@@ -3,6 +3,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useIsAdmin } from "@/hooks/useAdmin";
 import { LanguageSwitcher } from "./LanguageSwitcher";
+import { ThemeToggle } from "./ThemeToggle";
 import { Button } from "@/components/ui/button";
 import { Menu, X, Shield } from "lucide-react";
 import { useState } from "react";
@@ -23,6 +24,7 @@ export function Header() {
 
         {/* Desktop nav */}
         <nav className="hidden items-center gap-2 md:flex">
+          <ThemeToggle />
           <LanguageSwitcher />
           {user ? (
             <>
@@ -61,6 +63,7 @@ export function Header() {
 
         {/* Mobile menu toggle */}
         <div className="flex items-center gap-2 md:hidden">
+          <ThemeToggle />
           <LanguageSwitcher />
           <Button variant="ghost" size="icon" onClick={() => setMenuOpen(!menuOpen)}>
             {menuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
