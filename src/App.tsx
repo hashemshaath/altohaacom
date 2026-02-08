@@ -12,6 +12,16 @@ import Dashboard from "./pages/Dashboard";
 import Profile from "./pages/Profile";
 import Community from "./pages/Community";
 import NotFound from "./pages/NotFound";
+import PublicProfile from "./pages/PublicProfile";
+
+// Admin pages
+import AdminLayout from "./pages/admin/AdminLayout";
+import AdminDashboard from "./pages/admin/AdminDashboard";
+import UserManagement from "./pages/admin/UserManagement";
+import RoleManagement from "./pages/admin/RoleManagement";
+import MembershipManagement from "./pages/admin/MembershipManagement";
+import ContentModeration from "./pages/admin/ContentModeration";
+import AuditLog from "./pages/admin/AuditLog";
 
 const queryClient = new QueryClient();
 
@@ -29,6 +39,19 @@ const App = () => (
               <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
               <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
               <Route path="/community" element={<ProtectedRoute><Community /></ProtectedRoute>} />
+              
+              {/* Admin Routes */}
+              <Route path="/admin" element={<ProtectedRoute><AdminLayout /></ProtectedRoute>}>
+                <Route index element={<AdminDashboard />} />
+                <Route path="users" element={<UserManagement />} />
+                <Route path="roles" element={<RoleManagement />} />
+                <Route path="memberships" element={<MembershipManagement />} />
+                <Route path="moderation" element={<ContentModeration />} />
+                <Route path="audit" element={<AuditLog />} />
+              </Route>
+
+              {/* Public profile URL: altohaa.com/username */}
+              <Route path="/:username" element={<PublicProfile />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
           </BrowserRouter>

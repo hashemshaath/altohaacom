@@ -1,14 +1,16 @@
 import { Link } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/i18n/LanguageContext";
+import { useIsAdmin } from "@/hooks/useAdmin";
 import { LanguageSwitcher } from "./LanguageSwitcher";
 import { Button } from "@/components/ui/button";
-import { Menu, X } from "lucide-react";
+import { Menu, X, Shield } from "lucide-react";
 import { useState } from "react";
 
 export function Header() {
   const { user, signOut } = useAuth();
   const { t } = useLanguage();
+  const { data: isAdmin } = useIsAdmin();
   const [menuOpen, setMenuOpen] = useState(false);
 
   return (
@@ -33,6 +35,14 @@ export function Header() {
               <Button variant="ghost" size="sm" asChild>
                 <Link to="/profile">{t("myProfile")}</Link>
               </Button>
+              {isAdmin && (
+                <Button variant="ghost" size="sm" asChild>
+                  <Link to="/admin" className="flex items-center gap-1.5">
+                    <Shield className="h-4 w-4" />
+                    {t("adminPanel")}
+                  </Link>
+                </Button>
+              )}
               <Button variant="outline" size="sm" onClick={signOut}>
                 {t("signOut")}
               </Button>
@@ -73,6 +83,14 @@ export function Header() {
                 <Button variant="ghost" size="sm" asChild onClick={() => setMenuOpen(false)}>
                   <Link to="/profile">{t("myProfile")}</Link>
                 </Button>
+                {isAdmin && (
+                  <Button variant="ghost" size="sm" asChild onClick={() => setMenuOpen(false)}>
+                    <Link to="/admin" className="flex items-center gap-1.5">
+                      <Shield className="h-4 w-4" />
+                      {t("adminPanel")}
+                    </Link>
+                  </Button>
+                )}
                 <Button variant="outline" size="sm" onClick={() => { signOut(); setMenuOpen(false); }}>
                   {t("signOut")}
                 </Button>
