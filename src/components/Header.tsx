@@ -28,6 +28,9 @@ export function Header() {
                 <Link to="/dashboard">{t("home")}</Link>
               </Button>
               <Button variant="ghost" size="sm" asChild>
+                <Link to="/community">{t("community")}</Link>
+              </Button>
+              <Button variant="ghost" size="sm" asChild>
                 <Link to="/profile">{t("myProfile")}</Link>
               </Button>
               <Button variant="outline" size="sm" onClick={signOut}>
@@ -63,6 +66,9 @@ export function Header() {
               <>
                 <Button variant="ghost" size="sm" asChild onClick={() => setMenuOpen(false)}>
                   <Link to="/dashboard">{t("home")}</Link>
+                </Button>
+                <Button variant="ghost" size="sm" asChild onClick={() => setMenuOpen(false)}>
+                  <Link to="/community">{t("community")}</Link>
                 </Button>
                 <Button variant="ghost" size="sm" asChild onClick={() => setMenuOpen(false)}>
                   <Link to="/profile">{t("myProfile")}</Link>
