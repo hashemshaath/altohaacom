@@ -208,6 +208,7 @@ export const translations = {
     totalScore: "Total Score",
     submitScores: "Submit Scores",
     viewScores: "View Scores",
+    judgingPanel: "Judging Panel",
   },
   ar: {
     // Navigation
@@ -416,6 +417,7 @@ export const translations = {
     totalScore: "مجموع النقاط",
     submitScores: "تقديم النقاط",
     viewScores: "عرض النقاط",
+    judgingPanel: "لوحة التحكيم",
   },
 } as const;
 
