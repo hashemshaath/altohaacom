@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useParams, Link } from "react-router-dom";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useAuth } from "@/contexts/AuthContext";
@@ -11,10 +11,10 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Skeleton } from "@/components/ui/skeleton";
-import { useToast } from "@/hooks/use-toast";
 import { Calendar, MapPin, Users, Globe, Trophy, ArrowLeft, CheckCircle, Settings } from "lucide-react";
 import { format } from "date-fns";
 import { CompetitionStatusManager } from "@/components/competitions/CompetitionStatusManager";
+import { RegistrationDialog } from "@/components/competitions/RegistrationDialog";
 import type { Database } from "@/integrations/supabase/types";
 
 type CompetitionStatus = Database["public"]["Enums"]["competition_status"];
@@ -34,9 +34,8 @@ export default function CompetitionDetail() {
   const { id } = useParams<{ id: string }>();
   const { t, language } = useLanguage();
   const { user } = useAuth();
-  const { toast } = useToast();
-  const queryClient = useQueryClient();
   const [activeTab, setActiveTab] = useState("overview");
+  const [registrationDialogOpen, setRegistrationDialogOpen] = useState(false);
 
   const { data: competition, isLoading } = useQuery({
     queryKey: ["competition", id],
@@ -99,34 +98,7 @@ export default function CompetitionDetail() {
     enabled: !!id && !!user,
   });
 
-  const registerMutation = useMutation({
-    mutationFn: async () => {
-      if (!user || !id) throw new Error("Not authenticated");
-      
-      const { error } = await supabase
-        .from("competition_registrations")
-        .insert({
-          competition_id: id,
-          participant_id: user.id,
-        });
-      
-      if (error) throw error;
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["my-registration", id] });
-      toast({
-        title: "Registration submitted!",
-        description: "Your registration is pending approval.",
-      });
-    },
-    onError: (error) => {
-      toast({
-        variant: "destructive",
-        title: "Registration failed",
-        description: error.message,
-      });
-    },
-  });
+  // Registration is now handled by RegistrationDialog
 
   if (isLoading) {
     return (
@@ -330,10 +302,9 @@ export default function CompetitionDetail() {
                 ) : canRegister ? (
                   <Button
                     className="w-full"
-                    onClick={() => registerMutation.mutate()}
-                    disabled={registerMutation.isPending}
+                    onClick={() => setRegistrationDialogOpen(true)}
                   >
-                    {registerMutation.isPending ? "Registering..." : t("registerNow")}
+                    {t("registerNow")}
                   </Button>
                 ) : !user ? (
                   <Button asChild className="w-full">
@@ -413,6 +384,15 @@ export default function CompetitionDetail() {
       </main>
 
       <Footer />
+
+      {/* Registration Dialog */}
+      <RegistrationDialog
+        open={registrationDialogOpen}
+        onOpenChange={setRegistrationDialogOpen}
+        competitionId={competition.id}
+        competitionTitle={title}
+        categories={categories || []}
+      />
     </div>
   );
 }
