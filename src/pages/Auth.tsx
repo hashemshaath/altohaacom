@@ -132,7 +132,7 @@ export default function Auth() {
       password,
       options: {
         emailRedirectTo: redirectUrl,
-        data: { full_name: fullName },
+        data: { full_name: fullName, username: username.toLowerCase() },
       },
     });
     if (error) {
@@ -143,11 +143,21 @@ export default function Auth() {
 
     // Insert user role and update profile with username
     if (data.user) {
+      // Insert role (triggers account number generation)
       await supabase.from("user_roles").insert({ user_id: data.user.id, role });
-      await supabase
+      
+      // Wait briefly for the handle_new_user trigger to create the profile
+      await new Promise((resolve) => setTimeout(resolve, 500));
+      
+      // Update profile with username
+      const { error: updateError } = await supabase
         .from("profiles")
         .update({ username: username.toLowerCase() })
         .eq("user_id", data.user.id);
+      
+      if (updateError) {
+        console.error("Profile update error:", updateError);
+      }
     }
     setLoading(false);
     toast({
