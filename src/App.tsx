@@ -14,6 +14,7 @@ import Profile from "./pages/Profile";
 import Community from "./pages/Community";
 import Competitions from "./pages/Competitions";
 import CompetitionDetail from "./pages/CompetitionDetail";
+import CreateCompetition from "./pages/CreateCompetition";
 import NotFound from "./pages/NotFound";
 import PublicProfile from "./pages/PublicProfile";
 
@@ -49,6 +50,7 @@ const App = () => (
                 <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
                 <Route path="/community" element={<ProtectedRoute><Community /></ProtectedRoute>} />
                 <Route path="/competitions" element={<Competitions />} />
+                <Route path="/competitions/create" element={<ProtectedRoute><CreateCompetition /></ProtectedRoute>} />
                 <Route path="/competitions/:id" element={<CompetitionDetail />} />
                 
                 {/* Admin Routes */}
