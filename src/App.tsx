@@ -12,6 +12,8 @@ import Auth from "./pages/Auth";
 import Dashboard from "./pages/Dashboard";
 import Profile from "./pages/Profile";
 import Community from "./pages/Community";
+import Competitions from "./pages/Competitions";
+import CompetitionDetail from "./pages/CompetitionDetail";
 import NotFound from "./pages/NotFound";
 import PublicProfile from "./pages/PublicProfile";
 
@@ -46,6 +48,8 @@ const App = () => (
                 <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
                 <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
                 <Route path="/community" element={<ProtectedRoute><Community /></ProtectedRoute>} />
+                <Route path="/competitions" element={<Competitions />} />
+                <Route path="/competitions/:id" element={<CompetitionDetail />} />
                 
                 {/* Admin Routes */}
                 <Route path="/admin" element={<ProtectedRoute><AdminLayout /></ProtectedRoute>}>
