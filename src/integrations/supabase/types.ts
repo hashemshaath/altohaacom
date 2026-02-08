@@ -56,6 +56,256 @@ export type Database = {
         }
         Relationships: []
       }
+      competition_categories: {
+        Row: {
+          competition_id: string
+          created_at: string
+          description: string | null
+          description_ar: string | null
+          id: string
+          max_participants: number | null
+          name: string
+          name_ar: string | null
+          sort_order: number | null
+        }
+        Insert: {
+          competition_id: string
+          created_at?: string
+          description?: string | null
+          description_ar?: string | null
+          id?: string
+          max_participants?: number | null
+          name: string
+          name_ar?: string | null
+          sort_order?: number | null
+        }
+        Update: {
+          competition_id?: string
+          created_at?: string
+          description?: string | null
+          description_ar?: string | null
+          id?: string
+          max_participants?: number | null
+          name?: string
+          name_ar?: string | null
+          sort_order?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "competition_categories_competition_id_fkey"
+            columns: ["competition_id"]
+            isOneToOne: false
+            referencedRelation: "competitions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      competition_judges: {
+        Row: {
+          assigned_at: string
+          assigned_by: string | null
+          competition_id: string
+          id: string
+          judge_id: string
+        }
+        Insert: {
+          assigned_at?: string
+          assigned_by?: string | null
+          competition_id: string
+          id?: string
+          judge_id: string
+        }
+        Update: {
+          assigned_at?: string
+          assigned_by?: string | null
+          competition_id?: string
+          id?: string
+          judge_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "competition_judges_competition_id_fkey"
+            columns: ["competition_id"]
+            isOneToOne: false
+            referencedRelation: "competitions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      competition_registrations: {
+        Row: {
+          approved_at: string | null
+          approved_by: string | null
+          category_id: string | null
+          competition_id: string
+          dish_description: string | null
+          dish_image_url: string | null
+          dish_name: string | null
+          id: string
+          participant_id: string
+          registered_at: string
+          registration_number: string | null
+          status: string
+        }
+        Insert: {
+          approved_at?: string | null
+          approved_by?: string | null
+          category_id?: string | null
+          competition_id: string
+          dish_description?: string | null
+          dish_image_url?: string | null
+          dish_name?: string | null
+          id?: string
+          participant_id: string
+          registered_at?: string
+          registration_number?: string | null
+          status?: string
+        }
+        Update: {
+          approved_at?: string | null
+          approved_by?: string | null
+          category_id?: string | null
+          competition_id?: string
+          dish_description?: string | null
+          dish_image_url?: string | null
+          dish_name?: string | null
+          id?: string
+          participant_id?: string
+          registered_at?: string
+          registration_number?: string | null
+          status?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "competition_registrations_category_id_fkey"
+            columns: ["category_id"]
+            isOneToOne: false
+            referencedRelation: "competition_categories"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "competition_registrations_competition_id_fkey"
+            columns: ["competition_id"]
+            isOneToOne: false
+            referencedRelation: "competitions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      competition_scores: {
+        Row: {
+          criteria_id: string
+          id: string
+          judge_id: string
+          notes: string | null
+          registration_id: string
+          score: number
+          scored_at: string
+        }
+        Insert: {
+          criteria_id: string
+          id?: string
+          judge_id: string
+          notes?: string | null
+          registration_id: string
+          score: number
+          scored_at?: string
+        }
+        Update: {
+          criteria_id?: string
+          id?: string
+          judge_id?: string
+          notes?: string | null
+          registration_id?: string
+          score?: number
+          scored_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "competition_scores_criteria_id_fkey"
+            columns: ["criteria_id"]
+            isOneToOne: false
+            referencedRelation: "judging_criteria"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "competition_scores_registration_id_fkey"
+            columns: ["registration_id"]
+            isOneToOne: false
+            referencedRelation: "competition_registrations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      competitions: {
+        Row: {
+          city: string | null
+          competition_end: string
+          competition_start: string
+          country: string | null
+          cover_image_url: string | null
+          created_at: string
+          description: string | null
+          description_ar: string | null
+          id: string
+          is_virtual: boolean | null
+          max_participants: number | null
+          organizer_id: string
+          registration_end: string | null
+          registration_start: string | null
+          status: Database["public"]["Enums"]["competition_status"]
+          title: string
+          title_ar: string | null
+          updated_at: string
+          venue: string | null
+          venue_ar: string | null
+        }
+        Insert: {
+          city?: string | null
+          competition_end: string
+          competition_start: string
+          country?: string | null
+          cover_image_url?: string | null
+          created_at?: string
+          description?: string | null
+          description_ar?: string | null
+          id?: string
+          is_virtual?: boolean | null
+          max_participants?: number | null
+          organizer_id: string
+          registration_end?: string | null
+          registration_start?: string | null
+          status?: Database["public"]["Enums"]["competition_status"]
+          title: string
+          title_ar?: string | null
+          updated_at?: string
+          venue?: string | null
+          venue_ar?: string | null
+        }
+        Update: {
+          city?: string | null
+          competition_end?: string
+          competition_start?: string
+          country?: string | null
+          cover_image_url?: string | null
+          created_at?: string
+          description?: string | null
+          description_ar?: string | null
+          id?: string
+          is_virtual?: boolean | null
+          max_participants?: number | null
+          organizer_id?: string
+          registration_end?: string | null
+          registration_start?: string | null
+          status?: Database["public"]["Enums"]["competition_status"]
+          title?: string
+          title_ar?: string | null
+          updated_at?: string
+          venue?: string | null
+          venue_ar?: string | null
+        }
+        Relationships: []
+      }
       connections: {
         Row: {
           created_at: string
@@ -243,6 +493,53 @@ export type Database = {
           user_id?: string
         }
         Relationships: []
+      }
+      judging_criteria: {
+        Row: {
+          competition_id: string
+          created_at: string
+          description: string | null
+          description_ar: string | null
+          id: string
+          max_score: number
+          name: string
+          name_ar: string | null
+          sort_order: number | null
+          weight: number
+        }
+        Insert: {
+          competition_id: string
+          created_at?: string
+          description?: string | null
+          description_ar?: string | null
+          id?: string
+          max_score?: number
+          name: string
+          name_ar?: string | null
+          sort_order?: number | null
+          weight?: number
+        }
+        Update: {
+          competition_id?: string
+          created_at?: string
+          description?: string | null
+          description_ar?: string | null
+          id?: string
+          max_score?: number
+          name?: string
+          name_ar?: string | null
+          sort_order?: number | null
+          weight?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "judging_criteria_competition_id_fkey"
+            columns: ["competition_id"]
+            isOneToOne: false
+            referencedRelation: "competitions"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       membership_history: {
         Row: {
@@ -540,6 +837,15 @@ export type Database = {
         | "sponsor"
         | "assistant"
         | "supervisor"
+      competition_status:
+        | "draft"
+        | "upcoming"
+        | "registration_open"
+        | "registration_closed"
+        | "in_progress"
+        | "judging"
+        | "completed"
+        | "cancelled"
       experience_level: "beginner" | "amateur" | "professional"
       membership_status: "active" | "expired" | "suspended" | "cancelled"
       membership_tier: "basic" | "professional" | "enterprise"
@@ -680,6 +986,16 @@ export const Constants = {
         "sponsor",
         "assistant",
         "supervisor",
+      ],
+      competition_status: [
+        "draft",
+        "upcoming",
+        "registration_open",
+        "registration_closed",
+        "in_progress",
+        "judging",
+        "completed",
+        "cancelled",
       ],
       experience_level: ["beginner", "amateur", "professional"],
       membership_status: ["active", "expired", "suspended", "cancelled"],

@@ -1,0 +1,400 @@
+import { useState } from "react";
+import { useParams, Link } from "react-router-dom";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
+import { useLanguage } from "@/i18n/LanguageContext";
+import { useAuth } from "@/contexts/AuthContext";
+import { Header } from "@/components/Header";
+import { Footer } from "@/components/Footer";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Skeleton } from "@/components/ui/skeleton";
+import { useToast } from "@/hooks/use-toast";
+import { Calendar, MapPin, Users, Globe, Trophy, ArrowLeft, CheckCircle } from "lucide-react";
+import { format } from "date-fns";
+import type { Database } from "@/integrations/supabase/types";
+
+type CompetitionStatus = Database["public"]["Enums"]["competition_status"];
+
+const statusColors: Record<CompetitionStatus, string> = {
+  draft: "bg-muted text-muted-foreground",
+  upcoming: "bg-accent/20 text-accent",
+  registration_open: "bg-primary/20 text-primary",
+  registration_closed: "bg-muted text-muted-foreground",
+  in_progress: "bg-chart-3/20 text-chart-3",
+  judging: "bg-chart-4/20 text-chart-4",
+  completed: "bg-chart-5/20 text-chart-5",
+  cancelled: "bg-destructive/20 text-destructive",
+};
+
+export default function CompetitionDetail() {
+  const { id } = useParams<{ id: string }>();
+  const { t, language } = useLanguage();
+  const { user } = useAuth();
+  const { toast } = useToast();
+  const queryClient = useQueryClient();
+  const [activeTab, setActiveTab] = useState("overview");
+
+  const { data: competition, isLoading } = useQuery({
+    queryKey: ["competition", id],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("competitions")
+        .select("*")
+        .eq("id", id)
+        .single();
+      
+      if (error) throw error;
+      return data;
+    },
+    enabled: !!id,
+  });
+
+  const { data: categories } = useQuery({
+    queryKey: ["competition-categories", id],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("competition_categories")
+        .select("*")
+        .eq("competition_id", id)
+        .order("sort_order");
+      
+      if (error) throw error;
+      return data;
+    },
+    enabled: !!id,
+  });
+
+  const { data: criteria } = useQuery({
+    queryKey: ["judging-criteria", id],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("judging_criteria")
+        .select("*")
+        .eq("competition_id", id)
+        .order("sort_order");
+      
+      if (error) throw error;
+      return data;
+    },
+    enabled: !!id,
+  });
+
+  const { data: myRegistration } = useQuery({
+    queryKey: ["my-registration", id, user?.id],
+    queryFn: async () => {
+      if (!user) return null;
+      const { data } = await supabase
+        .from("competition_registrations")
+        .select("*")
+        .eq("competition_id", id)
+        .eq("participant_id", user.id)
+        .maybeSingle();
+      
+      return data;
+    },
+    enabled: !!id && !!user,
+  });
+
+  const registerMutation = useMutation({
+    mutationFn: async () => {
+      if (!user || !id) throw new Error("Not authenticated");
+      
+      const { error } = await supabase
+        .from("competition_registrations")
+        .insert({
+          competition_id: id,
+          participant_id: user.id,
+        });
+      
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["my-registration", id] });
+      toast({
+        title: "Registration submitted!",
+        description: "Your registration is pending approval.",
+      });
+    },
+    onError: (error) => {
+      toast({
+        variant: "destructive",
+        title: "Registration failed",
+        description: error.message,
+      });
+    },
+  });
+
+  if (isLoading) {
+    return (
+      <div className="flex min-h-screen flex-col">
+        <Header />
+        <main className="container flex-1 py-8">
+          <Skeleton className="mb-4 h-8 w-48" />
+          <Skeleton className="h-64 w-full rounded-lg" />
+        </main>
+        <Footer />
+      </div>
+    );
+  }
+
+  if (!competition) {
+    return (
+      <div className="flex min-h-screen flex-col">
+        <Header />
+        <main className="container flex-1 py-8 text-center">
+          <p className="text-muted-foreground">Competition not found</p>
+          <Button asChild className="mt-4">
+            <Link to="/competitions">Back to Competitions</Link>
+          </Button>
+        </main>
+        <Footer />
+      </div>
+    );
+  }
+
+  const title = language === "ar" && competition.title_ar ? competition.title_ar : competition.title;
+  const description = language === "ar" && competition.description_ar ? competition.description_ar : competition.description;
+  const venue = language === "ar" && competition.venue_ar ? competition.venue_ar : competition.venue;
+
+  const canRegister = competition.status === "registration_open" && user && !myRegistration;
+
+  const getStatusLabel = (status: CompetitionStatus): string => {
+    const labels: Record<CompetitionStatus, string> = {
+      draft: t("draft"),
+      upcoming: t("upcoming"),
+      registration_open: t("registrationOpen"),
+      registration_closed: t("registrationClosed"),
+      in_progress: t("inProgress"),
+      judging: t("judging"),
+      completed: t("completed"),
+      cancelled: t("cancelled"),
+    };
+    return labels[status];
+  };
+
+  return (
+    <div className="flex min-h-screen flex-col">
+      <Header />
+      
+      <main className="container flex-1 py-8">
+        {/* Back Button */}
+        <Button variant="ghost" size="sm" asChild className="mb-4">
+          <Link to="/competitions">
+            <ArrowLeft className="mr-2 h-4 w-4" />
+            {t("competitionsPage")}
+          </Link>
+        </Button>
+
+        {/* Hero Section */}
+        <div className="relative mb-8 overflow-hidden rounded-xl bg-gradient-to-br from-primary/20 to-accent/20">
+          {competition.cover_image_url ? (
+            <img
+              src={competition.cover_image_url}
+              alt={title}
+              className="h-64 w-full object-cover md:h-80"
+            />
+          ) : (
+            <div className="flex h-64 items-center justify-center md:h-80">
+              <Trophy className="h-24 w-24 text-primary/30" />
+            </div>
+          )}
+          <div className="absolute inset-0 bg-gradient-to-t from-background/90 to-transparent" />
+          <div className="absolute bottom-0 left-0 right-0 p-6">
+            <Badge className={`mb-2 ${statusColors[competition.status as CompetitionStatus]}`}>
+              {getStatusLabel(competition.status as CompetitionStatus)}
+            </Badge>
+            <h1 className="font-serif text-3xl font-bold md:text-4xl">{title}</h1>
+          </div>
+        </div>
+
+        <div className="grid gap-8 lg:grid-cols-3">
+          {/* Main Content */}
+          <div className="lg:col-span-2">
+            <Tabs value={activeTab} onValueChange={setActiveTab}>
+              <TabsList>
+                <TabsTrigger value="overview">Overview</TabsTrigger>
+                <TabsTrigger value="categories">{t("categories")}</TabsTrigger>
+                <TabsTrigger value="criteria">{t("criteria")}</TabsTrigger>
+              </TabsList>
+
+              <TabsContent value="overview" className="mt-6">
+                {description && (
+                  <Card>
+                    <CardContent className="prose prose-sm max-w-none p-6 dark:prose-invert">
+                      <p className="whitespace-pre-wrap">{description}</p>
+                    </CardContent>
+                  </Card>
+                )}
+              </TabsContent>
+
+              <TabsContent value="categories" className="mt-6">
+                {categories && categories.length > 0 ? (
+                  <div className="grid gap-4 sm:grid-cols-2">
+                    {categories.map((cat) => (
+                      <Card key={cat.id}>
+                        <CardHeader className="pb-2">
+                          <CardTitle className="text-lg">
+                            {language === "ar" && cat.name_ar ? cat.name_ar : cat.name}
+                          </CardTitle>
+                        </CardHeader>
+                        <CardContent className="text-sm text-muted-foreground">
+                          {language === "ar" && cat.description_ar
+                            ? cat.description_ar
+                            : cat.description}
+                          {cat.max_participants && (
+                            <p className="mt-2">
+                              <Users className="mr-1 inline h-4 w-4" />
+                              Max {cat.max_participants} participants
+                            </p>
+                          )}
+                        </CardContent>
+                      </Card>
+                    ))}
+                  </div>
+                ) : (
+                  <p className="text-muted-foreground">No categories defined yet.</p>
+                )}
+              </TabsContent>
+
+              <TabsContent value="criteria" className="mt-6">
+                {criteria && criteria.length > 0 ? (
+                  <div className="space-y-4">
+                    {criteria.map((crit) => (
+                      <Card key={crit.id}>
+                        <CardContent className="flex items-start justify-between p-4">
+                          <div>
+                            <h4 className="font-medium">
+                              {language === "ar" && crit.name_ar ? crit.name_ar : crit.name}
+                            </h4>
+                            <p className="text-sm text-muted-foreground">
+                              {language === "ar" && crit.description_ar
+                                ? crit.description_ar
+                                : crit.description}
+                            </p>
+                          </div>
+                          <div className="text-right">
+                            <Badge variant="outline">Max: {crit.max_score}</Badge>
+                            <p className="mt-1 text-xs text-muted-foreground">
+                              Weight: {(Number(crit.weight) * 100).toFixed(0)}%
+                            </p>
+                          </div>
+                        </CardContent>
+                      </Card>
+                    ))}
+                  </div>
+                ) : (
+                  <p className="text-muted-foreground">No judging criteria defined yet.</p>
+                )}
+              </TabsContent>
+            </Tabs>
+          </div>
+
+          {/* Sidebar */}
+          <div className="space-y-6">
+            {/* Registration Card */}
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-lg">{t("registerForCompetition")}</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                {myRegistration ? (
+                  <div className="flex items-center gap-2 text-primary">
+                    <CheckCircle className="h-5 w-5" />
+                    <span>
+                      {myRegistration.status === "approved"
+                        ? t("alreadyRegistered")
+                        : t("registrationPending")}
+                    </span>
+                  </div>
+                ) : canRegister ? (
+                  <Button
+                    className="w-full"
+                    onClick={() => registerMutation.mutate()}
+                    disabled={registerMutation.isPending}
+                  >
+                    {registerMutation.isPending ? "Registering..." : t("registerNow")}
+                  </Button>
+                ) : !user ? (
+                  <Button asChild className="w-full">
+                    <Link to="/auth">{t("signIn")} to Register</Link>
+                  </Button>
+                ) : (
+                  <p className="text-sm text-muted-foreground">
+                    Registration is currently closed.
+                  </p>
+                )}
+              </CardContent>
+            </Card>
+
+            {/* Details Card */}
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-lg">Details</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4 text-sm">
+                <div className="flex items-start gap-3">
+                  <Calendar className="mt-0.5 h-4 w-4 text-muted-foreground" />
+                  <div>
+                    <p className="font-medium">{t("startDate")}</p>
+                    <p className="text-muted-foreground">
+                      {format(new Date(competition.competition_start), "MMMM d, yyyy")}
+                    </p>
+                  </div>
+                </div>
+
+                <div className="flex items-start gap-3">
+                  <Calendar className="mt-0.5 h-4 w-4 text-muted-foreground" />
+                  <div>
+                    <p className="font-medium">{t("endDate")}</p>
+                    <p className="text-muted-foreground">
+                      {format(new Date(competition.competition_end), "MMMM d, yyyy")}
+                    </p>
+                  </div>
+                </div>
+
+                {competition.is_virtual ? (
+                  <div className="flex items-start gap-3">
+                    <Globe className="mt-0.5 h-4 w-4 text-muted-foreground" />
+                    <div>
+                      <p className="font-medium">{t("venue")}</p>
+                      <p className="text-muted-foreground">{t("virtual")}</p>
+                    </div>
+                  </div>
+                ) : venue && (
+                  <div className="flex items-start gap-3">
+                    <MapPin className="mt-0.5 h-4 w-4 text-muted-foreground" />
+                    <div>
+                      <p className="font-medium">{t("venue")}</p>
+                      <p className="text-muted-foreground">
+                        {venue}
+                        {competition.city && <>, {competition.city}</>}
+                        {competition.country && <>, {competition.country}</>}
+                      </p>
+                    </div>
+                  </div>
+                )}
+
+                {competition.max_participants && (
+                  <div className="flex items-start gap-3">
+                    <Users className="mt-0.5 h-4 w-4 text-muted-foreground" />
+                    <div>
+                      <p className="font-medium">{t("participants")}</p>
+                      <p className="text-muted-foreground">
+                        Max {competition.max_participants}
+                      </p>
+                    </div>
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+          </div>
+        </div>
+      </main>
+
+      <Footer />
+    </div>
+  );
+}
