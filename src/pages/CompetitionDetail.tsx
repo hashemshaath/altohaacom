@@ -12,8 +12,9 @@ import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useToast } from "@/hooks/use-toast";
-import { Calendar, MapPin, Users, Globe, Trophy, ArrowLeft, CheckCircle } from "lucide-react";
+import { Calendar, MapPin, Users, Globe, Trophy, ArrowLeft, CheckCircle, Settings } from "lucide-react";
 import { format } from "date-fns";
+import { CompetitionStatusManager } from "@/components/competitions/CompetitionStatusManager";
 import type { Database } from "@/integrations/supabase/types";
 
 type CompetitionStatus = Database["public"]["Enums"]["competition_status"];
@@ -160,6 +161,7 @@ export default function CompetitionDetail() {
   const venue = language === "ar" && competition.venue_ar ? competition.venue_ar : competition.venue;
 
   const canRegister = competition.status === "registration_open" && user && !myRegistration;
+  const isOrganizer = user && competition.organizer_id === user.id;
 
   const getStatusLabel = (status: CompetitionStatus): string => {
     const labels: Record<CompetitionStatus, string> = {
@@ -218,6 +220,12 @@ export default function CompetitionDetail() {
                 <TabsTrigger value="overview">Overview</TabsTrigger>
                 <TabsTrigger value="categories">{t("categories")}</TabsTrigger>
                 <TabsTrigger value="criteria">{t("criteria")}</TabsTrigger>
+                {isOrganizer && (
+                  <TabsTrigger value="manage" className="gap-1">
+                    <Settings className="h-4 w-4" />
+                    {language === "ar" ? "إدارة" : "Manage"}
+                  </TabsTrigger>
+                )}
               </TabsList>
 
               <TabsContent value="overview" className="mt-6">
@@ -289,6 +297,16 @@ export default function CompetitionDetail() {
                   <p className="text-muted-foreground">No judging criteria defined yet.</p>
                 )}
               </TabsContent>
+
+              {isOrganizer && (
+                <TabsContent value="manage" className="mt-6">
+                  <CompetitionStatusManager
+                    competitionId={competition.id}
+                    currentStatus={competition.status}
+                    competitionTitle={title}
+                  />
+                </TabsContent>
+              )}
             </Tabs>
           </div>
 
