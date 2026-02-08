@@ -14,6 +14,48 @@ export type Database = {
   }
   public: {
     Tables: {
+      account_sequences: {
+        Row: {
+          last_number: number
+          role: Database["public"]["Enums"]["app_role"]
+        }
+        Insert: {
+          last_number?: number
+          role: Database["public"]["Enums"]["app_role"]
+        }
+        Update: {
+          last_number?: number
+          role?: Database["public"]["Enums"]["app_role"]
+        }
+        Relationships: []
+      }
+      admin_actions: {
+        Row: {
+          action_type: string
+          admin_id: string
+          created_at: string
+          details: Json | null
+          id: string
+          target_user_id: string | null
+        }
+        Insert: {
+          action_type: string
+          admin_id: string
+          created_at?: string
+          details?: Json | null
+          id?: string
+          target_user_id?: string | null
+        }
+        Update: {
+          action_type?: string
+          admin_id?: string
+          created_at?: string
+          details?: Json | null
+          id?: string
+          target_user_id?: string | null
+        }
+        Relationships: []
+      }
       connections: {
         Row: {
           created_at: string
@@ -32,6 +74,45 @@ export type Database = {
           follower_id?: string
           following_id?: string
           id?: string
+        }
+        Relationships: []
+      }
+      content_reports: {
+        Row: {
+          content_id: string
+          content_type: string
+          created_at: string
+          id: string
+          reason: string
+          reporter_id: string
+          resolution_notes: string | null
+          resolved_at: string | null
+          resolved_by: string | null
+          status: string | null
+        }
+        Insert: {
+          content_id: string
+          content_type: string
+          created_at?: string
+          id?: string
+          reason: string
+          reporter_id: string
+          resolution_notes?: string | null
+          resolved_at?: string | null
+          resolved_by?: string | null
+          status?: string | null
+        }
+        Update: {
+          content_id?: string
+          content_type?: string
+          created_at?: string
+          id?: string
+          reason?: string
+          reporter_id?: string
+          resolution_notes?: string | null
+          resolved_at?: string | null
+          resolved_by?: string | null
+          status?: string | null
         }
         Relationships: []
       }
@@ -103,6 +184,93 @@ export type Database = {
           name?: string
           name_ar?: string | null
           updated_at?: string
+        }
+        Relationships: []
+      }
+      invoice_sequences: {
+        Row: {
+          last_number: number
+          year: number
+        }
+        Insert: {
+          last_number?: number
+          year: number
+        }
+        Update: {
+          last_number?: number
+          year?: number
+        }
+        Relationships: []
+      }
+      invoices: {
+        Row: {
+          amount: number
+          created_at: string
+          currency: string | null
+          description: string | null
+          due_date: string | null
+          id: string
+          invoice_number: string
+          paid_at: string | null
+          status: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          amount: number
+          created_at?: string
+          currency?: string | null
+          description?: string | null
+          due_date?: string | null
+          id?: string
+          invoice_number: string
+          paid_at?: string | null
+          status?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          amount?: number
+          created_at?: string
+          currency?: string | null
+          description?: string | null
+          due_date?: string | null
+          id?: string
+          invoice_number?: string
+          paid_at?: string | null
+          status?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      membership_history: {
+        Row: {
+          changed_by: string | null
+          created_at: string
+          id: string
+          new_tier: Database["public"]["Enums"]["membership_tier"]
+          previous_tier: Database["public"]["Enums"]["membership_tier"] | null
+          reason: string | null
+          user_id: string
+        }
+        Insert: {
+          changed_by?: string | null
+          created_at?: string
+          id?: string
+          new_tier: Database["public"]["Enums"]["membership_tier"]
+          previous_tier?: Database["public"]["Enums"]["membership_tier"] | null
+          reason?: string | null
+          user_id: string
+        }
+        Update: {
+          changed_by?: string | null
+          created_at?: string
+          id?: string
+          new_tier?: Database["public"]["Enums"]["membership_tier"]
+          previous_tier?: Database["public"]["Enums"]["membership_tier"] | null
+          reason?: string | null
+          user_id?: string
         }
         Relationships: []
       }
@@ -210,6 +378,8 @@ export type Database = {
       }
       profiles: {
         Row: {
+          account_number: string | null
+          account_status: Database["public"]["Enums"]["account_status"] | null
           avatar_url: string | null
           bio: string | null
           created_at: string
@@ -220,19 +390,32 @@ export type Database = {
           full_name: string | null
           id: string
           instagram: string | null
+          is_verified: boolean | null
+          last_login_at: string | null
           linkedin: string | null
           location: string | null
+          membership_expires_at: string | null
+          membership_status:
+            | Database["public"]["Enums"]["membership_status"]
+            | null
+          membership_tier: Database["public"]["Enums"]["membership_tier"] | null
           phone: string | null
           preferred_language: string | null
           profile_completed: boolean | null
           specialization: string | null
+          suspended_at: string | null
+          suspended_reason: string | null
           twitter: string | null
           updated_at: string
           user_id: string
+          username: string | null
+          verified_at: string | null
           website: string | null
           youtube: string | null
         }
         Insert: {
+          account_number?: string | null
+          account_status?: Database["public"]["Enums"]["account_status"] | null
           avatar_url?: string | null
           bio?: string | null
           created_at?: string
@@ -243,19 +426,34 @@ export type Database = {
           full_name?: string | null
           id?: string
           instagram?: string | null
+          is_verified?: boolean | null
+          last_login_at?: string | null
           linkedin?: string | null
           location?: string | null
+          membership_expires_at?: string | null
+          membership_status?:
+            | Database["public"]["Enums"]["membership_status"]
+            | null
+          membership_tier?:
+            | Database["public"]["Enums"]["membership_tier"]
+            | null
           phone?: string | null
           preferred_language?: string | null
           profile_completed?: boolean | null
           specialization?: string | null
+          suspended_at?: string | null
+          suspended_reason?: string | null
           twitter?: string | null
           updated_at?: string
           user_id: string
+          username?: string | null
+          verified_at?: string | null
           website?: string | null
           youtube?: string | null
         }
         Update: {
+          account_number?: string | null
+          account_status?: Database["public"]["Enums"]["account_status"] | null
           avatar_url?: string | null
           bio?: string | null
           created_at?: string
@@ -266,15 +464,28 @@ export type Database = {
           full_name?: string | null
           id?: string
           instagram?: string | null
+          is_verified?: boolean | null
+          last_login_at?: string | null
           linkedin?: string | null
           location?: string | null
+          membership_expires_at?: string | null
+          membership_status?:
+            | Database["public"]["Enums"]["membership_status"]
+            | null
+          membership_tier?:
+            | Database["public"]["Enums"]["membership_tier"]
+            | null
           phone?: string | null
           preferred_language?: string | null
           profile_completed?: boolean | null
           specialization?: string | null
+          suspended_at?: string | null
+          suspended_reason?: string | null
           twitter?: string | null
           updated_at?: string
           user_id?: string
+          username?: string | null
+          verified_at?: string | null
           website?: string | null
           youtube?: string | null
         }
@@ -303,6 +514,11 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      generate_account_number: {
+        Args: { p_role: Database["public"]["Enums"]["app_role"] }
+        Returns: string
+      }
+      generate_invoice_number: { Args: never; Returns: string }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
@@ -310,8 +526,11 @@ export type Database = {
         }
         Returns: boolean
       }
+      is_admin: { Args: { p_user_id: string }; Returns: boolean }
+      validate_username: { Args: { p_username: string }; Returns: boolean }
     }
     Enums: {
+      account_status: "pending" | "active" | "suspended" | "banned"
       app_role:
         | "chef"
         | "judge"
@@ -322,6 +541,8 @@ export type Database = {
         | "assistant"
         | "supervisor"
       experience_level: "beginner" | "amateur" | "professional"
+      membership_status: "active" | "expired" | "suspended" | "cancelled"
+      membership_tier: "basic" | "professional" | "enterprise"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -449,6 +670,7 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
+      account_status: ["pending", "active", "suspended", "banned"],
       app_role: [
         "chef",
         "judge",
@@ -460,6 +682,8 @@ export const Constants = {
         "supervisor",
       ],
       experience_level: ["beginner", "amateur", "professional"],
+      membership_status: ["active", "expired", "suspended", "cancelled"],
+      membership_tier: ["basic", "professional", "enterprise"],
     },
   },
 } as const
