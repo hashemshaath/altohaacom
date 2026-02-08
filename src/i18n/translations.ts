@@ -162,6 +162,12 @@ export const translations = {
     edit: "Edit",
     save: "Save",
     search: "Search",
+
+    // Theme
+    toggleTheme: "Toggle theme",
+    lightMode: "Light",
+    darkMode: "Dark",
+    systemMode: "System",
   },
   ar: {
     // Navigation
@@ -326,6 +332,12 @@ export const translations = {
     actions: "الإجراءات",
     reason: "السبب",
     noResults: "لا توجد نتائج",
+
+    // Theme
+    toggleTheme: "تبديل السمة",
+    lightMode: "فاتح",
+    darkMode: "داكن",
+    systemMode: "النظام",
   },
 } as const;
 
