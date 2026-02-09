@@ -61,6 +61,7 @@ export default function AdminLayout() {
       title: language === "ar" ? "إدارة المستخدمين" : "User Management",
       items: [
         { to: "/admin/users", icon: Users, label: language === "ar" ? "المستخدمين" : "Users" },
+        { to: "/admin/companies", icon: Building, label: language === "ar" ? "الشركات" : "Companies" },
         { to: "/admin/leads", icon: UserSearch, label: language === "ar" ? "العملاء المحتملين" : "Leads" },
         { to: "/admin/roles", icon: Shield, label: language === "ar" ? "الأدوار والصلاحيات" : "Roles & Permissions" },
         { to: "/admin/memberships", icon: CreditCard, label: language === "ar" ? "العضويات" : "Memberships" },

@@ -492,6 +492,801 @@ export type Database = {
           },
         ]
       }
+      companies: {
+        Row: {
+          address: string | null
+          address_ar: string | null
+          city: string | null
+          classifications: string[] | null
+          country: string | null
+          cover_image_url: string | null
+          created_at: string | null
+          created_by: string | null
+          credit_limit: number | null
+          currency: string | null
+          description: string | null
+          description_ar: string | null
+          email: string | null
+          id: string
+          logo_url: string | null
+          name: string
+          name_ar: string | null
+          payment_terms: number | null
+          phone: string | null
+          postal_code: string | null
+          registration_number: string | null
+          status: Database["public"]["Enums"]["company_status"] | null
+          tax_number: string | null
+          type: Database["public"]["Enums"]["company_type"]
+          updated_at: string | null
+          website: string | null
+          working_hours: Json | null
+        }
+        Insert: {
+          address?: string | null
+          address_ar?: string | null
+          city?: string | null
+          classifications?: string[] | null
+          country?: string | null
+          cover_image_url?: string | null
+          created_at?: string | null
+          created_by?: string | null
+          credit_limit?: number | null
+          currency?: string | null
+          description?: string | null
+          description_ar?: string | null
+          email?: string | null
+          id?: string
+          logo_url?: string | null
+          name: string
+          name_ar?: string | null
+          payment_terms?: number | null
+          phone?: string | null
+          postal_code?: string | null
+          registration_number?: string | null
+          status?: Database["public"]["Enums"]["company_status"] | null
+          tax_number?: string | null
+          type: Database["public"]["Enums"]["company_type"]
+          updated_at?: string | null
+          website?: string | null
+          working_hours?: Json | null
+        }
+        Update: {
+          address?: string | null
+          address_ar?: string | null
+          city?: string | null
+          classifications?: string[] | null
+          country?: string | null
+          cover_image_url?: string | null
+          created_at?: string | null
+          created_by?: string | null
+          credit_limit?: number | null
+          currency?: string | null
+          description?: string | null
+          description_ar?: string | null
+          email?: string | null
+          id?: string
+          logo_url?: string | null
+          name?: string
+          name_ar?: string | null
+          payment_terms?: number | null
+          phone?: string | null
+          postal_code?: string | null
+          registration_number?: string | null
+          status?: Database["public"]["Enums"]["company_status"] | null
+          tax_number?: string | null
+          type?: Database["public"]["Enums"]["company_type"]
+          updated_at?: string | null
+          website?: string | null
+          working_hours?: Json | null
+        }
+        Relationships: []
+      }
+      company_branches: {
+        Row: {
+          address: string | null
+          address_ar: string | null
+          city: string | null
+          company_id: string
+          coordinates: unknown
+          country: string | null
+          created_at: string | null
+          email: string | null
+          id: string
+          is_active: boolean | null
+          is_headquarters: boolean | null
+          manager_email: string | null
+          manager_name: string | null
+          manager_phone: string | null
+          name: string
+          name_ar: string | null
+          phone: string | null
+          postal_code: string | null
+          working_hours: Json | null
+        }
+        Insert: {
+          address?: string | null
+          address_ar?: string | null
+          city?: string | null
+          company_id: string
+          coordinates?: unknown
+          country?: string | null
+          created_at?: string | null
+          email?: string | null
+          id?: string
+          is_active?: boolean | null
+          is_headquarters?: boolean | null
+          manager_email?: string | null
+          manager_name?: string | null
+          manager_phone?: string | null
+          name: string
+          name_ar?: string | null
+          phone?: string | null
+          postal_code?: string | null
+          working_hours?: Json | null
+        }
+        Update: {
+          address?: string | null
+          address_ar?: string | null
+          city?: string | null
+          company_id?: string
+          coordinates?: unknown
+          country?: string | null
+          created_at?: string | null
+          email?: string | null
+          id?: string
+          is_active?: boolean | null
+          is_headquarters?: boolean | null
+          manager_email?: string | null
+          manager_name?: string | null
+          manager_phone?: string | null
+          name?: string
+          name_ar?: string | null
+          phone?: string | null
+          postal_code?: string | null
+          working_hours?: Json | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "company_branches_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      company_catalog: {
+        Row: {
+          category: string
+          company_id: string
+          created_at: string | null
+          currency: string | null
+          description: string | null
+          description_ar: string | null
+          id: string
+          image_url: string | null
+          in_stock: boolean | null
+          is_active: boolean | null
+          name: string
+          name_ar: string | null
+          quantity_available: number | null
+          sku: string | null
+          subcategory: string | null
+          unit: string | null
+          unit_price: number | null
+          updated_at: string | null
+        }
+        Insert: {
+          category: string
+          company_id: string
+          created_at?: string | null
+          currency?: string | null
+          description?: string | null
+          description_ar?: string | null
+          id?: string
+          image_url?: string | null
+          in_stock?: boolean | null
+          is_active?: boolean | null
+          name: string
+          name_ar?: string | null
+          quantity_available?: number | null
+          sku?: string | null
+          subcategory?: string | null
+          unit?: string | null
+          unit_price?: number | null
+          updated_at?: string | null
+        }
+        Update: {
+          category?: string
+          company_id?: string
+          created_at?: string | null
+          currency?: string | null
+          description?: string | null
+          description_ar?: string | null
+          id?: string
+          image_url?: string | null
+          in_stock?: boolean | null
+          is_active?: boolean | null
+          name?: string
+          name_ar?: string | null
+          quantity_available?: number | null
+          sku?: string | null
+          subcategory?: string | null
+          unit?: string | null
+          unit_price?: number | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "company_catalog_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      company_contacts: {
+        Row: {
+          can_login: boolean | null
+          company_id: string
+          created_at: string | null
+          department: string
+          email: string | null
+          id: string
+          is_primary: boolean | null
+          mobile: string | null
+          name: string
+          name_ar: string | null
+          phone: string | null
+          title: string | null
+          title_ar: string | null
+          updated_at: string | null
+          user_id: string | null
+          whatsapp: string | null
+        }
+        Insert: {
+          can_login?: boolean | null
+          company_id: string
+          created_at?: string | null
+          department: string
+          email?: string | null
+          id?: string
+          is_primary?: boolean | null
+          mobile?: string | null
+          name: string
+          name_ar?: string | null
+          phone?: string | null
+          title?: string | null
+          title_ar?: string | null
+          updated_at?: string | null
+          user_id?: string | null
+          whatsapp?: string | null
+        }
+        Update: {
+          can_login?: boolean | null
+          company_id?: string
+          created_at?: string | null
+          department?: string
+          email?: string | null
+          id?: string
+          is_primary?: boolean | null
+          mobile?: string | null
+          name?: string
+          name_ar?: string | null
+          phone?: string | null
+          title?: string | null
+          title_ar?: string | null
+          updated_at?: string | null
+          user_id?: string | null
+          whatsapp?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "company_contacts_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      company_drivers: {
+        Row: {
+          branch_id: string | null
+          company_id: string
+          created_at: string | null
+          id: string
+          is_active: boolean | null
+          is_available: boolean | null
+          license_number: string | null
+          name: string
+          name_ar: string | null
+          phone: string
+          vehicle_plate: string | null
+          vehicle_type: string | null
+        }
+        Insert: {
+          branch_id?: string | null
+          company_id: string
+          created_at?: string | null
+          id?: string
+          is_active?: boolean | null
+          is_available?: boolean | null
+          license_number?: string | null
+          name: string
+          name_ar?: string | null
+          phone: string
+          vehicle_plate?: string | null
+          vehicle_type?: string | null
+        }
+        Update: {
+          branch_id?: string | null
+          company_id?: string
+          created_at?: string | null
+          id?: string
+          is_active?: boolean | null
+          is_available?: boolean | null
+          license_number?: string | null
+          name?: string
+          name_ar?: string | null
+          phone?: string
+          vehicle_plate?: string | null
+          vehicle_type?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "company_drivers_branch_id_fkey"
+            columns: ["branch_id"]
+            isOneToOne: false
+            referencedRelation: "company_branches"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "company_drivers_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      company_evaluations: {
+        Row: {
+          communication_rating: number | null
+          company_id: string
+          competition_id: string | null
+          created_at: string | null
+          delivery_rating: number | null
+          evaluated_by: string | null
+          id: string
+          is_public: boolean | null
+          order_id: string | null
+          overall_rating: number | null
+          quality_rating: number | null
+          review: string | null
+          review_ar: string | null
+          value_rating: number | null
+        }
+        Insert: {
+          communication_rating?: number | null
+          company_id: string
+          competition_id?: string | null
+          created_at?: string | null
+          delivery_rating?: number | null
+          evaluated_by?: string | null
+          id?: string
+          is_public?: boolean | null
+          order_id?: string | null
+          overall_rating?: number | null
+          quality_rating?: number | null
+          review?: string | null
+          review_ar?: string | null
+          value_rating?: number | null
+        }
+        Update: {
+          communication_rating?: number | null
+          company_id?: string
+          competition_id?: string | null
+          created_at?: string | null
+          delivery_rating?: number | null
+          evaluated_by?: string | null
+          id?: string
+          is_public?: boolean | null
+          order_id?: string | null
+          overall_rating?: number | null
+          quality_rating?: number | null
+          review?: string | null
+          review_ar?: string | null
+          value_rating?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "company_evaluations_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "company_evaluations_competition_id_fkey"
+            columns: ["competition_id"]
+            isOneToOne: false
+            referencedRelation: "competitions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "company_evaluations_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: false
+            referencedRelation: "company_orders"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      company_invitations: {
+        Row: {
+          company_id: string
+          competition_id: string | null
+          created_at: string | null
+          created_by: string | null
+          description: string | null
+          description_ar: string | null
+          event_date: string | null
+          expires_at: string | null
+          id: string
+          invitation_type: string
+          responded_at: string | null
+          responded_by: string | null
+          response_notes: string | null
+          status: Database["public"]["Enums"]["invitation_status"] | null
+          title: string
+          title_ar: string | null
+        }
+        Insert: {
+          company_id: string
+          competition_id?: string | null
+          created_at?: string | null
+          created_by?: string | null
+          description?: string | null
+          description_ar?: string | null
+          event_date?: string | null
+          expires_at?: string | null
+          id?: string
+          invitation_type: string
+          responded_at?: string | null
+          responded_by?: string | null
+          response_notes?: string | null
+          status?: Database["public"]["Enums"]["invitation_status"] | null
+          title: string
+          title_ar?: string | null
+        }
+        Update: {
+          company_id?: string
+          competition_id?: string | null
+          created_at?: string | null
+          created_by?: string | null
+          description?: string | null
+          description_ar?: string | null
+          event_date?: string | null
+          expires_at?: string | null
+          id?: string
+          invitation_type?: string
+          responded_at?: string | null
+          responded_by?: string | null
+          response_notes?: string | null
+          status?: Database["public"]["Enums"]["invitation_status"] | null
+          title?: string
+          title_ar?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "company_invitations_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "company_invitations_competition_id_fkey"
+            columns: ["competition_id"]
+            isOneToOne: false
+            referencedRelation: "competitions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      company_media: {
+        Row: {
+          category: string
+          company_id: string
+          created_at: string | null
+          description: string | null
+          file_size: number | null
+          file_type: string
+          file_url: string
+          filename: string
+          id: string
+          is_public: boolean | null
+          sort_order: number | null
+          title: string | null
+          title_ar: string | null
+          uploaded_by: string | null
+        }
+        Insert: {
+          category: string
+          company_id: string
+          created_at?: string | null
+          description?: string | null
+          file_size?: number | null
+          file_type: string
+          file_url: string
+          filename: string
+          id?: string
+          is_public?: boolean | null
+          sort_order?: number | null
+          title?: string | null
+          title_ar?: string | null
+          uploaded_by?: string | null
+        }
+        Update: {
+          category?: string
+          company_id?: string
+          created_at?: string | null
+          description?: string | null
+          file_size?: number | null
+          file_type?: string
+          file_url?: string
+          filename?: string
+          id?: string
+          is_public?: boolean | null
+          sort_order?: number | null
+          title?: string | null
+          title_ar?: string | null
+          uploaded_by?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "company_media_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      company_orders: {
+        Row: {
+          approved_at: string | null
+          approved_by: string | null
+          branch_id: string | null
+          category: Database["public"]["Enums"]["order_category"]
+          company_id: string
+          competition_id: string | null
+          completed_at: string | null
+          created_at: string | null
+          created_by: string | null
+          currency: string | null
+          delivery_date: string | null
+          description: string | null
+          description_ar: string | null
+          direction: Database["public"]["Enums"]["order_direction"]
+          discount_amount: number | null
+          driver_id: string | null
+          due_date: string | null
+          id: string
+          internal_notes: string | null
+          items: Json | null
+          notes: string | null
+          order_date: string | null
+          order_number: string
+          rejected_at: string | null
+          rejected_by: string | null
+          rejection_reason: string | null
+          status: Database["public"]["Enums"]["order_status"] | null
+          subtotal: number | null
+          tax_amount: number | null
+          title: string
+          title_ar: string | null
+          total_amount: number | null
+          updated_at: string | null
+        }
+        Insert: {
+          approved_at?: string | null
+          approved_by?: string | null
+          branch_id?: string | null
+          category: Database["public"]["Enums"]["order_category"]
+          company_id: string
+          competition_id?: string | null
+          completed_at?: string | null
+          created_at?: string | null
+          created_by?: string | null
+          currency?: string | null
+          delivery_date?: string | null
+          description?: string | null
+          description_ar?: string | null
+          direction: Database["public"]["Enums"]["order_direction"]
+          discount_amount?: number | null
+          driver_id?: string | null
+          due_date?: string | null
+          id?: string
+          internal_notes?: string | null
+          items?: Json | null
+          notes?: string | null
+          order_date?: string | null
+          order_number: string
+          rejected_at?: string | null
+          rejected_by?: string | null
+          rejection_reason?: string | null
+          status?: Database["public"]["Enums"]["order_status"] | null
+          subtotal?: number | null
+          tax_amount?: number | null
+          title: string
+          title_ar?: string | null
+          total_amount?: number | null
+          updated_at?: string | null
+        }
+        Update: {
+          approved_at?: string | null
+          approved_by?: string | null
+          branch_id?: string | null
+          category?: Database["public"]["Enums"]["order_category"]
+          company_id?: string
+          competition_id?: string | null
+          completed_at?: string | null
+          created_at?: string | null
+          created_by?: string | null
+          currency?: string | null
+          delivery_date?: string | null
+          description?: string | null
+          description_ar?: string | null
+          direction?: Database["public"]["Enums"]["order_direction"]
+          discount_amount?: number | null
+          driver_id?: string | null
+          due_date?: string | null
+          id?: string
+          internal_notes?: string | null
+          items?: Json | null
+          notes?: string | null
+          order_date?: string | null
+          order_number?: string
+          rejected_at?: string | null
+          rejected_by?: string | null
+          rejection_reason?: string | null
+          status?: Database["public"]["Enums"]["order_status"] | null
+          subtotal?: number | null
+          tax_amount?: number | null
+          title?: string
+          title_ar?: string | null
+          total_amount?: number | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "company_orders_branch_id_fkey"
+            columns: ["branch_id"]
+            isOneToOne: false
+            referencedRelation: "company_branches"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "company_orders_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "company_orders_competition_id_fkey"
+            columns: ["competition_id"]
+            isOneToOne: false
+            referencedRelation: "competitions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "company_orders_driver_id_fkey"
+            columns: ["driver_id"]
+            isOneToOne: false
+            referencedRelation: "company_drivers"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      company_transactions: {
+        Row: {
+          amount: number
+          balance_after: number | null
+          balance_before: number | null
+          company_id: string
+          created_at: string | null
+          created_by: string | null
+          currency: string | null
+          description: string | null
+          description_ar: string | null
+          id: string
+          invoice_id: string | null
+          is_reconciled: boolean | null
+          order_id: string | null
+          payment_method: string | null
+          payment_reference: string | null
+          reconciled_at: string | null
+          reconciled_by: string | null
+          reference: string | null
+          transaction_date: string | null
+          transaction_number: string
+          type: Database["public"]["Enums"]["transaction_type"]
+        }
+        Insert: {
+          amount: number
+          balance_after?: number | null
+          balance_before?: number | null
+          company_id: string
+          created_at?: string | null
+          created_by?: string | null
+          currency?: string | null
+          description?: string | null
+          description_ar?: string | null
+          id?: string
+          invoice_id?: string | null
+          is_reconciled?: boolean | null
+          order_id?: string | null
+          payment_method?: string | null
+          payment_reference?: string | null
+          reconciled_at?: string | null
+          reconciled_by?: string | null
+          reference?: string | null
+          transaction_date?: string | null
+          transaction_number: string
+          type: Database["public"]["Enums"]["transaction_type"]
+        }
+        Update: {
+          amount?: number
+          balance_after?: number | null
+          balance_before?: number | null
+          company_id?: string
+          created_at?: string | null
+          created_by?: string | null
+          currency?: string | null
+          description?: string | null
+          description_ar?: string | null
+          id?: string
+          invoice_id?: string | null
+          is_reconciled?: boolean | null
+          order_id?: string | null
+          payment_method?: string | null
+          payment_reference?: string | null
+          reconciled_at?: string | null
+          reconciled_by?: string | null
+          reference?: string | null
+          transaction_date?: string | null
+          transaction_number?: string
+          type?: Database["public"]["Enums"]["transaction_type"]
+        }
+        Relationships: [
+          {
+            foreignKeyName: "company_transactions_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "company_transactions_invoice_id_fkey"
+            columns: ["invoice_id"]
+            isOneToOne: false
+            referencedRelation: "invoices"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "company_transactions_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: false
+            referencedRelation: "company_orders"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       competition_categories: {
         Row: {
           competition_id: string
@@ -1480,6 +2275,53 @@ export type Database = {
         }
         Relationships: []
       }
+      order_communications: {
+        Row: {
+          attachments: Json | null
+          created_at: string | null
+          id: string
+          is_read: boolean | null
+          message: string
+          message_ar: string | null
+          order_id: string
+          read_at: string | null
+          sender_id: string | null
+          sender_type: string
+        }
+        Insert: {
+          attachments?: Json | null
+          created_at?: string | null
+          id?: string
+          is_read?: boolean | null
+          message: string
+          message_ar?: string | null
+          order_id: string
+          read_at?: string | null
+          sender_id?: string | null
+          sender_type: string
+        }
+        Update: {
+          attachments?: Json | null
+          created_at?: string | null
+          id?: string
+          is_read?: boolean | null
+          message?: string
+          message_ar?: string | null
+          order_id?: string
+          read_at?: string | null
+          sender_id?: string | null
+          sender_type?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "order_communications_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: false
+            referencedRelation: "company_orders"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       post_comments: {
         Row: {
           author_id: string
@@ -1726,7 +2568,10 @@ export type Database = {
       }
       generate_certificate_number: { Args: never; Returns: string }
       generate_invoice_number: { Args: never; Returns: string }
+      generate_order_number: { Args: never; Returns: string }
+      generate_transaction_number: { Args: never; Returns: string }
       generate_verification_code: { Args: never; Returns: string }
+      get_company_balance: { Args: { p_company_id: string }; Returns: number }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
@@ -1764,6 +2609,8 @@ export type Database = {
         | "judge"
         | "sponsor"
         | "volunteer"
+      company_status: "active" | "inactive" | "pending" | "suspended"
+      company_type: "sponsor" | "supplier" | "partner" | "vendor"
       competition_status:
         | "draft"
         | "upcoming"
@@ -1774,10 +2621,36 @@ export type Database = {
         | "completed"
         | "cancelled"
       experience_level: "beginner" | "amateur" | "professional"
+      invitation_status: "pending" | "accepted" | "declined" | "expired"
       membership_status: "active" | "expired" | "suspended" | "cancelled"
       membership_tier: "basic" | "professional" | "enterprise"
       notification_channel: "in_app" | "email" | "sms" | "whatsapp" | "push"
       notification_status: "pending" | "sent" | "delivered" | "failed" | "read"
+      order_category:
+        | "promotional"
+        | "equipment"
+        | "materials"
+        | "services"
+        | "catering"
+        | "venue"
+        | "transport"
+        | "other"
+      order_direction: "outgoing" | "incoming"
+      order_status:
+        | "draft"
+        | "pending"
+        | "approved"
+        | "rejected"
+        | "in_progress"
+        | "completed"
+        | "cancelled"
+      transaction_type:
+        | "invoice"
+        | "payment"
+        | "credit"
+        | "debit"
+        | "refund"
+        | "adjustment"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -1934,6 +2807,8 @@ export const Constants = {
         "sponsor",
         "volunteer",
       ],
+      company_status: ["active", "inactive", "pending", "suspended"],
+      company_type: ["sponsor", "supplier", "partner", "vendor"],
       competition_status: [
         "draft",
         "upcoming",
@@ -1945,10 +2820,39 @@ export const Constants = {
         "cancelled",
       ],
       experience_level: ["beginner", "amateur", "professional"],
+      invitation_status: ["pending", "accepted", "declined", "expired"],
       membership_status: ["active", "expired", "suspended", "cancelled"],
       membership_tier: ["basic", "professional", "enterprise"],
       notification_channel: ["in_app", "email", "sms", "whatsapp", "push"],
       notification_status: ["pending", "sent", "delivered", "failed", "read"],
+      order_category: [
+        "promotional",
+        "equipment",
+        "materials",
+        "services",
+        "catering",
+        "venue",
+        "transport",
+        "other",
+      ],
+      order_direction: ["outgoing", "incoming"],
+      order_status: [
+        "draft",
+        "pending",
+        "approved",
+        "rejected",
+        "in_progress",
+        "completed",
+        "cancelled",
+      ],
+      transaction_type: [
+        "invoice",
+        "payment",
+        "credit",
+        "debit",
+        "refund",
+        "adjustment",
+      ],
     },
   },
 } as const
