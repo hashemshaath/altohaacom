@@ -445,6 +445,27 @@ export default function CompetitionDetail() {
           </Card>
         </div>
 
+        {/* Mobile sidebar widgets */}
+        <div className="mb-6 space-y-4 lg:hidden">
+          {competition.status === "registration_open" && competition.registration_end && (
+            <CompetitionCountdown
+              targetDate={competition.registration_end}
+              label="Registration Closes In"
+              labelAr="ينتهي التسجيل خلال"
+            />
+          )}
+          {["upcoming", "registration_open", "registration_closed"].includes(competition.status) && (
+            <CompetitionCountdown
+              targetDate={competition.competition_start}
+              label="Competition Starts In"
+              labelAr="تبدأ المسابقة خلال"
+            />
+          )}
+          <ParticipantStatsCard competitionId={competition.id} maxParticipants={competition.max_participants} />
+          <OrganizerCard organizerId={competition.organizer_id} />
+          <CompetitionActivityFeed competitionId={competition.id} isOrganizer={!!isOrganizer} />
+        </div>
+
         <div className="grid gap-6 lg:grid-cols-3">
           {/* Main Content */}
           <div className="lg:col-span-2">
