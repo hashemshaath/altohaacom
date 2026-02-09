@@ -44,6 +44,9 @@ export function Header() {
               <Button variant="ghost" size="sm" asChild>
                 <Link to="/profile">{t("myProfile")}</Link>
               </Button>
+              <Button variant="ghost" size="sm" asChild>
+                <Link to="/notification-preferences">{t("notificationPreferences")}</Link>
+              </Button>
               {isJudge && (
                 <Button variant="ghost" size="sm" asChild>
                   <Link to="/judging" className="flex items-center gap-1.5">
@@ -104,6 +107,9 @@ export function Header() {
                 </Button>
                 <Button variant="ghost" size="sm" asChild onClick={() => setMenuOpen(false)}>
                   <Link to="/profile">{t("myProfile")}</Link>
+                </Button>
+                <Button variant="ghost" size="sm" asChild onClick={() => setMenuOpen(false)}>
+                  <Link to="/notification-preferences">{t("notificationPreferences")}</Link>
                 </Button>
                 {isJudge && (
                   <Button variant="ghost" size="sm" asChild onClick={() => setMenuOpen(false)}>
