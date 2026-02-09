@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useIsAdmin } from "@/hooks/useAdmin";
 import { Navigate, Outlet, NavLink } from "react-router-dom";
-import { Header } from "@/components/Header";
+import { AdminHeader } from "@/components/admin/AdminHeader";
 import { Footer } from "@/components/Footer";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -105,7 +105,7 @@ export default function AdminLayout() {
 
   return (
     <div className="flex min-h-screen flex-col">
-      <Header />
+      <AdminHeader />
       <div className="flex flex-1">
         {/* Sidebar */}
         <aside 
