@@ -52,12 +52,19 @@ export default function Dashboard() {
       <main className="container flex-1 py-6 md:py-10">
         {/* Welcome */}
         <div className="mb-8">
-          <h1 className="font-serif text-2xl font-bold md:text-3xl">{greeting}</h1>
-          <p className="mt-1 text-sm text-muted-foreground">
-            {isAr
-              ? "إليك ملخص نشاطك ومسابقاتك القادمة"
-              : "Here's a summary of your activity and upcoming competitions"}
-          </p>
+          <div className="flex items-center gap-3">
+            <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-primary/10">
+              <Trophy className="h-5 w-5 text-primary" />
+            </div>
+            <div>
+              <h1 className="font-serif text-2xl font-bold md:text-3xl">{greeting}</h1>
+              <p className="mt-0.5 text-sm text-muted-foreground">
+                {isAr
+                  ? "إليك ملخص نشاطك ومسابقاتك القادمة"
+                  : "Here's a summary of your activity and upcoming competitions"}
+              </p>
+            </div>
+          </div>
         </div>
 
         {/* Quick Stats */}
@@ -85,10 +92,10 @@ export default function Dashboard() {
           <div className="grid gap-3 grid-cols-2 sm:grid-cols-3 lg:grid-cols-6">
             {sections.map((s) => (
               <Link key={s.title} to={s.href}>
-                <Card className="group h-full transition-all hover:shadow-sm hover:-translate-y-0.5">
+                <Card className="group h-full transition-all hover:shadow-sm hover:-translate-y-0.5 border-border/60">
                   <CardContent className="flex flex-col items-center gap-2.5 p-4 text-center">
-                    <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary/10 transition-colors group-hover:bg-primary/15">
-                      <s.icon className="h-5 w-5 text-primary" />
+                    <div className="flex h-10 w-10 items-center justify-center rounded-full bg-muted/60 transition-colors group-hover:bg-primary/10">
+                      <s.icon className="h-5 w-5 text-muted-foreground transition-colors group-hover:text-primary" />
                     </div>
                     <h3 className="text-xs font-medium leading-tight">{s.title}</h3>
                   </CardContent>
