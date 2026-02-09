@@ -44,9 +44,9 @@ import type { Database } from "@/integrations/supabase/types";
 
 function EmptyState({ icon, text }: { icon: React.ReactNode; text: string }) {
   return (
-    <div className="flex flex-col items-center justify-center py-12 text-center">
-      <div className="mb-3 rounded-full bg-muted p-3 text-muted-foreground">{icon}</div>
-      <p className="text-sm text-muted-foreground">{text}</p>
+    <div className="flex flex-col items-center justify-center py-16 text-center">
+      <div className="mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-muted text-muted-foreground">{icon}</div>
+      <p className="text-sm text-muted-foreground max-w-xs">{text}</p>
     </div>
   );
 }
@@ -130,17 +130,21 @@ export default function CompetitionDetail() {
 
   if (isLoading) {
     return (
-      <div className="flex min-h-screen flex-col">
+      <div className="flex min-h-screen flex-col bg-background">
         <Header />
-        <main className="container flex-1 py-8">
-          <Skeleton className="mb-4 h-8 w-48" />
-          <Skeleton className="h-64 w-full rounded-xl" />
+        <main className="container flex-1 py-6 md:py-8">
+          <Skeleton className="mb-4 h-7 w-36 rounded-md" />
+          <Skeleton className="h-48 w-full rounded-xl sm:h-56 md:h-72" />
           <div className="mt-6 grid gap-6 lg:grid-cols-3">
             <div className="lg:col-span-2 space-y-4">
-              <Skeleton className="h-10 w-full" />
-              <Skeleton className="h-48 w-full" />
+              <Skeleton className="h-10 w-full rounded-lg" />
+              <Skeleton className="h-40 w-full rounded-lg" />
+              <Skeleton className="h-32 w-full rounded-lg" />
             </div>
-            <Skeleton className="h-64 w-full" />
+            <div className="hidden lg:block space-y-4">
+              <Skeleton className="h-36 w-full rounded-lg" />
+              <Skeleton className="h-52 w-full rounded-lg" />
+            </div>
           </div>
         </main>
         <Footer />
@@ -150,14 +154,17 @@ export default function CompetitionDetail() {
 
   if (!competition) {
     return (
-      <div className="flex min-h-screen flex-col">
+      <div className="flex min-h-screen flex-col bg-background">
         <Header />
-        <main className="container flex-1 py-8 text-center">
-          <Trophy className="mx-auto h-12 w-12 text-muted-foreground/30 mb-4" />
-          <p className="text-muted-foreground">{language === "ar" ? "المسابقة غير موجودة" : "Competition not found"}</p>
-          <Button asChild className="mt-4" variant="outline">
+        <main className="container flex-1 py-16 text-center">
+          <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-muted">
+            <Trophy className="h-8 w-8 text-muted-foreground/40" />
+          </div>
+          <p className="text-muted-foreground mb-1">{language === "ar" ? "المسابقة غير موجودة" : "Competition not found"}</p>
+          <p className="text-xs text-muted-foreground/60 mb-5">{language === "ar" ? "تحقق من الرابط وحاول مرة أخرى" : "Check the link and try again"}</p>
+          <Button asChild variant="outline" size="sm">
             <Link to="/competitions">
-              <ArrowLeft className="mr-2 h-4 w-4" />
+              <ArrowLeft className="me-1.5 h-4 w-4" />
               {language === "ar" ? "العودة" : "Back to Competitions"}
             </Link>
           </Button>
@@ -189,7 +196,7 @@ export default function CompetitionDetail() {
   };
 
   return (
-    <div className="flex min-h-screen flex-col">
+    <div className="flex min-h-screen flex-col bg-background">
       <SEOHead
         title={title}
         description={description || `${title} - Culinary competition on Altohaa`}
@@ -494,9 +501,16 @@ export default function CompetitionDetail() {
           {/* Sidebar */}
           <div className="hidden space-y-4 lg:block">
             {/* Registration Card */}
-            <Card>
+            <Card className="overflow-hidden">
+              <div className="border-b bg-muted/30 px-4 py-3">
+                <h3 className="flex items-center gap-2 font-semibold text-sm">
+                  <div className="flex h-6 w-6 items-center justify-center rounded-md bg-primary/10">
+                    <Trophy className="h-3.5 w-3.5 text-primary" />
+                  </div>
+                  {t("registerForCompetition")}
+                </h3>
+              </div>
               <CardContent className="p-4 space-y-3">
-                <h3 className="font-semibold text-sm">{t("registerForCompetition")}</h3>
                 {myRegistration ? (
                   <div className="flex items-center gap-2 rounded-lg bg-primary/10 p-3">
                     <CheckCircle className="h-4 w-4 text-primary shrink-0" />
@@ -529,16 +543,20 @@ export default function CompetitionDetail() {
             </Card>
 
             {/* Details Card */}
-            <Card>
-              <CardContent className="p-4 space-y-0">
-                <h3 className="font-semibold text-sm mb-3">
+            <Card className="overflow-hidden">
+              <div className="border-b bg-muted/30 px-4 py-3">
+                <h3 className="flex items-center gap-2 font-semibold text-sm">
+                  <div className="flex h-6 w-6 items-center justify-center rounded-md bg-accent/10">
+                    <Calendar className="h-3.5 w-3.5 text-accent-foreground" />
+                  </div>
                   {language === "ar" ? "التفاصيل" : "Details"}
                 </h3>
-
-                <div className="flex items-center gap-3 py-2.5">
+              </div>
+              <CardContent className="p-0">
+                <div className="flex items-center gap-3 px-4 py-3">
                   <Calendar className="h-4 w-4 text-muted-foreground shrink-0" />
                   <div className="min-w-0">
-                    <p className="text-xs text-muted-foreground">{t("startDate")}</p>
+                    <p className="text-[10px] uppercase tracking-wider text-muted-foreground">{t("startDate")}</p>
                     <p className="text-sm font-medium">
                       {format(new Date(competition.competition_start), "MMMM d, yyyy")}
                     </p>
@@ -546,10 +564,10 @@ export default function CompetitionDetail() {
                 </div>
                 <Separator />
 
-                <div className="flex items-center gap-3 py-2.5">
+                <div className="flex items-center gap-3 px-4 py-3">
                   <Clock className="h-4 w-4 text-muted-foreground shrink-0" />
                   <div className="min-w-0">
-                    <p className="text-xs text-muted-foreground">{t("endDate")}</p>
+                    <p className="text-[10px] uppercase tracking-wider text-muted-foreground">{t("endDate")}</p>
                     <p className="text-sm font-medium">
                       {format(new Date(competition.competition_end), "MMMM d, yyyy")}
                     </p>
@@ -558,18 +576,18 @@ export default function CompetitionDetail() {
                 <Separator />
 
                 {competition.is_virtual ? (
-                  <div className="flex items-center gap-3 py-2.5">
+                  <div className="flex items-center gap-3 px-4 py-3">
                     <Globe className="h-4 w-4 text-muted-foreground shrink-0" />
                     <div>
-                      <p className="text-xs text-muted-foreground">{t("venue")}</p>
+                      <p className="text-[10px] uppercase tracking-wider text-muted-foreground">{t("venue")}</p>
                       <p className="text-sm font-medium">{t("virtual")}</p>
                     </div>
                   </div>
                 ) : venue ? (
-                  <div className="flex items-center gap-3 py-2.5">
+                  <div className="flex items-center gap-3 px-4 py-3">
                     <MapPin className="h-4 w-4 text-muted-foreground shrink-0" />
                     <div className="min-w-0">
-                      <p className="text-xs text-muted-foreground">{t("venue")}</p>
+                      <p className="text-[10px] uppercase tracking-wider text-muted-foreground">{t("venue")}</p>
                       <p className="text-sm font-medium">
                         {venue}
                         {competition.city && <>, {competition.city}</>}
@@ -582,10 +600,10 @@ export default function CompetitionDetail() {
                 {competition.max_participants && (
                   <>
                     <Separator />
-                    <div className="flex items-center gap-3 py-2.5">
+                    <div className="flex items-center gap-3 px-4 py-3">
                       <Users className="h-4 w-4 text-muted-foreground shrink-0" />
                       <div>
-                        <p className="text-xs text-muted-foreground">{t("participants")}</p>
+                        <p className="text-[10px] uppercase tracking-wider text-muted-foreground">{t("participants")}</p>
                         <p className="text-sm font-medium">
                           {language === "ar" ? `الحد الأقصى ${competition.max_participants}` : `Max ${competition.max_participants}`}
                         </p>
