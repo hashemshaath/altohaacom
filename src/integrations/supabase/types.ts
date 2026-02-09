@@ -2430,6 +2430,8 @@ export type Database = {
           account_status: Database["public"]["Enums"]["account_status"] | null
           avatar_url: string | null
           bio: string | null
+          company_id: string | null
+          company_role: string | null
           created_at: string
           experience_level:
             | Database["public"]["Enums"]["experience_level"]
@@ -2466,6 +2468,8 @@ export type Database = {
           account_status?: Database["public"]["Enums"]["account_status"] | null
           avatar_url?: string | null
           bio?: string | null
+          company_id?: string | null
+          company_role?: string | null
           created_at?: string
           experience_level?:
             | Database["public"]["Enums"]["experience_level"]
@@ -2504,6 +2508,8 @@ export type Database = {
           account_status?: Database["public"]["Enums"]["account_status"] | null
           avatar_url?: string | null
           bio?: string | null
+          company_id?: string | null
+          company_role?: string | null
           created_at?: string
           experience_level?:
             | Database["public"]["Enums"]["experience_level"]
@@ -2537,7 +2543,15 @@ export type Database = {
           website?: string | null
           youtube?: string | null
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "profiles_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       user_roles: {
         Row: {
