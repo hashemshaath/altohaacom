@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { SEOHead } from "@/components/SEOHead";
 import { Search, Calendar, User, Eye, ArrowRight } from "lucide-react";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
@@ -96,6 +97,10 @@ export default function News() {
 
   return (
     <div className="flex min-h-screen flex-col bg-background">
+      <SEOHead
+        title="News & Articles"
+        description="Stay updated with the latest culinary news, competition results, and chef stories from the Altohaa community."
+      />
       <Header />
       <main className="flex-1">
         {/* Hero */}

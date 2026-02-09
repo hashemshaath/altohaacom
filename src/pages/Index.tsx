@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import { SEOHead } from "@/components/SEOHead";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useLanguage } from "@/i18n/LanguageContext";
@@ -120,6 +121,11 @@ const Index = () => {
 
   return (
     <div className="flex min-h-screen flex-col">
+      <SEOHead
+        title="Altohaa - Culinary Community Platform"
+        description="The premier culinary community platform for chefs, judges, and food enthusiasts. Compete, learn, and connect."
+        ogImage="/pwa-512x512.png"
+      />
       <Header />
 
       {/* Hero Section */}

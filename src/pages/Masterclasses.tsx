@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { SEOHead } from "@/components/SEOHead";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
@@ -84,6 +85,10 @@ export default function Masterclasses() {
 
   return (
     <div className="flex min-h-screen flex-col bg-background">
+      <SEOHead
+        title="Culinary Masterclasses"
+        description="Learn from world-class chefs with our curated masterclasses. From French cuisine to pastry arts."
+      />
       <Header />
       <main className="flex-1 container mx-auto px-4 py-8">
         <div className="mb-8">

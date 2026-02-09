@@ -1,4 +1,5 @@
 import { useLanguage } from "@/i18n/LanguageContext";
+import { SEOHead } from "@/components/SEOHead";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -13,6 +14,10 @@ export default function Community() {
 
   return (
     <div className="flex min-h-screen flex-col">
+      <SEOHead
+        title="Culinary Community"
+        description="Connect with chefs, share recipes, join groups, and engage with the culinary community on Altohaa."
+      />
       <Header />
       <main className="container flex-1 py-8">
         <h1 className="mb-6 font-serif text-3xl font-bold">{t("community")}</h1>

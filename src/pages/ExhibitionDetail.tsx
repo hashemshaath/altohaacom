@@ -17,6 +17,7 @@ import {
   Clock, Users, Tag, Building, Phone, Mail, ArrowLeft,
   Share2, Ticket, Trophy
 } from "lucide-react";
+import { SEOHead } from "@/components/SEOHead";
 import { format, isPast, isFuture, isWithinInterval, formatDistanceToNow } from "date-fns";
 
 interface ScheduleDay {
@@ -201,6 +202,25 @@ export default function ExhibitionDetail() {
 
   return (
     <div className="flex min-h-screen flex-col">
+      <SEOHead
+        title={title}
+        description={description || `${title} - Event on Altohaa`}
+        ogImage={exhibition.cover_image_url || undefined}
+        ogType="article"
+        jsonLd={{
+          "@context": "https://schema.org",
+          "@type": "Event",
+          name: title,
+          description: description || undefined,
+          startDate: exhibition.start_date,
+          endDate: exhibition.end_date,
+          location: exhibition.is_virtual
+            ? { "@type": "VirtualLocation" }
+            : { "@type": "Place", name: venue || undefined, address: { "@type": "PostalAddress", addressLocality: exhibition.city, addressCountry: exhibition.country } },
+          image: exhibition.cover_image_url || undefined,
+          organizer: organizer ? { "@type": "Organization", name: organizer } : undefined,
+        }}
+      />
       <Header />
 
       <main className="container flex-1 py-8">
