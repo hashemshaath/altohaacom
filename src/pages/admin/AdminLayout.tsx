@@ -12,10 +12,12 @@ import {
   FileText,
   LayoutDashboard,
   UserSearch,
+  Trophy,
+  Settings,
 } from "lucide-react";
 
 export default function AdminLayout() {
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
   const { data: isAdmin, isLoading } = useIsAdmin();
 
   if (isLoading) {
@@ -36,8 +38,10 @@ export default function AdminLayout() {
     { to: "/admin/leads", icon: UserSearch, label: t("leadManagement") },
     { to: "/admin/roles", icon: Shield, label: t("rolePermissions") },
     { to: "/admin/memberships", icon: CreditCard, label: t("membershipControl") },
+    { to: "/admin/competitions", icon: Trophy, label: language === "ar" ? "المسابقات" : "Competitions" },
     { to: "/admin/moderation", icon: Flag, label: t("contentModeration") },
     { to: "/admin/audit", icon: FileText, label: t("auditLog") },
+    { to: "/admin/settings", icon: Settings, label: language === "ar" ? "الإعدادات" : "Settings" },
   ];
 
   return (
