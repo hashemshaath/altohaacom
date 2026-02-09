@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Trophy, Users, Globe, TrendingUp, CheckCircle, ArrowRight } from "lucide-react";
+import { Trophy, Users, Globe, TrendingUp, CheckCircle, ArrowRight, Sparkles } from "lucide-react";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { Button } from "@/components/ui/button";
@@ -7,9 +7,11 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { supabase } from "@/integrations/supabase/client";
+import { SEOHead } from "@/components/SEOHead";
 
 const benefits = [
   {
@@ -79,6 +81,8 @@ export default function SponsorsLanding() {
     message: "",
   });
 
+  const isAr = language === "ar";
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
@@ -97,20 +101,16 @@ export default function SponsorsLanding() {
       if (error) throw error;
 
       toast({
-        title: language === "ar" ? "تم الإرسال بنجاح" : "Submitted Successfully",
-        description: language === "ar" 
-          ? "سنتواصل معك قريباً" 
-          : "We'll be in touch soon",
+        title: isAr ? "تم الإرسال بنجاح" : "Submitted Successfully",
+        description: isAr ? "سنتواصل معك قريباً" : "We'll be in touch soon",
       });
 
       setFormData({ companyName: "", contactName: "", email: "", phone: "", message: "" });
     } catch (error) {
       toast({
         variant: "destructive",
-        title: language === "ar" ? "خطأ" : "Error",
-        description: language === "ar" 
-          ? "حدث خطأ، يرجى المحاولة مرة أخرى" 
-          : "Something went wrong, please try again",
+        title: isAr ? "خطأ" : "Error",
+        description: isAr ? "حدث خطأ، يرجى المحاولة مرة أخرى" : "Something went wrong, please try again",
       });
     } finally {
       setLoading(false);
@@ -119,49 +119,62 @@ export default function SponsorsLanding() {
 
   return (
     <div className="flex min-h-screen flex-col bg-background">
+      <SEOHead title="Become a Sponsor" description="Partner with Altohaa and reach thousands of culinary professionals worldwide" />
       <Header />
       <main className="flex-1">
         {/* Hero */}
-        <section className="relative py-20 overflow-hidden">
-          <div className="absolute inset-0 bg-gradient-to-br from-primary/20 via-primary/5 to-background" />
+        <section className="relative py-24 md:py-32 overflow-hidden">
+          <div className="absolute inset-0 bg-gradient-to-br from-primary/15 via-primary/5 to-transparent" />
+          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,hsl(var(--primary)/0.08),transparent_70%)]" />
           <div className="container mx-auto px-4 relative z-10">
             <div className="max-w-3xl mx-auto text-center">
-              <h1 className="font-serif text-5xl font-bold mb-6">
-                {language === "ar" 
-                  ? "كن شريكاً في النجاح الطهوي"
-                  : "Partner with Culinary Excellence"}
+              <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/5 px-4 py-1.5">
+                <Sparkles className="h-3.5 w-3.5 text-primary" />
+                <span className="text-xs font-medium text-primary">
+                  {isAr ? "فرص رعاية حصرية" : "Exclusive Sponsorship Opportunities"}
+                </span>
+              </div>
+              <h1 className="font-serif text-4xl font-bold md:text-5xl lg:text-6xl">
+                {isAr ? "كن شريكاً في النجاح الطهوي" : "Partner with Culinary Excellence"}
               </h1>
-              <p className="text-xl text-muted-foreground mb-8">
-                {language === "ar"
+              <p className="mt-4 text-lg text-muted-foreground md:text-xl">
+                {isAr
                   ? "انضم كراعٍ واستفد من الوصول إلى شبكة عالمية من محترفي الطهي"
                   : "Join as a sponsor and gain access to a global network of culinary professionals"}
               </p>
-              <Button size="lg" className="gap-2" onClick={() => document.getElementById("sponsor-contact")?.scrollIntoView({ behavior: "smooth" })}>
-                {language === "ar" ? "ابدأ الآن" : "Get Started"}
-                <ArrowRight className="h-5 w-5" />
+              <Button size="lg" className="mt-8 gap-2" onClick={() => document.getElementById("sponsor-contact")?.scrollIntoView({ behavior: "smooth" })}>
+                {isAr ? "ابدأ الآن" : "Get Started"}
+                <ArrowRight className="h-4 w-4" />
               </Button>
             </div>
           </div>
         </section>
 
         {/* Benefits */}
-        <section className="py-16 bg-muted/30">
+        <section className="py-16 md:py-20 bg-muted/30">
           <div className="container mx-auto px-4">
-            <h2 className="text-3xl font-serif font-bold text-center mb-12">
-              {language === "ar" ? "لماذا ترعانا؟" : "Why Sponsor Us?"}
-            </h2>
-            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div className="mb-12 text-center">
+              <h2 className="text-3xl font-serif font-bold">
+                {isAr ? "لماذا ترعانا؟" : "Why Sponsor Us?"}
+              </h2>
+              <p className="mt-2 text-muted-foreground max-w-xl mx-auto">
+                {isAr
+                  ? "استثمر في مجتمع الطهي المتنامي واحصل على عوائد ملموسة"
+                  : "Invest in the growing culinary community and get tangible returns"}
+              </p>
+            </div>
+            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4">
               {benefits.map((benefit, i) => (
-                <Card key={i} className="text-center">
+                <Card key={i} className="border-border/60 text-center">
                   <CardContent className="pt-6">
-                    <div className="h-12 w-12 mx-auto rounded-lg bg-primary/10 flex items-center justify-center mb-4">
+                    <div className="h-12 w-12 mx-auto rounded-xl bg-primary/10 flex items-center justify-center mb-4">
                       <benefit.icon className="h-6 w-6 text-primary" />
                     </div>
-                    <h3 className="font-semibold mb-2">
-                      {language === "ar" ? benefit.titleAr : benefit.titleEn}
+                    <h3 className="font-semibold mb-1.5">
+                      {isAr ? benefit.titleAr : benefit.titleEn}
                     </h3>
-                    <p className="text-sm text-muted-foreground">
-                      {language === "ar" ? benefit.descAr : benefit.descEn}
+                    <p className="text-sm text-muted-foreground leading-relaxed">
+                      {isAr ? benefit.descAr : benefit.descEn}
                     </p>
                   </CardContent>
                 </Card>
@@ -171,41 +184,50 @@ export default function SponsorsLanding() {
         </section>
 
         {/* Tiers */}
-        <section className="py-16">
+        <section className="py-16 md:py-20">
           <div className="container mx-auto px-4">
-            <h2 className="text-3xl font-serif font-bold text-center mb-12">
-              {language === "ar" ? "باقات الرعاية" : "Sponsorship Tiers"}
-            </h2>
-            <div className="grid md:grid-cols-3 gap-6 max-w-5xl mx-auto">
+            <div className="mb-12 text-center">
+              <h2 className="text-3xl font-serif font-bold">
+                {isAr ? "باقات الرعاية" : "Sponsorship Tiers"}
+              </h2>
+              <p className="mt-2 text-muted-foreground">
+                {isAr ? "اختر الباقة التي تناسب أهدافك" : "Choose the package that fits your goals"}
+              </p>
+            </div>
+            <div className="grid md:grid-cols-3 gap-5 max-w-5xl mx-auto">
               {sponsorshipTiers.map((tier, i) => (
-                <Card 
-                  key={i} 
-                  className={tier.popular ? "border-primary shadow-lg relative" : ""}
+                <Card
+                  key={i}
+                  className={`relative overflow-hidden ${tier.popular ? "border-primary shadow-md ring-1 ring-primary/20" : "border-border/60"}`}
                 >
                   {tier.popular && (
-                    <div className="absolute -top-3 left-1/2 -translate-x-1/2">
-                      <span className="bg-primary text-primary-foreground px-3 py-1 rounded-full text-xs font-medium">
-                        {language === "ar" ? "الأكثر شعبية" : "Most Popular"}
-                      </span>
-                    </div>
+                    <div className="absolute top-0 inset-x-0 h-1 bg-primary" />
                   )}
-                  <CardHeader className="text-center">
-                    <CardTitle className="text-xl">
-                      {language === "ar" ? tier.nameAr : tier.name}
+                  <CardHeader className="text-center pb-2">
+                    {tier.popular && (
+                      <Badge className="mx-auto mb-2 w-fit">
+                        {isAr ? "الأكثر شعبية" : "Most Popular"}
+                      </Badge>
+                    )}
+                    <CardTitle className="text-lg">
+                      {isAr ? tier.nameAr : tier.name}
                     </CardTitle>
-                    <p className="text-3xl font-bold text-primary">{tier.price}</p>
+                    <p className="text-3xl font-bold text-primary mt-1">{tier.price}</p>
+                    <p className="text-xs text-muted-foreground">
+                      {isAr ? "لكل مسابقة" : "per competition"}
+                    </p>
                   </CardHeader>
                   <CardContent>
-                    <ul className="space-y-3">
-                      {(language === "ar" ? tier.featuresAr : tier.features).map((feature, j) => (
-                        <li key={j} className="flex items-center gap-2 text-sm">
-                          <CheckCircle className="h-4 w-4 text-primary flex-shrink-0" />
-                          {feature}
+                    <ul className="space-y-2.5">
+                      {(isAr ? tier.featuresAr : tier.features).map((feature, j) => (
+                        <li key={j} className="flex items-start gap-2 text-sm">
+                          <CheckCircle className="h-4 w-4 text-primary flex-shrink-0 mt-0.5" />
+                          <span>{feature}</span>
                         </li>
                       ))}
                     </ul>
                     <Button className="w-full mt-6" variant={tier.popular ? "default" : "outline"}>
-                      {language === "ar" ? "اختر الباقة" : "Choose Plan"}
+                      {isAr ? "اختر الباقة" : "Choose Plan"}
                     </Button>
                   </CardContent>
                 </Card>
@@ -215,24 +237,26 @@ export default function SponsorsLanding() {
         </section>
 
         {/* Contact Form */}
-        <section id="sponsor-contact" className="py-16 bg-muted/30">
+        <section id="sponsor-contact" className="py-16 md:py-20 bg-muted/30">
           <div className="container mx-auto px-4">
             <div className="max-w-2xl mx-auto">
-              <h2 className="text-3xl font-serif font-bold text-center mb-4">
-                {language === "ar" ? "تواصل معنا" : "Get in Touch"}
-              </h2>
-              <p className="text-center text-muted-foreground mb-8">
-                {language === "ar"
-                  ? "أخبرنا عن شركتك وسنتواصل معك لمناقشة الفرص"
-                  : "Tell us about your company and we'll reach out to discuss opportunities"}
-              </p>
-              <Card>
-                <CardContent className="pt-6">
+              <div className="mb-8 text-center">
+                <h2 className="text-3xl font-serif font-bold">
+                  {isAr ? "تواصل معنا" : "Get in Touch"}
+                </h2>
+                <p className="mt-2 text-muted-foreground">
+                  {isAr
+                    ? "أخبرنا عن شركتك وسنتواصل معك لمناقشة الفرص"
+                    : "Tell us about your company and we'll reach out to discuss opportunities"}
+                </p>
+              </div>
+              <Card className="border-border/60">
+                <CardContent className="p-6">
                   <form onSubmit={handleSubmit} className="space-y-4">
                     <div className="grid sm:grid-cols-2 gap-4">
                       <div className="space-y-2">
                         <Label htmlFor="companyName">
-                          {language === "ar" ? "اسم الشركة" : "Company Name"}
+                          {isAr ? "اسم الشركة" : "Company Name"}
                         </Label>
                         <Input
                           id="companyName"
@@ -243,7 +267,7 @@ export default function SponsorsLanding() {
                       </div>
                       <div className="space-y-2">
                         <Label htmlFor="contactName">
-                          {language === "ar" ? "اسم جهة الاتصال" : "Contact Name"}
+                          {isAr ? "اسم جهة الاتصال" : "Contact Name"}
                         </Label>
                         <Input
                           id="contactName"
@@ -255,7 +279,7 @@ export default function SponsorsLanding() {
                     </div>
                     <div className="grid sm:grid-cols-2 gap-4">
                       <div className="space-y-2">
-                        <Label htmlFor="email">{language === "ar" ? "البريد الإلكتروني" : "Email"}</Label>
+                        <Label htmlFor="email">{isAr ? "البريد الإلكتروني" : "Email"}</Label>
                         <Input
                           id="email"
                           type="email"
@@ -265,7 +289,7 @@ export default function SponsorsLanding() {
                         />
                       </div>
                       <div className="space-y-2">
-                        <Label htmlFor="phone">{language === "ar" ? "الهاتف" : "Phone"}</Label>
+                        <Label htmlFor="phone">{isAr ? "الهاتف" : "Phone"}</Label>
                         <Input
                           id="phone"
                           value={formData.phone}
@@ -274,7 +298,7 @@ export default function SponsorsLanding() {
                       </div>
                     </div>
                     <div className="space-y-2">
-                      <Label htmlFor="message">{language === "ar" ? "رسالتك" : "Message"}</Label>
+                      <Label htmlFor="message">{isAr ? "رسالتك" : "Message"}</Label>
                       <Textarea
                         id="message"
                         value={formData.message}
@@ -283,9 +307,9 @@ export default function SponsorsLanding() {
                       />
                     </div>
                     <Button type="submit" className="w-full" disabled={loading}>
-                      {loading 
-                        ? (language === "ar" ? "جاري الإرسال..." : "Sending...") 
-                        : (language === "ar" ? "إرسال" : "Submit")}
+                      {loading
+                        ? (isAr ? "جاري الإرسال..." : "Sending...")
+                        : (isAr ? "إرسال" : "Submit")}
                     </Button>
                   </form>
                 </CardContent>
