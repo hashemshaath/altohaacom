@@ -288,9 +288,16 @@ export default function CompetitionDetail() {
           <div className="absolute bottom-0 inset-x-0 p-4 md:p-6">
             <div className="flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
               <div className="space-y-2">
-                <Badge className={statusColors[competition.status as CompetitionStatus]}>
-                  {getStatusLabel(competition.status as CompetitionStatus)}
-                </Badge>
+                <div className="flex items-center gap-2 flex-wrap">
+                  <Badge className={statusColors[competition.status as CompetitionStatus]}>
+                    {getStatusLabel(competition.status as CompetitionStatus)}
+                  </Badge>
+                  {competition.competition_number && (
+                    <Badge variant="outline" className="font-mono text-xs">
+                      {competition.competition_number}
+                    </Badge>
+                  )}
+                </div>
                 <h1 className="font-serif text-xl font-bold sm:text-2xl md:text-3xl lg:text-4xl leading-tight">
                   {title}
                 </h1>
