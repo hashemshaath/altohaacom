@@ -8,6 +8,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Heart, MessageCircle, User } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { PostComments } from "@/components/community/PostComments";
 
 interface Post {
   id: string;
@@ -20,6 +21,7 @@ interface Post {
   likes_count: number;
   comments_count: number;
   is_liked: boolean;
+  showComments?: boolean;
 }
 
 export function FeedTab() {
@@ -194,11 +196,25 @@ export function FeedTab() {
                       <Heart className={`h-4 w-4 me-1 ${post.is_liked ? "fill-current" : ""}`} />
                       {post.likes_count}
                     </Button>
-                    <Button variant="ghost" size="sm">
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => setPosts((prev) =>
+                        prev.map((pp) => pp.id === post.id ? { ...pp, showComments: !pp.showComments } : pp)
+                      )}
+                    >
                       <MessageCircle className="h-4 w-4 me-1" />
                       {post.comments_count}
                     </Button>
                   </div>
+                  {post.showComments && (
+                    <PostComments
+                      postId={post.id}
+                      onCommentCountChange={(count) =>
+                        setPosts((prev) => prev.map((pp) => pp.id === post.id ? { ...pp, comments_count: count } : pp))
+                      }
+                    />
+                  )}
                 </div>
               </div>
             </CardContent>
