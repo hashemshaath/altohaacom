@@ -86,6 +86,40 @@ export function useNotifications() {
     }
   }, [user]);
 
+  const deleteNotification = useCallback(async (notificationId: string) => {
+    if (!user) return;
+    try {
+      const { error } = await supabase
+        .from("notifications")
+        .delete()
+        .eq("id", notificationId)
+        .eq("user_id", user.id);
+      if (error) throw error;
+      setNotifications(prev => prev.filter(n => n.id !== notificationId));
+      setUnreadCount(prev => {
+        const wasUnread = notifications.find(n => n.id === notificationId && !n.is_read);
+        return wasUnread ? Math.max(0, prev - 1) : prev;
+      });
+    } catch (error) {
+      console.error("Error deleting notification:", error);
+    }
+  }, [user, notifications]);
+
+  const clearAllRead = useCallback(async () => {
+    if (!user) return;
+    try {
+      const { error } = await supabase
+        .from("notifications")
+        .delete()
+        .eq("user_id", user.id)
+        .eq("is_read", true);
+      if (error) throw error;
+      setNotifications(prev => prev.filter(n => !n.is_read));
+    } catch (error) {
+      console.error("Error clearing read notifications:", error);
+    }
+  }, [user]);
+
   // Initial fetch
   useEffect(() => {
     fetchNotifications();
@@ -132,6 +166,8 @@ export function useNotifications() {
     loading,
     markAsRead,
     markAllAsRead,
+    deleteNotification,
+    clearAllRead,
     refetch: fetchNotifications,
   };
 }
