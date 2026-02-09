@@ -203,7 +203,8 @@ export default function ExhibitionDetail() {
         .from("competitions")
         .select(`
           id, title, title_ar, status, competition_start, competition_end, 
-          cover_image_url, city, country, is_virtual, registration_deadline,
+          cover_image_url, city, country, is_virtual, registration_start, registration_end,
+          max_participants, description, description_ar,
           competition_categories(id, name, name_ar, max_participants),
           competition_registrations(id),
           competition_judges(
@@ -464,13 +465,18 @@ export default function ExhibitionDetail() {
                 <div className="space-y-4">
                   {linkedCompetitions.map((comp: any) => {
                     const compTitle = isAr && comp.title_ar ? comp.title_ar : comp.title;
+                    const compDesc = isAr && comp.description_ar ? comp.description_ar : comp.description;
                     const compStart = new Date(comp.competition_start);
                     const compEnd = new Date(comp.competition_end);
                     const compIsLive = isWithinInterval(now, { start: compStart, end: compEnd });
                     const compIsPast = isPast(compEnd);
                     const categories = comp.competition_categories || [];
                     const regCount = comp.competition_registrations?.length || 0;
-                    const regDeadline = comp.registration_deadline ? new Date(comp.registration_deadline) : null;
+                    const regEnd = comp.registration_end ? new Date(comp.registration_end) : null;
+                    const regStart = comp.registration_start ? new Date(comp.registration_start) : null;
+                    const regOpen = regStart && regEnd && !isPast(regEnd) && isPast(regStart);
+                    const regClosed = regEnd && isPast(regEnd);
+                    const maxParts = comp.max_participants;
 
                     return (
                       <Card key={comp.id} className="overflow-hidden border-border/60 transition-all hover:shadow-md hover:-translate-y-0.5">
@@ -485,6 +491,8 @@ export default function ExhibitionDetail() {
                               <Badge variant={compIsLive ? "default" : compIsPast ? "secondary" : "outline"} className="text-[10px]">
                                 {compIsLive ? (isAr ? "🔴 جارية" : "🔴 Live") : compIsPast ? (isAr ? "انتهت" : "Ended") : (isAr ? "قادمة" : "Upcoming")}
                               </Badge>
+                              {regOpen && <Badge className="bg-chart-3/20 text-chart-3 border-chart-3/30 text-[10px]">{isAr ? "التسجيل مفتوح" : "Registration Open"}</Badge>}
+                              {regClosed && <Badge variant="secondary" className="text-[10px]">{isAr ? "التسجيل مغلق" : "Registration Closed"}</Badge>}
                               {comp.is_virtual && <Badge variant="outline" className="text-[10px]"><Globe className="me-1 h-3 w-3" />{isAr ? "افتراضي" : "Virtual"}</Badge>}
                             </div>
 
@@ -492,14 +500,18 @@ export default function ExhibitionDetail() {
                               <h3 className="text-lg font-semibold group-hover:text-primary transition-colors">{compTitle}</h3>
                             </Link>
 
-                            <div className="mt-2 flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-muted-foreground">
+                            {compDesc && (
+                              <p className="mt-1 text-sm text-muted-foreground line-clamp-2">{compDesc}</p>
+                            )}
+
+                            <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-1.5 text-xs text-muted-foreground">
                               <span className="flex items-center gap-1">
                                 <Calendar className="h-3 w-3" />
-                                {format(compStart, "MMM d, yyyy")}
+                                {format(compStart, "MMM d")} – {format(compEnd, "MMM d, yyyy")}
                               </span>
                               <span className="flex items-center gap-1">
                                 <Users className="h-3 w-3" />
-                                {regCount} {isAr ? "مسجل" : "registered"}
+                                {regCount}{maxParts ? `/${maxParts}` : ""} {isAr ? "مسجل" : "registered"}
                               </span>
                               {comp.city && (
                                 <span className="flex items-center gap-1">
@@ -509,11 +521,32 @@ export default function ExhibitionDetail() {
                               )}
                             </div>
 
+                            {/* Registration dates */}
+                            {(regStart || regEnd) && (
+                              <div className={`mt-3 flex items-center gap-2 rounded-lg px-3 py-2 ${regOpen ? 'bg-chart-3/5 border border-chart-3/10' : 'bg-muted/30 border border-border/40'}`}>
+                                <Clock className={`h-3.5 w-3.5 shrink-0 ${regOpen ? 'text-chart-3' : 'text-muted-foreground'}`} />
+                                <span className={`text-xs font-medium ${regOpen ? 'text-chart-3' : 'text-muted-foreground'}`}>
+                                  {regClosed
+                                    ? (isAr ? "انتهى التسجيل" : "Registration Closed")
+                                    : regOpen
+                                      ? (isAr ? `آخر موعد للتسجيل: ${format(regEnd!, "d MMM yyyy")}` : `Register by: ${format(regEnd!, "MMM d, yyyy")}`)
+                                      : regStart
+                                        ? (isAr ? `التسجيل يبدأ: ${format(regStart, "d MMM yyyy")}` : `Registration opens: ${format(regStart, "MMM d, yyyy")}`)
+                                        : null}
+                                </span>
+                                {regEnd && regOpen && (
+                                  <Badge variant="outline" className="ms-auto text-[10px]">
+                                    {formatDistanceToNow(regEnd, { addSuffix: false })} {isAr ? "متبقي" : "left"}
+                                  </Badge>
+                                )}
+                              </div>
+                            )}
+
                             {/* Categories */}
                             {categories.length > 0 && (
                               <div className="mt-3">
                                 <p className="text-[10px] font-medium uppercase tracking-wider text-muted-foreground mb-1.5">
-                                  {isAr ? "الفئات" : "Categories"}
+                                  {isAr ? "الفئات" : "Categories"} ({categories.length})
                                 </p>
                                 <div className="flex flex-wrap gap-1.5">
                                   {categories.map((cat: any) => (
@@ -528,19 +561,15 @@ export default function ExhibitionDetail() {
                               </div>
                             )}
 
-                            {/* Registration deadline */}
-                            {regDeadline && (
-                              <div className="mt-3 flex items-center gap-2 rounded-lg bg-destructive/5 border border-destructive/10 px-3 py-2">
-                                <Clock className="h-3.5 w-3.5 text-destructive shrink-0" />
-                                <span className="text-xs font-medium text-destructive">
-                                  {isPast(regDeadline)
-                                    ? (isAr ? "انتهى التسجيل" : "Registration Closed")
-                                    : (isAr ? `آخر موعد للتسجيل: ${format(regDeadline, "d MMM yyyy")}` : `Registration Deadline: ${format(regDeadline, "MMM d, yyyy")}`)}
-                                </span>
-                              </div>
-                            )}
-
-                            <div className="mt-3">
+                            <div className="mt-4 flex flex-wrap gap-2">
+                              {regOpen && (
+                                <Button size="sm" asChild>
+                                  <Link to={`/competitions/${comp.id}`}>
+                                    <Trophy className="me-1.5 h-3.5 w-3.5" />
+                                    {isAr ? "سجّل الآن" : "Register Now"}
+                                  </Link>
+                                </Button>
+                              )}
                               <Button size="sm" variant="outline" asChild>
                                 <Link to={`/competitions/${comp.id}`}>
                                   {isAr ? "عرض التفاصيل" : "View Details"}
