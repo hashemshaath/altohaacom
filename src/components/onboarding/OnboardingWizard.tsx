@@ -7,19 +7,21 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Progress } from "@/components/ui/progress";
+import { Separator } from "@/components/ui/separator";
 import { useToast } from "@/hooks/use-toast";
-import { 
-  ChefHat, 
-  User, 
-  Trophy, 
-  ArrowRight, 
+import {
+  ChefHat,
+  User,
+  Trophy,
+  ArrowRight,
   ArrowLeft,
   Sparkles,
-  CheckCircle2
+  CheckCircle2,
+  Loader2,
 } from "lucide-react";
 import type { Database } from "@/integrations/supabase/types";
 
@@ -42,10 +44,11 @@ export function OnboardingWizard({ onComplete }: OnboardingWizardProps) {
   const { t, language } = useLanguage();
   const { toast } = useToast();
   const navigate = useNavigate();
-  
+  const isAr = language === "ar";
+
   const [step, setStep] = useState(1);
   const [saving, setSaving] = useState(false);
-  
+
   const [form, setForm] = useState({
     full_name: "",
     username: "",
@@ -54,54 +57,75 @@ export function OnboardingWizard({ onComplete }: OnboardingWizardProps) {
     experience_level: "beginner" as ExperienceLevel,
     location: "",
   });
-  
+
   const [selectedRoles, setSelectedRoles] = useState<AppRole[]>([]);
 
   const totalSteps = 3;
   const progress = (step / totalSteps) * 100;
 
+  const stepMeta = [
+    {
+      icon: User,
+      titleEn: "Welcome!",
+      titleAr: "مرحباً بك!",
+      descEn: "Let's start with your basic information",
+      descAr: "لنبدأ بالمعلومات الأساسية",
+    },
+    {
+      icon: ChefHat,
+      titleEn: "Select Your Roles",
+      titleAr: "اختر أدوارك",
+      descEn: "You can select multiple roles",
+      descAr: "يمكنك اختيار أكثر من دور",
+    },
+    {
+      icon: Trophy,
+      titleEn: "Professional Details",
+      titleAr: "التفاصيل المهنية",
+      descEn: "Tell us more about your expertise",
+      descAr: "أخبرنا المزيد عن خبرتك",
+    },
+  ];
+
+  const current = stepMeta[step - 1];
+  const StepIcon = current.icon;
+
   const handleRoleToggle = (role: AppRole) => {
-    setSelectedRoles(prev => 
-      prev.includes(role) 
-        ? prev.filter(r => r !== role)
-        : [...prev, role]
+    setSelectedRoles((prev) =>
+      prev.includes(role) ? prev.filter((r) => r !== role) : [...prev, role]
     );
   };
 
   const validateStep = () => {
     if (step === 1) {
       if (!form.full_name.trim()) {
-        toast({ variant: "destructive", title: language === "ar" ? "الاسم مطلوب" : "Name is required" });
+        toast({ variant: "destructive", title: isAr ? "الاسم مطلوب" : "Name is required" });
         return false;
       }
       if (!form.username.trim() || form.username.length < 3) {
-        toast({ variant: "destructive", title: language === "ar" ? "اسم المستخدم يجب أن يكون 3 أحرف على الأقل" : "Username must be at least 3 characters" });
+        toast({ variant: "destructive", title: isAr ? "اسم المستخدم يجب أن يكون 3 أحرف على الأقل" : "Username must be at least 3 characters" });
         return false;
       }
     }
     if (step === 2 && selectedRoles.length === 0) {
-      toast({ variant: "destructive", title: language === "ar" ? "يرجى اختيار دور واحد على الأقل" : "Please select at least one role" });
+      toast({ variant: "destructive", title: isAr ? "يرجى اختيار دور واحد على الأقل" : "Please select at least one role" });
       return false;
     }
     return true;
   };
 
   const nextStep = () => {
-    if (validateStep()) {
-      setStep(prev => Math.min(prev + 1, totalSteps));
-    }
+    if (validateStep()) setStep((prev) => Math.min(prev + 1, totalSteps));
   };
 
   const prevStep = () => {
-    setStep(prev => Math.max(prev - 1, 1));
+    setStep((prev) => Math.max(prev - 1, 1));
   };
 
   const handleComplete = async () => {
     if (!user) return;
-    
     setSaving(true);
     try {
-      // Update profile
       const { error: profileError } = await supabase
         .from("profiles")
         .update({
@@ -117,215 +141,183 @@ export function OnboardingWizard({ onComplete }: OnboardingWizardProps) {
 
       if (profileError) throw profileError;
 
-      // Insert roles
       if (selectedRoles.length > 0) {
-        const roleInserts = selectedRoles.map(role => ({
+        const roleInserts = selectedRoles.map((role) => ({
           user_id: user.id,
           role,
         }));
-        
         const { error: rolesError } = await supabase
           .from("user_roles")
           .upsert(roleInserts, { onConflict: "user_id,role" });
-
         if (rolesError) throw rolesError;
       }
 
       toast({
-        title: language === "ar" ? "تم إكمال الملف الشخصي!" : "Profile completed!",
-        description: language === "ar" ? "مرحباً بك في المجتمع" : "Welcome to the community",
+        title: isAr ? "تم إكمال الملف الشخصي!" : "Profile completed!",
+        description: isAr ? "مرحباً بك في المجتمع" : "Welcome to the community",
       });
-
       onComplete?.();
       navigate("/dashboard");
     } catch (error: any) {
-      toast({
-        variant: "destructive",
-        title: language === "ar" ? "خطأ" : "Error",
-        description: error.message,
-      });
+      toast({ variant: "destructive", title: isAr ? "خطأ" : "Error", description: error.message });
     } finally {
       setSaving(false);
     }
   };
 
   return (
-    <div className="mx-auto max-w-2xl p-4">
+    <div className="mx-auto max-w-2xl">
       {/* Progress */}
-      <div className="mb-8">
-        <div className="flex items-center justify-between mb-2 text-sm">
+      <div className="mb-6">
+        <div className="mb-1.5 flex items-center justify-between text-xs">
           <span className="text-muted-foreground">
-            {language === "ar" ? `الخطوة ${step} من ${totalSteps}` : `Step ${step} of ${totalSteps}`}
+            {isAr ? `الخطوة ${step} من ${totalSteps}` : `Step ${step} of ${totalSteps}`}
           </span>
           <span className="font-medium">{Math.round(progress)}%</span>
         </div>
-        <Progress value={progress} className="h-2" />
+        <Progress value={progress} className="h-1.5" />
       </div>
 
-      {/* Step 1: Basic Info */}
-      {step === 1 && (
-        <Card>
-          <CardHeader className="text-center">
-            <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-primary/10">
-              <User className="h-8 w-8 text-primary" />
-            </div>
-            <CardTitle className="font-serif text-2xl">
-              {language === "ar" ? "مرحباً بك!" : "Welcome!"}
-            </CardTitle>
-            <CardDescription>
-              {language === "ar" ? "لنبدأ بالمعلومات الأساسية" : "Let's start with your basic information"}
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="space-y-2">
-              <Label>{language === "ar" ? "الاسم الكامل" : "Full Name"} *</Label>
-              <Input
-                value={form.full_name}
-                onChange={(e) => setForm({ ...form, full_name: e.target.value })}
-                placeholder={language === "ar" ? "أدخل اسمك الكامل" : "Enter your full name"}
-              />
-            </div>
-            <div className="space-y-2">
-              <Label>{language === "ar" ? "اسم المستخدم" : "Username"} *</Label>
-              <Input
-                value={form.username}
-                onChange={(e) => setForm({ ...form, username: e.target.value.replace(/[^a-zA-Z0-9_]/g, "") })}
-                placeholder={language === "ar" ? "اختر اسم مستخدم" : "Choose a username"}
-              />
-              <p className="text-xs text-muted-foreground">
-                {language === "ar" ? "أحرف إنجليزية وأرقام وشرطة سفلية فقط" : "Letters, numbers and underscores only"}
-              </p>
-            </div>
-            <div className="space-y-2">
-              <Label>{language === "ar" ? "الموقع" : "Location"}</Label>
-              <Input
-                value={form.location}
-                onChange={(e) => setForm({ ...form, location: e.target.value })}
-                placeholder={language === "ar" ? "المدينة، البلد" : "City, Country"}
-              />
-            </div>
-          </CardContent>
-        </Card>
-      )}
+      {/* Step Card */}
+      <Card>
+        {/* Step Header */}
+        <div className="flex flex-col items-center border-b px-5 py-5 text-center">
+          <div className="mb-2.5 flex h-12 w-12 items-center justify-center rounded-full bg-primary/10">
+            <StepIcon className="h-6 w-6 text-primary" />
+          </div>
+          <h2 className="font-serif text-xl font-bold">
+            {isAr ? current.titleAr : current.titleEn}
+          </h2>
+          <p className="mt-0.5 text-sm text-muted-foreground">
+            {isAr ? current.descAr : current.descEn}
+          </p>
+        </div>
 
-      {/* Step 2: Select Roles */}
-      {step === 2 && (
-        <Card>
-          <CardHeader className="text-center">
-            <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-primary/10">
-              <ChefHat className="h-8 w-8 text-primary" />
+        <CardContent className="p-5 md:p-6">
+          {/* Step 1: Basic Info */}
+          {step === 1 && (
+            <div className="space-y-4">
+              <div className="space-y-1.5">
+                <Label className="text-xs">{isAr ? "الاسم الكامل" : "Full Name"} *</Label>
+                <Input
+                  value={form.full_name}
+                  onChange={(e) => setForm({ ...form, full_name: e.target.value })}
+                  placeholder={isAr ? "أدخل اسمك الكامل" : "Enter your full name"}
+                />
+              </div>
+              <div className="space-y-1.5">
+                <Label className="text-xs">{isAr ? "اسم المستخدم" : "Username"} *</Label>
+                <Input
+                  value={form.username}
+                  onChange={(e) => setForm({ ...form, username: e.target.value.replace(/[^a-zA-Z0-9_]/g, "") })}
+                  placeholder={isAr ? "اختر اسم مستخدم" : "Choose a username"}
+                />
+                <p className="text-[10px] text-muted-foreground">
+                  {isAr ? "أحرف إنجليزية وأرقام وشرطة سفلية فقط" : "Letters, numbers and underscores only"}
+                </p>
+              </div>
+              <div className="space-y-1.5">
+                <Label className="text-xs">{isAr ? "الموقع" : "Location"}</Label>
+                <Input
+                  value={form.location}
+                  onChange={(e) => setForm({ ...form, location: e.target.value })}
+                  placeholder={isAr ? "المدينة، البلد" : "City, Country"}
+                />
+              </div>
             </div>
-            <CardTitle className="font-serif text-2xl">
-              {language === "ar" ? "اختر أدوارك" : "Select Your Roles"}
-            </CardTitle>
-            <CardDescription>
-              {language === "ar" ? "يمكنك اختيار أكثر من دور" : "You can select multiple roles"}
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="grid gap-3 sm:grid-cols-2">
+          )}
+
+          {/* Step 2: Select Roles */}
+          {step === 2 && (
+            <div className="grid gap-2.5 sm:grid-cols-2">
               {ROLES.map((role) => (
-                <div
+                <button
                   key={role.value}
+                  type="button"
                   onClick={() => handleRoleToggle(role.value)}
-                  className={`flex cursor-pointer items-center gap-3 rounded-lg border-2 p-4 transition-colors ${
+                  className={`flex items-center gap-3 rounded-lg border-2 p-3.5 text-start transition-colors ${
                     selectedRoles.includes(role.value)
                       ? "border-primary bg-primary/5"
-                      : "border-border hover:border-primary/50"
+                      : "border-border hover:border-primary/40"
                   }`}
                 >
                   <Checkbox
                     checked={selectedRoles.includes(role.value)}
                     onCheckedChange={() => handleRoleToggle(role.value)}
+                    className="pointer-events-none"
                   />
                   <div className="flex items-center gap-2">
                     {role.icon}
-                    <span className="font-medium">
-                      {language === "ar" ? role.labelAr : role.labelEn}
+                    <span className="text-sm font-medium">
+                      {isAr ? role.labelAr : role.labelEn}
                     </span>
                   </div>
-                </div>
+                </button>
               ))}
             </div>
-          </CardContent>
-        </Card>
-      )}
+          )}
 
-      {/* Step 3: Professional Details */}
-      {step === 3 && (
-        <Card>
-          <CardHeader className="text-center">
-            <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-primary/10">
-              <Trophy className="h-8 w-8 text-primary" />
+          {/* Step 3: Professional Details */}
+          {step === 3 && (
+            <div className="space-y-4">
+              <div className="space-y-1.5">
+                <Label className="text-xs">{isAr ? "التخصص" : "Specialization"}</Label>
+                <Input
+                  value={form.specialization}
+                  onChange={(e) => setForm({ ...form, specialization: e.target.value })}
+                  placeholder={isAr ? "مثال: المطبخ الإيطالي، الحلويات" : "e.g., Italian Cuisine, Pastry"}
+                />
+              </div>
+              <div className="space-y-1.5">
+                <Label className="text-xs">{isAr ? "مستوى الخبرة" : "Experience Level"}</Label>
+                <Select
+                  value={form.experience_level}
+                  onValueChange={(v) => setForm({ ...form, experience_level: v as ExperienceLevel })}
+                >
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="beginner">{isAr ? "مبتدئ" : "Beginner"}</SelectItem>
+                    <SelectItem value="amateur">{isAr ? "هاوٍ" : "Amateur"}</SelectItem>
+                    <SelectItem value="professional">{isAr ? "محترف" : "Professional"}</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              <div className="space-y-1.5">
+                <Label className="text-xs">{isAr ? "نبذة عنك" : "Bio"}</Label>
+                <Textarea
+                  value={form.bio}
+                  onChange={(e) => setForm({ ...form, bio: e.target.value })}
+                  placeholder={isAr ? "اكتب نبذة مختصرة عن نفسك..." : "Write a short bio about yourself..."}
+                  rows={3}
+                />
+              </div>
             </div>
-            <CardTitle className="font-serif text-2xl">
-              {language === "ar" ? "التفاصيل المهنية" : "Professional Details"}
-            </CardTitle>
-            <CardDescription>
-              {language === "ar" ? "أخبرنا المزيد عن خبرتك" : "Tell us more about your expertise"}
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="space-y-2">
-              <Label>{language === "ar" ? "التخصص" : "Specialization"}</Label>
-              <Input
-                value={form.specialization}
-                onChange={(e) => setForm({ ...form, specialization: e.target.value })}
-                placeholder={language === "ar" ? "مثال: المطبخ الإيطالي، الحلويات" : "e.g., Italian Cuisine, Pastry"}
-              />
-            </div>
-            <div className="space-y-2">
-              <Label>{language === "ar" ? "مستوى الخبرة" : "Experience Level"}</Label>
-              <Select
-                value={form.experience_level}
-                onValueChange={(v) => setForm({ ...form, experience_level: v as ExperienceLevel })}
-              >
-                <SelectTrigger>
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="beginner">{language === "ar" ? "مبتدئ" : "Beginner"}</SelectItem>
-                  <SelectItem value="amateur">{language === "ar" ? "هاوٍ" : "Amateur"}</SelectItem>
-                  <SelectItem value="professional">{language === "ar" ? "محترف" : "Professional"}</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-            <div className="space-y-2">
-              <Label>{language === "ar" ? "نبذة عنك" : "Bio"}</Label>
-              <Textarea
-                value={form.bio}
-                onChange={(e) => setForm({ ...form, bio: e.target.value })}
-                placeholder={language === "ar" ? "اكتب نبذة مختصرة عن نفسك..." : "Write a short bio about yourself..."}
-                rows={4}
-              />
-            </div>
-          </CardContent>
-        </Card>
-      )}
+          )}
+        </CardContent>
+      </Card>
 
-      {/* Navigation Buttons */}
-      <div className="mt-6 flex justify-between">
-        <Button
-          variant="outline"
-          onClick={prevStep}
-          disabled={step === 1}
-          className="gap-2"
-        >
-          <ArrowLeft className="h-4 w-4" />
-          {language === "ar" ? "السابق" : "Back"}
+      {/* Navigation */}
+      <div className="mt-5 flex justify-between">
+        <Button variant="outline" onClick={prevStep} disabled={step === 1} className="gap-1.5">
+          <ArrowLeft className="h-3.5 w-3.5" />
+          {isAr ? "السابق" : "Back"}
         </Button>
 
         {step < totalSteps ? (
-          <Button onClick={nextStep} className="gap-2">
-            {language === "ar" ? "التالي" : "Next"}
-            <ArrowRight className="h-4 w-4" />
+          <Button onClick={nextStep} className="gap-1.5">
+            {isAr ? "التالي" : "Next"}
+            <ArrowRight className="h-3.5 w-3.5" />
           </Button>
         ) : (
-          <Button onClick={handleComplete} disabled={saving} className="gap-2">
-            <CheckCircle2 className="h-4 w-4" />
-            {saving 
-              ? (language === "ar" ? "جاري الحفظ..." : "Saving...") 
-              : (language === "ar" ? "إكمال" : "Complete")}
+          <Button onClick={handleComplete} disabled={saving} className="gap-1.5">
+            {saving ? (
+              <Loader2 className="h-3.5 w-3.5 animate-spin" />
+            ) : (
+              <CheckCircle2 className="h-3.5 w-3.5" />
+            )}
+            {saving ? (isAr ? "جاري الحفظ..." : "Saving...") : (isAr ? "إكمال" : "Complete")}
           </Button>
         )}
       </div>
