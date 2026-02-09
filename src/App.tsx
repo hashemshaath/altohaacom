@@ -30,6 +30,7 @@ import Messages from "./pages/Messages";
 import Onboarding from "./pages/Onboarding";
 import SponsorsLanding from "./pages/landing/SponsorsLanding";
 import OrganizersLanding from "./pages/landing/OrganizersLanding";
+import Install from "./pages/Install";
 
 // Admin pages
 import AdminLayout from "./pages/admin/AdminLayout";
@@ -122,6 +123,7 @@ const App = () => (
                 <Route path="/verify" element={<CertificateVerify />} />
                 <Route path="/masterclasses" element={<Masterclasses />} />
                 <Route path="/masterclasses/:id" element={<MasterclassDetail />} />
+                <Route path="/install" element={<Install />} />
                 
                 {/* Admin Routes */}
                 <Route path="/admin" element={<ProtectedRoute><AdminLayout /></ProtectedRoute>}>
