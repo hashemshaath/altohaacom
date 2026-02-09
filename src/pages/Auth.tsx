@@ -246,101 +246,114 @@ export default function Auth() {
   return (
     <div className="flex min-h-screen flex-col bg-background">
       <Header />
-      <main className="flex flex-1 items-center justify-center p-4">
-        <Card className="w-full max-w-md">
-          <CardHeader className="text-center">
-            <img src="/altohaa-logo.png" alt="Altohaa" className="mx-auto mb-2 h-14 w-auto" />
-            <CardTitle className="font-serif text-2xl">
+      <main className="flex flex-1 items-center justify-center px-4 py-8">
+        <div className="w-full max-w-md space-y-6">
+          <div className="text-center">
+            <img src="/altohaa-logo.png" alt="Altohaa" className="mx-auto mb-4 h-16 w-auto" />
+            <h1 className="font-serif text-2xl font-bold md:text-3xl">
               {isSignUp ? t("signUpTitle") : t("signInTitle")}
-            </CardTitle>
-            <CardDescription>
-              {isSignUp ? t("heroSubtitle") : ""}
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-4">
+            </h1>
             {isSignUp && (
-              <>
-                <div className="space-y-2">
-                  <Label htmlFor="fullName">{t("fullName")}</Label>
-                  <Input id="fullName" value={fullName} onChange={(e) => setFullName(e.target.value)} />
-                  {errors.fullName && <p className="text-sm text-destructive">{errors.fullName}</p>}
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="username">{t("username")}</Label>
-                  <div className="relative">
-                    <Input
-                      id="username"
-                      value={username}
-                      onChange={(e) => setUsername(e.target.value.toLowerCase().replace(/[^a-z0-9_]/g, ""))}
-                      className="pr-10"
-                      placeholder="your_username"
-                    />
-                    <div className="absolute right-3 top-1/2 -translate-y-1/2">
-                      {usernameStatus === "checking" && <Loader2 className="h-4 w-4 animate-spin text-muted-foreground" />}
-                      {usernameStatus === "available" && <CheckCircle className="h-4 w-4 text-green-500" />}
-                      {usernameStatus === "taken" && <XCircle className="h-4 w-4 text-destructive" />}
+              <p className="mt-1 text-sm text-muted-foreground">{t("heroSubtitle")}</p>
+            )}
+          </div>
+
+          <Card>
+            <CardContent className="space-y-4 p-5 md:p-6">
+              {isSignUp && (
+                <>
+                  <div className="grid gap-4 sm:grid-cols-2">
+                    <div className="space-y-2">
+                      <Label htmlFor="fullName">{t("fullName")}</Label>
+                      <Input id="fullName" value={fullName} onChange={(e) => setFullName(e.target.value)} />
+                      {errors.fullName && <p className="text-xs text-destructive">{errors.fullName}</p>}
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="username">{t("username")}</Label>
+                      <div className="relative">
+                        <Input
+                          id="username"
+                          value={username}
+                          onChange={(e) => setUsername(e.target.value.toLowerCase().replace(/[^a-z0-9_]/g, ""))}
+                          className="pr-10"
+                          placeholder="your_username"
+                        />
+                        <div className="absolute right-3 top-1/2 -translate-y-1/2">
+                          {usernameStatus === "checking" && <Loader2 className="h-4 w-4 animate-spin text-muted-foreground" />}
+                          {usernameStatus === "available" && <CheckCircle className="h-4 w-4 text-primary" />}
+                          {usernameStatus === "taken" && <XCircle className="h-4 w-4 text-destructive" />}
+                        </div>
+                      </div>
+                      <p className="text-xs text-muted-foreground">
+                        altohaa.com/<span className="font-medium">{username || "username"}</span>
+                      </p>
+                      {errors.username && <p className="text-xs text-destructive">{errors.username}</p>}
                     </div>
                   </div>
-                  <p className="text-xs text-muted-foreground">
-                    {t("usernameHint")}<span className="font-medium">{username || "username"}</span>
-                  </p>
-                  {errors.username && <p className="text-sm text-destructive">{errors.username}</p>}
-                </div>
-              </>
-            )}
-            <div className="space-y-2">
-              <Label htmlFor="email">{t("email")}</Label>
-              <Input id="email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} />
-              {errors.email && <p className="text-sm text-destructive">{errors.email}</p>}
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="password">{t("password")}</Label>
-              <Input id="password" type="password" value={password} onChange={(e) => setPassword(e.target.value)} />
-              {errors.password && <p className="text-sm text-destructive">{errors.password}</p>}
-            </div>
-            {isSignUp && (
-              <>
+                </>
+              )}
+
+              <div className="space-y-2">
+                <Label htmlFor="email">{t("email")}</Label>
+                <Input id="email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} />
+                {errors.email && <p className="text-xs text-destructive">{errors.email}</p>}
+              </div>
+
+              <div className={isSignUp ? "grid gap-4 sm:grid-cols-2" : "space-y-2"}>
                 <div className="space-y-2">
-                  <Label htmlFor="confirmPassword">{t("confirmPassword")}</Label>
-                  <Input id="confirmPassword" type="password" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} />
-                  {errors.confirmPassword && <p className="text-sm text-destructive">{errors.confirmPassword}</p>}
+                  <Label htmlFor="password">{t("password")}</Label>
+                  <Input id="password" type="password" value={password} onChange={(e) => setPassword(e.target.value)} />
+                  {errors.password && <p className="text-xs text-destructive">{errors.password}</p>}
                 </div>
+                {isSignUp && (
+                  <div className="space-y-2">
+                    <Label htmlFor="confirmPassword">{t("confirmPassword")}</Label>
+                    <Input id="confirmPassword" type="password" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} />
+                    {errors.confirmPassword && <p className="text-xs text-destructive">{errors.confirmPassword}</p>}
+                  </div>
+                )}
+              </div>
+
+              {isSignUp && (
                 <div className="space-y-2">
                   <Label>{t("selectRole")}</Label>
-                  <RadioGroup value={role} onValueChange={(v) => setRole(v as AppRole)} className="grid grid-cols-2 gap-2">
+                  <RadioGroup value={role} onValueChange={(v) => setRole(v as AppRole)} className="grid grid-cols-2 gap-2 sm:grid-cols-4">
                     {roles.map((r) => (
-                      <div key={r} className="flex items-center gap-2 rounded-md border p-2">
+                      <div key={r} className="flex items-center gap-2 rounded-lg border p-2.5 transition-colors has-[:checked]:border-primary has-[:checked]:bg-primary/5">
                         <RadioGroupItem value={r} id={r} />
-                        <Label htmlFor={r} className="cursor-pointer text-sm">
+                        <Label htmlFor={r} className="cursor-pointer text-xs font-medium sm:text-sm">
                           {t(r as any)}
                         </Label>
                       </div>
                     ))}
                   </RadioGroup>
                 </div>
-              </>
-            )}
-            <Button
-              className="w-full"
-              disabled={loading}
-              onClick={isSignUp ? handleCredentialsSubmit : handleSignIn}
-            >
-              {loading
-                ? (isSignUp ? t("signingUp") : t("signingIn"))
-                : (isSignUp ? t("continue") : t("signIn"))}
-            </Button>
-            <p className="text-center text-sm text-muted-foreground">
-              {isSignUp ? t("hasAccount") : t("noAccount")}{" "}
-              <button
-                type="button"
-                className="font-medium text-primary underline-offset-2 hover:underline"
-                onClick={() => { setIsSignUp(!isSignUp); setErrors({}); }}
+              )}
+
+              <Button
+                className="w-full"
+                disabled={loading}
+                onClick={isSignUp ? handleCredentialsSubmit : handleSignIn}
               >
-                {isSignUp ? t("signIn") : t("signUp")}
-              </button>
-            </p>
-          </CardContent>
-        </Card>
+                {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                {loading
+                  ? (isSignUp ? t("signingUp") : t("signingIn"))
+                  : (isSignUp ? t("continue") : t("signIn"))}
+              </Button>
+            </CardContent>
+          </Card>
+
+          <p className="text-center text-sm text-muted-foreground">
+            {isSignUp ? t("hasAccount") : t("noAccount")}{" "}
+            <button
+              type="button"
+              className="font-medium text-primary underline-offset-2 hover:underline"
+              onClick={() => { setIsSignUp(!isSignUp); setErrors({}); }}
+            >
+              {isSignUp ? t("signIn") : t("signUp")}
+            </button>
+          </p>
+        </div>
       </main>
     </div>
   );

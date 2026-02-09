@@ -113,23 +113,23 @@ export default function PublicProfile() {
   return (
     <div className="flex min-h-screen flex-col">
       <Header />
-      <main className="container flex-1 py-8">
-        <div className="grid gap-8 lg:grid-cols-3">
+      <main className="container flex-1 py-6 md:py-8">
+        <div className="grid gap-6 lg:grid-cols-3">
           {/* Profile Card */}
           <div className="lg:col-span-1">
             <Card>
-              <CardContent className="p-6">
+              <CardContent className="p-5 md:p-6">
                 {/* Profile Header */}
                 <div className="flex flex-col items-center text-center">
-                  <Avatar className="h-24 w-24">
+                  <Avatar className="h-20 w-20 md:h-24 md:w-24">
                     <AvatarImage src={profile.avatar_url || undefined} />
-                    <AvatarFallback className="text-2xl">
+                    <AvatarFallback className="text-xl md:text-2xl">
                       {(profile.full_name || "U")[0].toUpperCase()}
                     </AvatarFallback>
                   </Avatar>
 
-                  <div className="mt-4 flex items-center gap-2">
-                    <h1 className="font-serif text-2xl font-bold">
+                  <div className="mt-3 flex items-center gap-2">
+                    <h1 className="font-serif text-xl font-bold md:text-2xl">
                       {profile.full_name || "Unnamed Chef"}
                     </h1>
                     {profile.is_verified && (
@@ -137,7 +137,7 @@ export default function PublicProfile() {
                     )}
                   </div>
 
-                  <p className="text-muted-foreground">@{profile.username}</p>
+                  <p className="text-sm text-muted-foreground">@{profile.username}</p>
 
                   {/* Account Number & Membership */}
                   <div className="mt-2 flex flex-wrap justify-center gap-2">
@@ -166,14 +166,14 @@ export default function PublicProfile() {
 
                   {/* Specialization */}
                   {profile.specialization && (
-                    <div className="mt-4 flex items-center gap-2 text-sm">
+                    <div className="mt-3 flex items-center gap-2 text-sm">
                       <ChefHat className="h-4 w-4 text-primary" />
                       <span className="font-medium">{profile.specialization}</span>
                     </div>
                   )}
 
                   {/* Experience & Location */}
-                  <div className="mt-4 flex flex-wrap items-center justify-center gap-4 text-sm text-muted-foreground">
+                  <div className="mt-3 flex flex-wrap items-center justify-center gap-3 text-sm text-muted-foreground">
                     {profile.experience_level && (
                       <div className="flex items-center gap-1">
                         <Award className="h-4 w-4" />
@@ -191,14 +191,14 @@ export default function PublicProfile() {
 
                 {/* Bio */}
                 {profile.bio && (
-                  <div className="mt-6 rounded-lg bg-muted/50 p-4">
-                    <p className="text-center text-sm">{profile.bio}</p>
+                  <div className="mt-5 rounded-lg bg-muted/50 p-3">
+                    <p className="text-center text-sm leading-relaxed">{profile.bio}</p>
                   </div>
                 )}
 
                 {/* Social Links */}
                 {socialLinks.length > 0 && (
-                  <div className="mt-6 flex flex-wrap justify-center gap-2">
+                  <div className="mt-5 flex flex-wrap justify-center gap-2">
                     {socialLinks.map((link) => (
                       <Button
                         key={link.label}
@@ -210,10 +210,10 @@ export default function PublicProfile() {
                           href={link.value?.startsWith("http") ? link.value : `https://${link.value}`}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="flex items-center gap-2"
+                          className="flex items-center gap-1.5"
                         >
-                          <link.icon className="h-4 w-4" />
-                          {link.label}
+                          <link.icon className="h-3.5 w-3.5" />
+                          <span className="text-xs">{link.label}</span>
                         </a>
                       </Button>
                     ))}
@@ -221,7 +221,7 @@ export default function PublicProfile() {
                 )}
 
                 {/* Message Button */}
-                <div className="mt-6 flex justify-center">
+                <div className="mt-5">
                   <MessageButton userId={profile.user_id} variant="default" />
                 </div>
 
