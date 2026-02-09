@@ -8,14 +8,12 @@ import { Footer } from "@/components/Footer";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Separator } from "@/components/ui/separator";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Progress } from "@/components/ui/progress";
 import { toast } from "@/hooks/use-toast";
 import {
   Calendar, MapPin, Globe, ExternalLink, Bell, BellOff,
   Clock, Users, Tag, Building, Phone, Mail, ArrowLeft,
-  Share2, Ticket, Trophy
+  Share2, Ticket, Trophy, Landmark
 } from "lucide-react";
 import { SEOHead } from "@/components/SEOHead";
 import { format, isPast, isFuture, isWithinInterval, formatDistanceToNow } from "date-fns";
@@ -23,7 +21,6 @@ import { format, isPast, isFuture, isWithinInterval, formatDistanceToNow } from 
 interface ScheduleDay {
   day?: string;
   items?: ScheduleItem[];
-  // Flat format fallback
   time?: string;
   title?: string;
   title_ar?: string;
@@ -107,7 +104,6 @@ export default function ExhibitionDetail() {
     enabled: !!exhibition,
   });
 
-  // Fetch linked competitions
   const { data: linkedCompetitions } = useQuery({
     queryKey: ["exhibition-competitions", exhibition?.id],
     queryFn: async () => {
@@ -154,12 +150,41 @@ export default function ExhibitionDetail() {
 
   if (isLoading) {
     return (
-      <div className="flex min-h-screen flex-col">
+      <div className="flex min-h-screen flex-col bg-background">
         <Header />
         <main className="container flex-1 py-8">
-          <Skeleton className="mb-4 h-8 w-48" />
-          <Skeleton className="mb-8 h-72 w-full rounded-xl" />
-          <Skeleton className="h-6 w-3/4" />
+          <Skeleton className="mb-4 h-8 w-32 rounded-md" />
+          <Skeleton className="mb-8 h-64 w-full rounded-xl md:h-72" />
+          <div className="grid gap-8 lg:grid-cols-3">
+            <div className="space-y-4 lg:col-span-2">
+              <div className="flex gap-2">
+                <Skeleton className="h-5 w-20 rounded-full" />
+                <Skeleton className="h-5 w-16 rounded-full" />
+              </div>
+              <Skeleton className="h-9 w-3/4" />
+              <Skeleton className="h-4 w-1/3" />
+              <Skeleton className="mt-4 h-24 w-full" />
+            </div>
+            <div className="space-y-4">
+              <Card className="overflow-hidden">
+                <div className="space-y-3 p-5">
+                  <Skeleton className="h-10 w-full rounded-md" />
+                  <Skeleton className="h-10 w-full rounded-md" />
+                  <Skeleton className="h-3 w-24 mx-auto" />
+                </div>
+              </Card>
+              <Card className="overflow-hidden">
+                <div className="border-b bg-muted/30 px-4 py-3">
+                  <Skeleton className="h-4 w-28" />
+                </div>
+                <div className="space-y-4 p-4">
+                  <Skeleton className="h-12 w-full" />
+                  <Skeleton className="h-12 w-full" />
+                  <Skeleton className="h-12 w-full" />
+                </div>
+              </Card>
+            </div>
+          </div>
         </main>
         <Footer />
       </div>
@@ -168,12 +193,21 @@ export default function ExhibitionDetail() {
 
   if (!exhibition) {
     return (
-      <div className="flex min-h-screen flex-col">
+      <div className="flex min-h-screen flex-col bg-background">
         <Header />
         <main className="container flex-1 py-16 text-center">
-          <p className="text-xl text-muted-foreground">{isAr ? "الحدث غير موجود" : "Event not found"}</p>
+          <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-muted/60">
+            <Landmark className="h-8 w-8 text-muted-foreground/40" />
+          </div>
+          <p className="text-lg font-semibold">{isAr ? "الحدث غير موجود" : "Event not found"}</p>
+          <p className="mt-1 text-sm text-muted-foreground">
+            {isAr ? "قد يكون قد تم حذفه أو نقله" : "It may have been removed or moved"}
+          </p>
           <Button variant="outline" className="mt-4" asChild>
-            <Link to="/exhibitions">{isAr ? "العودة للفعاليات" : "Back to Events"}</Link>
+            <Link to="/exhibitions">
+              <ArrowLeft className="me-2 h-4 w-4" />
+              {isAr ? "العودة للفعاليات" : "Back to Events"}
+            </Link>
           </Button>
         </main>
         <Footer />
@@ -198,10 +232,9 @@ export default function ExhibitionDetail() {
   const sections = (exhibition.sections as Section[]) || [];
   const targetAudience = (exhibition.target_audience as string[]) || [];
   const tags = (exhibition.tags as string[]) || [];
-  const socialLinks = (exhibition.social_links as Record<string, string>) || {};
 
   return (
-    <div className="flex min-h-screen flex-col">
+    <div className="flex min-h-screen flex-col bg-background">
       <SEOHead
         title={title}
         description={description || `${title} - Event on Altohaa`}
@@ -225,9 +258,9 @@ export default function ExhibitionDetail() {
 
       <main className="container flex-1 py-8">
         {/* Breadcrumb */}
-        <Button variant="ghost" size="sm" className="mb-4" asChild>
+        <Button variant="ghost" size="sm" className="mb-4 -ms-2" asChild>
           <Link to="/exhibitions">
-            <ArrowLeft className="mr-2 h-4 w-4" />
+            <ArrowLeft className="me-1.5 h-4 w-4" />
             {isAr ? "العودة للفعاليات" : "Back to Events"}
           </Link>
         </Button>
@@ -314,12 +347,11 @@ export default function ExhibitionDetail() {
                 <h2 className="mb-4 text-xl font-semibold">{isAr ? "الجدول الزمني" : "Schedule"}</h2>
                 <div className="space-y-6">
                   {schedule.map((dayOrItem, i) => {
-                    // Grouped by day format: { day: "Day 1", items: [...] }
                     if (dayOrItem.items && dayOrItem.items.length > 0) {
                       return (
                         <div key={i}>
                           {dayOrItem.day && (
-                            <h3 className="mb-3 text-sm font-semibold uppercase tracking-wider text-primary">
+                            <h3 className="mb-3 text-[10px] font-semibold uppercase tracking-wider text-primary">
                               {dayOrItem.day}
                             </h3>
                           )}
@@ -343,7 +375,6 @@ export default function ExhibitionDetail() {
                         </div>
                       );
                     }
-                    // Flat format fallback
                     return (
                       <div key={i} className="flex gap-4 rounded-lg border p-4">
                         <div className="shrink-0 font-mono text-sm text-primary">{dayOrItem.time || dayOrItem.day}</div>
@@ -386,13 +417,13 @@ export default function ExhibitionDetail() {
                           )}
                           <CardContent className="p-4">
                             <div className="mb-2 flex items-center gap-2">
-                              <Badge variant={compIsLive ? "default" : compIsPast ? "secondary" : "outline"} className="text-xs">
+                              <Badge variant={compIsLive ? "default" : compIsPast ? "secondary" : "outline"} className="text-[10px]">
                                 {compIsLive ? (isAr ? "جارية" : "Live") : compIsPast ? (isAr ? "انتهت" : "Ended") : (isAr ? "قادمة" : "Upcoming")}
                               </Badge>
                             </div>
                             <h4 className="font-semibold line-clamp-2">{compTitle}</h4>
                             <p className="mt-1 text-xs text-muted-foreground">
-                              <Calendar className="mr-1 inline h-3 w-3" />
+                              <Calendar className="me-1 inline h-3 w-3" />
                               {format(compStart, "MMM d, yyyy")}
                             </p>
                           </CardContent>
@@ -414,7 +445,9 @@ export default function ExhibitionDetail() {
                         {speaker.image_url ? (
                           <img src={speaker.image_url} alt={speaker.name} className="mx-auto mb-3 h-20 w-20 rounded-full object-cover" />
                         ) : (
-                          <div className="mx-auto mb-3 flex h-20 w-20 items-center justify-center rounded-full bg-primary/10 text-2xl">👤</div>
+                          <div className="mx-auto mb-3 flex h-20 w-20 items-center justify-center rounded-full bg-primary/10">
+                            <Users className="h-8 w-8 text-primary/60" />
+                          </div>
                         )}
                         <p className="font-semibold">{isAr && speaker.name_ar ? speaker.name_ar : speaker.name}</p>
                         {(speaker.title || speaker.title_ar || speaker.role || speaker.role_ar) && (
@@ -423,7 +456,7 @@ export default function ExhibitionDetail() {
                           </p>
                         )}
                         {(speaker.topic || speaker.topic_ar) && (
-                          <Badge variant="outline" className="mt-2 text-xs">
+                          <Badge variant="outline" className="mt-2 text-[10px]">
                             {isAr && speaker.topic_ar ? speaker.topic_ar : speaker.topic}
                           </Badge>
                         )}
@@ -460,21 +493,27 @@ export default function ExhibitionDetail() {
           </div>
 
           {/* Sidebar */}
-          <div className="space-y-6">
+          <div className="space-y-4">
             {/* Action Card */}
-            <Card>
-              <CardContent className="space-y-4 pt-6">
-                {/* Registration / Tickets */}
+            <Card className="overflow-hidden">
+              <div className="border-b bg-muted/30 px-4 py-3">
+                <h3 className="flex items-center gap-2 text-sm font-semibold">
+                  <div className="flex h-6 w-6 items-center justify-center rounded-md bg-primary/10">
+                    <Ticket className="h-3.5 w-3.5 text-primary" />
+                  </div>
+                  {isAr ? "إجراءات" : "Actions"}
+                </h3>
+              </div>
+              <CardContent className="space-y-3 p-4">
                 {exhibition.registration_url && !hasEnded && (
                   <Button className="w-full" asChild>
                     <a href={exhibition.registration_url} target="_blank" rel="noopener noreferrer">
-                      <Ticket className="mr-2 h-4 w-4" />
+                      <Ticket className="me-2 h-4 w-4" />
                       {isAr ? "سجل الآن" : "Register Now"}
                     </a>
                   </Button>
                 )}
 
-                {/* Follow for updates */}
                 {user && (
                   <Button
                     variant={isFollowing ? "outline" : "secondary"}
@@ -483,44 +522,48 @@ export default function ExhibitionDetail() {
                     disabled={toggleFollow.isPending}
                   >
                     {isFollowing ? (
-                      <><BellOff className="mr-2 h-4 w-4" />{isAr ? "إلغاء المتابعة" : "Unfollow"}</>
+                      <><BellOff className="me-2 h-4 w-4" />{isAr ? "إلغاء المتابعة" : "Unfollow"}</>
                     ) : (
-                      <><Bell className="mr-2 h-4 w-4" />{isAr ? "تابع للإشعارات" : "Follow for Updates"}</>
+                      <><Bell className="me-2 h-4 w-4" />{isAr ? "تابع للإشعارات" : "Follow for Updates"}</>
                     )}
                   </Button>
                 )}
 
-                {/* Website */}
                 {exhibition.website_url && (
                   <Button variant="outline" className="w-full" asChild>
                     <a href={exhibition.website_url} target="_blank" rel="noopener noreferrer">
-                      <ExternalLink className="mr-2 h-4 w-4" />
+                      <ExternalLink className="me-2 h-4 w-4" />
                       {isAr ? "الموقع الرسمي" : "Official Website"}
                     </a>
                   </Button>
                 )}
 
                 <p className="text-center text-xs text-muted-foreground">
-                  <Users className="mb-0.5 mr-1 inline h-3 w-3" />
+                  <Users className="mb-0.5 me-1 inline h-3 w-3" />
                   {followerCount} {isAr ? "متابع" : "followers"}
                 </p>
               </CardContent>
             </Card>
 
             {/* Details Card */}
-            <Card>
-              <CardHeader>
-                <CardTitle className="text-base">{isAr ? "تفاصيل الحدث" : "Event Details"}</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4 text-sm">
+            <Card className="overflow-hidden">
+              <div className="border-b bg-muted/30 px-4 py-3">
+                <h3 className="flex items-center gap-2 text-sm font-semibold">
+                  <div className="flex h-6 w-6 items-center justify-center rounded-md bg-accent/10">
+                    <Calendar className="h-3.5 w-3.5 text-accent-foreground" />
+                  </div>
+                  {isAr ? "تفاصيل الحدث" : "Event Details"}
+                </h3>
+              </div>
+              <CardContent className="space-y-4 p-4 text-sm">
                 <div className="flex items-start gap-3">
                   <Calendar className="mt-0.5 h-4 w-4 shrink-0 text-primary" />
                   <div>
-                    <p className="font-medium">{isAr ? "التاريخ" : "Date"}</p>
-                    <p className="text-muted-foreground">
-                      {format(start, "EEEE, MMM d, yyyy")}
+                    <p className="text-[10px] uppercase tracking-wider text-muted-foreground">{isAr ? "التاريخ" : "Date"}</p>
+                    <p className="font-medium">
+                      {format(start, "MMM d, yyyy")}
                       {" – "}
-                      {format(end, "EEEE, MMM d, yyyy")}
+                      {format(end, "MMM d, yyyy")}
                     </p>
                   </div>
                 </div>
@@ -529,8 +572,8 @@ export default function ExhibitionDetail() {
                   <div className="flex items-start gap-3">
                     <Clock className="mt-0.5 h-4 w-4 shrink-0 text-primary" />
                     <div>
-                      <p className="font-medium">{isAr ? "آخر موعد للتسجيل" : "Registration Deadline"}</p>
-                      <p className="text-muted-foreground">
+                      <p className="text-[10px] uppercase tracking-wider text-muted-foreground">{isAr ? "آخر موعد للتسجيل" : "Registration Deadline"}</p>
+                      <p className="font-medium">
                         {format(new Date(exhibition.registration_deadline), "MMM d, yyyy")}
                       </p>
                     </div>
@@ -541,7 +584,7 @@ export default function ExhibitionDetail() {
                   <div className="flex items-start gap-3">
                     <Globe className="mt-0.5 h-4 w-4 shrink-0 text-primary" />
                     <div>
-                      <p className="font-medium">{isAr ? "حدث افتراضي" : "Virtual Event"}</p>
+                      <p className="text-[10px] uppercase tracking-wider text-muted-foreground">{isAr ? "حدث افتراضي" : "Virtual Event"}</p>
                       {exhibition.virtual_link && !hasEnded && (
                         <a href={exhibition.virtual_link} target="_blank" rel="noopener noreferrer"
                           className="text-primary underline">{isAr ? "رابط الدخول" : "Join Link"}</a>
@@ -552,8 +595,8 @@ export default function ExhibitionDetail() {
                   <div className="flex items-start gap-3">
                     <MapPin className="mt-0.5 h-4 w-4 shrink-0 text-primary" />
                     <div>
-                      <p className="font-medium">{isAr ? "الموقع" : "Location"}</p>
-                      <p className="text-muted-foreground">
+                      <p className="text-[10px] uppercase tracking-wider text-muted-foreground">{isAr ? "الموقع" : "Location"}</p>
+                      <p className="font-medium">
                         {venue}
                         {exhibition.city && <><br />{exhibition.city}</>}
                         {exhibition.country && `, ${exhibition.country}`}
@@ -569,8 +612,8 @@ export default function ExhibitionDetail() {
                 <div className="flex items-start gap-3">
                   <Ticket className="mt-0.5 h-4 w-4 shrink-0 text-primary" />
                   <div>
-                    <p className="font-medium">{isAr ? "التذاكر" : "Tickets"}</p>
-                    <p className="text-muted-foreground">
+                    <p className="text-[10px] uppercase tracking-wider text-muted-foreground">{isAr ? "التذاكر" : "Tickets"}</p>
+                    <p className="font-medium">
                       {exhibition.is_free
                         ? (isAr ? "دخول مجاني" : "Free Entry")
                         : (isAr && exhibition.ticket_price_ar ? exhibition.ticket_price_ar : exhibition.ticket_price || (isAr ? "راجع الموقع" : "See website"))}
@@ -582,8 +625,8 @@ export default function ExhibitionDetail() {
                   <div className="flex items-start gap-3">
                     <Users className="mt-0.5 h-4 w-4 shrink-0 text-primary" />
                     <div>
-                      <p className="font-medium">{isAr ? "السعة" : "Capacity"}</p>
-                      <p className="text-muted-foreground">{exhibition.max_attendees.toLocaleString()} {isAr ? "مقعد" : "attendees"}</p>
+                      <p className="text-[10px] uppercase tracking-wider text-muted-foreground">{isAr ? "السعة" : "Capacity"}</p>
+                      <p className="font-medium">{exhibition.max_attendees.toLocaleString()} {isAr ? "مقعد" : "attendees"}</p>
                     </div>
                   </div>
                 )}
@@ -592,11 +635,16 @@ export default function ExhibitionDetail() {
 
             {/* Organizer Info */}
             {organizer && (
-              <Card>
-                <CardHeader>
-                  <CardTitle className="text-base">{isAr ? "المنظم" : "Organizer"}</CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-2 text-sm">
+              <Card className="overflow-hidden">
+                <div className="border-b bg-muted/30 px-4 py-3">
+                  <h3 className="flex items-center gap-2 text-sm font-semibold">
+                    <div className="flex h-6 w-6 items-center justify-center rounded-md bg-primary/10">
+                      <Building className="h-3.5 w-3.5 text-primary" />
+                    </div>
+                    {isAr ? "المنظم" : "Organizer"}
+                  </h3>
+                </div>
+                <CardContent className="space-y-2.5 p-4 text-sm">
                   <div className="flex items-center gap-2">
                     <Building className="h-4 w-4 text-muted-foreground" />
                     <span className="font-medium">{organizer}</span>
@@ -612,7 +660,7 @@ export default function ExhibitionDetail() {
                   {exhibition.organizer_phone && (
                     <div className="flex items-center gap-2">
                       <Phone className="h-4 w-4 text-muted-foreground" />
-                      <span>{exhibition.organizer_phone}</span>
+                      <span className="font-mono text-xs">{exhibition.organizer_phone}</span>
                     </div>
                   )}
                   {exhibition.organizer_website && (
@@ -629,12 +677,20 @@ export default function ExhibitionDetail() {
 
             {/* Tags */}
             {tags.length > 0 && (
-              <Card>
-                <CardContent className="pt-6">
-                  <div className="flex flex-wrap gap-2">
+              <Card className="overflow-hidden">
+                <div className="border-b bg-muted/30 px-4 py-3">
+                  <h3 className="flex items-center gap-2 text-sm font-semibold">
+                    <div className="flex h-6 w-6 items-center justify-center rounded-md bg-accent/10">
+                      <Tag className="h-3.5 w-3.5 text-accent-foreground" />
+                    </div>
+                    {isAr ? "الوسوم" : "Tags"}
+                  </h3>
+                </div>
+                <CardContent className="p-4">
+                  <div className="flex flex-wrap gap-1.5">
                     {tags.map((tag) => (
-                      <Badge key={tag} variant="secondary">
-                        <Tag className="mr-1 h-3 w-3" />{tag}
+                      <Badge key={tag} variant="secondary" className="text-[10px]">
+                        {tag}
                       </Badge>
                     ))}
                   </div>
@@ -643,18 +699,23 @@ export default function ExhibitionDetail() {
             )}
 
             {/* Social Share */}
-            <Card>
-              <CardContent className="pt-6">
-                <p className="mb-3 text-sm font-medium">{isAr ? "شارك هذا الحدث" : "Share this event"}</p>
-                <div className="flex gap-2">
-                  <Button size="sm" variant="outline" onClick={() => {
-                    navigator.clipboard.writeText(window.location.href);
-                    toast({ title: isAr ? "تم نسخ الرابط" : "Link copied!" });
-                  }}>
-                    <Share2 className="mr-1.5 h-3.5 w-3.5" />
-                    {isAr ? "نسخ الرابط" : "Copy Link"}
-                  </Button>
-                </div>
+            <Card className="overflow-hidden">
+              <div className="border-b bg-muted/30 px-4 py-3">
+                <h3 className="flex items-center gap-2 text-sm font-semibold">
+                  <div className="flex h-6 w-6 items-center justify-center rounded-md bg-primary/10">
+                    <Share2 className="h-3.5 w-3.5 text-primary" />
+                  </div>
+                  {isAr ? "مشاركة" : "Share"}
+                </h3>
+              </div>
+              <CardContent className="p-4">
+                <Button size="sm" variant="outline" className="w-full" onClick={() => {
+                  navigator.clipboard.writeText(window.location.href);
+                  toast({ title: isAr ? "تم نسخ الرابط" : "Link copied!" });
+                }}>
+                  <Share2 className="me-1.5 h-3.5 w-3.5" />
+                  {isAr ? "نسخ الرابط" : "Copy Link"}
+                </Button>
               </CardContent>
             </Card>
           </div>
