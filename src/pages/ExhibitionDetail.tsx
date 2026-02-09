@@ -19,20 +19,34 @@ import {
 } from "lucide-react";
 import { format, isPast, isFuture, isWithinInterval, formatDistanceToNow } from "date-fns";
 
+interface ScheduleDay {
+  day?: string;
+  items?: ScheduleItem[];
+  // Flat format fallback
+  time?: string;
+  title?: string;
+  title_ar?: string;
+  description?: string;
+  description_ar?: string;
+}
+
 interface ScheduleItem {
   time?: string;
   title?: string;
   title_ar?: string;
   description?: string;
   description_ar?: string;
-  day?: string;
 }
 
 interface Speaker {
   name?: string;
   name_ar?: string;
+  title?: string;
+  title_ar?: string;
   role?: string;
   role_ar?: string;
+  topic?: string;
+  topic_ar?: string;
   image_url?: string;
 }
 
@@ -178,7 +192,7 @@ export default function ExhibitionDetail() {
   const isUpcoming = isFuture(start);
   const hasEnded = isPast(end);
 
-  const schedule = (exhibition.schedule as ScheduleItem[]) || [];
+  const schedule = (exhibition.schedule as ScheduleDay[]) || [];
   const speakers = (exhibition.speakers as Speaker[]) || [];
   const sections = (exhibition.sections as Section[]) || [];
   const targetAudience = (exhibition.target_audience as string[]) || [];
@@ -199,15 +213,19 @@ export default function ExhibitionDetail() {
         </Button>
 
         {/* Hero Image */}
-        {exhibition.cover_image_url && (
-          <div className="mb-8 overflow-hidden rounded-xl">
+        <div className="mb-8 overflow-hidden rounded-xl">
+          {exhibition.cover_image_url ? (
             <img
               src={exhibition.cover_image_url}
               alt={title}
-              className="h-64 w-full object-cover md:h-80"
+              className="h-56 w-full object-cover md:h-72 lg:h-80"
             />
-          </div>
-        )}
+          ) : (
+            <div className="flex h-56 items-center justify-center bg-gradient-to-br from-primary/10 to-accent/10 md:h-72 lg:h-80">
+              <span className="text-6xl">🏛️</span>
+            </div>
+          )}
+        </div>
 
         <div className="grid gap-8 lg:grid-cols-3">
           {/* Main Content */}
@@ -274,20 +292,52 @@ export default function ExhibitionDetail() {
             {schedule.length > 0 && (
               <section>
                 <h2 className="mb-4 text-xl font-semibold">{isAr ? "الجدول الزمني" : "Schedule"}</h2>
-                <div className="space-y-3">
-                  {schedule.map((item, i) => (
-                    <div key={i} className="flex gap-4 rounded-lg border p-4">
-                      <div className="shrink-0 text-sm font-mono text-primary">{item.time || item.day}</div>
-                      <div>
-                        <p className="font-medium">{isAr && item.title_ar ? item.title_ar : item.title}</p>
-                        {(item.description || item.description_ar) && (
-                          <p className="text-sm text-muted-foreground">
-                            {isAr && item.description_ar ? item.description_ar : item.description}
-                          </p>
-                        )}
+                <div className="space-y-6">
+                  {schedule.map((dayOrItem, i) => {
+                    // Grouped by day format: { day: "Day 1", items: [...] }
+                    if (dayOrItem.items && dayOrItem.items.length > 0) {
+                      return (
+                        <div key={i}>
+                          {dayOrItem.day && (
+                            <h3 className="mb-3 text-sm font-semibold uppercase tracking-wider text-primary">
+                              {dayOrItem.day}
+                            </h3>
+                          )}
+                          <div className="space-y-3">
+                            {dayOrItem.items.map((item, j) => (
+                              <div key={j} className="flex gap-4 rounded-lg border p-4">
+                                {item.time && (
+                                  <div className="shrink-0 font-mono text-sm font-medium text-primary">{item.time}</div>
+                                )}
+                                <div>
+                                  <p className="font-medium">{isAr && item.title_ar ? item.title_ar : item.title}</p>
+                                  {(item.description || item.description_ar) && (
+                                    <p className="text-sm text-muted-foreground">
+                                      {isAr && item.description_ar ? item.description_ar : item.description}
+                                    </p>
+                                  )}
+                                </div>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      );
+                    }
+                    // Flat format fallback
+                    return (
+                      <div key={i} className="flex gap-4 rounded-lg border p-4">
+                        <div className="shrink-0 font-mono text-sm text-primary">{dayOrItem.time || dayOrItem.day}</div>
+                        <div>
+                          <p className="font-medium">{isAr && dayOrItem.title_ar ? dayOrItem.title_ar : dayOrItem.title}</p>
+                          {(dayOrItem.description || dayOrItem.description_ar) && (
+                            <p className="text-sm text-muted-foreground">
+                              {isAr && dayOrItem.description_ar ? dayOrItem.description_ar : dayOrItem.description}
+                            </p>
+                          )}
+                        </div>
                       </div>
-                    </div>
-                  ))}
+                    );
+                  })}
                 </div>
               </section>
             )}
@@ -347,8 +397,15 @@ export default function ExhibitionDetail() {
                           <div className="mx-auto mb-3 flex h-20 w-20 items-center justify-center rounded-full bg-primary/10 text-2xl">👤</div>
                         )}
                         <p className="font-semibold">{isAr && speaker.name_ar ? speaker.name_ar : speaker.name}</p>
-                        {(speaker.role || speaker.role_ar) && (
-                          <p className="text-sm text-muted-foreground">{isAr && speaker.role_ar ? speaker.role_ar : speaker.role}</p>
+                        {(speaker.title || speaker.title_ar || speaker.role || speaker.role_ar) && (
+                          <p className="text-sm text-muted-foreground">
+                            {isAr && (speaker.title_ar || speaker.role_ar) ? (speaker.title_ar || speaker.role_ar) : (speaker.title || speaker.role)}
+                          </p>
+                        )}
+                        {(speaker.topic || speaker.topic_ar) && (
+                          <Badge variant="outline" className="mt-2 text-xs">
+                            {isAr && speaker.topic_ar ? speaker.topic_ar : speaker.topic}
+                          </Badge>
                         )}
                       </CardContent>
                     </Card>
