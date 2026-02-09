@@ -5,7 +5,7 @@ import { Navigate, Outlet, NavLink } from "react-router-dom";
 import { AdminHeader } from "@/components/admin/AdminHeader";
 import { Footer } from "@/components/Footer";
 import { cn } from "@/lib/utils";
-import { Handshake, GraduationCap, BarChart3, Landmark, Building2 } from "lucide-react";
+import { Handshake, GraduationCap, BarChart3, Landmark, Building2, Gavel } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
@@ -67,6 +67,7 @@ export default function AdminLayout() {
         { to: "/admin/companies", icon: Building, label: language === "ar" ? "الشركات" : "Companies" },
         { to: "/admin/sponsors", icon: Handshake, label: language === "ar" ? "الرعاة" : "Sponsors" },
         { to: "/admin/entities", icon: Building2, label: language === "ar" ? "الجهات والجمعيات" : "Entities Registry" },
+        { to: "/admin/judges", icon: Gavel, label: language === "ar" ? "المحكّمين" : "Judges Registry" },
         { to: "/admin/leads", icon: UserSearch, label: language === "ar" ? "العملاء المحتملين" : "Leads" },
         { to: "/admin/roles", icon: Shield, label: language === "ar" ? "الأدوار والصلاحيات" : "Roles & Permissions" },
         { to: "/admin/memberships", icon: CreditCard, label: language === "ar" ? "العضويات" : "Memberships" },
