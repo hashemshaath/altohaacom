@@ -2439,6 +2439,7 @@ export type Database = {
           map_url: string | null
           max_attendees: number | null
           organizer_email: string | null
+          organizer_logo_url: string | null
           organizer_name: string | null
           organizer_name_ar: string | null
           organizer_phone: string | null
@@ -2488,6 +2489,7 @@ export type Database = {
           map_url?: string | null
           max_attendees?: number | null
           organizer_email?: string | null
+          organizer_logo_url?: string | null
           organizer_name?: string | null
           organizer_name_ar?: string | null
           organizer_phone?: string | null
@@ -2537,6 +2539,7 @@ export type Database = {
           map_url?: string | null
           max_attendees?: number | null
           organizer_email?: string | null
+          organizer_logo_url?: string | null
           organizer_name?: string | null
           organizer_name_ar?: string | null
           organizer_phone?: string | null
