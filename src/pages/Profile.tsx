@@ -15,8 +15,10 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { SEOHead } from "@/components/SEOHead";
 import { useToast } from "@/hooks/use-toast";
-import { User, Edit, Save, MapPin, ChefHat, Award, X } from "lucide-react";
+import { User, Edit, Save, MapPin, ChefHat, Award, X, Trophy, GraduationCap } from "lucide-react";
 import type { Database } from "@/integrations/supabase/types";
+import { CompetitionHistory } from "@/components/profile/CompetitionHistory";
+import { UserBadgesDisplay } from "@/components/badges/UserBadgesDisplay";
 
 type Profile = Database["public"]["Tables"]["profiles"]["Row"];
 type ExperienceLevel = Database["public"]["Enums"]["experience_level"];
@@ -324,7 +326,7 @@ export default function Profile() {
                       </div>
                     </div>
                   )}
-                  {!profile?.bio && !profile?.instagram && (
+                {!profile?.bio && !profile?.instagram && (
                     <div className="flex flex-col items-center py-12 text-center">
                       <div className="mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-muted">
                         <Edit className="h-6 w-6 text-muted-foreground/40" />
@@ -342,6 +344,16 @@ export default function Profile() {
             </CardContent>
           </Card>
         </div>
+
+        {/* Competition History & Badges */}
+        {user && (
+          <div className="mt-6 grid gap-6 md:grid-cols-2">
+            <CompetitionHistory userId={user.id} />
+            <div className="space-y-6">
+              <UserBadgesDisplay userId={user.id} limit={6} />
+            </div>
+          </div>
+        )}
       </main>
       <Footer />
     </div>

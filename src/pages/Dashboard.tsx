@@ -7,6 +7,7 @@ import { Link } from "react-router-dom";
 import { UpcomingCompetitionsWidget } from "@/components/dashboard/UpcomingCompetitionsWidget";
 import { RecentActivityWidget } from "@/components/dashboard/RecentActivityWidget";
 import { QuickStatsWidget } from "@/components/dashboard/QuickStatsWidget";
+import { MasterclassProgressWidget } from "@/components/dashboard/MasterclassProgressWidget";
 import { useAuth } from "@/contexts/AuthContext";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -76,8 +77,9 @@ export default function Dashboard() {
 
         {/* Main Content Grid */}
         <div className="grid gap-6 lg:grid-cols-3">
-          <div className="lg:col-span-2">
+          <div className="lg:col-span-2 space-y-6">
             <UpcomingCompetitionsWidget />
+            {user && <MasterclassProgressWidget />}
           </div>
           <div>
             <RecentActivityWidget />
