@@ -6,9 +6,10 @@ import { useLanguage } from "@/i18n/LanguageContext";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Card, CardHeader } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Search, CalendarDays, Landmark } from "lucide-react";
@@ -75,29 +76,31 @@ export default function Exhibitions() {
       />
       <Header />
 
-      <main className="container flex-1 py-8">
-        {/* Hero */}
-        <div className="mb-8 text-center">
-          <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-primary/10">
-            <Landmark className="h-8 w-8 text-primary" />
+      <main className="container flex-1 py-8 md:py-12">
+        {/* Header */}
+        <div className="mb-8">
+          <div className="mb-1 flex items-center gap-2">
+            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary/10">
+              <Landmark className="h-4 w-4 text-primary" />
+            </div>
+            <h1 className="font-serif text-2xl font-bold md:text-3xl">
+              {isAr ? "المعارض والمؤتمرات والفعاليات" : "Exhibitions & Events"}
+            </h1>
           </div>
-          <h1 className="font-serif text-3xl font-bold md:text-4xl">
-            {isAr ? "المعارض والمؤتمرات والفعاليات" : "Exhibitions, Conferences & Events"}
-          </h1>
-          <p className="mx-auto mt-2 max-w-2xl text-muted-foreground">
+          <p className="mt-1 max-w-2xl text-sm text-muted-foreground md:text-base">
             {isAr
-              ? "اكتشف أبرز المعارض والمؤتمرات والفعاليات في عالم الطعام والطهي والمشروبات والمسابقات"
-              : "Discover the top exhibitions, conferences, and events in food, beverages, cooking, and culinary competitions"}
+              ? "اكتشف أبرز المعارض والمؤتمرات والفعاليات في عالم الطعام والطهي"
+              : "Discover the top exhibitions, conferences, and events in the culinary world"}
           </p>
         </div>
 
-        {/* Featured Carousel */}
+        {/* Featured */}
         {featuredExhibitions && featuredExhibitions.length > 0 && (
           <section className="mb-10">
-            <h2 className="mb-4 text-xl font-semibold">
-              {isAr ? "⭐ فعاليات مميزة" : "⭐ Featured Events"}
+            <h2 className="mb-4 text-sm font-semibold uppercase tracking-wider text-muted-foreground">
+              {isAr ? "فعاليات مميزة" : "Featured Events"}
             </h2>
-            <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
+            <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
               {featuredExhibitions.slice(0, 3).map((ex) => (
                 <ExhibitionCard key={ex.id} exhibition={ex} language={language} />
               ))}
@@ -106,18 +109,18 @@ export default function Exhibitions() {
         )}
 
         {/* Search + Filters */}
-        <div className="mb-6 flex flex-col gap-4 sm:flex-row">
-          <div className="relative flex-1">
-            <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+        <div className="mb-6 flex flex-col gap-3 sm:flex-row">
+          <div className="relative flex-1 sm:max-w-xs">
+            <Search className="absolute start-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
             <Input
-              placeholder={isAr ? "ابحث عن معرض أو مؤتمر أو فعالية..." : "Search exhibitions, conferences, events..."}
+              placeholder={isAr ? "ابحث عن فعالية..." : "Search events..."}
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="pl-10"
+              className="ps-10"
             />
           </div>
           <Select value={typeFilter} onValueChange={setTypeFilter}>
-            <SelectTrigger className="w-full sm:w-48">
+            <SelectTrigger className="w-full sm:w-44">
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
@@ -132,41 +135,48 @@ export default function Exhibitions() {
 
         {/* Tabs */}
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-          <TabsList className="h-auto w-full justify-start overflow-x-auto overflow-y-hidden whitespace-nowrap">
-            <TabsTrigger value="all">{isAr ? "الكل" : "All"}</TabsTrigger>
-            <TabsTrigger value="current">
-              <CalendarDays className="mr-1.5 h-4 w-4" />
+          <TabsList className="h-auto w-full justify-start overflow-x-auto bg-muted/50">
+            <TabsTrigger value="all" className="text-xs sm:text-sm">{isAr ? "الكل" : "All"}</TabsTrigger>
+            <TabsTrigger value="current" className="gap-1.5 text-xs sm:text-sm">
+              <CalendarDays className="hidden h-3.5 w-3.5 sm:inline" />
               {isAr ? "جارية الآن" : "Happening Now"}
             </TabsTrigger>
-            <TabsTrigger value="upcoming">{isAr ? "القادمة" : "Upcoming"}</TabsTrigger>
-            <TabsTrigger value="past">{isAr ? "السابقة" : "Past"}</TabsTrigger>
+            <TabsTrigger value="upcoming" className="text-xs sm:text-sm">{isAr ? "القادمة" : "Upcoming"}</TabsTrigger>
+            <TabsTrigger value="past" className="text-xs sm:text-sm">{isAr ? "السابقة" : "Past"}</TabsTrigger>
           </TabsList>
 
           <TabsContent value={activeTab} className="mt-6">
             {isLoading ? (
-              <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+              <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
                 {[1, 2, 3].map((i) => (
-                  <Card key={i}>
-                    <Skeleton className="h-52 w-full" />
-                    <CardHeader>
-                      <Skeleton className="h-6 w-3/4" />
+                  <Card key={i} className="overflow-hidden">
+                    <Skeleton className="aspect-[16/10] w-full" />
+                    <CardContent className="space-y-2.5 p-4">
+                      <Skeleton className="h-5 w-3/4" />
                       <Skeleton className="h-4 w-1/2" />
-                    </CardHeader>
+                    </CardContent>
                   </Card>
                 ))}
               </div>
             ) : filtered?.length === 0 ? (
-              <div className="py-16 text-center">
-                <Landmark className="mx-auto mb-4 h-12 w-12 text-muted-foreground/40" />
-                <p className="text-lg font-medium text-muted-foreground">
+              <div className="flex flex-col items-center justify-center py-20 text-center">
+                <div className="mb-4 rounded-2xl bg-muted/60 p-5">
+                  <Landmark className="h-10 w-10 text-muted-foreground/40" />
+                </div>
+                <h3 className="mb-1 text-lg font-semibold">
                   {isAr ? "لم يتم العثور على فعاليات" : "No events found"}
-                </p>
-                <p className="text-sm text-muted-foreground/70">
+                </h3>
+                <p className="max-w-sm text-sm text-muted-foreground">
                   {isAr ? "جرب تعديل معايير البحث" : "Try adjusting your search or filters"}
                 </p>
+                {search && (
+                  <Button variant="outline" size="sm" className="mt-4" onClick={() => setSearch("")}>
+                    {isAr ? "مسح البحث" : "Clear search"}
+                  </Button>
+                )}
               </div>
             ) : (
-              <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+              <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
                 {filtered?.map((ex) => (
                   <ExhibitionCard key={ex.id} exhibition={ex} language={language} />
                 ))}
@@ -177,18 +187,22 @@ export default function Exhibitions() {
 
         {/* Stats */}
         {exhibitions && exhibitions.length > 0 && (
-          <section className="mt-12 grid grid-cols-2 gap-4 sm:grid-cols-4">
-            {[
-              { label: isAr ? "إجمالي الفعاليات" : "Total Events", value: exhibitions.length },
-              { label: isAr ? "جارية الآن" : "Happening Now", value: exhibitions.filter(e => isWithinInterval(new Date(), { start: new Date(e.start_date), end: new Date(e.end_date) })).length },
-              { label: isAr ? "القادمة" : "Upcoming", value: exhibitions.filter(e => isFuture(new Date(e.start_date))).length },
-              { label: isAr ? "الدول" : "Countries", value: new Set(exhibitions.map(e => e.country).filter(Boolean)).size },
-            ].map((stat) => (
-              <Card key={stat.label} className="p-4 text-center">
-                <p className="text-2xl font-bold text-primary">{stat.value}</p>
-                <p className="text-xs text-muted-foreground">{stat.label}</p>
-              </Card>
-            ))}
+          <section className="mt-12 border-t pt-8">
+            <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+              {[
+                { label: isAr ? "إجمالي الفعاليات" : "Total Events", value: exhibitions.length },
+                { label: isAr ? "جارية الآن" : "Happening Now", value: exhibitions.filter(e => { try { return isWithinInterval(new Date(), { start: new Date(e.start_date), end: new Date(e.end_date) }); } catch { return false; } }).length },
+                { label: isAr ? "القادمة" : "Upcoming", value: exhibitions.filter(e => isFuture(new Date(e.start_date))).length },
+                { label: isAr ? "الدول" : "Countries", value: new Set(exhibitions.map(e => e.country).filter(Boolean)).size },
+              ].map((stat) => (
+                <Card key={stat.label}>
+                  <CardContent className="p-4 text-center">
+                    <p className="text-xl font-bold text-primary sm:text-2xl">{stat.value}</p>
+                    <p className="text-[11px] text-muted-foreground sm:text-xs">{stat.label}</p>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
           </section>
         )}
       </main>

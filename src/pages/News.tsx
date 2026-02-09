@@ -1,12 +1,13 @@
 import { useState, useEffect } from "react";
 import { SEOHead } from "@/components/SEOHead";
-import { Search, Calendar, User, Eye, ArrowRight } from "lucide-react";
+import { Search, Calendar, Eye, Newspaper } from "lucide-react";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Skeleton } from "@/components/ui/skeleton";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useLanguage } from "@/i18n/LanguageContext";
@@ -46,6 +47,7 @@ interface Category {
 
 export default function News() {
   const { language } = useLanguage();
+  const isAr = language === "ar";
   const [articles, setArticles] = useState<Article[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
   const [loading, setLoading] = useState(true);
@@ -91,182 +93,211 @@ export default function News() {
 
   const formatDate = (date: string) => {
     return format(new Date(date), "MMM dd, yyyy", {
-      locale: language === "ar" ? ar : enUS,
+      locale: isAr ? ar : enUS,
     });
   };
 
   return (
-    <div className="flex min-h-screen flex-col bg-background">
+    <div className="flex min-h-screen flex-col">
       <SEOHead
         title="News & Articles"
         description="Stay updated with the latest culinary news, competition results, and chef stories from the Altohaa community."
       />
       <Header />
       <main className="flex-1">
-        {/* Hero */}
-        <section className="bg-gradient-to-b from-primary/10 to-background py-12">
-          <div className="container mx-auto px-4">
-            <h1 className="font-serif text-4xl font-bold text-center mb-4">
-              {language === "ar" ? "الأخبار والمقالات" : "News & Articles"}
-            </h1>
-            <p className="text-center text-muted-foreground mb-8 max-w-2xl mx-auto">
-              {language === "ar"
+        {/* Header */}
+        <div className="container py-8 md:py-12">
+          <div className="mb-8">
+            <div className="mb-1 flex items-center gap-2">
+              <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary/10">
+                <Newspaper className="h-4 w-4 text-primary" />
+              </div>
+              <h1 className="font-serif text-2xl font-bold md:text-3xl">
+                {isAr ? "الأخبار والمقالات" : "News & Articles"}
+              </h1>
+            </div>
+            <p className="mt-1 max-w-2xl text-sm text-muted-foreground md:text-base">
+              {isAr
                 ? "ابق على اطلاع بأحدث أخبار المسابقات والفعاليات الطهوية"
                 : "Stay updated with the latest competition news and culinary events"}
             </p>
-
-            {/* Filters */}
-            <div className="flex flex-col sm:flex-row gap-4 max-w-3xl mx-auto">
-              <div className="relative flex-1">
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                <Input
-                  placeholder={language === "ar" ? "ابحث..." : "Search..."}
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  className="pl-9"
-                />
-              </div>
-              <Select value={selectedCategory} onValueChange={setSelectedCategory}>
-                <SelectTrigger className="w-full sm:w-[200px]">
-                  <SelectValue placeholder={language === "ar" ? "التصنيف" : "Category"} />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">{language === "ar" ? "جميع التصنيفات" : "All Categories"}</SelectItem>
-                  {categories.map((cat) => (
-                    <SelectItem key={cat.id} value={cat.id}>
-                      {language === "ar" && cat.name_ar ? cat.name_ar : cat.name}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
           </div>
-        </section>
 
-        <div className="container mx-auto px-4 py-8">
+          {/* Filters */}
+          <div className="mb-6 flex flex-col gap-3 sm:flex-row">
+            <div className="relative flex-1 sm:max-w-xs">
+              <Search className="absolute start-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+              <Input
+                placeholder={isAr ? "ابحث..." : "Search..."}
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="ps-10"
+              />
+            </div>
+            <Select value={selectedCategory} onValueChange={setSelectedCategory}>
+              <SelectTrigger className="w-full sm:w-44">
+                <SelectValue placeholder={isAr ? "التصنيف" : "Category"} />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">{isAr ? "جميع التصنيفات" : "All Categories"}</SelectItem>
+                {categories.map((cat) => (
+                  <SelectItem key={cat.id} value={cat.id}>
+                    {isAr && cat.name_ar ? cat.name_ar : cat.name}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+
           {/* Tabs */}
-          <Tabs value={activeType} onValueChange={setActiveType} className="mb-8">
-            <TabsList className="h-auto w-full justify-start overflow-x-auto overflow-y-hidden whitespace-nowrap">
-              <TabsTrigger value="all">{language === "ar" ? "الكل" : "All"}</TabsTrigger>
-              <TabsTrigger value="news">{language === "ar" ? "أخبار" : "News"}</TabsTrigger>
-              <TabsTrigger value="blog">{language === "ar" ? "مدونة" : "Blog"}</TabsTrigger>
-              <TabsTrigger value="exhibition">{language === "ar" ? "معارض" : "Exhibitions"}</TabsTrigger>
+          <Tabs value={activeType} onValueChange={setActiveType} className="space-y-6">
+            <TabsList className="h-auto w-full justify-start overflow-x-auto bg-muted/50">
+              <TabsTrigger value="all" className="text-xs sm:text-sm">{isAr ? "الكل" : "All"}</TabsTrigger>
+              <TabsTrigger value="news" className="text-xs sm:text-sm">{isAr ? "أخبار" : "News"}</TabsTrigger>
+              <TabsTrigger value="blog" className="text-xs sm:text-sm">{isAr ? "مدونة" : "Blog"}</TabsTrigger>
+              <TabsTrigger value="exhibition" className="text-xs sm:text-sm">{isAr ? "معارض" : "Exhibitions"}</TabsTrigger>
             </TabsList>
-          </Tabs>
 
-          {loading ? (
-            <div className="flex items-center justify-center py-16">
-              <div className="h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent" />
-            </div>
-          ) : filteredArticles.length === 0 ? (
-            <div className="text-center py-16 text-muted-foreground">
-              {language === "ar" ? "لا توجد مقالات" : "No articles found"}
-            </div>
-          ) : (
-            <>
-              {/* Featured Articles */}
-              {featuredArticles.length > 0 && (
-                <div className="mb-12">
-                  <h2 className="text-2xl font-serif font-bold mb-6">
-                    {language === "ar" ? "المميز" : "Featured"}
-                  </h2>
-                  <div className="grid md:grid-cols-2 gap-6">
-                    {featuredArticles.slice(0, 2).map((article) => (
-                      <Link key={article.id} to={`/news/${article.slug}`}>
-                        <Card className="overflow-hidden hover:shadow-lg transition-shadow h-full">
-                          {article.featured_image_url && (
-                            <div className="aspect-video relative">
-                              <img
-                                src={article.featured_image_url}
-                                alt={language === "ar" && article.title_ar ? article.title_ar : article.title}
-                                className="object-cover w-full h-full"
-                              />
-                              <Badge className="absolute top-4 left-4">{article.type}</Badge>
-                            </div>
-                          )}
-                          <CardContent className="p-6">
-                            <h3 className="text-xl font-semibold mb-2 line-clamp-2">
-                              {language === "ar" && article.title_ar ? article.title_ar : article.title}
-                            </h3>
-                            <p className="text-muted-foreground line-clamp-2 mb-4">
-                              {language === "ar" && article.excerpt_ar
-                                ? article.excerpt_ar
-                                : article.excerpt}
-                            </p>
-                            <div className="flex items-center gap-4 text-sm text-muted-foreground">
-                              <span className="flex items-center gap-1">
-                                <Calendar className="h-4 w-4" />
-                                {formatDate(article.published_at || article.created_at)}
-                              </span>
-                              <span className="flex items-center gap-1">
-                                <Eye className="h-4 w-4" />
-                                {article.view_count}
-                              </span>
-                            </div>
-                          </CardContent>
-                        </Card>
-                      </Link>
-                    ))}
-                  </div>
-                </div>
-              )}
-
-              {/* Regular Articles Grid */}
-              <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                {regularArticles.map((article) => (
-                  <Link key={article.id} to={`/news/${article.slug}`}>
-                    <Card className="overflow-hidden hover:shadow-lg transition-shadow h-full flex flex-col">
-                      {article.featured_image_url ? (
-                        <div className="aspect-video relative">
-                          <img
-                            src={article.featured_image_url}
-                            alt={language === "ar" && article.title_ar ? article.title_ar : article.title}
-                            className="object-cover w-full h-full"
-                          />
-                          <Badge className="absolute top-3 left-3 text-xs">{article.type}</Badge>
-                        </div>
-                      ) : (
-                        <div className="aspect-video bg-muted flex items-center justify-center">
-                          <Badge>{article.type}</Badge>
-                        </div>
-                      )}
-                      <CardContent className="p-4 flex-1 flex flex-col">
-                        <h3 className="font-semibold mb-2 line-clamp-2">
-                          {language === "ar" && article.title_ar ? article.title_ar : article.title}
-                        </h3>
-                        <p className="text-sm text-muted-foreground line-clamp-2 flex-1">
-                          {language === "ar" && article.excerpt_ar
-                            ? article.excerpt_ar
-                            : article.excerpt}
-                        </p>
-                        {article.type === "exhibition" && article.event_start && (
-                          <div className="mt-3 p-2 bg-accent rounded text-sm">
-                            <p className="font-medium">
-                              {formatDate(article.event_start)}
-                              {article.event_end && ` - ${formatDate(article.event_end)}`}
-                            </p>
-                            {article.event_location && (
-                              <p className="text-muted-foreground">
-                                {language === "ar" && article.event_location_ar
-                                  ? article.event_location_ar
-                                  : article.event_location}
-                              </p>
-                            )}
-                          </div>
-                        )}
-                        <div className="flex items-center justify-between mt-4 pt-3 border-t text-xs text-muted-foreground">
-                          <span>{formatDate(article.published_at || article.created_at)}</span>
-                          <span className="flex items-center gap-1">
-                            <Eye className="h-3 w-3" /> {article.view_count}
-                          </span>
-                        </div>
+            <TabsContent value={activeType} className="mt-6">
+              {loading ? (
+                <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                  {[1, 2, 3, 4, 5, 6].map((i) => (
+                    <Card key={i} className="overflow-hidden">
+                      <Skeleton className="aspect-video w-full" />
+                      <CardContent className="space-y-2.5 p-4">
+                        <Skeleton className="h-5 w-3/4" />
+                        <Skeleton className="h-4 w-full" />
+                        <Skeleton className="h-3 w-1/3" />
                       </CardContent>
                     </Card>
-                  </Link>
-                ))}
-              </div>
-            </>
-          )}
+                  ))}
+                </div>
+              ) : filteredArticles.length === 0 ? (
+                <div className="flex flex-col items-center justify-center py-20 text-center">
+                  <div className="mb-4 rounded-2xl bg-muted/60 p-5">
+                    <Newspaper className="h-10 w-10 text-muted-foreground/40" />
+                  </div>
+                  <h3 className="mb-1 text-lg font-semibold">
+                    {isAr ? "لا توجد مقالات" : "No articles found"}
+                  </h3>
+                  <p className="max-w-sm text-sm text-muted-foreground">
+                    {searchQuery
+                      ? (isAr ? "جرّب كلمات بحث مختلفة" : "Try different search terms")
+                      : (isAr ? "لا توجد مقالات حالياً" : "No articles available yet")}
+                  </p>
+                  {searchQuery && (
+                    <Button variant="outline" size="sm" className="mt-4" onClick={() => setSearchQuery("")}>
+                      {isAr ? "مسح البحث" : "Clear search"}
+                    </Button>
+                  )}
+                </div>
+              ) : (
+                <>
+                  {/* Featured Articles */}
+                  {featuredArticles.length > 0 && (
+                    <div className="mb-10">
+                      <h2 className="mb-4 text-sm font-semibold uppercase tracking-wider text-muted-foreground">
+                        {isAr ? "المميز" : "Featured"}
+                      </h2>
+                      <div className="grid gap-4 md:grid-cols-2">
+                        {featuredArticles.slice(0, 2).map((article) => {
+                          const title = isAr && article.title_ar ? article.title_ar : article.title;
+                          const excerpt = isAr && article.excerpt_ar ? article.excerpt_ar : article.excerpt;
+                          return (
+                            <Link key={article.id} to={`/news/${article.slug}`} className="group block">
+                              <Card className="h-full overflow-hidden transition-all hover:shadow-md hover:-translate-y-0.5">
+                                <div className="relative aspect-video overflow-hidden bg-muted">
+                                  {article.featured_image_url ? (
+                                    <img
+                                      src={article.featured_image_url}
+                                      alt={title}
+                                      className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
+                                      loading="lazy"
+                                    />
+                                  ) : (
+                                    <div className="flex h-full items-center justify-center">
+                                      <Newspaper className="h-10 w-10 text-muted-foreground/20" />
+                                    </div>
+                                  )}
+                                  <Badge className="absolute start-2.5 top-2.5 text-[10px]" variant="secondary">{article.type}</Badge>
+                                </div>
+                                <CardContent className="p-5">
+                                  <h3 className="mb-1.5 text-lg font-semibold line-clamp-2 group-hover:text-primary transition-colors">{title}</h3>
+                                  {excerpt && <p className="mb-3 text-sm text-muted-foreground line-clamp-2">{excerpt}</p>}
+                                  <div className="flex items-center gap-3 text-xs text-muted-foreground">
+                                    <span className="flex items-center gap-1">
+                                      <Calendar className="h-3 w-3" />
+                                      {formatDate(article.published_at || article.created_at)}
+                                    </span>
+                                    <span className="flex items-center gap-1">
+                                      <Eye className="h-3 w-3" />
+                                      {article.view_count}
+                                    </span>
+                                  </div>
+                                </CardContent>
+                              </Card>
+                            </Link>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Regular Articles */}
+                  <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                    {regularArticles.map((article) => {
+                      const title = isAr && article.title_ar ? article.title_ar : article.title;
+                      const excerpt = isAr && article.excerpt_ar ? article.excerpt_ar : article.excerpt;
+                      return (
+                        <Link key={article.id} to={`/news/${article.slug}`} className="group block">
+                          <Card className="h-full overflow-hidden transition-all hover:shadow-md hover:-translate-y-0.5 flex flex-col">
+                            <div className="relative aspect-video overflow-hidden bg-muted">
+                              {article.featured_image_url ? (
+                                <img
+                                  src={article.featured_image_url}
+                                  alt={title}
+                                  className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
+                                  loading="lazy"
+                                />
+                              ) : (
+                                <div className="flex h-full items-center justify-center">
+                                  <Newspaper className="h-10 w-10 text-muted-foreground/20" />
+                                </div>
+                              )}
+                              <Badge className="absolute start-2.5 top-2.5 text-[10px]" variant="secondary">{article.type}</Badge>
+                            </div>
+                            <CardContent className="flex flex-1 flex-col p-4">
+                              <h3 className="mb-1.5 text-sm font-semibold line-clamp-2 group-hover:text-primary transition-colors">{title}</h3>
+                              {excerpt && <p className="mb-3 flex-1 text-xs text-muted-foreground line-clamp-2 leading-relaxed">{excerpt}</p>}
+                              {article.type === "exhibition" && article.event_start && (
+                                <div className="mb-3 rounded-md bg-muted/50 p-2 text-xs">
+                                  <p className="font-medium">
+                                    {formatDate(article.event_start)}
+                                    {article.event_end && ` – ${formatDate(article.event_end)}`}
+                                  </p>
+                                  {article.event_location && (
+                                    <p className="text-muted-foreground">
+                                      {isAr && article.event_location_ar ? article.event_location_ar : article.event_location}
+                                    </p>
+                                  )}
+                                </div>
+                              )}
+                              <div className="flex items-center justify-between border-t pt-3 text-[11px] text-muted-foreground">
+                                <span>{formatDate(article.published_at || article.created_at)}</span>
+                                <span className="flex items-center gap-1">
+                                  <Eye className="h-3 w-3" /> {article.view_count}
+                                </span>
+                              </div>
+                            </CardContent>
+                          </Card>
+                        </Link>
+                      );
+                    })}
+                  </div>
+                </>
+              )}
+            </TabsContent>
+          </Tabs>
         </div>
       </main>
       <Footer />

@@ -10,6 +10,7 @@ import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card"
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
+import { Skeleton } from "@/components/ui/skeleton";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useNavigate } from "react-router-dom";
 import { BookOpen, Clock, Users, Search, GraduationCap, Star } from "lucide-react";
@@ -18,6 +19,7 @@ export default function Masterclasses() {
   const { language } = useLanguage();
   const { user } = useAuth();
   const navigate = useNavigate();
+  const isAr = language === "ar";
   const [search, setSearch] = useState("");
   const [levelFilter, setLevelFilter] = useState("all");
   const [categoryFilter, setCategoryFilter] = useState("all");
@@ -77,60 +79,66 @@ export default function Masterclasses() {
       all_levels: { en: "All Levels", ar: "جميع المستويات" },
     };
     return (
-      <Badge variant="outline" className={colors[level] || ""}>
-        {language === "ar" ? labels[level]?.ar : labels[level]?.en}
+      <Badge variant="outline" className={`text-[10px] ${colors[level] || ""}`}>
+        {isAr ? labels[level]?.ar : labels[level]?.en}
       </Badge>
     );
   };
 
   return (
-    <div className="flex min-h-screen flex-col bg-background">
+    <div className="flex min-h-screen flex-col">
       <SEOHead
         title="Culinary Masterclasses"
         description="Learn from world-class chefs with our curated masterclasses. From French cuisine to pastry arts."
       />
       <Header />
-      <main className="flex-1 container mx-auto px-4 py-8">
+      <main className="container flex-1 py-8 md:py-12">
+        {/* Header */}
         <div className="mb-8">
-          <h1 className="text-3xl font-serif font-bold">
-            {language === "ar" ? "الدورات التعليمية" : "Masterclasses"}
-          </h1>
-          <p className="text-muted-foreground mt-2">
-            {language === "ar"
+          <div className="mb-1 flex items-center gap-2">
+            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary/10">
+              <GraduationCap className="h-4 w-4 text-primary" />
+            </div>
+            <h1 className="font-serif text-2xl font-bold md:text-3xl">
+              {isAr ? "الدورات التعليمية" : "Masterclasses"}
+            </h1>
+          </div>
+          <p className="mt-1 text-sm text-muted-foreground md:text-base">
+            {isAr
               ? "تعلم من أفضل الطهاة والخبراء في عالم الطهي"
               : "Learn from the best chefs and culinary experts"}
           </p>
         </div>
 
         {/* Filters */}
-        <div className="flex flex-col sm:flex-row gap-4 mb-8">
-          <div className="relative flex-1">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+        <div className="mb-8 flex flex-col gap-3 sm:flex-row">
+          <div className="relative flex-1 sm:max-w-xs">
+            <Search className="absolute start-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
             <Input
-              placeholder={language === "ar" ? "ابحث عن دورة..." : "Search masterclasses..."}
+              placeholder={isAr ? "ابحث عن دورة..." : "Search masterclasses..."}
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="pl-10"
+              className="ps-10"
             />
           </div>
           <Select value={levelFilter} onValueChange={setLevelFilter}>
-            <SelectTrigger className="w-[180px]">
-              <SelectValue placeholder={language === "ar" ? "المستوى" : "Level"} />
+            <SelectTrigger className="w-full sm:w-40">
+              <SelectValue placeholder={isAr ? "المستوى" : "Level"} />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="all">{language === "ar" ? "جميع المستويات" : "All Levels"}</SelectItem>
-              <SelectItem value="beginner">{language === "ar" ? "مبتدئ" : "Beginner"}</SelectItem>
-              <SelectItem value="intermediate">{language === "ar" ? "متوسط" : "Intermediate"}</SelectItem>
-              <SelectItem value="advanced">{language === "ar" ? "متقدم" : "Advanced"}</SelectItem>
+              <SelectItem value="all">{isAr ? "جميع المستويات" : "All Levels"}</SelectItem>
+              <SelectItem value="beginner">{isAr ? "مبتدئ" : "Beginner"}</SelectItem>
+              <SelectItem value="intermediate">{isAr ? "متوسط" : "Intermediate"}</SelectItem>
+              <SelectItem value="advanced">{isAr ? "متقدم" : "Advanced"}</SelectItem>
             </SelectContent>
           </Select>
           {categories.length > 1 && (
             <Select value={categoryFilter} onValueChange={setCategoryFilter}>
-              <SelectTrigger className="w-[180px]">
-                <SelectValue placeholder={language === "ar" ? "التصنيف" : "Category"} />
+              <SelectTrigger className="w-full sm:w-40">
+                <SelectValue placeholder={isAr ? "التصنيف" : "Category"} />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="all">{language === "ar" ? "الكل" : "All"}</SelectItem>
+                <SelectItem value="all">{isAr ? "الكل" : "All"}</SelectItem>
                 {categories.map((cat) => (
                   <SelectItem key={cat} value={cat}>{cat}</SelectItem>
                 ))}
@@ -140,20 +148,39 @@ export default function Masterclasses() {
         </div>
 
         {isLoading ? (
-          <div className="flex items-center justify-center py-16">
-            <div className="h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent" />
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            {[1, 2, 3, 4, 5, 6].map((i) => (
+              <Card key={i} className="overflow-hidden">
+                <Skeleton className="aspect-video w-full" />
+                <CardContent className="space-y-2.5 p-4">
+                  <Skeleton className="h-5 w-3/4" />
+                  <Skeleton className="h-4 w-full" />
+                  <Skeleton className="h-4 w-1/2" />
+                </CardContent>
+              </Card>
+            ))}
           </div>
         ) : filtered.length === 0 ? (
-          <Card>
-            <CardContent className="flex flex-col items-center justify-center py-16">
-              <GraduationCap className="h-12 w-12 text-muted-foreground/30 mb-4" />
-              <p className="text-muted-foreground">
-                {language === "ar" ? "لا توجد دورات متاحة حالياً" : "No masterclasses available yet"}
-              </p>
-            </CardContent>
-          </Card>
+          <div className="flex flex-col items-center justify-center py-20 text-center">
+            <div className="mb-4 rounded-2xl bg-muted/60 p-5">
+              <GraduationCap className="h-10 w-10 text-muted-foreground/40" />
+            </div>
+            <h3 className="mb-1 text-lg font-semibold">
+              {isAr ? "لا توجد دورات متاحة" : "No masterclasses found"}
+            </h3>
+            <p className="max-w-sm text-sm text-muted-foreground">
+              {search
+                ? (isAr ? "جرّب كلمات بحث مختلفة" : "Try different search terms")
+                : (isAr ? "لا توجد دورات متاحة حالياً" : "No masterclasses available yet")}
+            </p>
+            {search && (
+              <Button variant="outline" size="sm" className="mt-4" onClick={() => setSearch("")}>
+                {isAr ? "مسح البحث" : "Clear search"}
+              </Button>
+            )}
+          </div>
         ) : (
-          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {filtered.map((mc: any) => {
               const isEnrolled = myEnrollments.includes(mc.id);
               const moduleCount = mc.masterclass_modules?.length || 0;
@@ -162,71 +189,72 @@ export default function Masterclasses() {
               const avgRating = reviews.length > 0
                 ? (reviews.reduce((sum: number, r: any) => sum + r.rating, 0) / reviews.length)
                 : null;
+              const title = isAr && mc.title_ar ? mc.title_ar : mc.title;
+              const description = isAr && mc.description_ar ? mc.description_ar : mc.description;
 
               return (
                 <Card
                   key={mc.id}
-                  className="overflow-hidden cursor-pointer transition-shadow hover:shadow-lg"
+                  className="group h-full overflow-hidden cursor-pointer transition-all hover:shadow-md hover:-translate-y-0.5 flex flex-col"
                   onClick={() => navigate(`/masterclasses/${mc.id}`)}
                 >
-                  {mc.cover_image_url ? (
-                    <div className="aspect-video overflow-hidden">
+                  <div className="relative aspect-video overflow-hidden bg-muted">
+                    {mc.cover_image_url ? (
                       <img
                         src={mc.cover_image_url}
-                        alt={mc.title}
-                        className="h-full w-full object-cover transition-transform hover:scale-105"
+                        alt={title}
+                        className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
+                        loading="lazy"
                       />
-                    </div>
-                  ) : (
-                    <div className="aspect-video bg-gradient-to-br from-primary/20 to-accent/20 flex items-center justify-center">
-                      <BookOpen className="h-12 w-12 text-primary/40" />
-                    </div>
-                  )}
-                  <CardHeader className="pb-2">
-                    <div className="flex items-center gap-2 mb-2">
+                    ) : (
+                      <div className="flex h-full items-center justify-center bg-gradient-to-br from-primary/5 to-muted">
+                        <BookOpen className="h-10 w-10 text-muted-foreground/20" />
+                      </div>
+                    )}
+                  </div>
+                  <CardContent className="flex flex-1 flex-col p-4">
+                    <div className="mb-2 flex flex-wrap items-center gap-1.5">
                       {getLevelBadge(mc.level)}
                       {mc.is_free && (
-                        <Badge variant="secondary">
-                          {language === "ar" ? "مجاني" : "Free"}
+                        <Badge variant="secondary" className="text-[10px]">
+                          {isAr ? "مجاني" : "Free"}
                         </Badge>
                       )}
                       {isEnrolled && (
-                        <Badge variant="default">
-                          {language === "ar" ? "مسجل" : "Enrolled"}
+                        <Badge variant="default" className="text-[10px]">
+                          {isAr ? "مسجل" : "Enrolled"}
                         </Badge>
                       )}
                     </div>
-                    <h3 className="font-semibold line-clamp-2">
-                      {language === "ar" && mc.title_ar ? mc.title_ar : mc.title}
+                    <h3 className="mb-1.5 text-sm font-semibold line-clamp-2 group-hover:text-primary transition-colors">
+                      {title}
                     </h3>
-                  </CardHeader>
-                  <CardContent className="pb-2">
-                    <p className="text-sm text-muted-foreground line-clamp-2">
-                      {language === "ar" && mc.description_ar ? mc.description_ar : mc.description}
+                    <p className="mb-3 flex-1 text-xs text-muted-foreground line-clamp-2 leading-relaxed">
+                      {description}
                     </p>
+                    <div className="flex flex-wrap items-center gap-3 text-[11px] text-muted-foreground border-t pt-3">
+                      <span className="flex items-center gap-1">
+                        <BookOpen className="h-3 w-3" />
+                        {moduleCount} {isAr ? "وحدة" : "modules"}
+                      </span>
+                      {mc.duration_hours && (
+                        <span className="flex items-center gap-1">
+                          <Clock className="h-3 w-3" />
+                          {mc.duration_hours}h
+                        </span>
+                      )}
+                      <span className="flex items-center gap-1">
+                        <Users className="h-3 w-3" />
+                        {enrollmentCount}
+                      </span>
+                      {avgRating !== null && (
+                        <span className="flex items-center gap-1">
+                          <Star className="h-3 w-3 fill-chart-4 text-chart-4" />
+                          {avgRating.toFixed(1)}
+                        </span>
+                      )}
+                    </div>
                   </CardContent>
-                  <CardFooter className="text-xs text-muted-foreground gap-4">
-                    <span className="flex items-center gap-1">
-                      <BookOpen className="h-3 w-3" />
-                      {moduleCount} {language === "ar" ? "وحدة" : "modules"}
-                    </span>
-                    {mc.duration_hours && (
-                      <span className="flex items-center gap-1">
-                        <Clock className="h-3 w-3" />
-                        {mc.duration_hours}h
-                      </span>
-                    )}
-                    <span className="flex items-center gap-1">
-                      <Users className="h-3 w-3" />
-                      {enrollmentCount}
-                    </span>
-                    {avgRating !== null && (
-                      <span className="flex items-center gap-1">
-                        <Star className="h-3 w-3 fill-chart-4 text-chart-4" />
-                        {avgRating.toFixed(1)}
-                      </span>
-                    )}
-                  </CardFooter>
                 </Card>
               );
             })}
