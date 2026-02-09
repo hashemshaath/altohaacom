@@ -9,21 +9,28 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Separator } from "@/components/ui/separator";
 import { toast } from "@/hooks/use-toast";
 import {
   Calendar, MapPin, Globe, ExternalLink, Bell, BellOff,
   Clock, Users, Tag, Building, Phone, Mail, ArrowLeft,
-  Share2, Ticket, Trophy, Landmark
+  Share2, Ticket, Trophy, Landmark, Timer, Flag,
+  ChevronRight, Star, Target, Award, Mic2
 } from "lucide-react";
 import { SEOHead } from "@/components/SEOHead";
-import { format, isPast, isFuture, isWithinInterval, formatDistanceToNow } from "date-fns";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { format, isPast, isFuture, isWithinInterval, formatDistanceToNow, differenceInDays, differenceInHours, differenceInMinutes, differenceInSeconds } from "date-fns";
+import { useState, useEffect, useMemo } from "react";
 
+/* ---------- types ---------- */
 interface ScheduleDay {
   day?: string;
-  items?: ScheduleItem[];
-  time?: string;
+  day_ar?: string;
   title?: string;
   title_ar?: string;
+  items?: ScheduleItem[];
+  events?: ScheduleItem[];
+  time?: string;
   description?: string;
   description_ar?: string;
 }
@@ -46,6 +53,14 @@ interface Speaker {
   topic?: string;
   topic_ar?: string;
   image_url?: string;
+  country?: string;
+}
+
+interface SponsorInfo {
+  name?: string;
+  name_ar?: string;
+  tier?: string;
+  logo_url?: string;
 }
 
 interface Section {
@@ -55,6 +70,82 @@ interface Section {
   description_ar?: string;
 }
 
+/* ---------- country flag helper ---------- */
+const COUNTRY_FLAGS: Record<string, string> = {
+  tunisia: "🇹🇳", "تونس": "🇹🇳",
+  uae: "🇦🇪", "الإمارات": "🇦🇪",
+  france: "🇫🇷", "فرنسا": "🇫🇷",
+  italy: "🇮🇹", "إيطاليا": "🇮🇹",
+  morocco: "🇲🇦", "المغرب": "🇲🇦",
+  algeria: "🇩🇿", "الجزائر": "🇩🇿",
+  egypt: "🇪🇬", "مصر": "🇪🇬",
+  lebanon: "🇱🇧", "لبنان": "🇱🇧",
+  jordan: "🇯🇴", "الأردن": "🇯🇴",
+  "saudi arabia": "🇸🇦", "السعودية": "🇸🇦",
+  qatar: "🇶🇦", "قطر": "🇶🇦",
+  bahrain: "🇧🇭", "البحرين": "🇧🇭",
+  kuwait: "🇰🇼", "الكويت": "🇰🇼",
+  oman: "🇴🇲", "عُمان": "🇴🇲",
+  turkey: "🇹🇷", "تركيا": "🇹🇷",
+  spain: "🇪🇸", "إسبانيا": "🇪🇸",
+  usa: "🇺🇸", "أمريكا": "🇺🇸",
+  uk: "🇬🇧", "بريطانيا": "🇬🇧",
+  germany: "🇩🇪", "ألمانيا": "🇩🇪",
+  japan: "🇯🇵", "اليابان": "🇯🇵",
+  china: "🇨🇳", "الصين": "🇨🇳",
+  india: "🇮🇳", "الهند": "🇮🇳",
+  libya: "🇱🇾", "ليبيا": "🇱🇾",
+  sudan: "🇸🇩", "السودان": "🇸🇩",
+  iraq: "🇮🇶", "العراق": "🇮🇶",
+  syria: "🇸🇾", "سوريا": "🇸🇾",
+  palestine: "🇵🇸", "فلسطين": "🇵🇸",
+  yemen: "🇾🇪", "اليمن": "🇾🇪",
+};
+
+function getCountryFlag(country?: string): string {
+  if (!country) return "🏳️";
+  return COUNTRY_FLAGS[country.toLowerCase()] || "🏳️";
+}
+
+/* ---------- Countdown ---------- */
+function CountdownTimer({ targetDate, isAr }: { targetDate: Date; isAr: boolean }) {
+  const [now, setNow] = useState(new Date());
+  useEffect(() => {
+    const id = setInterval(() => setNow(new Date()), 1000);
+    return () => clearInterval(id);
+  }, []);
+
+  const isPastTarget = isPast(targetDate);
+  if (isPastTarget) return null;
+
+  const totalSeconds = Math.max(0, Math.floor((targetDate.getTime() - now.getTime()) / 1000));
+  const days = Math.floor(totalSeconds / 86400);
+  const hours = Math.floor((totalSeconds % 86400) / 3600);
+  const minutes = Math.floor((totalSeconds % 3600) / 60);
+  const seconds = totalSeconds % 60;
+
+  const units = [
+    { value: days, label: isAr ? "يوم" : "Days" },
+    { value: hours, label: isAr ? "ساعة" : "Hours" },
+    { value: minutes, label: isAr ? "دقيقة" : "Min" },
+    { value: seconds, label: isAr ? "ثانية" : "Sec" },
+  ];
+
+  return (
+    <div className="flex items-center justify-center gap-3">
+      {units.map((u, i) => (
+        <div key={i} className="flex flex-col items-center">
+          <div className="flex h-16 w-16 items-center justify-center rounded-xl bg-primary/10 font-mono text-2xl font-bold text-primary sm:h-20 sm:w-20 sm:text-3xl">
+            {String(u.value).padStart(2, "0")}
+          </div>
+          <span className="mt-1.5 text-[10px] font-medium uppercase tracking-wider text-muted-foreground">{u.label}</span>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+/* ---------- main ---------- */
 export default function ExhibitionDetail() {
   const { slug } = useParams<{ slug: string }>();
   const { language } = useLanguage();
@@ -110,7 +201,15 @@ export default function ExhibitionDetail() {
       if (!exhibition) return [];
       const { data, error } = await supabase
         .from("competitions")
-        .select("id, title, title_ar, status, competition_start, competition_end, cover_image_url, city, country, is_virtual")
+        .select(`
+          id, title, title_ar, status, competition_start, competition_end, 
+          cover_image_url, city, country, is_virtual, registration_deadline,
+          competition_categories(id, name, name_ar, max_participants),
+          competition_registrations(id),
+          competition_judges(
+            id, judge_id
+          )
+        `)
         .eq("exhibition_id", exhibition.id)
         .order("competition_start", { ascending: true });
       if (error) throw error;
@@ -119,28 +218,43 @@ export default function ExhibitionDetail() {
     enabled: !!exhibition,
   });
 
+  /* fetch judge profiles for linked competitions */
+  const allJudgeIds = useMemo(() => {
+    if (!linkedCompetitions) return [];
+    const ids = new Set<string>();
+    linkedCompetitions.forEach((c: any) => {
+      c.competition_judges?.forEach((j: any) => ids.add(j.judge_id));
+    });
+    return Array.from(ids);
+  }, [linkedCompetitions]);
+
+  const { data: judgeProfiles } = useQuery({
+    queryKey: ["exhibition-judge-profiles", allJudgeIds],
+    queryFn: async () => {
+      if (allJudgeIds.length === 0) return [];
+      const { data } = await supabase
+        .from("profiles")
+        .select("user_id, full_name, full_name_ar, username, avatar_url, specialization, is_verified, country")
+        .in("user_id", allJudgeIds);
+      return data || [];
+    },
+    enabled: allJudgeIds.length > 0,
+  });
+
   const toggleFollow = useMutation({
     mutationFn: async () => {
       if (!user || !exhibition) throw new Error("Not authenticated");
       if (isFollowing) {
-        await supabase
-          .from("exhibition_followers")
-          .delete()
-          .eq("exhibition_id", exhibition.id)
-          .eq("user_id", user.id);
+        await supabase.from("exhibition_followers").delete().eq("exhibition_id", exhibition.id).eq("user_id", user.id);
       } else {
-        await supabase
-          .from("exhibition_followers")
-          .insert({ exhibition_id: exhibition.id, user_id: user.id });
+        await supabase.from("exhibition_followers").insert({ exhibition_id: exhibition.id, user_id: user.id });
       }
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["exhibition-follow"] });
       queryClient.invalidateQueries({ queryKey: ["exhibition-followers-count"] });
       toast({
-        title: isFollowing
-          ? (isAr ? "تم إلغاء المتابعة" : "Unfollowed")
-          : (isAr ? "تم المتابعة" : "Following"),
+        title: isFollowing ? (isAr ? "تم إلغاء المتابعة" : "Unfollowed") : (isAr ? "تم المتابعة" : "Following"),
         description: isFollowing
           ? (isAr ? "لن تتلقى إشعارات بعد الآن" : "You won't receive updates anymore")
           : (isAr ? "ستتلقى إشعارات حول هذا الحدث" : "You'll receive updates about this event"),
@@ -148,41 +262,23 @@ export default function ExhibitionDetail() {
     },
   });
 
+  /* ---------- loading / not found ---------- */
   if (isLoading) {
     return (
       <div className="flex min-h-screen flex-col bg-background">
         <Header />
         <main className="container flex-1 py-8">
           <Skeleton className="mb-4 h-8 w-32 rounded-md" />
-          <Skeleton className="mb-8 h-64 w-full rounded-xl md:h-72" />
+          <Skeleton className="mb-8 h-64 w-full rounded-xl md:h-80" />
           <div className="grid gap-8 lg:grid-cols-3">
             <div className="space-y-4 lg:col-span-2">
-              <div className="flex gap-2">
-                <Skeleton className="h-5 w-20 rounded-full" />
-                <Skeleton className="h-5 w-16 rounded-full" />
-              </div>
               <Skeleton className="h-9 w-3/4" />
               <Skeleton className="h-4 w-1/3" />
-              <Skeleton className="mt-4 h-24 w-full" />
+              <Skeleton className="mt-4 h-32 w-full" />
             </div>
             <div className="space-y-4">
-              <Card className="overflow-hidden">
-                <div className="space-y-3 p-5">
-                  <Skeleton className="h-10 w-full rounded-md" />
-                  <Skeleton className="h-10 w-full rounded-md" />
-                  <Skeleton className="h-3 w-24 mx-auto" />
-                </div>
-              </Card>
-              <Card className="overflow-hidden">
-                <div className="border-b bg-muted/30 px-4 py-3">
-                  <Skeleton className="h-4 w-28" />
-                </div>
-                <div className="space-y-4 p-4">
-                  <Skeleton className="h-12 w-full" />
-                  <Skeleton className="h-12 w-full" />
-                  <Skeleton className="h-12 w-full" />
-                </div>
-              </Card>
+              <Skeleton className="h-44 w-full rounded-xl" />
+              <Skeleton className="h-56 w-full rounded-xl" />
             </div>
           </div>
         </main>
@@ -215,6 +311,7 @@ export default function ExhibitionDetail() {
     );
   }
 
+  /* ---------- derived data ---------- */
   const title = isAr && exhibition.title_ar ? exhibition.title_ar : exhibition.title;
   const description = isAr && exhibition.description_ar ? exhibition.description_ar : exhibition.description;
   const venue = isAr && exhibition.venue_ar ? exhibition.venue_ar : exhibition.venue;
@@ -230,8 +327,12 @@ export default function ExhibitionDetail() {
   const schedule = (exhibition.schedule as ScheduleDay[]) || [];
   const speakers = (exhibition.speakers as Speaker[]) || [];
   const sections = (exhibition.sections as Section[]) || [];
+  const sponsorsInfo = (exhibition.sponsors_info as SponsorInfo[]) || [];
   const targetAudience = (exhibition.target_audience as string[]) || [];
   const tags = (exhibition.tags as string[]) || [];
+
+  const totalDays = differenceInDays(end, start) + 1;
+  const countryFlag = getCountryFlag(exhibition.country || undefined);
 
   return (
     <div className="flex min-h-screen flex-col bg-background">
@@ -256,115 +357,248 @@ export default function ExhibitionDetail() {
       />
       <Header />
 
-      <main className="container flex-1 py-8">
-        {/* Breadcrumb */}
-        <Button variant="ghost" size="sm" className="mb-4 -ms-2" asChild>
-          <Link to="/exhibitions">
-            <ArrowLeft className="me-1.5 h-4 w-4" />
-            {isAr ? "العودة للفعاليات" : "Back to Events"}
-          </Link>
-        </Button>
-
-        {/* Hero Image */}
-        <div className="mb-8 overflow-hidden rounded-xl">
-          {exhibition.cover_image_url ? (
-            <img
-              src={exhibition.cover_image_url}
-              alt={title}
-              className="h-56 w-full object-cover md:h-72 lg:h-80"
-            />
-          ) : (
-            <div className="flex h-56 items-center justify-center bg-gradient-to-br from-primary/10 to-accent/10 md:h-72 lg:h-80">
-              <span className="text-6xl">🏛️</span>
-            </div>
+      {/* ======== HERO ======== */}
+      <div className="relative overflow-hidden">
+        {exhibition.cover_image_url ? (
+          <img src={exhibition.cover_image_url} alt={title} className="h-64 w-full object-cover md:h-80 lg:h-96" />
+        ) : (
+          <div className="h-64 w-full bg-gradient-to-br from-primary/20 via-accent/10 to-background md:h-80 lg:h-96" />
+        )}
+        <div className="absolute inset-0 bg-gradient-to-t from-background via-background/60 to-transparent" />
+        <div className="absolute inset-x-0 bottom-0 container pb-8">
+          <Button variant="ghost" size="sm" className="-ms-2 mb-3 text-foreground/80 hover:text-foreground" asChild>
+            <Link to="/exhibitions">
+              <ArrowLeft className="me-1.5 h-4 w-4" />
+              {isAr ? "العودة للفعاليات" : "Back to Events"}
+            </Link>
+          </Button>
+          <div className="flex flex-wrap items-center gap-2 mb-3">
+            {isHappening && <Badge className="bg-chart-3/20 text-chart-3 border-chart-3/30">{isAr ? "🔴 يحدث الآن" : "🔴 Happening Now"}</Badge>}
+            {isUpcoming && <Badge className="bg-primary/20 text-primary border-primary/30">{isAr ? "قادم" : "Upcoming"}</Badge>}
+            {hasEnded && <Badge variant="secondary">{isAr ? "انتهى" : "Ended"}</Badge>}
+            <Badge variant="outline" className="gap-1">
+              <span>{countryFlag}</span>
+              {exhibition.city}{exhibition.country && `, ${exhibition.country}`}
+            </Badge>
+          </div>
+          <h1 className="font-serif text-3xl font-bold md:text-4xl lg:text-5xl">{title}</h1>
+          {organizer && (
+            <p className="mt-2 text-sm text-muted-foreground md:text-base">
+              {isAr ? "المنظم:" : "Organized by"} <span className="font-medium text-foreground">{organizer}</span>
+            </p>
           )}
-        </div>
-
-        <div className="grid gap-8 lg:grid-cols-3">
-          {/* Main Content */}
-          <div className="space-y-8 lg:col-span-2">
-            {/* Title & Status */}
-            <div>
-              <div className="mb-3 flex flex-wrap items-center gap-2">
-                {isHappening && <Badge className="bg-chart-3/20 text-chart-3">{isAr ? "🔴 يحدث الآن" : "🔴 Happening Now"}</Badge>}
-                {isUpcoming && <Badge className="bg-primary/20 text-primary">{isAr ? "قادم" : "Upcoming"}</Badge>}
-                {hasEnded && <Badge className="bg-muted text-muted-foreground">{isAr ? "انتهى" : "Ended"}</Badge>}
-              </div>
-              <h1 className="font-serif text-3xl font-bold md:text-4xl">{title}</h1>
-              {organizer && (
-                <p className="mt-2 text-muted-foreground">
-                  {isAr ? "المنظم:" : "Organized by:"} <span className="font-medium text-foreground">{organizer}</span>
-                </p>
-              )}
-            </div>
-
-            {/* Description */}
-            {description && (
-              <div className="prose prose-sm max-w-none text-foreground/80 dark:prose-invert">
-                <p className="whitespace-pre-line">{description}</p>
-              </div>
+          <div className="mt-3 flex flex-wrap items-center gap-4 text-sm text-muted-foreground">
+            <span className="flex items-center gap-1.5">
+              <Calendar className="h-4 w-4" />
+              {format(start, "MMM d")} – {format(end, "MMM d, yyyy")}
+              <Badge variant="secondary" className="ms-1 text-[10px]">{totalDays} {isAr ? "أيام" : "days"}</Badge>
+            </span>
+            {!exhibition.is_virtual && venue && (
+              <span className="flex items-center gap-1.5">
+                <MapPin className="h-4 w-4" />
+                {venue}
+              </span>
             )}
+            {exhibition.is_virtual && (
+              <span className="flex items-center gap-1.5">
+                <Globe className="h-4 w-4" />
+                {isAr ? "حدث افتراضي" : "Virtual Event"}
+              </span>
+            )}
+          </div>
+        </div>
+      </div>
 
-            {/* Countdown / Status */}
-            {isUpcoming && (
-              <Card className="border-primary/20 bg-primary/5">
-                <CardContent className="flex items-center gap-3 py-4">
-                  <Clock className="h-5 w-5 text-primary" />
-                  <p className="font-medium">
-                    {isAr ? "يبدأ " : "Starts "}
-                    {formatDistanceToNow(start, { addSuffix: true })}
+      <main className="container flex-1 py-8">
+        <div className="grid gap-8 lg:grid-cols-3">
+          {/* ======== MAIN CONTENT ======== */}
+          <div className="space-y-10 lg:col-span-2">
+
+            {/* COUNTDOWN */}
+            {(isUpcoming || isHappening) && (
+              <Card className="overflow-hidden border-primary/20">
+                <div className="border-b bg-primary/5 px-5 py-3">
+                  <h3 className="flex items-center gap-2 text-sm font-semibold">
+                    <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-primary/10">
+                      <Timer className="h-4 w-4 text-primary" />
+                    </div>
+                    {isHappening
+                      ? (isAr ? "⏱️ الحدث جارٍ الآن — ينتهي خلال" : "⏱️ Event is Live — Ends in")
+                      : (isAr ? "⏳ العد التنازلي للحدث" : "⏳ Event Countdown")}
+                  </h3>
+                </div>
+                <CardContent className="py-6">
+                  <CountdownTimer targetDate={isHappening ? end : start} isAr={isAr} />
+                  <p className="mt-4 text-center text-xs text-muted-foreground">
+                    {isHappening
+                      ? (isAr ? `ينتهي في ${format(end, "d MMMM yyyy")}` : `Ends on ${format(end, "MMMM d, yyyy")}`)
+                      : (isAr ? `يبدأ في ${format(start, "d MMMM yyyy")}` : `Starts on ${format(start, "MMMM d, yyyy")}`)}
                   </p>
                 </CardContent>
               </Card>
             )}
 
-            {/* Sections */}
-            {sections.length > 0 && (
+            {/* DESCRIPTION */}
+            {description && (
               <section>
-                <h2 className="mb-4 text-xl font-semibold">{isAr ? "الأقسام" : "Sections"}</h2>
-                <div className="grid gap-4 sm:grid-cols-2">
-                  {sections.map((section, i) => (
-                    <Card key={i}>
-                      <CardHeader className="pb-2">
-                        <CardTitle className="text-base">
-                          {isAr && section.name_ar ? section.name_ar : section.name}
-                        </CardTitle>
-                      </CardHeader>
-                      {(section.description || section.description_ar) && (
-                        <CardContent className="pt-0 text-sm text-muted-foreground">
-                          {isAr && section.description_ar ? section.description_ar : section.description}
-                        </CardContent>
-                      )}
-                    </Card>
-                  ))}
+                <h2 className="mb-3 flex items-center gap-2 text-xl font-semibold">
+                  <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-muted/60">
+                    <Landmark className="h-4 w-4 text-primary" />
+                  </div>
+                  {isAr ? "عن الحدث" : "About the Event"}
+                </h2>
+                <p className="leading-relaxed text-foreground/80 whitespace-pre-line">{description}</p>
+              </section>
+            )}
+
+            {/* COMPETITIONS */}
+            {linkedCompetitions && linkedCompetitions.length > 0 && (
+              <section>
+                <h2 className="mb-4 flex items-center gap-2 text-xl font-semibold">
+                  <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary/10">
+                    <Trophy className="h-4 w-4 text-primary" />
+                  </div>
+                  {isAr ? "المسابقات" : "Competitions"}
+                  <Badge variant="secondary" className="ms-1">{linkedCompetitions.length}</Badge>
+                </h2>
+                <div className="space-y-4">
+                  {linkedCompetitions.map((comp: any) => {
+                    const compTitle = isAr && comp.title_ar ? comp.title_ar : comp.title;
+                    const compStart = new Date(comp.competition_start);
+                    const compEnd = new Date(comp.competition_end);
+                    const compIsLive = isWithinInterval(now, { start: compStart, end: compEnd });
+                    const compIsPast = isPast(compEnd);
+                    const categories = comp.competition_categories || [];
+                    const regCount = comp.competition_registrations?.length || 0;
+                    const regDeadline = comp.registration_deadline ? new Date(comp.registration_deadline) : null;
+
+                    return (
+                      <Card key={comp.id} className="overflow-hidden border-border/60 transition-all hover:shadow-md hover:-translate-y-0.5">
+                        <div className="flex flex-col sm:flex-row">
+                          {comp.cover_image_url && (
+                            <div className="sm:w-48 shrink-0">
+                              <img src={comp.cover_image_url} alt={compTitle} className="h-40 w-full object-cover sm:h-full" />
+                            </div>
+                          )}
+                          <div className="flex-1 p-5">
+                            <div className="flex flex-wrap items-center gap-2 mb-2">
+                              <Badge variant={compIsLive ? "default" : compIsPast ? "secondary" : "outline"} className="text-[10px]">
+                                {compIsLive ? (isAr ? "🔴 جارية" : "🔴 Live") : compIsPast ? (isAr ? "انتهت" : "Ended") : (isAr ? "قادمة" : "Upcoming")}
+                              </Badge>
+                              {comp.is_virtual && <Badge variant="outline" className="text-[10px]"><Globe className="me-1 h-3 w-3" />{isAr ? "افتراضي" : "Virtual"}</Badge>}
+                            </div>
+
+                            <Link to={`/competitions/${comp.id}`} className="group">
+                              <h3 className="text-lg font-semibold group-hover:text-primary transition-colors">{compTitle}</h3>
+                            </Link>
+
+                            <div className="mt-2 flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-muted-foreground">
+                              <span className="flex items-center gap-1">
+                                <Calendar className="h-3 w-3" />
+                                {format(compStart, "MMM d, yyyy")}
+                              </span>
+                              <span className="flex items-center gap-1">
+                                <Users className="h-3 w-3" />
+                                {regCount} {isAr ? "مسجل" : "registered"}
+                              </span>
+                              {comp.city && (
+                                <span className="flex items-center gap-1">
+                                  <MapPin className="h-3 w-3" />
+                                  {getCountryFlag(comp.country)} {comp.city}
+                                </span>
+                              )}
+                            </div>
+
+                            {/* Categories */}
+                            {categories.length > 0 && (
+                              <div className="mt-3">
+                                <p className="text-[10px] font-medium uppercase tracking-wider text-muted-foreground mb-1.5">
+                                  {isAr ? "الفئات" : "Categories"}
+                                </p>
+                                <div className="flex flex-wrap gap-1.5">
+                                  {categories.map((cat: any) => (
+                                    <Badge key={cat.id} variant="secondary" className="text-[10px] gap-1">
+                                      {isAr && cat.name_ar ? cat.name_ar : cat.name}
+                                      {cat.max_participants && (
+                                        <span className="text-muted-foreground">({cat.max_participants})</span>
+                                      )}
+                                    </Badge>
+                                  ))}
+                                </div>
+                              </div>
+                            )}
+
+                            {/* Registration deadline */}
+                            {regDeadline && (
+                              <div className="mt-3 flex items-center gap-2 rounded-lg bg-destructive/5 border border-destructive/10 px-3 py-2">
+                                <Clock className="h-3.5 w-3.5 text-destructive shrink-0" />
+                                <span className="text-xs font-medium text-destructive">
+                                  {isPast(regDeadline)
+                                    ? (isAr ? "انتهى التسجيل" : "Registration Closed")
+                                    : (isAr ? `آخر موعد للتسجيل: ${format(regDeadline, "d MMM yyyy")}` : `Registration Deadline: ${format(regDeadline, "MMM d, yyyy")}`)}
+                                </span>
+                              </div>
+                            )}
+
+                            <div className="mt-3">
+                              <Button size="sm" variant="outline" asChild>
+                                <Link to={`/competitions/${comp.id}`}>
+                                  {isAr ? "عرض التفاصيل" : "View Details"}
+                                  <ChevronRight className="ms-1 h-3 w-3" />
+                                </Link>
+                              </Button>
+                            </div>
+                          </div>
+                        </div>
+                      </Card>
+                    );
+                  })}
                 </div>
               </section>
             )}
 
-            {/* Schedule */}
+            {/* SCHEDULE / TIMELINE */}
             {schedule.length > 0 && (
               <section>
-                <h2 className="mb-4 text-xl font-semibold">{isAr ? "الجدول الزمني" : "Schedule"}</h2>
-                <div className="space-y-6">
+                <h2 className="mb-5 flex items-center gap-2 text-xl font-semibold">
+                  <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-accent/10">
+                    <Calendar className="h-4 w-4 text-accent" />
+                  </div>
+                  {isAr ? "الجدول الزمني" : "Event Timeline"}
+                </h2>
+                <div className="space-y-8">
                   {schedule.map((dayOrItem, i) => {
-                    if (dayOrItem.items && dayOrItem.items.length > 0) {
+                    const dayEvents = dayOrItem.items || dayOrItem.events || [];
+                    const dayLabel = isAr && dayOrItem.day_ar ? dayOrItem.day_ar : dayOrItem.day;
+                    const dayTitle = isAr && dayOrItem.title_ar ? dayOrItem.title_ar : dayOrItem.title;
+
+                    if (dayEvents.length > 0) {
                       return (
                         <div key={i}>
-                          {dayOrItem.day && (
-                            <h3 className="mb-3 text-[10px] font-semibold uppercase tracking-wider text-primary">
-                              {dayOrItem.day}
-                            </h3>
-                          )}
-                          <div className="space-y-3">
-                            {dayOrItem.items.map((item, j) => (
-                              <div key={j} className="flex gap-4 rounded-lg border p-4">
-                                {item.time && (
-                                  <div className="shrink-0 font-mono text-sm font-medium text-primary">{item.time}</div>
-                                )}
-                                <div>
+                          {/* Day header */}
+                          <div className="mb-4 flex items-center gap-3">
+                            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary text-primary-foreground font-bold text-sm">
+                              {i + 1}
+                            </div>
+                            <div>
+                              {dayLabel && <p className="text-[10px] font-semibold uppercase tracking-wider text-primary">{dayLabel}</p>}
+                              {dayTitle && <p className="font-semibold">{dayTitle}</p>}
+                            </div>
+                          </div>
+
+                          {/* Timeline events */}
+                          <div className="ms-5 border-s-2 border-border ps-6 space-y-0">
+                            {dayEvents.map((item, j) => (
+                              <div key={j} className="relative pb-6 last:pb-0">
+                                {/* Dot */}
+                                <div className="absolute -start-[31px] top-1 h-3.5 w-3.5 rounded-full border-2 border-primary bg-background" />
+                                <div className="rounded-lg border border-border/60 bg-card p-4 transition-colors hover:border-primary/30">
+                                  {item.time && (
+                                    <p className="mb-1 font-mono text-xs font-semibold text-primary">{item.time}</p>
+                                  )}
                                   <p className="font-medium">{isAr && item.title_ar ? item.title_ar : item.title}</p>
                                   {(item.description || item.description_ar) && (
-                                    <p className="text-sm text-muted-foreground">
+                                    <p className="mt-1 text-sm text-muted-foreground">
                                       {isAr && item.description_ar ? item.description_ar : item.description}
                                     </p>
                                   )}
@@ -375,9 +609,11 @@ export default function ExhibitionDetail() {
                         </div>
                       );
                     }
+
+                    /* single flat event */
                     return (
-                      <div key={i} className="flex gap-4 rounded-lg border p-4">
-                        <div className="shrink-0 font-mono text-sm text-primary">{dayOrItem.time || dayOrItem.day}</div>
+                      <div key={i} className="flex gap-4 rounded-lg border border-border/60 bg-card p-4">
+                        <div className="shrink-0 font-mono text-sm font-semibold text-primary">{dayOrItem.time || dayLabel}</div>
                         <div>
                           <p className="font-medium">{isAr && dayOrItem.title_ar ? dayOrItem.title_ar : dayOrItem.title}</p>
                           {(dayOrItem.description || dayOrItem.description_ar) && (
@@ -393,39 +629,43 @@ export default function ExhibitionDetail() {
               </section>
             )}
 
-            {/* Linked Competitions */}
-            {linkedCompetitions && linkedCompetitions.length > 0 && (
+            {/* JUDGING COMMITTEE */}
+            {judgeProfiles && judgeProfiles.length > 0 && (
               <section>
                 <h2 className="mb-4 flex items-center gap-2 text-xl font-semibold">
-                  <Trophy className="h-5 w-5 text-primary" />
-                  {isAr ? "المسابقات المرتبطة" : "Competitions"}
+                  <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-accent/10">
+                    <Award className="h-4 w-4 text-accent" />
+                  </div>
+                  {isAr ? "لجنة التحكيم" : "Judging Committee"}
+                  <Badge variant="secondary" className="ms-1">{judgeProfiles.length}</Badge>
                 </h2>
-                <div className="grid gap-4 sm:grid-cols-2">
-                  {linkedCompetitions.map((comp) => {
-                    const compTitle = isAr && comp.title_ar ? comp.title_ar : comp.title;
-                    const compStart = new Date(comp.competition_start);
-                    const compEnd = new Date(comp.competition_end);
-                    const compNow = new Date();
-                    const compIsLive = isWithinInterval(compNow, { start: compStart, end: compEnd });
-                    const compIsPast = isPast(compEnd);
-
+                <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-3">
+                  {judgeProfiles.map((judge: any) => {
+                    const judgeName = isAr && judge.full_name_ar ? judge.full_name_ar : judge.full_name;
+                    const judgeFlag = getCountryFlag(judge.country);
                     return (
-                      <Link key={comp.id} to={`/competitions/${comp.id}`} className="block">
-                        <Card className="overflow-hidden transition-all hover:shadow-md hover:-translate-y-0.5">
-                          {comp.cover_image_url && (
-                            <img src={comp.cover_image_url} alt={compTitle} className="h-32 w-full object-cover" />
-                          )}
-                          <CardContent className="p-4">
-                            <div className="mb-2 flex items-center gap-2">
-                              <Badge variant={compIsLive ? "default" : compIsPast ? "secondary" : "outline"} className="text-[10px]">
-                                {compIsLive ? (isAr ? "جارية" : "Live") : compIsPast ? (isAr ? "انتهت" : "Ended") : (isAr ? "قادمة" : "Upcoming")}
-                              </Badge>
+                      <Link key={judge.user_id} to={`/${judge.username || judge.user_id}`} className="block">
+                        <Card className="overflow-hidden border-border/60 transition-all hover:shadow-md hover:-translate-y-0.5 group">
+                          <CardContent className="flex flex-col items-center p-5 text-center">
+                            <Avatar className="h-16 w-16 mb-3 ring-2 ring-border group-hover:ring-primary/30 transition-all">
+                              <AvatarImage src={judge.avatar_url || undefined} />
+                              <AvatarFallback className="bg-primary/10 text-primary text-lg font-bold">
+                                {(judgeName || "J")[0].toUpperCase()}
+                              </AvatarFallback>
+                            </Avatar>
+                            <div className="flex items-center gap-1.5">
+                              <span className="text-lg">{judgeFlag}</span>
+                              <p className="font-semibold">{judgeName || (isAr ? "حكم" : "Judge")}</p>
+                              {judge.is_verified && <Star className="h-3.5 w-3.5 text-primary fill-primary" />}
                             </div>
-                            <h4 className="font-semibold line-clamp-2">{compTitle}</h4>
-                            <p className="mt-1 text-xs text-muted-foreground">
-                              <Calendar className="me-1 inline h-3 w-3" />
-                              {format(compStart, "MMM d, yyyy")}
-                            </p>
+                            {judge.specialization && (
+                              <p className="mt-1 text-xs text-muted-foreground line-clamp-1">{judge.specialization}</p>
+                            )}
+                            {judge.country && (
+                              <Badge variant="outline" className="mt-2 text-[10px]">
+                                {judgeFlag} {judge.country}
+                              </Badge>
+                            )}
                           </CardContent>
                         </Card>
                       </Link>
@@ -435,23 +675,29 @@ export default function ExhibitionDetail() {
               </section>
             )}
 
+            {/* SPEAKERS */}
             {speakers.length > 0 && (
               <section>
-                <h2 className="mb-4 text-xl font-semibold">{isAr ? "المتحدثون" : "Speakers"}</h2>
+                <h2 className="mb-4 flex items-center gap-2 text-xl font-semibold">
+                  <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary/10">
+                    <Mic2 className="h-4 w-4 text-primary" />
+                  </div>
+                  {isAr ? "المتحدثون" : "Speakers"}
+                </h2>
                 <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-3">
                   {speakers.map((speaker, i) => (
-                    <Card key={i} className="text-center">
-                      <CardContent className="pt-6">
+                    <Card key={i} className="overflow-hidden border-border/60">
+                      <CardContent className="flex flex-col items-center p-5 text-center">
                         {speaker.image_url ? (
-                          <img src={speaker.image_url} alt={speaker.name} className="mx-auto mb-3 h-20 w-20 rounded-full object-cover" />
+                          <img src={speaker.image_url} alt={speaker.name} className="mb-3 h-16 w-16 rounded-full object-cover ring-2 ring-border" />
                         ) : (
-                          <div className="mx-auto mb-3 flex h-20 w-20 items-center justify-center rounded-full bg-primary/10">
-                            <Users className="h-8 w-8 text-primary/60" />
+                          <div className="mb-3 flex h-16 w-16 items-center justify-center rounded-full bg-accent/10 ring-2 ring-border">
+                            <Mic2 className="h-7 w-7 text-accent/60" />
                           </div>
                         )}
                         <p className="font-semibold">{isAr && speaker.name_ar ? speaker.name_ar : speaker.name}</p>
                         {(speaker.title || speaker.title_ar || speaker.role || speaker.role_ar) && (
-                          <p className="text-sm text-muted-foreground">
+                          <p className="mt-0.5 text-xs text-muted-foreground">
                             {isAr && (speaker.title_ar || speaker.role_ar) ? (speaker.title_ar || speaker.role_ar) : (speaker.title || speaker.role)}
                           </p>
                         )}
@@ -467,19 +713,64 @@ export default function ExhibitionDetail() {
               </section>
             )}
 
-            {/* Target Audience */}
+            {/* SPONSORS */}
+            {sponsorsInfo.length > 0 && (
+              <section>
+                <h2 className="mb-4 flex items-center gap-2 text-xl font-semibold">
+                  <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary/10">
+                    <Star className="h-4 w-4 text-primary" />
+                  </div>
+                  {isAr ? "الرعاة والشركاء" : "Sponsors & Partners"}
+                </h2>
+                <div className="space-y-3">
+                  {sponsorsInfo.map((sponsor, i) => {
+                    const sponsorName = isAr && sponsor.name_ar ? sponsor.name_ar : sponsor.name;
+                    const tierLabels: Record<string, { en: string; ar: string }> = {
+                      patron: { en: "Patron", ar: "راعي" },
+                      partner: { en: "Partner", ar: "شريك" },
+                      gold: { en: "Gold", ar: "ذهبي" },
+                      silver: { en: "Silver", ar: "فضي" },
+                      bronze: { en: "Bronze", ar: "برونزي" },
+                    };
+                    const tier = sponsor.tier ? tierLabels[sponsor.tier] : null;
+                    return (
+                      <div key={i} className="flex items-center gap-3 rounded-lg border border-border/60 bg-card p-4">
+                        <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/5 shrink-0">
+                          <Building className="h-5 w-5 text-primary/60" />
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <p className="font-medium truncate">{sponsorName}</p>
+                        </div>
+                        {tier && (
+                          <Badge variant="outline" className="text-[10px] shrink-0">
+                            {isAr ? tier.ar : tier.en}
+                          </Badge>
+                        )}
+                      </div>
+                    );
+                  })}
+                </div>
+              </section>
+            )}
+
+            {/* TARGET AUDIENCE */}
             {targetAudience.length > 0 && (
               <section>
-                <h2 className="mb-3 text-xl font-semibold">{isAr ? "الفئة المستهدفة" : "Target Audience"}</h2>
+                <h2 className="mb-3 flex items-center gap-2 text-xl font-semibold">
+                  <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-muted/60">
+                    <Target className="h-4 w-4 text-muted-foreground" />
+                  </div>
+                  {isAr ? "الفئة المستهدفة" : "Target Audience"}
+                </h2>
                 <div className="flex flex-wrap gap-2">
                   {targetAudience.map((audience) => (
-                    <Badge key={audience} variant="outline" className="py-1.5">{audience}</Badge>
+                    <Badge key={audience} variant="outline" className="py-1.5 capitalize">{audience.replace(/_/g, " ")}</Badge>
                   ))}
                 </div>
               </section>
             )}
 
-            {/* Gallery */}
+            {/* GALLERY */}
             {exhibition.gallery_urls && exhibition.gallery_urls.length > 0 && (
               <section>
                 <h2 className="mb-4 text-xl font-semibold">{isAr ? "معرض الصور" : "Gallery"}</h2>
@@ -492,10 +783,10 @@ export default function ExhibitionDetail() {
             )}
           </div>
 
-          {/* Sidebar */}
+          {/* ======== SIDEBAR ======== */}
           <div className="space-y-4">
-            {/* Action Card */}
-            <Card className="overflow-hidden">
+            {/* Actions */}
+            <Card className="overflow-hidden border-border/60">
               <div className="border-b bg-muted/30 px-4 py-3">
                 <h3 className="flex items-center gap-2 text-sm font-semibold">
                   <div className="flex h-6 w-6 items-center justify-center rounded-md bg-primary/10">
@@ -513,7 +804,6 @@ export default function ExhibitionDetail() {
                     </a>
                   </Button>
                 )}
-
                 {user && (
                   <Button
                     variant={isFollowing ? "outline" : "secondary"}
@@ -528,7 +818,6 @@ export default function ExhibitionDetail() {
                     )}
                   </Button>
                 )}
-
                 {exhibition.website_url && (
                   <Button variant="outline" className="w-full" asChild>
                     <a href={exhibition.website_url} target="_blank" rel="noopener noreferrer">
@@ -537,7 +826,6 @@ export default function ExhibitionDetail() {
                     </a>
                   </Button>
                 )}
-
                 <p className="text-center text-xs text-muted-foreground">
                   <Users className="mb-0.5 me-1 inline h-3 w-3" />
                   {followerCount} {isAr ? "متابع" : "followers"}
@@ -545,12 +833,12 @@ export default function ExhibitionDetail() {
               </CardContent>
             </Card>
 
-            {/* Details Card */}
-            <Card className="overflow-hidden">
+            {/* Event Details */}
+            <Card className="overflow-hidden border-border/60">
               <div className="border-b bg-muted/30 px-4 py-3">
                 <h3 className="flex items-center gap-2 text-sm font-semibold">
                   <div className="flex h-6 w-6 items-center justify-center rounded-md bg-accent/10">
-                    <Calendar className="h-3.5 w-3.5 text-accent-foreground" />
+                    <Calendar className="h-3.5 w-3.5 text-accent" />
                   </div>
                   {isAr ? "تفاصيل الحدث" : "Event Details"}
                 </h3>
@@ -560,22 +848,16 @@ export default function ExhibitionDetail() {
                   <Calendar className="mt-0.5 h-4 w-4 shrink-0 text-primary" />
                   <div>
                     <p className="text-[10px] uppercase tracking-wider text-muted-foreground">{isAr ? "التاريخ" : "Date"}</p>
-                    <p className="font-medium">
-                      {format(start, "MMM d, yyyy")}
-                      {" – "}
-                      {format(end, "MMM d, yyyy")}
-                    </p>
+                    <p className="font-medium">{format(start, "MMM d, yyyy")} – {format(end, "MMM d, yyyy")}</p>
                   </div>
                 </div>
 
                 {exhibition.registration_deadline && (
                   <div className="flex items-start gap-3">
-                    <Clock className="mt-0.5 h-4 w-4 shrink-0 text-primary" />
+                    <Clock className="mt-0.5 h-4 w-4 shrink-0 text-destructive" />
                     <div>
                       <p className="text-[10px] uppercase tracking-wider text-muted-foreground">{isAr ? "آخر موعد للتسجيل" : "Registration Deadline"}</p>
-                      <p className="font-medium">
-                        {format(new Date(exhibition.registration_deadline), "MMM d, yyyy")}
-                      </p>
+                      <p className="font-medium">{format(new Date(exhibition.registration_deadline), "MMM d, yyyy")}</p>
                     </div>
                   </div>
                 )}
@@ -586,8 +868,9 @@ export default function ExhibitionDetail() {
                     <div>
                       <p className="text-[10px] uppercase tracking-wider text-muted-foreground">{isAr ? "حدث افتراضي" : "Virtual Event"}</p>
                       {exhibition.virtual_link && !hasEnded && (
-                        <a href={exhibition.virtual_link} target="_blank" rel="noopener noreferrer"
-                          className="text-primary underline">{isAr ? "رابط الدخول" : "Join Link"}</a>
+                        <a href={exhibition.virtual_link} target="_blank" rel="noopener noreferrer" className="text-primary underline">
+                          {isAr ? "رابط الدخول" : "Join Link"}
+                        </a>
                       )}
                     </div>
                   </div>
@@ -597,13 +880,14 @@ export default function ExhibitionDetail() {
                     <div>
                       <p className="text-[10px] uppercase tracking-wider text-muted-foreground">{isAr ? "الموقع" : "Location"}</p>
                       <p className="font-medium">
-                        {venue}
+                        {countryFlag} {venue}
                         {exhibition.city && <><br />{exhibition.city}</>}
                         {exhibition.country && `, ${exhibition.country}`}
                       </p>
                       {exhibition.map_url && (
-                        <a href={exhibition.map_url} target="_blank" rel="noopener noreferrer"
-                          className="text-xs text-primary underline">{isAr ? "عرض الخريطة" : "View Map"}</a>
+                        <a href={exhibition.map_url} target="_blank" rel="noopener noreferrer" className="text-xs text-primary underline">
+                          {isAr ? "عرض الخريطة" : "View Map"}
+                        </a>
                       )}
                     </div>
                   </div>
@@ -633,9 +917,9 @@ export default function ExhibitionDetail() {
               </CardContent>
             </Card>
 
-            {/* Organizer Info */}
+            {/* Organizer */}
             {organizer && (
-              <Card className="overflow-hidden">
+              <Card className="overflow-hidden border-border/60">
                 <div className="border-b bg-muted/30 px-4 py-3">
                   <h3 className="flex items-center gap-2 text-sm font-semibold">
                     <div className="flex h-6 w-6 items-center justify-center rounded-md bg-primary/10">
@@ -652,9 +936,7 @@ export default function ExhibitionDetail() {
                   {exhibition.organizer_email && (
                     <div className="flex items-center gap-2">
                       <Mail className="h-4 w-4 text-muted-foreground" />
-                      <a href={`mailto:${exhibition.organizer_email}`} className="text-primary underline">
-                        {exhibition.organizer_email}
-                      </a>
+                      <a href={`mailto:${exhibition.organizer_email}`} className="text-primary underline">{exhibition.organizer_email}</a>
                     </div>
                   )}
                   {exhibition.organizer_phone && (
@@ -677,11 +959,11 @@ export default function ExhibitionDetail() {
 
             {/* Tags */}
             {tags.length > 0 && (
-              <Card className="overflow-hidden">
+              <Card className="overflow-hidden border-border/60">
                 <div className="border-b bg-muted/30 px-4 py-3">
                   <h3 className="flex items-center gap-2 text-sm font-semibold">
                     <div className="flex h-6 w-6 items-center justify-center rounded-md bg-accent/10">
-                      <Tag className="h-3.5 w-3.5 text-accent-foreground" />
+                      <Tag className="h-3.5 w-3.5 text-accent" />
                     </div>
                     {isAr ? "الوسوم" : "Tags"}
                   </h3>
@@ -689,17 +971,15 @@ export default function ExhibitionDetail() {
                 <CardContent className="p-4">
                   <div className="flex flex-wrap gap-1.5">
                     {tags.map((tag) => (
-                      <Badge key={tag} variant="secondary" className="text-[10px]">
-                        {tag}
-                      </Badge>
+                      <Badge key={tag} variant="secondary" className="text-[10px]">{tag}</Badge>
                     ))}
                   </div>
                 </CardContent>
               </Card>
             )}
 
-            {/* Social Share */}
-            <Card className="overflow-hidden">
+            {/* Share */}
+            <Card className="overflow-hidden border-border/60">
               <div className="border-b bg-muted/30 px-4 py-3">
                 <h3 className="flex items-center gap-2 text-sm font-semibold">
                   <div className="flex h-6 w-6 items-center justify-center rounded-md bg-primary/10">
