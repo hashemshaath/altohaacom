@@ -31,6 +31,7 @@ import {
   Globe,
   Database,
   Award,
+  BookOpen,
 } from "lucide-react";
 
 export default function AdminLayout() {
@@ -70,6 +71,7 @@ export default function AdminLayout() {
     {
       title: language === "ar" ? "المحتوى" : "Content",
       items: [
+        { to: "/admin/knowledge", icon: BookOpen, label: language === "ar" ? "بوابة المعرفة" : "Knowledge Portal" },
         { to: "/admin/articles", icon: Newspaper, label: language === "ar" ? "المقالات والأخبار" : "Articles & News" },
         { to: "/admin/competitions", icon: Trophy, label: language === "ar" ? "المسابقات" : "Competitions" },
         { to: "/admin/certificates", icon: Award, label: language === "ar" ? "الشهادات" : "Certificates" },

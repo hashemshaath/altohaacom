@@ -55,6 +55,8 @@ import CertificatesAdmin from "./pages/admin/CertificatesAdmin";
 import CertificateVerify from "./pages/CertificateVerify";
 import CompaniesAdmin from "./pages/admin/CompaniesAdmin";
 import OrdersAdmin from "./pages/admin/OrdersAdmin";
+import KnowledgeAdmin from "./pages/admin/KnowledgeAdmin";
+import KnowledgePortal from "./pages/KnowledgePortal";
 
 // Company Portal Pages
 import CompanyPortalLayout from "./pages/CompanyPortal";
@@ -101,6 +103,7 @@ const App = () => (
                 <Route path="/competitions/:id/edit" element={<ProtectedRoute><EditCompetition /></ProtectedRoute>} />
                 <Route path="/competitions/:id/results" element={<CompetitionResults />} />
                 <Route path="/judging" element={<ProtectedRoute><Judging /></ProtectedRoute>} />
+                <Route path="/knowledge" element={<ProtectedRoute><KnowledgePortal /></ProtectedRoute>} />
                 <Route path="/notification-preferences" element={<ProtectedRoute><NotificationPreferences /></ProtectedRoute>} />
                 <Route path="/search" element={<Search />} />
                 <Route path="/help" element={<HelpCenter />} />
@@ -136,6 +139,7 @@ const App = () => (
                   <Route path="certificates" element={<CertificatesAdmin />} />
                   <Route path="companies" element={<CompaniesAdmin />} />
                    <Route path="orders" element={<OrdersAdmin />} />
+                  <Route path="knowledge" element={<KnowledgeAdmin />} />
                 </Route>
 
                 {/* Company Portal Routes */}
