@@ -1,10 +1,9 @@
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useLanguage } from "@/i18n/LanguageContext";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Separator } from "@/components/ui/separator";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Trophy, Calendar, MapPin, Globe, ArrowRight } from "lucide-react";
 import { Link } from "react-router-dom";
@@ -31,33 +30,35 @@ export function UpcomingCompetitionsWidget() {
 
   if (isLoading) {
     return (
-      <Card>
-        <CardHeader>
-          <Skeleton className="h-6 w-48" />
-        </CardHeader>
-        <CardContent className="space-y-4">
-          <Skeleton className="h-20 w-full" />
-          <Skeleton className="h-20 w-full" />
+      <Card className="overflow-hidden">
+        <div className="border-b bg-muted/30 px-4 py-3">
+          <Skeleton className="h-5 w-48" />
+        </div>
+        <CardContent className="p-4 space-y-4">
+          <Skeleton className="h-16 w-full rounded-md" />
+          <Skeleton className="h-16 w-full rounded-md" />
         </CardContent>
       </Card>
     );
   }
 
   return (
-    <Card>
-      <CardHeader className="flex flex-row items-center justify-between pb-3">
-        <CardTitle className="flex items-center gap-2 text-base">
-          <Trophy className="h-4 w-4 text-primary" />
+    <Card className="overflow-hidden">
+      <div className="flex items-center justify-between border-b bg-muted/30 px-4 py-3">
+        <h3 className="flex items-center gap-2 text-sm font-semibold">
+          <div className="flex h-6 w-6 items-center justify-center rounded-md bg-primary/10">
+            <Trophy className="h-3.5 w-3.5 text-primary" />
+          </div>
           {t("upcomingCompetitions")}
-        </CardTitle>
-        <Button variant="ghost" size="sm" className="gap-1 text-xs" asChild>
+        </h3>
+        <Button variant="ghost" size="sm" className="gap-1 text-xs h-7" asChild>
           <Link to="/competitions">
             {isAr ? "عرض الكل" : "View All"}
-            <ArrowRight className="h-3.5 w-3.5" />
+            <ArrowRight className="h-3 w-3" />
           </Link>
         </Button>
-      </CardHeader>
-      <CardContent>
+      </div>
+      <CardContent className="p-4">
         {competitions && competitions.length > 0 ? (
           <div className="divide-y">
             {competitions.map((competition) => {
@@ -66,10 +67,10 @@ export function UpcomingCompetitionsWidget() {
                 <Link
                   key={competition.id}
                   to={`/competitions/${competition.id}`}
-                  className="flex items-start gap-3 py-3.5 first:pt-0 last:pb-0 transition-colors hover:bg-muted/30 -mx-1 px-1 rounded-md"
+                  className="flex items-start gap-3 py-3 first:pt-0 last:pb-0 transition-colors hover:bg-muted/30 -mx-1 px-1 rounded-md"
                 >
                   {/* Thumbnail */}
-                  <div className="flex h-12 w-12 shrink-0 items-center justify-center overflow-hidden rounded-lg bg-muted">
+                  <div className="flex h-11 w-11 shrink-0 items-center justify-center overflow-hidden rounded-lg bg-muted">
                     {competition.cover_image_url ? (
                       <img src={competition.cover_image_url} alt={title} className="h-full w-full object-cover" loading="lazy" />
                     ) : (
@@ -109,8 +110,8 @@ export function UpcomingCompetitionsWidget() {
             })}
           </div>
         ) : (
-          <div className="py-10 text-center">
-            <div className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-2xl bg-muted/60">
+          <div className="py-12 text-center">
+            <div className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-muted">
               <Trophy className="h-6 w-6 text-muted-foreground/40" />
             </div>
             <p className="text-sm text-muted-foreground">{t("noCompetitionsFound")}</p>

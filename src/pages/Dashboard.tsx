@@ -46,14 +46,14 @@ export default function Dashboard() {
   ];
 
   return (
-    <div className="flex min-h-screen flex-col">
+    <div className="flex min-h-screen flex-col bg-background">
       <SEOHead title="Dashboard" description="Your personal Altohaa dashboard" />
       <Header />
-      <main className="container flex-1 py-8 md:py-10">
+      <main className="container flex-1 py-6 md:py-10">
         {/* Welcome */}
         <div className="mb-8">
           <h1 className="font-serif text-2xl font-bold md:text-3xl">{greeting}</h1>
-          <p className="mt-0.5 text-sm text-muted-foreground md:text-base">
+          <p className="mt-1 text-sm text-muted-foreground">
             {isAr
               ? "إليك ملخص نشاطك ومسابقاتك القادمة"
               : "Here's a summary of your activity and upcoming competitions"}
@@ -79,18 +79,18 @@ export default function Dashboard() {
 
         {/* Quick Navigation */}
         <div className="mt-10">
-          <h2 className="mb-4 text-sm font-semibold uppercase tracking-wider text-muted-foreground">
+          <h2 className="mb-4 text-[10px] font-semibold uppercase tracking-widest text-muted-foreground">
             {t("quickLinks")}
           </h2>
           <div className="grid gap-3 grid-cols-2 sm:grid-cols-3 lg:grid-cols-6">
             {sections.map((s) => (
               <Link key={s.title} to={s.href}>
                 <Card className="group h-full transition-all hover:shadow-sm hover:-translate-y-0.5">
-                  <CardContent className="flex flex-col items-center gap-2 p-4 text-center">
-                    <div className="rounded-lg bg-primary/10 p-2.5 transition-colors group-hover:bg-primary/15">
+                  <CardContent className="flex flex-col items-center gap-2.5 p-4 text-center">
+                    <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary/10 transition-colors group-hover:bg-primary/15">
                       <s.icon className="h-5 w-5 text-primary" />
                     </div>
-                    <h3 className="text-xs font-medium">{s.title}</h3>
+                    <h3 className="text-xs font-medium leading-tight">{s.title}</h3>
                   </CardContent>
                 </Card>
               </Link>
