@@ -4913,6 +4913,156 @@ export type Database = {
           },
         ]
       }
+      shop_order_items: {
+        Row: {
+          id: string
+          order_id: string
+          product_id: string
+          product_snapshot: Json | null
+          quantity: number
+          total_price: number
+          unit_price: number
+        }
+        Insert: {
+          id?: string
+          order_id: string
+          product_id: string
+          product_snapshot?: Json | null
+          quantity?: number
+          total_price: number
+          unit_price: number
+        }
+        Update: {
+          id?: string
+          order_id?: string
+          product_id?: string
+          product_snapshot?: Json | null
+          quantity?: number
+          total_price?: number
+          unit_price?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "shop_order_items_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: false
+            referencedRelation: "shop_orders"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "shop_order_items_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "shop_products"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      shop_orders: {
+        Row: {
+          buyer_id: string
+          created_at: string
+          currency: string
+          id: string
+          notes: string | null
+          order_number: string
+          shipping_address: Json | null
+          status: Database["public"]["Enums"]["shop_order_status"]
+          total_amount: number
+          updated_at: string
+        }
+        Insert: {
+          buyer_id: string
+          created_at?: string
+          currency?: string
+          id?: string
+          notes?: string | null
+          order_number: string
+          shipping_address?: Json | null
+          status?: Database["public"]["Enums"]["shop_order_status"]
+          total_amount?: number
+          updated_at?: string
+        }
+        Update: {
+          buyer_id?: string
+          created_at?: string
+          currency?: string
+          id?: string
+          notes?: string | null
+          order_number?: string
+          shipping_address?: Json | null
+          status?: Database["public"]["Enums"]["shop_order_status"]
+          total_amount?: number
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      shop_products: {
+        Row: {
+          category: string
+          created_at: string
+          currency: string
+          description: string | null
+          description_ar: string | null
+          gallery_urls: string[] | null
+          id: string
+          image_url: string | null
+          is_active: boolean | null
+          is_featured: boolean | null
+          metadata: Json | null
+          price: number
+          product_type: Database["public"]["Enums"]["shop_product_type"]
+          seller_id: string
+          stock_quantity: number | null
+          tags: string[] | null
+          title: string
+          title_ar: string | null
+          updated_at: string
+        }
+        Insert: {
+          category?: string
+          created_at?: string
+          currency?: string
+          description?: string | null
+          description_ar?: string | null
+          gallery_urls?: string[] | null
+          id?: string
+          image_url?: string | null
+          is_active?: boolean | null
+          is_featured?: boolean | null
+          metadata?: Json | null
+          price?: number
+          product_type?: Database["public"]["Enums"]["shop_product_type"]
+          seller_id: string
+          stock_quantity?: number | null
+          tags?: string[] | null
+          title: string
+          title_ar?: string | null
+          updated_at?: string
+        }
+        Update: {
+          category?: string
+          created_at?: string
+          currency?: string
+          description?: string | null
+          description_ar?: string | null
+          gallery_urls?: string[] | null
+          id?: string
+          image_url?: string | null
+          is_active?: boolean | null
+          is_featured?: boolean | null
+          metadata?: Json | null
+          price?: number
+          product_type?: Database["public"]["Enums"]["shop_product_type"]
+          seller_id?: string
+          stock_quantity?: number | null
+          tags?: string[] | null
+          title?: string
+          title_ar?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
       sponsorship_packages: {
         Row: {
           benefits: Json | null
@@ -5070,6 +5220,7 @@ export type Database = {
       generate_invoice_number: { Args: never; Returns: string }
       generate_order_number: { Args: never; Returns: string }
       generate_registration_number: { Args: never; Returns: string }
+      generate_shop_order_number: { Args: never; Returns: string }
       generate_transaction_number: { Args: never; Returns: string }
       generate_verification_code: { Args: never; Returns: string }
       get_company_balance: { Args: { p_company_id: string }; Returns: number }
@@ -5179,6 +5330,15 @@ export type Database = {
         | "in_progress"
         | "completed"
         | "cancelled"
+      shop_order_status:
+        | "pending"
+        | "confirmed"
+        | "processing"
+        | "shipped"
+        | "delivered"
+        | "cancelled"
+        | "refunded"
+      shop_product_type: "physical" | "digital" | "service"
       sponsorship_tier: "platinum" | "gold" | "silver" | "bronze" | "custom"
       transaction_type:
         | "invoice"
@@ -5417,6 +5577,16 @@ export const Constants = {
         "completed",
         "cancelled",
       ],
+      shop_order_status: [
+        "pending",
+        "confirmed",
+        "processing",
+        "shipped",
+        "delivered",
+        "cancelled",
+        "refunded",
+      ],
+      shop_product_type: ["physical", "digital", "service"],
       sponsorship_tier: ["platinum", "gold", "silver", "bronze", "custom"],
       transaction_type: [
         "invoice",

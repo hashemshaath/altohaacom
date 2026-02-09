@@ -44,6 +44,10 @@ const CreateExhibition = lazy(() => import("./pages/CreateExhibition"));
 const EditExhibition = lazy(() => import("./pages/EditExhibition"));
 const Entities = lazy(() => import("./pages/Entities"));
 const EntityDetail = lazy(() => import("./pages/EntityDetail"));
+const Shop = lazy(() => import("./pages/Shop"));
+const ShopProduct = lazy(() => import("./pages/ShopProduct"));
+const ShopOrders = lazy(() => import("./pages/ShopOrders"));
+const ShopMyProducts = lazy(() => import("./pages/ShopMyProducts"));
 
 // Admin pages
 const AdminLayout = lazy(() => import("./pages/admin/AdminLayout"));
@@ -145,6 +149,10 @@ const App = () => (
                 <Route path="/exhibitions/:slug/edit" element={<ProtectedRoute><EditExhibition /></ProtectedRoute>} />
                 <Route path="/entities" element={<Entities />} />
                 <Route path="/entities/:slug" element={<EntityDetail />} />
+                <Route path="/shop" element={<Shop />} />
+                <Route path="/shop/:id" element={<ShopProduct />} />
+                <Route path="/shop/orders" element={<ProtectedRoute><ShopOrders /></ProtectedRoute>} />
+                <Route path="/shop/my-products" element={<ProtectedRoute><ShopMyProducts /></ProtectedRoute>} />
                 
                 {/* Admin Routes */}
                 <Route path="/admin" element={<ProtectedRoute><AdminLayout /></ProtectedRoute>}>

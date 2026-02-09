@@ -97,7 +97,7 @@ const Index = () => {
     { icon: GraduationCap, title: isAr ? "الدروس المتقدمة" : "Masterclasses", desc: isAr ? "تعلم من أفضل الطهاة من خلال دروس متقدمة ومحتوى تعليمي حصري." : "Learn from the best chefs through advanced lessons and exclusive educational content.", href: "/masterclasses" },
     { icon: Building2, title: isAr ? "الجهات والجمعيات" : "Entities & Associations", desc: isAr ? "اكتشف الجمعيات الطهوية والأكاديميات محلياً ودولياً." : "Discover culinary associations and academies locally and internationally.", href: "/entities" },
     { icon: Newspaper, title: isAr ? "الأخبار والمعارض" : "News & Exhibitions", desc: isAr ? "ابقَ على اطلاع بآخر الأخبار والمعارض في عالم الطهي." : "Stay updated with the latest news and exhibitions in the culinary world.", href: "/news" },
-    { icon: ShoppingBag, title: isAr ? "المتجر الطهوي" : "Culinary Shop", desc: isAr ? "أدوات طهي فاخرة وكتب وخدمات مهنية." : "Premium culinary tools, books, and professional services.", href: "#", comingSoon: true },
+    { icon: ShoppingBag, title: isAr ? "المتجر الطهوي" : "Culinary Shop", desc: isAr ? "أدوات طهي فاخرة وكتب وخدمات مهنية." : "Premium culinary tools, books, and professional services.", href: "/shop" },
   ];
 
   const whyUs = [
@@ -210,19 +210,14 @@ const Index = () => {
                 <div className="mb-3 flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10">
                   <s.icon className="h-5 w-5 text-primary" />
                 </div>
-                <div className="flex items-center gap-2 mb-1.5">
-                  <h3 className="font-semibold">{s.title}</h3>
-                  {s.comingSoon && <Badge variant="secondary" className="text-[10px]">{t("comingSoon")}</Badge>}
-                </div>
+                <h3 className="font-semibold mb-1.5">{s.title}</h3>
                 <p className="mb-3 flex-1 text-sm text-muted-foreground leading-relaxed">{s.desc}</p>
-                {!s.comingSoon && (
-                  <Button variant="ghost" size="sm" className="w-fit -ms-2 text-xs" asChild>
-                    <Link to={s.href}>
-                      {isAr ? "اكتشف المزيد" : "Explore"}
-                      <ArrowRight className="ms-1 h-3 w-3" />
-                    </Link>
-                  </Button>
-                )}
+                <Button variant="ghost" size="sm" className="w-fit -ms-2 text-xs" asChild>
+                  <Link to={s.href}>
+                    {isAr ? "اكتشف المزيد" : "Explore"}
+                    <ArrowRight className="ms-1 h-3 w-3" />
+                  </Link>
+                </Button>
               </CardContent>
             </Card>
           ))}
