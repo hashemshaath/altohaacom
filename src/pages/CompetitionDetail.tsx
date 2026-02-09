@@ -442,6 +442,153 @@ export default function CompetitionDetail() {
                   </Card>
                 )}
 
+                {/* Registration Timeline */}
+                {(competition.registration_start || competition.registration_end) && (
+                  <Card className="overflow-hidden">
+                    <div className="border-b bg-muted/30 px-4 py-3">
+                      <h3 className="flex items-center gap-2 font-semibold text-sm">
+                        <div className="flex h-6 w-6 items-center justify-center rounded-md bg-primary/10">
+                          <Clock className="h-3.5 w-3.5 text-primary" />
+                        </div>
+                        {isAr ? "الجدول الزمني" : "Timeline"}
+                      </h3>
+                    </div>
+                    <CardContent className="p-4">
+                      <div className="relative border-s-2 border-border ps-6 space-y-6">
+                        {competition.registration_start && (
+                          <div className="relative">
+                            <div className="absolute -start-[29px] top-0.5 h-3.5 w-3.5 rounded-full border-2 border-primary bg-background" />
+                            <p className="text-xs text-muted-foreground">{isAr ? "بداية التسجيل" : "Registration Opens"}</p>
+                            <p className="text-sm font-medium">{format(new Date(competition.registration_start), "MMMM d, yyyy")}</p>
+                          </div>
+                        )}
+                        {competition.registration_end && (
+                          <div className="relative">
+                            <div className="absolute -start-[29px] top-0.5 h-3.5 w-3.5 rounded-full border-2 border-chart-4 bg-background" />
+                            <p className="text-xs text-muted-foreground">{isAr ? "نهاية التسجيل" : "Registration Closes"}</p>
+                            <p className="text-sm font-medium">{format(new Date(competition.registration_end), "MMMM d, yyyy")}</p>
+                          </div>
+                        )}
+                        <div className="relative">
+                          <div className="absolute -start-[29px] top-0.5 h-3.5 w-3.5 rounded-full border-2 border-chart-3 bg-background" />
+                          <p className="text-xs text-muted-foreground">{isAr ? "بداية المسابقة" : "Competition Starts"}</p>
+                          <p className="text-sm font-medium">{format(new Date(competition.competition_start), "MMMM d, yyyy 'at' h:mm a")}</p>
+                        </div>
+                        <div className="relative">
+                          <div className="absolute -start-[29px] top-0.5 h-3.5 w-3.5 rounded-full border-2 border-chart-5 bg-background" />
+                          <p className="text-xs text-muted-foreground">{isAr ? "نهاية المسابقة" : "Competition Ends"}</p>
+                          <p className="text-sm font-medium">{format(new Date(competition.competition_end), "MMMM d, yyyy 'at' h:mm a")}</p>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+                )}
+
+                {/* Rules Summary */}
+                {(competition.rules_summary || competition.rules_summary_ar) && (
+                  <Card className="overflow-hidden">
+                    <div className="border-b bg-muted/30 px-4 py-3">
+                      <h3 className="flex items-center gap-2 font-semibold text-sm">
+                        <div className="flex h-6 w-6 items-center justify-center rounded-md bg-chart-4/10">
+                          <BookOpen className="h-3.5 w-3.5 text-chart-4" />
+                        </div>
+                        {isAr ? "القواعد والشروط" : "Rules & Regulations"}
+                      </h3>
+                    </div>
+                    <CardContent className="p-4 md:p-6">
+                      <div className="prose prose-sm max-w-none dark:prose-invert">
+                        <p className="whitespace-pre-wrap text-sm leading-relaxed">
+                          {isAr && competition.rules_summary_ar ? competition.rules_summary_ar : competition.rules_summary}
+                        </p>
+                      </div>
+                    </CardContent>
+                  </Card>
+                )}
+
+                {/* Scoring Notes */}
+                {(competition.scoring_notes || competition.scoring_notes_ar) && (
+                  <Card className="overflow-hidden">
+                    <div className="border-b bg-muted/30 px-4 py-3">
+                      <h3 className="flex items-center gap-2 font-semibold text-sm">
+                        <div className="flex h-6 w-6 items-center justify-center rounded-md bg-chart-3/10">
+                          <ClipboardList className="h-3.5 w-3.5 text-chart-3" />
+                        </div>
+                        {isAr ? "ملاحظات التقييم" : "Scoring Methodology"}
+                      </h3>
+                    </div>
+                    <CardContent className="p-4 md:p-6">
+                      <p className="text-sm whitespace-pre-wrap leading-relaxed text-muted-foreground">
+                        {isAr && competition.scoring_notes_ar ? competition.scoring_notes_ar : competition.scoring_notes}
+                      </p>
+                      {criteria && criteria.length > 0 && (
+                        <div className="mt-4 space-y-2">
+                          {criteria.map((crit) => (
+                            <div key={crit.id} className="flex items-center gap-3 rounded-lg bg-muted/40 px-3 py-2">
+                              <div className="flex h-8 w-8 items-center justify-center rounded-md bg-primary/10 text-xs font-bold text-primary">
+                                {(Number(crit.weight) * 100).toFixed(0)}%
+                              </div>
+                              <div className="min-w-0">
+                                <p className="text-sm font-medium">{isAr && crit.name_ar ? crit.name_ar : crit.name}</p>
+                                <p className="text-[11px] text-muted-foreground truncate">
+                                  {isAr && crit.description_ar ? crit.description_ar : crit.description}
+                                </p>
+                              </div>
+                              <Badge variant="outline" className="ms-auto shrink-0 text-[10px]">
+                                {isAr ? "الأقصى" : "Max"}: {crit.max_score}
+                              </Badge>
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                    </CardContent>
+                  </Card>
+                )}
+
+                {/* Categories Quick View */}
+                {categories && categories.length > 0 && (
+                  <Card className="overflow-hidden">
+                    <div className="border-b bg-muted/30 px-4 py-3 flex items-center justify-between">
+                      <h3 className="flex items-center gap-2 font-semibold text-sm">
+                        <div className="flex h-6 w-6 items-center justify-center rounded-md bg-primary/10">
+                          <Trophy className="h-3.5 w-3.5 text-primary" />
+                        </div>
+                        {isAr ? "الفئات" : "Categories"}
+                        <Badge variant="secondary" className="ms-1">{categories.length}</Badge>
+                      </h3>
+                      <Button variant="ghost" size="sm" className="text-xs" onClick={() => setActiveTab("categories")}>
+                        {isAr ? "عرض الكل" : "View All"}
+                      </Button>
+                    </div>
+                    <CardContent className="p-4">
+                      <div className="grid gap-2 sm:grid-cols-2">
+                        {categories.slice(0, 6).map((cat) => (
+                          <div key={cat.id} className="flex items-center gap-3 rounded-lg border p-2.5">
+                            {cat.cover_image_url ? (
+                              <img src={cat.cover_image_url} alt={cat.name} className="h-10 w-10 rounded-md object-cover shrink-0" />
+                            ) : (
+                              <div className="h-10 w-10 rounded-md bg-primary/5 flex items-center justify-center shrink-0">
+                                <Trophy className="h-4 w-4 text-primary/30" />
+                              </div>
+                            )}
+                            <div className="min-w-0">
+                              <p className="text-sm font-medium truncate">{isAr && cat.name_ar ? cat.name_ar : cat.name}</p>
+                              <div className="flex items-center gap-2 text-[10px] text-muted-foreground">
+                                {cat.max_participants && <span><Users className="inline h-2.5 w-2.5 me-0.5" />{cat.max_participants}</span>}
+                                <Badge variant="outline" className="text-[9px] h-4 px-1">{cat.gender === "male" ? (isAr ? "ذكور" : "Male") : cat.gender === "female" ? (isAr ? "إناث" : "Female") : (isAr ? "مختلط" : "Mixed")}</Badge>
+                              </div>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                      {categories.length > 6 && (
+                        <p className="text-xs text-center text-muted-foreground mt-3">
+                          {isAr ? `+${categories.length - 6} فئات أخرى` : `+${categories.length - 6} more categories`}
+                        </p>
+                      )}
+                    </CardContent>
+                  </Card>
+                )}
+
                 {/* Sponsors */}
                 <CompetitionSponsorsPanel competitionId={competition.id} isOrganizer={isOrganizer} />
 
