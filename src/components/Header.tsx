@@ -47,6 +47,9 @@ export function Header() {
                 <Link to="/masterclasses">Masterclasses</Link>
               </Button>
               <Button variant="ghost" size="sm" asChild>
+                <Link to="/exhibitions">{t("exhibitions")}</Link>
+              </Button>
+              <Button variant="ghost" size="sm" asChild>
                 <Link to="/profile">{t("myProfile")}</Link>
               </Button>
               <Button variant="ghost" size="sm" asChild>
@@ -114,6 +117,9 @@ export function Header() {
                 </Button>
                 <Button variant="ghost" size="sm" asChild onClick={() => setMenuOpen(false)}>
                   <Link to="/community">{t("community")}</Link>
+                </Button>
+                <Button variant="ghost" size="sm" asChild onClick={() => setMenuOpen(false)}>
+                  <Link to="/exhibitions">{t("exhibitions")}</Link>
                 </Button>
                 <Button variant="ghost" size="sm" asChild onClick={() => setMenuOpen(false)}>
                   <Link to="/profile">{t("myProfile")}</Link>

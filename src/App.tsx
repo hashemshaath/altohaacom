@@ -63,6 +63,9 @@ import Masterclasses from "./pages/Masterclasses";
 import MasterclassDetail from "./pages/MasterclassDetail";
 import MasterclassesAdmin from "./pages/admin/MasterclassesAdmin";
 import AnalyticsDashboard from "./pages/admin/AnalyticsDashboard";
+import Exhibitions from "./pages/Exhibitions";
+import ExhibitionDetail from "./pages/ExhibitionDetail";
+import ExhibitionsAdmin from "./pages/admin/ExhibitionsAdmin";
 
 // Company Portal Pages
 import CompanyPortalLayout from "./pages/CompanyPortal";
@@ -124,6 +127,8 @@ const App = () => (
                 <Route path="/masterclasses" element={<Masterclasses />} />
                 <Route path="/masterclasses/:id" element={<MasterclassDetail />} />
                 <Route path="/install" element={<Install />} />
+                <Route path="/exhibitions" element={<Exhibitions />} />
+                <Route path="/exhibitions/:slug" element={<ExhibitionDetail />} />
                 
                 {/* Admin Routes */}
                 <Route path="/admin" element={<ProtectedRoute><AdminLayout /></ProtectedRoute>}>
@@ -152,6 +157,7 @@ const App = () => (
                   <Route path="sponsors" element={<SponsorsAdmin />} />
                   <Route path="masterclasses" element={<MasterclassesAdmin />} />
                   <Route path="analytics" element={<AnalyticsDashboard />} />
+                  <Route path="exhibitions" element={<ExhibitionsAdmin />} />
                 </Route>
 
                 {/* Company Portal Routes */}
