@@ -27,6 +27,15 @@ import { AutoIssueCertificates } from "@/components/competitions/AutoIssueCertif
 import { RequirementsListPanel } from "@/components/competitions/RequirementsListPanel";
 import type { Database } from "@/integrations/supabase/types";
 
+function EmptyState({ icon, text }: { icon: React.ReactNode; text: string }) {
+  return (
+    <div className="flex flex-col items-center justify-center py-12 text-center">
+      <div className="mb-3 rounded-full bg-muted p-3 text-muted-foreground">{icon}</div>
+      <p className="text-sm text-muted-foreground">{text}</p>
+    </div>
+  );
+}
+
 type CompetitionStatus = Database["public"]["Enums"]["competition_status"];
 
 const statusColors: Record<CompetitionStatus, string> = {
@@ -46,7 +55,7 @@ export default function CompetitionDetail() {
   const { user } = useAuth();
   const [activeTab, setActiveTab] = useState("overview");
   const [showRegistrationForm, setShowRegistrationForm] = useState(false);
-  const isMobile = typeof window !== "undefined" && window.innerWidth < 768;
+  // removed static isMobile check
 
   const { data: competition, isLoading } = useQuery({
     queryKey: ["competition", id],
@@ -247,44 +256,99 @@ export default function CompetitionDetail() {
           </div>
         )}
 
+        {/* Key details strip - visible on mobile before tabs */}
+        <div className="mb-6 grid grid-cols-2 gap-3 lg:hidden">
+          <Card className="p-3">
+            <div className="flex items-center gap-2 text-sm">
+              <Calendar className="h-4 w-4 text-muted-foreground shrink-0" />
+              <div>
+                <p className="font-medium">{format(new Date(competition.competition_start), "MMM d, yyyy")}</p>
+                <p className="text-xs text-muted-foreground">{t("startDate")}</p>
+              </div>
+            </div>
+          </Card>
+          <Card className="p-3">
+            <div className="flex items-center gap-2 text-sm">
+              {competition.is_virtual ? (
+                <>
+                  <Globe className="h-4 w-4 text-muted-foreground shrink-0" />
+                  <div>
+                    <p className="font-medium">{t("virtual")}</p>
+                    <p className="text-xs text-muted-foreground">{t("venue")}</p>
+                  </div>
+                </>
+              ) : (
+                <>
+                  <MapPin className="h-4 w-4 text-muted-foreground shrink-0" />
+                  <div>
+                    <p className="font-medium line-clamp-1">{venue || competition.city || "TBA"}</p>
+                    <p className="text-xs text-muted-foreground">{t("venue")}</p>
+                  </div>
+                </>
+              )}
+            </div>
+          </Card>
+        </div>
+
+        {/* Mobile registration CTA */}
+        {canRegister && !showRegistrationForm && (
+          <div className="mb-6 lg:hidden">
+            <Button className="w-full" onClick={() => setShowRegistrationForm(true)}>
+              {t("registerNow")}
+            </Button>
+          </div>
+        )}
+        {myRegistration && (
+          <div className="mb-6 flex items-center gap-2 text-primary lg:hidden">
+            <CheckCircle className="h-5 w-5" />
+            <span className="text-sm font-medium">
+              {myRegistration.status === "approved"
+                ? t("alreadyRegistered")
+                : t("registrationPending")}
+            </span>
+          </div>
+        )}
+
         <div className="grid gap-8 lg:grid-cols-3">
           {/* Main Content */}
           <div className="lg:col-span-2">
             <Tabs value={activeTab} onValueChange={setActiveTab}>
-              <TabsList className="h-auto w-full justify-start overflow-x-auto overflow-y-hidden whitespace-nowrap md:flex-wrap">
-                <TabsTrigger value="overview">Overview</TabsTrigger>
-                <TabsTrigger value="participants" className="gap-1">
-                  <Users className="h-4 w-4" />
-                  {language === "ar" ? "المشاركين" : "Participants"}
-                </TabsTrigger>
-                <TabsTrigger value="categories">{t("categories")}</TabsTrigger>
-                <TabsTrigger value="criteria">{t("criteria")}</TabsTrigger>
-                <TabsTrigger value="leaderboard" className="gap-1">
-                  <Trophy className="h-4 w-4" />
-                  {language === "ar" ? "المتصدرين" : "Leaderboard"}
-                </TabsTrigger>
-                <TabsTrigger value="knowledge" className="gap-1">
-                  <BookOpen className="h-4 w-4" />
-                  {language === "ar" ? "قاعدة المعرفة" : "Knowledge"}
-                </TabsTrigger>
-                {isOrganizer && (
-                  <TabsTrigger value="requirements" className="gap-1">
-                    <ClipboardList className="h-4 w-4" />
-                    {language === "ar" ? "المتطلبات" : "Requirements"}
+              <div className="overflow-x-auto -mx-4 px-4 md:mx-0 md:px-0">
+                <TabsList className="h-auto w-max justify-start gap-1">
+                  <TabsTrigger value="overview" className="text-xs sm:text-sm">Overview</TabsTrigger>
+                  <TabsTrigger value="participants" className="gap-1 text-xs sm:text-sm">
+                    <Users className="h-3.5 w-3.5" />
+                    <span className="hidden sm:inline">{language === "ar" ? "المشاركين" : "Participants"}</span>
                   </TabsTrigger>
-                )}
-                {isOrganizer && (
-                  <TabsTrigger value="manage" className="gap-1">
-                    <Settings className="h-4 w-4" />
-                    {language === "ar" ? "إدارة" : "Manage"}
+                  <TabsTrigger value="categories" className="text-xs sm:text-sm">{t("categories")}</TabsTrigger>
+                  <TabsTrigger value="criteria" className="text-xs sm:text-sm">{t("criteria")}</TabsTrigger>
+                  <TabsTrigger value="leaderboard" className="gap-1 text-xs sm:text-sm">
+                    <Trophy className="h-3.5 w-3.5" />
+                    <span className="hidden sm:inline">{language === "ar" ? "المتصدرين" : "Leaderboard"}</span>
                   </TabsTrigger>
-                )}
-              </TabsList>
+                  <TabsTrigger value="knowledge" className="gap-1 text-xs sm:text-sm">
+                    <BookOpen className="h-3.5 w-3.5" />
+                    <span className="hidden sm:inline">{language === "ar" ? "قاعدة المعرفة" : "Knowledge"}</span>
+                  </TabsTrigger>
+                  {isOrganizer && (
+                    <TabsTrigger value="requirements" className="gap-1 text-xs sm:text-sm">
+                      <ClipboardList className="h-3.5 w-3.5" />
+                      <span className="hidden sm:inline">{language === "ar" ? "المتطلبات" : "Requirements"}</span>
+                    </TabsTrigger>
+                  )}
+                  {isOrganizer && (
+                    <TabsTrigger value="manage" className="gap-1 text-xs sm:text-sm">
+                      <Settings className="h-3.5 w-3.5" />
+                      <span className="hidden sm:inline">{language === "ar" ? "إدارة" : "Manage"}</span>
+                    </TabsTrigger>
+                  )}
+                </TabsList>
+              </div>
 
               <TabsContent value="overview" className="mt-6 space-y-6">
                 {description && (
                   <Card>
-                    <CardContent className="prose prose-sm max-w-none p-6 dark:prose-invert">
+                    <CardContent className="prose prose-sm max-w-none p-4 md:p-6 dark:prose-invert">
                       <p className="whitespace-pre-wrap">{description}</p>
                     </CardContent>
                   </Card>
@@ -326,17 +390,17 @@ export default function CompetitionDetail() {
                     ))}
                   </div>
                 ) : (
-                  <p className="text-muted-foreground">No categories defined yet.</p>
+                  <EmptyState icon={<Users className="h-6 w-6" />} text={language === "ar" ? "لم يتم تحديد فئات بعد" : "No categories defined yet."} />
                 )}
               </TabsContent>
 
               <TabsContent value="criteria" className="mt-6">
                 {criteria && criteria.length > 0 ? (
-                  <div className="space-y-4">
+                  <div className="space-y-3">
                     {criteria.map((crit) => (
                       <Card key={crit.id}>
-                        <CardContent className="flex items-start justify-between p-4">
-                          <div>
+                        <CardContent className="flex items-start justify-between gap-4 p-4">
+                          <div className="min-w-0">
                             <h4 className="font-medium">
                               {language === "ar" && crit.name_ar ? crit.name_ar : crit.name}
                             </h4>
@@ -346,7 +410,7 @@ export default function CompetitionDetail() {
                                 : crit.description}
                             </p>
                           </div>
-                          <div className="text-right">
+                          <div className="shrink-0 text-right">
                             <Badge variant="outline">Max: {crit.max_score}</Badge>
                             <p className="mt-1 text-xs text-muted-foreground">
                               Weight: {(Number(crit.weight) * 100).toFixed(0)}%
@@ -357,7 +421,7 @@ export default function CompetitionDetail() {
                     ))}
                   </div>
                 ) : (
-                  <p className="text-muted-foreground">No judging criteria defined yet.</p>
+                  <EmptyState icon={<ClipboardList className="h-6 w-6" />} text={language === "ar" ? "لم يتم تحديد معايير بعد" : "No judging criteria defined yet."} />
                 )}
               </TabsContent>
 
@@ -392,8 +456,8 @@ export default function CompetitionDetail() {
             </Tabs>
           </div>
 
-          {/* Sidebar */}
-          <div className="space-y-6">
+          {/* Sidebar — hidden on mobile (key info shown above) */}
+          <div className="hidden space-y-6 lg:block">
             {/* Registration Card */}
             <Card>
               <CardHeader>
@@ -494,14 +558,6 @@ export default function CompetitionDetail() {
         </div>
       </main>
 
-      {/* Mobile sticky registration CTA */}
-      {canRegister && !showRegistrationForm && (
-        <div className="fixed bottom-0 left-0 right-0 z-40 border-t bg-background p-3 md:hidden">
-          <Button className="w-full" onClick={() => setShowRegistrationForm(true)}>
-            {t("registerNow")}
-          </Button>
-        </div>
-      )}
 
       <Footer />
     </div>
