@@ -14,7 +14,7 @@ export function useCompanyAccess() {
         .from("company_contacts")
         .select("company_id")
         .eq("user_id", user.id)
-        .single();
+        .maybeSingle();
 
       if (error || !data) return null;
       return data.company_id;
@@ -36,7 +36,7 @@ export function useCompanyProfile(companyId: string | null) {
         .from("companies")
         .select("*")
         .eq("id", companyId)
-        .single();
+        .maybeSingle();
 
       if (error) throw error;
       return data;
