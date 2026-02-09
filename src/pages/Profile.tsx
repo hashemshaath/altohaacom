@@ -10,9 +10,12 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Separator } from "@/components/ui/separator";
+import { Skeleton } from "@/components/ui/skeleton";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { SEOHead } from "@/components/SEOHead";
 import { useToast } from "@/hooks/use-toast";
-import { User, Edit, Save } from "lucide-react";
+import { User, Edit, Save, MapPin, ChefHat, Award, X } from "lucide-react";
 import type { Database } from "@/integrations/supabase/types";
 
 type Profile = Database["public"]["Tables"]["profiles"]["Row"];
@@ -21,8 +24,9 @@ type AppRole = Database["public"]["Enums"]["app_role"];
 
 export default function Profile() {
   const { user } = useAuth();
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
   const { toast } = useToast();
+  const isAr = language === "ar";
   const [profile, setProfile] = useState<Profile | null>(null);
   const [roles, setRoles] = useState<AppRole[]>([]);
   const [editing, setEditing] = useState(false);
@@ -89,9 +93,8 @@ export default function Profile() {
     if (error) {
       toast({ variant: "destructive", title: "Error", description: error.message });
     } else {
-      toast({ title: "Success", description: "Profile updated successfully." });
+      toast({ title: "Success", description: isAr ? "تم تحديث الملف الشخصي" : "Profile updated successfully." });
       setEditing(false);
-      // Refresh profile
       const { data } = await supabase.from("profiles").select("*").eq("user_id", user.id).single();
       if (data) setProfile(data);
     }
@@ -100,9 +103,25 @@ export default function Profile() {
   if (loading) {
     return (
       <div className="flex min-h-screen flex-col">
+        <SEOHead title="Profile" description="Your Altohaa profile" />
         <Header />
-        <main className="flex flex-1 items-center justify-center">
-          <p className="text-muted-foreground">{t("loading")}</p>
+        <main className="container flex-1 py-8">
+          <div className="grid gap-6 md:grid-cols-3">
+            <Card>
+              <CardContent className="flex flex-col items-center gap-3 p-6">
+                <Skeleton className="h-20 w-20 rounded-full" />
+                <Skeleton className="h-6 w-32" />
+                <Skeleton className="h-4 w-24" />
+              </CardContent>
+            </Card>
+            <Card className="md:col-span-2">
+              <CardContent className="space-y-4 p-6">
+                <Skeleton className="h-5 w-40" />
+                <Skeleton className="h-20 w-full" />
+                <Skeleton className="h-5 w-32" />
+              </CardContent>
+            </Card>
+          </div>
         </main>
       </div>
     );
@@ -112,17 +131,18 @@ export default function Profile() {
 
   return (
     <div className="flex min-h-screen flex-col">
+      <SEOHead title="Profile" description="Your Altohaa profile" />
       <Header />
-      <main className="container flex-1 py-6 md:py-8">
+      <main className="container flex-1 py-8 md:py-10">
         {showCompletePrompt && (
-          <Card className="mb-6 border-primary/30 bg-primary/5">
+          <Card className="mb-6 border-primary/20 bg-primary/5">
             <CardContent className="flex flex-col gap-3 p-4 sm:flex-row sm:items-center sm:justify-between">
               <div>
-                <h3 className="font-semibold">{t("completeProfile")}</h3>
-                <p className="text-sm text-muted-foreground">{t("completeProfileDesc")}</p>
+                <h3 className="text-sm font-semibold">{t("completeProfile")}</h3>
+                <p className="text-xs text-muted-foreground">{t("completeProfileDesc")}</p>
               </div>
               <Button onClick={() => setEditing(true)} size="sm" className="w-full sm:w-auto">
-                <Edit className="mr-1.5 h-4 w-4" />
+                <Edit className="me-1.5 h-3.5 w-3.5" />
                 {t("editProfile")}
               </Button>
             </CardContent>
@@ -130,54 +150,76 @@ export default function Profile() {
         )}
 
         <div className="grid gap-6 md:grid-cols-3">
-          {/* Profile card */}
+          {/* Profile sidebar */}
           <Card className="md:col-span-1">
-            <CardContent className="flex flex-col items-center p-6 text-center">
-              <div className="mb-4 flex h-20 w-20 items-center justify-center rounded-full bg-primary/10 md:h-24 md:w-24">
-                <User className="h-10 w-10 text-primary md:h-12 md:w-12" />
-              </div>
-              <h2 className="mb-1 font-serif text-xl font-bold">
-                {profile?.full_name || user?.email}
-              </h2>
-              {profile?.username && (
-                <p className="mb-2 text-sm text-muted-foreground">@{profile.username}</p>
-              )}
-              <div className="mb-2 flex flex-wrap justify-center gap-1">
-                {roles.map((r) => (
-                  <Badge key={r} variant="secondary" className="capitalize">
-                    {t(r as any)}
+            <CardContent className="p-5">
+              <div className="flex flex-col items-center text-center">
+                <div className="mb-3 flex h-20 w-20 items-center justify-center rounded-full bg-primary/10">
+                  <User className="h-9 w-9 text-primary" />
+                </div>
+                <h2 className="font-serif text-lg font-bold">
+                  {profile?.full_name || user?.email}
+                </h2>
+                {profile?.username && (
+                  <p className="text-xs text-muted-foreground">@{profile.username}</p>
+                )}
+
+                {/* Roles */}
+                {roles.length > 0 && (
+                  <div className="mt-2.5 flex flex-wrap justify-center gap-1">
+                    {roles.map((r) => (
+                      <Badge key={r} variant="secondary" className="capitalize text-[10px]">
+                        {t(r as any)}
+                      </Badge>
+                    ))}
+                  </div>
+                )}
+
+                <Separator className="my-4" />
+
+                {/* Details */}
+                <div className="w-full space-y-2.5 text-start">
+                  {profile?.specialization && (
+                    <div className="flex items-center gap-2 text-sm">
+                      <ChefHat className="h-3.5 w-3.5 shrink-0 text-muted-foreground" />
+                      <span>{profile.specialization}</span>
+                    </div>
+                  )}
+                  {profile?.experience_level && (
+                    <div className="flex items-center gap-2 text-sm">
+                      <Award className="h-3.5 w-3.5 shrink-0 text-muted-foreground" />
+                      <span className="capitalize">{t(profile.experience_level as any)}</span>
+                    </div>
+                  )}
+                  {profile?.location && (
+                    <div className="flex items-center gap-2 text-sm">
+                      <MapPin className="h-3.5 w-3.5 shrink-0 text-muted-foreground" />
+                      <span>{profile.location}</span>
+                    </div>
+                  )}
+                </div>
+
+                {profile?.account_number && (
+                  <Badge variant="outline" className="mt-3 font-mono text-[10px]">
+                    {profile.account_number}
                   </Badge>
-                ))}
+                )}
+
+                {!editing && (
+                  <Button onClick={() => setEditing(true)} variant="outline" size="sm" className="mt-4 w-full">
+                    <Edit className="me-1.5 h-3.5 w-3.5" />
+                    {t("editProfile")}
+                  </Button>
+                )}
               </div>
-              {profile?.experience_level && (
-                <Badge variant="outline" className="capitalize">
-                  {t(profile.experience_level as any)}
-                </Badge>
-              )}
-              {profile?.specialization && (
-                <p className="mt-2 text-sm text-muted-foreground">{profile.specialization}</p>
-              )}
-              {profile?.location && (
-                <p className="text-sm text-muted-foreground">📍 {profile.location}</p>
-              )}
-              {profile?.account_number && (
-                <Badge variant="outline" className="mt-2 font-mono text-xs">
-                  {profile.account_number}
-                </Badge>
-              )}
-              {!editing && (
-                <Button onClick={() => setEditing(true)} variant="outline" size="sm" className="mt-4 w-full sm:w-auto">
-                  <Edit className="mr-1.5 h-4 w-4" />
-                  {t("editProfile")}
-                </Button>
-              )}
             </CardContent>
           </Card>
 
           {/* Details / Edit form */}
           <Card className="md:col-span-2">
-            <CardHeader>
-              <CardTitle className="font-serif">
+            <CardHeader className="pb-3">
+              <CardTitle className="flex items-center gap-2 text-base">
+                <User className="h-4 w-4 text-primary" />
                 {editing ? t("editProfile") : t("myProfile")}
               </CardTitle>
             </CardHeader>
@@ -185,16 +227,16 @@ export default function Profile() {
               {editing ? (
                 <div className="space-y-5">
                   <div className="grid gap-4 sm:grid-cols-2">
-                    <div className="space-y-2">
-                      <Label>{t("fullName")}</Label>
+                    <div className="space-y-1.5">
+                      <Label className="text-xs">{t("fullName")}</Label>
                       <Input value={form.full_name} onChange={(e) => setForm({ ...form, full_name: e.target.value })} />
                     </div>
-                    <div className="space-y-2">
-                      <Label>{t("specialization")}</Label>
+                    <div className="space-y-1.5">
+                      <Label className="text-xs">{t("specialization")}</Label>
                       <Input value={form.specialization} onChange={(e) => setForm({ ...form, specialization: e.target.value })} placeholder={t("specialization")} />
                     </div>
-                    <div className="space-y-2">
-                      <Label>{t("experienceLevel")}</Label>
+                    <div className="space-y-1.5">
+                      <Label className="text-xs">{t("experienceLevel")}</Label>
                       <Select value={form.experience_level} onValueChange={(v) => setForm({ ...form, experience_level: v as ExperienceLevel })}>
                         <SelectTrigger><SelectValue /></SelectTrigger>
                         <SelectContent>
@@ -204,25 +246,28 @@ export default function Profile() {
                         </SelectContent>
                       </Select>
                     </div>
-                    <div className="space-y-2">
-                      <Label>{t("location")}</Label>
+                    <div className="space-y-1.5">
+                      <Label className="text-xs">{t("location")}</Label>
                       <Input value={form.location} onChange={(e) => setForm({ ...form, location: e.target.value })} placeholder={t("location")} />
                     </div>
-                    <div className="space-y-2">
-                      <Label>{t("phone")}</Label>
+                    <div className="space-y-1.5">
+                      <Label className="text-xs">{t("phone")}</Label>
                       <Input value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })} />
                     </div>
-                    <div className="space-y-2">
-                      <Label>{t("website")}</Label>
+                    <div className="space-y-1.5">
+                      <Label className="text-xs">{t("website")}</Label>
                       <Input value={form.website} onChange={(e) => setForm({ ...form, website: e.target.value })} placeholder="https://..." />
                     </div>
                   </div>
-                  <div className="space-y-2">
-                    <Label>{t("bio")}</Label>
+                  <div className="space-y-1.5">
+                    <Label className="text-xs">{t("bio")}</Label>
                     <Textarea value={form.bio} onChange={(e) => setForm({ ...form, bio: e.target.value })} rows={3} placeholder={t("bio")} />
                   </div>
+
+                  <Separator />
+
                   <div>
-                    <h4 className="mb-3 text-sm font-semibold text-muted-foreground">{t("socialMedia")}</h4>
+                    <h4 className="mb-3 text-xs font-semibold uppercase tracking-wider text-muted-foreground">{t("socialMedia")}</h4>
                     <div className="grid gap-3 sm:grid-cols-2">
                       <Input placeholder="Instagram" value={form.instagram} onChange={(e) => setForm({ ...form, instagram: e.target.value })} />
                       <Input placeholder="Twitter / X" value={form.twitter} onChange={(e) => setForm({ ...form, twitter: e.target.value })} />
@@ -232,9 +277,12 @@ export default function Profile() {
                     </div>
                   </div>
                   <div className="flex flex-col-reverse gap-2 sm:flex-row">
-                    <Button variant="outline" onClick={() => setEditing(false)} className="w-full sm:w-auto">Cancel</Button>
+                    <Button variant="outline" onClick={() => setEditing(false)} className="w-full sm:w-auto">
+                      <X className="me-1.5 h-3.5 w-3.5" />
+                      {isAr ? "إلغاء" : "Cancel"}
+                    </Button>
                     <Button onClick={handleSave} disabled={saving} className="w-full sm:w-auto">
-                      <Save className="mr-1.5 h-4 w-4" />
+                      <Save className="me-1.5 h-3.5 w-3.5" />
                       {saving ? t("saving") : t("saveProfile")}
                     </Button>
                   </div>
@@ -243,30 +291,30 @@ export default function Profile() {
                 <div className="space-y-4">
                   {profile?.bio && (
                     <div>
-                      <h4 className="text-sm font-medium text-muted-foreground">{t("bio")}</h4>
-                      <p className="mt-1">{profile.bio}</p>
+                      <h4 className="mb-1 text-xs font-semibold uppercase tracking-wider text-muted-foreground">{t("bio")}</h4>
+                      <p className="text-sm leading-relaxed">{profile.bio}</p>
                     </div>
                   )}
                   {(profile?.instagram || profile?.twitter || profile?.facebook || profile?.linkedin || profile?.youtube) && (
                     <div>
-                      <h4 className="text-sm font-medium text-muted-foreground">{t("socialMedia")}</h4>
-                      <div className="mt-2 flex flex-wrap gap-2">
-                        {profile.instagram && <Badge variant="outline">IG: {profile.instagram}</Badge>}
-                        {profile.twitter && <Badge variant="outline">X: {profile.twitter}</Badge>}
-                        {profile.facebook && <Badge variant="outline">FB: {profile.facebook}</Badge>}
-                        {profile.linkedin && <Badge variant="outline">LI: {profile.linkedin}</Badge>}
-                        {profile.youtube && <Badge variant="outline">YT: {profile.youtube}</Badge>}
+                      <h4 className="mb-2 text-xs font-semibold uppercase tracking-wider text-muted-foreground">{t("socialMedia")}</h4>
+                      <div className="flex flex-wrap gap-1.5">
+                        {profile.instagram && <Badge variant="outline" className="text-[10px]">IG: {profile.instagram}</Badge>}
+                        {profile.twitter && <Badge variant="outline" className="text-[10px]">X: {profile.twitter}</Badge>}
+                        {profile.facebook && <Badge variant="outline" className="text-[10px]">FB: {profile.facebook}</Badge>}
+                        {profile.linkedin && <Badge variant="outline" className="text-[10px]">LI: {profile.linkedin}</Badge>}
+                        {profile.youtube && <Badge variant="outline" className="text-[10px]">YT: {profile.youtube}</Badge>}
                       </div>
                     </div>
                   )}
                   {!profile?.bio && !profile?.instagram && (
-                    <div className="flex flex-col items-center py-8 text-center">
-                      <div className="mb-3 rounded-full bg-muted p-3">
-                        <Edit className="h-6 w-6 text-muted-foreground" />
+                    <div className="flex flex-col items-center py-10 text-center">
+                      <div className="mb-3 rounded-2xl bg-muted/60 p-4">
+                        <Edit className="h-7 w-7 text-muted-foreground/40" />
                       </div>
                       <p className="mb-3 text-sm text-muted-foreground">{t("completeProfileDesc")}</p>
                       <Button variant="outline" size="sm" onClick={() => setEditing(true)}>
-                        <Edit className="mr-1.5 h-4 w-4" />
+                        <Edit className="me-1.5 h-3.5 w-3.5" />
                         {t("editProfile")}
                       </Button>
                     </div>
