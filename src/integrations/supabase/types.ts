@@ -3356,6 +3356,47 @@ export type Database = {
           },
         ]
       }
+      masterclass_reviews: {
+        Row: {
+          created_at: string
+          id: string
+          masterclass_id: string
+          rating: number
+          review: string | null
+          review_ar: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          masterclass_id: string
+          rating: number
+          review?: string | null
+          review_ar?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          masterclass_id?: string
+          rating?: number
+          review?: string | null
+          review_ar?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "masterclass_reviews_masterclass_id_fkey"
+            columns: ["masterclass_id"]
+            isOneToOne: false
+            referencedRelation: "masterclasses"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       masterclasses: {
         Row: {
           category: string

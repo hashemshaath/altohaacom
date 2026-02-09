@@ -16,9 +16,10 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { useToast } from "@/hooks/use-toast";
 import {
   BookOpen, Plus, Edit, Trash2, Users, Eye, EyeOff,
-  GraduationCap, ChevronDown, ChevronUp, Save, X,
+  GraduationCap, ChevronDown, ChevronUp, Save, X, ArrowLeft,
 } from "lucide-react";
 import { format } from "date-fns";
+import { ModuleLessonManager } from "@/components/masterclass/ModuleLessonManager";
 
 export default function MasterclassesAdmin() {
   const { language } = useLanguage();
@@ -27,6 +28,7 @@ export default function MasterclassesAdmin() {
   const queryClient = useQueryClient();
   const [showCreateForm, setShowCreateForm] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
+  const [managingModulesId, setManagingModulesId] = useState<string | null>(null);
 
   const [form, setForm] = useState({
     title: "",
@@ -114,6 +116,25 @@ export default function MasterclassesAdmin() {
     };
     return <Badge variant={variants[status] || "secondary"}>{status}</Badge>;
   };
+
+  // Show module manager for a specific masterclass
+  if (managingModulesId) {
+    const mc = masterclasses.find((m: any) => m.id === managingModulesId);
+    return (
+      <div className="space-y-6">
+        <div className="flex items-center gap-3">
+          <Button variant="ghost" size="sm" onClick={() => setManagingModulesId(null)}>
+            <ArrowLeft className="h-4 w-4 mr-2" />
+            {language === "ar" ? "رجوع" : "Back"}
+          </Button>
+          <h1 className="font-serif text-2xl font-bold">
+            {mc ? (language === "ar" && mc.title_ar ? mc.title_ar : mc.title) : ""}
+          </h1>
+        </div>
+        <ModuleLessonManager masterclassId={managingModulesId} />
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6">
@@ -274,6 +295,10 @@ export default function MasterclassesAdmin() {
                     <TableCell className="text-sm">{format(new Date(mc.created_at), "MMM d, yyyy")}</TableCell>
                     <TableCell>
                       <div className="flex gap-1">
+                        <Button size="sm" variant="outline" onClick={() => setManagingModulesId(mc.id)}>
+                          <BookOpen className="h-3 w-3 mr-1" />
+                          {language === "ar" ? "المحتوى" : "Content"}
+                        </Button>
                         {mc.status === "draft" && (
                           <Button size="sm" variant="outline" onClick={() => updateStatusMutation.mutate({ id: mc.id, status: "published" })}>
                             <Eye className="h-3 w-3 mr-1" />
