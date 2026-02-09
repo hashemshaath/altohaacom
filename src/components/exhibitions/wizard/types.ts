@@ -1,0 +1,65 @@
+export interface ExhibitionFormData {
+  title: string;
+  titleAr: string;
+  description: string;
+  descriptionAr: string;
+  type: string;
+  coverImageUrl: string;
+  startDate: string;
+  endDate: string;
+  registrationDeadline: string;
+  isVirtual: boolean;
+  virtualLink: string;
+  venue: string;
+  venueAr: string;
+  city: string;
+  country: string;
+  mapUrl: string;
+  organizerName: string;
+  organizerNameAr: string;
+  organizerEmail: string;
+  organizerPhone: string;
+  organizerWebsite: string;
+  registrationUrl: string;
+  websiteUrl: string;
+  isFree: boolean;
+  ticketPrice: string;
+  ticketPriceAr: string;
+  maxAttendees: string;
+  tags: string;
+  targetAudience: string;
+  isFeatured: boolean;
+}
+
+export const initialExhibitionData: ExhibitionFormData = {
+  title: "",
+  titleAr: "",
+  description: "",
+  descriptionAr: "",
+  type: "exhibition",
+  coverImageUrl: "",
+  startDate: "",
+  endDate: "",
+  registrationDeadline: "",
+  isVirtual: false,
+  virtualLink: "",
+  venue: "",
+  venueAr: "",
+  city: "",
+  country: "",
+  mapUrl: "",
+  organizerName: "",
+  organizerNameAr: "",
+  organizerEmail: "",
+  organizerPhone: "",
+  organizerWebsite: "",
+  registrationUrl: "",
+  websiteUrl: "",
+  isFree: false,
+  ticketPrice: "",
+  ticketPriceAr: "",
+  maxAttendees: "",
+  tags: "",
+  targetAudience: "",
+  isFeatured: false,
+};

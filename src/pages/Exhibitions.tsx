@@ -12,7 +12,9 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Search, CalendarDays, Landmark, MapPin } from "lucide-react";
+import { Search, CalendarDays, Landmark, MapPin, Plus } from "lucide-react";
+import { Link } from "react-router-dom";
+import { useAuth } from "@/contexts/AuthContext";
 import { ExhibitionCard, type Exhibition } from "@/components/exhibitions/ExhibitionCard";
 import { isPast, isFuture, isWithinInterval } from "date-fns";
 import type { Database } from "@/integrations/supabase/types";
@@ -33,6 +35,7 @@ const typeOptions: { value: ExhibitionType | "all"; en: string; ar: string }[] =
 export default function Exhibitions() {
   const { language } = useLanguage();
   const isAr = language === "ar";
+  const { user } = useAuth();
   const [search, setSearch] = useState("");
   const [activeTab, setActiveTab] = useState("all");
   const [typeFilter, setTypeFilter] = useState<string>("all");
@@ -85,8 +88,8 @@ export default function Exhibitions() {
 
       <main className="container flex-1 py-8 md:py-12">
         {/* Header */}
-        <div className="mb-8">
-          <div className="mb-1.5 flex items-center gap-2.5">
+        <div className="mb-8 flex items-start justify-between gap-4">
+          <div className="flex items-center gap-2.5">
             <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-primary/10">
               <Landmark className="h-7 w-7 text-primary" />
             </div>
@@ -101,6 +104,14 @@ export default function Exhibitions() {
               </p>
             </div>
           </div>
+          {user && (
+            <Button asChild>
+              <Link to="/exhibitions/create">
+                <Plus className="me-2 h-4 w-4" />
+                {isAr ? "إنشاء فعالية" : "Create Event"}
+              </Link>
+            </Button>
+          )}
         </div>
 
         {/* Featured */}
