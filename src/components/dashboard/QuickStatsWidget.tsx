@@ -16,9 +16,9 @@ interface StatCardProps {
 
 function StatCard({ icon: Icon, label, value, iconBg = "bg-primary/10", iconColor = "text-primary" }: StatCardProps) {
   return (
-    <Card>
+    <Card className="border-border/60">
       <CardContent className="flex items-center gap-3.5 p-4">
-        <div className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-lg ${iconBg}`}>
+        <div className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-xl ${iconBg}`}>
           <Icon className={`h-5 w-5 ${iconColor}`} />
         </div>
         <div className="min-w-0">
