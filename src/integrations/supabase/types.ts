@@ -1383,36 +1383,45 @@ export type Database = {
       competition_categories: {
         Row: {
           competition_id: string
+          cover_image_url: string | null
           created_at: string
           description: string | null
           description_ar: string | null
+          gender: string | null
           id: string
           max_participants: number | null
           name: string
           name_ar: string | null
           sort_order: number | null
+          status: string | null
         }
         Insert: {
           competition_id: string
+          cover_image_url?: string | null
           created_at?: string
           description?: string | null
           description_ar?: string | null
+          gender?: string | null
           id?: string
           max_participants?: number | null
           name: string
           name_ar?: string | null
           sort_order?: number | null
+          status?: string | null
         }
         Update: {
           competition_id?: string
+          cover_image_url?: string | null
           created_at?: string
           description?: string | null
           description_ar?: string | null
+          gender?: string | null
           id?: string
           max_participants?: number | null
           name?: string
           name_ar?: string | null
           sort_order?: number | null
+          status?: string | null
         }
         Relationships: [
           {
@@ -1636,6 +1645,56 @@ export type Database = {
             columns: ["package_id"]
             isOneToOne: false
             referencedRelation: "sponsorship_packages"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      competition_team_members: {
+        Row: {
+          competition_id: string
+          created_at: string
+          email: string | null
+          id: string
+          is_active: boolean | null
+          name: string
+          name_ar: string | null
+          notes: string | null
+          phone: string | null
+          role: string
+          user_id: string | null
+        }
+        Insert: {
+          competition_id: string
+          created_at?: string
+          email?: string | null
+          id?: string
+          is_active?: boolean | null
+          name: string
+          name_ar?: string | null
+          notes?: string | null
+          phone?: string | null
+          role: string
+          user_id?: string | null
+        }
+        Update: {
+          competition_id?: string
+          created_at?: string
+          email?: string | null
+          id?: string
+          is_active?: boolean | null
+          name?: string
+          name_ar?: string | null
+          notes?: string | null
+          phone?: string | null
+          role?: string
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "competition_team_members_competition_id_fkey"
+            columns: ["competition_id"]
+            isOneToOne: false
+            referencedRelation: "competitions"
             referencedColumns: ["id"]
           },
         ]

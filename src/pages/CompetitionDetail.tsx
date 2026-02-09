@@ -42,6 +42,8 @@ import { CompetitionKnowledgeTab } from "@/components/competitions/CompetitionKn
 import { CompetitionSponsorsPanel } from "@/components/competitions/CompetitionSponsorsPanel";
 import { AutoIssueCertificates } from "@/components/competitions/AutoIssueCertificates";
 import { RequirementsListPanel } from "@/components/competitions/RequirementsListPanel";
+import { CategoryManagementPanel } from "@/components/competitions/CategoryManagementPanel";
+import { CompetitionTeamPanel } from "@/components/competitions/CompetitionTeamPanel";
 import type { Database } from "@/integrations/supabase/types";
 
 function EmptyState({ icon, text }: { icon: React.ReactNode; text: string }) {
@@ -408,6 +410,10 @@ export default function CompetitionDetail() {
                     <Trophy className="h-3.5 w-3.5 hidden sm:block" />
                     {isAr ? "المتصدرين" : "Leaderboard"}
                   </TabsTrigger>
+                  <TabsTrigger value="team" className="gap-1 text-xs sm:text-sm">
+                    <Users className="h-3.5 w-3.5 hidden sm:block" />
+                    {isAr ? "الفريق" : "Team"}
+                  </TabsTrigger>
                   <TabsTrigger value="knowledge" className="gap-1 text-xs sm:text-sm">
                     <BookOpen className="h-3.5 w-3.5 hidden sm:block" />
                     {isAr ? "المعرفة" : "Knowledge"}
@@ -448,33 +454,11 @@ export default function CompetitionDetail() {
               </TabsContent>
 
               <TabsContent value="categories" className="mt-6">
-                {categories && categories.length > 0 ? (
-                  <div className="grid gap-4 sm:grid-cols-2">
-                    {categories.map((cat) => (
-                      <Card key={cat.id} className="overflow-hidden">
-                        <div className="border-b bg-muted/30 px-4 py-3">
-                          <h4 className="text-sm font-semibold">
-                            {isAr && cat.name_ar ? cat.name_ar : cat.name}
-                          </h4>
-                        </div>
-                        <CardContent className="p-4 text-sm text-muted-foreground">
-                          {isAr && cat.description_ar ? cat.description_ar : cat.description}
-                          {cat.max_participants && (
-                            <p className="mt-2.5 flex items-center gap-1.5 text-xs">
-                              <Users className="h-3 w-3" />
-                              {isAr ? `الحد الأقصى ${cat.max_participants}` : `Max ${cat.max_participants} participants`}
-                            </p>
-                          )}
-                        </CardContent>
-                      </Card>
-                    ))}
-                  </div>
-                ) : (
-                  <EmptyState
-                    icon={<Users className="h-6 w-6" />}
-                    text={isAr ? "لم يتم تحديد فئات بعد" : "No categories defined yet."}
-                  />
-                )}
+                <CategoryManagementPanel
+                  competitionId={competition.id}
+                  isOrganizer={isOrganizer}
+                  competitionStatus={competition.status}
+                />
               </TabsContent>
 
               <TabsContent value="criteria" className="mt-6">
@@ -515,6 +499,10 @@ export default function CompetitionDetail() {
 
               <TabsContent value="leaderboard" className="mt-6">
                 <CompetitionLeaderboard competitionId={competition.id} />
+              </TabsContent>
+
+              <TabsContent value="team" className="mt-6">
+                <CompetitionTeamPanel competitionId={competition.id} isOrganizer={isOrganizer} />
               </TabsContent>
 
               <TabsContent value="knowledge" className="mt-6">
