@@ -11,7 +11,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Calendar, MapPin, Users, Globe, Trophy, ArrowLeft, CheckCircle, Settings, Pencil, Award } from "lucide-react";
+import { Calendar, MapPin, Users, Globe, Trophy, ArrowLeft, CheckCircle, Settings, Pencil, Award, BookOpen } from "lucide-react";
 import { format } from "date-fns";
 import { CompetitionStatusManager } from "@/components/competitions/CompetitionStatusManager";
 import { RegistrationForm } from "@/components/competitions/RegistrationDialog";
@@ -20,6 +20,7 @@ import { JudgeAssignmentPanel } from "@/components/competitions/JudgeAssignmentP
 import { CompetitionLeaderboard } from "@/components/competitions/CompetitionLeaderboard";
 import { ParticipantsList } from "@/components/competitions/ParticipantsList";
 import { JudgesList } from "@/components/competitions/JudgesList";
+import { CompetitionKnowledgeTab } from "@/components/competitions/CompetitionKnowledgeTab";
 import type { Database } from "@/integrations/supabase/types";
 
 type CompetitionStatus = Database["public"]["Enums"]["competition_status"];
@@ -238,6 +239,10 @@ export default function CompetitionDetail() {
                   <Trophy className="h-4 w-4" />
                   {language === "ar" ? "المتصدرين" : "Leaderboard"}
                 </TabsTrigger>
+                <TabsTrigger value="knowledge" className="gap-1">
+                  <BookOpen className="h-4 w-4" />
+                  {language === "ar" ? "قاعدة المعرفة" : "Knowledge"}
+                </TabsTrigger>
                 {isOrganizer && (
                   <TabsTrigger value="manage" className="gap-1">
                     <Settings className="h-4 w-4" />
@@ -325,6 +330,10 @@ export default function CompetitionDetail() {
 
               <TabsContent value="leaderboard" className="mt-6">
                 <CompetitionLeaderboard competitionId={competition.id} />
+              </TabsContent>
+
+              <TabsContent value="knowledge" className="mt-6">
+                <CompetitionKnowledgeTab competitionId={competition.id} isOrganizer={isOrganizer} />
               </TabsContent>
 
               {isOrganizer && (
