@@ -18,7 +18,7 @@ export default function Community() {
         <h1 className="mb-6 font-serif text-3xl font-bold">{t("community")}</h1>
         
         <Tabs defaultValue="feed" className="w-full">
-          <TabsList className="mb-6">
+          <TabsList className="mb-6 h-auto w-full justify-start overflow-x-auto overflow-y-hidden whitespace-nowrap">
             <TabsTrigger value="feed">{t("feed")}</TabsTrigger>
             <TabsTrigger value="recipes">{language === "ar" ? "الوصفات" : "Recipes"}</TabsTrigger>
             <TabsTrigger value="events">{language === "ar" ? "الفعاليات" : "Events"}</TabsTrigger>

@@ -127,7 +127,7 @@ export default function Exhibitions() {
 
         {/* Tabs */}
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-          <TabsList>
+          <TabsList className="h-auto w-full justify-start overflow-x-auto overflow-y-hidden whitespace-nowrap">
             <TabsTrigger value="all">{isAr ? "الكل" : "All"}</TabsTrigger>
             <TabsTrigger value="current">
               <CalendarDays className="mr-1.5 h-4 w-4" />

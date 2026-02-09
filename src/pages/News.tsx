@@ -141,7 +141,7 @@ export default function News() {
         <div className="container mx-auto px-4 py-8">
           {/* Tabs */}
           <Tabs value={activeType} onValueChange={setActiveType} className="mb-8">
-            <TabsList className="w-full justify-start">
+            <TabsList className="h-auto w-full justify-start overflow-x-auto overflow-y-hidden whitespace-nowrap">
               <TabsTrigger value="all">{language === "ar" ? "الكل" : "All"}</TabsTrigger>
               <TabsTrigger value="news">{language === "ar" ? "أخبار" : "News"}</TabsTrigger>
               <TabsTrigger value="blog">{language === "ar" ? "مدونة" : "Blog"}</TabsTrigger>
