@@ -1484,6 +1484,10 @@ export type Database = {
           organizer_id: string
           registration_end: string | null
           registration_start: string | null
+          rules_summary: string | null
+          rules_summary_ar: string | null
+          scoring_notes: string | null
+          scoring_notes_ar: string | null
           status: Database["public"]["Enums"]["competition_status"]
           title: string
           title_ar: string | null
@@ -1506,6 +1510,10 @@ export type Database = {
           organizer_id: string
           registration_end?: string | null
           registration_start?: string | null
+          rules_summary?: string | null
+          rules_summary_ar?: string | null
+          scoring_notes?: string | null
+          scoring_notes_ar?: string | null
           status?: Database["public"]["Enums"]["competition_status"]
           title: string
           title_ar?: string | null
@@ -1528,6 +1536,10 @@ export type Database = {
           organizer_id?: string
           registration_end?: string | null
           registration_start?: string | null
+          rules_summary?: string | null
+          rules_summary_ar?: string | null
+          scoring_notes?: string | null
+          scoring_notes_ar?: string | null
           status?: Database["public"]["Enums"]["competition_status"]
           title?: string
           title_ar?: string | null

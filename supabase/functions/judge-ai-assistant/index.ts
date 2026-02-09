@@ -44,14 +44,25 @@ serve(async (req) => {
 
     const { data: resources } = await resourceQuery;
 
-    // Fetch judging criteria for the competition
+    // Fetch judging criteria and competition rules
     let criteriaContext = "";
+    let rulesContext = "";
     if (competition_id) {
-      const { data: criteria } = await supabase
-        .from("judging_criteria")
-        .select("name, name_ar, description, description_ar, max_score, weight")
-        .eq("competition_id", competition_id)
-        .order("sort_order");
+      const [criteriaResult, compResult] = await Promise.all([
+        supabase
+          .from("judging_criteria")
+          .select("name, name_ar, description, description_ar, max_score, weight")
+          .eq("competition_id", competition_id)
+          .order("sort_order"),
+        supabase
+          .from("competitions")
+          .select("rules_summary, rules_summary_ar, scoring_notes, scoring_notes_ar, title, title_ar")
+          .eq("id", competition_id)
+          .single(),
+      ]);
+
+      const criteria = criteriaResult.data;
+      const comp = compResult.data;
 
       if (criteria && criteria.length > 0) {
         criteriaContext = criteria.map(c =>
@@ -59,6 +70,13 @@ serve(async (req) => {
             ? `• ${c.name_ar || c.name}: ${c.description_ar || c.description || ""} (الدرجة القصوى: ${c.max_score}, الوزن: ${c.weight})`
             : `• ${c.name}: ${c.description || ""} (Max: ${c.max_score}, Weight: ${c.weight})`
         ).join("\n");
+      }
+
+      if (comp) {
+        const rules = language === "ar" ? (comp.rules_summary_ar || comp.rules_summary) : comp.rules_summary;
+        const scoring = language === "ar" ? (comp.scoring_notes_ar || comp.scoring_notes) : comp.scoring_notes;
+        if (rules) rulesContext += `\n\nCompetition Rules:\n${rules}`;
+        if (scoring) rulesContext += `\n\nScoring Notes:\n${scoring}`;
       }
     }
 
@@ -111,6 +129,7 @@ serve(async (req) => {
       ? `أنت مساعد ذكي متخصص في التحكيم لمنصة التُهاء للمسابقات الطهوية. أنت تساعد الحكام في تقييم المشاركين وفهم معايير التحكيم.
 
 ${criteriaContext ? `معايير التحكيم الحالية:\n${criteriaContext}\n` : ""}
+${rulesContext ? `${rulesContext}\n` : ""}
 
 قاعدة المعرفة:
 ${knowledgeContext}
@@ -125,6 +144,7 @@ ${knowledgeContext}
       : `You are an expert judging assistant for Altohaa, a culinary competition platform. You help judges evaluate participants and understand judging criteria.
 
 ${criteriaContext ? `Current Competition Criteria:\n${criteriaContext}\n` : ""}
+${rulesContext ? `${rulesContext}\n` : ""}
 
 Knowledge Base:
 ${knowledgeContext}
