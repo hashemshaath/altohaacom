@@ -40,6 +40,7 @@ const Masterclasses = lazy(() => import("./pages/Masterclasses"));
 const MasterclassDetail = lazy(() => import("./pages/MasterclassDetail"));
 const Exhibitions = lazy(() => import("./pages/Exhibitions"));
 const ExhibitionDetail = lazy(() => import("./pages/ExhibitionDetail"));
+const CreateExhibition = lazy(() => import("./pages/CreateExhibition"));
 const Entities = lazy(() => import("./pages/Entities"));
 const EntityDetail = lazy(() => import("./pages/EntityDetail"));
 
@@ -138,6 +139,7 @@ const App = () => (
                 <Route path="/masterclasses/:id" element={<MasterclassDetail />} />
                 <Route path="/install" element={<Install />} />
                 <Route path="/exhibitions" element={<Exhibitions />} />
+                <Route path="/exhibitions/create" element={<ProtectedRoute><CreateExhibition /></ProtectedRoute>} />
                 <Route path="/exhibitions/:slug" element={<ExhibitionDetail />} />
                 <Route path="/entities" element={<Entities />} />
                 <Route path="/entities/:slug" element={<EntityDetail />} />
