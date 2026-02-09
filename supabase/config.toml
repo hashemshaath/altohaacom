@@ -11,3 +11,9 @@ verify_jwt = false
 
 [functions.firecrawl-scrape]
 verify_jwt = false
+
+[functions.process-email-queue]
+verify_jwt = false
+
+[functions.broadcast-notification]
+verify_jwt = false
