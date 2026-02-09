@@ -4193,6 +4193,371 @@ export type Database = {
           },
         ]
       }
+      requirement_items: {
+        Row: {
+          category: string
+          created_at: string | null
+          created_by: string | null
+          currency: string | null
+          default_quantity: number | null
+          description: string | null
+          description_ar: string | null
+          estimated_cost: number | null
+          id: string
+          image_url: string | null
+          is_active: boolean | null
+          name: string
+          name_ar: string | null
+          subcategory: string | null
+          unit: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          category: string
+          created_at?: string | null
+          created_by?: string | null
+          currency?: string | null
+          default_quantity?: number | null
+          description?: string | null
+          description_ar?: string | null
+          estimated_cost?: number | null
+          id?: string
+          image_url?: string | null
+          is_active?: boolean | null
+          name: string
+          name_ar?: string | null
+          subcategory?: string | null
+          unit?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          category?: string
+          created_at?: string | null
+          created_by?: string | null
+          currency?: string | null
+          default_quantity?: number | null
+          description?: string | null
+          description_ar?: string | null
+          estimated_cost?: number | null
+          id?: string
+          image_url?: string | null
+          is_active?: boolean | null
+          name?: string
+          name_ar?: string | null
+          subcategory?: string | null
+          unit?: string | null
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
+      requirement_list_assignments: {
+        Row: {
+          assigned_at: string | null
+          assigned_by: string
+          can_edit: boolean | null
+          id: string
+          list_id: string
+          role: string | null
+          user_id: string
+        }
+        Insert: {
+          assigned_at?: string | null
+          assigned_by: string
+          can_edit?: boolean | null
+          id?: string
+          list_id: string
+          role?: string | null
+          user_id: string
+        }
+        Update: {
+          assigned_at?: string | null
+          assigned_by?: string
+          can_edit?: boolean | null
+          id?: string
+          list_id?: string
+          role?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "requirement_list_assignments_list_id_fkey"
+            columns: ["list_id"]
+            isOneToOne: false
+            referencedRelation: "requirement_lists"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      requirement_list_items: {
+        Row: {
+          added_by: string | null
+          created_at: string | null
+          currency: string | null
+          custom_name: string | null
+          custom_name_ar: string | null
+          estimated_cost: number | null
+          id: string
+          item_id: string | null
+          list_id: string
+          notes: string | null
+          priority: string | null
+          quantity: number
+          sort_order: number | null
+          sponsor_id: string | null
+          status: string | null
+          unit: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          added_by?: string | null
+          created_at?: string | null
+          currency?: string | null
+          custom_name?: string | null
+          custom_name_ar?: string | null
+          estimated_cost?: number | null
+          id?: string
+          item_id?: string | null
+          list_id: string
+          notes?: string | null
+          priority?: string | null
+          quantity?: number
+          sort_order?: number | null
+          sponsor_id?: string | null
+          status?: string | null
+          unit?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          added_by?: string | null
+          created_at?: string | null
+          currency?: string | null
+          custom_name?: string | null
+          custom_name_ar?: string | null
+          estimated_cost?: number | null
+          id?: string
+          item_id?: string | null
+          list_id?: string
+          notes?: string | null
+          priority?: string | null
+          quantity?: number
+          sort_order?: number | null
+          sponsor_id?: string | null
+          status?: string | null
+          unit?: string | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "requirement_list_items_item_id_fkey"
+            columns: ["item_id"]
+            isOneToOne: false
+            referencedRelation: "requirement_items"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "requirement_list_items_list_id_fkey"
+            columns: ["list_id"]
+            isOneToOne: false
+            referencedRelation: "requirement_lists"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "requirement_list_items_sponsor_id_fkey"
+            columns: ["sponsor_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      requirement_list_shares: {
+        Row: {
+          id: string
+          list_id: string
+          permission: string | null
+          shared_at: string | null
+          shared_by: string
+          shared_with_user_id: string | null
+        }
+        Insert: {
+          id?: string
+          list_id: string
+          permission?: string | null
+          shared_at?: string | null
+          shared_by: string
+          shared_with_user_id?: string | null
+        }
+        Update: {
+          id?: string
+          list_id?: string
+          permission?: string | null
+          shared_at?: string | null
+          shared_by?: string
+          shared_with_user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "requirement_list_shares_list_id_fkey"
+            columns: ["list_id"]
+            isOneToOne: false
+            referencedRelation: "requirement_lists"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      requirement_lists: {
+        Row: {
+          approved_at: string | null
+          approved_by: string | null
+          category: string
+          competition_id: string
+          created_at: string | null
+          created_by: string
+          description: string | null
+          description_ar: string | null
+          id: string
+          notes: string | null
+          status: string
+          title: string
+          title_ar: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          approved_at?: string | null
+          approved_by?: string | null
+          category?: string
+          competition_id: string
+          created_at?: string | null
+          created_by: string
+          description?: string | null
+          description_ar?: string | null
+          id?: string
+          notes?: string | null
+          status?: string
+          title: string
+          title_ar?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          approved_at?: string | null
+          approved_by?: string | null
+          category?: string
+          competition_id?: string
+          created_at?: string | null
+          created_by?: string
+          description?: string | null
+          description_ar?: string | null
+          id?: string
+          notes?: string | null
+          status?: string
+          title?: string
+          title_ar?: string | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "requirement_lists_competition_id_fkey"
+            columns: ["competition_id"]
+            isOneToOne: false
+            referencedRelation: "competitions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      requirement_sponsorship_requests: {
+        Row: {
+          competition_id: string
+          created_at: string | null
+          currency: string | null
+          deadline: string | null
+          description: string | null
+          description_ar: string | null
+          id: string
+          items: Json | null
+          list_id: string
+          request_type: string
+          requested_by: string
+          responded_at: string | null
+          responded_by: string | null
+          response_notes: string | null
+          sent_at: string | null
+          sponsor_company_id: string
+          status: string
+          title: string
+          title_ar: string | null
+          total_estimated_cost: number | null
+          updated_at: string | null
+        }
+        Insert: {
+          competition_id: string
+          created_at?: string | null
+          currency?: string | null
+          deadline?: string | null
+          description?: string | null
+          description_ar?: string | null
+          id?: string
+          items?: Json | null
+          list_id: string
+          request_type?: string
+          requested_by: string
+          responded_at?: string | null
+          responded_by?: string | null
+          response_notes?: string | null
+          sent_at?: string | null
+          sponsor_company_id: string
+          status?: string
+          title: string
+          title_ar?: string | null
+          total_estimated_cost?: number | null
+          updated_at?: string | null
+        }
+        Update: {
+          competition_id?: string
+          created_at?: string | null
+          currency?: string | null
+          deadline?: string | null
+          description?: string | null
+          description_ar?: string | null
+          id?: string
+          items?: Json | null
+          list_id?: string
+          request_type?: string
+          requested_by?: string
+          responded_at?: string | null
+          responded_by?: string | null
+          response_notes?: string | null
+          sent_at?: string | null
+          sponsor_company_id?: string
+          status?: string
+          title?: string
+          title_ar?: string | null
+          total_estimated_cost?: number | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "requirement_sponsorship_requests_competition_id_fkey"
+            columns: ["competition_id"]
+            isOneToOne: false
+            referencedRelation: "competitions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "requirement_sponsorship_requests_list_id_fkey"
+            columns: ["list_id"]
+            isOneToOne: false
+            referencedRelation: "requirement_lists"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "requirement_sponsorship_requests_sponsor_company_id_fkey"
+            columns: ["sponsor_company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       sponsorship_packages: {
         Row: {
           benefits: Json | null

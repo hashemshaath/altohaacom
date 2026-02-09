@@ -11,7 +11,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Calendar, MapPin, Users, Globe, Trophy, ArrowLeft, CheckCircle, Settings, Pencil, Award, BookOpen } from "lucide-react";
+import { Calendar, MapPin, Users, Globe, Trophy, ArrowLeft, CheckCircle, Settings, Pencil, Award, BookOpen, ClipboardList } from "lucide-react";
 import { format } from "date-fns";
 import { CompetitionStatusManager } from "@/components/competitions/CompetitionStatusManager";
 import { RegistrationForm } from "@/components/competitions/RegistrationDialog";
@@ -23,6 +23,7 @@ import { JudgesList } from "@/components/competitions/JudgesList";
 import { CompetitionKnowledgeTab } from "@/components/competitions/CompetitionKnowledgeTab";
 import { CompetitionSponsorsPanel } from "@/components/competitions/CompetitionSponsorsPanel";
 import { AutoIssueCertificates } from "@/components/competitions/AutoIssueCertificates";
+import { RequirementsListPanel } from "@/components/competitions/RequirementsListPanel";
 import type { Database } from "@/integrations/supabase/types";
 
 type CompetitionStatus = Database["public"]["Enums"]["competition_status"];
@@ -246,6 +247,12 @@ export default function CompetitionDetail() {
                   {language === "ar" ? "قاعدة المعرفة" : "Knowledge"}
                 </TabsTrigger>
                 {isOrganizer && (
+                  <TabsTrigger value="requirements" className="gap-1">
+                    <ClipboardList className="h-4 w-4" />
+                    {language === "ar" ? "المتطلبات" : "Requirements"}
+                  </TabsTrigger>
+                )}
+                {isOrganizer && (
                   <TabsTrigger value="manage" className="gap-1">
                     <Settings className="h-4 w-4" />
                     {language === "ar" ? "إدارة" : "Manage"}
@@ -340,6 +347,12 @@ export default function CompetitionDetail() {
               <TabsContent value="knowledge" className="mt-6">
                 <CompetitionKnowledgeTab competitionId={competition.id} isOrganizer={isOrganizer} />
               </TabsContent>
+
+              {isOrganizer && (
+                <TabsContent value="requirements" className="mt-6">
+                  <RequirementsListPanel competitionId={competition.id} isOrganizer={isOrganizer} />
+                </TabsContent>
+              )}
 
               {isOrganizer && (
                 <TabsContent value="manage" className="mt-6 space-y-8">
