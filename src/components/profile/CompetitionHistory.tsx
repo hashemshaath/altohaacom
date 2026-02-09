@@ -69,13 +69,13 @@ export function CompetitionHistory({ userId }: CompetitionHistoryProps) {
 
   if (isLoading) {
     return (
-      <Card>
-        <CardHeader>
-          <Skeleton className="h-6 w-40" />
-        </CardHeader>
-        <CardContent className="space-y-4">
+      <Card className="overflow-hidden">
+        <div className="border-b bg-muted/30 px-4 py-3">
+          <Skeleton className="h-5 w-40" />
+        </div>
+        <CardContent className="p-4 space-y-3">
           {[1, 2, 3].map(i => (
-            <Skeleton key={i} className="h-20 w-full" />
+            <Skeleton key={i} className="h-20 w-full rounded-md" />
           ))}
         </CardContent>
       </Card>
@@ -84,17 +84,27 @@ export function CompetitionHistory({ userId }: CompetitionHistoryProps) {
 
   if (!registrations || registrations.length === 0) {
     return (
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Trophy className="h-5 w-5 text-primary" />
+      <Card className="overflow-hidden">
+        <div className="border-b bg-muted/30 px-4 py-3">
+          <h3 className="flex items-center gap-2 text-sm font-semibold">
+            <div className="flex h-6 w-6 items-center justify-center rounded-md bg-primary/10">
+              <Trophy className="h-3.5 w-3.5 text-primary" />
+            </div>
             {language === "ar" ? "سجل المسابقات" : "Competition History"}
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <p className="text-muted-foreground text-center py-8">
-            {language === "ar" ? "لا توجد مسابقات سابقة" : "No competition history yet"}
-          </p>
+          </h3>
+        </div>
+        <CardContent className="p-4">
+          <div className="py-12 text-center">
+            <div className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-muted">
+              <Trophy className="h-6 w-6 text-muted-foreground/40" />
+            </div>
+            <p className="text-sm text-muted-foreground">
+              {language === "ar" ? "لا توجد مسابقات سابقة" : "No competition history yet"}
+            </p>
+            <p className="mt-0.5 text-xs text-muted-foreground/60">
+              {language === "ar" ? "سجل في مسابقة للبدء" : "Register for a competition to get started"}
+            </p>
+          </div>
         </CardContent>
       </Card>
     );
@@ -121,17 +131,19 @@ export function CompetitionHistory({ userId }: CompetitionHistoryProps) {
   };
 
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle className="flex items-center gap-2">
-          <Trophy className="h-5 w-5 text-primary" />
+    <Card className="overflow-hidden">
+      <div className="flex items-center justify-between border-b bg-muted/30 px-4 py-3">
+        <h3 className="flex items-center gap-2 text-sm font-semibold">
+          <div className="flex h-6 w-6 items-center justify-center rounded-md bg-primary/10">
+            <Trophy className="h-3.5 w-3.5 text-primary" />
+          </div>
           {language === "ar" ? "سجل المسابقات" : "Competition History"}
-          <Badge variant="secondary" className="ml-2">
-            {registrations.length}
-          </Badge>
-        </CardTitle>
-      </CardHeader>
-      <CardContent className="space-y-4">
+        </h3>
+        <Badge variant="secondary" className="text-[10px]">
+          {registrations.length}
+        </Badge>
+      </div>
+      <CardContent className="p-4 space-y-3">
         {registrations.map((reg) => (
           <Link
             key={reg.id}

@@ -102,27 +102,34 @@ export default function Profile() {
 
   if (loading) {
     return (
-      <div className="flex min-h-screen flex-col">
+      <div className="flex min-h-screen flex-col bg-background">
         <SEOHead title="Profile" description="Your Altohaa profile" />
         <Header />
-        <main className="container flex-1 py-8">
+        <main className="container flex-1 py-6 md:py-8">
           <div className="grid gap-6 md:grid-cols-3">
-            <Card>
+            <Card className="overflow-hidden">
+              <div className="border-b bg-muted/30 px-4 py-3">
+                <Skeleton className="h-5 w-24" />
+              </div>
               <CardContent className="flex flex-col items-center gap-3 p-6">
                 <Skeleton className="h-20 w-20 rounded-full" />
-                <Skeleton className="h-6 w-32" />
-                <Skeleton className="h-4 w-24" />
+                <Skeleton className="h-5 w-32" />
+                <Skeleton className="h-3 w-24" />
               </CardContent>
             </Card>
-            <Card className="md:col-span-2">
-              <CardContent className="space-y-4 p-6">
+            <Card className="md:col-span-2 overflow-hidden">
+              <div className="border-b bg-muted/30 px-4 py-3">
                 <Skeleton className="h-5 w-40" />
-                <Skeleton className="h-20 w-full" />
-                <Skeleton className="h-5 w-32" />
+              </div>
+              <CardContent className="space-y-4 p-6">
+                <Skeleton className="h-4 w-20" />
+                <Skeleton className="h-20 w-full rounded-md" />
+                <Skeleton className="h-4 w-32" />
               </CardContent>
             </Card>
           </div>
         </main>
+        <Footer />
       </div>
     );
   }
@@ -130,10 +137,10 @@ export default function Profile() {
   const showCompletePrompt = profile && !profile.profile_completed && !editing;
 
   return (
-    <div className="flex min-h-screen flex-col">
+    <div className="flex min-h-screen flex-col bg-background">
       <SEOHead title="Profile" description="Your Altohaa profile" />
       <Header />
-      <main className="container flex-1 py-8 md:py-10">
+      <main className="container flex-1 py-6 md:py-8">
         {showCompletePrompt && (
           <Card className="mb-6 border-primary/20 bg-primary/5">
             <CardContent className="flex flex-col gap-3 p-4 sm:flex-row sm:items-center sm:justify-between">
@@ -151,7 +158,15 @@ export default function Profile() {
 
         <div className="grid gap-6 md:grid-cols-3">
           {/* Profile sidebar */}
-          <Card className="md:col-span-1">
+          <Card className="md:col-span-1 overflow-hidden">
+            <div className="border-b bg-muted/30 px-4 py-3">
+              <h3 className="flex items-center gap-2 text-sm font-semibold">
+                <div className="flex h-6 w-6 items-center justify-center rounded-md bg-primary/10">
+                  <User className="h-3.5 w-3.5 text-primary" />
+                </div>
+                {isAr ? "الملف الشخصي" : "Profile"}
+              </h3>
+            </div>
             <CardContent className="p-5">
               <div className="flex flex-col items-center text-center">
                 <div className="mb-3 flex h-20 w-20 items-center justify-center rounded-full bg-primary/10">
@@ -216,14 +231,16 @@ export default function Profile() {
           </Card>
 
           {/* Details / Edit form */}
-          <Card className="md:col-span-2">
-            <CardHeader className="pb-3">
-              <CardTitle className="flex items-center gap-2 text-base">
-                <User className="h-4 w-4 text-primary" />
+          <Card className="md:col-span-2 overflow-hidden">
+            <div className="border-b bg-muted/30 px-4 py-3">
+              <h3 className="flex items-center gap-2 text-sm font-semibold">
+                <div className="flex h-6 w-6 items-center justify-center rounded-md bg-accent/10">
+                  <Edit className="h-3.5 w-3.5 text-accent-foreground" />
+                </div>
                 {editing ? t("editProfile") : t("myProfile")}
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
+              </h3>
+            </div>
+            <CardContent className="p-4 md:p-6">
               {editing ? (
                 <div className="space-y-5">
                   <div className="grid gap-4 sm:grid-cols-2">
@@ -308,11 +325,12 @@ export default function Profile() {
                     </div>
                   )}
                   {!profile?.bio && !profile?.instagram && (
-                    <div className="flex flex-col items-center py-10 text-center">
-                      <div className="mb-3 rounded-2xl bg-muted/60 p-4">
-                        <Edit className="h-7 w-7 text-muted-foreground/40" />
+                    <div className="flex flex-col items-center py-12 text-center">
+                      <div className="mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-muted">
+                        <Edit className="h-6 w-6 text-muted-foreground/40" />
                       </div>
-                      <p className="mb-3 text-sm text-muted-foreground">{t("completeProfileDesc")}</p>
+                      <p className="mb-1 text-sm text-muted-foreground">{t("completeProfileDesc")}</p>
+                      <p className="mb-4 text-xs text-muted-foreground/60">{isAr ? "أضف نبذة عنك وروابطك الاجتماعية" : "Add your bio and social links"}</p>
                       <Button variant="outline" size="sm" onClick={() => setEditing(true)}>
                         <Edit className="me-1.5 h-3.5 w-3.5" />
                         {t("editProfile")}
