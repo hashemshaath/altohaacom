@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Separator } from "@/components/ui/separator";
+import { Skeleton } from "@/components/ui/skeleton";
 import { Heart, MessageCircle, User, Send } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { PostComments } from "@/components/community/PostComments";
@@ -48,7 +49,6 @@ export function FeedTab() {
       return;
     }
 
-    // Fetch author profiles and engagement data
     const authorIds = [...new Set(postsData?.map((p) => p.author_id) || [])];
     const postIds = postsData?.map((p) => p.id) || [];
 
@@ -94,12 +94,10 @@ export function FeedTab() {
   const handlePost = async () => {
     if (!user || !newPost.trim()) return;
     setPosting(true);
-
     const { error } = await supabase.from("posts").insert({
       author_id: user.id,
       content: newPost.trim(),
     });
-
     setPosting(false);
     if (error) {
       toast({ variant: "destructive", title: "Error", description: error.message });
@@ -111,13 +109,11 @@ export function FeedTab() {
 
   const handleLike = async (postId: string, isLiked: boolean) => {
     if (!user) return;
-
     if (isLiked) {
       await supabase.from("post_likes").delete().eq("post_id", postId).eq("user_id", user.id);
     } else {
       await supabase.from("post_likes").insert({ post_id: postId, user_id: user.id });
     }
-
     setPosts((prev) =>
       prev.map((p) =>
         p.id === postId
@@ -143,18 +139,35 @@ export function FeedTab() {
   };
 
   if (loading) {
-    return <div className="text-center py-8 text-muted-foreground">{t("loading")}</div>;
+    return (
+      <div className="mx-auto max-w-2xl space-y-4">
+        {[1, 2, 3].map((i) => (
+          <Card key={i}>
+            <CardContent className="p-4">
+              <div className="flex gap-3">
+                <Skeleton className="h-9 w-9 shrink-0 rounded-full" />
+                <div className="flex-1 space-y-2">
+                  <Skeleton className="h-4 w-32" />
+                  <Skeleton className="h-12 w-full" />
+                  <Skeleton className="h-4 w-20" />
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        ))}
+      </div>
+    );
   }
 
   return (
-    <div className="max-w-2xl mx-auto space-y-4">
+    <div className="mx-auto max-w-2xl space-y-4">
       {/* Create post */}
       {user && (
         <Card>
           <CardContent className="p-4">
             <div className="flex gap-3">
               <Avatar className="h-9 w-9 shrink-0">
-                <AvatarFallback>
+                <AvatarFallback className="bg-primary/10 text-primary">
                   <User className="h-4 w-4" />
                 </AvatarFallback>
               </Avatar>
@@ -167,8 +180,8 @@ export function FeedTab() {
                   rows={2}
                 />
                 <div className="flex justify-end">
-                  <Button size="sm" onClick={handlePost} disabled={posting || !newPost.trim()}>
-                    <Send className="h-3.5 w-3.5 me-1.5" />
+                  <Button size="sm" onClick={handlePost} disabled={posting || !newPost.trim()} className="gap-1.5">
+                    <Send className="h-3.5 w-3.5" />
                     {posting ? t("loading") : t("post")}
                   </Button>
                 </div>
@@ -181,8 +194,11 @@ export function FeedTab() {
       {/* Posts feed */}
       {posts.length === 0 ? (
         <Card>
-          <CardContent className="py-12 text-center text-muted-foreground">
-            {t("noPostsYet")}
+          <CardContent className="flex flex-col items-center py-12 text-center">
+            <div className="mb-3 rounded-2xl bg-muted/60 p-4">
+              <MessageCircle className="h-7 w-7 text-muted-foreground/40" />
+            </div>
+            <p className="text-sm text-muted-foreground">{t("noPostsYet")}</p>
           </CardContent>
         </Card>
       ) : (
@@ -191,28 +207,28 @@ export function FeedTab() {
             <CardContent className="p-4">
               <div className="flex gap-3">
                 <Avatar className="h-9 w-9 shrink-0">
-                  <AvatarFallback>
-                    <User className="h-4 w-4" />
+                  <AvatarFallback className="bg-primary/10 text-primary text-xs">
+                    {(post.author_name || "C")[0].toUpperCase()}
                   </AvatarFallback>
                 </Avatar>
-                <div className="flex-1 min-w-0">
+                <div className="min-w-0 flex-1">
                   <div className="flex items-center gap-2">
-                    <span className="font-semibold text-sm truncate">{post.author_name || "Chef"}</span>
+                    <span className="truncate text-sm font-semibold">{post.author_name || "Chef"}</span>
                     {post.author_specialization && (
-                      <span className="text-xs text-muted-foreground truncate hidden sm:inline">
+                      <span className="hidden truncate text-xs text-muted-foreground sm:inline">
                         · {post.author_specialization}
                       </span>
                     )}
-                    <span className="text-xs text-muted-foreground ms-auto shrink-0">
+                    <span className="ms-auto shrink-0 text-[10px] text-muted-foreground">
                       {formatDate(post.created_at)}
                     </span>
                   </div>
-                  <p className="mt-2 text-sm whitespace-pre-wrap">{post.content}</p>
+                  <p className="mt-2 whitespace-pre-wrap text-sm leading-relaxed">{post.content}</p>
                   {post.image_url && (
                     <img
                       src={post.image_url}
                       alt=""
-                      className="mt-3 rounded-lg max-h-80 w-full object-cover"
+                      className="mt-3 max-h-80 w-full rounded-lg object-cover"
                       loading="lazy"
                     />
                   )}
@@ -223,16 +239,16 @@ export function FeedTab() {
                     <Button
                       variant="ghost"
                       size="sm"
-                      className={`h-8 px-3 text-xs ${post.is_liked ? "text-destructive" : "text-muted-foreground"}`}
+                      className={`h-8 px-2.5 text-xs ${post.is_liked ? "text-destructive" : "text-muted-foreground"}`}
                       onClick={() => handleLike(post.id, post.is_liked)}
                     >
-                      <Heart className={`h-3.5 w-3.5 me-1.5 ${post.is_liked ? "fill-current" : ""}`} />
+                      <Heart className={`me-1 h-3.5 w-3.5 ${post.is_liked ? "fill-current" : ""}`} />
                       {post.likes_count > 0 && post.likes_count}
                     </Button>
                     <Button
                       variant="ghost"
                       size="sm"
-                      className="h-8 px-3 text-xs text-muted-foreground"
+                      className="h-8 px-2.5 text-xs text-muted-foreground"
                       onClick={() =>
                         setPosts((prev) =>
                           prev.map((pp) =>
@@ -241,7 +257,7 @@ export function FeedTab() {
                         )
                       }
                     >
-                      <MessageCircle className="h-3.5 w-3.5 me-1.5" />
+                      <MessageCircle className="me-1 h-3.5 w-3.5" />
                       {post.comments_count > 0 && post.comments_count}
                     </Button>
                   </div>

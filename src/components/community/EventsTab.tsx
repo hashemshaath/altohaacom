@@ -8,8 +8,10 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
+import { Separator } from "@/components/ui/separator";
+import { Skeleton } from "@/components/ui/skeleton";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Calendar, MapPin, Users, Plus, Check, Clock } from "lucide-react";
+import { Calendar, MapPin, Users, Plus, Check, X, BarChart3, CalendarDays } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { format } from "date-fns";
 
@@ -46,6 +48,7 @@ export function EventsTab() {
   const { user } = useAuth();
   const { language } = useLanguage();
   const { toast } = useToast();
+  const isAr = language === "ar";
   const [events, setEvents] = useState<CommunityEvent[]>([]);
   const [polls, setPolls] = useState<Poll[]>([]);
   const [loading, setLoading] = useState(true);
@@ -63,7 +66,6 @@ export function EventsTab() {
       supabase.from("community_polls").select("*").eq("is_active", true).order("created_at", { ascending: false }),
     ]);
 
-    // Events
     const eventIds = eventsRes.data?.map((e) => e.id) || [];
     const organizerIds = [...new Set(eventsRes.data?.map((e) => e.organizer_id) || [])];
     const [profilesRes, attendeesRes, userAttendeesRes] = await Promise.all([
@@ -86,7 +88,6 @@ export function EventsTab() {
       is_attending: userAttendingSet.has(e.id),
     })));
 
-    // Polls
     const pollIds = pollsRes.data?.map((p) => p.id) || [];
     const [votesRes, userVotesRes] = await Promise.all([
       supabase.from("poll_votes").select("poll_id, option_index").in("poll_id", pollIds),
@@ -161,69 +162,128 @@ export function EventsTab() {
     if (!error) fetchData();
   };
 
-  if (loading) return <div className="text-center py-8 text-muted-foreground">{language === "ar" ? "جاري التحميل..." : "Loading..."}</div>;
+  if (loading) {
+    return (
+      <div className="space-y-4">
+        <Skeleton className="h-10 w-48" />
+        <div className="grid gap-3 sm:grid-cols-2">
+          {[1, 2].map((i) => (
+            <Card key={i}><CardContent className="space-y-2 p-4">
+              <Skeleton className="h-5 w-32" />
+              <Skeleton className="h-3 w-full" />
+              <Skeleton className="h-8 w-24" />
+            </CardContent></Card>
+          ))}
+        </div>
+      </div>
+    );
+  }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-5">
       <Tabs defaultValue="events">
-        <div className="flex items-center justify-between mb-4">
-          <TabsList>
-            <TabsTrigger value="events">{language === "ar" ? "الفعاليات" : "Events"}</TabsTrigger>
-            <TabsTrigger value="polls">{language === "ar" ? "التصويتات" : "Polls"}</TabsTrigger>
+        <div className="flex items-center justify-between gap-3 flex-wrap mb-4">
+          <TabsList className="bg-muted/50">
+            <TabsTrigger value="events" className="gap-1.5 text-xs data-[state=active]:bg-background data-[state=active]:shadow-sm sm:text-sm">
+              <CalendarDays className="h-3.5 w-3.5" />
+              {isAr ? "الفعاليات" : "Events"}
+            </TabsTrigger>
+            <TabsTrigger value="polls" className="gap-1.5 text-xs data-[state=active]:bg-background data-[state=active]:shadow-sm sm:text-sm">
+              <BarChart3 className="h-3.5 w-3.5" />
+              {isAr ? "التصويتات" : "Polls"}
+            </TabsTrigger>
           </TabsList>
           {user && (
             <div className="flex gap-2">
-              <Button size="sm" variant="outline" onClick={() => { setShowPollForm(!showPollForm); setShowEventForm(false); }}>
-                <Plus className="h-4 w-4 me-1" />{language === "ar" ? "تصويت" : "Poll"}
+              <Button
+                size="sm"
+                variant={showPollForm ? "outline" : "secondary"}
+                className="gap-1 text-xs"
+                onClick={() => { setShowPollForm(!showPollForm); setShowEventForm(false); }}
+              >
+                {showPollForm ? <X className="h-3.5 w-3.5" /> : <Plus className="h-3.5 w-3.5" />}
+                {isAr ? "تصويت" : "Poll"}
               </Button>
-              <Button size="sm" onClick={() => { setShowEventForm(!showEventForm); setShowPollForm(false); }}>
-                <Plus className="h-4 w-4 me-1" />{language === "ar" ? "فعالية" : "Event"}
+              <Button
+                size="sm"
+                variant={showEventForm ? "outline" : "default"}
+                className="gap-1 text-xs"
+                onClick={() => { setShowEventForm(!showEventForm); setShowPollForm(false); }}
+              >
+                {showEventForm ? <X className="h-3.5 w-3.5" /> : <Plus className="h-3.5 w-3.5" />}
+                {isAr ? "فعالية" : "Event"}
               </Button>
             </div>
           )}
         </div>
 
+        {/* Event create form */}
         {showEventForm && (
           <Card className="mb-4">
-            <CardHeader><CardTitle>{language === "ar" ? "فعالية جديدة" : "New Event"}</CardTitle></CardHeader>
+            <CardHeader className="pb-3">
+              <CardTitle className="text-base">{isAr ? "فعالية جديدة" : "New Event"}</CardTitle>
+            </CardHeader>
             <CardContent className="space-y-4">
               <div className="grid gap-4 sm:grid-cols-2">
-                <div className="space-y-2"><Label>{language === "ar" ? "العنوان" : "Title"}</Label><Input value={eventForm.title} onChange={(e) => setEventForm({ ...eventForm, title: e.target.value })} /></div>
-                <div className="space-y-2"><Label>{language === "ar" ? "التاريخ" : "Date"}</Label><Input type="datetime-local" value={eventForm.event_date} onChange={(e) => setEventForm({ ...eventForm, event_date: e.target.value })} /></div>
+                <div className="space-y-1.5">
+                  <Label className="text-xs">{isAr ? "العنوان" : "Title"}</Label>
+                  <Input value={eventForm.title} onChange={(e) => setEventForm({ ...eventForm, title: e.target.value })} />
+                </div>
+                <div className="space-y-1.5">
+                  <Label className="text-xs">{isAr ? "التاريخ" : "Date"}</Label>
+                  <Input type="datetime-local" value={eventForm.event_date} onChange={(e) => setEventForm({ ...eventForm, event_date: e.target.value })} />
+                </div>
               </div>
-              <div className="space-y-2"><Label>{language === "ar" ? "الوصف" : "Description"}</Label><Textarea value={eventForm.description} onChange={(e) => setEventForm({ ...eventForm, description: e.target.value })} rows={2} /></div>
+              <div className="space-y-1.5">
+                <Label className="text-xs">{isAr ? "الوصف" : "Description"}</Label>
+                <Textarea value={eventForm.description} onChange={(e) => setEventForm({ ...eventForm, description: e.target.value })} rows={2} />
+              </div>
               <div className="grid gap-4 sm:grid-cols-2">
-                <div className="space-y-2"><Label>{language === "ar" ? "الموقع" : "Location"}</Label><Input value={eventForm.location} onChange={(e) => setEventForm({ ...eventForm, location: e.target.value })} /></div>
-                <div className="space-y-2"><Label>{language === "ar" ? "الحد الأقصى" : "Max Attendees"}</Label><Input type="number" value={eventForm.max_attendees} onChange={(e) => setEventForm({ ...eventForm, max_attendees: e.target.value })} /></div>
+                <div className="space-y-1.5">
+                  <Label className="text-xs">{isAr ? "الموقع" : "Location"}</Label>
+                  <Input value={eventForm.location} onChange={(e) => setEventForm({ ...eventForm, location: e.target.value })} />
+                </div>
+                <div className="space-y-1.5">
+                  <Label className="text-xs">{isAr ? "الحد الأقصى" : "Max Attendees"}</Label>
+                  <Input type="number" value={eventForm.max_attendees} onChange={(e) => setEventForm({ ...eventForm, max_attendees: e.target.value })} />
+                </div>
               </div>
-              <div className="flex gap-2 justify-end">
-                <Button variant="outline" onClick={() => setShowEventForm(false)}>{language === "ar" ? "إلغاء" : "Cancel"}</Button>
-                <Button onClick={handleCreateEvent} disabled={creating || !eventForm.title.trim()}>{creating ? "..." : language === "ar" ? "إنشاء" : "Create"}</Button>
+              <div className="flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">
+                <Button variant="outline" onClick={() => setShowEventForm(false)}>{isAr ? "إلغاء" : "Cancel"}</Button>
+                <Button onClick={handleCreateEvent} disabled={creating || !eventForm.title.trim()}>
+                  {creating ? "..." : isAr ? "إنشاء" : "Create"}
+                </Button>
               </div>
             </CardContent>
           </Card>
         )}
 
+        {/* Poll create form */}
         {showPollForm && (
           <Card className="mb-4">
-            <CardHeader><CardTitle>{language === "ar" ? "تصويت جديد" : "New Poll"}</CardTitle></CardHeader>
+            <CardHeader className="pb-3">
+              <CardTitle className="text-base">{isAr ? "تصويت جديد" : "New Poll"}</CardTitle>
+            </CardHeader>
             <CardContent className="space-y-4">
-              <div className="space-y-2"><Label>{language === "ar" ? "السؤال" : "Question"}</Label><Input value={pollForm.question} onChange={(e) => setPollForm({ ...pollForm, question: e.target.value })} /></div>
+              <div className="space-y-1.5">
+                <Label className="text-xs">{isAr ? "السؤال" : "Question"}</Label>
+                <Input value={pollForm.question} onChange={(e) => setPollForm({ ...pollForm, question: e.target.value })} />
+              </div>
               {pollForm.options.map((opt, i) => (
                 <div key={i} className="space-y-1">
-                  <Label>{language === "ar" ? `الخيار ${i + 1}` : `Option ${i + 1}`}</Label>
+                  <Label className="text-xs">{isAr ? `الخيار ${i + 1}` : `Option ${i + 1}`}</Label>
                   <Input value={opt} onChange={(e) => { const opts = [...pollForm.options]; opts[i] = e.target.value; setPollForm({ ...pollForm, options: opts }); }} />
                 </div>
               ))}
               {pollForm.options.length < 6 && (
-                <Button variant="ghost" size="sm" onClick={() => setPollForm({ ...pollForm, options: [...pollForm.options, ""] })}>
-                  <Plus className="h-4 w-4 me-1" />{language === "ar" ? "إضافة خيار" : "Add Option"}
+                <Button variant="ghost" size="sm" className="gap-1 text-xs" onClick={() => setPollForm({ ...pollForm, options: [...pollForm.options, ""] })}>
+                  <Plus className="h-3.5 w-3.5" />{isAr ? "إضافة خيار" : "Add Option"}
                 </Button>
               )}
-              <div className="flex gap-2 justify-end">
-                <Button variant="outline" onClick={() => setShowPollForm(false)}>{language === "ar" ? "إلغاء" : "Cancel"}</Button>
+              <div className="flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">
+                <Button variant="outline" onClick={() => setShowPollForm(false)}>{isAr ? "إلغاء" : "Cancel"}</Button>
                 <Button onClick={handleCreatePoll} disabled={creating || !pollForm.question.trim() || pollForm.options.filter(Boolean).length < 2}>
-                  {creating ? "..." : language === "ar" ? "إنشاء" : "Create"}
+                  {creating ? "..." : isAr ? "إنشاء" : "Create"}
                 </Button>
               </div>
             </CardContent>
@@ -231,44 +291,75 @@ export function EventsTab() {
         )}
 
         <TabsContent value="events">
-          <div className="grid gap-4 sm:grid-cols-2">
+          <div className="grid gap-3 sm:grid-cols-2">
             {events.map((event) => (
               <Card key={event.id}>
                 <CardContent className="p-4">
-                  <div className="flex items-start justify-between mb-2">
-                    <h3 className="font-semibold">{event.title}</h3>
-                    <Badge variant={event.status === "upcoming" ? "default" : "secondary"}>{event.status}</Badge>
+                  <div className="mb-2 flex items-start justify-between gap-2">
+                    <h3 className="text-sm font-semibold">{event.title}</h3>
+                    <Badge
+                      variant={event.status === "upcoming" ? "default" : "secondary"}
+                      className="shrink-0 text-[10px]"
+                    >
+                      {event.status}
+                    </Badge>
                   </div>
-                  {event.description && <p className="text-sm text-muted-foreground mb-3">{event.description}</p>}
-                  <div className="flex flex-wrap gap-3 text-sm text-muted-foreground mb-3">
+                  {event.description && (
+                    <p className="mb-3 line-clamp-2 text-xs text-muted-foreground">{event.description}</p>
+                  )}
+                  <div className="mb-3 flex flex-wrap gap-2.5 text-[10px] text-muted-foreground">
                     {event.event_date && (
-                      <span className="flex items-center gap-1"><Calendar className="h-3 w-3" />{format(new Date(event.event_date), "MMM d, yyyy HH:mm")}</span>
+                      <span className="flex items-center gap-1">
+                        <Calendar className="h-3 w-3" />
+                        {format(new Date(event.event_date), "MMM d, yyyy HH:mm")}
+                      </span>
                     )}
-                    {event.location && <span className="flex items-center gap-1"><MapPin className="h-3 w-3" />{event.location}</span>}
-                    <span className="flex items-center gap-1"><Users className="h-3 w-3" />{event.attendees_count}{event.max_attendees ? `/${event.max_attendees}` : ""}</span>
+                    {event.location && (
+                      <span className="flex items-center gap-1"><MapPin className="h-3 w-3" />{event.location}</span>
+                    )}
+                    <span className="flex items-center gap-1">
+                      <Users className="h-3 w-3" />
+                      {event.attendees_count}{event.max_attendees ? `/${event.max_attendees}` : ""}
+                    </span>
                   </div>
                   {user && event.organizer_id !== user.id && (
-                    <Button size="sm" variant={event.is_attending ? "outline" : "default"} onClick={() => handleAttend(event.id, event.is_attending)}>
-                      {event.is_attending ? (<><Check className="h-4 w-4 me-1" />{language === "ar" ? "مسجل" : "Registered"}</>) : (language === "ar" ? "سجّل الآن" : "Register")}
+                    <Button
+                      size="sm"
+                      variant={event.is_attending ? "outline" : "default"}
+                      className="gap-1 text-xs"
+                      onClick={() => handleAttend(event.id, event.is_attending)}
+                    >
+                      {event.is_attending ? (
+                        <><Check className="h-3.5 w-3.5" />{isAr ? "مسجل" : "Registered"}</>
+                      ) : (
+                        isAr ? "سجّل الآن" : "Register"
+                      )}
                     </Button>
                   )}
                 </CardContent>
               </Card>
             ))}
             {events.length === 0 && (
-              <Card className="col-span-full"><CardContent className="py-12 text-center text-muted-foreground">
-                {language === "ar" ? "لا توجد فعاليات بعد" : "No events yet"}
-              </CardContent></Card>
+              <Card className="col-span-full">
+                <CardContent className="flex flex-col items-center py-12 text-center">
+                  <div className="mb-3 rounded-2xl bg-muted/60 p-4">
+                    <CalendarDays className="h-7 w-7 text-muted-foreground/40" />
+                  </div>
+                  <p className="text-sm text-muted-foreground">
+                    {isAr ? "لا توجد فعاليات بعد" : "No events yet"}
+                  </p>
+                </CardContent>
+              </Card>
             )}
           </div>
         </TabsContent>
 
         <TabsContent value="polls">
-          <div className="max-w-xl mx-auto space-y-4">
+          <div className="mx-auto max-w-xl space-y-3">
             {polls.map((poll) => (
               <Card key={poll.id}>
                 <CardContent className="p-4">
-                  <h3 className="font-semibold mb-3">{poll.question}</h3>
+                  <h3 className="mb-3 text-sm font-semibold">{poll.question}</h3>
                   <div className="space-y-2">
                     {poll.options.map((opt, i) => {
                       const count = poll.votes[i] || 0;
@@ -277,16 +368,22 @@ export function EventsTab() {
                       return (
                         <button
                           key={i}
-                          className={`w-full text-start rounded-lg border p-3 transition-colors ${poll.user_vote === i ? "border-primary bg-primary/5" : "hover:bg-accent/50"} ${hasVoted ? "cursor-default" : "cursor-pointer"}`}
+                          className={`w-full rounded-lg border p-3 text-start transition-colors ${
+                            poll.user_vote === i
+                              ? "border-primary bg-primary/5"
+                              : hasVoted
+                              ? "cursor-default"
+                              : "cursor-pointer hover:bg-accent/50"
+                          }`}
                           onClick={() => !hasVoted && user && handleVote(poll.id, i)}
                           disabled={hasVoted || !user}
                         >
                           <div className="flex items-center justify-between">
-                            <span className="text-sm">{opt.text}</span>
-                            {hasVoted && <span className="text-sm font-medium">{pct}%</span>}
+                            <span className="text-xs">{opt.text}</span>
+                            {hasVoted && <span className="text-xs font-medium">{pct}%</span>}
                           </div>
                           {hasVoted && (
-                            <div className="mt-1 h-1.5 rounded-full bg-muted overflow-hidden">
+                            <div className="mt-1 h-1 overflow-hidden rounded-full bg-muted">
                               <div className="h-full rounded-full bg-primary transition-all" style={{ width: `${pct}%` }} />
                             </div>
                           )}
@@ -294,14 +391,23 @@ export function EventsTab() {
                       );
                     })}
                   </div>
-                  <p className="text-xs text-muted-foreground mt-2">{poll.total_votes} {language === "ar" ? "صوت" : "votes"}</p>
+                  <p className="mt-2 text-[10px] text-muted-foreground">
+                    {poll.total_votes} {isAr ? "صوت" : "votes"}
+                  </p>
                 </CardContent>
               </Card>
             ))}
             {polls.length === 0 && (
-              <Card><CardContent className="py-12 text-center text-muted-foreground">
-                {language === "ar" ? "لا توجد تصويتات بعد" : "No polls yet"}
-              </CardContent></Card>
+              <Card>
+                <CardContent className="flex flex-col items-center py-12 text-center">
+                  <div className="mb-3 rounded-2xl bg-muted/60 p-4">
+                    <BarChart3 className="h-7 w-7 text-muted-foreground/40" />
+                  </div>
+                  <p className="text-sm text-muted-foreground">
+                    {isAr ? "لا توجد تصويتات بعد" : "No polls yet"}
+                  </p>
+                </CardContent>
+              </Card>
             )}
           </div>
         </TabsContent>
