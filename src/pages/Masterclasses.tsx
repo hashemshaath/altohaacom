@@ -11,7 +11,7 @@ import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useNavigate } from "react-router-dom";
-import { BookOpen, Clock, Users, Search, GraduationCap, Star, StarIcon } from "lucide-react";
+import { BookOpen, Clock, Users, Search, GraduationCap, Star } from "lucide-react";
 
 export default function Masterclasses() {
   const { language } = useLanguage();
@@ -64,10 +64,10 @@ export default function Masterclasses() {
 
   const getLevelBadge = (level: string) => {
     const colors: Record<string, string> = {
-      beginner: "bg-green-500/10 text-green-600",
-      intermediate: "bg-yellow-500/10 text-yellow-600",
-      advanced: "bg-red-500/10 text-red-600",
-      all_levels: "bg-blue-500/10 text-blue-600",
+      beginner: "bg-chart-3/10 text-chart-3",
+      intermediate: "bg-chart-4/10 text-chart-4",
+      advanced: "bg-destructive/10 text-destructive",
+      all_levels: "bg-primary/10 text-primary",
     };
     const labels: Record<string, { en: string; ar: string }> = {
       beginner: { en: "Beginner", ar: "مبتدئ" },
@@ -217,7 +217,7 @@ export default function Masterclasses() {
                     </span>
                     {avgRating !== null && (
                       <span className="flex items-center gap-1">
-                        <Star className="h-3 w-3 fill-yellow-400 text-yellow-400" />
+                        <Star className="h-3 w-3 fill-chart-4 text-chart-4" />
                         {avgRating.toFixed(1)}
                       </span>
                     )}
