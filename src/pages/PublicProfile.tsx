@@ -8,6 +8,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
+import { CompetitionHistory } from "@/components/profile/CompetitionHistory";
 import { 
   User, 
   MapPin, 
@@ -19,6 +20,7 @@ import {
   Facebook,
   Linkedin,
   Youtube,
+  ChefHat,
 } from "lucide-react";
 import type { Database } from "@/integrations/supabase/types";
 
@@ -109,110 +111,125 @@ export default function PublicProfile() {
     <div className="flex min-h-screen flex-col">
       <Header />
       <main className="container flex-1 py-8">
-        <Card className="mx-auto max-w-2xl">
-          <CardContent className="p-8">
-            {/* Profile Header */}
-            <div className="flex flex-col items-center text-center">
-              <Avatar className="h-24 w-24">
-                <AvatarImage src={profile.avatar_url || undefined} />
-                <AvatarFallback className="text-2xl">
-                  {(profile.full_name || "U")[0].toUpperCase()}
-                </AvatarFallback>
-              </Avatar>
+        <div className="grid gap-8 lg:grid-cols-3">
+          {/* Profile Card */}
+          <div className="lg:col-span-1">
+            <Card>
+              <CardContent className="p-6">
+                {/* Profile Header */}
+                <div className="flex flex-col items-center text-center">
+                  <Avatar className="h-24 w-24">
+                    <AvatarImage src={profile.avatar_url || undefined} />
+                    <AvatarFallback className="text-2xl">
+                      {(profile.full_name || "U")[0].toUpperCase()}
+                    </AvatarFallback>
+                  </Avatar>
 
-              <div className="mt-4 flex items-center gap-2">
-                <h1 className="font-serif text-2xl font-bold">
-                  {profile.full_name || "Unnamed Chef"}
-                </h1>
-                {profile.is_verified && (
-                  <BadgeCheck className="h-5 w-5 text-primary" />
-                )}
-              </div>
+                  <div className="mt-4 flex items-center gap-2">
+                    <h1 className="font-serif text-2xl font-bold">
+                      {profile.full_name || "Unnamed Chef"}
+                    </h1>
+                    {profile.is_verified && (
+                      <BadgeCheck className="h-5 w-5 text-primary" />
+                    )}
+                  </div>
 
-              <p className="text-muted-foreground">@{profile.username}</p>
+                  <p className="text-muted-foreground">@{profile.username}</p>
 
-              {/* Account Number & Membership */}
-              <div className="mt-2 flex flex-wrap justify-center gap-2">
-                {profile.account_number && (
-                  <Badge variant="outline" className="font-mono text-xs">
-                    {profile.account_number}
-                  </Badge>
-                )}
-                {profile.membership_tier && (
-                  <Badge className={getMembershipColor(profile.membership_tier)}>
-                    {profile.membership_tier === "professional" 
-                      ? t("professionalTier") 
-                      : t(profile.membership_tier as any)}
-                  </Badge>
-                )}
-              </div>
+                  {/* Account Number & Membership */}
+                  <div className="mt-2 flex flex-wrap justify-center gap-2">
+                    {profile.account_number && (
+                      <Badge variant="outline" className="font-mono text-xs">
+                        {profile.account_number}
+                      </Badge>
+                    )}
+                    {profile.membership_tier && (
+                      <Badge className={getMembershipColor(profile.membership_tier)}>
+                        {profile.membership_tier === "professional" 
+                          ? t("professionalTier") 
+                          : t(profile.membership_tier as any)}
+                      </Badge>
+                    )}
+                  </div>
 
-              {/* Roles */}
-              <div className="mt-3 flex flex-wrap justify-center gap-1">
-                {roles?.map((role) => (
-                  <Badge key={role} variant="secondary" className="capitalize">
-                    {t(role as any)}
-                  </Badge>
-                ))}
-              </div>
+                  {/* Roles */}
+                  <div className="mt-3 flex flex-wrap justify-center gap-1">
+                    {roles?.map((role) => (
+                      <Badge key={role} variant="secondary" className="capitalize">
+                        {t(role as any)}
+                      </Badge>
+                    ))}
+                  </div>
 
-              {/* Experience & Location */}
-              <div className="mt-4 flex flex-wrap items-center justify-center gap-4 text-sm text-muted-foreground">
-                {profile.experience_level && (
-                  <div className="flex items-center gap-1">
-                    <Award className="h-4 w-4" />
-                    <span className="capitalize">{t(profile.experience_level as any)}</span>
+                  {/* Specialization */}
+                  {profile.specialization && (
+                    <div className="mt-4 flex items-center gap-2 text-sm">
+                      <ChefHat className="h-4 w-4 text-primary" />
+                      <span className="font-medium">{profile.specialization}</span>
+                    </div>
+                  )}
+
+                  {/* Experience & Location */}
+                  <div className="mt-4 flex flex-wrap items-center justify-center gap-4 text-sm text-muted-foreground">
+                    {profile.experience_level && (
+                      <div className="flex items-center gap-1">
+                        <Award className="h-4 w-4" />
+                        <span className="capitalize">{t(profile.experience_level as any)}</span>
+                      </div>
+                    )}
+                    {profile.location && (
+                      <div className="flex items-center gap-1">
+                        <MapPin className="h-4 w-4" />
+                        <span>{profile.location}</span>
+                      </div>
+                    )}
+                  </div>
+                </div>
+
+                {/* Bio */}
+                {profile.bio && (
+                  <div className="mt-6 rounded-lg bg-muted/50 p-4">
+                    <p className="text-center text-sm">{profile.bio}</p>
                   </div>
                 )}
-                {profile.specialization && (
-                  <span>{profile.specialization}</span>
-                )}
-                {profile.location && (
-                  <div className="flex items-center gap-1">
-                    <MapPin className="h-4 w-4" />
-                    <span>{profile.location}</span>
+
+                {/* Social Links */}
+                {socialLinks.length > 0 && (
+                  <div className="mt-6 flex flex-wrap justify-center gap-2">
+                    {socialLinks.map((link) => (
+                      <Button
+                        key={link.label}
+                        variant="outline"
+                        size="sm"
+                        asChild
+                      >
+                        <a
+                          href={link.value?.startsWith("http") ? link.value : `https://${link.value}`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="flex items-center gap-2"
+                        >
+                          <link.icon className="h-4 w-4" />
+                          {link.label}
+                        </a>
+                      </Button>
+                    ))}
                   </div>
                 )}
-              </div>
-            </div>
 
-            {/* Bio */}
-            {profile.bio && (
-              <div className="mt-6 rounded-lg bg-muted/50 p-4">
-                <p className="text-center">{profile.bio}</p>
-              </div>
-            )}
+                {/* Member Since */}
+                <p className="mt-6 text-center text-xs text-muted-foreground">
+                  {t("memberSince")}: {new Date(profile.created_at).toLocaleDateString()}
+                </p>
+              </CardContent>
+            </Card>
+          </div>
 
-            {/* Social Links */}
-            {socialLinks.length > 0 && (
-              <div className="mt-6 flex flex-wrap justify-center gap-2">
-                {socialLinks.map((link) => (
-                  <Button
-                    key={link.label}
-                    variant="outline"
-                    size="sm"
-                    asChild
-                  >
-                    <a
-                      href={link.value?.startsWith("http") ? link.value : `https://${link.value}`}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="flex items-center gap-2"
-                    >
-                      <link.icon className="h-4 w-4" />
-                      {link.label}
-                    </a>
-                  </Button>
-                ))}
-              </div>
-            )}
-
-            {/* Member Since */}
-            <p className="mt-6 text-center text-xs text-muted-foreground">
-              {t("memberSince")}: {new Date(profile.created_at).toLocaleDateString()}
-            </p>
-          </CardContent>
-        </Card>
+          {/* Competition History */}
+          <div className="lg:col-span-2">
+            <CompetitionHistory userId={profile.user_id} />
+          </div>
+        </div>
       </main>
       <Footer />
     </div>
