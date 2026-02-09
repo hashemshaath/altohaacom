@@ -53,6 +53,8 @@ import LocalizationAdmin from "./pages/admin/LocalizationAdmin";
 import DatabaseAdmin from "./pages/admin/DatabaseAdmin";
 import CertificatesAdmin from "./pages/admin/CertificatesAdmin";
 import CertificateVerify from "./pages/CertificateVerify";
+import CompaniesAdmin from "./pages/admin/CompaniesAdmin";
+import OrdersAdmin from "./pages/admin/OrdersAdmin";
 
 const queryClient = new QueryClient();
 
@@ -115,6 +117,8 @@ const App = () => (
                   <Route path="audit" element={<AuditLog />} />
                   <Route path="database" element={<DatabaseAdmin />} />
                   <Route path="certificates" element={<CertificatesAdmin />} />
+                  <Route path="companies" element={<CompaniesAdmin />} />
+                  <Route path="orders" element={<OrdersAdmin />} />
                 </Route>
 
                 {/* Public profile URL: altohaa.com/username */}
