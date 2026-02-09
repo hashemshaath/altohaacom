@@ -56,6 +56,23 @@ import CertificateVerify from "./pages/CertificateVerify";
 import CompaniesAdmin from "./pages/admin/CompaniesAdmin";
 import OrdersAdmin from "./pages/admin/OrdersAdmin";
 
+// Company Portal Pages
+import CompanyPortalLayout from "./pages/CompanyPortal";
+import CompanyDashboard from "./pages/company/CompanyDashboard";
+import CompanyProfile from "./pages/company/CompanyProfile";
+import CompanyTeam from "./pages/company/CompanyTeam";
+import CompanyOrders from "./pages/company/CompanyOrders";
+import CompanyInvitations from "./pages/company/CompanyInvitations";
+import CompanyTransactions from "./pages/company/CompanyTransactions";
+import CompanyEvaluations from "./pages/company/CompanyEvaluations";
+import CompanyStatements from "./pages/company/CompanyStatements";
+import CompanyMedia from "./pages/company/CompanyMedia";
+import CompanyCommunications from "./pages/company/CompanyCommunications";
+import CompanyBranches from "./pages/company/CompanyBranches";
+import CompanyDrivers from "./pages/company/CompanyDrivers";
+import CompanyWorkingHours from "./pages/company/CompanyWorkingHours";
+import CompanySettings from "./pages/company/CompanySettings";
+
 const queryClient = new QueryClient();
 
 const App = () => (
@@ -118,7 +135,25 @@ const App = () => (
                   <Route path="database" element={<DatabaseAdmin />} />
                   <Route path="certificates" element={<CertificatesAdmin />} />
                   <Route path="companies" element={<CompaniesAdmin />} />
-                  <Route path="orders" element={<OrdersAdmin />} />
+                   <Route path="orders" element={<OrdersAdmin />} />
+                </Route>
+
+                {/* Company Portal Routes */}
+                <Route path="/company" element={<ProtectedRoute><CompanyPortalLayout /></ProtectedRoute>}>
+                  <Route index element={<CompanyDashboard />} />
+                  <Route path="profile" element={<CompanyProfile />} />
+                  <Route path="team" element={<CompanyTeam />} />
+                  <Route path="orders" element={<CompanyOrders />} />
+                  <Route path="invitations" element={<CompanyInvitations />} />
+                  <Route path="communications" element={<CompanyCommunications />} />
+                  <Route path="statements" element={<CompanyStatements />} />
+                  <Route path="transactions" element={<CompanyTransactions />} />
+                  <Route path="evaluations" element={<CompanyEvaluations />} />
+                  <Route path="media" element={<CompanyMedia />} />
+                  <Route path="branches" element={<CompanyBranches />} />
+                  <Route path="drivers" element={<CompanyDrivers />} />
+                  <Route path="working-hours" element={<CompanyWorkingHours />} />
+                  <Route path="settings" element={<CompanySettings />} />
                 </Route>
 
                 {/* Public profile URL: altohaa.com/username */}
