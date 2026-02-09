@@ -1,0 +1,63 @@
+export interface CategoryForm {
+  id?: string;
+  name: string;
+  name_ar: string;
+  description: string;
+  description_ar: string;
+  max_participants: number | null;
+  gender: string;
+}
+
+export interface CriteriaForm {
+  id?: string;
+  name: string;
+  name_ar: string;
+  description: string;
+  description_ar: string;
+  max_score: number;
+  weight: number;
+}
+
+export interface CompetitionFormData {
+  title: string;
+  titleAr: string;
+  description: string;
+  descriptionAr: string;
+  coverImageUrl: string | null;
+  rulesSummary: string;
+  rulesSummaryAr: string;
+  scoringNotes: string;
+  scoringNotesAr: string;
+  registrationStart: string;
+  registrationEnd: string;
+  competitionStart: string;
+  competitionEnd: string;
+  isVirtual: boolean;
+  venue: string;
+  venueAr: string;
+  city: string;
+  country: string;
+  countryCode: string;
+  editionYear: number;
+  maxParticipants: number | "";
+  categories: CategoryForm[];
+  criteria: CriteriaForm[];
+}
+
+export const emptyCategory: CategoryForm = {
+  name: "",
+  name_ar: "",
+  description: "",
+  description_ar: "",
+  max_participants: null,
+  gender: "mixed",
+};
+
+export const emptyCriteria: CriteriaForm = {
+  name: "",
+  name_ar: "",
+  description: "",
+  description_ar: "",
+  max_score: 10,
+  weight: 0.25,
+};
