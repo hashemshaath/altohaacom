@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { SEOHead } from "@/components/SEOHead";
 import { Link } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -111,6 +112,10 @@ export default function Competitions() {
 
   return (
     <div className="flex min-h-screen flex-col">
+      <SEOHead
+        title="Culinary Competitions"
+        description="Browse and join culinary competitions worldwide. Showcase your cooking skills and compete with the best chefs."
+      />
       <Header />
       
       <main className="container flex-1 py-8">

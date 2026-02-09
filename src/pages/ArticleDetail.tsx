@@ -1,4 +1,5 @@
 import { useParams, Link } from "react-router-dom";
+import { SEOHead } from "@/components/SEOHead";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useLanguage } from "@/i18n/LanguageContext";
@@ -164,6 +165,20 @@ export default function ArticleDetail() {
 
   return (
     <div className="flex min-h-screen flex-col">
+      <SEOHead
+        title={title}
+        description={excerpt || `${title} - Altohaa`}
+        ogImage={article.featured_image_url || undefined}
+        ogType="article"
+        jsonLd={{
+          "@context": "https://schema.org",
+          "@type": "Article",
+          headline: title,
+          description: excerpt || undefined,
+          image: article.featured_image_url || undefined,
+          datePublished: article.published_at || article.created_at,
+        }}
+      />
       <Header />
       
       <main className="flex-1">

@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { SEOHead } from "@/components/SEOHead";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useLanguage } from "@/i18n/LanguageContext";
@@ -68,6 +69,10 @@ export default function Exhibitions() {
 
   return (
     <div className="flex min-h-screen flex-col">
+      <SEOHead
+        title="Food Exhibitions & Events"
+        description="Discover food exhibitions, conferences, and culinary events worldwide. Stay updated with the latest in gastronomy."
+      />
       <Header />
 
       <main className="container flex-1 py-8">

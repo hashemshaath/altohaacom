@@ -12,6 +12,7 @@ import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Calendar, MapPin, Users, Globe, Trophy, ArrowLeft, CheckCircle, Settings, Pencil, Award, BookOpen, ClipboardList } from "lucide-react";
+import { SEOHead } from "@/components/SEOHead";
 import { format } from "date-fns";
 import { CompetitionStatusManager } from "@/components/competitions/CompetitionStatusManager";
 import { RegistrationForm } from "@/components/competitions/RegistrationDialog";
@@ -159,6 +160,25 @@ export default function CompetitionDetail() {
 
   return (
     <div className="flex min-h-screen flex-col">
+      <SEOHead
+        title={title}
+        description={description || `${title} - Culinary competition on Altohaa`}
+        ogImage={competition.cover_image_url || undefined}
+        ogType="article"
+        jsonLd={{
+          "@context": "https://schema.org",
+          "@type": "Event",
+          name: title,
+          description: description || undefined,
+          startDate: competition.competition_start,
+          endDate: competition.competition_end,
+          location: competition.is_virtual
+            ? { "@type": "VirtualLocation" }
+            : { "@type": "Place", name: venue || undefined, address: { "@type": "PostalAddress", addressLocality: competition.city, addressCountry: competition.country } },
+          image: competition.cover_image_url || undefined,
+          eventStatus: "https://schema.org/EventScheduled",
+        }}
+      />
       <Header />
       
       <main className="container flex-1 py-8">
