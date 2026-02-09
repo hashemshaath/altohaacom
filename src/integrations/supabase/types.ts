@@ -2346,6 +2346,276 @@ export type Database = {
         }
         Relationships: []
       }
+      masterclass_enrollments: {
+        Row: {
+          certificate_issued: boolean | null
+          completed_at: string | null
+          enrolled_at: string
+          id: string
+          masterclass_id: string
+          progress_percent: number | null
+          status: string
+          user_id: string
+        }
+        Insert: {
+          certificate_issued?: boolean | null
+          completed_at?: string | null
+          enrolled_at?: string
+          id?: string
+          masterclass_id: string
+          progress_percent?: number | null
+          status?: string
+          user_id: string
+        }
+        Update: {
+          certificate_issued?: boolean | null
+          completed_at?: string | null
+          enrolled_at?: string
+          id?: string
+          masterclass_id?: string
+          progress_percent?: number | null
+          status?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "masterclass_enrollments_masterclass_id_fkey"
+            columns: ["masterclass_id"]
+            isOneToOne: false
+            referencedRelation: "masterclasses"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      masterclass_lesson_progress: {
+        Row: {
+          completed: boolean | null
+          completed_at: string | null
+          created_at: string
+          enrollment_id: string
+          id: string
+          last_position_seconds: number | null
+          lesson_id: string
+          updated_at: string
+        }
+        Insert: {
+          completed?: boolean | null
+          completed_at?: string | null
+          created_at?: string
+          enrollment_id: string
+          id?: string
+          last_position_seconds?: number | null
+          lesson_id: string
+          updated_at?: string
+        }
+        Update: {
+          completed?: boolean | null
+          completed_at?: string | null
+          created_at?: string
+          enrollment_id?: string
+          id?: string
+          last_position_seconds?: number | null
+          lesson_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "masterclass_lesson_progress_enrollment_id_fkey"
+            columns: ["enrollment_id"]
+            isOneToOne: false
+            referencedRelation: "masterclass_enrollments"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "masterclass_lesson_progress_lesson_id_fkey"
+            columns: ["lesson_id"]
+            isOneToOne: false
+            referencedRelation: "masterclass_lessons"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      masterclass_lessons: {
+        Row: {
+          content: string | null
+          content_ar: string | null
+          content_type: string
+          created_at: string
+          duration_minutes: number | null
+          id: string
+          module_id: string
+          resources: Json | null
+          sort_order: number | null
+          title: string
+          title_ar: string | null
+          video_url: string | null
+        }
+        Insert: {
+          content?: string | null
+          content_ar?: string | null
+          content_type?: string
+          created_at?: string
+          duration_minutes?: number | null
+          id?: string
+          module_id: string
+          resources?: Json | null
+          sort_order?: number | null
+          title: string
+          title_ar?: string | null
+          video_url?: string | null
+        }
+        Update: {
+          content?: string | null
+          content_ar?: string | null
+          content_type?: string
+          created_at?: string
+          duration_minutes?: number | null
+          id?: string
+          module_id?: string
+          resources?: Json | null
+          sort_order?: number | null
+          title?: string
+          title_ar?: string | null
+          video_url?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "masterclass_lessons_module_id_fkey"
+            columns: ["module_id"]
+            isOneToOne: false
+            referencedRelation: "masterclass_modules"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      masterclass_modules: {
+        Row: {
+          created_at: string
+          description: string | null
+          description_ar: string | null
+          id: string
+          is_free_preview: boolean | null
+          masterclass_id: string
+          sort_order: number | null
+          title: string
+          title_ar: string | null
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          description_ar?: string | null
+          id?: string
+          is_free_preview?: boolean | null
+          masterclass_id: string
+          sort_order?: number | null
+          title: string
+          title_ar?: string | null
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          description_ar?: string | null
+          id?: string
+          is_free_preview?: boolean | null
+          masterclass_id?: string
+          sort_order?: number | null
+          title?: string
+          title_ar?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "masterclass_modules_masterclass_id_fkey"
+            columns: ["masterclass_id"]
+            isOneToOne: false
+            referencedRelation: "masterclasses"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      masterclasses: {
+        Row: {
+          category: string
+          cover_image_url: string | null
+          created_at: string
+          currency: string | null
+          description: string | null
+          description_ar: string | null
+          duration_hours: number | null
+          end_date: string | null
+          id: string
+          instructor_id: string
+          is_free: boolean | null
+          is_self_paced: boolean | null
+          level: string
+          max_enrollments: number | null
+          prerequisites: string | null
+          prerequisites_ar: string | null
+          price: number | null
+          start_date: string | null
+          status: string
+          tags: string[] | null
+          title: string
+          title_ar: string | null
+          updated_at: string
+          what_you_learn: string[] | null
+          what_you_learn_ar: string[] | null
+        }
+        Insert: {
+          category?: string
+          cover_image_url?: string | null
+          created_at?: string
+          currency?: string | null
+          description?: string | null
+          description_ar?: string | null
+          duration_hours?: number | null
+          end_date?: string | null
+          id?: string
+          instructor_id: string
+          is_free?: boolean | null
+          is_self_paced?: boolean | null
+          level?: string
+          max_enrollments?: number | null
+          prerequisites?: string | null
+          prerequisites_ar?: string | null
+          price?: number | null
+          start_date?: string | null
+          status?: string
+          tags?: string[] | null
+          title: string
+          title_ar?: string | null
+          updated_at?: string
+          what_you_learn?: string[] | null
+          what_you_learn_ar?: string[] | null
+        }
+        Update: {
+          category?: string
+          cover_image_url?: string | null
+          created_at?: string
+          currency?: string | null
+          description?: string | null
+          description_ar?: string | null
+          duration_hours?: number | null
+          end_date?: string | null
+          id?: string
+          instructor_id?: string
+          is_free?: boolean | null
+          is_self_paced?: boolean | null
+          level?: string
+          max_enrollments?: number | null
+          prerequisites?: string | null
+          prerequisites_ar?: string | null
+          price?: number | null
+          start_date?: string | null
+          status?: string
+          tags?: string[] | null
+          title?: string
+          title_ar?: string | null
+          updated_at?: string
+          what_you_learn?: string[] | null
+          what_you_learn_ar?: string[] | null
+        }
+        Relationships: []
+      }
       media_library: {
         Row: {
           alt_text: string | null
@@ -3115,6 +3385,7 @@ export type Database = {
         Returns: boolean
       }
       is_admin: { Args: { p_user_id: string }; Returns: boolean }
+      is_free_preview: { Args: { p_module_id: string }; Returns: boolean }
       validate_username: { Args: { p_username: string }; Returns: boolean }
     }
     Enums: {

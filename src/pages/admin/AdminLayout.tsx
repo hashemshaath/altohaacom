@@ -5,7 +5,7 @@ import { Navigate, Outlet, NavLink } from "react-router-dom";
 import { AdminHeader } from "@/components/admin/AdminHeader";
 import { Footer } from "@/components/Footer";
 import { cn } from "@/lib/utils";
-import { Handshake } from "lucide-react";
+import { Handshake, GraduationCap } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
@@ -74,6 +74,7 @@ export default function AdminLayout() {
       title: language === "ar" ? "المحتوى" : "Content",
       items: [
         { to: "/admin/knowledge", icon: BookOpen, label: language === "ar" ? "بوابة المعرفة" : "Knowledge Portal" },
+        { to: "/admin/masterclasses", icon: GraduationCap, label: language === "ar" ? "الدورات التعليمية" : "Masterclasses" },
         { to: "/admin/articles", icon: Newspaper, label: language === "ar" ? "المقالات والأخبار" : "Articles & News" },
         { to: "/admin/competitions", icon: Trophy, label: language === "ar" ? "المسابقات" : "Competitions" },
         { to: "/admin/certificates", icon: Award, label: language === "ar" ? "الشهادات" : "Certificates" },
