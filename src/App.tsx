@@ -1,3 +1,4 @@
+import { lazy, Suspense } from "react";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -9,84 +10,86 @@ import { ThemeProvider } from "@/components/ThemeProvider";
 import { ProtectedRoute } from "@/components/ProtectedRoute";
 import Index from "./pages/Index";
 import Auth from "./pages/Auth";
-import Dashboard from "./pages/Dashboard";
-import Profile from "./pages/Profile";
-import Community from "./pages/Community";
-import Competitions from "./pages/Competitions";
-import CompetitionDetail from "./pages/CompetitionDetail";
-import CreateCompetition from "./pages/CreateCompetition";
-import EditCompetition from "./pages/EditCompetition";
-import CompetitionResults from "./pages/CompetitionResults";
-import Judging from "./pages/Judging";
-import NotificationPreferences from "./pages/NotificationPreferences";
-import Search from "./pages/Search";
 import NotFound from "./pages/NotFound";
-import PublicProfile from "./pages/PublicProfile";
-import HelpCenter from "./pages/HelpCenter";
-import News from "./pages/News";
-import ArticleDetail from "./pages/ArticleDetail";
-import Notifications from "./pages/Notifications";
-import Messages from "./pages/Messages";
-import Onboarding from "./pages/Onboarding";
-import SponsorsLanding from "./pages/landing/SponsorsLanding";
-import OrganizersLanding from "./pages/landing/OrganizersLanding";
-import Install from "./pages/Install";
+
+// Lazy-loaded pages
+const Dashboard = lazy(() => import("./pages/Dashboard"));
+const Profile = lazy(() => import("./pages/Profile"));
+const Community = lazy(() => import("./pages/Community"));
+const Competitions = lazy(() => import("./pages/Competitions"));
+const CompetitionDetail = lazy(() => import("./pages/CompetitionDetail"));
+const CreateCompetition = lazy(() => import("./pages/CreateCompetition"));
+const EditCompetition = lazy(() => import("./pages/EditCompetition"));
+const CompetitionResults = lazy(() => import("./pages/CompetitionResults"));
+const Judging = lazy(() => import("./pages/Judging"));
+const NotificationPreferences = lazy(() => import("./pages/NotificationPreferences"));
+const Search = lazy(() => import("./pages/Search"));
+const PublicProfile = lazy(() => import("./pages/PublicProfile"));
+const HelpCenter = lazy(() => import("./pages/HelpCenter"));
+const News = lazy(() => import("./pages/News"));
+const ArticleDetail = lazy(() => import("./pages/ArticleDetail"));
+const Notifications = lazy(() => import("./pages/Notifications"));
+const Messages = lazy(() => import("./pages/Messages"));
+const Onboarding = lazy(() => import("./pages/Onboarding"));
+const SponsorsLanding = lazy(() => import("./pages/landing/SponsorsLanding"));
+const OrganizersLanding = lazy(() => import("./pages/landing/OrganizersLanding"));
+const Install = lazy(() => import("./pages/Install"));
+const CertificateVerify = lazy(() => import("./pages/CertificateVerify"));
+const KnowledgePortal = lazy(() => import("./pages/KnowledgePortal"));
+const Masterclasses = lazy(() => import("./pages/Masterclasses"));
+const MasterclassDetail = lazy(() => import("./pages/MasterclassDetail"));
+const Exhibitions = lazy(() => import("./pages/Exhibitions"));
+const ExhibitionDetail = lazy(() => import("./pages/ExhibitionDetail"));
+const Entities = lazy(() => import("./pages/Entities"));
+const EntityDetail = lazy(() => import("./pages/EntityDetail"));
 
 // Admin pages
-import AdminLayout from "./pages/admin/AdminLayout";
-import AdminDashboard from "./pages/admin/AdminDashboard";
-import UserManagement from "./pages/admin/UserManagement";
-import RoleManagement from "./pages/admin/RoleManagement";
-import MembershipManagement from "./pages/admin/MembershipManagement";
-import ContentModeration from "./pages/admin/ContentModeration";
-import AuditLog from "./pages/admin/AuditLog";
-import LeadManagement from "./pages/admin/LeadManagement";
-import CompetitionsAdmin from "./pages/admin/CompetitionsAdmin";
-import SystemSettings from "./pages/admin/SystemSettings";
-import IntegrationsAdmin from "./pages/admin/IntegrationsAdmin";
-import AIConfigAdmin from "./pages/admin/AIConfigAdmin";
-import ArticlesAdmin from "./pages/admin/ArticlesAdmin";
-import ThemeAdmin from "./pages/admin/ThemeAdmin";
-import ComponentsAdmin from "./pages/admin/ComponentsAdmin";
-import MediaAdmin from "./pages/admin/MediaAdmin";
-import NotificationsAdmin from "./pages/admin/NotificationsAdmin";
-import LocalizationAdmin from "./pages/admin/LocalizationAdmin";
-import DatabaseAdmin from "./pages/admin/DatabaseAdmin";
-import CertificatesAdmin from "./pages/admin/CertificatesAdmin";
-import CertificateVerify from "./pages/CertificateVerify";
-import CompaniesAdmin from "./pages/admin/CompaniesAdmin";
-import OrdersAdmin from "./pages/admin/OrdersAdmin";
-import KnowledgeAdmin from "./pages/admin/KnowledgeAdmin";
-import SponsorsAdmin from "./pages/admin/SponsorsAdmin";
-import KnowledgePortal from "./pages/KnowledgePortal";
-import Masterclasses from "./pages/Masterclasses";
-import MasterclassDetail from "./pages/MasterclassDetail";
-import MasterclassesAdmin from "./pages/admin/MasterclassesAdmin";
-import AnalyticsDashboard from "./pages/admin/AnalyticsDashboard";
-import Exhibitions from "./pages/Exhibitions";
-import ExhibitionDetail from "./pages/ExhibitionDetail";
-import ExhibitionsAdmin from "./pages/admin/ExhibitionsAdmin";
-import Entities from "./pages/Entities";
-import EntityDetail from "./pages/EntityDetail";
-import EntitiesAdmin from "./pages/admin/EntitiesAdmin";
-import JudgesAdmin from "./pages/admin/JudgesAdmin";
+const AdminLayout = lazy(() => import("./pages/admin/AdminLayout"));
+const AdminDashboard = lazy(() => import("./pages/admin/AdminDashboard"));
+const UserManagement = lazy(() => import("./pages/admin/UserManagement"));
+const RoleManagement = lazy(() => import("./pages/admin/RoleManagement"));
+const MembershipManagement = lazy(() => import("./pages/admin/MembershipManagement"));
+const ContentModeration = lazy(() => import("./pages/admin/ContentModeration"));
+const AuditLog = lazy(() => import("./pages/admin/AuditLog"));
+const LeadManagement = lazy(() => import("./pages/admin/LeadManagement"));
+const CompetitionsAdmin = lazy(() => import("./pages/admin/CompetitionsAdmin"));
+const SystemSettings = lazy(() => import("./pages/admin/SystemSettings"));
+const IntegrationsAdmin = lazy(() => import("./pages/admin/IntegrationsAdmin"));
+const AIConfigAdmin = lazy(() => import("./pages/admin/AIConfigAdmin"));
+const ArticlesAdmin = lazy(() => import("./pages/admin/ArticlesAdmin"));
+const ThemeAdmin = lazy(() => import("./pages/admin/ThemeAdmin"));
+const ComponentsAdmin = lazy(() => import("./pages/admin/ComponentsAdmin"));
+const MediaAdmin = lazy(() => import("./pages/admin/MediaAdmin"));
+const NotificationsAdmin = lazy(() => import("./pages/admin/NotificationsAdmin"));
+const LocalizationAdmin = lazy(() => import("./pages/admin/LocalizationAdmin"));
+const DatabaseAdmin = lazy(() => import("./pages/admin/DatabaseAdmin"));
+const CertificatesAdmin = lazy(() => import("./pages/admin/CertificatesAdmin"));
+const CompaniesAdmin = lazy(() => import("./pages/admin/CompaniesAdmin"));
+const OrdersAdmin = lazy(() => import("./pages/admin/OrdersAdmin"));
+const KnowledgeAdmin = lazy(() => import("./pages/admin/KnowledgeAdmin"));
+const SponsorsAdmin = lazy(() => import("./pages/admin/SponsorsAdmin"));
+const MasterclassesAdmin = lazy(() => import("./pages/admin/MasterclassesAdmin"));
+const AnalyticsDashboard = lazy(() => import("./pages/admin/AnalyticsDashboard"));
+const ExhibitionsAdmin = lazy(() => import("./pages/admin/ExhibitionsAdmin"));
+const EntitiesAdmin = lazy(() => import("./pages/admin/EntitiesAdmin"));
+const JudgesAdmin = lazy(() => import("./pages/admin/JudgesAdmin"));
 
 // Company Portal Pages
-import CompanyPortalLayout from "./pages/CompanyPortal";
-import CompanyDashboard from "./pages/company/CompanyDashboard";
-import CompanyProfile from "./pages/company/CompanyProfile";
-import CompanyTeam from "./pages/company/CompanyTeam";
-import CompanyOrders from "./pages/company/CompanyOrders";
-import CompanyInvitations from "./pages/company/CompanyInvitations";
-import CompanyTransactions from "./pages/company/CompanyTransactions";
-import CompanyEvaluations from "./pages/company/CompanyEvaluations";
-import CompanyStatements from "./pages/company/CompanyStatements";
-import CompanyMedia from "./pages/company/CompanyMedia";
-import CompanyCommunications from "./pages/company/CompanyCommunications";
-import CompanyBranches from "./pages/company/CompanyBranches";
-import CompanyDrivers from "./pages/company/CompanyDrivers";
-import CompanyWorkingHours from "./pages/company/CompanyWorkingHours";
-import CompanySettings from "./pages/company/CompanySettings";
+const CompanyPortalLayout = lazy(() => import("./pages/CompanyPortal"));
+const CompanyDashboard = lazy(() => import("./pages/company/CompanyDashboard"));
+const CompanyProfile = lazy(() => import("./pages/company/CompanyProfile"));
+const CompanyTeam = lazy(() => import("./pages/company/CompanyTeam"));
+const CompanyOrders = lazy(() => import("./pages/company/CompanyOrders"));
+const CompanyInvitations = lazy(() => import("./pages/company/CompanyInvitations"));
+const CompanyTransactions = lazy(() => import("./pages/company/CompanyTransactions"));
+const CompanyEvaluations = lazy(() => import("./pages/company/CompanyEvaluations"));
+const CompanyStatements = lazy(() => import("./pages/company/CompanyStatements"));
+const CompanyMedia = lazy(() => import("./pages/company/CompanyMedia"));
+const CompanyCommunications = lazy(() => import("./pages/company/CompanyCommunications"));
+const CompanyBranches = lazy(() => import("./pages/company/CompanyBranches"));
+const CompanyDrivers = lazy(() => import("./pages/company/CompanyDrivers"));
+const CompanyWorkingHours = lazy(() => import("./pages/company/CompanyWorkingHours"));
+const CompanySettings = lazy(() => import("./pages/company/CompanySettings"));
 
 const queryClient = new QueryClient();
 
@@ -104,6 +107,7 @@ const App = () => (
             <Toaster />
             <Sonner />
             <BrowserRouter>
+              <Suspense fallback={<div className="flex h-screen items-center justify-center"><div className="h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent" /></div>}>
               <Routes>
                 <Route path="/" element={<Index />} />
                 <Route path="/auth" element={<Auth />} />
@@ -190,6 +194,7 @@ const App = () => (
                 <Route path="/:username" element={<PublicProfile />} />
                 <Route path="*" element={<NotFound />} />
               </Routes>
+              </Suspense>
             </BrowserRouter>
           </TooltipProvider>
         </AuthProvider>
