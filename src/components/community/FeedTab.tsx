@@ -6,7 +6,8 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import { Heart, MessageCircle, User } from "lucide-react";
+import { Separator } from "@/components/ui/separator";
+import { Heart, MessageCircle, User, Send } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { PostComments } from "@/components/community/PostComments";
 
@@ -26,7 +27,7 @@ interface Post {
 
 export function FeedTab() {
   const { user } = useAuth();
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
   const { toast } = useToast();
   const [posts, setPosts] = useState<Post[]>([]);
   const [newPost, setNewPost] = useState("");
@@ -128,6 +129,16 @@ export function FeedTab() {
 
   const formatDate = (dateStr: string) => {
     const date = new Date(dateStr);
+    const now = new Date();
+    const diffMs = now.getTime() - date.getTime();
+    const diffMins = Math.floor(diffMs / 60000);
+    const diffHours = Math.floor(diffMs / 3600000);
+    const diffDays = Math.floor(diffMs / 86400000);
+
+    if (diffMins < 1) return language === "ar" ? "الآن" : "now";
+    if (diffMins < 60) return language === "ar" ? `${diffMins}د` : `${diffMins}m`;
+    if (diffHours < 24) return language === "ar" ? `${diffHours}س` : `${diffHours}h`;
+    if (diffDays < 7) return language === "ar" ? `${diffDays}ي` : `${diffDays}d`;
     return date.toLocaleDateString(undefined, { month: "short", day: "numeric" });
   };
 
@@ -136,22 +147,32 @@ export function FeedTab() {
   }
 
   return (
-    <div className="max-w-2xl mx-auto space-y-6">
+    <div className="max-w-2xl mx-auto space-y-4">
       {/* Create post */}
       {user && (
         <Card>
           <CardContent className="p-4">
-            <Textarea
-              placeholder={t("writePost")}
-              value={newPost}
-              onChange={(e) => setNewPost(e.target.value)}
-              className="mb-3 resize-none"
-              rows={3}
-            />
-            <div className="flex justify-end">
-              <Button onClick={handlePost} disabled={posting || !newPost.trim()}>
-                {posting ? t("loading") : t("post")}
-              </Button>
+            <div className="flex gap-3">
+              <Avatar className="h-9 w-9 shrink-0">
+                <AvatarFallback>
+                  <User className="h-4 w-4" />
+                </AvatarFallback>
+              </Avatar>
+              <div className="flex-1 space-y-3">
+                <Textarea
+                  placeholder={t("writePost")}
+                  value={newPost}
+                  onChange={(e) => setNewPost(e.target.value)}
+                  className="resize-none border-0 p-0 shadow-none focus-visible:ring-0"
+                  rows={2}
+                />
+                <div className="flex justify-end">
+                  <Button size="sm" onClick={handlePost} disabled={posting || !newPost.trim()}>
+                    <Send className="h-3.5 w-3.5 me-1.5" />
+                    {posting ? t("loading") : t("post")}
+                  </Button>
+                </div>
+              </div>
             </div>
           </CardContent>
         </Card>
@@ -169,49 +190,70 @@ export function FeedTab() {
           <Card key={post.id}>
             <CardContent className="p-4">
               <div className="flex gap-3">
-                <Avatar className="h-10 w-10">
+                <Avatar className="h-9 w-9 shrink-0">
                   <AvatarFallback>
-                    <User className="h-5 w-5" />
+                    <User className="h-4 w-4" />
                   </AvatarFallback>
                 </Avatar>
-                <div className="flex-1">
+                <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2">
-                    <span className="font-semibold">{post.author_name || "Chef"}</span>
+                    <span className="font-semibold text-sm truncate">{post.author_name || "Chef"}</span>
                     {post.author_specialization && (
-                      <span className="text-sm text-muted-foreground">• {post.author_specialization}</span>
+                      <span className="text-xs text-muted-foreground truncate hidden sm:inline">
+                        · {post.author_specialization}
+                      </span>
                     )}
-                    <span className="text-sm text-muted-foreground ms-auto">{formatDate(post.created_at)}</span>
+                    <span className="text-xs text-muted-foreground ms-auto shrink-0">
+                      {formatDate(post.created_at)}
+                    </span>
                   </div>
-                  <p className="mt-2 whitespace-pre-wrap">{post.content}</p>
+                  <p className="mt-2 text-sm whitespace-pre-wrap">{post.content}</p>
                   {post.image_url && (
-                    <img src={post.image_url} alt="" className="mt-3 rounded-lg max-h-96 object-cover" />
+                    <img
+                      src={post.image_url}
+                      alt=""
+                      className="mt-3 rounded-lg max-h-80 w-full object-cover"
+                      loading="lazy"
+                    />
                   )}
-                  <div className="mt-3 flex items-center gap-4">
+
+                  <Separator className="my-3" />
+
+                  <div className="flex items-center gap-1">
                     <Button
                       variant="ghost"
                       size="sm"
-                      className={post.is_liked ? "text-destructive" : ""}
+                      className={`h-8 px-3 text-xs ${post.is_liked ? "text-destructive" : "text-muted-foreground"}`}
                       onClick={() => handleLike(post.id, post.is_liked)}
                     >
-                      <Heart className={`h-4 w-4 me-1 ${post.is_liked ? "fill-current" : ""}`} />
-                      {post.likes_count}
+                      <Heart className={`h-3.5 w-3.5 me-1.5 ${post.is_liked ? "fill-current" : ""}`} />
+                      {post.likes_count > 0 && post.likes_count}
                     </Button>
                     <Button
                       variant="ghost"
                       size="sm"
-                      onClick={() => setPosts((prev) =>
-                        prev.map((pp) => pp.id === post.id ? { ...pp, showComments: !pp.showComments } : pp)
-                      )}
+                      className="h-8 px-3 text-xs text-muted-foreground"
+                      onClick={() =>
+                        setPosts((prev) =>
+                          prev.map((pp) =>
+                            pp.id === post.id ? { ...pp, showComments: !pp.showComments } : pp
+                          )
+                        )
+                      }
                     >
-                      <MessageCircle className="h-4 w-4 me-1" />
-                      {post.comments_count}
+                      <MessageCircle className="h-3.5 w-3.5 me-1.5" />
+                      {post.comments_count > 0 && post.comments_count}
                     </Button>
                   </div>
                   {post.showComments && (
                     <PostComments
                       postId={post.id}
                       onCommentCountChange={(count) =>
-                        setPosts((prev) => prev.map((pp) => pp.id === post.id ? { ...pp, comments_count: count } : pp))
+                        setPosts((prev) =>
+                          prev.map((pp) =>
+                            pp.id === post.id ? { ...pp, comments_count: count } : pp
+                          )
+                        )
                       }
                     />
                   )}

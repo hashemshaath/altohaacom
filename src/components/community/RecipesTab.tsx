@@ -10,7 +10,7 @@ import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import { ChefHat, Clock, Users as UsersIcon, Star, Plus, User } from "lucide-react";
+import { ChefHat, Clock, Users as UsersIcon, Star, Plus, User, X } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
 interface Recipe {
@@ -29,6 +29,12 @@ interface Recipe {
   ratings_count: number;
   created_at: string;
 }
+
+const difficultyColor = (d: string) => {
+  if (d === "easy") return "bg-chart-3/10 text-chart-3";
+  if (d === "hard") return "bg-destructive/10 text-destructive";
+  return "bg-chart-4/10 text-chart-4";
+};
 
 export function RecipesTab() {
   const { user } = useAuth();
@@ -119,12 +125,6 @@ export function RecipesTab() {
     }
   };
 
-  const difficultyColor = (d: string) => {
-    if (d === "easy") return "bg-green-500/10 text-green-700 dark:text-green-400";
-    if (d === "hard") return "bg-red-500/10 text-red-700 dark:text-red-400";
-    return "bg-yellow-500/10 text-yellow-700 dark:text-yellow-400";
-  };
-
   if (loading) return <div className="text-center py-8 text-muted-foreground">{language === "ar" ? "جاري التحميل..." : "Loading..."}</div>;
 
   return (
@@ -143,8 +143,10 @@ export function RecipesTab() {
         </Select>
         {user && (
           <Button onClick={() => setShowForm(!showForm)}>
-            <Plus className="h-4 w-4 me-2" />
-            {language === "ar" ? "إضافة وصفة" : "Add Recipe"}
+            {showForm ? <X className="h-4 w-4 me-2" /> : <Plus className="h-4 w-4 me-2" />}
+            {showForm
+              ? (language === "ar" ? "إلغاء" : "Cancel")
+              : (language === "ar" ? "إضافة وصفة" : "Add Recipe")}
           </Button>
         )}
       </div>
@@ -167,7 +169,7 @@ export function RecipesTab() {
               <Label>{language === "ar" ? "الوصف" : "Description"}</Label>
               <Textarea value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })} rows={2} />
             </div>
-            <div className="grid gap-4 sm:grid-cols-4">
+            <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-4">
               <div className="space-y-2">
                 <Label>{language === "ar" ? "الصعوبة" : "Difficulty"}</Label>
                 <Select value={form.difficulty} onValueChange={(v) => setForm({ ...form, difficulty: v })}>
@@ -180,11 +182,11 @@ export function RecipesTab() {
                 </Select>
               </div>
               <div className="space-y-2">
-                <Label>{language === "ar" ? "وقت التحضير (دقيقة)" : "Prep (min)"}</Label>
+                <Label>{language === "ar" ? "تحضير (دقيقة)" : "Prep (min)"}</Label>
                 <Input type="number" value={form.prep_time_minutes} onChange={(e) => setForm({ ...form, prep_time_minutes: e.target.value })} />
               </div>
               <div className="space-y-2">
-                <Label>{language === "ar" ? "وقت الطبخ (دقيقة)" : "Cook (min)"}</Label>
+                <Label>{language === "ar" ? "طبخ (دقيقة)" : "Cook (min)"}</Label>
                 <Input type="number" value={form.cook_time_minutes} onChange={(e) => setForm({ ...form, cook_time_minutes: e.target.value })} />
               </div>
               <div className="space-y-2">
@@ -212,19 +214,23 @@ export function RecipesTab() {
 
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {recipes.map((recipe) => (
-          <Card key={recipe.id} className="overflow-hidden">
+          <Card key={recipe.id} className="overflow-hidden group">
             {recipe.image_url && (
-              <img src={recipe.image_url} alt={recipe.title} className="h-48 w-full object-cover" />
+              <div className="aspect-video overflow-hidden bg-muted">
+                <img src={recipe.image_url} alt={recipe.title} className="h-full w-full object-cover transition-transform group-hover:scale-105" loading="lazy" />
+              </div>
             )}
             <CardContent className="p-4">
-              <div className="flex items-start justify-between mb-2">
-                <h3 className="font-semibold text-lg">{recipe.title}</h3>
-                <Badge variant="outline" className={difficultyColor(recipe.difficulty)}>{recipe.difficulty}</Badge>
+              <div className="flex items-start justify-between gap-2 mb-2">
+                <h3 className="font-semibold line-clamp-1">{recipe.title}</h3>
+                <Badge variant="outline" className={difficultyColor(recipe.difficulty)}>
+                  {recipe.difficulty}
+                </Badge>
               </div>
               {recipe.description && (
                 <p className="text-sm text-muted-foreground mb-3 line-clamp-2">{recipe.description}</p>
               )}
-              <div className="flex items-center gap-3 text-sm text-muted-foreground mb-3">
+              <div className="flex items-center gap-3 text-xs text-muted-foreground mb-3 flex-wrap">
                 {recipe.cuisine && (
                   <span className="flex items-center gap-1"><ChefHat className="h-3 w-3" />{recipe.cuisine}</span>
                 )}
@@ -243,11 +249,11 @@ export function RecipesTab() {
                   <Avatar className="h-6 w-6">
                     <AvatarFallback className="text-xs"><User className="h-3 w-3" /></AvatarFallback>
                   </Avatar>
-                  <span className="text-sm">{recipe.author_name || "Chef"}</span>
+                  <span className="text-xs text-muted-foreground">{recipe.author_name || "Chef"}</span>
                 </div>
                 {recipe.ratings_count > 0 && (
-                  <span className="flex items-center gap-1 text-sm">
-                    <Star className="h-3 w-3 fill-yellow-500 text-yellow-500" />
+                  <span className="flex items-center gap-1 text-xs">
+                    <Star className="h-3 w-3 fill-chart-4 text-chart-4" />
                     {recipe.avg_rating} ({recipe.ratings_count})
                   </span>
                 )}

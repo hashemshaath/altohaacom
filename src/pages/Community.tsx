@@ -8,6 +8,7 @@ import { ChefsTab } from "@/components/community/ChefsTab";
 import { GroupsTab } from "@/components/community/GroupsTab";
 import { RecipesTab } from "@/components/community/RecipesTab";
 import { EventsTab } from "@/components/community/EventsTab";
+import { Users, Newspaper, ChefHat, CalendarDays, UsersRound } from "lucide-react";
 
 export default function Community() {
   const { t, language } = useLanguage();
@@ -19,18 +20,40 @@ export default function Community() {
         description="Connect with chefs, share recipes, join groups, and engage with the culinary community on Altohaa."
       />
       <Header />
-      <main className="container flex-1 py-8">
-        <h1 className="mb-6 font-serif text-3xl font-bold">{t("community")}</h1>
-        
+      <main className="container flex-1 py-6 md:py-8">
+        <div className="mb-6">
+          <h1 className="font-serif text-2xl font-bold md:text-3xl">{t("community")}</h1>
+          <p className="mt-1 text-sm text-muted-foreground">
+            {language === "ar"
+              ? "تواصل مع الطهاة وشارك وصفاتك وانضم إلى المجموعات"
+              : "Connect with chefs, share recipes, and join culinary groups"}
+          </p>
+        </div>
+
         <Tabs defaultValue="feed" className="w-full">
-          <TabsList className="mb-6 h-auto w-full justify-start overflow-x-auto overflow-y-hidden whitespace-nowrap">
-            <TabsTrigger value="feed">{t("feed")}</TabsTrigger>
-            <TabsTrigger value="recipes">{language === "ar" ? "الوصفات" : "Recipes"}</TabsTrigger>
-            <TabsTrigger value="events">{language === "ar" ? "الفعاليات" : "Events"}</TabsTrigger>
-            <TabsTrigger value="chefs">{t("chefs")}</TabsTrigger>
-            <TabsTrigger value="groups">{t("groups")}</TabsTrigger>
+          <TabsList className="mb-6 h-auto w-full justify-start gap-1 overflow-x-auto overflow-y-hidden whitespace-nowrap bg-transparent p-0">
+            <TabsTrigger value="feed" className="gap-1.5 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
+              <Newspaper className="h-3.5 w-3.5" />
+              {t("feed")}
+            </TabsTrigger>
+            <TabsTrigger value="recipes" className="gap-1.5 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
+              <ChefHat className="h-3.5 w-3.5" />
+              {language === "ar" ? "الوصفات" : "Recipes"}
+            </TabsTrigger>
+            <TabsTrigger value="events" className="gap-1.5 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
+              <CalendarDays className="h-3.5 w-3.5" />
+              {language === "ar" ? "الفعاليات" : "Events"}
+            </TabsTrigger>
+            <TabsTrigger value="chefs" className="gap-1.5 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
+              <Users className="h-3.5 w-3.5" />
+              {t("chefs")}
+            </TabsTrigger>
+            <TabsTrigger value="groups" className="gap-1.5 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
+              <UsersRound className="h-3.5 w-3.5" />
+              {t("groups")}
+            </TabsTrigger>
           </TabsList>
-          
+
           <TabsContent value="feed"><FeedTab /></TabsContent>
           <TabsContent value="recipes"><RecipesTab /></TabsContent>
           <TabsContent value="events"><EventsTab /></TabsContent>
