@@ -24,8 +24,8 @@ export default function Community() {
         {/* Header */}
         <div className="mb-6">
           <div className="mb-1.5 flex items-center gap-2.5">
-            <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-primary/10">
-              <UsersRound className="h-7 w-7 text-primary" />
+            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary/10">
+              <UsersRound className="h-4 w-4 text-primary" />
             </div>
             <div>
               <h1 className="font-serif text-2xl font-bold md:text-3xl">{t("community")}</h1>

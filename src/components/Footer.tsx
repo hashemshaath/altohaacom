@@ -1,10 +1,12 @@
 import { useLanguage } from "@/i18n/LanguageContext";
+import { useAuth } from "@/contexts/AuthContext";
 import { Link } from "react-router-dom";
-import { Building2, Trophy, GraduationCap, Newspaper, Users, Globe, Mail } from "lucide-react";
+import { Building2, Trophy, GraduationCap, Newspaper, Users, Globe, Mail, User, LayoutDashboard } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
 
 export function Footer() {
   const { t, language } = useLanguage();
+  const { user } = useAuth();
   const isAr = language === "ar";
 
   return (
@@ -77,8 +79,21 @@ export function Footer() {
             <h4 className="mb-3 text-sm font-semibold">{t("quickLinks")}</h4>
             <nav className="flex flex-col gap-2 text-sm text-muted-foreground">
               <Link to="/" className="transition-colors hover:text-primary">{t("home")}</Link>
-              <Link to="/auth" className="transition-colors hover:text-primary">{t("signIn")}</Link>
-              <Link to="/auth?tab=signup" className="transition-colors hover:text-primary">{t("signUp")}</Link>
+              {user ? (
+                <>
+                  <Link to="/dashboard" className="flex items-center gap-1.5 transition-colors hover:text-primary">
+                    <LayoutDashboard className="h-3.5 w-3.5" />{isAr ? "لوحة التحكم" : "Dashboard"}
+                  </Link>
+                  <Link to="/profile" className="flex items-center gap-1.5 transition-colors hover:text-primary">
+                    <User className="h-3.5 w-3.5" />{t("myProfile")}
+                  </Link>
+                </>
+              ) : (
+                <>
+                  <Link to="/auth" className="transition-colors hover:text-primary">{t("signIn")}</Link>
+                  <Link to="/auth?tab=signup" className="transition-colors hover:text-primary">{t("signUp")}</Link>
+                </>
+              )}
               <Link to="/search" className="transition-colors hover:text-primary">{isAr ? "بحث" : "Search"}</Link>
               <Link to="/install" className="transition-colors hover:text-primary">{isAr ? "تثبيت التطبيق" : "Install App"}</Link>
             </nav>
@@ -90,10 +105,10 @@ export function Footer() {
         <div className="flex flex-col items-center gap-3 text-center text-xs text-muted-foreground sm:flex-row sm:justify-between sm:text-sm">
           <p>© {new Date().getFullYear()} Altohaa. {t("allRightsReserved")}</p>
           <div className="flex gap-4">
-            <span className="cursor-pointer transition-colors hover:text-primary">Instagram</span>
-            <span className="cursor-pointer transition-colors hover:text-primary">Twitter</span>
-            <span className="cursor-pointer transition-colors hover:text-primary">LinkedIn</span>
-            <span className="cursor-pointer transition-colors hover:text-primary">YouTube</span>
+            <a href="https://instagram.com/altohaa" target="_blank" rel="noopener noreferrer" className="transition-colors hover:text-primary">Instagram</a>
+            <a href="https://x.com/altohaa" target="_blank" rel="noopener noreferrer" className="transition-colors hover:text-primary">Twitter</a>
+            <a href="https://linkedin.com/company/altohaa" target="_blank" rel="noopener noreferrer" className="transition-colors hover:text-primary">LinkedIn</a>
+            <a href="https://youtube.com/@altohaa" target="_blank" rel="noopener noreferrer" className="transition-colors hover:text-primary">YouTube</a>
           </div>
         </div>
       </div>
