@@ -19,6 +19,7 @@ import EditCompetition from "./pages/EditCompetition";
 import CompetitionResults from "./pages/CompetitionResults";
 import Judging from "./pages/Judging";
 import NotificationPreferences from "./pages/NotificationPreferences";
+import Search from "./pages/Search";
 import NotFound from "./pages/NotFound";
 import PublicProfile from "./pages/PublicProfile";
 import HelpCenter from "./pages/HelpCenter";
@@ -66,6 +67,7 @@ const App = () => (
                 <Route path="/competitions/:id/results" element={<CompetitionResults />} />
                 <Route path="/judging" element={<ProtectedRoute><Judging /></ProtectedRoute>} />
                 <Route path="/notification-preferences" element={<ProtectedRoute><NotificationPreferences /></ProtectedRoute>} />
+                <Route path="/search" element={<Search />} />
                 <Route path="/help" element={<HelpCenter />} />
                 <Route path="/news" element={<News />} />
                 <Route path="/notifications" element={<ProtectedRoute><Notifications /></ProtectedRoute>} />
