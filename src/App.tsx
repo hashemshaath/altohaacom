@@ -42,6 +42,15 @@ import AuditLog from "./pages/admin/AuditLog";
 import LeadManagement from "./pages/admin/LeadManagement";
 import CompetitionsAdmin from "./pages/admin/CompetitionsAdmin";
 import SystemSettings from "./pages/admin/SystemSettings";
+import IntegrationsAdmin from "./pages/admin/IntegrationsAdmin";
+import AIConfigAdmin from "./pages/admin/AIConfigAdmin";
+import ArticlesAdmin from "./pages/admin/ArticlesAdmin";
+import ThemeAdmin from "./pages/admin/ThemeAdmin";
+import ComponentsAdmin from "./pages/admin/ComponentsAdmin";
+import MediaAdmin from "./pages/admin/MediaAdmin";
+import NotificationsAdmin from "./pages/admin/NotificationsAdmin";
+import LocalizationAdmin from "./pages/admin/LocalizationAdmin";
+import DatabaseAdmin from "./pages/admin/DatabaseAdmin";
 
 const queryClient = new QueryClient();
 
@@ -89,10 +98,19 @@ const App = () => (
                   <Route path="leads" element={<LeadManagement />} />
                   <Route path="roles" element={<RoleManagement />} />
                   <Route path="memberships" element={<MembershipManagement />} />
+                  <Route path="articles" element={<ArticlesAdmin />} />
                   <Route path="competitions" element={<CompetitionsAdmin />} />
+                  <Route path="media" element={<MediaAdmin />} />
                   <Route path="moderation" element={<ContentModeration />} />
-                  <Route path="audit" element={<AuditLog />} />
+                  <Route path="integrations" element={<IntegrationsAdmin />} />
+                  <Route path="ai" element={<AIConfigAdmin />} />
+                  <Route path="theme" element={<ThemeAdmin />} />
+                  <Route path="components" element={<ComponentsAdmin />} />
                   <Route path="settings" element={<SystemSettings />} />
+                  <Route path="notifications" element={<NotificationsAdmin />} />
+                  <Route path="localization" element={<LocalizationAdmin />} />
+                  <Route path="audit" element={<AuditLog />} />
+                  <Route path="database" element={<DatabaseAdmin />} />
                 </Route>
 
                 {/* Public profile URL: altohaa.com/username */}
