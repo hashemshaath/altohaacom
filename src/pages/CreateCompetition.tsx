@@ -14,6 +14,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { Switch } from "@/components/ui/switch";
 import { useToast } from "@/hooks/use-toast";
 import { Plus, Trash2, ArrowLeft, ArrowRight, Save } from "lucide-react";
+import { CoverImageUpload } from "@/components/competitions/CoverImageUpload";
 
 interface Category {
   name: string;
@@ -45,6 +46,11 @@ export default function CreateCompetition() {
   const [titleAr, setTitleAr] = useState("");
   const [description, setDescription] = useState("");
   const [descriptionAr, setDescriptionAr] = useState("");
+  const [coverImageUrl, setCoverImageUrl] = useState<string | null>(null);
+  const [rulesSummary, setRulesSummary] = useState("");
+  const [rulesSummaryAr, setRulesSummaryAr] = useState("");
+  const [scoringNotes, setScoringNotes] = useState("");
+  const [scoringNotesAr, setScoringNotesAr] = useState("");
   
   // Step 2: Dates & Location
   const [registrationStart, setRegistrationStart] = useState("");
@@ -112,6 +118,11 @@ export default function CreateCompetition() {
           title_ar: titleAr || null,
           description: description || null,
           description_ar: descriptionAr || null,
+          cover_image_url: coverImageUrl,
+          rules_summary: rulesSummary || null,
+          rules_summary_ar: rulesSummaryAr || null,
+          scoring_notes: scoringNotes || null,
+          scoring_notes_ar: scoringNotesAr || null,
           registration_start: registrationStart || null,
           registration_end: registrationEnd || null,
           competition_start: competitionStart,
@@ -282,6 +293,59 @@ export default function CreateCompetition() {
                     rows={4}
                     dir="rtl"
                   />
+                </div>
+
+                {/* Cover Image */}
+                <CoverImageUpload currentUrl={coverImageUrl} onUrlChange={setCoverImageUrl} />
+
+                {/* Rules Summary */}
+                <div className="grid gap-4 sm:grid-cols-2">
+                  <div className="space-y-2">
+                    <Label htmlFor="rules">Rules Summary (English)</Label>
+                    <Textarea
+                      id="rules"
+                      value={rulesSummary}
+                      onChange={(e) => setRulesSummary(e.target.value)}
+                      placeholder="Competition rules and guidelines..."
+                      rows={3}
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="rulesAr">Rules Summary (Arabic)</Label>
+                    <Textarea
+                      id="rulesAr"
+                      value={rulesSummaryAr}
+                      onChange={(e) => setRulesSummaryAr(e.target.value)}
+                      placeholder="قواعد وإرشادات المسابقة..."
+                      rows={3}
+                      dir="rtl"
+                    />
+                  </div>
+                </div>
+
+                {/* Scoring Notes */}
+                <div className="grid gap-4 sm:grid-cols-2">
+                  <div className="space-y-2">
+                    <Label htmlFor="scoring">Scoring Notes (English)</Label>
+                    <Textarea
+                      id="scoring"
+                      value={scoringNotes}
+                      onChange={(e) => setScoringNotes(e.target.value)}
+                      placeholder="How scoring will be conducted..."
+                      rows={3}
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="scoringAr">Scoring Notes (Arabic)</Label>
+                    <Textarea
+                      id="scoringAr"
+                      value={scoringNotesAr}
+                      onChange={(e) => setScoringNotesAr(e.target.value)}
+                      placeholder="كيف سيتم التقييم..."
+                      rows={3}
+                      dir="rtl"
+                    />
+                  </div>
                 </div>
               </CardContent>
             </Card>

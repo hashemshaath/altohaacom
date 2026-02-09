@@ -61,11 +61,11 @@ export default function Competitions() {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("competitions")
-        .select("*")
+        .select("*, competition_registrations(id)")
         .order("competition_start", { ascending: true });
       
       if (error) throw error;
-      return data as Competition[];
+      return data as (Competition & { competition_registrations: { id: string }[] })[];
     },
   });
 
@@ -192,7 +192,7 @@ export default function Competitions() {
 }
 
 interface CompetitionCardProps {
-  competition: Competition;
+  competition: Competition & { competition_registrations?: { id: string }[] };
   language: string;
   getStatusLabel: (status: CompetitionStatus) => string;
   t: (key: any) => string;
@@ -252,10 +252,13 @@ function CompetitionCard({ competition, language, getStatusLabel, t }: Competiti
           </div>
         )}
 
-        {competition.max_participants && (
+        {(competition.competition_registrations?.length || competition.max_participants) && (
           <div className="flex items-center gap-2">
             <Users className="h-4 w-4" />
-            <span>{competition.max_participants} {t("participants")}</span>
+            <span>
+              {competition.competition_registrations?.length || 0}
+              {competition.max_participants ? ` / ${competition.max_participants}` : ""} {t("participants")}
+            </span>
           </div>
         )}
       </CardContent>
