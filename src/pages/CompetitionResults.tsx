@@ -10,6 +10,7 @@ import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Trophy, Medal, Award, ArrowLeft, User, ChefHat, Sparkles } from "lucide-react";
+import { SocialShareButtons } from "@/components/competitions/SocialShareButtons";
 
 interface Winner {
   rank: number;
@@ -241,6 +242,16 @@ export default function CompetitionResults() {
                         <p className="mt-2 text-lg font-bold text-primary">
                           {winner.total_score.toFixed(1)}
                         </p>
+
+                        <div className="mt-3">
+                          <SocialShareButtons
+                            title={title}
+                            participantName={winner.participant_name || winner.participant_username || "Participant"}
+                            rank={winner.rank}
+                            score={winner.total_score}
+                            competitionUrl={window.location.href}
+                          />
+                        </div>
                       </CardContent>
                     </Card>
 
