@@ -18,6 +18,8 @@ import { RegistrationDialog } from "@/components/competitions/RegistrationDialog
 import { RegistrationApprovalPanel } from "@/components/competitions/RegistrationApprovalPanel";
 import { JudgeAssignmentPanel } from "@/components/competitions/JudgeAssignmentPanel";
 import { CompetitionLeaderboard } from "@/components/competitions/CompetitionLeaderboard";
+import { ParticipantsList } from "@/components/competitions/ParticipantsList";
+import { JudgesList } from "@/components/competitions/JudgesList";
 import type { Database } from "@/integrations/supabase/types";
 
 type CompetitionStatus = Database["public"]["Enums"]["competition_status"];
@@ -215,6 +217,10 @@ export default function CompetitionDetail() {
             <Tabs value={activeTab} onValueChange={setActiveTab}>
               <TabsList className="flex-wrap">
                 <TabsTrigger value="overview">Overview</TabsTrigger>
+                <TabsTrigger value="participants" className="gap-1">
+                  <Users className="h-4 w-4" />
+                  {language === "ar" ? "المشاركين" : "Participants"}
+                </TabsTrigger>
                 <TabsTrigger value="categories">{t("categories")}</TabsTrigger>
                 <TabsTrigger value="criteria">{t("criteria")}</TabsTrigger>
                 <TabsTrigger value="leaderboard" className="gap-1">
@@ -229,7 +235,7 @@ export default function CompetitionDetail() {
                 )}
               </TabsList>
 
-              <TabsContent value="overview" className="mt-6">
+              <TabsContent value="overview" className="mt-6 space-y-6">
                 {description && (
                   <Card>
                     <CardContent className="prose prose-sm max-w-none p-6 dark:prose-invert">
@@ -237,6 +243,13 @@ export default function CompetitionDetail() {
                     </CardContent>
                   </Card>
                 )}
+                
+                {/* Judges Panel */}
+                <JudgesList competitionId={competition.id} />
+              </TabsContent>
+
+              <TabsContent value="participants" className="mt-6">
+                <ParticipantsList competitionId={competition.id} />
               </TabsContent>
 
               <TabsContent value="categories" className="mt-6">

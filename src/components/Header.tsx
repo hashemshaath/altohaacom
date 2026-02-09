@@ -6,8 +6,9 @@ import { useUserRoles } from "@/hooks/useUserRole";
 import { LanguageSwitcher } from "./LanguageSwitcher";
 import { ThemeToggle } from "./ThemeToggle";
 import { NotificationBell } from "./notifications/NotificationBell";
+import { QuickSearch } from "./search/QuickSearch";
 import { Button } from "@/components/ui/button";
-import { Menu, X, Shield, Scale, HelpCircle, Newspaper, Search } from "lucide-react";
+import { Menu, X, Shield, Scale, Search } from "lucide-react";
 import { useState } from "react";
 
 export function Header() {
@@ -28,13 +29,8 @@ export function Header() {
 
         {/* Desktop nav */}
         <nav className="hidden items-center gap-2 md:flex">
-          <Button variant="ghost" size="icon" asChild>
-            <Link to="/search">
-              <Search className="h-5 w-5" />
-            </Link>
-          </Button>
+          <QuickSearch />
           <ThemeToggle />
-          <LanguageSwitcher />
           <LanguageSwitcher />
           {user ? (
             <>
