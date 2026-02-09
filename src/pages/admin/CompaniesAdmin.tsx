@@ -60,6 +60,7 @@ interface Company {
   name_ar: string | null;
   type: CompanyType;
   status: CompanyStatus;
+  company_number: string | null;
   email: string | null;
   phone: string | null;
   city: string | null;
@@ -1263,7 +1264,8 @@ export default function CompaniesAdmin() {
                           )}
                           <div>
                             <p className="font-medium">{company.name}</p>
-                            {company.name_ar && <p className="text-sm text-muted-foreground" dir="rtl">{company.name_ar}</p>}
+                            {company.company_number && <p className="text-xs text-muted-foreground font-mono">{company.company_number}</p>}
+                            {!company.company_number && company.name_ar && <p className="text-sm text-muted-foreground" dir="rtl">{company.name_ar}</p>}
                           </div>
                         </div>
                       </TableCell>
