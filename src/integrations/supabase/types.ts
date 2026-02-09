@@ -2531,6 +2531,320 @@ export type Database = {
           },
         ]
       }
+      judge_documents: {
+        Row: {
+          created_at: string
+          document_type: string
+          expiry_date: string | null
+          file_name: string | null
+          file_size: number | null
+          file_url: string
+          id: string
+          is_verified: boolean | null
+          notes: string | null
+          title: string
+          title_ar: string | null
+          updated_at: string
+          user_id: string
+          verified_at: string | null
+          verified_by: string | null
+        }
+        Insert: {
+          created_at?: string
+          document_type: string
+          expiry_date?: string | null
+          file_name?: string | null
+          file_size?: number | null
+          file_url: string
+          id?: string
+          is_verified?: boolean | null
+          notes?: string | null
+          title: string
+          title_ar?: string | null
+          updated_at?: string
+          user_id: string
+          verified_at?: string | null
+          verified_by?: string | null
+        }
+        Update: {
+          created_at?: string
+          document_type?: string
+          expiry_date?: string | null
+          file_name?: string | null
+          file_size?: number | null
+          file_url?: string
+          id?: string
+          is_verified?: boolean | null
+          notes?: string | null
+          title?: string
+          title_ar?: string | null
+          updated_at?: string
+          user_id?: string
+          verified_at?: string | null
+          verified_by?: string | null
+        }
+        Relationships: []
+      }
+      judge_memberships: {
+        Row: {
+          created_at: string
+          expiry_date: string | null
+          id: string
+          is_active: boolean | null
+          joined_date: string | null
+          membership_number: string | null
+          membership_type: string | null
+          notes: string | null
+          organization_name: string
+          organization_name_ar: string | null
+          role_in_organization: string | null
+          role_in_organization_ar: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          expiry_date?: string | null
+          id?: string
+          is_active?: boolean | null
+          joined_date?: string | null
+          membership_number?: string | null
+          membership_type?: string | null
+          notes?: string | null
+          organization_name: string
+          organization_name_ar?: string | null
+          role_in_organization?: string | null
+          role_in_organization_ar?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          expiry_date?: string | null
+          id?: string
+          is_active?: boolean | null
+          joined_date?: string | null
+          membership_number?: string | null
+          membership_type?: string | null
+          notes?: string | null
+          organization_name?: string
+          organization_name_ar?: string | null
+          role_in_organization?: string | null
+          role_in_organization_ar?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      judge_profiles: {
+        Row: {
+          allergies: string | null
+          blood_type: string | null
+          certifications: string[] | null
+          country_of_residence: string | null
+          created_at: string
+          culinary_specialties: string[] | null
+          current_employer: string | null
+          current_position: string | null
+          date_of_birth: string | null
+          dietary_restrictions: string | null
+          education: string | null
+          education_ar: string | null
+          emergency_contact_name: string | null
+          emergency_contact_phone: string | null
+          frequent_flyer_number: string | null
+          full_name_ar: string | null
+          gender: string | null
+          id: string
+          internal_notes: string | null
+          judge_category: string | null
+          judge_level: string | null
+          judge_title: string | null
+          judge_title_ar: string | null
+          languages_spoken: string[] | null
+          marital_status: string | null
+          medical_notes: string | null
+          national_id: string | null
+          nationality: string | null
+          notes: string | null
+          passport_country: string | null
+          passport_expiry_date: string | null
+          passport_issue_date: string | null
+          passport_number: string | null
+          preferred_airline: string | null
+          profile_photo_url: string | null
+          resume_url: string | null
+          second_nationality: string | null
+          shirt_size: string | null
+          spouse_name: string | null
+          spouse_name_ar: string | null
+          spouse_phone: string | null
+          travel_notes: string | null
+          updated_at: string
+          user_id: string
+          years_of_experience: number | null
+        }
+        Insert: {
+          allergies?: string | null
+          blood_type?: string | null
+          certifications?: string[] | null
+          country_of_residence?: string | null
+          created_at?: string
+          culinary_specialties?: string[] | null
+          current_employer?: string | null
+          current_position?: string | null
+          date_of_birth?: string | null
+          dietary_restrictions?: string | null
+          education?: string | null
+          education_ar?: string | null
+          emergency_contact_name?: string | null
+          emergency_contact_phone?: string | null
+          frequent_flyer_number?: string | null
+          full_name_ar?: string | null
+          gender?: string | null
+          id?: string
+          internal_notes?: string | null
+          judge_category?: string | null
+          judge_level?: string | null
+          judge_title?: string | null
+          judge_title_ar?: string | null
+          languages_spoken?: string[] | null
+          marital_status?: string | null
+          medical_notes?: string | null
+          national_id?: string | null
+          nationality?: string | null
+          notes?: string | null
+          passport_country?: string | null
+          passport_expiry_date?: string | null
+          passport_issue_date?: string | null
+          passport_number?: string | null
+          preferred_airline?: string | null
+          profile_photo_url?: string | null
+          resume_url?: string | null
+          second_nationality?: string | null
+          shirt_size?: string | null
+          spouse_name?: string | null
+          spouse_name_ar?: string | null
+          spouse_phone?: string | null
+          travel_notes?: string | null
+          updated_at?: string
+          user_id: string
+          years_of_experience?: number | null
+        }
+        Update: {
+          allergies?: string | null
+          blood_type?: string | null
+          certifications?: string[] | null
+          country_of_residence?: string | null
+          created_at?: string
+          culinary_specialties?: string[] | null
+          current_employer?: string | null
+          current_position?: string | null
+          date_of_birth?: string | null
+          dietary_restrictions?: string | null
+          education?: string | null
+          education_ar?: string | null
+          emergency_contact_name?: string | null
+          emergency_contact_phone?: string | null
+          frequent_flyer_number?: string | null
+          full_name_ar?: string | null
+          gender?: string | null
+          id?: string
+          internal_notes?: string | null
+          judge_category?: string | null
+          judge_level?: string | null
+          judge_title?: string | null
+          judge_title_ar?: string | null
+          languages_spoken?: string[] | null
+          marital_status?: string | null
+          medical_notes?: string | null
+          national_id?: string | null
+          nationality?: string | null
+          notes?: string | null
+          passport_country?: string | null
+          passport_expiry_date?: string | null
+          passport_issue_date?: string | null
+          passport_number?: string | null
+          preferred_airline?: string | null
+          profile_photo_url?: string | null
+          resume_url?: string | null
+          second_nationality?: string | null
+          shirt_size?: string | null
+          spouse_name?: string | null
+          spouse_name_ar?: string | null
+          spouse_phone?: string | null
+          travel_notes?: string | null
+          updated_at?: string
+          user_id?: string
+          years_of_experience?: number | null
+        }
+        Relationships: []
+      }
+      judge_visit_logs: {
+        Row: {
+          achievements: string | null
+          competition_id: string | null
+          country: string | null
+          created_at: string
+          created_by: string | null
+          end_date: string | null
+          event_name: string
+          event_name_ar: string | null
+          event_type: string
+          id: string
+          location: string | null
+          notes: string | null
+          role_played: string | null
+          start_date: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          achievements?: string | null
+          competition_id?: string | null
+          country?: string | null
+          created_at?: string
+          created_by?: string | null
+          end_date?: string | null
+          event_name: string
+          event_name_ar?: string | null
+          event_type: string
+          id?: string
+          location?: string | null
+          notes?: string | null
+          role_played?: string | null
+          start_date?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          achievements?: string | null
+          competition_id?: string | null
+          country?: string | null
+          created_at?: string
+          created_by?: string | null
+          end_date?: string | null
+          event_name?: string
+          event_name_ar?: string | null
+          event_type?: string
+          id?: string
+          location?: string | null
+          notes?: string | null
+          role_played?: string | null
+          start_date?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "judge_visit_logs_competition_id_fkey"
+            columns: ["competition_id"]
+            isOneToOne: false
+            referencedRelation: "competitions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       judging_criteria: {
         Row: {
           competition_id: string

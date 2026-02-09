@@ -69,6 +69,7 @@ import ExhibitionsAdmin from "./pages/admin/ExhibitionsAdmin";
 import Entities from "./pages/Entities";
 import EntityDetail from "./pages/EntityDetail";
 import EntitiesAdmin from "./pages/admin/EntitiesAdmin";
+import JudgesAdmin from "./pages/admin/JudgesAdmin";
 
 // Company Portal Pages
 import CompanyPortalLayout from "./pages/CompanyPortal";
@@ -164,6 +165,7 @@ const App = () => (
                   <Route path="analytics" element={<AnalyticsDashboard />} />
                   <Route path="exhibitions" element={<ExhibitionsAdmin />} />
                   <Route path="entities" element={<EntitiesAdmin />} />
+                  <Route path="judges" element={<JudgesAdmin />} />
                 </Route>
 
                 {/* Company Portal Routes */}
