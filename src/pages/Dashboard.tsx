@@ -17,7 +17,7 @@ export default function Dashboard() {
   const sections = [
     { icon: Users, title: t("communityTitle"), badge: null, href: "/community" },
     { icon: Trophy, title: t("competitionsTitle"), badge: null, href: "/competitions" },
-    { icon: GraduationCap, title: t("masterclassesTitle"), badge: t("comingSoon"), href: "#" },
+    { icon: GraduationCap, title: t("masterclassesTitle"), badge: null, href: "/masterclasses" },
     { icon: ShoppingBag, title: t("shopTitle"), badge: t("comingSoon"), href: "#" },
   ];
 

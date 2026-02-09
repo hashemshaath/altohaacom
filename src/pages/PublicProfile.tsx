@@ -40,9 +40,10 @@ export default function PublicProfile() {
         .from("profiles")
         .select("*")
         .eq("username", username?.toLowerCase())
-        .single();
+        .maybeSingle();
 
       if (error) throw error;
+      if (!data) throw new Error("Profile not found");
       return data as Profile;
     },
     enabled: !!username,
