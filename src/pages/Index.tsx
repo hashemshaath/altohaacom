@@ -179,9 +179,9 @@ const Index = () => {
       <section className="border-y bg-muted/30">
         <div className="container grid grid-cols-3 gap-4 py-8 md:py-10">
           {[
-            { value: stats?.members || "500+", label: isAr ? "عضو مسجل" : "Registered Members" },
-            { value: stats?.competitions || "50+", label: isAr ? "مسابقة" : "Competitions" },
-            { value: stats?.entities || "30+", label: isAr ? "جهة وجمعية" : "Entities & Associations" },
+            { value: stats?.members || 0, label: isAr ? "عضو مسجل" : "Registered Members" },
+            { value: stats?.competitions || 0, label: isAr ? "مسابقة" : "Competitions" },
+            { value: stats?.entities || 0, label: isAr ? "جهة وجمعية" : "Entities & Associations" },
           ].map((stat) => (
             <div key={stat.label} className="text-center">
               <p className="text-2xl font-bold text-primary md:text-3xl">{stat.value}+</p>
