@@ -103,9 +103,28 @@ export default function EntityDetail() {
 
   if (isLoading) {
     return (
-      <div className="flex min-h-screen flex-col">
+      <div className="flex min-h-screen flex-col bg-background">
         <Header />
-        <main className="container flex-1 py-8"><Skeleton className="h-64 w-full rounded-xl" /></main>
+        <main className="container flex-1 py-6 md:py-8">
+          <Skeleton className="mb-4 h-7 w-36 rounded-md" />
+          <Skeleton className="mb-8 h-48 w-full rounded-xl md:h-64" />
+          <div className="grid gap-8 lg:grid-cols-3">
+            <div className="lg:col-span-2 space-y-4">
+              <div className="flex items-start gap-5">
+                <Skeleton className="h-20 w-20 rounded-xl" />
+                <div className="space-y-2 flex-1">
+                  <Skeleton className="h-4 w-32" />
+                  <Skeleton className="h-7 w-3/4" />
+                </div>
+              </div>
+              <Skeleton className="h-32 w-full rounded-lg" />
+            </div>
+            <div className="hidden lg:block space-y-4">
+              <Skeleton className="h-40 w-full rounded-lg" />
+              <Skeleton className="h-48 w-full rounded-lg" />
+            </div>
+          </div>
+        </main>
         <Footer />
       </div>
     );
@@ -113,12 +132,16 @@ export default function EntityDetail() {
 
   if (!entity) {
     return (
-      <div className="flex min-h-screen flex-col">
+      <div className="flex min-h-screen flex-col bg-background">
         <Header />
         <main className="container flex-1 py-16 text-center">
-          <p className="text-xl text-muted-foreground">{isAr ? "الجهة غير موجودة" : "Entity not found"}</p>
-          <Button variant="outline" className="mt-4" asChild>
-            <Link to="/entities">{isAr ? "العودة للدليل" : "Back to Directory"}</Link>
+          <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-muted">
+            <Building2 className="h-8 w-8 text-muted-foreground/40" />
+          </div>
+          <p className="text-muted-foreground mb-1">{isAr ? "الجهة غير موجودة" : "Entity not found"}</p>
+          <p className="text-xs text-muted-foreground/60 mb-5">{isAr ? "تحقق من الرابط وحاول مرة أخرى" : "Check the link and try again"}</p>
+          <Button variant="outline" size="sm" asChild>
+            <Link to="/entities"><ArrowLeft className="me-1.5 h-4 w-4" />{isAr ? "العودة للدليل" : "Back to Directory"}</Link>
           </Button>
         </main>
         <Footer />
@@ -139,12 +162,12 @@ export default function EntityDetail() {
   const affiliates = (entity.affiliated_organizations as string[]) || [];
 
   return (
-    <div className="flex min-h-screen flex-col">
+    <div className="flex min-h-screen flex-col bg-background">
       <Header />
 
-      <main className="container flex-1 py-8">
-        <Button variant="ghost" size="sm" className="mb-4" asChild>
-          <Link to="/entities"><ArrowLeft className="mr-2 h-4 w-4" />{isAr ? "العودة للدليل" : "Back to Directory"}</Link>
+      <main className="container flex-1 py-6 md:py-8">
+        <Button variant="ghost" size="sm" className="mb-4 -ms-2" asChild>
+          <Link to="/entities"><ArrowLeft className="me-1.5 h-4 w-4" />{isAr ? "العودة للدليل" : "Back to Directory"}</Link>
         </Button>
 
         {/* Cover */}
@@ -271,10 +294,18 @@ export default function EntityDetail() {
           </div>
 
           {/* Sidebar */}
-          <div className="space-y-6">
+          <div className="space-y-4">
             {/* Actions */}
-            <Card>
-              <CardContent className="space-y-3 pt-6">
+            <Card className="overflow-hidden">
+              <div className="border-b bg-muted/30 px-4 py-3">
+                <h3 className="flex items-center gap-2 text-sm font-semibold">
+                  <div className="flex h-6 w-6 items-center justify-center rounded-md bg-primary/10">
+                    <Building2 className="h-3.5 w-3.5 text-primary" />
+                  </div>
+                  {isAr ? "إجراءات" : "Actions"}
+                </h3>
+              </div>
+              <CardContent className="space-y-3 p-4">
                 {user && (
                   <Button
                     variant={isFollowing ? "outline" : "default"}
@@ -282,14 +313,14 @@ export default function EntityDetail() {
                     onClick={() => toggleFollow.mutate()}
                     disabled={toggleFollow.isPending}
                   >
-                    {isFollowing ? <><BellOff className="mr-2 h-4 w-4" />{isAr ? "إلغاء المتابعة" : "Unfollow"}</>
-                      : <><Bell className="mr-2 h-4 w-4" />{isAr ? "تابع للتحديثات" : "Follow for Updates"}</>}
+                    {isFollowing ? <><BellOff className="me-2 h-4 w-4" />{isAr ? "إلغاء المتابعة" : "Unfollow"}</>
+                      : <><Bell className="me-2 h-4 w-4" />{isAr ? "تابع للتحديثات" : "Follow for Updates"}</>}
                   </Button>
                 )}
                 {entity.website && (
                   <Button variant="outline" className="w-full" asChild>
                     <a href={entity.website} target="_blank" rel="noopener noreferrer">
-                      <ExternalLink className="mr-2 h-4 w-4" />{isAr ? "الموقع الرسمي" : "Visit Website"}
+                      <ExternalLink className="me-2 h-4 w-4" />{isAr ? "الموقع الرسمي" : "Visit Website"}
                     </a>
                   </Button>
                 )}
@@ -297,23 +328,30 @@ export default function EntityDetail() {
                   navigator.clipboard.writeText(window.location.href);
                   toast({ title: isAr ? "تم نسخ الرابط" : "Link copied!" });
                 }}>
-                  <Share2 className="mr-2 h-4 w-4" />{isAr ? "مشاركة" : "Share"}
+                  <Share2 className="me-2 h-4 w-4" />{isAr ? "مشاركة" : "Share"}
                 </Button>
                 <p className="text-center text-xs text-muted-foreground">
-                  <Users className="mb-0.5 mr-1 inline h-3 w-3" />
+                  <Users className="mb-0.5 me-1 inline h-3 w-3" />
                   {followerCount} {isAr ? "متابع" : "followers"}
                 </p>
               </CardContent>
             </Card>
 
             {/* Contact Info */}
-            <Card>
-              <CardHeader><CardTitle className="text-base">{isAr ? "معلومات الاتصال" : "Contact Information"}</CardTitle></CardHeader>
-              <CardContent className="space-y-3 text-sm">
+            <Card className="overflow-hidden">
+              <div className="border-b bg-muted/30 px-4 py-3">
+                <h3 className="flex items-center gap-2 text-sm font-semibold">
+                  <div className="flex h-6 w-6 items-center justify-center rounded-md bg-accent/10">
+                    <Mail className="h-3.5 w-3.5 text-accent-foreground" />
+                  </div>
+                  {isAr ? "معلومات الاتصال" : "Contact Information"}
+                </h3>
+              </div>
+              <CardContent className="space-y-3 p-4 text-sm">
                 {entity.email && (
                   <div className="flex items-center gap-3">
                     <Mail className="h-4 w-4 shrink-0 text-primary" />
-                    <a href={`mailto:${entity.email}`} className="text-primary hover:underline">{entity.email}</a>
+                    <a href={`mailto:${entity.email}`} className="text-primary hover:underline truncate">{entity.email}</a>
                   </div>
                 )}
                 {entity.phone && (
@@ -343,30 +381,37 @@ export default function EntityDetail() {
             </Card>
 
             {/* Quick Facts */}
-            <Card>
-              <CardHeader><CardTitle className="text-base">{isAr ? "معلومات سريعة" : "Quick Facts"}</CardTitle></CardHeader>
-              <CardContent className="space-y-3 text-sm">
+            <Card className="overflow-hidden">
+              <div className="border-b bg-muted/30 px-4 py-3">
+                <h3 className="flex items-center gap-2 text-sm font-semibold">
+                  <div className="flex h-6 w-6 items-center justify-center rounded-md bg-chart-1/10">
+                    <Calendar className="h-3.5 w-3.5 text-chart-1" />
+                  </div>
+                  {isAr ? "معلومات سريعة" : "Quick Facts"}
+                </h3>
+              </div>
+              <CardContent className="p-0 text-sm">
                 {entity.founded_year && (
-                  <div className="flex items-center justify-between">
-                    <span className="text-muted-foreground">{isAr ? "تأسست" : "Founded"}</span>
+                  <div className="flex items-center justify-between px-4 py-2.5 border-b last:border-0">
+                    <span className="text-[10px] uppercase tracking-wider text-muted-foreground">{isAr ? "تأسست" : "Founded"}</span>
                     <span className="font-medium">{entity.founded_year}</span>
                   </div>
                 )}
                 {entity.member_count && (
-                  <div className="flex items-center justify-between">
-                    <span className="text-muted-foreground">{isAr ? "الأعضاء" : "Members"}</span>
+                  <div className="flex items-center justify-between px-4 py-2.5 border-b last:border-0">
+                    <span className="text-[10px] uppercase tracking-wider text-muted-foreground">{isAr ? "الأعضاء" : "Members"}</span>
                     <span className="font-medium">{entity.member_count.toLocaleString()}</span>
                   </div>
                 )}
                 {entity.registration_number && (
-                  <div className="flex items-center justify-between">
-                    <span className="text-muted-foreground">{isAr ? "رقم التسجيل" : "Reg. #"}</span>
+                  <div className="flex items-center justify-between px-4 py-2.5 border-b last:border-0">
+                    <span className="text-[10px] uppercase tracking-wider text-muted-foreground">{isAr ? "رقم التسجيل" : "Reg. #"}</span>
                     <span className="font-mono text-xs">{entity.registration_number}</span>
                   </div>
                 )}
                 {entity.license_number && (
-                  <div className="flex items-center justify-between">
-                    <span className="text-muted-foreground">{isAr ? "الترخيص" : "License #"}</span>
+                  <div className="flex items-center justify-between px-4 py-2.5 border-b last:border-0">
+                    <span className="text-[10px] uppercase tracking-wider text-muted-foreground">{isAr ? "الترخيص" : "License #"}</span>
                     <span className="font-mono text-xs">{entity.license_number}</span>
                   </div>
                 )}

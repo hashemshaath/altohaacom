@@ -119,19 +119,19 @@ export default function Entities() {
   });
 
   return (
-    <div className="flex min-h-screen flex-col">
+    <div className="flex min-h-screen flex-col bg-background">
       <Header />
 
-      <main className="container flex-1 py-8">
+      <main className="container flex-1 py-6 md:py-8">
         {/* Hero */}
         <div className="mb-8 text-center">
-          <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-primary/10">
-            <Building2 className="h-8 w-8 text-primary" />
+          <div className="mx-auto mb-3 flex h-14 w-14 items-center justify-center rounded-full bg-primary/10">
+            <Building2 className="h-7 w-7 text-primary" />
           </div>
-          <h1 className="font-serif text-3xl font-bold md:text-4xl">
+          <h1 className="font-serif text-2xl font-bold md:text-3xl">
             {isAr ? "دليل الجهات والجمعيات الطهوية" : "Culinary Entities Directory"}
           </h1>
-          <p className="mx-auto mt-2 max-w-2xl text-muted-foreground">
+          <p className="mx-auto mt-1.5 max-w-2xl text-sm text-muted-foreground">
             {isAr
               ? "اكتشف وتابع الجمعيات الطهوية والجهات الحكومية والخاصة المعنية بالطهي محلياً ودولياً"
               : "Discover and follow culinary associations, government entities, and private organizations locally and internationally"}
@@ -165,25 +165,35 @@ export default function Entities() {
 
         {/* Tabs */}
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-          <TabsList className="flex-wrap">
-            <TabsTrigger value="all">{isAr ? "الكل" : "All"}</TabsTrigger>
-            <TabsTrigger value="local">{isAr ? "محلي ووطني" : "Local & National"}</TabsTrigger>
-            <TabsTrigger value="international">{isAr ? "إقليمي ودولي" : "Regional & International"}</TabsTrigger>
-            <TabsTrigger value="government">{isAr ? "حكومي" : "Government"}</TabsTrigger>
-            <TabsTrigger value="private">{isAr ? "خاص" : "Private & Associations"}</TabsTrigger>
+          <TabsList className="flex-wrap bg-muted/50 p-1 gap-0.5">
+            <TabsTrigger value="all" className="text-xs sm:text-sm">{isAr ? "الكل" : "All"}</TabsTrigger>
+            <TabsTrigger value="local" className="text-xs sm:text-sm">{isAr ? "محلي ووطني" : "Local & National"}</TabsTrigger>
+            <TabsTrigger value="international" className="text-xs sm:text-sm">{isAr ? "إقليمي ودولي" : "Regional & International"}</TabsTrigger>
+            <TabsTrigger value="government" className="text-xs sm:text-sm">{isAr ? "حكومي" : "Government"}</TabsTrigger>
+            <TabsTrigger value="private" className="text-xs sm:text-sm">{isAr ? "خاص" : "Private & Associations"}</TabsTrigger>
           </TabsList>
 
           <TabsContent value={activeTab} className="mt-6">
             {isLoading ? (
               <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
                 {[1, 2, 3].map(i => (
-                  <Card key={i}><CardContent className="pt-6"><Skeleton className="h-32 w-full" /></CardContent></Card>
+                  <Card key={i}>
+                    <Skeleton className="h-32 w-full rounded-t-lg" />
+                    <CardContent className="pt-8 space-y-2">
+                      <Skeleton className="h-5 w-3/4" />
+                      <Skeleton className="h-3 w-1/2" />
+                      <Skeleton className="h-12 w-full" />
+                    </CardContent>
+                  </Card>
                 ))}
               </div>
             ) : filtered?.length === 0 ? (
               <div className="py-16 text-center">
-                <Building2 className="mx-auto mb-4 h-12 w-12 text-muted-foreground/40" />
-                <p className="text-lg font-medium text-muted-foreground">{isAr ? "لم يتم العثور على جهات" : "No entities found"}</p>
+                <div className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-muted">
+                  <Building2 className="h-6 w-6 text-muted-foreground/40" />
+                </div>
+                <p className="text-sm font-medium text-muted-foreground">{isAr ? "لم يتم العثور على جهات" : "No entities found"}</p>
+                <p className="mt-0.5 text-xs text-muted-foreground/60">{isAr ? "جرب تغيير عوامل التصفية" : "Try adjusting your filters"}</p>
               </div>
             ) : (
               <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
@@ -302,7 +312,7 @@ export default function Entities() {
 
         {/* Stats */}
         {entities && entities.length > 0 && (
-          <section className="mt-12 grid grid-cols-2 gap-4 sm:grid-cols-4">
+          <section className="mt-10 grid grid-cols-2 gap-3 sm:grid-cols-4">
             {[
               { label: isAr ? "إجمالي الجهات" : "Total Entities", value: entities.length },
               { label: isAr ? "جمعيات" : "Associations", value: entities.filter(e => e.type === "culinary_association" || e.type === "private_association").length },
@@ -311,7 +321,7 @@ export default function Entities() {
             ].map(stat => (
               <Card key={stat.label} className="p-4 text-center">
                 <p className="text-2xl font-bold text-primary">{stat.value}</p>
-                <p className="text-xs text-muted-foreground">{stat.label}</p>
+                <p className="mt-0.5 text-[10px] uppercase tracking-wider text-muted-foreground">{stat.label}</p>
               </Card>
             ))}
           </section>
