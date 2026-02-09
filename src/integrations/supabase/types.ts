@@ -1876,6 +1876,165 @@ export type Database = {
         }
         Relationships: []
       }
+      culinary_entities: {
+        Row: {
+          abbreviation: string | null
+          abbreviation_ar: string | null
+          account_manager_id: string | null
+          address: string | null
+          address_ar: string | null
+          affiliated_organizations: string[] | null
+          city: string | null
+          country: string | null
+          cover_image_url: string | null
+          created_at: string
+          created_by: string | null
+          description: string | null
+          description_ar: string | null
+          email: string | null
+          entity_number: string
+          fax: string | null
+          founded_year: number | null
+          gallery_urls: string[] | null
+          id: string
+          internal_notes: string | null
+          is_verified: boolean | null
+          is_visible: boolean
+          license_expires_at: string | null
+          license_number: string | null
+          logo_url: string | null
+          member_count: number | null
+          mission: string | null
+          mission_ar: string | null
+          name: string
+          name_ar: string | null
+          phone: string | null
+          postal_code: string | null
+          president_name: string | null
+          president_name_ar: string | null
+          registered_at: string | null
+          registration_number: string | null
+          scope: Database["public"]["Enums"]["entity_scope"]
+          secretary_name: string | null
+          secretary_name_ar: string | null
+          services: string[] | null
+          slug: string
+          social_links: Json | null
+          specializations: string[] | null
+          status: Database["public"]["Enums"]["entity_status"]
+          tags: string[] | null
+          type: Database["public"]["Enums"]["entity_type"]
+          updated_at: string
+          username: string | null
+          view_count: number | null
+          website: string | null
+        }
+        Insert: {
+          abbreviation?: string | null
+          abbreviation_ar?: string | null
+          account_manager_id?: string | null
+          address?: string | null
+          address_ar?: string | null
+          affiliated_organizations?: string[] | null
+          city?: string | null
+          country?: string | null
+          cover_image_url?: string | null
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          description_ar?: string | null
+          email?: string | null
+          entity_number: string
+          fax?: string | null
+          founded_year?: number | null
+          gallery_urls?: string[] | null
+          id?: string
+          internal_notes?: string | null
+          is_verified?: boolean | null
+          is_visible?: boolean
+          license_expires_at?: string | null
+          license_number?: string | null
+          logo_url?: string | null
+          member_count?: number | null
+          mission?: string | null
+          mission_ar?: string | null
+          name: string
+          name_ar?: string | null
+          phone?: string | null
+          postal_code?: string | null
+          president_name?: string | null
+          president_name_ar?: string | null
+          registered_at?: string | null
+          registration_number?: string | null
+          scope?: Database["public"]["Enums"]["entity_scope"]
+          secretary_name?: string | null
+          secretary_name_ar?: string | null
+          services?: string[] | null
+          slug: string
+          social_links?: Json | null
+          specializations?: string[] | null
+          status?: Database["public"]["Enums"]["entity_status"]
+          tags?: string[] | null
+          type: Database["public"]["Enums"]["entity_type"]
+          updated_at?: string
+          username?: string | null
+          view_count?: number | null
+          website?: string | null
+        }
+        Update: {
+          abbreviation?: string | null
+          abbreviation_ar?: string | null
+          account_manager_id?: string | null
+          address?: string | null
+          address_ar?: string | null
+          affiliated_organizations?: string[] | null
+          city?: string | null
+          country?: string | null
+          cover_image_url?: string | null
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          description_ar?: string | null
+          email?: string | null
+          entity_number?: string
+          fax?: string | null
+          founded_year?: number | null
+          gallery_urls?: string[] | null
+          id?: string
+          internal_notes?: string | null
+          is_verified?: boolean | null
+          is_visible?: boolean
+          license_expires_at?: string | null
+          license_number?: string | null
+          logo_url?: string | null
+          member_count?: number | null
+          mission?: string | null
+          mission_ar?: string | null
+          name?: string
+          name_ar?: string | null
+          phone?: string | null
+          postal_code?: string | null
+          president_name?: string | null
+          president_name_ar?: string | null
+          registered_at?: string | null
+          registration_number?: string | null
+          scope?: Database["public"]["Enums"]["entity_scope"]
+          secretary_name?: string | null
+          secretary_name_ar?: string | null
+          services?: string[] | null
+          slug?: string
+          social_links?: Json | null
+          specializations?: string[] | null
+          status?: Database["public"]["Enums"]["entity_status"]
+          tags?: string[] | null
+          type?: Database["public"]["Enums"]["entity_type"]
+          updated_at?: string
+          username?: string | null
+          view_count?: number | null
+          website?: string | null
+        }
+        Relationships: []
+      }
       digital_badges: {
         Row: {
           badge_type: Database["public"]["Enums"]["badge_type"]
@@ -1917,6 +2076,35 @@ export type Database = {
           name_ar?: string | null
         }
         Relationships: []
+      }
+      entity_followers: {
+        Row: {
+          created_at: string
+          entity_id: string
+          id: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          entity_id: string
+          id?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          entity_id?: string
+          id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "entity_followers_entity_id_fkey"
+            columns: ["entity_id"]
+            isOneToOne: false
+            referencedRelation: "culinary_entities"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       event_attendees: {
         Row: {
@@ -3898,6 +4086,14 @@ export type Database = {
         | "judging"
         | "completed"
         | "cancelled"
+      entity_scope: "local" | "national" | "regional" | "international"
+      entity_status: "pending" | "active" | "suspended" | "archived"
+      entity_type:
+        | "culinary_association"
+        | "government_entity"
+        | "private_association"
+        | "culinary_academy"
+        | "industry_body"
       exhibition_status:
         | "draft"
         | "upcoming"
@@ -4122,6 +4318,15 @@ export const Constants = {
         "judging",
         "completed",
         "cancelled",
+      ],
+      entity_scope: ["local", "national", "regional", "international"],
+      entity_status: ["pending", "active", "suspended", "archived"],
+      entity_type: [
+        "culinary_association",
+        "government_entity",
+        "private_association",
+        "culinary_academy",
+        "industry_body",
       ],
       exhibition_status: [
         "draft",
