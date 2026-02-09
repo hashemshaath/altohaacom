@@ -8,6 +8,8 @@ import { UpcomingCompetitionsWidget } from "@/components/dashboard/UpcomingCompe
 import { RecentActivityWidget } from "@/components/dashboard/RecentActivityWidget";
 import { QuickStatsWidget } from "@/components/dashboard/QuickStatsWidget";
 import { MasterclassProgressWidget } from "@/components/dashboard/MasterclassProgressWidget";
+import { NotificationsSummaryWidget } from "@/components/dashboard/NotificationsSummaryWidget";
+import { UpcomingExhibitionsWidget } from "@/components/dashboard/UpcomingExhibitionsWidget";
 import { useAuth } from "@/contexts/AuthContext";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -79,9 +81,11 @@ export default function Dashboard() {
         <div className="grid gap-6 lg:grid-cols-3">
           <div className="lg:col-span-2 space-y-6">
             <UpcomingCompetitionsWidget />
+            <UpcomingExhibitionsWidget />
             {user && <MasterclassProgressWidget />}
           </div>
-          <div>
+          <div className="space-y-6">
+            {user && <NotificationsSummaryWidget />}
             <RecentActivityWidget />
           </div>
         </div>
