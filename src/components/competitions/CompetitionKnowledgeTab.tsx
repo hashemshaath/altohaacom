@@ -18,6 +18,9 @@ import {
   Scale, Eye, EyeOff, Sparkles, X, Image
 } from "lucide-react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { RubricTemplatesPanel } from "./RubricTemplatesPanel";
+import { ReferenceGalleryPanel } from "./ReferenceGalleryPanel";
+import { JudgeAIAssistant } from "@/components/knowledge/JudgeAIAssistant";
 
 type ResourceType = "link" | "file" | "document" | "image" | "video" | "law" | "scraped_content";
 
@@ -572,6 +575,15 @@ export function CompetitionKnowledgeTab({ competitionId, isOrganizer }: Competit
           )}
         </CardContent>
       </Card>
+
+      {/* Rubric Templates */}
+      <RubricTemplatesPanel competitionId={competitionId} isAdmin={isOrganizer} />
+
+      {/* Reference Gallery */}
+      <ReferenceGalleryPanel competitionId={competitionId} isAdmin={isOrganizer} isJudge={false} />
+
+      {/* Judge AI Assistant */}
+      <JudgeAIAssistant competitionId={competitionId} className="h-[600px]" />
     </div>
   );
 }

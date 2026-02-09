@@ -14,9 +14,11 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Slider } from "@/components/ui/slider";
 import { useToast } from "@/hooks/use-toast";
-import { Trophy, User, CheckCircle, Star, AlertCircle, X, Save, ArrowLeft } from "lucide-react";
+import { Trophy, User, CheckCircle, Star, AlertCircle, X, Save, ArrowLeft, BookOpen } from "lucide-react";
 import { format } from "date-fns";
 import type { Database } from "@/integrations/supabase/types";
+import { JudgeAIAssistant } from "@/components/knowledge/JudgeAIAssistant";
+import { ReferenceGalleryPanel } from "@/components/competitions/ReferenceGalleryPanel";
 
 type Registration = Database["public"]["Tables"]["competition_registrations"]["Row"];
 type Criteria = Database["public"]["Tables"]["judging_criteria"]["Row"];
@@ -278,96 +280,107 @@ export default function Judging() {
             </Button>
           </div>
 
-          <Card>
-            <CardHeader>
-              <div className="flex items-center gap-4">
-                <div className="flex h-12 w-12 items-center justify-center rounded-full bg-primary/10">
-                  <Star className="h-6 w-6 text-primary" />
-                </div>
-                <div>
-                  <CardTitle>
-                    {language === "ar" ? "تقييم:" : "Scoring:"} {scoringRegistration.profile?.full_name || "Participant"}
-                  </CardTitle>
-                  <CardDescription>
-                    {scoringRegistration.dish_name && (
-                      <span className="font-medium text-foreground">
-                        {language === "ar" ? "الطبق:" : "Dish:"} {scoringRegistration.dish_name}
-                      </span>
-                    )}
-                  </CardDescription>
-                </div>
-              </div>
-            </CardHeader>
-            <CardContent className="space-y-8">
-              <p className="text-sm text-muted-foreground">
-                {language === "ar" 
-                  ? "قم بتقييم كل معيار باستخدام المنزلقات أدناه" 
-                  : "Rate each criterion using the sliders below."}
-              </p>
-
-              {criteria?.map((crit) => (
-                <div key={crit.id} className="space-y-4 rounded-lg border p-4">
-                  <div className="flex items-center justify-between">
-                    <Label className="text-base font-medium">
-                      {language === "ar" && crit.name_ar ? crit.name_ar : crit.name}
-                    </Label>
-                    <Badge variant="outline" className="text-lg px-3 py-1">
-                      {scores[crit.id] || 0} / {crit.max_score}
-                    </Badge>
+          <div className="grid gap-6 lg:grid-cols-3">
+            {/* Scoring Panel */}
+            <div className="lg:col-span-2">
+              <Card>
+                <CardHeader>
+                  <div className="flex items-center gap-4">
+                    <div className="flex h-12 w-12 items-center justify-center rounded-full bg-primary/10">
+                      <Star className="h-6 w-6 text-primary" />
+                    </div>
+                    <div>
+                      <CardTitle>
+                        {language === "ar" ? "تقييم:" : "Scoring:"} {scoringRegistration.profile?.full_name || "Participant"}
+                      </CardTitle>
+                      <CardDescription>
+                        {scoringRegistration.dish_name && (
+                          <span className="font-medium text-foreground">
+                            {language === "ar" ? "الطبق:" : "Dish:"} {scoringRegistration.dish_name}
+                          </span>
+                        )}
+                      </CardDescription>
+                    </div>
                   </div>
-                  {crit.description && (
-                    <p className="text-sm text-muted-foreground">
-                      {language === "ar" && crit.description_ar ? crit.description_ar : crit.description}
-                    </p>
-                  )}
-                  <Slider
-                    value={[scores[crit.id] || 0]}
-                    onValueChange={([val]) => setScores(prev => ({ ...prev, [crit.id]: val }))}
-                    max={crit.max_score}
-                    min={0}
-                    step={1}
-                    className="py-2"
-                  />
-                  <Textarea
-                    placeholder={language === "ar" 
-                      ? `ملاحظات لـ ${crit.name_ar || crit.name} (اختياري)` 
-                      : `Notes for ${crit.name} (optional)`}
-                    value={notes[crit.id] || ""}
-                    onChange={(e) => setNotes(prev => ({ ...prev, [crit.id]: e.target.value }))}
-                    className="text-sm"
-                    rows={2}
-                  />
-                </div>
-              ))}
+                </CardHeader>
+                <CardContent className="space-y-8">
+                  <p className="text-sm text-muted-foreground">
+                    {language === "ar" 
+                      ? "قم بتقييم كل معيار باستخدام المنزلقات أدناه" 
+                      : "Rate each criterion using the sliders below."}
+                  </p>
 
-              <div className="rounded-lg border-2 border-primary bg-primary/5 p-6">
-                <div className="flex items-center justify-between">
-                  <span className="text-lg font-medium">
-                    {language === "ar" ? "المجموع الموزون" : "Weighted Total Score"}
-                  </span>
-                  <span className="text-3xl font-bold text-primary">
-                    {calculateTotalScore()}
-                  </span>
-                </div>
-              </div>
+                  {criteria?.map((crit) => (
+                    <div key={crit.id} className="space-y-4 rounded-lg border p-4">
+                      <div className="flex items-center justify-between">
+                        <Label className="text-base font-medium">
+                          {language === "ar" && crit.name_ar ? crit.name_ar : crit.name}
+                        </Label>
+                        <Badge variant="outline" className="text-lg px-3 py-1">
+                          {scores[crit.id] || 0} / {crit.max_score}
+                        </Badge>
+                      </div>
+                      {crit.description && (
+                        <p className="text-sm text-muted-foreground">
+                          {language === "ar" && crit.description_ar ? crit.description_ar : crit.description}
+                        </p>
+                      )}
+                      <Slider
+                        value={[scores[crit.id] || 0]}
+                        onValueChange={([val]) => setScores(prev => ({ ...prev, [crit.id]: val }))}
+                        max={crit.max_score}
+                        min={0}
+                        step={1}
+                        className="py-2"
+                      />
+                      <Textarea
+                        placeholder={language === "ar" 
+                          ? `ملاحظات لـ ${crit.name_ar || crit.name} (اختياري)` 
+                          : `Notes for ${crit.name} (optional)`}
+                        value={notes[crit.id] || ""}
+                        onChange={(e) => setNotes(prev => ({ ...prev, [crit.id]: e.target.value }))}
+                        className="text-sm"
+                        rows={2}
+                      />
+                    </div>
+                  ))}
 
-              <div className="flex justify-end gap-2 pt-4 border-t">
-                <Button variant="outline" onClick={handleBackToList}>
-                  <X className="mr-2 h-4 w-4" />
-                  {language === "ar" ? "إلغاء" : "Cancel"}
-                </Button>
-                <Button 
-                  onClick={() => submitScoreMutation.mutate()}
-                  disabled={submitScoreMutation.isPending}
-                >
-                  <Save className="mr-2 h-4 w-4" />
-                  {submitScoreMutation.isPending
-                    ? (language === "ar" ? "جاري الحفظ..." : "Saving...")
-                    : (language === "ar" ? "حفظ الدرجات" : "Save Scores")}
-                </Button>
-              </div>
-            </CardContent>
-          </Card>
+                  <div className="rounded-lg border-2 border-primary bg-primary/5 p-6">
+                    <div className="flex items-center justify-between">
+                      <span className="text-lg font-medium">
+                        {language === "ar" ? "المجموع الموزون" : "Weighted Total Score"}
+                      </span>
+                      <span className="text-3xl font-bold text-primary">
+                        {calculateTotalScore()}
+                      </span>
+                    </div>
+                  </div>
+
+                  <div className="flex justify-end gap-2 pt-4 border-t">
+                    <Button variant="outline" onClick={handleBackToList}>
+                      <X className="mr-2 h-4 w-4" />
+                      {language === "ar" ? "إلغاء" : "Cancel"}
+                    </Button>
+                    <Button 
+                      onClick={() => submitScoreMutation.mutate()}
+                      disabled={submitScoreMutation.isPending}
+                    >
+                      <Save className="mr-2 h-4 w-4" />
+                      {submitScoreMutation.isPending
+                        ? (language === "ar" ? "جاري الحفظ..." : "Saving...")
+                        : (language === "ar" ? "حفظ الدرجات" : "Save Scores")}
+                    </Button>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+
+            {/* AI Assistant Sidebar */}
+            <div className="space-y-6">
+              <JudgeAIAssistant competitionId={selectedCompetition || undefined} className="h-[500px]" />
+              <ReferenceGalleryPanel isJudge={true} />
+            </div>
+          </div>
         </main>
         
         <Footer />
