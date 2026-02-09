@@ -2,7 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/i18n/LanguageContext";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Activity, Trophy, CheckCircle, XCircle, Clock, ChefHat } from "lucide-react";
@@ -96,16 +96,18 @@ export function RecentActivityWidget() {
 
   if (!user) {
     return (
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2 text-base">
-            <Activity className="h-4 w-4 text-primary" />
+      <Card className="overflow-hidden">
+        <div className="border-b bg-muted/30 px-4 py-3">
+          <h3 className="flex items-center gap-2 text-sm font-semibold">
+            <div className="flex h-6 w-6 items-center justify-center rounded-md bg-accent/10">
+              <Activity className="h-3.5 w-3.5 text-accent-foreground" />
+            </div>
             {isAr ? "النشاط الأخير" : "Recent Activity"}
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="py-10 text-center">
-            <div className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-2xl bg-muted/60">
+          </h3>
+        </div>
+        <CardContent className="p-4">
+          <div className="py-12 text-center">
+            <div className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-muted">
               <Activity className="h-6 w-6 text-muted-foreground/40" />
             </div>
             <p className="text-sm text-muted-foreground">
@@ -122,26 +124,28 @@ export function RecentActivityWidget() {
 
   if (isLoading) {
     return (
-      <Card>
-        <CardHeader>
+      <Card className="overflow-hidden">
+        <div className="border-b bg-muted/30 px-4 py-3">
           <Skeleton className="h-5 w-36" />
-        </CardHeader>
-        <CardContent className="space-y-3">
-          {[1, 2, 3].map((i) => <Skeleton key={i} className="h-14 w-full" />)}
+        </div>
+        <CardContent className="p-4 space-y-3">
+          {[1, 2, 3].map((i) => <Skeleton key={i} className="h-14 w-full rounded-md" />)}
         </CardContent>
       </Card>
     );
   }
 
   return (
-    <Card>
-      <CardHeader className="pb-3">
-        <CardTitle className="flex items-center gap-2 text-base">
-          <Activity className="h-4 w-4 text-primary" />
+    <Card className="overflow-hidden">
+      <div className="border-b bg-muted/30 px-4 py-3">
+        <h3 className="flex items-center gap-2 text-sm font-semibold">
+          <div className="flex h-6 w-6 items-center justify-center rounded-md bg-accent/10">
+            <Activity className="h-3.5 w-3.5 text-accent-foreground" />
+          </div>
           {isAr ? "النشاط الأخير" : "Recent Activity"}
-        </CardTitle>
-      </CardHeader>
-      <CardContent>
+        </h3>
+      </div>
+      <CardContent className="p-4">
         {activities && activities.length > 0 ? (
           <div className="divide-y">
             {activities.map((activity) => (
@@ -164,14 +168,14 @@ export function RecentActivityWidget() {
             ))}
           </div>
         ) : (
-          <div className="py-10 text-center">
-            <div className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-2xl bg-muted/60">
+          <div className="py-12 text-center">
+            <div className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-muted">
               <Trophy className="h-6 w-6 text-muted-foreground/40" />
             </div>
             <p className="text-sm text-muted-foreground">
               {isAr ? "لا يوجد نشاط حتى الآن" : "No activity yet"}
             </p>
-            <p className="mt-0.5 text-xs text-muted-foreground">
+            <p className="mt-0.5 text-xs text-muted-foreground/60">
               {isAr ? "سجل في مسابقة للبدء!" : "Register for a competition to get started!"}
             </p>
           </div>
