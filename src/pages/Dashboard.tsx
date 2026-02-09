@@ -2,68 +2,93 @@ import { useLanguage } from "@/i18n/LanguageContext";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { Card, CardContent } from "@/components/ui/card";
-import { Trophy, Users, GraduationCap, ShoppingBag } from "lucide-react";
+import { Trophy, Users, GraduationCap, Landmark, Newspaper, MessageSquare } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Link } from "react-router-dom";
 import { UpcomingCompetitionsWidget } from "@/components/dashboard/UpcomingCompetitionsWidget";
 import { RecentActivityWidget } from "@/components/dashboard/RecentActivityWidget";
 import { QuickStatsWidget } from "@/components/dashboard/QuickStatsWidget";
 import { useAuth } from "@/contexts/AuthContext";
+import { useQuery } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
+import { SEOHead } from "@/components/SEOHead";
 
 export default function Dashboard() {
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
   const { user } = useAuth();
 
+  const { data: profile } = useQuery({
+    queryKey: ["dashboard-profile", user?.id],
+    queryFn: async () => {
+      if (!user) return null;
+      const { data } = await supabase
+        .from("profiles")
+        .select("full_name, username")
+        .eq("user_id", user.id)
+        .single();
+      return data;
+    },
+    enabled: !!user,
+  });
+
+  const firstName = profile?.full_name?.split(" ")[0] || "";
+  const greeting = language === "ar"
+    ? `مرحباً${firstName ? ` ${firstName}` : ""} 👋`
+    : `Welcome back${firstName ? `, ${firstName}` : ""} 👋`;
+
   const sections = [
-    { icon: Users, title: t("communityTitle"), badge: null, href: "/community" },
-    { icon: Trophy, title: t("competitionsTitle"), badge: null, href: "/competitions" },
-    { icon: GraduationCap, title: t("masterclassesTitle"), badge: null, href: "/masterclasses" },
-    { icon: ShoppingBag, title: t("shopTitle"), badge: t("comingSoon"), href: "#" },
+    { icon: Trophy, title: t("competitionsTitle"), href: "/competitions" },
+    { icon: Users, title: t("communityTitle"), href: "/community" },
+    { icon: GraduationCap, title: t("masterclassesTitle"), href: "/masterclasses" },
+    { icon: Landmark, title: t("exhibitions") || "Exhibitions", href: "/exhibitions" },
+    { icon: Newspaper, title: t("news") || "News", href: "/news" },
+    { icon: MessageSquare, title: language === "ar" ? "الرسائل" : "Messages", href: "/messages" },
   ];
 
   return (
     <div className="flex min-h-screen flex-col">
+      <SEOHead title="Dashboard" description="Your personal Altohaa dashboard" />
       <Header />
-      <main className="container flex-1 py-8">
-        <h1 className="mb-8 font-serif text-3xl font-bold">{t("home")}</h1>
+      <main className="container flex-1 py-6">
+        {/* Welcome */}
+        <div className="mb-6">
+          <h1 className="font-serif text-2xl font-bold md:text-3xl">{greeting}</h1>
+          <p className="text-muted-foreground">
+            {language === "ar"
+              ? "إليك ملخص نشاطك ومسابقاتك القادمة"
+              : "Here's a summary of your activity and upcoming competitions"}
+          </p>
+        </div>
 
-        {/* Quick Stats (only for logged-in users) */}
+        {/* Quick Stats */}
         {user && (
-          <div className="mb-8">
+          <div className="mb-6">
             <QuickStatsWidget />
           </div>
         )}
 
         {/* Main Content Grid */}
-        <div className="grid gap-8 lg:grid-cols-3">
-          {/* Left Column - Upcoming Competitions */}
+        <div className="grid gap-6 lg:grid-cols-3">
           <div className="lg:col-span-2">
             <UpcomingCompetitionsWidget />
           </div>
-
-          {/* Right Column - Recent Activity */}
           <div>
             <RecentActivityWidget />
           </div>
         </div>
 
-        {/* Quick Navigation Cards */}
+        {/* Quick Navigation */}
         <div className="mt-8">
-          <h2 className="mb-4 text-xl font-semibold">
-            {t("quickLinks")}
-          </h2>
-          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          <h2 className="mb-4 text-lg font-semibold">{t("quickLinks")}</h2>
+          <div className="grid gap-3 grid-cols-2 sm:grid-cols-3 lg:grid-cols-6">
             {sections.map((s) => (
               <Link key={s.title} to={s.href}>
-                <Card className="group cursor-pointer transition-shadow hover:shadow-md">
-                  <CardContent className="flex items-center gap-4 p-4">
+                <Card className="group cursor-pointer transition-shadow hover:shadow-md h-full">
+                  <CardContent className="flex flex-col items-center gap-2 p-4 text-center">
                     <div className="rounded-full bg-primary/10 p-3">
                       <s.icon className="h-5 w-5 text-primary" />
                     </div>
-                    <div className="flex-1">
-                      <h3 className="font-medium">{s.title}</h3>
-                    </div>
-                    {s.badge && <Badge variant="secondary">{s.badge}</Badge>}
+                    <h3 className="text-sm font-medium">{s.title}</h3>
                   </CardContent>
                 </Card>
               </Link>
