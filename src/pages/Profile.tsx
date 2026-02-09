@@ -113,15 +113,15 @@ export default function Profile() {
   return (
     <div className="flex min-h-screen flex-col">
       <Header />
-      <main className="container flex-1 py-8">
+      <main className="container flex-1 py-6 md:py-8">
         {showCompletePrompt && (
           <Card className="mb-6 border-primary/30 bg-primary/5">
-            <CardContent className="flex items-center justify-between p-4">
+            <CardContent className="flex flex-col gap-3 p-4 sm:flex-row sm:items-center sm:justify-between">
               <div>
                 <h3 className="font-semibold">{t("completeProfile")}</h3>
                 <p className="text-sm text-muted-foreground">{t("completeProfileDesc")}</p>
               </div>
-              <Button onClick={() => setEditing(true)} size="sm">
+              <Button onClick={() => setEditing(true)} size="sm" className="w-full sm:w-auto">
                 <Edit className="mr-1.5 h-4 w-4" />
                 {t("editProfile")}
               </Button>
@@ -133,12 +133,15 @@ export default function Profile() {
           {/* Profile card */}
           <Card className="md:col-span-1">
             <CardContent className="flex flex-col items-center p-6 text-center">
-              <div className="mb-4 flex h-24 w-24 items-center justify-center rounded-full bg-primary/10">
-                <User className="h-12 w-12 text-primary" />
+              <div className="mb-4 flex h-20 w-20 items-center justify-center rounded-full bg-primary/10 md:h-24 md:w-24">
+                <User className="h-10 w-10 text-primary md:h-12 md:w-12" />
               </div>
               <h2 className="mb-1 font-serif text-xl font-bold">
                 {profile?.full_name || user?.email}
               </h2>
+              {profile?.username && (
+                <p className="mb-2 text-sm text-muted-foreground">@{profile.username}</p>
+              )}
               <div className="mb-2 flex flex-wrap justify-center gap-1">
                 {roles.map((r) => (
                   <Badge key={r} variant="secondary" className="capitalize">
@@ -157,8 +160,13 @@ export default function Profile() {
               {profile?.location && (
                 <p className="text-sm text-muted-foreground">📍 {profile.location}</p>
               )}
+              {profile?.account_number && (
+                <Badge variant="outline" className="mt-2 font-mono text-xs">
+                  {profile.account_number}
+                </Badge>
+              )}
               {!editing && (
-                <Button onClick={() => setEditing(true)} variant="outline" size="sm" className="mt-4">
+                <Button onClick={() => setEditing(true)} variant="outline" size="sm" className="mt-4 w-full sm:w-auto">
                   <Edit className="mr-1.5 h-4 w-4" />
                   {t("editProfile")}
                 </Button>
@@ -175,7 +183,7 @@ export default function Profile() {
             </CardHeader>
             <CardContent>
               {editing ? (
-                <div className="space-y-4">
+                <div className="space-y-5">
                   <div className="grid gap-4 sm:grid-cols-2">
                     <div className="space-y-2">
                       <Label>{t("fullName")}</Label>
@@ -183,7 +191,7 @@ export default function Profile() {
                     </div>
                     <div className="space-y-2">
                       <Label>{t("specialization")}</Label>
-                      <Input value={form.specialization} onChange={(e) => setForm({ ...form, specialization: e.target.value })} />
+                      <Input value={form.specialization} onChange={(e) => setForm({ ...form, specialization: e.target.value })} placeholder={t("specialization")} />
                     </div>
                     <div className="space-y-2">
                       <Label>{t("experienceLevel")}</Label>
@@ -198,7 +206,7 @@ export default function Profile() {
                     </div>
                     <div className="space-y-2">
                       <Label>{t("location")}</Label>
-                      <Input value={form.location} onChange={(e) => setForm({ ...form, location: e.target.value })} />
+                      <Input value={form.location} onChange={(e) => setForm({ ...form, location: e.target.value })} placeholder={t("location")} />
                     </div>
                     <div className="space-y-2">
                       <Label>{t("phone")}</Label>
@@ -206,16 +214,16 @@ export default function Profile() {
                     </div>
                     <div className="space-y-2">
                       <Label>{t("website")}</Label>
-                      <Input value={form.website} onChange={(e) => setForm({ ...form, website: e.target.value })} />
+                      <Input value={form.website} onChange={(e) => setForm({ ...form, website: e.target.value })} placeholder="https://..." />
                     </div>
                   </div>
                   <div className="space-y-2">
                     <Label>{t("bio")}</Label>
-                    <Textarea value={form.bio} onChange={(e) => setForm({ ...form, bio: e.target.value })} rows={3} />
+                    <Textarea value={form.bio} onChange={(e) => setForm({ ...form, bio: e.target.value })} rows={3} placeholder={t("bio")} />
                   </div>
                   <div>
-                    <h4 className="mb-2 font-semibold">{t("socialMedia")}</h4>
-                    <div className="grid gap-4 sm:grid-cols-2">
+                    <h4 className="mb-3 text-sm font-semibold text-muted-foreground">{t("socialMedia")}</h4>
+                    <div className="grid gap-3 sm:grid-cols-2">
                       <Input placeholder="Instagram" value={form.instagram} onChange={(e) => setForm({ ...form, instagram: e.target.value })} />
                       <Input placeholder="Twitter / X" value={form.twitter} onChange={(e) => setForm({ ...form, twitter: e.target.value })} />
                       <Input placeholder="Facebook" value={form.facebook} onChange={(e) => setForm({ ...form, facebook: e.target.value })} />
@@ -223,12 +231,12 @@ export default function Profile() {
                       <Input placeholder="YouTube" value={form.youtube} onChange={(e) => setForm({ ...form, youtube: e.target.value })} />
                     </div>
                   </div>
-                  <div className="flex gap-2">
-                    <Button onClick={handleSave} disabled={saving}>
+                  <div className="flex flex-col-reverse gap-2 sm:flex-row">
+                    <Button variant="outline" onClick={() => setEditing(false)} className="w-full sm:w-auto">Cancel</Button>
+                    <Button onClick={handleSave} disabled={saving} className="w-full sm:w-auto">
                       <Save className="mr-1.5 h-4 w-4" />
                       {saving ? t("saving") : t("saveProfile")}
                     </Button>
-                    <Button variant="outline" onClick={() => setEditing(false)}>Cancel</Button>
                   </div>
                 </div>
               ) : (
@@ -242,7 +250,7 @@ export default function Profile() {
                   {(profile?.instagram || profile?.twitter || profile?.facebook || profile?.linkedin || profile?.youtube) && (
                     <div>
                       <h4 className="text-sm font-medium text-muted-foreground">{t("socialMedia")}</h4>
-                      <div className="mt-1 flex flex-wrap gap-2">
+                      <div className="mt-2 flex flex-wrap gap-2">
                         {profile.instagram && <Badge variant="outline">IG: {profile.instagram}</Badge>}
                         {profile.twitter && <Badge variant="outline">X: {profile.twitter}</Badge>}
                         {profile.facebook && <Badge variant="outline">FB: {profile.facebook}</Badge>}
@@ -252,7 +260,16 @@ export default function Profile() {
                     </div>
                   )}
                   {!profile?.bio && !profile?.instagram && (
-                    <p className="text-muted-foreground">{t("completeProfileDesc")}</p>
+                    <div className="flex flex-col items-center py-8 text-center">
+                      <div className="mb-3 rounded-full bg-muted p-3">
+                        <Edit className="h-6 w-6 text-muted-foreground" />
+                      </div>
+                      <p className="mb-3 text-sm text-muted-foreground">{t("completeProfileDesc")}</p>
+                      <Button variant="outline" size="sm" onClick={() => setEditing(true)}>
+                        <Edit className="mr-1.5 h-4 w-4" />
+                        {t("editProfile")}
+                      </Button>
+                    </div>
                   )}
                 </div>
               )}
