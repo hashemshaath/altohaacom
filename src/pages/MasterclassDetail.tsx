@@ -36,11 +36,25 @@ export default function MasterclassDetail() {
         .from("masterclasses")
         .select("*")
         .eq("id", id!)
-        .single();
+        .maybeSingle();
       if (error) throw error;
       return data;
     },
     enabled: !!id,
+  });
+
+  const { data: instructor } = useQuery({
+    queryKey: ["masterclass-instructor", masterclass?.instructor_id],
+    queryFn: async () => {
+      if (!masterclass?.instructor_id) return null;
+      const { data } = await supabase
+        .from("profiles")
+        .select("full_name, avatar_url, bio")
+        .eq("user_id", masterclass.instructor_id)
+        .maybeSingle();
+      return data;
+    },
+    enabled: !!masterclass?.instructor_id,
   });
 
   const { data: modules = [] } = useQuery({
@@ -262,6 +276,21 @@ export default function MasterclassDetail() {
                     </span>
                   )}
                 </div>
+                {instructor && (
+                  <div className="flex items-center gap-3 mt-4 pt-4 border-t border-border/50">
+                    <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center overflow-hidden">
+                      {instructor.avatar_url ? (
+                        <img src={instructor.avatar_url} alt="" className="h-full w-full object-cover" />
+                      ) : (
+                        <Users className="h-5 w-5 text-primary" />
+                      )}
+                    </div>
+                    <div>
+                      <p className="text-sm font-medium text-foreground">{instructor.full_name}</p>
+                      <p className="text-xs text-muted-foreground">{language === "ar" ? "المدرب" : "Instructor"}</p>
+                    </div>
+                  </div>
+                )}
               </div>
 
               {/* Enrollment Card */}

@@ -11,7 +11,7 @@ import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useNavigate } from "react-router-dom";
-import { BookOpen, Clock, Users, Search, GraduationCap, Star } from "lucide-react";
+import { BookOpen, Clock, Users, Search, GraduationCap, Star, StarIcon } from "lucide-react";
 
 export default function Masterclasses() {
   const { language } = useLanguage();
@@ -26,7 +26,7 @@ export default function Masterclasses() {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("masterclasses")
-        .select("*, masterclass_modules(id), masterclass_enrollments(id)")
+        .select("*, masterclass_modules(id), masterclass_enrollments(id), masterclass_reviews(rating)")
         .eq("status", "published")
         .order("created_at", { ascending: false });
       if (error) throw error;
@@ -153,6 +153,10 @@ export default function Masterclasses() {
               const isEnrolled = myEnrollments.includes(mc.id);
               const moduleCount = mc.masterclass_modules?.length || 0;
               const enrollmentCount = mc.masterclass_enrollments?.length || 0;
+              const reviews = mc.masterclass_reviews || [];
+              const avgRating = reviews.length > 0
+                ? (reviews.reduce((sum: number, r: any) => sum + r.rating, 0) / reviews.length)
+                : null;
 
               return (
                 <Card
@@ -211,6 +215,12 @@ export default function Masterclasses() {
                       <Users className="h-3 w-3" />
                       {enrollmentCount}
                     </span>
+                    {avgRating !== null && (
+                      <span className="flex items-center gap-1">
+                        <Star className="h-3 w-3 fill-yellow-400 text-yellow-400" />
+                        {avgRating.toFixed(1)}
+                      </span>
+                    )}
                   </CardFooter>
                 </Card>
               );
