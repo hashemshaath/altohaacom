@@ -28,7 +28,18 @@ import {
   ClipboardList,
   Clock,
   Share2,
+  ImageIcon,
+  Twitter,
+  Facebook,
+  Linkedin,
+  Link2,
 } from "lucide-react";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { SEOHead } from "@/components/SEOHead";
 import { format } from "date-fns";
 import { CompetitionStatusManager } from "@/components/competitions/CompetitionStatusManager";
@@ -44,6 +55,8 @@ import { AutoIssueCertificates } from "@/components/competitions/AutoIssueCertif
 import { RequirementsListPanel } from "@/components/competitions/RequirementsListPanel";
 import { CategoryManagementPanel } from "@/components/competitions/CategoryManagementPanel";
 import { CompetitionTeamPanel } from "@/components/competitions/CompetitionTeamPanel";
+import { ReferenceGalleryPanel } from "@/components/competitions/ReferenceGalleryPanel";
+import { RubricTemplatesPanel } from "@/components/competitions/RubricTemplatesPanel";
 import { CriteriaManagementPanel } from "@/components/competitions/CriteriaManagementPanel";
 import type { Database } from "@/integrations/supabase/types";
 
@@ -304,6 +317,39 @@ export default function CompetitionDetail() {
                 </div>
               </div>
               <div className="flex gap-2 shrink-0">
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button variant="outline" size="sm">
+                      <Share2 className="me-1.5 h-4 w-4" />
+                      {isAr ? "مشاركة" : "Share"}
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end" className="w-48">
+                    <DropdownMenuItem className="cursor-pointer gap-2" onClick={() => {
+                      const text = encodeURIComponent(`${title} - ${isAr ? "مسابقة على التوحاء" : "Competition on Altohaa"}`);
+                      const url = encodeURIComponent(window.location.href);
+                      window.open(`https://twitter.com/intent/tweet?text=${text}&url=${url}`, "_blank", "width=600,height=400");
+                    }}>
+                      <Twitter className="h-4 w-4" /> Twitter / X
+                    </DropdownMenuItem>
+                    <DropdownMenuItem className="cursor-pointer gap-2" onClick={() => {
+                      window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(window.location.href)}`, "_blank", "width=600,height=400");
+                    }}>
+                      <Facebook className="h-4 w-4" /> Facebook
+                    </DropdownMenuItem>
+                    <DropdownMenuItem className="cursor-pointer gap-2" onClick={() => {
+                      window.open(`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(window.location.href)}`, "_blank", "width=600,height=400");
+                    }}>
+                      <Linkedin className="h-4 w-4" /> LinkedIn
+                    </DropdownMenuItem>
+                    <DropdownMenuItem className="cursor-pointer gap-2" onClick={() => {
+                      navigator.clipboard.writeText(window.location.href);
+                      toast({ title: isAr ? "تم نسخ الرابط!" : "Link copied!" });
+                    }}>
+                      <Link2 className="h-4 w-4" /> {isAr ? "نسخ الرابط" : "Copy Link"}
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
                 {competition.status === "completed" && (
                   <Button asChild variant="secondary" size="sm">
                     <Link to={`/competitions/${id}/results`}>
@@ -418,6 +464,10 @@ export default function CompetitionDetail() {
                   <TabsTrigger value="knowledge" className="gap-1 text-xs sm:text-sm">
                     <BookOpen className="h-3.5 w-3.5 hidden sm:block" />
                     {isAr ? "المعرفة" : "Knowledge"}
+                  </TabsTrigger>
+                  <TabsTrigger value="gallery" className="gap-1 text-xs sm:text-sm">
+                    <ImageIcon className="h-3.5 w-3.5 hidden sm:block" />
+                    {isAr ? "المعرض" : "Gallery"}
                   </TabsTrigger>
                   {isOrganizer && (
                     <TabsTrigger value="requirements" className="gap-1 text-xs sm:text-sm">
@@ -628,6 +678,11 @@ export default function CompetitionDetail() {
                 <CompetitionKnowledgeTab competitionId={competition.id} isOrganizer={isOrganizer} />
               </TabsContent>
 
+              <TabsContent value="gallery" className="mt-6 space-y-6">
+                <ReferenceGalleryPanel competitionId={competition.id} isAdmin={isOrganizer} />
+                {isOrganizer && <RubricTemplatesPanel competitionId={competition.id} isAdmin={isOrganizer} />}
+              </TabsContent>
+
               {isOrganizer && (
                 <TabsContent value="requirements" className="mt-6">
                   <RequirementsListPanel competitionId={competition.id} isOrganizer={isOrganizer} />
@@ -771,27 +826,6 @@ export default function CompetitionDetail() {
                     </div>
                   </>
                 )}
-              </CardContent>
-            </Card>
-
-            {/* Share Card */}
-            <Card className="overflow-hidden">
-              <div className="border-b bg-muted/30 px-4 py-3">
-                <h3 className="flex items-center gap-2 font-semibold text-sm">
-                  <div className="flex h-6 w-6 items-center justify-center rounded-md bg-primary/10">
-                    <Share2 className="h-3.5 w-3.5 text-primary" />
-                  </div>
-                  {isAr ? "مشاركة" : "Share"}
-                </h3>
-              </div>
-              <CardContent className="p-4">
-                <Button size="sm" variant="outline" className="w-full" onClick={() => {
-                  navigator.clipboard.writeText(window.location.href);
-                  toast({ title: isAr ? "تم نسخ الرابط" : "Link copied!" });
-                }}>
-                  <Share2 className="me-1.5 h-3.5 w-3.5" />
-                  {isAr ? "نسخ الرابط" : "Copy Link"}
-                </Button>
               </CardContent>
             </Card>
           </div>
