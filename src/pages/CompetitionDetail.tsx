@@ -659,7 +659,7 @@ export default function CompetitionDetail() {
               </TabsContent>
 
               <TabsContent value="participants" className="mt-6">
-                <ParticipantsList competitionId={competition.id} />
+                <ParticipantsList competitionId={competition.id} isOrganizer={!!isOrganizer} />
               </TabsContent>
 
               <TabsContent value="categories" className="mt-6">

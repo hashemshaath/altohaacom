@@ -1439,6 +1439,65 @@ export type Database = {
           },
         ]
       }
+      competition_invitations: {
+        Row: {
+          competition_id: string
+          created_at: string
+          id: string
+          invited_by: string
+          invitee_email: string | null
+          invitee_name: string | null
+          invitee_name_ar: string | null
+          message: string | null
+          message_ar: string | null
+          organization_name: string | null
+          organization_name_ar: string | null
+          organization_type: string | null
+          responded_at: string | null
+          status: string
+        }
+        Insert: {
+          competition_id: string
+          created_at?: string
+          id?: string
+          invited_by: string
+          invitee_email?: string | null
+          invitee_name?: string | null
+          invitee_name_ar?: string | null
+          message?: string | null
+          message_ar?: string | null
+          organization_name?: string | null
+          organization_name_ar?: string | null
+          organization_type?: string | null
+          responded_at?: string | null
+          status?: string
+        }
+        Update: {
+          competition_id?: string
+          created_at?: string
+          id?: string
+          invited_by?: string
+          invitee_email?: string | null
+          invitee_name?: string | null
+          invitee_name_ar?: string | null
+          message?: string | null
+          message_ar?: string | null
+          organization_name?: string | null
+          organization_name_ar?: string | null
+          organization_type?: string | null
+          responded_at?: string | null
+          status?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "competition_invitations_competition_id_fkey"
+            columns: ["competition_id"]
+            isOneToOne: false
+            referencedRelation: "competitions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       competition_judges: {
         Row: {
           assigned_at: string
