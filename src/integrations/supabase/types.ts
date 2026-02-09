@@ -56,6 +56,125 @@ export type Database = {
         }
         Relationships: []
       }
+      article_tags: {
+        Row: {
+          article_id: string
+          tag_id: string
+        }
+        Insert: {
+          article_id: string
+          tag_id: string
+        }
+        Update: {
+          article_id?: string
+          tag_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "article_tags_article_id_fkey"
+            columns: ["article_id"]
+            isOneToOne: false
+            referencedRelation: "articles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "article_tags_tag_id_fkey"
+            columns: ["tag_id"]
+            isOneToOne: false
+            referencedRelation: "content_tags"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      articles: {
+        Row: {
+          author_id: string | null
+          category_id: string | null
+          content: string
+          content_ar: string | null
+          created_at: string
+          event_end: string | null
+          event_location: string | null
+          event_location_ar: string | null
+          event_start: string | null
+          excerpt: string | null
+          excerpt_ar: string | null
+          featured_image_url: string | null
+          gallery_urls: string[] | null
+          id: string
+          is_featured: boolean | null
+          metadata: Json | null
+          published_at: string | null
+          slug: string
+          status: string | null
+          title: string
+          title_ar: string | null
+          type: string
+          updated_at: string
+          view_count: number | null
+        }
+        Insert: {
+          author_id?: string | null
+          category_id?: string | null
+          content: string
+          content_ar?: string | null
+          created_at?: string
+          event_end?: string | null
+          event_location?: string | null
+          event_location_ar?: string | null
+          event_start?: string | null
+          excerpt?: string | null
+          excerpt_ar?: string | null
+          featured_image_url?: string | null
+          gallery_urls?: string[] | null
+          id?: string
+          is_featured?: boolean | null
+          metadata?: Json | null
+          published_at?: string | null
+          slug: string
+          status?: string | null
+          title: string
+          title_ar?: string | null
+          type: string
+          updated_at?: string
+          view_count?: number | null
+        }
+        Update: {
+          author_id?: string | null
+          category_id?: string | null
+          content?: string
+          content_ar?: string | null
+          created_at?: string
+          event_end?: string | null
+          event_location?: string | null
+          event_location_ar?: string | null
+          event_start?: string | null
+          excerpt?: string | null
+          excerpt_ar?: string | null
+          featured_image_url?: string | null
+          gallery_urls?: string[] | null
+          id?: string
+          is_featured?: boolean | null
+          metadata?: Json | null
+          published_at?: string | null
+          slug?: string
+          status?: string | null
+          title?: string
+          title_ar?: string | null
+          type?: string
+          updated_at?: string
+          view_count?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "articles_category_id_fkey"
+            columns: ["category_id"]
+            isOneToOne: false
+            referencedRelation: "content_categories"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       competition_categories: {
         Row: {
           competition_id: string
@@ -327,6 +446,53 @@ export type Database = {
         }
         Relationships: []
       }
+      content_categories: {
+        Row: {
+          created_at: string
+          description: string | null
+          description_ar: string | null
+          id: string
+          name: string
+          name_ar: string | null
+          parent_id: string | null
+          slug: string
+          sort_order: number | null
+          type: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          description_ar?: string | null
+          id?: string
+          name: string
+          name_ar?: string | null
+          parent_id?: string | null
+          slug: string
+          sort_order?: number | null
+          type: string
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          description_ar?: string | null
+          id?: string
+          name?: string
+          name_ar?: string | null
+          parent_id?: string | null
+          slug?: string
+          sort_order?: number | null
+          type?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "content_categories_parent_id_fkey"
+            columns: ["parent_id"]
+            isOneToOne: false
+            referencedRelation: "content_categories"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       content_reports: {
         Row: {
           content_id: string
@@ -363,6 +529,69 @@ export type Database = {
           resolved_at?: string | null
           resolved_by?: string | null
           status?: string | null
+        }
+        Relationships: []
+      }
+      content_tags: {
+        Row: {
+          created_at: string
+          id: string
+          name: string
+          name_ar: string | null
+          slug: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          name: string
+          name_ar?: string | null
+          slug: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          name?: string
+          name_ar?: string | null
+          slug?: string
+        }
+        Relationships: []
+      }
+      faqs: {
+        Row: {
+          answer: string
+          answer_ar: string | null
+          category: string
+          created_at: string
+          id: string
+          is_featured: boolean | null
+          question: string
+          question_ar: string | null
+          sort_order: number | null
+          updated_at: string
+        }
+        Insert: {
+          answer: string
+          answer_ar?: string | null
+          category: string
+          created_at?: string
+          id?: string
+          is_featured?: boolean | null
+          question: string
+          question_ar?: string | null
+          sort_order?: number | null
+          updated_at?: string
+        }
+        Update: {
+          answer?: string
+          answer_ar?: string | null
+          category?: string
+          created_at?: string
+          id?: string
+          is_featured?: boolean | null
+          question?: string
+          question_ar?: string | null
+          sort_order?: number | null
+          updated_at?: string
         }
         Relationships: []
       }
@@ -541,6 +770,147 @@ export type Database = {
           },
         ]
       }
+      knowledge_articles: {
+        Row: {
+          author_id: string | null
+          category: string
+          content: string
+          content_ar: string | null
+          created_at: string
+          helpful_count: number | null
+          id: string
+          status: string | null
+          tags: string[] | null
+          title: string
+          title_ar: string | null
+          updated_at: string
+          view_count: number | null
+        }
+        Insert: {
+          author_id?: string | null
+          category: string
+          content: string
+          content_ar?: string | null
+          created_at?: string
+          helpful_count?: number | null
+          id?: string
+          status?: string | null
+          tags?: string[] | null
+          title: string
+          title_ar?: string | null
+          updated_at?: string
+          view_count?: number | null
+        }
+        Update: {
+          author_id?: string | null
+          category?: string
+          content?: string
+          content_ar?: string | null
+          created_at?: string
+          helpful_count?: number | null
+          id?: string
+          status?: string | null
+          tags?: string[] | null
+          title?: string
+          title_ar?: string | null
+          updated_at?: string
+          view_count?: number | null
+        }
+        Relationships: []
+      }
+      leads: {
+        Row: {
+          assigned_to: string | null
+          company_name: string | null
+          contact_name: string
+          created_at: string
+          email: string
+          id: string
+          message: string | null
+          metadata: Json | null
+          notes: string | null
+          phone: string | null
+          source: string | null
+          status: string | null
+          type: string
+          updated_at: string
+        }
+        Insert: {
+          assigned_to?: string | null
+          company_name?: string | null
+          contact_name: string
+          created_at?: string
+          email: string
+          id?: string
+          message?: string | null
+          metadata?: Json | null
+          notes?: string | null
+          phone?: string | null
+          source?: string | null
+          status?: string | null
+          type: string
+          updated_at?: string
+        }
+        Update: {
+          assigned_to?: string | null
+          company_name?: string | null
+          contact_name?: string
+          created_at?: string
+          email?: string
+          id?: string
+          message?: string | null
+          metadata?: Json | null
+          notes?: string | null
+          phone?: string | null
+          source?: string | null
+          status?: string | null
+          type?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      media_library: {
+        Row: {
+          alt_text: string | null
+          alt_text_ar: string | null
+          created_at: string
+          file_size: number | null
+          file_type: string
+          file_url: string
+          filename: string
+          folder: string | null
+          id: string
+          original_filename: string
+          uploaded_by: string | null
+        }
+        Insert: {
+          alt_text?: string | null
+          alt_text_ar?: string | null
+          created_at?: string
+          file_size?: number | null
+          file_type: string
+          file_url: string
+          filename: string
+          folder?: string | null
+          id?: string
+          original_filename: string
+          uploaded_by?: string | null
+        }
+        Update: {
+          alt_text?: string | null
+          alt_text_ar?: string | null
+          created_at?: string
+          file_size?: number | null
+          file_type?: string
+          file_url?: string
+          filename?: string
+          folder?: string | null
+          id?: string
+          original_filename?: string
+          uploaded_by?: string | null
+        }
+        Relationships: []
+      }
       membership_history: {
         Row: {
           changed_by: string | null
@@ -567,6 +937,171 @@ export type Database = {
           new_tier?: Database["public"]["Enums"]["membership_tier"]
           previous_tier?: Database["public"]["Enums"]["membership_tier"] | null
           reason?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
+      notification_preferences: {
+        Row: {
+          channel: Database["public"]["Enums"]["notification_channel"]
+          enabled: boolean | null
+          id: string
+          user_id: string
+        }
+        Insert: {
+          channel: Database["public"]["Enums"]["notification_channel"]
+          enabled?: boolean | null
+          id?: string
+          user_id: string
+        }
+        Update: {
+          channel?: Database["public"]["Enums"]["notification_channel"]
+          enabled?: boolean | null
+          id?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      notification_queue: {
+        Row: {
+          attempts: number | null
+          channel: Database["public"]["Enums"]["notification_channel"]
+          created_at: string
+          error_message: string | null
+          id: string
+          last_attempt_at: string | null
+          payload: Json
+          scheduled_for: string | null
+          status: Database["public"]["Enums"]["notification_status"] | null
+          template_id: string | null
+          user_id: string
+        }
+        Insert: {
+          attempts?: number | null
+          channel: Database["public"]["Enums"]["notification_channel"]
+          created_at?: string
+          error_message?: string | null
+          id?: string
+          last_attempt_at?: string | null
+          payload?: Json
+          scheduled_for?: string | null
+          status?: Database["public"]["Enums"]["notification_status"] | null
+          template_id?: string | null
+          user_id: string
+        }
+        Update: {
+          attempts?: number | null
+          channel?: Database["public"]["Enums"]["notification_channel"]
+          created_at?: string
+          error_message?: string | null
+          id?: string
+          last_attempt_at?: string | null
+          payload?: Json
+          scheduled_for?: string | null
+          status?: Database["public"]["Enums"]["notification_status"] | null
+          template_id?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "notification_queue_template_id_fkey"
+            columns: ["template_id"]
+            isOneToOne: false
+            referencedRelation: "notification_templates"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      notification_templates: {
+        Row: {
+          body: string
+          body_ar: string | null
+          channels: Database["public"]["Enums"]["notification_channel"][] | null
+          created_at: string
+          id: string
+          name: string
+          title: string
+          title_ar: string | null
+          updated_at: string
+          variables: string[] | null
+        }
+        Insert: {
+          body: string
+          body_ar?: string | null
+          channels?:
+            | Database["public"]["Enums"]["notification_channel"][]
+            | null
+          created_at?: string
+          id?: string
+          name: string
+          title: string
+          title_ar?: string | null
+          updated_at?: string
+          variables?: string[] | null
+        }
+        Update: {
+          body?: string
+          body_ar?: string | null
+          channels?:
+            | Database["public"]["Enums"]["notification_channel"][]
+            | null
+          created_at?: string
+          id?: string
+          name?: string
+          title?: string
+          title_ar?: string | null
+          updated_at?: string
+          variables?: string[] | null
+        }
+        Relationships: []
+      }
+      notifications: {
+        Row: {
+          body: string
+          body_ar: string | null
+          channel: Database["public"]["Enums"]["notification_channel"] | null
+          created_at: string
+          id: string
+          is_read: boolean | null
+          link: string | null
+          metadata: Json | null
+          read_at: string | null
+          status: Database["public"]["Enums"]["notification_status"] | null
+          title: string
+          title_ar: string | null
+          type: string | null
+          user_id: string
+        }
+        Insert: {
+          body: string
+          body_ar?: string | null
+          channel?: Database["public"]["Enums"]["notification_channel"] | null
+          created_at?: string
+          id?: string
+          is_read?: boolean | null
+          link?: string | null
+          metadata?: Json | null
+          read_at?: string | null
+          status?: Database["public"]["Enums"]["notification_status"] | null
+          title: string
+          title_ar?: string | null
+          type?: string | null
+          user_id: string
+        }
+        Update: {
+          body?: string
+          body_ar?: string | null
+          channel?: Database["public"]["Enums"]["notification_channel"] | null
+          created_at?: string
+          id?: string
+          is_read?: boolean | null
+          link?: string | null
+          metadata?: Json | null
+          read_at?: string | null
+          status?: Database["public"]["Enums"]["notification_status"] | null
+          title?: string
+          title_ar?: string | null
+          type?: string | null
           user_id?: string
         }
         Relationships: []
@@ -849,6 +1384,8 @@ export type Database = {
       experience_level: "beginner" | "amateur" | "professional"
       membership_status: "active" | "expired" | "suspended" | "cancelled"
       membership_tier: "basic" | "professional" | "enterprise"
+      notification_channel: "in_app" | "email" | "sms" | "whatsapp" | "push"
+      notification_status: "pending" | "sent" | "delivered" | "failed" | "read"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -1000,6 +1537,8 @@ export const Constants = {
       experience_level: ["beginner", "amateur", "professional"],
       membership_status: ["active", "expired", "suspended", "cancelled"],
       membership_tier: ["basic", "professional", "enterprise"],
+      notification_channel: ["in_app", "email", "sms", "whatsapp", "push"],
+      notification_status: ["pending", "sent", "delivered", "failed", "read"],
     },
   },
 } as const

@@ -20,6 +20,11 @@ import CompetitionResults from "./pages/CompetitionResults";
 import Judging from "./pages/Judging";
 import NotFound from "./pages/NotFound";
 import PublicProfile from "./pages/PublicProfile";
+import HelpCenter from "./pages/HelpCenter";
+import News from "./pages/News";
+import Notifications from "./pages/Notifications";
+import SponsorsLanding from "./pages/landing/SponsorsLanding";
+import OrganizersLanding from "./pages/landing/OrganizersLanding";
 
 // Admin pages
 import AdminLayout from "./pages/admin/AdminLayout";
@@ -58,6 +63,11 @@ const App = () => (
                 <Route path="/competitions/:id/edit" element={<ProtectedRoute><EditCompetition /></ProtectedRoute>} />
                 <Route path="/competitions/:id/results" element={<CompetitionResults />} />
                 <Route path="/judging" element={<ProtectedRoute><Judging /></ProtectedRoute>} />
+                <Route path="/help" element={<HelpCenter />} />
+                <Route path="/news" element={<News />} />
+                <Route path="/notifications" element={<ProtectedRoute><Notifications /></ProtectedRoute>} />
+                <Route path="/sponsors" element={<SponsorsLanding />} />
+                <Route path="/for-organizers" element={<OrganizersLanding />} />
                 
                 {/* Admin Routes */}
                 <Route path="/admin" element={<ProtectedRoute><AdminLayout /></ProtectedRoute>}>

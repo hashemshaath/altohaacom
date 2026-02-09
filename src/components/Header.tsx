@@ -5,8 +5,9 @@ import { useIsAdmin } from "@/hooks/useAdmin";
 import { useUserRoles } from "@/hooks/useUserRole";
 import { LanguageSwitcher } from "./LanguageSwitcher";
 import { ThemeToggle } from "./ThemeToggle";
+import { NotificationBell } from "./notifications/NotificationBell";
 import { Button } from "@/components/ui/button";
-import { Menu, X, Shield, Scale } from "lucide-react";
+import { Menu, X, Shield, Scale, HelpCircle, Newspaper } from "lucide-react";
 import { useState } from "react";
 
 export function Header() {
@@ -59,6 +60,7 @@ export function Header() {
                   </Link>
                 </Button>
               )}
+              <NotificationBell />
               <Button variant="outline" size="sm" onClick={signOut}>
                 {t("signOut")}
               </Button>

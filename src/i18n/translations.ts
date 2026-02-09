@@ -209,6 +209,35 @@ export const translations = {
     submitScores: "Submit Scores",
     viewScores: "View Scores",
     judgingPanel: "Judging Panel",
+    
+    // Notifications
+    notifications: "Notifications",
+    markAllRead: "Mark All Read",
+    noNotifications: "No notifications",
+    viewAll: "View All",
+    
+    // Knowledge Center
+    aiAssistant: "AI Assistant",
+    helpCenter: "Help Center",
+    knowledgeBase: "Knowledge Base",
+    askQuestion: "Ask a Question",
+    searchHelp: "Search for help...",
+    
+    // News & CMS
+    news: "News",
+    blog: "Blog",
+    exhibitions: "Exhibitions",
+    featuredArticles: "Featured Articles",
+    latestNews: "Latest News",
+    readMore: "Read More",
+    
+    // Landing Pages
+    sponsors: "Sponsors",
+    becomeASponsor: "Become a Sponsor",
+    forOrganizers: "For Organizers",
+    contactUs: "Contact Us",
+    getStarted: "Get Started",
+    requestDemo: "Request Demo",
   },
   ar: {
     // Navigation
@@ -418,6 +447,35 @@ export const translations = {
     submitScores: "تقديم النقاط",
     viewScores: "عرض النقاط",
     judgingPanel: "لوحة التحكيم",
+    
+    // Notifications
+    notifications: "الإشعارات",
+    markAllRead: "تحديد الكل كمقروء",
+    noNotifications: "لا توجد إشعارات",
+    viewAll: "عرض الكل",
+    
+    // Knowledge Center
+    aiAssistant: "المساعد الذكي",
+    helpCenter: "مركز المساعدة",
+    knowledgeBase: "قاعدة المعرفة",
+    askQuestion: "اطرح سؤالاً",
+    searchHelp: "ابحث عن مساعدة...",
+    
+    // News & CMS
+    news: "الأخبار",
+    blog: "المدونة",
+    exhibitions: "المعارض",
+    featuredArticles: "المقالات المميزة",
+    latestNews: "آخر الأخبار",
+    readMore: "اقرأ المزيد",
+    
+    // Landing Pages
+    sponsors: "الرعاة",
+    becomeASponsor: "كن راعياً",
+    forOrganizers: "للمنظمين",
+    contactUs: "تواصل معنا",
+    getStarted: "ابدأ الآن",
+    requestDemo: "طلب عرض توضيحي",
   },
 } as const;
 
