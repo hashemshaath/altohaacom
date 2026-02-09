@@ -253,6 +253,18 @@ export const translations = {
     contactUs: "Contact Us",
     getStarted: "Get Started",
     requestDemo: "Request Demo",
+    
+    // Lead Management
+    leadManagement: "Lead Management",
+    leads: "Leads",
+    new: "New",
+    contacted: "Contacted",
+    qualified: "Qualified",
+    proposal: "Proposal",
+    won: "Won",
+    lost: "Lost",
+    partnership: "Partnership",
+    general: "General",
   },
   ar: {
     // Navigation
@@ -506,6 +518,18 @@ export const translations = {
     contactUs: "تواصل معنا",
     getStarted: "ابدأ الآن",
     requestDemo: "طلب عرض توضيحي",
+    
+    // Lead Management
+    leadManagement: "إدارة العملاء المحتملين",
+    leads: "العملاء المحتملين",
+    new: "جديد",
+    contacted: "تم التواصل",
+    qualified: "مؤهل",
+    proposal: "عرض سعر",
+    won: "ناجح",
+    lost: "خسارة",
+    partnership: "شراكة",
+    general: "عام",
   },
 } as const;
 

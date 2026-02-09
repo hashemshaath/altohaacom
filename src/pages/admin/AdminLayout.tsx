@@ -11,6 +11,7 @@ import {
   Flag,
   FileText,
   LayoutDashboard,
+  UserSearch,
 } from "lucide-react";
 
 export default function AdminLayout() {
@@ -32,6 +33,7 @@ export default function AdminLayout() {
   const navItems = [
     { to: "/admin", icon: LayoutDashboard, label: t("adminPanel"), end: true },
     { to: "/admin/users", icon: Users, label: t("userManagement") },
+    { to: "/admin/leads", icon: UserSearch, label: t("leadManagement") },
     { to: "/admin/roles", icon: Shield, label: t("rolePermissions") },
     { to: "/admin/memberships", icon: CreditCard, label: t("membershipControl") },
     { to: "/admin/moderation", icon: Flag, label: t("contentModeration") },
