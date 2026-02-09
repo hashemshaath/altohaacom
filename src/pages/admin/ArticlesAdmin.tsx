@@ -10,23 +10,22 @@ import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { useToast } from "@/hooks/use-toast";
 import { format } from "date-fns";
 import { 
   Plus, 
   Search, 
-  MoreVertical, 
   Pencil, 
   Trash2, 
   Eye, 
   FileText,
-  Newspaper,
-  Calendar,
-  Image,
+  X,
+  Save,
+  ArrowLeft,
 } from "lucide-react";
+
+type ViewMode = "list" | "create" | "edit";
 
 export default function ArticlesAdmin() {
   const { language } = useLanguage();
@@ -35,8 +34,8 @@ export default function ArticlesAdmin() {
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState<string>("all");
   const [typeFilter, setTypeFilter] = useState<string>("all");
-  const [isCreateOpen, setIsCreateOpen] = useState(false);
-  const [editingArticle, setEditingArticle] = useState<any>(null);
+  const [viewMode, setViewMode] = useState<ViewMode>("list");
+  const [editingArticleId, setEditingArticleId] = useState<string | null>(null);
 
   const [formData, setFormData] = useState({
     title: "",
@@ -85,7 +84,7 @@ export default function ArticlesAdmin() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["admin-articles"] });
-      setIsCreateOpen(false);
+      setViewMode("list");
       resetForm();
       toast({
         title: language === "ar" ? "تم الإنشاء" : "Created",
@@ -101,7 +100,8 @@ export default function ArticlesAdmin() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["admin-articles"] });
-      setEditingArticle(null);
+      setViewMode("list");
+      setEditingArticleId(null);
       resetForm();
       toast({
         title: language === "ar" ? "تم التحديث" : "Updated",
@@ -140,7 +140,7 @@ export default function ArticlesAdmin() {
   };
 
   const handleEdit = (article: any) => {
-    setEditingArticle(article);
+    setEditingArticleId(article.id);
     setFormData({
       title: article.title || "",
       title_ar: article.title_ar || "",
@@ -153,14 +153,21 @@ export default function ArticlesAdmin() {
       status: article.status || "draft",
       featured_image_url: article.featured_image_url || "",
     });
+    setViewMode("edit");
   };
 
   const handleSubmit = () => {
-    if (editingArticle) {
-      updateMutation.mutate({ id: editingArticle.id, data: formData });
+    if (viewMode === "edit" && editingArticleId) {
+      updateMutation.mutate({ id: editingArticleId, data: formData });
     } else {
       createMutation.mutate(formData);
     }
+  };
+
+  const handleBackToList = () => {
+    setViewMode("list");
+    setEditingArticleId(null);
+    resetForm();
   };
 
   const getStatusBadge = (status: string) => {
@@ -181,94 +188,86 @@ export default function ArticlesAdmin() {
     return <Badge className={colors[type] || ""}>{type}</Badge>;
   };
 
-  return (
-    <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <div>
+  // Create/Edit Form View
+  if (viewMode === "create" || viewMode === "edit") {
+    return (
+      <div className="space-y-6">
+        <div className="flex items-center gap-4">
+          <Button variant="ghost" size="sm" onClick={handleBackToList}>
+            <ArrowLeft className="mr-2 h-4 w-4" />
+            {language === "ar" ? "رجوع" : "Back"}
+          </Button>
           <h1 className="font-serif text-2xl font-bold">
-            {language === "ar" ? "إدارة المقالات والأخبار" : "Articles & News Management"}
+            {viewMode === "edit" 
+              ? (language === "ar" ? "تعديل المقال" : "Edit Article")
+              : (language === "ar" ? "مقال جديد" : "New Article")}
           </h1>
-          <p className="text-muted-foreground">
-            {language === "ar" ? "إنشاء وتعديل المحتوى" : "Create and manage content"}
-          </p>
         </div>
-        <Dialog open={isCreateOpen || !!editingArticle} onOpenChange={(open) => {
-          if (!open) {
-            setIsCreateOpen(false);
-            setEditingArticle(null);
-            resetForm();
-          }
-        }}>
-          <DialogTrigger asChild>
-            <Button onClick={() => setIsCreateOpen(true)}>
-              <Plus className="mr-2 h-4 w-4" />
-              {language === "ar" ? "مقال جديد" : "New Article"}
-            </Button>
-          </DialogTrigger>
-          <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
-            <DialogHeader>
-              <DialogTitle>
-                {editingArticle 
-                  ? (language === "ar" ? "تعديل المقال" : "Edit Article")
-                  : (language === "ar" ? "مقال جديد" : "New Article")}
-              </DialogTitle>
-            </DialogHeader>
-            <div className="space-y-4 py-4">
+
+        <Card>
+          <CardContent className="pt-6">
+            <div className="space-y-6">
               <Tabs defaultValue="en">
                 <TabsList>
                   <TabsTrigger value="en">English</TabsTrigger>
                   <TabsTrigger value="ar">العربية</TabsTrigger>
                 </TabsList>
-                <TabsContent value="en" className="space-y-4">
+                <TabsContent value="en" className="space-y-4 pt-4">
                   <div className="space-y-2">
                     <Label>Title</Label>
                     <Input
                       value={formData.title}
                       onChange={(e) => setFormData({ ...formData, title: e.target.value })}
+                      placeholder="Enter article title"
                     />
                   </div>
                   <div className="space-y-2">
                     <Label>Excerpt</Label>
                     <Textarea
-                      rows={2}
+                      rows={3}
                       value={formData.excerpt}
                       onChange={(e) => setFormData({ ...formData, excerpt: e.target.value })}
+                      placeholder="Brief summary of the article"
                     />
                   </div>
                   <div className="space-y-2">
                     <Label>Content</Label>
                     <Textarea
-                      rows={8}
+                      rows={12}
                       value={formData.content}
                       onChange={(e) => setFormData({ ...formData, content: e.target.value })}
+                      placeholder="Full article content"
                     />
                   </div>
                 </TabsContent>
-                <TabsContent value="ar" className="space-y-4">
+                <TabsContent value="ar" className="space-y-4 pt-4">
                   <div className="space-y-2">
                     <Label>العنوان</Label>
                     <Input
                       dir="rtl"
                       value={formData.title_ar}
                       onChange={(e) => setFormData({ ...formData, title_ar: e.target.value })}
+                      placeholder="أدخل عنوان المقال"
                     />
                   </div>
                   <div className="space-y-2">
                     <Label>المقتطف</Label>
                     <Textarea
                       dir="rtl"
-                      rows={2}
+                      rows={3}
                       value={formData.excerpt_ar}
                       onChange={(e) => setFormData({ ...formData, excerpt_ar: e.target.value })}
+                      placeholder="ملخص موجز للمقال"
                     />
                   </div>
                   <div className="space-y-2">
                     <Label>المحتوى</Label>
                     <Textarea
                       dir="rtl"
-                      rows={8}
+                      rows={12}
                       value={formData.content_ar}
                       onChange={(e) => setFormData({ ...formData, content_ar: e.target.value })}
+                      placeholder="محتوى المقال الكامل"
                     />
                   </div>
                 </TabsContent>
@@ -288,6 +287,7 @@ export default function ArticlesAdmin() {
                   <Input
                     value={formData.featured_image_url}
                     onChange={(e) => setFormData({ ...formData, featured_image_url: e.target.value })}
+                    placeholder="https://..."
                   />
                 </div>
                 <div className="space-y-2">
@@ -318,23 +318,41 @@ export default function ArticlesAdmin() {
                 </div>
               </div>
 
-              <div className="flex justify-end gap-2 pt-4">
-                <Button variant="outline" onClick={() => {
-                  setIsCreateOpen(false);
-                  setEditingArticle(null);
-                  resetForm();
-                }}>
+              <div className="flex justify-end gap-2 pt-4 border-t">
+                <Button variant="outline" onClick={handleBackToList}>
+                  <X className="mr-2 h-4 w-4" />
                   {language === "ar" ? "إلغاء" : "Cancel"}
                 </Button>
                 <Button onClick={handleSubmit} disabled={createMutation.isPending || updateMutation.isPending}>
-                  {editingArticle 
+                  <Save className="mr-2 h-4 w-4" />
+                  {viewMode === "edit" 
                     ? (language === "ar" ? "تحديث" : "Update")
                     : (language === "ar" ? "إنشاء" : "Create")}
                 </Button>
               </div>
             </div>
-          </DialogContent>
-        </Dialog>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
+
+  // List View
+  return (
+    <div className="space-y-6">
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="font-serif text-2xl font-bold">
+            {language === "ar" ? "إدارة المقالات والأخبار" : "Articles & News Management"}
+          </h1>
+          <p className="text-muted-foreground">
+            {language === "ar" ? "إنشاء وتعديل المحتوى" : "Create and manage content"}
+          </p>
+        </div>
+        <Button onClick={() => setViewMode("create")}>
+          <Plus className="mr-2 h-4 w-4" />
+          {language === "ar" ? "مقال جديد" : "New Article"}
+        </Button>
       </div>
 
       {/* Filters */}
@@ -389,7 +407,7 @@ export default function ArticlesAdmin() {
                 <TableHead>{language === "ar" ? "الحالة" : "Status"}</TableHead>
                 <TableHead>{language === "ar" ? "المشاهدات" : "Views"}</TableHead>
                 <TableHead>{language === "ar" ? "التاريخ" : "Date"}</TableHead>
-                <TableHead className="w-[50px]"></TableHead>
+                <TableHead className="w-[120px]">{language === "ar" ? "الإجراءات" : "Actions"}</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -438,30 +456,35 @@ export default function ArticlesAdmin() {
                       {format(new Date(article.created_at), "MMM d, yyyy")}
                     </TableCell>
                     <TableCell>
-                      <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
-                          <Button variant="ghost" size="icon">
-                            <MoreVertical className="h-4 w-4" />
-                          </Button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent align="end">
-                          <DropdownMenuItem onClick={() => window.open(`/news/${article.slug}`, "_blank")}>
-                            <Eye className="mr-2 h-4 w-4" />
-                            {language === "ar" ? "معاينة" : "Preview"}
-                          </DropdownMenuItem>
-                          <DropdownMenuItem onClick={() => handleEdit(article)}>
-                            <Pencil className="mr-2 h-4 w-4" />
-                            {language === "ar" ? "تعديل" : "Edit"}
-                          </DropdownMenuItem>
-                          <DropdownMenuItem 
-                            className="text-destructive"
-                            onClick={() => deleteMutation.mutate(article.id)}
-                          >
-                            <Trash2 className="mr-2 h-4 w-4" />
-                            {language === "ar" ? "حذف" : "Delete"}
-                          </DropdownMenuItem>
-                        </DropdownMenuContent>
-                      </DropdownMenu>
+                      <div className="flex gap-1">
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          asChild
+                        >
+                          <a href={`/news/${article.slug}`} target="_blank" rel="noopener noreferrer">
+                            <Eye className="h-4 w-4" />
+                          </a>
+                        </Button>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => handleEdit(article)}
+                        >
+                          <Pencil className="h-4 w-4" />
+                        </Button>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => {
+                            if (confirm(language === "ar" ? "هل أنت متأكد من الحذف؟" : "Are you sure you want to delete?")) {
+                              deleteMutation.mutate(article.id);
+                            }
+                          }}
+                        >
+                          <Trash2 className="h-4 w-4" />
+                        </Button>
+                      </div>
                     </TableCell>
                   </TableRow>
                 ))

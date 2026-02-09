@@ -3,10 +3,11 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Textarea } from "@/components/ui/textarea";
+import { Label } from "@/components/ui/label";
 import {
   Table,
   TableBody,
@@ -15,16 +16,9 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogFooter,
-} from "@/components/ui/dialog";
 import { useToast } from "@/hooks/use-toast";
 import { format } from "date-fns";
-import { CheckCircle, XCircle, Eye } from "lucide-react";
+import { CheckCircle, XCircle, ChevronDown, ChevronUp, AlertTriangle } from "lucide-react";
 
 interface Report {
   id: string;
@@ -38,13 +32,13 @@ interface Report {
 }
 
 export default function ContentModeration() {
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
   const { user } = useAuth();
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
-  const [selectedReport, setSelectedReport] = useState<Report | null>(null);
-  const [resolutionNotes, setResolutionNotes] = useState("");
+  const [expandedReportId, setExpandedReportId] = useState<string | null>(null);
+  const [resolutionNotes, setResolutionNotes] = useState<Record<string, string>>({});
 
   const { data: reports, isLoading } = useQuery({
     queryKey: ["contentReports"],
@@ -79,12 +73,16 @@ export default function ContentModeration() {
         details: { report_id: reportId, status, notes },
       });
     },
-    onSuccess: () => {
+    onSuccess: (_, variables) => {
       queryClient.invalidateQueries({ queryKey: ["contentReports"] });
       queryClient.invalidateQueries({ queryKey: ["adminStats"] });
-      toast({ title: "Report resolved" });
-      setSelectedReport(null);
-      setResolutionNotes("");
+      toast({ title: language === "ar" ? "تم معالجة البلاغ" : "Report resolved" });
+      setExpandedReportId(null);
+      setResolutionNotes(prev => {
+        const updated = { ...prev };
+        delete updated[variables.reportId];
+        return updated;
+      });
     },
     onError: (error) => {
       toast({ variant: "destructive", title: "Error", description: error.message });
@@ -92,28 +90,54 @@ export default function ContentModeration() {
   });
 
   const getStatusBadge = (status: string) => {
-    const variants: Record<string, "default" | "secondary" | "destructive"> = {
-      pending: "secondary",
-      resolved: "default",
-      dismissed: "destructive",
+    const config: Record<string, { variant: "default" | "secondary" | "destructive"; label: string; labelAr: string }> = {
+      pending: { variant: "secondary", label: "Pending", labelAr: "معلق" },
+      resolved: { variant: "default", label: "Resolved", labelAr: "تم الحل" },
+      dismissed: { variant: "destructive", label: "Dismissed", labelAr: "مرفوض" },
     };
-    return <Badge variant={variants[status] || "secondary"}>{status}</Badge>;
+    const cfg = config[status] || config.pending;
+    return <Badge variant={cfg.variant}>{language === "ar" ? cfg.labelAr : cfg.label}</Badge>;
   };
 
   const pendingCount = reports?.filter(r => r.status === "pending").length || 0;
 
+  const toggleExpand = (reportId: string) => {
+    setExpandedReportId(expandedReportId === reportId ? null : reportId);
+  };
+
+  const handleResolve = (reportId: string, status: "resolved" | "dismissed") => {
+    resolveReportMutation.mutate({
+      reportId,
+      status,
+      notes: resolutionNotes[reportId] || "",
+    });
+  };
+
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
-        <h1 className="font-serif text-2xl font-bold">{t("contentModeration")}</h1>
+        <div>
+          <h1 className="font-serif text-2xl font-bold">{t("contentModeration")}</h1>
+          <p className="text-muted-foreground">
+            {language === "ar" ? "مراجعة البلاغات المقدمة" : "Review submitted reports"}
+          </p>
+        </div>
         {pendingCount > 0 && (
-          <Badge variant="destructive">{pendingCount} pending</Badge>
+          <Badge variant="destructive" className="flex items-center gap-1">
+            <AlertTriangle className="h-3 w-3" />
+            {pendingCount} {language === "ar" ? "معلق" : "pending"}
+          </Badge>
         )}
       </div>
 
       <Card>
         <CardHeader>
           <CardTitle>{t("reports")}</CardTitle>
+          <CardDescription>
+            {language === "ar" 
+              ? "انقر على أي بلاغ لعرض التفاصيل واتخاذ إجراء" 
+              : "Click on any report to view details and take action"}
+          </CardDescription>
         </CardHeader>
         <CardContent>
           {isLoading ? (
@@ -121,105 +145,112 @@ export default function ContentModeration() {
               <div className="h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent" />
             </div>
           ) : reports?.length === 0 ? (
-            <p className="py-8 text-center text-muted-foreground">{t("noResults")}</p>
+            <div className="py-12 text-center">
+              <CheckCircle className="mx-auto mb-4 h-12 w-12 text-muted-foreground" />
+              <p className="text-muted-foreground">{language === "ar" ? "لا توجد بلاغات" : "No reports found"}</p>
+            </div>
           ) : (
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>Type</TableHead>
-                  <TableHead>{t("reason")}</TableHead>
-                  <TableHead>Date</TableHead>
-                  <TableHead>Status</TableHead>
-                  <TableHead className="w-24">{t("actions")}</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {reports?.map((report) => (
-                  <TableRow key={report.id}>
-                    <TableCell>
+            <div className="space-y-2">
+              {reports?.map((report) => (
+                <div 
+                  key={report.id} 
+                  className={`rounded-lg border ${
+                    report.status === "pending" 
+                      ? "border-orange-200 bg-orange-50/50 dark:border-orange-900 dark:bg-orange-950/20" 
+                      : "border-border"
+                  }`}
+                >
+                  {/* Report Row Header */}
+                  <div 
+                    className="flex cursor-pointer items-center justify-between p-4"
+                    onClick={() => toggleExpand(report.id)}
+                  >
+                    <div className="flex items-center gap-4">
                       <Badge variant="outline">{report.content_type}</Badge>
-                    </TableCell>
-                    <TableCell className="max-w-xs truncate">{report.reason}</TableCell>
-                    <TableCell className="text-sm text-muted-foreground">
-                      {format(new Date(report.created_at), "MMM d, yyyy")}
-                    </TableCell>
-                    <TableCell>{getStatusBadge(report.status)}</TableCell>
-                    <TableCell>
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => setSelectedReport(report)}
-                      >
-                        <Eye className="h-4 w-4" />
-                      </Button>
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
+                      <span className="text-sm max-w-md truncate">{report.reason}</span>
+                    </div>
+                    <div className="flex items-center gap-4">
+                      <span className="text-xs text-muted-foreground">
+                        {format(new Date(report.created_at), "MMM d, yyyy")}
+                      </span>
+                      {getStatusBadge(report.status)}
+                      {expandedReportId === report.id ? (
+                        <ChevronUp className="h-4 w-4 text-muted-foreground" />
+                      ) : (
+                        <ChevronDown className="h-4 w-4 text-muted-foreground" />
+                      )}
+                    </div>
+                  </div>
+
+                  {/* Expanded Details */}
+                  {expandedReportId === report.id && (
+                    <div className="border-t p-4 space-y-4">
+                      <div className="grid gap-4 md:grid-cols-2">
+                        <div>
+                          <Label className="text-muted-foreground">{language === "ar" ? "نوع المحتوى" : "Content Type"}</Label>
+                          <p className="font-medium">{report.content_type}</p>
+                        </div>
+                        <div>
+                          <Label className="text-muted-foreground">{language === "ar" ? "معرف المحتوى" : "Content ID"}</Label>
+                          <p className="font-mono text-sm">{report.content_id}</p>
+                        </div>
+                      </div>
+
+                      <div>
+                        <Label className="text-muted-foreground">{t("reason")}</Label>
+                        <p className="mt-1 rounded-lg bg-muted p-3 text-sm">{report.reason}</p>
+                      </div>
+
+                      {report.status === "pending" ? (
+                        <div className="space-y-4">
+                          <div>
+                            <Label>{language === "ar" ? "ملاحظات القرار" : "Resolution Notes"}</Label>
+                            <Textarea
+                              className="mt-2"
+                              value={resolutionNotes[report.id] || ""}
+                              onChange={(e) => setResolutionNotes(prev => ({
+                                ...prev,
+                                [report.id]: e.target.value
+                              }))}
+                              placeholder={language === "ar" ? "أضف ملاحظات حول قرارك..." : "Add notes about your decision..."}
+                              rows={3}
+                            />
+                          </div>
+
+                          <div className="flex gap-2 justify-end">
+                            <Button
+                              variant="outline"
+                              onClick={() => handleResolve(report.id, "dismissed")}
+                              disabled={resolveReportMutation.isPending}
+                            >
+                              <XCircle className="mr-2 h-4 w-4" />
+                              {language === "ar" ? "رفض" : "Dismiss"}
+                            </Button>
+                            <Button
+                              onClick={() => handleResolve(report.id, "resolved")}
+                              disabled={resolveReportMutation.isPending}
+                            >
+                              <CheckCircle className="mr-2 h-4 w-4" />
+                              {language === "ar" ? "حل" : "Resolve"}
+                            </Button>
+                          </div>
+                        </div>
+                      ) : (
+                        report.resolution_notes && (
+                          <div>
+                            <Label className="text-muted-foreground">{language === "ar" ? "ملاحظات القرار" : "Resolution Notes"}</Label>
+                            <p className="mt-1 rounded-lg bg-muted p-3 text-sm">{report.resolution_notes}</p>
+                          </div>
+                        )
+                      )}
+                    </div>
+                  )}
+                </div>
+              ))}
+            </div>
           )}
         </CardContent>
       </Card>
-
-      {/* Resolution Dialog */}
-      <Dialog open={!!selectedReport} onOpenChange={() => setSelectedReport(null)}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Review Report</DialogTitle>
-          </DialogHeader>
-          <div className="space-y-4">
-            <div>
-              <p className="text-sm font-medium text-muted-foreground">Content Type</p>
-              <Badge variant="outline">{selectedReport?.content_type}</Badge>
-            </div>
-            <div>
-              <p className="text-sm font-medium text-muted-foreground">{t("reason")}</p>
-              <p className="text-sm">{selectedReport?.reason}</p>
-            </div>
-            {selectedReport?.status === "pending" && (
-              <div>
-                <p className="mb-2 text-sm font-medium text-muted-foreground">Resolution Notes</p>
-                <Textarea
-                  value={resolutionNotes}
-                  onChange={(e) => setResolutionNotes(e.target.value)}
-                  placeholder="Add notes about your decision..."
-                />
-              </div>
-            )}
-            {selectedReport?.resolution_notes && (
-              <div>
-                <p className="text-sm font-medium text-muted-foreground">Resolution Notes</p>
-                <p className="text-sm">{selectedReport.resolution_notes}</p>
-              </div>
-            )}
-          </div>
-          {selectedReport?.status === "pending" && (
-            <DialogFooter className="gap-2">
-              <Button
-                variant="outline"
-                onClick={() => resolveReportMutation.mutate({
-                  reportId: selectedReport.id,
-                  status: "dismissed",
-                  notes: resolutionNotes,
-                })}
-              >
-                <XCircle className="mr-2 h-4 w-4" />
-                Dismiss
-              </Button>
-              <Button
-                onClick={() => resolveReportMutation.mutate({
-                  reportId: selectedReport.id,
-                  status: "resolved",
-                  notes: resolutionNotes,
-                })}
-              >
-                <CheckCircle className="mr-2 h-4 w-4" />
-                Resolve
-              </Button>
-            </DialogFooter>
-          )}
-        </DialogContent>
-      </Dialog>
     </div>
   );
 }

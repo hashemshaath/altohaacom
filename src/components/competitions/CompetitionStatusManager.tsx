@@ -7,16 +7,6 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-} from "@/components/ui/alert-dialog";
-import {
   ArrowRight,
   FileEdit,
   Calendar,
@@ -27,6 +17,8 @@ import {
   Trophy,
   XCircle,
   CheckCircle,
+  AlertTriangle,
+  X,
 } from "lucide-react";
 import type { Database } from "@/integrations/supabase/types";
 
@@ -134,7 +126,7 @@ export function CompetitionStatusManager({
   const { t, language } = useLanguage();
   const { toast } = useToast();
   const queryClient = useQueryClient();
-  const [confirmStatus, setConfirmStatus] = useState<CompetitionStatus | null>(null);
+  const [pendingStatus, setPendingStatus] = useState<CompetitionStatus | null>(null);
 
   const updateStatusMutation = useMutation({
     mutationFn: async (newStatus: CompetitionStatus) => {
@@ -152,10 +144,10 @@ export function CompetitionStatusManager({
         title: language === "ar" ? "تم تحديث الحالة" : "Status Updated",
         description:
           language === "ar"
-            ? `تم تحديث حالة المسابقة إلى ${STATUS_CONFIG[confirmStatus!].labelAr}`
-            : `Competition status updated to ${STATUS_CONFIG[confirmStatus!].label}`,
+            ? `تم تحديث حالة المسابقة إلى ${STATUS_CONFIG[pendingStatus!].labelAr}`
+            : `Competition status updated to ${STATUS_CONFIG[pendingStatus!].label}`,
       });
-      setConfirmStatus(null);
+      setPendingStatus(null);
     },
     onError: (error) => {
       toast({
@@ -163,6 +155,7 @@ export function CompetitionStatusManager({
         title: language === "ar" ? "فشل التحديث" : "Update Failed",
         description: error.message,
       });
+      setPendingStatus(null);
     },
   });
 
@@ -171,155 +164,168 @@ export function CompetitionStatusManager({
   const CurrentIcon = currentConfig.icon;
 
   const handleStatusChange = (newStatus: CompetitionStatus) => {
-    setConfirmStatus(newStatus);
+    setPendingStatus(newStatus);
   };
 
   const confirmStatusChange = () => {
-    if (confirmStatus) {
-      updateStatusMutation.mutate(confirmStatus);
+    if (pendingStatus) {
+      updateStatusMutation.mutate(pendingStatus);
     }
   };
 
+  const cancelStatusChange = () => {
+    setPendingStatus(null);
+  };
+
   return (
-    <>
-      <Card>
-        <CardHeader className="pb-3">
-          <CardTitle className="flex items-center gap-2 text-lg">
-            <CurrentIcon className="h-5 w-5" />
-            {language === "ar" ? "إدارة الحالة" : "Status Management"}
-          </CardTitle>
-          <CardDescription>
-            {language === "ar" ? currentConfig.descriptionAr : currentConfig.description}
-          </CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          {/* Current Status */}
-          <div className="flex items-center gap-2">
-            <span className="text-sm text-muted-foreground">
-              {language === "ar" ? "الحالة الحالية:" : "Current Status:"}
-            </span>
-            <Badge className={currentConfig.color}>
-              {language === "ar" ? currentConfig.labelAr : currentConfig.label}
-            </Badge>
-          </div>
+    <Card>
+      <CardHeader className="pb-3">
+        <CardTitle className="flex items-center gap-2 text-lg">
+          <CurrentIcon className="h-5 w-5" />
+          {language === "ar" ? "إدارة الحالة" : "Status Management"}
+        </CardTitle>
+        <CardDescription>
+          {language === "ar" ? currentConfig.descriptionAr : currentConfig.description}
+        </CardDescription>
+      </CardHeader>
+      <CardContent className="space-y-4">
+        {/* Current Status */}
+        <div className="flex items-center gap-2">
+          <span className="text-sm text-muted-foreground">
+            {language === "ar" ? "الحالة الحالية:" : "Current Status:"}
+          </span>
+          <Badge className={currentConfig.color}>
+            {language === "ar" ? currentConfig.labelAr : currentConfig.label}
+          </Badge>
+        </div>
 
-          {/* Status Flow Visualization */}
-          <div className="flex flex-wrap items-center gap-1 rounded-lg border bg-muted/30 p-3 text-xs">
-            {(Object.keys(STATUS_CONFIG) as CompetitionStatus[])
-              .filter((s) => s !== "cancelled")
-              .map((flowStatus, index, arr) => {
-                const config = STATUS_CONFIG[flowStatus];
-                const isActive = flowStatus === currentStatus;
-                const currentIndex = (arr as CompetitionStatus[]).indexOf(currentStatus);
-                const isPast =
-                  currentIndex > index ||
-                  (currentStatus === "cancelled" && flowStatus === "draft");
+        {/* Status Flow Visualization */}
+        <div className="flex flex-wrap items-center gap-1 rounded-lg border bg-muted/30 p-3 text-xs">
+          {(Object.keys(STATUS_CONFIG) as CompetitionStatus[])
+            .filter((s) => s !== "cancelled")
+            .map((flowStatus, index, arr) => {
+              const config = STATUS_CONFIG[flowStatus];
+              const isActive = flowStatus === currentStatus;
+              const currentIndex = (arr as CompetitionStatus[]).indexOf(currentStatus);
+              const isPast =
+                currentIndex > index ||
+                (currentStatus === "cancelled" && flowStatus === "draft");
 
-                return (
-                  <div key={flowStatus} className="flex items-center gap-1">
-                    <div
-                      className={`flex items-center gap-1 rounded px-2 py-1 ${
-                        isActive
-                          ? config.color
-                          : isPast
-                          ? "bg-primary/10 text-primary"
-                          : "text-muted-foreground"
-                      }`}
-                    >
-                      {isPast && !isActive && <CheckCircle className="h-3 w-3" />}
-                      <span>{language === "ar" ? config.labelAr : config.label}</span>
-                    </div>
-                    {index < arr.length - 1 && (
-                      <ArrowRight className="h-3 w-3 text-muted-foreground/50" />
-                    )}
+              return (
+                <div key={flowStatus} className="flex items-center gap-1">
+                  <div
+                    className={`flex items-center gap-1 rounded px-2 py-1 ${
+                      isActive
+                        ? config.color
+                        : isPast
+                        ? "bg-primary/10 text-primary"
+                        : "text-muted-foreground"
+                    }`}
+                  >
+                    {isPast && !isActive && <CheckCircle className="h-3 w-3" />}
+                    <span>{language === "ar" ? config.labelAr : config.label}</span>
                   </div>
-                );
-              })}
-          </div>
+                  {index < arr.length - 1 && (
+                    <ArrowRight className="h-3 w-3 text-muted-foreground/50" />
+                  )}
+                </div>
+              );
+            })}
+        </div>
 
-          {/* Available Actions */}
-          {availableTransitions.length > 0 ? (
-            <div className="space-y-2">
-              <p className="text-sm font-medium">
-                {language === "ar" ? "الإجراءات المتاحة:" : "Available Actions:"}
-              </p>
-              <div className="flex flex-wrap gap-2">
-          {availableTransitions.map((nextStatus) => {
-                  const config = STATUS_CONFIG[nextStatus];
-                  const StatusIcon = config.icon;
-                  const isDestructive = nextStatus === "cancelled";
-
-                  return (
-                    <Button
-                      key={nextStatus}
-                      variant={isDestructive ? "destructive" : "outline"}
-                      size="sm"
-                      onClick={() => handleStatusChange(nextStatus)}
-                      disabled={updateStatusMutation.isPending}
-                    >
-                      <StatusIcon className="mr-1 h-4 w-4" />
-                      {language === "ar" ? config.labelAr : config.label}
-                    </Button>
-                  );
-                })}
+        {/* Inline Confirmation Panel */}
+        {pendingStatus && (
+          <div className="rounded-lg border-2 border-orange-200 bg-orange-50 p-4 dark:border-orange-900 dark:bg-orange-950/20">
+            <div className="flex items-start gap-3">
+              <AlertTriangle className="h-5 w-5 text-orange-600 dark:text-orange-400 mt-0.5" />
+              <div className="flex-1 space-y-3">
+                <div>
+                  <p className="font-medium text-orange-800 dark:text-orange-200">
+                    {language === "ar" ? "تأكيد تغيير الحالة" : "Confirm Status Change"}
+                  </p>
+                  <p className="text-sm text-orange-700 dark:text-orange-300 mt-1">
+                    {language === "ar"
+                      ? `هل أنت متأكد أنك تريد تغيير حالة "${competitionTitle}" إلى`
+                      : `Are you sure you want to change the status of "${competitionTitle}" to`}{" "}
+                    <strong>
+                      {language === "ar"
+                        ? STATUS_CONFIG[pendingStatus].labelAr
+                        : STATUS_CONFIG[pendingStatus].label}
+                    </strong>
+                    ?
+                  </p>
+                  <p className="text-xs text-orange-600 dark:text-orange-400 mt-2">
+                    {language === "ar"
+                      ? STATUS_CONFIG[pendingStatus].descriptionAr
+                      : STATUS_CONFIG[pendingStatus].description}
+                  </p>
+                </div>
+                <div className="flex gap-2">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={cancelStatusChange}
+                    disabled={updateStatusMutation.isPending}
+                  >
+                    <X className="mr-1 h-4 w-4" />
+                    {language === "ar" ? "إلغاء" : "Cancel"}
+                  </Button>
+                  <Button
+                    size="sm"
+                    onClick={confirmStatusChange}
+                    disabled={updateStatusMutation.isPending}
+                    className={pendingStatus === "cancelled" ? "bg-destructive hover:bg-destructive/90" : ""}
+                  >
+                    <CheckCircle className="mr-1 h-4 w-4" />
+                    {updateStatusMutation.isPending
+                      ? language === "ar"
+                        ? "جاري التحديث..."
+                        : "Updating..."
+                      : language === "ar"
+                      ? "تأكيد"
+                      : "Confirm"}
+                  </Button>
+                </div>
               </div>
             </div>
-          ) : (
-            <p className="text-sm text-muted-foreground">
-              {language === "ar"
-                ? "هذه المسابقة في حالتها النهائية."
-                : "This competition is in its final state."}
-            </p>
-          )}
-        </CardContent>
-      </Card>
+          </div>
+        )}
 
-      {/* Confirmation Dialog */}
-      <AlertDialog open={!!confirmStatus} onOpenChange={(open) => !open && setConfirmStatus(null)}>
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>
-              {language === "ar" ? "تأكيد تغيير الحالة" : "Confirm Status Change"}
-            </AlertDialogTitle>
-            <AlertDialogDescription className="space-y-2">
-              <p>
-                {language === "ar"
-                  ? `هل أنت متأكد أنك تريد تغيير حالة "${competitionTitle}" إلى`
-                  : `Are you sure you want to change the status of "${competitionTitle}" to`}{" "}
-                <strong>
-                  {confirmStatus &&
-                    (language === "ar"
-                      ? STATUS_CONFIG[confirmStatus].labelAr
-                      : STATUS_CONFIG[confirmStatus].label)}
-                </strong>
-                ?
-              </p>
-              {confirmStatus && (
-                <p className="text-sm">
-                  {language === "ar"
-                    ? STATUS_CONFIG[confirmStatus].descriptionAr
-                    : STATUS_CONFIG[confirmStatus].description}
-                </p>
-              )}
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel>{language === "ar" ? "إلغاء" : "Cancel"}</AlertDialogCancel>
-            <AlertDialogAction
-              onClick={confirmStatusChange}
-              className={confirmStatus === "cancelled" ? "bg-destructive hover:bg-destructive/90" : ""}
-            >
-              {updateStatusMutation.isPending
-                ? language === "ar"
-                  ? "جاري التحديث..."
-                  : "Updating..."
-                : language === "ar"
-                ? "تأكيد"
-                : "Confirm"}
-            </AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
-    </>
+        {/* Available Actions */}
+        {!pendingStatus && availableTransitions.length > 0 ? (
+          <div className="space-y-2">
+            <p className="text-sm font-medium">
+              {language === "ar" ? "الإجراءات المتاحة:" : "Available Actions:"}
+            </p>
+            <div className="flex flex-wrap gap-2">
+              {availableTransitions.map((nextStatus) => {
+                const config = STATUS_CONFIG[nextStatus];
+                const StatusIcon = config.icon;
+                const isDestructive = nextStatus === "cancelled";
+
+                return (
+                  <Button
+                    key={nextStatus}
+                    variant={isDestructive ? "destructive" : "outline"}
+                    size="sm"
+                    onClick={() => handleStatusChange(nextStatus)}
+                    disabled={updateStatusMutation.isPending}
+                  >
+                    <StatusIcon className="mr-1 h-4 w-4" />
+                    {language === "ar" ? config.labelAr : config.label}
+                  </Button>
+                );
+              })}
+            </div>
+          </div>
+        ) : !pendingStatus && (
+          <p className="text-sm text-muted-foreground">
+            {language === "ar"
+              ? "هذه المسابقة في حالتها النهائية."
+              : "This competition is in its final state."}
+          </p>
+        )}
+      </CardContent>
+    </Card>
   );
 }

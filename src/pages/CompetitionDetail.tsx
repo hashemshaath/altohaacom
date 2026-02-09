@@ -14,7 +14,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Calendar, MapPin, Users, Globe, Trophy, ArrowLeft, CheckCircle, Settings, Pencil, Award } from "lucide-react";
 import { format } from "date-fns";
 import { CompetitionStatusManager } from "@/components/competitions/CompetitionStatusManager";
-import { RegistrationDialog } from "@/components/competitions/RegistrationDialog";
+import { RegistrationForm } from "@/components/competitions/RegistrationDialog";
 import { RegistrationApprovalPanel } from "@/components/competitions/RegistrationApprovalPanel";
 import { JudgeAssignmentPanel } from "@/components/competitions/JudgeAssignmentPanel";
 import { CompetitionLeaderboard } from "@/components/competitions/CompetitionLeaderboard";
@@ -40,7 +40,7 @@ export default function CompetitionDetail() {
   const { t, language } = useLanguage();
   const { user } = useAuth();
   const [activeTab, setActiveTab] = useState("overview");
-  const [registrationDialogOpen, setRegistrationDialogOpen] = useState(false);
+  const [showRegistrationForm, setShowRegistrationForm] = useState(false);
 
   const { data: competition, isLoading } = useQuery({
     queryKey: ["competition", id],
@@ -102,8 +102,6 @@ export default function CompetitionDetail() {
     },
     enabled: !!id && !!user,
   });
-
-  // Registration is now handled by RegistrationDialog
 
   if (isLoading) {
     return (
@@ -210,6 +208,19 @@ export default function CompetitionDetail() {
             </div>
           </div>
         </div>
+
+        {/* Inline Registration Form */}
+        {showRegistrationForm && (
+          <div className="mb-8">
+            <RegistrationForm
+              competitionId={competition.id}
+              competitionTitle={title}
+              categories={categories || []}
+              onCancel={() => setShowRegistrationForm(false)}
+              onSuccess={() => setShowRegistrationForm(false)}
+            />
+          </div>
+        )}
 
         <div className="grid gap-8 lg:grid-cols-3">
           {/* Main Content */}
@@ -350,7 +361,8 @@ export default function CompetitionDetail() {
                 ) : canRegister ? (
                   <Button
                     className="w-full"
-                    onClick={() => setRegistrationDialogOpen(true)}
+                    onClick={() => setShowRegistrationForm(true)}
+                    disabled={showRegistrationForm}
                   >
                     {t("registerNow")}
                   </Button>
@@ -432,15 +444,6 @@ export default function CompetitionDetail() {
       </main>
 
       <Footer />
-
-      {/* Registration Dialog */}
-      <RegistrationDialog
-        open={registrationDialogOpen}
-        onOpenChange={setRegistrationDialogOpen}
-        competitionId={competition.id}
-        competitionTitle={title}
-        categories={categories || []}
-      />
     </div>
   );
 }

@@ -8,13 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import {
   Select,
   SelectContent,
@@ -22,7 +16,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Camera, Upload, X, Loader2 } from "lucide-react";
+import { Camera, Upload, X, Loader2, ArrowLeft } from "lucide-react";
 
 interface Category {
   id: string;
@@ -33,21 +27,21 @@ interface Category {
   max_participants: number | null;
 }
 
-interface RegistrationDialogProps {
-  open: boolean;
-  onOpenChange: (open: boolean) => void;
+interface RegistrationFormProps {
   competitionId: string;
   competitionTitle: string;
   categories: Category[];
+  onCancel: () => void;
+  onSuccess: () => void;
 }
 
-export function RegistrationDialog({
-  open,
-  onOpenChange,
+export function RegistrationForm({
   competitionId,
   competitionTitle,
   categories,
-}: RegistrationDialogProps) {
+  onCancel,
+  onSuccess,
+}: RegistrationFormProps) {
   const { language } = useLanguage();
   const { user } = useAuth();
   const { toast } = useToast();
@@ -167,7 +161,7 @@ export function RegistrationDialog({
             : "Your registration is pending approval.",
       });
       resetForm();
-      onOpenChange(false);
+      onSuccess();
     },
     onError: (error) => {
       toast({
@@ -219,15 +213,21 @@ export function RegistrationDialog({
   };
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-h-[90vh] overflow-y-auto sm:max-w-lg">
-        <DialogHeader>
-          <DialogTitle>
-            {language === "ar" ? "التسجيل في المسابقة" : "Register for Competition"}
-          </DialogTitle>
-          <DialogDescription>{competitionTitle}</DialogDescription>
-        </DialogHeader>
-
+    <Card className="border-primary">
+      <CardHeader>
+        <div className="flex items-center gap-2">
+          <Button variant="ghost" size="icon" onClick={onCancel}>
+            <ArrowLeft className="h-4 w-4" />
+          </Button>
+          <div>
+            <CardTitle>
+              {language === "ar" ? "التسجيل في المسابقة" : "Register for Competition"}
+            </CardTitle>
+            <CardDescription>{competitionTitle}</CardDescription>
+          </div>
+        </div>
+      </CardHeader>
+      <CardContent>
         <form onSubmit={handleSubmit} className="space-y-6">
           {/* Dish Name */}
           <div className="space-y-2">
@@ -342,11 +342,11 @@ export function RegistrationDialog({
           </div>
 
           {/* Submit Button */}
-          <div className="flex justify-end gap-2">
+          <div className="flex justify-end gap-2 pt-4 border-t">
             <Button
               type="button"
               variant="outline"
-              onClick={() => onOpenChange(false)}
+              onClick={onCancel}
               disabled={uploading}
             >
               {language === "ar" ? "إلغاء" : "Cancel"}
@@ -366,7 +366,36 @@ export function RegistrationDialog({
             </Button>
           </div>
         </form>
-      </DialogContent>
-    </Dialog>
+      </CardContent>
+    </Card>
+  );
+}
+
+// Keep the old dialog interface for backwards compatibility but convert to inline
+interface RegistrationDialogProps {
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+  competitionId: string;
+  competitionTitle: string;
+  categories: Category[];
+}
+
+export function RegistrationDialog({
+  open,
+  onOpenChange,
+  competitionId,
+  competitionTitle,
+  categories,
+}: RegistrationDialogProps) {
+  if (!open) return null;
+  
+  return (
+    <RegistrationForm
+      competitionId={competitionId}
+      competitionTitle={competitionTitle}
+      categories={categories}
+      onCancel={() => onOpenChange(false)}
+      onSuccess={() => onOpenChange(false)}
+    />
   );
 }

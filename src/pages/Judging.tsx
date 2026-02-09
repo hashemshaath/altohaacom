@@ -6,17 +6,15 @@ import { useAuth } from "@/contexts/AuthContext";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Slider } from "@/components/ui/slider";
 import { useToast } from "@/hooks/use-toast";
-import { Trophy, User, CheckCircle, Star, AlertCircle } from "lucide-react";
+import { Trophy, User, CheckCircle, Star, AlertCircle, X, Save, ArrowLeft } from "lucide-react";
 import { format } from "date-fns";
 import type { Database } from "@/integrations/supabase/types";
 
@@ -36,6 +34,8 @@ interface RegistrationWithProfile extends Registration {
   };
 }
 
+type ViewMode = "list" | "scoring";
+
 export default function Judging() {
   const { t, language } = useLanguage();
   const { user } = useAuth();
@@ -43,6 +43,7 @@ export default function Judging() {
   const queryClient = useQueryClient();
   
   const [selectedCompetition, setSelectedCompetition] = useState<string | null>(null);
+  const [viewMode, setViewMode] = useState<ViewMode>("list");
   const [scoringRegistration, setScoringRegistration] = useState<RegistrationWithProfile | null>(null);
   const [scores, setScores] = useState<Record<string, number>>({});
   const [notes, setNotes] = useState<Record<string, string>>({});
@@ -174,9 +175,12 @@ export default function Judging() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["judge-scores"] });
       toast({
-        title: "Scores submitted!",
-        description: `Your scores for ${scoringRegistration?.profile?.full_name || "this participant"} have been saved.`,
+        title: language === "ar" ? "تم حفظ الدرجات!" : "Scores submitted!",
+        description: language === "ar" 
+          ? `تم حفظ درجاتك للمشارك ${scoringRegistration?.profile?.full_name || ""}`
+          : `Your scores for ${scoringRegistration?.profile?.full_name || "this participant"} have been saved.`,
       });
+      setViewMode("list");
       setScoringRegistration(null);
       setScores({});
       setNotes({});
@@ -184,14 +188,15 @@ export default function Judging() {
     onError: (error) => {
       toast({
         variant: "destructive",
-        title: "Error submitting scores",
+        title: language === "ar" ? "خطأ في حفظ الدرجات" : "Error submitting scores",
         description: error.message,
       });
     },
   });
 
-  const openScoringDialog = (registration: RegistrationWithProfile) => {
+  const openScoringView = (registration: RegistrationWithProfile) => {
     setScoringRegistration(registration);
+    setViewMode("scoring");
     
     // Pre-fill with existing scores if any
     if (existingScores) {
@@ -215,6 +220,13 @@ export default function Judging() {
       setScores(defaultScores);
       setNotes({});
     }
+  };
+
+  const handleBackToList = () => {
+    setViewMode("list");
+    setScoringRegistration(null);
+    setScores({});
+    setNotes({});
   };
 
   const hasScored = (registrationId: string): boolean => {
@@ -241,7 +253,9 @@ export default function Judging() {
           <Card className="max-w-md text-center">
             <CardContent className="pt-6">
               <AlertCircle className="mx-auto mb-4 h-12 w-12 text-muted-foreground" />
-              <p className="text-muted-foreground">Please sign in to access the judging panel.</p>
+              <p className="text-muted-foreground">
+                {language === "ar" ? "الرجاء تسجيل الدخول للوصول إلى لوحة التحكيم" : "Please sign in to access the judging panel."}
+              </p>
             </CardContent>
           </Card>
         </main>
@@ -250,6 +264,118 @@ export default function Judging() {
     );
   }
 
+  // Scoring View
+  if (viewMode === "scoring" && scoringRegistration) {
+    return (
+      <div className="flex min-h-screen flex-col">
+        <Header />
+        
+        <main className="container flex-1 py-8">
+          <div className="mb-6">
+            <Button variant="ghost" size="sm" onClick={handleBackToList}>
+              <ArrowLeft className="mr-2 h-4 w-4" />
+              {language === "ar" ? "رجوع للقائمة" : "Back to list"}
+            </Button>
+          </div>
+
+          <Card>
+            <CardHeader>
+              <div className="flex items-center gap-4">
+                <div className="flex h-12 w-12 items-center justify-center rounded-full bg-primary/10">
+                  <Star className="h-6 w-6 text-primary" />
+                </div>
+                <div>
+                  <CardTitle>
+                    {language === "ar" ? "تقييم:" : "Scoring:"} {scoringRegistration.profile?.full_name || "Participant"}
+                  </CardTitle>
+                  <CardDescription>
+                    {scoringRegistration.dish_name && (
+                      <span className="font-medium text-foreground">
+                        {language === "ar" ? "الطبق:" : "Dish:"} {scoringRegistration.dish_name}
+                      </span>
+                    )}
+                  </CardDescription>
+                </div>
+              </div>
+            </CardHeader>
+            <CardContent className="space-y-8">
+              <p className="text-sm text-muted-foreground">
+                {language === "ar" 
+                  ? "قم بتقييم كل معيار باستخدام المنزلقات أدناه" 
+                  : "Rate each criterion using the sliders below."}
+              </p>
+
+              {criteria?.map((crit) => (
+                <div key={crit.id} className="space-y-4 rounded-lg border p-4">
+                  <div className="flex items-center justify-between">
+                    <Label className="text-base font-medium">
+                      {language === "ar" && crit.name_ar ? crit.name_ar : crit.name}
+                    </Label>
+                    <Badge variant="outline" className="text-lg px-3 py-1">
+                      {scores[crit.id] || 0} / {crit.max_score}
+                    </Badge>
+                  </div>
+                  {crit.description && (
+                    <p className="text-sm text-muted-foreground">
+                      {language === "ar" && crit.description_ar ? crit.description_ar : crit.description}
+                    </p>
+                  )}
+                  <Slider
+                    value={[scores[crit.id] || 0]}
+                    onValueChange={([val]) => setScores(prev => ({ ...prev, [crit.id]: val }))}
+                    max={crit.max_score}
+                    min={0}
+                    step={1}
+                    className="py-2"
+                  />
+                  <Textarea
+                    placeholder={language === "ar" 
+                      ? `ملاحظات لـ ${crit.name_ar || crit.name} (اختياري)` 
+                      : `Notes for ${crit.name} (optional)`}
+                    value={notes[crit.id] || ""}
+                    onChange={(e) => setNotes(prev => ({ ...prev, [crit.id]: e.target.value }))}
+                    className="text-sm"
+                    rows={2}
+                  />
+                </div>
+              ))}
+
+              <div className="rounded-lg border-2 border-primary bg-primary/5 p-6">
+                <div className="flex items-center justify-between">
+                  <span className="text-lg font-medium">
+                    {language === "ar" ? "المجموع الموزون" : "Weighted Total Score"}
+                  </span>
+                  <span className="text-3xl font-bold text-primary">
+                    {calculateTotalScore()}
+                  </span>
+                </div>
+              </div>
+
+              <div className="flex justify-end gap-2 pt-4 border-t">
+                <Button variant="outline" onClick={handleBackToList}>
+                  <X className="mr-2 h-4 w-4" />
+                  {language === "ar" ? "إلغاء" : "Cancel"}
+                </Button>
+                <Button 
+                  onClick={() => submitScoreMutation.mutate()}
+                  disabled={submitScoreMutation.isPending}
+                >
+                  <Save className="mr-2 h-4 w-4" />
+                  {submitScoreMutation.isPending
+                    ? (language === "ar" ? "جاري الحفظ..." : "Saving...")
+                    : (language === "ar" ? "حفظ الدرجات" : "Save Scores")}
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+        </main>
+        
+        <Footer />
+      </div>
+    );
+  }
+
+  // List View
   return (
     <div className="flex min-h-screen flex-col">
       <Header />
@@ -258,7 +384,7 @@ export default function Judging() {
         <div className="mb-8">
           <h1 className="font-serif text-3xl font-bold">{t("judgingPanel")}</h1>
           <p className="text-muted-foreground">
-            Score and evaluate competition participants
+            {language === "ar" ? "تقييم المشاركين في المسابقات" : "Score and evaluate competition participants"}
           </p>
         </div>
 
@@ -346,10 +472,12 @@ export default function Judging() {
                             size="sm"
                             className="w-full"
                             variant={hasScored(reg.id) ? "outline" : "default"}
-                            onClick={() => openScoringDialog(reg)}
+                            onClick={() => openScoringView(reg)}
                           >
                             <Star className="mr-2 h-4 w-4" />
-                            {hasScored(reg.id) ? "Edit Scores" : "Score Participant"}
+                            {hasScored(reg.id) 
+                              ? (language === "ar" ? "تعديل الدرجات" : "Edit Scores") 
+                              : (language === "ar" ? "تقييم المشارك" : "Score Participant")}
                           </Button>
                         </CardContent>
                       </Card>
@@ -360,7 +488,9 @@ export default function Judging() {
                     <CardContent className="py-12 text-center">
                       <User className="mx-auto mb-4 h-12 w-12 text-muted-foreground" />
                       <p className="text-muted-foreground">
-                        No approved participants to score yet.
+                        {language === "ar" 
+                          ? "لا يوجد مشاركين معتمدين للتقييم بعد" 
+                          : "No approved participants to score yet."}
                       </p>
                     </CardContent>
                   </Card>
@@ -373,89 +503,15 @@ export default function Judging() {
             <CardContent className="py-12 text-center">
               <Trophy className="mx-auto mb-4 h-12 w-12 text-muted-foreground" />
               <p className="text-muted-foreground">
-                You are not assigned as a judge to any active competitions.
+                {language === "ar" 
+                  ? "لم يتم تعيينك كحكم في أي مسابقات نشطة" 
+                  : "You are not assigned as a judge to any active competitions."}
               </p>
             </CardContent>
           </Card>
         )}
-
-        {/* Scoring Dialog */}
-        <Dialog open={!!scoringRegistration} onOpenChange={(open) => !open && setScoringRegistration(null)}>
-          <DialogContent className="max-h-[90vh] max-w-2xl overflow-y-auto">
-            <DialogHeader>
-              <DialogTitle className="flex items-center gap-2">
-                <Star className="h-5 w-5 text-primary" />
-                Score: {scoringRegistration?.profile?.full_name || "Participant"}
-              </DialogTitle>
-              <DialogDescription>
-                {scoringRegistration?.dish_name && (
-                  <span className="block font-medium text-foreground">
-                    Dish: {scoringRegistration.dish_name}
-                  </span>
-                )}
-                Rate each criterion using the sliders below.
-              </DialogDescription>
-            </DialogHeader>
-
-            <div className="space-y-6 py-4">
-              {criteria?.map((crit) => (
-                <div key={crit.id} className="space-y-3">
-                  <div className="flex items-center justify-between">
-                    <Label className="text-base font-medium">
-                      {language === "ar" && crit.name_ar ? crit.name_ar : crit.name}
-                    </Label>
-                    <Badge variant="outline">
-                      {scores[crit.id] || 0} / {crit.max_score}
-                    </Badge>
-                  </div>
-                  {crit.description && (
-                    <p className="text-sm text-muted-foreground">
-                      {language === "ar" && crit.description_ar ? crit.description_ar : crit.description}
-                    </p>
-                  )}
-                  <Slider
-                    value={[scores[crit.id] || 0]}
-                    onValueChange={([val]) => setScores(prev => ({ ...prev, [crit.id]: val }))}
-                    max={crit.max_score}
-                    min={0}
-                    step={1}
-                    className="py-2"
-                  />
-                  <Textarea
-                    placeholder={`Notes for ${crit.name} (optional)`}
-                    value={notes[crit.id] || ""}
-                    onChange={(e) => setNotes(prev => ({ ...prev, [crit.id]: e.target.value }))}
-                    className="text-sm"
-                    rows={2}
-                  />
-                </div>
-              ))}
-
-              <div className="rounded-lg border bg-muted/50 p-4">
-                <div className="flex items-center justify-between">
-                  <span className="font-medium">Weighted Total Score</span>
-                  <span className="text-2xl font-bold text-primary">
-                    {calculateTotalScore()}
-                  </span>
-                </div>
-              </div>
-            </div>
-
-            <div className="flex justify-end gap-2">
-              <Button variant="outline" onClick={() => setScoringRegistration(null)}>
-                Cancel
-              </Button>
-              <Button 
-                onClick={() => submitScoreMutation.mutate()}
-                disabled={submitScoreMutation.isPending}
-              >
-                {submitScoreMutation.isPending ? "Submitting..." : "Submit Scores"}
-              </Button>
-            </div>
-          </DialogContent>
-        </Dialog>
       </main>
-
+      
       <Footer />
     </div>
   );
