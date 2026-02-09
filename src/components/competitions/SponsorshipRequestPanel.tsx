@@ -4,6 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/hooks/use-toast";
+import { sendNotification } from "@/lib/notifications";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -117,11 +118,32 @@ export function SponsorshipRequestPanel({ listId, competitionId }: Props) {
   });
 
   const updateStatusMutation = useMutation({
-    mutationFn: async ({ id, status }: { id: string; status: string }) => {
+    mutationFn: async ({ id, status, requestTitle }: { id: string; status: string; requestTitle?: string }) => {
       const updates: Record<string, unknown> = { status };
       if (status === "sent") updates.sent_at = new Date().toISOString();
       const { error } = await supabase.from("requirement_sponsorship_requests").update(updates).eq("id", id);
       if (error) throw error;
+
+      // Notify the organizer who created the request about status changes from sponsor side
+      if (user && ["accepted", "declined", "partially_accepted", "fulfilled"].includes(status)) {
+        // Find the request creator
+        const { data: req } = await supabase
+          .from("requirement_sponsorship_requests")
+          .select("requested_by, title")
+          .eq("id", id)
+          .single();
+        if (req?.requested_by && req.requested_by !== user.id) {
+          sendNotification({
+            userId: req.requested_by,
+            title: `Sponsorship ${status.replace(/_/g, " ")}: ${req.title}`,
+            titleAr: `تحديث طلب الرعاية: ${req.title}`,
+            body: `Your sponsorship request "${req.title}" has been ${status.replace(/_/g, " ")}.`,
+            bodyAr: `تم تحديث طلب الرعاية "${req.title}".`,
+            type: status === "accepted" || status === "fulfilled" ? "success" : status === "declined" ? "warning" : "info",
+            channels: ["in_app"],
+          });
+        }
+      }
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["sponsorship-requests", listId] });

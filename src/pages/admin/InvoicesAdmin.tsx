@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { notifyInvoiceSent, notifyInvoicePaid } from "@/lib/notificationTriggers";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -148,11 +149,32 @@ export default function InvoicesAdmin() {
       if (status === "paid") updates.paid_at = new Date().toISOString();
       const { error } = await supabase.from("invoices").update(updates).eq("id", id);
       if (error) throw error;
+      return { id, status };
     },
-    onSuccess: () => {
+    onSuccess: (result) => {
       queryClient.invalidateQueries({ queryKey: ["admin-invoices"] });
       queryClient.invalidateQueries({ queryKey: ["invoice-detail", selectedInvoice] });
       toast({ title: language === "ar" ? "تم تحديث الحالة" : "Status updated" });
+
+      // Send notifications for status changes
+      if (invoiceDetails?.user_id && (result.status === "sent" || result.status === "paid")) {
+        const inv = invoiceDetails;
+        if (result.status === "sent") {
+          notifyInvoiceSent({
+            userId: inv.user_id,
+            invoiceNumber: inv.invoice_number,
+            amount: Number(inv.amount),
+            currency: inv.currency,
+          });
+        } else if (result.status === "paid") {
+          notifyInvoicePaid({
+            userId: inv.user_id,
+            invoiceNumber: inv.invoice_number,
+            amount: Number(inv.amount),
+            currency: inv.currency,
+          });
+        }
+      }
     },
   });
 
