@@ -10,6 +10,7 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { useToast } from "@/hooks/use-toast";
+import { PhoneVerification } from "@/components/auth/PhoneVerification";
 import { z } from "zod";
 import { CheckCircle, XCircle, Loader2 } from "lucide-react";
 import type { Database } from "@/integrations/supabase/types";
@@ -34,26 +35,33 @@ const signUpSchema = signInSchema.extend({
     .regex(usernameRegex, "Username must start with a letter and contain only letters, numbers, or underscores"),
   confirmPassword: z.string(),
   role: z.enum(["chef", "judge", "student", "organizer", "volunteer", "sponsor", "assistant", "supervisor"]),
+  phone: z.string().min(10, "Phone number is required"),
 }).refine((d) => d.password === d.confirmPassword, {
   message: "Passwords don't match",
   path: ["confirmPassword"],
 });
 
+type AuthStep = "credentials" | "phone-verify" | "complete";
+
 export default function Auth() {
   const [searchParams] = useSearchParams();
   const [isSignUp, setIsSignUp] = useState(searchParams.get("tab") === "signup");
+  const [authStep, setAuthStep] = useState<AuthStep>("credentials");
+  
+  // Form fields
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [fullName, setFullName] = useState("");
   const [username, setUsername] = useState("");
+  const [phone, setPhone] = useState("");
   const [usernameStatus, setUsernameStatus] = useState<"idle" | "checking" | "available" | "taken">("idle");
   const [role, setRole] = useState<AppRole>("chef");
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
 
   const { user } = useAuth();
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
   const navigate = useNavigate();
   const { toast } = useToast();
 
@@ -82,6 +90,11 @@ export default function Auth() {
     return () => clearTimeout(timer);
   }, [username]);
 
+  // Reset step when switching modes
+  useEffect(() => {
+    setAuthStep("credentials");
+  }, [isSignUp]);
+
   const handleSignIn = async () => {
     setErrors({});
     const result = signInSchema.safeParse({ email, password });
@@ -102,7 +115,7 @@ export default function Auth() {
     }
   };
 
-  const handleSignUp = async () => {
+  const handleCredentialsSubmit = async () => {
     setErrors({});
 
     // Check username availability first
@@ -115,16 +128,39 @@ export default function Auth() {
       return;
     }
 
-    const result = signUpSchema.safeParse({ email, password, confirmPassword, fullName, username, role });
-    if (!result.success) {
+    // Validate form (without phone for now, will be verified next)
+    const baseResult = z.object({
+      email: z.string().email("Invalid email address"),
+      password: z.string().min(6, "Password must be at least 6 characters"),
+      fullName: z.string().min(2, "Name is required"),
+      username: z.string()
+        .min(3, "Username must be at least 3 characters")
+        .max(30, "Username must be at most 30 characters")
+        .regex(usernameRegex, "Username must start with a letter"),
+      confirmPassword: z.string(),
+      role: z.enum(["chef", "judge", "student", "organizer", "volunteer", "sponsor", "assistant", "supervisor"]),
+    }).refine((d) => d.password === d.confirmPassword, {
+      message: "Passwords don't match",
+      path: ["confirmPassword"],
+    }).safeParse({ email, password, confirmPassword, fullName, username, role });
+
+    if (!baseResult.success) {
       const fieldErrors: Record<string, string> = {};
-      result.error.errors.forEach((e) => {
+      baseResult.error.errors.forEach((e) => {
         fieldErrors[e.path[0] as string] = e.message;
       });
       setErrors(fieldErrors);
       return;
     }
 
+    // Proceed to phone verification
+    setAuthStep("phone-verify");
+  };
+
+  const handlePhoneVerified = async (verifiedPhone: string) => {
+    setPhone(verifiedPhone);
+    
+    // Now complete signup with verified phone
     setLoading(true);
     const redirectUrl = `${window.location.origin}/`;
     const { data, error } = await supabase.auth.signUp({
@@ -135,13 +171,15 @@ export default function Auth() {
         data: { full_name: fullName, username: username.toLowerCase() },
       },
     });
+    
     if (error) {
       setLoading(false);
       toast({ variant: "destructive", title: "Error", description: error.message });
+      setAuthStep("credentials");
       return;
     }
 
-    // Insert user role and update profile with username
+    // Insert user role and update profile with username and phone
     if (data.user) {
       // Insert role (triggers account number generation)
       await supabase.from("user_roles").insert({ user_id: data.user.id, role });
@@ -149,23 +187,61 @@ export default function Auth() {
       // Wait briefly for the handle_new_user trigger to create the profile
       await new Promise((resolve) => setTimeout(resolve, 500));
       
-      // Update profile with username
+      // Update profile with username and phone
       const { error: updateError } = await supabase
         .from("profiles")
-        .update({ username: username.toLowerCase() })
+        .update({ 
+          username: username.toLowerCase(),
+          phone: verifiedPhone,
+        })
         .eq("user_id", data.user.id);
       
       if (updateError) {
         console.error("Profile update error:", updateError);
       }
     }
+    
     setLoading(false);
     toast({
-      title: "Account created!",
-      description: "Please check your email to verify your account before signing in.",
+      title: language === "ar" ? "تم إنشاء الحساب!" : "Account created!",
+      description: language === "ar" 
+        ? "يرجى التحقق من بريدك الإلكتروني لتأكيد حسابك قبل تسجيل الدخول."
+        : "Please check your email to verify your account before signing in.",
     });
     setIsSignUp(false);
+    setAuthStep("credentials");
   };
+
+  // Render phone verification step
+  if (authStep === "phone-verify" && isSignUp) {
+    return (
+      <div className="flex min-h-screen flex-col bg-background">
+        <Header />
+        <main className="flex flex-1 items-center justify-center p-4">
+          <Card className="w-full max-w-md">
+            <CardHeader className="text-center">
+              <img src="/altohaa-logo.png" alt="Altohaa" className="mx-auto mb-2 h-14 w-auto" />
+              <CardTitle className="font-serif text-2xl">
+                {language === "ar" ? "التحقق من الهاتف" : "Phone Verification"}
+              </CardTitle>
+              <CardDescription>
+                {language === "ar" 
+                  ? "يرجى التحقق من رقم هاتفك لإكمال التسجيل"
+                  : "Please verify your phone number to complete registration"}
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <PhoneVerification
+                onVerified={handlePhoneVerified}
+                onBack={() => setAuthStep("credentials")}
+                mode="signup"
+              />
+            </CardContent>
+          </Card>
+        </main>
+      </div>
+    );
+  }
 
   return (
     <div className="flex min-h-screen flex-col bg-background">
@@ -247,11 +323,11 @@ export default function Auth() {
             <Button
               className="w-full"
               disabled={loading}
-              onClick={isSignUp ? handleSignUp : handleSignIn}
+              onClick={isSignUp ? handleCredentialsSubmit : handleSignIn}
             >
               {loading
                 ? (isSignUp ? t("signingUp") : t("signingIn"))
-                : (isSignUp ? t("signUp") : t("signIn"))}
+                : (isSignUp ? t("continue") : t("signIn"))}
             </Button>
             <p className="text-center text-sm text-muted-foreground">
               {isSignUp ? t("hasAccount") : t("noAccount")}{" "}
