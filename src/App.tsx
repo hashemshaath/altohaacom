@@ -26,6 +26,8 @@ import HelpCenter from "./pages/HelpCenter";
 import News from "./pages/News";
 import ArticleDetail from "./pages/ArticleDetail";
 import Notifications from "./pages/Notifications";
+import Messages from "./pages/Messages";
+import Onboarding from "./pages/Onboarding";
 import SponsorsLanding from "./pages/landing/SponsorsLanding";
 import OrganizersLanding from "./pages/landing/OrganizersLanding";
 
@@ -73,6 +75,8 @@ const App = () => (
                 <Route path="/news" element={<News />} />
                 <Route path="/news/:slug" element={<ArticleDetail />} />
                 <Route path="/notifications" element={<ProtectedRoute><Notifications /></ProtectedRoute>} />
+                <Route path="/messages" element={<ProtectedRoute><Messages /></ProtectedRoute>} />
+                <Route path="/onboarding" element={<ProtectedRoute><Onboarding /></ProtectedRoute>} />
                 <Route path="/sponsors" element={<SponsorsLanding />} />
                 <Route path="/for-organizers" element={<OrganizersLanding />} />
                 
