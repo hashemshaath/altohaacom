@@ -1950,6 +1950,191 @@ export type Database = {
           },
         ]
       }
+      exhibition_followers: {
+        Row: {
+          created_at: string
+          exhibition_id: string
+          id: string
+          notify_schedule: boolean | null
+          notify_updates: boolean | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          exhibition_id: string
+          id?: string
+          notify_schedule?: boolean | null
+          notify_updates?: boolean | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          exhibition_id?: string
+          id?: string
+          notify_schedule?: boolean | null
+          notify_updates?: boolean | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "exhibition_followers_exhibition_id_fkey"
+            columns: ["exhibition_id"]
+            isOneToOne: false
+            referencedRelation: "exhibitions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      exhibitions: {
+        Row: {
+          address: string | null
+          address_ar: string | null
+          city: string | null
+          country: string | null
+          cover_image_url: string | null
+          created_at: string
+          created_by: string | null
+          description: string | null
+          description_ar: string | null
+          early_bird_deadline: string | null
+          end_date: string
+          gallery_urls: string[] | null
+          id: string
+          is_featured: boolean | null
+          is_free: boolean | null
+          is_virtual: boolean | null
+          logo_url: string | null
+          map_url: string | null
+          max_attendees: number | null
+          organizer_email: string | null
+          organizer_name: string | null
+          organizer_name_ar: string | null
+          organizer_phone: string | null
+          organizer_website: string | null
+          registration_deadline: string | null
+          registration_url: string | null
+          schedule: Json | null
+          sections: Json | null
+          slug: string
+          social_links: Json | null
+          speakers: Json | null
+          sponsors_info: Json | null
+          start_date: string
+          status: Database["public"]["Enums"]["exhibition_status"]
+          tags: string[] | null
+          target_audience: string[] | null
+          ticket_price: string | null
+          ticket_price_ar: string | null
+          title: string
+          title_ar: string | null
+          type: Database["public"]["Enums"]["exhibition_type"]
+          updated_at: string
+          venue: string | null
+          venue_ar: string | null
+          view_count: number | null
+          virtual_link: string | null
+          website_url: string | null
+        }
+        Insert: {
+          address?: string | null
+          address_ar?: string | null
+          city?: string | null
+          country?: string | null
+          cover_image_url?: string | null
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          description_ar?: string | null
+          early_bird_deadline?: string | null
+          end_date: string
+          gallery_urls?: string[] | null
+          id?: string
+          is_featured?: boolean | null
+          is_free?: boolean | null
+          is_virtual?: boolean | null
+          logo_url?: string | null
+          map_url?: string | null
+          max_attendees?: number | null
+          organizer_email?: string | null
+          organizer_name?: string | null
+          organizer_name_ar?: string | null
+          organizer_phone?: string | null
+          organizer_website?: string | null
+          registration_deadline?: string | null
+          registration_url?: string | null
+          schedule?: Json | null
+          sections?: Json | null
+          slug: string
+          social_links?: Json | null
+          speakers?: Json | null
+          sponsors_info?: Json | null
+          start_date: string
+          status?: Database["public"]["Enums"]["exhibition_status"]
+          tags?: string[] | null
+          target_audience?: string[] | null
+          ticket_price?: string | null
+          ticket_price_ar?: string | null
+          title: string
+          title_ar?: string | null
+          type?: Database["public"]["Enums"]["exhibition_type"]
+          updated_at?: string
+          venue?: string | null
+          venue_ar?: string | null
+          view_count?: number | null
+          virtual_link?: string | null
+          website_url?: string | null
+        }
+        Update: {
+          address?: string | null
+          address_ar?: string | null
+          city?: string | null
+          country?: string | null
+          cover_image_url?: string | null
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          description_ar?: string | null
+          early_bird_deadline?: string | null
+          end_date?: string
+          gallery_urls?: string[] | null
+          id?: string
+          is_featured?: boolean | null
+          is_free?: boolean | null
+          is_virtual?: boolean | null
+          logo_url?: string | null
+          map_url?: string | null
+          max_attendees?: number | null
+          organizer_email?: string | null
+          organizer_name?: string | null
+          organizer_name_ar?: string | null
+          organizer_phone?: string | null
+          organizer_website?: string | null
+          registration_deadline?: string | null
+          registration_url?: string | null
+          schedule?: Json | null
+          sections?: Json | null
+          slug?: string
+          social_links?: Json | null
+          speakers?: Json | null
+          sponsors_info?: Json | null
+          start_date?: string
+          status?: Database["public"]["Enums"]["exhibition_status"]
+          tags?: string[] | null
+          target_audience?: string[] | null
+          ticket_price?: string | null
+          ticket_price_ar?: string | null
+          title?: string
+          title_ar?: string | null
+          type?: Database["public"]["Enums"]["exhibition_type"]
+          updated_at?: string
+          venue?: string | null
+          venue_ar?: string | null
+          view_count?: number | null
+          virtual_link?: string | null
+          website_url?: string | null
+        }
+        Relationships: []
+      }
       faqs: {
         Row: {
           answer: string
@@ -3713,6 +3898,20 @@ export type Database = {
         | "judging"
         | "completed"
         | "cancelled"
+      exhibition_status:
+        | "draft"
+        | "upcoming"
+        | "active"
+        | "completed"
+        | "cancelled"
+      exhibition_type:
+        | "exhibition"
+        | "conference"
+        | "summit"
+        | "workshop"
+        | "food_festival"
+        | "trade_show"
+        | "competition_event"
       experience_level: "beginner" | "amateur" | "professional"
       invitation_status: "pending" | "accepted" | "declined" | "expired"
       membership_status: "active" | "expired" | "suspended" | "cancelled"
@@ -3923,6 +4122,22 @@ export const Constants = {
         "judging",
         "completed",
         "cancelled",
+      ],
+      exhibition_status: [
+        "draft",
+        "upcoming",
+        "active",
+        "completed",
+        "cancelled",
+      ],
+      exhibition_type: [
+        "exhibition",
+        "conference",
+        "summit",
+        "workshop",
+        "food_festival",
+        "trade_show",
+        "competition_event",
       ],
       experience_level: ["beginner", "amateur", "professional"],
       invitation_status: ["pending", "accepted", "declined", "expired"],
