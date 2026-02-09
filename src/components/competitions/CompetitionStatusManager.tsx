@@ -1,8 +1,9 @@
 import { useState } from "react";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useToast } from "@/hooks/use-toast";
+import { sendNotification } from "@/lib/notifications";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -136,6 +137,40 @@ export function CompetitionStatusManager({
         .eq("id", competitionId);
 
       if (error) throw error;
+
+      // Notify registered participants about status changes
+      const notifyStatuses: CompetitionStatus[] = ["registration_open", "in_progress", "judging", "completed", "cancelled"];
+      if (notifyStatuses.includes(newStatus)) {
+        const { data: registrations } = await supabase
+          .from("competition_registrations")
+          .select("participant_id")
+          .eq("competition_id", competitionId)
+          .eq("status", "approved");
+
+        const statusMessages: Record<string, { en: string; ar: string }> = {
+          registration_open: { en: "Registration is now open", ar: "التسجيل مفتوح الآن" },
+          in_progress: { en: "The competition has started", ar: "بدأت المسابقة" },
+          judging: { en: "Judging has begun", ar: "بدأ التحكيم" },
+          completed: { en: "Results are now available", ar: "النتائج متاحة الآن" },
+          cancelled: { en: "The competition has been cancelled", ar: "تم إلغاء المسابقة" },
+        };
+
+        const msg = statusMessages[newStatus];
+        if (msg && registrations) {
+          for (const reg of registrations) {
+            sendNotification({
+              userId: reg.participant_id,
+              title: `${competitionTitle} - ${STATUS_CONFIG[newStatus].label}`,
+              titleAr: `${competitionTitle} - ${STATUS_CONFIG[newStatus].labelAr}`,
+              body: msg.en,
+              bodyAr: msg.ar,
+              type: newStatus === "cancelled" ? "warning" : "info",
+              link: `/competitions/${competitionId}`,
+              channels: ["in_app", "email"],
+            });
+          }
+        }
+      }
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["competition", competitionId] });

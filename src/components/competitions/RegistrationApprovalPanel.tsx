@@ -4,6 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/hooks/use-toast";
+import { sendNotification } from "@/lib/notifications";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -116,7 +117,7 @@ export function RegistrationApprovalPanel({ competitionId }: RegistrationApprova
   });
 
   const approveMutation = useMutation({
-    mutationFn: async (registrationId: string) => {
+    mutationFn: async (registration: Registration) => {
       const { error } = await supabase
         .from("competition_registrations")
         .update({
@@ -124,9 +125,23 @@ export function RegistrationApprovalPanel({ competitionId }: RegistrationApprova
           approved_by: user?.id,
           approved_at: new Date().toISOString(),
         })
-        .eq("id", registrationId);
+        .eq("id", registration.id);
 
       if (error) throw error;
+
+      // Send notification to participant
+      if (registration.participant?.user_id) {
+        sendNotification({
+          userId: registration.participant.user_id,
+          title: "Registration Approved!",
+          titleAr: "تمت الموافقة على التسجيل!",
+          body: `Your registration for ${registration.dish_name || "the competition"} has been approved.`,
+          bodyAr: `تمت الموافقة على تسجيلك في ${registration.dish_name || "المسابقة"}.`,
+          type: "success",
+          link: `/competitions/${competitionId}`,
+          channels: ["in_app", "email"],
+        });
+      }
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["competition-registrations", competitionId] });
@@ -148,7 +163,7 @@ export function RegistrationApprovalPanel({ competitionId }: RegistrationApprova
   });
 
   const rejectMutation = useMutation({
-    mutationFn: async ({ registrationId, reason }: { registrationId: string; reason: string }) => {
+    mutationFn: async ({ registration, reason }: { registration: Registration; reason: string }) => {
       const { error } = await supabase
         .from("competition_registrations")
         .update({
@@ -156,9 +171,23 @@ export function RegistrationApprovalPanel({ competitionId }: RegistrationApprova
           approved_by: user?.id,
           approved_at: new Date().toISOString(),
         })
-        .eq("id", registrationId);
+        .eq("id", registration.id);
 
       if (error) throw error;
+
+      // Send notification to participant
+      if (registration.participant?.user_id) {
+        sendNotification({
+          userId: registration.participant.user_id,
+          title: "Registration Update",
+          titleAr: "تحديث التسجيل",
+          body: `Your registration has been reviewed.${reason ? ` Reason: ${reason}` : ""}`,
+          bodyAr: `تم مراجعة تسجيلك.${reason ? ` السبب: ${reason}` : ""}`,
+          type: "warning",
+          link: `/competitions/${competitionId}`,
+          channels: ["in_app", "email"],
+        });
+      }
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["competition-registrations", competitionId] });
@@ -319,7 +348,7 @@ export function RegistrationApprovalPanel({ competitionId }: RegistrationApprova
                         <Button
                           variant="default"
                           size="sm"
-                          onClick={() => approveMutation.mutate(registration.id)}
+                          onClick={() => approveMutation.mutate(registration)}
                           disabled={approveMutation.isPending}
                         >
                           {approveMutation.isPending ? (
@@ -458,7 +487,7 @@ export function RegistrationApprovalPanel({ competitionId }: RegistrationApprova
                 {language === "ar" ? "رفض" : "Reject"}
               </Button>
               <Button
-                onClick={() => approveMutation.mutate(selectedRegistration.id)}
+                onClick={() => approveMutation.mutate(selectedRegistration)}
                 disabled={approveMutation.isPending}
               >
                 {approveMutation.isPending ? (
@@ -513,7 +542,7 @@ export function RegistrationApprovalPanel({ competitionId }: RegistrationApprova
               onClick={() =>
                 selectedRegistration &&
                 rejectMutation.mutate({
-                  registrationId: selectedRegistration.id,
+                  registration: selectedRegistration,
                   reason: rejectReason,
                 })
               }

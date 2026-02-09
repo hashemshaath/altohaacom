@@ -98,10 +98,32 @@ export default function NotificationsAdmin() {
 
   const sendMutation = useMutation({
     mutationFn: async () => {
-      // In real implementation, this would send notifications to all users or specific users
+      const { data, error } = await supabase.functions.invoke("broadcast-notification", {
+        body: {
+          title: newNotification.title,
+          titleAr: newNotification.title_ar,
+          body: newNotification.body,
+          bodyAr: newNotification.body_ar,
+          type: newNotification.type,
+          channels: [newNotification.channel],
+          targetAll: newNotification.targetAll,
+          targetUserIds: newNotification.targetAll
+            ? []
+            : newNotification.targetUsers.split(",").map((id) => id.trim()).filter(Boolean),
+        },
+      });
+
+      if (error) throw error;
+      return data;
+    },
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({ queryKey: ["recent-notifications"] });
+      queryClient.invalidateQueries({ queryKey: ["notification-queue-stats"] });
       toast({
         title: language === "ar" ? "تم الإرسال" : "Sent",
-        description: language === "ar" ? "تم إرسال الإشعار بنجاح" : "Notification sent successfully",
+        description: language === "ar"
+          ? `تم إرسال الإشعار إلى ${data?.totalUsers || 0} مستخدم`
+          : `Notification sent to ${data?.totalUsers || 0} users`,
       });
       setIsCreateOpen(false);
       setNewNotification({
@@ -113,6 +135,13 @@ export default function NotificationsAdmin() {
         channel: "in_app",
         targetAll: true,
         targetUsers: "",
+      });
+    },
+    onError: (error) => {
+      toast({
+        variant: "destructive",
+        title: language === "ar" ? "فشل الإرسال" : "Send Failed",
+        description: error.message,
       });
     },
   });
