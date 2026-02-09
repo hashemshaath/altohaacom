@@ -52,6 +52,7 @@ interface Competition {
   title: string;
   title_ar: string | null;
   status: CompetitionStatus;
+  competition_number: string | null;
   competition_start: string;
   competition_end: string;
   venue: string | null;
@@ -270,8 +271,8 @@ export default function CompetitionsAdmin() {
                           <p className="font-medium truncate">
                             {language === "ar" && comp.title_ar ? comp.title_ar : comp.title}
                           </p>
-                          <p className="text-xs text-muted-foreground">
-                            {comp.is_virtual ? (language === "ar" ? "افتراضية" : "Virtual") : ""}
+                          <p className="text-xs text-muted-foreground font-mono">
+                            {comp.competition_number || (comp.is_virtual ? (language === "ar" ? "افتراضية" : "Virtual") : "")}
                           </p>
                         </div>
                       </TableCell>

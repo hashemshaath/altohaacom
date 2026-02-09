@@ -32,6 +32,7 @@ import {
 
 interface Registration {
   id: string;
+  registration_number: string | null;
   dish_name: string | null;
   dish_description: string | null;
   dish_image_url: string | null;
@@ -81,6 +82,7 @@ export function RegistrationApprovalPanel({ competitionId }: RegistrationApprova
         .from("competition_registrations")
         .select(`
           id,
+          registration_number,
           dish_name,
           dish_description,
           dish_image_url,
@@ -301,6 +303,11 @@ export function RegistrationApprovalPanel({ competitionId }: RegistrationApprova
                       <h4 className="font-medium">
                         {registration.dish_name || (language === "ar" ? "طبق بدون اسم" : "Unnamed Dish")}
                       </h4>
+                      {registration.registration_number && (
+                        <Badge variant="outline" className="font-mono text-[10px]">
+                          {registration.registration_number}
+                        </Badge>
+                      )}
                       <Badge className={statusClass}>
                         <StatusIcon className="mr-1 h-3 w-3" />
                         {registration.status}
