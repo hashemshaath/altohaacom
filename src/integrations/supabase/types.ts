@@ -408,7 +408,7 @@ export type Database = {
         Insert: {
           achievement?: string | null
           achievement_ar?: string | null
-          certificate_number: string
+          certificate_number?: string
           competition_id?: string | null
           created_at?: string | null
           downloaded_count?: number | null
@@ -1214,7 +1214,7 @@ export type Database = {
           items?: Json | null
           notes?: string | null
           order_date?: string | null
-          order_number: string
+          order_number?: string
           rejected_at?: string | null
           rejected_by?: string | null
           rejection_reason?: string | null
@@ -1336,7 +1336,7 @@ export type Database = {
           reconciled_by?: string | null
           reference?: string | null
           transaction_date?: string | null
-          transaction_number: string
+          transaction_number?: string
           type: Database["public"]["Enums"]["transaction_type"]
         }
         Update: {
@@ -2610,7 +2610,7 @@ export type Database = {
           description?: string | null
           due_date?: string | null
           id?: string
-          invoice_number: string
+          invoice_number?: string
           paid_at?: string | null
           status?: string | null
           updated_at?: string

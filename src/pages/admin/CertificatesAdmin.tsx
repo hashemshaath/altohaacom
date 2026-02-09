@@ -185,13 +185,12 @@ export default function CertificatesAdmin() {
         templateId = newTemplate.id;
       }
 
-      const { data: certNum } = await supabase.rpc("generate_certificate_number");
       const { data: verifyCode } = await supabase.rpc("generate_verification_code");
       
       const { error } = await supabase.from("certificates").insert({
         ...data,
         template_id: templateId,
-        certificate_number: certNum,
+        certificate_number: "",
         verification_code: verifyCode,
         status: "draft",
       });
