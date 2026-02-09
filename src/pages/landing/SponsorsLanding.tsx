@@ -136,7 +136,7 @@ export default function SponsorsLanding() {
                   ? "انضم كراعٍ واستفد من الوصول إلى شبكة عالمية من محترفي الطهي"
                   : "Join as a sponsor and gain access to a global network of culinary professionals"}
               </p>
-              <Button size="lg" className="gap-2">
+              <Button size="lg" className="gap-2" onClick={() => document.getElementById("sponsor-contact")?.scrollIntoView({ behavior: "smooth" })}>
                 {language === "ar" ? "ابدأ الآن" : "Get Started"}
                 <ArrowRight className="h-5 w-5" />
               </Button>
@@ -215,7 +215,7 @@ export default function SponsorsLanding() {
         </section>
 
         {/* Contact Form */}
-        <section className="py-16 bg-muted/30">
+        <section id="sponsor-contact" className="py-16 bg-muted/30">
           <div className="container mx-auto px-4">
             <div className="max-w-2xl mx-auto">
               <h2 className="text-3xl font-serif font-bold text-center mb-4">
