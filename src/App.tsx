@@ -34,6 +34,7 @@ import RoleManagement from "./pages/admin/RoleManagement";
 import MembershipManagement from "./pages/admin/MembershipManagement";
 import ContentModeration from "./pages/admin/ContentModeration";
 import AuditLog from "./pages/admin/AuditLog";
+import LeadManagement from "./pages/admin/LeadManagement";
 
 const queryClient = new QueryClient();
 
@@ -73,6 +74,7 @@ const App = () => (
                 <Route path="/admin" element={<ProtectedRoute><AdminLayout /></ProtectedRoute>}>
                   <Route index element={<AdminDashboard />} />
                   <Route path="users" element={<UserManagement />} />
+                  <Route path="leads" element={<LeadManagement />} />
                   <Route path="roles" element={<RoleManagement />} />
                   <Route path="memberships" element={<MembershipManagement />} />
                   <Route path="moderation" element={<ContentModeration />} />
