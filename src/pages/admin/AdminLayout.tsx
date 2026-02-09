@@ -30,6 +30,7 @@ import {
   Bell,
   Globe,
   Database,
+  Award,
 } from "lucide-react";
 
 export default function AdminLayout() {
@@ -70,6 +71,7 @@ export default function AdminLayout() {
       items: [
         { to: "/admin/articles", icon: Newspaper, label: language === "ar" ? "المقالات والأخبار" : "Articles & News" },
         { to: "/admin/competitions", icon: Trophy, label: language === "ar" ? "المسابقات" : "Competitions" },
+        { to: "/admin/certificates", icon: Award, label: language === "ar" ? "الشهادات" : "Certificates" },
         { to: "/admin/media", icon: Image, label: language === "ar" ? "مكتبة الوسائط" : "Media Library" },
         { to: "/admin/moderation", icon: Flag, label: language === "ar" ? "إدارة المحتوى" : "Moderation" },
       ],

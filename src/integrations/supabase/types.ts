@@ -175,6 +175,323 @@ export type Database = {
           },
         ]
       }
+      certificate_logos: {
+        Row: {
+          created_at: string | null
+          created_by: string | null
+          id: string
+          is_active: boolean | null
+          is_sponsor: boolean | null
+          logo_url: string
+          name: string
+          name_ar: string | null
+          organization: string | null
+          sort_order: number | null
+        }
+        Insert: {
+          created_at?: string | null
+          created_by?: string | null
+          id?: string
+          is_active?: boolean | null
+          is_sponsor?: boolean | null
+          logo_url: string
+          name: string
+          name_ar?: string | null
+          organization?: string | null
+          sort_order?: number | null
+        }
+        Update: {
+          created_at?: string | null
+          created_by?: string | null
+          id?: string
+          is_active?: boolean | null
+          is_sponsor?: boolean | null
+          logo_url?: string
+          name?: string
+          name_ar?: string | null
+          organization?: string | null
+          sort_order?: number | null
+        }
+        Relationships: []
+      }
+      certificate_signatures: {
+        Row: {
+          created_at: string | null
+          created_by: string | null
+          id: string
+          is_active: boolean | null
+          name: string
+          name_ar: string | null
+          organization: string | null
+          organization_ar: string | null
+          signature_image_url: string | null
+          title: string
+          title_ar: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          created_by?: string | null
+          id?: string
+          is_active?: boolean | null
+          name: string
+          name_ar?: string | null
+          organization?: string | null
+          organization_ar?: string | null
+          signature_image_url?: string | null
+          title: string
+          title_ar?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          created_by?: string | null
+          id?: string
+          is_active?: boolean | null
+          name?: string
+          name_ar?: string | null
+          organization?: string | null
+          organization_ar?: string | null
+          signature_image_url?: string | null
+          title?: string
+          title_ar?: string | null
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
+      certificate_templates: {
+        Row: {
+          background_color: string | null
+          body_font: string | null
+          body_template: string
+          body_template_ar: string | null
+          border_color: string | null
+          border_style: string | null
+          created_at: string | null
+          created_by: string | null
+          description: string | null
+          description_ar: string | null
+          footer_logos: Json | null
+          header_logos: Json | null
+          id: string
+          is_active: boolean | null
+          name: string
+          name_ar: string | null
+          signature_positions: Json | null
+          title_font: string | null
+          title_text: string
+          title_text_ar: string | null
+          type: Database["public"]["Enums"]["certificate_type"]
+          updated_at: string | null
+        }
+        Insert: {
+          background_color?: string | null
+          body_font?: string | null
+          body_template: string
+          body_template_ar?: string | null
+          border_color?: string | null
+          border_style?: string | null
+          created_at?: string | null
+          created_by?: string | null
+          description?: string | null
+          description_ar?: string | null
+          footer_logos?: Json | null
+          header_logos?: Json | null
+          id?: string
+          is_active?: boolean | null
+          name: string
+          name_ar?: string | null
+          signature_positions?: Json | null
+          title_font?: string | null
+          title_text?: string
+          title_text_ar?: string | null
+          type: Database["public"]["Enums"]["certificate_type"]
+          updated_at?: string | null
+        }
+        Update: {
+          background_color?: string | null
+          body_font?: string | null
+          body_template?: string
+          body_template_ar?: string | null
+          border_color?: string | null
+          border_style?: string | null
+          created_at?: string | null
+          created_by?: string | null
+          description?: string | null
+          description_ar?: string | null
+          footer_logos?: Json | null
+          header_logos?: Json | null
+          id?: string
+          is_active?: boolean | null
+          name?: string
+          name_ar?: string | null
+          signature_positions?: Json | null
+          title_font?: string | null
+          title_text?: string
+          title_text_ar?: string | null
+          type?: Database["public"]["Enums"]["certificate_type"]
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
+      certificate_verifications: {
+        Row: {
+          certificate_id: string
+          id: string
+          ip_address: string | null
+          user_agent: string | null
+          verification_code: string
+          verified_at: string | null
+        }
+        Insert: {
+          certificate_id: string
+          id?: string
+          ip_address?: string | null
+          user_agent?: string | null
+          verification_code: string
+          verified_at?: string | null
+        }
+        Update: {
+          certificate_id?: string
+          id?: string
+          ip_address?: string | null
+          user_agent?: string | null
+          verification_code?: string
+          verified_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "certificate_verifications_certificate_id_fkey"
+            columns: ["certificate_id"]
+            isOneToOne: false
+            referencedRelation: "certificates"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      certificates: {
+        Row: {
+          achievement: string | null
+          achievement_ar: string | null
+          certificate_number: string
+          competition_id: string | null
+          created_at: string | null
+          downloaded_count: number | null
+          event_date: string | null
+          event_location: string | null
+          event_location_ar: string | null
+          event_name: string | null
+          event_name_ar: string | null
+          id: string
+          issued_at: string | null
+          issued_by: string | null
+          last_downloaded_at: string | null
+          logos: Json | null
+          recipient_email: string | null
+          recipient_id: string | null
+          recipient_name: string
+          recipient_name_ar: string | null
+          revoke_reason: string | null
+          revoked_at: string | null
+          revoked_by: string | null
+          sent_at: string | null
+          sent_to_email: string | null
+          signatures: Json | null
+          signed_at: string | null
+          signed_by: string | null
+          status: Database["public"]["Enums"]["certificate_status"] | null
+          template_id: string
+          type: Database["public"]["Enums"]["certificate_type"]
+          updated_at: string | null
+          verification_code: string
+        }
+        Insert: {
+          achievement?: string | null
+          achievement_ar?: string | null
+          certificate_number: string
+          competition_id?: string | null
+          created_at?: string | null
+          downloaded_count?: number | null
+          event_date?: string | null
+          event_location?: string | null
+          event_location_ar?: string | null
+          event_name?: string | null
+          event_name_ar?: string | null
+          id?: string
+          issued_at?: string | null
+          issued_by?: string | null
+          last_downloaded_at?: string | null
+          logos?: Json | null
+          recipient_email?: string | null
+          recipient_id?: string | null
+          recipient_name: string
+          recipient_name_ar?: string | null
+          revoke_reason?: string | null
+          revoked_at?: string | null
+          revoked_by?: string | null
+          sent_at?: string | null
+          sent_to_email?: string | null
+          signatures?: Json | null
+          signed_at?: string | null
+          signed_by?: string | null
+          status?: Database["public"]["Enums"]["certificate_status"] | null
+          template_id: string
+          type: Database["public"]["Enums"]["certificate_type"]
+          updated_at?: string | null
+          verification_code: string
+        }
+        Update: {
+          achievement?: string | null
+          achievement_ar?: string | null
+          certificate_number?: string
+          competition_id?: string | null
+          created_at?: string | null
+          downloaded_count?: number | null
+          event_date?: string | null
+          event_location?: string | null
+          event_location_ar?: string | null
+          event_name?: string | null
+          event_name_ar?: string | null
+          id?: string
+          issued_at?: string | null
+          issued_by?: string | null
+          last_downloaded_at?: string | null
+          logos?: Json | null
+          recipient_email?: string | null
+          recipient_id?: string | null
+          recipient_name?: string
+          recipient_name_ar?: string | null
+          revoke_reason?: string | null
+          revoked_at?: string | null
+          revoked_by?: string | null
+          sent_at?: string | null
+          sent_to_email?: string | null
+          signatures?: Json | null
+          signed_at?: string | null
+          signed_by?: string | null
+          status?: Database["public"]["Enums"]["certificate_status"] | null
+          template_id?: string
+          type?: Database["public"]["Enums"]["certificate_type"]
+          updated_at?: string | null
+          verification_code?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "certificates_competition_id_fkey"
+            columns: ["competition_id"]
+            isOneToOne: false
+            referencedRelation: "competitions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "certificates_template_id_fkey"
+            columns: ["template_id"]
+            isOneToOne: false
+            referencedRelation: "certificate_templates"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       competition_categories: {
         Row: {
           competition_id: string
@@ -1407,7 +1724,9 @@ export type Database = {
         Args: { p_role: Database["public"]["Enums"]["app_role"] }
         Returns: string
       }
+      generate_certificate_number: { Args: never; Returns: string }
       generate_invoice_number: { Args: never; Returns: string }
+      generate_verification_code: { Args: never; Returns: string }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
@@ -1429,6 +1748,22 @@ export type Database = {
         | "sponsor"
         | "assistant"
         | "supervisor"
+      certificate_status:
+        | "draft"
+        | "pending_signature"
+        | "signed"
+        | "issued"
+        | "revoked"
+      certificate_type:
+        | "participation"
+        | "winner_gold"
+        | "winner_silver"
+        | "winner_bronze"
+        | "appreciation"
+        | "organizer"
+        | "judge"
+        | "sponsor"
+        | "volunteer"
       competition_status:
         | "draft"
         | "upcoming"
@@ -1580,6 +1915,24 @@ export const Constants = {
         "sponsor",
         "assistant",
         "supervisor",
+      ],
+      certificate_status: [
+        "draft",
+        "pending_signature",
+        "signed",
+        "issued",
+        "revoked",
+      ],
+      certificate_type: [
+        "participation",
+        "winner_gold",
+        "winner_silver",
+        "winner_bronze",
+        "appreciation",
+        "organizer",
+        "judge",
+        "sponsor",
+        "volunteer",
       ],
       competition_status: [
         "draft",

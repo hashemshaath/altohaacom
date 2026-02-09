@@ -51,6 +51,8 @@ import MediaAdmin from "./pages/admin/MediaAdmin";
 import NotificationsAdmin from "./pages/admin/NotificationsAdmin";
 import LocalizationAdmin from "./pages/admin/LocalizationAdmin";
 import DatabaseAdmin from "./pages/admin/DatabaseAdmin";
+import CertificatesAdmin from "./pages/admin/CertificatesAdmin";
+import CertificateVerify from "./pages/CertificateVerify";
 
 const queryClient = new QueryClient();
 
@@ -90,6 +92,7 @@ const App = () => (
                 <Route path="/onboarding" element={<ProtectedRoute><Onboarding /></ProtectedRoute>} />
                 <Route path="/sponsors" element={<SponsorsLanding />} />
                 <Route path="/for-organizers" element={<OrganizersLanding />} />
+                <Route path="/verify" element={<CertificateVerify />} />
                 
                 {/* Admin Routes */}
                 <Route path="/admin" element={<ProtectedRoute><AdminLayout /></ProtectedRoute>}>
@@ -111,6 +114,7 @@ const App = () => (
                   <Route path="localization" element={<LocalizationAdmin />} />
                   <Route path="audit" element={<AuditLog />} />
                   <Route path="database" element={<DatabaseAdmin />} />
+                  <Route path="certificates" element={<CertificatesAdmin />} />
                 </Route>
 
                 {/* Public profile URL: altohaa.com/username */}
