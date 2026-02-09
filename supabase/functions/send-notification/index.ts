@@ -166,6 +166,22 @@ serve(async (req) => {
       }
     }
 
+    // If emails were queued, trigger the email processor
+    if (results.email?.queued) {
+      try {
+        const emailProcessUrl = `${supabaseUrl}/functions/v1/process-email-queue`;
+        fetch(emailProcessUrl, {
+          method: "POST",
+          headers: {
+            "Authorization": `Bearer ${supabaseKey}`,
+            "Content-Type": "application/json",
+          },
+        }).catch((e) => console.error("Failed to trigger email processor:", e));
+      } catch (e) {
+        console.error("Failed to trigger email processor:", e);
+      }
+    }
+
     console.log("Notification sent:", { userId, channels: channelsToUse, results });
 
     return new Response(
