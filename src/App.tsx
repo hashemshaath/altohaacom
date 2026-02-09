@@ -40,6 +40,8 @@ import MembershipManagement from "./pages/admin/MembershipManagement";
 import ContentModeration from "./pages/admin/ContentModeration";
 import AuditLog from "./pages/admin/AuditLog";
 import LeadManagement from "./pages/admin/LeadManagement";
+import CompetitionsAdmin from "./pages/admin/CompetitionsAdmin";
+import SystemSettings from "./pages/admin/SystemSettings";
 
 const queryClient = new QueryClient();
 
@@ -87,8 +89,10 @@ const App = () => (
                   <Route path="leads" element={<LeadManagement />} />
                   <Route path="roles" element={<RoleManagement />} />
                   <Route path="memberships" element={<MembershipManagement />} />
+                  <Route path="competitions" element={<CompetitionsAdmin />} />
                   <Route path="moderation" element={<ContentModeration />} />
                   <Route path="audit" element={<AuditLog />} />
+                  <Route path="settings" element={<SystemSettings />} />
                 </Route>
 
                 {/* Public profile URL: altohaa.com/username */}
