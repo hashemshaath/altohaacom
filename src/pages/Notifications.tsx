@@ -28,13 +28,13 @@ export default function Notifications() {
   const getTypeColor = (type: string) => {
     switch (type) {
       case "success":
-        return "bg-green-500/10 text-green-600 dark:text-green-400";
+        return "bg-primary/10 text-primary";
       case "warning":
-        return "bg-yellow-500/10 text-yellow-600 dark:text-yellow-400";
+        return "bg-chart-4/10 text-chart-4";
       case "error":
-        return "bg-red-500/10 text-red-600 dark:text-red-400";
+        return "bg-destructive/10 text-destructive";
       default:
-        return "bg-blue-500/10 text-blue-600 dark:text-blue-400";
+        return "bg-accent text-accent-foreground";
     }
   };
 
@@ -60,12 +60,12 @@ export default function Notifications() {
   return (
     <div className="flex min-h-screen flex-col bg-background">
       <Header />
-      <main className="flex-1 container mx-auto px-4 py-8">
-        <div className="max-w-3xl mx-auto">
-          <div className="flex items-center justify-between mb-6">
+      <main className="container flex-1 py-6 md:py-8">
+        <div className="mx-auto max-w-3xl">
+          <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
             <div className="flex items-center gap-3">
               <Bell className="h-6 w-6 text-primary" />
-              <h1 className="text-2xl font-serif font-bold">
+              <h1 className="font-serif text-2xl font-bold">
                 {t("notifications")}
               </h1>
               {unreadCount > 0 && (
@@ -75,13 +75,13 @@ export default function Notifications() {
             <div className="flex items-center gap-2">
               {unreadCount > 0 && (
                 <Button variant="outline" size="sm" onClick={markAllAsRead}>
-                  <CheckCheck className="h-4 w-4 mr-2" />
+                  <CheckCheck className="mr-2 h-4 w-4" />
                   {t("markAllRead")}
                 </Button>
               )}
               {notifications.length - unreadCount > 0 && (
                 <Button variant="outline" size="sm" onClick={clearAllRead}>
-                  <Trash2 className="h-4 w-4 mr-2" />
+                  <Trash2 className="mr-2 h-4 w-4" />
                   {language === "ar" ? "مسح المقروءة" : "Clear Read"}
                 </Button>
               )}
