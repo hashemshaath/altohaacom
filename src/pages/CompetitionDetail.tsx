@@ -11,7 +11,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Calendar, MapPin, Users, Globe, Trophy, ArrowLeft, CheckCircle, Settings } from "lucide-react";
+import { Calendar, MapPin, Users, Globe, Trophy, ArrowLeft, CheckCircle, Settings, Pencil, Award } from "lucide-react";
 import { format } from "date-fns";
 import { CompetitionStatusManager } from "@/components/competitions/CompetitionStatusManager";
 import { RegistrationDialog } from "@/components/competitions/RegistrationDialog";
@@ -180,10 +180,32 @@ export default function CompetitionDetail() {
           )}
           <div className="absolute inset-0 bg-gradient-to-t from-background/90 to-transparent" />
           <div className="absolute bottom-0 left-0 right-0 p-6">
-            <Badge className={`mb-2 ${statusColors[competition.status as CompetitionStatus]}`}>
-              {getStatusLabel(competition.status as CompetitionStatus)}
-            </Badge>
-            <h1 className="font-serif text-3xl font-bold md:text-4xl">{title}</h1>
+            <div className="flex items-start justify-between">
+              <div>
+                <Badge className={`mb-2 ${statusColors[competition.status as CompetitionStatus]}`}>
+                  {getStatusLabel(competition.status as CompetitionStatus)}
+                </Badge>
+                <h1 className="font-serif text-3xl font-bold md:text-4xl">{title}</h1>
+              </div>
+              <div className="flex gap-2">
+                {competition.status === "completed" && (
+                  <Button asChild variant="secondary" size="sm">
+                    <Link to={`/competitions/${id}/results`}>
+                      <Award className="mr-2 h-4 w-4" />
+                      {language === "ar" ? "النتائج" : "Results"}
+                    </Link>
+                  </Button>
+                )}
+                {isOrganizer && (
+                  <Button asChild variant="outline" size="sm">
+                    <Link to={`/competitions/${id}/edit`}>
+                      <Pencil className="mr-2 h-4 w-4" />
+                      {language === "ar" ? "تعديل" : "Edit"}
+                    </Link>
+                  </Button>
+                )}
+              </div>
+            </div>
           </div>
         </div>
 

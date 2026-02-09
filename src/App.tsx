@@ -15,6 +15,8 @@ import Community from "./pages/Community";
 import Competitions from "./pages/Competitions";
 import CompetitionDetail from "./pages/CompetitionDetail";
 import CreateCompetition from "./pages/CreateCompetition";
+import EditCompetition from "./pages/EditCompetition";
+import CompetitionResults from "./pages/CompetitionResults";
 import Judging from "./pages/Judging";
 import NotFound from "./pages/NotFound";
 import PublicProfile from "./pages/PublicProfile";
@@ -53,6 +55,8 @@ const App = () => (
                 <Route path="/competitions" element={<Competitions />} />
                 <Route path="/competitions/create" element={<ProtectedRoute><CreateCompetition /></ProtectedRoute>} />
                 <Route path="/competitions/:id" element={<CompetitionDetail />} />
+                <Route path="/competitions/:id/edit" element={<ProtectedRoute><EditCompetition /></ProtectedRoute>} />
+                <Route path="/competitions/:id/results" element={<CompetitionResults />} />
                 <Route path="/judging" element={<ProtectedRoute><Judging /></ProtectedRoute>} />
                 
                 {/* Admin Routes */}
