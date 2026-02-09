@@ -5,7 +5,7 @@ import { Navigate, Outlet, NavLink } from "react-router-dom";
 import { AdminHeader } from "@/components/admin/AdminHeader";
 import { Footer } from "@/components/Footer";
 import { cn } from "@/lib/utils";
-import { Handshake, GraduationCap } from "lucide-react";
+import { Handshake, GraduationCap, BarChart3 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
@@ -57,6 +57,7 @@ export default function AdminLayout() {
       title: language === "ar" ? "لوحة التحكم" : "Dashboard",
       items: [
         { to: "/admin", icon: LayoutDashboard, label: language === "ar" ? "نظرة عامة" : "Overview", end: true },
+        { to: "/admin/analytics", icon: BarChart3, label: language === "ar" ? "التحليلات" : "Analytics" },
       ],
     },
     {

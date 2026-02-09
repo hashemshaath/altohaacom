@@ -61,6 +61,7 @@ import KnowledgePortal from "./pages/KnowledgePortal";
 import Masterclasses from "./pages/Masterclasses";
 import MasterclassDetail from "./pages/MasterclassDetail";
 import MasterclassesAdmin from "./pages/admin/MasterclassesAdmin";
+import AnalyticsDashboard from "./pages/admin/AnalyticsDashboard";
 
 // Company Portal Pages
 import CompanyPortalLayout from "./pages/CompanyPortal";
@@ -148,6 +149,7 @@ const App = () => (
                   <Route path="knowledge" element={<KnowledgeAdmin />} />
                   <Route path="sponsors" element={<SponsorsAdmin />} />
                   <Route path="masterclasses" element={<MasterclassesAdmin />} />
+                  <Route path="analytics" element={<AnalyticsDashboard />} />
                 </Route>
 
                 {/* Company Portal Routes */}
