@@ -15,6 +15,7 @@ import { Calendar, MapPin, Users, Globe, Trophy, ArrowLeft, CheckCircle, Setting
 import { format } from "date-fns";
 import { CompetitionStatusManager } from "@/components/competitions/CompetitionStatusManager";
 import { RegistrationDialog } from "@/components/competitions/RegistrationDialog";
+import { RegistrationApprovalPanel } from "@/components/competitions/RegistrationApprovalPanel";
 import type { Database } from "@/integrations/supabase/types";
 
 type CompetitionStatus = Database["public"]["Enums"]["competition_status"];
@@ -271,12 +272,13 @@ export default function CompetitionDetail() {
               </TabsContent>
 
               {isOrganizer && (
-                <TabsContent value="manage" className="mt-6">
+                <TabsContent value="manage" className="mt-6 space-y-8">
                   <CompetitionStatusManager
                     competitionId={competition.id}
                     currentStatus={competition.status}
                     competitionTitle={title}
                   />
+                  <RegistrationApprovalPanel competitionId={competition.id} />
                 </TabsContent>
               )}
             </Tabs>
