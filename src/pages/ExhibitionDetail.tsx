@@ -10,11 +10,12 @@ import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Progress } from "@/components/ui/progress";
 import { toast } from "@/hooks/use-toast";
 import {
   Calendar, MapPin, Globe, ExternalLink, Bell, BellOff,
   Clock, Users, Tag, Building, Phone, Mail, ArrowLeft,
-  Share2, Ticket
+  Share2, Ticket, Trophy
 } from "lucide-react";
 import { format, isPast, isFuture, isWithinInterval, formatDistanceToNow } from "date-fns";
 
@@ -87,6 +88,22 @@ export default function ExhibitionDetail() {
         .select("id", { count: "exact", head: true })
         .eq("exhibition_id", exhibition.id);
       return count || 0;
+    },
+    enabled: !!exhibition,
+  });
+
+  // Fetch linked competitions
+  const { data: linkedCompetitions } = useQuery({
+    queryKey: ["exhibition-competitions", exhibition?.id],
+    queryFn: async () => {
+      if (!exhibition) return [];
+      const { data, error } = await supabase
+        .from("competitions")
+        .select("id, title, title_ar, status, competition_start, competition_end, cover_image_url, city, country, is_virtual")
+        .eq("exhibition_id", exhibition.id)
+        .order("competition_start", { ascending: true });
+      if (error) throw error;
+      return data || [];
     },
     enabled: !!exhibition,
   });
@@ -275,7 +292,48 @@ export default function ExhibitionDetail() {
               </section>
             )}
 
-            {/* Speakers */}
+            {/* Linked Competitions */}
+            {linkedCompetitions && linkedCompetitions.length > 0 && (
+              <section>
+                <h2 className="mb-4 flex items-center gap-2 text-xl font-semibold">
+                  <Trophy className="h-5 w-5 text-primary" />
+                  {isAr ? "المسابقات المرتبطة" : "Competitions"}
+                </h2>
+                <div className="grid gap-4 sm:grid-cols-2">
+                  {linkedCompetitions.map((comp) => {
+                    const compTitle = isAr && comp.title_ar ? comp.title_ar : comp.title;
+                    const compStart = new Date(comp.competition_start);
+                    const compEnd = new Date(comp.competition_end);
+                    const compNow = new Date();
+                    const compIsLive = isWithinInterval(compNow, { start: compStart, end: compEnd });
+                    const compIsPast = isPast(compEnd);
+
+                    return (
+                      <Link key={comp.id} to={`/competitions/${comp.id}`} className="block">
+                        <Card className="overflow-hidden transition-all hover:shadow-md hover:-translate-y-0.5">
+                          {comp.cover_image_url && (
+                            <img src={comp.cover_image_url} alt={compTitle} className="h-32 w-full object-cover" />
+                          )}
+                          <CardContent className="p-4">
+                            <div className="mb-2 flex items-center gap-2">
+                              <Badge variant={compIsLive ? "default" : compIsPast ? "secondary" : "outline"} className="text-xs">
+                                {compIsLive ? (isAr ? "جارية" : "Live") : compIsPast ? (isAr ? "انتهت" : "Ended") : (isAr ? "قادمة" : "Upcoming")}
+                              </Badge>
+                            </div>
+                            <h4 className="font-semibold line-clamp-2">{compTitle}</h4>
+                            <p className="mt-1 text-xs text-muted-foreground">
+                              <Calendar className="mr-1 inline h-3 w-3" />
+                              {format(compStart, "MMM d, yyyy")}
+                            </p>
+                          </CardContent>
+                        </Card>
+                      </Link>
+                    );
+                  })}
+                </div>
+              </section>
+            )}
+
             {speakers.length > 0 && (
               <section>
                 <h2 className="mb-4 text-xl font-semibold">{isAr ? "المتحدثون" : "Speakers"}</h2>

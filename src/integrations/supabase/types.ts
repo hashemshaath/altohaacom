@@ -1650,6 +1650,7 @@ export type Database = {
           created_at: string
           description: string | null
           description_ar: string | null
+          exhibition_id: string | null
           id: string
           is_virtual: boolean | null
           max_participants: number | null
@@ -1676,6 +1677,7 @@ export type Database = {
           created_at?: string
           description?: string | null
           description_ar?: string | null
+          exhibition_id?: string | null
           id?: string
           is_virtual?: boolean | null
           max_participants?: number | null
@@ -1702,6 +1704,7 @@ export type Database = {
           created_at?: string
           description?: string | null
           description_ar?: string | null
+          exhibition_id?: string | null
           id?: string
           is_virtual?: boolean | null
           max_participants?: number | null
@@ -1719,7 +1722,15 @@ export type Database = {
           venue?: string | null
           venue_ar?: string | null
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "competitions_exhibition_id_fkey"
+            columns: ["exhibition_id"]
+            isOneToOne: false
+            referencedRelation: "exhibitions"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       connections: {
         Row: {
