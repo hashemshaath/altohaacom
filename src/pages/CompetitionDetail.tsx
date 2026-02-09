@@ -12,6 +12,7 @@ import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Separator } from "@/components/ui/separator";
+import { toast } from "@/hooks/use-toast";
 import {
   Calendar,
   MapPin,
@@ -26,6 +27,7 @@ import {
   BookOpen,
   ClipboardList,
   Clock,
+  Share2,
 } from "lucide-react";
 import { SEOHead } from "@/components/SEOHead";
 import { format } from "date-fns";
@@ -45,7 +47,7 @@ import type { Database } from "@/integrations/supabase/types";
 function EmptyState({ icon, text }: { icon: React.ReactNode; text: string }) {
   return (
     <div className="flex flex-col items-center justify-center py-16 text-center">
-      <div className="mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-muted text-muted-foreground">{icon}</div>
+      <div className="mb-3 flex h-14 w-14 items-center justify-center rounded-full bg-muted/60 text-muted-foreground/50">{icon}</div>
       <p className="text-sm text-muted-foreground max-w-xs">{text}</p>
     </div>
   );
@@ -70,6 +72,7 @@ export default function CompetitionDetail() {
   const { user } = useAuth();
   const [activeTab, setActiveTab] = useState("overview");
   const [showRegistrationForm, setShowRegistrationForm] = useState(false);
+  const isAr = language === "ar";
 
   const { data: competition, isLoading } = useQuery({
     queryKey: ["competition", id],
@@ -142,8 +145,24 @@ export default function CompetitionDetail() {
               <Skeleton className="h-32 w-full rounded-lg" />
             </div>
             <div className="hidden lg:block space-y-4">
-              <Skeleton className="h-36 w-full rounded-lg" />
-              <Skeleton className="h-52 w-full rounded-lg" />
+              <Card className="overflow-hidden">
+                <div className="border-b bg-muted/30 px-4 py-3">
+                  <Skeleton className="h-4 w-28" />
+                </div>
+                <div className="space-y-3 p-4">
+                  <Skeleton className="h-10 w-full rounded-md" />
+                </div>
+              </Card>
+              <Card className="overflow-hidden">
+                <div className="border-b bg-muted/30 px-4 py-3">
+                  <Skeleton className="h-4 w-20" />
+                </div>
+                <div className="space-y-3 p-4">
+                  <Skeleton className="h-10 w-full" />
+                  <Skeleton className="h-10 w-full" />
+                  <Skeleton className="h-10 w-full" />
+                </div>
+              </Card>
             </div>
           </div>
         </main>
@@ -157,15 +176,15 @@ export default function CompetitionDetail() {
       <div className="flex min-h-screen flex-col bg-background">
         <Header />
         <main className="container flex-1 py-16 text-center">
-          <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-muted">
+          <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-muted/60">
             <Trophy className="h-8 w-8 text-muted-foreground/40" />
           </div>
-          <p className="text-muted-foreground mb-1">{language === "ar" ? "المسابقة غير موجودة" : "Competition not found"}</p>
-          <p className="text-xs text-muted-foreground/60 mb-5">{language === "ar" ? "تحقق من الرابط وحاول مرة أخرى" : "Check the link and try again"}</p>
-          <Button asChild variant="outline" size="sm">
+          <p className="font-semibold">{isAr ? "المسابقة غير موجودة" : "Competition not found"}</p>
+          <p className="mt-1 text-sm text-muted-foreground">{isAr ? "تحقق من الرابط وحاول مرة أخرى" : "Check the link and try again"}</p>
+          <Button asChild variant="outline" size="sm" className="mt-5">
             <Link to="/competitions">
               <ArrowLeft className="me-1.5 h-4 w-4" />
-              {language === "ar" ? "العودة" : "Back to Competitions"}
+              {isAr ? "العودة" : "Back to Competitions"}
             </Link>
           </Button>
         </main>
@@ -174,9 +193,9 @@ export default function CompetitionDetail() {
     );
   }
 
-  const title = language === "ar" && competition.title_ar ? competition.title_ar : competition.title;
-  const description = language === "ar" && competition.description_ar ? competition.description_ar : competition.description;
-  const venue = language === "ar" && competition.venue_ar ? competition.venue_ar : competition.venue;
+  const title = isAr && competition.title_ar ? competition.title_ar : competition.title;
+  const description = isAr && competition.description_ar ? competition.description_ar : competition.description;
+  const venue = isAr && competition.venue_ar ? competition.venue_ar : competition.venue;
 
   const canRegister = competition.status === "registration_open" && user && !myRegistration;
   const isOrganizer = user && competition.organizer_id === user.id;
@@ -286,7 +305,7 @@ export default function CompetitionDetail() {
                   <Button asChild variant="secondary" size="sm">
                     <Link to={`/competitions/${id}/results`}>
                       <Award className="me-1.5 h-4 w-4" />
-                      {language === "ar" ? "النتائج" : "Results"}
+                      {isAr ? "النتائج" : "Results"}
                     </Link>
                   </Button>
                 )}
@@ -294,7 +313,7 @@ export default function CompetitionDetail() {
                   <Button asChild variant="outline" size="sm">
                     <Link to={`/competitions/${id}/edit`}>
                       <Pencil className="me-1.5 h-4 w-4" />
-                      {language === "ar" ? "تعديل" : "Edit"}
+                      {isAr ? "تعديل" : "Edit"}
                     </Link>
                   </Button>
                 )}
@@ -316,16 +335,14 @@ export default function CompetitionDetail() {
           </div>
         )}
 
-        {/* Mobile registration CTA */}
-        {canRegister && !showRegistrationForm && (
-          <div className="mb-6 lg:hidden">
+        {/* Mobile registration CTA + details */}
+        <div className="mb-6 space-y-3 lg:hidden">
+          {canRegister && !showRegistrationForm && (
             <Button className="w-full" onClick={() => setShowRegistrationForm(true)}>
               {t("registerNow")}
             </Button>
-          </div>
-        )}
-        {myRegistration && (
-          <div className="mb-6 lg:hidden">
+          )}
+          {myRegistration && (
             <Card className="border-primary/20 bg-primary/5">
               <CardContent className="flex items-center gap-2 p-3">
                 <CheckCircle className="h-4 w-4 text-primary shrink-0" />
@@ -336,8 +353,37 @@ export default function CompetitionDetail() {
                 </span>
               </CardContent>
             </Card>
-          </div>
-        )}
+          )}
+
+          {/* Mobile key details */}
+          <Card className="overflow-hidden">
+            <CardContent className="flex flex-wrap gap-x-6 gap-y-2 p-3 text-sm">
+              <div className="flex items-center gap-2">
+                <Calendar className="h-3.5 w-3.5 text-muted-foreground" />
+                <span>
+                  {format(new Date(competition.competition_start), "MMM d")} – {format(new Date(competition.competition_end), "MMM d, yyyy")}
+                </span>
+              </div>
+              {competition.is_virtual ? (
+                <div className="flex items-center gap-2">
+                  <Globe className="h-3.5 w-3.5 text-muted-foreground" />
+                  <span>{t("virtual")}</span>
+                </div>
+              ) : venue ? (
+                <div className="flex items-center gap-2">
+                  <MapPin className="h-3.5 w-3.5 text-muted-foreground" />
+                  <span>{venue}{competition.city && `, ${competition.city}`}</span>
+                </div>
+              ) : null}
+              {competition.max_participants && (
+                <div className="flex items-center gap-2">
+                  <Users className="h-3.5 w-3.5 text-muted-foreground" />
+                  <span>{isAr ? `الحد الأقصى ${competition.max_participants}` : `Max ${competition.max_participants}`}</span>
+                </div>
+              )}
+            </CardContent>
+          </Card>
+        </div>
 
         <div className="grid gap-6 lg:grid-cols-3">
           {/* Main Content */}
@@ -346,11 +392,11 @@ export default function CompetitionDetail() {
               <div className="overflow-x-auto -mx-4 px-4 md:mx-0 md:px-0">
                 <TabsList className="h-auto w-max justify-start gap-0.5 bg-muted/50 p-1">
                   <TabsTrigger value="overview" className="text-xs sm:text-sm">
-                    {language === "ar" ? "نظرة عامة" : "Overview"}
+                    {isAr ? "نظرة عامة" : "Overview"}
                   </TabsTrigger>
                   <TabsTrigger value="participants" className="gap-1 text-xs sm:text-sm">
                     <Users className="h-3.5 w-3.5 hidden sm:block" />
-                    {language === "ar" ? "المشاركين" : "Participants"}
+                    {isAr ? "المشاركين" : "Participants"}
                   </TabsTrigger>
                   <TabsTrigger value="categories" className="text-xs sm:text-sm">
                     {t("categories")}
@@ -360,22 +406,22 @@ export default function CompetitionDetail() {
                   </TabsTrigger>
                   <TabsTrigger value="leaderboard" className="gap-1 text-xs sm:text-sm">
                     <Trophy className="h-3.5 w-3.5 hidden sm:block" />
-                    {language === "ar" ? "المتصدرين" : "Leaderboard"}
+                    {isAr ? "المتصدرين" : "Leaderboard"}
                   </TabsTrigger>
                   <TabsTrigger value="knowledge" className="gap-1 text-xs sm:text-sm">
                     <BookOpen className="h-3.5 w-3.5 hidden sm:block" />
-                    {language === "ar" ? "المعرفة" : "Knowledge"}
+                    {isAr ? "المعرفة" : "Knowledge"}
                   </TabsTrigger>
                   {isOrganizer && (
                     <TabsTrigger value="requirements" className="gap-1 text-xs sm:text-sm">
                       <ClipboardList className="h-3.5 w-3.5 hidden sm:block" />
-                      {language === "ar" ? "المتطلبات" : "Requirements"}
+                      {isAr ? "المتطلبات" : "Requirements"}
                     </TabsTrigger>
                   )}
                   {isOrganizer && (
                     <TabsTrigger value="manage" className="gap-1 text-xs sm:text-sm">
                       <Settings className="h-3.5 w-3.5 hidden sm:block" />
-                      {language === "ar" ? "إدارة" : "Manage"}
+                      {isAr ? "إدارة" : "Manage"}
                     </TabsTrigger>
                   )}
                 </TabsList>
@@ -405,18 +451,18 @@ export default function CompetitionDetail() {
                 {categories && categories.length > 0 ? (
                   <div className="grid gap-4 sm:grid-cols-2">
                     {categories.map((cat) => (
-                      <Card key={cat.id}>
-                        <CardHeader className="pb-2">
-                          <CardTitle className="text-base">
-                            {language === "ar" && cat.name_ar ? cat.name_ar : cat.name}
-                          </CardTitle>
-                        </CardHeader>
-                        <CardContent className="text-sm text-muted-foreground">
-                          {language === "ar" && cat.description_ar ? cat.description_ar : cat.description}
+                      <Card key={cat.id} className="overflow-hidden">
+                        <div className="border-b bg-muted/30 px-4 py-3">
+                          <h4 className="text-sm font-semibold">
+                            {isAr && cat.name_ar ? cat.name_ar : cat.name}
+                          </h4>
+                        </div>
+                        <CardContent className="p-4 text-sm text-muted-foreground">
+                          {isAr && cat.description_ar ? cat.description_ar : cat.description}
                           {cat.max_participants && (
-                            <p className="mt-2 flex items-center gap-1">
-                              <Users className="h-3.5 w-3.5" />
-                              {language === "ar" ? `الحد الأقصى ${cat.max_participants}` : `Max ${cat.max_participants} participants`}
+                            <p className="mt-2.5 flex items-center gap-1.5 text-xs">
+                              <Users className="h-3 w-3" />
+                              {isAr ? `الحد الأقصى ${cat.max_participants}` : `Max ${cat.max_participants} participants`}
                             </p>
                           )}
                         </CardContent>
@@ -426,7 +472,7 @@ export default function CompetitionDetail() {
                 ) : (
                   <EmptyState
                     icon={<Users className="h-6 w-6" />}
-                    text={language === "ar" ? "لم يتم تحديد فئات بعد" : "No categories defined yet."}
+                    text={isAr ? "لم يتم تحديد فئات بعد" : "No categories defined yet."}
                   />
                 )}
               </TabsContent>
@@ -435,24 +481,24 @@ export default function CompetitionDetail() {
                 {criteria && criteria.length > 0 ? (
                   <div className="space-y-3">
                     {criteria.map((crit) => (
-                      <Card key={crit.id}>
+                      <Card key={crit.id} className="overflow-hidden">
                         <CardContent className="flex items-start justify-between gap-4 p-4">
                           <div className="min-w-0">
                             <h4 className="font-medium text-sm">
-                              {language === "ar" && crit.name_ar ? crit.name_ar : crit.name}
+                              {isAr && crit.name_ar ? crit.name_ar : crit.name}
                             </h4>
                             {(crit.description || crit.description_ar) && (
                               <p className="text-xs text-muted-foreground mt-1">
-                                {language === "ar" && crit.description_ar ? crit.description_ar : crit.description}
+                                {isAr && crit.description_ar ? crit.description_ar : crit.description}
                               </p>
                             )}
                           </div>
                           <div className="shrink-0 text-end space-y-1">
-                            <Badge variant="outline" className="text-xs">
-                              {language === "ar" ? "الأقصى" : "Max"}: {crit.max_score}
+                            <Badge variant="outline" className="text-[10px]">
+                              {isAr ? "الأقصى" : "Max"}: {crit.max_score}
                             </Badge>
-                            <p className="text-[11px] text-muted-foreground">
-                              {language === "ar" ? "الوزن" : "Weight"}: {(Number(crit.weight) * 100).toFixed(0)}%
+                            <p className="text-[10px] text-muted-foreground">
+                              {isAr ? "الوزن" : "Weight"}: {(Number(crit.weight) * 100).toFixed(0)}%
                             </p>
                           </div>
                         </CardContent>
@@ -462,7 +508,7 @@ export default function CompetitionDetail() {
                 ) : (
                   <EmptyState
                     icon={<ClipboardList className="h-6 w-6" />}
-                    text={language === "ar" ? "لم يتم تحديد معايير بعد" : "No judging criteria defined yet."}
+                    text={isAr ? "لم يتم تحديد معايير بعد" : "No judging criteria defined yet."}
                   />
                 )}
               </TabsContent>
@@ -531,12 +577,19 @@ export default function CompetitionDetail() {
                 ) : !user ? (
                   <Button asChild className="w-full" variant="outline">
                     <Link to="/auth">
-                      {language === "ar" ? "سجل الدخول للتسجيل" : "Sign in to Register"}
+                      {isAr ? "سجل الدخول للتسجيل" : "Sign in to Register"}
                     </Link>
                   </Button>
                 ) : (
                   <p className="text-xs text-muted-foreground">
-                    {language === "ar" ? "التسجيل مغلق حالياً" : "Registration is currently closed."}
+                    {isAr ? "التسجيل مغلق حالياً" : "Registration is currently closed."}
+                  </p>
+                )}
+
+                {competition.registration_end && (
+                  <p className="text-[10px] text-center text-muted-foreground">
+                    {isAr ? "ينتهي التسجيل:" : "Registration ends:"}{" "}
+                    <span className="font-medium">{format(new Date(competition.registration_end), "MMM d, yyyy")}</span>
                   </p>
                 )}
               </CardContent>
@@ -549,7 +602,7 @@ export default function CompetitionDetail() {
                   <div className="flex h-6 w-6 items-center justify-center rounded-md bg-accent/10">
                     <Calendar className="h-3.5 w-3.5 text-accent-foreground" />
                   </div>
-                  {language === "ar" ? "التفاصيل" : "Details"}
+                  {isAr ? "التفاصيل" : "Details"}
                 </h3>
               </div>
               <CardContent className="p-0">
@@ -605,12 +658,33 @@ export default function CompetitionDetail() {
                       <div>
                         <p className="text-[10px] uppercase tracking-wider text-muted-foreground">{t("participants")}</p>
                         <p className="text-sm font-medium">
-                          {language === "ar" ? `الحد الأقصى ${competition.max_participants}` : `Max ${competition.max_participants}`}
+                          {isAr ? `الحد الأقصى ${competition.max_participants}` : `Max ${competition.max_participants}`}
                         </p>
                       </div>
                     </div>
                   </>
                 )}
+              </CardContent>
+            </Card>
+
+            {/* Share Card */}
+            <Card className="overflow-hidden">
+              <div className="border-b bg-muted/30 px-4 py-3">
+                <h3 className="flex items-center gap-2 font-semibold text-sm">
+                  <div className="flex h-6 w-6 items-center justify-center rounded-md bg-primary/10">
+                    <Share2 className="h-3.5 w-3.5 text-primary" />
+                  </div>
+                  {isAr ? "مشاركة" : "Share"}
+                </h3>
+              </div>
+              <CardContent className="p-4">
+                <Button size="sm" variant="outline" className="w-full" onClick={() => {
+                  navigator.clipboard.writeText(window.location.href);
+                  toast({ title: isAr ? "تم نسخ الرابط" : "Link copied!" });
+                }}>
+                  <Share2 className="me-1.5 h-3.5 w-3.5" />
+                  {isAr ? "نسخ الرابط" : "Copy Link"}
+                </Button>
               </CardContent>
             </Card>
           </div>
