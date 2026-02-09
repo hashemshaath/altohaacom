@@ -16,6 +16,8 @@ import { format } from "date-fns";
 import { CompetitionStatusManager } from "@/components/competitions/CompetitionStatusManager";
 import { RegistrationDialog } from "@/components/competitions/RegistrationDialog";
 import { RegistrationApprovalPanel } from "@/components/competitions/RegistrationApprovalPanel";
+import { JudgeAssignmentPanel } from "@/components/competitions/JudgeAssignmentPanel";
+import { CompetitionLeaderboard } from "@/components/competitions/CompetitionLeaderboard";
 import type { Database } from "@/integrations/supabase/types";
 
 type CompetitionStatus = Database["public"]["Enums"]["competition_status"];
@@ -189,10 +191,14 @@ export default function CompetitionDetail() {
           {/* Main Content */}
           <div className="lg:col-span-2">
             <Tabs value={activeTab} onValueChange={setActiveTab}>
-              <TabsList>
+              <TabsList className="flex-wrap">
                 <TabsTrigger value="overview">Overview</TabsTrigger>
                 <TabsTrigger value="categories">{t("categories")}</TabsTrigger>
                 <TabsTrigger value="criteria">{t("criteria")}</TabsTrigger>
+                <TabsTrigger value="leaderboard" className="gap-1">
+                  <Trophy className="h-4 w-4" />
+                  {language === "ar" ? "المتصدرين" : "Leaderboard"}
+                </TabsTrigger>
                 {isOrganizer && (
                   <TabsTrigger value="manage" className="gap-1">
                     <Settings className="h-4 w-4" />
@@ -271,6 +277,10 @@ export default function CompetitionDetail() {
                 )}
               </TabsContent>
 
+              <TabsContent value="leaderboard" className="mt-6">
+                <CompetitionLeaderboard competitionId={competition.id} />
+              </TabsContent>
+
               {isOrganizer && (
                 <TabsContent value="manage" className="mt-6 space-y-8">
                   <CompetitionStatusManager
@@ -278,6 +288,7 @@ export default function CompetitionDetail() {
                     currentStatus={competition.status}
                     competitionTitle={title}
                   />
+                  <JudgeAssignmentPanel competitionId={competition.id} />
                   <RegistrationApprovalPanel competitionId={competition.id} />
                 </TabsContent>
               )}
