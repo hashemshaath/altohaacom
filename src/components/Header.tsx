@@ -22,6 +22,7 @@ import {
   GraduationCap,
   Landmark,
   Newspaper,
+  ShoppingBag,
   User,
   LogOut,
   MessageSquare,
@@ -36,6 +37,7 @@ const navLinks = [
   { to: "/masterclasses", icon: GraduationCap, labelKey: "masterclasses", fallback: "Masterclasses" },
   { to: "/exhibitions", icon: Landmark, labelKey: "exhibitions" },
   { to: "/news", icon: Newspaper, labelKey: "news", fallback: "News" },
+  { to: "/shop", icon: ShoppingBag, labelKey: "shop", fallback: "Shop" },
 ];
 
 export function Header() {
