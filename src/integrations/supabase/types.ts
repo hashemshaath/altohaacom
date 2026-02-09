@@ -1859,6 +1859,44 @@ export type Database = {
         }
         Relationships: []
       }
+      judge_ai_conversations: {
+        Row: {
+          competition_id: string | null
+          context_summary: string | null
+          created_at: string
+          id: string
+          judge_id: string
+          messages: Json
+          updated_at: string
+        }
+        Insert: {
+          competition_id?: string | null
+          context_summary?: string | null
+          created_at?: string
+          id?: string
+          judge_id: string
+          messages?: Json
+          updated_at?: string
+        }
+        Update: {
+          competition_id?: string | null
+          context_summary?: string | null
+          created_at?: string
+          id?: string
+          judge_id?: string
+          messages?: Json
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "judge_ai_conversations_competition_id_fkey"
+            columns: ["competition_id"]
+            isOneToOne: false
+            referencedRelation: "competitions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       judging_criteria: {
         Row: {
           competition_id: string
@@ -1905,6 +1943,51 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      judging_rubric_templates: {
+        Row: {
+          category_type: string | null
+          competition_type: string | null
+          created_at: string
+          created_by: string | null
+          criteria: Json
+          description: string | null
+          description_ar: string | null
+          id: string
+          is_active: boolean | null
+          name: string
+          name_ar: string | null
+          updated_at: string
+        }
+        Insert: {
+          category_type?: string | null
+          competition_type?: string | null
+          created_at?: string
+          created_by?: string | null
+          criteria?: Json
+          description?: string | null
+          description_ar?: string | null
+          id?: string
+          is_active?: boolean | null
+          name: string
+          name_ar?: string | null
+          updated_at?: string
+        }
+        Update: {
+          category_type?: string | null
+          competition_type?: string | null
+          created_at?: string
+          created_by?: string | null
+          criteria?: Json
+          description?: string | null
+          description_ar?: string | null
+          id?: string
+          is_active?: boolean | null
+          name?: string
+          name_ar?: string | null
+          updated_at?: string
+        }
+        Relationships: []
       }
       knowledge_articles: {
         Row: {
@@ -1953,6 +2036,140 @@ export type Database = {
           view_count?: number | null
         }
         Relationships: []
+      }
+      knowledge_categories: {
+        Row: {
+          created_at: string
+          description: string | null
+          description_ar: string | null
+          icon: string | null
+          id: string
+          name: string
+          name_ar: string | null
+          parent_id: string | null
+          sort_order: number | null
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          description_ar?: string | null
+          icon?: string | null
+          id?: string
+          name: string
+          name_ar?: string | null
+          parent_id?: string | null
+          sort_order?: number | null
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          description_ar?: string | null
+          icon?: string | null
+          id?: string
+          name?: string
+          name_ar?: string | null
+          parent_id?: string | null
+          sort_order?: number | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "knowledge_categories_parent_id_fkey"
+            columns: ["parent_id"]
+            isOneToOne: false
+            referencedRelation: "knowledge_categories"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      knowledge_resources: {
+        Row: {
+          added_by: string | null
+          category_id: string | null
+          competition_id: string | null
+          created_at: string
+          description: string | null
+          description_ar: string | null
+          file_size: number | null
+          file_type: string | null
+          file_url: string | null
+          id: string
+          is_judge_resource: boolean | null
+          is_published: boolean | null
+          resource_type: string
+          scraped_content: string | null
+          scraped_content_ar: string | null
+          tags: string[] | null
+          title: string
+          title_ar: string | null
+          updated_at: string
+          url: string | null
+          view_count: number | null
+        }
+        Insert: {
+          added_by?: string | null
+          category_id?: string | null
+          competition_id?: string | null
+          created_at?: string
+          description?: string | null
+          description_ar?: string | null
+          file_size?: number | null
+          file_type?: string | null
+          file_url?: string | null
+          id?: string
+          is_judge_resource?: boolean | null
+          is_published?: boolean | null
+          resource_type: string
+          scraped_content?: string | null
+          scraped_content_ar?: string | null
+          tags?: string[] | null
+          title: string
+          title_ar?: string | null
+          updated_at?: string
+          url?: string | null
+          view_count?: number | null
+        }
+        Update: {
+          added_by?: string | null
+          category_id?: string | null
+          competition_id?: string | null
+          created_at?: string
+          description?: string | null
+          description_ar?: string | null
+          file_size?: number | null
+          file_type?: string | null
+          file_url?: string | null
+          id?: string
+          is_judge_resource?: boolean | null
+          is_published?: boolean | null
+          resource_type?: string
+          scraped_content?: string | null
+          scraped_content_ar?: string | null
+          tags?: string[] | null
+          title?: string
+          title_ar?: string | null
+          updated_at?: string
+          url?: string | null
+          view_count?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "knowledge_resources_category_id_fkey"
+            columns: ["category_id"]
+            isOneToOne: false
+            referencedRelation: "knowledge_categories"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "knowledge_resources_competition_id_fkey"
+            columns: ["competition_id"]
+            isOneToOne: false
+            referencedRelation: "competitions"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       leads: {
         Row: {
@@ -2549,6 +2766,71 @@ export type Database = {
             columns: ["company_id"]
             isOneToOne: false
             referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      reference_gallery: {
+        Row: {
+          added_by: string | null
+          category_id: string | null
+          competition_category: string | null
+          created_at: string
+          description: string | null
+          description_ar: string | null
+          id: string
+          image_url: string
+          is_active: boolean | null
+          rating: string | null
+          score_range_max: number | null
+          score_range_min: number | null
+          sort_order: number | null
+          tags: string[] | null
+          title: string
+          title_ar: string | null
+        }
+        Insert: {
+          added_by?: string | null
+          category_id?: string | null
+          competition_category?: string | null
+          created_at?: string
+          description?: string | null
+          description_ar?: string | null
+          id?: string
+          image_url: string
+          is_active?: boolean | null
+          rating?: string | null
+          score_range_max?: number | null
+          score_range_min?: number | null
+          sort_order?: number | null
+          tags?: string[] | null
+          title: string
+          title_ar?: string | null
+        }
+        Update: {
+          added_by?: string | null
+          category_id?: string | null
+          competition_category?: string | null
+          created_at?: string
+          description?: string | null
+          description_ar?: string | null
+          id?: string
+          image_url?: string
+          is_active?: boolean | null
+          rating?: string | null
+          score_range_max?: number | null
+          score_range_min?: number | null
+          sort_order?: number | null
+          tags?: string[] | null
+          title?: string
+          title_ar?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "reference_gallery_category_id_fkey"
+            columns: ["category_id"]
+            isOneToOne: false
+            referencedRelation: "knowledge_categories"
             referencedColumns: ["id"]
           },
         ]
