@@ -341,8 +341,8 @@ export function EventsTab() {
             ))}
             {events.length === 0 && (
               <Card className="col-span-full">
-                <CardContent className="flex flex-col items-center py-12 text-center">
-                  <div className="mb-3 rounded-2xl bg-muted/60 p-4">
+                <CardContent className="flex flex-col items-center py-16 text-center">
+                  <div className="mb-3 flex h-14 w-14 items-center justify-center rounded-full bg-muted/60">
                     <CalendarDays className="h-7 w-7 text-muted-foreground/40" />
                   </div>
                   <p className="text-sm text-muted-foreground">
