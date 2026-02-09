@@ -2,8 +2,8 @@ import { Link } from "react-router-dom";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Calendar, MapPin, Globe, ExternalLink } from "lucide-react";
-import { format, isPast, isFuture, isWithinInterval } from "date-fns";
+import { Calendar, MapPin, Globe, ExternalLink, Clock } from "lucide-react";
+import { format, isPast, isFuture, isWithinInterval, differenceInDays } from "date-fns";
 import type { Database } from "@/integrations/supabase/types";
 
 type ExhibitionStatus = Database["public"]["Enums"]["exhibition_status"];
@@ -97,13 +97,25 @@ export function ExhibitionCard({ exhibition, language }: ExhibitionCardProps) {
             <span className="text-5xl">🏛️</span>
           </div>
         )}
-        <div className="absolute start-3 top-3 flex gap-1.5">
+        <div className="absolute start-3 top-3 flex flex-wrap gap-1.5">
           <Badge className={liveStatus.className}>
             {isAr ? liveStatus.labelAr : liveStatus.label}
           </Badge>
           {exhibition.is_featured && (
             <Badge variant="default">⭐ {isAr ? "مميز" : "Featured"}</Badge>
           )}
+          {isFuture(new Date(exhibition.start_date)) && (() => {
+            const daysLeft = differenceInDays(new Date(exhibition.start_date), new Date());
+            if (daysLeft <= 30 && daysLeft > 0) {
+              return (
+                <Badge variant="secondary" className="gap-1 text-[10px]">
+                  <Clock className="h-2.5 w-2.5" />
+                  {isAr ? `${daysLeft} يوم` : `${daysLeft}d left`}
+                </Badge>
+              );
+            }
+            return null;
+          })()}
         </div>
         <Badge variant="secondary" className="absolute end-3 top-3 text-[10px]">
           {isAr ? typeLabel.ar : typeLabel.en}
