@@ -1,13 +1,18 @@
 import { useState } from "react";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useLanguage } from "@/i18n/LanguageContext";
+import { useAuth } from "@/contexts/AuthContext";
+import { useToast } from "@/hooks/use-toast";
 import { Card, CardContent } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Separator } from "@/components/ui/separator";
 import {
   Select,
   SelectContent,
@@ -25,12 +30,21 @@ import {
   ChefHat,
   Star,
   Filter,
+  Send,
+  Plus,
+  X,
+  Link2,
+  Building2,
+  Mail,
+  Copy,
 } from "lucide-react";
 import { Link } from "react-router-dom";
 import { format } from "date-fns";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 interface ParticipantsListProps {
   competitionId: string;
+  isOrganizer?: boolean;
 }
 
 interface CategoryData {
@@ -46,12 +60,34 @@ const STATUS_CONFIG: Record<string, { icon: React.ElementType; className: string
   withdrawn: { icon: XCircle, className: "bg-muted text-muted-foreground", label: "Withdrawn", labelAr: "منسحب" },
 };
 
-export function ParticipantsList({ competitionId }: ParticipantsListProps) {
+const ORG_TYPES = [
+  { value: "hotel", label: "Hotel", labelAr: "فندق" },
+  { value: "restaurant", label: "Restaurant", labelAr: "مطعم" },
+  { value: "institution", label: "Institution", labelAr: "مؤسسة" },
+  { value: "university", label: "University", labelAr: "جامعة" },
+  { value: "other", label: "Other", labelAr: "أخرى" },
+];
+
+export function ParticipantsList({ competitionId, isOrganizer = false }: ParticipantsListProps) {
   const { language } = useLanguage();
+  const { user } = useAuth();
+  const { toast } = useToast();
+  const queryClient = useQueryClient();
   const isAr = language === "ar";
   const [searchQuery, setSearchQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
   const [categoryFilter, setCategoryFilter] = useState("all");
+  const [activeSubTab, setActiveSubTab] = useState("list");
+  const [showInviteForm, setShowInviteForm] = useState(false);
+
+  // Invite form state
+  const [inviteForm, setInviteForm] = useState({
+    invitee_name: "",
+    invitee_email: "",
+    organization_name: "",
+    organization_type: "other",
+    message: "",
+  });
 
   const { data: categories } = useQuery({
     queryKey: ["participant-categories", competitionId],
@@ -82,8 +118,19 @@ export function ParticipantsList({ competitionId }: ParticipantsListProps) {
       const userIds = registrations.map((r) => r.participant_id);
       const { data: profiles } = await supabase
         .from("profiles")
-        .select("user_id, username, full_name, avatar_url, specialization, is_verified")
+        .select("user_id, username, full_name, avatar_url, specialization, is_verified, location, company_id")
         .in("user_id", userIds);
+
+      // Fetch company info for participants with company_id
+      const companyIds = profiles?.map(p => p.company_id).filter(Boolean) as string[];
+      let companyMap = new Map<string, { name: string; name_ar: string | null }>();
+      if (companyIds.length > 0) {
+        const { data: companies } = await supabase
+          .from("companies")
+          .select("id, name, name_ar")
+          .in("id", companyIds);
+        companies?.forEach(c => companyMap.set(c.id, { name: c.name, name_ar: c.name_ar }));
+      }
 
       // Fetch scores for approved participants
       const approvedRegIds = registrations.filter((r) => r.status === "approved").map((r) => r.id);
@@ -110,24 +157,92 @@ export function ParticipantsList({ competitionId }: ParticipantsListProps) {
       const profileMap = new Map(profiles?.map((p) => [p.user_id, p]) || []);
       const categoryMap = new Map<string, CategoryData>((cats || []).map((c) => [c.id, c]));
 
-      return registrations.map((reg) => ({
-        ...reg,
-        profile: profileMap.get(reg.participant_id),
-        category: reg.category_id ? categoryMap.get(reg.category_id) : null,
-        scores: scoresMap.get(reg.id) || null,
-      }));
+      return registrations.map((reg) => {
+        const profile = profileMap.get(reg.participant_id);
+        const company = profile?.company_id ? companyMap.get(profile.company_id) : null;
+        return {
+          ...reg,
+          profile,
+          category: reg.category_id ? categoryMap.get(reg.category_id) : null,
+          scores: scoresMap.get(reg.id) || null,
+          company,
+        };
+      });
     },
     enabled: !!competitionId,
   });
 
+  // Invitations query
+  const { data: invitations = [] } = useQuery({
+    queryKey: ["competition-invitations", competitionId],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("competition_invitations")
+        .select("*")
+        .eq("competition_id", competitionId)
+        .order("created_at", { ascending: false });
+      if (error) throw error;
+      return data;
+    },
+    enabled: !!competitionId && isOrganizer,
+  });
+
+  // Send invitation mutation
+  const sendInviteMutation = useMutation({
+    mutationFn: async () => {
+      if (!user) throw new Error("Not authenticated");
+      const { error } = await supabase.from("competition_invitations").insert({
+        competition_id: competitionId,
+        invited_by: user.id,
+        invitee_name: inviteForm.invitee_name.trim() || null,
+        invitee_email: inviteForm.invitee_email.trim() || null,
+        organization_name: inviteForm.organization_name.trim() || null,
+        organization_type: inviteForm.organization_type,
+        message: inviteForm.message.trim() || null,
+        status: "pending",
+      });
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["competition-invitations", competitionId] });
+      setInviteForm({ invitee_name: "", invitee_email: "", organization_name: "", organization_type: "other", message: "" });
+      setShowInviteForm(false);
+      toast({ title: isAr ? "تم إرسال الدعوة" : "Invitation sent" });
+    },
+    onError: (err: any) => {
+      toast({ variant: "destructive", title: isAr ? "فشل الإرسال" : "Failed", description: err.message });
+    },
+  });
+
+  const copyRegistrationLink = () => {
+    const url = `${window.location.origin}/competitions/${competitionId}`;
+    navigator.clipboard.writeText(url);
+    toast({ title: isAr ? "تم نسخ رابط التسجيل!" : "Registration link copied!" });
+  };
+
+  // Get unique organizations for filtering
+  const organizations = Array.from(
+    new Set(participants?.map(p => {
+      const compName = isAr && p.company?.name_ar ? p.company.name_ar : p.company?.name;
+      return compName;
+    }).filter(Boolean) as string[])
+  );
+
+  const [orgFilter, setOrgFilter] = useState("all");
+
   const filtered = participants?.filter((p) => {
     if (statusFilter !== "all" && p.status !== statusFilter) return false;
     if (categoryFilter !== "all" && p.category_id !== categoryFilter) return false;
+    if (orgFilter !== "all") {
+      const compName = isAr && p.company?.name_ar ? p.company.name_ar : p.company?.name;
+      if (compName !== orgFilter) return false;
+    }
     if (searchQuery.trim()) {
       const q = searchQuery.toLowerCase();
       const name = (p.profile?.full_name || "").toLowerCase();
       const dish = (p.dish_name || "").toLowerCase();
-      if (!name.includes(q) && !dish.includes(q)) return false;
+      const org = (p.company?.name || "").toLowerCase();
+      if (!name.includes(q) && !dish.includes(q) && !org.includes(q)) return false;
     }
     return true;
   });
@@ -154,9 +269,9 @@ export function ParticipantsList({ competitionId }: ParticipantsListProps) {
 
   return (
     <div className="space-y-4">
-      {/* Header with stats */}
+      {/* Header with tabs for organizer */}
       <Card className="overflow-hidden">
-        <div className="border-b bg-muted/30 px-4 py-3">
+        <div className="border-b bg-muted/30 px-4 py-3 flex items-center justify-between">
           <h3 className="flex items-center gap-2 font-semibold text-sm">
             <div className="flex h-6 w-6 items-center justify-center rounded-md bg-primary/10">
               <Users className="h-3.5 w-3.5 text-primary" />
@@ -164,184 +279,392 @@ export function ParticipantsList({ competitionId }: ParticipantsListProps) {
             {isAr ? "المشاركين" : "Participants"}
             <Badge variant="secondary" className="ms-1">{statusCounts.total || 0}</Badge>
           </h3>
+          <div className="flex gap-2">
+            <Button variant="outline" size="sm" className="h-7 text-xs gap-1" onClick={copyRegistrationLink}>
+              <Link2 className="h-3 w-3" />
+              {isAr ? "رابط التسجيل" : "Share Link"}
+            </Button>
+          </div>
         </div>
         <CardContent className="p-3">
-          <div className="flex flex-wrap gap-2 mb-3">
-            {[
-              { key: "all", label: isAr ? "الكل" : "All", count: statusCounts.total },
-              { key: "approved", label: isAr ? "مقبول" : "Approved", count: statusCounts.approved || 0 },
-              { key: "pending", label: isAr ? "معلق" : "Pending", count: statusCounts.pending || 0 },
-              { key: "rejected", label: isAr ? "مرفوض" : "Rejected", count: statusCounts.rejected || 0 },
-            ].map((f) => (
-              <Button
-                key={f.key}
-                variant={statusFilter === f.key ? "default" : "outline"}
-                size="sm"
-                className="h-7 text-xs gap-1"
-                onClick={() => setStatusFilter(f.key)}
-              >
-                {f.label}
-                <Badge variant="secondary" className="text-[10px] h-4 px-1">{f.count}</Badge>
-              </Button>
-            ))}
-          </div>
-          <div className="flex gap-2">
-            <div className="relative flex-1">
-              <Search className="absolute left-3 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-muted-foreground" />
-              <Input
-                placeholder={isAr ? "بحث بالاسم أو الطبق..." : "Search by name or dish..."}
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="h-8 pl-9 text-xs"
-              />
-            </div>
-            {categories && categories.length > 0 && (
-              <Select value={categoryFilter} onValueChange={setCategoryFilter}>
-                <SelectTrigger className="h-8 w-40 text-xs">
-                  <Filter className="h-3 w-3 me-1" />
-                  <SelectValue placeholder={isAr ? "الفئة" : "Category"} />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">{isAr ? "جميع الفئات" : "All Categories"}</SelectItem>
-                  {categories.map((cat) => (
-                    <SelectItem key={cat.id} value={cat.id}>
-                      {isAr && cat.name_ar ? cat.name_ar : cat.name}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            )}
-          </div>
+          {/* Sub-tabs for organizer */}
+          {isOrganizer && (
+            <Tabs value={activeSubTab} onValueChange={setActiveSubTab} className="mb-3">
+              <TabsList className="h-8">
+                <TabsTrigger value="list" className="text-xs h-6">
+                  <Users className="h-3 w-3 me-1" />
+                  {isAr ? "القائمة" : "List"}
+                </TabsTrigger>
+                <TabsTrigger value="invitations" className="text-xs h-6">
+                  <Send className="h-3 w-3 me-1" />
+                  {isAr ? "الدعوات" : "Invitations"}
+                  {invitations.length > 0 && (
+                    <Badge variant="secondary" className="ms-1 text-[9px] h-4 px-1">{invitations.length}</Badge>
+                  )}
+                </TabsTrigger>
+              </TabsList>
+            </Tabs>
+          )}
+
+          {activeSubTab === "list" && (
+            <>
+              {/* Status filter pills */}
+              <div className="flex flex-wrap gap-2 mb-3">
+                {[
+                  { key: "all", label: isAr ? "الكل" : "All", count: statusCounts.total },
+                  { key: "approved", label: isAr ? "مقبول" : "Approved", count: statusCounts.approved || 0 },
+                  { key: "pending", label: isAr ? "معلق" : "Pending", count: statusCounts.pending || 0 },
+                  { key: "rejected", label: isAr ? "مرفوض" : "Rejected", count: statusCounts.rejected || 0 },
+                ].map((f) => (
+                  <Button
+                    key={f.key}
+                    variant={statusFilter === f.key ? "default" : "outline"}
+                    size="sm"
+                    className="h-7 text-xs gap-1"
+                    onClick={() => setStatusFilter(f.key)}
+                  >
+                    {f.label}
+                    <Badge variant="secondary" className="text-[10px] h-4 px-1">{f.count}</Badge>
+                  </Button>
+                ))}
+              </div>
+
+              {/* Search and filters */}
+              <div className="flex gap-2 flex-wrap">
+                <div className="relative flex-1 min-w-[150px]">
+                  <Search className="absolute left-3 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-muted-foreground" />
+                  <Input
+                    placeholder={isAr ? "بحث بالاسم أو الطبق أو المنظمة..." : "Search name, dish, or organization..."}
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    className="h-8 pl-9 text-xs"
+                  />
+                </div>
+                {categories && categories.length > 0 && (
+                  <Select value={categoryFilter} onValueChange={setCategoryFilter}>
+                    <SelectTrigger className="h-8 w-36 text-xs">
+                      <Filter className="h-3 w-3 me-1" />
+                      <SelectValue placeholder={isAr ? "الفئة" : "Category"} />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="all">{isAr ? "جميع الفئات" : "All Categories"}</SelectItem>
+                      {categories.map((cat) => (
+                        <SelectItem key={cat.id} value={cat.id}>
+                          {isAr && cat.name_ar ? cat.name_ar : cat.name}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                )}
+                {organizations.length > 0 && (
+                  <Select value={orgFilter} onValueChange={setOrgFilter}>
+                    <SelectTrigger className="h-8 w-40 text-xs">
+                      <Building2 className="h-3 w-3 me-1" />
+                      <SelectValue placeholder={isAr ? "المنظمة" : "Organization"} />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="all">{isAr ? "جميع المنظمات" : "All Organizations"}</SelectItem>
+                      {organizations.map((org) => (
+                        <SelectItem key={org} value={org}>{org}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                )}
+              </div>
+            </>
+          )}
         </CardContent>
       </Card>
 
-      {/* Participants Grid */}
-      {filtered && filtered.length > 0 ? (
-        <div className="grid gap-3 sm:grid-cols-2">
-          {filtered.map((participant) => {
-            const status = STATUS_CONFIG[participant.status] || STATUS_CONFIG.pending;
-            const StatusIcon = status.icon;
+      {/* Invitations Tab */}
+      {activeSubTab === "invitations" && isOrganizer && (
+        <div className="space-y-4">
+          {/* Invite Form Toggle */}
+          {!showInviteForm ? (
+            <Button onClick={() => setShowInviteForm(true)} className="w-full" variant="outline">
+              <Plus className="h-4 w-4 me-2" />
+              {isAr ? "إرسال دعوة جديدة" : "Send New Invitation"}
+            </Button>
+          ) : (
+            <Card>
+              <CardContent className="p-4 space-y-3">
+                <div className="flex items-center justify-between">
+                  <h4 className="text-sm font-semibold">{isAr ? "دعوة جديدة" : "New Invitation"}</h4>
+                  <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => setShowInviteForm(false)}>
+                    <X className="h-4 w-4" />
+                  </Button>
+                </div>
+                <div className="grid gap-3 sm:grid-cols-2">
+                  <div className="space-y-1.5">
+                    <Label className="text-xs">{isAr ? "اسم المدعو" : "Invitee Name"}</Label>
+                    <Input
+                      value={inviteForm.invitee_name}
+                      onChange={(e) => setInviteForm(f => ({ ...f, invitee_name: e.target.value }))}
+                      className="h-8 text-sm"
+                      placeholder={isAr ? "الاسم..." : "Name..."}
+                    />
+                  </div>
+                  <div className="space-y-1.5">
+                    <Label className="text-xs">{isAr ? "البريد الإلكتروني" : "Email"}</Label>
+                    <Input
+                      type="email"
+                      value={inviteForm.invitee_email}
+                      onChange={(e) => setInviteForm(f => ({ ...f, invitee_email: e.target.value }))}
+                      className="h-8 text-sm"
+                      placeholder="email@example.com"
+                    />
+                  </div>
+                  <div className="space-y-1.5">
+                    <Label className="text-xs">{isAr ? "اسم المنظمة" : "Organization"}</Label>
+                    <Input
+                      value={inviteForm.organization_name}
+                      onChange={(e) => setInviteForm(f => ({ ...f, organization_name: e.target.value }))}
+                      className="h-8 text-sm"
+                      placeholder={isAr ? "فندق، مطعم، جامعة..." : "Hotel, restaurant, university..."}
+                    />
+                  </div>
+                  <div className="space-y-1.5">
+                    <Label className="text-xs">{isAr ? "نوع المنظمة" : "Organization Type"}</Label>
+                    <Select value={inviteForm.organization_type} onValueChange={(v) => setInviteForm(f => ({ ...f, organization_type: v }))}>
+                      <SelectTrigger className="h-8 text-sm">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {ORG_TYPES.map((t) => (
+                          <SelectItem key={t.value} value={t.value}>
+                            {isAr ? t.labelAr : t.label}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </div>
+                <div className="space-y-1.5">
+                  <Label className="text-xs">{isAr ? "رسالة (اختياري)" : "Message (optional)"}</Label>
+                  <Textarea
+                    value={inviteForm.message}
+                    onChange={(e) => setInviteForm(f => ({ ...f, message: e.target.value }))}
+                    rows={2}
+                    className="text-sm"
+                    placeholder={isAr ? "رسالة الدعوة..." : "Invitation message..."}
+                  />
+                </div>
+                <Button
+                  className="w-full"
+                  size="sm"
+                  disabled={(!inviteForm.invitee_name.trim() && !inviteForm.organization_name.trim()) || sendInviteMutation.isPending}
+                  onClick={() => sendInviteMutation.mutate()}
+                >
+                  <Send className="h-3.5 w-3.5 me-1.5" />
+                  {isAr ? "إرسال الدعوة" : "Send Invitation"}
+                </Button>
+              </CardContent>
+            </Card>
+          )}
 
-            return (
-              <Card key={participant.id} className="overflow-hidden hover:shadow-sm transition-shadow">
-                <CardContent className="p-0">
-                  <div className="flex gap-3 p-3">
-                    {/* Dish Image or Avatar */}
-                    <div className="relative shrink-0">
-                      {participant.dish_image_url ? (
-                        <img
-                          src={participant.dish_image_url}
-                          alt={participant.dish_name || "Dish"}
-                          className="h-16 w-16 rounded-lg object-cover"
-                        />
-                      ) : (
-                        <div className="flex h-16 w-16 items-center justify-center rounded-lg bg-muted">
-                          <ChefHat className="h-6 w-6 text-muted-foreground/40" />
+          {/* Copy registration link */}
+          <Card>
+            <CardContent className="p-3 flex items-center gap-3">
+              <div className="flex-1 min-w-0">
+                <p className="text-xs font-medium">{isAr ? "رابط التسجيل المباشر" : "Direct Registration Link"}</p>
+                <p className="text-[11px] text-muted-foreground truncate">
+                  {window.location.origin}/competitions/{competitionId}
+                </p>
+              </div>
+              <Button variant="outline" size="sm" className="shrink-0 h-7 text-xs" onClick={copyRegistrationLink}>
+                <Copy className="h-3 w-3 me-1" />
+                {isAr ? "نسخ" : "Copy"}
+              </Button>
+            </CardContent>
+          </Card>
+
+          {/* Invitations list */}
+          {invitations.length > 0 ? (
+            <div className="space-y-2">
+              {invitations.map((inv: any) => (
+                <Card key={inv.id} className="overflow-hidden">
+                  <CardContent className="p-3">
+                    <div className="flex items-start justify-between gap-2">
+                      <div className="min-w-0 space-y-1">
+                        <div className="flex items-center gap-2">
+                          {inv.invitee_name && <p className="text-sm font-medium truncate">{inv.invitee_name}</p>}
+                          <Badge variant={inv.status === "accepted" ? "default" : inv.status === "declined" ? "destructive" : "secondary"} className="text-[9px] h-5">
+                            {inv.status === "accepted" ? (isAr ? "مقبول" : "Accepted") :
+                             inv.status === "declined" ? (isAr ? "مرفوض" : "Declined") :
+                             (isAr ? "معلق" : "Pending")}
+                          </Badge>
                         </div>
-                      )}
-                      {/* Score overlay */}
-                      {participant.scores && participant.scores.count > 0 && (
-                        <div className="absolute -top-1 -end-1 flex h-5 items-center gap-0.5 rounded-full bg-primary px-1.5">
-                          <Star className="h-2.5 w-2.5 text-primary-foreground fill-primary-foreground" />
-                          <span className="text-[9px] font-bold text-primary-foreground">
-                            {(participant.scores.total / participant.scores.count).toFixed(1)}
-                          </span>
-                        </div>
-                      )}
+                        {inv.organization_name && (
+                          <p className="text-[11px] text-muted-foreground flex items-center gap-1">
+                            <Building2 className="h-3 w-3" />
+                            {inv.organization_name}
+                            {inv.organization_type && inv.organization_type !== "other" && (
+                              <Badge variant="outline" className="text-[9px] h-4 px-1 ms-1">
+                                {ORG_TYPES.find(t => t.value === inv.organization_type)?.[isAr ? "labelAr" : "label"]}
+                              </Badge>
+                            )}
+                          </p>
+                        )}
+                        {inv.invitee_email && (
+                          <p className="text-[10px] text-muted-foreground flex items-center gap-1">
+                            <Mail className="h-2.5 w-2.5" />
+                            {inv.invitee_email}
+                          </p>
+                        )}
+                      </div>
+                      <span className="text-[10px] text-muted-foreground shrink-0">
+                        {format(new Date(inv.created_at), "MMM d")}
+                      </span>
                     </div>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          ) : (
+            <div className="flex flex-col items-center justify-center py-12 text-center">
+              <div className="mb-2 flex h-10 w-10 items-center justify-center rounded-full bg-muted/60">
+                <Send className="h-4 w-4 text-muted-foreground/40" />
+              </div>
+              <p className="text-xs text-muted-foreground">
+                {isAr ? "لا توجد دعوات بعد" : "No invitations sent yet"}
+              </p>
+            </div>
+          )}
+        </div>
+      )}
 
-                    {/* Info */}
-                    <div className="flex-1 min-w-0 space-y-1">
-                      <div className="flex items-start justify-between gap-1">
-                        <Link
-                          to={`/${participant.profile?.username || participant.participant_id}`}
-                          className="hover:underline"
-                        >
-                          <div className="flex items-center gap-1">
-                            <Avatar className="h-4 w-4">
-                              <AvatarImage src={participant.profile?.avatar_url || undefined} />
-                              <AvatarFallback className="text-[8px]">
-                                {(participant.profile?.full_name || "U")[0]}
-                              </AvatarFallback>
-                            </Avatar>
-                            <span className="text-sm font-medium truncate">
-                              {participant.profile?.full_name || "Unknown"}
-                            </span>
-                            {participant.profile?.is_verified && (
-                              <CheckCircle2 className="h-3 w-3 text-primary shrink-0" />
+      {/* Participants Grid */}
+      {activeSubTab === "list" && (
+        <>
+          {filtered && filtered.length > 0 ? (
+            <div className="grid gap-3 sm:grid-cols-2">
+              {filtered.map((participant) => {
+                const status = STATUS_CONFIG[participant.status] || STATUS_CONFIG.pending;
+                const StatusIcon = status.icon;
+
+                return (
+                  <Card key={participant.id} className="overflow-hidden hover:shadow-sm transition-shadow">
+                    <CardContent className="p-0">
+                      <div className="flex gap-3 p-3">
+                        {/* Dish Image or Avatar */}
+                        <div className="relative shrink-0">
+                          {participant.dish_image_url ? (
+                            <img
+                              src={participant.dish_image_url}
+                              alt={participant.dish_name || "Dish"}
+                              className="h-16 w-16 rounded-lg object-cover"
+                            />
+                          ) : (
+                            <div className="flex h-16 w-16 items-center justify-center rounded-lg bg-muted">
+                              <ChefHat className="h-6 w-6 text-muted-foreground/40" />
+                            </div>
+                          )}
+                          {/* Score overlay */}
+                          {participant.scores && participant.scores.count > 0 && (
+                            <div className="absolute -top-1 -end-1 flex h-5 items-center gap-0.5 rounded-full bg-primary px-1.5">
+                              <Star className="h-2.5 w-2.5 text-primary-foreground fill-primary-foreground" />
+                              <span className="text-[9px] font-bold text-primary-foreground">
+                                {(participant.scores.total / participant.scores.count).toFixed(1)}
+                              </span>
+                            </div>
+                          )}
+                        </div>
+
+                        {/* Info */}
+                        <div className="flex-1 min-w-0 space-y-1">
+                          <div className="flex items-start justify-between gap-1">
+                            <Link
+                              to={`/${participant.profile?.username || participant.participant_id}`}
+                              className="hover:underline"
+                            >
+                              <div className="flex items-center gap-1">
+                                <Avatar className="h-4 w-4">
+                                  <AvatarImage src={participant.profile?.avatar_url || undefined} />
+                                  <AvatarFallback className="text-[8px]">
+                                    {(participant.profile?.full_name || "U")[0]}
+                                  </AvatarFallback>
+                                </Avatar>
+                                <span className="text-sm font-medium truncate">
+                                  {participant.profile?.full_name || "Unknown"}
+                                </span>
+                                {participant.profile?.is_verified && (
+                                  <CheckCircle2 className="h-3 w-3 text-primary shrink-0" />
+                                )}
+                              </div>
+                            </Link>
+                            <Badge className={`${status.className} text-[9px] h-5 shrink-0`}>
+                              <StatusIcon className="h-2.5 w-2.5 me-0.5" />
+                              {isAr ? status.labelAr : status.label}
+                            </Badge>
+                          </div>
+
+                          {participant.dish_name && (
+                            <p className="text-xs text-muted-foreground truncate">
+                              <ChefHat className="inline h-3 w-3 me-0.5" />
+                              {participant.dish_name}
+                            </p>
+                          )}
+
+                          <div className="flex items-center gap-2 flex-wrap">
+                            {participant.category && (
+                              <Badge variant="outline" className="text-[9px] h-4 px-1">
+                                {isAr && participant.category.name_ar
+                                  ? participant.category.name_ar
+                                  : participant.category.name}
+                              </Badge>
+                            )}
+                            {participant.company && (
+                              <Badge variant="outline" className="text-[9px] h-4 px-1 gap-0.5">
+                                <Building2 className="h-2 w-2" />
+                                {isAr && participant.company.name_ar ? participant.company.name_ar : participant.company.name}
+                              </Badge>
+                            )}
+                            {participant.registration_number && (
+                              <span className="text-[10px] text-muted-foreground font-mono">
+                                #{participant.registration_number}
+                              </span>
                             )}
                           </div>
-                        </Link>
-                        <Badge className={`${status.className} text-[9px] h-5 shrink-0`}>
-                          <StatusIcon className="h-2.5 w-2.5 me-0.5" />
-                          {isAr ? status.labelAr : status.label}
-                        </Badge>
-                      </div>
 
-                      {participant.dish_name && (
-                        <p className="text-xs text-muted-foreground truncate">
-                          <ChefHat className="inline h-3 w-3 me-0.5" />
-                          {participant.dish_name}
-                        </p>
-                      )}
-
-                      <div className="flex items-center gap-2 flex-wrap">
-                        {participant.category && (
-                          <Badge variant="outline" className="text-[9px] h-4 px-1">
-                            {isAr && participant.category.name_ar
-                              ? participant.category.name_ar
-                              : participant.category.name}
-                          </Badge>
-                        )}
-                        {participant.profile?.specialization && (
-                          <span className="text-[10px] text-muted-foreground truncate max-w-[80px]">
-                            {participant.profile.specialization}
-                          </span>
-                        )}
-                        {participant.registration_number && (
-                          <span className="text-[10px] text-muted-foreground font-mono">
-                            #{participant.registration_number}
-                          </span>
-                        )}
-                      </div>
-
-                      {/* Score details */}
-                      {participant.scores && participant.scores.count > 0 && (
-                        <div className="flex items-center gap-2 text-[10px] text-muted-foreground">
-                          <Trophy className="h-2.5 w-2.5" />
-                          <span>
-                            {isAr ? `${participant.scores.count} تقييم` : `${participant.scores.count} scores`}
-                            {" · "}
-                            {isAr ? "المعدل" : "Avg"}: {(participant.scores.total / participant.scores.count).toFixed(1)}
-                          </span>
+                          {/* Score details */}
+                          {participant.scores && participant.scores.count > 0 && (
+                            <div className="flex items-center gap-2 text-[10px] text-muted-foreground">
+                              <Trophy className="h-2.5 w-2.5" />
+                              <span>
+                                {isAr ? `${participant.scores.count} تقييم` : `${participant.scores.count} scores`}
+                                {" · "}
+                                {isAr ? "المعدل" : "Avg"}: {(participant.scores.total / participant.scores.count).toFixed(1)}
+                              </span>
+                            </div>
+                          )}
                         </div>
-                      )}
-                    </div>
-                  </div>
+                      </div>
 
-                  {/* Registration date footer */}
-                  <div className="border-t bg-muted/20 px-3 py-1.5">
-                    <span className="text-[10px] text-muted-foreground">
-                      {isAr ? "تاريخ التسجيل:" : "Registered:"}{" "}
-                      {format(new Date(participant.registered_at), "MMM d, yyyy")}
-                    </span>
-                  </div>
-                </CardContent>
-              </Card>
-            );
-          })}
-        </div>
-      ) : (
-        <div className="flex flex-col items-center justify-center py-16 text-center">
-          <div className="mb-3 flex h-14 w-14 items-center justify-center rounded-full bg-muted/60 text-muted-foreground/50">
-            <Users className="h-6 w-6" />
-          </div>
-          <p className="text-sm text-muted-foreground max-w-xs">
-            {searchQuery || statusFilter !== "all" || categoryFilter !== "all"
-              ? (isAr ? "لا توجد نتائج مطابقة" : "No matching participants found")
-              : (isAr ? "لا يوجد مشاركين حتى الآن" : "No participants yet")}
-          </p>
-        </div>
+                      {/* Registration date footer */}
+                      <div className="border-t bg-muted/20 px-3 py-1.5">
+                        <span className="text-[10px] text-muted-foreground">
+                          {isAr ? "تاريخ التسجيل:" : "Registered:"}{" "}
+                          {format(new Date(participant.registered_at), "MMM d, yyyy")}
+                        </span>
+                      </div>
+                    </CardContent>
+                  </Card>
+                );
+              })}
+            </div>
+          ) : (
+            <div className="flex flex-col items-center justify-center py-16 text-center">
+              <div className="mb-3 flex h-14 w-14 items-center justify-center rounded-full bg-muted/60 text-muted-foreground/50">
+                <Users className="h-6 w-6" />
+              </div>
+              <p className="text-sm text-muted-foreground max-w-xs">
+                {searchQuery || statusFilter !== "all" || categoryFilter !== "all" || orgFilter !== "all"
+                  ? (isAr ? "لا توجد نتائج مطابقة" : "No matching participants found")
+                  : (isAr ? "لا يوجد مشاركين حتى الآن" : "No participants yet")}
+              </p>
+            </div>
+          )}
+        </>
       )}
     </div>
   );
