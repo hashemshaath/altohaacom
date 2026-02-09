@@ -44,6 +44,7 @@ import { AutoIssueCertificates } from "@/components/competitions/AutoIssueCertif
 import { RequirementsListPanel } from "@/components/competitions/RequirementsListPanel";
 import { CategoryManagementPanel } from "@/components/competitions/CategoryManagementPanel";
 import { CompetitionTeamPanel } from "@/components/competitions/CompetitionTeamPanel";
+import { CriteriaManagementPanel } from "@/components/competitions/CriteriaManagementPanel";
 import type { Database } from "@/integrations/supabase/types";
 
 function EmptyState({ icon, text }: { icon: React.ReactNode; text: string }) {
@@ -609,39 +610,10 @@ export default function CompetitionDetail() {
               </TabsContent>
 
               <TabsContent value="criteria" className="mt-6">
-                {criteria && criteria.length > 0 ? (
-                  <div className="space-y-3">
-                    {criteria.map((crit) => (
-                      <Card key={crit.id} className="overflow-hidden">
-                        <CardContent className="flex items-start justify-between gap-4 p-4">
-                          <div className="min-w-0">
-                            <h4 className="font-medium text-sm">
-                              {isAr && crit.name_ar ? crit.name_ar : crit.name}
-                            </h4>
-                            {(crit.description || crit.description_ar) && (
-                              <p className="text-xs text-muted-foreground mt-1">
-                                {isAr && crit.description_ar ? crit.description_ar : crit.description}
-                              </p>
-                            )}
-                          </div>
-                          <div className="shrink-0 text-end space-y-1">
-                            <Badge variant="outline" className="text-[10px]">
-                              {isAr ? "الأقصى" : "Max"}: {crit.max_score}
-                            </Badge>
-                            <p className="text-[10px] text-muted-foreground">
-                              {isAr ? "الوزن" : "Weight"}: {(Number(crit.weight) * 100).toFixed(0)}%
-                            </p>
-                          </div>
-                        </CardContent>
-                      </Card>
-                    ))}
-                  </div>
-                ) : (
-                  <EmptyState
-                    icon={<ClipboardList className="h-6 w-6" />}
-                    text={isAr ? "لم يتم تحديد معايير بعد" : "No judging criteria defined yet."}
-                  />
-                )}
+                <CriteriaManagementPanel
+                  competitionId={competition.id}
+                  isOrganizer={isOrganizer}
+                />
               </TabsContent>
 
               <TabsContent value="leaderboard" className="mt-6">
