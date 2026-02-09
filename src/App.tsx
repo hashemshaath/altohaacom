@@ -58,6 +58,9 @@ import OrdersAdmin from "./pages/admin/OrdersAdmin";
 import KnowledgeAdmin from "./pages/admin/KnowledgeAdmin";
 import SponsorsAdmin from "./pages/admin/SponsorsAdmin";
 import KnowledgePortal from "./pages/KnowledgePortal";
+import Masterclasses from "./pages/Masterclasses";
+import MasterclassDetail from "./pages/MasterclassDetail";
+import MasterclassesAdmin from "./pages/admin/MasterclassesAdmin";
 
 // Company Portal Pages
 import CompanyPortalLayout from "./pages/CompanyPortal";
@@ -116,6 +119,8 @@ const App = () => (
                 <Route path="/sponsors" element={<SponsorsLanding />} />
                 <Route path="/for-organizers" element={<OrganizersLanding />} />
                 <Route path="/verify" element={<CertificateVerify />} />
+                <Route path="/masterclasses" element={<Masterclasses />} />
+                <Route path="/masterclasses/:id" element={<MasterclassDetail />} />
                 
                 {/* Admin Routes */}
                 <Route path="/admin" element={<ProtectedRoute><AdminLayout /></ProtectedRoute>}>
@@ -142,6 +147,7 @@ const App = () => (
                    <Route path="orders" element={<OrdersAdmin />} />
                   <Route path="knowledge" element={<KnowledgeAdmin />} />
                   <Route path="sponsors" element={<SponsorsAdmin />} />
+                  <Route path="masterclasses" element={<MasterclassesAdmin />} />
                 </Route>
 
                 {/* Company Portal Routes */}

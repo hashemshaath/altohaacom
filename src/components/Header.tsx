@@ -44,6 +44,9 @@ export function Header() {
                 <Link to="/community">{t("community")}</Link>
               </Button>
               <Button variant="ghost" size="sm" asChild>
+                <Link to="/masterclasses">Masterclasses</Link>
+              </Button>
+              <Button variant="ghost" size="sm" asChild>
                 <Link to="/profile">{t("myProfile")}</Link>
               </Button>
               <Button variant="ghost" size="sm" asChild>
