@@ -17,6 +17,8 @@ import {
   BookOpen, Clock, Users, GraduationCap, CheckCircle, PlayCircle,
   FileText, Lock, ChevronRight, ArrowLeft,
 } from "lucide-react";
+import { LessonViewer } from "@/components/masterclass/LessonViewer";
+import { MasterclassReviews } from "@/components/masterclass/MasterclassReviews";
 
 export default function MasterclassDetail() {
   const { id } = useParams<{ id: string }>();
@@ -25,6 +27,7 @@ export default function MasterclassDetail() {
   const navigate = useNavigate();
   const { toast } = useToast();
   const queryClient = useQueryClient();
+  const [selectedLessonId, setSelectedLessonId] = useState<string | null>(null);
 
   const { data: masterclass, isLoading } = useQuery({
     queryKey: ["masterclass", id],
@@ -127,13 +130,58 @@ export default function MasterclassDetail() {
       const completedCount = lessonProgress.filter((lp) => lp.completed).length + 1;
       const newPercent = Math.round((completedCount / totalLessons) * 100);
 
+      const updatePayload: Record<string, any> = { progress_percent: newPercent };
+      if (newPercent >= 100) {
+        updatePayload.status = "completed";
+        updatePayload.completed_at = new Date().toISOString();
+      }
+
       await supabase
         .from("masterclass_enrollments")
-        .update({
-          progress_percent: newPercent,
-          ...(newPercent >= 100 ? { status: "completed", completed_at: new Date().toISOString() } : {}),
-        })
+        .update(updatePayload)
         .eq("id", enrollment.id);
+
+      // Auto-issue certificate on completion
+      if (newPercent >= 100 && !enrollment.certificate_issued && user) {
+        const certNumber = `MC-${Date.now().toString(36).toUpperCase()}`;
+        const verificationCode = Math.random().toString(36).substring(2, 10).toUpperCase();
+
+        // Get a default template
+        const { data: template } = await supabase
+          .from("certificate_templates")
+          .select("id")
+          .eq("is_active", true)
+          .limit(1)
+          .maybeSingle();
+
+        if (template) {
+          const { data: profile } = await supabase
+            .from("profiles")
+            .select("full_name")
+            .eq("user_id", user.id)
+            .maybeSingle();
+
+          await supabase.from("certificates").insert({
+            certificate_number: certNumber,
+            verification_code: verificationCode,
+            template_id: template.id,
+            type: "participation" as any,
+            recipient_id: user.id,
+            recipient_name: (profile as any)?.full_name || "Participant",
+            event_name: masterclass?.title || "",
+            event_name_ar: masterclass?.title_ar || null,
+            achievement: `Completed masterclass: ${masterclass?.title}`,
+            achievement_ar: masterclass?.title_ar ? `إكمال الدورة: ${masterclass.title_ar}` : null,
+            status: "issued" as any,
+            issued_at: new Date().toISOString(),
+          });
+
+          await supabase
+            .from("masterclass_enrollments")
+            .update({ certificate_issued: true })
+            .eq("id", enrollment.id);
+        }
+      }
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["lesson-progress"] });
@@ -290,86 +338,108 @@ export default function MasterclassDetail() {
           </div>
         )}
 
+        {/* Lesson Viewer */}
+        {selectedLessonId && (() => {
+          const allLessons = modules.flatMap((m: any) => (m.masterclass_lessons || []).map((l: any) => ({ ...l, modulePreview: m.is_free_preview })));
+          const lesson = allLessons.find((l: any) => l.id === selectedLessonId);
+          if (!lesson) return null;
+          return (
+            <div className="container mx-auto px-4 pb-12">
+              <LessonViewer
+                lesson={lesson}
+                isCompleted={completedLessonIds.has(lesson.id)}
+                isEnrolled={!!enrollment}
+                onComplete={(lessonId) => completeLessonMutation.mutate(lessonId)}
+                onBack={() => setSelectedLessonId(null)}
+              />
+            </div>
+          );
+        })()}
+
         {/* Course Content */}
-        <div className="container mx-auto px-4 pb-12">
-          <h2 className="text-xl font-semibold mb-4">
-            {language === "ar" ? "محتوى الدورة" : "Course Content"}
-          </h2>
-          <Accordion type="multiple" className="space-y-2">
-            {modules.map((module: any) => {
-              const lessons = module.masterclass_lessons || [];
-              const sortedLessons = [...lessons].sort((a: any, b: any) => (a.sort_order || 0) - (b.sort_order || 0));
-              const moduleCompletedCount = sortedLessons.filter((l: any) => completedLessonIds.has(l.id)).length;
+        {!selectedLessonId && (
+          <div className="container mx-auto px-4 pb-12">
+            <h2 className="text-xl font-semibold mb-4">
+              {language === "ar" ? "محتوى الدورة" : "Course Content"}
+            </h2>
+            <Accordion type="multiple" className="space-y-2">
+              {modules.map((module: any) => {
+                const lessons = module.masterclass_lessons || [];
+                const sortedLessons = [...lessons].sort((a: any, b: any) => (a.sort_order || 0) - (b.sort_order || 0));
+                const moduleCompletedCount = sortedLessons.filter((l: any) => completedLessonIds.has(l.id)).length;
 
-              return (
-                <AccordionItem key={module.id} value={module.id} className="border rounded-lg px-4">
-                  <AccordionTrigger className="hover:no-underline">
-                    <div className="flex items-center gap-3 text-left">
-                      <div>
-                        <p className="font-medium">
-                          {language === "ar" && module.title_ar ? module.title_ar : module.title}
-                        </p>
-                        <p className="text-xs text-muted-foreground">
-                          {sortedLessons.length} {language === "ar" ? "دروس" : "lessons"}
-                          {enrollment && ` • ${moduleCompletedCount}/${sortedLessons.length} ${language === "ar" ? "مكتمل" : "done"}`}
-                        </p>
+                return (
+                  <AccordionItem key={module.id} value={module.id} className="border rounded-lg px-4">
+                    <AccordionTrigger className="hover:no-underline">
+                      <div className="flex items-center gap-3 text-left">
+                        <div>
+                          <p className="font-medium">
+                            {language === "ar" && module.title_ar ? module.title_ar : module.title}
+                          </p>
+                          <p className="text-xs text-muted-foreground">
+                            {sortedLessons.length} {language === "ar" ? "دروس" : "lessons"}
+                            {enrollment && ` • ${moduleCompletedCount}/${sortedLessons.length} ${language === "ar" ? "مكتمل" : "done"}`}
+                          </p>
+                        </div>
+                        {module.is_free_preview && (
+                          <Badge variant="outline" className="text-xs">
+                            {language === "ar" ? "معاينة مجانية" : "Free Preview"}
+                          </Badge>
+                        )}
                       </div>
-                      {module.is_free_preview && (
-                        <Badge variant="outline" className="text-xs">
-                          {language === "ar" ? "معاينة مجانية" : "Free Preview"}
-                        </Badge>
-                      )}
-                    </div>
-                  </AccordionTrigger>
-                  <AccordionContent>
-                    <div className="space-y-2 pt-2">
-                      {sortedLessons.map((lesson: any) => {
-                        const isLessonCompleted = completedLessonIds.has(lesson.id);
-                        const canAccess = enrollment || module.is_free_preview;
+                    </AccordionTrigger>
+                    <AccordionContent>
+                      <div className="space-y-2 pt-2">
+                        {sortedLessons.map((lesson: any) => {
+                          const isLessonCompleted = completedLessonIds.has(lesson.id);
+                          const canAccess = enrollment || module.is_free_preview;
 
-                        return (
-                          <div
-                            key={lesson.id}
-                            className="flex items-center justify-between rounded-md p-3 hover:bg-accent/50 transition-colors"
-                          >
-                            <div className="flex items-center gap-3">
-                              {isLessonCompleted ? (
-                                <CheckCircle className="h-4 w-4 text-green-500" />
-                              ) : canAccess ? (
-                                getContentTypeIcon(lesson.content_type)
-                              ) : (
-                                <Lock className="h-4 w-4 text-muted-foreground" />
-                              )}
-                              <div>
-                                <p className="text-sm font-medium">
-                                  {language === "ar" && lesson.title_ar ? lesson.title_ar : lesson.title}
-                                </p>
-                                <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                                  <span>{lesson.content_type}</span>
-                                  {lesson.duration_minutes && <span>• {lesson.duration_minutes} min</span>}
+                          return (
+                            <div
+                              key={lesson.id}
+                              className={`flex items-center justify-between rounded-md p-3 transition-colors ${canAccess ? "cursor-pointer hover:bg-accent/50" : ""}`}
+                              onClick={() => canAccess && setSelectedLessonId(lesson.id)}
+                            >
+                              <div className="flex items-center gap-3">
+                                {isLessonCompleted ? (
+                                  <CheckCircle className="h-4 w-4 text-green-500" />
+                                ) : canAccess ? (
+                                  getContentTypeIcon(lesson.content_type)
+                                ) : (
+                                  <Lock className="h-4 w-4 text-muted-foreground" />
+                                )}
+                                <div>
+                                  <p className="text-sm font-medium">
+                                    {language === "ar" && lesson.title_ar ? lesson.title_ar : lesson.title}
+                                  </p>
+                                  <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                                    <span>{lesson.content_type}</span>
+                                    {lesson.duration_minutes && <span>• {lesson.duration_minutes} min</span>}
+                                  </div>
                                 </div>
                               </div>
+                              {canAccess && (
+                                <ChevronRight className="h-4 w-4 text-muted-foreground" />
+                              )}
                             </div>
-                            {enrollment && !isLessonCompleted && (
-                              <Button
-                                variant="ghost"
-                                size="sm"
-                                onClick={() => completeLessonMutation.mutate(lesson.id)}
-                              >
-                                <CheckCircle className="h-4 w-4 mr-1" />
-                                {language === "ar" ? "إكمال" : "Complete"}
-                              </Button>
-                            )}
-                          </div>
-                        );
-                      })}
-                    </div>
-                  </AccordionContent>
-                </AccordionItem>
-              );
-            })}
-          </Accordion>
-        </div>
+                          );
+                        })}
+                      </div>
+                    </AccordionContent>
+                  </AccordionItem>
+                );
+              })}
+            </Accordion>
+
+            {/* Reviews Section */}
+            <div className="mt-12">
+              <MasterclassReviews
+                masterclassId={id!}
+                hasCompleted={isCompleted}
+              />
+            </div>
+          </div>
+        )}
       </main>
       <Footer />
     </div>
