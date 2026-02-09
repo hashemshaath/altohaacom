@@ -69,7 +69,7 @@ export default function Exhibitions() {
   const featuredExhibitions = exhibitions?.filter((ex) => ex.is_featured && !isPast(new Date(ex.end_date)));
 
   return (
-    <div className="flex min-h-screen flex-col">
+    <div className="flex min-h-screen flex-col bg-background">
       <SEOHead
         title="Food Exhibitions & Events"
         description="Discover food exhibitions, conferences, and culinary events worldwide. Stay updated with the latest in gastronomy."
@@ -79,25 +79,27 @@ export default function Exhibitions() {
       <main className="container flex-1 py-8 md:py-12">
         {/* Header */}
         <div className="mb-8">
-          <div className="mb-1 flex items-center gap-2">
-            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary/10">
-              <Landmark className="h-4 w-4 text-primary" />
+          <div className="mb-1.5 flex items-center gap-2.5">
+            <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-primary/10">
+              <Landmark className="h-7 w-7 text-primary" />
             </div>
-            <h1 className="font-serif text-2xl font-bold md:text-3xl">
-              {isAr ? "المعارض والمؤتمرات والفعاليات" : "Exhibitions & Events"}
-            </h1>
+            <div>
+              <h1 className="font-serif text-2xl font-bold md:text-3xl">
+                {isAr ? "المعارض والمؤتمرات والفعاليات" : "Exhibitions & Events"}
+              </h1>
+              <p className="mt-0.5 max-w-2xl text-sm text-muted-foreground">
+                {isAr
+                  ? "اكتشف أبرز المعارض والمؤتمرات والفعاليات في عالم الطعام والطهي"
+                  : "Discover the top exhibitions, conferences, and events in the culinary world"}
+              </p>
+            </div>
           </div>
-          <p className="mt-1 max-w-2xl text-sm text-muted-foreground md:text-base">
-            {isAr
-              ? "اكتشف أبرز المعارض والمؤتمرات والفعاليات في عالم الطعام والطهي"
-              : "Discover the top exhibitions, conferences, and events in the culinary world"}
-          </p>
         </div>
 
         {/* Featured */}
         {featuredExhibitions && featuredExhibitions.length > 0 && (
           <section className="mb-10">
-            <h2 className="mb-4 text-sm font-semibold uppercase tracking-wider text-muted-foreground">
+            <h2 className="mb-4 text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
               {isAr ? "فعاليات مميزة" : "Featured Events"}
             </h2>
             <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
@@ -135,7 +137,7 @@ export default function Exhibitions() {
 
         {/* Tabs */}
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-          <TabsList className="h-auto w-full justify-start overflow-x-auto bg-muted/50">
+          <TabsList className="h-auto w-full justify-start gap-1 overflow-x-auto bg-muted/50">
             <TabsTrigger value="all" className="text-xs sm:text-sm">{isAr ? "الكل" : "All"}</TabsTrigger>
             <TabsTrigger value="current" className="gap-1.5 text-xs sm:text-sm">
               <CalendarDays className="hidden h-3.5 w-3.5 sm:inline" />
@@ -148,20 +150,25 @@ export default function Exhibitions() {
           <TabsContent value={activeTab} className="mt-6">
             {isLoading ? (
               <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-                {[1, 2, 3].map((i) => (
+                {[1, 2, 3, 4, 5, 6].map((i) => (
                   <Card key={i} className="overflow-hidden">
                     <Skeleton className="aspect-[16/10] w-full" />
-                    <CardContent className="space-y-2.5 p-4">
+                    <div className="space-y-2.5 p-4">
                       <Skeleton className="h-5 w-3/4" />
                       <Skeleton className="h-4 w-1/2" />
-                    </CardContent>
+                      <div className="flex gap-2 pt-1">
+                        <Skeleton className="h-3.5 w-20" />
+                        <Skeleton className="h-3.5 w-24" />
+                      </div>
+                      <Skeleton className="mt-3 h-9 w-full rounded-md" />
+                    </div>
                   </Card>
                 ))}
               </div>
             ) : filtered?.length === 0 ? (
               <div className="flex flex-col items-center justify-center py-20 text-center">
-                <div className="mb-4 rounded-2xl bg-muted/60 p-5">
-                  <Landmark className="h-10 w-10 text-muted-foreground/40" />
+                <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-muted/60">
+                  <Landmark className="h-8 w-8 text-muted-foreground/40" />
                 </div>
                 <h3 className="mb-1 text-lg font-semibold">
                   {isAr ? "لم يتم العثور على فعاليات" : "No events found"}
@@ -198,7 +205,7 @@ export default function Exhibitions() {
                 <Card key={stat.label}>
                   <CardContent className="p-4 text-center">
                     <p className="text-xl font-bold text-primary sm:text-2xl">{stat.value}</p>
-                    <p className="text-[11px] text-muted-foreground sm:text-xs">{stat.label}</p>
+                    <p className="text-[10px] uppercase tracking-wider text-muted-foreground">{stat.label}</p>
                   </CardContent>
                 </Card>
               ))}
