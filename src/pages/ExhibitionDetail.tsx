@@ -15,7 +15,7 @@ import {
   Calendar, MapPin, Globe, ExternalLink, Bell, BellOff,
   Clock, Users, Tag, Building, Phone, Mail, ArrowLeft,
   Share2, Ticket, Trophy, Landmark, Timer, Flag,
-  ChevronRight, Star, Target, Award, Mic2
+  ChevronRight, Star, Target, Award, Mic2, Pencil
 } from "lucide-react";
 import { SEOHead } from "@/components/SEOHead";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -382,7 +382,17 @@ export default function ExhibitionDetail() {
               {exhibition.city}{exhibition.country && `, ${exhibition.country}`}
             </Badge>
           </div>
-          <h1 className="font-serif text-3xl font-bold md:text-4xl lg:text-5xl">{title}</h1>
+          <div className="flex flex-wrap items-center gap-3">
+            <h1 className="font-serif text-3xl font-bold md:text-4xl lg:text-5xl">{title}</h1>
+            {user && exhibition.created_by === user.id && (
+              <Button variant="secondary" size="sm" asChild>
+                <Link to={`/exhibitions/${exhibition.slug}/edit`}>
+                  <Pencil className="me-1.5 h-3.5 w-3.5" />
+                  {isAr ? "تعديل" : "Edit"}
+                </Link>
+              </Button>
+            )}
+          </div>
           {organizer && (
             <p className="mt-2 text-sm text-muted-foreground md:text-base">
               {isAr ? "المنظم:" : "Organized by"} <span className="font-medium text-foreground">{organizer}</span>
