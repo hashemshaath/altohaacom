@@ -58,6 +58,10 @@ import { CompetitionTeamPanel } from "@/components/competitions/CompetitionTeamP
 import { ReferenceGalleryPanel } from "@/components/competitions/ReferenceGalleryPanel";
 import { RubricTemplatesPanel } from "@/components/competitions/RubricTemplatesPanel";
 import { CriteriaManagementPanel } from "@/components/competitions/CriteriaManagementPanel";
+import { CompetitionCountdown } from "@/components/competitions/CompetitionCountdown";
+import { ParticipantStatsCard } from "@/components/competitions/ParticipantStatsCard";
+import { OrganizerCard } from "@/components/competitions/OrganizerCard";
+import { CompetitionActivityFeed } from "@/components/competitions/CompetitionActivityFeed";
 import type { Database } from "@/integrations/supabase/types";
 
 function EmptyState({ icon, text }: { icon: React.ReactNode; text: string }) {
@@ -715,7 +719,21 @@ export default function CompetitionDetail() {
 
           {/* Sidebar */}
           <div className="hidden space-y-4 lg:block">
-            {/* Registration Card */}
+            {/* Countdown */}
+            {competition.status === "registration_open" && competition.registration_end && (
+              <CompetitionCountdown
+                targetDate={competition.registration_end}
+                label="Registration Closes In"
+                labelAr="ينتهي التسجيل خلال"
+              />
+            )}
+            {["upcoming", "registration_open", "registration_closed"].includes(competition.status) && (
+              <CompetitionCountdown
+                targetDate={competition.competition_start}
+                label="Competition Starts In"
+                labelAr="تبدأ المسابقة خلال"
+              />
+            )}
             <Card className="overflow-hidden">
               <div className="border-b bg-muted/30 px-4 py-3">
                 <h3 className="flex items-center gap-2 font-semibold text-sm">
@@ -847,6 +865,15 @@ export default function CompetitionDetail() {
                 )}
               </CardContent>
             </Card>
+
+            {/* Participant Stats */}
+            <ParticipantStatsCard competitionId={competition.id} maxParticipants={competition.max_participants} />
+
+            {/* Organizer */}
+            <OrganizerCard organizerId={competition.organizer_id} />
+
+            {/* Activity Feed */}
+            <CompetitionActivityFeed competitionId={competition.id} isOrganizer={!!isOrganizer} />
           </div>
         </div>
       </main>

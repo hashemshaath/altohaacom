@@ -1748,6 +1748,53 @@ export type Database = {
           },
         ]
       }
+      competition_updates: {
+        Row: {
+          author_id: string
+          competition_id: string
+          content: string | null
+          content_ar: string | null
+          created_at: string
+          id: string
+          is_pinned: boolean | null
+          title: string
+          title_ar: string | null
+          update_type: string
+        }
+        Insert: {
+          author_id: string
+          competition_id: string
+          content?: string | null
+          content_ar?: string | null
+          created_at?: string
+          id?: string
+          is_pinned?: boolean | null
+          title: string
+          title_ar?: string | null
+          update_type?: string
+        }
+        Update: {
+          author_id?: string
+          competition_id?: string
+          content?: string | null
+          content_ar?: string | null
+          created_at?: string
+          id?: string
+          is_pinned?: boolean | null
+          title?: string
+          title_ar?: string | null
+          update_type?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "competition_updates_competition_id_fkey"
+            columns: ["competition_id"]
+            isOneToOne: false
+            referencedRelation: "competitions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       competitions: {
         Row: {
           city: string | null
