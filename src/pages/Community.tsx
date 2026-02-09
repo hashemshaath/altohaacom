@@ -21,9 +21,15 @@ export default function Community() {
       />
       <Header />
       <main className="container flex-1 py-6 md:py-8">
+        {/* Header */}
         <div className="mb-6">
-          <h1 className="font-serif text-2xl font-bold md:text-3xl">{t("community")}</h1>
-          <p className="mt-1 text-sm text-muted-foreground">
+          <div className="mb-1 flex items-center gap-2">
+            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary/10">
+              <UsersRound className="h-4 w-4 text-primary" />
+            </div>
+            <h1 className="font-serif text-2xl font-bold md:text-3xl">{t("community")}</h1>
+          </div>
+          <p className="mt-1 text-sm text-muted-foreground md:text-base">
             {language === "ar"
               ? "تواصل مع الطهاة وشارك وصفاتك وانضم إلى المجموعات"
               : "Connect with chefs, share recipes, and join culinary groups"}
@@ -31,24 +37,24 @@ export default function Community() {
         </div>
 
         <Tabs defaultValue="feed" className="w-full">
-          <TabsList className="mb-6 h-auto w-full justify-start gap-1 overflow-x-auto overflow-y-hidden whitespace-nowrap bg-transparent p-0">
-            <TabsTrigger value="feed" className="gap-1.5 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
+          <TabsList className="mb-6 h-auto w-full justify-start gap-1 overflow-x-auto overflow-y-hidden whitespace-nowrap bg-muted/50 p-1">
+            <TabsTrigger value="feed" className="gap-1.5 text-xs data-[state=active]:bg-background data-[state=active]:shadow-sm sm:text-sm">
               <Newspaper className="h-3.5 w-3.5" />
               {t("feed")}
             </TabsTrigger>
-            <TabsTrigger value="recipes" className="gap-1.5 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
+            <TabsTrigger value="recipes" className="gap-1.5 text-xs data-[state=active]:bg-background data-[state=active]:shadow-sm sm:text-sm">
               <ChefHat className="h-3.5 w-3.5" />
               {language === "ar" ? "الوصفات" : "Recipes"}
             </TabsTrigger>
-            <TabsTrigger value="events" className="gap-1.5 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
+            <TabsTrigger value="events" className="gap-1.5 text-xs data-[state=active]:bg-background data-[state=active]:shadow-sm sm:text-sm">
               <CalendarDays className="h-3.5 w-3.5" />
               {language === "ar" ? "الفعاليات" : "Events"}
             </TabsTrigger>
-            <TabsTrigger value="chefs" className="gap-1.5 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
+            <TabsTrigger value="chefs" className="gap-1.5 text-xs data-[state=active]:bg-background data-[state=active]:shadow-sm sm:text-sm">
               <Users className="h-3.5 w-3.5" />
               {t("chefs")}
             </TabsTrigger>
-            <TabsTrigger value="groups" className="gap-1.5 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
+            <TabsTrigger value="groups" className="gap-1.5 text-xs data-[state=active]:bg-background data-[state=active]:shadow-sm sm:text-sm">
               <UsersRound className="h-3.5 w-3.5" />
               {t("groups")}
             </TabsTrigger>
