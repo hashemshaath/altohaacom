@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Bell, Check, CheckCheck, Trash2, Filter } from "lucide-react";
+import { Bell, Check, CheckCheck, Trash2, X } from "lucide-react";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { Button } from "@/components/ui/button";
@@ -14,7 +14,7 @@ import { useNavigate } from "react-router-dom";
 import { cn } from "@/lib/utils";
 
 export default function Notifications() {
-  const { notifications, unreadCount, markAsRead, markAllAsRead, loading } = useNotifications();
+  const { notifications, unreadCount, markAsRead, markAllAsRead, deleteNotification, clearAllRead, loading } = useNotifications();
   const { language, t } = useLanguage();
   const navigate = useNavigate();
   const [filter, setFilter] = useState("all");
@@ -72,12 +72,20 @@ export default function Notifications() {
                 <Badge variant="secondary">{unreadCount} {language === "ar" ? "جديد" : "new"}</Badge>
               )}
             </div>
-            {unreadCount > 0 && (
-              <Button variant="outline" size="sm" onClick={markAllAsRead}>
-                <CheckCheck className="h-4 w-4 mr-2" />
-                {t("markAllRead")}
-              </Button>
-            )}
+            <div className="flex items-center gap-2">
+              {unreadCount > 0 && (
+                <Button variant="outline" size="sm" onClick={markAllAsRead}>
+                  <CheckCheck className="h-4 w-4 mr-2" />
+                  {t("markAllRead")}
+                </Button>
+              )}
+              {notifications.length - unreadCount > 0 && (
+                <Button variant="outline" size="sm" onClick={clearAllRead}>
+                  <Trash2 className="h-4 w-4 mr-2" />
+                  {language === "ar" ? "مسح المقروءة" : "Clear Read"}
+                </Button>
+              )}
+            </div>
           </div>
 
           <Tabs value={filter} onValueChange={setFilter} className="mb-6">
@@ -146,6 +154,17 @@ export default function Notifications() {
                             {!notification.is_read && (
                               <div className="h-2 w-2 rounded-full bg-primary" />
                             )}
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              className="h-7 w-7"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                deleteNotification(notification.id);
+                              }}
+                            >
+                              <X className="h-3.5 w-3.5 text-muted-foreground" />
+                            </Button>
                           </div>
                         </div>
                         <div className="flex items-center gap-4 mt-3 text-xs text-muted-foreground">
