@@ -47,6 +47,7 @@ export default function CompanyPortalLayout() {
     { to: "/company/profile", icon: Building2, label: language === "ar" ? "ملف الشركة" : "Company Profile" },
     { to: "/company/team", icon: Users, label: language === "ar" ? "فريق العمل" : "Team" },
     { to: "/company/orders", icon: ShoppingCart, label: language === "ar" ? "الطلبيات" : "Orders" },
+    { to: "/company/invoices", icon: FileText, label: language === "ar" ? "الفواتير" : "Invoices" },
     { to: "/company/invitations", icon: FileText, label: language === "ar" ? "الدعوات" : "Invitations" },
     { to: "/company/communications", icon: MessageSquare, label: language === "ar" ? "التواصل" : "Communications" },
     { to: "/company/statements", icon: BarChart3, label: language === "ar" ? "كشوفات الحساب" : "Statements" },

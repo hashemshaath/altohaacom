@@ -66,6 +66,7 @@ const DatabaseAdmin = lazy(() => import("./pages/admin/DatabaseAdmin"));
 const CertificatesAdmin = lazy(() => import("./pages/admin/CertificatesAdmin"));
 const CompaniesAdmin = lazy(() => import("./pages/admin/CompaniesAdmin"));
 const OrdersAdmin = lazy(() => import("./pages/admin/OrdersAdmin"));
+const InvoicesAdmin = lazy(() => import("./pages/admin/InvoicesAdmin"));
 const KnowledgeAdmin = lazy(() => import("./pages/admin/KnowledgeAdmin"));
 const SponsorsAdmin = lazy(() => import("./pages/admin/SponsorsAdmin"));
 const MasterclassesAdmin = lazy(() => import("./pages/admin/MasterclassesAdmin"));
@@ -90,6 +91,7 @@ const CompanyBranches = lazy(() => import("./pages/company/CompanyBranches"));
 const CompanyDrivers = lazy(() => import("./pages/company/CompanyDrivers"));
 const CompanyWorkingHours = lazy(() => import("./pages/company/CompanyWorkingHours"));
 const CompanySettings = lazy(() => import("./pages/company/CompanySettings"));
+const CompanyInvoices = lazy(() => import("./pages/company/CompanyInvoices"));
 
 const queryClient = new QueryClient();
 
@@ -163,6 +165,7 @@ const App = () => (
                   <Route path="certificates" element={<CertificatesAdmin />} />
                   <Route path="companies" element={<CompaniesAdmin />} />
                    <Route path="orders" element={<OrdersAdmin />} />
+                   <Route path="invoices" element={<InvoicesAdmin />} />
                   <Route path="knowledge" element={<KnowledgeAdmin />} />
                   <Route path="sponsors" element={<SponsorsAdmin />} />
                   <Route path="masterclasses" element={<MasterclassesAdmin />} />
@@ -188,6 +191,7 @@ const App = () => (
                   <Route path="drivers" element={<CompanyDrivers />} />
                   <Route path="working-hours" element={<CompanyWorkingHours />} />
                   <Route path="settings" element={<CompanySettings />} />
+                  <Route path="invoices" element={<CompanyInvoices />} />
                 </Route>
 
                 {/* Public profile URL: altohaa.com/username */}

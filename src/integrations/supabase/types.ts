@@ -2698,44 +2698,114 @@ export type Database = {
       invoices: {
         Row: {
           amount: number
+          company_id: string | null
+          competition_id: string | null
           created_at: string
           currency: string | null
           description: string | null
+          description_ar: string | null
+          discount_amount: number | null
           due_date: string | null
           id: string
           invoice_number: string
+          issued_by: string | null
+          items: Json | null
+          notes: string | null
+          notes_ar: string | null
+          order_id: string | null
           paid_at: string | null
+          payment_method: string | null
+          payment_reference: string | null
           status: string | null
+          subtotal: number | null
+          tax_amount: number | null
+          tax_rate: number | null
+          title: string | null
+          title_ar: string | null
           updated_at: string
           user_id: string
         }
         Insert: {
           amount: number
+          company_id?: string | null
+          competition_id?: string | null
           created_at?: string
           currency?: string | null
           description?: string | null
+          description_ar?: string | null
+          discount_amount?: number | null
           due_date?: string | null
           id?: string
           invoice_number?: string
+          issued_by?: string | null
+          items?: Json | null
+          notes?: string | null
+          notes_ar?: string | null
+          order_id?: string | null
           paid_at?: string | null
+          payment_method?: string | null
+          payment_reference?: string | null
           status?: string | null
+          subtotal?: number | null
+          tax_amount?: number | null
+          tax_rate?: number | null
+          title?: string | null
+          title_ar?: string | null
           updated_at?: string
           user_id: string
         }
         Update: {
           amount?: number
+          company_id?: string | null
+          competition_id?: string | null
           created_at?: string
           currency?: string | null
           description?: string | null
+          description_ar?: string | null
+          discount_amount?: number | null
           due_date?: string | null
           id?: string
           invoice_number?: string
+          issued_by?: string | null
+          items?: Json | null
+          notes?: string | null
+          notes_ar?: string | null
+          order_id?: string | null
           paid_at?: string | null
+          payment_method?: string | null
+          payment_reference?: string | null
           status?: string | null
+          subtotal?: number | null
+          tax_amount?: number | null
+          tax_rate?: number | null
+          title?: string | null
+          title_ar?: string | null
           updated_at?: string
           user_id?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "invoices_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "invoices_competition_id_fkey"
+            columns: ["competition_id"]
+            isOneToOne: false
+            referencedRelation: "competitions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "invoices_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: false
+            referencedRelation: "company_orders"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       judge_ai_conversations: {
         Row: {
