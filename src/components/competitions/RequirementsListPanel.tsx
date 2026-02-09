@@ -136,7 +136,7 @@ export function RequirementsListPanel({ competitionId, isOrganizer }: Props) {
             <TabsTrigger value="sponsors">{language === "ar" ? "طلبات الرعاية" : "Sponsor Requests"}</TabsTrigger>
           </TabsList>
           <TabsContent value="items" className="mt-4">
-            <RequirementListItems listId={selectedList.id} competitionId={competitionId} />
+            <RequirementListItems listId={selectedList.id} competitionId={competitionId} listCategory={selectedList.category} />
           </TabsContent>
           <TabsContent value="sponsors" className="mt-4">
             <SponsorshipRequestPanel listId={selectedList.id} competitionId={competitionId} />

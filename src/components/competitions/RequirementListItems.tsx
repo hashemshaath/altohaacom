@@ -13,6 +13,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Label } from "@/components/ui/label";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Plus, Trash2, Search, Package } from "lucide-react";
+import { AIRequirementsSuggest } from "./AIRequirementsSuggest";
 
 const ITEM_CATEGORIES = [
   { value: "venue_setup", label: "Venue Setup", labelAr: "إعداد الموقع" },
@@ -44,9 +45,10 @@ const STATUS_COLORS: Record<string, string> = {
 interface Props {
   listId: string;
   competitionId: string;
+  listCategory?: string;
 }
 
-export function RequirementListItems({ listId, competitionId }: Props) {
+export function RequirementListItems({ listId, competitionId, listCategory = "general" }: Props) {
   const { language } = useLanguage();
   const { user } = useAuth();
   const { toast } = useToast();
@@ -184,10 +186,23 @@ export function RequirementListItems({ listId, competitionId }: Props) {
             </Badge>
           )}
         </div>
-        <Dialog open={showAddDialog} onOpenChange={setShowAddDialog}>
-          <DialogTrigger asChild>
-            <Button size="sm"><Plus className="mr-2 h-4 w-4" />{language === "ar" ? "إضافة عنصر" : "Add Item"}</Button>
-          </DialogTrigger>
+        <div className="flex gap-2">
+          <AIRequirementsSuggest
+            competitionId={competitionId}
+            listId={listId}
+            listCategory={listCategory}
+            existingItemNames={listItems?.map(item => {
+              if (item.item_id && item.requirement_items) {
+                return (item.requirement_items as any).name;
+              }
+              return item.custom_name || "";
+            }).filter(Boolean) || []}
+            onItemsAdded={() => queryClient.invalidateQueries({ queryKey: ["requirement-list-items", listId] })}
+          />
+          <Dialog open={showAddDialog} onOpenChange={setShowAddDialog}>
+            <DialogTrigger asChild>
+              <Button size="sm"><Plus className="mr-2 h-4 w-4" />{language === "ar" ? "إضافة عنصر" : "Add Item"}</Button>
+            </DialogTrigger>
           <DialogContent className="max-w-2xl">
             <DialogHeader>
               <DialogTitle>{language === "ar" ? "إضافة عنصر للقائمة" : "Add Item to List"}</DialogTitle>
@@ -287,6 +302,7 @@ export function RequirementListItems({ listId, competitionId }: Props) {
             </div>
           </DialogContent>
         </Dialog>
+        </div>
       </div>
 
       {isLoading ? (
