@@ -591,7 +591,9 @@ export type Database = {
           address_ar: string | null
           city: string | null
           classifications: string[] | null
+          company_number: string | null
           country: string | null
+          country_code: string | null
           cover_image_url: string | null
           created_at: string | null
           created_by: string | null
@@ -620,7 +622,9 @@ export type Database = {
           address_ar?: string | null
           city?: string | null
           classifications?: string[] | null
+          company_number?: string | null
           country?: string | null
+          country_code?: string | null
           cover_image_url?: string | null
           created_at?: string | null
           created_by?: string | null
@@ -649,7 +653,9 @@ export type Database = {
           address_ar?: string | null
           city?: string | null
           classifications?: string[] | null
+          company_number?: string | null
           country?: string | null
+          country_code?: string | null
           cover_image_url?: string | null
           created_at?: string | null
           created_by?: string | null
@@ -1586,6 +1592,42 @@ export type Database = {
           },
         ]
       }
+      competition_series: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          description: string | null
+          description_ar: string | null
+          id: string
+          logo_url: string | null
+          name: string
+          name_ar: string | null
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          description_ar?: string | null
+          id?: string
+          logo_url?: string | null
+          name: string
+          name_ar?: string | null
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          description_ar?: string | null
+          id?: string
+          logo_url?: string | null
+          name?: string
+          name_ar?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
       competition_sponsors: {
         Row: {
           amount_paid: number | null
@@ -1710,12 +1752,15 @@ export type Database = {
         Row: {
           city: string | null
           competition_end: string
+          competition_number: string | null
           competition_start: string
           country: string | null
+          country_code: string | null
           cover_image_url: string | null
           created_at: string
           description: string | null
           description_ar: string | null
+          edition_year: number | null
           exhibition_id: string | null
           id: string
           is_virtual: boolean | null
@@ -1727,6 +1772,7 @@ export type Database = {
           rules_summary_ar: string | null
           scoring_notes: string | null
           scoring_notes_ar: string | null
+          series_id: string | null
           status: Database["public"]["Enums"]["competition_status"]
           title: string
           title_ar: string | null
@@ -1737,12 +1783,15 @@ export type Database = {
         Insert: {
           city?: string | null
           competition_end: string
+          competition_number?: string | null
           competition_start: string
           country?: string | null
+          country_code?: string | null
           cover_image_url?: string | null
           created_at?: string
           description?: string | null
           description_ar?: string | null
+          edition_year?: number | null
           exhibition_id?: string | null
           id?: string
           is_virtual?: boolean | null
@@ -1754,6 +1803,7 @@ export type Database = {
           rules_summary_ar?: string | null
           scoring_notes?: string | null
           scoring_notes_ar?: string | null
+          series_id?: string | null
           status?: Database["public"]["Enums"]["competition_status"]
           title: string
           title_ar?: string | null
@@ -1764,12 +1814,15 @@ export type Database = {
         Update: {
           city?: string | null
           competition_end?: string
+          competition_number?: string | null
           competition_start?: string
           country?: string | null
+          country_code?: string | null
           cover_image_url?: string | null
           created_at?: string
           description?: string | null
           description_ar?: string | null
+          edition_year?: number | null
           exhibition_id?: string | null
           id?: string
           is_virtual?: boolean | null
@@ -1781,6 +1834,7 @@ export type Database = {
           rules_summary_ar?: string | null
           scoring_notes?: string | null
           scoring_notes_ar?: string | null
+          series_id?: string | null
           status?: Database["public"]["Enums"]["competition_status"]
           title?: string
           title_ar?: string | null
@@ -1794,6 +1848,13 @@ export type Database = {
             columns: ["exhibition_id"]
             isOneToOne: false
             referencedRelation: "exhibitions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "competitions_series_id_fkey"
+            columns: ["series_id"]
+            isOneToOne: false
+            referencedRelation: "competition_series"
             referencedColumns: ["id"]
           },
         ]
@@ -4819,6 +4880,17 @@ export type Database = {
         Returns: string
       }
       generate_certificate_number: { Args: never; Returns: string }
+      generate_company_number: {
+        Args: {
+          p_company_type: Database["public"]["Enums"]["company_type"]
+          p_country_code: string
+        }
+        Returns: string
+      }
+      generate_competition_number: {
+        Args: { p_country_code: string; p_year: number }
+        Returns: string
+      }
       generate_invoice_number: { Args: never; Returns: string }
       generate_order_number: { Args: never; Returns: string }
       generate_transaction_number: { Args: never; Returns: string }

@@ -62,6 +62,8 @@ export default function CreateCompetition() {
   const [venueAr, setVenueAr] = useState("");
   const [city, setCity] = useState("");
   const [country, setCountry] = useState("");
+  const [countryCode, setCountryCode] = useState("");
+  const [editionYear, setEditionYear] = useState<number>(new Date().getFullYear());
   const [maxParticipants, setMaxParticipants] = useState<number | "">("");
   
   // Step 3: Categories
@@ -132,6 +134,8 @@ export default function CreateCompetition() {
           venue_ar: isVirtual ? null : venueAr || null,
           city: isVirtual ? null : city || null,
           country: isVirtual ? null : country || null,
+          country_code: countryCode.toUpperCase() || null,
+          edition_year: editionYear || null,
           max_participants: maxParticipants || null,
           organizer_id: user.id,
           status: "draft",
@@ -200,7 +204,7 @@ export default function CreateCompetition() {
 
   const canProceed = () => {
     if (step === 1) return title.trim() !== "";
-    if (step === 2) return competitionStart !== "" && competitionEnd !== "";
+    if (step === 2) return competitionStart !== "" && competitionEnd !== "" && countryCode.length === 2;
     if (step === 3) return categories.some(c => c.name.trim() !== "");
     if (step === 4) return criteria.some(c => c.name.trim() !== "");
     return true;
@@ -451,6 +455,32 @@ export default function CreateCompetition() {
                     </div>
                   </>
                 )}
+
+                {/* Country Code & Edition Year */}
+                <div className="grid gap-4 sm:grid-cols-2">
+                  <div className="space-y-2">
+                    <Label htmlFor="countryCode">Country Code (ISO 2-letter) *</Label>
+                    <Input
+                      id="countryCode"
+                      value={countryCode}
+                      onChange={(e) => setCountryCode(e.target.value.toUpperCase().slice(0, 2))}
+                      placeholder="SA, TN, AE..."
+                      maxLength={2}
+                    />
+                    <p className="text-xs text-muted-foreground">Used for competition number (e.g., SA-2026-COMP-001)</p>
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="editionYear">Edition Year</Label>
+                    <Input
+                      id="editionYear"
+                      type="number"
+                      value={editionYear}
+                      onChange={(e) => setEditionYear(parseInt(e.target.value) || new Date().getFullYear())}
+                      min={2020}
+                      max={2050}
+                    />
+                  </div>
+                </div>
 
                 <div className="space-y-2">
                   <Label htmlFor="maxParticipants">Max Participants</Label>
