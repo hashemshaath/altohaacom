@@ -492,6 +492,99 @@ export type Database = {
           },
         ]
       }
+      community_events: {
+        Row: {
+          created_at: string
+          description: string | null
+          description_ar: string | null
+          event_date: string | null
+          event_end_date: string | null
+          event_type: string
+          id: string
+          image_url: string | null
+          is_virtual: boolean | null
+          location: string | null
+          location_ar: string | null
+          max_attendees: number | null
+          organizer_id: string
+          status: string | null
+          title: string
+          title_ar: string | null
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          description_ar?: string | null
+          event_date?: string | null
+          event_end_date?: string | null
+          event_type?: string
+          id?: string
+          image_url?: string | null
+          is_virtual?: boolean | null
+          location?: string | null
+          location_ar?: string | null
+          max_attendees?: number | null
+          organizer_id: string
+          status?: string | null
+          title: string
+          title_ar?: string | null
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          description_ar?: string | null
+          event_date?: string | null
+          event_end_date?: string | null
+          event_type?: string
+          id?: string
+          image_url?: string | null
+          is_virtual?: boolean | null
+          location?: string | null
+          location_ar?: string | null
+          max_attendees?: number | null
+          organizer_id?: string
+          status?: string | null
+          title?: string
+          title_ar?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      community_polls: {
+        Row: {
+          author_id: string
+          created_at: string
+          expires_at: string | null
+          id: string
+          is_active: boolean | null
+          options: Json
+          question: string
+          question_ar: string | null
+        }
+        Insert: {
+          author_id: string
+          created_at?: string
+          expires_at?: string | null
+          id?: string
+          is_active?: boolean | null
+          options?: Json
+          question: string
+          question_ar?: string | null
+        }
+        Update: {
+          author_id?: string
+          created_at?: string
+          expires_at?: string | null
+          id?: string
+          is_active?: boolean | null
+          options?: Json
+          question?: string
+          question_ar?: string | null
+        }
+        Relationships: []
+      }
       companies: {
         Row: {
           address: string | null
@@ -1816,6 +1909,38 @@ export type Database = {
         }
         Relationships: []
       }
+      event_attendees: {
+        Row: {
+          event_id: string
+          id: string
+          registered_at: string
+          status: string | null
+          user_id: string
+        }
+        Insert: {
+          event_id: string
+          id?: string
+          registered_at?: string
+          status?: string | null
+          user_id: string
+        }
+        Update: {
+          event_id?: string
+          id?: string
+          registered_at?: string
+          status?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "event_attendees_event_id_fkey"
+            columns: ["event_id"]
+            isOneToOne: false
+            referencedRelation: "community_events"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       faqs: {
         Row: {
           answer: string
@@ -1889,6 +2014,7 @@ export type Database = {
       }
       groups: {
         Row: {
+          category: string | null
           cover_image_url: string | null
           created_at: string
           created_by: string
@@ -1901,6 +2027,7 @@ export type Database = {
           updated_at: string
         }
         Insert: {
+          category?: string | null
           cover_image_url?: string | null
           created_at?: string
           created_by: string
@@ -1913,6 +2040,7 @@ export type Database = {
           updated_at?: string
         }
         Update: {
+          category?: string | null
           cover_image_url?: string | null
           created_at?: string
           created_by?: string
@@ -2933,12 +3061,45 @@ export type Database = {
           },
         ]
       }
+      poll_votes: {
+        Row: {
+          id: string
+          option_index: number
+          poll_id: string
+          user_id: string
+          voted_at: string
+        }
+        Insert: {
+          id?: string
+          option_index: number
+          poll_id: string
+          user_id: string
+          voted_at?: string
+        }
+        Update: {
+          id?: string
+          option_index?: number
+          poll_id?: string
+          user_id?: string
+          voted_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "poll_votes_poll_id_fkey"
+            columns: ["poll_id"]
+            isOneToOne: false
+            referencedRelation: "community_polls"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       post_comments: {
         Row: {
           author_id: string
           content: string
           created_at: string
           id: string
+          parent_comment_id: string | null
           post_id: string
           updated_at: string
         }
@@ -2947,6 +3108,7 @@ export type Database = {
           content: string
           created_at?: string
           id?: string
+          parent_comment_id?: string | null
           post_id: string
           updated_at?: string
         }
@@ -2955,10 +3117,18 @@ export type Database = {
           content?: string
           created_at?: string
           id?: string
+          parent_comment_id?: string | null
           post_id?: string
           updated_at?: string
         }
         Relationships: [
+          {
+            foreignKeyName: "post_comments_parent_comment_id_fkey"
+            columns: ["parent_comment_id"]
+            isOneToOne: false
+            referencedRelation: "post_comments"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "post_comments_post_id_fkey"
             columns: ["post_id"]
@@ -3163,6 +3333,104 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      recipe_ratings: {
+        Row: {
+          created_at: string
+          id: string
+          rating: number
+          recipe_id: string
+          review: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          rating: number
+          recipe_id: string
+          review?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          rating?: number
+          recipe_id?: string
+          review?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "recipe_ratings_recipe_id_fkey"
+            columns: ["recipe_id"]
+            isOneToOne: false
+            referencedRelation: "recipes"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      recipes: {
+        Row: {
+          author_id: string
+          cook_time_minutes: number | null
+          created_at: string
+          cuisine: string | null
+          description: string | null
+          description_ar: string | null
+          difficulty: string | null
+          gallery_urls: string[] | null
+          id: string
+          image_url: string | null
+          ingredients: Json
+          is_published: boolean | null
+          prep_time_minutes: number | null
+          servings: number | null
+          steps: Json
+          title: string
+          title_ar: string | null
+          updated_at: string
+        }
+        Insert: {
+          author_id: string
+          cook_time_minutes?: number | null
+          created_at?: string
+          cuisine?: string | null
+          description?: string | null
+          description_ar?: string | null
+          difficulty?: string | null
+          gallery_urls?: string[] | null
+          id?: string
+          image_url?: string | null
+          ingredients?: Json
+          is_published?: boolean | null
+          prep_time_minutes?: number | null
+          servings?: number | null
+          steps?: Json
+          title: string
+          title_ar?: string | null
+          updated_at?: string
+        }
+        Update: {
+          author_id?: string
+          cook_time_minutes?: number | null
+          created_at?: string
+          cuisine?: string | null
+          description?: string | null
+          description_ar?: string | null
+          difficulty?: string | null
+          gallery_urls?: string[] | null
+          id?: string
+          image_url?: string | null
+          ingredients?: Json
+          is_published?: boolean | null
+          prep_time_minutes?: number | null
+          servings?: number | null
+          steps?: Json
+          title?: string
+          title_ar?: string | null
+          updated_at?: string
+        }
+        Relationships: []
       }
       reference_gallery: {
         Row: {
