@@ -90,8 +90,8 @@ export default function Exhibitions() {
         {/* Header */}
         <div className="mb-8 flex items-start justify-between gap-4">
           <div className="flex items-center gap-2.5">
-            <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-primary/10">
-              <Landmark className="h-7 w-7 text-primary" />
+            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary/10">
+              <Landmark className="h-4 w-4 text-primary" />
             </div>
             <div>
               <h1 className="font-serif text-2xl font-bold md:text-3xl">
