@@ -19,21 +19,6 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
-import {
   Table,
   TableBody,
   TableCell,
@@ -44,17 +29,16 @@ import {
 import { useToast } from "@/hooks/use-toast";
 import { 
   Search, 
-  MoreHorizontal, 
   UserX, 
   UserCheck, 
   Eye, 
   Shield, 
   Ban, 
-  CreditCard,
-  Trash2,
   Edit,
   ChevronRight,
   ChevronLeft,
+  X,
+  Save,
 } from "lucide-react";
 import { format } from "date-fns";
 import type { Database } from "@/integrations/supabase/types";
@@ -93,8 +77,8 @@ export default function UserManagement() {
   const [page, setPage] = useState(0);
   const pageSize = 20;
 
-  // Edit user dialog state
-  const [editUser, setEditUser] = useState<UserProfile | null>(null);
+  // Edit user inline state
+  const [editingUserId, setEditingUserId] = useState<string | null>(null);
   const [editRoles, setEditRoles] = useState<AppRole[]>([]);
   const [editMembership, setEditMembership] = useState<MembershipTier>("basic");
   const [editStatus, setEditStatus] = useState<AccountStatus>("active");
@@ -158,6 +142,9 @@ export default function UserManagement() {
   });
 
   const totalPages = Math.ceil((usersData?.totalCount || 0) / pageSize);
+
+  // Get currently editing user
+  const editingUser = filteredUsers?.find(u => u.user_id === editingUserId);
 
   // Update user status mutation
   const updateStatusMutation = useMutation({
@@ -245,19 +232,23 @@ export default function UserManagement() {
   });
 
   const handleOpenEdit = (profile: UserProfile) => {
-    setEditUser(profile);
+    setEditingUserId(profile.user_id);
     setEditRoles(profile.roles?.map(r => r.role) || []);
     setEditMembership(profile.membership_tier || "basic");
     setEditStatus(profile.account_status || "pending");
     setEditVerified(profile.is_verified || false);
   };
 
+  const handleCancelEdit = () => {
+    setEditingUserId(null);
+  };
+
   const handleSaveEdit = async () => {
-    if (!editUser) return;
+    if (!editingUserId) return;
 
     // Update profile details
     await updateProfileMutation.mutateAsync({
-      userId: editUser.user_id,
+      userId: editingUserId,
       updates: {
         membership_tier: editMembership,
         account_status: editStatus,
@@ -267,11 +258,11 @@ export default function UserManagement() {
 
     // Update roles
     await updateRolesMutation.mutateAsync({
-      userId: editUser.user_id,
+      userId: editingUserId,
       roles: editRoles,
     });
 
-    setEditUser(null);
+    setEditingUserId(null);
   };
 
   const toggleRole = (role: AppRole) => {
@@ -353,6 +344,117 @@ export default function UserManagement() {
         </CardContent>
       </Card>
 
+      {/* Inline Edit Panel */}
+      {editingUser && (
+        <Card className="border-primary">
+          <CardHeader className="pb-3">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <Avatar className="h-12 w-12">
+                  <AvatarImage src={editingUser.avatar_url || undefined} />
+                  <AvatarFallback>{(editingUser.full_name || "U")[0].toUpperCase()}</AvatarFallback>
+                </Avatar>
+                <div>
+                  <CardTitle className="text-lg">{editingUser.full_name || "Unknown"}</CardTitle>
+                  <p className="text-sm text-muted-foreground">@{editingUser.username}</p>
+                </div>
+              </div>
+              <Button variant="ghost" size="icon" onClick={handleCancelEdit}>
+                <X className="h-4 w-4" />
+              </Button>
+            </div>
+          </CardHeader>
+          <CardContent className="space-y-6">
+            <p className="text-sm text-muted-foreground">
+              {language === "ar" ? "تعديل بيانات المستخدم والصلاحيات" : "Edit user details and permissions"}
+            </p>
+
+            <div className="grid gap-6 md:grid-cols-2">
+              {/* Account Status */}
+              <div className="space-y-2">
+                <Label>{language === "ar" ? "حالة الحساب" : "Account Status"}</Label>
+                <Select value={editStatus} onValueChange={(v) => setEditStatus(v as AccountStatus)}>
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="pending">{language === "ar" ? "معلق" : "Pending"}</SelectItem>
+                    <SelectItem value="active">{language === "ar" ? "نشط" : "Active"}</SelectItem>
+                    <SelectItem value="suspended">{language === "ar" ? "موقوف" : "Suspended"}</SelectItem>
+                    <SelectItem value="banned">{language === "ar" ? "محظور" : "Banned"}</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+
+              {/* Membership Tier */}
+              <div className="space-y-2">
+                <Label>{language === "ar" ? "مستوى العضوية" : "Membership Tier"}</Label>
+                <Select value={editMembership} onValueChange={(v) => setEditMembership(v as MembershipTier)}>
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="basic">{t("basic")}</SelectItem>
+                    <SelectItem value="professional">{t("professionalTier")}</SelectItem>
+                    <SelectItem value="enterprise">{t("enterprise")}</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+
+            {/* Verified Status */}
+            <div className="flex items-center gap-3">
+              <Checkbox
+                id="verified"
+                checked={editVerified}
+                onCheckedChange={(checked) => setEditVerified(!!checked)}
+              />
+              <Label htmlFor="verified" className="cursor-pointer">
+                {language === "ar" ? "حساب موثق" : "Verified Account"}
+              </Label>
+            </div>
+
+            {/* Roles */}
+            <div className="space-y-3">
+              <Label>{language === "ar" ? "الأدوار" : "Roles"}</Label>
+              <div className="grid grid-cols-2 gap-2 md:grid-cols-4">
+                {ALL_ROLES.map(role => (
+                  <div
+                    key={role}
+                    onClick={() => toggleRole(role)}
+                    className={`flex cursor-pointer items-center gap-2 rounded-lg border p-3 transition-colors ${
+                      editRoles.includes(role)
+                        ? "border-primary bg-primary/5"
+                        : "border-border hover:border-primary/50"
+                    }`}
+                  >
+                    <Checkbox
+                      checked={editRoles.includes(role)}
+                      onCheckedChange={() => toggleRole(role)}
+                    />
+                    <span className="text-sm capitalize">{t(role as any)}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Action Buttons */}
+            <div className="flex gap-2 justify-end pt-4 border-t">
+              <Button variant="outline" onClick={handleCancelEdit}>
+                {language === "ar" ? "إلغاء" : "Cancel"}
+              </Button>
+              <Button 
+                onClick={handleSaveEdit}
+                disabled={updateProfileMutation.isPending || updateRolesMutation.isPending}
+              >
+                <Save className="mr-2 h-4 w-4" />
+                {language === "ar" ? "حفظ التغييرات" : "Save Changes"}
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
       {/* Users Table */}
       <Card>
         <CardHeader>
@@ -376,12 +478,12 @@ export default function UserManagement() {
                     <TableHead>{t("membershipTier")}</TableHead>
                     <TableHead>{t("accountStatus")}</TableHead>
                     <TableHead>{language === "ar" ? "تاريخ الإنشاء" : "Created"}</TableHead>
-                    <TableHead className="w-12"></TableHead>
+                    <TableHead className="w-32">{language === "ar" ? "الإجراءات" : "Actions"}</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
                   {filteredUsers?.map((profile) => (
-                    <TableRow key={profile.id}>
+                    <TableRow key={profile.id} className={editingUserId === profile.user_id ? "bg-primary/5" : ""}>
                       <TableCell>
                         <div className="flex items-center gap-3">
                           <Avatar className="h-8 w-8">
@@ -424,61 +526,48 @@ export default function UserManagement() {
                         {format(new Date(profile.created_at), "MMM d, yyyy")}
                       </TableCell>
                       <TableCell>
-                        <DropdownMenu>
-                          <DropdownMenuTrigger asChild>
-                            <Button variant="ghost" size="icon">
-                              <MoreHorizontal className="h-4 w-4" />
+                        <div className="flex gap-1">
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            asChild
+                          >
+                            <Link to={`/${profile.username || profile.user_id}`}>
+                              <Eye className="h-4 w-4" />
+                            </Link>
+                          </Button>
+                          <Button
+                            variant={editingUserId === profile.user_id ? "secondary" : "ghost"}
+                            size="sm"
+                            onClick={() => editingUserId === profile.user_id ? handleCancelEdit() : handleOpenEdit(profile)}
+                          >
+                            <Edit className="h-4 w-4" />
+                          </Button>
+                          {profile.account_status === "active" ? (
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              onClick={() => updateStatusMutation.mutate({
+                                userId: profile.user_id,
+                                newStatus: "suspended",
+                                reason: "Admin action",
+                              })}
+                            >
+                              <UserX className="h-4 w-4" />
                             </Button>
-                          </DropdownMenuTrigger>
-                          <DropdownMenuContent align="end">
-                            <DropdownMenuItem asChild>
-                              <Link to={`/${profile.username || profile.user_id}`}>
-                                <Eye className="mr-2 h-4 w-4" />
-                                {t("viewProfile")}
-                              </Link>
-                            </DropdownMenuItem>
-                            <DropdownMenuItem onClick={() => handleOpenEdit(profile)}>
-                              <Edit className="mr-2 h-4 w-4" />
-                              {language === "ar" ? "تعديل" : "Edit User"}
-                            </DropdownMenuItem>
-                            <DropdownMenuSeparator />
-                            {profile.account_status === "active" ? (
-                              <>
-                                <DropdownMenuItem
-                                  onClick={() => updateStatusMutation.mutate({
-                                    userId: profile.user_id,
-                                    newStatus: "suspended",
-                                    reason: "Admin action",
-                                  })}
-                                >
-                                  <UserX className="mr-2 h-4 w-4" />
-                                  {t("suspendUser")}
-                                </DropdownMenuItem>
-                                <DropdownMenuItem
-                                  className="text-destructive"
-                                  onClick={() => updateStatusMutation.mutate({
-                                    userId: profile.user_id,
-                                    newStatus: "banned",
-                                    reason: "Admin action",
-                                  })}
-                                >
-                                  <Ban className="mr-2 h-4 w-4" />
-                                  {language === "ar" ? "حظر" : "Ban User"}
-                                </DropdownMenuItem>
-                              </>
-                            ) : (
-                              <DropdownMenuItem
-                                onClick={() => updateStatusMutation.mutate({
-                                  userId: profile.user_id,
-                                  newStatus: "active",
-                                })}
-                              >
-                                <UserCheck className="mr-2 h-4 w-4" />
-                                {t("activateUser")}
-                              </DropdownMenuItem>
-                            )}
-                          </DropdownMenuContent>
-                        </DropdownMenu>
+                          ) : (
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              onClick={() => updateStatusMutation.mutate({
+                                userId: profile.user_id,
+                                newStatus: "active",
+                              })}
+                            >
+                              <UserCheck className="h-4 w-4" />
+                            </Button>
+                          )}
+                        </div>
                       </TableCell>
                     </TableRow>
                   ))}
@@ -515,109 +604,6 @@ export default function UserManagement() {
           )}
         </CardContent>
       </Card>
-
-      {/* Edit User Dialog */}
-      <Dialog open={!!editUser} onOpenChange={() => setEditUser(null)}>
-        <DialogContent className="max-w-lg">
-          <DialogHeader>
-            <DialogTitle className="flex items-center gap-3">
-              <Avatar className="h-10 w-10">
-                <AvatarImage src={editUser?.avatar_url || undefined} />
-                <AvatarFallback>{(editUser?.full_name || "U")[0].toUpperCase()}</AvatarFallback>
-              </Avatar>
-              <div>
-                <p>{editUser?.full_name || "Unknown"}</p>
-                <p className="text-sm font-normal text-muted-foreground">@{editUser?.username}</p>
-              </div>
-            </DialogTitle>
-            <DialogDescription>
-              {language === "ar" ? "تعديل بيانات المستخدم والصلاحيات" : "Edit user details and permissions"}
-            </DialogDescription>
-          </DialogHeader>
-
-          <div className="space-y-6 py-4">
-            {/* Account Status */}
-            <div className="space-y-2">
-              <Label>{language === "ar" ? "حالة الحساب" : "Account Status"}</Label>
-              <Select value={editStatus} onValueChange={(v) => setEditStatus(v as AccountStatus)}>
-                <SelectTrigger>
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="pending">{language === "ar" ? "معلق" : "Pending"}</SelectItem>
-                  <SelectItem value="active">{language === "ar" ? "نشط" : "Active"}</SelectItem>
-                  <SelectItem value="suspended">{language === "ar" ? "موقوف" : "Suspended"}</SelectItem>
-                  <SelectItem value="banned">{language === "ar" ? "محظور" : "Banned"}</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-
-            {/* Membership Tier */}
-            <div className="space-y-2">
-              <Label>{language === "ar" ? "مستوى العضوية" : "Membership Tier"}</Label>
-              <Select value={editMembership} onValueChange={(v) => setEditMembership(v as MembershipTier)}>
-                <SelectTrigger>
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="basic">{t("basic")}</SelectItem>
-                  <SelectItem value="professional">{t("professionalTier")}</SelectItem>
-                  <SelectItem value="enterprise">{t("enterprise")}</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-
-            {/* Verified Status */}
-            <div className="flex items-center gap-3">
-              <Checkbox
-                id="verified"
-                checked={editVerified}
-                onCheckedChange={(checked) => setEditVerified(!!checked)}
-              />
-              <Label htmlFor="verified" className="cursor-pointer">
-                {language === "ar" ? "حساب موثق" : "Verified Account"}
-              </Label>
-            </div>
-
-            {/* Roles */}
-            <div className="space-y-3">
-              <Label>{language === "ar" ? "الأدوار" : "Roles"}</Label>
-              <div className="grid grid-cols-2 gap-2">
-                {ALL_ROLES.map(role => (
-                  <div
-                    key={role}
-                    onClick={() => toggleRole(role)}
-                    className={`flex cursor-pointer items-center gap-2 rounded-lg border p-3 transition-colors ${
-                      editRoles.includes(role)
-                        ? "border-primary bg-primary/5"
-                        : "border-border hover:border-primary/50"
-                    }`}
-                  >
-                    <Checkbox
-                      checked={editRoles.includes(role)}
-                      onCheckedChange={() => toggleRole(role)}
-                    />
-                    <span className="text-sm capitalize">{t(role as any)}</span>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
-
-          <DialogFooter>
-            <Button variant="outline" onClick={() => setEditUser(null)}>
-              {language === "ar" ? "إلغاء" : "Cancel"}
-            </Button>
-            <Button 
-              onClick={handleSaveEdit}
-              disabled={updateProfileMutation.isPending || updateRolesMutation.isPending}
-            >
-              <Shield className="mr-2 h-4 w-4" />
-              {language === "ar" ? "حفظ التغييرات" : "Save Changes"}
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
     </div>
   );
 }
