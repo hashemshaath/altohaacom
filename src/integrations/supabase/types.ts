@@ -4893,6 +4893,7 @@ export type Database = {
       }
       generate_invoice_number: { Args: never; Returns: string }
       generate_order_number: { Args: never; Returns: string }
+      generate_registration_number: { Args: never; Returns: string }
       generate_transaction_number: { Args: never; Returns: string }
       generate_verification_code: { Args: never; Returns: string }
       get_company_balance: { Args: { p_company_id: string }; Returns: number }
