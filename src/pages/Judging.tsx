@@ -13,12 +13,16 @@ import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Slider } from "@/components/ui/slider";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
-import { Trophy, User, CheckCircle, Star, AlertCircle, X, Save, ArrowLeft, BookOpen } from "lucide-react";
+import { Trophy, User, CheckCircle, Star, AlertCircle, X, Save, ArrowLeft, BookOpen, Flag, BarChart3, ArrowLeftRight, LayoutDashboard } from "lucide-react";
 import { format } from "date-fns";
 import type { Database } from "@/integrations/supabase/types";
 import { JudgeAIAssistant } from "@/components/knowledge/JudgeAIAssistant";
 import { ReferenceGalleryPanel } from "@/components/competitions/ReferenceGalleryPanel";
+import { JudgeDashboard } from "@/components/judging/JudgeDashboard";
+import { ScoringAnalytics } from "@/components/judging/ScoringAnalytics";
+import { EntryComparison } from "@/components/judging/EntryComparison";
 
 type Registration = Database["public"]["Tables"]["competition_registrations"]["Row"];
 type Criteria = Database["public"]["Tables"]["judging_criteria"]["Row"];
@@ -46,9 +50,12 @@ export default function Judging() {
   
   const [selectedCompetition, setSelectedCompetition] = useState<string | null>(null);
   const [viewMode, setViewMode] = useState<ViewMode>("list");
+  const [activeTab, setActiveTab] = useState("dashboard");
   const [scoringRegistration, setScoringRegistration] = useState<RegistrationWithProfile | null>(null);
   const [scores, setScores] = useState<Record<string, number>>({});
   const [notes, setNotes] = useState<Record<string, string>>({});
+  const [flagStatus, setFlagStatus] = useState<Record<string, string>>({});
+  const [detailedFeedback, setDetailedFeedback] = useState<Record<string, string>>({});
 
   // Fetch competitions where user is a judge
   const { data: assignedCompetitions, isLoading: loadingCompetitions } = useQuery({
@@ -159,6 +166,9 @@ export default function Judging() {
         criteria_id: crit.id,
         score: scores[crit.id] || 0,
         notes: notes[crit.id] || null,
+        flag_status: flagStatus[crit.id] || null,
+        flag_reason: flagStatus[crit.id] ? notes[crit.id] || null : null,
+        detailed_feedback: detailedFeedback[crit.id] || null,
       }));
 
       // Delete existing scores first (for upsert behavior)
@@ -186,6 +196,8 @@ export default function Judging() {
       setScoringRegistration(null);
       setScores({});
       setNotes({});
+      setFlagStatus({});
+      setDetailedFeedback({});
     },
     onError: (error) => {
       toast({
@@ -229,6 +241,8 @@ export default function Judging() {
     setScoringRegistration(null);
     setScores({});
     setNotes({});
+    setFlagStatus({});
+    setDetailedFeedback({});
   };
 
   const hasScored = (registrationId: string): boolean => {
@@ -342,6 +356,32 @@ export default function Judging() {
                         className="text-sm"
                         rows={2}
                       />
+                      <Textarea
+                        placeholder={language === "ar" 
+                          ? `ملاحظات تفصيلية للمشارك (اختياري)` 
+                          : `Detailed feedback for participant (optional)`}
+                        value={detailedFeedback[crit.id] || ""}
+                        onChange={(e) => setDetailedFeedback(prev => ({ ...prev, [crit.id]: e.target.value }))}
+                        className="text-sm"
+                        rows={2}
+                      />
+                      <div className="flex items-center gap-2">
+                        <Flag className={`h-4 w-4 ${flagStatus[crit.id] ? "text-destructive" : "text-muted-foreground"}`} />
+                        <Select
+                          value={flagStatus[crit.id] || "none"}
+                          onValueChange={(v) => setFlagStatus(prev => ({ ...prev, [crit.id]: v === "none" ? "" : v }))}
+                        >
+                          <SelectTrigger className="h-8 w-48 text-xs">
+                            <SelectValue placeholder={language === "ar" ? "تعليم..." : "Flag..."} />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="none">{language === "ar" ? "بدون علم" : "No flag"}</SelectItem>
+                            <SelectItem value="review">{language === "ar" ? "يحتاج مراجعة" : "Needs review"}</SelectItem>
+                            <SelectItem value="concern">{language === "ar" ? "قلق" : "Concern"}</SelectItem>
+                            <SelectItem value="disqualify">{language === "ar" ? "اقتراح استبعاد" : "Suggest disqualify"}</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
                     </div>
                   ))}
 
@@ -401,6 +441,63 @@ export default function Judging() {
           </p>
         </div>
 
+        {/* Main Judging Tabs */}
+        <Tabs value={activeTab} onValueChange={setActiveTab} className="mb-6">
+          <TabsList>
+            <TabsTrigger value="dashboard" className="gap-2">
+              <LayoutDashboard className="h-4 w-4" />
+              {language === "ar" ? "لوحة التحكم" : "Dashboard"}
+            </TabsTrigger>
+            <TabsTrigger value="scoring" className="gap-2">
+              <Star className="h-4 w-4" />
+              {language === "ar" ? "التقييم" : "Scoring"}
+            </TabsTrigger>
+            <TabsTrigger value="analytics" className="gap-2">
+              <BarChart3 className="h-4 w-4" />
+              {language === "ar" ? "التحليلات" : "Analytics"}
+            </TabsTrigger>
+            <TabsTrigger value="comparison" className="gap-2">
+              <ArrowLeftRight className="h-4 w-4" />
+              {language === "ar" ? "المقارنة" : "Compare"}
+            </TabsTrigger>
+          </TabsList>
+
+          {/* Dashboard Tab */}
+          <TabsContent value="dashboard">
+            <JudgeDashboard onSelectCompetition={(id) => {
+              setSelectedCompetition(id);
+              setActiveTab("scoring");
+            }} />
+          </TabsContent>
+
+          {/* Analytics Tab */}
+          <TabsContent value="analytics">
+            {selectedCompetition ? (
+              <ScoringAnalytics competitionId={selectedCompetition} />
+            ) : (
+              <Card>
+                <CardContent className="py-12 text-center text-muted-foreground">
+                  {language === "ar" ? "اختر مسابقة أولاً من لوحة التحكم" : "Select a competition first from the Dashboard tab"}
+                </CardContent>
+              </Card>
+            )}
+          </TabsContent>
+
+          {/* Comparison Tab */}
+          <TabsContent value="comparison">
+            {selectedCompetition ? (
+              <EntryComparison competitionId={selectedCompetition} />
+            ) : (
+              <Card>
+                <CardContent className="py-12 text-center text-muted-foreground">
+                  {language === "ar" ? "اختر مسابقة أولاً من لوحة التحكم" : "Select a competition first from the Dashboard tab"}
+                </CardContent>
+              </Card>
+            )}
+          </TabsContent>
+
+          {/* Scoring Tab */}
+          <TabsContent value="scoring">
         {loadingCompetitions ? (
           <div className="space-y-4">
             <Skeleton className="h-32 w-full" />
@@ -523,6 +620,8 @@ export default function Judging() {
             </CardContent>
           </Card>
         )}
+          </TabsContent>
+        </Tabs>
       </main>
       
       <Footer />

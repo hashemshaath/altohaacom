@@ -1519,6 +1519,9 @@ export type Database = {
       competition_scores: {
         Row: {
           criteria_id: string
+          detailed_feedback: string | null
+          flag_reason: string | null
+          flag_status: string | null
           id: string
           judge_id: string
           notes: string | null
@@ -1528,6 +1531,9 @@ export type Database = {
         }
         Insert: {
           criteria_id: string
+          detailed_feedback?: string | null
+          flag_reason?: string | null
+          flag_status?: string | null
           id?: string
           judge_id: string
           notes?: string | null
@@ -1537,6 +1543,9 @@ export type Database = {
         }
         Update: {
           criteria_id?: string
+          detailed_feedback?: string | null
+          flag_reason?: string | null
+          flag_status?: string | null
           id?: string
           judge_id?: string
           notes?: string | null
