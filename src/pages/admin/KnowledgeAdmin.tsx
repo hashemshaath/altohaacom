@@ -17,7 +17,7 @@ import { Separator } from "@/components/ui/separator";
 import { useToast } from "@/hooks/use-toast";
 import {
   BookOpen, Plus, Trash2, Edit, Link, FileText, Image, Scale, Upload,
-  Folder, Star, Eye, EyeOff, Save, X, GalleryHorizontalEnd
+  Folder, Star, Eye, EyeOff, Save, X, GalleryHorizontalEnd, Globe, Loader2
 } from "lucide-react";
 
 type ResourceType = "link" | "file" | "document" | "image" | "video" | "law" | "scraped_content";
@@ -33,6 +33,9 @@ export default function KnowledgeAdmin() {
   const [showAddReference, setShowAddReference] = useState(false);
   const [showAddRubric, setShowAddRubric] = useState(false);
   const [editingResource, setEditingResource] = useState<string | null>(null);
+  const [showScrapeUrl, setShowScrapeUrl] = useState(false);
+  const [scrapeUrl, setScrapeUrl] = useState("");
+  const [isScraping, setIsScraping] = useState(false);
 
   // Form states
   const [resourceForm, setResourceForm] = useState({
@@ -246,6 +249,50 @@ export default function KnowledgeAdmin() {
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ["admin-knowledge-resources"] }),
   });
 
+  const handleScrapeUrl = async () => {
+    if (!scrapeUrl.trim()) return;
+    setIsScraping(true);
+    try {
+      const response = await fetch(
+        `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/firecrawl-scrape`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY}`,
+          },
+          body: JSON.stringify({ url: scrapeUrl, options: { formats: ["markdown"] } }),
+        }
+      );
+      const data = await response.json();
+      if (!response.ok || !data.success) {
+        throw new Error(data.error || "Scraping failed");
+      }
+      const markdown = data.data?.markdown || data.markdown || "";
+      const title = data.data?.metadata?.title || data.metadata?.title || scrapeUrl;
+      const { error } = await supabase.from("knowledge_resources").insert({
+        title,
+        description: (data.data?.metadata?.description || data.metadata?.description || "").slice(0, 500),
+        resource_type: "scraped_content",
+        url: scrapeUrl,
+        scraped_content: markdown,
+        is_published: true,
+        is_judge_resource: true,
+        added_by: user?.id,
+        tags: ["scraped"],
+      });
+      if (error) throw error;
+      queryClient.invalidateQueries({ queryKey: ["admin-knowledge-resources"] });
+      setScrapeUrl("");
+      setShowScrapeUrl(false);
+      toast({ title: language === "ar" ? "تم استخراج المحتوى بنجاح" : "Content scraped successfully" });
+    } catch (err) {
+      toast({ variant: "destructive", title: "Scrape failed", description: err instanceof Error ? err.message : "Unknown error" });
+    } finally {
+      setIsScraping(false);
+    }
+  };
+
   const resourceTypeIcon = (type: string) => {
     switch (type) {
       case "link": return <Link className="h-4 w-4" />;
@@ -298,11 +345,53 @@ export default function KnowledgeAdmin() {
 
         {/* RESOURCES TAB */}
         <TabsContent value="resources" className="space-y-4">
-          {!showAddResource ? (
-            <Button onClick={() => setShowAddResource(true)}>
-              <Plus className="mr-2 h-4 w-4" />
-              {language === "ar" ? "إضافة مورد" : "Add Resource"}
-            </Button>
+          {!showAddResource && !showScrapeUrl ? (
+            <div className="flex gap-2">
+              <Button onClick={() => setShowAddResource(true)}>
+                <Plus className="mr-2 h-4 w-4" />
+                {language === "ar" ? "إضافة مورد" : "Add Resource"}
+              </Button>
+              <Button variant="outline" onClick={() => setShowScrapeUrl(true)}>
+                <Globe className="mr-2 h-4 w-4" />
+                {language === "ar" ? "استخراج من رابط" : "Scrape URL"}
+              </Button>
+            </div>
+          ) : showScrapeUrl ? (
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-lg flex items-center gap-2">
+                  <Globe className="h-5 w-5" />
+                  {language === "ar" ? "استخراج محتوى من رابط" : "Scrape Content from URL"}
+                </CardTitle>
+                <CardDescription>
+                  {language === "ar"
+                    ? "أدخل رابطاً لاستخراج المحتوى تلقائياً وإضافته لقاعدة المعرفة"
+                    : "Enter a URL to automatically extract content and add it to the knowledge base"}
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="space-y-2">
+                  <Label>URL</Label>
+                  <Input
+                    value={scrapeUrl}
+                    onChange={e => setScrapeUrl(e.target.value)}
+                    placeholder="https://example.com/judging-rules"
+                    disabled={isScraping}
+                  />
+                </div>
+                <div className="flex justify-end gap-2">
+                  <Button variant="outline" onClick={() => { setShowScrapeUrl(false); setScrapeUrl(""); }} disabled={isScraping}>
+                    <X className="mr-2 h-4 w-4" /> {language === "ar" ? "إلغاء" : "Cancel"}
+                  </Button>
+                  <Button onClick={handleScrapeUrl} disabled={!scrapeUrl.trim() || isScraping}>
+                    {isScraping ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Globe className="mr-2 h-4 w-4" />}
+                    {isScraping
+                      ? (language === "ar" ? "جاري الاستخراج..." : "Scraping...")
+                      : (language === "ar" ? "استخراج" : "Scrape")}
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
           ) : (
             <Card>
               <CardHeader>
