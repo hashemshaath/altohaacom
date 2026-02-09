@@ -5,6 +5,7 @@ import { Navigate, Outlet, NavLink } from "react-router-dom";
 import { AdminHeader } from "@/components/admin/AdminHeader";
 import { Footer } from "@/components/Footer";
 import { cn } from "@/lib/utils";
+import { Handshake } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
@@ -63,6 +64,7 @@ export default function AdminLayout() {
       items: [
         { to: "/admin/users", icon: Users, label: language === "ar" ? "المستخدمين" : "Users" },
         { to: "/admin/companies", icon: Building, label: language === "ar" ? "الشركات" : "Companies" },
+        { to: "/admin/sponsors", icon: Handshake, label: language === "ar" ? "الرعاة" : "Sponsors" },
         { to: "/admin/leads", icon: UserSearch, label: language === "ar" ? "العملاء المحتملين" : "Leads" },
         { to: "/admin/roles", icon: Shield, label: language === "ar" ? "الأدوار والصلاحيات" : "Roles & Permissions" },
         { to: "/admin/memberships", icon: CreditCard, label: language === "ar" ? "العضويات" : "Memberships" },

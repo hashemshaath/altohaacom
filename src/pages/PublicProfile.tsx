@@ -10,6 +10,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { CompetitionHistory } from "@/components/profile/CompetitionHistory";
 import { MessageButton } from "@/components/profile/MessageButton";
+import { UserBadgesDisplay } from "@/components/badges/UserBadgesDisplay";
 import { 
   User, 
   MapPin, 
@@ -232,7 +233,8 @@ export default function PublicProfile() {
           </div>
 
           {/* Competition History */}
-          <div className="lg:col-span-2">
+          <div className="lg:col-span-2 space-y-6">
+            <UserBadgesDisplay userId={profile.user_id} />
             <CompetitionHistory userId={profile.user_id} />
           </div>
         </div>

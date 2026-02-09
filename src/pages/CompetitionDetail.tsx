@@ -21,6 +21,8 @@ import { CompetitionLeaderboard } from "@/components/competitions/CompetitionLea
 import { ParticipantsList } from "@/components/competitions/ParticipantsList";
 import { JudgesList } from "@/components/competitions/JudgesList";
 import { CompetitionKnowledgeTab } from "@/components/competitions/CompetitionKnowledgeTab";
+import { CompetitionSponsorsPanel } from "@/components/competitions/CompetitionSponsorsPanel";
+import { AutoIssueCertificates } from "@/components/competitions/AutoIssueCertificates";
 import type { Database } from "@/integrations/supabase/types";
 
 type CompetitionStatus = Database["public"]["Enums"]["competition_status"];
@@ -260,6 +262,9 @@ export default function CompetitionDetail() {
                   </Card>
                 )}
                 
+                {/* Sponsors */}
+                <CompetitionSponsorsPanel competitionId={competition.id} isOrganizer={isOrganizer} />
+                
                 {/* Judges Panel */}
                 <JudgesList competitionId={competition.id} />
               </TabsContent>
@@ -345,6 +350,9 @@ export default function CompetitionDetail() {
                   />
                   <JudgeAssignmentPanel competitionId={competition.id} />
                   <RegistrationApprovalPanel competitionId={competition.id} />
+                  {competition.status === "completed" && (
+                    <AutoIssueCertificates competitionId={competition.id} />
+                  )}
                 </TabsContent>
               )}
             </Tabs>

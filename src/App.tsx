@@ -56,6 +56,7 @@ import CertificateVerify from "./pages/CertificateVerify";
 import CompaniesAdmin from "./pages/admin/CompaniesAdmin";
 import OrdersAdmin from "./pages/admin/OrdersAdmin";
 import KnowledgeAdmin from "./pages/admin/KnowledgeAdmin";
+import SponsorsAdmin from "./pages/admin/SponsorsAdmin";
 import KnowledgePortal from "./pages/KnowledgePortal";
 
 // Company Portal Pages
@@ -140,6 +141,7 @@ const App = () => (
                   <Route path="companies" element={<CompaniesAdmin />} />
                    <Route path="orders" element={<OrdersAdmin />} />
                   <Route path="knowledge" element={<KnowledgeAdmin />} />
+                  <Route path="sponsors" element={<SponsorsAdmin />} />
                 </Route>
 
                 {/* Company Portal Routes */}
