@@ -63,6 +63,8 @@ export default function EditCompetition() {
   const [city, setCity] = useState("");
   const [country, setCountry] = useState("");
   const [maxParticipants, setMaxParticipants] = useState<number | "">("");
+  const [countryCode, setCountryCode] = useState("");
+  const [editionYear, setEditionYear] = useState<number>(new Date().getFullYear());
   const [categories, setCategories] = useState<CategoryForm[]>([]);
   const [criteria, setCriteria] = useState<CriteriaForm[]>([]);
 
@@ -117,6 +119,8 @@ export default function EditCompetition() {
       setCity(competition.city || "");
       setCountry(competition.country || "");
       setMaxParticipants(competition.max_participants || "");
+      setCountryCode(competition.country_code || "");
+      setEditionYear(competition.edition_year || new Date().getFullYear());
     }
   }, [competition]);
 
@@ -168,6 +172,7 @@ export default function EditCompetition() {
         is_virtual: isVirtual,
         venue: isVirtual ? null : venue || null, venue_ar: isVirtual ? null : venueAr || null,
         city: isVirtual ? null : city || null, country: isVirtual ? null : country || null,
+        country_code: countryCode.toUpperCase() || null, edition_year: editionYear || null,
         max_participants: maxParticipants || null,
       }).eq("id", id);
       if (error) throw error;
@@ -362,6 +367,17 @@ export default function EditCompetition() {
                     </div>
                   </>
                 )}
+                <div className="grid gap-4 sm:grid-cols-2">
+                  <div className="space-y-2">
+                    <Label>Country Code (ISO 2-letter) *</Label>
+                    <Input value={countryCode} onChange={(e) => setCountryCode(e.target.value.toUpperCase().slice(0, 2))} placeholder="SA, TN, AE..." maxLength={2} />
+                    <p className="text-xs text-muted-foreground">{competition.competition_number ? `Current: ${competition.competition_number}` : "Used to generate competition number"}</p>
+                  </div>
+                  <div className="space-y-2">
+                    <Label>Edition Year</Label>
+                    <Input type="number" value={editionYear} onChange={(e) => setEditionYear(parseInt(e.target.value) || new Date().getFullYear())} min={2020} max={2050} />
+                  </div>
+                </div>
                 <div className="space-y-2">
                   <Label>Max Participants</Label>
                   <Input type="number" value={maxParticipants} onChange={(e) => setMaxParticipants(e.target.value ? parseInt(e.target.value) : "")} placeholder="Leave empty for unlimited" />
