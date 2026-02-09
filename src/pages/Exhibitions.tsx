@@ -12,7 +12,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Search, CalendarDays, Landmark } from "lucide-react";
+import { Search, CalendarDays, Landmark, MapPin } from "lucide-react";
 import { ExhibitionCard, type Exhibition } from "@/components/exhibitions/ExhibitionCard";
 import { isPast, isFuture, isWithinInterval } from "date-fns";
 import type { Database } from "@/integrations/supabase/types";
@@ -36,6 +36,7 @@ export default function Exhibitions() {
   const [search, setSearch] = useState("");
   const [activeTab, setActiveTab] = useState("all");
   const [typeFilter, setTypeFilter] = useState<string>("all");
+  const [countryFilter, setCountryFilter] = useState<string>("all");
 
   const { data: exhibitions, isLoading } = useQuery({
     queryKey: ["exhibitions"],
@@ -49,10 +50,16 @@ export default function Exhibitions() {
     },
   });
 
+  // Derive unique countries for filter
+  const countries = Array.from(
+    new Set(exhibitions?.map(e => e.country).filter(Boolean) as string[])
+  ).sort();
+
   const filtered = exhibitions?.filter((ex) => {
     const title = isAr && ex.title_ar ? ex.title_ar : ex.title;
     const matchesSearch = title.toLowerCase().includes(search.toLowerCase());
     const matchesType = typeFilter === "all" || ex.type === typeFilter;
+    const matchesCountry = countryFilter === "all" || ex.country === countryFilter;
 
     const now = new Date();
     const start = new Date(ex.start_date);
@@ -63,7 +70,7 @@ export default function Exhibitions() {
     else if (activeTab === "current") matchesTab = isWithinInterval(now, { start, end });
     else if (activeTab === "past") matchesTab = isPast(end);
 
-    return matchesSearch && matchesType && matchesTab;
+    return matchesSearch && matchesType && matchesCountry && matchesTab;
   });
 
   const featuredExhibitions = exhibitions?.filter((ex) => ex.is_featured && !isPast(new Date(ex.end_date)));
@@ -133,6 +140,20 @@ export default function Exhibitions() {
               ))}
             </SelectContent>
           </Select>
+          {countries.length > 1 && (
+            <Select value={countryFilter} onValueChange={setCountryFilter}>
+              <SelectTrigger className="w-full sm:w-40">
+                <MapPin className="me-1.5 h-3.5 w-3.5 text-muted-foreground" />
+                <SelectValue placeholder={isAr ? "الدولة" : "Country"} />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">{isAr ? "جميع الدول" : "All Countries"}</SelectItem>
+                {countries.map((c) => (
+                  <SelectItem key={c} value={c}>{c}</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          )}
         </div>
 
         {/* Tabs */}
