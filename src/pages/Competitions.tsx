@@ -13,8 +13,9 @@ import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Calendar, MapPin, Users, Search, Plus, Globe, Trophy, ArrowRight } from "lucide-react";
-import { format } from "date-fns";
+import { Calendar, MapPin, Users, Search, Plus, Globe, Trophy, ArrowRight, Clock } from "lucide-react";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { format, differenceInDays, isFuture } from "date-fns";
 import type { Database } from "@/integrations/supabase/types";
 
 type CompetitionStatus = Database["public"]["Enums"]["competition_status"];
@@ -57,6 +58,7 @@ export default function Competitions() {
   const isAr = language === "ar";
   const [search, setSearch] = useState("");
   const [activeTab, setActiveTab] = useState("all");
+  const [countryFilter, setCountryFilter] = useState("all");
 
   const { data: competitions, isLoading } = useQuery({
     queryKey: ["competitions"],
@@ -86,15 +88,21 @@ export default function Competitions() {
 
   const canCreate = userRoles?.some(role => ["organizer", "supervisor"].includes(role));
 
+  const countries = Array.from(
+    new Set(competitions?.map(c => c.country).filter(Boolean) as string[])
+  ).sort();
+
   const filteredCompetitions = competitions?.filter(comp => {
     const title = isAr && comp.title_ar ? comp.title_ar : comp.title;
     const matchesSearch = title.toLowerCase().includes(search.toLowerCase());
+    const matchesCountry = countryFilter === "all" || comp.country === countryFilter;
     
-    if (activeTab === "all") return matchesSearch;
-    if (activeTab === "upcoming") return matchesSearch && ["upcoming", "registration_open"].includes(comp.status);
-    if (activeTab === "active") return matchesSearch && ["in_progress", "judging"].includes(comp.status);
-    if (activeTab === "past") return matchesSearch && ["completed", "cancelled"].includes(comp.status);
-    return matchesSearch;
+    let matchesTab = true;
+    if (activeTab === "upcoming") matchesTab = ["upcoming", "registration_open"].includes(comp.status);
+    else if (activeTab === "active") matchesTab = ["in_progress", "judging"].includes(comp.status);
+    else if (activeTab === "past") matchesTab = ["completed", "cancelled"].includes(comp.status);
+    
+    return matchesSearch && matchesCountry && matchesTab;
   });
 
   const getStatusLabel = (status: CompetitionStatus): string => {
@@ -159,6 +167,20 @@ export default function Competitions() {
               className="ps-10"
             />
           </div>
+          {countries.length > 1 && (
+            <Select value={countryFilter} onValueChange={setCountryFilter}>
+              <SelectTrigger className="w-full sm:w-40">
+                <MapPin className="me-1.5 h-3.5 w-3.5 text-muted-foreground" />
+                <SelectValue placeholder={isAr ? "الدولة" : "Country"} />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">{isAr ? "جميع الدول" : "All Countries"}</SelectItem>
+                {countries.map((c) => (
+                  <SelectItem key={c} value={c}>{c}</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          )}
         </div>
 
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
@@ -266,9 +288,23 @@ function CompetitionCard({ competition, language, getStatusLabel, t }: Competiti
               <Trophy className="h-10 w-10 text-muted-foreground/20" />
             </div>
           )}
-          <Badge className={`absolute end-2.5 top-2.5 text-[10px] font-medium ${statusColors[competition.status]}`}>
-            {getStatusLabel(competition.status)}
-          </Badge>
+          <div className="absolute start-2.5 top-2.5 flex flex-wrap gap-1.5">
+            <Badge className={`text-[10px] font-medium ${statusColors[competition.status]}`}>
+              {getStatusLabel(competition.status)}
+            </Badge>
+            {isFuture(new Date(competition.competition_start)) && (() => {
+              const daysLeft = differenceInDays(new Date(competition.competition_start), new Date());
+              if (daysLeft <= 30 && daysLeft > 0) {
+                return (
+                  <Badge variant="secondary" className="gap-1 text-[10px]">
+                    <Clock className="h-2.5 w-2.5" />
+                    {isAr ? `${daysLeft} يوم` : `${daysLeft}d left`}
+                  </Badge>
+                );
+              }
+              return null;
+            })()}
+          </div>
         </div>
 
         <CardContent className="p-4">
