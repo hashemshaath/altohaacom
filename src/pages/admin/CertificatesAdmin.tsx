@@ -146,15 +146,51 @@ export default function CertificatesAdmin() {
     },
   });
 
+  // Fetch templates for dropdown
+  const { data: templates = [] } = useQuery({
+    queryKey: ["certificate-templates"],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("certificate_templates")
+        .select("id, name, name_ar, type, is_active")
+        .eq("is_active", true)
+        .order("name");
+      if (error) throw error;
+      return data;
+    },
+  });
+
   // Create certificate mutation
   const createCertificateMutation = useMutation({
     mutationFn: async (data: typeof certificateForm) => {
+      // Find matching template by type, or use first available
+      let templateId = templates.find(t => t.type === data.type)?.id || templates[0]?.id;
+      
+      if (!templateId) {
+        // Auto-create a default template
+        const { data: newTemplate, error: tplErr } = await supabase
+          .from("certificate_templates")
+          .insert({
+            name: "Default Template",
+            name_ar: "القالب الافتراضي",
+            type: data.type,
+            title_text: "Certificate",
+            body_template: "This certifies that {{recipient_name}} has participated.",
+            body_template_ar: "نشهد بأن {{recipient_name}} قد شارك.",
+            is_active: true,
+          })
+          .select("id")
+          .single();
+        if (tplErr) throw tplErr;
+        templateId = newTemplate.id;
+      }
+
       const { data: certNum } = await supabase.rpc("generate_certificate_number");
       const { data: verifyCode } = await supabase.rpc("generate_verification_code");
       
       const { error } = await supabase.from("certificates").insert({
         ...data,
-        template_id: null,
+        template_id: templateId,
         certificate_number: certNum,
         verification_code: verifyCode,
         status: "draft",
@@ -163,12 +199,13 @@ export default function CertificatesAdmin() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["certificates"] });
+      queryClient.invalidateQueries({ queryKey: ["certificate-templates"] });
       setShowCertificateForm(false);
       resetCertificateForm();
       toast({ title: language === "ar" ? "تم إنشاء الشهادة" : "Certificate created" });
     },
-    onError: () => {
-      toast({ title: language === "ar" ? "فشل في إنشاء الشهادة" : "Failed to create certificate", variant: "destructive" });
+    onError: (err: any) => {
+      toast({ title: language === "ar" ? "فشل في إنشاء الشهادة" : "Failed to create certificate", variant: "destructive", description: err.message });
     },
   });
 
@@ -277,9 +314,30 @@ export default function CertificatesAdmin() {
         </div>
         
         <CertificateDesigner
-          onSave={(design) => {
-            console.log("Design saved:", design);
-            toast({ title: language === "ar" ? "تم حفظ التصميم" : "Design saved" });
+          onSave={async (design) => {
+            try {
+              const { error } = await supabase.from("certificate_templates").insert({
+                name: design.titleText || "Custom Template",
+                name_ar: design.titleTextAr || null,
+                type: "participation",
+                title_text: design.titleText,
+                title_text_ar: design.titleTextAr,
+                body_template: design.bodyTemplate,
+                body_template_ar: design.bodyTemplateAr,
+                background_color: design.backgroundColor,
+                border_color: design.borderColor,
+                border_style: design.borderStyle,
+                title_font: design.titleFont,
+                body_font: design.bodyFont,
+                is_active: true,
+              });
+              if (error) throw error;
+              queryClient.invalidateQueries({ queryKey: ["certificate-templates"] });
+              toast({ title: language === "ar" ? "تم حفظ القالب" : "Template saved" });
+              setShowDesigner(false);
+            } catch (err: any) {
+              toast({ variant: "destructive", title: "Error", description: err.message });
+            }
           }}
         />
       </div>
@@ -815,40 +873,40 @@ export default function CertificatesAdmin() {
             </CardHeader>
             <CardContent>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                {/* Default Templates */}
-                {[
-                  { id: "1", name: "Classic Gold", nameAr: "ذهبي كلاسيكي", color: "#c9a227", type: "participation" },
-                  { id: "2", name: "Modern Emerald", nameAr: "زمردي عصري", color: "#10B981", type: "winner_gold" },
-                  { id: "3", name: "Royal Purple", nameAr: "أرجواني ملكي", color: "#8B5CF6", type: "appreciation" },
-                  { id: "4", name: "Executive", nameAr: "تنفيذي", color: "#1f2937", type: "organizer" },
-                ].map((template) => (
-                  <Card key={template.id} className="overflow-hidden cursor-pointer hover:shadow-md transition-shadow" onClick={() => setShowDesigner(true)}>
-                    <div 
-                      className="h-32 flex items-center justify-center"
-                      style={{ 
-                        background: `linear-gradient(135deg, ${template.color}20, ${template.color}10)`,
-                        borderBottom: `4px solid ${template.color}`,
-                      }}
-                    >
-                      <Award className="h-12 w-12" style={{ color: template.color }} />
-                    </div>
-                    <CardContent className="pt-4">
-                      <div className="flex items-center justify-between">
-                        <div>
-                          <h3 className="font-semibold">
-                            {language === "ar" ? template.nameAr : template.name}
-                          </h3>
-                          <Badge variant="outline" className="mt-1">
-                            {getTypeLabel(template.type as CertificateType)}
-                          </Badge>
-                        </div>
-                        <Button variant="ghost" size="icon">
-                          <Edit className="h-4 w-4" />
-                        </Button>
+                {templates.length > 0 ? (
+                  templates.map((template) => (
+                    <Card key={template.id} className="overflow-hidden cursor-pointer hover:shadow-md transition-shadow" onClick={() => setShowDesigner(true)}>
+                      <div 
+                        className="h-32 flex items-center justify-center bg-muted/30"
+                      >
+                        <Award className="h-12 w-12 text-primary" />
                       </div>
-                    </CardContent>
-                  </Card>
-                ))}
+                      <CardContent className="pt-4">
+                        <div className="flex items-center justify-between">
+                          <div>
+                            <h3 className="font-semibold">
+                              {language === "ar" && template.name_ar ? template.name_ar : template.name}
+                            </h3>
+                            <Badge variant="outline" className="mt-1">
+                              {getTypeLabel(template.type as CertificateType)}
+                            </Badge>
+                          </div>
+                          <Button variant="ghost" size="icon">
+                            <Edit className="h-4 w-4" />
+                          </Button>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  ))
+                ) : (
+                  <div className="col-span-full text-center py-12 text-muted-foreground">
+                    <LayoutTemplate className="h-12 w-12 mx-auto mb-4 opacity-50" />
+                    <p>{language === "ar" ? "لا توجد قوالب بعد" : "No templates yet"}</p>
+                    <Button variant="link" onClick={() => setShowDesigner(true)}>
+                      {language === "ar" ? "إنشاء أول قالب" : "Create your first template"}
+                    </Button>
+                  </div>
+                )}
               </div>
             </CardContent>
           </Card>
