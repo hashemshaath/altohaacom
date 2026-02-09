@@ -3,12 +3,12 @@ import { useLanguage } from "@/i18n/LanguageContext";
 import { useIsAdmin } from "@/hooks/useAdmin";
 import { Navigate, Outlet, NavLink } from "react-router-dom";
 import { AdminHeader } from "@/components/admin/AdminHeader";
-import { Footer } from "@/components/Footer";
 import { cn } from "@/lib/utils";
 import { Handshake, GraduationCap, BarChart3, Landmark, Building2, Gavel } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
+import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import {
   Users,
   Shield,
@@ -33,12 +33,14 @@ import {
   Database,
   Award,
   BookOpen,
+  Menu,
 } from "lucide-react";
 
 export default function AdminLayout() {
   const { t, language } = useLanguage();
   const { data: isAdmin, isLoading } = useIsAdmin();
   const [collapsed, setCollapsed] = useState(false);
+  const [mobileOpen, setMobileOpen] = useState(false);
 
   if (isLoading) {
     return (
@@ -112,19 +114,83 @@ export default function AdminLayout() {
     },
   ];
 
+  const renderNav = (isMobile = false) => (
+    <ScrollArea className="flex-1 p-2">
+      <nav className="space-y-4">
+        {navSections.map((section, idx) => (
+          <div key={idx}>
+            {(!collapsed || isMobile) && (
+              <p className="mb-2 px-3 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                {section.title}
+              </p>
+            )}
+            <div className="space-y-1">
+              {section.items.map((item) => (
+                <NavLink
+                  key={item.to}
+                  to={item.to}
+                  end={item.end}
+                  onClick={() => isMobile && setMobileOpen(false)}
+                  className={({ isActive }) =>
+                    cn(
+                      "flex items-center gap-3 rounded-md px-3 py-2 text-sm transition-colors",
+                      !isMobile && collapsed && "justify-center px-2",
+                      isActive
+                        ? "bg-primary text-primary-foreground"
+                        : "text-muted-foreground hover:bg-muted hover:text-foreground"
+                    )
+                  }
+                  title={!isMobile && collapsed ? item.label : undefined}
+                >
+                  <item.icon className="h-4 w-4 shrink-0" />
+                  {(isMobile || !collapsed) && <span className="truncate">{item.label}</span>}
+                </NavLink>
+              ))}
+            </div>
+            {idx < navSections.length - 1 && (isMobile || !collapsed) && <Separator className="my-3" />}
+          </div>
+        ))}
+      </nav>
+    </ScrollArea>
+  );
+
   return (
     <div className="flex min-h-screen flex-col">
       <AdminHeader />
       <div className="flex flex-1">
-        {/* Sidebar */}
+        {/* Mobile Nav Trigger */}
+        <div className="sticky top-14 z-30 flex h-12 items-center border-b bg-card px-4 md:hidden">
+          <Sheet open={mobileOpen} onOpenChange={setMobileOpen}>
+            <SheetTrigger asChild>
+              <Button variant="ghost" size="icon">
+                <Menu className="h-5 w-5" />
+              </Button>
+            </SheetTrigger>
+            <SheetContent side={language === "ar" ? "right" : "left"} className="w-72 p-0">
+              <div className="flex h-full flex-col">
+                <div className="flex items-center gap-2 border-b p-4">
+                  <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary text-primary-foreground">
+                    <Building className="h-4 w-4" />
+                  </div>
+                  <span className="font-semibold">{language === "ar" ? "لوحة الإدارة" : "Admin Panel"}</span>
+                </div>
+                {renderNav(true)}
+              </div>
+            </SheetContent>
+          </Sheet>
+          <span className="ml-2 text-sm font-medium text-muted-foreground">
+            {language === "ar" ? "القائمة" : "Menu"}
+          </span>
+        </div>
+
+        {/* Desktop Sidebar */}
         <aside 
           className={cn(
-            "sticky top-0 hidden h-[calc(100vh-64px)] shrink-0 border-r bg-card transition-all duration-300 md:block",
+            "sticky top-14 hidden h-[calc(100vh-56px)] shrink-0 border-r bg-card transition-all duration-300 md:block",
             collapsed ? "w-16" : "w-64"
           )}
         >
           <div className="flex h-full flex-col">
-            {/* Collapse Toggle */}
             <div className="flex items-center justify-between border-b p-3">
               {!collapsed && (
                 <div className="flex items-center gap-2">
@@ -143,44 +209,7 @@ export default function AdminLayout() {
                 {collapsed ? <ChevronRight className="h-4 w-4" /> : <ChevronLeft className="h-4 w-4" />}
               </Button>
             </div>
-
-            {/* Navigation */}
-            <ScrollArea className="flex-1 p-2">
-              <nav className="space-y-4">
-                {navSections.map((section, idx) => (
-                  <div key={idx}>
-                    {!collapsed && (
-                      <p className="mb-2 px-3 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-                        {section.title}
-                      </p>
-                    )}
-                    <div className="space-y-1">
-                      {section.items.map((item) => (
-                        <NavLink
-                          key={item.to}
-                          to={item.to}
-                          end={item.end}
-                          className={({ isActive }) =>
-                            cn(
-                              "flex items-center gap-3 rounded-md px-3 py-2 text-sm transition-colors",
-                              collapsed && "justify-center px-2",
-                              isActive
-                                ? "bg-primary text-primary-foreground"
-                                : "text-muted-foreground hover:bg-muted hover:text-foreground"
-                            )
-                          }
-                          title={collapsed ? item.label : undefined}
-                        >
-                          <item.icon className="h-4 w-4 shrink-0" />
-                          {!collapsed && <span className="truncate">{item.label}</span>}
-                        </NavLink>
-                      ))}
-                    </div>
-                    {idx < navSections.length - 1 && !collapsed && <Separator className="my-3" />}
-                  </div>
-                ))}
-              </nav>
-            </ScrollArea>
+            {renderNav(false)}
           </div>
         </aside>
 

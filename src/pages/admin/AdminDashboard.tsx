@@ -18,6 +18,10 @@ import {
   Activity,
   CreditCard,
   UserX,
+  Landmark,
+  Package,
+  Building2,
+  GraduationCap,
 } from "lucide-react";
 import { format } from "date-fns";
 
@@ -36,6 +40,9 @@ export default function AdminDashboard() {
         { count: totalCompetitions },
         { count: totalArticles },
         { count: totalMessages },
+        { count: totalExhibitions },
+        { count: totalOrders },
+        { count: totalMasterclasses },
         { data: recentActions },
         { data: recentUsers },
       ] = await Promise.all([
@@ -46,6 +53,9 @@ export default function AdminDashboard() {
         supabase.from("competitions").select("*", { count: "exact", head: true }),
         supabase.from("articles").select("*", { count: "exact", head: true }),
         supabase.from("messages").select("*", { count: "exact", head: true }),
+        supabase.from("exhibitions").select("*", { count: "exact", head: true }),
+        supabase.from("company_orders").select("*", { count: "exact", head: true }),
+        supabase.from("masterclasses").select("*", { count: "exact", head: true }),
         supabase.from("admin_actions").select("*").order("created_at", { ascending: false }).limit(5),
         supabase.from("profiles").select("id, full_name, username, avatar_url, created_at").order("created_at", { ascending: false }).limit(5),
       ]);
@@ -58,11 +68,14 @@ export default function AdminDashboard() {
         totalCompetitions: totalCompetitions || 0,
         totalArticles: totalArticles || 0,
         totalMessages: totalMessages || 0,
+        totalExhibitions: totalExhibitions || 0,
+        totalOrders: totalOrders || 0,
+        totalMasterclasses: totalMasterclasses || 0,
         recentActions: recentActions || [],
         recentUsers: recentUsers || [],
       };
     },
-    staleTime: 1000 * 30, // Refresh every 30 seconds
+    staleTime: 1000 * 30,
   });
 
   const statCards = [
@@ -70,32 +83,24 @@ export default function AdminDashboard() {
       title: language === "ar" ? "إجمالي المستخدمين" : "Total Users",
       value: stats?.totalUsers || 0,
       icon: Users,
-      color: "text-blue-500",
-      bgColor: "bg-blue-500/10",
+      color: "text-primary",
+      bgColor: "bg-primary/10",
       link: "/admin/users",
     },
     {
       title: language === "ar" ? "المستخدمين النشطين" : "Active Users",
       value: stats?.activeUsers || 0,
       icon: UserCheck,
-      color: "text-green-500",
-      bgColor: "bg-green-500/10",
+      color: "text-primary",
+      bgColor: "bg-primary/10",
       link: "/admin/users?status=active",
-    },
-    {
-      title: language === "ar" ? "الحسابات الموقوفة" : "Suspended",
-      value: stats?.suspendedUsers || 0,
-      icon: UserX,
-      color: "text-red-500",
-      bgColor: "bg-red-500/10",
-      link: "/admin/users?status=suspended",
     },
     {
       title: language === "ar" ? "تقارير معلقة" : "Pending Reports",
       value: stats?.pendingReports || 0,
       icon: Flag,
-      color: "text-orange-500",
-      bgColor: "bg-orange-500/10",
+      color: "text-destructive",
+      bgColor: "bg-destructive/10",
       link: "/admin/moderation",
       urgent: (stats?.pendingReports || 0) > 0,
     },
@@ -103,17 +108,41 @@ export default function AdminDashboard() {
       title: language === "ar" ? "المسابقات" : "Competitions",
       value: stats?.totalCompetitions || 0,
       icon: Trophy,
-      color: "text-purple-500",
-      bgColor: "bg-purple-500/10",
-      link: "/competitions",
+      color: "text-primary",
+      bgColor: "bg-primary/10",
+      link: "/admin/competitions",
+    },
+    {
+      title: language === "ar" ? "المعارض" : "Exhibitions",
+      value: stats?.totalExhibitions || 0,
+      icon: Landmark,
+      color: "text-primary",
+      bgColor: "bg-primary/10",
+      link: "/admin/exhibitions",
+    },
+    {
+      title: language === "ar" ? "الدورات" : "Masterclasses",
+      value: stats?.totalMasterclasses || 0,
+      icon: GraduationCap,
+      color: "text-primary",
+      bgColor: "bg-primary/10",
+      link: "/admin/masterclasses",
     },
     {
       title: language === "ar" ? "المقالات" : "Articles",
       value: stats?.totalArticles || 0,
       icon: FileText,
-      color: "text-cyan-500",
-      bgColor: "bg-cyan-500/10",
-      link: "/news",
+      color: "text-primary",
+      bgColor: "bg-primary/10",
+      link: "/admin/articles",
+    },
+    {
+      title: language === "ar" ? "الطلبات" : "Orders",
+      value: stats?.totalOrders || 0,
+      icon: Package,
+      color: "text-primary",
+      bgColor: "bg-primary/10",
+      link: "/admin/orders",
     },
   ];
 
@@ -178,7 +207,7 @@ export default function AdminDashboard() {
       </div>
 
       {/* Stats Grid */}
-      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6">
+      <div className="grid gap-4 grid-cols-2 sm:grid-cols-3 lg:grid-cols-4">
         {statCards.map((stat) => (
           <Link key={stat.title} to={stat.link}>
             <Card className={`hover:shadow-md transition-shadow ${stat.urgent ? "ring-2 ring-orange-500" : ""}`}>
