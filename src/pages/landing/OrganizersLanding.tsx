@@ -1,16 +1,17 @@
 import { useState } from "react";
-import { Calendar, Users, BarChart3, Shield, CheckCircle, ArrowRight, Star } from "lucide-react";
+import { Calendar, Users, BarChart3, Shield, CheckCircle, ArrowRight, Star, Sparkles } from "lucide-react";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { useToast } from "@/hooks/use-toast";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { supabase } from "@/integrations/supabase/client";
 import { Link } from "react-router-dom";
+import { SEOHead } from "@/components/SEOHead";
 
 const features = [
   {
@@ -51,6 +52,7 @@ const testimonials = [
     roleAr: "منظم مسابقات",
     quote: "Altohaa transformed how we run our culinary events. The platform is intuitive and powerful.",
     quoteAr: "غيّرت التُهاء طريقة إدارتنا للفعاليات الطهوية. المنصة سهلة الاستخدام وقوية.",
+    initials: "AH",
   },
   {
     name: "Sarah Mitchell",
@@ -59,6 +61,7 @@ const testimonials = [
     roleAr: "مديرة مدرسة طهي",
     quote: "Our students love participating in competitions through Altohaa. It's professional and easy to use.",
     quoteAr: "يحب طلابنا المشاركة في المسابقات عبر التُهاء. إنها احترافية وسهلة الاستخدام.",
+    initials: "SM",
   },
 ];
 
@@ -73,6 +76,8 @@ export default function OrganizersLanding() {
     phone: "",
     message: "",
   });
+
+  const isAr = language === "ar";
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -92,20 +97,16 @@ export default function OrganizersLanding() {
       if (error) throw error;
 
       toast({
-        title: language === "ar" ? "تم الإرسال بنجاح" : "Submitted Successfully",
-        description: language === "ar" 
-          ? "سنتواصل معك قريباً" 
-          : "We'll be in touch soon",
+        title: isAr ? "تم الإرسال بنجاح" : "Submitted Successfully",
+        description: isAr ? "سنتواصل معك قريباً" : "We'll be in touch soon",
       });
 
       setFormData({ organizationName: "", contactName: "", email: "", phone: "", message: "" });
     } catch (error) {
       toast({
         variant: "destructive",
-        title: language === "ar" ? "خطأ" : "Error",
-        description: language === "ar" 
-          ? "حدث خطأ، يرجى المحاولة مرة أخرى" 
-          : "Something went wrong, please try again",
+        title: isAr ? "خطأ" : "Error",
+        description: isAr ? "حدث خطأ، يرجى المحاولة مرة أخرى" : "Something went wrong, please try again",
       });
     } finally {
       setLoading(false);
@@ -114,33 +115,39 @@ export default function OrganizersLanding() {
 
   return (
     <div className="flex min-h-screen flex-col bg-background">
+      <SEOHead title="For Organizers" description="Create and manage exceptional culinary competitions with Altohaa" />
       <Header />
       <main className="flex-1">
         {/* Hero */}
-        <section className="relative py-20 overflow-hidden">
-          <div className="absolute inset-0 bg-gradient-to-br from-primary/20 via-primary/5 to-background" />
+        <section className="relative py-24 md:py-32 overflow-hidden">
+          <div className="absolute inset-0 bg-gradient-to-br from-primary/15 via-primary/5 to-transparent" />
+          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,hsl(var(--primary)/0.08),transparent_70%)]" />
           <div className="container mx-auto px-4 relative z-10">
             <div className="max-w-3xl mx-auto text-center">
-              <h1 className="font-serif text-5xl font-bold mb-6">
-                {language === "ar" 
-                  ? "أنشئ مسابقات طهوية استثنائية"
-                  : "Create Exceptional Culinary Competitions"}
+              <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/5 px-4 py-1.5">
+                <Sparkles className="h-3.5 w-3.5 text-primary" />
+                <span className="text-xs font-medium text-primary">
+                  {isAr ? "منصة إدارة المسابقات" : "Competition Management Platform"}
+                </span>
+              </div>
+              <h1 className="font-serif text-4xl font-bold md:text-5xl lg:text-6xl">
+                {isAr ? "أنشئ مسابقات طهوية استثنائية" : "Create Exceptional Culinary Competitions"}
               </h1>
-              <p className="text-xl text-muted-foreground mb-8">
-                {language === "ar"
+              <p className="mt-4 text-lg text-muted-foreground md:text-xl">
+                {isAr
                   ? "منصة متكاملة لإدارة المسابقات من التسجيل إلى الإعلان عن الفائزين"
                   : "A complete platform to manage competitions from registration to announcing winners"}
               </p>
-              <div className="flex gap-4 justify-center">
+              <div className="mt-8 flex gap-3 justify-center">
                 <Button size="lg" className="gap-2" asChild>
                   <Link to="/auth?tab=signup">
-                    {language === "ar" ? "ابدأ مجاناً" : "Start Free"}
-                    <ArrowRight className="h-5 w-5" />
+                    {isAr ? "ابدأ مجاناً" : "Start Free"}
+                    <ArrowRight className="h-4 w-4" />
                   </Link>
                 </Button>
                 <Button size="lg" variant="outline" asChild>
                   <Link to="/competitions">
-                    {language === "ar" ? "شاهد المسابقات" : "View Competitions"}
+                    {isAr ? "شاهد المسابقات" : "View Competitions"}
                   </Link>
                 </Button>
               </div>
@@ -149,28 +156,30 @@ export default function OrganizersLanding() {
         </section>
 
         {/* Features */}
-        <section className="py-16">
+        <section className="py-16 md:py-20">
           <div className="container mx-auto px-4">
-            <h2 className="text-3xl font-serif font-bold text-center mb-4">
-              {language === "ar" ? "كل ما تحتاجه لتنظيم المسابقات" : "Everything You Need to Organize Competitions"}
-            </h2>
-            <p className="text-center text-muted-foreground mb-12 max-w-2xl mx-auto">
-              {language === "ar"
-                ? "أدوات قوية وسهلة الاستخدام لإدارة جميع جوانب مسابقتك"
-                : "Powerful yet easy-to-use tools to manage every aspect of your competition"}
-            </p>
-            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div className="mb-12 text-center">
+              <h2 className="text-3xl font-serif font-bold">
+                {isAr ? "كل ما تحتاجه لتنظيم المسابقات" : "Everything You Need to Organize Competitions"}
+              </h2>
+              <p className="mt-2 text-muted-foreground max-w-2xl mx-auto">
+                {isAr
+                  ? "أدوات قوية وسهلة الاستخدام لإدارة جميع جوانب مسابقتك"
+                  : "Powerful yet easy-to-use tools to manage every aspect of your competition"}
+              </p>
+            </div>
+            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4">
               {features.map((feature, i) => (
-                <Card key={i}>
+                <Card key={i} className="border-border/60">
                   <CardContent className="pt-6">
-                    <div className="h-12 w-12 rounded-lg bg-primary/10 flex items-center justify-center mb-4">
+                    <div className="h-12 w-12 rounded-xl bg-primary/10 flex items-center justify-center mb-4">
                       <feature.icon className="h-6 w-6 text-primary" />
                     </div>
-                    <h3 className="font-semibold mb-2">
-                      {language === "ar" ? feature.titleAr : feature.titleEn}
+                    <h3 className="font-semibold mb-1.5">
+                      {isAr ? feature.titleAr : feature.titleEn}
                     </h3>
-                    <p className="text-sm text-muted-foreground">
-                      {language === "ar" ? feature.descAr : feature.descEn}
+                    <p className="text-sm text-muted-foreground leading-relaxed">
+                      {isAr ? feature.descAr : feature.descEn}
                     </p>
                   </CardContent>
                 </Card>
@@ -180,30 +189,39 @@ export default function OrganizersLanding() {
         </section>
 
         {/* Testimonials */}
-        <section className="py-16 bg-muted/30">
+        <section className="py-16 md:py-20 bg-muted/30">
           <div className="container mx-auto px-4">
-            <h2 className="text-3xl font-serif font-bold text-center mb-12">
-              {language === "ar" ? "ماذا يقول المنظمون" : "What Organizers Say"}
-            </h2>
-            <div className="grid md:grid-cols-2 gap-6 max-w-4xl mx-auto">
+            <div className="mb-12 text-center">
+              <h2 className="text-3xl font-serif font-bold">
+                {isAr ? "ماذا يقول المنظمون" : "What Organizers Say"}
+              </h2>
+            </div>
+            <div className="grid md:grid-cols-2 gap-5 max-w-4xl mx-auto">
               {testimonials.map((testimonial, i) => (
-                <Card key={i}>
-                  <CardContent className="pt-6">
-                    <div className="flex gap-1 mb-4">
+                <Card key={i} className="border-border/60">
+                  <CardContent className="p-6">
+                    <div className="flex gap-0.5 mb-4">
                       {[...Array(5)].map((_, j) => (
                         <Star key={j} className="h-4 w-4 fill-primary text-primary" />
                       ))}
                     </div>
-                    <p className="text-muted-foreground mb-4">
-                      "{language === "ar" ? testimonial.quoteAr : testimonial.quote}"
+                    <p className="text-muted-foreground leading-relaxed mb-5">
+                      "{isAr ? testimonial.quoteAr : testimonial.quote}"
                     </p>
-                    <div>
-                      <p className="font-semibold">
-                        {language === "ar" ? testimonial.nameAr : testimonial.name}
-                      </p>
-                      <p className="text-sm text-muted-foreground">
-                        {language === "ar" ? testimonial.roleAr : testimonial.role}
-                      </p>
+                    <div className="flex items-center gap-3 border-t pt-4">
+                      <Avatar className="h-9 w-9">
+                        <AvatarFallback className="bg-primary/10 text-primary text-xs font-semibold">
+                          {testimonial.initials}
+                        </AvatarFallback>
+                      </Avatar>
+                      <div>
+                        <p className="text-sm font-semibold leading-none">
+                          {isAr ? testimonial.nameAr : testimonial.name}
+                        </p>
+                        <p className="mt-1 text-xs text-muted-foreground">
+                          {isAr ? testimonial.roleAr : testimonial.role}
+                        </p>
+                      </div>
                     </div>
                   </CardContent>
                 </Card>
@@ -213,43 +231,45 @@ export default function OrganizersLanding() {
         </section>
 
         {/* CTA / Contact Form */}
-        <section className="py-16">
+        <section className="py-16 md:py-20">
           <div className="container mx-auto px-4">
-            <div className="grid lg:grid-cols-2 gap-12 items-center max-w-5xl mx-auto">
-              <div>
-                <h2 className="text-3xl font-serif font-bold mb-4">
-                  {language === "ar" ? "جاهز للبدء؟" : "Ready to Get Started?"}
+            <div className="grid lg:grid-cols-2 gap-12 items-start max-w-5xl mx-auto">
+              <div className="lg:sticky lg:top-24">
+                <h2 className="text-3xl font-serif font-bold mb-3">
+                  {isAr ? "جاهز للبدء؟" : "Ready to Get Started?"}
                 </h2>
                 <p className="text-muted-foreground mb-6">
-                  {language === "ar"
+                  {isAr
                     ? "انضم إلى مئات المنظمين الذين يثقون في التُهاء لإدارة مسابقاتهم"
                     : "Join hundreds of organizers who trust Altohaa to manage their competitions"}
                 </p>
                 <ul className="space-y-3">
                   {[
-                    language === "ar" ? "إعداد مجاني بدون بطاقة ائتمان" : "Free setup, no credit card required",
-                    language === "ar" ? "دعم فني على مدار الساعة" : "24/7 technical support",
-                    language === "ar" ? "تدريب شخصي للفريق" : "Personal team training",
-                    language === "ar" ? "استيراد البيانات من أنظمة أخرى" : "Data import from other systems",
+                    isAr ? "إعداد مجاني بدون بطاقة ائتمان" : "Free setup, no credit card required",
+                    isAr ? "دعم فني على مدار الساعة" : "24/7 technical support",
+                    isAr ? "تدريب شخصي للفريق" : "Personal team training",
+                    isAr ? "استيراد البيانات من أنظمة أخرى" : "Data import from other systems",
                   ].map((item, i) => (
-                    <li key={i} className="flex items-center gap-2">
-                      <CheckCircle className="h-5 w-5 text-primary" />
+                    <li key={i} className="flex items-center gap-2.5 text-sm">
+                      <div className="flex h-5 w-5 items-center justify-center rounded-full bg-primary/10">
+                        <CheckCircle className="h-3.5 w-3.5 text-primary" />
+                      </div>
                       {item}
                     </li>
                   ))}
                 </ul>
               </div>
-              <Card>
-                <CardHeader>
-                  <CardTitle>
-                    {language === "ar" ? "احصل على عرض توضيحي" : "Get a Demo"}
+              <Card className="border-border/60">
+                <CardHeader className="border-b bg-muted/30 px-6 py-4">
+                  <CardTitle className="text-base">
+                    {isAr ? "احصل على عرض توضيحي" : "Get a Demo"}
                   </CardTitle>
                 </CardHeader>
-                <CardContent>
+                <CardContent className="p-6">
                   <form onSubmit={handleSubmit} className="space-y-4">
                     <div className="space-y-2">
                       <Label htmlFor="organizationName">
-                        {language === "ar" ? "اسم المنظمة" : "Organization Name"}
+                        {isAr ? "اسم المنظمة" : "Organization Name"}
                       </Label>
                       <Input
                         id="organizationName"
@@ -260,7 +280,7 @@ export default function OrganizersLanding() {
                     </div>
                     <div className="space-y-2">
                       <Label htmlFor="contactName">
-                        {language === "ar" ? "اسم جهة الاتصال" : "Contact Name"}
+                        {isAr ? "اسم جهة الاتصال" : "Contact Name"}
                       </Label>
                       <Input
                         id="contactName"
@@ -270,7 +290,7 @@ export default function OrganizersLanding() {
                       />
                     </div>
                     <div className="space-y-2">
-                      <Label htmlFor="email">{language === "ar" ? "البريد الإلكتروني" : "Email"}</Label>
+                      <Label htmlFor="email">{isAr ? "البريد الإلكتروني" : "Email"}</Label>
                       <Input
                         id="email"
                         type="email"
@@ -280,7 +300,7 @@ export default function OrganizersLanding() {
                       />
                     </div>
                     <div className="space-y-2">
-                      <Label htmlFor="phone">{language === "ar" ? "الهاتف" : "Phone"}</Label>
+                      <Label htmlFor="phone">{isAr ? "الهاتف" : "Phone"}</Label>
                       <Input
                         id="phone"
                         value={formData.phone}
@@ -288,9 +308,9 @@ export default function OrganizersLanding() {
                       />
                     </div>
                     <Button type="submit" className="w-full" disabled={loading}>
-                      {loading 
-                        ? (language === "ar" ? "جاري الإرسال..." : "Sending...") 
-                        : (language === "ar" ? "طلب عرض توضيحي" : "Request Demo")}
+                      {loading
+                        ? (isAr ? "جاري الإرسال..." : "Sending...")
+                        : (isAr ? "طلب عرض توضيحي" : "Request Demo")}
                     </Button>
                   </form>
                 </CardContent>
