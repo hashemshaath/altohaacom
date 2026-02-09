@@ -22,27 +22,18 @@ interface ActivityItem {
 export function RecentActivityWidget() {
   const { user } = useAuth();
   const { language, t } = useLanguage();
+  const isAr = language === "ar";
 
   const { data: activities, isLoading } = useQuery({
     queryKey: ["recent-activity-widget", user?.id],
     queryFn: async () => {
       if (!user) return [];
 
-      // Fetch user's recent registrations
       const { data: registrations, error } = await supabase
         .from("competition_registrations")
         .select(`
-          id,
-          status,
-          registered_at,
-          approved_at,
-          dish_name,
-          competition_id,
-          competitions (
-            id,
-            title,
-            title_ar
-          )
+          id, status, registered_at, approved_at, dish_name, competition_id,
+          competitions (id, title, title_ar)
         `)
         .eq("participant_id", user.id)
         .order("registered_at", { ascending: false })
@@ -50,27 +41,19 @@ export function RecentActivityWidget() {
 
       if (error) throw error;
 
-      // Transform to activity items
       const activityItems: ActivityItem[] = [];
 
       registrations?.forEach((reg) => {
         const comp = reg.competitions as { id: string; title: string; title_ar: string | null } | null;
         const competitionTitle = comp
-          ? language === "ar" && comp.title_ar
-            ? comp.title_ar
-            : comp.title
-          : language === "ar"
-          ? "مسابقة"
-          : "Competition";
+          ? isAr && comp.title_ar ? comp.title_ar : comp.title
+          : isAr ? "مسابقة" : "Competition";
 
         activityItems.push({
           id: reg.id,
           type: "registration",
-          title:
-            language === "ar"
-              ? `سجلت في ${competitionTitle}`
-              : `Registered for ${competitionTitle}`,
-          subtitle: reg.dish_name || (language === "ar" ? "طبق" : "Dish"),
+          title: isAr ? `سجلت في ${competitionTitle}` : `Registered for ${competitionTitle}`,
+          subtitle: reg.dish_name || (isAr ? "طبق" : "Dish"),
           status: reg.status,
           timestamp: reg.approved_at || reg.registered_at,
           competitionId: reg.competition_id,
@@ -84,14 +67,10 @@ export function RecentActivityWidget() {
 
   const getStatusIcon = (status: string) => {
     switch (status) {
-      case "approved":
-        return <CheckCircle className="h-4 w-4 text-primary" />;
-      case "rejected":
-        return <XCircle className="h-4 w-4 text-destructive" />;
-      case "pending":
-        return <Clock className="h-4 w-4 text-warning" />;
-      default:
-        return <ChefHat className="h-4 w-4 text-muted-foreground" />;
+      case "approved": return <CheckCircle className="h-3.5 w-3.5 text-chart-5" />;
+      case "rejected": return <XCircle className="h-3.5 w-3.5 text-destructive" />;
+      case "pending": return <Clock className="h-3.5 w-3.5 text-chart-4" />;
+      default: return <ChefHat className="h-3.5 w-3.5 text-muted-foreground" />;
     }
   };
 
@@ -102,16 +81,14 @@ export function RecentActivityWidget() {
       rejected: "destructive",
       withdrawn: "outline",
     };
-
     const labels: Record<string, string> = {
-      approved: language === "ar" ? "موافق عليه" : "Approved",
-      pending: language === "ar" ? "معلق" : "Pending",
-      rejected: language === "ar" ? "مرفوض" : "Rejected",
-      withdrawn: language === "ar" ? "منسحب" : "Withdrawn",
+      approved: isAr ? "موافق عليه" : "Approved",
+      pending: isAr ? "معلق" : "Pending",
+      rejected: isAr ? "مرفوض" : "Rejected",
+      withdrawn: isAr ? "منسحب" : "Withdrawn",
     };
-
     return (
-      <Badge variant={variants[status] || "secondary"}>
+      <Badge variant={variants[status] || "secondary"} className="text-[10px]">
         {labels[status] || status}
       </Badge>
     );
@@ -121,23 +98,21 @@ export function RecentActivityWidget() {
     return (
       <Card>
         <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Activity className="h-5 w-5 text-primary" />
-            {language === "ar" ? "النشاط الأخير" : "Recent Activity"}
+          <CardTitle className="flex items-center gap-2 text-base">
+            <Activity className="h-4 w-4 text-primary" />
+            {isAr ? "النشاط الأخير" : "Recent Activity"}
           </CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="py-8 text-center">
-            <Activity className="mx-auto mb-2 h-12 w-12 text-muted-foreground/50" />
-            <p className="text-muted-foreground">
-              {language === "ar"
-                ? "سجل الدخول لعرض نشاطك"
-                : "Sign in to view your activity"}
+          <div className="py-10 text-center">
+            <div className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-2xl bg-muted/60">
+              <Activity className="h-6 w-6 text-muted-foreground/40" />
+            </div>
+            <p className="text-sm text-muted-foreground">
+              {isAr ? "سجل الدخول لعرض نشاطك" : "Sign in to view your activity"}
             </p>
-            <Link to="/auth">
-              <span className="mt-2 inline-block text-primary hover:underline">
-                {t("signIn")}
-              </span>
+            <Link to="/auth" className="mt-2 inline-block text-sm text-primary hover:underline">
+              {t("signIn")}
             </Link>
           </div>
         </CardContent>
@@ -149,12 +124,10 @@ export function RecentActivityWidget() {
     return (
       <Card>
         <CardHeader>
-          <Skeleton className="h-6 w-40" />
+          <Skeleton className="h-5 w-36" />
         </CardHeader>
-        <CardContent className="space-y-4">
-          <Skeleton className="h-16 w-full" />
-          <Skeleton className="h-16 w-full" />
-          <Skeleton className="h-16 w-full" />
+        <CardContent className="space-y-3">
+          {[1, 2, 3].map((i) => <Skeleton key={i} className="h-14 w-full" />)}
         </CardContent>
       </Card>
     );
@@ -162,50 +135,44 @@ export function RecentActivityWidget() {
 
   return (
     <Card>
-      <CardHeader>
-        <CardTitle className="flex items-center gap-2">
-          <Activity className="h-5 w-5 text-primary" />
-          {language === "ar" ? "النشاط الأخير" : "Recent Activity"}
+      <CardHeader className="pb-3">
+        <CardTitle className="flex items-center gap-2 text-base">
+          <Activity className="h-4 w-4 text-primary" />
+          {isAr ? "النشاط الأخير" : "Recent Activity"}
         </CardTitle>
       </CardHeader>
       <CardContent>
         {activities && activities.length > 0 ? (
-          <div className="space-y-4">
+          <div className="divide-y">
             {activities.map((activity) => (
               <Link
                 key={activity.id}
                 to={`/competitions/${activity.competitionId}`}
-                className="block"
+                className="flex items-start gap-2.5 py-3 first:pt-0 last:pb-0 transition-colors hover:bg-muted/30 -mx-1 px-1 rounded-md"
               >
-                <div className="flex items-start gap-3 rounded-lg border p-3 transition-colors hover:bg-muted/50">
-                  <div className="mt-0.5">{getStatusIcon(activity.status)}</div>
-                  <div className="flex-1 space-y-1">
-                    <div className="flex items-center justify-between gap-2">
-                      <p className="text-sm font-medium">{activity.title}</p>
-                      {getStatusBadge(activity.status)}
-                    </div>
-                    <p className="text-xs text-muted-foreground">
-                      {formatDistanceToNow(new Date(activity.timestamp), {
-                        addSuffix: true,
-                      })}
-                    </p>
+                <div className="mt-1 shrink-0">{getStatusIcon(activity.status)}</div>
+                <div className="flex-1 min-w-0">
+                  <p className="text-sm font-medium line-clamp-2 leading-snug">{activity.title}</p>
+                  <div className="mt-1 flex items-center gap-2">
+                    {getStatusBadge(activity.status)}
+                    <span className="text-[10px] text-muted-foreground">
+                      {formatDistanceToNow(new Date(activity.timestamp), { addSuffix: true })}
+                    </span>
                   </div>
                 </div>
               </Link>
             ))}
           </div>
         ) : (
-          <div className="py-8 text-center">
-            <Trophy className="mx-auto mb-2 h-12 w-12 text-muted-foreground/50" />
-            <p className="text-muted-foreground">
-              {language === "ar"
-                ? "لا يوجد نشاط حتى الآن"
-                : "No activity yet"}
+          <div className="py-10 text-center">
+            <div className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-2xl bg-muted/60">
+              <Trophy className="h-6 w-6 text-muted-foreground/40" />
+            </div>
+            <p className="text-sm text-muted-foreground">
+              {isAr ? "لا يوجد نشاط حتى الآن" : "No activity yet"}
             </p>
-            <p className="mt-1 text-sm text-muted-foreground">
-              {language === "ar"
-                ? "سجل في مسابقة للبدء!"
-                : "Register for a competition to get started!"}
+            <p className="mt-0.5 text-xs text-muted-foreground">
+              {isAr ? "سجل في مسابقة للبدء!" : "Register for a competition to get started!"}
             </p>
           </div>
         )}

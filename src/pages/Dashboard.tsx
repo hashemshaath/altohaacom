@@ -2,8 +2,7 @@ import { useLanguage } from "@/i18n/LanguageContext";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { Card, CardContent } from "@/components/ui/card";
-import { Trophy, Users, GraduationCap, Landmark, Newspaper, MessageSquare } from "lucide-react";
-import { Badge } from "@/components/ui/badge";
+import { Trophy, Users, GraduationCap, Landmark, Newspaper, MessageSquare, ArrowRight } from "lucide-react";
 import { Link } from "react-router-dom";
 import { UpcomingCompetitionsWidget } from "@/components/dashboard/UpcomingCompetitionsWidget";
 import { RecentActivityWidget } from "@/components/dashboard/RecentActivityWidget";
@@ -16,6 +15,7 @@ import { SEOHead } from "@/components/SEOHead";
 export default function Dashboard() {
   const { t, language } = useLanguage();
   const { user } = useAuth();
+  const isAr = language === "ar";
 
   const { data: profile } = useQuery({
     queryKey: ["dashboard-profile", user?.id],
@@ -32,7 +32,7 @@ export default function Dashboard() {
   });
 
   const firstName = profile?.full_name?.split(" ")[0] || "";
-  const greeting = language === "ar"
+  const greeting = isAr
     ? `مرحباً${firstName ? ` ${firstName}` : ""} 👋`
     : `Welcome back${firstName ? `, ${firstName}` : ""} 👋`;
 
@@ -42,19 +42,19 @@ export default function Dashboard() {
     { icon: GraduationCap, title: t("masterclassesTitle"), href: "/masterclasses" },
     { icon: Landmark, title: t("exhibitions") || "Exhibitions", href: "/exhibitions" },
     { icon: Newspaper, title: t("news") || "News", href: "/news" },
-    { icon: MessageSquare, title: language === "ar" ? "الرسائل" : "Messages", href: "/messages" },
+    { icon: MessageSquare, title: isAr ? "الرسائل" : "Messages", href: "/messages" },
   ];
 
   return (
     <div className="flex min-h-screen flex-col">
       <SEOHead title="Dashboard" description="Your personal Altohaa dashboard" />
       <Header />
-      <main className="container flex-1 py-6">
+      <main className="container flex-1 py-8 md:py-10">
         {/* Welcome */}
-        <div className="mb-6">
+        <div className="mb-8">
           <h1 className="font-serif text-2xl font-bold md:text-3xl">{greeting}</h1>
-          <p className="text-muted-foreground">
-            {language === "ar"
+          <p className="mt-0.5 text-sm text-muted-foreground md:text-base">
+            {isAr
               ? "إليك ملخص نشاطك ومسابقاتك القادمة"
               : "Here's a summary of your activity and upcoming competitions"}
           </p>
@@ -62,7 +62,7 @@ export default function Dashboard() {
 
         {/* Quick Stats */}
         {user && (
-          <div className="mb-6">
+          <div className="mb-8">
             <QuickStatsWidget />
           </div>
         )}
@@ -78,17 +78,19 @@ export default function Dashboard() {
         </div>
 
         {/* Quick Navigation */}
-        <div className="mt-8">
-          <h2 className="mb-4 text-lg font-semibold">{t("quickLinks")}</h2>
+        <div className="mt-10">
+          <h2 className="mb-4 text-sm font-semibold uppercase tracking-wider text-muted-foreground">
+            {t("quickLinks")}
+          </h2>
           <div className="grid gap-3 grid-cols-2 sm:grid-cols-3 lg:grid-cols-6">
             {sections.map((s) => (
               <Link key={s.title} to={s.href}>
-                <Card className="group cursor-pointer transition-shadow hover:shadow-md h-full">
+                <Card className="group h-full transition-all hover:shadow-sm hover:-translate-y-0.5">
                   <CardContent className="flex flex-col items-center gap-2 p-4 text-center">
-                    <div className="rounded-full bg-primary/10 p-3">
+                    <div className="rounded-lg bg-primary/10 p-2.5 transition-colors group-hover:bg-primary/15">
                       <s.icon className="h-5 w-5 text-primary" />
                     </div>
-                    <h3 className="text-sm font-medium">{s.title}</h3>
+                    <h3 className="text-xs font-medium">{s.title}</h3>
                   </CardContent>
                 </Card>
               </Link>
