@@ -1468,6 +1468,76 @@ export type Database = {
           },
         ]
       }
+      competition_sponsors: {
+        Row: {
+          amount_paid: number | null
+          company_id: string
+          competition_id: string
+          created_at: string | null
+          created_by: string | null
+          custom_benefits: Json | null
+          id: string
+          logo_url: string | null
+          notes: string | null
+          package_id: string | null
+          status: string | null
+          tier: Database["public"]["Enums"]["sponsorship_tier"]
+          updated_at: string | null
+        }
+        Insert: {
+          amount_paid?: number | null
+          company_id: string
+          competition_id: string
+          created_at?: string | null
+          created_by?: string | null
+          custom_benefits?: Json | null
+          id?: string
+          logo_url?: string | null
+          notes?: string | null
+          package_id?: string | null
+          status?: string | null
+          tier?: Database["public"]["Enums"]["sponsorship_tier"]
+          updated_at?: string | null
+        }
+        Update: {
+          amount_paid?: number | null
+          company_id?: string
+          competition_id?: string
+          created_at?: string | null
+          created_by?: string | null
+          custom_benefits?: Json | null
+          id?: string
+          logo_url?: string | null
+          notes?: string | null
+          package_id?: string | null
+          status?: string | null
+          tier?: Database["public"]["Enums"]["sponsorship_tier"]
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "competition_sponsors_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "competition_sponsors_competition_id_fkey"
+            columns: ["competition_id"]
+            isOneToOne: false
+            referencedRelation: "competitions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "competition_sponsors_package_id_fkey"
+            columns: ["package_id"]
+            isOneToOne: false
+            referencedRelation: "sponsorship_packages"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       competitions: {
         Row: {
           city: string | null
@@ -1701,6 +1771,48 @@ export type Database = {
           last_message_at?: string
           participant_1?: string
           participant_2?: string
+        }
+        Relationships: []
+      }
+      digital_badges: {
+        Row: {
+          badge_type: Database["public"]["Enums"]["badge_type"]
+          color: string | null
+          created_at: string | null
+          created_by: string | null
+          description: string | null
+          description_ar: string | null
+          icon_url: string | null
+          id: string
+          is_active: boolean | null
+          name: string
+          name_ar: string | null
+        }
+        Insert: {
+          badge_type: Database["public"]["Enums"]["badge_type"]
+          color?: string | null
+          created_at?: string | null
+          created_by?: string | null
+          description?: string | null
+          description_ar?: string | null
+          icon_url?: string | null
+          id?: string
+          is_active?: boolean | null
+          name: string
+          name_ar?: string | null
+        }
+        Update: {
+          badge_type?: Database["public"]["Enums"]["badge_type"]
+          color?: string | null
+          created_at?: string | null
+          created_by?: string | null
+          description?: string | null
+          description_ar?: string | null
+          icon_url?: string | null
+          id?: string
+          is_active?: boolean | null
+          name?: string
+          name_ar?: string | null
         }
         Relationships: []
       }
@@ -2847,6 +2959,121 @@ export type Database = {
           },
         ]
       }
+      sponsorship_packages: {
+        Row: {
+          benefits: Json | null
+          created_at: string | null
+          created_by: string | null
+          currency: string | null
+          description: string | null
+          description_ar: string | null
+          id: string
+          is_active: boolean | null
+          logo_on_certificates: boolean | null
+          logo_placement: string | null
+          max_sponsors: number | null
+          name: string
+          name_ar: string | null
+          price: number | null
+          sort_order: number | null
+          tier: Database["public"]["Enums"]["sponsorship_tier"]
+          updated_at: string | null
+        }
+        Insert: {
+          benefits?: Json | null
+          created_at?: string | null
+          created_by?: string | null
+          currency?: string | null
+          description?: string | null
+          description_ar?: string | null
+          id?: string
+          is_active?: boolean | null
+          logo_on_certificates?: boolean | null
+          logo_placement?: string | null
+          max_sponsors?: number | null
+          name: string
+          name_ar?: string | null
+          price?: number | null
+          sort_order?: number | null
+          tier: Database["public"]["Enums"]["sponsorship_tier"]
+          updated_at?: string | null
+        }
+        Update: {
+          benefits?: Json | null
+          created_at?: string | null
+          created_by?: string | null
+          currency?: string | null
+          description?: string | null
+          description_ar?: string | null
+          id?: string
+          is_active?: boolean | null
+          logo_on_certificates?: boolean | null
+          logo_placement?: string | null
+          max_sponsors?: number | null
+          name?: string
+          name_ar?: string | null
+          price?: number | null
+          sort_order?: number | null
+          tier?: Database["public"]["Enums"]["sponsorship_tier"]
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
+      user_badges: {
+        Row: {
+          badge_id: string
+          certificate_id: string | null
+          competition_id: string | null
+          earned_at: string | null
+          id: string
+          is_public: boolean | null
+          share_token: string | null
+          user_id: string
+        }
+        Insert: {
+          badge_id: string
+          certificate_id?: string | null
+          competition_id?: string | null
+          earned_at?: string | null
+          id?: string
+          is_public?: boolean | null
+          share_token?: string | null
+          user_id: string
+        }
+        Update: {
+          badge_id?: string
+          certificate_id?: string | null
+          competition_id?: string | null
+          earned_at?: string | null
+          id?: string
+          is_public?: boolean | null
+          share_token?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_badges_badge_id_fkey"
+            columns: ["badge_id"]
+            isOneToOne: false
+            referencedRelation: "digital_badges"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "user_badges_certificate_id_fkey"
+            columns: ["certificate_id"]
+            isOneToOne: false
+            referencedRelation: "certificates"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "user_badges_competition_id_fkey"
+            columns: ["competition_id"]
+            isOneToOne: false
+            referencedRelation: "competitions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       user_roles: {
         Row: {
           id: string
@@ -2901,6 +3128,16 @@ export type Database = {
         | "sponsor"
         | "assistant"
         | "supervisor"
+      badge_type:
+        | "gold_winner"
+        | "silver_winner"
+        | "bronze_winner"
+        | "participant"
+        | "judge"
+        | "organizer"
+        | "volunteer"
+        | "sponsor"
+        | "special"
       certificate_status:
         | "draft"
         | "pending_signature"
@@ -2952,6 +3189,7 @@ export type Database = {
         | "in_progress"
         | "completed"
         | "cancelled"
+      sponsorship_tier: "platinum" | "gold" | "silver" | "bronze" | "custom"
       transaction_type:
         | "invoice"
         | "payment"
@@ -3097,6 +3335,17 @@ export const Constants = {
         "assistant",
         "supervisor",
       ],
+      badge_type: [
+        "gold_winner",
+        "silver_winner",
+        "bronze_winner",
+        "participant",
+        "judge",
+        "organizer",
+        "volunteer",
+        "sponsor",
+        "special",
+      ],
       certificate_status: [
         "draft",
         "pending_signature",
@@ -3153,6 +3402,7 @@ export const Constants = {
         "completed",
         "cancelled",
       ],
+      sponsorship_tier: ["platinum", "gold", "silver", "bronze", "custom"],
       transaction_type: [
         "invoice",
         "payment",
