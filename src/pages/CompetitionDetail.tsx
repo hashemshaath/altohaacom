@@ -11,7 +11,22 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Calendar, MapPin, Users, Globe, Trophy, ArrowLeft, CheckCircle, Settings, Pencil, Award, BookOpen, ClipboardList } from "lucide-react";
+import { Separator } from "@/components/ui/separator";
+import {
+  Calendar,
+  MapPin,
+  Users,
+  Globe,
+  Trophy,
+  ArrowLeft,
+  CheckCircle,
+  Settings,
+  Pencil,
+  Award,
+  BookOpen,
+  ClipboardList,
+  Clock,
+} from "lucide-react";
 import { SEOHead } from "@/components/SEOHead";
 import { format } from "date-fns";
 import { CompetitionStatusManager } from "@/components/competitions/CompetitionStatusManager";
@@ -40,13 +55,13 @@ type CompetitionStatus = Database["public"]["Enums"]["competition_status"];
 
 const statusColors: Record<CompetitionStatus, string> = {
   draft: "bg-muted text-muted-foreground",
-  upcoming: "bg-accent/20 text-accent",
-  registration_open: "bg-primary/20 text-primary",
+  upcoming: "bg-accent text-accent-foreground",
+  registration_open: "bg-primary/15 text-primary",
   registration_closed: "bg-muted text-muted-foreground",
-  in_progress: "bg-chart-3/20 text-chart-3",
-  judging: "bg-chart-4/20 text-chart-4",
-  completed: "bg-chart-5/20 text-chart-5",
-  cancelled: "bg-destructive/20 text-destructive",
+  in_progress: "bg-chart-3/15 text-chart-3",
+  judging: "bg-chart-4/15 text-chart-4",
+  completed: "bg-chart-5/15 text-chart-5",
+  cancelled: "bg-destructive/15 text-destructive",
 };
 
 export default function CompetitionDetail() {
@@ -55,7 +70,6 @@ export default function CompetitionDetail() {
   const { user } = useAuth();
   const [activeTab, setActiveTab] = useState("overview");
   const [showRegistrationForm, setShowRegistrationForm] = useState(false);
-  // removed static isMobile check
 
   const { data: competition, isLoading } = useQuery({
     queryKey: ["competition", id],
@@ -65,7 +79,6 @@ export default function CompetitionDetail() {
         .select("*")
         .eq("id", id)
         .single();
-      
       if (error) throw error;
       return data;
     },
@@ -80,7 +93,6 @@ export default function CompetitionDetail() {
         .select("*")
         .eq("competition_id", id)
         .order("sort_order");
-      
       if (error) throw error;
       return data;
     },
@@ -95,7 +107,6 @@ export default function CompetitionDetail() {
         .select("*")
         .eq("competition_id", id)
         .order("sort_order");
-      
       if (error) throw error;
       return data;
     },
@@ -112,7 +123,6 @@ export default function CompetitionDetail() {
         .eq("competition_id", id)
         .eq("participant_id", user.id)
         .maybeSingle();
-      
       return data;
     },
     enabled: !!id && !!user,
@@ -124,7 +134,14 @@ export default function CompetitionDetail() {
         <Header />
         <main className="container flex-1 py-8">
           <Skeleton className="mb-4 h-8 w-48" />
-          <Skeleton className="h-64 w-full rounded-lg" />
+          <Skeleton className="h-64 w-full rounded-xl" />
+          <div className="mt-6 grid gap-6 lg:grid-cols-3">
+            <div className="lg:col-span-2 space-y-4">
+              <Skeleton className="h-10 w-full" />
+              <Skeleton className="h-48 w-full" />
+            </div>
+            <Skeleton className="h-64 w-full" />
+          </div>
         </main>
         <Footer />
       </div>
@@ -136,9 +153,13 @@ export default function CompetitionDetail() {
       <div className="flex min-h-screen flex-col">
         <Header />
         <main className="container flex-1 py-8 text-center">
-          <p className="text-muted-foreground">Competition not found</p>
-          <Button asChild className="mt-4">
-            <Link to="/competitions">Back to Competitions</Link>
+          <Trophy className="mx-auto h-12 w-12 text-muted-foreground/30 mb-4" />
+          <p className="text-muted-foreground">{language === "ar" ? "المسابقة غير موجودة" : "Competition not found"}</p>
+          <Button asChild className="mt-4" variant="outline">
+            <Link to="/competitions">
+              <ArrowLeft className="mr-2 h-4 w-4" />
+              {language === "ar" ? "العودة" : "Back to Competitions"}
+            </Link>
           </Button>
         </main>
         <Footer />
@@ -183,49 +204,81 @@ export default function CompetitionDetail() {
           endDate: competition.competition_end,
           location: competition.is_virtual
             ? { "@type": "VirtualLocation" }
-            : { "@type": "Place", name: venue || undefined, address: { "@type": "PostalAddress", addressLocality: competition.city, addressCountry: competition.country } },
+            : {
+                "@type": "Place",
+                name: venue || undefined,
+                address: {
+                  "@type": "PostalAddress",
+                  addressLocality: competition.city,
+                  addressCountry: competition.country,
+                },
+              },
           image: competition.cover_image_url || undefined,
           eventStatus: "https://schema.org/EventScheduled",
         }}
       />
       <Header />
-      
-      <main className="container flex-1 py-8">
+
+      <main className="container flex-1 py-6 md:py-8">
         {/* Back Button */}
-        <Button variant="ghost" size="sm" asChild className="mb-4">
+        <Button variant="ghost" size="sm" asChild className="mb-4 -ms-2">
           <Link to="/competitions">
-            <ArrowLeft className="mr-2 h-4 w-4" />
+            <ArrowLeft className="me-1.5 h-4 w-4" />
             {t("competitionsPage")}
           </Link>
         </Button>
 
         {/* Hero Section */}
-        <div className="relative mb-8 overflow-hidden rounded-xl">
+        <div className="relative mb-6 overflow-hidden rounded-xl">
           {competition.cover_image_url ? (
             <img
               src={competition.cover_image_url}
               alt={title}
-              className="h-56 w-full object-cover md:h-72 lg:h-80"
+              className="h-48 w-full object-cover sm:h-56 md:h-72 lg:h-80"
+              loading="eager"
             />
           ) : (
-            <div className="flex h-56 items-center justify-center bg-gradient-to-br from-primary/20 to-accent/20 md:h-72 lg:h-80">
-              <Trophy className="h-24 w-24 text-primary/30" />
+            <div className="flex h-48 items-center justify-center bg-gradient-to-br from-primary/10 via-accent/10 to-primary/5 sm:h-56 md:h-72 lg:h-80">
+              <Trophy className="h-20 w-20 text-primary/20" />
             </div>
           )}
-          <div className="absolute inset-0 bg-gradient-to-t from-background via-background/60 to-transparent" />
-          <div className="absolute bottom-0 left-0 right-0 p-4 md:p-6">
+          <div className="absolute inset-0 bg-gradient-to-t from-background via-background/50 to-transparent" />
+          <div className="absolute bottom-0 inset-x-0 p-4 md:p-6">
             <div className="flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
-              <div>
-                <Badge className={`mb-2 ${statusColors[competition.status as CompetitionStatus]}`}>
+              <div className="space-y-2">
+                <Badge className={statusColors[competition.status as CompetitionStatus]}>
                   {getStatusLabel(competition.status as CompetitionStatus)}
                 </Badge>
-                <h1 className="font-serif text-2xl font-bold md:text-3xl lg:text-4xl">{title}</h1>
+                <h1 className="font-serif text-xl font-bold sm:text-2xl md:text-3xl lg:text-4xl leading-tight">
+                  {title}
+                </h1>
+                {/* Inline meta on hero */}
+                <div className="flex items-center gap-3 text-xs text-muted-foreground flex-wrap">
+                  <span className="flex items-center gap-1">
+                    <Calendar className="h-3 w-3" />
+                    {format(new Date(competition.competition_start), "MMM d")} –{" "}
+                    {format(new Date(competition.competition_end), "MMM d, yyyy")}
+                  </span>
+                  {competition.is_virtual ? (
+                    <span className="flex items-center gap-1">
+                      <Globe className="h-3 w-3" />
+                      {t("virtual")}
+                    </span>
+                  ) : (
+                    (venue || competition.city) && (
+                      <span className="flex items-center gap-1">
+                        <MapPin className="h-3 w-3" />
+                        {venue || competition.city}
+                      </span>
+                    )
+                  )}
+                </div>
               </div>
-              <div className="flex gap-2">
+              <div className="flex gap-2 shrink-0">
                 {competition.status === "completed" && (
                   <Button asChild variant="secondary" size="sm">
                     <Link to={`/competitions/${id}/results`}>
-                      <Award className="mr-2 h-4 w-4" />
+                      <Award className="me-1.5 h-4 w-4" />
                       {language === "ar" ? "النتائج" : "Results"}
                     </Link>
                   </Button>
@@ -233,7 +286,7 @@ export default function CompetitionDetail() {
                 {isOrganizer && (
                   <Button asChild variant="outline" size="sm">
                     <Link to={`/competitions/${id}/edit`}>
-                      <Pencil className="mr-2 h-4 w-4" />
+                      <Pencil className="me-1.5 h-4 w-4" />
                       {language === "ar" ? "تعديل" : "Edit"}
                     </Link>
                   </Button>
@@ -245,7 +298,7 @@ export default function CompetitionDetail() {
 
         {/* Inline Registration Form */}
         {showRegistrationForm && (
-          <div className="mb-8">
+          <div className="mb-6">
             <RegistrationForm
               competitionId={competition.id}
               competitionTitle={title}
@@ -256,40 +309,6 @@ export default function CompetitionDetail() {
           </div>
         )}
 
-        {/* Key details strip - visible on mobile before tabs */}
-        <div className="mb-6 grid grid-cols-2 gap-3 lg:hidden">
-          <Card className="p-3">
-            <div className="flex items-center gap-2 text-sm">
-              <Calendar className="h-4 w-4 text-muted-foreground shrink-0" />
-              <div>
-                <p className="font-medium">{format(new Date(competition.competition_start), "MMM d, yyyy")}</p>
-                <p className="text-xs text-muted-foreground">{t("startDate")}</p>
-              </div>
-            </div>
-          </Card>
-          <Card className="p-3">
-            <div className="flex items-center gap-2 text-sm">
-              {competition.is_virtual ? (
-                <>
-                  <Globe className="h-4 w-4 text-muted-foreground shrink-0" />
-                  <div>
-                    <p className="font-medium">{t("virtual")}</p>
-                    <p className="text-xs text-muted-foreground">{t("venue")}</p>
-                  </div>
-                </>
-              ) : (
-                <>
-                  <MapPin className="h-4 w-4 text-muted-foreground shrink-0" />
-                  <div>
-                    <p className="font-medium line-clamp-1">{venue || competition.city || "TBA"}</p>
-                    <p className="text-xs text-muted-foreground">{t("venue")}</p>
-                  </div>
-                </>
-              )}
-            </div>
-          </Card>
-        </div>
-
         {/* Mobile registration CTA */}
         {canRegister && !showRegistrationForm && (
           <div className="mb-6 lg:hidden">
@@ -299,47 +318,57 @@ export default function CompetitionDetail() {
           </div>
         )}
         {myRegistration && (
-          <div className="mb-6 flex items-center gap-2 text-primary lg:hidden">
-            <CheckCircle className="h-5 w-5" />
-            <span className="text-sm font-medium">
-              {myRegistration.status === "approved"
-                ? t("alreadyRegistered")
-                : t("registrationPending")}
-            </span>
+          <div className="mb-6 lg:hidden">
+            <Card className="border-primary/20 bg-primary/5">
+              <CardContent className="flex items-center gap-2 p-3">
+                <CheckCircle className="h-4 w-4 text-primary shrink-0" />
+                <span className="text-sm font-medium text-primary">
+                  {myRegistration.status === "approved"
+                    ? t("alreadyRegistered")
+                    : t("registrationPending")}
+                </span>
+              </CardContent>
+            </Card>
           </div>
         )}
 
-        <div className="grid gap-8 lg:grid-cols-3">
+        <div className="grid gap-6 lg:grid-cols-3">
           {/* Main Content */}
           <div className="lg:col-span-2">
             <Tabs value={activeTab} onValueChange={setActiveTab}>
               <div className="overflow-x-auto -mx-4 px-4 md:mx-0 md:px-0">
-                <TabsList className="h-auto w-max justify-start gap-1">
-                  <TabsTrigger value="overview" className="text-xs sm:text-sm">Overview</TabsTrigger>
-                  <TabsTrigger value="participants" className="gap-1 text-xs sm:text-sm">
-                    <Users className="h-3.5 w-3.5" />
-                    <span className="hidden sm:inline">{language === "ar" ? "المشاركين" : "Participants"}</span>
+                <TabsList className="h-auto w-max justify-start gap-0.5 bg-muted/50 p-1">
+                  <TabsTrigger value="overview" className="text-xs sm:text-sm">
+                    {language === "ar" ? "نظرة عامة" : "Overview"}
                   </TabsTrigger>
-                  <TabsTrigger value="categories" className="text-xs sm:text-sm">{t("categories")}</TabsTrigger>
-                  <TabsTrigger value="criteria" className="text-xs sm:text-sm">{t("criteria")}</TabsTrigger>
+                  <TabsTrigger value="participants" className="gap-1 text-xs sm:text-sm">
+                    <Users className="h-3.5 w-3.5 hidden sm:block" />
+                    {language === "ar" ? "المشاركين" : "Participants"}
+                  </TabsTrigger>
+                  <TabsTrigger value="categories" className="text-xs sm:text-sm">
+                    {t("categories")}
+                  </TabsTrigger>
+                  <TabsTrigger value="criteria" className="text-xs sm:text-sm">
+                    {t("criteria")}
+                  </TabsTrigger>
                   <TabsTrigger value="leaderboard" className="gap-1 text-xs sm:text-sm">
-                    <Trophy className="h-3.5 w-3.5" />
-                    <span className="hidden sm:inline">{language === "ar" ? "المتصدرين" : "Leaderboard"}</span>
+                    <Trophy className="h-3.5 w-3.5 hidden sm:block" />
+                    {language === "ar" ? "المتصدرين" : "Leaderboard"}
                   </TabsTrigger>
                   <TabsTrigger value="knowledge" className="gap-1 text-xs sm:text-sm">
-                    <BookOpen className="h-3.5 w-3.5" />
-                    <span className="hidden sm:inline">{language === "ar" ? "قاعدة المعرفة" : "Knowledge"}</span>
+                    <BookOpen className="h-3.5 w-3.5 hidden sm:block" />
+                    {language === "ar" ? "المعرفة" : "Knowledge"}
                   </TabsTrigger>
                   {isOrganizer && (
                     <TabsTrigger value="requirements" className="gap-1 text-xs sm:text-sm">
-                      <ClipboardList className="h-3.5 w-3.5" />
-                      <span className="hidden sm:inline">{language === "ar" ? "المتطلبات" : "Requirements"}</span>
+                      <ClipboardList className="h-3.5 w-3.5 hidden sm:block" />
+                      {language === "ar" ? "المتطلبات" : "Requirements"}
                     </TabsTrigger>
                   )}
                   {isOrganizer && (
                     <TabsTrigger value="manage" className="gap-1 text-xs sm:text-sm">
-                      <Settings className="h-3.5 w-3.5" />
-                      <span className="hidden sm:inline">{language === "ar" ? "إدارة" : "Manage"}</span>
+                      <Settings className="h-3.5 w-3.5 hidden sm:block" />
+                      {language === "ar" ? "إدارة" : "Manage"}
                     </TabsTrigger>
                   )}
                 </TabsList>
@@ -353,10 +382,10 @@ export default function CompetitionDetail() {
                     </CardContent>
                   </Card>
                 )}
-                
+
                 {/* Sponsors */}
                 <CompetitionSponsorsPanel competitionId={competition.id} isOrganizer={isOrganizer} />
-                
+
                 {/* Judges Panel */}
                 <JudgesList competitionId={competition.id} />
               </TabsContent>
@@ -371,18 +400,16 @@ export default function CompetitionDetail() {
                     {categories.map((cat) => (
                       <Card key={cat.id}>
                         <CardHeader className="pb-2">
-                          <CardTitle className="text-lg">
+                          <CardTitle className="text-base">
                             {language === "ar" && cat.name_ar ? cat.name_ar : cat.name}
                           </CardTitle>
                         </CardHeader>
                         <CardContent className="text-sm text-muted-foreground">
-                          {language === "ar" && cat.description_ar
-                            ? cat.description_ar
-                            : cat.description}
+                          {language === "ar" && cat.description_ar ? cat.description_ar : cat.description}
                           {cat.max_participants && (
-                            <p className="mt-2">
-                              <Users className="mr-1 inline h-4 w-4" />
-                              Max {cat.max_participants} participants
+                            <p className="mt-2 flex items-center gap-1">
+                              <Users className="h-3.5 w-3.5" />
+                              {language === "ar" ? `الحد الأقصى ${cat.max_participants}` : `Max ${cat.max_participants} participants`}
                             </p>
                           )}
                         </CardContent>
@@ -390,7 +417,10 @@ export default function CompetitionDetail() {
                     ))}
                   </div>
                 ) : (
-                  <EmptyState icon={<Users className="h-6 w-6" />} text={language === "ar" ? "لم يتم تحديد فئات بعد" : "No categories defined yet."} />
+                  <EmptyState
+                    icon={<Users className="h-6 w-6" />}
+                    text={language === "ar" ? "لم يتم تحديد فئات بعد" : "No categories defined yet."}
+                  />
                 )}
               </TabsContent>
 
@@ -401,19 +431,21 @@ export default function CompetitionDetail() {
                       <Card key={crit.id}>
                         <CardContent className="flex items-start justify-between gap-4 p-4">
                           <div className="min-w-0">
-                            <h4 className="font-medium">
+                            <h4 className="font-medium text-sm">
                               {language === "ar" && crit.name_ar ? crit.name_ar : crit.name}
                             </h4>
-                            <p className="text-sm text-muted-foreground">
-                              {language === "ar" && crit.description_ar
-                                ? crit.description_ar
-                                : crit.description}
-                            </p>
+                            {(crit.description || crit.description_ar) && (
+                              <p className="text-xs text-muted-foreground mt-1">
+                                {language === "ar" && crit.description_ar ? crit.description_ar : crit.description}
+                              </p>
+                            )}
                           </div>
-                          <div className="shrink-0 text-right">
-                            <Badge variant="outline">Max: {crit.max_score}</Badge>
-                            <p className="mt-1 text-xs text-muted-foreground">
-                              Weight: {(Number(crit.weight) * 100).toFixed(0)}%
+                          <div className="shrink-0 text-end space-y-1">
+                            <Badge variant="outline" className="text-xs">
+                              {language === "ar" ? "الأقصى" : "Max"}: {crit.max_score}
+                            </Badge>
+                            <p className="text-[11px] text-muted-foreground">
+                              {language === "ar" ? "الوزن" : "Weight"}: {(Number(crit.weight) * 100).toFixed(0)}%
                             </p>
                           </div>
                         </CardContent>
@@ -421,7 +453,10 @@ export default function CompetitionDetail() {
                     ))}
                   </div>
                 ) : (
-                  <EmptyState icon={<ClipboardList className="h-6 w-6" />} text={language === "ar" ? "لم يتم تحديد معايير بعد" : "No judging criteria defined yet."} />
+                  <EmptyState
+                    icon={<ClipboardList className="h-6 w-6" />}
+                    text={language === "ar" ? "لم يتم تحديد معايير بعد" : "No judging criteria defined yet."}
+                  />
                 )}
               </TabsContent>
 
@@ -456,18 +491,16 @@ export default function CompetitionDetail() {
             </Tabs>
           </div>
 
-          {/* Sidebar — hidden on mobile (key info shown above) */}
-          <div className="hidden space-y-6 lg:block">
+          {/* Sidebar */}
+          <div className="hidden space-y-4 lg:block">
             {/* Registration Card */}
             <Card>
-              <CardHeader>
-                <CardTitle className="text-lg">{t("registerForCompetition")}</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
+              <CardContent className="p-4 space-y-3">
+                <h3 className="font-semibold text-sm">{t("registerForCompetition")}</h3>
                 {myRegistration ? (
-                  <div className="flex items-center gap-2 text-primary">
-                    <CheckCircle className="h-5 w-5" />
-                    <span>
+                  <div className="flex items-center gap-2 rounded-lg bg-primary/10 p-3">
+                    <CheckCircle className="h-4 w-4 text-primary shrink-0" />
+                    <span className="text-sm font-medium text-primary">
                       {myRegistration.status === "approved"
                         ? t("alreadyRegistered")
                         : t("registrationPending")}
@@ -482,12 +515,14 @@ export default function CompetitionDetail() {
                     {t("registerNow")}
                   </Button>
                 ) : !user ? (
-                  <Button asChild className="w-full">
-                    <Link to="/auth">{t("signIn")} to Register</Link>
+                  <Button asChild className="w-full" variant="outline">
+                    <Link to="/auth">
+                      {language === "ar" ? "سجل الدخول للتسجيل" : "Sign in to Register"}
+                    </Link>
                   </Button>
                 ) : (
-                  <p className="text-sm text-muted-foreground">
-                    Registration is currently closed.
+                  <p className="text-xs text-muted-foreground">
+                    {language === "ar" ? "التسجيل مغلق حالياً" : "Registration is currently closed."}
                   </p>
                 )}
               </CardContent>
@@ -495,69 +530,74 @@ export default function CompetitionDetail() {
 
             {/* Details Card */}
             <Card>
-              <CardHeader>
-                <CardTitle className="text-lg">Details</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4 text-sm">
-                <div className="flex items-start gap-3">
-                  <Calendar className="mt-0.5 h-4 w-4 text-muted-foreground" />
-                  <div>
-                    <p className="font-medium">{t("startDate")}</p>
-                    <p className="text-muted-foreground">
+              <CardContent className="p-4 space-y-0">
+                <h3 className="font-semibold text-sm mb-3">
+                  {language === "ar" ? "التفاصيل" : "Details"}
+                </h3>
+
+                <div className="flex items-center gap-3 py-2.5">
+                  <Calendar className="h-4 w-4 text-muted-foreground shrink-0" />
+                  <div className="min-w-0">
+                    <p className="text-xs text-muted-foreground">{t("startDate")}</p>
+                    <p className="text-sm font-medium">
                       {format(new Date(competition.competition_start), "MMMM d, yyyy")}
                     </p>
                   </div>
                 </div>
+                <Separator />
 
-                <div className="flex items-start gap-3">
-                  <Calendar className="mt-0.5 h-4 w-4 text-muted-foreground" />
-                  <div>
-                    <p className="font-medium">{t("endDate")}</p>
-                    <p className="text-muted-foreground">
+                <div className="flex items-center gap-3 py-2.5">
+                  <Clock className="h-4 w-4 text-muted-foreground shrink-0" />
+                  <div className="min-w-0">
+                    <p className="text-xs text-muted-foreground">{t("endDate")}</p>
+                    <p className="text-sm font-medium">
                       {format(new Date(competition.competition_end), "MMMM d, yyyy")}
                     </p>
                   </div>
                 </div>
+                <Separator />
 
                 {competition.is_virtual ? (
-                  <div className="flex items-start gap-3">
-                    <Globe className="mt-0.5 h-4 w-4 text-muted-foreground" />
+                  <div className="flex items-center gap-3 py-2.5">
+                    <Globe className="h-4 w-4 text-muted-foreground shrink-0" />
                     <div>
-                      <p className="font-medium">{t("venue")}</p>
-                      <p className="text-muted-foreground">{t("virtual")}</p>
+                      <p className="text-xs text-muted-foreground">{t("venue")}</p>
+                      <p className="text-sm font-medium">{t("virtual")}</p>
                     </div>
                   </div>
-                ) : venue && (
-                  <div className="flex items-start gap-3">
-                    <MapPin className="mt-0.5 h-4 w-4 text-muted-foreground" />
-                    <div>
-                      <p className="font-medium">{t("venue")}</p>
-                      <p className="text-muted-foreground">
+                ) : venue ? (
+                  <div className="flex items-center gap-3 py-2.5">
+                    <MapPin className="h-4 w-4 text-muted-foreground shrink-0" />
+                    <div className="min-w-0">
+                      <p className="text-xs text-muted-foreground">{t("venue")}</p>
+                      <p className="text-sm font-medium">
                         {venue}
                         {competition.city && <>, {competition.city}</>}
                         {competition.country && <>, {competition.country}</>}
                       </p>
                     </div>
                   </div>
-                )}
+                ) : null}
 
                 {competition.max_participants && (
-                  <div className="flex items-start gap-3">
-                    <Users className="mt-0.5 h-4 w-4 text-muted-foreground" />
-                    <div>
-                      <p className="font-medium">{t("participants")}</p>
-                      <p className="text-muted-foreground">
-                        Max {competition.max_participants}
-                      </p>
+                  <>
+                    <Separator />
+                    <div className="flex items-center gap-3 py-2.5">
+                      <Users className="h-4 w-4 text-muted-foreground shrink-0" />
+                      <div>
+                        <p className="text-xs text-muted-foreground">{t("participants")}</p>
+                        <p className="text-sm font-medium">
+                          {language === "ar" ? `الحد الأقصى ${competition.max_participants}` : `Max ${competition.max_participants}`}
+                        </p>
+                      </div>
                     </div>
-                  </div>
+                  </>
                 )}
               </CardContent>
             </Card>
           </div>
         </div>
       </main>
-
 
       <Footer />
     </div>
