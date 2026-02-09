@@ -45,6 +45,7 @@ export default function CompetitionDetail() {
   const { user } = useAuth();
   const [activeTab, setActiveTab] = useState("overview");
   const [showRegistrationForm, setShowRegistrationForm] = useState(false);
+  const isMobile = typeof window !== "undefined" && window.innerWidth < 768;
 
   const { data: competition, isLoading } = useQuery({
     queryKey: ["competition", id],
@@ -170,26 +171,26 @@ export default function CompetitionDetail() {
         </Button>
 
         {/* Hero Section */}
-        <div className="relative mb-8 overflow-hidden rounded-xl bg-gradient-to-br from-primary/20 to-accent/20">
+        <div className="relative mb-8 overflow-hidden rounded-xl">
           {competition.cover_image_url ? (
             <img
               src={competition.cover_image_url}
               alt={title}
-              className="h-64 w-full object-cover md:h-80"
+              className="h-56 w-full object-cover md:h-72 lg:h-80"
             />
           ) : (
-            <div className="flex h-64 items-center justify-center md:h-80">
+            <div className="flex h-56 items-center justify-center bg-gradient-to-br from-primary/20 to-accent/20 md:h-72 lg:h-80">
               <Trophy className="h-24 w-24 text-primary/30" />
             </div>
           )}
-          <div className="absolute inset-0 bg-gradient-to-t from-background/90 to-transparent" />
-          <div className="absolute bottom-0 left-0 right-0 p-6">
-            <div className="flex items-start justify-between">
+          <div className="absolute inset-0 bg-gradient-to-t from-background via-background/60 to-transparent" />
+          <div className="absolute bottom-0 left-0 right-0 p-4 md:p-6">
+            <div className="flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
               <div>
                 <Badge className={`mb-2 ${statusColors[competition.status as CompetitionStatus]}`}>
                   {getStatusLabel(competition.status as CompetitionStatus)}
                 </Badge>
-                <h1 className="font-serif text-3xl font-bold md:text-4xl">{title}</h1>
+                <h1 className="font-serif text-2xl font-bold md:text-3xl lg:text-4xl">{title}</h1>
               </div>
               <div className="flex gap-2">
                 {competition.status === "completed" && (
@@ -230,7 +231,7 @@ export default function CompetitionDetail() {
           {/* Main Content */}
           <div className="lg:col-span-2">
             <Tabs value={activeTab} onValueChange={setActiveTab}>
-              <TabsList className="flex-wrap">
+              <TabsList className="h-auto w-full justify-start overflow-x-auto overflow-y-hidden whitespace-nowrap md:flex-wrap">
                 <TabsTrigger value="overview">Overview</TabsTrigger>
                 <TabsTrigger value="participants" className="gap-1">
                   <Users className="h-4 w-4" />
@@ -472,6 +473,15 @@ export default function CompetitionDetail() {
           </div>
         </div>
       </main>
+
+      {/* Mobile sticky registration CTA */}
+      {canRegister && !showRegistrationForm && (
+        <div className="fixed bottom-0 left-0 right-0 z-40 border-t bg-background p-3 md:hidden">
+          <Button className="w-full" onClick={() => setShowRegistrationForm(true)}>
+            {t("registerNow")}
+          </Button>
+        </div>
+      )}
 
       <Footer />
     </div>
