@@ -775,6 +775,18 @@ export default function CompetitionDetail() {
                 </h3>
               </div>
               <CardContent className="p-0">
+                {competition.competition_number && (
+                  <>
+                    <div className="flex items-center gap-3 px-4 py-3">
+                      <Trophy className="h-4 w-4 text-muted-foreground shrink-0" />
+                      <div className="min-w-0">
+                        <p className="text-[10px] uppercase tracking-wider text-muted-foreground">{isAr ? "رقم المسابقة" : "Competition No."}</p>
+                        <p className="text-sm font-mono font-medium">{competition.competition_number}</p>
+                      </div>
+                    </div>
+                    <Separator />
+                  </>
+                )}
                 <div className="flex items-center gap-3 px-4 py-3">
                   <Calendar className="h-4 w-4 text-muted-foreground shrink-0" />
                   <div className="min-w-0">
