@@ -9,6 +9,7 @@ import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { CompetitionHistory } from "@/components/profile/CompetitionHistory";
+import { MessageButton } from "@/components/profile/MessageButton";
 import { 
   User, 
   MapPin, 
@@ -217,8 +218,13 @@ export default function PublicProfile() {
                   </div>
                 )}
 
+                {/* Message Button */}
+                <div className="mt-6 flex justify-center">
+                  <MessageButton userId={profile.user_id} variant="default" />
+                </div>
+
                 {/* Member Since */}
-                <p className="mt-6 text-center text-xs text-muted-foreground">
+                <p className="mt-4 text-center text-xs text-muted-foreground">
                   {t("memberSince")}: {new Date(profile.created_at).toLocaleDateString()}
                 </p>
               </CardContent>
