@@ -1,9 +1,11 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { useSearchParams } from "react-router-dom";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/i18n/LanguageContext";
+import { useRealtimeMessages } from "@/hooks/useRealtimeMessages";
+import { usePresence } from "@/hooks/usePresence";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { Button } from "@/components/ui/button";
@@ -56,6 +58,10 @@ export default function Messages() {
   const [newMessage, setNewMessage] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const typingDebounceRef = useRef<ReturnType<typeof setTimeout>>();
+
+  const { partnerTyping, sendTypingIndicator } = useRealtimeMessages(selectedPartner?.user_id || null);
+  const { isOnline } = usePresence();
 
   // Fetch conversations
   const { data: conversations, isLoading: loadingConversations } = useQuery({
@@ -118,7 +124,7 @@ export default function Messages() {
       );
     },
     enabled: !!user,
-    refetchInterval: 5000, // Poll every 5 seconds
+    refetchInterval: 15000, // Reduced polling — realtime handles new messages
   });
 
   // Fetch messages for selected conversation
@@ -152,7 +158,7 @@ export default function Messages() {
       return data || [];
     },
     enabled: !!user && !!selectedPartner,
-    refetchInterval: 3000,
+    // No polling needed — realtime handles new messages
   });
 
   // Send message mutation
@@ -224,6 +230,14 @@ export default function Messages() {
     }
   };
 
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setNewMessage(e.target.value);
+    if (typingDebounceRef.current) clearTimeout(typingDebounceRef.current);
+    typingDebounceRef.current = setTimeout(() => {
+      sendTypingIndicator();
+    }, 300);
+  };
+
   const formatMessageDate = (date: string) => {
     const d = new Date(date);
     const locale = language === "ar" ? ar : enUS;
@@ -292,12 +306,17 @@ export default function Messages() {
                             : "hover:bg-accent/50"
                         }`}
                       >
-                        <Avatar>
-                          <AvatarImage src={conv.avatar_url || undefined} />
-                          <AvatarFallback>
-                            {(conv.full_name || "U")[0].toUpperCase()}
-                          </AvatarFallback>
-                        </Avatar>
+                        <div className="relative">
+                          <Avatar>
+                            <AvatarImage src={conv.avatar_url || undefined} />
+                            <AvatarFallback>
+                              {(conv.full_name || "U")[0].toUpperCase()}
+                            </AvatarFallback>
+                          </Avatar>
+                          {isOnline(conv.user_id) && (
+                            <div className="absolute bottom-0 right-0 h-3 w-3 rounded-full border-2 border-background bg-primary" />
+                          )}
+                        </div>
                         <div className="flex-1 min-w-0">
                           <div className="flex items-center justify-between">
                             <p className="font-medium truncate">
@@ -334,19 +353,30 @@ export default function Messages() {
                     >
                       <ArrowLeft className="h-5 w-5" />
                     </Button>
-                    <Avatar>
-                      <AvatarImage src={selectedPartner.avatar_url || undefined} />
-                      <AvatarFallback>
-                        {(selectedPartner.full_name || "U")[0].toUpperCase()}
-                      </AvatarFallback>
-                    </Avatar>
+                    <div className="relative">
+                      <Avatar>
+                        <AvatarImage src={selectedPartner.avatar_url || undefined} />
+                        <AvatarFallback>
+                          {(selectedPartner.full_name || "U")[0].toUpperCase()}
+                        </AvatarFallback>
+                      </Avatar>
+                      {isOnline(selectedPartner.user_id) && (
+                        <div className="absolute bottom-0 right-0 h-3 w-3 rounded-full border-2 border-background bg-primary" />
+                      )}
+                    </div>
                     <div>
                       <p className="font-semibold">
                         {selectedPartner.full_name || selectedPartner.username || "Unknown"}
                       </p>
-                      {selectedPartner.username && (
-                        <p className="text-sm text-muted-foreground">@{selectedPartner.username}</p>
-                      )}
+                      <p className="text-xs text-muted-foreground">
+                        {partnerTyping
+                          ? (language === "ar" ? "يكتب..." : "typing...")
+                          : isOnline(selectedPartner.user_id)
+                            ? (language === "ar" ? "متصل" : "online")
+                            : selectedPartner.username
+                              ? `@${selectedPartner.username}`
+                              : ""}
+                      </p>
                     </div>
                   </div>
 
@@ -399,7 +429,7 @@ export default function Messages() {
                     <div className="flex gap-2">
                       <Input
                         value={newMessage}
-                        onChange={(e) => setNewMessage(e.target.value)}
+                        onChange={handleInputChange}
                         placeholder={language === "ar" ? "اكتب رسالة..." : "Type a message..."}
                         className="flex-1"
                       />
