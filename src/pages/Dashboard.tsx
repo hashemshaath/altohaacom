@@ -2,7 +2,7 @@ import { useLanguage } from "@/i18n/LanguageContext";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { Card, CardContent } from "@/components/ui/card";
-import { Trophy, Users, GraduationCap, Landmark, Newspaper, MessageSquare, ShoppingBag, ArrowRight, Sparkles } from "lucide-react";
+import { Trophy, Users, GraduationCap, Landmark, Newspaper, MessageSquare, ShoppingBag, Sparkles } from "lucide-react";
 import { Link } from "react-router-dom";
 import { UpcomingCompetitionsWidget } from "@/components/dashboard/UpcomingCompetitionsWidget";
 import { RecentActivityWidget } from "@/components/dashboard/RecentActivityWidget";
@@ -55,8 +55,10 @@ export default function Dashboard() {
       <Header />
       <main className="container flex-1 py-6 md:py-10">
         {/* Welcome Banner */}
-        <Card className="mb-8 overflow-hidden border-primary/10 bg-gradient-to-br from-primary/5 via-background to-accent/5">
-          <CardContent className="flex flex-col gap-4 p-5 sm:flex-row sm:items-center sm:justify-between sm:p-6">
+        <Card className="mb-8 overflow-hidden border-primary/10 bg-gradient-to-br from-primary/5 via-background to-accent/5 relative">
+          {/* Decorative glow */}
+          <div className="pointer-events-none absolute -end-16 -top-16 h-48 w-48 rounded-full bg-primary/5 blur-3xl" />
+          <CardContent className="relative flex flex-col gap-4 p-5 sm:flex-row sm:items-center sm:justify-between sm:p-6">
             <div className="flex items-center gap-4">
               <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-primary/10 ring-4 ring-primary/5">
                 <Sparkles className="h-6 w-6 text-primary" />
@@ -79,8 +81,8 @@ export default function Dashboard() {
             {sections.map((s) => (
               <Link key={s.title} to={s.href}>
                 <Card className="group h-full transition-all hover:shadow-md hover:-translate-y-1 border-border/50 hover:border-primary/20">
-                  <CardContent className="flex flex-col items-center gap-2 p-3 text-center sm:p-4">
-                    <div className={`flex h-10 w-10 items-center justify-center rounded-xl ${s.bg} transition-transform group-hover:scale-110`}>
+                  <CardContent className="flex flex-col items-center gap-2.5 p-3 text-center sm:p-4">
+                    <div className={`flex h-11 w-11 items-center justify-center rounded-xl ${s.bg} transition-transform group-hover:scale-110 ring-2 ring-transparent group-hover:ring-primary/10`}>
                       <s.icon className={`h-5 w-5 ${s.color}`} />
                     </div>
                     <h3 className="text-[11px] font-medium leading-tight sm:text-xs">{s.title}</h3>

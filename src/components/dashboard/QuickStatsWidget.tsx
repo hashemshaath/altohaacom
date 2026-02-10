@@ -17,9 +17,9 @@ interface StatCardProps {
 
 function StatCard({ icon: Icon, label, value, iconBg = "bg-primary/10", iconColor = "text-primary", accent = "border-primary/20" }: StatCardProps) {
   return (
-    <Card className={`border-s-[3px] ${accent} transition-shadow hover:shadow-sm`}>
+    <Card className={`border-s-[3px] ${accent} transition-all hover:shadow-md hover:-translate-y-0.5`}>
       <CardContent className="flex items-center gap-3.5 p-4">
-        <div className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-xl ${iconBg}`}>
+        <div className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-xl ${iconBg} ring-2 ring-transparent`}>
           <Icon className={`h-5 w-5 ${iconColor}`} />
         </div>
         <div className="min-w-0">
