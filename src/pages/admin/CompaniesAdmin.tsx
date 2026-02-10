@@ -2,6 +2,9 @@ import { useState } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
+import { CountrySelector } from "@/components/auth/CountrySelector";
+import { useAllCountries } from "@/hooks/useCountries";
+import { countryFlag } from "@/lib/countryFlag";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -65,6 +68,8 @@ interface Company {
   phone: string | null;
   city: string | null;
   country: string | null;
+  country_code: string | null;
+  operating_countries: string[] | null;
   logo_url: string | null;
   created_at: string;
 }
@@ -114,6 +119,7 @@ export default function CompaniesAdmin() {
     address_ar: "",
     city: "",
     country: "",
+    country_code: "",
     postal_code: "",
     description: "",
     description_ar: "",
@@ -121,6 +127,8 @@ export default function CompaniesAdmin() {
     payment_terms: 30,
     currency: "SAR",
   });
+
+  const { data: allCountries = [] } = useAllCountries();
 
   // Fetch companies
   const { data: companies = [], isLoading } = useQuery({
@@ -343,8 +351,10 @@ export default function CompaniesAdmin() {
   // Create company mutation
   const createCompanyMutation = useMutation({
     mutationFn: async (data: typeof companyForm) => {
+      const { country_code, ...rest } = data;
       const { error } = await supabase.from("companies").insert({
-        ...data,
+        ...rest,
+        country_code: country_code || null,
         status: "pending",
       });
       if (error) throw error;
@@ -390,6 +400,7 @@ export default function CompaniesAdmin() {
       address_ar: "",
       city: "",
       country: "",
+      country_code: "",
       postal_code: "",
       description: "",
       description_ar: "",
@@ -453,12 +464,27 @@ export default function CompaniesAdmin() {
               )}
               <div>
                 <h1 className="text-2xl font-bold">{companyDetails.name}</h1>
-                <div className="flex items-center gap-2 mt-1">
+                <div className="flex flex-wrap items-center gap-2 mt-1">
                   <Badge className={statusColors[companyDetails.status as CompanyStatus]}>
                     {getStatusLabel(companyDetails.status)}
                   </Badge>
                   <Badge variant="outline">{getTypeLabel(companyDetails.type)}</Badge>
+                  {companyDetails.country_code && (
+                    <Badge variant="outline">
+                      {countryFlag(companyDetails.country_code)} {companyDetails.country || companyDetails.country_code}
+                    </Badge>
+                  )}
                 </div>
+                {companyDetails.operating_countries && (companyDetails.operating_countries as string[]).length > 0 && (
+                  <div className="mt-1.5 flex flex-wrap items-center gap-1">
+                    <span className="text-xs text-muted-foreground">{language === "ar" ? "يعمل في:" : "Operates in:"}</span>
+                    {(companyDetails.operating_countries as string[]).map((cc: string) => (
+                      <Badge key={cc} variant="secondary" className="text-[10px] px-1.5 py-0">
+                        {countryFlag(cc)}
+                      </Badge>
+                    ))}
+                  </div>
+                )}
               </div>
             </div>
           </div>
@@ -1400,13 +1426,15 @@ export default function CompaniesAdmin() {
                   onChange={(e) => setCompanyForm({ ...companyForm, city: e.target.value })}
                 />
               </div>
-              <div className="space-y-2">
-                <Label>{language === "ar" ? "الدولة" : "Country"}</Label>
-                <Input
-                  value={companyForm.country}
-                  onChange={(e) => setCompanyForm({ ...companyForm, country: e.target.value })}
-                />
-              </div>
+              <CountrySelector
+                value={companyForm.country_code}
+                onChange={(code, country) => {
+                  const name = language === "ar" ? (country?.name_ar || country?.name || "") : (country?.name || "");
+                  setCompanyForm({ ...companyForm, country_code: code, country: name, currency: country?.currency_code || companyForm.currency });
+                }}
+                label={language === "ar" ? "الدولة (المقر الرئيسي)" : "Country (Home)"}
+                required
+              />
               <div className="space-y-2">
                 <Label>{language === "ar" ? "الرمز البريدي" : "Postal Code"}</Label>
                 <Input
@@ -1581,7 +1609,7 @@ export default function CompaniesAdmin() {
                         </div>
                       </TableCell>
                       <TableCell>
-                        {[company.city, company.country].filter(Boolean).join(", ") || "-"}
+                        {company.country_code ? `${countryFlag(company.country_code)} ` : ""}{[company.city, company.country].filter(Boolean).join(", ") || "-"}
                       </TableCell>
                       <TableCell>
                         <Badge className={statusColors[company.status]}>

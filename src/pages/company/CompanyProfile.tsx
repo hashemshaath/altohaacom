@@ -4,6 +4,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Separator } from "@/components/ui/separator";
+import { countryFlag } from "@/lib/countryFlag";
+import { useAllCountries } from "@/hooks/useCountries";
 import {
   Phone,
   Mail,
@@ -14,12 +16,20 @@ import {
   FileText,
   Hash,
   Shield,
+  Earth,
 } from "lucide-react";
 
 export default function CompanyProfile() {
   const { language } = useLanguage();
   const { companyId } = useCompanyAccess();
   const { data: company, isLoading } = useCompanyProfile(companyId);
+  const { data: countries = [] } = useAllCountries();
+
+  const getCountryName = (code: string | null) => {
+    if (!code) return null;
+    const c = countries.find((ct) => ct.code === code);
+    return c ? (language === "ar" ? c.name_ar || c.name : c.name) : code;
+  };
 
   if (isLoading) {
     return (
@@ -72,7 +82,23 @@ export default function CompanyProfile() {
                   {company.company_number}
                 </Badge>
               )}
+              {(company as any).country_code && (
+                <Badge variant="outline">
+                  {countryFlag((company as any).country_code)} {getCountryName((company as any).country_code)}
+                </Badge>
+              )}
             </div>
+            {(company as any).operating_countries && (company as any).operating_countries.length > 0 && (
+              <div className="mt-2 flex flex-wrap items-center gap-1.5">
+                <Earth className="h-3.5 w-3.5 text-muted-foreground" />
+                <span className="text-xs text-muted-foreground">{language === "ar" ? "يعمل في:" : "Operates in:"}</span>
+                {((company as any).operating_countries as string[]).map((cc) => (
+                  <Badge key={cc} variant="secondary" className="text-[10px] px-1.5 py-0">
+                    {countryFlag(cc)} {getCountryName(cc)}
+                  </Badge>
+                ))}
+              </div>
+            )}
           </div>
         </div>
       </div>
