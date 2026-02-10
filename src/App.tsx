@@ -76,6 +76,7 @@ const OrdersAdmin = lazy(() => import("./pages/admin/OrdersAdmin"));
 const InvoicesAdmin = lazy(() => import("./pages/admin/InvoicesAdmin"));
 const KnowledgeAdmin = lazy(() => import("./pages/admin/KnowledgeAdmin"));
 const SponsorsAdmin = lazy(() => import("./pages/admin/SponsorsAdmin"));
+const QRCodesAdmin = lazy(() => import("./pages/admin/QRCodesAdmin"));
 const MasterclassesAdmin = lazy(() => import("./pages/admin/MasterclassesAdmin"));
 const AnalyticsDashboard = lazy(() => import("./pages/admin/AnalyticsDashboard"));
 const ExhibitionsAdmin = lazy(() => import("./pages/admin/ExhibitionsAdmin"));
@@ -196,6 +197,7 @@ const App = () => (
                   <Route path="masterclasses" element={<MasterclassesAdmin />} />
                   <Route path="analytics" element={<AnalyticsDashboard />} />
                   <Route path="exhibitions" element={<ExhibitionsAdmin />} />
+                  <Route path="qr-codes" element={<QRCodesAdmin />} />
                   <Route path="entities" element={<EntitiesAdmin />} />
                   <Route path="judges" element={<JudgesAdmin />} />
                    <Route path="communications" element={<CommunicationsAdmin />} />

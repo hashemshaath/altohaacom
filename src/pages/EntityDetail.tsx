@@ -14,6 +14,7 @@ import {
   Building2, MapPin, Globe, Mail, Phone, Users, ShieldCheck,
   Bell, BellOff, ArrowLeft, ExternalLink, Share2, Calendar, Award, Target
 } from "lucide-react";
+import { QRCodeDisplay } from "@/components/qr/QRCodeDisplay";
 import type { Database } from "@/integrations/supabase/types";
 
 type EntityType = Database["public"]["Enums"]["entity_type"];
@@ -380,6 +381,14 @@ export default function EntityDetail() {
                 )}
               </CardContent>
             </Card>
+
+            {/* QR Code */}
+            <QRCodeDisplay
+              code={entity.entity_number || entity.id.slice(0, 8).toUpperCase()}
+              label={isAr ? "رمز QR للجهة" : "Entity QR Code"}
+              size={140}
+              compact={false}
+            />
 
             {/* Quick Facts */}
             <Card className="overflow-hidden">
