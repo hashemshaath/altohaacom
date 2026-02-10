@@ -14,6 +14,8 @@ import { Separator } from "@/components/ui/separator";
 import { SEOHead } from "@/components/SEOHead";
 import { useToast } from "@/hooks/use-toast";
 import { PhoneVerification } from "@/components/auth/PhoneVerification";
+import { CountrySelector } from "@/components/auth/CountrySelector";
+import { useAllCountries, type Country } from "@/hooks/useCountries";
 import { z } from "zod";
 import { CheckCircle, XCircle, Loader2, ArrowLeft, ShieldCheck, UserPlus, LogIn } from "lucide-react";
 import type { Database } from "@/integrations/supabase/types";
@@ -56,6 +58,8 @@ export default function Auth() {
   const [fullName, setFullName] = useState("");
   const [username, setUsername] = useState("");
   const [phone, setPhone] = useState("");
+  const [countryCode, setCountryCode] = useState("");
+  const [phoneCode, setPhoneCode] = useState("");
   const [usernameStatus, setUsernameStatus] = useState<"idle" | "checking" | "available" | "taken">("idle");
   const [role, setRole] = useState<AppRole>("chef");
   const [loading, setLoading] = useState(false);
@@ -122,6 +126,11 @@ export default function Auth() {
       return;
     }
 
+    if (!countryCode) {
+      setErrors({ countryCode: isAr ? "يرجى اختيار الدولة" : "Country is required" });
+      return;
+    }
+
     const baseResult = z.object({
       email: z.string().email("Invalid email address"),
       password: z.string().min(6, "Password must be at least 6 characters"),
@@ -176,6 +185,8 @@ export default function Auth() {
         .update({
           username: username.toLowerCase(),
           phone: verifiedPhone,
+          country_code: countryCode || null,
+          preferred_language: language,
         })
         .eq("user_id", data.user.id);
       if (updateError) {
@@ -219,6 +230,7 @@ export default function Auth() {
               <PhoneVerification
                 onVerified={handlePhoneVerified}
                 onBack={() => setAuthStep("credentials")}
+                phoneCode={phoneCode}
                 mode="signup"
               />
             </div>
@@ -281,6 +293,18 @@ export default function Auth() {
                       {errors.username && <p className="text-xs text-destructive">{errors.username}</p>}
                     </div>
                   </div>
+
+                  {/* Country Selection */}
+                  <CountrySelector
+                    value={countryCode}
+                    onChange={(code, country) => {
+                      setCountryCode(code);
+                      setPhoneCode(country?.phone_code || "");
+                    }}
+                    label={isAr ? "دولة الإقامة" : "Country of Residence"}
+                    required
+                  />
+                  {errors.countryCode && <p className="text-xs text-destructive">{errors.countryCode}</p>}
                 </>
               )}
 

@@ -12,6 +12,7 @@ interface PhoneVerificationProps {
   onVerified: (phone: string) => void;
   onBack?: () => void;
   initialPhone?: string;
+  phoneCode?: string;
   mode?: "signup" | "login";
 }
 
@@ -41,12 +42,12 @@ const VirtualOTPService = {
   },
 };
 
-export function PhoneVerification({ onVerified, onBack, initialPhone = "", mode = "signup" }: PhoneVerificationProps) {
+export function PhoneVerification({ onVerified, onBack, initialPhone = "", phoneCode = "", mode = "signup" }: PhoneVerificationProps) {
   const { t, language } = useLanguage();
   const { toast } = useToast();
   
   const [step, setStep] = useState<"phone" | "otp">("phone");
-  const [phone, setPhone] = useState(initialPhone);
+  const [phone, setPhone] = useState(initialPhone || phoneCode);
   const [otp, setOtp] = useState("");
   const [virtualOTP, setVirtualOTP] = useState<string>("");
   const [loading, setLoading] = useState(false);
