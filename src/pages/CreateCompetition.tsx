@@ -8,7 +8,7 @@ import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
-import { ArrowLeft, ArrowRight, Save, Loader2 } from "lucide-react";
+import { ArrowLeft, ArrowRight, Save, Loader2, Trophy } from "lucide-react";
 import { StepIndicator } from "@/components/competitions/wizard/StepIndicator";
 import { ExhibitionStep } from "@/components/competitions/wizard/ExhibitionStep";
 import { BasicInfoStep } from "@/components/competitions/wizard/BasicInfoStep";
@@ -192,22 +192,26 @@ export default function CreateCompetition() {
   const totalSteps = 7;
 
   return (
-    <div className="flex min-h-screen flex-col">
+    <div className="flex min-h-screen flex-col bg-background">
       <Header />
       <main className="container flex-1 py-8">
-        <Button variant="ghost" size="sm" onClick={() => navigate("/competitions")} className="mb-4">
-          <ArrowLeft className="mr-2 h-4 w-4" />
+        <Button variant="ghost" size="sm" onClick={() => navigate("/competitions")} className="mb-4 -ms-2">
+          <ArrowLeft className="me-2 h-4 w-4" />
           {isAr ? "العودة للمسابقات" : "Back to Competitions"}
         </Button>
 
         <div className="mx-auto max-w-2xl">
-          <h1 className="mb-2 font-serif text-3xl font-bold">{t("createCompetition")}</h1>
-          <p className="mb-1 text-muted-foreground">
-            {isAr ? "أدخل التفاصيل لإنشاء مسابقة جديدة" : "Fill in the details to create a new competition"}
-          </p>
-          <p className="mb-6 text-xs text-muted-foreground">
-            {isAr ? STEP_LABELS_AR[step - 1] : STEP_LABELS_EN[step - 1]} ({step}/{totalSteps})
-          </p>
+          <div className="mb-6 flex items-start gap-3">
+            <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-primary/10 ring-1 ring-primary/15 shadow-sm">
+              <Trophy className="h-5 w-5 text-primary" />
+            </div>
+            <div>
+              <h1 className="font-serif text-2xl font-bold md:text-3xl">{t("createCompetition")}</h1>
+              <p className="mt-0.5 text-sm text-muted-foreground">
+                {isAr ? STEP_LABELS_AR[step - 1] : STEP_LABELS_EN[step - 1]} ({step}/{totalSteps})
+              </p>
+            </div>
+          </div>
 
           <StepIndicator currentStep={step} totalSteps={totalSteps} />
 
@@ -240,14 +244,14 @@ export default function CreateCompetition() {
 
           <div className="mt-6 flex justify-between">
             <Button variant="outline" onClick={() => setStep(step - 1)} disabled={step === 1}>
-              <ArrowLeft className="mr-2 h-4 w-4" />
+              <ArrowLeft className="me-2 h-4 w-4" />
               {isAr ? "السابق" : "Previous"}
             </Button>
 
             {step < totalSteps ? (
               <Button onClick={() => setStep(step + 1)} disabled={!canProceed()}>
                 {isAr ? "التالي" : "Next"}
-                <ArrowRight className="ml-2 h-4 w-4" />
+                <ArrowRight className="ms-2 h-4 w-4" />
               </Button>
             ) : (
               <Button
@@ -255,9 +259,9 @@ export default function CreateCompetition() {
                 disabled={createMutation.isPending || !data.title.trim()}
               >
                 {createMutation.isPending ? (
-                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  <Loader2 className="me-2 h-4 w-4 animate-spin" />
                 ) : (
-                  <Save className="mr-2 h-4 w-4" />
+                  <Save className="me-2 h-4 w-4" />
                 )}
                 {isAr ? "إنشاء المسابقة" : "Create Competition"}
               </Button>
