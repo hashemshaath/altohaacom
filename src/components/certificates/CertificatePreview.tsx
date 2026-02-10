@@ -96,6 +96,7 @@ export function CertificatePreview({ design, zoom, previewData }: CertificatePre
 
   return (
     <div
+      data-certificate-preview
       className="relative shadow-2xl transition-all duration-300"
       dir={isRtl ? "rtl" : "ltr"}
       style={{
