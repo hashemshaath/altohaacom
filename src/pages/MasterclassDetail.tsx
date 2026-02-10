@@ -312,7 +312,7 @@ export default function MasterclassDetail() {
                         </p>
                       </div>
                       {isCompleted && (
-                        <div className="flex items-center gap-2 text-green-600 bg-green-500/10 rounded-lg p-3">
+                        <div className="flex items-center gap-2 text-chart-5 bg-chart-5/10 rounded-lg p-3">
                           <GraduationCap className="h-5 w-5" />
                           <span className="font-medium">{language === "ar" ? "تم الإكمال!" : "Completed!"}</span>
                         </div>
@@ -357,7 +357,7 @@ export default function MasterclassDetail() {
                     : masterclass.what_you_learn
                   ).map((item: string, i: number) => (
                     <div key={i} className="flex items-start gap-2">
-                      <CheckCircle className="h-4 w-4 text-green-500 mt-0.5 shrink-0" />
+                      <CheckCircle className="h-4 w-4 text-chart-5 mt-0.5 shrink-0" />
                       <span className="text-sm">{item}</span>
                     </div>
                   ))}
@@ -431,7 +431,7 @@ export default function MasterclassDetail() {
                             >
                               <div className="flex items-center gap-3">
                                 {isLessonCompleted ? (
-                                  <CheckCircle className="h-4 w-4 text-green-500" />
+                                  <CheckCircle className="h-4 w-4 text-chart-5" />
                                 ) : canAccess ? (
                                   getContentTypeIcon(lesson.content_type)
                                 ) : (

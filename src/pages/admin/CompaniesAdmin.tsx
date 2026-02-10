@@ -82,10 +82,10 @@ const companyTypes: { value: CompanyType; label: string; labelAr: string }[] = [
 ];
 
 const statusColors: Record<CompanyStatus, string> = {
-  active: "bg-green-500",
-  inactive: "bg-gray-500",
-  pending: "bg-yellow-500",
-  suspended: "bg-red-500",
+  active: "bg-chart-5",
+  inactive: "bg-muted-foreground",
+  pending: "bg-chart-4",
+  suspended: "bg-destructive",
 };
 
 export default function CompaniesAdmin() {
@@ -859,7 +859,7 @@ export default function CompaniesAdmin() {
                 <h3 className="text-lg font-semibold">{language === "ar" ? "كشف الحساب" : "Account Statement"}</h3>
                 <p className="text-sm text-muted-foreground">
                   {language === "ar" ? "الرصيد الحالي:" : "Current Balance:"} 
-                  <span className={`font-bold mx-2 ${companyBalance >= 0 ? "text-green-600" : "text-red-600"}`}>
+                  <span className={`font-bold mx-2 ${companyBalance >= 0 ? "text-chart-5" : "text-destructive"}`}>
                     {companyBalance.toLocaleString()} {companyDetails?.currency || "SAR"}
                   </span>
                 </p>
@@ -891,7 +891,7 @@ export default function CompaniesAdmin() {
                           </Badge>
                         </TableCell>
                         <TableCell>{t.description || "-"}</TableCell>
-                        <TableCell className={["payment", "credit", "refund"].includes(t.type) ? "text-green-600" : "text-red-600"}>
+                        <TableCell className={["payment", "credit", "refund"].includes(t.type) ? "text-chart-5" : "text-destructive"}>
                           {["payment", "credit", "refund"].includes(t.type) ? "+" : "-"}{Number(t.amount).toLocaleString()} {t.currency}
                         </TableCell>
                         <TableCell>{format(new Date(t.created_at), "yyyy-MM-dd")}</TableCell>
@@ -929,9 +929,9 @@ export default function CompaniesAdmin() {
                         <p className="text-sm text-muted-foreground">{inv.invitation_type}</p>
                       </div>
                       <Badge className={
-                        inv.status === "accepted" ? "bg-green-500" :
-                        inv.status === "declined" ? "bg-red-500" :
-                        inv.status === "expired" ? "bg-gray-500" : "bg-yellow-500"
+                        inv.status === "accepted" ? "bg-chart-5" :
+                        inv.status === "declined" ? "bg-destructive" :
+                        inv.status === "expired" ? "bg-muted-foreground" : "bg-chart-4"
                       }>
                         {inv.status}
                       </Badge>

@@ -173,9 +173,9 @@ export function CategoryManagementPanel({ competitionId, isOrganizer, competitio
 
   const statusBadge = (s: string) => {
     const map: Record<string, string> = {
-      active: "bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300",
+      active: "bg-chart-5/10 text-chart-5",
       draft: "bg-muted text-muted-foreground",
-      suspended: "bg-orange-100 text-orange-800 dark:bg-orange-900/30 dark:text-orange-300",
+      suspended: "bg-chart-4/10 text-chart-4",
     };
     return <Badge className={map[s] || ""} variant="outline">{isAr ? (s === "active" ? "نشط" : s === "draft" ? "مسودة" : "معلق") : s}</Badge>;
   };
@@ -535,12 +535,12 @@ export function CategoryManagementPanel({ competitionId, isOrganizer, competitio
                         {isAr ? "تعديل" : "Edit"}
                       </Button>
                       {cat.status === "active" ? (
-                        <Button variant="ghost" size="sm" className="h-7 text-xs text-orange-600" onClick={() => updateStatusMutation.mutate({ id: cat.id, status: "suspended" })}>
+                        <Button variant="ghost" size="sm" className="h-7 text-xs text-chart-4" onClick={() => updateStatusMutation.mutate({ id: cat.id, status: "suspended" })}>
                           <Pause className="me-1 h-3 w-3" />
                           {isAr ? "تعليق" : "Suspend"}
                         </Button>
                       ) : cat.status === "suspended" ? (
-                        <Button variant="ghost" size="sm" className="h-7 text-xs text-green-600" onClick={() => updateStatusMutation.mutate({ id: cat.id, status: "active" })}>
+                        <Button variant="ghost" size="sm" className="h-7 text-xs text-chart-5" onClick={() => updateStatusMutation.mutate({ id: cat.id, status: "active" })}>
                           <Play className="me-1 h-3 w-3" />
                           {isAr ? "تفعيل" : "Activate"}
                         </Button>

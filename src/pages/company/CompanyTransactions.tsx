@@ -95,10 +95,10 @@ export default function CompanyTransactions() {
             </div>
           </CardContent>
         </Card>
-        <Card className="border-s-[3px] border-s-emerald-500">
+        <Card className="border-s-[3px] border-s-chart-5">
           <CardContent className="flex items-center gap-3 p-4">
-            <div className="rounded-xl bg-emerald-500/10 p-2.5">
-              <CheckCircle className="h-5 w-5 text-emerald-600" />
+            <div className="rounded-xl bg-chart-5/10 p-2.5">
+              <CheckCircle className="h-5 w-5 text-chart-5" />
             </div>
             <div>
               <p className="text-xs text-muted-foreground">{language === "ar" ? "تمت التسوية" : "Reconciled"}</p>
@@ -106,10 +106,10 @@ export default function CompanyTransactions() {
             </div>
           </CardContent>
         </Card>
-        <Card className="border-s-[3px] border-s-amber-500">
+        <Card className="border-s-[3px] border-s-chart-4">
           <CardContent className="flex items-center gap-3 p-4">
-            <div className="rounded-xl bg-amber-500/10 p-2.5">
-              <Clock className="h-5 w-5 text-amber-600" />
+            <div className="rounded-xl bg-chart-4/10 p-2.5">
+              <Clock className="h-5 w-5 text-chart-4" />
             </div>
             <div>
               <p className="text-xs text-muted-foreground">{language === "ar" ? "قيد المراجعة" : "Pending"}</p>
@@ -182,7 +182,7 @@ export default function CompanyTransactions() {
                         </TableCell>
                         <TableCell>
                           {t.is_reconciled ? (
-                            <Badge className="bg-emerald-500/10 text-emerald-600 border-emerald-500/20">
+                            <Badge className="bg-chart-5/10 text-chart-5 border-chart-5/20">
                               {language === "ar" ? "تمت التسوية" : "Reconciled"}
                             </Badge>
                           ) : (

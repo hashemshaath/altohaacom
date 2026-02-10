@@ -198,7 +198,7 @@ export default function CommunicationsAdmin() {
       case "urgent":
         return <Badge variant="destructive">{language === "ar" ? "عاجل" : "Urgent"}</Badge>;
       case "high":
-        return <Badge className="bg-orange-500">{language === "ar" ? "مرتفع" : "High"}</Badge>;
+        return <Badge className="bg-chart-4 text-chart-4-foreground">{language === "ar" ? "مرتفع" : "High"}</Badge>;
       default:
         return null;
     }
@@ -219,16 +219,20 @@ export default function CommunicationsAdmin() {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div>
-        <h1 className="text-3xl font-bold flex items-center gap-3">
-          <MessageSquare className="h-8 w-8 text-primary" />
-          {language === "ar" ? "صندوق التواصل" : "Communications Inbox"}
-        </h1>
-        <p className="mt-1 text-muted-foreground">
-          {language === "ar"
-            ? "عرض والرد على جميع رسائل الشركات"
-            : "View and respond to all company messages"}
-        </p>
+      <div className="flex items-center gap-3">
+        <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-primary/10">
+          <MessageSquare className="h-5 w-5 text-primary" />
+        </div>
+        <div>
+          <h1 className="font-serif text-xl font-bold sm:text-2xl">
+            {language === "ar" ? "صندوق التواصل" : "Communications Inbox"}
+          </h1>
+          <p className="text-xs text-muted-foreground">
+            {language === "ar"
+              ? "عرض والرد على جميع رسائل الشركات"
+              : "View and respond to all company messages"}
+          </p>
+        </div>
       </div>
 
       {/* Stats */}
@@ -258,7 +262,7 @@ export default function CommunicationsAdmin() {
         <Card>
           <CardContent className="pt-4">
             <div className="flex items-center gap-3">
-              <Clock className="h-8 w-8 text-orange-500" />
+              <Clock className="h-8 w-8 text-chart-4" />
               <div>
                 <p className="text-sm text-muted-foreground">{language === "ar" ? "عاجلة" : "Urgent"}</p>
                 <p className="text-xl font-bold">{urgentCount}</p>

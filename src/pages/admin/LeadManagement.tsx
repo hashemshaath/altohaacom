@@ -179,12 +179,12 @@ export default function LeadManagement() {
 
   const getStatusBadge = (status: string | null) => {
     const colors: Record<string, string> = {
-      new: "bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200",
-      contacted: "bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200",
-      qualified: "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200",
-      proposal: "bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200",
-      won: "bg-emerald-100 text-emerald-800 dark:bg-emerald-900 dark:text-emerald-200",
-      lost: "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200",
+      new: "bg-primary/10 text-primary",
+      contacted: "bg-chart-4/10 text-chart-4",
+      qualified: "bg-chart-5/10 text-chart-5",
+      proposal: "bg-chart-3/10 text-chart-3",
+      won: "bg-chart-5/10 text-chart-5",
+      lost: "bg-destructive/10 text-destructive",
     };
     const statusLabels: Record<string, { en: string; ar: string }> = {
       new: { en: "New", ar: "جديد" },
@@ -204,10 +204,10 @@ export default function LeadManagement() {
 
   const getTypeBadge = (type: string) => {
     const colors: Record<string, string> = {
-      sponsor: "bg-amber-100 text-amber-800 dark:bg-amber-900 dark:text-amber-200",
-      organizer: "bg-indigo-100 text-indigo-800 dark:bg-indigo-900 dark:text-indigo-200",
-      partnership: "bg-cyan-100 text-cyan-800 dark:bg-cyan-900 dark:text-cyan-200",
-      general: "bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-200",
+      sponsor: "bg-chart-4/10 text-chart-4",
+      organizer: "bg-chart-1/10 text-chart-1",
+      partnership: "bg-chart-3/10 text-chart-3",
+      general: "bg-muted text-muted-foreground",
     };
     const typeLabels: Record<string, { en: string; ar: string }> = {
       sponsor: { en: "Sponsor", ar: "راعٍ" },
@@ -228,29 +228,29 @@ export default function LeadManagement() {
       title: language === "ar" ? "إجمالي العملاء المحتملين" : "Total Leads",
       value: stats?.total || 0,
       icon: Users,
-      color: "text-blue-500",
-      bgColor: "bg-blue-500/10",
+      color: "text-primary",
+      bgColor: "bg-primary/10",
     },
     {
       title: language === "ar" ? "عملاء جدد" : "New Leads",
       value: stats?.newLeads || 0,
       icon: Clock,
-      color: "text-orange-500",
-      bgColor: "bg-orange-500/10",
+      color: "text-chart-4",
+      bgColor: "bg-chart-4/10",
     },
     {
       title: language === "ar" ? "مؤهلين" : "Qualified",
       value: stats?.qualified || 0,
       icon: TrendingUp,
-      color: "text-purple-500",
-      bgColor: "bg-purple-500/10",
+      color: "text-chart-3",
+      bgColor: "bg-chart-3/10",
     },
     {
       title: language === "ar" ? "صفقات ناجحة" : "Won Deals",
       value: stats?.won || 0,
       icon: CheckCircle2,
-      color: "text-green-500",
-      bgColor: "bg-green-500/10",
+      color: "text-chart-5",
+      bgColor: "bg-chart-5/10",
     },
   ];
 

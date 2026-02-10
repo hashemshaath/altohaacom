@@ -44,12 +44,12 @@ import {
 import { format } from "date-fns";
 
 const AVAILABLE_ROLES = [
-  { value: "sponsor", label: "Sponsor", labelAr: "راعي", color: "bg-amber-500/10 text-amber-600 border-amber-500/20" },
-  { value: "supplier", label: "Supplier", labelAr: "مورد", color: "bg-blue-500/10 text-blue-600 border-blue-500/20" },
-  { value: "partner", label: "Partner", labelAr: "شريك", color: "bg-violet-500/10 text-violet-600 border-violet-500/20" },
-  { value: "vendor", label: "Vendor", labelAr: "بائع", color: "bg-emerald-500/10 text-emerald-600 border-emerald-500/20" },
-  { value: "media", label: "Media", labelAr: "إعلام", color: "bg-pink-500/10 text-pink-600 border-pink-500/20" },
-  { value: "logistics", label: "Logistics", labelAr: "لوجستيات", color: "bg-orange-500/10 text-orange-600 border-orange-500/20" },
+  { value: "sponsor", label: "Sponsor", labelAr: "راعي", color: "bg-chart-4/10 text-chart-4 border-chart-4/20" },
+  { value: "supplier", label: "Supplier", labelAr: "مورد", color: "bg-primary/10 text-primary border-primary/20" },
+  { value: "partner", label: "Partner", labelAr: "شريك", color: "bg-chart-3/10 text-chart-3 border-chart-3/20" },
+  { value: "vendor", label: "Vendor", labelAr: "بائع", color: "bg-chart-5/10 text-chart-5 border-chart-5/20" },
+  { value: "media", label: "Media", labelAr: "إعلام", color: "bg-chart-1/10 text-chart-1 border-chart-1/20" },
+  { value: "logistics", label: "Logistics", labelAr: "لوجستيات", color: "bg-chart-2/10 text-chart-2 border-chart-2/20" },
 ];
 
 interface RoleAssignment {
@@ -266,10 +266,10 @@ export default function CompanyRolesAdmin() {
             </div>
           </CardContent>
         </Card>
-        <Card className="border-s-[3px] border-s-emerald-500">
+        <Card className="border-s-[3px] border-s-chart-5">
           <CardContent className="flex items-center gap-3 p-4">
-            <div className="rounded-xl bg-emerald-500/10 p-2.5">
-              <CheckCircle className="h-5 w-5 text-emerald-600" />
+            <div className="rounded-xl bg-chart-5/10 p-2.5">
+              <CheckCircle className="h-5 w-5 text-chart-5" />
             </div>
             <div>
               <p className="text-xs text-muted-foreground">{language === "ar" ? "نشطة" : "Active"}</p>
@@ -277,10 +277,10 @@ export default function CompanyRolesAdmin() {
             </div>
           </CardContent>
         </Card>
-        <Card className="border-s-[3px] border-s-amber-500">
+        <Card className="border-s-[3px] border-s-chart-4">
           <CardContent className="flex items-center gap-3 p-4">
-            <div className="rounded-xl bg-amber-500/10 p-2.5">
-              <Building2 className="h-5 w-5 text-amber-600" />
+            <div className="rounded-xl bg-chart-4/10 p-2.5">
+              <Building2 className="h-5 w-5 text-chart-4" />
             </div>
             <div>
               <p className="text-xs text-muted-foreground">{language === "ar" ? "شركات فريدة" : "Unique Companies"}</p>
@@ -288,10 +288,10 @@ export default function CompanyRolesAdmin() {
             </div>
           </CardContent>
         </Card>
-        <Card className="border-s-[3px] border-s-violet-500">
+        <Card className="border-s-[3px] border-s-chart-3">
           <CardContent className="flex items-center gap-3 p-4">
-            <div className="rounded-xl bg-violet-500/10 p-2.5">
-              <Shield className="h-5 w-5 text-violet-600" />
+            <div className="rounded-xl bg-chart-3/10 p-2.5">
+              <Shield className="h-5 w-5 text-chart-3" />
             </div>
             <div>
               <p className="text-xs text-muted-foreground">{language === "ar" ? "أنواع الأدوار" : "Role Types"}</p>
@@ -388,7 +388,7 @@ export default function CompanyRolesAdmin() {
                         <TableCell>{getRoleBadge(assignment.role)}</TableCell>
                         <TableCell>
                           {assignment.is_active ? (
-                            <Badge className="bg-emerald-500/10 text-emerald-600 border-emerald-500/20">
+                            <Badge className="bg-chart-5/10 text-chart-5 border-chart-5/20">
                               {language === "ar" ? "نشط" : "Active"}
                             </Badge>
                           ) : (
@@ -418,7 +418,7 @@ export default function CompanyRolesAdmin() {
                               {assignment.is_active ? (
                                 <XCircle className="h-4 w-4 text-muted-foreground" />
                               ) : (
-                                <CheckCircle className="h-4 w-4 text-emerald-600" />
+                                <CheckCircle className="h-4 w-4 text-chart-5" />
                               )}
                             </Button>
                             <Button

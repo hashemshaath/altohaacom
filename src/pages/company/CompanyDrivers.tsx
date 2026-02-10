@@ -131,18 +131,18 @@ export default function CompanyDrivers() {
             </div>
           </CardContent>
         </Card>
-        <Card className="border-s-[3px] border-s-emerald-500">
+        <Card className="border-s-[3px] border-s-chart-5">
           <CardContent className="flex items-center gap-3 p-4">
-            <div className="rounded-xl bg-emerald-500/10 p-2.5"><CheckCircle className="h-5 w-5 text-emerald-600" /></div>
+            <div className="rounded-xl bg-chart-5/10 p-2.5"><CheckCircle className="h-5 w-5 text-chart-5" /></div>
             <div>
               <p className="text-xs text-muted-foreground">{language === "ar" ? "متاحون" : "Available"}</p>
               <p className="text-2xl font-bold">{availableCount}</p>
             </div>
           </CardContent>
         </Card>
-        <Card className="border-s-[3px] border-s-amber-500">
+        <Card className="border-s-[3px] border-s-chart-4">
           <CardContent className="flex items-center gap-3 p-4">
-            <div className="rounded-xl bg-amber-500/10 p-2.5"><Car className="h-5 w-5 text-amber-600" /></div>
+            <div className="rounded-xl bg-chart-4/10 p-2.5"><Car className="h-5 w-5 text-chart-4" /></div>
             <div>
               <p className="text-xs text-muted-foreground">{language === "ar" ? "نشطون" : "Active"}</p>
               <p className="text-2xl font-bold">{activeCount}</p>
