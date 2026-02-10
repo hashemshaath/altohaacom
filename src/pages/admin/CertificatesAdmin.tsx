@@ -994,6 +994,7 @@ export default function CertificatesAdmin() {
         <DialogContent>
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2"><Mail className="h-5 w-5" />{language === "ar" ? "إرسال الشهادة" : "Send Certificate"}</DialogTitle>
+            <DialogDescription>{language === "ar" ? "إرسال الشهادة عبر البريد الإلكتروني للمستلم" : "Send the certificate via email to the recipient"}</DialogDescription>
           </DialogHeader>
           {sendDialog && (
             <div className="space-y-4">
