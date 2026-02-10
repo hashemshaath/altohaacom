@@ -23,7 +23,7 @@ import {
 } from "lucide-react";
 import { format } from "date-fns";
 
-type CategoryFilter = "all" | "account" | "certificate" | "invoice" | "competition" | "company";
+type CategoryFilter = "all" | "account" | "certificate" | "invoice" | "competition" | "company" | "participant" | "judge" | "team_member" | "exhibition";
 
 export default function Verify() {
   const { language } = useLanguage();
@@ -93,6 +93,51 @@ export default function Verify() {
             .maybeSingle();
           return data ? { ...(data as any), type: "company" as const } : null;
         }
+        case "exhibition": {
+          const { data } = await supabase
+            .from("exhibitions")
+            .select("title, title_ar, start_date, end_date, venue, city, country, status, cover_image_url, slug")
+            .eq("id", qrResult.entity_id)
+            .maybeSingle();
+          return data ? { ...(data as any), type: "exhibition" as const } : null;
+        }
+        case "participant": {
+          const { data: reg } = await supabase
+            .from("competition_registrations")
+            .select("id, status, registration_number, competition_id, participant_id, category_id, dish_name, registered_at")
+            .eq("id", qrResult.entity_id)
+            .maybeSingle();
+          if (!reg) return null;
+          const { data: profile } = await supabase.from("profiles").select("full_name, avatar_url, username").eq("user_id", reg.participant_id).maybeSingle();
+          const { data: comp } = await supabase.from("competitions").select("title, title_ar").eq("id", reg.competition_id).maybeSingle();
+          let catName = null;
+          if (reg.category_id) {
+            const { data: cat } = await supabase.from("competition_categories").select("name, name_ar").eq("id", reg.category_id).maybeSingle();
+            catName = cat;
+          }
+          return { ...reg, profile, competition: comp, category: catName, type: "participant" as const };
+        }
+        case "judge": {
+          const { data: ja } = await supabase
+            .from("competition_judges")
+            .select("id, judge_id, competition_id, assigned_at")
+            .eq("id", qrResult.entity_id)
+            .maybeSingle();
+          if (!ja) return null;
+          const { data: profile } = await supabase.from("profiles").select("full_name, avatar_url, username").eq("user_id", ja.judge_id).maybeSingle();
+          const { data: comp } = await supabase.from("competitions").select("title, title_ar").eq("id", ja.competition_id).maybeSingle();
+          return { ...ja, profile, competition: comp, type: "judge" as const };
+        }
+        case "team_member": {
+          const { data: tm } = await supabase
+            .from("competition_team_members")
+            .select("id, name, name_ar, role, title, title_ar, competition_id, is_checked_in, checked_in_at, photo_url")
+            .eq("id", qrResult.entity_id)
+            .maybeSingle();
+          if (!tm) return null;
+          const { data: comp } = await supabase.from("competitions").select("title, title_ar").eq("id", tm.competition_id).maybeSingle();
+          return { ...tm, competition: comp, type: "team_member" as const };
+        }
       }
     },
     enabled: !!qrResult,
@@ -125,7 +170,11 @@ export default function Verify() {
     { value: "certificate", label: "Certificates", labelAr: "الشهادات" },
     { value: "invoice", label: "Invoices", labelAr: "الفواتير" },
     { value: "competition", label: "Competitions", labelAr: "المسابقات" },
+    { value: "exhibition", label: "Exhibitions", labelAr: "الفعاليات" },
     { value: "company", label: "Companies", labelAr: "الشركات" },
+    { value: "participant", label: "Participants", labelAr: "المشاركين" },
+    { value: "judge", label: "Judges", labelAr: "الحكام" },
+    { value: "team_member", label: "Team", labelAr: "الفريق" },
   ];
 
   return (
@@ -302,6 +351,10 @@ function VerificationResult({
     invoice: { en: "Invoice", ar: "فاتورة", icon: FileText, color: "primary" },
     competition: { en: "Competition", ar: "مسابقة", icon: Award, color: "chart-3" },
     company: { en: "Company", ar: "شركة", icon: Building, color: "chart-4" },
+    exhibition: { en: "Exhibition", ar: "فعالية", icon: Calendar, color: "chart-3" },
+    participant: { en: "Contestant", ar: "متسابق", icon: User, color: "primary" },
+    judge: { en: "Judge", ar: "حكم", icon: Shield, color: "chart-4" },
+    team_member: { en: "Team Member", ar: "عضو فريق", icon: User, color: "chart-3" },
   };
 
   const typeInfo = typeLabels[entityType] || typeLabels.certificate;
@@ -354,6 +407,22 @@ function VerificationResult({
 
         {entityType === "company" && entityDetails?.type === "company" && (
           <CompanyVerificationDetails details={entityDetails} entityId={result.entity_id} />
+        )}
+
+        {entityType === "exhibition" && entityDetails?.type === "exhibition" && (
+          <ExhibitionVerificationDetails details={entityDetails} />
+        )}
+
+        {entityType === "participant" && entityDetails?.type === "participant" && (
+          <ParticipantVerificationDetails details={entityDetails} />
+        )}
+
+        {entityType === "judge" && entityDetails?.type === "judge" && (
+          <ParticipantVerificationDetails details={entityDetails} />
+        )}
+
+        {entityType === "team_member" && entityDetails?.type === "team_member" && (
+          <TeamMemberVerificationDetails details={entityDetails} />
         )}
 
         {/* Code display */}
@@ -612,6 +681,186 @@ function CompanyVerificationDetails({ details, entityId }: { details: any; entit
           {isAr ? "عرض الشركة" : "View Company"}
         </Link>
       </Button>
+    </div>
+  );
+}
+
+function ExhibitionVerificationDetails({ details }: { details: any }) {
+  const { language } = useLanguage();
+  const isAr = language === "ar";
+
+  return (
+    <div className="space-y-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="flex items-start gap-3">
+          <Calendar className="h-5 w-5 text-muted-foreground mt-0.5" />
+          <div>
+            <p className="text-sm text-muted-foreground">{isAr ? "الفعالية" : "Exhibition"}</p>
+            <p className="font-semibold">{isAr ? details.title_ar || details.title : details.title}</p>
+          </div>
+        </div>
+        {details.start_date && (
+          <div className="flex items-start gap-3">
+            <Calendar className="h-5 w-5 text-muted-foreground mt-0.5" />
+            <div>
+              <p className="text-sm text-muted-foreground">{isAr ? "التاريخ" : "Date"}</p>
+              <p className="font-semibold">{format(new Date(details.start_date), "MMM d")} – {format(new Date(details.end_date), "MMM d, yyyy")}</p>
+            </div>
+          </div>
+        )}
+        {(details.city || details.country) && (
+          <div className="flex items-start gap-3">
+            <Building className="h-5 w-5 text-muted-foreground mt-0.5" />
+            <div>
+              <p className="text-sm text-muted-foreground">{isAr ? "الموقع" : "Location"}</p>
+              <p className="font-semibold">{[details.city, details.country].filter(Boolean).join(", ")}</p>
+            </div>
+          </div>
+        )}
+        <div className="flex items-start gap-3">
+          <CheckCircle className="h-5 w-5 text-muted-foreground mt-0.5" />
+          <div>
+            <p className="text-sm text-muted-foreground">{isAr ? "الحالة" : "Status"}</p>
+            <Badge>{details.status}</Badge>
+          </div>
+        </div>
+      </div>
+      {details.slug && (
+        <Button variant="outline" size="sm" asChild>
+          <Link to={`/exhibitions/${details.slug}`}>
+            <ExternalLink className="h-3.5 w-3.5 me-1.5" />
+            {isAr ? "عرض الفعالية" : "View Exhibition"}
+          </Link>
+        </Button>
+      )}
+    </div>
+  );
+}
+
+function ParticipantVerificationDetails({ details }: { details: any }) {
+  const { language } = useLanguage();
+  const isAr = language === "ar";
+
+  return (
+    <div className="space-y-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="flex items-start gap-3">
+          <User className="h-5 w-5 text-muted-foreground mt-0.5" />
+          <div>
+            <p className="text-sm text-muted-foreground">
+              {details.type === "judge" ? (isAr ? "الحكم" : "Judge") : (isAr ? "المتسابق" : "Contestant")}
+            </p>
+            <p className="font-semibold">{details.profile?.full_name || "N/A"}</p>
+          </div>
+        </div>
+        {details.competition && (
+          <div className="flex items-start gap-3">
+            <Award className="h-5 w-5 text-muted-foreground mt-0.5" />
+            <div>
+              <p className="text-sm text-muted-foreground">{isAr ? "المسابقة" : "Competition"}</p>
+              <p className="font-semibold">{isAr ? details.competition.title_ar || details.competition.title : details.competition.title}</p>
+            </div>
+          </div>
+        )}
+        {details.category && (
+          <div className="flex items-start gap-3">
+            <FileText className="h-5 w-5 text-muted-foreground mt-0.5" />
+            <div>
+              <p className="text-sm text-muted-foreground">{isAr ? "الفئة" : "Category"}</p>
+              <p className="font-semibold">{isAr ? details.category.name_ar || details.category.name : details.category.name}</p>
+            </div>
+          </div>
+        )}
+        {details.registration_number && (
+          <div className="flex items-start gap-3">
+            <FileText className="h-5 w-5 text-muted-foreground mt-0.5" />
+            <div>
+              <p className="text-sm text-muted-foreground">{isAr ? "رقم التسجيل" : "Registration #"}</p>
+              <Badge variant="outline" className="font-mono text-xs">{details.registration_number}</Badge>
+            </div>
+          </div>
+        )}
+        {details.status && (
+          <div className="flex items-start gap-3">
+            <CheckCircle className="h-5 w-5 text-muted-foreground mt-0.5" />
+            <div>
+              <p className="text-sm text-muted-foreground">{isAr ? "الحالة" : "Status"}</p>
+              <Badge>{details.status === "approved" ? (isAr ? "مؤكد" : "Confirmed") : details.status}</Badge>
+            </div>
+          </div>
+        )}
+      </div>
+      {details.competition_id && (
+        <Button variant="outline" size="sm" asChild>
+          <Link to={`/competitions/${details.competition_id}`}>
+            <ExternalLink className="h-3.5 w-3.5 me-1.5" />
+            {isAr ? "عرض المسابقة" : "View Competition"}
+          </Link>
+        </Button>
+      )}
+    </div>
+  );
+}
+
+function TeamMemberVerificationDetails({ details }: { details: any }) {
+  const { language } = useLanguage();
+  const isAr = language === "ar";
+
+  return (
+    <div className="space-y-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="flex items-start gap-3">
+          <User className="h-5 w-5 text-muted-foreground mt-0.5" />
+          <div>
+            <p className="text-sm text-muted-foreground">{isAr ? "عضو الفريق" : "Team Member"}</p>
+            <p className="font-semibold">{isAr ? details.name_ar || details.name : details.name}</p>
+          </div>
+        </div>
+        {details.role && (
+          <div className="flex items-start gap-3">
+            <Shield className="h-5 w-5 text-muted-foreground mt-0.5" />
+            <div>
+              <p className="text-sm text-muted-foreground">{isAr ? "الدور" : "Role"}</p>
+              <Badge variant="secondary">{details.role}</Badge>
+            </div>
+          </div>
+        )}
+        {(details.title || details.title_ar) && (
+          <div className="flex items-start gap-3">
+            <Award className="h-5 w-5 text-muted-foreground mt-0.5" />
+            <div>
+              <p className="text-sm text-muted-foreground">{isAr ? "المسمى" : "Title"}</p>
+              <p className="font-semibold">{isAr ? details.title_ar || details.title : details.title}</p>
+            </div>
+          </div>
+        )}
+        {details.competition && (
+          <div className="flex items-start gap-3">
+            <Award className="h-5 w-5 text-muted-foreground mt-0.5" />
+            <div>
+              <p className="text-sm text-muted-foreground">{isAr ? "المسابقة" : "Competition"}</p>
+              <p className="font-semibold">{isAr ? details.competition.title_ar || details.competition.title : details.competition.title}</p>
+            </div>
+          </div>
+        )}
+        <div className="flex items-start gap-3">
+          <CheckCircle className="h-5 w-5 text-muted-foreground mt-0.5" />
+          <div>
+            <p className="text-sm text-muted-foreground">{isAr ? "تسجيل الحضور" : "Check-in"}</p>
+            <Badge variant={details.is_checked_in ? "default" : "secondary"}>
+              {details.is_checked_in ? (isAr ? "تم التسجيل" : "Checked In") : (isAr ? "لم يسجل بعد" : "Not Checked In")}
+            </Badge>
+          </div>
+        </div>
+      </div>
+      {details.competition_id && (
+        <Button variant="outline" size="sm" asChild>
+          <Link to={`/competitions/${details.competition_id}`}>
+            <ExternalLink className="h-3.5 w-3.5 me-1.5" />
+            {isAr ? "عرض المسابقة" : "View Competition"}
+          </Link>
+        </Button>
+      )}
     </div>
   );
 }

@@ -32,6 +32,8 @@ import { ImageLightbox } from "@/components/competitions/ImageLightbox";
 import { countryFlag as getCountryFlagUtil } from "@/lib/countryFlag";
 import { format, isPast, isFuture, isWithinInterval, differenceInDays } from "date-fns";
 import { useState, useEffect, useMemo } from "react";
+import { QRCodeDisplay } from "@/components/qr/QRCodeDisplay";
+import { useEntityQRCode } from "@/hooks/useQRCode";
 
 /* ---------- types ---------- */
 interface ScheduleDay {
@@ -353,6 +355,7 @@ export default function ExhibitionDetail() {
 
   const organizerLogoUrl = (exhibition as any).organizer_logo_url || exhibition.logo_url;
   const isOwner = user && exhibition.created_by === user.id;
+  const { data: exhibitionQrCode } = useEntityQRCode("exhibition", exhibition.id, "exhibition");
 
   // Count content for tab badges
   const hasCompetitions = linkedCompetitions && linkedCompetitions.length > 0;
@@ -1260,6 +1263,16 @@ export default function ExhibitionDetail() {
                   </div>
                 </CardContent>
               </Card>
+            )}
+
+            {/* QR Code */}
+            {exhibitionQrCode && (
+              <QRCodeDisplay
+                code={exhibitionQrCode.code}
+                label={isAr ? "رمز QR للفعالية" : "Exhibition QR Code"}
+                size={140}
+                compact={false}
+              />
             )}
 
             {/* Tags */}
