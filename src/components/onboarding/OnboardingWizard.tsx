@@ -11,7 +11,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Progress } from "@/components/ui/progress";
-import { Separator } from "@/components/ui/separator";
+import { CountrySelector } from "@/components/auth/CountrySelector";
 import { useToast } from "@/hooks/use-toast";
 import {
   ChefHat,
@@ -56,6 +56,8 @@ export function OnboardingWizard({ onComplete }: OnboardingWizardProps) {
     specialization: "",
     experience_level: "beginner" as ExperienceLevel,
     location: "",
+    country_code: "",
+    nationality: "",
   });
 
   const [selectedRoles, setSelectedRoles] = useState<AppRole[]>([]);
@@ -135,6 +137,8 @@ export function OnboardingWizard({ onComplete }: OnboardingWizardProps) {
           specialization: form.specialization,
           experience_level: form.experience_level,
           location: form.location,
+          country_code: form.country_code || null,
+          nationality: form.nationality || null,
           profile_completed: true,
         })
         .eq("user_id", user.id);
@@ -216,12 +220,22 @@ export function OnboardingWizard({ onComplete }: OnboardingWizardProps) {
                   {isAr ? "أحرف إنجليزية وأرقام وشرطة سفلية فقط" : "Letters, numbers and underscores only"}
                 </p>
               </div>
+              <CountrySelector
+                value={form.country_code}
+                onChange={(code) => setForm({ ...form, country_code: code })}
+                label={isAr ? "دولة الإقامة" : "Country of Residence"}
+              />
+              <CountrySelector
+                value={form.nationality}
+                onChange={(code) => setForm({ ...form, nationality: code })}
+                label={isAr ? "الجنسية" : "Nationality"}
+              />
               <div className="space-y-1.5">
-                <Label className="text-xs">{isAr ? "الموقع" : "Location"}</Label>
+                <Label className="text-xs">{isAr ? "المدينة" : "City"}</Label>
                 <Input
                   value={form.location}
                   onChange={(e) => setForm({ ...form, location: e.target.value })}
-                  placeholder={isAr ? "المدينة، البلد" : "City, Country"}
+                  placeholder={isAr ? "المدينة" : "City"}
                 />
               </div>
             </div>
