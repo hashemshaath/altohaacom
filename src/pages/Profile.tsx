@@ -170,7 +170,7 @@ export default function Profile() {
 
         <div className="grid gap-6 md:grid-cols-3">
           {/* Profile sidebar */}
-          <Card className="md:col-span-1 overflow-hidden">
+          <Card className="md:col-span-1 overflow-hidden shadow-lg shadow-primary/5">
             <div className="border-b bg-muted/30 px-4 py-3">
               <h3 className="flex items-center gap-2 text-sm font-semibold">
                 <div className="flex h-6 w-6 items-center justify-center rounded-md bg-primary/10">
@@ -181,7 +181,7 @@ export default function Profile() {
             </div>
             <CardContent className="p-5">
               <div className="flex flex-col items-center text-center">
-                <div className="mb-3 flex h-20 w-20 items-center justify-center rounded-full bg-primary/10">
+                <div className="mb-3 flex h-20 w-20 items-center justify-center rounded-full bg-primary/10 ring-4 ring-primary/5 shadow-lg">
                   <User className="h-9 w-9 text-primary" />
                 </div>
                 <h2 className="font-serif text-lg font-bold">

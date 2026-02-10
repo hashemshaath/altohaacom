@@ -84,48 +84,58 @@ export default function Shop() {
       />
       <Header />
 
-      <main className="container flex-1 py-8 md:py-12">
-        {/* Page Header */}
-        <div className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
-          <div>
-            <div className="mb-1 flex items-center gap-2">
-              <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary/10">
-                <ShoppingBag className="h-4 w-4 text-primary" />
+      {/* Hero Banner */}
+      <section className="relative overflow-hidden border-b bg-gradient-to-b from-primary/5 via-background to-background">
+        <div className="absolute -top-32 start-1/4 h-64 w-64 rounded-full bg-primary/8 blur-[100px] animate-pulse pointer-events-none" />
+        <div className="absolute -top-20 end-1/3 h-48 w-48 rounded-full bg-accent/10 blur-[80px] animate-pulse [animation-delay:1s] pointer-events-none" />
+        <div className="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-primary/20 to-transparent" />
+        <div className="container relative py-10 md:py-14">
+          <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+            <div className="flex items-start gap-3">
+              <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-primary/10 ring-1 ring-primary/15 shadow-sm">
+                <ShoppingBag className="h-6 w-6 text-primary" />
               </div>
-              <h1 className="font-serif text-2xl font-bold md:text-3xl">
-                {isAr ? "المتجر الطهوي" : "Culinary Shop"}
-              </h1>
+              <div>
+                <h1 className="font-serif text-2xl font-bold md:text-3xl lg:text-4xl">
+                  {isAr ? "المتجر الطهوي" : "Culinary Shop"}
+                </h1>
+                <p className="mt-1 max-w-xl text-sm text-muted-foreground sm:text-base">
+                  {isAr
+                    ? "أدوات طهي فاخرة وكتب ومنتجات وخدمات مهنية"
+                    : "Premium culinary tools, books, products, and professional services"}
+                </p>
+              </div>
             </div>
-            <p className="text-sm text-muted-foreground">
-              {isAr
-                ? "أدوات طهي فاخرة وكتب ومنتجات وخدمات مهنية"
-                : "Premium culinary tools, books, products, and professional services"}
-            </p>
-          </div>
-          <div className="flex gap-2">
-            {user && (
-              <Button variant="outline" size="sm" asChild>
-                <Link to="/shop/my-products">
-                  {isAr ? "منتجاتي" : "My Products"}
-                </Link>
-              </Button>
-            )}
-            <Button
-              variant="outline"
-              size="sm"
-              className="relative"
-              onClick={() => setCartOpen(true)}
-            >
-              <ShoppingCart className="me-1.5 h-4 w-4" />
-              {isAr ? "السلة" : "Cart"}
-              {cart.totalItems > 0 && (
-                <Badge className="absolute -end-2 -top-2 h-5 min-w-5 px-1.5 text-[10px]">
-                  {cart.totalItems}
-                </Badge>
+            <div className="flex gap-2">
+              {user && (
+                <Button variant="outline" size="sm" asChild>
+                  <Link to="/shop/my-products">
+                    {isAr ? "منتجاتي" : "My Products"}
+                  </Link>
+                </Button>
               )}
-            </Button>
+              <Button
+                variant="outline"
+                size="sm"
+                className="relative"
+                onClick={() => setCartOpen(true)}
+              >
+                <ShoppingCart className="me-1.5 h-4 w-4" />
+                {isAr ? "السلة" : "Cart"}
+                {cart.totalItems > 0 && (
+                  <Badge className="absolute -end-2 -top-2 h-5 min-w-5 px-1.5 text-[10px]">
+                    {cart.totalItems}
+                  </Badge>
+                )}
+              </Button>
+            </div>
           </div>
         </div>
+      </section>
+
+      <main className="container flex-1 py-8 md:py-12">
+        {/* Page Header - removed, now in hero */}
+        {/* Header moved to hero banner above */}
 
         {/* Filters */}
         <div className="mb-6 flex flex-col gap-3 sm:flex-row">
