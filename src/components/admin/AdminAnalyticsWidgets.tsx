@@ -5,7 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from "recharts";
-import { TrendingUp, Users, Trophy, FileText, DollarSign } from "lucide-react";
+import { TrendingUp, Users, Trophy, FileText, DollarSign, Landmark, GraduationCap } from "lucide-react";
 import { CountryBreakdownChart } from "@/components/analytics/CountryBreakdownChart";
 
 export function AdminAnalyticsWidgets() {
@@ -258,6 +258,30 @@ export function AdminAnalyticsWidgets() {
         </CardContent>
       </Card>
 
+      {/* Quick Counts */}
+      <div className="grid gap-3 grid-cols-2 lg:grid-cols-4">
+        <QuickCountCard
+          icon={Landmark}
+          label={isAr ? "المعارض" : "Exhibitions"}
+          table="exhibitions"
+        />
+        <QuickCountCard
+          icon={GraduationCap}
+          label={isAr ? "الدورات" : "Masterclasses"}
+          table="masterclasses"
+        />
+        <QuickCountCard
+          icon={FileText}
+          label={isAr ? "المقالات" : "Articles"}
+          table="articles"
+        />
+        <QuickCountCard
+          icon={Users}
+          label={isAr ? "المجموعات" : "Groups"}
+          table="groups"
+        />
+      </div>
+
       {/* Country Breakdowns */}
       <div className="grid gap-4 lg:grid-cols-2">
         <CountryBreakdownChart metric="users" />
@@ -280,4 +304,31 @@ function CertificateCount() {
   });
 
   return <p className="text-2xl font-bold">{count ?? "…"}</p>;
+}
+
+function QuickCountCard({ icon: Icon, label, table }: { icon: React.ElementType; label: string; table: string }) {
+  const { data: count } = useQuery({
+    queryKey: ["admin-quick-count", table],
+    queryFn: async () => {
+      const { count } = await supabase
+        .from(table as any)
+        .select("*", { count: "exact", head: true });
+      return count || 0;
+    },
+    staleTime: 1000 * 60 * 5,
+  });
+
+  return (
+    <Card className="border-border/50 transition-all hover:shadow-sm">
+      <CardContent className="flex items-center gap-3 p-4">
+        <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-primary/10">
+          <Icon className="h-4 w-4 text-primary" />
+        </div>
+        <div>
+          <p className="text-xl font-bold">{count ?? "…"}</p>
+          <p className="text-[10px] uppercase tracking-wider text-muted-foreground">{label}</p>
+        </div>
+      </CardContent>
+    </Card>
+  );
 }
