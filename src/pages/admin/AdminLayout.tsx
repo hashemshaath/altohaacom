@@ -4,7 +4,7 @@ import { useIsAdmin } from "@/hooks/useAdmin";
 import { Navigate, Outlet, NavLink } from "react-router-dom";
 import { AdminHeader } from "@/components/admin/AdminHeader";
 import { cn } from "@/lib/utils";
-import { Handshake, GraduationCap, BarChart3, Landmark, Building2, Gavel, MessageSquare as MessageSquareIcon, Earth } from "lucide-react";
+import { Handshake, GraduationCap, BarChart3, Landmark, Building2, Gavel, MessageSquare as MessageSquareIcon, Earth, QrCode } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
@@ -85,6 +85,7 @@ export default function AdminLayout() {
         { to: "/admin/competitions", icon: Trophy, label: language === "ar" ? "المسابقات" : "Competitions" },
         { to: "/admin/exhibitions", icon: Landmark, label: language === "ar" ? "المعارض والفعاليات" : "Exhibitions & Events" },
         { to: "/admin/certificates", icon: Award, label: language === "ar" ? "الشهادات" : "Certificates" },
+        { to: "/admin/qr-codes", icon: QrCode, label: language === "ar" ? "رموز QR" : "QR Codes" },
         { to: "/admin/media", icon: Image, label: language === "ar" ? "مكتبة الوسائط" : "Media Library" },
         { to: "/admin/moderation", icon: Flag, label: language === "ar" ? "إدارة المحتوى" : "Moderation" },
         { to: "/admin/invoices", icon: FileText, label: language === "ar" ? "الفواتير" : "Invoices" },

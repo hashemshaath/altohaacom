@@ -45,6 +45,7 @@ import { CompetitionCountdown } from "@/components/competitions/CompetitionCount
 import { ParticipantStatsCard } from "@/components/competitions/ParticipantStatsCard";
 import { OrganizerCard } from "@/components/competitions/OrganizerCard";
 import { CompetitionActivityFeed } from "@/components/competitions/CompetitionActivityFeed";
+import { QRCodeDisplay } from "@/components/qr/QRCodeDisplay";
 import type { Database } from "@/integrations/supabase/types";
 
 type CompetitionStatus = Database["public"]["Enums"]["competition_status"];
@@ -700,6 +701,14 @@ export default function CompetitionDetail() {
                   )}
                 </CardContent>
               </Card>
+
+              {/* QR Code */}
+              <QRCodeDisplay
+                code={competition.competition_number || competition.id.slice(0, 8).toUpperCase()}
+                label={isAr ? "رمز QR للمسابقة" : "Competition QR Code"}
+                size={140}
+                compact={false}
+              />
 
               {/* Organizer */}
               <OrganizerCard organizerId={competition.organizer_id} />
