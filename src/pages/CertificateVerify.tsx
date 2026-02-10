@@ -37,19 +37,14 @@ export default function CertificateVerify() {
     queryFn: async () => {
       if (!searchedCode) return null;
       
+      // Use secure RPC function that doesn't expose email fields
       const { data, error } = await supabase
-        .from("certificates")
-        .select("*")
-        .eq("verification_code", searchedCode.toUpperCase())
-        .eq("status", "issued")
-        .single();
+        .rpc("verify_certificate", { p_code: searchedCode.toUpperCase() });
       
-      if (error) {
-        if (error.code === "PGRST116") return null; // Not found
-        throw error;
-      }
+      if (error) throw error;
+      if (!data || (data as any[]).length === 0) return null;
       
-      return data;
+      return (data as any[])[0];
     },
     enabled: !!searchedCode,
   });

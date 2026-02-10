@@ -103,7 +103,16 @@ const CompanySettings = lazy(() => import("./pages/company/CompanySettings"));
 const CompanyInvoices = lazy(() => import("./pages/company/CompanyInvoices"));
 const CompanyCatalog = lazy(() => import("./pages/company/CompanyCatalog"));
 
-const queryClient = new QueryClient();
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      staleTime: 1000 * 60 * 2, // 2 minutes default stale time
+      gcTime: 1000 * 60 * 10, // 10 minutes garbage collection
+      retry: 1,
+      refetchOnWindowFocus: false,
+    },
+  },
+});
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
