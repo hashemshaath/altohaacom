@@ -213,7 +213,7 @@ export function RegistrationForm({
   };
 
   return (
-    <Card className="border-primary">
+    <Card className="border-primary/30 shadow-lg shadow-primary/5 overflow-hidden">
       <CardHeader>
         <div className="flex items-center gap-2">
           <Button variant="ghost" size="icon" onClick={onCancel}>
@@ -328,7 +328,7 @@ export function RegistrationForm({
             ) : (
               <div
                 onClick={() => !uploading && fileInputRef.current?.click()}
-                className="flex h-48 cursor-pointer flex-col items-center justify-center rounded-lg border-2 border-dashed border-muted-foreground/25 bg-muted/50 transition-colors hover:border-primary/50 hover:bg-muted"
+                className="flex h-48 cursor-pointer flex-col items-center justify-center rounded-xl border-2 border-dashed border-muted-foreground/25 bg-muted/30 transition-all duration-300 hover:border-primary/50 hover:bg-primary/5 hover:shadow-inner"
               >
                 <Camera className="mb-2 h-8 w-8 text-muted-foreground" />
                 <p className="text-sm text-muted-foreground">

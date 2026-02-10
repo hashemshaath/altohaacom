@@ -118,12 +118,12 @@ export function ProfileActivityTimeline({ userId }: ProfileActivityTimelineProps
           <div className="absolute start-[15px] top-2 bottom-2 w-px bg-border" />
 
           {events.map((event, i) => (
-            <div key={event.id} className="relative flex gap-3 pb-4 last:pb-0">
-              <div className="relative z-10 flex h-[30px] w-[30px] shrink-0 items-center justify-center rounded-full border bg-card">
+            <div key={event.id} className="relative flex gap-3 pb-4 last:pb-0 group">
+              <div className="relative z-10 flex h-[30px] w-[30px] shrink-0 items-center justify-center rounded-full border bg-card transition-all duration-200 group-hover:shadow-sm group-hover:scale-110">
                 <event.icon className={`h-3.5 w-3.5 ${event.color}`} />
               </div>
               <div className="flex-1 pt-0.5">
-                <p className="text-sm leading-snug">{event.title}</p>
+                <p className="text-sm leading-snug group-hover:text-foreground transition-colors">{event.title}</p>
                 <p className="mt-0.5 text-[10px] text-muted-foreground">
                   {format(new Date(event.date), "MMM d, yyyy")}
                 </p>

@@ -57,8 +57,10 @@ export function ProfileStatsBar({ userId }: ProfileStatsBarProps) {
       <CardContent className="p-0">
         <div className="grid grid-cols-4 divide-x rtl:divide-x-reverse">
           {stats.map((stat) => (
-            <div key={stat.label} className="flex flex-col items-center gap-1 py-4 px-2">
-              <stat.icon className="h-4 w-4 text-primary mb-0.5" />
+            <div key={stat.label} className="group flex flex-col items-center gap-1 py-4 px-2 transition-colors duration-200 hover:bg-accent/30">
+              <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-primary/10 transition-transform duration-200 group-hover:scale-110">
+                <stat.icon className="h-4 w-4 text-primary" />
+              </div>
               <span className="text-lg font-bold leading-none">{stat.value}</span>
               <span className="text-[10px] text-muted-foreground text-center leading-tight">{stat.label}</span>
             </div>

@@ -156,16 +156,19 @@ export default function PublicProfile() {
       <Header />
 
       {/* Cover gradient */}
-      <div className="h-32 bg-gradient-to-br from-primary/15 via-primary/5 to-accent/10 md:h-40" />
+      <div className="h-32 bg-gradient-to-br from-primary/15 via-primary/5 to-accent/10 md:h-44 relative overflow-hidden">
+        <div className="absolute -top-16 start-1/4 h-32 w-32 rounded-full bg-primary/10 blur-[60px]" />
+        <div className="absolute -bottom-8 end-1/4 h-24 w-24 rounded-full bg-accent/15 blur-[50px]" />
+      </div>
 
       <main className="container flex-1 -mt-16 pb-8 md:pb-10">
         <div className="grid gap-6 lg:grid-cols-3">
           {/* Profile Card */}
           <div className="lg:col-span-1">
-            <Card className="border-border/50">
+            <Card className="border-border/50 shadow-lg shadow-primary/5">
               <CardContent className="p-5">
                 <div className="flex flex-col items-center text-center">
-                  <Avatar className="h-20 w-20 ring-4 ring-background">
+                  <Avatar className="h-20 w-20 ring-4 ring-background shadow-lg">
                     <AvatarImage src={profile.avatar_url || undefined} />
                     <AvatarFallback className="text-xl bg-primary/10 text-primary font-bold">
                       {(profile.full_name || "U")[0].toUpperCase()}
