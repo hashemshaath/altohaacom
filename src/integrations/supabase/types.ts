@@ -1877,6 +1877,50 @@ export type Database = {
           },
         ]
       }
+      competition_roles: {
+        Row: {
+          assigned_at: string
+          assigned_by: string | null
+          competition_id: string
+          id: string
+          notes: string | null
+          revoked_at: string | null
+          role: string
+          status: string
+          user_id: string
+        }
+        Insert: {
+          assigned_at?: string
+          assigned_by?: string | null
+          competition_id: string
+          id?: string
+          notes?: string | null
+          revoked_at?: string | null
+          role: string
+          status?: string
+          user_id: string
+        }
+        Update: {
+          assigned_at?: string
+          assigned_by?: string | null
+          competition_id?: string
+          id?: string
+          notes?: string | null
+          revoked_at?: string | null
+          role?: string
+          status?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "competition_roles_competition_id_fkey"
+            columns: ["competition_id"]
+            isOneToOne: false
+            referencedRelation: "competitions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       competition_scores: {
         Row: {
           criteria_id: string
@@ -5531,6 +5575,39 @@ export type Database = {
           },
         ]
       }
+      permissions: {
+        Row: {
+          category: string
+          code: string
+          created_at: string
+          description: string | null
+          description_ar: string | null
+          id: string
+          name: string
+          name_ar: string | null
+        }
+        Insert: {
+          category?: string
+          code: string
+          created_at?: string
+          description?: string | null
+          description_ar?: string | null
+          id?: string
+          name: string
+          name_ar?: string | null
+        }
+        Update: {
+          category?: string
+          code?: string
+          created_at?: string
+          description?: string | null
+          description_ar?: string | null
+          id?: string
+          name?: string
+          name_ar?: string | null
+        }
+        Relationships: []
+      }
       poll_votes: {
         Row: {
           id: string
@@ -6543,6 +6620,35 @@ export type Database = {
           },
         ]
       }
+      role_permissions: {
+        Row: {
+          created_at: string
+          id: string
+          permission_id: string
+          role: Database["public"]["Enums"]["app_role"]
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          permission_id: string
+          role: Database["public"]["Enums"]["app_role"]
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          permission_id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+        }
+        Relationships: [
+          {
+            foreignKeyName: "role_permissions_permission_id_fkey"
+            columns: ["permission_id"]
+            isOneToOne: false
+            referencedRelation: "permissions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       shop_order_items: {
         Row: {
           id: string
@@ -7089,6 +7195,78 @@ export type Database = {
           },
         ]
       }
+      user_affiliations: {
+        Row: {
+          affiliation_type: string
+          company_id: string | null
+          created_at: string
+          department: string | null
+          department_ar: string | null
+          end_date: string | null
+          establishment_id: string | null
+          id: string
+          is_current: boolean | null
+          is_verified: boolean | null
+          role_in_org: string | null
+          role_in_org_ar: string | null
+          start_date: string | null
+          updated_at: string
+          user_id: string
+          verified_by: string | null
+        }
+        Insert: {
+          affiliation_type: string
+          company_id?: string | null
+          created_at?: string
+          department?: string | null
+          department_ar?: string | null
+          end_date?: string | null
+          establishment_id?: string | null
+          id?: string
+          is_current?: boolean | null
+          is_verified?: boolean | null
+          role_in_org?: string | null
+          role_in_org_ar?: string | null
+          start_date?: string | null
+          updated_at?: string
+          user_id: string
+          verified_by?: string | null
+        }
+        Update: {
+          affiliation_type?: string
+          company_id?: string | null
+          created_at?: string
+          department?: string | null
+          department_ar?: string | null
+          end_date?: string | null
+          establishment_id?: string | null
+          id?: string
+          is_current?: boolean | null
+          is_verified?: boolean | null
+          role_in_org?: string | null
+          role_in_org_ar?: string | null
+          start_date?: string | null
+          updated_at?: string
+          user_id?: string
+          verified_by?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_affiliations_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "user_affiliations_establishment_id_fkey"
+            columns: ["establishment_id"]
+            isOneToOne: false
+            referencedRelation: "establishments"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       user_badges: {
         Row: {
           badge_id: string
@@ -7144,6 +7322,47 @@ export type Database = {
           },
         ]
       }
+      user_permission_overrides: {
+        Row: {
+          created_at: string
+          expires_at: string | null
+          granted: boolean
+          granted_by: string | null
+          id: string
+          permission_id: string
+          reason: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          expires_at?: string | null
+          granted?: boolean
+          granted_by?: string | null
+          id?: string
+          permission_id: string
+          reason?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          expires_at?: string | null
+          granted?: boolean
+          granted_by?: string | null
+          id?: string
+          permission_id?: string
+          reason?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_permission_overrides_permission_id_fkey"
+            columns: ["permission_id"]
+            isOneToOne: false
+            referencedRelation: "permissions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       user_roles: {
         Row: {
           id: string
@@ -7161,6 +7380,71 @@ export type Database = {
           user_id?: string
         }
         Relationships: []
+      }
+      user_titles: {
+        Row: {
+          created_at: string
+          establishment_id: string | null
+          expiry_date: string | null
+          id: string
+          is_verified: boolean | null
+          issued_date: string | null
+          issuing_body: string | null
+          issuing_body_ar: string | null
+          sort_order: number | null
+          title: string
+          title_ar: string | null
+          title_type: string
+          updated_at: string
+          user_id: string
+          verified_at: string | null
+          verified_by: string | null
+        }
+        Insert: {
+          created_at?: string
+          establishment_id?: string | null
+          expiry_date?: string | null
+          id?: string
+          is_verified?: boolean | null
+          issued_date?: string | null
+          issuing_body?: string | null
+          issuing_body_ar?: string | null
+          sort_order?: number | null
+          title: string
+          title_ar?: string | null
+          title_type: string
+          updated_at?: string
+          user_id: string
+          verified_at?: string | null
+          verified_by?: string | null
+        }
+        Update: {
+          created_at?: string
+          establishment_id?: string | null
+          expiry_date?: string | null
+          id?: string
+          is_verified?: boolean | null
+          issued_date?: string | null
+          issuing_body?: string | null
+          issuing_body_ar?: string | null
+          sort_order?: number | null
+          title?: string
+          title_ar?: string | null
+          title_type?: string
+          updated_at?: string
+          user_id?: string
+          verified_at?: string | null
+          verified_by?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_titles_establishment_id_fkey"
+            columns: ["establishment_id"]
+            isOneToOne: false
+            referencedRelation: "establishments"
+            referencedColumns: ["id"]
+          },
+        ]
       }
     }
     Views: {
@@ -7192,6 +7476,10 @@ export type Database = {
       generate_verification_code: { Args: never; Returns: string }
       get_company_balance: { Args: { p_company_id: string }; Returns: number }
       get_user_company_id: { Args: { p_user_id: string }; Returns: string[] }
+      get_user_competition_role: {
+        Args: { p_competition_id: string; p_user_id: string }
+        Returns: string[]
+      }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
@@ -7201,6 +7489,10 @@ export type Database = {
       }
       is_admin: { Args: { p_user_id: string }; Returns: boolean }
       is_free_preview: { Args: { p_module_id: string }; Returns: boolean }
+      user_has_permission: {
+        Args: { p_permission_code: string; p_user_id: string }
+        Returns: boolean
+      }
       validate_username: { Args: { p_username: string }; Returns: boolean }
       verify_certificate: {
         Args: { p_code: string }
