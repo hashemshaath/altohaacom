@@ -5683,6 +5683,342 @@ export type Database = {
         }
         Relationships: []
       }
+      tasting_criteria: {
+        Row: {
+          category: string | null
+          created_at: string
+          description: string | null
+          description_ar: string | null
+          id: string
+          is_required: boolean | null
+          max_score: number | null
+          name: string
+          name_ar: string | null
+          session_id: string
+          sort_order: number | null
+          weight: number | null
+        }
+        Insert: {
+          category?: string | null
+          created_at?: string
+          description?: string | null
+          description_ar?: string | null
+          id?: string
+          is_required?: boolean | null
+          max_score?: number | null
+          name: string
+          name_ar?: string | null
+          session_id: string
+          sort_order?: number | null
+          weight?: number | null
+        }
+        Update: {
+          category?: string | null
+          created_at?: string
+          description?: string | null
+          description_ar?: string | null
+          id?: string
+          is_required?: boolean | null
+          max_score?: number | null
+          name?: string
+          name_ar?: string | null
+          session_id?: string
+          sort_order?: number | null
+          weight?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "tasting_criteria_session_id_fkey"
+            columns: ["session_id"]
+            isOneToOne: false
+            referencedRelation: "tasting_sessions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      tasting_criteria_presets: {
+        Row: {
+          category: string
+          created_at: string
+          created_by: string | null
+          criteria: Json
+          id: string
+          is_system: boolean | null
+          preset_name: string
+          preset_name_ar: string | null
+        }
+        Insert: {
+          category?: string
+          created_at?: string
+          created_by?: string | null
+          criteria?: Json
+          id?: string
+          is_system?: boolean | null
+          preset_name: string
+          preset_name_ar?: string | null
+        }
+        Update: {
+          category?: string
+          created_at?: string
+          created_by?: string | null
+          criteria?: Json
+          id?: string
+          is_system?: boolean | null
+          preset_name?: string
+          preset_name_ar?: string | null
+        }
+        Relationships: []
+      }
+      tasting_entries: {
+        Row: {
+          category: string | null
+          chef_id: string | null
+          chef_name: string | null
+          chef_name_ar: string | null
+          created_at: string
+          description: string | null
+          description_ar: string | null
+          dish_name: string
+          dish_name_ar: string | null
+          entry_number: number
+          id: string
+          is_active: boolean | null
+          photo_url: string | null
+          session_id: string
+          sort_order: number | null
+        }
+        Insert: {
+          category?: string | null
+          chef_id?: string | null
+          chef_name?: string | null
+          chef_name_ar?: string | null
+          created_at?: string
+          description?: string | null
+          description_ar?: string | null
+          dish_name: string
+          dish_name_ar?: string | null
+          entry_number: number
+          id?: string
+          is_active?: boolean | null
+          photo_url?: string | null
+          session_id: string
+          sort_order?: number | null
+        }
+        Update: {
+          category?: string | null
+          chef_id?: string | null
+          chef_name?: string | null
+          chef_name_ar?: string | null
+          created_at?: string
+          description?: string | null
+          description_ar?: string | null
+          dish_name?: string
+          dish_name_ar?: string | null
+          entry_number?: number
+          id?: string
+          is_active?: boolean | null
+          photo_url?: string | null
+          session_id?: string
+          sort_order?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "tasting_entries_session_id_fkey"
+            columns: ["session_id"]
+            isOneToOne: false
+            referencedRelation: "tasting_sessions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      tasting_judges: {
+        Row: {
+          assigned_at: string
+          completed_at: string | null
+          has_completed: boolean | null
+          id: string
+          judge_id: string
+          session_id: string
+        }
+        Insert: {
+          assigned_at?: string
+          completed_at?: string | null
+          has_completed?: boolean | null
+          id?: string
+          judge_id: string
+          session_id: string
+        }
+        Update: {
+          assigned_at?: string
+          completed_at?: string | null
+          has_completed?: boolean | null
+          id?: string
+          judge_id?: string
+          session_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "tasting_judges_session_id_fkey"
+            columns: ["session_id"]
+            isOneToOne: false
+            referencedRelation: "tasting_sessions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      tasting_scores: {
+        Row: {
+          created_at: string
+          criterion_id: string
+          entry_id: string
+          id: string
+          judge_id: string
+          note: string | null
+          note_ar: string | null
+          passed: boolean | null
+          score: number | null
+          session_id: string
+          stars: number | null
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          criterion_id: string
+          entry_id: string
+          id?: string
+          judge_id: string
+          note?: string | null
+          note_ar?: string | null
+          passed?: boolean | null
+          score?: number | null
+          session_id: string
+          stars?: number | null
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          criterion_id?: string
+          entry_id?: string
+          id?: string
+          judge_id?: string
+          note?: string | null
+          note_ar?: string | null
+          passed?: boolean | null
+          score?: number | null
+          session_id?: string
+          stars?: number | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "tasting_scores_criterion_id_fkey"
+            columns: ["criterion_id"]
+            isOneToOne: false
+            referencedRelation: "tasting_criteria"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "tasting_scores_entry_id_fkey"
+            columns: ["entry_id"]
+            isOneToOne: false
+            referencedRelation: "tasting_entries"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "tasting_scores_session_id_fkey"
+            columns: ["session_id"]
+            isOneToOne: false
+            referencedRelation: "tasting_sessions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      tasting_sessions: {
+        Row: {
+          allow_notes: boolean | null
+          city: string | null
+          competition_id: string | null
+          country: string | null
+          country_code: string | null
+          cover_image_url: string | null
+          created_at: string
+          description: string | null
+          description_ar: string | null
+          eval_method: Database["public"]["Enums"]["tasting_eval_method"]
+          id: string
+          is_blind_tasting: boolean | null
+          max_score: number | null
+          notes: string | null
+          organizer_id: string
+          session_date: string | null
+          session_end: string | null
+          status: Database["public"]["Enums"]["tasting_session_status"]
+          title: string
+          title_ar: string | null
+          updated_at: string
+          venue: string | null
+          venue_ar: string | null
+        }
+        Insert: {
+          allow_notes?: boolean | null
+          city?: string | null
+          competition_id?: string | null
+          country?: string | null
+          country_code?: string | null
+          cover_image_url?: string | null
+          created_at?: string
+          description?: string | null
+          description_ar?: string | null
+          eval_method?: Database["public"]["Enums"]["tasting_eval_method"]
+          id?: string
+          is_blind_tasting?: boolean | null
+          max_score?: number | null
+          notes?: string | null
+          organizer_id: string
+          session_date?: string | null
+          session_end?: string | null
+          status?: Database["public"]["Enums"]["tasting_session_status"]
+          title: string
+          title_ar?: string | null
+          updated_at?: string
+          venue?: string | null
+          venue_ar?: string | null
+        }
+        Update: {
+          allow_notes?: boolean | null
+          city?: string | null
+          competition_id?: string | null
+          country?: string | null
+          country_code?: string | null
+          cover_image_url?: string | null
+          created_at?: string
+          description?: string | null
+          description_ar?: string | null
+          eval_method?: Database["public"]["Enums"]["tasting_eval_method"]
+          id?: string
+          is_blind_tasting?: boolean | null
+          max_score?: number | null
+          notes?: string | null
+          organizer_id?: string
+          session_date?: string | null
+          session_end?: string | null
+          status?: Database["public"]["Enums"]["tasting_session_status"]
+          title?: string
+          title_ar?: string | null
+          updated_at?: string
+          venue?: string | null
+          venue_ar?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "tasting_sessions_competition_id_fkey"
+            columns: ["competition_id"]
+            isOneToOne: false
+            referencedRelation: "competitions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       user_badges: {
         Row: {
           badge_id: string
@@ -5937,6 +6273,13 @@ export type Database = {
         | "refunded"
       shop_product_type: "physical" | "digital" | "service"
       sponsorship_tier: "platinum" | "gold" | "silver" | "bronze" | "custom"
+      tasting_eval_method: "numeric" | "stars" | "pass_fail"
+      tasting_session_status:
+        | "draft"
+        | "open"
+        | "in_progress"
+        | "completed"
+        | "cancelled"
       transaction_type:
         | "invoice"
         | "payment"
@@ -6185,6 +6528,14 @@ export const Constants = {
       ],
       shop_product_type: ["physical", "digital", "service"],
       sponsorship_tier: ["platinum", "gold", "silver", "bronze", "custom"],
+      tasting_eval_method: ["numeric", "stars", "pass_fail"],
+      tasting_session_status: [
+        "draft",
+        "open",
+        "in_progress",
+        "completed",
+        "cancelled",
+      ],
       transaction_type: [
         "invoice",
         "payment",

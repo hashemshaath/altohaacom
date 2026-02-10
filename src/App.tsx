@@ -48,6 +48,9 @@ const Shop = lazy(() => import("./pages/Shop"));
 const ShopProduct = lazy(() => import("./pages/ShopProduct"));
 const ShopOrders = lazy(() => import("./pages/ShopOrders"));
 const ShopMyProducts = lazy(() => import("./pages/ShopMyProducts"));
+const Tastings = lazy(() => import("./pages/Tastings"));
+const CreateTasting = lazy(() => import("./pages/CreateTasting"));
+const TastingDetail = lazy(() => import("./pages/TastingDetail"));
 
 // Admin pages
 const AdminLayout = lazy(() => import("./pages/admin/AdminLayout"));
@@ -167,6 +170,9 @@ const App = () => (
                 <Route path="/shop/:id" element={<ShopProduct />} />
                 <Route path="/shop/orders" element={<ProtectedRoute><ShopOrders /></ProtectedRoute>} />
                 <Route path="/shop/my-products" element={<ProtectedRoute><ShopMyProducts /></ProtectedRoute>} />
+                <Route path="/tastings" element={<Tastings />} />
+                <Route path="/tastings/create" element={<ProtectedRoute><CreateTasting /></ProtectedRoute>} />
+                <Route path="/tastings/:id" element={<TastingDetail />} />
                 
                 {/* Admin Routes */}
                 <Route path="/admin" element={<ProtectedRoute><AdminLayout /></ProtectedRoute>}>

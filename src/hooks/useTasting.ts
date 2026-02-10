@@ -1,0 +1,275 @@
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/contexts/AuthContext";
+import { toast } from "sonner";
+
+export type EvalMethod = "numeric" | "stars" | "pass_fail";
+export type SessionStatus = "draft" | "open" | "in_progress" | "completed" | "cancelled";
+
+export interface TastingSession {
+  id: string;
+  title: string;
+  title_ar: string | null;
+  description: string | null;
+  description_ar: string | null;
+  competition_id: string | null;
+  organizer_id: string;
+  eval_method: EvalMethod;
+  status: SessionStatus;
+  max_score: number | null;
+  session_date: string | null;
+  session_end: string | null;
+  venue: string | null;
+  venue_ar: string | null;
+  city: string | null;
+  country: string | null;
+  country_code: string | null;
+  cover_image_url: string | null;
+  notes: string | null;
+  is_blind_tasting: boolean | null;
+  allow_notes: boolean | null;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface TastingCriterion {
+  id: string;
+  session_id: string;
+  name: string;
+  name_ar: string | null;
+  description: string | null;
+  description_ar: string | null;
+  category: string | null;
+  weight: number;
+  max_score: number;
+  sort_order: number;
+  is_required: boolean | null;
+  created_at: string;
+}
+
+export interface TastingEntry {
+  id: string;
+  session_id: string;
+  entry_number: number | null;
+  dish_name: string;
+  dish_name_ar: string | null;
+  description: string | null;
+  description_ar: string | null;
+  chef_name: string | null;
+  chef_name_ar: string | null;
+  chef_id: string | null;
+  photo_url: string | null;
+  category: string | null;
+  is_active: boolean | null;
+  sort_order: number | null;
+  created_at: string;
+}
+
+export interface TastingScore {
+  id: string;
+  session_id: string;
+  entry_id: string;
+  criterion_id: string;
+  judge_id: string;
+  score: number | null;
+  stars: number | null;
+  passed: boolean | null;
+  note: string | null;
+  note_ar: string | null;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface CriteriaPreset {
+  id: string;
+  preset_name: string;
+  preset_name_ar: string | null;
+  category: string;
+  criteria: Array<{
+    name: string;
+    name_ar: string;
+    description?: string;
+    max_score: number;
+    weight: number;
+  }>;
+  is_system: boolean | null;
+}
+
+export function useTastingSessions() {
+  return useQuery({
+    queryKey: ["tasting-sessions"],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("tasting_sessions" as any)
+        .select("*")
+        .order("created_at", { ascending: false });
+      if (error) throw error;
+      return (data || []) as unknown as TastingSession[];
+    },
+  });
+}
+
+export function useTastingSession(id: string | undefined) {
+  return useQuery({
+    queryKey: ["tasting-session", id],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("tasting_sessions" as any)
+        .select("*")
+        .eq("id", id!)
+        .single();
+      if (error) throw error;
+      return data as unknown as TastingSession;
+    },
+    enabled: !!id,
+  });
+}
+
+export function useTastingCriteria(sessionId: string | undefined) {
+  return useQuery({
+    queryKey: ["tasting-criteria", sessionId],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("tasting_criteria" as any)
+        .select("*")
+        .eq("session_id", sessionId!)
+        .order("sort_order");
+      if (error) throw error;
+      return (data || []) as unknown as TastingCriterion[];
+    },
+    enabled: !!sessionId,
+  });
+}
+
+export function useTastingEntries(sessionId: string | undefined) {
+  return useQuery({
+    queryKey: ["tasting-entries", sessionId],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("tasting_entries" as any)
+        .select("*")
+        .eq("session_id", sessionId!)
+        .order("sort_order");
+      if (error) throw error;
+      return (data || []) as unknown as TastingEntry[];
+    },
+    enabled: !!sessionId,
+  });
+}
+
+export function useTastingScores(sessionId: string | undefined) {
+  return useQuery({
+    queryKey: ["tasting-scores", sessionId],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("tasting_scores" as any)
+        .select("*")
+        .eq("session_id", sessionId!);
+      if (error) throw error;
+      return (data || []) as unknown as TastingScore[];
+    },
+    enabled: !!sessionId,
+  });
+}
+
+export function useCriteriaPresets() {
+  return useQuery({
+    queryKey: ["tasting-criteria-presets"],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("tasting_criteria_presets" as any)
+        .select("*");
+      if (error) throw error;
+      return (data || []) as unknown as CriteriaPreset[];
+    },
+  });
+}
+
+export function useCreateTastingSession() {
+  const queryClient = useQueryClient();
+  const { user } = useAuth();
+
+  return useMutation({
+    mutationFn: async (session: Partial<TastingSession>) => {
+      const { data, error } = await supabase
+        .from("tasting_sessions" as any)
+        .insert({ ...session, organizer_id: user?.id } as any)
+        .select()
+        .single();
+      if (error) throw error;
+      return data as unknown as TastingSession;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["tasting-sessions"] });
+    },
+  });
+}
+
+export function useSubmitScore() {
+  const queryClient = useQueryClient();
+  const { user } = useAuth();
+
+  return useMutation({
+    mutationFn: async (score: {
+      session_id: string;
+      entry_id: string;
+      criterion_id: string;
+      score?: number;
+      stars?: number;
+      passed?: boolean;
+      note?: string;
+    }) => {
+      const { data, error } = await supabase
+        .from("tasting_scores" as any)
+        .upsert(
+          { ...score, judge_id: user?.id } as any,
+          { onConflict: "entry_id,criterion_id,judge_id" }
+        )
+        .select()
+        .single();
+      if (error) throw error;
+      return data;
+    },
+    onSuccess: (_, vars) => {
+      queryClient.invalidateQueries({ queryKey: ["tasting-scores", vars.session_id] });
+    },
+  });
+}
+
+export function useAddTastingEntry() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async (entry: Partial<TastingEntry>) => {
+      const { data, error } = await supabase
+        .from("tasting_entries" as any)
+        .insert(entry as any)
+        .select()
+        .single();
+      if (error) throw error;
+      return data;
+    },
+    onSuccess: (_, vars) => {
+      queryClient.invalidateQueries({ queryKey: ["tasting-entries", vars.session_id] });
+    },
+  });
+}
+
+export function useAddTastingCriteria() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async (criteria: Array<Partial<TastingCriterion>>) => {
+      const { data, error } = await supabase
+        .from("tasting_criteria" as any)
+        .insert(criteria as any)
+        .select();
+      if (error) throw error;
+      return data;
+    },
+    onSuccess: (_, vars) => {
+      const sessionId = vars[0]?.session_id;
+      if (sessionId) queryClient.invalidateQueries({ queryKey: ["tasting-criteria", sessionId] });
+    },
+  });
+}
