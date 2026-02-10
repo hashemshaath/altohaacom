@@ -8,7 +8,15 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Separator } from "@/components/ui/separator";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
-import { FileText, ChevronLeft, DollarSign, Clock, CheckCircle } from "lucide-react";
+import PrintableInvoice from "@/components/invoices/PrintableInvoice";
+import {
+  FileText,
+  ChevronLeft,
+  DollarSign,
+  Clock,
+  CheckCircle,
+  CreditCard,
+} from "lucide-react";
 import { format } from "date-fns";
 import { useState } from "react";
 
@@ -18,15 +26,6 @@ interface InvoiceItem {
   quantity: number;
   unit_price: number;
 }
-
-const statusColors: Record<string, "default" | "destructive" | "outline" | "secondary"> = {
-  draft: "secondary",
-  pending: "outline",
-  sent: "outline",
-  paid: "default",
-  overdue: "destructive",
-  cancelled: "destructive",
-};
 
 export default function CompanyInvoices() {
   const { language } = useLanguage();
@@ -63,6 +62,21 @@ export default function CompanyInvoices() {
     return language === "ar" ? l.ar : l.en;
   };
 
+  const getStatusBadge = (status: string) => {
+    switch (status) {
+      case "paid":
+        return <Badge className="bg-emerald-500/10 text-emerald-600 border-emerald-500/20">{getStatusLabel(status)}</Badge>;
+      case "sent":
+      case "pending":
+        return <Badge className="bg-amber-500/10 text-amber-600 border-amber-500/20">{getStatusLabel(status)}</Badge>;
+      case "overdue":
+      case "cancelled":
+        return <Badge variant="destructive">{getStatusLabel(status)}</Badge>;
+      default:
+        return <Badge variant="secondary">{getStatusLabel(status)}</Badge>;
+    }
+  };
+
   const stats = {
     total: invoices.length,
     pending: invoices.filter((i) => ["pending", "sent"].includes(i.status || "")).length,
@@ -76,7 +90,9 @@ export default function CompanyInvoices() {
     return (
       <div className="space-y-6">
         <Skeleton className="h-8 w-48" />
-        <div className="grid gap-4 sm:grid-cols-3"><Skeleton className="h-24" /><Skeleton className="h-24" /><Skeleton className="h-24" /></div>
+        <div className="grid gap-4 sm:grid-cols-3">
+          {[...Array(3)].map((_, i) => <Skeleton key={i} className="h-24" />)}
+        </div>
         <Skeleton className="h-64" />
       </div>
     );
@@ -84,95 +100,23 @@ export default function CompanyInvoices() {
 
   // Detail view
   if (selectedInvoice) {
-    const items = (selectedInvoice.items || []) as unknown as InvoiceItem[];
     return (
       <div className="space-y-6">
         <div className="flex items-center gap-4">
           <Button variant="ghost" size="icon" onClick={() => setSelectedId(null)}>
             <ChevronLeft className="h-5 w-5" />
           </Button>
-          <div>
+          <div className="flex-1">
             <h1 className="text-2xl font-bold">{selectedInvoice.invoice_number}</h1>
             <p className="text-muted-foreground">{selectedInvoice.title}</p>
           </div>
-          <Badge variant={statusColors[selectedInvoice.status || "draft"]} className="ms-auto">
-            {getStatusLabel(selectedInvoice.status || "draft")}
-          </Badge>
+          {getStatusBadge(selectedInvoice.status || "draft")}
         </div>
 
-        <Card>
-          <CardHeader>
-            <CardTitle>{language === "ar" ? "تفاصيل الفاتورة" : "Invoice Details"}</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="grid grid-cols-2 gap-4 text-sm">
-              <div>
-                <p className="text-muted-foreground">{language === "ar" ? "تاريخ الإنشاء" : "Created"}</p>
-                <p className="font-medium">{format(new Date(selectedInvoice.created_at), "yyyy-MM-dd")}</p>
-              </div>
-              <div>
-                <p className="text-muted-foreground">{language === "ar" ? "تاريخ الاستحقاق" : "Due Date"}</p>
-                <p className="font-medium">{selectedInvoice.due_date ? format(new Date(selectedInvoice.due_date), "yyyy-MM-dd") : "—"}</p>
-              </div>
-            </div>
-
-            {items.length > 0 && (
-              <>
-                <Separator />
-                <Table>
-                  <TableHeader>
-                    <TableRow>
-                      <TableHead>{language === "ar" ? "الصنف" : "Item"}</TableHead>
-                      <TableHead className="text-center">{language === "ar" ? "الكمية" : "Qty"}</TableHead>
-                      <TableHead className="text-right">{language === "ar" ? "السعر" : "Price"}</TableHead>
-                      <TableHead className="text-right">{language === "ar" ? "المجموع" : "Total"}</TableHead>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    {items.map((item, idx) => (
-                      <TableRow key={idx}>
-                        <TableCell>{item.name}</TableCell>
-                        <TableCell className="text-center">{item.quantity}</TableCell>
-                        <TableCell className="text-right">{Number(item.unit_price).toLocaleString()}</TableCell>
-                        <TableCell className="text-right font-medium">{(item.quantity * item.unit_price).toLocaleString()}</TableCell>
-                      </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
-
-                <div className="flex justify-end">
-                  <div className="w-64 space-y-2 text-sm">
-                    <div className="flex justify-between">
-                      <span className="text-muted-foreground">{language === "ar" ? "المجموع الفرعي" : "Subtotal"}</span>
-                      <span>{Number(selectedInvoice.subtotal).toLocaleString()}</span>
-                    </div>
-                    {Number(selectedInvoice.tax_amount) > 0 && (
-                      <div className="flex justify-between">
-                        <span className="text-muted-foreground">{language === "ar" ? "الضريبة" : "Tax"} ({selectedInvoice.tax_rate}%)</span>
-                        <span>{Number(selectedInvoice.tax_amount).toLocaleString()}</span>
-                      </div>
-                    )}
-                    <Separator />
-                    <div className="flex justify-between font-bold text-base">
-                      <span>{language === "ar" ? "الإجمالي" : "Total"}</span>
-                      <span>{Number(selectedInvoice.amount).toLocaleString()} {selectedInvoice.currency}</span>
-                    </div>
-                  </div>
-                </div>
-              </>
-            )}
-
-            {selectedInvoice.paid_at && (
-              <>
-                <Separator />
-                <div className="flex items-center gap-2 text-sm text-primary">
-                  <CheckCircle className="h-4 w-4" />
-                  {language === "ar" ? "تم الدفع بتاريخ" : "Paid on"} {format(new Date(selectedInvoice.paid_at), "yyyy-MM-dd")}
-                </div>
-              </>
-            )}
-          </CardContent>
-        </Card>
+        <PrintableInvoice
+          invoice={selectedInvoice}
+          company={null}
+        />
       </div>
     );
   }
@@ -180,33 +124,48 @@ export default function CompanyInvoices() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-3xl font-bold">{language === "ar" ? "الفواتير" : "Invoices"}</h1>
-        <p className="mt-2 text-muted-foreground">
+        <h1 className="text-2xl font-bold flex items-center gap-2">
+          <FileText className="h-6 w-6 text-primary" />
+          {language === "ar" ? "الفواتير" : "Invoices"}
+        </h1>
+        <p className="mt-1 text-muted-foreground">
           {language === "ar" ? "عرض جميع الفواتير المتعلقة بالشركة" : "View all invoices related to your company"}
         </p>
       </div>
 
       {/* Stats */}
       <div className="grid gap-4 sm:grid-cols-3">
-        <Card>
-          <CardContent className="pt-6 text-center">
-            <FileText className="mx-auto mb-2 h-6 w-6 text-muted-foreground" />
-            <p className="text-2xl font-bold">{stats.total}</p>
-            <p className="text-sm text-muted-foreground">{language === "ar" ? "إجمالي الفواتير" : "Total Invoices"}</p>
+        <Card className="border-s-[3px] border-s-primary">
+          <CardContent className="flex items-center gap-3 p-4">
+            <div className="rounded-xl bg-primary/10 p-2.5">
+              <FileText className="h-5 w-5 text-primary" />
+            </div>
+            <div>
+              <p className="text-xs text-muted-foreground">{language === "ar" ? "إجمالي الفواتير" : "Total Invoices"}</p>
+              <p className="text-2xl font-bold">{stats.total}</p>
+            </div>
           </CardContent>
         </Card>
-        <Card>
-          <CardContent className="pt-6 text-center">
-            <Clock className="mx-auto mb-2 h-6 w-6 text-muted-foreground" />
-            <p className="text-2xl font-bold">{stats.pending}</p>
-            <p className="text-sm text-muted-foreground">{language === "ar" ? "قيد الانتظار" : "Pending"}</p>
+        <Card className="border-s-[3px] border-s-amber-500">
+          <CardContent className="flex items-center gap-3 p-4">
+            <div className="rounded-xl bg-amber-500/10 p-2.5">
+              <Clock className="h-5 w-5 text-amber-600" />
+            </div>
+            <div>
+              <p className="text-xs text-muted-foreground">{language === "ar" ? "قيد الانتظار" : "Pending"}</p>
+              <p className="text-2xl font-bold">{stats.pending}</p>
+            </div>
           </CardContent>
         </Card>
-        <Card>
-          <CardContent className="pt-6 text-center">
-            <DollarSign className="mx-auto mb-2 h-6 w-6 text-muted-foreground" />
-            <p className="text-2xl font-bold">{stats.totalDue.toLocaleString()}</p>
-            <p className="text-sm text-muted-foreground">{language === "ar" ? "المستحق" : "Outstanding"}</p>
+        <Card className="border-s-[3px] border-s-destructive">
+          <CardContent className="flex items-center gap-3 p-4">
+            <div className="rounded-xl bg-destructive/10 p-2.5">
+              <CreditCard className="h-5 w-5 text-destructive" />
+            </div>
+            <div>
+              <p className="text-xs text-muted-foreground">{language === "ar" ? "المستحق" : "Outstanding"}</p>
+              <p className="text-2xl font-bold">{stats.totalDue.toLocaleString()}</p>
+            </div>
           </CardContent>
         </Card>
       </div>
@@ -231,18 +190,14 @@ export default function CompanyInvoices() {
                 </TableHeader>
                 <TableBody>
                   {invoices.map((inv) => (
-                    <TableRow key={inv.id} className="cursor-pointer" onClick={() => setSelectedId(inv.id)}>
-                      <TableCell className="font-medium">{inv.invoice_number}</TableCell>
-                      <TableCell>{inv.title || inv.description || "—"}</TableCell>
-                      <TableCell>
-                        <Badge variant={statusColors[inv.status || "draft"]}>
-                          {getStatusLabel(inv.status || "draft")}
-                        </Badge>
-                      </TableCell>
+                    <TableRow key={inv.id} className="cursor-pointer hover:bg-muted/50" onClick={() => setSelectedId(inv.id)}>
+                      <TableCell className="font-mono text-sm font-medium">{inv.invoice_number}</TableCell>
+                      <TableCell className="font-medium">{inv.title || inv.description || "—"}</TableCell>
+                      <TableCell>{getStatusBadge(inv.status || "draft")}</TableCell>
                       <TableCell className="text-right font-medium">
                         {Number(inv.amount).toLocaleString()} {inv.currency}
                       </TableCell>
-                      <TableCell>
+                      <TableCell className="text-muted-foreground">
                         {inv.due_date ? format(new Date(inv.due_date), "MMM dd, yyyy") : "—"}
                       </TableCell>
                     </TableRow>
@@ -251,8 +206,10 @@ export default function CompanyInvoices() {
               </Table>
             </div>
           ) : (
-            <div className="py-12 text-center">
-              <FileText className="mx-auto mb-4 h-12 w-12 text-muted-foreground" />
+            <div className="flex flex-col items-center justify-center py-12">
+              <div className="flex h-14 w-14 items-center justify-center rounded-full bg-muted mb-3">
+                <FileText className="h-6 w-6 text-muted-foreground" />
+              </div>
               <p className="text-muted-foreground">
                 {language === "ar" ? "لا توجد فواتير حتى الآن" : "No invoices yet"}
               </p>
