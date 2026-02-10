@@ -98,7 +98,7 @@ export default function MediaAdmin() {
           </p>
         </div>
         <Button>
-          <Upload className="mr-2 h-4 w-4" />
+          <Upload className="me-2 h-4 w-4" />
           {language === "ar" ? "رفع ملف" : "Upload File"}
         </Button>
       </div>

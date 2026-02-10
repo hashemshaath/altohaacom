@@ -164,7 +164,7 @@ export default function ContentModeration() {
                   key={report.id} 
                   className={`rounded-lg border ${
                     report.status === "pending" 
-                      ? "border-orange-200 bg-orange-50/50 dark:border-orange-900 dark:bg-orange-950/20" 
+                      ? "border-chart-4/30 bg-chart-4/5" 
                       : "border-border"
                   }`}
                 >
