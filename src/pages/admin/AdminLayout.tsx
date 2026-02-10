@@ -4,7 +4,7 @@ import { useIsAdmin } from "@/hooks/useAdmin";
 import { Navigate, Outlet, NavLink } from "react-router-dom";
 import { AdminHeader } from "@/components/admin/AdminHeader";
 import { cn } from "@/lib/utils";
-import { Handshake, GraduationCap, BarChart3, Landmark, Building2, Gavel, MessageSquare as MessageSquareIcon, Earth, QrCode, UtensilsCrossed } from "lucide-react";
+import { Handshake, GraduationCap, BarChart3, Landmark, Building2, Gavel, MessageSquare as MessageSquareIcon, Earth, QrCode, UtensilsCrossed, MailOpen } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
@@ -112,6 +112,7 @@ export default function AdminLayout() {
         { to: "/admin/settings", icon: Settings, label: language === "ar" ? "الإعدادات العامة" : "General Settings" },
         { to: "/admin/notifications", icon: Bell, label: language === "ar" ? "الإشعارات" : "Notifications" },
         { to: "/admin/communications", icon: MessageSquareIcon, label: language === "ar" ? "صندوق التواصل" : "Communications" },
+        { to: "/admin/templates", icon: MailOpen, label: language === "ar" ? "قوالب الاتصالات" : "Templates" },
         { to: "/admin/localization", icon: Globe, label: language === "ar" ? "اللغات" : "Localization" },
         { to: "/admin/countries", icon: Earth, label: language === "ar" ? "إدارة الدول" : "Countries" },
         { to: "/admin/audit", icon: FileText, label: language === "ar" ? "سجل العمليات" : "Audit Log" },
