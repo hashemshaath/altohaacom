@@ -19,6 +19,7 @@ import {
   ImageIcon, Twitter, Facebook, Linkedin, Link2, ChevronDown,
   Sparkles, Target, BarChart3, UsersRound, Eye, Flame, Shield, Building2,
 } from "lucide-react";
+import { countryFlag } from "@/lib/countryFlag";
 import {
   DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
@@ -299,7 +300,7 @@ export default function CompetitionDetail() {
                     {competition.is_virtual ? (
                       <span className="flex items-center gap-1.5"><Globe className="h-3.5 w-3.5" />{isAr ? "افتراضية" : "Virtual"}</span>
                     ) : (venue || competition.city) && (
-                      <span className="flex items-center gap-1.5"><MapPin className="h-3.5 w-3.5" />{venue || competition.city}</span>
+                      <span className="flex items-center gap-1.5"><MapPin className="h-3.5 w-3.5" />{competition.country_code ? `${countryFlag(competition.country_code)} ` : ""}{venue || competition.city}</span>
                     )}
                   </div>
                 </div>

@@ -3,6 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
+import { CountrySelector } from "@/components/auth/CountrySelector";
 import type { CompetitionFormData } from "./types";
 
 interface DatesLocationStepProps {
@@ -115,30 +116,46 @@ export function DatesLocationStep({ data, onChange, competitionNumber }: DatesLo
                 <Label>{language === "ar" ? "المدينة" : "City"}</Label>
                 <Input value={data.city} onChange={(e) => onChange({ city: e.target.value })} />
               </div>
-              <div className="space-y-2">
-                <Label>{language === "ar" ? "الدولة" : "Country"}</Label>
-                <Input value={data.country} onChange={(e) => onChange({ country: e.target.value })} />
-              </div>
+              <CountrySelector
+                value={data.countryCode}
+                onChange={(code, country) => {
+                  const name = language === "ar" ? (country?.name_ar || country?.name || "") : (country?.name || "");
+                  onChange({ countryCode: code, country: name });
+                }}
+                label={language === "ar" ? "الدولة" : "Country"}
+              />
             </div>
           </>
         )}
 
         {/* Country Code & Edition */}
+        {/* Country Code (for virtual competitions or standalone) & Edition */}
+        {data.isVirtual && (
+          <CountrySelector
+            value={data.countryCode}
+            onChange={(code, country) => {
+              const name = language === "ar" ? (country?.name_ar || country?.name || "") : (country?.name || "");
+              onChange({ countryCode: code, country: name });
+            }}
+            label={language === "ar" ? "الدولة (للترقيم)" : "Country (for numbering)"}
+            required
+          />
+        )}
+
         <div className="grid gap-4 sm:grid-cols-2">
           <div className="space-y-2">
-            <Label>{language === "ar" ? "رمز الدولة (حرفين)" : "Country Code (ISO 2-letter)"} *</Label>
+            <Label>{language === "ar" ? "رمز الدولة" : "Country Code"}</Label>
             <Input
               value={data.countryCode}
-              onChange={(e) => onChange({ countryCode: e.target.value.toUpperCase().slice(0, 2) })}
-              placeholder="SA, TN, AE..."
-              maxLength={2}
+              readOnly
+              className="bg-muted/50"
             />
             <p className="text-xs text-muted-foreground">
               {competitionNumber
                 ? `${language === "ar" ? "الحالي" : "Current"}: ${competitionNumber}`
                 : language === "ar"
-                ? "يُستخدم لإنشاء رقم المسابقة"
-                : "Used to generate competition number"}
+                ? "يتم تعبئته تلقائياً من اختيار الدولة"
+                : "Auto-filled from country selection"}
             </p>
           </div>
           <div className="space-y-2">
