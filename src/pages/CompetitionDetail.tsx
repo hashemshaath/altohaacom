@@ -46,6 +46,7 @@ import { ParticipantStatsCard } from "@/components/competitions/ParticipantStats
 import { OrganizerCard } from "@/components/competitions/OrganizerCard";
 import { CompetitionActivityFeed } from "@/components/competitions/CompetitionActivityFeed";
 import { QRCodeDisplay } from "@/components/qr/QRCodeDisplay";
+import { useEntityQRCode } from "@/hooks/useQRCode";
 import type { Database } from "@/integrations/supabase/types";
 
 type CompetitionStatus = Database["public"]["Enums"]["competition_status"];
@@ -97,6 +98,7 @@ export default function CompetitionDetail() {
   const [activeSection, setActiveSection] = useState<string>("overview");
   const [showRegistrationForm, setShowRegistrationForm] = useState(false);
   const isAr = language === "ar";
+  const { data: qrCode } = useEntityQRCode("competition", id, "competition");
 
   const { data: competition, isLoading } = useQuery({
     queryKey: ["competition", id],
@@ -703,12 +705,14 @@ export default function CompetitionDetail() {
               </Card>
 
               {/* QR Code */}
-              <QRCodeDisplay
-                code={competition.competition_number || competition.id.slice(0, 8).toUpperCase()}
-                label={isAr ? "رمز QR للمسابقة" : "Competition QR Code"}
-                size={140}
-                compact={false}
-              />
+              {qrCode && (
+                <QRCodeDisplay
+                  code={qrCode.code}
+                  label={isAr ? "رمز QR للمسابقة" : "Competition QR Code"}
+                  size={140}
+                  compact={false}
+                />
+              )}
 
               {/* Organizer */}
               <OrganizerCard organizerId={competition.organizer_id} />
