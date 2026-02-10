@@ -7,11 +7,12 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
 import {
   Plus, Trash2, Pencil, Users, Save, X, Loader2,
-  Phone, Mail, UserCheck,
+  Phone, Mail, UserCheck, CheckCircle, Clock,
 } from "lucide-react";
 
 interface CompetitionTeamPanelProps {
@@ -37,9 +38,15 @@ interface MemberForm {
   email: string;
   phone: string;
   notes: string;
+  title: string;
+  title_ar: string;
+  photo_url: string;
 }
 
-const emptyForm: MemberForm = { name: "", name_ar: "", role: "assistant", email: "", phone: "", notes: "" };
+const emptyForm: MemberForm = {
+  name: "", name_ar: "", role: "assistant", email: "", phone: "",
+  notes: "", title: "", title_ar: "", photo_url: "",
+};
 
 export function CompetitionTeamPanel({ competitionId, isOrganizer }: CompetitionTeamPanelProps) {
   const { language } = useLanguage();
@@ -67,19 +74,19 @@ export function CompetitionTeamPanel({ competitionId, isOrganizer }: Competition
 
   const saveMutation = useMutation({
     mutationFn: async () => {
+      const payload = {
+        name: form.name, name_ar: form.name_ar || null,
+        role: form.role, email: form.email || null,
+        phone: form.phone || null, notes: form.notes || null,
+        title: form.title || null, title_ar: form.title_ar || null,
+        photo_url: form.photo_url || null,
+      };
       if (editingId) {
-        const { error } = await supabase.from("competition_team_members").update({
-          name: form.name, name_ar: form.name_ar || null,
-          role: form.role, email: form.email || null,
-          phone: form.phone || null, notes: form.notes || null,
-        }).eq("id", editingId);
+        const { error } = await supabase.from("competition_team_members").update(payload).eq("id", editingId);
         if (error) throw error;
       } else {
         const { error } = await supabase.from("competition_team_members").insert({
-          competition_id: competitionId,
-          name: form.name, name_ar: form.name_ar || null,
-          role: form.role, email: form.email || null,
-          phone: form.phone || null, notes: form.notes || null,
+          competition_id: competitionId, ...payload,
         });
         if (error) throw error;
       }
@@ -105,6 +112,20 @@ export function CompetitionTeamPanel({ competitionId, isOrganizer }: Competition
     },
   });
 
+  const checkInMutation = useMutation({
+    mutationFn: async ({ id, checkedIn }: { id: string; checkedIn: boolean }) => {
+      const { error } = await supabase.from("competition_team_members").update({
+        is_checked_in: checkedIn,
+        checked_in_at: checkedIn ? new Date().toISOString() : null,
+      }).eq("id", id);
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["competition-team", competitionId] });
+      toast({ title: isAr ? "تم التحديث" : "Updated" });
+    },
+  });
+
   const filtered = filterRole === "all" ? members : members.filter((m: any) => m.role === filterRole);
 
   const getRoleLabel = (role: string) => {
@@ -112,17 +133,15 @@ export function CompetitionTeamPanel({ competitionId, isOrganizer }: Competition
     return isAr ? r?.ar || role : r?.en || role;
   };
 
-  const roleColor = (role: string) => {
-    const map: Record<string, string> = {
-      assistant: "bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300",
-      volunteer: "bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300",
-      coordinator: "bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-300",
-      kitchen_marshal: "bg-orange-100 text-orange-800 dark:bg-orange-900/30 dark:text-orange-300",
-      timekeeper: "bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-300",
-      photographer: "bg-pink-100 text-pink-800 dark:bg-pink-900/30 dark:text-pink-300",
-      mc: "bg-indigo-100 text-indigo-800 dark:bg-indigo-900/30 dark:text-indigo-300",
+  const roleColor = (role: string): "default" | "secondary" | "outline" | "destructive" => {
+    const map: Record<string, "default" | "secondary" | "outline"> = {
+      coordinator: "default",
+      kitchen_marshal: "default",
+      assistant: "secondary",
+      volunteer: "secondary",
+      mc: "outline",
     };
-    return map[role] || "bg-muted text-muted-foreground";
+    return map[role] || "secondary";
   };
 
   const grouped = ROLES.reduce((acc, role) => {
@@ -131,15 +150,23 @@ export function CompetitionTeamPanel({ competitionId, isOrganizer }: Competition
     return acc;
   }, [] as any[]);
 
+  const checkedInCount = members.filter((m: any) => m.is_checked_in).length;
+
   return (
     <div className="space-y-4">
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-between flex-wrap gap-2">
         <h3 className="font-semibold text-base flex items-center gap-2">
-          <div className="flex h-7 w-7 items-center justify-center rounded-md bg-primary/10">
+          <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-primary/10">
             <UserCheck className="h-4 w-4 text-primary" />
           </div>
           {isAr ? "فريق العمل" : "Support Team"}
           <Badge variant="secondary" className="ms-1">{members.length}</Badge>
+          {members.length > 0 && (
+            <Badge variant="outline" className="ms-1 gap-1 text-[10px]">
+              <CheckCircle className="h-2.5 w-2.5" />
+              {checkedInCount}/{members.length}
+            </Badge>
+          )}
         </h3>
         <div className="flex gap-2">
           <Select value={filterRole} onValueChange={setFilterRole}>
@@ -163,7 +190,7 @@ export function CompetitionTeamPanel({ competitionId, isOrganizer }: Competition
       {/* Add/Edit Form */}
       {showForm && (
         <Card>
-          <CardHeader>
+          <CardHeader className="pb-3">
             <CardTitle className="text-sm">
               {editingId ? (isAr ? "تعديل العضو" : "Edit Member") : (isAr ? "إضافة عضو جديد" : "Add New Member")}
             </CardTitle>
@@ -177,6 +204,16 @@ export function CompetitionTeamPanel({ competitionId, isOrganizer }: Competition
               <div className="space-y-1.5">
                 <Label className="text-xs">{isAr ? "الاسم (عربي)" : "Name (Arabic)"}</Label>
                 <Input value={form.name_ar} onChange={(e) => setForm({ ...form, name_ar: e.target.value })} dir="rtl" className="h-9" />
+              </div>
+            </div>
+            <div className="grid gap-3 sm:grid-cols-2">
+              <div className="space-y-1.5">
+                <Label className="text-xs">{isAr ? "المسمى الوظيفي" : "Job Title"}</Label>
+                <Input value={form.title} onChange={(e) => setForm({ ...form, title: e.target.value })} className="h-9" placeholder={isAr ? "شيف تنفيذي" : "Executive Chef"} />
+              </div>
+              <div className="space-y-1.5">
+                <Label className="text-xs">{isAr ? "المسمى (عربي)" : "Title (Arabic)"}</Label>
+                <Input value={form.title_ar} onChange={(e) => setForm({ ...form, title_ar: e.target.value })} dir="rtl" className="h-9" />
               </div>
             </div>
             <div className="grid gap-3 sm:grid-cols-3">
@@ -199,6 +236,10 @@ export function CompetitionTeamPanel({ competitionId, isOrganizer }: Competition
                 <Label className="text-xs">{isAr ? "الهاتف" : "Phone"}</Label>
                 <Input value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })} className="h-9" />
               </div>
+            </div>
+            <div className="space-y-1.5">
+              <Label className="text-xs">{isAr ? "رابط الصورة" : "Photo URL"}</Label>
+              <Input value={form.photo_url} onChange={(e) => setForm({ ...form, photo_url: e.target.value })} className="h-9" placeholder="https://..." />
             </div>
             <div className="space-y-1.5">
               <Label className="text-xs">{isAr ? "ملاحظات" : "Notes"}</Label>
@@ -229,50 +270,104 @@ export function CompetitionTeamPanel({ competitionId, isOrganizer }: Competition
           <p className="text-sm text-muted-foreground">{isAr ? "لا يوجد أعضاء فريق بعد" : "No team members yet"}</p>
         </div>
       ) : (
-        <div className="space-y-4">
+        <div className="space-y-5">
           {grouped.map((group: any) => (
             <div key={group.value}>
-              <h4 className="text-xs uppercase tracking-wider text-muted-foreground mb-2 flex items-center gap-2">
-                <Badge className={roleColor(group.value)} variant="outline">{isAr ? group.ar : group.en}</Badge>
-                <span>({group.members.length})</span>
+              <h4 className="text-xs uppercase tracking-wider text-muted-foreground mb-3 flex items-center gap-2">
+                <Badge variant={roleColor(group.value)}>{isAr ? group.ar : group.en}</Badge>
+                <span className="text-muted-foreground/60">({group.members.length})</span>
               </h4>
-              <div className="space-y-2">
-                {group.members.map((member: any) => (
-                  <Card key={member.id} className="overflow-hidden">
-                    <CardContent className="flex items-center justify-between p-3">
-                      <div className="flex items-center gap-3 min-w-0">
-                        <div className="h-9 w-9 rounded-full bg-primary/10 flex items-center justify-center text-sm font-medium text-primary shrink-0">
-                          {member.name[0].toUpperCase()}
-                        </div>
-                        <div className="min-w-0">
-                          <p className="text-sm font-medium truncate">{isAr && member.name_ar ? member.name_ar : member.name}</p>
-                          <div className="flex items-center gap-3 text-[11px] text-muted-foreground">
-                            {member.email && <span className="flex items-center gap-1"><Mail className="h-3 w-3" />{member.email}</span>}
-                            {member.phone && <span className="flex items-center gap-1"><Phone className="h-3 w-3" />{member.phone}</span>}
+              <div className="grid gap-3 sm:grid-cols-2">
+                {group.members.map((member: any) => {
+                  const name = isAr && member.name_ar ? member.name_ar : member.name;
+                  const title = isAr && member.title_ar ? member.title_ar : member.title;
+                  const initials = name.split(" ").map((n: string) => n[0]).join("").slice(0, 2).toUpperCase();
+
+                  return (
+                    <Card key={member.id} className="overflow-hidden group hover:shadow-md transition-all hover:-translate-y-0.5">
+                      <CardContent className="p-0">
+                        <div className="flex gap-3 p-4">
+                          <Avatar className="h-12 w-12 rounded-xl shrink-0 ring-2 ring-background shadow-sm">
+                            <AvatarImage src={member.photo_url || undefined} alt={name} className="object-cover" />
+                            <AvatarFallback className="rounded-xl bg-primary/10 text-primary font-semibold">
+                              {initials}
+                            </AvatarFallback>
+                          </Avatar>
+                          <div className="min-w-0 flex-1 space-y-0.5">
+                            <div className="flex items-center gap-1.5">
+                              <span className="text-sm font-semibold truncate">{name}</span>
+                              {member.is_checked_in && (
+                                <CheckCircle className="h-3.5 w-3.5 text-primary shrink-0" />
+                              )}
+                            </div>
+                            {title && (
+                              <p className="text-xs text-primary/80 font-medium truncate">{title}</p>
+                            )}
+                            <div className="flex items-center gap-3 text-[11px] text-muted-foreground">
+                              {member.email && (
+                                <span className="flex items-center gap-1 truncate">
+                                  <Mail className="h-3 w-3 shrink-0" />{member.email}
+                                </span>
+                              )}
+                              {member.phone && (
+                                <span className="flex items-center gap-1">
+                                  <Phone className="h-3 w-3 shrink-0" />{member.phone}
+                                </span>
+                              )}
+                            </div>
                           </div>
                         </div>
-                      </div>
-                      {isOrganizer && (
-                        <div className="flex gap-1 shrink-0">
-                          <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => {
-                            setEditingId(member.id);
-                            setForm({ name: member.name, name_ar: member.name_ar || "", role: member.role, email: member.email || "", phone: member.phone || "", notes: member.notes || "" });
-                            setShowForm(true);
-                          }}>
-                            <Pencil className="h-3.5 w-3.5" />
-                          </Button>
-                          <Button variant="ghost" size="icon" className="h-7 w-7 text-destructive" onClick={() => {
-                            if (confirm(isAr ? "حذف هذا العضو؟" : "Remove this member?")) {
-                              deleteMutation.mutate(member.id);
-                            }
-                          }}>
-                            <Trash2 className="h-3.5 w-3.5" />
-                          </Button>
+
+                        {/* Footer with actions */}
+                        <div className="border-t bg-muted/20 px-4 py-2 flex items-center justify-between">
+                          <div className="flex items-center gap-1.5">
+                            {member.is_checked_in ? (
+                              <Badge variant="default" className="text-[9px] h-5 gap-0.5">
+                                <CheckCircle className="h-2.5 w-2.5" />
+                                {isAr ? "حاضر" : "Checked In"}
+                              </Badge>
+                            ) : (
+                              <Badge variant="outline" className="text-[9px] h-5 gap-0.5">
+                                <Clock className="h-2.5 w-2.5" />
+                                {isAr ? "لم يحضر" : "Not arrived"}
+                              </Badge>
+                            )}
+                          </div>
+                          {isOrganizer && (
+                            <div className="flex gap-1">
+                              <Button
+                                variant="ghost"
+                                size="sm"
+                                className="h-7 text-xs px-2"
+                                onClick={() => checkInMutation.mutate({ id: member.id, checkedIn: !member.is_checked_in })}
+                              >
+                                {member.is_checked_in ? (isAr ? "إلغاء" : "Undo") : (isAr ? "تسجيل حضور" : "Check In")}
+                              </Button>
+                              <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => {
+                                setEditingId(member.id);
+                                setForm({
+                                  name: member.name, name_ar: member.name_ar || "", role: member.role,
+                                  email: member.email || "", phone: member.phone || "", notes: member.notes || "",
+                                  title: member.title || "", title_ar: member.title_ar || "", photo_url: member.photo_url || "",
+                                });
+                                setShowForm(true);
+                              }}>
+                                <Pencil className="h-3.5 w-3.5" />
+                              </Button>
+                              <Button variant="ghost" size="icon" className="h-7 w-7 text-destructive" onClick={() => {
+                                if (confirm(isAr ? "حذف هذا العضو؟" : "Remove this member?")) {
+                                  deleteMutation.mutate(member.id);
+                                }
+                              }}>
+                                <Trash2 className="h-3.5 w-3.5" />
+                              </Button>
+                            </div>
+                          )}
                         </div>
-                      )}
-                    </CardContent>
-                  </Card>
-                ))}
+                      </CardContent>
+                    </Card>
+                  );
+                })}
               </div>
             </div>
           ))}

@@ -275,52 +275,56 @@ export default function CompetitionDetail() {
         </Button>
 
         {/* Hero Section */}
-        <div className="relative mb-6 overflow-hidden rounded-xl">
+        <div className="relative mb-6 overflow-hidden rounded-2xl shadow-lg">
           {competition.cover_image_url ? (
             <img
               src={competition.cover_image_url}
               alt={title}
-              className="h-48 w-full object-cover sm:h-56 md:h-72 lg:h-80"
+              className="h-56 w-full object-cover sm:h-64 md:h-80 lg:h-[22rem]"
               loading="eager"
             />
           ) : (
-            <div className="flex h-48 items-center justify-center bg-gradient-to-br from-primary/10 via-accent/10 to-primary/5 sm:h-56 md:h-72 lg:h-80">
-              <Trophy className="h-20 w-20 text-primary/20" />
+            <div className="flex h-56 items-center justify-center bg-gradient-to-br from-primary/10 via-accent/10 to-primary/5 sm:h-64 md:h-80 lg:h-[22rem]">
+              <Trophy className="h-24 w-24 text-primary/15" />
             </div>
           )}
-          <div className="absolute inset-0 bg-gradient-to-t from-background via-background/50 to-transparent" />
-          <div className="absolute bottom-0 inset-x-0 p-4 md:p-6">
+          <div className="absolute inset-0 bg-gradient-to-t from-background via-background/60 to-transparent" />
+          <div className="absolute bottom-0 inset-x-0 p-5 md:p-8">
             <div className="flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
-              <div className="space-y-2">
+              <div className="space-y-2.5">
                 <div className="flex items-center gap-2 flex-wrap">
                   <Badge className={statusColors[competition.status as CompetitionStatus]}>
                     {getStatusLabel(competition.status as CompetitionStatus)}
                   </Badge>
+                  {competition.edition_year && (
+                    <Badge variant="outline" className="bg-background/60 backdrop-blur-sm text-xs">
+                      {competition.edition_year}
+                    </Badge>
+                  )}
                   {competition.competition_number && (
-                    <Badge variant="outline" className="font-mono text-xs">
+                    <Badge variant="outline" className="font-mono text-xs bg-background/60 backdrop-blur-sm">
                       {competition.competition_number}
                     </Badge>
                   )}
                 </div>
-                <h1 className="font-serif text-xl font-bold sm:text-2xl md:text-3xl lg:text-4xl leading-tight">
+                <h1 className="font-serif text-2xl font-bold sm:text-3xl md:text-4xl lg:text-5xl leading-tight drop-shadow-sm">
                   {title}
                 </h1>
-                {/* Inline meta on hero */}
-                <div className="flex items-center gap-3 text-xs text-muted-foreground flex-wrap">
-                  <span className="flex items-center gap-1">
-                    <Calendar className="h-3 w-3" />
+                <div className="flex items-center gap-4 text-sm text-muted-foreground flex-wrap">
+                  <span className="flex items-center gap-1.5">
+                    <Calendar className="h-3.5 w-3.5" />
                     {format(new Date(competition.competition_start), "MMM d")} –{" "}
                     {format(new Date(competition.competition_end), "MMM d, yyyy")}
                   </span>
                   {competition.is_virtual ? (
-                    <span className="flex items-center gap-1">
-                      <Globe className="h-3 w-3" />
+                    <span className="flex items-center gap-1.5">
+                      <Globe className="h-3.5 w-3.5" />
                       {t("virtual")}
                     </span>
                   ) : (
                     (venue || competition.city) && (
-                      <span className="flex items-center gap-1">
-                        <MapPin className="h-3 w-3" />
+                      <span className="flex items-center gap-1.5">
+                        <MapPin className="h-3.5 w-3.5" />
                         {venue || competition.city}
                       </span>
                     )
@@ -330,7 +334,7 @@ export default function CompetitionDetail() {
               <div className="flex gap-2 shrink-0">
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
-                    <Button variant="outline" size="sm">
+                    <Button variant="outline" size="sm" className="bg-background/80 backdrop-blur-sm">
                       <Share2 className="me-1.5 h-4 w-4" />
                       {isAr ? "مشاركة" : "Share"}
                     </Button>
@@ -362,7 +366,7 @@ export default function CompetitionDetail() {
                   </DropdownMenuContent>
                 </DropdownMenu>
                 {competition.status === "completed" && (
-                  <Button asChild variant="secondary" size="sm">
+                  <Button asChild variant="secondary" size="sm" className="bg-background/80 backdrop-blur-sm">
                     <Link to={`/competitions/${id}/results`}>
                       <Award className="me-1.5 h-4 w-4" />
                       {isAr ? "النتائج" : "Results"}
@@ -370,7 +374,7 @@ export default function CompetitionDetail() {
                   </Button>
                 )}
                 {isOrganizer && (
-                  <Button asChild variant="outline" size="sm">
+                  <Button asChild variant="outline" size="sm" className="bg-background/80 backdrop-blur-sm">
                     <Link to={`/competitions/${id}/edit`}>
                       <Pencil className="me-1.5 h-4 w-4" />
                       {isAr ? "تعديل" : "Edit"}
@@ -712,7 +716,6 @@ export default function CompetitionDetail() {
 
               <TabsContent value="gallery" className="mt-6 space-y-6">
                 <ReferenceGalleryPanel competitionId={competition.id} isAdmin={isOrganizer} />
-                {isOrganizer && <RubricTemplatesPanel competitionId={competition.id} isAdmin={isOrganizer} />}
               </TabsContent>
 
               {isOrganizer && (

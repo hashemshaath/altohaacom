@@ -7,11 +7,12 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
-import { ImageIcon, Plus, Trash2, Save, X, Star, ThumbsUp, ThumbsDown } from "lucide-react";
+import { ImageIcon, Plus, Trash2, Save, X, Star, ThumbsUp, ThumbsDown, Expand } from "lucide-react";
+import { ImageLightbox } from "./ImageLightbox";
 
 interface ReferenceGalleryPanelProps {
   competitionId?: string;
@@ -20,10 +21,19 @@ interface ReferenceGalleryPanelProps {
 }
 
 const RATINGS = [
-  { value: "excellent", label: "Excellent", label_ar: "ممتاز", color: "bg-chart-3/20 text-chart-3", icon: Star },
-  { value: "good", label: "Good", label_ar: "جيد", color: "bg-primary/20 text-primary", icon: ThumbsUp },
-  { value: "average", label: "Average", label_ar: "متوسط", color: "bg-chart-4/20 text-chart-4", icon: null },
-  { value: "poor", label: "Poor", label_ar: "ضعيف", color: "bg-destructive/20 text-destructive", icon: ThumbsDown },
+  { value: "excellent", label: "Excellent", label_ar: "ممتاز", icon: Star },
+  { value: "good", label: "Good", label_ar: "جيد", icon: ThumbsUp },
+  { value: "average", label: "Average", label_ar: "متوسط", icon: null },
+  { value: "poor", label: "Poor", label_ar: "ضعيف", icon: ThumbsDown },
+];
+
+const CATEGORIES = [
+  { value: "preparation", label: "Preparation", label_ar: "التحضير" },
+  { value: "plating", label: "Plating", label_ar: "التقديم" },
+  { value: "technique", label: "Technique", label_ar: "التقنية" },
+  { value: "final_dish", label: "Final Dish", label_ar: "الطبق النهائي" },
+  { value: "workspace", label: "Workspace", label_ar: "بيئة العمل" },
+  { value: "other", label: "Other", label_ar: "أخرى" },
 ];
 
 export function ReferenceGalleryPanel({ competitionId, isAdmin, isJudge }: ReferenceGalleryPanelProps) {
@@ -31,14 +41,17 @@ export function ReferenceGalleryPanel({ competitionId, isAdmin, isJudge }: Refer
   const { user } = useAuth();
   const { toast } = useToast();
   const queryClient = useQueryClient();
+  const isAr = language === "ar";
   const canManage = isAdmin || isJudge;
 
   const [showForm, setShowForm] = useState(false);
   const [filterRating, setFilterRating] = useState<string>("all");
+  const [filterCategory, setFilterCategory] = useState<string>("all");
+  const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
   const [form, setForm] = useState({
     title: "", title_ar: "", description: "", description_ar: "",
     image_url: "", rating: "excellent", score_range_min: 0, score_range_max: 10,
-    competition_category: "", tags: "",
+    competition_category: "", category: "final_dish", tags: "",
   });
 
   const { data: references, isLoading } = useQuery({
@@ -66,6 +79,7 @@ export function ReferenceGalleryPanel({ competitionId, isAdmin, isJudge }: Refer
         score_range_min: form.score_range_min,
         score_range_max: form.score_range_max,
         competition_category: form.competition_category || null,
+        category: form.category || null,
         tags: form.tags ? form.tags.split(",").map(t => t.trim()) : [],
         added_by: user?.id,
         is_active: true,
@@ -75,8 +89,12 @@ export function ReferenceGalleryPanel({ competitionId, isAdmin, isJudge }: Refer
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["reference-gallery"] });
       setShowForm(false);
-      setForm({ title: "", title_ar: "", description: "", description_ar: "", image_url: "", rating: "excellent", score_range_min: 0, score_range_max: 10, competition_category: "", tags: "" });
-      toast({ title: language === "ar" ? "تمت الإضافة" : "Reference added" });
+      setForm({
+        title: "", title_ar: "", description: "", description_ar: "",
+        image_url: "", rating: "excellent", score_range_min: 0, score_range_max: 10,
+        competition_category: "", category: "final_dish", tags: "",
+      });
+      toast({ title: isAr ? "تمت الإضافة" : "Reference added" });
     },
     onError: (err: Error) => toast({ variant: "destructive", title: "Error", description: err.message }),
   });
@@ -88,163 +106,210 @@ export function ReferenceGalleryPanel({ competitionId, isAdmin, isJudge }: Refer
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["reference-gallery"] });
-      toast({ title: language === "ar" ? "تم الحذف" : "Deleted" });
+      toast({ title: isAr ? "تم الحذف" : "Deleted" });
     },
   });
 
-  const filtered = references?.filter(r => filterRating === "all" || r.rating === filterRating) || [];
+  const filtered = references?.filter(r => {
+    if (filterRating !== "all" && r.rating !== filterRating) return false;
+    if (filterCategory !== "all" && (r as any).category !== filterCategory) return false;
+    return true;
+  }) || [];
 
   const getRatingInfo = (rating: string | null) => RATINGS.find(r => r.value === rating) || RATINGS[2];
 
+  const lightboxImages = filtered.map(r => ({
+    url: r.image_url,
+    title: isAr && r.title_ar ? r.title_ar : r.title,
+  }));
+
   return (
-    <Card>
-      <CardHeader>
-        <div className="flex items-center justify-between">
-          <div>
-            <CardTitle className="flex items-center gap-2 text-lg">
-              <ImageIcon className="h-5 w-5" />
-              {language === "ar" ? "معرض المراجع" : "Reference Gallery"}
-            </CardTitle>
-            <CardDescription>
-              {language === "ar" ? "أمثلة مرجعية للتقييم مع نطاقات الدرجات" : "Visual examples with score ranges for calibration"}
-            </CardDescription>
-          </div>
+    <>
+      <Card className="overflow-hidden">
+        <div className="border-b bg-muted/30 px-4 py-3 flex items-center justify-between">
+          <h3 className="flex items-center gap-2 font-semibold text-sm">
+            <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-chart-4/10">
+              <ImageIcon className="h-4 w-4 text-chart-4" />
+            </div>
+            {isAr ? "معرض الصور" : "Gallery"}
+            {filtered.length > 0 && <Badge variant="secondary" className="ms-1">{filtered.length}</Badge>}
+          </h3>
           {canManage && !showForm && (
             <Button size="sm" onClick={() => setShowForm(true)}>
-              <Plus className="mr-2 h-4 w-4" />
-              {language === "ar" ? "إضافة مرجع" : "Add Reference"}
+              <Plus className="me-1.5 h-4 w-4" />
+              {isAr ? "إضافة صورة" : "Add Image"}
             </Button>
           )}
         </div>
-      </CardHeader>
-      <CardContent className="space-y-4">
-        {/* Add Form */}
-        {showForm && (
-          <div className="rounded-lg border p-4 space-y-3">
-            <div className="grid gap-3 md:grid-cols-2">
-              <div className="space-y-1">
-                <Label className="text-xs">Title</Label>
-                <Input value={form.title} onChange={e => setForm(f => ({ ...f, title: e.target.value }))} />
+        <CardContent className="p-4 space-y-4">
+          {/* Add Form */}
+          {showForm && (
+            <div className="rounded-xl border p-4 space-y-3 bg-muted/20">
+              <div className="grid gap-3 md:grid-cols-2">
+                <div className="space-y-1">
+                  <Label className="text-xs">{isAr ? "العنوان" : "Title"}</Label>
+                  <Input value={form.title} onChange={e => setForm(f => ({ ...f, title: e.target.value }))} className="h-9" />
+                </div>
+                <div className="space-y-1">
+                  <Label className="text-xs">{isAr ? "العنوان (عربي)" : "Title (Arabic)"}</Label>
+                  <Input dir="rtl" value={form.title_ar} onChange={e => setForm(f => ({ ...f, title_ar: e.target.value }))} className="h-9" />
+                </div>
               </div>
               <div className="space-y-1">
-                <Label className="text-xs">Title (Arabic)</Label>
-                <Input dir="rtl" value={form.title_ar} onChange={e => setForm(f => ({ ...f, title_ar: e.target.value }))} />
+                <Label className="text-xs">{isAr ? "رابط الصورة" : "Image URL"}</Label>
+                <Input value={form.image_url} onChange={e => setForm(f => ({ ...f, image_url: e.target.value }))} className="h-9" placeholder="https://..." />
+              </div>
+              <div className="grid gap-3 md:grid-cols-4">
+                <div className="space-y-1">
+                  <Label className="text-xs">{isAr ? "الفئة" : "Category"}</Label>
+                  <Select value={form.category} onValueChange={v => setForm(f => ({ ...f, category: v }))}>
+                    <SelectTrigger className="h-9"><SelectValue /></SelectTrigger>
+                    <SelectContent>
+                      {CATEGORIES.map(c => (
+                        <SelectItem key={c.value} value={c.value}>{isAr ? c.label_ar : c.label}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="space-y-1">
+                  <Label className="text-xs">{isAr ? "التقييم" : "Rating"}</Label>
+                  <Select value={form.rating} onValueChange={v => setForm(f => ({ ...f, rating: v }))}>
+                    <SelectTrigger className="h-9"><SelectValue /></SelectTrigger>
+                    <SelectContent>
+                      {RATINGS.map(r => (
+                        <SelectItem key={r.value} value={r.value}>{isAr ? r.label_ar : r.label}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="space-y-1">
+                  <Label className="text-xs">{isAr ? "أدنى درجة" : "Min Score"}</Label>
+                  <Input type="number" value={form.score_range_min} onChange={e => setForm(f => ({ ...f, score_range_min: Number(e.target.value) }))} className="h-9" />
+                </div>
+                <div className="space-y-1">
+                  <Label className="text-xs">{isAr ? "أعلى درجة" : "Max Score"}</Label>
+                  <Input type="number" value={form.score_range_max} onChange={e => setForm(f => ({ ...f, score_range_max: Number(e.target.value) }))} className="h-9" />
+                </div>
+              </div>
+              <div className="space-y-1">
+                <Label className="text-xs">{isAr ? "الوصف" : "Description"}</Label>
+                <Textarea value={form.description} onChange={e => setForm(f => ({ ...f, description: e.target.value }))} rows={2} />
+              </div>
+              <div className="flex justify-end gap-2">
+                <Button variant="outline" size="sm" onClick={() => setShowForm(false)}>
+                  <X className="me-1.5 h-4 w-4" /> {isAr ? "إلغاء" : "Cancel"}
+                </Button>
+                <Button size="sm" onClick={() => addMutation.mutate()} disabled={!form.title || !form.image_url || addMutation.isPending}>
+                  <Save className="me-1.5 h-4 w-4" /> {isAr ? "حفظ" : "Save"}
+                </Button>
               </div>
             </div>
-            <div className="space-y-1">
-              <Label className="text-xs">{language === "ar" ? "رابط الصورة" : "Image URL"}</Label>
-              <Input value={form.image_url} onChange={e => setForm(f => ({ ...f, image_url: e.target.value }))} placeholder="https://..." />
-            </div>
-            <div className="grid gap-3 md:grid-cols-3">
-              <div className="space-y-1">
-                <Label className="text-xs">{language === "ar" ? "التقييم" : "Rating"}</Label>
-                <Select value={form.rating} onValueChange={v => setForm(f => ({ ...f, rating: v }))}>
-                  <SelectTrigger><SelectValue /></SelectTrigger>
-                  <SelectContent>
-                    {RATINGS.map(r => (
-                      <SelectItem key={r.value} value={r.value}>
-                        {language === "ar" ? r.label_ar : r.label}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-              <div className="space-y-1">
-                <Label className="text-xs">{language === "ar" ? "أدنى درجة" : "Min Score"}</Label>
-                <Input type="number" value={form.score_range_min} onChange={e => setForm(f => ({ ...f, score_range_min: Number(e.target.value) }))} />
-              </div>
-              <div className="space-y-1">
-                <Label className="text-xs">{language === "ar" ? "أعلى درجة" : "Max Score"}</Label>
-                <Input type="number" value={form.score_range_max} onChange={e => setForm(f => ({ ...f, score_range_max: Number(e.target.value) }))} />
-              </div>
-            </div>
-            <div className="space-y-1">
-              <Label className="text-xs">{language === "ar" ? "الوصف" : "Description"}</Label>
-              <Textarea value={form.description} onChange={e => setForm(f => ({ ...f, description: e.target.value }))} rows={2} />
-            </div>
-            <div className="grid gap-3 md:grid-cols-2">
-              <div className="space-y-1">
-                <Label className="text-xs">{language === "ar" ? "الفئة" : "Category"}</Label>
-                <Input value={form.competition_category} onChange={e => setForm(f => ({ ...f, competition_category: e.target.value }))} placeholder="e.g., pastry, hot kitchen" />
-              </div>
-              <div className="space-y-1">
-                <Label className="text-xs">{language === "ar" ? "الوسوم" : "Tags (comma-separated)"}</Label>
-                <Input value={form.tags} onChange={e => setForm(f => ({ ...f, tags: e.target.value }))} />
-              </div>
-            </div>
-            <div className="flex justify-end gap-2">
-              <Button variant="outline" size="sm" onClick={() => setShowForm(false)}>
-                <X className="mr-2 h-4 w-4" /> {language === "ar" ? "إلغاء" : "Cancel"}
+          )}
+
+          {/* Filters */}
+          <div className="flex gap-2 flex-wrap">
+            <Select value={filterCategory} onValueChange={setFilterCategory}>
+              <SelectTrigger className="h-8 w-32 text-xs"><SelectValue placeholder={isAr ? "الفئة" : "Category"} /></SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">{isAr ? "جميع الفئات" : "All Categories"}</SelectItem>
+                {CATEGORIES.map(c => (
+                  <SelectItem key={c.value} value={c.value}>{isAr ? c.label_ar : c.label}</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+            <div className="flex gap-1.5">
+              <Button variant={filterRating === "all" ? "default" : "outline"} size="sm" className="h-8 text-xs" onClick={() => setFilterRating("all")}>
+                {isAr ? "الكل" : "All"}
               </Button>
-              <Button size="sm" onClick={() => addMutation.mutate()} disabled={!form.title || !form.image_url || addMutation.isPending}>
-                <Save className="mr-2 h-4 w-4" /> {language === "ar" ? "حفظ" : "Save"}
-              </Button>
+              {RATINGS.map(r => (
+                <Button key={r.value} variant={filterRating === r.value ? "default" : "outline"} size="sm" className="h-8 text-xs" onClick={() => setFilterRating(r.value)}>
+                  {isAr ? r.label_ar : r.label}
+                </Button>
+              ))}
             </div>
           </div>
-        )}
 
-        {/* Filter */}
-        <div className="flex gap-2 flex-wrap">
-          <Button variant={filterRating === "all" ? "default" : "outline"} size="sm" onClick={() => setFilterRating("all")}>
-            {language === "ar" ? "الكل" : "All"}
-          </Button>
-          {RATINGS.map(r => (
-            <Button key={r.value} variant={filterRating === r.value ? "default" : "outline"} size="sm" onClick={() => setFilterRating(r.value)}>
-              {language === "ar" ? r.label_ar : r.label}
-            </Button>
-          ))}
-        </div>
-
-        {/* Gallery Grid */}
-        {isLoading ? (
-          <p className="text-sm text-muted-foreground">{language === "ar" ? "جاري التحميل..." : "Loading..."}</p>
-        ) : filtered.length > 0 ? (
-          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            {filtered.map(ref => {
-              const ratingInfo = getRatingInfo(ref.rating);
-              return (
-                <div key={ref.id} className="rounded-lg border overflow-hidden group">
-                  <div className="aspect-video relative bg-muted">
-                    <img src={ref.image_url} alt={ref.title} className="w-full h-full object-cover" loading="lazy" />
-                    <div className="absolute top-2 left-2">
-                      <Badge className={ratingInfo.color}>
-                        {language === "ar" ? ratingInfo.label_ar : ratingInfo.label}
-                      </Badge>
-                    </div>
-                    {canManage && (
-                      <Button variant="destructive" size="icon" className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity h-7 w-7" onClick={() => deleteMutation.mutate(ref.id)}>
-                        <Trash2 className="h-3 w-3" />
-                      </Button>
-                    )}
-                  </div>
-                  <div className="p-3">
-                    <p className="font-medium text-sm">
-                      {language === "ar" && ref.title_ar ? ref.title_ar : ref.title}
-                    </p>
-                    {(ref.description || ref.description_ar) && (
-                      <p className="text-xs text-muted-foreground mt-1 line-clamp-2">
-                        {language === "ar" && ref.description_ar ? ref.description_ar : ref.description}
-                      </p>
-                    )}
-                    <div className="flex items-center justify-between mt-2">
-                      <Badge variant="outline" className="text-xs">
-                        {language === "ar" ? "النطاق:" : "Range:"} {ref.score_range_min}–{ref.score_range_max}
-                      </Badge>
-                      {ref.competition_category && (
-                        <Badge variant="secondary" className="text-[10px]">{ref.competition_category}</Badge>
+          {/* Gallery Grid */}
+          {isLoading ? (
+            <p className="text-sm text-muted-foreground text-center py-6">{isAr ? "جاري التحميل..." : "Loading..."}</p>
+          ) : filtered.length > 0 ? (
+            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+              {filtered.map((ref, idx) => {
+                const ratingInfo = getRatingInfo(ref.rating);
+                const cat = CATEGORIES.find(c => c.value === (ref as any).category);
+                return (
+                  <div
+                    key={ref.id}
+                    className="rounded-xl border overflow-hidden group cursor-pointer hover:shadow-md transition-all hover:-translate-y-0.5"
+                    onClick={() => setLightboxIndex(idx)}
+                  >
+                    <div className="aspect-video relative bg-muted">
+                      <img src={ref.image_url} alt={ref.title} className="w-full h-full object-cover" loading="lazy" />
+                      <div className="absolute inset-0 bg-gradient-to-t from-background/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                        <div className="flex h-10 w-10 items-center justify-center rounded-full bg-background/80 shadow-sm">
+                          <Expand className="h-4 w-4" />
+                        </div>
+                      </div>
+                      <div className="absolute top-2 start-2 flex gap-1.5">
+                        <Badge variant="secondary" className="text-[9px] h-5 backdrop-blur-sm">
+                          {isAr ? ratingInfo.label_ar : ratingInfo.label}
+                        </Badge>
+                        {cat && (
+                          <Badge variant="outline" className="text-[9px] h-5 bg-background/80 backdrop-blur-sm">
+                            {isAr ? cat.label_ar : cat.label}
+                          </Badge>
+                        )}
+                      </div>
+                      {canManage && (
+                        <Button
+                          variant="destructive"
+                          size="icon"
+                          className="absolute top-2 end-2 opacity-0 group-hover:opacity-100 transition-opacity h-7 w-7"
+                          onClick={(e) => { e.stopPropagation(); deleteMutation.mutate(ref.id); }}
+                        >
+                          <Trash2 className="h-3 w-3" />
+                        </Button>
                       )}
                     </div>
+                    <div className="p-3 space-y-1">
+                      <p className="font-medium text-sm truncate">
+                        {isAr && ref.title_ar ? ref.title_ar : ref.title}
+                      </p>
+                      {(ref.description || ref.description_ar) && (
+                        <p className="text-xs text-muted-foreground line-clamp-2">
+                          {isAr && ref.description_ar ? ref.description_ar : ref.description}
+                        </p>
+                      )}
+                      <div className="flex items-center justify-between pt-1">
+                        <Badge variant="outline" className="text-[10px]">
+                          {isAr ? "النطاق:" : "Range:"} {ref.score_range_min}–{ref.score_range_max}
+                        </Badge>
+                      </div>
+                    </div>
                   </div>
-                </div>
-              );
-            })}
-          </div>
-        ) : (
-          <p className="text-sm text-muted-foreground text-center py-6">
-            {language === "ar" ? "لا توجد أمثلة مرجعية بعد" : "No reference examples yet"}
-          </p>
-        )}
-      </CardContent>
-    </Card>
+                );
+              })}
+            </div>
+          ) : (
+            <div className="flex flex-col items-center justify-center py-16 text-center">
+              <div className="mb-3 flex h-14 w-14 items-center justify-center rounded-full bg-muted/60">
+                <ImageIcon className="h-6 w-6 text-muted-foreground/50" />
+              </div>
+              <p className="text-sm text-muted-foreground">{isAr ? "لا توجد صور بعد" : "No images yet"}</p>
+            </div>
+          )}
+        </CardContent>
+      </Card>
+
+      {/* Lightbox */}
+      {lightboxIndex !== null && (
+        <ImageLightbox
+          images={lightboxImages}
+          currentIndex={lightboxIndex}
+          onClose={() => setLightboxIndex(null)}
+          onNavigate={setLightboxIndex}
+        />
+      )}
+    </>
   );
 }
