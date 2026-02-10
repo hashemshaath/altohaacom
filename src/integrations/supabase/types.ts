@@ -495,6 +495,60 @@ export type Database = {
           },
         ]
       }
+      communication_templates: {
+        Row: {
+          body: string
+          body_ar: string | null
+          category: string
+          channel: string
+          created_at: string
+          created_by: string | null
+          id: string
+          is_active: boolean
+          name: string
+          name_ar: string | null
+          slug: string
+          subject: string | null
+          subject_ar: string | null
+          updated_at: string
+          variables: string[] | null
+        }
+        Insert: {
+          body: string
+          body_ar?: string | null
+          category?: string
+          channel?: string
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          is_active?: boolean
+          name: string
+          name_ar?: string | null
+          slug: string
+          subject?: string | null
+          subject_ar?: string | null
+          updated_at?: string
+          variables?: string[] | null
+        }
+        Update: {
+          body?: string
+          body_ar?: string | null
+          category?: string
+          channel?: string
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          is_active?: boolean
+          name?: string
+          name_ar?: string | null
+          slug?: string
+          subject?: string | null
+          subject_ar?: string | null
+          updated_at?: string
+          variables?: string[] | null
+        }
+        Relationships: []
+      }
       community_events: {
         Row: {
           created_at: string

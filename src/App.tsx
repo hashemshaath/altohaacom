@@ -51,6 +51,7 @@ const ShopMyProducts = lazy(() => import("./pages/ShopMyProducts"));
 const Tastings = lazy(() => import("./pages/Tastings"));
 const CreateTasting = lazy(() => import("./pages/CreateTasting"));
 const TastingDetail = lazy(() => import("./pages/TastingDetail"));
+const RegisterCompany = lazy(() => import("./pages/RegisterCompany"));
 
 // Admin pages
 const AdminLayout = lazy(() => import("./pages/admin/AdminLayout"));
@@ -88,6 +89,7 @@ const JudgesAdmin = lazy(() => import("./pages/admin/JudgesAdmin"));
 const CompanyRolesAdmin = lazy(() => import("./pages/admin/CompanyRolesAdmin"));
 const CountriesAdmin = lazy(() => import("./pages/admin/CountriesAdmin"));
 const TastingsAdmin = lazy(() => import("./pages/admin/TastingsAdmin"));
+const CommunicationTemplatesAdmin = lazy(() => import("./pages/admin/CommunicationTemplatesAdmin"));
 
 // Company Portal Pages
 const CompanyPortalLayout = lazy(() => import("./pages/CompanyPortal"));
@@ -174,6 +176,7 @@ const App = () => (
                 <Route path="/tastings" element={<Tastings />} />
                 <Route path="/tastings/create" element={<ProtectedRoute><CreateTasting /></ProtectedRoute>} />
                 <Route path="/tastings/:id" element={<TastingDetail />} />
+                <Route path="/register-company" element={<ProtectedRoute><RegisterCompany /></ProtectedRoute>} />
                 
                 {/* Admin Routes */}
                 <Route path="/admin" element={<ProtectedRoute><AdminLayout /></ProtectedRoute>}>
@@ -211,6 +214,7 @@ const App = () => (
                    <Route path="company-roles" element={<CompanyRolesAdmin />} />
                    <Route path="countries" element={<CountriesAdmin />} />
                    <Route path="tastings" element={<TastingsAdmin />} />
+                   <Route path="templates" element={<CommunicationTemplatesAdmin />} />
                 </Route>
 
                 {/* Company Portal Routes */}
