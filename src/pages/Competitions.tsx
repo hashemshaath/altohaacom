@@ -128,27 +128,27 @@ export default function Competitions() {
 
       <main className="flex-1">
         {/* Hero Banner */}
-        <section className="relative overflow-hidden border-b bg-gradient-to-br from-primary/5 via-background to-accent/5">
-          <div className="absolute inset-0 overflow-hidden pointer-events-none">
-            <div className="absolute -top-24 -end-24 h-64 w-64 rounded-full bg-primary/5 blur-3xl" />
-            <div className="absolute -bottom-16 -start-16 h-48 w-48 rounded-full bg-accent/5 blur-3xl" />
-          </div>
-          <div className="container relative py-10 md:py-16">
+        <section className="relative overflow-hidden border-b bg-gradient-to-b from-primary/5 via-background to-background">
+          <div className="absolute -top-32 start-1/4 h-64 w-64 rounded-full bg-primary/8 blur-[100px] animate-pulse pointer-events-none" />
+          <div className="absolute -top-20 end-1/3 h-48 w-48 rounded-full bg-accent/10 blur-[80px] animate-pulse [animation-delay:1s] pointer-events-none" />
+          <div className="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-primary/20 to-transparent" />
+
+          <div className="container relative py-10 md:py-14">
             <div className="flex flex-col gap-6 md:flex-row md:items-center md:justify-between">
               <div className="max-w-xl space-y-3">
                 <div className="flex items-center gap-2">
-                  <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary/10">
-                    <Trophy className="h-5 w-5 text-primary" />
+                  <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-primary/10 ring-1 ring-primary/15 shadow-sm">
+                    <Trophy className="h-6 w-6 text-primary" />
                   </div>
                   <Badge variant="outline" className="gap-1.5 border-primary/20 text-primary">
                     <Sparkles className="h-3 w-3" />
                     {counts.all} {isAr ? "مسابقة" : "Competitions"}
                   </Badge>
                 </div>
-                <h1 className="font-serif text-3xl font-bold md:text-4xl lg:text-5xl">
+                <h1 className="font-serif text-2xl font-bold md:text-3xl lg:text-4xl">
                   {isAr ? "المسابقات الطهوية" : "Culinary Competitions"}
                 </h1>
-                <p className="text-muted-foreground leading-relaxed">
+                <p className="text-sm text-muted-foreground leading-relaxed sm:text-base">
                   {isAr
                     ? "اكتشف المسابقات الطهوية واشترك فيها. أظهر مهاراتك وتنافس مع أفضل الطهاة."
                     : "Discover world-class culinary competitions. Showcase your skills, compete with top chefs, and earn recognition."}
@@ -280,7 +280,8 @@ function FeaturedCard({ competition, language, isAr }: { competition: Competitio
 
   return (
     <Link to={`/competitions/${competition.id}`} className="group mb-8 block">
-      <Card className="overflow-hidden border-primary/10 transition-all hover:shadow-xl hover:shadow-primary/5">
+      <Card className="relative overflow-hidden border-primary/15 transition-all hover:shadow-xl hover:shadow-primary/5">
+        <div className="pointer-events-none absolute -top-16 -end-16 h-40 w-40 rounded-full bg-primary/5 blur-[50px]" />
         <div className="relative flex flex-col md:flex-row">
           {/* Image */}
           <div className="relative aspect-[16/9] w-full overflow-hidden md:aspect-auto md:w-2/5 lg:w-1/3">
@@ -369,7 +370,7 @@ function CompetitionCard({ competition, language, isAr }: { competition: Competi
 
   return (
     <Link to={`/competitions/${competition.id}`} className="group block">
-      <Card className="h-full overflow-hidden transition-all duration-300 hover:shadow-lg hover:-translate-y-1 border-border/60 hover:border-primary/20">
+      <Card className="h-full overflow-hidden transition-all duration-300 hover:shadow-lg hover:-translate-y-1 border-border/50 hover:border-primary/20">
         {/* Cover Image */}
         <div className="relative aspect-[16/10] overflow-hidden bg-muted">
           {competition.cover_image_url ? (
