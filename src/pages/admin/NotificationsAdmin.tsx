@@ -154,7 +154,7 @@ export default function NotificationsAdmin() {
     switch (status) {
       case "sent":
       case "delivered":
-        return <Badge className="bg-emerald-500/10 text-emerald-600 border-emerald-500/20 gap-1"><Check className="h-3 w-3" />{status}</Badge>;
+        return <Badge className="bg-chart-5/10 text-chart-5 border-chart-5/20 gap-1"><Check className="h-3 w-3" />{status}</Badge>;
       case "failed":
         return <Badge variant="destructive" className="gap-1"><X className="h-3 w-3" />{status}</Badge>;
       default:
@@ -293,18 +293,18 @@ export default function NotificationsAdmin() {
             </div>
           </CardContent>
         </Card>
-        <Card className="border-s-[3px] border-s-amber-500">
+        <Card className="border-s-[3px] border-s-chart-4">
           <CardContent className="flex items-center gap-3 p-4">
-            <div className="rounded-xl bg-amber-500/10 p-2.5"><Clock className="h-5 w-5 text-amber-600" /></div>
+            <div className="rounded-xl bg-chart-4/10 p-2.5"><Clock className="h-5 w-5 text-chart-4" /></div>
             <div>
               <p className="text-xs text-muted-foreground">{language === "ar" ? "في الانتظار" : "Pending"}</p>
               <p className="text-2xl font-bold">{queueStats?.pending || 0}</p>
             </div>
           </CardContent>
         </Card>
-        <Card className="border-s-[3px] border-s-emerald-500">
+        <Card className="border-s-[3px] border-s-chart-5">
           <CardContent className="flex items-center gap-3 p-4">
-            <div className="rounded-xl bg-emerald-500/10 p-2.5"><Check className="h-5 w-5 text-emerald-600" /></div>
+            <div className="rounded-xl bg-chart-5/10 p-2.5"><Check className="h-5 w-5 text-chart-5" /></div>
             <div>
               <p className="text-xs text-muted-foreground">{language === "ar" ? "تم الإرسال" : "Sent"}</p>
               <p className="text-2xl font-bold">{queueStats?.sent || 0}</p>

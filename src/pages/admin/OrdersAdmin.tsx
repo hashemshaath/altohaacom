@@ -55,13 +55,13 @@ interface Order {
 }
 
 const statusColors: Record<OrderStatus, string> = {
-  draft: "bg-gray-500",
-  pending: "bg-yellow-500",
-  approved: "bg-blue-500",
-  rejected: "bg-red-500",
-  in_progress: "bg-purple-500",
-  completed: "bg-green-500",
-  cancelled: "bg-gray-600",
+  draft: "bg-muted-foreground",
+  pending: "bg-chart-4",
+  approved: "bg-chart-1",
+  rejected: "bg-destructive",
+  in_progress: "bg-chart-3",
+  completed: "bg-chart-5",
+  cancelled: "bg-muted-foreground",
 };
 
 const categoryLabels: Record<OrderCategory, { en: string; ar: string }> = {
@@ -460,7 +460,7 @@ export default function OrdersAdmin() {
               <CardContent>
                 <div className="space-y-3">
                   <div className="flex items-center gap-3">
-                    <div className="h-2 w-2 rounded-full bg-green-500" />
+                    <div className="h-2 w-2 rounded-full bg-chart-5" />
                     <div className="flex-1">
                       <p className="text-sm font-medium">{language === "ar" ? "تم الإنشاء" : "Created"}</p>
                       <p className="text-xs text-muted-foreground">
@@ -470,7 +470,7 @@ export default function OrdersAdmin() {
                   </div>
                   {orderDetails.approved_at && (
                     <div className="flex items-center gap-3">
-                      <div className="h-2 w-2 rounded-full bg-blue-500" />
+                      <div className="h-2 w-2 rounded-full bg-chart-1" />
                       <div className="flex-1">
                         <p className="text-sm font-medium">{language === "ar" ? "تم الاعتماد" : "Approved"}</p>
                         <p className="text-xs text-muted-foreground">
@@ -481,7 +481,7 @@ export default function OrdersAdmin() {
                   )}
                   {orderDetails.rejected_at && (
                     <div className="flex items-center gap-3">
-                      <div className="h-2 w-2 rounded-full bg-red-500" />
+                      <div className="h-2 w-2 rounded-full bg-destructive" />
                       <div className="flex-1">
                         <p className="text-sm font-medium">{language === "ar" ? "تم الرفض" : "Rejected"}</p>
                         <p className="text-xs text-muted-foreground">
@@ -492,7 +492,7 @@ export default function OrdersAdmin() {
                   )}
                   {orderDetails.completed_at && (
                     <div className="flex items-center gap-3">
-                      <div className="h-2 w-2 rounded-full bg-green-500" />
+                      <div className="h-2 w-2 rounded-full bg-chart-5" />
                       <div className="flex-1">
                         <p className="text-sm font-medium">{language === "ar" ? "مكتمل" : "Completed"}</p>
                         <p className="text-xs text-muted-foreground">
@@ -536,7 +536,7 @@ export default function OrdersAdmin() {
         <Card>
           <CardContent className="pt-4">
             <div className="text-center">
-              <p className="text-2xl font-bold text-yellow-600">{stats.pending}</p>
+              <p className="text-2xl font-bold text-chart-4">{stats.pending}</p>
               <p className="text-sm text-muted-foreground">{language === "ar" ? "قيد الانتظار" : "Pending"}</p>
             </div>
           </CardContent>
@@ -544,7 +544,7 @@ export default function OrdersAdmin() {
         <Card>
           <CardContent className="pt-4">
             <div className="text-center">
-              <p className="text-2xl font-bold text-purple-600">{stats.inProgress}</p>
+              <p className="text-2xl font-bold text-chart-3">{stats.inProgress}</p>
               <p className="text-sm text-muted-foreground">{language === "ar" ? "جاري" : "In Progress"}</p>
             </div>
           </CardContent>
@@ -552,7 +552,7 @@ export default function OrdersAdmin() {
         <Card>
           <CardContent className="pt-4">
             <div className="text-center">
-              <p className="text-2xl font-bold text-green-600">{stats.completed}</p>
+              <p className="text-2xl font-bold text-chart-5">{stats.completed}</p>
               <p className="text-sm text-muted-foreground">{language === "ar" ? "مكتمل" : "Completed"}</p>
             </div>
           </CardContent>
@@ -560,7 +560,7 @@ export default function OrdersAdmin() {
         <Card>
           <CardContent className="pt-4">
             <div className="text-center">
-              <p className="text-2xl font-bold text-blue-600">{stats.incoming}</p>
+              <p className="text-2xl font-bold text-chart-1">{stats.incoming}</p>
               <p className="text-sm text-muted-foreground">{language === "ar" ? "وارد" : "Incoming"}</p>
             </div>
           </CardContent>
@@ -568,7 +568,7 @@ export default function OrdersAdmin() {
         <Card>
           <CardContent className="pt-4">
             <div className="text-center">
-              <p className="text-2xl font-bold text-indigo-600">{stats.outgoing}</p>
+              <p className="text-2xl font-bold text-chart-2">{stats.outgoing}</p>
               <p className="text-sm text-muted-foreground">{language === "ar" ? "صادر" : "Outgoing"}</p>
             </div>
           </CardContent>
@@ -676,9 +676,9 @@ export default function OrdersAdmin() {
                     <TableCell>
                       <div className="flex items-center gap-1">
                         {order.direction === "incoming" ? (
-                          <ArrowDownLeft className="h-4 w-4 text-green-600" />
+                          <ArrowDownLeft className="h-4 w-4 text-chart-5" />
                         ) : (
-                          <ArrowUpRight className="h-4 w-4 text-blue-600" />
+                          <ArrowUpRight className="h-4 w-4 text-chart-1" />
                         )}
                         <span className="text-sm">
                           {order.direction === "incoming"
