@@ -258,6 +258,39 @@ export default function CompaniesAdmin() {
     enabled: !!selectedCompany,
   });
 
+  // Fetch company catalog
+  const { data: catalogItems = [] } = useQuery({
+    queryKey: ["company-catalog", selectedCompany],
+    queryFn: async () => {
+      if (!selectedCompany) return [];
+      const { data, error } = await supabase
+        .from("company_catalog")
+        .select("*")
+        .eq("company_id", selectedCompany)
+        .order("category")
+        .order("name");
+      if (error) throw error;
+      return data;
+    },
+    enabled: !!selectedCompany,
+  });
+
+  // Fetch company drivers
+  const { data: drivers = [] } = useQuery({
+    queryKey: ["company-drivers", selectedCompany],
+    queryFn: async () => {
+      if (!selectedCompany) return [];
+      const { data, error } = await supabase
+        .from("company_drivers")
+        .select("*")
+        .eq("company_id", selectedCompany)
+        .order("name");
+      if (error) throw error;
+      return data;
+    },
+    enabled: !!selectedCompany,
+  });
+
   // Create company mutation
   const createCompanyMutation = useMutation({
     mutationFn: async (data: typeof companyForm) => {
@@ -464,6 +497,8 @@ export default function CompaniesAdmin() {
             <TabsTrigger value="transactions">{language === "ar" ? "الحساب" : "Account"}</TabsTrigger>
             <TabsTrigger value="invitations">{language === "ar" ? "الدعوات" : "Invitations"}</TabsTrigger>
             <TabsTrigger value="evaluations">{language === "ar" ? "التقييمات" : "Evaluations"}</TabsTrigger>
+            <TabsTrigger value="catalog">{language === "ar" ? "الكتالوج" : "Catalog"}</TabsTrigger>
+            <TabsTrigger value="drivers">{language === "ar" ? "السائقون" : "Drivers"}</TabsTrigger>
             <TabsTrigger value="media">{language === "ar" ? "الوسائط" : "Media"}</TabsTrigger>
           </TabsList>
 
@@ -896,6 +931,110 @@ export default function CompaniesAdmin() {
                 </div>
               )}
             </div>
+          </TabsContent>
+
+          {/* Catalog Tab */}
+          <TabsContent value="catalog" className="space-y-4">
+            <div className="flex justify-between items-center">
+              <h3 className="text-lg font-semibold">{language === "ar" ? "كتالوج المنتجات" : "Product Catalog"}</h3>
+            </div>
+            {catalogItems.length > 0 ? (
+              <Card>
+                <CardContent className="p-0">
+                  <Table>
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead>{language === "ar" ? "المنتج" : "Product"}</TableHead>
+                        <TableHead>{language === "ar" ? "الفئة" : "Category"}</TableHead>
+                        <TableHead>SKU</TableHead>
+                        <TableHead>{language === "ar" ? "السعر" : "Price"}</TableHead>
+                        <TableHead>{language === "ar" ? "الكمية" : "Qty"}</TableHead>
+                        <TableHead>{language === "ar" ? "الحالة" : "Status"}</TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      {catalogItems.map((item: any) => (
+                        <TableRow key={item.id}>
+                          <TableCell>
+                            <div>
+                              <p className="font-medium">{item.name}</p>
+                              {item.name_ar && <p className="text-xs text-muted-foreground" dir="rtl">{item.name_ar}</p>}
+                            </div>
+                          </TableCell>
+                          <TableCell><Badge variant="outline">{item.category}</Badge></TableCell>
+                          <TableCell className="font-mono text-xs">{item.sku || "-"}</TableCell>
+                          <TableCell>
+                            {item.unit_price != null ? `${Number(item.unit_price).toLocaleString()} ${item.currency || "SAR"}` : "-"}
+                            {item.unit && <span className="text-xs text-muted-foreground"> / {item.unit}</span>}
+                          </TableCell>
+                          <TableCell>{item.quantity_available ?? "-"}</TableCell>
+                          <TableCell>
+                            <div className="flex gap-1">
+                              <Badge variant={item.is_active ? "default" : "secondary"}>
+                                {item.is_active ? (language === "ar" ? "نشط" : "Active") : (language === "ar" ? "غير نشط" : "Inactive")}
+                              </Badge>
+                            </div>
+                          </TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                </CardContent>
+              </Card>
+            ) : (
+              <div className="text-center py-12 text-muted-foreground">
+                <Package className="h-12 w-12 mx-auto mb-4 opacity-50" />
+                <p>{language === "ar" ? "لا توجد منتجات في الكتالوج" : "No catalog items"}</p>
+              </div>
+            )}
+          </TabsContent>
+
+          {/* Drivers Tab */}
+          <TabsContent value="drivers" className="space-y-4">
+            <div className="flex justify-between items-center">
+              <h3 className="text-lg font-semibold">{language === "ar" ? "السائقون" : "Drivers"}</h3>
+            </div>
+            {drivers.length > 0 ? (
+              <Card>
+                <CardContent className="p-0">
+                  <Table>
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead>{language === "ar" ? "الاسم" : "Name"}</TableHead>
+                        <TableHead>{language === "ar" ? "الهاتف" : "Phone"}</TableHead>
+                        <TableHead>{language === "ar" ? "نوع المركبة" : "Vehicle"}</TableHead>
+                        <TableHead>{language === "ar" ? "لوحة المركبة" : "Plate"}</TableHead>
+                        <TableHead>{language === "ar" ? "رقم الرخصة" : "License #"}</TableHead>
+                        <TableHead>{language === "ar" ? "الحالة" : "Status"}</TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      {drivers.map((driver: any) => (
+                        <TableRow key={driver.id}>
+                          <TableCell className="font-medium">{driver.name}</TableCell>
+                          <TableCell>{driver.phone}</TableCell>
+                          <TableCell>{driver.vehicle_type || "-"}</TableCell>
+                          <TableCell>{driver.vehicle_plate || "-"}</TableCell>
+                          <TableCell className="font-mono text-xs">{driver.license_number || "-"}</TableCell>
+                          <TableCell>
+                            <Badge variant={driver.is_available ? "default" : "secondary"}>
+                              {driver.is_available
+                                ? (language === "ar" ? "متاح" : "Available")
+                                : (language === "ar" ? "غير متاح" : "Unavailable")}
+                            </Badge>
+                          </TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                </CardContent>
+              </Card>
+            ) : (
+              <div className="text-center py-12 text-muted-foreground">
+                <Truck className="h-12 w-12 mx-auto mb-4 opacity-50" />
+                <p>{language === "ar" ? "لا يوجد سائقون" : "No drivers found"}</p>
+              </div>
+            )}
           </TabsContent>
 
           {/* Media Tab */}
