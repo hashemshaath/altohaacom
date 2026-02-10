@@ -79,14 +79,14 @@ const CommunicationsAdmin = lazy(() => import("./pages/admin/CommunicationsAdmin
 const OrdersAdmin = lazy(() => import("./pages/admin/OrdersAdmin"));
 const InvoicesAdmin = lazy(() => import("./pages/admin/InvoicesAdmin"));
 const KnowledgeAdmin = lazy(() => import("./pages/admin/KnowledgeAdmin"));
-const SponsorsAdmin = lazy(() => import("./pages/admin/SponsorsAdmin"));
+const SponsorsAdmin = lazy(() => import("./pages/admin/CompaniesAdmin"));
 const QRCodesAdmin = lazy(() => import("./pages/admin/QRCodesAdmin"));
 const MasterclassesAdmin = lazy(() => import("./pages/admin/MasterclassesAdmin"));
 const AnalyticsDashboard = lazy(() => import("./pages/admin/AnalyticsDashboard"));
 const ExhibitionsAdmin = lazy(() => import("./pages/admin/ExhibitionsAdmin"));
 const EntitiesAdmin = lazy(() => import("./pages/admin/EntitiesAdmin"));
 const JudgesAdmin = lazy(() => import("./pages/admin/JudgesAdmin"));
-const CompanyRolesAdmin = lazy(() => import("./pages/admin/CompanyRolesAdmin"));
+const CompanyRolesAdmin = lazy(() => import("./pages/admin/CompaniesAdmin"));
 const CountriesAdmin = lazy(() => import("./pages/admin/CountriesAdmin"));
 const TastingsAdmin = lazy(() => import("./pages/admin/TastingsAdmin"));
 const CommunicationTemplatesAdmin = lazy(() => import("./pages/admin/CommunicationTemplatesAdmin"));
@@ -203,7 +203,7 @@ const App = () => (
                    <Route path="orders" element={<OrdersAdmin />} />
                    <Route path="invoices" element={<InvoicesAdmin />} />
                   <Route path="knowledge" element={<KnowledgeAdmin />} />
-                  <Route path="sponsors" element={<SponsorsAdmin />} />
+                  <Route path="sponsors" element={<CompaniesAdmin />} />
                   <Route path="masterclasses" element={<MasterclassesAdmin />} />
                   <Route path="analytics" element={<AnalyticsDashboard />} />
                   <Route path="exhibitions" element={<ExhibitionsAdmin />} />
@@ -211,7 +211,7 @@ const App = () => (
                   <Route path="entities" element={<EntitiesAdmin />} />
                   <Route path="judges" element={<JudgesAdmin />} />
                    <Route path="communications" element={<CommunicationsAdmin />} />
-                   <Route path="company-roles" element={<CompanyRolesAdmin />} />
+                   <Route path="company-roles" element={<CompaniesAdmin />} />
                    <Route path="countries" element={<CountriesAdmin />} />
                    <Route path="tastings" element={<TastingsAdmin />} />
                    <Route path="templates" element={<CommunicationTemplatesAdmin />} />
