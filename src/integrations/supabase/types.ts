@@ -495,6 +495,121 @@ export type Database = {
           },
         ]
       }
+      chef_establishment_associations: {
+        Row: {
+          association_type: string
+          created_at: string
+          department: string | null
+          department_ar: string | null
+          description: string | null
+          description_ar: string | null
+          end_date: string | null
+          establishment_id: string
+          id: string
+          is_current: boolean | null
+          role_title: string | null
+          role_title_ar: string | null
+          start_date: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          association_type?: string
+          created_at?: string
+          department?: string | null
+          department_ar?: string | null
+          description?: string | null
+          description_ar?: string | null
+          end_date?: string | null
+          establishment_id: string
+          id?: string
+          is_current?: boolean | null
+          role_title?: string | null
+          role_title_ar?: string | null
+          start_date?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          association_type?: string
+          created_at?: string
+          department?: string | null
+          department_ar?: string | null
+          description?: string | null
+          description_ar?: string | null
+          end_date?: string | null
+          establishment_id?: string
+          id?: string
+          is_current?: boolean | null
+          role_title?: string | null
+          role_title_ar?: string | null
+          start_date?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "chef_establishment_associations_establishment_id_fkey"
+            columns: ["establishment_id"]
+            isOneToOne: false
+            referencedRelation: "establishments"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      chef_establishment_qualifications: {
+        Row: {
+          association_id: string
+          created_at: string
+          credential_id: string | null
+          description: string | null
+          description_ar: string | null
+          expiry_date: string | null
+          id: string
+          issued_date: string | null
+          qualification_name: string
+          qualification_name_ar: string | null
+          qualification_type: string | null
+          user_id: string
+        }
+        Insert: {
+          association_id: string
+          created_at?: string
+          credential_id?: string | null
+          description?: string | null
+          description_ar?: string | null
+          expiry_date?: string | null
+          id?: string
+          issued_date?: string | null
+          qualification_name: string
+          qualification_name_ar?: string | null
+          qualification_type?: string | null
+          user_id: string
+        }
+        Update: {
+          association_id?: string
+          created_at?: string
+          credential_id?: string | null
+          description?: string | null
+          description_ar?: string | null
+          expiry_date?: string | null
+          id?: string
+          issued_date?: string | null
+          qualification_name?: string
+          qualification_name_ar?: string | null
+          qualification_type?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "chef_establishment_qualifications_association_id_fkey"
+            columns: ["association_id"]
+            isOneToOne: false
+            referencedRelation: "chef_establishment_associations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       communication_templates: {
         Row: {
           body: string
@@ -3277,6 +3392,87 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      establishments: {
+        Row: {
+          address: string | null
+          address_ar: string | null
+          city: string | null
+          city_ar: string | null
+          country_code: string | null
+          cover_image_url: string | null
+          created_at: string
+          created_by: string | null
+          cuisine_type: string | null
+          cuisine_type_ar: string | null
+          description: string | null
+          description_ar: string | null
+          email: string | null
+          id: string
+          is_active: boolean | null
+          is_verified: boolean | null
+          logo_url: string | null
+          name: string
+          name_ar: string | null
+          phone: string | null
+          star_rating: number | null
+          type: string
+          updated_at: string
+          website: string | null
+        }
+        Insert: {
+          address?: string | null
+          address_ar?: string | null
+          city?: string | null
+          city_ar?: string | null
+          country_code?: string | null
+          cover_image_url?: string | null
+          created_at?: string
+          created_by?: string | null
+          cuisine_type?: string | null
+          cuisine_type_ar?: string | null
+          description?: string | null
+          description_ar?: string | null
+          email?: string | null
+          id?: string
+          is_active?: boolean | null
+          is_verified?: boolean | null
+          logo_url?: string | null
+          name: string
+          name_ar?: string | null
+          phone?: string | null
+          star_rating?: number | null
+          type?: string
+          updated_at?: string
+          website?: string | null
+        }
+        Update: {
+          address?: string | null
+          address_ar?: string | null
+          city?: string | null
+          city_ar?: string | null
+          country_code?: string | null
+          cover_image_url?: string | null
+          created_at?: string
+          created_by?: string | null
+          cuisine_type?: string | null
+          cuisine_type_ar?: string | null
+          description?: string | null
+          description_ar?: string | null
+          email?: string | null
+          id?: string
+          is_active?: boolean | null
+          is_verified?: boolean | null
+          logo_url?: string | null
+          name?: string
+          name_ar?: string | null
+          phone?: string | null
+          star_rating?: number | null
+          type?: string
+          updated_at?: string
+          website?: string | null
+        }
+        Relationships: []
       }
       event_attendees: {
         Row: {

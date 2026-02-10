@@ -58,6 +58,8 @@ const MentorApply = lazy(() => import("./pages/MentorApply"));
 const MentorshipMatchPage = lazy(() => import("./pages/MentorshipMatch"));
 const Recipes = lazy(() => import("./pages/Recipes"));
 const RecipeDetail = lazy(() => import("./pages/RecipeDetail"));
+const Establishments = lazy(() => import("./pages/Establishments"));
+const EstablishmentDetail = lazy(() => import("./pages/EstablishmentDetail"));
 
 // Admin pages
 const AdminLayout = lazy(() => import("./pages/admin/AdminLayout"));
@@ -97,6 +99,7 @@ const CountriesAdmin = lazy(() => import("./pages/admin/CountriesAdmin"));
 const TastingsAdmin = lazy(() => import("./pages/admin/TastingsAdmin"));
 const CommunicationTemplatesAdmin = lazy(() => import("./pages/admin/CommunicationTemplatesAdmin"));
 const MentorshipAdmin = lazy(() => import("./pages/admin/MentorshipAdmin"));
+const EstablishmentsAdmin = lazy(() => import("./pages/admin/EstablishmentsAdmin"));
 
 // Company Portal Pages
 const CompanyPortalLayout = lazy(() => import("./pages/CompanyPortal"));
@@ -190,6 +193,8 @@ const App = () => (
                 <Route path="/mentorship/match/:id" element={<ProtectedRoute><MentorshipMatchPage /></ProtectedRoute>} />
                 <Route path="/recipes" element={<Recipes />} />
                 <Route path="/recipes/:slug" element={<RecipeDetail />} />
+                <Route path="/establishments" element={<Establishments />} />
+                <Route path="/establishments/:id" element={<EstablishmentDetail />} />
                 
                 {/* Admin Routes */}
                 <Route path="/admin" element={<ProtectedRoute><AdminLayout /></ProtectedRoute>}>
@@ -229,6 +234,7 @@ const App = () => (
                    <Route path="tastings" element={<TastingsAdmin />} />
                    <Route path="templates" element={<CommunicationTemplatesAdmin />} />
                    <Route path="mentorship" element={<MentorshipAdmin />} />
+                   <Route path="establishments" element={<EstablishmentsAdmin />} />
                 </Route>
 
                 {/* Company Portal Routes */}
