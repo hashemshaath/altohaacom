@@ -71,6 +71,7 @@ const LocalizationAdmin = lazy(() => import("./pages/admin/LocalizationAdmin"));
 const DatabaseAdmin = lazy(() => import("./pages/admin/DatabaseAdmin"));
 const CertificatesAdmin = lazy(() => import("./pages/admin/CertificatesAdmin"));
 const CompaniesAdmin = lazy(() => import("./pages/admin/CompaniesAdmin"));
+const CommunicationsAdmin = lazy(() => import("./pages/admin/CommunicationsAdmin"));
 const OrdersAdmin = lazy(() => import("./pages/admin/OrdersAdmin"));
 const InvoicesAdmin = lazy(() => import("./pages/admin/InvoicesAdmin"));
 const KnowledgeAdmin = lazy(() => import("./pages/admin/KnowledgeAdmin"));
@@ -186,6 +187,7 @@ const App = () => (
                   <Route path="exhibitions" element={<ExhibitionsAdmin />} />
                   <Route path="entities" element={<EntitiesAdmin />} />
                   <Route path="judges" element={<JudgesAdmin />} />
+                  <Route path="communications" element={<CommunicationsAdmin />} />
                 </Route>
 
                 {/* Company Portal Routes */}
