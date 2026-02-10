@@ -11,6 +11,7 @@ import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import { User, Search, UserPlus, UserMinus, MapPin, ChefHat } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { countryFlag } from "@/lib/countryFlag";
 
 interface ChefProfile {
   user_id: string;
@@ -19,6 +20,8 @@ interface ChefProfile {
   specialization: string | null;
   experience_level: string | null;
   location: string | null;
+  country_code: string | null;
+  nationality: string | null;
   role: string | null;
   is_following: boolean;
 }
@@ -35,7 +38,7 @@ export function ChefsTab() {
   const fetchChefs = async () => {
     const { data: profiles, error } = await supabase
       .from("profiles")
-      .select("user_id, full_name, username, specialization, experience_level, location")
+      .select("user_id, full_name, username, specialization, experience_level, location, country_code, nationality")
       .neq("user_id", user?.id || "")
       .limit(50);
 
@@ -64,6 +67,8 @@ export function ChefsTab() {
       specialization: p.specialization,
       experience_level: p.experience_level,
       location: p.location,
+      country_code: p.country_code,
+      nationality: p.nationality,
       role: rolesMap.get(p.user_id) || null,
       is_following: followingSet.has(p.user_id),
     }));
@@ -166,7 +171,7 @@ export function ChefsTab() {
                   {chef.location && (
                     <p className="mt-0.5 flex items-center gap-1 text-[10px] text-muted-foreground">
                       <MapPin className="h-2.5 w-2.5 shrink-0" />
-                      {chef.location}
+                      {chef.country_code ? `${countryFlag(chef.country_code)} ` : ""}{chef.location}
                     </p>
                   )}
                 </div>

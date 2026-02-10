@@ -28,7 +28,10 @@ import {
   ChefHat,
   ArrowLeft,
   Calendar,
+  Earth,
 } from "lucide-react";
+import { countryFlag } from "@/lib/countryFlag";
+import { useAllCountries } from "@/hooks/useCountries";
 import type { Database } from "@/integrations/supabase/types";
 
 type Profile = Database["public"]["Tables"]["profiles"]["Row"];
@@ -38,6 +41,12 @@ export default function PublicProfile() {
   const { username } = useParams<{ username: string }>();
   const { t, language } = useLanguage();
   const isAr = language === "ar";
+  const { data: allCountries = [] } = useAllCountries();
+  const getCountryName = (code: string | null) => {
+    if (!code) return null;
+    const c = allCountries.find((ct) => ct.code === code);
+    return c ? (isAr ? c.name_ar || c.name : c.name) : code;
+  };
 
   const { data: profile, isLoading, error } = useQuery({
     queryKey: ["publicProfile", username],
@@ -226,7 +235,23 @@ export default function PublicProfile() {
                         <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-muted">
                           <MapPin className="h-3.5 w-3.5 text-muted-foreground" />
                         </div>
-                        <span>{profile.location}</span>
+                        <span>{profile.country_code ? `${countryFlag(profile.country_code)} ` : ""}{profile.location}</span>
+                      </div>
+                    )}
+                    {profile.country_code && (
+                      <div className="flex items-center gap-2.5 text-sm">
+                        <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-muted">
+                          <Earth className="h-3.5 w-3.5 text-muted-foreground" />
+                        </div>
+                        <span>{countryFlag(profile.country_code)} {getCountryName(profile.country_code)}</span>
+                      </div>
+                    )}
+                    {profile.nationality && profile.nationality !== profile.country_code && (
+                      <div className="flex items-center gap-2.5 text-sm text-muted-foreground">
+                        <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-muted">
+                          <Earth className="h-3.5 w-3.5 text-muted-foreground" />
+                        </div>
+                        <span>{countryFlag(profile.nationality)} {getCountryName(profile.nationality)} <span className="text-[10px]">({isAr ? "الجنسية" : "Nationality"})</span></span>
                       </div>
                     )}
                   </div>

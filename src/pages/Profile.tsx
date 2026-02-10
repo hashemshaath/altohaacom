@@ -15,7 +15,9 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { SEOHead } from "@/components/SEOHead";
 import { useToast } from "@/hooks/use-toast";
-import { User, Edit, Save, MapPin, ChefHat, Award, X, Trophy, GraduationCap } from "lucide-react";
+import { User, Edit, Save, MapPin, ChefHat, Award, X, Trophy, GraduationCap, Earth } from "lucide-react";
+import { countryFlag } from "@/lib/countryFlag";
+import { useAllCountries } from "@/hooks/useCountries";
 import type { Database } from "@/integrations/supabase/types";
 import { CompetitionHistory } from "@/components/profile/CompetitionHistory";
 import { UserBadgesDisplay } from "@/components/badges/UserBadgesDisplay";
@@ -31,6 +33,12 @@ export default function Profile() {
   const { t, language } = useLanguage();
   const { toast } = useToast();
   const isAr = language === "ar";
+  const { data: allCountries = [] } = useAllCountries();
+  const getCountryName = (code: string | null) => {
+    if (!code) return null;
+    const c = allCountries.find((ct) => ct.code === code);
+    return c ? (isAr ? c.name_ar || c.name : c.name) : code;
+  };
   const [profile, setProfile] = useState<Profile | null>(null);
   const [roles, setRoles] = useState<AppRole[]>([]);
   const [editing, setEditing] = useState(false);
@@ -213,7 +221,19 @@ export default function Profile() {
                   {profile?.location && (
                     <div className="flex items-center gap-2 text-sm">
                       <MapPin className="h-3.5 w-3.5 shrink-0 text-muted-foreground" />
-                      <span>{profile.location}</span>
+                      <span>{profile.country_code ? `${countryFlag(profile.country_code)} ` : ""}{profile.location}</span>
+                    </div>
+                  )}
+                  {profile?.country_code && (
+                    <div className="flex items-center gap-2 text-sm">
+                      <Earth className="h-3.5 w-3.5 shrink-0 text-muted-foreground" />
+                      <span>{countryFlag(profile.country_code)} {getCountryName(profile.country_code)}</span>
+                    </div>
+                  )}
+                  {profile?.nationality && profile.nationality !== profile?.country_code && (
+                    <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                      <span className="text-[10px]">{isAr ? "الجنسية:" : "Nationality:"}</span>
+                      <span>{countryFlag(profile.nationality)} {getCountryName(profile.nationality)}</span>
                     </div>
                   )}
                 </div>
