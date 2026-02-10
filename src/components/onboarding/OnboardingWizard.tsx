@@ -249,9 +249,9 @@ export function OnboardingWizard({ onComplete }: OnboardingWizardProps) {
                   key={role.value}
                   type="button"
                   onClick={() => handleRoleToggle(role.value)}
-                  className={`flex items-center gap-3 rounded-lg border-2 p-3.5 text-start transition-colors ${
+                  className={`flex items-center gap-3 rounded-xl border-2 p-3.5 text-start transition-all duration-300 hover:shadow-sm hover:-translate-y-0.5 active:scale-95 ${
                     selectedRoles.includes(role.value)
-                      ? "border-primary bg-primary/5"
+                      ? "border-primary bg-primary/5 shadow-sm"
                       : "border-border hover:border-primary/40"
                   }`}
                 >

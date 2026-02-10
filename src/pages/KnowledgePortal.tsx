@@ -104,21 +104,26 @@ export default function KnowledgePortal() {
   };
 
   const ratingColors: Record<string, string> = {
-    excellent: "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200",
-    good: "bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200",
-    average: "bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200",
-    poor: "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200",
+    excellent: "bg-chart-3/10 text-chart-3",
+    good: "bg-primary/10 text-primary",
+    average: "bg-chart-4/10 text-chart-4",
+    poor: "bg-destructive/10 text-destructive",
   };
 
   return (
     <div className="flex min-h-screen flex-col">
       <Header />
-      <main className="container flex-1 py-8">
+      <main className="container flex-1 py-8 md:py-12">
         <div className="mb-8">
-          <h1 className="font-serif text-3xl font-bold">
-            {language === "ar" ? "بوابة المعرفة" : "Knowledge Portal"}
-          </h1>
-          <p className="text-muted-foreground">
+          <div className="mb-1 flex items-center gap-2">
+            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary/10">
+              <BookOpen className="h-4 w-4 text-primary" />
+            </div>
+            <h1 className="font-serif text-2xl font-bold md:text-3xl">
+              {language === "ar" ? "بوابة المعرفة" : "Knowledge Portal"}
+            </h1>
+          </div>
+          <p className="mt-1 text-sm text-muted-foreground">
             {language === "ar"
               ? "الموارد والمراجع ومعايير التحكيم والمساعد الذكي"
               : "Resources, references, judging standards, and AI assistant"}
@@ -185,9 +190,9 @@ export default function KnowledgePortal() {
                 ) : filteredResources && filteredResources.length > 0 ? (
                   <div className="space-y-3">
                     {filteredResources.map(resource => (
-                      <Card key={resource.id} className="hover:border-primary/30 transition-colors">
+                      <Card key={resource.id} className="hover:border-primary/30 hover:shadow-md hover:-translate-y-0.5 transition-all duration-300">
                         <CardContent className="flex items-start gap-4 p-4">
-                          <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-lg bg-primary/10">
+                          <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-primary/10">
                             {resourceTypeIcon(resource.resource_type)}
                           </div>
                           <div className="min-w-0 flex-1">
@@ -239,12 +244,12 @@ export default function KnowledgePortal() {
                 {references && references.length > 0 ? (
                   <div className="grid gap-4 sm:grid-cols-2">
                     {references.map(ref => (
-                      <Card key={ref.id} className="overflow-hidden">
-                        <div className="aspect-video relative">
+                      <Card key={ref.id} className="group overflow-hidden hover:shadow-md hover:-translate-y-0.5 transition-all duration-300">
+                        <div className="aspect-video relative overflow-hidden">
                           <img
                             src={ref.image_url}
                             alt={ref.title}
-                            className="h-full w-full object-cover"
+                            className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
                             onError={(e) => { (e.target as HTMLImageElement).src = "/placeholder.svg"; }}
                           />
                           <Badge className={`absolute top-2 ${language === "ar" ? "left-2" : "right-2"} ${ratingColors[ref.rating || "good"]}`}>

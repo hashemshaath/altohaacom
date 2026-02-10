@@ -112,8 +112,8 @@ export function CartSheet({ open, onOpenChange, cart }: CartSheetProps) {
               {cart.items.map((item) => {
                 const title = isAr && item.title_ar ? item.title_ar : item.title;
                 return (
-                  <div key={item.product_id} className="flex gap-3 rounded-lg border p-3">
-                    <div className="h-16 w-16 shrink-0 overflow-hidden rounded-md bg-muted">
+                  <div key={item.product_id} className="flex gap-3 rounded-xl border border-border/50 p-3 transition-all duration-200 hover:border-primary/20 hover:shadow-sm">
+                    <div className="h-16 w-16 shrink-0 overflow-hidden rounded-lg bg-muted ring-1 ring-border/30">
                       {item.image_url ? (
                         <img src={item.image_url} alt={title} className="h-full w-full object-cover" />
                       ) : (

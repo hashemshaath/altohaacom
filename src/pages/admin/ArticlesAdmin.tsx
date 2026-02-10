@@ -181,11 +181,11 @@ export default function ArticlesAdmin() {
 
   const getTypeBadge = (type: string) => {
     const colors: Record<string, string> = {
-      news: "bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200",
-      article: "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200",
-      exhibition: "bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200",
+      news: "bg-primary/10 text-primary",
+      article: "bg-chart-3/10 text-chart-3",
+      exhibition: "bg-chart-5/10 text-chart-5",
     };
-    return <Badge className={colors[type] || ""}>{type}</Badge>;
+    return <Badge variant="outline" className={colors[type] || ""}>{type}</Badge>;
   };
 
   // Create/Edit Form View
@@ -341,13 +341,18 @@ export default function ArticlesAdmin() {
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
-        <div>
-          <h1 className="font-serif text-2xl font-bold">
-            {language === "ar" ? "إدارة المقالات والأخبار" : "Articles & News Management"}
-          </h1>
-          <p className="text-muted-foreground">
-            {language === "ar" ? "إنشاء وتعديل المحتوى" : "Create and manage content"}
-          </p>
+        <div className="flex items-center gap-3">
+          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary/10">
+            <FileText className="h-5 w-5 text-primary" />
+          </div>
+          <div>
+            <h1 className="font-serif text-2xl font-bold">
+              {language === "ar" ? "إدارة المقالات والأخبار" : "Articles & News Management"}
+            </h1>
+            <p className="text-sm text-muted-foreground">
+              {language === "ar" ? "إنشاء وتعديل المحتوى" : "Create and manage content"}
+            </p>
+          </div>
         </div>
         <Button onClick={() => setViewMode("create")}>
           <Plus className="mr-2 h-4 w-4" />
@@ -427,18 +432,18 @@ export default function ArticlesAdmin() {
                 </TableRow>
               ) : (
                 articles?.map((article) => (
-                  <TableRow key={article.id}>
+                  <TableRow key={article.id} className="hover:bg-accent/30 transition-colors">
                     <TableCell>
                       <div className="flex items-center gap-3">
                         {article.featured_image_url ? (
                           <img 
                             src={article.featured_image_url} 
                             alt="" 
-                            className="h-10 w-14 rounded object-cover"
+                            className="h-10 w-14 rounded-lg object-cover ring-1 ring-border/50"
                           />
                         ) : (
-                          <div className="flex h-10 w-14 items-center justify-center rounded bg-muted">
-                            <FileText className="h-4 w-4 text-muted-foreground" />
+                          <div className="flex h-10 w-14 items-center justify-center rounded-lg bg-primary/5">
+                            <FileText className="h-4 w-4 text-primary/40" />
                           </div>
                         )}
                         <div>
