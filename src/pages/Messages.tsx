@@ -254,7 +254,7 @@ export default function Messages() {
       <Header />
 
       <main className="container flex-1 py-4 md:py-6">
-        <Card className="mx-auto max-w-5xl overflow-hidden" style={{ height: "calc(100vh - 160px)", minHeight: 500 }}>
+        <Card className="mx-auto max-w-5xl overflow-hidden border-border/50 shadow-lg shadow-primary/5" style={{ height: "calc(100vh - 160px)", minHeight: 500 }}>
           <div className="flex h-full">
             {/* Conversations List */}
             <div className={`w-full border-e md:w-80 flex flex-col ${selectedPartner ? "hidden md:flex" : ""}`}>
@@ -398,7 +398,7 @@ export default function Messages() {
                           return (
                             <div key={msg.id} className={`flex ${isMine ? "justify-end" : "justify-start"} animate-fade-in`}>
                               <div
-                                className={`max-w-[75%] rounded-2xl px-3.5 py-2 transition-all hover:shadow-sm ${
+                                className={`max-w-[75%] rounded-2xl px-3.5 py-2 transition-all duration-200 hover:shadow-md ${
                                   isMine
                                     ? "bg-primary text-primary-foreground rounded-ee-md"
                                     : "bg-muted rounded-es-md"

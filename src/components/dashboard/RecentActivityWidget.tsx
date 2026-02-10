@@ -153,11 +153,11 @@ export function RecentActivityWidget() {
               <Link
                 key={activity.id}
                 to={`/competitions/${activity.competitionId}`}
-                className="flex items-start gap-2.5 py-3 first:pt-0 last:pb-0 transition-colors hover:bg-muted/30 -mx-1 px-1 rounded-md"
+                className="group flex items-start gap-2.5 py-3 first:pt-0 last:pb-0 transition-all hover:bg-muted/30 -mx-1 px-1 rounded-lg hover:shadow-sm"
               >
-                <div className="mt-1 shrink-0">{getStatusIcon(activity.status)}</div>
+                <div className="mt-1 shrink-0 transition-transform duration-200 group-hover:scale-110">{getStatusIcon(activity.status)}</div>
                 <div className="flex-1 min-w-0">
-                  <p className="text-sm font-medium line-clamp-2 leading-snug">{activity.title}</p>
+                  <p className="text-sm font-medium line-clamp-2 leading-snug group-hover:text-foreground transition-colors">{activity.title}</p>
                   <div className="mt-1 flex items-center gap-2">
                     {getStatusBadge(activity.status)}
                     <span className="text-[10px] text-muted-foreground">

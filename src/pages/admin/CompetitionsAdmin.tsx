@@ -139,7 +139,7 @@ export default function CompetitionsAdmin() {
           { label: isAr ? "مكتملة" : "Completed", value: stats.completed, icon: <Calendar className="h-4 w-4 text-chart-5" /> },
           { label: isAr ? "مسودة" : "Draft", value: stats.draft, icon: <Edit className="h-4 w-4 text-muted-foreground" /> },
         ].map((stat, i) => (
-          <Card key={i} className="border-border/60">
+          <Card key={i} className="border-border/60 transition-all duration-200 hover:shadow-md hover:-translate-y-0.5">
             <CardContent className="flex items-center gap-3 p-4">
               <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-muted shrink-0">{stat.icon}</div>
               <div>
@@ -212,7 +212,7 @@ export default function CompetitionsAdmin() {
                   const fillPct = comp.max_participants ? Math.min(Math.round((counts.approved / comp.max_participants) * 100), 100) : 0;
 
                   return (
-                    <TableRow key={comp.id} className="group hover:bg-muted/20">
+                    <TableRow key={comp.id} className="group hover:bg-muted/20 transition-colors duration-150">
                       <TableCell>
                         <div className="max-w-[220px]">
                           <p className="font-semibold text-sm truncate group-hover:text-primary transition-colors">
