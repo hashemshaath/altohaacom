@@ -10,25 +10,23 @@ import {
   UserCheck, 
   Flag, 
   Trophy, 
-  MessageSquare, 
   FileText,
   TrendingUp,
   ArrowRight,
   Shield,
   Activity,
   CreditCard,
-  UserX,
   Landmark,
   Package,
-  Building2,
   GraduationCap,
+  LayoutDashboard,
 } from "lucide-react";
 import { format } from "date-fns";
 
 export default function AdminDashboard() {
-  const { t, language } = useLanguage();
+  const { language } = useLanguage();
+  const isAr = language === "ar";
 
-  // Fetch comprehensive stats
   const { data: stats, isLoading } = useQuery({
     queryKey: ["superAdminStats"],
     queryFn: async () => {
@@ -79,113 +77,35 @@ export default function AdminDashboard() {
   });
 
   const statCards = [
-    {
-      title: language === "ar" ? "إجمالي المستخدمين" : "Total Users",
-      value: stats?.totalUsers || 0,
-      icon: Users,
-      color: "text-primary",
-      bgColor: "bg-primary/10",
-      link: "/admin/users",
-    },
-    {
-      title: language === "ar" ? "المستخدمين النشطين" : "Active Users",
-      value: stats?.activeUsers || 0,
-      icon: UserCheck,
-      color: "text-primary",
-      bgColor: "bg-primary/10",
-      link: "/admin/users?status=active",
-    },
-    {
-      title: language === "ar" ? "تقارير معلقة" : "Pending Reports",
-      value: stats?.pendingReports || 0,
-      icon: Flag,
-      color: "text-destructive",
-      bgColor: "bg-destructive/10",
-      link: "/admin/moderation",
-      urgent: (stats?.pendingReports || 0) > 0,
-    },
-    {
-      title: language === "ar" ? "المسابقات" : "Competitions",
-      value: stats?.totalCompetitions || 0,
-      icon: Trophy,
-      color: "text-primary",
-      bgColor: "bg-primary/10",
-      link: "/admin/competitions",
-    },
-    {
-      title: language === "ar" ? "المعارض" : "Exhibitions",
-      value: stats?.totalExhibitions || 0,
-      icon: Landmark,
-      color: "text-primary",
-      bgColor: "bg-primary/10",
-      link: "/admin/exhibitions",
-    },
-    {
-      title: language === "ar" ? "الدورات" : "Masterclasses",
-      value: stats?.totalMasterclasses || 0,
-      icon: GraduationCap,
-      color: "text-primary",
-      bgColor: "bg-primary/10",
-      link: "/admin/masterclasses",
-    },
-    {
-      title: language === "ar" ? "المقالات" : "Articles",
-      value: stats?.totalArticles || 0,
-      icon: FileText,
-      color: "text-primary",
-      bgColor: "bg-primary/10",
-      link: "/admin/articles",
-    },
-    {
-      title: language === "ar" ? "الطلبات" : "Orders",
-      value: stats?.totalOrders || 0,
-      icon: Package,
-      color: "text-primary",
-      bgColor: "bg-primary/10",
-      link: "/admin/orders",
-    },
+    { title: isAr ? "إجمالي المستخدمين" : "Total Users", value: stats?.totalUsers || 0, icon: Users, accent: "border-s-primary", bg: "bg-primary/10", color: "text-primary", link: "/admin/users" },
+    { title: isAr ? "المستخدمين النشطين" : "Active Users", value: stats?.activeUsers || 0, icon: UserCheck, accent: "border-s-primary", bg: "bg-primary/10", color: "text-primary", link: "/admin/users?status=active" },
+    { title: isAr ? "تقارير معلقة" : "Pending Reports", value: stats?.pendingReports || 0, icon: Flag, accent: "border-s-destructive", bg: "bg-destructive/10", color: "text-destructive", link: "/admin/moderation", urgent: (stats?.pendingReports || 0) > 0 },
+    { title: isAr ? "المسابقات" : "Competitions", value: stats?.totalCompetitions || 0, icon: Trophy, accent: "border-s-primary", bg: "bg-primary/10", color: "text-primary", link: "/admin/competitions" },
+    { title: isAr ? "المعارض" : "Exhibitions", value: stats?.totalExhibitions || 0, icon: Landmark, accent: "border-s-primary", bg: "bg-primary/10", color: "text-primary", link: "/admin/exhibitions" },
+    { title: isAr ? "الدورات" : "Masterclasses", value: stats?.totalMasterclasses || 0, icon: GraduationCap, accent: "border-s-primary", bg: "bg-primary/10", color: "text-primary", link: "/admin/masterclasses" },
+    { title: isAr ? "المقالات" : "Articles", value: stats?.totalArticles || 0, icon: FileText, accent: "border-s-primary", bg: "bg-primary/10", color: "text-primary", link: "/admin/articles" },
+    { title: isAr ? "الطلبات" : "Orders", value: stats?.totalOrders || 0, icon: Package, accent: "border-s-primary", bg: "bg-primary/10", color: "text-primary", link: "/admin/orders" },
   ];
 
   const quickActions = [
-    {
-      title: language === "ar" ? "إدارة المستخدمين" : "User Management",
-      description: language === "ar" ? "عرض وتعديل جميع المستخدمين" : "View and edit all users",
-      icon: Users,
-      link: "/admin/users",
-    },
-    {
-      title: language === "ar" ? "إدارة الأدوار" : "Role Management",
-      description: language === "ar" ? "تعيين وإدارة صلاحيات المستخدمين" : "Assign and manage user permissions",
-      icon: Shield,
-      link: "/admin/roles",
-    },
-    {
-      title: language === "ar" ? "العضويات" : "Memberships",
-      description: language === "ar" ? "ترقية وتخفيض عضويات المستخدمين" : "Upgrade and downgrade memberships",
-      icon: CreditCard,
-      link: "/admin/memberships",
-    },
-    {
-      title: language === "ar" ? "مراجعة المحتوى" : "Content Moderation",
-      description: language === "ar" ? "مراجعة التقارير والمحتوى المُبلغ عنه" : "Review reports and flagged content",
-      icon: Flag,
-      link: "/admin/moderation",
-      badge: stats?.pendingReports,
-    },
+    { title: isAr ? "إدارة المستخدمين" : "User Management", description: isAr ? "عرض وتعديل جميع المستخدمين" : "View and edit all users", icon: Users, link: "/admin/users" },
+    { title: isAr ? "إدارة الأدوار" : "Role Management", description: isAr ? "تعيين وإدارة صلاحيات المستخدمين" : "Assign and manage user permissions", icon: Shield, link: "/admin/roles" },
+    { title: isAr ? "العضويات" : "Memberships", description: isAr ? "ترقية وتخفيض عضويات المستخدمين" : "Upgrade and downgrade memberships", icon: CreditCard, link: "/admin/memberships" },
+    { title: isAr ? "مراجعة المحتوى" : "Content Moderation", description: isAr ? "مراجعة التقارير والمحتوى المُبلغ عنه" : "Review reports and flagged content", icon: Flag, link: "/admin/moderation", badge: stats?.pendingReports },
   ];
 
   const getActionBadge = (actionType: string) => {
     const colors: Record<string, string> = {
-      suspend_user: "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200",
-      active_user: "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200",
-      banned_user: "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200",
-      change_membership: "bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200",
-      resolve_report: "bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200",
-      update_roles: "bg-orange-100 text-orange-800 dark:bg-orange-900 dark:text-orange-200",
-      update_profile: "bg-cyan-100 text-cyan-800 dark:bg-cyan-900 dark:text-cyan-200",
+      suspend_user: "bg-destructive/10 text-destructive border-destructive/20",
+      active_user: "bg-primary/10 text-primary border-primary/20",
+      banned_user: "bg-destructive/10 text-destructive border-destructive/20",
+      change_membership: "bg-accent/20 text-accent-foreground border-accent/20",
+      resolve_report: "bg-secondary text-secondary-foreground border-border",
+      update_roles: "bg-muted text-muted-foreground border-border",
+      update_profile: "bg-muted text-muted-foreground border-border",
     };
     return (
-      <Badge className={colors[actionType] || "bg-muted"} variant="outline">
+      <Badge className={colors[actionType] || "bg-muted text-muted-foreground"} variant="outline">
         {actionType.replace(/_/g, " ")}
       </Badge>
     );
@@ -193,35 +113,43 @@ export default function AdminDashboard() {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="font-serif text-2xl font-bold">{t("adminPanel")}</h1>
-          <p className="text-muted-foreground">
-            {language === "ar" ? "مرحباً، مدير النظام" : "Welcome, Super Admin"}
-          </p>
+      {/* Hero Header */}
+      <Card className="overflow-hidden border-border/50 bg-gradient-to-br from-primary/5 via-background to-accent/5">
+        <div className="flex items-center justify-between p-5 md:p-6">
+          <div className="flex items-center gap-4">
+            <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-primary/10">
+              <LayoutDashboard className="h-6 w-6 text-primary" />
+            </div>
+            <div>
+              <h1 className="font-serif text-2xl font-bold">
+                {isAr ? "لوحة التحكم" : "Admin Dashboard"}
+              </h1>
+              <p className="mt-0.5 text-sm text-muted-foreground">
+                {isAr ? "مرحباً، مدير النظام" : "Welcome, Super Admin"}
+              </p>
+            </div>
+          </div>
+          <Badge variant="secondary" className="hidden gap-1.5 sm:flex">
+            <Shield className="h-3 w-3" />
+            {isAr ? "صلاحيات كاملة" : "Full Access"}
+          </Badge>
         </div>
-        <Badge variant="secondary" className="gap-1">
-          <Shield className="h-3 w-3" />
-          {language === "ar" ? "صلاحيات كاملة" : "Full Access"}
-        </Badge>
-      </div>
+      </Card>
 
       {/* Stats Grid */}
-      <div className="grid gap-4 grid-cols-2 sm:grid-cols-3 lg:grid-cols-4">
+      <div className="grid gap-3 grid-cols-2 sm:grid-cols-3 lg:grid-cols-4">
         {statCards.map((stat) => (
           <Link key={stat.title} to={stat.link}>
-            <Card className={`hover:shadow-md transition-shadow ${stat.urgent ? "ring-2 ring-orange-500" : ""}`}>
-              <CardHeader className="flex flex-row items-center justify-between pb-2">
-                <CardTitle className="text-xs font-medium text-muted-foreground">
-                  {stat.title}
-                </CardTitle>
-                <div className={`rounded-full p-2 ${stat.bgColor}`}>
-                  <stat.icon className={`h-4 w-4 ${stat.color}`} />
+            <Card className={`border-s-[3px] ${stat.accent} transition-all hover:shadow-md hover:-translate-y-0.5 ${stat.urgent ? "ring-1 ring-destructive/30" : ""}`}>
+              <CardContent className="flex items-center gap-3 p-3.5">
+                <div className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-xl ${stat.bg}`}>
+                  <stat.icon className={`h-4.5 w-4.5 ${stat.color}`} />
                 </div>
-              </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold">
-                  {isLoading ? "..." : stat.value.toLocaleString()}
+                <div>
+                  <p className="text-xl font-bold leading-none tracking-tight">
+                    {isLoading ? "…" : stat.value.toLocaleString()}
+                  </p>
+                  <p className="mt-1 text-[11px] text-muted-foreground">{stat.title}</p>
                 </div>
               </CardContent>
             </Card>
@@ -231,29 +159,31 @@ export default function AdminDashboard() {
 
       <div className="grid gap-6 lg:grid-cols-2">
         {/* Quick Actions */}
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Activity className="h-5 w-5 text-primary" />
-              {language === "ar" ? "إجراءات سريعة" : "Quick Actions"}
+        <Card className="border-border/50">
+          <CardHeader className="pb-3">
+            <CardTitle className="flex items-center gap-2 text-base">
+              <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-primary/10">
+                <Activity className="h-3.5 w-3.5 text-primary" />
+              </div>
+              {isAr ? "إجراءات سريعة" : "Quick Actions"}
             </CardTitle>
           </CardHeader>
-          <CardContent className="space-y-3">
+          <CardContent className="space-y-2">
             {quickActions.map((action) => (
               <Link key={action.title} to={action.link}>
-                <div className="flex items-center justify-between rounded-lg border p-4 hover:bg-accent/50 transition-colors">
+                <div className="flex items-center justify-between rounded-xl border border-border/50 p-3.5 transition-all hover:bg-accent/50 hover:shadow-sm">
                   <div className="flex items-center gap-3">
-                    <div className="rounded-full bg-primary/10 p-2">
-                      <action.icon className="h-5 w-5 text-primary" />
+                    <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-primary/10">
+                      <action.icon className="h-4 w-4 text-primary" />
                     </div>
                     <div>
-                      <p className="font-medium">{action.title}</p>
-                      <p className="text-sm text-muted-foreground">{action.description}</p>
+                      <p className="text-sm font-medium">{action.title}</p>
+                      <p className="text-xs text-muted-foreground">{action.description}</p>
                     </div>
                   </div>
                   <div className="flex items-center gap-2">
                     {action.badge && action.badge > 0 && (
-                      <Badge variant="destructive">{action.badge}</Badge>
+                      <Badge variant="destructive" className="text-[10px]">{action.badge}</Badge>
                     )}
                     <ArrowRight className="h-4 w-4 text-muted-foreground" />
                   </div>
@@ -264,31 +194,36 @@ export default function AdminDashboard() {
         </Card>
 
         {/* Recent Admin Actions */}
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between">
-            <CardTitle className="flex items-center gap-2">
-              <TrendingUp className="h-5 w-5 text-primary" />
-              {language === "ar" ? "آخر الإجراءات" : "Recent Actions"}
+        <Card className="border-border/50">
+          <CardHeader className="flex flex-row items-center justify-between pb-3">
+            <CardTitle className="flex items-center gap-2 text-base">
+              <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-primary/10">
+                <TrendingUp className="h-3.5 w-3.5 text-primary" />
+              </div>
+              {isAr ? "آخر الإجراءات" : "Recent Actions"}
             </CardTitle>
             <Button variant="ghost" size="sm" asChild>
               <Link to="/admin/audit">
-                {language === "ar" ? "عرض الكل" : "View All"}
-                <ArrowRight className="ml-2 h-4 w-4" />
+                {isAr ? "عرض الكل" : "View All"}
+                <ArrowRight className="ms-1.5 h-3.5 w-3.5" />
               </Link>
             </Button>
           </CardHeader>
           <CardContent>
             {stats?.recentActions?.length === 0 ? (
-              <p className="text-center text-muted-foreground py-8">
-                {language === "ar" ? "لا توجد إجراءات حديثة" : "No recent actions"}
-              </p>
+              <div className="flex flex-col items-center py-10 text-center">
+                <div className="mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-muted/60">
+                  <TrendingUp className="h-5 w-5 text-muted-foreground/40" />
+                </div>
+                <p className="text-sm text-muted-foreground">
+                  {isAr ? "لا توجد إجراءات حديثة" : "No recent actions"}
+                </p>
+              </div>
             ) : (
-              <div className="space-y-3">
+              <div className="space-y-2.5">
                 {stats?.recentActions?.map((action: any) => (
-                  <div key={action.id} className="flex items-center justify-between border-b pb-3 last:border-0">
-                    <div className="flex items-center gap-3">
-                      {getActionBadge(action.action_type)}
-                    </div>
+                  <div key={action.id} className="flex items-center justify-between rounded-lg border border-border/40 p-3">
+                    {getActionBadge(action.action_type)}
                     <span className="text-xs text-muted-foreground">
                       {format(new Date(action.created_at), "MMM d, HH:mm")}
                     </span>
@@ -301,35 +236,35 @@ export default function AdminDashboard() {
       </div>
 
       {/* Recent Users */}
-      <Card>
-        <CardHeader className="flex flex-row items-center justify-between">
+      <Card className="border-border/50">
+        <CardHeader className="flex flex-row items-center justify-between pb-3">
           <div>
-            <CardTitle>{language === "ar" ? "أحدث المستخدمين" : "Recent Users"}</CardTitle>
-            <CardDescription>
-              {language === "ar" ? "آخر المستخدمين المسجلين" : "Latest registered users"}
+            <CardTitle className="text-base">{isAr ? "أحدث المستخدمين" : "Recent Users"}</CardTitle>
+            <CardDescription className="mt-0.5">
+              {isAr ? "آخر المستخدمين المسجلين" : "Latest registered users"}
             </CardDescription>
           </div>
           <Button variant="outline" size="sm" asChild>
             <Link to="/admin/users">
-              {language === "ar" ? "عرض الكل" : "View All"}
-              <ArrowRight className="ml-2 h-4 w-4" />
+              {isAr ? "عرض الكل" : "View All"}
+              <ArrowRight className="ms-1.5 h-3.5 w-3.5" />
             </Link>
           </Button>
         </CardHeader>
         <CardContent>
-          <div className="flex flex-wrap gap-4">
+          <div className="flex flex-wrap gap-3">
             {stats?.recentUsers?.map((user: any) => (
               <Link 
                 key={user.id} 
                 to={`/${user.username || user.id}`}
-                className="flex items-center gap-3 rounded-lg border p-3 hover:bg-accent/50 transition-colors"
+                className="flex items-center gap-3 rounded-xl border border-border/50 p-3 transition-all hover:shadow-sm hover:bg-accent/30 hover:-translate-y-0.5"
               >
-                <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center text-primary font-medium">
+                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-primary/10 text-primary font-semibold">
                   {(user.full_name || "U")[0].toUpperCase()}
                 </div>
                 <div>
-                  <p className="font-medium">{user.full_name || "Unknown"}</p>
-                  <p className="text-xs text-muted-foreground">
+                  <p className="text-sm font-medium">{user.full_name || "Unknown"}</p>
+                  <p className="text-[10px] text-muted-foreground">
                     {format(new Date(user.created_at), "MMM d, yyyy")}
                   </p>
                 </div>
