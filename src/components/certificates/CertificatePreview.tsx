@@ -1,5 +1,7 @@
 import { Award, Image } from "lucide-react";
+import { QRCodeSVG } from "qrcode.react";
 import type { CertificateDesign, LogoItem } from "./types";
+import { getVerificationUrl } from "@/lib/qrCode";
 
 interface CertificatePreviewProps {
   design: CertificateDesign;
@@ -254,18 +256,31 @@ export function CertificatePreview({ design, zoom, previewData }: CertificatePre
             </div>
           )}
 
-          {/* Certificate Number & Verification */}
+          {/* Certificate Number, Verification Code & QR */}
           {(design.showCertificateNumber || design.showVerificationCode) && (
-            <div className="shrink-0 flex justify-between items-center" style={{ marginTop: s(6) }}>
-              {design.showCertificateNumber && (
-                <span style={{ fontSize: s(7), color: "#9ca3af", fontFamily: "monospace" }}>
-                  {previewData.certificateNumber}
-                </span>
-              )}
+            <div className="shrink-0 flex justify-between items-end" style={{ marginTop: s(6) }}>
+              <div className="flex flex-col">
+                {design.showCertificateNumber && (
+                  <span style={{ fontSize: s(7), color: "#9ca3af", fontFamily: "monospace" }}>
+                    {previewData.certificateNumber}
+                  </span>
+                )}
+                {design.showVerificationCode && (
+                  <span style={{ fontSize: s(7), color: "#9ca3af", fontFamily: "monospace" }}>
+                    {isRtl ? "كود التحقق" : "Verify"}: {previewData.verificationCode}
+                  </span>
+                )}
+              </div>
               {design.showVerificationCode && (
-                <span style={{ fontSize: s(7), color: "#9ca3af", fontFamily: "monospace" }}>
-                  {isRtl ? "كود التحقق" : "Verify"}: {previewData.verificationCode}
-                </span>
+                <div style={{ width: s(45), height: s(45) }}>
+                  <QRCodeSVG
+                    value={getVerificationUrl(previewData.verificationCode)}
+                    size={s(45)}
+                    level="M"
+                    bgColor="transparent"
+                    fgColor="#6b7280"
+                  />
+                </div>
               )}
             </div>
           )}

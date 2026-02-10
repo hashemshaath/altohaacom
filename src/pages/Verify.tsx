@@ -14,6 +14,7 @@ import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { SEOHead } from "@/components/SEOHead";
 import { QRCodeDisplay } from "@/components/qr/QRCodeDisplay";
+import { QRScanner } from "@/components/qr/QRScanner";
 import { generateVCard, downloadVCard, getVerificationUrl } from "@/lib/qrCode";
 import {
   Search, Shield, CheckCircle, XCircle, AlertTriangle,
@@ -199,6 +200,9 @@ export default function Verify() {
                       </>
                     )}
                   </Button>
+                </div>
+                <div className="mt-3 flex justify-center">
+                  <QRScanner onScan={(code) => { setInputCode(code); setSearchedCode(code); }} />
                 </div>
               </CardContent>
             </Card>

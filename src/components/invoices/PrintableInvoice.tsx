@@ -3,6 +3,8 @@ import { useLanguage } from "@/i18n/LanguageContext";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { Printer } from "lucide-react";
+import { QRCodeSVG } from "qrcode.react";
+import { getVerificationUrl } from "@/lib/qrCode";
 
 interface InvoiceItem {
   name: string;
@@ -285,9 +287,23 @@ export default function PrintableInvoice({ invoice, company, showPrintButton = t
         )}
 
         {/* Footer */}
-        <div className="footer">
-          <p>{language === "ar" ? "شكراً لتعاملكم معنا" : "Thank you for your business"}</p>
-          <p style={{ marginTop: "4px" }}>Altohaa Platform • altohaa.com</p>
+        <div className="footer" style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+          <div>
+            <p>{language === "ar" ? "شكراً لتعاملكم معنا" : "Thank you for your business"}</p>
+            <p style={{ marginTop: "4px" }}>Altohaa Platform • altohaa.com</p>
+          </div>
+          <div style={{ textAlign: "center" }}>
+            <QRCodeSVG
+              value={getVerificationUrl(invoice.invoice_number)}
+              size={60}
+              level="M"
+              bgColor="transparent"
+              fgColor="#9ca3af"
+            />
+            <p style={{ fontSize: "9px", color: "#9ca3af", marginTop: "2px" }}>
+              {language === "ar" ? "مسح للتحقق" : "Scan to verify"}
+            </p>
+          </div>
         </div>
       </div>
     </div>
