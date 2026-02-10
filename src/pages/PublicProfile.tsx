@@ -1,5 +1,6 @@
 import { useParams, Link } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
+import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { supabase } from "@/integrations/supabase/client";
 import { Header } from "@/components/Header";
@@ -13,6 +14,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { CompetitionHistory } from "@/components/profile/CompetitionHistory";
 import { MessageButton } from "@/components/profile/MessageButton";
 import { UserBadgesDisplay } from "@/components/badges/UserBadgesDisplay";
+import { ProfileCertificates } from "@/components/profile/ProfileCertificates";
 import { SEOHead } from "@/components/SEOHead";
 import {
   User,
@@ -40,6 +42,7 @@ type AppRole = Database["public"]["Enums"]["app_role"];
 export default function PublicProfile() {
   const { username } = useParams<{ username: string }>();
   const { t, language } = useLanguage();
+  const { user } = useAuth();
   const isAr = language === "ar";
   const { data: allCountries = [] } = useAllCountries();
   const getCountryName = (code: string | null) => {
@@ -302,6 +305,7 @@ export default function PublicProfile() {
           {/* Content */}
           <div className="lg:col-span-2 space-y-6">
             <UserBadgesDisplay userId={profile.user_id} />
+            <ProfileCertificates userId={profile.user_id} isOwner={user?.id === profile.user_id} />
             <CompetitionHistory userId={profile.user_id} />
           </div>
         </div>
