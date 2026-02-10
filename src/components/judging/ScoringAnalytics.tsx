@@ -2,8 +2,9 @@ import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
-import { BarChart3 } from "lucide-react";
+import { BarChart3, Users, Scale, ClipboardList } from "lucide-react";
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar } from "recharts";
 
 interface ScoringAnalyticsProps {
@@ -12,18 +13,17 @@ interface ScoringAnalyticsProps {
 
 export function ScoringAnalytics({ competitionId }: ScoringAnalyticsProps) {
   const { language } = useLanguage();
+  const isAr = language === "ar";
 
   const { data, isLoading } = useQuery({
     queryKey: ["scoring-analytics", competitionId],
     queryFn: async () => {
-      // Get criteria
       const { data: criteria } = await supabase
         .from("judging_criteria")
         .select("*")
         .eq("competition_id", competitionId)
         .order("sort_order");
 
-      // Get all scores
       const { data: registrations } = await supabase
         .from("competition_registrations")
         .select("id")
@@ -40,25 +40,22 @@ export function ScoringAnalytics({ competitionId }: ScoringAnalyticsProps) {
 
       if (!criteria || !scores) return null;
 
-      // Criteria breakdown: avg score per criterion
       const criteriaBreakdown = criteria.map(crit => {
         const critScores = scores.filter(s => s.criteria_id === crit.id);
         const avg = critScores.length > 0
           ? critScores.reduce((sum, s) => sum + Number(s.score), 0) / critScores.length
           : 0;
         return {
-          name: language === "ar" && crit.name_ar ? crit.name_ar : crit.name,
+          name: isAr && crit.name_ar ? crit.name_ar : crit.name,
           avg: Math.round(avg * 10) / 10,
           max: crit.max_score,
           pct: crit.max_score > 0 ? Math.round((avg / crit.max_score) * 100) : 0,
         };
       });
 
-      // Judge agreement: standard deviation per criterion across judges
       const judgeIds = [...new Set(scores.map(s => s.judge_id))];
       const agreement = criteria.map(crit => {
         const critScores = scores.filter(s => s.criteria_id === crit.id);
-        // Group by registration, calculate std dev of judge scores
         const byReg: Record<string, number[]> = {};
         critScores.forEach(s => {
           if (!byReg[s.registration_id]) byReg[s.registration_id] = [];
@@ -77,14 +74,13 @@ export function ScoringAnalytics({ competitionId }: ScoringAnalyticsProps) {
           ? stdDevs.reduce((a, b) => a + b, 0) / stdDevs.length
           : 0;
 
-        // Convert to agreement score (lower std dev = higher agreement)
         const maxPossibleStdDev = crit.max_score / 2;
         const agreementPct = maxPossibleStdDev > 0
           ? Math.round((1 - avgStdDev / maxPossibleStdDev) * 100)
           : 100;
 
         return {
-          name: language === "ar" && crit.name_ar ? crit.name_ar : crit.name,
+          name: isAr && crit.name_ar ? crit.name_ar : crit.name,
           agreement: Math.max(0, agreementPct),
         };
       });
@@ -101,52 +97,67 @@ export function ScoringAnalytics({ competitionId }: ScoringAnalyticsProps) {
   });
 
   if (isLoading) {
-    return <Skeleton className="h-64 w-full" />;
+    return (
+      <div className="space-y-6">
+        <div className="grid gap-3 grid-cols-3">
+          {[1, 2, 3].map(i => <Skeleton key={i} className="h-24" />)}
+        </div>
+        <Skeleton className="h-64 w-full" />
+      </div>
+    );
   }
 
   if (!data) {
     return (
-      <Card>
-        <CardContent className="py-8 text-center text-muted-foreground">
-          {language === "ar" ? "لا توجد بيانات تحليلية" : "No analytics data available"}
+      <Card className="overflow-hidden">
+        <CardContent className="py-12 text-center">
+          <div className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-muted">
+            <BarChart3 className="h-6 w-6 text-muted-foreground/40" />
+          </div>
+          <p className="text-sm text-muted-foreground">
+            {isAr ? "لا توجد بيانات تحليلية" : "No analytics data available"}
+          </p>
         </CardContent>
       </Card>
     );
   }
 
+  const summaryStats = [
+    { icon: ClipboardList, label: isAr ? "إجمالي التقييمات" : "Total Scores", value: data.totalScores, bg: "bg-primary/10", color: "text-primary", accent: "border-primary/30" },
+    { icon: Scale, label: isAr ? "عدد الحكام" : "Judges", value: data.totalJudges, bg: "bg-chart-4/10", color: "text-chart-4", accent: "border-chart-4/30" },
+    { icon: Users, label: isAr ? "عدد المشاركين" : "Entries", value: data.totalEntries, bg: "bg-chart-5/10", color: "text-chart-5", accent: "border-chart-5/30" },
+  ];
+
   return (
     <div className="space-y-6">
       {/* Summary Stats */}
-      <div className="grid gap-4 md:grid-cols-3">
-        <Card>
-          <CardContent className="pt-6 text-center">
-            <p className="text-3xl font-bold text-primary">{data.totalScores}</p>
-            <p className="text-sm text-muted-foreground">{language === "ar" ? "إجمالي التقييمات" : "Total Scores"}</p>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardContent className="pt-6 text-center">
-            <p className="text-3xl font-bold text-primary">{data.totalJudges}</p>
-            <p className="text-sm text-muted-foreground">{language === "ar" ? "عدد الحكام" : "Judges"}</p>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardContent className="pt-6 text-center">
-            <p className="text-3xl font-bold text-primary">{data.totalEntries}</p>
-            <p className="text-sm text-muted-foreground">{language === "ar" ? "عدد المشاركين" : "Entries"}</p>
-          </CardContent>
-        </Card>
+      <div className="grid gap-3 grid-cols-3">
+        {summaryStats.map((stat, i) => (
+          <Card key={i} className={`border-s-[3px] ${stat.accent} transition-shadow hover:shadow-sm`}>
+            <CardContent className="flex items-center gap-3.5 p-4">
+              <div className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-xl ${stat.bg}`}>
+                <stat.icon className={`h-5 w-5 ${stat.color}`} />
+              </div>
+              <div>
+                <p className="text-2xl font-bold leading-none tracking-tight">{stat.value}</p>
+                <p className="mt-1.5 text-xs text-muted-foreground">{stat.label}</p>
+              </div>
+            </CardContent>
+          </Card>
+        ))}
       </div>
 
       {/* Criteria Breakdown Chart */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2 text-lg">
-            <BarChart3 className="h-5 w-5" />
-            {language === "ar" ? "متوسط الدرجات لكل معيار" : "Average Scores by Criterion"}
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
+      <Card className="overflow-hidden">
+        <div className="border-b bg-muted/30 px-4 py-3">
+          <h3 className="flex items-center gap-2 text-sm font-semibold">
+            <div className="flex h-6 w-6 items-center justify-center rounded-md bg-primary/10">
+              <BarChart3 className="h-3.5 w-3.5 text-primary" />
+            </div>
+            {isAr ? "متوسط الدرجات لكل معيار" : "Average Scores by Criterion"}
+          </h3>
+        </div>
+        <CardContent className="p-4">
           <div className="h-64">
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={data.criteriaBreakdown}>
@@ -155,7 +166,7 @@ export function ScoringAnalytics({ competitionId }: ScoringAnalyticsProps) {
                 <Tooltip
                   formatter={(value: number, name: string) => [
                     `${value}`,
-                    name === "avg" ? (language === "ar" ? "المتوسط" : "Average") : name,
+                    name === "avg" ? (isAr ? "المتوسط" : "Average") : name,
                   ]}
                 />
                 <Bar dataKey="avg" fill="hsl(var(--primary))" radius={[4, 4, 0, 0]} />
@@ -168,13 +179,16 @@ export function ScoringAnalytics({ competitionId }: ScoringAnalyticsProps) {
 
       {/* Judge Agreement Radar */}
       {data.agreement.length > 2 && (
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-lg">
-              {language === "ar" ? "اتفاق الحكام" : "Judge Agreement"}
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
+        <Card className="overflow-hidden">
+          <div className="border-b bg-muted/30 px-4 py-3">
+            <h3 className="flex items-center gap-2 text-sm font-semibold">
+              <div className="flex h-6 w-6 items-center justify-center rounded-md bg-chart-4/10">
+                <Scale className="h-3.5 w-3.5 text-chart-4" />
+              </div>
+              {isAr ? "اتفاق الحكام" : "Judge Agreement"}
+            </h3>
+          </div>
+          <CardContent className="p-4">
             <div className="h-64">
               <ResponsiveContainer width="100%" height="100%">
                 <RadarChart data={data.agreement}>
@@ -182,7 +196,7 @@ export function ScoringAnalytics({ competitionId }: ScoringAnalyticsProps) {
                   <PolarAngleAxis dataKey="name" tick={{ fontSize: 11 }} />
                   <PolarRadiusAxis domain={[0, 100]} />
                   <Radar
-                    name={language === "ar" ? "نسبة الاتفاق" : "Agreement %"}
+                    name={isAr ? "نسبة الاتفاق" : "Agreement %"}
                     dataKey="agreement"
                     stroke="hsl(var(--primary))"
                     fill="hsl(var(--primary))"
@@ -192,7 +206,7 @@ export function ScoringAnalytics({ competitionId }: ScoringAnalyticsProps) {
               </ResponsiveContainer>
             </div>
             <p className="mt-2 text-center text-xs text-muted-foreground">
-              {language === "ar"
+              {isAr
                 ? "نسبة أعلى = اتفاق أكبر بين الحكام"
                 : "Higher % = stronger agreement between judges"}
             </p>
