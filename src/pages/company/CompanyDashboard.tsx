@@ -5,17 +5,23 @@ import { useQuery } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Separator } from "@/components/ui/separator";
 import {
   BarChart3,
   FileText,
   Users,
   ShoppingCart,
   TrendingUp,
-  AlertCircle,
+  Building2,
+  CreditCard,
+  Activity,
+  ArrowUpRight,
+  ArrowDownRight,
+  Clock,
 } from "lucide-react";
 
 export default function CompanyPortalDashboard() {
-  const { t, language } = useLanguage();
+  const { language } = useLanguage();
   const { companyId } = useCompanyAccess();
   const { data: company, isLoading: companyLoading } = useCompanyProfile(companyId);
 
@@ -34,6 +40,7 @@ export default function CompanyPortalDashboard() {
       return {
         totalOrders: ordersRes.data?.length || 0,
         pendingOrders: ordersRes.data?.filter(o => o.status === "pending").length || 0,
+        completedOrders: ordersRes.data?.filter(o => o.status === "completed").length || 0,
         totalInvitations: invitationsRes.data?.length || 0,
         pendingInvitations: invitationsRes.data?.filter(i => i.status === "pending").length || 0,
         totalContacts: contactsRes.data?.length || 0,
@@ -47,105 +54,185 @@ export default function CompanyPortalDashboard() {
 
   const isLoading = companyLoading || statsLoading;
 
+  const getStatusBadge = (status: string | null) => {
+    switch (status) {
+      case "active":
+        return <Badge className="bg-emerald-500/10 text-emerald-600 border-emerald-500/20 hover:bg-emerald-500/20">{language === "ar" ? "نشط" : "Active"}</Badge>;
+      case "suspended":
+        return <Badge variant="destructive">{language === "ar" ? "معلّق" : "Suspended"}</Badge>;
+      default:
+        return <Badge variant="secondary">{language === "ar" ? "قيد المراجعة" : "Pending"}</Badge>;
+    }
+  };
+
   return (
-    <div className="space-y-6">
-      {/* Header */}
-      <div>
-        <h1 className="text-3xl font-bold">
-          {language === "ar" ? "لوحة تحكم الشركة" : "Company Dashboard"}
-        </h1>
-        <p className="mt-2 text-muted-foreground">
+    <div className="space-y-8">
+      {/* Hero Banner */}
+      <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-primary/90 via-primary to-primary/80 p-8 text-primary-foreground">
+        <div className="absolute -right-10 -top-10 h-40 w-40 rounded-full bg-primary-foreground/10 blur-3xl" />
+        <div className="absolute -bottom-10 -left-10 h-32 w-32 rounded-full bg-primary-foreground/5 blur-2xl" />
+        <div className="relative z-10">
           {isLoading ? (
-            <Skeleton className="h-4 w-48" />
+            <>
+              <Skeleton className="h-8 w-64 bg-primary-foreground/20" />
+              <Skeleton className="mt-3 h-5 w-48 bg-primary-foreground/20" />
+            </>
           ) : (
-            company?.name
+            <>
+              <div className="flex items-center gap-3 mb-2">
+                <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-primary-foreground/20 backdrop-blur-sm">
+                  <Building2 className="h-6 w-6" />
+                </div>
+                <div>
+                  <h1 className="text-2xl font-bold md:text-3xl">{company?.name}</h1>
+                  {company?.name_ar && language !== "ar" && (
+                    <p className="text-sm text-primary-foreground/70">{company.name_ar}</p>
+                  )}
+                </div>
+              </div>
+              <div className="mt-4 flex flex-wrap items-center gap-3">
+                {getStatusBadge(company?.status || null)}
+                <Badge variant="outline" className="border-primary-foreground/30 text-primary-foreground">
+                  {company?.type}
+                </Badge>
+                {company?.company_number && (
+                  <span className="text-sm text-primary-foreground/70">#{company.company_number}</span>
+                )}
+              </div>
+            </>
           )}
-        </p>
+        </div>
       </div>
 
-      {/* Company Status */}
-      {!isLoading && company && (
-        <Card>
-          <CardContent className="pt-6">
-            <div className="grid gap-4 md:grid-cols-3">
-              <div>
-                <p className="text-sm text-muted-foreground">
-                  {language === "ar" ? "حالة الشركة" : "Company Status"}
-                </p>
-                <Badge className="mt-2">
-                  {company.status || "pending"}
-                </Badge>
-              </div>
-              <div>
-                <p className="text-sm text-muted-foreground">
-                  {language === "ar" ? "نوع الشركة" : "Company Type"}
-                </p>
-                <p className="mt-2 font-medium">{company.type}</p>
-              </div>
-              <div>
-                <p className="text-sm text-muted-foreground">
-                  {language === "ar" ? "الرصيد المتاح" : "Available Credit"}
-                </p>
-                <p className="mt-2 font-medium text-primary">
-                  {company.currency} {company.credit_limit?.toLocaleString()}
-                </p>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-      )}
-
-      {/* Stats Grid */}
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+      {/* Quick Stats */}
+      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         <StatCard
           icon={ShoppingCart}
           label={language === "ar" ? "إجمالي الطلبيات" : "Total Orders"}
           value={stats?.totalOrders || 0}
-          subValue={`${stats?.pendingOrders || 0} ${language === "ar" ? "قيد الانتظار" : "pending"}`}
+          subLabel={language === "ar" ? "قيد الانتظار" : "pending"}
+          subValue={stats?.pendingOrders || 0}
+          accent="border-s-primary"
           isLoading={isLoading}
         />
         <StatCard
           icon={FileText}
           label={language === "ar" ? "الدعوات" : "Invitations"}
           value={stats?.totalInvitations || 0}
-          subValue={`${stats?.pendingInvitations || 0} ${language === "ar" ? "قيد الانتظار" : "pending"}`}
+          subLabel={language === "ar" ? "قيد الانتظار" : "pending"}
+          subValue={stats?.pendingInvitations || 0}
+          accent="border-s-amber-500"
           isLoading={isLoading}
         />
         <StatCard
           icon={Users}
           label={language === "ar" ? "أعضاء الفريق" : "Team Members"}
           value={stats?.totalContacts || 0}
+          accent="border-s-violet-500"
           isLoading={isLoading}
         />
         <StatCard
           icon={BarChart3}
-          label={language === "ar" ? "إجمالي المعاملات" : "Total Transactions"}
+          label={language === "ar" ? "المعاملات" : "Transactions"}
           value={stats?.totalTransactions || 0}
+          accent="border-s-emerald-500"
           isLoading={isLoading}
         />
       </div>
 
-      {/* Recent Activity */}
+      {/* Financial Overview */}
+      {!isLoading && company && (
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          <Card className="animate-fade-in">
+            <CardContent className="flex items-center gap-4 pt-6">
+              <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-primary/10">
+                <CreditCard className="h-6 w-6 text-primary" />
+              </div>
+              <div>
+                <p className="text-sm text-muted-foreground">
+                  {language === "ar" ? "حد الائتمان" : "Credit Limit"}
+                </p>
+                <p className="text-xl font-bold">
+                  {company.currency || "USD"} {company.credit_limit?.toLocaleString() || "0"}
+                </p>
+              </div>
+            </CardContent>
+          </Card>
+          <Card className="animate-fade-in" style={{ animationDelay: "0.05s" }}>
+            <CardContent className="flex items-center gap-4 pt-6">
+              <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-emerald-500/10">
+                <TrendingUp className="h-6 w-6 text-emerald-600" />
+              </div>
+              <div>
+                <p className="text-sm text-muted-foreground">
+                  {language === "ar" ? "إجمالي المبالغ" : "Total Volume"}
+                </p>
+                <p className="text-xl font-bold">
+                  {company.currency || "USD"} {stats?.totalAmount?.toLocaleString() || "0"}
+                </p>
+              </div>
+            </CardContent>
+          </Card>
+          <Card className="animate-fade-in" style={{ animationDelay: "0.1s" }}>
+            <CardContent className="flex items-center gap-4 pt-6">
+              <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-amber-500/10">
+                <Clock className="h-6 w-6 text-amber-600" />
+              </div>
+              <div>
+                <p className="text-sm text-muted-foreground">
+                  {language === "ar" ? "شروط الدفع" : "Payment Terms"}
+                </p>
+                <p className="text-xl font-bold">
+                  {company.payment_terms || 0} {language === "ar" ? "يوم" : "days"}
+                </p>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+      )}
+
+      {/* Recent Activity Placeholder */}
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
-            <TrendingUp className="h-5 w-5" />
+            <Activity className="h-5 w-5 text-primary" />
             {language === "ar" ? "النشاط الأخير" : "Recent Activity"}
           </CardTitle>
         </CardHeader>
         <CardContent>
-          <p className="text-sm text-muted-foreground">
-            {language === "ar" ? "لا توجد أنشطة حديثة حالياً" : "No recent activity yet"}
-          </p>
+          <div className="flex flex-col items-center justify-center py-8 text-center">
+            <div className="flex h-14 w-14 items-center justify-center rounded-full bg-muted mb-3">
+              <TrendingUp className="h-6 w-6 text-muted-foreground" />
+            </div>
+            <p className="text-sm text-muted-foreground">
+              {language === "ar" ? "لا توجد أنشطة حديثة حالياً" : "No recent activity yet"}
+            </p>
+          </div>
         </CardContent>
       </Card>
     </div>
   );
 }
 
-function StatCard({ icon: Icon, label, value, subValue, isLoading }: any) {
+function StatCard({
+  icon: Icon,
+  label,
+  value,
+  subLabel,
+  subValue,
+  accent,
+  isLoading,
+}: {
+  icon: any;
+  label: string;
+  value: number;
+  subLabel?: string;
+  subValue?: number;
+  accent: string;
+  isLoading: boolean;
+}) {
   return (
-    <Card>
+    <Card className={`border-s-[3px] ${accent} animate-fade-in hover:shadow-md transition-shadow`}>
       <CardContent className="pt-6">
         <div className="flex items-start justify-between">
           <div>
@@ -154,13 +241,17 @@ function StatCard({ icon: Icon, label, value, subValue, isLoading }: any) {
               <Skeleton className="mt-2 h-8 w-16" />
             ) : (
               <>
-                <p className="mt-2 text-2xl font-bold">{value}</p>
-                {subValue && <p className="mt-1 text-xs text-muted-foreground">{subValue}</p>}
+                <p className="mt-1 text-3xl font-bold">{value}</p>
+                {subLabel && subValue !== undefined && (
+                  <p className="mt-1 text-xs text-muted-foreground">
+                    {subValue} {subLabel}
+                  </p>
+                )}
               </>
             )}
           </div>
-          <div className="rounded-lg bg-primary/10 p-2">
-            <Icon className="h-5 w-5 text-primary" />
+          <div className="rounded-xl bg-muted p-2.5">
+            <Icon className="h-5 w-5 text-muted-foreground" />
           </div>
         </div>
       </CardContent>
