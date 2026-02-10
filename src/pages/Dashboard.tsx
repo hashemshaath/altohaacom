@@ -2,7 +2,7 @@ import { useLanguage } from "@/i18n/LanguageContext";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { Card, CardContent } from "@/components/ui/card";
-import { Trophy, Users, GraduationCap, Landmark, Newspaper, MessageSquare, ShoppingBag, ArrowRight } from "lucide-react";
+import { Trophy, Users, GraduationCap, Landmark, Newspaper, MessageSquare, ShoppingBag, ArrowRight, Sparkles } from "lucide-react";
 import { Link } from "react-router-dom";
 import { UpcomingCompetitionsWidget } from "@/components/dashboard/UpcomingCompetitionsWidget";
 import { RecentActivityWidget } from "@/components/dashboard/RecentActivityWidget";
@@ -36,17 +36,17 @@ export default function Dashboard() {
 
   const firstName = profile?.full_name?.split(" ")[0] || "";
   const greeting = isAr
-    ? `مرحباً${firstName ? ` ${firstName}` : ""} 👋`
-    : `Welcome back${firstName ? `, ${firstName}` : ""} 👋`;
+    ? `مرحباً${firstName ? ` ${firstName}` : ""}`
+    : `Welcome back${firstName ? `, ${firstName}` : ""}`;
 
   const sections = [
-    { icon: Trophy, title: t("competitionsTitle"), href: "/competitions" },
-    { icon: Users, title: t("communityTitle"), href: "/community" },
-    { icon: GraduationCap, title: t("masterclassesTitle"), href: "/masterclasses" },
-    { icon: Landmark, title: t("exhibitions") || "Exhibitions", href: "/exhibitions" },
-    { icon: Newspaper, title: t("news") || "News", href: "/news" },
-    { icon: MessageSquare, title: isAr ? "الرسائل" : "Messages", href: "/messages" },
-    { icon: ShoppingBag, title: isAr ? "المتجر" : "Shop", href: "/shop" },
+    { icon: Trophy, title: t("competitionsTitle"), href: "/competitions", color: "text-primary", bg: "bg-primary/10" },
+    { icon: Users, title: t("communityTitle"), href: "/community", color: "text-chart-2", bg: "bg-chart-2/10" },
+    { icon: GraduationCap, title: t("masterclassesTitle"), href: "/masterclasses", color: "text-chart-3", bg: "bg-chart-3/10" },
+    { icon: Landmark, title: t("exhibitions") || "Exhibitions", href: "/exhibitions", color: "text-chart-5", bg: "bg-chart-5/10" },
+    { icon: Newspaper, title: t("news") || "News", href: "/news", color: "text-chart-4", bg: "bg-chart-4/10" },
+    { icon: MessageSquare, title: isAr ? "الرسائل" : "Messages", href: "/messages", color: "text-chart-1", bg: "bg-chart-1/10" },
+    { icon: ShoppingBag, title: isAr ? "المتجر" : "Shop", href: "/shop", color: "text-accent-foreground", bg: "bg-accent/30" },
   ];
 
   return (
@@ -54,20 +54,40 @@ export default function Dashboard() {
       <SEOHead title="Dashboard" description="Your personal Altohaa dashboard" />
       <Header />
       <main className="container flex-1 py-6 md:py-10">
-        {/* Welcome */}
+        {/* Welcome Banner */}
+        <Card className="mb-8 overflow-hidden border-primary/10 bg-gradient-to-br from-primary/5 via-background to-accent/5">
+          <CardContent className="flex flex-col gap-4 p-5 sm:flex-row sm:items-center sm:justify-between sm:p-6">
+            <div className="flex items-center gap-4">
+              <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-primary/10 ring-4 ring-primary/5">
+                <Sparkles className="h-6 w-6 text-primary" />
+              </div>
+              <div>
+                <h1 className="font-serif text-xl font-bold sm:text-2xl md:text-3xl">{greeting} 👋</h1>
+                <p className="mt-1 text-sm text-muted-foreground">
+                  {isAr
+                    ? "إليك ملخص نشاطك ومسابقاتك القادمة"
+                    : "Here's a summary of your activity and upcoming events"}
+                </p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Quick Navigation */}
         <div className="mb-8">
-          <div className="flex items-center gap-3">
-            <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-primary/10">
-              <Trophy className="h-5 w-5 text-primary" />
-            </div>
-            <div>
-              <h1 className="font-serif text-2xl font-bold md:text-3xl">{greeting}</h1>
-              <p className="mt-0.5 text-sm text-muted-foreground">
-                {isAr
-                  ? "إليك ملخص نشاطك ومسابقاتك القادمة"
-                  : "Here's a summary of your activity and upcoming competitions"}
-              </p>
-            </div>
+          <div className="grid gap-2.5 grid-cols-3 sm:grid-cols-4 lg:grid-cols-7">
+            {sections.map((s) => (
+              <Link key={s.title} to={s.href}>
+                <Card className="group h-full transition-all hover:shadow-md hover:-translate-y-1 border-border/50 hover:border-primary/20">
+                  <CardContent className="flex flex-col items-center gap-2 p-3 text-center sm:p-4">
+                    <div className={`flex h-10 w-10 items-center justify-center rounded-xl ${s.bg} transition-transform group-hover:scale-110`}>
+                      <s.icon className={`h-5 w-5 ${s.color}`} />
+                    </div>
+                    <h3 className="text-[11px] font-medium leading-tight sm:text-xs">{s.title}</h3>
+                  </CardContent>
+                </Card>
+              </Link>
+            ))}
           </div>
         </div>
 
@@ -88,27 +108,6 @@ export default function Dashboard() {
           <div className="space-y-6">
             {user && <NotificationsSummaryWidget />}
             <RecentActivityWidget />
-          </div>
-        </div>
-
-        {/* Quick Navigation */}
-        <div className="mt-10">
-          <h2 className="mb-4 text-[10px] font-semibold uppercase tracking-widest text-muted-foreground">
-            {t("quickLinks")}
-          </h2>
-          <div className="grid gap-3 grid-cols-2 sm:grid-cols-3 lg:grid-cols-6">
-            {sections.map((s) => (
-              <Link key={s.title} to={s.href}>
-                <Card className="group h-full transition-all hover:shadow-sm hover:-translate-y-0.5 border-border/60">
-                  <CardContent className="flex flex-col items-center gap-2.5 p-4 text-center">
-                    <div className="flex h-10 w-10 items-center justify-center rounded-full bg-muted/60 transition-colors group-hover:bg-primary/10">
-                      <s.icon className="h-5 w-5 text-muted-foreground transition-colors group-hover:text-primary" />
-                    </div>
-                    <h3 className="text-xs font-medium leading-tight">{s.title}</h3>
-                  </CardContent>
-                </Card>
-              </Link>
-            ))}
           </div>
         </div>
       </main>
