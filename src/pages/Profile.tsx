@@ -19,6 +19,8 @@ import { User, Edit, Save, MapPin, ChefHat, Award, X, Trophy, GraduationCap } fr
 import type { Database } from "@/integrations/supabase/types";
 import { CompetitionHistory } from "@/components/profile/CompetitionHistory";
 import { UserBadgesDisplay } from "@/components/badges/UserBadgesDisplay";
+import { ProfileStatsBar } from "@/components/profile/ProfileStatsBar";
+import { ProfileActivityTimeline } from "@/components/profile/ProfileActivityTimeline";
 
 type Profile = Database["public"]["Tables"]["profiles"]["Row"];
 type ExperienceLevel = Database["public"]["Enums"]["experience_level"];
@@ -345,12 +347,22 @@ export default function Profile() {
           </Card>
         </div>
 
-        {/* Competition History & Badges */}
+        {/* Stats Bar */}
         {user && (
-          <div className="mt-6 grid gap-6 md:grid-cols-2">
-            <CompetitionHistory userId={user.id} />
-            <div className="space-y-6">
+          <div className="mt-6">
+            <ProfileStatsBar userId={user.id} />
+          </div>
+        )}
+
+        {/* Competition History, Badges & Activity */}
+        {user && (
+          <div className="mt-6 grid gap-6 lg:grid-cols-3">
+            <div className="lg:col-span-2 space-y-6">
+              <CompetitionHistory userId={user.id} />
               <UserBadgesDisplay userId={user.id} limit={6} />
+            </div>
+            <div>
+              <ProfileActivityTimeline userId={user.id} />
             </div>
           </div>
         )}
