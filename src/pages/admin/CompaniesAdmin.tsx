@@ -17,6 +17,7 @@ import { Switch } from "@/components/ui/switch";
 import { Separator } from "@/components/ui/separator";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { useToast } from "@/hooks/use-toast";
 import {
   Building2,
@@ -56,6 +57,90 @@ import { format } from "date-fns";
 
 type CompanyType = "sponsor" | "supplier" | "partner" | "vendor";
 type CompanyStatus = "active" | "inactive" | "pending" | "suspended";
+
+// Inline invitation send button component
+function InvitationSendButton({ companyId, userId, language, onSuccess }: { companyId: string; userId?: string; language: string; onSuccess: () => void }) {
+  const [open, setOpen] = useState(false);
+  const { toast } = useToast();
+  const [form, setForm] = useState({ title: "", title_ar: "", description: "", invitation_type: "sponsorship", event_date: "", expires_at: "" });
+
+  const sendMutation = useMutation({
+    mutationFn: async () => {
+      const user = (await supabase.auth.getUser()).data.user;
+      const { error } = await supabase.from("company_invitations").insert({
+        company_id: companyId,
+        invitation_type: form.invitation_type,
+        title: form.title,
+        title_ar: form.title_ar || null,
+        description: form.description || null,
+        event_date: form.event_date || null,
+        expires_at: form.expires_at || null,
+        status: "pending",
+        created_by: user?.id || null,
+      });
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      onSuccess();
+      setOpen(false);
+      setForm({ title: "", title_ar: "", description: "", invitation_type: "sponsorship", event_date: "", expires_at: "" });
+      toast({ title: language === "ar" ? "تم إرسال الدعوة" : "Invitation sent" });
+    },
+    onError: (err: Error) => toast({ variant: "destructive", title: "Error", description: err.message }),
+  });
+
+  return (
+    <Dialog open={open} onOpenChange={setOpen}>
+      <DialogTrigger asChild>
+        <Button><Send className="h-4 w-4 mr-2" />{language === "ar" ? "دعوة جديدة" : "New Invitation"}</Button>
+      </DialogTrigger>
+      <DialogContent>
+        <DialogHeader><DialogTitle>{language === "ar" ? "إرسال دعوة" : "Send Invitation"}</DialogTitle></DialogHeader>
+        <div className="space-y-4">
+          <div className="space-y-2">
+            <Label>{language === "ar" ? "نوع الدعوة" : "Type"}</Label>
+            <Select value={form.invitation_type} onValueChange={v => setForm({ ...form, invitation_type: v })}>
+              <SelectTrigger><SelectValue /></SelectTrigger>
+              <SelectContent>
+                <SelectItem value="sponsorship">{language === "ar" ? "رعاية" : "Sponsorship"}</SelectItem>
+                <SelectItem value="section_sponsor">{language === "ar" ? "رعاية قسم" : "Section Sponsor"}</SelectItem>
+                <SelectItem value="exhibition_sponsor">{language === "ar" ? "رعاية معرض" : "Exhibition Sponsor"}</SelectItem>
+                <SelectItem value="participation">{language === "ar" ? "مشاركة" : "Participation"}</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+          <div className="grid grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <Label>{language === "ar" ? "العنوان (EN)" : "Title (EN)"}</Label>
+              <Input value={form.title} onChange={e => setForm({ ...form, title: e.target.value })} />
+            </div>
+            <div className="space-y-2">
+              <Label>{language === "ar" ? "العنوان (AR)" : "Title (AR)"}</Label>
+              <Input value={form.title_ar} onChange={e => setForm({ ...form, title_ar: e.target.value })} dir="rtl" />
+            </div>
+          </div>
+          <div className="space-y-2">
+            <Label>{language === "ar" ? "الوصف" : "Description"}</Label>
+            <Textarea value={form.description} onChange={e => setForm({ ...form, description: e.target.value })} rows={3} />
+          </div>
+          <div className="grid grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <Label>{language === "ar" ? "تاريخ الفعالية" : "Event Date"}</Label>
+              <Input type="date" value={form.event_date} onChange={e => setForm({ ...form, event_date: e.target.value })} />
+            </div>
+            <div className="space-y-2">
+              <Label>{language === "ar" ? "ينتهي في" : "Expires At"}</Label>
+              <Input type="date" value={form.expires_at} onChange={e => setForm({ ...form, expires_at: e.target.value })} />
+            </div>
+          </div>
+          <Button className="w-full" onClick={() => sendMutation.mutate()} disabled={!form.title || sendMutation.isPending}>
+            <Send className="mr-2 h-4 w-4" />{language === "ar" ? "إرسال" : "Send"}
+          </Button>
+        </div>
+      </DialogContent>
+    </Dialog>
+  );
+}
 
 interface Company {
   id: string;
@@ -914,10 +999,7 @@ export default function CompaniesAdmin() {
           <TabsContent value="invitations" className="space-y-4">
             <div className="flex justify-between items-center">
               <h3 className="text-lg font-semibold">{language === "ar" ? "الدعوات" : "Invitations"}</h3>
-              <Button>
-                <Send className="h-4 w-4 mr-2" />
-                {language === "ar" ? "دعوة جديدة" : "New Invitation"}
-              </Button>
+              <InvitationSendButton companyId={selectedCompany} userId={undefined} language={language} onSuccess={() => queryClient.invalidateQueries({ queryKey: ["company-invitations", selectedCompany] })} />
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {invitations.map((inv: any) => (
@@ -925,7 +1007,7 @@ export default function CompaniesAdmin() {
                   <CardContent className="pt-6">
                     <div className="flex items-start justify-between">
                       <div>
-                        <p className="font-semibold">{inv.title}</p>
+                        <p className="font-semibold">{language === "ar" && inv.title_ar ? inv.title_ar : inv.title}</p>
                         <p className="text-sm text-muted-foreground">{inv.invitation_type}</p>
                       </div>
                       <Badge className={
@@ -937,7 +1019,13 @@ export default function CompaniesAdmin() {
                       </Badge>
                     </div>
                     {inv.description && (
-                      <p className="text-sm mt-2">{inv.description}</p>
+                      <p className="text-sm mt-2">{language === "ar" && inv.description_ar ? inv.description_ar : inv.description}</p>
+                    )}
+                    {inv.response_notes && (
+                      <div className="mt-2 rounded-md bg-muted p-2">
+                        <p className="text-xs text-muted-foreground mb-0.5">{language === "ar" ? "ملاحظات الرد" : "Response"}</p>
+                        <p className="text-sm">{inv.response_notes}</p>
+                      </div>
                     )}
                     <div className="flex justify-between items-center mt-4 text-sm text-muted-foreground">
                       <span>{format(new Date(inv.created_at), "yyyy-MM-dd")}</span>
