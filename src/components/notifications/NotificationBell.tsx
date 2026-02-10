@@ -1,3 +1,4 @@
+import React from "react";
 import { Bell } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -16,7 +17,7 @@ import { ar, enUS } from "date-fns/locale";
 import { useNavigate } from "react-router-dom";
 import { cn } from "@/lib/utils";
 
-export function NotificationBell() {
+export const NotificationBell = React.forwardRef<HTMLButtonElement, Record<string, never>>(function NotificationBell(_props, _ref) {
   const { notifications, unreadCount, markAsRead, markAllAsRead, loading } = useNotifications();
   const { language, t } = useLanguage();
   const navigate = useNavigate();
@@ -129,4 +130,4 @@ export function NotificationBell() {
       </DropdownMenuContent>
     </DropdownMenu>
   );
-}
+});
