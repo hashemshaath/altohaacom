@@ -8,11 +8,13 @@ interface Step {
 }
 
 const STEPS: Step[] = [
-  { number: 1, label: "Basic Info", labelAr: "المعلومات" },
-  { number: 2, label: "Schedule", labelAr: "الجدول" },
-  { number: 3, label: "Categories", labelAr: "الفئات" },
-  { number: 4, label: "Criteria", labelAr: "المعايير" },
-  { number: 5, label: "Review", labelAr: "مراجعة" },
+  { number: 1, label: "Exhibition", labelAr: "المعرض" },
+  { number: 2, label: "Basic Info", labelAr: "المعلومات" },
+  { number: 3, label: "Types", labelAr: "الأنواع" },
+  { number: 4, label: "Schedule", labelAr: "الجدول" },
+  { number: 5, label: "Bodies", labelAr: "الإشراف" },
+  { number: 6, label: "Criteria", labelAr: "المعايير" },
+  { number: 7, label: "Review", labelAr: "مراجعة" },
 ];
 
 interface StepIndicatorProps {

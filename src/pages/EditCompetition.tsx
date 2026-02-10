@@ -86,6 +86,10 @@ export default function EditCompetition() {
         countryCode: competition.country_code || "",
         editionYear: competition.edition_year || new Date().getFullYear(),
         maxParticipants: competition.max_participants || "",
+        exhibitionId: competition.exhibition_id || null,
+        selectedTypeIds: [],
+        supervisingBodyIds: [],
+        judgeIds: [],
         categories: existingCategories.map((c) => ({
           id: c.id,
           name: c.name,

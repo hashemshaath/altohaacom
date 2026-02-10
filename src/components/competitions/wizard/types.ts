@@ -42,6 +42,11 @@ export interface CompetitionFormData {
   maxParticipants: number | "";
   categories: CategoryForm[];
   criteria: CriteriaForm[];
+  // New fields
+  exhibitionId: string | null;
+  selectedTypeIds: string[];
+  supervisingBodyIds: string[];
+  judgeIds: string[];
 }
 
 export const emptyCategory: CategoryForm = {

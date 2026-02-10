@@ -1292,6 +1292,38 @@ export type Database = {
           },
         ]
       }
+      company_role_assignments: {
+        Row: {
+          assigned_at: string | null
+          company_id: string
+          id: string
+          is_active: boolean | null
+          role: string
+        }
+        Insert: {
+          assigned_at?: string | null
+          company_id: string
+          id?: string
+          is_active?: boolean | null
+          role: string
+        }
+        Update: {
+          assigned_at?: string | null
+          company_id?: string
+          id?: string
+          is_active?: boolean | null
+          role?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "company_role_assignments_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       company_transactions: {
         Row: {
           amount: number
@@ -1770,6 +1802,45 @@ export type Database = {
           },
         ]
       }
+      competition_supervising_bodies: {
+        Row: {
+          competition_id: string
+          created_at: string | null
+          entity_id: string
+          id: string
+          role: string
+        }
+        Insert: {
+          competition_id: string
+          created_at?: string | null
+          entity_id: string
+          id?: string
+          role?: string
+        }
+        Update: {
+          competition_id?: string
+          created_at?: string | null
+          entity_id?: string
+          id?: string
+          role?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "competition_supervising_bodies_competition_id_fkey"
+            columns: ["competition_id"]
+            isOneToOne: false
+            referencedRelation: "competitions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "competition_supervising_bodies_entity_id_fkey"
+            columns: ["entity_id"]
+            isOneToOne: false
+            referencedRelation: "culinary_entities"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       competition_team_members: {
         Row: {
           checked_in_at: string | null
@@ -1834,6 +1905,78 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      competition_type_assignments: {
+        Row: {
+          competition_id: string
+          created_at: string | null
+          id: string
+          type_id: string
+        }
+        Insert: {
+          competition_id: string
+          created_at?: string | null
+          id?: string
+          type_id: string
+        }
+        Update: {
+          competition_id?: string
+          created_at?: string | null
+          id?: string
+          type_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "competition_type_assignments_competition_id_fkey"
+            columns: ["competition_id"]
+            isOneToOne: false
+            referencedRelation: "competitions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "competition_type_assignments_type_id_fkey"
+            columns: ["type_id"]
+            isOneToOne: false
+            referencedRelation: "competition_types"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      competition_types: {
+        Row: {
+          created_at: string | null
+          description: string | null
+          description_ar: string | null
+          icon: string | null
+          id: string
+          is_active: boolean | null
+          name: string
+          name_ar: string | null
+          sort_order: number | null
+        }
+        Insert: {
+          created_at?: string | null
+          description?: string | null
+          description_ar?: string | null
+          icon?: string | null
+          id?: string
+          is_active?: boolean | null
+          name: string
+          name_ar?: string | null
+          sort_order?: number | null
+        }
+        Update: {
+          created_at?: string | null
+          description?: string | null
+          description_ar?: string | null
+          icon?: string | null
+          id?: string
+          is_active?: boolean | null
+          name?: string
+          name_ar?: string | null
+          sort_order?: number | null
+        }
+        Relationships: []
       }
       competition_updates: {
         Row: {
@@ -4283,6 +4426,56 @@ export type Database = {
             columns: ["group_id"]
             isOneToOne: false
             referencedRelation: "groups"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      predefined_categories: {
+        Row: {
+          created_at: string | null
+          default_max_participants: number | null
+          description: string | null
+          description_ar: string | null
+          gender: string | null
+          id: string
+          is_active: boolean | null
+          name: string
+          name_ar: string | null
+          sort_order: number | null
+          type_id: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          default_max_participants?: number | null
+          description?: string | null
+          description_ar?: string | null
+          gender?: string | null
+          id?: string
+          is_active?: boolean | null
+          name: string
+          name_ar?: string | null
+          sort_order?: number | null
+          type_id?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          default_max_participants?: number | null
+          description?: string | null
+          description_ar?: string | null
+          gender?: string | null
+          id?: string
+          is_active?: boolean | null
+          name?: string
+          name_ar?: string | null
+          sort_order?: number | null
+          type_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "predefined_categories_type_id_fkey"
+            columns: ["type_id"]
+            isOneToOne: false
+            referencedRelation: "competition_types"
             referencedColumns: ["id"]
           },
         ]
