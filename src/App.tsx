@@ -82,6 +82,7 @@ const ExhibitionsAdmin = lazy(() => import("./pages/admin/ExhibitionsAdmin"));
 const EntitiesAdmin = lazy(() => import("./pages/admin/EntitiesAdmin"));
 const JudgesAdmin = lazy(() => import("./pages/admin/JudgesAdmin"));
 const CompanyRolesAdmin = lazy(() => import("./pages/admin/CompanyRolesAdmin"));
+const CountriesAdmin = lazy(() => import("./pages/admin/CountriesAdmin"));
 
 // Company Portal Pages
 const CompanyPortalLayout = lazy(() => import("./pages/CompanyPortal"));
@@ -190,6 +191,7 @@ const App = () => (
                   <Route path="judges" element={<JudgesAdmin />} />
                    <Route path="communications" element={<CommunicationsAdmin />} />
                    <Route path="company-roles" element={<CompanyRolesAdmin />} />
+                   <Route path="countries" element={<CountriesAdmin />} />
                 </Route>
 
                 {/* Company Portal Routes */}
