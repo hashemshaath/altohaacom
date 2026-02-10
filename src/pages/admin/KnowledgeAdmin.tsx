@@ -304,23 +304,28 @@ export default function KnowledgeAdmin() {
   };
 
   const ratingColors: Record<string, string> = {
-    excellent: "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200",
-    good: "bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200",
-    average: "bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200",
-    poor: "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200",
+    excellent: "bg-chart-5/10 text-chart-5",
+    good: "bg-primary/10 text-primary",
+    average: "bg-chart-4/10 text-chart-4",
+    poor: "bg-destructive/10 text-destructive",
   };
 
   return (
     <div className="space-y-6">
-      <div>
-        <h1 className="font-serif text-2xl font-bold">
-          {language === "ar" ? "بوابة المعرفة" : "Knowledge Portal"}
-        </h1>
-        <p className="text-muted-foreground">
-          {language === "ar"
-            ? "إدارة الموارد والمراجع ومعايير التحكيم"
-            : "Manage resources, references, and judging standards"}
-        </p>
+      <div className="flex items-center gap-3">
+        <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-primary/10">
+          <BookOpen className="h-5 w-5 text-primary" />
+        </div>
+        <div>
+          <h1 className="font-serif text-xl font-bold sm:text-2xl">
+            {language === "ar" ? "بوابة المعرفة" : "Knowledge Portal"}
+          </h1>
+          <p className="text-xs text-muted-foreground">
+            {language === "ar"
+              ? "إدارة الموارد والمراجع ومعايير التحكيم"
+              : "Manage resources, references, and judging standards"}
+          </p>
+        </div>
       </div>
 
       <Tabs value={activeTab} onValueChange={setActiveTab}>

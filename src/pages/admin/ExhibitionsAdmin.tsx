@@ -146,17 +146,21 @@ export default function ExhibitionsAdmin() {
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-2xl font-bold flex items-center gap-2">
-            <Landmark className="h-6 w-6" />
-            {isAr ? "إدارة المعارض والفعاليات" : "Exhibitions & Events Management"}
-          </h1>
-          <p className="text-muted-foreground text-sm">
-            {isAr ? "إدارة المعارض والمؤتمرات والفعاليات" : "Manage exhibitions, conferences, and events"}
-          </p>
+        <div className="flex items-center gap-3">
+          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-primary/10">
+            <Landmark className="h-5 w-5 text-primary" />
+          </div>
+          <div>
+            <h1 className="font-serif text-xl font-bold sm:text-2xl">
+              {isAr ? "إدارة المعارض والفعاليات" : "Exhibitions & Events"}
+            </h1>
+            <p className="text-xs text-muted-foreground">
+              {isAr ? "إدارة المعارض والمؤتمرات والفعاليات" : "Manage exhibitions, conferences, and events"}
+            </p>
+          </div>
         </div>
         <Button onClick={() => { resetForm(); setShowForm(!showForm); }}>
-          {showForm ? (isAr ? "إغلاق" : "Close") : <><Plus className="mr-2 h-4 w-4" />{isAr ? "إضافة فعالية" : "Add Event"}</>}
+          {showForm ? (isAr ? "إغلاق" : "Close") : <><Plus className="me-2 h-4 w-4" />{isAr ? "إضافة فعالية" : "Add Event"}</>}
         </Button>
       </div>
 
@@ -281,17 +285,17 @@ export default function ExhibitionsAdmin() {
       )}
 
       {/* Table */}
-      <Card>
+      <Card className="border-border/60 overflow-hidden">
         <CardContent className="p-0">
           <Table>
             <TableHeader>
-              <TableRow>
-                <TableHead>{isAr ? "الفعالية" : "Event"}</TableHead>
-                <TableHead>{isAr ? "النوع" : "Type"}</TableHead>
-                <TableHead>{isAr ? "الحالة" : "Status"}</TableHead>
-                <TableHead>{isAr ? "التاريخ" : "Date"}</TableHead>
-                <TableHead>{isAr ? "الموقع" : "Location"}</TableHead>
-                <TableHead className="text-right">{isAr ? "الإجراءات" : "Actions"}</TableHead>
+              <TableRow className="bg-muted/30 hover:bg-muted/30">
+                <TableHead className="font-semibold">{isAr ? "الفعالية" : "Event"}</TableHead>
+                <TableHead className="font-semibold">{isAr ? "النوع" : "Type"}</TableHead>
+                <TableHead className="font-semibold">{isAr ? "الحالة" : "Status"}</TableHead>
+                <TableHead className="font-semibold">{isAr ? "التاريخ" : "Date"}</TableHead>
+                <TableHead className="font-semibold">{isAr ? "الموقع" : "Location"}</TableHead>
+                <TableHead className="text-end font-semibold">{isAr ? "الإجراءات" : "Actions"}</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -301,11 +305,11 @@ export default function ExhibitionsAdmin() {
                 <TableRow><TableCell colSpan={6} className="text-center py-8 text-muted-foreground">No events yet</TableCell></TableRow>
               ) : (
                 exhibitions?.map((ex) => (
-                  <TableRow key={ex.id}>
+                  <TableRow key={ex.id} className="group hover:bg-muted/20 transition-colors duration-150">
                     <TableCell>
                       <div>
-                        <p className="font-medium">{isAr && ex.title_ar ? ex.title_ar : ex.title}</p>
-                        {ex.organizer_name && <p className="text-xs text-muted-foreground">{ex.organizer_name}</p>}
+                        <p className="font-semibold text-sm truncate group-hover:text-primary transition-colors">{isAr && ex.title_ar ? ex.title_ar : ex.title}</p>
+                        {ex.organizer_name && <p className="text-[10px] text-muted-foreground">{ex.organizer_name}</p>}
                       </div>
                     </TableCell>
                     <TableCell><Badge variant="secondary">{ex.type.replace("_", " ")}</Badge></TableCell>
