@@ -300,7 +300,7 @@ export default function CompetitionResults() {
               </h2>
               <div className="space-y-2">
                 {others.map((winner) => (
-                  <Card key={winner.registration_id} className="overflow-hidden border-border/60 hover:border-primary/20 transition-colors">
+                  <Card key={winner.registration_id} className="overflow-hidden border-border/60 hover:border-primary/20 hover:shadow-sm transition-all duration-200">
                     <CardContent className="flex items-center gap-3 p-3.5">
                       <span className="w-8 text-center text-sm font-bold text-muted-foreground">{winner.rank}</span>
                       <div className="h-11 w-11 shrink-0 overflow-hidden rounded-xl bg-muted">

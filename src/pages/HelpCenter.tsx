@@ -83,24 +83,32 @@ export default function HelpCenter() {
       <Header />
       <main className="flex-1">
         {/* Hero Section */}
-        <section className="bg-gradient-to-b from-primary/10 to-background py-16">
-          <div className="container mx-auto px-4 text-center">
-            <h1 className="font-serif text-4xl font-bold mb-4">
+        <section className="relative overflow-hidden border-b bg-gradient-to-b from-primary/5 via-background to-background py-16">
+          <div className="absolute -top-32 start-1/4 h-64 w-64 rounded-full bg-primary/8 blur-[100px] animate-pulse pointer-events-none" />
+          <div className="absolute -top-20 end-1/3 h-48 w-48 rounded-full bg-accent/10 blur-[80px] animate-pulse [animation-delay:1s] pointer-events-none" />
+          <div className="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-primary/20 to-transparent" />
+          <div className="container relative text-center">
+            <div className="flex justify-center mb-6">
+              <div className="h-14 w-14 rounded-2xl bg-primary/10 flex items-center justify-center ring-1 ring-primary/15 shadow-sm">
+                <HelpCircle className="h-7 w-7 text-primary" />
+              </div>
+            </div>
+            <h1 className="font-serif text-3xl font-bold mb-4 md:text-4xl">
               {language === "ar" ? "مركز المساعدة" : "Help Center"}
             </h1>
-            <p className="text-lg text-muted-foreground mb-8 max-w-2xl mx-auto">
+            <p className="text-base text-muted-foreground mb-8 max-w-2xl mx-auto">
               {language === "ar" 
                 ? "اعثر على إجابات لأسئلتك أو تحدث مع مساعدنا الذكي"
                 : "Find answers to your questions or chat with our AI assistant"}
             </p>
             <div className="max-w-xl mx-auto relative">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+              <Search className="absolute start-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
               <Input
                 type="search"
                 placeholder={language === "ar" ? "ابحث عن مساعدة..." : "Search for help..."}
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="pl-10 h-12 text-lg"
+                className="ps-10 h-12 text-lg"
               />
             </div>
           </div>
@@ -115,11 +123,11 @@ export default function HelpCenter() {
                 {helpCategories.map((cat) => (
                   <Card 
                     key={cat.id}
-                    className="cursor-pointer hover:border-primary transition-colors"
+                    className="cursor-pointer hover:border-primary/30 hover:shadow-md hover:-translate-y-0.5 transition-all duration-200"
                     onClick={() => setActiveCategory(cat.id)}
                   >
-                    <CardContent className="flex items-center gap-4 p-6">
-                      <div className="h-12 w-12 rounded-lg bg-primary/10 flex items-center justify-center">
+                    <CardContent className="flex items-center gap-4 p-5">
+                      <div className="h-11 w-11 rounded-xl bg-primary/10 flex items-center justify-center shrink-0">
                         <cat.icon className="h-6 w-6 text-primary" />
                       </div>
                       <div>
@@ -130,7 +138,7 @@ export default function HelpCenter() {
                           {filteredFaqs.filter(f => f.category === cat.id).length} {language === "ar" ? "مقالات" : "articles"}
                         </p>
                       </div>
-                      <ChevronRight className="h-5 w-5 text-muted-foreground ml-auto" />
+                      <ChevronRight className="h-5 w-5 text-muted-foreground ms-auto" />
                     </CardContent>
                   </Card>
                 ))}
@@ -222,7 +230,7 @@ export default function HelpCenter() {
                         <Link
                           key={article.id}
                           to={`/help/article/${article.id}`}
-                          className="block p-4 rounded-lg border hover:bg-accent transition-colors"
+                          className="block p-4 rounded-xl border hover:bg-muted/30 hover:border-primary/20 hover:shadow-sm transition-all duration-200"
                         >
                           <h4 className="font-medium mb-1">
                             {language === "ar" && article.title_ar ? article.title_ar : article.title}

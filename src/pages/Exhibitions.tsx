@@ -283,7 +283,7 @@ export default function Exhibitions() {
                 { label: isAr ? "القادمة" : "Upcoming", value: upcomingCount, color: "border-s-chart-1" },
                 { label: isAr ? "الدول" : "Countries", value: countriesCount, color: "border-s-accent" },
               ].map((stat) => (
-                <Card key={stat.label} className={`border-s-[3px] ${stat.color} transition-all hover:shadow-sm`}>
+                <Card key={stat.label} className={`border-s-[3px] ${stat.color} transition-all duration-200 hover:shadow-md hover:-translate-y-0.5`}>
                   <CardContent className="p-4 text-center">
                     <p className="text-2xl font-bold text-foreground sm:text-3xl">{stat.value}</p>
                     <p className="mt-0.5 text-[10px] uppercase tracking-wider text-muted-foreground">{stat.label}</p>
