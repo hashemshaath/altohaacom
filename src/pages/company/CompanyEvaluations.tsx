@@ -47,10 +47,10 @@ export default function CompanyEvaluations() {
   const valueAvg = avg("value_rating");
 
   const ratingCategories = [
-    { label: language === "ar" ? "الجودة" : "Quality", value: qualityAvg, icon: ThumbsUp, color: "text-emerald-600" },
-    { label: language === "ar" ? "التسليم" : "Delivery", value: deliveryAvg, icon: Truck, color: "text-blue-600" },
-    { label: language === "ar" ? "التواصل" : "Communication", value: communicationAvg, icon: Phone, color: "text-violet-600" },
-    { label: language === "ar" ? "القيمة" : "Value", value: valueAvg, icon: TrendingUp, color: "text-amber-600" },
+    { label: language === "ar" ? "الجودة" : "Quality", value: qualityAvg, icon: ThumbsUp, color: "text-chart-5" },
+    { label: language === "ar" ? "التسليم" : "Delivery", value: deliveryAvg, icon: Truck, color: "text-primary" },
+    { label: language === "ar" ? "التواصل" : "Communication", value: communicationAvg, icon: Phone, color: "text-chart-3" },
+    { label: language === "ar" ? "القيمة" : "Value", value: valueAvg, icon: TrendingUp, color: "text-chart-4" },
   ];
 
   const renderStars = (rating: number) => {
@@ -59,7 +59,7 @@ export default function CompanyEvaluations() {
         {[1, 2, 3, 4, 5].map((s) => (
           <Star
             key={s}
-            className={`h-4 w-4 ${s <= Math.round(rating) ? "fill-amber-400 text-amber-400" : "text-muted-foreground/30"}`}
+            className={`h-4 w-4 ${s <= Math.round(rating) ? "fill-chart-4 text-chart-4" : "text-muted-foreground/30"}`}
           />
         ))}
       </div>

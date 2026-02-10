@@ -34,10 +34,10 @@ const LIST_CATEGORIES = [
 
 const STATUS_COLORS: Record<string, string> = {
   draft: "bg-muted text-muted-foreground",
-  in_progress: "bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200",
-  review: "bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200",
-  approved: "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200",
-  sent_to_sponsors: "bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200",
+  in_progress: "bg-primary/20 text-primary",
+  review: "bg-chart-4/20 text-chart-4",
+  approved: "bg-chart-5/20 text-chart-5",
+  sent_to_sponsors: "bg-chart-3/20 text-chart-3",
 };
 
 interface Props {
