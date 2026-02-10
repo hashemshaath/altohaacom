@@ -826,6 +826,66 @@ export type Database = {
           },
         ]
       }
+      company_communications: {
+        Row: {
+          company_id: string
+          created_at: string
+          direction: string
+          id: string
+          is_internal_note: boolean | null
+          message: string
+          parent_id: string | null
+          priority: string | null
+          sender_id: string
+          status: string
+          subject: string
+          updated_at: string
+        }
+        Insert: {
+          company_id: string
+          created_at?: string
+          direction?: string
+          id?: string
+          is_internal_note?: boolean | null
+          message: string
+          parent_id?: string | null
+          priority?: string | null
+          sender_id: string
+          status?: string
+          subject: string
+          updated_at?: string
+        }
+        Update: {
+          company_id?: string
+          created_at?: string
+          direction?: string
+          id?: string
+          is_internal_note?: boolean | null
+          message?: string
+          parent_id?: string | null
+          priority?: string | null
+          sender_id?: string
+          status?: string
+          subject?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "company_communications_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "company_communications_parent_id_fkey"
+            columns: ["parent_id"]
+            isOneToOne: false
+            referencedRelation: "company_communications"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       company_contacts: {
         Row: {
           can_login: boolean | null
