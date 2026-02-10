@@ -513,10 +513,10 @@ export default function CompaniesAdmin() {
           <Card>
             <CardContent className="pt-4">
               <div className="flex items-center gap-3">
-                <DollarSign className="h-8 w-8 text-green-600" />
+                <DollarSign className="h-8 w-8 text-chart-5" />
                 <div>
                   <p className="text-sm text-muted-foreground">{language === "ar" ? "الرصيد" : "Balance"}</p>
-                  <p className={`text-xl font-bold ${companyBalance >= 0 ? "text-green-600" : "text-red-600"}`}>
+                  <p className={`text-xl font-bold ${companyBalance >= 0 ? "text-chart-5" : "text-destructive"}`}>
                     {companyBalance.toLocaleString()} {companyDetails.currency || "SAR"}
                   </p>
                 </div>
@@ -526,7 +526,7 @@ export default function CompaniesAdmin() {
           <Card>
             <CardContent className="pt-4">
               <div className="flex items-center gap-3">
-                <Package className="h-8 w-8 text-blue-600" />
+                <Package className="h-8 w-8 text-primary" />
                 <div>
                   <p className="text-sm text-muted-foreground">{language === "ar" ? "الطلبات" : "Orders"}</p>
                   <p className="text-xl font-bold">{orders.length}</p>
@@ -537,7 +537,7 @@ export default function CompaniesAdmin() {
           <Card>
             <CardContent className="pt-4">
               <div className="flex items-center gap-3">
-                <CalendarCheck className="h-8 w-8 text-purple-600" />
+                <CalendarCheck className="h-8 w-8 text-chart-3" />
                 <div>
                   <p className="text-sm text-muted-foreground">{language === "ar" ? "الدعوات" : "Invitations"}</p>
                   <p className="text-xl font-bold">{invitations.length}</p>
@@ -548,7 +548,7 @@ export default function CompaniesAdmin() {
           <Card>
             <CardContent className="pt-4">
               <div className="flex items-center gap-3">
-                <Star className="h-8 w-8 text-yellow-600" />
+                <Star className="h-8 w-8 text-chart-4" />
                 <div>
                   <p className="text-sm text-muted-foreground">{language === "ar" ? "التقييم" : "Rating"}</p>
                   <p className="text-xl font-bold">
@@ -1178,7 +1178,7 @@ export default function CompaniesAdmin() {
                           {msg.priority === "urgent" ? (
                             <Badge variant="destructive">{language === "ar" ? "عاجل" : "Urgent"}</Badge>
                           ) : msg.priority === "high" ? (
-                            <Badge className="bg-orange-500">{language === "ar" ? "مرتفع" : "High"}</Badge>
+                            <Badge className="bg-chart-4 text-chart-4-foreground">{language === "ar" ? "مرتفع" : "High"}</Badge>
                           ) : (
                             <span className="text-sm text-muted-foreground">{msg.priority}</span>
                           )}
@@ -1273,7 +1273,7 @@ export default function CompaniesAdmin() {
         <Card>
           <CardContent className="pt-4">
             <div className="text-center">
-              <p className="text-2xl font-bold text-green-600">{stats.active}</p>
+              <p className="text-2xl font-bold text-chart-5">{stats.active}</p>
               <p className="text-sm text-muted-foreground">{language === "ar" ? "نشطة" : "Active"}</p>
             </div>
           </CardContent>
@@ -1281,7 +1281,7 @@ export default function CompaniesAdmin() {
         <Card>
           <CardContent className="pt-4">
             <div className="text-center">
-              <p className="text-2xl font-bold text-yellow-600">{stats.pending}</p>
+              <p className="text-2xl font-bold text-chart-4">{stats.pending}</p>
               <p className="text-sm text-muted-foreground">{language === "ar" ? "قيد الانتظار" : "Pending"}</p>
             </div>
           </CardContent>
@@ -1289,7 +1289,7 @@ export default function CompaniesAdmin() {
         <Card>
           <CardContent className="pt-4">
             <div className="text-center">
-              <p className="text-2xl font-bold text-purple-600">{stats.sponsors}</p>
+              <p className="text-2xl font-bold text-chart-3">{stats.sponsors}</p>
               <p className="text-sm text-muted-foreground">{language === "ar" ? "رعاة" : "Sponsors"}</p>
             </div>
           </CardContent>
@@ -1297,7 +1297,7 @@ export default function CompaniesAdmin() {
         <Card>
           <CardContent className="pt-4">
             <div className="text-center">
-              <p className="text-2xl font-bold text-blue-600">{stats.suppliers}</p>
+              <p className="text-2xl font-bold text-primary">{stats.suppliers}</p>
               <p className="text-sm text-muted-foreground">{language === "ar" ? "موردين" : "Suppliers"}</p>
             </div>
           </CardContent>

@@ -25,10 +25,10 @@ const TIER_ICONS: Record<string, any> = {
 };
 
 const TIER_COLORS: Record<string, string> = {
-  platinum: "bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-300",
-  gold: "bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-300",
-  silver: "bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-300",
-  bronze: "bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-300",
+  platinum: "bg-chart-3/10 text-chart-3",
+  gold: "bg-chart-4/10 text-chart-4",
+  silver: "bg-muted text-muted-foreground",
+  bronze: "bg-chart-2/10 text-chart-2",
   custom: "bg-primary/10 text-primary",
 };
 
@@ -136,17 +136,22 @@ export default function SponsorsAdmin() {
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
-        <div>
-          <h1 className="font-serif text-2xl font-bold">
-            {language === "ar" ? "إدارة الرعاة" : "Sponsorship Management"}
-          </h1>
-          <p className="text-muted-foreground">
-            {language === "ar" ? "إدارة باقات الرعاية وربط الرعاة بالمسابقات" : "Manage sponsorship packages and link sponsors to competitions"}
-          </p>
+        <div className="flex items-center gap-3">
+          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-primary/10">
+            <Crown className="h-5 w-5 text-primary" />
+          </div>
+          <div>
+            <h1 className="font-serif text-xl font-bold sm:text-2xl">
+              {language === "ar" ? "إدارة الرعاة" : "Sponsorship Management"}
+            </h1>
+            <p className="text-xs text-muted-foreground">
+              {language === "ar" ? "إدارة باقات الرعاية وربط الرعاة بالمسابقات" : "Manage sponsorship packages and link sponsors to competitions"}
+            </p>
+          </div>
         </div>
         <Dialog open={dialogOpen} onOpenChange={(o) => { setDialogOpen(o); if (!o) resetForm(); }}>
           <DialogTrigger asChild>
-            <Button><Plus className="mr-2 h-4 w-4" />{language === "ar" ? "باقة جديدة" : "New Package"}</Button>
+            <Button><Plus className="me-2 h-4 w-4" />{language === "ar" ? "باقة جديدة" : "New Package"}</Button>
           </DialogTrigger>
           <DialogContent className="max-w-lg">
             <DialogHeader>

@@ -157,14 +157,18 @@ export default function JudgesAdmin() {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div>
-        <h1 className="text-2xl font-bold flex items-center gap-2">
-          <Gavel className="h-6 w-6" />
-          {isAr ? "إدارة المحكّمين" : "Judges Management"}
-        </h1>
-        <p className="text-muted-foreground text-sm">
-          {isAr ? "ملفات المحكّمين الشاملة، التصنيف، المستندات، والسجلات" : "Comprehensive judge profiles, classification, documents & records"}
-        </p>
+      <div className="flex items-center gap-3">
+        <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-primary/10">
+          <Gavel className="h-5 w-5 text-primary" />
+        </div>
+        <div>
+          <h1 className="font-serif text-xl font-bold sm:text-2xl">
+            {isAr ? "إدارة المحكّمين" : "Judges Management"}
+          </h1>
+          <p className="text-xs text-muted-foreground">
+            {isAr ? "ملفات المحكّمين الشاملة، التصنيف، المستندات، والسجلات" : "Comprehensive judge profiles, classification, documents & records"}
+          </p>
+        </div>
       </div>
 
       {/* Stats */}
