@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from "recharts";
 import { TrendingUp, Users, Trophy, FileText, DollarSign } from "lucide-react";
+import { CountryBreakdownChart } from "@/components/analytics/CountryBreakdownChart";
 
 export function AdminAnalyticsWidgets() {
   const { language } = useLanguage();
@@ -108,7 +109,7 @@ export function AdminAnalyticsWidgets() {
   });
 
   return (
-    <div className="grid gap-4 lg:grid-cols-2">
+    <div className="space-y-4">
       {/* Registration Trends */}
       <Card className="border-border/50">
         <CardHeader className="pb-2">
@@ -256,6 +257,12 @@ export function AdminAnalyticsWidgets() {
           </div>
         </CardContent>
       </Card>
+
+      {/* Country Breakdowns */}
+      <div className="grid gap-4 lg:grid-cols-2">
+        <CountryBreakdownChart metric="users" />
+        <CountryBreakdownChart metric="competitions" />
+      </div>
     </div>
   );
 }
