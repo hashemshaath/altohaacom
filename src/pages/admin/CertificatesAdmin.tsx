@@ -81,6 +81,8 @@ export default function CertificatesAdmin() {
   const [searchQuery, setSearchQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState<string>("all");
   const [typeFilter, setTypeFilter] = useState<string>("all");
+  const [eventFilter, setEventFilter] = useState<string>("all");
+  const [groupBy, setGroupBy] = useState<string>("none");
 
   const [showDesigner, setShowDesigner] = useState(false);
   const [showCertificateForm, setShowCertificateForm] = useState(false);
@@ -396,12 +398,18 @@ export default function CertificatesAdmin() {
         <CertificateDesigner
           onSave={async (design) => {
             try {
+              // Extract title from first line
+              const titleLine = design.lines[0];
+              const bodyLine = design.lines.find(l => l.isVariable && l.text.includes("{{event_name}}"));
               const { error } = await supabase.from("certificate_templates").insert({
-                name: design.titleText || "Custom Template", name_ar: design.titleTextAr || null,
-                type: "participation", title_text: design.titleText, title_text_ar: design.titleTextAr,
-                body_template: design.bodyTemplate, body_template_ar: design.bodyTemplateAr,
+                name: titleLine?.text || "Custom Template", name_ar: null,
+                type: "participation", title_text: titleLine?.text || "Certificate",
+                title_text_ar: null,
+                body_template: bodyLine?.text || "",
+                body_template_ar: null,
                 background_color: design.backgroundColor, border_color: design.borderColor,
-                border_style: design.borderStyle, title_font: design.titleFont, body_font: design.bodyFont,
+                border_style: design.borderStyle, title_font: titleLine?.font || "serif",
+                body_font: bodyLine?.font || "sans-serif",
                 is_active: true,
               });
               if (error) throw error;
@@ -505,84 +513,154 @@ export default function CertificatesAdmin() {
                     {certificateTypes.map(t => <SelectItem key={t.value} value={t.value}>{language === "ar" ? t.labelAr : t.label}</SelectItem>)}
                   </SelectContent>
                 </Select>
+                <Select value={eventFilter} onValueChange={setEventFilter}>
+                  <SelectTrigger className="w-[180px]"><SelectValue placeholder={language === "ar" ? "الحدث" : "Event"} /></SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">{language === "ar" ? "كل الأحداث" : "All Events"}</SelectItem>
+                    {[...new Set(certificates.map(c => c.event_name).filter(Boolean))].map(ev => (
+                      <SelectItem key={ev!} value={ev!}>{ev}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                <Select value={groupBy} onValueChange={setGroupBy}>
+                  <SelectTrigger className="w-[160px]"><SelectValue placeholder={language === "ar" ? "تجميع حسب" : "Group By"} /></SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="none">{language === "ar" ? "بدون تجميع" : "No Grouping"}</SelectItem>
+                    <SelectItem value="event">{language === "ar" ? "اسم الحدث" : "Event Name"}</SelectItem>
+                    <SelectItem value="location">{language === "ar" ? "الموقع" : "Location"}</SelectItem>
+                    <SelectItem value="date">{language === "ar" ? "التاريخ" : "Date"}</SelectItem>
+                    <SelectItem value="type">{language === "ar" ? "النوع" : "Type"}</SelectItem>
+                  </SelectContent>
+                </Select>
               </div>
 
-              <ScrollArea className="h-[500px]">
-                <Table>
-                  <TableHeader>
-                    <TableRow>
-                      <TableHead>{language === "ar" ? "رقم" : "#"}</TableHead>
-                      <TableHead>{language === "ar" ? "المستلم" : "Recipient"}</TableHead>
-                      <TableHead>{language === "ar" ? "النوع" : "Type"}</TableHead>
-                      <TableHead>{language === "ar" ? "الحالة" : "Status"}</TableHead>
-                      <TableHead>{language === "ar" ? "الحدث" : "Event"}</TableHead>
-                      <TableHead>{language === "ar" ? "الإجراءات" : "Actions"}</TableHead>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    {certificates.map(cert => (
-                      <TableRow key={cert.id}>
-                        <TableCell className="font-mono text-xs">{cert.certificate_number?.slice(-8) || "—"}</TableCell>
-                        <TableCell>
-                          <p className="font-medium text-sm">{cert.recipient_name}</p>
-                          {cert.recipient_email && <p className="text-xs text-muted-foreground">{cert.recipient_email}</p>}
-                        </TableCell>
-                        <TableCell>
-                          <Badge className={`text-[10px] ${certificateTypes.find(t => t.value === cert.type)?.color} text-white`}>
-                            {getTypeLabel(cert.type)}
-                          </Badge>
-                        </TableCell>
-                        <TableCell>
-                          <Badge className={`text-[10px] ${statusColors[cert.status]}`}>{getStatusLabel(cert.status)}</Badge>
-                        </TableCell>
-                        <TableCell className="text-xs max-w-[120px] truncate">{cert.event_name || "—"}</TableCell>
-                        <TableCell>
-                          <div className="flex items-center gap-0.5">
-                            <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => setViewCertificate(cert)} title={language === "ar" ? "عرض" : "View"}>
-                              <Eye className="h-3.5 w-3.5" />
-                            </Button>
-                            {cert.status === "draft" && (
-                              <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => setSignDialog(cert)} title={language === "ar" ? "توقيع" : "Sign"}>
-                                <PenTool className="h-3.5 w-3.5 text-blue-600" />
-                              </Button>
-                            )}
-                            {cert.status === "signed" && (
-                              <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => issueCertificateMutation.mutate(cert.id)} title={language === "ar" ? "إصدار" : "Issue"}>
-                                <CheckCircle className="h-3.5 w-3.5 text-emerald-600" />
-                              </Button>
-                            )}
-                            {cert.status === "issued" && (
-                              <>
-                                <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => setSendDialog(cert)} title={language === "ar" ? "إرسال" : "Send"}>
-                                  <Send className="h-3.5 w-3.5 text-primary" />
-                                </Button>
-                                <Button variant="ghost" size="icon" className="h-7 w-7" title={language === "ar" ? "تحميل" : "Download"}>
-                                  <Download className="h-3.5 w-3.5" />
-                                </Button>
-                              </>
-                            )}
-                            <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => { navigator.clipboard.writeText(cert.verification_code); toast({ title: language === "ar" ? "تم النسخ" : "Copied" }); }}>
-                              <Copy className="h-3.5 w-3.5" />
-                            </Button>
-                            {cert.status !== "revoked" && (
-                              <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => revokeMutation.mutate(cert.id)}>
-                                <XCircle className="h-3.5 w-3.5 text-destructive" />
-                              </Button>
-                            )}
-                          </div>
-                        </TableCell>
-                      </TableRow>
-                    ))}
-                    {certificates.length === 0 && (
+              {(() => {
+                // Filter by event
+                const filtered = eventFilter === "all" ? certificates : certificates.filter(c => c.event_name === eventFilter);
+
+                // Group certificates
+                const getGroupKey = (cert: Certificate): string => {
+                  switch (groupBy) {
+                    case "event": return cert.event_name || (language === "ar" ? "بدون حدث" : "No Event");
+                    case "location": return cert.event_location || (language === "ar" ? "بدون موقع" : "No Location");
+                    case "date": return cert.event_date || (language === "ar" ? "بدون تاريخ" : "No Date");
+                    case "type": return getTypeLabel(cert.type) || cert.type;
+                    default: return "all";
+                  }
+                };
+
+                const groups: Record<string, Certificate[]> = {};
+                filtered.forEach(cert => {
+                  const key = getGroupKey(cert);
+                  if (!groups[key]) groups[key] = [];
+                  groups[key].push(cert);
+                });
+
+                const sortedKeys = Object.keys(groups).sort();
+
+                const renderTable = (certs: Certificate[]) => (
+                  <Table>
+                    <TableHeader>
                       <TableRow>
-                        <TableCell colSpan={6} className="text-center text-muted-foreground py-12">
-                          {language === "ar" ? "لا توجد شهادات" : "No certificates found"}
-                        </TableCell>
+                        <TableHead>{language === "ar" ? "رقم" : "#"}</TableHead>
+                        <TableHead>{language === "ar" ? "المستلم" : "Recipient"}</TableHead>
+                        <TableHead>{language === "ar" ? "النوع" : "Type"}</TableHead>
+                        <TableHead>{language === "ar" ? "الحالة" : "Status"}</TableHead>
+                        <TableHead>{language === "ar" ? "الحدث" : "Event"}</TableHead>
+                        <TableHead>{language === "ar" ? "الموقع" : "Location"}</TableHead>
+                        <TableHead>{language === "ar" ? "الإجراءات" : "Actions"}</TableHead>
                       </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      {certs.map(cert => (
+                        <TableRow key={cert.id}>
+                          <TableCell className="font-mono text-xs">{cert.certificate_number?.slice(-8) || "—"}</TableCell>
+                          <TableCell>
+                            <p className="font-medium text-sm">{cert.recipient_name}</p>
+                            {cert.recipient_email && <p className="text-xs text-muted-foreground">{cert.recipient_email}</p>}
+                          </TableCell>
+                          <TableCell>
+                            <Badge className={`text-[10px] ${certificateTypes.find(t => t.value === cert.type)?.color} text-white`}>
+                              {getTypeLabel(cert.type)}
+                            </Badge>
+                          </TableCell>
+                          <TableCell>
+                            <Badge className={`text-[10px] ${statusColors[cert.status]}`}>{getStatusLabel(cert.status)}</Badge>
+                          </TableCell>
+                          <TableCell className="text-xs max-w-[120px] truncate">{cert.event_name || "—"}</TableCell>
+                          <TableCell className="text-xs max-w-[100px] truncate">{cert.event_location || "—"}</TableCell>
+                          <TableCell>
+                            <div className="flex items-center gap-0.5">
+                              <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => setViewCertificate(cert)} title={language === "ar" ? "عرض" : "View"}>
+                                <Eye className="h-3.5 w-3.5" />
+                              </Button>
+                              {cert.status === "draft" && (
+                                <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => setSignDialog(cert)} title={language === "ar" ? "توقيع" : "Sign"}>
+                                  <PenTool className="h-3.5 w-3.5 text-primary" />
+                                </Button>
+                              )}
+                              {cert.status === "signed" && (
+                                <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => issueCertificateMutation.mutate(cert.id)} title={language === "ar" ? "إصدار" : "Issue"}>
+                                  <CheckCircle className="h-3.5 w-3.5 text-chart-3" />
+                                </Button>
+                              )}
+                              {cert.status === "issued" && (
+                                <>
+                                  <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => setSendDialog(cert)} title={language === "ar" ? "إرسال" : "Send"}>
+                                    <Send className="h-3.5 w-3.5 text-primary" />
+                                  </Button>
+                                  <Button variant="ghost" size="icon" className="h-7 w-7" title={language === "ar" ? "تحميل" : "Download"}>
+                                    <Download className="h-3.5 w-3.5" />
+                                  </Button>
+                                </>
+                              )}
+                              <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => { navigator.clipboard.writeText(cert.verification_code); toast({ title: language === "ar" ? "تم النسخ" : "Copied" }); }}>
+                                <Copy className="h-3.5 w-3.5" />
+                              </Button>
+                              {cert.status !== "revoked" && (
+                                <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => revokeMutation.mutate(cert.id)}>
+                                  <XCircle className="h-3.5 w-3.5 text-destructive" />
+                                </Button>
+                              )}
+                            </div>
+                          </TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                );
+
+                return (
+                  <ScrollArea className="h-[500px]">
+                    {groupBy === "none" ? (
+                      <>
+                        {renderTable(filtered)}
+                        {filtered.length === 0 && (
+                          <div className="text-center text-muted-foreground py-12">
+                            {language === "ar" ? "لا توجد شهادات" : "No certificates found"}
+                          </div>
+                        )}
+                      </>
+                    ) : (
+                      <div className="space-y-4">
+                        {sortedKeys.map(key => (
+                          <div key={key}>
+                            <div className="flex items-center gap-2 mb-2 px-1">
+                              <Badge variant="secondary" className="text-xs font-medium">
+                                {key}
+                              </Badge>
+                              <Badge variant="outline" className="text-[10px]">
+                                {groups[key].length} {language === "ar" ? "شهادة" : "certificates"}
+                              </Badge>
+                            </div>
+                            {renderTable(groups[key])}
+                          </div>
+                        ))}
+                      </div>
                     )}
-                  </TableBody>
-                </Table>
-              </ScrollArea>
+                  </ScrollArea>
+                );
+              })()}
             </CardContent>
           </Card>
         </TabsContent>
