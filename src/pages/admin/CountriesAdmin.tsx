@@ -21,7 +21,9 @@ import {
   MapPin, DollarSign, Clock, Languages, Star, Settings2,
   Building2, Users, Trophy, ShieldCheck, Save, X, ChevronRight,
   ToggleLeft,
+  BarChart3,
 } from "lucide-react";
+import { CountryOverviewDashboard } from "@/components/admin/CountryOverviewDashboard";
 
 interface Country {
   id: string;
@@ -104,7 +106,7 @@ export default function CountriesAdmin() {
   const [editCountry, setEditCountry] = useState<Country | null>(null);
   const [showForm, setShowForm] = useState(false);
   const [form, setForm] = useState(defaultForm);
-  const [activeTab, setActiveTab] = useState("countries");
+  const [activeTab, setActiveTab] = useState("overview");
   const [formTab, setFormTab] = useState("basic");
 
   const { data: countries = [], isLoading } = useQuery({
@@ -291,6 +293,10 @@ export default function CountriesAdmin() {
       {/* Tabs */}
       <Tabs value={activeTab} onValueChange={setActiveTab}>
         <TabsList>
+          <TabsTrigger value="overview">
+            <BarChart3 className="h-4 w-4 mr-1.5" />
+            {language === "ar" ? "نظرة عامة" : "Overview"}
+          </TabsTrigger>
           <TabsTrigger value="countries">
             <Globe className="h-4 w-4 mr-1.5" />
             {language === "ar" ? "الدول" : "Countries"}
@@ -300,6 +306,11 @@ export default function CountriesAdmin() {
             {language === "ar" ? "حسب المنطقة" : "By Region"}
           </TabsTrigger>
         </TabsList>
+
+        {/* Overview Dashboard */}
+        <TabsContent value="overview" className="space-y-4">
+          <CountryOverviewDashboard />
+        </TabsContent>
 
         {/* All Countries */}
         <TabsContent value="countries" className="space-y-4">
