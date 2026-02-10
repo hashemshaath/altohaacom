@@ -155,8 +155,9 @@ export default function ExhibitionDetail() {
         .from("exhibitions")
         .select("*")
         .eq("slug", slug!)
-        .single();
+        .maybeSingle();
       if (error) throw error;
+      if (!data) throw new Error("Exhibition not found");
       return data;
     },
     enabled: !!slug,
