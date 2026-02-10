@@ -98,6 +98,7 @@ const CompanyDrivers = lazy(() => import("./pages/company/CompanyDrivers"));
 const CompanyWorkingHours = lazy(() => import("./pages/company/CompanyWorkingHours"));
 const CompanySettings = lazy(() => import("./pages/company/CompanySettings"));
 const CompanyInvoices = lazy(() => import("./pages/company/CompanyInvoices"));
+const CompanyCatalog = lazy(() => import("./pages/company/CompanyCatalog"));
 
 const queryClient = new QueryClient();
 
@@ -204,6 +205,7 @@ const App = () => (
                   <Route path="working-hours" element={<CompanyWorkingHours />} />
                   <Route path="settings" element={<CompanySettings />} />
                   <Route path="invoices" element={<CompanyInvoices />} />
+                  <Route path="catalog" element={<CompanyCatalog />} />
                 </Route>
 
                 {/* Public profile URL: altohaa.com/username */}

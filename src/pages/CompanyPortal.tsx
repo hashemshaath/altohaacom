@@ -23,6 +23,7 @@ import {
   Building2,
   Truck,
   Star,
+  Package,
 } from "lucide-react";
 
 export default function CompanyPortalLayout() {
@@ -46,6 +47,7 @@ export default function CompanyPortalLayout() {
     { to: "/company", icon: LayoutDashboard, label: language === "ar" ? "لوحة التحكم" : "Dashboard", end: true },
     { to: "/company/profile", icon: Building2, label: language === "ar" ? "ملف الشركة" : "Company Profile" },
     { to: "/company/team", icon: Users, label: language === "ar" ? "فريق العمل" : "Team" },
+    { to: "/company/catalog", icon: Package, label: language === "ar" ? "كتالوج المنتجات" : "Catalog" },
     { to: "/company/orders", icon: ShoppingCart, label: language === "ar" ? "الطلبيات" : "Orders" },
     { to: "/company/invoices", icon: FileText, label: language === "ar" ? "الفواتير" : "Invoices" },
     { to: "/company/invitations", icon: FileText, label: language === "ar" ? "الدعوات" : "Invitations" },
