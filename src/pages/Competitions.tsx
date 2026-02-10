@@ -9,11 +9,11 @@ import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Calendar, MapPin, Users, Search, Plus, Globe, Trophy, ArrowRight, Clock } from "lucide-react";
+import { Calendar, MapPin, Users, Search, Plus, Globe, Trophy, Clock } from "lucide-react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { format, differenceInDays, isFuture } from "date-fns";
 import type { Database } from "@/integrations/supabase/types";
@@ -134,31 +134,33 @@ export default function Competitions() {
       />
       <Header />
       
-      <main className="container flex-1 py-8 md:py-12">
+      <main className="container flex-1 py-6 md:py-10">
         {/* Page Header */}
-        <div className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
-          <div>
-            <div className="mb-1 flex items-center gap-2">
-              <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary/10">
-                <Trophy className="h-4 w-4 text-primary" />
+        <Card className="mb-8 overflow-hidden border-primary/10 bg-gradient-to-br from-primary/5 via-background to-accent/5">
+          <CardContent className="flex flex-col gap-4 p-5 sm:flex-row sm:items-center sm:justify-between sm:p-6">
+            <div className="flex items-center gap-4">
+              <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-primary/10 ring-4 ring-primary/5">
+                <Trophy className="h-6 w-6 text-primary" />
               </div>
-              <h1 className="font-serif text-2xl font-bold md:text-3xl">{t("competitionsPage")}</h1>
+              <div>
+                <h1 className="font-serif text-xl font-bold sm:text-2xl md:text-3xl">{t("competitionsPage")}</h1>
+                <p className="mt-1 text-sm text-muted-foreground">{t("competitionsDesc")}</p>
+              </div>
             </div>
-            <p className="text-sm text-muted-foreground md:text-base">{t("competitionsDesc")}</p>
-          </div>
-          {canCreate && (
-            <Button asChild size="sm" className="w-full sm:w-auto">
-              <Link to="/competitions/create">
-                <Plus className="me-1.5 h-4 w-4" />
-                {t("createCompetition")}
-              </Link>
-            </Button>
-          )}
-        </div>
+            {canCreate && (
+              <Button asChild className="w-full sm:w-auto">
+                <Link to="/competitions/create">
+                  <Plus className="me-1.5 h-4 w-4" />
+                  {t("createCompetition")}
+                </Link>
+              </Button>
+            )}
+          </CardContent>
+        </Card>
 
-        {/* Search & Tabs Row */}
-        <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-          <div className="relative w-full sm:max-w-xs">
+        {/* Search & Filters */}
+        <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center">
+          <div className="relative flex-1 sm:max-w-sm">
             <Search className="absolute start-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
             <Input
               placeholder={t("searchCompetitions")}
@@ -222,8 +224,8 @@ export default function Competitions() {
               </div>
             ) : filteredCompetitions?.length === 0 ? (
               <div className="flex flex-col items-center justify-center py-20 text-center">
-                <div className="mb-4 rounded-2xl bg-muted/60 p-5">
-                  <Trophy className="h-10 w-10 text-muted-foreground/40" />
+                <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-muted">
+                  <Trophy className="h-7 w-7 text-muted-foreground/40" />
                 </div>
                 <h3 className="mb-1 text-lg font-semibold">{t("noCompetitionsFound")}</h3>
                 <p className="max-w-sm text-sm text-muted-foreground">
@@ -269,18 +271,22 @@ interface CompetitionCardProps {
 function CompetitionCard({ competition, language, getStatusLabel, t }: CompetitionCardProps) {
   const isAr = language === "ar";
   const title = isAr && competition.title_ar ? competition.title_ar : competition.title;
+  const desc = isAr && competition.description_ar ? competition.description_ar : competition.description;
   const venue = isAr && competition.venue_ar ? competition.venue_ar : competition.venue;
+  const regCount = competition.competition_registrations?.length || 0;
+  const maxP = competition.max_participants;
+  const fillPct = maxP ? Math.min(Math.round((regCount / maxP) * 100), 100) : 0;
 
   return (
     <Link to={`/competitions/${competition.id}`} className="group block">
-      <Card className="h-full overflow-hidden transition-all hover:shadow-md hover:-translate-y-0.5">
+      <Card className="h-full overflow-hidden transition-all hover:shadow-lg hover:-translate-y-1 border-border/50 hover:border-primary/20">
         {/* Cover Image */}
         <div className="relative aspect-[16/10] overflow-hidden bg-muted">
           {competition.cover_image_url ? (
             <img
               src={competition.cover_image_url}
               alt={title}
-              className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
+              className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
               loading="lazy"
             />
           ) : (
@@ -288,15 +294,19 @@ function CompetitionCard({ competition, language, getStatusLabel, t }: Competiti
               <Trophy className="h-10 w-10 text-muted-foreground/20" />
             </div>
           )}
-          <div className="absolute start-2.5 top-2.5 flex flex-wrap gap-1.5">
-            <Badge className={`text-[10px] font-medium ${statusColors[competition.status]}`}>
+          {/* Gradient overlay for readability */}
+          <div className="absolute inset-x-0 bottom-0 h-16 bg-gradient-to-t from-black/40 to-transparent" />
+          
+          {/* Status badges */}
+          <div className="absolute start-3 top-3 flex flex-wrap gap-1.5">
+            <Badge className={`text-[10px] font-medium border-0 shadow-sm ${statusColors[competition.status]}`}>
               {getStatusLabel(competition.status)}
             </Badge>
             {isFuture(new Date(competition.competition_start)) && (() => {
               const daysLeft = differenceInDays(new Date(competition.competition_start), new Date());
               if (daysLeft <= 30 && daysLeft > 0) {
                 return (
-                  <Badge variant="secondary" className="gap-1 text-[10px]">
+                  <Badge variant="secondary" className="gap-1 text-[10px] shadow-sm">
                     <Clock className="h-2.5 w-2.5" />
                     {isAr ? `${daysLeft} يوم` : `${daysLeft}d left`}
                   </Badge>
@@ -305,54 +315,59 @@ function CompetitionCard({ competition, language, getStatusLabel, t }: Competiti
               return null;
             })()}
           </div>
+
+          {/* Participant count on image */}
+          {maxP && (
+            <div className="absolute end-3 bottom-3 flex items-center gap-1.5">
+              <Badge variant="secondary" className="gap-1 text-[10px] bg-background/80 backdrop-blur-sm shadow-sm">
+                <Users className="h-2.5 w-2.5" />
+                {regCount}/{maxP}
+              </Badge>
+            </div>
+          )}
         </div>
 
         <CardContent className="p-4">
-          <h3 className="mb-2.5 line-clamp-2 text-sm font-semibold leading-snug group-hover:text-primary transition-colors">
+          <h3 className="mb-1.5 line-clamp-2 text-sm font-semibold leading-snug group-hover:text-primary transition-colors">
             {title}
           </h3>
 
-          <div className="space-y-1.5 text-[12px] text-muted-foreground">
-            <div className="flex items-center gap-2">
-              <Calendar className="h-3.5 w-3.5 shrink-0" />
-              <span className="truncate">
-                {format(new Date(competition.competition_start), "MMM d, yyyy")}
-                {competition.competition_end !== competition.competition_start && (
-                  <> – {format(new Date(competition.competition_end), "MMM d, yyyy")}</>
-                )}
-              </span>
+          {desc && (
+            <p className="mb-3 text-[11px] text-muted-foreground line-clamp-2 leading-relaxed">
+              {desc}
+            </p>
+          )}
+
+          {/* Capacity bar */}
+          {maxP && maxP > 0 && (
+            <div className="mb-3">
+              <div className="h-1.5 w-full overflow-hidden rounded-full bg-muted">
+                <div
+                  className="h-full rounded-full bg-primary/60 transition-all"
+                  style={{ width: `${fillPct}%` }}
+                />
+              </div>
             </div>
+          )}
+
+          <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-[11px] text-muted-foreground">
+            <span className="flex items-center gap-1.5">
+              <Calendar className="h-3 w-3 shrink-0" />
+              {format(new Date(competition.competition_start), "MMM d, yyyy")}
+            </span>
             
             {competition.is_virtual ? (
-              <div className="flex items-center gap-2">
-                <Globe className="h-3.5 w-3.5 shrink-0" />
-                <span>{t("virtual")}</span>
-              </div>
-            ) : venue ? (
-              <div className="flex items-center gap-2">
-                <MapPin className="h-3.5 w-3.5 shrink-0" />
+              <span className="flex items-center gap-1.5">
+                <Globe className="h-3 w-3 shrink-0" />
+                {t("virtual")}
+              </span>
+            ) : (venue || competition.city) ? (
+              <span className="flex items-center gap-1.5">
+                <MapPin className="h-3 w-3 shrink-0" />
                 <span className="line-clamp-1">
-                  {venue}
-                  {competition.city && `, ${competition.city}`}
+                  {competition.city || venue}{competition.country ? `, ${competition.country}` : ""}
                 </span>
-              </div>
-            ) : competition.city ? (
-              <div className="flex items-center gap-2">
-                <MapPin className="h-3.5 w-3.5 shrink-0" />
-                <span className="line-clamp-1">
-                  {competition.city}{competition.country ? `, ${competition.country}` : ""}
-                </span>
-              </div>
-            ) : null}
-
-            {(competition.competition_registrations?.length || competition.max_participants) ? (
-              <div className="flex items-center gap-2">
-                <Users className="h-3.5 w-3.5 shrink-0" />
-                <span>
-                  {competition.competition_registrations?.length || 0}
-                  {competition.max_participants ? ` / ${competition.max_participants}` : ""} {t("participants")}
-                </span>
-              </div>
+              </span>
             ) : null}
           </div>
         </CardContent>
