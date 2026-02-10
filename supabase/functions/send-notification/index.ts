@@ -9,6 +9,7 @@ const corsHeaders = {
 interface NotificationPayload {
   userId: string;
   templateName?: string;
+  templateSlug?: string;
   title?: string;
   titleAr?: string;
   body?: string;
@@ -17,6 +18,8 @@ interface NotificationPayload {
   link?: string;
   channels?: string[];
   variables?: Record<string, string>;
+  // For WhatsApp/SMS
+  phone?: string;
 }
 
 serve(async (req) => {
@@ -30,7 +33,7 @@ serve(async (req) => {
     const supabase = createClient(supabaseUrl, supabaseKey);
 
     const payload: NotificationPayload = await req.json();
-    const { userId, templateName, title, titleAr, body, bodyAr, type = "info", link, channels = ["in_app"], variables = {} } = payload;
+    const { userId, templateName, templateSlug, title, titleAr, body, bodyAr, type = "info", link, channels = ["in_app"], variables = {}, phone } = payload;
 
     if (!userId) {
       return new Response(
@@ -44,36 +47,61 @@ serve(async (req) => {
     let finalBody = body;
     let finalBodyAr = bodyAr;
     let finalChannels = channels;
+    let emailSubject = title;
+    let emailSubjectAr = titleAr;
 
-    // If using a template, fetch and process it
-    if (templateName) {
+    // If using a communication template (slug-based), fetch from communication_templates
+    if (templateSlug) {
+      const { data: template, error: templateError } = await supabase
+        .from("communication_templates")
+        .select("*")
+        .eq("slug", templateSlug)
+        .eq("is_active", true)
+        .single();
+
+      if (!templateError && template) {
+        emailSubject = template.subject || template.name;
+        emailSubjectAr = template.subject_ar || template.name_ar;
+        finalBody = template.body;
+        finalBodyAr = template.body_ar;
+        finalTitle = template.name;
+        finalTitleAr = template.name_ar;
+
+        // Replace variables
+        for (const [key, value] of Object.entries(variables)) {
+          const regex = new RegExp(`{{${key}}}`, "g");
+          finalTitle = finalTitle?.replace(regex, value);
+          finalTitleAr = finalTitleAr?.replace(regex, value);
+          finalBody = finalBody?.replace(regex, value);
+          finalBodyAr = finalBodyAr?.replace(regex, value);
+          if (emailSubject) emailSubject = emailSubject.replace(regex, value);
+          if (emailSubjectAr) emailSubjectAr = emailSubjectAr.replace(regex, value);
+        }
+      }
+    }
+
+    // Legacy: notification_templates support
+    if (templateName && !templateSlug) {
       const { data: template, error: templateError } = await supabase
         .from("notification_templates")
         .select("*")
         .eq("name", templateName)
         .single();
 
-      if (templateError || !template) {
-        console.error("Template not found:", templateName);
-        return new Response(
-          JSON.stringify({ error: "Template not found" }),
-          { status: 404, headers: { ...corsHeaders, "Content-Type": "application/json" } }
-        );
-      }
+      if (!templateError && template) {
+        finalTitle = template.title;
+        finalTitleAr = template.title_ar;
+        finalBody = template.body;
+        finalBodyAr = template.body_ar;
+        finalChannels = template.channels || channels;
 
-      finalTitle = template.title;
-      finalTitleAr = template.title_ar;
-      finalBody = template.body;
-      finalBodyAr = template.body_ar;
-      finalChannels = template.channels || channels;
-
-      // Replace variables in template
-      for (const [key, value] of Object.entries(variables)) {
-        const regex = new RegExp(`{{${key}}}`, "g");
-        finalTitle = finalTitle?.replace(regex, value);
-        finalTitleAr = finalTitleAr?.replace(regex, value);
-        finalBody = finalBody?.replace(regex, value);
-        finalBodyAr = finalBodyAr?.replace(regex, value);
+        for (const [key, value] of Object.entries(variables)) {
+          const regex = new RegExp(`{{${key}}}`, "g");
+          finalTitle = finalTitle?.replace(regex, value);
+          finalTitleAr = finalTitleAr?.replace(regex, value);
+          finalBody = finalBody?.replace(regex, value);
+          finalBodyAr = finalBodyAr?.replace(regex, value);
+        }
       }
     }
 
@@ -91,23 +119,18 @@ serve(async (req) => {
       .eq("user_id", userId);
 
     const enabledChannels = new Set(
-      (preferences || [])
-        .filter(p => p.enabled)
-        .map(p => p.channel)
+      (preferences || []).filter(p => p.enabled).map(p => p.channel)
     );
 
-    // Default all channels to enabled if no preferences set
-    const channelsToUse = preferences?.length 
+    const channelsToUse = preferences?.length
       ? finalChannels.filter(c => enabledChannels.has(c))
       : finalChannels;
 
     const results: Record<string, any> = {};
 
-    // Process each channel
     for (const channel of channelsToUse) {
       switch (channel) {
-        case "in_app":
-          // Create in-app notification
+        case "in_app": {
           const { data: notification, error: notifError } = await supabase
             .from("notifications")
             .insert({
@@ -124,19 +147,14 @@ serve(async (req) => {
             .select()
             .single();
 
-          if (notifError) {
-            console.error("Error creating in-app notification:", notifError);
-            results.in_app = { success: false, error: notifError.message };
-          } else {
-            results.in_app = { success: true, id: notification.id };
-          }
+          results.in_app = notifError
+            ? { success: false, error: notifError.message }
+            : { success: true, id: notification.id };
           break;
+        }
 
         case "email":
-        case "sms":
-        case "whatsapp":
-        case "push":
-          // Queue for external delivery (will be processed by separate workers when integrations are ready)
+        case "push": {
           const { data: queueItem, error: queueError } = await supabase
             .from("notification_queue")
             .insert({
@@ -145,6 +163,8 @@ serve(async (req) => {
               payload: {
                 title: finalTitle,
                 title_ar: finalTitleAr,
+                subject: emailSubject || finalTitle,
+                subject_ar: emailSubjectAr || finalTitleAr,
                 body: finalBody,
                 body_ar: finalBodyAr,
                 type,
@@ -156,17 +176,44 @@ serve(async (req) => {
             .select()
             .single();
 
-          if (queueError) {
-            console.error(`Error queuing ${channel} notification:`, queueError);
-            results[channel] = { success: false, error: queueError.message };
-          } else {
-            results[channel] = { success: true, queued: true, id: queueItem.id };
-          }
+          results[channel] = queueError
+            ? { success: false, error: queueError.message }
+            : { success: true, queued: true, id: queueItem.id };
           break;
+        }
+
+        case "sms":
+        case "whatsapp": {
+          // Queue SMS/WhatsApp — will be processed when provider keys are configured
+          const { data: queueItem, error: queueError } = await supabase
+            .from("notification_queue")
+            .insert({
+              user_id: userId,
+              channel,
+              payload: {
+                title: finalTitle,
+                title_ar: finalTitleAr,
+                body: finalBody,
+                body_ar: finalBodyAr,
+                phone: phone || null,
+                type,
+                link,
+                variables,
+              },
+              status: "pending",
+            })
+            .select()
+            .single();
+
+          results[channel] = queueError
+            ? { success: false, error: queueError.message }
+            : { success: true, queued: true, id: queueItem.id };
+          break;
+        }
       }
     }
 
-    // If emails were queued, trigger the email processor
+    // Trigger email processor if emails were queued
     if (results.email?.queued) {
       try {
         const emailProcessUrl = `${supabaseUrl}/functions/v1/process-email-queue`;

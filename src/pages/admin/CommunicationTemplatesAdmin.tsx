@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
+import { notifyFromTemplate } from "@/lib/notificationTriggers";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -28,6 +29,7 @@ import {
   Filter,
   FileText,
   Variable,
+  Zap,
 } from "lucide-react";
 
 interface Template {
@@ -75,7 +77,11 @@ export default function CommunicationTemplatesAdmin() {
   const [channelFilter, setChannelFilter] = useState("all");
   const [editDialogOpen, setEditDialogOpen] = useState(false);
   const [previewDialogOpen, setPreviewDialogOpen] = useState(false);
+  const [sendDialogOpen, setSendDialogOpen] = useState(false);
   const [editingTemplate, setEditingTemplate] = useState<Template | null>(null);
+  const [sendUserId, setSendUserId] = useState("");
+  const [sendPhone, setSendPhone] = useState("");
+  const [sendVars, setSendVars] = useState<Record<string, string>>({});
 
   const [form, setForm] = useState({
     name: "",
@@ -170,6 +176,38 @@ export default function CommunicationTemplatesAdmin() {
       queryClient.invalidateQueries({ queryKey: ["communication-templates"] });
     },
   });
+  const sendMutation = useMutation({
+    mutationFn: async () => {
+      if (!editingTemplate || !sendUserId) throw new Error("Missing data");
+      await notifyFromTemplate({
+        userId: sendUserId,
+        templateSlug: editingTemplate.slug,
+        variables: sendVars,
+        channels: [editingTemplate.channel],
+        phone: sendPhone || undefined,
+      });
+    },
+    onSuccess: () => {
+      setSendDialogOpen(false);
+      setSendUserId("");
+      setSendPhone("");
+      setSendVars({});
+      toast({ title: isAr ? "تم الإرسال" : "Notification sent" });
+    },
+    onError: (e: any) => {
+      toast({ title: isAr ? "فشل الإرسال" : "Send failed", description: e.message, variant: "destructive" });
+    },
+  });
+
+  const openSendDialog = (t: Template) => {
+    setEditingTemplate(t);
+    const vars: Record<string, string> = {};
+    (t.variables || []).forEach((v) => { vars[v] = ""; });
+    setSendVars(vars);
+    setSendUserId("");
+    setSendPhone("");
+    setSendDialogOpen(true);
+  };
 
   const openCreate = () => {
     setEditingTemplate(null);
@@ -322,6 +360,9 @@ export default function CommunicationTemplatesAdmin() {
                   </TableCell>
                   <TableCell>
                     <div className="flex items-center gap-1">
+                      <Button variant="ghost" size="icon" onClick={() => openSendDialog(t)} title={isAr ? "إرسال" : "Send"}>
+                        <Zap className="h-4 w-4 text-chart-4" />
+                      </Button>
                       <Button variant="ghost" size="icon" onClick={() => { setEditingTemplate(t); setPreviewDialogOpen(true); }}>
                         <Eye className="h-4 w-4" />
                       </Button>
@@ -487,6 +528,73 @@ export default function CommunicationTemplatesAdmin() {
               )}
             </div>
           )}
+        </DialogContent>
+      </Dialog>
+
+      {/* Send Dialog */}
+      <Dialog open={sendDialogOpen} onOpenChange={setSendDialogOpen}>
+        <DialogContent className="max-w-md">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <Zap className="h-5 w-5 text-chart-4" />
+              {isAr ? "إرسال إشعار من القالب" : "Send Notification from Template"}
+            </DialogTitle>
+          </DialogHeader>
+          {editingTemplate && (
+            <div className="space-y-4">
+              <div className="rounded-lg border bg-muted/50 p-3">
+                <p className="font-medium text-sm">{isAr && editingTemplate.name_ar ? editingTemplate.name_ar : editingTemplate.name}</p>
+                <p className="text-xs text-muted-foreground font-mono">{editingTemplate.slug} • {editingTemplate.channel}</p>
+              </div>
+
+              <div className="space-y-2">
+                <Label>{isAr ? "معرف المستخدم" : "User ID"}</Label>
+                <Input
+                  value={sendUserId}
+                  onChange={(e) => setSendUserId(e.target.value)}
+                  placeholder="UUID of the recipient user"
+                  className="font-mono text-sm"
+                />
+              </div>
+
+              {(editingTemplate.channel === "whatsapp" || editingTemplate.channel === "sms") && (
+                <div className="space-y-2">
+                  <Label>{isAr ? "رقم الهاتف" : "Phone Number"}</Label>
+                  <Input
+                    value={sendPhone}
+                    onChange={(e) => setSendPhone(e.target.value)}
+                    placeholder="+966XXXXXXXXX"
+                  />
+                </div>
+              )}
+
+              {(editingTemplate.variables || []).length > 0 && (
+                <>
+                  <Separator />
+                  <p className="text-sm font-medium">{isAr ? "المتغيرات" : "Variables"}</p>
+                  <div className="space-y-2">
+                    {(editingTemplate.variables || []).map((v) => (
+                      <div key={v} className="space-y-1">
+                        <Label className="text-xs font-mono">{`{{${v}}}`}</Label>
+                        <Input
+                          value={sendVars[v] || ""}
+                          onChange={(e) => setSendVars((p) => ({ ...p, [v]: e.target.value }))}
+                          placeholder={v}
+                        />
+                      </div>
+                    ))}
+                  </div>
+                </>
+              )}
+            </div>
+          )}
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setSendDialogOpen(false)}>{isAr ? "إلغاء" : "Cancel"}</Button>
+            <Button onClick={() => sendMutation.mutate()} disabled={!sendUserId || sendMutation.isPending}>
+              <Send className="mr-2 h-4 w-4" />
+              {sendMutation.isPending ? (isAr ? "جارٍ الإرسال..." : "Sending...") : (isAr ? "إرسال" : "Send")}
+            </Button>
+          </DialogFooter>
         </DialogContent>
       </Dialog>
     </div>

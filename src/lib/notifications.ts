@@ -2,13 +2,16 @@ import { supabase } from "@/integrations/supabase/client";
 
 interface SendNotificationParams {
   userId: string;
-  title: string;
+  title?: string;
   titleAr?: string;
-  body: string;
+  body?: string;
   bodyAr?: string;
   type?: "info" | "success" | "warning" | "error";
   link?: string;
   channels?: string[];
+  templateSlug?: string;
+  variables?: Record<string, string>;
+  phone?: string;
 }
 
 export async function sendNotification(params: SendNotificationParams) {
@@ -23,6 +26,9 @@ export async function sendNotification(params: SendNotificationParams) {
         type: params.type || "info",
         link: params.link,
         channels: params.channels || ["in_app"],
+        templateSlug: params.templateSlug,
+        variables: params.variables,
+        phone: params.phone,
       },
     });
 

@@ -68,7 +68,7 @@ serve(async (req) => {
         const emailResult = await resend.emails.send({
           from: "Altohaa <noreply@altohaa.com>",
           to: [userEmail],
-          subject: payload.title || "Notification from Altohaa",
+          subject: payload.subject || payload.title || "Notification from Altohaa",
           html: `
             <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
               <div style="text-align: center; margin-bottom: 20px;">

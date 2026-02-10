@@ -227,3 +227,43 @@ export async function notifyInvoicePaid(params: {
     channels: ["in_app", "email"],
   });
 }
+
+// ── Template-based notifications ──
+
+export async function notifyFromTemplate(params: {
+  userId: string;
+  templateSlug: string;
+  variables?: Record<string, string>;
+  channels?: string[];
+  link?: string;
+  phone?: string;
+}) {
+  return sendNotification({
+    userId: params.userId,
+    templateSlug: params.templateSlug,
+    variables: params.variables,
+    channels: params.channels || ["in_app", "email"],
+    link: params.link,
+    phone: params.phone,
+  });
+}
+
+// ── Company invitation notification ──
+
+export async function notifyCompanyInvitation(params: {
+  userId: string;
+  companyName: string;
+  invitationType: string;
+  competitionTitle?: string;
+}) {
+  return sendNotification({
+    userId: params.userId,
+    templateSlug: "company-invitation",
+    variables: {
+      company_name: params.companyName,
+      invitation_type: params.invitationType,
+      competition_title: params.competitionTitle || "",
+    },
+    channels: ["in_app", "email"],
+  });
+}
