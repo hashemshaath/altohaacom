@@ -96,6 +96,9 @@ export default function CompaniesAdmin() {
   const [showCompanyForm, setShowCompanyForm] = useState(false);
   const [selectedCompany, setSelectedCompany] = useState<string | null>(null);
   const [companyDetailTab, setCompanyDetailTab] = useState("overview");
+  const [replyDialogOpen, setReplyDialogOpen] = useState(false);
+  const [replyTarget, setReplyTarget] = useState<string | null>(null);
+  const [replyMessage, setReplyMessage] = useState("");
 
   // Form state
   const [companyForm, setCompanyForm] = useState({
@@ -289,6 +292,52 @@ export default function CompaniesAdmin() {
       return data;
     },
     enabled: !!selectedCompany,
+  });
+
+  // Fetch company communications
+  const { data: communications = [] } = useQuery({
+    queryKey: ["company-communications", selectedCompany],
+    queryFn: async () => {
+      if (!selectedCompany) return [];
+      const { data, error } = await supabase
+        .from("company_communications")
+        .select("*")
+        .eq("company_id", selectedCompany)
+        .is("parent_id", null)
+        .order("created_at", { ascending: false });
+      if (error) throw error;
+      return data;
+    },
+    enabled: !!selectedCompany,
+  });
+
+
+  const replyMutation = useMutation({
+    mutationFn: async ({ parentId, message }: { parentId: string; message: string }) => {
+      if (!selectedCompany) throw new Error("No company");
+      const parent = communications.find(c => c.id === parentId);
+      const { error } = await supabase.from("company_communications").insert({
+        company_id: selectedCompany,
+        sender_id: (await supabase.auth.getUser()).data.user?.id || "",
+        subject: `Re: ${parent?.subject || ""}`,
+        message,
+        direction: "incoming",
+        priority: parent?.priority || "normal",
+        parent_id: parentId,
+        status: "unread",
+      });
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["company-communications"] });
+      setReplyDialogOpen(false);
+      setReplyMessage("");
+      setReplyTarget(null);
+      toast({ title: language === "ar" ? "تم إرسال الرد" : "Reply sent" });
+    },
+    onError: () => {
+      toast({ title: language === "ar" ? "فشل الإرسال" : "Failed to send", variant: "destructive" });
+    },
   });
 
   // Create company mutation
@@ -499,6 +548,7 @@ export default function CompaniesAdmin() {
             <TabsTrigger value="evaluations">{language === "ar" ? "التقييمات" : "Evaluations"}</TabsTrigger>
             <TabsTrigger value="catalog">{language === "ar" ? "الكتالوج" : "Catalog"}</TabsTrigger>
             <TabsTrigger value="drivers">{language === "ar" ? "السائقون" : "Drivers"}</TabsTrigger>
+            <TabsTrigger value="communications">{language === "ar" ? "التواصل" : "Communications"}</TabsTrigger>
             <TabsTrigger value="media">{language === "ar" ? "الوسائط" : "Media"}</TabsTrigger>
           </TabsList>
 
@@ -1050,6 +1100,119 @@ export default function CompaniesAdmin() {
               <Image className="h-12 w-12 mx-auto mb-4 opacity-50" />
               <p>{language === "ar" ? "لا توجد ملفات" : "No files found"}</p>
             </div>
+          </TabsContent>
+
+          {/* Communications Tab */}
+          <TabsContent value="communications" className="space-y-4">
+            <div className="flex justify-between items-center">
+              <h3 className="text-lg font-semibold">
+                {language === "ar" ? "رسائل الشركة" : "Company Messages"}
+                {communications.filter(c => c.direction === "outgoing" && c.status === "unread").length > 0 && (
+                  <Badge variant="destructive" className="ml-2">
+                    {communications.filter(c => c.direction === "outgoing" && c.status === "unread").length}
+                  </Badge>
+                )}
+              </h3>
+            </div>
+            {communications.length === 0 ? (
+              <div className="text-center py-12 text-muted-foreground">
+                <MessageSquare className="h-12 w-12 mx-auto mb-4 opacity-50" />
+                <p>{language === "ar" ? "لا توجد رسائل" : "No messages"}</p>
+              </div>
+            ) : (
+              <ScrollArea className="h-[500px]">
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>{language === "ar" ? "الاتجاه" : "Direction"}</TableHead>
+                      <TableHead>{language === "ar" ? "الموضوع" : "Subject"}</TableHead>
+                      <TableHead>{language === "ar" ? "الأولوية" : "Priority"}</TableHead>
+                      <TableHead>{language === "ar" ? "الحالة" : "Status"}</TableHead>
+                      <TableHead>{language === "ar" ? "التاريخ" : "Date"}</TableHead>
+                      <TableHead></TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {communications.map((msg) => (
+                      <TableRow key={msg.id}>
+                        <TableCell>
+                          <Badge variant="outline">
+                            {msg.direction === "outgoing"
+                              ? language === "ar" ? "من الشركة" : "From Company"
+                              : language === "ar" ? "من الإدارة" : "From Admin"}
+                          </Badge>
+                        </TableCell>
+                        <TableCell>
+                          <div>
+                            <p className="font-medium">{msg.subject}</p>
+                            <p className="text-sm text-muted-foreground truncate max-w-[300px]">{msg.message}</p>
+                          </div>
+                        </TableCell>
+                        <TableCell>
+                          {msg.priority === "urgent" ? (
+                            <Badge variant="destructive">{language === "ar" ? "عاجل" : "Urgent"}</Badge>
+                          ) : msg.priority === "high" ? (
+                            <Badge className="bg-orange-500">{language === "ar" ? "مرتفع" : "High"}</Badge>
+                          ) : (
+                            <span className="text-sm text-muted-foreground">{msg.priority}</span>
+                          )}
+                        </TableCell>
+                        <TableCell>
+                          <Badge variant={msg.status === "unread" ? "default" : "secondary"}>
+                            {msg.status === "unread"
+                              ? language === "ar" ? "غير مقروءة" : "Unread"
+                              : language === "ar" ? "مقروءة" : "Read"}
+                          </Badge>
+                        </TableCell>
+                        <TableCell className="text-sm">{format(new Date(msg.created_at), "yyyy-MM-dd HH:mm")}</TableCell>
+                        <TableCell>
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => {
+                              setReplyTarget(msg.id);
+                              setReplyDialogOpen(true);
+                            }}
+                          >
+                            <Send className="h-3 w-3 mr-1" />
+                            {language === "ar" ? "رد" : "Reply"}
+                          </Button>
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </ScrollArea>
+            )}
+
+            {/* Reply Dialog */}
+            {replyDialogOpen && (
+              <Card className="border-primary">
+                <CardHeader>
+                  <CardTitle className="text-base">{language === "ar" ? "رد على الرسالة" : "Reply to Message"}</CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <Textarea
+                    value={replyMessage}
+                    onChange={(e) => setReplyMessage(e.target.value)}
+                    rows={4}
+                    placeholder={language === "ar" ? "اكتب ردك هنا..." : "Type your reply here..."}
+                  />
+                  <div className="flex justify-end gap-2">
+                    <Button variant="outline" onClick={() => { setReplyDialogOpen(false); setReplyMessage(""); setReplyTarget(null); }}>
+                      {language === "ar" ? "إلغاء" : "Cancel"}
+                    </Button>
+                    <Button
+                      disabled={!replyMessage || replyMutation.isPending}
+                      onClick={() => replyTarget && replyMutation.mutate({ parentId: replyTarget, message: replyMessage })}
+                    >
+                      <Send className="h-4 w-4 mr-2" />
+                      {replyMutation.isPending ? (language === "ar" ? "جارٍ الإرسال..." : "Sending...") : (language === "ar" ? "إرسال" : "Send")}
+                    </Button>
+                  </div>
+                </CardContent>
+              </Card>
+            )}
           </TabsContent>
         </Tabs>
       </div>
