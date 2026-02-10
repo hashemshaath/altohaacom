@@ -1,13 +1,13 @@
 import { useState } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
-import { Navigate, Outlet, NavLink } from "react-router-dom";
+import { Navigate, Outlet, NavLink, useLocation } from "react-router-dom";
 import { useCompanyAccess } from "@/hooks/useCompanyAccess";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Separator } from "@/components/ui/separator";
+import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import {
   LayoutDashboard,
   ShoppingCart,
@@ -24,12 +24,16 @@ import {
   Truck,
   Star,
   Package,
+  Menu,
+  MoreHorizontal,
 } from "lucide-react";
 
 export default function CompanyPortalLayout() {
   const { t, language } = useLanguage();
   const { companyId, isLoading } = useCompanyAccess();
   const [collapsed, setCollapsed] = useState(false);
+  const [mobileOpen, setMobileOpen] = useState(false);
+  const location = useLocation();
 
   if (isLoading) {
     return (
@@ -45,28 +49,58 @@ export default function CompanyPortalLayout() {
 
   const navItems = [
     { to: "/company", icon: LayoutDashboard, label: language === "ar" ? "لوحة التحكم" : "Dashboard", end: true },
-    { to: "/company/profile", icon: Building2, label: language === "ar" ? "ملف الشركة" : "Company Profile" },
+    { to: "/company/profile", icon: Building2, label: language === "ar" ? "ملف الشركة" : "Profile" },
     { to: "/company/team", icon: Users, label: language === "ar" ? "فريق العمل" : "Team" },
     { to: "/company/catalog", icon: Package, label: language === "ar" ? "كتالوج المنتجات" : "Catalog" },
     { to: "/company/orders", icon: ShoppingCart, label: language === "ar" ? "الطلبيات" : "Orders" },
     { to: "/company/invoices", icon: FileText, label: language === "ar" ? "الفواتير" : "Invoices" },
     { to: "/company/invitations", icon: FileText, label: language === "ar" ? "الدعوات" : "Invitations" },
-    { to: "/company/communications", icon: MessageSquare, label: language === "ar" ? "التواصل" : "Communications" },
+    { to: "/company/communications", icon: MessageSquare, label: language === "ar" ? "التواصل" : "Comms" },
     { to: "/company/statements", icon: BarChart3, label: language === "ar" ? "كشوفات الحساب" : "Statements" },
     { to: "/company/transactions", icon: FileText, label: language === "ar" ? "المعاملات" : "Transactions" },
     { to: "/company/evaluations", icon: Star, label: language === "ar" ? "التقييمات" : "Evaluations" },
-    { to: "/company/media", icon: Image, label: language === "ar" ? "مكتبة الوسائط" : "Media Library" },
+    { to: "/company/media", icon: Image, label: language === "ar" ? "مكتبة الوسائط" : "Media" },
     { to: "/company/branches", icon: Building2, label: language === "ar" ? "الفروع" : "Branches" },
     { to: "/company/drivers", icon: Truck, label: language === "ar" ? "السائقون" : "Drivers" },
-    { to: "/company/working-hours", icon: Clock, label: language === "ar" ? "ساعات العمل" : "Working Hours" },
+    { to: "/company/working-hours", icon: Clock, label: language === "ar" ? "ساعات العمل" : "Hours" },
     { to: "/company/settings", icon: Settings, label: language === "ar" ? "الإعدادات" : "Settings" },
   ];
+
+  // Bottom bar shows first 4 items + "More" on mobile
+  const bottomBarItems = navItems.slice(0, 4);
+  const isMoreActive = !bottomBarItems.some(
+    (item) => item.end ? location.pathname === item.to : location.pathname.startsWith(item.to)
+  );
+
+  const NavList = ({ onNavigate }: { onNavigate?: () => void }) => (
+    <nav className="space-y-1">
+      {navItems.map((item) => (
+        <NavLink
+          key={item.to}
+          to={item.to}
+          end={item.end}
+          onClick={onNavigate}
+          className={({ isActive }) =>
+            cn(
+              "flex items-center gap-3 rounded-md px-3 py-2 text-sm transition-colors",
+              isActive
+                ? "bg-primary text-primary-foreground"
+                : "text-muted-foreground hover:bg-muted hover:text-foreground"
+            )
+          }
+        >
+          <item.icon className="h-4 w-4 shrink-0" />
+          <span className="truncate">{item.label}</span>
+        </NavLink>
+      ))}
+    </nav>
+  );
 
   return (
     <div className="flex min-h-screen flex-col">
       <Header />
       <div className="flex flex-1">
-        {/* Sidebar */}
+        {/* Desktop Sidebar */}
         <aside
           className={cn(
             "sticky top-0 hidden h-[calc(100vh-64px)] shrink-0 border-r bg-card transition-all duration-300 md:block",
@@ -74,7 +108,6 @@ export default function CompanyPortalLayout() {
           )}
         >
           <div className="flex h-full flex-col">
-            {/* Header */}
             <div className="flex items-center justify-between border-b p-3">
               {!collapsed && (
                 <div className="flex items-center gap-2">
@@ -93,8 +126,6 @@ export default function CompanyPortalLayout() {
                 {collapsed ? <ChevronRight className="h-4 w-4" /> : <ChevronLeft className="h-4 w-4" />}
               </Button>
             </div>
-
-            {/* Navigation */}
             <ScrollArea className="flex-1 p-2">
               <nav className="space-y-1">
                 {navItems.map((item) => (
@@ -123,13 +154,61 @@ export default function CompanyPortalLayout() {
         </aside>
 
         {/* Main Content */}
-        <main className="min-w-0 flex-1">
+        <main className="min-w-0 flex-1 pb-20 md:pb-0">
           <div className="container py-6">
             <Outlet />
           </div>
         </main>
       </div>
-      <Footer />
+
+      {/* Mobile Bottom Navigation */}
+      <div className="fixed inset-x-0 bottom-0 z-50 border-t bg-card/95 backdrop-blur-sm md:hidden">
+        <nav className="flex items-center justify-around px-1 py-1.5">
+          {bottomBarItems.map((item) => (
+            <NavLink
+              key={item.to}
+              to={item.to}
+              end={item.end}
+              className={({ isActive }) =>
+                cn(
+                  "flex flex-1 flex-col items-center gap-0.5 rounded-md py-1.5 text-[10px] transition-colors",
+                  isActive
+                    ? "text-primary"
+                    : "text-muted-foreground"
+                )
+              }
+            >
+              <item.icon className="h-5 w-5" />
+              <span className="truncate">{item.label}</span>
+            </NavLink>
+          ))}
+
+          {/* More button opens sheet */}
+          <Sheet open={mobileOpen} onOpenChange={setMobileOpen}>
+            <SheetTrigger asChild>
+              <button
+                className={cn(
+                  "flex flex-1 flex-col items-center gap-0.5 rounded-md py-1.5 text-[10px] transition-colors",
+                  isMoreActive ? "text-primary" : "text-muted-foreground"
+                )}
+              >
+                <MoreHorizontal className="h-5 w-5" />
+                <span>{language === "ar" ? "المزيد" : "More"}</span>
+              </button>
+            </SheetTrigger>
+            <SheetContent side="bottom" className="max-h-[70vh] rounded-t-2xl px-4 pb-8 pt-4">
+              <div className="mx-auto mb-4 h-1 w-10 rounded-full bg-muted" />
+              <ScrollArea className="h-full">
+                <NavList onNavigate={() => setMobileOpen(false)} />
+              </ScrollArea>
+            </SheetContent>
+          </Sheet>
+        </nav>
+      </div>
+
+      <div className="hidden md:block">
+        <Footer />
+      </div>
     </div>
   );
 }
