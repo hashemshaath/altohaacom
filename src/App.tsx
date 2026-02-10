@@ -52,6 +52,10 @@ const Tastings = lazy(() => import("./pages/Tastings"));
 const CreateTasting = lazy(() => import("./pages/CreateTasting"));
 const TastingDetail = lazy(() => import("./pages/TastingDetail"));
 const RegisterCompany = lazy(() => import("./pages/RegisterCompany"));
+const Mentorship = lazy(() => import("./pages/Mentorship"));
+const MentorshipDetail = lazy(() => import("./pages/MentorshipDetail"));
+const MentorApply = lazy(() => import("./pages/MentorApply"));
+const MentorshipMatchPage = lazy(() => import("./pages/MentorshipMatch"));
 
 // Admin pages
 const AdminLayout = lazy(() => import("./pages/admin/AdminLayout"));
@@ -90,6 +94,7 @@ const CompanyRolesAdmin = lazy(() => import("./pages/admin/CompaniesAdmin"));
 const CountriesAdmin = lazy(() => import("./pages/admin/CountriesAdmin"));
 const TastingsAdmin = lazy(() => import("./pages/admin/TastingsAdmin"));
 const CommunicationTemplatesAdmin = lazy(() => import("./pages/admin/CommunicationTemplatesAdmin"));
+const MentorshipAdmin = lazy(() => import("./pages/admin/MentorshipAdmin"));
 
 // Company Portal Pages
 const CompanyPortalLayout = lazy(() => import("./pages/CompanyPortal"));
@@ -177,6 +182,10 @@ const App = () => (
                 <Route path="/tastings/create" element={<ProtectedRoute><CreateTasting /></ProtectedRoute>} />
                 <Route path="/tastings/:id" element={<TastingDetail />} />
                 <Route path="/register-company" element={<ProtectedRoute><RegisterCompany /></ProtectedRoute>} />
+                <Route path="/mentorship" element={<Mentorship />} />
+                <Route path="/mentorship/:id" element={<MentorshipDetail />} />
+                <Route path="/mentorship/apply" element={<ProtectedRoute><MentorApply /></ProtectedRoute>} />
+                <Route path="/mentorship/match/:id" element={<ProtectedRoute><MentorshipMatchPage /></ProtectedRoute>} />
                 
                 {/* Admin Routes */}
                 <Route path="/admin" element={<ProtectedRoute><AdminLayout /></ProtectedRoute>}>
@@ -215,6 +224,7 @@ const App = () => (
                    <Route path="countries" element={<CountriesAdmin />} />
                    <Route path="tastings" element={<TastingsAdmin />} />
                    <Route path="templates" element={<CommunicationTemplatesAdmin />} />
+                   <Route path="mentorship" element={<MentorshipAdmin />} />
                 </Route>
 
                 {/* Company Portal Routes */}
