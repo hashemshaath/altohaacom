@@ -28,6 +28,7 @@ import {
   MessageSquare,
   Settings,
   UtensilsCrossed,
+  Building2,
 } from "lucide-react";
 import { useState } from "react";
 
@@ -40,6 +41,7 @@ const navLinks = [
   { to: "/news", icon: Newspaper, labelKey: "news", fallback: "News" },
   { to: "/shop", icon: ShoppingBag, labelKey: "shop", fallback: "Shop" },
   { to: "/recipes", icon: UtensilsCrossed, labelKey: "recipes", fallback: "Recipes" },
+  { to: "/establishments", icon: Building2, labelKey: "establishments", fallback: "Establishments" },
 ];
 
 export function Header() {
