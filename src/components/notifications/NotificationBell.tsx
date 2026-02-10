@@ -45,12 +45,12 @@ export const NotificationBell = React.forwardRef<HTMLButtonElement, Record<strin
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="ghost" size="icon" className="relative">
-          <Bell className="h-5 w-5" />
+        <Button variant="ghost" size="icon" className="relative group">
+          <Bell className="h-5 w-5 transition-transform group-hover:rotate-12" />
           {unreadCount > 0 && (
             <Badge 
               variant="destructive" 
-              className="absolute -top-1 -right-1 h-5 w-5 flex items-center justify-center p-0 text-xs"
+              className="absolute -top-1 -right-1 h-5 w-5 flex items-center justify-center p-0 text-xs animate-scale-in"
             >
               {unreadCount > 9 ? "9+" : unreadCount}
             </Badge>
@@ -81,13 +81,19 @@ export const NotificationBell = React.forwardRef<HTMLButtonElement, Record<strin
               <DropdownMenuItem
                 key={notification.id}
                 className={cn(
-                  "flex flex-col items-start gap-1 p-4 cursor-pointer",
-                  !notification.is_read && "bg-accent/50"
+                  "flex flex-col items-start gap-1 p-4 cursor-pointer transition-colors",
+                  !notification.is_read && "bg-accent/50 border-s-2 border-s-primary"
                 )}
                 onClick={() => handleNotificationClick(notification)}
               >
                 <div className="flex w-full items-start gap-2">
-                  <span className="text-lg">
+                  <span className={cn(
+                    "flex h-7 w-7 shrink-0 items-center justify-center rounded-full text-xs",
+                    notification.type === "success" && "bg-chart-3/10 text-chart-3",
+                    notification.type === "warning" && "bg-chart-4/10 text-chart-4",
+                    notification.type === "error" && "bg-destructive/10 text-destructive",
+                    (!notification.type || notification.type === "info") && "bg-primary/10 text-primary",
+                  )}>
                     {getNotificationIcon(notification.type || "info")}
                   </span>
                   <div className="flex-1 min-w-0">
@@ -101,7 +107,7 @@ export const NotificationBell = React.forwardRef<HTMLButtonElement, Record<strin
                         ? notification.body_ar 
                         : notification.body}
                     </p>
-                    <p className="text-xs text-muted-foreground mt-1">
+                    <p className="text-[10px] text-muted-foreground/70 mt-1">
                       {formatDistanceToNow(new Date(notification.created_at), {
                         addSuffix: true,
                         locale: language === "ar" ? ar : enUS,
@@ -109,7 +115,7 @@ export const NotificationBell = React.forwardRef<HTMLButtonElement, Record<strin
                     </p>
                   </div>
                   {!notification.is_read && (
-                    <div className="h-2 w-2 rounded-full bg-primary flex-shrink-0" />
+                    <div className="h-2 w-2 rounded-full bg-primary flex-shrink-0 animate-pulse" />
                   )}
                 </div>
               </DropdownMenuItem>

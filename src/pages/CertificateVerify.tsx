@@ -76,22 +76,25 @@ export default function CertificateVerify() {
   const notFound = searchedCode && !certificate && !isLoading;
 
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="min-h-screen flex flex-col bg-background">
       <Header />
       
       <main className="flex-1">
         {/* Hero Section */}
-        <section className="bg-gradient-to-b from-primary/10 to-background py-16">
-          <div className="container text-center">
+        <section className="relative overflow-hidden border-b bg-gradient-to-b from-primary/5 via-background to-background py-16">
+          <div className="absolute -top-32 start-1/4 h-64 w-64 rounded-full bg-primary/8 blur-[100px] animate-pulse" />
+          <div className="absolute -top-20 end-1/3 h-48 w-48 rounded-full bg-accent/10 blur-[80px] animate-pulse [animation-delay:1s]" />
+          <div className="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-primary/20 to-transparent" />
+          <div className="container relative text-center">
             <div className="flex justify-center mb-6">
-              <div className="h-20 w-20 rounded-full bg-primary/10 flex items-center justify-center">
+              <div className="h-20 w-20 rounded-full bg-primary/10 flex items-center justify-center ring-4 ring-primary/5 shadow-lg">
                 <Shield className="h-10 w-10 text-primary" />
               </div>
             </div>
-            <h1 className="text-4xl font-bold mb-4">
+            <h1 className="font-serif text-3xl font-bold md:text-4xl">
               {language === "ar" ? "التحقق من الشهادة" : "Certificate Verification"}
             </h1>
-            <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
+            <p className="mt-3 text-base text-muted-foreground max-w-2xl mx-auto">
               {language === "ar"
                 ? "تحقق من صحة الشهادات الصادرة عن منظمتنا باستخدام كود التحقق الفريد"
                 : "Verify the authenticity of certificates issued by our organization using the unique verification code"}
@@ -319,45 +322,21 @@ export default function CertificateVerify() {
 
             {/* Info Section */}
             <div className="mt-12 grid grid-cols-1 md:grid-cols-3 gap-6">
-              <Card>
-                <CardContent className="pt-6 text-center">
-                  <Shield className="h-10 w-10 mx-auto mb-4 text-primary" />
-                  <h3 className="font-semibold mb-2">
-                    {language === "ar" ? "آمن ومُشفر" : "Secure & Encrypted"}
-                  </h3>
-                  <p className="text-sm text-muted-foreground">
-                    {language === "ar"
-                      ? "جميع الشهادات محمية بتشفير قوي"
-                      : "All certificates are protected with strong encryption"}
-                  </p>
-                </CardContent>
-              </Card>
-              <Card>
-                <CardContent className="pt-6 text-center">
-                  <CheckCircle className="h-10 w-10 mx-auto mb-4 text-green-500" />
-                  <h3 className="font-semibold mb-2">
-                    {language === "ar" ? "تحقق فوري" : "Instant Verification"}
-                  </h3>
-                  <p className="text-sm text-muted-foreground">
-                    {language === "ar"
-                      ? "احصل على نتائج التحقق فوراً"
-                      : "Get verification results instantly"}
-                  </p>
-                </CardContent>
-              </Card>
-              <Card>
-                <CardContent className="pt-6 text-center">
-                  <Award className="h-10 w-10 mx-auto mb-4 text-primary" />
-                  <h3 className="font-semibold mb-2">
-                    {language === "ar" ? "معتمد رسمياً" : "Officially Certified"}
-                  </h3>
-                  <p className="text-sm text-muted-foreground">
-                    {language === "ar"
-                      ? "شهادات صادرة من جهات معتمدة"
-                      : "Certificates issued by authorized bodies"}
-                  </p>
-                </CardContent>
-              </Card>
+              {[
+                { icon: Shield, color: "text-primary", bg: "bg-primary/10", title: language === "ar" ? "آمن ومُشفر" : "Secure & Encrypted", desc: language === "ar" ? "جميع الشهادات محمية بتشفير قوي" : "All certificates are protected with strong encryption" },
+                { icon: CheckCircle, color: "text-chart-3", bg: "bg-chart-3/10", title: language === "ar" ? "تحقق فوري" : "Instant Verification", desc: language === "ar" ? "احصل على نتائج التحقق فوراً" : "Get verification results instantly" },
+                { icon: Award, color: "text-chart-4", bg: "bg-chart-4/10", title: language === "ar" ? "معتمد رسمياً" : "Officially Certified", desc: language === "ar" ? "شهادات صادرة من جهات معتمدة" : "Certificates issued by authorized bodies" },
+              ].map((item) => (
+                <Card key={item.title} className="border-border/50 transition-all duration-300 hover:shadow-md hover:-translate-y-1">
+                  <CardContent className="pt-6 text-center">
+                    <div className={`mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl ${item.bg}`}>
+                      <item.icon className={`h-7 w-7 ${item.color}`} />
+                    </div>
+                    <h3 className="font-semibold mb-2">{item.title}</h3>
+                    <p className="text-sm text-muted-foreground">{item.desc}</p>
+                  </CardContent>
+                </Card>
+              ))}
             </div>
           </div>
         </section>

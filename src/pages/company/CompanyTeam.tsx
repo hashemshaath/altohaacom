@@ -55,12 +55,14 @@ export default function CompanyTeam() {
           {contacts.map((contact, index) => (
             <Card
               key={contact.id}
-              className="animate-fade-in overflow-hidden hover:shadow-md transition-shadow"
+              className="group animate-fade-in overflow-hidden border-border/50 transition-all duration-300 hover:shadow-lg hover:-translate-y-1 hover:border-primary/20"
               style={{ animationDelay: `${index * 0.05}s` }}
             >
+              {/* Top accent bar */}
+              <div className={`h-1 transition-all ${contact.is_primary ? "bg-primary" : "bg-transparent group-hover:bg-primary/30"}`} />
               <CardContent className="p-5">
                 <div className="flex items-start gap-4">
-                  <Avatar className="h-12 w-12 shrink-0">
+                  <Avatar className="h-12 w-12 shrink-0 ring-2 ring-transparent transition-all group-hover:ring-primary/20">
                     <AvatarFallback className="bg-primary/10 text-primary font-semibold">
                       {contact.name?.charAt(0)?.toUpperCase() || "?"}
                     </AvatarFallback>
