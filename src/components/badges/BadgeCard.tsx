@@ -52,29 +52,31 @@ export function BadgeCard({ badge, competitionTitle, earnedAt, shareToken, showS
   };
 
   return (
-    <Card className="overflow-hidden transition-transform hover:scale-[1.02]">
-      <CardContent className="flex flex-col items-center p-4 text-center">
+    <Card className="group overflow-hidden border-border/50 transition-all duration-300 hover:shadow-lg hover:-translate-y-1 hover:border-primary/20">
+      <CardContent className="flex flex-col items-center p-5 text-center">
         <div
-          className="mb-3 flex h-16 w-16 items-center justify-center rounded-full"
-          style={{ backgroundColor: `${badge.color || "#c9a227"}20` }}
+          className="mb-3 flex h-18 w-18 items-center justify-center rounded-full ring-4 ring-border/20 transition-transform duration-300 group-hover:scale-110"
+          style={{
+            backgroundColor: `${badge.color || "#c9a227"}15`,
+          }}
         >
-          <Icon className="h-8 w-8" style={{ color: badge.color || "#c9a227" }} />
+          <Icon className="h-8 w-8 transition-transform group-hover:rotate-12" style={{ color: badge.color || "#c9a227" }} />
         </div>
         <p className="font-semibold text-sm">{name}</p>
-        {desc && <p className="mt-1 text-xs text-muted-foreground">{desc}</p>}
+        {desc && <p className="mt-1 text-xs text-muted-foreground line-clamp-2">{desc}</p>}
         {competitionTitle && (
           <Badge variant="outline" className="mt-2 text-xs">
             {competitionTitle}
           </Badge>
         )}
         {earnedAt && (
-          <p className="mt-1 text-xs text-muted-foreground">
+          <p className="mt-1.5 text-[10px] text-muted-foreground">
             {new Date(earnedAt).toLocaleDateString(language === "ar" ? "ar" : "en")}
           </p>
         )}
         {showShare && shareToken && (
-          <Button variant="ghost" size="sm" className="mt-2" onClick={handleShare}>
-            <Share2 className="mr-1 h-3 w-3" />
+          <Button variant="ghost" size="sm" className="mt-2 gap-1.5 text-xs transition-all active:scale-95" onClick={handleShare}>
+            <Share2 className="h-3 w-3" />
             {language === "ar" ? "مشاركة" : "Share"}
           </Button>
         )}

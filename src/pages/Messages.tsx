@@ -396,9 +396,9 @@ export default function Messages() {
                         {messages?.map((msg) => {
                           const isMine = msg.sender_id === user?.id;
                           return (
-                            <div key={msg.id} className={`flex ${isMine ? "justify-end" : "justify-start"}`}>
+                            <div key={msg.id} className={`flex ${isMine ? "justify-end" : "justify-start"} animate-fade-in`}>
                               <div
-                                className={`max-w-[75%] rounded-2xl px-3.5 py-2 ${
+                                className={`max-w-[75%] rounded-2xl px-3.5 py-2 transition-all hover:shadow-sm ${
                                   isMine
                                     ? "bg-primary text-primary-foreground rounded-ee-md"
                                     : "bg-muted rounded-es-md"
@@ -407,13 +407,13 @@ export default function Messages() {
                                 <p className="text-sm break-words">{msg.content}</p>
                                 <div
                                   className={`flex items-center gap-1 mt-1 text-[10px] ${
-                                    isMine ? "text-primary-foreground/60" : "text-muted-foreground"
+                                    isMine ? "text-primary-foreground/60 justify-end" : "text-muted-foreground"
                                   }`}
                                 >
                                   <span>{formatMessageDate(msg.created_at)}</span>
                                   {isMine &&
                                     (msg.is_read ? (
-                                      <CheckCheck className="h-3 w-3" />
+                                      <CheckCheck className="h-3 w-3 text-primary-foreground/80" />
                                     ) : (
                                       <Check className="h-3 w-3" />
                                     ))}

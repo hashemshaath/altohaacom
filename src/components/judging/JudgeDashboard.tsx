@@ -133,9 +133,9 @@ export function JudgeDashboard({ onSelectCompetition }: JudgeDashboardProps) {
       {/* Quick Stats */}
       <div className="grid gap-3 grid-cols-2 lg:grid-cols-4">
         {statCards.map((stat, i) => (
-          <Card key={i} className={`border-s-[3px] ${stat.accent} transition-shadow hover:shadow-sm`}>
+          <Card key={i} className={`border-s-[3px] ${stat.accent} transition-all duration-300 hover:shadow-md hover:-translate-y-0.5`}>
             <CardContent className="flex items-center gap-3.5 p-4">
-              <div className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-xl ${stat.bg}`}>
+              <div className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-xl ${stat.bg} transition-transform group-hover:scale-110`}>
                 <stat.icon className={`h-5 w-5 ${stat.color}`} />
               </div>
               <div>
@@ -146,6 +146,29 @@ export function JudgeDashboard({ onSelectCompetition }: JudgeDashboardProps) {
           </Card>
         ))}
       </div>
+
+      {/* Overall Progress Summary */}
+      {competitions.length > 0 && (
+        <Card className="border-border/50">
+          <CardContent className="flex items-center gap-4 p-4">
+            <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-chart-5/10">
+              <Scale className="h-5 w-5 text-chart-5" />
+            </div>
+            <div className="flex-1">
+              <div className="flex items-center justify-between mb-1.5">
+                <span className="text-sm font-medium">{isAr ? "التقدم الإجمالي" : "Overall Progress"}</span>
+                <span className="text-sm font-bold text-primary">
+                  {stats.total > 0 ? Math.round((stats.scored / stats.total) * 100) : 0}%
+                </span>
+              </div>
+              <Progress value={stats.total > 0 ? (stats.scored / stats.total) * 100 : 0} className="h-2.5" />
+              <p className="mt-1.5 text-[11px] text-muted-foreground">
+                {stats.scored}/{stats.total} {isAr ? "تم تقييمهم" : "entries scored"} · {competitions.length} {isAr ? "مسابقة" : "competitions"}
+              </p>
+            </div>
+          </CardContent>
+        </Card>
+      )}
 
       {/* Competitions Progress */}
       <Card className="overflow-hidden">
