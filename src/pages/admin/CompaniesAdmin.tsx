@@ -3,6 +3,8 @@ import { useLanguage } from "@/i18n/LanguageContext";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { CountrySelector } from "@/components/auth/CountrySelector";
+import { CompanyRolesPanel } from "@/components/admin/CompanyRolesPanel";
+import { CompanySponsorshipPanel } from "@/components/admin/CompanySponsorshipPanel";
 import { useAllCountries } from "@/hooks/useCountries";
 import { countryFlag } from "@/lib/countryFlag";
 import { Button } from "@/components/ui/button";
@@ -661,6 +663,8 @@ export default function CompaniesAdmin() {
             <TabsTrigger value="drivers">{language === "ar" ? "السائقون" : "Drivers"}</TabsTrigger>
             <TabsTrigger value="communications">{language === "ar" ? "التواصل" : "Communications"}</TabsTrigger>
             <TabsTrigger value="media">{language === "ar" ? "الوسائط" : "Media"}</TabsTrigger>
+            <TabsTrigger value="roles">{language === "ar" ? "الأدوار" : "Roles"}</TabsTrigger>
+            <TabsTrigger value="sponsorship">{language === "ar" ? "الرعاية" : "Sponsorship"}</TabsTrigger>
           </TabsList>
 
           {/* Overview Tab */}
@@ -1328,6 +1332,16 @@ export default function CompaniesAdmin() {
               </Card>
             )}
           </TabsContent>
+
+          {/* Roles Tab */}
+          <TabsContent value="roles" className="space-y-4">
+            <CompanyRolesPanel companyId={selectedCompany} />
+          </TabsContent>
+
+          {/* Sponsorship Tab */}
+          <TabsContent value="sponsorship" className="space-y-4">
+            <CompanySponsorshipPanel companyId={selectedCompany} />
+          </TabsContent>
         </Tabs>
       </div>
     );
@@ -1343,8 +1357,8 @@ export default function CompaniesAdmin() {
         </h1>
         <p className="text-muted-foreground mt-1">
           {language === "ar"
-            ? "إدارة الرعاة والموردين والشركاء"
-            : "Manage sponsors, suppliers, and partners"}
+            ? "إدارة الشركات والرعاة والموردين والشركاء - موحّدة"
+            : "Unified management for companies, sponsors, suppliers & partners"}
         </p>
       </div>
 

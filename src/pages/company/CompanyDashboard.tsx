@@ -1,4 +1,5 @@
 import { useCompanyAccess, useCompanyProfile } from "@/hooks/useCompanyAccess";
+import { useCompanyRoles, COMPANY_ROLES } from "@/hooks/useCompanyRoles";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { supabase } from "@/integrations/supabase/client";
 import { useQuery } from "@tanstack/react-query";
@@ -24,6 +25,7 @@ export default function CompanyPortalDashboard() {
   const { language } = useLanguage();
   const { companyId } = useCompanyAccess();
   const { data: company, isLoading: companyLoading } = useCompanyProfile(companyId);
+  const { data: companyRoles = [] } = useCompanyRoles(companyId);
 
   const { data: stats, isLoading: statsLoading } = useQuery({
     queryKey: ["companyStats", companyId],
@@ -92,9 +94,20 @@ export default function CompanyPortalDashboard() {
               </div>
               <div className="mt-4 flex flex-wrap items-center gap-3">
                 {getStatusBadge(company?.status || null)}
-                <Badge variant="outline" className="border-primary-foreground/30 text-primary-foreground">
-                  {company?.type}
-                </Badge>
+                {companyRoles.filter(r => r.is_active).length > 0 ? (
+                  companyRoles.filter(r => r.is_active).map(r => {
+                    const roleDef = COMPANY_ROLES.find(cr => cr.value === r.role);
+                    return (
+                      <Badge key={r.id} variant="outline" className="border-primary-foreground/30 text-primary-foreground">
+                        {roleDef ? (language === "ar" ? roleDef.labelAr : roleDef.label) : r.role}
+                      </Badge>
+                    );
+                  })
+                ) : (
+                  <Badge variant="outline" className="border-primary-foreground/30 text-primary-foreground">
+                    {company?.type}
+                  </Badge>
+                )}
                 {company?.company_number && (
                   <span className="text-sm text-primary-foreground/70">#{company.company_number}</span>
                 )}

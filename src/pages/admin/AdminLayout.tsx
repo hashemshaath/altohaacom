@@ -4,7 +4,7 @@ import { useIsAdmin } from "@/hooks/useAdmin";
 import { Navigate, Outlet, NavLink } from "react-router-dom";
 import { AdminHeader } from "@/components/admin/AdminHeader";
 import { cn } from "@/lib/utils";
-import { Handshake, GraduationCap, BarChart3, Landmark, Building2, Gavel, MessageSquare as MessageSquareIcon, Earth, QrCode, UtensilsCrossed, MailOpen } from "lucide-react";
+import { GraduationCap, BarChart3, Landmark, Building2, Gavel, MessageSquare as MessageSquareIcon, Earth, QrCode, UtensilsCrossed, MailOpen } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
@@ -66,9 +66,7 @@ export default function AdminLayout() {
       title: language === "ar" ? "إدارة المستخدمين" : "User Management",
       items: [
         { to: "/admin/users", icon: Users, label: language === "ar" ? "المستخدمين" : "Users" },
-        { to: "/admin/companies", icon: Building, label: language === "ar" ? "الشركات" : "Companies" },
-        { to: "/admin/company-roles", icon: Shield, label: language === "ar" ? "أدوار الشركات" : "Company Roles" },
-        { to: "/admin/sponsors", icon: Handshake, label: language === "ar" ? "الرعاة" : "Sponsors" },
+        { to: "/admin/companies", icon: Building, label: language === "ar" ? "الشركات والرعاة" : "Companies & Sponsors" },
         { to: "/admin/entities", icon: Building2, label: language === "ar" ? "الجهات والجمعيات" : "Entities Registry" },
         { to: "/admin/judges", icon: Gavel, label: language === "ar" ? "المحكّمين" : "Judges Registry" },
         { to: "/admin/leads", icon: UserSearch, label: language === "ar" ? "العملاء المحتملين" : "Leads" },
