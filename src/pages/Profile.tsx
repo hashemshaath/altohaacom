@@ -23,6 +23,7 @@ import { CompetitionHistory } from "@/components/profile/CompetitionHistory";
 import { UserBadgesDisplay } from "@/components/badges/UserBadgesDisplay";
 import { ProfileStatsBar } from "@/components/profile/ProfileStatsBar";
 import { ProfileActivityTimeline } from "@/components/profile/ProfileActivityTimeline";
+import { ProfileCertificates } from "@/components/profile/ProfileCertificates";
 
 type Profile = Database["public"]["Tables"]["profiles"]["Row"];
 type ExperienceLevel = Database["public"]["Enums"]["experience_level"];
@@ -378,6 +379,7 @@ export default function Profile() {
         {user && (
           <div className="mt-6 grid gap-6 lg:grid-cols-3">
             <div className="lg:col-span-2 space-y-6">
+              <ProfileCertificates userId={user.id} isOwner={true} />
               <CompetitionHistory userId={user.id} />
               <UserBadgesDisplay userId={user.id} limit={6} />
             </div>
