@@ -15,6 +15,7 @@ import {
   Bell, BellOff, ArrowLeft, ExternalLink, Share2, Calendar, Award, Target
 } from "lucide-react";
 import { QRCodeDisplay } from "@/components/qr/QRCodeDisplay";
+import { useEntityQRCode } from "@/hooks/useQRCode";
 import type { Database } from "@/integrations/supabase/types";
 
 type EntityType = Database["public"]["Enums"]["entity_type"];
@@ -84,6 +85,8 @@ export default function EntityDetail() {
     },
     enabled: !!entity,
   });
+
+  const { data: qrCode } = useEntityQRCode("company", entity?.id, "company");
 
   const toggleFollow = useMutation({
     mutationFn: async () => {
@@ -383,12 +386,14 @@ export default function EntityDetail() {
             </Card>
 
             {/* QR Code */}
-            <QRCodeDisplay
-              code={entity.entity_number || entity.id.slice(0, 8).toUpperCase()}
-              label={isAr ? "رمز QR للجهة" : "Entity QR Code"}
-              size={140}
-              compact={false}
-            />
+            {qrCode && (
+              <QRCodeDisplay
+                code={qrCode.code}
+                label={isAr ? "رمز QR للجهة" : "Entity QR Code"}
+                size={140}
+                compact={false}
+              />
+            )}
 
             {/* Quick Facts */}
             <Card className="overflow-hidden">

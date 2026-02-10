@@ -6,6 +6,8 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Separator } from "@/components/ui/separator";
 import { countryFlag } from "@/lib/countryFlag";
 import { useAllCountries } from "@/hooks/useCountries";
+import { QRCodeDisplay } from "@/components/qr/QRCodeDisplay";
+import { useEntityQRCode } from "@/hooks/useQRCode";
 import {
   Phone,
   Mail,
@@ -24,6 +26,7 @@ export default function CompanyProfile() {
   const { companyId } = useCompanyAccess();
   const { data: company, isLoading } = useCompanyProfile(companyId);
   const { data: countries = [] } = useAllCountries();
+  const { data: qrCode } = useEntityQRCode("company", companyId || undefined, "company");
 
   const getCountryName = (code: string | null) => {
     if (!code) return null;
@@ -102,6 +105,24 @@ export default function CompanyProfile() {
           </div>
         </div>
       </div>
+
+      {/* QR Code */}
+      {qrCode && (
+        <QRCodeDisplay
+          code={qrCode.code}
+          label={language === "ar" ? "رمز QR للشركة" : "Company QR Code"}
+          size={140}
+          vCardData={{
+            fullName: company.name,
+            phone: company.phone || undefined,
+            email: company.email || undefined,
+            organization: company.name,
+            website: company.website || undefined,
+            location: company.city || undefined,
+            accountNumber: company.company_number || undefined,
+          }}
+        />
+      )}
 
       <div className="grid gap-6 md:grid-cols-2">
         {/* Contact Information */}
