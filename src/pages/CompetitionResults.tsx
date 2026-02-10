@@ -44,8 +44,9 @@ export default function CompetitionResults() {
   const { data: competition, isLoading: loadingComp } = useQuery({
     queryKey: ["competition", id],
     queryFn: async () => {
-      const { data, error } = await supabase.from("competitions").select("*").eq("id", id).single();
+      const { data, error } = await supabase.from("competitions").select("*").eq("id", id).maybeSingle();
       if (error) throw error;
+      if (!data) throw new Error("Competition not found");
       return data;
     },
     enabled: !!id,
