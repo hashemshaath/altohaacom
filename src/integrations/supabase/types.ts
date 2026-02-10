@@ -404,6 +404,7 @@ export type Database = {
           type: Database["public"]["Enums"]["certificate_type"]
           updated_at: string | null
           verification_code: string
+          visibility: string
         }
         Insert: {
           achievement?: string | null
@@ -439,6 +440,7 @@ export type Database = {
           type: Database["public"]["Enums"]["certificate_type"]
           updated_at?: string | null
           verification_code: string
+          visibility?: string
         }
         Update: {
           achievement?: string | null
@@ -474,6 +476,7 @@ export type Database = {
           type?: Database["public"]["Enums"]["certificate_type"]
           updated_at?: string | null
           verification_code?: string
+          visibility?: string
         }
         Relationships: [
           {
