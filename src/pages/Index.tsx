@@ -215,16 +215,16 @@ const Index = () => {
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {services.map((s) => (
             <Link key={s.title} to={s.href} className="group block">
-              <Card className="h-full border-border/50 transition-all hover:shadow-lg hover:-translate-y-1 hover:border-primary/20">
+              <Card className="h-full border-border/50 transition-all duration-300 hover:shadow-xl hover:-translate-y-1.5 hover:border-primary/20">
                 <CardContent className="flex flex-col p-5">
-                  <div className="mb-3.5 flex h-11 w-11 items-center justify-center rounded-xl bg-primary/10 transition-colors group-hover:bg-primary/15">
+                  <div className="mb-3.5 flex h-11 w-11 items-center justify-center rounded-xl bg-primary/10 transition-all duration-300 group-hover:bg-primary/15 group-hover:scale-110 group-hover:shadow-md group-hover:shadow-primary/10">
                     <s.icon className="h-5 w-5 text-primary" />
                   </div>
-                  <h3 className="font-semibold mb-1.5 group-hover:text-primary transition-colors">{s.title}</h3>
+                  <h3 className="font-semibold mb-1.5 group-hover:text-primary transition-colors duration-200">{s.title}</h3>
                   <p className="mb-4 flex-1 text-sm text-muted-foreground leading-relaxed">{s.desc}</p>
                   <span className="inline-flex items-center text-xs font-medium text-primary">
                     {isAr ? "اكتشف المزيد" : "Explore"}
-                    <ArrowRight className="ms-1 h-3 w-3 transition-transform group-hover:translate-x-0.5" />
+                    <ArrowRight className="ms-1 h-3 w-3 transition-transform duration-200 group-hover:translate-x-1" />
                   </span>
                 </CardContent>
               </Card>
@@ -262,22 +262,23 @@ const Index = () => {
                 const title = isAr && comp.title_ar ? comp.title_ar : comp.title;
                 return (
                   <Link key={comp.id} to={`/competitions/${comp.id}`} className="group block">
-                    <Card className="h-full overflow-hidden border-border/50 transition-all hover:shadow-lg hover:-translate-y-1 hover:border-primary/20">
+                    <Card className="h-full overflow-hidden border-border/50 transition-all duration-300 hover:shadow-xl hover:-translate-y-1.5 hover:border-primary/20">
                       <div className="relative aspect-[16/10] overflow-hidden bg-muted">
                         {comp.cover_image_url ? (
-                          <img src={comp.cover_image_url} alt={title} className="h-full w-full object-cover transition-transform group-hover:scale-105" loading="lazy" />
+                          <img src={comp.cover_image_url} alt={title} className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110" loading="lazy" />
                         ) : (
                           <div className="flex h-full items-center justify-center">
                             <Trophy className="h-10 w-10 text-muted-foreground/20" />
                           </div>
                         )}
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
                         <div className="absolute inset-x-0 bottom-0 h-12 bg-gradient-to-t from-black/30 to-transparent" />
                         <Badge className="absolute end-2 top-2 bg-primary/90 text-primary-foreground text-[10px]">
                           {comp.status === "registration_open" ? (isAr ? "مفتوح" : "Open") : (isAr ? "قادمة" : "Upcoming")}
                         </Badge>
                       </div>
                       <CardContent className="p-3.5">
-                        <h3 className="mb-2 line-clamp-2 text-sm font-semibold group-hover:text-primary transition-colors">{title}</h3>
+                        <h3 className="mb-2 line-clamp-2 text-sm font-semibold group-hover:text-primary transition-colors duration-200">{title}</h3>
                         <div className="space-y-1 text-[11px] text-muted-foreground">
                           <div className="flex items-center gap-1.5">
                             <Calendar className="h-3 w-3 shrink-0" />
@@ -464,9 +465,9 @@ const Index = () => {
           </div>
           <div className="grid gap-6 grid-cols-2 lg:grid-cols-4">
             {whyUs.map((item) => (
-              <Card key={item.title} className="border-border/50 text-center transition-all hover:shadow-md hover:-translate-y-1">
+              <Card key={item.title} className="border-border/50 text-center transition-all duration-300 hover:shadow-lg hover:-translate-y-1.5">
                 <CardContent className="flex flex-col items-center p-6">
-                  <div className="mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-primary/10 ring-1 ring-primary/15 shadow-sm">
+                  <div className="mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-primary/10 ring-1 ring-primary/15 shadow-sm transition-all duration-300 hover:scale-110 hover:shadow-md hover:shadow-primary/10">
                     <item.icon className="h-7 w-7 text-primary" />
                   </div>
                   <h3 className="mb-1.5 text-sm font-semibold">{item.title}</h3>

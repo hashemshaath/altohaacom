@@ -283,6 +283,12 @@ export default function Masterclasses() {
                           {avgRating.toFixed(1)}
                         </span>
                       )}
+                      {mc.country_code && (
+                        <span className="flex items-center gap-1">
+                          <MapPin className="h-3 w-3" />
+                          {countryFlag(mc.country_code)} {getCountryName(mc.country_code)}
+                        </span>
+                      )}
                     </div>
                   </CardContent>
                 </Card>

@@ -624,7 +624,7 @@ export default function CompetitionDetail() {
               )}
 
               {/* Registration Card */}
-              <Card className="overflow-hidden border-border/60">
+              <Card className="overflow-hidden border-border/60 transition-shadow hover:shadow-md">
                 <div className="border-b bg-gradient-to-r from-primary/5 to-transparent px-5 py-3.5">
                   <h3 className="flex items-center gap-2 font-semibold text-sm">
                     <Trophy className="h-4 w-4 text-primary" />
@@ -661,6 +661,44 @@ export default function CompetitionDetail() {
 
               {/* Participant Stats */}
               <ParticipantStatsCard competitionId={competition.id} maxParticipants={competition.max_participants} />
+
+              {/* Quick Info Card */}
+              <Card className="overflow-hidden border-border/60">
+                <div className="border-b bg-gradient-to-r from-accent/5 to-transparent px-5 py-3.5">
+                  <h3 className="flex items-center gap-2 font-semibold text-sm">
+                    <BookOpen className="h-4 w-4 text-primary" />
+                    {isAr ? "معلومات سريعة" : "Quick Info"}
+                  </h3>
+                </div>
+                <CardContent className="p-5 space-y-3">
+                  {competition.country_code && (
+                    <div className="flex items-center justify-between text-sm">
+                      <span className="text-muted-foreground">{isAr ? "الدولة" : "Country"}</span>
+                      <span className="font-medium">{countryFlag(competition.country_code)} {competition.country}</span>
+                    </div>
+                  )}
+                  {competition.edition_year && (
+                    <div className="flex items-center justify-between text-sm">
+                      <span className="text-muted-foreground">{isAr ? "النسخة" : "Edition"}</span>
+                      <span className="font-medium">{competition.edition_year}</span>
+                    </div>
+                  )}
+                  {competition.max_participants && (
+                    <div className="flex items-center justify-between text-sm">
+                      <span className="text-muted-foreground">{isAr ? "السعة" : "Capacity"}</span>
+                      <span className="font-medium">{competition.max_participants}</span>
+                    </div>
+                  )}
+                  {competition.is_virtual !== null && (
+                    <div className="flex items-center justify-between text-sm">
+                      <span className="text-muted-foreground">{isAr ? "النوع" : "Format"}</span>
+                      <Badge variant="outline" className="text-[10px]">
+                        {competition.is_virtual ? (isAr ? "افتراضية" : "Virtual") : (isAr ? "حضورية" : "In-Person")}
+                      </Badge>
+                    </div>
+                  )}
+                </CardContent>
+              </Card>
 
               {/* Organizer */}
               <OrganizerCard organizerId={competition.organizer_id} />

@@ -205,14 +205,14 @@ export default function Shop() {
               const isOutOfStock = product.product_type === "physical" && product.stock_quantity <= 0;
 
               return (
-                <Card key={product.id} className="group h-full overflow-hidden flex flex-col transition-all hover:shadow-md hover:-translate-y-0.5">
+                <Card key={product.id} className="group h-full overflow-hidden flex flex-col transition-all duration-300 hover:shadow-lg hover:-translate-y-1 hover:border-primary/20">
                   <Link to={`/shop/${product.id}`} className="block">
                     <div className="relative aspect-square overflow-hidden bg-muted">
                       {product.image_url ? (
                         <img
                           src={product.image_url}
                           alt={title}
-                          className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
+                          className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110"
                           loading="lazy"
                         />
                       ) : (
@@ -220,6 +220,7 @@ export default function Shop() {
                           <ShoppingBag className="h-10 w-10 text-muted-foreground/20" />
                         </div>
                       )}
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/10 via-transparent to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
                       <div className="absolute start-2.5 top-2.5 flex flex-wrap gap-1.5">
                         {product.is_featured && (
                           <Badge className="bg-chart-4/90 text-chart-4-foreground text-[10px] gap-1">
@@ -235,7 +236,7 @@ export default function Shop() {
                         </Badge>
                       </div>
                       {isOutOfStock && (
-                        <div className="absolute inset-0 flex items-center justify-center bg-background/60">
+                        <div className="absolute inset-0 flex items-center justify-center bg-background/60 backdrop-blur-sm">
                           <Badge variant="destructive">{isAr ? "نفذت الكمية" : "Out of Stock"}</Badge>
                         </div>
                       )}
@@ -243,12 +244,12 @@ export default function Shop() {
                   </Link>
                   <CardContent className="flex flex-1 flex-col p-4">
                     <Link to={`/shop/${product.id}`}>
-                      <h3 className="mb-1 text-sm font-semibold line-clamp-2 group-hover:text-primary transition-colors">
+                      <h3 className="mb-1 text-sm font-semibold line-clamp-2 group-hover:text-primary transition-colors duration-200">
                         {title}
                       </h3>
                     </Link>
                     <Badge variant="outline" className="mb-2 w-fit text-[10px]">{product.category}</Badge>
-                    <div className="mt-auto flex items-center justify-between pt-3 border-t">
+                    <div className="mt-auto flex items-center justify-between pt-3 border-t border-border/50">
                       <span className="text-lg font-bold text-primary">
                         {product.currency} {product.price.toFixed(2)}
                       </span>
@@ -256,6 +257,7 @@ export default function Shop() {
                         size="sm"
                         disabled={isOutOfStock}
                         onClick={(e) => { e.preventDefault(); handleAddToCart(product); }}
+                        className="transition-transform duration-200 active:scale-95"
                       >
                         <ShoppingCart className="me-1 h-3.5 w-3.5" />
                         {isAr ? "أضف" : "Add"}

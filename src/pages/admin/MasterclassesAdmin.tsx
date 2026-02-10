@@ -16,10 +16,12 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { useToast } from "@/hooks/use-toast";
 import {
   BookOpen, Plus, Edit, Trash2, Users, Eye, EyeOff,
-  GraduationCap, ChevronDown, ChevronUp, Save, X, ArrowLeft,
+  GraduationCap, ChevronDown, ChevronUp, Save, X, ArrowLeft, MapPin,
 } from "lucide-react";
 import { format } from "date-fns";
 import { ModuleLessonManager } from "@/components/masterclass/ModuleLessonManager";
+import { useAllCountries } from "@/hooks/useCountries";
+import { countryFlag } from "@/lib/countryFlag";
 
 export default function MasterclassesAdmin() {
   const { language } = useLanguage();
@@ -29,6 +31,8 @@ export default function MasterclassesAdmin() {
   const [showCreateForm, setShowCreateForm] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [managingModulesId, setManagingModulesId] = useState<string | null>(null);
+
+  const { data: allCountries = [] } = useAllCountries();
 
   const [form, setForm] = useState({
     title: "",
@@ -42,6 +46,7 @@ export default function MasterclassesAdmin() {
     duration_hours: 0,
     is_self_paced: true,
     status: "draft",
+    country_code: "",
   });
 
   const { data: masterclasses = [], isLoading } = useQuery({
@@ -59,11 +64,13 @@ export default function MasterclassesAdmin() {
   const createMutation = useMutation({
     mutationFn: async () => {
       if (!user) throw new Error("Not authenticated");
+      const { country_code, ...rest } = form;
       const { error } = await supabase.from("masterclasses").insert({
-        ...form,
+        ...rest,
+        country_code: country_code || null,
         instructor_id: user.id,
-        price: form.is_free ? 0 : form.price,
-      });
+        price: rest.is_free ? 0 : rest.price,
+      } as any);
       if (error) throw error;
     },
     onSuccess: () => {
@@ -103,7 +110,7 @@ export default function MasterclassesAdmin() {
     setForm({
       title: "", title_ar: "", description: "", description_ar: "",
       category: "general", level: "beginner", is_free: true, price: 0,
-      duration_hours: 0, is_self_paced: true, status: "draft",
+      duration_hours: 0, is_self_paced: true, status: "draft", country_code: "",
     });
   };
 
@@ -203,6 +210,23 @@ export default function MasterclassesAdmin() {
                 <Label>{language === "ar" ? "المدة (ساعات)" : "Duration (hours)"}</Label>
                 <Input type="number" value={form.duration_hours} onChange={(e) => setForm({ ...form, duration_hours: parseFloat(e.target.value) || 0 })} />
               </div>
+            </div>
+            <div className="space-y-2 max-w-xs">
+              <Label>{language === "ar" ? "الدولة" : "Country"}</Label>
+              <Select value={form.country_code} onValueChange={(v) => setForm({ ...form, country_code: v })}>
+                <SelectTrigger>
+                  <MapPin className="me-1.5 h-3.5 w-3.5 text-muted-foreground" />
+                  <SelectValue placeholder={language === "ar" ? "اختر الدولة" : "Select country"} />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="">{language === "ar" ? "بدون تحديد" : "No country"}</SelectItem>
+                  {allCountries.map((c) => (
+                    <SelectItem key={c.code} value={c.code}>
+                      {countryFlag(c.code)} {language === "ar" ? c.name_ar || c.name : c.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
             </div>
             <div className="flex items-center gap-6">
               <div className="flex items-center gap-2">
