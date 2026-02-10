@@ -28,6 +28,9 @@ const typeOptions: { value: EntityType | "all"; en: string; ar: string }[] = [
   { value: "private_association", en: "Private Associations", ar: "الجمعيات الخاصة" },
   { value: "culinary_academy", en: "Culinary Academies", ar: "أكاديميات الطهي" },
   { value: "industry_body", en: "Industry Bodies", ar: "الهيئات الصناعية" },
+  { value: "university", en: "Universities", ar: "الجامعات" },
+  { value: "college", en: "Colleges", ar: "الكليات" },
+  { value: "training_center", en: "Training Centers", ar: "مراكز التدريب" },
 ];
 
 const scopeOptions: { value: EntityScope | "all"; en: string; ar: string }[] = [
@@ -44,6 +47,9 @@ const typeLabels: Record<EntityType, { en: string; ar: string }> = {
   private_association: { en: "Private Association", ar: "جمعية خاصة" },
   culinary_academy: { en: "Culinary Academy", ar: "أكاديمية طهي" },
   industry_body: { en: "Industry Body", ar: "هيئة صناعية" },
+  university: { en: "University", ar: "جامعة" },
+  college: { en: "College", ar: "كلية" },
+  training_center: { en: "Training Center", ar: "مركز تدريب" },
 };
 
 const scopeLabels: Record<EntityScope, { en: string; ar: string }> = {
@@ -111,6 +117,7 @@ export default function Entities() {
     const matchesScope = scopeFilter === "all" || e.scope === scopeFilter;
 
     let matchesTab = true;
+    if (activeTab === "education") matchesTab = e.type === "university" || e.type === "college" || e.type === "training_center" || e.type === "culinary_academy";
     if (activeTab === "local") matchesTab = e.scope === "local" || e.scope === "national";
     if (activeTab === "international") matchesTab = e.scope === "regional" || e.scope === "international";
     if (activeTab === "government") matchesTab = e.type === "government_entity";
@@ -198,6 +205,7 @@ export default function Entities() {
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
           <TabsList className="flex-wrap bg-muted/50 p-1 gap-0.5">
             <TabsTrigger value="all" className="text-xs sm:text-sm">{isAr ? "الكل" : "All"}</TabsTrigger>
+            <TabsTrigger value="education" className="text-xs sm:text-sm">{isAr ? "تعليمي" : "Education"}</TabsTrigger>
             <TabsTrigger value="local" className="text-xs sm:text-sm">{isAr ? "محلي ووطني" : "Local & National"}</TabsTrigger>
             <TabsTrigger value="international" className="text-xs sm:text-sm">{isAr ? "إقليمي ودولي" : "Regional & International"}</TabsTrigger>
             <TabsTrigger value="government" className="text-xs sm:text-sm">{isAr ? "حكومي" : "Government"}</TabsTrigger>

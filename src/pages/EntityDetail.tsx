@@ -8,14 +8,21 @@ import { Footer } from "@/components/Footer";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Skeleton } from "@/components/ui/skeleton";
 import { toast } from "@/hooks/use-toast";
 import {
   Building2, MapPin, Globe, Mail, Phone, Users, ShieldCheck,
-  Bell, BellOff, ArrowLeft, ExternalLink, Share2, Calendar, Award, Target
+  Bell, BellOff, ArrowLeft, ExternalLink, Share2, Calendar, Award, Target,
+  GraduationCap, BookOpen, Trophy
 } from "lucide-react";
 import { QRCodeDisplay } from "@/components/qr/QRCodeDisplay";
 import { useEntityQRCode } from "@/hooks/useQRCode";
+import { EntityProgramsTab } from "@/components/entities/EntityProgramsTab";
+import { EntityMembersTab } from "@/components/entities/EntityMembersTab";
+import { EntityDegreesTab } from "@/components/entities/EntityDegreesTab";
+import { EntityEventsTab } from "@/components/entities/EntityEventsTab";
+import { EntityCompetitionsTab } from "@/components/entities/EntityCompetitionsTab";
 import type { Database } from "@/integrations/supabase/types";
 
 type EntityType = Database["public"]["Enums"]["entity_type"];
@@ -27,6 +34,9 @@ const typeLabels: Record<EntityType, { en: string; ar: string }> = {
   private_association: { en: "Private Association", ar: "جمعية خاصة" },
   culinary_academy: { en: "Culinary Academy", ar: "أكاديمية طهي" },
   industry_body: { en: "Industry Body", ar: "هيئة صناعية" },
+  university: { en: "University", ar: "جامعة" },
+  college: { en: "College", ar: "كلية" },
+  training_center: { en: "Training Center", ar: "مركز تدريب" },
 };
 
 const scopeLabels: Record<EntityScope, { en: string; ar: string }> = {
@@ -296,6 +306,43 @@ export default function EntityDetail() {
                 </div>
               </section>
             )}
+
+            {/* Entity Sub-sections Tabs */}
+            <Tabs defaultValue="programs" className="mt-8">
+              <TabsList className="flex-wrap bg-muted/50 p-1 gap-0.5">
+                <TabsTrigger value="programs" className="gap-1.5 text-xs sm:text-sm">
+                  <BookOpen className="h-3.5 w-3.5" />{isAr ? "البرامج" : "Programs"}
+                </TabsTrigger>
+                <TabsTrigger value="members" className="gap-1.5 text-xs sm:text-sm">
+                  <Users className="h-3.5 w-3.5" />{isAr ? "الأعضاء" : "Members"}
+                </TabsTrigger>
+                <TabsTrigger value="degrees" className="gap-1.5 text-xs sm:text-sm">
+                  <GraduationCap className="h-3.5 w-3.5" />{isAr ? "الشهادات" : "Degrees"}
+                </TabsTrigger>
+                <TabsTrigger value="events" className="gap-1.5 text-xs sm:text-sm">
+                  <Calendar className="h-3.5 w-3.5" />{isAr ? "الفعاليات" : "Events"}
+                </TabsTrigger>
+                <TabsTrigger value="competitions" className="gap-1.5 text-xs sm:text-sm">
+                  <Trophy className="h-3.5 w-3.5" />{isAr ? "المسابقات" : "Competitions"}
+                </TabsTrigger>
+              </TabsList>
+
+              <TabsContent value="programs" className="mt-4">
+                <EntityProgramsTab entityId={entity.id} />
+              </TabsContent>
+              <TabsContent value="members" className="mt-4">
+                <EntityMembersTab entityId={entity.id} />
+              </TabsContent>
+              <TabsContent value="degrees" className="mt-4">
+                <EntityDegreesTab entityId={entity.id} />
+              </TabsContent>
+              <TabsContent value="events" className="mt-4">
+                <EntityEventsTab entityId={entity.id} />
+              </TabsContent>
+              <TabsContent value="competitions" className="mt-4">
+                <EntityCompetitionsTab entityId={entity.id} />
+              </TabsContent>
+            </Tabs>
           </div>
 
           {/* Sidebar */}
