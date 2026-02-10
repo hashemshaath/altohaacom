@@ -98,30 +98,33 @@ export default function News() {
   };
 
   return (
-    <div className="flex min-h-screen flex-col">
+    <div className="flex min-h-screen flex-col bg-background">
       <SEOHead
         title="News & Articles"
         description="Stay updated with the latest culinary news, competition results, and chef stories from the Altohaa community."
       />
       <Header />
       <main className="flex-1">
-        {/* Header */}
         <div className="container py-8 md:py-12">
-          <div className="mb-8">
-            <div className="mb-1 flex items-center gap-2">
-              <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary/10">
-                <Newspaper className="h-4 w-4 text-primary" />
+          {/* Hero Header */}
+          <Card className="mb-8 overflow-hidden border-border/50 bg-gradient-to-br from-primary/5 via-background to-accent/5 relative">
+            <div className="pointer-events-none absolute -end-16 -top-16 h-48 w-48 rounded-full bg-primary/5 blur-3xl" />
+            <div className="relative flex items-center gap-4 p-5 md:p-6">
+              <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-primary/10 ring-4 ring-primary/5">
+                <Newspaper className="h-6 w-6 text-primary" />
               </div>
-              <h1 className="font-serif text-2xl font-bold md:text-3xl">
-                {isAr ? "الأخبار والمقالات" : "News & Articles"}
-              </h1>
+              <div>
+                <h1 className="font-serif text-2xl font-bold md:text-3xl">
+                  {isAr ? "الأخبار والمقالات" : "News & Articles"}
+                </h1>
+                <p className="mt-1 text-sm text-muted-foreground">
+                  {isAr
+                    ? "ابق على اطلاع بأحدث أخبار المسابقات والفعاليات الطهوية"
+                    : "Stay updated with the latest competition news and culinary events"}
+                </p>
+              </div>
             </div>
-            <p className="mt-1 max-w-2xl text-sm text-muted-foreground md:text-base">
-              {isAr
-                ? "ابق على اطلاع بأحدث أخبار المسابقات والفعاليات الطهوية"
-                : "Stay updated with the latest competition news and culinary events"}
-            </p>
-          </div>
+          </Card>
 
           {/* Filters */}
           <div className="mb-6 flex flex-col gap-3 sm:flex-row">
@@ -151,11 +154,11 @@ export default function News() {
 
           {/* Tabs */}
           <Tabs value={activeType} onValueChange={setActiveType} className="space-y-6">
-            <TabsList className="h-auto w-full justify-start overflow-x-auto bg-muted/50">
-              <TabsTrigger value="all" className="text-xs sm:text-sm">{isAr ? "الكل" : "All"}</TabsTrigger>
-              <TabsTrigger value="news" className="text-xs sm:text-sm">{isAr ? "أخبار" : "News"}</TabsTrigger>
-              <TabsTrigger value="blog" className="text-xs sm:text-sm">{isAr ? "مدونة" : "Blog"}</TabsTrigger>
-              <TabsTrigger value="exhibition" className="text-xs sm:text-sm">{isAr ? "معارض" : "Exhibitions"}</TabsTrigger>
+            <TabsList className="h-auto w-full justify-start gap-1 overflow-x-auto overflow-y-hidden whitespace-nowrap rounded-lg border border-border/50 bg-muted/30 p-1">
+              <TabsTrigger value="all" className="gap-1.5 rounded-md text-xs data-[state=active]:bg-background data-[state=active]:shadow-sm sm:text-sm">{isAr ? "الكل" : "All"}</TabsTrigger>
+              <TabsTrigger value="news" className="gap-1.5 rounded-md text-xs data-[state=active]:bg-background data-[state=active]:shadow-sm sm:text-sm">{isAr ? "أخبار" : "News"}</TabsTrigger>
+              <TabsTrigger value="blog" className="gap-1.5 rounded-md text-xs data-[state=active]:bg-background data-[state=active]:shadow-sm sm:text-sm">{isAr ? "مدونة" : "Blog"}</TabsTrigger>
+              <TabsTrigger value="exhibition" className="gap-1.5 rounded-md text-xs data-[state=active]:bg-background data-[state=active]:shadow-sm sm:text-sm">{isAr ? "معارض" : "Exhibitions"}</TabsTrigger>
             </TabsList>
 
             <TabsContent value={activeType} className="mt-6">
@@ -173,39 +176,44 @@ export default function News() {
                   ))}
                 </div>
               ) : filteredArticles.length === 0 ? (
-                <div className="flex flex-col items-center justify-center py-20 text-center">
-                  <div className="mb-4 rounded-2xl bg-muted/60 p-5">
-                    <Newspaper className="h-10 w-10 text-muted-foreground/40" />
-                  </div>
-                  <h3 className="mb-1 text-lg font-semibold">
-                    {isAr ? "لا توجد مقالات" : "No articles found"}
-                  </h3>
-                  <p className="max-w-sm text-sm text-muted-foreground">
-                    {searchQuery
-                      ? (isAr ? "جرّب كلمات بحث مختلفة" : "Try different search terms")
-                      : (isAr ? "لا توجد مقالات حالياً" : "No articles available yet")}
-                  </p>
-                  {searchQuery && (
-                    <Button variant="outline" size="sm" className="mt-4" onClick={() => setSearchQuery("")}>
-                      {isAr ? "مسح البحث" : "Clear search"}
-                    </Button>
-                  )}
-                </div>
+                <Card className="border-border/50">
+                  <CardContent className="flex flex-col items-center justify-center py-20 text-center">
+                    <div className="mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-muted">
+                      <Newspaper className="h-7 w-7 text-muted-foreground/40" />
+                    </div>
+                    <h3 className="mb-1 text-lg font-semibold">
+                      {isAr ? "لا توجد مقالات" : "No articles found"}
+                    </h3>
+                    <p className="max-w-sm text-sm text-muted-foreground">
+                      {searchQuery
+                        ? (isAr ? "جرّب كلمات بحث مختلفة" : "Try different search terms")
+                        : (isAr ? "لا توجد مقالات حالياً" : "No articles available yet")}
+                    </p>
+                    {searchQuery && (
+                      <Button variant="outline" size="sm" className="mt-4" onClick={() => setSearchQuery("")}>
+                        {isAr ? "مسح البحث" : "Clear search"}
+                      </Button>
+                    )}
+                  </CardContent>
+                </Card>
               ) : (
                 <>
                   {/* Featured Articles */}
                   {featuredArticles.length > 0 && (
                     <div className="mb-10">
-                      <h2 className="mb-4 text-sm font-semibold uppercase tracking-wider text-muted-foreground">
-                        {isAr ? "المميز" : "Featured"}
-                      </h2>
+                      <div className="mb-4 flex items-center gap-2">
+                        <Badge variant="secondary" className="text-[10px] uppercase tracking-wider">
+                          {isAr ? "المميز" : "Featured"}
+                        </Badge>
+                        <div className="h-px flex-1 bg-border/50" />
+                      </div>
                       <div className="grid gap-4 md:grid-cols-2">
                         {featuredArticles.slice(0, 2).map((article) => {
                           const title = isAr && article.title_ar ? article.title_ar : article.title;
                           const excerpt = isAr && article.excerpt_ar ? article.excerpt_ar : article.excerpt;
                           return (
                             <Link key={article.id} to={`/news/${article.slug}`} className="group block">
-                              <Card className="h-full overflow-hidden transition-all hover:shadow-md hover:-translate-y-0.5">
+                              <Card className="h-full overflow-hidden border-border/50 transition-all hover:shadow-lg hover:-translate-y-0.5 hover:border-primary/20">
                                 <div className="relative aspect-video overflow-hidden bg-muted">
                                   {article.featured_image_url ? (
                                     <img
@@ -250,7 +258,7 @@ export default function News() {
                       const excerpt = isAr && article.excerpt_ar ? article.excerpt_ar : article.excerpt;
                       return (
                         <Link key={article.id} to={`/news/${article.slug}`} className="group block">
-                          <Card className="h-full overflow-hidden transition-all hover:shadow-md hover:-translate-y-0.5 flex flex-col">
+                          <Card className="h-full overflow-hidden border-border/50 transition-all hover:shadow-md hover:-translate-y-0.5 hover:border-primary/20 flex flex-col">
                             <div className="relative aspect-video overflow-hidden bg-muted">
                               {article.featured_image_url ? (
                                 <img
