@@ -34,7 +34,7 @@ const Onboarding = lazy(() => import("./pages/Onboarding"));
 const SponsorsLanding = lazy(() => import("./pages/landing/SponsorsLanding"));
 const OrganizersLanding = lazy(() => import("./pages/landing/OrganizersLanding"));
 const Install = lazy(() => import("./pages/Install"));
-const CertificateVerify = lazy(() => import("./pages/CertificateVerify"));
+const Verify = lazy(() => import("./pages/Verify"));
 const KnowledgePortal = lazy(() => import("./pages/KnowledgePortal"));
 const Masterclasses = lazy(() => import("./pages/Masterclasses"));
 const MasterclassDetail = lazy(() => import("./pages/MasterclassDetail"));
@@ -152,7 +152,7 @@ const App = () => (
                 <Route path="/onboarding" element={<ProtectedRoute><Onboarding /></ProtectedRoute>} />
                 <Route path="/sponsors" element={<SponsorsLanding />} />
                 <Route path="/for-organizers" element={<OrganizersLanding />} />
-                <Route path="/verify" element={<CertificateVerify />} />
+                <Route path="/verify" element={<Verify />} />
                 <Route path="/masterclasses" element={<Masterclasses />} />
                 <Route path="/masterclasses/:id" element={<MasterclassDetail />} />
                 <Route path="/install" element={<Install />} />

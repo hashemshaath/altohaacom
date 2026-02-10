@@ -4856,6 +4856,89 @@ export type Database = {
           },
         ]
       }
+      qr_codes: {
+        Row: {
+          category: string
+          code: string
+          created_at: string
+          created_by: string | null
+          entity_id: string
+          entity_type: string
+          id: string
+          is_active: boolean
+          last_scanned_at: string | null
+          metadata: Json | null
+          scan_count: number
+          updated_at: string
+        }
+        Insert: {
+          category?: string
+          code: string
+          created_at?: string
+          created_by?: string | null
+          entity_id: string
+          entity_type: string
+          id?: string
+          is_active?: boolean
+          last_scanned_at?: string | null
+          metadata?: Json | null
+          scan_count?: number
+          updated_at?: string
+        }
+        Update: {
+          category?: string
+          code?: string
+          created_at?: string
+          created_by?: string | null
+          entity_id?: string
+          entity_type?: string
+          id?: string
+          is_active?: boolean
+          last_scanned_at?: string | null
+          metadata?: Json | null
+          scan_count?: number
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      qr_scan_logs: {
+        Row: {
+          code: string
+          id: string
+          ip_address: string | null
+          qr_code_id: string
+          scanned_at: string
+          scanned_by: string | null
+          user_agent: string | null
+        }
+        Insert: {
+          code: string
+          id?: string
+          ip_address?: string | null
+          qr_code_id: string
+          scanned_at?: string
+          scanned_by?: string | null
+          user_agent?: string | null
+        }
+        Update: {
+          code?: string
+          id?: string
+          ip_address?: string | null
+          qr_code_id?: string
+          scanned_at?: string
+          scanned_by?: string | null
+          user_agent?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "qr_scan_logs_qr_code_id_fkey"
+            columns: ["qr_code_id"]
+            isOneToOne: false
+            referencedRelation: "qr_codes"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       recipe_ratings: {
         Row: {
           created_at: string
@@ -5696,6 +5779,7 @@ export type Database = {
       }
       generate_invoice_number: { Args: never; Returns: string }
       generate_order_number: { Args: never; Returns: string }
+      generate_qr_code: { Args: { p_prefix?: string }; Returns: string }
       generate_registration_number: { Args: never; Returns: string }
       generate_shop_order_number: { Args: never; Returns: string }
       generate_transaction_number: { Args: never; Returns: string }
@@ -5732,6 +5816,20 @@ export type Database = {
           status: string
           type: string
           verification_code: string
+        }[]
+      }
+      verify_qr_code: {
+        Args: { p_code: string }
+        Returns: {
+          category: string
+          code: string
+          created_at: string
+          entity_id: string
+          entity_type: string
+          id: string
+          is_active: boolean
+          metadata: Json
+          scan_count: number
         }[]
       }
     }

@@ -15,6 +15,8 @@ import { CompetitionHistory } from "@/components/profile/CompetitionHistory";
 import { MessageButton } from "@/components/profile/MessageButton";
 import { UserBadgesDisplay } from "@/components/badges/UserBadgesDisplay";
 import { ProfileCertificates } from "@/components/profile/ProfileCertificates";
+import { QRCodeDisplay } from "@/components/qr/QRCodeDisplay";
+import { useEntityQRCode } from "@/hooks/useQRCode";
 import { SEOHead } from "@/components/SEOHead";
 import {
   User,
@@ -66,6 +68,9 @@ export default function PublicProfile() {
     },
     enabled: !!username,
   });
+
+  // QR code for user account
+  const { data: qrCode } = useEntityQRCode("user", profile?.username || undefined, "account");
 
   const { data: roles } = useQuery({
     queryKey: ["publicProfileRoles", profile?.user_id],
@@ -298,6 +303,25 @@ export default function PublicProfile() {
                   <Calendar className="h-3 w-3" />
                   {t("memberSince")}: {new Date(profile.created_at).toLocaleDateString()}
                 </div>
+
+                {/* QR Code */}
+                {qrCode && (
+                  <div className="mt-4">
+                    <QRCodeDisplay
+                      code={qrCode.code}
+                      label={isAr ? "رمز QR للحساب" : "Account QR Code"}
+                      size={140}
+                      vCardData={{
+                        fullName: profile.full_name || "Unknown",
+                        phone: profile.phone || undefined,
+                        website: profile.website || undefined,
+                        location: profile.location || undefined,
+                        accountNumber: profile.account_number || undefined,
+                        profileUrl: `https://altohaacom.lovable.app/${profile.username}`,
+                      }}
+                    />
+                  </div>
+                )}
               </CardContent>
             </Card>
           </div>

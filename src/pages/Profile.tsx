@@ -24,6 +24,8 @@ import { UserBadgesDisplay } from "@/components/badges/UserBadgesDisplay";
 import { ProfileStatsBar } from "@/components/profile/ProfileStatsBar";
 import { ProfileActivityTimeline } from "@/components/profile/ProfileActivityTimeline";
 import { ProfileCertificates } from "@/components/profile/ProfileCertificates";
+import { QRCodeDisplay } from "@/components/qr/QRCodeDisplay";
+import { useEntityQRCode } from "@/hooks/useQRCode";
 
 type Profile = Database["public"]["Tables"]["profiles"]["Row"];
 type ExperienceLevel = Database["public"]["Enums"]["experience_level"];
@@ -35,6 +37,8 @@ export default function Profile() {
   const { toast } = useToast();
   const isAr = language === "ar";
   const { data: allCountries = [] } = useAllCountries();
+  const [profileUsername, setProfileUsername] = useState<string | undefined>();
+  const { data: qrCode } = useEntityQRCode("user", profileUsername, "account");
   const getCountryName = (code: string | null) => {
     if (!code) return null;
     const c = allCountries.find((ct) => ct.code === code);
@@ -69,6 +73,7 @@ export default function Profile() {
       ]);
       if (profileRes.data) {
         setProfile(profileRes.data);
+        setProfileUsername(profileRes.data.username || undefined);
         setForm({
           full_name: profileRes.data.full_name || "",
           bio: profileRes.data.bio || "",
@@ -250,6 +255,25 @@ export default function Profile() {
                     <Edit className="me-1.5 h-3.5 w-3.5" />
                     {t("editProfile")}
                   </Button>
+                )}
+
+                {/* QR Code */}
+                {!editing && qrCode && (
+                  <div className="mt-4">
+                    <QRCodeDisplay
+                      code={qrCode.code}
+                      label={isAr ? "رمز QR للحساب" : "My QR Code"}
+                      size={140}
+                      vCardData={{
+                        fullName: profile?.full_name || "",
+                        phone: profile?.phone || undefined,
+                        website: profile?.website || undefined,
+                        location: profile?.location || undefined,
+                        accountNumber: profile?.account_number || undefined,
+                        profileUrl: profile?.username ? `https://altohaacom.lovable.app/${profile.username}` : undefined,
+                      }}
+                    />
+                  </div>
                 )}
               </div>
             </CardContent>
