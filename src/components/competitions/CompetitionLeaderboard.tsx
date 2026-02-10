@@ -29,9 +29,9 @@ interface LeaderboardEntry {
 
 const RANK_ICONS = [Trophy, Medal, Award];
 const RANK_COLORS = [
-  "text-yellow-500",
-  "text-gray-400",
-  "text-amber-600",
+  "text-chart-4",
+  "text-muted-foreground",
+  "text-chart-5",
 ];
 
 export function CompetitionLeaderboard({
@@ -192,12 +192,12 @@ export function CompetitionLeaderboard({
           return (
             <div
               key={entry.registration_id}
-              className={`flex items-center gap-4 rounded-lg border p-4 ${
-                entry.rank <= 3 ? "bg-accent/5" : ""
+              className={`flex items-center gap-4 rounded-xl border p-4 transition-all duration-200 hover:shadow-sm hover:-translate-y-0.5 ${
+                entry.rank <= 3 ? "bg-accent/5 border-primary/10" : ""
               }`}
             >
               {/* Rank */}
-              <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center">
+              <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-xl bg-muted/50">
                 {RankIcon ? (
                   <RankIcon className={`h-6 w-6 ${rankColor}`} />
                 ) : (
@@ -208,12 +208,12 @@ export function CompetitionLeaderboard({
               </div>
 
               {/* Dish Image */}
-              <div className="h-14 w-14 flex-shrink-0 overflow-hidden rounded-lg bg-muted">
+              <div className="h-14 w-14 flex-shrink-0 overflow-hidden rounded-xl bg-muted ring-1 ring-border/30">
                 {entry.dish_image_url ? (
                   <img
                     src={entry.dish_image_url}
                     alt={entry.dish_name || "Dish"}
-                    className="h-full w-full object-cover"
+                    className="h-full w-full object-cover transition-transform duration-300 hover:scale-110"
                   />
                 ) : (
                   <div className="flex h-full items-center justify-center">
