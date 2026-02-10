@@ -299,11 +299,19 @@ export default function UserManagement() {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <h1 className="font-serif text-2xl font-bold">{t("userManagement")}</h1>
-        <Badge variant="outline" className="text-sm">
-          {usersData?.totalCount || 0} {language === "ar" ? "مستخدم" : "users"}
-        </Badge>
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+        <div>
+          <h1 className="font-serif text-2xl font-bold">{t("userManagement")}</h1>
+          <p className="text-sm text-muted-foreground">
+            {language === "ar" ? "إدارة المستخدمين والصلاحيات" : "Manage users, roles, and permissions"}
+          </p>
+        </div>
+        <div className="flex items-center gap-2">
+          <Badge variant="outline" className="text-sm">
+            {usersData?.totalCount || 0} {language === "ar" ? "مستخدم" : "users"}
+          </Badge>
+          <UserStatsQuickView language={language} />
+        </div>
       </div>
 
       {/* Filters */}
@@ -604,6 +612,36 @@ export default function UserManagement() {
           )}
         </CardContent>
       </Card>
+    </div>
+  );
+}
+
+function UserStatsQuickView({ language }: { language: string }) {
+  const isAr = language === "ar";
+  const { data } = useQuery({
+    queryKey: ["admin-user-quick-stats"],
+    queryFn: async () => {
+      const [activeRes, pendingRes] = await Promise.all([
+        supabase.from("profiles").select("id", { count: "exact", head: true }).eq("account_status", "active"),
+        supabase.from("profiles").select("id", { count: "exact", head: true }).eq("account_status", "pending"),
+      ]);
+      return { active: activeRes.count || 0, pending: pendingRes.count || 0 };
+    },
+    staleTime: 1000 * 60 * 5,
+  });
+
+  if (!data) return null;
+
+  return (
+    <div className="flex items-center gap-2">
+      <Badge className="bg-chart-3/15 text-chart-3 border-chart-3/20">
+        {data.active} {isAr ? "نشط" : "active"}
+      </Badge>
+      {data.pending > 0 && (
+        <Badge variant="secondary">
+          {data.pending} {isAr ? "معلق" : "pending"}
+        </Badge>
+      )}
     </div>
   );
 }

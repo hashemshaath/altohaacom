@@ -206,7 +206,7 @@ export function FeedTab() {
         </Card>
       ) : (
         posts.map((post) => (
-          <Card key={post.id} className="border-border/50 transition-all hover:shadow-md hover:border-primary/10">
+          <Card key={post.id} className="border-border/50 transition-all duration-300 hover:shadow-lg hover:border-primary/15 hover:-translate-y-0.5">
             <CardContent className="p-4">
               <div className="flex gap-3">
                 <Link to={`/${post.author_username || post.author_id}`} className="shrink-0">

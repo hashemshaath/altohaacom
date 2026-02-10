@@ -221,16 +221,19 @@ export function GroupsTab() {
 
       <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
         {groups.map((group) => (
-          <Card key={group.id} className="border-border/50 transition-all hover:shadow-md hover:-translate-y-0.5 hover:border-primary/20">
+          <Card key={group.id} className="group/card relative overflow-hidden border-border/50 transition-all duration-300 hover:shadow-lg hover:-translate-y-1 hover:border-primary/20">
+            {/* Decorative accent */}
+            <div className={`absolute inset-x-0 top-0 h-1 transition-opacity ${group.is_private ? "bg-chart-5" : "bg-primary"} opacity-0 group-hover/card:opacity-100`} />
             <CardContent className="p-4">
               <div className="mb-2 flex items-start justify-between gap-2">
-                <h3 className="font-semibold">{getDisplayName(group)}</h3>
+                <div className="flex items-center gap-2">
+                  <div className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-lg ${group.is_private ? "bg-chart-5/10" : "bg-primary/10"}`}>
+                    {group.is_private ? <Lock className="h-3.5 w-3.5 text-chart-5" /> : <Globe className="h-3.5 w-3.5 text-primary" />}
+                  </div>
+                  <h3 className="font-semibold leading-tight">{getDisplayName(group)}</h3>
+                </div>
                 <Badge variant="outline" className="shrink-0 text-[10px]">
-                  {group.is_private ? (
-                    <><Lock className="me-1 h-2.5 w-2.5" />{t("privateGroup")}</>
-                  ) : (
-                    <><Globe className="me-1 h-2.5 w-2.5" />{t("publicGroup")}</>
-                  )}
+                  {group.is_private ? t("privateGroup") : t("publicGroup")}
                 </Badge>
               </div>
               {getDisplayDesc(group) && (
@@ -246,7 +249,7 @@ export function GroupsTab() {
                   <Button
                     variant={group.is_member ? "outline" : "default"}
                     size="sm"
-                    className="text-xs"
+                    className="text-xs transition-all active:scale-95"
                     onClick={() => handleJoinLeave(group.id, group.is_member)}
                   >
                     {group.is_member ? t("leaveGroup") : t("joinGroup")}

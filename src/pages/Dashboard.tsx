@@ -2,7 +2,7 @@ import { useLanguage } from "@/i18n/LanguageContext";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { Card, CardContent } from "@/components/ui/card";
-import { Trophy, Users, GraduationCap, Landmark, Newspaper, MessageSquare, ShoppingBag, Sparkles } from "lucide-react";
+import { Trophy, Users, GraduationCap, Landmark, Newspaper, MessageSquare, ShoppingBag, Sparkles, Award, Star } from "lucide-react";
 import { Link } from "react-router-dom";
 import { UpcomingCompetitionsWidget } from "@/components/dashboard/UpcomingCompetitionsWidget";
 import { RecentActivityWidget } from "@/components/dashboard/RecentActivityWidget";
@@ -102,6 +102,13 @@ export default function Dashboard() {
           </div>
         )}
 
+        {/* Achievements Summary */}
+        {user && (
+          <div className="mb-8">
+            <AchievementsSummary userId={user.id} isAr={isAr} />
+          </div>
+        )}
+
         {/* Main Content Grid */}
         <div className="grid gap-6 lg:grid-cols-3">
           <div className="lg:col-span-2 space-y-6">
@@ -116,6 +123,49 @@ export default function Dashboard() {
         </div>
       </main>
       <Footer />
+    </div>
+  );
+}
+
+function AchievementsSummary({ userId, isAr }: { userId: string; isAr: boolean }) {
+  const { data } = useQuery({
+    queryKey: ["dashboard-achievements", userId],
+    queryFn: async (): Promise<{ certificates: number; competitions: number; badges: number }> => {
+      const certsRes = await (supabase.from("certificates").select("id", { count: "exact", head: true }) as any).eq("recipient_id", userId);
+      const regsRes = await (supabase.from("competition_registrations").select("id", { count: "exact", head: true }) as any).eq("user_id", userId);
+      const badgesRes = await (supabase.from("user_badges").select("id", { count: "exact", head: true }) as any).eq("user_id", userId);
+      return {
+        certificates: certsRes.count || 0,
+        competitions: regsRes.count || 0,
+        badges: badgesRes.count || 0,
+      };
+    },
+    staleTime: 1000 * 60 * 5,
+  });
+
+  if (!data || (data.certificates === 0 && data.competitions === 0 && data.badges === 0)) return null;
+
+  const items = [
+    { icon: Trophy, label: isAr ? "مسابقات" : "Competitions", value: data.competitions, color: "text-primary", bg: "bg-primary/10", border: "border-s-primary" },
+    { icon: Award, label: isAr ? "شهادات" : "Certificates", value: data.certificates, color: "text-chart-3", bg: "bg-chart-3/10", border: "border-s-chart-3" },
+    { icon: Star, label: isAr ? "شارات" : "Badges", value: data.badges, color: "text-chart-4", bg: "bg-chart-4/10", border: "border-s-chart-4" },
+  ];
+
+  return (
+    <div className="grid grid-cols-3 gap-3">
+      {items.map((item) => (
+        <Card key={item.label} className={`border-s-[3px] ${item.border} transition-all hover:shadow-sm`}>
+          <CardContent className="flex items-center gap-3 p-3 sm:p-4">
+            <div className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-xl ${item.bg}`}>
+              <item.icon className={`h-4 w-4 ${item.color}`} />
+            </div>
+            <div>
+              <p className="text-lg font-bold sm:text-xl">{item.value}</p>
+              <p className="text-[10px] uppercase tracking-wider text-muted-foreground">{item.label}</p>
+            </div>
+          </CardContent>
+        </Card>
+      ))}
     </div>
   );
 }
