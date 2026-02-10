@@ -15,6 +15,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Search, CalendarDays, Landmark, MapPin, Plus, Globe, ArrowRight, Clock } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
+import { countryFlag } from "@/lib/countryFlag";
 import { ExhibitionCard, type Exhibition } from "@/components/exhibitions/ExhibitionCard";
 import { isPast, isFuture, isWithinInterval } from "date-fns";
 import type { Database } from "@/integrations/supabase/types";
@@ -208,7 +209,7 @@ export default function Exhibitions() {
               <SelectContent>
                 <SelectItem value="all">{isAr ? "جميع الدول" : "All Countries"}</SelectItem>
                 {countries.map((c) => (
-                  <SelectItem key={c} value={c}>{c}</SelectItem>
+                  <SelectItem key={c} value={c}>{countryFlag(c)} {c}</SelectItem>
                 ))}
               </SelectContent>
             </Select>

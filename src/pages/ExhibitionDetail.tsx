@@ -29,6 +29,7 @@ import {
 } from "lucide-react";
 import { SEOHead } from "@/components/SEOHead";
 import { ImageLightbox } from "@/components/competitions/ImageLightbox";
+import { countryFlag as getCountryFlagUtil } from "@/lib/countryFlag";
 import { format, isPast, isFuture, isWithinInterval, differenceInDays } from "date-fns";
 import { useState, useEffect, useMemo } from "react";
 
@@ -81,40 +82,9 @@ interface Section {
 }
 
 /* ---------- country flag helper ---------- */
-const COUNTRY_FLAGS: Record<string, string> = {
-  tunisia: "🇹🇳", "تونس": "🇹🇳",
-  uae: "🇦🇪", "الإمارات": "🇦🇪",
-  france: "🇫🇷", "فرنسا": "🇫🇷",
-  italy: "🇮🇹", "إيطاليا": "🇮🇹",
-  morocco: "🇲🇦", "المغرب": "🇲🇦",
-  algeria: "🇩🇿", "الجزائر": "🇩🇿",
-  egypt: "🇪🇬", "مصر": "🇪🇬",
-  lebanon: "🇱🇧", "لبنان": "🇱🇧",
-  jordan: "🇯🇴", "الأردن": "🇯🇴",
-  "saudi arabia": "🇸🇦", "السعودية": "🇸🇦",
-  qatar: "🇶🇦", "قطر": "🇶🇦",
-  bahrain: "🇧🇭", "البحرين": "🇧🇭",
-  kuwait: "🇰🇼", "الكويت": "🇰🇼",
-  oman: "🇴🇲", "عُمان": "🇴🇲",
-  turkey: "🇹🇷", "تركيا": "🇹🇷",
-  spain: "🇪🇸", "إسبانيا": "🇪🇸",
-  usa: "🇺🇸", "أمريكا": "🇺🇸",
-  uk: "🇬🇧", "بريطانيا": "🇬🇧",
-  germany: "🇩🇪", "ألمانيا": "🇩🇪",
-  japan: "🇯🇵", "اليابان": "🇯🇵",
-  china: "🇨🇳", "الصين": "🇨🇳",
-  india: "🇮🇳", "الهند": "🇮🇳",
-  libya: "🇱🇾", "ليبيا": "🇱🇾",
-  sudan: "🇸🇩", "السودان": "🇸🇩",
-  iraq: "🇮🇶", "العراق": "🇮🇶",
-  syria: "🇸🇾", "سوريا": "🇸🇾",
-  palestine: "🇵🇸", "فلسطين": "🇵🇸",
-  yemen: "🇾🇪", "اليمن": "🇾🇪",
-};
-
 function getCountryFlag(country?: string): string {
   if (!country) return "🏳️";
-  return COUNTRY_FLAGS[country.toLowerCase()] || "🏳️";
+  return getCountryFlagUtil(country) || "🏳️";
 }
 
 /* ---------- Tier Config ---------- */

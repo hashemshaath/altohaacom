@@ -4,6 +4,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Calendar, MapPin, Globe, ExternalLink, Clock, ArrowRight } from "lucide-react";
 import { format, isPast, isFuture, isWithinInterval, differenceInDays } from "date-fns";
+import { countryFlag } from "@/lib/countryFlag";
 import type { Database } from "@/integrations/supabase/types";
 
 type ExhibitionStatus = Database["public"]["Enums"]["exhibition_status"];
@@ -159,7 +160,7 @@ export function ExhibitionCard({ exhibition, language }: ExhibitionCardProps) {
               <div className="flex items-center gap-2">
                 <MapPin className="h-3.5 w-3.5 shrink-0 text-primary/60" />
                 <span className="line-clamp-1">
-                  {venue}{exhibition.city && `, ${exhibition.city}`}{exhibition.country && `, ${exhibition.country}`}
+                  {exhibition.country && `${countryFlag(exhibition.country)} `}{venue}{exhibition.city && `, ${exhibition.city}`}{exhibition.country && `, ${exhibition.country}`}
                 </span>
               </div>
             )}
