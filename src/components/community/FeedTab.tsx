@@ -165,8 +165,9 @@ export function FeedTab() {
     <div className="mx-auto max-w-2xl space-y-4">
       {/* Create post */}
       {user && (
-        <Card className="border-border/50 overflow-hidden">
-          <CardContent className="p-4">
+        <Card className="relative overflow-hidden border-primary/15">
+          <div className="absolute -top-12 -end-12 h-32 w-32 rounded-full bg-primary/5 blur-[40px]" />
+          <CardContent className="relative p-4">
             <div className="flex gap-3">
               <Avatar className="h-10 w-10 shrink-0 ring-2 ring-primary/10">
                 <AvatarFallback className="bg-primary/10 text-primary">
