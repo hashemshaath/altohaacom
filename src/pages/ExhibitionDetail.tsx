@@ -90,11 +90,11 @@ function getCountryFlag(country?: string): string {
 /* ---------- Tier Config ---------- */
 const TIER_CONFIG: Record<string, { icon: typeof Star; gradient: string; label: string; labelAr: string; order: number }> = {
   patron: { icon: Award, gradient: "from-chart-4/20 to-chart-4/5", label: "Patron", labelAr: "راعي رسمي", order: 0 },
-  platinum: { icon: Star, gradient: "from-purple-500/20 to-purple-500/5", label: "Platinum", labelAr: "بلاتيني", order: 1 },
-  gold: { icon: Star, gradient: "from-yellow-500/20 to-yellow-500/5", label: "Gold", labelAr: "ذهبي", order: 2 },
+  platinum: { icon: Star, gradient: "from-chart-3/20 to-chart-3/5", label: "Platinum", labelAr: "بلاتيني", order: 1 },
+  gold: { icon: Star, gradient: "from-chart-4/20 to-chart-4/5", label: "Gold", labelAr: "ذهبي", order: 2 },
   partner: { icon: Building, gradient: "from-primary/20 to-primary/5", label: "Partner", labelAr: "شريك", order: 3 },
   silver: { icon: Star, gradient: "from-muted-foreground/20 to-muted-foreground/5", label: "Silver", labelAr: "فضي", order: 4 },
-  bronze: { icon: Star, gradient: "from-amber-600/20 to-amber-600/5", label: "Bronze", labelAr: "برونزي", order: 5 },
+  bronze: { icon: Star, gradient: "from-chart-2/20 to-chart-2/5", label: "Bronze", labelAr: "برونزي", order: 5 },
 };
 
 /* ---------- Countdown ---------- */
