@@ -135,8 +135,9 @@ export function RecentActivityWidget() {
     );
   }
 
-  return (
-    <Card className="overflow-hidden transition-shadow hover:shadow-md">
+    return (
+    <Card className="relative overflow-hidden transition-shadow hover:shadow-md border-border/50">
+      <div className="pointer-events-none absolute -top-12 -end-12 h-32 w-32 rounded-full bg-accent/8 blur-[40px]" />
       <div className="border-b bg-muted/30 px-4 py-3">
         <h3 className="flex items-center gap-2 text-sm font-semibold">
           <div className="flex h-6 w-6 items-center justify-center rounded-md bg-accent/10">

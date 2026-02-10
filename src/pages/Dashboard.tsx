@@ -55,12 +55,14 @@ export default function Dashboard() {
       <Header />
       <main className="container flex-1 py-6 md:py-10">
         {/* Welcome Banner */}
-        <Card className="mb-8 overflow-hidden border-primary/10 bg-gradient-to-br from-primary/5 via-background to-accent/5 relative">
-          {/* Decorative glow */}
-          <div className="pointer-events-none absolute -end-16 -top-16 h-48 w-48 rounded-full bg-primary/5 blur-3xl" />
+        <Card className="mb-8 overflow-hidden border-primary/15 bg-gradient-to-br from-primary/5 via-background to-accent/5 relative">
+          {/* Decorative glows */}
+          <div className="pointer-events-none absolute -end-16 -top-16 h-48 w-48 rounded-full bg-primary/8 blur-[80px] animate-pulse" />
+          <div className="pointer-events-none absolute -start-10 -bottom-10 h-36 w-36 rounded-full bg-accent/10 blur-[60px] animate-pulse [animation-delay:1s]" />
+          <div className="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-primary/20 to-transparent" />
           <CardContent className="relative flex flex-col gap-4 p-5 sm:flex-row sm:items-center sm:justify-between sm:p-6">
             <div className="flex items-center gap-4">
-              <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-primary/10 ring-4 ring-primary/5">
+              <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-primary/10 ring-4 ring-primary/5 shadow-sm">
                 <Sparkles className="h-6 w-6 text-primary" />
               </div>
               <div>
@@ -80,7 +82,7 @@ export default function Dashboard() {
           <div className="grid gap-2.5 grid-cols-3 sm:grid-cols-4 lg:grid-cols-7">
             {sections.map((s) => (
               <Link key={s.title} to={s.href}>
-                <Card className="group h-full transition-all hover:shadow-md hover:-translate-y-1 border-border/50 hover:border-primary/20">
+                <Card className="group h-full transition-all hover:shadow-md hover:-translate-y-1 border-border/50 hover:border-primary/20 bg-card/80">
                   <CardContent className="flex flex-col items-center gap-2.5 p-3 text-center sm:p-4">
                     <div className={`flex h-11 w-11 items-center justify-center rounded-xl ${s.bg} transition-transform group-hover:scale-110 ring-2 ring-transparent group-hover:ring-primary/10`}>
                       <s.icon className={`h-5 w-5 ${s.color}`} />

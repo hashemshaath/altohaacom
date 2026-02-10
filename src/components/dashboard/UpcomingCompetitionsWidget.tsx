@@ -43,7 +43,8 @@ export function UpcomingCompetitionsWidget() {
   }
 
   return (
-    <Card className="overflow-hidden transition-shadow hover:shadow-md">
+    <Card className="relative overflow-hidden transition-shadow hover:shadow-md border-border/50">
+      <div className="pointer-events-none absolute -top-16 -end-16 h-40 w-40 rounded-full bg-primary/5 blur-[50px]" />
       <div className="flex items-center justify-between border-b bg-muted/30 px-4 py-3">
         <h3 className="flex items-center gap-2 text-sm font-semibold">
           <div className="flex h-6 w-6 items-center justify-center rounded-md bg-primary/10">
