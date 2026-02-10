@@ -27,6 +27,7 @@ import {
   Youtube,
   ChefHat,
   ArrowLeft,
+  Calendar,
 } from "lucide-react";
 import type { Database } from "@/integrations/supabase/types";
 
@@ -144,16 +145,20 @@ export default function PublicProfile() {
         description={profile.bio || `${profile.full_name}'s profile on Altohaa`}
       />
       <Header />
-      <main className="container flex-1 py-8 md:py-10">
+
+      {/* Cover gradient */}
+      <div className="h-32 bg-gradient-to-br from-primary/15 via-primary/5 to-accent/10 md:h-40" />
+
+      <main className="container flex-1 -mt-16 pb-8 md:pb-10">
         <div className="grid gap-6 lg:grid-cols-3">
           {/* Profile Card */}
           <div className="lg:col-span-1">
-            <Card>
+            <Card className="border-border/50">
               <CardContent className="p-5">
                 <div className="flex flex-col items-center text-center">
-                  <Avatar className="h-20 w-20">
+                  <Avatar className="h-20 w-20 ring-4 ring-background">
                     <AvatarImage src={profile.avatar_url || undefined} />
-                    <AvatarFallback className="text-xl bg-primary/10 text-primary">
+                    <AvatarFallback className="text-xl bg-primary/10 text-primary font-bold">
                       {(profile.full_name || "U")[0].toUpperCase()}
                     </AvatarFallback>
                   </Avatar>
@@ -163,7 +168,7 @@ export default function PublicProfile() {
                       {profile.full_name || "Unnamed Chef"}
                     </h1>
                     {profile.is_verified && (
-                      <BadgeCheck className="h-4 w-4 text-primary" />
+                      <BadgeCheck className="h-4.5 w-4.5 text-primary" />
                     )}
                   </div>
 
@@ -199,22 +204,28 @@ export default function PublicProfile() {
                   <Separator className="my-4" />
 
                   {/* Details */}
-                  <div className="w-full space-y-2 text-start">
+                  <div className="w-full space-y-2.5 text-start">
                     {profile.specialization && (
-                      <div className="flex items-center gap-2 text-sm">
-                        <ChefHat className="h-3.5 w-3.5 shrink-0 text-muted-foreground" />
+                      <div className="flex items-center gap-2.5 text-sm">
+                        <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-primary/10">
+                          <ChefHat className="h-3.5 w-3.5 text-primary" />
+                        </div>
                         <span>{profile.specialization}</span>
                       </div>
                     )}
                     {profile.experience_level && (
-                      <div className="flex items-center gap-2 text-sm">
-                        <Award className="h-3.5 w-3.5 shrink-0 text-muted-foreground" />
+                      <div className="flex items-center gap-2.5 text-sm">
+                        <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-primary/10">
+                          <Award className="h-3.5 w-3.5 text-primary" />
+                        </div>
                         <span className="capitalize">{t(profile.experience_level as any)}</span>
                       </div>
                     )}
                     {profile.location && (
-                      <div className="flex items-center gap-2 text-sm">
-                        <MapPin className="h-3.5 w-3.5 shrink-0 text-muted-foreground" />
+                      <div className="flex items-center gap-2.5 text-sm">
+                        <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-muted">
+                          <MapPin className="h-3.5 w-3.5 text-muted-foreground" />
+                        </div>
                         <span>{profile.location}</span>
                       </div>
                     )}
@@ -223,7 +234,7 @@ export default function PublicProfile() {
 
                 {/* Bio */}
                 {profile.bio && (
-                  <div className="mt-4 rounded-lg bg-muted/40 p-3">
+                  <div className="mt-4 rounded-xl bg-muted/30 p-3.5">
                     <p className="text-center text-xs leading-relaxed text-muted-foreground">{profile.bio}</p>
                   </div>
                 )}
@@ -232,14 +243,14 @@ export default function PublicProfile() {
                 {socialLinks.length > 0 && (
                   <div className="mt-4 flex flex-wrap justify-center gap-1.5">
                     {socialLinks.map((link) => (
-                      <Button key={link.label} variant="outline" size="sm" className="h-8 px-2.5" asChild>
+                      <Button key={link.label} variant="outline" size="sm" className="h-8 gap-1.5 rounded-full px-3" asChild>
                         <a
                           href={link.value?.startsWith("http") ? link.value : `https://${link.value}`}
                           target="_blank"
                           rel="noopener noreferrer"
                         >
                           <link.icon className="h-3 w-3" />
-                          <span className="ms-1 text-[10px]">{link.label}</span>
+                          <span className="text-[10px]">{link.label}</span>
                         </a>
                       </Button>
                     ))}
@@ -252,9 +263,10 @@ export default function PublicProfile() {
                 </div>
 
                 {/* Member Since */}
-                <p className="mt-3 text-center text-[10px] text-muted-foreground">
+                <div className="mt-4 flex items-center justify-center gap-1.5 text-[10px] text-muted-foreground">
+                  <Calendar className="h-3 w-3" />
                   {t("memberSince")}: {new Date(profile.created_at).toLocaleDateString()}
-                </p>
+                </div>
               </CardContent>
             </Card>
           </div>

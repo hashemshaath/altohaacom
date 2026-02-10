@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { supabase } from "@/integrations/supabase/client";
@@ -14,6 +15,7 @@ import { useToast } from "@/hooks/use-toast";
 interface ChefProfile {
   user_id: string;
   full_name: string | null;
+  username: string | null;
   specialization: string | null;
   experience_level: string | null;
   location: string | null;
@@ -33,7 +35,7 @@ export function ChefsTab() {
   const fetchChefs = async () => {
     const { data: profiles, error } = await supabase
       .from("profiles")
-      .select("user_id, full_name, specialization, experience_level, location")
+      .select("user_id, full_name, username, specialization, experience_level, location")
       .neq("user_id", user?.id || "")
       .limit(50);
 
@@ -58,6 +60,7 @@ export function ChefsTab() {
     const enriched: ChefProfile[] = (profiles || []).map((p) => ({
       user_id: p.user_id,
       full_name: p.full_name,
+      username: p.username,
       specialization: p.specialization,
       experience_level: p.experience_level,
       location: p.location,
@@ -133,50 +136,58 @@ export function ChefsTab() {
 
       <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
         {filteredChefs.map((chef) => (
-          <Card key={chef.user_id}>
-            <CardContent className="flex items-center gap-3 p-4">
-              <Avatar className="h-12 w-12 shrink-0">
-                <AvatarFallback className="bg-primary/10 text-primary">
-                  {(chef.full_name || "C")[0].toUpperCase()}
-                </AvatarFallback>
-              </Avatar>
-              <div className="min-w-0 flex-1">
-                <h3 className="truncate text-sm font-semibold">{chef.full_name || "Chef"}</h3>
-                {chef.role && (
-                  <Badge variant="secondary" className="mt-0.5 capitalize text-[10px]">
-                    {t(chef.role as any)}
-                  </Badge>
-                )}
-                {chef.specialization && (
-                  <p className="mt-1 flex items-center gap-1 truncate text-xs text-muted-foreground">
-                    <ChefHat className="h-3 w-3 shrink-0" />
-                    {chef.specialization}
-                  </p>
-                )}
-                {chef.location && (
-                  <p className="flex items-center gap-1 text-[10px] text-muted-foreground">
-                    <MapPin className="h-2.5 w-2.5 shrink-0" />
-                    {chef.location}
-                  </p>
+          <Card key={chef.user_id} className="group border-border/50 transition-all hover:shadow-md hover:-translate-y-0.5 hover:border-primary/20">
+            <CardContent className="p-4">
+              <div className="flex items-start gap-3">
+                <Link to={`/${chef.username || chef.user_id}`} className="shrink-0">
+                  <Avatar className="h-12 w-12 transition-opacity group-hover:opacity-90">
+                    <AvatarFallback className="bg-primary/10 text-primary font-semibold">
+                      {(chef.full_name || "C")[0].toUpperCase()}
+                    </AvatarFallback>
+                  </Avatar>
+                </Link>
+                <div className="min-w-0 flex-1">
+                  <Link to={`/${chef.username || chef.user_id}`} className="block">
+                    <h3 className="truncate text-sm font-semibold group-hover:text-primary transition-colors">
+                      {chef.full_name || "Chef"}
+                    </h3>
+                  </Link>
+                  {chef.role && (
+                    <Badge variant="secondary" className="mt-0.5 capitalize text-[10px]">
+                      {t(chef.role as any)}
+                    </Badge>
+                  )}
+                  {chef.specialization && (
+                    <p className="mt-1.5 flex items-center gap-1 truncate text-xs text-muted-foreground">
+                      <ChefHat className="h-3 w-3 shrink-0" />
+                      {chef.specialization}
+                    </p>
+                  )}
+                  {chef.location && (
+                    <p className="mt-0.5 flex items-center gap-1 text-[10px] text-muted-foreground">
+                      <MapPin className="h-2.5 w-2.5 shrink-0" />
+                      {chef.location}
+                    </p>
+                  )}
+                </div>
+                {user && (
+                  <Button
+                    variant={chef.is_following ? "outline" : "default"}
+                    size="sm"
+                    className="shrink-0 gap-1 text-xs"
+                    onClick={() => handleFollow(chef.user_id, chef.is_following)}
+                  >
+                    {chef.is_following ? (
+                      <UserMinus className="h-3.5 w-3.5" />
+                    ) : (
+                      <UserPlus className="h-3.5 w-3.5" />
+                    )}
+                    <span className="hidden sm:inline">
+                      {chef.is_following ? t("unfollow") : t("follow")}
+                    </span>
+                  </Button>
                 )}
               </div>
-              {user && (
-                <Button
-                  variant={chef.is_following ? "outline" : "default"}
-                  size="sm"
-                  className="shrink-0 gap-1 text-xs"
-                  onClick={() => handleFollow(chef.user_id, chef.is_following)}
-                >
-                  {chef.is_following ? (
-                    <UserMinus className="h-3.5 w-3.5" />
-                  ) : (
-                    <UserPlus className="h-3.5 w-3.5" />
-                  )}
-                  <span className="hidden sm:inline">
-                    {chef.is_following ? t("unfollow") : t("follow")}
-                  </span>
-                </Button>
-              )}
             </CardContent>
           </Card>
         ))}
