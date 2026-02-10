@@ -15,7 +15,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Slider } from "@/components/ui/slider";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
-import { Trophy, User, CheckCircle, Star, AlertCircle, X, Save, ArrowLeft, BookOpen, Flag, BarChart3, ArrowLeftRight, LayoutDashboard } from "lucide-react";
+import { Trophy, User, CheckCircle, Star, AlertCircle, X, Save, ArrowLeft, BookOpen, Flag, BarChart3, ArrowLeftRight, LayoutDashboard, Scale } from "lucide-react";
 import { format } from "date-fns";
 import type { Database } from "@/integrations/supabase/types";
 import { JudgeAIAssistant } from "@/components/knowledge/JudgeAIAssistant";
@@ -433,13 +433,21 @@ export default function Judging() {
     <div className="flex min-h-screen flex-col">
       <Header />
       
-      <main className="container flex-1 py-8">
-        <div className="mb-8">
-          <h1 className="font-serif text-3xl font-bold">{t("judgingPanel")}</h1>
-          <p className="text-muted-foreground">
-            {language === "ar" ? "تقييم المشاركين في المسابقات" : "Score and evaluate competition participants"}
-          </p>
-        </div>
+      <main className="container flex-1 py-6 md:py-10">
+        {/* Page Header */}
+        <Card className="mb-8 overflow-hidden border-chart-4/10 bg-gradient-to-br from-chart-4/5 via-background to-primary/5">
+          <CardContent className="flex items-center gap-4 p-5 sm:p-6">
+            <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-chart-4/10 ring-4 ring-chart-4/5">
+              <Scale className="h-6 w-6 text-chart-4" />
+            </div>
+            <div>
+              <h1 className="font-serif text-xl font-bold sm:text-2xl md:text-3xl">{t("judgingPanel")}</h1>
+              <p className="mt-1 text-sm text-muted-foreground">
+                {language === "ar" ? "تقييم المشاركين في المسابقات" : "Score and evaluate competition participants"}
+              </p>
+            </div>
+          </CardContent>
+        </Card>
 
         {/* Main Judging Tabs */}
         <Tabs value={activeTab} onValueChange={setActiveTab} className="mb-6">
