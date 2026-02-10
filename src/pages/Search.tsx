@@ -24,10 +24,13 @@ import {
   Trophy,
   Filter,
   X,
-  CheckCircle2
+  CheckCircle2,
+  Clock,
+  Trash2,
 } from "lucide-react";
 import { format } from "date-fns";
 import { useGlobalSearch, type SearchFilters } from "@/hooks/useGlobalSearch";
+import { getRecentSearches, addRecentSearch, clearRecentSearches } from "@/lib/recentSearches";
 import type { Database } from "@/integrations/supabase/types";
 
 type CompetitionStatus = Database["public"]["Enums"]["competition_status"];
@@ -47,7 +50,7 @@ export default function Search() {
   const { t, language } = useLanguage();
   const [searchParams, setSearchParams] = useSearchParams();
   const [showFilters, setShowFilters] = useState(false);
-  
+  const [recentSearches, setRecentSearches] = useState<string[]>([]);
   const { 
     filters, 
     updateFilter, 
@@ -57,11 +60,20 @@ export default function Search() {
     isLoading 
   } = useGlobalSearch();
 
+  // Load recent searches
+  useEffect(() => {
+    setRecentSearches(getRecentSearches());
+  }, []);
+
   // Initialize from URL params
   useEffect(() => {
     const query = searchParams.get("q") || "";
     const type = (searchParams.get("type") as SearchFilters["type"]) || "all";
-    if (query) updateFilter("query", query);
+    if (query) {
+      updateFilter("query", query);
+      addRecentSearch(query);
+      setRecentSearches(getRecentSearches());
+    }
     if (type) updateFilter("type", type);
   }, []);
 
@@ -75,8 +87,22 @@ export default function Search() {
 
   const handleSearch = (value: string) => {
     updateFilter("query", value);
+    if (value.trim().length >= 2) {
+      addRecentSearch(value.trim());
+      setRecentSearches(getRecentSearches());
+    }
   };
 
+  const handleRecentClick = (term: string) => {
+    updateFilter("query", term);
+    addRecentSearch(term);
+    setRecentSearches(getRecentSearches());
+  };
+
+  const handleClearRecent = () => {
+    clearRecentSearches();
+    setRecentSearches([]);
+  };
   const getStatusLabel = (status: CompetitionStatus): string => {
     const labels: Record<CompetitionStatus, string> = {
       draft: t("draft"),
@@ -278,7 +304,13 @@ export default function Search() {
             {isLoading ? (
               <SearchSkeleton />
             ) : !filters.query ? (
-              <EmptySearch message={t("enterSearchQuery")} />
+              <RecentSearchesPanel
+                recentSearches={recentSearches}
+                onRecentClick={handleRecentClick}
+                onClear={handleClearRecent}
+                language={language}
+                fallbackMessage={t("enterSearchQuery")}
+              />
             ) : totalResults === 0 ? (
               <EmptySearch message={t("noResultsFound")} />
             ) : (
@@ -601,6 +633,55 @@ function EmptySearch({ message }: { message: string }) {
     <div className="flex flex-col items-center justify-center py-16 text-center">
       <SearchIcon className="h-16 w-16 text-muted-foreground/30 mb-4" />
       <p className="text-muted-foreground">{message}</p>
+    </div>
+  );
+}
+
+function RecentSearchesPanel({ 
+  recentSearches, 
+  onRecentClick, 
+  onClear, 
+  language, 
+  fallbackMessage 
+}: { 
+  recentSearches: string[]; 
+  onRecentClick: (term: string) => void; 
+  onClear: () => void; 
+  language: string; 
+  fallbackMessage: string; 
+}) {
+  if (recentSearches.length === 0) {
+    return <EmptySearch message={fallbackMessage} />;
+  }
+
+  return (
+    <div className="flex flex-col items-center py-10">
+      <div className="mb-6 flex h-14 w-14 items-center justify-center rounded-full bg-muted/60">
+        <Clock className="h-6 w-6 text-muted-foreground/50" />
+      </div>
+      <div className="mb-4 flex items-center gap-2">
+        <h3 className="text-sm font-semibold text-muted-foreground">
+          {language === "ar" ? "عمليات البحث الأخيرة" : "Recent Searches"}
+        </h3>
+        <Button variant="ghost" size="sm" className="h-6 px-2 text-xs text-muted-foreground" onClick={onClear}>
+          <Trash2 className="h-3 w-3 me-1" />
+          {language === "ar" ? "مسح" : "Clear"}
+        </Button>
+      </div>
+      <div className="flex flex-wrap justify-center gap-2">
+        {recentSearches.map((term) => (
+          <Button
+            key={term}
+            variant="outline"
+            size="sm"
+            className="gap-1.5"
+            onClick={() => onRecentClick(term)}
+          >
+            <Clock className="h-3 w-3" />
+            {term}
+          </Button>
+        ))}
+      </div>
     </div>
   );
 }

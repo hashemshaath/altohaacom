@@ -13,8 +13,11 @@ import {
   FileText, 
   User, 
   ArrowRight,
-  X
+  X,
+  Clock,
+  Trash2,
 } from "lucide-react";
+import { getRecentSearches, addRecentSearch, clearRecentSearches } from "@/lib/recentSearches";
 
 interface QuickSearchProps {
   onClose?: () => void;
@@ -23,11 +26,17 @@ interface QuickSearchProps {
 export function QuickSearch({ onClose }: QuickSearchProps) {
   const [query, setQuery] = useState("");
   const [isOpen, setIsOpen] = useState(false);
+  const [recentSearches, setRecentSearches] = useState<string[]>([]);
   const { t, language } = useLanguage();
   const navigate = useNavigate();
   const inputRef = useRef<HTMLInputElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const debouncedQuery = useDebounce(query, 300);
+
+  // Load recent searches on mount
+  useEffect(() => {
+    setRecentSearches(getRecentSearches());
+  }, []);
 
   // Close on click outside
   useEffect(() => {
@@ -50,6 +59,19 @@ export function QuickSearch({ onClose }: QuickSearchProps) {
     }
     document.addEventListener("keydown", handleEscape);
     return () => document.removeEventListener("keydown", handleEscape);
+  }, []);
+
+  // Keyboard shortcut: Ctrl/Cmd+K
+  useEffect(() => {
+    function handleShortcut(event: KeyboardEvent) {
+      if ((event.metaKey || event.ctrlKey) && event.key === "k") {
+        event.preventDefault();
+        inputRef.current?.focus();
+        setIsOpen(true);
+      }
+    }
+    document.addEventListener("keydown", handleShortcut);
+    return () => document.removeEventListener("keydown", handleShortcut);
   }, []);
 
   const { data: suggestions, isLoading } = useQuery({
@@ -96,9 +118,11 @@ export function QuickSearch({ onClose }: QuickSearchProps) {
     suggestions.members.length > 0
   );
 
-  const handleSearch = (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleSearch = (e?: React.FormEvent) => {
+    e?.preventDefault();
     if (query.trim()) {
+      addRecentSearch(query.trim());
+      setRecentSearches(getRecentSearches());
       navigate(`/search?q=${encodeURIComponent(query.trim())}`);
       setIsOpen(false);
       setQuery("");
@@ -106,11 +130,33 @@ export function QuickSearch({ onClose }: QuickSearchProps) {
     }
   };
 
-  const handleResultClick = () => {
+  const handleRecentClick = (term: string) => {
+    setQuery(term);
+    addRecentSearch(term);
+    setRecentSearches(getRecentSearches());
+    navigate(`/search?q=${encodeURIComponent(term)}`);
     setIsOpen(false);
     setQuery("");
     onClose?.();
   };
+
+  const handleClearRecent = () => {
+    clearRecentSearches();
+    setRecentSearches([]);
+  };
+
+  const handleResultClick = () => {
+    if (query.trim()) {
+      addRecentSearch(query.trim());
+      setRecentSearches(getRecentSearches());
+    }
+    setIsOpen(false);
+    setQuery("");
+    onClose?.();
+  };
+
+  const showRecent = isOpen && query.length < 2 && recentSearches.length > 0;
+  const showResults = isOpen && query.length >= 2;
 
   return (
     <div ref={containerRef} className="relative w-full max-w-sm">
@@ -120,7 +166,7 @@ export function QuickSearch({ onClose }: QuickSearchProps) {
           <Input
             ref={inputRef}
             type="text"
-            placeholder={language === "ar" ? "ابحث..." : "Search..."}
+            placeholder={language === "ar" ? "ابحث... (⌘K)" : "Search... (⌘K)"}
             value={query}
             onChange={(e) => {
               setQuery(e.target.value);
@@ -146,8 +192,33 @@ export function QuickSearch({ onClose }: QuickSearchProps) {
         </div>
       </form>
 
-      {/* Dropdown Results */}
-      {isOpen && query.length >= 2 && (
+      {/* Recent Searches Dropdown */}
+      {showRecent && (
+        <div className="absolute top-full left-0 right-0 z-50 mt-1 rounded-md border bg-popover p-2 shadow-lg">
+          <div className="flex items-center justify-between px-2 mb-1">
+            <p className="text-xs font-semibold text-muted-foreground uppercase">
+              {language === "ar" ? "عمليات البحث الأخيرة" : "Recent Searches"}
+            </p>
+            <Button variant="ghost" size="sm" className="h-6 px-1.5 text-xs text-muted-foreground" onClick={handleClearRecent}>
+              <Trash2 className="h-3 w-3 me-1" />
+              {language === "ar" ? "مسح" : "Clear"}
+            </Button>
+          </div>
+          {recentSearches.map((term) => (
+            <button
+              key={term}
+              onClick={() => handleRecentClick(term)}
+              className="flex w-full items-center gap-3 rounded-md p-2 text-sm hover:bg-accent transition-colors text-start"
+            >
+              <Clock className="h-3.5 w-3.5 text-muted-foreground shrink-0" />
+              <span className="truncate">{term}</span>
+            </button>
+          ))}
+        </div>
+      )}
+
+      {/* Search Results Dropdown */}
+      {showResults && (
         <div className="absolute top-full left-0 right-0 z-50 mt-1 rounded-md border bg-popover p-2 shadow-lg">
           {isLoading ? (
             <div className="flex items-center justify-center py-4">
@@ -257,7 +328,7 @@ export function QuickSearch({ onClose }: QuickSearchProps) {
                   variant="ghost"
                   size="sm"
                   className="w-full justify-between"
-                  onClick={handleSearch}
+                  onClick={() => handleSearch()}
                 >
                   <span>{language === "ar" ? "عرض جميع النتائج" : "View all results"}</span>
                   <ArrowRight className="h-4 w-4" />
