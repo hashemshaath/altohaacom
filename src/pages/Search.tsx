@@ -118,14 +118,19 @@ export default function Search() {
   };
 
   return (
-    <div className="flex min-h-screen flex-col">
+    <div className="flex min-h-screen flex-col bg-background">
       <Header />
       
       <main className="container flex-1 py-8">
         {/* Search Header */}
-        <div className="mb-8">
-          <h1 className="font-serif text-3xl font-bold mb-2">{t("searchTitle")}</h1>
-          <p className="text-muted-foreground">{t("searchSubtitle")}</p>
+        <div className="mb-8 flex items-start gap-3">
+          <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-primary/10 ring-1 ring-primary/15 shadow-sm">
+            <SearchIcon className="h-6 w-6 text-primary" />
+          </div>
+          <div>
+            <h1 className="font-serif text-2xl font-bold md:text-3xl">{t("searchTitle")}</h1>
+            <p className="mt-0.5 text-sm text-muted-foreground">{t("searchSubtitle")}</p>
+          </div>
         </div>
 
         {/* Search Input */}

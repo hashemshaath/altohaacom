@@ -57,8 +57,8 @@ export default function Notifications() {
 
   const getTypeColor = (type: string) => {
     switch (type) {
-      case "success": return "bg-emerald-500/10 text-emerald-600";
-      case "warning": return "bg-amber-500/10 text-amber-600";
+      case "success": return "bg-chart-5/10 text-chart-5";
+      case "warning": return "bg-chart-4/10 text-chart-4";
       case "error": return "bg-destructive/10 text-destructive";
       default: return "bg-primary/10 text-primary";
     }
@@ -91,11 +91,11 @@ export default function Notifications() {
           {/* Header */}
           <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
             <div className="flex items-center gap-3">
-              <div className="rounded-xl bg-primary/10 p-2.5">
-                <Bell className="h-6 w-6 text-primary" />
+              <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-primary/10 ring-1 ring-primary/15 shadow-sm">
+                <Bell className="h-5 w-5 text-primary" />
               </div>
               <div>
-                <h1 className="text-2xl font-bold">
+                <h1 className="font-serif text-2xl font-bold">
                   {language === "ar" ? "الإشعارات" : "Notifications"}
                 </h1>
                 {unreadCount > 0 && (
@@ -129,13 +129,13 @@ export default function Notifications() {
                 <p className="text-xl font-bold">{notifications.length}</p>
               </CardContent>
             </Card>
-            <Card className="border-s-[3px] border-s-amber-500">
+            <Card className="border-s-[3px] border-s-chart-4">
               <CardContent className="p-3 text-center">
                 <p className="text-xs text-muted-foreground">{language === "ar" ? "غير مقروء" : "Unread"}</p>
                 <p className="text-xl font-bold">{unreadCount}</p>
               </CardContent>
             </Card>
-            <Card className="border-s-[3px] border-s-emerald-500">
+            <Card className="border-s-[3px] border-s-chart-5">
               <CardContent className="p-3 text-center">
                 <p className="text-xs text-muted-foreground">{language === "ar" ? "مقروء" : "Read"}</p>
                 <p className="text-xl font-bold">{notifications.length - unreadCount}</p>
@@ -195,10 +195,10 @@ export default function Notifications() {
                   <p className="mb-3 text-sm font-medium text-muted-foreground">{dateLabel}</p>
                   <div className="space-y-2">
                     {items.map((notification) => (
-                      <Card
+                        <Card
                         key={notification.id}
                         className={cn(
-                          "cursor-pointer transition-all hover:shadow-sm",
+                          "cursor-pointer transition-all duration-200 hover:shadow-md hover:-translate-y-0.5",
                           !notification.is_read && "border-s-[3px] border-s-primary bg-primary/5"
                         )}
                         onClick={() => handleNotificationClick(notification)}
