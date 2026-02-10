@@ -17,7 +17,7 @@ import {
   Calendar, MapPin, Users, Globe, Trophy, ArrowLeft, CheckCircle,
   Settings, Pencil, Award, BookOpen, ClipboardList, Clock, Share2,
   ImageIcon, Twitter, Facebook, Linkedin, Link2, ChevronDown,
-  Sparkles, Target, BarChart3, UsersRound, Eye,
+  Sparkles, Target, BarChart3, UsersRound, Eye, Flame, Shield, Building2,
 } from "lucide-react";
 import {
   DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger,
@@ -134,6 +134,42 @@ export default function CompetitionDetail() {
       return data;
     },
     enabled: !!id && !!user,
+  });
+
+  const { data: competitionTypes } = useQuery({
+    queryKey: ["competition-detail-types", id],
+    queryFn: async () => {
+      const { data: assignments } = await supabase
+        .from("competition_type_assignments")
+        .select("type_id")
+        .eq("competition_id", id);
+      if (!assignments || assignments.length === 0) return [];
+      const typeIds = assignments.map((a) => a.type_id);
+      const { data: types } = await supabase
+        .from("competition_types")
+        .select("id, name, name_ar, icon")
+        .in("id", typeIds);
+      return types || [];
+    },
+    enabled: !!id,
+  });
+
+  const { data: supervisingBodies } = useQuery({
+    queryKey: ["competition-detail-bodies", id],
+    queryFn: async () => {
+      const { data: assignments } = await supabase
+        .from("competition_supervising_bodies")
+        .select("entity_id, role")
+        .eq("competition_id", id);
+      if (!assignments || assignments.length === 0) return [];
+      const entityIds = assignments.map((a) => a.entity_id);
+      const { data: entities } = await supabase
+        .from("culinary_entities")
+        .select("id, name, name_ar, abbreviation, logo_url, type, country")
+        .in("id", entityIds);
+      return entities || [];
+    },
+    enabled: !!id,
   });
 
   if (isLoading) {
@@ -401,9 +437,51 @@ export default function CompetitionDetail() {
               {activeSection === "overview" && (
                 <>
                   {/* Description */}
-                  {description && (
+                   {description && (
                     <Section icon={<BookOpen className="h-4 w-4 text-primary" />} title={isAr ? "نبذة عن المسابقة" : "About this Competition"}>
                       <p className="whitespace-pre-wrap text-sm leading-relaxed text-muted-foreground">{description}</p>
+                    </Section>
+                  )}
+
+                  {/* Competition Types */}
+                  {competitionTypes && competitionTypes.length > 0 && (
+                    <Section icon={<Flame className="h-4 w-4 text-primary" />} title={isAr ? "أنواع المسابقة" : "Competition Types"} badge={<Badge variant="secondary" className="text-[10px]">{competitionTypes.length}</Badge>}>
+                      <div className="flex flex-wrap gap-2">
+                        {competitionTypes.map((type) => (
+                          <Badge key={type.id} variant="secondary" className="gap-1.5 py-1.5 px-3">
+                            <Flame className="h-3 w-3" />
+                            {isAr && type.name_ar ? type.name_ar : type.name}
+                          </Badge>
+                        ))}
+                      </div>
+                    </Section>
+                  )}
+
+                  {/* Supervising Bodies */}
+                  {supervisingBodies && supervisingBodies.length > 0 && (
+                    <Section icon={<Shield className="h-4 w-4 text-primary" />} title={isAr ? "الجهات المشرفة" : "Supervising Bodies"} badge={<Badge variant="secondary" className="text-[10px]">{supervisingBodies.length}</Badge>}>
+                      <div className="grid gap-2 sm:grid-cols-2">
+                        {supervisingBodies.map((entity) => (
+                          <div key={entity.id} className="flex items-center gap-3 rounded-xl border border-border/60 p-3">
+                            {entity.logo_url ? (
+                              <img src={entity.logo_url} alt="" className="h-10 w-10 rounded-lg object-cover shrink-0" />
+                            ) : (
+                              <div className="h-10 w-10 rounded-lg bg-primary/5 flex items-center justify-center shrink-0">
+                                <Building2 className="h-4 w-4 text-primary/30" />
+                              </div>
+                            )}
+                            <div className="min-w-0">
+                              <p className="text-sm font-medium truncate">
+                                {isAr && entity.name_ar ? entity.name_ar : entity.name}
+                                {entity.abbreviation && <span className="text-muted-foreground"> ({entity.abbreviation})</span>}
+                              </p>
+                              <p className="text-[10px] text-muted-foreground">
+                                {entity.type?.replace("_", " ")} {entity.country ? `· ${entity.country}` : ""}
+                              </p>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
                     </Section>
                   )}
 
