@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
+import { AdminAnalyticsWidgets } from "@/components/admin/AdminAnalyticsWidgets";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
@@ -156,6 +157,10 @@ export default function AdminDashboard() {
           </Link>
         ))}
       </div>
+
+
+      {/* Analytics Widgets */}
+      <AdminAnalyticsWidgets />
 
       <div className="grid gap-6 lg:grid-cols-2">
         {/* Quick Actions */}
