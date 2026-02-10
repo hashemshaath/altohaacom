@@ -40,14 +40,14 @@ export default function AuditLog() {
 
   const getActionBadge = (actionType: string) => {
     const colors: Record<string, string> = {
-      suspend_user: "bg-red-100 text-red-800",
-      activate_user: "bg-green-100 text-green-800",
-      change_membership: "bg-blue-100 text-blue-800",
-      resolve_report: "bg-purple-100 text-purple-800",
-      assign_role: "bg-orange-100 text-orange-800",
+      suspend_user: "bg-destructive/10 text-destructive",
+      activate_user: "bg-chart-5/10 text-chart-5",
+      change_membership: "bg-chart-1/10 text-chart-1",
+      resolve_report: "bg-chart-2/10 text-chart-2",
+      assign_role: "bg-chart-4/10 text-chart-4",
     };
     return (
-      <Badge className={colors[actionType] || "bg-gray-100 text-gray-800"} variant="outline">
+      <Badge className={colors[actionType] || "bg-muted text-muted-foreground"} variant="outline">
         {actionType.replace(/_/g, " ")}
       </Badge>
     );

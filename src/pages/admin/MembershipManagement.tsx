@@ -196,7 +196,7 @@ export default function MembershipManagement() {
     const colors: Record<MembershipTier, string> = {
       basic: "bg-muted text-muted-foreground",
       professional: "bg-primary/20 text-primary",
-      enterprise: "bg-purple-500/20 text-purple-600",
+      enterprise: "bg-chart-2/20 text-chart-2",
     };
     return (
       <Badge className={colors[tier || "basic"]}>
@@ -243,7 +243,7 @@ export default function MembershipManagement() {
         <Card>
           <CardHeader className="flex flex-row items-center justify-between pb-2">
             <CardTitle className="text-sm font-medium text-muted-foreground">{t("enterprise")}</CardTitle>
-            <TrendingUp className="h-4 w-4 text-purple-500" />
+            <TrendingUp className="h-4 w-4 text-chart-2" />
           </CardHeader>
           <CardContent>
             <p className="text-2xl font-bold">{stats?.enterprise || 0}</p>

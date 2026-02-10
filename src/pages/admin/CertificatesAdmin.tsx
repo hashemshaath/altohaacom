@@ -737,7 +737,7 @@ export default function CertificatesAdmin() {
                           <TableRow key={r.registrationId}>
                             <TableCell>
                               {r.rank <= 3 ? (
-                                <Badge className={r.rank === 1 ? "bg-yellow-500 text-white" : r.rank === 2 ? "bg-gray-400 text-white" : "bg-orange-600 text-white"}>
+                                <Badge className={r.rank === 1 ? "bg-chart-4 text-chart-4-foreground" : r.rank === 2 ? "bg-muted-foreground text-background" : "bg-chart-3 text-chart-3-foreground"}>
                                   #{r.rank}
                                 </Badge>
                               ) : (
@@ -750,7 +750,7 @@ export default function CertificatesAdmin() {
                               <div className="flex gap-1">
                                 <Badge variant="outline" className="text-[10px]">{language === "ar" ? "مشاركة" : "Participation"}</Badge>
                                 {r.rank <= 3 && (
-                                  <Badge className={`text-[10px] ${r.rank === 1 ? "bg-yellow-500" : r.rank === 2 ? "bg-gray-400" : "bg-orange-600"} text-white`}>
+                                  <Badge className={`text-[10px] ${r.rank === 1 ? "bg-chart-4 text-chart-4-foreground" : r.rank === 2 ? "bg-muted-foreground text-background" : "bg-chart-3 text-chart-3-foreground"}`}>
                                     {r.rank === 1 ? (language === "ar" ? "ذهبي" : "Gold") : r.rank === 2 ? (language === "ar" ? "فضي" : "Silver") : (language === "ar" ? "برونزي" : "Bronze")}
                                   </Badge>
                                 )}

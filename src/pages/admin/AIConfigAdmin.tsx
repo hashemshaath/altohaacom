@@ -150,7 +150,7 @@ export default function AIConfigAdmin() {
               </p>
             </div>
           </div>
-          <Badge variant="default" className="gap-1 bg-green-500 hover:bg-green-600">
+          <Badge variant="default" className="gap-1 bg-chart-5 hover:bg-chart-5/90">
             <span className="h-2 w-2 rounded-full bg-white animate-pulse" />
             {language === "ar" ? "نشط" : "Active"}
           </Badge>

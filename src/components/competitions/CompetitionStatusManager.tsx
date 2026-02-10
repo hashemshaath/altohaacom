@@ -270,15 +270,15 @@ export function CompetitionStatusManager({
 
         {/* Inline Confirmation Panel */}
         {pendingStatus && (
-          <div className="rounded-lg border-2 border-orange-200 bg-orange-50 p-4 dark:border-orange-900 dark:bg-orange-950/20">
+          <div className="rounded-lg border-2 border-chart-4/30 bg-chart-4/5 p-4">
             <div className="flex items-start gap-3">
-              <AlertTriangle className="h-5 w-5 text-orange-600 dark:text-orange-400 mt-0.5" />
+              <AlertTriangle className="h-5 w-5 text-chart-4 mt-0.5" />
               <div className="flex-1 space-y-3">
                 <div>
-                  <p className="font-medium text-orange-800 dark:text-orange-200">
+                  <p className="font-medium text-foreground">
                     {language === "ar" ? "تأكيد تغيير الحالة" : "Confirm Status Change"}
                   </p>
-                  <p className="text-sm text-orange-700 dark:text-orange-300 mt-1">
+                  <p className="text-sm text-muted-foreground mt-1">
                     {language === "ar"
                       ? `هل أنت متأكد أنك تريد تغيير حالة "${competitionTitle}" إلى`
                       : `Are you sure you want to change the status of "${competitionTitle}" to`}{" "}
@@ -289,7 +289,7 @@ export function CompetitionStatusManager({
                     </strong>
                     ?
                   </p>
-                  <p className="text-xs text-orange-600 dark:text-orange-400 mt-2">
+                  <p className="text-xs text-chart-4 mt-2">
                     {language === "ar"
                       ? STATUS_CONFIG[pendingStatus].descriptionAr
                       : STATUS_CONFIG[pendingStatus].description}
