@@ -5712,6 +5712,28 @@ export type Database = {
       is_admin: { Args: { p_user_id: string }; Returns: boolean }
       is_free_preview: { Args: { p_module_id: string }; Returns: boolean }
       validate_username: { Args: { p_username: string }; Returns: boolean }
+      verify_certificate: {
+        Args: { p_code: string }
+        Returns: {
+          achievement: string
+          achievement_ar: string
+          certificate_number: string
+          event_date: string
+          event_location: string
+          event_location_ar: string
+          event_name: string
+          event_name_ar: string
+          id: string
+          issued_at: string
+          logos: Json
+          recipient_name: string
+          recipient_name_ar: string
+          signatures: Json
+          status: string
+          type: string
+          verification_code: string
+        }[]
+      }
     }
     Enums: {
       account_status: "pending" | "active" | "suspended" | "banned"
