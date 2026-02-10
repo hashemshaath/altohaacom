@@ -59,7 +59,7 @@ export function LessonViewer({ lesson, isCompleted, isEnrolled, onComplete, onBa
           )}
           <h2 className="text-xl font-semibold">{title}</h2>
         </div>
-        {isCompleted && <CheckCircle className="h-5 w-5 text-green-500" />}
+        {isCompleted && <CheckCircle className="h-5 w-5 text-chart-5" />}
       </div>
 
       {/* Video Player */}

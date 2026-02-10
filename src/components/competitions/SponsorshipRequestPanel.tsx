@@ -17,12 +17,12 @@ import { Send, Building2, Clock, CheckCircle, XCircle } from "lucide-react";
 
 const REQUEST_STATUS_COLORS: Record<string, string> = {
   pending: "bg-muted text-muted-foreground",
-  sent: "bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200",
-  viewed: "bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200",
-  accepted: "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200",
-  partially_accepted: "bg-orange-100 text-orange-800 dark:bg-orange-900 dark:text-orange-200",
-  declined: "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200",
-  fulfilled: "bg-emerald-100 text-emerald-800 dark:bg-emerald-900 dark:text-emerald-200",
+  sent: "bg-primary/10 text-primary",
+  viewed: "bg-chart-4/10 text-chart-4",
+  accepted: "bg-chart-5/10 text-chart-5",
+  partially_accepted: "bg-chart-2/10 text-chart-2",
+  declined: "bg-destructive/10 text-destructive",
+  fulfilled: "bg-chart-5/10 text-chart-5",
 };
 
 interface Props {

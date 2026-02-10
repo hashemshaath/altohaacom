@@ -16,10 +16,10 @@ interface CompetitionSponsorsPanelProps {
 }
 
 const TIER_CONFIG = {
-  platinum: { icon: Crown, color: "text-purple-500", bg: "bg-purple-100 dark:bg-purple-900/30", label: "Platinum", labelAr: "بلاتيني" },
-  gold: { icon: Star, color: "text-yellow-500", bg: "bg-yellow-100 dark:bg-yellow-900/30", label: "Gold", labelAr: "ذهبي" },
-  silver: { icon: Medal, color: "text-gray-400", bg: "bg-gray-100 dark:bg-gray-800", label: "Silver", labelAr: "فضي" },
-  bronze: { icon: Award, color: "text-amber-600", bg: "bg-amber-100 dark:bg-amber-900/30", label: "Bronze", labelAr: "برونزي" },
+  platinum: { icon: Crown, color: "text-chart-3", bg: "bg-chart-3/10", label: "Platinum", labelAr: "بلاتيني" },
+  gold: { icon: Star, color: "text-chart-4", bg: "bg-chart-4/10", label: "Gold", labelAr: "ذهبي" },
+  silver: { icon: Medal, color: "text-muted-foreground", bg: "bg-muted", label: "Silver", labelAr: "فضي" },
+  bronze: { icon: Award, color: "text-chart-2", bg: "bg-chart-2/10", label: "Bronze", labelAr: "برونزي" },
   custom: { icon: Star, color: "text-primary", bg: "bg-primary/10", label: "Custom", labelAr: "مخصص" },
 };
 

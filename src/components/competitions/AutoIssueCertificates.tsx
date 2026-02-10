@@ -255,7 +255,7 @@ export function AutoIssueCertificates({ competitionId }: AutoIssueCertificatesPr
         {/* Stats */}
         <div className="grid grid-cols-3 gap-3">
           <div className="rounded-lg border p-3 text-center">
-            <Trophy className="mx-auto mb-1 h-5 w-5 text-yellow-500" />
+            <Trophy className="mx-auto mb-1 h-5 w-5 text-chart-4" />
             <p className="text-lg font-bold">{winnerCount}</p>
             <p className="text-xs text-muted-foreground">{language === "ar" ? "فائزين" : "Winners"}</p>
           </div>
@@ -265,7 +265,7 @@ export function AutoIssueCertificates({ competitionId }: AutoIssueCertificatesPr
             <p className="text-xs text-muted-foreground">{language === "ar" ? "مشاركين" : "Participants"}</p>
           </div>
           <div className="rounded-lg border p-3 text-center">
-            <Award className="mx-auto mb-1 h-5 w-5 text-green-500" />
+            <Award className="mx-auto mb-1 h-5 w-5 text-chart-5" />
             <p className="text-lg font-bold">{existingCount}</p>
             <p className="text-xs text-muted-foreground">{language === "ar" ? "شهادات صادرة" : "Issued"}</p>
           </div>
@@ -311,7 +311,7 @@ export function AutoIssueCertificates({ competitionId }: AutoIssueCertificatesPr
         </div>
 
         {existingCount > 0 && (
-          <div className="flex items-center gap-2 rounded-lg bg-green-50 p-3 text-sm text-green-700 dark:bg-green-900/20 dark:text-green-300">
+          <div className="flex items-center gap-2 rounded-lg bg-chart-5/10 p-3 text-sm text-chart-5">
             <CheckCircle className="h-4 w-4" />
             {language === "ar"
               ? `يوجد ${existingCount} شهادة صادرة بالفعل. سيتم تخطي التكرارات.`

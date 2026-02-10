@@ -30,9 +30,9 @@ interface Props {
 
 const PRIORITY_COLORS: Record<string, string> = {
   low: "bg-muted text-muted-foreground",
-  medium: "bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200",
-  high: "bg-orange-100 text-orange-800 dark:bg-orange-900 dark:text-orange-200",
-  critical: "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200",
+  medium: "bg-primary/10 text-primary",
+  high: "bg-chart-4/10 text-chart-4",
+  critical: "bg-destructive/10 text-destructive",
 };
 
 export function AIRequirementsSuggest({ competitionId, listId, listCategory, existingItemNames, onItemsAdded }: Props) {
