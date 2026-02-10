@@ -67,6 +67,7 @@ export default function AdminLayout() {
       items: [
         { to: "/admin/users", icon: Users, label: language === "ar" ? "المستخدمين" : "Users" },
         { to: "/admin/companies", icon: Building, label: language === "ar" ? "الشركات" : "Companies" },
+        { to: "/admin/company-roles", icon: Shield, label: language === "ar" ? "أدوار الشركات" : "Company Roles" },
         { to: "/admin/sponsors", icon: Handshake, label: language === "ar" ? "الرعاة" : "Sponsors" },
         { to: "/admin/entities", icon: Building2, label: language === "ar" ? "الجهات والجمعيات" : "Entities Registry" },
         { to: "/admin/judges", icon: Gavel, label: language === "ar" ? "المحكّمين" : "Judges Registry" },
