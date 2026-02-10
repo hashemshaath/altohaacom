@@ -15,7 +15,8 @@ import { Separator } from "@/components/ui/separator";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { toast } from "@/hooks/use-toast";
-import { Plus, Pencil, Trash2, Building2, Eye, EyeOff, ShieldCheck, Search, Users } from "lucide-react";
+import { Plus, Pencil, Trash2, Building2, Eye, EyeOff, ShieldCheck, Search, Users, Settings2 } from "lucide-react";
+import { EntitySubModulesPanel } from "@/components/entities/EntitySubModulesPanel";
 import { format } from "date-fns";
 import type { Database } from "@/integrations/supabase/types";
 
@@ -29,6 +30,9 @@ const typeOptions: { value: EntityType; en: string; ar: string }[] = [
   { value: "private_association", en: "Private Association", ar: "جمعية خاصة" },
   { value: "culinary_academy", en: "Culinary Academy", ar: "أكاديمية طهي" },
   { value: "industry_body", en: "Industry Body", ar: "هيئة صناعية" },
+  { value: "university", en: "University", ar: "جامعة" },
+  { value: "college", en: "College", ar: "كلية" },
+  { value: "training_center", en: "Training Center", ar: "مركز تدريب" },
 ];
 
 const scopeOptions: { value: EntityScope; en: string; ar: string }[] = [
@@ -87,6 +91,7 @@ export default function EntitiesAdmin() {
   const [searchQuery, setSearchQuery] = useState("");
   const [filterType, setFilterType] = useState<string>("all");
   const [filterStatus, setFilterStatus] = useState<string>("all");
+  const [managingEntity, setManagingEntity] = useState<{ id: string; name: string } | null>(null);
 
   const { data: entities, isLoading } = useQuery({
     queryKey: ["admin-entities"],
@@ -121,6 +126,9 @@ export default function EntitiesAdmin() {
       private_association: "PA",
       culinary_academy: "ACM",
       industry_body: "IB",
+      university: "UNI",
+      college: "COL",
+      training_center: "TC",
     };
     const prefix = prefixes[type];
     const timestamp = Date.now().toString(36).toUpperCase().slice(-4);
@@ -533,6 +541,7 @@ export default function EntitiesAdmin() {
                       </TableCell>
                       <TableCell>
                         <div className="flex justify-end gap-1">
+                          <Button size="icon" variant="ghost" title={isAr ? "إدارة" : "Manage"} onClick={() => setManagingEntity({ id: entity.id, name: isAr && entity.name_ar ? entity.name_ar : entity.name })}><Settings2 className="h-4 w-4" /></Button>
                           <Button size="icon" variant="ghost" onClick={() => startEdit(entity)}><Pencil className="h-4 w-4" /></Button>
                           <Button size="icon" variant="ghost" onClick={() => deleteMutation.mutate(entity.id)}><Trash2 className="h-4 w-4" /></Button>
                         </div>
@@ -545,6 +554,15 @@ export default function EntitiesAdmin() {
           </Table>
         </CardContent>
       </Card>
+
+      {/* Entity Sub-Modules Management Panel */}
+      {managingEntity && (
+        <EntitySubModulesPanel
+          entityId={managingEntity.id}
+          entityName={managingEntity.name}
+          onClose={() => setManagingEntity(null)}
+        />
+      )}
     </div>
   );
 }

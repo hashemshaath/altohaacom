@@ -2776,6 +2776,263 @@ export type Database = {
         }
         Relationships: []
       }
+      entity_competition_participations: {
+        Row: {
+          competition_id: string
+          created_at: string
+          entity_id: string
+          id: string
+          notes: string | null
+          participation_type: string
+          status: string
+          student_count: number | null
+        }
+        Insert: {
+          competition_id: string
+          created_at?: string
+          entity_id: string
+          id?: string
+          notes?: string | null
+          participation_type?: string
+          status?: string
+          student_count?: number | null
+        }
+        Update: {
+          competition_id?: string
+          created_at?: string
+          entity_id?: string
+          id?: string
+          notes?: string | null
+          participation_type?: string
+          status?: string
+          student_count?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "entity_competition_participations_competition_id_fkey"
+            columns: ["competition_id"]
+            isOneToOne: false
+            referencedRelation: "competitions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "entity_competition_participations_entity_id_fkey"
+            columns: ["entity_id"]
+            isOneToOne: false
+            referencedRelation: "culinary_entities"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      entity_degrees: {
+        Row: {
+          certificate_number: string | null
+          created_at: string
+          degree_name: string
+          degree_name_ar: string | null
+          degree_type: string
+          document_url: string | null
+          entity_id: string
+          field_of_study: string | null
+          field_of_study_ar: string | null
+          gpa: string | null
+          graduation_date: string | null
+          honors: string | null
+          id: string
+          is_public: boolean | null
+          is_verified: boolean | null
+          issue_date: string | null
+          program_id: string | null
+          updated_at: string
+          user_id: string
+          verified_at: string | null
+          verified_by: string | null
+        }
+        Insert: {
+          certificate_number?: string | null
+          created_at?: string
+          degree_name: string
+          degree_name_ar?: string | null
+          degree_type: string
+          document_url?: string | null
+          entity_id: string
+          field_of_study?: string | null
+          field_of_study_ar?: string | null
+          gpa?: string | null
+          graduation_date?: string | null
+          honors?: string | null
+          id?: string
+          is_public?: boolean | null
+          is_verified?: boolean | null
+          issue_date?: string | null
+          program_id?: string | null
+          updated_at?: string
+          user_id: string
+          verified_at?: string | null
+          verified_by?: string | null
+        }
+        Update: {
+          certificate_number?: string | null
+          created_at?: string
+          degree_name?: string
+          degree_name_ar?: string | null
+          degree_type?: string
+          document_url?: string | null
+          entity_id?: string
+          field_of_study?: string | null
+          field_of_study_ar?: string | null
+          gpa?: string | null
+          graduation_date?: string | null
+          honors?: string | null
+          id?: string
+          is_public?: boolean | null
+          is_verified?: boolean | null
+          issue_date?: string | null
+          program_id?: string | null
+          updated_at?: string
+          user_id?: string
+          verified_at?: string | null
+          verified_by?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "entity_degrees_entity_id_fkey"
+            columns: ["entity_id"]
+            isOneToOne: false
+            referencedRelation: "culinary_entities"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "entity_degrees_program_id_fkey"
+            columns: ["program_id"]
+            isOneToOne: false
+            referencedRelation: "entity_programs"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      entity_event_attendees: {
+        Row: {
+          attended_at: string | null
+          event_id: string
+          id: string
+          registered_at: string | null
+          status: string
+          user_id: string
+        }
+        Insert: {
+          attended_at?: string | null
+          event_id: string
+          id?: string
+          registered_at?: string | null
+          status?: string
+          user_id: string
+        }
+        Update: {
+          attended_at?: string | null
+          event_id?: string
+          id?: string
+          registered_at?: string | null
+          status?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "entity_event_attendees_event_id_fkey"
+            columns: ["event_id"]
+            isOneToOne: false
+            referencedRelation: "entity_events"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      entity_events: {
+        Row: {
+          competition_id: string | null
+          created_at: string
+          created_by: string | null
+          description: string | null
+          description_ar: string | null
+          end_date: string | null
+          entity_id: string
+          event_type: string
+          id: string
+          image_url: string | null
+          is_public: boolean | null
+          is_virtual: boolean | null
+          location: string | null
+          location_ar: string | null
+          max_attendees: number | null
+          meeting_url: string | null
+          start_date: string | null
+          status: string
+          title: string
+          title_ar: string | null
+          updated_at: string
+        }
+        Insert: {
+          competition_id?: string | null
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          description_ar?: string | null
+          end_date?: string | null
+          entity_id: string
+          event_type?: string
+          id?: string
+          image_url?: string | null
+          is_public?: boolean | null
+          is_virtual?: boolean | null
+          location?: string | null
+          location_ar?: string | null
+          max_attendees?: number | null
+          meeting_url?: string | null
+          start_date?: string | null
+          status?: string
+          title: string
+          title_ar?: string | null
+          updated_at?: string
+        }
+        Update: {
+          competition_id?: string | null
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          description_ar?: string | null
+          end_date?: string | null
+          entity_id?: string
+          event_type?: string
+          id?: string
+          image_url?: string | null
+          is_public?: boolean | null
+          is_virtual?: boolean | null
+          location?: string | null
+          location_ar?: string | null
+          max_attendees?: number | null
+          meeting_url?: string | null
+          start_date?: string | null
+          status?: string
+          title?: string
+          title_ar?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "entity_events_competition_id_fkey"
+            columns: ["competition_id"]
+            isOneToOne: false
+            referencedRelation: "competitions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "entity_events_entity_id_fkey"
+            columns: ["entity_id"]
+            isOneToOne: false
+            referencedRelation: "culinary_entities"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       entity_followers: {
         Row: {
           created_at: string
@@ -2798,6 +3055,222 @@ export type Database = {
         Relationships: [
           {
             foreignKeyName: "entity_followers_entity_id_fkey"
+            columns: ["entity_id"]
+            isOneToOne: false
+            referencedRelation: "culinary_entities"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      entity_memberships: {
+        Row: {
+          created_at: string
+          department: string | null
+          department_ar: string | null
+          enrollment_date: string | null
+          entity_id: string
+          graduation_date: string | null
+          id: string
+          is_public: boolean | null
+          membership_type: string
+          notes: string | null
+          status: string
+          student_id: string | null
+          title: string | null
+          title_ar: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          department?: string | null
+          department_ar?: string | null
+          enrollment_date?: string | null
+          entity_id: string
+          graduation_date?: string | null
+          id?: string
+          is_public?: boolean | null
+          membership_type?: string
+          notes?: string | null
+          status?: string
+          student_id?: string | null
+          title?: string | null
+          title_ar?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          department?: string | null
+          department_ar?: string | null
+          enrollment_date?: string | null
+          entity_id?: string
+          graduation_date?: string | null
+          id?: string
+          is_public?: boolean | null
+          membership_type?: string
+          notes?: string | null
+          status?: string
+          student_id?: string | null
+          title?: string | null
+          title_ar?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "entity_memberships_entity_id_fkey"
+            columns: ["entity_id"]
+            isOneToOne: false
+            referencedRelation: "culinary_entities"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      entity_program_enrollments: {
+        Row: {
+          completed_at: string | null
+          created_at: string
+          enrolled_at: string | null
+          grade: string | null
+          id: string
+          notes: string | null
+          program_id: string
+          progress_percent: number | null
+          status: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          completed_at?: string | null
+          created_at?: string
+          enrolled_at?: string | null
+          grade?: string | null
+          id?: string
+          notes?: string | null
+          program_id: string
+          progress_percent?: number | null
+          status?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          completed_at?: string | null
+          created_at?: string
+          enrolled_at?: string | null
+          grade?: string | null
+          id?: string
+          notes?: string | null
+          program_id?: string
+          progress_percent?: number | null
+          status?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "entity_program_enrollments_program_id_fkey"
+            columns: ["program_id"]
+            isOneToOne: false
+            referencedRelation: "entity_programs"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      entity_programs: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          credits: number | null
+          currency: string | null
+          description: string | null
+          description_ar: string | null
+          duration_months: number | null
+          end_date: string | null
+          enrollment_deadline: string | null
+          entity_id: string
+          id: string
+          image_url: string | null
+          is_active: boolean | null
+          is_featured: boolean | null
+          language: string | null
+          level: string | null
+          max_students: number | null
+          name: string
+          name_ar: string | null
+          prerequisites: string | null
+          prerequisites_ar: string | null
+          program_type: string
+          schedule: Json | null
+          start_date: string | null
+          status: string
+          syllabus: Json | null
+          tuition_fee: number | null
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          credits?: number | null
+          currency?: string | null
+          description?: string | null
+          description_ar?: string | null
+          duration_months?: number | null
+          end_date?: string | null
+          enrollment_deadline?: string | null
+          entity_id: string
+          id?: string
+          image_url?: string | null
+          is_active?: boolean | null
+          is_featured?: boolean | null
+          language?: string | null
+          level?: string | null
+          max_students?: number | null
+          name: string
+          name_ar?: string | null
+          prerequisites?: string | null
+          prerequisites_ar?: string | null
+          program_type?: string
+          schedule?: Json | null
+          start_date?: string | null
+          status?: string
+          syllabus?: Json | null
+          tuition_fee?: number | null
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          credits?: number | null
+          currency?: string | null
+          description?: string | null
+          description_ar?: string | null
+          duration_months?: number | null
+          end_date?: string | null
+          enrollment_deadline?: string | null
+          entity_id?: string
+          id?: string
+          image_url?: string | null
+          is_active?: boolean | null
+          is_featured?: boolean | null
+          language?: string | null
+          level?: string | null
+          max_students?: number | null
+          name?: string
+          name_ar?: string | null
+          prerequisites?: string | null
+          prerequisites_ar?: string | null
+          program_type?: string
+          schedule?: Json | null
+          start_date?: string | null
+          status?: string
+          syllabus?: Json | null
+          tuition_fee?: number | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "entity_programs_entity_id_fkey"
             columns: ["entity_id"]
             isOneToOne: false
             referencedRelation: "culinary_entities"
@@ -6593,6 +7066,9 @@ export type Database = {
         | "private_association"
         | "culinary_academy"
         | "industry_body"
+        | "university"
+        | "college"
+        | "training_center"
       exhibition_status:
         | "draft"
         | "upcoming"
@@ -6842,6 +7318,9 @@ export const Constants = {
         "private_association",
         "culinary_academy",
         "industry_body",
+        "university",
+        "college",
+        "training_center",
       ],
       exhibition_status: [
         "draft",
