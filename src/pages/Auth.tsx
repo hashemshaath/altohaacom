@@ -261,7 +261,7 @@ export default function Auth() {
           </div>
 
           {/* Form Card */}
-          <Card>
+          <Card className="border-border/50 shadow-lg shadow-primary/5">
             <CardContent className="space-y-4 p-5 md:p-6">
               {isSignUp && (
                 <>
@@ -340,7 +340,7 @@ export default function Auth() {
                     {roles.map((r) => (
                       <div
                         key={r}
-                        className="flex items-center gap-1.5 rounded-lg border p-2 transition-colors has-[:checked]:border-primary has-[:checked]:bg-primary/5"
+                        className="flex items-center gap-1.5 rounded-lg border p-2 transition-all duration-200 has-[:checked]:border-primary has-[:checked]:bg-primary/5 has-[:checked]:shadow-sm hover:border-primary/30"
                       >
                         <RadioGroupItem value={r} id={r} className="h-3.5 w-3.5" />
                         <Label htmlFor={r} className="cursor-pointer text-[11px] font-medium leading-tight">

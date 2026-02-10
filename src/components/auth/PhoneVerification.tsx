@@ -135,7 +135,7 @@ export function PhoneVerification({ onVerified, onBack, initialPhone = "", phone
     <div className="space-y-6">
       {/* Header */}
       <div className="text-center">
-        <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-primary/10">
+      <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-primary/10 shadow-lg shadow-primary/10">
           <Phone className="h-8 w-8 text-primary" />
         </div>
         <h2 className="text-xl font-semibold">
@@ -155,7 +155,7 @@ export function PhoneVerification({ onVerified, onBack, initialPhone = "", phone
       </div>
 
       {/* Virtual OTP Notice */}
-      <div className="flex items-start gap-3 rounded-lg border border-primary/20 bg-primary/5 p-3">
+      <div className="flex items-start gap-3 rounded-xl border border-primary/20 bg-primary/5 p-3">
         <MessageSquare className="mt-0.5 h-5 w-5 text-primary" />
         <div className="text-sm">
           <p className="font-medium text-primary">

@@ -288,7 +288,7 @@ export default function UserManagement() {
     const colors: Record<MembershipTier, string> = {
       basic: "bg-muted text-muted-foreground",
       professional: "bg-primary/20 text-primary",
-      enterprise: "bg-purple-500/20 text-purple-600",
+      enterprise: "bg-accent/20 text-accent-foreground",
     };
     return (
       <Badge className={colors[tier || "basic"]} variant="outline">
@@ -354,7 +354,7 @@ export default function UserManagement() {
 
       {/* Inline Edit Panel */}
       {editingUser && (
-        <Card className="border-primary">
+        <Card className="border-primary/30 shadow-lg shadow-primary/5">
           <CardHeader className="pb-3">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
@@ -430,7 +430,7 @@ export default function UserManagement() {
                   <div
                     key={role}
                     onClick={() => toggleRole(role)}
-                    className={`flex cursor-pointer items-center gap-2 rounded-lg border p-3 transition-colors ${
+                    className={`flex cursor-pointer items-center gap-2 rounded-xl border p-3 transition-all duration-200 hover:shadow-sm ${
                       editRoles.includes(role)
                         ? "border-primary bg-primary/5"
                         : "border-border hover:border-primary/50"
