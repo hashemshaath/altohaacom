@@ -48,7 +48,7 @@ export function MasterclassProgressWidget() {
   }
 
   return (
-    <Card className="overflow-hidden">
+    <Card className="overflow-hidden transition-shadow hover:shadow-md">
       <div className="flex items-center justify-between border-b bg-muted/30 px-4 py-3">
         <h3 className="flex items-center gap-2 text-sm font-semibold">
           <div className="flex h-6 w-6 items-center justify-center rounded-md bg-chart-3/10">
