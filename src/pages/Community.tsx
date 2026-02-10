@@ -23,9 +23,10 @@ export default function Community() {
       <Header />
       <main className="container flex-1 py-6 md:py-8">
         {/* Hero Header */}
-        <Card className="mb-6 overflow-hidden border-border/50 bg-gradient-to-br from-primary/5 via-background to-accent/5">
-          <div className="flex items-center gap-4 p-5 md:p-6">
-            <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-primary/10">
+        <Card className="mb-6 overflow-hidden border-border/50 bg-gradient-to-br from-primary/5 via-background to-accent/5 relative">
+          <div className="pointer-events-none absolute -end-16 -top-16 h-48 w-48 rounded-full bg-primary/5 blur-3xl" />
+          <div className="relative flex items-center gap-4 p-5 md:p-6">
+            <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-primary/10 ring-4 ring-primary/5">
               <UsersRound className="h-6 w-6 text-primary" />
             </div>
             <div>

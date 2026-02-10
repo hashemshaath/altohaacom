@@ -221,7 +221,7 @@ export function GroupsTab() {
 
       <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
         {groups.map((group) => (
-          <Card key={group.id}>
+          <Card key={group.id} className="border-border/50 transition-all hover:shadow-md hover:-translate-y-0.5 hover:border-primary/20">
             <CardContent className="p-4">
               <div className="mb-2 flex items-start justify-between gap-2">
                 <h3 className="font-semibold">{getDisplayName(group)}</h3>

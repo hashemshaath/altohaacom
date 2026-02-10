@@ -165,10 +165,10 @@ export function FeedTab() {
     <div className="mx-auto max-w-2xl space-y-4">
       {/* Create post */}
       {user && (
-        <Card className="border-border/50">
+        <Card className="border-border/50 overflow-hidden">
           <CardContent className="p-4">
             <div className="flex gap-3">
-              <Avatar className="h-10 w-10 shrink-0">
+              <Avatar className="h-10 w-10 shrink-0 ring-2 ring-primary/10">
                 <AvatarFallback className="bg-primary/10 text-primary">
                   <User className="h-4 w-4" />
                 </AvatarFallback>
@@ -205,7 +205,7 @@ export function FeedTab() {
         </Card>
       ) : (
         posts.map((post) => (
-          <Card key={post.id} className="border-border/50 transition-shadow hover:shadow-sm">
+          <Card key={post.id} className="border-border/50 transition-all hover:shadow-md hover:border-primary/10">
             <CardContent className="p-4">
               <div className="flex gap-3">
                 <Link to={`/${post.author_username || post.author_id}`} className="shrink-0">

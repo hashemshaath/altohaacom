@@ -293,7 +293,7 @@ export function EventsTab() {
         <TabsContent value="events">
           <div className="grid gap-3 sm:grid-cols-2">
             {events.map((event) => (
-              <Card key={event.id}>
+              <Card key={event.id} className="border-border/50 transition-all hover:shadow-md hover:-translate-y-0.5 hover:border-primary/20">
                 <CardContent className="p-4">
                   <div className="mb-2 flex items-start justify-between gap-2">
                     <h3 className="text-sm font-semibold">{event.title}</h3>

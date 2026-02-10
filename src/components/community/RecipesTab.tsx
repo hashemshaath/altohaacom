@@ -232,7 +232,7 @@ export function RecipesTab() {
 
       <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
         {recipes.map((recipe) => (
-          <Card key={recipe.id} className="group overflow-hidden">
+          <Card key={recipe.id} className="group overflow-hidden border-border/50 transition-all hover:shadow-md hover:-translate-y-0.5 hover:border-primary/20">
             {recipe.image_url && (
               <div className="aspect-video overflow-hidden bg-muted">
                 <img src={recipe.image_url} alt={recipe.title} className="h-full w-full object-cover transition-transform group-hover:scale-105" loading="lazy" />
