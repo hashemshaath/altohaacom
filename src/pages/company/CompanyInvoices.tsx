@@ -65,10 +65,10 @@ export default function CompanyInvoices() {
   const getStatusBadge = (status: string) => {
     switch (status) {
       case "paid":
-        return <Badge className="bg-emerald-500/10 text-emerald-600 border-emerald-500/20">{getStatusLabel(status)}</Badge>;
+        return <Badge className="bg-chart-5/10 text-chart-5 border-chart-5/20">{getStatusLabel(status)}</Badge>;
       case "sent":
       case "pending":
-        return <Badge className="bg-amber-500/10 text-amber-600 border-amber-500/20">{getStatusLabel(status)}</Badge>;
+        return <Badge className="bg-chart-4/10 text-chart-4 border-chart-4/20">{getStatusLabel(status)}</Badge>;
       case "overdue":
       case "cancelled":
         return <Badge variant="destructive">{getStatusLabel(status)}</Badge>;
@@ -146,10 +146,10 @@ export default function CompanyInvoices() {
             </div>
           </CardContent>
         </Card>
-        <Card className="border-s-[3px] border-s-amber-500">
+        <Card className="border-s-[3px] border-s-chart-4">
           <CardContent className="flex items-center gap-3 p-4">
-            <div className="rounded-xl bg-amber-500/10 p-2.5">
-              <Clock className="h-5 w-5 text-amber-600" />
+            <div className="rounded-xl bg-chart-4/10 p-2.5">
+              <Clock className="h-5 w-5 text-chart-4" />
             </div>
             <div>
               <p className="text-xs text-muted-foreground">{language === "ar" ? "قيد الانتظار" : "Pending"}</p>

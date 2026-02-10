@@ -48,7 +48,7 @@ export default function CompanyProfile() {
   const getStatusBadge = (status: string | null) => {
     switch (status) {
       case "active":
-        return <Badge className="bg-emerald-500/10 text-emerald-600 border-emerald-500/20 hover:bg-emerald-500/20">{language === "ar" ? "نشط" : "Active"}</Badge>;
+        return <Badge className="bg-chart-5/10 text-chart-5 border-chart-5/20 hover:bg-chart-5/20">{language === "ar" ? "نشط" : "Active"}</Badge>;
       case "suspended":
         return <Badge variant="destructive">{language === "ar" ? "معلّق" : "Suspended"}</Badge>;
       default:

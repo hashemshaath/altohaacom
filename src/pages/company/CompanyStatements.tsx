@@ -107,10 +107,10 @@ export default function CompanyStatements() {
         </div>
       ) : (
         <div className="grid gap-4 sm:grid-cols-3">
-          <Card className="border-s-[3px] border-s-emerald-500">
+          <Card className="border-s-[3px] border-s-chart-5">
             <CardContent className="flex items-center gap-3 p-4">
-              <div className="rounded-xl bg-emerald-500/10 p-2.5">
-                <TrendingUp className="h-5 w-5 text-emerald-600" />
+              <div className="rounded-xl bg-chart-5/10 p-2.5">
+                <TrendingUp className="h-5 w-5 text-chart-5" />
               </div>
               <div>
                 <p className="text-xs text-muted-foreground">{language === "ar" ? "إجمالي الإيرادات" : "Total Credits"}</p>
@@ -184,7 +184,7 @@ export default function CompanyStatements() {
                             {t.type}
                           </Badge>
                         </TableCell>
-                        <TableCell className={`text-right font-medium ${isCredit ? "text-emerald-600" : "text-destructive"}`}>
+                        <TableCell className={`text-right font-medium ${isCredit ? "text-chart-5" : "text-destructive"}`}>
                           {isCredit ? "+" : "-"}{t.currency} {Math.abs(t.amount).toLocaleString()}
                         </TableCell>
                         <TableCell className="text-right font-medium">

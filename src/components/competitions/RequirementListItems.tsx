@@ -29,17 +29,17 @@ const ITEM_CATEGORIES = [
 
 const PRIORITY_COLORS: Record<string, string> = {
   low: "bg-muted text-muted-foreground",
-  medium: "bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200",
-  high: "bg-orange-100 text-orange-800 dark:bg-orange-900 dark:text-orange-200",
-  critical: "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200",
+  medium: "bg-chart-1/10 text-chart-1",
+  high: "bg-chart-4/10 text-chart-4",
+  critical: "bg-destructive/10 text-destructive",
 };
 
 const STATUS_COLORS: Record<string, string> = {
   pending: "bg-muted text-muted-foreground",
-  sourced: "bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200",
-  sponsored: "bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200",
-  purchased: "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200",
-  delivered: "bg-emerald-100 text-emerald-800 dark:bg-emerald-900 dark:text-emerald-200",
+  sourced: "bg-chart-1/10 text-chart-1",
+  sponsored: "bg-chart-2/10 text-chart-2",
+  purchased: "bg-chart-3/10 text-chart-3",
+  delivered: "bg-chart-5/10 text-chart-5",
 };
 
 interface Props {

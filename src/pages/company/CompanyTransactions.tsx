@@ -174,7 +174,7 @@ export default function CompanyTransactions() {
                           </Badge>
                         </TableCell>
                         <TableCell>{language === "ar" ? t.description_ar || t.description : t.description || "—"}</TableCell>
-                        <TableCell className={`text-right font-medium ${isCredit ? "text-emerald-600" : "text-destructive"}`}>
+                        <TableCell className={`text-right font-medium ${isCredit ? "text-chart-5" : "text-destructive"}`}>
                           {t.currency} {t.amount?.toLocaleString()}
                         </TableCell>
                         <TableCell className="text-right">

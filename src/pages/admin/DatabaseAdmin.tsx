@@ -122,7 +122,7 @@ export default function DatabaseAdmin() {
                 <p className="text-sm text-muted-foreground">{language === "ar" ? "الجداول" : "Tables"}</p>
                 <p className="text-2xl font-bold">{tableStats?.length || 0}</p>
               </div>
-              <Table2 className="h-8 w-8 text-blue-500" />
+              <Table2 className="h-8 w-8 text-chart-1" />
             </div>
           </CardContent>
         </Card>
@@ -133,7 +133,7 @@ export default function DatabaseAdmin() {
                 <p className="text-sm text-muted-foreground">{language === "ar" ? "التخزين" : "Storage"}</p>
                 <p className="text-2xl font-bold">44.8 MB</p>
               </div>
-              <HardDrive className="h-8 w-8 text-green-500" />
+              <HardDrive className="h-8 w-8 text-chart-5" />
             </div>
           </CardContent>
         </Card>
@@ -142,11 +142,11 @@ export default function DatabaseAdmin() {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm text-muted-foreground">{language === "ar" ? "الحالة" : "Status"}</p>
-                <Badge variant="default" className="mt-1 bg-green-500">
+                <Badge variant="default" className="mt-1 bg-chart-5">
                   {language === "ar" ? "متصل" : "Connected"}
                 </Badge>
               </div>
-              <div className="h-3 w-3 rounded-full bg-green-500 animate-pulse" />
+              <div className="h-3 w-3 rounded-full bg-chart-5 animate-pulse" />
             </div>
           </CardContent>
         </Card>

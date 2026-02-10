@@ -87,7 +87,7 @@ export function MasterclassReviews({ masterclassId, hasCompleted }: Props) {
           key={star}
           className={`h-5 w-5 cursor-pointer transition-colors ${
             star <= (readonly ? value : (hoverRating || value))
-              ? "fill-yellow-400 text-yellow-400"
+              ? "fill-chart-4 text-chart-4"
               : "text-muted-foreground/30"
           } ${readonly ? "cursor-default" : ""}`}
           onClick={() => !readonly && onChange?.(star)}

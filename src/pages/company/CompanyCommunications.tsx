@@ -195,7 +195,7 @@ export default function CompanyCommunications() {
       case "urgent":
         return <Badge variant="destructive">{language === "ar" ? "عاجل" : "Urgent"}</Badge>;
       case "high":
-        return <Badge className="bg-orange-500">{language === "ar" ? "مرتفع" : "High"}</Badge>;
+        return <Badge className="bg-chart-4">{language === "ar" ? "مرتفع" : "High"}</Badge>;
       default:
         return null;
     }

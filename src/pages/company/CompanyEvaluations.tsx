@@ -92,10 +92,10 @@ export default function CompanyEvaluations() {
       </div>
 
       {/* Overall Score */}
-      <Card className="border-s-[3px] border-s-amber-500">
+      <Card className="border-s-[3px] border-s-chart-4">
         <CardContent className="flex items-center gap-4 p-6">
-          <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-amber-500/10">
-            <Star className="h-8 w-8 fill-amber-400 text-amber-400" />
+          <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-chart-4/10">
+            <Star className="h-8 w-8 fill-chart-4 text-chart-4" />
           </div>
           <div>
             <p className="text-sm text-muted-foreground">{language === "ar" ? "التقييم العام" : "Overall Rating"}</p>
