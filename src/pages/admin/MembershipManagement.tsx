@@ -180,7 +180,7 @@ export default function MembershipManagement() {
     {
       tier: "enterprise" as MembershipTier,
       price: "$99/" + (language === "ar" ? "شهر" : "month"),
-      color: "border-purple-500",
+      color: "border-chart-3",
       features: [
         language === "ar" ? "جميع مميزات الاحترافية" : "All Professional features",
         language === "ar" ? "علامة تجارية مخصصة" : "Custom branding",
