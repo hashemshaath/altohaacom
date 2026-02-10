@@ -52,23 +52,23 @@ interface Certificate {
 }
 
 const certificateTypes: { value: CertificateType; label: string; labelAr: string; color: string }[] = [
-  { value: "participation", label: "Participation", labelAr: "مشاركة", color: "bg-blue-500" },
-  { value: "winner_gold", label: "Gold Winner", labelAr: "فائز ذهبي", color: "bg-yellow-500" },
-  { value: "winner_silver", label: "Silver Winner", labelAr: "فائز فضي", color: "bg-gray-400" },
-  { value: "winner_bronze", label: "Bronze Winner", labelAr: "فائز برونزي", color: "bg-orange-600" },
-  { value: "appreciation", label: "Appreciation", labelAr: "تقدير", color: "bg-purple-500" },
-  { value: "organizer", label: "Organizer", labelAr: "منظم", color: "bg-emerald-500" },
-  { value: "judge", label: "Judge", labelAr: "حكم", color: "bg-red-500" },
-  { value: "sponsor", label: "Sponsor", labelAr: "راعي", color: "bg-indigo-500" },
-  { value: "volunteer", label: "Volunteer", labelAr: "متطوع", color: "bg-pink-500" },
+  { value: "participation", label: "Participation", labelAr: "مشاركة", color: "bg-primary" },
+  { value: "winner_gold", label: "Gold Winner", labelAr: "فائز ذهبي", color: "bg-chart-4" },
+  { value: "winner_silver", label: "Silver Winner", labelAr: "فائز فضي", color: "bg-muted-foreground" },
+  { value: "winner_bronze", label: "Bronze Winner", labelAr: "فائز برونزي", color: "bg-chart-2" },
+  { value: "appreciation", label: "Appreciation", labelAr: "تقدير", color: "bg-chart-3" },
+  { value: "organizer", label: "Organizer", labelAr: "منظم", color: "bg-chart-5" },
+  { value: "judge", label: "Judge", labelAr: "حكم", color: "bg-destructive" },
+  { value: "sponsor", label: "Sponsor", labelAr: "راعي", color: "bg-chart-1" },
+  { value: "volunteer", label: "Volunteer", labelAr: "متطوع", color: "bg-accent-foreground" },
 ];
 
 const statusColors: Record<CertificateStatus, string> = {
   draft: "bg-muted text-muted-foreground",
-  pending_signature: "bg-yellow-500/20 text-yellow-700 dark:text-yellow-400",
-  signed: "bg-blue-500/20 text-blue-700 dark:text-blue-400",
-  issued: "bg-emerald-500/20 text-emerald-700 dark:text-emerald-400",
-  revoked: "bg-red-500/20 text-red-700 dark:text-red-400",
+  pending_signature: "bg-chart-4/20 text-chart-4",
+  signed: "bg-primary/20 text-primary",
+  issued: "bg-chart-5/20 text-chart-5",
+  revoked: "bg-destructive/20 text-destructive",
 };
 
 export default function CertificatesAdmin() {
@@ -430,14 +430,18 @@ export default function CertificatesAdmin() {
     <div className="space-y-6">
       {/* Header */}
       <div className="flex items-center justify-between flex-wrap gap-4">
-        <div>
-          <h1 className="text-3xl font-bold flex items-center gap-3">
-            <Award className="h-8 w-8 text-primary" />
-            {language === "ar" ? "مركز الشهادات" : "Certificate Center"}
-          </h1>
-          <p className="text-muted-foreground mt-1">
-            {language === "ar" ? "إدارة وإصدار وتوقيع وإرسال الشهادات" : "Manage, issue, sign, and send certificates"}
-          </p>
+        <div className="flex items-center gap-3">
+          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-primary/10">
+            <Award className="h-5 w-5 text-primary" />
+          </div>
+          <div>
+            <h1 className="font-serif text-xl font-bold sm:text-2xl">
+              {language === "ar" ? "مركز الشهادات" : "Certificate Center"}
+            </h1>
+            <p className="text-xs text-muted-foreground">
+              {language === "ar" ? "إدارة وإصدار وتوقيع وإرسال الشهادات" : "Manage, issue, sign, and send certificates"}
+            </p>
+          </div>
         </div>
         <div className="flex gap-2 flex-wrap">
           <Button variant="outline" onClick={() => setShowDesigner(true)}>
@@ -702,7 +706,7 @@ export default function CertificatesAdmin() {
                 <>
                   <div className="grid grid-cols-3 gap-3">
                     <div className="rounded-lg border p-3 text-center">
-                      <Trophy className="mx-auto mb-1 h-5 w-5 text-yellow-500" />
+                      <Trophy className="mx-auto mb-1 h-5 w-5 text-chart-4" />
                       <p className="text-lg font-bold">{competitionResults.filter(r => r.rank <= 3).length}</p>
                       <p className="text-xs text-muted-foreground">{language === "ar" ? "فائزين" : "Winners"}</p>
                     </div>
@@ -712,7 +716,7 @@ export default function CertificatesAdmin() {
                       <p className="text-xs text-muted-foreground">{language === "ar" ? "مشاركين" : "Participants"}</p>
                     </div>
                     <div className="rounded-lg border p-3 text-center">
-                      <FileText className="mx-auto mb-1 h-5 w-5 text-emerald-500" />
+                      <FileText className="mx-auto mb-1 h-5 w-5 text-chart-5" />
                       <p className="text-lg font-bold">{competitionResults.length + competitionResults.filter(r => r.rank <= 3).length}</p>
                       <p className="text-xs text-muted-foreground">{language === "ar" ? "شهادات ستُنشأ" : "Certs to Create"}</p>
                     </div>
