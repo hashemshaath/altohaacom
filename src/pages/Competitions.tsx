@@ -16,6 +16,8 @@ import { Progress } from "@/components/ui/progress";
 import { Calendar, MapPin, Users, Search, Plus, Globe, Trophy, Clock, ArrowRight, Flame, Sparkles, Filter } from "lucide-react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { format, differenceInDays, isFuture } from "date-fns";
+import { countryFlag } from "@/lib/countryFlag";
+import { useAllCountries } from "@/hooks/useCountries";
 import type { Database } from "@/integrations/supabase/types";
 
 type CompetitionStatus = Database["public"]["Enums"]["competition_status"];
@@ -36,6 +38,7 @@ interface Competition {
   venue_ar: string | null;
   city: string | null;
   country: string | null;
+  country_code: string | null;
   is_virtual: boolean | null;
   max_participants: number | null;
   organizer_id: string;
@@ -61,6 +64,7 @@ export default function Competitions() {
   const [search, setSearch] = useState("");
   const [activeTab, setActiveTab] = useState<typeof TAB_FILTERS[number]>("all");
   const [countryFilter, setCountryFilter] = useState("all");
+  const { data: allCountries = [] } = useAllCountries();
 
   const { data: competitions, isLoading } = useQuery({
     queryKey: ["competitions"],
@@ -86,14 +90,19 @@ export default function Competitions() {
 
   const canCreate = userRoles?.some(role => ["organizer", "supervisor"].includes(role));
 
-  const countries = Array.from(
-    new Set(competitions?.map(c => c.country).filter(Boolean) as string[])
+  const countryCodes = Array.from(
+    new Set(competitions?.map(c => c.country_code).filter(Boolean) as string[])
   ).sort();
+
+  const getCountryName = (code: string) => {
+    const c = allCountries.find((ct) => ct.code === code);
+    return c ? (isAr ? c.name_ar || c.name : c.name) : code;
+  };
 
   const filteredCompetitions = competitions?.filter(comp => {
     const title = isAr && comp.title_ar ? comp.title_ar : comp.title;
     const matchesSearch = title.toLowerCase().includes(search.toLowerCase());
-    const matchesCountry = countryFilter === "all" || comp.country === countryFilter;
+    const matchesCountry = countryFilter === "all" || comp.country_code === countryFilter;
     let matchesTab = true;
     if (activeTab === "upcoming") matchesTab = ["upcoming", "registration_open"].includes(comp.status);
     else if (activeTab === "active") matchesTab = ["in_progress", "judging"].includes(comp.status);
@@ -183,16 +192,21 @@ export default function Competitions() {
                 className="ps-10"
               />
             </div>
-            {countries.length > 1 && (
+            {countryCodes.length > 1 && (
               <Select value={countryFilter} onValueChange={setCountryFilter}>
-                <SelectTrigger className="w-full sm:w-44">
+                <SelectTrigger className="w-full sm:w-48">
                   <Filter className="me-1.5 h-3.5 w-3.5 text-muted-foreground" />
                   <SelectValue placeholder={isAr ? "الدولة" : "Country"} />
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="all">{isAr ? "جميع الدول" : "All Countries"}</SelectItem>
-                  {countries.map((c) => (
-                    <SelectItem key={c} value={c}>{c}</SelectItem>
+                  {countryCodes.map((code) => (
+                    <SelectItem key={code} value={code}>
+                      <span className="flex items-center gap-2">
+                        <span>{countryFlag(code)}</span>
+                        <span>{getCountryName(code)}</span>
+                      </span>
+                    </SelectItem>
                   ))}
                 </SelectContent>
               </Select>
@@ -338,8 +352,8 @@ function FeaturedCard({ competition, language, isAr }: { competition: Competitio
                 </span>
               ) : competition.city && (
                 <span className="flex items-center gap-1.5">
-                  <MapPin className="h-3.5 w-3.5" />
-                  {competition.city}{competition.country ? `, ${competition.country}` : ""}
+                <MapPin className="h-3.5 w-3.5" />
+                  {competition.country_code ? `${countryFlag(competition.country_code)} ` : ""}{competition.city}{competition.country ? `, ${competition.country}` : ""}
                 </span>
               )}
               <span className="flex items-center gap-1.5">
@@ -446,7 +460,7 @@ function CompetitionCard({ competition, language, isAr }: { competition: Competi
             ) : competition.city ? (
               <span className="flex items-center gap-1 truncate">
                 <MapPin className="h-3 w-3 shrink-0" />
-                {competition.city}{competition.country ? `, ${competition.country}` : ""}
+                {competition.country_code ? `${countryFlag(competition.country_code)} ` : ""}{competition.city}{competition.country ? `, ${competition.country}` : ""}
               </span>
             ) : null}
           </div>
