@@ -13,7 +13,9 @@ import { Input } from "@/components/ui/input";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useNavigate } from "react-router-dom";
-import { BookOpen, Clock, Users, Search, GraduationCap, Star } from "lucide-react";
+import { BookOpen, Clock, Users, Search, GraduationCap, Star, MapPin } from "lucide-react";
+import { countryFlag } from "@/lib/countryFlag";
+import { useAllCountries } from "@/hooks/useCountries";
 
 export default function Masterclasses() {
   const { language } = useLanguage();
@@ -23,6 +25,8 @@ export default function Masterclasses() {
   const [search, setSearch] = useState("");
   const [levelFilter, setLevelFilter] = useState("all");
   const [categoryFilter, setCategoryFilter] = useState("all");
+  const [countryFilter, setCountryFilter] = useState("all");
+  const { data: allCountries = [] } = useAllCountries();
 
   const { data: masterclasses = [], isLoading } = useQuery({
     queryKey: ["masterclasses", "published"],
@@ -52,6 +56,15 @@ export default function Masterclasses() {
     enabled: !!user,
   });
 
+  const countryCodes = Array.from(
+    new Set(masterclasses.map((mc: any) => mc.country_code).filter(Boolean) as string[])
+  ).sort();
+
+  const getCountryName = (code: string) => {
+    const c = allCountries.find((ct) => ct.code === code);
+    return c ? (isAr ? c.name_ar || c.name : c.name) : code;
+  };
+
   const filtered = masterclasses.filter((mc: any) => {
     const matchesSearch =
       !search ||
@@ -60,7 +73,8 @@ export default function Masterclasses() {
       mc.description?.toLowerCase().includes(search.toLowerCase());
     const matchesLevel = levelFilter === "all" || mc.level === levelFilter;
     const matchesCategory = categoryFilter === "all" || mc.category === categoryFilter;
-    return matchesSearch && matchesLevel && matchesCategory;
+    const matchesCountry = countryFilter === "all" || mc.country_code === countryFilter;
+    return matchesSearch && matchesLevel && matchesCategory && matchesCountry;
   });
 
   const categories = [...new Set(masterclasses.map((mc: any) => mc.category))];
@@ -141,6 +155,22 @@ export default function Masterclasses() {
                 <SelectItem value="all">{isAr ? "الكل" : "All"}</SelectItem>
                 {categories.map((cat) => (
                   <SelectItem key={cat} value={cat}>{cat}</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          )}
+          {countryCodes.length > 1 && (
+            <Select value={countryFilter} onValueChange={setCountryFilter}>
+              <SelectTrigger className="w-full sm:w-44">
+                <MapPin className="me-1.5 h-3.5 w-3.5 text-muted-foreground" />
+                <SelectValue placeholder={isAr ? "الدولة" : "Country"} />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">{isAr ? "جميع الدول" : "All Countries"}</SelectItem>
+                {countryCodes.map((code) => (
+                  <SelectItem key={code} value={code}>
+                    {countryFlag(code)} {getCountryName(code)}
+                  </SelectItem>
                 ))}
               </SelectContent>
             </Select>

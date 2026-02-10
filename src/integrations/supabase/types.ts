@@ -4115,6 +4115,7 @@ export type Database = {
       masterclasses: {
         Row: {
           category: string
+          country_code: string | null
           cover_image_url: string | null
           created_at: string
           currency: string | null
@@ -4142,6 +4143,7 @@ export type Database = {
         }
         Insert: {
           category?: string
+          country_code?: string | null
           cover_image_url?: string | null
           created_at?: string
           currency?: string | null
@@ -4169,6 +4171,7 @@ export type Database = {
         }
         Update: {
           category?: string
+          country_code?: string | null
           cover_image_url?: string | null
           created_at?: string
           currency?: string | null
@@ -4194,7 +4197,15 @@ export type Database = {
           what_you_learn?: string[] | null
           what_you_learn_ar?: string[] | null
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "masterclasses_country_code_fkey"
+            columns: ["country_code"]
+            isOneToOne: false
+            referencedRelation: "countries"
+            referencedColumns: ["code"]
+          },
+        ]
       }
       media_library: {
         Row: {
