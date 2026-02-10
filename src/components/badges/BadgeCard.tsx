@@ -55,12 +55,12 @@ export function BadgeCard({ badge, competitionTitle, earnedAt, shareToken, showS
     <Card className="group overflow-hidden border-border/50 transition-all duration-300 hover:shadow-lg hover:-translate-y-1 hover:border-primary/20">
       <CardContent className="flex flex-col items-center p-5 text-center">
         <div
-          className="mb-3 flex h-18 w-18 items-center justify-center rounded-full ring-4 ring-border/20 transition-transform duration-300 group-hover:scale-110"
+          className="mb-3 flex h-18 w-18 items-center justify-center rounded-2xl ring-4 ring-border/20 shadow-lg transition-all duration-300 group-hover:scale-110 group-hover:shadow-xl"
           style={{
             backgroundColor: `${badge.color || "#c9a227"}15`,
           }}
         >
-          <Icon className="h-8 w-8 transition-transform group-hover:rotate-12" style={{ color: badge.color || "#c9a227" }} />
+          <Icon className="h-8 w-8 transition-transform duration-300 group-hover:rotate-12" style={{ color: badge.color || "#c9a227" }} />
         </div>
         <p className="font-semibold text-sm">{name}</p>
         {desc && <p className="mt-1 text-xs text-muted-foreground line-clamp-2">{desc}</p>}
