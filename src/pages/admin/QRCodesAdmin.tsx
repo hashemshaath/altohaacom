@@ -13,7 +13,7 @@ import { QrCode, Search, Eye, Copy, BarChart3, Hash, ScanLine, Filter } from "lu
 import { useToast } from "@/hooks/use-toast";
 import { format } from "date-fns";
 
-const CATEGORIES = ["all", "account", "certificate", "invoice", "competition", "company", "general"];
+const CATEGORIES = ["all", "account", "certificate", "invoice", "competition", "company", "exhibition", "participant", "judge", "team_member", "general"];
 
 export default function QRCodesAdmin() {
   const { language } = useLanguage();
@@ -84,6 +84,10 @@ export default function QRCodesAdmin() {
       invoice: { en: "Invoice", ar: "فاتورة" },
       competition: { en: "Competition", ar: "مسابقة" },
       company: { en: "Company", ar: "شركة" },
+      exhibition: { en: "Exhibition", ar: "فعالية" },
+      participant: { en: "Participant", ar: "متسابق" },
+      judge: { en: "Judge", ar: "حكم" },
+      team_member: { en: "Team Member", ar: "عضو فريق" },
       general: { en: "General", ar: "عام" },
     };
     return labels[cat] ? (isAr ? labels[cat].ar : labels[cat].en) : cat;

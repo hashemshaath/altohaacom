@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { ParticipantBadgeCard } from "./ParticipantBadgeCard";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useLanguage } from "@/i18n/LanguageContext";
@@ -39,6 +40,7 @@ import {
   MessageCircle,
   Bell,
   Phone,
+  QrCode,
 } from "lucide-react";
 import { Link } from "react-router-dom";
 import { format } from "date-fns";
@@ -317,6 +319,10 @@ export function ParticipantsList({ competitionId, isOrganizer = false }: Partici
                   <Users className="h-3 w-3" />
                   {isAr ? "القائمة" : "List"}
                   <Badge variant="secondary" className="text-[9px] h-4 px-1">{statusCounts.total}</Badge>
+                </TabsTrigger>
+                <TabsTrigger value="badges" className="text-xs gap-1">
+                  <QrCode className="h-3 w-3" />
+                  {isAr ? "البطاقات" : "Badges"}
                 </TabsTrigger>
                 <TabsTrigger value="invitations" className="text-xs gap-1">
                   <Send className="h-3 w-3" />
@@ -626,6 +632,52 @@ export function ParticipantsList({ competitionId, isOrganizer = false }: Partici
               </div>
               <p className="text-sm text-muted-foreground">
                 {isAr ? "لا توجد دعوات بعد" : "No invitations yet"}
+              </p>
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* Badges Tab */}
+      {activeSubTab === "badges" && isOrganizer && (
+        <div className="space-y-4">
+          <p className="text-sm text-muted-foreground">
+            {isAr
+              ? "بطاقات QR فريدة لكل مشارك للتسجيل والحضور والتحقق"
+              : "Unique QR badges for each participant for registration, attendance, and verification"}
+          </p>
+          {filtered && filtered.length > 0 ? (
+            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+              {filtered.filter(p => p.status === "approved").map((participant) => (
+                <ParticipantBadgeCard
+                  key={participant.id}
+                  role="participant"
+                  entityId={participant.id}
+                  personName={participant.profile?.full_name || "Unknown"}
+                  personPhoto={participant.profile?.avatar_url}
+                  competitionTitle={competitionId}
+                  categoryName={
+                    participant.category
+                      ? (isAr && participant.category.name_ar ? participant.category.name_ar : participant.category.name)
+                      : null
+                  }
+                  organizationName={
+                    participant.company
+                      ? (isAr && participant.company.name_ar ? participant.company.name_ar : participant.company.name)
+                      : null
+                  }
+                  registrationNumber={participant.registration_number}
+                  status={participant.status}
+                />
+              ))}
+            </div>
+          ) : (
+            <div className="flex flex-col items-center justify-center py-16 text-center">
+              <div className="mb-3 flex h-14 w-14 items-center justify-center rounded-full bg-muted/60">
+                <QrCode className="h-6 w-6 text-muted-foreground/50" />
+              </div>
+              <p className="text-sm text-muted-foreground">
+                {isAr ? "لا يوجد مشاركين مؤكدين بعد" : "No confirmed participants yet"}
               </p>
             </div>
           )}

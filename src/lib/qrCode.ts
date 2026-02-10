@@ -4,7 +4,7 @@
 
 const BASE_URL = "https://altohaacom.lovable.app";
 
-export type QREntityType = "user" | "certificate" | "invoice" | "competition" | "company";
+export type QREntityType = "user" | "certificate" | "invoice" | "competition" | "company" | "exhibition" | "participant" | "judge" | "team_member";
 
 export interface QRCodeData {
   code: string;
@@ -32,6 +32,12 @@ export function getEntityUrl(entityType: QREntityType, entityId: string): string
       return `${BASE_URL}/competitions/${entityId}`;
     case "company":
       return `${BASE_URL}/entities/${entityId}`;
+    case "exhibition":
+      return `${BASE_URL}/exhibitions/${entityId}`;
+    case "participant":
+    case "judge":
+    case "team_member":
+      return `${BASE_URL}/verify?code=${entityId}`;
     default:
       return `${BASE_URL}/verify?code=${entityId}`;
   }
@@ -88,5 +94,9 @@ export const CODE_PREFIXES: Record<string, string> = {
   invoice: "INV",
   competition: "CMP",
   company: "COM",
+  exhibition: "EXH",
+  participant: "PRT",
+  judge: "JDG",
+  team_member: "TM",
   general: "QR",
 };
