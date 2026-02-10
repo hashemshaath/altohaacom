@@ -80,13 +80,19 @@ export default function Verify() {
         case "competition": {
           const { data } = await supabase
             .from("competitions")
-            .select("title, title_ar, start_date, end_date, location, status, competition_number")
+            .select("title, title_ar, competition_start, competition_end, venue, city, country, status, competition_number, cover_image_url")
             .eq("id", qrResult.entity_id)
             .maybeSingle();
           return data ? { ...(data as any), type: "competition" as const } : null;
         }
-        default:
-          return null;
+        case "company": {
+          const { data } = await supabase
+            .from("companies")
+            .select("name, name_ar, type, status, company_number, email, phone, city, country, logo_url, website")
+            .eq("id", qrResult.entity_id)
+            .maybeSingle();
+          return data ? { ...(data as any), type: "company" as const } : null;
+        }
       }
     },
     enabled: !!qrResult,
@@ -343,7 +349,11 @@ function VerificationResult({
         )}
 
         {entityType === "competition" && entityDetails?.type === "competition" && (
-          <CompetitionVerificationDetails details={entityDetails} />
+          <CompetitionVerificationDetails details={entityDetails} entityId={result.entity_id} />
+        )}
+
+        {entityType === "company" && entityDetails?.type === "company" && (
+          <CompanyVerificationDetails details={entityDetails} entityId={result.entity_id} />
         )}
 
         {/* Code display */}
@@ -504,44 +514,104 @@ function InvoiceVerificationDetails({ details }: { details: any }) {
   );
 }
 
-function CompetitionVerificationDetails({ details }: { details: any }) {
+function CompetitionVerificationDetails({ details, entityId }: { details: any; entityId: string }) {
   const { language } = useLanguage();
   const isAr = language === "ar";
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-      <div className="flex items-start gap-3">
-        <Award className="h-5 w-5 text-muted-foreground mt-0.5" />
-        <div>
-          <p className="text-sm text-muted-foreground">{isAr ? "المسابقة" : "Competition"}</p>
-          <p className="font-semibold">{isAr ? details.title_ar || details.title : details.title}</p>
-        </div>
-      </div>
-      {details.competition_number && (
+    <div className="space-y-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div className="flex items-start gap-3">
-          <FileText className="h-5 w-5 text-muted-foreground mt-0.5" />
+          <Award className="h-5 w-5 text-muted-foreground mt-0.5" />
           <div>
-            <p className="text-sm text-muted-foreground">{isAr ? "رقم المسابقة" : "Competition Number"}</p>
-            <Badge variant="outline" className="font-mono text-xs">{details.competition_number}</Badge>
+            <p className="text-sm text-muted-foreground">{isAr ? "المسابقة" : "Competition"}</p>
+            <p className="font-semibold">{isAr ? details.title_ar || details.title : details.title}</p>
           </div>
         </div>
-      )}
-      {details.start_date && (
+        {details.competition_number && (
+          <div className="flex items-start gap-3">
+            <FileText className="h-5 w-5 text-muted-foreground mt-0.5" />
+            <div>
+              <p className="text-sm text-muted-foreground">{isAr ? "رقم المسابقة" : "Competition Number"}</p>
+              <Badge variant="outline" className="font-mono text-xs">{details.competition_number}</Badge>
+            </div>
+          </div>
+        )}
+        {details.competition_start && (
+          <div className="flex items-start gap-3">
+            <Calendar className="h-5 w-5 text-muted-foreground mt-0.5" />
+            <div>
+              <p className="text-sm text-muted-foreground">{isAr ? "التاريخ" : "Date"}</p>
+              <p className="font-semibold">{format(new Date(details.competition_start), "MMMM d, yyyy")}</p>
+            </div>
+          </div>
+        )}
         <div className="flex items-start gap-3">
-          <Calendar className="h-5 w-5 text-muted-foreground mt-0.5" />
+          <CheckCircle className="h-5 w-5 text-muted-foreground mt-0.5" />
           <div>
-            <p className="text-sm text-muted-foreground">{isAr ? "التاريخ" : "Date"}</p>
-            <p className="font-semibold">{format(new Date(details.start_date), "MMMM d, yyyy")}</p>
+            <p className="text-sm text-muted-foreground">{isAr ? "الحالة" : "Status"}</p>
+            <Badge>{details.status}</Badge>
           </div>
         </div>
-      )}
-      <div className="flex items-start gap-3">
-        <CheckCircle className="h-5 w-5 text-muted-foreground mt-0.5" />
-        <div>
-          <p className="text-sm text-muted-foreground">{isAr ? "الحالة" : "Status"}</p>
-          <Badge>{details.status}</Badge>
-        </div>
       </div>
+      <Button variant="outline" size="sm" asChild>
+        <Link to={`/competitions/${entityId}`}>
+          <ExternalLink className="h-3.5 w-3.5 me-1.5" />
+          {isAr ? "عرض المسابقة" : "View Competition"}
+        </Link>
+      </Button>
+    </div>
+  );
+}
+
+function CompanyVerificationDetails({ details, entityId }: { details: any; entityId: string }) {
+  const { language } = useLanguage();
+  const isAr = language === "ar";
+
+  return (
+    <div className="space-y-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="flex items-start gap-3">
+          <Building className="h-5 w-5 text-muted-foreground mt-0.5" />
+          <div>
+            <p className="text-sm text-muted-foreground">{isAr ? "الشركة" : "Company"}</p>
+            <p className="font-semibold">{isAr ? details.name_ar || details.name : details.name}</p>
+          </div>
+        </div>
+        {details.company_number && (
+          <div className="flex items-start gap-3">
+            <FileText className="h-5 w-5 text-muted-foreground mt-0.5" />
+            <div>
+              <p className="text-sm text-muted-foreground">{isAr ? "رقم الشركة" : "Company Number"}</p>
+              <Badge variant="outline" className="font-mono text-xs">{details.company_number}</Badge>
+            </div>
+          </div>
+        )}
+        {details.type && (
+          <div className="flex items-start gap-3">
+            <Award className="h-5 w-5 text-muted-foreground mt-0.5" />
+            <div>
+              <p className="text-sm text-muted-foreground">{isAr ? "النوع" : "Type"}</p>
+              <Badge variant="secondary">{details.type}</Badge>
+            </div>
+          </div>
+        )}
+        {(details.city || details.country) && (
+          <div className="flex items-start gap-3">
+            <Building className="h-5 w-5 text-muted-foreground mt-0.5" />
+            <div>
+              <p className="text-sm text-muted-foreground">{isAr ? "الموقع" : "Location"}</p>
+              <p className="font-semibold">{[details.city, details.country].filter(Boolean).join(", ")}</p>
+            </div>
+          </div>
+        )}
+      </div>
+      <Button variant="outline" size="sm" asChild>
+        <Link to={`/entities/${entityId}`}>
+          <ExternalLink className="h-3.5 w-3.5 me-1.5" />
+          {isAr ? "عرض الشركة" : "View Company"}
+        </Link>
+      </Button>
     </div>
   );
 }
