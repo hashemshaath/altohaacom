@@ -421,7 +421,10 @@ export default function ExhibitionDetail() {
         ) : (
           <div className="h-56 w-full bg-gradient-to-br from-primary/20 via-accent/10 to-background sm:h-64 md:h-80 lg:h-[26rem]" />
         )}
-        <div className="absolute inset-0 bg-gradient-to-t from-background via-background/60 to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-t from-background via-background/70 to-background/10" />
+        <div className="absolute -top-32 start-1/4 h-64 w-64 rounded-full bg-primary/8 blur-[100px] animate-pulse" />
+        <div className="absolute -top-20 end-1/3 h-48 w-48 rounded-full bg-accent/10 blur-[80px] animate-pulse [animation-delay:1s]" />
+        <div className="absolute bottom-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-primary/20 to-transparent" />
         <div className="absolute inset-x-0 bottom-0 container pb-6 md:pb-10">
           <Button variant="ghost" size="sm" className="-ms-2 mb-4 text-foreground/80 hover:text-foreground" asChild>
             <Link to="/exhibitions">
@@ -442,7 +445,7 @@ export default function ExhibitionDetail() {
                 </Badge>
               </div>
 
-              <h1 className="font-serif text-2xl font-bold leading-tight sm:text-3xl md:text-4xl lg:text-5xl drop-shadow-sm">{title}</h1>
+              <h1 className="font-serif text-3xl font-bold leading-tight sm:text-4xl md:text-5xl lg:text-6xl drop-shadow-md">{title}</h1>
 
               <div className="flex flex-wrap items-center gap-4 text-sm text-muted-foreground">
                 <span className="flex items-center gap-1.5">
@@ -632,7 +635,8 @@ export default function ExhibitionDetail() {
               <TabsContent value="overview" className="mt-6 space-y-6">
                 {/* Countdown (desktop) */}
                 {(isUpcoming || isHappening) && (
-                  <Card className="overflow-hidden border-primary/20 shadow-md hidden lg:block">
+                  <Card className="relative overflow-hidden border-primary/20 shadow-md hidden lg:block">
+                    <div className="absolute -top-16 -end-16 h-40 w-40 rounded-full bg-primary/5 blur-[50px] animate-pulse" />
                     <div className="bg-gradient-to-r from-primary/10 via-primary/5 to-transparent px-6 py-4">
                       <h3 className="flex items-center gap-2.5 font-semibold">
                         <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-primary/15">
@@ -656,9 +660,9 @@ export default function ExhibitionDetail() {
 
                 {/* Description */}
                 {description && (
-                  <Card>
+                  <Card className="border-s-[3px] border-s-primary/40">
                     <CardContent className="prose prose-sm max-w-none p-4 md:p-6 dark:prose-invert">
-                      <p className="whitespace-pre-wrap">{description}</p>
+                      <p className="whitespace-pre-wrap leading-relaxed">{description}</p>
                     </CardContent>
                   </Card>
                 )}
@@ -1093,8 +1097,9 @@ export default function ExhibitionDetail() {
           {/* ======== SIDEBAR ======== */}
           <div className="hidden space-y-4 lg:block">
             {/* Actions */}
-            <Card className="overflow-hidden shadow-md">
-              <div className="border-b bg-muted/30 px-4 py-3">
+            <Card className="relative overflow-hidden shadow-md border-primary/15">
+              <div className="absolute -top-12 -end-12 h-32 w-32 rounded-full bg-primary/5 blur-[40px]" />
+              <div className="border-b bg-gradient-to-r from-primary/10 via-primary/5 to-transparent px-4 py-3">
                 <h3 className="flex items-center gap-2 text-sm font-semibold">
                   <div className="flex h-6 w-6 items-center justify-center rounded-md bg-primary/10">
                     <Ticket className="h-3.5 w-3.5 text-primary" />
@@ -1141,7 +1146,7 @@ export default function ExhibitionDetail() {
             </Card>
 
             {/* Event Details */}
-            <Card className="overflow-hidden">
+            <Card className="overflow-hidden transition-all hover:shadow-sm">
               <div className="border-b bg-muted/30 px-4 py-3">
                 <h3 className="flex items-center gap-2 text-sm font-semibold">
                   <div className="flex h-6 w-6 items-center justify-center rounded-md bg-accent/10">
@@ -1240,7 +1245,7 @@ export default function ExhibitionDetail() {
 
             {/* Organizer */}
             {organizer && (
-              <Card className="overflow-hidden">
+              <Card className="overflow-hidden transition-all hover:shadow-sm">
                 <div className="border-b bg-muted/30 px-4 py-3">
                   <h3 className="flex items-center gap-2 text-sm font-semibold">
                     <div className="flex h-6 w-6 items-center justify-center rounded-md bg-primary/10">
@@ -1288,7 +1293,7 @@ export default function ExhibitionDetail() {
 
             {/* Tags */}
             {tags.length > 0 && (
-              <Card className="overflow-hidden">
+              <Card className="overflow-hidden transition-all hover:shadow-sm">
                 <div className="border-b bg-muted/30 px-4 py-3">
                   <h3 className="flex items-center gap-2 text-sm font-semibold">
                     <div className="flex h-6 w-6 items-center justify-center rounded-md bg-accent/10">
