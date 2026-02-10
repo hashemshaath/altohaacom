@@ -4336,6 +4336,287 @@ export type Database = {
         }
         Relationships: []
       }
+      mentor_applications: {
+        Row: {
+          bio: string | null
+          bio_ar: string | null
+          created_at: string
+          expertise: string[] | null
+          id: string
+          program_id: string | null
+          reviewed_at: string | null
+          reviewed_by: string | null
+          status: string
+          user_id: string
+          years_experience: number | null
+        }
+        Insert: {
+          bio?: string | null
+          bio_ar?: string | null
+          created_at?: string
+          expertise?: string[] | null
+          id?: string
+          program_id?: string | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          status?: string
+          user_id: string
+          years_experience?: number | null
+        }
+        Update: {
+          bio?: string | null
+          bio_ar?: string | null
+          created_at?: string
+          expertise?: string[] | null
+          id?: string
+          program_id?: string | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          status?: string
+          user_id?: string
+          years_experience?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "mentor_applications_program_id_fkey"
+            columns: ["program_id"]
+            isOneToOne: false
+            referencedRelation: "mentorship_programs"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      mentorship_goals: {
+        Row: {
+          completed_at: string | null
+          created_at: string
+          created_by: string | null
+          description: string | null
+          description_ar: string | null
+          id: string
+          match_id: string
+          progress: number | null
+          status: string
+          target_date: string | null
+          title: string
+          title_ar: string | null
+          updated_at: string
+        }
+        Insert: {
+          completed_at?: string | null
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          description_ar?: string | null
+          id?: string
+          match_id: string
+          progress?: number | null
+          status?: string
+          target_date?: string | null
+          title: string
+          title_ar?: string | null
+          updated_at?: string
+        }
+        Update: {
+          completed_at?: string | null
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          description_ar?: string | null
+          id?: string
+          match_id?: string
+          progress?: number | null
+          status?: string
+          target_date?: string | null
+          title?: string
+          title_ar?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "mentorship_goals_match_id_fkey"
+            columns: ["match_id"]
+            isOneToOne: false
+            referencedRelation: "mentorship_matches"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      mentorship_matches: {
+        Row: {
+          completed_at: string | null
+          created_at: string
+          id: string
+          matched_at: string | null
+          mentee_id: string
+          mentee_notes: string | null
+          mentor_id: string
+          mentor_notes: string | null
+          program_id: string
+          started_at: string | null
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          completed_at?: string | null
+          created_at?: string
+          id?: string
+          matched_at?: string | null
+          mentee_id: string
+          mentee_notes?: string | null
+          mentor_id: string
+          mentor_notes?: string | null
+          program_id: string
+          started_at?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          completed_at?: string | null
+          created_at?: string
+          id?: string
+          matched_at?: string | null
+          mentee_id?: string
+          mentee_notes?: string | null
+          mentor_id?: string
+          mentor_notes?: string | null
+          program_id?: string
+          started_at?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "mentorship_matches_program_id_fkey"
+            columns: ["program_id"]
+            isOneToOne: false
+            referencedRelation: "mentorship_programs"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      mentorship_programs: {
+        Row: {
+          category: string
+          country_code: string | null
+          cover_image_url: string | null
+          created_at: string
+          created_by: string | null
+          description: string | null
+          description_ar: string | null
+          duration_weeks: number | null
+          id: string
+          max_matches: number | null
+          requirements: string | null
+          requirements_ar: string | null
+          status: string
+          title: string
+          title_ar: string | null
+          updated_at: string
+        }
+        Insert: {
+          category?: string
+          country_code?: string | null
+          cover_image_url?: string | null
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          description_ar?: string | null
+          duration_weeks?: number | null
+          id?: string
+          max_matches?: number | null
+          requirements?: string | null
+          requirements_ar?: string | null
+          status?: string
+          title: string
+          title_ar?: string | null
+          updated_at?: string
+        }
+        Update: {
+          category?: string
+          country_code?: string | null
+          cover_image_url?: string | null
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          description_ar?: string | null
+          duration_weeks?: number | null
+          id?: string
+          max_matches?: number | null
+          requirements?: string | null
+          requirements_ar?: string | null
+          status?: string
+          title?: string
+          title_ar?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      mentorship_sessions: {
+        Row: {
+          created_at: string
+          description: string | null
+          description_ar: string | null
+          duration_minutes: number | null
+          id: string
+          match_id: string
+          meeting_url: string | null
+          mentee_feedback: string | null
+          mentee_rating: number | null
+          mentor_feedback: string | null
+          mentor_rating: number | null
+          scheduled_at: string
+          status: string
+          title: string
+          title_ar: string | null
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          description_ar?: string | null
+          duration_minutes?: number | null
+          id?: string
+          match_id: string
+          meeting_url?: string | null
+          mentee_feedback?: string | null
+          mentee_rating?: number | null
+          mentor_feedback?: string | null
+          mentor_rating?: number | null
+          scheduled_at: string
+          status?: string
+          title: string
+          title_ar?: string | null
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          description_ar?: string | null
+          duration_minutes?: number | null
+          id?: string
+          match_id?: string
+          meeting_url?: string | null
+          mentee_feedback?: string | null
+          mentee_rating?: number | null
+          mentor_feedback?: string | null
+          mentor_rating?: number | null
+          scheduled_at?: string
+          status?: string
+          title?: string
+          title_ar?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "mentorship_sessions_match_id_fkey"
+            columns: ["match_id"]
+            isOneToOne: false
+            referencedRelation: "mentorship_matches"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       messages: {
         Row: {
           content: string
