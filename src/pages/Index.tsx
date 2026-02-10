@@ -125,31 +125,34 @@ const Index = () => {
       <Header />
 
       {/* Hero */}
-      <section className="relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-b from-primary/8 via-background to-background" />
-        <div className="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-primary/20 to-transparent" />
-        <div className="absolute -top-40 start-1/2 -translate-x-1/2 h-80 w-[600px] rounded-full bg-primary/5 blur-3xl" />
+      <section className="relative overflow-hidden bg-gradient-to-b from-primary/5 via-background to-background">
+        {/* Animated decorative orbs */}
+        <div className="absolute -top-32 start-1/4 h-64 w-64 rounded-full bg-primary/8 blur-[100px] animate-pulse" />
+        <div className="absolute -top-20 end-1/4 h-48 w-48 rounded-full bg-accent/10 blur-[80px] animate-pulse [animation-delay:1s]" />
+        <div className="absolute top-1/2 start-0 h-32 w-32 rounded-full bg-primary/5 blur-[60px] animate-pulse [animation-delay:2s]" />
+        <div className="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-primary/30 to-transparent" />
+        <div className="absolute bottom-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-border to-transparent" />
 
-        <div className="container relative flex flex-col items-center py-16 text-center sm:py-20 md:py-28">
-          <div className="mb-5 rounded-2xl bg-primary/5 p-3.5 ring-1 ring-primary/10">
+        <div className="container relative flex flex-col items-center py-20 text-center sm:py-24 md:py-32 lg:py-36">
+          <div className="mb-6 rounded-2xl bg-primary/5 p-4 ring-1 ring-primary/15 shadow-lg shadow-primary/5 backdrop-blur-sm">
             <img src="/altohaa-logo.png" alt="Altohaa" className="h-16 w-auto sm:h-20 md:h-24" />
           </div>
-          <h1 className="mb-3 font-serif text-3xl font-bold tracking-tight sm:text-4xl md:text-5xl lg:text-6xl">
-            <span className="bg-gradient-to-r from-primary to-primary/70 bg-clip-text text-transparent">
+          <h1 className="mb-3 font-serif text-4xl font-bold tracking-tight sm:text-5xl md:text-6xl lg:text-7xl">
+            <span className="bg-gradient-to-br from-primary via-primary/80 to-accent bg-clip-text text-transparent">
               Altohaa
             </span>
           </h1>
-          <p className="mb-1.5 font-serif text-lg text-primary/80 sm:text-xl md:text-2xl">
+          <p className="mb-2 font-serif text-lg text-primary/80 sm:text-xl md:text-2xl tracking-wide">
             {isAr ? "مجتمع الطهي العالمي" : "The Global Culinary Community"}
           </p>
-          <p className="mb-8 max-w-xl text-sm text-muted-foreground sm:text-base md:max-w-2xl md:text-lg">
+          <p className="mb-10 max-w-xl text-sm text-muted-foreground sm:text-base md:max-w-2xl md:text-lg leading-relaxed">
             {isAr
               ? "المنصة الرائدة التي تجمع الطهاة المحترفين والحكام والمنظمين والرعاة. تنافس، تعلم، وتطور."
               : "The premier platform uniting professional chefs, judges, organizers, and sponsors. Compete, learn, and grow."}
           </p>
           <div className="flex flex-wrap justify-center gap-3">
             {user ? (
-              <Button size="lg" asChild>
+              <Button size="lg" className="shadow-lg shadow-primary/20" asChild>
                 <Link to="/dashboard">
                   {isAr ? "لوحة التحكم" : "Dashboard"}
                   <ArrowRight className="ms-2 h-4 w-4" />
@@ -157,18 +160,18 @@ const Index = () => {
               </Button>
             ) : (
               <>
-                <Button size="lg" asChild>
+                <Button size="lg" className="shadow-lg shadow-primary/20" asChild>
                   <Link to="/auth?tab=signup">
                     {t("joinNow")}
                     <ArrowRight className="ms-2 h-4 w-4" />
                   </Link>
                 </Button>
-                <Button size="lg" variant="outline" asChild>
+                <Button size="lg" variant="outline" className="backdrop-blur-sm" asChild>
                   <Link to="/auth">{t("signIn")}</Link>
                 </Button>
               </>
             )}
-            <Button size="lg" variant="secondary" asChild>
+            <Button size="lg" variant="secondary" className="backdrop-blur-sm" asChild>
               <Link to="/competitions">{isAr ? "تصفح المسابقات" : "Browse Competitions"}</Link>
             </Button>
           </div>
@@ -176,19 +179,19 @@ const Index = () => {
       </section>
 
       {/* Stats */}
-      <section className="border-y bg-card/80 backdrop-blur-sm">
-        <div className="container grid grid-cols-3 py-6 sm:py-8">
+      <section className="relative border-y bg-card/80 backdrop-blur-sm">
+        <div className="container grid grid-cols-3 py-8 sm:py-10">
           {[
             { value: stats?.members || 0, label: isAr ? "عضو مسجل" : "Members", icon: Users },
             { value: stats?.competitions || 0, label: isAr ? "مسابقة" : "Competitions", icon: Trophy },
             { value: stats?.entities || 0, label: isAr ? "جهة معتمدة" : "Entities", icon: Building2 },
           ].map((stat, i) => (
-            <div key={stat.label} className={`flex flex-col items-center gap-1 px-2 ${i > 0 ? "border-s" : ""}`}>
-              <div className="mb-1 flex h-8 w-8 items-center justify-center rounded-lg bg-primary/10 sm:h-9 sm:w-9">
-                <stat.icon className="h-4 w-4 text-primary" />
+            <div key={stat.label} className={`flex flex-col items-center gap-1.5 px-2 ${i > 0 ? "border-s border-border/50" : ""}`}>
+              <div className="mb-1.5 flex h-10 w-10 items-center justify-center rounded-xl bg-primary/10 ring-1 ring-primary/10 sm:h-11 sm:w-11">
+                <stat.icon className="h-5 w-5 text-primary" />
               </div>
-              <p className="text-xl font-bold text-foreground sm:text-2xl md:text-3xl">{stat.value}+</p>
-              <p className="text-[11px] text-muted-foreground sm:text-xs md:text-sm">{stat.label}</p>
+              <p className="text-2xl font-bold text-foreground sm:text-3xl md:text-4xl">{stat.value}+</p>
+              <p className="text-xs text-muted-foreground sm:text-sm">{stat.label}</p>
             </div>
           ))}
         </div>
@@ -444,8 +447,10 @@ const Index = () => {
       )}
 
       {/* Why Altohaa */}
-      <section className="bg-muted/30 py-14 md:py-20">
-        <div className="container">
+      <section className="relative bg-muted/30 py-14 md:py-20 overflow-hidden">
+        <div className="absolute end-0 top-0 h-48 w-48 rounded-full bg-primary/5 blur-[80px]" />
+        <div className="absolute start-0 bottom-0 h-48 w-48 rounded-full bg-accent/5 blur-[80px]" />
+        <div className="container relative">
           <div className="mb-10 text-center">
             <Badge variant="secondary" className="mb-3">
               {isAr ? "المميزات" : "Features"}
@@ -459,13 +464,15 @@ const Index = () => {
           </div>
           <div className="grid gap-6 grid-cols-2 lg:grid-cols-4">
             {whyUs.map((item) => (
-              <div key={item.title} className="flex flex-col items-center text-center">
-                <div className="mb-3 flex h-14 w-14 items-center justify-center rounded-2xl bg-primary/10 ring-1 ring-primary/15">
-                  <item.icon className="h-7 w-7 text-primary" />
-                </div>
-                <h3 className="mb-1 text-sm font-semibold">{item.title}</h3>
-                <p className="text-xs text-muted-foreground leading-relaxed">{item.desc}</p>
-              </div>
+              <Card key={item.title} className="border-border/50 text-center transition-all hover:shadow-md hover:-translate-y-1">
+                <CardContent className="flex flex-col items-center p-6">
+                  <div className="mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-primary/10 ring-1 ring-primary/15 shadow-sm">
+                    <item.icon className="h-7 w-7 text-primary" />
+                  </div>
+                  <h3 className="mb-1.5 text-sm font-semibold">{item.title}</h3>
+                  <p className="text-xs text-muted-foreground leading-relaxed">{item.desc}</p>
+                </CardContent>
+              </Card>
             ))}
           </div>
         </div>
@@ -473,21 +480,22 @@ const Index = () => {
 
       {/* CTA Cards */}
       <section className="container py-14 md:py-20">
-        <div className="grid gap-4 md:grid-cols-2">
-          <Card className="group border-primary/10 bg-gradient-to-br from-primary/5 to-transparent transition-all hover:shadow-lg hover:border-primary/20">
-            <CardContent className="p-6 md:p-8">
-              <div className="mb-3 flex h-11 w-11 items-center justify-center rounded-xl bg-primary/10">
-                <Star className="h-5 w-5 text-primary" />
+        <div className="grid gap-6 md:grid-cols-2">
+          <Card className="group relative overflow-hidden border-primary/15 bg-gradient-to-br from-primary/5 via-primary/3 to-transparent transition-all hover:shadow-xl hover:border-primary/25">
+            <div className="absolute -end-12 -top-12 h-32 w-32 rounded-full bg-primary/8 blur-2xl transition-all group-hover:bg-primary/12" />
+            <CardContent className="relative p-6 md:p-8">
+              <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-primary/10 ring-1 ring-primary/15 shadow-sm">
+                <Star className="h-6 w-6 text-primary" />
               </div>
-              <h3 className="mb-1.5 font-serif text-xl font-bold md:text-2xl">
+              <h3 className="mb-2 font-serif text-xl font-bold md:text-2xl">
                 {isAr ? "هل أنت راعٍ أو شركة؟" : "Are You a Sponsor?"}
               </h3>
-              <p className="mb-5 text-sm text-muted-foreground leading-relaxed">
+              <p className="mb-6 text-sm text-muted-foreground leading-relaxed">
                 {isAr
                   ? "اربط علامتك التجارية بالتميز الطهوي واستفد من شبكة عالمية."
                   : "Connect your brand with culinary excellence and a global network of professionals."}
               </p>
-              <Button size="sm" asChild>
+              <Button size="sm" className="shadow-sm shadow-primary/20" asChild>
                 <Link to="/sponsors">
                   {isAr ? "اكتشف فرص الرعاية" : "Explore Sponsorship"}
                   <ArrowRight className="ms-1.5 h-3.5 w-3.5" />
@@ -496,20 +504,21 @@ const Index = () => {
             </CardContent>
           </Card>
 
-          <Card className="group border-accent/10 bg-gradient-to-br from-accent/5 to-transparent transition-all hover:shadow-lg hover:border-accent/20">
-            <CardContent className="p-6 md:p-8">
-              <div className="mb-3 flex h-11 w-11 items-center justify-center rounded-xl bg-accent/10">
-                <Trophy className="h-5 w-5 text-accent-foreground" />
+          <Card className="group relative overflow-hidden border-accent/15 bg-gradient-to-br from-accent/5 via-accent/3 to-transparent transition-all hover:shadow-xl hover:border-accent/25">
+            <div className="absolute -end-12 -top-12 h-32 w-32 rounded-full bg-accent/8 blur-2xl transition-all group-hover:bg-accent/12" />
+            <CardContent className="relative p-6 md:p-8">
+              <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-accent/10 ring-1 ring-accent/15 shadow-sm">
+                <Trophy className="h-6 w-6 text-accent-foreground" />
               </div>
-              <h3 className="mb-1.5 font-serif text-xl font-bold md:text-2xl">
+              <h3 className="mb-2 font-serif text-xl font-bold md:text-2xl">
                 {isAr ? "هل أنت منظم مسابقات؟" : "Competition Organizer?"}
               </h3>
-              <p className="mb-5 text-sm text-muted-foreground leading-relaxed">
+              <p className="mb-6 text-sm text-muted-foreground leading-relaxed">
                 {isAr
                   ? "أنشئ وأدِر مسابقات طهوية احترافية بأدوات رقمية متكاملة."
                   : "Create and manage professional culinary competitions with integrated digital tools."}
               </p>
-              <Button variant="secondary" size="sm" asChild>
+              <Button variant="secondary" size="sm" className="shadow-sm" asChild>
                 <Link to="/for-organizers">
                   {isAr ? "ابدأ التنظيم" : "Start Organizing"}
                   <ArrowRight className="ms-1.5 h-3.5 w-3.5" />
@@ -522,31 +531,36 @@ const Index = () => {
 
       {/* Final CTA */}
       {!user && (
-        <section className="border-t bg-gradient-to-b from-muted/20 to-background">
-          <div className="container py-14 text-center md:py-20">
+        <section className="relative border-t overflow-hidden">
+          <div className="absolute inset-0 bg-gradient-to-b from-primary/3 via-background to-background" />
+          <div className="absolute top-1/2 start-1/2 -translate-x-1/2 -translate-y-1/2 h-64 w-[500px] rounded-full bg-primary/5 blur-[100px]" />
+          <div className="container relative py-16 text-center md:py-24">
+            <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-primary/10 ring-1 ring-primary/15">
+              <ChefHat className="h-7 w-7 text-primary" />
+            </div>
             <h2 className="mb-3 font-serif text-2xl font-bold sm:text-3xl md:text-4xl">
               {isAr ? "انضم إلى مجتمع الطهي العالمي" : "Join the Global Culinary Community"}
             </h2>
-            <p className="mx-auto mb-6 max-w-lg text-sm text-muted-foreground sm:text-base">
+            <p className="mx-auto mb-8 max-w-lg text-sm text-muted-foreground sm:text-base leading-relaxed">
               {isAr
                 ? "سجل مجاناً واستمتع بجميع مميزات المنصة — مسابقات، دروس متقدمة، شبكة مهنية والمزيد."
                 : "Sign up for free and enjoy all platform features — competitions, masterclasses, networking, and more."}
             </p>
             <div className="flex flex-wrap justify-center gap-3">
-              <Button size="lg" asChild>
+              <Button size="lg" className="shadow-lg shadow-primary/20" asChild>
                 <Link to="/auth?tab=signup">
                   {isAr ? "أنشئ حسابك المجاني" : "Create Your Free Account"}
                   <ArrowRight className="ms-2 h-4 w-4" />
                 </Link>
               </Button>
-              <Button size="lg" variant="outline" asChild>
+              <Button size="lg" variant="outline" className="backdrop-blur-sm" asChild>
                 <Link to="/competitions">{isAr ? "تصفح المسابقات" : "Browse Competitions"}</Link>
               </Button>
             </div>
-            <div className="mt-6 flex flex-wrap items-center justify-center gap-4 text-xs text-muted-foreground sm:gap-6 sm:text-sm">
-              <div className="flex items-center gap-1.5"><CheckCircle className="h-3.5 w-3.5 text-primary" />{isAr ? "مجاني بالكامل" : "Completely Free"}</div>
-              <div className="flex items-center gap-1.5"><CheckCircle className="h-3.5 w-3.5 text-primary" />{isAr ? "بدون بطاقة ائتمان" : "No Credit Card"}</div>
-              <div className="flex items-center gap-1.5"><CheckCircle className="h-3.5 w-3.5 text-primary" />{isAr ? "إعداد في دقائق" : "Setup in Minutes"}</div>
+            <div className="mt-8 flex flex-wrap items-center justify-center gap-5 text-xs text-muted-foreground sm:gap-8 sm:text-sm">
+              <div className="flex items-center gap-1.5"><CheckCircle className="h-4 w-4 text-primary" />{isAr ? "مجاني بالكامل" : "Completely Free"}</div>
+              <div className="flex items-center gap-1.5"><CheckCircle className="h-4 w-4 text-primary" />{isAr ? "بدون بطاقة ائتمان" : "No Credit Card"}</div>
+              <div className="flex items-center gap-1.5"><CheckCircle className="h-4 w-4 text-primary" />{isAr ? "إعداد في دقائق" : "Setup in Minutes"}</div>
             </div>
           </div>
         </section>
