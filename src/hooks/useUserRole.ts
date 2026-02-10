@@ -22,7 +22,7 @@ export function useUserRoles() {
       return data?.map(r => r.role) || [];
     },
     enabled: !!user?.id,
-    staleTime: 1000 * 60 * 5, // Cache for 5 minutes
+    staleTime: 1000 * 60 * 5,
   });
 }
 
@@ -39,3 +39,6 @@ export function useIsOrganizer() {
   const { data: roles = [] } = useUserRoles();
   return roles.includes("organizer") || roles.includes("supervisor");
 }
+
+// Re-export permission hooks for convenience
+export { useHasPermission, useUserPermissions } from "./usePermissions";

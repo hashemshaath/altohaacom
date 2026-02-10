@@ -14,14 +14,9 @@ import { Progress } from "@/components/ui/progress";
 import { CountrySelector } from "@/components/auth/CountrySelector";
 import { useToast } from "@/hooks/use-toast";
 import {
-  ChefHat,
-  User,
-  Trophy,
-  ArrowRight,
-  ArrowLeft,
-  Sparkles,
-  CheckCircle2,
-  Loader2,
+  ChefHat, User, Trophy, ArrowRight, ArrowLeft, Sparkles,
+  CheckCircle2, Loader2, GraduationCap, Building2, Hand,
+  Heart, Headphones, Eye,
 } from "lucide-react";
 import type { Database } from "@/integrations/supabase/types";
 
@@ -31,8 +26,12 @@ type AppRole = Database["public"]["Enums"]["app_role"];
 const ROLES: { value: AppRole; labelEn: string; labelAr: string; icon: React.ReactNode }[] = [
   { value: "chef", labelEn: "Chef", labelAr: "طاهٍ", icon: <ChefHat className="h-5 w-5" /> },
   { value: "judge", labelEn: "Judge", labelAr: "حكم", icon: <Trophy className="h-5 w-5" /> },
-  { value: "student", labelEn: "Student", labelAr: "طالب", icon: <User className="h-5 w-5" /> },
+  { value: "student", labelEn: "Student", labelAr: "طالب", icon: <GraduationCap className="h-5 w-5" /> },
   { value: "organizer", labelEn: "Organizer", labelAr: "منظم", icon: <Sparkles className="h-5 w-5" /> },
+  { value: "volunteer", labelEn: "Volunteer", labelAr: "متطوع", icon: <Hand className="h-5 w-5" /> },
+  { value: "sponsor", labelEn: "Sponsor", labelAr: "راعي", icon: <Heart className="h-5 w-5" /> },
+  { value: "assistant", labelEn: "Assistant", labelAr: "مساعد", icon: <Headphones className="h-5 w-5" /> },
+  { value: "supervisor", labelEn: "Supervisor", labelAr: "مشرف", icon: <Eye className="h-5 w-5" /> },
 ];
 
 interface OnboardingWizardProps {
@@ -58,6 +57,8 @@ export function OnboardingWizard({ onComplete }: OnboardingWizardProps) {
     location: "",
     country_code: "",
     nationality: "",
+    professional_title: "",
+    professional_title_ar: "",
   });
 
   const [selectedRoles, setSelectedRoles] = useState<AppRole[]>([]);
@@ -77,15 +78,15 @@ export function OnboardingWizard({ onComplete }: OnboardingWizardProps) {
       icon: ChefHat,
       titleEn: "Select Your Roles",
       titleAr: "اختر أدوارك",
-      descEn: "You can select multiple roles",
-      descAr: "يمكنك اختيار أكثر من دور",
+      descEn: "You can select multiple roles — they determine your permissions",
+      descAr: "يمكنك اختيار أكثر من دور — وسيحدد ذلك صلاحياتك",
     },
     {
       icon: Trophy,
       titleEn: "Professional Details",
       titleAr: "التفاصيل المهنية",
-      descEn: "Tell us more about your expertise",
-      descAr: "أخبرنا المزيد عن خبرتك",
+      descEn: "Your title, specialization and experience",
+      descAr: "لقبك وتخصصك ومستوى خبرتك",
     },
   ];
 
@@ -120,9 +121,7 @@ export function OnboardingWizard({ onComplete }: OnboardingWizardProps) {
     if (validateStep()) setStep((prev) => Math.min(prev + 1, totalSteps));
   };
 
-  const prevStep = () => {
-    setStep((prev) => Math.max(prev - 1, 1));
-  };
+  const prevStep = () => setStep((prev) => Math.max(prev - 1, 1));
 
   const handleComplete = async () => {
     if (!user) return;
@@ -145,6 +144,7 @@ export function OnboardingWizard({ onComplete }: OnboardingWizardProps) {
 
       if (profileError) throw profileError;
 
+      // Upsert roles
       if (selectedRoles.length > 0) {
         const roleInserts = selectedRoles.map((role) => ({
           user_id: user.id,
@@ -154,6 +154,16 @@ export function OnboardingWizard({ onComplete }: OnboardingWizardProps) {
           .from("user_roles")
           .upsert(roleInserts, { onConflict: "user_id,role" });
         if (rolesError) throw rolesError;
+      }
+
+      // Create professional title if provided
+      if (form.professional_title.trim()) {
+        await supabase.from("user_titles").insert({
+          user_id: user.id,
+          title_type: "professional",
+          title: form.professional_title.trim(),
+          title_ar: form.professional_title_ar.trim() || null,
+        });
       }
 
       toast({
@@ -184,7 +194,6 @@ export function OnboardingWizard({ onComplete }: OnboardingWizardProps) {
 
       {/* Step Card */}
       <Card>
-        {/* Step Header */}
         <div className="flex flex-col items-center border-b px-5 py-5 text-center">
           <div className="mb-2.5 flex h-12 w-12 items-center justify-center rounded-full bg-primary/10">
             <StepIcon className="h-6 w-6 text-primary" />
@@ -274,6 +283,23 @@ export function OnboardingWizard({ onComplete }: OnboardingWizardProps) {
           {/* Step 3: Professional Details */}
           {step === 3 && (
             <div className="space-y-4">
+              <div className="space-y-1.5">
+                <Label className="text-xs">{isAr ? "اللقب المهني" : "Professional Title"}</Label>
+                <Input
+                  value={form.professional_title}
+                  onChange={(e) => setForm({ ...form, professional_title: e.target.value })}
+                  placeholder={isAr ? "مثال: شيف تنفيذي، مدرب طهي" : "e.g., Executive Chef, Culinary Instructor"}
+                />
+              </div>
+              <div className="space-y-1.5">
+                <Label className="text-xs">{isAr ? "اللقب المهني (عربي)" : "Professional Title (Arabic)"}</Label>
+                <Input
+                  value={form.professional_title_ar}
+                  onChange={(e) => setForm({ ...form, professional_title_ar: e.target.value })}
+                  placeholder={isAr ? "اللقب بالعربية" : "Title in Arabic"}
+                  dir="rtl"
+                />
+              </div>
               <div className="space-y-1.5">
                 <Label className="text-xs">{isAr ? "التخصص" : "Specialization"}</Label>
                 <Input
