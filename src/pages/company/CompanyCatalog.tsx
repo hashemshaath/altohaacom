@@ -251,7 +251,7 @@ export default function CompanyCatalog() {
         <Card>
           <CardContent className="pt-4">
             <div className="flex items-center gap-3">
-              <Package className="h-8 w-8 text-green-600" />
+              <Package className="h-8 w-8 text-chart-5" />
               <div>
                 <p className="text-sm text-muted-foreground">
                   {language === "ar" ? "نشط" : "Active"}
@@ -264,7 +264,7 @@ export default function CompanyCatalog() {
         <Card>
           <CardContent className="pt-4">
             <div className="flex items-center gap-3">
-              <Package className="h-8 w-8 text-blue-600" />
+              <Package className="h-8 w-8 text-primary" />
               <div>
                 <p className="text-sm text-muted-foreground">
                   {language === "ar" ? "متوفر" : "In Stock"}
@@ -395,7 +395,7 @@ export default function CompanyCatalog() {
                             </Badge>
                           )}
                           {item.in_stock ? (
-                            <Badge variant="outline" className="w-fit text-green-600 border-green-600">
+                            <Badge variant="outline" className="w-fit text-chart-5 border-chart-5">
                               {language === "ar" ? "متوفر" : "In Stock"}
                             </Badge>
                           ) : (

@@ -32,7 +32,7 @@ interface Winner {
 const PODIUM_CONFIG = [
   { rank: 2, icon: Medal, gradient: "from-muted to-muted/50", ring: "ring-muted-foreground/20", medal: "Silver", medalAr: "فضي", textColor: "text-muted-foreground" },
   { rank: 1, icon: Crown, gradient: "from-chart-4/10 to-chart-4/5", ring: "ring-chart-4/30", medal: "Gold", medalAr: "ذهبي", textColor: "text-chart-4" },
-  { rank: 3, icon: Award, gradient: "from-chart-4/5 to-muted/30", ring: "ring-chart-4/20", medal: "Bronze", medalAr: "برونزي", textColor: "text-amber-600" },
+  { rank: 3, icon: Award, gradient: "from-chart-4/5 to-muted/30", ring: "ring-chart-4/20", medal: "Bronze", medalAr: "برونزي", textColor: "text-chart-2" },
 ];
 
 export default function CompetitionResults() {
