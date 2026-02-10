@@ -56,6 +56,8 @@ const Mentorship = lazy(() => import("./pages/Mentorship"));
 const MentorshipDetail = lazy(() => import("./pages/MentorshipDetail"));
 const MentorApply = lazy(() => import("./pages/MentorApply"));
 const MentorshipMatchPage = lazy(() => import("./pages/MentorshipMatch"));
+const Recipes = lazy(() => import("./pages/Recipes"));
+const RecipeDetail = lazy(() => import("./pages/RecipeDetail"));
 
 // Admin pages
 const AdminLayout = lazy(() => import("./pages/admin/AdminLayout"));
@@ -186,6 +188,8 @@ const App = () => (
                 <Route path="/mentorship/:id" element={<MentorshipDetail />} />
                 <Route path="/mentorship/apply" element={<ProtectedRoute><MentorApply /></ProtectedRoute>} />
                 <Route path="/mentorship/match/:id" element={<ProtectedRoute><MentorshipMatchPage /></ProtectedRoute>} />
+                <Route path="/recipes" element={<Recipes />} />
+                <Route path="/recipes/:slug" element={<RecipeDetail />} />
                 
                 {/* Admin Routes */}
                 <Route path="/admin" element={<ProtectedRoute><AdminLayout /></ProtectedRoute>}>

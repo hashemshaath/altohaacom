@@ -5818,63 +5818,96 @@ export type Database = {
       recipes: {
         Row: {
           author_id: string
+          calories: number | null
+          carbs_g: number | null
+          category: string | null
           cook_time_minutes: number | null
+          country_code: string | null
           created_at: string
           cuisine: string | null
           description: string | null
           description_ar: string | null
           difficulty: string | null
+          fat_g: number | null
+          fiber_g: number | null
           gallery_urls: string[] | null
           id: string
           image_url: string | null
           ingredients: Json
           is_published: boolean | null
           prep_time_minutes: number | null
+          protein_g: number | null
           servings: number | null
+          slug: string | null
+          source_url: string | null
           steps: Json
+          tags: string[] | null
           title: string
           title_ar: string | null
           updated_at: string
+          video_url: string | null
         }
         Insert: {
           author_id: string
+          calories?: number | null
+          carbs_g?: number | null
+          category?: string | null
           cook_time_minutes?: number | null
+          country_code?: string | null
           created_at?: string
           cuisine?: string | null
           description?: string | null
           description_ar?: string | null
           difficulty?: string | null
+          fat_g?: number | null
+          fiber_g?: number | null
           gallery_urls?: string[] | null
           id?: string
           image_url?: string | null
           ingredients?: Json
           is_published?: boolean | null
           prep_time_minutes?: number | null
+          protein_g?: number | null
           servings?: number | null
+          slug?: string | null
+          source_url?: string | null
           steps?: Json
+          tags?: string[] | null
           title: string
           title_ar?: string | null
           updated_at?: string
+          video_url?: string | null
         }
         Update: {
           author_id?: string
+          calories?: number | null
+          carbs_g?: number | null
+          category?: string | null
           cook_time_minutes?: number | null
+          country_code?: string | null
           created_at?: string
           cuisine?: string | null
           description?: string | null
           description_ar?: string | null
           difficulty?: string | null
+          fat_g?: number | null
+          fiber_g?: number | null
           gallery_urls?: string[] | null
           id?: string
           image_url?: string | null
           ingredients?: Json
           is_published?: boolean | null
           prep_time_minutes?: number | null
+          protein_g?: number | null
           servings?: number | null
+          slug?: string | null
+          source_url?: string | null
           steps?: Json
+          tags?: string[] | null
           title?: string
           title_ar?: string | null
           updated_at?: string
+          video_url?: string | null
         }
         Relationships: []
       }
