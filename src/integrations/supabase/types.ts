@@ -1441,9 +1441,11 @@ export type Database = {
       }
       competition_invitations: {
         Row: {
+          category_id: string | null
           competition_id: string
           created_at: string
           id: string
+          invitation_channel: string | null
           invited_by: string
           invitee_email: string | null
           invitee_name: string | null
@@ -1457,9 +1459,11 @@ export type Database = {
           status: string
         }
         Insert: {
+          category_id?: string | null
           competition_id: string
           created_at?: string
           id?: string
+          invitation_channel?: string | null
           invited_by: string
           invitee_email?: string | null
           invitee_name?: string | null
@@ -1473,9 +1477,11 @@ export type Database = {
           status?: string
         }
         Update: {
+          category_id?: string | null
           competition_id?: string
           created_at?: string
           id?: string
+          invitation_channel?: string | null
           invited_by?: string
           invitee_email?: string | null
           invitee_name?: string | null
@@ -1489,6 +1495,13 @@ export type Database = {
           status?: string
         }
         Relationships: [
+          {
+            foreignKeyName: "competition_invitations_category_id_fkey"
+            columns: ["category_id"]
+            isOneToOne: false
+            referencedRelation: "competition_categories"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "competition_invitations_competition_id_fkey"
             columns: ["competition_id"]
@@ -1759,42 +1772,57 @@ export type Database = {
       }
       competition_team_members: {
         Row: {
+          checked_in_at: string | null
           competition_id: string
           created_at: string
           email: string | null
           id: string
           is_active: boolean | null
+          is_checked_in: boolean | null
           name: string
           name_ar: string | null
           notes: string | null
           phone: string | null
+          photo_url: string | null
           role: string
+          title: string | null
+          title_ar: string | null
           user_id: string | null
         }
         Insert: {
+          checked_in_at?: string | null
           competition_id: string
           created_at?: string
           email?: string | null
           id?: string
           is_active?: boolean | null
+          is_checked_in?: boolean | null
           name: string
           name_ar?: string | null
           notes?: string | null
           phone?: string | null
+          photo_url?: string | null
           role: string
+          title?: string | null
+          title_ar?: string | null
           user_id?: string | null
         }
         Update: {
+          checked_in_at?: string | null
           competition_id?: string
           created_at?: string
           email?: string | null
           id?: string
           is_active?: boolean | null
+          is_checked_in?: boolean | null
           name?: string
           name_ar?: string | null
           notes?: string | null
           phone?: string | null
+          photo_url?: string | null
           role?: string
+          title?: string | null
+          title_ar?: string | null
           user_id?: string | null
         }
         Relationships: [
@@ -4489,6 +4517,7 @@ export type Database = {
       reference_gallery: {
         Row: {
           added_by: string | null
+          category: string | null
           category_id: string | null
           competition_category: string | null
           created_at: string
@@ -4504,9 +4533,11 @@ export type Database = {
           tags: string[] | null
           title: string
           title_ar: string | null
+          uploaded_by_name: string | null
         }
         Insert: {
           added_by?: string | null
+          category?: string | null
           category_id?: string | null
           competition_category?: string | null
           created_at?: string
@@ -4522,9 +4553,11 @@ export type Database = {
           tags?: string[] | null
           title: string
           title_ar?: string | null
+          uploaded_by_name?: string | null
         }
         Update: {
           added_by?: string | null
+          category?: string | null
           category_id?: string | null
           competition_category?: string | null
           created_at?: string
@@ -4540,6 +4573,7 @@ export type Database = {
           tags?: string[] | null
           title?: string
           title_ar?: string | null
+          uploaded_by_name?: string | null
         }
         Relationships: [
           {
