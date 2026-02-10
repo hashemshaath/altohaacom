@@ -137,12 +137,12 @@ export default function ShopProduct() {
         <div className="grid gap-8 lg:grid-cols-2">
           {/* Images */}
           <div className="space-y-3">
-            <div className="aspect-square overflow-hidden rounded-xl bg-muted">
+            <div className="aspect-square overflow-hidden rounded-xl bg-muted ring-1 ring-border/50">
               {allImages.length > 0 ? (
                 <img
                   src={allImages[selectedImage]}
                   alt={title}
-                  className="h-full w-full object-cover"
+                  className="h-full w-full object-cover transition-transform duration-500 hover:scale-105"
                 />
               ) : (
                 <div className="flex h-full items-center justify-center">
@@ -156,8 +156,8 @@ export default function ShopProduct() {
                   <button
                     key={i}
                     onClick={() => setSelectedImage(i)}
-                    className={`h-16 w-16 shrink-0 overflow-hidden rounded-lg border-2 transition-colors ${
-                      i === selectedImage ? "border-primary" : "border-transparent"
+                    className={`h-16 w-16 shrink-0 overflow-hidden rounded-lg border-2 transition-all duration-200 ${
+                      i === selectedImage ? "border-primary ring-2 ring-primary/20 scale-105" : "border-transparent hover:border-muted-foreground/30"
                     }`}
                   >
                     <img src={img} alt="" className="h-full w-full object-cover" />
@@ -211,7 +211,7 @@ export default function ShopProduct() {
                   <Plus className="h-4 w-4" />
                 </Button>
               </div>
-              <Button className="flex-1" size="lg" disabled={isOutOfStock} onClick={handleAddToCart}>
+              <Button className="flex-1 transition-transform duration-200 active:scale-95" size="lg" disabled={isOutOfStock} onClick={handleAddToCart}>
                 <ShoppingCart className="me-2 h-5 w-5" />
                 {isAr ? "أضف إلى السلة" : "Add to Cart"}
               </Button>
