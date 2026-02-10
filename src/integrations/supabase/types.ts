@@ -606,6 +606,7 @@ export type Database = {
           logo_url: string | null
           name: string
           name_ar: string | null
+          operating_countries: string[] | null
           payment_terms: number | null
           phone: string | null
           postal_code: string | null
@@ -637,6 +638,7 @@ export type Database = {
           logo_url?: string | null
           name: string
           name_ar?: string | null
+          operating_countries?: string[] | null
           payment_terms?: number | null
           phone?: string | null
           postal_code?: string | null
@@ -668,6 +670,7 @@ export type Database = {
           logo_url?: string | null
           name?: string
           name_ar?: string | null
+          operating_countries?: string[] | null
           payment_terms?: number | null
           phone?: string | null
           postal_code?: string | null
@@ -2350,6 +2353,170 @@ export type Database = {
           participant_2?: string
         }
         Relationships: []
+      }
+      countries: {
+        Row: {
+          code: string
+          code_alpha3: string | null
+          continent: string | null
+          created_at: string
+          currency_code: string
+          currency_name: string | null
+          currency_name_ar: string | null
+          currency_symbol: string
+          data_residency_notes: string | null
+          date_format: string | null
+          default_language: string
+          features: Json
+          flag_emoji: string | null
+          id: string
+          is_active: boolean
+          is_featured: boolean | null
+          launch_date: string | null
+          local_office_address: string | null
+          local_office_address_ar: string | null
+          metadata: Json | null
+          name: string
+          name_ar: string | null
+          name_local: string | null
+          phone_code: string | null
+          phone_format: string | null
+          region: string | null
+          requires_tax_number: boolean | null
+          sort_order: number | null
+          support_email: string | null
+          support_phone: string | null
+          supported_languages: string[]
+          tax_name: string | null
+          tax_name_ar: string | null
+          tax_rate: number | null
+          timezone: string
+          updated_at: string
+        }
+        Insert: {
+          code: string
+          code_alpha3?: string | null
+          continent?: string | null
+          created_at?: string
+          currency_code?: string
+          currency_name?: string | null
+          currency_name_ar?: string | null
+          currency_symbol?: string
+          data_residency_notes?: string | null
+          date_format?: string | null
+          default_language?: string
+          features?: Json
+          flag_emoji?: string | null
+          id?: string
+          is_active?: boolean
+          is_featured?: boolean | null
+          launch_date?: string | null
+          local_office_address?: string | null
+          local_office_address_ar?: string | null
+          metadata?: Json | null
+          name: string
+          name_ar?: string | null
+          name_local?: string | null
+          phone_code?: string | null
+          phone_format?: string | null
+          region?: string | null
+          requires_tax_number?: boolean | null
+          sort_order?: number | null
+          support_email?: string | null
+          support_phone?: string | null
+          supported_languages?: string[]
+          tax_name?: string | null
+          tax_name_ar?: string | null
+          tax_rate?: number | null
+          timezone?: string
+          updated_at?: string
+        }
+        Update: {
+          code?: string
+          code_alpha3?: string | null
+          continent?: string | null
+          created_at?: string
+          currency_code?: string
+          currency_name?: string | null
+          currency_name_ar?: string | null
+          currency_symbol?: string
+          data_residency_notes?: string | null
+          date_format?: string | null
+          default_language?: string
+          features?: Json
+          flag_emoji?: string | null
+          id?: string
+          is_active?: boolean
+          is_featured?: boolean | null
+          launch_date?: string | null
+          local_office_address?: string | null
+          local_office_address_ar?: string | null
+          metadata?: Json | null
+          name?: string
+          name_ar?: string | null
+          name_local?: string | null
+          phone_code?: string | null
+          phone_format?: string | null
+          region?: string | null
+          requires_tax_number?: boolean | null
+          sort_order?: number | null
+          support_email?: string | null
+          support_phone?: string | null
+          supported_languages?: string[]
+          tax_name?: string | null
+          tax_name_ar?: string | null
+          tax_rate?: number | null
+          timezone?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      country_services: {
+        Row: {
+          country_id: string
+          created_at: string
+          id: string
+          is_active: boolean
+          metadata: Json | null
+          name: string
+          name_ar: string | null
+          service_key: string
+          service_type: string
+          sort_order: number | null
+        }
+        Insert: {
+          country_id: string
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          metadata?: Json | null
+          name: string
+          name_ar?: string | null
+          service_key: string
+          service_type: string
+          sort_order?: number | null
+        }
+        Update: {
+          country_id?: string
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          metadata?: Json | null
+          name?: string
+          name_ar?: string | null
+          service_key?: string
+          service_type?: string
+          sort_order?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "country_services_country_id_fkey"
+            columns: ["country_id"]
+            isOneToOne: false
+            referencedRelation: "countries"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       culinary_entities: {
         Row: {
@@ -4548,6 +4715,7 @@ export type Database = {
           bio: string | null
           company_id: string | null
           company_role: string | null
+          country_code: string | null
           created_at: string
           experience_level:
             | Database["public"]["Enums"]["experience_level"]
@@ -4565,6 +4733,7 @@ export type Database = {
             | Database["public"]["Enums"]["membership_status"]
             | null
           membership_tier: Database["public"]["Enums"]["membership_tier"] | null
+          nationality: string | null
           phone: string | null
           preferred_language: string | null
           profile_completed: boolean | null
@@ -4586,6 +4755,7 @@ export type Database = {
           bio?: string | null
           company_id?: string | null
           company_role?: string | null
+          country_code?: string | null
           created_at?: string
           experience_level?:
             | Database["public"]["Enums"]["experience_level"]
@@ -4605,6 +4775,7 @@ export type Database = {
           membership_tier?:
             | Database["public"]["Enums"]["membership_tier"]
             | null
+          nationality?: string | null
           phone?: string | null
           preferred_language?: string | null
           profile_completed?: boolean | null
@@ -4626,6 +4797,7 @@ export type Database = {
           bio?: string | null
           company_id?: string | null
           company_role?: string | null
+          country_code?: string | null
           created_at?: string
           experience_level?:
             | Database["public"]["Enums"]["experience_level"]
@@ -4645,6 +4817,7 @@ export type Database = {
           membership_tier?:
             | Database["public"]["Enums"]["membership_tier"]
             | null
+          nationality?: string | null
           phone?: string | null
           preferred_language?: string | null
           profile_completed?: boolean | null
