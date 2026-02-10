@@ -133,7 +133,7 @@ export function ScoringAnalytics({ competitionId }: ScoringAnalyticsProps) {
       {/* Summary Stats */}
       <div className="grid gap-3 grid-cols-3">
         {summaryStats.map((stat, i) => (
-          <Card key={i} className={`border-s-[3px] ${stat.accent} transition-shadow hover:shadow-sm`}>
+          <Card key={i} className={`border-s-[3px] ${stat.accent} transition-all duration-200 hover:shadow-md hover:-translate-y-0.5`}>
             <CardContent className="flex items-center gap-3.5 p-4">
               <div className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-xl ${stat.bg}`}>
                 <stat.icon className={`h-5 w-5 ${stat.color}`} />

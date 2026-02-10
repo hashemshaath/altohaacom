@@ -105,7 +105,7 @@ export default function CertificateVerify() {
         {/* Verification Form */}
         <section className="py-12">
           <div className="container max-w-2xl">
-            <Card>
+            <Card className="border-border/50 shadow-lg shadow-primary/5">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <Search className="h-5 w-5" />
@@ -150,14 +150,14 @@ export default function CertificateVerify() {
                     </CardContent>
                   </Card>
                 ) : isVerified ? (
-                  <Card className="border-green-500 bg-green-50 dark:bg-green-950/20">
+                  <Card className="border-chart-5/30 bg-chart-5/5">
                     <CardHeader>
                       <div className="flex items-center gap-4">
-                        <div className="h-16 w-16 rounded-full bg-green-500 flex items-center justify-center">
-                          <CheckCircle className="h-8 w-8 text-white" />
+                        <div className="h-16 w-16 rounded-2xl bg-chart-5/15 flex items-center justify-center ring-2 ring-chart-5/20 shadow-lg shadow-chart-5/10">
+                          <CheckCircle className="h-8 w-8 text-chart-5" />
                         </div>
                         <div>
-                          <CardTitle className="text-green-700 dark:text-green-400">
+                          <CardTitle className="text-chart-5">
                             {language === "ar" ? "شهادة صالحة ومُصدقة" : "Valid & Verified Certificate"}
                           </CardTitle>
                           <CardDescription>
@@ -270,14 +270,14 @@ export default function CertificateVerify() {
                     </CardContent>
                   </Card>
                 ) : isRevoked ? (
-                  <Card className="border-red-500 bg-red-50 dark:bg-red-950/20">
+                  <Card className="border-destructive/30 bg-destructive/5">
                     <CardHeader>
                       <div className="flex items-center gap-4">
-                        <div className="h-16 w-16 rounded-full bg-red-500 flex items-center justify-center">
-                          <XCircle className="h-8 w-8 text-white" />
+                        <div className="h-16 w-16 rounded-2xl bg-destructive/15 flex items-center justify-center ring-2 ring-destructive/20">
+                          <XCircle className="h-8 w-8 text-destructive" />
                         </div>
                         <div>
-                          <CardTitle className="text-red-700 dark:text-red-400">
+                          <CardTitle className="text-destructive">
                             {language === "ar" ? "شهادة ملغاة" : "Certificate Revoked"}
                           </CardTitle>
                           <CardDescription>
@@ -290,14 +290,14 @@ export default function CertificateVerify() {
                     </CardHeader>
                   </Card>
                 ) : notFound ? (
-                  <Card className="border-yellow-500 bg-yellow-50 dark:bg-yellow-950/20">
+                  <Card className="border-chart-4/30 bg-chart-4/5">
                     <CardHeader>
                       <div className="flex items-center gap-4">
-                        <div className="h-16 w-16 rounded-full bg-yellow-500 flex items-center justify-center">
-                          <AlertTriangle className="h-8 w-8 text-white" />
+                        <div className="h-16 w-16 rounded-2xl bg-chart-4/15 flex items-center justify-center ring-2 ring-chart-4/20">
+                          <AlertTriangle className="h-8 w-8 text-chart-4" />
                         </div>
                         <div>
-                          <CardTitle className="text-yellow-700 dark:text-yellow-400">
+                          <CardTitle className="text-chart-4">
                             {language === "ar" ? "لم يتم العثور على الشهادة" : "Certificate Not Found"}
                           </CardTitle>
                           <CardDescription>

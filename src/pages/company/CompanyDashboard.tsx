@@ -57,7 +57,7 @@ export default function CompanyPortalDashboard() {
   const getStatusBadge = (status: string | null) => {
     switch (status) {
       case "active":
-        return <Badge className="bg-emerald-500/10 text-emerald-600 border-emerald-500/20 hover:bg-emerald-500/20">{language === "ar" ? "نشط" : "Active"}</Badge>;
+        return <Badge className="bg-primary/10 text-primary border-primary/20 hover:bg-primary/20">{language === "ar" ? "نشط" : "Active"}</Badge>;
       case "suspended":
         return <Badge variant="destructive">{language === "ar" ? "معلّق" : "Suspended"}</Badge>;
       default:
@@ -121,21 +121,21 @@ export default function CompanyPortalDashboard() {
           value={stats?.totalInvitations || 0}
           subLabel={language === "ar" ? "قيد الانتظار" : "pending"}
           subValue={stats?.pendingInvitations || 0}
-          accent="border-s-amber-500"
+          accent="border-s-chart-4"
           isLoading={isLoading}
         />
         <StatCard
           icon={Users}
           label={language === "ar" ? "أعضاء الفريق" : "Team Members"}
           value={stats?.totalContacts || 0}
-          accent="border-s-violet-500"
+          accent="border-s-accent"
           isLoading={isLoading}
         />
         <StatCard
           icon={BarChart3}
           label={language === "ar" ? "المعاملات" : "Transactions"}
           value={stats?.totalTransactions || 0}
-          accent="border-s-emerald-500"
+          accent="border-s-chart-5"
           isLoading={isLoading}
         />
       </div>
@@ -143,7 +143,7 @@ export default function CompanyPortalDashboard() {
       {/* Financial Overview */}
       {!isLoading && company && (
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          <Card className="animate-fade-in">
+          <Card className="animate-fade-in transition-all duration-200 hover:shadow-md hover:-translate-y-0.5">
             <CardContent className="flex items-center gap-4 pt-6">
               <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-primary/10">
                 <CreditCard className="h-6 w-6 text-primary" />
@@ -158,10 +158,10 @@ export default function CompanyPortalDashboard() {
               </div>
             </CardContent>
           </Card>
-          <Card className="animate-fade-in" style={{ animationDelay: "0.05s" }}>
+          <Card className="animate-fade-in transition-all duration-200 hover:shadow-md hover:-translate-y-0.5" style={{ animationDelay: "0.05s" }}>
             <CardContent className="flex items-center gap-4 pt-6">
-              <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-emerald-500/10">
-                <TrendingUp className="h-6 w-6 text-emerald-600" />
+              <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-chart-5/10">
+                <TrendingUp className="h-6 w-6 text-chart-5" />
               </div>
               <div>
                 <p className="text-sm text-muted-foreground">
@@ -173,10 +173,10 @@ export default function CompanyPortalDashboard() {
               </div>
             </CardContent>
           </Card>
-          <Card className="animate-fade-in" style={{ animationDelay: "0.1s" }}>
+          <Card className="animate-fade-in transition-all duration-200 hover:shadow-md hover:-translate-y-0.5" style={{ animationDelay: "0.1s" }}>
             <CardContent className="flex items-center gap-4 pt-6">
-              <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-amber-500/10">
-                <Clock className="h-6 w-6 text-amber-600" />
+              <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-chart-4/10">
+                <Clock className="h-6 w-6 text-chart-4" />
               </div>
               <div>
                 <p className="text-sm text-muted-foreground">
@@ -237,7 +237,7 @@ function StatCard({
   isLoading: boolean;
 }) {
   return (
-    <Card className={`border-s-[3px] ${accent} animate-fade-in hover:shadow-md transition-shadow`}>
+    <Card className={`border-s-[3px] ${accent} animate-fade-in transition-all duration-200 hover:shadow-md hover:-translate-y-0.5`}>
       <CardContent className="pt-6">
         <div className="flex items-start justify-between">
           <div>
