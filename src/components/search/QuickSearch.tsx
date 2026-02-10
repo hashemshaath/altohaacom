@@ -194,9 +194,9 @@ export function QuickSearch({ onClose }: QuickSearchProps) {
 
       {/* Recent Searches Dropdown */}
       {showRecent && (
-        <div className="absolute top-full left-0 right-0 z-50 mt-1 rounded-md border bg-popover p-2 shadow-lg">
-          <div className="flex items-center justify-between px-2 mb-1">
-            <p className="text-xs font-semibold text-muted-foreground uppercase">
+        <div className="absolute top-full left-0 right-0 z-50 mt-1 rounded-xl border bg-popover p-2.5 shadow-xl animate-fade-in">
+          <div className="flex items-center justify-between px-2 mb-1.5">
+            <p className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider">
               {language === "ar" ? "عمليات البحث الأخيرة" : "Recent Searches"}
             </p>
             <Button variant="ghost" size="sm" className="h-6 px-1.5 text-xs text-muted-foreground" onClick={handleClearRecent}>
@@ -219,7 +219,7 @@ export function QuickSearch({ onClose }: QuickSearchProps) {
 
       {/* Search Results Dropdown */}
       {showResults && (
-        <div className="absolute top-full left-0 right-0 z-50 mt-1 rounded-md border bg-popover p-2 shadow-lg">
+        <div className="absolute top-full left-0 right-0 z-50 mt-1 rounded-xl border bg-popover p-2.5 shadow-xl animate-fade-in">
           {isLoading ? (
             <div className="flex items-center justify-center py-4">
               <div className="h-5 w-5 animate-spin rounded-full border-2 border-primary border-t-transparent" />
