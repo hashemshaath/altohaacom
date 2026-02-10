@@ -15,9 +15,10 @@ import { Separator } from "@/components/ui/separator";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useToast } from "@/hooks/use-toast";
+import PrintableInvoice from "@/components/invoices/PrintableInvoice";
 import {
   FileText, Search, Plus, Eye, ChevronLeft, Save, Trash2,
-  DollarSign, Clock, CheckCircle, XCircle, Send,
+  DollarSign, Clock, CheckCircle, XCircle, Send, Copy,
 } from "lucide-react";
 import { format } from "date-fns";
 
@@ -178,6 +179,39 @@ export default function InvoicesAdmin() {
     },
   });
 
+  const duplicateMutation = useMutation({
+    mutationFn: async (sourceId: string) => {
+      if (!user) throw new Error("Not authenticated");
+      const source = invoices.find((i) => i.id === sourceId);
+      if (!source) throw new Error("Invoice not found");
+      const { error } = await supabase.from("invoices").insert({
+        title: source.title ? `${source.title} (copy)` : null,
+        title_ar: source.title_ar || null,
+        description: source.description || null,
+        description_ar: source.description_ar || null,
+        company_id: source.company_id || null,
+        user_id: user.id,
+        currency: source.currency,
+        due_date: null,
+        notes: source.notes || null,
+        notes_ar: source.notes_ar || null,
+        items: source.items as unknown as Record<string, unknown>,
+        subtotal: source.subtotal,
+        tax_rate: source.tax_rate,
+        tax_amount: source.tax_amount,
+        amount: source.amount,
+        status: "draft",
+        issued_by: user.id,
+      } as any);
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["admin-invoices"] });
+      toast({ title: language === "ar" ? "تم نسخ الفاتورة" : "Invoice duplicated" });
+    },
+    onError: (err) => toast({ variant: "destructive", title: "Error", description: err.message }),
+  });
+
   const resetForm = () => {
     setFormData({
       title: "", title_ar: "", description: "", description_ar: "",
@@ -246,7 +280,11 @@ export default function InvoicesAdmin() {
             <h1 className="text-2xl font-bold">{invoiceDetails.invoice_number}</h1>
             <p className="text-muted-foreground">{invoiceDetails.title}</p>
           </div>
-          <div className="flex gap-2">
+          <div className="flex flex-wrap gap-2">
+            <Button variant="outline" onClick={() => duplicateMutation.mutate(invoiceDetails.id)} disabled={duplicateMutation.isPending}>
+              <Copy className="mr-2 h-4 w-4" />
+              {language === "ar" ? "نسخ" : "Duplicate"}
+            </Button>
             {invoiceDetails.status === "draft" && (
               <Button onClick={() => updateStatusMutation.mutate({ id: invoiceDetails.id, status: "sent" })}>
                 <Send className="mr-2 h-4 w-4" />
@@ -399,6 +437,12 @@ export default function InvoicesAdmin() {
             )}
           </div>
         </div>
+
+        {/* Printable Invoice */}
+        <PrintableInvoice
+          invoice={invoiceDetails}
+          company={invoiceDetails.companies || null}
+        />
       </div>
     );
   }
