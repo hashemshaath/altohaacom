@@ -110,9 +110,9 @@ export function Header() {
             <div className="hidden items-center gap-1 lg:flex">
               {isJudge && (
                 <Button variant="ghost" size="sm" asChild>
-                  <Link to="/judging" className="flex items-center gap-1.5">
+                  <Link to="/tastings" className="flex items-center gap-1.5">
                     <Scale className="h-3.5 w-3.5" />
-                    {t("judgingPanel")}
+                    {language === "ar" ? "التقييم" : "Evaluation"}
                   </Link>
                 </Button>
               )}
@@ -220,12 +220,12 @@ export function Header() {
 
                         {isJudge && (
                           <Link
-                            to="/judging"
+                            to="/tastings"
                             onClick={() => setOpen(false)}
                             className="flex items-center gap-3 rounded-md px-3 py-2.5 text-sm text-muted-foreground hover:bg-muted hover:text-foreground"
                           >
                             <Scale className="h-4 w-4" />
-                            {t("judgingPanel")}
+                            {language === "ar" ? "التقييم" : "Evaluation"}
                           </Link>
                         )}
                         {isAdmin && (

@@ -11,7 +11,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Plus, Search, UtensilsCrossed, Calendar, MapPin, Eye } from "lucide-react";
+import { Plus, Search, UtensilsCrossed, Calendar, MapPin, Eye, Trophy } from "lucide-react";
 import { format } from "date-fns";
 
 const statusColors: Record<string, string> = {
@@ -37,14 +37,14 @@ export default function Tastings() {
 
   return (
     <>
-      <SEOHead title={isAr ? "جلسات التذوق" : "Tasting Sessions"} description={isAr ? "استكشف وأنشئ جلسات تذوق الطعام" : "Explore and create food tasting sessions"} />
+      <SEOHead title={isAr ? "التقييم والتذوق" : "Evaluation & Tasting"} description={isAr ? "جلسات تقييم المسابقات وتذوق المنتجات" : "Competition evaluation and product tasting sessions"} />
       <div className="min-h-screen bg-background" dir={isAr ? "rtl" : "ltr"}>
         <Header />
         <main className="container mx-auto px-4 py-8">
           <div className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
             <div>
-              <h1 className="text-3xl font-bold">{isAr ? "جلسات التذوق" : "Tasting Sessions"}</h1>
-              <p className="mt-1 text-muted-foreground">{isAr ? "تقييم الأطباق بمعايير احترافية" : "Evaluate dishes with professional criteria"}</p>
+              <h1 className="text-3xl font-bold">{isAr ? "التقييم والتذوق" : "Evaluation & Tasting"}</h1>
+              <p className="mt-1 text-muted-foreground">{isAr ? "تقييم المسابقات وجلسات تذوق المنتجات" : "Competition evaluations and product tasting sessions"}</p>
             </div>
             {user && (
               <Button onClick={() => navigate("/tastings/create")} className="gap-2">
@@ -87,6 +87,16 @@ export default function Tastings() {
                       <Badge variant="outline" className={statusColors[session.status] || ""}>
                         {session.status}
                       </Badge>
+                      {session.competition_id ? (
+                        <Badge variant="default" className="text-xs gap-1">
+                          <Trophy className="h-3 w-3" />
+                          {isAr ? "مسابقة" : "Competition"}
+                        </Badge>
+                      ) : (
+                        <Badge variant="secondary" className="text-xs">
+                          {isAr ? "تذوق مستقل" : "Standalone"}
+                        </Badge>
+                      )}
                       <Badge variant="secondary" className="text-xs">
                         {session.eval_method === "numeric" ? (isAr ? "رقمي" : "Numeric") :
                          session.eval_method === "stars" ? (isAr ? "نجوم" : "Stars") :
