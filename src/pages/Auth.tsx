@@ -16,22 +16,21 @@ import { useToast } from "@/hooks/use-toast";
 import { PhoneVerification } from "@/components/auth/PhoneVerification";
 import { CountrySelector } from "@/components/auth/CountrySelector";
 import { PasswordStrengthMeter, getPasswordStrength } from "@/components/auth/PasswordStrengthMeter";
+import { UsernameSuggestions } from "@/components/auth/UsernameSuggestions";
+import { ForgotPasswordDialog } from "@/components/auth/ForgotPasswordDialog";
+import { TermsAgreement } from "@/components/auth/TermsAgreement";
 import { normalizePhoneInput } from "@/lib/arabicNumerals";
 import { z } from "zod";
 import {
   CheckCircle, XCircle, Loader2, ShieldCheck, UserPlus, LogIn,
-  Trophy, Globe, GraduationCap, Award, Star, Phone, Mail,
+  Trophy, Globe, GraduationCap, Award, Star, Phone, Mail, KeyRound,
 } from "lucide-react";
 
 const usernameRegex = /^[a-zA-Z][a-zA-Z0-9_]{2,29}$/;
 
-const signInSchema = z.object({
-  email: z.string().email("Invalid email address"),
-  password: z.string().min(6, "Password must be at least 6 characters"),
-});
-
 type SignUpStep = "contact" | "verify" | "details" | "credentials";
 type SignUpMethod = "phone" | "email";
+type SignInMethod = "phone" | "email";
 
 const features = [
   { icon: Trophy, labelEn: "Compete Globally", labelAr: "تنافس عالمياً" },
@@ -42,34 +41,48 @@ const features = [
 
 export default function Auth() {
   const [searchParams] = useSearchParams();
+  const isResetMode = searchParams.get("tab") === "reset";
   const [isSignUp, setIsSignUp] = useState(searchParams.get("tab") === "signup");
   const [signUpStep, setSignUpStep] = useState<SignUpStep>("contact");
   const [signUpMethod, setSignUpMethod] = useState<SignUpMethod>("phone");
 
-  // Contact step
+  // Sign-in state
+  const [signInMethod, setSignInMethod] = useState<SignInMethod>("phone");
+  const [signInPhone, setSignInPhone] = useState("");
+  const [signInPhoneCode, setSignInPhoneCode] = useState("");
+  const [signInCountry, setSignInCountry] = useState("");
+  const [signInEmail, setSignInEmail] = useState("");
+  const [signInPassword, setSignInPassword] = useState("");
+  const [signInPhoneStep, setSignInPhoneStep] = useState<"phone" | "otp" | "password">("phone");
+  const [signInVerifiedPhone, setSignInVerifiedPhone] = useState("");
+
+  // Sign-up contact step
   const [phoneInput, setPhoneInput] = useState("");
   const [emailInput, setEmailInput] = useState("");
   const [countryCode, setCountryCode] = useState("");
   const [phoneCode, setPhoneCode] = useState("");
 
-  // Verified contact
+  // Sign-up verified contact
   const [verifiedPhone, setVerifiedPhone] = useState("");
   const [verifiedEmail, setVerifiedEmail] = useState("");
-  const [emailVerificationSent, setEmailVerificationSent] = useState(false);
 
-  // Details step
+  // Sign-up details step
   const [fullName, setFullName] = useState("");
-  const [email, setEmail] = useState(""); // secondary email if phone-primary
+  const [email, setEmail] = useState("");
 
-  // Credentials step
+  // Sign-up credentials step
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [username, setUsername] = useState("");
   const [usernameStatus, setUsernameStatus] = useState<"idle" | "checking" | "available" | "taken">("idle");
+  const [termsAccepted, setTermsAccepted] = useState(false);
 
-  // Sign in
-  const [signInEmail, setSignInEmail] = useState("");
-  const [signInPassword, setSignInPassword] = useState("");
+  // Password reset
+  const [resetPassword, setResetPassword] = useState("");
+  const [resetConfirm, setResetConfirm] = useState("");
+
+  // Dialogs
+  const [forgotOpen, setForgotOpen] = useState(false);
 
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
@@ -81,8 +94,8 @@ export default function Auth() {
   const isAr = language === "ar";
 
   useEffect(() => {
-    if (user) navigate("/", { replace: true });
-  }, [user, navigate]);
+    if (user && !isResetMode) navigate("/", { replace: true });
+  }, [user, navigate, isResetMode]);
 
   // Username availability check
   useEffect(() => {
@@ -119,18 +132,15 @@ export default function Auth() {
     setLoading(false);
   };
 
-  // ── Sign In ──
-  const handleSignIn = async () => {
+  // ── Sign In with Email ──
+  const handleSignInEmail = async () => {
     setErrors({});
-    const result = signInSchema.safeParse({ email: signInEmail, password: signInPassword });
-    if (!result.success) {
-      const fieldErrors: Record<string, string> = {};
-      result.error.errors.forEach((e) => {
-        fieldErrors[e.path[0] as string] = e.message;
-      });
-      setErrors(fieldErrors);
-      return;
-    }
+    const errs: Record<string, string> = {};
+    const emailResult = z.string().email().safeParse(signInEmail);
+    if (!emailResult.success) errs.signInEmail = isAr ? "البريد الإلكتروني غير صالح" : "Invalid email";
+    if (signInPassword.length < 6) errs.signInPassword = isAr ? "كلمة المرور قصيرة جداً" : "Password too short";
+    if (Object.keys(errs).length > 0) { setErrors(errs); return; }
+
     setLoading(true);
     const { error } = await supabase.auth.signInWithPassword({ email: signInEmail, password: signInPassword });
     setLoading(false);
@@ -139,61 +149,129 @@ export default function Auth() {
     }
   };
 
-  // ── Step 1: Contact — validate and go to verify ──
+  // ── Sign In with Phone (after OTP verification) ──
+  const handleSignInPhoneVerified = (phone: string) => {
+    setSignInVerifiedPhone(phone);
+    setSignInPhoneStep("password");
+  };
+
+  const handleSignInPhonePassword = async () => {
+    setErrors({});
+    if (signInPassword.length < 6) {
+      setErrors({ signInPassword: isAr ? "كلمة المرور قصيرة جداً" : "Password too short" });
+      return;
+    }
+
+    // Look up email by phone
+    setLoading(true);
+    const { data: profile } = await supabase
+      .from("profiles")
+      .select("user_id")
+      .eq("phone", signInVerifiedPhone)
+      .maybeSingle();
+
+    if (!profile) {
+      setLoading(false);
+      toast({
+        variant: "destructive",
+        title: isAr ? "خطأ" : "Error",
+        description: isAr ? "لا يوجد حساب مرتبط بهذا الرقم" : "No account linked to this phone number",
+      });
+      return;
+    }
+
+    // Get user email from auth to sign in
+    const { data: userData } = await supabase
+      .from("profiles")
+      .select("user_id")
+      .eq("phone", signInVerifiedPhone)
+      .single();
+
+    if (!userData) {
+      setLoading(false);
+      toast({
+        variant: "destructive",
+        title: isAr ? "خطأ" : "Error",
+        description: isAr ? "لم يتم العثور على الحساب" : "Account not found",
+      });
+      return;
+    }
+
+    // We need the user's email to sign in with password
+    // Try to find it from the profiles or ask user
+    const { data: emailProfile } = await supabase
+      .from("profiles")
+      .select("full_name")
+      .eq("user_id", userData.user_id)
+      .single();
+
+    // Since we can't get email from profiles, ask user to provide it
+    // For now, we'll ask them to enter their email
+    setLoading(false);
+    toast({
+      title: isAr ? "أدخل بريدك الإلكتروني" : "Enter your email",
+      description: isAr
+        ? "تم التحقق من رقمك. أدخل بريدك الإلكتروني وكلمة المرور لتسجيل الدخول"
+        : "Phone verified. Enter your email and password to sign in",
+    });
+    setSignInMethod("email");
+    setSignInPhoneStep("phone");
+  };
+
+  // ── Password Reset (when redirected back) ──
+  const handleResetPassword = async () => {
+    setErrors({});
+    const errs: Record<string, string> = {};
+    if (resetPassword.length < 8) errs.resetPassword = isAr ? "8 أحرف على الأقل" : "At least 8 characters";
+    if (getPasswordStrength(resetPassword) < 2) errs.resetPassword = isAr ? "كلمة المرور ضعيفة" : "Password too weak";
+    if (resetPassword !== resetConfirm) errs.resetConfirm = isAr ? "غير متطابقة" : "Passwords don't match";
+    if (Object.keys(errs).length > 0) { setErrors(errs); return; }
+
+    setLoading(true);
+    const { error } = await supabase.auth.updateUser({ password: resetPassword });
+    setLoading(false);
+
+    if (error) {
+      toast({ variant: "destructive", title: isAr ? "خطأ" : "Error", description: error.message });
+    } else {
+      toast({
+        title: isAr ? "تم تحديث كلمة المرور" : "Password Updated",
+        description: isAr ? "يمكنك الآن تسجيل الدخول بكلمة المرور الجديدة" : "You can now sign in with your new password",
+      });
+      navigate("/auth", { replace: true });
+    }
+  };
+
+  // ── Sign Up Step 1: Contact ──
   const handleContactSubmit = () => {
     setErrors({});
     const errs: Record<string, string> = {};
 
     if (signUpMethod === "phone") {
       const cleanPhone = phoneInput.replace(/\s/g, "");
-      const phoneRegex = /^\+?[1-9]\d{7,14}$/;
-      if (!phoneRegex.test(cleanPhone)) {
+      if (!/^\+?[1-9]\d{7,14}$/.test(cleanPhone)) {
         errs.phone = isAr ? "رقم الهاتف غير صالح" : "Invalid phone number";
       }
-      if (!countryCode) {
-        errs.countryCode = isAr ? "يرجى اختيار الدولة" : "Country is required";
-      }
+      if (!countryCode) errs.countryCode = isAr ? "يرجى اختيار الدولة" : "Country is required";
     } else {
-      const emailResult = z.string().email().safeParse(emailInput);
-      if (!emailResult.success) {
+      if (!z.string().email().safeParse(emailInput).success) {
         errs.email = isAr ? "البريد الإلكتروني غير صالح" : "Invalid email address";
       }
-      if (!countryCode) {
-        errs.countryCode = isAr ? "يرجى اختيار الدولة" : "Country is required";
-      }
+      if (!countryCode) errs.countryCode = isAr ? "يرجى اختيار الدولة" : "Country is required";
     }
 
-    if (Object.keys(errs).length > 0) {
-      setErrors(errs);
-      return;
-    }
+    if (Object.keys(errs).length > 0) { setErrors(errs); return; }
     setSignUpStep("verify");
   };
 
-  // ── Step 2a: Phone verified ──
+  // ── Sign Up Step 2: Verified ──
   const handlePhoneVerified = (phone: string) => {
     setVerifiedPhone(phone);
     setSignUpStep("details");
   };
 
-  // ── Step 2b: Email verification sent ──
   const handleSendEmailVerification = async () => {
-    setLoading(true);
-    // For email method, we'll use OTP sign-in to verify email
-    const { error } = await supabase.auth.signInWithOtp({
-      email: emailInput,
-      options: { shouldCreateUser: false },
-    });
-    setLoading(false);
-
-    if (error && !error.message.includes("User not found")) {
-      // OTP won't work for non-existing users with shouldCreateUser: false
-      // This is expected - we mark email as "pending verification" and proceed
-    }
-
-    // In this flow, email verification happens after account creation via confirmation email
     setVerifiedEmail(emailInput);
-    setEmailVerificationSent(true);
     setSignUpStep("details");
     toast({
       title: isAr ? "سيتم التحقق من البريد" : "Email will be verified",
@@ -203,58 +281,36 @@ export default function Auth() {
     });
   };
 
-  // ── Step 3: Details — name + optional email/phone ──
+  // ── Sign Up Step 3: Details ──
   const handleDetailsSubmit = () => {
     setErrors({});
     const errs: Record<string, string> = {};
-
     if (!fullName.trim() || fullName.trim().length < 2) {
-      errs.fullName = isAr ? "الاسم مطلوب" : "Name is required";
+      errs.fullName = isAr ? "الاسم مطلوب (حرفان على الأقل)" : "Name is required (min 2 chars)";
     }
-
-    // If phone-primary, email is needed for account creation
     if (signUpMethod === "phone") {
-      const emailResult = z.string().email().safeParse(email);
-      if (!emailResult.success) {
-        errs.email = isAr ? "البريد الإلكتروني مطلوب لإنشاء الحساب" : "Email is required for account creation";
+      if (!z.string().email().safeParse(email).success) {
+        errs.email = isAr ? "البريد الإلكتروني مطلوب لإنشاء الحساب" : "Email required for account creation";
       }
     }
-
-    if (Object.keys(errs).length > 0) {
-      setErrors(errs);
-      return;
-    }
+    if (Object.keys(errs).length > 0) { setErrors(errs); return; }
     setSignUpStep("credentials");
   };
 
-  // ── Step 4: Create account ──
+  // ── Sign Up Step 4: Create Account ──
   const handleCreateAccount = async () => {
     setErrors({});
     const errs: Record<string, string> = {};
 
-    if (!username || !usernameRegex.test(username)) {
-      errs.username = isAr ? "اسم المستخدم غير صالح" : "Invalid username";
-    }
-    if (usernameStatus === "taken") {
-      errs.username = isAr ? "اسم المستخدم مستخدم بالفعل" : "Username already taken";
-    }
-    if (usernameStatus === "checking") {
-      errs.username = isAr ? "جاري التحقق..." : "Still checking...";
-    }
-    if (password.length < 8) {
-      errs.password = isAr ? "كلمة المرور يجب أن تكون 8 أحرف على الأقل" : "Password must be at least 8 characters";
-    }
-    if (getPasswordStrength(password) < 2) {
-      errs.password = isAr ? "كلمة المرور ضعيفة جداً" : "Password is too weak";
-    }
-    if (password !== confirmPassword) {
-      errs.confirmPassword = isAr ? "كلمات المرور غير متطابقة" : "Passwords don't match";
-    }
+    if (!username || !usernameRegex.test(username)) errs.username = isAr ? "اسم مستخدم غير صالح (حروف وأرقام و _ فقط)" : "Invalid username (letters, numbers, _ only)";
+    if (usernameStatus === "taken") errs.username = isAr ? "اسم المستخدم مستخدم بالفعل" : "Username already taken";
+    if (usernameStatus === "checking") errs.username = isAr ? "جاري التحقق..." : "Still checking...";
+    if (password.length < 8) errs.password = isAr ? "8 أحرف على الأقل" : "At least 8 characters";
+    if (getPasswordStrength(password) < 2) errs.password = isAr ? "كلمة المرور ضعيفة جداً" : "Password is too weak";
+    if (password !== confirmPassword) errs.confirmPassword = isAr ? "غير متطابقة" : "Passwords don't match";
+    if (!termsAccepted) errs.terms = isAr ? "يجب الموافقة على الشروط والأحكام" : "You must accept the Terms & Conditions";
 
-    if (Object.keys(errs).length > 0) {
-      setErrors(errs);
-      return;
-    }
+    if (Object.keys(errs).length > 0) { setErrors(errs); return; }
 
     const accountEmail = signUpMethod === "phone" ? email : emailInput;
 
@@ -289,31 +345,74 @@ export default function Auth() {
     }
 
     setLoading(false);
-
-    if (signUpMethod === "email") {
-      toast({
-        title: isAr ? "تم إنشاء الحساب!" : "Account created!",
-        description: isAr
-          ? "يرجى التحقق من بريدك الإلكتروني لتأكيد حسابك قبل تسجيل الدخول."
-          : "Please check your email to verify your account before signing in.",
-      });
-    } else {
-      toast({
-        title: isAr ? "تم إنشاء الحساب!" : "Account created!",
-        description: isAr
-          ? "تم التحقق من رقم هاتفك. يرجى التحقق من بريدك الإلكتروني لتأكيد حسابك."
-          : "Your phone is verified. Please check your email to confirm your account.",
-      });
-    }
-
+    toast({
+      title: isAr ? "تم إنشاء الحساب بنجاح! 🎉" : "Account Created! 🎉",
+      description: isAr
+        ? "يرجى التحقق من بريدك الإلكتروني لتأكيد حسابك قبل تسجيل الدخول."
+        : "Please check your email to verify your account before signing in.",
+    });
     setIsSignUp(false);
     setSignUpStep("contact");
   };
 
   const totalSteps = 4;
-  const currentStepNum = signUpStep === "contact" ? 1 : signUpStep === "verify" ? 2 : signUpStep === "details" ? 3 : 4;
 
-  /* ── Step 2: Verification ── */
+  // ── Password Reset Page ──
+  if (isResetMode) {
+    return (
+      <div className="flex min-h-screen flex-col">
+        <SEOHead title={isAr ? "إعادة تعيين كلمة المرور" : "Reset Password"} description="Reset your password" />
+        <Header />
+        <main className="flex flex-1 items-center justify-center p-4">
+          <Card className="w-full max-w-md border-border/50 shadow-xl shadow-primary/5">
+            <div className="p-5 md:p-6 space-y-5">
+              <div className="flex flex-col items-center text-center">
+                <div className="mb-3 flex h-14 w-14 items-center justify-center rounded-2xl bg-primary/10 ring-1 ring-primary/15">
+                  <KeyRound className="h-7 w-7 text-primary" />
+                </div>
+                <h2 className="font-serif text-xl font-bold">
+                  {isAr ? "إعادة تعيين كلمة المرور" : "Reset Password"}
+                </h2>
+                <p className="mt-1 text-sm text-muted-foreground">
+                  {isAr ? "أدخل كلمة المرور الجديدة" : "Enter your new password"}
+                </p>
+              </div>
+
+              <div className="space-y-1.5">
+                <Label className="text-xs">{isAr ? "كلمة المرور الجديدة" : "New Password"} *</Label>
+                <Input
+                  type="password"
+                  value={resetPassword}
+                  onChange={(e) => setResetPassword(e.target.value)}
+                  placeholder="••••••••"
+                />
+                <PasswordStrengthMeter password={resetPassword} />
+                {errors.resetPassword && <p className="text-xs text-destructive">{errors.resetPassword}</p>}
+              </div>
+
+              <div className="space-y-1.5">
+                <Label className="text-xs">{isAr ? "تأكيد كلمة المرور" : "Confirm Password"} *</Label>
+                <Input
+                  type="password"
+                  value={resetConfirm}
+                  onChange={(e) => setResetConfirm(e.target.value)}
+                  placeholder="••••••••"
+                />
+                {errors.resetConfirm && <p className="text-xs text-destructive">{errors.resetConfirm}</p>}
+              </div>
+
+              <Button className="w-full" size="lg" onClick={handleResetPassword} disabled={loading}>
+                {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                {isAr ? "تعيين كلمة المرور الجديدة" : "Set New Password"}
+              </Button>
+            </div>
+          </Card>
+        </main>
+      </div>
+    );
+  }
+
+  // ── Sign Up Step 2: Verification ──
   if (signUpStep === "verify" && isSignUp) {
     return (
       <div className="flex min-h-screen flex-col">
@@ -355,19 +454,14 @@ export default function Auth() {
                     <p className="mt-2 text-xs text-muted-foreground">
                       {isAr
                         ? "سيتم إرسال رابط التحقق إلى بريدك الإلكتروني بعد إنشاء الحساب"
-                        : "A verification link will be sent to your email after account creation"}
+                        : "A verification link will be sent after account creation"}
                     </p>
                   </div>
                   <div className="flex gap-2">
                     <Button variant="outline" onClick={() => setSignUpStep("contact")}>
                       {isAr ? "رجوع" : "Back"}
                     </Button>
-                    <Button
-                      className="flex-1"
-                      onClick={handleSendEmailVerification}
-                      disabled={loading}
-                    >
-                      {loading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
+                    <Button className="flex-1" onClick={handleSendEmailVerification}>
                       {isAr ? "متابعة" : "Continue"}
                     </Button>
                   </div>
@@ -380,7 +474,7 @@ export default function Auth() {
     );
   }
 
-  /* ── Step 3: Details (name, secondary contact) ── */
+  // ── Sign Up Step 3: Details ──
   if (signUpStep === "details" && isSignUp) {
     return (
       <div className="flex min-h-screen flex-col">
@@ -401,25 +495,23 @@ export default function Auth() {
                 </p>
               </div>
 
-              {/* Verified badge */}
               <div className="flex items-center gap-2 rounded-lg border border-primary/20 bg-primary/5 p-3">
                 <CheckCircle className="h-5 w-5 text-primary shrink-0" />
                 <div className="text-sm">
                   {signUpMethod === "phone" ? (
                     <>
-                      <span className="font-medium">{isAr ? "تم التحقق من الهاتف:" : "Phone verified:"}</span>{" "}
+                      <span className="font-medium">{isAr ? "تم التحقق:" : "Verified:"}</span>{" "}
                       <span className="font-mono text-primary" dir="ltr">{verifiedPhone}</span>
                     </>
                   ) : (
                     <>
-                      <span className="font-medium">{isAr ? "البريد الإلكتروني:" : "Email:"}</span>{" "}
+                      <span className="font-medium">{isAr ? "البريد:" : "Email:"}</span>{" "}
                       <span className="text-primary">{verifiedEmail}</span>
                     </>
                   )}
                 </div>
               </div>
 
-              {/* Full Name */}
               <div className="space-y-1.5">
                 <Label htmlFor="fullName" className="text-xs">{isAr ? "الاسم الكامل" : "Full Name"} *</Label>
                 <Input
@@ -431,7 +523,6 @@ export default function Auth() {
                 {errors.fullName && <p className="text-xs text-destructive">{errors.fullName}</p>}
               </div>
 
-              {/* If phone-primary, ask for email */}
               {signUpMethod === "phone" && (
                 <div className="space-y-1.5">
                   <Label htmlFor="email" className="text-xs">{isAr ? "البريد الإلكتروني" : "Email"} *</Label>
@@ -464,7 +555,7 @@ export default function Auth() {
     );
   }
 
-  /* ── Step 4: Credentials (username & password) ── */
+  // ── Sign Up Step 4: Credentials ──
   if (signUpStep === "credentials" && isSignUp) {
     return (
       <div className="flex min-h-screen flex-col">
@@ -506,6 +597,14 @@ export default function Auth() {
                   altohaa.com/<span className="font-medium">{username || "username"}</span>
                 </p>
                 {errors.username && <p className="text-xs text-destructive">{errors.username}</p>}
+
+                {/* Username suggestions when taken */}
+                {usernameStatus === "taken" && (
+                  <UsernameSuggestions
+                    baseUsername={username}
+                    onSelect={(s) => setUsername(s)}
+                  />
+                )}
               </div>
 
               {/* Password */}
@@ -533,10 +632,17 @@ export default function Auth() {
                   placeholder="••••••••"
                 />
                 {confirmPassword && password !== confirmPassword && (
-                  <p className="text-xs text-destructive">{isAr ? "كلمات المرور غير متطابقة" : "Passwords don't match"}</p>
+                  <p className="text-xs text-destructive">{isAr ? "غير متطابقة" : "Passwords don't match"}</p>
                 )}
                 {errors.confirmPassword && <p className="text-xs text-destructive">{errors.confirmPassword}</p>}
               </div>
+
+              {/* Terms */}
+              <TermsAgreement
+                checked={termsAccepted}
+                onCheckedChange={setTermsAccepted}
+                error={errors.terms}
+              />
 
               <div className="flex gap-2">
                 <Button variant="outline" onClick={() => setSignUpStep("details")}>
@@ -545,7 +651,7 @@ export default function Auth() {
                 <Button
                   className="flex-1 gap-2"
                   size="lg"
-                  disabled={loading || usernameStatus !== "available"}
+                  disabled={loading || usernameStatus !== "available" || !termsAccepted}
                   onClick={handleCreateAccount}
                 >
                   {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : <UserPlus className="h-4 w-4" />}
@@ -559,7 +665,97 @@ export default function Auth() {
     );
   }
 
-  /* ── Main auth view (Sign In or Sign Up Step 1: Contact) ── */
+  // ── Sign In: Phone OTP step ──
+  if (!isSignUp && signInMethod === "phone" && signInPhoneStep === "otp") {
+    return (
+      <div className="flex min-h-screen flex-col">
+        <SEOHead title="Verify Phone" description="Verify your phone to sign in" />
+        <Header />
+        <main className="flex flex-1 items-center justify-center p-4">
+          <Card className="w-full max-w-md border-border/50 shadow-xl shadow-primary/5">
+            <div className="p-5 md:p-6">
+              <PhoneVerification
+                onVerified={handleSignInPhoneVerified}
+                onBack={() => setSignInPhoneStep("phone")}
+                initialPhone={signInPhone}
+                phoneCode={signInPhoneCode}
+                mode="login"
+              />
+            </div>
+          </Card>
+        </main>
+      </div>
+    );
+  }
+
+  // ── Sign In: Phone password step ──
+  if (!isSignUp && signInMethod === "phone" && signInPhoneStep === "password") {
+    return (
+      <div className="flex min-h-screen flex-col">
+        <SEOHead title="Sign In" description="Enter your password" />
+        <Header />
+        <main className="flex flex-1 items-center justify-center p-4">
+          <Card className="w-full max-w-md border-border/50 shadow-xl shadow-primary/5">
+            <div className="p-5 md:p-6 space-y-5">
+              <div className="flex flex-col items-center text-center">
+                <div className="mb-3 flex h-14 w-14 items-center justify-center rounded-2xl bg-primary/10 ring-1 ring-primary/15">
+                  <LogIn className="h-7 w-7 text-primary" />
+                </div>
+                <h2 className="font-serif text-xl font-bold">
+                  {isAr ? "تسجيل الدخول" : "Sign In"}
+                </h2>
+              </div>
+
+              <div className="flex items-center gap-2 rounded-lg border border-primary/20 bg-primary/5 p-3">
+                <CheckCircle className="h-5 w-5 text-primary shrink-0" />
+                <div className="text-sm">
+                  <span className="font-medium">{isAr ? "تم التحقق:" : "Verified:"}</span>{" "}
+                  <span className="font-mono text-primary" dir="ltr">{signInVerifiedPhone}</span>
+                </div>
+              </div>
+
+              <div className="space-y-1.5">
+                <Label className="text-xs">{isAr ? "البريد الإلكتروني" : "Email"}</Label>
+                <Input
+                  type="email"
+                  value={signInEmail}
+                  onChange={(e) => setSignInEmail(e.target.value)}
+                  placeholder={isAr ? "البريد المرتبط بحسابك" : "Email linked to your account"}
+                />
+              </div>
+
+              <div className="space-y-1.5">
+                <Label className="text-xs">{isAr ? "كلمة المرور" : "Password"}</Label>
+                <Input
+                  type="password"
+                  value={signInPassword}
+                  onChange={(e) => setSignInPassword(e.target.value)}
+                  placeholder="••••••••"
+                  onKeyDown={(e) => e.key === "Enter" && handleSignInEmail()}
+                />
+                {errors.signInPassword && <p className="text-xs text-destructive">{errors.signInPassword}</p>}
+              </div>
+
+              <Button className="w-full gap-2" size="lg" onClick={handleSignInEmail} disabled={loading}>
+                {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : <LogIn className="h-4 w-4" />}
+                {isAr ? "تسجيل الدخول" : "Sign In"}
+              </Button>
+
+              <button
+                type="button"
+                className="w-full text-center text-xs text-primary hover:underline"
+                onClick={() => { setSignInPhoneStep("phone"); setSignInMethod("phone"); }}
+              >
+                {isAr ? "رجوع" : "Back"}
+              </button>
+            </div>
+          </Card>
+        </main>
+      </div>
+    );
+  }
+
+  /* ── Main auth view (Sign In or Sign Up Step 1) ── */
   return (
     <div className="flex min-h-screen flex-col">
       <SEOHead
@@ -612,7 +808,7 @@ export default function Auth() {
             <div className="flex flex-col items-center text-center">
               <img src="/altohaa-logo.png" alt="Altohaa" className="mb-3 h-12 w-auto lg:hidden" />
               <h1 className="font-serif text-2xl font-bold">
-                {isSignUp ? (isAr ? "إنشاء حساب جديد" : "Create Account") : t("signInTitle")}
+                {isSignUp ? (isAr ? "إنشاء حساب جديد" : "Create Account") : (isAr ? "تسجيل الدخول" : "Sign In")}
               </h1>
               {isSignUp && (
                 <p className="mt-1 text-sm text-muted-foreground">
@@ -648,6 +844,7 @@ export default function Auth() {
             <Card className="border-border/50 shadow-lg shadow-primary/5">
               <CardContent className="space-y-4 p-5 md:p-6">
                 {isSignUp ? (
+                  /* ── SIGN UP: Step 1 Contact ── */
                   <>
                     {/* Method Toggle */}
                     <div className="flex rounded-lg border border-border/50 p-1 gap-1">
@@ -679,23 +876,19 @@ export default function Auth() {
 
                     {signUpMethod === "phone" ? (
                       <>
-                        {/* Country */}
                         <CountrySelector
                           value={countryCode}
                           onChange={(code, country) => {
                             setCountryCode(code);
                             const pc = country?.phone_code || "";
                             setPhoneCode(pc);
-                            if (!phoneInput || phoneInput === phoneCode) {
-                              setPhoneInput(pc);
-                            }
+                            if (!phoneInput || phoneInput === phoneCode) setPhoneInput(pc);
                           }}
                           label={isAr ? "الدولة" : "Country"}
                           required
                         />
                         {errors.countryCode && <p className="text-xs text-destructive">{errors.countryCode}</p>}
 
-                        {/* Phone Number */}
                         <div className="space-y-1.5">
                           <Label htmlFor="phone" className="text-xs">{isAr ? "رقم الهاتف" : "Phone Number"} *</Label>
                           <Input
@@ -714,7 +907,6 @@ export default function Auth() {
                       </>
                     ) : (
                       <>
-                        {/* Country */}
                         <CountrySelector
                           value={countryCode}
                           onChange={(code, country) => {
@@ -726,7 +918,6 @@ export default function Auth() {
                         />
                         {errors.countryCode && <p className="text-xs text-destructive">{errors.countryCode}</p>}
 
-                        {/* Email */}
                         <div className="space-y-1.5">
                           <Label htmlFor="emailInput" className="text-xs">{isAr ? "البريد الإلكتروني" : "Email"} *</Label>
                           <Input
@@ -744,58 +935,139 @@ export default function Auth() {
                       </>
                     )}
 
-                    <Button
-                      className="w-full gap-2"
-                      size="lg"
-                      onClick={handleContactSubmit}
-                    >
+                    <Button className="w-full gap-2" size="lg" onClick={handleContactSubmit}>
                       {signUpMethod === "phone"
                         ? (isAr ? "التالي — التحقق من الهاتف" : "Next — Verify Phone")
                         : (isAr ? "التالي — التحقق من البريد" : "Next — Verify Email")}
                     </Button>
                   </>
                 ) : (
+                  /* ── SIGN IN ── */
                   <>
-                    {/* Sign In */}
-                    <div className="space-y-1.5">
-                      <Label htmlFor="signInEmail" className="text-xs">{isAr ? "البريد الإلكتروني" : "Email"}</Label>
-                      <Input
-                        id="signInEmail"
-                        type="email"
-                        value={signInEmail}
-                        onChange={(e) => setSignInEmail(e.target.value)}
-                        placeholder={isAr ? "البريد الإلكتروني" : "Email address"}
-                      />
-                      {errors.email && <p className="text-xs text-destructive">{errors.email}</p>}
+                    {/* Sign-in method toggle */}
+                    <div className="flex rounded-lg border border-border/50 p-1 gap-1">
+                      <button
+                        type="button"
+                        onClick={() => { setSignInMethod("phone"); setErrors({}); }}
+                        className={`flex flex-1 items-center justify-center gap-2 rounded-md px-3 py-2 text-sm font-medium transition-colors ${
+                          signInMethod === "phone"
+                            ? "bg-primary text-primary-foreground shadow-sm"
+                            : "text-muted-foreground hover:text-foreground"
+                        }`}
+                      >
+                        <Phone className="h-4 w-4" />
+                        {isAr ? "الهاتف" : "Phone"}
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => { setSignInMethod("email"); setErrors({}); }}
+                        className={`flex flex-1 items-center justify-center gap-2 rounded-md px-3 py-2 text-sm font-medium transition-colors ${
+                          signInMethod === "email"
+                            ? "bg-primary text-primary-foreground shadow-sm"
+                            : "text-muted-foreground hover:text-foreground"
+                        }`}
+                      >
+                        <Mail className="h-4 w-4" />
+                        {isAr ? "البريد" : "Email"}
+                      </button>
                     </div>
 
-                    <div className="space-y-1.5">
-                      <Label htmlFor="signInPassword" className="text-xs">{isAr ? "كلمة المرور" : "Password"}</Label>
-                      <Input
-                        id="signInPassword"
-                        type="password"
-                        value={signInPassword}
-                        onChange={(e) => setSignInPassword(e.target.value)}
-                        placeholder="••••••••"
-                      />
-                      {errors.password && <p className="text-xs text-destructive">{errors.password}</p>}
-                    </div>
+                    {signInMethod === "phone" ? (
+                      <>
+                        <CountrySelector
+                          value={signInCountry}
+                          onChange={(code, country) => {
+                            setSignInCountry(code);
+                            const pc = country?.phone_code || "";
+                            setSignInPhoneCode(pc);
+                            if (!signInPhone || signInPhone === signInPhoneCode) setSignInPhone(pc);
+                          }}
+                          label={isAr ? "الدولة" : "Country"}
+                          required
+                        />
 
-                    <Button
-                      className="w-full gap-2"
-                      size="lg"
-                      disabled={loading}
-                      onClick={handleSignIn}
-                    >
-                      {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : <LogIn className="h-4 w-4" />}
-                      {loading ? (isAr ? "جاري الدخول..." : "Signing in...") : (isAr ? "تسجيل الدخول" : "Sign In")}
-                    </Button>
+                        <div className="space-y-1.5">
+                          <Label className="text-xs">{isAr ? "رقم الهاتف" : "Phone Number"}</Label>
+                          <Input
+                            type="tel"
+                            dir="ltr"
+                            placeholder="+966 5XX XXX XXXX"
+                            value={signInPhone}
+                            onChange={(e) => setSignInPhone(normalizePhoneInput(e.target.value))}
+                          />
+                        </div>
+
+                        <Button
+                          className="w-full gap-2"
+                          size="lg"
+                          onClick={() => {
+                            const clean = signInPhone.replace(/\s/g, "");
+                            if (!/^\+?[1-9]\d{7,14}$/.test(clean)) {
+                              setErrors({ signInPhone: isAr ? "رقم غير صالح" : "Invalid number" });
+                              return;
+                            }
+                            setErrors({});
+                            setSignInPhoneStep("otp");
+                          }}
+                        >
+                          {isAr ? "التالي — التحقق" : "Next — Verify"}
+                        </Button>
+                        {errors.signInPhone && <p className="text-xs text-destructive">{errors.signInPhone}</p>}
+                      </>
+                    ) : (
+                      <>
+                        <div className="space-y-1.5">
+                          <Label htmlFor="signInEmail" className="text-xs">{isAr ? "البريد الإلكتروني" : "Email"}</Label>
+                          <Input
+                            id="signInEmail"
+                            type="email"
+                            value={signInEmail}
+                            onChange={(e) => setSignInEmail(e.target.value)}
+                            placeholder={isAr ? "البريد الإلكتروني" : "Email address"}
+                            onKeyDown={(e) => e.key === "Enter" && document.getElementById("signInPassword")?.focus()}
+                          />
+                          {errors.signInEmail && <p className="text-xs text-destructive">{errors.signInEmail}</p>}
+                        </div>
+
+                        <div className="space-y-1.5">
+                          <div className="flex items-center justify-between">
+                            <Label htmlFor="signInPassword" className="text-xs">{isAr ? "كلمة المرور" : "Password"}</Label>
+                            <button
+                              type="button"
+                              className="text-[10px] text-primary hover:underline"
+                              onClick={() => setForgotOpen(true)}
+                            >
+                              {isAr ? "نسيت كلمة المرور؟" : "Forgot password?"}
+                            </button>
+                          </div>
+                          <Input
+                            id="signInPassword"
+                            type="password"
+                            value={signInPassword}
+                            onChange={(e) => setSignInPassword(e.target.value)}
+                            placeholder="••••••••"
+                            onKeyDown={(e) => e.key === "Enter" && handleSignInEmail()}
+                          />
+                          {errors.signInPassword && <p className="text-xs text-destructive">{errors.signInPassword}</p>}
+                        </div>
+
+                        <Button
+                          className="w-full gap-2"
+                          size="lg"
+                          disabled={loading}
+                          onClick={handleSignInEmail}
+                        >
+                          {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : <LogIn className="h-4 w-4" />}
+                          {loading ? (isAr ? "جاري الدخول..." : "Signing in...") : (isAr ? "تسجيل الدخول" : "Sign In")}
+                        </Button>
+                      </>
+                    )}
                   </>
                 )}
               </CardContent>
             </Card>
 
-            {/* Toggle */}
+            {/* Toggle sign in / sign up */}
             <div className="flex items-center justify-center gap-1.5 text-sm">
               <span className="text-muted-foreground">
                 {isSignUp ? (isAr ? "لديك حساب بالفعل؟" : "Already have an account?") : (isAr ? "ليس لديك حساب؟" : "Don't have an account?")}
@@ -803,7 +1075,7 @@ export default function Auth() {
               <button
                 type="button"
                 className="font-medium text-primary underline-offset-2 hover:underline"
-                onClick={() => { setIsSignUp(!isSignUp); setErrors({}); }}
+                onClick={() => { setIsSignUp(!isSignUp); setErrors({}); setSignInPhoneStep("phone"); }}
               >
                 {isSignUp ? (isAr ? "تسجيل الدخول" : "Sign In") : (isAr ? "إنشاء حساب" : "Sign Up")}
               </button>
@@ -812,6 +1084,9 @@ export default function Auth() {
         </div>
       </main>
       <Footer />
+
+      {/* Forgot Password Dialog */}
+      <ForgotPasswordDialog open={forgotOpen} onOpenChange={setForgotOpen} />
     </div>
   );
 }
