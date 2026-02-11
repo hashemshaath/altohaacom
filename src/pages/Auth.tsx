@@ -10,14 +10,16 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent } from "@/components/ui/card";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { Separator } from "@/components/ui/separator";
 import { SEOHead } from "@/components/SEOHead";
 import { useToast } from "@/hooks/use-toast";
 import { PhoneVerification } from "@/components/auth/PhoneVerification";
 import { CountrySelector } from "@/components/auth/CountrySelector";
 import { useAllCountries, type Country } from "@/hooks/useCountries";
 import { z } from "zod";
-import { CheckCircle, XCircle, Loader2, ArrowLeft, ShieldCheck, UserPlus, LogIn } from "lucide-react";
+import {
+  CheckCircle, XCircle, Loader2, ShieldCheck, UserPlus, LogIn,
+  Trophy, Globe, GraduationCap, Award, Star, Users,
+} from "lucide-react";
 import type { Database } from "@/integrations/supabase/types";
 
 type AppRole = Database["public"]["Enums"]["app_role"];
@@ -31,21 +33,14 @@ const signInSchema = z.object({
   password: z.string().min(6, "Password must be at least 6 characters"),
 });
 
-const signUpSchema = signInSchema.extend({
-  fullName: z.string().min(2, "Name is required"),
-  username: z.string()
-    .min(3, "Username must be at least 3 characters")
-    .max(30, "Username must be at most 30 characters")
-    .regex(usernameRegex, "Username must start with a letter and contain only letters, numbers, or underscores"),
-  confirmPassword: z.string(),
-  role: z.enum(["chef", "judge", "student", "organizer", "volunteer", "sponsor", "assistant", "supervisor"]),
-  phone: z.string().min(10, "Phone number is required"),
-}).refine((d) => d.password === d.confirmPassword, {
-  message: "Passwords don't match",
-  path: ["confirmPassword"],
-});
-
 type AuthStep = "credentials" | "phone-verify" | "complete";
+
+const features = [
+  { icon: Trophy, labelEn: "Compete Globally", labelAr: "تنافس عالمياً" },
+  { icon: GraduationCap, labelEn: "Learn from the Best", labelAr: "تعلم من الأفضل" },
+  { icon: Globe, labelEn: "Connect Worldwide", labelAr: "تواصل حول العالم" },
+  { icon: Award, labelEn: "Earn Certificates", labelAr: "احصل على شهادات" },
+];
 
 export default function Auth() {
   const [searchParams] = useSearchParams();
@@ -72,7 +67,7 @@ export default function Auth() {
   const isAr = language === "ar";
 
   useEffect(() => {
-    if (user) navigate("/dashboard", { replace: true });
+    if (user) navigate("/", { replace: true });
   }, [user, navigate]);
 
   useEffect(() => {
@@ -205,17 +200,17 @@ export default function Auth() {
     setAuthStep("credentials");
   };
 
-  // Phone verification step
+  /* ── Phone verification step ── */
   if (authStep === "phone-verify" && isSignUp) {
     return (
       <div className="flex min-h-screen flex-col">
         <SEOHead title="Phone Verification" description="Verify your phone number" />
         <Header />
         <main className="flex flex-1 items-center justify-center p-4">
-          <Card className="w-full max-w-md">
+          <Card className="w-full max-w-md border-border/50 shadow-xl shadow-primary/5">
             <div className="p-5 md:p-6">
               <div className="mb-5 flex flex-col items-center text-center">
-                <div className="mb-3 flex h-14 w-14 items-center justify-center rounded-full bg-primary/10">
+                <div className="mb-3 flex h-14 w-14 items-center justify-center rounded-2xl bg-primary/10 ring-1 ring-primary/15">
                   <ShieldCheck className="h-7 w-7 text-primary" />
                 </div>
                 <h2 className="font-serif text-xl font-bold">
@@ -240,149 +235,191 @@ export default function Auth() {
     );
   }
 
+  /* ── Main auth view ── */
   return (
     <div className="flex min-h-screen flex-col">
       <SEOHead
-        title={isSignUp ? "Sign Up" : "Sign In"}
-        description="Sign in or create an account on Altohaa"
+        title={isSignUp ? "Sign Up - Altohaa" : "Sign In - Altohaa"}
+        description="Join the global culinary community. Sign in or create your free account on Altohaa."
       />
       <Header />
-      <main className="flex flex-1 items-center justify-center px-4 py-8">
-        <div className="w-full max-w-md space-y-5">
-          {/* Header */}
-          <div className="flex flex-col items-center text-center">
-            <img src="/altohaa-logo.png" alt="Altohaa" className="mb-3 h-14 w-auto" />
-            <h1 className="font-serif text-2xl font-bold">
-              {isSignUp ? t("signUpTitle") : t("signInTitle")}
-            </h1>
-            {isSignUp && (
-              <p className="mt-1 max-w-xs text-sm text-muted-foreground">{t("heroSubtitle")}</p>
-            )}
+      <main className="flex flex-1">
+        {/* ── Left: Feature panel (desktop only) ── */}
+        <div className="hidden lg:flex lg:w-[420px] xl:w-[480px] flex-col justify-center bg-gradient-to-br from-primary/5 via-background to-accent/5 border-e p-10 xl:p-14">
+          <div className="mb-8">
+            <div className="mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-primary/10 ring-1 ring-primary/15">
+              <Star className="h-7 w-7 text-primary" />
+            </div>
+            <h2 className="font-serif text-2xl font-bold xl:text-3xl">
+              {isSignUp
+                ? (isAr ? "انضم لمجتمع الطهي العالمي" : "Join the Global Culinary Community")
+                : (isAr ? "مرحباً بعودتك!" : "Welcome Back!")}
+            </h2>
+            <p className="mt-2 text-sm text-muted-foreground leading-relaxed">
+              {isSignUp
+                ? (isAr
+                    ? "أنشئ حسابك المجاني وابدأ رحلتك مع آلاف الطهاة والمحترفين من حول العالم."
+                    : "Create your free account and start your journey with thousands of chefs and culinary professionals worldwide.")
+                : (isAr
+                    ? "سجل دخولك للوصول إلى مسابقاتك ودوراتك ومجتمعك المهني."
+                    : "Sign in to access your competitions, courses, and professional network.")}
+            </p>
           </div>
-
-          {/* Form Card */}
-          <Card className="border-border/50 shadow-lg shadow-primary/5">
-            <CardContent className="space-y-4 p-5 md:p-6">
-              {isSignUp && (
-                <>
-                  <div className="grid gap-4 sm:grid-cols-2">
-                    <div className="space-y-1.5">
-                      <Label htmlFor="fullName" className="text-xs">{t("fullName")}</Label>
-                      <Input id="fullName" value={fullName} onChange={(e) => setFullName(e.target.value)} />
-                      {errors.fullName && <p className="text-xs text-destructive">{errors.fullName}</p>}
-                    </div>
-                    <div className="space-y-1.5">
-                      <Label htmlFor="username" className="text-xs">{t("username")}</Label>
-                      <div className="relative">
-                        <Input
-                          id="username"
-                          value={username}
-                          onChange={(e) => setUsername(e.target.value.toLowerCase().replace(/[^a-z0-9_]/g, ""))}
-                          className="pe-10"
-                          placeholder="your_username"
-                        />
-                        <div className="pointer-events-none absolute end-3 top-1/2 -translate-y-1/2">
-                          {usernameStatus === "checking" && <Loader2 className="h-4 w-4 animate-spin text-muted-foreground" />}
-                          {usernameStatus === "available" && <CheckCircle className="h-4 w-4 text-primary" />}
-                          {usernameStatus === "taken" && <XCircle className="h-4 w-4 text-destructive" />}
-                        </div>
-                      </div>
-                      <p className="text-[10px] text-muted-foreground">
-                        altohaa.com/<span className="font-medium">{username || "username"}</span>
-                      </p>
-                      {errors.username && <p className="text-xs text-destructive">{errors.username}</p>}
-                    </div>
-                  </div>
-
-                  {/* Country Selection */}
-                  <CountrySelector
-                    value={countryCode}
-                    onChange={(code, country) => {
-                      setCountryCode(code);
-                      setPhoneCode(country?.phone_code || "");
-                    }}
-                    label={isAr ? "دولة الإقامة" : "Country of Residence"}
-                    required
-                  />
-                  {errors.countryCode && <p className="text-xs text-destructive">{errors.countryCode}</p>}
-                </>
-              )}
-
-              <div className="space-y-1.5">
-                <Label htmlFor="email" className="text-xs">{t("email")}</Label>
-                <Input id="email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} />
-                {errors.email && <p className="text-xs text-destructive">{errors.email}</p>}
-              </div>
-
-              <div className={isSignUp ? "grid gap-4 sm:grid-cols-2" : "space-y-1.5"}>
-                <div className="space-y-1.5">
-                  <Label htmlFor="password" className="text-xs">{t("password")}</Label>
-                  <Input id="password" type="password" value={password} onChange={(e) => setPassword(e.target.value)} />
-                  {errors.password && <p className="text-xs text-destructive">{errors.password}</p>}
+          <div className="space-y-4">
+            {features.map((f) => (
+              <div key={f.labelEn} className="flex items-center gap-3">
+                <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-primary/10">
+                  <f.icon className="h-4 w-4 text-primary" />
                 </div>
+                <span className="text-sm font-medium">{isAr ? f.labelAr : f.labelEn}</span>
+              </div>
+            ))}
+          </div>
+          <div className="mt-10 flex items-center gap-3 text-xs text-muted-foreground">
+            <CheckCircle className="h-4 w-4 text-primary shrink-0" />
+            {isAr ? "مجاني بالكامل · بدون بطاقة ائتمان · إعداد في دقائق" : "Completely Free · No Credit Card · Setup in Minutes"}
+          </div>
+        </div>
+
+        {/* ── Right: Form ── */}
+        <div className="flex flex-1 items-center justify-center px-4 py-8">
+          <div className="w-full max-w-md space-y-5">
+            {/* Header */}
+            <div className="flex flex-col items-center text-center">
+              <img src="/altohaa-logo.png" alt="Altohaa" className="mb-3 h-12 w-auto lg:hidden" />
+              <h1 className="font-serif text-2xl font-bold">
+                {isSignUp ? t("signUpTitle") : t("signInTitle")}
+              </h1>
+              {isSignUp && (
+                <p className="mt-1 max-w-xs text-sm text-muted-foreground lg:hidden">{t("heroSubtitle")}</p>
+              )}
+            </div>
+
+            {/* Form Card */}
+            <Card className="border-border/50 shadow-lg shadow-primary/5">
+              <CardContent className="space-y-4 p-5 md:p-6">
                 {isSignUp && (
+                  <>
+                    <div className="grid gap-4 sm:grid-cols-2">
+                      <div className="space-y-1.5">
+                        <Label htmlFor="fullName" className="text-xs">{t("fullName")}</Label>
+                        <Input id="fullName" value={fullName} onChange={(e) => setFullName(e.target.value)} placeholder={isAr ? "الاسم الكامل" : "Full name"} />
+                        {errors.fullName && <p className="text-xs text-destructive">{errors.fullName}</p>}
+                      </div>
+                      <div className="space-y-1.5">
+                        <Label htmlFor="username" className="text-xs">{t("username")}</Label>
+                        <div className="relative">
+                          <Input
+                            id="username"
+                            value={username}
+                            onChange={(e) => setUsername(e.target.value.toLowerCase().replace(/[^a-z0-9_]/g, ""))}
+                            className="pe-10"
+                            placeholder="your_username"
+                          />
+                          <div className="pointer-events-none absolute end-3 top-1/2 -translate-y-1/2">
+                            {usernameStatus === "checking" && <Loader2 className="h-4 w-4 animate-spin text-muted-foreground" />}
+                            {usernameStatus === "available" && <CheckCircle className="h-4 w-4 text-primary" />}
+                            {usernameStatus === "taken" && <XCircle className="h-4 w-4 text-destructive" />}
+                          </div>
+                        </div>
+                        <p className="text-[10px] text-muted-foreground">
+                          altohaa.com/<span className="font-medium">{username || "username"}</span>
+                        </p>
+                        {errors.username && <p className="text-xs text-destructive">{errors.username}</p>}
+                      </div>
+                    </div>
+
+                    {/* Country */}
+                    <CountrySelector
+                      value={countryCode}
+                      onChange={(code, country) => {
+                        setCountryCode(code);
+                        setPhoneCode(country?.phone_code || "");
+                      }}
+                      label={isAr ? "دولة الإقامة" : "Country of Residence"}
+                      required
+                    />
+                    {errors.countryCode && <p className="text-xs text-destructive">{errors.countryCode}</p>}
+                  </>
+                )}
+
+                <div className="space-y-1.5">
+                  <Label htmlFor="email" className="text-xs">{t("email")}</Label>
+                  <Input id="email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder={isAr ? "البريد الإلكتروني" : "Email address"} />
+                  {errors.email && <p className="text-xs text-destructive">{errors.email}</p>}
+                </div>
+
+                <div className={isSignUp ? "grid gap-4 sm:grid-cols-2" : "space-y-1.5"}>
                   <div className="space-y-1.5">
-                    <Label htmlFor="confirmPassword" className="text-xs">{t("confirmPassword")}</Label>
-                    <Input id="confirmPassword" type="password" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} />
-                    {errors.confirmPassword && <p className="text-xs text-destructive">{errors.confirmPassword}</p>}
+                    <Label htmlFor="password" className="text-xs">{t("password")}</Label>
+                    <Input id="password" type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="••••••••" />
+                    {errors.password && <p className="text-xs text-destructive">{errors.password}</p>}
+                  </div>
+                  {isSignUp && (
+                    <div className="space-y-1.5">
+                      <Label htmlFor="confirmPassword" className="text-xs">{t("confirmPassword")}</Label>
+                      <Input id="confirmPassword" type="password" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} placeholder="••••••••" />
+                      {errors.confirmPassword && <p className="text-xs text-destructive">{errors.confirmPassword}</p>}
+                    </div>
+                  )}
+                </div>
+
+                {isSignUp && (
+                  <div className="space-y-2">
+                    <Label className="text-xs">{t("selectRole")}</Label>
+                    <RadioGroup
+                      value={role}
+                      onValueChange={(v) => setRole(v as AppRole)}
+                      className="grid grid-cols-2 gap-1.5 sm:grid-cols-4"
+                    >
+                      {roles.map((r) => (
+                        <div
+                          key={r}
+                          className="flex items-center gap-1.5 rounded-lg border p-2 transition-all duration-200 has-[:checked]:border-primary has-[:checked]:bg-primary/5 has-[:checked]:shadow-sm hover:border-primary/30"
+                        >
+                          <RadioGroupItem value={r} id={r} className="h-3.5 w-3.5" />
+                          <Label htmlFor={r} className="cursor-pointer text-[11px] font-medium leading-tight">
+                            {t(r as any)}
+                          </Label>
+                        </div>
+                      ))}
+                    </RadioGroup>
                   </div>
                 )}
-              </div>
 
-              {isSignUp && (
-                <div className="space-y-2">
-                  <Label className="text-xs">{t("selectRole")}</Label>
-                  <RadioGroup
-                    value={role}
-                    onValueChange={(v) => setRole(v as AppRole)}
-                    className="grid grid-cols-2 gap-1.5 sm:grid-cols-4"
-                  >
-                    {roles.map((r) => (
-                      <div
-                        key={r}
-                        className="flex items-center gap-1.5 rounded-lg border p-2 transition-all duration-200 has-[:checked]:border-primary has-[:checked]:bg-primary/5 has-[:checked]:shadow-sm hover:border-primary/30"
-                      >
-                        <RadioGroupItem value={r} id={r} className="h-3.5 w-3.5" />
-                        <Label htmlFor={r} className="cursor-pointer text-[11px] font-medium leading-tight">
-                          {t(r as any)}
-                        </Label>
-                      </div>
-                    ))}
-                  </RadioGroup>
-                </div>
-              )}
+                <Button
+                  className="w-full gap-2"
+                  size="lg"
+                  disabled={loading}
+                  onClick={isSignUp ? handleCredentialsSubmit : handleSignIn}
+                >
+                  {loading ? (
+                    <Loader2 className="h-4 w-4 animate-spin" />
+                  ) : isSignUp ? (
+                    <UserPlus className="h-4 w-4" />
+                  ) : (
+                    <LogIn className="h-4 w-4" />
+                  )}
+                  {loading
+                    ? (isSignUp ? t("signingUp") : t("signingIn"))
+                    : (isSignUp ? t("continue") : t("signIn"))}
+                </Button>
+              </CardContent>
+            </Card>
 
-              <Button
-                className="w-full gap-2"
-                disabled={loading}
-                onClick={isSignUp ? handleCredentialsSubmit : handleSignIn}
+            {/* Toggle */}
+            <div className="flex items-center justify-center gap-1.5 text-sm">
+              <span className="text-muted-foreground">
+                {isSignUp ? t("hasAccount") : t("noAccount")}
+              </span>
+              <button
+                type="button"
+                className="font-medium text-primary underline-offset-2 hover:underline"
+                onClick={() => { setIsSignUp(!isSignUp); setErrors({}); }}
               >
-                {loading ? (
-                  <Loader2 className="h-4 w-4 animate-spin" />
-                ) : isSignUp ? (
-                  <UserPlus className="h-4 w-4" />
-                ) : (
-                  <LogIn className="h-4 w-4" />
-                )}
-                {loading
-                  ? (isSignUp ? t("signingUp") : t("signingIn"))
-                  : (isSignUp ? t("continue") : t("signIn"))}
-              </Button>
-            </CardContent>
-          </Card>
-
-          {/* Toggle */}
-          <div className="flex items-center justify-center gap-1.5 text-sm">
-            <span className="text-muted-foreground">
-              {isSignUp ? t("hasAccount") : t("noAccount")}
-            </span>
-            <button
-              type="button"
-              className="font-medium text-primary underline-offset-2 hover:underline"
-              onClick={() => { setIsSignUp(!isSignUp); setErrors({}); }}
-            >
-              {isSignUp ? t("signIn") : t("signUp")}
-            </button>
+                {isSignUp ? t("signIn") : t("signUp")}
+              </button>
+            </div>
           </div>
         </div>
       </main>
