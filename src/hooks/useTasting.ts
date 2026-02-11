@@ -95,6 +95,17 @@ export interface CriteriaPreset {
   is_system: boolean | null;
 }
 
+export interface TastingJudge {
+  id: string;
+  session_id: string;
+  judge_id: string;
+  assigned_at: string;
+  has_completed: boolean | null;
+  completed_at: string | null;
+}
+
+// ─── Queries ────────────────────────────────────
+
 export function useTastingSessions() {
   return useQuery({
     queryKey: ["tasting-sessions"],
@@ -185,6 +196,23 @@ export function useCriteriaPresets() {
   });
 }
 
+export function useTastingJudges(sessionId: string | undefined) {
+  return useQuery({
+    queryKey: ["tasting-judges", sessionId],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("tasting_judges" as any)
+        .select("*")
+        .eq("session_id", sessionId!);
+      if (error) throw error;
+      return (data || []) as unknown as TastingJudge[];
+    },
+    enabled: !!sessionId,
+  });
+}
+
+// ─── Mutations ──────────────────────────────────
+
 export function useCreateTastingSession() {
   const queryClient = useQueryClient();
   const { user } = useAuth();
@@ -198,6 +226,44 @@ export function useCreateTastingSession() {
         .single();
       if (error) throw error;
       return data as unknown as TastingSession;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["tasting-sessions"] });
+    },
+  });
+}
+
+export function useUpdateTastingSession() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async ({ id, ...updates }: Partial<TastingSession> & { id: string }) => {
+      const { data, error } = await supabase
+        .from("tasting_sessions" as any)
+        .update(updates as any)
+        .eq("id", id)
+        .select()
+        .single();
+      if (error) throw error;
+      return data as unknown as TastingSession;
+    },
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({ queryKey: ["tasting-sessions"] });
+      queryClient.invalidateQueries({ queryKey: ["tasting-session", data.id] });
+    },
+  });
+}
+
+export function useDeleteTastingSession() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async (id: string) => {
+      const { error } = await supabase
+        .from("tasting_sessions" as any)
+        .delete()
+        .eq("id", id);
+      if (error) throw error;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["tasting-sessions"] });
@@ -255,6 +321,44 @@ export function useAddTastingEntry() {
   });
 }
 
+export function useUpdateTastingEntry() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async ({ id, ...updates }: Partial<TastingEntry> & { id: string }) => {
+      const { data, error } = await supabase
+        .from("tasting_entries" as any)
+        .update(updates as any)
+        .eq("id", id)
+        .select()
+        .single();
+      if (error) throw error;
+      return data as unknown as TastingEntry;
+    },
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({ queryKey: ["tasting-entries", (data as any).session_id] });
+    },
+  });
+}
+
+export function useDeleteTastingEntry() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async ({ id, sessionId }: { id: string; sessionId: string }) => {
+      const { error } = await supabase
+        .from("tasting_entries" as any)
+        .delete()
+        .eq("id", id);
+      if (error) throw error;
+      return sessionId;
+    },
+    onSuccess: (sessionId) => {
+      queryClient.invalidateQueries({ queryKey: ["tasting-entries", sessionId] });
+    },
+  });
+}
+
 export function useAddTastingCriteria() {
   const queryClient = useQueryClient();
 
@@ -270,6 +374,24 @@ export function useAddTastingCriteria() {
     onSuccess: (_, vars) => {
       const sessionId = vars[0]?.session_id;
       if (sessionId) queryClient.invalidateQueries({ queryKey: ["tasting-criteria", sessionId] });
+    },
+  });
+}
+
+export function useDeleteTastingCriterion() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async ({ id, sessionId }: { id: string; sessionId: string }) => {
+      const { error } = await supabase
+        .from("tasting_criteria" as any)
+        .delete()
+        .eq("id", id);
+      if (error) throw error;
+      return sessionId;
+    },
+    onSuccess: (sessionId) => {
+      queryClient.invalidateQueries({ queryKey: ["tasting-criteria", sessionId] });
     },
   });
 }
