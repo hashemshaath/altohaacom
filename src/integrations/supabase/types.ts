@@ -175,6 +175,51 @@ export type Database = {
           },
         ]
       }
+      audience_segments: {
+        Row: {
+          created_at: string
+          created_by: string
+          description: string | null
+          description_ar: string | null
+          estimated_reach: number | null
+          filters: Json
+          id: string
+          is_active: boolean | null
+          last_used_at: string | null
+          name: string
+          name_ar: string | null
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          created_by: string
+          description?: string | null
+          description_ar?: string | null
+          estimated_reach?: number | null
+          filters?: Json
+          id?: string
+          is_active?: boolean | null
+          last_used_at?: string | null
+          name: string
+          name_ar?: string | null
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          created_by?: string
+          description?: string | null
+          description_ar?: string | null
+          estimated_reach?: number | null
+          filters?: Json
+          id?: string
+          is_active?: boolean | null
+          last_used_at?: string | null
+          name?: string
+          name_ar?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
       certificate_logos: {
         Row: {
           created_at: string | null
@@ -494,6 +539,83 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      chat_session_messages: {
+        Row: {
+          created_at: string
+          id: string
+          message: string
+          message_type: string | null
+          sender_id: string
+          session_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          message: string
+          message_type?: string | null
+          sender_id: string
+          session_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          message?: string
+          message_type?: string | null
+          sender_id?: string
+          session_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "chat_session_messages_session_id_fkey"
+            columns: ["session_id"]
+            isOneToOne: false
+            referencedRelation: "chat_sessions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      chat_sessions: {
+        Row: {
+          agent_id: string | null
+          created_at: string
+          ended_at: string | null
+          feedback: string | null
+          id: string
+          rating: number | null
+          started_at: string
+          status: string
+          subject: string | null
+          subject_ar: string | null
+          user_id: string
+        }
+        Insert: {
+          agent_id?: string | null
+          created_at?: string
+          ended_at?: string | null
+          feedback?: string | null
+          id?: string
+          rating?: number | null
+          started_at?: string
+          status?: string
+          subject?: string | null
+          subject_ar?: string | null
+          user_id: string
+        }
+        Update: {
+          agent_id?: string | null
+          created_at?: string
+          ended_at?: string | null
+          feedback?: string | null
+          id?: string
+          rating?: number | null
+          started_at?: string
+          status?: string
+          subject?: string | null
+          subject_ar?: string | null
+          user_id?: string
+        }
+        Relationships: []
       }
       chef_establishment_associations: {
         Row: {
@@ -2739,6 +2861,53 @@ export type Database = {
             columns: ["country_id"]
             isOneToOne: false
             referencedRelation: "countries"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      crm_activities: {
+        Row: {
+          activity_type: string
+          created_at: string
+          description: string | null
+          description_ar: string | null
+          id: string
+          lead_id: string
+          metadata: Json | null
+          title: string
+          title_ar: string | null
+          user_id: string
+        }
+        Insert: {
+          activity_type: string
+          created_at?: string
+          description?: string | null
+          description_ar?: string | null
+          id?: string
+          lead_id: string
+          metadata?: Json | null
+          title: string
+          title_ar?: string | null
+          user_id: string
+        }
+        Update: {
+          activity_type?: string
+          created_at?: string
+          description?: string | null
+          description_ar?: string | null
+          id?: string
+          lead_id?: string
+          metadata?: Json | null
+          title?: string
+          title_ar?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "crm_activities_lead_id_fkey"
+            columns: ["lead_id"]
+            isOneToOne: false
+            referencedRelation: "leads"
             referencedColumns: ["id"]
           },
         ]
@@ -6880,6 +7049,104 @@ export type Database = {
         }
         Relationships: []
       }
+      support_ticket_messages: {
+        Row: {
+          attachments: string[] | null
+          created_at: string
+          id: string
+          is_internal_note: boolean | null
+          message: string
+          message_ar: string | null
+          sender_id: string
+          ticket_id: string
+        }
+        Insert: {
+          attachments?: string[] | null
+          created_at?: string
+          id?: string
+          is_internal_note?: boolean | null
+          message: string
+          message_ar?: string | null
+          sender_id: string
+          ticket_id: string
+        }
+        Update: {
+          attachments?: string[] | null
+          created_at?: string
+          id?: string
+          is_internal_note?: boolean | null
+          message?: string
+          message_ar?: string | null
+          sender_id?: string
+          ticket_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "support_ticket_messages_ticket_id_fkey"
+            columns: ["ticket_id"]
+            isOneToOne: false
+            referencedRelation: "support_tickets"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      support_tickets: {
+        Row: {
+          assigned_to: string | null
+          category: string
+          closed_at: string | null
+          created_at: string
+          description: string
+          description_ar: string | null
+          id: string
+          priority: string
+          resolved_at: string | null
+          status: string
+          subject: string
+          subject_ar: string | null
+          tags: string[] | null
+          ticket_number: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          assigned_to?: string | null
+          category?: string
+          closed_at?: string | null
+          created_at?: string
+          description: string
+          description_ar?: string | null
+          id?: string
+          priority?: string
+          resolved_at?: string | null
+          status?: string
+          subject: string
+          subject_ar?: string | null
+          tags?: string[] | null
+          ticket_number?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          assigned_to?: string | null
+          category?: string
+          closed_at?: string | null
+          created_at?: string
+          description?: string
+          description_ar?: string | null
+          id?: string
+          priority?: string
+          resolved_at?: string | null
+          status?: string
+          subject?: string
+          subject_ar?: string | null
+          tags?: string[] | null
+          ticket_number?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       tasting_criteria: {
         Row: {
           category: string | null
@@ -7719,6 +7986,7 @@ export type Database = {
       generate_qr_code: { Args: { p_prefix?: string }; Returns: string }
       generate_registration_number: { Args: never; Returns: string }
       generate_shop_order_number: { Args: never; Returns: string }
+      generate_ticket_number: { Args: never; Returns: string }
       generate_transaction_number: { Args: never; Returns: string }
       generate_verification_code: { Args: never; Returns: string }
       get_company_balance: { Args: { p_company_id: string }; Returns: number }
