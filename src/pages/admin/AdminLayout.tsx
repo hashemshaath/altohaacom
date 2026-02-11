@@ -4,7 +4,7 @@ import { useIsAdmin } from "@/hooks/useAdmin";
 import { Navigate, Outlet, NavLink } from "react-router-dom";
 import { AdminHeader } from "@/components/admin/AdminHeader";
 import { cn } from "@/lib/utils";
-import { GraduationCap, BarChart3, Landmark, Building2, MessageSquare as MessageSquareIcon, Earth, QrCode, UtensilsCrossed, MailOpen, HandHeart, ShieldCheck, Ticket, Target, Headphones, Activity } from "lucide-react";
+import { GraduationCap, BarChart3, Landmark, Building2, MessageSquare as MessageSquareIcon, Earth, QrCode, UtensilsCrossed, MailOpen, HandHeart, ShieldCheck, Ticket, Target, Headphones, Activity, Megaphone } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
@@ -90,6 +90,7 @@ export default function AdminLayout() {
         { to: "/admin/media", icon: Image, label: language === "ar" ? "مكتبة الوسائط" : "Media Library" },
         { to: "/admin/moderation", icon: Flag, label: language === "ar" ? "إدارة المحتوى" : "Moderation" },
         { to: "/admin/invoices", icon: FileText, label: language === "ar" ? "الفواتير" : "Invoices" },
+        { to: "/admin/advertising", icon: Megaphone, label: language === "ar" ? "مركز الإعلانات" : "Advertising" },
       ],
     },
     {

@@ -73,7 +73,7 @@ export default function ChefsLanding() {
         <section className="py-14 md:py-18">
           <div className="container mx-auto px-4">
             <div className="mb-10 text-center">
-              <h2 className="text-3xl font-serif font-bold"><h2 className="text-3xl font-serif font-bold">{isAr ? "لماذا الطهاة للطهاة؟" : "Why Altohaa for Chefs?"}</h2></h2>
+              <h2 className="text-3xl font-serif font-bold">{isAr ? "لماذا الطهاة للطهاة؟" : "Why Altohaa for Chefs?"}</h2>
               <p className="mt-2 text-muted-foreground max-w-xl mx-auto">
                 {isAr ? "كل الأدوات التي تحتاجها لبناء مسيرة طهوية ناجحة" : "All the tools you need to build a successful culinary career"}
               </p>

@@ -10,6 +10,8 @@ import { HomeArticles } from "@/components/home/HomeArticles";
 import { PlatformFeatures } from "@/components/home/PlatformFeatures";
 import { NewsletterSignup } from "@/components/home/NewsletterSignup";
 import { PartnersLogos } from "@/components/home/PartnersLogos";
+import { AdBanner } from "@/components/ads/AdBanner";
+import { AdPopup } from "@/components/ads/AdPopup";
 
 const Index = () => {
   return (
@@ -27,6 +29,11 @@ const Index = () => {
       {/* 2. Search Bar */}
       <HomeSearch />
 
+      {/* Hero Banner Ad */}
+      <div className="container mt-4">
+        <AdBanner placementSlug="home-hero-banner" className="w-full aspect-[4/1]" />
+      </div>
+
       {/* 3. Stats */}
       <div className="mt-6">
         <HomeStats />
@@ -37,6 +44,11 @@ const Index = () => {
 
       {/* 5. Regional Events (Middle East vs Global) */}
       <RegionalEvents />
+
+      {/* Sidebar-style ad between sections */}
+      <div className="container my-4">
+        <AdBanner placementSlug="in-feed" className="w-full max-w-2xl mx-auto aspect-[3/2]" />
+      </div>
 
       {/* 6. Platform Services & Features */}
       <PlatformFeatures />
@@ -49,6 +61,9 @@ const Index = () => {
 
       {/* 9. Partners & Association Logos */}
       <PartnersLogos />
+
+      {/* Pop-up Ad */}
+      <AdPopup />
 
       <Footer />
     </div>

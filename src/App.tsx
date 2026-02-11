@@ -108,6 +108,7 @@ const SupportTicketsAdmin = lazy(() => import("./pages/admin/SupportTicketsAdmin
 const AudienceSegments = lazy(() => import("./pages/admin/AudienceSegments"));
 const LiveChatAdmin = lazy(() => import("./pages/admin/LiveChatAdmin"));
 const CRMDashboard = lazy(() => import("./pages/admin/CRMDashboard"));
+const AdvertisingAdmin = lazy(() => import("./pages/admin/AdvertisingAdmin"));
 const SupportTickets = lazy(() => import("./pages/SupportTickets"));
 
 // Company Portal Pages
@@ -128,6 +129,7 @@ const CompanyWorkingHours = lazy(() => import("./pages/company/CompanyWorkingHou
 const CompanySettings = lazy(() => import("./pages/company/CompanySettings"));
 const CompanyInvoices = lazy(() => import("./pages/company/CompanyInvoices"));
 const CompanyCatalog = lazy(() => import("./pages/company/CompanyCatalog"));
+const CompanyAdvertising = lazy(() => import("./pages/company/CompanyAdvertising"));
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -255,6 +257,7 @@ const App = () => (
                    <Route path="audience-segments" element={<AudienceSegments />} />
                    <Route path="live-chat" element={<LiveChatAdmin />} />
                    <Route path="crm" element={<CRMDashboard />} />
+                   <Route path="advertising" element={<AdvertisingAdmin />} />
                 </Route>
 
                 {/* Company Portal Routes */}
@@ -275,6 +278,7 @@ const App = () => (
                   <Route path="settings" element={<CompanySettings />} />
                   <Route path="invoices" element={<CompanyInvoices />} />
                   <Route path="catalog" element={<CompanyCatalog />} />
+                  <Route path="advertising" element={<CompanyAdvertising />} />
                 </Route>
 
                 {/* Public profile URL: altohaa.com/username or /profile/username */}

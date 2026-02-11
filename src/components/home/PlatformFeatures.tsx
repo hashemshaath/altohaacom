@@ -125,7 +125,7 @@ export function PlatformFeatures() {
       {/* Why Altohaa */}
       <section className="container py-12 md:py-16">
         <div className="mb-8 text-center">
-          <h2 className="font-serif text-2xl font-bold sm:text-3xl"><h2 className="font-serif text-2xl font-bold sm:text-3xl">{isAr ? "لماذا الطهاة؟" : "Why Altohaa?"}</h2></h2>
+          <h2 className="font-serif text-2xl font-bold sm:text-3xl">{isAr ? "لماذا الطهاة؟" : "Why Altohaa?"}</h2>
         </div>
         <div className="grid gap-4 grid-cols-2 lg:grid-cols-4">
           {whyUs.map((item) => (
