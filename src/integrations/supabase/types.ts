@@ -8080,6 +8080,90 @@ export type Database = {
           },
         ]
       }
+      shop_categories: {
+        Row: {
+          created_at: string | null
+          description: string | null
+          description_ar: string | null
+          icon: string | null
+          id: string
+          is_active: boolean | null
+          name: string
+          name_ar: string | null
+          sort_order: number | null
+        }
+        Insert: {
+          created_at?: string | null
+          description?: string | null
+          description_ar?: string | null
+          icon?: string | null
+          id?: string
+          is_active?: boolean | null
+          name: string
+          name_ar?: string | null
+          sort_order?: number | null
+        }
+        Update: {
+          created_at?: string | null
+          description?: string | null
+          description_ar?: string | null
+          icon?: string | null
+          id?: string
+          is_active?: boolean | null
+          name?: string
+          name_ar?: string | null
+          sort_order?: number | null
+        }
+        Relationships: []
+      }
+      shop_discount_codes: {
+        Row: {
+          code: string
+          created_at: string | null
+          created_by: string | null
+          description: string | null
+          discount_type: string
+          discount_value: number
+          id: string
+          is_active: boolean | null
+          max_uses: number | null
+          min_order_amount: number | null
+          used_count: number | null
+          valid_from: string | null
+          valid_until: string | null
+        }
+        Insert: {
+          code: string
+          created_at?: string | null
+          created_by?: string | null
+          description?: string | null
+          discount_type?: string
+          discount_value?: number
+          id?: string
+          is_active?: boolean | null
+          max_uses?: number | null
+          min_order_amount?: number | null
+          used_count?: number | null
+          valid_from?: string | null
+          valid_until?: string | null
+        }
+        Update: {
+          code?: string
+          created_at?: string | null
+          created_by?: string | null
+          description?: string | null
+          discount_type?: string
+          discount_value?: number
+          id?: string
+          is_active?: boolean | null
+          max_uses?: number | null
+          min_order_amount?: number | null
+          used_count?: number | null
+          valid_from?: string | null
+          valid_until?: string | null
+        }
+        Relationships: []
+      }
       shop_order_items: {
         Row: {
           id: string
@@ -8127,38 +8211,62 @@ export type Database = {
       }
       shop_orders: {
         Row: {
+          buyer_email: string | null
           buyer_id: string
+          buyer_name: string | null
           created_at: string
           currency: string
+          discount_amount: number | null
           id: string
           notes: string | null
           order_number: string
+          payment_intent_id: string | null
+          payment_method: string | null
+          payment_status: string | null
           shipping_address: Json | null
           status: Database["public"]["Enums"]["shop_order_status"]
+          subtotal: number | null
+          tax_amount: number | null
           total_amount: number
           updated_at: string
         }
         Insert: {
+          buyer_email?: string | null
           buyer_id: string
+          buyer_name?: string | null
           created_at?: string
           currency?: string
+          discount_amount?: number | null
           id?: string
           notes?: string | null
           order_number: string
+          payment_intent_id?: string | null
+          payment_method?: string | null
+          payment_status?: string | null
           shipping_address?: Json | null
           status?: Database["public"]["Enums"]["shop_order_status"]
+          subtotal?: number | null
+          tax_amount?: number | null
           total_amount?: number
           updated_at?: string
         }
         Update: {
+          buyer_email?: string | null
           buyer_id?: string
+          buyer_name?: string | null
           created_at?: string
           currency?: string
+          discount_amount?: number | null
           id?: string
           notes?: string | null
           order_number?: string
+          payment_intent_id?: string | null
+          payment_method?: string | null
+          payment_status?: string | null
           shipping_address?: Json | null
           status?: Database["public"]["Enums"]["shop_order_status"]
+          subtotal?: number | null
+          tax_amount?: number | null
           total_amount?: number
           updated_at?: string
         }
@@ -8166,11 +8274,15 @@ export type Database = {
       }
       shop_products: {
         Row: {
+          brand: string | null
+          brand_ar: string | null
           category: string
+          compare_at_price: number | null
           created_at: string
           currency: string
           description: string | null
           description_ar: string | null
+          discount_percent: number | null
           gallery_urls: string[] | null
           id: string
           image_url: string | null
@@ -8180,18 +8292,26 @@ export type Database = {
           price: number
           product_type: Database["public"]["Enums"]["shop_product_type"]
           seller_id: string
+          sku: string | null
           stock_quantity: number | null
           tags: string[] | null
+          tax_inclusive: boolean | null
+          tax_rate: number | null
           title: string
           title_ar: string | null
           updated_at: string
+          weight_kg: number | null
         }
         Insert: {
+          brand?: string | null
+          brand_ar?: string | null
           category?: string
+          compare_at_price?: number | null
           created_at?: string
           currency?: string
           description?: string | null
           description_ar?: string | null
+          discount_percent?: number | null
           gallery_urls?: string[] | null
           id?: string
           image_url?: string | null
@@ -8201,18 +8321,26 @@ export type Database = {
           price?: number
           product_type?: Database["public"]["Enums"]["shop_product_type"]
           seller_id: string
+          sku?: string | null
           stock_quantity?: number | null
           tags?: string[] | null
+          tax_inclusive?: boolean | null
+          tax_rate?: number | null
           title: string
           title_ar?: string | null
           updated_at?: string
+          weight_kg?: number | null
         }
         Update: {
+          brand?: string | null
+          brand_ar?: string | null
           category?: string
+          compare_at_price?: number | null
           created_at?: string
           currency?: string
           description?: string | null
           description_ar?: string | null
+          discount_percent?: number | null
           gallery_urls?: string[] | null
           id?: string
           image_url?: string | null
@@ -8222,11 +8350,15 @@ export type Database = {
           price?: number
           product_type?: Database["public"]["Enums"]["shop_product_type"]
           seller_id?: string
+          sku?: string | null
           stock_quantity?: number | null
           tags?: string[] | null
+          tax_inclusive?: boolean | null
+          tax_rate?: number | null
           title?: string
           title_ar?: string | null
           updated_at?: string
+          weight_kg?: number | null
         }
         Relationships: []
       }

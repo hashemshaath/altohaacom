@@ -1,4 +1,4 @@
-import { useState, useCallback, useEffect } from "react";
+import { useState, useCallback, useEffect, useMemo } from "react";
 
 export interface CartItem {
   product_id: string;
@@ -6,9 +6,13 @@ export interface CartItem {
   title_ar?: string | null;
   image_url?: string | null;
   price: number;
+  compare_at_price?: number | null;
+  discount_percent?: number;
   currency: string;
   quantity: number;
   stock_quantity: number;
+  tax_rate?: number;
+  tax_inclusive?: boolean;
 }
 
 const CART_KEY = "altohaa_cart";
@@ -28,6 +32,12 @@ function saveCart(items: CartItem[]) {
 
 export function useCart() {
   const [items, setItems] = useState<CartItem[]>(loadCart);
+  const [discountCode, setDiscountCode] = useState<string>("");
+  const [appliedDiscount, setAppliedDiscount] = useState<{
+    code: string;
+    type: "percentage" | "fixed";
+    value: number;
+  } | null>(null);
 
   useEffect(() => {
     saveCart(items);
@@ -67,10 +77,61 @@ export function useCart() {
 
   const clearCart = useCallback(() => {
     setItems([]);
+    setAppliedDiscount(null);
+    setDiscountCode("");
   }, []);
 
-  const totalItems = items.reduce((sum, i) => sum + i.quantity, 0);
-  const totalPrice = items.reduce((sum, i) => sum + i.price * i.quantity, 0);
+  const totals = useMemo(() => {
+    let subtotal = 0;
+    let totalTax = 0;
 
-  return { items, addItem, removeItem, updateQuantity, clearCart, totalItems, totalPrice };
+    items.forEach((item) => {
+      const lineTotal = item.price * item.quantity;
+      subtotal += lineTotal;
+
+      const taxRate = item.tax_rate || 0;
+      if (item.tax_inclusive) {
+        totalTax += lineTotal - lineTotal / (1 + taxRate / 100);
+      } else {
+        totalTax += lineTotal * (taxRate / 100);
+      }
+    });
+
+    let discountAmount = 0;
+    if (appliedDiscount) {
+      if (appliedDiscount.type === "percentage") {
+        discountAmount = subtotal * (appliedDiscount.value / 100);
+      } else {
+        discountAmount = Math.min(appliedDiscount.value, subtotal);
+      }
+    }
+
+    const grandTotal = subtotal + totalTax - discountAmount;
+
+    return {
+      subtotal: Math.round(subtotal * 100) / 100,
+      tax: Math.round(totalTax * 100) / 100,
+      discount: Math.round(discountAmount * 100) / 100,
+      total: Math.round(grandTotal * 100) / 100,
+    };
+  }, [items, appliedDiscount]);
+
+  const totalItems = items.reduce((sum, i) => sum + i.quantity, 0);
+
+  return {
+    items,
+    addItem,
+    removeItem,
+    updateQuantity,
+    clearCart,
+    totalItems,
+    totalPrice: totals.total,
+    subtotal: totals.subtotal,
+    taxAmount: totals.tax,
+    discountAmount: totals.discount,
+    discountCode,
+    setDiscountCode,
+    appliedDiscount,
+    setAppliedDiscount,
+  };
 }
