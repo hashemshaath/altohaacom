@@ -4,7 +4,7 @@ import { useIsAdmin } from "@/hooks/useAdmin";
 import { Navigate, Outlet, NavLink } from "react-router-dom";
 import { AdminHeader } from "@/components/admin/AdminHeader";
 import { cn } from "@/lib/utils";
-import { GraduationCap, BarChart3, Landmark, Building2, Gavel, MessageSquare as MessageSquareIcon, Earth, QrCode, UtensilsCrossed, MailOpen, HandHeart, ShieldCheck } from "lucide-react";
+import { GraduationCap, BarChart3, Landmark, Building2, Gavel, MessageSquare as MessageSquareIcon, Earth, QrCode, UtensilsCrossed, MailOpen, HandHeart, ShieldCheck, Ticket, Target, Headphones } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
@@ -69,7 +69,7 @@ export default function AdminLayout() {
         { to: "/admin/companies", icon: Building, label: language === "ar" ? "الشركات والرعاة" : "Companies & Sponsors" },
         { to: "/admin/entities", icon: Building2, label: language === "ar" ? "الجهات والجمعيات" : "Entities Registry" },
         { to: "/admin/judges", icon: Gavel, label: language === "ar" ? "المحكّمين" : "Judges Registry" },
-        { to: "/admin/leads", icon: UserSearch, label: language === "ar" ? "العملاء المحتملين" : "Leads" },
+        { to: "/admin/establishments", icon: Building, label: language === "ar" ? "المنشآت" : "Establishments" },
         { to: "/admin/roles", icon: Shield, label: language === "ar" ? "الأدوار والصلاحيات" : "Roles & Permissions" },
         { to: "/admin/memberships", icon: CreditCard, label: language === "ar" ? "العضويات" : "Memberships" },
         { to: "/admin/verification", icon: ShieldCheck, label: language === "ar" ? "التوثيق والتحقق" : "Verification" },
@@ -104,6 +104,15 @@ export default function AdminLayout() {
       items: [
         { to: "/admin/theme", icon: Palette, label: language === "ar" ? "المظهر والألوان" : "Theme & Colors" },
         { to: "/admin/components", icon: Eye, label: language === "ar" ? "إظهار المكونات" : "Component Visibility" },
+      ],
+    },
+    {
+      title: language === "ar" ? "الدعم وإدارة العلاقات" : "CRM & Support",
+      items: [
+        { to: "/admin/support-tickets", icon: Ticket, label: language === "ar" ? "تذاكر الدعم" : "Support Tickets" },
+        { to: "/admin/live-chat", icon: Headphones, label: language === "ar" ? "الدعم المباشر" : "Live Chat" },
+        { to: "/admin/audience-segments", icon: Target, label: language === "ar" ? "شرائح الجمهور" : "Audience Segments" },
+        { to: "/admin/leads", icon: UserSearch, label: language === "ar" ? "العملاء المحتملين" : "Leads" },
       ],
     },
     {

@@ -1,4 +1,5 @@
 import { lazy, Suspense } from "react";
+import { LiveChatWidget } from "@/components/crm/LiveChatWidget";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -101,6 +102,10 @@ const CommunicationTemplatesAdmin = lazy(() => import("./pages/admin/Communicati
 const MentorshipAdmin = lazy(() => import("./pages/admin/MentorshipAdmin"));
 const EstablishmentsAdmin = lazy(() => import("./pages/admin/EstablishmentsAdmin"));
 const VerificationAdmin = lazy(() => import("./pages/admin/VerificationAdmin"));
+const SupportTicketsAdmin = lazy(() => import("./pages/admin/SupportTicketsAdmin"));
+const AudienceSegments = lazy(() => import("./pages/admin/AudienceSegments"));
+const LiveChatAdmin = lazy(() => import("./pages/admin/LiveChatAdmin"));
+const SupportTickets = lazy(() => import("./pages/SupportTickets"));
 
 // Company Portal Pages
 const CompanyPortalLayout = lazy(() => import("./pages/CompanyPortal"));
@@ -145,9 +150,11 @@ const App = () => (
           <TooltipProvider>
             <Toaster />
             <Sonner />
+            <LiveChatWidget />
             <BrowserRouter>
               <Suspense fallback={<div className="flex h-screen items-center justify-center"><div className="h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent" /></div>}>
               <Routes>
+                {/* LiveChatWidget renders globally for logged-in users */}
                 <Route path="/" element={<Index />} />
                 <Route path="/auth" element={<Auth />} />
                 <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
@@ -167,6 +174,7 @@ const App = () => (
                 <Route path="/news/:slug" element={<ArticleDetail />} />
                 <Route path="/notifications" element={<ProtectedRoute><Notifications /></ProtectedRoute>} />
                 <Route path="/messages" element={<ProtectedRoute><Messages /></ProtectedRoute>} />
+                <Route path="/support" element={<ProtectedRoute><SupportTickets /></ProtectedRoute>} />
                 <Route path="/onboarding" element={<ProtectedRoute><Onboarding /></ProtectedRoute>} />
                 <Route path="/sponsors" element={<SponsorsLanding />} />
                 <Route path="/for-organizers" element={<OrganizersLanding />} />
@@ -237,6 +245,9 @@ const App = () => (
                    <Route path="mentorship" element={<MentorshipAdmin />} />
                    <Route path="establishments" element={<EstablishmentsAdmin />} />
                    <Route path="verification" element={<VerificationAdmin />} />
+                   <Route path="support-tickets" element={<SupportTicketsAdmin />} />
+                   <Route path="audience-segments" element={<AudienceSegments />} />
+                   <Route path="live-chat" element={<LiveChatAdmin />} />
                 </Route>
 
                 {/* Company Portal Routes */}
