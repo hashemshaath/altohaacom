@@ -48,55 +48,67 @@ export function CandidateSelector({ competitions, templates }: CandidateSelector
 
   const competition = competitions.find(c => c.id === selectedCompetitionId);
 
-  // Fetch candidates
-  const { data: candidates = [], isLoading: loadingCandidates } = useQuery({
-    queryKey: ["cert-candidates", selectedCompetitionId],
-    queryFn: async () => {
-      if (!selectedCompetitionId) return [];
-      const { data: registrations } = await supabase
-        .from("competition_registrations")
-        .select("id, participant_id, dish_name, category_id")
-        .eq("competition_id", selectedCompetitionId)
-        .eq("status", "approved");
-      if (!registrations?.length) return [];
+   // Fetch candidates
+   const { data: candidates = [], isLoading: loadingCandidates } = useQuery({
+     queryKey: ["cert-candidates", selectedCompetitionId],
+     queryFn: async () => {
+       if (!selectedCompetitionId) return [];
+       const { data: registrations } = await supabase
+         .from("competition_registrations")
+         .select("id, participant_id, dish_name, category_id, entry_type, team_name, team_name_ar, organization_name, organization_name_ar")
+         .eq("competition_id", selectedCompetitionId)
+         .eq("status", "approved");
+       if (!registrations?.length) return [];
 
-      const { data: criteria } = await supabase.from("judging_criteria").select("id, weight, max_score").eq("competition_id", selectedCompetitionId);
-      const regIds = registrations.map(r => r.id);
-      const { data: scores } = await supabase.from("competition_scores").select("registration_id, criteria_id, score").in("registration_id", regIds);
-      const partIds = registrations.map(r => r.participant_id);
-      const { data: profiles } = await supabase.from("profiles").select("user_id, full_name, username").in("user_id", partIds);
+       const { data: criteria } = await supabase.from("judging_criteria").select("id, weight, max_score").eq("competition_id", selectedCompetitionId);
+       const regIds = registrations.map(r => r.id);
+       const { data: scores } = await supabase.from("competition_scores").select("registration_id, criteria_id, score").in("registration_id", regIds);
+       
+       // Fetch profiles only for individual entries
+       const individualRegIds = registrations.filter(r => r.entry_type === 'individual' || !r.entry_type).map(r => r.participant_id);
+       let profileMap = new Map<string, any>();
+       if (individualRegIds.length > 0) {
+         const { data: profiles } = await supabase.from("profiles").select("user_id, full_name, username").in("user_id", individualRegIds);
+         profiles?.forEach(p => profileMap.set(p.user_id, p));
+       }
 
-      // Get categories
-      const catIds = [...new Set(registrations.map(r => r.category_id).filter(Boolean))];
-      let categories: Record<string, string> = {};
-      if (catIds.length) {
-        const { data: cats } = await supabase.from("competition_categories").select("id, name, name_ar").in("id", catIds);
-        cats?.forEach(c => { categories[c.id] = language === "ar" && c.name_ar ? c.name_ar : c.name; });
-      }
+       // Get categories
+       const catIds = [...new Set(registrations.map(r => r.category_id).filter(Boolean))];
+       let categories: Record<string, string> = {};
+       if (catIds.length) {
+         const { data: cats } = await supabase.from("competition_categories").select("id, name, name_ar").in("id", catIds);
+         cats?.forEach(c => { categories[c.id] = language === "ar" && c.name_ar ? c.name_ar : c.name; });
+       }
 
-      return registrations.map(reg => {
-        const regScores = scores?.filter(s => s.registration_id === reg.id) || [];
-        const profile = profiles?.find(p => p.user_id === reg.participant_id);
-        let totalScore = 0, totalWeight = 0;
-        criteria?.forEach(crit => {
-          const cs = regScores.filter(s => s.criteria_id === crit.id);
-          if (cs.length) {
-            const avg = cs.reduce((sum, s) => sum + Number(s.score), 0) / cs.length;
-            totalScore += (avg / crit.max_score) * 100 * Number(crit.weight);
-            totalWeight += Number(crit.weight);
-          }
-        });
-        return {
-          registrationId: reg.id,
-          participantId: reg.participant_id,
-          dishName: reg.dish_name,
-          name: profile?.full_name || profile?.username || "Unknown",
-          email: "",
-          score: totalWeight > 0 ? totalScore / totalWeight : 0,
-          rank: 0,
-          categoryName: reg.category_id ? categories[reg.category_id] || "" : "",
-        } as CandidateResult;
-      }).sort((a, b) => b.score - a.score).map((r, i) => ({ ...r, rank: i + 1 }));
+       return registrations.map(reg => {
+         const regScores = scores?.filter(s => s.registration_id === reg.id) || [];
+         const profile = profileMap.get(reg.participant_id);
+         const displayName = reg.entry_type === 'team'
+           ? (language === "ar" && reg.team_name_ar ? reg.team_name_ar : reg.team_name)
+           : reg.entry_type === 'organization'
+           ? (language === "ar" && reg.organization_name_ar ? reg.organization_name_ar : reg.organization_name)
+           : profile?.full_name || profile?.username || "Unknown";
+         
+         let totalScore = 0, totalWeight = 0;
+         criteria?.forEach(crit => {
+           const cs = regScores.filter(s => s.criteria_id === crit.id);
+           if (cs.length) {
+             const avg = cs.reduce((sum, s) => sum + Number(s.score), 0) / cs.length;
+             totalScore += (avg / crit.max_score) * 100 * Number(crit.weight);
+             totalWeight += Number(crit.weight);
+           }
+         });
+         return {
+           registrationId: reg.id,
+           participantId: reg.participant_id,
+           dishName: reg.dish_name,
+           name: displayName,
+           email: "",
+           score: totalWeight > 0 ? totalScore / totalWeight : 0,
+           rank: 0,
+           categoryName: reg.category_id ? categories[reg.category_id] || "" : "",
+         } as CandidateResult;
+       }).sort((a, b) => b.score - a.score).map((r, i) => ({ ...r, rank: i + 1 }));
     },
     enabled: !!selectedCompetitionId,
   });
@@ -135,63 +147,63 @@ export function CandidateSelector({ competitions, templates }: CandidateSelector
   const selectedCandidates = candidates.filter(c => selectedIds.has(c.participantId));
   const allSelected = candidates.length > 0 && selectedIds.size === candidates.length;
 
-  // Issue mutation
-  const issueMutation = useMutation({
-    mutationFn: async () => {
-      if (!selectedCandidates.length || !competition) throw new Error("No candidates selected");
+   // Issue mutation
+   const issueMutation = useMutation({
+     mutationFn: async () => {
+       if (!selectedCandidates.length || !competition) throw new Error("No candidates selected");
 
-      let templateId = templates.find(t => t.type === "participation")?.id;
-      if (!templateId) {
-        const { data: newT, error } = await supabase.from("certificate_templates").insert({
-          name: "Auto Template", name_ar: "قالب تلقائي", type: "participation",
-          title_text: "Certificate", body_template: "Participated in {{event_name}}.",
-          body_template_ar: "شارك في {{event_name}}.", is_active: true,
-        }).select("id").single();
-        if (error) throw error;
-        templateId = newT.id;
-      }
+       let templateId = templates.find(t => t.type === "participation")?.id;
+       if (!templateId) {
+         const { data: newT, error } = await supabase.from("certificate_templates").insert({
+           name: "Auto Template", name_ar: "قالب تلقائي", type: "participation",
+           title_text: "Certificate", body_template: "Participated in {{event_name}}.",
+           body_template_ar: "شارك في {{event_name}}.", is_active: true,
+         }).select("id").single();
+         if (error) throw error;
+         templateId = newT.id;
+       }
 
-      const certs: any[] = [];
-      for (const r of selectedCandidates) {
-        const isWinner = r.rank <= 3;
-        const winType = r.rank === 1 ? "winner_gold" : r.rank === 2 ? "winner_silver" : "winner_bronze";
-        const rankLabel = r.rank === 1 ? "Gold" : r.rank === 2 ? "Silver" : "Bronze";
-        const rankLabelAr = r.rank === 1 ? "ذهبي" : r.rank === 2 ? "فضي" : "برونزي";
+       const certs: any[] = [];
+       for (const r of selectedCandidates) {
+         const isWinner = r.rank <= 3;
+         const winType = r.rank === 1 ? "winner_gold" : r.rank === 2 ? "winner_silver" : "winner_bronze";
+         const rankLabel = r.rank === 1 ? "Gold" : r.rank === 2 ? "Silver" : "Bronze";
+         const rankLabelAr = r.rank === 1 ? "ذهبي" : r.rank === 2 ? "فضي" : "برونزي";
 
-        if (issueWinners && isWinner && !existingSet.has(`${r.participantId}-${winType}`)) {
-          certs.push({
-            template_id: templateId, type: winType, competition_id: selectedCompetitionId,
-            recipient_id: r.participantId, recipient_name: r.name, recipient_email: r.email,
-            achievement: `${rankLabel} Winner - ${competition.title}`,
-            achievement_ar: `فائز ${rankLabelAr} - ${competition.title_ar || competition.title}`,
-            event_name: competition.title, event_name_ar: competition.title_ar,
-            event_date: competition.competition_end?.split("T")[0],
-            event_location: competition.venue, event_location_ar: competition.venue_ar,
-            verification_code: crypto.randomUUID().substring(0, 8).toUpperCase(),
-            status: "draft", issued_by: user?.id,
-          });
-        }
-        if (issueParticipation && !existingSet.has(`${r.participantId}-participation`)) {
-          certs.push({
-            template_id: templateId, type: "participation", competition_id: selectedCompetitionId,
-            recipient_id: r.participantId, recipient_name: r.name, recipient_email: r.email,
-            achievement: `Participant - ${competition.title}`,
-            achievement_ar: `مشارك - ${competition.title_ar || competition.title}`,
-            event_name: competition.title, event_name_ar: competition.title_ar,
-            event_date: competition.competition_end?.split("T")[0],
-            event_location: competition.venue, event_location_ar: competition.venue_ar,
-            verification_code: crypto.randomUUID().substring(0, 8).toUpperCase(),
-            status: "draft", issued_by: user?.id,
-          });
-        }
-      }
+         if (issueWinners && isWinner && !existingSet.has(`${r.participantId}-${winType}`)) {
+           certs.push({
+             template_id: templateId, type: winType, competition_id: selectedCompetitionId,
+             recipient_id: r.participantId, recipient_name: r.name, recipient_email: r.email,
+             achievement: `${rankLabel} Winner - ${competition.title}`,
+             achievement_ar: `فائز ${rankLabelAr} - ${competition.title_ar || competition.title}`,
+             event_name: competition.title, event_name_ar: competition.title_ar,
+             event_date: competition.competition_end?.split("T")[0],
+             event_location: competition.venue, event_location_ar: competition.venue_ar,
+             verification_code: crypto.randomUUID().substring(0, 8).toUpperCase(),
+             status: "draft", issued_by: user?.id,
+           });
+         }
+         if (issueParticipation && !existingSet.has(`${r.participantId}-participation`)) {
+           certs.push({
+             template_id: templateId, type: "participation", competition_id: selectedCompetitionId,
+             recipient_id: r.participantId, recipient_name: r.name, recipient_email: r.email,
+             achievement: `Participant - ${competition.title}`,
+             achievement_ar: `مشارك - ${competition.title_ar || competition.title}`,
+             event_name: competition.title, event_name_ar: competition.title_ar,
+             event_date: competition.competition_end?.split("T")[0],
+             event_location: competition.venue, event_location_ar: competition.venue_ar,
+             verification_code: crypto.randomUUID().substring(0, 8).toUpperCase(),
+             status: "draft", issued_by: user?.id,
+           });
+         }
+       }
 
-      if (certs.length === 0) throw new Error(language === "ar" ? "جميع الشهادات صادرة بالفعل" : "All certificates already issued for selected candidates");
+       if (certs.length === 0) throw new Error(language === "ar" ? "جميع الشهادات صادرة بالفعل" : "All certificates already issued for selected candidates");
 
-      const { error } = await supabase.from("certificates").insert(certs);
-      if (error) throw error;
-      return certs.length;
-    },
+       const { error } = await supabase.from("certificates").insert(certs);
+       if (error) throw error;
+       return certs.length;
+     },
     onSuccess: (count) => {
       queryClient.invalidateQueries({ queryKey: ["certificates"] });
       queryClient.invalidateQueries({ queryKey: ["existing-certs-check"] });
