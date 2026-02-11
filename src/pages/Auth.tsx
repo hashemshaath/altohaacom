@@ -3,28 +3,25 @@ import { useNavigate, useSearchParams } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { supabase } from "@/integrations/supabase/client";
+import { lovable } from "@/integrations/lovable/index";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent } from "@/components/ui/card";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { Separator } from "@/components/ui/separator";
 import { SEOHead } from "@/components/SEOHead";
 import { useToast } from "@/hooks/use-toast";
 import { PhoneVerification } from "@/components/auth/PhoneVerification";
 import { CountrySelector } from "@/components/auth/CountrySelector";
-import { useAllCountries, type Country } from "@/hooks/useCountries";
+import { PasswordStrengthMeter, getPasswordStrength } from "@/components/auth/PasswordStrengthMeter";
+import { normalizePhoneInput } from "@/lib/arabicNumerals";
 import { z } from "zod";
 import {
   CheckCircle, XCircle, Loader2, ShieldCheck, UserPlus, LogIn,
-  Trophy, Globe, GraduationCap, Award, Star, Users,
+  Trophy, Globe, GraduationCap, Award, Star,
 } from "lucide-react";
-import type { Database } from "@/integrations/supabase/types";
-
-type AppRole = Database["public"]["Enums"]["app_role"];
-
-const roles: AppRole[] = ["chef", "judge", "student", "organizer", "volunteer", "sponsor", "assistant", "supervisor"];
 
 const usernameRegex = /^[a-zA-Z][a-zA-Z0-9_]{2,29}$/;
 
@@ -33,7 +30,7 @@ const signInSchema = z.object({
   password: z.string().min(6, "Password must be at least 6 characters"),
 });
 
-type AuthStep = "credentials" | "phone-verify" | "complete";
+type SignUpStep = "info" | "phone-verify" | "credentials";
 
 const features = [
   { icon: Trophy, labelEn: "Compete Globally", labelAr: "تنافس عالمياً" },
@@ -45,18 +42,27 @@ const features = [
 export default function Auth() {
   const [searchParams] = useSearchParams();
   const [isSignUp, setIsSignUp] = useState(searchParams.get("tab") === "signup");
-  const [authStep, setAuthStep] = useState<AuthStep>("credentials");
+  const [signUpStep, setSignUpStep] = useState<SignUpStep>("info");
 
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
+  // Step 1: Basic info
   const [fullName, setFullName] = useState("");
-  const [username, setUsername] = useState("");
-  const [phone, setPhone] = useState("");
+  const [email, setEmail] = useState("");
   const [countryCode, setCountryCode] = useState("");
   const [phoneCode, setPhoneCode] = useState("");
+
+  // Step 2: Phone verified
+  const [verifiedPhone, setVerifiedPhone] = useState("");
+
+  // Step 3: Password & username
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [username, setUsername] = useState("");
   const [usernameStatus, setUsernameStatus] = useState<"idle" | "checking" | "available" | "taken">("idle");
-  const [role, setRole] = useState<AppRole>("chef");
+
+  // Sign in
+  const [signInEmail, setSignInEmail] = useState("");
+  const [signInPassword, setSignInPassword] = useState("");
+
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
 
@@ -70,6 +76,7 @@ export default function Auth() {
     if (user) navigate("/", { replace: true });
   }, [user, navigate]);
 
+  // Username availability check
   useEffect(() => {
     if (!username || username.length < 3 || !usernameRegex.test(username)) {
       setUsernameStatus("idle");
@@ -88,12 +95,26 @@ export default function Auth() {
   }, [username]);
 
   useEffect(() => {
-    setAuthStep("credentials");
+    setSignUpStep("info");
+    setErrors({});
   }, [isSignUp]);
 
+  // ── Google Sign In ──
+  const handleGoogleSignIn = async () => {
+    setLoading(true);
+    const { error } = await lovable.auth.signInWithOAuth("google", {
+      redirect_uri: window.location.origin,
+    });
+    if (error) {
+      toast({ variant: "destructive", title: "Error", description: error.message });
+    }
+    setLoading(false);
+  };
+
+  // ── Sign In ──
   const handleSignIn = async () => {
     setErrors({});
-    const result = signInSchema.safeParse({ email, password });
+    const result = signInSchema.safeParse({ email: signInEmail, password: signInPassword });
     if (!result.success) {
       const fieldErrors: Record<string, string> = {};
       result.error.errors.forEach((e) => {
@@ -103,79 +124,95 @@ export default function Auth() {
       return;
     }
     setLoading(true);
-    const { error } = await supabase.auth.signInWithPassword({ email, password });
+    const { error } = await supabase.auth.signInWithPassword({ email: signInEmail, password: signInPassword });
     setLoading(false);
     if (error) {
-      toast({ variant: "destructive", title: "Error", description: error.message });
+      toast({ variant: "destructive", title: isAr ? "خطأ" : "Error", description: error.message });
     }
   };
 
-  const handleCredentialsSubmit = async () => {
+  // ── Step 1: Validate info and go to phone ──
+  const handleInfoSubmit = () => {
     setErrors({});
-    if (usernameStatus === "taken") {
-      setErrors({ username: t("usernameTaken") });
-      return;
+    const errs: Record<string, string> = {};
+
+    if (!fullName.trim() || fullName.trim().length < 2) {
+      errs.fullName = isAr ? "الاسم مطلوب" : "Name is required";
     }
-    if (usernameStatus !== "available") {
-      setErrors({ username: t("usernameInvalid") });
-      return;
+
+    const emailResult = z.string().email().safeParse(email);
+    if (!emailResult.success) {
+      errs.email = isAr ? "البريد الإلكتروني غير صالح" : "Invalid email address";
     }
 
     if (!countryCode) {
-      setErrors({ countryCode: isAr ? "يرجى اختيار الدولة" : "Country is required" });
-      return;
+      errs.countryCode = isAr ? "يرجى اختيار الدولة" : "Country is required";
     }
 
-    const baseResult = z.object({
-      email: z.string().email("Invalid email address"),
-      password: z.string().min(6, "Password must be at least 6 characters"),
-      fullName: z.string().min(2, "Name is required"),
-      username: z.string()
-        .min(3, "Username must be at least 3 characters")
-        .max(30, "Username must be at most 30 characters")
-        .regex(usernameRegex, "Username must start with a letter"),
-      confirmPassword: z.string(),
-      role: z.enum(["chef", "judge", "student", "organizer", "volunteer", "sponsor", "assistant", "supervisor"]),
-    }).refine((d) => d.password === d.confirmPassword, {
-      message: "Passwords don't match",
-      path: ["confirmPassword"],
-    }).safeParse({ email, password, confirmPassword, fullName, username, role });
-
-    if (!baseResult.success) {
-      const fieldErrors: Record<string, string> = {};
-      baseResult.error.errors.forEach((e) => {
-        fieldErrors[e.path[0] as string] = e.message;
-      });
-      setErrors(fieldErrors);
+    if (Object.keys(errs).length > 0) {
+      setErrors(errs);
       return;
     }
-    setAuthStep("phone-verify");
+    setSignUpStep("phone-verify");
   };
 
-  const handlePhoneVerified = async (verifiedPhone: string) => {
-    setPhone(verifiedPhone);
+  // ── Step 2: Phone verified → go to credentials ──
+  const handlePhoneVerified = (phone: string) => {
+    setVerifiedPhone(phone);
+    setSignUpStep("credentials");
+  };
+
+  // ── Step 3: Create account ──
+  const handleCreateAccount = async () => {
+    setErrors({});
+    const errs: Record<string, string> = {};
+
+    if (!username || !usernameRegex.test(username)) {
+      errs.username = isAr ? "اسم المستخدم غير صالح" : "Invalid username";
+    }
+    if (usernameStatus === "taken") {
+      errs.username = isAr ? "اسم المستخدم مستخدم بالفعل" : "Username already taken";
+    }
+    if (usernameStatus === "checking") {
+      errs.username = isAr ? "جاري التحقق..." : "Still checking...";
+    }
+
+    if (password.length < 8) {
+      errs.password = isAr ? "كلمة المرور يجب أن تكون 8 أحرف على الأقل" : "Password must be at least 8 characters";
+    }
+    if (getPasswordStrength(password) < 2) {
+      errs.password = isAr ? "كلمة المرور ضعيفة جداً" : "Password is too weak";
+    }
+    if (password !== confirmPassword) {
+      errs.confirmPassword = isAr ? "كلمات المرور غير متطابقة" : "Passwords don't match";
+    }
+
+    if (Object.keys(errs).length > 0) {
+      setErrors(errs);
+      return;
+    }
+
     setLoading(true);
-    const redirectUrl = `${window.location.origin}/`;
     const { data, error } = await supabase.auth.signUp({
       email,
       password,
       options: {
-        emailRedirectTo: redirectUrl,
+        emailRedirectTo: `${window.location.origin}/`,
         data: { full_name: fullName, username: username.toLowerCase() },
       },
     });
 
     if (error) {
       setLoading(false);
-      toast({ variant: "destructive", title: "Error", description: error.message });
-      setAuthStep("credentials");
+      toast({ variant: "destructive", title: isAr ? "خطأ" : "Error", description: error.message });
       return;
     }
 
     if (data.user) {
-      await supabase.from("user_roles").insert({ user_id: data.user.id, role });
+      // Default role is "chef" - no role selection during registration
+      await supabase.from("user_roles").insert({ user_id: data.user.id, role: "chef" as any });
       await new Promise((resolve) => setTimeout(resolve, 500));
-      const { error: updateError } = await supabase
+      await supabase
         .from("profiles")
         .update({
           username: username.toLowerCase(),
@@ -184,9 +221,6 @@ export default function Auth() {
           preferred_language: language,
         })
         .eq("user_id", data.user.id);
-      if (updateError) {
-        console.error("Profile update error:", updateError);
-      }
     }
 
     setLoading(false);
@@ -197,11 +231,11 @@ export default function Auth() {
         : "Please check your email to verify your account before signing in.",
     });
     setIsSignUp(false);
-    setAuthStep("credentials");
+    setSignUpStep("info");
   };
 
   /* ── Phone verification step ── */
-  if (authStep === "phone-verify" && isSignUp) {
+  if (signUpStep === "phone-verify" && isSignUp) {
     return (
       <div className="flex min-h-screen flex-col">
         <SEOHead title="Phone Verification" description="Verify your phone number" />
@@ -217,14 +251,12 @@ export default function Auth() {
                   {isAr ? "التحقق من الهاتف" : "Phone Verification"}
                 </h2>
                 <p className="mt-1 text-sm text-muted-foreground">
-                  {isAr
-                    ? "يرجى التحقق من رقم هاتفك لإكمال التسجيل"
-                    : "Verify your phone number to complete registration"}
+                  {isAr ? "الخطوة 2 من 3 — تأكيد رقم الهاتف" : "Step 2 of 3 — Confirm your phone number"}
                 </p>
               </div>
               <PhoneVerification
                 onVerified={handlePhoneVerified}
-                onBack={() => setAuthStep("credentials")}
+                onBack={() => setSignUpStep("info")}
                 phoneCode={phoneCode}
                 mode="signup"
               />
@@ -235,7 +267,106 @@ export default function Auth() {
     );
   }
 
-  /* ── Main auth view ── */
+  /* ── Credentials step (password & username) ── */
+  if (signUpStep === "credentials" && isSignUp) {
+    return (
+      <div className="flex min-h-screen flex-col">
+        <SEOHead title="Complete Registration" description="Set your password and username" />
+        <Header />
+        <main className="flex flex-1 items-center justify-center p-4">
+          <Card className="w-full max-w-md border-border/50 shadow-xl shadow-primary/5">
+            <div className="p-5 md:p-6 space-y-5">
+              <div className="flex flex-col items-center text-center">
+                <div className="mb-3 flex h-14 w-14 items-center justify-center rounded-2xl bg-primary/10 ring-1 ring-primary/15">
+                  <UserPlus className="h-7 w-7 text-primary" />
+                </div>
+                <h2 className="font-serif text-xl font-bold">
+                  {isAr ? "إنشاء حسابك" : "Create Your Account"}
+                </h2>
+                <p className="mt-1 text-sm text-muted-foreground">
+                  {isAr ? "الخطوة 3 من 3 — اسم المستخدم وكلمة المرور" : "Step 3 of 3 — Username & password"}
+                </p>
+              </div>
+
+              {/* Username */}
+              <div className="space-y-1.5">
+                <Label htmlFor="username" className="text-xs">{isAr ? "اسم المستخدم" : "Username"} *</Label>
+                <div className="relative">
+                  <Input
+                    id="username"
+                    value={username}
+                    onChange={(e) => setUsername(e.target.value.toLowerCase().replace(/[^a-z0-9_]/g, ""))}
+                    className="pe-10"
+                    placeholder="your_username"
+                  />
+                  <div className="pointer-events-none absolute end-3 top-1/2 -translate-y-1/2">
+                    {usernameStatus === "checking" && <Loader2 className="h-4 w-4 animate-spin text-muted-foreground" />}
+                    {usernameStatus === "available" && <CheckCircle className="h-4 w-4 text-primary" />}
+                    {usernameStatus === "taken" && <XCircle className="h-4 w-4 text-destructive" />}
+                  </div>
+                </div>
+                <p className="text-[10px] text-muted-foreground">
+                  altohaa.com/<span className="font-medium">{username || "username"}</span>
+                </p>
+                {errors.username && <p className="text-xs text-destructive">{errors.username}</p>}
+              </div>
+
+              {/* Password */}
+              <div className="space-y-1.5">
+                <Label htmlFor="password" className="text-xs">{isAr ? "كلمة المرور" : "Password"} *</Label>
+                <Input
+                  id="password"
+                  type="password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  placeholder="••••••••"
+                />
+                <PasswordStrengthMeter password={password} />
+                {errors.password && <p className="text-xs text-destructive">{errors.password}</p>}
+              </div>
+
+              {/* Confirm Password */}
+              <div className="space-y-1.5">
+                <Label htmlFor="confirmPassword" className="text-xs">{isAr ? "تأكيد كلمة المرور" : "Confirm Password"} *</Label>
+                <Input
+                  id="confirmPassword"
+                  type="password"
+                  value={confirmPassword}
+                  onChange={(e) => setConfirmPassword(e.target.value)}
+                  placeholder="••••••••"
+                />
+                {confirmPassword && password !== confirmPassword && (
+                  <p className="text-xs text-destructive">{isAr ? "كلمات المرور غير متطابقة" : "Passwords don't match"}</p>
+                )}
+                {errors.confirmPassword && <p className="text-xs text-destructive">{errors.confirmPassword}</p>}
+              </div>
+
+              <div className="flex gap-2">
+                <Button
+                  variant="outline"
+                  onClick={() => setSignUpStep("phone-verify")}
+                  className="gap-1.5"
+                >
+                  {isAr ? "رجوع" : "Back"}
+                </Button>
+                <Button
+                  className="flex-1 gap-2"
+                  size="lg"
+                  disabled={loading || usernameStatus !== "available"}
+                  onClick={handleCreateAccount}
+                >
+                  {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : <UserPlus className="h-4 w-4" />}
+                  {loading ? (isAr ? "جاري الإنشاء..." : "Creating...") : (isAr ? "إنشاء الحساب" : "Create Account")}
+                </Button>
+              </div>
+            </div>
+          </Card>
+        </main>
+      </div>
+    );
+  }
+
+  /* ── Main auth view (Sign In or Sign Up Step 1) ── */
   return (
     <div className="flex min-h-screen flex-col">
       <SEOHead
@@ -288,45 +419,66 @@ export default function Auth() {
             <div className="flex flex-col items-center text-center">
               <img src="/altohaa-logo.png" alt="Altohaa" className="mb-3 h-12 w-auto lg:hidden" />
               <h1 className="font-serif text-2xl font-bold">
-                {isSignUp ? t("signUpTitle") : t("signInTitle")}
+                {isSignUp ? (isAr ? "إنشاء حساب جديد" : "Create Account") : t("signInTitle")}
               </h1>
               {isSignUp && (
-                <p className="mt-1 max-w-xs text-sm text-muted-foreground lg:hidden">{t("heroSubtitle")}</p>
+                <p className="mt-1 text-sm text-muted-foreground">
+                  {isAr ? "الخطوة 1 من 3 — المعلومات الأساسية" : "Step 1 of 3 — Basic information"}
+                </p>
               )}
+            </div>
+
+            {/* Google Sign In */}
+            <Button
+              variant="outline"
+              className="w-full gap-2"
+              size="lg"
+              onClick={handleGoogleSignIn}
+              disabled={loading}
+            >
+              <svg className="h-5 w-5" viewBox="0 0 24 24">
+                <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 0 1-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z" fill="#4285F4" />
+                <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853" />
+                <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05" />
+                <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335" />
+              </svg>
+              {isAr ? "المتابعة بحساب جوجل" : "Continue with Google"}
+            </Button>
+
+            <div className="flex items-center gap-3">
+              <Separator className="flex-1" />
+              <span className="text-xs text-muted-foreground">{isAr ? "أو" : "or"}</span>
+              <Separator className="flex-1" />
             </div>
 
             {/* Form Card */}
             <Card className="border-border/50 shadow-lg shadow-primary/5">
               <CardContent className="space-y-4 p-5 md:p-6">
-                {isSignUp && (
+                {isSignUp ? (
                   <>
-                    <div className="grid gap-4 sm:grid-cols-2">
-                      <div className="space-y-1.5">
-                        <Label htmlFor="fullName" className="text-xs">{t("fullName")}</Label>
-                        <Input id="fullName" value={fullName} onChange={(e) => setFullName(e.target.value)} placeholder={isAr ? "الاسم الكامل" : "Full name"} />
-                        {errors.fullName && <p className="text-xs text-destructive">{errors.fullName}</p>}
-                      </div>
-                      <div className="space-y-1.5">
-                        <Label htmlFor="username" className="text-xs">{t("username")}</Label>
-                        <div className="relative">
-                          <Input
-                            id="username"
-                            value={username}
-                            onChange={(e) => setUsername(e.target.value.toLowerCase().replace(/[^a-z0-9_]/g, ""))}
-                            className="pe-10"
-                            placeholder="your_username"
-                          />
-                          <div className="pointer-events-none absolute end-3 top-1/2 -translate-y-1/2">
-                            {usernameStatus === "checking" && <Loader2 className="h-4 w-4 animate-spin text-muted-foreground" />}
-                            {usernameStatus === "available" && <CheckCircle className="h-4 w-4 text-primary" />}
-                            {usernameStatus === "taken" && <XCircle className="h-4 w-4 text-destructive" />}
-                          </div>
-                        </div>
-                        <p className="text-[10px] text-muted-foreground">
-                          altohaa.com/<span className="font-medium">{username || "username"}</span>
-                        </p>
-                        {errors.username && <p className="text-xs text-destructive">{errors.username}</p>}
-                      </div>
+                    {/* Full Name */}
+                    <div className="space-y-1.5">
+                      <Label htmlFor="fullName" className="text-xs">{isAr ? "الاسم الكامل" : "Full Name"} *</Label>
+                      <Input
+                        id="fullName"
+                        value={fullName}
+                        onChange={(e) => setFullName(e.target.value)}
+                        placeholder={isAr ? "الاسم الكامل" : "Full name"}
+                      />
+                      {errors.fullName && <p className="text-xs text-destructive">{errors.fullName}</p>}
+                    </div>
+
+                    {/* Email */}
+                    <div className="space-y-1.5">
+                      <Label htmlFor="email" className="text-xs">{isAr ? "البريد الإلكتروني" : "Email"} *</Label>
+                      <Input
+                        id="email"
+                        type="email"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                        placeholder={isAr ? "البريد الإلكتروني" : "Email address"}
+                      />
+                      {errors.email && <p className="text-xs text-destructive">{errors.email}</p>}
                     </div>
 
                     {/* Country */}
@@ -340,84 +492,67 @@ export default function Auth() {
                       required
                     />
                     {errors.countryCode && <p className="text-xs text-destructive">{errors.countryCode}</p>}
+
+                    <Button
+                      className="w-full gap-2"
+                      size="lg"
+                      onClick={handleInfoSubmit}
+                    >
+                      {isAr ? "التالي — التحقق من الهاتف" : "Next — Phone Verification"}
+                    </Button>
+                  </>
+                ) : (
+                  <>
+                    {/* Sign In */}
+                    <div className="space-y-1.5">
+                      <Label htmlFor="signInEmail" className="text-xs">{isAr ? "البريد الإلكتروني" : "Email"}</Label>
+                      <Input
+                        id="signInEmail"
+                        type="email"
+                        value={signInEmail}
+                        onChange={(e) => setSignInEmail(e.target.value)}
+                        placeholder={isAr ? "البريد الإلكتروني" : "Email address"}
+                      />
+                      {errors.email && <p className="text-xs text-destructive">{errors.email}</p>}
+                    </div>
+
+                    <div className="space-y-1.5">
+                      <Label htmlFor="signInPassword" className="text-xs">{isAr ? "كلمة المرور" : "Password"}</Label>
+                      <Input
+                        id="signInPassword"
+                        type="password"
+                        value={signInPassword}
+                        onChange={(e) => setSignInPassword(e.target.value)}
+                        placeholder="••••••••"
+                      />
+                      {errors.password && <p className="text-xs text-destructive">{errors.password}</p>}
+                    </div>
+
+                    <Button
+                      className="w-full gap-2"
+                      size="lg"
+                      disabled={loading}
+                      onClick={handleSignIn}
+                    >
+                      {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : <LogIn className="h-4 w-4" />}
+                      {loading ? (isAr ? "جاري الدخول..." : "Signing in...") : (isAr ? "تسجيل الدخول" : "Sign In")}
+                    </Button>
                   </>
                 )}
-
-                <div className="space-y-1.5">
-                  <Label htmlFor="email" className="text-xs">{t("email")}</Label>
-                  <Input id="email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder={isAr ? "البريد الإلكتروني" : "Email address"} />
-                  {errors.email && <p className="text-xs text-destructive">{errors.email}</p>}
-                </div>
-
-                <div className={isSignUp ? "grid gap-4 sm:grid-cols-2" : "space-y-1.5"}>
-                  <div className="space-y-1.5">
-                    <Label htmlFor="password" className="text-xs">{t("password")}</Label>
-                    <Input id="password" type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="••••••••" />
-                    {errors.password && <p className="text-xs text-destructive">{errors.password}</p>}
-                  </div>
-                  {isSignUp && (
-                    <div className="space-y-1.5">
-                      <Label htmlFor="confirmPassword" className="text-xs">{t("confirmPassword")}</Label>
-                      <Input id="confirmPassword" type="password" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} placeholder="••••••••" />
-                      {errors.confirmPassword && <p className="text-xs text-destructive">{errors.confirmPassword}</p>}
-                    </div>
-                  )}
-                </div>
-
-                {isSignUp && (
-                  <div className="space-y-2">
-                    <Label className="text-xs">{t("selectRole")}</Label>
-                    <RadioGroup
-                      value={role}
-                      onValueChange={(v) => setRole(v as AppRole)}
-                      className="grid grid-cols-2 gap-1.5 sm:grid-cols-4"
-                    >
-                      {roles.map((r) => (
-                        <div
-                          key={r}
-                          className="flex items-center gap-1.5 rounded-lg border p-2 transition-all duration-200 has-[:checked]:border-primary has-[:checked]:bg-primary/5 has-[:checked]:shadow-sm hover:border-primary/30"
-                        >
-                          <RadioGroupItem value={r} id={r} className="h-3.5 w-3.5" />
-                          <Label htmlFor={r} className="cursor-pointer text-[11px] font-medium leading-tight">
-                            {t(r as any)}
-                          </Label>
-                        </div>
-                      ))}
-                    </RadioGroup>
-                  </div>
-                )}
-
-                <Button
-                  className="w-full gap-2"
-                  size="lg"
-                  disabled={loading}
-                  onClick={isSignUp ? handleCredentialsSubmit : handleSignIn}
-                >
-                  {loading ? (
-                    <Loader2 className="h-4 w-4 animate-spin" />
-                  ) : isSignUp ? (
-                    <UserPlus className="h-4 w-4" />
-                  ) : (
-                    <LogIn className="h-4 w-4" />
-                  )}
-                  {loading
-                    ? (isSignUp ? t("signingUp") : t("signingIn"))
-                    : (isSignUp ? t("continue") : t("signIn"))}
-                </Button>
               </CardContent>
             </Card>
 
             {/* Toggle */}
             <div className="flex items-center justify-center gap-1.5 text-sm">
               <span className="text-muted-foreground">
-                {isSignUp ? t("hasAccount") : t("noAccount")}
+                {isSignUp ? (isAr ? "لديك حساب بالفعل؟" : "Already have an account?") : (isAr ? "ليس لديك حساب؟" : "Don't have an account?")}
               </span>
               <button
                 type="button"
                 className="font-medium text-primary underline-offset-2 hover:underline"
                 onClick={() => { setIsSignUp(!isSignUp); setErrors({}); }}
               >
-                {isSignUp ? t("signIn") : t("signUp")}
+                {isSignUp ? (isAr ? "تسجيل الدخول" : "Sign In") : (isAr ? "إنشاء حساب" : "Sign Up")}
               </button>
             </div>
           </div>

@@ -8,31 +8,17 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent } from "@/components/ui/card";
-import { Checkbox } from "@/components/ui/checkbox";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Progress } from "@/components/ui/progress";
 import { CountrySelector } from "@/components/auth/CountrySelector";
 import { useToast } from "@/hooks/use-toast";
 import {
-  ChefHat, User, Trophy, ArrowRight, ArrowLeft, Sparkles,
-  CheckCircle2, Loader2, GraduationCap, Building2, Hand,
-  Heart, Headphones, Eye,
+  ChefHat, User, Trophy, ArrowRight, ArrowLeft,
+  CheckCircle2, Loader2,
 } from "lucide-react";
 import type { Database } from "@/integrations/supabase/types";
 
 type ExperienceLevel = Database["public"]["Enums"]["experience_level"];
-type AppRole = Database["public"]["Enums"]["app_role"];
-
-const ROLES: { value: AppRole; labelEn: string; labelAr: string; icon: React.ReactNode }[] = [
-  { value: "chef", labelEn: "Chef", labelAr: "طاهٍ", icon: <ChefHat className="h-5 w-5" /> },
-  { value: "judge", labelEn: "Judge", labelAr: "حكم", icon: <Trophy className="h-5 w-5" /> },
-  { value: "student", labelEn: "Student", labelAr: "طالب", icon: <GraduationCap className="h-5 w-5" /> },
-  { value: "organizer", labelEn: "Organizer", labelAr: "منظم", icon: <Sparkles className="h-5 w-5" /> },
-  { value: "volunteer", labelEn: "Volunteer", labelAr: "متطوع", icon: <Hand className="h-5 w-5" /> },
-  { value: "sponsor", labelEn: "Sponsor", labelAr: "راعي", icon: <Heart className="h-5 w-5" /> },
-  { value: "assistant", labelEn: "Assistant", labelAr: "مساعد", icon: <Headphones className="h-5 w-5" /> },
-  { value: "supervisor", labelEn: "Supervisor", labelAr: "مشرف", icon: <Eye className="h-5 w-5" /> },
-];
 
 interface OnboardingWizardProps {
   onComplete?: () => void;
@@ -40,7 +26,7 @@ interface OnboardingWizardProps {
 
 export function OnboardingWizard({ onComplete }: OnboardingWizardProps) {
   const { user } = useAuth();
-  const { t, language } = useLanguage();
+  const { language } = useLanguage();
   const { toast } = useToast();
   const navigate = useNavigate();
   const isAr = language === "ar";
@@ -61,9 +47,7 @@ export function OnboardingWizard({ onComplete }: OnboardingWizardProps) {
     professional_title_ar: "",
   });
 
-  const [selectedRoles, setSelectedRoles] = useState<AppRole[]>([]);
-
-  const totalSteps = 3;
+  const totalSteps = 2;
   const progress = (step / totalSteps) * 100;
 
   const stepMeta = [
@@ -73,13 +57,6 @@ export function OnboardingWizard({ onComplete }: OnboardingWizardProps) {
       titleAr: "مرحباً بك!",
       descEn: "Let's start with your basic information",
       descAr: "لنبدأ بالمعلومات الأساسية",
-    },
-    {
-      icon: ChefHat,
-      titleEn: "Select Your Roles",
-      titleAr: "اختر أدوارك",
-      descEn: "You can select multiple roles — they determine your permissions",
-      descAr: "يمكنك اختيار أكثر من دور — وسيحدد ذلك صلاحياتك",
     },
     {
       icon: Trophy,
@@ -93,12 +70,6 @@ export function OnboardingWizard({ onComplete }: OnboardingWizardProps) {
   const current = stepMeta[step - 1];
   const StepIcon = current.icon;
 
-  const handleRoleToggle = (role: AppRole) => {
-    setSelectedRoles((prev) =>
-      prev.includes(role) ? prev.filter((r) => r !== role) : [...prev, role]
-    );
-  };
-
   const validateStep = () => {
     if (step === 1) {
       if (!form.full_name.trim()) {
@@ -109,10 +80,6 @@ export function OnboardingWizard({ onComplete }: OnboardingWizardProps) {
         toast({ variant: "destructive", title: isAr ? "اسم المستخدم يجب أن يكون 3 أحرف على الأقل" : "Username must be at least 3 characters" });
         return false;
       }
-    }
-    if (step === 2 && selectedRoles.length === 0) {
-      toast({ variant: "destructive", title: isAr ? "يرجى اختيار دور واحد على الأقل" : "Please select at least one role" });
-      return false;
     }
     return true;
   };
@@ -143,18 +110,6 @@ export function OnboardingWizard({ onComplete }: OnboardingWizardProps) {
         .eq("user_id", user.id);
 
       if (profileError) throw profileError;
-
-      // Upsert roles
-      if (selectedRoles.length > 0) {
-        const roleInserts = selectedRoles.map((role) => ({
-          user_id: user.id,
-          role,
-        }));
-        const { error: rolesError } = await supabase
-          .from("user_roles")
-          .upsert(roleInserts, { onConflict: "user_id,role" });
-        if (rolesError) throw rolesError;
-      }
 
       // Create professional title if provided
       if (form.professional_title.trim()) {
@@ -250,39 +205,19 @@ export function OnboardingWizard({ onComplete }: OnboardingWizardProps) {
             </div>
           )}
 
-          {/* Step 2: Select Roles */}
+          {/* Step 2: Professional Details */}
           {step === 2 && (
-            <div className="grid gap-2.5 sm:grid-cols-2">
-              {ROLES.map((role) => (
-                <button
-                  key={role.value}
-                  type="button"
-                  onClick={() => handleRoleToggle(role.value)}
-                  className={`flex items-center gap-3 rounded-xl border-2 p-3.5 text-start transition-all duration-300 hover:shadow-sm hover:-translate-y-0.5 active:scale-95 ${
-                    selectedRoles.includes(role.value)
-                      ? "border-primary bg-primary/5 shadow-sm"
-                      : "border-border hover:border-primary/40"
-                  }`}
-                >
-                  <Checkbox
-                    checked={selectedRoles.includes(role.value)}
-                    onCheckedChange={() => handleRoleToggle(role.value)}
-                    className="pointer-events-none"
-                  />
-                  <div className="flex items-center gap-2">
-                    {role.icon}
-                    <span className="text-sm font-medium">
-                      {isAr ? role.labelAr : role.labelEn}
-                    </span>
-                  </div>
-                </button>
-              ))}
-            </div>
-          )}
-
-          {/* Step 3: Professional Details */}
-          {step === 3 && (
             <div className="space-y-4">
+              <div className="rounded-lg border border-primary/20 bg-primary/5 p-3 text-sm">
+                <p className="font-medium text-primary">
+                  {isAr ? "💡 ترقية الدور" : "💡 Role Upgrade"}
+                </p>
+                <p className="mt-1 text-muted-foreground">
+                  {isAr
+                    ? "يمكنك طلب ترقية دورك (حكم، منظم، راعي...) بعد إكمال ملفك الشخصي من خلال إعدادات حسابك."
+                    : "You can request a role upgrade (Judge, Organizer, Sponsor...) after completing your profile from your account settings."}
+                </p>
+              </div>
               <div className="space-y-1.5">
                 <Label className="text-xs">{isAr ? "اللقب المهني" : "Professional Title"}</Label>
                 <Input
