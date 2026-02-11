@@ -112,7 +112,7 @@ export function PlatformFeatures() {
           {!user && (
             <div className="mt-6 text-center">
               <Button size="lg" asChild>
-                <Link to="/auth?tab=signup">
+                <Link to="/register">
                   {isAr ? "سجل مجاناً الآن" : "Sign Up Free Now"}
                   <ArrowRight className="ms-2 h-4 w-4" />
                 </Link>
@@ -185,7 +185,7 @@ export function PlatformFeatures() {
             </p>
             <div className="flex flex-wrap justify-center gap-3">
               <Button size="lg" className="shadow-lg shadow-primary/20" asChild>
-                <Link to="/auth?tab=signup">{isAr ? "أنشئ حسابك المجاني" : "Create Your Free Account"}<ArrowRight className="ms-2 h-4 w-4" /></Link>
+                <Link to="/register">{isAr ? "أنشئ حسابك المجاني" : "Create Your Free Account"}<ArrowRight className="ms-2 h-4 w-4" /></Link>
               </Button>
               <Button size="lg" variant="outline" asChild>
                 <Link to="/competitions">{isAr ? "تصفح المسابقات" : "Browse Competitions"}</Link>

@@ -231,10 +231,10 @@ export function Header() {
           ) : (
             <div className="hidden items-center gap-1.5 lg:flex">
               <Button variant="ghost" size="sm" asChild>
-                <Link to="/auth">{t("signIn")}</Link>
+                <Link to="/login">{t("signIn")}</Link>
               </Button>
               <Button size="sm" asChild>
-                <Link to="/auth?tab=signup">{t("signUp")}</Link>
+                <Link to="/register">{t("signUp")}</Link>
               </Button>
             </div>
           )}
@@ -373,10 +373,10 @@ export function Header() {
                         <Separator className="my-2" />
                         <div className="space-y-2 p-2">
                           <Button className="w-full" asChild onClick={() => setOpen(false)}>
-                            <Link to="/auth">{t("signIn")}</Link>
+                            <Link to="/login">{t("signIn")}</Link>
                           </Button>
                           <Button variant="outline" className="w-full" asChild onClick={() => setOpen(false)}>
-                            <Link to="/auth?tab=signup">{t("signUp")}</Link>
+                            <Link to="/register">{t("signUp")}</Link>
                           </Button>
                         </div>
                       </>

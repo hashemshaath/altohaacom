@@ -328,7 +328,7 @@ export default function MasterclassDetail() {
                       <Button
                         className="w-full"
                         size="lg"
-                        onClick={() => user ? enrollMutation.mutate() : navigate("/auth")}
+                        onClick={() => user ? enrollMutation.mutate() : navigate("/login")}
                         disabled={enrollMutation.isPending}
                       >
                         {enrollMutation.isPending

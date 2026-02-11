@@ -95,8 +95,8 @@ export function Footer() {
                 </>
               ) : (
                 <>
-                  <Link to="/auth" className="transition-colors hover:text-primary">{t("signIn")}</Link>
-                  <Link to="/auth?tab=signup" className="transition-colors hover:text-primary">{t("signUp")}</Link>
+                  <Link to="/login" className="transition-colors hover:text-primary">{t("signIn")}</Link>
+                  <Link to="/register" className="transition-colors hover:text-primary">{t("signUp")}</Link>
                 </>
               )}
               <Link to="/search" className="transition-colors hover:text-primary">{isAr ? "بحث" : "Search"}</Link>

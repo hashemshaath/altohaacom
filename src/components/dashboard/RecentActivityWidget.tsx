@@ -113,7 +113,7 @@ export function RecentActivityWidget() {
             <p className="text-sm text-muted-foreground">
               {isAr ? "سجل الدخول لعرض نشاطك" : "Sign in to view your activity"}
             </p>
-            <Link to="/auth" className="mt-2 inline-block text-sm text-primary hover:underline">
+            <Link to="/login" className="mt-2 inline-block text-sm text-primary hover:underline">
               {t("signIn")}
             </Link>
           </div>

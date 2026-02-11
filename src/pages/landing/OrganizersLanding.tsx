@@ -140,7 +140,7 @@ export default function OrganizersLanding() {
               </p>
               <div className="mt-8 flex gap-3 justify-center">
                 <Button size="lg" className="gap-2" asChild>
-                  <Link to="/auth?tab=signup">
+                  <Link to="/register">
                     {isAr ? "ابدأ مجاناً" : "Start Free"}
                     <ArrowRight className="h-4 w-4" />
                   </Link>
