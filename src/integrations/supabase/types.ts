@@ -7310,6 +7310,7 @@ export type Database = {
           country_code: string | null
           created_at: string
           date_of_birth: string | null
+          email: string | null
           experience_level:
             | Database["public"]["Enums"]["experience_level"]
             | null
@@ -7356,6 +7357,7 @@ export type Database = {
           country_code?: string | null
           created_at?: string
           date_of_birth?: string | null
+          email?: string | null
           experience_level?:
             | Database["public"]["Enums"]["experience_level"]
             | null
@@ -7404,6 +7406,7 @@ export type Database = {
           country_code?: string | null
           created_at?: string
           date_of_birth?: string | null
+          email?: string | null
           experience_level?:
             | Database["public"]["Enums"]["experience_level"]
             | null

@@ -153,8 +153,28 @@ export default function Auth() {
   };
 
   // ── Sign In with Phone (after OTP verification) ──
-  const handleSignInPhoneVerified = (phone: string) => {
+  const handleSignInPhoneVerified = async (phone: string) => {
     setSignInVerifiedPhone(phone);
+    // Lookup account by phone
+    setLoading(true);
+    const { data: profile } = await supabase
+      .from("profiles")
+      .select("user_id")
+      .eq("phone", phone)
+      .maybeSingle();
+
+    if (!profile) {
+      setLoading(false);
+      toast({
+        variant: "destructive",
+        title: isAr ? "خطأ" : "Error",
+        description: isAr ? "لا يوجد حساب مرتبط بهذا الرقم" : "No account linked to this phone number",
+      });
+      setSignInPhoneStep("phone");
+      return;
+    }
+
+    setLoading(false);
     setSignInPhoneStep("password");
   };
 
@@ -166,9 +186,10 @@ export default function Auth() {
     }
 
     setLoading(true);
-    const { data: profile } = await supabase
-      .from("profiles")
-      .select("user_id")
+    // Find the email linked to this phone using raw query to access email column
+    const { data: profile } = await (supabase
+      .from("profiles") as any)
+      .select("user_id, email")
       .eq("phone", signInVerifiedPhone)
       .maybeSingle();
 
@@ -182,15 +203,22 @@ export default function Auth() {
       return;
     }
 
+    const accountEmail = profile.email;
+    if (!accountEmail) {
+      setLoading(false);
+      toast({
+        variant: "destructive",
+        title: isAr ? "خطأ" : "Error",
+        description: isAr ? "لا يوجد بريد إلكتروني مرتبط بهذا الحساب" : "No email linked to this account",
+      });
+      return;
+    }
+
+    const { error } = await supabase.auth.signInWithPassword({ email: accountEmail, password: signInPassword });
     setLoading(false);
-    toast({
-      title: isAr ? "أدخل بريدك الإلكتروني" : "Enter your email",
-      description: isAr
-        ? "تم التحقق من رقمك. أدخل بريدك الإلكتروني وكلمة المرور لتسجيل الدخول"
-        : "Phone verified. Enter your email and password to sign in",
-    });
-    setSignInMethod("email");
-    setSignInPhoneStep("phone");
+    if (error) {
+      toast({ variant: "destructive", title: isAr ? "خطأ" : "Error", description: error.message });
+    }
   };
 
   // ── Password Reset ──
@@ -218,18 +246,49 @@ export default function Auth() {
   };
 
   // ── Sign Up Step 1: Contact ──
-  const handleContactSubmit = () => {
+  const handleContactSubmit = async () => {
     setErrors({});
     const errs: Record<string, string> = {};
 
     if (signUpMethod === "phone") {
-      const fullPhone = phoneCode + phoneInput.replace(/\s/g, "");
-      if (!/^\+?[1-9]\d{7,14}$/.test(fullPhone)) {
+      const digitsOnly = phoneInput.replace(/\s/g, "");
+      // Validate minimum 7 digits, maximum 15 digits (ITU-T E.164)
+      if (digitsOnly.length < 7 || digitsOnly.length > 15) {
+        errs.phone = isAr ? "طول رقم الهاتف غير صالح (7-15 رقم)" : "Invalid phone length (7-15 digits)";
+      }
+      const fullPhone = phoneCode + digitsOnly;
+      if (!errs.phone && !/^\+?[1-9]\d{7,14}$/.test(fullPhone)) {
         errs.phone = isAr ? "رقم الهاتف غير صالح" : "Invalid phone number";
+      }
+      // Check if phone already registered
+      if (!errs.phone) {
+        setLoading(true);
+        const { data: existingPhone } = await supabase
+          .from("profiles")
+          .select("user_id")
+          .eq("phone", fullPhone)
+          .maybeSingle();
+        setLoading(false);
+        if (existingPhone) {
+          errs.phone = isAr ? "هذا الرقم مسجل بالفعل. يرجى تسجيل الدخول" : "This number is already registered. Please sign in";
+        }
       }
     } else {
       if (!z.string().email().safeParse(emailInput).success) {
         errs.email = isAr ? "البريد الإلكتروني غير صالح" : "Invalid email address";
+      }
+      // Check if email already registered
+      if (!errs.email) {
+        setLoading(true);
+        const { data: existingEmail } = await (supabase
+          .from("profiles") as any)
+          .select("user_id")
+          .eq("email", emailInput.trim().toLowerCase())
+          .maybeSingle();
+        setLoading(false);
+        if (existingEmail) {
+          errs.email = isAr ? "هذا البريد مسجل بالفعل. يرجى تسجيل الدخول" : "This email is already registered. Please sign in";
+        }
       }
     }
 
@@ -255,7 +314,7 @@ export default function Auth() {
   };
 
   // ── Sign Up Step 3: Details ──
-  const handleDetailsSubmit = () => {
+  const handleDetailsSubmit = async () => {
     setErrors({});
     const errs: Record<string, string> = {};
     if (!fullName.trim() || fullName.trim().length < 2) {
@@ -264,6 +323,19 @@ export default function Auth() {
     if (signUpMethod === "phone") {
       if (!z.string().email().safeParse(email).success) {
         errs.email = isAr ? "البريد الإلكتروني مطلوب لإنشاء الحساب" : "Email required for account creation";
+      }
+      // Check if email already registered
+      if (!errs.email && email) {
+        setLoading(true);
+        const { data: existingEmail } = await (supabase
+          .from("profiles") as any)
+          .select("user_id")
+          .eq("email", email.trim().toLowerCase())
+          .maybeSingle();
+        setLoading(false);
+        if (existingEmail) {
+          errs.email = isAr ? "هذا البريد مسجل بالفعل" : "This email is already registered";
+        }
       }
     }
     if (Object.keys(errs).length > 0) { setErrors(errs); return; }
@@ -313,7 +385,8 @@ export default function Auth() {
           phone: verifiedPhone || null,
           country_code: countryCode || null,
           preferred_language: language,
-        })
+          email: accountEmail,
+        } as any)
         .eq("user_id", data.user.id);
     }
 
@@ -603,7 +676,7 @@ export default function Auth() {
     );
   }
 
-  // ── Sign In: Phone password step ──
+  // ── Sign In: Phone password step (no email needed) ──
   if (!isSignUp && signInMethod === "phone" && signInPhoneStep === "password") {
     return (
       <AuthLayout stage="login" isAr={isAr}>
@@ -626,22 +699,17 @@ export default function Auth() {
             </div>
 
             <div className="space-y-1.5">
-              <Label className="text-xs">{isAr ? "البريد الإلكتروني" : "Email"}</Label>
-              <Input type="email" value={signInEmail} onChange={(e) => setSignInEmail(e.target.value)} placeholder={isAr ? "البريد المرتبط بحسابك" : "Email linked to your account"} />
-            </div>
-
-            <div className="space-y-1.5">
               <Label className="text-xs">{isAr ? "كلمة المرور" : "Password"}</Label>
-              <Input type="password" value={signInPassword} onChange={(e) => setSignInPassword(e.target.value)} placeholder="••••••••" onKeyDown={(e) => e.key === "Enter" && handleSignInEmail()} />
+              <Input type="password" value={signInPassword} onChange={(e) => setSignInPassword(e.target.value)} placeholder="••••••••" onKeyDown={(e) => e.key === "Enter" && handleSignInPhonePassword()} />
               {errors.signInPassword && <p className="text-xs text-destructive">{errors.signInPassword}</p>}
             </div>
 
-            <Button className="w-full gap-2" size="lg" onClick={handleSignInEmail} disabled={loading}>
+            <Button className="w-full gap-2" size="lg" onClick={handleSignInPhonePassword} disabled={loading}>
               {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : <LogIn className="h-4 w-4" />}
               {isAr ? "تسجيل الدخول" : "Sign In"}
             </Button>
 
-            <button type="button" className="w-full text-center text-xs text-primary hover:underline" onClick={() => { setSignInPhoneStep("phone"); setSignInMethod("phone"); }}>
+            <button type="button" className="w-full text-center text-xs text-primary hover:underline" onClick={() => { setSignInPhoneStep("phone"); }}>
               {isAr ? "رجوع" : "Back"}
             </button>
           </div>
