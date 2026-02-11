@@ -22,7 +22,7 @@ const CompetitionDetail = lazy(() => import("./pages/CompetitionDetail"));
 const CreateCompetition = lazy(() => import("./pages/CreateCompetition"));
 const EditCompetition = lazy(() => import("./pages/EditCompetition"));
 const CompetitionResults = lazy(() => import("./pages/CompetitionResults"));
-const Judging = lazy(() => import("./pages/Judging"));
+const EvaluationCenter = lazy(() => import("./pages/admin/EvaluationCenter"));
 const NotificationPreferences = lazy(() => import("./pages/NotificationPreferences"));
 const Search = lazy(() => import("./pages/Search"));
 const PublicProfile = lazy(() => import("./pages/PublicProfile"));
@@ -166,7 +166,7 @@ const App = () => (
                 <Route path="/competitions/:id" element={<CompetitionDetail />} />
                 <Route path="/competitions/:id/edit" element={<ProtectedRoute><EditCompetition /></ProtectedRoute>} />
                 <Route path="/competitions/:id/results" element={<CompetitionResults />} />
-                <Route path="/judging" element={<ProtectedRoute><Judging /></ProtectedRoute>} />
+                {/* Judging merged into tasting sessions */}
                 <Route path="/knowledge" element={<ProtectedRoute><KnowledgePortal /></ProtectedRoute>} />
                 <Route path="/notification-preferences" element={<ProtectedRoute><NotificationPreferences /></ProtectedRoute>} />
                 <Route path="/search" element={<Search />} />
@@ -237,11 +237,11 @@ const App = () => (
                   <Route path="exhibitions" element={<ExhibitionsAdmin />} />
                   <Route path="qr-codes" element={<QRCodesAdmin />} />
                   <Route path="entities" element={<EntitiesAdmin />} />
-                  <Route path="judges" element={<JudgesAdmin />} />
+                   <Route path="judges" element={<JudgesAdmin />} />
+                   <Route path="evaluation" element={<EvaluationCenter />} />
                    <Route path="communications" element={<CommunicationsAdmin />} />
                    <Route path="company-roles" element={<CompaniesAdmin />} />
                    <Route path="countries" element={<CountriesAdmin />} />
-                   <Route path="tastings" element={<TastingsAdmin />} />
                    <Route path="templates" element={<CommunicationTemplatesAdmin />} />
                    <Route path="mentorship" element={<MentorshipAdmin />} />
                    <Route path="establishments" element={<EstablishmentsAdmin />} />

@@ -1,5 +1,7 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
+import { useQuery } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useCreateTastingSession, useAddTastingCriteria, useCriteriaPresets, EvalMethod } from "@/hooks/useTasting";
 import { Header } from "@/components/Header";
@@ -13,16 +15,40 @@ import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
+import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
-import { ArrowLeft, UtensilsCrossed } from "lucide-react";
+import { ArrowLeft, UtensilsCrossed, Trophy, Layers } from "lucide-react";
+
+type SessionMode = "standalone" | "competition";
 
 export default function CreateTasting() {
   const { language } = useLanguage();
   const isAr = language === "ar";
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const preselectedCompetitionId = searchParams.get("competition_id");
+
   const createSession = useCreateTastingSession();
   const addCriteria = useAddTastingCriteria();
   const { data: presets } = useCriteriaPresets();
+
+  const [mode, setMode] = useState<SessionMode>(preselectedCompetitionId ? "competition" : "standalone");
+
+  // Fetch active competitions for linking
+  const { data: competitions } = useQuery({
+    queryKey: ["active-competitions-for-tasting"],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("competitions")
+        .select("id, title, title_ar, status, competition_start")
+        .in("status", ["draft", "registration_open", "registration_closed", "in_progress", "judging"])
+        .order("competition_start", { ascending: false })
+        .limit(50);
+      if (error) throw error;
+      return data || [];
+    },
+    enabled: mode === "competition",
+  });
 
   const [form, setForm] = useState({
     title: "",
@@ -38,6 +64,7 @@ export default function CreateTasting() {
     country: "",
     is_blind_tasting: false,
     allow_notes: true,
+    competition_id: preselectedCompetitionId || "",
   });
 
   const [submitting, setSubmitting] = useState(false);
@@ -46,6 +73,10 @@ export default function CreateTasting() {
     e.preventDefault();
     if (!form.title.trim()) {
       toast.error(isAr ? "يرجى إدخال العنوان" : "Please enter a title");
+      return;
+    }
+    if (mode === "competition" && !form.competition_id) {
+      toast.error(isAr ? "يرجى اختيار المسابقة" : "Please select a competition");
       return;
     }
     setSubmitting(true);
@@ -63,6 +94,7 @@ export default function CreateTasting() {
         country: form.country || null,
         is_blind_tasting: form.is_blind_tasting,
         allow_notes: form.allow_notes,
+        competition_id: mode === "competition" ? form.competition_id : null,
         status: "draft" as any,
       });
 
@@ -94,7 +126,7 @@ export default function CreateTasting() {
 
   return (
     <>
-      <SEOHead title={isAr ? "إنشاء جلسة تذوق" : "Create Tasting Session"} />
+      <SEOHead title={isAr ? "إنشاء جلسة تقييم" : "Create Evaluation Session"} />
       <div className="min-h-screen bg-background" dir={isAr ? "rtl" : "ltr"}>
         <Header />
         <main className="container mx-auto max-w-2xl px-4 py-8">
@@ -108,12 +140,67 @@ export default function CreateTasting() {
               <UtensilsCrossed className="h-6 w-6 text-primary" />
             </div>
             <div>
-              <h1 className="text-2xl font-bold">{isAr ? "جلسة تذوق جديدة" : "New Tasting Session"}</h1>
-              <p className="text-sm text-muted-foreground">{isAr ? "أنشئ جلسة تقييم طعام" : "Set up a food evaluation session"}</p>
+              <h1 className="text-2xl font-bold">{isAr ? "جلسة تقييم جديدة" : "New Evaluation Session"}</h1>
+              <p className="text-sm text-muted-foreground">{isAr ? "تقييم مسابقة أو تذوق منتجات" : "Competition evaluation or product tasting"}</p>
             </div>
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-6">
+            {/* Session Mode */}
+            <Card>
+              <CardHeader><CardTitle className="text-base">{isAr ? "نوع الجلسة" : "Session Mode"}</CardTitle></CardHeader>
+              <CardContent className="space-y-4">
+                <RadioGroup value={mode} onValueChange={(v) => setMode(v as SessionMode)}>
+                  <div className={`flex items-center gap-3 rounded-lg border p-4 transition-colors ${mode === "competition" ? "border-primary bg-primary/5" : ""}`}>
+                    <RadioGroupItem value="competition" id="mode-competition" />
+                    <Label htmlFor="mode-competition" className="flex-1 cursor-pointer">
+                      <div className="flex items-center gap-2">
+                        <Trophy className="h-4 w-4 text-primary" />
+                        <span className="font-medium">{isAr ? "تقييم مسابقة" : "Competition Evaluation"}</span>
+                      </div>
+                      <p className="mt-1 text-xs text-muted-foreground">
+                        {isAr ? "مرتبط بمسابقة محددة - التقييم يؤثر على النتائج والشهادات" : "Linked to a competition — scoring affects results & certificates"}
+                      </p>
+                    </Label>
+                  </div>
+                  <div className={`flex items-center gap-3 rounded-lg border p-4 transition-colors ${mode === "standalone" ? "border-primary bg-primary/5" : ""}`}>
+                    <RadioGroupItem value="standalone" id="mode-standalone" />
+                    <Label htmlFor="mode-standalone" className="flex-1 cursor-pointer">
+                      <div className="flex items-center gap-2">
+                        <Layers className="h-4 w-4 text-chart-4" />
+                        <span className="font-medium">{isAr ? "تذوق منتجات" : "Product Tasting"}</span>
+                      </div>
+                      <p className="mt-1 text-xs text-muted-foreground">
+                        {isAr ? "جلسة مستقلة لتقييم منتجات أو أطباق بدون ربط بمسابقة" : "Standalone session for evaluating products or dishes independently"}
+                      </p>
+                    </Label>
+                  </div>
+                </RadioGroup>
+
+                {/* Competition Selector */}
+                {mode === "competition" && (
+                  <div className="space-y-2">
+                    <Label>{isAr ? "المسابقة المرتبطة" : "Linked Competition"} *</Label>
+                    <Select value={form.competition_id} onValueChange={v => setForm(f => ({ ...f, competition_id: v }))}>
+                      <SelectTrigger>
+                        <SelectValue placeholder={isAr ? "اختر المسابقة..." : "Select competition..."} />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {competitions?.map(c => (
+                          <SelectItem key={c.id} value={c.id}>
+                            <div className="flex items-center gap-2">
+                              <span>{isAr && c.title_ar ? c.title_ar : c.title}</span>
+                              <Badge variant="outline" className="text-[10px]">{c.status.replace("_", " ")}</Badge>
+                            </div>
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+
             {/* Basic Info */}
             <Card>
               <CardHeader><CardTitle className="text-base">{isAr ? "المعلومات الأساسية" : "Basic Info"}</CardTitle></CardHeader>

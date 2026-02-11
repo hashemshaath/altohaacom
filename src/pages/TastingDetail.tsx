@@ -1,5 +1,7 @@
 import { useState } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, Link } from "react-router-dom";
+import { useQuery } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useAuth } from "@/contexts/AuthContext";
 import {
@@ -9,6 +11,8 @@ import {
 } from "@/hooks/useTasting";
 import { TastingEvaluationPanel } from "@/components/tasting/TastingEvaluationPanel";
 import { TastingResultsPanel } from "@/components/tasting/TastingResultsPanel";
+import { ScoringAnalytics } from "@/components/judging/ScoringAnalytics";
+import { EntryComparison } from "@/components/judging/EntryComparison";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { SEOHead } from "@/components/SEOHead";
@@ -25,7 +29,8 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Separator } from "@/components/ui/separator";
 import {
   ArrowLeft, Calendar, MapPin, Eye, Plus, UtensilsCrossed, ClipboardList,
-  BarChart3, Settings2, Trash2, CheckCircle2, XCircle, RefreshCw, FileEdit
+  BarChart3, Settings2, Trash2, CheckCircle2, XCircle, RefreshCw, FileEdit,
+  Trophy, ArrowLeftRight
 } from "lucide-react";
 import { format } from "date-fns";
 import { toast } from "sonner";
@@ -55,6 +60,21 @@ export default function TastingDetail() {
   const addCriteria = useAddTastingCriteria();
   const deleteCriterion = useDeleteTastingCriterion();
   const updateSession = useUpdateTastingSession();
+
+  // Fetch linked competition info
+  const { data: linkedCompetition } = useQuery({
+    queryKey: ["linked-competition", session?.competition_id],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("competitions")
+        .select("id, title, title_ar, status")
+        .eq("id", session!.competition_id!)
+        .single();
+      if (error) throw error;
+      return data;
+    },
+    enabled: !!session?.competition_id,
+  });
 
   const [newEntry, setNewEntry] = useState({ dish_name: "", dish_name_ar: "", chef_name: "", chef_name_ar: "", category: "", description: "" });
   const [entryDialogOpen, setEntryDialogOpen] = useState(false);
@@ -209,12 +229,26 @@ export default function TastingDetail() {
                   {session.is_blind_tasting && (
                     <Badge variant="outline" className="gap-1"><Eye className="h-3 w-3" />{isAr ? "تذوق أعمى" : "Blind Tasting"}</Badge>
                   )}
+                  {linkedCompetition ? (
+                    <Badge variant="default" className="gap-1">
+                      <Trophy className="h-3 w-3" />
+                      {isAr ? "مسابقة" : "Competition"}
+                    </Badge>
+                  ) : (
+                    <Badge variant="secondary" className="text-xs">{isAr ? "تذوق مستقل" : "Standalone"}</Badge>
+                  )}
                 </div>
                 <h1 className="text-2xl font-bold sm:text-3xl">{isAr && session.title_ar ? session.title_ar : session.title}</h1>
                 {session.description && (
                   <p className="mt-2 text-muted-foreground max-w-2xl">{isAr && session.description_ar ? session.description_ar : session.description}</p>
                 )}
                 <div className="mt-3 flex flex-wrap gap-4 text-sm text-muted-foreground">
+                  {linkedCompetition && (
+                    <Link to={`/competitions/${linkedCompetition.id}`} className="flex items-center gap-1.5 text-primary hover:underline">
+                      <Trophy className="h-4 w-4" />
+                      {isAr && linkedCompetition.title_ar ? linkedCompetition.title_ar : linkedCompetition.title}
+                    </Link>
+                  )}
                   {session.session_date && (
                     <span className="flex items-center gap-1.5">
                       <Calendar className="h-4 w-4" />
@@ -271,7 +305,7 @@ export default function TastingDetail() {
 
           {/* Tabs */}
           <Tabs defaultValue="evaluate">
-            <TabsList className="mb-4">
+            <TabsList className="mb-4 flex-wrap">
               <TabsTrigger value="evaluate" className="gap-1.5">
                 <ClipboardList className="h-3.5 w-3.5" />
                 {isAr ? "التقييم" : "Evaluate"}
@@ -280,6 +314,18 @@ export default function TastingDetail() {
                 <BarChart3 className="h-3.5 w-3.5" />
                 {isAr ? "النتائج" : "Results"}
               </TabsTrigger>
+              {session.competition_id && (
+                <>
+                  <TabsTrigger value="analytics" className="gap-1.5">
+                    <BarChart3 className="h-3.5 w-3.5" />
+                    {isAr ? "تحليلات التقييم" : "Scoring Analytics"}
+                  </TabsTrigger>
+                  <TabsTrigger value="comparison" className="gap-1.5">
+                    <ArrowLeftRight className="h-3.5 w-3.5" />
+                    {isAr ? "المقارنة" : "Compare"}
+                  </TabsTrigger>
+                </>
+              )}
               {isOrganizer && (
                 <TabsTrigger value="manage" className="gap-1.5">
                   <Settings2 className="h-3.5 w-3.5" />
@@ -325,6 +371,17 @@ export default function TastingDetail() {
             <TabsContent value="results">
               <TastingResultsPanel entries={entries} criteria={criteria} scores={scores} evalMethod={session.eval_method} />
             </TabsContent>
+
+            {session.competition_id && (
+              <>
+                <TabsContent value="analytics">
+                  <ScoringAnalytics competitionId={session.competition_id} />
+                </TabsContent>
+                <TabsContent value="comparison">
+                  <EntryComparison competitionId={session.competition_id} />
+                </TabsContent>
+              </>
+            )}
 
             {isOrganizer && (
               <TabsContent value="manage">
