@@ -42,11 +42,22 @@ export interface CompetitionFormData {
   maxParticipants: number | "";
   categories: CategoryForm[];
   criteria: CriteriaForm[];
-  // New fields
+  // Exhibition linkage
   exhibitionId: string | null;
   selectedTypeIds: string[];
   supervisingBodyIds: string[];
   judgeIds: string[];
+  // Registration fee settings
+  registrationFeeType: "free" | "paid";
+  registrationFee: number;
+  registrationCurrency: string;
+  registrationTaxRate: number;
+  registrationTaxName: string;
+  registrationTaxNameAr: string;
+  // Entry types
+  allowedEntryTypes: string[];
+  maxTeamSize: number;
+  minTeamSize: number;
 }
 
 export const emptyCategory: CategoryForm = {

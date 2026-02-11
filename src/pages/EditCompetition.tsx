@@ -128,6 +128,15 @@ export default function EditCompetition() {
         selectedTypeIds: existingTypeAssignments.map((t) => t.type_id),
         supervisingBodyIds: existingSupervisingBodies.map((s) => s.entity_id),
         judgeIds: existingJudges.map((j) => j.judge_id),
+        registrationFeeType: (competition as any).registration_fee_type || "free",
+        registrationFee: (competition as any).registration_fee || 0,
+        registrationCurrency: (competition as any).registration_currency || "USD",
+        registrationTaxRate: (competition as any).registration_tax_rate || 0,
+        registrationTaxName: (competition as any).registration_tax_name || "VAT",
+        registrationTaxNameAr: (competition as any).registration_tax_name_ar || "ضريبة القيمة المضافة",
+        allowedEntryTypes: (competition as any).allowed_entry_types || ["individual"],
+        maxTeamSize: (competition as any).max_team_size || 5,
+        minTeamSize: (competition as any).min_team_size || 2,
         categories: existingCategories.map((c) => ({
           id: c.id,
           name: c.name,
@@ -178,6 +187,15 @@ export default function EditCompetition() {
         edition_year: data.editionYear || null,
         max_participants: data.maxParticipants || null,
         exhibition_id: data.exhibitionId || null,
+        registration_fee_type: data.registrationFeeType,
+        registration_fee: data.registrationFee,
+        registration_currency: data.registrationCurrency || null,
+        registration_tax_rate: data.registrationTaxRate,
+        registration_tax_name: data.registrationTaxName || null,
+        registration_tax_name_ar: data.registrationTaxNameAr || null,
+        allowed_entry_types: data.allowedEntryTypes,
+        max_team_size: data.maxTeamSize,
+        min_team_size: data.minTeamSize,
       }).eq("id", id);
       if (error) throw error;
 

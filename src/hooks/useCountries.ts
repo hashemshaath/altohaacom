@@ -10,6 +10,9 @@ export interface Country {
   currency_code: string | null;
   supported_languages: string[] | null;
   is_active: boolean | null;
+  tax_rate: number | null;
+  tax_name: string | null;
+  tax_name_ar: string | null;
 }
 
 export function useCountries(activeOnly = true) {
@@ -18,7 +21,7 @@ export function useCountries(activeOnly = true) {
     queryFn: async () => {
       let query = supabase
         .from("countries")
-        .select("code, name, name_ar, phone_code, phone_format, currency_code, supported_languages, is_active")
+        .select("code, name, name_ar, phone_code, phone_format, currency_code, supported_languages, is_active, tax_rate, tax_name, tax_name_ar")
         .order("name");
 
       if (activeOnly) {

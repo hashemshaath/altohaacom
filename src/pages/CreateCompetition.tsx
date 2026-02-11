@@ -35,6 +35,15 @@ const initialData: CompetitionFormData = {
   selectedTypeIds: [],
   supervisingBodyIds: [],
   judgeIds: [],
+  registrationFeeType: "free",
+  registrationFee: 0,
+  registrationCurrency: "USD",
+  registrationTaxRate: 0,
+  registrationTaxName: "VAT",
+  registrationTaxNameAr: "ضريبة القيمة المضافة",
+  allowedEntryTypes: ["individual"],
+  maxTeamSize: 5,
+  minTeamSize: 2,
 };
 
 const STEP_LABELS_EN = ["Exhibition", "Basic Info", "Types & Categories", "Schedule", "Supervising & Judges", "Criteria", "Review"];
@@ -94,6 +103,15 @@ export default function CreateCompetition() {
           organizer_id: user.id,
           status: "draft",
           exhibition_id: data.exhibitionId || null,
+          registration_fee_type: data.registrationFeeType,
+          registration_fee: data.registrationFee,
+          registration_currency: data.registrationCurrency || null,
+          registration_tax_rate: data.registrationTaxRate,
+          registration_tax_name: data.registrationTaxName || null,
+          registration_tax_name_ar: data.registrationTaxNameAr || null,
+          allowed_entry_types: data.allowedEntryTypes,
+          max_team_size: data.maxTeamSize,
+          min_team_size: data.minTeamSize,
         })
         .select()
         .single();

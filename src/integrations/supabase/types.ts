@@ -2642,11 +2642,26 @@ export type Database = {
           dish_description: string | null
           dish_image_url: string | null
           dish_name: string | null
+          entry_type: string
           id: string
+          notes: string | null
+          organization_id: string | null
+          organization_name: string | null
+          organization_name_ar: string | null
+          organization_type: string | null
+          paid_at: string | null
           participant_id: string
+          payment_amount: number | null
+          payment_currency: string | null
+          payment_reference: string | null
+          payment_status: string | null
           registered_at: string
           registration_number: string | null
           status: string
+          tax_amount: number | null
+          tax_rate: number | null
+          team_name: string | null
+          team_name_ar: string | null
         }
         Insert: {
           approved_at?: string | null
@@ -2656,11 +2671,26 @@ export type Database = {
           dish_description?: string | null
           dish_image_url?: string | null
           dish_name?: string | null
+          entry_type?: string
           id?: string
+          notes?: string | null
+          organization_id?: string | null
+          organization_name?: string | null
+          organization_name_ar?: string | null
+          organization_type?: string | null
+          paid_at?: string | null
           participant_id: string
+          payment_amount?: number | null
+          payment_currency?: string | null
+          payment_reference?: string | null
+          payment_status?: string | null
           registered_at?: string
           registration_number?: string | null
           status?: string
+          tax_amount?: number | null
+          tax_rate?: number | null
+          team_name?: string | null
+          team_name_ar?: string | null
         }
         Update: {
           approved_at?: string | null
@@ -2670,11 +2700,26 @@ export type Database = {
           dish_description?: string | null
           dish_image_url?: string | null
           dish_name?: string | null
+          entry_type?: string
           id?: string
+          notes?: string | null
+          organization_id?: string | null
+          organization_name?: string | null
+          organization_name_ar?: string | null
+          organization_type?: string | null
+          paid_at?: string | null
           participant_id?: string
+          payment_amount?: number | null
+          payment_currency?: string | null
+          payment_reference?: string | null
+          payment_status?: string | null
           registered_at?: string
           registration_number?: string | null
           status?: string
+          tax_amount?: number | null
+          tax_rate?: number | null
+          team_name?: string | null
+          team_name_ar?: string | null
         }
         Relationships: [
           {
@@ -3129,6 +3174,7 @@ export type Database = {
       }
       competitions: {
         Row: {
+          allowed_entry_types: string[] | null
           city: string | null
           competition_end: string
           competition_number: string | null
@@ -3144,9 +3190,17 @@ export type Database = {
           id: string
           is_virtual: boolean | null
           max_participants: number | null
+          max_team_size: number | null
+          min_team_size: number | null
           organizer_id: string
+          registration_currency: string | null
           registration_end: string | null
+          registration_fee: number | null
+          registration_fee_type: string | null
           registration_start: string | null
+          registration_tax_name: string | null
+          registration_tax_name_ar: string | null
+          registration_tax_rate: number | null
           rules_summary: string | null
           rules_summary_ar: string | null
           scoring_notes: string | null
@@ -3160,6 +3214,7 @@ export type Database = {
           venue_ar: string | null
         }
         Insert: {
+          allowed_entry_types?: string[] | null
           city?: string | null
           competition_end: string
           competition_number?: string | null
@@ -3175,9 +3230,17 @@ export type Database = {
           id?: string
           is_virtual?: boolean | null
           max_participants?: number | null
+          max_team_size?: number | null
+          min_team_size?: number | null
           organizer_id: string
+          registration_currency?: string | null
           registration_end?: string | null
+          registration_fee?: number | null
+          registration_fee_type?: string | null
           registration_start?: string | null
+          registration_tax_name?: string | null
+          registration_tax_name_ar?: string | null
+          registration_tax_rate?: number | null
           rules_summary?: string | null
           rules_summary_ar?: string | null
           scoring_notes?: string | null
@@ -3191,6 +3254,7 @@ export type Database = {
           venue_ar?: string | null
         }
         Update: {
+          allowed_entry_types?: string[] | null
           city?: string | null
           competition_end?: string
           competition_number?: string | null
@@ -3206,9 +3270,17 @@ export type Database = {
           id?: string
           is_virtual?: boolean | null
           max_participants?: number | null
+          max_team_size?: number | null
+          min_team_size?: number | null
           organizer_id?: string
+          registration_currency?: string | null
           registration_end?: string | null
+          registration_fee?: number | null
+          registration_fee_type?: string | null
           registration_start?: string | null
+          registration_tax_name?: string | null
+          registration_tax_name_ar?: string | null
+          registration_tax_rate?: number | null
           rules_summary?: string | null
           rules_summary_ar?: string | null
           scoring_notes?: string | null
@@ -7551,6 +7623,65 @@ export type Database = {
             columns: ["category_id"]
             isOneToOne: false
             referencedRelation: "knowledge_categories"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      registration_team_members: {
+        Row: {
+          avatar_url: string | null
+          created_at: string
+          email: string | null
+          id: string
+          is_captain: boolean | null
+          job_title: string | null
+          job_title_ar: string | null
+          member_name: string
+          member_name_ar: string | null
+          phone: string | null
+          registration_id: string
+          role_in_team: string | null
+          sort_order: number | null
+          user_id: string | null
+        }
+        Insert: {
+          avatar_url?: string | null
+          created_at?: string
+          email?: string | null
+          id?: string
+          is_captain?: boolean | null
+          job_title?: string | null
+          job_title_ar?: string | null
+          member_name: string
+          member_name_ar?: string | null
+          phone?: string | null
+          registration_id: string
+          role_in_team?: string | null
+          sort_order?: number | null
+          user_id?: string | null
+        }
+        Update: {
+          avatar_url?: string | null
+          created_at?: string
+          email?: string | null
+          id?: string
+          is_captain?: boolean | null
+          job_title?: string | null
+          job_title_ar?: string | null
+          member_name?: string
+          member_name_ar?: string | null
+          phone?: string | null
+          registration_id?: string
+          role_in_team?: string | null
+          sort_order?: number | null
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "registration_team_members_registration_id_fkey"
+            columns: ["registration_id"]
+            isOneToOne: false
+            referencedRelation: "competition_registrations"
             referencedColumns: ["id"]
           },
         ]
