@@ -13,7 +13,7 @@ import { Input } from "@/components/ui/input";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Link } from "react-router-dom";
-import { Search, ShoppingBag, ShoppingCart, Star, Package, Laptop, Wrench } from "lucide-react";
+import { Search, ShoppingBag, ShoppingCart, Star, Package, Laptop, Wrench, Percent } from "lucide-react";
 import { useCart } from "@/hooks/useCart";
 import { CartSheet } from "@/components/shop/CartSheet";
 import { toast } from "@/hooks/use-toast";
@@ -70,8 +70,12 @@ export default function Shop() {
       title_ar: product.title_ar,
       image_url: product.image_url,
       price: product.price,
+      compare_at_price: product.compare_at_price,
+      discount_percent: product.discount_percent || 0,
       currency: product.currency,
       stock_quantity: product.stock_quantity || 999,
+      tax_rate: product.tax_rate || 0,
+      tax_inclusive: product.tax_inclusive || false,
     });
     toast({ title: isAr ? `تمت إضافة "${title}" إلى السلة` : `"${title}" added to cart` });
   };
@@ -259,10 +263,23 @@ export default function Shop() {
                       </h3>
                     </Link>
                     <Badge variant="outline" className="mb-2 w-fit text-[10px]">{product.category}</Badge>
+                    {product.discount_percent > 0 && (
+                      <Badge variant="destructive" className="absolute end-2.5 top-2.5 text-[10px] gap-0.5">
+                        <Percent className="h-2.5 w-2.5" />
+                        {product.discount_percent}% {isAr ? "خصم" : "OFF"}
+                      </Badge>
+                    )}
                     <div className="mt-auto flex items-center justify-between pt-3 border-t border-border/50">
-                      <span className="text-lg font-bold text-primary">
-                        {product.currency} {product.price.toFixed(2)}
-                      </span>
+                      <div>
+                        <span className="text-lg font-bold text-primary">
+                          {product.currency} {product.price.toFixed(2)}
+                        </span>
+                        {product.compare_at_price && product.compare_at_price > product.price && (
+                          <span className="ms-1.5 text-xs text-muted-foreground line-through">
+                            {product.currency} {product.compare_at_price.toFixed(2)}
+                          </span>
+                        )}
+                      </div>
                       <Button
                         size="sm"
                         disabled={isOutOfStock}
