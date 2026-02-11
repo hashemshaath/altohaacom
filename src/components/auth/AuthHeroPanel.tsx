@@ -72,11 +72,11 @@ interface Props {
 }
 
 /* ── Floating Orb ── */
-function FloatingOrb({ className }: { className?: string }) {
+function FloatingOrb({ className, duration }: { className?: string; duration?: number }) {
   return (
     <div
-      className={`absolute rounded-full blur-3xl opacity-20 ${className}`}
-      style={{ animationDuration: `${6 + Math.random() * 4}s`, animation: "pulse 6s ease-in-out infinite" }}
+      className={`absolute rounded-full blur-3xl opacity-20 animate-pulse ${className}`}
+      style={{ animationDuration: `${duration ?? 6}s` }}
     />
   );
 }
@@ -130,9 +130,9 @@ export function AuthHeroPanel({ stage, isAr, currentStep, totalSteps = 4 }: Prop
       <div className="absolute inset-0 bg-gradient-to-br from-primary/15 via-transparent to-transparent" />
 
       {/* Orbs */}
-      <FloatingOrb className="h-64 w-64 bg-primary/30 -top-20 -start-20" />
-      <FloatingOrb className="h-48 w-48 bg-accent/20 top-1/3 end-[-40px]" />
-      <FloatingOrb className="h-32 w-32 bg-primary/20 bottom-40 start-10" />
+      <FloatingOrb className="h-64 w-64 bg-primary/30 -top-20 -start-20" duration={7} />
+      <FloatingOrb className="h-48 w-48 bg-accent/20 top-1/3 end-[-40px]" duration={9} />
+      <FloatingOrb className="h-32 w-32 bg-primary/20 bottom-40 start-10" duration={8} />
 
       {/* Logo */}
       <div className="relative z-10 p-8 xl:p-10">
