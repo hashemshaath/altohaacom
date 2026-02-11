@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useNavigate, useSearchParams, useLocation } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { supabase } from "@/integrations/supabase/client";
@@ -35,12 +35,10 @@ const DEFAULT_COUNTRY = "SA";
 const DEFAULT_PHONE_CODE = "+966";
 
 export default function Auth() {
-  const [searchParams] = useSearchParams();
   const location = useLocation();
-  const tab = searchParams.get("tab");
-  const isResetMode = tab === "reset" || location.pathname === "/reset-password";
+  const isResetMode = location.pathname === "/reset-password";
   const [isSignUp, setIsSignUp] = useState(
-    tab === "signup" || tab === "register" || location.pathname === "/register"
+    location.pathname === "/register"
   );
   const [signUpStep, setSignUpStep] = useState<SignUpStep>("contact");
   const [signUpMethod, setSignUpMethod] = useState<SignUpMethod>("phone");
