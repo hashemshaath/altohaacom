@@ -56,7 +56,7 @@ export default function ChefsLanding() {
               </p>
               <div className="mt-8 flex gap-3 justify-center flex-wrap">
                 <Button size="lg" className="gap-2" asChild>
-                  <Link to="/auth?tab=signup">
+                  <Link to="/register">
                     {isAr ? "انضم مجاناً" : "Join Free"}
                     <ArrowRight className="h-4 w-4" />
                   </Link>
@@ -160,7 +160,7 @@ export default function ChefsLanding() {
             </p>
             <div className="flex flex-wrap justify-center gap-3">
               <Button size="lg" className="shadow-lg shadow-primary/20" asChild>
-                <Link to="/auth?tab=signup">{isAr ? "سجل مجاناً" : "Sign Up Free"}<ArrowRight className="ms-2 h-4 w-4" /></Link>
+                <Link to="/register">{isAr ? "سجل مجاناً" : "Sign Up Free"}<ArrowRight className="ms-2 h-4 w-4" /></Link>
               </Button>
               <Button size="lg" variant="outline" asChild>
                 <Link to="/competitions">{isAr ? "تصفح المسابقات" : "Browse Competitions"}</Link>

@@ -129,7 +129,7 @@ export default function RegisterCompany() {
   const handleSubmit = async () => {
     if (!user) {
       toast({ title: isAr ? "يرجى تسجيل الدخول أولاً" : "Please sign in first", variant: "destructive" });
-      navigate("/auth");
+      navigate("/login");
       return;
     }
 

@@ -627,7 +627,7 @@ export default function CompetitionDetail() {
                     </Button>
                   ) : !user ? (
                     <Button asChild className="w-full" variant="outline">
-                      <Link to="/auth">{isAr ? "سجل الدخول للتسجيل" : "Sign in to Register"}</Link>
+                      <Link to="/login">{isAr ? "سجل الدخول للتسجيل" : "Sign in to Register"}</Link>
                     </Button>
                   ) : (
                     <p className="text-xs text-muted-foreground text-center">{isAr ? "التسجيل مغلق حالياً" : "Registration is currently closed."}</p>

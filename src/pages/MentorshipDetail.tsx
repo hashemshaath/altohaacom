@@ -213,7 +213,7 @@ export default function MentorshipDetail() {
                         </DialogContent>
                       </Dialog>
                     ) : (
-                      <Link to="/auth">
+                      <Link to="/login">
                         <Button variant="outline" className="w-full">
                           {isAr ? "سجل الدخول أولاً" : "Sign in to Enroll"}
                         </Button>
