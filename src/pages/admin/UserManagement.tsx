@@ -540,7 +540,7 @@ export default function UserManagement() {
                             size="sm"
                             asChild
                           >
-                            <Link to={`/${profile.username || profile.user_id}`}>
+                            <Link to={`/admin/users/${profile.user_id}`}>
                               <Eye className="h-4 w-4" />
                             </Link>
                           </Button>

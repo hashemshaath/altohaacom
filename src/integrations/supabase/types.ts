@@ -3769,6 +3769,224 @@ export type Database = {
         }
         Relationships: []
       }
+      customer_custom_fields: {
+        Row: {
+          created_at: string
+          field_name: string
+          field_type: string | null
+          field_value: string | null
+          id: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          field_name: string
+          field_type?: string | null
+          field_value?: string | null
+          id?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          field_name?: string
+          field_type?: string | null
+          field_value?: string | null
+          id?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      customer_group_members: {
+        Row: {
+          added_by: string | null
+          created_at: string
+          group_id: string
+          id: string
+          user_id: string
+        }
+        Insert: {
+          added_by?: string | null
+          created_at?: string
+          group_id: string
+          id?: string
+          user_id: string
+        }
+        Update: {
+          added_by?: string | null
+          created_at?: string
+          group_id?: string
+          id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "customer_group_members_group_id_fkey"
+            columns: ["group_id"]
+            isOneToOne: false
+            referencedRelation: "customer_groups"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      customer_groups: {
+        Row: {
+          color: string | null
+          created_at: string
+          created_by: string | null
+          description: string | null
+          description_ar: string | null
+          id: string
+          is_active: boolean | null
+          name: string
+          name_ar: string | null
+          updated_at: string
+        }
+        Insert: {
+          color?: string | null
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          description_ar?: string | null
+          id?: string
+          is_active?: boolean | null
+          name: string
+          name_ar?: string | null
+          updated_at?: string
+        }
+        Update: {
+          color?: string | null
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          description_ar?: string | null
+          id?: string
+          is_active?: boolean | null
+          name?: string
+          name_ar?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      customer_loyalty_points: {
+        Row: {
+          created_at: string
+          description: string | null
+          description_ar: string | null
+          expires_at: string | null
+          id: string
+          points: number
+          reference_id: string | null
+          reference_type: string | null
+          type: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          description_ar?: string | null
+          expires_at?: string | null
+          id?: string
+          points?: number
+          reference_id?: string | null
+          reference_type?: string | null
+          type?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          description_ar?: string | null
+          expires_at?: string | null
+          id?: string
+          points?: number
+          reference_id?: string | null
+          reference_type?: string | null
+          type?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      customer_wallet_transactions: {
+        Row: {
+          amount: number
+          balance_after: number
+          created_at: string
+          created_by: string | null
+          description: string | null
+          description_ar: string | null
+          id: string
+          reference_id: string | null
+          reference_type: string | null
+          type: string
+          user_id: string
+        }
+        Insert: {
+          amount?: number
+          balance_after?: number
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          description_ar?: string | null
+          id?: string
+          reference_id?: string | null
+          reference_type?: string | null
+          type?: string
+          user_id: string
+        }
+        Update: {
+          amount?: number
+          balance_after?: number
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          description_ar?: string | null
+          id?: string
+          reference_id?: string | null
+          reference_type?: string | null
+          type?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      customer_wishlist: {
+        Row: {
+          created_at: string
+          id: string
+          item_id: string
+          item_image_url: string | null
+          item_name: string | null
+          item_name_ar: string | null
+          item_price: number | null
+          item_type: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          item_id: string
+          item_image_url?: string | null
+          item_name?: string | null
+          item_name_ar?: string | null
+          item_price?: number | null
+          item_type?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          item_id?: string
+          item_image_url?: string | null
+          item_name?: string | null
+          item_name_ar?: string | null
+          item_price?: number | null
+          item_type?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       digital_badges: {
         Row: {
           badge_type: Database["public"]["Enums"]["badge_type"]
@@ -6832,17 +7050,20 @@ export type Database = {
           company_role: string | null
           country_code: string | null
           created_at: string
+          date_of_birth: string | null
           experience_level:
             | Database["public"]["Enums"]["experience_level"]
             | null
           facebook: string | null
           full_name: string | null
+          gender: string | null
           id: string
           instagram: string | null
           is_verified: boolean | null
           last_login_at: string | null
           linkedin: string | null
           location: string | null
+          loyalty_points: number | null
           membership_expires_at: string | null
           membership_status:
             | Database["public"]["Enums"]["membership_status"]
@@ -6862,6 +7083,7 @@ export type Database = {
           verification_badge: string | null
           verification_level: string | null
           verified_at: string | null
+          wallet_balance: number | null
           website: string | null
           youtube: string | null
         }
@@ -6874,17 +7096,20 @@ export type Database = {
           company_role?: string | null
           country_code?: string | null
           created_at?: string
+          date_of_birth?: string | null
           experience_level?:
             | Database["public"]["Enums"]["experience_level"]
             | null
           facebook?: string | null
           full_name?: string | null
+          gender?: string | null
           id?: string
           instagram?: string | null
           is_verified?: boolean | null
           last_login_at?: string | null
           linkedin?: string | null
           location?: string | null
+          loyalty_points?: number | null
           membership_expires_at?: string | null
           membership_status?:
             | Database["public"]["Enums"]["membership_status"]
@@ -6906,6 +7131,7 @@ export type Database = {
           verification_badge?: string | null
           verification_level?: string | null
           verified_at?: string | null
+          wallet_balance?: number | null
           website?: string | null
           youtube?: string | null
         }
@@ -6918,17 +7144,20 @@ export type Database = {
           company_role?: string | null
           country_code?: string | null
           created_at?: string
+          date_of_birth?: string | null
           experience_level?:
             | Database["public"]["Enums"]["experience_level"]
             | null
           facebook?: string | null
           full_name?: string | null
+          gender?: string | null
           id?: string
           instagram?: string | null
           is_verified?: boolean | null
           last_login_at?: string | null
           linkedin?: string | null
           location?: string | null
+          loyalty_points?: number | null
           membership_expires_at?: string | null
           membership_status?:
             | Database["public"]["Enums"]["membership_status"]
@@ -6950,6 +7179,7 @@ export type Database = {
           verification_badge?: string | null
           verification_level?: string | null
           verified_at?: string | null
+          wallet_balance?: number | null
           website?: string | null
           youtube?: string | null
         }
