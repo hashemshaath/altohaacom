@@ -7,6 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
@@ -20,6 +21,7 @@ import {
   HandHeart,
   Target,
   BookOpen,
+  User,
 } from "lucide-react";
 
 export default function Mentorship() {
@@ -178,31 +180,34 @@ export default function Mentorship() {
                   </Card>
                 ) : (
                   <div className="grid gap-4 sm:grid-cols-2">
-                    {myMatches.map(match => (
-                      <Link key={match.id} to={`/mentorship/match/${match.id}`}>
-                        <Card className="transition-all duration-200 hover:shadow-md hover:-translate-y-0.5">
-                          <CardContent className="flex items-center gap-4 pt-6">
-                            <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-primary/10">
-                              <Users className="h-6 w-6 text-primary" />
-                            </div>
-                            <div className="flex-1">
-                              <div className="flex items-center gap-2">
-                                <Badge className={statusColors[match.status] || ""}>{match.status}</Badge>
-                                <span className="text-xs text-muted-foreground">
-                                  {match.mentor_id === user?.id
-                                    ? isAr ? "أنت المرشد" : "You are Mentor"
-                                    : isAr ? "أنت المتعلم" : "You are Mentee"}
-                                </span>
+                    {myMatches.map(match => {
+                      const isMentor = match.mentor_id === user?.id;
+                      const partnerProfile = isMentor ? match.mentee_profile : match.mentor_profile;
+                      const partnerRole = isMentor ? (isAr ? "المتعلم" : "Mentee") : (isAr ? "المرشد" : "Mentor");
+                      return (
+                        <Link key={match.id} to={`/mentorship/match/${match.id}`}>
+                          <Card className="transition-all duration-200 hover:shadow-md hover:-translate-y-0.5">
+                            <CardContent className="flex items-center gap-4 pt-6">
+                              <Avatar className="h-12 w-12">
+                                <AvatarImage src={partnerProfile?.avatar_url || ""} />
+                                <AvatarFallback><User className="h-5 w-5" /></AvatarFallback>
+                              </Avatar>
+                              <div className="flex-1">
+                                <p className="font-medium text-sm">{partnerProfile?.full_name || "Unknown"}</p>
+                                <div className="flex items-center gap-2 mt-1">
+                                  <Badge className={statusColors[match.status] || ""}>{match.status}</Badge>
+                                  <span className="text-xs text-muted-foreground">{partnerRole}</span>
+                                </div>
+                                <p className="mt-1 text-xs text-muted-foreground">
+                                  {isAr ? "بدأ في" : "Started"} {match.matched_at ? new Date(match.matched_at).toLocaleDateString() : "N/A"}
+                                </p>
                               </div>
-                              <p className="mt-1 text-sm text-muted-foreground">
-                                {isAr ? "بدأ في" : "Started"} {match.matched_at ? new Date(match.matched_at).toLocaleDateString() : "N/A"}
-                              </p>
-                            </div>
-                            <ArrowRight className="h-4 w-4 text-muted-foreground" />
-                          </CardContent>
-                        </Card>
-                      </Link>
-                    ))}
+                              <ArrowRight className="h-4 w-4 text-muted-foreground" />
+                            </CardContent>
+                          </Card>
+                        </Link>
+                      );
+                    })}
                   </div>
                 )}
               </TabsContent>

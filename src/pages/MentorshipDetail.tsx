@@ -1,23 +1,37 @@
-import { useParams, Link } from "react-router-dom";
+import { useState } from "react";
+import { useParams, Link, useNavigate } from "react-router-dom";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useAuth } from "@/contexts/AuthContext";
-import { useMentorshipProgram } from "@/hooks/useMentorship";
+import { useMentorshipProgram, useMyEnrollment, useEnrollAsMentee } from "@/hooks/useMentorship";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Separator } from "@/components/ui/separator";
+import { Textarea } from "@/components/ui/textarea";
+import { Label } from "@/components/ui/label";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { useToast } from "@/hooks/use-toast";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { SEOHead } from "@/components/SEOHead";
-import { GraduationCap, Clock, Users, ArrowLeft, HandHeart, Target, CheckCircle } from "lucide-react";
+import { GraduationCap, Clock, Users, ArrowLeft, HandHeart, Target, CheckCircle, Sparkles } from "lucide-react";
 
 export default function MentorshipDetail() {
   const { id } = useParams<{ id: string }>();
   const { language } = useLanguage();
   const { user } = useAuth();
+  const { toast } = useToast();
+  const navigate = useNavigate();
   const isAr = language === "ar";
   const { data: program, isLoading } = useMentorshipProgram(id);
+  const { data: myEnrollment } = useMyEnrollment(id);
+  const enrollMutation = useEnrollAsMentee();
+
+  const [enrollOpen, setEnrollOpen] = useState(false);
+  const [goals, setGoals] = useState("");
+  const [expLevel, setExpLevel] = useState("beginner");
 
   if (isLoading) {
     return (
@@ -50,6 +64,21 @@ export default function MentorshipDetail() {
       </div>
     );
   }
+
+  const handleEnroll = () => {
+    enrollMutation.mutate(
+      { program_id: program.id, goals_description: goals || undefined, experience_level: expLevel },
+      {
+        onSuccess: () => {
+          toast({ title: isAr ? "تم التسجيل بنجاح!" : "Enrollment submitted!" });
+          setEnrollOpen(false);
+        },
+        onError: (err: any) => {
+          toast({ variant: "destructive", title: isAr ? "فشل التسجيل" : "Enrollment failed", description: err.message });
+        },
+      }
+    );
+  };
 
   return (
     <div className="min-h-screen flex flex-col bg-background">
@@ -119,24 +148,80 @@ export default function MentorshipDetail() {
                 <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-primary/10 mx-auto">
                   <GraduationCap className="h-6 w-6 text-primary" />
                 </div>
-                <div className="text-center">
-                  <h3 className="font-semibold">{isAr ? "انضم كمتعلم" : "Join as Mentee"}</h3>
-                  <p className="text-sm text-muted-foreground mt-1">
-                    {isAr ? "سجل في البرنامج وسيتم ربطك بمرشد" : "Enroll and get matched with an experienced mentor"}
-                  </p>
-                </div>
-                {user ? (
-                  <Button className="w-full gap-2">
-                    <Target className="h-4 w-4" />
-                    {isAr ? "التسجيل كمتعلم" : "Enroll as Mentee"}
-                  </Button>
+
+                {/* Enrollment Status or Enroll Button */}
+                {myEnrollment ? (
+                  <div className="text-center space-y-2">
+                    <Badge className="bg-chart-2/10 text-chart-2 border-chart-2/20">
+                      <Sparkles className="h-3 w-3 me-1" />
+                      {myEnrollment.status === "pending"
+                        ? isAr ? "طلبك قيد المراجعة" : "Enrollment Pending"
+                        : myEnrollment.status === "matched"
+                          ? isAr ? "تم مطابقتك!" : "You've been matched!"
+                          : isAr ? `الحالة: ${myEnrollment.status}` : `Status: ${myEnrollment.status}`}
+                    </Badge>
+                    <p className="text-xs text-muted-foreground">
+                      {isAr ? "سيتم إشعارك عند مطابقتك مع مرشد" : "You'll be notified when matched with a mentor"}
+                    </p>
+                  </div>
                 ) : (
-                  <Link to="/auth">
-                    <Button variant="outline" className="w-full">
-                      {isAr ? "سجل الدخول أولاً" : "Sign in to Enroll"}
-                    </Button>
-                  </Link>
+                  <>
+                    <div className="text-center">
+                      <h3 className="font-semibold">{isAr ? "انضم كمتعلم" : "Join as Mentee"}</h3>
+                      <p className="text-sm text-muted-foreground mt-1">
+                        {isAr ? "سجل في البرنامج وسيتم ربطك بمرشد" : "Enroll and get matched with an experienced mentor"}
+                      </p>
+                    </div>
+                    {user ? (
+                      <Dialog open={enrollOpen} onOpenChange={setEnrollOpen}>
+                        <DialogTrigger asChild>
+                          <Button className="w-full gap-2">
+                            <Target className="h-4 w-4" />
+                            {isAr ? "التسجيل كمتعلم" : "Enroll as Mentee"}
+                          </Button>
+                        </DialogTrigger>
+                        <DialogContent>
+                          <DialogHeader>
+                            <DialogTitle>{isAr ? "التسجيل في البرنامج" : "Enroll in Program"}</DialogTitle>
+                          </DialogHeader>
+                          <div className="space-y-4">
+                            <div className="space-y-2">
+                              <Label>{isAr ? "مستوى الخبرة" : "Experience Level"}</Label>
+                              <Select value={expLevel} onValueChange={setExpLevel}>
+                                <SelectTrigger><SelectValue /></SelectTrigger>
+                                <SelectContent>
+                                  <SelectItem value="beginner">{isAr ? "مبتدئ" : "Beginner"}</SelectItem>
+                                  <SelectItem value="intermediate">{isAr ? "متوسط" : "Intermediate"}</SelectItem>
+                                  <SelectItem value="advanced">{isAr ? "متقدم" : "Advanced"}</SelectItem>
+                                </SelectContent>
+                              </Select>
+                            </div>
+                            <div className="space-y-2">
+                              <Label>{isAr ? "أهدافك من البرنامج" : "Your Goals"}</Label>
+                              <Textarea
+                                value={goals}
+                                onChange={e => setGoals(e.target.value)}
+                                placeholder={isAr ? "ما الذي تأمل تحقيقه؟" : "What do you hope to achieve?"}
+                                rows={3}
+                              />
+                            </div>
+                            <Button onClick={handleEnroll} disabled={enrollMutation.isPending} className="w-full gap-2">
+                              <Target className="h-4 w-4" />
+                              {enrollMutation.isPending ? (isAr ? "جاري التسجيل..." : "Enrolling...") : (isAr ? "تأكيد التسجيل" : "Confirm Enrollment")}
+                            </Button>
+                          </div>
+                        </DialogContent>
+                      </Dialog>
+                    ) : (
+                      <Link to="/auth">
+                        <Button variant="outline" className="w-full">
+                          {isAr ? "سجل الدخول أولاً" : "Sign in to Enroll"}
+                        </Button>
+                      </Link>
+                    )}
+                  </>
                 )}
+
                 <Separator />
                 <div className="text-center">
                   <h3 className="font-semibold">{isAr ? "هل أنت طاهٍ محترف؟" : "Are you an experienced chef?"}</h3>
