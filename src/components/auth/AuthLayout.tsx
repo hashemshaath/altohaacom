@@ -15,7 +15,7 @@ export function AuthLayout({ children, stage, isAr, showFooter = false, currentS
     <div className="flex min-h-screen flex-col" dir={isAr ? "rtl" : "ltr"}>
       <Header />
       <main className="flex flex-1">
-        {/* Hero panel — desktop only */}
+        {/* Hero panel — tablet & desktop */}
         <AuthHeroPanel stage={stage} isAr={isAr} currentStep={currentStep} />
 
         {/* Form panel */}
