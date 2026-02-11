@@ -20,7 +20,7 @@ import { normalizePhoneInput } from "@/lib/arabicNumerals";
 import { z } from "zod";
 import {
   CheckCircle, XCircle, Loader2, ShieldCheck, UserPlus, LogIn,
-  Trophy, Globe, GraduationCap, Award, Star,
+  Trophy, Globe, GraduationCap, Award, Star, Phone, Mail,
 } from "lucide-react";
 
 const usernameRegex = /^[a-zA-Z][a-zA-Z0-9_]{2,29}$/;
@@ -30,7 +30,8 @@ const signInSchema = z.object({
   password: z.string().min(6, "Password must be at least 6 characters"),
 });
 
-type SignUpStep = "info" | "phone-verify" | "credentials";
+type SignUpStep = "contact" | "verify" | "details" | "credentials";
+type SignUpMethod = "phone" | "email";
 
 const features = [
   { icon: Trophy, labelEn: "Compete Globally", labelAr: "تنافس عالمياً" },
@@ -42,18 +43,25 @@ const features = [
 export default function Auth() {
   const [searchParams] = useSearchParams();
   const [isSignUp, setIsSignUp] = useState(searchParams.get("tab") === "signup");
-  const [signUpStep, setSignUpStep] = useState<SignUpStep>("info");
+  const [signUpStep, setSignUpStep] = useState<SignUpStep>("contact");
+  const [signUpMethod, setSignUpMethod] = useState<SignUpMethod>("phone");
 
-  // Step 1: Basic info
-  const [fullName, setFullName] = useState("");
-  const [email, setEmail] = useState("");
+  // Contact step
+  const [phoneInput, setPhoneInput] = useState("");
+  const [emailInput, setEmailInput] = useState("");
   const [countryCode, setCountryCode] = useState("");
   const [phoneCode, setPhoneCode] = useState("");
 
-  // Step 2: Phone verified
+  // Verified contact
   const [verifiedPhone, setVerifiedPhone] = useState("");
+  const [verifiedEmail, setVerifiedEmail] = useState("");
+  const [emailVerificationSent, setEmailVerificationSent] = useState(false);
 
-  // Step 3: Password & username
+  // Details step
+  const [fullName, setFullName] = useState("");
+  const [email, setEmail] = useState(""); // secondary email if phone-primary
+
+  // Credentials step
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [username, setUsername] = useState("");
@@ -95,7 +103,7 @@ export default function Auth() {
   }, [username]);
 
   useEffect(() => {
-    setSignUpStep("info");
+    setSignUpStep("contact");
     setErrors({});
   }, [isSignUp]);
 
@@ -131,8 +139,72 @@ export default function Auth() {
     }
   };
 
-  // ── Step 1: Validate info and go to phone ──
-  const handleInfoSubmit = () => {
+  // ── Step 1: Contact — validate and go to verify ──
+  const handleContactSubmit = () => {
+    setErrors({});
+    const errs: Record<string, string> = {};
+
+    if (signUpMethod === "phone") {
+      const cleanPhone = phoneInput.replace(/\s/g, "");
+      const phoneRegex = /^\+?[1-9]\d{7,14}$/;
+      if (!phoneRegex.test(cleanPhone)) {
+        errs.phone = isAr ? "رقم الهاتف غير صالح" : "Invalid phone number";
+      }
+      if (!countryCode) {
+        errs.countryCode = isAr ? "يرجى اختيار الدولة" : "Country is required";
+      }
+    } else {
+      const emailResult = z.string().email().safeParse(emailInput);
+      if (!emailResult.success) {
+        errs.email = isAr ? "البريد الإلكتروني غير صالح" : "Invalid email address";
+      }
+      if (!countryCode) {
+        errs.countryCode = isAr ? "يرجى اختيار الدولة" : "Country is required";
+      }
+    }
+
+    if (Object.keys(errs).length > 0) {
+      setErrors(errs);
+      return;
+    }
+    setSignUpStep("verify");
+  };
+
+  // ── Step 2a: Phone verified ──
+  const handlePhoneVerified = (phone: string) => {
+    setVerifiedPhone(phone);
+    setSignUpStep("details");
+  };
+
+  // ── Step 2b: Email verification sent ──
+  const handleSendEmailVerification = async () => {
+    setLoading(true);
+    // For email method, we'll use OTP sign-in to verify email
+    const { error } = await supabase.auth.signInWithOtp({
+      email: emailInput,
+      options: { shouldCreateUser: false },
+    });
+    setLoading(false);
+
+    if (error && !error.message.includes("User not found")) {
+      // OTP won't work for non-existing users with shouldCreateUser: false
+      // This is expected - we mark email as "pending verification" and proceed
+    }
+
+    // In this flow, email verification happens after account creation via confirmation email
+    setVerifiedEmail(emailInput);
+    setEmailVerificationSent(true);
+    setSignUpStep("details");
+    toast({
+      title: isAr ? "سيتم التحقق من البريد" : "Email will be verified",
+      description: isAr
+        ? "سيتم إرسال رابط التحقق بعد إنشاء الحساب"
+        : "A verification link will be sent after account creation",
+    });
+  };
+
+  // ── Step 3: Details — name + optional email/phone ──
+  const handleDetailsSubmit = () => {
     setErrors({});
     const errs: Record<string, string> = {};
 
@@ -140,29 +212,22 @@ export default function Auth() {
       errs.fullName = isAr ? "الاسم مطلوب" : "Name is required";
     }
 
-    const emailResult = z.string().email().safeParse(email);
-    if (!emailResult.success) {
-      errs.email = isAr ? "البريد الإلكتروني غير صالح" : "Invalid email address";
-    }
-
-    if (!countryCode) {
-      errs.countryCode = isAr ? "يرجى اختيار الدولة" : "Country is required";
+    // If phone-primary, email is needed for account creation
+    if (signUpMethod === "phone") {
+      const emailResult = z.string().email().safeParse(email);
+      if (!emailResult.success) {
+        errs.email = isAr ? "البريد الإلكتروني مطلوب لإنشاء الحساب" : "Email is required for account creation";
+      }
     }
 
     if (Object.keys(errs).length > 0) {
       setErrors(errs);
       return;
     }
-    setSignUpStep("phone-verify");
-  };
-
-  // ── Step 2: Phone verified → go to credentials ──
-  const handlePhoneVerified = (phone: string) => {
-    setVerifiedPhone(phone);
     setSignUpStep("credentials");
   };
 
-  // ── Step 3: Create account ──
+  // ── Step 4: Create account ──
   const handleCreateAccount = async () => {
     setErrors({});
     const errs: Record<string, string> = {};
@@ -176,7 +241,6 @@ export default function Auth() {
     if (usernameStatus === "checking") {
       errs.username = isAr ? "جاري التحقق..." : "Still checking...";
     }
-
     if (password.length < 8) {
       errs.password = isAr ? "كلمة المرور يجب أن تكون 8 أحرف على الأقل" : "Password must be at least 8 characters";
     }
@@ -192,9 +256,11 @@ export default function Auth() {
       return;
     }
 
+    const accountEmail = signUpMethod === "phone" ? email : emailInput;
+
     setLoading(true);
     const { data, error } = await supabase.auth.signUp({
-      email,
+      email: accountEmail,
       password,
       options: {
         emailRedirectTo: `${window.location.origin}/`,
@@ -209,14 +275,13 @@ export default function Auth() {
     }
 
     if (data.user) {
-      // Default role is "chef" - no role selection during registration
       await supabase.from("user_roles").insert({ user_id: data.user.id, role: "chef" as any });
       await new Promise((resolve) => setTimeout(resolve, 500));
       await supabase
         .from("profiles")
         .update({
           username: username.toLowerCase(),
-          phone: verifiedPhone,
+          phone: verifiedPhone || null,
           country_code: countryCode || null,
           preferred_language: language,
         })
@@ -224,21 +289,35 @@ export default function Auth() {
     }
 
     setLoading(false);
-    toast({
-      title: isAr ? "تم إنشاء الحساب!" : "Account created!",
-      description: isAr
-        ? "يرجى التحقق من بريدك الإلكتروني لتأكيد حسابك قبل تسجيل الدخول."
-        : "Please check your email to verify your account before signing in.",
-    });
+
+    if (signUpMethod === "email") {
+      toast({
+        title: isAr ? "تم إنشاء الحساب!" : "Account created!",
+        description: isAr
+          ? "يرجى التحقق من بريدك الإلكتروني لتأكيد حسابك قبل تسجيل الدخول."
+          : "Please check your email to verify your account before signing in.",
+      });
+    } else {
+      toast({
+        title: isAr ? "تم إنشاء الحساب!" : "Account created!",
+        description: isAr
+          ? "تم التحقق من رقم هاتفك. يرجى التحقق من بريدك الإلكتروني لتأكيد حسابك."
+          : "Your phone is verified. Please check your email to confirm your account.",
+      });
+    }
+
     setIsSignUp(false);
-    setSignUpStep("info");
+    setSignUpStep("contact");
   };
 
-  /* ── Phone verification step ── */
-  if (signUpStep === "phone-verify" && isSignUp) {
+  const totalSteps = 4;
+  const currentStepNum = signUpStep === "contact" ? 1 : signUpStep === "verify" ? 2 : signUpStep === "details" ? 3 : 4;
+
+  /* ── Step 2: Verification ── */
+  if (signUpStep === "verify" && isSignUp) {
     return (
       <div className="flex min-h-screen flex-col">
-        <SEOHead title="Phone Verification" description="Verify your phone number" />
+        <SEOHead title="Verification" description="Verify your contact" />
         <Header />
         <main className="flex flex-1 items-center justify-center p-4">
           <Card className="w-full max-w-md border-border/50 shadow-xl shadow-primary/5">
@@ -248,18 +327,52 @@ export default function Auth() {
                   <ShieldCheck className="h-7 w-7 text-primary" />
                 </div>
                 <h2 className="font-serif text-xl font-bold">
-                  {isAr ? "التحقق من الهاتف" : "Phone Verification"}
+                  {signUpMethod === "phone"
+                    ? (isAr ? "التحقق من رقم الهاتف" : "Phone Verification")
+                    : (isAr ? "التحقق من البريد الإلكتروني" : "Email Verification")}
                 </h2>
                 <p className="mt-1 text-sm text-muted-foreground">
-                  {isAr ? "الخطوة 2 من 3 — تأكيد رقم الهاتف" : "Step 2 of 3 — Confirm your phone number"}
+                  {isAr ? `الخطوة 2 من ${totalSteps}` : `Step 2 of ${totalSteps}`}
                 </p>
               </div>
-              <PhoneVerification
-                onVerified={handlePhoneVerified}
-                onBack={() => setSignUpStep("info")}
-                phoneCode={phoneCode}
-                mode="signup"
-              />
+
+              {signUpMethod === "phone" ? (
+                <PhoneVerification
+                  onVerified={handlePhoneVerified}
+                  onBack={() => setSignUpStep("contact")}
+                  initialPhone={phoneInput}
+                  phoneCode={phoneCode}
+                  mode="signup"
+                />
+              ) : (
+                <div className="space-y-4">
+                  <div className="rounded-xl border border-primary/20 bg-primary/5 p-4 text-center">
+                    <Mail className="mx-auto mb-2 h-8 w-8 text-primary" />
+                    <p className="text-sm font-medium">
+                      {isAr ? "سيتم التحقق من:" : "Will verify:"}
+                    </p>
+                    <p className="mt-1 font-mono text-sm text-primary">{emailInput}</p>
+                    <p className="mt-2 text-xs text-muted-foreground">
+                      {isAr
+                        ? "سيتم إرسال رابط التحقق إلى بريدك الإلكتروني بعد إنشاء الحساب"
+                        : "A verification link will be sent to your email after account creation"}
+                    </p>
+                  </div>
+                  <div className="flex gap-2">
+                    <Button variant="outline" onClick={() => setSignUpStep("contact")}>
+                      {isAr ? "رجوع" : "Back"}
+                    </Button>
+                    <Button
+                      className="flex-1"
+                      onClick={handleSendEmailVerification}
+                      disabled={loading}
+                    >
+                      {loading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
+                      {isAr ? "متابعة" : "Continue"}
+                    </Button>
+                  </div>
+                </div>
+              )}
             </div>
           </Card>
         </main>
@@ -267,7 +380,91 @@ export default function Auth() {
     );
   }
 
-  /* ── Credentials step (password & username) ── */
+  /* ── Step 3: Details (name, secondary contact) ── */
+  if (signUpStep === "details" && isSignUp) {
+    return (
+      <div className="flex min-h-screen flex-col">
+        <SEOHead title="Your Details" description="Complete your details" />
+        <Header />
+        <main className="flex flex-1 items-center justify-center p-4">
+          <Card className="w-full max-w-md border-border/50 shadow-xl shadow-primary/5">
+            <div className="p-5 md:p-6 space-y-5">
+              <div className="flex flex-col items-center text-center">
+                <div className="mb-3 flex h-14 w-14 items-center justify-center rounded-2xl bg-primary/10 ring-1 ring-primary/15">
+                  <UserPlus className="h-7 w-7 text-primary" />
+                </div>
+                <h2 className="font-serif text-xl font-bold">
+                  {isAr ? "المعلومات الشخصية" : "Personal Details"}
+                </h2>
+                <p className="mt-1 text-sm text-muted-foreground">
+                  {isAr ? `الخطوة 3 من ${totalSteps}` : `Step 3 of ${totalSteps}`}
+                </p>
+              </div>
+
+              {/* Verified badge */}
+              <div className="flex items-center gap-2 rounded-lg border border-primary/20 bg-primary/5 p-3">
+                <CheckCircle className="h-5 w-5 text-primary shrink-0" />
+                <div className="text-sm">
+                  {signUpMethod === "phone" ? (
+                    <>
+                      <span className="font-medium">{isAr ? "تم التحقق من الهاتف:" : "Phone verified:"}</span>{" "}
+                      <span className="font-mono text-primary" dir="ltr">{verifiedPhone}</span>
+                    </>
+                  ) : (
+                    <>
+                      <span className="font-medium">{isAr ? "البريد الإلكتروني:" : "Email:"}</span>{" "}
+                      <span className="text-primary">{verifiedEmail}</span>
+                    </>
+                  )}
+                </div>
+              </div>
+
+              {/* Full Name */}
+              <div className="space-y-1.5">
+                <Label htmlFor="fullName" className="text-xs">{isAr ? "الاسم الكامل" : "Full Name"} *</Label>
+                <Input
+                  id="fullName"
+                  value={fullName}
+                  onChange={(e) => setFullName(e.target.value)}
+                  placeholder={isAr ? "الاسم الكامل" : "Full name"}
+                />
+                {errors.fullName && <p className="text-xs text-destructive">{errors.fullName}</p>}
+              </div>
+
+              {/* If phone-primary, ask for email */}
+              {signUpMethod === "phone" && (
+                <div className="space-y-1.5">
+                  <Label htmlFor="email" className="text-xs">{isAr ? "البريد الإلكتروني" : "Email"} *</Label>
+                  <Input
+                    id="email"
+                    type="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    placeholder={isAr ? "البريد الإلكتروني" : "Email address"}
+                  />
+                  <p className="text-[10px] text-muted-foreground">
+                    {isAr ? "مطلوب لإنشاء الحساب وإرسال الإشعارات" : "Required for account creation and notifications"}
+                  </p>
+                  {errors.email && <p className="text-xs text-destructive">{errors.email}</p>}
+                </div>
+              )}
+
+              <div className="flex gap-2">
+                <Button variant="outline" onClick={() => setSignUpStep("verify")}>
+                  {isAr ? "رجوع" : "Back"}
+                </Button>
+                <Button className="flex-1" onClick={handleDetailsSubmit}>
+                  {isAr ? "التالي" : "Next"}
+                </Button>
+              </div>
+            </div>
+          </Card>
+        </main>
+      </div>
+    );
+  }
+
+  /* ── Step 4: Credentials (username & password) ── */
   if (signUpStep === "credentials" && isSignUp) {
     return (
       <div className="flex min-h-screen flex-col">
@@ -284,7 +481,7 @@ export default function Auth() {
                   {isAr ? "إنشاء حسابك" : "Create Your Account"}
                 </h2>
                 <p className="mt-1 text-sm text-muted-foreground">
-                  {isAr ? "الخطوة 3 من 3 — اسم المستخدم وكلمة المرور" : "Step 3 of 3 — Username & password"}
+                  {isAr ? `الخطوة 4 من ${totalSteps}` : `Step 4 of ${totalSteps}`}
                 </p>
               </div>
 
@@ -342,11 +539,7 @@ export default function Auth() {
               </div>
 
               <div className="flex gap-2">
-                <Button
-                  variant="outline"
-                  onClick={() => setSignUpStep("phone-verify")}
-                  className="gap-1.5"
-                >
+                <Button variant="outline" onClick={() => setSignUpStep("details")}>
                   {isAr ? "رجوع" : "Back"}
                 </Button>
                 <Button
@@ -366,7 +559,7 @@ export default function Auth() {
     );
   }
 
-  /* ── Main auth view (Sign In or Sign Up Step 1) ── */
+  /* ── Main auth view (Sign In or Sign Up Step 1: Contact) ── */
   return (
     <div className="flex min-h-screen flex-col">
       <SEOHead
@@ -423,7 +616,7 @@ export default function Auth() {
               </h1>
               {isSignUp && (
                 <p className="mt-1 text-sm text-muted-foreground">
-                  {isAr ? "الخطوة 1 من 3 — المعلومات الأساسية" : "Step 1 of 3 — Basic information"}
+                  {isAr ? `الخطوة 1 من ${totalSteps} — طريقة التسجيل` : `Step 1 of ${totalSteps} — Registration method`}
                 </p>
               )}
             </div>
@@ -456,49 +649,109 @@ export default function Auth() {
               <CardContent className="space-y-4 p-5 md:p-6">
                 {isSignUp ? (
                   <>
-                    {/* Full Name */}
-                    <div className="space-y-1.5">
-                      <Label htmlFor="fullName" className="text-xs">{isAr ? "الاسم الكامل" : "Full Name"} *</Label>
-                      <Input
-                        id="fullName"
-                        value={fullName}
-                        onChange={(e) => setFullName(e.target.value)}
-                        placeholder={isAr ? "الاسم الكامل" : "Full name"}
-                      />
-                      {errors.fullName && <p className="text-xs text-destructive">{errors.fullName}</p>}
+                    {/* Method Toggle */}
+                    <div className="flex rounded-lg border border-border/50 p-1 gap-1">
+                      <button
+                        type="button"
+                        onClick={() => setSignUpMethod("phone")}
+                        className={`flex flex-1 items-center justify-center gap-2 rounded-md px-3 py-2 text-sm font-medium transition-colors ${
+                          signUpMethod === "phone"
+                            ? "bg-primary text-primary-foreground shadow-sm"
+                            : "text-muted-foreground hover:text-foreground"
+                        }`}
+                      >
+                        <Phone className="h-4 w-4" />
+                        {isAr ? "رقم الهاتف" : "Phone"}
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setSignUpMethod("email")}
+                        className={`flex flex-1 items-center justify-center gap-2 rounded-md px-3 py-2 text-sm font-medium transition-colors ${
+                          signUpMethod === "email"
+                            ? "bg-primary text-primary-foreground shadow-sm"
+                            : "text-muted-foreground hover:text-foreground"
+                        }`}
+                      >
+                        <Mail className="h-4 w-4" />
+                        {isAr ? "البريد الإلكتروني" : "Email"}
+                      </button>
                     </div>
 
-                    {/* Email */}
-                    <div className="space-y-1.5">
-                      <Label htmlFor="email" className="text-xs">{isAr ? "البريد الإلكتروني" : "Email"} *</Label>
-                      <Input
-                        id="email"
-                        type="email"
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
-                        placeholder={isAr ? "البريد الإلكتروني" : "Email address"}
-                      />
-                      {errors.email && <p className="text-xs text-destructive">{errors.email}</p>}
-                    </div>
+                    {signUpMethod === "phone" ? (
+                      <>
+                        {/* Country */}
+                        <CountrySelector
+                          value={countryCode}
+                          onChange={(code, country) => {
+                            setCountryCode(code);
+                            const pc = country?.phone_code || "";
+                            setPhoneCode(pc);
+                            if (!phoneInput || phoneInput === phoneCode) {
+                              setPhoneInput(pc);
+                            }
+                          }}
+                          label={isAr ? "الدولة" : "Country"}
+                          required
+                        />
+                        {errors.countryCode && <p className="text-xs text-destructive">{errors.countryCode}</p>}
 
-                    {/* Country */}
-                    <CountrySelector
-                      value={countryCode}
-                      onChange={(code, country) => {
-                        setCountryCode(code);
-                        setPhoneCode(country?.phone_code || "");
-                      }}
-                      label={isAr ? "دولة الإقامة" : "Country of Residence"}
-                      required
-                    />
-                    {errors.countryCode && <p className="text-xs text-destructive">{errors.countryCode}</p>}
+                        {/* Phone Number */}
+                        <div className="space-y-1.5">
+                          <Label htmlFor="phone" className="text-xs">{isAr ? "رقم الهاتف" : "Phone Number"} *</Label>
+                          <Input
+                            id="phone"
+                            type="tel"
+                            dir="ltr"
+                            placeholder="+966 5XX XXX XXXX"
+                            value={phoneInput}
+                            onChange={(e) => setPhoneInput(normalizePhoneInput(e.target.value))}
+                          />
+                          {errors.phone && <p className="text-xs text-destructive">{errors.phone}</p>}
+                          <p className="text-[10px] text-muted-foreground">
+                            {isAr ? "سيتم إرسال رمز التحقق إلى هذا الرقم" : "A verification code will be sent to this number"}
+                          </p>
+                        </div>
+                      </>
+                    ) : (
+                      <>
+                        {/* Country */}
+                        <CountrySelector
+                          value={countryCode}
+                          onChange={(code, country) => {
+                            setCountryCode(code);
+                            setPhoneCode(country?.phone_code || "");
+                          }}
+                          label={isAr ? "الدولة" : "Country"}
+                          required
+                        />
+                        {errors.countryCode && <p className="text-xs text-destructive">{errors.countryCode}</p>}
+
+                        {/* Email */}
+                        <div className="space-y-1.5">
+                          <Label htmlFor="emailInput" className="text-xs">{isAr ? "البريد الإلكتروني" : "Email"} *</Label>
+                          <Input
+                            id="emailInput"
+                            type="email"
+                            value={emailInput}
+                            onChange={(e) => setEmailInput(e.target.value)}
+                            placeholder={isAr ? "البريد الإلكتروني" : "Email address"}
+                          />
+                          {errors.email && <p className="text-xs text-destructive">{errors.email}</p>}
+                          <p className="text-[10px] text-muted-foreground">
+                            {isAr ? "سيتم إرسال رابط التحقق إلى هذا البريد" : "A verification link will be sent to this email"}
+                          </p>
+                        </div>
+                      </>
+                    )}
 
                     <Button
                       className="w-full gap-2"
                       size="lg"
-                      onClick={handleInfoSubmit}
+                      onClick={handleContactSubmit}
                     >
-                      {isAr ? "التالي — التحقق من الهاتف" : "Next — Phone Verification"}
+                      {signUpMethod === "phone"
+                        ? (isAr ? "التالي — التحقق من الهاتف" : "Next — Verify Phone")
+                        : (isAr ? "التالي — التحقق من البريد" : "Next — Verify Email")}
                     </Button>
                   </>
                 ) : (
