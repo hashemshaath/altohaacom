@@ -7,6 +7,7 @@ import { useCreateTastingSession, useAddTastingCriteria, useCriteriaPresets, Eva
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { SEOHead } from "@/components/SEOHead";
+import { EvaluationCategorySelect, type EvaluationCategory } from "@/components/tasting/EvaluationCategorySelect";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -56,6 +57,7 @@ export default function CreateTasting() {
     description: "",
     description_ar: "",
     eval_method: "numeric" as EvalMethod,
+    evaluation_category: "culinary" as EvaluationCategory,
     preset: "",
     session_date: "",
     venue: "",
@@ -87,6 +89,7 @@ export default function CreateTasting() {
         description: form.description || null,
         description_ar: form.description_ar || null,
         eval_method: form.eval_method,
+        evaluation_category: form.evaluation_category,
         session_date: form.session_date || null,
         venue: form.venue || null,
         venue_ar: form.venue_ar || null,
@@ -201,6 +204,17 @@ export default function CreateTasting() {
               </CardContent>
             </Card>
 
+            {/* Evaluation Category */}
+            <Card>
+              <CardHeader><CardTitle className="text-base">{isAr ? "فئة التقييم" : "Evaluation Category"}</CardTitle></CardHeader>
+              <CardContent>
+                <EvaluationCategorySelect
+                  value={form.evaluation_category}
+                  onChange={v => setForm(f => ({ ...f, evaluation_category: v, preset: "" }))}
+                />
+              </CardContent>
+            </Card>
+
             {/* Basic Info */}
             <Card>
               <CardHeader><CardTitle className="text-base">{isAr ? "المعلومات الأساسية" : "Basic Info"}</CardTitle></CardHeader>
@@ -250,7 +264,7 @@ export default function CreateTasting() {
                   </div>
                 </RadioGroup>
 
-                {/* Criteria Preset */}
+                {/* Criteria Preset - filtered by category */}
                 <div className="space-y-2">
                   <Label>{isAr ? "قالب المعايير" : "Criteria Preset"}</Label>
                   <Select value={form.preset} onValueChange={v => setForm(f => ({ ...f, preset: v }))}>
@@ -258,9 +272,12 @@ export default function CreateTasting() {
                       <SelectValue placeholder={isAr ? "اختر قالب..." : "Select a preset..."} />
                     </SelectTrigger>
                     <SelectContent>
-                      {presets?.map(p => (
+                      {presets?.filter(p => p.category === form.evaluation_category || p.category === "classic" || p.category === "professional").map(p => (
                         <SelectItem key={p.id} value={p.id}>
-                          {isAr && p.preset_name_ar ? p.preset_name_ar : p.preset_name}
+                          <div className="flex items-center gap-2">
+                            <span>{isAr && p.preset_name_ar ? p.preset_name_ar : p.preset_name}</span>
+                            <Badge variant="outline" className="text-[10px]">{p.category}</Badge>
+                          </div>
                         </SelectItem>
                       ))}
                     </SelectContent>

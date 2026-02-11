@@ -7153,13 +7153,18 @@ export type Database = {
           created_at: string
           description: string | null
           description_ar: string | null
+          eval_scale: string | null
+          guidelines: string | null
+          guidelines_ar: string | null
           id: string
           is_required: boolean | null
           max_score: number | null
           name: string
           name_ar: string | null
+          reference_images: string[] | null
           session_id: string
           sort_order: number | null
+          stage: string | null
           weight: number | null
         }
         Insert: {
@@ -7167,13 +7172,18 @@ export type Database = {
           created_at?: string
           description?: string | null
           description_ar?: string | null
+          eval_scale?: string | null
+          guidelines?: string | null
+          guidelines_ar?: string | null
           id?: string
           is_required?: boolean | null
           max_score?: number | null
           name: string
           name_ar?: string | null
+          reference_images?: string[] | null
           session_id: string
           sort_order?: number | null
+          stage?: string | null
           weight?: number | null
         }
         Update: {
@@ -7181,13 +7191,18 @@ export type Database = {
           created_at?: string
           description?: string | null
           description_ar?: string | null
+          eval_scale?: string | null
+          guidelines?: string | null
+          guidelines_ar?: string | null
           id?: string
           is_required?: boolean | null
           max_score?: number | null
           name?: string
           name_ar?: string | null
+          reference_images?: string[] | null
           session_id?: string
           sort_order?: number | null
+          stage?: string | null
           weight?: number | null
         }
         Relationships: [
@@ -7246,10 +7261,12 @@ export type Database = {
           dish_name_ar: string | null
           entry_number: number
           id: string
+          images: string[] | null
           is_active: boolean | null
           photo_url: string | null
           session_id: string
           sort_order: number | null
+          stage: string | null
         }
         Insert: {
           category?: string | null
@@ -7263,10 +7280,12 @@ export type Database = {
           dish_name_ar?: string | null
           entry_number: number
           id?: string
+          images?: string[] | null
           is_active?: boolean | null
           photo_url?: string | null
           session_id: string
           sort_order?: number | null
+          stage?: string | null
         }
         Update: {
           category?: string | null
@@ -7280,10 +7299,12 @@ export type Database = {
           dish_name_ar?: string | null
           entry_number?: number
           id?: string
+          images?: string[] | null
           is_active?: boolean | null
           photo_url?: string | null
           session_id?: string
           sort_order?: number | null
+          stage?: string | null
         }
         Relationships: [
           {
@@ -7330,12 +7351,54 @@ export type Database = {
           },
         ]
       }
+      tasting_score_images: {
+        Row: {
+          caption: string | null
+          caption_ar: string | null
+          created_at: string
+          id: string
+          image_url: string
+          score_id: string
+          sort_order: number | null
+          stage: string | null
+        }
+        Insert: {
+          caption?: string | null
+          caption_ar?: string | null
+          created_at?: string
+          id?: string
+          image_url: string
+          score_id: string
+          sort_order?: number | null
+          stage?: string | null
+        }
+        Update: {
+          caption?: string | null
+          caption_ar?: string | null
+          created_at?: string
+          id?: string
+          image_url?: string
+          score_id?: string
+          sort_order?: number | null
+          stage?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "tasting_score_images_score_id_fkey"
+            columns: ["score_id"]
+            isOneToOne: false
+            referencedRelation: "tasting_scores"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       tasting_scores: {
         Row: {
           created_at: string
           criterion_id: string
           entry_id: string
           id: string
+          image_url: string | null
           judge_id: string
           note: string | null
           note_ar: string | null
@@ -7350,6 +7413,7 @@ export type Database = {
           criterion_id: string
           entry_id: string
           id?: string
+          image_url?: string | null
           judge_id: string
           note?: string | null
           note_ar?: string | null
@@ -7364,6 +7428,7 @@ export type Database = {
           criterion_id?: string
           entry_id?: string
           id?: string
+          image_url?: string | null
           judge_id?: string
           note?: string | null
           note_ar?: string | null
@@ -7409,11 +7474,14 @@ export type Database = {
           description: string | null
           description_ar: string | null
           eval_method: Database["public"]["Enums"]["tasting_eval_method"]
+          evaluation_category: string | null
+          evaluation_type: string | null
           id: string
           is_blind_tasting: boolean | null
           max_score: number | null
           notes: string | null
           organizer_id: string
+          round: string | null
           session_date: string | null
           session_end: string | null
           status: Database["public"]["Enums"]["tasting_session_status"]
@@ -7434,11 +7502,14 @@ export type Database = {
           description?: string | null
           description_ar?: string | null
           eval_method?: Database["public"]["Enums"]["tasting_eval_method"]
+          evaluation_category?: string | null
+          evaluation_type?: string | null
           id?: string
           is_blind_tasting?: boolean | null
           max_score?: number | null
           notes?: string | null
           organizer_id: string
+          round?: string | null
           session_date?: string | null
           session_end?: string | null
           status?: Database["public"]["Enums"]["tasting_session_status"]
@@ -7459,11 +7530,14 @@ export type Database = {
           description?: string | null
           description_ar?: string | null
           eval_method?: Database["public"]["Enums"]["tasting_eval_method"]
+          evaluation_category?: string | null
+          evaluation_type?: string | null
           id?: string
           is_blind_tasting?: boolean | null
           max_score?: number | null
           notes?: string | null
           organizer_id?: string
+          round?: string | null
           session_date?: string | null
           session_end?: string | null
           status?: Database["public"]["Enums"]["tasting_session_status"]
