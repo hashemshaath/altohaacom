@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Search, BookOpen, HelpCircle, MessageSquare, ChevronRight } from "lucide-react";
+import { Search, BookOpen, HelpCircle, MessageSquare, ChevronRight, Ticket, Headphones } from "lucide-react";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { Input } from "@/components/ui/input";
@@ -259,7 +259,6 @@ export default function HelpCenter() {
             <div className="lg:col-span-1">
               <div className="sticky top-4">
                 <AIAssistant />
-                
                 {/* Contact Card */}
                 <Card className="mt-6">
                   <CardHeader>
@@ -268,12 +267,26 @@ export default function HelpCenter() {
                     </CardTitle>
                   </CardHeader>
                   <CardContent className="space-y-3">
-                    <Button variant="outline" className="w-full justify-start" asChild>
-                      <Link to="/contact">
-                        <MessageSquare className="h-4 w-4 mr-2" />
-                        {language === "ar" ? "تواصل معنا" : "Contact Support"}
+                    <Button variant="outline" className="w-full justify-start gap-2" asChild>
+                      <Link to="/support">
+                        <Ticket className="h-4 w-4" />
+                        {language === "ar" ? "إرسال تذكرة دعم" : "Submit a Support Ticket"}
                       </Link>
                     </Button>
+                    <Button variant="outline" className="w-full justify-start gap-2" asChild>
+                      <Link to="/messages">
+                        <MessageSquare className="h-4 w-4" />
+                        {language === "ar" ? "المراسلة المباشرة" : "Direct Messages"}
+                      </Link>
+                    </Button>
+                    <div className="rounded-lg bg-primary/5 p-3 text-center">
+                      <Headphones className="h-5 w-5 text-primary mx-auto mb-1" />
+                      <p className="text-xs text-muted-foreground">
+                        {language === "ar" 
+                          ? "أو استخدم زر الدعم المباشر أسفل الشاشة" 
+                          : "Or use the Live Chat button at the bottom of the screen"}
+                      </p>
+                    </div>
                   </CardContent>
                 </Card>
               </div>

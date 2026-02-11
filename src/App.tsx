@@ -105,6 +105,7 @@ const VerificationAdmin = lazy(() => import("./pages/admin/VerificationAdmin"));
 const SupportTicketsAdmin = lazy(() => import("./pages/admin/SupportTicketsAdmin"));
 const AudienceSegments = lazy(() => import("./pages/admin/AudienceSegments"));
 const LiveChatAdmin = lazy(() => import("./pages/admin/LiveChatAdmin"));
+const CRMDashboard = lazy(() => import("./pages/admin/CRMDashboard"));
 const SupportTickets = lazy(() => import("./pages/SupportTickets"));
 
 // Company Portal Pages
@@ -248,6 +249,7 @@ const App = () => (
                    <Route path="support-tickets" element={<SupportTicketsAdmin />} />
                    <Route path="audience-segments" element={<AudienceSegments />} />
                    <Route path="live-chat" element={<LiveChatAdmin />} />
+                   <Route path="crm" element={<CRMDashboard />} />
                 </Route>
 
                 {/* Company Portal Routes */}

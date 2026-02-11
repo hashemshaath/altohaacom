@@ -6,6 +6,8 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useRealtimeMessages } from "@/hooks/useRealtimeMessages";
 import { usePresence } from "@/hooks/usePresence";
+import { NewConversationDialog } from "@/components/messages/NewConversationDialog";
+import { EmojiPicker } from "@/components/messages/EmojiPicker";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { Button } from "@/components/ui/button";
@@ -18,12 +20,21 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Separator } from "@/components/ui/separator";
 import { useToast } from "@/hooks/use-toast";
 import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import {
   MessageSquare,
   Send,
   Search,
   Check,
   CheckCheck,
   ArrowLeft,
+  Plus,
+  Trash2,
+  MoreVertical,
 } from "lucide-react";
 import { format, isToday, isYesterday } from "date-fns";
 import { ar, enUS } from "date-fns/locale";
@@ -58,6 +69,7 @@ export default function Messages() {
   const [selectedPartner, setSelectedPartner] = useState<ConversationPartner | null>(null);
   const [newMessage, setNewMessage] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
+  const [isNewConvOpen, setIsNewConvOpen] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const typingDebounceRef = useRef<ReturnType<typeof setTimeout>>();
 
@@ -259,10 +271,15 @@ export default function Messages() {
             {/* Conversations List */}
             <div className={`w-full border-e md:w-80 flex flex-col ${selectedPartner ? "hidden md:flex" : ""}`}>
               <div className="border-b p-4 space-y-3">
-                <h2 className="flex items-center gap-2 font-semibold">
-                  <MessageSquare className="h-4 w-4 text-primary" />
-                  {language === "ar" ? "الرسائل" : "Messages"}
-                </h2>
+                <div className="flex items-center justify-between">
+                  <h2 className="flex items-center gap-2 font-semibold">
+                    <MessageSquare className="h-4 w-4 text-primary" />
+                    {language === "ar" ? "الرسائل" : "Messages"}
+                  </h2>
+                  <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => setIsNewConvOpen(true)}>
+                    <Plus className="h-4 w-4" />
+                  </Button>
+                </div>
                 <div className="relative">
                   <Search className="absolute start-3 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-muted-foreground" />
                   <Input
@@ -430,6 +447,7 @@ export default function Messages() {
                   {/* Message Input */}
                   <form onSubmit={handleSend} className="border-t p-3">
                     <div className="flex gap-2">
+                      <EmojiPicker onEmojiSelect={(emoji) => setNewMessage(prev => prev + emoji)} />
                       <Input
                         value={newMessage}
                         onChange={handleInputChange}
@@ -461,6 +479,12 @@ export default function Messages() {
           </div>
         </Card>
       </main>
+
+      <NewConversationDialog
+        open={isNewConvOpen}
+        onOpenChange={setIsNewConvOpen}
+        onSelectUser={(u) => setSelectedPartner({ ...u, unread_count: 0 })}
+      />
 
       <Footer />
     </div>
