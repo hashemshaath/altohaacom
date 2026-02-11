@@ -36,21 +36,21 @@ export default function RoleManagement() {
   const [activeRole, setActiveRole] = useState<AppRole>("chef");
   const [saving, setSaving] = useState(false);
   const [selectedPerms, setSelectedPerms] = useState<Set<string>>(new Set());
-  const [initialized, setInitialized] = useState(false);
+  const [lastSyncedRole, setLastSyncedRole] = useState<string | null>(null);
 
   const { data: permissions = [] } = usePermissions();
   const { data: rolePerms = [], isLoading } = useRolePermissions(activeRole);
 
   // Sync selectedPerms when role data loads
-  if (!isLoading && rolePerms.length >= 0 && !initialized) {
+  if (!isLoading && lastSyncedRole !== activeRole) {
     const ids = new Set(rolePerms.map((rp: any) => rp.permission_id as string));
     setSelectedPerms(ids);
-    setInitialized(true);
+    setLastSyncedRole(activeRole);
   }
 
   const handleRoleChange = (role: AppRole) => {
     setActiveRole(role);
-    setInitialized(false);
+    setLastSyncedRole(null);
   };
 
   const togglePerm = (permId: string) => {
