@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, forwardRef } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -24,19 +24,19 @@ import { AdBehaviorInsights } from "@/components/ads/AdBehaviorInsights";
 import { GoogleIntegrationPanel } from "@/components/ads/GoogleIntegrationPanel";
 
 const statusColors: Record<string, string> = {
-  pending: "bg-yellow-500/10 text-yellow-600 border-yellow-500/20",
-  pending_approval: "bg-yellow-500/10 text-yellow-600 border-yellow-500/20",
-  under_review: "bg-blue-500/10 text-blue-600 border-blue-500/20",
-  approved: "bg-green-500/10 text-green-600 border-green-500/20",
-  active: "bg-green-500/10 text-green-600 border-green-500/20",
-  rejected: "bg-red-500/10 text-red-600 border-red-500/20",
-  paused: "bg-orange-500/10 text-orange-600 border-orange-500/20",
+  pending: "bg-warning/10 text-warning border-warning/20",
+  pending_approval: "bg-warning/10 text-warning border-warning/20",
+  under_review: "bg-primary/10 text-primary border-primary/20",
+  approved: "bg-chart-2/10 text-chart-2 border-chart-2/20",
+  active: "bg-chart-2/10 text-chart-2 border-chart-2/20",
+  rejected: "bg-destructive/10 text-destructive border-destructive/20",
+  paused: "bg-chart-4/10 text-chart-4 border-chart-4/20",
   completed: "bg-muted text-muted-foreground border-border",
   draft: "bg-muted text-muted-foreground border-border",
   cancelled: "bg-muted text-muted-foreground border-border",
 };
 
-export default function AdvertisingAdmin() {
+const AdvertisingAdmin = forwardRef<HTMLDivElement>(function AdvertisingAdmin(_props, ref) {
   const { language } = useLanguage();
   const isAr = language === "ar";
   const qc = useQueryClient();
@@ -172,7 +172,7 @@ export default function AdvertisingAdmin() {
   const pendingCreatives = creatives.filter(c => c.status === "pending");
 
   return (
-    <div className="space-y-6">
+    <div ref={ref} className="space-y-6">
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
@@ -276,10 +276,10 @@ export default function AdvertisingAdmin() {
                         <TableCell>
                           {(req.status === "pending" || req.status === "under_review") && (
                             <div className="flex gap-1">
-                              <Button size="sm" variant="ghost" className="h-7 text-green-600" onClick={() => approveRequest.mutate({ id: req.id, status: "approved" })}>
+                              <Button size="sm" variant="ghost" className="h-7 text-chart-2" onClick={() => approveRequest.mutate({ id: req.id, status: "approved" })}>
                                 <CheckCircle className="h-3.5 w-3.5" />
                               </Button>
-                              <Button size="sm" variant="ghost" className="h-7 text-red-600" onClick={() => approveRequest.mutate({ id: req.id, status: "rejected", notes: "Does not meet guidelines" })}>
+                              <Button size="sm" variant="ghost" className="h-7 text-destructive" onClick={() => approveRequest.mutate({ id: req.id, status: "rejected", notes: "Does not meet guidelines" })}>
                                 <XCircle className="h-3.5 w-3.5" />
                               </Button>
                             </div>
@@ -328,10 +328,10 @@ export default function AdvertisingAdmin() {
                         <TableCell>
                           {c.status === "pending_approval" && (
                             <div className="flex gap-1">
-                              <Button size="sm" variant="ghost" className="h-7 text-green-600" onClick={() => approveCampaign.mutate({ id: c.id, status: "active" })}>
+                              <Button size="sm" variant="ghost" className="h-7 text-chart-2" onClick={() => approveCampaign.mutate({ id: c.id, status: "active" })}>
                                 <CheckCircle className="h-3.5 w-3.5" />
                               </Button>
-                              <Button size="sm" variant="ghost" className="h-7 text-red-600" onClick={() => approveCampaign.mutate({ id: c.id, status: "rejected", reason: "Does not meet guidelines" })}>
+                              <Button size="sm" variant="ghost" className="h-7 text-destructive" onClick={() => approveCampaign.mutate({ id: c.id, status: "rejected", reason: "Does not meet guidelines" })}>
                                 <XCircle className="h-3.5 w-3.5" />
                               </Button>
                             </div>
@@ -427,7 +427,7 @@ export default function AdvertisingAdmin() {
                       <TableCell>{p.width && p.height ? `${p.width}×${p.height}` : "—"}</TableCell>
                       <TableCell>{p.base_cpm} SAR</TableCell>
                       <TableCell>{p.base_cpc} SAR</TableCell>
-                      <TableCell>{p.is_premium ? <Badge className="bg-yellow-500/10 text-yellow-600 border-yellow-500/20">Premium</Badge> : "—"}</TableCell>
+                      <TableCell>{p.is_premium ? <Badge variant="secondary">Premium</Badge> : "—"}</TableCell>
                       <TableCell>
                         <Switch checked={p.is_active} onCheckedChange={(checked) => togglePlacement.mutate({ id: p.id, is_active: checked })} />
                       </TableCell>
@@ -484,4 +484,6 @@ export default function AdvertisingAdmin() {
       </Tabs>
     </div>
   );
-}
+});
+
+export default AdvertisingAdmin;
