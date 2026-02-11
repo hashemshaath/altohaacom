@@ -100,6 +100,7 @@ const TastingsAdmin = lazy(() => import("./pages/admin/TastingsAdmin"));
 const CommunicationTemplatesAdmin = lazy(() => import("./pages/admin/CommunicationTemplatesAdmin"));
 const MentorshipAdmin = lazy(() => import("./pages/admin/MentorshipAdmin"));
 const EstablishmentsAdmin = lazy(() => import("./pages/admin/EstablishmentsAdmin"));
+const VerificationAdmin = lazy(() => import("./pages/admin/VerificationAdmin"));
 
 // Company Portal Pages
 const CompanyPortalLayout = lazy(() => import("./pages/CompanyPortal"));
@@ -235,6 +236,7 @@ const App = () => (
                    <Route path="templates" element={<CommunicationTemplatesAdmin />} />
                    <Route path="mentorship" element={<MentorshipAdmin />} />
                    <Route path="establishments" element={<EstablishmentsAdmin />} />
+                   <Route path="verification" element={<VerificationAdmin />} />
                 </Route>
 
                 {/* Company Portal Routes */}
