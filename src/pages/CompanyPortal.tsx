@@ -27,6 +27,7 @@ import {
   Package,
   Menu,
   MoreHorizontal,
+  Megaphone,
 } from "lucide-react";
 
 export default function CompanyPortalLayout() {
@@ -65,6 +66,7 @@ export default function CompanyPortalLayout() {
     { to: "/company/branches", icon: Building2, label: language === "ar" ? "الفروع" : "Branches" },
     { to: "/company/drivers", icon: Truck, label: language === "ar" ? "السائقون" : "Drivers", roles: ["logistics", "supplier"] },
     { to: "/company/working-hours", icon: Clock, label: language === "ar" ? "ساعات العمل" : "Hours" },
+    { to: "/company/advertising", icon: Megaphone, label: language === "ar" ? "الإعلانات" : "Advertising", roles: ["sponsor", "partner", "vendor", "supplier"] },
     { to: "/company/settings", icon: Settings, label: language === "ar" ? "الإعدادات" : "Settings" },
   ];
 
