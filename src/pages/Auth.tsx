@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/i18n/LanguageContext";
@@ -20,11 +20,14 @@ import { UsernameSuggestions } from "@/components/auth/UsernameSuggestions";
 import { ForgotPasswordDialog } from "@/components/auth/ForgotPasswordDialog";
 import { TermsAgreement } from "@/components/auth/TermsAgreement";
 import { normalizePhoneInput } from "@/lib/arabicNumerals";
+import { countryFlag } from "@/lib/countryFlag";
+import { useAllCountries } from "@/hooks/useCountries";
 import { z } from "zod";
 import {
   CheckCircle, XCircle, Loader2, ShieldCheck, UserPlus, LogIn,
-  Trophy, Globe, GraduationCap, Award, Star, Phone, Mail, KeyRound,
+  Trophy, Globe, GraduationCap, Award, Star, Phone, Mail, KeyRound, ChevronDown,
 } from "lucide-react";
+import authHeroImg from "@/assets/auth-hero.jpg";
 
 const usernameRegex = /^[a-zA-Z][a-zA-Z0-9_]{2,29}$/;
 
@@ -32,12 +35,247 @@ type SignUpStep = "contact" | "verify" | "details" | "credentials";
 type SignUpMethod = "phone" | "email";
 type SignInMethod = "phone" | "email";
 
+const DEFAULT_COUNTRY = "SA";
+const DEFAULT_PHONE_CODE = "+966";
+
+/* ── Motivational quotes for the hero panel ── */
+const motivationalQuotes = {
+  signup: {
+    en: [
+      "Every great chef started somewhere. Start your journey today.",
+      "Join thousands of culinary professionals shaping the future of gastronomy.",
+      "Your culinary masterpiece awaits — create, compete, and connect globally.",
+    ],
+    ar: [
+      "كل شيف عظيم بدأ من مكان ما. ابدأ رحلتك اليوم.",
+      "انضم لآلاف المحترفين الذين يشكلون مستقبل فن الطهي.",
+      "تحفتك الفنية في انتظارك — أبدع، تنافس، وتواصل عالمياً.",
+    ],
+  },
+  signin: {
+    en: [
+      "Welcome back, Chef. Your community is waiting.",
+      "Continue your culinary excellence journey.",
+      "Great things are cooking — sign in to see what's new.",
+    ],
+    ar: [
+      "مرحباً بعودتك، شيف. مجتمعك في انتظارك.",
+      "واصل رحلتك نحو التميز في الطهي.",
+      "أشياء رائعة تُطهى — سجل دخولك لمعرفة الجديد.",
+    ],
+  },
+  verify: {
+    en: ["Almost there — we just need to verify it's really you."],
+    ar: ["اقتربت — نحتاج فقط التأكد من هويتك."],
+  },
+  details: {
+    en: ["Tell us a bit about yourself. Every great chef has a story."],
+    ar: ["أخبرنا عن نفسك. كل شيف عظيم له قصة."],
+  },
+  credentials: {
+    en: ["One last step and you're in. Make it secure, make it yours."],
+    ar: ["خطوة أخيرة وتنضم إلينا. اجعلها آمنة، اجعلها خاصة بك."],
+  },
+  reset: {
+    en: ["Secure your account with a strong new password."],
+    ar: ["أمّن حسابك بكلمة مرور جديدة قوية."],
+  },
+};
+
 const features = [
   { icon: Trophy, labelEn: "Compete Globally", labelAr: "تنافس عالمياً" },
   { icon: GraduationCap, labelEn: "Learn from the Best", labelAr: "تعلم من الأفضل" },
   { icon: Globe, labelEn: "Connect Worldwide", labelAr: "تواصل حول العالم" },
   { icon: Award, labelEn: "Earn Certificates", labelAr: "احصل على شهادات" },
 ];
+
+/* ── Phone Input with Flag + Code ── */
+function PhoneInputWithFlag({
+  phone,
+  onPhoneChange,
+  countryCode,
+  phoneCode,
+  onCountryChange,
+  error,
+  label,
+  isAr,
+}: {
+  phone: string;
+  onPhoneChange: (v: string) => void;
+  countryCode: string;
+  phoneCode: string;
+  onCountryChange: (code: string, phoneCode: string) => void;
+  error?: string;
+  label?: string;
+  isAr: boolean;
+}) {
+  const { data: countries } = useAllCountries();
+  const [dropdownOpen, setDropdownOpen] = useState(false);
+
+  const selectedCountry = useMemo(
+    () => countries?.find((c) => c.code === countryCode),
+    [countries, countryCode]
+  );
+
+  const flag = countryFlag(countryCode);
+  const displayCode = phoneCode || selectedCountry?.phone_code || "";
+
+  return (
+    <div className="space-y-1.5">
+      {label && <Label className="text-xs">{label} *</Label>}
+      <div className="flex gap-2">
+        {/* Country code button */}
+        <div className="relative">
+          <button
+            type="button"
+            onClick={() => setDropdownOpen(!dropdownOpen)}
+            className="flex h-10 items-center gap-1.5 rounded-md border border-input bg-background px-3 text-sm hover:bg-accent/50 transition-colors min-w-[100px]"
+          >
+            <span className="text-base">{flag}</span>
+            <span className="font-mono text-muted-foreground" dir="ltr">{displayCode}</span>
+            <ChevronDown className="h-3.5 w-3.5 text-muted-foreground ms-auto" />
+          </button>
+
+          {dropdownOpen && (
+            <>
+              <div className="fixed inset-0 z-40" onClick={() => setDropdownOpen(false)} />
+              <div className="absolute top-full mt-1 z-50 w-64 max-h-60 overflow-auto rounded-lg border bg-popover shadow-lg">
+                {(countries || []).map((c) => (
+                  <button
+                    key={c.code}
+                    type="button"
+                    className="flex w-full items-center gap-2 px-3 py-2 text-sm hover:bg-accent/50 transition-colors"
+                    onClick={() => {
+                      const pc = c.phone_code || "";
+                      onCountryChange(c.code, pc);
+                      setDropdownOpen(false);
+                    }}
+                  >
+                    <span className="text-base">{countryFlag(c.code)}</span>
+                    <span className="flex-1 text-start truncate">
+                      {isAr ? c.name_ar || c.name : c.name}
+                    </span>
+                    <span className="font-mono text-xs text-muted-foreground" dir="ltr">
+                      {c.phone_code}
+                    </span>
+                  </button>
+                ))}
+              </div>
+            </>
+          )}
+        </div>
+
+        {/* Phone number input */}
+        <Input
+          type="tel"
+          dir="ltr"
+          placeholder="5XX XXX XXXX"
+          value={phone}
+          onChange={(e) => onPhoneChange(normalizePhoneInput(e.target.value))}
+          className="flex-1"
+        />
+      </div>
+      {error && <p className="text-xs text-destructive">{error}</p>}
+    </div>
+  );
+}
+
+/* ── Hero Side Panel ── */
+function AuthHeroPanel({
+  stage,
+  isAr,
+}: {
+  stage: "signup" | "signin" | "verify" | "details" | "credentials" | "reset";
+  isAr: boolean;
+}) {
+  const quoteSet = motivationalQuotes[stage] || motivationalQuotes.signup;
+  const quotes = isAr ? quoteSet.ar : quoteSet.en;
+  const randomQuote = useMemo(() => quotes[Math.floor(Math.random() * quotes.length)], [stage]);
+
+  const headings: Record<string, { en: string; ar: string }> = {
+    signup: { en: "Join the Global Culinary Community", ar: "انضم لمجتمع الطهي العالمي" },
+    signin: { en: "Welcome Back, Chef!", ar: "مرحباً بعودتك، شيف!" },
+    verify: { en: "Verifying Your Identity", ar: "التحقق من هويتك" },
+    details: { en: "Tell Us About Yourself", ar: "أخبرنا عن نفسك" },
+    credentials: { en: "Almost There!", ar: "اقتربت!" },
+    reset: { en: "Reset Your Password", ar: "إعادة تعيين كلمة المرور" },
+  };
+
+  const heading = headings[stage] || headings.signup;
+
+  return (
+    <div className="hidden lg:flex lg:w-[480px] xl:w-[540px] relative flex-col justify-end overflow-hidden">
+      {/* Background image */}
+      <img
+        src={authHeroImg}
+        alt="Culinary excellence"
+        className="absolute inset-0 h-full w-full object-cover"
+      />
+      {/* Gradient overlay */}
+      <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-black/20" />
+
+      {/* Content */}
+      <div className="relative z-10 p-10 xl:p-14 space-y-6">
+        <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-primary/20 backdrop-blur-sm ring-1 ring-primary/30">
+          <Star className="h-6 w-6 text-primary" />
+        </div>
+
+        <div>
+          <h2 className="font-serif text-2xl font-bold xl:text-3xl text-white">
+            {isAr ? heading.ar : heading.en}
+          </h2>
+          <p className="mt-3 text-sm leading-relaxed text-white/80">
+            {randomQuote}
+          </p>
+        </div>
+
+        <div className="space-y-3 pt-2">
+          {features.map((f) => (
+            <div key={f.labelEn} className="flex items-center gap-3">
+              <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-white/10 backdrop-blur-sm">
+                <f.icon className="h-4 w-4 text-primary" />
+              </div>
+              <span className="text-sm font-medium text-white/90">{isAr ? f.labelAr : f.labelEn}</span>
+            </div>
+          ))}
+        </div>
+
+        <div className="flex items-center gap-2 pt-4 text-xs text-white/60">
+          <CheckCircle className="h-3.5 w-3.5 text-primary shrink-0" />
+          {isAr ? "مجاني بالكامل · بدون بطاقة ائتمان · إعداد في دقائق" : "Completely Free · No Credit Card · Setup in Minutes"}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/* ── Auth Layout Wrapper ── */
+function AuthLayout({
+  children,
+  stage,
+  isAr,
+  showFooter = false,
+}: {
+  children: React.ReactNode;
+  stage: "signup" | "signin" | "verify" | "details" | "credentials" | "reset";
+  isAr: boolean;
+  showFooter?: boolean;
+}) {
+  return (
+    <div className="flex min-h-screen flex-col">
+      <Header />
+      <main className="flex flex-1">
+        <AuthHeroPanel stage={stage} isAr={isAr} />
+        <div className="flex flex-1 items-center justify-center px-4 py-8">
+          <div className="w-full max-w-md space-y-5">
+            {children}
+          </div>
+        </div>
+      </main>
+      {showFooter && <Footer />}
+    </div>
+  );
+}
 
 export default function Auth() {
   const [searchParams] = useSearchParams();
@@ -49,8 +287,8 @@ export default function Auth() {
   // Sign-in state
   const [signInMethod, setSignInMethod] = useState<SignInMethod>("phone");
   const [signInPhone, setSignInPhone] = useState("");
-  const [signInPhoneCode, setSignInPhoneCode] = useState("");
-  const [signInCountry, setSignInCountry] = useState("");
+  const [signInPhoneCode, setSignInPhoneCode] = useState(DEFAULT_PHONE_CODE);
+  const [signInCountry, setSignInCountry] = useState(DEFAULT_COUNTRY);
   const [signInEmail, setSignInEmail] = useState("");
   const [signInPassword, setSignInPassword] = useState("");
   const [signInPhoneStep, setSignInPhoneStep] = useState<"phone" | "otp" | "password">("phone");
@@ -59,8 +297,8 @@ export default function Auth() {
   // Sign-up contact step
   const [phoneInput, setPhoneInput] = useState("");
   const [emailInput, setEmailInput] = useState("");
-  const [countryCode, setCountryCode] = useState("");
-  const [phoneCode, setPhoneCode] = useState("");
+  const [countryCode, setCountryCode] = useState(DEFAULT_COUNTRY);
+  const [phoneCode, setPhoneCode] = useState(DEFAULT_PHONE_CODE);
 
   // Sign-up verified contact
   const [verifiedPhone, setVerifiedPhone] = useState("");
@@ -162,7 +400,6 @@ export default function Auth() {
       return;
     }
 
-    // Look up email by phone
     setLoading(true);
     const { data: profile } = await supabase
       .from("profiles")
@@ -180,33 +417,6 @@ export default function Auth() {
       return;
     }
 
-    // Get user email from auth to sign in
-    const { data: userData } = await supabase
-      .from("profiles")
-      .select("user_id")
-      .eq("phone", signInVerifiedPhone)
-      .single();
-
-    if (!userData) {
-      setLoading(false);
-      toast({
-        variant: "destructive",
-        title: isAr ? "خطأ" : "Error",
-        description: isAr ? "لم يتم العثور على الحساب" : "Account not found",
-      });
-      return;
-    }
-
-    // We need the user's email to sign in with password
-    // Try to find it from the profiles or ask user
-    const { data: emailProfile } = await supabase
-      .from("profiles")
-      .select("full_name")
-      .eq("user_id", userData.user_id)
-      .single();
-
-    // Since we can't get email from profiles, ask user to provide it
-    // For now, we'll ask them to enter their email
     setLoading(false);
     toast({
       title: isAr ? "أدخل بريدك الإلكتروني" : "Enter your email",
@@ -218,7 +428,7 @@ export default function Auth() {
     setSignInPhoneStep("phone");
   };
 
-  // ── Password Reset (when redirected back) ──
+  // ── Password Reset ──
   const handleResetPassword = async () => {
     setErrors({});
     const errs: Record<string, string> = {};
@@ -248,16 +458,14 @@ export default function Auth() {
     const errs: Record<string, string> = {};
 
     if (signUpMethod === "phone") {
-      const cleanPhone = phoneInput.replace(/\s/g, "");
-      if (!/^\+?[1-9]\d{7,14}$/.test(cleanPhone)) {
+      const fullPhone = phoneCode + phoneInput.replace(/\s/g, "");
+      if (!/^\+?[1-9]\d{7,14}$/.test(fullPhone)) {
         errs.phone = isAr ? "رقم الهاتف غير صالح" : "Invalid phone number";
       }
-      if (!countryCode) errs.countryCode = isAr ? "يرجى اختيار الدولة" : "Country is required";
     } else {
       if (!z.string().email().safeParse(emailInput).success) {
         errs.email = isAr ? "البريد الإلكتروني غير صالح" : "Invalid email address";
       }
-      if (!countryCode) errs.countryCode = isAr ? "يرجى اختيار الدولة" : "Country is required";
     }
 
     if (Object.keys(errs).length > 0) { setErrors(errs); return; }
@@ -360,733 +568,560 @@ export default function Auth() {
   // ── Password Reset Page ──
   if (isResetMode) {
     return (
-      <div className="flex min-h-screen flex-col">
+      <AuthLayout stage="reset" isAr={isAr}>
         <SEOHead title={isAr ? "إعادة تعيين كلمة المرور" : "Reset Password"} description="Reset your password" />
-        <Header />
-        <main className="flex flex-1 items-center justify-center p-4">
-          <Card className="w-full max-w-md border-border/50 shadow-xl shadow-primary/5">
-            <div className="p-5 md:p-6 space-y-5">
-              <div className="flex flex-col items-center text-center">
-                <div className="mb-3 flex h-14 w-14 items-center justify-center rounded-2xl bg-primary/10 ring-1 ring-primary/15">
-                  <KeyRound className="h-7 w-7 text-primary" />
-                </div>
-                <h2 className="font-serif text-xl font-bold">
-                  {isAr ? "إعادة تعيين كلمة المرور" : "Reset Password"}
-                </h2>
-                <p className="mt-1 text-sm text-muted-foreground">
-                  {isAr ? "أدخل كلمة المرور الجديدة" : "Enter your new password"}
-                </p>
+        <Card className="border-border/50 shadow-xl shadow-primary/5">
+          <div className="p-5 md:p-6 space-y-5">
+            <div className="flex flex-col items-center text-center">
+              <div className="mb-3 flex h-14 w-14 items-center justify-center rounded-2xl bg-primary/10 ring-1 ring-primary/15">
+                <KeyRound className="h-7 w-7 text-primary" />
               </div>
-
-              <div className="space-y-1.5">
-                <Label className="text-xs">{isAr ? "كلمة المرور الجديدة" : "New Password"} *</Label>
-                <Input
-                  type="password"
-                  value={resetPassword}
-                  onChange={(e) => setResetPassword(e.target.value)}
-                  placeholder="••••••••"
-                />
-                <PasswordStrengthMeter password={resetPassword} />
-                {errors.resetPassword && <p className="text-xs text-destructive">{errors.resetPassword}</p>}
-              </div>
-
-              <div className="space-y-1.5">
-                <Label className="text-xs">{isAr ? "تأكيد كلمة المرور" : "Confirm Password"} *</Label>
-                <Input
-                  type="password"
-                  value={resetConfirm}
-                  onChange={(e) => setResetConfirm(e.target.value)}
-                  placeholder="••••••••"
-                />
-                {errors.resetConfirm && <p className="text-xs text-destructive">{errors.resetConfirm}</p>}
-              </div>
-
-              <Button className="w-full" size="lg" onClick={handleResetPassword} disabled={loading}>
-                {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                {isAr ? "تعيين كلمة المرور الجديدة" : "Set New Password"}
-              </Button>
+              <h2 className="font-serif text-xl font-bold">
+                {isAr ? "إعادة تعيين كلمة المرور" : "Reset Password"}
+              </h2>
+              <p className="mt-1 text-sm text-muted-foreground">
+                {isAr ? "أدخل كلمة المرور الجديدة" : "Enter your new password"}
+              </p>
             </div>
-          </Card>
-        </main>
-      </div>
+
+            <div className="space-y-1.5">
+              <Label className="text-xs">{isAr ? "كلمة المرور الجديدة" : "New Password"} *</Label>
+              <Input type="password" value={resetPassword} onChange={(e) => setResetPassword(e.target.value)} placeholder="••••••••" />
+              <PasswordStrengthMeter password={resetPassword} />
+              {errors.resetPassword && <p className="text-xs text-destructive">{errors.resetPassword}</p>}
+            </div>
+
+            <div className="space-y-1.5">
+              <Label className="text-xs">{isAr ? "تأكيد كلمة المرور" : "Confirm Password"} *</Label>
+              <Input type="password" value={resetConfirm} onChange={(e) => setResetConfirm(e.target.value)} placeholder="••••••••" />
+              {errors.resetConfirm && <p className="text-xs text-destructive">{errors.resetConfirm}</p>}
+            </div>
+
+            <Button className="w-full" size="lg" onClick={handleResetPassword} disabled={loading}>
+              {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+              {isAr ? "تعيين كلمة المرور الجديدة" : "Set New Password"}
+            </Button>
+          </div>
+        </Card>
+      </AuthLayout>
     );
   }
 
   // ── Sign Up Step 2: Verification ──
   if (signUpStep === "verify" && isSignUp) {
     return (
-      <div className="flex min-h-screen flex-col">
+      <AuthLayout stage="verify" isAr={isAr}>
         <SEOHead title="Verification" description="Verify your contact" />
-        <Header />
-        <main className="flex flex-1 items-center justify-center p-4">
-          <Card className="w-full max-w-md border-border/50 shadow-xl shadow-primary/5">
-            <div className="p-5 md:p-6">
-              <div className="mb-5 flex flex-col items-center text-center">
-                <div className="mb-3 flex h-14 w-14 items-center justify-center rounded-2xl bg-primary/10 ring-1 ring-primary/15">
-                  <ShieldCheck className="h-7 w-7 text-primary" />
-                </div>
-                <h2 className="font-serif text-xl font-bold">
-                  {signUpMethod === "phone"
-                    ? (isAr ? "التحقق من رقم الهاتف" : "Phone Verification")
-                    : (isAr ? "التحقق من البريد الإلكتروني" : "Email Verification")}
-                </h2>
-                <p className="mt-1 text-sm text-muted-foreground">
-                  {isAr ? `الخطوة 2 من ${totalSteps}` : `Step 2 of ${totalSteps}`}
-                </p>
+        <Card className="border-border/50 shadow-xl shadow-primary/5">
+          <div className="p-5 md:p-6">
+            <div className="mb-5 flex flex-col items-center text-center">
+              <div className="mb-3 flex h-14 w-14 items-center justify-center rounded-2xl bg-primary/10 ring-1 ring-primary/15">
+                <ShieldCheck className="h-7 w-7 text-primary" />
               </div>
-
-              {signUpMethod === "phone" ? (
-                <PhoneVerification
-                  onVerified={handlePhoneVerified}
-                  onBack={() => setSignUpStep("contact")}
-                  initialPhone={phoneInput}
-                  phoneCode={phoneCode}
-                  mode="signup"
-                />
-              ) : (
-                <div className="space-y-4">
-                  <div className="rounded-xl border border-primary/20 bg-primary/5 p-4 text-center">
-                    <Mail className="mx-auto mb-2 h-8 w-8 text-primary" />
-                    <p className="text-sm font-medium">
-                      {isAr ? "سيتم التحقق من:" : "Will verify:"}
-                    </p>
-                    <p className="mt-1 font-mono text-sm text-primary">{emailInput}</p>
-                    <p className="mt-2 text-xs text-muted-foreground">
-                      {isAr
-                        ? "سيتم إرسال رابط التحقق إلى بريدك الإلكتروني بعد إنشاء الحساب"
-                        : "A verification link will be sent after account creation"}
-                    </p>
-                  </div>
-                  <div className="flex gap-2">
-                    <Button variant="outline" onClick={() => setSignUpStep("contact")}>
-                      {isAr ? "رجوع" : "Back"}
-                    </Button>
-                    <Button className="flex-1" onClick={handleSendEmailVerification}>
-                      {isAr ? "متابعة" : "Continue"}
-                    </Button>
-                  </div>
-                </div>
-              )}
+              <h2 className="font-serif text-xl font-bold">
+                {signUpMethod === "phone"
+                  ? (isAr ? "التحقق من رقم الهاتف" : "Phone Verification")
+                  : (isAr ? "التحقق من البريد الإلكتروني" : "Email Verification")}
+              </h2>
+              <p className="mt-1 text-sm text-muted-foreground">
+                {isAr ? `الخطوة 2 من ${totalSteps}` : `Step 2 of ${totalSteps}`}
+              </p>
             </div>
-          </Card>
-        </main>
-      </div>
+
+            {signUpMethod === "phone" ? (
+              <PhoneVerification
+                onVerified={handlePhoneVerified}
+                onBack={() => setSignUpStep("contact")}
+                initialPhone={phoneCode + phoneInput}
+                phoneCode={phoneCode}
+                mode="signup"
+              />
+            ) : (
+              <div className="space-y-4">
+                <div className="rounded-xl border border-primary/20 bg-primary/5 p-4 text-center">
+                  <Mail className="mx-auto mb-2 h-8 w-8 text-primary" />
+                  <p className="text-sm font-medium">{isAr ? "سيتم التحقق من:" : "Will verify:"}</p>
+                  <p className="mt-1 font-mono text-sm text-primary">{emailInput}</p>
+                  <p className="mt-2 text-xs text-muted-foreground">
+                    {isAr
+                      ? "سيتم إرسال رابط التحقق إلى بريدك الإلكتروني بعد إنشاء الحساب"
+                      : "A verification link will be sent after account creation"}
+                  </p>
+                </div>
+                <div className="flex gap-2">
+                  <Button variant="outline" onClick={() => setSignUpStep("contact")}>
+                    {isAr ? "رجوع" : "Back"}
+                  </Button>
+                  <Button className="flex-1" onClick={handleSendEmailVerification}>
+                    {isAr ? "متابعة" : "Continue"}
+                  </Button>
+                </div>
+              </div>
+            )}
+          </div>
+        </Card>
+      </AuthLayout>
     );
   }
 
   // ── Sign Up Step 3: Details ──
   if (signUpStep === "details" && isSignUp) {
     return (
-      <div className="flex min-h-screen flex-col">
+      <AuthLayout stage="details" isAr={isAr}>
         <SEOHead title="Your Details" description="Complete your details" />
-        <Header />
-        <main className="flex flex-1 items-center justify-center p-4">
-          <Card className="w-full max-w-md border-border/50 shadow-xl shadow-primary/5">
-            <div className="p-5 md:p-6 space-y-5">
-              <div className="flex flex-col items-center text-center">
-                <div className="mb-3 flex h-14 w-14 items-center justify-center rounded-2xl bg-primary/10 ring-1 ring-primary/15">
-                  <UserPlus className="h-7 w-7 text-primary" />
-                </div>
-                <h2 className="font-serif text-xl font-bold">
-                  {isAr ? "المعلومات الشخصية" : "Personal Details"}
-                </h2>
-                <p className="mt-1 text-sm text-muted-foreground">
-                  {isAr ? `الخطوة 3 من ${totalSteps}` : `Step 3 of ${totalSteps}`}
-                </p>
+        <Card className="border-border/50 shadow-xl shadow-primary/5">
+          <div className="p-5 md:p-6 space-y-5">
+            <div className="flex flex-col items-center text-center">
+              <div className="mb-3 flex h-14 w-14 items-center justify-center rounded-2xl bg-primary/10 ring-1 ring-primary/15">
+                <UserPlus className="h-7 w-7 text-primary" />
               </div>
+              <h2 className="font-serif text-xl font-bold">{isAr ? "المعلومات الشخصية" : "Personal Details"}</h2>
+              <p className="mt-1 text-sm text-muted-foreground">
+                {isAr ? `الخطوة 3 من ${totalSteps}` : `Step 3 of ${totalSteps}`}
+              </p>
+            </div>
 
-              <div className="flex items-center gap-2 rounded-lg border border-primary/20 bg-primary/5 p-3">
-                <CheckCircle className="h-5 w-5 text-primary shrink-0" />
-                <div className="text-sm">
-                  {signUpMethod === "phone" ? (
-                    <>
-                      <span className="font-medium">{isAr ? "تم التحقق:" : "Verified:"}</span>{" "}
-                      <span className="font-mono text-primary" dir="ltr">{verifiedPhone}</span>
-                    </>
-                  ) : (
-                    <>
-                      <span className="font-medium">{isAr ? "البريد:" : "Email:"}</span>{" "}
-                      <span className="text-primary">{verifiedEmail}</span>
-                    </>
-                  )}
-                </div>
-              </div>
-
-              <div className="space-y-1.5">
-                <Label htmlFor="fullName" className="text-xs">{isAr ? "الاسم الكامل" : "Full Name"} *</Label>
-                <Input
-                  id="fullName"
-                  value={fullName}
-                  onChange={(e) => setFullName(e.target.value)}
-                  placeholder={isAr ? "الاسم الكامل" : "Full name"}
-                />
-                {errors.fullName && <p className="text-xs text-destructive">{errors.fullName}</p>}
-              </div>
-
-              {signUpMethod === "phone" && (
-                <div className="space-y-1.5">
-                  <Label htmlFor="email" className="text-xs">{isAr ? "البريد الإلكتروني" : "Email"} *</Label>
-                  <Input
-                    id="email"
-                    type="email"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    placeholder={isAr ? "البريد الإلكتروني" : "Email address"}
-                  />
-                  <p className="text-[10px] text-muted-foreground">
-                    {isAr ? "مطلوب لإنشاء الحساب وإرسال الإشعارات" : "Required for account creation and notifications"}
-                  </p>
-                  {errors.email && <p className="text-xs text-destructive">{errors.email}</p>}
-                </div>
-              )}
-
-              <div className="flex gap-2">
-                <Button variant="outline" onClick={() => setSignUpStep("verify")}>
-                  {isAr ? "رجوع" : "Back"}
-                </Button>
-                <Button className="flex-1" onClick={handleDetailsSubmit}>
-                  {isAr ? "التالي" : "Next"}
-                </Button>
+            <div className="flex items-center gap-2 rounded-lg border border-primary/20 bg-primary/5 p-3">
+              <CheckCircle className="h-5 w-5 text-primary shrink-0" />
+              <div className="text-sm">
+                {signUpMethod === "phone" ? (
+                  <>
+                    <span className="font-medium">{isAr ? "تم التحقق:" : "Verified:"}</span>{" "}
+                    <span className="font-mono text-primary" dir="ltr">{verifiedPhone}</span>
+                  </>
+                ) : (
+                  <>
+                    <span className="font-medium">{isAr ? "البريد:" : "Email:"}</span>{" "}
+                    <span className="text-primary">{verifiedEmail}</span>
+                  </>
+                )}
               </div>
             </div>
-          </Card>
-        </main>
-      </div>
+
+            <div className="space-y-1.5">
+              <Label htmlFor="fullName" className="text-xs">{isAr ? "الاسم الكامل" : "Full Name"} *</Label>
+              <Input id="fullName" value={fullName} onChange={(e) => setFullName(e.target.value)} placeholder={isAr ? "الاسم الكامل" : "Full name"} />
+              {errors.fullName && <p className="text-xs text-destructive">{errors.fullName}</p>}
+            </div>
+
+            {signUpMethod === "phone" && (
+              <div className="space-y-1.5">
+                <Label htmlFor="email" className="text-xs">{isAr ? "البريد الإلكتروني" : "Email"} *</Label>
+                <Input id="email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder={isAr ? "البريد الإلكتروني" : "Email address"} />
+                <p className="text-[10px] text-muted-foreground">{isAr ? "مطلوب لإنشاء الحساب وإرسال الإشعارات" : "Required for account creation and notifications"}</p>
+                {errors.email && <p className="text-xs text-destructive">{errors.email}</p>}
+              </div>
+            )}
+
+            <div className="flex gap-2">
+              <Button variant="outline" onClick={() => setSignUpStep("verify")}>{isAr ? "رجوع" : "Back"}</Button>
+              <Button className="flex-1" onClick={handleDetailsSubmit}>{isAr ? "التالي" : "Next"}</Button>
+            </div>
+          </div>
+        </Card>
+      </AuthLayout>
     );
   }
 
   // ── Sign Up Step 4: Credentials ──
   if (signUpStep === "credentials" && isSignUp) {
     return (
-      <div className="flex min-h-screen flex-col">
+      <AuthLayout stage="credentials" isAr={isAr}>
         <SEOHead title="Complete Registration" description="Set your password and username" />
-        <Header />
-        <main className="flex flex-1 items-center justify-center p-4">
-          <Card className="w-full max-w-md border-border/50 shadow-xl shadow-primary/5">
-            <div className="p-5 md:p-6 space-y-5">
-              <div className="flex flex-col items-center text-center">
-                <div className="mb-3 flex h-14 w-14 items-center justify-center rounded-2xl bg-primary/10 ring-1 ring-primary/15">
-                  <UserPlus className="h-7 w-7 text-primary" />
-                </div>
-                <h2 className="font-serif text-xl font-bold">
-                  {isAr ? "إنشاء حسابك" : "Create Your Account"}
-                </h2>
-                <p className="mt-1 text-sm text-muted-foreground">
-                  {isAr ? `الخطوة 4 من ${totalSteps}` : `Step 4 of ${totalSteps}`}
-                </p>
+        <Card className="border-border/50 shadow-xl shadow-primary/5">
+          <div className="p-5 md:p-6 space-y-5">
+            <div className="flex flex-col items-center text-center">
+              <div className="mb-3 flex h-14 w-14 items-center justify-center rounded-2xl bg-primary/10 ring-1 ring-primary/15">
+                <UserPlus className="h-7 w-7 text-primary" />
               </div>
-
-              {/* Username */}
-              <div className="space-y-1.5">
-                <Label htmlFor="username" className="text-xs">{isAr ? "اسم المستخدم" : "Username"} *</Label>
-                <div className="relative">
-                  <Input
-                    id="username"
-                    value={username}
-                    onChange={(e) => setUsername(e.target.value.toLowerCase().replace(/[^a-z0-9_]/g, ""))}
-                    className="pe-10"
-                    placeholder="your_username"
-                  />
-                  <div className="pointer-events-none absolute end-3 top-1/2 -translate-y-1/2">
-                    {usernameStatus === "checking" && <Loader2 className="h-4 w-4 animate-spin text-muted-foreground" />}
-                    {usernameStatus === "available" && <CheckCircle className="h-4 w-4 text-primary" />}
-                    {usernameStatus === "taken" && <XCircle className="h-4 w-4 text-destructive" />}
-                  </div>
-                </div>
-                <p className="text-[10px] text-muted-foreground">
-                  altohaa.com/<span className="font-medium">{username || "username"}</span>
-                </p>
-                {errors.username && <p className="text-xs text-destructive">{errors.username}</p>}
-
-                {/* Username suggestions when taken */}
-                {usernameStatus === "taken" && (
-                  <UsernameSuggestions
-                    baseUsername={username}
-                    onSelect={(s) => setUsername(s)}
-                  />
-                )}
-              </div>
-
-              {/* Password */}
-              <div className="space-y-1.5">
-                <Label htmlFor="password" className="text-xs">{isAr ? "كلمة المرور" : "Password"} *</Label>
-                <Input
-                  id="password"
-                  type="password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  placeholder="••••••••"
-                />
-                <PasswordStrengthMeter password={password} />
-                {errors.password && <p className="text-xs text-destructive">{errors.password}</p>}
-              </div>
-
-              {/* Confirm Password */}
-              <div className="space-y-1.5">
-                <Label htmlFor="confirmPassword" className="text-xs">{isAr ? "تأكيد كلمة المرور" : "Confirm Password"} *</Label>
-                <Input
-                  id="confirmPassword"
-                  type="password"
-                  value={confirmPassword}
-                  onChange={(e) => setConfirmPassword(e.target.value)}
-                  placeholder="••••••••"
-                />
-                {confirmPassword && password !== confirmPassword && (
-                  <p className="text-xs text-destructive">{isAr ? "غير متطابقة" : "Passwords don't match"}</p>
-                )}
-                {errors.confirmPassword && <p className="text-xs text-destructive">{errors.confirmPassword}</p>}
-              </div>
-
-              {/* Terms */}
-              <TermsAgreement
-                checked={termsAccepted}
-                onCheckedChange={setTermsAccepted}
-                error={errors.terms}
-              />
-
-              <div className="flex gap-2">
-                <Button variant="outline" onClick={() => setSignUpStep("details")}>
-                  {isAr ? "رجوع" : "Back"}
-                </Button>
-                <Button
-                  className="flex-1 gap-2"
-                  size="lg"
-                  disabled={loading || usernameStatus !== "available" || !termsAccepted}
-                  onClick={handleCreateAccount}
-                >
-                  {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : <UserPlus className="h-4 w-4" />}
-                  {loading ? (isAr ? "جاري الإنشاء..." : "Creating...") : (isAr ? "إنشاء الحساب" : "Create Account")}
-                </Button>
-              </div>
+              <h2 className="font-serif text-xl font-bold">{isAr ? "إنشاء حسابك" : "Create Your Account"}</h2>
+              <p className="mt-1 text-sm text-muted-foreground">
+                {isAr ? `الخطوة 4 من ${totalSteps}` : `Step 4 of ${totalSteps}`}
+              </p>
             </div>
-          </Card>
-        </main>
-      </div>
+
+            {/* Username */}
+            <div className="space-y-1.5">
+              <Label htmlFor="username" className="text-xs">{isAr ? "اسم المستخدم" : "Username"} *</Label>
+              <div className="relative">
+                <Input
+                  id="username"
+                  value={username}
+                  onChange={(e) => setUsername(e.target.value.toLowerCase().replace(/[^a-z0-9_]/g, ""))}
+                  className="pe-10"
+                  placeholder="your_username"
+                />
+                <div className="pointer-events-none absolute end-3 top-1/2 -translate-y-1/2">
+                  {usernameStatus === "checking" && <Loader2 className="h-4 w-4 animate-spin text-muted-foreground" />}
+                  {usernameStatus === "available" && <CheckCircle className="h-4 w-4 text-primary" />}
+                  {usernameStatus === "taken" && <XCircle className="h-4 w-4 text-destructive" />}
+                </div>
+              </div>
+              <p className="text-[10px] text-muted-foreground">
+                altohaa.com/<span className="font-medium">{username || "username"}</span>
+              </p>
+              {errors.username && <p className="text-xs text-destructive">{errors.username}</p>}
+              {usernameStatus === "taken" && (
+                <UsernameSuggestions baseUsername={username} onSelect={(s) => setUsername(s)} />
+              )}
+            </div>
+
+            {/* Password */}
+            <div className="space-y-1.5">
+              <Label htmlFor="password" className="text-xs">{isAr ? "كلمة المرور" : "Password"} *</Label>
+              <Input id="password" type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="••••••••" />
+              <PasswordStrengthMeter password={password} />
+              {errors.password && <p className="text-xs text-destructive">{errors.password}</p>}
+            </div>
+
+            {/* Confirm Password */}
+            <div className="space-y-1.5">
+              <Label htmlFor="confirmPassword" className="text-xs">{isAr ? "تأكيد كلمة المرور" : "Confirm Password"} *</Label>
+              <Input id="confirmPassword" type="password" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} placeholder="••••••••" />
+              {confirmPassword && password !== confirmPassword && (
+                <p className="text-xs text-destructive">{isAr ? "غير متطابقة" : "Passwords don't match"}</p>
+              )}
+              {errors.confirmPassword && <p className="text-xs text-destructive">{errors.confirmPassword}</p>}
+            </div>
+
+            {/* Terms */}
+            <TermsAgreement checked={termsAccepted} onCheckedChange={setTermsAccepted} error={errors.terms} />
+
+            <div className="flex gap-2">
+              <Button variant="outline" onClick={() => setSignUpStep("details")}>{isAr ? "رجوع" : "Back"}</Button>
+              <Button
+                className="flex-1 gap-2"
+                size="lg"
+                disabled={loading || usernameStatus !== "available" || !termsAccepted}
+                onClick={handleCreateAccount}
+              >
+                {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : <UserPlus className="h-4 w-4" />}
+                {loading ? (isAr ? "جاري الإنشاء..." : "Creating...") : (isAr ? "إنشاء الحساب" : "Create Account")}
+              </Button>
+            </div>
+          </div>
+        </Card>
+      </AuthLayout>
     );
   }
 
   // ── Sign In: Phone OTP step ──
   if (!isSignUp && signInMethod === "phone" && signInPhoneStep === "otp") {
     return (
-      <div className="flex min-h-screen flex-col">
+      <AuthLayout stage="verify" isAr={isAr}>
         <SEOHead title="Verify Phone" description="Verify your phone to sign in" />
-        <Header />
-        <main className="flex flex-1 items-center justify-center p-4">
-          <Card className="w-full max-w-md border-border/50 shadow-xl shadow-primary/5">
-            <div className="p-5 md:p-6">
-              <PhoneVerification
-                onVerified={handleSignInPhoneVerified}
-                onBack={() => setSignInPhoneStep("phone")}
-                initialPhone={signInPhone}
-                phoneCode={signInPhoneCode}
-                mode="login"
-              />
-            </div>
-          </Card>
-        </main>
-      </div>
+        <Card className="border-border/50 shadow-xl shadow-primary/5">
+          <div className="p-5 md:p-6">
+            <PhoneVerification
+              onVerified={handleSignInPhoneVerified}
+              onBack={() => setSignInPhoneStep("phone")}
+              initialPhone={signInPhoneCode + signInPhone}
+              phoneCode={signInPhoneCode}
+              mode="login"
+            />
+          </div>
+        </Card>
+      </AuthLayout>
     );
   }
 
   // ── Sign In: Phone password step ──
   if (!isSignUp && signInMethod === "phone" && signInPhoneStep === "password") {
     return (
-      <div className="flex min-h-screen flex-col">
+      <AuthLayout stage="signin" isAr={isAr}>
         <SEOHead title="Sign In" description="Enter your password" />
-        <Header />
-        <main className="flex flex-1 items-center justify-center p-4">
-          <Card className="w-full max-w-md border-border/50 shadow-xl shadow-primary/5">
-            <div className="p-5 md:p-6 space-y-5">
-              <div className="flex flex-col items-center text-center">
-                <div className="mb-3 flex h-14 w-14 items-center justify-center rounded-2xl bg-primary/10 ring-1 ring-primary/15">
-                  <LogIn className="h-7 w-7 text-primary" />
-                </div>
-                <h2 className="font-serif text-xl font-bold">
-                  {isAr ? "تسجيل الدخول" : "Sign In"}
-                </h2>
+        <Card className="border-border/50 shadow-xl shadow-primary/5">
+          <div className="p-5 md:p-6 space-y-5">
+            <div className="flex flex-col items-center text-center">
+              <div className="mb-3 flex h-14 w-14 items-center justify-center rounded-2xl bg-primary/10 ring-1 ring-primary/15">
+                <LogIn className="h-7 w-7 text-primary" />
               </div>
-
-              <div className="flex items-center gap-2 rounded-lg border border-primary/20 bg-primary/5 p-3">
-                <CheckCircle className="h-5 w-5 text-primary shrink-0" />
-                <div className="text-sm">
-                  <span className="font-medium">{isAr ? "تم التحقق:" : "Verified:"}</span>{" "}
-                  <span className="font-mono text-primary" dir="ltr">{signInVerifiedPhone}</span>
-                </div>
-              </div>
-
-              <div className="space-y-1.5">
-                <Label className="text-xs">{isAr ? "البريد الإلكتروني" : "Email"}</Label>
-                <Input
-                  type="email"
-                  value={signInEmail}
-                  onChange={(e) => setSignInEmail(e.target.value)}
-                  placeholder={isAr ? "البريد المرتبط بحسابك" : "Email linked to your account"}
-                />
-              </div>
-
-              <div className="space-y-1.5">
-                <Label className="text-xs">{isAr ? "كلمة المرور" : "Password"}</Label>
-                <Input
-                  type="password"
-                  value={signInPassword}
-                  onChange={(e) => setSignInPassword(e.target.value)}
-                  placeholder="••••••••"
-                  onKeyDown={(e) => e.key === "Enter" && handleSignInEmail()}
-                />
-                {errors.signInPassword && <p className="text-xs text-destructive">{errors.signInPassword}</p>}
-              </div>
-
-              <Button className="w-full gap-2" size="lg" onClick={handleSignInEmail} disabled={loading}>
-                {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : <LogIn className="h-4 w-4" />}
-                {isAr ? "تسجيل الدخول" : "Sign In"}
-              </Button>
-
-              <button
-                type="button"
-                className="w-full text-center text-xs text-primary hover:underline"
-                onClick={() => { setSignInPhoneStep("phone"); setSignInMethod("phone"); }}
-              >
-                {isAr ? "رجوع" : "Back"}
-              </button>
+              <h2 className="font-serif text-xl font-bold">{isAr ? "تسجيل الدخول" : "Sign In"}</h2>
             </div>
-          </Card>
-        </main>
-      </div>
+
+            <div className="flex items-center gap-2 rounded-lg border border-primary/20 bg-primary/5 p-3">
+              <CheckCircle className="h-5 w-5 text-primary shrink-0" />
+              <div className="text-sm">
+                <span className="font-medium">{isAr ? "تم التحقق:" : "Verified:"}</span>{" "}
+                <span className="font-mono text-primary" dir="ltr">{signInVerifiedPhone}</span>
+              </div>
+            </div>
+
+            <div className="space-y-1.5">
+              <Label className="text-xs">{isAr ? "البريد الإلكتروني" : "Email"}</Label>
+              <Input type="email" value={signInEmail} onChange={(e) => setSignInEmail(e.target.value)} placeholder={isAr ? "البريد المرتبط بحسابك" : "Email linked to your account"} />
+            </div>
+
+            <div className="space-y-1.5">
+              <Label className="text-xs">{isAr ? "كلمة المرور" : "Password"}</Label>
+              <Input type="password" value={signInPassword} onChange={(e) => setSignInPassword(e.target.value)} placeholder="••••••••" onKeyDown={(e) => e.key === "Enter" && handleSignInEmail()} />
+              {errors.signInPassword && <p className="text-xs text-destructive">{errors.signInPassword}</p>}
+            </div>
+
+            <Button className="w-full gap-2" size="lg" onClick={handleSignInEmail} disabled={loading}>
+              {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : <LogIn className="h-4 w-4" />}
+              {isAr ? "تسجيل الدخول" : "Sign In"}
+            </Button>
+
+            <button type="button" className="w-full text-center text-xs text-primary hover:underline" onClick={() => { setSignInPhoneStep("phone"); setSignInMethod("phone"); }}>
+              {isAr ? "رجوع" : "Back"}
+            </button>
+          </div>
+        </Card>
+      </AuthLayout>
     );
   }
 
   /* ── Main auth view (Sign In or Sign Up Step 1) ── */
   return (
-    <div className="flex min-h-screen flex-col">
+    <AuthLayout stage={isSignUp ? "signup" : "signin"} isAr={isAr} showFooter>
       <SEOHead
         title={isSignUp ? "Sign Up - Altohaa" : "Sign In - Altohaa"}
         description="Join the global culinary community. Sign in or create your free account on Altohaa."
       />
-      <Header />
-      <main className="flex flex-1">
-        {/* ── Left: Feature panel (desktop only) ── */}
-        <div className="hidden lg:flex lg:w-[420px] xl:w-[480px] flex-col justify-center bg-gradient-to-br from-primary/5 via-background to-accent/5 border-e p-10 xl:p-14">
-          <div className="mb-8">
-            <div className="mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-primary/10 ring-1 ring-primary/15">
-              <Star className="h-7 w-7 text-primary" />
-            </div>
-            <h2 className="font-serif text-2xl font-bold xl:text-3xl">
-              {isSignUp
-                ? (isAr ? "انضم لمجتمع الطهي العالمي" : "Join the Global Culinary Community")
-                : (isAr ? "مرحباً بعودتك!" : "Welcome Back!")}
-            </h2>
-            <p className="mt-2 text-sm text-muted-foreground leading-relaxed">
-              {isSignUp
-                ? (isAr
-                    ? "أنشئ حسابك المجاني وابدأ رحلتك مع آلاف الطهاة والمحترفين من حول العالم."
-                    : "Create your free account and start your journey with thousands of chefs and culinary professionals worldwide.")
-                : (isAr
-                    ? "سجل دخولك للوصول إلى مسابقاتك ودوراتك ومجتمعك المهني."
-                    : "Sign in to access your competitions, courses, and professional network.")}
-            </p>
-          </div>
-          <div className="space-y-4">
-            {features.map((f) => (
-              <div key={f.labelEn} className="flex items-center gap-3">
-                <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-primary/10">
-                  <f.icon className="h-4 w-4 text-primary" />
-                </div>
-                <span className="text-sm font-medium">{isAr ? f.labelAr : f.labelEn}</span>
+
+      {/* Header */}
+      <div className="flex flex-col items-center text-center">
+        <img src="/altohaa-logo.png" alt="Altohaa" className="mb-3 h-12 w-auto lg:hidden" />
+        <h1 className="font-serif text-2xl font-bold">
+          {isSignUp ? (isAr ? "إنشاء حساب جديد" : "Create Account") : (isAr ? "تسجيل الدخول" : "Sign In")}
+        </h1>
+        {isSignUp && (
+          <p className="mt-1 text-sm text-muted-foreground">
+            {isAr ? `الخطوة 1 من ${totalSteps} — طريقة التسجيل` : `Step 1 of ${totalSteps} — Registration method`}
+          </p>
+        )}
+      </div>
+
+      {/* Google Sign In */}
+      <Button variant="outline" className="w-full gap-2" size="lg" onClick={handleGoogleSignIn} disabled={loading}>
+        <svg className="h-5 w-5" viewBox="0 0 24 24">
+          <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 0 1-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z" fill="#4285F4" />
+          <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853" />
+          <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05" />
+          <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335" />
+        </svg>
+        {isAr ? "المتابعة بحساب جوجل" : "Continue with Google"}
+      </Button>
+
+      <div className="flex items-center gap-3">
+        <Separator className="flex-1" />
+        <span className="text-xs text-muted-foreground">{isAr ? "أو" : "or"}</span>
+        <Separator className="flex-1" />
+      </div>
+
+      {/* Form Card */}
+      <Card className="border-border/50 shadow-lg shadow-primary/5">
+        <CardContent className="space-y-4 p-5 md:p-6">
+          {isSignUp ? (
+            /* ── SIGN UP: Step 1 Contact ── */
+            <>
+              {/* Method Toggle */}
+              <div className="flex rounded-lg border border-border/50 p-1 gap-1">
+                <button
+                  type="button"
+                  onClick={() => setSignUpMethod("phone")}
+                  className={`flex flex-1 items-center justify-center gap-2 rounded-md px-3 py-2 text-sm font-medium transition-colors ${
+                    signUpMethod === "phone"
+                      ? "bg-primary text-primary-foreground shadow-sm"
+                      : "text-muted-foreground hover:text-foreground"
+                  }`}
+                >
+                  <Phone className="h-4 w-4" />
+                  {isAr ? "رقم الهاتف" : "Phone"}
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setSignUpMethod("email")}
+                  className={`flex flex-1 items-center justify-center gap-2 rounded-md px-3 py-2 text-sm font-medium transition-colors ${
+                    signUpMethod === "email"
+                      ? "bg-primary text-primary-foreground shadow-sm"
+                      : "text-muted-foreground hover:text-foreground"
+                  }`}
+                >
+                  <Mail className="h-4 w-4" />
+                  {isAr ? "البريد الإلكتروني" : "Email"}
+                </button>
               </div>
-            ))}
-          </div>
-          <div className="mt-10 flex items-center gap-3 text-xs text-muted-foreground">
-            <CheckCircle className="h-4 w-4 text-primary shrink-0" />
-            {isAr ? "مجاني بالكامل · بدون بطاقة ائتمان · إعداد في دقائق" : "Completely Free · No Credit Card · Setup in Minutes"}
-          </div>
-        </div>
 
-        {/* ── Right: Form ── */}
-        <div className="flex flex-1 items-center justify-center px-4 py-8">
-          <div className="w-full max-w-md space-y-5">
-            {/* Header */}
-            <div className="flex flex-col items-center text-center">
-              <img src="/altohaa-logo.png" alt="Altohaa" className="mb-3 h-12 w-auto lg:hidden" />
-              <h1 className="font-serif text-2xl font-bold">
-                {isSignUp ? (isAr ? "إنشاء حساب جديد" : "Create Account") : (isAr ? "تسجيل الدخول" : "Sign In")}
-              </h1>
-              {isSignUp && (
-                <p className="mt-1 text-sm text-muted-foreground">
-                  {isAr ? `الخطوة 1 من ${totalSteps} — طريقة التسجيل` : `Step 1 of ${totalSteps} — Registration method`}
-                </p>
+              {signUpMethod === "phone" ? (
+                <>
+                  <PhoneInputWithFlag
+                    phone={phoneInput}
+                    onPhoneChange={setPhoneInput}
+                    countryCode={countryCode}
+                    phoneCode={phoneCode}
+                    onCountryChange={(code, pc) => {
+                      setCountryCode(code);
+                      setPhoneCode(pc);
+                    }}
+                    error={errors.phone}
+                    label={isAr ? "رقم الهاتف" : "Phone Number"}
+                    isAr={isAr}
+                  />
+                  <p className="text-[10px] text-muted-foreground">
+                    {isAr ? "سيتم إرسال رمز التحقق إلى هذا الرقم" : "A verification code will be sent to this number"}
+                  </p>
+                </>
+              ) : (
+                <>
+                  <CountrySelector
+                    value={countryCode}
+                    onChange={(code, country) => {
+                      setCountryCode(code);
+                      setPhoneCode(country?.phone_code || "");
+                    }}
+                    label={isAr ? "الدولة" : "Country"}
+                    required
+                  />
+                  {errors.countryCode && <p className="text-xs text-destructive">{errors.countryCode}</p>}
+
+                  <div className="space-y-1.5">
+                    <Label htmlFor="emailInput" className="text-xs">{isAr ? "البريد الإلكتروني" : "Email"} *</Label>
+                    <Input
+                      id="emailInput"
+                      type="email"
+                      value={emailInput}
+                      onChange={(e) => setEmailInput(e.target.value)}
+                      placeholder={isAr ? "البريد الإلكتروني" : "Email address"}
+                    />
+                    {errors.email && <p className="text-xs text-destructive">{errors.email}</p>}
+                    <p className="text-[10px] text-muted-foreground">
+                      {isAr ? "سيتم إرسال رابط التحقق إلى هذا البريد" : "A verification link will be sent to this email"}
+                    </p>
+                  </div>
+                </>
               )}
-            </div>
 
-            {/* Google Sign In */}
-            <Button
-              variant="outline"
-              className="w-full gap-2"
-              size="lg"
-              onClick={handleGoogleSignIn}
-              disabled={loading}
-            >
-              <svg className="h-5 w-5" viewBox="0 0 24 24">
-                <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 0 1-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z" fill="#4285F4" />
-                <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853" />
-                <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05" />
-                <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335" />
-              </svg>
-              {isAr ? "المتابعة بحساب جوجل" : "Continue with Google"}
-            </Button>
+              <Button className="w-full gap-2" size="lg" onClick={handleContactSubmit}>
+                {signUpMethod === "phone"
+                  ? (isAr ? "التالي — التحقق من الهاتف" : "Next — Verify Phone")
+                  : (isAr ? "التالي — التحقق من البريد" : "Next — Verify Email")}
+              </Button>
+            </>
+          ) : (
+            /* ── SIGN IN ── */
+            <>
+              {/* Sign-in method toggle */}
+              <div className="flex rounded-lg border border-border/50 p-1 gap-1">
+                <button
+                  type="button"
+                  onClick={() => { setSignInMethod("phone"); setErrors({}); }}
+                  className={`flex flex-1 items-center justify-center gap-2 rounded-md px-3 py-2 text-sm font-medium transition-colors ${
+                    signInMethod === "phone"
+                      ? "bg-primary text-primary-foreground shadow-sm"
+                      : "text-muted-foreground hover:text-foreground"
+                  }`}
+                >
+                  <Phone className="h-4 w-4" />
+                  {isAr ? "الهاتف" : "Phone"}
+                </button>
+                <button
+                  type="button"
+                  onClick={() => { setSignInMethod("email"); setErrors({}); }}
+                  className={`flex flex-1 items-center justify-center gap-2 rounded-md px-3 py-2 text-sm font-medium transition-colors ${
+                    signInMethod === "email"
+                      ? "bg-primary text-primary-foreground shadow-sm"
+                      : "text-muted-foreground hover:text-foreground"
+                  }`}
+                >
+                  <Mail className="h-4 w-4" />
+                  {isAr ? "البريد" : "Email"}
+                </button>
+              </div>
 
-            <div className="flex items-center gap-3">
-              <Separator className="flex-1" />
-              <span className="text-xs text-muted-foreground">{isAr ? "أو" : "or"}</span>
-              <Separator className="flex-1" />
-            </div>
+              {signInMethod === "phone" ? (
+                <>
+                  <PhoneInputWithFlag
+                    phone={signInPhone}
+                    onPhoneChange={setSignInPhone}
+                    countryCode={signInCountry}
+                    phoneCode={signInPhoneCode}
+                    onCountryChange={(code, pc) => {
+                      setSignInCountry(code);
+                      setSignInPhoneCode(pc);
+                    }}
+                    error={errors.signInPhone}
+                    label={isAr ? "رقم الهاتف" : "Phone Number"}
+                    isAr={isAr}
+                  />
 
-            {/* Form Card */}
-            <Card className="border-border/50 shadow-lg shadow-primary/5">
-              <CardContent className="space-y-4 p-5 md:p-6">
-                {isSignUp ? (
-                  /* ── SIGN UP: Step 1 Contact ── */
-                  <>
-                    {/* Method Toggle */}
-                    <div className="flex rounded-lg border border-border/50 p-1 gap-1">
-                      <button
-                        type="button"
-                        onClick={() => setSignUpMethod("phone")}
-                        className={`flex flex-1 items-center justify-center gap-2 rounded-md px-3 py-2 text-sm font-medium transition-colors ${
-                          signUpMethod === "phone"
-                            ? "bg-primary text-primary-foreground shadow-sm"
-                            : "text-muted-foreground hover:text-foreground"
-                        }`}
-                      >
-                        <Phone className="h-4 w-4" />
-                        {isAr ? "رقم الهاتف" : "Phone"}
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => setSignUpMethod("email")}
-                        className={`flex flex-1 items-center justify-center gap-2 rounded-md px-3 py-2 text-sm font-medium transition-colors ${
-                          signUpMethod === "email"
-                            ? "bg-primary text-primary-foreground shadow-sm"
-                            : "text-muted-foreground hover:text-foreground"
-                        }`}
-                      >
-                        <Mail className="h-4 w-4" />
-                        {isAr ? "البريد الإلكتروني" : "Email"}
-                      </button>
-                    </div>
+                  <Button
+                    className="w-full gap-2"
+                    size="lg"
+                    onClick={() => {
+                      const fullPhone = signInPhoneCode + signInPhone.replace(/\s/g, "");
+                      if (!/^\+?[1-9]\d{7,14}$/.test(fullPhone)) {
+                        setErrors({ signInPhone: isAr ? "رقم غير صالح" : "Invalid number" });
+                        return;
+                      }
+                      setErrors({});
+                      setSignInPhoneStep("otp");
+                    }}
+                  >
+                    {isAr ? "التالي — التحقق" : "Next — Verify"}
+                  </Button>
+                </>
+              ) : (
+                <>
+                  <div className="space-y-1.5">
+                    <Label htmlFor="signInEmail" className="text-xs">{isAr ? "البريد الإلكتروني" : "Email"}</Label>
+                    <Input
+                      id="signInEmail"
+                      type="email"
+                      value={signInEmail}
+                      onChange={(e) => setSignInEmail(e.target.value)}
+                      placeholder={isAr ? "البريد الإلكتروني" : "Email address"}
+                      onKeyDown={(e) => e.key === "Enter" && document.getElementById("signInPassword")?.focus()}
+                    />
+                    {errors.signInEmail && <p className="text-xs text-destructive">{errors.signInEmail}</p>}
+                  </div>
 
-                    {signUpMethod === "phone" ? (
-                      <>
-                        <CountrySelector
-                          value={countryCode}
-                          onChange={(code, country) => {
-                            setCountryCode(code);
-                            const pc = country?.phone_code || "";
-                            setPhoneCode(pc);
-                            if (!phoneInput || phoneInput === phoneCode) setPhoneInput(pc);
-                          }}
-                          label={isAr ? "الدولة" : "Country"}
-                          required
-                        />
-                        {errors.countryCode && <p className="text-xs text-destructive">{errors.countryCode}</p>}
-
-                        <div className="space-y-1.5">
-                          <Label htmlFor="phone" className="text-xs">{isAr ? "رقم الهاتف" : "Phone Number"} *</Label>
-                          <Input
-                            id="phone"
-                            type="tel"
-                            dir="ltr"
-                            placeholder="+966 5XX XXX XXXX"
-                            value={phoneInput}
-                            onChange={(e) => setPhoneInput(normalizePhoneInput(e.target.value))}
-                          />
-                          {errors.phone && <p className="text-xs text-destructive">{errors.phone}</p>}
-                          <p className="text-[10px] text-muted-foreground">
-                            {isAr ? "سيتم إرسال رمز التحقق إلى هذا الرقم" : "A verification code will be sent to this number"}
-                          </p>
-                        </div>
-                      </>
-                    ) : (
-                      <>
-                        <CountrySelector
-                          value={countryCode}
-                          onChange={(code, country) => {
-                            setCountryCode(code);
-                            setPhoneCode(country?.phone_code || "");
-                          }}
-                          label={isAr ? "الدولة" : "Country"}
-                          required
-                        />
-                        {errors.countryCode && <p className="text-xs text-destructive">{errors.countryCode}</p>}
-
-                        <div className="space-y-1.5">
-                          <Label htmlFor="emailInput" className="text-xs">{isAr ? "البريد الإلكتروني" : "Email"} *</Label>
-                          <Input
-                            id="emailInput"
-                            type="email"
-                            value={emailInput}
-                            onChange={(e) => setEmailInput(e.target.value)}
-                            placeholder={isAr ? "البريد الإلكتروني" : "Email address"}
-                          />
-                          {errors.email && <p className="text-xs text-destructive">{errors.email}</p>}
-                          <p className="text-[10px] text-muted-foreground">
-                            {isAr ? "سيتم إرسال رابط التحقق إلى هذا البريد" : "A verification link will be sent to this email"}
-                          </p>
-                        </div>
-                      </>
-                    )}
-
-                    <Button className="w-full gap-2" size="lg" onClick={handleContactSubmit}>
-                      {signUpMethod === "phone"
-                        ? (isAr ? "التالي — التحقق من الهاتف" : "Next — Verify Phone")
-                        : (isAr ? "التالي — التحقق من البريد" : "Next — Verify Email")}
-                    </Button>
-                  </>
-                ) : (
-                  /* ── SIGN IN ── */
-                  <>
-                    {/* Sign-in method toggle */}
-                    <div className="flex rounded-lg border border-border/50 p-1 gap-1">
-                      <button
-                        type="button"
-                        onClick={() => { setSignInMethod("phone"); setErrors({}); }}
-                        className={`flex flex-1 items-center justify-center gap-2 rounded-md px-3 py-2 text-sm font-medium transition-colors ${
-                          signInMethod === "phone"
-                            ? "bg-primary text-primary-foreground shadow-sm"
-                            : "text-muted-foreground hover:text-foreground"
-                        }`}
-                      >
-                        <Phone className="h-4 w-4" />
-                        {isAr ? "الهاتف" : "Phone"}
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => { setSignInMethod("email"); setErrors({}); }}
-                        className={`flex flex-1 items-center justify-center gap-2 rounded-md px-3 py-2 text-sm font-medium transition-colors ${
-                          signInMethod === "email"
-                            ? "bg-primary text-primary-foreground shadow-sm"
-                            : "text-muted-foreground hover:text-foreground"
-                        }`}
-                      >
-                        <Mail className="h-4 w-4" />
-                        {isAr ? "البريد" : "Email"}
+                  <div className="space-y-1.5">
+                    <div className="flex items-center justify-between">
+                      <Label htmlFor="signInPassword" className="text-xs">{isAr ? "كلمة المرور" : "Password"}</Label>
+                      <button type="button" className="text-[10px] text-primary hover:underline" onClick={() => setForgotOpen(true)}>
+                        {isAr ? "نسيت كلمة المرور؟" : "Forgot password?"}
                       </button>
                     </div>
+                    <Input
+                      id="signInPassword"
+                      type="password"
+                      value={signInPassword}
+                      onChange={(e) => setSignInPassword(e.target.value)}
+                      placeholder="••••••••"
+                      onKeyDown={(e) => e.key === "Enter" && handleSignInEmail()}
+                    />
+                    {errors.signInPassword && <p className="text-xs text-destructive">{errors.signInPassword}</p>}
+                  </div>
 
-                    {signInMethod === "phone" ? (
-                      <>
-                        <CountrySelector
-                          value={signInCountry}
-                          onChange={(code, country) => {
-                            setSignInCountry(code);
-                            const pc = country?.phone_code || "";
-                            setSignInPhoneCode(pc);
-                            if (!signInPhone || signInPhone === signInPhoneCode) setSignInPhone(pc);
-                          }}
-                          label={isAr ? "الدولة" : "Country"}
-                          required
-                        />
+                  <Button className="w-full gap-2" size="lg" disabled={loading} onClick={handleSignInEmail}>
+                    {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : <LogIn className="h-4 w-4" />}
+                    {loading ? (isAr ? "جاري الدخول..." : "Signing in...") : (isAr ? "تسجيل الدخول" : "Sign In")}
+                  </Button>
+                </>
+              )}
+            </>
+          )}
+        </CardContent>
+      </Card>
 
-                        <div className="space-y-1.5">
-                          <Label className="text-xs">{isAr ? "رقم الهاتف" : "Phone Number"}</Label>
-                          <Input
-                            type="tel"
-                            dir="ltr"
-                            placeholder="+966 5XX XXX XXXX"
-                            value={signInPhone}
-                            onChange={(e) => setSignInPhone(normalizePhoneInput(e.target.value))}
-                          />
-                        </div>
-
-                        <Button
-                          className="w-full gap-2"
-                          size="lg"
-                          onClick={() => {
-                            const clean = signInPhone.replace(/\s/g, "");
-                            if (!/^\+?[1-9]\d{7,14}$/.test(clean)) {
-                              setErrors({ signInPhone: isAr ? "رقم غير صالح" : "Invalid number" });
-                              return;
-                            }
-                            setErrors({});
-                            setSignInPhoneStep("otp");
-                          }}
-                        >
-                          {isAr ? "التالي — التحقق" : "Next — Verify"}
-                        </Button>
-                        {errors.signInPhone && <p className="text-xs text-destructive">{errors.signInPhone}</p>}
-                      </>
-                    ) : (
-                      <>
-                        <div className="space-y-1.5">
-                          <Label htmlFor="signInEmail" className="text-xs">{isAr ? "البريد الإلكتروني" : "Email"}</Label>
-                          <Input
-                            id="signInEmail"
-                            type="email"
-                            value={signInEmail}
-                            onChange={(e) => setSignInEmail(e.target.value)}
-                            placeholder={isAr ? "البريد الإلكتروني" : "Email address"}
-                            onKeyDown={(e) => e.key === "Enter" && document.getElementById("signInPassword")?.focus()}
-                          />
-                          {errors.signInEmail && <p className="text-xs text-destructive">{errors.signInEmail}</p>}
-                        </div>
-
-                        <div className="space-y-1.5">
-                          <div className="flex items-center justify-between">
-                            <Label htmlFor="signInPassword" className="text-xs">{isAr ? "كلمة المرور" : "Password"}</Label>
-                            <button
-                              type="button"
-                              className="text-[10px] text-primary hover:underline"
-                              onClick={() => setForgotOpen(true)}
-                            >
-                              {isAr ? "نسيت كلمة المرور؟" : "Forgot password?"}
-                            </button>
-                          </div>
-                          <Input
-                            id="signInPassword"
-                            type="password"
-                            value={signInPassword}
-                            onChange={(e) => setSignInPassword(e.target.value)}
-                            placeholder="••••••••"
-                            onKeyDown={(e) => e.key === "Enter" && handleSignInEmail()}
-                          />
-                          {errors.signInPassword && <p className="text-xs text-destructive">{errors.signInPassword}</p>}
-                        </div>
-
-                        <Button
-                          className="w-full gap-2"
-                          size="lg"
-                          disabled={loading}
-                          onClick={handleSignInEmail}
-                        >
-                          {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : <LogIn className="h-4 w-4" />}
-                          {loading ? (isAr ? "جاري الدخول..." : "Signing in...") : (isAr ? "تسجيل الدخول" : "Sign In")}
-                        </Button>
-                      </>
-                    )}
-                  </>
-                )}
-              </CardContent>
-            </Card>
-
-            {/* Toggle sign in / sign up */}
-            <div className="flex items-center justify-center gap-1.5 text-sm">
-              <span className="text-muted-foreground">
-                {isSignUp ? (isAr ? "لديك حساب بالفعل؟" : "Already have an account?") : (isAr ? "ليس لديك حساب؟" : "Don't have an account?")}
-              </span>
-              <button
-                type="button"
-                className="font-medium text-primary underline-offset-2 hover:underline"
-                onClick={() => { setIsSignUp(!isSignUp); setErrors({}); setSignInPhoneStep("phone"); }}
-              >
-                {isSignUp ? (isAr ? "تسجيل الدخول" : "Sign In") : (isAr ? "إنشاء حساب" : "Sign Up")}
-              </button>
-            </div>
-          </div>
-        </div>
-      </main>
-      <Footer />
+      {/* Toggle sign in / sign up */}
+      <div className="flex items-center justify-center gap-1.5 text-sm">
+        <span className="text-muted-foreground">
+          {isSignUp ? (isAr ? "لديك حساب بالفعل؟" : "Already have an account?") : (isAr ? "ليس لديك حساب؟" : "Don't have an account?")}
+        </span>
+        <button
+          type="button"
+          className="font-medium text-primary underline-offset-2 hover:underline"
+          onClick={() => { setIsSignUp(!isSignUp); setErrors({}); setSignInPhoneStep("phone"); }}
+        >
+          {isSignUp ? (isAr ? "تسجيل الدخول" : "Sign In") : (isAr ? "إنشاء حساب" : "Sign Up")}
+        </button>
+      </div>
 
       {/* Forgot Password Dialog */}
       <ForgotPasswordDialog open={forgotOpen} onOpenChange={setForgotOpen} />
-    </div>
+    </AuthLayout>
   );
 }
