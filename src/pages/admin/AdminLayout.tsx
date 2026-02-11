@@ -4,7 +4,7 @@ import { useIsAdmin } from "@/hooks/useAdmin";
 import { Navigate, Outlet, NavLink } from "react-router-dom";
 import { AdminHeader } from "@/components/admin/AdminHeader";
 import { cn } from "@/lib/utils";
-import { GraduationCap, BarChart3, Landmark, Building2, Gavel, MessageSquare as MessageSquareIcon, Earth, QrCode, UtensilsCrossed, MailOpen, HandHeart, ShieldCheck, Ticket, Target, Headphones, Activity } from "lucide-react";
+import { GraduationCap, BarChart3, Landmark, Building2, MessageSquare as MessageSquareIcon, Earth, QrCode, UtensilsCrossed, MailOpen, HandHeart, ShieldCheck, Ticket, Target, Headphones, Activity } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
@@ -68,7 +68,7 @@ export default function AdminLayout() {
         { to: "/admin/users", icon: Users, label: language === "ar" ? "المستخدمين" : "Users" },
         { to: "/admin/companies", icon: Building, label: language === "ar" ? "الشركات والرعاة" : "Companies & Sponsors" },
         { to: "/admin/entities", icon: Building2, label: language === "ar" ? "الجهات والجمعيات" : "Entities Registry" },
-        { to: "/admin/judges", icon: Gavel, label: language === "ar" ? "المحكّمين" : "Judges Registry" },
+        { to: "/admin/evaluation", icon: UtensilsCrossed, label: language === "ar" ? "مركز التقييم" : "Evaluation Center" },
         { to: "/admin/establishments", icon: Building, label: language === "ar" ? "المنشآت" : "Establishments" },
         { to: "/admin/roles", icon: Shield, label: language === "ar" ? "الأدوار والصلاحيات" : "Roles & Permissions" },
         { to: "/admin/memberships", icon: CreditCard, label: language === "ar" ? "العضويات" : "Memberships" },
@@ -85,7 +85,7 @@ export default function AdminLayout() {
         { to: "/admin/exhibitions", icon: Landmark, label: language === "ar" ? "المعارض والفعاليات" : "Exhibitions & Events" },
         { to: "/admin/certificates", icon: Award, label: language === "ar" ? "الشهادات" : "Certificates" },
         { to: "/admin/qr-codes", icon: QrCode, label: language === "ar" ? "رموز QR" : "QR Codes" },
-        { to: "/admin/tastings", icon: UtensilsCrossed, label: language === "ar" ? "جلسات التذوق" : "Tasting Sessions" },
+        { to: "/admin/orders", icon: CreditCard, label: language === "ar" ? "الطلبات" : "Orders" },
         { to: "/admin/mentorship", icon: HandHeart, label: language === "ar" ? "الإرشاد" : "Mentorship" },
         { to: "/admin/media", icon: Image, label: language === "ar" ? "مكتبة الوسائط" : "Media Library" },
         { to: "/admin/moderation", icon: Flag, label: language === "ar" ? "إدارة المحتوى" : "Moderation" },
