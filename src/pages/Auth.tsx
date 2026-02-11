@@ -180,67 +180,127 @@ function PhoneInputWithFlag({
   );
 }
 
+/* ── Animated Orb ── */
+function FloatingOrb({ className }: { className?: string }) {
+  return (
+    <div
+      className={`absolute rounded-full blur-3xl opacity-30 animate-pulse ${className}`}
+      style={{ animationDuration: `${6 + Math.random() * 4}s` }}
+    />
+  );
+}
+
+/* ── Step Progress Indicator ── */
+function StepDots({ current, total, isAr }: { current: number; total: number; isAr: boolean }) {
+  return (
+    <div className="flex items-center gap-2" dir="ltr">
+      {Array.from({ length: total }).map((_, i) => (
+        <div
+          key={i}
+          className={`h-1.5 rounded-full transition-all duration-500 ${
+            i < current
+              ? "w-6 bg-primary"
+              : i === current
+              ? "w-8 bg-primary shadow-sm shadow-primary/50"
+              : "w-4 bg-white/20"
+          }`}
+        />
+      ))}
+    </div>
+  );
+}
+
 /* ── Hero Side Panel ── */
 function AuthHeroPanel({
   stage,
   isAr,
+  currentStep,
 }: {
   stage: "signup" | "signin" | "verify" | "details" | "credentials" | "reset";
   isAr: boolean;
+  currentStep?: number;
 }) {
   const quoteSet = motivationalQuotes[stage] || motivationalQuotes.signup;
   const quotes = isAr ? quoteSet.ar : quoteSet.en;
-  const randomQuote = useMemo(() => quotes[Math.floor(Math.random() * quotes.length)], [stage]);
+  const randomQuote = useMemo(() => quotes[Math.floor(Math.random() * quotes.length)], [stage, isAr]);
 
   const headings: Record<string, { en: string; ar: string }> = {
-    signup: { en: "Join the Global Culinary Community", ar: "انضم لمجتمع الطهي العالمي" },
-    signin: { en: "Welcome Back, Chef!", ar: "مرحباً بعودتك، شيف!" },
-    verify: { en: "Verifying Your Identity", ar: "التحقق من هويتك" },
-    details: { en: "Tell Us About Yourself", ar: "أخبرنا عن نفسك" },
-    credentials: { en: "Almost There!", ar: "اقتربت!" },
-    reset: { en: "Reset Your Password", ar: "إعادة تعيين كلمة المرور" },
+    signup: { en: "Join the Global\nCulinary Community", ar: "انضم لمجتمع\nالطهي العالمي" },
+    signin: { en: "Welcome Back,\nChef!", ar: "مرحباً بعودتك\nشيف!" },
+    verify: { en: "Verifying\nYour Identity", ar: "التحقق من\nهويتك" },
+    details: { en: "Tell Us\nAbout Yourself", ar: "أخبرنا\nعن نفسك" },
+    credentials: { en: "Almost\nThere!", ar: "اقتربت\nمن الهدف!" },
+    reset: { en: "Reset Your\nPassword", ar: "إعادة تعيين\nكلمة المرور" },
   };
 
   const heading = headings[stage] || headings.signup;
+  const isSignUpFlow = ["signup", "verify", "details", "credentials"].includes(stage);
 
   return (
-    <div className="hidden lg:flex lg:w-[480px] xl:w-[540px] relative flex-col justify-end overflow-hidden">
-      {/* Background image */}
+    <div className="hidden lg:flex lg:w-[480px] xl:w-[540px] relative flex-col overflow-hidden" dir={isAr ? "rtl" : "ltr"}>
+      {/* Background image with parallax-like depth */}
       <img
         src={authHeroImg}
         alt="Culinary excellence"
-        className="absolute inset-0 h-full w-full object-cover"
+        className="absolute inset-0 h-full w-full object-cover scale-105"
       />
-      {/* Gradient overlay */}
-      <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-black/20" />
 
-      {/* Content */}
-      <div className="relative z-10 p-10 xl:p-14 space-y-6">
-        <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-primary/20 backdrop-blur-sm ring-1 ring-primary/30">
-          <Star className="h-6 w-6 text-primary" />
+      {/* Layered gradient overlays for depth */}
+      <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/50 to-transparent" />
+      <div className="absolute inset-0 bg-gradient-to-br from-primary/20 via-transparent to-accent/10" />
+
+      {/* Animated floating orbs */}
+      <FloatingOrb className="h-64 w-64 bg-primary/40 -top-20 -start-20" />
+      <FloatingOrb className="h-48 w-48 bg-accent/30 top-1/3 end-[-40px]" />
+      <FloatingOrb className="h-32 w-32 bg-primary/25 bottom-40 start-10" />
+
+      {/* Top: Logo + badge */}
+      <div className="relative z-10 p-8 xl:p-10">
+        <div className="flex items-center gap-3">
+          <img src="/altohaa-logo.png" alt="Altohaa" className="h-8 w-auto brightness-0 invert opacity-90" />
         </div>
+      </div>
 
-        <div>
-          <h2 className="font-serif text-2xl font-bold xl:text-3xl text-white">
+      {/* Center: Main content */}
+      <div className="relative z-10 flex flex-1 flex-col justify-center px-8 xl:px-10">
+        <div className="space-y-6">
+          <h2 className={`${isAr ? "font-sans" : "font-serif"} text-3xl font-bold xl:text-4xl leading-tight whitespace-pre-line`} style={{ color: "white" }}>
             {isAr ? heading.ar : heading.en}
           </h2>
-          <p className="mt-3 text-sm leading-relaxed text-white/80">
+          <p className="text-base leading-relaxed max-w-sm" style={{ color: "rgba(255,255,255,0.75)" }}>
             {randomQuote}
           </p>
         </div>
+      </div>
 
-        <div className="space-y-3 pt-2">
+      {/* Bottom: Features + step indicator */}
+      <div className="relative z-10 p-8 xl:p-10 space-y-6">
+        {/* Step progress for signup flow */}
+        {isSignUpFlow && currentStep !== undefined && (
+          <div className="space-y-2">
+            <StepDots current={currentStep} total={4} isAr={isAr} />
+            <p className="text-xs" style={{ color: "rgba(255,255,255,0.5)" }}>
+              {isAr ? `الخطوة ${currentStep + 1} من 4` : `Step ${currentStep + 1} of 4`}
+            </p>
+          </div>
+        )}
+
+        {/* Feature badges */}
+        <div className="flex flex-wrap gap-2">
           {features.map((f) => (
-            <div key={f.labelEn} className="flex items-center gap-3">
-              <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-white/10 backdrop-blur-sm">
-                <f.icon className="h-4 w-4 text-primary" />
-              </div>
-              <span className="text-sm font-medium text-white/90">{isAr ? f.labelAr : f.labelEn}</span>
+            <div
+              key={f.labelEn}
+              className="flex items-center gap-2 rounded-full px-3 py-1.5 text-xs font-medium backdrop-blur-md"
+              style={{ background: "rgba(255,255,255,0.1)", border: "1px solid rgba(255,255,255,0.1)", color: "rgba(255,255,255,0.85)" }}
+            >
+              <f.icon className="h-3.5 w-3.5 text-primary" />
+              {isAr ? f.labelAr : f.labelEn}
             </div>
           ))}
         </div>
 
-        <div className="flex items-center gap-2 pt-4 text-xs text-white/60">
+        {/* Trust indicator */}
+        <div className="flex items-center gap-2 text-xs" style={{ color: "rgba(255,255,255,0.45)" }}>
           <CheckCircle className="h-3.5 w-3.5 text-primary shrink-0" />
           {isAr ? "مجاني بالكامل · بدون بطاقة ائتمان · إعداد في دقائق" : "Completely Free · No Credit Card · Setup in Minutes"}
         </div>
@@ -255,18 +315,21 @@ function AuthLayout({
   stage,
   isAr,
   showFooter = false,
+  currentStep,
 }: {
   children: React.ReactNode;
   stage: "signup" | "signin" | "verify" | "details" | "credentials" | "reset";
   isAr: boolean;
   showFooter?: boolean;
+  currentStep?: number;
 }) {
   return (
-    <div className="flex min-h-screen flex-col">
+    <div className="flex min-h-screen flex-col" dir={isAr ? "rtl" : "ltr"}>
       <Header />
       <main className="flex flex-1">
-        <AuthHeroPanel stage={stage} isAr={isAr} />
-        <div className="flex flex-1 items-center justify-center px-4 py-8">
+        {/* Hero panel: always on the start side (left in LTR, right in RTL) */}
+        <AuthHeroPanel stage={stage} isAr={isAr} currentStep={currentStep} />
+        <div className="flex flex-1 items-center justify-center px-4 py-8 sm:px-6 lg:px-10">
           <div className="w-full max-w-md space-y-5">
             {children}
           </div>
@@ -576,7 +639,7 @@ export default function Auth() {
               <div className="mb-3 flex h-14 w-14 items-center justify-center rounded-2xl bg-primary/10 ring-1 ring-primary/15">
                 <KeyRound className="h-7 w-7 text-primary" />
               </div>
-              <h2 className="font-serif text-xl font-bold">
+              <h2 className={`${isAr ? "font-sans" : "font-serif"} text-xl font-bold`}>
                 {isAr ? "إعادة تعيين كلمة المرور" : "Reset Password"}
               </h2>
               <p className="mt-1 text-sm text-muted-foreground">
@@ -610,7 +673,7 @@ export default function Auth() {
   // ── Sign Up Step 2: Verification ──
   if (signUpStep === "verify" && isSignUp) {
     return (
-      <AuthLayout stage="verify" isAr={isAr}>
+      <AuthLayout stage="verify" isAr={isAr} currentStep={1}>
         <SEOHead title="Verification" description="Verify your contact" />
         <Card className="border-border/50 shadow-xl shadow-primary/5">
           <div className="p-5 md:p-6">
@@ -618,7 +681,7 @@ export default function Auth() {
               <div className="mb-3 flex h-14 w-14 items-center justify-center rounded-2xl bg-primary/10 ring-1 ring-primary/15">
                 <ShieldCheck className="h-7 w-7 text-primary" />
               </div>
-              <h2 className="font-serif text-xl font-bold">
+              <h2 className={`${isAr ? "font-sans" : "font-serif"} text-xl font-bold`}>
                 {signUpMethod === "phone"
                   ? (isAr ? "التحقق من رقم الهاتف" : "Phone Verification")
                   : (isAr ? "التحقق من البريد الإلكتروني" : "Email Verification")}
@@ -667,7 +730,7 @@ export default function Auth() {
   // ── Sign Up Step 3: Details ──
   if (signUpStep === "details" && isSignUp) {
     return (
-      <AuthLayout stage="details" isAr={isAr}>
+      <AuthLayout stage="details" isAr={isAr} currentStep={2}>
         <SEOHead title="Your Details" description="Complete your details" />
         <Card className="border-border/50 shadow-xl shadow-primary/5">
           <div className="p-5 md:p-6 space-y-5">
@@ -675,7 +738,7 @@ export default function Auth() {
               <div className="mb-3 flex h-14 w-14 items-center justify-center rounded-2xl bg-primary/10 ring-1 ring-primary/15">
                 <UserPlus className="h-7 w-7 text-primary" />
               </div>
-              <h2 className="font-serif text-xl font-bold">{isAr ? "المعلومات الشخصية" : "Personal Details"}</h2>
+              <h2 className={`${isAr ? "font-sans" : "font-serif"} text-xl font-bold`}>{isAr ? "المعلومات الشخصية" : "Personal Details"}</h2>
               <p className="mt-1 text-sm text-muted-foreground">
                 {isAr ? `الخطوة 3 من ${totalSteps}` : `Step 3 of ${totalSteps}`}
               </p>
@@ -726,7 +789,7 @@ export default function Auth() {
   // ── Sign Up Step 4: Credentials ──
   if (signUpStep === "credentials" && isSignUp) {
     return (
-      <AuthLayout stage="credentials" isAr={isAr}>
+      <AuthLayout stage="credentials" isAr={isAr} currentStep={3}>
         <SEOHead title="Complete Registration" description="Set your password and username" />
         <Card className="border-border/50 shadow-xl shadow-primary/5">
           <div className="p-5 md:p-6 space-y-5">
@@ -734,7 +797,7 @@ export default function Auth() {
               <div className="mb-3 flex h-14 w-14 items-center justify-center rounded-2xl bg-primary/10 ring-1 ring-primary/15">
                 <UserPlus className="h-7 w-7 text-primary" />
               </div>
-              <h2 className="font-serif text-xl font-bold">{isAr ? "إنشاء حسابك" : "Create Your Account"}</h2>
+              <h2 className={`${isAr ? "font-sans" : "font-serif"} text-xl font-bold`}>{isAr ? "إنشاء حسابك" : "Create Your Account"}</h2>
               <p className="mt-1 text-sm text-muted-foreground">
                 {isAr ? `الخطوة 4 من ${totalSteps}` : `Step 4 of ${totalSteps}`}
               </p>
@@ -836,7 +899,7 @@ export default function Auth() {
               <div className="mb-3 flex h-14 w-14 items-center justify-center rounded-2xl bg-primary/10 ring-1 ring-primary/15">
                 <LogIn className="h-7 w-7 text-primary" />
               </div>
-              <h2 className="font-serif text-xl font-bold">{isAr ? "تسجيل الدخول" : "Sign In"}</h2>
+              <h2 className={`${isAr ? "font-sans" : "font-serif"} text-xl font-bold`}>{isAr ? "تسجيل الدخول" : "Sign In"}</h2>
             </div>
 
             <div className="flex items-center gap-2 rounded-lg border border-primary/20 bg-primary/5 p-3">
@@ -874,7 +937,7 @@ export default function Auth() {
 
   /* ── Main auth view (Sign In or Sign Up Step 1) ── */
   return (
-    <AuthLayout stage={isSignUp ? "signup" : "signin"} isAr={isAr} showFooter>
+    <AuthLayout stage={isSignUp ? "signup" : "signin"} isAr={isAr} showFooter currentStep={isSignUp ? 0 : undefined}>
       <SEOHead
         title={isSignUp ? "Sign Up - Altohaa" : "Sign In - Altohaa"}
         description="Join the global culinary community. Sign in or create your free account on Altohaa."
@@ -883,7 +946,7 @@ export default function Auth() {
       {/* Header */}
       <div className="flex flex-col items-center text-center">
         <img src="/altohaa-logo.png" alt="Altohaa" className="mb-3 h-12 w-auto lg:hidden" />
-        <h1 className="font-serif text-2xl font-bold">
+        <h1 className={`${isAr ? "font-sans" : "font-serif"} text-2xl font-bold`}>
           {isSignUp ? (isAr ? "إنشاء حساب جديد" : "Create Account") : (isAr ? "تسجيل الدخول" : "Sign In")}
         </h1>
         {isSignUp && (
