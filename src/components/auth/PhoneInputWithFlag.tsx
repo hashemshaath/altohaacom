@@ -32,7 +32,7 @@ export function PhoneInputWithFlag({
 
   const selectedCountry = useMemo(
     () => countries?.find((c) => c.code === countryCode),
-    [countries, countryCode]
+    [countries, countryCode],
   );
 
   const flag = countryFlag(countryCode);

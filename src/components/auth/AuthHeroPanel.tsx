@@ -2,8 +2,8 @@ import { useMemo } from "react";
 import { Trophy, Globe, GraduationCap, Award, CheckCircle } from "lucide-react";
 import authHeroImg from "@/assets/auth-hero.jpg";
 
-/* ── Motivational quotes ── */
-const quotes = {
+/* ── Stage quotes ── */
+const quotes: Record<string, { en: string[]; ar: string[] }> = {
   login: {
     en: [
       "Welcome back, Chef. Your community is waiting.",
@@ -71,16 +71,6 @@ interface Props {
   totalSteps?: number;
 }
 
-/* ── Floating Orb ── */
-function FloatingOrb({ className, duration }: { className?: string; duration?: number }) {
-  return (
-    <div
-      className={`absolute rounded-full blur-3xl opacity-20 animate-pulse ${className}`}
-      style={{ animationDuration: `${duration ?? 6}s` }}
-    />
-  );
-}
-
 /* ── Step Dots ── */
 function StepDots({ current, total }: { current: number; total: number }) {
   return (
@@ -107,7 +97,7 @@ export function AuthHeroPanel({ stage, isAr, currentStep, totalSteps = 4 }: Prop
   const randomQuote = useMemo(
     () => quoteList[Math.floor(Math.random() * quoteList.length)],
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [stage, isAr]
+    [stage, isAr],
   );
 
   const heading = headings[stage] || headings.register;
@@ -118,21 +108,16 @@ export function AuthHeroPanel({ stage, isAr, currentStep, totalSteps = 4 }: Prop
       className="hidden lg:flex lg:w-[480px] xl:w-[540px] relative flex-col overflow-hidden"
       dir={isAr ? "rtl" : "ltr"}
     >
-      {/* Background image */}
+      {/* Background image — ES6 import ensures it works in production */}
       <img
         src={authHeroImg}
         alt="Culinary excellence"
-        className="absolute inset-0 h-full w-full object-cover scale-105"
+        className="absolute inset-0 h-full w-full object-cover"
       />
 
       {/* Gradient overlays */}
       <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/50 to-black/30" />
-      <div className="absolute inset-0 bg-gradient-to-br from-primary/15 via-transparent to-transparent" />
-
-      {/* Orbs */}
-      <FloatingOrb className="h-64 w-64 bg-primary/30 -top-20 -start-20" duration={7} />
-      <FloatingOrb className="h-48 w-48 bg-accent/20 top-1/3 end-[-40px]" duration={9} />
-      <FloatingOrb className="h-32 w-32 bg-primary/20 bottom-40 start-10" duration={8} />
+      <div className="absolute inset-0 bg-gradient-to-br from-primary/20 via-transparent to-transparent" />
 
       {/* Logo */}
       <div className="relative z-10 p-8 xl:p-10">
@@ -143,26 +128,22 @@ export function AuthHeroPanel({ stage, isAr, currentStep, totalSteps = 4 }: Prop
       <div className="relative z-10 flex flex-1 flex-col justify-center px-8 xl:px-10">
         <div className="space-y-5">
           <h2
-            className={`${isAr ? "font-sans" : "font-serif"} text-3xl font-bold xl:text-4xl leading-tight whitespace-pre-line`}
-            style={{ color: "white" }}
+            className={`${isAr ? "font-sans" : "font-serif"} text-3xl font-bold xl:text-4xl leading-tight whitespace-pre-line text-white`}
           >
             {isAr ? heading.ar : heading.en}
           </h2>
-          <p
-            className="text-base leading-relaxed max-w-sm"
-            style={{ color: "rgba(255,255,255,0.75)" }}
-          >
+          <p className="text-base leading-relaxed max-w-sm text-white/75">
             {randomQuote}
           </p>
         </div>
       </div>
 
-      {/* Bottom */}
+      {/* Bottom section */}
       <div className="relative z-10 p-8 xl:p-10 space-y-5">
         {isSignUpFlow && currentStep !== undefined && (
           <div className="space-y-2">
             <StepDots current={currentStep} total={totalSteps} />
-            <p className="text-xs" style={{ color: "rgba(255,255,255,0.5)" }}>
+            <p className="text-xs text-white/50">
               {isAr ? `الخطوة ${currentStep + 1} من ${totalSteps}` : `Step ${currentStep + 1} of ${totalSteps}`}
             </p>
           </div>
@@ -172,12 +153,7 @@ export function AuthHeroPanel({ stage, isAr, currentStep, totalSteps = 4 }: Prop
           {features.map((f) => (
             <div
               key={f.labelEn}
-              className="flex items-center gap-2 rounded-full px-3 py-1.5 text-xs font-medium backdrop-blur-md"
-              style={{
-                background: "rgba(255,255,255,0.1)",
-                border: "1px solid rgba(255,255,255,0.1)",
-                color: "rgba(255,255,255,0.85)",
-              }}
+              className="flex items-center gap-2 rounded-full border border-white/10 bg-white/10 px-3 py-1.5 text-xs font-medium text-white/85 backdrop-blur-md"
             >
               <f.icon className="h-3.5 w-3.5 text-primary" />
               {isAr ? f.labelAr : f.labelEn}
@@ -185,7 +161,7 @@ export function AuthHeroPanel({ stage, isAr, currentStep, totalSteps = 4 }: Prop
           ))}
         </div>
 
-        <div className="flex items-center gap-2 text-xs" style={{ color: "rgba(255,255,255,0.45)" }}>
+        <div className="flex items-center gap-2 text-xs text-white/45">
           <CheckCircle className="h-3.5 w-3.5 text-primary shrink-0" />
           {isAr
             ? "مجاني بالكامل · بدون بطاقة ائتمان · إعداد في دقائق"
