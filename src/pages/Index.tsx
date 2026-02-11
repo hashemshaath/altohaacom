@@ -25,43 +25,43 @@ const Index = () => {
       />
       <Header />
 
-      {/* 1. Hero Slider (admin-controlled) */}
+      {/* 1. Hero Slider */}
       <HeroSlider />
 
       {/* 2. Search Bar */}
       <HomeSearch />
-
-      {/* Hero Banner Ad */}
-      <div className="container mt-4">
-        <AdBanner placementSlug="home-hero-banner" className="w-full aspect-[4/1]" />
-      </div>
 
       {/* 3. Stats */}
       <div className="mt-6">
         <HomeStats />
       </div>
 
-      {/* 4. Events by Category (Competitions, Exhibitions, Tastings) */}
+      {/* Leaderboard Ad — full width, contained, professional */}
+      <section className="container py-4">
+        <AdBanner placementSlug="home-hero-banner" className="w-full rounded-xl overflow-hidden aspect-[728/90] sm:aspect-[970/90] max-h-[120px]" />
+      </section>
+
+      {/* 4. Events by Category */}
       <EventsByCategory />
 
-      {/* 5. Regional Events (Middle East vs Global) */}
+      {/* 5. Regional Events */}
       <RegionalEvents />
-
-      {/* Sidebar-style ad between sections */}
-      <div className="container my-4">
-        <AdBanner placementSlug="in-feed" className="w-full max-w-2xl mx-auto aspect-[3/2]" />
-      </div>
 
       {/* 6. Platform Services & Features */}
       <PlatformFeatures />
 
+      {/* In-feed Ad — contained, centered */}
+      <section className="container py-4">
+        <AdBanner placementSlug="in-feed" className="w-full max-w-3xl mx-auto rounded-xl overflow-hidden aspect-[728/90] sm:aspect-[970/250] max-h-[250px]" />
+      </section>
+
       {/* 7. News & Articles */}
       <HomeArticles />
 
-      {/* 8. Newsletter Signup */}
+      {/* 8. Newsletter */}
       <NewsletterSignup />
 
-      {/* 9. Partners & Association Logos */}
+      {/* 9. Partners */}
       <PartnersLogos />
 
       {/* Pop-up Ad */}
