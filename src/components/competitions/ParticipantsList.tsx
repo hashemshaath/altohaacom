@@ -119,23 +119,38 @@ export function ParticipantsList({ competitionId, isOrganizer = false }: Partici
     enabled: !!competitionId,
   });
 
-  const { data: participants, isLoading } = useQuery({
-    queryKey: ["competition-all-participants", competitionId],
-    queryFn: async () => {
-      const { data: registrations, error } = await supabase
-        .from("competition_registrations")
-        .select("id, participant_id, status, dish_name, dish_image_url, dish_description, category_id, registered_at, registration_number")
-        .eq("competition_id", competitionId)
-        .order("registered_at", { ascending: true });
+   const { data: participants, isLoading } = useQuery({
+     queryKey: ["competition-all-participants", competitionId],
+     queryFn: async () => {
+       const { data: registrations, error } = await supabase
+         .from("competition_registrations")
+         .select("id, participant_id, status, dish_name, dish_image_url, dish_description, category_id, registered_at, registration_number, entry_type, team_name, team_name_ar, organization_name, organization_name_ar, organization_type")
+         .eq("competition_id", competitionId)
+         .order("registered_at", { ascending: true });
 
-      if (error) throw error;
-      if (!registrations || registrations.length === 0) return [];
+       if (error) throw error;
+       if (!registrations || registrations.length === 0) return [];
 
-      const userIds = registrations.map((r) => r.participant_id);
-      const { data: profiles } = await supabase
-        .from("profiles")
-        .select("user_id, username, full_name, avatar_url, specialization, is_verified, location, company_id")
-        .in("user_id", userIds);
+       // Fetch team members if needed
+       const teamRegIds = registrations.filter(r => r.entry_type === 'team').map(r => r.id);
+       let teamMembersMap = new Map<string, any[]>();
+       if (teamRegIds.length > 0) {
+         const { data: teamMembers } = await supabase
+           .from("registration_team_members")
+           .select("registration_id, user_id, member_name, member_name_ar, job_title, job_title_ar, is_captain, avatar_url")
+           .in("registration_id", teamRegIds);
+         teamMembers?.forEach(tm => {
+           const members = teamMembersMap.get(tm.registration_id) || [];
+           members.push(tm);
+           teamMembersMap.set(tm.registration_id, members);
+         });
+       }
+
+       const userIds = registrations.map((r) => r.participant_id);
+       const { data: profiles } = await supabase
+         .from("profiles")
+         .select("user_id, username, full_name, avatar_url, specialization, is_verified, location, company_id")
+         .in("user_id", userIds);
 
       const companyIds = profiles?.map(p => p.company_id).filter(Boolean) as string[];
       let companyMap = new Map<string, { name: string; name_ar: string | null }>();
@@ -170,17 +185,18 @@ export function ParticipantsList({ competitionId, isOrganizer = false }: Partici
       const profileMap = new Map(profiles?.map((p) => [p.user_id, p]) || []);
       const categoryMap = new Map<string, CategoryData>((cats || []).map((c) => [c.id, c]));
 
-      return registrations.map((reg) => {
-        const profile = profileMap.get(reg.participant_id);
-        const company = profile?.company_id ? companyMap.get(profile.company_id) : null;
-        return {
-          ...reg,
-          profile,
-          category: reg.category_id ? categoryMap.get(reg.category_id) : null,
-          scores: scoresMap.get(reg.id) || null,
-          company,
-        };
-      });
+       return registrations.map((reg) => {
+         const profile = profileMap.get(reg.participant_id);
+         const company = profile?.company_id ? companyMap.get(profile.company_id) : null;
+         return {
+           ...reg,
+           profile,
+           category: reg.category_id ? categoryMap.get(reg.category_id) : null,
+           scores: scoresMap.get(reg.id) || null,
+           company,
+           teamMembers: teamMembersMap.get(reg.id) || [],
+         };
+       });
     },
     enabled: !!competitionId,
   });
