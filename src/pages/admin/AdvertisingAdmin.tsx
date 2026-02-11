@@ -152,6 +152,54 @@ const AdvertisingAdmin = forwardRef<HTMLDivElement>(function AdvertisingAdmin(_p
     },
   });
 
+  const toggleCreativeActive = useMutation({
+    mutationFn: async ({ id, is_active }: { id: string; is_active: boolean }) => {
+      const { error } = await supabase.from("ad_creatives").update({ is_active }).eq("id", id);
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ["admin-ad-creatives"] });
+      toast({ title: isAr ? "تم التحديث" : "Updated" });
+    },
+  });
+
+  const generateInvoice = useMutation({
+    mutationFn: async (campaign: any) => {
+      const amount = campaign.spent || 0;
+      if (amount <= 0) throw new Error("No spend to invoice");
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) throw new Error("Not authenticated");
+      const taxRate = 15;
+      const taxAmount = amount * (taxRate / 100);
+      const total = amount + taxAmount;
+      const { error } = await supabase.from("invoices").insert({
+        user_id: user.id,
+        company_id: campaign.company_id,
+        title: `Ad Campaign: ${campaign.name}`,
+        title_ar: `حملة إعلانية: ${campaign.name_ar || campaign.name}`,
+        description: `Advertising charges for campaign "${campaign.name}" (${campaign.billing_model})`,
+        description_ar: `رسوم إعلانية للحملة "${campaign.name_ar || campaign.name}" (${campaign.billing_model})`,
+        currency: campaign.currency || "SAR",
+        subtotal: amount,
+        tax_rate: taxRate,
+        tax_amount: taxAmount,
+        amount: total,
+        status: "sent",
+        items: [
+          { name: `Campaign: ${campaign.name}`, description: `${campaign.total_impressions || 0} impressions, ${campaign.total_clicks || 0} clicks`, quantity: 1, unit_price: amount }
+        ],
+        issued_by: user.id,
+      });
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      toast({ title: isAr ? "تم إنشاء الفاتورة" : "Invoice generated" });
+    },
+    onError: (e: any) => {
+      toast({ title: isAr ? "خطأ" : "Error", description: e.message, variant: "destructive" });
+    },
+  });
+
   const togglePlacement = useMutation({
     mutationFn: async ({ id, is_active }: { id: string; is_active: boolean }) => {
       const { error } = await supabase.from("ad_placements").update({ is_active }).eq("id", id);
@@ -337,14 +385,24 @@ const AdvertisingAdmin = forwardRef<HTMLDivElement>(function AdvertisingAdmin(_p
                             </div>
                           )}
                           {c.status === "active" && (
-                            <Button size="sm" variant="ghost" className="h-7" onClick={() => approveCampaign.mutate({ id: c.id, status: "paused" })}>
-                              {isAr ? "إيقاف" : "Pause"}
-                            </Button>
+                            <div className="flex gap-1">
+                              <Button size="sm" variant="ghost" className="h-7" onClick={() => approveCampaign.mutate({ id: c.id, status: "paused" })}>
+                                {isAr ? "إيقاف" : "Pause"}
+                              </Button>
+                              <Button size="sm" variant="outline" className="h-7" onClick={() => generateInvoice.mutate(c)} disabled={generateInvoice.isPending}>
+                                <DollarSign className="h-3 w-3 me-1" />{isAr ? "فوترة" : "Invoice"}
+                              </Button>
+                            </div>
                           )}
                           {c.status === "paused" && (
-                            <Button size="sm" variant="ghost" className="h-7" onClick={() => approveCampaign.mutate({ id: c.id, status: "active" })}>
-                              {isAr ? "تفعيل" : "Resume"}
-                            </Button>
+                            <div className="flex gap-1">
+                              <Button size="sm" variant="ghost" className="h-7" onClick={() => approveCampaign.mutate({ id: c.id, status: "active" })}>
+                                {isAr ? "تفعيل" : "Resume"}
+                              </Button>
+                              <Button size="sm" variant="outline" className="h-7" onClick={() => generateInvoice.mutate(c)} disabled={generateInvoice.isPending}>
+                                <DollarSign className="h-3 w-3 me-1" />{isAr ? "فوترة" : "Invoice"}
+                              </Button>
+                            </div>
                           )}
                         </TableCell>
                       </TableRow>
@@ -378,9 +436,13 @@ const AdvertisingAdmin = forwardRef<HTMLDivElement>(function AdvertisingAdmin(_p
                           <Badge className={statusColors[cr.status] || ""}>{cr.status}</Badge>
                         </div>
                         <p className="text-xs text-muted-foreground mb-1">{isAr ? cr.ad_placements?.name_ar : cr.ad_placements?.name}</p>
-                        <p className="text-xs text-muted-foreground mb-3">
+                        <p className="text-xs text-muted-foreground mb-2">
                           {cr.impressions?.toLocaleString()} {isAr ? "مشاهدة" : "views"} · {cr.clicks?.toLocaleString()} {isAr ? "نقرة" : "clicks"}
                         </p>
+                        <div className="flex items-center justify-between mb-2">
+                          <Label className="text-xs">{isAr ? "مفعل" : "Active"}</Label>
+                          <Switch checked={cr.is_active} onCheckedChange={(checked) => toggleCreativeActive.mutate({ id: cr.id, is_active: checked })} />
+                        </div>
                         {cr.status === "pending" && (
                           <div className="flex gap-2">
                             <Button size="sm" className="flex-1" onClick={() => approveCreative.mutate({ id: cr.id, status: "approved" })}>
