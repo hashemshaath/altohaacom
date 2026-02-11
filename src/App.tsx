@@ -259,7 +259,8 @@ const App = () => (
                   <Route path="catalog" element={<CompanyCatalog />} />
                 </Route>
 
-                {/* Public profile URL: altohaa.com/username */}
+                {/* Public profile URL: altohaa.com/username or /profile/username */}
+                <Route path="/profile/:username" element={<PublicProfile />} />
                 <Route path="/:username" element={<PublicProfile />} />
                 <Route path="*" element={<NotFound />} />
               </Routes>
