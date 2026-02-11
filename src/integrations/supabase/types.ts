@@ -4035,6 +4035,57 @@ export type Database = {
         }
         Relationships: []
       }
+      hero_slides: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          id: string
+          image_url: string
+          is_active: boolean
+          link_label: string | null
+          link_label_ar: string | null
+          link_url: string | null
+          sort_order: number
+          subtitle: string | null
+          subtitle_ar: string | null
+          title: string
+          title_ar: string | null
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          image_url: string
+          is_active?: boolean
+          link_label?: string | null
+          link_label_ar?: string | null
+          link_url?: string | null
+          sort_order?: number
+          subtitle?: string | null
+          subtitle_ar?: string | null
+          title: string
+          title_ar?: string | null
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          image_url?: string
+          is_active?: boolean
+          link_label?: string | null
+          link_label_ar?: string | null
+          link_url?: string | null
+          sort_order?: number
+          subtitle?: string | null
+          subtitle_ar?: string | null
+          title?: string
+          title_ar?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
       invoice_sequences: {
         Row: {
           last_number: number
@@ -5547,6 +5598,33 @@ export type Database = {
         }
         Relationships: []
       }
+      newsletter_subscribers: {
+        Row: {
+          email: string
+          id: string
+          is_active: boolean
+          name: string | null
+          source: string | null
+          subscribed_at: string
+        }
+        Insert: {
+          email: string
+          id?: string
+          is_active?: boolean
+          name?: string | null
+          source?: string | null
+          subscribed_at?: string
+        }
+        Update: {
+          email?: string
+          id?: string
+          is_active?: boolean
+          name?: string | null
+          source?: string | null
+          subscribed_at?: string
+        }
+        Relationships: []
+      }
       notification_preferences: {
         Row: {
           channel: Database["public"]["Enums"]["notification_channel"]
@@ -5758,6 +5836,42 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      partner_logos: {
+        Row: {
+          category: string
+          created_at: string
+          id: string
+          is_active: boolean
+          logo_url: string
+          name: string
+          name_ar: string | null
+          sort_order: number
+          website_url: string | null
+        }
+        Insert: {
+          category?: string
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          logo_url: string
+          name: string
+          name_ar?: string | null
+          sort_order?: number
+          website_url?: string | null
+        }
+        Update: {
+          category?: string
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          logo_url?: string
+          name?: string
+          name_ar?: string | null
+          sort_order?: number
+          website_url?: string | null
+        }
+        Relationships: []
       }
       permissions: {
         Row: {
