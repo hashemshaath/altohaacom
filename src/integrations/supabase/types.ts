@@ -6224,6 +6224,50 @@ export type Database = {
         }
         Relationships: []
       }
+      mentee_enrollments: {
+        Row: {
+          created_at: string
+          experience_level: string | null
+          goals_description: string | null
+          id: string
+          preferred_language: string | null
+          program_id: string
+          status: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          experience_level?: string | null
+          goals_description?: string | null
+          id?: string
+          preferred_language?: string | null
+          program_id: string
+          status?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          experience_level?: string | null
+          goals_description?: string | null
+          id?: string
+          preferred_language?: string | null
+          program_id?: string
+          status?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "mentee_enrollments_program_id_fkey"
+            columns: ["program_id"]
+            isOneToOne: false
+            referencedRelation: "mentorship_programs"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       mentor_applications: {
         Row: {
           bio: string | null

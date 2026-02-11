@@ -33,6 +33,10 @@ export interface MentorshipMatch {
   started_at: string | null;
   completed_at: string | null;
   created_at: string;
+  // Joined profile data
+  mentor_profile?: { full_name: string | null; avatar_url: string | null; specialization: string | null } | null;
+  mentee_profile?: { full_name: string | null; avatar_url: string | null; specialization: string | null } | null;
+  program?: { title: string; title_ar: string | null } | null;
 }
 
 export interface MentorshipSession {
@@ -41,6 +45,7 @@ export interface MentorshipSession {
   title: string;
   title_ar: string | null;
   description: string | null;
+  description_ar: string | null;
   scheduled_at: string;
   duration_minutes: number | null;
   status: string;
@@ -78,8 +83,23 @@ export interface MentorApplication {
   reviewed_by: string | null;
   reviewed_at: string | null;
   created_at: string;
+  // Joined profile
+  profile?: { full_name: string | null; avatar_url: string | null } | null;
 }
 
+export interface MenteeEnrollment {
+  id: string;
+  program_id: string;
+  user_id: string;
+  status: string;
+  goals_description: string | null;
+  experience_level: string | null;
+  preferred_language: string | null;
+  created_at: string;
+  profile?: { full_name: string | null; avatar_url: string | null } | null;
+}
+
+// ─── Programs ──────────────────────────────────
 export function useMentorshipPrograms(statusFilter?: string) {
   return useQuery({
     queryKey: ["mentorshipPrograms", statusFilter],
@@ -114,6 +134,7 @@ export function useMentorshipProgram(id: string | undefined) {
   });
 }
 
+// ─── Matches (with profile joins) ──────────────
 export function useMyMentorshipMatches() {
   const { user } = useAuth();
   return useQuery({
@@ -126,7 +147,21 @@ export function useMyMentorshipMatches() {
         .or(`mentor_id.eq.${user.id},mentee_id.eq.${user.id}`)
         .order("created_at", { ascending: false });
       if (error) throw error;
-      return (data || []) as MentorshipMatch[];
+      if (!data || data.length === 0) return [] as MentorshipMatch[];
+
+      // Fetch profiles
+      const allIds = [...new Set(data.flatMap(m => [m.mentor_id, m.mentee_id]))];
+      const { data: profiles } = await supabase
+        .from("profiles")
+        .select("user_id, full_name, avatar_url, specialization")
+        .in("user_id", allIds);
+      const profileMap = new Map((profiles || []).map(p => [p.user_id, p]));
+
+      return data.map(m => ({
+        ...m,
+        mentor_profile: profileMap.get(m.mentor_id) || null,
+        mentee_profile: profileMap.get(m.mentee_id) || null,
+      })) as MentorshipMatch[];
     },
     enabled: !!user?.id,
   });
@@ -137,18 +172,32 @@ export function useMentorshipMatchDetails(matchId: string | undefined) {
     queryKey: ["mentorshipMatch", matchId],
     queryFn: async () => {
       if (!matchId) return null;
+      // Try with profile joins
       const { data, error } = await supabase
         .from("mentorship_matches")
         .select("*")
         .eq("id", matchId)
         .maybeSingle();
       if (error) throw error;
-      return data as MentorshipMatch | null;
+      if (!data) return null;
+
+      // Fetch profiles separately for reliability
+      const [mentorRes, menteeRes] = await Promise.all([
+        supabase.from("profiles").select("full_name, avatar_url, specialization").eq("user_id", data.mentor_id).maybeSingle(),
+        supabase.from("profiles").select("full_name, avatar_url, specialization").eq("user_id", data.mentee_id).maybeSingle(),
+      ]);
+
+      return {
+        ...data,
+        mentor_profile: mentorRes.data,
+        mentee_profile: menteeRes.data,
+      } as MentorshipMatch;
     },
     enabled: !!matchId,
   });
 }
 
+// ─── Sessions ──────────────────────────────────
 export function useMentorshipSessions(matchId: string | undefined) {
   return useQuery({
     queryKey: ["mentorshipSessions", matchId],
@@ -166,6 +215,7 @@ export function useMentorshipSessions(matchId: string | undefined) {
   });
 }
 
+// ─── Goals ─────────────────────────────────────
 export function useMentorshipGoals(matchId: string | undefined) {
   return useQuery({
     queryKey: ["mentorshipGoals", matchId],
@@ -183,6 +233,7 @@ export function useMentorshipGoals(matchId: string | undefined) {
   });
 }
 
+// ─── Mentor Application ───────────────────────
 export function useMyMentorApplication() {
   const { user } = useAuth();
   return useQuery({
@@ -221,6 +272,46 @@ export function useApplyAsMentor() {
   });
 }
 
+// ─── Mentee Enrollment ────────────────────────
+export function useMyEnrollment(programId: string | undefined) {
+  const { user } = useAuth();
+  return useQuery({
+    queryKey: ["myEnrollment", programId, user?.id],
+    queryFn: async () => {
+      if (!user?.id || !programId) return null;
+      const { data, error } = await supabase
+        .from("mentee_enrollments")
+        .select("*")
+        .eq("program_id", programId)
+        .eq("user_id", user.id)
+        .maybeSingle();
+      if (error) throw error;
+      return data as MenteeEnrollment | null;
+    },
+    enabled: !!user?.id && !!programId,
+  });
+}
+
+export function useEnrollAsMentee() {
+  const queryClient = useQueryClient();
+  const { user } = useAuth();
+  return useMutation({
+    mutationFn: async (data: { program_id: string; goals_description?: string; experience_level?: string }) => {
+      if (!user?.id) throw new Error("Not authenticated");
+      const { error } = await supabase.from("mentee_enrollments").insert({
+        user_id: user.id,
+        ...data,
+      });
+      if (error) throw error;
+    },
+    onSuccess: (_, vars) => {
+      queryClient.invalidateQueries({ queryKey: ["myEnrollment", vars.program_id] });
+      queryClient.invalidateQueries({ queryKey: ["allMenteeEnrollments"] });
+    },
+  });
+}
+
+// ─── Session mutations ────────────────────────
 export function useCreateSession(matchId: string) {
   const queryClient = useQueryClient();
   return useMutation({
@@ -237,6 +328,42 @@ export function useCreateSession(matchId: string) {
   });
 }
 
+export function useUpdateSessionFeedback(matchId: string) {
+  const queryClient = useQueryClient();
+  const { user } = useAuth();
+  return useMutation({
+    mutationFn: async ({ sessionId, feedback, rating, isMentor }: { sessionId: string; feedback: string; rating: number; isMentor: boolean }) => {
+      const update: Record<string, any> = {};
+      if (isMentor) {
+        update.mentor_feedback = feedback;
+        update.mentor_rating = rating;
+      } else {
+        update.mentee_feedback = feedback;
+        update.mentee_rating = rating;
+      }
+      const { error } = await supabase.from("mentorship_sessions").update(update).eq("id", sessionId);
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["mentorshipSessions", matchId] });
+    },
+  });
+}
+
+export function useCompleteSession(matchId: string) {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async (sessionId: string) => {
+      const { error } = await supabase.from("mentorship_sessions").update({ status: "completed" }).eq("id", sessionId);
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["mentorshipSessions", matchId] });
+    },
+  });
+}
+
+// ─── Goal mutations ───────────────────────────
 export function useCreateGoal(matchId: string) {
   const queryClient = useQueryClient();
   const { user } = useAuth();
@@ -274,7 +401,7 @@ export function useUpdateGoalProgress(matchId: string) {
   });
 }
 
-// Admin hooks
+// ─── Admin hooks ──────────────────────────────
 export function useAllMentorApplications() {
   return useQuery({
     queryKey: ["allMentorApplications"],
@@ -284,7 +411,17 @@ export function useAllMentorApplications() {
         .select("*")
         .order("created_at", { ascending: false });
       if (error) throw error;
-      return (data || []) as MentorApplication[];
+      // Fetch profiles for each application
+      const userIds = (data || []).map(a => a.user_id);
+      const { data: profiles } = await supabase
+        .from("profiles")
+        .select("user_id, full_name, avatar_url")
+        .in("user_id", userIds);
+      const profileMap = new Map((profiles || []).map(p => [p.user_id, p]));
+      return (data || []).map(a => ({
+        ...a,
+        profile: profileMap.get(a.user_id) || null,
+      })) as MentorApplication[];
     },
   });
 }
@@ -298,7 +435,41 @@ export function useAllMentorshipMatches() {
         .select("*")
         .order("created_at", { ascending: false });
       if (error) throw error;
-      return (data || []) as MentorshipMatch[];
+      // Fetch profiles
+      const allIds = [...new Set((data || []).flatMap(m => [m.mentor_id, m.mentee_id]))];
+      const { data: profiles } = await supabase
+        .from("profiles")
+        .select("user_id, full_name, avatar_url, specialization")
+        .in("user_id", allIds);
+      const profileMap = new Map((profiles || []).map(p => [p.user_id, p]));
+      return (data || []).map(m => ({
+        ...m,
+        mentor_profile: profileMap.get(m.mentor_id) || null,
+        mentee_profile: profileMap.get(m.mentee_id) || null,
+      })) as MentorshipMatch[];
+    },
+  });
+}
+
+export function useAllMenteeEnrollments() {
+  return useQuery({
+    queryKey: ["allMenteeEnrollments"],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("mentee_enrollments")
+        .select("*")
+        .order("created_at", { ascending: false });
+      if (error) throw error;
+      const userIds = (data || []).map(e => e.user_id);
+      const { data: profiles } = await supabase
+        .from("profiles")
+        .select("user_id, full_name, avatar_url")
+        .in("user_id", userIds);
+      const profileMap = new Map((profiles || []).map(p => [p.user_id, p]));
+      return (data || []).map(e => ({
+        ...e,
+        profile: profileMap.get(e.user_id) || null,
+      })) as MenteeEnrollment[];
     },
   });
 }
@@ -324,11 +495,15 @@ export function useCreateMatch() {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: async (data: { program_id: string; mentor_id: string; mentee_id: string }) => {
-      const { error } = await supabase.from("mentorship_matches").insert(data);
+      const { error } = await supabase.from("mentorship_matches").insert({
+        ...data,
+        matched_at: new Date().toISOString(),
+      });
       if (error) throw error;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["allMentorshipMatches"] });
+      queryClient.invalidateQueries({ queryKey: ["myMentorshipMatches"] });
     },
   });
 }
@@ -360,6 +535,44 @@ export function useUpdateProgram() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["mentorshipPrograms"] });
+    },
+  });
+}
+
+// ─── Mentorship Analytics ─────────────────────
+export function useMentorshipAnalytics() {
+  return useQuery({
+    queryKey: ["mentorshipAnalytics"],
+    queryFn: async () => {
+      const [programs, matches, applications, sessions, enrollments] = await Promise.all([
+        supabase.from("mentorship_programs").select("id, status, created_at"),
+        supabase.from("mentorship_matches").select("id, status, matched_at, completed_at"),
+        supabase.from("mentor_applications").select("id, status, created_at"),
+        supabase.from("mentorship_sessions").select("id, status, mentor_rating, mentee_rating"),
+        supabase.from("mentee_enrollments").select("id, status, created_at"),
+      ]);
+
+      const matchesData = matches.data || [];
+      const sessionsData = sessions.data || [];
+      const completedSessions = sessionsData.filter(s => s.status === "completed");
+      const avgMentorRating = completedSessions.filter(s => s.mentor_rating).reduce((s, c) => s + (c.mentor_rating || 0), 0) / (completedSessions.filter(s => s.mentor_rating).length || 1);
+      const avgMenteeRating = completedSessions.filter(s => s.mentee_rating).reduce((s, c) => s + (c.mentee_rating || 0), 0) / (completedSessions.filter(s => s.mentee_rating).length || 1);
+
+      return {
+        totalPrograms: (programs.data || []).length,
+        activePrograms: (programs.data || []).filter(p => p.status === "active").length,
+        totalMatches: matchesData.length,
+        activeMatches: matchesData.filter(m => m.status === "active" || m.status === "pending").length,
+        completedMatches: matchesData.filter(m => m.status === "completed").length,
+        totalApplications: (applications.data || []).length,
+        pendingApplications: (applications.data || []).filter(a => a.status === "pending").length,
+        totalSessions: sessionsData.length,
+        completedSessions: completedSessions.length,
+        avgMentorRating: Math.round(avgMentorRating * 10) / 10,
+        avgMenteeRating: Math.round(avgMenteeRating * 10) / 10,
+        totalEnrollments: (enrollments.data || []).length,
+        pendingEnrollments: (enrollments.data || []).filter(e => e.status === "pending").length,
+      };
     },
   });
 }
