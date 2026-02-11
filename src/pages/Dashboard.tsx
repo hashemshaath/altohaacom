@@ -10,6 +10,7 @@ import { QuickStatsWidget } from "@/components/dashboard/QuickStatsWidget";
 import { MasterclassProgressWidget } from "@/components/dashboard/MasterclassProgressWidget";
 import { NotificationsSummaryWidget } from "@/components/dashboard/NotificationsSummaryWidget";
 import { UpcomingExhibitionsWidget } from "@/components/dashboard/UpcomingExhibitionsWidget";
+import { EventsCalendarWidget } from "@/components/dashboard/EventsCalendarWidget";
 import { useAuth } from "@/contexts/AuthContext";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -117,6 +118,7 @@ export default function Dashboard() {
             {user && <MasterclassProgressWidget />}
           </div>
           <div className="space-y-6">
+            {user && <EventsCalendarWidget />}
             {user && <NotificationsSummaryWidget />}
             <RecentActivityWidget />
           </div>
