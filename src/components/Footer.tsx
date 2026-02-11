@@ -55,7 +55,6 @@ export function Footer() {
             </nav>
           </div>
 
-          {/* For Business */}
           <div>
             <h4 className="mb-3 text-sm font-semibold">{isAr ? "للأعمال" : "For Business"}</h4>
             <nav className="flex flex-col gap-2 text-sm text-muted-foreground">
@@ -64,6 +63,12 @@ export function Footer() {
               </Link>
               <Link to="/for-organizers" className="transition-colors hover:text-primary">
                 {isAr ? "للمنظمين" : "For Organizers"}
+              </Link>
+              <Link to="/for-companies" className="transition-colors hover:text-primary">
+                {isAr ? "للشركات" : "For Companies"}
+              </Link>
+              <Link to="/for-chefs" className="transition-colors hover:text-primary">
+                {isAr ? "للطهاة" : "For Chefs"}
               </Link>
               <Link to="/verify" className="transition-colors hover:text-primary">
                 {isAr ? "التحقق من الشهادات" : "Certificate Verification"}
