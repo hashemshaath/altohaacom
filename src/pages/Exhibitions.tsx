@@ -1,5 +1,7 @@
 import { useState } from "react";
 import { SEOHead } from "@/components/SEOHead";
+import { AdBanner } from "@/components/ads/AdBanner";
+import { useAdTracking } from "@/hooks/useAdTracking";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useLanguage } from "@/i18n/LanguageContext";
@@ -37,6 +39,7 @@ export default function Exhibitions() {
   const { language } = useLanguage();
   const isAr = language === "ar";
   const { user } = useAuth();
+  useAdTracking();
   const [search, setSearch] = useState("");
   const [activeTab, setActiveTab] = useState("all");
   const [typeFilter, setTypeFilter] = useState<string>("all");

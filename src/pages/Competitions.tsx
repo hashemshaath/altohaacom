@@ -3,6 +3,9 @@ import { SEOHead } from "@/components/SEOHead";
 import { Link } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
+import { AdBanner } from "@/components/ads/AdBanner";
+import { AdVertical } from "@/components/ads/AdVertical";
+import { useAdTracking } from "@/hooks/useAdTracking";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useAuth } from "@/contexts/AuthContext";
 import { Header } from "@/components/Header";
@@ -89,6 +92,7 @@ export default function Competitions() {
   });
 
   const canCreate = userRoles?.some(role => ["organizer", "supervisor"].includes(role));
+  useAdTracking();
 
   const countryCodes = Array.from(
     new Set(competitions?.map(c => c.country_code).filter(Boolean) as string[])
@@ -136,6 +140,10 @@ export default function Competitions() {
       <Header />
 
       <main className="flex-1">
+        {/* Top Banner Ad */}
+        <div className="container mt-4">
+          <AdBanner placementSlug="competitions-top-banner" className="w-full aspect-[5/1]" />
+        </div>
         {/* Hero Banner */}
         <section className="relative overflow-hidden border-b bg-gradient-to-b from-primary/5 via-background to-background">
           <div className="absolute -top-32 start-1/4 h-64 w-64 rounded-full bg-primary/8 blur-[100px] animate-pulse pointer-events-none" />

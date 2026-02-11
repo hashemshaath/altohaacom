@@ -1,4 +1,6 @@
 import { useLanguage } from "@/i18n/LanguageContext";
+import { AdBanner } from "@/components/ads/AdBanner";
+import { useAdTracking } from "@/hooks/useAdTracking";
 import { SEOHead } from "@/components/SEOHead";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
@@ -14,6 +16,7 @@ import { Users, Newspaper, ChefHat, CalendarDays, UsersRound, Globe, MessageCirc
 export default function Community() {
   const { t, language } = useLanguage();
   const isAr = language === "ar";
+  useAdTracking();
 
   return (
     <div className="flex min-h-screen flex-col bg-background">
@@ -99,6 +102,11 @@ export default function Community() {
           <TabsContent value="chefs"><ChefsTab /></TabsContent>
           <TabsContent value="groups"><GroupsTab /></TabsContent>
         </Tabs>
+
+        {/* In-feed Ad */}
+        <div className="mt-6">
+          <AdBanner placementSlug="in-feed" className="w-full max-w-2xl mx-auto aspect-[3/1]" />
+        </div>
       </main>
       <Footer />
     </div>
