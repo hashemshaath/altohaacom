@@ -18,7 +18,7 @@ export function EventsByCategory() {
     queryFn: async () => {
       const { data } = await supabase
         .from("competitions")
-        .select("id, title, title_ar, cover_image_url, status, competition_start, city, country, is_virtual, competition_type")
+        .select("id, title, title_ar, cover_image_url, status, competition_start, city, country, is_virtual")
         .in("status", ["registration_open", "upcoming", "in_progress"])
         .order("competition_start", { ascending: true })
         .limit(8);
