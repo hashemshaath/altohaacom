@@ -45,13 +45,14 @@ export function PhoneInputWithFlag({
           {label} *
         </Label>
       )}
-      <div className="flex gap-2">
+      <div className="flex gap-2" dir="ltr">
         {/* Country code button */}
         <div className="relative">
           <button
             type="button"
             onClick={() => setDropdownOpen(!dropdownOpen)}
             className="flex h-10 items-center gap-1.5 rounded-md border border-input bg-background px-3 text-sm hover:bg-accent/50 transition-colors min-w-[100px]"
+            dir="ltr"
           >
             <span className="text-base">{flag}</span>
             <span className="font-mono text-muted-foreground" dir="ltr">
