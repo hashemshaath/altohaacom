@@ -22,6 +22,9 @@ import {
 import { AdAnalyticsDashboard } from "@/components/ads/AdAnalyticsDashboard";
 import { AdBehaviorInsights } from "@/components/ads/AdBehaviorInsights";
 import { GoogleIntegrationPanel } from "@/components/ads/GoogleIntegrationPanel";
+import { MetaPixelPanel } from "@/components/ads/MetaPixelPanel";
+import { TikTokPixelPanel } from "@/components/ads/TikTokPixelPanel";
+import { SnapPixelPanel } from "@/components/ads/SnapPixelPanel";
 
 const statusColors: Record<string, string> = {
   pending: "bg-warning/10 text-warning border-warning/20",
@@ -539,9 +542,12 @@ const AdvertisingAdmin = forwardRef<HTMLDivElement>(function AdvertisingAdmin(_p
           <AdBehaviorInsights />
         </TabsContent>
 
-        {/* Google Integrations Tab */}
-        <TabsContent value="integrations">
+        {/* All Pixel & Tracking Integrations Tab */}
+        <TabsContent value="integrations" className="space-y-8">
           <GoogleIntegrationPanel />
+          <MetaPixelPanel />
+          <TikTokPixelPanel />
+          <SnapPixelPanel />
         </TabsContent>
       </Tabs>
     </div>
