@@ -109,6 +109,7 @@ const AudienceSegments = lazy(() => import("./pages/admin/AudienceSegments"));
 const LiveChatAdmin = lazy(() => import("./pages/admin/LiveChatAdmin"));
 const CRMDashboard = lazy(() => import("./pages/admin/CRMDashboard"));
 const AdvertisingAdmin = lazy(() => import("./pages/admin/AdvertisingAdmin"));
+const CRMCustomerDetail = lazy(() => import("./pages/admin/CRMCustomerDetail"));
 const SupportTickets = lazy(() => import("./pages/SupportTickets"));
 
 // Company Portal Pages
@@ -215,6 +216,7 @@ const App = () => (
                 {/* Admin Routes */}
                 <Route path="/admin" element={<ProtectedRoute><AdminLayout /></ProtectedRoute>}>
                   <Route index element={<AdminDashboard />} />
+                  <Route path="users/:userId" element={<CRMCustomerDetail />} />
                   <Route path="users" element={<UserManagement />} />
                   <Route path="leads" element={<LeadManagement />} />
                   <Route path="roles" element={<RoleManagement />} />
