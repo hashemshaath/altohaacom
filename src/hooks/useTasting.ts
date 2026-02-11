@@ -28,6 +28,9 @@ export interface TastingSession {
   notes: string | null;
   is_blind_tasting: boolean | null;
   allow_notes: boolean | null;
+  evaluation_category: string | null;
+  evaluation_type: string | null;
+  round: string | null;
   created_at: string;
   updated_at: string;
 }
@@ -44,6 +47,11 @@ export interface TastingCriterion {
   max_score: number;
   sort_order: number;
   is_required: boolean | null;
+  stage: string | null;
+  guidelines: string | null;
+  guidelines_ar: string | null;
+  reference_images: string[] | null;
+  eval_scale: string | null;
   created_at: string;
 }
 
@@ -62,6 +70,8 @@ export interface TastingEntry {
   category: string | null;
   is_active: boolean | null;
   sort_order: number | null;
+  images: string[] | null;
+  stage: string | null;
   created_at: string;
 }
 

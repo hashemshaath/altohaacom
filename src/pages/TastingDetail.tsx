@@ -30,7 +30,7 @@ import { Separator } from "@/components/ui/separator";
 import {
   ArrowLeft, Calendar, MapPin, Eye, Plus, UtensilsCrossed, ClipboardList,
   BarChart3, Settings2, Trash2, CheckCircle2, XCircle, RefreshCw, FileEdit,
-  Trophy, ArrowLeftRight
+  Trophy, ArrowLeftRight, Coffee, Wine, Palette, Globe, ChefHat
 } from "lucide-react";
 import { format } from "date-fns";
 import { toast } from "sonner";
@@ -236,6 +236,16 @@ export default function TastingDetail() {
                     </Badge>
                   ) : (
                     <Badge variant="secondary" className="text-xs">{isAr ? "تذوق مستقل" : "Standalone"}</Badge>
+                  )}
+                  {session.evaluation_category && session.evaluation_category !== "culinary" && (
+                    <Badge variant="outline" className="gap-1 text-xs">
+                      {session.evaluation_category === "coffee" && <><Coffee className="h-3 w-3" />{isAr ? "قهوة" : "Coffee"}</>}
+                      {session.evaluation_category === "barista" && <><ChefHat className="h-3 w-3" />{isAr ? "باريستا" : "Barista"}</>}
+                      {session.evaluation_category === "beverage" && <><Wine className="h-3 w-3" />{isAr ? "مشروبات" : "Beverage"}</>}
+                      {session.evaluation_category === "decoration" && <><Palette className="h-3 w-3" />{isAr ? "تزيين" : "Decoration"}</>}
+                      {session.evaluation_category === "local_dishes" && <><UtensilsCrossed className="h-3 w-3" />{isAr ? "أطباق محلية" : "Local Dishes"}</>}
+                      {session.evaluation_category === "international" && <><Globe className="h-3 w-3" />{isAr ? "معايير دولية" : "International"}</>}
+                    </Badge>
                   )}
                 </div>
                 <h1 className="text-2xl font-bold sm:text-3xl">{isAr && session.title_ar ? session.title_ar : session.title}</h1>
