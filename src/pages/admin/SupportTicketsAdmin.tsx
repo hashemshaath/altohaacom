@@ -429,18 +429,27 @@ export default function SupportTicketsAdmin() {
                       <TableHead>{isAr ? "التاريخ" : "Date"}</TableHead>
                     </TableRow>
                   </TableHeader>
-                  <TableBody>
+                   <TableBody>
                     {filteredTickets.map(ticket => {
                       const profile = profileMap.get(ticket.user_id);
                       return (
                         <TableRow
                           key={ticket.id}
-                          className="cursor-pointer hover:bg-muted/50"
+                          className="cursor-pointer hover:bg-accent/50 transition-colors"
                           onClick={() => setSelectedTicketId(ticket.id)}
                         >
                           <TableCell className="font-mono text-xs">{ticket.ticket_number}</TableCell>
-                          <TableCell className="font-medium max-w-[200px] truncate">{ticket.subject}</TableCell>
-                          <TableCell className="text-sm">{profile?.full_name || "Unknown"}</TableCell>
+                          <TableCell>
+                            <p className="font-medium max-w-[240px] truncate">{ticket.subject}</p>
+                          </TableCell>
+                          <TableCell>
+                            <div className="flex items-center gap-2">
+                              <div className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-muted text-[10px] font-medium">
+                                {(profile?.full_name || "U")[0].toUpperCase()}
+                              </div>
+                              <span className="text-sm truncate">{profile?.full_name || "Unknown"}</span>
+                            </div>
+                          </TableCell>
                           <TableCell>{getStatusBadge(ticket.status)}</TableCell>
                           <TableCell>{getPriorityBadge(ticket.priority)}</TableCell>
                           <TableCell className="text-xs text-muted-foreground">

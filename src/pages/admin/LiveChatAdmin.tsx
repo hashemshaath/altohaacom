@@ -186,30 +186,36 @@ export default function LiveChatAdmin() {
 
       {/* Stats */}
       <div className="grid grid-cols-3 gap-4">
-        <Card>
+        <Card className="border-s-4 border-s-chart-4">
           <CardContent className="flex items-center gap-3 py-4">
-            <Clock className="h-8 w-8 text-chart-4" />
+            <div className="rounded-full bg-chart-4/10 p-2.5">
+              <Clock className="h-5 w-5 text-chart-4" />
+            </div>
             <div>
               <p className="text-xs text-muted-foreground">{isAr ? "في الانتظار" : "Waiting"}</p>
-              <p className="text-xl font-bold">{waitingCount}</p>
+              <p className="text-2xl font-bold">{waitingCount}</p>
             </div>
           </CardContent>
         </Card>
-        <Card>
+        <Card className="border-s-4 border-s-primary">
           <CardContent className="flex items-center gap-3 py-4">
-            <MessageCircle className="h-8 w-8 text-primary" />
+            <div className="rounded-full bg-primary/10 p-2.5">
+              <MessageCircle className="h-5 w-5 text-primary" />
+            </div>
             <div>
               <p className="text-xs text-muted-foreground">{isAr ? "نشطة" : "Active"}</p>
-              <p className="text-xl font-bold">{activeCount}</p>
+              <p className="text-2xl font-bold">{activeCount}</p>
             </div>
           </CardContent>
         </Card>
-        <Card>
+        <Card className="border-s-4 border-s-muted-foreground">
           <CardContent className="flex items-center gap-3 py-4">
-            <Users className="h-8 w-8 text-muted-foreground" />
+            <div className="rounded-full bg-muted p-2.5">
+              <Users className="h-5 w-5 text-muted-foreground" />
+            </div>
             <div>
               <p className="text-xs text-muted-foreground">{isAr ? "الإجمالي" : "Total"}</p>
-              <p className="text-xl font-bold">{sessions.length}</p>
+              <p className="text-2xl font-bold">{sessions.length}</p>
             </div>
           </CardContent>
         </Card>

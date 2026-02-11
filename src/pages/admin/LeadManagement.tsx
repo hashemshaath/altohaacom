@@ -50,6 +50,7 @@ import {
   MessageSquare,
   Calendar,
   Users,
+  UserSearch,
   TrendingUp,
   Clock,
   CheckCircle2,
@@ -256,9 +257,19 @@ export default function LeadManagement() {
 
   return (
     <div className="space-y-6">
-      <h1 className="font-serif text-2xl font-bold">
-        {language === "ar" ? "إدارة العملاء المحتملين" : "Lead Management"}
-      </h1>
+      <div className="flex items-center gap-3">
+        <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-primary/10">
+          <UserSearch className="h-5 w-5 text-primary" />
+        </div>
+        <div>
+          <h1 className="font-serif text-xl font-bold sm:text-2xl">
+            {language === "ar" ? "إدارة العملاء المحتملين" : "Lead Management"}
+          </h1>
+          <p className="text-xs text-muted-foreground">
+            {language === "ar" ? "تتبع وإدارة العملاء المحتملين والصفقات" : "Track and manage leads & deals pipeline"}
+          </p>
+        </div>
+      </div>
 
       {/* Stats Grid */}
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
@@ -283,12 +294,12 @@ export default function LeadManagement() {
       <Card>
         <CardContent className="flex flex-wrap gap-4 pt-6">
           <div className="relative flex-1 min-w-[200px]">
-            <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+            <Search className="absolute start-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
             <Input
               placeholder={language === "ar" ? "بحث بالاسم أو البريد الإلكتروني أو الشركة..." : "Search by name, email, or company..."}
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="pl-10"
+              className="ps-10"
             />
           </div>
           <Select value={typeFilter} onValueChange={setTypeFilter}>
@@ -380,19 +391,19 @@ export default function LeadManagement() {
                         </DropdownMenuTrigger>
                         <DropdownMenuContent align="end">
                           <DropdownMenuItem onClick={() => openLeadDetail(lead)}>
-                            <Eye className="mr-2 h-4 w-4" />
+                            <Eye className="me-2 h-4 w-4" />
                             {language === "ar" ? "عرض التفاصيل" : "View Details"}
                           </DropdownMenuItem>
                           <DropdownMenuItem asChild>
                             <a href={`mailto:${lead.email}`}>
-                              <Mail className="mr-2 h-4 w-4" />
+                              <Mail className="me-2 h-4 w-4" />
                               {language === "ar" ? "إرسال بريد" : "Send Email"}
                             </a>
                           </DropdownMenuItem>
                           {lead.phone && (
                             <DropdownMenuItem asChild>
                               <a href={`tel:${lead.phone}`}>
-                                <Phone className="mr-2 h-4 w-4" />
+                                <Phone className="me-2 h-4 w-4" />
                                 {language === "ar" ? "اتصال" : "Call"}
                               </a>
                             </DropdownMenuItem>
@@ -402,14 +413,14 @@ export default function LeadManagement() {
                             onClick={() => handleStatusChange(lead, "contacted")}
                             disabled={lead.status === "contacted"}
                           >
-                            <UserPlus className="mr-2 h-4 w-4" />
+                            <UserPlus className="me-2 h-4 w-4" />
                             {language === "ar" ? "تحديد كـ تم التواصل" : "Mark Contacted"}
                           </DropdownMenuItem>
                           <DropdownMenuItem
                             onClick={() => handleStatusChange(lead, "qualified")}
                             disabled={lead.status === "qualified"}
                           >
-                            <CheckCircle2 className="mr-2 h-4 w-4" />
+                            <CheckCircle2 className="me-2 h-4 w-4" />
                             {language === "ar" ? "تحديد كـ مؤهل" : "Mark Qualified"}
                           </DropdownMenuItem>
                         </DropdownMenuContent>
