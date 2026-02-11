@@ -637,6 +637,90 @@ export type Database = {
           },
         ]
       }
+      ad_user_behaviors: {
+        Row: {
+          browser: string | null
+          country: string | null
+          created_at: string
+          device_type: string | null
+          duration_seconds: number | null
+          entity_id: string | null
+          entity_type: string | null
+          event_type: string
+          id: string
+          metadata: Json | null
+          page_category: string | null
+          page_url: string | null
+          session_id: string | null
+          user_id: string | null
+        }
+        Insert: {
+          browser?: string | null
+          country?: string | null
+          created_at?: string
+          device_type?: string | null
+          duration_seconds?: number | null
+          entity_id?: string | null
+          entity_type?: string | null
+          event_type?: string
+          id?: string
+          metadata?: Json | null
+          page_category?: string | null
+          page_url?: string | null
+          session_id?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          browser?: string | null
+          country?: string | null
+          created_at?: string
+          device_type?: string | null
+          duration_seconds?: number | null
+          entity_id?: string | null
+          entity_type?: string | null
+          event_type?: string
+          id?: string
+          metadata?: Json | null
+          page_category?: string | null
+          page_url?: string | null
+          session_id?: string | null
+          user_id?: string | null
+        }
+        Relationships: []
+      }
+      ad_user_interests: {
+        Row: {
+          created_at: string
+          id: string
+          interaction_count: number | null
+          interest_category: string
+          last_interaction_at: string | null
+          score: number | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          interaction_count?: number | null
+          interest_category: string
+          last_interaction_at?: string | null
+          score?: number | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          interaction_count?: number | null
+          interest_category?: string
+          last_interaction_at?: string | null
+          score?: number | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       admin_actions: {
         Row: {
           action_type: string
@@ -4690,6 +4774,36 @@ export type Database = {
           subtitle_ar?: string | null
           title?: string
           title_ar?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      integration_settings: {
+        Row: {
+          config: Json | null
+          created_at: string
+          created_by: string | null
+          id: string
+          integration_type: string
+          is_active: boolean | null
+          updated_at: string
+        }
+        Insert: {
+          config?: Json | null
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          integration_type: string
+          is_active?: boolean | null
+          updated_at?: string
+        }
+        Update: {
+          config?: Json | null
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          integration_type?: string
+          is_active?: boolean | null
           updated_at?: string
         }
         Relationships: []

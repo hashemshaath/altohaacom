@@ -1,5 +1,8 @@
 import { useState, useEffect } from "react";
 import { SEOHead } from "@/components/SEOHead";
+import { AdBanner } from "@/components/ads/AdBanner";
+import { AdVertical } from "@/components/ads/AdVertical";
+import { useAdTracking } from "@/hooks/useAdTracking";
 import { Search, Calendar, Eye, Newspaper } from "lucide-react";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
@@ -48,6 +51,7 @@ interface Category {
 export default function News() {
   const { language } = useLanguage();
   const isAr = language === "ar";
+  useAdTracking();
   const [articles, setArticles] = useState<Article[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
   const [loading, setLoading] = useState(true);

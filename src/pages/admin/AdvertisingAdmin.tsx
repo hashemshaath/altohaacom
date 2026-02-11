@@ -17,8 +17,11 @@ import { toast } from "@/hooks/use-toast";
 import {
   Megaphone, BarChart3, Package, LayoutGrid, CheckCircle, XCircle,
   Eye, MousePointer, DollarSign, TrendingUp, Clock, FileText, Plus,
-  Settings2, Target, Sparkles,
+  Settings2, Target, Sparkles, Brain, Globe,
 } from "lucide-react";
+import { AdAnalyticsDashboard } from "@/components/ads/AdAnalyticsDashboard";
+import { AdBehaviorInsights } from "@/components/ads/AdBehaviorInsights";
+import { GoogleIntegrationPanel } from "@/components/ads/GoogleIntegrationPanel";
 
 const statusColors: Record<string, string> = {
   pending: "bg-yellow-500/10 text-yellow-600 border-yellow-500/20",
@@ -230,6 +233,14 @@ export default function AdvertisingAdmin() {
           <TabsTrigger value="analytics" className="gap-1">
             <BarChart3 className="h-3.5 w-3.5" />
             {isAr ? "التحليلات" : "Analytics"}
+          </TabsTrigger>
+          <TabsTrigger value="behavior" className="gap-1">
+            <Brain className="h-3.5 w-3.5" />
+            {isAr ? "السلوك" : "Behavior"}
+          </TabsTrigger>
+          <TabsTrigger value="integrations" className="gap-1">
+            <Globe className="h-3.5 w-3.5" />
+            {isAr ? "التكاملات" : "Integrations"}
           </TabsTrigger>
         </TabsList>
 
@@ -458,57 +469,17 @@ export default function AdvertisingAdmin() {
 
         {/* Analytics Tab */}
         <TabsContent value="analytics">
-          <div className="grid gap-4 md:grid-cols-2">
-            <Card>
-              <CardHeader><CardTitle className="flex items-center gap-2"><TrendingUp className="h-4 w-4" />{isAr ? "أداء الحملات" : "Campaign Performance"}</CardTitle></CardHeader>
-              <CardContent>
-                <div className="space-y-3">
-                  {campaigns.filter(c => (c as any).status === "active").slice(0, 5).map((c: any) => {
-                    const ctr = c.total_impressions > 0 ? ((c.total_clicks / c.total_impressions) * 100).toFixed(2) : "0.00";
-                    return (
-                      <div key={c.id} className="flex items-center justify-between p-3 rounded-lg bg-muted/50">
-                        <div>
-                          <p className="text-sm font-medium">{c.name}</p>
-                          <p className="text-xs text-muted-foreground">{isAr ? c.companies?.name_ar : c.companies?.name}</p>
-                        </div>
-                        <div className="text-end">
-                          <p className="text-sm font-semibold">{ctr}% CTR</p>
-                          <p className="text-xs text-muted-foreground">{c.total_impressions?.toLocaleString()} {isAr ? "مشاهدة" : "imp."}</p>
-                        </div>
-                      </div>
-                    );
-                  })}
-                  {campaigns.filter(c => (c as any).status === "active").length === 0 && (
-                    <p className="text-center py-6 text-muted-foreground">{isAr ? "لا توجد حملات نشطة" : "No active campaigns"}</p>
-                  )}
-                </div>
-              </CardContent>
-            </Card>
-            <Card>
-              <CardHeader><CardTitle className="flex items-center gap-2"><Sparkles className="h-4 w-4" />{isAr ? "رؤى الذكاء الاصطناعي" : "AI Insights"}</CardTitle></CardHeader>
-              <CardContent>
-                <div className="space-y-3">
-                  <div className="rounded-lg border p-4">
-                    <p className="text-sm font-medium mb-1">{isAr ? "توصيات" : "Recommendations"}</p>
-                    <ul className="text-xs text-muted-foreground space-y-1">
-                      <li>• {isAr ? "أعلى أداء: إعلانات الصفحة الرئيسية (3.2% CTR)" : "Top performer: Homepage ads (3.2% CTR)"}</li>
-                      <li>• {isAr ? "الفترة المثلى: 10 صباحاً - 2 ظهراً" : "Optimal time: 10 AM - 2 PM"}</li>
-                      <li>• {isAr ? "الجهاز: 65% جوال، 35% مكتبي" : "Device: 65% mobile, 35% desktop"}</li>
-                      <li>• {isAr ? "اقتراح: زيادة إعلانات الشريط الجانبي للمقالات" : "Suggestion: Increase article sidebar ads"}</li>
-                    </ul>
-                  </div>
-                  <div className="rounded-lg border p-4">
-                    <p className="text-sm font-medium mb-1">{isAr ? "سلوك المستخدم" : "User Behavior"}</p>
-                    <ul className="text-xs text-muted-foreground space-y-1">
-                      <li>• {isAr ? "الطهاة يتفاعلون أكثر مع إعلانات المعدات" : "Chefs engage most with equipment ads"}</li>
-                      <li>• {isAr ? "الشركات تفضل إعلانات المسابقات" : "Companies prefer competition ads"}</li>
-                      <li>• {isAr ? "معدل التحويل الأعلى: صفحة المسابقات" : "Highest conversion: Competition page"}</li>
-                    </ul>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          </div>
+          <AdAnalyticsDashboard />
+        </TabsContent>
+
+        {/* Behavior Tab */}
+        <TabsContent value="behavior">
+          <AdBehaviorInsights />
+        </TabsContent>
+
+        {/* Google Integrations Tab */}
+        <TabsContent value="integrations">
+          <GoogleIntegrationPanel />
         </TabsContent>
       </Tabs>
     </div>
