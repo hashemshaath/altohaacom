@@ -257,7 +257,7 @@ function AuthHeroPanel({
       {/* Top: Logo + badge */}
       <div className="relative z-10 p-8 xl:p-10">
         <div className="flex items-center gap-3">
-          <img src="/altohaa-logo.png" alt="Altohaa" className="h-8 w-auto brightness-0 invert opacity-90" />
+          <img src="/altohaa-logo.png" alt="Altohaa" className="h-10 w-auto drop-shadow-lg" />
         </div>
       </div>
 
