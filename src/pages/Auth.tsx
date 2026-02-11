@@ -4,6 +4,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { supabase } from "@/integrations/supabase/client";
 import { lovable } from "@/integrations/lovable/index";
+import { normalizePhoneForStorage } from "@/lib/arabicNumerals";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -148,19 +149,26 @@ export default function Auth() {
     const { error } = await supabase.auth.signInWithPassword({ email: signInEmail, password: signInPassword });
     setLoading(false);
     if (error) {
-      toast({ variant: "destructive", title: isAr ? "خطأ" : "Error", description: error.message });
+      let msg = error.message;
+      if (error.message.includes("Email not confirmed")) {
+        msg = isAr ? "لم يتم تأكيد البريد الإلكتروني. يرجى التحقق من بريدك الوارد" : "Email not confirmed. Please check your inbox";
+      } else if (error.message.includes("Invalid login credentials")) {
+        msg = isAr ? "بيانات الدخول غير صحيحة. تحقق من البريد وكلمة المرور" : "Invalid credentials. Check your email and password";
+      }
+      toast({ variant: "destructive", title: isAr ? "خطأ" : "Error", description: msg });
     }
   };
 
   // ── Sign In with Phone (after OTP verification) ──
   const handleSignInPhoneVerified = async (phone: string) => {
-    setSignInVerifiedPhone(phone);
-    // Lookup account by phone
+    const normalizedPhone = normalizePhoneForStorage(phone);
+    setSignInVerifiedPhone(normalizedPhone);
+    // Lookup account by phone (try both normalized and raw)
     setLoading(true);
     const { data: profile } = await supabase
       .from("profiles")
       .select("user_id")
-      .eq("phone", phone)
+      .eq("phone", normalizedPhone)
       .maybeSingle();
 
     if (!profile) {
@@ -217,7 +225,13 @@ export default function Auth() {
     const { error } = await supabase.auth.signInWithPassword({ email: accountEmail, password: signInPassword });
     setLoading(false);
     if (error) {
-      toast({ variant: "destructive", title: isAr ? "خطأ" : "Error", description: error.message });
+      let msg = error.message;
+      if (error.message.includes("Invalid login credentials")) {
+        msg = isAr ? "كلمة المرور غير صحيحة" : "Incorrect password";
+      } else if (error.message.includes("Email not confirmed")) {
+        msg = isAr ? "لم يتم تأكيد البريد الإلكتروني. يرجى التحقق من بريدك الوارد" : "Email not confirmed. Please check your inbox";
+      }
+      toast({ variant: "destructive", title: isAr ? "خطأ" : "Error", description: msg });
     }
   };
 
@@ -256,7 +270,7 @@ export default function Auth() {
       if (digitsOnly.length < 7 || digitsOnly.length > 15) {
         errs.phone = isAr ? "طول رقم الهاتف غير صالح (7-15 رقم)" : "Invalid phone length (7-15 digits)";
       }
-      const fullPhone = phoneCode + digitsOnly;
+      const fullPhone = normalizePhoneForStorage(phoneCode + digitsOnly);
       if (!errs.phone && !/^\+?[1-9]\d{7,14}$/.test(fullPhone)) {
         errs.phone = isAr ? "رقم الهاتف غير صالح" : "Invalid phone number";
       }
@@ -298,7 +312,7 @@ export default function Auth() {
 
   // ── Sign Up Step 2: Verified ──
   const handlePhoneVerified = (phone: string) => {
-    setVerifiedPhone(phone);
+    setVerifiedPhone(normalizePhoneForStorage(phone));
     setSignUpStep("details");
   };
 

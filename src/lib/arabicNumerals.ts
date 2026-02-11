@@ -20,3 +20,15 @@ export function normalizePhoneInput(value: string): string {
   }
   return result;
 }
+
+/**
+ * Normalize a phone number for storage/lookup:
+ * strips all non-digit chars except leading +
+ * e.g. "+966-50-631-5300" → "+966506315300"
+ */
+export function normalizePhoneForStorage(phone: string): string {
+  if (!phone) return "";
+  const hasPlus = phone.startsWith("+");
+  const digits = phone.replace(/[^\d]/g, "");
+  return (hasPlus ? "+" : "") + digits;
+}
