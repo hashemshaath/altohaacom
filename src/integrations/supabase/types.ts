@@ -775,6 +775,7 @@ export type Database = {
           description_ar: string | null
           email: string | null
           id: string
+          is_verified: boolean | null
           logo_url: string | null
           name: string
           name_ar: string | null
@@ -787,6 +788,8 @@ export type Database = {
           tax_number: string | null
           type: Database["public"]["Enums"]["company_type"]
           updated_at: string | null
+          verification_level: string | null
+          verified_at: string | null
           website: string | null
           working_hours: Json | null
         }
@@ -807,6 +810,7 @@ export type Database = {
           description_ar?: string | null
           email?: string | null
           id?: string
+          is_verified?: boolean | null
           logo_url?: string | null
           name: string
           name_ar?: string | null
@@ -819,6 +823,8 @@ export type Database = {
           tax_number?: string | null
           type: Database["public"]["Enums"]["company_type"]
           updated_at?: string | null
+          verification_level?: string | null
+          verified_at?: string | null
           website?: string | null
           working_hours?: Json | null
         }
@@ -839,6 +845,7 @@ export type Database = {
           description_ar?: string | null
           email?: string | null
           id?: string
+          is_verified?: boolean | null
           logo_url?: string | null
           name?: string
           name_ar?: string | null
@@ -851,6 +858,8 @@ export type Database = {
           tax_number?: string | null
           type?: Database["public"]["Enums"]["company_type"]
           updated_at?: string | null
+          verification_level?: string | null
+          verified_at?: string | null
           website?: string | null
           working_hours?: Json | null
         }
@@ -2784,6 +2793,8 @@ export type Database = {
           type: Database["public"]["Enums"]["entity_type"]
           updated_at: string
           username: string | null
+          verification_level: string | null
+          verified_at: string | null
           view_count: number | null
           website: string | null
         }
@@ -2836,6 +2847,8 @@ export type Database = {
           type: Database["public"]["Enums"]["entity_type"]
           updated_at?: string
           username?: string | null
+          verification_level?: string | null
+          verified_at?: string | null
           view_count?: number | null
           website?: string | null
         }
@@ -2888,6 +2901,8 @@ export type Database = {
           type?: Database["public"]["Enums"]["entity_type"]
           updated_at?: string
           username?: string | null
+          verification_level?: string | null
+          verified_at?: string | null
           view_count?: number | null
           website?: string | null
         }
@@ -5839,6 +5854,8 @@ export type Database = {
           updated_at: string
           user_id: string
           username: string | null
+          verification_badge: string | null
+          verification_level: string | null
           verified_at: string | null
           website: string | null
           youtube: string | null
@@ -5881,6 +5898,8 @@ export type Database = {
           updated_at?: string
           user_id: string
           username?: string | null
+          verification_badge?: string | null
+          verification_level?: string | null
           verified_at?: string | null
           website?: string | null
           youtube?: string | null
@@ -5923,6 +5942,8 @@ export type Database = {
           updated_at?: string
           user_id?: string
           username?: string | null
+          verification_badge?: string | null
+          verification_level?: string | null
           verified_at?: string | null
           website?: string | null
           youtube?: string | null
@@ -7442,6 +7463,232 @@ export type Database = {
             columns: ["establishment_id"]
             isOneToOne: false
             referencedRelation: "establishments"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      verification_audit_log: {
+        Row: {
+          action: string
+          action_by: string | null
+          action_by_system: boolean | null
+          created_at: string
+          details: Json | null
+          id: string
+          ip_address: string | null
+          request_id: string
+        }
+        Insert: {
+          action: string
+          action_by?: string | null
+          action_by_system?: boolean | null
+          created_at?: string
+          details?: Json | null
+          id?: string
+          ip_address?: string | null
+          request_id: string
+        }
+        Update: {
+          action?: string
+          action_by?: string | null
+          action_by_system?: boolean | null
+          created_at?: string
+          details?: Json | null
+          id?: string
+          ip_address?: string | null
+          request_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "verification_audit_log_request_id_fkey"
+            columns: ["request_id"]
+            isOneToOne: false
+            referencedRelation: "verification_requests"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      verification_documents: {
+        Row: {
+          ai_confidence: number | null
+          ai_document_type_match: boolean | null
+          ai_document_valid: boolean | null
+          ai_extracted_data: Json | null
+          ai_flags: string[] | null
+          document_type: string
+          file_name: string | null
+          file_size: number | null
+          file_url: string
+          id: string
+          manually_verified: boolean | null
+          mime_type: string | null
+          request_id: string
+          uploaded_at: string
+          verified_at: string | null
+          verified_by: string | null
+        }
+        Insert: {
+          ai_confidence?: number | null
+          ai_document_type_match?: boolean | null
+          ai_document_valid?: boolean | null
+          ai_extracted_data?: Json | null
+          ai_flags?: string[] | null
+          document_type: string
+          file_name?: string | null
+          file_size?: number | null
+          file_url: string
+          id?: string
+          manually_verified?: boolean | null
+          mime_type?: string | null
+          request_id: string
+          uploaded_at?: string
+          verified_at?: string | null
+          verified_by?: string | null
+        }
+        Update: {
+          ai_confidence?: number | null
+          ai_document_type_match?: boolean | null
+          ai_document_valid?: boolean | null
+          ai_extracted_data?: Json | null
+          ai_flags?: string[] | null
+          document_type?: string
+          file_name?: string | null
+          file_size?: number | null
+          file_url?: string
+          id?: string
+          manually_verified?: boolean | null
+          mime_type?: string | null
+          request_id?: string
+          uploaded_at?: string
+          verified_at?: string | null
+          verified_by?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "verification_documents_request_id_fkey"
+            columns: ["request_id"]
+            isOneToOne: false
+            referencedRelation: "verification_requests"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      verification_requests: {
+        Row: {
+          ai_analysis: Json | null
+          ai_flags: string[] | null
+          ai_reviewed_at: string | null
+          ai_risk_score: number | null
+          applicant_name: string
+          applicant_name_ar: string | null
+          applicant_position: string | null
+          applicant_position_ar: string | null
+          applicant_role: string | null
+          company_id: string | null
+          created_at: string
+          culinary_entity_id: string | null
+          documents: Json | null
+          entity_type: string
+          expires_at: string | null
+          id: string
+          ip_address: string | null
+          rejection_reason: string | null
+          rejection_reason_ar: string | null
+          reviewed_at: string | null
+          reviewed_by: string | null
+          reviewer_notes: string | null
+          reviewer_notes_ar: string | null
+          revoked_at: string | null
+          revoked_by: string | null
+          revoked_reason: string | null
+          status: string
+          submission_metadata: Json | null
+          updated_at: string
+          user_agent: string | null
+          user_id: string | null
+          verification_level: string
+        }
+        Insert: {
+          ai_analysis?: Json | null
+          ai_flags?: string[] | null
+          ai_reviewed_at?: string | null
+          ai_risk_score?: number | null
+          applicant_name: string
+          applicant_name_ar?: string | null
+          applicant_position?: string | null
+          applicant_position_ar?: string | null
+          applicant_role?: string | null
+          company_id?: string | null
+          created_at?: string
+          culinary_entity_id?: string | null
+          documents?: Json | null
+          entity_type: string
+          expires_at?: string | null
+          id?: string
+          ip_address?: string | null
+          rejection_reason?: string | null
+          rejection_reason_ar?: string | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          reviewer_notes?: string | null
+          reviewer_notes_ar?: string | null
+          revoked_at?: string | null
+          revoked_by?: string | null
+          revoked_reason?: string | null
+          status?: string
+          submission_metadata?: Json | null
+          updated_at?: string
+          user_agent?: string | null
+          user_id?: string | null
+          verification_level?: string
+        }
+        Update: {
+          ai_analysis?: Json | null
+          ai_flags?: string[] | null
+          ai_reviewed_at?: string | null
+          ai_risk_score?: number | null
+          applicant_name?: string
+          applicant_name_ar?: string | null
+          applicant_position?: string | null
+          applicant_position_ar?: string | null
+          applicant_role?: string | null
+          company_id?: string | null
+          created_at?: string
+          culinary_entity_id?: string | null
+          documents?: Json | null
+          entity_type?: string
+          expires_at?: string | null
+          id?: string
+          ip_address?: string | null
+          rejection_reason?: string | null
+          rejection_reason_ar?: string | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          reviewer_notes?: string | null
+          reviewer_notes_ar?: string | null
+          revoked_at?: string | null
+          revoked_by?: string | null
+          revoked_reason?: string | null
+          status?: string
+          submission_metadata?: Json | null
+          updated_at?: string
+          user_agent?: string | null
+          user_id?: string | null
+          verification_level?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "verification_requests_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "verification_requests_culinary_entity_id_fkey"
+            columns: ["culinary_entity_id"]
+            isOneToOne: false
+            referencedRelation: "culinary_entities"
             referencedColumns: ["id"]
           },
         ]

@@ -23,3 +23,6 @@ verify_jwt = false
 
 [functions.ai-requirements]
 verify_jwt = false
+
+[functions.ai-verify-document]
+verify_jwt = false
