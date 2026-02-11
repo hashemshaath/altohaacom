@@ -5113,6 +5113,149 @@ export type Database = {
         }
         Relationships: []
       }
+      invoice_settings: {
+        Row: {
+          auto_send_invoice: boolean | null
+          auto_send_statuses: string[] | null
+          company_id: string | null
+          contact_email: string | null
+          contact_phone: string | null
+          created_at: string | null
+          id: string
+          invoice_title: string | null
+          invoice_title_ar: string | null
+          issue_english_copy: boolean | null
+          logo_position: string | null
+          logo_size: number | null
+          logo_url: string | null
+          main_font_weight: string | null
+          primary_color: string | null
+          return_policy_text: string | null
+          return_policy_text_ar: string | null
+          show_contact_info: boolean | null
+          show_gtin_code: boolean | null
+          show_invoice_acknowledgment: boolean | null
+          show_invoice_barcode: boolean | null
+          show_mpn_code: boolean | null
+          show_order_note: boolean | null
+          show_product_barcode: boolean | null
+          show_product_description: boolean | null
+          show_product_image: boolean | null
+          show_product_stock_number: boolean | null
+          show_product_weight: boolean | null
+          show_return_policy: boolean | null
+          show_store_address: boolean | null
+          stamp_opacity: number | null
+          stamp_position: string | null
+          stamp_url: string | null
+          store_address: string | null
+          store_address_ar: string | null
+          store_name_prefix: string | null
+          store_name_prefix_ar: string | null
+          sub_font_weight: string | null
+          title_style: string | null
+          updated_at: string | null
+          watermark_opacity: number | null
+          watermark_url: string | null
+        }
+        Insert: {
+          auto_send_invoice?: boolean | null
+          auto_send_statuses?: string[] | null
+          company_id?: string | null
+          contact_email?: string | null
+          contact_phone?: string | null
+          created_at?: string | null
+          id?: string
+          invoice_title?: string | null
+          invoice_title_ar?: string | null
+          issue_english_copy?: boolean | null
+          logo_position?: string | null
+          logo_size?: number | null
+          logo_url?: string | null
+          main_font_weight?: string | null
+          primary_color?: string | null
+          return_policy_text?: string | null
+          return_policy_text_ar?: string | null
+          show_contact_info?: boolean | null
+          show_gtin_code?: boolean | null
+          show_invoice_acknowledgment?: boolean | null
+          show_invoice_barcode?: boolean | null
+          show_mpn_code?: boolean | null
+          show_order_note?: boolean | null
+          show_product_barcode?: boolean | null
+          show_product_description?: boolean | null
+          show_product_image?: boolean | null
+          show_product_stock_number?: boolean | null
+          show_product_weight?: boolean | null
+          show_return_policy?: boolean | null
+          show_store_address?: boolean | null
+          stamp_opacity?: number | null
+          stamp_position?: string | null
+          stamp_url?: string | null
+          store_address?: string | null
+          store_address_ar?: string | null
+          store_name_prefix?: string | null
+          store_name_prefix_ar?: string | null
+          sub_font_weight?: string | null
+          title_style?: string | null
+          updated_at?: string | null
+          watermark_opacity?: number | null
+          watermark_url?: string | null
+        }
+        Update: {
+          auto_send_invoice?: boolean | null
+          auto_send_statuses?: string[] | null
+          company_id?: string | null
+          contact_email?: string | null
+          contact_phone?: string | null
+          created_at?: string | null
+          id?: string
+          invoice_title?: string | null
+          invoice_title_ar?: string | null
+          issue_english_copy?: boolean | null
+          logo_position?: string | null
+          logo_size?: number | null
+          logo_url?: string | null
+          main_font_weight?: string | null
+          primary_color?: string | null
+          return_policy_text?: string | null
+          return_policy_text_ar?: string | null
+          show_contact_info?: boolean | null
+          show_gtin_code?: boolean | null
+          show_invoice_acknowledgment?: boolean | null
+          show_invoice_barcode?: boolean | null
+          show_mpn_code?: boolean | null
+          show_order_note?: boolean | null
+          show_product_barcode?: boolean | null
+          show_product_description?: boolean | null
+          show_product_image?: boolean | null
+          show_product_stock_number?: boolean | null
+          show_product_weight?: boolean | null
+          show_return_policy?: boolean | null
+          show_store_address?: boolean | null
+          stamp_opacity?: number | null
+          stamp_position?: string | null
+          stamp_url?: string | null
+          store_address?: string | null
+          store_address_ar?: string | null
+          store_name_prefix?: string | null
+          store_name_prefix_ar?: string | null
+          sub_font_weight?: string | null
+          title_style?: string | null
+          updated_at?: string | null
+          watermark_opacity?: number | null
+          watermark_url?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "invoice_settings_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: true
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       invoices: {
         Row: {
           amount: number
