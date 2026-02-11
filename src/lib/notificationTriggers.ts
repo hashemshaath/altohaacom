@@ -267,3 +267,149 @@ export async function notifyCompanyInvitation(params: {
     channels: ["in_app", "email"],
   });
 }
+
+// ── Deadline Reminders ──
+
+export async function notifyRegistrationDeadline(params: {
+  userId: string;
+  competitionTitle: string;
+  competitionTitleAr?: string;
+  competitionId: string;
+  daysLeft: number;
+}) {
+  return sendNotification({
+    userId: params.userId,
+    title: `Registration Closing Soon: ${params.competitionTitle}`,
+    titleAr: params.competitionTitleAr
+      ? `التسجيل يغلق قريباً: ${params.competitionTitleAr}`
+      : undefined,
+    body: `Only ${params.daysLeft} day${params.daysLeft > 1 ? "s" : ""} left to register for "${params.competitionTitle}". Don't miss out!`,
+    bodyAr: params.competitionTitleAr
+      ? `بقي ${params.daysLeft} يوم للتسجيل في "${params.competitionTitleAr}". لا تفوت الفرصة!`
+      : undefined,
+    type: "warning",
+    link: `/competitions/${params.competitionId}`,
+    channels: ["in_app", "email"],
+  });
+}
+
+export async function notifyCompetitionStartingSoon(params: {
+  userId: string;
+  competitionTitle: string;
+  competitionTitleAr?: string;
+  competitionId: string;
+  daysLeft: number;
+}) {
+  return sendNotification({
+    userId: params.userId,
+    title: `Competition Starts Soon: ${params.competitionTitle}`,
+    titleAr: params.competitionTitleAr
+      ? `المسابقة تبدأ قريباً: ${params.competitionTitleAr}`
+      : undefined,
+    body: `"${params.competitionTitle}" starts in ${params.daysLeft} day${params.daysLeft > 1 ? "s" : ""}. Get ready!`,
+    bodyAr: params.competitionTitleAr
+      ? `"${params.competitionTitleAr}" تبدأ خلال ${params.daysLeft} أيام. استعد!`
+      : undefined,
+    type: "info",
+    link: `/competitions/${params.competitionId}`,
+    channels: ["in_app", "email"],
+  });
+}
+
+export async function notifyCompetitionResults(params: {
+  userId: string;
+  competitionTitle: string;
+  competitionTitleAr?: string;
+  competitionId: string;
+  placement?: string;
+}) {
+  return sendNotification({
+    userId: params.userId,
+    title: `Results Available: ${params.competitionTitle}`,
+    titleAr: params.competitionTitleAr
+      ? `النتائج متاحة: ${params.competitionTitleAr}`
+      : undefined,
+    body: params.placement
+      ? `Congratulations! You placed ${params.placement} in "${params.competitionTitle}". View your results now.`
+      : `Results for "${params.competitionTitle}" are now available. Check your performance!`,
+    bodyAr: params.competitionTitleAr
+      ? `تم نشر نتائج "${params.competitionTitleAr}". اطلع على أدائك الآن!`
+      : undefined,
+    type: "success",
+    link: `/competitions/${params.competitionId}/results`,
+    channels: ["in_app", "email"],
+  });
+}
+
+export async function notifyWelcomeUser(params: {
+  userId: string;
+  userName: string;
+}) {
+  return sendNotification({
+    userId: params.userId,
+    templateSlug: "welcome-user",
+    variables: {
+      user_name: params.userName,
+    },
+    channels: ["in_app", "email"],
+  });
+}
+
+export async function notifyCertificateIssued(params: {
+  userId: string;
+  certificateNumber: string;
+  competitionTitle: string;
+  competitionTitleAr?: string;
+}) {
+  return sendNotification({
+    userId: params.userId,
+    title: `Certificate Issued: ${params.competitionTitle}`,
+    titleAr: params.competitionTitleAr
+      ? `تم إصدار شهادة: ${params.competitionTitleAr}`
+      : undefined,
+    body: `Your certificate #${params.certificateNumber} for "${params.competitionTitle}" is ready. Download it from your profile.`,
+    bodyAr: params.competitionTitleAr
+      ? `شهادتك رقم #${params.certificateNumber} لـ "${params.competitionTitleAr}" جاهزة. حملها من ملفك الشخصي.`
+      : undefined,
+    type: "success",
+    link: `/profile`,
+    channels: ["in_app", "email"],
+  });
+}
+
+export async function notifyJudgeAssigned(params: {
+  userId: string;
+  competitionTitle: string;
+  competitionTitleAr?: string;
+  competitionId: string;
+}) {
+  return sendNotification({
+    userId: params.userId,
+    title: `You've been assigned as Judge: ${params.competitionTitle}`,
+    titleAr: params.competitionTitleAr
+      ? `تم تعيينك كحكم: ${params.competitionTitleAr}`
+      : undefined,
+    body: `You have been assigned as a judge for "${params.competitionTitle}". Review the competition details and criteria.`,
+    bodyAr: params.competitionTitleAr
+      ? `تم تعيينك كحكم في "${params.competitionTitleAr}". راجع تفاصيل المسابقة والمعايير.`
+      : undefined,
+    type: "info",
+    link: `/competitions/${params.competitionId}`,
+    channels: ["in_app", "email"],
+  });
+}
+
+export async function notifyProfileVerified(params: {
+  userId: string;
+  userName: string;
+}) {
+  return sendNotification({
+    userId: params.userId,
+    title: `Profile Verified`,
+    titleAr: `تم التحقق من الملف الشخصي`,
+    body: `Congratulations ${params.userName}! Your professional profile has been verified. You now have access to verified member features.`,
+    bodyAr: `تهانينا ${params.userName}! تم التحقق من ملفك المهني. يمكنك الآن الوصول إلى ميزات العضو الموثق.`,
+    type: "success",
+    channels: ["in_app", "email"],
+  });
+}

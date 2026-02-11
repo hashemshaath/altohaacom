@@ -42,9 +42,11 @@ import { ReferenceGalleryPanel } from "@/components/competitions/ReferenceGaller
 import { RubricTemplatesPanel } from "@/components/competitions/RubricTemplatesPanel";
 import { CriteriaManagementPanel } from "@/components/competitions/CriteriaManagementPanel";
 import { CompetitionCountdown } from "@/components/competitions/CompetitionCountdown";
+import { CompetitionTimeline } from "@/components/competitions/CompetitionTimeline";
 import { ParticipantStatsCard } from "@/components/competitions/ParticipantStatsCard";
 import { OrganizerCard } from "@/components/competitions/OrganizerCard";
 import { CompetitionActivityFeed } from "@/components/competitions/CompetitionActivityFeed";
+import { deriveCompetitionStatus } from "@/lib/competitionStatus";
 import { QRCodeDisplay } from "@/components/qr/QRCodeDisplay";
 import { useEntityQRCode } from "@/hooks/useQRCode";
 import type { Database } from "@/integrations/supabase/types";
@@ -490,37 +492,13 @@ export default function CompetitionDetail() {
                     </Section>
                   )}
 
-                  {/* Timeline */}
-                  {(competition.registration_start || competition.registration_end) && (
-                    <Section icon={<Clock className="h-4 w-4 text-primary" />} title={isAr ? "الجدول الزمني" : "Timeline"}>
-                      <div className="relative border-s-2 border-border ps-6 space-y-5">
-                        {competition.registration_start && (
-                          <div className="relative">
-                            <div className="absolute -start-[29px] top-0.5 h-3.5 w-3.5 rounded-full border-2 border-primary bg-background" />
-                            <p className="text-[10px] uppercase tracking-wider text-muted-foreground">{isAr ? "بداية التسجيل" : "Registration Opens"}</p>
-                            <p className="text-sm font-semibold">{format(new Date(competition.registration_start), "MMMM d, yyyy")}</p>
-                          </div>
-                        )}
-                        {competition.registration_end && (
-                          <div className="relative">
-                            <div className="absolute -start-[29px] top-0.5 h-3.5 w-3.5 rounded-full border-2 border-chart-4 bg-background" />
-                            <p className="text-[10px] uppercase tracking-wider text-muted-foreground">{isAr ? "نهاية التسجيل" : "Registration Closes"}</p>
-                            <p className="text-sm font-semibold">{format(new Date(competition.registration_end), "MMMM d, yyyy")}</p>
-                          </div>
-                        )}
-                        <div className="relative">
-                          <div className="absolute -start-[29px] top-0.5 h-3.5 w-3.5 rounded-full border-2 border-chart-3 bg-background" />
-                          <p className="text-[10px] uppercase tracking-wider text-muted-foreground">{isAr ? "بداية المسابقة" : "Competition Starts"}</p>
-                          <p className="text-sm font-semibold">{format(new Date(competition.competition_start), "MMMM d, yyyy 'at' h:mm a")}</p>
-                        </div>
-                        <div className="relative">
-                          <div className="absolute -start-[29px] top-0.5 h-3.5 w-3.5 rounded-full border-2 border-chart-5 bg-background" />
-                          <p className="text-[10px] uppercase tracking-wider text-muted-foreground">{isAr ? "نهاية المسابقة" : "Competition Ends"}</p>
-                          <p className="text-sm font-semibold">{format(new Date(competition.competition_end), "MMMM d, yyyy 'at' h:mm a")}</p>
-                        </div>
-                      </div>
-                    </Section>
-                  )}
+                  {/* Timeline - New Component */}
+                  <CompetitionTimeline
+                    registrationStart={competition.registration_start}
+                    registrationEnd={competition.registration_end}
+                    competitionStart={competition.competition_start}
+                    competitionEnd={competition.competition_end}
+                  />
 
                   {/* Rules */}
                   {(competition.rules_summary || competition.rules_summary_ar) && (
