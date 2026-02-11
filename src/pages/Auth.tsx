@@ -1,11 +1,9 @@
-import { useState, useEffect, useMemo } from "react";
-import { useNavigate, useSearchParams } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { useNavigate, useSearchParams, useLocation } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { supabase } from "@/integrations/supabase/client";
 import { lovable } from "@/integrations/lovable/index";
-import { Header } from "@/components/Header";
-import { Footer } from "@/components/Footer";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -19,15 +17,13 @@ import { PasswordStrengthMeter, getPasswordStrength } from "@/components/auth/Pa
 import { UsernameSuggestions } from "@/components/auth/UsernameSuggestions";
 import { ForgotPasswordDialog } from "@/components/auth/ForgotPasswordDialog";
 import { TermsAgreement } from "@/components/auth/TermsAgreement";
-import { normalizePhoneInput } from "@/lib/arabicNumerals";
-import { countryFlag } from "@/lib/countryFlag";
-import { useAllCountries } from "@/hooks/useCountries";
+import { AuthLayout } from "@/components/auth/AuthLayout";
+import { PhoneInputWithFlag } from "@/components/auth/PhoneInputWithFlag";
 import { z } from "zod";
 import {
   CheckCircle, XCircle, Loader2, ShieldCheck, UserPlus, LogIn,
-  Trophy, Globe, GraduationCap, Award, Star, Phone, Mail, KeyRound, ChevronDown,
+  Phone, Mail, KeyRound,
 } from "lucide-react";
-import authHeroImg from "@/assets/auth-hero.jpg";
 
 const usernameRegex = /^[a-zA-Z][a-zA-Z0-9_]{2,29}$/;
 
@@ -38,312 +34,14 @@ type SignInMethod = "phone" | "email";
 const DEFAULT_COUNTRY = "SA";
 const DEFAULT_PHONE_CODE = "+966";
 
-/* ── Motivational quotes for the hero panel ── */
-const motivationalQuotes = {
-  signup: {
-    en: [
-      "Every great chef started somewhere. Start your journey today.",
-      "Join thousands of culinary professionals shaping the future of gastronomy.",
-      "Your culinary masterpiece awaits — create, compete, and connect globally.",
-    ],
-    ar: [
-      "كل شيف عظيم بدأ من مكان ما. ابدأ رحلتك اليوم.",
-      "انضم لآلاف المحترفين الذين يشكلون مستقبل فن الطهي.",
-      "تحفتك الفنية في انتظارك — أبدع، تنافس، وتواصل عالمياً.",
-    ],
-  },
-  signin: {
-    en: [
-      "Welcome back, Chef. Your community is waiting.",
-      "Continue your culinary excellence journey.",
-      "Great things are cooking — sign in to see what's new.",
-    ],
-    ar: [
-      "مرحباً بعودتك، شيف. مجتمعك في انتظارك.",
-      "واصل رحلتك نحو التميز في الطهي.",
-      "أشياء رائعة تُطهى — سجل دخولك لمعرفة الجديد.",
-    ],
-  },
-  verify: {
-    en: ["Almost there — we just need to verify it's really you."],
-    ar: ["اقتربت — نحتاج فقط التأكد من هويتك."],
-  },
-  details: {
-    en: ["Tell us a bit about yourself. Every great chef has a story."],
-    ar: ["أخبرنا عن نفسك. كل شيف عظيم له قصة."],
-  },
-  credentials: {
-    en: ["One last step and you're in. Make it secure, make it yours."],
-    ar: ["خطوة أخيرة وتنضم إلينا. اجعلها آمنة، اجعلها خاصة بك."],
-  },
-  reset: {
-    en: ["Secure your account with a strong new password."],
-    ar: ["أمّن حسابك بكلمة مرور جديدة قوية."],
-  },
-};
-
-const features = [
-  { icon: Trophy, labelEn: "Compete Globally", labelAr: "تنافس عالمياً" },
-  { icon: GraduationCap, labelEn: "Learn from the Best", labelAr: "تعلم من الأفضل" },
-  { icon: Globe, labelEn: "Connect Worldwide", labelAr: "تواصل حول العالم" },
-  { icon: Award, labelEn: "Earn Certificates", labelAr: "احصل على شهادات" },
-];
-
-/* ── Phone Input with Flag + Code ── */
-function PhoneInputWithFlag({
-  phone,
-  onPhoneChange,
-  countryCode,
-  phoneCode,
-  onCountryChange,
-  error,
-  label,
-  isAr,
-}: {
-  phone: string;
-  onPhoneChange: (v: string) => void;
-  countryCode: string;
-  phoneCode: string;
-  onCountryChange: (code: string, phoneCode: string) => void;
-  error?: string;
-  label?: string;
-  isAr: boolean;
-}) {
-  const { data: countries } = useAllCountries();
-  const [dropdownOpen, setDropdownOpen] = useState(false);
-
-  const selectedCountry = useMemo(
-    () => countries?.find((c) => c.code === countryCode),
-    [countries, countryCode]
-  );
-
-  const flag = countryFlag(countryCode);
-  const displayCode = phoneCode || selectedCountry?.phone_code || "";
-
-  return (
-    <div className="space-y-1.5">
-      {label && <Label className="text-xs">{label} *</Label>}
-      <div className="flex gap-2">
-        {/* Country code button */}
-        <div className="relative">
-          <button
-            type="button"
-            onClick={() => setDropdownOpen(!dropdownOpen)}
-            className="flex h-10 items-center gap-1.5 rounded-md border border-input bg-background px-3 text-sm hover:bg-accent/50 transition-colors min-w-[100px]"
-          >
-            <span className="text-base">{flag}</span>
-            <span className="font-mono text-muted-foreground" dir="ltr">{displayCode}</span>
-            <ChevronDown className="h-3.5 w-3.5 text-muted-foreground ms-auto" />
-          </button>
-
-          {dropdownOpen && (
-            <>
-              <div className="fixed inset-0 z-40" onClick={() => setDropdownOpen(false)} />
-              <div className="absolute top-full mt-1 z-50 w-64 max-h-60 overflow-auto rounded-lg border bg-popover shadow-lg">
-                {(countries || []).map((c) => (
-                  <button
-                    key={c.code}
-                    type="button"
-                    className="flex w-full items-center gap-2 px-3 py-2 text-sm hover:bg-accent/50 transition-colors"
-                    onClick={() => {
-                      const pc = c.phone_code || "";
-                      onCountryChange(c.code, pc);
-                      setDropdownOpen(false);
-                    }}
-                  >
-                    <span className="text-base">{countryFlag(c.code)}</span>
-                    <span className="flex-1 text-start truncate">
-                      {isAr ? c.name_ar || c.name : c.name}
-                    </span>
-                    <span className="font-mono text-xs text-muted-foreground" dir="ltr">
-                      {c.phone_code}
-                    </span>
-                  </button>
-                ))}
-              </div>
-            </>
-          )}
-        </div>
-
-        {/* Phone number input */}
-        <Input
-          type="tel"
-          dir="ltr"
-          placeholder="5XX XXX XXXX"
-          value={phone}
-          onChange={(e) => onPhoneChange(normalizePhoneInput(e.target.value))}
-          className="flex-1"
-        />
-      </div>
-      {error && <p className="text-xs text-destructive">{error}</p>}
-    </div>
-  );
-}
-
-/* ── Animated Orb ── */
-function FloatingOrb({ className }: { className?: string }) {
-  return (
-    <div
-      className={`absolute rounded-full blur-3xl opacity-30 animate-pulse ${className}`}
-      style={{ animationDuration: `${6 + Math.random() * 4}s` }}
-    />
-  );
-}
-
-/* ── Step Progress Indicator ── */
-function StepDots({ current, total, isAr }: { current: number; total: number; isAr: boolean }) {
-  return (
-    <div className="flex items-center gap-2" dir="ltr">
-      {Array.from({ length: total }).map((_, i) => (
-        <div
-          key={i}
-          className={`h-1.5 rounded-full transition-all duration-500 ${
-            i < current
-              ? "w-6 bg-primary"
-              : i === current
-              ? "w-8 bg-primary shadow-sm shadow-primary/50"
-              : "w-4 bg-white/20"
-          }`}
-        />
-      ))}
-    </div>
-  );
-}
-
-/* ── Hero Side Panel ── */
-function AuthHeroPanel({
-  stage,
-  isAr,
-  currentStep,
-}: {
-  stage: "signup" | "signin" | "verify" | "details" | "credentials" | "reset";
-  isAr: boolean;
-  currentStep?: number;
-}) {
-  const quoteSet = motivationalQuotes[stage] || motivationalQuotes.signup;
-  const quotes = isAr ? quoteSet.ar : quoteSet.en;
-  const randomQuote = useMemo(() => quotes[Math.floor(Math.random() * quotes.length)], [stage, isAr]);
-
-  const headings: Record<string, { en: string; ar: string }> = {
-    signup: { en: "Join the Global\nCulinary Community", ar: "انضم لمجتمع\nالطهي العالمي" },
-    signin: { en: "Welcome Back,\nChef!", ar: "مرحباً بعودتك\nشيف!" },
-    verify: { en: "Verifying\nYour Identity", ar: "التحقق من\nهويتك" },
-    details: { en: "Tell Us\nAbout Yourself", ar: "أخبرنا\nعن نفسك" },
-    credentials: { en: "Almost\nThere!", ar: "اقتربت\nمن الهدف!" },
-    reset: { en: "Reset Your\nPassword", ar: "إعادة تعيين\nكلمة المرور" },
-  };
-
-  const heading = headings[stage] || headings.signup;
-  const isSignUpFlow = ["signup", "verify", "details", "credentials"].includes(stage);
-
-  return (
-    <div className="hidden lg:flex lg:w-[480px] xl:w-[540px] relative flex-col overflow-hidden" dir={isAr ? "rtl" : "ltr"}>
-      {/* Background image with parallax-like depth */}
-      <img
-        src={authHeroImg}
-        alt="Culinary excellence"
-        className="absolute inset-0 h-full w-full object-cover scale-105"
-      />
-
-      {/* Layered gradient overlays for depth */}
-      <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/50 to-transparent" />
-      <div className="absolute inset-0 bg-gradient-to-br from-primary/20 via-transparent to-accent/10" />
-
-      {/* Animated floating orbs */}
-      <FloatingOrb className="h-64 w-64 bg-primary/40 -top-20 -start-20" />
-      <FloatingOrb className="h-48 w-48 bg-accent/30 top-1/3 end-[-40px]" />
-      <FloatingOrb className="h-32 w-32 bg-primary/25 bottom-40 start-10" />
-
-      {/* Top: Logo + badge */}
-      <div className="relative z-10 p-8 xl:p-10">
-        <div className="flex items-center gap-3">
-          <img src="/altohaa-logo.png" alt="Altohaa" className="h-10 w-auto drop-shadow-lg" />
-        </div>
-      </div>
-
-      {/* Center: Main content */}
-      <div className="relative z-10 flex flex-1 flex-col justify-center px-8 xl:px-10">
-        <div className="space-y-6">
-          <h2 className={`${isAr ? "font-sans" : "font-serif"} text-3xl font-bold xl:text-4xl leading-tight whitespace-pre-line`} style={{ color: "white" }}>
-            {isAr ? heading.ar : heading.en}
-          </h2>
-          <p className="text-base leading-relaxed max-w-sm" style={{ color: "rgba(255,255,255,0.75)" }}>
-            {randomQuote}
-          </p>
-        </div>
-      </div>
-
-      {/* Bottom: Features + step indicator */}
-      <div className="relative z-10 p-8 xl:p-10 space-y-6">
-        {/* Step progress for signup flow */}
-        {isSignUpFlow && currentStep !== undefined && (
-          <div className="space-y-2">
-            <StepDots current={currentStep} total={4} isAr={isAr} />
-            <p className="text-xs" style={{ color: "rgba(255,255,255,0.5)" }}>
-              {isAr ? `الخطوة ${currentStep + 1} من 4` : `Step ${currentStep + 1} of 4`}
-            </p>
-          </div>
-        )}
-
-        {/* Feature badges */}
-        <div className="flex flex-wrap gap-2">
-          {features.map((f) => (
-            <div
-              key={f.labelEn}
-              className="flex items-center gap-2 rounded-full px-3 py-1.5 text-xs font-medium backdrop-blur-md"
-              style={{ background: "rgba(255,255,255,0.1)", border: "1px solid rgba(255,255,255,0.1)", color: "rgba(255,255,255,0.85)" }}
-            >
-              <f.icon className="h-3.5 w-3.5 text-primary" />
-              {isAr ? f.labelAr : f.labelEn}
-            </div>
-          ))}
-        </div>
-
-        {/* Trust indicator */}
-        <div className="flex items-center gap-2 text-xs" style={{ color: "rgba(255,255,255,0.45)" }}>
-          <CheckCircle className="h-3.5 w-3.5 text-primary shrink-0" />
-          {isAr ? "مجاني بالكامل · بدون بطاقة ائتمان · إعداد في دقائق" : "Completely Free · No Credit Card · Setup in Minutes"}
-        </div>
-      </div>
-    </div>
-  );
-}
-
-/* ── Auth Layout Wrapper ── */
-function AuthLayout({
-  children,
-  stage,
-  isAr,
-  showFooter = false,
-  currentStep,
-}: {
-  children: React.ReactNode;
-  stage: "signup" | "signin" | "verify" | "details" | "credentials" | "reset";
-  isAr: boolean;
-  showFooter?: boolean;
-  currentStep?: number;
-}) {
-  return (
-    <div className="flex min-h-screen flex-col" dir={isAr ? "rtl" : "ltr"}>
-      <Header />
-      <main className="flex flex-1">
-        {/* Hero panel: always on the start side (left in LTR, right in RTL) */}
-        <AuthHeroPanel stage={stage} isAr={isAr} currentStep={currentStep} />
-        <div className="flex flex-1 items-center justify-center px-4 py-8 sm:px-6 lg:px-10">
-          <div className="w-full max-w-md space-y-5">
-            {children}
-          </div>
-        </div>
-      </main>
-      {showFooter && <Footer />}
-    </div>
-  );
-}
-
 export default function Auth() {
   const [searchParams] = useSearchParams();
-  const isResetMode = searchParams.get("tab") === "reset";
-  const [isSignUp, setIsSignUp] = useState(searchParams.get("tab") === "signup");
+  const location = useLocation();
+  const tab = searchParams.get("tab");
+  const isResetMode = tab === "reset" || location.pathname === "/reset-password";
+  const [isSignUp, setIsSignUp] = useState(
+    tab === "signup" || tab === "register" || location.pathname === "/register"
+  );
   const [signUpStep, setSignUpStep] = useState<SignUpStep>("contact");
   const [signUpMethod, setSignUpMethod] = useState<SignUpMethod>("phone");
 
@@ -389,7 +87,7 @@ export default function Auth() {
   const [errors, setErrors] = useState<Record<string, string>>({});
 
   const { user } = useAuth();
-  const { t, language } = useLanguage();
+  const { language } = useLanguage();
   const navigate = useNavigate();
   const { toast } = useToast();
   const isAr = language === "ar";
@@ -397,6 +95,12 @@ export default function Auth() {
   useEffect(() => {
     if (user && !isResetMode) navigate("/", { replace: true });
   }, [user, navigate, isResetMode]);
+
+  // Sync isSignUp with route
+  useEffect(() => {
+    if (location.pathname === "/register") setIsSignUp(true);
+    else if (location.pathname === "/login") setIsSignUp(false);
+  }, [location.pathname]);
 
   // Username availability check
   useEffect(() => {
@@ -511,7 +215,7 @@ export default function Auth() {
         title: isAr ? "تم تحديث كلمة المرور" : "Password Updated",
         description: isAr ? "يمكنك الآن تسجيل الدخول بكلمة المرور الجديدة" : "You can now sign in with your new password",
       });
-      navigate("/auth", { replace: true });
+      navigate("/login", { replace: true });
     }
   };
 
@@ -624,9 +328,22 @@ export default function Auth() {
     });
     setIsSignUp(false);
     setSignUpStep("contact");
+    navigate("/login", { replace: true });
   };
 
   const totalSteps = 4;
+
+  const stepIndex: Record<SignUpStep, number> = { contact: 0, verify: 1, details: 2, credentials: 3 };
+
+  // ── Helper: get hero stage ──
+  const getStage = () => {
+    if (isResetMode) return "reset" as const;
+    if (!isSignUp) return "login" as const;
+    if (signUpStep === "verify") return "verify" as const;
+    if (signUpStep === "details") return "details" as const;
+    if (signUpStep === "credentials") return "credentials" as const;
+    return "register" as const;
+  };
 
   // ── Password Reset Page ──
   if (isResetMode) {
@@ -661,7 +378,7 @@ export default function Auth() {
             </div>
 
             <Button className="w-full" size="lg" onClick={handleResetPassword} disabled={loading}>
-              {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+              {loading && <Loader2 className="me-2 h-4 w-4 animate-spin" />}
               {isAr ? "تعيين كلمة المرور الجديدة" : "Set New Password"}
             </Button>
           </div>
@@ -674,7 +391,7 @@ export default function Auth() {
   if (signUpStep === "verify" && isSignUp) {
     return (
       <AuthLayout stage="verify" isAr={isAr} currentStep={1}>
-        <SEOHead title="Verification" description="Verify your contact" />
+        <SEOHead title={isAr ? "التحقق" : "Verification"} description="Verify your contact" />
         <Card className="border-border/50 shadow-xl shadow-primary/5">
           <div className="p-5 md:p-6">
             <div className="mb-5 flex flex-col items-center text-center">
@@ -731,7 +448,7 @@ export default function Auth() {
   if (signUpStep === "details" && isSignUp) {
     return (
       <AuthLayout stage="details" isAr={isAr} currentStep={2}>
-        <SEOHead title="Your Details" description="Complete your details" />
+        <SEOHead title={isAr ? "المعلومات الشخصية" : "Your Details"} description="Complete your details" />
         <Card className="border-border/50 shadow-xl shadow-primary/5">
           <div className="p-5 md:p-6 space-y-5">
             <div className="flex flex-col items-center text-center">
@@ -790,7 +507,7 @@ export default function Auth() {
   if (signUpStep === "credentials" && isSignUp) {
     return (
       <AuthLayout stage="credentials" isAr={isAr} currentStep={3}>
-        <SEOHead title="Complete Registration" description="Set your password and username" />
+        <SEOHead title={isAr ? "إنشاء حسابك" : "Complete Registration"} description="Set your password and username" />
         <Card className="border-border/50 shadow-xl shadow-primary/5">
           <div className="p-5 md:p-6 space-y-5">
             <div className="flex flex-col items-center text-center">
@@ -872,7 +589,7 @@ export default function Auth() {
   if (!isSignUp && signInMethod === "phone" && signInPhoneStep === "otp") {
     return (
       <AuthLayout stage="verify" isAr={isAr}>
-        <SEOHead title="Verify Phone" description="Verify your phone to sign in" />
+        <SEOHead title={isAr ? "التحقق من الهاتف" : "Verify Phone"} description="Verify your phone to sign in" />
         <Card className="border-border/50 shadow-xl shadow-primary/5">
           <div className="p-5 md:p-6">
             <PhoneVerification
@@ -891,8 +608,8 @@ export default function Auth() {
   // ── Sign In: Phone password step ──
   if (!isSignUp && signInMethod === "phone" && signInPhoneStep === "password") {
     return (
-      <AuthLayout stage="signin" isAr={isAr}>
-        <SEOHead title="Sign In" description="Enter your password" />
+      <AuthLayout stage="login" isAr={isAr}>
+        <SEOHead title={isAr ? "تسجيل الدخول" : "Sign In"} description="Enter your password" />
         <Card className="border-border/50 shadow-xl shadow-primary/5">
           <div className="p-5 md:p-6 space-y-5">
             <div className="flex flex-col items-center text-center">
@@ -937,9 +654,9 @@ export default function Auth() {
 
   /* ── Main auth view (Sign In or Sign Up Step 1) ── */
   return (
-    <AuthLayout stage={isSignUp ? "signup" : "signin"} isAr={isAr} showFooter currentStep={isSignUp ? 0 : undefined}>
+    <AuthLayout stage={getStage()} isAr={isAr} showFooter currentStep={isSignUp ? 0 : undefined}>
       <SEOHead
-        title={isSignUp ? "Sign Up - Altohaa" : "Sign In - Altohaa"}
+        title={isSignUp ? (isAr ? "إنشاء حساب - Altohaa" : "Sign Up - Altohaa") : (isAr ? "تسجيل الدخول - Altohaa" : "Sign In - Altohaa")}
         description="Join the global culinary community. Sign in or create your free account on Altohaa."
       />
 
@@ -1177,7 +894,16 @@ export default function Auth() {
         <button
           type="button"
           className="font-medium text-primary underline-offset-2 hover:underline"
-          onClick={() => { setIsSignUp(!isSignUp); setErrors({}); setSignInPhoneStep("phone"); }}
+          onClick={() => {
+            if (isSignUp) {
+              navigate("/login", { replace: true });
+            } else {
+              navigate("/register", { replace: true });
+            }
+            setIsSignUp(!isSignUp);
+            setErrors({});
+            setSignInPhoneStep("phone");
+          }}
         >
           {isSignUp ? (isAr ? "تسجيل الدخول" : "Sign In") : (isAr ? "إنشاء حساب" : "Sign Up")}
         </button>
