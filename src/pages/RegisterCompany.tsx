@@ -114,7 +114,7 @@ export default function RegisterCompany() {
   const canProceed = (): boolean => {
     switch (currentStep) {
       case "company_info":
-        return !!(form.name && form.type && form.country_code);
+        return !!(form.name && form.type && form.country_code && form.registration_number);
       case "contact_details":
         return !!(form.email && form.phone && form.contact_name && form.contact_email);
       case "services":
@@ -380,8 +380,8 @@ export default function RegisterCompany() {
                       <Input value={form.website} onChange={(e) => updateForm("website", e.target.value)} placeholder="https://..." />
                     </div>
                     <div className="space-y-2">
-                      <Label>{isAr ? "رقم التسجيل" : "Registration Number"}</Label>
-                      <Input value={form.registration_number} onChange={(e) => updateForm("registration_number", e.target.value)} />
+                      <Label>{isAr ? "رقم السجل التجاري *" : "Commercial Registration Number *"}</Label>
+                      <Input value={form.registration_number} onChange={(e) => updateForm("registration_number", e.target.value)} placeholder={isAr ? "رقم السجل التجاري" : "Commercial registration number"} />
                     </div>
                   </div>
 

@@ -7,6 +7,7 @@ import { InputOTP, InputOTPGroup, InputOTPSlot } from "@/components/ui/input-otp
 import { useToast } from "@/hooks/use-toast";
 import { Phone, ArrowLeft, CheckCircle, Loader2, MessageSquare } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { normalizePhoneInput } from "@/lib/arabicNumerals";
 
 interface PhoneVerificationProps {
   onVerified: (phone: string) => void;
@@ -186,7 +187,7 @@ export function PhoneVerification({ onVerified, onBack, initialPhone = "", phone
               type="tel"
               placeholder="+966 5XX XXX XXXX"
               value={phone}
-              onChange={(e) => setPhone(e.target.value)}
+              onChange={(e) => setPhone(normalizePhoneInput(e.target.value))}
               className={cn(error && "border-destructive")}
               dir="ltr"
             />
