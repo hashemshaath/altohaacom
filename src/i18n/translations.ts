@@ -334,7 +334,7 @@ export const translations = {
 
     // Auth
     signInTitle: "مرحباً بعودتك",
-    signUpTitle: "انضم إلى ألتوها",
+    signUpTitle: "انضم إلى الطهاة",
     email: "البريد الإلكتروني",
     password: "كلمة المرور",
     fullName: "الاسم الكامل",
@@ -371,7 +371,7 @@ export const translations = {
     professional: "محترف",
     profileCompleted: "اكتمل الملف الشخصي",
     completeProfile: "أكمل ملفك الشخصي",
-    completeProfileDesc: "أخبرنا المزيد عن نفسك للاستفادة القصوى من ألتوها.",
+    completeProfileDesc: "أخبرنا المزيد عن نفسك للاستفادة القصوى من الطهاة.",
 
     // Community
     feed: "الخلاصة",
