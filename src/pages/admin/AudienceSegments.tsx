@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { SegmentBroadcastDialog } from "@/components/crm/SegmentBroadcastDialog";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/i18n/LanguageContext";
@@ -81,6 +82,7 @@ export default function AudienceSegments() {
   const isAr = language === "ar";
 
   const [isCreateOpen, setIsCreateOpen] = useState(false);
+  const [broadcastSegment, setBroadcastSegment] = useState<Segment | null>(null);
   const [name, setName] = useState("");
   const [nameAr, setNameAr] = useState("");
   const [description, setDescription] = useState("");
@@ -418,7 +420,7 @@ export default function AudienceSegments() {
                     <span className="text-[10px] text-muted-foreground">
                       {format(new Date(segment.created_at), "MMM d, yyyy")}
                     </span>
-                    <Button variant="outline" size="sm" className="gap-1 h-7 text-xs">
+                    <Button variant="outline" size="sm" className="gap-1 h-7 text-xs" onClick={() => setBroadcastSegment(segment)}>
                       <Send className="h-3 w-3" />
                       {isAr ? "إرسال إشعار" : "Send Notification"}
                     </Button>
@@ -428,6 +430,18 @@ export default function AudienceSegments() {
             );
           })}
         </div>
+      )}
+
+      {/* Broadcast Dialog */}
+      {broadcastSegment && (
+        <SegmentBroadcastDialog
+          open={!!broadcastSegment}
+          onOpenChange={(open) => !open && setBroadcastSegment(null)}
+          segmentName={isAr && broadcastSegment.name_ar ? broadcastSegment.name_ar : broadcastSegment.name}
+          segmentId={broadcastSegment.id}
+          estimatedReach={broadcastSegment.estimated_reach}
+          filters={broadcastSegment.filters}
+        />
       )}
     </div>
   );
