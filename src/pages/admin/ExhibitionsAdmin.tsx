@@ -16,9 +16,12 @@ import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { toast } from "@/hooks/use-toast";
-import { Plus, Pencil, Trash2, Eye, Landmark, Calendar, MapPin, Building, Ticket, Tag, Globe, Save, X, Loader2, Search, Trophy, GraduationCap, Mic } from "lucide-react";
+import { Plus, Pencil, Trash2, Eye, Landmark, Calendar, MapPin, Building, Ticket, Tag, Globe, Save, X, Loader2, Search, Trophy, GraduationCap, Mic, Image, Users, FileText, Bot } from "lucide-react";
 import { AITextOptimizer } from "@/components/admin/AITextOptimizer";
 import { OrganizerSearchSelector, type OrganizerValue } from "@/components/admin/OrganizerSearchSelector";
+import { ExhibitionMediaUploader } from "@/components/admin/ExhibitionMediaUploader";
+import { ExhibitionOfficialsPanel } from "@/components/admin/ExhibitionOfficialsPanel";
+import { ExhibitionDocumentsPanel } from "@/components/admin/ExhibitionDocumentsPanel";
 import { format } from "date-fns";
 import { Link, useNavigate } from "react-router-dom";
 import type { Database } from "@/integrations/supabase/types";
@@ -323,7 +326,7 @@ export default function ExhibitionsAdmin() {
                   <Input value={form.slug || ""} onChange={e => updateField("slug", e.target.value)} placeholder={t("auto-generated-from-title", "يُنشأ تلقائياً من العنوان")} className="font-mono text-xs" />
                 </div>
                 <div>
-                  <Label>{t("Cover Image URL", "رابط صورة الغلاف")}</Label>
+                  <Label>{t("Cover Image URL (or use Media Library below)", "رابط صورة الغلاف (أو استخدم مكتبة الوسائط أدناه)")}</Label>
                   <Input value={form.cover_image_url || ""} onChange={e => updateField("cover_image_url", e.target.value)} placeholder="https://example.com/image.jpg" />
                 </div>
               </div>
@@ -586,6 +589,46 @@ export default function ExhibitionsAdmin() {
                 <Switch checked={form.is_featured || false} onCheckedChange={v => updateField("is_featured", v)} />
                 <Label>{t("Featured Event", "فعالية مميزة")}</Label>
               </div>
+            </div>
+
+            <Separator />
+
+            {/* Section: Media Library */}
+            <div>
+              <SectionHeader icon={Image} title={t("Media Library", "مكتبة الوسائط")} />
+              <p className="text-xs text-muted-foreground mb-3">
+                {t("Upload logos, cover images, and gallery photos for this exhibition.", "ارفع الشعارات وصور الغلاف ومعرض الصور لهذه الفعالية.")}
+              </p>
+              <ExhibitionMediaUploader
+                exhibitionId={editingId || ""}
+                coverImageUrl={form.cover_image_url || undefined}
+                onCoverChange={url => updateField("cover_image_url", url)}
+              />
+            </div>
+
+            <Separator />
+
+            {/* Section: Officials & Team */}
+            <div>
+              <SectionHeader icon={Users} title={t("Officials & Team", "المسؤولون وفريق العمل")} />
+              <p className="text-xs text-muted-foreground mb-3">
+                {t("Add event officials, their roles, and contact details.", "أضف مسؤولي الفعالية وأدوارهم وبيانات الاتصال.")}
+              </p>
+              <ExhibitionOfficialsPanel exhibitionId={editingId || ""} />
+            </div>
+
+            <Separator />
+
+            {/* Section: Documents & AI Knowledge */}
+            <div>
+              <SectionHeader icon={FileText} title={t("Documents & AI Knowledge Base", "المستندات وقاعدة معارف الذكاء الاصطناعي")} />
+              <p className="text-xs text-muted-foreground mb-3">
+                {t(
+                  "Upload rules, guidelines, and reference files. Mark files as 'Feed to AI' to enable the AI support center to answer exhibition questions.",
+                  "ارفع القواعد والإرشادات والملفات المرجعية. حدد الملفات لـ 'تغذية الذكاء الاصطناعي' لتمكين مركز الدعم من الإجابة على أسئلة المعرض."
+                )}
+              </p>
+              <ExhibitionDocumentsPanel exhibitionId={editingId || ""} />
             </div>
 
             {/* Actions */}
