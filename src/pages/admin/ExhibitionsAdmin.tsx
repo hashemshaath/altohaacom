@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { BulkImportPanel } from "@/components/admin/BulkImportPanel";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useLanguage } from "@/i18n/LanguageContext";
@@ -16,7 +17,7 @@ import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { toast } from "@/hooks/use-toast";
-import { Plus, Pencil, Trash2, Eye, Landmark, Calendar, MapPin, Building, Ticket, Tag, Globe, Save, X, Loader2, Search, Trophy, GraduationCap, Mic, Image, Users, FileText, Bot, Copy } from "lucide-react";
+import { Plus, Pencil, Trash2, Eye, Landmark, Calendar, MapPin, Building, Ticket, Tag, Globe, Save, X, Loader2, Search, Trophy, GraduationCap, Mic, Image, Users, FileText, Bot, Copy, FileSpreadsheet } from "lucide-react";
 import { AITextOptimizer } from "@/components/admin/AITextOptimizer";
 import { OrganizerSearchSelector, type OrganizerValue } from "@/components/admin/OrganizerSearchSelector";
 import { ExhibitionMediaUploader } from "@/components/admin/ExhibitionMediaUploader";
@@ -77,6 +78,7 @@ export default function ExhibitionsAdmin() {
   const queryClient = useQueryClient();
   const isAr = language === "ar";
   const [showForm, setShowForm] = useState(false);
+  const [showBulkImport, setShowBulkImport] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [form, setForm] = useState<Partial<ExhibitionInsert>>(emptyForm);
   const [tagsInput, setTagsInput] = useState("");
@@ -309,9 +311,15 @@ export default function ExhibitionsAdmin() {
             </p>
           </div>
         </div>
-        <Button onClick={() => { resetForm(); setShowForm(!showForm); }} size="sm">
-          {showForm ? <><X className="me-2 h-4 w-4" />{t("Close", "إغلاق")}</> : <><Plus className="me-2 h-4 w-4" />{t("Add Event", "إضافة فعالية")}</>}
-        </Button>
+        <div className="flex gap-2">
+          <Button variant="outline" size="sm" onClick={() => { setShowBulkImport(!showBulkImport); if (showForm) setShowForm(false); }}>
+            <FileSpreadsheet className="me-2 h-4 w-4" />
+            {t("Bulk Import", "استيراد جماعي")}
+          </Button>
+          <Button onClick={() => { resetForm(); setShowForm(!showForm); if (showBulkImport) setShowBulkImport(false); }} size="sm">
+            {showForm ? <><X className="me-2 h-4 w-4" />{t("Close", "إغلاق")}</> : <><Plus className="me-2 h-4 w-4" />{t("Add Event", "إضافة فعالية")}</>}
+          </Button>
+        </div>
       </div>
 
       {/* Quick Stats */}
@@ -331,6 +339,11 @@ export default function ExhibitionsAdmin() {
             </Card>
           ))}
         </div>
+      )}
+
+      {/* Bulk Import */}
+      {showBulkImport && (
+        <BulkImportPanel entityType="exhibition" onImportComplete={() => { setShowBulkImport(false); queryClient.invalidateQueries({ queryKey: ["admin-exhibitions"] }); }} />
       )}
 
       {/* Inline Form */}

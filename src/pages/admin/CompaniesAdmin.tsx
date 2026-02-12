@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { BulkImportPanel } from "@/components/admin/BulkImportPanel";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -25,7 +26,7 @@ import {
   Building2, Users, Package, FileText, Send, Search, Plus, Edit, Trash2, Eye,
   CheckCircle, XCircle, Clock, MapPin, Phone, Mail, Globe, ChevronLeft, Save, X,
   Truck, DollarSign, Star, Image, CalendarCheck, MessageSquare, UserPlus, Building,
-  Upload, FolderOpen, FileImage, File, Sparkles,
+  Upload, FolderOpen, FileImage, File, Sparkles, FileSpreadsheet,
 } from "lucide-react";
 import { format } from "date-fns";
 
@@ -90,6 +91,7 @@ export default function CompaniesAdmin() {
   const [typeFilter, setTypeFilter] = useState<string>("all");
   const [statusFilter, setStatusFilter] = useState<string>("all");
   const [showCompanyForm, setShowCompanyForm] = useState(false);
+  const [showBulkImport, setShowBulkImport] = useState(false);
   const [selectedCompany, setSelectedCompany] = useState<string | null>(null);
   const [companyDetailTab, setCompanyDetailTab] = useState("overview");
 
@@ -1509,6 +1511,17 @@ export default function CompaniesAdmin() {
         <Card><CardContent className="pt-4"><div className="text-center"><p className="text-2xl font-bold text-chart-3">{stats.sponsors}</p><p className="text-sm text-muted-foreground">{isAr ? "رعاة" : "Sponsors"}</p></div></CardContent></Card>
         <Card><CardContent className="pt-4"><div className="text-center"><p className="text-2xl font-bold text-primary">{stats.suppliers}</p><p className="text-sm text-muted-foreground">{isAr ? "موردين" : "Suppliers"}</p></div></CardContent></Card>
       </div>
+
+      {/* Bulk Import */}
+      <div className="flex gap-2">
+        <Button variant={showBulkImport ? "secondary" : "outline"} size="sm" onClick={() => setShowBulkImport(!showBulkImport)}>
+          <FileSpreadsheet className="me-2 h-4 w-4" />
+          {isAr ? "استيراد جماعي" : "Bulk Import"}
+        </Button>
+      </div>
+      {showBulkImport && (
+        <BulkImportPanel entityType="company" onImportComplete={() => { setShowBulkImport(false); queryClient.invalidateQueries({ queryKey: ["companies"] }); }} />
+      )}
 
       {showCompanyForm ? (
         <Card>
