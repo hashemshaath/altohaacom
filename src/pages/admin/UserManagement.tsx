@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useCallback } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Link } from "react-router-dom";
 import { useLanguage } from "@/i18n/LanguageContext";
@@ -14,52 +14,17 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Textarea } from "@/components/ui/textarea";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { CountrySelector } from "@/components/auth/CountrySelector";
 import { useToast } from "@/hooks/use-toast";
+import { useApprovedSpecialties, useUserSpecialties } from "@/hooks/useSpecialties";
+import { useFollowStats } from "@/hooks/useFollow";
 import {
-  Search,
-  UserX,
-  UserCheck,
-  Eye,
-  Edit,
-  ChevronRight,
-  ChevronLeft,
-  X,
-  Save,
-  UserPlus,
-  KeyRound,
-  Mail,
-  Loader2,
-  Upload,
-  Image as ImageIcon,
-  Users,
-  Plus,
-  Trash2,
-  Camera,
-  CheckCircle2,
+  Search, UserX, UserCheck, Eye, Edit, ChevronRight, ChevronLeft, X, Save,
+  UserPlus, KeyRound, Mail, Loader2, Upload, Image as ImageIcon, Users, Plus,
+  Trash2, Camera, CheckCircle2, AlertCircle,
 } from "lucide-react";
 import { format } from "date-fns";
 import type { Database } from "@/integrations/supabase/types";
@@ -74,6 +39,7 @@ interface UserProfile {
   id: string;
   user_id: string;
   full_name: string | null;
+  display_name: string | null;
   username: string | null;
   account_number: string | null;
   account_status: AccountStatus | null;
@@ -82,6 +48,8 @@ interface UserProfile {
   cover_image_url?: string | null;
   created_at: string;
   location: string | null;
+  country_code: string | null;
+  city: string | null;
   specialization: string | null;
   is_verified: boolean | null;
   email: string | null;
@@ -110,13 +78,19 @@ export default function UserManagement() {
   const [editStatus, setEditStatus] = useState<AccountStatus>("active");
   const [editVerified, setEditVerified] = useState(false);
   const [editFullName, setEditFullName] = useState("");
+  const [editDisplayName, setEditDisplayName] = useState("");
   const [editUsername, setEditUsername] = useState("");
   const [editEmail, setEditEmail] = useState("");
   const [editPhone, setEditPhone] = useState("");
   const [editBio, setEditBio] = useState("");
-  const [editLocation, setEditLocation] = useState("");
+  const [editCountryCode, setEditCountryCode] = useState("");
+  const [editCity, setEditCity] = useState("");
   const [editSpecialization, setEditSpecialization] = useState("");
   const [editTab, setEditTab] = useState("profile");
+
+  // Validation state
+  const [usernameError, setUsernameError] = useState("");
+  const [usernameChecking, setUsernameChecking] = useState(false);
 
   // Create user dialog
   const [createOpen, setCreateOpen] = useState(false);
@@ -154,7 +128,7 @@ export default function UserManagement() {
     queryFn: async () => {
       let query = supabase
         .from("profiles")
-        .select(`id, user_id, full_name, username, account_number, account_status, membership_tier, avatar_url, created_at, location, specialization, is_verified, email, phone, bio, cover_image_url`, { count: "exact" })
+        .select(`id, user_id, full_name, display_name, username, account_number, account_status, membership_tier, avatar_url, created_at, location, country_code, city, specialization, is_verified, email, phone, bio, cover_image_url`, { count: "exact" })
         .order("created_at", { ascending: false })
         .range(page * pageSize, (page + 1) * pageSize - 1);
 
@@ -203,6 +177,10 @@ export default function UserManagement() {
     enabled: !!editingUserId,
   });
 
+  const { data: approvedSpecialties = [] } = useApprovedSpecialties();
+  const { data: editUserSpecialties = [], refetch: refetchUserSpecialties } = useUserSpecialties(editingUserId || undefined);
+  const { data: editFollowStats } = useFollowStats(editingUserId || undefined);
+
   const filteredUsers = usersData?.users?.filter((u) => {
     if (roleFilter === "all") return true;
     return u.roles?.some((r) => r.role === roleFilter);
@@ -210,6 +188,36 @@ export default function UserManagement() {
 
   const totalPages = Math.ceil((usersData?.totalCount || 0) / pageSize);
   const editingUser = filteredUsers?.find((u) => u.user_id === editingUserId);
+
+  // ── Username validation ──────────────────────────
+
+  const validateUsername = useCallback(async (username: string) => {
+    if (!username || username.length < 3) {
+      setUsernameError(isAr ? "اسم المستخدم يجب أن يكون 3 أحرف على الأقل" : "Username must be at least 3 characters");
+      return false;
+    }
+    if (!/^[a-zA-Z][a-zA-Z0-9_]{2,29}$/.test(username)) {
+      setUsernameError(isAr ? "يجب أن يبدأ بحرف ويحتوي على أحرف وأرقام و _ فقط" : "Must start with letter, only letters, numbers and _");
+      return false;
+    }
+    setUsernameChecking(true);
+    try {
+      const { data } = await supabase
+        .from("profiles")
+        .select("user_id")
+        .eq("username", username.toLowerCase())
+        .neq("user_id", editingUserId || "")
+        .maybeSingle();
+      if (data) {
+        setUsernameError(isAr ? "اسم المستخدم مأخوذ بالفعل" : "Username is already taken");
+        return false;
+      }
+      setUsernameError("");
+      return true;
+    } finally {
+      setUsernameChecking(false);
+    }
+  }, [editingUserId, isAr]);
 
   // ── Edge function caller ──────────────────────────
 
@@ -230,19 +238,32 @@ export default function UserManagement() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["adminUsers"] });
-      toast({ title: isAr ? "تم تحديث الملف الشخصي" : "Profile updated" });
+      toast({ title: isAr ? "تم تحديث الملف الشخصي بنجاح" : "Profile updated successfully" });
     },
-    onError: (e) => toast({ variant: "destructive", title: isAr ? "خطأ" : "Error", description: e.message }),
+    onError: (e) => toast({ variant: "destructive", title: isAr ? "خطأ في التحديث" : "Update Error", description: e.message }),
   });
 
   const updateRolesMutation = useMutation({
     mutationFn: async ({ userId, roles }: { userId: string; roles: AppRole[] }) => {
-      const { error: deleteError } = await supabase.from("user_roles").delete().eq("user_id", userId);
-      if (deleteError) throw deleteError;
-      if (roles.length > 0) {
-        const { error: insertError } = await supabase.from("user_roles").insert(roles.map((role) => ({ user_id: userId, role })));
-        if (insertError) throw insertError;
+      // Fetch existing roles to avoid duplicates
+      const { data: existingRoles } = await supabase.from("user_roles").select("role").eq("user_id", userId);
+      const existingSet = new Set(existingRoles?.map((r) => r.role) || []);
+      const newSet = new Set(roles);
+
+      // Delete removed roles
+      const toDelete = [...existingSet].filter((r) => !newSet.has(r as AppRole));
+      if (toDelete.length > 0) {
+        const { error } = await supabase.from("user_roles").delete().eq("user_id", userId).in("role", toDelete);
+        if (error) throw error;
       }
+
+      // Insert new roles
+      const toInsert = [...newSet].filter((r) => !existingSet.has(r));
+      if (toInsert.length > 0) {
+        const { error } = await supabase.from("user_roles").insert(toInsert.map((role) => ({ user_id: userId, role })));
+        if (error) throw error;
+      }
+
       await supabase.from("admin_actions").insert([{ admin_id: user!.id, target_user_id: userId, action_type: "update_roles", details: { roles } }]);
     },
     onSuccess: () => {
@@ -276,7 +297,7 @@ export default function UserManagement() {
     mutationFn: async () => callAdminFn({ action: "create_user", email: newEmail, password: newPassword, full_name: newFullName, username: newUsername, phone: newPhone, role: newRole }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["adminUsers"] });
-      toast({ title: isAr ? "تم إنشاء المستخدم" : "User created successfully" });
+      toast({ title: isAr ? "تم إنشاء المستخدم بنجاح" : "User created successfully" });
       setCreateOpen(false);
       setNewEmail(""); setNewPassword(""); setNewFullName(""); setNewUsername(""); setNewPhone("");
     },
@@ -306,11 +327,7 @@ export default function UserManagement() {
   const createGroupMutation = useMutation({
     mutationFn: async () => {
       const { error } = await supabase.from("customer_groups").insert({
-        name: newGroupName,
-        name_ar: newGroupNameAr || null,
-        color: newGroupColor,
-        is_active: true,
-        created_by: user!.id,
+        name: newGroupName, name_ar: newGroupNameAr || null, color: newGroupColor, is_active: true, created_by: user!.id,
       });
       if (error) throw error;
     },
@@ -318,8 +335,7 @@ export default function UserManagement() {
       queryClient.invalidateQueries({ queryKey: ["customerGroups"] });
       toast({ title: isAr ? "تم إنشاء المجموعة" : "Group created" });
       setCreateGroupOpen(false);
-      setNewGroupName("");
-      setNewGroupNameAr("");
+      setNewGroupName(""); setNewGroupNameAr("");
     },
     onError: (e) => toast({ variant: "destructive", title: isAr ? "خطأ" : "Error", description: e.message }),
   });
@@ -327,11 +343,7 @@ export default function UserManagement() {
   const addToGroupMutation = useMutation({
     mutationFn: async (groupId: string) => {
       if (!editingUserId) throw new Error("No user selected");
-      const { error } = await supabase.from("customer_group_members").insert({
-        group_id: groupId,
-        user_id: editingUserId,
-        added_by: user!.id,
-      });
+      const { error } = await supabase.from("customer_group_members").insert({ group_id: groupId, user_id: editingUserId, added_by: user!.id });
       if (error) throw error;
     },
     onSuccess: () => {
@@ -353,6 +365,31 @@ export default function UserManagement() {
     onError: (e) => toast({ variant: "destructive", title: isAr ? "خطأ" : "Error", description: e.message }),
   });
 
+  const addSpecialtyMutation = useMutation({
+    mutationFn: async (specialtyId: string) => {
+      if (!editingUserId) throw new Error("No user");
+      const { error } = await supabase.from("user_specialties").insert({ user_id: editingUserId, specialty_id: specialtyId });
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      refetchUserSpecialties();
+      toast({ title: isAr ? "تمت إضافة التخصص" : "Specialty added" });
+    },
+    onError: (e) => toast({ variant: "destructive", title: isAr ? "خطأ" : "Error", description: e.message }),
+  });
+
+  const removeSpecialtyMutation = useMutation({
+    mutationFn: async (id: string) => {
+      const { error } = await supabase.from("user_specialties").delete().eq("id", id);
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      refetchUserSpecialties();
+      toast({ title: isAr ? "تمت إزالة التخصص" : "Specialty removed" });
+    },
+    onError: (e) => toast({ variant: "destructive", title: isAr ? "خطأ" : "Error", description: e.message }),
+  });
+
   const uploadMediaMutation = useMutation({
     mutationFn: async ({ file, type }: { file: File; type: "avatar" | "cover" }) => {
       if (!editingUserId) throw new Error("No user selected");
@@ -368,7 +405,7 @@ export default function UserManagement() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["adminUsers"] });
-      toast({ title: isAr ? "تم رفع الصورة" : "Image uploaded successfully" });
+      toast({ title: isAr ? "تم رفع الصورة بنجاح" : "Image uploaded successfully" });
     },
     onError: (e) => toast({ variant: "destructive", title: isAr ? "خطأ" : "Error", description: e.message }),
   });
@@ -382,25 +419,38 @@ export default function UserManagement() {
     setEditStatus(profile.account_status || "pending");
     setEditVerified(profile.is_verified || false);
     setEditFullName(profile.full_name || "");
+    setEditDisplayName((profile as any).display_name || "");
     setEditUsername(profile.username || "");
     setEditEmail(profile.email || "");
     setEditPhone(profile.phone || "");
     setEditBio(profile.bio || "");
-    setEditLocation(profile.location || "");
+    setEditCountryCode(profile.country_code || "");
+    setEditCity((profile as any).city || "");
     setEditSpecialization(profile.specialization || "");
     setEditTab("profile");
+    setUsernameError("");
   };
 
   const handleSaveEdit = async () => {
     if (!editingUserId) return;
+
+    // Validate username before saving
+    if (editUsername) {
+      const valid = await validateUsername(editUsername);
+      if (!valid) return;
+    }
+
     await updateProfileMutation.mutateAsync({
       userId: editingUserId,
       updates: {
         full_name: editFullName || null,
-        username: editUsername || null,
+        display_name: editDisplayName || null,
+        username: editUsername?.toLowerCase() || null,
         phone: editPhone || null,
         bio: editBio || null,
-        location: editLocation || null,
+        country_code: editCountryCode || null,
+        city: editCity || null,
+        location: editCountryCode ? null : null, // Clear legacy location
         specialization: editSpecialization || null,
         membership_tier: editMembership,
         account_status: editStatus,
@@ -425,18 +475,14 @@ export default function UserManagement() {
     uploadMediaMutation.mutate({ file, type });
   };
 
-  const getStatusConfig = (status: AccountStatus | null) => {
-    const config: Record<AccountStatus, { variant: "default" | "secondary" | "destructive" | "outline"; label: string; labelAr: string; icon: typeof CheckCircle2 }> = {
-      active: { variant: "default", label: "Active", labelAr: "نشط", icon: CheckCircle2 },
-      pending: { variant: "secondary", label: "Pending", labelAr: "معلق", icon: Loader2 },
-      suspended: { variant: "destructive", label: "Suspended", labelAr: "موقوف", icon: UserX },
-      banned: { variant: "destructive", label: "Banned", labelAr: "محظور", icon: X },
-    };
-    return config[status || "pending"];
-  };
-
   const getStatusBadge = (status: AccountStatus | null) => {
-    const cfg = getStatusConfig(status);
+    const config: Record<AccountStatus, { variant: "default" | "secondary" | "destructive" | "outline"; label: string; labelAr: string }> = {
+      active: { variant: "default", label: "Active", labelAr: "نشط" },
+      pending: { variant: "secondary", label: "Pending", labelAr: "معلق" },
+      suspended: { variant: "destructive", label: "Suspended", labelAr: "موقوف" },
+      banned: { variant: "destructive", label: "Banned", labelAr: "محظور" },
+    };
+    const cfg = config[status || "pending"];
     return <Badge variant={cfg.variant}>{isAr ? cfg.labelAr : cfg.label}</Badge>;
   };
 
@@ -455,6 +501,8 @@ export default function UserManagement() {
 
   const memberGroupIds = new Set(userGroupMemberships.map((m: any) => m.group_id));
   const availableGroups = groups.filter((g: any) => !memberGroupIds.has(g.id));
+  const editUserSpecialtyIds = new Set(editUserSpecialties.map((us: any) => us.specialty_id));
+  const availableSpecialties = approvedSpecialties.filter((s) => !editUserSpecialtyIds.has(s.id));
 
   const isSaving = updateProfileMutation.isPending || updateRolesMutation.isPending;
 
@@ -463,9 +511,9 @@ export default function UserManagement() {
       {/* Header */}
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h1 className="font-serif text-2xl font-bold">{t("userManagement")}</h1>
+          <h1 className="font-serif text-2xl font-bold">{isAr ? "إدارة المستخدمين" : "User Management"}</h1>
           <p className="text-sm text-muted-foreground">
-            {isAr ? "تحكم كامل بإدارة المستخدمين والحسابات والمجموعات والوسائط" : "Full control over users, accounts, groups, and media"}
+            {isAr ? "تحكم كامل بإدارة الحسابات والأدوار والمجموعات والتخصصات" : "Manage accounts, roles, groups, specialties and media"}
           </p>
         </div>
         <div className="flex flex-wrap items-center gap-2">
@@ -538,8 +586,8 @@ export default function UserManagement() {
           </DialogTrigger>
           <DialogContent className="max-w-md">
             <DialogHeader>
-              <DialogTitle>{isAr ? "إرسال دعوة" : "Send Invitation"}</DialogTitle>
-              <DialogDescription>{isAr ? "أرسل دعوة عبر البريد الإلكتروني لتفعيل الحساب" : "Send an email invitation to activate account"}</DialogDescription>
+              <DialogTitle>{isAr ? "إرسال دعوة بالبريد الإلكتروني" : "Send Email Invitation"}</DialogTitle>
+              <DialogDescription>{isAr ? "أرسل دعوة للمستخدم لتفعيل حسابه وتعيين كلمة مرور جديدة" : "Invite user to activate their account and set a new password"}</DialogDescription>
             </DialogHeader>
             <div className="space-y-4">
               <div className="space-y-2">
@@ -594,7 +642,7 @@ export default function UserManagement() {
             />
           </div>
           <Select value={roleFilter} onValueChange={setRoleFilter}>
-            <SelectTrigger className="w-40"><SelectValue placeholder={t("filterByRole")} /></SelectTrigger>
+            <SelectTrigger className="w-40"><SelectValue placeholder={isAr ? "تصفية حسب الدور" : "Filter by role"} /></SelectTrigger>
             <SelectContent>
               <SelectItem value="all">{t("allUsers")}</SelectItem>
               {ALL_ROLES.map((role) => (
@@ -603,7 +651,7 @@ export default function UserManagement() {
             </SelectContent>
           </Select>
           <Select value={statusFilter} onValueChange={setStatusFilter}>
-            <SelectTrigger className="w-40"><SelectValue placeholder={t("filterByStatus")} /></SelectTrigger>
+            <SelectTrigger className="w-40"><SelectValue placeholder={isAr ? "تصفية حسب الحالة" : "Filter by status"} /></SelectTrigger>
             <SelectContent>
               <SelectItem value="all">{t("allUsers")}</SelectItem>
               <SelectItem value="active">{isAr ? "نشط" : "Active"}</SelectItem>
@@ -627,12 +675,18 @@ export default function UserManagement() {
                 </Avatar>
                 <div>
                   <CardTitle className="text-lg flex items-center gap-2">
-                    {editingUser.full_name || "Unknown"}
+                    {(editingUser as any).display_name || editingUser.full_name || "Unknown"}
                     {getStatusBadge(editingUser.account_status)}
                   </CardTitle>
                   <p className="text-sm text-muted-foreground">
                     <span className="font-mono">{editingUser.account_number}</span> · @{editingUser.username} · {editingUser.email}
                   </p>
+                  {editFollowStats && (
+                    <p className="text-xs text-muted-foreground mt-0.5">
+                      <Users className="inline h-3 w-3 me-1" />
+                      {editFollowStats.followers} {isAr ? "متابع" : "followers"} · {editFollowStats.following} {isAr ? "يتابع" : "following"}
+                    </p>
+                  )}
                 </div>
               </div>
               <Button variant="ghost" size="icon" onClick={() => setEditingUserId(null)}>
@@ -657,30 +711,84 @@ export default function UserManagement() {
                     <Input value={editFullName} onChange={(e) => setEditFullName(e.target.value)} />
                   </div>
                   <div className="space-y-2">
+                    <Label>{isAr ? "الاسم المعروض" : "Display Name"}</Label>
+                    <Input value={editDisplayName} onChange={(e) => setEditDisplayName(e.target.value)} placeholder={isAr ? "كما يظهر في الملف الشخصي" : "As shown on profile"} />
+                    <p className="text-[10px] text-muted-foreground">{isAr ? "يظهر بدلاً من الاسم الكامل في الملف العام" : "Shown instead of full name on public profile"}</p>
+                  </div>
+                  <div className="space-y-2">
                     <Label>{isAr ? "اسم المستخدم" : "Username"}</Label>
-                    <Input value={editUsername} onChange={(e) => setEditUsername(e.target.value)} dir="ltr" />
+                    <div className="relative">
+                      <Input
+                        value={editUsername}
+                        onChange={(e) => { setEditUsername(e.target.value); setUsernameError(""); }}
+                        onBlur={() => editUsername && validateUsername(editUsername)}
+                        dir="ltr"
+                        className={usernameError ? "border-destructive" : ""}
+                      />
+                      {usernameChecking && <Loader2 className="absolute end-3 top-1/2 -translate-y-1/2 h-4 w-4 animate-spin text-muted-foreground" />}
+                    </div>
+                    {usernameError && (
+                      <p className="text-xs text-destructive flex items-center gap-1">
+                        <AlertCircle className="h-3 w-3" />{usernameError}
+                      </p>
+                    )}
                   </div>
                   <div className="space-y-2">
                     <Label>{isAr ? "البريد الإلكتروني" : "Email"}</Label>
                     <Input value={editEmail} disabled dir="ltr" className="opacity-60" />
-                    <p className="text-xs text-muted-foreground">{isAr ? "لا يمكن تعديل البريد من هنا" : "Email cannot be changed here"}</p>
+                    <p className="text-[10px] text-muted-foreground">{isAr ? "لا يمكن تعديل البريد من هنا" : "Email cannot be changed here"}</p>
                   </div>
                   <div className="space-y-2">
                     <Label>{isAr ? "رقم الهاتف" : "Phone"}</Label>
                     <Input value={editPhone} onChange={(e) => setEditPhone(e.target.value)} dir="ltr" />
                   </div>
-                  <div className="space-y-2">
-                    <Label>{isAr ? "الموقع" : "Location"}</Label>
-                    <Input value={editLocation} onChange={(e) => setEditLocation(e.target.value)} />
-                  </div>
-                  <div className="space-y-2">
-                    <Label>{isAr ? "التخصص" : "Specialization"}</Label>
-                    <Input value={editSpecialization} onChange={(e) => setEditSpecialization(e.target.value)} />
+                </div>
+
+                {/* Country & City */}
+                <div className="grid gap-4 md:grid-cols-2">
+                  <CountrySelector
+                    value={editCountryCode}
+                    onChange={(code) => setEditCountryCode(code)}
+                    label={isAr ? "الدولة" : "Country"}
+                  />
+                  <div className="space-y-1.5">
+                    <Label className="text-xs">{isAr ? "المدينة" : "City"}</Label>
+                    <Input value={editCity} onChange={(e) => setEditCity(e.target.value)} placeholder={isAr ? "أدخل المدينة" : "Enter city"} />
                   </div>
                 </div>
+
+                {/* Specialties */}
+                <div className="space-y-2">
+                  <Label>{isAr ? "التخصصات" : "Specialties"}</Label>
+                  {editUserSpecialties.length > 0 && (
+                    <div className="flex flex-wrap gap-1.5 mb-2">
+                      {editUserSpecialties.map((us: any) => (
+                        <Badge key={us.id} variant="secondary" className="gap-1">
+                          {isAr ? us.specialties?.name_ar || us.specialties?.name : us.specialties?.name}
+                          <button onClick={() => removeSpecialtyMutation.mutate(us.id)} className="hover:text-destructive">
+                            <X className="h-3 w-3" />
+                          </button>
+                        </Badge>
+                      ))}
+                    </div>
+                  )}
+                  {availableSpecialties.length > 0 && (
+                    <Select onValueChange={(id) => addSpecialtyMutation.mutate(id)}>
+                      <SelectTrigger><SelectValue placeholder={isAr ? "إضافة تخصص..." : "Add specialty..."} /></SelectTrigger>
+                      <SelectContent>
+                        {availableSpecialties.map((s) => (
+                          <SelectItem key={s.id} value={s.id}>{isAr ? s.name_ar || s.name : s.name}</SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  )}
+                </div>
+
+                {/* Bio */}
                 <div className="space-y-2">
                   <Label>{isAr ? "نبذة تعريفية" : "Bio"}</Label>
-                  <Textarea value={editBio} onChange={(e) => setEditBio(e.target.value)} rows={3} />
+                  <Textarea value={editBio} onChange={(e) => setEditBio(e.target.value)} rows={3} placeholder={isAr ? "نبذة مختصرة عن المستخدم وخبراته المهنية" : "A brief summary of the user's professional background and expertise"} />
+                  <p className="text-[10px] text-muted-foreground">{isAr ? "يُعرض في الملف الشخصي العام ونتائج البحث" : "Displayed on public profile and search results"}</p>
                 </div>
               </TabsContent>
 
@@ -733,7 +841,7 @@ export default function UserManagement() {
                   </Button>
                   {editingUser.email && (
                     <Button variant="outline" size="sm" onClick={() => { setInviteEmail(editingUser.email || ""); setInviteOpen(true); }}>
-                      <Mail className="me-2 h-4 w-4" />{isAr ? "إرسال دعوة" : "Send Invitation"}
+                      <Mail className="me-2 h-4 w-4" />{isAr ? "إرسال دعوة تفعيل" : "Send Activation"}
                     </Button>
                   )}
                 </div>
@@ -821,7 +929,6 @@ export default function UserManagement() {
                 <input ref={avatarInputRef} type="file" accept="image/*" className="hidden" onChange={(e) => e.target.files?.[0] && handleFileUpload(e.target.files[0], "avatar")} />
                 <input ref={coverInputRef} type="file" accept="image/*" className="hidden" onChange={(e) => e.target.files?.[0] && handleFileUpload(e.target.files[0], "cover")} />
 
-                {/* Cover Image */}
                 <div className="space-y-2">
                   <Label>{isAr ? "صورة الغلاف" : "Cover Image"}</Label>
                   <div className="relative rounded-xl border overflow-hidden h-40 bg-muted/30 group cursor-pointer" onClick={() => coverInputRef.current?.click()}>
@@ -840,7 +947,6 @@ export default function UserManagement() {
                   </div>
                 </div>
 
-                {/* Avatar */}
                 <div className="space-y-2">
                   <Label>{isAr ? "صورة الملف الشخصي" : "Profile Photo"}</Label>
                   <div className="flex items-center gap-4">
@@ -875,7 +981,7 @@ export default function UserManagement() {
             <Separator className="my-4" />
             <div className="flex justify-between">
               <Button variant="outline" onClick={() => setEditingUserId(null)}>{isAr ? "إلغاء" : "Cancel"}</Button>
-              <Button onClick={handleSaveEdit} disabled={isSaving}>
+              <Button onClick={handleSaveEdit} disabled={isSaving || !!usernameError}>
                 {isSaving && <Loader2 className="me-2 h-4 w-4 animate-spin" />}
                 <Save className="me-2 h-4 w-4" />
                 {isAr ? "حفظ جميع التغييرات" : "Save All Changes"}
@@ -922,7 +1028,7 @@ export default function UserManagement() {
                           </Avatar>
                           <div>
                             <div className="flex items-center gap-1">
-                              <p className="font-medium">{profile.full_name || "No name"}</p>
+                              <p className="font-medium">{(profile as any).display_name || profile.full_name || "No name"}</p>
                               {profile.is_verified && <Badge variant="secondary" className="h-4 px-1 text-[10px]">✓</Badge>}
                             </div>
                             <p className="text-xs text-muted-foreground">

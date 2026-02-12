@@ -7357,12 +7357,14 @@ export type Database = {
           account_status: Database["public"]["Enums"]["account_status"] | null
           avatar_url: string | null
           bio: string | null
+          city: string | null
           company_id: string | null
           company_role: string | null
           country_code: string | null
           cover_image_url: string | null
           created_at: string
           date_of_birth: string | null
+          display_name: string | null
           email: string | null
           experience_level:
             | Database["public"]["Enums"]["experience_level"]
@@ -7405,12 +7407,14 @@ export type Database = {
           account_status?: Database["public"]["Enums"]["account_status"] | null
           avatar_url?: string | null
           bio?: string | null
+          city?: string | null
           company_id?: string | null
           company_role?: string | null
           country_code?: string | null
           cover_image_url?: string | null
           created_at?: string
           date_of_birth?: string | null
+          display_name?: string | null
           email?: string | null
           experience_level?:
             | Database["public"]["Enums"]["experience_level"]
@@ -7455,12 +7459,14 @@ export type Database = {
           account_status?: Database["public"]["Enums"]["account_status"] | null
           avatar_url?: string | null
           bio?: string | null
+          city?: string | null
           company_id?: string | null
           company_role?: string | null
           country_code?: string | null
           cover_image_url?: string | null
           created_at?: string
           date_of_birth?: string | null
+          display_name?: string | null
           email?: string | null
           experience_level?:
             | Database["public"]["Enums"]["experience_level"]
@@ -8563,6 +8569,57 @@ export type Database = {
         }
         Relationships: []
       }
+      specialties: {
+        Row: {
+          approved_at: string | null
+          approved_by: string | null
+          category: string | null
+          created_at: string
+          created_by: string | null
+          description: string | null
+          description_ar: string | null
+          id: string
+          is_active: boolean | null
+          is_approved: boolean | null
+          name: string
+          name_ar: string | null
+          slug: string
+          updated_at: string
+        }
+        Insert: {
+          approved_at?: string | null
+          approved_by?: string | null
+          category?: string | null
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          description_ar?: string | null
+          id?: string
+          is_active?: boolean | null
+          is_approved?: boolean | null
+          name: string
+          name_ar?: string | null
+          slug: string
+          updated_at?: string
+        }
+        Update: {
+          approved_at?: string | null
+          approved_by?: string | null
+          category?: string | null
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          description_ar?: string | null
+          id?: string
+          is_active?: boolean | null
+          is_approved?: boolean | null
+          name?: string
+          name_ar?: string | null
+          slug?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       sponsorship_packages: {
         Row: {
           benefits: Json | null
@@ -9258,6 +9315,27 @@ export type Database = {
           },
         ]
       }
+      user_follows: {
+        Row: {
+          created_at: string
+          follower_id: string
+          following_id: string
+          id: string
+        }
+        Insert: {
+          created_at?: string
+          follower_id: string
+          following_id: string
+          id?: string
+        }
+        Update: {
+          created_at?: string
+          follower_id?: string
+          following_id?: string
+          id?: string
+        }
+        Relationships: []
+      }
       user_permission_overrides: {
         Row: {
           created_at: string
@@ -9316,6 +9394,35 @@ export type Database = {
           user_id?: string
         }
         Relationships: []
+      }
+      user_specialties: {
+        Row: {
+          created_at: string
+          id: string
+          specialty_id: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          specialty_id: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          specialty_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_specialties_specialty_id_fkey"
+            columns: ["specialty_id"]
+            isOneToOne: false
+            referencedRelation: "specialties"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       user_titles: {
         Row: {

@@ -1,4 +1,5 @@
 import { useParams, Link } from "react-router-dom";
+import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/i18n/LanguageContext";
@@ -11,6 +12,8 @@ import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import { CompetitionHistory } from "@/components/profile/CompetitionHistory";
 import { MessageButton } from "@/components/profile/MessageButton";
 import { UserBadgesDisplay } from "@/components/badges/UserBadgesDisplay";
@@ -18,6 +21,8 @@ import { ProfileCertificates } from "@/components/profile/ProfileCertificates";
 import { QRCodeDisplay } from "@/components/qr/QRCodeDisplay";
 import { useEntityQRCode } from "@/hooks/useQRCode";
 import { SEOHead } from "@/components/SEOHead";
+import { useFollowStats, useIsFollowing, useToggleFollow, useFollowersList } from "@/hooks/useFollow";
+import { useUserSpecialties } from "@/hooks/useSpecialties";
 import {
   User,
   MapPin,
@@ -33,6 +38,10 @@ import {
   ArrowLeft,
   Calendar,
   Earth,
+  UserPlus,
+  UserMinus,
+  Loader2,
+  Users,
 } from "lucide-react";
 import { countryFlag } from "@/lib/countryFlag";
 import { useAllCountries } from "@/hooks/useCountries";
@@ -47,6 +56,8 @@ export default function PublicProfile() {
   const { user } = useAuth();
   const isAr = language === "ar";
   const { data: allCountries = [] } = useAllCountries();
+  const [followListOpen, setFollowListOpen] = useState<"followers" | "following" | null>(null);
+
   const getCountryName = (code: string | null) => {
     if (!code) return null;
     const c = allCountries.find((ct) => ct.code === code);
@@ -61,7 +72,6 @@ export default function PublicProfile() {
         .select("*")
         .eq("username", username?.toLowerCase())
         .maybeSingle();
-
       if (error) throw error;
       if (!data) throw new Error("Profile not found");
       return data as Profile;
@@ -69,20 +79,25 @@ export default function PublicProfile() {
     enabled: !!username,
   });
 
-  // QR code for user account
   const { data: qrCode } = useEntityQRCode("user", profile?.username || undefined, "account");
 
   const { data: roles } = useQuery({
     queryKey: ["publicProfileRoles", profile?.user_id],
     queryFn: async () => {
-      const { data } = await supabase
-        .from("user_roles")
-        .select("role")
-        .eq("user_id", profile!.user_id);
+      const { data } = await supabase.from("user_roles").select("role").eq("user_id", profile!.user_id);
       return data?.map(r => r.role) as AppRole[] || [];
     },
     enabled: !!profile?.user_id,
   });
+
+  // Follow system
+  const { data: followStats } = useFollowStats(profile?.user_id);
+  const { data: isFollowing } = useIsFollowing(profile?.user_id);
+  const toggleFollow = useToggleFollow(profile?.user_id);
+  const { data: followersList = [] } = useFollowersList(followListOpen ? profile?.user_id : undefined, followListOpen || "followers");
+  const { data: userSpecialties = [] } = useUserSpecialties(profile?.user_id);
+
+  const isOwnProfile = user?.id === profile?.user_id;
 
   if (isLoading) {
     return (
@@ -155,18 +170,26 @@ export default function PublicProfile() {
     return colors[tier || "basic"] || colors.basic;
   };
 
+  const displayName = (profile as any).display_name || profile.full_name || "Unnamed Chef";
+
   return (
     <div className="flex min-h-screen flex-col">
       <SEOHead
-        title={`${profile.full_name || username} - Profile`}
-        description={profile.bio || `${profile.full_name}'s profile on Altohaa`}
+        title={`${displayName} (@${profile.username}) - Profile`}
+        description={profile.bio || `${displayName}'s professional culinary profile on Altohaa`}
       />
       <Header />
 
-      {/* Cover gradient */}
+      {/* Cover */}
       <div className="h-32 bg-gradient-to-br from-primary/15 via-primary/5 to-accent/10 md:h-44 relative overflow-hidden">
-        <div className="absolute -top-16 start-1/4 h-32 w-32 rounded-full bg-primary/10 blur-[60px]" />
-        <div className="absolute -bottom-8 end-1/4 h-24 w-24 rounded-full bg-accent/15 blur-[50px]" />
+        {(profile as any).cover_image_url ? (
+          <img src={(profile as any).cover_image_url} alt="Cover" className="w-full h-full object-cover" />
+        ) : (
+          <>
+            <div className="absolute -top-16 start-1/4 h-32 w-32 rounded-full bg-primary/10 blur-[60px]" />
+            <div className="absolute -bottom-8 end-1/4 h-24 w-24 rounded-full bg-accent/15 blur-[50px]" />
+          </>
+        )}
       </div>
 
       <main className="container flex-1 -mt-16 pb-8 md:pb-10">
@@ -179,33 +202,65 @@ export default function PublicProfile() {
                   <Avatar className="h-20 w-20 ring-4 ring-background shadow-lg">
                     <AvatarImage src={profile.avatar_url || undefined} />
                     <AvatarFallback className="text-xl bg-primary/10 text-primary font-bold">
-                      {(profile.full_name || "U")[0].toUpperCase()}
+                      {(displayName)[0].toUpperCase()}
                     </AvatarFallback>
                   </Avatar>
 
                   <div className="mt-3 flex items-center gap-1.5">
-                    <h1 className="font-serif text-lg font-bold">
-                      {profile.full_name || "Unnamed Chef"}
-                    </h1>
-                    {profile.is_verified && (
-                      <BadgeCheck className="h-4.5 w-4.5 text-primary" />
-                    )}
+                    <h1 className="font-serif text-lg font-bold">{displayName}</h1>
+                    {profile.is_verified && <BadgeCheck className="h-4.5 w-4.5 text-primary" />}
                   </div>
 
                   <p className="text-xs text-muted-foreground">@{profile.username}</p>
 
+                  {/* Follow Stats */}
+                  <div className="mt-3 flex items-center gap-6">
+                    <button
+                      onClick={() => setFollowListOpen("followers")}
+                      className="flex flex-col items-center hover:text-primary transition-colors"
+                    >
+                      <span className="text-lg font-bold">{followStats?.followers || 0}</span>
+                      <span className="text-[10px] text-muted-foreground">{isAr ? "متابعون" : "Followers"}</span>
+                    </button>
+                    <button
+                      onClick={() => setFollowListOpen("following")}
+                      className="flex flex-col items-center hover:text-primary transition-colors"
+                    >
+                      <span className="text-lg font-bold">{followStats?.following || 0}</span>
+                      <span className="text-[10px] text-muted-foreground">{isAr ? "يتابع" : "Following"}</span>
+                    </button>
+                  </div>
+
+                  {/* Follow Button */}
+                  {user && !isOwnProfile && (
+                    <Button
+                      className="mt-3 w-full"
+                      variant={isFollowing ? "outline" : "default"}
+                      size="sm"
+                      onClick={() => toggleFollow.mutate(!!isFollowing)}
+                      disabled={toggleFollow.isPending}
+                    >
+                      {toggleFollow.isPending ? (
+                        <Loader2 className="me-1.5 h-3.5 w-3.5 animate-spin" />
+                      ) : isFollowing ? (
+                        <UserMinus className="me-1.5 h-3.5 w-3.5" />
+                      ) : (
+                        <UserPlus className="me-1.5 h-3.5 w-3.5" />
+                      )}
+                      {isFollowing
+                        ? isAr ? "إلغاء المتابعة" : "Unfollow"
+                        : isAr ? "متابعة" : "Follow"}
+                    </Button>
+                  )}
+
                   {/* Account & Membership */}
                   <div className="mt-2 flex flex-wrap justify-center gap-1.5">
                     {profile.account_number && (
-                      <Badge variant="outline" className="font-mono text-[10px]">
-                        {profile.account_number}
-                      </Badge>
+                      <Badge variant="outline" className="font-mono text-[10px]">{profile.account_number}</Badge>
                     )}
                     {profile.membership_tier && (
                       <Badge className={`text-[10px] ${getMembershipColor(profile.membership_tier)}`}>
-                        {profile.membership_tier === "professional"
-                          ? t("professionalTier")
-                          : t(profile.membership_tier as any)}
+                        {profile.membership_tier === "professional" ? t("professionalTier") : t(profile.membership_tier as any)}
                       </Badge>
                     )}
                   </div>
@@ -214,9 +269,7 @@ export default function PublicProfile() {
                   {roles && roles.length > 0 && (
                     <div className="mt-2.5 flex flex-wrap justify-center gap-1">
                       {roles.map((role) => (
-                        <Badge key={role} variant="secondary" className="capitalize text-[10px]">
-                          {t(role as any)}
-                        </Badge>
+                        <Badge key={role} variant="secondary" className="capitalize text-[10px]">{t(role as any)}</Badge>
                       ))}
                     </div>
                   )}
@@ -233,6 +286,16 @@ export default function PublicProfile() {
                         <span>{profile.specialization}</span>
                       </div>
                     )}
+                    {/* Specialties from DB */}
+                    {userSpecialties.length > 0 && (
+                      <div className="flex flex-wrap gap-1 ps-9">
+                        {userSpecialties.map((us: any) => (
+                          <Badge key={us.id} variant="outline" className="text-[10px]">
+                            {isAr ? us.specialties?.name_ar || us.specialties?.name : us.specialties?.name}
+                          </Badge>
+                        ))}
+                      </div>
+                    )}
                     {profile.experience_level && (
                       <div className="flex items-center gap-2.5 text-sm">
                         <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-primary/10">
@@ -241,20 +304,15 @@ export default function PublicProfile() {
                         <span className="capitalize">{t(profile.experience_level as any)}</span>
                       </div>
                     )}
-                    {profile.location && (
+                    {(profile.country_code || profile.location || (profile as any).city) && (
                       <div className="flex items-center gap-2.5 text-sm">
                         <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-muted">
                           <MapPin className="h-3.5 w-3.5 text-muted-foreground" />
                         </div>
-                        <span>{profile.country_code ? `${countryFlag(profile.country_code)} ` : ""}{profile.location}</span>
-                      </div>
-                    )}
-                    {profile.country_code && (
-                      <div className="flex items-center gap-2.5 text-sm">
-                        <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-muted">
-                          <Earth className="h-3.5 w-3.5 text-muted-foreground" />
-                        </div>
-                        <span>{countryFlag(profile.country_code)} {getCountryName(profile.country_code)}</span>
+                        <span>
+                          {profile.country_code ? `${countryFlag(profile.country_code)} ` : ""}
+                          {[getCountryName(profile.country_code), (profile as any).city].filter(Boolean).join(", ") || profile.location}
+                        </span>
                       </div>
                     )}
                     {profile.nationality && profile.nationality !== profile.country_code && (
@@ -280,11 +338,7 @@ export default function PublicProfile() {
                   <div className="mt-4 flex flex-wrap justify-center gap-1.5">
                     {socialLinks.map((link) => (
                       <Button key={link.label} variant="outline" size="sm" className="h-8 gap-1.5 rounded-full px-3" asChild>
-                        <a
-                          href={link.value?.startsWith("http") ? link.value : `https://${link.value}`}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                        >
+                        <a href={link.value?.startsWith("http") ? link.value : `https://${link.value}`} target="_blank" rel="noopener noreferrer">
                           <link.icon className="h-3 w-3" />
                           <span className="text-[10px]">{link.label}</span>
                         </a>
@@ -334,6 +388,49 @@ export default function PublicProfile() {
           </div>
         </div>
       </main>
+
+      {/* Follow List Dialog */}
+      <Dialog open={!!followListOpen} onOpenChange={() => setFollowListOpen(null)}>
+        <DialogContent className="max-w-sm">
+          <DialogHeader>
+            <DialogTitle>
+              {followListOpen === "followers"
+                ? isAr ? "المتابعون" : "Followers"
+                : isAr ? "يتابع" : "Following"}
+            </DialogTitle>
+          </DialogHeader>
+          <ScrollArea className="max-h-[60vh]">
+            <div className="space-y-2">
+              {followersList.length === 0 ? (
+                <p className="py-8 text-center text-sm text-muted-foreground">
+                  {isAr ? "لا يوجد" : "No users yet"}
+                </p>
+              ) : (
+                followersList.map((p: any) => (
+                  <Link
+                    key={p.user_id}
+                    to={`/${p.username}`}
+                    onClick={() => setFollowListOpen(null)}
+                    className="flex items-center gap-3 rounded-lg p-2 hover:bg-muted/50 transition-colors"
+                  >
+                    <Avatar className="h-10 w-10">
+                      <AvatarImage src={p.avatar_url || undefined} />
+                      <AvatarFallback>{(p.full_name || "U")[0].toUpperCase()}</AvatarFallback>
+                    </Avatar>
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center gap-1">
+                        <p className="text-sm font-medium truncate">{p.display_name || p.full_name || "Unknown"}</p>
+                        {p.is_verified && <BadgeCheck className="h-3.5 w-3.5 text-primary shrink-0" />}
+                      </div>
+                      <p className="text-xs text-muted-foreground truncate">@{p.username}</p>
+                    </div>
+                  </Link>
+                ))
+              )}
+            </div>
+          </ScrollArea>
+        </DialogContent>
+      </Dialog>
       <Footer />
     </div>
   );
