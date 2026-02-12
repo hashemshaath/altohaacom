@@ -1,10 +1,10 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Link } from "react-router-dom";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -12,6 +12,8 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Separator } from "@/components/ui/separator";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Textarea } from "@/components/ui/textarea";
 import {
   Select,
   SelectContent,
@@ -50,8 +52,14 @@ import {
   UserPlus,
   KeyRound,
   Mail,
-  Trash2,
   Loader2,
+  Upload,
+  Image as ImageIcon,
+  Users,
+  Plus,
+  Trash2,
+  Camera,
+  CheckCircle2,
 } from "lucide-react";
 import { format } from "date-fns";
 import type { Database } from "@/integrations/supabase/types";
@@ -71,11 +79,14 @@ interface UserProfile {
   account_status: AccountStatus | null;
   membership_tier: MembershipTier | null;
   avatar_url: string | null;
+  cover_image_url?: string | null;
   created_at: string;
   location: string | null;
   specialization: string | null;
   is_verified: boolean | null;
   email: string | null;
+  phone?: string | null;
+  bio?: string | null;
   roles?: { role: AppRole }[];
 }
 
@@ -92,12 +103,20 @@ export default function UserManagement() {
   const [page, setPage] = useState(0);
   const pageSize = 20;
 
-  // Edit user inline state
+  // Edit user state
   const [editingUserId, setEditingUserId] = useState<string | null>(null);
   const [editRoles, setEditRoles] = useState<AppRole[]>([]);
   const [editMembership, setEditMembership] = useState<MembershipTier>("basic");
   const [editStatus, setEditStatus] = useState<AccountStatus>("active");
   const [editVerified, setEditVerified] = useState(false);
+  const [editFullName, setEditFullName] = useState("");
+  const [editUsername, setEditUsername] = useState("");
+  const [editEmail, setEditEmail] = useState("");
+  const [editPhone, setEditPhone] = useState("");
+  const [editBio, setEditBio] = useState("");
+  const [editLocation, setEditLocation] = useState("");
+  const [editSpecialization, setEditSpecialization] = useState("");
+  const [editTab, setEditTab] = useState("profile");
 
   // Create user dialog
   const [createOpen, setCreateOpen] = useState(false);
@@ -118,12 +137,24 @@ export default function UserManagement() {
   const [inviteOpen, setInviteOpen] = useState(false);
   const [inviteEmail, setInviteEmail] = useState("");
 
+  // Group management
+  const [newGroupName, setNewGroupName] = useState("");
+  const [newGroupNameAr, setNewGroupNameAr] = useState("");
+  const [newGroupColor, setNewGroupColor] = useState("#3b82f6");
+  const [createGroupOpen, setCreateGroupOpen] = useState(false);
+
+  // Media upload
+  const avatarInputRef = useRef<HTMLInputElement>(null);
+  const coverInputRef = useRef<HTMLInputElement>(null);
+
+  // ── Queries ──────────────────────────────────────
+
   const { data: usersData, isLoading } = useQuery({
     queryKey: ["adminUsers", searchQuery, roleFilter, statusFilter, page],
     queryFn: async () => {
       let query = supabase
         .from("profiles")
-        .select(`id, user_id, full_name, username, account_number, account_status, membership_tier, avatar_url, created_at, location, specialization, is_verified, email`, { count: "exact" })
+        .select(`id, user_id, full_name, username, account_number, account_status, membership_tier, avatar_url, created_at, location, specialization, is_verified, email, phone, bio, cover_image_url`, { count: "exact" })
         .order("created_at", { ascending: false })
         .range(page * pageSize, (page + 1) * pageSize - 1);
 
@@ -149,6 +180,29 @@ export default function UserManagement() {
     },
   });
 
+  const { data: groups = [] } = useQuery({
+    queryKey: ["customerGroups"],
+    queryFn: async () => {
+      const { data, error } = await supabase.from("customer_groups").select("*").order("name");
+      if (error) throw error;
+      return data || [];
+    },
+  });
+
+  const { data: userGroupMemberships = [] } = useQuery({
+    queryKey: ["userGroupMemberships", editingUserId],
+    queryFn: async () => {
+      if (!editingUserId) return [];
+      const { data, error } = await supabase
+        .from("customer_group_members")
+        .select("*, customer_groups(*)")
+        .eq("user_id", editingUserId);
+      if (error) throw error;
+      return data || [];
+    },
+    enabled: !!editingUserId,
+  });
+
   const filteredUsers = usersData?.users?.filter((u) => {
     if (roleFilter === "all") return true;
     return u.roles?.some((r) => r.role === roleFilter);
@@ -157,13 +211,46 @@ export default function UserManagement() {
   const totalPages = Math.ceil((usersData?.totalCount || 0) / pageSize);
   const editingUser = filteredUsers?.find((u) => u.user_id === editingUserId);
 
-  // Edge function caller
+  // ── Edge function caller ──────────────────────────
+
   const callAdminFn = async (body: Record<string, unknown>) => {
     const { data, error } = await supabase.functions.invoke("admin-user-management", { body });
     if (error) throw new Error(error.message);
     if (data?.error) throw new Error(data.error);
     return data;
   };
+
+  // ── Mutations ──────────────────────────────────────
+
+  const updateProfileMutation = useMutation({
+    mutationFn: async ({ userId, updates }: { userId: string; updates: Record<string, unknown> }) => {
+      const { error } = await supabase.from("profiles").update(updates).eq("user_id", userId);
+      if (error) throw error;
+      await supabase.from("admin_actions").insert([{ admin_id: user!.id, target_user_id: userId, action_type: "update_profile", details: updates as any }]);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["adminUsers"] });
+      toast({ title: isAr ? "تم تحديث الملف الشخصي" : "Profile updated" });
+    },
+    onError: (e) => toast({ variant: "destructive", title: isAr ? "خطأ" : "Error", description: e.message }),
+  });
+
+  const updateRolesMutation = useMutation({
+    mutationFn: async ({ userId, roles }: { userId: string; roles: AppRole[] }) => {
+      const { error: deleteError } = await supabase.from("user_roles").delete().eq("user_id", userId);
+      if (deleteError) throw deleteError;
+      if (roles.length > 0) {
+        const { error: insertError } = await supabase.from("user_roles").insert(roles.map((role) => ({ user_id: userId, role })));
+        if (insertError) throw insertError;
+      }
+      await supabase.from("admin_actions").insert([{ admin_id: user!.id, target_user_id: userId, action_type: "update_roles", details: { roles } }]);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["adminUsers"] });
+      toast({ title: isAr ? "تم تحديث الأدوار" : "Roles updated" });
+    },
+    onError: (e) => toast({ variant: "destructive", title: isAr ? "خطأ" : "Error", description: e.message }),
+  });
 
   const updateStatusMutation = useMutation({
     mutationFn: async ({ userId, newStatus, reason }: { userId: string; newStatus: AccountStatus; reason?: string }) => {
@@ -181,39 +268,6 @@ export default function UserManagement() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["adminUsers"] });
       toast({ title: isAr ? "تم تحديث الحالة" : "Status updated" });
-    },
-    onError: (e) => toast({ variant: "destructive", title: isAr ? "خطأ" : "Error", description: e.message }),
-  });
-
-  const updateRolesMutation = useMutation({
-    mutationFn: async ({ userId, roles }: { userId: string; roles: AppRole[] }) => {
-      // Delete existing roles first and check for errors
-      const { error: deleteError } = await supabase.from("user_roles").delete().eq("user_id", userId);
-      if (deleteError) throw deleteError;
-      
-      // Insert new roles
-      if (roles.length > 0) {
-        const { error: insertError } = await supabase.from("user_roles").insert(roles.map((role) => ({ user_id: userId, role })));
-        if (insertError) throw insertError;
-      }
-      await supabase.from("admin_actions").insert([{ admin_id: user!.id, target_user_id: userId, action_type: "update_roles", details: { roles } }]);
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["adminUsers"] });
-      toast({ title: isAr ? "تم تحديث الأدوار" : "Roles updated" });
-    },
-    onError: (e) => toast({ variant: "destructive", title: isAr ? "خطأ" : "Error", description: e.message }),
-  });
-
-  const updateProfileMutation = useMutation({
-    mutationFn: async ({ userId, updates }: { userId: string; updates: Record<string, unknown> }) => {
-      const { error } = await supabase.from("profiles").update(updates).eq("user_id", userId);
-      if (error) throw error;
-      await supabase.from("admin_actions").insert([{ admin_id: user!.id, target_user_id: userId, action_type: "update_profile", details: updates as any }]);
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["adminUsers"] });
-      toast({ title: isAr ? "تم تحديث الملف الشخصي" : "Profile updated" });
     },
     onError: (e) => toast({ variant: "destructive", title: isAr ? "خطأ" : "Error", description: e.message }),
   });
@@ -249,17 +303,112 @@ export default function UserManagement() {
     onError: (e) => toast({ variant: "destructive", title: isAr ? "خطأ" : "Error", description: e.message }),
   });
 
+  const createGroupMutation = useMutation({
+    mutationFn: async () => {
+      const { error } = await supabase.from("customer_groups").insert({
+        name: newGroupName,
+        name_ar: newGroupNameAr || null,
+        color: newGroupColor,
+        is_active: true,
+        created_by: user!.id,
+      });
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["customerGroups"] });
+      toast({ title: isAr ? "تم إنشاء المجموعة" : "Group created" });
+      setCreateGroupOpen(false);
+      setNewGroupName("");
+      setNewGroupNameAr("");
+    },
+    onError: (e) => toast({ variant: "destructive", title: isAr ? "خطأ" : "Error", description: e.message }),
+  });
+
+  const addToGroupMutation = useMutation({
+    mutationFn: async (groupId: string) => {
+      if (!editingUserId) throw new Error("No user selected");
+      const { error } = await supabase.from("customer_group_members").insert({
+        group_id: groupId,
+        user_id: editingUserId,
+        added_by: user!.id,
+      });
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["userGroupMemberships"] });
+      toast({ title: isAr ? "تمت الإضافة للمجموعة" : "Added to group" });
+    },
+    onError: (e) => toast({ variant: "destructive", title: isAr ? "خطأ" : "Error", description: e.message }),
+  });
+
+  const removeFromGroupMutation = useMutation({
+    mutationFn: async (membershipId: string) => {
+      const { error } = await supabase.from("customer_group_members").delete().eq("id", membershipId);
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["userGroupMemberships"] });
+      toast({ title: isAr ? "تمت الإزالة من المجموعة" : "Removed from group" });
+    },
+    onError: (e) => toast({ variant: "destructive", title: isAr ? "خطأ" : "Error", description: e.message }),
+  });
+
+  const uploadMediaMutation = useMutation({
+    mutationFn: async ({ file, type }: { file: File; type: "avatar" | "cover" }) => {
+      if (!editingUserId) throw new Error("No user selected");
+      const ext = file.name.split(".").pop();
+      const path = `${editingUserId}/${type}-${Date.now()}.${ext}`;
+      const { error: uploadError } = await supabase.storage.from("user-media").upload(path, file, { upsert: true });
+      if (uploadError) throw uploadError;
+      const { data: { publicUrl } } = supabase.storage.from("user-media").getPublicUrl(path);
+      const updateField = type === "avatar" ? "avatar_url" : "cover_image_url";
+      const { error: updateError } = await supabase.from("profiles").update({ [updateField]: publicUrl }).eq("user_id", editingUserId);
+      if (updateError) throw updateError;
+      return { type, url: publicUrl };
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["adminUsers"] });
+      toast({ title: isAr ? "تم رفع الصورة" : "Image uploaded successfully" });
+    },
+    onError: (e) => toast({ variant: "destructive", title: isAr ? "خطأ" : "Error", description: e.message }),
+  });
+
+  // ── Handlers ──────────────────────────────────────
+
   const handleOpenEdit = (profile: UserProfile) => {
     setEditingUserId(profile.user_id);
     setEditRoles(profile.roles?.map((r) => r.role) || []);
     setEditMembership(profile.membership_tier || "basic");
     setEditStatus(profile.account_status || "pending");
     setEditVerified(profile.is_verified || false);
+    setEditFullName(profile.full_name || "");
+    setEditUsername(profile.username || "");
+    setEditEmail(profile.email || "");
+    setEditPhone(profile.phone || "");
+    setEditBio(profile.bio || "");
+    setEditLocation(profile.location || "");
+    setEditSpecialization(profile.specialization || "");
+    setEditTab("profile");
   };
 
   const handleSaveEdit = async () => {
     if (!editingUserId) return;
-    await updateProfileMutation.mutateAsync({ userId: editingUserId, updates: { membership_tier: editMembership, account_status: editStatus, is_verified: editVerified } });
+    await updateProfileMutation.mutateAsync({
+      userId: editingUserId,
+      updates: {
+        full_name: editFullName || null,
+        username: editUsername || null,
+        phone: editPhone || null,
+        bio: editBio || null,
+        location: editLocation || null,
+        specialization: editSpecialization || null,
+        membership_tier: editMembership,
+        account_status: editStatus,
+        is_verified: editVerified,
+        suspended_reason: editStatus === "suspended" || editStatus === "banned" ? "Admin action" : null,
+        suspended_at: editStatus === "suspended" || editStatus === "banned" ? new Date().toISOString() : null,
+      },
+    });
     await updateRolesMutation.mutateAsync({ userId: editingUserId, roles: editRoles });
     setEditingUserId(null);
   };
@@ -268,15 +417,27 @@ export default function UserManagement() {
     setEditRoles((prev) => prev.includes(role) ? prev.filter((r) => r !== role) : [...prev, role]);
   };
 
-  const getStatusBadge = (status: AccountStatus | null) => {
-    const config: Record<AccountStatus, { variant: "default" | "secondary" | "destructive" | "outline"; label: string }> = {
-      active: { variant: "default", label: isAr ? "نشط" : "Active" },
-      pending: { variant: "secondary", label: isAr ? "معلق" : "Pending" },
-      suspended: { variant: "destructive", label: isAr ? "موقوف" : "Suspended" },
-      banned: { variant: "destructive", label: isAr ? "محظور" : "Banned" },
+  const handleFileUpload = (file: File, type: "avatar" | "cover") => {
+    if (file.size > 5 * 1024 * 1024) {
+      toast({ variant: "destructive", title: isAr ? "الملف كبير جداً" : "File too large", description: isAr ? "الحد الأقصى 5 ميجابايت" : "Max 5MB allowed" });
+      return;
+    }
+    uploadMediaMutation.mutate({ file, type });
+  };
+
+  const getStatusConfig = (status: AccountStatus | null) => {
+    const config: Record<AccountStatus, { variant: "default" | "secondary" | "destructive" | "outline"; label: string; labelAr: string; icon: typeof CheckCircle2 }> = {
+      active: { variant: "default", label: "Active", labelAr: "نشط", icon: CheckCircle2 },
+      pending: { variant: "secondary", label: "Pending", labelAr: "معلق", icon: Loader2 },
+      suspended: { variant: "destructive", label: "Suspended", labelAr: "موقوف", icon: UserX },
+      banned: { variant: "destructive", label: "Banned", labelAr: "محظور", icon: X },
     };
-    const cfg = config[status || "pending"];
-    return <Badge variant={cfg.variant}>{cfg.label}</Badge>;
+    return config[status || "pending"];
+  };
+
+  const getStatusBadge = (status: AccountStatus | null) => {
+    const cfg = getStatusConfig(status);
+    return <Badge variant={cfg.variant}>{isAr ? cfg.labelAr : cfg.label}</Badge>;
   };
 
   const getMembershipBadge = (tier: MembershipTier | null) => {
@@ -292,6 +453,11 @@ export default function UserManagement() {
     );
   };
 
+  const memberGroupIds = new Set(userGroupMemberships.map((m: any) => m.group_id));
+  const availableGroups = groups.filter((g: any) => !memberGroupIds.has(g.id));
+
+  const isSaving = updateProfileMutation.isPending || updateRolesMutation.isPending;
+
   return (
     <div className="space-y-6">
       {/* Header */}
@@ -299,7 +465,7 @@ export default function UserManagement() {
         <div>
           <h1 className="font-serif text-2xl font-bold">{t("userManagement")}</h1>
           <p className="text-sm text-muted-foreground">
-            {isAr ? "إدارة المستخدمين وإنشاء الحسابات وإعادة تعيين كلمات المرور والدعوات" : "Manage users, create accounts, reset passwords, and send invitations"}
+            {isAr ? "تحكم كامل بإدارة المستخدمين والحسابات والمجموعات والوسائط" : "Full control over users, accounts, groups, and media"}
           </p>
         </div>
         <div className="flex flex-wrap items-center gap-2">
@@ -314,10 +480,7 @@ export default function UserManagement() {
       <div className="flex flex-wrap gap-2">
         <Dialog open={createOpen} onOpenChange={setCreateOpen}>
           <DialogTrigger asChild>
-            <Button>
-              <UserPlus className="me-2 h-4 w-4" />
-              {isAr ? "إنشاء مستخدم" : "Create User"}
-            </Button>
+            <Button><UserPlus className="me-2 h-4 w-4" />{isAr ? "إنشاء مستخدم" : "Create User"}</Button>
           </DialogTrigger>
           <DialogContent className="max-w-md">
             <DialogHeader>
@@ -337,13 +500,15 @@ export default function UserManagement() {
                 <Label>{isAr ? "كلمة المرور" : "Password"} *</Label>
                 <Input type="password" value={newPassword} onChange={(e) => setNewPassword(e.target.value)} placeholder={isAr ? "كلمة المرور الأولية" : "Initial password"} dir="ltr" />
               </div>
-              <div className="space-y-2">
-                <Label>{isAr ? "اسم المستخدم" : "Username"}</Label>
-                <Input value={newUsername} onChange={(e) => setNewUsername(e.target.value)} placeholder="username" dir="ltr" />
-              </div>
-              <div className="space-y-2">
-                <Label>{isAr ? "رقم الهاتف" : "Phone"}</Label>
-                <Input value={newPhone} onChange={(e) => setNewPhone(e.target.value)} placeholder="+966..." dir="ltr" />
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label>{isAr ? "اسم المستخدم" : "Username"}</Label>
+                  <Input value={newUsername} onChange={(e) => setNewUsername(e.target.value)} placeholder="username" dir="ltr" />
+                </div>
+                <div className="space-y-2">
+                  <Label>{isAr ? "رقم الهاتف" : "Phone"}</Label>
+                  <Input value={newPhone} onChange={(e) => setNewPhone(e.target.value)} placeholder="+966..." dir="ltr" />
+                </div>
               </div>
               <div className="space-y-2">
                 <Label>{isAr ? "الدور" : "Role"}</Label>
@@ -369,15 +534,12 @@ export default function UserManagement() {
 
         <Dialog open={inviteOpen} onOpenChange={setInviteOpen}>
           <DialogTrigger asChild>
-            <Button variant="outline">
-              <Mail className="me-2 h-4 w-4" />
-              {isAr ? "إرسال دعوة" : "Send Invitation"}
-            </Button>
+            <Button variant="outline"><Mail className="me-2 h-4 w-4" />{isAr ? "إرسال دعوة" : "Send Invitation"}</Button>
           </DialogTrigger>
           <DialogContent className="max-w-md">
             <DialogHeader>
               <DialogTitle>{isAr ? "إرسال دعوة" : "Send Invitation"}</DialogTitle>
-              <DialogDescription>{isAr ? "أرسل دعوة عبر البريد الإلكتروني لتفعيل الحساب وتغيير كلمة المرور" : "Send an email invitation to activate account and change password"}</DialogDescription>
+              <DialogDescription>{isAr ? "أرسل دعوة عبر البريد الإلكتروني لتفعيل الحساب" : "Send an email invitation to activate account"}</DialogDescription>
             </DialogHeader>
             <div className="space-y-4">
               <div className="space-y-2">
@@ -401,7 +563,7 @@ export default function UserManagement() {
         <DialogContent className="max-w-md">
           <DialogHeader>
             <DialogTitle>{isAr ? "إعادة تعيين كلمة المرور" : "Reset Password"}</DialogTitle>
-            <DialogDescription>{isAr ? `إعادة تعيين كلمة المرور للمستخدم: ${resetUserName}` : `Reset password for user: ${resetUserName}`}</DialogDescription>
+            <DialogDescription>{isAr ? `إعادة تعيين كلمة المرور للمستخدم: ${resetUserName}` : `Reset password for: ${resetUserName}`}</DialogDescription>
           </DialogHeader>
           <div className="space-y-4">
             <div className="space-y-2">
@@ -444,28 +606,33 @@ export default function UserManagement() {
             <SelectTrigger className="w-40"><SelectValue placeholder={t("filterByStatus")} /></SelectTrigger>
             <SelectContent>
               <SelectItem value="all">{t("allUsers")}</SelectItem>
-              <SelectItem value="active">{t("active")}</SelectItem>
-              <SelectItem value="pending">{t("pending")}</SelectItem>
-              <SelectItem value="suspended">{t("suspended")}</SelectItem>
+              <SelectItem value="active">{isAr ? "نشط" : "Active"}</SelectItem>
+              <SelectItem value="pending">{isAr ? "معلق" : "Pending"}</SelectItem>
+              <SelectItem value="suspended">{isAr ? "موقوف" : "Suspended"}</SelectItem>
               <SelectItem value="banned">{isAr ? "محظور" : "Banned"}</SelectItem>
             </SelectContent>
           </Select>
         </CardContent>
       </Card>
 
-      {/* Inline Edit Panel */}
+      {/* ── Inline Edit Panel ─────────────────────────── */}
       {editingUser && (
         <Card className="border-primary/30 shadow-lg shadow-primary/5">
           <CardHeader className="pb-3">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
-                <Avatar className="h-12 w-12">
+                <Avatar className="h-14 w-14 border-2 border-primary/20">
                   <AvatarImage src={editingUser.avatar_url || undefined} />
-                  <AvatarFallback>{(editingUser.full_name || "U")[0].toUpperCase()}</AvatarFallback>
+                  <AvatarFallback className="text-lg">{(editingUser.full_name || "U")[0].toUpperCase()}</AvatarFallback>
                 </Avatar>
                 <div>
-                  <CardTitle className="text-lg">{editingUser.full_name || "Unknown"}</CardTitle>
-                  <p className="text-sm text-muted-foreground">@{editingUser.username} · {editingUser.email}</p>
+                  <CardTitle className="text-lg flex items-center gap-2">
+                    {editingUser.full_name || "Unknown"}
+                    {getStatusBadge(editingUser.account_status)}
+                  </CardTitle>
+                  <p className="text-sm text-muted-foreground">
+                    <span className="font-mono">{editingUser.account_number}</span> · @{editingUser.username} · {editingUser.email}
+                  </p>
                 </div>
               </div>
               <Button variant="ghost" size="icon" onClick={() => setEditingUserId(null)}>
@@ -473,74 +640,252 @@ export default function UserManagement() {
               </Button>
             </div>
           </CardHeader>
-          <CardContent className="space-y-6">
-            <div className="grid gap-6 md:grid-cols-2">
-              <div className="space-y-2">
-                <Label>{isAr ? "حالة الحساب" : "Account Status"}</Label>
-                <Select value={editStatus} onValueChange={(v) => setEditStatus(v as AccountStatus)}>
-                  <SelectTrigger><SelectValue /></SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="pending">{isAr ? "معلق" : "Pending"}</SelectItem>
-                    <SelectItem value="active">{isAr ? "نشط" : "Active"}</SelectItem>
-                    <SelectItem value="suspended">{isAr ? "موقوف" : "Suspended"}</SelectItem>
-                    <SelectItem value="banned">{isAr ? "محظور" : "Banned"}</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-              <div className="space-y-2">
-                <Label>{isAr ? "مستوى العضوية" : "Membership Tier"}</Label>
-                <Select value={editMembership} onValueChange={(v) => setEditMembership(v as MembershipTier)}>
-                  <SelectTrigger><SelectValue /></SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="basic">{t("basic")}</SelectItem>
-                    <SelectItem value="professional">{t("professionalTier")}</SelectItem>
-                    <SelectItem value="enterprise">{t("enterprise")}</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-            </div>
-            <div className="flex items-center gap-3">
-              <Checkbox id="verified" checked={editVerified} onCheckedChange={(checked) => setEditVerified(!!checked)} />
-              <Label htmlFor="verified" className="cursor-pointer">{isAr ? "حساب موثق" : "Verified Account"}</Label>
-            </div>
-            <div className="space-y-3">
-              <Label>{isAr ? "الأدوار" : "Roles"}</Label>
-              <div className="grid grid-cols-2 gap-2 md:grid-cols-4">
-                {ALL_ROLES.map((role) => (
-                  <div key={role} onClick={() => toggleRole(role)} className={`flex cursor-pointer items-center gap-2 rounded-xl border p-3 transition-all duration-200 hover:shadow-sm ${editRoles.includes(role) ? "border-primary bg-primary/5" : "border-border hover:border-primary/50"}`}>
-                    <Checkbox checked={editRoles.includes(role)} onCheckedChange={() => toggleRole(role)} />
-                    <span className="text-sm capitalize">{t(role as any)}</span>
+          <CardContent>
+            <Tabs value={editTab} onValueChange={setEditTab}>
+              <TabsList className="mb-4">
+                <TabsTrigger value="profile"><Edit className="me-1 h-3.5 w-3.5" />{isAr ? "الملف الشخصي" : "Profile"}</TabsTrigger>
+                <TabsTrigger value="roles"><Users className="me-1 h-3.5 w-3.5" />{isAr ? "الأدوار والحالة" : "Roles & Status"}</TabsTrigger>
+                <TabsTrigger value="groups"><Users className="me-1 h-3.5 w-3.5" />{isAr ? "المجموعات" : "Groups"}</TabsTrigger>
+                <TabsTrigger value="media"><ImageIcon className="me-1 h-3.5 w-3.5" />{isAr ? "الوسائط" : "Media"}</TabsTrigger>
+              </TabsList>
+
+              {/* ── Profile Tab ────── */}
+              <TabsContent value="profile" className="space-y-4">
+                <div className="grid gap-4 md:grid-cols-2">
+                  <div className="space-y-2">
+                    <Label>{isAr ? "الاسم الكامل" : "Full Name"}</Label>
+                    <Input value={editFullName} onChange={(e) => setEditFullName(e.target.value)} />
                   </div>
-                ))}
-              </div>
-            </div>
-            <Separator />
-            <div className="flex flex-wrap gap-2 justify-between">
-              <div className="flex gap-2">
-                <Button variant="outline" size="sm" onClick={() => { setResetUserId(editingUser.user_id); setResetUserName(editingUser.full_name || ""); setResetOpen(true); }}>
-                  <KeyRound className="me-2 h-4 w-4" />
-                  {isAr ? "إعادة تعيين كلمة المرور" : "Reset Password"}
-                </Button>
-                {editingUser.email && (
-                  <Button variant="outline" size="sm" onClick={() => { setInviteEmail(editingUser.email || ""); setInviteOpen(true); }}>
-                    <Mail className="me-2 h-4 w-4" />
-                    {isAr ? "إرسال دعوة" : "Send Invitation"}
+                  <div className="space-y-2">
+                    <Label>{isAr ? "اسم المستخدم" : "Username"}</Label>
+                    <Input value={editUsername} onChange={(e) => setEditUsername(e.target.value)} dir="ltr" />
+                  </div>
+                  <div className="space-y-2">
+                    <Label>{isAr ? "البريد الإلكتروني" : "Email"}</Label>
+                    <Input value={editEmail} disabled dir="ltr" className="opacity-60" />
+                    <p className="text-xs text-muted-foreground">{isAr ? "لا يمكن تعديل البريد من هنا" : "Email cannot be changed here"}</p>
+                  </div>
+                  <div className="space-y-2">
+                    <Label>{isAr ? "رقم الهاتف" : "Phone"}</Label>
+                    <Input value={editPhone} onChange={(e) => setEditPhone(e.target.value)} dir="ltr" />
+                  </div>
+                  <div className="space-y-2">
+                    <Label>{isAr ? "الموقع" : "Location"}</Label>
+                    <Input value={editLocation} onChange={(e) => setEditLocation(e.target.value)} />
+                  </div>
+                  <div className="space-y-2">
+                    <Label>{isAr ? "التخصص" : "Specialization"}</Label>
+                    <Input value={editSpecialization} onChange={(e) => setEditSpecialization(e.target.value)} />
+                  </div>
+                </div>
+                <div className="space-y-2">
+                  <Label>{isAr ? "نبذة تعريفية" : "Bio"}</Label>
+                  <Textarea value={editBio} onChange={(e) => setEditBio(e.target.value)} rows={3} />
+                </div>
+              </TabsContent>
+
+              {/* ── Roles & Status Tab ────── */}
+              <TabsContent value="roles" className="space-y-6">
+                <div className="grid gap-6 md:grid-cols-2">
+                  <div className="space-y-2">
+                    <Label>{isAr ? "حالة الحساب" : "Account Status"}</Label>
+                    <Select value={editStatus} onValueChange={(v) => setEditStatus(v as AccountStatus)}>
+                      <SelectTrigger><SelectValue /></SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="pending">{isAr ? "معلق" : "Pending"}</SelectItem>
+                        <SelectItem value="active">{isAr ? "نشط" : "Active"}</SelectItem>
+                        <SelectItem value="suspended">{isAr ? "موقوف" : "Suspended"}</SelectItem>
+                        <SelectItem value="banned">{isAr ? "محظور" : "Banned"}</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div className="space-y-2">
+                    <Label>{isAr ? "مستوى العضوية" : "Membership Tier"}</Label>
+                    <Select value={editMembership} onValueChange={(v) => setEditMembership(v as MembershipTier)}>
+                      <SelectTrigger><SelectValue /></SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="basic">{t("basic")}</SelectItem>
+                        <SelectItem value="professional">{t("professionalTier")}</SelectItem>
+                        <SelectItem value="enterprise">{t("enterprise")}</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </div>
+                <div className="flex items-center gap-3">
+                  <Checkbox id="verified" checked={editVerified} onCheckedChange={(checked) => setEditVerified(!!checked)} />
+                  <Label htmlFor="verified" className="cursor-pointer">{isAr ? "حساب موثق" : "Verified Account"}</Label>
+                </div>
+                <div className="space-y-3">
+                  <Label>{isAr ? "الأدوار" : "Roles"}</Label>
+                  <div className="grid grid-cols-2 gap-2 md:grid-cols-4">
+                    {ALL_ROLES.map((role) => (
+                      <div key={role} onClick={() => toggleRole(role)} className={`flex cursor-pointer items-center gap-2 rounded-xl border p-3 transition-all duration-200 hover:shadow-sm ${editRoles.includes(role) ? "border-primary bg-primary/5" : "border-border hover:border-primary/50"}`}>
+                        <Checkbox checked={editRoles.includes(role)} onCheckedChange={() => toggleRole(role)} />
+                        <span className="text-sm capitalize">{t(role as any)}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+                <Separator />
+                <div className="flex flex-wrap gap-2">
+                  <Button variant="outline" size="sm" onClick={() => { setResetUserId(editingUser.user_id); setResetUserName(editingUser.full_name || ""); setResetOpen(true); }}>
+                    <KeyRound className="me-2 h-4 w-4" />{isAr ? "إعادة تعيين كلمة المرور" : "Reset Password"}
                   </Button>
+                  {editingUser.email && (
+                    <Button variant="outline" size="sm" onClick={() => { setInviteEmail(editingUser.email || ""); setInviteOpen(true); }}>
+                      <Mail className="me-2 h-4 w-4" />{isAr ? "إرسال دعوة" : "Send Invitation"}
+                    </Button>
+                  )}
+                </div>
+              </TabsContent>
+
+              {/* ── Groups Tab ────── */}
+              <TabsContent value="groups" className="space-y-4">
+                <div className="flex items-center justify-between">
+                  <Label className="text-base font-semibold">{isAr ? "المجموعات المنضمة" : "Joined Groups"}</Label>
+                  <Dialog open={createGroupOpen} onOpenChange={setCreateGroupOpen}>
+                    <DialogTrigger asChild>
+                      <Button variant="outline" size="sm"><Plus className="me-1 h-3.5 w-3.5" />{isAr ? "مجموعة جديدة" : "New Group"}</Button>
+                    </DialogTrigger>
+                    <DialogContent className="max-w-sm">
+                      <DialogHeader>
+                        <DialogTitle>{isAr ? "إنشاء مجموعة جديدة" : "Create New Group"}</DialogTitle>
+                      </DialogHeader>
+                      <div className="space-y-4">
+                        <div className="space-y-2">
+                          <Label>{isAr ? "اسم المجموعة (EN)" : "Group Name (EN)"}</Label>
+                          <Input value={newGroupName} onChange={(e) => setNewGroupName(e.target.value)} placeholder="VIP Members" />
+                        </div>
+                        <div className="space-y-2">
+                          <Label>{isAr ? "اسم المجموعة (AR)" : "Group Name (AR)"}</Label>
+                          <Input value={newGroupNameAr} onChange={(e) => setNewGroupNameAr(e.target.value)} placeholder="أعضاء مميزون" />
+                        </div>
+                        <div className="space-y-2">
+                          <Label>{isAr ? "اللون" : "Color"}</Label>
+                          <Input type="color" value={newGroupColor} onChange={(e) => setNewGroupColor(e.target.value)} className="h-10 w-20" />
+                        </div>
+                      </div>
+                      <DialogFooter>
+                        <Button variant="outline" onClick={() => setCreateGroupOpen(false)}>{isAr ? "إلغاء" : "Cancel"}</Button>
+                        <Button onClick={() => createGroupMutation.mutate()} disabled={!newGroupName || createGroupMutation.isPending}>
+                          {createGroupMutation.isPending && <Loader2 className="me-2 h-4 w-4 animate-spin" />}
+                          {isAr ? "إنشاء" : "Create"}
+                        </Button>
+                      </DialogFooter>
+                    </DialogContent>
+                  </Dialog>
+                </div>
+
+                {userGroupMemberships.length === 0 ? (
+                  <p className="text-sm text-muted-foreground py-4 text-center">{isAr ? "لم ينضم لأي مجموعة بعد" : "Not a member of any group yet"}</p>
+                ) : (
+                  <div className="space-y-2">
+                    {userGroupMemberships.map((m: any) => (
+                      <div key={m.id} className="flex items-center justify-between rounded-lg border p-3">
+                        <div className="flex items-center gap-2">
+                          <div className="h-3 w-3 rounded-full" style={{ backgroundColor: m.customer_groups?.color || "#888" }} />
+                          <span className="text-sm font-medium">{isAr ? m.customer_groups?.name_ar || m.customer_groups?.name : m.customer_groups?.name}</span>
+                        </div>
+                        <Button variant="ghost" size="sm" onClick={() => removeFromGroupMutation.mutate(m.id)}>
+                          <Trash2 className="h-3.5 w-3.5 text-destructive" />
+                        </Button>
+                      </div>
+                    ))}
+                  </div>
                 )}
-              </div>
-              <div className="flex gap-2">
-                <Button variant="outline" onClick={() => setEditingUserId(null)}>{isAr ? "إلغاء" : "Cancel"}</Button>
-                <Button onClick={handleSaveEdit} disabled={updateProfileMutation.isPending || updateRolesMutation.isPending}>
-                  <Save className="me-2 h-4 w-4" />
-                  {isAr ? "حفظ التغييرات" : "Save Changes"}
-                </Button>
-              </div>
+
+                {availableGroups.length > 0 ? (
+                  <div className="space-y-2">
+                    <Label className="text-sm">{isAr ? "إضافة إلى مجموعة" : "Add to Group"}</Label>
+                    <div className="flex flex-wrap gap-2">
+                      {availableGroups.map((g: any) => (
+                        <Button key={g.id} variant="outline" size="sm" onClick={() => addToGroupMutation.mutate(g.id)} disabled={addToGroupMutation.isPending}>
+                          <Plus className="me-1 h-3 w-3" />
+                          {isAr ? g.name_ar || g.name : g.name}
+                        </Button>
+                      ))}
+                    </div>
+                  </div>
+                ) : groups.length === 0 ? (
+                  <div className="rounded-lg border border-dashed p-4 text-center">
+                    <p className="text-sm text-muted-foreground mb-2">{isAr ? "لا توجد مجموعات حتى الآن" : "No groups exist yet"}</p>
+                    <Button variant="outline" size="sm" onClick={() => setCreateGroupOpen(true)}>
+                      <Plus className="me-1 h-3.5 w-3.5" />{isAr ? "إنشاء أول مجموعة" : "Create First Group"}
+                    </Button>
+                  </div>
+                ) : null}
+              </TabsContent>
+
+              {/* ── Media Tab ────── */}
+              <TabsContent value="media" className="space-y-6">
+                <input ref={avatarInputRef} type="file" accept="image/*" className="hidden" onChange={(e) => e.target.files?.[0] && handleFileUpload(e.target.files[0], "avatar")} />
+                <input ref={coverInputRef} type="file" accept="image/*" className="hidden" onChange={(e) => e.target.files?.[0] && handleFileUpload(e.target.files[0], "cover")} />
+
+                {/* Cover Image */}
+                <div className="space-y-2">
+                  <Label>{isAr ? "صورة الغلاف" : "Cover Image"}</Label>
+                  <div className="relative rounded-xl border overflow-hidden h-40 bg-muted/30 group cursor-pointer" onClick={() => coverInputRef.current?.click()}>
+                    {editingUser.cover_image_url ? (
+                      <img src={editingUser.cover_image_url} alt="Cover" className="w-full h-full object-cover" />
+                    ) : (
+                      <div className="flex items-center justify-center h-full">
+                        <ImageIcon className="h-8 w-8 text-muted-foreground/40" />
+                      </div>
+                    )}
+                    <div className="absolute inset-0 bg-foreground/0 group-hover:bg-foreground/20 transition-colors flex items-center justify-center">
+                      <div className="opacity-0 group-hover:opacity-100 transition-opacity bg-background/80 rounded-full p-2">
+                        <Upload className="h-5 w-5" />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Avatar */}
+                <div className="space-y-2">
+                  <Label>{isAr ? "صورة الملف الشخصي" : "Profile Photo"}</Label>
+                  <div className="flex items-center gap-4">
+                    <div className="relative group cursor-pointer" onClick={() => avatarInputRef.current?.click()}>
+                      <Avatar className="h-24 w-24 border-2 border-border">
+                        <AvatarImage src={editingUser.avatar_url || undefined} />
+                        <AvatarFallback className="text-2xl">{(editingUser.full_name || "U")[0].toUpperCase()}</AvatarFallback>
+                      </Avatar>
+                      <div className="absolute inset-0 rounded-full bg-foreground/0 group-hover:bg-foreground/20 transition-colors flex items-center justify-center">
+                        <Camera className="h-6 w-6 opacity-0 group-hover:opacity-100 transition-opacity text-background" />
+                      </div>
+                    </div>
+                    <div>
+                      <Button variant="outline" size="sm" onClick={() => avatarInputRef.current?.click()}>
+                        <Upload className="me-2 h-4 w-4" />{isAr ? "رفع صورة" : "Upload Photo"}
+                      </Button>
+                      <p className="text-xs text-muted-foreground mt-1">{isAr ? "JPG, PNG بحد أقصى 5MB" : "JPG, PNG up to 5MB"}</p>
+                    </div>
+                  </div>
+                </div>
+
+                {uploadMediaMutation.isPending && (
+                  <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                    <Loader2 className="h-4 w-4 animate-spin" />
+                    {isAr ? "جاري رفع الصورة..." : "Uploading..."}
+                  </div>
+                )}
+              </TabsContent>
+            </Tabs>
+
+            {/* Save bar */}
+            <Separator className="my-4" />
+            <div className="flex justify-between">
+              <Button variant="outline" onClick={() => setEditingUserId(null)}>{isAr ? "إلغاء" : "Cancel"}</Button>
+              <Button onClick={handleSaveEdit} disabled={isSaving}>
+                {isSaving && <Loader2 className="me-2 h-4 w-4 animate-spin" />}
+                <Save className="me-2 h-4 w-4" />
+                {isAr ? "حفظ جميع التغييرات" : "Save All Changes"}
+              </Button>
             </div>
           </CardContent>
         </Card>
       )}
 
-      {/* Users Table */}
+      {/* ── Users Table ─────────────────────────── */}
       <Card>
         <CardHeader>
           <CardTitle>{t("allUsers")}</CardTitle>
