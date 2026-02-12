@@ -242,10 +242,10 @@ export default function PublicProfile() {
         <div className="absolute inset-0 bg-gradient-to-t from-background via-background/30 to-transparent" />
       </div>
 
-      <main className="container flex-1 -mt-20 pb-10 relative z-10">
+      <main className="flex-1 -mt-20 pb-10 relative z-10 px-3 md:px-6 lg:px-10 max-w-3xl mx-auto w-full">
         {/* ── Hero Profile Card ── */}
-        <Card className="mb-6 overflow-visible border shadow-lg">
-          <CardContent className="p-5 md:p-8">
+        <Card className="mb-4 overflow-visible border shadow-lg rounded-2xl">
+          <CardContent className="p-4 md:p-6">
             <div className="flex flex-col md:flex-row items-center md:items-start gap-5 md:gap-7" dir={isAr ? "rtl" : "ltr"}>
               {/* Avatar */}
               <div className="-mt-20 md:-mt-24 shrink-0">
@@ -363,7 +363,7 @@ export default function PublicProfile() {
         </Card>
 
         {/* ── Follow Stats Bar ── */}
-        <Card className="mb-6">
+        <Card className="mb-4 rounded-2xl">
           <CardContent className="flex items-center justify-between p-4 gap-4 flex-wrap" dir={isAr ? "rtl" : "ltr"}>
             <div className="flex gap-6">
               <button onClick={() => setFollowListOpen("followers")} className="flex flex-col items-center hover:text-primary transition-colors">
