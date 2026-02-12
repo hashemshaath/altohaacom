@@ -24,12 +24,12 @@ import { useEntityQRCode } from "@/hooks/useQRCode";
 import { SEOHead } from "@/components/SEOHead";
 import { useFollowStats, useIsFollowing, useToggleFollow, useFollowersList } from "@/hooks/useFollow";
 import { useUserSpecialties } from "@/hooks/useSpecialties";
-import {
-  User, MapPin, Globe, Award, BadgeCheck, Instagram, Twitter, Facebook,
-  Linkedin, Youtube, ChefHat, ArrowLeft, Calendar, Earth, UserPlus,
-  UserMinus, Loader2, Users, Briefcase, GraduationCap, Building2,
-  Mail, Phone, ExternalLink, Trophy, Medal, ImageIcon,
-} from "lucide-react";
+  import {
+    User, MapPin, Globe, Award, BadgeCheck, Instagram, Twitter, Facebook,
+    Linkedin, Youtube, ChefHat, ArrowLeft, Calendar, Earth, UserPlus,
+    UserMinus, Loader2, Users, Briefcase, GraduationCap, Building2,
+    Mail, Phone, ExternalLink, Trophy, Medal, ImageIcon,
+  } from "lucide-react";
 import { countryFlag } from "@/lib/countryFlag";
 import { useAllCountries } from "@/hooks/useCountries";
 import type { Database } from "@/integrations/supabase/types";
@@ -110,6 +110,19 @@ export default function PublicProfile() {
         .select("*, culinary_entities(name, name_ar, logo_url, type)")
         .eq("user_id", profile!.user_id)
         .eq("status", "active");
+      return data || [];
+    },
+    enabled: !!profile?.user_id,
+  });
+
+  // ── System Awards ──
+  const { data: userAwards = [] } = useQuery({
+    queryKey: ["public-user-awards", profile?.user_id],
+    queryFn: async () => {
+      const { data } = await supabase.from("user_global_awards")
+        .select("*, global_awards_system(*)")
+        .eq("user_id", profile!.user_id)
+        .eq("is_public", true);
       return data || [];
     },
     enabled: !!profile?.user_id,
@@ -247,39 +260,49 @@ export default function PublicProfile() {
             </div>
             <p className="text-sm text-muted-foreground mt-0.5">@{profile.username}</p>
 
-            {/* Global Awards (Michelin Star, Tabakh Star, etc.) */}
-            {(() => {
-              const awards = (profile as any).global_awards as Array<{ name: string; name_ar?: string; icon?: string; year?: number; level?: string }> | null;
-              if (!awards || awards.length === 0) return null;
-              const AWARD_STYLES: Record<string, { bg: string; text: string; glow: string }> = {
-                michelin: { bg: "bg-destructive/10", text: "text-destructive", glow: "shadow-destructive/20" },
-                tabakh: { bg: "bg-chart-4/10", text: "text-chart-4", glow: "shadow-chart-4/20" },
-                gold: { bg: "bg-chart-4/10", text: "text-chart-4", glow: "shadow-chart-4/20" },
-                silver: { bg: "bg-muted", text: "text-muted-foreground", glow: "shadow-muted/20" },
-                bronze: { bg: "bg-chart-1/10", text: "text-chart-1", glow: "shadow-chart-1/20" },
-                default: { bg: "bg-primary/10", text: "text-primary", glow: "shadow-primary/20" },
-              };
-              return (
-                <div className="mt-2 flex flex-wrap gap-2">
-                  {awards.map((award, i) => {
-                    const key = (award.icon || "default").toLowerCase();
-                    const style = AWARD_STYLES[key] || AWARD_STYLES.default;
-                    return (
-                      <div key={i} className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-semibold ${style.bg} ${style.text} shadow-sm ${style.glow} border border-current/10`}>
-                        <Award className="h-3.5 w-3.5" />
-                        <span>{isAr ? (award.name_ar || award.name) : award.name}</span>
-                        {award.level && <span className="opacity-70">({award.level})</span>}
-                        {award.year && <span className="opacity-50 text-[10px]">{award.year}</span>}
-                      </div>
-                    );
-                  })}
-                </div>
-              );
-            })()}
+            {/* Main Title / Specialization */}
+            {specialization && (
+              <p className="text-lg font-semibold text-primary mt-1">{specialization}</p>
+            )}
+
+            {/* System Global Awards with Logos */}
+            {userAwards && userAwards.length > 0 && (
+              <div className="mt-3 flex flex-wrap gap-2">
+                {userAwards.map((userAward: any) => {
+                  const award = userAward.global_awards_system;
+                  if (!award) return null;
+                  return (
+                    <div
+                      key={userAward.id}
+                      className="group relative inline-flex flex-col items-center gap-1 rounded-xl p-2.5 bg-gradient-to-br from-primary/10 to-accent/5 border border-primary/20 hover:border-primary/40 hover:shadow-md transition-all duration-300"
+                    >
+                      {award.logo_url ? (
+                        <img
+                          src={award.logo_url}
+                          alt={award.name}
+                          className="h-10 w-10 object-contain filter drop-shadow-sm group-hover:scale-110 transition-transform"
+                        />
+                      ) : (
+                        <Trophy className="h-6 w-6 text-primary" />
+                      )}
+                      <span className="text-xs font-semibold text-center max-w-[80px] line-clamp-2">
+                        {isAr ? (award.name_ar || award.name) : award.name}
+                      </span>
+                      {userAward.level && (
+                        <span className="text-[10px] text-muted-foreground font-medium">{userAward.level}</span>
+                      )}
+                      {userAward.year_awarded && (
+                        <span className="text-[10px] text-muted-foreground">{userAward.year_awarded}</span>
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
+            )}
 
             {/* Current Position with Entity Logo */}
             {currentWork && (
-              <div className="flex items-center gap-2 mt-2">
+              <div className="flex items-center gap-2 mt-3">
                 {memberships.find((m: any) => m.culinary_entities?.name === currentWork.entity_name)?.culinary_entities?.logo_url && (
                   <img
                     src={(memberships.find((m: any) => m.culinary_entities?.name === currentWork.entity_name) as any)?.culinary_entities?.logo_url}
@@ -289,9 +312,9 @@ export default function PublicProfile() {
                 )}
                 <p className="text-sm text-muted-foreground flex items-center gap-1.5">
                   <Briefcase className="h-3.5 w-3.5 shrink-0" />
-                  <span>{isAr ? (currentWork.title_ar || currentWork.title) : currentWork.title}</span>
+                  <span className="font-medium">{isAr ? (currentWork.title_ar || currentWork.title) : currentWork.title}</span>
                   {currentWork.entity_name && (
-                    <span className="text-foreground font-medium">
+                    <span className="text-foreground font-semibold">
                       {isAr ? "في" : "at"} {currentWork.entity_name}
                     </span>
                   )}
