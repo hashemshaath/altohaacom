@@ -215,6 +215,55 @@ export default function ExhibitionDetail() {
     enabled: !!exhibition,
   });
 
+  // Fetch winning dishes (scored registrations with dish info)
+  const competitionIds = useMemo(() => linkedCompetitions?.map((c: any) => c.id) || [], [linkedCompetitions]);
+  
+  const { data: winningDishes } = useQuery({
+    queryKey: ["exhibition-winning-dishes", competitionIds],
+    queryFn: async () => {
+      if (competitionIds.length === 0) return [];
+      // Get registrations with scores for these competitions
+      const { data: regs, error } = await supabase
+        .from("competition_registrations")
+        .select(`
+          id, dish_name, dish_description, dish_image_url, competition_id, participant_id, entry_type, team_name, team_name_ar,
+          competition_scores(score, criteria_id)
+        `)
+        .in("competition_id", competitionIds)
+        .eq("status", "approved")
+        .not("dish_name", "is", null);
+      if (error) throw error;
+      
+      // Calculate total scores and filter those with scores
+      const scored = (regs || [])
+        .map((r: any) => ({
+          ...r,
+          totalScore: (r.competition_scores || []).reduce((sum: number, s: any) => sum + Number(s.score || 0), 0),
+          scoreCount: (r.competition_scores || []).length,
+        }))
+        .filter((r: any) => r.scoreCount > 0)
+        .sort((a: any, b: any) => b.totalScore - a.totalScore);
+      
+      // Get participant profiles
+      const participantIds = [...new Set(scored.map((r: any) => r.participant_id))];
+      if (participantIds.length > 0) {
+        const { data: profiles } = await supabase
+          .from("profiles")
+          .select("user_id, full_name, username, avatar_url")
+          .in("user_id", participantIds);
+        const profileMap = new Map((profiles || []).map(p => [p.user_id, p]));
+        scored.forEach((r: any) => { r.participant = profileMap.get(r.participant_id) || null; });
+      }
+      
+      // Attach competition title
+      const compMap = new Map(linkedCompetitions!.map((c: any) => [c.id, c]));
+      scored.forEach((r: any) => { r.competition = compMap.get(r.competition_id) || null; });
+      
+      return scored;
+    },
+    enabled: competitionIds.length > 0,
+  });
+
   const allJudgeIds = useMemo(() => {
     if (!linkedCompetitions) return [];
     const ids = new Set<string>();
@@ -359,6 +408,8 @@ export default function ExhibitionDetail() {
   const isOwner = user && exhibition.created_by === user.id;
   
 
+  const hasWinningDishes = winningDishes && winningDishes.length > 0;
+
   // Count content for tab badges
   const hasCompetitions = linkedCompetitions && linkedCompetitions.length > 0;
   const hasSchedule = schedule.length > 0;
@@ -366,6 +417,11 @@ export default function ExhibitionDetail() {
   const hasSpeakers = speakers.length > 0;
   const hasGallery = galleryUrls.length > 0;
   const hasSponsors = sortedSponsors.length > 0;
+
+  // Classify competitions by status
+  const liveCompetitions = linkedCompetitions?.filter((c: any) => isWithinInterval(now, { start: new Date(c.competition_start), end: new Date(c.competition_end) })) || [];
+  const upcomingCompetitions = linkedCompetitions?.filter((c: any) => isFuture(new Date(c.competition_start))) || [];
+  const pastCompetitions = linkedCompetitions?.filter((c: any) => isPast(new Date(c.competition_end))) || [];
 
   return (
     <div className="flex min-h-screen flex-col bg-background">
@@ -573,6 +629,13 @@ export default function ExhibitionDetail() {
                   <TabsTrigger value="overview" className="text-xs sm:text-sm">
                     {isAr ? "نظرة عامة" : "Overview"}
                   </TabsTrigger>
+                  {hasWinningDishes && (
+                    <TabsTrigger value="winning-dishes" className="gap-1 text-xs sm:text-sm">
+                      <Award className="h-3.5 w-3.5 hidden sm:block" />
+                      {isAr ? "الأطباق الفائزة" : "Winning Dishes"}
+                      <Badge variant="secondary" className="ms-0.5 h-4 px-1 text-[9px]">{winningDishes!.length}</Badge>
+                    </TabsTrigger>
+                  )}
                   {hasCompetitions && (
                     <TabsTrigger value="competitions" className="gap-1 text-xs sm:text-sm">
                       <Trophy className="h-3.5 w-3.5 hidden sm:block" />
@@ -771,90 +834,116 @@ export default function ExhibitionDetail() {
                 )}
               </TabsContent>
 
-              {/* === COMPETITIONS TAB === */}
-              {hasCompetitions && (
-                <TabsContent value="competitions" className="mt-6 space-y-4">
-                  {linkedCompetitions!.map((comp: any) => {
-                    const compTitle = isAr && comp.title_ar ? comp.title_ar : comp.title;
-                    const compDesc = isAr && comp.description_ar ? comp.description_ar : comp.description;
-                    const compStart = new Date(comp.competition_start);
-                    const compEnd = new Date(comp.competition_end);
-                    const compIsLive = isWithinInterval(now, { start: compStart, end: compEnd });
-                    const compIsPast = isPast(compEnd);
-                    const categories = comp.competition_categories || [];
-                    const regCount = comp.competition_registrations?.length || 0;
-                    const regEnd = comp.registration_end ? new Date(comp.registration_end) : null;
-                    const regStart = comp.registration_start ? new Date(comp.registration_start) : null;
-                    const regOpen = regStart && regEnd && !isPast(regEnd) && isPast(regStart);
-                    const maxParts = comp.max_participants;
-
-                    return (
-                      <Card key={comp.id} className="overflow-hidden transition-all hover:shadow-md hover:-translate-y-0.5">
-                        <div className="flex flex-col sm:flex-row">
-                          {comp.cover_image_url && (
-                            <div className="sm:w-48 shrink-0">
-                              <img src={comp.cover_image_url} alt={compTitle} className="h-40 w-full object-cover sm:h-full" />
+              {/* === WINNING DISHES TAB === */}
+              {hasWinningDishes && (
+                <TabsContent value="winning-dishes" className="mt-6 space-y-6">
+                  <div className="grid gap-4 sm:grid-cols-2">
+                    {winningDishes!.map((dish: any, i: number) => {
+                      const comp = dish.competition;
+                      const compTitle = comp ? (isAr && comp.title_ar ? comp.title_ar : comp.title) : "";
+                      const participantName = dish.participant?.full_name || dish.team_name || (isAr ? "متسابق" : "Contestant");
+                      const medal = i === 0 ? "🥇" : i === 1 ? "🥈" : i === 2 ? "🥉" : `#${i + 1}`;
+                      return (
+                        <Card key={dish.id} className="overflow-hidden group hover:shadow-lg transition-all hover:-translate-y-0.5">
+                          {dish.dish_image_url ? (
+                            <div className="relative h-44 overflow-hidden">
+                              <img src={dish.dish_image_url} alt={dish.dish_name} className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105" />
+                              <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
+                              <div className="absolute top-3 start-3">
+                                <Badge className="bg-chart-4/90 text-chart-4-foreground text-sm font-bold shadow-md">{medal}</Badge>
+                              </div>
+                              <div className="absolute bottom-3 start-3 end-3">
+                                <p className="font-bold text-lg leading-tight text-white drop-shadow-md">{dish.dish_name}</p>
+                              </div>
+                            </div>
+                          ) : (
+                            <div className="relative h-32 bg-gradient-to-br from-chart-4/20 via-chart-4/10 to-background flex items-center justify-center">
+                              <Trophy className="h-10 w-10 text-chart-4/30" />
+                              <div className="absolute top-3 start-3">
+                                <Badge className="bg-chart-4/90 text-chart-4-foreground text-sm font-bold shadow-md">{medal}</Badge>
+                              </div>
+                              <div className="absolute bottom-3 start-3 end-3">
+                                <p className="font-bold text-lg leading-tight">{dish.dish_name}</p>
+                              </div>
                             </div>
                           )}
-                          <div className="flex-1 p-5">
-                            <div className="flex flex-wrap items-center gap-2 mb-2">
-                              <Badge variant={compIsLive ? "default" : compIsPast ? "secondary" : "outline"} className="text-[10px]">
-                                {compIsLive ? (isAr ? "🔴 جارية" : "🔴 Live") : compIsPast ? (isAr ? "انتهت" : "Ended") : (isAr ? "قادمة" : "Upcoming")}
-                              </Badge>
-                              {regOpen && <Badge className="bg-chart-3/20 text-chart-3 border-chart-3/30 text-[10px]">{isAr ? "التسجيل مفتوح" : "Registration Open"}</Badge>}
-                            </div>
-
-                            <Link to={`/competitions/${comp.id}`} className="group">
-                              <h3 className="text-lg font-semibold group-hover:text-primary transition-colors">{compTitle}</h3>
-                            </Link>
-
-                            {compDesc && <p className="mt-1 text-sm text-muted-foreground line-clamp-2">{compDesc}</p>}
-
-                            <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-1.5 text-xs text-muted-foreground">
-                              <span className="flex items-center gap-1">
-                                <Calendar className="h-3 w-3" />
-                                {format(compStart, "MMM d")} – {format(compEnd, "MMM d, yyyy")}
-                              </span>
-                              <span className="flex items-center gap-1">
-                                <Users className="h-3 w-3" />
-                                {regCount}{maxParts ? `/${maxParts}` : ""} {isAr ? "مسجل" : "registered"}
-                              </span>
-                            </div>
-
-                            {categories.length > 0 && (
-                              <div className="mt-3 flex flex-wrap gap-1.5">
-                                {categories.slice(0, 5).map((cat: any) => (
-                                  <Badge key={cat.id} variant="secondary" className="text-[10px]">
-                                    {isAr && cat.name_ar ? cat.name_ar : cat.name}
-                                  </Badge>
-                                ))}
-                                {categories.length > 5 && (
-                                  <Badge variant="outline" className="text-[10px]">+{categories.length - 5}</Badge>
-                                )}
-                              </div>
+                          <CardContent className="p-4 space-y-2">
+                            {dish.dish_description && (
+                              <p className="text-xs text-muted-foreground line-clamp-2">{dish.dish_description}</p>
                             )}
-
-                            <div className="mt-4 flex flex-wrap gap-2">
-                              {regOpen && (
-                                <Button size="sm" asChild>
-                                  <Link to={`/competitions/${comp.id}`}>
-                                    <Trophy className="me-1.5 h-3.5 w-3.5" />
-                                    {isAr ? "سجّل الآن" : "Register Now"}
-                                  </Link>
-                                </Button>
+                            <div className="flex items-center gap-2">
+                              {dish.participant?.avatar_url ? (
+                                <Avatar className="h-6 w-6">
+                                  <AvatarImage src={dish.participant.avatar_url} />
+                                  <AvatarFallback className="text-[9px]">{participantName.slice(0, 2)}</AvatarFallback>
+                                </Avatar>
+                              ) : (
+                                <div className="h-6 w-6 rounded-full bg-primary/10 flex items-center justify-center">
+                                  <Users className="h-3 w-3 text-primary" />
+                                </div>
                               )}
-                              <Button size="sm" variant="outline" asChild>
-                                <Link to={`/competitions/${comp.id}`}>
-                                  {isAr ? "عرض التفاصيل" : "View Details"}
-                                  <ChevronRight className="ms-1 h-3 w-3" />
-                                </Link>
-                              </Button>
+                              <span className="text-sm font-medium truncate">{participantName}</span>
                             </div>
-                          </div>
+                            <div className="flex items-center justify-between">
+                              <Badge variant="outline" className="text-[10px]">{compTitle}</Badge>
+                              <span className="text-xs font-bold text-chart-4">{dish.totalScore.toFixed(1)} {isAr ? "نقطة" : "pts"}</span>
+                            </div>
+                          </CardContent>
+                        </Card>
+                      );
+                    })}
+                  </div>
+                </TabsContent>
+              )}
+
+              {/* === COMPETITIONS TAB (Classified) === */}
+              {hasCompetitions && (
+                <TabsContent value="competitions" className="mt-6 space-y-6">
+                  {/* Live Competitions */}
+                  {liveCompetitions.length > 0 && (
+                    <section>
+                      <h3 className="flex items-center gap-2 mb-3 font-semibold text-sm">
+                        <div className="h-2 w-2 rounded-full bg-chart-3 animate-pulse" />
+                        {isAr ? "مسابقات جارية" : "Live Competitions"}
+                        <Badge variant="secondary" className="text-[9px]">{liveCompetitions.length}</Badge>
+                      </h3>
+                      <div className="space-y-3">
+                        {liveCompetitions.map((comp: any) => <CompetitionClassifiedCard key={comp.id} comp={comp} isAr={isAr} now={now} />)}
+                      </div>
+                    </section>
+                  )}
+
+                  {/* Upcoming Competitions */}
+                  {upcomingCompetitions.length > 0 && (
+                    <section>
+                      <h3 className="flex items-center gap-2 mb-3 font-semibold text-sm">
+                        <div className="flex h-5 w-5 items-center justify-center rounded-md bg-primary/10">
+                          <Flag className="h-3 w-3 text-primary" />
                         </div>
-                      </Card>
-                    );
-                  })}
+                        {isAr ? "مسابقات قادمة" : "Upcoming Competitions"}
+                        <Badge variant="secondary" className="text-[9px]">{upcomingCompetitions.length}</Badge>
+                      </h3>
+                      <div className="space-y-3">
+                        {upcomingCompetitions.map((comp: any) => <CompetitionClassifiedCard key={comp.id} comp={comp} isAr={isAr} now={now} />)}
+                      </div>
+                    </section>
+                  )}
+
+                  {/* Past Competitions */}
+                  {pastCompetitions.length > 0 && (
+                    <section>
+                      <h3 className="flex items-center gap-2 mb-3 font-semibold text-sm">
+                        <div className="flex h-5 w-5 items-center justify-center rounded-md bg-muted">
+                          <CheckCircle2 className="h-3 w-3 text-muted-foreground" />
+                        </div>
+                        {isAr ? "مسابقات منتهية" : "Past Competitions"}
+                        <Badge variant="secondary" className="text-[9px]">{pastCompetitions.length}</Badge>
+                      </h3>
+                      <div className="space-y-3">
+                        {pastCompetitions.map((comp: any) => <CompetitionClassifiedCard key={comp.id} comp={comp} isAr={isAr} now={now} />)}
+                      </div>
+                    </section>
+                  )}
                 </TabsContent>
               )}
 
@@ -1381,5 +1470,88 @@ function CollapsibleDay({
         </CollapsibleContent>
       </Card>
     </Collapsible>
+  );
+}
+
+/* ---------- Competition Classified Card ---------- */
+function CompetitionClassifiedCard({ comp, isAr, now }: { comp: any; isAr: boolean; now: Date }) {
+  const compTitle = isAr && comp.title_ar ? comp.title_ar : comp.title;
+  const compDesc = isAr && comp.description_ar ? comp.description_ar : comp.description;
+  const compStart = new Date(comp.competition_start);
+  const compEnd = new Date(comp.competition_end);
+  const compIsLive = isWithinInterval(now, { start: compStart, end: compEnd });
+  const compIsPast = isPast(compEnd);
+  const categories = comp.competition_categories || [];
+  const regCount = comp.competition_registrations?.length || 0;
+  const regEnd = comp.registration_end ? new Date(comp.registration_end) : null;
+  const regStart = comp.registration_start ? new Date(comp.registration_start) : null;
+  const regOpen = regStart && regEnd && !isPast(regEnd) && isPast(regStart);
+  const maxParts = comp.max_participants;
+
+  return (
+    <Card className="overflow-hidden transition-all hover:shadow-md hover:-translate-y-0.5">
+      <div className="flex flex-col sm:flex-row">
+        {comp.cover_image_url && (
+          <div className="sm:w-48 shrink-0">
+            <img src={comp.cover_image_url} alt={compTitle} className="h-40 w-full object-cover sm:h-full" />
+          </div>
+        )}
+        <div className="flex-1 p-5">
+          <div className="flex flex-wrap items-center gap-2 mb-2">
+            <Badge variant={compIsLive ? "default" : compIsPast ? "secondary" : "outline"} className="text-[10px]">
+              {compIsLive ? (isAr ? "🔴 جارية" : "🔴 Live") : compIsPast ? (isAr ? "انتهت" : "Ended") : (isAr ? "قادمة" : "Upcoming")}
+            </Badge>
+            {regOpen && <Badge className="bg-chart-3/20 text-chart-3 border-chart-3/30 text-[10px]">{isAr ? "التسجيل مفتوح" : "Registration Open"}</Badge>}
+          </div>
+
+          <Link to={`/competitions/${comp.id}`} className="group">
+            <h3 className="text-lg font-semibold group-hover:text-primary transition-colors">{compTitle}</h3>
+          </Link>
+
+          {compDesc && <p className="mt-1 text-sm text-muted-foreground line-clamp-2">{compDesc}</p>}
+
+          <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-1.5 text-xs text-muted-foreground">
+            <span className="flex items-center gap-1">
+              <Calendar className="h-3 w-3" />
+              {format(compStart, "MMM d")} – {format(compEnd, "MMM d, yyyy")}
+            </span>
+            <span className="flex items-center gap-1">
+              <Users className="h-3 w-3" />
+              {regCount}{maxParts ? `/${maxParts}` : ""} {isAr ? "مسجل" : "registered"}
+            </span>
+          </div>
+
+          {categories.length > 0 && (
+            <div className="mt-3 flex flex-wrap gap-1.5">
+              {categories.slice(0, 5).map((cat: any) => (
+                <Badge key={cat.id} variant="secondary" className="text-[10px]">
+                  {isAr && cat.name_ar ? cat.name_ar : cat.name}
+                </Badge>
+              ))}
+              {categories.length > 5 && (
+                <Badge variant="outline" className="text-[10px]">+{categories.length - 5}</Badge>
+              )}
+            </div>
+          )}
+
+          <div className="mt-4 flex flex-wrap gap-2">
+            {regOpen && (
+              <Button size="sm" asChild>
+                <Link to={`/competitions/${comp.id}`}>
+                  <Trophy className="me-1.5 h-3.5 w-3.5" />
+                  {isAr ? "سجّل الآن" : "Register Now"}
+                </Link>
+              </Button>
+            )}
+            <Button size="sm" variant="outline" asChild>
+              <Link to={`/competitions/${comp.id}`}>
+                {isAr ? "عرض التفاصيل" : "View Details"}
+                <ChevronRight className="ms-1 h-3 w-3" />
+              </Link>
+            </Button>
+          </div>
+        </div>
+      </div>
+    </Card>
   );
 }
