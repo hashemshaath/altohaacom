@@ -101,11 +101,6 @@ export default function UserManagement() {
     gender: "",
     preferredLanguage: "",
     nationality: "",
-    educationLevel: "",
-    educationInstitution: "",
-    educationEntityId: "",
-    yearsOfExperience: "",
-    experienceLevel: "",
   });
 
   // Validation state
@@ -458,11 +453,6 @@ export default function UserManagement() {
       gender: (profile as any).gender || "",
       preferredLanguage: (profile as any).preferred_language || "",
       nationality: (profile as any).nationality || "",
-      educationLevel: (profile as any).education_level || "",
-      educationInstitution: (profile as any).education_institution || "",
-      educationEntityId: (profile as any).education_entity_id || "",
-      yearsOfExperience: (profile as any).years_of_experience?.toString() || "",
-      experienceLevel: (profile as any).experience_level || "",
     });
   };
 
@@ -500,11 +490,6 @@ export default function UserManagement() {
         gender: editPersonal.gender || null,
         preferred_language: editPersonal.preferredLanguage || null,
         nationality: editPersonal.nationality || null,
-        education_level: editPersonal.educationLevel || null,
-        education_institution: editPersonal.educationInstitution || null,
-        education_entity_id: editPersonal.educationEntityId || null,
-        years_of_experience: editPersonal.yearsOfExperience ? parseInt(editPersonal.yearsOfExperience) : null,
-        experience_level: editPersonal.experienceLevel || null,
       },
     });
     await updateRolesMutation.mutateAsync({ userId: editingUserId, roles: editRoles });
@@ -750,7 +735,7 @@ export default function UserManagement() {
                 <TabsTrigger value="roles"><Users className="me-1 h-3.5 w-3.5" />{isAr ? "الأدوار والحالة" : "Roles & Status"}</TabsTrigger>
                 <TabsTrigger value="groups"><Users className="me-1 h-3.5 w-3.5" />{isAr ? "المجموعات" : "Groups"}</TabsTrigger>
                 <TabsTrigger value="media"><ImageIcon className="me-1 h-3.5 w-3.5" />{isAr ? "الوسائط" : "Media"}</TabsTrigger>
-                <TabsTrigger value="career"><Briefcase className="me-1 h-3.5 w-3.5" />{isAr ? "السجل المهني" : "Career"}</TabsTrigger>
+                <TabsTrigger value="career"><Briefcase className="me-1 h-3.5 w-3.5" />{isAr ? "السيرة المهنية" : "Professional"}</TabsTrigger>
                 <TabsTrigger value="history"><History className="me-1 h-3.5 w-3.5" />{isAr ? "سجل التعديلات" : "History"}</TabsTrigger>
               </TabsList>
 
