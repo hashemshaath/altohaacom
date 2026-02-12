@@ -14,7 +14,7 @@ import { toast } from "@/hooks/use-toast";
 import {
   Building2, MapPin, Globe, Mail, Phone, Users, ShieldCheck,
   Bell, BellOff, ArrowLeft, ExternalLink, Share2, Calendar, Award, Target,
-  GraduationCap, BookOpen, Trophy
+  GraduationCap, BookOpen, Trophy, ArrowRight
 } from "lucide-react";
 import { QRCodeDisplay } from "@/components/qr/QRCodeDisplay";
 import { useEntityQRCode } from "@/hooks/useQRCode";
@@ -23,6 +23,7 @@ import { EntityMembersTab } from "@/components/entities/EntityMembersTab";
 import { EntityDegreesTab } from "@/components/entities/EntityDegreesTab";
 import { EntityEventsTab } from "@/components/entities/EntityEventsTab";
 import { EntityCompetitionsTab } from "@/components/entities/EntityCompetitionsTab";
+import entitiesHero from "@/assets/entities-hero.jpg";
 import type { Database } from "@/integrations/supabase/types";
 
 type EntityType = Database["public"]["Enums"]["entity_type"];
@@ -120,9 +121,8 @@ export default function EntityDetail() {
     return (
       <div className="flex min-h-screen flex-col bg-background">
         <Header />
+        <Skeleton className="h-64 w-full md:h-80" />
         <main className="container flex-1 py-6 md:py-8">
-          <Skeleton className="mb-4 h-7 w-36 rounded-md" />
-          <Skeleton className="mb-8 h-48 w-full rounded-xl md:h-64" />
           <div className="grid gap-8 lg:grid-cols-3">
             <div className="lg:col-span-2 space-y-4">
               <div className="flex items-start gap-5">
@@ -150,13 +150,16 @@ export default function EntityDetail() {
       <div className="flex min-h-screen flex-col bg-background">
         <Header />
         <main className="container flex-1 py-16 text-center">
-          <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-muted">
+          <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-muted">
             <Building2 className="h-8 w-8 text-muted-foreground/40" />
           </div>
           <p className="text-muted-foreground mb-1">{isAr ? "الجهة غير موجودة" : "Entity not found"}</p>
           <p className="text-xs text-muted-foreground/60 mb-5">{isAr ? "تحقق من الرابط وحاول مرة أخرى" : "Check the link and try again"}</p>
           <Button variant="outline" size="sm" asChild>
-            <Link to="/entities"><ArrowLeft className="me-1.5 h-4 w-4" />{isAr ? "العودة للدليل" : "Back to Directory"}</Link>
+            <Link to="/entities">
+              {isAr ? <ArrowRight className="me-1.5 h-4 w-4" /> : <ArrowLeft className="me-1.5 h-4 w-4" />}
+              {isAr ? "العودة للدليل" : "Back to Directory"}
+            </Link>
           </Button>
         </main>
         <Footer />
@@ -175,55 +178,75 @@ export default function EntityDetail() {
   const services = (entity.services as string[]) || [];
   const specializations = (entity.specializations as string[]) || [];
   const affiliates = (entity.affiliated_organizations as string[]) || [];
+  const BackIcon = isAr ? ArrowRight : ArrowLeft;
 
   return (
     <div className="flex min-h-screen flex-col bg-background">
       <Header />
 
-      <main className="container flex-1 py-6 md:py-8">
-        <Button variant="ghost" size="sm" className="mb-4 -ms-2" asChild>
-          <Link to="/entities"><ArrowLeft className="me-1.5 h-4 w-4" />{isAr ? "العودة للدليل" : "Back to Directory"}</Link>
-        </Button>
+      {/* Hero Cover Banner */}
+      <section className="relative overflow-hidden">
+        <div className="absolute inset-0">
+          {entity.cover_image_url ? (
+            <img src={entity.cover_image_url} alt={name} className="h-full w-full object-cover" />
+          ) : (
+            <img src={entitiesHero} alt="" className="h-full w-full object-cover" />
+          )}
+          <div className="absolute inset-0 bg-gradient-to-t from-background via-background/70 to-background/30" />
+          <div className="absolute inset-0 bg-gradient-to-r from-background/50 to-transparent" />
+        </div>
 
-        {/* Cover */}
-        {entity.cover_image_url && (
-          <div className="mb-8 overflow-hidden rounded-xl">
-            <img src={entity.cover_image_url} alt={name} className="h-48 w-full object-cover md:h-64" />
+        {/* Animated orbs */}
+        <div className="absolute -top-20 start-1/4 h-48 w-48 rounded-full bg-primary/10 blur-[80px] animate-pulse pointer-events-none" />
+        <div className="absolute -top-16 end-1/3 h-40 w-40 rounded-full bg-accent/10 blur-[60px] animate-pulse [animation-delay:1s] pointer-events-none" />
+
+        <div className="container relative py-12 md:py-16">
+          {/* Back button */}
+          <Button variant="ghost" size="sm" className="mb-6 -ms-2 backdrop-blur-sm bg-background/30 hover:bg-background/50" asChild>
+            <Link to="/entities">
+              <BackIcon className="me-1.5 h-4 w-4" />
+              {isAr ? "العودة للدليل" : "Back to Directory"}
+            </Link>
+          </Button>
+
+          <div className="flex items-start gap-5">
+            {/* Logo */}
+            {entity.logo_url ? (
+              <img src={entity.logo_url} alt={name} className="h-20 w-20 rounded-2xl border-2 border-background/50 object-cover shadow-xl ring-1 ring-border/10 backdrop-blur-sm md:h-24 md:w-24" />
+            ) : (
+              <div className="flex h-20 w-20 shrink-0 items-center justify-center rounded-2xl border-2 border-background/50 bg-background/80 shadow-xl ring-1 ring-border/10 backdrop-blur-sm md:h-24 md:w-24">
+                <Building2 className="h-10 w-10 text-primary" />
+              </div>
+            )}
+
+            <div className="min-w-0 flex-1">
+              <div className="mb-2 flex flex-wrap items-center gap-2">
+                <Badge variant="secondary" className="backdrop-blur-sm bg-secondary/80">{isAr ? tLabel.ar : tLabel.en}</Badge>
+                <Badge variant="outline" className="backdrop-blur-sm bg-background/50">{isAr ? sLabel.ar : sLabel.en}</Badge>
+                {entity.is_verified && (
+                  <Badge className="bg-chart-3/20 text-chart-3 backdrop-blur-sm">
+                    <ShieldCheck className="me-1 h-3 w-3" />{isAr ? "موثق" : "Verified"}
+                  </Badge>
+                )}
+              </div>
+              <h1 className="font-serif text-2xl font-bold md:text-3xl lg:text-4xl">{name}</h1>
+              {entity.abbreviation && (
+                <p className="text-muted-foreground mt-0.5">({entity.abbreviation})</p>
+              )}
+              <p className="mt-1 text-sm text-muted-foreground/70 font-mono">#{entity.entity_number}</p>
+            </div>
           </div>
-        )}
+        </div>
+      </section>
 
+      <main className="container flex-1 py-6 md:py-8">
         <div className="grid gap-8 lg:grid-cols-3">
           {/* Main Content */}
           <div className="space-y-8 lg:col-span-2">
-            {/* Header */}
-            <div className="flex items-start gap-5">
-              {entity.logo_url ? (
-                <img src={entity.logo_url} alt={name} className="h-20 w-20 rounded-xl border object-cover shadow" />
-              ) : (
-                <div className="flex h-20 w-20 shrink-0 items-center justify-center rounded-xl border bg-primary/5 shadow">
-                  <Building2 className="h-10 w-10 text-primary" />
-                </div>
-              )}
-              <div>
-                <div className="mb-2 flex flex-wrap items-center gap-2">
-                  <Badge variant="secondary">{isAr ? tLabel.ar : tLabel.en}</Badge>
-                  <Badge variant="outline">{isAr ? sLabel.ar : sLabel.en}</Badge>
-                  {entity.is_verified && (
-                    <Badge className="bg-chart-3/20 text-chart-3"><ShieldCheck className="mr-1 h-3 w-3" />{isAr ? "موثق" : "Verified"}</Badge>
-                  )}
-                </div>
-                <h1 className="font-serif text-3xl font-bold">{name}</h1>
-                {entity.abbreviation && (
-                  <p className="text-muted-foreground">({entity.abbreviation})</p>
-                )}
-                <p className="mt-1 text-sm text-muted-foreground font-mono">#{entity.entity_number}</p>
-              </div>
-            </div>
-
             {/* Description */}
             {description && (
               <div className="prose prose-sm max-w-none text-foreground/80 dark:prose-invert">
-                <p className="whitespace-pre-line">{description}</p>
+                <p className="whitespace-pre-line leading-relaxed">{description}</p>
               </div>
             )}
 
@@ -231,10 +254,12 @@ export default function EntityDetail() {
             {mission && (
               <section>
                 <h2 className="mb-3 flex items-center gap-2 text-xl font-semibold">
-                  <Target className="h-5 w-5 text-primary" />
+                  <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-primary/10">
+                    <Target className="h-4 w-4 text-primary" />
+                  </div>
                   {isAr ? "الرسالة" : "Mission"}
                 </h2>
-                <Card><CardContent className="pt-4 text-sm text-foreground/80">{mission}</CardContent></Card>
+                <Card><CardContent className="pt-4 text-sm text-foreground/80 leading-relaxed">{mission}</CardContent></Card>
               </section>
             )}
 
@@ -264,18 +289,22 @@ export default function EntityDetail() {
                 <h2 className="mb-3 text-xl font-semibold">{isAr ? "القيادة" : "Leadership"}</h2>
                 <div className="grid gap-4 sm:grid-cols-2">
                   {presidentName && (
-                    <Card>
+                    <Card className="overflow-hidden">
                       <CardContent className="pt-6 text-center">
-                        <div className="mx-auto mb-2 flex h-12 w-12 items-center justify-center rounded-full bg-primary/10"><Award className="h-6 w-6 text-primary" /></div>
+                        <div className="mx-auto mb-3 flex h-14 w-14 items-center justify-center rounded-2xl bg-primary/10 ring-1 ring-primary/15">
+                          <Award className="h-7 w-7 text-primary" />
+                        </div>
                         <p className="font-semibold">{presidentName}</p>
                         <p className="text-sm text-muted-foreground">{isAr ? "الرئيس" : "President"}</p>
                       </CardContent>
                     </Card>
                   )}
                   {secretaryName && (
-                    <Card>
+                    <Card className="overflow-hidden">
                       <CardContent className="pt-6 text-center">
-                        <div className="mx-auto mb-2 flex h-12 w-12 items-center justify-center rounded-full bg-accent/20"><Users className="h-6 w-6 text-accent-foreground" /></div>
+                        <div className="mx-auto mb-3 flex h-14 w-14 items-center justify-center rounded-2xl bg-accent/15 ring-1 ring-accent/20">
+                          <Users className="h-7 w-7 text-accent-foreground" />
+                        </div>
                         <p className="font-semibold">{secretaryName}</p>
                         <p className="text-sm text-muted-foreground">{isAr ? "الأمين العام" : "Secretary General"}</p>
                       </CardContent>
@@ -301,7 +330,7 @@ export default function EntityDetail() {
                 <h2 className="mb-3 text-xl font-semibold">{isAr ? "معرض الصور" : "Gallery"}</h2>
                 <div className="grid grid-cols-2 gap-3 md:grid-cols-3">
                   {entity.gallery_urls.map((url, i) => (
-                    <img key={i} src={url} alt={`${name} ${i + 1}`} className="rounded-lg object-cover aspect-video" />
+                    <img key={i} src={url} alt={`${name} ${i + 1}`} className="rounded-xl object-cover aspect-video shadow-sm" />
                   ))}
                 </div>
               </section>
@@ -351,7 +380,7 @@ export default function EntityDetail() {
             <Card className="overflow-hidden">
               <div className="border-b bg-muted/30 px-4 py-3">
                 <h3 className="flex items-center gap-2 text-sm font-semibold">
-                  <div className="flex h-6 w-6 items-center justify-center rounded-md bg-primary/10">
+                  <div className="flex h-6 w-6 items-center justify-center rounded-lg bg-primary/10">
                     <Building2 className="h-3.5 w-3.5 text-primary" />
                   </div>
                   {isAr ? "إجراءات" : "Actions"}
@@ -393,7 +422,7 @@ export default function EntityDetail() {
             <Card className="overflow-hidden">
               <div className="border-b bg-muted/30 px-4 py-3">
                 <h3 className="flex items-center gap-2 text-sm font-semibold">
-                  <div className="flex h-6 w-6 items-center justify-center rounded-md bg-accent/10">
+                  <div className="flex h-6 w-6 items-center justify-center rounded-lg bg-accent/10">
                     <Mail className="h-3.5 w-3.5 text-accent-foreground" />
                   </div>
                   {isAr ? "معلومات الاتصال" : "Contact Information"}
@@ -446,7 +475,7 @@ export default function EntityDetail() {
             <Card className="overflow-hidden">
               <div className="border-b bg-muted/30 px-4 py-3">
                 <h3 className="flex items-center gap-2 text-sm font-semibold">
-                  <div className="flex h-6 w-6 items-center justify-center rounded-md bg-chart-1/10">
+                  <div className="flex h-6 w-6 items-center justify-center rounded-lg bg-chart-1/10">
                     <Calendar className="h-3.5 w-3.5 text-chart-1" />
                   </div>
                   {isAr ? "معلومات سريعة" : "Quick Facts"}
