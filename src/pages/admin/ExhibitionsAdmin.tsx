@@ -3,21 +3,24 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useAuth } from "@/contexts/AuthContext";
+import { useCountries } from "@/hooks/useCountries";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Checkbox } from "@/components/ui/checkbox";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { toast } from "@/hooks/use-toast";
-import { Plus, Pencil, Trash2, Eye, Landmark, Calendar, MapPin, Building, Ticket, Tag, Globe, Save, X, Loader2, ExternalLink, Search } from "lucide-react";
+import { Plus, Pencil, Trash2, Eye, Landmark, Calendar, MapPin, Building, Ticket, Tag, Globe, Save, X, Loader2, Search, Trophy, GraduationCap, Mic } from "lucide-react";
 import { AITextOptimizer } from "@/components/admin/AITextOptimizer";
+import { OrganizerSearchSelector, type OrganizerValue } from "@/components/admin/OrganizerSearchSelector";
 import { format } from "date-fns";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import type { Database } from "@/integrations/supabase/types";
 
 type ExhibitionStatus = Database["public"]["Enums"]["exhibition_status"];
@@ -67,6 +70,7 @@ const emptyForm: Partial<ExhibitionInsert> = {
 export default function ExhibitionsAdmin() {
   const { language } = useLanguage();
   const { user } = useAuth();
+  const navigate = useNavigate();
   const queryClient = useQueryClient();
   const isAr = language === "ar";
   const [showForm, setShowForm] = useState(false);
@@ -76,6 +80,12 @@ export default function ExhibitionsAdmin() {
   const [audienceInput, setAudienceInput] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState<string>("all");
+  const [organizer, setOrganizer] = useState<OrganizerValue | null>(null);
+  const [currency, setCurrency] = useState("USD");
+  const [includesCompetitions, setIncludesCompetitions] = useState(false);
+  const [includesTraining, setIncludesTraining] = useState(false);
+  const [includesSeminars, setIncludesSeminars] = useState(false);
+  const { data: countries } = useCountries();
 
   const t = (en: string, ar: string) => isAr ? ar : en;
 
@@ -103,9 +113,23 @@ export default function ExhibitionsAdmin() {
   const saveMutation = useMutation({
     mutationFn: async () => {
       const slug = form.slug || form.title?.toLowerCase().replace(/\s+/g, "-").replace(/[^a-z0-9-]/g, "") || "";
-      const payload: ExhibitionInsert = {
-        ...form as ExhibitionInsert,
+      const payload: any = {
+        ...form,
         slug,
+        organizer_name: organizer?.name || form.organizer_name || null,
+        organizer_name_ar: organizer?.nameAr || form.organizer_name_ar || null,
+        organizer_email: organizer?.email || form.organizer_email || null,
+        organizer_phone: organizer?.phone || form.organizer_phone || null,
+        organizer_website: organizer?.website || form.organizer_website || null,
+        organizer_logo_url: organizer?.logoUrl || null,
+        organizer_type: organizer?.type || "custom",
+        organizer_entity_id: organizer?.entityId || null,
+        organizer_company_id: organizer?.companyId || null,
+        organizer_user_id: organizer?.userId || null,
+        currency,
+        includes_competitions: includesCompetitions,
+        includes_training: includesTraining,
+        includes_seminars: includesSeminars,
         tags: tagsInput ? tagsInput.split(",").map(t => t.trim()) : [],
         target_audience: audienceInput ? audienceInput.split(",").map(t => t.trim()) : [],
         created_by: user?.id,
@@ -114,15 +138,24 @@ export default function ExhibitionsAdmin() {
       if (editingId) {
         const { error } = await supabase.from("exhibitions").update(payload).eq("id", editingId);
         if (error) throw error;
+        return { slug, id: editingId, isNew: false };
       } else {
-        const { error } = await supabase.from("exhibitions").insert(payload);
+        const { data, error } = await supabase.from("exhibitions").insert(payload).select("id, slug").single();
         if (error) throw error;
+        return { slug: data.slug, id: data.id, isNew: true };
       }
     },
-    onSuccess: () => {
+    onSuccess: (result) => {
       queryClient.invalidateQueries({ queryKey: ["admin-exhibitions"] });
       toast({ title: editingId ? t("Exhibition updated", "تم تحديث الفعالية") : t("Exhibition created", "تم إنشاء الفعالية") });
-      resetForm();
+      
+      // Redirect to the exhibition detail page if it includes sub-content
+      if (result.isNew && (includesCompetitions || includesTraining || includesSeminars)) {
+        resetForm();
+        navigate(`/exhibitions/${result.slug}`);
+      } else {
+        resetForm();
+      }
     },
     onError: (err: any) => {
       toast({ title: t("Error", "خطأ"), description: err.message, variant: "destructive" });
@@ -144,6 +177,11 @@ export default function ExhibitionsAdmin() {
     setForm(emptyForm);
     setTagsInput("");
     setAudienceInput("");
+    setOrganizer(null);
+    setCurrency("USD");
+    setIncludesCompetitions(false);
+    setIncludesTraining(false);
+    setIncludesSeminars(false);
     setEditingId(null);
     setShowForm(false);
   };
@@ -165,6 +203,28 @@ export default function ExhibitionsAdmin() {
       cover_image_url: ex.cover_image_url,
       registration_deadline: ex.registration_deadline?.slice(0, 16),
     });
+    // Restore organizer from saved data
+    if (ex.organizer_entity_id || ex.organizer_company_id || ex.organizer_user_id) {
+      setOrganizer({
+        type: ex.organizer_type || "custom",
+        entityId: ex.organizer_entity_id || null,
+        companyId: ex.organizer_company_id || null,
+        userId: ex.organizer_user_id || null,
+        name: ex.organizer_name || "",
+        nameAr: ex.organizer_name_ar || "",
+        email: ex.organizer_email || undefined,
+        phone: ex.organizer_phone || undefined,
+        website: ex.organizer_website || undefined,
+        logoUrl: ex.organizer_logo_url || undefined,
+        country: ex.country || undefined,
+      });
+    } else {
+      setOrganizer(null);
+    }
+    setCurrency(ex.currency || "USD");
+    setIncludesCompetitions(ex.includes_competitions || false);
+    setIncludesTraining(ex.includes_training || false);
+    setIncludesSeminars(ex.includes_seminars || false);
     setTagsInput((ex.tags || []).join(", "));
     setAudienceInput((ex.target_audience || []).join(", "));
     setEditingId(ex.id);
@@ -393,34 +453,88 @@ export default function ExhibitionsAdmin() {
 
             {/* Section: Organizer */}
             <div>
-              <SectionHeader icon={Building} title={t("Organizer Information", "معلومات المنظم")} />
-              <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-                <div>
-                  <div className="flex items-center justify-between">
-                    <Label>{t("Organizer Name (English)", "اسم المنظم (إنجليزي)")}</Label>
-                    <AITextOptimizer text={form.organizer_name || ""} lang="en" onTranslated={v => updateField("organizer_name_ar", v)} compact />
+              <SectionHeader icon={Building} title={t("Organizer Information", "الجهة المنظمة")} />
+              <OrganizerSearchSelector
+                value={organizer}
+                onChange={(val) => {
+                  setOrganizer(val);
+                  if (val) {
+                    updateField("organizer_name", val.name);
+                    updateField("organizer_name_ar", val.nameAr);
+                    updateField("organizer_email", val.email || "");
+                    updateField("organizer_phone", val.phone || "");
+                    updateField("organizer_website", val.website || "");
+                    // Auto-set currency from country
+                    if (val.country) {
+                      const c = countries?.find(co => co.code === val.country || co.name === val.country);
+                      if (c?.currency_code) setCurrency(c.currency_code);
+                    }
+                  }
+                }}
+                label={t("Search & Select Organizer", "البحث واختيار الجهة المنظمة")}
+              />
+              {/* Manual contact override */}
+              {organizer && (
+                <div className="grid gap-4 sm:grid-cols-3 mt-4">
+                  <div>
+                    <Label>{t("Email", "البريد الإلكتروني")}</Label>
+                    <Input type="email" value={form.organizer_email || ""} onChange={e => updateField("organizer_email", e.target.value)} />
                   </div>
-                  <Input value={form.organizer_name || ""} onChange={e => updateField("organizer_name", e.target.value)} />
-                </div>
-                <div>
-                  <div className="flex items-center justify-between">
-                    <Label>{t("Organizer Name (Arabic)", "اسم المنظم (عربي)")}</Label>
-                    <AITextOptimizer text={form.organizer_name_ar || ""} lang="ar" onTranslated={v => updateField("organizer_name", v)} compact />
+                  <div>
+                    <Label>{t("Phone", "رقم الهاتف")}</Label>
+                    <Input value={form.organizer_phone || ""} onChange={e => updateField("organizer_phone", e.target.value)} />
                   </div>
-                  <Input value={form.organizer_name_ar || ""} onChange={e => updateField("organizer_name_ar", e.target.value)} dir="rtl" />
+                  <div>
+                    <Label>{t("Website", "الموقع الإلكتروني")}</Label>
+                    <Input value={form.organizer_website || ""} onChange={e => updateField("organizer_website", e.target.value)} placeholder="https://..." />
+                  </div>
                 </div>
-                <div>
-                  <Label>{t("Email", "البريد الإلكتروني")}</Label>
-                  <Input type="email" value={form.organizer_email || ""} onChange={e => updateField("organizer_email", e.target.value)} />
-                </div>
-                <div>
-                  <Label>{t("Phone", "رقم الهاتف")}</Label>
-                  <Input value={form.organizer_phone || ""} onChange={e => updateField("organizer_phone", e.target.value)} />
-                </div>
-                <div>
-                  <Label>{t("Website", "الموقع الإلكتروني")}</Label>
-                  <Input value={form.organizer_website || ""} onChange={e => updateField("organizer_website", e.target.value)} placeholder="https://..." />
-                </div>
+              )}
+            </div>
+
+            <Separator />
+
+            {/* Section: Currency */}
+            <div className="grid gap-4 sm:grid-cols-2">
+              <div>
+                <Label>{t("Currency", "العملة")}</Label>
+                <Select value={currency} onValueChange={setCurrency}>
+                  <SelectTrigger><SelectValue /></SelectTrigger>
+                  <SelectContent>
+                    {countries?.filter(c => c.currency_code).map(c => (
+                      <SelectItem key={c.code} value={c.currency_code!}>
+                        {c.currency_code} — {isAr ? (c.name_ar || c.name) : c.name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+
+            <Separator />
+
+            {/* Section: Event Content Types */}
+            <div>
+              <SectionHeader icon={Trophy} title={t("Event Content", "محتوى الفعالية")} />
+              <p className="text-xs text-muted-foreground mb-3">
+                {t("Select what this event includes. After creation, you'll be redirected to complete the details.", "حدد ما تتضمنه الفعالية. بعد الإنشاء سيتم توجيهك لإكمال التفاصيل.")}
+              </p>
+              <div className="flex flex-wrap gap-4">
+                <label className="flex items-center gap-2 cursor-pointer">
+                  <Checkbox checked={includesCompetitions} onCheckedChange={(v) => setIncludesCompetitions(!!v)} />
+                  <Trophy className="h-4 w-4 text-chart-4" />
+                  <span className="text-sm">{t("Competitions", "مسابقات")}</span>
+                </label>
+                <label className="flex items-center gap-2 cursor-pointer">
+                  <Checkbox checked={includesTraining} onCheckedChange={(v) => setIncludesTraining(!!v)} />
+                  <GraduationCap className="h-4 w-4 text-chart-2" />
+                  <span className="text-sm">{t("Training / Workshops", "تدريب / ورش عمل")}</span>
+                </label>
+                <label className="flex items-center gap-2 cursor-pointer">
+                  <Checkbox checked={includesSeminars} onCheckedChange={(v) => setIncludesSeminars(!!v)} />
+                  <Mic className="h-4 w-4 text-chart-1" />
+                  <span className="text-sm">{t("Seminars / Talks", "ندوات / محاضرات")}</span>
+                </label>
               </div>
             </div>
 
