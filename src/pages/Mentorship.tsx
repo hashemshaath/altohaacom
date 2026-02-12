@@ -42,7 +42,7 @@ export default function Mentorship() {
   return (
     <div className="min-h-screen flex flex-col bg-background">
       <SEOHead
-        title={isAr ? "برنامج الإرشاد - التُهاء" : "Mentorship Program - Altohaa"}
+        title={isAr ? "برنامج الإرشاد - الطهاة" : "Mentorship Program - Altohaa"}
         description={isAr ? "برنامج إرشاد الطهاة" : "Chef-to-student mentoring program"}
       />
       <Header />
@@ -61,7 +61,7 @@ export default function Mentorship() {
             </h1>
             <p className="mt-3 text-lg text-primary-foreground/80 max-w-2xl mx-auto">
               {isAr
-                ? "تواصل مع طهاة محترفين للتعلم والنمو في رحلتك الطهوية"
+                ? "تواصل مع طهاة محترفين للتعلم والنمو في رحلتك في الطهي"
                 : "Connect with experienced chefs to learn, grow, and advance your culinary journey"}
             </p>
             <div className="mt-6 flex flex-wrap justify-center gap-3">

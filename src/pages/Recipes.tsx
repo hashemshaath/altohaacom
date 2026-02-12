@@ -131,8 +131,8 @@ export default function Recipes() {
   return (
     <div className="min-h-screen flex flex-col bg-background">
       <SEOHead
-        title={isAr ? "الوصفات - التُهاء" : "Recipe Database - Altohaa"}
-        description={isAr ? "اكتشف وشارك الوصفات الطهوية" : "Discover and share culinary recipes with ingredients, steps, and nutritional data"}
+        title={isAr ? "الوصفات - الطهاة" : "Recipe Database - Altohaa"}
+        description={isAr ? "اكتشف وشارك وصفات الطهي" : "Discover and share culinary recipes with ingredients, steps, and nutritional data"}
       />
       <Header />
 

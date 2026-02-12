@@ -41,7 +41,7 @@ export function BadgeCard({ badge, competitionTitle, earnedAt, shareToken, showS
   const handleShare = () => {
     const url = `${window.location.origin}/verify?badge=${shareToken}`;
     const text = language === "ar"
-      ? `🏆 حصلت على شارة "${name}" ${competitionTitle ? `في ${competitionTitle}` : ""} على منصة التُهاء!`
+      ? `🏆 حصلت على شارة "${name}" ${competitionTitle ? `في ${competitionTitle}` : ""} على منصة الطهاة!`
       : `🏆 I earned the "${name}" badge ${competitionTitle ? `at ${competitionTitle}` : ""} on Altohaa!`;
 
     if (navigator.share) {

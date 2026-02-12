@@ -16,21 +16,21 @@ export function PlatformFeatures() {
   const isAr = language === "ar";
 
   const services = [
-    { icon: Trophy, title: isAr ? "المسابقات الطهوية" : "Culinary Competitions", desc: isAr ? "شارك في مسابقات طهي عالمية ومحلية مع نظام تحكيم رقمي." : "Compete in global and local culinary competitions.", href: "/competitions" },
+    { icon: Trophy, title: isAr ? "مسابقات الطهي" : "Culinary Competitions", desc: isAr ? "شارك في مسابقات طهي عالمية ومحلية مع نظام تحكيم رقمي." : "Compete in global and local culinary competitions.", href: "/competitions" },
     { icon: Coffee, title: isAr ? "تقييم وتذوق" : "Tasting & Evaluation", desc: isAr ? "نظام تقييم احترافي للقهوة والمشروبات والأطباق." : "Professional evaluation for coffee, beverages, and dishes.", href: "/tastings" },
-    { icon: Globe, title: isAr ? "المعارض والفعاليات" : "Exhibitions & Events", desc: isAr ? "اكتشف المعارض الطهوية محلياً ودولياً." : "Discover culinary exhibitions locally and internationally.", href: "/exhibitions" },
+    { icon: Globe, title: isAr ? "المعارض والفعاليات" : "Exhibitions & Events", desc: isAr ? "اكتشف معارض الطهي محلياً ودولياً." : "Discover culinary exhibitions locally and internationally.", href: "/exhibitions" },
     { icon: GraduationCap, title: isAr ? "الدروس المتقدمة" : "Masterclasses", desc: isAr ? "تعلم من أفضل الطهاة عبر دروس حصرية." : "Learn from top chefs through exclusive lessons.", href: "/masterclasses" },
     { icon: Users, title: isAr ? "المجتمع المهني" : "Professional Community", desc: isAr ? "تواصل مع طهاة ومحترفين عالميين." : "Network with chefs and culinary professionals.", href: "/community" },
-    { icon: ShoppingBag, title: isAr ? "المتجر الطهوي" : "Culinary Shop", desc: isAr ? "أدوات طهي فاخرة وكتب وخدمات مهنية." : "Premium tools, books, and professional services.", href: "/shop" },
+    { icon: ShoppingBag, title: isAr ? "متجر الطهي" : "Culinary Shop", desc: isAr ? "أدوات طهي فاخرة وكتب وخدمات مهنية." : "Premium tools, books, and professional services.", href: "/shop" },
   ];
 
   const roles = [
     { icon: ChefHat, title: isAr ? "الطهاة" : "Chefs", desc: isAr ? "اعرض مهاراتك وشارك في المسابقات" : "Showcase your skills and compete", href: "/for-chefs" },
     { icon: Scale, title: isAr ? "الحكام" : "Judges", desc: isAr ? "قيّم المتسابقين بأدوات احترافية" : "Evaluate contestants with pro tools" },
     { icon: Trophy, title: isAr ? "المنظمون" : "Organizers", desc: isAr ? "أنشئ وأدِر مسابقات بسهولة" : "Create and manage competitions easily", href: "/for-organizers" },
-    { icon: Star, title: isAr ? "الرعاة" : "Sponsors", desc: isAr ? "اربط علامتك بالتميز الطهوي" : "Connect your brand with excellence", href: "/sponsors" },
+    { icon: Star, title: isAr ? "الرعاة" : "Sponsors", desc: isAr ? "اربط علامتك بالتميز في الطهي" : "Connect your brand with excellence", href: "/sponsors" },
     { icon: Building2, title: isAr ? "الشركات" : "Companies", desc: isAr ? "حلول متكاملة لشركات الأغذية" : "Complete solutions for food companies", href: "/for-companies" },
-    { icon: BookOpen, title: isAr ? "الطلاب" : "Students", desc: isAr ? "تعلم وتطور مهاراتك الطهوية" : "Learn and develop your skills" },
+    { icon: BookOpen, title: isAr ? "الطلاب" : "Students", desc: isAr ? "تعلم وتطور مهاراتك في الطهي" : "Learn and develop your skills" },
   ];
 
   const whyUs = [
