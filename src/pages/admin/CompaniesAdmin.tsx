@@ -5,6 +5,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { CountrySelector } from "@/components/auth/CountrySelector";
 import { CompanyClassificationsPanel } from "@/components/admin/CompanyClassificationsPanel";
 import { CompanySponsorshipPanelEnhanced } from "@/components/admin/CompanySponsorshipPanelEnhanced";
+import { CompanyEditPanel } from "@/components/admin/CompanyEditPanel";
 import { useAllCountries } from "@/hooks/useCountries";
 import { countryFlag } from "@/lib/countryFlag";
 import { Button } from "@/components/ui/button";
@@ -739,112 +740,7 @@ export default function CompaniesAdmin() {
 
           {/* ── Overview Tab ── */}
           <TabsContent value="overview" className="space-y-6">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <Card>
-                <CardHeader><CardTitle>{isAr ? "معلومات الشركة" : "Company Information"}</CardTitle></CardHeader>
-                <CardContent className="space-y-4">
-                  {companyDetails.name_ar && <div><p className="text-sm text-muted-foreground">{isAr ? "الاسم (عربي)" : "Name (Arabic)"}</p><p className="font-medium" dir="rtl">{companyDetails.name_ar}</p></div>}
-                  {companyDetails.registration_number && <div><p className="text-sm text-muted-foreground">{isAr ? "رقم السجل" : "Registration #"}</p><p className="font-medium">{companyDetails.registration_number}</p></div>}
-                  {companyDetails.tax_number && <div><p className="text-sm text-muted-foreground">{isAr ? "الرقم الضريبي" : "Tax Number"}</p><p className="font-medium">{companyDetails.tax_number}</p></div>}
-                  {companyDetails.description && <div><p className="text-sm text-muted-foreground">{isAr ? "الوصف" : "Description"}</p><p>{companyDetails.description}</p></div>}
-                </CardContent>
-              </Card>
-
-              <Card>
-                <CardHeader><CardTitle>{isAr ? "معلومات الاتصال" : "Contact Information"}</CardTitle></CardHeader>
-                <CardContent className="space-y-4">
-                  {companyDetails.email && <div className="flex items-center gap-2"><Mail className="h-4 w-4 text-muted-foreground" /><span>{companyDetails.email}</span></div>}
-                  {companyDetails.phone && <div className="flex items-center gap-2"><Phone className="h-4 w-4 text-muted-foreground" /><span>{companyDetails.phone}</span></div>}
-                  {companyDetails.website && <div className="flex items-center gap-2"><Globe className="h-4 w-4 text-muted-foreground" /><a href={companyDetails.website} target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">{companyDetails.website}</a></div>}
-                  {companyDetails.address && <div className="flex items-start gap-2"><MapPin className="h-4 w-4 text-muted-foreground mt-0.5" /><div><p>{companyDetails.address}</p><p className="text-sm text-muted-foreground">{[companyDetails.city, companyDetails.country].filter(Boolean).join(", ")}</p></div></div>}
-                </CardContent>
-              </Card>
-
-              <Card>
-                <CardHeader><CardTitle>{isAr ? "الإعدادات المالية" : "Financial Settings"}</CardTitle></CardHeader>
-                <CardContent className="space-y-4">
-                  <div className="grid grid-cols-2 gap-4">
-                    <div><p className="text-sm text-muted-foreground">{isAr ? "حد الائتمان" : "Credit Limit"}</p><p className="font-medium">{Number(companyDetails.credit_limit || 0).toLocaleString()} {companyDetails.currency}</p></div>
-                    <div><p className="text-sm text-muted-foreground">{isAr ? "شروط الدفع" : "Payment Terms"}</p><p className="font-medium">{companyDetails.payment_terms || 30} {isAr ? "يوم" : "days"}</p></div>
-                  </div>
-                </CardContent>
-              </Card>
-
-              {/* Working Hours - Editable inline */}
-              <Card>
-                <CardHeader>
-                  <div className="flex items-center justify-between">
-                    <CardTitle className="flex items-center gap-2"><Clock className="h-5 w-5 text-primary" />{isAr ? "ساعات العمل" : "Working Hours"}</CardTitle>
-                    {!editingHours ? (
-                      <Button variant="outline" size="sm" onClick={() => {
-                        const wh = companyDetails.working_hours as any || {};
-                        const defaultHours: Record<string, any> = {};
-                        DAYS.forEach(d => {
-                          const key = d.en.toLowerCase();
-                          defaultHours[key] = wh[key] || { open: "09:00", close: "17:00", enabled: key !== "friday" && key !== "saturday" };
-                        });
-                        setWorkingHours(defaultHours);
-                        setEditingHours(true);
-                      }}>
-                        <Edit className="h-3 w-3 mr-1" />{isAr ? "تعديل" : "Edit"}
-                      </Button>
-                    ) : (
-                      <div className="flex gap-2">
-                        <Button size="sm" onClick={() => saveWorkingHoursMutation.mutate()} disabled={saveWorkingHoursMutation.isPending}>
-                          <Save className="h-3 w-3 mr-1" />{isAr ? "حفظ" : "Save"}
-                        </Button>
-                        <Button variant="outline" size="sm" onClick={() => setEditingHours(false)}>
-                          <X className="h-3 w-3" />
-                        </Button>
-                      </div>
-                    )}
-                  </div>
-                </CardHeader>
-                <CardContent>
-                  {editingHours ? (
-                    <div className="space-y-3">
-                      {DAYS.map(day => {
-                        const key = day.en.toLowerCase();
-                        const s = workingHours[key] || { open: "09:00", close: "17:00", enabled: true };
-                        return (
-                          <div key={key} className="flex items-center gap-3 rounded-lg border p-3">
-                            <Switch checked={s.enabled} onCheckedChange={v => setWorkingHours(prev => ({ ...prev, [key]: { ...prev[key], enabled: v } }))} />
-                            <span className="w-20 text-sm font-medium">{isAr ? day.ar : day.en}</span>
-                            {s.enabled ? (
-                              <div className="flex items-center gap-2 flex-1">
-                                <Input type="time" value={s.open} onChange={e => setWorkingHours(prev => ({ ...prev, [key]: { ...prev[key], open: e.target.value } }))} className="w-28 h-8" />
-                                <span className="text-muted-foreground">—</span>
-                                <Input type="time" value={s.close} onChange={e => setWorkingHours(prev => ({ ...prev, [key]: { ...prev[key], close: e.target.value } }))} className="w-28 h-8" />
-                              </div>
-                            ) : (
-                              <span className="text-sm text-muted-foreground">{isAr ? "مغلق" : "Closed"}</span>
-                            )}
-                          </div>
-                        );
-                      })}
-                    </div>
-                  ) : (
-                    companyDetails.working_hours && Object.keys(companyDetails.working_hours as object).length > 0 ? (
-                      <div className="space-y-2">
-                        {DAYS.map(day => {
-                          const key = day.en.toLowerCase();
-                          const h = (companyDetails.working_hours as any)?.[key];
-                          if (!h) return null;
-                          return (
-                            <div key={key} className="flex justify-between text-sm">
-                              <span className="font-medium">{isAr ? day.ar : day.en}</span>
-                              <span className="text-muted-foreground">{h.enabled ? `${h.open} - ${h.close}` : (isAr ? "مغلق" : "Closed")}</span>
-                            </div>
-                          );
-                        })}
-                      </div>
-                    ) : (
-                      <p className="text-muted-foreground text-sm">{isAr ? "لم يتم تحديد ساعات العمل" : "No working hours set"}</p>
-                    )
-                  )}
-                </CardContent>
-              </Card>
-            </div>
+            <CompanyEditPanel companyId={selectedCompany} companyDetails={companyDetails} />
           </TabsContent>
 
           {/* ── Contacts Tab ── */}
