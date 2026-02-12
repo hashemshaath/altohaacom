@@ -111,6 +111,7 @@ const LiveChatAdmin = lazy(() => import("./pages/admin/LiveChatAdmin"));
 const CRMDashboard = lazy(() => import("./pages/admin/CRMDashboard"));
 const AdvertisingAdmin = lazy(() => import("./pages/admin/AdvertisingAdmin"));
 const CRMCustomerDetail = lazy(() => import("./pages/admin/CRMCustomerDetail"));
+const TranslationSEOAdmin = lazy(() => import("./pages/admin/TranslationSEOAdmin"));
 const SupportTickets = lazy(() => import("./pages/SupportTickets"));
 
 // Company Portal Pages
@@ -265,6 +266,7 @@ const App = () => (
                    <Route path="live-chat" element={<LiveChatAdmin />} />
                    <Route path="crm" element={<CRMDashboard />} />
                    <Route path="advertising" element={<AdvertisingAdmin />} />
+                   <Route path="translation-seo" element={<TranslationSEOAdmin />} />
                 </Route>
 
                 {/* Company Portal Routes */}
