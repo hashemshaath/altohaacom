@@ -358,7 +358,7 @@ export function UserCareerTimeline({ userId, isAr }: Props) {
   // ── Render ──────────────────────────────────────
 
   return (
-    <div className="space-y-2">
+    <div className="space-y-3">
       {SECTIONS.map(section => {
         const Icon = section.icon;
         const count = sectionCounts[section.key];
@@ -366,25 +366,27 @@ export function UserCareerTimeline({ userId, isAr }: Props) {
         const isAddingHere = addingSection === section.key;
 
         return (
-          <div key={section.key} className="rounded-lg border overflow-hidden">
+          <div key={section.key} className="rounded-xl border bg-card/50 overflow-hidden transition-all hover:shadow-sm">
             {/* Section Header */}
             <button
               onClick={() => toggleSection(section.key)}
-              className="w-full flex items-center gap-3 px-4 py-3 hover:bg-muted/30 transition-colors"
+              className="w-full flex items-center gap-3 px-5 py-4 hover:bg-muted/40 transition-all group"
             >
-              <div className={`flex h-8 w-8 items-center justify-center rounded-lg shrink-0 ${section.color}`}>
-                <Icon className="h-4 w-4" />
+              <div className={`flex h-9 w-9 items-center justify-center rounded-xl shrink-0 ${section.color} group-hover:scale-110 transition-transform`}>
+                <Icon className="h-4.5 w-4.5" />
               </div>
-              <span className="text-sm font-semibold flex-1 text-start">{isAr ? section.ar : section.en}</span>
+              <div className="flex-1 text-start">
+                <span className="text-sm font-semibold">{isAr ? section.ar : section.en}</span>
+              </div>
               {count > 0 && (
-                <Badge variant="secondary" className="text-[10px] h-5 px-2">{count}</Badge>
+                <Badge variant="outline" className="text-xs h-6 px-2.5 font-medium">{count}</Badge>
               )}
-              {isExpanded ? <ChevronUp className="h-4 w-4 text-muted-foreground" /> : <ChevronDown className="h-4 w-4 text-muted-foreground" />}
+              {isExpanded ? <ChevronUp className="h-5 w-5 text-muted-foreground transition-transform" /> : <ChevronDown className="h-5 w-5 text-muted-foreground transition-transform" />}
             </button>
 
             {/* Section Content */}
             {isExpanded && (
-              <div className="border-t px-4 py-3 space-y-2">
+              <div className="border-t px-5 py-4 space-y-2.5">
                 {/* ═══ EDUCATION ═══ */}
                 {section.key === "education" && (
                   <>
@@ -395,7 +397,7 @@ export function UserCareerTimeline({ userId, isAr }: Props) {
                       <CompactRow key={r.id} icon={GraduationCap} color={section.color}
                         title={isAr ? (r.title_ar || r.title) : r.title}
                         subtitle={r.entity_name || ""}
-                        meta={`${formatDateShort(r.start_date, isAr)} — ${r.is_current ? (isAr ? "الحالي" : "Present") : formatDateShort(r.end_date, isAr)}${r.education_level ? ` · ${labelFor(r.education_level, EDUCATION_LEVELS, isAr)}` : ""}`}
+                        meta={`${formatDateShort(r.start_date, isAr)} – ${r.is_current ? (isAr ? "الحالي" : "Present") : formatDateShort(r.end_date, isAr)}${r.education_level ? ` · ${labelFor(r.education_level, EDUCATION_LEVELS, isAr)}` : ""}`}
                         isCurrent={r.is_current} isAr={isAr}
                         onEdit={() => startEditCareer(r)} onDelete={() => deleteCareerMutation.mutate(r.id)}
                       />
@@ -533,19 +535,19 @@ export function UserCareerTimeline({ userId, isAr }: Props) {
 
 function EmptyState({ icon: Icon, message }: { icon: any; message: string }) {
   return (
-    <div className="rounded-lg border border-dashed p-4 text-center">
-      <div className="mx-auto flex h-8 w-8 items-center justify-center rounded-full bg-muted mb-1.5">
-        <Icon className="h-4 w-4 text-muted-foreground" />
+    <div className="rounded-lg border border-dashed border-border/50 p-6 text-center bg-muted/20">
+      <div className="mx-auto flex h-10 w-10 items-center justify-center rounded-full bg-muted/40 mb-2">
+        <Icon className="h-5 w-5 text-muted-foreground" />
       </div>
-      <p className="text-xs text-muted-foreground">{message}</p>
+      <p className="text-xs text-muted-foreground font-medium">{message}</p>
     </div>
   );
 }
 
 function AddButton({ label, onClick }: { label: string; onClick: () => void }) {
   return (
-    <Button variant="outline" size="sm" className="w-full gap-1.5 text-xs h-8 border-dashed" onClick={onClick}>
-      <Plus className="h-3 w-3" />{label}
+    <Button variant="outline" size="sm" className="w-full gap-2 text-xs h-9 border-dashed hover:bg-muted/50 hover:border-border/80 transition-all" onClick={onClick}>
+      <Plus className="h-3.5 w-3.5" />{label}
     </Button>
   );
 }
@@ -556,30 +558,27 @@ function CompactRow({ icon: Icon, color, logoUrl, title, subtitle, meta, badge, 
   onEdit?: () => void; onDelete?: () => void;
 }) {
   return (
-    <div className="flex items-center gap-2.5 rounded-lg border px-3 py-2 hover:bg-muted/30 transition-colors group">
+    <div className="flex items-center gap-3 rounded-lg border border-border/50 px-4 py-3 hover:bg-muted/50 transition-all hover:border-border/80 group">
       {logoUrl ? (
-        <img src={logoUrl} className="h-7 w-7 rounded-md object-cover shrink-0" alt="" />
+        <img src={logoUrl} className="h-8 w-8 rounded-lg object-cover shrink-0" alt="" />
       ) : (
-        <div className={`flex h-7 w-7 items-center justify-center rounded-md shrink-0 ${color}`}>
-          <Icon className="h-3.5 w-3.5" />
+        <div className={`flex h-8 w-8 items-center justify-center rounded-lg shrink-0 ${color}`}>
+          <Icon className="h-4 w-4" />
         </div>
       )}
       <div className="flex-1 min-w-0">
-        <div className="flex items-center gap-1.5">
-          <p className="text-sm font-medium truncate">{title}</p>
-          {isCurrent && <Badge variant="default" className="text-[9px] h-4 px-1 shrink-0">{isAr ? "حالي" : "Current"}</Badge>}
+        <div className="flex items-center gap-2 flex-wrap">
+          <p className="text-sm font-semibold">{title}</p>
+          {isCurrent && <Badge variant="default" className="text-[10px] h-5 px-2 shrink-0">{isAr ? "حالي" : "Current"}</Badge>}
+          {badge && <Badge variant={badgeVariant || "secondary"} className="text-[10px] h-5 px-2 shrink-0 capitalize">{badge}</Badge>}
         </div>
-        {(subtitle || meta) && (
-          <p className="text-xs text-muted-foreground truncate">
-            {subtitle}{subtitle && meta ? " · " : ""}{meta}
-          </p>
-        )}
+        {subtitle && <p className="text-xs text-muted-foreground mt-0.5">{subtitle}</p>}
+        {meta && <p className="text-xs text-muted-foreground">{meta}</p>}
       </div>
-      {badge && <Badge variant={badgeVariant || "secondary"} className="text-[9px] h-4 px-1.5 shrink-0 capitalize">{badge}</Badge>}
       {(onEdit || onDelete) && (
-        <div className="flex items-center gap-0.5 opacity-0 group-hover:opacity-100 transition-opacity shrink-0">
-          {onEdit && <Button size="icon" variant="ghost" className="h-6 w-6" onClick={onEdit}><Pencil className="h-3 w-3" /></Button>}
-          {onDelete && <Button size="icon" variant="ghost" className="h-6 w-6 text-destructive" onClick={onDelete}><Trash2 className="h-3 w-3" /></Button>}
+        <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity shrink-0 ms-2">
+          {onEdit && <Button size="icon" variant="ghost" className="h-7 w-7 text-muted-foreground hover:text-foreground" onClick={onEdit}><Pencil className="h-3.5 w-3.5" /></Button>}
+          {onDelete && <Button size="icon" variant="ghost" className="h-7 w-7 text-destructive/60 hover:text-destructive hover:bg-destructive/5" onClick={onDelete}><Trash2 className="h-3.5 w-3.5" /></Button>}
         </div>
       )}
     </div>
@@ -590,10 +589,10 @@ function FormActions({ isAr, isPending, editingId, canSave, onSave, onCancel }: 
   isAr: boolean; isPending: boolean; editingId?: string | null; canSave: boolean; onSave: () => void; onCancel: () => void;
 }) {
   return (
-    <div className="flex gap-2 pt-1">
-      <Button variant="outline" size="sm" className="flex-1 h-8 text-xs" onClick={onCancel}>{isAr ? "إلغاء" : "Cancel"}</Button>
-      <Button size="sm" className="flex-1 h-8 text-xs gap-1" onClick={onSave} disabled={!canSave || isPending}>
-        {isPending ? <span className="animate-spin h-3 w-3 border-2 border-current border-t-transparent rounded-full" /> : <Check className="h-3 w-3" />}
+    <div className="flex gap-2.5 pt-2 border-t border-border/30">
+      <Button variant="outline" size="sm" className="flex-1 h-9 text-xs font-medium" onClick={onCancel}>{isAr ? "إلغاء" : "Cancel"}</Button>
+      <Button size="sm" className="flex-1 h-9 text-xs font-medium gap-1.5" onClick={onSave} disabled={!canSave || isPending}>
+        {isPending ? <span className="animate-spin h-3 w-3 border-2 border-current border-t-transparent rounded-full" /> : <Check className="h-3.5 w-3.5" />}
         {editingId ? (isAr ? "تحديث" : "Update") : (isAr ? "إضافة" : "Add")}
       </Button>
     </div>
@@ -606,78 +605,79 @@ function CareerForm({ form, editingId, isAr, isPending, onUpdate, onSave, onCanc
 }) {
   const isEdu = form.record_type === "education";
   return (
-    <div className="rounded-lg border bg-muted/5 p-3 space-y-2.5">
-      <div className="flex items-center justify-between">
-        <h4 className="text-xs font-semibold flex items-center gap-1.5">
-          {isEdu ? <GraduationCap className="h-3.5 w-3.5" /> : <Briefcase className="h-3.5 w-3.5" />}
+    <div className="rounded-lg border border-border/50 bg-gradient-to-br from-muted/30 to-muted/10 p-4 space-y-3">
+      <div className="flex items-center justify-between pb-2 border-b border-border/30">
+        <h4 className="text-sm font-semibold flex items-center gap-2">
+          {isEdu ? <GraduationCap className="h-4 w-4" /> : <Briefcase className="h-4 w-4" />}
           {editingId ? (isAr ? "تعديل" : "Edit") : isEdu ? (isAr ? "إضافة تعليم" : "Add Education") : (isAr ? "إضافة خبرة" : "Add Experience")}
         </h4>
-        <Button size="icon" variant="ghost" className="h-6 w-6" onClick={onCancel}><X className="h-3 w-3" /></Button>
+        <Button size="icon" variant="ghost" className="h-6 w-6" onClick={onCancel}><X className="h-3.5 w-3.5" /></Button>
       </div>
 
       <EntitySelector value={form.entity_id} entityName={form.entity_name}
         onChange={(id, name) => { onUpdate("entity_id", id); onUpdate("entity_name", name); }}
         label={isEdu ? (isAr ? "المؤسسة التعليمية" : "Institution") : (isAr ? "جهة العمل" : "Organization")} />
 
-      <div className="grid gap-2 sm:grid-cols-2">
-        <div className="space-y-1">
-          <Label className="text-[11px]">{isEdu ? (isAr ? "الدرجة (EN)" : "Degree (EN)") : (isAr ? "المسمى (EN)" : "Title (EN)")} *</Label>
-          <Input value={form.title} onChange={(e) => onUpdate("title", e.target.value)} className="h-8 text-xs" dir="ltr" />
+      <div className="grid gap-2.5 sm:grid-cols-2">
+        <div className="space-y-1.5">
+          <Label className="text-xs font-medium">{isEdu ? (isAr ? "الدرجة (EN)" : "Degree (EN)") : (isAr ? "المسمى (EN)" : "Title (EN)")} *</Label>
+          <Input value={form.title} onChange={(e) => onUpdate("title", e.target.value)} className="h-9 text-xs" dir="ltr" placeholder={isAr ? "باللغة الإنجليزية" : "In English"} />
         </div>
-        <div className="space-y-1">
-          <Label className="text-[11px]">{isEdu ? (isAr ? "الدرجة (AR)" : "Degree (AR)") : (isAr ? "المسمى (AR)" : "Title (AR)")}</Label>
-          <Input value={form.title_ar} onChange={(e) => onUpdate("title_ar", e.target.value)} className="h-8 text-xs" dir="rtl" />
+        <div className="space-y-1.5">
+          <Label className="text-xs font-medium">{isEdu ? (isAr ? "الدرجة (AR)" : "Degree (AR)") : (isAr ? "المسمى (AR)" : "Title (AR)")}</Label>
+          <Input value={form.title_ar} onChange={(e) => onUpdate("title_ar", e.target.value)} className="h-9 text-xs" dir="rtl" placeholder={isAr ? "باللغة العربية" : "In Arabic"} />
         </div>
       </div>
 
+
       {isEdu ? (
-        <div className="grid gap-2 sm:grid-cols-3">
-          <div className="space-y-1">
-            <Label className="text-[11px]">{isAr ? "المستوى" : "Level"}</Label>
+        <div className="grid gap-2.5 sm:grid-cols-3">
+          <div className="space-y-1.5">
+            <Label className="text-xs font-medium">{isAr ? "المستوى" : "Level"}</Label>
             <Select value={form.education_level} onValueChange={(v) => onUpdate("education_level", v)}>
-              <SelectTrigger className="h-8 text-xs"><SelectValue placeholder={isAr ? "اختر" : "Select"} /></SelectTrigger>
+              <SelectTrigger className="h-9 text-xs"><SelectValue placeholder={isAr ? "اختر المستوى" : "Select level"} /></SelectTrigger>
               <SelectContent>{EDUCATION_LEVELS.map(l => <SelectItem key={l.value} value={l.value}>{isAr ? l.ar : l.en}</SelectItem>)}</SelectContent>
             </Select>
           </div>
-          <div className="space-y-1">
-            <Label className="text-[11px]">{isAr ? "التخصص" : "Field"}</Label>
-            <Input value={form.field_of_study} onChange={(e) => onUpdate("field_of_study", e.target.value)} className="h-8 text-xs" />
+          <div className="space-y-1.5">
+            <Label className="text-xs font-medium">{isAr ? "التخصص" : "Field"}</Label>
+            <Input value={form.field_of_study} onChange={(e) => onUpdate("field_of_study", e.target.value)} className="h-9 text-xs" placeholder={isAr ? "مثل الطهي" : "e.g., Culinary"} />
           </div>
-          <div className="space-y-1">
-            <Label className="text-[11px]">{isAr ? "المعدل" : "Grade"}</Label>
-            <Input value={form.grade} onChange={(e) => onUpdate("grade", e.target.value)} className="h-8 text-xs" />
+          <div className="space-y-1.5">
+            <Label className="text-xs font-medium">{isAr ? "المعدل" : "Grade"}</Label>
+            <Input value={form.grade} onChange={(e) => onUpdate("grade", e.target.value)} className="h-9 text-xs" placeholder={isAr ? "مثل 4.0" : "e.g., 4.0"} />
           </div>
         </div>
       ) : (
-        <div className="grid gap-2 sm:grid-cols-2">
-          <div className="space-y-1">
-            <Label className="text-[11px]">{isAr ? "نوع التوظيف" : "Employment Type"}</Label>
+        <div className="grid gap-2.5 sm:grid-cols-2">
+          <div className="space-y-1.5">
+            <Label className="text-xs font-medium">{isAr ? "نوع التوظيف" : "Employment Type"}</Label>
             <Select value={form.employment_type} onValueChange={(v) => onUpdate("employment_type", v)}>
-              <SelectTrigger className="h-8 text-xs"><SelectValue placeholder={isAr ? "اختر" : "Select"} /></SelectTrigger>
+              <SelectTrigger className="h-9 text-xs"><SelectValue placeholder={isAr ? "اختر النوع" : "Select type"} /></SelectTrigger>
               <SelectContent>{EMPLOYMENT_TYPES.map(t => <SelectItem key={t.value} value={t.value}>{isAr ? t.ar : t.en}</SelectItem>)}</SelectContent>
             </Select>
           </div>
-          <div className="space-y-1">
-            <Label className="text-[11px]">{isAr ? "الموقع" : "Location"}</Label>
-            <Input value={form.location} onChange={(e) => onUpdate("location", e.target.value)} className="h-8 text-xs" />
+          <div className="space-y-1.5">
+            <Label className="text-xs font-medium">{isAr ? "الموقع" : "Location"}</Label>
+            <Input value={form.location} onChange={(e) => onUpdate("location", e.target.value)} className="h-9 text-xs" placeholder={isAr ? "مثل الرياض" : "e.g., Riyadh"} />
           </div>
         </div>
       )}
 
-      <div className="grid gap-2 sm:grid-cols-2">
-        <div className="space-y-1">
-          <Label className="text-[11px]">{isAr ? "من" : "From"}</Label>
-          <Input type="date" value={form.start_date} onChange={(e) => onUpdate("start_date", e.target.value)} className="h-8 text-xs" dir="ltr" />
+      <div className="grid gap-2.5 sm:grid-cols-2">
+        <div className="space-y-1.5">
+          <Label className="text-xs font-medium">{isAr ? "من" : "Start Date"}</Label>
+          <Input type="date" value={form.start_date} onChange={(e) => onUpdate("start_date", e.target.value)} className="h-9 text-xs" dir="ltr" />
         </div>
-        <div className="space-y-1">
-          <Label className="text-[11px]">{isAr ? "إلى" : "To"}</Label>
-          <Input type="date" value={form.end_date} onChange={(e) => onUpdate("end_date", e.target.value)} className="h-8 text-xs" dir="ltr" disabled={form.is_current} />
+        <div className="space-y-1.5">
+          <Label className="text-xs font-medium">{isAr ? "إلى" : "End Date"}</Label>
+          <Input type="date" value={form.end_date} onChange={(e) => onUpdate("end_date", e.target.value)} className="h-9 text-xs" dir="ltr" disabled={form.is_current} />
         </div>
       </div>
 
-      <div className="flex items-center gap-2">
+      <div className="flex items-center gap-2.5 p-2.5 rounded-lg bg-muted/40">
         <Switch checked={form.is_current} onCheckedChange={(v) => onUpdate("is_current", v)} />
-        <Label className="text-[11px] cursor-pointer">{isEdu ? (isAr ? "ما زلت أدرس" : "Currently studying") : (isAr ? "أعمل حالياً" : "Currently working")}</Label>
+        <Label className="text-xs font-medium cursor-pointer">{isEdu ? (isAr ? "ما زلت أدرس" : "Currently studying") : (isAr ? "أعمل حالياً" : "Currently working")}</Label>
       </div>
 
       <FormActions isAr={isAr} isPending={isPending} editingId={editingId} canSave={!!form.title.trim()} onSave={onSave} onCancel={onCancel} />
@@ -690,40 +690,40 @@ function MembershipForm({ form, isAr, isPending, onUpdate, onSave, onCancel }: {
   onUpdate: (key: string, value: any) => void; onSave: () => void; onCancel: () => void;
 }) {
   return (
-    <div className="rounded-lg border bg-muted/5 p-3 space-y-2.5">
-      <div className="flex items-center justify-between">
-        <h4 className="text-xs font-semibold flex items-center gap-1.5">
-          <Users className="h-3.5 w-3.5" />{isAr ? "إضافة عضوية" : "Add Membership"}
+    <div className="rounded-lg border border-border/50 bg-gradient-to-br from-muted/30 to-muted/10 p-4 space-y-3">
+      <div className="flex items-center justify-between pb-2 border-b border-border/30">
+        <h4 className="text-sm font-semibold flex items-center gap-2">
+          <Users className="h-4 w-4" />{isAr ? "إضافة عضوية" : "Add Membership"}
         </h4>
-        <Button size="icon" variant="ghost" className="h-6 w-6" onClick={onCancel}><X className="h-3 w-3" /></Button>
+        <Button size="icon" variant="ghost" className="h-6 w-6" onClick={onCancel}><X className="h-3.5 w-3.5" /></Button>
       </div>
 
       <EntitySelector value={form.entity_id} entityName=""
         onChange={(id, name) => onUpdate("entity_id", id)}
         label={isAr ? "الجمعية / المنظمة" : "Association / Organization"} />
 
-      <div className="grid gap-2 sm:grid-cols-2">
-        <div className="space-y-1">
-          <Label className="text-[11px]">{isAr ? "نوع العضوية" : "Membership Type"}</Label>
+      <div className="grid gap-2.5 sm:grid-cols-2">
+        <div className="space-y-1.5">
+          <Label className="text-xs font-medium">{isAr ? "نوع العضوية" : "Membership Type"}</Label>
           <Select value={form.membership_type} onValueChange={(v) => onUpdate("membership_type", v)}>
-            <SelectTrigger className="h-8 text-xs"><SelectValue /></SelectTrigger>
+            <SelectTrigger className="h-9 text-xs"><SelectValue placeholder={isAr ? "اختر النوع" : "Select type"} /></SelectTrigger>
             <SelectContent>{MEMBERSHIP_TYPES.map(t => <SelectItem key={t.value} value={t.value}>{isAr ? t.ar : t.en}</SelectItem>)}</SelectContent>
           </Select>
         </div>
-        <div className="space-y-1">
-          <Label className="text-[11px]">{isAr ? "تاريخ الانتساب" : "Enrollment Date"}</Label>
-          <Input type="date" value={form.enrollment_date} onChange={(e) => onUpdate("enrollment_date", e.target.value)} className="h-8 text-xs" dir="ltr" />
+        <div className="space-y-1.5">
+          <Label className="text-xs font-medium">{isAr ? "تاريخ الانتساب" : "Enrollment Date"}</Label>
+          <Input type="date" value={form.enrollment_date} onChange={(e) => onUpdate("enrollment_date", e.target.value)} className="h-9 text-xs" dir="ltr" />
         </div>
       </div>
 
-      <div className="grid gap-2 sm:grid-cols-2">
-        <div className="space-y-1">
-          <Label className="text-[11px]">{isAr ? "المسمى (EN)" : "Title (EN)"}</Label>
-          <Input value={form.title} onChange={(e) => onUpdate("title", e.target.value)} className="h-8 text-xs" dir="ltr" />
+      <div className="grid gap-2.5 sm:grid-cols-2">
+        <div className="space-y-1.5">
+          <Label className="text-xs font-medium">{isAr ? "المسمى (EN)" : "Title (EN)"}</Label>
+          <Input value={form.title} onChange={(e) => onUpdate("title", e.target.value)} className="h-9 text-xs" dir="ltr" placeholder={isAr ? "باللغة الإنجليزية" : "In English"} />
         </div>
-        <div className="space-y-1">
-          <Label className="text-[11px]">{isAr ? "المسمى (AR)" : "Title (AR)"}</Label>
-          <Input value={form.title_ar} onChange={(e) => onUpdate("title_ar", e.target.value)} className="h-8 text-xs" dir="rtl" />
+        <div className="space-y-1.5">
+          <Label className="text-xs font-medium">{isAr ? "المسمى (AR)" : "Title (AR)"}</Label>
+          <Input value={form.title_ar} onChange={(e) => onUpdate("title_ar", e.target.value)} className="h-9 text-xs" dir="rtl" placeholder={isAr ? "باللغة العربية" : "In Arabic"} />
         </div>
       </div>
 
@@ -744,25 +744,27 @@ function CompetitionAddForm({ competitions, selectedId, onSelect, isAr, isPendin
   }, [competitions, search]);
 
   return (
-    <div className="rounded-lg border bg-muted/5 p-3 space-y-2.5">
-      <div className="flex items-center justify-between">
-        <h4 className="text-xs font-semibold flex items-center gap-1.5">
-          <Trophy className="h-3.5 w-3.5" />{isAr ? "إضافة مسابقة" : "Add Competition"}
+    <div className="rounded-lg border border-border/50 bg-gradient-to-br from-muted/30 to-muted/10 p-4 space-y-3">
+      <div className="flex items-center justify-between pb-2 border-b border-border/30">
+        <h4 className="text-sm font-semibold flex items-center gap-2">
+          <Trophy className="h-4 w-4" />{isAr ? "إضافة مسابقة" : "Add Competition"}
         </h4>
-        <Button size="icon" variant="ghost" className="h-6 w-6" onClick={onCancel}><X className="h-3 w-3" /></Button>
+        <Button size="icon" variant="ghost" className="h-6 w-6" onClick={onCancel}><X className="h-3.5 w-3.5" /></Button>
       </div>
 
       <Input placeholder={isAr ? "ابحث عن مسابقة..." : "Search competitions..."}
-        value={search} onChange={(e) => setSearch(e.target.value)} className="h-8 text-xs" />
+        value={search} onChange={(e) => setSearch(e.target.value)} className="h-9 text-xs" />
 
-      <div className="max-h-40 overflow-y-auto space-y-1 rounded border p-1">
-        {filtered.length === 0 && <p className="text-xs text-muted-foreground text-center py-2">{isAr ? "لا توجد نتائج" : "No results"}</p>}
+      <div className="max-h-48 overflow-y-auto space-y-1.5 rounded-lg border border-border/40 bg-muted/20 p-2">
+        {filtered.length === 0 && <p className="text-xs text-muted-foreground text-center py-3">{isAr ? "لا توجد نتائج" : "No results"}</p>}
         {filtered.map(c => (
           <button key={c.id} onClick={() => onSelect(c.id)}
-            className={`w-full flex items-center gap-2 rounded px-2 py-1.5 text-start transition-colors text-xs ${selectedId === c.id ? "bg-primary/10 border border-primary/30" : "hover:bg-muted/50"}`}>
-            <Trophy className="h-3 w-3 shrink-0 text-chart-4" />
-            <span className="flex-1 truncate">{isAr ? (c.title_ar || c.title) : c.title}</span>
-            {c.competition_start && <span className="text-[10px] text-muted-foreground shrink-0">{formatDateShort(c.competition_start, isAr)}</span>}
+            className={`w-full flex items-center gap-2.5 rounded-lg px-3 py-2 text-start transition-all text-xs font-medium ${selectedId === c.id ? "bg-primary/15 border border-primary/40 text-primary" : "hover:bg-muted/50 border border-transparent"}`}>
+            <Trophy className="h-4 w-4 shrink-0 text-chart-4" />
+            <div className="flex-1 min-w-0">
+              <p className="truncate">{isAr ? (c.title_ar || c.title) : c.title}</p>
+            </div>
+            {c.competition_start && <span className="text-[10px] text-muted-foreground shrink-0 whitespace-nowrap">{formatDateShort(c.competition_start, isAr)}</span>}
           </button>
         ))}
       </div>
@@ -777,47 +779,47 @@ function AwardAddForm({ form, isAr, isPending, onUpdate, onSave, onCancel }: {
   onUpdate: (key: string, value: any) => void; onSave: () => void; onCancel: () => void;
 }) {
   return (
-    <div className="rounded-lg border bg-muted/5 p-3 space-y-2.5">
-      <div className="flex items-center justify-between">
-        <h4 className="text-xs font-semibold flex items-center gap-1.5">
-          <Medal className="h-3.5 w-3.5" />{isAr ? "إضافة جائزة" : "Add Award"}
+    <div className="rounded-lg border border-border/50 bg-gradient-to-br from-muted/30 to-muted/10 p-4 space-y-3">
+      <div className="flex items-center justify-between pb-2 border-b border-border/30">
+        <h4 className="text-sm font-semibold flex items-center gap-2">
+          <Medal className="h-4 w-4" />{isAr ? "إضافة جائزة" : "Add Award"}
         </h4>
-        <Button size="icon" variant="ghost" className="h-6 w-6" onClick={onCancel}><X className="h-3 w-3" /></Button>
+        <Button size="icon" variant="ghost" className="h-6 w-6" onClick={onCancel}><X className="h-3.5 w-3.5" /></Button>
       </div>
 
-      <div className="grid gap-2 sm:grid-cols-2">
-        <div className="space-y-1">
-          <Label className="text-[11px]">{isAr ? "اسم الحدث (EN)" : "Event Name (EN)"} *</Label>
-          <Input value={form.event_name} onChange={(e) => onUpdate("event_name", e.target.value)} className="h-8 text-xs" dir="ltr" />
+      <div className="grid gap-2.5 sm:grid-cols-2">
+        <div className="space-y-1.5">
+          <Label className="text-xs font-medium">{isAr ? "اسم الحدث (EN)" : "Event Name (EN)"} *</Label>
+          <Input value={form.event_name} onChange={(e) => onUpdate("event_name", e.target.value)} className="h-9 text-xs" dir="ltr" placeholder={isAr ? "باللغة الإنجليزية" : "In English"} />
         </div>
-        <div className="space-y-1">
-          <Label className="text-[11px]">{isAr ? "اسم الحدث (AR)" : "Event Name (AR)"}</Label>
-          <Input value={form.event_name_ar} onChange={(e) => onUpdate("event_name_ar", e.target.value)} className="h-8 text-xs" dir="rtl" />
-        </div>
-      </div>
-
-      <div className="grid gap-2 sm:grid-cols-2">
-        <div className="space-y-1">
-          <Label className="text-[11px]">{isAr ? "الإنجاز (EN)" : "Achievement (EN)"}</Label>
-          <Input value={form.achievement} onChange={(e) => onUpdate("achievement", e.target.value)} className="h-8 text-xs" dir="ltr" />
-        </div>
-        <div className="space-y-1">
-          <Label className="text-[11px]">{isAr ? "الإنجاز (AR)" : "Achievement (AR)"}</Label>
-          <Input value={form.achievement_ar} onChange={(e) => onUpdate("achievement_ar", e.target.value)} className="h-8 text-xs" dir="rtl" />
+        <div className="space-y-1.5">
+          <Label className="text-xs font-medium">{isAr ? "اسم الحدث (AR)" : "Event Name (AR)"}</Label>
+          <Input value={form.event_name_ar} onChange={(e) => onUpdate("event_name_ar", e.target.value)} className="h-9 text-xs" dir="rtl" placeholder={isAr ? "باللغة العربية" : "In Arabic"} />
         </div>
       </div>
 
-      <div className="grid gap-2 sm:grid-cols-2">
-        <div className="space-y-1">
-          <Label className="text-[11px]">{isAr ? "النوع" : "Type"}</Label>
+      <div className="grid gap-2.5 sm:grid-cols-2">
+        <div className="space-y-1.5">
+          <Label className="text-xs font-medium">{isAr ? "الإنجاز (EN)" : "Achievement (EN)"}</Label>
+          <Input value={form.achievement} onChange={(e) => onUpdate("achievement", e.target.value)} className="h-9 text-xs" dir="ltr" placeholder={isAr ? "مثل الفوز أو المشاركة" : "e.g., Winner or Participant"} />
+        </div>
+        <div className="space-y-1.5">
+          <Label className="text-xs font-medium">{isAr ? "الإنجاز (AR)" : "Achievement (AR)"}</Label>
+          <Input value={form.achievement_ar} onChange={(e) => onUpdate("achievement_ar", e.target.value)} className="h-9 text-xs" dir="rtl" placeholder={isAr ? "مثل الفوز أو المشاركة" : "e.g., Winner or Participant"} />
+        </div>
+      </div>
+
+      <div className="grid gap-2.5 sm:grid-cols-2">
+        <div className="space-y-1.5">
+          <Label className="text-xs font-medium">{isAr ? "النوع" : "Type"}</Label>
           <Select value={form.type} onValueChange={(v) => onUpdate("type", v)}>
-            <SelectTrigger className="h-8 text-xs"><SelectValue /></SelectTrigger>
+            <SelectTrigger className="h-9 text-xs"><SelectValue placeholder={isAr ? "اختر النوع" : "Select type"} /></SelectTrigger>
             <SelectContent>{CERTIFICATE_TYPES.map(t => <SelectItem key={t.value} value={t.value}>{isAr ? t.ar : t.en}</SelectItem>)}</SelectContent>
           </Select>
         </div>
-        <div className="space-y-1">
-          <Label className="text-[11px]">{isAr ? "التاريخ" : "Date"}</Label>
-          <Input type="date" value={form.event_date} onChange={(e) => onUpdate("event_date", e.target.value)} className="h-8 text-xs" dir="ltr" />
+        <div className="space-y-1.5">
+          <Label className="text-xs font-medium">{isAr ? "التاريخ" : "Award Date"}</Label>
+          <Input type="date" value={form.event_date} onChange={(e) => onUpdate("event_date", e.target.value)} className="h-9 text-xs" dir="ltr" />
         </div>
       </div>
 
