@@ -4881,23 +4881,31 @@ export type Database = {
           cover_image_url: string | null
           created_at: string
           created_by: string | null
+          currency: string | null
           description: string | null
           description_ar: string | null
           early_bird_deadline: string | null
           end_date: string
           gallery_urls: string[] | null
           id: string
+          includes_competitions: boolean | null
+          includes_seminars: boolean | null
+          includes_training: boolean | null
           is_featured: boolean | null
           is_free: boolean | null
           is_virtual: boolean | null
           logo_url: string | null
           map_url: string | null
           max_attendees: number | null
+          organizer_company_id: string | null
           organizer_email: string | null
+          organizer_entity_id: string | null
           organizer_logo_url: string | null
           organizer_name: string | null
           organizer_name_ar: string | null
           organizer_phone: string | null
+          organizer_type: string | null
+          organizer_user_id: string | null
           organizer_website: string | null
           registration_deadline: string | null
           registration_url: string | null
@@ -4931,23 +4939,31 @@ export type Database = {
           cover_image_url?: string | null
           created_at?: string
           created_by?: string | null
+          currency?: string | null
           description?: string | null
           description_ar?: string | null
           early_bird_deadline?: string | null
           end_date: string
           gallery_urls?: string[] | null
           id?: string
+          includes_competitions?: boolean | null
+          includes_seminars?: boolean | null
+          includes_training?: boolean | null
           is_featured?: boolean | null
           is_free?: boolean | null
           is_virtual?: boolean | null
           logo_url?: string | null
           map_url?: string | null
           max_attendees?: number | null
+          organizer_company_id?: string | null
           organizer_email?: string | null
+          organizer_entity_id?: string | null
           organizer_logo_url?: string | null
           organizer_name?: string | null
           organizer_name_ar?: string | null
           organizer_phone?: string | null
+          organizer_type?: string | null
+          organizer_user_id?: string | null
           organizer_website?: string | null
           registration_deadline?: string | null
           registration_url?: string | null
@@ -4981,23 +4997,31 @@ export type Database = {
           cover_image_url?: string | null
           created_at?: string
           created_by?: string | null
+          currency?: string | null
           description?: string | null
           description_ar?: string | null
           early_bird_deadline?: string | null
           end_date?: string
           gallery_urls?: string[] | null
           id?: string
+          includes_competitions?: boolean | null
+          includes_seminars?: boolean | null
+          includes_training?: boolean | null
           is_featured?: boolean | null
           is_free?: boolean | null
           is_virtual?: boolean | null
           logo_url?: string | null
           map_url?: string | null
           max_attendees?: number | null
+          organizer_company_id?: string | null
           organizer_email?: string | null
+          organizer_entity_id?: string | null
           organizer_logo_url?: string | null
           organizer_name?: string | null
           organizer_name_ar?: string | null
           organizer_phone?: string | null
+          organizer_type?: string | null
+          organizer_user_id?: string | null
           organizer_website?: string | null
           registration_deadline?: string | null
           registration_url?: string | null
@@ -5023,7 +5047,22 @@ export type Database = {
           virtual_link?: string | null
           website_url?: string | null
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "exhibitions_organizer_company_id_fkey"
+            columns: ["organizer_company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "exhibitions_organizer_entity_id_fkey"
+            columns: ["organizer_entity_id"]
+            isOneToOne: false
+            referencedRelation: "culinary_entities"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       faqs: {
         Row: {
