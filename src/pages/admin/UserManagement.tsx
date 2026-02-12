@@ -4,13 +4,14 @@ import { Link } from "react-router-dom";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
+import { Separator } from "@/components/ui/separator";
 import {
   Select,
   SelectContent,
@@ -26,19 +27,31 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 import { useToast } from "@/hooks/use-toast";
-import { 
-  Search, 
-  UserX, 
-  UserCheck, 
-  Eye, 
-  Shield, 
-  Ban, 
+import {
+  Search,
+  UserX,
+  UserCheck,
+  Eye,
   Edit,
   ChevronRight,
   ChevronLeft,
   X,
   Save,
+  UserPlus,
+  KeyRound,
+  Mail,
+  Trash2,
+  Loader2,
 } from "lucide-react";
 import { format } from "date-fns";
 import type { Database } from "@/integrations/supabase/types";
@@ -62,6 +75,7 @@ interface UserProfile {
   location: string | null;
   specialization: string | null;
   is_verified: boolean | null;
+  email: string | null;
   roles?: { role: AppRole }[];
 }
 
@@ -70,6 +84,7 @@ export default function UserManagement() {
   const { user } = useAuth();
   const { toast } = useToast();
   const queryClient = useQueryClient();
+  const isAr = language === "ar";
 
   const [searchQuery, setSearchQuery] = useState("");
   const [roleFilter, setRoleFilter] = useState<string>("all");
@@ -84,33 +99,37 @@ export default function UserManagement() {
   const [editStatus, setEditStatus] = useState<AccountStatus>("active");
   const [editVerified, setEditVerified] = useState(false);
 
-  // Fetch users with their roles
+  // Create user dialog
+  const [createOpen, setCreateOpen] = useState(false);
+  const [newEmail, setNewEmail] = useState("");
+  const [newPassword, setNewPassword] = useState("");
+  const [newFullName, setNewFullName] = useState("");
+  const [newUsername, setNewUsername] = useState("");
+  const [newPhone, setNewPhone] = useState("");
+  const [newRole, setNewRole] = useState<AppRole>("chef");
+
+  // Reset password dialog
+  const [resetOpen, setResetOpen] = useState(false);
+  const [resetUserId, setResetUserId] = useState("");
+  const [resetUserName, setResetUserName] = useState("");
+  const [resetNewPassword, setResetNewPassword] = useState("");
+
+  // Invite dialog
+  const [inviteOpen, setInviteOpen] = useState(false);
+  const [inviteEmail, setInviteEmail] = useState("");
+
   const { data: usersData, isLoading } = useQuery({
     queryKey: ["adminUsers", searchQuery, roleFilter, statusFilter, page],
     queryFn: async () => {
       let query = supabase
         .from("profiles")
-        .select(`
-          id,
-          user_id,
-          full_name,
-          username,
-          account_number,
-          account_status,
-          membership_tier,
-          avatar_url,
-          created_at,
-          location,
-          specialization,
-          is_verified
-        `, { count: "exact" })
+        .select(`id, user_id, full_name, username, account_number, account_status, membership_tier, avatar_url, created_at, location, specialization, is_verified, email`, { count: "exact" })
         .order("created_at", { ascending: false })
         .range(page * pageSize, (page + 1) * pageSize - 1);
 
       if (searchQuery) {
-        query = query.or(`full_name.ilike.%${searchQuery}%,username.ilike.%${searchQuery}%,account_number.ilike.%${searchQuery}%`);
+        query = query.or(`full_name.ilike.%${searchQuery}%,username.ilike.%${searchQuery}%,account_number.ilike.%${searchQuery}%,email.ilike.%${searchQuery}%`);
       }
-
       if (statusFilter !== "all") {
         query = query.eq("account_status", statusFilter as AccountStatus);
       }
@@ -118,35 +137,34 @@ export default function UserManagement() {
       const { data: profiles, error, count } = await query;
       if (error) throw error;
 
-      // Fetch roles for each user
-      const userIds = profiles?.map(p => p.user_id) || [];
-      const { data: roles } = await supabase
-        .from("user_roles")
-        .select("user_id, role")
-        .in("user_id", userIds);
+      const userIds = profiles?.map((p) => p.user_id) || [];
+      const { data: roles } = await supabase.from("user_roles").select("user_id, role").in("user_id", userIds);
 
-      // Merge roles with profiles
-      const users = profiles?.map(profile => ({
+      const users = profiles?.map((profile) => ({
         ...profile,
-        roles: roles?.filter(r => r.user_id === profile.user_id) || [],
+        roles: roles?.filter((r) => r.user_id === profile.user_id) || [],
       })) as UserProfile[];
 
       return { users, totalCount: count || 0 };
     },
   });
 
-  // Filter by role client-side
-  const filteredUsers = usersData?.users?.filter(u => {
+  const filteredUsers = usersData?.users?.filter((u) => {
     if (roleFilter === "all") return true;
-    return u.roles?.some(r => r.role === roleFilter);
+    return u.roles?.some((r) => r.role === roleFilter);
   });
 
   const totalPages = Math.ceil((usersData?.totalCount || 0) / pageSize);
+  const editingUser = filteredUsers?.find((u) => u.user_id === editingUserId);
 
-  // Get currently editing user
-  const editingUser = filteredUsers?.find(u => u.user_id === editingUserId);
+  // Edge function caller
+  const callAdminFn = async (body: Record<string, unknown>) => {
+    const { data, error } = await supabase.functions.invoke("admin-user-management", { body });
+    if (error) throw new Error(error.message);
+    if (data?.error) throw new Error(data.error);
+    return data;
+  };
 
-  // Update user status mutation
   const updateStatusMutation = useMutation({
     mutationFn: async ({ userId, newStatus, reason }: { userId: string; newStatus: AccountStatus; reason?: string }) => {
       const { error } = await supabase
@@ -157,128 +175,101 @@ export default function UserManagement() {
           suspended_at: newStatus === "suspended" || newStatus === "banned" ? new Date().toISOString() : null,
         })
         .eq("user_id", userId);
-
       if (error) throw error;
-
-      await supabase.from("admin_actions").insert({
-        admin_id: user!.id,
-        target_user_id: userId,
-        action_type: `${newStatus}_user`,
-        details: { reason },
-      });
+      await supabase.from("admin_actions").insert([{ admin_id: user!.id, target_user_id: userId, action_type: `${newStatus}_user`, details: { reason } }]);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["adminUsers"] });
-      toast({ title: language === "ar" ? "تم تحديث الحالة" : "Status updated" });
+      toast({ title: isAr ? "تم تحديث الحالة" : "Status updated" });
     },
-    onError: (error) => {
-      toast({ variant: "destructive", title: "Error", description: error.message });
-    },
+    onError: (e) => toast({ variant: "destructive", title: isAr ? "خطأ" : "Error", description: e.message }),
   });
 
-  // Update user roles mutation
   const updateRolesMutation = useMutation({
     mutationFn: async ({ userId, roles }: { userId: string; roles: AppRole[] }) => {
-      // Delete existing roles
       await supabase.from("user_roles").delete().eq("user_id", userId);
-      
-      // Insert new roles
       if (roles.length > 0) {
-        const roleInserts = roles.map(role => ({ user_id: userId, role }));
-        const { error } = await supabase.from("user_roles").insert(roleInserts);
+        const { error } = await supabase.from("user_roles").insert(roles.map((role) => ({ user_id: userId, role })));
         if (error) throw error;
       }
-
-      await supabase.from("admin_actions").insert({
-        admin_id: user!.id,
-        target_user_id: userId,
-        action_type: "update_roles",
-        details: { roles },
-      });
+      await supabase.from("admin_actions").insert([{ admin_id: user!.id, target_user_id: userId, action_type: "update_roles", details: { roles } }]);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["adminUsers"] });
-      toast({ title: language === "ar" ? "تم تحديث الأدوار" : "Roles updated" });
+      toast({ title: isAr ? "تم تحديث الأدوار" : "Roles updated" });
     },
-    onError: (error) => {
-      toast({ variant: "destructive", title: "Error", description: error.message });
-    },
+    onError: (e) => toast({ variant: "destructive", title: isAr ? "خطأ" : "Error", description: e.message }),
   });
 
-  // Update user profile mutation
   const updateProfileMutation = useMutation({
-    mutationFn: async ({ userId, updates }: { userId: string; updates: Partial<UserProfile> }) => {
-      const { error } = await supabase
-        .from("profiles")
-        .update(updates)
-        .eq("user_id", userId);
-
+    mutationFn: async ({ userId, updates }: { userId: string; updates: Record<string, unknown> }) => {
+      const { error } = await supabase.from("profiles").update(updates).eq("user_id", userId);
       if (error) throw error;
-
-      await supabase.from("admin_actions").insert({
-        admin_id: user!.id,
-        target_user_id: userId,
-        action_type: "update_profile",
-        details: updates,
-      });
+      await supabase.from("admin_actions").insert([{ admin_id: user!.id, target_user_id: userId, action_type: "update_profile", details: updates as any }]);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["adminUsers"] });
-      toast({ title: language === "ar" ? "تم تحديث الملف الشخصي" : "Profile updated" });
+      toast({ title: isAr ? "تم تحديث الملف الشخصي" : "Profile updated" });
     },
-    onError: (error) => {
-      toast({ variant: "destructive", title: "Error", description: error.message });
+    onError: (e) => toast({ variant: "destructive", title: isAr ? "خطأ" : "Error", description: e.message }),
+  });
+
+  const createUserMutation = useMutation({
+    mutationFn: async () => callAdminFn({ action: "create_user", email: newEmail, password: newPassword, full_name: newFullName, username: newUsername, phone: newPhone, role: newRole }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["adminUsers"] });
+      toast({ title: isAr ? "تم إنشاء المستخدم" : "User created successfully" });
+      setCreateOpen(false);
+      setNewEmail(""); setNewPassword(""); setNewFullName(""); setNewUsername(""); setNewPhone("");
     },
+    onError: (e) => toast({ variant: "destructive", title: isAr ? "خطأ" : "Error", description: e.message }),
+  });
+
+  const resetPasswordMutation = useMutation({
+    mutationFn: async () => callAdminFn({ action: "reset_password", user_id: resetUserId, new_password: resetNewPassword }),
+    onSuccess: () => {
+      toast({ title: isAr ? "تم إعادة تعيين كلمة المرور" : "Password reset successfully" });
+      setResetOpen(false);
+      setResetNewPassword("");
+    },
+    onError: (e) => toast({ variant: "destructive", title: isAr ? "خطأ" : "Error", description: e.message }),
+  });
+
+  const inviteMutation = useMutation({
+    mutationFn: async () => callAdminFn({ action: "send_invitation", email: inviteEmail }),
+    onSuccess: () => {
+      toast({ title: isAr ? "تم إرسال الدعوة" : "Invitation sent successfully" });
+      setInviteOpen(false);
+      setInviteEmail("");
+    },
+    onError: (e) => toast({ variant: "destructive", title: isAr ? "خطأ" : "Error", description: e.message }),
   });
 
   const handleOpenEdit = (profile: UserProfile) => {
     setEditingUserId(profile.user_id);
-    setEditRoles(profile.roles?.map(r => r.role) || []);
+    setEditRoles(profile.roles?.map((r) => r.role) || []);
     setEditMembership(profile.membership_tier || "basic");
     setEditStatus(profile.account_status || "pending");
     setEditVerified(profile.is_verified || false);
   };
 
-  const handleCancelEdit = () => {
-    setEditingUserId(null);
-  };
-
   const handleSaveEdit = async () => {
     if (!editingUserId) return;
-
-    // Update profile details
-    await updateProfileMutation.mutateAsync({
-      userId: editingUserId,
-      updates: {
-        membership_tier: editMembership,
-        account_status: editStatus,
-        is_verified: editVerified,
-      },
-    });
-
-    // Update roles
-    await updateRolesMutation.mutateAsync({
-      userId: editingUserId,
-      roles: editRoles,
-    });
-
+    await updateProfileMutation.mutateAsync({ userId: editingUserId, updates: { membership_tier: editMembership, account_status: editStatus, is_verified: editVerified } });
+    await updateRolesMutation.mutateAsync({ userId: editingUserId, roles: editRoles });
     setEditingUserId(null);
   };
 
   const toggleRole = (role: AppRole) => {
-    setEditRoles(prev => 
-      prev.includes(role) 
-        ? prev.filter(r => r !== role)
-        : [...prev, role]
-    );
+    setEditRoles((prev) => prev.includes(role) ? prev.filter((r) => r !== role) : [...prev, role]);
   };
 
   const getStatusBadge = (status: AccountStatus | null) => {
     const config: Record<AccountStatus, { variant: "default" | "secondary" | "destructive" | "outline"; label: string }> = {
-      active: { variant: "default", label: language === "ar" ? "نشط" : "Active" },
-      pending: { variant: "secondary", label: language === "ar" ? "معلق" : "Pending" },
-      suspended: { variant: "destructive", label: language === "ar" ? "موقوف" : "Suspended" },
-      banned: { variant: "destructive", label: language === "ar" ? "محظور" : "Banned" },
+      active: { variant: "default", label: isAr ? "نشط" : "Active" },
+      pending: { variant: "secondary", label: isAr ? "معلق" : "Pending" },
+      suspended: { variant: "destructive", label: isAr ? "موقوف" : "Suspended" },
+      banned: { variant: "destructive", label: isAr ? "محظور" : "Banned" },
     };
     const cfg = config[status || "pending"];
     return <Badge variant={cfg.variant}>{cfg.label}</Badge>;
@@ -299,54 +290,160 @@ export default function UserManagement() {
 
   return (
     <div className="space-y-6">
+      {/* Header */}
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <h1 className="font-serif text-2xl font-bold">{t("userManagement")}</h1>
           <p className="text-sm text-muted-foreground">
-            {language === "ar" ? "إدارة المستخدمين والصلاحيات" : "Manage users, roles, and permissions"}
+            {isAr ? "إدارة المستخدمين وإنشاء الحسابات وإعادة تعيين كلمات المرور والدعوات" : "Manage users, create accounts, reset passwords, and send invitations"}
           </p>
         </div>
-        <div className="flex items-center gap-2">
+        <div className="flex flex-wrap items-center gap-2">
           <Badge variant="outline" className="text-sm">
-            {usersData?.totalCount || 0} {language === "ar" ? "مستخدم" : "users"}
+            {usersData?.totalCount || 0} {isAr ? "مستخدم" : "users"}
           </Badge>
           <UserStatsQuickView language={language} />
         </div>
       </div>
 
+      {/* Action Buttons */}
+      <div className="flex flex-wrap gap-2">
+        <Dialog open={createOpen} onOpenChange={setCreateOpen}>
+          <DialogTrigger asChild>
+            <Button>
+              <UserPlus className="me-2 h-4 w-4" />
+              {isAr ? "إنشاء مستخدم" : "Create User"}
+            </Button>
+          </DialogTrigger>
+          <DialogContent className="max-w-md">
+            <DialogHeader>
+              <DialogTitle>{isAr ? "إنشاء حساب جديد" : "Create New Account"}</DialogTitle>
+              <DialogDescription>{isAr ? "أنشئ حساب مستخدم جديد مع بيانات الدخول الأولية" : "Create a new user account with initial login credentials"}</DialogDescription>
+            </DialogHeader>
+            <div className="space-y-4">
+              <div className="space-y-2">
+                <Label>{isAr ? "الاسم الكامل" : "Full Name"} *</Label>
+                <Input value={newFullName} onChange={(e) => setNewFullName(e.target.value)} placeholder={isAr ? "أدخل الاسم الكامل" : "Enter full name"} />
+              </div>
+              <div className="space-y-2">
+                <Label>{isAr ? "البريد الإلكتروني" : "Email"} *</Label>
+                <Input type="email" value={newEmail} onChange={(e) => setNewEmail(e.target.value)} placeholder="user@example.com" dir="ltr" />
+              </div>
+              <div className="space-y-2">
+                <Label>{isAr ? "كلمة المرور" : "Password"} *</Label>
+                <Input type="password" value={newPassword} onChange={(e) => setNewPassword(e.target.value)} placeholder={isAr ? "كلمة المرور الأولية" : "Initial password"} dir="ltr" />
+              </div>
+              <div className="space-y-2">
+                <Label>{isAr ? "اسم المستخدم" : "Username"}</Label>
+                <Input value={newUsername} onChange={(e) => setNewUsername(e.target.value)} placeholder="username" dir="ltr" />
+              </div>
+              <div className="space-y-2">
+                <Label>{isAr ? "رقم الهاتف" : "Phone"}</Label>
+                <Input value={newPhone} onChange={(e) => setNewPhone(e.target.value)} placeholder="+966..." dir="ltr" />
+              </div>
+              <div className="space-y-2">
+                <Label>{isAr ? "الدور" : "Role"}</Label>
+                <Select value={newRole} onValueChange={(v) => setNewRole(v as AppRole)}>
+                  <SelectTrigger><SelectValue /></SelectTrigger>
+                  <SelectContent>
+                    {ALL_ROLES.map((role) => (
+                      <SelectItem key={role} value={role}>{t(role as any)}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+            <DialogFooter>
+              <Button variant="outline" onClick={() => setCreateOpen(false)}>{isAr ? "إلغاء" : "Cancel"}</Button>
+              <Button onClick={() => createUserMutation.mutate()} disabled={!newEmail || !newPassword || !newFullName || createUserMutation.isPending}>
+                {createUserMutation.isPending && <Loader2 className="me-2 h-4 w-4 animate-spin" />}
+                {isAr ? "إنشاء الحساب" : "Create Account"}
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
+
+        <Dialog open={inviteOpen} onOpenChange={setInviteOpen}>
+          <DialogTrigger asChild>
+            <Button variant="outline">
+              <Mail className="me-2 h-4 w-4" />
+              {isAr ? "إرسال دعوة" : "Send Invitation"}
+            </Button>
+          </DialogTrigger>
+          <DialogContent className="max-w-md">
+            <DialogHeader>
+              <DialogTitle>{isAr ? "إرسال دعوة" : "Send Invitation"}</DialogTitle>
+              <DialogDescription>{isAr ? "أرسل دعوة عبر البريد الإلكتروني لتفعيل الحساب وتغيير كلمة المرور" : "Send an email invitation to activate account and change password"}</DialogDescription>
+            </DialogHeader>
+            <div className="space-y-4">
+              <div className="space-y-2">
+                <Label>{isAr ? "البريد الإلكتروني" : "Email"}</Label>
+                <Input type="email" value={inviteEmail} onChange={(e) => setInviteEmail(e.target.value)} placeholder="user@example.com" dir="ltr" />
+              </div>
+            </div>
+            <DialogFooter>
+              <Button variant="outline" onClick={() => setInviteOpen(false)}>{isAr ? "إلغاء" : "Cancel"}</Button>
+              <Button onClick={() => inviteMutation.mutate()} disabled={!inviteEmail || inviteMutation.isPending}>
+                {inviteMutation.isPending && <Loader2 className="me-2 h-4 w-4 animate-spin" />}
+                {isAr ? "إرسال الدعوة" : "Send Invitation"}
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
+      </div>
+
+      {/* Reset Password Dialog */}
+      <Dialog open={resetOpen} onOpenChange={setResetOpen}>
+        <DialogContent className="max-w-md">
+          <DialogHeader>
+            <DialogTitle>{isAr ? "إعادة تعيين كلمة المرور" : "Reset Password"}</DialogTitle>
+            <DialogDescription>{isAr ? `إعادة تعيين كلمة المرور للمستخدم: ${resetUserName}` : `Reset password for user: ${resetUserName}`}</DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4">
+            <div className="space-y-2">
+              <Label>{isAr ? "كلمة المرور الجديدة" : "New Password"}</Label>
+              <Input type="password" value={resetNewPassword} onChange={(e) => setResetNewPassword(e.target.value)} placeholder={isAr ? "كلمة المرور الجديدة" : "New password"} dir="ltr" />
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setResetOpen(false)}>{isAr ? "إلغاء" : "Cancel"}</Button>
+            <Button onClick={() => resetPasswordMutation.mutate()} disabled={!resetNewPassword || resetPasswordMutation.isPending}>
+              {resetPasswordMutation.isPending && <Loader2 className="me-2 h-4 w-4 animate-spin" />}
+              {isAr ? "إعادة التعيين" : "Reset Password"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
       {/* Filters */}
       <Card>
         <CardContent className="flex flex-wrap gap-4 pt-6">
           <div className="relative flex-1 min-w-[200px]">
-            <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+            <Search className="absolute start-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
             <Input
-              placeholder={language === "ar" ? "بحث بالاسم أو اسم المستخدم أو رقم الحساب..." : "Search by name, username, or account number..."}
+              placeholder={isAr ? "بحث بالاسم أو البريد أو رقم الحساب..." : "Search by name, email, or account number..."}
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="pl-10"
+              className="ps-10"
             />
           </div>
           <Select value={roleFilter} onValueChange={setRoleFilter}>
-            <SelectTrigger className="w-40">
-              <SelectValue placeholder={t("filterByRole")} />
-            </SelectTrigger>
+            <SelectTrigger className="w-40"><SelectValue placeholder={t("filterByRole")} /></SelectTrigger>
             <SelectContent>
               <SelectItem value="all">{t("allUsers")}</SelectItem>
-              {ALL_ROLES.map(role => (
+              {ALL_ROLES.map((role) => (
                 <SelectItem key={role} value={role}>{t(role as any)}</SelectItem>
               ))}
             </SelectContent>
           </Select>
           <Select value={statusFilter} onValueChange={setStatusFilter}>
-            <SelectTrigger className="w-40">
-              <SelectValue placeholder={t("filterByStatus")} />
-            </SelectTrigger>
+            <SelectTrigger className="w-40"><SelectValue placeholder={t("filterByStatus")} /></SelectTrigger>
             <SelectContent>
               <SelectItem value="all">{t("allUsers")}</SelectItem>
               <SelectItem value="active">{t("active")}</SelectItem>
               <SelectItem value="pending">{t("pending")}</SelectItem>
               <SelectItem value="suspended">{t("suspended")}</SelectItem>
-              <SelectItem value="banned">{language === "ar" ? "محظور" : "Banned"}</SelectItem>
+              <SelectItem value="banned">{isAr ? "محظور" : "Banned"}</SelectItem>
             </SelectContent>
           </Select>
         </CardContent>
@@ -364,43 +461,32 @@ export default function UserManagement() {
                 </Avatar>
                 <div>
                   <CardTitle className="text-lg">{editingUser.full_name || "Unknown"}</CardTitle>
-                  <p className="text-sm text-muted-foreground">@{editingUser.username}</p>
+                  <p className="text-sm text-muted-foreground">@{editingUser.username} · {editingUser.email}</p>
                 </div>
               </div>
-              <Button variant="ghost" size="icon" onClick={handleCancelEdit}>
+              <Button variant="ghost" size="icon" onClick={() => setEditingUserId(null)}>
                 <X className="h-4 w-4" />
               </Button>
             </div>
           </CardHeader>
           <CardContent className="space-y-6">
-            <p className="text-sm text-muted-foreground">
-              {language === "ar" ? "تعديل بيانات المستخدم والصلاحيات" : "Edit user details and permissions"}
-            </p>
-
             <div className="grid gap-6 md:grid-cols-2">
-              {/* Account Status */}
               <div className="space-y-2">
-                <Label>{language === "ar" ? "حالة الحساب" : "Account Status"}</Label>
+                <Label>{isAr ? "حالة الحساب" : "Account Status"}</Label>
                 <Select value={editStatus} onValueChange={(v) => setEditStatus(v as AccountStatus)}>
-                  <SelectTrigger>
-                    <SelectValue />
-                  </SelectTrigger>
+                  <SelectTrigger><SelectValue /></SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="pending">{language === "ar" ? "معلق" : "Pending"}</SelectItem>
-                    <SelectItem value="active">{language === "ar" ? "نشط" : "Active"}</SelectItem>
-                    <SelectItem value="suspended">{language === "ar" ? "موقوف" : "Suspended"}</SelectItem>
-                    <SelectItem value="banned">{language === "ar" ? "محظور" : "Banned"}</SelectItem>
+                    <SelectItem value="pending">{isAr ? "معلق" : "Pending"}</SelectItem>
+                    <SelectItem value="active">{isAr ? "نشط" : "Active"}</SelectItem>
+                    <SelectItem value="suspended">{isAr ? "موقوف" : "Suspended"}</SelectItem>
+                    <SelectItem value="banned">{isAr ? "محظور" : "Banned"}</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
-
-              {/* Membership Tier */}
               <div className="space-y-2">
-                <Label>{language === "ar" ? "مستوى العضوية" : "Membership Tier"}</Label>
+                <Label>{isAr ? "مستوى العضوية" : "Membership Tier"}</Label>
                 <Select value={editMembership} onValueChange={(v) => setEditMembership(v as MembershipTier)}>
-                  <SelectTrigger>
-                    <SelectValue />
-                  </SelectTrigger>
+                  <SelectTrigger><SelectValue /></SelectTrigger>
                   <SelectContent>
                     <SelectItem value="basic">{t("basic")}</SelectItem>
                     <SelectItem value="professional">{t("professionalTier")}</SelectItem>
@@ -409,55 +495,42 @@ export default function UserManagement() {
                 </Select>
               </div>
             </div>
-
-            {/* Verified Status */}
             <div className="flex items-center gap-3">
-              <Checkbox
-                id="verified"
-                checked={editVerified}
-                onCheckedChange={(checked) => setEditVerified(!!checked)}
-              />
-              <Label htmlFor="verified" className="cursor-pointer">
-                {language === "ar" ? "حساب موثق" : "Verified Account"}
-              </Label>
+              <Checkbox id="verified" checked={editVerified} onCheckedChange={(checked) => setEditVerified(!!checked)} />
+              <Label htmlFor="verified" className="cursor-pointer">{isAr ? "حساب موثق" : "Verified Account"}</Label>
             </div>
-
-            {/* Roles */}
             <div className="space-y-3">
-              <Label>{language === "ar" ? "الأدوار" : "Roles"}</Label>
+              <Label>{isAr ? "الأدوار" : "Roles"}</Label>
               <div className="grid grid-cols-2 gap-2 md:grid-cols-4">
-                {ALL_ROLES.map(role => (
-                  <div
-                    key={role}
-                    onClick={() => toggleRole(role)}
-                    className={`flex cursor-pointer items-center gap-2 rounded-xl border p-3 transition-all duration-200 hover:shadow-sm ${
-                      editRoles.includes(role)
-                        ? "border-primary bg-primary/5"
-                        : "border-border hover:border-primary/50"
-                    }`}
-                  >
-                    <Checkbox
-                      checked={editRoles.includes(role)}
-                      onCheckedChange={() => toggleRole(role)}
-                    />
+                {ALL_ROLES.map((role) => (
+                  <div key={role} onClick={() => toggleRole(role)} className={`flex cursor-pointer items-center gap-2 rounded-xl border p-3 transition-all duration-200 hover:shadow-sm ${editRoles.includes(role) ? "border-primary bg-primary/5" : "border-border hover:border-primary/50"}`}>
+                    <Checkbox checked={editRoles.includes(role)} onCheckedChange={() => toggleRole(role)} />
                     <span className="text-sm capitalize">{t(role as any)}</span>
                   </div>
                 ))}
               </div>
             </div>
-
-            {/* Action Buttons */}
-            <div className="flex gap-2 justify-end pt-4 border-t">
-              <Button variant="outline" onClick={handleCancelEdit}>
-                {language === "ar" ? "إلغاء" : "Cancel"}
-              </Button>
-              <Button 
-                onClick={handleSaveEdit}
-                disabled={updateProfileMutation.isPending || updateRolesMutation.isPending}
-              >
-                <Save className="mr-2 h-4 w-4" />
-                {language === "ar" ? "حفظ التغييرات" : "Save Changes"}
-              </Button>
+            <Separator />
+            <div className="flex flex-wrap gap-2 justify-between">
+              <div className="flex gap-2">
+                <Button variant="outline" size="sm" onClick={() => { setResetUserId(editingUser.user_id); setResetUserName(editingUser.full_name || ""); setResetOpen(true); }}>
+                  <KeyRound className="me-2 h-4 w-4" />
+                  {isAr ? "إعادة تعيين كلمة المرور" : "Reset Password"}
+                </Button>
+                {editingUser.email && (
+                  <Button variant="outline" size="sm" onClick={() => { setInviteEmail(editingUser.email || ""); setInviteOpen(true); }}>
+                    <Mail className="me-2 h-4 w-4" />
+                    {isAr ? "إرسال دعوة" : "Send Invitation"}
+                  </Button>
+                )}
+              </div>
+              <div className="flex gap-2">
+                <Button variant="outline" onClick={() => setEditingUserId(null)}>{isAr ? "إلغاء" : "Cancel"}</Button>
+                <Button onClick={handleSaveEdit} disabled={updateProfileMutation.isPending || updateRolesMutation.isPending}>
+                  <Save className="me-2 h-4 w-4" />
+                  {isAr ? "حفظ التغييرات" : "Save Changes"}
+                </Button>
+              </div>
             </div>
           </CardContent>
         </Card>
@@ -480,13 +553,13 @@ export default function UserManagement() {
               <Table>
                 <TableHeader>
                   <TableRow>
-                    <TableHead>{language === "ar" ? "المستخدم" : "User"}</TableHead>
+                    <TableHead>{isAr ? "المستخدم" : "User"}</TableHead>
                     <TableHead>{t("accountNumber")}</TableHead>
-                    <TableHead>{language === "ar" ? "الأدوار" : "Roles"}</TableHead>
+                    <TableHead>{isAr ? "الأدوار" : "Roles"}</TableHead>
                     <TableHead>{t("membershipTier")}</TableHead>
                     <TableHead>{t("accountStatus")}</TableHead>
-                    <TableHead>{language === "ar" ? "تاريخ الإنشاء" : "Created"}</TableHead>
-                    <TableHead className="w-32">{language === "ar" ? "الإجراءات" : "Actions"}</TableHead>
+                    <TableHead>{isAr ? "تاريخ الإنشاء" : "Created"}</TableHead>
+                    <TableHead className="w-40">{isAr ? "الإجراءات" : "Actions"}</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -496,82 +569,49 @@ export default function UserManagement() {
                         <div className="flex items-center gap-3">
                           <Avatar className="h-8 w-8">
                             <AvatarImage src={profile.avatar_url || undefined} />
-                            <AvatarFallback>
-                              {(profile.full_name || "U")[0].toUpperCase()}
-                            </AvatarFallback>
+                            <AvatarFallback>{(profile.full_name || "U")[0].toUpperCase()}</AvatarFallback>
                           </Avatar>
                           <div>
                             <div className="flex items-center gap-1">
                               <p className="font-medium">{profile.full_name || "No name"}</p>
-                              {profile.is_verified && (
-                                <Badge variant="secondary" className="h-4 px-1 text-[10px]">✓</Badge>
-                              )}
+                              {profile.is_verified && <Badge variant="secondary" className="h-4 px-1 text-[10px]">✓</Badge>}
                             </div>
-                            {profile.username && (
-                              <p className="text-xs text-muted-foreground">@{profile.username}</p>
-                            )}
+                            <p className="text-xs text-muted-foreground">
+                              {profile.username && `@${profile.username}`}
+                              {profile.email && ` · ${profile.email}`}
+                            </p>
                           </div>
                         </div>
                       </TableCell>
-                      <TableCell className="font-mono text-sm">
-                        {profile.account_number || "-"}
-                      </TableCell>
+                      <TableCell className="font-mono text-sm">{profile.account_number || "-"}</TableCell>
                       <TableCell>
                         <div className="flex flex-wrap gap-1">
                           {profile.roles?.map((r) => (
-                            <Badge key={r.role} variant="outline" className="text-xs">
-                              {t(r.role as any)}
-                            </Badge>
+                            <Badge key={r.role} variant="outline" className="text-xs">{t(r.role as any)}</Badge>
                           ))}
-                          {(!profile.roles || profile.roles.length === 0) && (
-                            <span className="text-xs text-muted-foreground">-</span>
-                          )}
+                          {(!profile.roles || profile.roles.length === 0) && <span className="text-xs text-muted-foreground">-</span>}
                         </div>
                       </TableCell>
                       <TableCell>{getMembershipBadge(profile.membership_tier)}</TableCell>
                       <TableCell>{getStatusBadge(profile.account_status)}</TableCell>
-                      <TableCell className="text-xs text-muted-foreground">
-                        {format(new Date(profile.created_at), "MMM d, yyyy")}
-                      </TableCell>
+                      <TableCell className="text-xs text-muted-foreground">{format(new Date(profile.created_at), "MMM d, yyyy")}</TableCell>
                       <TableCell>
                         <div className="flex gap-1">
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            asChild
-                          >
-                            <Link to={`/admin/users/${profile.user_id}`}>
-                              <Eye className="h-4 w-4" />
-                            </Link>
+                          <Button variant="ghost" size="sm" asChild>
+                            <Link to={`/admin/users/${profile.user_id}`}><Eye className="h-4 w-4" /></Link>
                           </Button>
-                          <Button
-                            variant={editingUserId === profile.user_id ? "secondary" : "ghost"}
-                            size="sm"
-                            onClick={() => editingUserId === profile.user_id ? handleCancelEdit() : handleOpenEdit(profile)}
-                          >
+                          <Button variant={editingUserId === profile.user_id ? "secondary" : "ghost"} size="sm" onClick={() => editingUserId === profile.user_id ? setEditingUserId(null) : handleOpenEdit(profile)}>
                             <Edit className="h-4 w-4" />
                           </Button>
+                          <Button variant="ghost" size="sm" onClick={() => { setResetUserId(profile.user_id); setResetUserName(profile.full_name || ""); setResetOpen(true); }}>
+                            <KeyRound className="h-4 w-4" />
+                          </Button>
                           {profile.account_status === "active" ? (
-                            <Button
-                              variant="ghost"
-                              size="sm"
-                              onClick={() => updateStatusMutation.mutate({
-                                userId: profile.user_id,
-                                newStatus: "suspended",
-                                reason: "Admin action",
-                              })}
-                            >
+                            <Button variant="ghost" size="sm" onClick={() => updateStatusMutation.mutate({ userId: profile.user_id, newStatus: "suspended", reason: "Admin action" })}>
                               <UserX className="h-4 w-4" />
                             </Button>
                           ) : (
-                            <Button
-                              variant="ghost"
-                              size="sm"
-                              onClick={() => updateStatusMutation.mutate({
-                                userId: profile.user_id,
-                                newStatus: "active",
-                              })}
-                            >
+                            <Button variant="ghost" size="sm" onClick={() => updateStatusMutation.mutate({ userId: profile.user_id, newStatus: "active" })}>
                               <UserCheck className="h-4 w-4" />
                             </Button>
                           )}
@@ -582,27 +622,16 @@ export default function UserManagement() {
                 </TableBody>
               </Table>
 
-              {/* Pagination */}
               {totalPages > 1 && (
                 <div className="mt-4 flex items-center justify-between">
                   <p className="text-sm text-muted-foreground">
-                    {language === "ar" ? `صفحة ${page + 1} من ${totalPages}` : `Page ${page + 1} of ${totalPages}`}
+                    {isAr ? `صفحة ${page + 1} من ${totalPages}` : `Page ${page + 1} of ${totalPages}`}
                   </p>
                   <div className="flex gap-2">
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={() => setPage(p => Math.max(0, p - 1))}
-                      disabled={page === 0}
-                    >
+                    <Button variant="outline" size="sm" onClick={() => setPage((p) => Math.max(0, p - 1))} disabled={page === 0}>
                       <ChevronLeft className="h-4 w-4" />
                     </Button>
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={() => setPage(p => Math.min(totalPages - 1, p + 1))}
-                      disabled={page >= totalPages - 1}
-                    >
+                    <Button variant="outline" size="sm" onClick={() => setPage((p) => Math.min(totalPages - 1, p + 1))} disabled={page >= totalPages - 1}>
                       <ChevronRight className="h-4 w-4" />
                     </Button>
                   </div>
