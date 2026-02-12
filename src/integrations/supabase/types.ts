@@ -7384,6 +7384,7 @@ export type Database = {
           full_name: string | null
           full_name_ar: string | null
           gender: string | null
+          global_awards: Json | null
           id: string
           instagram: string | null
           is_verified: boolean | null
@@ -7446,6 +7447,7 @@ export type Database = {
           full_name?: string | null
           full_name_ar?: string | null
           gender?: string | null
+          global_awards?: Json | null
           id?: string
           instagram?: string | null
           is_verified?: boolean | null
@@ -7510,6 +7512,7 @@ export type Database = {
           full_name?: string | null
           full_name_ar?: string | null
           gender?: string | null
+          global_awards?: Json | null
           id?: string
           instagram?: string | null
           is_verified?: boolean | null
