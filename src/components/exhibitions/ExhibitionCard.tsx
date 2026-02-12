@@ -132,7 +132,9 @@ export function ExhibitionCard({ exhibition, language }: ExhibitionCardProps) {
 
         {/* Content */}
         <CardContent className="flex flex-1 flex-col p-4">
-          <h3 className="line-clamp-2 text-base font-semibold leading-snug group-hover:text-primary transition-colors">{title}</h3>
+          <h3 className="line-clamp-2 text-base font-semibold leading-snug group-hover:text-primary transition-colors">
+            {title} <span className="text-primary font-bold">{new Date(exhibition.start_date).getFullYear()}</span>
+          </h3>
           {organizer && (
             <p className="mt-0.5 text-[11px] text-muted-foreground">{isAr ? "المنظم:" : "By:"} {organizer}</p>
           )}

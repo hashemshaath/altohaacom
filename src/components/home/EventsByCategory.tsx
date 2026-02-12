@@ -31,7 +31,7 @@ export function EventsByCategory() {
     queryFn: async () => {
       const { data } = await supabase
         .from("exhibitions")
-        .select("id, title, title_ar, cover_image_url, status, start_date, city, country, slug")
+        .select("id, title, title_ar, cover_image_url, status, start_date, city, country, slug, venue, venue_ar, organizer_name, organizer_name_ar, logo_url")
         .in("status", ["upcoming", "active"])
         .order("start_date", { ascending: true })
         .limit(6);
@@ -76,7 +76,9 @@ export function EventsByCategory() {
                 </Badge>
               </div>
               <CardContent className="p-3">
-                <h3 className="mb-1.5 line-clamp-2 text-sm font-semibold group-hover:text-primary transition-colors">{title}</h3>
+                <h3 className="mb-1.5 line-clamp-2 text-sm font-semibold group-hover:text-primary transition-colors">
+                  {title} {item.competition_start && <span className="text-primary font-bold">{new Date(item.competition_start).getFullYear()}</span>}
+                </h3>
                 <div className="space-y-1 text-[11px] text-muted-foreground">
                   {item.competition_start && (
                     <div className="flex items-center gap-1.5"><Calendar className="h-3 w-3 shrink-0" /><span>{format(new Date(item.competition_start), "MMM d, yyyy")}</span></div>
@@ -102,6 +104,9 @@ export function EventsByCategory() {
       items: exhibitions,
       renderItem: (item: any) => {
         const title = isAr && item.title_ar ? item.title_ar : item.title;
+        const venue = isAr && item.venue_ar ? item.venue_ar : item.venue;
+        const organizerName = isAr && item.organizer_name_ar ? item.organizer_name_ar : item.organizer_name;
+        const year = item.start_date ? new Date(item.start_date).getFullYear() : "";
         return (
           <Link key={item.id} to={`/exhibitions/${item.slug || item.id}`} className="group block">
             <Card className="h-full overflow-hidden border-border/50 transition-all duration-300 hover:shadow-lg hover:-translate-y-1 hover:border-primary/20">
@@ -114,13 +119,26 @@ export function EventsByCategory() {
                 <Badge className="absolute end-2 top-2 text-[10px]">{item.status === "open" ? (isAr ? "نشط" : "Active") : (isAr ? "قادم" : "Upcoming")}</Badge>
               </div>
               <CardContent className="p-3">
-                <h3 className="mb-1.5 line-clamp-2 text-sm font-semibold group-hover:text-primary transition-colors">{title}</h3>
+                <h3 className="mb-1.5 line-clamp-2 text-sm font-semibold group-hover:text-primary transition-colors">
+                  {title} {year && <span className="text-primary font-bold">{year}</span>}
+                </h3>
+                {/* Organizer with logo */}
+                {organizerName && (
+                  <div className="mb-1.5 flex items-center gap-1.5 text-[11px] text-muted-foreground">
+                    {item.logo_url ? (
+                      <img src={item.logo_url} alt={organizerName} className="h-4 w-4 rounded object-contain shrink-0" />
+                    ) : (
+                      <Globe className="h-3 w-3 shrink-0 text-primary/60" />
+                    )}
+                    <span className="truncate">{organizerName}</span>
+                  </div>
+                )}
                 <div className="space-y-1 text-[11px] text-muted-foreground">
                   {item.start_date && (
                     <div className="flex items-center gap-1.5"><Calendar className="h-3 w-3 shrink-0" /><span>{format(new Date(item.start_date), "MMM d, yyyy")}</span></div>
                   )}
-                  {item.city && (
-                    <div className="flex items-center gap-1.5"><MapPin className="h-3 w-3 shrink-0" /><span>{item.city}{item.country ? `, ${item.country}` : ""}</span></div>
+                  {(venue || item.city) && (
+                    <div className="flex items-center gap-1.5"><MapPin className="h-3 w-3 shrink-0" /><span className="truncate">{venue || ""}{item.city ? (venue ? `, ${item.city}` : item.city) : ""}{item.country ? `, ${item.country}` : ""}</span></div>
                   )}
                 </div>
               </CardContent>
