@@ -1,4 +1,5 @@
 import { useState, useRef } from "react";
+import { BulkImportPanel } from "@/components/admin/BulkImportPanel";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useLanguage } from "@/i18n/LanguageContext";
@@ -17,7 +18,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Progress } from "@/components/ui/progress";
 import { toast } from "@/hooks/use-toast";
 import { CountrySelector } from "@/components/auth/CountrySelector";
-import { Plus, Pencil, Trash2, Building2, Eye, EyeOff, ShieldCheck, Search, Users, Settings2, Languages, Upload, Image, X, Loader2, MapPin } from "lucide-react";
+import { Plus, Pencil, Trash2, Building2, Eye, EyeOff, ShieldCheck, Search, Users, Settings2, Languages, Upload, Image, X, Loader2, MapPin, FileSpreadsheet } from "lucide-react";
 import { EntitySubModulesPanel } from "@/components/entities/EntitySubModulesPanel";
 import { ChefSearchSelector } from "@/components/admin/ChefSearchSelector";
 import { EntityLeadershipPanel } from "@/components/entities/EntityLeadershipPanel";
@@ -102,6 +103,7 @@ export default function EntitiesAdmin() {
   const queryClient = useQueryClient();
   const isAr = language === "ar";
   const [showForm, setShowForm] = useState(false);
+  const [showBulkImport, setShowBulkImport] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [form, setForm] = useState<FormData>(emptyForm);
   const [searchQuery, setSearchQuery] = useState("");
@@ -492,9 +494,15 @@ export default function EntitiesAdmin() {
             {isAr ? "إدارة الجمعيات والجهات الحكومية والخاصة المتعلقة بالطهي" : "Manage culinary associations, government & private entities"}
           </p>
         </div>
-        <Button onClick={() => { resetForm(); setShowForm(!showForm); }}>
-          {showForm ? (isAr ? "إغلاق" : "Close") : <><Plus className="me-2 h-4 w-4" />{isAr ? "إضافة جهة" : "Add Entity"}</>}
-        </Button>
+        <div className="flex gap-2">
+          <Button variant={showBulkImport ? "secondary" : "outline"} size="sm" onClick={() => { setShowBulkImport(!showBulkImport); if (showForm) setShowForm(false); }}>
+            <FileSpreadsheet className="me-2 h-4 w-4" />
+            {isAr ? "استيراد جماعي" : "Bulk Import"}
+          </Button>
+          <Button onClick={() => { resetForm(); setShowForm(!showForm); if (showBulkImport) setShowBulkImport(false); }}>
+            {showForm ? (isAr ? "إغلاق" : "Close") : <><Plus className="me-2 h-4 w-4" />{isAr ? "إضافة جهة" : "Add Entity"}</>}
+          </Button>
+        </div>
       </div>
 
       {/* Stats */}
@@ -511,6 +519,11 @@ export default function EntitiesAdmin() {
           </Card>
         ))}
       </div>
+
+      {/* Bulk Import */}
+      {showBulkImport && (
+        <BulkImportPanel entityType="entity" onImportComplete={() => { setShowBulkImport(false); queryClient.invalidateQueries({ queryKey: ["admin-entities"] }); }} />
+      )}
 
       {/* Inline Form */}
       {showForm && (

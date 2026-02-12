@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { BulkImportPanel } from "@/components/admin/BulkImportPanel";
 import { Link } from "react-router-dom";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useLanguage } from "@/i18n/LanguageContext";
@@ -13,7 +14,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { useToast } from "@/hooks/use-toast";
-import { Search, MoreHorizontal, Eye, Edit, Trash2, Trophy, Users, Calendar, MapPin, Sparkles, Filter, Globe, Plus, Copy, Building2, Tag } from "lucide-react";
+import { Search, MoreHorizontal, Eye, Edit, Trash2, Trophy, Users, Calendar, MapPin, Sparkles, Filter, Globe, Plus, Copy, Building2, Tag, FileSpreadsheet } from "lucide-react";
 import { format } from "date-fns";
 import type { Database } from "@/integrations/supabase/types";
 
@@ -47,6 +48,7 @@ export default function CompetitionsAdmin() {
   const [organizerFilter, setOrganizerFilter] = useState<string>("all");
   const [exhibitionFilter, setExhibitionFilter] = useState<string>("all");
   const [yearFilter, setYearFilter] = useState<string>("all");
+  const [showBulkImport, setShowBulkImport] = useState<"competition" | "participant" | "judge" | "winner" | null>(null);
 
   // Fetch competitions with organizer and exhibition info
   const { data: competitions, isLoading } = useQuery({
@@ -193,13 +195,41 @@ export default function CompetitionsAdmin() {
             <p className="text-xs text-muted-foreground">{isAr ? "إدارة ومراقبة جميع المسابقات" : "Manage and monitor all competitions"}</p>
           </div>
         </div>
-        <Button asChild className="gap-2 shadow-lg shadow-primary/20">
-          <Link to="/competitions/create">
-            <Plus className="h-4 w-4" />
-            {isAr ? "إضافة مسابقة" : "Add Competition"}
-          </Link>
-        </Button>
+        <div className="flex flex-wrap gap-2">
+          {(["competition", "participant", "judge", "winner"] as const).map(type => (
+            <Button
+              key={type}
+              variant={showBulkImport === type ? "secondary" : "outline"}
+              size="sm"
+              onClick={() => setShowBulkImport(showBulkImport === type ? null : type)}
+            >
+              <FileSpreadsheet className="me-2 h-4 w-4" />
+              {isAr ? ({
+                competition: "استيراد مسابقات",
+                participant: "استيراد مشاركين",
+                judge: "استيراد محكمين",
+                winner: "استيراد فائزين",
+              }[type]) : ({
+                competition: "Import Competitions",
+                participant: "Import Participants",
+                judge: "Import Judges",
+                winner: "Import Winners",
+              }[type])}
+            </Button>
+          ))}
+          <Button asChild className="gap-2 shadow-lg shadow-primary/20">
+            <Link to="/competitions/create">
+              <Plus className="h-4 w-4" />
+              {isAr ? "إضافة مسابقة" : "Add Competition"}
+            </Link>
+          </Button>
+        </div>
       </div>
+
+      {/* Bulk Import */}
+      {showBulkImport && (
+        <BulkImportPanel entityType={showBulkImport} onImportComplete={() => { setShowBulkImport(null); queryClient.invalidateQueries({ queryKey: ["adminCompetitions"] }); }} />
+      )}
 
       {/* Stats */}
       <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">

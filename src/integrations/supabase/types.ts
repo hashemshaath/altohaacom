@@ -912,6 +912,60 @@ export type Database = {
         }
         Relationships: []
       }
+      bulk_imports: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          entity_type: string
+          errors: Json | null
+          failed_rows: number | null
+          file_name: string | null
+          id: string
+          imported_data: Json | null
+          notes: string | null
+          processed_rows: number | null
+          reviewed_at: string | null
+          reviewed_by: string | null
+          status: string
+          total_rows: number | null
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          entity_type: string
+          errors?: Json | null
+          failed_rows?: number | null
+          file_name?: string | null
+          id?: string
+          imported_data?: Json | null
+          notes?: string | null
+          processed_rows?: number | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          status?: string
+          total_rows?: number | null
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          entity_type?: string
+          errors?: Json | null
+          failed_rows?: number | null
+          file_name?: string | null
+          id?: string
+          imported_data?: Json | null
+          notes?: string | null
+          processed_rows?: number | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          status?: string
+          total_rows?: number | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
       certificate_logos: {
         Row: {
           created_at: string | null
