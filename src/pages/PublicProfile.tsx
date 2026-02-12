@@ -230,123 +230,129 @@ export default function PublicProfile() {
       <Header />
 
       {/* ── Cover Photo ── */}
-      <div className="relative h-48 md:h-64 overflow-hidden bg-gradient-to-br from-primary/20 via-primary/5 to-accent/10">
+      <div className="relative h-48 md:h-64 overflow-hidden bg-gradient-to-br from-accent via-primary/80 to-accent">
         {(profile as any).cover_image_url ? (
           <img src={(profile as any).cover_image_url} alt="Cover" className="w-full h-full object-cover" />
         ) : (
           <>
-            <div className="absolute -top-20 start-1/4 h-40 w-40 rounded-full bg-primary/10 blur-[80px]" />
-            <div className="absolute -bottom-10 end-1/3 h-32 w-32 rounded-full bg-accent/15 blur-[60px]" />
-            <div className="absolute top-1/2 start-2/3 h-24 w-24 rounded-full bg-chart-4/10 blur-[50px]" />
+            <div className="absolute -top-20 start-1/4 h-40 w-40 rounded-full bg-primary/30 blur-[80px]" />
+            <div className="absolute -bottom-10 end-1/3 h-32 w-32 rounded-full bg-primary/20 blur-[60px]" />
+            <div className="absolute top-1/2 start-2/3 h-24 w-24 rounded-full bg-accent-foreground/10 blur-[50px]" />
           </>
         )}
-        {/* Gradient overlay for text readability */}
-        <div className="absolute inset-0 bg-gradient-to-t from-background/80 via-transparent to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-t from-background via-transparent to-transparent" />
       </div>
 
-      <main className="container flex-1 -mt-20 pb-10 relative z-10">
-        {/* ── Hero Profile Section ── */}
-        <div className="flex flex-col md:flex-row gap-5 items-start md:items-end mb-8">
-          <Avatar className="h-28 w-28 md:h-32 md:w-32 ring-4 ring-background shadow-xl border-2 border-background rounded-xl">
-            <AvatarImage src={profile.avatar_url || undefined} className="rounded-xl" />
-            <AvatarFallback className="text-3xl bg-primary/10 text-primary font-bold rounded-xl">
-              {displayName[0]?.toUpperCase()}
-            </AvatarFallback>
-          </Avatar>
+      <main className="container flex-1 -mt-16 pb-10 relative z-10">
+        {/* ── Hero Profile Card ── */}
+        <Card className="mb-6 overflow-visible border-border/50 shadow-lg">
+          <CardContent className="p-5 md:p-6">
+            <div className="flex flex-col md:flex-row gap-5 items-start">
+              {/* Avatar - cropped square, no corner compression */}
+              <div className="-mt-16 md:-mt-20 shrink-0">
+                <Avatar className="h-28 w-28 md:h-32 md:w-32 ring-4 ring-card shadow-xl border-2 border-card rounded-xl">
+                  <AvatarImage src={profile.avatar_url || undefined} className="rounded-xl object-cover" />
+                  <AvatarFallback className="text-3xl bg-primary/10 text-primary font-bold rounded-xl">
+                    {displayName[0]?.toUpperCase()}
+                  </AvatarFallback>
+                </Avatar>
+              </div>
 
-          <div className="flex-1 min-w-0">
-            <div className="flex items-center gap-2 flex-wrap">
-              <h1 className="font-serif text-2xl md:text-3xl font-bold">{displayName}</h1>
-              {profile.is_verified && <BadgeCheck className="h-6 w-6 text-primary" />}
-              {/* System Awards - Logo Only (Michelin, Tabakh Stars, etc.) */}
-              {userAwards && userAwards.length > 0 && userAwards.map((userAward: any) => {
-                const award = userAward.global_awards_system;
-                if (!award || !award.logo_url) return null;
-                const awardName = isAr ? (award.name_ar || award.name) : award.name;
-                return (
-                  <Tooltip key={userAward.id}>
-                    <TooltipTrigger asChild>
+              <div className="flex-1 min-w-0 pt-1">
+                <div className="flex items-center gap-2 flex-wrap">
+                  <h1 className="font-serif text-2xl md:text-3xl font-bold text-foreground">{displayName}</h1>
+                  {profile.is_verified && <BadgeCheck className="h-6 w-6 text-primary" />}
+                  {/* System Awards - Logo Only */}
+                  {userAwards && userAwards.length > 0 && userAwards.map((userAward: any) => {
+                    const award = userAward.global_awards_system;
+                    if (!award || !award.logo_url) return null;
+                    const awardName = isAr ? (award.name_ar || award.name) : award.name;
+                    return (
+                      <Tooltip key={userAward.id}>
+                        <TooltipTrigger asChild>
+                          <img
+                            src={award.logo_url}
+                            alt={awardName}
+                            className="h-7 w-7 object-contain cursor-pointer hover:scale-125 transition-transform duration-200 drop-shadow-sm"
+                            title={awardName}
+                          />
+                        </TooltipTrigger>
+                        <TooltipContent side="bottom" className="text-xs">
+                          <p className="font-semibold">{awardName}</p>
+                          {userAward.level && <p className="text-muted-foreground">{userAward.level}</p>}
+                          {userAward.year_awarded && <p className="text-muted-foreground">{userAward.year_awarded}</p>}
+                        </TooltipContent>
+                      </Tooltip>
+                    );
+                  })}
+                </div>
+                <p className="text-sm text-muted-foreground mt-0.5">@{profile.username}</p>
+
+                {/* Main Title - Job Title from current work */}
+                {currentWork && (
+                  <p className="text-base font-semibold text-primary mt-2 flex items-center gap-2 bg-primary/5 rounded-lg px-3 py-1.5 w-fit">
+                    {memberships.find((m: any) => m.culinary_entities?.name === currentWork.entity_name)?.culinary_entities?.logo_url && (
                       <img
-                        src={award.logo_url}
-                        alt={awardName}
-                        className="h-7 w-7 object-contain cursor-pointer hover:scale-125 transition-transform duration-200 drop-shadow-sm"
-                        title={awardName}
+                        src={(memberships.find((m: any) => m.culinary_entities?.name === currentWork.entity_name) as any)?.culinary_entities?.logo_url}
+                        alt=""
+                        className="h-5 w-5 rounded object-cover"
                       />
-                    </TooltipTrigger>
-                    <TooltipContent side="bottom" className="text-xs">
-                      <p className="font-semibold">{awardName}</p>
-                      {userAward.level && <p className="text-muted-foreground">{userAward.level}</p>}
-                      {userAward.year_awarded && <p className="text-muted-foreground">{userAward.year_awarded}</p>}
-                    </TooltipContent>
-                  </Tooltip>
-                );
-              })}
-            </div>
-            <p className="text-sm text-muted-foreground mt-0.5">@{profile.username}</p>
-
-            {/* Main Title - Job Title from current work */}
-            {currentWork && (
-              <p className="text-base font-semibold text-primary mt-1 flex items-center gap-2">
-                {memberships.find((m: any) => m.culinary_entities?.name === currentWork.entity_name)?.culinary_entities?.logo_url && (
-                  <img
-                    src={(memberships.find((m: any) => m.culinary_entities?.name === currentWork.entity_name) as any)?.culinary_entities?.logo_url}
-                    alt=""
-                    className="h-5 w-5 rounded object-cover"
-                  />
+                    )}
+                    <span>{isAr ? (currentWork.title_ar || currentWork.title) : currentWork.title}</span>
+                    {currentWork.entity_name && (
+                      <span className="text-muted-foreground font-normal text-sm">
+                        {isAr ? "في" : "at"} {currentWork.entity_name}
+                      </span>
+                    )}
+                  </p>
                 )}
-                <span>{isAr ? (currentWork.title_ar || currentWork.title) : currentWork.title}</span>
-                {currentWork.entity_name && (
-                  <span className="text-muted-foreground font-normal text-sm">
-                    {isAr ? "في" : "at"} {currentWork.entity_name}
-                  </span>
+
+                {/* Location */}
+                {(profile.country_code || (profile as any).city || profile.location) && (
+                  <p className="text-sm mt-2 text-muted-foreground flex items-center gap-1.5">
+                    <MapPin className="h-3.5 w-3.5 shrink-0" />
+                    {profile.country_code ? `${countryFlag(profile.country_code)} ` : ""}
+                    {[(profile as any).city, getCountryName(profile.country_code)].filter(Boolean).join(", ") || profile.location}
+                  </p>
                 )}
-              </p>
-            )}
 
-            {/* Location */}
-            {(profile.country_code || (profile as any).city || profile.location) && (
-              <p className="text-sm mt-1 text-muted-foreground flex items-center gap-1.5">
-                <MapPin className="h-3.5 w-3.5 shrink-0" />
-                {profile.country_code ? `${countryFlag(profile.country_code)} ` : ""}
-                {[(profile as any).city, getCountryName(profile.country_code)].filter(Boolean).join(", ") || profile.location}
-              </p>
-            )}
+                {/* Roles */}
+                <div className="mt-2.5 flex flex-wrap gap-1.5">
+                  {roles?.map((role) => (
+                    <Badge key={role} variant="secondary" className="text-xs">
+                      {isAr ? roleLabels[role]?.ar || role : roleLabels[role]?.en || role}
+                    </Badge>
+                  ))}
+                  {profile.membership_tier && profile.membership_tier !== "basic" && (
+                    <Badge className="text-xs bg-primary/10 text-primary">
+                      {profile.membership_tier === "professional" ? (isAr ? "محترف" : "Professional") : profile.membership_tier}
+                    </Badge>
+                  )}
+                  {profile.account_number && (
+                    <Badge variant="outline" className="font-mono text-[10px]">{profile.account_number}</Badge>
+                  )}
+                </div>
+              </div>
 
-            {/* Roles */}
-            <div className="mt-2.5 flex flex-wrap gap-1.5">
-              {roles?.map((role) => (
-                <Badge key={role} variant="secondary" className="text-xs">
-                  {isAr ? roleLabels[role]?.ar || role : roleLabels[role]?.en || role}
-                </Badge>
-              ))}
-              {profile.membership_tier && profile.membership_tier !== "basic" && (
-                <Badge className="text-xs bg-primary/10 text-primary">
-                  {profile.membership_tier === "professional" ? (isAr ? "محترف" : "Professional") : profile.membership_tier}
-                </Badge>
-              )}
-              {profile.account_number && (
-                <Badge variant="outline" className="font-mono text-[10px]">{profile.account_number}</Badge>
-              )}
+              {/* Action Buttons */}
+              <div className="flex flex-wrap gap-2 shrink-0 mt-2 md:mt-0">
+                {user && !isOwnProfile && (
+                  <Button
+                    variant={isFollowing ? "outline" : "default"}
+                    size="sm"
+                    onClick={() => toggleFollow.mutate(!!isFollowing)}
+                    disabled={toggleFollow.isPending}
+                  >
+                    {toggleFollow.isPending ? <Loader2 className="me-1.5 h-3.5 w-3.5 animate-spin" /> :
+                      isFollowing ? <UserMinus className="me-1.5 h-3.5 w-3.5" /> : <UserPlus className="me-1.5 h-3.5 w-3.5" />}
+                    {isFollowing ? (isAr ? "إلغاء المتابعة" : "Unfollow") : (isAr ? "متابعة" : "Follow")}
+                  </Button>
+                )}
+                <MessageButton userId={profile.user_id} variant="outline" />
+              </div>
             </div>
-          </div>
-
-          {/* Action Buttons */}
-          <div className="flex flex-wrap gap-2 shrink-0 mt-2 md:mt-0">
-            {user && !isOwnProfile && (
-              <Button
-                variant={isFollowing ? "outline" : "default"}
-                size="sm"
-                onClick={() => toggleFollow.mutate(!!isFollowing)}
-                disabled={toggleFollow.isPending}
-              >
-                {toggleFollow.isPending ? <Loader2 className="me-1.5 h-3.5 w-3.5 animate-spin" /> :
-                  isFollowing ? <UserMinus className="me-1.5 h-3.5 w-3.5" /> : <UserPlus className="me-1.5 h-3.5 w-3.5" />}
-                {isFollowing ? (isAr ? "إلغاء المتابعة" : "Unfollow") : (isAr ? "متابعة" : "Follow")}
-              </Button>
-            )}
-            <MessageButton userId={profile.user_id} variant="outline" />
-          </div>
-        </div>
+          </CardContent>
+        </Card>
 
         {/* ── Follow Stats Bar ── */}
         <Card className="mb-6">
