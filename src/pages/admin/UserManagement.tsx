@@ -26,7 +26,7 @@ import { UserBioOptimizer } from "@/components/admin/UserBioOptimizer";
 import {
   Search, UserX, UserCheck, Eye, Edit, ChevronRight, ChevronLeft, X, Save,
   UserPlus, KeyRound, Mail, Loader2, Upload, Image as ImageIcon, Users, Plus,
-  Trash2, Camera, CheckCircle2, AlertCircle, History, UserCircle,
+  Trash2, Camera, CheckCircle2, AlertCircle, History, UserCircle, Languages,
 } from "lucide-react";
 import { format } from "date-fns";
 import type { Database } from "@/integrations/supabase/types";
@@ -829,54 +829,25 @@ export default function UserManagement() {
                   </div>
                 </div>
 
-                {/* Specialization (bilingual) */}
-                <div className="rounded-lg border p-4 space-y-4">
-                  <h3 className="text-sm font-semibold">{isAr ? "التخصص الرئيسي" : "Primary Specialization"}</h3>
-                  <div className="grid gap-4 md:grid-cols-2">
-                    <div className="space-y-2">
-                      <Label>Specialization (EN)</Label>
-                      <Input value={editSpecialization} onChange={(e) => setEditSpecialization(e.target.value)} placeholder="e.g. Pastry & Chocolate Arts" dir="ltr" />
-                    </div>
-                    <div className="space-y-2">
-                      <Label>التخصص (AR)</Label>
-                      <Input value={editSpecializationAr} onChange={(e) => setEditSpecializationAr(e.target.value)} placeholder="مثال: فنون الحلويات والشوكولاتة" dir="rtl" />
-                    </div>
-                  </div>
-                </div>
-
-                {/* Specialties Tags */}
-                <div className="rounded-lg border p-4 space-y-3">
-                  <h3 className="text-sm font-semibold">{isAr ? "التخصصات الفرعية" : "Specialty Tags"}</h3>
-                  {editUserSpecialties.length > 0 && (
-                    <div className="flex flex-wrap gap-1.5">
-                      {editUserSpecialties.map((us: any) => (
-                        <Badge key={us.id} variant="secondary" className="gap-1">
-                          {isAr ? us.specialties?.name_ar || us.specialties?.name : us.specialties?.name}
-                          <button onClick={() => removeSpecialtyMutation.mutate(us.id)} className="hover:text-destructive">
-                            <X className="h-3 w-3" />
-                          </button>
-                        </Badge>
-                      ))}
-                    </div>
-                  )}
-                  {availableSpecialties.length > 0 && (
-                    <Select onValueChange={(id) => addSpecialtyMutation.mutate(id)}>
-                      <SelectTrigger><SelectValue placeholder={isAr ? "إضافة تخصص..." : "Add specialty..."} /></SelectTrigger>
-                      <SelectContent>
-                        {availableSpecialties.map((s) => (
-                          <SelectItem key={s.id} value={s.id}>{isAr ? s.name_ar || s.name : s.name}</SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  )}
-                </div>
+                {/* Specialization from DB with search */}
+                <SpecializationSelector
+                  editSpecialization={editSpecialization}
+                  editSpecializationAr={editSpecializationAr}
+                  onSpecializationChange={setEditSpecialization}
+                  onSpecializationArChange={setEditSpecializationAr}
+                  editUserSpecialties={editUserSpecialties}
+                  availableSpecialties={availableSpecialties}
+                  onAddSpecialty={(id) => addSpecialtyMutation.mutate(id)}
+                  onRemoveSpecialty={(id) => removeSpecialtyMutation.mutate(id)}
+                  isAr={isAr}
+                />
 
                 {/* Bio (EN) with AI Optimizer */}
                 <div className="rounded-lg border p-4 space-y-3">
                   <h3 className="text-sm font-semibold">{isAr ? "النبذة التعريفية" : "Biography (SEO Optimized)"}</h3>
-                  <UserBioOptimizer bio={editBio} onBioChange={setEditBio} isAr={false} />
+                  <UserBioOptimizer bio={editBio} onBioChange={setEditBio} lang="en" onTranslatedBioChange={setEditBioAr} />
                   <Separator />
-                  <UserBioOptimizer bio={editBioAr} onBioChange={setEditBioAr} isAr={true} />
+                  <UserBioOptimizer bio={editBioAr} onBioChange={setEditBioAr} lang="ar" onTranslatedBioChange={setEditBio} />
                 </div>
               </TabsContent>
 
@@ -1229,5 +1200,150 @@ function UserStatsQuickView({ language }: { language: string }) {
         </Badge>
       )}
     </div>
+  );
+}
+
+function SpecializationSelector({
+  editSpecialization,
+  editSpecializationAr,
+  onSpecializationChange,
+  onSpecializationArChange,
+  editUserSpecialties,
+  availableSpecialties,
+  onAddSpecialty,
+  onRemoveSpecialty,
+  isAr,
+}: {
+  editSpecialization: string;
+  editSpecializationAr: string;
+  onSpecializationChange: (v: string) => void;
+  onSpecializationArChange: (v: string) => void;
+  editUserSpecialties: any[];
+  availableSpecialties: any[];
+  onAddSpecialty: (id: string) => void;
+  onRemoveSpecialty: (id: string) => void;
+  isAr: boolean;
+}) {
+  const [specSearch, setSpecSearch] = useState("");
+  const [translatingSpec, setTranslatingSpec] = useState(false);
+  const { toast } = useToast();
+
+  const filteredSpecs = availableSpecialties.filter((s) => {
+    if (!specSearch.trim()) return true;
+    const q = specSearch.toLowerCase();
+    return (s.name?.toLowerCase().includes(q)) || (s.name_ar?.toLowerCase().includes(q));
+  });
+
+  const handleTranslateSpec = async (fromLang: "en" | "ar") => {
+    const text = fromLang === "en" ? editSpecialization : editSpecializationAr;
+    if (!text.trim()) return;
+    setTranslatingSpec(true);
+    try {
+      const targetLang = fromLang === "en" ? "ar" : "en";
+      const { data, error } = await supabase.functions.invoke("ai-translate-seo", {
+        body: { text, source_lang: fromLang, target_lang: targetLang, optimize_seo: true },
+      });
+      if (error) throw error;
+      if (data?.translated) {
+        if (targetLang === "ar") onSpecializationArChange(data.translated);
+        else onSpecializationChange(data.translated);
+        toast({ title: isAr ? "تمت الترجمة بنجاح" : "Translation complete" });
+      }
+    } catch (err: any) {
+      toast({ variant: "destructive", title: "Error", description: err.message });
+    } finally {
+      setTranslatingSpec(false);
+    }
+  };
+
+  return (
+    <>
+      {/* Primary Specialization (bilingual with translation) */}
+      <div className="rounded-lg border p-4 space-y-4">
+        <h3 className="text-sm font-semibold">{isAr ? "التخصص الرئيسي" : "Primary Specialization"}</h3>
+        <div className="grid gap-4 md:grid-cols-2">
+          <div className="space-y-2">
+            <div className="flex items-center justify-between">
+              <Label>Specialization (EN)</Label>
+              <Button
+                type="button" variant="ghost" size="sm"
+                onClick={() => handleTranslateSpec("en")}
+                disabled={translatingSpec || !editSpecialization.trim()}
+                className="gap-1 text-xs h-6"
+              >
+                {translatingSpec ? <Loader2 className="h-3 w-3 animate-spin" /> : <Languages className="h-3 w-3" />}
+                → AR
+              </Button>
+            </div>
+            <Input value={editSpecialization} onChange={(e) => onSpecializationChange(e.target.value)} placeholder="e.g. Pastry & Chocolate Arts" dir="ltr" />
+          </div>
+          <div className="space-y-2">
+            <div className="flex items-center justify-between">
+              <Label>التخصص (AR)</Label>
+              <Button
+                type="button" variant="ghost" size="sm"
+                onClick={() => handleTranslateSpec("ar")}
+                disabled={translatingSpec || !editSpecializationAr.trim()}
+                className="gap-1 text-xs h-6"
+              >
+                {translatingSpec ? <Loader2 className="h-3 w-3 animate-spin" /> : <Languages className="h-3 w-3" />}
+                → EN
+              </Button>
+            </div>
+            <Input value={editSpecializationAr} onChange={(e) => onSpecializationArChange(e.target.value)} placeholder="مثال: فنون الحلويات والشوكولاتة" dir="rtl" />
+          </div>
+        </div>
+      </div>
+
+      {/* Specialty Tags from DB with search */}
+      <div className="rounded-lg border p-4 space-y-3">
+        <h3 className="text-sm font-semibold">{isAr ? "التخصصات الفرعية (من قاعدة البيانات)" : "Specialty Tags (from database)"}</h3>
+        {editUserSpecialties.length > 0 && (
+          <div className="flex flex-wrap gap-1.5">
+            {editUserSpecialties.map((us: any) => (
+              <Badge key={us.id} variant="secondary" className="gap-1">
+                {isAr ? us.specialties?.name_ar || us.specialties?.name : us.specialties?.name}
+                <button onClick={() => onRemoveSpecialty(us.id)} className="hover:text-destructive">
+                  <X className="h-3 w-3" />
+                </button>
+              </Badge>
+            ))}
+          </div>
+        )}
+        <div className="space-y-2">
+          <div className="relative">
+            <Search className="absolute start-3 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-muted-foreground" />
+            <Input
+              value={specSearch}
+              onChange={(e) => setSpecSearch(e.target.value)}
+              placeholder={isAr ? "ابحث عن تخصص..." : "Search specialties..."}
+              className="ps-9 h-9 text-sm"
+            />
+          </div>
+          {(specSearch.trim() || filteredSpecs.length <= 10) && filteredSpecs.length > 0 && (
+            <div className="max-h-40 overflow-y-auto rounded-md border divide-y">
+              {filteredSpecs.slice(0, 20).map((s) => (
+                <button
+                  key={s.id}
+                  type="button"
+                  onClick={() => { onAddSpecialty(s.id); setSpecSearch(""); }}
+                  className="w-full text-start px-3 py-2 text-sm hover:bg-accent/50 transition-colors flex items-center justify-between"
+                >
+                  <span>{isAr ? s.name_ar || s.name : s.name}</span>
+                  {s.name_ar && s.name && (
+                    <span className="text-xs text-muted-foreground">{isAr ? s.name : s.name_ar}</span>
+                  )}
+                </button>
+              ))}
+            </div>
+          )}
+          {specSearch.trim() && filteredSpecs.length === 0 && (
+            <p className="text-xs text-muted-foreground text-center py-2">
+              {isAr ? "لا توجد نتائج" : "No results found"}
+            </p>
+          )}
+        </div>
+      </div>
+    </>
   );
 }
