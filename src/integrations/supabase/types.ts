@@ -5001,6 +5001,51 @@ export type Database = {
         }
         Relationships: []
       }
+      global_awards_system: {
+        Row: {
+          award_type: string
+          category: string | null
+          created_at: string | null
+          description: string | null
+          description_ar: string | null
+          id: string
+          is_active: boolean | null
+          logo_url: string | null
+          name: string
+          name_ar: string | null
+          sort_order: number | null
+          updated_at: string | null
+        }
+        Insert: {
+          award_type?: string
+          category?: string | null
+          created_at?: string | null
+          description?: string | null
+          description_ar?: string | null
+          id?: string
+          is_active?: boolean | null
+          logo_url?: string | null
+          name: string
+          name_ar?: string | null
+          sort_order?: number | null
+          updated_at?: string | null
+        }
+        Update: {
+          award_type?: string
+          category?: string | null
+          created_at?: string | null
+          description?: string | null
+          description_ar?: string | null
+          id?: string
+          is_active?: boolean | null
+          logo_url?: string | null
+          name?: string
+          name_ar?: string | null
+          sort_order?: number | null
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
       group_members: {
         Row: {
           group_id: string
@@ -9674,6 +9719,44 @@ export type Database = {
           id?: string
         }
         Relationships: []
+      }
+      user_global_awards: {
+        Row: {
+          award_id: string
+          created_at: string | null
+          id: string
+          is_public: boolean | null
+          level: string | null
+          user_id: string
+          year_awarded: number | null
+        }
+        Insert: {
+          award_id: string
+          created_at?: string | null
+          id?: string
+          is_public?: boolean | null
+          level?: string | null
+          user_id: string
+          year_awarded?: number | null
+        }
+        Update: {
+          award_id?: string
+          created_at?: string | null
+          id?: string
+          is_public?: boolean | null
+          level?: string | null
+          user_id?: string
+          year_awarded?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_global_awards_award_id_fkey"
+            columns: ["award_id"]
+            isOneToOne: false
+            referencedRelation: "global_awards_system"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       user_permission_overrides: {
         Row: {
