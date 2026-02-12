@@ -6,7 +6,7 @@ import { Switch } from "@/components/ui/switch";
 import { Badge } from "@/components/ui/badge";
 import { Checkbox } from "@/components/ui/checkbox";
 import { CountrySelector } from "@/components/auth/CountrySelector";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { AITextOptimizer } from "@/components/admin/AITextOptimizer";
 import { DollarSign, Users, UserPlus, Building2 } from "lucide-react";
 import type { CompetitionFormData } from "./types";
 import { useCountries } from "@/hooks/useCountries";
@@ -31,8 +31,6 @@ export function DatesLocationStep({ data, onChange, competitionNumber }: DatesLo
   const handleCountryChange = (code: string, country: any) => {
     const name = isAr ? (country?.name_ar || country?.name || "") : (country?.name || "");
     const updates: Partial<CompetitionFormData> = { countryCode: code, country: name };
-
-    // Auto-fill currency and tax from country
     if (country) {
       const countryData = countries?.find((c: any) => c.code === code);
       if (countryData) {
@@ -47,76 +45,76 @@ export function DatesLocationStep({ data, onChange, competitionNumber }: DatesLo
 
   const toggleEntryType = (type: string) => {
     const current = data.allowedEntryTypes || ["individual"];
-    const updated = current.includes(type)
-      ? current.filter((t) => t !== type)
-      : [...current, type];
-    if (updated.length === 0) return; // at least one required
+    const updated = current.includes(type) ? current.filter((t) => t !== type) : [...current, type];
+    if (updated.length === 0) return;
     onChange({ allowedEntryTypes: updated });
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4">
       <Card>
-        <CardHeader>
+        <CardHeader className="pb-3">
           <CardTitle>{isAr ? "التواريخ والموقع" : "Schedule & Location"}</CardTitle>
           <CardDescription>{isAr ? "حدد الجدول الزمني وتفاصيل المكان" : "Set the timeline and venue details"}</CardDescription>
         </CardHeader>
-        <CardContent className="space-y-6">
-          {/* Registration Dates */}
+        <CardContent className="space-y-5">
           <div>
-            <p className="mb-3 text-sm font-medium text-muted-foreground">{isAr ? "فترة التسجيل" : "Registration Period"}</p>
-            <div className="grid gap-4 sm:grid-cols-2">
-              <div className="space-y-2">
-                <Label>{isAr ? "بداية التسجيل" : "Registration Start"}</Label>
+            <p className="mb-2 text-sm font-medium text-muted-foreground">{isAr ? "فترة التسجيل" : "Registration Period"}</p>
+            <div className="grid gap-3 sm:grid-cols-2">
+              <div className="space-y-1.5">
+                <Label className="text-xs">{isAr ? "بداية التسجيل" : "Registration Start"}</Label>
                 <Input type="datetime-local" value={data.registrationStart} onChange={(e) => onChange({ registrationStart: e.target.value })} />
               </div>
-              <div className="space-y-2">
-                <Label>{isAr ? "نهاية التسجيل" : "Registration End"}</Label>
+              <div className="space-y-1.5">
+                <Label className="text-xs">{isAr ? "نهاية التسجيل" : "Registration End"}</Label>
                 <Input type="datetime-local" value={data.registrationEnd} onChange={(e) => onChange({ registrationEnd: e.target.value })} />
               </div>
             </div>
           </div>
 
-          {/* Competition Dates */}
           <div>
-            <p className="mb-3 text-sm font-medium text-muted-foreground">{isAr ? "فترة المسابقة" : "Competition Period"}</p>
-            <div className="grid gap-4 sm:grid-cols-2">
-              <div className="space-y-2">
-                <Label>{isAr ? "بداية المسابقة" : "Competition Start"} *</Label>
+            <p className="mb-2 text-sm font-medium text-muted-foreground">{isAr ? "فترة المسابقة" : "Competition Period"}</p>
+            <div className="grid gap-3 sm:grid-cols-2">
+              <div className="space-y-1.5">
+                <Label className="text-xs">{isAr ? "بداية المسابقة" : "Competition Start"} *</Label>
                 <Input type="datetime-local" value={data.competitionStart} onChange={(e) => onChange({ competitionStart: e.target.value })} />
               </div>
-              <div className="space-y-2">
-                <Label>{isAr ? "نهاية المسابقة" : "Competition End"} *</Label>
+              <div className="space-y-1.5">
+                <Label className="text-xs">{isAr ? "نهاية المسابقة" : "Competition End"} *</Label>
                 <Input type="datetime-local" value={data.competitionEnd} onChange={(e) => onChange({ competitionEnd: e.target.value })} />
               </div>
             </div>
           </div>
 
-          {/* Virtual Toggle */}
-          <div className="flex items-center justify-between rounded-lg border p-4">
+          <div className="flex items-center justify-between rounded-lg border p-3">
             <div>
-              <p className="font-medium">{isAr ? "مسابقة افتراضية" : "Virtual Competition"}</p>
-              <p className="text-sm text-muted-foreground">{isAr ? "تقام عبر الإنترنت" : "This competition takes place online"}</p>
+              <p className="font-medium text-sm">{isAr ? "مسابقة افتراضية" : "Virtual Competition"}</p>
+              <p className="text-xs text-muted-foreground">{isAr ? "تقام عبر الإنترنت" : "This competition takes place online"}</p>
             </div>
             <Switch checked={data.isVirtual} onCheckedChange={(v) => onChange({ isVirtual: v })} />
           </div>
 
-          {/* Venue */}
           {!data.isVirtual && (
             <>
-              <div className="grid gap-4 sm:grid-cols-2">
-                <div className="space-y-2">
-                  <Label>{isAr ? "المكان (إنجليزي)" : "Venue (English)"}</Label>
+              <div className="grid gap-3 sm:grid-cols-2">
+                <div className="space-y-1.5">
+                  <div className="flex items-center justify-between">
+                    <Label className="text-xs">{isAr ? "المكان (إنجليزي)" : "Venue (English)"}</Label>
+                    <AITextOptimizer text={data.venue} lang="en" compact onOptimized={(v) => onChange({ venue: v })} onTranslated={(v) => onChange({ venueAr: v })} />
+                  </div>
                   <Input value={data.venue} onChange={(e) => onChange({ venue: e.target.value })} placeholder={isAr ? "اسم المكان" : "Venue name"} />
                 </div>
-                <div className="space-y-2">
-                  <Label>{isAr ? "المكان (عربي)" : "Venue (Arabic)"}</Label>
+                <div className="space-y-1.5">
+                  <div className="flex items-center justify-between">
+                    <Label className="text-xs">{isAr ? "المكان (عربي)" : "Venue (Arabic)"}</Label>
+                    <AITextOptimizer text={data.venueAr} lang="ar" compact onOptimized={(v) => onChange({ venueAr: v })} onTranslated={(v) => onChange({ venue: v })} />
+                  </div>
                   <Input value={data.venueAr} onChange={(e) => onChange({ venueAr: e.target.value })} placeholder="اسم المكان" dir="rtl" />
                 </div>
               </div>
-              <div className="grid gap-4 sm:grid-cols-2">
-                <div className="space-y-2">
-                  <Label>{isAr ? "المدينة" : "City"}</Label>
+              <div className="grid gap-3 sm:grid-cols-2">
+                <div className="space-y-1.5">
+                  <Label className="text-xs">{isAr ? "المدينة" : "City"}</Label>
                   <Input value={data.city} onChange={(e) => onChange({ city: e.target.value })} />
                 </div>
                 <CountrySelector value={data.countryCode} onChange={handleCountryChange} label={isAr ? "الدولة" : "Country"} />
@@ -128,63 +126,62 @@ export function DatesLocationStep({ data, onChange, competitionNumber }: DatesLo
             <CountrySelector value={data.countryCode} onChange={handleCountryChange} label={isAr ? "الدولة (للترقيم)" : "Country (for numbering)"} required />
           )}
 
-          <div className="grid gap-4 sm:grid-cols-2">
-            <div className="space-y-2">
-              <Label>{isAr ? "رمز الدولة" : "Country Code"}</Label>
+          <div className="grid gap-3 sm:grid-cols-2">
+            <div className="space-y-1.5">
+              <Label className="text-xs">{isAr ? "رمز الدولة" : "Country Code"}</Label>
               <Input value={data.countryCode} readOnly className="bg-muted/50" />
-              <p className="text-xs text-muted-foreground">
+              <p className="text-[10px] text-muted-foreground">
                 {competitionNumber
                   ? `${isAr ? "الحالي" : "Current"}: ${competitionNumber}`
-                  : isAr ? "يتم تعبئته تلقائياً من اختيار الدولة" : "Auto-filled from country selection"}
+                  : isAr ? "يتم تعبئته تلقائياً" : "Auto-filled from country"}
               </p>
             </div>
-            <div className="space-y-2">
-              <Label>{isAr ? "سنة الإصدار" : "Edition Year"}</Label>
+            <div className="space-y-1.5">
+              <Label className="text-xs">{isAr ? "سنة الإصدار" : "Edition Year"}</Label>
               <Input type="number" value={data.editionYear} onChange={(e) => onChange({ editionYear: parseInt(e.target.value) || new Date().getFullYear() })} min={2020} max={2050} />
             </div>
           </div>
 
-          <div className="space-y-2">
-            <Label>{isAr ? "الحد الأقصى للمشاركين" : "Max Participants"}</Label>
+          <div className="space-y-1.5">
+            <Label className="text-xs">{isAr ? "الحد الأقصى للمشاركين" : "Max Participants"}</Label>
             <Input type="number" value={data.maxParticipants} onChange={(e) => onChange({ maxParticipants: e.target.value ? parseInt(e.target.value) : "" })} placeholder={isAr ? "اتركه فارغاً لعدد غير محدود" : "Leave empty for unlimited"} />
           </div>
         </CardContent>
       </Card>
 
-      {/* Entry Types Card */}
       <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Users className="h-5 w-5 text-primary" />
+        <CardHeader className="pb-3">
+          <CardTitle className="flex items-center gap-2 text-base">
+            <Users className="h-4 w-4 text-primary" />
             {isAr ? "أنواع المشاركة" : "Entry Types"}
           </CardTitle>
-          <CardDescription>{isAr ? "حدد كيف يمكن للمتسابقين التسجيل" : "Define how contestants can register"}</CardDescription>
+          <CardDescription className="text-xs">{isAr ? "حدد كيف يمكن للمتسابقين التسجيل" : "Define how contestants can register"}</CardDescription>
         </CardHeader>
-        <CardContent className="space-y-4">
-          <div className="grid gap-3 sm:grid-cols-3">
+        <CardContent className="space-y-3">
+          <div className="grid gap-2 sm:grid-cols-3">
             {ENTRY_TYPES.map((type) => {
               const isChecked = (data.allowedEntryTypes || ["individual"]).includes(type.value);
               return (
                 <label
                   key={type.value}
-                  className={`flex items-center gap-3 rounded-lg border p-3 cursor-pointer transition-all ${isChecked ? "border-primary bg-primary/5" : "border-border hover:border-primary/30"}`}
+                  className={`flex items-center gap-2 rounded-lg border p-2.5 cursor-pointer transition-all text-sm ${isChecked ? "border-primary bg-primary/5" : "border-border hover:border-primary/30"}`}
                 >
                   <Checkbox checked={isChecked} onCheckedChange={() => toggleEntryType(type.value)} />
-                  <type.icon className="h-4 w-4 text-muted-foreground" />
-                  <span className="text-sm font-medium">{isAr ? type.labelAr : type.labelEn}</span>
+                  <type.icon className="h-3.5 w-3.5 text-muted-foreground" />
+                  <span className="text-xs font-medium">{isAr ? type.labelAr : type.labelEn}</span>
                 </label>
               );
             })}
           </div>
 
           {(data.allowedEntryTypes || []).includes("team") && (
-            <div className="grid gap-4 sm:grid-cols-2 pt-2 border-t">
-              <div className="space-y-2">
-                <Label>{isAr ? "الحد الأدنى لحجم الفريق" : "Min Team Size"}</Label>
+            <div className="grid gap-3 sm:grid-cols-2 pt-2 border-t">
+              <div className="space-y-1.5">
+                <Label className="text-xs">{isAr ? "الحد الأدنى لحجم الفريق" : "Min Team Size"}</Label>
                 <Input type="number" value={data.minTeamSize} onChange={(e) => onChange({ minTeamSize: parseInt(e.target.value) || 2 })} min={2} max={20} />
               </div>
-              <div className="space-y-2">
-                <Label>{isAr ? "الحد الأقصى لحجم الفريق" : "Max Team Size"}</Label>
+              <div className="space-y-1.5">
+                <Label className="text-xs">{isAr ? "الحد الأقصى لحجم الفريق" : "Max Team Size"}</Label>
                 <Input type="number" value={data.maxTeamSize} onChange={(e) => onChange({ maxTeamSize: parseInt(e.target.value) || 5 })} min={2} max={50} />
               </div>
             </div>
@@ -192,24 +189,22 @@ export function DatesLocationStep({ data, onChange, competitionNumber }: DatesLo
         </CardContent>
       </Card>
 
-      {/* Registration Fee Card */}
       <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <DollarSign className="h-5 w-5 text-primary" />
+        <CardHeader className="pb-3">
+          <CardTitle className="flex items-center gap-2 text-base">
+            <DollarSign className="h-4 w-4 text-primary" />
             {isAr ? "رسوم التسجيل" : "Registration Fee"}
           </CardTitle>
-          <CardDescription>{isAr ? "حدد ما إذا كان التسجيل مجانياً أو مدفوعاً" : "Set whether registration is free or paid"}</CardDescription>
         </CardHeader>
-        <CardContent className="space-y-4">
-          <div className="flex gap-3">
+        <CardContent className="space-y-3">
+          <div className="flex gap-2">
             {(["free", "paid"] as const).map((type) => (
               <label
                 key={type}
-                className={`flex-1 flex items-center justify-center gap-2 rounded-lg border p-3 cursor-pointer transition-all ${data.registrationFeeType === type ? "border-primary bg-primary/5" : "border-border hover:border-primary/30"}`}
+                className={`flex-1 flex items-center justify-center gap-2 rounded-lg border p-2.5 cursor-pointer transition-all ${data.registrationFeeType === type ? "border-primary bg-primary/5" : "border-border hover:border-primary/30"}`}
               >
                 <input type="radio" name="feeType" value={type} checked={data.registrationFeeType === type} onChange={() => onChange({ registrationFeeType: type })} className="sr-only" />
-                <Badge variant={data.registrationFeeType === type ? "default" : "outline"}>
+                <Badge variant={data.registrationFeeType === type ? "default" : "outline"} className="text-xs">
                   {type === "free" ? (isAr ? "مجاني" : "Free") : (isAr ? "مدفوع" : "Paid")}
                 </Badge>
               </label>
@@ -217,28 +212,24 @@ export function DatesLocationStep({ data, onChange, competitionNumber }: DatesLo
           </div>
 
           {data.registrationFeeType === "paid" && (
-            <div className="space-y-4 pt-2 border-t">
-              <div className="grid gap-4 sm:grid-cols-3">
-                <div className="space-y-2">
-                  <Label>{isAr ? "رسوم التسجيل" : "Fee Amount"}</Label>
+            <div className="space-y-3 pt-2 border-t">
+              <div className="grid gap-3 sm:grid-cols-3">
+                <div className="space-y-1.5">
+                  <Label className="text-xs">{isAr ? "رسوم التسجيل" : "Fee Amount"}</Label>
                   <Input type="number" value={data.registrationFee} onChange={(e) => onChange({ registrationFee: parseFloat(e.target.value) || 0 })} min={0} step={0.01} />
                 </div>
-                <div className="space-y-2">
-                  <Label>{isAr ? "العملة" : "Currency"}</Label>
+                <div className="space-y-1.5">
+                  <Label className="text-xs">{isAr ? "العملة" : "Currency"}</Label>
                   <Input value={data.registrationCurrency} readOnly className="bg-muted/50" />
-                  <p className="text-xs text-muted-foreground">{isAr ? "من إعدادات الدولة" : "From country settings"}</p>
                 </div>
-                <div className="space-y-2">
-                  <Label>{isAr ? "نسبة الضريبة %" : "Tax Rate %"}</Label>
+                <div className="space-y-1.5">
+                  <Label className="text-xs">{isAr ? "نسبة الضريبة %" : "Tax Rate %"}</Label>
                   <Input type="number" value={data.registrationTaxRate} readOnly className="bg-muted/50" />
-                  <p className="text-xs text-muted-foreground">
-                    {isAr ? data.registrationTaxNameAr : data.registrationTaxName}
-                  </p>
                 </div>
               </div>
 
               {data.registrationFee > 0 && (
-                <div className="rounded-lg bg-muted/50 p-3 text-sm">
+                <div className="rounded-lg bg-muted/50 p-2.5 text-xs">
                   <div className="flex justify-between">
                     <span>{isAr ? "الرسوم" : "Fee"}</span>
                     <span>{data.registrationFee} {data.registrationCurrency}</span>

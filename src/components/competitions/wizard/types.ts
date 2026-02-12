@@ -58,6 +58,11 @@ export interface CompetitionFormData {
   allowedEntryTypes: string[];
   maxTeamSize: number;
   minTeamSize: number;
+  // Extended linkage
+  linkType: string;
+  linkedEntityId: string | null;
+  linkedChefId: string | null;
+  linkedTastingId: string | null;
 }
 
 export const emptyCategory: CategoryForm = {
