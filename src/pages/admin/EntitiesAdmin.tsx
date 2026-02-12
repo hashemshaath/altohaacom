@@ -294,9 +294,19 @@ export default function EntitiesAdmin() {
         if (error) throw error;
       }
     },
-    onSuccess: () => {
+    onSuccess: (_data, variables) => {
       queryClient.invalidateQueries({ queryKey: ["admin-entities"] });
+      const wasCreating = !editingId;
       toast({ title: editingId ? (isAr ? "تم تحديث الجهة" : "Entity updated") : (isAr ? "تم إنشاء الجهة" : "Entity created") });
+      if (wasCreating) {
+        import("@/lib/notificationTriggers").then(({ notifyAdminEntityReview }) => {
+          notifyAdminEntityReview({
+            entityName: form.name,
+            entityNameAr: form.name_ar || undefined,
+            submittedBy: "Admin",
+          });
+        });
+      }
       resetForm();
     },
     onError: (err: any) => {
