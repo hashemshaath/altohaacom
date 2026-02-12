@@ -51,7 +51,7 @@ const testimonials = [
     role: "Competition Organizer",
     roleAr: "منظم مسابقات",
     quote: "Altohaa transformed how we run our culinary events. The platform is intuitive and powerful.",
-    quoteAr: "غيّرت التُهاء طريقة إدارتنا للفعاليات الطهوية. المنصة سهلة الاستخدام وقوية.",
+    quoteAr: "غيّرت الطهاة طريقة إدارتنا لفعاليات الطهي. المنصة سهلة الاستخدام وقوية.",
     initials: "AH",
   },
   {
@@ -60,7 +60,7 @@ const testimonials = [
     role: "Culinary School Director",
     roleAr: "مديرة مدرسة طهي",
     quote: "Our students love participating in competitions through Altohaa. It's professional and easy to use.",
-    quoteAr: "يحب طلابنا المشاركة في المسابقات عبر التُهاء. إنها احترافية وسهلة الاستخدام.",
+    quoteAr: "يحب طلابنا المشاركة في المسابقات عبر الطهاة. إنها احترافية وسهلة الاستخدام.",
     initials: "SM",
   },
 ];
@@ -240,7 +240,7 @@ export default function OrganizersLanding() {
                 </h2>
                 <p className="text-muted-foreground mb-6">
                   {isAr
-                    ? "انضم إلى مئات المنظمين الذين يثقون في التُهاء لإدارة مسابقاتهم"
+                    ? "انضم إلى مئات المنظمين الذين يثقون في الطهاة لإدارة مسابقاتهم"
                     : "Join hundreds of organizers who trust Altohaa to manage their competitions"}
                 </p>
                 <ul className="space-y-3">

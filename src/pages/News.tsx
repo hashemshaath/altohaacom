@@ -123,7 +123,7 @@ export default function News() {
                 </h1>
                 <p className="mt-1 text-sm text-muted-foreground">
                   {isAr
-                    ? "ابق على اطلاع بأحدث أخبار المسابقات والفعاليات الطهوية"
+                    ? "ابق على اطلاع بأحدث أخبار المسابقات وفعاليات الطهي"
                     : "Stay updated with the latest competition news and culinary events"}
                 </p>
               </div>

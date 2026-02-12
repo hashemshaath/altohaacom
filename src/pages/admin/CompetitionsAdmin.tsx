@@ -13,28 +13,11 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { useToast } from "@/hooks/use-toast";
-import { Search, MoreHorizontal, Eye, Edit, Trash2, Trophy, Users, Calendar, MapPin, Sparkles, Filter, Globe } from "lucide-react";
+import { Search, MoreHorizontal, Eye, Edit, Trash2, Trophy, Users, Calendar, MapPin, Sparkles, Filter, Globe, Plus, Copy, Building2, Tag } from "lucide-react";
 import { format } from "date-fns";
 import type { Database } from "@/integrations/supabase/types";
 
 type CompetitionStatus = Database["public"]["Enums"]["competition_status"];
-
-interface Competition {
-  id: string;
-  title: string;
-  title_ar: string | null;
-  status: CompetitionStatus;
-  competition_number: string | null;
-  competition_start: string;
-  competition_end: string;
-  venue: string | null;
-  city: string | null;
-  country: string | null;
-  is_virtual: boolean | null;
-  max_participants: number | null;
-  organizer_id: string;
-  created_at: string;
-}
 
 const ALL_STATUSES: CompetitionStatus[] = [
   "draft", "upcoming", "registration_open", "registration_closed",
@@ -61,16 +44,47 @@ export default function CompetitionsAdmin() {
 
   const [searchQuery, setSearchQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState<string>("all");
+  const [organizerFilter, setOrganizerFilter] = useState<string>("all");
+  const [exhibitionFilter, setExhibitionFilter] = useState<string>("all");
+  const [yearFilter, setYearFilter] = useState<string>("all");
 
+  // Fetch competitions with organizer and exhibition info
   const { data: competitions, isLoading } = useQuery({
-    queryKey: ["adminCompetitions", searchQuery, statusFilter],
+    queryKey: ["adminCompetitions", searchQuery, statusFilter, organizerFilter, exhibitionFilter, yearFilter],
     queryFn: async () => {
-      let query = supabase.from("competitions").select("*").order("created_at", { ascending: false }).limit(50);
+      let query = supabase
+        .from("competitions")
+        .select("*, organizer:profiles!competitions_organizer_id_fkey(id, full_name, full_name_ar, avatar_url), exhibition:exhibitions!competitions_exhibition_id_fkey(id, title, title_ar)")
+        .order("competition_start", { ascending: false })
+        .limit(100);
+
       if (searchQuery) query = query.or(`title.ilike.%${searchQuery}%,title_ar.ilike.%${searchQuery}%,city.ilike.%${searchQuery}%`);
       if (statusFilter !== "all") query = query.eq("status", statusFilter as CompetitionStatus);
+      if (organizerFilter !== "all") query = query.eq("organizer_id", organizerFilter);
+      if (exhibitionFilter !== "all") query = query.eq("exhibition_id", exhibitionFilter);
+      if (yearFilter !== "all") query = query.gte("competition_start", `${yearFilter}-01-01`).lte("competition_start", `${yearFilter}-12-31`);
+
       const { data, error } = await query;
       if (error) throw error;
-      return data as Competition[];
+      return data as any[];
+    },
+  });
+
+  // Fetch categories for display
+  const { data: allCategories } = useQuery({
+    queryKey: ["adminCompetitionCategories"],
+    queryFn: async () => {
+      const { data } = await supabase.from("competition_categories").select("id, competition_id, name, name_ar");
+      return data || [];
+    },
+  });
+
+  // Fetch type assignments
+  const { data: typeAssignments } = useQuery({
+    queryKey: ["adminCompetitionTypes"],
+    queryFn: async () => {
+      const { data } = await supabase.from("competition_type_assignments").select("competition_id, type:competition_types(id, name, name_ar)");
+      return data || [];
     },
   });
 
@@ -88,6 +102,21 @@ export default function CompetitionsAdmin() {
     },
   });
 
+  // Unique organizers for filter
+  const uniqueOrganizers = competitions?.reduce((acc, c) => {
+    if (c.organizer && !acc.find((o: any) => o.id === c.organizer.id)) acc.push(c.organizer);
+    return acc;
+  }, [] as any[]) || [];
+
+  // Unique exhibitions for filter
+  const uniqueExhibitions = competitions?.reduce((acc, c) => {
+    if (c.exhibition && !acc.find((e: any) => e.id === c.exhibition.id)) acc.push(c.exhibition);
+    return acc;
+  }, [] as any[]) || [];
+
+  // Unique years
+  const uniqueYears = [...new Set(competitions?.map(c => new Date(c.competition_start).getFullYear().toString()) || [])].sort().reverse();
+
   const updateStatusMutation = useMutation({
     mutationFn: async ({ id, status }: { id: string; status: CompetitionStatus }) => {
       const { error } = await supabase.from("competitions").update({ status }).eq("id", id);
@@ -95,6 +124,24 @@ export default function CompetitionsAdmin() {
       await supabase.from("admin_actions").insert({ admin_id: user!.id, action_type: "update_competition_status", details: { competition_id: id, new_status: status } });
     },
     onSuccess: () => { queryClient.invalidateQueries({ queryKey: ["adminCompetitions"] }); toast({ title: isAr ? "تم تحديث الحالة" : "Status updated" }); },
+    onError: (error) => { toast({ variant: "destructive", title: "Error", description: error.message }); },
+  });
+
+  const duplicateMutation = useMutation({
+    mutationFn: async (comp: any) => {
+      const { id, created_at, updated_at, organizer, exhibition, competition_number, slug, view_count, ...rest } = comp;
+      const { error } = await supabase.from("competitions").insert({
+        ...rest,
+        title: `${rest.title} (Copy)`,
+        title_ar: rest.title_ar ? `${rest.title_ar} (نسخة)` : null,
+        status: "draft" as CompetitionStatus,
+        view_count: 0,
+        organizer_id: rest.organizer_id,
+        exhibition_id: rest.exhibition_id,
+      });
+      if (error) throw error;
+    },
+    onSuccess: () => { queryClient.invalidateQueries({ queryKey: ["adminCompetitions"] }); toast({ title: isAr ? "تم نسخ المسابقة" : "Competition duplicated" }); },
     onError: (error) => { toast({ variant: "destructive", title: "Error", description: error.message }); },
   });
 
@@ -108,13 +155,15 @@ export default function CompetitionsAdmin() {
     onError: (error) => { toast({ variant: "destructive", title: "Error", description: error.message }); },
   });
 
-  // Stats
   const stats = {
     total: competitions?.length || 0,
     active: competitions?.filter(c => ["in_progress", "judging", "registration_open"].includes(c.status)).length || 0,
     completed: competitions?.filter(c => c.status === "completed").length || 0,
     draft: competitions?.filter(c => c.status === "draft").length || 0,
   };
+
+  const getCategoriesForComp = (compId: string) => allCategories?.filter(c => c.competition_id === compId) || [];
+  const getTypesForComp = (compId: string) => typeAssignments?.filter((t: any) => t.competition_id === compId) || [];
 
   return (
     <div className="space-y-6">
@@ -129,6 +178,12 @@ export default function CompetitionsAdmin() {
             <p className="text-xs text-muted-foreground">{isAr ? "إدارة ومراقبة جميع المسابقات" : "Manage and monitor all competitions"}</p>
           </div>
         </div>
+        <Button asChild className="gap-2 shadow-lg shadow-primary/20">
+          <Link to="/competitions/create">
+            <Plus className="h-4 w-4" />
+            {isAr ? "إضافة مسابقة" : "Add Competition"}
+          </Link>
+        </Button>
       </div>
 
       {/* Stats */}
@@ -164,7 +219,7 @@ export default function CompetitionsAdmin() {
             />
           </div>
           <Select value={statusFilter} onValueChange={setStatusFilter}>
-            <SelectTrigger className="w-48">
+            <SelectTrigger className="w-40">
               <Filter className="me-1.5 h-3.5 w-3.5 text-muted-foreground" />
               <SelectValue placeholder={isAr ? "الحالة" : "Status"} />
             </SelectTrigger>
@@ -177,6 +232,52 @@ export default function CompetitionsAdmin() {
               ))}
             </SelectContent>
           </Select>
+          {uniqueOrganizers.length > 0 && (
+            <Select value={organizerFilter} onValueChange={setOrganizerFilter}>
+              <SelectTrigger className="w-44">
+                <Users className="me-1.5 h-3.5 w-3.5 text-muted-foreground" />
+                <SelectValue placeholder={isAr ? "المنظم" : "Organizer"} />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">{isAr ? "جميع المنظمين" : "All Organizers"}</SelectItem>
+                {uniqueOrganizers.map((org: any) => (
+                  <SelectItem key={org.id} value={org.id}>
+                    {isAr && org.full_name_ar ? org.full_name_ar : org.full_name || org.id.slice(0, 8)}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          )}
+          {uniqueExhibitions.length > 0 && (
+            <Select value={exhibitionFilter} onValueChange={setExhibitionFilter}>
+              <SelectTrigger className="w-44">
+                <Building2 className="me-1.5 h-3.5 w-3.5 text-muted-foreground" />
+                <SelectValue placeholder={isAr ? "المعرض" : "Exhibition"} />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">{isAr ? "جميع المعارض" : "All Exhibitions"}</SelectItem>
+                {uniqueExhibitions.map((ex: any) => (
+                  <SelectItem key={ex.id} value={ex.id}>
+                    {isAr && ex.title_ar ? ex.title_ar : ex.title}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          )}
+          {uniqueYears.length > 0 && (
+            <Select value={yearFilter} onValueChange={setYearFilter}>
+              <SelectTrigger className="w-28">
+                <Calendar className="me-1.5 h-3.5 w-3.5 text-muted-foreground" />
+                <SelectValue placeholder={isAr ? "السنة" : "Year"} />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">{isAr ? "الكل" : "All"}</SelectItem>
+                {uniqueYears.map(y => (
+                  <SelectItem key={y} value={y}>{y}</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          )}
         </CardContent>
       </Card>
 
@@ -193,15 +294,22 @@ export default function CompetitionsAdmin() {
                 <Trophy className="h-6 w-6 text-muted-foreground/30" />
               </div>
               <p className="text-sm text-muted-foreground">{isAr ? "لا توجد مسابقات" : "No competitions found"}</p>
+              <Button asChild variant="outline" className="mt-4 gap-2">
+                <Link to="/competitions/create">
+                  <Plus className="h-4 w-4" />
+                  {isAr ? "إنشاء أول مسابقة" : "Create First Competition"}
+                </Link>
+              </Button>
             </div>
           ) : (
             <Table>
               <TableHeader>
                 <TableRow className="bg-muted/30 hover:bg-muted/30">
                   <TableHead className="font-semibold">{isAr ? "المسابقة" : "Competition"}</TableHead>
+                  <TableHead className="font-semibold">{isAr ? "المنظم / المعرض" : "Organizer / Exhibition"}</TableHead>
                   <TableHead className="font-semibold">{isAr ? "الحالة" : "Status"}</TableHead>
                   <TableHead className="font-semibold">{isAr ? "التاريخ" : "Date"}</TableHead>
-                  <TableHead className="font-semibold">{isAr ? "الموقع" : "Location"}</TableHead>
+                  <TableHead className="font-semibold">{isAr ? "الفئات" : "Categories"}</TableHead>
                   <TableHead className="font-semibold">{isAr ? "المشاركين" : "Participants"}</TableHead>
                   <TableHead className="w-12"></TableHead>
                 </TableRow>
@@ -210,6 +318,9 @@ export default function CompetitionsAdmin() {
                 {competitions?.map((comp) => {
                   const counts = participantCounts?.[comp.id] || { approved: 0, pending: 0 };
                   const fillPct = comp.max_participants ? Math.min(Math.round((counts.approved / comp.max_participants) * 100), 100) : 0;
+                  const categories = getCategoriesForComp(comp.id);
+                  const types = getTypesForComp(comp.id);
+                  const year = new Date(comp.competition_start).getFullYear();
 
                   return (
                     <TableRow key={comp.id} className="group hover:bg-muted/20 transition-colors duration-150">
@@ -217,16 +328,51 @@ export default function CompetitionsAdmin() {
                         <div className="max-w-[220px]">
                           <p className="font-semibold text-sm truncate group-hover:text-primary transition-colors">
                             {isAr && comp.title_ar ? comp.title_ar : comp.title}
+                            <span className="ms-1.5 text-[10px] text-muted-foreground font-normal">{year}</span>
                           </p>
-                          <p className="text-[10px] text-muted-foreground font-mono">
+                          {types.length > 0 && (
+                            <div className="flex flex-wrap gap-1 mt-1">
+                              {types.slice(0, 2).map((t: any) => (
+                                <Badge key={t.type?.id} variant="outline" className="text-[9px] px-1.5 py-0">
+                                  {isAr && t.type?.name_ar ? t.type.name_ar : t.type?.name}
+                                </Badge>
+                              ))}
+                              {types.length > 2 && <Badge variant="outline" className="text-[9px] px-1.5 py-0">+{types.length - 2}</Badge>}
+                            </div>
+                          )}
+                          <p className="text-[10px] text-muted-foreground font-mono mt-0.5">
                             {comp.competition_number || (comp.is_virtual ? (isAr ? "افتراضية" : "Virtual") : "")}
                           </p>
                         </div>
                       </TableCell>
                       <TableCell>
-                        <Badge className={`text-[10px] font-semibold border-0 ${statusConfig[comp.status].bg}`}>
-                          <span className={`me-1 inline-block h-1.5 w-1.5 rounded-full ${statusConfig[comp.status].dot}`} />
-                          {isAr ? statusConfig[comp.status].labelAr : statusConfig[comp.status].label}
+                        <div className="space-y-1">
+                          {comp.organizer && (
+                            <div className="flex items-center gap-2">
+                              {comp.organizer.avatar_url ? (
+                                <img src={comp.organizer.avatar_url} alt="" className="h-6 w-6 rounded-full object-cover" />
+                              ) : (
+                                <div className="h-6 w-6 rounded-full bg-muted flex items-center justify-center">
+                                  <Users className="h-3 w-3 text-muted-foreground" />
+                                </div>
+                              )}
+                              <span className="text-xs truncate max-w-[120px]">
+                                {isAr && comp.organizer.full_name_ar ? comp.organizer.full_name_ar : comp.organizer.full_name || "—"}
+                              </span>
+                            </div>
+                          )}
+                          {comp.exhibition && (
+                            <div className="flex items-center gap-1.5 text-[10px] text-muted-foreground">
+                              <Building2 className="h-3 w-3" />
+                              <span className="truncate max-w-[120px]">{isAr && comp.exhibition.title_ar ? comp.exhibition.title_ar : comp.exhibition.title}</span>
+                            </div>
+                          )}
+                        </div>
+                      </TableCell>
+                      <TableCell>
+                        <Badge className={`text-[10px] font-semibold border-0 ${statusConfig[comp.status as CompetitionStatus].bg}`}>
+                          <span className={`me-1 inline-block h-1.5 w-1.5 rounded-full ${statusConfig[comp.status as CompetitionStatus].dot}`} />
+                          {isAr ? statusConfig[comp.status as CompetitionStatus].labelAr : statusConfig[comp.status as CompetitionStatus].label}
                         </Badge>
                       </TableCell>
                       <TableCell>
@@ -234,18 +380,28 @@ export default function CompetitionsAdmin() {
                           <Calendar className="h-3 w-3 text-muted-foreground" />
                           {format(new Date(comp.competition_start), "MMM d, yyyy")}
                         </div>
+                        {comp.city && (
+                          <div className="flex items-center gap-1 text-[10px] text-muted-foreground mt-0.5">
+                            <MapPin className="h-2.5 w-2.5" />
+                            {comp.city}{comp.country ? `, ${comp.country}` : ""}
+                          </div>
+                        )}
                       </TableCell>
                       <TableCell>
-                        {comp.is_virtual ? (
-                          <div className="flex items-center gap-1.5 text-sm text-muted-foreground">
-                            <Globe className="h-3 w-3" />
-                            {isAr ? "افتراضية" : "Online"}
+                        {categories.length > 0 ? (
+                          <div className="flex flex-wrap gap-1">
+                            {categories.slice(0, 3).map(cat => (
+                              <Badge key={cat.id} variant="secondary" className="text-[9px] px-1.5 py-0 gap-1">
+                                <Tag className="h-2.5 w-2.5" />
+                                {isAr && cat.name_ar ? cat.name_ar : cat.name}
+                              </Badge>
+                            ))}
+                            {categories.length > 3 && (
+                              <Badge variant="outline" className="text-[9px] px-1.5 py-0">+{categories.length - 3}</Badge>
+                            )}
                           </div>
                         ) : (
-                          <div className="flex items-center gap-1.5 text-sm">
-                            <MapPin className="h-3 w-3 text-muted-foreground" />
-                            <span className="truncate max-w-[120px]">{comp.city}{comp.country ? `, ${comp.country}` : ""}</span>
-                          </div>
+                          <span className="text-[10px] text-muted-foreground">—</span>
                         )}
                       </TableCell>
                       <TableCell>
@@ -277,14 +433,17 @@ export default function CompetitionsAdmin() {
                             <DropdownMenuItem asChild>
                               <Link to={`/competitions/${comp.id}/edit`}><Edit className="mr-2 h-4 w-4" />{isAr ? "تعديل" : "Edit"}</Link>
                             </DropdownMenuItem>
-                            <DropdownMenuSeparator />
-                            <DropdownMenuItem
-                              onClick={() => updateStatusMutation.mutate({ id: comp.id, status: "cancelled" })}
-                              className="text-destructive"
-                              disabled={comp.status === "cancelled"}
-                            >
-                              {isAr ? "إلغاء المسابقة" : "Cancel Competition"}
+                            <DropdownMenuItem onClick={() => duplicateMutation.mutate(comp)}>
+                              <Copy className="mr-2 h-4 w-4" />{isAr ? "نسخ" : "Duplicate"}
                             </DropdownMenuItem>
+                            <DropdownMenuSeparator />
+                            {ALL_STATUSES.filter(s => s !== comp.status).slice(0, 4).map(status => (
+                              <DropdownMenuItem key={status} onClick={() => updateStatusMutation.mutate({ id: comp.id, status })}>
+                                <span className={`me-2 inline-block h-2 w-2 rounded-full ${statusConfig[status].dot}`} />
+                                {isAr ? statusConfig[status].labelAr : statusConfig[status].label}
+                              </DropdownMenuItem>
+                            ))}
+                            <DropdownMenuSeparator />
                             {comp.status === "draft" && (
                               <DropdownMenuItem
                                 onClick={() => {

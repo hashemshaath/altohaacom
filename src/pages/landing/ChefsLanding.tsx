@@ -47,7 +47,7 @@ export default function ChefsLanding() {
                 <span className="text-xs font-medium text-primary">{isAr ? "للطهاة المحترفين" : "For Professional Chefs"}</span>
               </div>
               <h1 className="font-serif text-4xl font-bold md:text-5xl lg:text-6xl">
-                {isAr ? "ارتقِ بمسيرتك الطهوية" : "Elevate Your Culinary Career"}
+                {isAr ? "ارتقِ بمسيرتك في الطهي" : "Elevate Your Culinary Career"}
               </h1>
               <p className="mt-4 text-lg text-muted-foreground md:text-xl">
                 {isAr
@@ -153,7 +153,7 @@ export default function ChefsLanding() {
               <ChefHat className="h-7 w-7 text-primary" />
             </div>
             <h2 className="mb-3 font-serif text-2xl font-bold sm:text-3xl">
-              {isAr ? "ابدأ مسيرتك الطهوية اليوم" : "Start Your Culinary Journey Today"}
+              {isAr ? "ابدأ مسيرتك في الطهي اليوم" : "Start Your Culinary Journey Today"}
             </h2>
             <p className="mx-auto mb-6 max-w-lg text-sm text-muted-foreground">
               {isAr ? "انضم إلى آلاف الطهاة المحترفين وابدأ رحلتك نحو التميز" : "Join thousands of professional chefs and begin your journey to excellence"}

@@ -96,7 +96,7 @@ export function PartnersLogos() {
         {entities.length > 0 && (
           <div>
             <h3 className="mb-4 text-center text-sm font-medium text-muted-foreground">
-              {isAr ? "الجهات الطهوية المعتمدة" : "Verified Culinary Entities"}
+              {isAr ? "جهات الطهي المعتمدة" : "Verified Culinary Entities"}
             </h3>
             <div className="flex flex-wrap items-center justify-center gap-6 md:gap-10">
               {entities.map((e: any) => (

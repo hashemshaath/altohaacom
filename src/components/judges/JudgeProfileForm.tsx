@@ -311,7 +311,7 @@ export default function JudgeProfileForm({ userId, isAdmin }: Props) {
             <div><Label>{isAr ? "التعليم (AR)" : "Education (AR)"}</Label><Textarea value={form.education_ar || ""} onChange={e => update("education_ar", e.target.value)} rows={2} dir="rtl" /></div>
           </div>
           <div className="grid gap-4 sm:grid-cols-3">
-            <div><Label>{isAr ? "التخصصات الطهوية (مفصولة بفواصل)" : "Culinary Specialties (comma-separated)"}</Label><Input value={form.culinary_specialties || ""} onChange={e => update("culinary_specialties", e.target.value)} /></div>
+            <div><Label>{isAr ? "تخصصات الطهي (مفصولة بفواصل)" : "Culinary Specialties (comma-separated)"}</Label><Input value={form.culinary_specialties || ""} onChange={e => update("culinary_specialties", e.target.value)} /></div>
             <div><Label>{isAr ? "الشهادات المهنية" : "Certifications"}</Label><Input value={form.certifications || ""} onChange={e => update("certifications", e.target.value)} /></div>
             <div><Label>{isAr ? "اللغات" : "Languages Spoken"}</Label><Input value={form.languages_spoken || ""} onChange={e => update("languages_spoken", e.target.value)} /></div>
           </div>

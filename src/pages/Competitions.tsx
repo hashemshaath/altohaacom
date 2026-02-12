@@ -181,11 +181,11 @@ export default function Competitions() {
                   </Badge>
                 </div>
                 <h1 className="font-serif text-2xl font-bold md:text-3xl lg:text-4xl">
-                  {isAr ? "المسابقات الطهوية" : "Culinary Competitions"}
+                  {isAr ? "مسابقات الطهي" : "Culinary Competitions"}
                 </h1>
                 <p className="text-sm text-muted-foreground leading-relaxed sm:text-base">
                   {isAr
-                    ? "اكتشف المسابقات الطهوية واشترك فيها. أظهر مهاراتك وتنافس مع أفضل الطهاة."
+                    ? "اكتشف مسابقات الطهي واشترك فيها. أظهر مهاراتك وتنافس مع أفضل الطهاة."
                     : "Discover world-class culinary competitions. Showcase your skills, compete with top chefs, and earn recognition."}
                 </p>
               </div>

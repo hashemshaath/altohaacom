@@ -156,11 +156,11 @@ export default function Entities() {
               </Badge>
             </div>
             <h1 className="font-serif text-3xl font-bold md:text-4xl lg:text-5xl">
-              {isAr ? "دليل الجهات والجمعيات الطهوية" : "Culinary Entities Directory"}
+              {isAr ? "دليل جهات وجمعيات الطهي" : "Culinary Entities Directory"}
             </h1>
             <p className="mt-3 max-w-xl text-sm text-muted-foreground sm:text-base md:text-lg">
               {isAr
-                ? "اكتشف وتابع الجمعيات الطهوية والجهات الحكومية والخاصة المعنية بالطهي محلياً ودولياً"
+                ? "اكتشف وتابع جمعيات الطهي والجهات الحكومية والخاصة المعنية بالطهي محلياً ودولياً"
                 : "Discover and follow culinary associations, government entities, and private organizations locally and internationally"}
             </p>
 
