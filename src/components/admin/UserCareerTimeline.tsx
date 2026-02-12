@@ -557,8 +557,11 @@ function CompactRow({ icon: Icon, color, logoUrl, title, subtitle, meta, badge, 
   badge?: string; badgeVariant?: "default" | "secondary" | "outline"; isCurrent?: boolean; isAr: boolean;
   onEdit?: () => void; onDelete?: () => void;
 }) {
+  // Build single-line content
+  const mainContent = [title, subtitle, meta].filter(Boolean).join(" · ");
+  
   return (
-    <div className="flex items-center gap-3 rounded-lg border border-border/50 px-4 py-3 hover:bg-muted/50 transition-all hover:border-border/80 group">
+    <div className="flex items-center gap-3 rounded-lg border border-border/50 px-4 py-2.5 hover:bg-muted/50 transition-all hover:border-border/80 group">
       {logoUrl ? (
         <img src={logoUrl} className="h-8 w-8 rounded-lg object-cover shrink-0" alt="" />
       ) : (
@@ -566,14 +569,10 @@ function CompactRow({ icon: Icon, color, logoUrl, title, subtitle, meta, badge, 
           <Icon className="h-4 w-4" />
         </div>
       )}
-      <div className="flex-1 min-w-0">
-        <div className="flex items-center gap-2 flex-wrap">
-          <p className="text-sm font-semibold">{title}</p>
-          {isCurrent && <Badge variant="default" className="text-[10px] h-5 px-2 shrink-0">{isAr ? "حالي" : "Current"}</Badge>}
-          {badge && <Badge variant={badgeVariant || "secondary"} className="text-[10px] h-5 px-2 shrink-0 capitalize">{badge}</Badge>}
-        </div>
-        {subtitle && <p className="text-xs text-muted-foreground mt-0.5">{subtitle}</p>}
-        {meta && <p className="text-xs text-muted-foreground">{meta}</p>}
+      <div className="flex-1 min-w-0 flex items-center gap-2 flex-wrap">
+        <p className="text-sm font-medium truncate">{mainContent}</p>
+        {isCurrent && <Badge variant="default" className="text-[10px] h-5 px-1.5 shrink-0 whitespace-nowrap">{isAr ? "حالي" : "Current"}</Badge>}
+        {badge && <Badge variant={badgeVariant || "secondary"} className="text-[10px] h-5 px-1.5 shrink-0 capitalize whitespace-nowrap">{badge}</Badge>}
       </div>
       {(onEdit || onDelete) && (
         <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity shrink-0 ms-2">
