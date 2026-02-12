@@ -50,8 +50,8 @@ const initialData: CompetitionFormData = {
   linkedTastingId: null,
 };
 
-const STEP_LABELS_EN = ["Linkage", "Basic Info", "Types & Categories", "Schedule", "Supervising & Judges", "Criteria", "Review"];
-const STEP_LABELS_AR = ["الربط", "المعلومات", "الأنواع والفئات", "الجدول", "الإشراف والتحكيم", "المعايير", "المراجعة"];
+const STEP_LABELS_EN = ["Types & Categories", "Linkage", "Basic Info", "Schedule", "Supervising & Judges", "Criteria", "Review"];
+const STEP_LABELS_AR = ["الأنواع والفئات", "الربط", "المعلومات", "الجدول", "الإشراف والتحكيم", "المعايير", "المراجعة"];
 
 export default function CreateCompetition() {
   const { language, t } = useLanguage();
@@ -67,9 +67,9 @@ export default function CreateCompetition() {
   }, []);
 
   const canProceed = () => {
-    if (step === 1) return true;
-    if (step === 2) return data.title.trim() !== "";
-    if (step === 3) return data.selectedTypeIds.length > 0 && data.categories.some((c) => c.name.trim() !== "");
+    if (step === 1) return data.selectedTypeIds.length > 0 && data.categories.some((c) => c.name.trim() !== "");
+    if (step === 2) return true;
+    if (step === 3) return data.title.trim() !== "";
     if (step === 4) return data.competitionStart !== "" && data.competitionEnd !== "" && data.countryCode.length === 2;
     if (step === 5) return true;
     if (step === 6) return data.criteria.some((c) => c.name.trim() !== "");
@@ -236,6 +236,14 @@ export default function CreateCompetition() {
 
           <div className="mt-4">
             {step === 1 && (
+              <TypesCategoriesStep
+                selectedTypeIds={data.selectedTypeIds}
+                categories={data.categories}
+                onTypeChange={(ids) => updateData({ selectedTypeIds: ids })}
+                onCategoriesChange={(cats) => updateData({ categories: cats })}
+              />
+            )}
+            {step === 2 && (
               <ExhibitionStep
                 selectedId={data.exhibitionId}
                 onChange={(id) => updateData({ exhibitionId: id })}
@@ -247,15 +255,7 @@ export default function CreateCompetition() {
                 onLinkedChefChange={(id) => updateData({ linkedChefId: id })}
               />
             )}
-            {step === 2 && <BasicInfoStep data={data} onChange={updateData} />}
-            {step === 3 && (
-              <TypesCategoriesStep
-                selectedTypeIds={data.selectedTypeIds}
-                categories={data.categories}
-                onTypeChange={(ids) => updateData({ selectedTypeIds: ids })}
-                onCategoriesChange={(cats) => updateData({ categories: cats })}
-              />
-            )}
+            {step === 3 && <BasicInfoStep data={data} onChange={updateData} />}
             {step === 4 && <DatesLocationStep data={data} onChange={updateData} />}
             {step === 5 && (
               <SupervisingBodiesStep

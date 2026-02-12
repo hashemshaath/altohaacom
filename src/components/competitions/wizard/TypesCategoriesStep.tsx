@@ -218,41 +218,59 @@ export function TypesCategoriesStep({
         </CardHeader>
         <CardContent className="space-y-3">
           {categories.map((cat, index) => (
-            <div key={index} className="flex items-center gap-3 rounded-lg border p-3">
-              <div className="flex-1 min-w-0">
-                {cat.name ? (
-                  <div className="flex items-center gap-2">
-                    <span className="text-sm font-medium truncate">{isAr && cat.name_ar ? cat.name_ar : cat.name}</span>
-                    {cat.gender !== "mixed" && (
-                      <Badge variant="outline" className="text-[10px]">{cat.gender}</Badge>
-                    )}
-                    {cat.max_participants && (
-                      <Badge variant="outline" className="text-[10px]">
-                        {isAr ? `الحد: ${cat.max_participants}` : `Max: ${cat.max_participants}`}
-                      </Badge>
-                    )}
-                  </div>
-                ) : (
-                  <div className="grid gap-2 sm:grid-cols-2">
-                    <Input
-                      placeholder={isAr ? "اسم الفئة (إنجليزي)" : "Category name (English)"}
-                      value={cat.name}
-                      onChange={(e) => updateCategory(index, "name", e.target.value)}
-                      className="h-8 text-sm"
-                    />
-                    <Input
-                      placeholder="اسم الفئة (عربي)"
-                      value={cat.name_ar}
-                      onChange={(e) => updateCategory(index, "name_ar", e.target.value)}
-                      className="h-8 text-sm"
-                      dir="rtl"
-                    />
-                  </div>
-                )}
+            <div key={index} className="rounded-lg border p-3 space-y-2">
+              <div className="flex items-center gap-3">
+                <div className="flex-1 min-w-0">
+                  {cat.name ? (
+                    <div className="flex items-center gap-2">
+                      <span className="text-sm font-medium truncate">{isAr && cat.name_ar ? cat.name_ar : cat.name}</span>
+                      {cat.gender !== "mixed" && (
+                        <Badge variant="outline" className="text-[10px]">{cat.gender}</Badge>
+                      )}
+                      {cat.max_participants && (
+                        <Badge variant="outline" className="text-[10px]">
+                          {isAr ? `الحد: ${cat.max_participants}` : `Max: ${cat.max_participants}`}
+                        </Badge>
+                      )}
+                    </div>
+                  ) : (
+                    <div className="grid gap-2 sm:grid-cols-2">
+                      <Input
+                        placeholder={isAr ? "اسم الفئة (إنجليزي)" : "Category name (English)"}
+                        value={cat.name}
+                        onChange={(e) => updateCategory(index, "name", e.target.value)}
+                        className="h-8 text-sm"
+                      />
+                      <Input
+                        placeholder="اسم الفئة (عربي)"
+                        value={cat.name_ar}
+                        onChange={(e) => updateCategory(index, "name_ar", e.target.value)}
+                        className="h-8 text-sm"
+                        dir="rtl"
+                      />
+                    </div>
+                  )}
+                </div>
+                <Button type="button" variant="ghost" size="icon" className="h-7 w-7 shrink-0" onClick={() => removeCategory(index)}>
+                  <Trash2 className="h-3.5 w-3.5 text-destructive" />
+                </Button>
               </div>
-              <Button type="button" variant="ghost" size="icon" className="h-7 w-7 shrink-0" onClick={() => removeCategory(index)}>
-                <Trash2 className="h-3.5 w-3.5 text-destructive" />
-              </Button>
+              {/* Description fields */}
+              <div className="grid gap-2 sm:grid-cols-2">
+                <Input
+                  placeholder={isAr ? "وصف الفئة (إنجليزي)" : "Category description (English)"}
+                  value={cat.description}
+                  onChange={(e) => updateCategory(index, "description", e.target.value)}
+                  className="h-8 text-xs"
+                />
+                <Input
+                  placeholder="وصف الفئة (عربي)"
+                  value={cat.description_ar}
+                  onChange={(e) => updateCategory(index, "description_ar", e.target.value)}
+                  className="h-8 text-xs"
+                  dir="rtl"
+                />
+              </div>
             </div>
           ))}
 
