@@ -4510,6 +4510,62 @@ export type Database = {
           },
         ]
       }
+      entity_positions: {
+        Row: {
+          created_at: string
+          end_date: string | null
+          entity_id: string
+          id: string
+          is_active: boolean | null
+          notes: string | null
+          position_title: string | null
+          position_title_ar: string | null
+          position_type: string
+          sort_order: number | null
+          start_date: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          end_date?: string | null
+          entity_id: string
+          id?: string
+          is_active?: boolean | null
+          notes?: string | null
+          position_title?: string | null
+          position_title_ar?: string | null
+          position_type?: string
+          sort_order?: number | null
+          start_date?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          end_date?: string | null
+          entity_id?: string
+          id?: string
+          is_active?: boolean | null
+          notes?: string | null
+          position_title?: string | null
+          position_title_ar?: string | null
+          position_type?: string
+          sort_order?: number | null
+          start_date?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "entity_positions_entity_id_fkey"
+            columns: ["entity_id"]
+            isOneToOne: false
+            referencedRelation: "culinary_entities"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       entity_program_enrollments: {
         Row: {
           completed_at: string | null

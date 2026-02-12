@@ -19,6 +19,7 @@ import { toast } from "@/hooks/use-toast";
 import { CountrySelector } from "@/components/auth/CountrySelector";
 import { Plus, Pencil, Trash2, Building2, Eye, EyeOff, ShieldCheck, Search, Users, Settings2, Languages, Upload, Image, X, Loader2, MapPin } from "lucide-react";
 import { EntitySubModulesPanel } from "@/components/entities/EntitySubModulesPanel";
+import { ChefSearchSelector } from "@/components/admin/ChefSearchSelector";
 import type { Database } from "@/integrations/supabase/types";
 
 type EntityType = Database["public"]["Enums"]["entity_type"];
@@ -683,14 +684,58 @@ export default function EntitiesAdmin() {
 
               {/* Leadership Tab */}
               <TabsContent value="leadership" className="space-y-4">
+                <div className="rounded-lg border border-dashed border-primary/30 p-4 bg-primary/5">
+                  <p className="text-sm text-muted-foreground mb-2">
+                    {isAr
+                      ? "💡 لإدارة المناصب القيادية والأعضاء، احفظ الجهة أولاً ثم استخدم زر ⚙️ إدارة من القائمة"
+                      : "💡 To manage leadership positions and board members, save the entity first, then use the ⚙️ Manage button from the list"
+                    }
+                  </p>
+                </div>
                 <div className="grid gap-4 sm:grid-cols-2">
-                  <div><Label>{isAr ? "اسم الرئيس (EN)" : "President Name (EN)"}</Label><Input value={form.president_name} onChange={e => updateField("president_name", e.target.value)} /></div>
-                  <div><Label>{isAr ? "اسم الرئيس (AR)" : "President Name (AR)"}</Label><Input value={form.president_name_ar} onChange={e => updateField("president_name_ar", e.target.value)} dir="rtl" /></div>
+                  <div>
+                    <Label>{isAr ? "اسم الرئيس (EN)" : "President Name (EN)"}</Label>
+                    <ChefSearchSelector
+                      value={form.president_name ? "temp" : undefined}
+                      valueName={form.president_name}
+                      onChange={(_userId, name, nameAr) => {
+                        updateField("president_name", name);
+                        updateField("president_name_ar", nameAr);
+                      }}
+                      onClear={() => {
+                        updateField("president_name", "");
+                        updateField("president_name_ar", "");
+                      }}
+                      placeholder={isAr ? "ابحث عن الرئيس..." : "Search for president..."}
+                    />
+                  </div>
+                  <div>
+                    <Label>{isAr ? "اسم الرئيس (AR)" : "President Name (AR)"}</Label>
+                    <Input value={form.president_name_ar} onChange={e => updateField("president_name_ar", e.target.value)} dir="rtl" />
+                  </div>
                 </div>
                 <TranslateBtn enField="president_name" arField="president_name_ar" />
                 <div className="grid gap-4 sm:grid-cols-2">
-                  <div><Label>{isAr ? "اسم الأمين العام (EN)" : "Secretary Name (EN)"}</Label><Input value={form.secretary_name} onChange={e => updateField("secretary_name", e.target.value)} /></div>
-                  <div><Label>{isAr ? "اسم الأمين العام (AR)" : "Secretary Name (AR)"}</Label><Input value={form.secretary_name_ar} onChange={e => updateField("secretary_name_ar", e.target.value)} dir="rtl" /></div>
+                  <div>
+                    <Label>{isAr ? "اسم الأمين العام (EN)" : "Secretary Name (EN)"}</Label>
+                    <ChefSearchSelector
+                      value={form.secretary_name ? "temp" : undefined}
+                      valueName={form.secretary_name}
+                      onChange={(_userId, name, nameAr) => {
+                        updateField("secretary_name", name);
+                        updateField("secretary_name_ar", nameAr);
+                      }}
+                      onClear={() => {
+                        updateField("secretary_name", "");
+                        updateField("secretary_name_ar", "");
+                      }}
+                      placeholder={isAr ? "ابحث عن الأمين العام..." : "Search for secretary..."}
+                    />
+                  </div>
+                  <div>
+                    <Label>{isAr ? "اسم الأمين العام (AR)" : "Secretary Name (AR)"}</Label>
+                    <Input value={form.secretary_name_ar} onChange={e => updateField("secretary_name_ar", e.target.value)} dir="rtl" />
+                  </div>
                 </div>
                 <TranslateBtn enField="secretary_name" arField="secretary_name_ar" />
               </TabsContent>
