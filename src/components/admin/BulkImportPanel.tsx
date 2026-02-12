@@ -16,12 +16,14 @@ import {
   Sparkles, Eye, Save, AlertTriangle, ArrowRight, Trash2, Languages,
 } from "lucide-react";
 
-type EntityType = "exhibition" | "competition" | "participant" | "judge" | "winner" | "company" | "entity";
+type EntityType = "exhibition" | "competition" | "participant" | "judge" | "winner" | "company" | "entity" | "volunteer" | "sponsor";
 type ImportStep = "upload" | "preview" | "optimize" | "review" | "saving";
 
 interface BulkImportPanelProps {
   entityType: EntityType;
   onImportComplete?: () => void;
+  /** For competition-scoped imports: auto-fill competition_number in template */
+  competitionNumber?: string;
 }
 
 const ENTITY_LABELS: Record<EntityType, { en: string; ar: string }> = {
@@ -32,9 +34,11 @@ const ENTITY_LABELS: Record<EntityType, { en: string; ar: string }> = {
   winner: { en: "Winners", ar: "الفائزين" },
   company: { en: "Companies", ar: "الشركات" },
   entity: { en: "Entities", ar: "الجهات" },
+  volunteer: { en: "Volunteers & Team", ar: "المتطوعين والفريق" },
+  sponsor: { en: "Sponsors", ar: "الرعاة" },
 };
 
-export function BulkImportPanel({ entityType, onImportComplete }: BulkImportPanelProps) {
+export function BulkImportPanel({ entityType, onImportComplete, competitionNumber }: BulkImportPanelProps) {
   const { language } = useLanguage();
   const { user } = useAuth();
   const queryClient = useQueryClient();
@@ -60,8 +64,9 @@ export function BulkImportPanel({ entityType, onImportComplete }: BulkImportPane
     setLoading(true);
     try {
       const { data: { session } } = await supabase.auth.getSession();
+      const templateUrl = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/bulk-import?action=template&type=${entityType}${competitionNumber ? `&competition_number=${competitionNumber}` : ""}`;
       const res = await fetch(
-        `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/bulk-import?action=template&type=${entityType}`,
+        templateUrl,
         { headers: { Authorization: `Bearer ${session?.access_token}`, apikey: import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY } }
       );
       if (!res.ok) throw new Error("Failed to download template");
