@@ -7365,6 +7365,8 @@ export type Database = {
           created_at: string
           date_of_birth: string | null
           display_name: string | null
+          education_institution: string | null
+          education_level: string | null
           email: string | null
           experience_level:
             | Database["public"]["Enums"]["experience_level"]
@@ -7400,6 +7402,7 @@ export type Database = {
           verified_at: string | null
           wallet_balance: number | null
           website: string | null
+          years_of_experience: number | null
           youtube: string | null
         }
         Insert: {
@@ -7415,6 +7418,8 @@ export type Database = {
           created_at?: string
           date_of_birth?: string | null
           display_name?: string | null
+          education_institution?: string | null
+          education_level?: string | null
           email?: string | null
           experience_level?:
             | Database["public"]["Enums"]["experience_level"]
@@ -7452,6 +7457,7 @@ export type Database = {
           verified_at?: string | null
           wallet_balance?: number | null
           website?: string | null
+          years_of_experience?: number | null
           youtube?: string | null
         }
         Update: {
@@ -7467,6 +7473,8 @@ export type Database = {
           created_at?: string
           date_of_birth?: string | null
           display_name?: string | null
+          education_institution?: string | null
+          education_level?: string | null
           email?: string | null
           experience_level?:
             | Database["public"]["Enums"]["experience_level"]
@@ -7504,6 +7512,7 @@ export type Database = {
           verified_at?: string | null
           wallet_balance?: number | null
           website?: string | null
+          years_of_experience?: number | null
           youtube?: string | null
         }
         Relationships: [

@@ -13,7 +13,6 @@ import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
@@ -21,10 +20,13 @@ import { CountrySelector } from "@/components/auth/CountrySelector";
 import { useToast } from "@/hooks/use-toast";
 import { useApprovedSpecialties, useUserSpecialties } from "@/hooks/useSpecialties";
 import { useFollowStats } from "@/hooks/useFollow";
+import { UserPersonalDetailsTab } from "@/components/admin/UserPersonalDetailsTab";
+import { UserModificationHistory } from "@/components/admin/UserModificationHistory";
+import { UserBioOptimizer } from "@/components/admin/UserBioOptimizer";
 import {
   Search, UserX, UserCheck, Eye, Edit, ChevronRight, ChevronLeft, X, Save,
   UserPlus, KeyRound, Mail, Loader2, Upload, Image as ImageIcon, Users, Plus,
-  Trash2, Camera, CheckCircle2, AlertCircle,
+  Trash2, Camera, CheckCircle2, AlertCircle, History, UserCircle,
 } from "lucide-react";
 import { format } from "date-fns";
 import type { Database } from "@/integrations/supabase/types";
@@ -88,6 +90,18 @@ export default function UserManagement() {
   const [editSpecialization, setEditSpecialization] = useState("");
   const [editTab, setEditTab] = useState("profile");
 
+  // Personal details state
+  const [editPersonal, setEditPersonal] = useState({
+    dateOfBirth: "",
+    gender: "",
+    preferredLanguage: "",
+    nationality: "",
+    educationLevel: "",
+    educationInstitution: "",
+    yearsOfExperience: "",
+    experienceLevel: "",
+  });
+
   // Validation state
   const [usernameError, setUsernameError] = useState("");
   const [usernameChecking, setUsernameChecking] = useState(false);
@@ -128,7 +142,7 @@ export default function UserManagement() {
     queryFn: async () => {
       let query = supabase
         .from("profiles")
-        .select(`id, user_id, full_name, display_name, username, account_number, account_status, membership_tier, avatar_url, created_at, location, country_code, city, specialization, is_verified, email, phone, bio, cover_image_url`, { count: "exact" })
+        .select(`id, user_id, full_name, display_name, username, account_number, account_status, membership_tier, avatar_url, created_at, location, country_code, city, specialization, is_verified, email, phone, bio, cover_image_url, date_of_birth, gender, preferred_language, nationality, experience_level, education_level, education_institution, years_of_experience`, { count: "exact" })
         .order("created_at", { ascending: false })
         .range(page * pageSize, (page + 1) * pageSize - 1);
 
@@ -429,6 +443,16 @@ export default function UserManagement() {
     setEditSpecialization(profile.specialization || "");
     setEditTab("profile");
     setUsernameError("");
+    setEditPersonal({
+      dateOfBirth: (profile as any).date_of_birth || "",
+      gender: (profile as any).gender || "",
+      preferredLanguage: (profile as any).preferred_language || "",
+      nationality: (profile as any).nationality || "",
+      educationLevel: (profile as any).education_level || "",
+      educationInstitution: (profile as any).education_institution || "",
+      yearsOfExperience: (profile as any).years_of_experience?.toString() || "",
+      experienceLevel: (profile as any).experience_level || "",
+    });
   };
 
   const handleSaveEdit = async () => {
@@ -450,13 +474,21 @@ export default function UserManagement() {
         bio: editBio || null,
         country_code: editCountryCode || null,
         city: editCity || null,
-        location: editCountryCode ? null : null, // Clear legacy location
+        location: editCountryCode ? null : null,
         specialization: editSpecialization || null,
         membership_tier: editMembership,
         account_status: editStatus,
         is_verified: editVerified,
         suspended_reason: editStatus === "suspended" || editStatus === "banned" ? "Admin action" : null,
         suspended_at: editStatus === "suspended" || editStatus === "banned" ? new Date().toISOString() : null,
+        date_of_birth: editPersonal.dateOfBirth || null,
+        gender: editPersonal.gender || null,
+        preferred_language: editPersonal.preferredLanguage || null,
+        nationality: editPersonal.nationality || null,
+        education_level: editPersonal.educationLevel || null,
+        education_institution: editPersonal.educationInstitution || null,
+        years_of_experience: editPersonal.yearsOfExperience ? parseInt(editPersonal.yearsOfExperience) : null,
+        experience_level: editPersonal.experienceLevel || null,
       },
     });
     await updateRolesMutation.mutateAsync({ userId: editingUserId, roles: editRoles });
@@ -696,11 +728,13 @@ export default function UserManagement() {
           </CardHeader>
           <CardContent>
             <Tabs value={editTab} onValueChange={setEditTab}>
-              <TabsList className="mb-4">
+              <TabsList className="mb-4 flex-wrap">
                 <TabsTrigger value="profile"><Edit className="me-1 h-3.5 w-3.5" />{isAr ? "الملف الشخصي" : "Profile"}</TabsTrigger>
+                <TabsTrigger value="personal"><UserCircle className="me-1 h-3.5 w-3.5" />{isAr ? "البيانات الشخصية" : "Personal"}</TabsTrigger>
                 <TabsTrigger value="roles"><Users className="me-1 h-3.5 w-3.5" />{isAr ? "الأدوار والحالة" : "Roles & Status"}</TabsTrigger>
                 <TabsTrigger value="groups"><Users className="me-1 h-3.5 w-3.5" />{isAr ? "المجموعات" : "Groups"}</TabsTrigger>
                 <TabsTrigger value="media"><ImageIcon className="me-1 h-3.5 w-3.5" />{isAr ? "الوسائط" : "Media"}</TabsTrigger>
+                <TabsTrigger value="history"><History className="me-1 h-3.5 w-3.5" />{isAr ? "سجل التعديلات" : "History"}</TabsTrigger>
               </TabsList>
 
               {/* ── Profile Tab ────── */}
@@ -784,12 +818,17 @@ export default function UserManagement() {
                   )}
                 </div>
 
-                {/* Bio */}
-                <div className="space-y-2">
-                  <Label>{isAr ? "نبذة تعريفية" : "Bio"}</Label>
-                  <Textarea value={editBio} onChange={(e) => setEditBio(e.target.value)} rows={3} placeholder={isAr ? "نبذة مختصرة عن المستخدم وخبراته المهنية" : "A brief summary of the user's professional background and expertise"} />
-                  <p className="text-[10px] text-muted-foreground">{isAr ? "يُعرض في الملف الشخصي العام ونتائج البحث" : "Displayed on public profile and search results"}</p>
-                </div>
+                {/* Bio with AI Optimizer */}
+                <UserBioOptimizer bio={editBio} onBioChange={setEditBio} isAr={isAr} />
+              </TabsContent>
+
+              {/* ── Personal Details Tab ────── */}
+              <TabsContent value="personal" className="space-y-4">
+                <UserPersonalDetailsTab
+                  form={editPersonal}
+                  onChange={(updates) => setEditPersonal((prev) => ({ ...prev, ...updates }))}
+                  isAr={isAr}
+                />
               </TabsContent>
 
               {/* ── Roles & Status Tab ────── */}
@@ -974,6 +1013,11 @@ export default function UserManagement() {
                     {isAr ? "جاري رفع الصورة..." : "Uploading..."}
                   </div>
                 )}
+              </TabsContent>
+
+              {/* ── History Tab ────── */}
+              <TabsContent value="history">
+                <UserModificationHistory userId={editingUserId!} isAr={isAr} />
               </TabsContent>
             </Tabs>
 
