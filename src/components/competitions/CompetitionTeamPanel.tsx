@@ -20,16 +20,54 @@ interface CompetitionTeamPanelProps {
   isOrganizer?: boolean;
 }
 
-const ROLES = [
-  { value: "assistant", en: "Assistant", ar: "مساعد" },
-  { value: "volunteer", en: "Volunteer", ar: "متطوع" },
-  { value: "coordinator", en: "Coordinator", ar: "منسق" },
-  { value: "kitchen_marshal", en: "Kitchen Marshal", ar: "مشرف المطبخ" },
-  { value: "timekeeper", en: "Timekeeper", ar: "ضابط الوقت" },
-  { value: "photographer", en: "Photographer", ar: "مصور" },
-  { value: "mc", en: "MC / Host", ar: "مقدم الحفل" },
-  { value: "other", en: "Other", ar: "أخرى" },
+const ROLE_GROUPS = [
+  {
+    group: "operations",
+    groupEn: "Operations & Logistics",
+    groupAr: "العمليات واللوجستيات",
+    roles: [
+      { value: "coordinator", en: "Coordinator", ar: "منسق" },
+      { value: "kitchen_marshal", en: "Kitchen Marshal", ar: "مشرف المطبخ" },
+      { value: "timekeeper", en: "Timekeeper", ar: "ضابط الوقت" },
+      { value: "floor_manager", en: "Floor Manager", ar: "مدير القاعة" },
+      { value: "logistics", en: "Logistics", ar: "لوجستيات" },
+    ],
+  },
+  {
+    group: "support",
+    groupEn: "Support Staff",
+    groupAr: "فريق الدعم",
+    roles: [
+      { value: "assistant", en: "Assistant", ar: "مساعد" },
+      { value: "volunteer", en: "Volunteer", ar: "متطوع" },
+      { value: "runner", en: "Runner", ar: "مساعد ميداني" },
+      { value: "registration_desk", en: "Registration Desk", ar: "مكتب التسجيل" },
+    ],
+  },
+  {
+    group: "media",
+    groupEn: "Media & Presentation",
+    groupAr: "الإعلام والتقديم",
+    roles: [
+      { value: "photographer", en: "Photographer", ar: "مصور" },
+      { value: "videographer", en: "Videographer", ar: "مصور فيديو" },
+      { value: "mc", en: "MC / Host", ar: "مقدم الحفل" },
+      { value: "social_media", en: "Social Media", ar: "وسائل التواصل" },
+    ],
+  },
+  {
+    group: "other",
+    groupEn: "Other",
+    groupAr: "أخرى",
+    roles: [
+      { value: "medical", en: "Medical / First Aid", ar: "إسعافات أولية" },
+      { value: "security", en: "Security", ar: "أمن" },
+      { value: "other", en: "Other", ar: "أخرى" },
+    ],
+  },
 ];
+
+const ROLES = ROLE_GROUPS.flatMap(g => g.roles);
 
 interface MemberForm {
   name: string;
@@ -44,7 +82,7 @@ interface MemberForm {
 }
 
 const emptyForm: MemberForm = {
-  name: "", name_ar: "", role: "assistant", email: "", phone: "",
+  name: "", name_ar: "", role: "coordinator", email: "", phone: "",
   notes: "", title: "", title_ar: "", photo_url: "",
 };
 
@@ -137,9 +175,16 @@ export function CompetitionTeamPanel({ competitionId, isOrganizer }: Competition
     const map: Record<string, "default" | "secondary" | "outline"> = {
       coordinator: "default",
       kitchen_marshal: "default",
+      floor_manager: "default",
+      logistics: "default",
       assistant: "secondary",
       volunteer: "secondary",
+      runner: "secondary",
+      registration_desk: "secondary",
+      photographer: "outline",
+      videographer: "outline",
       mc: "outline",
+      social_media: "outline",
     };
     return map[role] || "secondary";
   };
@@ -173,8 +218,15 @@ export function CompetitionTeamPanel({ competitionId, isOrganizer }: Competition
             <SelectTrigger className="w-36 h-9 text-sm"><SelectValue /></SelectTrigger>
             <SelectContent>
               <SelectItem value="all">{isAr ? "الكل" : "All Roles"}</SelectItem>
-              {ROLES.map((r) => (
-                <SelectItem key={r.value} value={r.value}>{isAr ? r.ar : r.en}</SelectItem>
+              {ROLE_GROUPS.map((group) => (
+                <div key={group.group}>
+                  <div className="px-2 py-1.5 text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
+                    {isAr ? group.groupAr : group.groupEn}
+                  </div>
+                  {group.roles.map((r) => (
+                    <SelectItem key={r.value} value={r.value}>{isAr ? r.ar : r.en}</SelectItem>
+                  ))}
+                </div>
               ))}
             </SelectContent>
           </Select>
@@ -222,8 +274,15 @@ export function CompetitionTeamPanel({ competitionId, isOrganizer }: Competition
                 <Select value={form.role} onValueChange={(v) => setForm({ ...form, role: v })}>
                   <SelectTrigger className="h-9"><SelectValue /></SelectTrigger>
                   <SelectContent>
-                    {ROLES.map((r) => (
-                      <SelectItem key={r.value} value={r.value}>{isAr ? r.ar : r.en}</SelectItem>
+                    {ROLE_GROUPS.map((group) => (
+                      <div key={group.group}>
+                        <div className="px-2 py-1.5 text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
+                          {isAr ? group.groupAr : group.groupEn}
+                        </div>
+                        {group.roles.map((r) => (
+                          <SelectItem key={r.value} value={r.value}>{isAr ? r.ar : r.en}</SelectItem>
+                        ))}
+                      </div>
                     ))}
                   </SelectContent>
                 </Select>
@@ -270,14 +329,26 @@ export function CompetitionTeamPanel({ competitionId, isOrganizer }: Competition
           <p className="text-sm text-muted-foreground">{isAr ? "لا يوجد أعضاء فريق بعد" : "No team members yet"}</p>
         </div>
       ) : (
-        <div className="space-y-5">
-          {grouped.map((group: any) => (
-            <div key={group.value}>
-              <h4 className="text-xs uppercase tracking-wider text-muted-foreground mb-3 flex items-center gap-2">
-                <Badge variant={roleColor(group.value)}>{isAr ? group.ar : group.en}</Badge>
-                <span className="text-muted-foreground/60">({group.members.length})</span>
-              </h4>
-              <div className="grid gap-3 sm:grid-cols-2">
+        <div className="space-y-6">
+          {ROLE_GROUPS.map((roleGroup) => {
+            const groupMembers = roleGroup.roles.flatMap(role => 
+              filtered.filter((m: any) => m.role === role.value)
+            );
+            if (groupMembers.length === 0) return null;
+            return (
+              <div key={roleGroup.group}>
+                <h4 className="text-[11px] uppercase tracking-wider text-muted-foreground mb-3 flex items-center gap-2 font-semibold">
+                  {isAr ? roleGroup.groupAr : roleGroup.groupEn}
+                  <span className="text-muted-foreground/50">({groupMembers.length})</span>
+                </h4>
+                <div className="space-y-3">
+                  {grouped.filter((g: any) => roleGroup.roles.some(r => r.value === g.value)).map((group: any) => (
+                    <div key={group.value}>
+                      <div className="flex items-center gap-2 mb-2">
+                        <Badge variant={roleColor(group.value)} className="text-[10px]">{isAr ? group.ar : group.en}</Badge>
+                        <span className="text-[10px] text-muted-foreground/60">({group.members.length})</span>
+                      </div>
+                      <div className="grid gap-3 sm:grid-cols-2">
                 {group.members.map((member: any) => {
                   const name = isAr && member.name_ar ? member.name_ar : member.name;
                   const title = isAr && member.title_ar ? member.title_ar : member.title;
@@ -369,8 +440,12 @@ export function CompetitionTeamPanel({ competitionId, isOrganizer }: Competition
                   );
                 })}
               </div>
-            </div>
-          ))}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            );
+          })}
         </div>
       )}
     </div>

@@ -3155,6 +3155,7 @@ export type Database = {
       }
       competition_types: {
         Row: {
+          cover_image_url: string | null
           created_at: string | null
           description: string | null
           description_ar: string | null
@@ -3166,6 +3167,7 @@ export type Database = {
           sort_order: number | null
         }
         Insert: {
+          cover_image_url?: string | null
           created_at?: string | null
           description?: string | null
           description_ar?: string | null
@@ -3177,6 +3179,7 @@ export type Database = {
           sort_order?: number | null
         }
         Update: {
+          cover_image_url?: string | null
           created_at?: string | null
           description?: string | null
           description_ar?: string | null

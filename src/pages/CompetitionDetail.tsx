@@ -152,7 +152,7 @@ export default function CompetitionDetail() {
       const { data: assignments } = await supabase.from("competition_type_assignments").select("type_id").eq("competition_id", id);
       if (!assignments || assignments.length === 0) return [];
       const typeIds = assignments.map((a) => a.type_id);
-      const { data: types } = await supabase.from("competition_types").select("id, name, name_ar, icon").in("id", typeIds);
+      const { data: types } = await supabase.from("competition_types").select("id, name, name_ar, icon, cover_image_url").in("id", typeIds);
       return types || [];
     },
     enabled: !!id,
@@ -461,15 +461,28 @@ export default function CompetitionDetail() {
                   {competitionTypes && competitionTypes.length > 0 && (
                     <Section icon={<Flame className="h-4 w-4 text-primary" />} title={isAr ? "تخصص المسابقة" : "Competition Specialty"} badge={<Badge variant="secondary" className="text-[10px]">{competitionTypes.length}</Badge>}>
                       <div className="grid gap-3 sm:grid-cols-2">
-                        {competitionTypes.map((type) => (
-                          <div key={type.id} className="flex items-center gap-3 rounded-xl border border-border/60 p-3 bg-gradient-to-r from-primary/5 to-transparent">
-                            <div className="h-12 w-12 rounded-xl bg-primary/10 flex items-center justify-center shrink-0">
-                              <Flame className="h-5 w-5 text-primary" />
-                            </div>
-                            <div>
-                              <p className="text-sm font-semibold">{isAr && type.name_ar ? type.name_ar : type.name}</p>
-                              <p className="text-[10px] text-muted-foreground">{isAr ? "تخصص" : "Specialty"}</p>
-                            </div>
+                        {competitionTypes.map((type: any) => (
+                          <div key={type.id} className="group relative overflow-hidden rounded-xl border border-border/60 hover:shadow-md transition-all hover:-translate-y-0.5">
+                            {type.cover_image_url ? (
+                              <div className="relative h-28">
+                                <img src={type.cover_image_url} alt={type.name} className="h-full w-full object-cover group-hover:scale-105 transition-transform duration-300" />
+                                <div className="absolute inset-0 bg-gradient-to-t from-background/90 via-background/40 to-transparent" />
+                                <div className="absolute bottom-0 inset-x-0 p-3">
+                                  <p className="text-sm font-semibold text-foreground">{isAr && type.name_ar ? type.name_ar : type.name}</p>
+                                  <p className="text-[10px] text-muted-foreground">{isAr ? "تخصص" : "Specialty"}</p>
+                                </div>
+                              </div>
+                            ) : (
+                              <div className="flex items-center gap-3 p-3.5 bg-gradient-to-r from-primary/5 to-transparent">
+                                <div className="h-12 w-12 rounded-xl bg-primary/10 flex items-center justify-center shrink-0">
+                                  <Flame className="h-5 w-5 text-primary" />
+                                </div>
+                                <div>
+                                  <p className="text-sm font-semibold">{isAr && type.name_ar ? type.name_ar : type.name}</p>
+                                  <p className="text-[10px] text-muted-foreground">{isAr ? "تخصص" : "Specialty"}</p>
+                                </div>
+                              </div>
+                            )}
                           </div>
                         ))}
                       </div>
