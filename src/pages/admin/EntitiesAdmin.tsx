@@ -20,6 +20,7 @@ import { CountrySelector } from "@/components/auth/CountrySelector";
 import { Plus, Pencil, Trash2, Building2, Eye, EyeOff, ShieldCheck, Search, Users, Settings2, Languages, Upload, Image, X, Loader2, MapPin } from "lucide-react";
 import { EntitySubModulesPanel } from "@/components/entities/EntitySubModulesPanel";
 import { ChefSearchSelector } from "@/components/admin/ChefSearchSelector";
+import { EntityLeadershipPanel } from "@/components/entities/EntityLeadershipPanel";
 import type { Database } from "@/integrations/supabase/types";
 
 type EntityType = Database["public"]["Enums"]["entity_type"];
@@ -684,17 +685,10 @@ export default function EntitiesAdmin() {
 
               {/* Leadership Tab */}
               <TabsContent value="leadership" className="space-y-4">
-                <div className="rounded-lg border border-dashed border-primary/30 p-4 bg-primary/5">
-                  <p className="text-sm text-muted-foreground mb-2">
-                    {isAr
-                      ? "💡 لإدارة المناصب القيادية والأعضاء، احفظ الجهة أولاً ثم استخدم زر ⚙️ إدارة من القائمة"
-                      : "💡 To manage leadership positions and board members, save the entity first, then use the ⚙️ Manage button from the list"
-                    }
-                  </p>
-                </div>
+                {/* Quick president/secretary fields */}
                 <div className="grid gap-4 sm:grid-cols-2">
                   <div>
-                    <Label>{isAr ? "اسم الرئيس (EN)" : "President Name (EN)"}</Label>
+                    <Label>{isAr ? "الرئيس" : "President"}</Label>
                     <ChefSearchSelector
                       value={form.president_name ? "temp" : undefined}
                       valueName={form.president_name}
@@ -702,22 +696,12 @@ export default function EntitiesAdmin() {
                         updateField("president_name", name);
                         updateField("president_name_ar", nameAr);
                       }}
-                      onClear={() => {
-                        updateField("president_name", "");
-                        updateField("president_name_ar", "");
-                      }}
+                      onClear={() => { updateField("president_name", ""); updateField("president_name_ar", ""); }}
                       placeholder={isAr ? "ابحث عن الرئيس..." : "Search for president..."}
                     />
                   </div>
                   <div>
-                    <Label>{isAr ? "اسم الرئيس (AR)" : "President Name (AR)"}</Label>
-                    <Input value={form.president_name_ar} onChange={e => updateField("president_name_ar", e.target.value)} dir="rtl" />
-                  </div>
-                </div>
-                <TranslateBtn enField="president_name" arField="president_name_ar" />
-                <div className="grid gap-4 sm:grid-cols-2">
-                  <div>
-                    <Label>{isAr ? "اسم الأمين العام (EN)" : "Secretary Name (EN)"}</Label>
+                    <Label>{isAr ? "الأمين العام" : "Secretary General"}</Label>
                     <ChefSearchSelector
                       value={form.secretary_name ? "temp" : undefined}
                       valueName={form.secretary_name}
@@ -725,19 +709,26 @@ export default function EntitiesAdmin() {
                         updateField("secretary_name", name);
                         updateField("secretary_name_ar", nameAr);
                       }}
-                      onClear={() => {
-                        updateField("secretary_name", "");
-                        updateField("secretary_name_ar", "");
-                      }}
+                      onClear={() => { updateField("secretary_name", ""); updateField("secretary_name_ar", ""); }}
                       placeholder={isAr ? "ابحث عن الأمين العام..." : "Search for secretary..."}
                     />
                   </div>
-                  <div>
-                    <Label>{isAr ? "اسم الأمين العام (AR)" : "Secretary Name (AR)"}</Label>
-                    <Input value={form.secretary_name_ar} onChange={e => updateField("secretary_name_ar", e.target.value)} dir="rtl" />
-                  </div>
                 </div>
-                <TranslateBtn enField="secretary_name" arField="secretary_name_ar" />
+
+                {/* Full positions management - only when editing */}
+                {editingId ? (
+                  <>
+                    <Separator />
+                    <h3 className="text-sm font-semibold">{isAr ? "جميع المناصب والأعضاء" : "All Positions & Members"}</h3>
+                    <EntityLeadershipPanel entityId={editingId} />
+                  </>
+                ) : (
+                  <div className="rounded-lg border border-dashed border-muted-foreground/30 p-4 text-center">
+                    <p className="text-sm text-muted-foreground">
+                      {isAr ? "احفظ الجهة أولاً لإدارة جميع المناصب القيادية" : "Save the entity first to manage all leadership positions"}
+                    </p>
+                  </div>
+                )}
               </TabsContent>
 
               {/* Details Tab */}
