@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Bell, Check, CheckCheck, Trash2, X, Filter, Info, AlertTriangle, CircleCheck, CircleX } from "lucide-react";
+import { Bell, Check, CheckCheck, Trash2, X, Filter, Info, AlertTriangle, CircleCheck, CircleX, ShoppingCart, Trophy, FileText } from "lucide-react";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { Button } from "@/components/ui/button";
@@ -21,17 +21,31 @@ import { ar, enUS } from "date-fns/locale";
 import { useNavigate } from "react-router-dom";
 import { cn } from "@/lib/utils";
 
+type NotificationCategory = "all" | "approvals" | "orders" | "competitions" | "general";
+
+function categorizeNotification(notification: { link?: string | null; title?: string; type?: string | null }): NotificationCategory {
+  const link = notification.link || "";
+  const title = (notification.title || "").toLowerCase();
+  if (link.includes("/admin/") || title.includes("approv") || title.includes("review") || title.includes("verif") || title.includes("موافق") || title.includes("مراجع") || title.includes("توثيق")) return "approvals";
+  if (link.includes("/order") || link.includes("/invoice") || title.includes("order") || title.includes("invoice") || title.includes("payment") || title.includes("طلب") || title.includes("فاتور") || title.includes("دفع")) return "orders";
+  if (link.includes("/competition") || title.includes("competition") || title.includes("judge") || title.includes("score") || title.includes("مسابق") || title.includes("حكم") || title.includes("تقييم")) return "competitions";
+  return "general";
+}
+
 export default function Notifications() {
   const { notifications, unreadCount, markAsRead, markAllAsRead, deleteNotification, clearAllRead, loading } = useNotifications();
   const { language } = useLanguage();
   const navigate = useNavigate();
   const [filter, setFilter] = useState("all");
   const [typeFilter, setTypeFilter] = useState("all");
+  const [categoryFilter, setCategoryFilter] = useState<NotificationCategory>("all");
+  const isAr = language === "ar";
 
   const filteredNotifications = notifications.filter((n) => {
     const matchesRead = filter === "all" || (filter === "unread" ? !n.is_read : n.is_read);
     const matchesType = typeFilter === "all" || n.type === typeFilter;
-    return matchesRead && matchesType;
+    const matchesCategory = categoryFilter === "all" || categorizeNotification(n) === categoryFilter;
+    return matchesRead && matchesType && matchesCategory;
   });
 
   // Group by date
@@ -144,27 +158,55 @@ export default function Notifications() {
           </div>
 
           {/* Filters */}
-          <div className="flex items-center gap-3">
-            <Tabs value={filter} onValueChange={setFilter}>
-              <TabsList>
-                <TabsTrigger value="all">{language === "ar" ? "الكل" : "All"}</TabsTrigger>
-                <TabsTrigger value="unread">{language === "ar" ? "غير مقروء" : "Unread"}</TabsTrigger>
-                <TabsTrigger value="read">{language === "ar" ? "مقروء" : "Read"}</TabsTrigger>
-              </TabsList>
-            </Tabs>
-            <Select value={typeFilter} onValueChange={setTypeFilter}>
-              <SelectTrigger className="w-[130px]">
-                <Filter className="mr-2 h-3.5 w-3.5" />
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">{language === "ar" ? "كل الأنواع" : "All Types"}</SelectItem>
-                <SelectItem value="info">{language === "ar" ? "معلومات" : "Info"}</SelectItem>
-                <SelectItem value="success">{language === "ar" ? "نجاح" : "Success"}</SelectItem>
-                <SelectItem value="warning">{language === "ar" ? "تحذير" : "Warning"}</SelectItem>
-                <SelectItem value="error">{language === "ar" ? "خطأ" : "Error"}</SelectItem>
-              </SelectContent>
-            </Select>
+          <div className="flex flex-col gap-3">
+            {/* Category Tabs */}
+            <div className="flex gap-1.5 flex-wrap">
+              {([
+                { key: "all" as NotificationCategory, en: "All", ar: "الكل", icon: <Bell className="h-3.5 w-3.5" /> },
+                { key: "approvals" as NotificationCategory, en: "Approvals", ar: "الموافقات", icon: <CircleCheck className="h-3.5 w-3.5" /> },
+                { key: "orders" as NotificationCategory, en: "Orders", ar: "الطلبات", icon: <ShoppingCart className="h-3.5 w-3.5" /> },
+                { key: "competitions" as NotificationCategory, en: "Events", ar: "الفعاليات", icon: <Trophy className="h-3.5 w-3.5" /> },
+                { key: "general" as NotificationCategory, en: "General", ar: "عام", icon: <FileText className="h-3.5 w-3.5" /> },
+              ]).map((cat) => {
+                const count = cat.key === "all" ? notifications.length : notifications.filter(n => categorizeNotification(n) === cat.key).length;
+                return (
+                  <Button
+                    key={cat.key}
+                    variant={categoryFilter === cat.key ? "default" : "outline"}
+                    size="sm"
+                    className="gap-1.5"
+                    onClick={() => setCategoryFilter(cat.key)}
+                  >
+                    {cat.icon}
+                    {isAr ? cat.ar : cat.en}
+                    {count > 0 && <Badge variant="secondary" className="text-[10px] h-4 px-1.5 ms-1">{count}</Badge>}
+                  </Button>
+                );
+              })}
+            </div>
+
+            <div className="flex items-center gap-3">
+              <Tabs value={filter} onValueChange={setFilter}>
+                <TabsList>
+                  <TabsTrigger value="all">{isAr ? "الكل" : "All"}</TabsTrigger>
+                  <TabsTrigger value="unread">{isAr ? "غير مقروء" : "Unread"}</TabsTrigger>
+                  <TabsTrigger value="read">{isAr ? "مقروء" : "Read"}</TabsTrigger>
+                </TabsList>
+              </Tabs>
+              <Select value={typeFilter} onValueChange={setTypeFilter}>
+                <SelectTrigger className="w-[130px]">
+                  <Filter className="me-2 h-3.5 w-3.5" />
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">{isAr ? "كل الأنواع" : "All Types"}</SelectItem>
+                  <SelectItem value="info">{isAr ? "معلومات" : "Info"}</SelectItem>
+                  <SelectItem value="success">{isAr ? "نجاح" : "Success"}</SelectItem>
+                  <SelectItem value="warning">{isAr ? "تحذير" : "Warning"}</SelectItem>
+                  <SelectItem value="error">{isAr ? "خطأ" : "Error"}</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
           </div>
 
           {/* Notifications List */}
