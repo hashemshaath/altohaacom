@@ -242,7 +242,7 @@ export default function PublicProfile() {
         <div className="absolute inset-0 bg-gradient-to-t from-background via-background/30 to-transparent" />
       </div>
 
-      <main className="flex-1 -mt-20 pb-10 relative z-10 px-3 md:px-6 lg:px-10 max-w-5xl mx-auto w-full">
+      <main className="flex-1 -mt-20 pb-10 relative z-10 px-2 sm:px-4 md:px-6 lg:px-8 max-w-4xl lg:max-w-5xl xl:max-w-6xl mx-auto w-full">
         {/* ── Hero Profile Card ── */}
         <Card className="mb-4 overflow-visible border shadow-lg rounded-2xl">
           <CardContent className="p-4 md:p-6">
