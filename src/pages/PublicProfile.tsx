@@ -230,31 +230,30 @@ export default function PublicProfile() {
       <Header />
 
       {/* ── Cover Photo ── */}
-      <div className="relative h-52 md:h-72 overflow-hidden">
+      <div className="relative h-44 md:h-56 overflow-hidden">
         {(profile as any).cover_image_url ? (
           <img src={(profile as any).cover_image_url} alt="Cover" className="w-full h-full object-cover" />
         ) : (
-          <div className="w-full h-full bg-gradient-to-br from-accent via-primary/80 to-accent">
-            <div className="absolute -top-20 start-1/4 h-40 w-40 rounded-full bg-primary/30 blur-[80px]" />
-            <div className="absolute -bottom-10 end-1/3 h-32 w-32 rounded-full bg-primary/20 blur-[60px]" />
-            <div className="absolute top-1/2 start-2/3 h-24 w-24 rounded-full bg-accent-foreground/10 blur-[50px]" />
+          <div className="w-full h-full bg-gradient-to-br from-primary/20 via-primary/10 to-secondary">
+            <div className="absolute top-8 start-1/4 h-32 w-32 rounded-full bg-primary/15 blur-[60px]" />
+            <div className="absolute bottom-4 end-1/3 h-24 w-24 rounded-full bg-primary/10 blur-[50px]" />
           </div>
         )}
-        <div className="absolute inset-0 bg-gradient-to-t from-background/90 via-background/20 to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-t from-background via-background/30 to-transparent" />
       </div>
 
-      <main className="container flex-1 -mt-24 pb-10 relative z-10">
+      <main className="container flex-1 -mt-20 pb-10 relative z-10">
         {/* ── Hero Profile Card ── */}
-        <Card className="mb-6 overflow-visible border-none shadow-xl bg-gradient-to-br from-accent via-accent/95 to-primary/80">
+        <Card className="mb-6 overflow-visible border shadow-lg">
           <CardContent className="p-5 md:p-8">
-            <div className="flex flex-col md:flex-row items-center md:items-start gap-5 md:gap-7">
+            <div className="flex flex-col md:flex-row items-center md:items-start gap-5 md:gap-7" dir={isAr ? "rtl" : "ltr"}>
               {/* Avatar */}
               <div className="-mt-20 md:-mt-24 shrink-0">
-                <div className="h-32 w-32 md:h-40 md:w-40 ring-4 ring-card shadow-2xl border-2 border-card rounded-2xl overflow-hidden">
+                <div className="h-28 w-28 md:h-36 md:w-36 ring-4 ring-background shadow-xl rounded-2xl overflow-hidden border-2 border-border">
                   {profile.avatar_url ? (
                     <img src={profile.avatar_url} alt={displayName} className="h-full w-full object-cover" />
                   ) : (
-                    <div className="h-full w-full flex items-center justify-center bg-primary/10 text-primary text-4xl font-bold">
+                    <div className="h-full w-full flex items-center justify-center bg-muted text-primary text-4xl font-bold">
                       {displayName[0]?.toUpperCase()}
                     </div>
                   )}
@@ -262,11 +261,11 @@ export default function PublicProfile() {
               </div>
 
               {/* Info */}
-              <div className="flex-1 min-w-0 text-center md:text-start space-y-2 pt-0 md:pt-2" dir={isAr ? "rtl" : "ltr"}>
+              <div className="flex-1 min-w-0 text-center md:text-start space-y-3 pt-0 md:pt-2">
                 {/* Name + Verification + Awards */}
                 <div className="flex items-center gap-2 flex-wrap justify-center md:justify-start">
-                  <h1 className="font-serif text-2xl md:text-3xl font-bold text-accent-foreground">{displayName}</h1>
-                  {profile.is_verified && <BadgeCheck className="h-6 w-6 text-accent-foreground" />}
+                  <h1 className="font-serif text-2xl md:text-3xl font-bold text-foreground">{displayName}</h1>
+                  {profile.is_verified && <BadgeCheck className="h-5 w-5 text-primary" />}
                   {userAwards && userAwards.length > 0 && userAwards.map((userAward: any) => {
                     const award = userAward.global_awards_system;
                     if (!award || !award.logo_url) return null;
@@ -277,7 +276,7 @@ export default function PublicProfile() {
                           <img
                             src={award.logo_url}
                             alt={awardName}
-                            className="h-7 w-7 object-contain cursor-pointer hover:scale-125 transition-transform duration-200 drop-shadow-md"
+                            className="h-6 w-6 object-contain cursor-pointer hover:scale-110 transition-transform duration-200"
                           />
                         </TooltipTrigger>
                         <TooltipContent side="bottom" className="text-xs">
@@ -291,11 +290,11 @@ export default function PublicProfile() {
                 </div>
 
                 {/* Username */}
-                <p className="text-sm text-accent-foreground/70">@{profile.username}</p>
+                <p className="text-sm text-muted-foreground">@{profile.username}</p>
 
                 {/* Job Title pill */}
                 {currentWork && (
-                  <div className="inline-flex items-center gap-2 bg-card/90 backdrop-blur-sm rounded-xl px-4 py-2 shadow-sm border border-border/10">
+                  <div className="inline-flex items-center gap-2 bg-secondary rounded-lg px-3 py-2 border border-border">
                     {memberships.find((m: any) => m.culinary_entities?.name === currentWork.entity_name)?.culinary_entities?.logo_url && (
                       <img
                         src={(memberships.find((m: any) => m.culinary_entities?.name === currentWork.entity_name) as any)?.culinary_entities?.logo_url}
@@ -303,7 +302,7 @@ export default function PublicProfile() {
                         className="h-5 w-5 rounded object-cover"
                       />
                     )}
-                    <span className="text-sm font-bold text-foreground">
+                    <span className="text-sm font-semibold text-foreground">
                       {isAr ? (currentWork.title_ar || currentWork.title) : currentWork.title}
                     </span>
                     {currentWork.entity_name && (
@@ -316,8 +315,8 @@ export default function PublicProfile() {
 
                 {/* Location */}
                 {(profile.country_code || (profile as any).city || profile.location) && (
-                  <p className="text-sm text-accent-foreground/80 flex items-center gap-1.5 justify-center md:justify-start">
-                    <MapPin className="h-3.5 w-3.5 shrink-0" />
+                  <p className="text-sm text-muted-foreground flex items-center gap-1.5 justify-center md:justify-start">
+                    <MapPin className="h-3.5 w-3.5 shrink-0 text-primary" />
                     {profile.country_code ? `${countryFlag(profile.country_code)} ` : ""}
                     {[(profile as any).city, getCountryName(profile.country_code)].filter(Boolean).join(", ") || profile.location}
                   </p>
@@ -326,17 +325,17 @@ export default function PublicProfile() {
                 {/* Roles */}
                 <div className="flex flex-wrap gap-1.5 justify-center md:justify-start">
                   {roles?.map((role) => (
-                    <Badge key={role} className="text-xs bg-card/20 text-accent-foreground border-accent-foreground/20 hover:bg-card/30">
+                    <Badge key={role} variant="secondary" className="text-xs">
                       {isAr ? roleLabels[role]?.ar || role : roleLabels[role]?.en || role}
                     </Badge>
                   ))}
                   {profile.membership_tier && profile.membership_tier !== "basic" && (
-                    <Badge className="text-xs bg-card/30 text-accent-foreground border-accent-foreground/20">
+                    <Badge variant="outline" className="text-xs border-primary/30 text-primary">
                       {profile.membership_tier === "professional" ? (isAr ? "محترف" : "Professional") : profile.membership_tier}
                     </Badge>
                   )}
                   {profile.account_number && (
-                    <Badge className="font-mono text-[10px] bg-card/20 text-accent-foreground/80 border-accent-foreground/15">
+                    <Badge variant="outline" className="font-mono text-[10px] text-muted-foreground">
                       {profile.account_number}
                     </Badge>
                   )}
@@ -348,7 +347,6 @@ export default function PublicProfile() {
                     <Button
                       variant={isFollowing ? "outline" : "default"}
                       size="sm"
-                      className={isFollowing ? "border-accent-foreground/30 text-accent-foreground hover:bg-card/20" : ""}
                       onClick={() => toggleFollow.mutate(!!isFollowing)}
                       disabled={toggleFollow.isPending}
                     >
@@ -417,7 +415,6 @@ export default function PublicProfile() {
             </div>
           </CardContent>
         </Card>
-
         {/* ── Main Content Grid ── */}
         <div className="grid gap-6 lg:grid-cols-3">
           {/* ── Left Sidebar ── */}
