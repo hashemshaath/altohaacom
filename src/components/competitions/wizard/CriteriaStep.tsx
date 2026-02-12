@@ -5,6 +5,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
+import { AITextOptimizer } from "@/components/admin/AITextOptimizer";
 import { Plus, Trash2 } from "lucide-react";
 import type { CriteriaForm } from "./types";
 import { emptyCriteria } from "./types";
@@ -16,6 +17,7 @@ interface CriteriaStepProps {
 
 export function CriteriaStep({ criteria, onChange }: CriteriaStepProps) {
   const { language } = useLanguage();
+  const isAr = language === "ar";
 
   const totalWeight = criteria.reduce((sum, c) => sum + Number(c.weight), 0);
   const weightPct = Math.round(totalWeight * 100);
@@ -24,9 +26,7 @@ export function CriteriaStep({ criteria, onChange }: CriteriaStepProps) {
   const addCriteria = () => onChange([...criteria, { ...emptyCriteria }]);
 
   const removeCriteria = (index: number) => {
-    if (criteria.length > 1) {
-      onChange(criteria.filter((_, i) => i !== index));
-    }
+    if (criteria.length > 1) onChange(criteria.filter((_, i) => i !== index));
   };
 
   const updateCriteria = (index: number, field: keyof CriteriaForm, value: string | number) => {
@@ -37,106 +37,137 @@ export function CriteriaStep({ criteria, onChange }: CriteriaStepProps) {
 
   return (
     <Card>
-      <CardHeader>
-        <CardTitle>{language === "ar" ? "معايير التحكيم" : "Judging Criteria"}</CardTitle>
-        <CardDescription>
-          {language === "ar"
+      <CardHeader className="pb-3">
+        <CardTitle>{isAr ? "معايير التحكيم" : "Judging Criteria"}</CardTitle>
+        <CardDescription className="text-xs">
+          {isAr
             ? "حدد كيف سيتم تقييم المشاركين. يجب أن تصل الأوزان إلى 100%."
             : "Define how participants will be scored. Weights should total 100%."}
         </CardDescription>
       </CardHeader>
-      <CardContent className="space-y-4">
-        {/* Weight Progress */}
-        <div className="space-y-2 rounded-lg border p-3">
-          <div className="flex items-center justify-between text-sm">
-            <span className="text-muted-foreground">
-              {language === "ar" ? "إجمالي الأوزان" : "Total Weight"}
-            </span>
-            <span className={`font-medium ${isBalanced ? "text-primary" : "text-destructive"}`}>
-              {weightPct}%
-            </span>
+      <CardContent className="space-y-3">
+        <div className="space-y-1.5 rounded-lg border p-2.5">
+          <div className="flex items-center justify-between text-xs">
+            <span className="text-muted-foreground">{isAr ? "إجمالي الأوزان" : "Total Weight"}</span>
+            <span className={`font-medium ${isBalanced ? "text-primary" : "text-destructive"}`}>{weightPct}%</span>
           </div>
-          <Progress value={Math.min(weightPct, 100)} className="h-2" />
+          <Progress value={Math.min(weightPct, 100)} className="h-1.5" />
           {!isBalanced && (
-            <p className="text-xs text-destructive">
+            <p className="text-[10px] text-destructive">
               {weightPct < 100
-                ? language === "ar"
-                  ? `متبقي ${100 - weightPct}% للوصول إلى 100%`
-                  : `${100 - weightPct}% remaining to reach 100%`
-                : language === "ar"
-                ? `تجاوز بـ ${weightPct - 100}%`
-                : `Exceeds by ${weightPct - 100}%`}
+                ? isAr ? `متبقي ${100 - weightPct}% للوصول إلى 100%` : `${100 - weightPct}% remaining to reach 100%`
+                : isAr ? `تجاوز بـ ${weightPct - 100}%` : `Exceeds by ${weightPct - 100}%`}
             </p>
           )}
         </div>
 
         {criteria.map((crit, index) => (
-          <div key={crit.id || index} className="space-y-3 rounded-lg border p-4">
+          <div key={crit.id || index} className="space-y-2.5 rounded-lg border p-3">
             <div className="flex items-center justify-between">
-              <span className="text-sm font-medium text-muted-foreground">
-                {language === "ar" ? `المعيار ${index + 1}` : `Criterion ${index + 1}`}
+              <span className="text-xs font-medium text-muted-foreground">
+                {isAr ? `المعيار ${index + 1}` : `Criterion ${index + 1}`}
               </span>
               {criteria.length > 1 && (
-                <Button type="button" variant="ghost" size="icon" onClick={() => removeCriteria(index)}>
-                  <Trash2 className="h-4 w-4 text-destructive" />
+                <Button type="button" variant="ghost" size="icon" className="h-6 w-6" onClick={() => removeCriteria(index)}>
+                  <Trash2 className="h-3.5 w-3.5 text-destructive" />
                 </Button>
               )}
             </div>
 
-            <div className="grid gap-3 sm:grid-cols-2">
-              <Input
-                placeholder={language === "ar" ? "الاسم (إنجليزي)" : "Name (English)"}
-                value={crit.name}
-                onChange={(e) => updateCriteria(index, "name", e.target.value)}
-              />
-              <Input
-                placeholder="الاسم (عربي)"
-                value={crit.name_ar}
-                onChange={(e) => updateCriteria(index, "name_ar", e.target.value)}
-                dir="rtl"
-              />
-            </div>
-
-            <Textarea
-              placeholder={language === "ar" ? "الوصف (اختياري)" : "Description (optional)"}
-              value={crit.description}
-              onChange={(e) => updateCriteria(index, "description", e.target.value)}
-              rows={2}
-            />
-
-            <div className="grid gap-3 sm:grid-cols-2">
+            <div className="grid gap-2 sm:grid-cols-2">
               <div className="space-y-1">
-                <Label className="text-xs">
-                  {language === "ar" ? "الدرجة القصوى" : "Max Score"}
-                </Label>
+                <div className="flex items-center justify-between">
+                  <Label className="text-[10px]">{isAr ? "الاسم (إنجليزي)" : "Name (English)"}</Label>
+                  <AITextOptimizer
+                    text={crit.name}
+                    lang="en"
+                    compact
+                    onTranslated={(v) => updateCriteria(index, "name_ar", v)}
+                  />
+                </div>
                 <Input
-                  type="number"
-                  value={crit.max_score}
-                  onChange={(e) => updateCriteria(index, "max_score", parseInt(e.target.value) || 10)}
-                  min={1}
-                  max={100}
+                  placeholder={isAr ? "الاسم (إنجليزي)" : "Name (English)"}
+                  value={crit.name}
+                  onChange={(e) => updateCriteria(index, "name", e.target.value)}
+                  className="h-8 text-sm"
                 />
               </div>
               <div className="space-y-1">
-                <Label className="text-xs">
-                  {language === "ar" ? "الوزن" : "Weight"} ({(Number(crit.weight) * 100).toFixed(0)}%)
-                </Label>
+                <div className="flex items-center justify-between">
+                  <Label className="text-[10px]">{isAr ? "الاسم (عربي)" : "Name (Arabic)"}</Label>
+                  <AITextOptimizer
+                    text={crit.name_ar}
+                    lang="ar"
+                    compact
+                    onTranslated={(v) => updateCriteria(index, "name", v)}
+                  />
+                </div>
                 <Input
-                  type="number"
-                  step="0.05"
-                  value={crit.weight}
-                  onChange={(e) => updateCriteria(index, "weight", parseFloat(e.target.value) || 0)}
-                  min={0}
-                  max={1}
+                  placeholder="الاسم (عربي)"
+                  value={crit.name_ar}
+                  onChange={(e) => updateCriteria(index, "name_ar", e.target.value)}
+                  dir="rtl"
+                  className="h-8 text-sm"
                 />
+              </div>
+            </div>
+
+            <div className="grid gap-2 sm:grid-cols-2">
+              <div className="space-y-1">
+                <div className="flex items-center justify-between">
+                  <Label className="text-[10px]">{isAr ? "الوصف (إنجليزي)" : "Description (English)"}</Label>
+                  <AITextOptimizer
+                    text={crit.description}
+                    lang="en"
+                    compact
+                    onTranslated={(v) => updateCriteria(index, "description_ar", v)}
+                  />
+                </div>
+                <Textarea
+                  placeholder={isAr ? "الوصف (اختياري)" : "Description (optional)"}
+                  value={crit.description}
+                  onChange={(e) => updateCriteria(index, "description", e.target.value)}
+                  rows={2}
+                  className="text-sm"
+                />
+              </div>
+              <div className="space-y-1">
+                <div className="flex items-center justify-between">
+                  <Label className="text-[10px]">{isAr ? "الوصف (عربي)" : "Description (Arabic)"}</Label>
+                  <AITextOptimizer
+                    text={crit.description_ar}
+                    lang="ar"
+                    compact
+                    onTranslated={(v) => updateCriteria(index, "description", v)}
+                  />
+                </div>
+                <Textarea
+                  placeholder="الوصف (عربي)"
+                  value={crit.description_ar}
+                  onChange={(e) => updateCriteria(index, "description_ar", e.target.value)}
+                  rows={2}
+                  dir="rtl"
+                  className="text-sm"
+                />
+              </div>
+            </div>
+
+            <div className="grid gap-2 sm:grid-cols-2">
+              <div className="space-y-1">
+                <Label className="text-[10px]">{isAr ? "الدرجة القصوى" : "Max Score"}</Label>
+                <Input type="number" value={crit.max_score} onChange={(e) => updateCriteria(index, "max_score", parseInt(e.target.value) || 10)} min={1} max={100} className="h-8" />
+              </div>
+              <div className="space-y-1">
+                <Label className="text-[10px]">{isAr ? "الوزن" : "Weight"} ({(Number(crit.weight) * 100).toFixed(0)}%)</Label>
+                <Input type="number" step="0.05" value={crit.weight} onChange={(e) => updateCriteria(index, "weight", parseFloat(e.target.value) || 0)} min={0} max={1} className="h-8" />
               </div>
             </div>
           </div>
         ))}
 
         <Button type="button" variant="outline" onClick={addCriteria} className="w-full">
-          <Plus className="mr-2 h-4 w-4" />
-          {language === "ar" ? "إضافة معيار" : "Add Criterion"}
+          <Plus className="me-2 h-4 w-4" />
+          {isAr ? "إضافة معيار" : "Add Criterion"}
         </Button>
       </CardContent>
     </Card>

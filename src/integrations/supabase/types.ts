@@ -3241,6 +3241,10 @@ export type Database = {
           exhibition_id: string | null
           id: string
           is_virtual: boolean | null
+          link_type: string | null
+          linked_chef_id: string | null
+          linked_entity_id: string | null
+          linked_tasting_id: string | null
           max_participants: number | null
           max_team_size: number | null
           min_team_size: number | null
@@ -3281,6 +3285,10 @@ export type Database = {
           exhibition_id?: string | null
           id?: string
           is_virtual?: boolean | null
+          link_type?: string | null
+          linked_chef_id?: string | null
+          linked_entity_id?: string | null
+          linked_tasting_id?: string | null
           max_participants?: number | null
           max_team_size?: number | null
           min_team_size?: number | null
@@ -3321,6 +3329,10 @@ export type Database = {
           exhibition_id?: string | null
           id?: string
           is_virtual?: boolean | null
+          link_type?: string | null
+          linked_chef_id?: string | null
+          linked_entity_id?: string | null
+          linked_tasting_id?: string | null
           max_participants?: number | null
           max_team_size?: number | null
           min_team_size?: number | null

@@ -44,10 +44,14 @@ const initialData: CompetitionFormData = {
   allowedEntryTypes: ["individual"],
   maxTeamSize: 5,
   minTeamSize: 2,
+  linkType: "exhibition",
+  linkedEntityId: null,
+  linkedChefId: null,
+  linkedTastingId: null,
 };
 
-const STEP_LABELS_EN = ["Exhibition", "Basic Info", "Types & Categories", "Schedule", "Supervising & Judges", "Criteria", "Review"];
-const STEP_LABELS_AR = ["المعرض", "المعلومات", "الأنواع والفئات", "الجدول", "الإشراف والتحكيم", "المعايير", "المراجعة"];
+const STEP_LABELS_EN = ["Linkage", "Basic Info", "Types & Categories", "Schedule", "Supervising & Judges", "Criteria", "Review"];
+const STEP_LABELS_AR = ["الربط", "المعلومات", "الأنواع والفئات", "الجدول", "الإشراف والتحكيم", "المعايير", "المراجعة"];
 
 export default function CreateCompetition() {
   const { language, t } = useLanguage();
@@ -63,11 +67,11 @@ export default function CreateCompetition() {
   }, []);
 
   const canProceed = () => {
-    if (step === 1) return true; // exhibition is optional
+    if (step === 1) return true;
     if (step === 2) return data.title.trim() !== "";
     if (step === 3) return data.selectedTypeIds.length > 0 && data.categories.some((c) => c.name.trim() !== "");
     if (step === 4) return data.competitionStart !== "" && data.competitionEnd !== "" && data.countryCode.length === 2;
-    if (step === 5) return true; // supervising bodies optional
+    if (step === 5) return true;
     if (step === 6) return data.criteria.some((c) => c.name.trim() !== "");
     return true;
   };
@@ -102,7 +106,11 @@ export default function CreateCompetition() {
           max_participants: data.maxParticipants || null,
           organizer_id: user.id,
           status: "draft",
-          exhibition_id: data.exhibitionId || null,
+          exhibition_id: data.linkType === "exhibition" ? data.exhibitionId : null,
+          link_type: data.linkType || "exhibition",
+          linked_entity_id: data.linkType === "entity" ? data.linkedEntityId : null,
+          linked_chef_id: data.linkType === "chef" ? data.linkedChefId : null,
+          linked_tasting_id: data.linkType === "tasting" ? data.linkedTastingId : null,
           registration_fee_type: data.registrationFeeType,
           registration_fee: data.registrationFee,
           registration_currency: data.registrationCurrency || null,
@@ -122,10 +130,7 @@ export default function CreateCompetition() {
       if (data.selectedTypeIds.length > 0) {
         const { error: typeError } = await supabase
           .from("competition_type_assignments")
-          .insert(data.selectedTypeIds.map((typeId) => ({
-            competition_id: competition.id,
-            type_id: typeId,
-          })));
+          .insert(data.selectedTypeIds.map((typeId) => ({ competition_id: competition.id, type_id: typeId })));
         if (typeError) throw typeError;
       }
 
@@ -134,18 +139,16 @@ export default function CreateCompetition() {
       if (validCategories.length > 0) {
         const { error: catError } = await supabase
           .from("competition_categories")
-          .insert(
-            validCategories.map((cat, index) => ({
-              competition_id: competition.id,
-              name: cat.name,
-              name_ar: cat.name_ar || null,
-              description: cat.description || null,
-              description_ar: cat.description_ar || null,
-              max_participants: cat.max_participants,
-              gender: cat.gender || "mixed",
-              sort_order: index + 1,
-            }))
-          );
+          .insert(validCategories.map((cat, index) => ({
+            competition_id: competition.id,
+            name: cat.name,
+            name_ar: cat.name_ar || null,
+            description: cat.description || null,
+            description_ar: cat.description_ar || null,
+            max_participants: cat.max_participants,
+            gender: cat.gender || "mixed",
+            sort_order: index + 1,
+          })));
         if (catError) throw catError;
       }
 
@@ -154,18 +157,16 @@ export default function CreateCompetition() {
       if (validCriteria.length > 0) {
         const { error: critError } = await supabase
           .from("judging_criteria")
-          .insert(
-            validCriteria.map((crit, index) => ({
-              competition_id: competition.id,
-              name: crit.name,
-              name_ar: crit.name_ar || null,
-              description: crit.description || null,
-              description_ar: crit.description_ar || null,
-              max_score: crit.max_score,
-              weight: crit.weight,
-              sort_order: index + 1,
-            }))
-          );
+          .insert(validCriteria.map((crit, index) => ({
+            competition_id: competition.id,
+            name: crit.name,
+            name_ar: crit.name_ar || null,
+            description: crit.description || null,
+            description_ar: crit.description_ar || null,
+            max_score: crit.max_score,
+            weight: crit.weight,
+            sort_order: index + 1,
+          })));
         if (critError) throw critError;
       }
 
@@ -198,7 +199,7 @@ export default function CreateCompetition() {
     onSuccess: (competition) => {
       toast({
         title: isAr ? "تم إنشاء المسابقة!" : "Competition created!",
-        description: isAr ? "تم حفظ المسابقة كمسودة." : "Your competition has been saved as a draft.",
+        description: isAr ? "تم حفظ المسابقة كمسودة. يمكنك الآن إدارة الدعوات." : "Saved as draft. You can now manage invitations.",
       });
       navigate(`/competitions/${competition.id}`);
     },
@@ -212,20 +213,20 @@ export default function CreateCompetition() {
   return (
     <div className="flex min-h-screen flex-col bg-background">
       <Header />
-      <main className="container flex-1 py-8">
-        <Button variant="ghost" size="sm" onClick={() => navigate("/competitions")} className="mb-4 -ms-2">
-          <ArrowLeft className="me-2 h-4 w-4" />
-          {isAr ? "العودة للمسابقات" : "Back to Competitions"}
-        </Button>
-
+      <main className="flex-1 py-6 px-3 sm:px-4 md:px-6">
         <div className="mx-auto max-w-2xl">
-          <div className="mb-6 flex items-start gap-3">
-            <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-primary/10 ring-1 ring-primary/15 shadow-sm">
+          <Button variant="ghost" size="sm" onClick={() => navigate("/competitions")} className="mb-3 -ms-2">
+            <ArrowLeft className="me-2 h-4 w-4" />
+            {isAr ? "العودة للمسابقات" : "Back to Competitions"}
+          </Button>
+
+          <div className="mb-4 flex items-start gap-3">
+            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-primary/10 ring-1 ring-primary/15 shadow-sm">
               <Trophy className="h-5 w-5 text-primary" />
             </div>
             <div>
-              <h1 className="font-serif text-2xl font-bold md:text-3xl">{t("createCompetition")}</h1>
-              <p className="mt-0.5 text-sm text-muted-foreground">
+              <h1 className="font-serif text-xl font-bold sm:text-2xl md:text-3xl">{t("createCompetition")}</h1>
+              <p className="mt-0.5 text-xs text-muted-foreground">
                 {isAr ? STEP_LABELS_AR[step - 1] : STEP_LABELS_EN[step - 1]} ({step}/{totalSteps})
               </p>
             </div>
@@ -233,46 +234,55 @@ export default function CreateCompetition() {
 
           <StepIndicator currentStep={step} totalSteps={totalSteps} />
 
-          {step === 1 && (
-            <ExhibitionStep
-              selectedId={data.exhibitionId}
-              onChange={(id) => updateData({ exhibitionId: id })}
-            />
-          )}
-          {step === 2 && <BasicInfoStep data={data} onChange={updateData} />}
-          {step === 3 && (
-            <TypesCategoriesStep
-              selectedTypeIds={data.selectedTypeIds}
-              categories={data.categories}
-              onTypeChange={(ids) => updateData({ selectedTypeIds: ids })}
-              onCategoriesChange={(cats) => updateData({ categories: cats })}
-            />
-          )}
-          {step === 4 && <DatesLocationStep data={data} onChange={updateData} />}
-          {step === 5 && (
-            <SupervisingBodiesStep
-              supervisingBodyIds={data.supervisingBodyIds}
-              judgeIds={data.judgeIds}
-              onSupervisingChange={(ids) => updateData({ supervisingBodyIds: ids })}
-              onJudgesChange={(ids) => updateData({ judgeIds: ids })}
-            />
-          )}
-          {step === 6 && <CriteriaStep criteria={data.criteria} onChange={(crits) => updateData({ criteria: crits })} />}
-          {step === 7 && <ReviewStep data={data} />}
+          <div className="mt-4">
+            {step === 1 && (
+              <ExhibitionStep
+                selectedId={data.exhibitionId}
+                onChange={(id) => updateData({ exhibitionId: id })}
+                linkType={data.linkType}
+                onLinkTypeChange={(type) => updateData({ linkType: type })}
+                linkedEntityId={data.linkedEntityId}
+                onLinkedEntityChange={(id) => updateData({ linkedEntityId: id })}
+                linkedChefId={data.linkedChefId}
+                onLinkedChefChange={(id) => updateData({ linkedChefId: id })}
+              />
+            )}
+            {step === 2 && <BasicInfoStep data={data} onChange={updateData} />}
+            {step === 3 && (
+              <TypesCategoriesStep
+                selectedTypeIds={data.selectedTypeIds}
+                categories={data.categories}
+                onTypeChange={(ids) => updateData({ selectedTypeIds: ids })}
+                onCategoriesChange={(cats) => updateData({ categories: cats })}
+              />
+            )}
+            {step === 4 && <DatesLocationStep data={data} onChange={updateData} />}
+            {step === 5 && (
+              <SupervisingBodiesStep
+                supervisingBodyIds={data.supervisingBodyIds}
+                judgeIds={data.judgeIds}
+                onSupervisingChange={(ids) => updateData({ supervisingBodyIds: ids })}
+                onJudgesChange={(ids) => updateData({ judgeIds: ids })}
+              />
+            )}
+            {step === 6 && <CriteriaStep criteria={data.criteria} onChange={(crits) => updateData({ criteria: crits })} />}
+            {step === 7 && <ReviewStep data={data} />}
+          </div>
 
-          <div className="mt-6 flex justify-between">
-            <Button variant="outline" onClick={() => setStep(step - 1)} disabled={step === 1}>
+          <div className="mt-5 flex justify-between">
+            <Button variant="outline" size="sm" onClick={() => setStep(step - 1)} disabled={step === 1}>
               <ArrowLeft className="me-2 h-4 w-4" />
               {isAr ? "السابق" : "Previous"}
             </Button>
 
             {step < totalSteps ? (
-              <Button onClick={() => setStep(step + 1)} disabled={!canProceed()}>
+              <Button size="sm" onClick={() => setStep(step + 1)} disabled={!canProceed()}>
                 {isAr ? "التالي" : "Next"}
                 <ArrowRight className="ms-2 h-4 w-4" />
               </Button>
             ) : (
               <Button
+                size="sm"
                 onClick={() => createMutation.mutate()}
                 disabled={createMutation.isPending || !data.title.trim()}
               >
