@@ -137,6 +137,10 @@ export default function EditCompetition() {
         allowedEntryTypes: (competition as any).allowed_entry_types || ["individual"],
         maxTeamSize: (competition as any).max_team_size || 5,
         minTeamSize: (competition as any).min_team_size || 2,
+        linkType: (competition as any).link_type || "exhibition",
+        linkedEntityId: (competition as any).linked_entity_id || null,
+        linkedChefId: (competition as any).linked_chef_id || null,
+        linkedTastingId: (competition as any).linked_tasting_id || null,
         categories: existingCategories.map((c) => ({
           id: c.id,
           name: c.name,

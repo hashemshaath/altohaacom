@@ -64,11 +64,11 @@ export function InvitationManager({ competitionId }: InvitationManagerProps) {
     mutationFn: async () => {
       const { error } = await supabase.from("competition_invitations").insert({
         competition_id: competitionId,
-        invited_name: newInvite.name || null,
-        invited_name_ar: newInvite.nameAr || null,
-        invited_email: newInvite.email || null,
-        invited_phone: newInvite.phone || null,
-        role: newInvite.role,
+        invitee_name: newInvite.name || null,
+        invitee_name_ar: newInvite.nameAr || null,
+        invitee_email: newInvite.email || null,
+        invitee_phone: newInvite.phone || null,
+        invitee_role: newInvite.role,
         invitation_channel: newInvite.channel,
         invited_by: user?.id,
         status: "pending",
@@ -113,10 +113,10 @@ export function InvitationManager({ competitionId }: InvitationManagerProps) {
 
   const filtered = invitations?.filter((inv) => {
     const matchesSearch = !search ||
-      inv.invited_name?.toLowerCase().includes(search.toLowerCase()) ||
-      inv.invited_name_ar?.toLowerCase().includes(search.toLowerCase()) ||
-      inv.invited_email?.toLowerCase().includes(search.toLowerCase());
-    const matchesRole = roleFilter === "all" || inv.role === roleFilter;
+      inv.invitee_name?.toLowerCase().includes(search.toLowerCase()) ||
+      inv.invitee_name_ar?.toLowerCase().includes(search.toLowerCase()) ||
+      inv.invitee_email?.toLowerCase().includes(search.toLowerCase());
+    const matchesRole = roleFilter === "all" || (inv as any).invitee_role === roleFilter;
     const matchesStatus = statusFilter === "all" || inv.status === statusFilter;
     return matchesSearch && matchesRole && matchesStatus;
   });
@@ -245,19 +245,19 @@ export function InvitationManager({ competitionId }: InvitationManagerProps) {
                 <div key={inv.id} className="flex items-center gap-3 rounded-lg border p-2.5 hover:bg-muted/30 transition-colors">
                   <div className="flex-1 min-w-0">
                     <p className="text-sm font-medium truncate">
-                      {isAr && inv.invited_name_ar ? inv.invited_name_ar : inv.invited_name || inv.invited_email || "—"}
+                      {isAr && inv.invitee_name_ar ? inv.invitee_name_ar : inv.invitee_name || inv.invitee_email || "—"}
                     </p>
                     <div className="flex flex-wrap gap-1.5 mt-0.5">
-                      <Badge variant="outline" className="text-[9px] h-4">{roleLabel(inv.role)}</Badge>
+                      <Badge variant="outline" className="text-[9px] h-4">{roleLabel((inv as any).invitee_role)}</Badge>
                       <Badge className={`text-[9px] h-4 ${STATUS_COLORS[inv.status] || ""}`}>{inv.status}</Badge>
-                      {inv.invited_email && (
+                      {inv.invitee_email && (
                         <span className="text-[9px] text-muted-foreground flex items-center gap-0.5">
-                          <Mail className="h-2.5 w-2.5" />{inv.invited_email}
+                          <Mail className="h-2.5 w-2.5" />{inv.invitee_email}
                         </span>
                       )}
-                      {inv.invited_phone && (
+                      {(inv as any).invitee_phone && (
                         <span className="text-[9px] text-muted-foreground flex items-center gap-0.5">
-                          <Phone className="h-2.5 w-2.5" />{inv.invited_phone}
+                          <Phone className="h-2.5 w-2.5" />{(inv as any).invitee_phone}
                         </span>
                       )}
                     </div>

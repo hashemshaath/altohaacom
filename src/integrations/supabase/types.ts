@@ -2584,6 +2584,7 @@ export type Database = {
       competition_invitations: {
         Row: {
           category_id: string | null
+          checked_in_at: string | null
           competition_id: string
           created_at: string
           id: string
@@ -2592,16 +2593,20 @@ export type Database = {
           invitee_email: string | null
           invitee_name: string | null
           invitee_name_ar: string | null
+          invitee_phone: string | null
+          invitee_role: string | null
           message: string | null
           message_ar: string | null
           organization_name: string | null
           organization_name_ar: string | null
           organization_type: string | null
           responded_at: string | null
+          sent_at: string | null
           status: string
         }
         Insert: {
           category_id?: string | null
+          checked_in_at?: string | null
           competition_id: string
           created_at?: string
           id?: string
@@ -2610,16 +2615,20 @@ export type Database = {
           invitee_email?: string | null
           invitee_name?: string | null
           invitee_name_ar?: string | null
+          invitee_phone?: string | null
+          invitee_role?: string | null
           message?: string | null
           message_ar?: string | null
           organization_name?: string | null
           organization_name_ar?: string | null
           organization_type?: string | null
           responded_at?: string | null
+          sent_at?: string | null
           status?: string
         }
         Update: {
           category_id?: string | null
+          checked_in_at?: string | null
           competition_id?: string
           created_at?: string
           id?: string
@@ -2628,12 +2637,15 @@ export type Database = {
           invitee_email?: string | null
           invitee_name?: string | null
           invitee_name_ar?: string | null
+          invitee_phone?: string | null
+          invitee_role?: string | null
           message?: string | null
           message_ar?: string | null
           organization_name?: string | null
           organization_name_ar?: string | null
           organization_type?: string | null
           responded_at?: string | null
+          sent_at?: string | null
           status?: string
         }
         Relationships: [
