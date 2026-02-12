@@ -1,4 +1,5 @@
-import { sendNotification } from "@/lib/notifications";
+import { sendNotification, type SendNotificationParams } from "@/lib/notifications";
+import { supabase } from "@/integrations/supabase/client";
 
 /**
  * Auto-trigger notification helpers for key platform events.
@@ -410,6 +411,147 @@ export async function notifyProfileVerified(params: {
     body: `Congratulations ${params.userName}! Your professional profile has been verified. You now have access to verified member features.`,
     bodyAr: `تهانينا ${params.userName}! تم التحقق من ملفك المهني. يمكنك الآن الوصول إلى ميزات العضو الموثق.`,
     type: "success",
+    channels: ["in_app", "email"],
+  });
+}
+
+// ═══════════════════════════════════════════════
+// ── Admin Review Notification System ──
+// Sends notifications to all admin users (organizer/supervisor roles)
+// for items requiring review, approval, or rejection.
+// ═══════════════════════════════════════════════
+
+async function getAdminUserIds(): Promise<string[]> {
+  const { data } = await supabase
+    .from("user_roles")
+    .select("user_id")
+    .in("role", ["organizer", "supervisor"]);
+  return [...new Set((data || []).map((r: any) => r.user_id as string))];
+}
+
+async function notifyAllAdmins(notification: Omit<SendNotificationParams, "userId">) {
+  const adminIds = await getAdminUserIds();
+  await Promise.allSettled(
+    adminIds.map((userId) => sendNotification({ ...notification, userId }))
+  );
+}
+
+/** Notify admins when a new entity is submitted for review */
+export async function notifyAdminEntityReview(params: {
+  entityName: string;
+  entityNameAr?: string;
+  submittedBy: string;
+}) {
+  return notifyAllAdmins({
+    title: `Entity Review Required: ${params.entityName}`,
+    titleAr: `مراجعة جهة مطلوبة: ${params.entityNameAr || params.entityName}`,
+    body: `A new entity "${params.entityName}" has been submitted and requires admin review.`,
+    bodyAr: `تم إرسال جهة جديدة "${params.entityNameAr || params.entityName}" وتحتاج لمراجعة الإدارة.`,
+    type: "info",
+    link: "/admin/entities",
+    channels: ["in_app", "email"],
+  });
+}
+
+/** Notify admins when a Michelin Star / award request is submitted */
+export async function notifyAdminAwardRequest(params: {
+  userName: string;
+  awardName: string;
+  awardNameAr?: string;
+  documentUrl?: string;
+}) {
+  return notifyAllAdmins({
+    title: `Award Request: ${params.awardName} by ${params.userName}`,
+    titleAr: `طلب جائزة: ${params.awardNameAr || params.awardName} من ${params.userName}`,
+    body: `${params.userName} has requested "${params.awardName}" approval. ${params.documentUrl ? "Supporting document attached." : "Review required."}`,
+    bodyAr: `${params.userName} طلب الموافقة على "${params.awardNameAr || params.awardName}". ${params.documentUrl ? "المستند المرفق متاح." : "مطلوب مراجعة."}`,
+    type: "warning",
+    link: "/admin/users",
+    channels: ["in_app", "email"],
+  });
+}
+
+/** Notify admins when a verification request is submitted */
+export async function notifyAdminVerificationRequest(params: {
+  userName: string;
+  verificationType: string;
+  userId: string;
+}) {
+  return notifyAllAdmins({
+    title: `Verification Request: ${params.userName}`,
+    titleAr: `طلب توثيق: ${params.userName}`,
+    body: `${params.userName} submitted a ${params.verificationType} verification request. Please review.`,
+    bodyAr: `قدّم ${params.userName} طلب توثيق من نوع ${params.verificationType}. يرجى المراجعة.`,
+    type: "info",
+    link: "/admin/verification",
+    channels: ["in_app", "email"],
+  });
+}
+
+/** Notify admins when a career record references an unregistered entity */
+export async function notifyAdminUnregisteredEntity(params: {
+  userName: string;
+  entityName: string;
+}) {
+  return notifyAllAdmins({
+    title: `Unregistered Entity Referenced: ${params.entityName}`,
+    titleAr: `جهة غير مسجلة: ${params.entityName}`,
+    body: `${params.userName} referenced "${params.entityName}" in their career record, but this entity is not yet registered in the system.`,
+    bodyAr: `أشار ${params.userName} إلى "${params.entityName}" في سجله المهني، لكن هذه الجهة غير مسجلة بعد في النظام.`,
+    type: "info",
+    link: "/admin/entities",
+    channels: ["in_app"],
+  });
+}
+
+/** Notify admins when a new company registration request is submitted */
+export async function notifyAdminCompanyRegistration(params: {
+  companyName: string;
+  companyNameAr?: string;
+  submittedBy: string;
+}) {
+  return notifyAllAdmins({
+    title: `Company Registration: ${params.companyName}`,
+    titleAr: `تسجيل شركة: ${params.companyNameAr || params.companyName}`,
+    body: `A new company "${params.companyName}" registration has been submitted by ${params.submittedBy} and requires approval.`,
+    bodyAr: `تم تقديم تسجيل شركة جديدة "${params.companyNameAr || params.companyName}" من ${params.submittedBy} ويحتاج للموافقة.`,
+    type: "info",
+    link: "/admin/companies",
+    channels: ["in_app", "email"],
+  });
+}
+
+/** Notify admins when content is reported */
+export async function notifyAdminContentReport(params: {
+  reportedBy: string;
+  contentType: string;
+  reason: string;
+}) {
+  return notifyAllAdmins({
+    title: `Content Report: ${params.contentType}`,
+    titleAr: `بلاغ محتوى: ${params.contentType}`,
+    body: `${params.reportedBy} reported ${params.contentType} content. Reason: ${params.reason}`,
+    bodyAr: `أبلغ ${params.reportedBy} عن محتوى ${params.contentType}. السبب: ${params.reason}`,
+    type: "warning",
+    link: "/admin/moderation",
+    channels: ["in_app"],
+  });
+}
+
+/** Notify admins about new support ticket */
+export async function notifyAdminSupportTicket(params: {
+  ticketNumber: string;
+  subject: string;
+  priority: string;
+  userName: string;
+}) {
+  return notifyAllAdmins({
+    title: `Support Ticket ${params.ticketNumber}: ${params.subject}`,
+    titleAr: `تذكرة دعم ${params.ticketNumber}: ${params.subject}`,
+    body: `New ${params.priority} priority support ticket from ${params.userName}. Subject: ${params.subject}`,
+    bodyAr: `تذكرة دعم جديدة بأولوية ${params.priority} من ${params.userName}. الموضوع: ${params.subject}`,
+    type: params.priority === "urgent" || params.priority === "high" ? "warning" : "info",
+    link: "/admin/support-tickets",
     channels: ["in_app", "email"],
   });
 }
