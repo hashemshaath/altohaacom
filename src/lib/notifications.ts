@@ -1,6 +1,6 @@
 import { supabase } from "@/integrations/supabase/client";
 
-interface SendNotificationParams {
+export interface SendNotificationParams {
   userId: string;
   title?: string;
   titleAr?: string;
