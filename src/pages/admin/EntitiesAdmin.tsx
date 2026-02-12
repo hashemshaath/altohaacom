@@ -150,15 +150,29 @@ export default function EntitiesAdmin() {
 
   const [selectedManager, setSelectedManager] = useState<string>("");
 
-  const generateEntityNumber = (type: EntityType) => {
-    const prefixes: Record<EntityType, string> = {
-      culinary_association: "CA", government_entity: "GE", private_association: "PA",
-      culinary_academy: "ACM", industry_body: "IB", university: "UNI", college: "COL", training_center: "TC",
-    };
-    const prefix = prefixes[type];
-    const timestamp = Date.now().toString(36).toUpperCase().slice(-4);
-    const random = Math.random().toString(36).toUpperCase().slice(2, 5);
-    return `${prefix}-${timestamp}${random}`;
+  // AI SEO Optimize (same language)
+  const handleSeoOptimize = async (field: keyof FormData) => {
+    const text = form[field] as string;
+    if (!text?.trim()) {
+      toast({ title: isAr ? "لا يوجد نص" : "No text", variant: "destructive" });
+      return;
+    }
+    setTranslatingField(`seo-${String(field)}`);
+    try {
+      const isArabicField = String(field).endsWith("_ar");
+      const { data, error } = await supabase.functions.invoke("ai-translate-seo", {
+        body: { text, source_lang: isArabicField ? "ar" : "en", optimize_only: true },
+      });
+      if (error) throw error;
+      if (data?.optimized) {
+        setForm(prev => ({ ...prev, [field]: data.optimized }));
+        toast({ title: isAr ? "تم تحسين النص" : "Text optimized for SEO" });
+      }
+    } catch (err: any) {
+      toast({ title: isAr ? "خطأ" : "Error", description: err.message, variant: "destructive" });
+    } finally {
+      setTranslatingField(null);
+    }
   };
 
   // AI Translate + SEO
@@ -181,7 +195,7 @@ export default function EntitiesAdmin() {
       if (error) throw error;
       if (data?.translated) {
         setForm(prev => ({ ...prev, [targetField]: data.translated }));
-        toast({ title: isAr ? "تمت الترجمة" : "Translation complete" });
+        toast({ title: isAr ? "تمت الترجمة + SEO" : "Translated + SEO optimized" });
       }
     } catch (err: any) {
       toast({ title: isAr ? "خطأ في الترجمة" : "Translation error", description: err.message, variant: "destructive" });
@@ -267,10 +281,10 @@ export default function EntitiesAdmin() {
         const { error } = await supabase.from("culinary_entities").update(payload).eq("id", editingId);
         if (error) throw error;
       } else {
-        const entityNumber = generateEntityNumber(form.type);
+        // entity_number is auto-assigned by DB trigger (empty string triggers it)
         const { error } = await supabase.from("culinary_entities").insert({
           ...payload,
-          entity_number: entityNumber,
+          entity_number: "",
         });
         if (error) throw error;
       }
@@ -358,28 +372,54 @@ export default function EntitiesAdmin() {
     visible: entities?.filter(e => e.is_visible).length || 0,
   };
 
-  // Translate button component
+  // SEO + Translate buttons component
   const TranslateBtn = ({ enField, arField }: { enField: keyof FormData; arField: keyof FormData }) => {
-    const isLoading = translatingField === String(enField) || translatingField === String(arField);
+    const isSeoEn = translatingField === `seo-${String(enField)}`;
+    const isSeoAr = translatingField === `seo-${String(arField)}`;
+    const isTranslating = translatingField === String(enField) || translatingField === String(arField);
+    const anyLoading = isSeoEn || isSeoAr || isTranslating;
     return (
-      <div className="flex items-center gap-1">
+      <div className="flex flex-wrap items-center gap-1">
+        {/* SEO Optimize EN */}
+        <Button
+          type="button" size="sm" variant="secondary"
+          disabled={anyLoading || !(form[enField] as string)?.trim()}
+          onClick={() => handleSeoOptimize(enField)}
+          className="h-7 gap-1 text-xs"
+        >
+          {isSeoEn ? <Loader2 className="h-3 w-3 animate-spin" /> : <Search className="h-3 w-3" />}
+          SEO EN
+        </Button>
+        {/* SEO Optimize AR */}
+        <Button
+          type="button" size="sm" variant="secondary"
+          disabled={anyLoading || !(form[arField] as string)?.trim()}
+          onClick={() => handleSeoOptimize(arField)}
+          className="h-7 gap-1 text-xs"
+        >
+          {isSeoAr ? <Loader2 className="h-3 w-3 animate-spin" /> : <Search className="h-3 w-3" />}
+          SEO AR
+        </Button>
+        <Separator orientation="vertical" className="h-5 mx-1" />
+        {/* Translate EN→AR + SEO */}
         <Button
           type="button" size="sm" variant="outline"
-          disabled={isLoading || !(form[enField] as string)?.trim()}
+          disabled={anyLoading || !(form[enField] as string)?.trim()}
           onClick={() => handleTranslate(enField, arField, "en_to_ar")}
           className="h-7 gap-1 text-xs"
         >
-          {isLoading ? <Loader2 className="h-3 w-3 animate-spin" /> : <Languages className="h-3 w-3" />}
-          EN → AR
+          {isTranslating ? <Loader2 className="h-3 w-3 animate-spin" /> : <Languages className="h-3 w-3" />}
+          EN → AR + SEO
         </Button>
+        {/* Translate AR→EN + SEO */}
         <Button
           type="button" size="sm" variant="outline"
-          disabled={isLoading || !(form[arField] as string)?.trim()}
+          disabled={anyLoading || !(form[arField] as string)?.trim()}
           onClick={() => handleTranslate(arField, enField, "ar_to_en")}
           className="h-7 gap-1 text-xs"
         >
-          {isLoading ? <Loader2 className="h-3 w-3 animate-spin" /> : <Languages className="h-3 w-3" />}
-          AR → EN
+          {isTranslating ? <Loader2 className="h-3 w-3 animate-spin" /> : <Languages className="h-3 w-3" />}
+          AR → EN + SEO
         </Button>
       </div>
     );

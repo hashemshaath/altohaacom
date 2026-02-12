@@ -9626,6 +9626,7 @@ export type Database = {
         Args: { p_country_code: string; p_year: number }
         Returns: string
       }
+      generate_entity_number: { Args: never; Returns: string }
       generate_invoice_number: { Args: never; Returns: string }
       generate_order_number: { Args: never; Returns: string }
       generate_qr_code: { Args: { p_prefix?: string }; Returns: string }
