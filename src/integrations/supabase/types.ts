@@ -4564,6 +4564,13 @@ export type Database = {
             referencedRelation: "culinary_entities"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "entity_positions_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["user_id"]
+          },
         ]
       }
       entity_program_enrollments: {
