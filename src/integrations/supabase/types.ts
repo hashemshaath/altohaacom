@@ -7360,6 +7360,7 @@ export type Database = {
           company_id: string | null
           company_role: string | null
           country_code: string | null
+          cover_image_url: string | null
           created_at: string
           date_of_birth: string | null
           email: string | null
@@ -7407,6 +7408,7 @@ export type Database = {
           company_id?: string | null
           company_role?: string | null
           country_code?: string | null
+          cover_image_url?: string | null
           created_at?: string
           date_of_birth?: string | null
           email?: string | null
@@ -7456,6 +7458,7 @@ export type Database = {
           company_id?: string | null
           company_role?: string | null
           country_code?: string | null
+          cover_image_url?: string | null
           created_at?: string
           date_of_birth?: string | null
           email?: string | null
