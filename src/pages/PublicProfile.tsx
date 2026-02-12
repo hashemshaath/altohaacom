@@ -247,17 +247,56 @@ export default function PublicProfile() {
             </div>
             <p className="text-sm text-muted-foreground mt-0.5">@{profile.username}</p>
 
-            {/* Current Position */}
+            {/* Global Awards (Michelin Star, Tabakh Star, etc.) */}
+            {(() => {
+              const awards = (profile as any).global_awards as Array<{ name: string; name_ar?: string; icon?: string; year?: number; level?: string }> | null;
+              if (!awards || awards.length === 0) return null;
+              const AWARD_STYLES: Record<string, { bg: string; text: string; glow: string }> = {
+                michelin: { bg: "bg-destructive/10", text: "text-destructive", glow: "shadow-destructive/20" },
+                tabakh: { bg: "bg-chart-4/10", text: "text-chart-4", glow: "shadow-chart-4/20" },
+                gold: { bg: "bg-chart-4/10", text: "text-chart-4", glow: "shadow-chart-4/20" },
+                silver: { bg: "bg-muted", text: "text-muted-foreground", glow: "shadow-muted/20" },
+                bronze: { bg: "bg-chart-1/10", text: "text-chart-1", glow: "shadow-chart-1/20" },
+                default: { bg: "bg-primary/10", text: "text-primary", glow: "shadow-primary/20" },
+              };
+              return (
+                <div className="mt-2 flex flex-wrap gap-2">
+                  {awards.map((award, i) => {
+                    const key = (award.icon || "default").toLowerCase();
+                    const style = AWARD_STYLES[key] || AWARD_STYLES.default;
+                    return (
+                      <div key={i} className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-semibold ${style.bg} ${style.text} shadow-sm ${style.glow} border border-current/10`}>
+                        <Award className="h-3.5 w-3.5" />
+                        <span>{isAr ? (award.name_ar || award.name) : award.name}</span>
+                        {award.level && <span className="opacity-70">({award.level})</span>}
+                        {award.year && <span className="opacity-50 text-[10px]">{award.year}</span>}
+                      </div>
+                    );
+                  })}
+                </div>
+              );
+            })()}
+
+            {/* Current Position with Entity Logo */}
             {currentWork && (
-              <p className="text-sm mt-1.5 text-muted-foreground flex items-center gap-1.5">
-                <Briefcase className="h-3.5 w-3.5 shrink-0" />
-                <span>{isAr ? (currentWork.title_ar || currentWork.title) : currentWork.title}</span>
-                {currentWork.entity_name && (
-                  <span className="text-foreground font-medium">
-                    {isAr ? "في" : "at"} {currentWork.entity_name}
-                  </span>
+              <div className="flex items-center gap-2 mt-2">
+                {memberships.find((m: any) => m.culinary_entities?.name === currentWork.entity_name)?.culinary_entities?.logo_url && (
+                  <img
+                    src={(memberships.find((m: any) => m.culinary_entities?.name === currentWork.entity_name) as any)?.culinary_entities?.logo_url}
+                    alt=""
+                    className="h-6 w-6 rounded object-cover border"
+                  />
                 )}
-              </p>
+                <p className="text-sm text-muted-foreground flex items-center gap-1.5">
+                  <Briefcase className="h-3.5 w-3.5 shrink-0" />
+                  <span>{isAr ? (currentWork.title_ar || currentWork.title) : currentWork.title}</span>
+                  {currentWork.entity_name && (
+                    <span className="text-foreground font-medium">
+                      {isAr ? "في" : "at"} {currentWork.entity_name}
+                    </span>
+                  )}
+                </p>
+              </div>
             )}
 
             {/* Location */}
