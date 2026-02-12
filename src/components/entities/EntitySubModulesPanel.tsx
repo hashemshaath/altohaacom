@@ -15,7 +15,8 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Separator } from "@/components/ui/separator";
 import { toast } from "@/hooks/use-toast";
-import { Plus, Pencil, Trash2, BookOpen, Users, GraduationCap, Calendar, Trophy } from "lucide-react";
+import { Plus, Pencil, Trash2, BookOpen, Users, GraduationCap, Calendar, Trophy, Crown } from "lucide-react";
+import { EntityLeadershipPanel } from "@/components/entities/EntityLeadershipPanel";
 import { format } from "date-fns";
 
 interface Props {
@@ -35,7 +36,7 @@ export function EntitySubModulesPanel({ entityId, entityName, onClose }: Props) 
   const { user } = useAuth();
   const queryClient = useQueryClient();
   const isAr = language === "ar";
-  const [activeTab, setActiveTab] = useState("programs");
+  const [activeTab, setActiveTab] = useState("leadership");
 
   // === Programs ===
   const { data: programs } = useQuery({
@@ -217,12 +218,18 @@ export function EntitySubModulesPanel({ entityId, entityName, onClose }: Props) 
       <CardContent>
         <Tabs value={activeTab} onValueChange={setActiveTab}>
           <TabsList className="flex-wrap">
+            <TabsTrigger value="leadership" className="gap-1"><Crown className="h-3.5 w-3.5" />{isAr ? "القيادة" : "Leadership"}</TabsTrigger>
             <TabsTrigger value="programs" className="gap-1"><BookOpen className="h-3.5 w-3.5" />{isAr ? "البرامج" : "Programs"}</TabsTrigger>
             <TabsTrigger value="events" className="gap-1"><Calendar className="h-3.5 w-3.5" />{isAr ? "الفعاليات" : "Events"}</TabsTrigger>
             <TabsTrigger value="competitions" className="gap-1"><Trophy className="h-3.5 w-3.5" />{isAr ? "المسابقات" : "Competitions"}</TabsTrigger>
             <TabsTrigger value="members" className="gap-1"><Users className="h-3.5 w-3.5" />{isAr ? "الأعضاء" : "Members"} ({memberships?.length || 0})</TabsTrigger>
             <TabsTrigger value="degrees" className="gap-1"><GraduationCap className="h-3.5 w-3.5" />{isAr ? "الشهادات" : "Degrees"} ({degrees?.length || 0})</TabsTrigger>
           </TabsList>
+
+          {/* Leadership Tab */}
+          <TabsContent value="leadership" className="mt-4">
+            <EntityLeadershipPanel entityId={entityId} />
+          </TabsContent>
 
           {/* Programs Tab */}
           <TabsContent value="programs" className="space-y-4 mt-4">
