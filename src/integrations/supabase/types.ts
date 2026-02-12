@@ -4837,6 +4837,65 @@ export type Database = {
           },
         ]
       }
+      exhibition_documents: {
+        Row: {
+          category: string
+          created_at: string
+          description: string | null
+          description_ar: string | null
+          exhibition_id: string
+          feed_to_ai: boolean | null
+          file_size: number | null
+          file_type: string | null
+          file_url: string
+          id: string
+          is_public: boolean | null
+          title: string
+          title_ar: string | null
+          uploaded_by: string | null
+        }
+        Insert: {
+          category?: string
+          created_at?: string
+          description?: string | null
+          description_ar?: string | null
+          exhibition_id: string
+          feed_to_ai?: boolean | null
+          file_size?: number | null
+          file_type?: string | null
+          file_url: string
+          id?: string
+          is_public?: boolean | null
+          title: string
+          title_ar?: string | null
+          uploaded_by?: string | null
+        }
+        Update: {
+          category?: string
+          created_at?: string
+          description?: string | null
+          description_ar?: string | null
+          exhibition_id?: string
+          feed_to_ai?: boolean | null
+          file_size?: number | null
+          file_type?: string | null
+          file_url?: string
+          id?: string
+          is_public?: boolean | null
+          title?: string
+          title_ar?: string | null
+          uploaded_by?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "exhibition_documents_exhibition_id_fkey"
+            columns: ["exhibition_id"]
+            isOneToOne: false
+            referencedRelation: "exhibitions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       exhibition_followers: {
         Row: {
           created_at: string
@@ -4865,6 +4924,109 @@ export type Database = {
         Relationships: [
           {
             foreignKeyName: "exhibition_followers_exhibition_id_fkey"
+            columns: ["exhibition_id"]
+            isOneToOne: false
+            referencedRelation: "exhibitions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      exhibition_media: {
+        Row: {
+          category: string
+          created_at: string
+          exhibition_id: string
+          file_type: string | null
+          file_url: string
+          id: string
+          sort_order: number | null
+          title: string | null
+          title_ar: string | null
+          uploaded_by: string | null
+        }
+        Insert: {
+          category?: string
+          created_at?: string
+          exhibition_id: string
+          file_type?: string | null
+          file_url: string
+          id?: string
+          sort_order?: number | null
+          title?: string | null
+          title_ar?: string | null
+          uploaded_by?: string | null
+        }
+        Update: {
+          category?: string
+          created_at?: string
+          exhibition_id?: string
+          file_type?: string | null
+          file_url?: string
+          id?: string
+          sort_order?: number | null
+          title?: string | null
+          title_ar?: string | null
+          uploaded_by?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "exhibition_media_exhibition_id_fkey"
+            columns: ["exhibition_id"]
+            isOneToOne: false
+            referencedRelation: "exhibitions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      exhibition_officials: {
+        Row: {
+          avatar_url: string | null
+          created_at: string
+          email: string | null
+          exhibition_id: string
+          full_name: string
+          full_name_ar: string | null
+          id: string
+          phone: string | null
+          role_title: string
+          role_title_ar: string | null
+          sort_order: number | null
+          updated_at: string
+          user_id: string | null
+        }
+        Insert: {
+          avatar_url?: string | null
+          created_at?: string
+          email?: string | null
+          exhibition_id: string
+          full_name: string
+          full_name_ar?: string | null
+          id?: string
+          phone?: string | null
+          role_title: string
+          role_title_ar?: string | null
+          sort_order?: number | null
+          updated_at?: string
+          user_id?: string | null
+        }
+        Update: {
+          avatar_url?: string | null
+          created_at?: string
+          email?: string | null
+          exhibition_id?: string
+          full_name?: string
+          full_name_ar?: string | null
+          id?: string
+          phone?: string | null
+          role_title?: string
+          role_title_ar?: string | null
+          sort_order?: number | null
+          updated_at?: string
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "exhibition_officials_exhibition_id_fkey"
             columns: ["exhibition_id"]
             isOneToOne: false
             referencedRelation: "exhibitions"
