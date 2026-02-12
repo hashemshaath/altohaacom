@@ -4,6 +4,7 @@ import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useAuth } from "@/contexts/AuthContext";
+import { useIsAdmin } from "@/hooks/useAdmin";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { Button } from "@/components/ui/button";
@@ -18,6 +19,7 @@ import {
   Settings, Pencil, Award, BookOpen, ClipboardList, Clock, Share2,
   ImageIcon, Twitter, Facebook, Linkedin, Link2, ChevronDown,
   Sparkles, Target, BarChart3, UsersRound, Eye, Flame, Shield, Building2,
+  Medal, Info, DoorOpen, Scale,
 } from "lucide-react";
 import { countryFlag } from "@/lib/countryFlag";
 import {
@@ -97,6 +99,7 @@ export default function CompetitionDetail() {
   const { id } = useParams<{ id: string }>();
   const { t, language } = useLanguage();
   const { user } = useAuth();
+  const isAdmin = useIsAdmin();
   const [activeSection, setActiveSection] = useState<string>("overview");
   const [showRegistrationForm, setShowRegistrationForm] = useState(false);
   const isAr = language === "ar";
@@ -146,16 +149,10 @@ export default function CompetitionDetail() {
   const { data: competitionTypes } = useQuery({
     queryKey: ["competition-detail-types", id],
     queryFn: async () => {
-      const { data: assignments } = await supabase
-        .from("competition_type_assignments")
-        .select("type_id")
-        .eq("competition_id", id);
+      const { data: assignments } = await supabase.from("competition_type_assignments").select("type_id").eq("competition_id", id);
       if (!assignments || assignments.length === 0) return [];
       const typeIds = assignments.map((a) => a.type_id);
-      const { data: types } = await supabase
-        .from("competition_types")
-        .select("id, name, name_ar, icon")
-        .in("id", typeIds);
+      const { data: types } = await supabase.from("competition_types").select("id, name, name_ar, icon").in("id", typeIds);
       return types || [];
     },
     enabled: !!id,
@@ -164,19 +161,24 @@ export default function CompetitionDetail() {
   const { data: supervisingBodies } = useQuery({
     queryKey: ["competition-detail-bodies", id],
     queryFn: async () => {
-      const { data: assignments } = await supabase
-        .from("competition_supervising_bodies")
-        .select("entity_id, role")
-        .eq("competition_id", id);
+      const { data: assignments } = await supabase.from("competition_supervising_bodies").select("entity_id, role").eq("competition_id", id);
       if (!assignments || assignments.length === 0) return [];
       const entityIds = assignments.map((a) => a.entity_id);
-      const { data: entities } = await supabase
-        .from("culinary_entities")
-        .select("id, name, name_ar, abbreviation, logo_url, type, country")
-        .in("id", entityIds);
-      return entities || [];
+      const roles = new Map(assignments.map(a => [a.entity_id, a.role]));
+      const { data: entities } = await supabase.from("culinary_entities").select("id, name, name_ar, abbreviation, logo_url, type, country").in("id", entityIds);
+      return (entities || []).map(e => ({ ...e, bodyRole: roles.get(e.id) || "supervisor" }));
     },
     enabled: !!id,
+  });
+
+  // Check if user has supervisor/judge/organizer role
+  const { data: userRoles } = useQuery({
+    queryKey: ["user-roles", user?.id],
+    queryFn: async () => {
+      const { data } = await supabase.from("user_roles").select("role").eq("user_id", user!.id);
+      return data?.map(r => r.role) || [];
+    },
+    enabled: !!user,
   });
 
   if (isLoading) {
@@ -225,15 +227,22 @@ export default function CompetitionDetail() {
   const venue = isAr && competition.venue_ar ? competition.venue_ar : competition.venue;
   const canRegister = competition.status === "registration_open" && user && !myRegistration;
   const isOrganizer = user && competition.organizer_id === user.id;
+  const canSeeKnowledge = isOrganizer || isAdmin || userRoles?.some(r => ["judge", "supervisor"].includes(r));
+  const hasWinners = competition.status === "completed";
+
+  // Separate supervising bodies by role
+  const supervisors = supervisingBodies?.filter(b => b.bodyRole === "supervisor") || [];
+  const accreditors = supervisingBodies?.filter(b => b.bodyRole !== "supervisor") || [];
 
   const navItems = [
     { id: "overview", icon: <Eye className="h-3.5 w-3.5" />, label: isAr ? "نظرة عامة" : "Overview" },
-    { id: "participants", icon: <Users className="h-3.5 w-3.5" />, label: isAr ? "المشاركين" : "Participants" },
+    { id: "judges", icon: <Scale className="h-3.5 w-3.5" />, label: isAr ? "لجنة التحكيم" : "Judging Panel" },
+    { id: "contestants", icon: <Users className="h-3.5 w-3.5" />, label: isAr ? "المتسابقين" : "Contestants" },
     { id: "categories", icon: <Target className="h-3.5 w-3.5" />, label: isAr ? "الفئات" : "Categories" },
     { id: "criteria", icon: <BarChart3 className="h-3.5 w-3.5" />, label: isAr ? "المعايير" : "Criteria" },
-    { id: "leaderboard", icon: <Trophy className="h-3.5 w-3.5" />, label: isAr ? "المتصدرين" : "Leaderboard" },
+    { id: "winners", icon: <Medal className="h-3.5 w-3.5" />, label: isAr ? "الفائزين" : "Winners" },
     { id: "team", icon: <UsersRound className="h-3.5 w-3.5" />, label: isAr ? "الفريق" : "Team" },
-    { id: "knowledge", icon: <BookOpen className="h-3.5 w-3.5" />, label: isAr ? "المعرفة" : "Knowledge" },
+    ...(canSeeKnowledge ? [{ id: "knowledge", icon: <BookOpen className="h-3.5 w-3.5" />, label: isAr ? "المعرفة" : "Knowledge" }] : []),
     { id: "gallery", icon: <ImageIcon className="h-3.5 w-3.5" />, label: isAr ? "المعرض" : "Gallery" },
     ...(isOrganizer ? [
       { id: "requirements", icon: <ClipboardList className="h-3.5 w-3.5" />, label: isAr ? "المتطلبات" : "Requirements" },
@@ -278,7 +287,6 @@ export default function CompetitionDetail() {
 
           <div className="absolute inset-x-0 bottom-0">
             <div className="container pb-6 md:pb-8">
-              {/* Back */}
               <Button variant="ghost" size="sm" asChild className="mb-4 -ms-2 text-foreground/80 hover:text-foreground">
                 <Link to="/competitions"><ArrowLeft className="me-1.5 h-4 w-4" />{isAr ? "المسابقات" : "Competitions"}</Link>
               </Button>
@@ -311,7 +319,6 @@ export default function CompetitionDetail() {
                   </div>
                 </div>
                 <div className="flex gap-2 shrink-0">
-                  {/* Share */}
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild>
                       <Button variant="outline" size="sm" className="bg-background/80 backdrop-blur-sm">
@@ -388,7 +395,7 @@ export default function CompetitionDetail() {
         )}
 
         <div className="container py-8">
-          {/* ─── Quick Stats Bar (mobile + desktop) ─── */}
+          {/* ─── Quick Stats Bar ─── */}
           <div className="mb-6 grid grid-cols-2 gap-3 sm:grid-cols-4">
             {[
               { icon: <Calendar className="h-4 w-4 text-primary" />, label: isAr ? "تاريخ البداية" : "Start Date", value: format(new Date(competition.competition_start), "MMM d, yyyy") },
@@ -444,31 +451,36 @@ export default function CompetitionDetail() {
               {activeSection === "overview" && (
                 <>
                   {/* Description */}
-                   {description && (
+                  {description && (
                     <Section icon={<BookOpen className="h-4 w-4 text-primary" />} title={isAr ? "نبذة عن المسابقة" : "About this Competition"}>
                       <p className="whitespace-pre-wrap text-sm leading-relaxed text-muted-foreground">{description}</p>
                     </Section>
                   )}
 
-                  {/* Competition Types */}
+                  {/* Competition specialty (changed from "types") */}
                   {competitionTypes && competitionTypes.length > 0 && (
-                    <Section icon={<Flame className="h-4 w-4 text-primary" />} title={isAr ? "أنواع المسابقة" : "Competition Types"} badge={<Badge variant="secondary" className="text-[10px]">{competitionTypes.length}</Badge>}>
-                      <div className="flex flex-wrap gap-2">
+                    <Section icon={<Flame className="h-4 w-4 text-primary" />} title={isAr ? "تخصص المسابقة" : "Competition Specialty"} badge={<Badge variant="secondary" className="text-[10px]">{competitionTypes.length}</Badge>}>
+                      <div className="grid gap-3 sm:grid-cols-2">
                         {competitionTypes.map((type) => (
-                          <Badge key={type.id} variant="secondary" className="gap-1.5 py-1.5 px-3">
-                            <Flame className="h-3 w-3" />
-                            {isAr && type.name_ar ? type.name_ar : type.name}
-                          </Badge>
+                          <div key={type.id} className="flex items-center gap-3 rounded-xl border border-border/60 p-3 bg-gradient-to-r from-primary/5 to-transparent">
+                            <div className="h-12 w-12 rounded-xl bg-primary/10 flex items-center justify-center shrink-0">
+                              <Flame className="h-5 w-5 text-primary" />
+                            </div>
+                            <div>
+                              <p className="text-sm font-semibold">{isAr && type.name_ar ? type.name_ar : type.name}</p>
+                              <p className="text-[10px] text-muted-foreground">{isAr ? "تخصص" : "Specialty"}</p>
+                            </div>
+                          </div>
                         ))}
                       </div>
                     </Section>
                   )}
 
                   {/* Supervising Bodies */}
-                  {supervisingBodies && supervisingBodies.length > 0 && (
-                    <Section icon={<Shield className="h-4 w-4 text-primary" />} title={isAr ? "الجهات المشرفة" : "Supervising Bodies"} badge={<Badge variant="secondary" className="text-[10px]">{supervisingBodies.length}</Badge>}>
+                  {supervisors.length > 0 && (
+                    <Section icon={<Shield className="h-4 w-4 text-primary" />} title={isAr ? "الجهات المشرفة" : "Supervising Bodies"} badge={<Badge variant="secondary" className="text-[10px]">{supervisors.length}</Badge>}>
                       <div className="grid gap-2 sm:grid-cols-2">
-                        {supervisingBodies.map((entity) => (
+                        {supervisors.map((entity) => (
                           <div key={entity.id} className="flex items-center gap-3 rounded-xl border border-border/60 p-3">
                             {entity.logo_url ? (
                               <img src={entity.logo_url} alt="" className="h-10 w-10 rounded-lg object-cover shrink-0" />
@@ -483,7 +495,7 @@ export default function CompetitionDetail() {
                                 {entity.abbreviation && <span className="text-muted-foreground"> ({entity.abbreviation})</span>}
                               </p>
                               <p className="text-[10px] text-muted-foreground">
-                                {entity.type?.replace("_", " ")} {entity.country ? `· ${entity.country}` : ""}
+                                {isAr ? "جهة مشرفة" : "Supervising Body"}
                               </p>
                             </div>
                           </div>
@@ -492,13 +504,80 @@ export default function CompetitionDetail() {
                     </Section>
                   )}
 
-                  {/* Timeline - New Component */}
+                  {/* Accrediting Bodies */}
+                  {accreditors.length > 0 && (
+                    <Section icon={<Award className="h-4 w-4 text-primary" />} title={isAr ? "جهات الاعتماد" : "Accrediting Bodies"} badge={<Badge variant="secondary" className="text-[10px]">{accreditors.length}</Badge>}>
+                      <div className="grid gap-2 sm:grid-cols-2">
+                        {accreditors.map((entity) => (
+                          <div key={entity.id} className="flex items-center gap-3 rounded-xl border border-primary/20 p-3 bg-primary/5">
+                            {entity.logo_url ? (
+                              <img src={entity.logo_url} alt="" className="h-10 w-10 rounded-lg object-cover shrink-0" />
+                            ) : (
+                              <div className="h-10 w-10 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
+                                <Award className="h-4 w-4 text-primary/50" />
+                              </div>
+                            )}
+                            <div className="min-w-0">
+                              <p className="text-sm font-medium truncate">
+                                {isAr && entity.name_ar ? entity.name_ar : entity.name}
+                                {entity.abbreviation && <span className="text-muted-foreground"> ({entity.abbreviation})</span>}
+                              </p>
+                              <p className="text-[10px] text-muted-foreground">
+                                {isAr ? "جهة اعتماد" : "Accrediting Body"}
+                              </p>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </Section>
+                  )}
+
+                  {/* Judging Panel Preview */}
+                  <JudgesList competitionId={competition.id} />
+
+                  {/* Timeline */}
                   <CompetitionTimeline
                     registrationStart={competition.registration_start}
                     registrationEnd={competition.registration_end}
                     competitionStart={competition.competition_start}
                     competitionEnd={competition.competition_end}
                   />
+
+                  {/* Venue & Instructions */}
+                  {!competition.is_virtual && (venue || competition.city) && (
+                    <Section icon={<DoorOpen className="h-4 w-4 text-primary" />} title={isAr ? "معلومات الموقع والدخول" : "Venue & Entry Information"}>
+                      <div className="space-y-3">
+                        <div className="flex items-start gap-3">
+                          <MapPin className="h-4 w-4 text-primary mt-0.5 shrink-0" />
+                          <div>
+                            <p className="text-sm font-medium">{venue}</p>
+                            <p className="text-xs text-muted-foreground">{competition.city}, {competition.country}</p>
+                          </div>
+                        </div>
+                        {competition.competition_start && (
+                          <div className="flex items-start gap-3">
+                            <Clock className="h-4 w-4 text-primary mt-0.5 shrink-0" />
+                            <div>
+                              <p className="text-sm font-medium">{isAr ? "وقت الدخول" : "Entry Time"}</p>
+                              <p className="text-xs text-muted-foreground">{format(new Date(competition.competition_start), "h:mm a")}</p>
+                            </div>
+                          </div>
+                        )}
+                        <div className="flex items-start gap-3">
+                          <Info className="h-4 w-4 text-primary mt-0.5 shrink-0" />
+                          <div>
+                            <p className="text-sm font-medium">{isAr ? "تعليمات للمتسابقين" : "Instructions for Contestants"}</p>
+                            <ul className="text-xs text-muted-foreground mt-1 space-y-1 list-disc list-inside">
+                              <li>{isAr ? "يرجى الحضور قبل 30 دقيقة من الموعد" : "Please arrive 30 minutes before the scheduled time"}</li>
+                              <li>{isAr ? "إحضار بطاقة الهوية أو التسجيل" : "Bring your ID or registration confirmation"}</li>
+                              <li>{isAr ? "الالتزام بزي المسابقة المطلوب" : "Wear the required competition uniform"}</li>
+                              <li>{isAr ? "الأدوات الشخصية مسموح بها وفق القواعد" : "Personal tools are allowed per the rules"}</li>
+                            </ul>
+                          </div>
+                        </div>
+                      </div>
+                    </Section>
+                  )}
 
                   {/* Rules */}
                   {(competition.rules_summary || competition.rules_summary_ar) && (
@@ -534,30 +613,49 @@ export default function CompetitionDetail() {
                     </Section>
                   )}
 
-                  {/* Categories Quick View */}
+                  {/* Categories Quick View with covers */}
                   {categories && categories.length > 0 && (
                     <Section
                       icon={<Target className="h-4 w-4 text-primary" />}
                       title={isAr ? "الفئات" : "Categories"}
                       badge={<Badge variant="secondary" className="text-[10px]">{categories.length}</Badge>}
                     >
-                      <div className="grid gap-2 sm:grid-cols-2">
+                      <div className="grid gap-3 sm:grid-cols-2">
                         {categories.slice(0, 6).map((cat) => (
-                          <div key={cat.id} className="flex items-center gap-3 rounded-xl border border-border/60 p-3 hover:bg-muted/30 transition-colors">
+                          <div
+                            key={cat.id}
+                            className="group relative overflow-hidden rounded-xl border border-border/60 hover:shadow-md transition-all hover:-translate-y-0.5 cursor-pointer"
+                            onClick={() => setActiveSection("categories")}
+                          >
                             {cat.cover_image_url ? (
-                              <img src={cat.cover_image_url} alt={cat.name} className="h-10 w-10 rounded-lg object-cover shrink-0" />
+                              <div className="relative h-24">
+                                <img src={cat.cover_image_url} alt={cat.name} className="h-full w-full object-cover group-hover:scale-105 transition-transform duration-300" />
+                                <div className="absolute inset-0 bg-gradient-to-t from-background/90 via-background/40 to-transparent" />
+                                <div className="absolute bottom-0 inset-x-0 p-3">
+                                  <p className="text-sm font-semibold text-foreground">{isAr && cat.name_ar ? cat.name_ar : cat.name}</p>
+                                  <div className="flex items-center gap-2 text-[10px] text-muted-foreground">
+                                    {cat.max_participants && <span><Users className="inline h-2.5 w-2.5 me-0.5" />{cat.max_participants}</span>}
+                                    <Badge variant="outline" className="text-[9px] h-4 px-1 bg-background/60">{cat.gender === "male" ? (isAr ? "ذكور" : "Male") : cat.gender === "female" ? (isAr ? "إناث" : "Female") : (isAr ? "مختلط" : "Mixed")}</Badge>
+                                  </div>
+                                </div>
+                              </div>
                             ) : (
-                              <div className="h-10 w-10 rounded-lg bg-primary/5 flex items-center justify-center shrink-0">
-                                <Trophy className="h-4 w-4 text-primary/30" />
+                              <div className="flex items-center gap-3 p-3.5">
+                                <div className="h-12 w-12 rounded-xl bg-gradient-to-br from-primary/10 to-accent/10 flex items-center justify-center shrink-0">
+                                  <Trophy className="h-5 w-5 text-primary/40" />
+                                </div>
+                                <div className="min-w-0">
+                                  <p className="text-sm font-semibold truncate">{isAr && cat.name_ar ? cat.name_ar : cat.name}</p>
+                                  {cat.description && (
+                                    <p className="text-[11px] text-muted-foreground truncate">{isAr && cat.description_ar ? cat.description_ar : cat.description}</p>
+                                  )}
+                                  <div className="flex items-center gap-2 text-[10px] text-muted-foreground mt-0.5">
+                                    {cat.max_participants && <span><Users className="inline h-2.5 w-2.5 me-0.5" />{cat.max_participants}</span>}
+                                    <Badge variant="outline" className="text-[9px] h-4 px-1">{cat.gender === "male" ? (isAr ? "ذكور" : "Male") : cat.gender === "female" ? (isAr ? "إناث" : "Female") : (isAr ? "مختلط" : "Mixed")}</Badge>
+                                  </div>
+                                </div>
                               </div>
                             )}
-                            <div className="min-w-0">
-                              <p className="text-sm font-medium truncate">{isAr && cat.name_ar ? cat.name_ar : cat.name}</p>
-                              <div className="flex items-center gap-2 text-[10px] text-muted-foreground">
-                                {cat.max_participants && <span><Users className="inline h-2.5 w-2.5 me-0.5" />{cat.max_participants}</span>}
-                                <Badge variant="outline" className="text-[9px] h-4 px-1">{cat.gender === "male" ? (isAr ? "ذكور" : "Male") : cat.gender === "female" ? (isAr ? "إناث" : "Female") : (isAr ? "مختلط" : "Mixed")}</Badge>
-                              </div>
-                            </div>
                           </div>
                         ))}
                       </div>
@@ -571,18 +669,42 @@ export default function CompetitionDetail() {
 
                   {/* Sponsors */}
                   <CompetitionSponsorsPanel competitionId={competition.id} isOrganizer={isOrganizer} />
-
-                  {/* Judges */}
-                  <JudgesList competitionId={competition.id} />
                 </>
               )}
 
-              {activeSection === "participants" && <ParticipantsList competitionId={competition.id} isOrganizer={!!isOrganizer} />}
+              {activeSection === "judges" && <JudgesList competitionId={competition.id} />}
+              {activeSection === "contestants" && <ParticipantsList competitionId={competition.id} isOrganizer={!!isOrganizer} />}
               {activeSection === "categories" && <CategoryManagementPanel competitionId={competition.id} isOrganizer={isOrganizer} competitionStatus={competition.status} />}
               {activeSection === "criteria" && <CriteriaManagementPanel competitionId={competition.id} isOrganizer={isOrganizer} />}
-              {activeSection === "leaderboard" && <CompetitionLeaderboard competitionId={competition.id} />}
+              {activeSection === "winners" && (
+                hasWinners ? (
+                  <CompetitionLeaderboard competitionId={competition.id} />
+                ) : (
+                  <Card className="border-primary/20">
+                    <CardContent className="flex flex-col items-center justify-center py-16 text-center">
+                      <div className="mb-4 flex h-20 w-20 items-center justify-center rounded-full bg-gradient-to-br from-primary/10 to-chart-4/10">
+                        <Medal className="h-10 w-10 text-primary" />
+                      </div>
+                      <h3 className="font-serif text-lg font-bold mb-2">
+                        {isAr ? "لم يتم إعلان الفائزين بعد" : "Winners Not Announced Yet"}
+                      </h3>
+                      <p className="text-sm text-muted-foreground max-w-md">
+                        {isAr
+                          ? "شارك لتكون من الفائزين بالميدالية الذهبية 🏅 سيتم الإعلان عن النتائج بعد انتهاء المسابقة والتحكيم."
+                          : "Participate to be among the Gold Medal winners 🏅 Results will be announced after the competition and judging conclude."}
+                      </p>
+                      {canRegister && (
+                        <Button className="mt-6 shadow-lg shadow-primary/20" onClick={() => { setShowRegistrationForm(true); setActiveSection("overview"); }}>
+                          <Sparkles className="me-1.5 h-4 w-4" />
+                          {isAr ? "سجّل الآن" : "Register Now"}
+                        </Button>
+                      )}
+                    </CardContent>
+                  </Card>
+                )
+              )}
               {activeSection === "team" && <CompetitionTeamPanel competitionId={competition.id} isOrganizer={isOrganizer} />}
-              {activeSection === "knowledge" && <CompetitionKnowledgeTab competitionId={competition.id} isOrganizer={isOrganizer} />}
+              {activeSection === "knowledge" && canSeeKnowledge && <CompetitionKnowledgeTab competitionId={competition.id} isOrganizer={isOrganizer} />}
               {activeSection === "gallery" && <ReferenceGalleryPanel competitionId={competition.id} isAdmin={isOrganizer} />}
               {isOrganizer && activeSection === "requirements" && <RequirementsListPanel competitionId={competition.id} isOrganizer={isOrganizer} />}
               {isOrganizer && activeSection === "manage" && (
@@ -679,6 +801,12 @@ export default function CompetitionDetail() {
                       </Badge>
                     </div>
                   )}
+                  {competition.registration_fee_type === "paid" && (
+                    <div className="flex items-center justify-between text-sm">
+                      <span className="text-muted-foreground">{isAr ? "رسوم التسجيل" : "Entry Fee"}</span>
+                      <span className="font-medium">{competition.registration_fee} {competition.registration_currency}</span>
+                    </div>
+                  )}
                 </CardContent>
               </Card>
 
@@ -692,8 +820,8 @@ export default function CompetitionDetail() {
                 />
               )}
 
-              {/* Organizer */}
-              <OrganizerCard organizerId={competition.organizer_id} />
+              {/* Organizer - uses exhibition's organizer when linked */}
+              <OrganizerCard organizerId={competition.organizer_id} exhibitionId={competition.exhibition_id} />
 
               {/* Activity Feed */}
               <CompetitionActivityFeed competitionId={competition.id} isOrganizer={!!isOrganizer} />
