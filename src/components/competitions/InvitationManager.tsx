@@ -116,7 +116,7 @@ export function InvitationManager({ competitionId }: InvitationManagerProps) {
       inv.invitee_name?.toLowerCase().includes(search.toLowerCase()) ||
       inv.invitee_name_ar?.toLowerCase().includes(search.toLowerCase()) ||
       inv.invitee_email?.toLowerCase().includes(search.toLowerCase());
-    const matchesRole = roleFilter === "all" || (inv as any).invitee_role === roleFilter;
+    const matchesRole = roleFilter === "all" || inv.invitee_role === roleFilter;
     const matchesStatus = statusFilter === "all" || inv.status === statusFilter;
     return matchesSearch && matchesRole && matchesStatus;
   });
@@ -248,16 +248,16 @@ export function InvitationManager({ competitionId }: InvitationManagerProps) {
                       {isAr && inv.invitee_name_ar ? inv.invitee_name_ar : inv.invitee_name || inv.invitee_email || "—"}
                     </p>
                     <div className="flex flex-wrap gap-1.5 mt-0.5">
-                      <Badge variant="outline" className="text-[9px] h-4">{roleLabel((inv as any).invitee_role)}</Badge>
+                      <Badge variant="outline" className="text-[9px] h-4">{roleLabel(inv.invitee_role || "visitor")}</Badge>
                       <Badge className={`text-[9px] h-4 ${STATUS_COLORS[inv.status] || ""}`}>{inv.status}</Badge>
                       {inv.invitee_email && (
                         <span className="text-[9px] text-muted-foreground flex items-center gap-0.5">
                           <Mail className="h-2.5 w-2.5" />{inv.invitee_email}
                         </span>
                       )}
-                      {(inv as any).invitee_phone && (
+                      {inv.invitee_phone && (
                         <span className="text-[9px] text-muted-foreground flex items-center gap-0.5">
-                          <Phone className="h-2.5 w-2.5" />{(inv as any).invitee_phone}
+                          <Phone className="h-2.5 w-2.5" />{inv.invitee_phone}
                         </span>
                       )}
                     </div>
