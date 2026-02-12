@@ -268,6 +268,8 @@ export default function ExhibitionDetail() {
     },
   });
 
+  const { data: exhibitionQrCode } = useEntityQRCode("exhibition", exhibition?.id, "exhibition");
+
   /* ---------- loading / not found ---------- */
   if (isLoading) {
     return (
@@ -355,7 +357,7 @@ export default function ExhibitionDetail() {
 
   const organizerLogoUrl = (exhibition as any).organizer_logo_url || exhibition.logo_url;
   const isOwner = user && exhibition.created_by === user.id;
-  const { data: exhibitionQrCode } = useEntityQRCode("exhibition", exhibition.id, "exhibition");
+  
 
   // Count content for tab badges
   const hasCompetitions = linkedCompetitions && linkedCompetitions.length > 0;
