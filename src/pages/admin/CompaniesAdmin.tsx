@@ -19,130 +19,17 @@ import { Switch } from "@/components/ui/switch";
 import { Separator } from "@/components/ui/separator";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { useToast } from "@/hooks/use-toast";
 import {
-  Building2,
-  Users,
-  Package,
-  FileText,
-  Send,
-  Search,
-  Plus,
-  Edit,
-  Trash2,
-  Eye,
-  CheckCircle,
-  XCircle,
-  Clock,
-  MapPin,
-  Phone,
-  Mail,
-  Globe,
-  ChevronLeft,
-  Save,
-  X,
-  Truck,
-  DollarSign,
-  Star,
-  Image,
-  CalendarCheck,
-  MessageSquare,
-  Filter,
-  MoreHorizontal,
-  UserPlus,
-  Building,
-  CreditCard,
-  Receipt,
+  Building2, Users, Package, FileText, Send, Search, Plus, Edit, Trash2, Eye,
+  CheckCircle, XCircle, Clock, MapPin, Phone, Mail, Globe, ChevronLeft, Save, X,
+  Truck, DollarSign, Star, Image, CalendarCheck, MessageSquare, UserPlus, Building,
+  Upload, FolderOpen, FileImage, File, Sparkles,
 } from "lucide-react";
 import { format } from "date-fns";
 
 type CompanyType = "sponsor" | "supplier" | "partner" | "vendor";
 type CompanyStatus = "active" | "inactive" | "pending" | "suspended";
-
-// Inline invitation send button component
-function InvitationSendButton({ companyId, userId, language, onSuccess }: { companyId: string; userId?: string; language: string; onSuccess: () => void }) {
-  const [open, setOpen] = useState(false);
-  const { toast } = useToast();
-  const [form, setForm] = useState({ title: "", title_ar: "", description: "", invitation_type: "sponsorship", event_date: "", expires_at: "" });
-
-  const sendMutation = useMutation({
-    mutationFn: async () => {
-      const user = (await supabase.auth.getUser()).data.user;
-      const { error } = await supabase.from("company_invitations").insert({
-        company_id: companyId,
-        invitation_type: form.invitation_type,
-        title: form.title,
-        title_ar: form.title_ar || null,
-        description: form.description || null,
-        event_date: form.event_date || null,
-        expires_at: form.expires_at || null,
-        status: "pending",
-        created_by: user?.id || null,
-      });
-      if (error) throw error;
-    },
-    onSuccess: () => {
-      onSuccess();
-      setOpen(false);
-      setForm({ title: "", title_ar: "", description: "", invitation_type: "sponsorship", event_date: "", expires_at: "" });
-      toast({ title: language === "ar" ? "تم إرسال الدعوة" : "Invitation sent" });
-    },
-    onError: (err: Error) => toast({ variant: "destructive", title: "Error", description: err.message }),
-  });
-
-  return (
-    <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger asChild>
-        <Button><Send className="h-4 w-4 mr-2" />{language === "ar" ? "دعوة جديدة" : "New Invitation"}</Button>
-      </DialogTrigger>
-      <DialogContent>
-        <DialogHeader><DialogTitle>{language === "ar" ? "إرسال دعوة" : "Send Invitation"}</DialogTitle></DialogHeader>
-        <div className="space-y-4">
-          <div className="space-y-2">
-            <Label>{language === "ar" ? "نوع الدعوة" : "Type"}</Label>
-            <Select value={form.invitation_type} onValueChange={v => setForm({ ...form, invitation_type: v })}>
-              <SelectTrigger><SelectValue /></SelectTrigger>
-              <SelectContent>
-                <SelectItem value="sponsorship">{language === "ar" ? "رعاية" : "Sponsorship"}</SelectItem>
-                <SelectItem value="section_sponsor">{language === "ar" ? "رعاية قسم" : "Section Sponsor"}</SelectItem>
-                <SelectItem value="exhibition_sponsor">{language === "ar" ? "رعاية معرض" : "Exhibition Sponsor"}</SelectItem>
-                <SelectItem value="participation">{language === "ar" ? "مشاركة" : "Participation"}</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
-          <div className="grid grid-cols-2 gap-4">
-            <div className="space-y-2">
-              <Label>{language === "ar" ? "العنوان (EN)" : "Title (EN)"}</Label>
-              <Input value={form.title} onChange={e => setForm({ ...form, title: e.target.value })} />
-            </div>
-            <div className="space-y-2">
-              <Label>{language === "ar" ? "العنوان (AR)" : "Title (AR)"}</Label>
-              <Input value={form.title_ar} onChange={e => setForm({ ...form, title_ar: e.target.value })} dir="rtl" />
-            </div>
-          </div>
-          <div className="space-y-2">
-            <Label>{language === "ar" ? "الوصف" : "Description"}</Label>
-            <Textarea value={form.description} onChange={e => setForm({ ...form, description: e.target.value })} rows={3} />
-          </div>
-          <div className="grid grid-cols-2 gap-4">
-            <div className="space-y-2">
-              <Label>{language === "ar" ? "تاريخ الفعالية" : "Event Date"}</Label>
-              <Input type="date" value={form.event_date} onChange={e => setForm({ ...form, event_date: e.target.value })} />
-            </div>
-            <div className="space-y-2">
-              <Label>{language === "ar" ? "ينتهي في" : "Expires At"}</Label>
-              <Input type="date" value={form.expires_at} onChange={e => setForm({ ...form, expires_at: e.target.value })} />
-            </div>
-          </div>
-          <Button className="w-full" onClick={() => sendMutation.mutate()} disabled={!form.title || sendMutation.isPending}>
-            <Send className="mr-2 h-4 w-4" />{language === "ar" ? "إرسال" : "Send"}
-          </Button>
-        </div>
-      </DialogContent>
-    </Dialog>
-  );
-}
 
 interface Company {
   id: string;
@@ -175,242 +62,396 @@ const statusColors: Record<CompanyStatus, string> = {
   suspended: "bg-destructive",
 };
 
+const DAYS = [
+  { en: "Monday", ar: "الاثنين" },
+  { en: "Tuesday", ar: "الثلاثاء" },
+  { en: "Wednesday", ar: "الأربعاء" },
+  { en: "Thursday", ar: "الخميس" },
+  { en: "Friday", ar: "الجمعة" },
+  { en: "Saturday", ar: "السبت" },
+  { en: "Sunday", ar: "الأحد" },
+];
+
+const MEDIA_CATEGORIES = [
+  { value: "logo", label: "Logo", labelAr: "الشعار", icon: FileImage },
+  { value: "documents", label: "Documents", labelAr: "المستندات", icon: File },
+  { value: "product_images", label: "Product Images", labelAr: "صور المنتجات", icon: Image },
+  { value: "certificates", label: "Certificates", labelAr: "الشهادات", icon: FileText },
+  { value: "other", label: "Other", labelAr: "أخرى", icon: FolderOpen },
+];
+
 export default function CompaniesAdmin() {
   const { language } = useLanguage();
+  const isAr = language === "ar";
   const { toast } = useToast();
   const queryClient = useQueryClient();
-  const [activeTab, setActiveTab] = useState("companies");
   const [searchQuery, setSearchQuery] = useState("");
   const [typeFilter, setTypeFilter] = useState<string>("all");
   const [statusFilter, setStatusFilter] = useState<string>("all");
-  
-  // View states
   const [showCompanyForm, setShowCompanyForm] = useState(false);
   const [selectedCompany, setSelectedCompany] = useState<string | null>(null);
   const [companyDetailTab, setCompanyDetailTab] = useState("overview");
-  const [replyDialogOpen, setReplyDialogOpen] = useState(false);
+
+  // Sub-form states
+  const [showContactForm, setShowContactForm] = useState(false);
+  const [showBranchForm, setShowBranchForm] = useState(false);
+  const [showDriverForm, setShowDriverForm] = useState(false);
+  const [showInvitationForm, setShowInvitationForm] = useState(false);
+  const [showMediaUpload, setShowMediaUpload] = useState(false);
+  const [mediaCategory, setMediaCategory] = useState("logo");
+
+  // Reply state
   const [replyTarget, setReplyTarget] = useState<string | null>(null);
   const [replyMessage, setReplyMessage] = useState("");
 
-  // Form state
-  const [companyForm, setCompanyForm] = useState({
-    name: "",
-    name_ar: "",
-    type: "supplier" as CompanyType,
-    registration_number: "",
-    tax_number: "",
-    email: "",
-    phone: "",
-    website: "",
-    address: "",
-    address_ar: "",
-    city: "",
-    country: "",
-    country_code: "",
-    postal_code: "",
-    description: "",
-    description_ar: "",
-    credit_limit: 0,
-    payment_terms: 30,
-    currency: "SAR",
+  // Contact form
+  const [contactForm, setContactForm] = useState({
+    name: "", name_ar: "", title: "", title_ar: "", department: "general",
+    email: "", phone: "", mobile: "", whatsapp: "", is_primary: false, can_login: false,
   });
+
+  // Branch form
+  const [branchForm, setBranchForm] = useState({
+    name: "", name_ar: "", address: "", address_ar: "", city: "", country: "",
+    phone: "", email: "", postal_code: "", is_headquarters: false,
+    manager_name: "", manager_phone: "", manager_email: "",
+  });
+
+  // Driver form
+  const [driverForm, setDriverForm] = useState({
+    name: "", name_ar: "", phone: "", vehicle_type: "", vehicle_plate: "",
+    license_number: "", is_available: true,
+  });
+
+  // Invitation form
+  const [invitationForm, setInvitationForm] = useState({
+    title: "", title_ar: "", description: "", invitation_type: "sponsorship",
+    event_date: "", expires_at: "",
+  });
+
+  // Company form
+  const [companyForm, setCompanyForm] = useState({
+    name: "", name_ar: "", type: "supplier" as CompanyType,
+    registration_number: "", tax_number: "", email: "", phone: "", website: "",
+    address: "", address_ar: "", city: "", country: "", country_code: "",
+    postal_code: "", description: "", description_ar: "",
+    credit_limit: 0, payment_terms: 30, currency: "SAR",
+  });
+
+  // Working hours state
+  const [workingHours, setWorkingHours] = useState<Record<string, { open: string; close: string; enabled: boolean }>>({});
+  const [editingHours, setEditingHours] = useState(false);
 
   const { data: allCountries = [] } = useAllCountries();
 
-  // Fetch companies
+  // ── Queries ──
   const { data: companies = [], isLoading } = useQuery({
     queryKey: ["companies", searchQuery, typeFilter, statusFilter],
     queryFn: async () => {
-      let query = supabase
-        .from("companies")
-        .select("*")
-        .order("created_at", { ascending: false });
-
-      if (searchQuery) {
-        query = query.or(`name.ilike.%${searchQuery}%,email.ilike.%${searchQuery}%`);
-      }
-      if (typeFilter !== "all") {
-        query = query.eq("type", typeFilter as CompanyType);
-      }
-      if (statusFilter !== "all") {
-        query = query.eq("status", statusFilter as CompanyStatus);
-      }
-
+      let query = supabase.from("companies").select("*").order("created_at", { ascending: false });
+      if (searchQuery) query = query.or(`name.ilike.%${searchQuery}%,email.ilike.%${searchQuery}%`);
+      if (typeFilter !== "all") query = query.eq("type", typeFilter as CompanyType);
+      if (statusFilter !== "all") query = query.eq("status", statusFilter as CompanyStatus);
       const { data, error } = await query;
       if (error) throw error;
       return data as Company[];
     },
   });
 
-  // Fetch selected company details
   const { data: companyDetails } = useQuery({
     queryKey: ["company", selectedCompany],
     queryFn: async () => {
       if (!selectedCompany) return null;
-      const { data, error } = await supabase
-        .from("companies")
-        .select("*")
-        .eq("id", selectedCompany)
-        .single();
+      const { data, error } = await supabase.from("companies").select("*").eq("id", selectedCompany).single();
       if (error) throw error;
       return data;
     },
     enabled: !!selectedCompany,
   });
 
-  // Fetch company contacts
   const { data: contacts = [] } = useQuery({
     queryKey: ["company-contacts", selectedCompany],
     queryFn: async () => {
       if (!selectedCompany) return [];
-      const { data, error } = await supabase
-        .from("company_contacts")
-        .select("*")
-        .eq("company_id", selectedCompany)
-        .order("is_primary", { ascending: false });
+      const { data, error } = await supabase.from("company_contacts").select("*").eq("company_id", selectedCompany).order("is_primary", { ascending: false });
       if (error) throw error;
       return data;
     },
     enabled: !!selectedCompany,
   });
 
-  // Fetch company branches
   const { data: branches = [] } = useQuery({
     queryKey: ["company-branches", selectedCompany],
     queryFn: async () => {
       if (!selectedCompany) return [];
-      const { data, error } = await supabase
-        .from("company_branches")
-        .select("*")
-        .eq("company_id", selectedCompany)
-        .order("is_headquarters", { ascending: false });
+      const { data, error } = await supabase.from("company_branches").select("*").eq("company_id", selectedCompany).order("is_headquarters", { ascending: false });
       if (error) throw error;
       return data;
     },
     enabled: !!selectedCompany,
   });
 
-  // Fetch company orders
   const { data: orders = [] } = useQuery({
     queryKey: ["company-orders", selectedCompany],
     queryFn: async () => {
       if (!selectedCompany) return [];
-      const { data, error } = await supabase
-        .from("company_orders")
-        .select("*")
-        .eq("company_id", selectedCompany)
-        .order("created_at", { ascending: false })
-        .limit(20);
+      const { data, error } = await supabase.from("company_orders").select("*").eq("company_id", selectedCompany).order("created_at", { ascending: false }).limit(20);
       if (error) throw error;
       return data;
     },
     enabled: !!selectedCompany,
   });
 
-  // Fetch company transactions
   const { data: transactions = [] } = useQuery({
     queryKey: ["company-transactions", selectedCompany],
     queryFn: async () => {
       if (!selectedCompany) return [];
-      const { data, error } = await supabase
-        .from("company_transactions")
-        .select("*")
-        .eq("company_id", selectedCompany)
-        .order("created_at", { ascending: false })
-        .limit(50);
+      const { data, error } = await supabase.from("company_transactions").select("*").eq("company_id", selectedCompany).order("created_at", { ascending: false }).limit(50);
       if (error) throw error;
       return data;
     },
     enabled: !!selectedCompany,
   });
 
-  // Fetch company invitations
   const { data: invitations = [] } = useQuery({
     queryKey: ["company-invitations", selectedCompany],
     queryFn: async () => {
       if (!selectedCompany) return [];
-      const { data, error } = await supabase
-        .from("company_invitations")
-        .select("*")
-        .eq("company_id", selectedCompany)
-        .order("created_at", { ascending: false });
+      const { data, error } = await supabase.from("company_invitations").select("*").eq("company_id", selectedCompany).order("created_at", { ascending: false });
       if (error) throw error;
       return data;
     },
     enabled: !!selectedCompany,
   });
 
-  // Fetch company evaluations
   const { data: evaluations = [] } = useQuery({
     queryKey: ["company-evaluations", selectedCompany],
     queryFn: async () => {
       if (!selectedCompany) return [];
-      const { data, error } = await supabase
-        .from("company_evaluations")
-        .select("*")
-        .eq("company_id", selectedCompany)
-        .order("created_at", { ascending: false });
+      const { data, error } = await supabase.from("company_evaluations").select("*").eq("company_id", selectedCompany).order("created_at", { ascending: false });
       if (error) throw error;
       return data;
     },
     enabled: !!selectedCompany,
   });
 
-  // Fetch company catalog
   const { data: catalogItems = [] } = useQuery({
     queryKey: ["company-catalog", selectedCompany],
     queryFn: async () => {
       if (!selectedCompany) return [];
-      const { data, error } = await supabase
-        .from("company_catalog")
-        .select("*")
-        .eq("company_id", selectedCompany)
-        .order("category")
-        .order("name");
+      const { data, error } = await supabase.from("company_catalog").select("*").eq("company_id", selectedCompany).order("category").order("name");
       if (error) throw error;
       return data;
     },
     enabled: !!selectedCompany,
   });
 
-  // Fetch company drivers
   const { data: drivers = [] } = useQuery({
     queryKey: ["company-drivers", selectedCompany],
     queryFn: async () => {
       if (!selectedCompany) return [];
-      const { data, error } = await supabase
-        .from("company_drivers")
-        .select("*")
-        .eq("company_id", selectedCompany)
-        .order("name");
+      const { data, error } = await supabase.from("company_drivers").select("*").eq("company_id", selectedCompany).order("name");
       if (error) throw error;
       return data;
     },
     enabled: !!selectedCompany,
   });
 
-  // Fetch company communications
   const { data: communications = [] } = useQuery({
     queryKey: ["company-communications", selectedCompany],
     queryFn: async () => {
       if (!selectedCompany) return [];
-      const { data, error } = await supabase
-        .from("company_communications")
-        .select("*")
-        .eq("company_id", selectedCompany)
-        .is("parent_id", null)
-        .order("created_at", { ascending: false });
+      const { data, error } = await supabase.from("company_communications").select("*").eq("company_id", selectedCompany).order("created_at", { ascending: false });
       if (error) throw error;
       return data;
     },
     enabled: !!selectedCompany,
   });
 
+  const { data: media = [] } = useQuery({
+    queryKey: ["company-media", selectedCompany],
+    queryFn: async () => {
+      if (!selectedCompany) return [];
+      const { data, error } = await supabase.from("company_media").select("*").eq("company_id", selectedCompany).order("category").order("created_at", { ascending: false });
+      if (error) throw error;
+      return data;
+    },
+    enabled: !!selectedCompany,
+  });
+
+  // ── Mutations ──
+  const createCompanyMutation = useMutation({
+    mutationFn: async (data: typeof companyForm) => {
+      const { country_code, ...rest } = data;
+      const { error } = await supabase.from("companies").insert({ ...rest, country_code: country_code || null, status: "pending" });
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["companies"] });
+      setShowCompanyForm(false);
+      resetCompanyForm();
+      toast({ title: isAr ? "تم إنشاء الشركة" : "Company created" });
+    },
+    onError: () => toast({ title: isAr ? "فشل في إنشاء الشركة" : "Failed to create company", variant: "destructive" }),
+  });
+
+  const updateStatusMutation = useMutation({
+    mutationFn: async ({ id, status }: { id: string; status: CompanyStatus }) => {
+      const { error } = await supabase.from("companies").update({ status }).eq("id", id);
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["companies"] });
+      queryClient.invalidateQueries({ queryKey: ["company", selectedCompany] });
+      toast({ title: isAr ? "تم تحديث الحالة" : "Status updated" });
+    },
+  });
+
+  const addContactMutation = useMutation({
+    mutationFn: async () => {
+      if (!selectedCompany) throw new Error("No company");
+      const { error } = await supabase.from("company_contacts").insert({
+        company_id: selectedCompany,
+        name: contactForm.name,
+        name_ar: contactForm.name_ar || null,
+        title: contactForm.title || null,
+        title_ar: contactForm.title_ar || null,
+        department: contactForm.department,
+        email: contactForm.email || null,
+        phone: contactForm.phone || null,
+        mobile: contactForm.mobile || null,
+        whatsapp: contactForm.whatsapp || null,
+        is_primary: contactForm.is_primary,
+        can_login: contactForm.can_login,
+      });
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["company-contacts", selectedCompany] });
+      setShowContactForm(false);
+      setContactForm({ name: "", name_ar: "", title: "", title_ar: "", department: "general", email: "", phone: "", mobile: "", whatsapp: "", is_primary: false, can_login: false });
+      toast({ title: isAr ? "تم إضافة جهة الاتصال" : "Contact added" });
+    },
+    onError: (e: Error) => toast({ variant: "destructive", title: isAr ? "فشل الإضافة" : "Failed to add", description: e.message }),
+  });
+
+  const deleteContactMutation = useMutation({
+    mutationFn: async (id: string) => {
+      const { error } = await supabase.from("company_contacts").delete().eq("id", id);
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["company-contacts", selectedCompany] });
+      toast({ title: isAr ? "تم الحذف" : "Contact removed" });
+    },
+  });
+
+  const addBranchMutation = useMutation({
+    mutationFn: async () => {
+      if (!selectedCompany) throw new Error("No company");
+      const { error } = await supabase.from("company_branches").insert({
+        company_id: selectedCompany,
+        name: branchForm.name,
+        name_ar: branchForm.name_ar || null,
+        address: branchForm.address || null,
+        address_ar: branchForm.address_ar || null,
+        city: branchForm.city || null,
+        country: branchForm.country || null,
+        phone: branchForm.phone || null,
+        email: branchForm.email || null,
+        postal_code: branchForm.postal_code || null,
+        is_headquarters: branchForm.is_headquarters,
+        manager_name: branchForm.manager_name || null,
+        manager_phone: branchForm.manager_phone || null,
+        manager_email: branchForm.manager_email || null,
+      });
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["company-branches", selectedCompany] });
+      setShowBranchForm(false);
+      setBranchForm({ name: "", name_ar: "", address: "", address_ar: "", city: "", country: "", phone: "", email: "", postal_code: "", is_headquarters: false, manager_name: "", manager_phone: "", manager_email: "" });
+      toast({ title: isAr ? "تم إضافة الفرع" : "Branch added" });
+    },
+    onError: (e: Error) => toast({ variant: "destructive", title: isAr ? "فشل الإضافة" : "Failed to add", description: e.message }),
+  });
+
+  const deleteBranchMutation = useMutation({
+    mutationFn: async (id: string) => {
+      const { error } = await supabase.from("company_branches").delete().eq("id", id);
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["company-branches", selectedCompany] });
+      toast({ title: isAr ? "تم الحذف" : "Branch removed" });
+    },
+  });
+
+  const addDriverMutation = useMutation({
+    mutationFn: async () => {
+      if (!selectedCompany) throw new Error("No company");
+      const { error } = await supabase.from("company_drivers").insert({
+        company_id: selectedCompany,
+        name: driverForm.name,
+        name_ar: driverForm.name_ar || null,
+        phone: driverForm.phone,
+        vehicle_type: driverForm.vehicle_type || null,
+        vehicle_plate: driverForm.vehicle_plate || null,
+        license_number: driverForm.license_number || null,
+        is_available: driverForm.is_available,
+      });
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["company-drivers", selectedCompany] });
+      setShowDriverForm(false);
+      setDriverForm({ name: "", name_ar: "", phone: "", vehicle_type: "", vehicle_plate: "", license_number: "", is_available: true });
+      toast({ title: isAr ? "تم إضافة السائق" : "Driver added" });
+    },
+    onError: (e: Error) => toast({ variant: "destructive", title: isAr ? "فشل الإضافة" : "Failed to add", description: e.message }),
+  });
+
+  const deleteDriverMutation = useMutation({
+    mutationFn: async (id: string) => {
+      const { error } = await supabase.from("company_drivers").delete().eq("id", id);
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["company-drivers", selectedCompany] });
+      toast({ title: isAr ? "تم الحذف" : "Driver removed" });
+    },
+  });
+
+  const sendInvitationMutation = useMutation({
+    mutationFn: async () => {
+      if (!selectedCompany) throw new Error("No company");
+      const user = (await supabase.auth.getUser()).data.user;
+      const { error } = await supabase.from("company_invitations").insert({
+        company_id: selectedCompany,
+        invitation_type: invitationForm.invitation_type,
+        title: invitationForm.title,
+        title_ar: invitationForm.title_ar || null,
+        description: invitationForm.description || null,
+        event_date: invitationForm.event_date || null,
+        expires_at: invitationForm.expires_at || null,
+        status: "pending",
+        created_by: user?.id || null,
+      });
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["company-invitations", selectedCompany] });
+      setShowInvitationForm(false);
+      setInvitationForm({ title: "", title_ar: "", description: "", invitation_type: "sponsorship", event_date: "", expires_at: "" });
+      toast({ title: isAr ? "تم إرسال الدعوة" : "Invitation sent" });
+    },
+    onError: (e: Error) => toast({ variant: "destructive", title: "Error", description: e.message }),
+  });
 
   const replyMutation = useMutation({
     mutationFn: async ({ parentId, message }: { parentId: string; message: string }) => {
       if (!selectedCompany) throw new Error("No company");
-      const parent = communications.find(c => c.id === parentId);
+      const parent = communications.find((c: any) => c.id === parentId);
       const { error } = await supabase.from("company_communications").insert({
         company_id: selectedCompany,
         sender_id: (await supabase.auth.getUser()).data.user?.id || "",
@@ -425,81 +466,117 @@ export default function CompaniesAdmin() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["company-communications"] });
-      setReplyDialogOpen(false);
-      setReplyMessage("");
       setReplyTarget(null);
-      toast({ title: language === "ar" ? "تم إرسال الرد" : "Reply sent" });
+      setReplyMessage("");
+      toast({ title: isAr ? "تم إرسال الرد" : "Reply sent" });
     },
-    onError: () => {
-      toast({ title: language === "ar" ? "فشل الإرسال" : "Failed to send", variant: "destructive" });
+    onError: () => toast({ title: isAr ? "فشل الإرسال" : "Failed to send", variant: "destructive" }),
+  });
+
+  const saveWorkingHoursMutation = useMutation({
+    mutationFn: async () => {
+      if (!selectedCompany) throw new Error("No company");
+      const { error } = await supabase.from("companies").update({ working_hours: workingHours as any }).eq("id", selectedCompany);
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["company", selectedCompany] });
+      setEditingHours(false);
+      toast({ title: isAr ? "تم الحفظ" : "Saved" });
     },
   });
 
-  // Create company mutation
-  const createCompanyMutation = useMutation({
-    mutationFn: async (data: typeof companyForm) => {
-      const { country_code, ...rest } = data;
-      const { error } = await supabase.from("companies").insert({
-        ...rest,
-        country_code: country_code || null,
-        status: "pending",
+  const uploadMediaMutation = useMutation({
+    mutationFn: async (file: File) => {
+      if (!selectedCompany) throw new Error("No company");
+      const ext = file.name.split(".").pop();
+      const path = `${selectedCompany}/${mediaCategory}/${Date.now()}.${ext}`;
+      const { error: uploadError } = await supabase.storage.from("company-media").upload(path, file);
+      if (uploadError) {
+        // Bucket might not exist yet, try ad-creatives as fallback
+        const { error: err2 } = await supabase.storage.from("ad-creatives").upload(path, file);
+        if (err2) throw err2;
+        const { data: urlData } = supabase.storage.from("ad-creatives").getPublicUrl(path);
+        return { url: urlData.publicUrl, file };
+      }
+      const { data: urlData } = supabase.storage.from("company-media").getPublicUrl(path);
+      return { url: urlData.publicUrl, file };
+    },
+    onSuccess: async ({ url, file }) => {
+      const user = (await supabase.auth.getUser()).data.user;
+      await supabase.from("company_media").insert({
+        company_id: selectedCompany!,
+        category: mediaCategory,
+        file_url: url,
+        filename: file.name,
+        file_type: file.type,
+        file_size: file.size,
+        uploaded_by: user?.id || null,
+      });
+      queryClient.invalidateQueries({ queryKey: ["company-media", selectedCompany] });
+      toast({ title: isAr ? "تم رفع الملف" : "File uploaded" });
+    },
+    onError: (e: Error) => toast({ variant: "destructive", title: isAr ? "فشل الرفع" : "Upload failed", description: e.message }),
+  });
+
+  const deleteMediaMutation = useMutation({
+    mutationFn: async (id: string) => {
+      const { error } = await supabase.from("company_media").delete().eq("id", id);
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["company-media", selectedCompany] });
+      toast({ title: isAr ? "تم الحذف" : "Deleted" });
+    },
+  });
+
+  // AI Translation state
+  const [aiLoading, setAiLoading] = useState(false);
+
+  const handleAITranslate = async (textAr: string, setter: (enText: string) => void) => {
+    if (!textAr.trim()) return;
+    setAiLoading(true);
+    try {
+      const { data, error } = await supabase.functions.invoke("ai-translate-seo", {
+        body: { text: textAr, source_lang: "ar", target_lang: "en", optimize_seo: true },
       });
       if (error) throw error;
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["companies"] });
-      setShowCompanyForm(false);
-      resetForm();
-      toast({ title: language === "ar" ? "تم إنشاء الشركة" : "Company created" });
-    },
-    onError: () => {
-      toast({ title: language === "ar" ? "فشل في إنشاء الشركة" : "Failed to create company", variant: "destructive" });
-    },
-  });
+      if (data?.translated) setter(data.translated);
+      else toast({ variant: "destructive", title: isAr ? "لم يتم الترجمة" : "Translation failed" });
+    } catch {
+      // Fallback - just notify
+      toast({ variant: "destructive", title: isAr ? "خدمة الترجمة غير متاحة حالياً" : "Translation service unavailable" });
+    }
+    setAiLoading(false);
+  };
 
-  // Update company status
-  const updateStatusMutation = useMutation({
-    mutationFn: async ({ id, status }: { id: string; status: CompanyStatus }) => {
-      const { error } = await supabase
-        .from("companies")
-        .update({ status })
-        .eq("id", id);
+  const handleAIOptimize = async (text: string, lang: "ar" | "en", setter: (optimized: string) => void) => {
+    if (!text.trim()) return;
+    setAiLoading(true);
+    try {
+      const { data, error } = await supabase.functions.invoke("ai-translate-seo", {
+        body: { text, source_lang: lang, optimize_seo: true, optimize_only: true },
+      });
       if (error) throw error;
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["companies"] });
-      queryClient.invalidateQueries({ queryKey: ["company", selectedCompany] });
-      toast({ title: language === "ar" ? "تم تحديث الحالة" : "Status updated" });
-    },
-  });
+      if (data?.optimized) setter(data.optimized);
+    } catch {
+      toast({ variant: "destructive", title: isAr ? "خدمة التحسين غير متاحة" : "Optimization service unavailable" });
+    }
+    setAiLoading(false);
+  };
 
-  const resetForm = () => {
+  const resetCompanyForm = () => {
     setCompanyForm({
-      name: "",
-      name_ar: "",
-      type: "supplier",
-      registration_number: "",
-      tax_number: "",
-      email: "",
-      phone: "",
-      website: "",
-      address: "",
-      address_ar: "",
-      city: "",
-      country: "",
-      country_code: "",
-      postal_code: "",
-      description: "",
-      description_ar: "",
-      credit_limit: 0,
-      payment_terms: 30,
-      currency: "SAR",
+      name: "", name_ar: "", type: "supplier", registration_number: "", tax_number: "",
+      email: "", phone: "", website: "", address: "", address_ar: "", city: "",
+      country: "", country_code: "", postal_code: "", description: "", description_ar: "",
+      credit_limit: 0, payment_terms: 30, currency: "SAR",
     });
   };
 
   const getTypeLabel = (type: CompanyType) => {
     const t = companyTypes.find(ct => ct.value === type);
-    return language === "ar" ? t?.labelAr : t?.label;
+    return isAr ? t?.labelAr : t?.label;
   };
 
   const getStatusLabel = (status: CompanyStatus) => {
@@ -509,10 +586,9 @@ export default function CompaniesAdmin() {
       pending: { en: "Pending", ar: "قيد الانتظار" },
       suspended: { en: "Suspended", ar: "معلق" },
     };
-    return language === "ar" ? labels[status].ar : labels[status].en;
+    return isAr ? labels[status].ar : labels[status].en;
   };
 
-  // Calculate stats
   const stats = {
     total: companies.length,
     active: companies.filter(c => c.status === "active").length,
@@ -521,23 +597,29 @@ export default function CompaniesAdmin() {
     suppliers: companies.filter(c => c.type === "supplier").length,
   };
 
-  // Calculate company balance
-  const companyBalance = transactions.reduce((acc, t) => {
-    if (t.type === "payment" || t.type === "credit" || t.type === "refund") {
-      return acc + Number(t.amount);
-    }
-    if (t.type === "invoice" || t.type === "debit") {
-      return acc - Number(t.amount);
-    }
+  const companyBalance = transactions.reduce((acc, t: any) => {
+    if (t.type === "payment" || t.type === "credit" || t.type === "refund") return acc + Number(t.amount);
+    if (t.type === "invoice" || t.type === "debit") return acc - Number(t.amount);
     return acc + Number(t.amount);
   }, 0);
 
+  // ── AI Translation Button Component ──
+  const AIButton = ({ onClick, disabled }: { onClick: () => void; disabled?: boolean }) => (
+    <Button type="button" variant="outline" size="sm" onClick={onClick} disabled={disabled || aiLoading} className="gap-1">
+      <Sparkles className="h-3 w-3" />
+      {aiLoading ? "..." : isAr ? "ترجمة + SEO" : "Translate + SEO"}
+    </Button>
+  );
+
+  // ══════════════════════════════════════════════════════════
+  // COMPANY DETAIL VIEW
+  // ══════════════════════════════════════════════════════════
   if (selectedCompany && companyDetails) {
     return (
       <div className="space-y-6">
         {/* Header */}
         <div className="flex items-center gap-4">
-          <Button variant="ghost" size="icon" onClick={() => setSelectedCompany(null)}>
+          <Button variant="ghost" size="icon" onClick={() => { setSelectedCompany(null); setCompanyDetailTab("overview"); }}>
             <ChevronLeft className="h-5 w-5" />
           </Button>
           <div className="flex-1">
@@ -552,244 +634,245 @@ export default function CompaniesAdmin() {
               <div>
                 <h1 className="text-2xl font-bold">{companyDetails.name}</h1>
                 <div className="flex flex-wrap items-center gap-2 mt-1">
-                  <Badge className={statusColors[companyDetails.status as CompanyStatus]}>
-                    {getStatusLabel(companyDetails.status)}
-                  </Badge>
+                  <Badge className={statusColors[companyDetails.status as CompanyStatus]}>{getStatusLabel(companyDetails.status)}</Badge>
                   <Badge variant="outline">{getTypeLabel(companyDetails.type)}</Badge>
                   {companyDetails.country_code && (
-                    <Badge variant="outline">
-                      {countryFlag(companyDetails.country_code)} {companyDetails.country || companyDetails.country_code}
-                    </Badge>
+                    <Badge variant="outline">{countryFlag(companyDetails.country_code)} {companyDetails.country || companyDetails.country_code}</Badge>
                   )}
                 </div>
-                {companyDetails.operating_countries && (companyDetails.operating_countries as string[]).length > 0 && (
-                  <div className="mt-1.5 flex flex-wrap items-center gap-1">
-                    <span className="text-xs text-muted-foreground">{language === "ar" ? "يعمل في:" : "Operates in:"}</span>
-                    {(companyDetails.operating_countries as string[]).map((cc: string) => (
-                      <Badge key={cc} variant="secondary" className="text-[10px] px-1.5 py-0">
-                        {countryFlag(cc)}
-                      </Badge>
-                    ))}
-                  </div>
-                )}
               </div>
             </div>
           </div>
           <div className="flex gap-2">
             {companyDetails.status === "pending" && (
               <Button onClick={() => updateStatusMutation.mutate({ id: companyDetails.id, status: "active" })}>
-                <CheckCircle className="h-4 w-4 mr-2" />
-                {language === "ar" ? "تفعيل" : "Activate"}
+                <CheckCircle className="h-4 w-4 mr-2" />{isAr ? "تفعيل" : "Activate"}
               </Button>
             )}
             {companyDetails.status === "active" && (
               <Button variant="outline" onClick={() => updateStatusMutation.mutate({ id: companyDetails.id, status: "suspended" })}>
-                <XCircle className="h-4 w-4 mr-2" />
-                {language === "ar" ? "تعليق" : "Suspend"}
+                <XCircle className="h-4 w-4 mr-2" />{isAr ? "تعليق" : "Suspend"}
               </Button>
             )}
-            <Button variant="outline">
-              <Edit className="h-4 w-4 mr-2" />
-              {language === "ar" ? "تعديل" : "Edit"}
-            </Button>
           </div>
         </div>
 
         {/* Quick Stats */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          <Card>
-            <CardContent className="pt-4">
-              <div className="flex items-center gap-3">
-                <DollarSign className="h-8 w-8 text-chart-5" />
-                <div>
-                  <p className="text-sm text-muted-foreground">{language === "ar" ? "الرصيد" : "Balance"}</p>
-                  <p className={`text-xl font-bold ${companyBalance >= 0 ? "text-chart-5" : "text-destructive"}`}>
-                    {companyBalance.toLocaleString()} {companyDetails.currency || "SAR"}
-                  </p>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-          <Card>
-            <CardContent className="pt-4">
-              <div className="flex items-center gap-3">
-                <Package className="h-8 w-8 text-primary" />
-                <div>
-                  <p className="text-sm text-muted-foreground">{language === "ar" ? "الطلبات" : "Orders"}</p>
-                  <p className="text-xl font-bold">{orders.length}</p>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-          <Card>
-            <CardContent className="pt-4">
-              <div className="flex items-center gap-3">
-                <CalendarCheck className="h-8 w-8 text-chart-3" />
-                <div>
-                  <p className="text-sm text-muted-foreground">{language === "ar" ? "الدعوات" : "Invitations"}</p>
-                  <p className="text-xl font-bold">{invitations.length}</p>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-          <Card>
-            <CardContent className="pt-4">
-              <div className="flex items-center gap-3">
-                <Star className="h-8 w-8 text-chart-4" />
-                <div>
-                  <p className="text-sm text-muted-foreground">{language === "ar" ? "التقييم" : "Rating"}</p>
-                  <p className="text-xl font-bold">
-                    {evaluations.length > 0
-                      ? (evaluations.reduce((a, e) => a + Number(e.overall_rating || 0), 0) / evaluations.length).toFixed(1)
-                      : "-"}
-                  </p>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
+          <Card><CardContent className="pt-4"><div className="flex items-center gap-3"><DollarSign className="h-8 w-8 text-chart-5" /><div><p className="text-sm text-muted-foreground">{isAr ? "الرصيد" : "Balance"}</p><p className={`text-xl font-bold ${companyBalance >= 0 ? "text-chart-5" : "text-destructive"}`}>{companyBalance.toLocaleString()} {companyDetails.currency || "SAR"}</p></div></div></CardContent></Card>
+          <Card><CardContent className="pt-4"><div className="flex items-center gap-3"><Package className="h-8 w-8 text-primary" /><div><p className="text-sm text-muted-foreground">{isAr ? "الطلبات" : "Orders"}</p><p className="text-xl font-bold">{orders.length}</p></div></div></CardContent></Card>
+          <Card><CardContent className="pt-4"><div className="flex items-center gap-3"><CalendarCheck className="h-8 w-8 text-chart-3" /><div><p className="text-sm text-muted-foreground">{isAr ? "الدعوات" : "Invitations"}</p><p className="text-xl font-bold">{invitations.length}</p></div></div></CardContent></Card>
+          <Card><CardContent className="pt-4"><div className="flex items-center gap-3"><Star className="h-8 w-8 text-chart-4" /><div><p className="text-sm text-muted-foreground">{isAr ? "التقييم" : "Rating"}</p><p className="text-xl font-bold">{evaluations.length > 0 ? (evaluations.reduce((a: number, e: any) => a + Number(e.overall_rating || 0), 0) / evaluations.length).toFixed(1) : "-"}</p></div></div></CardContent></Card>
         </div>
 
         {/* Detail Tabs */}
         <Tabs value={companyDetailTab} onValueChange={setCompanyDetailTab}>
           <TabsList className="flex-wrap h-auto gap-1">
-            <TabsTrigger value="overview">{language === "ar" ? "نظرة عامة" : "Overview"}</TabsTrigger>
-            <TabsTrigger value="contacts">{language === "ar" ? "جهات الاتصال" : "Contacts"}</TabsTrigger>
-            <TabsTrigger value="branches">{language === "ar" ? "الفروع" : "Branches"}</TabsTrigger>
-            <TabsTrigger value="orders">{language === "ar" ? "الطلبات" : "Orders"}</TabsTrigger>
-            <TabsTrigger value="transactions">{language === "ar" ? "الحساب" : "Account"}</TabsTrigger>
-            <TabsTrigger value="invitations">{language === "ar" ? "الدعوات" : "Invitations"}</TabsTrigger>
-            <TabsTrigger value="evaluations">{language === "ar" ? "التقييمات" : "Evaluations"}</TabsTrigger>
-            <TabsTrigger value="catalog">{language === "ar" ? "الكتالوج" : "Catalog"}</TabsTrigger>
-            <TabsTrigger value="drivers">{language === "ar" ? "السائقون" : "Drivers"}</TabsTrigger>
-            <TabsTrigger value="communications">{language === "ar" ? "التواصل" : "Communications"}</TabsTrigger>
-            <TabsTrigger value="media">{language === "ar" ? "الوسائط" : "Media"}</TabsTrigger>
-            <TabsTrigger value="roles">{language === "ar" ? "الأدوار" : "Roles"}</TabsTrigger>
-            <TabsTrigger value="sponsorship">{language === "ar" ? "الرعاية" : "Sponsorship"}</TabsTrigger>
+            <TabsTrigger value="overview">{isAr ? "نظرة عامة" : "Overview"}</TabsTrigger>
+            <TabsTrigger value="contacts">{isAr ? "جهات الاتصال" : "Contacts"}</TabsTrigger>
+            <TabsTrigger value="branches">{isAr ? "الفروع" : "Branches"}</TabsTrigger>
+            <TabsTrigger value="orders">{isAr ? "الطلبات" : "Orders"}</TabsTrigger>
+            <TabsTrigger value="transactions">{isAr ? "الحساب" : "Account"}</TabsTrigger>
+            <TabsTrigger value="invitations">{isAr ? "الدعوات" : "Invitations"}</TabsTrigger>
+            <TabsTrigger value="evaluations">{isAr ? "التقييمات" : "Evaluations"}</TabsTrigger>
+            <TabsTrigger value="catalog">{isAr ? "الكتالوج" : "Catalog"}</TabsTrigger>
+            <TabsTrigger value="drivers">{isAr ? "السائقون" : "Drivers"}</TabsTrigger>
+            <TabsTrigger value="communications">{isAr ? "التواصل" : "Communications"}</TabsTrigger>
+            <TabsTrigger value="media">{isAr ? "الوسائط" : "Media"}</TabsTrigger>
+            <TabsTrigger value="roles">{isAr ? "التصنيفات" : "Classifications"}</TabsTrigger>
+            <TabsTrigger value="sponsorship">{isAr ? "الرعاية" : "Sponsorship"}</TabsTrigger>
           </TabsList>
 
-          {/* Overview Tab */}
+          {/* ── Overview Tab ── */}
           <TabsContent value="overview" className="space-y-6">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <Card>
-                <CardHeader>
-                  <CardTitle>{language === "ar" ? "معلومات الشركة" : "Company Information"}</CardTitle>
-                </CardHeader>
+                <CardHeader><CardTitle>{isAr ? "معلومات الشركة" : "Company Information"}</CardTitle></CardHeader>
                 <CardContent className="space-y-4">
-                  {companyDetails.name_ar && (
-                    <div>
-                      <p className="text-sm text-muted-foreground">{language === "ar" ? "الاسم (عربي)" : "Name (Arabic)"}</p>
-                      <p className="font-medium" dir="rtl">{companyDetails.name_ar}</p>
-                    </div>
-                  )}
-                  {companyDetails.registration_number && (
-                    <div>
-                      <p className="text-sm text-muted-foreground">{language === "ar" ? "رقم السجل" : "Registration #"}</p>
-                      <p className="font-medium">{companyDetails.registration_number}</p>
-                    </div>
-                  )}
-                  {companyDetails.tax_number && (
-                    <div>
-                      <p className="text-sm text-muted-foreground">{language === "ar" ? "الرقم الضريبي" : "Tax Number"}</p>
-                      <p className="font-medium">{companyDetails.tax_number}</p>
-                    </div>
-                  )}
-                  {companyDetails.description && (
-                    <div>
-                      <p className="text-sm text-muted-foreground">{language === "ar" ? "الوصف" : "Description"}</p>
-                      <p>{companyDetails.description}</p>
-                    </div>
-                  )}
+                  {companyDetails.name_ar && <div><p className="text-sm text-muted-foreground">{isAr ? "الاسم (عربي)" : "Name (Arabic)"}</p><p className="font-medium" dir="rtl">{companyDetails.name_ar}</p></div>}
+                  {companyDetails.registration_number && <div><p className="text-sm text-muted-foreground">{isAr ? "رقم السجل" : "Registration #"}</p><p className="font-medium">{companyDetails.registration_number}</p></div>}
+                  {companyDetails.tax_number && <div><p className="text-sm text-muted-foreground">{isAr ? "الرقم الضريبي" : "Tax Number"}</p><p className="font-medium">{companyDetails.tax_number}</p></div>}
+                  {companyDetails.description && <div><p className="text-sm text-muted-foreground">{isAr ? "الوصف" : "Description"}</p><p>{companyDetails.description}</p></div>}
                 </CardContent>
               </Card>
 
               <Card>
-                <CardHeader>
-                  <CardTitle>{language === "ar" ? "معلومات الاتصال" : "Contact Information"}</CardTitle>
-                </CardHeader>
+                <CardHeader><CardTitle>{isAr ? "معلومات الاتصال" : "Contact Information"}</CardTitle></CardHeader>
                 <CardContent className="space-y-4">
-                  {companyDetails.email && (
-                    <div className="flex items-center gap-2">
-                      <Mail className="h-4 w-4 text-muted-foreground" />
-                      <span>{companyDetails.email}</span>
-                    </div>
-                  )}
-                  {companyDetails.phone && (
-                    <div className="flex items-center gap-2">
-                      <Phone className="h-4 w-4 text-muted-foreground" />
-                      <span>{companyDetails.phone}</span>
-                    </div>
-                  )}
-                  {companyDetails.website && (
-                    <div className="flex items-center gap-2">
-                      <Globe className="h-4 w-4 text-muted-foreground" />
-                      <a href={companyDetails.website} target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">
-                        {companyDetails.website}
-                      </a>
-                    </div>
-                  )}
-                  {companyDetails.address && (
-                    <div className="flex items-start gap-2">
-                      <MapPin className="h-4 w-4 text-muted-foreground mt-0.5" />
-                      <div>
-                        <p>{companyDetails.address}</p>
-                        <p className="text-sm text-muted-foreground">
-                          {[companyDetails.city, companyDetails.country].filter(Boolean).join(", ")}
-                        </p>
-                      </div>
-                    </div>
-                  )}
+                  {companyDetails.email && <div className="flex items-center gap-2"><Mail className="h-4 w-4 text-muted-foreground" /><span>{companyDetails.email}</span></div>}
+                  {companyDetails.phone && <div className="flex items-center gap-2"><Phone className="h-4 w-4 text-muted-foreground" /><span>{companyDetails.phone}</span></div>}
+                  {companyDetails.website && <div className="flex items-center gap-2"><Globe className="h-4 w-4 text-muted-foreground" /><a href={companyDetails.website} target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">{companyDetails.website}</a></div>}
+                  {companyDetails.address && <div className="flex items-start gap-2"><MapPin className="h-4 w-4 text-muted-foreground mt-0.5" /><div><p>{companyDetails.address}</p><p className="text-sm text-muted-foreground">{[companyDetails.city, companyDetails.country].filter(Boolean).join(", ")}</p></div></div>}
                 </CardContent>
               </Card>
 
               <Card>
-                <CardHeader>
-                  <CardTitle>{language === "ar" ? "الإعدادات المالية" : "Financial Settings"}</CardTitle>
-                </CardHeader>
+                <CardHeader><CardTitle>{isAr ? "الإعدادات المالية" : "Financial Settings"}</CardTitle></CardHeader>
                 <CardContent className="space-y-4">
                   <div className="grid grid-cols-2 gap-4">
-                    <div>
-                      <p className="text-sm text-muted-foreground">{language === "ar" ? "حد الائتمان" : "Credit Limit"}</p>
-                      <p className="font-medium">{Number(companyDetails.credit_limit || 0).toLocaleString()} {companyDetails.currency}</p>
-                    </div>
-                    <div>
-                      <p className="text-sm text-muted-foreground">{language === "ar" ? "شروط الدفع" : "Payment Terms"}</p>
-                      <p className="font-medium">{companyDetails.payment_terms || 30} {language === "ar" ? "يوم" : "days"}</p>
-                    </div>
+                    <div><p className="text-sm text-muted-foreground">{isAr ? "حد الائتمان" : "Credit Limit"}</p><p className="font-medium">{Number(companyDetails.credit_limit || 0).toLocaleString()} {companyDetails.currency}</p></div>
+                    <div><p className="text-sm text-muted-foreground">{isAr ? "شروط الدفع" : "Payment Terms"}</p><p className="font-medium">{companyDetails.payment_terms || 30} {isAr ? "يوم" : "days"}</p></div>
                   </div>
                 </CardContent>
               </Card>
 
+              {/* Working Hours - Editable inline */}
               <Card>
                 <CardHeader>
-                  <CardTitle>{language === "ar" ? "ساعات العمل" : "Working Hours"}</CardTitle>
+                  <div className="flex items-center justify-between">
+                    <CardTitle className="flex items-center gap-2"><Clock className="h-5 w-5 text-primary" />{isAr ? "ساعات العمل" : "Working Hours"}</CardTitle>
+                    {!editingHours ? (
+                      <Button variant="outline" size="sm" onClick={() => {
+                        const wh = companyDetails.working_hours as any || {};
+                        const defaultHours: Record<string, any> = {};
+                        DAYS.forEach(d => {
+                          const key = d.en.toLowerCase();
+                          defaultHours[key] = wh[key] || { open: "09:00", close: "17:00", enabled: key !== "friday" && key !== "saturday" };
+                        });
+                        setWorkingHours(defaultHours);
+                        setEditingHours(true);
+                      }}>
+                        <Edit className="h-3 w-3 mr-1" />{isAr ? "تعديل" : "Edit"}
+                      </Button>
+                    ) : (
+                      <div className="flex gap-2">
+                        <Button size="sm" onClick={() => saveWorkingHoursMutation.mutate()} disabled={saveWorkingHoursMutation.isPending}>
+                          <Save className="h-3 w-3 mr-1" />{isAr ? "حفظ" : "Save"}
+                        </Button>
+                        <Button variant="outline" size="sm" onClick={() => setEditingHours(false)}>
+                          <X className="h-3 w-3" />
+                        </Button>
+                      </div>
+                    )}
+                  </div>
                 </CardHeader>
                 <CardContent>
-                  {companyDetails.working_hours && Object.keys(companyDetails.working_hours).length > 0 ? (
-                    <div className="space-y-2">
-                      {Object.entries(companyDetails.working_hours).map(([day, hours]: [string, any]) => (
-                        <div key={day} className="flex justify-between">
-                          <span className="capitalize">{day}</span>
-                          <span className="text-muted-foreground">{hours}</span>
-                        </div>
-                      ))}
+                  {editingHours ? (
+                    <div className="space-y-3">
+                      {DAYS.map(day => {
+                        const key = day.en.toLowerCase();
+                        const s = workingHours[key] || { open: "09:00", close: "17:00", enabled: true };
+                        return (
+                          <div key={key} className="flex items-center gap-3 rounded-lg border p-3">
+                            <Switch checked={s.enabled} onCheckedChange={v => setWorkingHours(prev => ({ ...prev, [key]: { ...prev[key], enabled: v } }))} />
+                            <span className="w-20 text-sm font-medium">{isAr ? day.ar : day.en}</span>
+                            {s.enabled ? (
+                              <div className="flex items-center gap-2 flex-1">
+                                <Input type="time" value={s.open} onChange={e => setWorkingHours(prev => ({ ...prev, [key]: { ...prev[key], open: e.target.value } }))} className="w-28 h-8" />
+                                <span className="text-muted-foreground">—</span>
+                                <Input type="time" value={s.close} onChange={e => setWorkingHours(prev => ({ ...prev, [key]: { ...prev[key], close: e.target.value } }))} className="w-28 h-8" />
+                              </div>
+                            ) : (
+                              <span className="text-sm text-muted-foreground">{isAr ? "مغلق" : "Closed"}</span>
+                            )}
+                          </div>
+                        );
+                      })}
                     </div>
                   ) : (
-                    <p className="text-muted-foreground">{language === "ar" ? "لم يتم تحديد ساعات العمل" : "No working hours set"}</p>
+                    companyDetails.working_hours && Object.keys(companyDetails.working_hours as object).length > 0 ? (
+                      <div className="space-y-2">
+                        {DAYS.map(day => {
+                          const key = day.en.toLowerCase();
+                          const h = (companyDetails.working_hours as any)?.[key];
+                          if (!h) return null;
+                          return (
+                            <div key={key} className="flex justify-between text-sm">
+                              <span className="font-medium">{isAr ? day.ar : day.en}</span>
+                              <span className="text-muted-foreground">{h.enabled ? `${h.open} - ${h.close}` : (isAr ? "مغلق" : "Closed")}</span>
+                            </div>
+                          );
+                        })}
+                      </div>
+                    ) : (
+                      <p className="text-muted-foreground text-sm">{isAr ? "لم يتم تحديد ساعات العمل" : "No working hours set"}</p>
+                    )
                   )}
                 </CardContent>
               </Card>
             </div>
           </TabsContent>
 
-          {/* Contacts Tab */}
+          {/* ── Contacts Tab ── */}
           <TabsContent value="contacts" className="space-y-4">
             <div className="flex justify-between items-center">
-              <h3 className="text-lg font-semibold">{language === "ar" ? "جهات الاتصال" : "Contacts"}</h3>
-              <Button>
-                <UserPlus className="h-4 w-4 mr-2" />
-                {language === "ar" ? "إضافة جهة اتصال" : "Add Contact"}
+              <h3 className="text-lg font-semibold">{isAr ? "جهات الاتصال" : "Contacts"}</h3>
+              <Button onClick={() => setShowContactForm(!showContactForm)}>
+                {showContactForm ? <><X className="h-4 w-4 mr-2" />{isAr ? "إلغاء" : "Cancel"}</> : <><UserPlus className="h-4 w-4 mr-2" />{isAr ? "إضافة جهة اتصال" : "Add Contact"}</>}
               </Button>
             </div>
+
+            {showContactForm && (
+              <Card className="border-primary/30">
+                <CardHeader><CardTitle className="text-base">{isAr ? "جهة اتصال جديدة" : "New Contact"}</CardTitle></CardHeader>
+                <CardContent className="space-y-4">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <Label>{isAr ? "الاسم (EN)" : "Name (EN)"} *</Label>
+                      <Input value={contactForm.name} onChange={e => setContactForm({ ...contactForm, name: e.target.value })} />
+                    </div>
+                    <div className="space-y-2">
+                      <div className="flex items-center justify-between">
+                        <Label>{isAr ? "الاسم (AR)" : "Name (AR)"}</Label>
+                      </div>
+                      <Input value={contactForm.name_ar} onChange={e => setContactForm({ ...contactForm, name_ar: e.target.value })} dir="rtl" />
+                    </div>
+                    <div className="space-y-2">
+                      <Label>{isAr ? "المسمى الوظيفي (EN)" : "Title (EN)"}</Label>
+                      <Input value={contactForm.title} onChange={e => setContactForm({ ...contactForm, title: e.target.value })} />
+                    </div>
+                    <div className="space-y-2">
+                      <Label>{isAr ? "المسمى الوظيفي (AR)" : "Title (AR)"}</Label>
+                      <Input value={contactForm.title_ar} onChange={e => setContactForm({ ...contactForm, title_ar: e.target.value })} dir="rtl" />
+                    </div>
+                    <div className="space-y-2">
+                      <Label>{isAr ? "القسم" : "Department"} *</Label>
+                      <Select value={contactForm.department} onValueChange={v => setContactForm({ ...contactForm, department: v })}>
+                        <SelectTrigger><SelectValue /></SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="general">{isAr ? "عام" : "General"}</SelectItem>
+                          <SelectItem value="sales">{isAr ? "المبيعات" : "Sales"}</SelectItem>
+                          <SelectItem value="finance">{isAr ? "المالية" : "Finance"}</SelectItem>
+                          <SelectItem value="operations">{isAr ? "العمليات" : "Operations"}</SelectItem>
+                          <SelectItem value="marketing">{isAr ? "التسويق" : "Marketing"}</SelectItem>
+                          <SelectItem value="management">{isAr ? "الإدارة" : "Management"}</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div className="space-y-2">
+                      <Label>{isAr ? "البريد الإلكتروني" : "Email"}</Label>
+                      <Input type="email" value={contactForm.email} onChange={e => setContactForm({ ...contactForm, email: e.target.value })} />
+                    </div>
+                    <div className="space-y-2">
+                      <Label>{isAr ? "الهاتف" : "Phone"}</Label>
+                      <Input value={contactForm.phone} onChange={e => setContactForm({ ...contactForm, phone: e.target.value })} />
+                    </div>
+                    <div className="space-y-2">
+                      <Label>{isAr ? "الجوال" : "Mobile"}</Label>
+                      <Input value={contactForm.mobile} onChange={e => setContactForm({ ...contactForm, mobile: e.target.value })} />
+                    </div>
+                    <div className="space-y-2">
+                      <Label>WhatsApp</Label>
+                      <Input value={contactForm.whatsapp} onChange={e => setContactForm({ ...contactForm, whatsapp: e.target.value })} />
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-6">
+                    <div className="flex items-center gap-2">
+                      <Switch checked={contactForm.is_primary} onCheckedChange={v => setContactForm({ ...contactForm, is_primary: v })} />
+                      <Label className="cursor-pointer">{isAr ? "جهة اتصال أساسية" : "Primary contact"}</Label>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <Switch checked={contactForm.can_login} onCheckedChange={v => setContactForm({ ...contactForm, can_login: v })} />
+                      <Label className="cursor-pointer">{isAr ? "يمكنه تسجيل الدخول" : "Can login"}</Label>
+                    </div>
+                  </div>
+                  <Button onClick={() => addContactMutation.mutate()} disabled={!contactForm.name || !contactForm.department || addContactMutation.isPending}>
+                    <Save className="h-4 w-4 mr-2" />{isAr ? "حفظ" : "Save"}
+                  </Button>
+                </CardContent>
+              </Card>
+            )}
+
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
               {contacts.map((contact: any) => (
                 <Card key={contact.id}>
@@ -797,54 +880,98 @@ export default function CompaniesAdmin() {
                     <div className="flex items-start justify-between">
                       <div>
                         <p className="font-semibold">{contact.name}</p>
+                        {contact.name_ar && <p className="text-sm text-muted-foreground" dir="rtl">{contact.name_ar}</p>}
                         <p className="text-sm text-muted-foreground">{contact.title}</p>
                         <Badge variant="outline" className="mt-1">{contact.department}</Badge>
                       </div>
-                      {contact.is_primary && (
-                        <Badge className="bg-primary">{language === "ar" ? "أساسي" : "Primary"}</Badge>
-                      )}
+                      <div className="flex items-center gap-1">
+                        {contact.is_primary && <Badge className="bg-primary">{isAr ? "أساسي" : "Primary"}</Badge>}
+                        <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => deleteContactMutation.mutate(contact.id)}>
+                          <Trash2 className="h-3 w-3 text-destructive" />
+                        </Button>
+                      </div>
                     </div>
                     <Separator className="my-3" />
-                    <div className="space-y-2 text-sm">
-                      {contact.email && (
-                        <div className="flex items-center gap-2">
-                          <Mail className="h-3 w-3" />
-                          <span>{contact.email}</span>
-                        </div>
-                      )}
-                      {contact.phone && (
-                        <div className="flex items-center gap-2">
-                          <Phone className="h-3 w-3" />
-                          <span>{contact.phone}</span>
-                        </div>
-                      )}
+                    <div className="space-y-1 text-sm">
+                      {contact.email && <div className="flex items-center gap-2"><Mail className="h-3 w-3" /><span>{contact.email}</span></div>}
+                      {contact.phone && <div className="flex items-center gap-2"><Phone className="h-3 w-3" /><span>{contact.phone}</span></div>}
+                      {contact.mobile && <div className="flex items-center gap-2"><Phone className="h-3 w-3" /><span>{contact.mobile}</span></div>}
                     </div>
-                    {contact.can_login && (
-                      <Badge variant="secondary" className="mt-3">
-                        {language === "ar" ? "يمكنه تسجيل الدخول" : "Can login"}
-                      </Badge>
-                    )}
+                    {contact.can_login && <Badge variant="secondary" className="mt-3">{isAr ? "يمكنه تسجيل الدخول" : "Can login"}</Badge>}
                   </CardContent>
                 </Card>
               ))}
-              {contacts.length === 0 && (
+              {contacts.length === 0 && !showContactForm && (
                 <div className="col-span-full text-center py-12 text-muted-foreground">
                   <Users className="h-12 w-12 mx-auto mb-4 opacity-50" />
-                  <p>{language === "ar" ? "لا توجد جهات اتصال" : "No contacts found"}</p>
+                  <p>{isAr ? "لا توجد جهات اتصال" : "No contacts found"}</p>
                 </div>
               )}
             </div>
           </TabsContent>
 
-          {/* Branches Tab */}
+          {/* ── Branches Tab ── */}
           <TabsContent value="branches" className="space-y-4">
             <div className="flex justify-between items-center">
-              <h3 className="text-lg font-semibold">{language === "ar" ? "الفروع" : "Branches"}</h3>
-              <Button>
-                <Plus className="h-4 w-4 mr-2" />
-                {language === "ar" ? "إضافة فرع" : "Add Branch"}
+              <h3 className="text-lg font-semibold">{isAr ? "الفروع" : "Branches"}</h3>
+              <Button onClick={() => setShowBranchForm(!showBranchForm)}>
+                {showBranchForm ? <><X className="h-4 w-4 mr-2" />{isAr ? "إلغاء" : "Cancel"}</> : <><Plus className="h-4 w-4 mr-2" />{isAr ? "إضافة فرع" : "Add Branch"}</>}
               </Button>
             </div>
+
+            {showBranchForm && (
+              <Card className="border-primary/30">
+                <CardHeader><CardTitle className="text-base">{isAr ? "فرع جديد" : "New Branch"}</CardTitle></CardHeader>
+                <CardContent className="space-y-4">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <Label>{isAr ? "اسم الفرع (EN)" : "Branch Name (EN)"} *</Label>
+                      <Input value={branchForm.name} onChange={e => setBranchForm({ ...branchForm, name: e.target.value })} />
+                    </div>
+                    <div className="space-y-2">
+                      <Label>{isAr ? "اسم الفرع (AR)" : "Branch Name (AR)"}</Label>
+                      <Input value={branchForm.name_ar} onChange={e => setBranchForm({ ...branchForm, name_ar: e.target.value })} dir="rtl" />
+                    </div>
+                    <div className="space-y-2">
+                      <Label>{isAr ? "العنوان" : "Address"}</Label>
+                      <Input value={branchForm.address} onChange={e => setBranchForm({ ...branchForm, address: e.target.value })} />
+                    </div>
+                    <div className="space-y-2">
+                      <Label>{isAr ? "المدينة" : "City"}</Label>
+                      <Input value={branchForm.city} onChange={e => setBranchForm({ ...branchForm, city: e.target.value })} />
+                    </div>
+                    <div className="space-y-2">
+                      <Label>{isAr ? "الدولة" : "Country"}</Label>
+                      <Input value={branchForm.country} onChange={e => setBranchForm({ ...branchForm, country: e.target.value })} />
+                    </div>
+                    <div className="space-y-2">
+                      <Label>{isAr ? "الهاتف" : "Phone"}</Label>
+                      <Input value={branchForm.phone} onChange={e => setBranchForm({ ...branchForm, phone: e.target.value })} />
+                    </div>
+                    <div className="space-y-2">
+                      <Label>{isAr ? "البريد" : "Email"}</Label>
+                      <Input type="email" value={branchForm.email} onChange={e => setBranchForm({ ...branchForm, email: e.target.value })} />
+                    </div>
+                    <div className="space-y-2">
+                      <Label>{isAr ? "اسم المدير" : "Manager Name"}</Label>
+                      <Input value={branchForm.manager_name} onChange={e => setBranchForm({ ...branchForm, manager_name: e.target.value })} />
+                    </div>
+                    <div className="space-y-2">
+                      <Label>{isAr ? "هاتف المدير" : "Manager Phone"}</Label>
+                      <Input value={branchForm.manager_phone} onChange={e => setBranchForm({ ...branchForm, manager_phone: e.target.value })} />
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <Switch checked={branchForm.is_headquarters} onCheckedChange={v => setBranchForm({ ...branchForm, is_headquarters: v })} />
+                    <Label className="cursor-pointer">{isAr ? "المقر الرئيسي" : "Headquarters"}</Label>
+                  </div>
+                  <Button onClick={() => addBranchMutation.mutate()} disabled={!branchForm.name || addBranchMutation.isPending}>
+                    <Save className="h-4 w-4 mr-2" />{isAr ? "حفظ" : "Save"}
+                  </Button>
+                </CardContent>
+              </Card>
+            )}
+
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {branches.map((branch: any) => (
                 <Card key={branch.id}>
@@ -852,22 +979,21 @@ export default function CompaniesAdmin() {
                     <div className="flex items-start justify-between">
                       <div>
                         <p className="font-semibold">{branch.name}</p>
-                        <p className="text-sm text-muted-foreground">
-                          {[branch.city, branch.country].filter(Boolean).join(", ")}
-                        </p>
+                        <p className="text-sm text-muted-foreground">{[branch.city, branch.country].filter(Boolean).join(", ")}</p>
                       </div>
-                      {branch.is_headquarters && (
-                        <Badge className="bg-primary">{language === "ar" ? "المقر الرئيسي" : "HQ"}</Badge>
-                      )}
+                      <div className="flex items-center gap-1">
+                        {branch.is_headquarters && <Badge className="bg-primary">{isAr ? "المقر الرئيسي" : "HQ"}</Badge>}
+                        <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => deleteBranchMutation.mutate(branch.id)}>
+                          <Trash2 className="h-3 w-3 text-destructive" />
+                        </Button>
+                      </div>
                     </div>
-                    {branch.address && (
-                      <p className="text-sm mt-2">{branch.address}</p>
-                    )}
+                    {branch.address && <p className="text-sm mt-2">{branch.address}</p>}
                     {branch.manager_name && (
                       <>
                         <Separator className="my-3" />
                         <div>
-                          <p className="text-sm text-muted-foreground">{language === "ar" ? "مدير الفرع" : "Branch Manager"}</p>
+                          <p className="text-sm text-muted-foreground">{isAr ? "مدير الفرع" : "Branch Manager"}</p>
                           <p className="font-medium">{branch.manager_name}</p>
                           {branch.manager_phone && <p className="text-sm">{branch.manager_phone}</p>}
                         </div>
@@ -876,469 +1002,461 @@ export default function CompaniesAdmin() {
                   </CardContent>
                 </Card>
               ))}
-              {branches.length === 0 && (
+              {branches.length === 0 && !showBranchForm && (
                 <div className="col-span-full text-center py-12 text-muted-foreground">
                   <Building className="h-12 w-12 mx-auto mb-4 opacity-50" />
-                  <p>{language === "ar" ? "لا توجد فروع" : "No branches found"}</p>
+                  <p>{isAr ? "لا توجد فروع" : "No branches found"}</p>
                 </div>
               )}
             </div>
           </TabsContent>
 
-          {/* Orders Tab */}
+          {/* ── Orders Tab ── */}
           <TabsContent value="orders" className="space-y-4">
-            <div className="flex justify-between items-center">
-              <h3 className="text-lg font-semibold">{language === "ar" ? "الطلبات" : "Orders"}</h3>
-              <Button>
-                <Plus className="h-4 w-4 mr-2" />
-                {language === "ar" ? "طلب جديد" : "New Order"}
-              </Button>
-            </div>
-            <Card>
-              <CardContent className="p-0">
-                <Table>
-                  <TableHeader>
-                    <TableRow>
-                      <TableHead>{language === "ar" ? "رقم الطلب" : "Order #"}</TableHead>
-                      <TableHead>{language === "ar" ? "العنوان" : "Title"}</TableHead>
-                      <TableHead>{language === "ar" ? "الاتجاه" : "Direction"}</TableHead>
-                      <TableHead>{language === "ar" ? "الفئة" : "Category"}</TableHead>
-                      <TableHead>{language === "ar" ? "المبلغ" : "Amount"}</TableHead>
-                      <TableHead>{language === "ar" ? "الحالة" : "Status"}</TableHead>
-                      <TableHead>{language === "ar" ? "التاريخ" : "Date"}</TableHead>
+            <h3 className="text-lg font-semibold">{isAr ? "الطلبات" : "Orders"}</h3>
+            <Card><CardContent className="p-0">
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>{isAr ? "رقم الطلب" : "Order #"}</TableHead>
+                    <TableHead>{isAr ? "العنوان" : "Title"}</TableHead>
+                    <TableHead>{isAr ? "الاتجاه" : "Direction"}</TableHead>
+                    <TableHead>{isAr ? "المبلغ" : "Amount"}</TableHead>
+                    <TableHead>{isAr ? "الحالة" : "Status"}</TableHead>
+                    <TableHead>{isAr ? "التاريخ" : "Date"}</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {orders.map((order: any) => (
+                    <TableRow key={order.id}>
+                      <TableCell className="font-mono">{order.order_number}</TableCell>
+                      <TableCell>{order.title}</TableCell>
+                      <TableCell><Badge variant={order.direction === "incoming" ? "default" : "secondary"}>{order.direction === "incoming" ? (isAr ? "وارد" : "Incoming") : (isAr ? "صادر" : "Outgoing")}</Badge></TableCell>
+                      <TableCell>{Number(order.total_amount).toLocaleString()} {order.currency}</TableCell>
+                      <TableCell><Badge>{order.status}</Badge></TableCell>
+                      <TableCell>{format(new Date(order.created_at), "yyyy-MM-dd")}</TableCell>
                     </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    {orders.map((order: any) => (
-                      <TableRow key={order.id}>
-                        <TableCell className="font-mono">{order.order_number}</TableCell>
-                        <TableCell>{order.title}</TableCell>
-                        <TableCell>
-                          <Badge variant={order.direction === "incoming" ? "default" : "secondary"}>
-                            {order.direction === "incoming" 
-                              ? (language === "ar" ? "وارد" : "Incoming")
-                              : (language === "ar" ? "صادر" : "Outgoing")}
-                          </Badge>
-                        </TableCell>
-                        <TableCell>{order.category}</TableCell>
-                        <TableCell>{Number(order.total_amount).toLocaleString()} {order.currency}</TableCell>
-                        <TableCell>
-                          <Badge>{order.status}</Badge>
-                        </TableCell>
-                        <TableCell>{format(new Date(order.created_at), "yyyy-MM-dd")}</TableCell>
-                      </TableRow>
-                    ))}
-                    {orders.length === 0 && (
-                      <TableRow>
-                        <TableCell colSpan={7} className="text-center py-8 text-muted-foreground">
-                          {language === "ar" ? "لا توجد طلبات" : "No orders found"}
-                        </TableCell>
-                      </TableRow>
-                    )}
-                  </TableBody>
-                </Table>
-              </CardContent>
-            </Card>
+                  ))}
+                  {orders.length === 0 && <TableRow><TableCell colSpan={6} className="text-center py-8 text-muted-foreground">{isAr ? "لا توجد طلبات" : "No orders found"}</TableCell></TableRow>}
+                </TableBody>
+              </Table>
+            </CardContent></Card>
           </TabsContent>
 
-          {/* Transactions Tab */}
+          {/* ── Transactions Tab ── */}
           <TabsContent value="transactions" className="space-y-4">
-            <div className="flex justify-between items-center">
-              <div>
-                <h3 className="text-lg font-semibold">{language === "ar" ? "كشف الحساب" : "Account Statement"}</h3>
-                <p className="text-sm text-muted-foreground">
-                  {language === "ar" ? "الرصيد الحالي:" : "Current Balance:"} 
-                  <span className={`font-bold mx-2 ${companyBalance >= 0 ? "text-chart-5" : "text-destructive"}`}>
-                    {companyBalance.toLocaleString()} {companyDetails?.currency || "SAR"}
-                  </span>
-                </p>
-              </div>
-              <Button>
-                <Plus className="h-4 w-4 mr-2" />
-                {language === "ar" ? "معاملة جديدة" : "New Transaction"}
-              </Button>
+            <div>
+              <h3 className="text-lg font-semibold">{isAr ? "كشف الحساب" : "Account Statement"}</h3>
+              <p className="text-sm text-muted-foreground">{isAr ? "الرصيد الحالي:" : "Current Balance:"} <span className={`font-bold mx-2 ${companyBalance >= 0 ? "text-chart-5" : "text-destructive"}`}>{companyBalance.toLocaleString()} {companyDetails?.currency || "SAR"}</span></p>
             </div>
-            <Card>
-              <CardContent className="p-0">
-                <Table>
-                  <TableHeader>
-                    <TableRow>
-                      <TableHead>{language === "ar" ? "رقم المعاملة" : "Transaction #"}</TableHead>
-                      <TableHead>{language === "ar" ? "النوع" : "Type"}</TableHead>
-                      <TableHead>{language === "ar" ? "الوصف" : "Description"}</TableHead>
-                      <TableHead>{language === "ar" ? "المبلغ" : "Amount"}</TableHead>
-                      <TableHead>{language === "ar" ? "التاريخ" : "Date"}</TableHead>
+            <Card><CardContent className="p-0">
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>{isAr ? "رقم المعاملة" : "Transaction #"}</TableHead>
+                    <TableHead>{isAr ? "النوع" : "Type"}</TableHead>
+                    <TableHead>{isAr ? "الوصف" : "Description"}</TableHead>
+                    <TableHead>{isAr ? "المبلغ" : "Amount"}</TableHead>
+                    <TableHead>{isAr ? "التاريخ" : "Date"}</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {transactions.map((t: any) => (
+                    <TableRow key={t.id}>
+                      <TableCell className="font-mono">{t.transaction_number}</TableCell>
+                      <TableCell><Badge variant={["payment", "credit", "refund"].includes(t.type) ? "default" : "secondary"}>{t.type}</Badge></TableCell>
+                      <TableCell>{t.description || "-"}</TableCell>
+                      <TableCell className={["payment", "credit", "refund"].includes(t.type) ? "text-chart-5" : "text-destructive"}>{["payment", "credit", "refund"].includes(t.type) ? "+" : "-"}{Number(t.amount).toLocaleString()} {t.currency}</TableCell>
+                      <TableCell>{format(new Date(t.created_at), "yyyy-MM-dd")}</TableCell>
                     </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    {transactions.map((t: any) => (
-                      <TableRow key={t.id}>
-                        <TableCell className="font-mono">{t.transaction_number}</TableCell>
-                        <TableCell>
-                          <Badge variant={["payment", "credit", "refund"].includes(t.type) ? "default" : "secondary"}>
-                            {t.type}
-                          </Badge>
-                        </TableCell>
-                        <TableCell>{t.description || "-"}</TableCell>
-                        <TableCell className={["payment", "credit", "refund"].includes(t.type) ? "text-chart-5" : "text-destructive"}>
-                          {["payment", "credit", "refund"].includes(t.type) ? "+" : "-"}{Number(t.amount).toLocaleString()} {t.currency}
-                        </TableCell>
-                        <TableCell>{format(new Date(t.created_at), "yyyy-MM-dd")}</TableCell>
-                      </TableRow>
-                    ))}
-                    {transactions.length === 0 && (
-                      <TableRow>
-                        <TableCell colSpan={5} className="text-center py-8 text-muted-foreground">
-                          {language === "ar" ? "لا توجد معاملات" : "No transactions found"}
-                        </TableCell>
-                      </TableRow>
-                    )}
-                  </TableBody>
-                </Table>
-              </CardContent>
-            </Card>
+                  ))}
+                  {transactions.length === 0 && <TableRow><TableCell colSpan={5} className="text-center py-8 text-muted-foreground">{isAr ? "لا توجد معاملات" : "No transactions"}</TableCell></TableRow>}
+                </TableBody>
+              </Table>
+            </CardContent></Card>
           </TabsContent>
 
-          {/* Invitations Tab */}
+          {/* ── Invitations Tab (INLINE form) ── */}
           <TabsContent value="invitations" className="space-y-4">
             <div className="flex justify-between items-center">
-              <h3 className="text-lg font-semibold">{language === "ar" ? "الدعوات" : "Invitations"}</h3>
-              <InvitationSendButton companyId={selectedCompany} userId={undefined} language={language} onSuccess={() => queryClient.invalidateQueries({ queryKey: ["company-invitations", selectedCompany] })} />
+              <h3 className="text-lg font-semibold">{isAr ? "الدعوات" : "Invitations"}</h3>
+              <Button onClick={() => setShowInvitationForm(!showInvitationForm)}>
+                {showInvitationForm ? <><X className="h-4 w-4 mr-2" />{isAr ? "إلغاء" : "Cancel"}</> : <><Send className="h-4 w-4 mr-2" />{isAr ? "دعوة جديدة" : "New Invitation"}</>}
+              </Button>
             </div>
+
+            {showInvitationForm && (
+              <Card className="border-primary/30">
+                <CardHeader><CardTitle className="text-base">{isAr ? "إرسال دعوة جديدة" : "Send New Invitation"}</CardTitle></CardHeader>
+                <CardContent className="space-y-4">
+                  <div className="space-y-2">
+                    <Label>{isAr ? "نوع الدعوة" : "Type"}</Label>
+                    <Select value={invitationForm.invitation_type} onValueChange={v => setInvitationForm({ ...invitationForm, invitation_type: v })}>
+                      <SelectTrigger><SelectValue /></SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="sponsorship">{isAr ? "رعاية" : "Sponsorship"}</SelectItem>
+                        <SelectItem value="section_sponsor">{isAr ? "رعاية قسم" : "Section Sponsor"}</SelectItem>
+                        <SelectItem value="exhibition_sponsor">{isAr ? "رعاية معرض" : "Exhibition Sponsor"}</SelectItem>
+                        <SelectItem value="participation">{isAr ? "مشاركة" : "Participation"}</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <div className="flex items-center justify-between">
+                        <Label>{isAr ? "العنوان (EN)" : "Title (EN)"} *</Label>
+                        <AIButton onClick={() => handleAITranslate(invitationForm.title_ar, v => setInvitationForm(f => ({ ...f, title: v })))} />
+                      </div>
+                      <Input value={invitationForm.title} onChange={e => setInvitationForm({ ...invitationForm, title: e.target.value })} />
+                    </div>
+                    <div className="space-y-2">
+                      <Label>{isAr ? "العنوان (AR)" : "Title (AR)"}</Label>
+                      <Input value={invitationForm.title_ar} onChange={e => setInvitationForm({ ...invitationForm, title_ar: e.target.value })} dir="rtl" />
+                    </div>
+                  </div>
+                  <div className="space-y-2">
+                    <Label>{isAr ? "الوصف" : "Description"}</Label>
+                    <Textarea value={invitationForm.description} onChange={e => setInvitationForm({ ...invitationForm, description: e.target.value })} rows={3} />
+                  </div>
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <Label>{isAr ? "تاريخ الفعالية" : "Event Date"}</Label>
+                      <Input type="date" value={invitationForm.event_date} onChange={e => setInvitationForm({ ...invitationForm, event_date: e.target.value })} />
+                    </div>
+                    <div className="space-y-2">
+                      <Label>{isAr ? "ينتهي في" : "Expires At"}</Label>
+                      <Input type="date" value={invitationForm.expires_at} onChange={e => setInvitationForm({ ...invitationForm, expires_at: e.target.value })} />
+                    </div>
+                  </div>
+                  <Button onClick={() => sendInvitationMutation.mutate()} disabled={!invitationForm.title || sendInvitationMutation.isPending}>
+                    <Send className="mr-2 h-4 w-4" />{isAr ? "إرسال" : "Send"}
+                  </Button>
+                </CardContent>
+              </Card>
+            )}
+
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {invitations.map((inv: any) => (
                 <Card key={inv.id}>
                   <CardContent className="pt-6">
                     <div className="flex items-start justify-between">
                       <div>
-                        <p className="font-semibold">{language === "ar" && inv.title_ar ? inv.title_ar : inv.title}</p>
+                        <p className="font-semibold">{isAr && inv.title_ar ? inv.title_ar : inv.title}</p>
                         <p className="text-sm text-muted-foreground">{inv.invitation_type}</p>
                       </div>
-                      <Badge className={
-                        inv.status === "accepted" ? "bg-chart-5" :
-                        inv.status === "declined" ? "bg-destructive" :
-                        inv.status === "expired" ? "bg-muted-foreground" : "bg-chart-4"
-                      }>
-                        {inv.status}
-                      </Badge>
+                      <Badge className={inv.status === "accepted" ? "bg-chart-5" : inv.status === "declined" ? "bg-destructive" : inv.status === "expired" ? "bg-muted-foreground" : "bg-chart-4"}>{inv.status}</Badge>
                     </div>
-                    {inv.description && (
-                      <p className="text-sm mt-2">{language === "ar" && inv.description_ar ? inv.description_ar : inv.description}</p>
-                    )}
-                    {inv.response_notes && (
-                      <div className="mt-2 rounded-md bg-muted p-2">
-                        <p className="text-xs text-muted-foreground mb-0.5">{language === "ar" ? "ملاحظات الرد" : "Response"}</p>
-                        <p className="text-sm">{inv.response_notes}</p>
-                      </div>
-                    )}
+                    {inv.description && <p className="text-sm mt-2">{inv.description}</p>}
+                    {inv.response_notes && <div className="mt-2 rounded-md bg-muted p-2"><p className="text-xs text-muted-foreground mb-0.5">{isAr ? "ملاحظات الرد" : "Response"}</p><p className="text-sm">{inv.response_notes}</p></div>}
                     <div className="flex justify-between items-center mt-4 text-sm text-muted-foreground">
                       <span>{format(new Date(inv.created_at), "yyyy-MM-dd")}</span>
-                      {inv.expires_at && (
-                        <span>{language === "ar" ? "ينتهي:" : "Expires:"} {format(new Date(inv.expires_at), "yyyy-MM-dd")}</span>
-                      )}
+                      {inv.expires_at && <span>{isAr ? "ينتهي:" : "Expires:"} {format(new Date(inv.expires_at), "yyyy-MM-dd")}</span>}
                     </div>
                   </CardContent>
                 </Card>
               ))}
-              {invitations.length === 0 && (
+              {invitations.length === 0 && !showInvitationForm && (
                 <div className="col-span-full text-center py-12 text-muted-foreground">
                   <CalendarCheck className="h-12 w-12 mx-auto mb-4 opacity-50" />
-                  <p>{language === "ar" ? "لا توجد دعوات" : "No invitations found"}</p>
+                  <p>{isAr ? "لا توجد دعوات" : "No invitations found"}</p>
                 </div>
               )}
             </div>
           </TabsContent>
 
-          {/* Evaluations Tab */}
+          {/* ── Evaluations Tab ── */}
           <TabsContent value="evaluations" className="space-y-4">
-            <div className="flex justify-between items-center">
-              <h3 className="text-lg font-semibold">{language === "ar" ? "التقييمات" : "Evaluations"}</h3>
-              <Button>
-                <Plus className="h-4 w-4 mr-2" />
-                {language === "ar" ? "تقييم جديد" : "New Evaluation"}
-              </Button>
-            </div>
+            <h3 className="text-lg font-semibold">{isAr ? "التقييمات" : "Evaluations"}</h3>
             <div className="space-y-4">
               {evaluations.map((ev: any) => (
                 <Card key={ev.id}>
                   <CardContent className="pt-6">
                     <div className="grid grid-cols-4 gap-4 mb-4">
-                      <div className="text-center">
-                        <p className="text-sm text-muted-foreground">{language === "ar" ? "الجودة" : "Quality"}</p>
-                        <p className="text-2xl font-bold">{ev.quality_rating}/5</p>
-                      </div>
-                      <div className="text-center">
-                        <p className="text-sm text-muted-foreground">{language === "ar" ? "التوصيل" : "Delivery"}</p>
-                        <p className="text-2xl font-bold">{ev.delivery_rating}/5</p>
-                      </div>
-                      <div className="text-center">
-                        <p className="text-sm text-muted-foreground">{language === "ar" ? "التواصل" : "Communication"}</p>
-                        <p className="text-2xl font-bold">{ev.communication_rating}/5</p>
-                      </div>
-                      <div className="text-center">
-                        <p className="text-sm text-muted-foreground">{language === "ar" ? "القيمة" : "Value"}</p>
-                        <p className="text-2xl font-bold">{ev.value_rating}/5</p>
-                      </div>
+                      <div className="text-center"><p className="text-sm text-muted-foreground">{isAr ? "الجودة" : "Quality"}</p><p className="text-2xl font-bold">{ev.quality_rating}/5</p></div>
+                      <div className="text-center"><p className="text-sm text-muted-foreground">{isAr ? "التوصيل" : "Delivery"}</p><p className="text-2xl font-bold">{ev.delivery_rating}/5</p></div>
+                      <div className="text-center"><p className="text-sm text-muted-foreground">{isAr ? "التواصل" : "Communication"}</p><p className="text-2xl font-bold">{ev.communication_rating}/5</p></div>
+                      <div className="text-center"><p className="text-sm text-muted-foreground">{isAr ? "القيمة" : "Value"}</p><p className="text-2xl font-bold">{ev.value_rating}/5</p></div>
                     </div>
-                    {ev.review && (
-                      <>
-                        <Separator className="my-4" />
-                        <p>{ev.review}</p>
-                      </>
-                    )}
-                    <p className="text-sm text-muted-foreground mt-4">
-                      {format(new Date(ev.created_at), "yyyy-MM-dd")}
-                    </p>
+                    {ev.review && <><Separator className="my-4" /><p>{ev.review}</p></>}
+                    <p className="text-sm text-muted-foreground mt-4">{format(new Date(ev.created_at), "yyyy-MM-dd")}</p>
                   </CardContent>
                 </Card>
               ))}
-              {evaluations.length === 0 && (
-                <div className="text-center py-12 text-muted-foreground">
-                  <Star className="h-12 w-12 mx-auto mb-4 opacity-50" />
-                  <p>{language === "ar" ? "لا توجد تقييمات" : "No evaluations found"}</p>
-                </div>
-              )}
+              {evaluations.length === 0 && <div className="text-center py-12 text-muted-foreground"><Star className="h-12 w-12 mx-auto mb-4 opacity-50" /><p>{isAr ? "لا توجد تقييمات" : "No evaluations found"}</p></div>}
             </div>
           </TabsContent>
 
-          {/* Catalog Tab */}
+          {/* ── Catalog Tab ── */}
           <TabsContent value="catalog" className="space-y-4">
-            <div className="flex justify-between items-center">
-              <h3 className="text-lg font-semibold">{language === "ar" ? "كتالوج المنتجات" : "Product Catalog"}</h3>
-            </div>
+            <h3 className="text-lg font-semibold">{isAr ? "كتالوج المنتجات" : "Product Catalog"}</h3>
             {catalogItems.length > 0 ? (
-              <Card>
-                <CardContent className="p-0">
-                  <Table>
-                    <TableHeader>
-                      <TableRow>
-                        <TableHead>{language === "ar" ? "المنتج" : "Product"}</TableHead>
-                        <TableHead>{language === "ar" ? "الفئة" : "Category"}</TableHead>
-                        <TableHead>SKU</TableHead>
-                        <TableHead>{language === "ar" ? "السعر" : "Price"}</TableHead>
-                        <TableHead>{language === "ar" ? "الكمية" : "Qty"}</TableHead>
-                        <TableHead>{language === "ar" ? "الحالة" : "Status"}</TableHead>
-                      </TableRow>
-                    </TableHeader>
-                    <TableBody>
-                      {catalogItems.map((item: any) => (
-                        <TableRow key={item.id}>
-                          <TableCell>
-                            <div>
-                              <p className="font-medium">{item.name}</p>
-                              {item.name_ar && <p className="text-xs text-muted-foreground" dir="rtl">{item.name_ar}</p>}
-                            </div>
-                          </TableCell>
-                          <TableCell><Badge variant="outline">{item.category}</Badge></TableCell>
-                          <TableCell className="font-mono text-xs">{item.sku || "-"}</TableCell>
-                          <TableCell>
-                            {item.unit_price != null ? `${Number(item.unit_price).toLocaleString()} ${item.currency || "SAR"}` : "-"}
-                            {item.unit && <span className="text-xs text-muted-foreground"> / {item.unit}</span>}
-                          </TableCell>
-                          <TableCell>{item.quantity_available ?? "-"}</TableCell>
-                          <TableCell>
-                            <div className="flex gap-1">
-                              <Badge variant={item.is_active ? "default" : "secondary"}>
-                                {item.is_active ? (language === "ar" ? "نشط" : "Active") : (language === "ar" ? "غير نشط" : "Inactive")}
-                              </Badge>
-                            </div>
-                          </TableCell>
-                        </TableRow>
-                      ))}
-                    </TableBody>
-                  </Table>
-                </CardContent>
-              </Card>
-            ) : (
-              <div className="text-center py-12 text-muted-foreground">
-                <Package className="h-12 w-12 mx-auto mb-4 opacity-50" />
-                <p>{language === "ar" ? "لا توجد منتجات في الكتالوج" : "No catalog items"}</p>
-              </div>
-            )}
-          </TabsContent>
-
-          {/* Drivers Tab */}
-          <TabsContent value="drivers" className="space-y-4">
-            <div className="flex justify-between items-center">
-              <h3 className="text-lg font-semibold">{language === "ar" ? "السائقون" : "Drivers"}</h3>
-            </div>
-            {drivers.length > 0 ? (
-              <Card>
-                <CardContent className="p-0">
-                  <Table>
-                    <TableHeader>
-                      <TableRow>
-                        <TableHead>{language === "ar" ? "الاسم" : "Name"}</TableHead>
-                        <TableHead>{language === "ar" ? "الهاتف" : "Phone"}</TableHead>
-                        <TableHead>{language === "ar" ? "نوع المركبة" : "Vehicle"}</TableHead>
-                        <TableHead>{language === "ar" ? "لوحة المركبة" : "Plate"}</TableHead>
-                        <TableHead>{language === "ar" ? "رقم الرخصة" : "License #"}</TableHead>
-                        <TableHead>{language === "ar" ? "الحالة" : "Status"}</TableHead>
-                      </TableRow>
-                    </TableHeader>
-                    <TableBody>
-                      {drivers.map((driver: any) => (
-                        <TableRow key={driver.id}>
-                          <TableCell className="font-medium">{driver.name}</TableCell>
-                          <TableCell>{driver.phone}</TableCell>
-                          <TableCell>{driver.vehicle_type || "-"}</TableCell>
-                          <TableCell>{driver.vehicle_plate || "-"}</TableCell>
-                          <TableCell className="font-mono text-xs">{driver.license_number || "-"}</TableCell>
-                          <TableCell>
-                            <Badge variant={driver.is_available ? "default" : "secondary"}>
-                              {driver.is_available
-                                ? (language === "ar" ? "متاح" : "Available")
-                                : (language === "ar" ? "غير متاح" : "Unavailable")}
-                            </Badge>
-                          </TableCell>
-                        </TableRow>
-                      ))}
-                    </TableBody>
-                  </Table>
-                </CardContent>
-              </Card>
-            ) : (
-              <div className="text-center py-12 text-muted-foreground">
-                <Truck className="h-12 w-12 mx-auto mb-4 opacity-50" />
-                <p>{language === "ar" ? "لا يوجد سائقون" : "No drivers found"}</p>
-              </div>
-            )}
-          </TabsContent>
-
-          {/* Media Tab */}
-          <TabsContent value="media" className="space-y-4">
-            <div className="flex justify-between items-center">
-              <h3 className="text-lg font-semibold">{language === "ar" ? "مكتبة الوسائط" : "Media Library"}</h3>
-              <Button>
-                <Plus className="h-4 w-4 mr-2" />
-                {language === "ar" ? "رفع ملف" : "Upload File"}
-              </Button>
-            </div>
-            <div className="text-center py-12 text-muted-foreground">
-              <Image className="h-12 w-12 mx-auto mb-4 opacity-50" />
-              <p>{language === "ar" ? "لا توجد ملفات" : "No files found"}</p>
-            </div>
-          </TabsContent>
-
-          {/* Communications Tab */}
-          <TabsContent value="communications" className="space-y-4">
-            <div className="flex justify-between items-center">
-              <h3 className="text-lg font-semibold">
-                {language === "ar" ? "رسائل الشركة" : "Company Messages"}
-                {communications.filter(c => c.direction === "outgoing" && c.status === "unread").length > 0 && (
-                  <Badge variant="destructive" className="ml-2">
-                    {communications.filter(c => c.direction === "outgoing" && c.status === "unread").length}
-                  </Badge>
-                )}
-              </h3>
-            </div>
-            {communications.length === 0 ? (
-              <div className="text-center py-12 text-muted-foreground">
-                <MessageSquare className="h-12 w-12 mx-auto mb-4 opacity-50" />
-                <p>{language === "ar" ? "لا توجد رسائل" : "No messages"}</p>
-              </div>
-            ) : (
-              <ScrollArea className="h-[500px]">
+              <Card><CardContent className="p-0">
                 <Table>
                   <TableHeader>
                     <TableRow>
-                      <TableHead>{language === "ar" ? "الاتجاه" : "Direction"}</TableHead>
-                      <TableHead>{language === "ar" ? "الموضوع" : "Subject"}</TableHead>
-                      <TableHead>{language === "ar" ? "الأولوية" : "Priority"}</TableHead>
-                      <TableHead>{language === "ar" ? "الحالة" : "Status"}</TableHead>
-                      <TableHead>{language === "ar" ? "التاريخ" : "Date"}</TableHead>
-                      <TableHead></TableHead>
+                      <TableHead>{isAr ? "المنتج" : "Product"}</TableHead>
+                      <TableHead>{isAr ? "الفئة" : "Category"}</TableHead>
+                      <TableHead>SKU</TableHead>
+                      <TableHead>{isAr ? "السعر" : "Price"}</TableHead>
+                      <TableHead>{isAr ? "الكمية" : "Qty"}</TableHead>
+                      <TableHead>{isAr ? "الحالة" : "Status"}</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {communications.map((msg) => (
-                      <TableRow key={msg.id}>
-                        <TableCell>
-                          <Badge variant="outline">
-                            {msg.direction === "outgoing"
-                              ? language === "ar" ? "من الشركة" : "From Company"
-                              : language === "ar" ? "من الإدارة" : "From Admin"}
-                          </Badge>
-                        </TableCell>
-                        <TableCell>
-                          <div>
-                            <p className="font-medium">{msg.subject}</p>
-                            <p className="text-sm text-muted-foreground truncate max-w-[300px]">{msg.message}</p>
-                          </div>
-                        </TableCell>
-                        <TableCell>
-                          {msg.priority === "urgent" ? (
-                            <Badge variant="destructive">{language === "ar" ? "عاجل" : "Urgent"}</Badge>
-                          ) : msg.priority === "high" ? (
-                            <Badge className="bg-chart-4 text-chart-4-foreground">{language === "ar" ? "مرتفع" : "High"}</Badge>
-                          ) : (
-                            <span className="text-sm text-muted-foreground">{msg.priority}</span>
-                          )}
-                        </TableCell>
-                        <TableCell>
-                          <Badge variant={msg.status === "unread" ? "default" : "secondary"}>
-                            {msg.status === "unread"
-                              ? language === "ar" ? "غير مقروءة" : "Unread"
-                              : language === "ar" ? "مقروءة" : "Read"}
-                          </Badge>
-                        </TableCell>
-                        <TableCell className="text-sm">{format(new Date(msg.created_at), "yyyy-MM-dd HH:mm")}</TableCell>
-                        <TableCell>
-                          <Button
-                            variant="outline"
-                            size="sm"
-                            onClick={() => {
-                              setReplyTarget(msg.id);
-                              setReplyDialogOpen(true);
-                            }}
-                          >
-                            <Send className="h-3 w-3 mr-1" />
-                            {language === "ar" ? "رد" : "Reply"}
-                          </Button>
-                        </TableCell>
+                    {catalogItems.map((item: any) => (
+                      <TableRow key={item.id}>
+                        <TableCell><div><p className="font-medium">{item.name}</p>{item.name_ar && <p className="text-xs text-muted-foreground" dir="rtl">{item.name_ar}</p>}</div></TableCell>
+                        <TableCell><Badge variant="outline">{item.category}</Badge></TableCell>
+                        <TableCell className="font-mono text-xs">{item.sku || "-"}</TableCell>
+                        <TableCell>{item.unit_price != null ? `${Number(item.unit_price).toLocaleString()} ${item.currency || "SAR"}` : "-"}{item.unit && <span className="text-xs text-muted-foreground"> / {item.unit}</span>}</TableCell>
+                        <TableCell>{item.quantity_available ?? "-"}</TableCell>
+                        <TableCell><Badge variant={item.is_active ? "default" : "secondary"}>{item.is_active ? (isAr ? "نشط" : "Active") : (isAr ? "غير نشط" : "Inactive")}</Badge></TableCell>
                       </TableRow>
                     ))}
                   </TableBody>
                 </Table>
-              </ScrollArea>
+              </CardContent></Card>
+            ) : (
+              <div className="text-center py-12 text-muted-foreground"><Package className="h-12 w-12 mx-auto mb-4 opacity-50" /><p>{isAr ? "لا توجد منتجات" : "No catalog items"}</p></div>
+            )}
+          </TabsContent>
+
+          {/* ── Drivers Tab ── */}
+          <TabsContent value="drivers" className="space-y-4">
+            <div className="flex justify-between items-center">
+              <h3 className="text-lg font-semibold">{isAr ? "السائقون" : "Drivers"}</h3>
+              <Button onClick={() => setShowDriverForm(!showDriverForm)}>
+                {showDriverForm ? <><X className="h-4 w-4 mr-2" />{isAr ? "إلغاء" : "Cancel"}</> : <><Plus className="h-4 w-4 mr-2" />{isAr ? "إضافة سائق" : "Add Driver"}</>}
+              </Button>
+            </div>
+
+            {showDriverForm && (
+              <Card className="border-primary/30">
+                <CardHeader><CardTitle className="text-base">{isAr ? "سائق جديد" : "New Driver"}</CardTitle></CardHeader>
+                <CardContent className="space-y-4">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <Label>{isAr ? "الاسم (EN)" : "Name (EN)"} *</Label>
+                      <Input value={driverForm.name} onChange={e => setDriverForm({ ...driverForm, name: e.target.value })} />
+                    </div>
+                    <div className="space-y-2">
+                      <Label>{isAr ? "الاسم (AR)" : "Name (AR)"}</Label>
+                      <Input value={driverForm.name_ar} onChange={e => setDriverForm({ ...driverForm, name_ar: e.target.value })} dir="rtl" />
+                    </div>
+                    <div className="space-y-2">
+                      <Label>{isAr ? "الهاتف" : "Phone"} *</Label>
+                      <Input value={driverForm.phone} onChange={e => setDriverForm({ ...driverForm, phone: e.target.value })} />
+                    </div>
+                    <div className="space-y-2">
+                      <Label>{isAr ? "نوع المركبة" : "Vehicle Type"}</Label>
+                      <Input value={driverForm.vehicle_type} onChange={e => setDriverForm({ ...driverForm, vehicle_type: e.target.value })} />
+                    </div>
+                    <div className="space-y-2">
+                      <Label>{isAr ? "لوحة المركبة" : "Vehicle Plate"}</Label>
+                      <Input value={driverForm.vehicle_plate} onChange={e => setDriverForm({ ...driverForm, vehicle_plate: e.target.value })} />
+                    </div>
+                    <div className="space-y-2">
+                      <Label>{isAr ? "رقم الرخصة" : "License Number"}</Label>
+                      <Input value={driverForm.license_number} onChange={e => setDriverForm({ ...driverForm, license_number: e.target.value })} />
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <Switch checked={driverForm.is_available} onCheckedChange={v => setDriverForm({ ...driverForm, is_available: v })} />
+                    <Label className="cursor-pointer">{isAr ? "متاح" : "Available"}</Label>
+                  </div>
+                  <Button onClick={() => addDriverMutation.mutate()} disabled={!driverForm.name || !driverForm.phone || addDriverMutation.isPending}>
+                    <Save className="h-4 w-4 mr-2" />{isAr ? "حفظ" : "Save"}
+                  </Button>
+                </CardContent>
+              </Card>
             )}
 
-            {/* Reply Dialog */}
-            {replyDialogOpen && (
-              <Card className="border-primary">
-                <CardHeader>
-                  <CardTitle className="text-base">{language === "ar" ? "رد على الرسالة" : "Reply to Message"}</CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  <Textarea
-                    value={replyMessage}
-                    onChange={(e) => setReplyMessage(e.target.value)}
-                    rows={4}
-                    placeholder={language === "ar" ? "اكتب ردك هنا..." : "Type your reply here..."}
-                  />
-                  <div className="flex justify-end gap-2">
-                    <Button variant="outline" onClick={() => { setReplyDialogOpen(false); setReplyMessage(""); setReplyTarget(null); }}>
-                      {language === "ar" ? "إلغاء" : "Cancel"}
-                    </Button>
-                    <Button
-                      disabled={!replyMessage || replyMutation.isPending}
-                      onClick={() => replyTarget && replyMutation.mutate({ parentId: replyTarget, message: replyMessage })}
-                    >
-                      <Send className="h-4 w-4 mr-2" />
-                      {replyMutation.isPending ? (language === "ar" ? "جارٍ الإرسال..." : "Sending...") : (language === "ar" ? "إرسال" : "Send")}
-                    </Button>
+            {drivers.length > 0 ? (
+              <Card><CardContent className="p-0">
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>{isAr ? "الاسم" : "Name"}</TableHead>
+                      <TableHead>{isAr ? "الهاتف" : "Phone"}</TableHead>
+                      <TableHead>{isAr ? "نوع المركبة" : "Vehicle"}</TableHead>
+                      <TableHead>{isAr ? "لوحة المركبة" : "Plate"}</TableHead>
+                      <TableHead>{isAr ? "الحالة" : "Status"}</TableHead>
+                      <TableHead></TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {drivers.map((driver: any) => (
+                      <TableRow key={driver.id}>
+                        <TableCell className="font-medium">{driver.name}</TableCell>
+                        <TableCell>{driver.phone}</TableCell>
+                        <TableCell>{driver.vehicle_type || "-"}</TableCell>
+                        <TableCell>{driver.vehicle_plate || "-"}</TableCell>
+                        <TableCell><Badge variant={driver.is_available ? "default" : "secondary"}>{driver.is_available ? (isAr ? "متاح" : "Available") : (isAr ? "غير متاح" : "Unavailable")}</Badge></TableCell>
+                        <TableCell><Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => deleteDriverMutation.mutate(driver.id)}><Trash2 className="h-3 w-3 text-destructive" /></Button></TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </CardContent></Card>
+            ) : !showDriverForm && (
+              <div className="text-center py-12 text-muted-foreground"><Truck className="h-12 w-12 mx-auto mb-4 opacity-50" /><p>{isAr ? "لا يوجد سائقون" : "No drivers found"}</p></div>
+            )}
+          </TabsContent>
+
+          {/* ── Communications Tab (with full log) ── */}
+          <TabsContent value="communications" className="space-y-4">
+            <h3 className="text-lg font-semibold">
+              {isAr ? "سجل التواصل" : "Communication Log"}
+              {communications.filter((c: any) => c.direction === "outgoing" && c.status === "unread").length > 0 && (
+                <Badge variant="destructive" className="ml-2">{communications.filter((c: any) => c.direction === "outgoing" && c.status === "unread").length}</Badge>
+              )}
+            </h3>
+            {communications.length === 0 ? (
+              <div className="text-center py-12 text-muted-foreground"><MessageSquare className="h-12 w-12 mx-auto mb-4 opacity-50" /><p>{isAr ? "لا توجد رسائل" : "No messages"}</p></div>
+            ) : (
+              <ScrollArea className="h-[500px]">
+                <div className="space-y-3">
+                  {communications.map((msg: any) => (
+                    <Card key={msg.id} className={msg.status === "unread" ? "border-primary/30" : ""}>
+                      <CardContent className="pt-4 pb-4">
+                        <div className="flex items-start justify-between gap-4">
+                          <div className="flex-1">
+                            <div className="flex items-center gap-2 mb-1">
+                              <Badge variant="outline" className="text-[10px]">
+                                {msg.direction === "outgoing" ? (isAr ? "من الشركة" : "From Company") : (isAr ? "من الإدارة" : "From Admin")}
+                              </Badge>
+                              {msg.priority === "urgent" && <Badge variant="destructive" className="text-[10px]">{isAr ? "عاجل" : "Urgent"}</Badge>}
+                              {msg.priority === "high" && <Badge className="bg-chart-4 text-[10px]">{isAr ? "مرتفع" : "High"}</Badge>}
+                              <span className="text-xs text-muted-foreground">{format(new Date(msg.created_at), "yyyy-MM-dd HH:mm")}</span>
+                            </div>
+                            <p className="font-medium text-sm">{msg.subject}</p>
+                            <p className="text-sm text-muted-foreground mt-1">{msg.message}</p>
+                            {/* Show thread replies */}
+                            {msg.parent_id && <Badge variant="secondary" className="mt-1 text-[10px]">{isAr ? "رد" : "Reply"}</Badge>}
+                          </div>
+                          <div className="flex items-center gap-1">
+                            <Badge variant={msg.status === "unread" ? "default" : "secondary"} className="text-[10px]">
+                              {msg.status === "unread" ? (isAr ? "جديد" : "New") : (isAr ? "مقروءة" : "Read")}
+                            </Badge>
+                            <Button variant="outline" size="sm" className="h-7 text-xs" onClick={() => { setReplyTarget(msg.id); setReplyMessage(""); }}>
+                              <Send className="h-3 w-3 mr-1" />{isAr ? "رد" : "Reply"}
+                            </Button>
+                          </div>
+                        </div>
+                        {replyTarget === msg.id && (
+                          <div className="mt-3 space-y-2 border-t pt-3">
+                            <Textarea value={replyMessage} onChange={e => setReplyMessage(e.target.value)} rows={2} placeholder={isAr ? "اكتب ردك هنا..." : "Type your reply..."} />
+                            <div className="flex gap-2">
+                              <Button size="sm" disabled={!replyMessage || replyMutation.isPending} onClick={() => replyMutation.mutate({ parentId: msg.id, message: replyMessage })}>
+                                <Send className="h-3 w-3 mr-1" />{isAr ? "إرسال" : "Send"}
+                              </Button>
+                              <Button variant="outline" size="sm" onClick={() => setReplyTarget(null)}>{isAr ? "إلغاء" : "Cancel"}</Button>
+                            </div>
+                          </div>
+                        )}
+                      </CardContent>
+                    </Card>
+                  ))}
+                </div>
+              </ScrollArea>
+            )}
+          </TabsContent>
+
+          {/* ── Media Tab (Organized by category) ── */}
+          <TabsContent value="media" className="space-y-4">
+            <div className="flex justify-between items-center">
+              <h3 className="text-lg font-semibold">{isAr ? "مكتبة الوسائط" : "Media Library"}</h3>
+              <Button onClick={() => setShowMediaUpload(!showMediaUpload)}>
+                {showMediaUpload ? <><X className="h-4 w-4 mr-2" />{isAr ? "إلغاء" : "Cancel"}</> : <><Upload className="h-4 w-4 mr-2" />{isAr ? "رفع ملف" : "Upload File"}</>}
+              </Button>
+            </div>
+
+            {showMediaUpload && (
+              <Card className="border-primary/30">
+                <CardContent className="pt-6 space-y-4">
+                  <div className="space-y-2">
+                    <Label>{isAr ? "التصنيف" : "Category"}</Label>
+                    <Select value={mediaCategory} onValueChange={setMediaCategory}>
+                      <SelectTrigger><SelectValue /></SelectTrigger>
+                      <SelectContent>
+                        {MEDIA_CATEGORIES.map(c => (
+                          <SelectItem key={c.value} value={c.value}>{isAr ? c.labelAr : c.label}</SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div>
+                    <Input
+                      type="file"
+                      accept="image/*,.pdf,.doc,.docx,.xls,.xlsx"
+                      onChange={e => {
+                        const file = e.target.files?.[0];
+                        if (file) uploadMediaMutation.mutate(file);
+                      }}
+                      disabled={uploadMediaMutation.isPending}
+                    />
+                    {uploadMediaMutation.isPending && <p className="text-sm text-muted-foreground mt-1">{isAr ? "جارٍ الرفع..." : "Uploading..."}</p>}
                   </div>
                 </CardContent>
               </Card>
             )}
+
+            {/* Categorized sections */}
+            {MEDIA_CATEGORIES.map(cat => {
+              const catMedia = media.filter((m: any) => m.category === cat.value);
+              if (catMedia.length === 0 && !showMediaUpload) return null;
+              const CatIcon = cat.icon;
+              return (
+                <Card key={cat.value}>
+                  <CardHeader className="pb-3">
+                    <CardTitle className="text-sm flex items-center gap-2">
+                      <CatIcon className="h-4 w-4 text-primary" />
+                      {isAr ? cat.labelAr : cat.label}
+                      <Badge variant="secondary" className="text-[10px]">{catMedia.length}</Badge>
+                    </CardTitle>
+                  </CardHeader>
+                  {catMedia.length > 0 && (
+                    <CardContent>
+                      <div className="grid gap-3 grid-cols-2 md:grid-cols-4">
+                        {catMedia.map((item: any) => (
+                          <div key={item.id} className="relative group rounded-lg border overflow-hidden">
+                            {item.file_type?.startsWith("image") ? (
+                              <img src={item.file_url} alt={item.title || item.filename} className="h-32 w-full object-cover" />
+                            ) : (
+                              <div className="flex h-32 w-full items-center justify-center bg-muted">
+                                <File className="h-8 w-8 text-muted-foreground" />
+                              </div>
+                            )}
+                            <div className="p-2">
+                              <p className="text-xs font-medium truncate">{item.title || item.filename}</p>
+                              {item.file_size && <p className="text-[10px] text-muted-foreground">{(item.file_size / 1024).toFixed(0)} KB</p>}
+                            </div>
+                            <Button variant="ghost" size="icon" className="absolute top-1 right-1 h-6 w-6 opacity-0 group-hover:opacity-100 bg-background/80" onClick={() => deleteMediaMutation.mutate(item.id)}>
+                              <Trash2 className="h-3 w-3 text-destructive" />
+                            </Button>
+                          </div>
+                        ))}
+                      </div>
+                    </CardContent>
+                  )}
+                </Card>
+              );
+            })}
+
+            {media.length === 0 && !showMediaUpload && (
+              <div className="text-center py-12 text-muted-foreground">
+                <Image className="h-12 w-12 mx-auto mb-4 opacity-50" />
+                <p>{isAr ? "لا توجد ملفات" : "No files found"}</p>
+              </div>
+            )}
           </TabsContent>
 
-          {/* Roles Tab */}
+          {/* ── Classifications (formerly Roles) Tab ── */}
           <TabsContent value="roles" className="space-y-4">
             <CompanyRolesPanel companyId={selectedCompany} />
           </TabsContent>
 
-          {/* Sponsorship Tab */}
+          {/* ── Sponsorship Tab ── */}
           <TabsContent value="sponsorship" className="space-y-4">
             <CompanySponsorshipPanel companyId={selectedCompany} />
           </TabsContent>
@@ -1347,238 +1465,102 @@ export default function CompaniesAdmin() {
     );
   }
 
+  // ══════════════════════════════════════════════════════════
+  // COMPANIES LIST VIEW
+  // ══════════════════════════════════════════════════════════
   return (
     <div className="space-y-6">
-      {/* Header */}
       <div>
         <h1 className="text-3xl font-bold flex items-center gap-3">
           <Building2 className="h-8 w-8 text-primary" />
-          {language === "ar" ? "إدارة الشركات" : "Company Management"}
+          {isAr ? "إدارة الشركات" : "Company Management"}
         </h1>
-        <p className="text-muted-foreground mt-1">
-          {language === "ar"
-            ? "إدارة الشركات والرعاة والموردين والشركاء - موحّدة"
-            : "Unified management for companies, sponsors, suppliers & partners"}
-        </p>
+        <p className="text-muted-foreground mt-1">{isAr ? "إدارة الشركات والرعاة والموردين والشركاء - موحّدة" : "Unified management for companies, sponsors, suppliers & partners"}</p>
       </div>
 
       {/* Stats */}
       <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
-        <Card>
-          <CardContent className="pt-4">
-            <div className="text-center">
-              <p className="text-2xl font-bold">{stats.total}</p>
-              <p className="text-sm text-muted-foreground">{language === "ar" ? "إجمالي الشركات" : "Total Companies"}</p>
-            </div>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardContent className="pt-4">
-            <div className="text-center">
-              <p className="text-2xl font-bold text-chart-5">{stats.active}</p>
-              <p className="text-sm text-muted-foreground">{language === "ar" ? "نشطة" : "Active"}</p>
-            </div>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardContent className="pt-4">
-            <div className="text-center">
-              <p className="text-2xl font-bold text-chart-4">{stats.pending}</p>
-              <p className="text-sm text-muted-foreground">{language === "ar" ? "قيد الانتظار" : "Pending"}</p>
-            </div>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardContent className="pt-4">
-            <div className="text-center">
-              <p className="text-2xl font-bold text-chart-3">{stats.sponsors}</p>
-              <p className="text-sm text-muted-foreground">{language === "ar" ? "رعاة" : "Sponsors"}</p>
-            </div>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardContent className="pt-4">
-            <div className="text-center">
-              <p className="text-2xl font-bold text-primary">{stats.suppliers}</p>
-              <p className="text-sm text-muted-foreground">{language === "ar" ? "موردين" : "Suppliers"}</p>
-            </div>
-          </CardContent>
-        </Card>
+        <Card><CardContent className="pt-4"><div className="text-center"><p className="text-2xl font-bold">{stats.total}</p><p className="text-sm text-muted-foreground">{isAr ? "إجمالي الشركات" : "Total"}</p></div></CardContent></Card>
+        <Card><CardContent className="pt-4"><div className="text-center"><p className="text-2xl font-bold text-chart-5">{stats.active}</p><p className="text-sm text-muted-foreground">{isAr ? "نشطة" : "Active"}</p></div></CardContent></Card>
+        <Card><CardContent className="pt-4"><div className="text-center"><p className="text-2xl font-bold text-chart-4">{stats.pending}</p><p className="text-sm text-muted-foreground">{isAr ? "قيد الانتظار" : "Pending"}</p></div></CardContent></Card>
+        <Card><CardContent className="pt-4"><div className="text-center"><p className="text-2xl font-bold text-chart-3">{stats.sponsors}</p><p className="text-sm text-muted-foreground">{isAr ? "رعاة" : "Sponsors"}</p></div></CardContent></Card>
+        <Card><CardContent className="pt-4"><div className="text-center"><p className="text-2xl font-bold text-primary">{stats.suppliers}</p><p className="text-sm text-muted-foreground">{isAr ? "موردين" : "Suppliers"}</p></div></CardContent></Card>
       </div>
 
-      {/* Main Content */}
       {showCompanyForm ? (
         <Card>
           <CardHeader>
             <div className="flex items-center gap-2">
-              <Button variant="ghost" size="icon" onClick={() => { setShowCompanyForm(false); resetForm(); }}>
-                <ChevronLeft className="h-4 w-4" />
-              </Button>
-              <CardTitle>{language === "ar" ? "إضافة شركة جديدة" : "Add New Company"}</CardTitle>
+              <Button variant="ghost" size="icon" onClick={() => { setShowCompanyForm(false); resetCompanyForm(); }}><ChevronLeft className="h-4 w-4" /></Button>
+              <CardTitle>{isAr ? "إضافة شركة جديدة" : "Add New Company"}</CardTitle>
             </div>
           </CardHeader>
           <CardContent className="space-y-6">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="space-y-2">
-                <Label>{language === "ar" ? "اسم الشركة (إنجليزي)" : "Company Name (English)"} *</Label>
-                <Input
-                  value={companyForm.name}
-                  onChange={(e) => setCompanyForm({ ...companyForm, name: e.target.value })}
-                  placeholder="Company Name"
-                />
+                <div className="flex items-center justify-between">
+                  <Label>{isAr ? "اسم الشركة (EN)" : "Company Name (EN)"} *</Label>
+                  <AIButton onClick={() => handleAITranslate(companyForm.name_ar, v => setCompanyForm(f => ({ ...f, name: v })))} />
+                </div>
+                <Input value={companyForm.name} onChange={e => setCompanyForm({ ...companyForm, name: e.target.value })} placeholder="Company Name" />
               </div>
               <div className="space-y-2">
-                <Label>{language === "ar" ? "اسم الشركة (عربي)" : "Company Name (Arabic)"}</Label>
-                <Input
-                  value={companyForm.name_ar}
-                  onChange={(e) => setCompanyForm({ ...companyForm, name_ar: e.target.value })}
-                  placeholder="اسم الشركة"
-                  dir="rtl"
-                />
+                <Label>{isAr ? "اسم الشركة (AR)" : "Company Name (AR)"}</Label>
+                <Input value={companyForm.name_ar} onChange={e => setCompanyForm({ ...companyForm, name_ar: e.target.value })} placeholder="اسم الشركة" dir="rtl" />
               </div>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div className="space-y-2">
-                <Label>{language === "ar" ? "نوع الشركة" : "Company Type"} *</Label>
-                <Select
-                  value={companyForm.type}
-                  onValueChange={(v) => setCompanyForm({ ...companyForm, type: v as CompanyType })}
-                >
-                  <SelectTrigger>
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {companyTypes.map(type => (
-                      <SelectItem key={type.value} value={type.value}>
-                        {language === "ar" ? type.labelAr : type.label}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
+                <Label>{isAr ? "نوع الشركة" : "Company Type"} *</Label>
+                <Select value={companyForm.type} onValueChange={v => setCompanyForm({ ...companyForm, type: v as CompanyType })}>
+                  <SelectTrigger><SelectValue /></SelectTrigger>
+                  <SelectContent>{companyTypes.map(type => <SelectItem key={type.value} value={type.value}>{isAr ? type.labelAr : type.label}</SelectItem>)}</SelectContent>
                 </Select>
               </div>
-              <div className="space-y-2">
-                <Label>{language === "ar" ? "رقم السجل التجاري" : "Registration Number"}</Label>
-                <Input
-                  value={companyForm.registration_number}
-                  onChange={(e) => setCompanyForm({ ...companyForm, registration_number: e.target.value })}
-                />
-              </div>
-              <div className="space-y-2">
-                <Label>{language === "ar" ? "الرقم الضريبي" : "Tax Number"}</Label>
-                <Input
-                  value={companyForm.tax_number}
-                  onChange={(e) => setCompanyForm({ ...companyForm, tax_number: e.target.value })}
-                />
-              </div>
+              <div className="space-y-2"><Label>{isAr ? "رقم السجل التجاري" : "Registration Number"}</Label><Input value={companyForm.registration_number} onChange={e => setCompanyForm({ ...companyForm, registration_number: e.target.value })} /></div>
+              <div className="space-y-2"><Label>{isAr ? "الرقم الضريبي" : "Tax Number"}</Label><Input value={companyForm.tax_number} onChange={e => setCompanyForm({ ...companyForm, tax_number: e.target.value })} /></div>
             </div>
 
             <Separator />
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <div className="space-y-2">
-                <Label>{language === "ar" ? "البريد الإلكتروني" : "Email"}</Label>
-                <Input
-                  type="email"
-                  value={companyForm.email}
-                  onChange={(e) => setCompanyForm({ ...companyForm, email: e.target.value })}
-                />
-              </div>
-              <div className="space-y-2">
-                <Label>{language === "ar" ? "الهاتف" : "Phone"}</Label>
-                <Input
-                  value={companyForm.phone}
-                  onChange={(e) => setCompanyForm({ ...companyForm, phone: e.target.value })}
-                />
-              </div>
-              <div className="space-y-2">
-                <Label>{language === "ar" ? "الموقع الإلكتروني" : "Website"}</Label>
-                <Input
-                  value={companyForm.website}
-                  onChange={(e) => setCompanyForm({ ...companyForm, website: e.target.value })}
-                />
-              </div>
+              <div className="space-y-2"><Label>{isAr ? "البريد الإلكتروني" : "Email"}</Label><Input type="email" value={companyForm.email} onChange={e => setCompanyForm({ ...companyForm, email: e.target.value })} /></div>
+              <div className="space-y-2"><Label>{isAr ? "الهاتف" : "Phone"}</Label><Input value={companyForm.phone} onChange={e => setCompanyForm({ ...companyForm, phone: e.target.value })} /></div>
+              <div className="space-y-2"><Label>{isAr ? "الموقع الإلكتروني" : "Website"}</Label><Input value={companyForm.website} onChange={e => setCompanyForm({ ...companyForm, website: e.target.value })} /></div>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="space-y-2">
-                <Label>{language === "ar" ? "العنوان (إنجليزي)" : "Address (English)"}</Label>
-                <Textarea
-                  value={companyForm.address}
-                  onChange={(e) => setCompanyForm({ ...companyForm, address: e.target.value })}
-                  rows={2}
-                />
+                <div className="flex items-center justify-between">
+                  <Label>{isAr ? "العنوان (EN)" : "Address (EN)"}</Label>
+                  <AIButton onClick={() => handleAITranslate(companyForm.address_ar, v => setCompanyForm(f => ({ ...f, address: v })))} />
+                </div>
+                <Textarea value={companyForm.address} onChange={e => setCompanyForm({ ...companyForm, address: e.target.value })} rows={2} />
               </div>
-              <div className="space-y-2">
-                <Label>{language === "ar" ? "العنوان (عربي)" : "Address (Arabic)"}</Label>
-                <Textarea
-                  value={companyForm.address_ar}
-                  onChange={(e) => setCompanyForm({ ...companyForm, address_ar: e.target.value })}
-                  rows={2}
-                  dir="rtl"
-                />
-              </div>
+              <div className="space-y-2"><Label>{isAr ? "العنوان (AR)" : "Address (AR)"}</Label><Textarea value={companyForm.address_ar} onChange={e => setCompanyForm({ ...companyForm, address_ar: e.target.value })} rows={2} dir="rtl" /></div>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <div className="space-y-2">
-                <Label>{language === "ar" ? "المدينة" : "City"}</Label>
-                <Input
-                  value={companyForm.city}
-                  onChange={(e) => setCompanyForm({ ...companyForm, city: e.target.value })}
-                />
-              </div>
-              <CountrySelector
-                value={companyForm.country_code}
-                onChange={(code, country) => {
-                  const name = language === "ar" ? (country?.name_ar || country?.name || "") : (country?.name || "");
-                  setCompanyForm({ ...companyForm, country_code: code, country: name, currency: country?.currency_code || companyForm.currency });
-                }}
-                label={language === "ar" ? "الدولة (المقر الرئيسي)" : "Country (Home)"}
-                required
-              />
-              <div className="space-y-2">
-                <Label>{language === "ar" ? "الرمز البريدي" : "Postal Code"}</Label>
-                <Input
-                  value={companyForm.postal_code}
-                  onChange={(e) => setCompanyForm({ ...companyForm, postal_code: e.target.value })}
-                />
-              </div>
+              <div className="space-y-2"><Label>{isAr ? "المدينة" : "City"}</Label><Input value={companyForm.city} onChange={e => setCompanyForm({ ...companyForm, city: e.target.value })} /></div>
+              <CountrySelector value={companyForm.country_code} onChange={(code, country) => {
+                const name = isAr ? (country?.name_ar || country?.name || "") : (country?.name || "");
+                setCompanyForm({ ...companyForm, country_code: code, country: name, currency: country?.currency_code || companyForm.currency });
+              }} label={isAr ? "الدولة" : "Country"} required />
+              <div className="space-y-2"><Label>{isAr ? "الرمز البريدي" : "Postal Code"}</Label><Input value={companyForm.postal_code} onChange={e => setCompanyForm({ ...companyForm, postal_code: e.target.value })} /></div>
             </div>
 
             <Separator />
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div className="space-y-2"><Label>{isAr ? "حد الائتمان" : "Credit Limit"}</Label><Input type="number" value={companyForm.credit_limit} onChange={e => setCompanyForm({ ...companyForm, credit_limit: Number(e.target.value) })} /></div>
+              <div className="space-y-2"><Label>{isAr ? "شروط الدفع (أيام)" : "Payment Terms (days)"}</Label><Input type="number" value={companyForm.payment_terms} onChange={e => setCompanyForm({ ...companyForm, payment_terms: Number(e.target.value) })} /></div>
               <div className="space-y-2">
-                <Label>{language === "ar" ? "حد الائتمان" : "Credit Limit"}</Label>
-                <Input
-                  type="number"
-                  value={companyForm.credit_limit}
-                  onChange={(e) => setCompanyForm({ ...companyForm, credit_limit: Number(e.target.value) })}
-                />
-              </div>
-              <div className="space-y-2">
-                <Label>{language === "ar" ? "شروط الدفع (أيام)" : "Payment Terms (days)"}</Label>
-                <Input
-                  type="number"
-                  value={companyForm.payment_terms}
-                  onChange={(e) => setCompanyForm({ ...companyForm, payment_terms: Number(e.target.value) })}
-                />
-              </div>
-              <div className="space-y-2">
-                <Label>{language === "ar" ? "العملة" : "Currency"}</Label>
-                <Select
-                  value={companyForm.currency}
-                  onValueChange={(v) => setCompanyForm({ ...companyForm, currency: v })}
-                >
-                  <SelectTrigger>
-                    <SelectValue />
-                  </SelectTrigger>
+                <Label>{isAr ? "العملة" : "Currency"}</Label>
+                <Select value={companyForm.currency} onValueChange={v => setCompanyForm({ ...companyForm, currency: v })}>
+                  <SelectTrigger><SelectValue /></SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="SAR">SAR</SelectItem>
-                    <SelectItem value="USD">USD</SelectItem>
-                    <SelectItem value="EUR">EUR</SelectItem>
-                    <SelectItem value="AED">AED</SelectItem>
+                    <SelectItem value="SAR">SAR</SelectItem><SelectItem value="USD">USD</SelectItem><SelectItem value="EUR">EUR</SelectItem><SelectItem value="AED">AED</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
@@ -1586,33 +1568,18 @@ export default function CompaniesAdmin() {
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="space-y-2">
-                <Label>{language === "ar" ? "الوصف (إنجليزي)" : "Description (English)"}</Label>
-                <Textarea
-                  value={companyForm.description}
-                  onChange={(e) => setCompanyForm({ ...companyForm, description: e.target.value })}
-                  rows={3}
-                />
+                <div className="flex items-center justify-between">
+                  <Label>{isAr ? "الوصف (EN)" : "Description (EN)"}</Label>
+                  <AIButton onClick={() => handleAITranslate(companyForm.description_ar, v => setCompanyForm(f => ({ ...f, description: v })))} />
+                </div>
+                <Textarea value={companyForm.description} onChange={e => setCompanyForm({ ...companyForm, description: e.target.value })} rows={3} />
               </div>
-              <div className="space-y-2">
-                <Label>{language === "ar" ? "الوصف (عربي)" : "Description (Arabic)"}</Label>
-                <Textarea
-                  value={companyForm.description_ar}
-                  onChange={(e) => setCompanyForm({ ...companyForm, description_ar: e.target.value })}
-                  rows={3}
-                  dir="rtl"
-                />
-              </div>
+              <div className="space-y-2"><Label>{isAr ? "الوصف (AR)" : "Description (AR)"}</Label><Textarea value={companyForm.description_ar} onChange={e => setCompanyForm({ ...companyForm, description_ar: e.target.value })} rows={3} dir="rtl" /></div>
             </div>
 
             <div className="flex gap-2">
-              <Button onClick={() => createCompanyMutation.mutate(companyForm)} disabled={!companyForm.name}>
-                <Save className="h-4 w-4 mr-2" />
-                {language === "ar" ? "حفظ الشركة" : "Save Company"}
-              </Button>
-              <Button variant="outline" onClick={() => { setShowCompanyForm(false); resetForm(); }}>
-                <X className="h-4 w-4 mr-2" />
-                {language === "ar" ? "إلغاء" : "Cancel"}
-              </Button>
+              <Button onClick={() => createCompanyMutation.mutate(companyForm)} disabled={!companyForm.name}><Save className="h-4 w-4 mr-2" />{isAr ? "حفظ الشركة" : "Save Company"}</Button>
+              <Button variant="outline" onClick={() => { setShowCompanyForm(false); resetCompanyForm(); }}><X className="h-4 w-4 mr-2" />{isAr ? "إلغاء" : "Cancel"}</Button>
             </div>
           </CardContent>
         </Card>
@@ -1620,119 +1587,69 @@ export default function CompaniesAdmin() {
         <Card>
           <CardHeader>
             <div className="flex items-center justify-between">
-              <CardTitle>{language === "ar" ? "جميع الشركات" : "All Companies"}</CardTitle>
-              <Button onClick={() => setShowCompanyForm(true)}>
-                <Plus className="h-4 w-4 mr-2" />
-                {language === "ar" ? "شركة جديدة" : "New Company"}
-              </Button>
+              <CardTitle>{isAr ? "جميع الشركات" : "All Companies"}</CardTitle>
+              <Button onClick={() => setShowCompanyForm(true)}><Plus className="h-4 w-4 mr-2" />{isAr ? "شركة جديدة" : "New Company"}</Button>
             </div>
           </CardHeader>
           <CardContent>
-            {/* Filters */}
             <div className="flex flex-wrap gap-4 mb-4">
               <div className="flex-1 min-w-[200px]">
                 <div className="relative">
                   <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                  <Input
-                    placeholder={language === "ar" ? "بحث بالاسم أو البريد..." : "Search by name or email..."}
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                    className="pl-10"
-                  />
+                  <Input placeholder={isAr ? "بحث بالاسم أو البريد..." : "Search by name or email..."} value={searchQuery} onChange={e => setSearchQuery(e.target.value)} className="pl-10" />
                 </div>
               </div>
               <Select value={typeFilter} onValueChange={setTypeFilter}>
-                <SelectTrigger className="w-[150px]">
-                  <SelectValue placeholder={language === "ar" ? "النوع" : "Type"} />
-                </SelectTrigger>
+                <SelectTrigger className="w-[150px]"><SelectValue placeholder={isAr ? "النوع" : "Type"} /></SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="all">{language === "ar" ? "جميع الأنواع" : "All Types"}</SelectItem>
-                  {companyTypes.map(type => (
-                    <SelectItem key={type.value} value={type.value}>
-                      {language === "ar" ? type.labelAr : type.label}
-                    </SelectItem>
-                  ))}
+                  <SelectItem value="all">{isAr ? "جميع الأنواع" : "All Types"}</SelectItem>
+                  {companyTypes.map(type => <SelectItem key={type.value} value={type.value}>{isAr ? type.labelAr : type.label}</SelectItem>)}
                 </SelectContent>
               </Select>
               <Select value={statusFilter} onValueChange={setStatusFilter}>
-                <SelectTrigger className="w-[150px]">
-                  <SelectValue placeholder={language === "ar" ? "الحالة" : "Status"} />
-                </SelectTrigger>
+                <SelectTrigger className="w-[150px]"><SelectValue placeholder={isAr ? "الحالة" : "Status"} /></SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="all">{language === "ar" ? "جميع الحالات" : "All Status"}</SelectItem>
-                  <SelectItem value="active">{language === "ar" ? "نشط" : "Active"}</SelectItem>
-                  <SelectItem value="pending">{language === "ar" ? "قيد الانتظار" : "Pending"}</SelectItem>
-                  <SelectItem value="inactive">{language === "ar" ? "غير نشط" : "Inactive"}</SelectItem>
-                  <SelectItem value="suspended">{language === "ar" ? "معلق" : "Suspended"}</SelectItem>
+                  <SelectItem value="all">{isAr ? "جميع الحالات" : "All Status"}</SelectItem>
+                  <SelectItem value="active">{isAr ? "نشط" : "Active"}</SelectItem>
+                  <SelectItem value="pending">{isAr ? "قيد الانتظار" : "Pending"}</SelectItem>
+                  <SelectItem value="inactive">{isAr ? "غير نشط" : "Inactive"}</SelectItem>
+                  <SelectItem value="suspended">{isAr ? "معلق" : "Suspended"}</SelectItem>
                 </SelectContent>
               </Select>
             </div>
 
-            {/* Table */}
             <ScrollArea className="h-[500px]">
               <Table>
                 <TableHeader>
                   <TableRow>
-                    <TableHead>{language === "ar" ? "الشركة" : "Company"}</TableHead>
-                    <TableHead>{language === "ar" ? "النوع" : "Type"}</TableHead>
-                    <TableHead>{language === "ar" ? "الاتصال" : "Contact"}</TableHead>
-                    <TableHead>{language === "ar" ? "الموقع" : "Location"}</TableHead>
-                    <TableHead>{language === "ar" ? "الحالة" : "Status"}</TableHead>
-                    <TableHead>{language === "ar" ? "التاريخ" : "Date"}</TableHead>
+                    <TableHead>{isAr ? "الشركة" : "Company"}</TableHead>
+                    <TableHead>{isAr ? "النوع" : "Type"}</TableHead>
+                    <TableHead>{isAr ? "الاتصال" : "Contact"}</TableHead>
+                    <TableHead>{isAr ? "الموقع" : "Location"}</TableHead>
+                    <TableHead>{isAr ? "الحالة" : "Status"}</TableHead>
+                    <TableHead>{isAr ? "التاريخ" : "Date"}</TableHead>
                     <TableHead></TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {companies.map((company) => (
+                  {companies.map(company => (
                     <TableRow key={company.id} className="cursor-pointer hover:bg-muted/50" onClick={() => setSelectedCompany(company.id)}>
                       <TableCell>
                         <div className="flex items-center gap-3">
-                          {company.logo_url ? (
-                            <img src={company.logo_url} alt={company.name} className="h-10 w-10 rounded-lg object-cover" />
-                          ) : (
-                            <div className="h-10 w-10 rounded-lg bg-muted flex items-center justify-center">
-                              <Building2 className="h-5 w-5 text-muted-foreground" />
-                            </div>
-                          )}
-                          <div>
-                            <p className="font-medium">{company.name}</p>
-                            {company.company_number && <p className="text-xs text-muted-foreground font-mono">{company.company_number}</p>}
-                            {!company.company_number && company.name_ar && <p className="text-sm text-muted-foreground" dir="rtl">{company.name_ar}</p>}
-                          </div>
+                          {company.logo_url ? <img src={company.logo_url} alt={company.name} className="h-10 w-10 rounded-lg object-cover" /> : <div className="h-10 w-10 rounded-lg bg-muted flex items-center justify-center"><Building2 className="h-5 w-5 text-muted-foreground" /></div>}
+                          <div><p className="font-medium">{company.name}</p>{company.company_number && <p className="text-xs text-muted-foreground font-mono">{company.company_number}</p>}{!company.company_number && company.name_ar && <p className="text-sm text-muted-foreground" dir="rtl">{company.name_ar}</p>}</div>
                         </div>
                       </TableCell>
-                      <TableCell>
-                        <Badge variant="outline">{getTypeLabel(company.type)}</Badge>
-                      </TableCell>
-                      <TableCell>
-                        <div className="text-sm">
-                          {company.email && <p>{company.email}</p>}
-                          {company.phone && <p className="text-muted-foreground">{company.phone}</p>}
-                        </div>
-                      </TableCell>
-                      <TableCell>
-                        {company.country_code ? `${countryFlag(company.country_code)} ` : ""}{[company.city, company.country].filter(Boolean).join(", ") || "-"}
-                      </TableCell>
-                      <TableCell>
-                        <Badge className={statusColors[company.status]}>
-                          {getStatusLabel(company.status)}
-                        </Badge>
-                      </TableCell>
+                      <TableCell><Badge variant="outline">{getTypeLabel(company.type)}</Badge></TableCell>
+                      <TableCell><div className="text-sm">{company.email && <p>{company.email}</p>}{company.phone && <p className="text-muted-foreground">{company.phone}</p>}</div></TableCell>
+                      <TableCell>{company.country_code ? `${countryFlag(company.country_code)} ` : ""}{[company.city, company.country].filter(Boolean).join(", ") || "-"}</TableCell>
+                      <TableCell><Badge className={statusColors[company.status]}>{getStatusLabel(company.status)}</Badge></TableCell>
                       <TableCell>{format(new Date(company.created_at), "yyyy-MM-dd")}</TableCell>
-                      <TableCell>
-                        <Button variant="ghost" size="icon">
-                          <Eye className="h-4 w-4" />
-                        </Button>
-                      </TableCell>
+                      <TableCell><Button variant="ghost" size="icon"><Eye className="h-4 w-4" /></Button></TableCell>
                     </TableRow>
                   ))}
                   {companies.length === 0 && (
-                    <TableRow>
-                      <TableCell colSpan={7} className="text-center py-12 text-muted-foreground">
-                        <Building2 className="h-12 w-12 mx-auto mb-4 opacity-50" />
-                        <p>{language === "ar" ? "لا توجد شركات" : "No companies found"}</p>
-                      </TableCell>
-                    </TableRow>
+                    <TableRow><TableCell colSpan={7} className="text-center py-12 text-muted-foreground"><Building2 className="h-12 w-12 mx-auto mb-4 opacity-50" /><p>{isAr ? "لا توجد شركات" : "No companies found"}</p></TableCell></TableRow>
                   )}
                 </TableBody>
               </Table>
