@@ -81,7 +81,7 @@ export function UserBioOptimizer({ bio, onBioChange, isAr }: Props) {
   return (
     <div className="space-y-3">
       <div className="flex items-center justify-between">
-        <Label>{isAr ? "نبذة تعريفية" : "Bio"}</Label>
+        <Label>{isAr ? "النبذة بالعربية" : "Bio (English)"}</Label>
         <div className="flex gap-1.5">
           <Button
             type="button"
