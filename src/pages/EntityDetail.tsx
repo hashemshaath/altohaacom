@@ -14,12 +14,13 @@ import { toast } from "@/hooks/use-toast";
 import {
   Building2, MapPin, Globe, Mail, Phone, Users, ShieldCheck,
   Bell, BellOff, ArrowLeft, ExternalLink, Share2, Calendar, Award, Target,
-  GraduationCap, BookOpen, Trophy, ArrowRight
+  GraduationCap, BookOpen, Trophy, ArrowRight, Crown
 } from "lucide-react";
 import { QRCodeDisplay } from "@/components/qr/QRCodeDisplay";
 import { useEntityQRCode } from "@/hooks/useQRCode";
 import { EntityProgramsTab } from "@/components/entities/EntityProgramsTab";
 import { EntityMembersTab } from "@/components/entities/EntityMembersTab";
+import { EntityLeadershipSection } from "@/components/entities/EntityLeadershipSection";
 import { EntityDegreesTab } from "@/components/entities/EntityDegreesTab";
 import { EntityEventsTab } from "@/components/entities/EntityEventsTab";
 import { EntityCompetitionsTab } from "@/components/entities/EntityCompetitionsTab";
@@ -283,36 +284,12 @@ export default function EntityDetail() {
               </section>
             )}
 
-            {/* Leadership */}
-            {(presidentName || secretaryName) && (
-              <section>
-                <h2 className="mb-3 text-xl font-semibold">{isAr ? "القيادة" : "Leadership"}</h2>
-                <div className="grid gap-4 sm:grid-cols-2">
-                  {presidentName && (
-                    <Card className="overflow-hidden">
-                      <CardContent className="pt-6 text-center">
-                        <div className="mx-auto mb-3 flex h-14 w-14 items-center justify-center rounded-2xl bg-primary/10 ring-1 ring-primary/15">
-                          <Award className="h-7 w-7 text-primary" />
-                        </div>
-                        <p className="font-semibold">{presidentName}</p>
-                        <p className="text-sm text-muted-foreground">{isAr ? "الرئيس" : "President"}</p>
-                      </CardContent>
-                    </Card>
-                  )}
-                  {secretaryName && (
-                    <Card className="overflow-hidden">
-                      <CardContent className="pt-6 text-center">
-                        <div className="mx-auto mb-3 flex h-14 w-14 items-center justify-center rounded-2xl bg-accent/15 ring-1 ring-accent/20">
-                          <Users className="h-7 w-7 text-accent-foreground" />
-                        </div>
-                        <p className="font-semibold">{secretaryName}</p>
-                        <p className="text-sm text-muted-foreground">{isAr ? "الأمين العام" : "Secretary General"}</p>
-                      </CardContent>
-                    </Card>
-                  )}
-                </div>
-              </section>
-            )}
+            {/* Leadership - Dynamic from entity_positions */}
+            <EntityLeadershipSection
+              entityId={entity.id}
+              presidentName={presidentName}
+              secretaryName={secretaryName}
+            />
 
             {/* Affiliated */}
             {affiliates.length > 0 && (
