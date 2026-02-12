@@ -16,7 +16,7 @@ import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { toast } from "@/hooks/use-toast";
-import { Plus, Pencil, Trash2, Eye, Landmark, Calendar, MapPin, Building, Ticket, Tag, Globe, Save, X, Loader2, Search, Trophy, GraduationCap, Mic, Image, Users, FileText, Bot } from "lucide-react";
+import { Plus, Pencil, Trash2, Eye, Landmark, Calendar, MapPin, Building, Ticket, Tag, Globe, Save, X, Loader2, Search, Trophy, GraduationCap, Mic, Image, Users, FileText, Bot, Copy } from "lucide-react";
 import { AITextOptimizer } from "@/components/admin/AITextOptimizer";
 import { OrganizerSearchSelector, type OrganizerValue } from "@/components/admin/OrganizerSearchSelector";
 import { ExhibitionMediaUploader } from "@/components/admin/ExhibitionMediaUploader";
@@ -83,7 +83,10 @@ export default function ExhibitionsAdmin() {
   const [audienceInput, setAudienceInput] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState<string>("all");
-  const [organizer, setOrganizer] = useState<OrganizerValue | null>(null);
+  const [typeFilter, setTypeFilter] = useState<string>("all");
+  const [yearFilter, setYearFilter] = useState<string>("all");
+  const [cityFilter, setCityFilter] = useState<string>("all");
+  const [organizerFilter, setOrganizerFilter] = useState<string>("all");
   const [currency, setCurrency] = useState("USD");
   const [includesCompetitions, setIncludesCompetitions] = useState(false);
   const [includesTraining, setIncludesTraining] = useState(false);
@@ -92,17 +95,24 @@ export default function ExhibitionsAdmin() {
 
   const t = (en: string, ar: string) => isAr ? ar : en;
 
+  const [organizer, setOrganizer] = useState<OrganizerValue | null>(null);
+
   const { data: exhibitions, isLoading } = useQuery({
     queryKey: ["admin-exhibitions"],
     queryFn: async () => {
       const { data, error } = await supabase
         .from("exhibitions")
         .select("*")
-        .order("created_at", { ascending: false });
+        .order("start_date", { ascending: false });
       if (error) throw error;
       return data;
     },
   });
+
+  // Derive unique values for filters
+  const uniqueYears = [...new Set(exhibitions?.map(e => new Date(e.start_date).getFullYear().toString()) || [])].sort((a, b) => Number(b) - Number(a));
+  const uniqueCities = [...new Set(exhibitions?.map(e => e.city).filter(Boolean) || [])].sort();
+  const uniqueOrganizers = [...new Set(exhibitions?.map(e => e.organizer_name).filter(Boolean) || [])].sort();
 
   const filteredExhibitions = exhibitions?.filter((ex) => {
     const matchesSearch = !searchQuery || 
@@ -110,7 +120,11 @@ export default function ExhibitionsAdmin() {
       (ex.title_ar && ex.title_ar.includes(searchQuery)) ||
       (ex.organizer_name && ex.organizer_name.toLowerCase().includes(searchQuery.toLowerCase()));
     const matchesStatus = statusFilter === "all" || ex.status === statusFilter;
-    return matchesSearch && matchesStatus;
+    const matchesType = typeFilter === "all" || ex.type === typeFilter;
+    const matchesYear = yearFilter === "all" || new Date(ex.start_date).getFullYear().toString() === yearFilter;
+    const matchesCity = cityFilter === "all" || ex.city === cityFilter;
+    const matchesOrganizer = organizerFilter === "all" || ex.organizer_name === organizerFilter;
+    return matchesSearch && matchesStatus && matchesType && matchesYear && matchesCity && matchesOrganizer;
   });
 
   const saveMutation = useMutation({
@@ -173,6 +187,31 @@ export default function ExhibitionsAdmin() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["admin-exhibitions"] });
       toast({ title: t("Exhibition deleted", "تم حذف الفعالية") });
+    },
+  });
+
+  const duplicateMutation = useMutation({
+    mutationFn: async (ex: any) => {
+      const { id, created_at, updated_at, view_count, slug, ...rest } = ex;
+      const newSlug = (slug || "") + "-copy-" + Date.now().toString(36);
+      const payload = {
+        ...rest,
+        title: (rest.title || "") + " (Copy)",
+        title_ar: rest.title_ar ? rest.title_ar + " (نسخة)" : null,
+        slug: newSlug,
+        status: "draft" as ExhibitionStatus,
+        view_count: 0,
+        created_by: user?.id,
+      };
+      const { error } = await supabase.from("exhibitions").insert(payload);
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["admin-exhibitions"] });
+      toast({ title: t("Exhibition duplicated", "تم تكرار الفعالية") });
+    },
+    onError: (err: any) => {
+      toast({ title: t("Error", "خطأ"), description: err.message, variant: "destructive" });
     },
   });
 
@@ -656,18 +695,62 @@ export default function ExhibitionsAdmin() {
           <Input
             value={searchQuery}
             onChange={e => setSearchQuery(e.target.value)}
-            placeholder={t("Search events...", "البحث عن الفعاليات...")}
+            placeholder={t("Search by name, organizer...", "بحث بالاسم، المنظم...")}
             className="ps-9"
           />
         </div>
         <Select value={statusFilter} onValueChange={setStatusFilter}>
-          <SelectTrigger className="w-[160px]">
-            <SelectValue placeholder={t("All Statuses", "جميع الحالات")} />
+          <SelectTrigger className="w-[140px]">
+            <SelectValue placeholder={t("Status", "الحالة")} />
           </SelectTrigger>
           <SelectContent>
             <SelectItem value="all">{t("All Statuses", "جميع الحالات")}</SelectItem>
             {statusOptions.map(opt => (
               <SelectItem key={opt.value} value={opt.value}>{isAr ? opt.ar : opt.en}</SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+        <Select value={typeFilter} onValueChange={setTypeFilter}>
+          <SelectTrigger className="w-[140px]">
+            <SelectValue placeholder={t("Type", "النوع")} />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="all">{t("All Types", "جميع الأنواع")}</SelectItem>
+            {typeOptions.map(opt => (
+              <SelectItem key={opt.value} value={opt.value}>{isAr ? opt.ar : opt.en}</SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+        <Select value={yearFilter} onValueChange={setYearFilter}>
+          <SelectTrigger className="w-[120px]">
+            <SelectValue placeholder={t("Year", "السنة")} />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="all">{t("All Years", "جميع السنوات")}</SelectItem>
+            {uniqueYears.map(y => (
+              <SelectItem key={y} value={y}>{y}</SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+        <Select value={cityFilter} onValueChange={setCityFilter}>
+          <SelectTrigger className="w-[140px]">
+            <SelectValue placeholder={t("City", "المدينة")} />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="all">{t("All Cities", "جميع المدن")}</SelectItem>
+            {uniqueCities.map(c => (
+              <SelectItem key={c!} value={c!}>{c}</SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+        <Select value={organizerFilter} onValueChange={setOrganizerFilter}>
+          <SelectTrigger className="w-[160px]">
+            <SelectValue placeholder={t("Organizer", "المنظم")} />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="all">{t("All Organizers", "جميع المنظمين")}</SelectItem>
+            {uniqueOrganizers.map(o => (
+              <SelectItem key={o!} value={o!}>{o}</SelectItem>
             ))}
           </SelectContent>
         </Select>
@@ -680,6 +763,7 @@ export default function ExhibitionsAdmin() {
             <TableHeader>
               <TableRow className="bg-muted/30 hover:bg-muted/30">
                 <TableHead className="font-semibold">{t("Event", "الفعالية")}</TableHead>
+                <TableHead className="font-semibold">{t("Organizer", "المنظم")}</TableHead>
                 <TableHead className="font-semibold">{t("Type", "النوع")}</TableHead>
                 <TableHead className="font-semibold">{t("Status", "الحالة")}</TableHead>
                 <TableHead className="font-semibold">{t("Date", "التاريخ")}</TableHead>
@@ -690,20 +774,22 @@ export default function ExhibitionsAdmin() {
             <TableBody>
               {isLoading ? (
                 <TableRow>
-                  <TableCell colSpan={6} className="text-center py-12">
+                  <TableCell colSpan={7} className="text-center py-12">
                     <Loader2 className="h-6 w-6 animate-spin mx-auto text-muted-foreground" />
                     <p className="text-sm text-muted-foreground mt-2">{t("Loading events...", "جاري تحميل الفعاليات...")}</p>
                   </TableCell>
                 </TableRow>
               ) : filteredExhibitions?.length === 0 ? (
                 <TableRow>
-                  <TableCell colSpan={6} className="text-center py-12">
+                  <TableCell colSpan={7} className="text-center py-12">
                     <Landmark className="h-8 w-8 mx-auto text-muted-foreground/40 mb-2" />
                     <p className="text-sm text-muted-foreground">{t("No events found", "لا توجد فعاليات")}</p>
                   </TableCell>
                 </TableRow>
               ) : (
-                filteredExhibitions?.map((ex) => (
+                filteredExhibitions?.map((ex) => {
+                  const orgLogoUrl = (ex as any).organizer_logo_url || ex.logo_url;
+                  return (
                   <TableRow key={ex.id} className="group hover:bg-muted/20 transition-colors duration-150">
                     <TableCell>
                       <div className="flex items-center gap-3">
@@ -713,13 +799,23 @@ export default function ExhibitionsAdmin() {
                         <div className="min-w-0">
                           <Link to={`/exhibitions/${ex.slug}`} className="font-semibold text-sm truncate block group-hover:text-primary transition-colors hover:underline">
                             {isAr && ex.title_ar ? ex.title_ar : ex.title}
+                            <span className="text-primary ms-1 font-bold">{new Date(ex.start_date).getFullYear()}</span>
                           </Link>
-                          {ex.organizer_name && (
-                            <p className="text-[10px] text-muted-foreground truncate">
-                              {isAr && ex.organizer_name_ar ? ex.organizer_name_ar : ex.organizer_name}
-                            </p>
-                          )}
                         </div>
+                      </div>
+                    </TableCell>
+                    <TableCell>
+                      <div className="flex items-center gap-2">
+                        {orgLogoUrl ? (
+                          <img src={orgLogoUrl} alt="" className="h-7 w-7 rounded object-contain shrink-0 bg-muted p-0.5" />
+                        ) : ex.organizer_name ? (
+                          <div className="flex h-7 w-7 items-center justify-center rounded bg-primary/10 shrink-0">
+                            <Building className="h-3.5 w-3.5 text-primary" />
+                          </div>
+                        ) : null}
+                        <span className="text-xs text-muted-foreground truncate max-w-[120px]">
+                          {ex.organizer_name ? (isAr && ex.organizer_name_ar ? ex.organizer_name_ar : ex.organizer_name) : "—"}
+                        </span>
                       </div>
                     </TableCell>
                     <TableCell>
@@ -750,13 +846,17 @@ export default function ExhibitionsAdmin() {
                         <Button size="icon" variant="ghost" onClick={() => startEdit(ex)} className="h-8 w-8" title={t("Edit", "تعديل")}>
                           <Pencil className="h-4 w-4" />
                         </Button>
+                        <Button size="icon" variant="ghost" onClick={() => duplicateMutation.mutate(ex)} className="h-8 w-8" title={t("Duplicate", "تكرار")}>
+                          <Copy className="h-4 w-4" />
+                        </Button>
                         <Button size="icon" variant="ghost" onClick={() => deleteMutation.mutate(ex.id)} className="h-8 w-8 text-destructive hover:text-destructive" title={t("Delete", "حذف")}>
                           <Trash2 className="h-4 w-4" />
                         </Button>
                       </div>
                     </TableCell>
                   </TableRow>
-                ))
+                  );
+                })
               )}
             </TableBody>
           </Table>
