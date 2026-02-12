@@ -15,6 +15,7 @@ import { Separator } from "@/components/ui/separator";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { toast } from "@/hooks/use-toast";
 import { Plus, Pencil, Trash2, Eye, Landmark, Calendar, MapPin, Building, Ticket, Tag, Globe, Save, X, Loader2, ExternalLink, Search } from "lucide-react";
+import { AITextOptimizer } from "@/components/admin/AITextOptimizer";
 import { format } from "date-fns";
 import { Link } from "react-router-dom";
 import type { Database } from "@/integrations/supabase/types";
@@ -244,11 +245,17 @@ export default function ExhibitionsAdmin() {
               <SectionHeader icon={Landmark} title={t("Basic Information", "المعلومات الأساسية")} />
               <div className="grid gap-4 sm:grid-cols-2">
                 <div>
-                  <Label>{t("Title (English)", "العنوان (إنجليزي)")}</Label>
+                  <div className="flex items-center justify-between">
+                    <Label>{t("Title (English)", "العنوان (إنجليزي)")}</Label>
+                    <AITextOptimizer text={form.title || ""} lang="en" onOptimized={v => updateField("title", v)} onTranslated={v => updateField("title_ar", v)} />
+                  </div>
                   <Input value={form.title || ""} onChange={e => updateField("title", e.target.value)} placeholder={t("Event title in English", "عنوان الفعالية بالإنجليزية")} />
                 </div>
                 <div>
-                  <Label>{t("Title (Arabic)", "العنوان (عربي)")}</Label>
+                  <div className="flex items-center justify-between">
+                    <Label>{t("Title (Arabic)", "العنوان (عربي)")}</Label>
+                    <AITextOptimizer text={form.title_ar || ""} lang="ar" onOptimized={v => updateField("title_ar", v)} onTranslated={v => updateField("title", v)} />
+                  </div>
                   <Input value={form.title_ar || ""} onChange={e => updateField("title_ar", e.target.value)} dir="rtl" placeholder={t("Event title in Arabic", "عنوان الفعالية بالعربية")} />
                 </div>
                 <div>
@@ -262,11 +269,17 @@ export default function ExhibitionsAdmin() {
               </div>
               <div className="grid gap-4 sm:grid-cols-2 mt-4">
                 <div>
-                  <Label>{t("Description (English)", "الوصف (إنجليزي)")}</Label>
+                  <div className="flex items-center justify-between">
+                    <Label>{t("Description (English)", "الوصف (إنجليزي)")}</Label>
+                    <AITextOptimizer text={form.description || ""} lang="en" onOptimized={v => updateField("description", v)} onTranslated={v => updateField("description_ar", v)} />
+                  </div>
                   <Textarea value={form.description || ""} onChange={e => updateField("description", e.target.value)} rows={3} placeholder={t("Event description", "وصف الفعالية")} />
                 </div>
                 <div>
-                  <Label>{t("Description (Arabic)", "الوصف (عربي)")}</Label>
+                  <div className="flex items-center justify-between">
+                    <Label>{t("Description (Arabic)", "الوصف (عربي)")}</Label>
+                    <AITextOptimizer text={form.description_ar || ""} lang="ar" onOptimized={v => updateField("description_ar", v)} onTranslated={v => updateField("description", v)} />
+                  </div>
                   <Textarea value={form.description_ar || ""} onChange={e => updateField("description_ar", e.target.value)} rows={3} dir="rtl" placeholder={t("Event description in Arabic", "وصف الفعالية بالعربية")} />
                 </div>
               </div>
@@ -345,11 +358,17 @@ export default function ExhibitionsAdmin() {
               ) : (
                 <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
                   <div>
-                    <Label>{t("Venue (English)", "المكان (إنجليزي)")}</Label>
+                    <div className="flex items-center justify-between">
+                      <Label>{t("Venue (English)", "المكان (إنجليزي)")}</Label>
+                      <AITextOptimizer text={form.venue || ""} lang="en" onTranslated={v => updateField("venue_ar", v)} compact />
+                    </div>
                     <Input value={form.venue || ""} onChange={e => updateField("venue", e.target.value)} placeholder={t("Venue name", "اسم المكان")} />
                   </div>
                   <div>
-                    <Label>{t("Venue (Arabic)", "المكان (عربي)")}</Label>
+                    <div className="flex items-center justify-between">
+                      <Label>{t("Venue (Arabic)", "المكان (عربي)")}</Label>
+                      <AITextOptimizer text={form.venue_ar || ""} lang="ar" onTranslated={v => updateField("venue", v)} compact />
+                    </div>
                     <Input value={form.venue_ar || ""} onChange={e => updateField("venue_ar", e.target.value)} dir="rtl" placeholder={t("Venue name in Arabic", "اسم المكان بالعربية")} />
                   </div>
                   <div>
@@ -377,11 +396,17 @@ export default function ExhibitionsAdmin() {
               <SectionHeader icon={Building} title={t("Organizer Information", "معلومات المنظم")} />
               <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
                 <div>
-                  <Label>{t("Organizer Name (English)", "اسم المنظم (إنجليزي)")}</Label>
+                  <div className="flex items-center justify-between">
+                    <Label>{t("Organizer Name (English)", "اسم المنظم (إنجليزي)")}</Label>
+                    <AITextOptimizer text={form.organizer_name || ""} lang="en" onTranslated={v => updateField("organizer_name_ar", v)} compact />
+                  </div>
                   <Input value={form.organizer_name || ""} onChange={e => updateField("organizer_name", e.target.value)} />
                 </div>
                 <div>
-                  <Label>{t("Organizer Name (Arabic)", "اسم المنظم (عربي)")}</Label>
+                  <div className="flex items-center justify-between">
+                    <Label>{t("Organizer Name (Arabic)", "اسم المنظم (عربي)")}</Label>
+                    <AITextOptimizer text={form.organizer_name_ar || ""} lang="ar" onTranslated={v => updateField("organizer_name", v)} compact />
+                  </div>
                   <Input value={form.organizer_name_ar || ""} onChange={e => updateField("organizer_name_ar", e.target.value)} dir="rtl" />
                 </div>
                 <div>
