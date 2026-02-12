@@ -247,116 +247,118 @@ export default function PublicProfile() {
         {/* ── Hero Profile Card ── */}
         <Card className="mb-6 overflow-visible border-none shadow-xl bg-gradient-to-br from-accent via-accent/95 to-primary/80">
           <CardContent className="p-5 md:p-8">
-            {/* Desktop: Row with avatar on end side, text centered */}
-            <div className="flex flex-col items-center text-center relative">
-              {/* Avatar - positioned at top end corner */}
-              <div className="absolute -top-20 end-4 md:end-8">
-                <div className="h-28 w-28 md:h-36 md:w-36 ring-4 ring-card shadow-2xl border-2 border-card rounded-xl overflow-hidden">
+            <div className="flex flex-col md:flex-row items-center md:items-start gap-5 md:gap-7">
+              {/* Avatar */}
+              <div className="-mt-20 md:-mt-24 shrink-0">
+                <div className="h-32 w-32 md:h-40 md:w-40 ring-4 ring-card shadow-2xl border-2 border-card rounded-2xl overflow-hidden">
                   {profile.avatar_url ? (
                     <img src={profile.avatar_url} alt={displayName} className="h-full w-full object-cover" />
                   ) : (
-                    <div className="h-full w-full flex items-center justify-center bg-primary/10 text-primary text-3xl font-bold">
+                    <div className="h-full w-full flex items-center justify-center bg-primary/10 text-primary text-4xl font-bold">
                       {displayName[0]?.toUpperCase()}
                     </div>
                   )}
                 </div>
               </div>
 
-              {/* Name + Verification + Awards */}
-              <div className="mt-8 md:mt-2 flex items-center gap-2 flex-wrap justify-center">
-                <h1 className="font-serif text-2xl md:text-3xl font-bold text-accent-foreground">{displayName}</h1>
-                {profile.is_verified && <BadgeCheck className="h-6 w-6 text-accent-foreground" />}
-                {userAwards && userAwards.length > 0 && userAwards.map((userAward: any) => {
-                  const award = userAward.global_awards_system;
-                  if (!award || !award.logo_url) return null;
-                  const awardName = isAr ? (award.name_ar || award.name) : award.name;
-                  return (
-                    <Tooltip key={userAward.id}>
-                      <TooltipTrigger asChild>
-                        <img
-                          src={award.logo_url}
-                          alt={awardName}
-                          className="h-7 w-7 object-contain cursor-pointer hover:scale-125 transition-transform duration-200 drop-shadow-md"
-                        />
-                      </TooltipTrigger>
-                      <TooltipContent side="bottom" className="text-xs">
-                        <p className="font-semibold">{awardName}</p>
-                        {userAward.level && <p className="text-muted-foreground">{userAward.level}</p>}
-                        {userAward.year_awarded && <p className="text-muted-foreground">{userAward.year_awarded}</p>}
-                      </TooltipContent>
-                    </Tooltip>
-                  );
-                })}
-              </div>
+              {/* Info */}
+              <div className="flex-1 min-w-0 text-center md:text-start space-y-2 pt-0 md:pt-2" dir={isAr ? "rtl" : "ltr"}>
+                {/* Name + Verification + Awards */}
+                <div className="flex items-center gap-2 flex-wrap justify-center md:justify-start">
+                  <h1 className="font-serif text-2xl md:text-3xl font-bold text-accent-foreground">{displayName}</h1>
+                  {profile.is_verified && <BadgeCheck className="h-6 w-6 text-accent-foreground" />}
+                  {userAwards && userAwards.length > 0 && userAwards.map((userAward: any) => {
+                    const award = userAward.global_awards_system;
+                    if (!award || !award.logo_url) return null;
+                    const awardName = isAr ? (award.name_ar || award.name) : award.name;
+                    return (
+                      <Tooltip key={userAward.id}>
+                        <TooltipTrigger asChild>
+                          <img
+                            src={award.logo_url}
+                            alt={awardName}
+                            className="h-7 w-7 object-contain cursor-pointer hover:scale-125 transition-transform duration-200 drop-shadow-md"
+                          />
+                        </TooltipTrigger>
+                        <TooltipContent side="bottom" className="text-xs">
+                          <p className="font-semibold">{awardName}</p>
+                          {userAward.level && <p className="text-muted-foreground">{userAward.level}</p>}
+                          {userAward.year_awarded && <p className="text-muted-foreground">{userAward.year_awarded}</p>}
+                        </TooltipContent>
+                      </Tooltip>
+                    );
+                  })}
+                </div>
 
-              {/* Username */}
-              <p className="text-sm text-accent-foreground/70 mt-1">@{profile.username}</p>
+                {/* Username */}
+                <p className="text-sm text-accent-foreground/70">@{profile.username}</p>
 
-              {/* Job Title - prominent centered pill */}
-              {currentWork && (
-                <div className="mt-3 inline-flex items-center gap-2 bg-card/90 backdrop-blur-sm rounded-xl px-4 py-2.5 shadow-sm border border-border/10">
-                  {memberships.find((m: any) => m.culinary_entities?.name === currentWork.entity_name)?.culinary_entities?.logo_url && (
-                    <img
-                      src={(memberships.find((m: any) => m.culinary_entities?.name === currentWork.entity_name) as any)?.culinary_entities?.logo_url}
-                      alt=""
-                      className="h-5 w-5 rounded object-cover"
-                    />
-                  )}
-                  <span className="text-sm font-bold text-foreground">
-                    {isAr ? (currentWork.title_ar || currentWork.title) : currentWork.title}
-                  </span>
-                  {currentWork.entity_name && (
-                    <span className="text-muted-foreground text-xs">
-                      {isAr ? "في" : "at"} {currentWork.entity_name}
+                {/* Job Title pill */}
+                {currentWork && (
+                  <div className="inline-flex items-center gap-2 bg-card/90 backdrop-blur-sm rounded-xl px-4 py-2 shadow-sm border border-border/10">
+                    {memberships.find((m: any) => m.culinary_entities?.name === currentWork.entity_name)?.culinary_entities?.logo_url && (
+                      <img
+                        src={(memberships.find((m: any) => m.culinary_entities?.name === currentWork.entity_name) as any)?.culinary_entities?.logo_url}
+                        alt=""
+                        className="h-5 w-5 rounded object-cover"
+                      />
+                    )}
+                    <span className="text-sm font-bold text-foreground">
+                      {isAr ? (currentWork.title_ar || currentWork.title) : currentWork.title}
                     </span>
+                    {currentWork.entity_name && (
+                      <span className="text-muted-foreground text-xs">
+                        {isAr ? "في" : "at"} {currentWork.entity_name}
+                      </span>
+                    )}
+                  </div>
+                )}
+
+                {/* Location */}
+                {(profile.country_code || (profile as any).city || profile.location) && (
+                  <p className="text-sm text-accent-foreground/80 flex items-center gap-1.5 justify-center md:justify-start">
+                    <MapPin className="h-3.5 w-3.5 shrink-0" />
+                    {profile.country_code ? `${countryFlag(profile.country_code)} ` : ""}
+                    {[(profile as any).city, getCountryName(profile.country_code)].filter(Boolean).join(", ") || profile.location}
+                  </p>
+                )}
+
+                {/* Roles */}
+                <div className="flex flex-wrap gap-1.5 justify-center md:justify-start">
+                  {roles?.map((role) => (
+                    <Badge key={role} className="text-xs bg-card/20 text-accent-foreground border-accent-foreground/20 hover:bg-card/30">
+                      {isAr ? roleLabels[role]?.ar || role : roleLabels[role]?.en || role}
+                    </Badge>
+                  ))}
+                  {profile.membership_tier && profile.membership_tier !== "basic" && (
+                    <Badge className="text-xs bg-card/30 text-accent-foreground border-accent-foreground/20">
+                      {profile.membership_tier === "professional" ? (isAr ? "محترف" : "Professional") : profile.membership_tier}
+                    </Badge>
+                  )}
+                  {profile.account_number && (
+                    <Badge className="font-mono text-[10px] bg-card/20 text-accent-foreground/80 border-accent-foreground/15">
+                      {profile.account_number}
+                    </Badge>
                   )}
                 </div>
-              )}
 
-              {/* Location */}
-              {(profile.country_code || (profile as any).city || profile.location) && (
-                <p className="text-sm mt-3 text-accent-foreground/80 flex items-center justify-center gap-1.5">
-                  <MapPin className="h-3.5 w-3.5 shrink-0" />
-                  {profile.country_code ? `${countryFlag(profile.country_code)} ` : ""}
-                  {[(profile as any).city, getCountryName(profile.country_code)].filter(Boolean).join(", ") || profile.location}
-                </p>
-              )}
-
-              {/* Roles */}
-              <div className="mt-3 flex flex-wrap gap-1.5 justify-center">
-                {roles?.map((role) => (
-                  <Badge key={role} className="text-xs bg-card/20 text-accent-foreground border-accent-foreground/20 hover:bg-card/30">
-                    {isAr ? roleLabels[role]?.ar || role : roleLabels[role]?.en || role}
-                  </Badge>
-                ))}
-                {profile.membership_tier && profile.membership_tier !== "basic" && (
-                  <Badge className="text-xs bg-card/30 text-accent-foreground border-accent-foreground/20">
-                    {profile.membership_tier === "professional" ? (isAr ? "محترف" : "Professional") : profile.membership_tier}
-                  </Badge>
-                )}
-                {profile.account_number && (
-                  <Badge className="font-mono text-[10px] bg-card/20 text-accent-foreground/80 border-accent-foreground/15">
-                    {profile.account_number}
-                  </Badge>
-                )}
-              </div>
-
-              {/* Action Buttons */}
-              <div className="flex flex-wrap gap-2 mt-4 justify-center">
-                {user && !isOwnProfile && (
-                  <Button
-                    variant={isFollowing ? "outline" : "default"}
-                    size="sm"
-                    className={isFollowing ? "border-accent-foreground/30 text-accent-foreground hover:bg-card/20" : ""}
-                    onClick={() => toggleFollow.mutate(!!isFollowing)}
-                    disabled={toggleFollow.isPending}
-                  >
-                    {toggleFollow.isPending ? <Loader2 className="me-1.5 h-3.5 w-3.5 animate-spin" /> :
-                      isFollowing ? <UserMinus className="me-1.5 h-3.5 w-3.5" /> : <UserPlus className="me-1.5 h-3.5 w-3.5" />}
-                    {isFollowing ? (isAr ? "إلغاء المتابعة" : "Unfollow") : (isAr ? "متابعة" : "Follow")}
-                  </Button>
-                )}
-                <MessageButton userId={profile.user_id} variant="outline" />
+                {/* Action Buttons */}
+                <div className="flex flex-wrap gap-2 justify-center md:justify-start pt-1">
+                  {user && !isOwnProfile && (
+                    <Button
+                      variant={isFollowing ? "outline" : "default"}
+                      size="sm"
+                      className={isFollowing ? "border-accent-foreground/30 text-accent-foreground hover:bg-card/20" : ""}
+                      onClick={() => toggleFollow.mutate(!!isFollowing)}
+                      disabled={toggleFollow.isPending}
+                    >
+                      {toggleFollow.isPending ? <Loader2 className="me-1.5 h-3.5 w-3.5 animate-spin" /> :
+                        isFollowing ? <UserMinus className="me-1.5 h-3.5 w-3.5" /> : <UserPlus className="me-1.5 h-3.5 w-3.5" />}
+                      {isFollowing ? (isAr ? "إلغاء المتابعة" : "Unfollow") : (isAr ? "متابعة" : "Follow")}
+                    </Button>
+                  )}
+                  <MessageButton userId={profile.user_id} variant="outline" />
+                </div>
               </div>
             </div>
           </CardContent>
@@ -364,7 +366,7 @@ export default function PublicProfile() {
 
         {/* ── Follow Stats Bar ── */}
         <Card className="mb-6">
-          <CardContent className="flex items-center justify-between p-4 gap-4 flex-wrap">
+          <CardContent className="flex items-center justify-between p-4 gap-4 flex-wrap" dir={isAr ? "rtl" : "ltr"}>
             <div className="flex gap-6">
               <button onClick={() => setFollowListOpen("followers")} className="flex flex-col items-center hover:text-primary transition-colors">
                 <span className="text-xl font-bold">{followStats?.followers || 0}</span>
@@ -419,11 +421,11 @@ export default function PublicProfile() {
         {/* ── Main Content Grid ── */}
         <div className="grid gap-6 lg:grid-cols-3">
           {/* ── Left Sidebar ── */}
-          <div className="space-y-5">
+          <div className="space-y-5" dir={isAr ? "rtl" : "ltr"}>
             {/* Bio & Specialization Combined */}
             {isVisible("bio") && (bio || specialization) && (
               <Card>
-                <CardContent className="p-5 space-y-4">
+                <CardContent className="p-5 space-y-4" dir={isAr ? "rtl" : "ltr"}>
                   {bio && (
                     <div>
                       <h3 className="text-sm font-semibold mb-2 flex items-center gap-2">
@@ -520,7 +522,7 @@ export default function PublicProfile() {
           </div>
 
           {/* ── Main Content ── */}
-          <div className="lg:col-span-2 space-y-6">
+          <div className="lg:col-span-2 space-y-6" dir={isAr ? "rtl" : "ltr"}>
             <Tabs defaultValue="career" className="w-full">
               <TabsList className="w-full flex flex-wrap h-auto gap-1 bg-transparent p-0">
                 {isVisible("career") && (
@@ -577,7 +579,7 @@ export default function PublicProfile() {
                   ) : (
                     workRecords.map((record) => (
                       <Card key={record.id} className="overflow-hidden hover:shadow-sm transition-shadow">
-                        <CardContent className="p-5">
+                        <CardContent className="p-5" dir={isAr ? "rtl" : "ltr"}>
                           <div className="flex gap-4">
                             <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-chart-3/10">
                               <Briefcase className="h-5 w-5 text-chart-3" />
@@ -633,7 +635,7 @@ export default function PublicProfile() {
                 <TabsContent value="education" className="mt-4 space-y-4">
                   {educationRecords.map((record) => (
                     <Card key={record.id} className="overflow-hidden hover:shadow-sm transition-shadow">
-                      <CardContent className="p-5">
+                      <CardContent className="p-5" dir={isAr ? "rtl" : "ltr"}>
                         <div className="flex gap-4">
                           <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-chart-2/10">
                             <GraduationCap className="h-5 w-5 text-chart-2" />
@@ -686,7 +688,7 @@ export default function PublicProfile() {
                   <div className="grid gap-4 sm:grid-cols-2">
                     {memberships.map((m: any) => (
                       <Card key={m.id} className="overflow-hidden hover:shadow-sm transition-shadow">
-                        <CardContent className="p-5 flex items-start gap-4">
+                        <CardContent className="p-5 flex items-start gap-4" dir={isAr ? "rtl" : "ltr"}>
                           {m.culinary_entities?.logo_url ? (
                             <img src={m.culinary_entities.logo_url} alt="" className="h-12 w-12 rounded-lg object-cover border" />
                           ) : (

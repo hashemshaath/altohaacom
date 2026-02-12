@@ -98,7 +98,7 @@ export default function Notifications() {
   };
 
   return (
-    <div className="flex min-h-screen flex-col bg-background">
+    <div className="flex min-h-screen flex-col bg-background" dir={isAr ? "rtl" : "ltr"}>
       <Header />
       <main className="container flex-1 py-6 md:py-8">
         <div className="mx-auto max-w-3xl space-y-6">
@@ -122,13 +122,13 @@ export default function Notifications() {
             <div className="flex items-center gap-2">
               {unreadCount > 0 && (
                 <Button variant="outline" size="sm" onClick={markAllAsRead}>
-                  <CheckCheck className="mr-2 h-4 w-4" />
+                  <CheckCheck className="me-2 h-4 w-4" />
                   {language === "ar" ? "قراءة الكل" : "Mark All Read"}
                 </Button>
               )}
               {notifications.length - unreadCount > 0 && (
                 <Button variant="outline" size="sm" onClick={clearAllRead}>
-                  <Trash2 className="mr-2 h-4 w-4" />
+                  <Trash2 className="me-2 h-4 w-4" />
                   {language === "ar" ? "مسح المقروءة" : "Clear Read"}
                 </Button>
               )}
