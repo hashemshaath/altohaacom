@@ -54,8 +54,8 @@ export default function CompetitionsAdmin() {
     queryFn: async () => {
       let query = supabase
         .from("competitions")
-        .select("*, organizer:profiles!competitions_organizer_id_fkey(id, full_name, full_name_ar, avatar_url), exhibition:exhibitions!competitions_exhibition_id_fkey(id, title, title_ar)")
-        .order("competition_start", { ascending: false })
+        .select("*, exhibition:exhibitions!competitions_exhibition_id_fkey(id, title, title_ar)")
+        .order("created_at", { ascending: false })
         .limit(100);
 
       if (searchQuery) query = query.or(`title.ilike.%${searchQuery}%,title_ar.ilike.%${searchQuery}%,city.ilike.%${searchQuery}%`);
@@ -66,7 +66,22 @@ export default function CompetitionsAdmin() {
 
       const { data, error } = await query;
       if (error) throw error;
-      return data as any[];
+
+      // Fetch organizer profiles separately (no FK exists)
+      const organizerIds = [...new Set((data || []).map(c => c.organizer_id).filter(Boolean))];
+      let organizerMap: Record<string, any> = {};
+      if (organizerIds.length > 0) {
+        const { data: profiles } = await supabase
+          .from("profiles")
+          .select("user_id, full_name, full_name_ar, avatar_url")
+          .in("user_id", organizerIds);
+        profiles?.forEach(p => { organizerMap[p.user_id] = p; });
+      }
+
+      return (data || []).map(c => ({
+        ...c,
+        organizer: c.organizer_id ? organizerMap[c.organizer_id] || null : null,
+      }));
     },
   });
 
@@ -104,7 +119,7 @@ export default function CompetitionsAdmin() {
 
   // Unique organizers for filter
   const uniqueOrganizers = competitions?.reduce((acc, c) => {
-    if (c.organizer && !acc.find((o: any) => o.id === c.organizer.id)) acc.push(c.organizer);
+    if (c.organizer && !acc.find((o: any) => o.user_id === c.organizer.user_id)) acc.push(c.organizer);
     return acc;
   }, [] as any[]) || [];
 
@@ -115,7 +130,7 @@ export default function CompetitionsAdmin() {
   }, [] as any[]) || [];
 
   // Unique years
-  const uniqueYears = [...new Set(competitions?.map(c => new Date(c.competition_start).getFullYear().toString()) || [])].sort().reverse();
+  const uniqueYears = [...new Set(competitions?.filter(c => c.competition_start).map(c => new Date(c.competition_start).getFullYear().toString()) || [])].sort().reverse();
 
   const updateStatusMutation = useMutation({
     mutationFn: async ({ id, status }: { id: string; status: CompetitionStatus }) => {
@@ -241,8 +256,8 @@ export default function CompetitionsAdmin() {
               <SelectContent>
                 <SelectItem value="all">{isAr ? "جميع المنظمين" : "All Organizers"}</SelectItem>
                 {uniqueOrganizers.map((org: any) => (
-                  <SelectItem key={org.id} value={org.id}>
-                    {isAr && org.full_name_ar ? org.full_name_ar : org.full_name || org.id.slice(0, 8)}
+                  <SelectItem key={org.user_id} value={org.user_id}>
+                    {isAr && org.full_name_ar ? org.full_name_ar : org.full_name || org.user_id.slice(0, 8)}
                   </SelectItem>
                 ))}
               </SelectContent>
@@ -320,7 +335,7 @@ export default function CompetitionsAdmin() {
                   const fillPct = comp.max_participants ? Math.min(Math.round((counts.approved / comp.max_participants) * 100), 100) : 0;
                   const categories = getCategoriesForComp(comp.id);
                   const types = getTypesForComp(comp.id);
-                  const year = new Date(comp.competition_start).getFullYear();
+                  const year = comp.competition_start ? new Date(comp.competition_start).getFullYear() : null;
 
                   return (
                     <TableRow key={comp.id} className="group hover:bg-muted/20 transition-colors duration-150">
@@ -328,7 +343,7 @@ export default function CompetitionsAdmin() {
                         <div className="max-w-[220px]">
                           <p className="font-semibold text-sm truncate group-hover:text-primary transition-colors">
                             {isAr && comp.title_ar ? comp.title_ar : comp.title}
-                            <span className="ms-1.5 text-[10px] text-muted-foreground font-normal">{year}</span>
+                            {year && <span className="ms-1.5 text-[10px] text-muted-foreground font-normal">{year}</span>}
                           </p>
                           {types.length > 0 && (
                             <div className="flex flex-wrap gap-1 mt-1">
@@ -376,15 +391,21 @@ export default function CompetitionsAdmin() {
                         </Badge>
                       </TableCell>
                       <TableCell>
-                        <div className="flex items-center gap-1.5 text-sm">
-                          <Calendar className="h-3 w-3 text-muted-foreground" />
-                          {format(new Date(comp.competition_start), "MMM d, yyyy")}
-                        </div>
-                        {comp.city && (
-                          <div className="flex items-center gap-1 text-[10px] text-muted-foreground mt-0.5">
-                            <MapPin className="h-2.5 w-2.5" />
-                            {comp.city}{comp.country ? `, ${comp.country}` : ""}
-                          </div>
+                        {comp.competition_start ? (
+                          <>
+                            <div className="flex items-center gap-1.5 text-sm">
+                              <Calendar className="h-3 w-3 text-muted-foreground" />
+                              {format(new Date(comp.competition_start), "MMM d, yyyy")}
+                            </div>
+                            {comp.city && (
+                              <div className="flex items-center gap-1 text-[10px] text-muted-foreground mt-0.5">
+                                <MapPin className="h-2.5 w-2.5" />
+                                {comp.city}{comp.country ? `, ${comp.country}` : ""}
+                              </div>
+                            )}
+                          </>
+                        ) : (
+                          <span className="text-xs text-muted-foreground">{isAr ? "لم يحدد" : "Not set"}</span>
                         )}
                       </TableCell>
                       <TableCell>
