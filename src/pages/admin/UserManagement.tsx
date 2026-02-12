@@ -21,12 +21,13 @@ import { useToast } from "@/hooks/use-toast";
 import { useApprovedSpecialties, useUserSpecialties } from "@/hooks/useSpecialties";
 import { useFollowStats } from "@/hooks/useFollow";
 import { UserPersonalDetailsTab } from "@/components/admin/UserPersonalDetailsTab";
+import { UserCareerTimeline } from "@/components/admin/UserCareerTimeline";
 import { UserModificationHistory } from "@/components/admin/UserModificationHistory";
 import { UserBioOptimizer } from "@/components/admin/UserBioOptimizer";
 import {
   Search, UserX, UserCheck, Eye, Edit, ChevronRight, ChevronLeft, X, Save,
   UserPlus, KeyRound, Mail, Loader2, Upload, Image as ImageIcon, Users, Plus,
-  Trash2, Camera, CheckCircle2, AlertCircle, History, UserCircle, Languages,
+  Trash2, Camera, CheckCircle2, AlertCircle, History, UserCircle, Languages, Briefcase,
 } from "lucide-react";
 import { format } from "date-fns";
 import type { Database } from "@/integrations/supabase/types";
@@ -749,6 +750,7 @@ export default function UserManagement() {
                 <TabsTrigger value="roles"><Users className="me-1 h-3.5 w-3.5" />{isAr ? "الأدوار والحالة" : "Roles & Status"}</TabsTrigger>
                 <TabsTrigger value="groups"><Users className="me-1 h-3.5 w-3.5" />{isAr ? "المجموعات" : "Groups"}</TabsTrigger>
                 <TabsTrigger value="media"><ImageIcon className="me-1 h-3.5 w-3.5" />{isAr ? "الوسائط" : "Media"}</TabsTrigger>
+                <TabsTrigger value="career"><Briefcase className="me-1 h-3.5 w-3.5" />{isAr ? "السجل المهني" : "Career"}</TabsTrigger>
                 <TabsTrigger value="history"><History className="me-1 h-3.5 w-3.5" />{isAr ? "سجل التعديلات" : "History"}</TabsTrigger>
               </TabsList>
 
@@ -861,6 +863,11 @@ export default function UserManagement() {
                   onChange={(updates) => setEditPersonal((prev) => ({ ...prev, ...updates }))}
                   isAr={isAr}
                 />
+              </TabsContent>
+
+              {/* ── Career Timeline Tab ────── */}
+              <TabsContent value="career" className="space-y-4">
+                <UserCareerTimeline userId={editingUser.user_id} isAr={isAr} />
               </TabsContent>
 
               {/* ── Roles & Status Tab ────── */}

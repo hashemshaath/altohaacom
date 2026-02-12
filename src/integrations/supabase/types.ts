@@ -9553,6 +9553,92 @@ export type Database = {
           },
         ]
       }
+      user_career_records: {
+        Row: {
+          created_at: string
+          department: string | null
+          department_ar: string | null
+          description: string | null
+          description_ar: string | null
+          education_level: string | null
+          employment_type: string | null
+          end_date: string | null
+          entity_id: string | null
+          entity_name: string | null
+          field_of_study: string | null
+          field_of_study_ar: string | null
+          grade: string | null
+          id: string
+          is_current: boolean
+          location: string | null
+          record_type: string
+          sort_order: number | null
+          start_date: string | null
+          title: string
+          title_ar: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          department?: string | null
+          department_ar?: string | null
+          description?: string | null
+          description_ar?: string | null
+          education_level?: string | null
+          employment_type?: string | null
+          end_date?: string | null
+          entity_id?: string | null
+          entity_name?: string | null
+          field_of_study?: string | null
+          field_of_study_ar?: string | null
+          grade?: string | null
+          id?: string
+          is_current?: boolean
+          location?: string | null
+          record_type: string
+          sort_order?: number | null
+          start_date?: string | null
+          title: string
+          title_ar?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          department?: string | null
+          department_ar?: string | null
+          description?: string | null
+          description_ar?: string | null
+          education_level?: string | null
+          employment_type?: string | null
+          end_date?: string | null
+          entity_id?: string | null
+          entity_name?: string | null
+          field_of_study?: string | null
+          field_of_study_ar?: string | null
+          grade?: string | null
+          id?: string
+          is_current?: boolean
+          location?: string | null
+          record_type?: string
+          sort_order?: number | null
+          start_date?: string | null
+          title?: string
+          title_ar?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_career_records_entity_id_fkey"
+            columns: ["entity_id"]
+            isOneToOne: false
+            referencedRelation: "culinary_entities"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       user_follows: {
         Row: {
           created_at: string
