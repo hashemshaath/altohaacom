@@ -397,12 +397,11 @@ export default function ExhibitionDetail() {
         ) : (
           <div className="h-56 w-full bg-gradient-to-br from-primary/20 via-accent/10 to-background sm:h-64 md:h-80 lg:h-[26rem]" />
         )}
-        <div className="absolute inset-0 bg-gradient-to-t from-background via-background/70 to-background/10" />
-        <div className="absolute -top-32 start-1/4 h-64 w-64 rounded-full bg-primary/8 blur-[100px] animate-pulse" />
-        <div className="absolute -top-20 end-1/3 h-48 w-48 rounded-full bg-accent/10 blur-[80px] animate-pulse [animation-delay:1s]" />
-        <div className="absolute bottom-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-primary/20 to-transparent" />
+        {/* Dark overlay for text readability */}
+        <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/60 to-black/20" />
+        <div className="absolute bottom-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-primary/30 to-transparent" />
         <div className="absolute inset-x-0 bottom-0 container pb-6 md:pb-10">
-          <Button variant="ghost" size="sm" className="-ms-2 mb-4 text-foreground/80 hover:text-foreground" asChild>
+          <Button variant="ghost" size="sm" className="-ms-2 mb-4 text-white/80 hover:text-white" asChild>
             <Link to="/exhibitions">
               <ArrowLeft className="me-1.5 h-4 w-4" />
               {isAr ? "الفعاليات" : "Events"}
@@ -421,9 +420,11 @@ export default function ExhibitionDetail() {
                 </Badge>
               </div>
 
-              <h1 className="font-serif text-3xl font-bold leading-tight sm:text-4xl md:text-5xl lg:text-6xl drop-shadow-md">{title}</h1>
+              <h1 className="font-serif text-3xl font-bold leading-tight sm:text-4xl md:text-5xl lg:text-6xl text-white drop-shadow-lg">
+                {title} <span className="text-primary">{new Date(exhibition.start_date).getFullYear()}</span>
+              </h1>
 
-              <div className="flex flex-wrap items-center gap-4 text-sm text-muted-foreground">
+              <div className="flex flex-wrap items-center gap-4 text-sm text-white/80">
                 <span className="flex items-center gap-1.5">
                   <Calendar className="h-3.5 w-3.5" />
                   {format(start, "MMM d")} – {format(end, "MMM d, yyyy")}
@@ -447,17 +448,17 @@ export default function ExhibitionDetail() {
             <div className="flex gap-2 shrink-0">
               {/* Organizer badge in hero */}
               {organizer && (
-                <div className="hidden sm:flex items-center gap-3 rounded-xl border border-border/40 bg-card/80 px-4 py-3 backdrop-blur-sm shadow-sm">
+                <div className="hidden sm:flex items-center gap-3 rounded-xl border border-white/20 bg-black/40 px-4 py-3 backdrop-blur-sm shadow-sm">
                   {organizerLogoUrl ? (
-                    <img src={organizerLogoUrl} alt={organizer} className="h-10 w-10 rounded-lg object-contain bg-background p-0.5" />
+                    <img src={organizerLogoUrl} alt={organizer} className="h-10 w-10 rounded-lg object-contain bg-white/90 p-0.5" />
                   ) : (
-                    <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10">
-                      <Building className="h-5 w-5 text-primary" />
+                    <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-white/20">
+                      <Building className="h-5 w-5 text-white" />
                     </div>
                   )}
                   <div>
-                    <p className="text-[10px] uppercase tracking-wider text-muted-foreground">{isAr ? "المنظم" : "Organized by"}</p>
-                    <p className="font-semibold text-sm">{organizer}</p>
+                    <p className="text-[10px] uppercase tracking-wider text-white/60">{isAr ? "المنظم" : "Organized by"}</p>
+                    <p className="font-semibold text-sm text-white">{organizer}</p>
                   </div>
                 </div>
               )}
