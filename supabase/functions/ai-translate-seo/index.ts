@@ -24,11 +24,23 @@ serve(async (req) => {
     let systemPrompt: string;
     
     if (optimize_only) {
-      systemPrompt = `You are an SEO optimization expert. Optimize the following ${source_lang === "ar" ? "Arabic" : "English"} text for search engines while keeping the meaning intact. Make it more discoverable, use relevant keywords naturally, and ensure it reads well for both humans and search engines. Return ONLY the optimized text, nothing else.`;
+      systemPrompt = `You are an SEO optimization expert. Optimize the following ${source_lang === "ar" ? "Arabic" : "English"} text for search engines while keeping the meaning intact. Make it more discoverable, use relevant keywords naturally, and ensure it reads well for both humans and search engines.
+
+IMPORTANT RULES:
+- NEVER use special characters like **, ##, __, --, etc.
+- NEVER use markdown formatting symbols
+- Preserve proper spacing and punctuation
+- Return ONLY the optimized text, nothing else.`;
     } else {
       const fromLang = source_lang === "ar" ? "Arabic" : "English";
       const toLang = target_lang === "en" ? "English" : "Arabic";
-      systemPrompt = `You are a professional translator and SEO expert. Translate the following ${fromLang} text to ${toLang}. ${optimize_seo ? "Also optimize the translation for search engines - use relevant keywords naturally, ensure readability, and make it discoverable." : ""} Return ONLY the translated text, nothing else.`;
+      systemPrompt = `You are a professional translator and SEO expert. Translate the following ${fromLang} text to ${toLang}. ${optimize_seo ? "Also optimize the translation for search engines - use relevant keywords naturally, ensure readability, and make it discoverable." : ""}
+
+IMPORTANT RULES:
+- NEVER use special characters like **, ##, __, --, etc.
+- NEVER use markdown formatting symbols
+- Preserve proper spacing and punctuation
+- Return ONLY the translated text, nothing else.`;
     }
 
     const response = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
