@@ -6,33 +6,135 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
-import { User, ExternalLink } from "lucide-react";
+import { User, ExternalLink, Building2 } from "lucide-react";
 
 interface OrganizerCardProps {
   organizerId: string;
+  exhibitionId?: string | null;
 }
 
-export function OrganizerCard({ organizerId }: OrganizerCardProps) {
+export function OrganizerCard({ organizerId, exhibitionId }: OrganizerCardProps) {
   const { language } = useLanguage();
   const isAr = language === "ar";
 
-  const { data: organizer } = useQuery({
-    queryKey: ["organizer-profile", organizerId],
+  // If linked to exhibition, get the exhibition's organizer instead
+  const { data: exhibition } = useQuery({
+    queryKey: ["exhibition-organizer", exhibitionId],
     queryFn: async () => {
       const { data, error } = await supabase
-        .from("profiles")
-        .select("user_id, full_name, avatar_url, username, specialization, is_verified")
-        .eq("user_id", organizerId)
+        .from("exhibitions")
+        .select("organizer_entity_id, organizer_company_id, organizer_user_id, organizer_type, organizer_name, organizer_name_ar, organizer_logo_url, title, title_ar")
+        .eq("id", exhibitionId!)
         .single();
       if (error) throw error;
       return data;
     },
+    enabled: !!exhibitionId,
   });
 
-  if (!organizer) return null;
+  // Determine the real organizer from exhibition
+  const exhEntityId = exhibition?.organizer_entity_id;
+  const exhCompanyId = exhibition?.organizer_company_id;
+  const exhUserId = exhibition?.organizer_user_id;
 
-  const initials = organizer.full_name
-    ? organizer.full_name.split(" ").map((n: string) => n[0]).join("").slice(0, 2).toUpperCase()
+  // Try to find as entity first
+  const { data: entityOrganizer } = useQuery({
+    queryKey: ["organizer-entity", exhEntityId],
+    queryFn: async () => {
+      const { data } = await supabase
+        .from("culinary_entities")
+        .select("id, name, name_ar, logo_url, abbreviation, type")
+        .eq("id", exhEntityId!)
+        .maybeSingle();
+      return data;
+    },
+    enabled: !!exhEntityId,
+  });
+
+  // Try to find as company
+  const { data: companyOrganizer } = useQuery({
+    queryKey: ["organizer-company", exhCompanyId],
+    queryFn: async () => {
+      const { data } = await supabase
+        .from("companies")
+        .select("id, name, name_ar, logo_url")
+        .eq("id", exhCompanyId!)
+        .maybeSingle();
+      return data;
+    },
+    enabled: !!exhCompanyId && !entityOrganizer,
+  });
+
+  // Fallback: profile-based organizer (exhibition user or competition creator)
+  const effectiveUserId = exhUserId || organizerId;
+  const { data: profileOrganizer } = useQuery({
+    queryKey: ["organizer-profile", effectiveUserId],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("profiles")
+        .select("user_id, full_name, avatar_url, username, specialization, is_verified")
+        .eq("user_id", effectiveUserId)
+        .single();
+      if (error) throw error;
+      return data;
+    },
+    enabled: !!effectiveUserId && !entityOrganizer && !companyOrganizer && !exhibition?.organizer_name,
+  });
+
+  // Render entity/company organizer
+  if (entityOrganizer || companyOrganizer || exhibition?.organizer_name) {
+    const org = entityOrganizer || companyOrganizer;
+    const name = org
+      ? (isAr && org.name_ar ? org.name_ar : org.name)
+      : (isAr && exhibition?.organizer_name_ar ? exhibition.organizer_name_ar : exhibition?.organizer_name);
+    const logo = org?.logo_url || exhibition?.organizer_logo_url;
+    const abbr = entityOrganizer?.abbreviation;
+
+    return (
+      <Card className="overflow-hidden">
+        <div className="border-b bg-muted/30 px-4 py-3">
+          <h3 className="flex items-center gap-2 font-semibold text-sm">
+            <div className="flex h-6 w-6 items-center justify-center rounded-md bg-chart-3/10">
+              <Building2 className="h-3.5 w-3.5 text-chart-3" />
+            </div>
+            {isAr ? "المنظم" : "Organizer"}
+          </h3>
+        </div>
+        <CardContent className="p-4">
+          <div className="flex items-center gap-3">
+            {logo ? (
+              <img src={logo} alt={name || ""} className="h-11 w-11 rounded-lg object-contain" />
+            ) : (
+              <div className="h-11 w-11 rounded-lg bg-primary/10 flex items-center justify-center">
+                <Building2 className="h-5 w-5 text-primary/50" />
+              </div>
+            )}
+            <div className="min-w-0 flex-1">
+              <p className="text-sm font-medium truncate">{name}</p>
+              {abbr && <p className="text-[10px] text-muted-foreground">{abbr}</p>}
+              {entityOrganizer?.type && (
+                <p className="text-[10px] text-muted-foreground">{entityOrganizer.type.replace("_", " ")}</p>
+              )}
+            </div>
+          </div>
+          {entityOrganizer && (
+            <Button asChild variant="outline" size="sm" className="w-full mt-3">
+              <Link to={`/entities/${entityOrganizer.id}`}>
+                <ExternalLink className="me-1.5 h-3.5 w-3.5" />
+                {isAr ? "عرض الجهة" : "View Organization"}
+              </Link>
+            </Button>
+          )}
+        </CardContent>
+      </Card>
+    );
+  }
+
+  // Fallback: profile organizer
+  if (!profileOrganizer) return null;
+
+  const initials = profileOrganizer.full_name
+    ? profileOrganizer.full_name.split(" ").map((n: string) => n[0]).join("").slice(0, 2).toUpperCase()
     : "?";
 
   return (
@@ -48,26 +150,26 @@ export function OrganizerCard({ organizerId }: OrganizerCardProps) {
       <CardContent className="p-4">
         <div className="flex items-center gap-3">
           <Avatar className="h-11 w-11">
-            <AvatarImage src={organizer.avatar_url || undefined} alt={organizer.full_name || ""} />
+            <AvatarImage src={profileOrganizer.avatar_url || undefined} alt={profileOrganizer.full_name || ""} />
             <AvatarFallback className="bg-primary/10 text-primary text-sm font-medium">{initials}</AvatarFallback>
           </Avatar>
           <div className="min-w-0 flex-1">
             <div className="flex items-center gap-1.5">
-              <p className="text-sm font-medium truncate">{organizer.full_name || (isAr ? "منظم" : "Organizer")}</p>
-              {organizer.is_verified && (
+              <p className="text-sm font-medium truncate">{profileOrganizer.full_name || (isAr ? "منظم" : "Organizer")}</p>
+              {profileOrganizer.is_verified && (
                 <Badge variant="secondary" className="text-[9px] h-4 px-1 shrink-0">✓</Badge>
               )}
             </div>
-            {organizer.specialization && (
-              <p className="text-[11px] text-muted-foreground truncate">{organizer.specialization}</p>
+            {profileOrganizer.specialization && (
+              <p className="text-[11px] text-muted-foreground truncate">{profileOrganizer.specialization}</p>
             )}
-            {organizer.username && (
-              <p className="text-[10px] text-muted-foreground">@{organizer.username}</p>
+            {profileOrganizer.username && (
+              <p className="text-[10px] text-muted-foreground">@{profileOrganizer.username}</p>
             )}
           </div>
         </div>
         <Button asChild variant="outline" size="sm" className="w-full mt-3">
-          <Link to={`/profile/${organizer.username || organizer.user_id}`}>
+          <Link to={`/profile/${profileOrganizer.username || profileOrganizer.user_id}`}>
             <ExternalLink className="me-1.5 h-3.5 w-3.5" />
             {isAr ? "عرض الملف الشخصي" : "View Profile"}
           </Link>

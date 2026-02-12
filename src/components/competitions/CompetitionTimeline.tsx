@@ -72,27 +72,40 @@ export function CompetitionTimeline({
                     className={cn(
                       "relative z-10 flex h-8 w-8 shrink-0 items-center justify-center rounded-full border-2 transition-all",
                       isCurrent
-                        ? "border-primary bg-primary text-primary-foreground shadow-md shadow-primary/20"
+                        ? "border-chart-5 bg-chart-5 text-chart-5-foreground shadow-md shadow-chart-5/20"
                         : isPast
-                        ? "border-chart-5 bg-chart-5/10 text-chart-5"
-                        : "border-border bg-background text-muted-foreground"
+                        ? "border-muted-foreground/30 bg-muted text-muted-foreground"
+                        : "border-primary bg-primary/10 text-primary"
                     )}
                   >
                     <Icon className="h-3.5 w-3.5" />
                   </div>
                   <div className="flex-1 pt-0.5">
                     <div className="flex items-center gap-2 flex-wrap">
-                      <p className={cn("text-sm font-medium", isPast && "text-muted-foreground")}>
+                      <p className={cn(
+                        "text-sm font-medium",
+                        isPast && !isCurrent && "text-muted-foreground line-through decoration-muted-foreground/30"
+                      )}>
                         {isAr ? event.labelAr : event.label}
                       </p>
                       {isCurrent && (
-                        <Badge className="bg-primary/10 text-primary text-[10px] px-1.5 py-0">
+                        <Badge className="bg-chart-5/10 text-chart-5 text-[10px] px-1.5 py-0">
                           {isAr ? "الآن" : "Now"}
                         </Badge>
                       )}
                       {isUrgent && (
                         <Badge className="bg-chart-4/10 text-chart-4 text-[10px] px-1.5 py-0 animate-pulse">
                           {isAr ? `${daysUntil} أيام` : `${daysUntil}d left`}
+                        </Badge>
+                      )}
+                      {!isPast && !isCurrent && !isUrgent && (
+                        <Badge variant="outline" className="text-[10px] px-1.5 py-0 border-primary/20 text-primary">
+                          {isAr ? "قادم" : "Upcoming"}
+                        </Badge>
+                      )}
+                      {isPast && !isCurrent && (
+                        <Badge variant="outline" className="text-[10px] px-1.5 py-0 border-muted text-muted-foreground">
+                          {isAr ? "مكتمل" : "Done"}
                         </Badge>
                       )}
                     </div>

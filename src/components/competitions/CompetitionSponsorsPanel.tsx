@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useLanguage } from "@/i18n/LanguageContext";
@@ -30,6 +30,7 @@ export function CompetitionSponsorsPanel({ competitionId, isOrganizer }: Competi
   const queryClient = useQueryClient();
   const [selectedCompany, setSelectedCompany] = useState("");
   const [selectedPackage, setSelectedPackage] = useState("");
+  const isAr = language === "ar";
 
   const { data: sponsors } = useQuery({
     queryKey: ["competition-sponsors", competitionId],
@@ -90,7 +91,7 @@ export function CompetitionSponsorsPanel({ competitionId, isOrganizer }: Competi
       queryClient.invalidateQueries({ queryKey: ["competition-sponsors", competitionId] });
       setSelectedCompany("");
       setSelectedPackage("");
-      toast({ title: language === "ar" ? "تمت إضافة الراعي" : "Sponsor added" });
+      toast({ title: isAr ? "تمت إضافة الراعي" : "Sponsor added" });
     },
     onError: (err: any) => {
       toast({ variant: "destructive", title: "Error", description: err.message });
@@ -104,23 +105,39 @@ export function CompetitionSponsorsPanel({ competitionId, isOrganizer }: Competi
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["competition-sponsors", competitionId] });
-      toast({ title: language === "ar" ? "تمت إزالة الراعي" : "Sponsor removed" });
+      toast({ title: isAr ? "تمت إزالة الراعي" : "Sponsor removed" });
     },
   });
 
   const existingSponsorIds = sponsors?.map((s: any) => s.company_id) || [];
   const availableCompanies = companies?.filter(c => !existingSponsorIds.includes(c.id)) || [];
 
+  // Marquee for public display (non-organizer view)
+  const scrollRef = useRef<HTMLDivElement>(null);
+  const [shouldScroll, setShouldScroll] = useState(false);
+
+  useEffect(() => {
+    if (sponsors && sponsors.length > 2) {
+      setShouldScroll(true);
+    }
+  }, [sponsors]);
+
+  if (!sponsors || sponsors.length === 0) {
+    if (!isOrganizer) return null;
+  }
+
   return (
     <Card>
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           <Building className="h-5 w-5 text-primary" />
-          {language === "ar" ? "رعاة المسابقة" : "Competition Sponsors"}
+          {isAr ? "رعاة المسابقة" : "Competition Sponsors"}
         </CardTitle>
-        <CardDescription>
-          {language === "ar" ? "إدارة رعاة ومموّلي هذه المسابقة" : "Manage sponsors for this competition"}
-        </CardDescription>
+        {isOrganizer && (
+          <CardDescription>
+            {isAr ? "إدارة رعاة ومموّلي هذه المسابقة" : "Manage sponsors for this competition"}
+          </CardDescription>
+        )}
       </CardHeader>
       <CardContent className="space-y-4">
         {/* Add Sponsor Form (organizer only) */}
@@ -128,24 +145,24 @@ export function CompetitionSponsorsPanel({ competitionId, isOrganizer }: Competi
           <div className="flex flex-wrap gap-2 rounded-lg border p-3">
             <Select value={selectedCompany} onValueChange={setSelectedCompany}>
               <SelectTrigger className="w-48">
-                <SelectValue placeholder={language === "ar" ? "اختر شركة" : "Select company"} />
+                <SelectValue placeholder={isAr ? "اختر شركة" : "Select company"} />
               </SelectTrigger>
               <SelectContent>
                 {availableCompanies.map(c => (
                   <SelectItem key={c.id} value={c.id}>
-                    {language === "ar" && c.name_ar ? c.name_ar : c.name}
+                    {isAr && c.name_ar ? c.name_ar : c.name}
                   </SelectItem>
                 ))}
               </SelectContent>
             </Select>
             <Select value={selectedPackage} onValueChange={setSelectedPackage}>
               <SelectTrigger className="w-48">
-                <SelectValue placeholder={language === "ar" ? "اختر الباقة" : "Select package"} />
+                <SelectValue placeholder={isAr ? "اختر الباقة" : "Select package"} />
               </SelectTrigger>
               <SelectContent>
                 {packages?.map(p => (
                   <SelectItem key={p.id} value={p.id}>
-                    {language === "ar" && p.name_ar ? p.name_ar : p.name}
+                    {isAr && p.name_ar ? p.name_ar : p.name}
                   </SelectItem>
                 ))}
               </SelectContent>
@@ -155,42 +172,42 @@ export function CompetitionSponsorsPanel({ competitionId, isOrganizer }: Competi
               onClick={() => addSponsorMutation.mutate()}
               disabled={!selectedCompany || addSponsorMutation.isPending}
             >
-              <Plus className="mr-1 h-4 w-4" />
-              {language === "ar" ? "إضافة" : "Add"}
+              <Plus className="me-1 h-4 w-4" />
+              {isAr ? "إضافة" : "Add"}
             </Button>
           </div>
         )}
 
-        {/* Sponsors List */}
+        {/* Sponsors Display - Marquee for public, grid for organizer */}
         {sponsors && sponsors.length > 0 ? (
-          <div className="grid gap-3 sm:grid-cols-2">
-            {sponsors.map((sponsor: any) => {
-              const tier = (sponsor.tier || "bronze") as keyof typeof TIER_CONFIG;
-              const config = TIER_CONFIG[tier] || TIER_CONFIG.bronze;
-              const Icon = config.icon;
-              const companyName = language === "ar" && sponsor.companies?.name_ar
-                ? sponsor.companies.name_ar
-                : sponsor.companies?.name;
+          isOrganizer ? (
+            <div className="grid gap-3 sm:grid-cols-2">
+              {sponsors.map((sponsor: any) => {
+                const tier = (sponsor.tier || "bronze") as keyof typeof TIER_CONFIG;
+                const config = TIER_CONFIG[tier] || TIER_CONFIG.bronze;
+                const Icon = config.icon;
+                const companyName = isAr && sponsor.companies?.name_ar
+                  ? sponsor.companies.name_ar
+                  : sponsor.companies?.name;
 
-              return (
-                <div key={sponsor.id} className={`flex items-center gap-3 rounded-lg border p-3 ${config.bg}`}>
-                  {sponsor.companies?.logo_url ? (
-                    <img src={sponsor.companies.logo_url} alt={companyName} className="h-10 w-10 rounded-lg object-contain" />
-                  ) : (
-                    <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-muted">
-                      <Building className="h-5 w-5 text-muted-foreground" />
+                return (
+                  <div key={sponsor.id} className={`flex items-center gap-3 rounded-lg border p-3 ${config.bg}`}>
+                    {sponsor.companies?.logo_url ? (
+                      <img src={sponsor.companies.logo_url} alt={companyName} className="h-10 w-10 rounded-lg object-contain" />
+                    ) : (
+                      <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-muted">
+                        <Building className="h-5 w-5 text-muted-foreground" />
+                      </div>
+                    )}
+                    <div className="flex-1 min-w-0">
+                      <p className="truncate font-medium text-sm">{companyName}</p>
+                      <div className="flex items-center gap-1">
+                        <Icon className={`h-3 w-3 ${config.color}`} />
+                        <span className="text-xs text-muted-foreground">
+                          {isAr ? config.labelAr : config.label}
+                        </span>
+                      </div>
                     </div>
-                  )}
-                  <div className="flex-1 min-w-0">
-                    <p className="truncate font-medium text-sm">{companyName}</p>
-                    <div className="flex items-center gap-1">
-                      <Icon className={`h-3 w-3 ${config.color}`} />
-                      <span className="text-xs text-muted-foreground">
-                        {language === "ar" ? config.labelAr : config.label}
-                      </span>
-                    </div>
-                  </div>
-                  {isOrganizer && (
                     <Button
                       variant="ghost"
                       size="icon"
@@ -199,14 +216,62 @@ export function CompetitionSponsorsPanel({ competitionId, isOrganizer }: Competi
                     >
                       <Trash2 className="h-4 w-4 text-destructive" />
                     </Button>
-                  )}
-                </div>
-              );
-            })}
-          </div>
+                  </div>
+                );
+              })}
+            </div>
+          ) : (
+            /* Public marquee sponsor strip */
+            <div className="relative overflow-hidden rounded-lg border bg-muted/20 py-3">
+              <div
+                ref={scrollRef}
+                className={`flex items-center gap-6 px-4 ${shouldScroll ? "animate-marquee" : "justify-center"}`}
+                style={shouldScroll ? {
+                  animation: `marquee ${sponsors.length * 5}s linear infinite`,
+                } : {}}
+              >
+                {/* Double the items for seamless loop */}
+                {[...sponsors, ...(shouldScroll ? sponsors : [])].map((sponsor: any, idx: number) => {
+                  const tier = (sponsor.tier || "bronze") as keyof typeof TIER_CONFIG;
+                  const config = TIER_CONFIG[tier] || TIER_CONFIG.bronze;
+                  const Icon = config.icon;
+                  const companyName = isAr && sponsor.companies?.name_ar
+                    ? sponsor.companies.name_ar
+                    : sponsor.companies?.name;
+
+                  return (
+                    <div key={`${sponsor.id}-${idx}`} className="flex items-center gap-3 shrink-0">
+                      {sponsor.companies?.logo_url ? (
+                        <img src={sponsor.companies.logo_url} alt={companyName} className="h-10 w-10 rounded-lg object-contain" />
+                      ) : (
+                        <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-muted">
+                          <Building className="h-5 w-5 text-muted-foreground" />
+                        </div>
+                      )}
+                      <div className="min-w-0">
+                        <p className="text-sm font-medium whitespace-nowrap">{companyName}</p>
+                        <div className="flex items-center gap-1">
+                          <Icon className={`h-3 w-3 ${config.color}`} />
+                          <span className="text-[10px] text-muted-foreground">
+                            {isAr ? config.labelAr : config.label}
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+              <style>{`
+                @keyframes marquee {
+                  0% { transform: translateX(0); }
+                  100% { transform: translateX(-50%); }
+                }
+              `}</style>
+            </div>
+          )
         ) : (
           <p className="py-4 text-center text-sm text-muted-foreground">
-            {language === "ar" ? "لا يوجد رعاة حتى الآن" : "No sponsors yet"}
+            {isAr ? "لا يوجد رعاة حتى الآن" : "No sponsors yet"}
           </p>
         )}
       </CardContent>
