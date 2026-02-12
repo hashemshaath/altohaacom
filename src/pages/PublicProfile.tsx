@@ -222,7 +222,7 @@ export default function PublicProfile() {
   };
 
   return (
-    <div className="flex min-h-screen flex-col">
+    <div className="flex min-h-screen flex-col" dir={isAr ? "rtl" : "ltr"}>
       <SEOHead
         title={`${displayName} (@${profile.username}) - Profile`}
         description={bio || `${displayName}'s professional culinary profile on Altohaa`}
@@ -247,9 +247,9 @@ export default function PublicProfile() {
       <main className="container flex-1 -mt-20 pb-10 relative z-10">
         {/* ── Hero Profile Section ── */}
         <div className="flex flex-col md:flex-row gap-5 items-start md:items-end mb-8">
-          <Avatar className="h-28 w-28 md:h-32 md:w-32 ring-4 ring-background shadow-xl border-2 border-background">
-            <AvatarImage src={profile.avatar_url || undefined} />
-            <AvatarFallback className="text-3xl bg-primary/10 text-primary font-bold">
+          <Avatar className="h-28 w-28 md:h-32 md:w-32 ring-4 ring-background shadow-xl border-2 border-background rounded-xl">
+            <AvatarImage src={profile.avatar_url || undefined} className="rounded-xl" />
+            <AvatarFallback className="text-3xl bg-primary/10 text-primary font-bold rounded-xl">
               {displayName[0]?.toUpperCase()}
             </AvatarFallback>
           </Avatar>
@@ -406,42 +406,45 @@ export default function PublicProfile() {
         <div className="grid gap-6 lg:grid-cols-3">
           {/* ── Left Sidebar ── */}
           <div className="space-y-5">
-            {/* Bio */}
-            {isVisible("bio") && bio && (
+            {/* Bio & Specialization Combined */}
+            {isVisible("bio") && (bio || specialization) && (
               <Card>
-                <CardContent className="p-5">
-                  <h3 className="text-sm font-semibold mb-2 flex items-center gap-2">
-                    <User className="h-4 w-4 text-primary" />
-                    {isAr ? "نبذة" : "About"}
-                  </h3>
-                  <p className="text-sm leading-relaxed text-muted-foreground">{bio}</p>
-                </CardContent>
-              </Card>
-            )}
-
-            {/* Specialization & Skills */}
-            {specialization && (
-              <Card>
-                <CardContent className="p-5">
-                  <h3 className="text-sm font-semibold mb-2 flex items-center gap-2">
-                    <ChefHat className="h-4 w-4 text-primary" />
-                    {isAr ? "التخصص" : "Specialization"}
-                  </h3>
-                  <p className="text-sm mb-2">{specialization}</p>
-                  {userSpecialties.length > 0 && (
-                    <div className="flex flex-wrap gap-1">
-                      {userSpecialties.map((us: any) => (
-                        <Badge key={us.id} variant="outline" className="text-[10px]">
-                          {isAr ? us.specialties?.name_ar || us.specialties?.name : us.specialties?.name}
-                        </Badge>
-                      ))}
+                <CardContent className="p-5 space-y-4">
+                  {bio && (
+                    <div>
+                      <h3 className="text-sm font-semibold mb-2 flex items-center gap-2">
+                        <User className="h-4 w-4 text-primary" />
+                        {isAr ? "نبذة" : "About"}
+                      </h3>
+                      <p className="text-sm leading-relaxed text-foreground whitespace-pre-line">{bio}</p>
                     </div>
                   )}
-                  {profile.experience_level && (
-                    <div className="mt-2 flex items-center gap-2 text-sm text-muted-foreground">
-                      <Award className="h-3.5 w-3.5" />
-                      <span className="capitalize">{t(profile.experience_level as any)}</span>
-                    </div>
+                  {specialization && (
+                    <>
+                      {bio && <Separator />}
+                      <div>
+                        <h3 className="text-sm font-semibold mb-2 flex items-center gap-2">
+                          <ChefHat className="h-4 w-4 text-primary" />
+                          {isAr ? "التخصص" : "Specialization"}
+                        </h3>
+                        <p className="text-sm font-medium text-foreground mb-2">{specialization}</p>
+                        {userSpecialties.length > 0 && (
+                          <div className="flex flex-wrap gap-1.5">
+                            {userSpecialties.map((us: any) => (
+                              <Badge key={us.id} variant="secondary" className="text-xs">
+                                {isAr ? us.specialties?.name_ar || us.specialties?.name : us.specialties?.name}
+                              </Badge>
+                            ))}
+                          </div>
+                        )}
+                        {profile.experience_level && (
+                          <div className="mt-2 flex items-center gap-2 text-sm text-muted-foreground">
+                            <Award className="h-3.5 w-3.5" />
+                            <span className="capitalize">{t(profile.experience_level as any)}</span>
+                          </div>
+                        )}
+                      </div>
+                    </>
                   )}
                 </CardContent>
               </Card>
@@ -569,9 +572,19 @@ export default function PublicProfile() {
                               <h4 className="font-semibold text-sm">
                                 {isAr ? (record.title_ar || record.title) : record.title}
                               </h4>
-                              {record.entity_name && (
-                                <p className="text-sm text-primary font-medium">{record.entity_name}</p>
-                              )}
+                            {record.entity_name && (
+                              record.entity_id ? (
+                                <Link to={`/entities/${record.entity_id}`} className="text-sm text-primary font-medium hover:underline flex items-center gap-1">
+                                  {record.entity_name}
+                                  <ExternalLink className="h-3 w-3" />
+                                </Link>
+                              ) : (
+                                <p className="text-sm text-muted-foreground font-medium flex items-center gap-1.5">
+                                  {record.entity_name}
+                                  <Badge variant="outline" className="text-[9px] h-4">{isAr ? "قيد المراجعة" : "Under Review"}</Badge>
+                                </p>
+                              )
+                            )}
                               <div className="flex flex-wrap gap-2 mt-1 text-xs text-muted-foreground">
                                 <span className="flex items-center gap-1">
                                   <Calendar className="h-3 w-3" />
@@ -616,7 +629,17 @@ export default function PublicProfile() {
                               {isAr ? (record.title_ar || record.title) : record.title}
                             </h4>
                             {record.entity_name && (
-                              <p className="text-sm text-primary font-medium">{record.entity_name}</p>
+                              record.entity_id ? (
+                                <Link to={`/entities/${record.entity_id}`} className="text-sm text-primary font-medium hover:underline flex items-center gap-1">
+                                  {record.entity_name}
+                                  <ExternalLink className="h-3 w-3" />
+                                </Link>
+                              ) : (
+                                <p className="text-sm text-muted-foreground font-medium flex items-center gap-1.5">
+                                  {record.entity_name}
+                                  <Badge variant="outline" className="text-[9px] h-4">{isAr ? "قيد المراجعة" : "Under Review"}</Badge>
+                                </p>
+                              )
                             )}
                             <div className="flex flex-wrap gap-2 mt-1 text-xs text-muted-foreground">
                               <span className="flex items-center gap-1">
