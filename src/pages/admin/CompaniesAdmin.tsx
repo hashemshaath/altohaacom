@@ -3,8 +3,8 @@ import { useLanguage } from "@/i18n/LanguageContext";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { CountrySelector } from "@/components/auth/CountrySelector";
-import { CompanyRolesPanel } from "@/components/admin/CompanyRolesPanel";
-import { CompanySponsorshipPanel } from "@/components/admin/CompanySponsorshipPanel";
+import { CompanyClassificationsPanel } from "@/components/admin/CompanyClassificationsPanel";
+import { CompanySponsorshipPanelEnhanced } from "@/components/admin/CompanySponsorshipPanelEnhanced";
 import { useAllCountries } from "@/hooks/useCountries";
 import { countryFlag } from "@/lib/countryFlag";
 import { Button } from "@/components/ui/button";
@@ -98,6 +98,7 @@ export default function CompaniesAdmin() {
   const [showDriverForm, setShowDriverForm] = useState(false);
   const [showInvitationForm, setShowInvitationForm] = useState(false);
   const [showMediaUpload, setShowMediaUpload] = useState(false);
+  const [showCatalogForm, setShowCatalogForm] = useState(false);
   const [mediaCategory, setMediaCategory] = useState("logo");
 
   // Reply state
@@ -127,6 +128,12 @@ export default function CompaniesAdmin() {
   const [invitationForm, setInvitationForm] = useState({
     title: "", title_ar: "", description: "", invitation_type: "sponsorship",
     event_date: "", expires_at: "",
+  });
+
+  // Catalog form
+  const [catalogForm, setCatalogForm] = useState({
+    name: "", name_ar: "", category: "", sku: "", unit_price: "", quantity: "",
+    description: "", shop_product_id: "",
   });
 
   // Company form
@@ -275,6 +282,17 @@ export default function CompaniesAdmin() {
       const { data, error } = await supabase.from("company_media").select("*").eq("company_id", selectedCompany).order("category").order("created_at", { ascending: false });
       if (error) throw error;
       return data;
+    },
+    enabled: !!selectedCompany,
+  });
+
+  // Shop products for linking
+  const { data: shopProducts = [] } = useQuery({
+    queryKey: ["shop-products-for-catalog"],
+    queryFn: async () => {
+      const { data, error } = await supabase.from("shop_products").select("id, title, sku").eq("is_active", true).order("title").limit(100);
+      if (error) throw error;
+      return data || [];
     },
     enabled: !!selectedCompany,
   });
@@ -526,6 +544,42 @@ export default function CompaniesAdmin() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["company-media", selectedCompany] });
+      toast({ title: isAr ? "تم الحذف" : "Deleted" });
+    },
+  });
+
+  const addCatalogMutation = useMutation({
+    mutationFn: async () => {
+      if (!selectedCompany) throw new Error("No company");
+      const { error } = await supabase.from("company_catalog").insert({
+        company_id: selectedCompany,
+        name: catalogForm.name,
+        name_ar: catalogForm.name_ar || null,
+        category: catalogForm.category,
+        sku: catalogForm.sku || null,
+        unit_price: catalogForm.unit_price ? Number(catalogForm.unit_price) : null,
+        quantity_available: catalogForm.quantity ? Number(catalogForm.quantity) : null,
+        description: catalogForm.description || null,
+        shop_product_id: catalogForm.shop_product_id && catalogForm.shop_product_id !== "none" ? catalogForm.shop_product_id : null,
+      });
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["company-catalog", selectedCompany] });
+      setShowCatalogForm(false);
+      setCatalogForm({ name: "", name_ar: "", category: "", sku: "", unit_price: "", quantity: "", description: "", shop_product_id: "" });
+      toast({ title: isAr ? "تم إضافة المنتج" : "Product added" });
+    },
+    onError: (e: Error) => toast({ variant: "destructive", title: isAr ? "فشل الإضافة" : "Failed to add", description: e.message }),
+  });
+
+  const deleteCatalogMutation = useMutation({
+    mutationFn: async (id: string) => {
+      const { error } = await supabase.from("company_catalog").delete().eq("id", id);
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["company-catalog", selectedCompany] });
       toast({ title: isAr ? "تم الحذف" : "Deleted" });
     },
   });
@@ -1186,9 +1240,70 @@ export default function CompaniesAdmin() {
             </div>
           </TabsContent>
 
-          {/* ── Catalog Tab ── */}
+          {/* ── Catalog Tab (with add product + link to shop) ── */}
           <TabsContent value="catalog" className="space-y-4">
-            <h3 className="text-lg font-semibold">{isAr ? "كتالوج المنتجات" : "Product Catalog"}</h3>
+            <div className="flex justify-between items-center">
+              <h3 className="text-lg font-semibold">{isAr ? "كتالوج المنتجات" : "Product Catalog"}</h3>
+              <Button onClick={() => setShowCatalogForm(!showCatalogForm)}>
+                {showCatalogForm ? <><X className="h-4 w-4 mr-2" />{isAr ? "إلغاء" : "Cancel"}</> : <><Plus className="h-4 w-4 mr-2" />{isAr ? "إضافة منتج" : "Add Product"}</>}
+              </Button>
+            </div>
+
+            {showCatalogForm && (
+              <Card className="border-primary/30">
+                <CardHeader><CardTitle className="text-base">{isAr ? "منتج جديد" : "New Product"}</CardTitle></CardHeader>
+                <CardContent className="space-y-4">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <Label>{isAr ? "اسم المنتج (EN)" : "Product Name (EN)"} *</Label>
+                      <Input value={catalogForm.name} onChange={e => setCatalogForm({ ...catalogForm, name: e.target.value })} />
+                    </div>
+                    <div className="space-y-2">
+                      <Label>{isAr ? "اسم المنتج (AR)" : "Product Name (AR)"}</Label>
+                      <Input value={catalogForm.name_ar} onChange={e => setCatalogForm({ ...catalogForm, name_ar: e.target.value })} dir="rtl" />
+                    </div>
+                    <div className="space-y-2">
+                      <Label>{isAr ? "الفئة" : "Category"} *</Label>
+                      <Input value={catalogForm.category} onChange={e => setCatalogForm({ ...catalogForm, category: e.target.value })} placeholder="e.g. ingredients, equipment" />
+                    </div>
+                    <div className="space-y-2">
+                      <Label>SKU</Label>
+                      <Input value={catalogForm.sku} onChange={e => setCatalogForm({ ...catalogForm, sku: e.target.value })} />
+                    </div>
+                    <div className="space-y-2">
+                      <Label>{isAr ? "السعر" : "Price"}</Label>
+                      <Input type="number" value={catalogForm.unit_price} onChange={e => setCatalogForm({ ...catalogForm, unit_price: e.target.value })} />
+                    </div>
+                    <div className="space-y-2">
+                      <Label>{isAr ? "الكمية" : "Quantity"}</Label>
+                      <Input type="number" value={catalogForm.quantity} onChange={e => setCatalogForm({ ...catalogForm, quantity: e.target.value })} />
+                    </div>
+                  </div>
+                  <div className="space-y-2">
+                    <Label>{isAr ? "الوصف" : "Description"}</Label>
+                    <Textarea value={catalogForm.description} onChange={e => setCatalogForm({ ...catalogForm, description: e.target.value })} rows={2} />
+                  </div>
+                  {shopProducts.length > 0 && (
+                    <div className="space-y-2">
+                      <Label>{isAr ? "ربط بمنتج المتجر" : "Link to Shop Product"}</Label>
+                      <Select value={catalogForm.shop_product_id} onValueChange={v => setCatalogForm({ ...catalogForm, shop_product_id: v })}>
+                        <SelectTrigger><SelectValue placeholder={isAr ? "اختياري - ربط بالمتجر" : "Optional - Link to shop"} /></SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="none">{isAr ? "بدون ربط" : "No link"}</SelectItem>
+                          {shopProducts.map((p: any) => (
+                            <SelectItem key={p.id} value={p.id}>{p.title} {p.sku ? `(${p.sku})` : ""}</SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
+                  )}
+                  <Button onClick={() => addCatalogMutation.mutate()} disabled={!catalogForm.name || !catalogForm.category || addCatalogMutation.isPending}>
+                    <Save className="h-4 w-4 mr-2" />{isAr ? "حفظ" : "Save"}
+                  </Button>
+                </CardContent>
+              </Card>
+            )}
+
             {catalogItems.length > 0 ? (
               <Card><CardContent className="p-0">
                 <Table>
@@ -1199,7 +1314,9 @@ export default function CompaniesAdmin() {
                       <TableHead>SKU</TableHead>
                       <TableHead>{isAr ? "السعر" : "Price"}</TableHead>
                       <TableHead>{isAr ? "الكمية" : "Qty"}</TableHead>
+                      <TableHead>{isAr ? "المتجر" : "Shop"}</TableHead>
                       <TableHead>{isAr ? "الحالة" : "Status"}</TableHead>
+                      <TableHead></TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
@@ -1210,13 +1327,15 @@ export default function CompaniesAdmin() {
                         <TableCell className="font-mono text-xs">{item.sku || "-"}</TableCell>
                         <TableCell>{item.unit_price != null ? `${Number(item.unit_price).toLocaleString()} ${item.currency || "SAR"}` : "-"}{item.unit && <span className="text-xs text-muted-foreground"> / {item.unit}</span>}</TableCell>
                         <TableCell>{item.quantity_available ?? "-"}</TableCell>
+                        <TableCell>{item.shop_product_id ? <Badge className="bg-chart-5/10 text-chart-5">{isAr ? "مرتبط" : "Linked"}</Badge> : <Badge variant="secondary">{isAr ? "غير مرتبط" : "Not linked"}</Badge>}</TableCell>
                         <TableCell><Badge variant={item.is_active ? "default" : "secondary"}>{item.is_active ? (isAr ? "نشط" : "Active") : (isAr ? "غير نشط" : "Inactive")}</Badge></TableCell>
+                        <TableCell><Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => deleteCatalogMutation.mutate(item.id)}><Trash2 className="h-3 w-3 text-destructive" /></Button></TableCell>
                       </TableRow>
                     ))}
                   </TableBody>
                 </Table>
               </CardContent></Card>
-            ) : (
+            ) : !showCatalogForm && (
               <div className="text-center py-12 text-muted-foreground"><Package className="h-12 w-12 mx-auto mb-4 opacity-50" /><p>{isAr ? "لا توجد منتجات" : "No catalog items"}</p></div>
             )}
           </TabsContent>
@@ -1453,12 +1572,12 @@ export default function CompaniesAdmin() {
 
           {/* ── Classifications (formerly Roles) Tab ── */}
           <TabsContent value="roles" className="space-y-4">
-            <CompanyRolesPanel companyId={selectedCompany} />
+            <CompanyClassificationsPanel companyId={selectedCompany} />
           </TabsContent>
 
           {/* ── Sponsorship Tab ── */}
           <TabsContent value="sponsorship" className="space-y-4">
-            <CompanySponsorshipPanel companyId={selectedCompany} />
+            <CompanySponsorshipPanelEnhanced companyId={selectedCompany} />
           </TabsContent>
         </Tabs>
       </div>

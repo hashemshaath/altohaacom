@@ -1768,6 +1768,7 @@ export type Database = {
           name: string
           name_ar: string | null
           quantity_available: number | null
+          shop_product_id: string | null
           sku: string | null
           subcategory: string | null
           unit: string | null
@@ -1788,6 +1789,7 @@ export type Database = {
           name: string
           name_ar?: string | null
           quantity_available?: number | null
+          shop_product_id?: string | null
           sku?: string | null
           subcategory?: string | null
           unit?: string | null
@@ -1808,6 +1810,7 @@ export type Database = {
           name?: string
           name_ar?: string | null
           quantity_available?: number | null
+          shop_product_id?: string | null
           sku?: string | null
           subcategory?: string | null
           unit?: string | null
@@ -1822,7 +1825,56 @@ export type Database = {
             referencedRelation: "companies"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "company_catalog_shop_product_id_fkey"
+            columns: ["shop_product_id"]
+            isOneToOne: false
+            referencedRelation: "shop_products"
+            referencedColumns: ["id"]
+          },
         ]
+      }
+      company_classifications: {
+        Row: {
+          color: string | null
+          created_at: string | null
+          created_by: string | null
+          description: string | null
+          icon: string | null
+          id: string
+          is_active: boolean | null
+          is_system: boolean | null
+          name: string
+          name_ar: string | null
+          sort_order: number | null
+        }
+        Insert: {
+          color?: string | null
+          created_at?: string | null
+          created_by?: string | null
+          description?: string | null
+          icon?: string | null
+          id?: string
+          is_active?: boolean | null
+          is_system?: boolean | null
+          name: string
+          name_ar?: string | null
+          sort_order?: number | null
+        }
+        Update: {
+          color?: string | null
+          created_at?: string | null
+          created_by?: string | null
+          description?: string | null
+          icon?: string | null
+          id?: string
+          is_active?: boolean | null
+          is_system?: boolean | null
+          name?: string
+          name_ar?: string | null
+          sort_order?: number | null
+        }
+        Relationships: []
       }
       company_communications: {
         Row: {
