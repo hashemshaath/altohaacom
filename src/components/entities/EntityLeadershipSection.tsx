@@ -5,7 +5,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Link } from "react-router-dom";
-import { Crown, User, Shield, Star } from "lucide-react";
+import { Crown, User, Shield, Star, Users, Award } from "lucide-react";
 
 const positionLabels: Record<string, { en: string; ar: string }> = {
   president: { en: "President", ar: "الرئيس" },
@@ -31,14 +31,6 @@ function getPositionIcon(type: string) {
   if (type === "vice_president" || type === "director") return Shield;
   if (honoraryTypes.includes(type)) return Star;
   return User;
-}
-
-function getPositionStyle(type: string) {
-  if (type === "president") return "ring-chart-4/30 bg-chart-4/10";
-  if (type === "vice_president" || type === "director") return "ring-primary/30 bg-primary/10";
-  if (type === "honorary_president") return "ring-chart-5/30 bg-chart-5/10";
-  if (type === "secretary_general") return "ring-chart-3/30 bg-chart-3/10";
-  return "ring-border bg-muted/50";
 }
 
 interface Props {
@@ -75,7 +67,7 @@ export function EntityLeadershipSection({ entityId, presidentName, secretaryName
           {isAr ? "الهيكل القيادي" : "Leadership"}
         </h2>
         <div className="grid gap-3 sm:grid-cols-2">
-          {[1, 2, 3].map(i => <Skeleton key={i} className="h-20 rounded-xl" />)}
+          {[1, 2, 3].map(i => <Skeleton key={i} className="h-24 rounded-xl" />)}
         </div>
       </section>
     );
@@ -86,37 +78,87 @@ export function EntityLeadershipSection({ entityId, presidentName, secretaryName
 
   if (!hasPositions && !hasFallbackNames) return null;
 
-  // Group positions
-  const executive = positions?.filter(p => executiveTypes.includes(p.position_type)) || [];
+  // Find the president (featured card)
+  const president = positions?.find(p => p.position_type === "president");
+  const otherExecutive = positions?.filter(p => executiveTypes.includes(p.position_type) && p.position_type !== "president") || [];
   const honorary = positions?.filter(p => honoraryTypes.includes(p.position_type)) || [];
   const board = positions?.filter(p => !executiveTypes.includes(p.position_type) && !honoraryTypes.includes(p.position_type)) || [];
 
-  const renderCard = (pos: any) => {
-    const profile = pos.profiles as any;
-    const displayName = isAr && profile?.full_name_ar ? profile.full_name_ar : profile?.full_name || "—";
+  const getTitle = (pos: any) => {
     const label = positionLabels[pos.position_type];
-    const posTitle = pos.position_title
+    return pos.position_title
       ? (isAr && pos.position_title_ar ? pos.position_title_ar : pos.position_title)
       : (label ? (isAr ? label.ar : label.en) : pos.position_type);
-    const Icon = getPositionIcon(pos.position_type);
-    const style = getPositionStyle(pos.position_type);
-    const username = profile?.username;
+  };
 
-    const cardContent = (
-      <Card className={`group overflow-hidden transition-all hover:shadow-md ${username ? "cursor-pointer" : ""}`}>
-        <CardContent className="flex items-center gap-4 p-4">
-          <div className={`relative flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl ring-2 ${style}`}>
+  const renderFeaturedCard = (pos: any) => {
+    const profile = pos.profiles as any;
+    const displayName = isAr && profile?.full_name_ar ? profile.full_name_ar : profile?.full_name || "—";
+    const username = profile?.username;
+    const title = getTitle(pos);
+
+    const content = (
+      <Card className="group overflow-hidden border-chart-4/20 bg-gradient-to-br from-chart-4/5 via-background to-background transition-all hover:shadow-lg hover:border-chart-4/40">
+        <CardContent className="flex flex-col items-center gap-4 p-6 sm:flex-row sm:items-center sm:gap-6">
+          <div className="relative">
+            <div className="h-20 w-20 rounded-2xl ring-2 ring-chart-4/30 overflow-hidden bg-chart-4/10 sm:h-24 sm:w-24">
+              {profile?.avatar_url ? (
+                <img src={profile.avatar_url} alt={displayName} className="h-full w-full object-cover" />
+              ) : (
+                <div className="flex h-full w-full items-center justify-center">
+                  <Crown className="h-8 w-8 text-chart-4/60" />
+                </div>
+              )}
+            </div>
+            <div className="absolute -bottom-1 -end-1 flex h-7 w-7 items-center justify-center rounded-lg bg-chart-4 text-chart-4-foreground shadow-md">
+              <Crown className="h-3.5 w-3.5" />
+            </div>
+          </div>
+          <div className="flex-1 text-center sm:text-start min-w-0">
+            <Badge className="mb-2 bg-chart-4/15 text-chart-4 border-chart-4/20 text-xs font-semibold">
+              {title}
+            </Badge>
+            <h3 className="text-lg font-bold group-hover:text-chart-4 transition-colors truncate">{displayName}</h3>
+            {profile?.experience_level && (
+              <p className="mt-0.5 text-xs text-muted-foreground capitalize">{profile.experience_level}</p>
+            )}
+          </div>
+        </CardContent>
+      </Card>
+    );
+
+    if (username) {
+      return (
+        <Link key={pos.id} to={`/profile/${username}`} className="block">
+          {content}
+        </Link>
+      );
+    }
+    return <div key={pos.id}>{content}</div>;
+  };
+
+  const renderMemberCard = (pos: any) => {
+    const profile = pos.profiles as any;
+    const displayName = isAr && profile?.full_name_ar ? profile.full_name_ar : profile?.full_name || "—";
+    const username = profile?.username;
+    const title = getTitle(pos);
+    const Icon = getPositionIcon(pos.position_type);
+
+    const content = (
+      <Card className="group overflow-hidden transition-all hover:shadow-md hover:-translate-y-0.5">
+        <CardContent className="flex items-center gap-3 p-4">
+          <div className="relative h-14 w-14 shrink-0 rounded-xl overflow-hidden ring-1 ring-border/50 bg-muted/50">
             {profile?.avatar_url ? (
-              <img src={profile.avatar_url} alt={displayName} className="h-14 w-14 rounded-2xl object-cover" />
+              <img src={profile.avatar_url} alt={displayName} className="h-full w-full object-cover" />
             ) : (
-              <Icon className="h-6 w-6 text-muted-foreground" />
+              <div className="flex h-full w-full items-center justify-center">
+                <Icon className="h-5 w-5 text-muted-foreground/60" />
+              </div>
             )}
           </div>
           <div className="flex-1 min-w-0">
-            <p className="font-semibold text-sm group-hover:text-primary transition-colors truncate">{displayName}</p>
-            <Badge variant="secondary" className="mt-1 text-[10px] font-medium">
-              {posTitle}
-            </Badge>
+            <p className="text-sm font-semibold truncate group-hover:text-primary transition-colors">{displayName}</p>
+            <Badge variant="secondary" className="mt-1 text-[10px] font-medium">{title}</Badge>
             {profile?.experience_level && (
               <p className="mt-0.5 text-[10px] text-muted-foreground capitalize">{profile.experience_level}</p>
             )}
@@ -128,58 +170,74 @@ export function EntityLeadershipSection({ entityId, presidentName, secretaryName
     if (username) {
       return (
         <Link key={pos.id} to={`/profile/${username}`} className="block">
-          {cardContent}
+          {content}
         </Link>
       );
     }
-
-    return <div key={pos.id}>{cardContent}</div>;
+    return <div key={pos.id}>{content}</div>;
   };
 
   // Fallback cards for president/secretary if no positions exist
   const renderFallbackCard = (name: string, role: string, icon: typeof Crown) => {
     const Icon = icon;
     return (
-      <Card className="overflow-hidden">
-        <CardContent className="flex items-center gap-4 p-4">
-          <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl ring-2 ring-chart-4/30 bg-chart-4/10">
-            <Icon className="h-6 w-6 text-chart-4" />
+      <Card className="overflow-hidden border-chart-4/20 bg-gradient-to-br from-chart-4/5 to-background">
+        <CardContent className="flex items-center gap-4 p-5">
+          <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded-xl ring-2 ring-chart-4/30 bg-chart-4/10">
+            <Icon className="h-7 w-7 text-chart-4/60" />
           </div>
           <div className="flex-1 min-w-0">
-            <p className="font-semibold text-sm truncate">{name}</p>
-            <Badge variant="secondary" className="mt-1 text-[10px] font-medium">{role}</Badge>
+            <Badge className="mb-1 bg-chart-4/15 text-chart-4 border-chart-4/20 text-[10px]">{role}</Badge>
+            <p className="font-semibold truncate">{name}</p>
           </div>
         </CardContent>
       </Card>
     );
   };
 
-  const renderGroup = (title: string, items: any[]) => {
+  const renderGroup = (title: string, icon: React.ReactNode, items: any[]) => {
     if (!items.length) return null;
     return (
-      <div className="space-y-2">
-        <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">{title}</p>
+      <div className="space-y-3">
+        <div className="flex items-center gap-2">
+          <div className="flex h-6 w-6 items-center justify-center rounded-lg bg-muted">
+            {icon}
+          </div>
+          <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">{title}</p>
+          <Badge variant="outline" className="text-[10px] h-5">{items.length}</Badge>
+        </div>
         <div className="grid gap-3 sm:grid-cols-2">
-          {items.map(renderCard)}
+          {items.map(renderMemberCard)}
         </div>
       </div>
     );
   };
 
   return (
-    <section className="space-y-4">
+    <section className="space-y-5">
       <h2 className="flex items-center gap-2 text-xl font-semibold">
         <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-chart-4/10">
           <Crown className="h-4 w-4 text-chart-4" />
         </div>
         {isAr ? "الهيكل القيادي" : "Leadership"}
+        {hasPositions && (
+          <Badge variant="outline" className="ms-auto text-xs">{positions.length} {isAr ? "منصب" : "positions"}</Badge>
+        )}
       </h2>
 
       {hasPositions ? (
-        <div className="space-y-5">
-          {renderGroup(isAr ? "المناصب التنفيذية" : "Executive", executive)}
-          {renderGroup(isAr ? "المناصب الفخرية والاستشارية" : "Honorary & Advisory", honorary)}
-          {renderGroup(isAr ? "أعضاء مجلس الإدارة" : "Board Members", board)}
+        <div className="space-y-6">
+          {/* Featured President Card */}
+          {president && renderFeaturedCard(president)}
+
+          {/* Other Executive */}
+          {renderGroup(isAr ? "المناصب التنفيذية" : "Executive Team", <Shield className="h-3.5 w-3.5 text-muted-foreground" />, otherExecutive)}
+
+          {/* Honorary & Advisory */}
+          {renderGroup(isAr ? "المناصب الفخرية والاستشارية" : "Honorary & Advisory", <Star className="h-3.5 w-3.5 text-muted-foreground" />, honorary)}
+
+          {/* Board Members */}
+          {renderGroup(isAr ? "أعضاء مجلس الإدارة" : "Board Members", <Users className="h-3.5 w-3.5 text-muted-foreground" />, board)}
         </div>
       ) : (
         <div className="grid gap-3 sm:grid-cols-2">
