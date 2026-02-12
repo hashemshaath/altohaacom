@@ -7357,6 +7357,7 @@ export type Database = {
           account_status: Database["public"]["Enums"]["account_status"] | null
           avatar_url: string | null
           bio: string | null
+          bio_ar: string | null
           city: string | null
           company_id: string | null
           company_role: string | null
@@ -7365,6 +7366,7 @@ export type Database = {
           created_at: string
           date_of_birth: string | null
           display_name: string | null
+          display_name_ar: string | null
           education_institution: string | null
           education_level: string | null
           email: string | null
@@ -7373,6 +7375,7 @@ export type Database = {
             | null
           facebook: string | null
           full_name: string | null
+          full_name_ar: string | null
           gender: string | null
           id: string
           instagram: string | null
@@ -7391,6 +7394,7 @@ export type Database = {
           preferred_language: string | null
           profile_completed: boolean | null
           specialization: string | null
+          specialization_ar: string | null
           suspended_at: string | null
           suspended_reason: string | null
           twitter: string | null
@@ -7410,6 +7414,7 @@ export type Database = {
           account_status?: Database["public"]["Enums"]["account_status"] | null
           avatar_url?: string | null
           bio?: string | null
+          bio_ar?: string | null
           city?: string | null
           company_id?: string | null
           company_role?: string | null
@@ -7418,6 +7423,7 @@ export type Database = {
           created_at?: string
           date_of_birth?: string | null
           display_name?: string | null
+          display_name_ar?: string | null
           education_institution?: string | null
           education_level?: string | null
           email?: string | null
@@ -7426,6 +7432,7 @@ export type Database = {
             | null
           facebook?: string | null
           full_name?: string | null
+          full_name_ar?: string | null
           gender?: string | null
           id?: string
           instagram?: string | null
@@ -7446,6 +7453,7 @@ export type Database = {
           preferred_language?: string | null
           profile_completed?: boolean | null
           specialization?: string | null
+          specialization_ar?: string | null
           suspended_at?: string | null
           suspended_reason?: string | null
           twitter?: string | null
@@ -7465,6 +7473,7 @@ export type Database = {
           account_status?: Database["public"]["Enums"]["account_status"] | null
           avatar_url?: string | null
           bio?: string | null
+          bio_ar?: string | null
           city?: string | null
           company_id?: string | null
           company_role?: string | null
@@ -7473,6 +7482,7 @@ export type Database = {
           created_at?: string
           date_of_birth?: string | null
           display_name?: string | null
+          display_name_ar?: string | null
           education_institution?: string | null
           education_level?: string | null
           email?: string | null
@@ -7481,6 +7491,7 @@ export type Database = {
             | null
           facebook?: string | null
           full_name?: string | null
+          full_name_ar?: string | null
           gender?: string | null
           id?: string
           instagram?: string | null
@@ -7501,6 +7512,7 @@ export type Database = {
           preferred_language?: string | null
           profile_completed?: boolean | null
           specialization?: string | null
+          specialization_ar?: string | null
           suspended_at?: string | null
           suspended_reason?: string | null
           twitter?: string | null
@@ -9969,6 +9981,7 @@ export type Database = {
         Returns: boolean
       }
       is_admin: { Args: { p_user_id: string }; Returns: boolean }
+      is_admin_user: { Args: never; Returns: boolean }
       is_free_preview: { Args: { p_module_id: string }; Returns: boolean }
       user_has_permission: {
         Args: { p_permission_code: string; p_user_id: string }

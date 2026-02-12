@@ -85,9 +85,13 @@ export default function UserManagement() {
   const [editEmail, setEditEmail] = useState("");
   const [editPhone, setEditPhone] = useState("");
   const [editBio, setEditBio] = useState("");
+  const [editBioAr, setEditBioAr] = useState("");
   const [editCountryCode, setEditCountryCode] = useState("");
   const [editCity, setEditCity] = useState("");
   const [editSpecialization, setEditSpecialization] = useState("");
+  const [editSpecializationAr, setEditSpecializationAr] = useState("");
+  const [editFullNameAr, setEditFullNameAr] = useState("");
+  const [editDisplayNameAr, setEditDisplayNameAr] = useState("");
   const [editTab, setEditTab] = useState("profile");
 
   // Personal details state
@@ -142,7 +146,7 @@ export default function UserManagement() {
     queryFn: async () => {
       let query = supabase
         .from("profiles")
-        .select(`id, user_id, full_name, display_name, username, account_number, account_status, membership_tier, avatar_url, created_at, location, country_code, city, specialization, is_verified, email, phone, bio, cover_image_url, date_of_birth, gender, preferred_language, nationality, experience_level, education_level, education_institution, years_of_experience`, { count: "exact" })
+        .select(`id, user_id, full_name, full_name_ar, display_name, display_name_ar, username, account_number, account_status, membership_tier, avatar_url, created_at, location, country_code, city, specialization, specialization_ar, is_verified, email, phone, bio, bio_ar, cover_image_url, date_of_birth, gender, preferred_language, nationality, experience_level, education_level, education_institution, years_of_experience`, { count: "exact" })
         .order("created_at", { ascending: false })
         .range(page * pageSize, (page + 1) * pageSize - 1);
 
@@ -438,9 +442,13 @@ export default function UserManagement() {
     setEditEmail(profile.email || "");
     setEditPhone(profile.phone || "");
     setEditBio(profile.bio || "");
+    setEditBioAr((profile as any).bio_ar || "");
     setEditCountryCode(profile.country_code || "");
     setEditCity((profile as any).city || "");
     setEditSpecialization(profile.specialization || "");
+    setEditSpecializationAr((profile as any).specialization_ar || "");
+    setEditFullNameAr((profile as any).full_name_ar || "");
+    setEditDisplayNameAr((profile as any).display_name_ar || "");
     setEditTab("profile");
     setUsernameError("");
     setEditPersonal({
@@ -468,14 +476,18 @@ export default function UserManagement() {
       userId: editingUserId,
       updates: {
         full_name: editFullName || null,
+        full_name_ar: editFullNameAr || null,
         display_name: editDisplayName || null,
+        display_name_ar: editDisplayNameAr || null,
         username: editUsername?.toLowerCase() || null,
         phone: editPhone || null,
         bio: editBio || null,
+        bio_ar: editBioAr || null,
         country_code: editCountryCode || null,
         city: editCity || null,
         location: editCountryCode ? null : null,
         specialization: editSpecialization || null,
+        specialization_ar: editSpecializationAr || null,
         membership_tier: editMembership,
         account_status: editStatus,
         is_verified: editVerified,
@@ -738,64 +750,105 @@ export default function UserManagement() {
               </TabsList>
 
               {/* ── Profile Tab ────── */}
-              <TabsContent value="profile" className="space-y-4">
-                <div className="grid gap-4 md:grid-cols-2">
-                  <div className="space-y-2">
-                    <Label>{isAr ? "الاسم الكامل" : "Full Name"}</Label>
-                    <Input value={editFullName} onChange={(e) => setEditFullName(e.target.value)} />
-                  </div>
-                  <div className="space-y-2">
-                    <Label>{isAr ? "الاسم المعروض" : "Display Name"}</Label>
-                    <Input value={editDisplayName} onChange={(e) => setEditDisplayName(e.target.value)} placeholder={isAr ? "كما يظهر في الملف الشخصي" : "As shown on profile"} />
-                    <p className="text-[10px] text-muted-foreground">{isAr ? "يظهر بدلاً من الاسم الكامل في الملف العام" : "Shown instead of full name on public profile"}</p>
-                  </div>
-                  <div className="space-y-2">
-                    <Label>{isAr ? "اسم المستخدم" : "Username"}</Label>
-                    <div className="relative">
-                      <Input
-                        value={editUsername}
-                        onChange={(e) => { setEditUsername(e.target.value); setUsernameError(""); }}
-                        onBlur={() => editUsername && validateUsername(editUsername)}
-                        dir="ltr"
-                        className={usernameError ? "border-destructive" : ""}
-                      />
-                      {usernameChecking && <Loader2 className="absolute end-3 top-1/2 -translate-y-1/2 h-4 w-4 animate-spin text-muted-foreground" />}
+              <TabsContent value="profile" className="space-y-5">
+                {/* Bilingual Name Section */}
+                <div className="rounded-lg border p-4 space-y-4">
+                  <h3 className="text-sm font-semibold flex items-center gap-2">
+                    <UserCircle className="h-4 w-4" />
+                    {isAr ? "الاسم والهوية" : "Name & Identity"}
+                  </h3>
+                  <div className="grid gap-4 md:grid-cols-2">
+                    <div className="space-y-2">
+                      <Label>Full Name (EN)</Label>
+                      <Input value={editFullName} onChange={(e) => setEditFullName(e.target.value)} placeholder="Full name in English" dir="ltr" />
                     </div>
-                    {usernameError && (
-                      <p className="text-xs text-destructive flex items-center gap-1">
-                        <AlertCircle className="h-3 w-3" />{usernameError}
-                      </p>
-                    )}
+                    <div className="space-y-2">
+                      <Label>الاسم الكامل (AR)</Label>
+                      <Input value={editFullNameAr} onChange={(e) => setEditFullNameAr(e.target.value)} placeholder="الاسم الكامل بالعربية" dir="rtl" />
+                    </div>
+                    <div className="space-y-2">
+                      <Label>Display Name (EN)</Label>
+                      <Input value={editDisplayName} onChange={(e) => setEditDisplayName(e.target.value)} placeholder="Public display name" dir="ltr" />
+                      <p className="text-[10px] text-muted-foreground">Shown on public profile & search results</p>
+                    </div>
+                    <div className="space-y-2">
+                      <Label>الاسم المعروض (AR)</Label>
+                      <Input value={editDisplayNameAr} onChange={(e) => setEditDisplayNameAr(e.target.value)} placeholder="الاسم المعروض للعامة" dir="rtl" />
+                      <p className="text-[10px] text-muted-foreground">يظهر في الملف العام ونتائج البحث</p>
+                    </div>
                   </div>
-                  <div className="space-y-2">
-                    <Label>{isAr ? "البريد الإلكتروني" : "Email"}</Label>
-                    <Input value={editEmail} disabled dir="ltr" className="opacity-60" />
-                    <p className="text-[10px] text-muted-foreground">{isAr ? "لا يمكن تعديل البريد من هنا" : "Email cannot be changed here"}</p>
-                  </div>
-                  <div className="space-y-2">
-                    <Label>{isAr ? "رقم الهاتف" : "Phone"}</Label>
-                    <Input value={editPhone} onChange={(e) => setEditPhone(e.target.value)} dir="ltr" />
+                </div>
+
+                {/* Username, Email, Phone */}
+                <div className="rounded-lg border p-4 space-y-4">
+                  <h3 className="text-sm font-semibold">{isAr ? "بيانات الحساب" : "Account Details"}</h3>
+                  <div className="grid gap-4 md:grid-cols-3">
+                    <div className="space-y-2">
+                      <Label>{isAr ? "اسم المستخدم" : "Username"}</Label>
+                      <div className="relative">
+                        <Input
+                          value={editUsername}
+                          onChange={(e) => { setEditUsername(e.target.value); setUsernameError(""); }}
+                          onBlur={() => editUsername && validateUsername(editUsername)}
+                          dir="ltr"
+                          className={usernameError ? "border-destructive" : ""}
+                        />
+                        {usernameChecking && <Loader2 className="absolute end-3 top-1/2 -translate-y-1/2 h-4 w-4 animate-spin text-muted-foreground" />}
+                      </div>
+                      {usernameError && (
+                        <p className="text-xs text-destructive flex items-center gap-1">
+                          <AlertCircle className="h-3 w-3" />{usernameError}
+                        </p>
+                      )}
+                    </div>
+                    <div className="space-y-2">
+                      <Label>{isAr ? "البريد الإلكتروني" : "Email"}</Label>
+                      <Input value={editEmail} disabled dir="ltr" className="opacity-60" />
+                      <p className="text-[10px] text-muted-foreground">{isAr ? "لا يمكن تعديله من هنا" : "Cannot be changed here"}</p>
+                    </div>
+                    <div className="space-y-2">
+                      <Label>{isAr ? "رقم الهاتف" : "Phone"}</Label>
+                      <Input value={editPhone} onChange={(e) => setEditPhone(e.target.value)} dir="ltr" placeholder="+966..." />
+                    </div>
                   </div>
                 </div>
 
                 {/* Country & City */}
-                <div className="grid gap-4 md:grid-cols-2">
-                  <CountrySelector
-                    value={editCountryCode}
-                    onChange={(code) => setEditCountryCode(code)}
-                    label={isAr ? "الدولة" : "Country"}
-                  />
-                  <div className="space-y-1.5">
-                    <Label className="text-xs">{isAr ? "المدينة" : "City"}</Label>
-                    <Input value={editCity} onChange={(e) => setEditCity(e.target.value)} placeholder={isAr ? "أدخل المدينة" : "Enter city"} />
+                <div className="rounded-lg border p-4 space-y-4">
+                  <h3 className="text-sm font-semibold">{isAr ? "الموقع" : "Location"}</h3>
+                  <div className="grid gap-4 md:grid-cols-2">
+                    <CountrySelector
+                      value={editCountryCode}
+                      onChange={(code) => setEditCountryCode(code)}
+                      label={isAr ? "الدولة" : "Country"}
+                    />
+                    <div className="space-y-1.5">
+                      <Label className="text-xs">{isAr ? "المدينة" : "City"}</Label>
+                      <Input value={editCity} onChange={(e) => setEditCity(e.target.value)} placeholder={isAr ? "أدخل المدينة" : "Enter city"} />
+                    </div>
                   </div>
                 </div>
 
-                {/* Specialties */}
-                <div className="space-y-2">
-                  <Label>{isAr ? "التخصصات" : "Specialties"}</Label>
+                {/* Specialization (bilingual) */}
+                <div className="rounded-lg border p-4 space-y-4">
+                  <h3 className="text-sm font-semibold">{isAr ? "التخصص الرئيسي" : "Primary Specialization"}</h3>
+                  <div className="grid gap-4 md:grid-cols-2">
+                    <div className="space-y-2">
+                      <Label>Specialization (EN)</Label>
+                      <Input value={editSpecialization} onChange={(e) => setEditSpecialization(e.target.value)} placeholder="e.g. Pastry & Chocolate Arts" dir="ltr" />
+                    </div>
+                    <div className="space-y-2">
+                      <Label>التخصص (AR)</Label>
+                      <Input value={editSpecializationAr} onChange={(e) => setEditSpecializationAr(e.target.value)} placeholder="مثال: فنون الحلويات والشوكولاتة" dir="rtl" />
+                    </div>
+                  </div>
+                </div>
+
+                {/* Specialties Tags */}
+                <div className="rounded-lg border p-4 space-y-3">
+                  <h3 className="text-sm font-semibold">{isAr ? "التخصصات الفرعية" : "Specialty Tags"}</h3>
                   {editUserSpecialties.length > 0 && (
-                    <div className="flex flex-wrap gap-1.5 mb-2">
+                    <div className="flex flex-wrap gap-1.5">
                       {editUserSpecialties.map((us: any) => (
                         <Badge key={us.id} variant="secondary" className="gap-1">
                           {isAr ? us.specialties?.name_ar || us.specialties?.name : us.specialties?.name}
@@ -818,8 +871,13 @@ export default function UserManagement() {
                   )}
                 </div>
 
-                {/* Bio with AI Optimizer */}
-                <UserBioOptimizer bio={editBio} onBioChange={setEditBio} isAr={isAr} />
+                {/* Bio (EN) with AI Optimizer */}
+                <div className="rounded-lg border p-4 space-y-3">
+                  <h3 className="text-sm font-semibold">{isAr ? "النبذة التعريفية" : "Biography (SEO Optimized)"}</h3>
+                  <UserBioOptimizer bio={editBio} onBioChange={setEditBio} isAr={false} />
+                  <Separator />
+                  <UserBioOptimizer bio={editBioAr} onBioChange={setEditBioAr} isAr={true} />
+                </div>
               </TabsContent>
 
               {/* ── Personal Details Tab ────── */}
