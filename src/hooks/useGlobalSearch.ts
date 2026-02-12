@@ -53,10 +53,15 @@ export interface MemberResult {
   id: string;
   user_id: string;
   full_name: string | null;
+  full_name_ar: string | null;
+  display_name: string | null;
+  display_name_ar: string | null;
   username: string | null;
   avatar_url: string | null;
   bio: string | null;
+  bio_ar: string | null;
   specialization: string | null;
+  specialization_ar: string | null;
   experience_level: Database["public"]["Enums"]["experience_level"] | null;
   location: string | null;
   is_verified: boolean | null;
@@ -175,12 +180,12 @@ export function useGlobalSearch() {
       
       let query = supabase
         .from("profiles")
-        .select("id, user_id, full_name, username, avatar_url, bio, specialization, experience_level, location, is_verified")
+        .select("id, user_id, full_name, full_name_ar, display_name, display_name_ar, username, avatar_url, bio, bio_ar, specialization, specialization_ar, experience_level, location, is_verified")
         .eq("account_status", "active");
 
-      // Text search
+      // Text search (bilingual)
       if (filters.query) {
-        query = query.or(`full_name.ilike.%${filters.query}%,username.ilike.%${filters.query}%,bio.ilike.%${filters.query}%,specialization.ilike.%${filters.query}%,location.ilike.%${filters.query}%`);
+        query = query.or(`full_name.ilike.%${filters.query}%,full_name_ar.ilike.%${filters.query}%,display_name.ilike.%${filters.query}%,display_name_ar.ilike.%${filters.query}%,username.ilike.%${filters.query}%,bio.ilike.%${filters.query}%,bio_ar.ilike.%${filters.query}%,specialization.ilike.%${filters.query}%,specialization_ar.ilike.%${filters.query}%,location.ilike.%${filters.query}%`);
       }
 
       // Experience level filter

@@ -7397,9 +7397,13 @@ export type Database = {
             | null
           membership_tier: Database["public"]["Enums"]["membership_tier"] | null
           nationality: string | null
+          offers_services: boolean | null
           phone: string | null
           preferred_language: string | null
           profile_completed: boolean | null
+          section_visibility: Json | null
+          services_description: string | null
+          services_description_ar: string | null
           specialization: string | null
           specialization_ar: string | null
           suspended_at: string | null
@@ -7457,9 +7461,13 @@ export type Database = {
             | Database["public"]["Enums"]["membership_tier"]
             | null
           nationality?: string | null
+          offers_services?: boolean | null
           phone?: string | null
           preferred_language?: string | null
           profile_completed?: boolean | null
+          section_visibility?: Json | null
+          services_description?: string | null
+          services_description_ar?: string | null
           specialization?: string | null
           specialization_ar?: string | null
           suspended_at?: string | null
@@ -7517,9 +7525,13 @@ export type Database = {
             | Database["public"]["Enums"]["membership_tier"]
             | null
           nationality?: string | null
+          offers_services?: boolean | null
           phone?: string | null
           preferred_language?: string | null
           profile_completed?: boolean | null
+          section_visibility?: Json | null
+          services_description?: string | null
+          services_description_ar?: string | null
           specialization?: string | null
           specialization_ar?: string | null
           suspended_at?: string | null

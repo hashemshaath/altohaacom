@@ -394,6 +394,7 @@ export default function Search() {
                         <MemberCard 
                           key={member.id} 
                           member={member}
+                          language={language}
                           t={t}
                         />
                       ))}
@@ -457,6 +458,7 @@ export default function Search() {
                   <MemberCard 
                     key={member.id} 
                     member={member}
+                    language={language}
                     t={t}
                   />
                 ))}
@@ -574,12 +576,20 @@ function ArticleCard({ article, language, t }: {
   );
 }
 
-function MemberCard({ member, t }: {
+function MemberCard({ member, language, t }: {
   member: any;
+  language: string;
   t: (key: any) => string;
 }) {
-  const initials = member.full_name
-    ? member.full_name.split(" ").map((n: string) => n[0]).join("").toUpperCase()
+  const isAr = language === "ar";
+  const displayName = isAr
+    ? (member.display_name_ar || member.full_name_ar || member.display_name || member.full_name || member.username || "Unknown")
+    : (member.display_name || member.full_name || member.display_name_ar || member.full_name_ar || member.username || "Unknown");
+  const specialization = isAr
+    ? (member.specialization_ar || member.specialization)
+    : (member.specialization || member.specialization_ar);
+  const initials = displayName
+    ? displayName.split(" ").map((n: string) => n[0]).join("").toUpperCase().slice(0, 2)
     : "?";
 
   return (
@@ -590,15 +600,15 @@ function MemberCard({ member, t }: {
           <AvatarFallback className="text-lg">{initials}</AvatarFallback>
         </Avatar>
         <div className="flex items-center gap-1 mb-1">
-          <h3 className="font-semibold line-clamp-1">{member.full_name || member.username || "Unknown"}</h3>
+          <h3 className="font-semibold line-clamp-1">{displayName}</h3>
           {member.is_verified && <CheckCircle2 className="h-4 w-4 text-primary" />}
         </div>
         {member.username && (
           <p className="text-sm text-muted-foreground">@{member.username}</p>
         )}
-        {member.specialization && (
+        {specialization && (
           <Badge variant="secondary" className="mt-2 text-xs">
-            {member.specialization}
+            {specialization}
           </Badge>
         )}
         {member.location && (

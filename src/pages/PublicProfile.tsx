@@ -14,6 +14,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { CompetitionHistory } from "@/components/profile/CompetitionHistory";
 import { MessageButton } from "@/components/profile/MessageButton";
 import { UserBadgesDisplay } from "@/components/badges/UserBadgesDisplay";
@@ -24,24 +25,10 @@ import { SEOHead } from "@/components/SEOHead";
 import { useFollowStats, useIsFollowing, useToggleFollow, useFollowersList } from "@/hooks/useFollow";
 import { useUserSpecialties } from "@/hooks/useSpecialties";
 import {
-  User,
-  MapPin,
-  Globe,
-  Award,
-  BadgeCheck,
-  Instagram,
-  Twitter,
-  Facebook,
-  Linkedin,
-  Youtube,
-  ChefHat,
-  ArrowLeft,
-  Calendar,
-  Earth,
-  UserPlus,
-  UserMinus,
-  Loader2,
-  Users,
+  User, MapPin, Globe, Award, BadgeCheck, Instagram, Twitter, Facebook,
+  Linkedin, Youtube, ChefHat, ArrowLeft, Calendar, Earth, UserPlus,
+  UserMinus, Loader2, Users, Briefcase, GraduationCap, Building2,
+  Mail, Phone, ExternalLink, Trophy, Medal, ImageIcon,
 } from "lucide-react";
 import { countryFlag } from "@/lib/countryFlag";
 import { useAllCountries } from "@/hooks/useCountries";
@@ -50,6 +37,16 @@ import type { Database } from "@/integrations/supabase/types";
 type Profile = Database["public"]["Tables"]["profiles"]["Row"];
 type AppRole = Database["public"]["Enums"]["app_role"];
 
+const SOCIAL_ICONS: Record<string, typeof Instagram> = {
+  instagram: Instagram, twitter: Twitter, facebook: Facebook,
+  linkedin: Linkedin, youtube: Youtube, website: Globe,
+};
+
+const formatDate = (date: string | null, isAr: boolean) => {
+  if (!date) return isAr ? "الحالي" : "Present";
+  return new Date(date).toLocaleDateString(isAr ? "ar-SA" : "en-US", { year: "numeric", month: "short" });
+};
+
 export default function PublicProfile() {
   const { username } = useParams<{ username: string }>();
   const { t, language } = useLanguage();
@@ -57,6 +54,7 @@ export default function PublicProfile() {
   const isAr = language === "ar";
   const { data: allCountries = [] } = useAllCountries();
   const [followListOpen, setFollowListOpen] = useState<"followers" | "following" | null>(null);
+  const [lightboxImg, setLightboxImg] = useState<string | null>(null);
 
   const getCountryName = (code: string | null) => {
     if (!code) return null;
@@ -64,6 +62,7 @@ export default function PublicProfile() {
     return c ? (isAr ? c.name_ar || c.name : c.name) : code;
   };
 
+  // ── Profile Query ──
   const { data: profile, isLoading, error } = useQuery({
     queryKey: ["publicProfile", username],
     queryFn: async () => {
@@ -74,13 +73,12 @@ export default function PublicProfile() {
         .maybeSingle();
       if (error) throw error;
       if (!data) throw new Error("Profile not found");
-      return data as Profile;
+      return data as Profile & { section_visibility?: Record<string, boolean>; offers_services?: boolean; services_description?: string; services_description_ar?: string };
     },
     enabled: !!username,
   });
 
   const { data: qrCode } = useEntityQRCode("user", profile?.username || undefined, "account");
-
   const { data: roles } = useQuery({
     queryKey: ["publicProfileRoles", profile?.user_id],
     queryFn: async () => {
@@ -90,32 +88,68 @@ export default function PublicProfile() {
     enabled: !!profile?.user_id,
   });
 
-  // Follow system
+  // ── Career Records ──
+  const { data: careerRecords = [] } = useQuery({
+    queryKey: ["public-career-records", profile?.user_id],
+    queryFn: async () => {
+      const { data } = await supabase.from("user_career_records").select("*")
+        .eq("user_id", profile!.user_id)
+        .order("is_current", { ascending: false })
+        .order("end_date", { ascending: false, nullsFirst: true })
+        .order("start_date", { ascending: false });
+      return data || [];
+    },
+    enabled: !!profile?.user_id,
+  });
+
+  // ── Entity Memberships ──
+  const { data: memberships = [] } = useQuery({
+    queryKey: ["public-memberships", profile?.user_id],
+    queryFn: async () => {
+      const { data } = await supabase.from("entity_memberships")
+        .select("*, culinary_entities(name, name_ar, logo_url, type)")
+        .eq("user_id", profile!.user_id)
+        .eq("status", "active");
+      return data || [];
+    },
+    enabled: !!profile?.user_id,
+  });
+
+  // ── Follow System ──
   const { data: followStats } = useFollowStats(profile?.user_id);
   const { data: isFollowing } = useIsFollowing(profile?.user_id);
   const toggleFollow = useToggleFollow(profile?.user_id);
   const { data: followersList = [] } = useFollowersList(followListOpen ? profile?.user_id : undefined, followListOpen || "followers");
   const { data: userSpecialties = [] } = useUserSpecialties(profile?.user_id);
 
+  // ── Media Gallery ──
+  const { data: mediaFiles = [] } = useQuery({
+    queryKey: ["user-media-gallery", profile?.user_id],
+    queryFn: async () => {
+      const { data } = await supabase.storage.from("user-media").list(`${profile!.user_id}`, { limit: 20 });
+      return (data || []).filter(f => f.name !== ".emptyFolderPlaceholder").map(f => {
+        const { data: urlData } = supabase.storage.from("user-media").getPublicUrl(`${profile!.user_id}/${f.name}`);
+        return { name: f.name, url: urlData.publicUrl };
+      });
+    },
+    enabled: !!profile?.user_id,
+  });
+
   const isOwnProfile = user?.id === profile?.user_id;
+  const visibility = (profile as any)?.section_visibility || {};
+  const isVisible = (section: string) => visibility[section] !== false;
 
   if (isLoading) {
     return (
       <div className="flex min-h-screen flex-col">
         <Header />
-        <main className="container flex-1 py-8">
+        <Skeleton className="h-48 w-full" />
+        <main className="container flex-1 -mt-16 pb-8">
           <div className="grid gap-6 lg:grid-cols-3">
-            <Card>
-              <CardContent className="flex flex-col items-center gap-3 p-6">
-                <Skeleton className="h-20 w-20 rounded-full" />
-                <Skeleton className="h-6 w-32" />
-                <Skeleton className="h-4 w-24" />
-                <Skeleton className="h-8 w-full" />
-              </CardContent>
-            </Card>
+            <Skeleton className="h-96 rounded-xl" />
             <div className="lg:col-span-2 space-y-4">
-              <Skeleton className="h-32 w-full" />
-              <Skeleton className="h-48 w-full" />
+              <Skeleton className="h-32" />
+              <Skeleton className="h-48" />
             </div>
           </div>
         </main>
@@ -132,19 +166,12 @@ export default function PublicProfile() {
           <div className="rounded-2xl bg-muted/60 p-5">
             <User className="h-10 w-10 text-muted-foreground/40" />
           </div>
-          <h1 className="font-serif text-xl font-bold">
-            {isAr ? "المستخدم غير موجود" : "User not found"}
-          </h1>
+          <h1 className="font-serif text-xl font-bold">{isAr ? "المستخدم غير موجود" : "User not found"}</h1>
           <p className="max-w-sm text-center text-sm text-muted-foreground">
-            {isAr
-              ? "الملف الشخصي الذي تبحث عنه غير موجود أو تم حذفه."
-              : "The profile you're looking for doesn't exist or has been removed."}
+            {isAr ? "الملف الشخصي غير موجود أو تم حذفه." : "This profile doesn't exist or has been removed."}
           </p>
           <Button asChild variant="outline" size="sm">
-            <Link to="/">
-              <ArrowLeft className="me-1.5 h-3.5 w-3.5" />
-              {isAr ? "الرئيسية" : "Go Home"}
-            </Link>
+            <Link to="/"><ArrowLeft className="me-1.5 h-3.5 w-3.5" />{isAr ? "الرئيسية" : "Go Home"}</Link>
           </Button>
         </main>
         <Footer />
@@ -152,267 +179,529 @@ export default function PublicProfile() {
     );
   }
 
+  const displayName = isAr
+    ? ((profile as any).display_name_ar || (profile as any).full_name_ar || (profile as any).display_name || profile.full_name || "طاهٍ")
+    : ((profile as any).display_name || profile.full_name || (profile as any).display_name_ar || (profile as any).full_name_ar || "Chef");
+  const bio = isAr ? ((profile as any).bio_ar || profile.bio) : (profile.bio || (profile as any).bio_ar);
+  const specialization = isAr ? ((profile as any).specialization_ar || profile.specialization) : (profile.specialization || (profile as any).specialization_ar);
+
   const socialLinks = [
-    { icon: Instagram, value: profile.instagram, label: "Instagram" },
-    { icon: Twitter, value: profile.twitter, label: "Twitter" },
-    { icon: Facebook, value: profile.facebook, label: "Facebook" },
-    { icon: Linkedin, value: profile.linkedin, label: "LinkedIn" },
-    { icon: Youtube, value: profile.youtube, label: "YouTube" },
-    { icon: Globe, value: profile.website, label: "Website" },
+    { key: "instagram", value: profile.instagram, label: "Instagram" },
+    { key: "twitter", value: profile.twitter, label: "X / Twitter" },
+    { key: "facebook", value: profile.facebook, label: "Facebook" },
+    { key: "linkedin", value: profile.linkedin, label: "LinkedIn" },
+    { key: "youtube", value: profile.youtube, label: "YouTube" },
+    { key: "website", value: profile.website, label: isAr ? "الموقع" : "Website" },
   ].filter(s => s.value);
 
-  const getMembershipColor = (tier: string | null) => {
-    const colors: Record<string, string> = {
-      basic: "bg-muted text-muted-foreground",
-      professional: "bg-primary/10 text-primary",
-      enterprise: "bg-accent/20 text-accent-foreground",
-    };
-    return colors[tier || "basic"] || colors.basic;
-  };
+  const educationRecords = careerRecords.filter(r => r.record_type === "education");
+  const workRecords = careerRecords.filter(r => r.record_type === "work");
+  const currentWork = workRecords.find(r => r.is_current);
 
-  const displayName = (profile as any).display_name || profile.full_name || "Unnamed Chef";
+  const roleLabels: Record<string, { en: string; ar: string }> = {
+    chef: { en: "Chef", ar: "طاهٍ" },
+    judge: { en: "Judge", ar: "حكم" },
+    organizer: { en: "Organizer", ar: "منظم" },
+    student: { en: "Student", ar: "طالب" },
+    sponsor: { en: "Sponsor", ar: "راعي" },
+    supervisor: { en: "Supervisor", ar: "مشرف" },
+  };
 
   return (
     <div className="flex min-h-screen flex-col">
       <SEOHead
         title={`${displayName} (@${profile.username}) - Profile`}
-        description={profile.bio || `${displayName}'s professional culinary profile on Altohaa`}
+        description={bio || `${displayName}'s professional culinary profile on Altohaa`}
       />
       <Header />
 
-      {/* Cover */}
-      <div className="h-32 bg-gradient-to-br from-primary/15 via-primary/5 to-accent/10 md:h-44 relative overflow-hidden">
+      {/* ── Cover Photo ── */}
+      <div className="relative h-48 md:h-64 overflow-hidden bg-gradient-to-br from-primary/20 via-primary/5 to-accent/10">
         {(profile as any).cover_image_url ? (
           <img src={(profile as any).cover_image_url} alt="Cover" className="w-full h-full object-cover" />
         ) : (
           <>
-            <div className="absolute -top-16 start-1/4 h-32 w-32 rounded-full bg-primary/10 blur-[60px]" />
-            <div className="absolute -bottom-8 end-1/4 h-24 w-24 rounded-full bg-accent/15 blur-[50px]" />
+            <div className="absolute -top-20 start-1/4 h-40 w-40 rounded-full bg-primary/10 blur-[80px]" />
+            <div className="absolute -bottom-10 end-1/3 h-32 w-32 rounded-full bg-accent/15 blur-[60px]" />
+            <div className="absolute top-1/2 start-2/3 h-24 w-24 rounded-full bg-chart-4/10 blur-[50px]" />
           </>
         )}
+        {/* Gradient overlay for text readability */}
+        <div className="absolute inset-0 bg-gradient-to-t from-background/80 via-transparent to-transparent" />
       </div>
 
-      <main className="container flex-1 -mt-16 pb-8 md:pb-10">
-        <div className="grid gap-6 lg:grid-cols-3">
-          {/* Profile Card */}
-          <div className="lg:col-span-1">
-            <Card className="border-border/50 shadow-lg shadow-primary/5">
-              <CardContent className="p-5">
-                <div className="flex flex-col items-center text-center">
-                  <Avatar className="h-20 w-20 ring-4 ring-background shadow-lg">
-                    <AvatarImage src={profile.avatar_url || undefined} />
-                    <AvatarFallback className="text-xl bg-primary/10 text-primary font-bold">
-                      {(displayName)[0].toUpperCase()}
-                    </AvatarFallback>
-                  </Avatar>
+      <main className="container flex-1 -mt-20 pb-10 relative z-10">
+        {/* ── Hero Profile Section ── */}
+        <div className="flex flex-col md:flex-row gap-5 items-start md:items-end mb-8">
+          <Avatar className="h-28 w-28 md:h-32 md:w-32 ring-4 ring-background shadow-xl border-2 border-background">
+            <AvatarImage src={profile.avatar_url || undefined} />
+            <AvatarFallback className="text-3xl bg-primary/10 text-primary font-bold">
+              {displayName[0]?.toUpperCase()}
+            </AvatarFallback>
+          </Avatar>
 
-                  <div className="mt-3 flex items-center gap-1.5">
-                    <h1 className="font-serif text-lg font-bold">{displayName}</h1>
-                    {profile.is_verified && <BadgeCheck className="h-4.5 w-4.5 text-primary" />}
-                  </div>
+          <div className="flex-1 min-w-0">
+            <div className="flex items-center gap-2 flex-wrap">
+              <h1 className="font-serif text-2xl md:text-3xl font-bold">{displayName}</h1>
+              {profile.is_verified && <BadgeCheck className="h-6 w-6 text-primary" />}
+            </div>
+            <p className="text-sm text-muted-foreground mt-0.5">@{profile.username}</p>
 
-                  <p className="text-xs text-muted-foreground">@{profile.username}</p>
+            {/* Current Position */}
+            {currentWork && (
+              <p className="text-sm mt-1.5 text-muted-foreground flex items-center gap-1.5">
+                <Briefcase className="h-3.5 w-3.5 shrink-0" />
+                <span>{isAr ? (currentWork.title_ar || currentWork.title) : currentWork.title}</span>
+                {currentWork.entity_name && (
+                  <span className="text-foreground font-medium">
+                    {isAr ? "في" : "at"} {currentWork.entity_name}
+                  </span>
+                )}
+              </p>
+            )}
 
-                  {/* Follow Stats */}
-                  <div className="mt-3 flex items-center gap-6">
-                    <button
-                      onClick={() => setFollowListOpen("followers")}
-                      className="flex flex-col items-center hover:text-primary transition-colors"
-                    >
-                      <span className="text-lg font-bold">{followStats?.followers || 0}</span>
-                      <span className="text-[10px] text-muted-foreground">{isAr ? "متابعون" : "Followers"}</span>
-                    </button>
-                    <button
-                      onClick={() => setFollowListOpen("following")}
-                      className="flex flex-col items-center hover:text-primary transition-colors"
-                    >
-                      <span className="text-lg font-bold">{followStats?.following || 0}</span>
-                      <span className="text-[10px] text-muted-foreground">{isAr ? "يتابع" : "Following"}</span>
-                    </button>
-                  </div>
+            {/* Location */}
+            {(profile.country_code || (profile as any).city || profile.location) && (
+              <p className="text-sm mt-1 text-muted-foreground flex items-center gap-1.5">
+                <MapPin className="h-3.5 w-3.5 shrink-0" />
+                {profile.country_code ? `${countryFlag(profile.country_code)} ` : ""}
+                {[(profile as any).city, getCountryName(profile.country_code)].filter(Boolean).join(", ") || profile.location}
+              </p>
+            )}
 
-                  {/* Follow Button */}
-                  {user && !isOwnProfile && (
-                    <Button
-                      className="mt-3 w-full"
-                      variant={isFollowing ? "outline" : "default"}
-                      size="sm"
-                      onClick={() => toggleFollow.mutate(!!isFollowing)}
-                      disabled={toggleFollow.isPending}
-                    >
-                      {toggleFollow.isPending ? (
-                        <Loader2 className="me-1.5 h-3.5 w-3.5 animate-spin" />
-                      ) : isFollowing ? (
-                        <UserMinus className="me-1.5 h-3.5 w-3.5" />
-                      ) : (
-                        <UserPlus className="me-1.5 h-3.5 w-3.5" />
-                      )}
-                      {isFollowing
-                        ? isAr ? "إلغاء المتابعة" : "Unfollow"
-                        : isAr ? "متابعة" : "Follow"}
+            {/* Roles */}
+            <div className="mt-2.5 flex flex-wrap gap-1.5">
+              {roles?.map((role) => (
+                <Badge key={role} variant="secondary" className="text-xs">
+                  {isAr ? roleLabels[role]?.ar || role : roleLabels[role]?.en || role}
+                </Badge>
+              ))}
+              {profile.membership_tier && profile.membership_tier !== "basic" && (
+                <Badge className="text-xs bg-primary/10 text-primary">
+                  {profile.membership_tier === "professional" ? (isAr ? "محترف" : "Professional") : profile.membership_tier}
+                </Badge>
+              )}
+              {profile.account_number && (
+                <Badge variant="outline" className="font-mono text-[10px]">{profile.account_number}</Badge>
+              )}
+            </div>
+          </div>
+
+          {/* Action Buttons */}
+          <div className="flex flex-wrap gap-2 shrink-0 mt-2 md:mt-0">
+            {user && !isOwnProfile && (
+              <Button
+                variant={isFollowing ? "outline" : "default"}
+                size="sm"
+                onClick={() => toggleFollow.mutate(!!isFollowing)}
+                disabled={toggleFollow.isPending}
+              >
+                {toggleFollow.isPending ? <Loader2 className="me-1.5 h-3.5 w-3.5 animate-spin" /> :
+                  isFollowing ? <UserMinus className="me-1.5 h-3.5 w-3.5" /> : <UserPlus className="me-1.5 h-3.5 w-3.5" />}
+                {isFollowing ? (isAr ? "إلغاء المتابعة" : "Unfollow") : (isAr ? "متابعة" : "Follow")}
+              </Button>
+            )}
+            <MessageButton userId={profile.user_id} variant="outline" />
+          </div>
+        </div>
+
+        {/* ── Follow Stats Bar ── */}
+        <Card className="mb-6">
+          <CardContent className="flex items-center justify-between p-4 gap-4 flex-wrap">
+            <div className="flex gap-6">
+              <button onClick={() => setFollowListOpen("followers")} className="flex flex-col items-center hover:text-primary transition-colors">
+                <span className="text-xl font-bold">{followStats?.followers || 0}</span>
+                <span className="text-[11px] text-muted-foreground">{isAr ? "متابعون" : "Followers"}</span>
+              </button>
+              <button onClick={() => setFollowListOpen("following")} className="flex flex-col items-center hover:text-primary transition-colors">
+                <span className="text-xl font-bold">{followStats?.following || 0}</span>
+                <span className="text-[11px] text-muted-foreground">{isAr ? "يتابع" : "Following"}</span>
+              </button>
+              {(profile as any).years_of_experience && (
+                <div className="flex flex-col items-center">
+                  <span className="text-xl font-bold">{(profile as any).years_of_experience}+</span>
+                  <span className="text-[11px] text-muted-foreground">{isAr ? "سنوات خبرة" : "Years Exp."}</span>
+                </div>
+              )}
+            </div>
+
+            {/* Social Links */}
+            {isVisible("social") && socialLinks.length > 0 && (
+              <div className="flex gap-1.5">
+                {socialLinks.map((link) => {
+                  const Icon = SOCIAL_ICONS[link.key] || Globe;
+                  return (
+                    <Button key={link.key} variant="ghost" size="icon" className="h-9 w-9 rounded-full" asChild>
+                      <a href={link.value?.startsWith("http") ? link.value : `https://${link.value}`} target="_blank" rel="noopener noreferrer" title={link.label}>
+                        <Icon className="h-4 w-4" />
+                      </a>
                     </Button>
-                  )}
+                  );
+                })}
+              </div>
+            )}
 
-                  {/* Account & Membership */}
-                  <div className="mt-2 flex flex-wrap justify-center gap-1.5">
-                    {profile.account_number && (
-                      <Badge variant="outline" className="font-mono text-[10px]">{profile.account_number}</Badge>
-                    )}
-                    {profile.membership_tier && (
-                      <Badge className={`text-[10px] ${getMembershipColor(profile.membership_tier)}`}>
-                        {profile.membership_tier === "professional" ? t("professionalTier") : t(profile.membership_tier as any)}
-                      </Badge>
-                    )}
-                  </div>
+            {/* Contact Info */}
+            <div className="flex gap-2">
+              {isVisible("contact") && profile.email && (
+                <Button variant="outline" size="sm" className="gap-1.5" asChild>
+                  <a href={`mailto:${profile.email}`}><Mail className="h-3.5 w-3.5" />{isAr ? "بريد" : "Email"}</a>
+                </Button>
+              )}
+              {isVisible("contact") && profile.website && (
+                <Button variant="outline" size="sm" className="gap-1.5" asChild>
+                  <a href={profile.website.startsWith("http") ? profile.website : `https://${profile.website}`} target="_blank" rel="noopener noreferrer">
+                    <ExternalLink className="h-3.5 w-3.5" />{isAr ? "الموقع" : "Website"}
+                  </a>
+                </Button>
+              )}
+            </div>
+          </CardContent>
+        </Card>
 
-                  {/* Roles */}
-                  {roles && roles.length > 0 && (
-                    <div className="mt-2.5 flex flex-wrap justify-center gap-1">
-                      {roles.map((role) => (
-                        <Badge key={role} variant="secondary" className="capitalize text-[10px]">{t(role as any)}</Badge>
+        {/* ── Main Content Grid ── */}
+        <div className="grid gap-6 lg:grid-cols-3">
+          {/* ── Left Sidebar ── */}
+          <div className="space-y-5">
+            {/* Bio */}
+            {isVisible("bio") && bio && (
+              <Card>
+                <CardContent className="p-5">
+                  <h3 className="text-sm font-semibold mb-2 flex items-center gap-2">
+                    <User className="h-4 w-4 text-primary" />
+                    {isAr ? "نبذة" : "About"}
+                  </h3>
+                  <p className="text-sm leading-relaxed text-muted-foreground">{bio}</p>
+                </CardContent>
+              </Card>
+            )}
+
+            {/* Specialization & Skills */}
+            {specialization && (
+              <Card>
+                <CardContent className="p-5">
+                  <h3 className="text-sm font-semibold mb-2 flex items-center gap-2">
+                    <ChefHat className="h-4 w-4 text-primary" />
+                    {isAr ? "التخصص" : "Specialization"}
+                  </h3>
+                  <p className="text-sm mb-2">{specialization}</p>
+                  {userSpecialties.length > 0 && (
+                    <div className="flex flex-wrap gap-1">
+                      {userSpecialties.map((us: any) => (
+                        <Badge key={us.id} variant="outline" className="text-[10px]">
+                          {isAr ? us.specialties?.name_ar || us.specialties?.name : us.specialties?.name}
+                        </Badge>
                       ))}
                     </div>
                   )}
+                  {profile.experience_level && (
+                    <div className="mt-2 flex items-center gap-2 text-sm text-muted-foreground">
+                      <Award className="h-3.5 w-3.5" />
+                      <span className="capitalize">{t(profile.experience_level as any)}</span>
+                    </div>
+                  )}
+                </CardContent>
+              </Card>
+            )}
 
-                  <Separator className="my-4" />
+            {/* Nationality */}
+            {profile.nationality && profile.nationality !== profile.country_code && (
+              <Card>
+                <CardContent className="p-5 flex items-center gap-2.5 text-sm">
+                  <Earth className="h-4 w-4 text-muted-foreground" />
+                  <span>{countryFlag(profile.nationality)} {getCountryName(profile.nationality)}</span>
+                  <span className="text-[10px] text-muted-foreground">({isAr ? "الجنسية" : "Nationality"})</span>
+                </CardContent>
+              </Card>
+            )}
 
-                  {/* Details */}
-                  <div className="w-full space-y-2.5 text-start">
-                    {profile.specialization && (
-                      <div className="flex items-center gap-2.5 text-sm">
-                        <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-primary/10">
-                          <ChefHat className="h-3.5 w-3.5 text-primary" />
-                        </div>
-                        <span>{profile.specialization}</span>
-                      </div>
-                    )}
-                    {/* Specialties from DB */}
-                    {userSpecialties.length > 0 && (
-                      <div className="flex flex-wrap gap-1 ps-9">
-                        {userSpecialties.map((us: any) => (
-                          <Badge key={us.id} variant="outline" className="text-[10px]">
-                            {isAr ? us.specialties?.name_ar || us.specialties?.name : us.specialties?.name}
-                          </Badge>
-                        ))}
-                      </div>
-                    )}
-                    {profile.experience_level && (
-                      <div className="flex items-center gap-2.5 text-sm">
-                        <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-primary/10">
-                          <Award className="h-3.5 w-3.5 text-primary" />
-                        </div>
-                        <span className="capitalize">{t(profile.experience_level as any)}</span>
-                      </div>
-                    )}
-                    {(profile.country_code || profile.location || (profile as any).city) && (
-                      <div className="flex items-center gap-2.5 text-sm">
-                        <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-muted">
-                          <MapPin className="h-3.5 w-3.5 text-muted-foreground" />
-                        </div>
-                        <span>
-                          {profile.country_code ? `${countryFlag(profile.country_code)} ` : ""}
-                          {[getCountryName(profile.country_code), (profile as any).city].filter(Boolean).join(", ") || profile.location}
-                        </span>
-                      </div>
-                    )}
-                    {profile.nationality && profile.nationality !== profile.country_code && (
-                      <div className="flex items-center gap-2.5 text-sm text-muted-foreground">
-                        <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-muted">
-                          <Earth className="h-3.5 w-3.5 text-muted-foreground" />
-                        </div>
-                        <span>{countryFlag(profile.nationality)} {getCountryName(profile.nationality)} <span className="text-[10px]">({isAr ? "الجنسية" : "Nationality"})</span></span>
-                      </div>
-                    )}
-                  </div>
-                </div>
+            {/* Services */}
+            {(profile as any).offers_services && (
+              <Card className="border-primary/20">
+                <CardContent className="p-5">
+                  <h3 className="text-sm font-semibold mb-2 flex items-center gap-2">
+                    <Briefcase className="h-4 w-4 text-primary" />
+                    {isAr ? "يقدم خدمات" : "Services Offered"}
+                  </h3>
+                  <p className="text-sm text-muted-foreground">
+                    {isAr ? ((profile as any).services_description_ar || (profile as any).services_description || "متاح للعمل")
+                      : ((profile as any).services_description || (profile as any).services_description_ar || "Available for hire")}
+                  </p>
+                </CardContent>
+              </Card>
+            )}
 
-                {/* Bio */}
-                {profile.bio && (
-                  <div className="mt-4 rounded-xl bg-muted/30 p-3.5">
-                    <p className="text-center text-xs leading-relaxed text-muted-foreground">{profile.bio}</p>
-                  </div>
-                )}
+            {/* QR Code */}
+            {qrCode && (
+              <Card>
+                <CardContent className="p-5">
+                  <QRCodeDisplay
+                    code={qrCode.code}
+                    label={isAr ? "رمز QR" : "QR Code"}
+                    size={140}
+                    vCardData={{
+                      fullName: profile.full_name || "Unknown",
+                      phone: profile.phone || undefined,
+                      website: profile.website || undefined,
+                      location: profile.location || undefined,
+                      accountNumber: profile.account_number || undefined,
+                      profileUrl: `https://altohaacom.lovable.app/${profile.username}`,
+                    }}
+                  />
+                </CardContent>
+              </Card>
+            )}
 
-                {/* Social Links */}
-                {socialLinks.length > 0 && (
-                  <div className="mt-4 flex flex-wrap justify-center gap-1.5">
-                    {socialLinks.map((link) => (
-                      <Button key={link.label} variant="outline" size="sm" className="h-8 gap-1.5 rounded-full px-3" asChild>
-                        <a href={link.value?.startsWith("http") ? link.value : `https://${link.value}`} target="_blank" rel="noopener noreferrer">
-                          <link.icon className="h-3 w-3" />
-                          <span className="text-[10px]">{link.label}</span>
-                        </a>
-                      </Button>
-                    ))}
-                  </div>
-                )}
-
-                {/* Message */}
-                <div className="mt-4">
-                  <MessageButton userId={profile.user_id} variant="default" />
-                </div>
-
-                {/* Member Since */}
-                <div className="mt-4 flex items-center justify-center gap-1.5 text-[10px] text-muted-foreground">
-                  <Calendar className="h-3 w-3" />
-                  {t("memberSince")}: {new Date(profile.created_at).toLocaleDateString()}
-                </div>
-
-                {/* QR Code */}
-                {qrCode && (
-                  <div className="mt-4">
-                    <QRCodeDisplay
-                      code={qrCode.code}
-                      label={isAr ? "رمز QR للحساب" : "Account QR Code"}
-                      size={140}
-                      vCardData={{
-                        fullName: profile.full_name || "Unknown",
-                        phone: profile.phone || undefined,
-                        website: profile.website || undefined,
-                        location: profile.location || undefined,
-                        accountNumber: profile.account_number || undefined,
-                        profileUrl: `https://altohaacom.lovable.app/${profile.username}`,
-                      }}
-                    />
-                  </div>
-                )}
-              </CardContent>
-            </Card>
+            {/* Member Since */}
+            <div className="flex items-center justify-center gap-1.5 text-[11px] text-muted-foreground px-4">
+              <Calendar className="h-3 w-3" />
+              {t("memberSince")}: {new Date(profile.created_at).toLocaleDateString(isAr ? "ar-SA" : "en-US", { year: "numeric", month: "long" })}
+            </div>
           </div>
 
-          {/* Content */}
+          {/* ── Main Content ── */}
           <div className="lg:col-span-2 space-y-6">
-            <UserBadgesDisplay userId={profile.user_id} />
-            <ProfileCertificates userId={profile.user_id} isOwner={user?.id === profile.user_id} />
-            <CompetitionHistory userId={profile.user_id} />
+            <Tabs defaultValue="career" className="w-full">
+              <TabsList className="w-full flex flex-wrap h-auto gap-1 bg-transparent p-0">
+                {isVisible("career") && (
+                  <TabsTrigger value="career" className="gap-1.5 data-[state=active]:bg-primary/10">
+                    <Briefcase className="h-3.5 w-3.5" />
+                    {isAr ? "المسيرة المهنية" : "Career"}
+                  </TabsTrigger>
+                )}
+                {isVisible("education") && educationRecords.length > 0 && (
+                  <TabsTrigger value="education" className="gap-1.5 data-[state=active]:bg-primary/10">
+                    <GraduationCap className="h-3.5 w-3.5" />
+                    {isAr ? "التعليم" : "Education"}
+                  </TabsTrigger>
+                )}
+                {isVisible("memberships") && memberships.length > 0 && (
+                  <TabsTrigger value="entities" className="gap-1.5 data-[state=active]:bg-primary/10">
+                    <Building2 className="h-3.5 w-3.5" />
+                    {isAr ? "الجهات" : "Entities"}
+                  </TabsTrigger>
+                )}
+                {isVisible("certificates") && (
+                  <TabsTrigger value="certificates" className="gap-1.5 data-[state=active]:bg-primary/10">
+                    <Award className="h-3.5 w-3.5" />
+                    {isAr ? "الشهادات" : "Certificates"}
+                  </TabsTrigger>
+                )}
+                {isVisible("competitions") && (
+                  <TabsTrigger value="competitions" className="gap-1.5 data-[state=active]:bg-primary/10">
+                    <Trophy className="h-3.5 w-3.5" />
+                    {isAr ? "المسابقات" : "Competitions"}
+                  </TabsTrigger>
+                )}
+                {isVisible("badges") && (
+                  <TabsTrigger value="badges" className="gap-1.5 data-[state=active]:bg-primary/10">
+                    <Medal className="h-3.5 w-3.5" />
+                    {isAr ? "الأوسمة" : "Badges"}
+                  </TabsTrigger>
+                )}
+                {mediaFiles.length > 0 && (
+                  <TabsTrigger value="gallery" className="gap-1.5 data-[state=active]:bg-primary/10">
+                    <ImageIcon className="h-3.5 w-3.5" />
+                    {isAr ? "الألبوم" : "Gallery"}
+                  </TabsTrigger>
+                )}
+              </TabsList>
+
+              {/* ── Career Tab ── */}
+              {isVisible("career") && (
+                <TabsContent value="career" className="mt-4 space-y-4">
+                  {workRecords.length === 0 ? (
+                    <Card><CardContent className="p-8 text-center text-sm text-muted-foreground">
+                      {isAr ? "لا توجد خبرات مضافة" : "No work experience added yet"}
+                    </CardContent></Card>
+                  ) : (
+                    workRecords.map((record) => (
+                      <Card key={record.id} className="overflow-hidden hover:shadow-sm transition-shadow">
+                        <CardContent className="p-5">
+                          <div className="flex gap-4">
+                            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-chart-3/10">
+                              <Briefcase className="h-5 w-5 text-chart-3" />
+                            </div>
+                            <div className="flex-1 min-w-0">
+                              <h4 className="font-semibold text-sm">
+                                {isAr ? (record.title_ar || record.title) : record.title}
+                              </h4>
+                              {record.entity_name && (
+                                <p className="text-sm text-primary font-medium">{record.entity_name}</p>
+                              )}
+                              <div className="flex flex-wrap gap-2 mt-1 text-xs text-muted-foreground">
+                                <span className="flex items-center gap-1">
+                                  <Calendar className="h-3 w-3" />
+                                  {formatDate(record.start_date, isAr)} – {formatDate(record.end_date, isAr)}
+                                </span>
+                                {record.is_current && (
+                                  <Badge className="bg-chart-3/10 text-chart-3 text-[10px] h-5">{isAr ? "حالي" : "Current"}</Badge>
+                                )}
+                                {record.employment_type && (
+                                  <Badge variant="outline" className="text-[10px] h-5">{record.employment_type}</Badge>
+                                )}
+                                {record.location && (
+                                  <span className="flex items-center gap-1"><MapPin className="h-3 w-3" />{record.location}</span>
+                                )}
+                              </div>
+                              {(record.description || record.description_ar) && (
+                                <p className="mt-2 text-xs text-muted-foreground leading-relaxed">
+                                  {isAr ? (record.description_ar || record.description) : (record.description || record.description_ar)}
+                                </p>
+                              )}
+                            </div>
+                          </div>
+                        </CardContent>
+                      </Card>
+                    ))
+                  )}
+                </TabsContent>
+              )}
+
+              {/* ── Education Tab ── */}
+              {isVisible("education") && (
+                <TabsContent value="education" className="mt-4 space-y-4">
+                  {educationRecords.map((record) => (
+                    <Card key={record.id} className="overflow-hidden hover:shadow-sm transition-shadow">
+                      <CardContent className="p-5">
+                        <div className="flex gap-4">
+                          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-chart-2/10">
+                            <GraduationCap className="h-5 w-5 text-chart-2" />
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <h4 className="font-semibold text-sm">
+                              {isAr ? (record.title_ar || record.title) : record.title}
+                            </h4>
+                            {record.entity_name && (
+                              <p className="text-sm text-primary font-medium">{record.entity_name}</p>
+                            )}
+                            <div className="flex flex-wrap gap-2 mt-1 text-xs text-muted-foreground">
+                              <span className="flex items-center gap-1">
+                                <Calendar className="h-3 w-3" />
+                                {formatDate(record.start_date, isAr)} – {formatDate(record.end_date, isAr)}
+                              </span>
+                              {record.education_level && (
+                                <Badge variant="outline" className="text-[10px] h-5">{record.education_level}</Badge>
+                              )}
+                              {record.field_of_study && (
+                                <span>{isAr ? (record.field_of_study_ar || record.field_of_study) : record.field_of_study}</span>
+                              )}
+                            </div>
+                            {(record.description || record.description_ar) && (
+                              <p className="mt-2 text-xs text-muted-foreground leading-relaxed">
+                                {isAr ? (record.description_ar || record.description) : (record.description || record.description_ar)}
+                              </p>
+                            )}
+                          </div>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  ))}
+                </TabsContent>
+              )}
+
+              {/* ── Entities / Memberships Tab ── */}
+              {isVisible("memberships") && (
+                <TabsContent value="entities" className="mt-4">
+                  <div className="grid gap-4 sm:grid-cols-2">
+                    {memberships.map((m: any) => (
+                      <Card key={m.id} className="overflow-hidden hover:shadow-sm transition-shadow">
+                        <CardContent className="p-5 flex items-start gap-4">
+                          {m.culinary_entities?.logo_url ? (
+                            <img src={m.culinary_entities.logo_url} alt="" className="h-12 w-12 rounded-lg object-cover border" />
+                          ) : (
+                            <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-lg bg-primary/10">
+                              <Building2 className="h-6 w-6 text-primary" />
+                            </div>
+                          )}
+                          <div className="flex-1 min-w-0">
+                            <h4 className="font-semibold text-sm truncate">
+                              {isAr ? (m.culinary_entities?.name_ar || m.culinary_entities?.name) : (m.culinary_entities?.name || m.culinary_entities?.name_ar)}
+                            </h4>
+                            {m.title && (
+                              <p className="text-xs text-muted-foreground">{isAr ? (m.title_ar || m.title) : m.title}</p>
+                            )}
+                            <div className="mt-1 flex gap-1.5">
+                              <Badge variant="outline" className="text-[10px]">{m.membership_type}</Badge>
+                              {m.culinary_entities?.type && (
+                                <Badge variant="secondary" className="text-[10px]">{m.culinary_entities.type}</Badge>
+                              )}
+                            </div>
+                          </div>
+                        </CardContent>
+                      </Card>
+                    ))}
+                  </div>
+                </TabsContent>
+              )}
+
+              {/* ── Certificates Tab ── */}
+              {isVisible("certificates") && (
+                <TabsContent value="certificates" className="mt-4">
+                  <ProfileCertificates userId={profile.user_id} isOwner={isOwnProfile} />
+                </TabsContent>
+              )}
+
+              {/* ── Competitions Tab ── */}
+              {isVisible("competitions") && (
+                <TabsContent value="competitions" className="mt-4">
+                  <CompetitionHistory userId={profile.user_id} />
+                </TabsContent>
+              )}
+
+              {/* ── Badges Tab ── */}
+              {isVisible("badges") && (
+                <TabsContent value="badges" className="mt-4">
+                  <UserBadgesDisplay userId={profile.user_id} />
+                </TabsContent>
+              )}
+
+              {/* ── Gallery Tab ── */}
+              {mediaFiles.length > 0 && (
+                <TabsContent value="gallery" className="mt-4">
+                  <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
+                    {mediaFiles.map((file) => (
+                      <button
+                        key={file.name}
+                        onClick={() => setLightboxImg(file.url)}
+                        className="aspect-square rounded-xl overflow-hidden border bg-muted hover:opacity-90 transition-opacity"
+                      >
+                        <img src={file.url} alt={file.name} className="w-full h-full object-cover" />
+                      </button>
+                    ))}
+                  </div>
+                </TabsContent>
+              )}
+            </Tabs>
           </div>
         </div>
       </main>
 
-      {/* Follow List Dialog */}
+      {/* ── Image Lightbox ── */}
+      <Dialog open={!!lightboxImg} onOpenChange={() => setLightboxImg(null)}>
+        <DialogContent className="max-w-4xl p-2">
+          {lightboxImg && (
+            <img src={lightboxImg} alt="Gallery" className="w-full rounded-lg" />
+          )}
+        </DialogContent>
+      </Dialog>
+
+      {/* ── Follow List Dialog ── */}
       <Dialog open={!!followListOpen} onOpenChange={() => setFollowListOpen(null)}>
         <DialogContent className="max-w-sm">
           <DialogHeader>
             <DialogTitle>
-              {followListOpen === "followers"
-                ? isAr ? "المتابعون" : "Followers"
-                : isAr ? "يتابع" : "Following"}
+              {followListOpen === "followers" ? (isAr ? "المتابعون" : "Followers") : (isAr ? "يتابع" : "Following")}
             </DialogTitle>
           </DialogHeader>
           <ScrollArea className="max-h-[60vh]">
             <div className="space-y-2">
               {followersList.length === 0 ? (
-                <p className="py-8 text-center text-sm text-muted-foreground">
-                  {isAr ? "لا يوجد" : "No users yet"}
-                </p>
+                <p className="py-8 text-center text-sm text-muted-foreground">{isAr ? "لا يوجد" : "No users yet"}</p>
               ) : (
                 followersList.map((p: any) => (
-                  <Link
-                    key={p.user_id}
-                    to={`/${p.username}`}
-                    onClick={() => setFollowListOpen(null)}
-                    className="flex items-center gap-3 rounded-lg p-2 hover:bg-muted/50 transition-colors"
-                  >
+                  <Link key={p.user_id} to={`/${p.username}`} onClick={() => setFollowListOpen(null)}
+                    className="flex items-center gap-3 rounded-lg p-2 hover:bg-muted/50 transition-colors">
                     <Avatar className="h-10 w-10">
                       <AvatarImage src={p.avatar_url || undefined} />
                       <AvatarFallback>{(p.full_name || "U")[0].toUpperCase()}</AvatarFallback>
@@ -431,6 +720,7 @@ export default function PublicProfile() {
           </ScrollArea>
         </DialogContent>
       </Dialog>
+
       <Footer />
     </div>
   );
