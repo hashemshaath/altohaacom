@@ -189,6 +189,14 @@ export default function RegisterCompany() {
           ? `رقم شركتكم: ${company.company_number}`
           : `Your company number: ${company.company_number}`,
       });
+      // Notify admins about new company registration
+      import("@/lib/notificationTriggers").then(({ notifyAdminCompanyRegistration }) => {
+        notifyAdminCompanyRegistration({
+          companyName: form.name,
+          companyNameAr: form.name_ar || undefined,
+          submittedBy: form.contact_name || user?.email || "User",
+        });
+      });
     } catch (error: any) {
       console.error("Registration error:", error);
       toast({

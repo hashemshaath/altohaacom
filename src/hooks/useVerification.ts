@@ -83,9 +83,17 @@ export function useSubmitVerification() {
       if (error) throw error;
       return data;
     },
-    onSuccess: () => {
+    onSuccess: (data, variables) => {
       queryClient.invalidateQueries({ queryKey: ["my-verification-requests"] });
       toast({ title: "Verification request submitted" });
+      // Notify admins about new verification request
+      import("@/lib/notificationTriggers").then(({ notifyAdminVerificationRequest }) => {
+        notifyAdminVerificationRequest({
+          userName: variables.applicant_name,
+          verificationType: variables.verification_level,
+          userId: user!.id,
+        });
+      });
     },
     onError: (err: any) => {
       toast({ variant: "destructive", title: "Error", description: err.message });
