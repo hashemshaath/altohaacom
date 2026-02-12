@@ -86,7 +86,7 @@ export const NotificationBell = React.forwardRef<HTMLButtonElement, Record<strin
           )}
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent align="end" className="w-96">
+      <DropdownMenuContent align="end" className={cn("w-96", isAr && "text-right")}>
         <div className="flex items-center justify-between px-4 py-2">
           <h3 className="font-semibold">{t("notifications")}</h3>
           {unreadCount > 0 && (
