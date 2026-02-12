@@ -8296,6 +8296,207 @@ export type Database = {
           },
         ]
       }
+      seo_ai_models: {
+        Row: {
+          capabilities: string[] | null
+          created_at: string
+          created_by: string | null
+          description: string | null
+          description_ar: string | null
+          display_name: string
+          display_name_ar: string | null
+          id: string
+          is_active: boolean
+          is_default: boolean
+          max_tokens: number | null
+          model_id: string
+          provider: string
+          sort_order: number | null
+          updated_at: string
+        }
+        Insert: {
+          capabilities?: string[] | null
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          description_ar?: string | null
+          display_name: string
+          display_name_ar?: string | null
+          id?: string
+          is_active?: boolean
+          is_default?: boolean
+          max_tokens?: number | null
+          model_id: string
+          provider?: string
+          sort_order?: number | null
+          updated_at?: string
+        }
+        Update: {
+          capabilities?: string[] | null
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          description_ar?: string | null
+          display_name?: string
+          display_name_ar?: string | null
+          id?: string
+          is_active?: boolean
+          is_default?: boolean
+          max_tokens?: number | null
+          model_id?: string
+          provider?: string
+          sort_order?: number | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      seo_content_sources: {
+        Row: {
+          color: string | null
+          created_at: string
+          created_by: string | null
+          description: string | null
+          description_ar: string | null
+          icon: string | null
+          id: string
+          is_active: boolean
+          name: string
+          name_ar: string
+          sort_order: number | null
+          source_key: string
+          updated_at: string
+        }
+        Insert: {
+          color?: string | null
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          description_ar?: string | null
+          icon?: string | null
+          id?: string
+          is_active?: boolean
+          name: string
+          name_ar: string
+          sort_order?: number | null
+          source_key: string
+          updated_at?: string
+        }
+        Update: {
+          color?: string | null
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          description_ar?: string | null
+          icon?: string | null
+          id?: string
+          is_active?: boolean
+          name?: string
+          name_ar?: string
+          sort_order?: number | null
+          source_key?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      seo_rules: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          field_scope: string
+          id: string
+          is_enabled: boolean
+          rule_text: string
+          rule_text_ar: string
+          severity: string
+          sort_order: number | null
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          field_scope?: string
+          id?: string
+          is_enabled?: boolean
+          rule_text: string
+          rule_text_ar: string
+          severity?: string
+          sort_order?: number | null
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          field_scope?: string
+          id?: string
+          is_enabled?: boolean
+          rule_text?: string
+          rule_text_ar?: string
+          severity?: string
+          sort_order?: number | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      seo_translatable_fields: {
+        Row: {
+          category: string
+          created_at: string
+          created_by: string | null
+          description: string | null
+          description_ar: string | null
+          field_name: string
+          field_name_ar: string
+          id: string
+          is_active: boolean
+          is_required: boolean
+          label: string
+          label_ar: string
+          max_length: number
+          seo_optimize: boolean
+          sort_order: number | null
+          table_name: string
+          updated_at: string
+        }
+        Insert: {
+          category: string
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          description_ar?: string | null
+          field_name: string
+          field_name_ar: string
+          id?: string
+          is_active?: boolean
+          is_required?: boolean
+          label: string
+          label_ar: string
+          max_length?: number
+          seo_optimize?: boolean
+          sort_order?: number | null
+          table_name: string
+          updated_at?: string
+        }
+        Update: {
+          category?: string
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          description_ar?: string | null
+          field_name?: string
+          field_name_ar?: string
+          id?: string
+          is_active?: boolean
+          is_required?: boolean
+          label?: string
+          label_ar?: string
+          max_length?: number
+          seo_optimize?: boolean
+          sort_order?: number | null
+          table_name?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       shop_categories: {
         Row: {
           created_at: string | null
