@@ -133,6 +133,14 @@ export function EntitySelector({ value, entityName, onChange, label }: EntitySel
             ? "المؤسسة قيد المراجعة من قبل الإدارة وستظهر في القائمة"
             : "The institution is under review by admin and will appear in the list",
         });
+        // Notify admins about new entity for review
+        import("@/lib/notificationTriggers").then(({ notifyAdminEntityReview }) => {
+          notifyAdminEntityReview({
+            entityName: newName,
+            entityNameAr: newNameAr || undefined,
+            submittedBy: "User",
+          });
+        });
         resetAddForm();
       }
     } catch (err: any) {

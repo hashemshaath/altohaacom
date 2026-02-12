@@ -159,6 +159,15 @@ export default function SupportTickets() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["supportTickets"] });
       setIsCreateOpen(false);
+      // Notify admins about new support ticket
+      import("@/lib/notificationTriggers").then(({ notifyAdminSupportTicket }) => {
+        notifyAdminSupportTicket({
+          ticketNumber: "",
+          subject: newSubject,
+          priority: newPriority,
+          userName: user?.email || "User",
+        });
+      });
       setNewSubject("");
       setNewDescription("");
       setNewCategory("general");
