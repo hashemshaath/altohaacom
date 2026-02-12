@@ -19,7 +19,7 @@ import {
   Settings, Pencil, Award, BookOpen, ClipboardList, Clock, Share2,
   ImageIcon, Twitter, Facebook, Linkedin, Link2, ChevronDown,
   Sparkles, Target, BarChart3, UsersRound, Eye, Flame, Shield, Building2,
-  Medal, Info, DoorOpen, Scale,
+  Medal, Info, DoorOpen, Scale, FileSpreadsheet,
 } from "lucide-react";
 import { countryFlag } from "@/lib/countryFlag";
 import {
@@ -40,6 +40,7 @@ import { AutoIssueCertificates } from "@/components/competitions/AutoIssueCertif
 import { RequirementsListPanel } from "@/components/competitions/RequirementsListPanel";
 import { CategoryManagementPanel } from "@/components/competitions/CategoryManagementPanel";
 import { CompetitionTeamPanel } from "@/components/competitions/CompetitionTeamPanel";
+import { BulkImportPanel } from "@/components/admin/BulkImportPanel";
 import { ReferenceGalleryPanel } from "@/components/competitions/ReferenceGalleryPanel";
 import { RubricTemplatesPanel } from "@/components/competitions/RubricTemplatesPanel";
 import { CriteriaManagementPanel } from "@/components/competitions/CriteriaManagementPanel";
@@ -726,6 +727,29 @@ export default function CompetitionDetail() {
                   <JudgeAssignmentPanel competitionId={competition.id} />
                   <RegistrationApprovalPanel competitionId={competition.id} />
                   {competition.status === "completed" && <AutoIssueCertificates competitionId={competition.id} />}
+
+                  {/* Bulk Import Section */}
+                  <Section icon={<FileSpreadsheet className="h-4 w-4 text-primary" />} title={isAr ? "استيراد جماعي من ملف إكسل" : "Bulk Import from Excel"} defaultOpen={false}>
+                    <div className="space-y-3">
+                      <p className="text-xs text-muted-foreground">
+                        {isAr
+                          ? "قم بتنزيل القالب، واملأه، ثم ارفعه لاستيراد المشاركين أو المحكمين أو الفائزين أو المتطوعين أو الرعاة. رقم المسابقة سيُملأ تلقائياً."
+                          : "Download the template, fill it out, then upload to import participants, judges, winners, volunteers, or sponsors. The competition number is auto-filled."}
+                      </p>
+                      <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+                        {(["participant", "judge", "winner", "volunteer", "sponsor"] as const).map(type => (
+                          <BulkImportPanel
+                            key={type}
+                            entityType={type}
+                            competitionNumber={competition.competition_number || ""}
+                            onImportComplete={() => {
+                              // Refresh relevant queries
+                            }}
+                          />
+                        ))}
+                      </div>
+                    </div>
+                  </Section>
                 </div>
               )}
             </div>

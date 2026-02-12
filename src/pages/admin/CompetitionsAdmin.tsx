@@ -48,7 +48,7 @@ export default function CompetitionsAdmin() {
   const [organizerFilter, setOrganizerFilter] = useState<string>("all");
   const [exhibitionFilter, setExhibitionFilter] = useState<string>("all");
   const [yearFilter, setYearFilter] = useState<string>("all");
-  const [showBulkImport, setShowBulkImport] = useState<"competition" | "participant" | "judge" | "winner" | null>(null);
+  const [showBulkImport, setShowBulkImport] = useState(false);
 
   // Fetch competitions with organizer and exhibition info
   const { data: competitions, isLoading } = useQuery({
@@ -196,27 +196,14 @@ export default function CompetitionsAdmin() {
           </div>
         </div>
         <div className="flex flex-wrap gap-2">
-          {(["competition", "participant", "judge", "winner"] as const).map(type => (
-            <Button
-              key={type}
-              variant={showBulkImport === type ? "secondary" : "outline"}
-              size="sm"
-              onClick={() => setShowBulkImport(showBulkImport === type ? null : type)}
-            >
-              <FileSpreadsheet className="me-2 h-4 w-4" />
-              {isAr ? ({
-                competition: "استيراد مسابقات",
-                participant: "استيراد مشاركين",
-                judge: "استيراد محكمين",
-                winner: "استيراد فائزين",
-              }[type]) : ({
-                competition: "Import Competitions",
-                participant: "Import Participants",
-                judge: "Import Judges",
-                winner: "Import Winners",
-              }[type])}
-            </Button>
-          ))}
+          <Button
+            variant={showBulkImport ? "secondary" : "outline"}
+            size="sm"
+            onClick={() => setShowBulkImport(!showBulkImport)}
+          >
+            <FileSpreadsheet className="me-2 h-4 w-4" />
+            {isAr ? "استيراد مسابقات" : "Import Competitions"}
+          </Button>
           <Button asChild className="gap-2 shadow-lg shadow-primary/20">
             <Link to="/competitions/create">
               <Plus className="h-4 w-4" />
@@ -228,7 +215,7 @@ export default function CompetitionsAdmin() {
 
       {/* Bulk Import */}
       {showBulkImport && (
-        <BulkImportPanel entityType={showBulkImport} onImportComplete={() => { setShowBulkImport(null); queryClient.invalidateQueries({ queryKey: ["adminCompetitions"] }); }} />
+        <BulkImportPanel entityType="competition" onImportComplete={() => { setShowBulkImport(false); queryClient.invalidateQueries({ queryKey: ["adminCompetitions"] }); }} />
       )}
 
       {/* Stats */}
