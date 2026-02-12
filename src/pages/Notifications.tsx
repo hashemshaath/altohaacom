@@ -1,12 +1,11 @@
-import { useState } from "react";
-import { Bell, Check, CheckCheck, Trash2, X, Filter, Info, AlertTriangle, CircleCheck, CircleX, ShoppingCart, Trophy, FileText } from "lucide-react";
+import { useState, useMemo } from "react";
+import { Bell, Check, CheckCheck, Trash2, X, Filter, Info, AlertTriangle, CircleCheck, CircleX, ShoppingCart, Trophy, FileText, Building2, GraduationCap, Users, Handshake, HeadphonesIcon, CreditCard, CalendarDays, Settings } from "lucide-react";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Separator } from "@/components/ui/separator";
 import {
   Select,
   SelectContent,
@@ -21,15 +20,48 @@ import { ar, enUS } from "date-fns/locale";
 import { useNavigate } from "react-router-dom";
 import { cn } from "@/lib/utils";
 
-type NotificationCategory = "all" | "approvals" | "orders" | "competitions" | "general";
+type NotificationSection =
+  | "all"
+  | "account"
+  | "competitions"
+  | "exhibitions"
+  | "company"
+  | "financial"
+  | "orders"
+  | "masterclass"
+  | "mentorship"
+  | "community"
+  | "support"
+  | "admin";
 
-function categorizeNotification(notification: { link?: string | null; title?: string; type?: string | null }): NotificationCategory {
-  const link = notification.link || "";
-  const title = (notification.title || "").toLowerCase();
-  if (link.includes("/admin/") || title.includes("approv") || title.includes("review") || title.includes("verif") || title.includes("موافق") || title.includes("مراجع") || title.includes("توثيق")) return "approvals";
-  if (link.includes("/order") || link.includes("/invoice") || title.includes("order") || title.includes("invoice") || title.includes("payment") || title.includes("طلب") || title.includes("فاتور") || title.includes("دفع")) return "orders";
-  if (link.includes("/competition") || title.includes("competition") || title.includes("judge") || title.includes("score") || title.includes("مسابق") || title.includes("حكم") || title.includes("تقييم")) return "competitions";
-  return "general";
+const sectionConfig: {
+  key: NotificationSection;
+  en: string;
+  ar: string;
+  icon: React.ElementType;
+  keywords: string[];
+}[] = [
+  { key: "all", en: "All", ar: "الكل", icon: Bell, keywords: [] },
+  { key: "account", en: "Account", ar: "الحساب", icon: Settings, keywords: ["welcome", "profile", "verified", "password", "membership", "suspend", "مرحب", "ملف", "توثيق", "كلمة", "عضوية", "تعليق", "حساب", "account"] },
+  { key: "competitions", en: "Competitions", ar: "المسابقات", icon: Trophy, keywords: ["competition", "judge", "score", "certificate", "registration", "result", "مسابق", "حكم", "تقييم", "شهاد", "تسجيل", "نتائج", "نتيجة"] },
+  { key: "exhibitions", en: "Exhibitions", ar: "المعارض", icon: CalendarDays, keywords: ["exhibition", "expo", "معرض", "عرض"] },
+  { key: "company", en: "Companies", ar: "الشركات", icon: Building2, keywords: ["company", "شركة", "شركت", "تفعيل"] },
+  { key: "financial", en: "Financial", ar: "المالية", icon: CreditCard, keywords: ["invoice", "payment", "فاتور", "دفع", "مالي", "استحقاق"] },
+  { key: "orders", en: "Orders", ar: "الطلبات", icon: ShoppingCart, keywords: ["order", "shipped", "delivered", "طلب", "شحن", "تسليم"] },
+  { key: "masterclass", en: "Masterclasses", ar: "الدروس", icon: GraduationCap, keywords: ["masterclass", "lesson", "module", "درس", "وحدة", "تعليم"] },
+  { key: "mentorship", en: "Mentorship", ar: "الإرشاد", icon: Handshake, keywords: ["mentor", "مرشد", "إرشاد", "جلسة"] },
+  { key: "community", en: "Community", ar: "المجتمع", icon: Users, keywords: ["follower", "message", "recipe", "badge", "comment", "متابع", "رسالة", "وصفة", "شارة", "تعليق"] },
+  { key: "support", en: "Support", ar: "الدعم", icon: HeadphonesIcon, keywords: ["ticket", "support", "تذكرة", "دعم"] },
+  { key: "admin", en: "Admin", ar: "إدارة", icon: FileText, keywords: ["admin", "review", "system", "alert", "إدار", "مراجع", "نظام", "تنبيه"] },
+];
+
+function categorizeNotification(n: { link?: string | null; title?: string; title_ar?: string | null; body?: string | null }): NotificationSection {
+  const text = `${n.link || ""} ${n.title || ""} ${n.title_ar || ""} ${n.body || ""}`.toLowerCase();
+  for (const section of sectionConfig) {
+    if (section.key === "all") continue;
+    if (section.keywords.some((kw) => text.includes(kw))) return section.key;
+  }
+  return "account";
 }
 
 export default function Notifications() {
@@ -38,23 +70,32 @@ export default function Notifications() {
   const navigate = useNavigate();
   const [filter, setFilter] = useState("all");
   const [typeFilter, setTypeFilter] = useState("all");
-  const [categoryFilter, setCategoryFilter] = useState<NotificationCategory>("all");
+  const [sectionFilter, setSectionFilter] = useState<NotificationSection>("all");
   const isAr = language === "ar";
+
+  const sectionCounts = useMemo(() => {
+    const counts: Record<string, number> = { all: notifications.length };
+    for (const n of notifications) {
+      const cat = categorizeNotification(n);
+      counts[cat] = (counts[cat] || 0) + 1;
+    }
+    return counts;
+  }, [notifications]);
 
   const filteredNotifications = notifications.filter((n) => {
     const matchesRead = filter === "all" || (filter === "unread" ? !n.is_read : n.is_read);
     const matchesType = typeFilter === "all" || n.type === typeFilter;
-    const matchesCategory = categoryFilter === "all" || categorizeNotification(n) === categoryFilter;
-    return matchesRead && matchesType && matchesCategory;
+    const matchesSection = sectionFilter === "all" || categorizeNotification(n) === sectionFilter;
+    return matchesRead && matchesType && matchesSection;
   });
 
   // Group by date
   const grouped = filteredNotifications.reduce<Record<string, typeof filteredNotifications>>((acc, n) => {
     const date = new Date(n.created_at);
     let key: string;
-    if (isToday(date)) key = language === "ar" ? "اليوم" : "Today";
-    else if (isYesterday(date)) key = language === "ar" ? "أمس" : "Yesterday";
-    else key = format(date, "MMM d, yyyy", { locale: language === "ar" ? ar : enUS });
+    if (isToday(date)) key = isAr ? "اليوم" : "Today";
+    else if (isYesterday(date)) key = isAr ? "أمس" : "Yesterday";
+    else key = format(date, "MMM d, yyyy", { locale: isAr ? ar : enUS });
     if (!acc[key]) acc[key] = [];
     acc[key].push(n);
     return acc;
@@ -85,7 +126,13 @@ export default function Notifications() {
       error: { en: "Error", ar: "خطأ" },
       info: { en: "Info", ar: "معلومات" },
     };
-    return language === "ar" ? labels[type]?.ar || type : labels[type]?.en || type;
+    return isAr ? labels[type]?.ar || type : labels[type]?.en || type;
+  };
+
+  const getSectionLabel = (n: typeof notifications[0]) => {
+    const cat = categorizeNotification(n);
+    const section = sectionConfig.find((s) => s.key === cat);
+    return section ? (isAr ? section.ar : section.en) : "";
   };
 
   const handleNotificationClick = async (notification: typeof notifications[0]) => {
@@ -96,6 +143,11 @@ export default function Notifications() {
       navigate(notification.link);
     }
   };
+
+  // Active sections (only show tabs that have notifications)
+  const activeSections = sectionConfig.filter(
+    (s) => s.key === "all" || (sectionCounts[s.key] || 0) > 0
+  );
 
   return (
     <div className="flex min-h-screen flex-col bg-background" dir={isAr ? "rtl" : "ltr"}>
@@ -110,11 +162,11 @@ export default function Notifications() {
               </div>
               <div>
                 <h1 className="font-serif text-2xl font-bold">
-                  {language === "ar" ? "الإشعارات" : "Notifications"}
+                  {isAr ? "مركز الإشعارات" : "Notification Center"}
                 </h1>
                 {unreadCount > 0 && (
                   <p className="text-sm text-muted-foreground">
-                    {language === "ar" ? `${unreadCount} إشعار غير مقروء` : `${unreadCount} unread`}
+                    {isAr ? `${unreadCount} إشعار غير مقروء` : `${unreadCount} unread`}
                   </p>
                 )}
               </div>
@@ -123,13 +175,13 @@ export default function Notifications() {
               {unreadCount > 0 && (
                 <Button variant="outline" size="sm" onClick={markAllAsRead}>
                   <CheckCheck className="me-2 h-4 w-4" />
-                  {language === "ar" ? "قراءة الكل" : "Mark All Read"}
+                  {isAr ? "قراءة الكل" : "Mark All Read"}
                 </Button>
               )}
               {notifications.length - unreadCount > 0 && (
                 <Button variant="outline" size="sm" onClick={clearAllRead}>
                   <Trash2 className="me-2 h-4 w-4" />
-                  {language === "ar" ? "مسح المقروءة" : "Clear Read"}
+                  {isAr ? "مسح المقروءة" : "Clear Read"}
                 </Button>
               )}
             </div>
@@ -139,74 +191,71 @@ export default function Notifications() {
           <div className="grid grid-cols-3 gap-3">
             <Card className="border-s-[3px] border-s-primary">
               <CardContent className="p-3 text-center">
-                <p className="text-xs text-muted-foreground">{language === "ar" ? "الإجمالي" : "Total"}</p>
+                <p className="text-xs text-muted-foreground">{isAr ? "الإجمالي" : "Total"}</p>
                 <p className="text-xl font-bold">{notifications.length}</p>
               </CardContent>
             </Card>
             <Card className="border-s-[3px] border-s-chart-4">
               <CardContent className="p-3 text-center">
-                <p className="text-xs text-muted-foreground">{language === "ar" ? "غير مقروء" : "Unread"}</p>
+                <p className="text-xs text-muted-foreground">{isAr ? "غير مقروء" : "Unread"}</p>
                 <p className="text-xl font-bold">{unreadCount}</p>
               </CardContent>
             </Card>
             <Card className="border-s-[3px] border-s-chart-5">
               <CardContent className="p-3 text-center">
-                <p className="text-xs text-muted-foreground">{language === "ar" ? "مقروء" : "Read"}</p>
+                <p className="text-xs text-muted-foreground">{isAr ? "مقروء" : "Read"}</p>
                 <p className="text-xl font-bold">{notifications.length - unreadCount}</p>
               </CardContent>
             </Card>
           </div>
 
-          {/* Filters */}
-          <div className="flex flex-col gap-3">
-            {/* Category Tabs */}
-            <div className="flex gap-1.5 flex-wrap">
-              {([
-                { key: "all" as NotificationCategory, en: "All", ar: "الكل", icon: <Bell className="h-3.5 w-3.5" /> },
-                { key: "approvals" as NotificationCategory, en: "Approvals", ar: "الموافقات", icon: <CircleCheck className="h-3.5 w-3.5" /> },
-                { key: "orders" as NotificationCategory, en: "Orders", ar: "الطلبات", icon: <ShoppingCart className="h-3.5 w-3.5" /> },
-                { key: "competitions" as NotificationCategory, en: "Events", ar: "الفعاليات", icon: <Trophy className="h-3.5 w-3.5" /> },
-                { key: "general" as NotificationCategory, en: "General", ar: "عام", icon: <FileText className="h-3.5 w-3.5" /> },
-              ]).map((cat) => {
-                const count = cat.key === "all" ? notifications.length : notifications.filter(n => categorizeNotification(n) === cat.key).length;
-                return (
-                  <Button
-                    key={cat.key}
-                    variant={categoryFilter === cat.key ? "default" : "outline"}
-                    size="sm"
-                    className="gap-1.5"
-                    onClick={() => setCategoryFilter(cat.key)}
-                  >
-                    {cat.icon}
-                    {isAr ? cat.ar : cat.en}
-                    {count > 0 && <Badge variant="secondary" className="text-[10px] h-4 px-1.5 ms-1">{count}</Badge>}
-                  </Button>
-                );
-              })}
-            </div>
+          {/* Section Tabs */}
+          <div className="flex gap-1.5 flex-wrap">
+            {activeSections.map((section) => {
+              const Icon = section.icon;
+              const count = sectionCounts[section.key] || 0;
+              return (
+                <Button
+                  key={section.key}
+                  variant={sectionFilter === section.key ? "default" : "outline"}
+                  size="sm"
+                  className="gap-1.5"
+                  onClick={() => setSectionFilter(section.key)}
+                >
+                  <Icon className="h-3.5 w-3.5" />
+                  {isAr ? section.ar : section.en}
+                  {count > 0 && (
+                    <Badge variant="secondary" className="text-[10px] h-4 px-1.5 ms-1">
+                      {count}
+                    </Badge>
+                  )}
+                </Button>
+              );
+            })}
+          </div>
 
-            <div className="flex items-center gap-3">
-              <Tabs value={filter} onValueChange={setFilter}>
-                <TabsList>
-                  <TabsTrigger value="all">{isAr ? "الكل" : "All"}</TabsTrigger>
-                  <TabsTrigger value="unread">{isAr ? "غير مقروء" : "Unread"}</TabsTrigger>
-                  <TabsTrigger value="read">{isAr ? "مقروء" : "Read"}</TabsTrigger>
-                </TabsList>
-              </Tabs>
-              <Select value={typeFilter} onValueChange={setTypeFilter}>
-                <SelectTrigger className="w-[130px]">
-                  <Filter className="me-2 h-3.5 w-3.5" />
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">{isAr ? "كل الأنواع" : "All Types"}</SelectItem>
-                  <SelectItem value="info">{isAr ? "معلومات" : "Info"}</SelectItem>
-                  <SelectItem value="success">{isAr ? "نجاح" : "Success"}</SelectItem>
-                  <SelectItem value="warning">{isAr ? "تحذير" : "Warning"}</SelectItem>
-                  <SelectItem value="error">{isAr ? "خطأ" : "Error"}</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
+          {/* Read/Type Filters */}
+          <div className="flex items-center gap-3">
+            <Tabs value={filter} onValueChange={setFilter}>
+              <TabsList>
+                <TabsTrigger value="all">{isAr ? "الكل" : "All"}</TabsTrigger>
+                <TabsTrigger value="unread">{isAr ? "غير مقروء" : "Unread"}</TabsTrigger>
+                <TabsTrigger value="read">{isAr ? "مقروء" : "Read"}</TabsTrigger>
+              </TabsList>
+            </Tabs>
+            <Select value={typeFilter} onValueChange={setTypeFilter}>
+              <SelectTrigger className="w-[130px]">
+                <Filter className="me-2 h-3.5 w-3.5" />
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">{isAr ? "كل الأنواع" : "All Types"}</SelectItem>
+                <SelectItem value="info">{isAr ? "معلومات" : "Info"}</SelectItem>
+                <SelectItem value="success">{isAr ? "نجاح" : "Success"}</SelectItem>
+                <SelectItem value="warning">{isAr ? "تحذير" : "Warning"}</SelectItem>
+                <SelectItem value="error">{isAr ? "خطأ" : "Error"}</SelectItem>
+              </SelectContent>
+            </Select>
           </div>
 
           {/* Notifications List */}
@@ -222,11 +271,11 @@ export default function Notifications() {
                 </div>
                 <p className="text-muted-foreground">
                   {filter === "unread"
-                    ? (language === "ar" ? "لا توجد إشعارات غير مقروءة" : "No unread notifications")
-                    : (language === "ar" ? "لا توجد إشعارات" : "No notifications")}
+                    ? (isAr ? "لا توجد إشعارات غير مقروءة" : "No unread notifications")
+                    : (isAr ? "لا توجد إشعارات" : "No notifications")}
                 </p>
                 <Button variant="outline" size="sm" className="mt-3" onClick={() => navigate("/notification-preferences")}>
-                  {language === "ar" ? "إعدادات الإشعارات" : "Notification Settings"}
+                  {isAr ? "إعدادات الإشعارات" : "Notification Settings"}
                 </Button>
               </CardContent>
             </Card>
@@ -237,7 +286,7 @@ export default function Notifications() {
                   <p className="mb-3 text-sm font-medium text-muted-foreground">{dateLabel}</p>
                   <div className="space-y-2">
                     {items.map((notification) => (
-                        <Card
+                      <Card
                         key={notification.id}
                         className={cn(
                           "cursor-pointer transition-all duration-200 hover:shadow-md hover:-translate-y-0.5",
@@ -254,10 +303,10 @@ export default function Notifications() {
                               <div className="flex items-start justify-between gap-3">
                                 <div>
                                   <h3 className={cn("text-sm", !notification.is_read ? "font-semibold" : "font-medium")}>
-                                    {language === "ar" && notification.title_ar ? notification.title_ar : notification.title}
+                                    {isAr && notification.title_ar ? notification.title_ar : notification.title}
                                   </h3>
                                   <p className="text-sm text-muted-foreground mt-0.5 line-clamp-2">
-                                    {language === "ar" && notification.body_ar ? notification.body_ar : notification.body}
+                                    {isAr && notification.body_ar ? notification.body_ar : notification.body}
                                   </p>
                                 </div>
                                 <Button
@@ -269,20 +318,23 @@ export default function Notifications() {
                                   <X className="h-3.5 w-3.5 text-muted-foreground" />
                                 </Button>
                               </div>
-                              <div className="flex items-center gap-3 mt-2 text-xs text-muted-foreground">
+                              <div className="flex items-center gap-3 mt-2 text-xs text-muted-foreground flex-wrap">
                                 <span>
                                   {formatDistanceToNow(new Date(notification.created_at), {
                                     addSuffix: true,
-                                    locale: language === "ar" ? ar : enUS,
+                                    locale: isAr ? ar : enUS,
                                   })}
                                 </span>
                                 <Badge variant="outline" className="text-[10px] px-1.5 py-0">
                                   {getTypeLabel(notification.type || "info")}
                                 </Badge>
+                                <Badge variant="secondary" className="text-[10px] px-1.5 py-0">
+                                  {getSectionLabel(notification)}
+                                </Badge>
                                 {notification.is_read && notification.read_at && (
                                   <span className="flex items-center gap-1">
                                     <Check className="h-3 w-3" />
-                                    {language === "ar" ? "تمت القراءة" : "Read"}
+                                    {isAr ? "تمت القراءة" : "Read"}
                                   </span>
                                 )}
                               </div>
