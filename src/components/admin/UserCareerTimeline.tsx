@@ -1,28 +1,29 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import { useLanguage } from "@/i18n/LanguageContext";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Separator } from "@/components/ui/separator";
 import { Switch } from "@/components/ui/switch";
+import { Separator } from "@/components/ui/separator";
 import { EntitySelector } from "@/components/admin/EntitySelector";
 import { toast } from "@/hooks/use-toast";
 import {
   GraduationCap, Briefcase, Plus, Pencil, Trash2, X, Check, Calendar,
-  Building2, MapPin, ChevronDown, ChevronUp,
+  Building2, MapPin, Trophy, Award, Medal, Users, ChefHat,
 } from "lucide-react";
+
+// ── Constants ──────────────────────────────────────
 
 const EDUCATION_LEVELS = [
   { value: "high_school", en: "High School", ar: "ثانوية عامة" },
   { value: "diploma", en: "Diploma", ar: "دبلوم" },
-  { value: "bachelors", en: "Bachelor's Degree", ar: "بكالوريوس" },
-  { value: "masters", en: "Master's Degree", ar: "ماجستير" },
-  { value: "doctorate", en: "Doctorate / PhD", ar: "دكتوراه" },
+  { value: "bachelors", en: "Bachelor's", ar: "بكالوريوس" },
+  { value: "masters", en: "Master's", ar: "ماجستير" },
+  { value: "doctorate", en: "PhD", ar: "دكتوراه" },
   { value: "culinary_certificate", en: "Culinary Certificate", ar: "شهادة طهي" },
   { value: "professional_diploma", en: "Professional Diploma", ar: "دبلوم مهني" },
   { value: "other", en: "Other", ar: "أخرى" },
@@ -36,6 +37,18 @@ const EMPLOYMENT_TYPES = [
   { value: "freelance", en: "Freelance", ar: "عمل حر" },
   { value: "volunteer", en: "Volunteer", ar: "تطوعي" },
 ];
+
+const SECTIONS = [
+  { key: "education" as const, icon: GraduationCap, en: "Education", ar: "التعليم" },
+  { key: "work" as const, icon: Briefcase, en: "Experience", ar: "الخبرات" },
+  { key: "memberships" as const, icon: Users, en: "Memberships", ar: "العضويات" },
+  { key: "competitions" as const, icon: Trophy, en: "Competitions", ar: "المسابقات" },
+  { key: "awards" as const, icon: Medal, en: "Awards & Medals", ar: "الجوائز والميداليات" },
+];
+
+type SectionKey = typeof SECTIONS[number]["key"];
+
+// ── Types ──────────────────────────────────────
 
 interface CareerRecord {
   id: string;
@@ -63,7 +76,7 @@ interface CareerRecord {
 }
 
 interface EmptyForm {
-  record_type: "education" | "work";
+  record_type: string;
   entity_id: string | null;
   entity_name: string;
   title: string;
@@ -85,23 +98,12 @@ interface EmptyForm {
 
 const emptyForm: EmptyForm = {
   record_type: "education",
-  entity_id: null,
-  entity_name: "",
-  title: "",
-  title_ar: "",
-  education_level: "",
-  field_of_study: "",
-  field_of_study_ar: "",
-  grade: "",
-  department: "",
-  department_ar: "",
-  employment_type: "",
-  start_date: "",
-  end_date: "",
-  is_current: false,
-  description: "",
-  description_ar: "",
-  location: "",
+  entity_id: null, entity_name: "",
+  title: "", title_ar: "",
+  education_level: "", field_of_study: "", field_of_study_ar: "", grade: "",
+  department: "", department_ar: "", employment_type: "",
+  start_date: "", end_date: "", is_current: false,
+  description: "", description_ar: "", location: "",
 };
 
 interface Props {
@@ -109,12 +111,29 @@ interface Props {
   isAr: boolean;
 }
 
+// ── Helpers ──────────────────────────────────────
+
+const formatDateShort = (date: string | null, isAr: boolean) => {
+  if (!date) return isAr ? "الحالي" : "Present";
+  const d = new Date(date);
+  return d.toLocaleDateString(isAr ? "ar-SA" : "en-US", { year: "numeric", month: "short" });
+};
+
+const labelFor = (key: string, list: { value: string; en: string; ar: string }[], isAr: boolean) => {
+  const item = list.find(l => l.value === key);
+  return item ? (isAr ? item.ar : item.en) : key;
+};
+
+// ── Main Component ──────────────────────────────────────
+
 export function UserCareerTimeline({ userId, isAr }: Props) {
   const queryClient = useQueryClient();
-  const [activeSection, setActiveSection] = useState<"education" | "work">("education");
+  const [activeSection, setActiveSection] = useState<SectionKey>("education");
   const [showForm, setShowForm] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [form, setForm] = useState<EmptyForm>(emptyForm);
+
+  // ── Data ──────────────────────────────────────
 
   const { data: records = [], isLoading } = useQuery({
     queryKey: ["career-records", userId],
@@ -131,33 +150,73 @@ export function UserCareerTimeline({ userId, isAr }: Props) {
     },
   });
 
-  const educationRecords = records.filter(r => r.record_type === "education");
-  const workRecords = records.filter(r => r.record_type === "work");
+  const { data: competitions = [] } = useQuery({
+    queryKey: ["user-competition-history", userId],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("competition_registrations")
+        .select("id, registered_at, status, competitions(title, title_ar, competition_start, country_code, status)")
+        .eq("participant_id", userId)
+        .order("registered_at", { ascending: false });
+      if (error) throw error;
+      return data || [];
+    },
+  });
+
+  const { data: certificates = [] } = useQuery({
+    queryKey: ["user-certificates-awards", userId],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("certificates")
+        .select("id, issued_at, event_name, event_name_ar, achievement, achievement_ar, type, status")
+        .eq("recipient_id", userId)
+        .eq("status", "issued")
+        .order("issued_at", { ascending: false });
+      if (error) throw error;
+      return data || [];
+    },
+  });
+
+  const { data: memberships = [] } = useQuery({
+    queryKey: ["user-entity-memberships", userId],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("entity_memberships")
+        .select("*, culinary_entities(name, name_ar, logo_url, type)")
+        .eq("user_id", userId)
+        .order("created_at", { ascending: false });
+      if (error) throw error;
+      return data || [];
+    },
+  });
+
+  const sectionRecords = useMemo(() => records.filter(r => r.record_type === activeSection), [records, activeSection]);
+
+  const sectionCounts: Record<SectionKey, number> = {
+    education: records.filter(r => r.record_type === "education").length,
+    work: records.filter(r => r.record_type === "work").length,
+    memberships: memberships.length,
+    competitions: competitions.length,
+    awards: certificates.length,
+  };
+
+  // ── Mutations ──────────────────────────────────────
 
   const saveMutation = useMutation({
     mutationFn: async () => {
       const payload = {
-        user_id: userId,
-        record_type: form.record_type,
-        entity_id: form.entity_id || null,
-        entity_name: form.entity_name || null,
-        title: form.title,
-        title_ar: form.title_ar || null,
+        user_id: userId, record_type: form.record_type,
+        entity_id: form.entity_id || null, entity_name: form.entity_name || null,
+        title: form.title, title_ar: form.title_ar || null,
         education_level: form.education_level || null,
-        field_of_study: form.field_of_study || null,
-        field_of_study_ar: form.field_of_study_ar || null,
-        grade: form.grade || null,
-        department: form.department || null,
-        department_ar: form.department_ar || null,
+        field_of_study: form.field_of_study || null, field_of_study_ar: form.field_of_study_ar || null,
+        grade: form.grade || null, department: form.department || null, department_ar: form.department_ar || null,
         employment_type: form.employment_type || null,
-        start_date: form.start_date || null,
-        end_date: form.is_current ? null : (form.end_date || null),
+        start_date: form.start_date || null, end_date: form.is_current ? null : (form.end_date || null),
         is_current: form.is_current,
-        description: form.description || null,
-        description_ar: form.description_ar || null,
+        description: form.description || null, description_ar: form.description_ar || null,
         location: form.location || null,
       };
-
       if (editingId) {
         const { error } = await supabase.from("user_career_records").update(payload).eq("id", editingId);
         if (error) throw error;
@@ -171,9 +230,7 @@ export function UserCareerTimeline({ userId, isAr }: Props) {
       toast({ title: editingId ? (isAr ? "تم التحديث" : "Updated") : (isAr ? "تمت الإضافة" : "Added") });
       resetForm();
     },
-    onError: (err: any) => {
-      toast({ title: isAr ? "خطأ" : "Error", description: err.message, variant: "destructive" });
-    },
+    onError: (err: any) => toast({ title: isAr ? "خطأ" : "Error", description: err.message, variant: "destructive" }),
   });
 
   const deleteMutation = useMutation({
@@ -187,368 +244,376 @@ export function UserCareerTimeline({ userId, isAr }: Props) {
     },
   });
 
-  const resetForm = () => {
-    setForm({ ...emptyForm, record_type: activeSection });
-    setEditingId(null);
-    setShowForm(false);
-  };
+  // ── Form Helpers ──────────────────────────────────────
+
+  const resetForm = () => { setForm({ ...emptyForm, record_type: activeSection }); setEditingId(null); setShowForm(false); };
 
   const startEdit = (record: CareerRecord) => {
     setForm({
-      record_type: record.record_type as "education" | "work",
-      entity_id: record.entity_id,
-      entity_name: record.entity_name || "",
-      title: record.title,
-      title_ar: record.title_ar || "",
-      education_level: record.education_level || "",
-      field_of_study: record.field_of_study || "",
-      field_of_study_ar: record.field_of_study_ar || "",
-      grade: record.grade || "",
-      department: record.department || "",
-      department_ar: record.department_ar || "",
+      record_type: record.record_type,
+      entity_id: record.entity_id, entity_name: record.entity_name || "",
+      title: record.title, title_ar: record.title_ar || "",
+      education_level: record.education_level || "", field_of_study: record.field_of_study || "",
+      field_of_study_ar: record.field_of_study_ar || "", grade: record.grade || "",
+      department: record.department || "", department_ar: record.department_ar || "",
       employment_type: record.employment_type || "",
-      start_date: record.start_date || "",
-      end_date: record.end_date || "",
+      start_date: record.start_date || "", end_date: record.end_date || "",
       is_current: record.is_current,
-      description: record.description || "",
-      description_ar: record.description_ar || "",
+      description: record.description || "", description_ar: record.description_ar || "",
       location: record.location || "",
     });
-    setActiveSection(record.record_type as "education" | "work");
+    setActiveSection(record.record_type as SectionKey);
     setEditingId(record.id);
     setShowForm(true);
   };
 
-  const startAdd = (type: "education" | "work") => {
-    setActiveSection(type);
-    setForm({ ...emptyForm, record_type: type });
-    setEditingId(null);
-    setShowForm(true);
-  };
-
+  const startAdd = () => { setForm({ ...emptyForm, record_type: activeSection }); setEditingId(null); setShowForm(true); };
   const updateField = (key: keyof EmptyForm, value: any) => setForm(prev => ({ ...prev, [key]: value }));
 
-  const formatDate = (date: string | null) => {
-    if (!date) return isAr ? "الحالي" : "Present";
-    const d = new Date(date);
-    return d.toLocaleDateString(isAr ? "ar-SA" : "en-US", { year: "numeric", month: "short" });
-  };
+  // ── Editable sections (education / work) ──────────────────────────────────────
 
-  const currentRecords = activeSection === "education" ? educationRecords : workRecords;
+  const isEditable = activeSection === "education" || activeSection === "work";
 
   return (
     <div className="space-y-4">
-      {/* Section Tabs */}
-      <div className="flex gap-2">
-        <Button
-          variant={activeSection === "education" ? "default" : "outline"}
-          size="sm"
-          className="gap-1.5"
-          onClick={() => { setActiveSection("education"); setShowForm(false); }}
-        >
-          <GraduationCap className="h-4 w-4" />
-          {isAr ? "التعليم" : "Education"}
-          {educationRecords.length > 0 && (
-            <Badge variant="secondary" className="ms-1 h-5 text-[10px]">{educationRecords.length}</Badge>
-          )}
-        </Button>
-        <Button
-          variant={activeSection === "work" ? "default" : "outline"}
-          size="sm"
-          className="gap-1.5"
-          onClick={() => { setActiveSection("work"); setShowForm(false); }}
-        >
-          <Briefcase className="h-4 w-4" />
-          {isAr ? "الخبرات" : "Experience"}
-          {workRecords.length > 0 && (
-            <Badge variant="secondary" className="ms-1 h-5 text-[10px]">{workRecords.length}</Badge>
-          )}
-        </Button>
+      {/* Section Nav - compact pills */}
+      <div className="flex flex-wrap gap-1.5">
+        {SECTIONS.map(s => {
+          const Icon = s.icon;
+          const count = sectionCounts[s.key];
+          const active = activeSection === s.key;
+          return (
+            <button
+              key={s.key}
+              onClick={() => { setActiveSection(s.key); setShowForm(false); }}
+              className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-medium transition-all ${
+                active
+                  ? "bg-primary text-primary-foreground shadow-sm"
+                  : "bg-muted/50 text-muted-foreground hover:bg-muted"
+              }`}
+            >
+              <Icon className="h-3.5 w-3.5" />
+              {isAr ? s.ar : s.en}
+              {count > 0 && (
+                <span className={`rounded-full px-1.5 py-0.5 text-[10px] leading-none ${
+                  active ? "bg-primary-foreground/20 text-primary-foreground" : "bg-background text-foreground"
+                }`}>
+                  {count}
+                </span>
+              )}
+            </button>
+          );
+        })}
       </div>
 
-      {/* Timeline Records */}
-      {isLoading ? (
-        <p className="text-sm text-muted-foreground text-center py-6">{isAr ? "جاري التحميل..." : "Loading..."}</p>
-      ) : currentRecords.length === 0 && !showForm ? (
-        <div className="rounded-lg border border-dashed p-6 text-center space-y-2">
-          <div className="mx-auto flex h-10 w-10 items-center justify-center rounded-full bg-muted">
-            {activeSection === "education" ? <GraduationCap className="h-5 w-5 text-muted-foreground" /> : <Briefcase className="h-5 w-5 text-muted-foreground" />}
-          </div>
-          <p className="text-sm text-muted-foreground">
-            {activeSection === "education"
-              ? (isAr ? "لا يوجد سجل تعليمي بعد" : "No education records yet")
-              : (isAr ? "لا يوجد سجل خبرات بعد" : "No work experience yet")}
-          </p>
-          <Button variant="outline" size="sm" onClick={() => startAdd(activeSection)}>
-            <Plus className="me-1 h-3.5 w-3.5" />
-            {activeSection === "education" ? (isAr ? "إضافة تعليم" : "Add Education") : (isAr ? "إضافة خبرة" : "Add Experience")}
-          </Button>
-        </div>
-      ) : (
-        <div className="space-y-0">
-          {currentRecords.map((record, idx) => (
-            <div key={record.id} className="relative flex gap-3">
-              {/* Timeline line */}
-              <div className="flex flex-col items-center">
-                <div className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-full border-2 ${
-                  record.is_current ? "border-primary bg-primary/10" : "border-muted-foreground/30 bg-muted"
-                }`}>
-                  {record.record_type === "education"
-                    ? <GraduationCap className={`h-4 w-4 ${record.is_current ? "text-primary" : "text-muted-foreground"}`} />
-                    : <Briefcase className={`h-4 w-4 ${record.is_current ? "text-primary" : "text-muted-foreground"}`} />
-                  }
+      <Separator />
+
+      {/* ── Education & Work Records ──────────────────────── */}
+      {isEditable && (
+        <>
+          {isLoading ? (
+            <p className="text-sm text-muted-foreground text-center py-4">{isAr ? "جاري التحميل..." : "Loading..."}</p>
+          ) : sectionRecords.length === 0 && !showForm ? (
+            <EmptyState
+              icon={activeSection === "education" ? GraduationCap : Briefcase}
+              message={activeSection === "education"
+                ? (isAr ? "لا يوجد سجل تعليمي بعد" : "No education records yet")
+                : (isAr ? "لا يوجد سجل خبرات بعد" : "No work experience yet")}
+              actionLabel={activeSection === "education" ? (isAr ? "إضافة تعليم" : "Add Education") : (isAr ? "إضافة خبرة" : "Add Experience")}
+              onAction={startAdd}
+            />
+          ) : (
+            <div className="space-y-1.5">
+              {sectionRecords.map(record => (
+                <CompactRecordRow
+                  key={record.id}
+                  record={record}
+                  isAr={isAr}
+                  onEdit={() => startEdit(record)}
+                  onDelete={() => deleteMutation.mutate(record.id)}
+                />
+              ))}
+            </div>
+          )}
+
+          {sectionRecords.length > 0 && !showForm && (
+            <Button variant="outline" size="sm" className="w-full gap-1.5 text-xs" onClick={startAdd}>
+              <Plus className="h-3.5 w-3.5" />
+              {activeSection === "education" ? (isAr ? "إضافة تعليم" : "Add Education") : (isAr ? "إضافة خبرة" : "Add Experience")}
+            </Button>
+          )}
+
+          {showForm && (
+            <InlineForm
+              form={form}
+              editingId={editingId}
+              isAr={isAr}
+              isPending={saveMutation.isPending}
+              onUpdate={updateField}
+              onSave={() => saveMutation.mutate()}
+              onCancel={resetForm}
+            />
+          )}
+        </>
+      )}
+
+      {/* ── Memberships (read-only from entity_memberships) ──────── */}
+      {activeSection === "memberships" && (
+        <div className="space-y-1.5">
+          {memberships.length === 0 ? (
+            <EmptyState icon={Users} message={isAr ? "لا توجد عضويات" : "No memberships"} />
+          ) : memberships.map((m: any) => (
+            <div key={m.id} className="flex items-center gap-3 rounded-lg border px-3 py-2.5 hover:bg-muted/30 transition-colors">
+              {m.culinary_entities?.logo_url ? (
+                <img src={m.culinary_entities.logo_url} className="h-8 w-8 rounded-md object-cover shrink-0" alt="" />
+              ) : (
+                <div className="flex h-8 w-8 items-center justify-center rounded-md bg-primary/10 shrink-0">
+                  <Users className="h-4 w-4 text-primary" />
                 </div>
-                {idx < currentRecords.length - 1 && <div className="w-0.5 flex-1 bg-border" />}
+              )}
+              <div className="flex-1 min-w-0">
+                <p className="text-sm font-medium truncate">
+                  {isAr ? (m.culinary_entities?.name_ar || m.culinary_entities?.name) : m.culinary_entities?.name}
+                </p>
+                <p className="text-xs text-muted-foreground">
+                  {m.membership_type && <span className="capitalize">{m.membership_type}</span>}
+                  {m.role && <> · {m.role}</>}
+                </p>
               </div>
-
-              {/* Content */}
-              <div className="flex-1 pb-6">
-                <div className="rounded-lg border p-3 hover:shadow-sm transition-shadow group">
-                  <div className="flex items-start justify-between">
-                    <div className="flex-1 min-w-0">
-                      <h4 className="font-semibold text-sm">{isAr ? (record.title_ar || record.title) : record.title}</h4>
-                      <p className="text-xs text-muted-foreground flex items-center gap-1 mt-0.5">
-                        <Building2 className="h-3 w-3" />
-                        {record.entity_name || (isAr ? "غير محدد" : "Not specified")}
-                      </p>
-                    </div>
-                    <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                      <Button size="icon" variant="ghost" className="h-7 w-7" onClick={() => startEdit(record)}>
-                        <Pencil className="h-3 w-3" />
-                      </Button>
-                      <Button size="icon" variant="ghost" className="h-7 w-7 text-destructive" onClick={() => deleteMutation.mutate(record.id)}>
-                        <Trash2 className="h-3 w-3" />
-                      </Button>
-                    </div>
-                  </div>
-
-                  {/* Meta info */}
-                  <div className="flex flex-wrap items-center gap-2 mt-1.5">
-                    <span className="text-xs text-muted-foreground flex items-center gap-1">
-                      <Calendar className="h-3 w-3" />
-                      {formatDate(record.start_date)} — {record.is_current ? (isAr ? "الحالي" : "Present") : formatDate(record.end_date)}
-                    </span>
-                    {record.is_current && (
-                      <Badge variant="default" className="text-[10px] h-4 px-1.5">{isAr ? "حالي" : "Current"}</Badge>
-                    )}
-                    {record.record_type === "education" && record.education_level && (
-                      <Badge variant="outline" className="text-[10px] h-4 px-1.5">
-                        {EDUCATION_LEVELS.find(l => l.value === record.education_level)?.[isAr ? "ar" : "en"] || record.education_level}
-                      </Badge>
-                    )}
-                    {record.record_type === "work" && record.employment_type && (
-                      <Badge variant="outline" className="text-[10px] h-4 px-1.5">
-                        {EMPLOYMENT_TYPES.find(t => t.value === record.employment_type)?.[isAr ? "ar" : "en"] || record.employment_type}
-                      </Badge>
-                    )}
-                    {record.location && (
-                      <span className="text-[10px] text-muted-foreground flex items-center gap-0.5">
-                        <MapPin className="h-2.5 w-2.5" />{record.location}
-                      </span>
-                    )}
-                  </div>
-
-                  {/* Field of study / Department */}
-                  {record.record_type === "education" && record.field_of_study && (
-                    <p className="text-xs text-muted-foreground mt-1">
-                      {isAr ? (record.field_of_study_ar || record.field_of_study) : record.field_of_study}
-                      {record.grade && ` • ${isAr ? "المعدل" : "Grade"}: ${record.grade}`}
-                    </p>
-                  )}
-                  {record.record_type === "work" && record.department && (
-                    <p className="text-xs text-muted-foreground mt-1">
-                      {isAr ? (record.department_ar || record.department) : record.department}
-                    </p>
-                  )}
-
-                  {/* Description */}
-                  {record.description && (
-                    <p className="text-xs mt-2 text-muted-foreground line-clamp-2">
-                      {isAr ? (record.description_ar || record.description) : record.description}
-                    </p>
-                  )}
-                </div>
-              </div>
+              {m.status && (
+                <Badge variant={m.status === "active" ? "default" : "secondary"} className="text-[10px] h-5 shrink-0">
+                  {m.status === "active" ? (isAr ? "نشط" : "Active") : m.status}
+                </Badge>
+              )}
             </div>
           ))}
         </div>
       )}
 
-      {/* Add Button (when records exist) */}
-      {currentRecords.length > 0 && !showForm && (
-        <Button variant="outline" size="sm" className="w-full gap-1.5" onClick={() => startAdd(activeSection)}>
-          <Plus className="h-3.5 w-3.5" />
-          {activeSection === "education" ? (isAr ? "إضافة تعليم" : "Add Education") : (isAr ? "إضافة خبرة" : "Add Experience")}
-        </Button>
+      {/* ── Competitions (read-only from registrations) ──────── */}
+      {activeSection === "competitions" && (
+        <div className="space-y-1.5">
+          {competitions.length === 0 ? (
+            <EmptyState icon={Trophy} message={isAr ? "لا توجد مشاركات في مسابقات" : "No competition participations"} />
+          ) : competitions.map((reg: any) => (
+            <div key={reg.id} className="flex items-center gap-3 rounded-lg border px-3 py-2.5 hover:bg-muted/30 transition-colors">
+              <div className="flex h-8 w-8 items-center justify-center rounded-md bg-chart-4/10 shrink-0">
+                <Trophy className="h-4 w-4 text-chart-4" />
+              </div>
+              <div className="flex-1 min-w-0">
+                <p className="text-sm font-medium truncate">
+                  {isAr ? (reg.competitions?.title_ar || reg.competitions?.title) : reg.competitions?.title}
+                </p>
+                <p className="text-xs text-muted-foreground">
+                  {reg.competitions?.competition_start && formatDateShort(reg.competitions.competition_start, isAr)}
+                  {reg.competitions?.country_code && <> · {reg.competitions.country_code}</>}
+                </p>
+              </div>
+              <Badge variant={reg.status === "approved" ? "default" : "secondary"} className="text-[10px] h-5 shrink-0 capitalize">
+                {reg.status === "approved" ? (isAr ? "مقبول" : "Approved") : reg.status === "pending" ? (isAr ? "قيد المراجعة" : "Pending") : reg.status}
+              </Badge>
+            </div>
+          ))}
+        </div>
       )}
 
-      {/* Inline Add/Edit Form */}
-      {showForm && (
-        <div className="rounded-lg border p-4 space-y-4 bg-muted/10">
-          <div className="flex items-center justify-between">
-            <h3 className="text-sm font-semibold flex items-center gap-2">
-              {form.record_type === "education" ? <GraduationCap className="h-4 w-4" /> : <Briefcase className="h-4 w-4" />}
-              {editingId
-                ? (isAr ? "تعديل السجل" : "Edit Record")
-                : form.record_type === "education"
-                  ? (isAr ? "إضافة سجل تعليمي" : "Add Education")
-                  : (isAr ? "إضافة خبرة عملية" : "Add Work Experience")
-              }
-            </h3>
-            <Button size="icon" variant="ghost" className="h-7 w-7" onClick={resetForm}>
-              <X className="h-3.5 w-3.5" />
-            </Button>
-          </div>
-
-          {/* Entity Selector */}
-          <EntitySelector
-            value={form.entity_id}
-            entityName={form.entity_name}
-            onChange={(entityId, entityName) => { updateField("entity_id", entityId); updateField("entity_name", entityName); }}
-            label={form.record_type === "education" ? (isAr ? "المؤسسة التعليمية" : "Institution") : (isAr ? "جهة العمل" : "Company / Organization")}
-          />
-
-          {/* Title */}
-          <div className="grid gap-3 sm:grid-cols-2">
-            <div className="space-y-1">
-              <Label className="text-xs">
-                {form.record_type === "education" ? (isAr ? "الدرجة / الشهادة (EN)" : "Degree / Certificate (EN)") : (isAr ? "المسمى الوظيفي (EN)" : "Job Title (EN)")} *
-              </Label>
-              <Input value={form.title} onChange={(e) => updateField("title", e.target.value)} className="h-9 text-sm" dir="ltr" />
-            </div>
-            <div className="space-y-1">
-              <Label className="text-xs">
-                {form.record_type === "education" ? (isAr ? "الدرجة / الشهادة (AR)" : "Degree / Certificate (AR)") : (isAr ? "المسمى الوظيفي (AR)" : "Job Title (AR)")}
-              </Label>
-              <Input value={form.title_ar} onChange={(e) => updateField("title_ar", e.target.value)} className="h-9 text-sm" dir="rtl" />
-            </div>
-          </div>
-
-          {/* Education-specific fields */}
-          {form.record_type === "education" && (
-            <>
-              <div className="grid gap-3 sm:grid-cols-2">
-                <div className="space-y-1">
-                  <Label className="text-xs">{isAr ? "المستوى التعليمي" : "Education Level"}</Label>
-                  <Select value={form.education_level} onValueChange={(v) => updateField("education_level", v)}>
-                    <SelectTrigger className="h-9 text-sm"><SelectValue placeholder={isAr ? "اختر" : "Select"} /></SelectTrigger>
-                    <SelectContent>
-                      {EDUCATION_LEVELS.map(l => (
-                        <SelectItem key={l.value} value={l.value}>{isAr ? l.ar : l.en}</SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-                <div className="space-y-1">
-                  <Label className="text-xs">{isAr ? "المعدل / التقدير" : "Grade / GPA"}</Label>
-                  <Input value={form.grade} onChange={(e) => updateField("grade", e.target.value)} className="h-9 text-sm" dir="ltr" />
-                </div>
+      {/* ── Awards & Certificates (read-only) ──────── */}
+      {activeSection === "awards" && (
+        <div className="space-y-1.5">
+          {certificates.length === 0 ? (
+            <EmptyState icon={Medal} message={isAr ? "لا توجد جوائز أو شهادات" : "No awards or certificates"} />
+          ) : certificates.map((cert: any) => (
+            <div key={cert.id} className="flex items-center gap-3 rounded-lg border px-3 py-2.5 hover:bg-muted/30 transition-colors">
+              <div className="flex h-8 w-8 items-center justify-center rounded-md bg-chart-1/10 shrink-0">
+                <Award className="h-4 w-4 text-chart-1" />
               </div>
-              <div className="grid gap-3 sm:grid-cols-2">
-                <div className="space-y-1">
-                  <Label className="text-xs">{isAr ? "التخصص (EN)" : "Field of Study (EN)"}</Label>
-                  <Input value={form.field_of_study} onChange={(e) => updateField("field_of_study", e.target.value)} className="h-9 text-sm" dir="ltr" />
-                </div>
-                <div className="space-y-1">
-                  <Label className="text-xs">{isAr ? "التخصص (AR)" : "Field of Study (AR)"}</Label>
-                  <Input value={form.field_of_study_ar} onChange={(e) => updateField("field_of_study_ar", e.target.value)} className="h-9 text-sm" dir="rtl" />
-                </div>
+              <div className="flex-1 min-w-0">
+                <p className="text-sm font-medium truncate">
+                  {isAr ? (cert.event_name_ar || cert.event_name) : cert.event_name}
+                </p>
+                <p className="text-xs text-muted-foreground">
+                  {cert.achievement && <>{isAr ? (cert.achievement_ar || cert.achievement) : cert.achievement} · </>}
+                  {cert.issued_at && formatDateShort(cert.issued_at, isAr)}
+                </p>
               </div>
-            </>
+              <Badge variant="outline" className="text-[10px] h-5 shrink-0 capitalize">{cert.type}</Badge>
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
+// ── Sub-components ──────────────────────────────────────
+
+function EmptyState({ icon: Icon, message, actionLabel, onAction }: {
+  icon: any; message: string; actionLabel?: string; onAction?: () => void;
+}) {
+  return (
+    <div className="rounded-lg border border-dashed p-6 text-center space-y-2">
+      <div className="mx-auto flex h-10 w-10 items-center justify-center rounded-full bg-muted">
+        <Icon className="h-5 w-5 text-muted-foreground" />
+      </div>
+      <p className="text-sm text-muted-foreground">{message}</p>
+      {actionLabel && onAction && (
+        <Button variant="outline" size="sm" onClick={onAction}>
+          <Plus className="me-1 h-3.5 w-3.5" />{actionLabel}
+        </Button>
+      )}
+    </div>
+  );
+}
+
+function CompactRecordRow({ record, isAr, onEdit, onDelete }: {
+  record: CareerRecord; isAr: boolean; onEdit: () => void; onDelete: () => void;
+}) {
+  const isEdu = record.record_type === "education";
+  const Icon = isEdu ? GraduationCap : Briefcase;
+
+  return (
+    <div className="flex items-center gap-3 rounded-lg border px-3 py-2.5 hover:bg-muted/30 transition-colors group">
+      <div className={`flex h-8 w-8 items-center justify-center rounded-md shrink-0 ${
+        record.is_current ? "bg-primary/10" : "bg-muted"
+      }`}>
+        <Icon className={`h-4 w-4 ${record.is_current ? "text-primary" : "text-muted-foreground"}`} />
+      </div>
+
+      <div className="flex-1 min-w-0">
+        <div className="flex items-center gap-2">
+          <p className="text-sm font-medium truncate">{isAr ? (record.title_ar || record.title) : record.title}</p>
+          {record.is_current && <Badge variant="default" className="text-[10px] h-4 px-1.5 shrink-0">{isAr ? "حالي" : "Current"}</Badge>}
+        </div>
+        <p className="text-xs text-muted-foreground truncate flex items-center gap-1">
+          <Building2 className="h-3 w-3 shrink-0" />
+          <span className="truncate">{record.entity_name || (isAr ? "غير محدد" : "Not specified")}</span>
+          <span className="mx-0.5">·</span>
+          <Calendar className="h-3 w-3 shrink-0" />
+          <span>{formatDateShort(record.start_date, isAr)} — {record.is_current ? (isAr ? "الحالي" : "Present") : formatDateShort(record.end_date, isAr)}</span>
+          {isEdu && record.education_level && (
+            <><span className="mx-0.5">·</span><span>{labelFor(record.education_level, EDUCATION_LEVELS, isAr)}</span></>
           )}
-
-          {/* Work-specific fields */}
-          {form.record_type === "work" && (
-            <>
-              <div className="grid gap-3 sm:grid-cols-2">
-                <div className="space-y-1">
-                  <Label className="text-xs">{isAr ? "نوع التوظيف" : "Employment Type"}</Label>
-                  <Select value={form.employment_type} onValueChange={(v) => updateField("employment_type", v)}>
-                    <SelectTrigger className="h-9 text-sm"><SelectValue placeholder={isAr ? "اختر" : "Select"} /></SelectTrigger>
-                    <SelectContent>
-                      {EMPLOYMENT_TYPES.map(t => (
-                        <SelectItem key={t.value} value={t.value}>{isAr ? t.ar : t.en}</SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-                <div className="space-y-1">
-                  <Label className="text-xs">{isAr ? "الموقع" : "Location"}</Label>
-                  <Input value={form.location} onChange={(e) => updateField("location", e.target.value)} className="h-9 text-sm" />
-                </div>
-              </div>
-              <div className="grid gap-3 sm:grid-cols-2">
-                <div className="space-y-1">
-                  <Label className="text-xs">{isAr ? "القسم (EN)" : "Department (EN)"}</Label>
-                  <Input value={form.department} onChange={(e) => updateField("department", e.target.value)} className="h-9 text-sm" dir="ltr" />
-                </div>
-                <div className="space-y-1">
-                  <Label className="text-xs">{isAr ? "القسم (AR)" : "Department (AR)"}</Label>
-                  <Input value={form.department_ar} onChange={(e) => updateField("department_ar", e.target.value)} className="h-9 text-sm" dir="rtl" />
-                </div>
-              </div>
-            </>
+          {!isEdu && record.employment_type && (
+            <><span className="mx-0.5">·</span><span>{labelFor(record.employment_type, EMPLOYMENT_TYPES, isAr)}</span></>
           )}
+          {record.location && (
+            <><span className="mx-0.5">·</span><MapPin className="h-3 w-3 shrink-0" /><span className="truncate">{record.location}</span></>
+          )}
+        </p>
+      </div>
 
-          {/* Period */}
-          <div className="grid gap-3 sm:grid-cols-2">
-            <div className="space-y-1">
-              <Label className="text-xs">{isAr ? "تاريخ البداية" : "Start Date"}</Label>
-              <Input type="date" value={form.start_date} onChange={(e) => updateField("start_date", e.target.value)} className="h-9 text-sm" dir="ltr" />
-            </div>
-            <div className="space-y-1">
-              <Label className="text-xs">{isAr ? "تاريخ الانتهاء" : "End Date"}</Label>
-              <Input
-                type="date"
-                value={form.end_date}
-                onChange={(e) => updateField("end_date", e.target.value)}
-                className="h-9 text-sm"
-                dir="ltr"
-                disabled={form.is_current}
-              />
-            </div>
-          </div>
-          <div className="flex items-center gap-2">
-            <Switch checked={form.is_current} onCheckedChange={(v) => updateField("is_current", v)} />
-            <Label className="text-xs cursor-pointer">
-              {form.record_type === "education" ? (isAr ? "ما زلت أدرس هنا" : "Currently studying here") : (isAr ? "أعمل هنا حالياً" : "Currently working here")}
-            </Label>
-          </div>
+      <div className="flex items-center gap-0.5 opacity-0 group-hover:opacity-100 transition-opacity shrink-0">
+        <Button size="icon" variant="ghost" className="h-7 w-7" onClick={onEdit}><Pencil className="h-3 w-3" /></Button>
+        <Button size="icon" variant="ghost" className="h-7 w-7 text-destructive" onClick={onDelete}><Trash2 className="h-3 w-3" /></Button>
+      </div>
+    </div>
+  );
+}
 
-          {/* Description */}
+function InlineForm({ form, editingId, isAr, isPending, onUpdate, onSave, onCancel }: {
+  form: EmptyForm; editingId: string | null; isAr: boolean; isPending: boolean;
+  onUpdate: (key: keyof EmptyForm, value: any) => void; onSave: () => void; onCancel: () => void;
+}) {
+  const isEdu = form.record_type === "education";
+
+  return (
+    <div className="rounded-lg border p-4 space-y-3 bg-muted/10">
+      <div className="flex items-center justify-between">
+        <h3 className="text-sm font-semibold flex items-center gap-2">
+          {isEdu ? <GraduationCap className="h-4 w-4" /> : <Briefcase className="h-4 w-4" />}
+          {editingId
+            ? (isAr ? "تعديل السجل" : "Edit Record")
+            : isEdu ? (isAr ? "إضافة تعليم" : "Add Education") : (isAr ? "إضافة خبرة" : "Add Experience")}
+        </h3>
+        <Button size="icon" variant="ghost" className="h-7 w-7" onClick={onCancel}><X className="h-3.5 w-3.5" /></Button>
+      </div>
+
+      <EntitySelector
+        value={form.entity_id}
+        entityName={form.entity_name}
+        onChange={(id, name) => { onUpdate("entity_id", id); onUpdate("entity_name", name); }}
+        label={isEdu ? (isAr ? "المؤسسة التعليمية" : "Institution") : (isAr ? "جهة العمل" : "Company / Organization")}
+      />
+
+      <div className="grid gap-3 sm:grid-cols-2">
+        <div className="space-y-1">
+          <Label className="text-xs">{isEdu ? (isAr ? "الدرجة (EN)" : "Degree (EN)") : (isAr ? "المسمى الوظيفي (EN)" : "Job Title (EN)")} *</Label>
+          <Input value={form.title} onChange={(e) => onUpdate("title", e.target.value)} className="h-9 text-sm" dir="ltr" />
+        </div>
+        <div className="space-y-1">
+          <Label className="text-xs">{isEdu ? (isAr ? "الدرجة (AR)" : "Degree (AR)") : (isAr ? "المسمى الوظيفي (AR)" : "Job Title (AR)")}</Label>
+          <Input value={form.title_ar} onChange={(e) => onUpdate("title_ar", e.target.value)} className="h-9 text-sm" dir="rtl" />
+        </div>
+      </div>
+
+      {isEdu ? (
+        <div className="grid gap-3 sm:grid-cols-3">
           <div className="space-y-1">
-            <Label className="text-xs">{isAr ? "وصف / ملاحظات" : "Description / Notes"}</Label>
-            <Textarea
-              value={form.description}
-              onChange={(e) => updateField("description", e.target.value)}
-              className="min-h-[60px] text-sm"
-              placeholder={form.record_type === "education"
-                ? (isAr ? "الأنشطة، الإنجازات..." : "Activities, achievements...")
-                : (isAr ? "المهام والمسؤوليات..." : "Responsibilities, achievements...")}
-            />
+            <Label className="text-xs">{isAr ? "المستوى" : "Level"}</Label>
+            <Select value={form.education_level} onValueChange={(v) => onUpdate("education_level", v)}>
+              <SelectTrigger className="h-9 text-sm"><SelectValue placeholder={isAr ? "اختر" : "Select"} /></SelectTrigger>
+              <SelectContent>
+                {EDUCATION_LEVELS.map(l => <SelectItem key={l.value} value={l.value}>{isAr ? l.ar : l.en}</SelectItem>)}
+              </SelectContent>
+            </Select>
           </div>
-
-          {/* Actions */}
-          <div className="flex gap-2">
-            <Button variant="outline" size="sm" className="flex-1" onClick={resetForm}>
-              {isAr ? "إلغاء" : "Cancel"}
-            </Button>
-            <Button
-              size="sm"
-              className="flex-1 gap-1"
-              onClick={() => saveMutation.mutate()}
-              disabled={!form.title.trim() || saveMutation.isPending}
-            >
-              {saveMutation.isPending ? (
-                <span className="animate-spin h-3.5 w-3.5 border-2 border-current border-t-transparent rounded-full" />
-              ) : (
-                <Check className="h-3.5 w-3.5" />
-              )}
-              {editingId ? (isAr ? "تحديث" : "Update") : (isAr ? "إضافة" : "Add")}
-            </Button>
+          <div className="space-y-1">
+            <Label className="text-xs">{isAr ? "التخصص" : "Field of Study"}</Label>
+            <Input value={form.field_of_study} onChange={(e) => onUpdate("field_of_study", e.target.value)} className="h-9 text-sm" dir="ltr" />
+          </div>
+          <div className="space-y-1">
+            <Label className="text-xs">{isAr ? "المعدل" : "Grade"}</Label>
+            <Input value={form.grade} onChange={(e) => onUpdate("grade", e.target.value)} className="h-9 text-sm" dir="ltr" />
+          </div>
+        </div>
+      ) : (
+        <div className="grid gap-3 sm:grid-cols-2">
+          <div className="space-y-1">
+            <Label className="text-xs">{isAr ? "نوع التوظيف" : "Employment Type"}</Label>
+            <Select value={form.employment_type} onValueChange={(v) => onUpdate("employment_type", v)}>
+              <SelectTrigger className="h-9 text-sm"><SelectValue placeholder={isAr ? "اختر" : "Select"} /></SelectTrigger>
+              <SelectContent>
+                {EMPLOYMENT_TYPES.map(t => <SelectItem key={t.value} value={t.value}>{isAr ? t.ar : t.en}</SelectItem>)}
+              </SelectContent>
+            </Select>
+          </div>
+          <div className="space-y-1">
+            <Label className="text-xs">{isAr ? "الموقع" : "Location"}</Label>
+            <Input value={form.location} onChange={(e) => onUpdate("location", e.target.value)} className="h-9 text-sm" />
           </div>
         </div>
       )}
+
+      <div className="grid gap-3 sm:grid-cols-2">
+        <div className="space-y-1">
+          <Label className="text-xs">{isAr ? "من" : "From"}</Label>
+          <Input type="date" value={form.start_date} onChange={(e) => onUpdate("start_date", e.target.value)} className="h-9 text-sm" dir="ltr" />
+        </div>
+        <div className="space-y-1">
+          <Label className="text-xs">{isAr ? "إلى" : "To"}</Label>
+          <Input type="date" value={form.end_date} onChange={(e) => onUpdate("end_date", e.target.value)} className="h-9 text-sm" dir="ltr" disabled={form.is_current} />
+        </div>
+      </div>
+
+      <div className="flex items-center gap-2">
+        <Switch checked={form.is_current} onCheckedChange={(v) => onUpdate("is_current", v)} />
+        <Label className="text-xs cursor-pointer">
+          {isEdu ? (isAr ? "ما زلت أدرس هنا" : "Currently studying") : (isAr ? "أعمل هنا حالياً" : "Currently working")}
+        </Label>
+      </div>
+
+      <div className="space-y-1">
+        <Label className="text-xs">{isAr ? "ملاحظات" : "Notes"}</Label>
+        <Textarea value={form.description} onChange={(e) => onUpdate("description", e.target.value)} className="min-h-[50px] text-sm" />
+      </div>
+
+      <div className="flex gap-2">
+        <Button variant="outline" size="sm" className="flex-1" onClick={onCancel}>{isAr ? "إلغاء" : "Cancel"}</Button>
+        <Button size="sm" className="flex-1 gap-1" onClick={onSave} disabled={!form.title.trim() || isPending}>
+          {isPending ? <span className="animate-spin h-3.5 w-3.5 border-2 border-current border-t-transparent rounded-full" /> : <Check className="h-3.5 w-3.5" />}
+          {editingId ? (isAr ? "تحديث" : "Update") : (isAr ? "إضافة" : "Add")}
+        </Button>
+      </div>
     </div>
   );
 }
