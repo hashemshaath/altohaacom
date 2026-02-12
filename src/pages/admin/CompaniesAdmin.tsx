@@ -305,9 +305,17 @@ export default function CompaniesAdmin() {
       const { error } = await supabase.from("companies").insert({ ...rest, country_code: country_code || null, status: "pending" });
       if (error) throw error;
     },
-    onSuccess: () => {
+    onSuccess: (_data, variables) => {
       queryClient.invalidateQueries({ queryKey: ["companies"] });
       setShowCompanyForm(false);
+      // Notify admins about new company
+      import("@/lib/notificationTriggers").then(({ notifyAdminCompanyRegistration }) => {
+        notifyAdminCompanyRegistration({
+          companyName: variables.name,
+          companyNameAr: variables.name_ar || undefined,
+          submittedBy: "Admin",
+        });
+      });
       resetCompanyForm();
       toast({ title: isAr ? "تم إنشاء الشركة" : "Company created" });
     },
