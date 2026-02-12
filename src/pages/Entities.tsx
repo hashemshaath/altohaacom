@@ -14,8 +14,9 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Skeleton } from "@/components/ui/skeleton";
 import { toast } from "@/hooks/use-toast";
-import { Search, Building2, Globe, MapPin, Users, ShieldCheck, Bell, BellOff, ExternalLink, Mail, Phone, Sparkles } from "lucide-react";
+import { Search, Building2, Globe, MapPin, Users, ShieldCheck, Bell, BellOff, ExternalLink, Mail, Phone, Sparkles, Landmark, GraduationCap, Briefcase } from "lucide-react";
 import { SEOHead } from "@/components/SEOHead";
+import entitiesHero from "@/assets/entities-hero.jpg";
 import type { Database } from "@/integrations/supabase/types";
 
 type EntityType = Database["public"]["Enums"]["entity_type"];
@@ -131,53 +132,63 @@ export default function Entities() {
       <SEOHead title="Culinary Entities Directory" description="Discover culinary associations, government entities, and academies worldwide." />
       <Header />
 
-      {/* Hero Banner */}
-      <section className="relative overflow-hidden border-b bg-gradient-to-b from-primary/5 via-background to-background">
-        <div className="absolute -top-32 start-1/4 h-64 w-64 rounded-full bg-primary/8 blur-[100px] animate-pulse pointer-events-none" />
+      {/* Hero Banner with Cover Image */}
+      <section className="relative overflow-hidden border-b">
+        {/* Background Image */}
+        <div className="absolute inset-0">
+          <img src={entitiesHero} alt="" className="h-full w-full object-cover" />
+          <div className="absolute inset-0 bg-gradient-to-t from-background via-background/80 to-background/40" />
+          <div className="absolute inset-0 bg-gradient-to-r from-background/60 to-transparent" />
+        </div>
+
+        {/* Animated orbs */}
+        <div className="absolute -top-32 start-1/4 h-64 w-64 rounded-full bg-primary/10 blur-[100px] animate-pulse pointer-events-none" />
         <div className="absolute -top-20 end-1/3 h-48 w-48 rounded-full bg-accent/10 blur-[80px] animate-pulse [animation-delay:1s] pointer-events-none" />
-        <div className="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-primary/20 to-transparent" />
 
-        <div className="container relative py-10 md:py-14">
-          <div className="flex items-start gap-3">
-            <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-primary/10 ring-1 ring-primary/15 shadow-sm">
-              <Building2 className="h-6 w-6 text-primary" />
+        <div className="container relative py-16 md:py-20">
+          <div className="max-w-2xl">
+            <div className="mb-4 flex items-center gap-3">
+              <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-primary/15 ring-1 ring-primary/20 shadow-lg backdrop-blur-sm">
+                <Building2 className="h-7 w-7 text-primary" />
+              </div>
+              <Badge variant="secondary" className="backdrop-blur-sm bg-secondary/80 text-xs">
+                {isAr ? "الدليل الرسمي" : "Official Directory"}
+              </Badge>
             </div>
-            <div>
-              <h1 className="font-serif text-2xl font-bold md:text-3xl lg:text-4xl">
-                {isAr ? "دليل الجهات والجمعيات الطهوية" : "Culinary Entities Directory"}
-              </h1>
-              <p className="mt-1 max-w-xl text-sm text-muted-foreground sm:text-base">
-                {isAr
-                  ? "اكتشف وتابع الجمعيات الطهوية والجهات الحكومية والخاصة المعنية بالطهي محلياً ودولياً"
-                  : "Discover and follow culinary associations, government entities, and private organizations locally and internationally"}
-              </p>
-            </div>
+            <h1 className="font-serif text-3xl font-bold md:text-4xl lg:text-5xl">
+              {isAr ? "دليل الجهات والجمعيات الطهوية" : "Culinary Entities Directory"}
+            </h1>
+            <p className="mt-3 max-w-xl text-sm text-muted-foreground sm:text-base md:text-lg">
+              {isAr
+                ? "اكتشف وتابع الجمعيات الطهوية والجهات الحكومية والخاصة المعنية بالطهي محلياً ودولياً"
+                : "Discover and follow culinary associations, government entities, and private organizations locally and internationally"}
+            </p>
+
+            {/* Quick stat pills */}
+            {entities && entities.length > 0 && (
+              <div className="mt-6 flex flex-wrap gap-2">
+                <Badge variant="secondary" className="gap-1.5 px-3 py-1.5 text-xs backdrop-blur-sm bg-secondary/80">
+                  <Building2 className="h-3.5 w-3.5" />
+                  {entities.length} {isAr ? "جهة مسجلة" : "Registered Entities"}
+                </Badge>
+                <Badge variant="secondary" className="gap-1.5 px-3 py-1.5 text-xs backdrop-blur-sm bg-secondary/80">
+                  <ShieldCheck className="h-3.5 w-3.5" />
+                  {entities.filter(e => e.is_verified).length} {isAr ? "جهة موثقة" : "Verified"}
+                </Badge>
+                <Badge variant="secondary" className="gap-1.5 px-3 py-1.5 text-xs backdrop-blur-sm bg-secondary/80">
+                  <Globe className="h-3.5 w-3.5" />
+                  {new Set(entities.map(e => e.country).filter(Boolean)).size} {isAr ? "دولة" : "Countries"}
+                </Badge>
+              </div>
+            )}
           </div>
-
-          {/* Quick stat pills */}
-          {entities && entities.length > 0 && (
-            <div className="mt-6 flex flex-wrap gap-2">
-              <Badge variant="secondary" className="gap-1.5 px-3 py-1.5 text-xs">
-                <Building2 className="h-3 w-3" />
-                {entities.length} {isAr ? "جهة" : "Entities"}
-              </Badge>
-              <Badge variant="secondary" className="gap-1.5 px-3 py-1.5 text-xs">
-                <ShieldCheck className="h-3 w-3" />
-                {entities.filter(e => e.is_verified).length} {isAr ? "موثقة" : "Verified"}
-              </Badge>
-              <Badge variant="secondary" className="gap-1.5 px-3 py-1.5 text-xs">
-                <Globe className="h-3 w-3" />
-                {new Set(entities.map(e => e.country).filter(Boolean)).size} {isAr ? "دولة" : "Countries"}
-              </Badge>
-            </div>
-          )}
         </div>
       </section>
 
       <main className="container flex-1 py-6 md:py-8">
 
         {/* Search & Filters */}
-        <div className="mb-6 flex flex-col gap-4 sm:flex-row">
+        <div className="mb-6 flex flex-col gap-3 sm:flex-row">
           <div className="relative flex-1">
             <Search className="absolute start-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
             <Input
@@ -204,12 +215,30 @@ export default function Entities() {
         {/* Tabs */}
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
           <TabsList className="flex-wrap bg-muted/50 p-1 gap-0.5">
-            <TabsTrigger value="all" className="text-xs sm:text-sm">{isAr ? "الكل" : "All"}</TabsTrigger>
-            <TabsTrigger value="education" className="text-xs sm:text-sm">{isAr ? "تعليمي" : "Education"}</TabsTrigger>
-            <TabsTrigger value="local" className="text-xs sm:text-sm">{isAr ? "محلي ووطني" : "Local & National"}</TabsTrigger>
-            <TabsTrigger value="international" className="text-xs sm:text-sm">{isAr ? "إقليمي ودولي" : "Regional & International"}</TabsTrigger>
-            <TabsTrigger value="government" className="text-xs sm:text-sm">{isAr ? "حكومي" : "Government"}</TabsTrigger>
-            <TabsTrigger value="private" className="text-xs sm:text-sm">{isAr ? "خاص" : "Private & Associations"}</TabsTrigger>
+            <TabsTrigger value="all" className="gap-1.5 text-xs sm:text-sm">
+              <Building2 className="h-3.5 w-3.5 hidden sm:inline" />
+              {isAr ? "الكل" : "All"}
+            </TabsTrigger>
+            <TabsTrigger value="education" className="gap-1.5 text-xs sm:text-sm">
+              <GraduationCap className="h-3.5 w-3.5 hidden sm:inline" />
+              {isAr ? "تعليمي" : "Education"}
+            </TabsTrigger>
+            <TabsTrigger value="local" className="gap-1.5 text-xs sm:text-sm">
+              <MapPin className="h-3.5 w-3.5 hidden sm:inline" />
+              {isAr ? "محلي ووطني" : "Local & National"}
+            </TabsTrigger>
+            <TabsTrigger value="international" className="gap-1.5 text-xs sm:text-sm">
+              <Globe className="h-3.5 w-3.5 hidden sm:inline" />
+              {isAr ? "إقليمي ودولي" : "Regional & International"}
+            </TabsTrigger>
+            <TabsTrigger value="government" className="gap-1.5 text-xs sm:text-sm">
+              <Landmark className="h-3.5 w-3.5 hidden sm:inline" />
+              {isAr ? "حكومي" : "Government"}
+            </TabsTrigger>
+            <TabsTrigger value="private" className="gap-1.5 text-xs sm:text-sm">
+              <Briefcase className="h-3.5 w-3.5 hidden sm:inline" />
+              {isAr ? "خاص" : "Private & Associations"}
+            </TabsTrigger>
           </TabsList>
 
           <TabsContent value={activeTab} className="mt-6">
@@ -217,7 +246,7 @@ export default function Entities() {
               <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
                 {[1, 2, 3].map(i => (
                   <Card key={i}>
-                    <Skeleton className="h-32 w-full rounded-t-lg" />
+                    <Skeleton className="h-36 w-full rounded-t-lg" />
                     <CardContent className="pt-8 space-y-2">
                       <Skeleton className="h-5 w-3/4" />
                       <Skeleton className="h-3 w-1/2" />
@@ -228,11 +257,11 @@ export default function Entities() {
               </div>
             ) : filtered?.length === 0 ? (
               <div className="py-16 text-center">
-                <div className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-muted">
-                  <Building2 className="h-6 w-6 text-muted-foreground/40" />
+                <div className="mx-auto mb-3 flex h-16 w-16 items-center justify-center rounded-2xl bg-muted">
+                  <Building2 className="h-8 w-8 text-muted-foreground/40" />
                 </div>
                 <p className="text-sm font-medium text-muted-foreground">{isAr ? "لم يتم العثور على جهات" : "No entities found"}</p>
-                <p className="mt-0.5 text-xs text-muted-foreground/60">{isAr ? "جرب تغيير عوامل التصفية" : "Try adjusting your filters"}</p>
+                <p className="mt-1 text-xs text-muted-foreground/60">{isAr ? "جرب تغيير عوامل التصفية" : "Try adjusting your filters"}</p>
               </div>
             ) : (
               <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
@@ -245,60 +274,71 @@ export default function Entities() {
                   const followerCount = (entity as any).entity_followers?.length || 0;
 
                   return (
-                    <Card key={entity.id} className="group overflow-hidden border-border/50 transition-all hover:shadow-lg hover:-translate-y-1 hover:border-primary/20">
+                    <Card key={entity.id} className="group overflow-hidden border-border/50 transition-all duration-300 hover:shadow-xl hover:-translate-y-1 hover:border-primary/20">
                       {/* Cover / Logo Header */}
-                      <div className="relative h-32 bg-gradient-to-br from-primary/10 to-accent/10">
+                      <div className="relative h-36 bg-gradient-to-br from-primary/10 via-accent/5 to-primary/5">
                         {entity.cover_image_url ? (
-                          <img src={entity.cover_image_url} alt="" className="h-full w-full object-cover" />
-                        ) : null}
-                        <div className="absolute -bottom-6 left-4">
+                          <img src={entity.cover_image_url} alt="" className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105" />
+                        ) : (
+                          <div className="flex h-full w-full items-center justify-center">
+                            <Building2 className="h-12 w-12 text-primary/15" />
+                          </div>
+                        )}
+                        <div className="absolute inset-0 bg-gradient-to-t from-card/80 to-transparent" />
+                        
+                        {/* Logo positioned at bottom-start */}
+                        <div className="absolute -bottom-6 start-4">
                           {entity.logo_url ? (
-                            <img src={entity.logo_url} alt={name} className="h-14 w-14 rounded-lg border-2 border-background bg-background object-cover shadow" />
+                            <img src={entity.logo_url} alt={name} className="h-14 w-14 rounded-xl border-2 border-background bg-background object-cover shadow-lg ring-1 ring-border/10" />
                           ) : (
-                            <div className="flex h-14 w-14 items-center justify-center rounded-lg border-2 border-background bg-background shadow">
+                            <div className="flex h-14 w-14 items-center justify-center rounded-xl border-2 border-background bg-background shadow-lg ring-1 ring-border/10">
                               <Building2 className="h-7 w-7 text-primary" />
                             </div>
                           )}
                         </div>
-                        <div className="absolute right-3 top-3 flex gap-1.5">
-                          <Badge variant="secondary">{isAr ? tLabel.ar : tLabel.en}</Badge>
+
+                        {/* Badges at top-end */}
+                        <div className="absolute end-3 top-3 flex gap-1.5">
+                          <Badge variant="secondary" className="text-[10px] backdrop-blur-sm bg-secondary/80">{isAr ? tLabel.ar : tLabel.en}</Badge>
                           {entity.is_verified && (
-                            <Badge className="bg-chart-3/20 text-chart-3"><ShieldCheck className="mr-1 h-3 w-3" />{isAr ? "موثق" : "Verified"}</Badge>
+                            <Badge className="bg-chart-3/20 text-chart-3 backdrop-blur-sm text-[10px]">
+                              <ShieldCheck className="me-1 h-3 w-3" />{isAr ? "موثق" : "Verified"}
+                            </Badge>
                           )}
                         </div>
                       </div>
 
                       <CardHeader className="pt-8 pb-2">
-                        <div className="flex items-start justify-between">
-                          <div>
-                            <CardTitle className="text-lg">{name}</CardTitle>
+                        <div className="flex items-start justify-between gap-2">
+                          <div className="min-w-0">
+                            <CardTitle className="text-base leading-tight truncate">{name}</CardTitle>
                             {entity.abbreviation && (
-                              <p className="text-xs text-muted-foreground">({entity.abbreviation})</p>
+                              <p className="text-xs text-muted-foreground mt-0.5">({entity.abbreviation})</p>
                             )}
                           </div>
-                          <Badge variant="outline">{isAr ? sLabel.ar : sLabel.en}</Badge>
+                          <Badge variant="outline" className="shrink-0 text-[10px]">{isAr ? sLabel.ar : sLabel.en}</Badge>
                         </div>
                       </CardHeader>
 
                       <CardContent className="space-y-3">
-                        {description && <p className="line-clamp-2 text-sm text-foreground/70">{description}</p>}
+                        {description && <p className="line-clamp-2 text-sm text-muted-foreground leading-relaxed">{description}</p>}
 
                         <div className="space-y-1.5 text-sm text-muted-foreground">
                           {entity.city && (
                             <div className="flex items-center gap-2">
-                              <MapPin className="h-3.5 w-3.5 shrink-0" />
-                              <span>{entity.city}{entity.country ? `, ${entity.country}` : ""}</span>
+                              <MapPin className="h-3.5 w-3.5 shrink-0 text-primary/60" />
+                              <span className="truncate">{entity.city}{entity.country ? `, ${entity.country}` : ""}</span>
                             </div>
                           )}
                           {entity.email && (
                             <div className="flex items-center gap-2">
-                              <Mail className="h-3.5 w-3.5 shrink-0" />
+                              <Mail className="h-3.5 w-3.5 shrink-0 text-primary/60" />
                               <a href={`mailto:${entity.email}`} className="text-primary hover:underline truncate">{entity.email}</a>
                             </div>
                           )}
                           {entity.website && (
                             <div className="flex items-center gap-2">
-                              <Globe className="h-3.5 w-3.5 shrink-0" />
+                              <Globe className="h-3.5 w-3.5 shrink-0 text-primary/60" />
                               <a href={entity.website} target="_blank" rel="noopener noreferrer" className="text-primary hover:underline truncate">{entity.website}</a>
                             </div>
                           )}
@@ -307,25 +347,25 @@ export default function Entities() {
                         {entity.specializations && (entity.specializations as string[]).length > 0 && (
                           <div className="flex flex-wrap gap-1">
                             {(entity.specializations as string[]).slice(0, 3).map(s => (
-                              <Badge key={s} variant="secondary" className="text-xs">{s}</Badge>
+                              <Badge key={s} variant="secondary" className="text-[10px]">{s}</Badge>
                             ))}
                           </div>
                         )}
 
-                        <div className="flex items-center justify-between pt-2 border-t">
+                        <div className="flex items-center justify-between pt-3 border-t">
                           <div className="flex items-center gap-1 text-xs text-muted-foreground">
                             <Users className="h-3 w-3" />
                             <span>{followerCount} {isAr ? "متابع" : "followers"}</span>
                             {entity.member_count && (
-                              <span className="ml-2">• {entity.member_count.toLocaleString()} {isAr ? "عضو" : "members"}</span>
+                              <span className="ms-2">• {entity.member_count.toLocaleString()} {isAr ? "عضو" : "members"}</span>
                             )}
                           </div>
                           {entity.founded_year && (
-                            <span className="text-xs text-muted-foreground">{isAr ? "تأسست" : "Est."} {entity.founded_year}</span>
+                            <span className="text-[10px] text-muted-foreground/70">{isAr ? "تأسست" : "Est."} {entity.founded_year}</span>
                           )}
                         </div>
 
-                        <div className="flex gap-2">
+                        <div className="flex gap-2 pt-1">
                           <Button variant="outline" size="sm" className="flex-1" asChild>
                             <Link to={`/entities/${entity.slug}`}>{isAr ? "التفاصيل" : "View Details"}</Link>
                           </Button>
@@ -349,18 +389,23 @@ export default function Entities() {
           </TabsContent>
         </Tabs>
 
+        {/* Results count */}
+        {filtered && filtered.length > 0 && (
+          <p className="mt-6 text-center text-xs text-muted-foreground">
+            {isAr ? `عرض ${filtered.length} من ${entities?.length ?? 0} جهة` : `Showing ${filtered.length} of ${entities?.length ?? 0} entities`}
+          </p>
+        )}
+
         {/* Stats */}
         {entities && entities.length > 0 && (
           <section className="mt-10 grid grid-cols-2 gap-3 sm:grid-cols-4">
             {[
-              { label: isAr ? "إجمالي الجهات" : "Total Entities", value: entities.length },
-              { label: isAr ? "جمعيات" : "Associations", value: entities.filter(e => e.type === "culinary_association" || e.type === "private_association").length },
-              { label: isAr ? "جهات حكومية" : "Government", value: entities.filter(e => e.type === "government_entity").length },
-              { label: isAr ? "الدول" : "Countries", value: new Set(entities.map(e => e.country).filter(Boolean)).size },
-            ].map((stat, i) => (
-              <Card key={stat.label} className={`border-s-[3px] ${
-                i === 0 ? "border-s-primary/30" : i === 1 ? "border-s-chart-3/30" : i === 2 ? "border-s-chart-4/30" : "border-s-accent/30"
-              } transition-all hover:shadow-sm`}>
+              { label: isAr ? "إجمالي الجهات" : "Total Entities", value: entities.length, accent: "border-s-primary/40" },
+              { label: isAr ? "جمعيات" : "Associations", value: entities.filter(e => e.type === "culinary_association" || e.type === "private_association").length, accent: "border-s-chart-3/40" },
+              { label: isAr ? "جهات حكومية" : "Government", value: entities.filter(e => e.type === "government_entity").length, accent: "border-s-chart-4/40" },
+              { label: isAr ? "الدول" : "Countries", value: new Set(entities.map(e => e.country).filter(Boolean)).size, accent: "border-s-accent/40" },
+            ].map((stat) => (
+              <Card key={stat.label} className={`border-s-[3px] ${stat.accent} transition-all hover:shadow-sm`}>
                 <CardContent className="p-4 text-center">
                   <p className="text-2xl font-bold sm:text-3xl">{stat.value}</p>
                   <p className="mt-0.5 text-[10px] uppercase tracking-wider text-muted-foreground">{stat.label}</p>
