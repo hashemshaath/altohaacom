@@ -16,7 +16,8 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Progress } from "@/components/ui/progress";
 import { toast } from "@/hooks/use-toast";
-import { Plus, Pencil, Trash2, Building2, Eye, EyeOff, ShieldCheck, Search, Users, Settings2, Languages, Upload, Image, X, Loader2 } from "lucide-react";
+import { CountrySelector } from "@/components/auth/CountrySelector";
+import { Plus, Pencil, Trash2, Building2, Eye, EyeOff, ShieldCheck, Search, Users, Settings2, Languages, Upload, Image, X, Loader2, MapPin } from "lucide-react";
 import { EntitySubModulesPanel } from "@/components/entities/EntitySubModulesPanel";
 import type { Database } from "@/integrations/supabase/types";
 
@@ -60,6 +61,7 @@ interface FormData {
   registration_number: string; license_number: string;
   internal_notes: string;
   services_input: string; specializations_input: string; tags_input: string;
+  latitude: string; longitude: string;
 }
 
 const emptyForm: FormData = {
@@ -78,6 +80,7 @@ const emptyForm: FormData = {
   registration_number: "", license_number: "",
   internal_notes: "",
   services_input: "", specializations_input: "", tags_input: "",
+  latitude: "", longitude: "",
 };
 
 // Bilingual field pairs for translation
@@ -273,6 +276,8 @@ export default function EntitiesAdmin() {
         specializations: form.specializations_input ? form.specializations_input.split(",").map(s => s.trim()) : [],
         tags: form.tags_input ? form.tags_input.split(",").map(s => s.trim()) : [],
         account_manager_id: selectedManager || null,
+        latitude: form.latitude ? parseFloat(form.latitude) : null,
+        longitude: form.longitude ? parseFloat(form.longitude) : null,
         slug,
         created_by: user?.id,
       };
@@ -350,6 +355,8 @@ export default function EntitiesAdmin() {
       services_input: (entity.services || []).join(", "),
       specializations_input: (entity.specializations || []).join(", "),
       tags_input: (entity.tags || []).join(", "),
+      latitude: (entity as any).latitude?.toString() || "",
+      longitude: (entity as any).longitude?.toString() || "",
     });
     setSelectedManager(entity.account_manager_id || "");
     setEditingId(entity.id);
@@ -615,7 +622,11 @@ export default function EntitiesAdmin() {
                   <div><Label>{isAr ? "الهاتف" : "Phone"}</Label><Input value={form.phone} onChange={e => updateField("phone", e.target.value)} /></div>
                   <div><Label>{isAr ? "الفاكس" : "Fax"}</Label><Input value={form.fax} onChange={e => updateField("fax", e.target.value)} /></div>
                   <div><Label>{isAr ? "الموقع الإلكتروني" : "Website"}</Label><Input value={form.website} onChange={e => updateField("website", e.target.value)} /></div>
-                  <div><Label>{isAr ? "الدولة" : "Country"}</Label><Input value={form.country} onChange={e => updateField("country", e.target.value)} /></div>
+                  <CountrySelector
+                    value={form.country}
+                    onChange={(code) => updateField("country", code)}
+                    label={isAr ? "الدولة" : "Country"}
+                  />
                   <div><Label>{isAr ? "المدينة" : "City"}</Label><Input value={form.city} onChange={e => updateField("city", e.target.value)} /></div>
                 </div>
                 <div className="grid gap-4 sm:grid-cols-2">
@@ -624,6 +635,40 @@ export default function EntitiesAdmin() {
                 </div>
                 <TranslateBtn enField="address" arField="address_ar" />
                 <div><Label>{isAr ? "الرمز البريدي" : "Postal Code"}</Label><Input value={form.postal_code} onChange={e => updateField("postal_code", e.target.value)} className="max-w-xs" /></div>
+                
+                {/* Google Maps Location */}
+                <Separator />
+                <div className="space-y-3">
+                  <Label className="flex items-center gap-1.5 text-sm font-semibold">
+                    <MapPin className="h-4 w-4" />
+                    {isAr ? "الموقع على الخريطة" : "Map Location"}
+                  </Label>
+                  <div className="grid gap-4 sm:grid-cols-2">
+                    <div><Label className="text-xs">{isAr ? "خط العرض" : "Latitude"}</Label><Input value={form.latitude} onChange={e => updateField("latitude", e.target.value)} placeholder="e.g. 24.7136" dir="ltr" /></div>
+                    <div><Label className="text-xs">{isAr ? "خط الطول" : "Longitude"}</Label><Input value={form.longitude} onChange={e => updateField("longitude", e.target.value)} placeholder="e.g. 46.6753" dir="ltr" /></div>
+                  </div>
+                  {form.latitude && form.longitude && (
+                    <div className="space-y-2">
+                      <iframe
+                        title="Google Maps"
+                        width="100%"
+                        height="250"
+                        className="rounded-md border"
+                        loading="lazy"
+                        src={`https://maps.google.com/maps?q=${form.latitude},${form.longitude}&z=14&output=embed`}
+                      />
+                      <a
+                        href={`https://www.google.com/maps?q=${form.latitude},${form.longitude}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center gap-1.5 text-xs text-primary hover:underline"
+                      >
+                        <MapPin className="h-3 w-3" />
+                        {isAr ? "فتح في خرائط جوجل" : "Open in Google Maps"}
+                      </a>
+                    </div>
+                  )}
+                </div>
               </TabsContent>
 
               {/* Leadership Tab */}
