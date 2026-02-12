@@ -187,10 +187,14 @@ export default function UserManagement() {
 
   const updateRolesMutation = useMutation({
     mutationFn: async ({ userId, roles }: { userId: string; roles: AppRole[] }) => {
-      await supabase.from("user_roles").delete().eq("user_id", userId);
+      // Delete existing roles first and check for errors
+      const { error: deleteError } = await supabase.from("user_roles").delete().eq("user_id", userId);
+      if (deleteError) throw deleteError;
+      
+      // Insert new roles
       if (roles.length > 0) {
-        const { error } = await supabase.from("user_roles").insert(roles.map((role) => ({ user_id: userId, role })));
-        if (error) throw error;
+        const { error: insertError } = await supabase.from("user_roles").insert(roles.map((role) => ({ user_id: userId, role })));
+        if (insertError) throw insertError;
       }
       await supabase.from("admin_actions").insert([{ admin_id: user!.id, target_user_id: userId, action_type: "update_roles", details: { roles } }]);
     },
