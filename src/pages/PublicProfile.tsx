@@ -15,6 +15,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { CompetitionHistory } from "@/components/profile/CompetitionHistory";
 import { MessageButton } from "@/components/profile/MessageButton";
 import { UserBadgesDisplay } from "@/components/badges/UserBadgesDisplay";
@@ -209,7 +210,7 @@ export default function PublicProfile() {
 
   const educationRecords = careerRecords.filter(r => r.record_type === "education");
   const workRecords = careerRecords.filter(r => r.record_type === "work");
-  const currentWork = workRecords.find(r => r.is_current);
+  const currentWork = workRecords.find(r => r.is_current) || workRecords[0];
 
   const roleLabels: Record<string, { en: string; ar: string }> = {
     chef: { en: "Chef", ar: "طاهٍ" },
@@ -257,69 +258,49 @@ export default function PublicProfile() {
             <div className="flex items-center gap-2 flex-wrap">
               <h1 className="font-serif text-2xl md:text-3xl font-bold">{displayName}</h1>
               {profile.is_verified && <BadgeCheck className="h-6 w-6 text-primary" />}
+              {/* System Awards - Logo Only (Michelin, Tabakh Stars, etc.) */}
+              {userAwards && userAwards.length > 0 && userAwards.map((userAward: any) => {
+                const award = userAward.global_awards_system;
+                if (!award || !award.logo_url) return null;
+                const awardName = isAr ? (award.name_ar || award.name) : award.name;
+                return (
+                  <Tooltip key={userAward.id}>
+                    <TooltipTrigger asChild>
+                      <img
+                        src={award.logo_url}
+                        alt={awardName}
+                        className="h-7 w-7 object-contain cursor-pointer hover:scale-125 transition-transform duration-200 drop-shadow-sm"
+                        title={awardName}
+                      />
+                    </TooltipTrigger>
+                    <TooltipContent side="bottom" className="text-xs">
+                      <p className="font-semibold">{awardName}</p>
+                      {userAward.level && <p className="text-muted-foreground">{userAward.level}</p>}
+                      {userAward.year_awarded && <p className="text-muted-foreground">{userAward.year_awarded}</p>}
+                    </TooltipContent>
+                  </Tooltip>
+                );
+              })}
             </div>
             <p className="text-sm text-muted-foreground mt-0.5">@{profile.username}</p>
 
-            {/* Main Title / Specialization */}
-            {specialization && (
-              <p className="text-lg font-semibold text-primary mt-1">{specialization}</p>
-            )}
-
-            {/* System Global Awards with Logos */}
-            {userAwards && userAwards.length > 0 && (
-              <div className="mt-3 flex flex-wrap gap-2">
-                {userAwards.map((userAward: any) => {
-                  const award = userAward.global_awards_system;
-                  if (!award) return null;
-                  return (
-                    <div
-                      key={userAward.id}
-                      className="group relative inline-flex flex-col items-center gap-1 rounded-xl p-2.5 bg-gradient-to-br from-primary/10 to-accent/5 border border-primary/20 hover:border-primary/40 hover:shadow-md transition-all duration-300"
-                    >
-                      {award.logo_url ? (
-                        <img
-                          src={award.logo_url}
-                          alt={award.name}
-                          className="h-10 w-10 object-contain filter drop-shadow-sm group-hover:scale-110 transition-transform"
-                        />
-                      ) : (
-                        <Trophy className="h-6 w-6 text-primary" />
-                      )}
-                      <span className="text-xs font-semibold text-center max-w-[80px] line-clamp-2">
-                        {isAr ? (award.name_ar || award.name) : award.name}
-                      </span>
-                      {userAward.level && (
-                        <span className="text-[10px] text-muted-foreground font-medium">{userAward.level}</span>
-                      )}
-                      {userAward.year_awarded && (
-                        <span className="text-[10px] text-muted-foreground">{userAward.year_awarded}</span>
-                      )}
-                    </div>
-                  );
-                })}
-              </div>
-            )}
-
-            {/* Current Position with Entity Logo */}
+            {/* Main Title - Job Title from current work */}
             {currentWork && (
-              <div className="flex items-center gap-2 mt-3">
+              <p className="text-base font-semibold text-primary mt-1 flex items-center gap-2">
                 {memberships.find((m: any) => m.culinary_entities?.name === currentWork.entity_name)?.culinary_entities?.logo_url && (
                   <img
                     src={(memberships.find((m: any) => m.culinary_entities?.name === currentWork.entity_name) as any)?.culinary_entities?.logo_url}
                     alt=""
-                    className="h-6 w-6 rounded object-cover border"
+                    className="h-5 w-5 rounded object-cover"
                   />
                 )}
-                <p className="text-sm text-muted-foreground flex items-center gap-1.5">
-                  <Briefcase className="h-3.5 w-3.5 shrink-0" />
-                  <span className="font-medium">{isAr ? (currentWork.title_ar || currentWork.title) : currentWork.title}</span>
-                  {currentWork.entity_name && (
-                    <span className="text-foreground font-semibold">
-                      {isAr ? "في" : "at"} {currentWork.entity_name}
-                    </span>
-                  )}
-                </p>
-              </div>
+                <span>{isAr ? (currentWork.title_ar || currentWork.title) : currentWork.title}</span>
+                {currentWork.entity_name && (
+                  <span className="text-muted-foreground font-normal text-sm">
+                    {isAr ? "في" : "at"} {currentWork.entity_name}
+                  </span>
+                )}
+              </p>
             )}
 
             {/* Location */}
