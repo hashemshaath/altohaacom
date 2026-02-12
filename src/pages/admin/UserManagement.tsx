@@ -28,6 +28,7 @@ import {
   Search, UserX, UserCheck, Eye, Edit, ChevronRight, ChevronLeft, X, Save,
   UserPlus, KeyRound, Mail, Loader2, Upload, Image as ImageIcon, Users, Plus,
   Trash2, Camera, CheckCircle2, AlertCircle, History, UserCircle, Languages, Briefcase,
+  ChefHat, Pencil, Check,
 } from "lucide-react";
 import { format } from "date-fns";
 import type { Database } from "@/integrations/supabase/types";
@@ -1220,79 +1221,222 @@ function SpecializationSelector({
   isAr: boolean;
 }) {
   const [specSearch, setSpecSearch] = useState("");
-  const [translatingSpec, setTranslatingSpec] = useState(false);
+  const [primarySearch, setPrimarySearch] = useState("");
+  const [showPrimaryDropdown, setShowPrimaryDropdown] = useState(false);
+  const [showNewSpecForm, setShowNewSpecForm] = useState(false);
+  const [newSpecName, setNewSpecName] = useState("");
+  const [newSpecNameAr, setNewSpecNameAr] = useState("");
+  const [addingNewSpec, setAddingNewSpec] = useState(false);
   const { toast } = useToast();
+  const queryClient = useQueryClient();
 
+  // All specialties (including pending) for duplication check
+  const { data: allSpecialties } = useQuery({
+    queryKey: ["specialties", "all-for-check"],
+    queryFn: async () => {
+      const { data, error } = await supabase.from("specialties").select("id, name, name_ar, slug, is_approved, is_active").order("name");
+      if (error) throw error;
+      return data || [];
+    },
+    staleTime: 1000 * 60 * 5,
+  });
+
+  // Filter approved specialties for primary selection
+  const filteredPrimary = availableSpecialties.filter((s) => {
+    if (!primarySearch.trim()) return true;
+    const q = primarySearch.toLowerCase();
+    return s.name?.toLowerCase().includes(q) || s.name_ar?.toLowerCase().includes(q);
+  });
+
+  // Filter for specialty tags
   const filteredSpecs = availableSpecialties.filter((s) => {
     if (!specSearch.trim()) return true;
     const q = specSearch.toLowerCase();
-    return (s.name?.toLowerCase().includes(q)) || (s.name_ar?.toLowerCase().includes(q));
+    return s.name?.toLowerCase().includes(q) || s.name_ar?.toLowerCase().includes(q);
   });
 
-  const handleTranslateSpec = async (fromLang: "en" | "ar") => {
-    const text = fromLang === "en" ? editSpecialization : editSpecializationAr;
-    if (!text.trim()) return;
-    setTranslatingSpec(true);
+  // Select a primary specialty from the list
+  const handleSelectPrimary = (spec: any) => {
+    onSpecializationChange(spec.name || "");
+    onSpecializationArChange(spec.name_ar || "");
+    setPrimarySearch("");
+    setShowPrimaryDropdown(false);
+  };
+
+  // Check duplication and add new specialty
+  const handleAddNewSpecialty = async () => {
+    if (!newSpecName.trim()) return;
+    const slug = newSpecName.trim().toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "");
+
+    // Check for duplicates
+    const duplicate = (allSpecialties || []).find(
+      (s) => s.slug === slug || s.name?.toLowerCase() === newSpecName.trim().toLowerCase()
+        || (newSpecNameAr.trim() && s.name_ar === newSpecNameAr.trim())
+    );
+
+    if (duplicate) {
+      toast({
+        variant: "destructive",
+        title: isAr ? "تخصص مكرر" : "Duplicate Specialty",
+        description: isAr
+          ? `التخصص "${duplicate.name_ar || duplicate.name}" موجود بالفعل${!duplicate.is_approved ? " (قيد المراجعة)" : ""}`
+          : `"${duplicate.name}" already exists${!duplicate.is_approved ? " (pending approval)" : ""}`,
+      });
+      return;
+    }
+
+    setAddingNewSpec(true);
     try {
-      const targetLang = fromLang === "en" ? "ar" : "en";
-      const { data, error } = await supabase.functions.invoke("ai-translate-seo", {
-        body: { text, source_lang: fromLang, target_lang: targetLang, optimize_seo: true },
+      const { error } = await supabase.from("specialties").insert({
+        name: newSpecName.trim(),
+        name_ar: newSpecNameAr.trim() || null,
+        slug,
+        is_approved: false,
+        is_active: true,
       });
       if (error) throw error;
-      if (data?.translated) {
-        if (targetLang === "ar") onSpecializationArChange(data.translated);
-        else onSpecializationChange(data.translated);
-        toast({ title: isAr ? "تمت الترجمة بنجاح" : "Translation complete" });
-      }
+      queryClient.invalidateQueries({ queryKey: ["specialties"] });
+      toast({
+        title: isAr ? "تم إرسال التخصص للمراجعة" : "Specialty submitted for review",
+        description: isAr
+          ? "سيتم مراجعته والموافقة عليه من قبل الإدارة"
+          : "It will be reviewed and approved by an admin",
+      });
+      setNewSpecName("");
+      setNewSpecNameAr("");
+      setShowNewSpecForm(false);
     } catch (err: any) {
       toast({ variant: "destructive", title: "Error", description: err.message });
     } finally {
-      setTranslatingSpec(false);
+      setAddingNewSpec(false);
     }
   };
 
+  // Current primary display
+  const primaryDisplay = editSpecialization
+    ? (isAr ? (editSpecializationAr || editSpecialization) : editSpecialization)
+    : "";
+
+  // Pending specialties count
+  const pendingCount = (allSpecialties || []).filter((s) => !s.is_approved).length;
+
   return (
     <>
-      {/* Primary Specialization (bilingual with translation) */}
-      <div className="rounded-lg border p-4 space-y-4">
-        <h3 className="text-sm font-semibold">{isAr ? "التخصص الرئيسي" : "Primary Specialization"}</h3>
-        <div className="grid gap-4 md:grid-cols-2">
-          <div className="space-y-2">
-            <div className="flex items-center justify-between">
-              <Label>Specialization (EN)</Label>
-              <Button
-                type="button" variant="ghost" size="sm"
-                onClick={() => handleTranslateSpec("en")}
-                disabled={translatingSpec || !editSpecialization.trim()}
-                className="gap-1 text-xs h-6"
-              >
-                {translatingSpec ? <Loader2 className="h-3 w-3 animate-spin" /> : <Languages className="h-3 w-3" />}
-                → AR
-              </Button>
-            </div>
-            <Input value={editSpecialization} onChange={(e) => onSpecializationChange(e.target.value)} placeholder="e.g. Pastry & Chocolate Arts" dir="ltr" />
-          </div>
-          <div className="space-y-2">
-            <div className="flex items-center justify-between">
-              <Label>التخصص (AR)</Label>
-              <Button
-                type="button" variant="ghost" size="sm"
-                onClick={() => handleTranslateSpec("ar")}
-                disabled={translatingSpec || !editSpecializationAr.trim()}
-                className="gap-1 text-xs h-6"
-              >
-                {translatingSpec ? <Loader2 className="h-3 w-3 animate-spin" /> : <Languages className="h-3 w-3" />}
-                → EN
-              </Button>
-            </div>
-            <Input value={editSpecializationAr} onChange={(e) => onSpecializationArChange(e.target.value)} placeholder="مثال: فنون الحلويات والشوكولاتة" dir="rtl" />
-          </div>
+      {/* Primary Specialization - DB selector */}
+      <div className="rounded-lg border p-4 space-y-3">
+        <div className="flex items-center justify-between">
+          <h3 className="text-sm font-semibold">{isAr ? "التخصص الرئيسي" : "Primary Specialization"}</h3>
+          {pendingCount > 0 && (
+            <Badge variant="outline" className="text-[10px] gap-1 text-chart-4 border-chart-4/30">
+              <AlertCircle className="h-3 w-3" />
+              {isAr ? `${pendingCount} بانتظار الموافقة` : `${pendingCount} pending approval`}
+            </Badge>
+          )}
         </div>
+
+        {/* Selected primary display */}
+        {primaryDisplay && !showPrimaryDropdown && (
+          <div className="flex items-center gap-2 rounded-md border border-border/60 bg-muted/30 px-3 py-2">
+            <ChefHat className="h-4 w-4 text-primary shrink-0" />
+            <div className="flex-1 min-w-0">
+              <p className="text-sm font-medium">{editSpecialization}</p>
+              {editSpecializationAr && <p className="text-xs text-muted-foreground" dir="rtl">{editSpecializationAr}</p>}
+            </div>
+            <Button variant="ghost" size="sm" className="h-7 text-xs gap-1" onClick={() => setShowPrimaryDropdown(true)}>
+              <Pencil className="h-3 w-3" />{isAr ? "تغيير" : "Change"}
+            </Button>
+            <Button variant="ghost" size="sm" className="h-7 text-xs text-destructive/70 hover:text-destructive" onClick={() => { onSpecializationChange(""); onSpecializationArChange(""); }}>
+              <X className="h-3 w-3" />
+            </Button>
+          </div>
+        )}
+
+        {/* Search & select dropdown */}
+        {(!primaryDisplay || showPrimaryDropdown) && (
+          <div className="space-y-2">
+            <div className="relative">
+              <Search className="absolute start-3 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-muted-foreground" />
+              <Input
+                value={primarySearch}
+                onChange={(e) => setPrimarySearch(e.target.value)}
+                onFocus={() => setShowPrimaryDropdown(true)}
+                placeholder={isAr ? "ابحث واختر التخصص الرئيسي..." : "Search and select primary specialization..."}
+                className="ps-9 h-9 text-sm"
+              />
+            </div>
+            {showPrimaryDropdown && (
+              <div className="max-h-48 overflow-y-auto rounded-md border divide-y bg-popover">
+                {filteredPrimary.slice(0, 30).map((s) => (
+                  <button
+                    key={s.id} type="button"
+                    onClick={() => handleSelectPrimary(s)}
+                    className="w-full text-start px-3 py-2 text-sm hover:bg-accent/50 transition-colors flex items-center justify-between"
+                  >
+                    <span>{isAr ? s.name_ar || s.name : s.name}</span>
+                    <span className="text-xs text-muted-foreground">{isAr ? s.name : s.name_ar}</span>
+                  </button>
+                ))}
+                {filteredPrimary.length === 0 && (
+                  <div className="px-3 py-3 text-center">
+                    <p className="text-xs text-muted-foreground mb-2">{isAr ? "لا توجد نتائج" : "No results found"}</p>
+                    {!showNewSpecForm && (
+                      <Button variant="outline" size="sm" className="h-7 text-xs gap-1" onClick={() => { setShowNewSpecForm(true); setNewSpecName(primarySearch); }}>
+                        <Plus className="h-3 w-3" />{isAr ? "إضافة تخصص جديد" : "Add new specialty"}
+                      </Button>
+                    )}
+                  </div>
+                )}
+                {showPrimaryDropdown && filteredPrimary.length > 0 && !showNewSpecForm && (
+                  <div className="px-3 py-2 border-t">
+                    <Button variant="ghost" size="sm" className="w-full h-7 text-xs gap-1 text-muted-foreground hover:text-foreground" onClick={() => setShowNewSpecForm(true)}>
+                      <Plus className="h-3 w-3" />{isAr ? "لم تجد تخصصك؟ أضف جديد" : "Can't find yours? Add new"}
+                    </Button>
+                  </div>
+                )}
+              </div>
+            )}
+            {showPrimaryDropdown && primaryDisplay && (
+              <Button variant="ghost" size="sm" className="text-xs" onClick={() => setShowPrimaryDropdown(false)}>
+                {isAr ? "إلغاء" : "Cancel"}
+              </Button>
+            )}
+          </div>
+        )}
+
+        {/* New specialty form (inline) */}
+        {showNewSpecForm && (
+          <div className="rounded-md border border-dashed border-chart-4/40 bg-chart-4/5 p-3 space-y-3">
+            <div className="flex items-center justify-between">
+              <p className="text-xs font-semibold flex items-center gap-1.5">
+                <AlertCircle className="h-3.5 w-3.5 text-chart-4" />
+                {isAr ? "إضافة تخصص جديد (يتطلب موافقة الإدارة)" : "Add new specialty (requires admin approval)"}
+              </p>
+              <Button variant="ghost" size="sm" className="h-6 w-6 p-0" onClick={() => setShowNewSpecForm(false)}><X className="h-3.5 w-3.5" /></Button>
+            </div>
+            <div className="grid gap-2 sm:grid-cols-2">
+              <div className="space-y-1">
+                <Label className="text-xs">{isAr ? "الاسم (EN)" : "Name (EN)"} *</Label>
+                <Input value={newSpecName} onChange={(e) => setNewSpecName(e.target.value)} className="h-8 text-xs" dir="ltr" placeholder="e.g. Molecular Gastronomy" />
+              </div>
+              <div className="space-y-1">
+                <Label className="text-xs">{isAr ? "الاسم (AR)" : "Name (AR)"}</Label>
+                <Input value={newSpecNameAr} onChange={(e) => setNewSpecNameAr(e.target.value)} className="h-8 text-xs" dir="rtl" placeholder="مثال: فن الطهي الجزيئي" />
+              </div>
+            </div>
+            <div className="flex gap-2">
+              <Button variant="outline" size="sm" className="h-8 text-xs flex-1" onClick={() => setShowNewSpecForm(false)}>{isAr ? "إلغاء" : "Cancel"}</Button>
+              <Button size="sm" className="h-8 text-xs flex-1 gap-1" onClick={handleAddNewSpecialty} disabled={!newSpecName.trim() || addingNewSpec}>
+                {addingNewSpec ? <Loader2 className="h-3 w-3 animate-spin" /> : <Check className="h-3 w-3" />}
+                {isAr ? "إرسال للمراجعة" : "Submit for Review"}
+              </Button>
+            </div>
+          </div>
+        )}
       </div>
 
       {/* Specialty Tags from DB with search */}
       <div className="rounded-lg border p-4 space-y-3">
-        <h3 className="text-sm font-semibold">{isAr ? "التخصصات الفرعية (من قاعدة البيانات)" : "Specialty Tags (from database)"}</h3>
+        <h3 className="text-sm font-semibold">{isAr ? "التخصصات الفرعية" : "Secondary Specialties"}</h3>
         {editUserSpecialties.length > 0 && (
           <div className="flex flex-wrap gap-1.5">
             {editUserSpecialties.map((us: any) => (
