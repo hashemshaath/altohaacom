@@ -102,6 +102,7 @@ export default function UserManagement() {
     nationality: "",
     educationLevel: "",
     educationInstitution: "",
+    educationEntityId: "",
     yearsOfExperience: "",
     experienceLevel: "",
   });
@@ -146,7 +147,7 @@ export default function UserManagement() {
     queryFn: async () => {
       let query = supabase
         .from("profiles")
-        .select(`id, user_id, full_name, full_name_ar, display_name, display_name_ar, username, account_number, account_status, membership_tier, avatar_url, created_at, location, country_code, city, specialization, specialization_ar, is_verified, email, phone, bio, bio_ar, cover_image_url, date_of_birth, gender, preferred_language, nationality, experience_level, education_level, education_institution, years_of_experience`, { count: "exact" })
+        .select(`id, user_id, full_name, full_name_ar, display_name, display_name_ar, username, account_number, account_status, membership_tier, avatar_url, created_at, location, country_code, city, specialization, specialization_ar, is_verified, email, phone, bio, bio_ar, cover_image_url, date_of_birth, gender, preferred_language, nationality, experience_level, education_level, education_institution, education_entity_id, years_of_experience`, { count: "exact" })
         .order("created_at", { ascending: false })
         .range(page * pageSize, (page + 1) * pageSize - 1);
 
@@ -458,6 +459,7 @@ export default function UserManagement() {
       nationality: (profile as any).nationality || "",
       educationLevel: (profile as any).education_level || "",
       educationInstitution: (profile as any).education_institution || "",
+      educationEntityId: (profile as any).education_entity_id || "",
       yearsOfExperience: (profile as any).years_of_experience?.toString() || "",
       experienceLevel: (profile as any).experience_level || "",
     });
@@ -499,6 +501,7 @@ export default function UserManagement() {
         nationality: editPersonal.nationality || null,
         education_level: editPersonal.educationLevel || null,
         education_institution: editPersonal.educationInstitution || null,
+        education_entity_id: editPersonal.educationEntityId || null,
         years_of_experience: editPersonal.yearsOfExperience ? parseInt(editPersonal.yearsOfExperience) : null,
         experience_level: editPersonal.experienceLevel || null,
       },

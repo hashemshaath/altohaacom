@@ -2,6 +2,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { CountrySelector } from "@/components/auth/CountrySelector";
+import { EntitySelector } from "@/components/admin/EntitySelector";
 
 interface PersonalDetailsForm {
   dateOfBirth: string;
@@ -10,6 +11,7 @@ interface PersonalDetailsForm {
   nationality: string;
   educationLevel: string;
   educationInstitution: string;
+  educationEntityId: string;
   yearsOfExperience: string;
   experienceLevel: string;
 }
@@ -126,14 +128,16 @@ export function UserPersonalDetailsTab({ form, onChange, isAr }: Props) {
             </SelectContent>
           </Select>
         </div>
-        <div className="space-y-2">
-          <Label>{isAr ? "المؤسسة التعليمية" : "Educational Institution"}</Label>
-          <Input
-            value={form.educationInstitution}
-            onChange={(e) => onChange({ educationInstitution: e.target.value })}
-            placeholder={isAr ? "اسم الجامعة أو المعهد" : "University or institute name"}
-          />
-        </div>
+        <EntitySelector
+          value={form.educationEntityId || null}
+          entityName={form.educationInstitution}
+          onChange={(entityId, entityName) => {
+            onChange({
+              educationEntityId: entityId || "",
+              educationInstitution: entityName,
+            });
+          }}
+        />
       </div>
 
       {/* Experience */}

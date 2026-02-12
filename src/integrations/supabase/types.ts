@@ -3752,9 +3752,11 @@ export type Database = {
           internal_notes: string | null
           is_verified: boolean | null
           is_visible: boolean
+          latitude: number | null
           license_expires_at: string | null
           license_number: string | null
           logo_url: string | null
+          longitude: number | null
           member_count: number | null
           mission: string | null
           mission_ar: string | null
@@ -3806,9 +3808,11 @@ export type Database = {
           internal_notes?: string | null
           is_verified?: boolean | null
           is_visible?: boolean
+          latitude?: number | null
           license_expires_at?: string | null
           license_number?: string | null
           logo_url?: string | null
+          longitude?: number | null
           member_count?: number | null
           mission?: string | null
           mission_ar?: string | null
@@ -3860,9 +3864,11 @@ export type Database = {
           internal_notes?: string | null
           is_verified?: boolean | null
           is_visible?: boolean
+          latitude?: number | null
           license_expires_at?: string | null
           license_number?: string | null
           logo_url?: string | null
+          longitude?: number | null
           member_count?: number | null
           mission?: string | null
           mission_ar?: string | null
@@ -7367,6 +7373,7 @@ export type Database = {
           date_of_birth: string | null
           display_name: string | null
           display_name_ar: string | null
+          education_entity_id: string | null
           education_institution: string | null
           education_level: string | null
           email: string | null
@@ -7424,6 +7431,7 @@ export type Database = {
           date_of_birth?: string | null
           display_name?: string | null
           display_name_ar?: string | null
+          education_entity_id?: string | null
           education_institution?: string | null
           education_level?: string | null
           email?: string | null
@@ -7483,6 +7491,7 @@ export type Database = {
           date_of_birth?: string | null
           display_name?: string | null
           display_name_ar?: string | null
+          education_entity_id?: string | null
           education_institution?: string | null
           education_level?: string | null
           email?: string | null
@@ -7533,6 +7542,13 @@ export type Database = {
             columns: ["company_id"]
             isOneToOne: false
             referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "profiles_education_entity_id_fkey"
+            columns: ["education_entity_id"]
+            isOneToOne: false
+            referencedRelation: "culinary_entities"
             referencedColumns: ["id"]
           },
         ]
