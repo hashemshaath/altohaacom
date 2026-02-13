@@ -1,4 +1,3 @@
-import { forwardRef } from "react";
 import { Link } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -12,7 +11,7 @@ import { format } from "date-fns";
 
 const MIDDLE_EAST = ["SA", "AE", "KW", "BH", "QA", "OM", "JO", "LB", "IQ", "EG", "TN", "MA", "DZ", "LY", "SY", "PS", "YE"];
 
-export const RegionalEvents = forwardRef<HTMLElement>(function RegionalEvents(_, ref) {
+export function RegionalEvents() {
   const { language } = useLanguage();
   const isAr = language === "ar";
 
@@ -119,4 +118,4 @@ export const RegionalEvents = forwardRef<HTMLElement>(function RegionalEvents(_,
       </div>
     </section>
   );
-});
+}
