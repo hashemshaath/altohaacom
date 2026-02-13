@@ -1,6 +1,6 @@
 import { lazy } from "react";
 import { Route } from "react-router-dom";
-import { ProtectedRoute } from "@/components/ProtectedRoute";
+import { AdminRoute } from "@/components/AdminRoute";
 
 const AdminLayout = lazy(() => import("@/pages/admin/AdminLayout"));
 const AdminDashboard = lazy(() => import("@/pages/admin/AdminDashboard"));
@@ -53,7 +53,7 @@ const TranslationSEOAdmin = lazy(() => import("@/pages/admin/TranslationSEOAdmin
 const OrderCenterAdmin = lazy(() => import("@/pages/admin/OrderCenterAdmin"));
 
 export const adminRoutes = (
-  <Route path="/admin" element={<ProtectedRoute><AdminLayout /></ProtectedRoute>}>
+  <Route path="/admin" element={<AdminRoute><AdminLayout /></AdminRoute>}>
     <Route index element={<AdminDashboard />} />
     <Route path="users/:userId" element={<CRMCustomerDetail />} />
     <Route path="users" element={<UserManagement />} />

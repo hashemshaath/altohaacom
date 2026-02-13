@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
-import { useIsAdmin } from "@/hooks/useAdmin";
-import { Navigate, Outlet, NavLink } from "react-router-dom";
+import { Outlet, NavLink } from "react-router-dom";
 import { AdminHeader } from "@/components/admin/AdminHeader";
 import { cn } from "@/lib/utils";
 import { GraduationCap, BarChart3, Landmark, Building2, MessageSquare as MessageSquareIcon, Earth, QrCode, UtensilsCrossed, MailOpen, HandHeart, ShieldCheck, Ticket, Target, Headphones, Activity, Megaphone, Languages, Package } from "lucide-react";
@@ -38,21 +37,8 @@ import {
 
 export default function AdminLayout() {
   const { t, language } = useLanguage();
-  const { data: isAdmin, isLoading } = useIsAdmin();
   const [collapsed, setCollapsed] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
-
-  if (isLoading) {
-    return (
-      <div className="flex min-h-screen items-center justify-center">
-        <div className="h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent" />
-      </div>
-    );
-  }
-
-  if (!isAdmin) {
-    return <Navigate to="/dashboard" replace />;
-  }
 
   const navSections = [
     {

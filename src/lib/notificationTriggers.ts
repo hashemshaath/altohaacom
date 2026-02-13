@@ -478,15 +478,15 @@ export async function notifyProfileVerified(params: {
 
 // ═══════════════════════════════════════════════
 // ── Admin Review Notification System ──
-// Sends notifications to all admin users (organizer/supervisor roles)
-// for items requiring review, approval, or rejection.
+// Sends notifications to all supervisor-role users only.
+// Only supervisors have full admin privileges.
 // ═══════════════════════════════════════════════
 
 async function getAdminUserIds(): Promise<string[]> {
   const { data } = await supabase
     .from("user_roles")
     .select("user_id")
-    .in("role", ["organizer", "supervisor"]);
+    .eq("role", "supervisor");
   return [...new Set((data || []).map((r: any) => r.user_id as string))];
 }
 
