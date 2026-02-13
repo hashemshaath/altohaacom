@@ -135,6 +135,19 @@ export function UnifiedMembershipTab({ profile, userId, onMembershipChange }: Un
   const isTrial = card?.is_trial && card?.trial_ends_at && new Date(card.trial_ends_at) > new Date();
   const shortCode = profile?.account_number ? profile.account_number.replace(/\D/g, "").slice(-4).padStart(4, "0") : "0000";
   const fullVerificationCode = card?.verification_code || "";
+
+  // Generate 1D barcode bars
+  const barcodeValue = profile?.account_number || card?.membership_number || "";
+  const barcodeBars: number[] = (() => {
+    const bars: number[] = [1, 1, 0, 1, 1, 0];
+    for (const char of barcodeValue) {
+      const code = char.charCodeAt(0);
+      for (let i = 7; i >= 0; i--) bars.push((code >> i) & 1);
+      bars.push(0);
+    }
+    bars.push(0, 1, 1, 0, 1, 1);
+    return bars;
+  })();
   const isVertical = orientation === "vertical";
 
   const profileCompletion = [
@@ -203,75 +216,105 @@ export function UnifiedMembershipTab({ profile, userId, onMembershipChange }: Un
 
           <div
             ref={cardRef}
-            className={`relative overflow-hidden rounded-2xl shadow-2xl ${isVertical ? "max-w-[320px] mx-auto" : "w-full max-w-[560px]"}`}
-            style={{ background: "linear-gradient(135deg, hsl(36, 20%, 12%) 0%, hsl(36, 25%, 16%) 40%, hsl(36, 30%, 20%) 100%)", aspectRatio: isVertical ? "9/16" : undefined, minHeight: isVertical ? undefined : "220px" }}
+            className={`relative overflow-hidden rounded-2xl shadow-2xl ${isVertical ? "max-w-[320px] mx-auto" : "w-full max-w-[540px]"}`}
+            style={{
+              background: "linear-gradient(135deg, hsl(36, 20%, 12%) 0%, hsl(36, 25%, 16%) 40%, hsl(36, 30%, 20%) 100%)",
+              aspectRatio: isVertical ? "0.6306" : "1.586",
+            }}
           >
+            {/* Decorative elements */}
             <div className="absolute inset-0 overflow-hidden">
               <div className="absolute top-0 right-0 w-1/2 h-full opacity-10" style={{ background: "linear-gradient(180deg, #d4af37 0%, transparent 100%)" }} />
               <div className="absolute bottom-0 left-0 w-full h-px" style={{ background: "linear-gradient(90deg, transparent, #d4af37, transparent)" }} />
               <div className="absolute top-0 left-0 w-full h-px" style={{ background: "linear-gradient(90deg, transparent, #d4af37, transparent)" }} />
             </div>
-            <div className={`relative h-full p-5 flex flex-col justify-between`}>
+
+            <div className="relative h-full p-3 sm:p-4 flex flex-col justify-between">
+              {/* Header: Logo + Tier */}
               <div className="flex items-start justify-between">
-                <div className="flex items-center gap-2">
-                  <img src="/altohaa-logo.png" alt="Altohaa" className="h-8 w-8 rounded-lg object-contain" style={{ filter: "brightness(1.5)" }} />
+                <div className="flex items-center gap-1.5">
+                  <img src="/altohaa-logo.png" alt="Altohaa" className="h-6 w-6 sm:h-7 sm:w-7 rounded-md object-contain" style={{ filter: "brightness(1.5)" }} />
                   <div>
-                    <p className="text-[10px] uppercase tracking-[0.2em] font-medium" style={{ color: "#d4af37" }}>{isAr ? "بطاقة العضوية" : "MEMBERSHIP CARD"}</p>
-                    <p className="text-[8px] text-gray-400">{isAr ? "منصة ألطهاء" : "Altohaa Platform"}</p>
+                    <p className="text-[8px] sm:text-[9px] uppercase tracking-[0.2em] font-medium" style={{ color: "#d4af37" }}>{isAr ? "بطاقة العضوية" : "MEMBERSHIP CARD"}</p>
+                    <p className="text-[7px] text-gray-400">{isAr ? "منصة ألطهاء" : "Altohaa Platform"}</p>
                   </div>
                 </div>
-                <div className="flex items-center gap-1.5 rounded-full px-2.5 py-1" style={{ background: "rgba(212, 175, 55, 0.15)", border: "1px solid rgba(212, 175, 55, 0.3)" }}>
-                  <TierIcon className="h-3.5 w-3.5" style={{ color: "#d4af37" }} />
-                  <span className="text-[10px] font-semibold" style={{ color: "#d4af37" }}>{tierName}</span>
+                <div className="flex items-center gap-1 rounded-full px-2 py-0.5" style={{ background: "rgba(212, 175, 55, 0.15)", border: "1px solid rgba(212, 175, 55, 0.3)" }}>
+                  <TierIcon className="h-3 w-3" style={{ color: "#d4af37" }} />
+                  <span className="text-[8px] sm:text-[9px] font-semibold" style={{ color: "#d4af37" }}>{tierName}</span>
                 </div>
               </div>
-              <div className={isVertical ? "flex-1 flex flex-col justify-center space-y-4" : "space-y-3"}>
-                <div>
-                  <p className="text-white font-bold text-lg leading-tight">{isAr ? (profile?.full_name_ar || profile?.full_name || "—") : (profile?.full_name || "—")}</p>
-                  {isAr && profile?.full_name && <p className="text-gray-400 text-xs mt-0.5">{profile.full_name}</p>}
-                  {!isAr && profile?.full_name_ar && <p className="text-gray-400 text-xs mt-0.5" dir="rtl">{profile.full_name_ar}</p>}
-                </div>
-                <div>
-                  <p className="text-[9px] uppercase tracking-widest text-gray-500 mb-0.5">{isAr ? "رقم العضوية" : "MEMBERSHIP NO."}</p>
-                  <p className="text-sm font-mono font-bold tracking-wider" style={{ color: "#d4af37" }}>{card.membership_number}</p>
-                </div>
-                <div className={`grid ${isVertical ? "grid-cols-2" : "grid-cols-4"} gap-2`}>
-                  <div>
-                    <p className="text-[8px] uppercase tracking-wider text-gray-500">{isAr ? "الانضمام" : "JOINED"}</p>
-                    <p className="text-[11px] text-gray-300 font-medium">{format(new Date(card.issued_at), "dd/MM/yyyy")}</p>
-                  </div>
-                  <div>
-                    <p className="text-[8px] uppercase tracking-wider text-gray-500">{isAr ? "الانتهاء" : "EXPIRES"}</p>
-                    <p className="text-[11px] text-gray-300 font-medium">{format(new Date(card.expires_at), "dd/MM/yyyy")}</p>
-                  </div>
-                  {genderLabel && (
-                    <div>
-                      <p className="text-[8px] uppercase tracking-wider text-gray-500">{isAr ? "الجنس" : "GENDER"}</p>
-                      <p className="text-[11px] text-gray-300 font-medium">{genderLabel}</p>
+
+              {/* Body: Avatar + Info */}
+              <div className={isVertical ? "flex-1 flex flex-col justify-center space-y-3" : "flex items-start gap-3 mt-1"}>
+                {/* Avatar */}
+                <div className="shrink-0">
+                  {profile?.avatar_url ? (
+                    <img
+                      src={profile.avatar_url}
+                      alt={profile.full_name || ""}
+                      className={`${isVertical ? "h-16 w-16" : "h-12 w-12 sm:h-14 sm:w-14"} rounded-lg object-cover border`}
+                      style={{ borderColor: "rgba(212,175,55,0.3)" }}
+                    />
+                  ) : (
+                    <div className={`${isVertical ? "h-16 w-16" : "h-12 w-12 sm:h-14 sm:w-14"} rounded-lg flex items-center justify-center border`} style={{ background: "rgba(212,175,55,0.1)", borderColor: "rgba(212,175,55,0.25)" }}>
+                      <span className="text-lg font-bold" style={{ color: "#d4af37" }}>{(profile?.full_name || "?")[0]}</span>
                     </div>
                   )}
+                </div>
+
+                <div className="flex-1 min-w-0 space-y-1.5">
                   <div>
-                    <p className="text-[8px] uppercase tracking-wider text-gray-500">{isAr ? "رقم الحساب" : "ACCOUNT"}</p>
-                    <p className="text-[11px] text-gray-300 font-medium">{profile?.account_number || "—"}</p>
+                    <p className="text-white font-bold text-sm sm:text-base leading-tight truncate">{isAr ? (profile?.full_name_ar || profile?.full_name || "—") : (profile?.full_name || "—")}</p>
+                    {isAr && profile?.full_name && <p className="text-gray-400 text-[10px] mt-0.5 truncate">{profile.full_name}</p>}
+                    {!isAr && profile?.full_name_ar && <p className="text-gray-400 text-[10px] mt-0.5 truncate" dir="rtl">{profile.full_name_ar}</p>}
+                  </div>
+                  <div>
+                    <p className="text-[7px] uppercase tracking-widest text-gray-500">{isAr ? "رقم العضوية" : "MEMBERSHIP NO."}</p>
+                    <p className="text-[11px] sm:text-xs font-mono font-bold tracking-wider" style={{ color: "#d4af37" }}>{card.membership_number}</p>
+                  </div>
+                  <div className={`grid ${isVertical ? "grid-cols-2" : "grid-cols-3"} gap-x-3 gap-y-1`}>
+                    <div>
+                      <p className="text-[7px] uppercase tracking-wider text-gray-500">{isAr ? "الانضمام" : "JOINED"}</p>
+                      <p className="text-[10px] text-gray-300 font-medium">{format(new Date(card.issued_at), "dd/MM/yyyy")}</p>
+                    </div>
+                    <div>
+                      <p className="text-[7px] uppercase tracking-wider text-gray-500">{isAr ? "الانتهاء" : "EXPIRES"}</p>
+                      <p className="text-[10px] text-gray-300 font-medium">{format(new Date(card.expires_at), "dd/MM/yyyy")}</p>
+                    </div>
+                    <div>
+                      <p className="text-[7px] uppercase tracking-wider text-gray-500">{isAr ? "الحساب" : "ACCOUNT"}</p>
+                      <p className="text-[10px] text-gray-300 font-medium">{profile?.account_number || "—"}</p>
+                    </div>
                   </div>
                 </div>
               </div>
-              <div className="flex items-end justify-between flex-wrap gap-2">
-                <div>
-                  <p className="text-[8px] uppercase tracking-wider text-gray-500 mb-1">{isAr ? "كود التحقق" : "VERIFICATION CODE"}</p>
-                  <div className="flex items-center gap-1.5">
-                    {shortCode.split("").map((d, i) => (
-                      <span key={i} className="inline-flex h-8 w-7 sm:h-9 sm:w-8 items-center justify-center rounded-md border font-mono text-sm sm:text-base font-bold" style={{ borderColor: "rgba(212,175,55,0.3)", background: "rgba(212,175,55,0.1)", color: "#d4af37" }}>
-                        {showCode ? d : "•"}
-                      </span>
-                    ))}
-                    <button onClick={() => setShowCode(!showCode)} className="ms-1 text-gray-500 hover:text-gray-300 transition-colors p-1">
-                      {showCode ? <EyeOff className="h-3.5 w-3.5" /> : <Eye className="h-3.5 w-3.5" />}
-                    </button>
-                  </div>
+
+              {/* Footer: Code + Barcode + Status */}
+              <div className="space-y-1.5">
+                {/* Barcode */}
+                <div className="flex flex-col items-center">
+                  <svg viewBox={`0 0 ${barcodeBars.length} 28`} className="w-full max-w-[85%]" height={28} preserveAspectRatio="none">
+                    {barcodeBars.map((bar, i) => bar ? <rect key={i} x={i} y={0} width={0.7} height={28} fill="rgba(212,175,55,0.6)" /> : null)}
+                  </svg>
+                  <span className="font-mono text-[7px] tracking-[0.3em] text-gray-500 mt-0.5">{profile?.account_number || card.membership_number}</span>
                 </div>
-                <div className="text-right">
-                  <div className={`inline-block rounded-md px-2 py-0.5 text-[8px] font-bold uppercase tracking-wider ${card.card_status === "active" ? "bg-emerald-500/20 text-emerald-400" : card.card_status === "suspended" ? "bg-amber-500/20 text-amber-400" : "bg-red-500/20 text-red-400"}`}>
+
+                <div className="flex items-end justify-between">
+                  <div>
+                    <p className="text-[7px] uppercase tracking-wider text-gray-500 mb-0.5">{isAr ? "كود التحقق" : "CODE"}</p>
+                    <div className="flex items-center gap-1">
+                      {shortCode.split("").map((d, i) => (
+                        <span key={i} className="inline-flex h-6 w-5 sm:h-7 sm:w-6 items-center justify-center rounded border font-mono text-xs sm:text-sm font-bold" style={{ borderColor: "rgba(212,175,55,0.3)", background: "rgba(212,175,55,0.1)", color: "#d4af37" }}>
+                          {showCode ? d : "•"}
+                        </span>
+                      ))}
+                      <button onClick={() => setShowCode(!showCode)} className="ms-1 text-gray-500 hover:text-gray-300 transition-colors p-0.5">
+                        {showCode ? <EyeOff className="h-3 w-3" /> : <Eye className="h-3 w-3" />}
+                      </button>
+                    </div>
+                  </div>
+                  <div className={`inline-block rounded-md px-2 py-0.5 text-[7px] font-bold uppercase tracking-wider ${card.card_status === "active" ? "bg-emerald-500/20 text-emerald-400" : card.card_status === "suspended" ? "bg-amber-500/20 text-amber-400" : "bg-red-500/20 text-red-400"}`}>
                     {card.card_status === "active" ? (isAr ? "نشطة" : "ACTIVE") : card.card_status === "suspended" ? (isAr ? "معلقة" : "SUSPENDED") : (isAr ? "منتهية" : "EXPIRED")}
                   </div>
                 </div>
