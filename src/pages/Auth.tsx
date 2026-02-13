@@ -1079,26 +1079,43 @@ export default function Auth() {
       </Card>
 
       {/* Toggle sign in / sign up */}
-      <div className="flex items-center justify-center gap-1.5 text-sm">
-        <span className="text-muted-foreground">
-          {isSignUp ? (isAr ? "لديك حساب بالفعل؟" : "Already have an account?") : (isAr ? "ليس لديك حساب؟" : "Don't have an account?")}
-        </span>
-        <button
-          type="button"
-          className="font-medium text-primary underline-offset-2 hover:underline"
-          onClick={() => {
-            if (isSignUp) {
-              navigate("/login", { replace: true });
-            } else {
-              navigate("/register", { replace: true });
-            }
-            setIsSignUp(!isSignUp);
-            setErrors({});
-            setSignInPhoneStep("phone");
-          }}
-        >
-          {isSignUp ? (isAr ? "تسجيل الدخول" : "Sign In") : (isAr ? "إنشاء حساب" : "Sign Up")}
-        </button>
+      <div className="flex flex-col items-center gap-2 text-sm">
+        <div className="flex items-center gap-1.5">
+          <span className="text-muted-foreground">
+            {isSignUp ? (isAr ? "لديك حساب بالفعل؟" : "Already have an account?") : (isAr ? "ليس لديك حساب؟" : "Don't have an account?")}
+          </span>
+          <button
+            type="button"
+            className="font-medium text-primary underline-offset-2 hover:underline"
+            onClick={() => {
+              if (isSignUp) {
+                navigate("/login", { replace: true });
+              } else {
+                navigate("/register", { replace: true });
+              }
+              setIsSignUp(!isSignUp);
+              setErrors({});
+              setSignInPhoneStep("phone");
+            }}
+          >
+            {isSignUp ? (isAr ? "تسجيل الدخول" : "Sign In") : (isAr ? "إنشاء حساب" : "Sign Up")}
+          </button>
+        </div>
+
+        {!isSignUp && (
+          <div className="flex items-center gap-1.5">
+            <span className="text-muted-foreground">
+              {isAr ? "حساب شركة؟" : "Company account?"}
+            </span>
+            <button
+              type="button"
+              className="font-medium text-primary underline-offset-2 hover:underline"
+              onClick={() => navigate("/company-login")}
+            >
+              {isAr ? "تسجيل دخول الشركة" : "Company Login"}
+            </button>
+          </div>
+        )}
       </div>
 
       {/* Forgot Password Dialog */}

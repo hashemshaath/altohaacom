@@ -3,7 +3,7 @@ import { Route, Navigate } from "react-router-dom";
 import Index from "@/pages/Index";
 
 const Auth = lazy(() => import("@/pages/Auth"));
-
+const CompanyLogin = lazy(() => import("@/pages/CompanyLogin"));
 const Competitions = lazy(() => import("@/pages/Competitions"));
 const CompetitionDetail = lazy(() => import("@/pages/CompetitionDetail"));
 const CompetitionResults = lazy(() => import("@/pages/CompetitionResults"));
@@ -42,6 +42,7 @@ export const publicRoutes = (
     <Route path="/auth" element={<Navigate to="/login" replace />} />
     <Route path="/login" element={<Auth />} />
     <Route path="/register" element={<Auth />} />
+    <Route path="/company-login" element={<CompanyLogin />} />
     <Route path="/reset-password" element={<Auth />} />
     <Route path="/competitions" element={<Competitions />} />
     <Route path="/competitions/:id" element={<CompetitionDetail />} />
