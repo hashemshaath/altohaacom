@@ -1,6 +1,6 @@
 import { useLanguage } from "@/i18n/LanguageContext";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { LayoutDashboard, ClipboardList, Package, Lightbulb, CheckSquare, Send, Wallet, Truck, Activity, BarChart3, ClipboardCheck, BookTemplate } from "lucide-react";
+import { LayoutDashboard, ClipboardList, Package, Lightbulb, CheckSquare, Send, Wallet, Truck, Activity, BarChart3, ClipboardCheck, BookTemplate, FileInput } from "lucide-react";
 import { RequirementsListPanel } from "../RequirementsListPanel";
 import { SuggestionPanel } from "./SuggestionPanel";
 import { DeliveryChecklist } from "./DeliveryChecklist";
@@ -13,6 +13,7 @@ import { OrderActivityLog } from "./OrderActivityLog";
 import { VendorPerformance } from "./VendorPerformance";
 import { ReadinessChecklist } from "./ReadinessChecklist";
 import { RequirementTemplates } from "./RequirementTemplates";
+import { ItemRequestPanel } from "./ItemRequestPanel";
 
 interface Props {
   competitionId: string;
@@ -25,6 +26,7 @@ export function OrderCenterHub({ competitionId, isOrganizer }: Props) {
 
   const tabs = [
     { id: "overview", icon: <LayoutDashboard className="h-3.5 w-3.5" />, label: isAr ? "نظرة عامة" : "Overview" },
+    { id: "requests", icon: <FileInput className="h-3.5 w-3.5" />, label: isAr ? "طلبات العناصر" : "Item Requests" },
     { id: "lists", icon: <ClipboardList className="h-3.5 w-3.5" />, label: isAr ? "قوائم المتطلبات" : "Requirement Lists" },
     { id: "catalog", icon: <Package className="h-3.5 w-3.5" />, label: isAr ? "كتالوج العناصر" : "Item Catalog" },
     { id: "checklist", icon: <CheckSquare className="h-3.5 w-3.5" />, label: isAr ? "قائمة التحقق" : "Delivery Checklist" },
@@ -63,6 +65,10 @@ export function OrderCenterHub({ competitionId, isOrganizer }: Props) {
 
         <TabsContent value="overview" className="mt-4">
           <OrderOverviewDashboard competitionId={competitionId} isOrganizer={isOrganizer} />
+        </TabsContent>
+
+        <TabsContent value="requests" className="mt-4">
+          <ItemRequestPanel competitionId={competitionId} isOrganizer={isOrganizer} />
         </TabsContent>
 
         <TabsContent value="lists" className="mt-4">
