@@ -7527,9 +7527,18 @@ export type Database = {
       }
       order_item_requests: {
         Row: {
+          assigned_vendor: string | null
+          assigned_vendor_ar: string | null
           category: string
           competition_id: string
           created_at: string
+          delivered_at: string | null
+          delivered_by: string | null
+          delivery_deadline: string | null
+          delivery_notes: string | null
+          delivery_status: string | null
+          fulfilled_at: string | null
+          fulfilled_by: string | null
           id: string
           item_name: string
           item_name_ar: string | null
@@ -7544,13 +7553,24 @@ export type Database = {
           reviewed_at: string | null
           reviewed_by: string | null
           status: string
+          tracking_number: string | null
           unit: string
           updated_at: string
+          vendor_id: string | null
         }
         Insert: {
+          assigned_vendor?: string | null
+          assigned_vendor_ar?: string | null
           category?: string
           competition_id: string
           created_at?: string
+          delivered_at?: string | null
+          delivered_by?: string | null
+          delivery_deadline?: string | null
+          delivery_notes?: string | null
+          delivery_status?: string | null
+          fulfilled_at?: string | null
+          fulfilled_by?: string | null
           id?: string
           item_name: string
           item_name_ar?: string | null
@@ -7565,13 +7585,24 @@ export type Database = {
           reviewed_at?: string | null
           reviewed_by?: string | null
           status?: string
+          tracking_number?: string | null
           unit?: string
           updated_at?: string
+          vendor_id?: string | null
         }
         Update: {
+          assigned_vendor?: string | null
+          assigned_vendor_ar?: string | null
           category?: string
           competition_id?: string
           created_at?: string
+          delivered_at?: string | null
+          delivered_by?: string | null
+          delivery_deadline?: string | null
+          delivery_notes?: string | null
+          delivery_status?: string | null
+          fulfilled_at?: string | null
+          fulfilled_by?: string | null
           id?: string
           item_name?: string
           item_name_ar?: string | null
@@ -7586,8 +7617,10 @@ export type Database = {
           reviewed_at?: string | null
           reviewed_by?: string | null
           status?: string
+          tracking_number?: string | null
           unit?: string
           updated_at?: string
+          vendor_id?: string | null
         }
         Relationships: [
           {
@@ -7602,6 +7635,13 @@ export type Database = {
             columns: ["list_id"]
             isOneToOne: false
             referencedRelation: "requirement_lists"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "order_item_requests_vendor_id_fkey"
+            columns: ["vendor_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
             referencedColumns: ["id"]
           },
         ]
