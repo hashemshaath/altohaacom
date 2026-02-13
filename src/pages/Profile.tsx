@@ -7,7 +7,7 @@ import { Footer } from "@/components/Footer";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Skeleton } from "@/components/ui/skeleton";
 import { SEOHead } from "@/components/SEOHead";
-import { User, Briefcase, Award, Edit, Shield, Crown, BarChart3, History, CreditCard, Wallet, FileText } from "lucide-react";
+import { User, Briefcase, Award, Edit, Shield, Crown, BarChart3, Wallet } from "lucide-react";
 import type { Database } from "@/integrations/supabase/types";
 
 import { ProfileHeader } from "@/components/profile/ProfileHeader";
@@ -18,13 +18,9 @@ import { CompetitionHistory } from "@/components/profile/CompetitionHistory";
 import { UserBadgesDisplay } from "@/components/badges/UserBadgesDisplay";
 import { ProfileEditForm } from "@/components/profile/ProfileEditForm";
 import { ProfilePrivacySettings } from "@/components/profile/ProfilePrivacySettings";
-import { ProfileMembershipTab } from "@/components/profile/ProfileMembershipTab";
-import { ProfessionalMembershipDashboard } from "@/components/profile/ProfessionalMembershipDashboard";
+import { UnifiedMembershipTab } from "@/components/membership/UnifiedMembershipTab";
 import { ProfileAnalyticsDashboard } from "@/components/profile/ProfileAnalyticsDashboard";
-import { UserModificationHistory } from "@/components/admin/UserModificationHistory";
-import { MembershipCard } from "@/components/membership/MembershipCard";
 import { WalletDashboard } from "@/components/wallet/WalletDashboard";
-import TaxReportGenerator from "@/components/finance/TaxReportGenerator";
 import { useSearchParams } from "react-router-dom";
 
 type Profile = Database["public"]["Tables"]["profiles"]["Row"];
@@ -54,7 +50,6 @@ export default function Profile() {
 
   useEffect(() => { fetchProfile(); }, [user]);
 
-  // Sync tab from URL query param
   useEffect(() => {
     const tab = searchParams.get("tab");
     if (tab) setActiveTab(tab);
@@ -75,18 +70,13 @@ export default function Profile() {
     );
   }
 
-  const isPro = profile?.membership_tier === "professional" || profile?.membership_tier === "enterprise";
-
   const tabs = [
     { id: "overview", label: isAr ? "نظرة عامة" : "Overview", icon: User },
-    { id: "card", label: isAr ? "بطاقة العضوية" : "Card", icon: CreditCard },
     { id: "career", label: isAr ? "السيرة المهنية" : "Career", icon: Briefcase },
-    { id: "certificates", label: isAr ? "الشهادات والإنجازات" : "Achievements", icon: Award },
+    { id: "achievements", label: isAr ? "الإنجازات" : "Achievements", icon: Award },
     { id: "membership", label: isAr ? "العضوية" : "Membership", icon: Crown },
     { id: "wallet", label: isAr ? "المحفظة" : "Wallet", icon: Wallet },
-    { id: "finance", label: isAr ? "التقارير الضريبية" : "Tax Reports", icon: FileText },
     { id: "analytics", label: isAr ? "الإحصائيات" : "Analytics", icon: BarChart3 },
-    { id: "history", label: isAr ? "سجل التعديلات" : "History", icon: History },
     { id: "edit", label: isAr ? "تعديل" : "Edit", icon: Edit },
     { id: "privacy", label: isAr ? "الخصوصية" : "Privacy", icon: Shield },
   ];
@@ -96,17 +86,10 @@ export default function Profile() {
       <SEOHead title="Profile" description="Your Altohaa profile" />
       <Header />
       <main className="container flex-1 py-6 md:py-8 max-w-5xl">
-        {/* Profile Header */}
         {profile && user && (
-          <ProfileHeader
-            profile={profile}
-            roles={roles}
-            userId={user.id}
-            onProfileUpdate={fetchProfile}
-          />
+          <ProfileHeader profile={profile} roles={roles} userId={user.id} onProfileUpdate={fetchProfile} />
         )}
 
-        {/* Tabs */}
         <Tabs value={activeTab} onValueChange={setActiveTab} className="mt-6">
           <TabsList className="w-full justify-start gap-1 bg-muted/50 p-1 rounded-xl h-auto flex-wrap">
             {tabs.map((tab) => (
@@ -121,81 +104,40 @@ export default function Profile() {
             ))}
           </TabsList>
 
-          {/* Overview */}
           <TabsContent value="overview" className="mt-6">
             {profile && user && <ProfileOverviewTab profile={profile} userId={user.id} />}
           </TabsContent>
 
-          {/* Membership Card */}
-          <TabsContent value="card" className="mt-6">
-            {profile && user && <MembershipCard profile={profile} userId={user.id} />}
-          </TabsContent>
-
-          {/* Career */}
           <TabsContent value="career" className="mt-6">
             {user && <ProfileCareerTab userId={user.id} />}
           </TabsContent>
 
-          {/* Certificates & Achievements */}
-          <TabsContent value="certificates" className="mt-6 space-y-6">
+          <TabsContent value="achievements" className="mt-6 space-y-6">
             {user && <ProfileCertificates userId={user.id} isOwner={true} />}
             {user && <CompetitionHistory userId={user.id} />}
             {user && <UserBadgesDisplay userId={user.id} />}
           </TabsContent>
 
-          {/* Membership */}
           <TabsContent value="membership" className="mt-6">
             {profile && user && (
-              <>
-                {isPro && (
-                  <ProfessionalMembershipDashboard profile={profile} userId={user.id} />
-                )}
-                <div className={isPro ? "mt-6" : ""}>
-                  <ProfileMembershipTab profile={profile} userId={user.id} onMembershipChange={fetchProfile} />
-                </div>
-              </>
+              <UnifiedMembershipTab profile={profile} userId={user.id} onMembershipChange={fetchProfile} />
             )}
           </TabsContent>
 
-          {/* Wallet */}
           <TabsContent value="wallet" className="mt-6">
             {user && <WalletDashboard userId={user.id} />}
           </TabsContent>
 
-          {/* Tax Reports */}
-          <TabsContent value="finance" className="mt-6">
-            <TaxReportGenerator />
-          </TabsContent>
-
-          {/* Analytics */}
           <TabsContent value="analytics" className="mt-6">
             {user && <ProfileAnalyticsDashboard userId={user.id} />}
           </TabsContent>
 
-          {/* Modification History */}
-          <TabsContent value="history" className="mt-6">
-            {user && (
-              <div className="space-y-4">
-                <p className="text-sm text-muted-foreground">
-                  {isAr ? "سجل جميع التعديلات التي تمت على ملفك الشخصي" : "A log of all modifications made to your profile"}
-                </p>
-                <UserModificationHistory userId={user.id} isAr={isAr} />
-              </div>
-            )}
-          </TabsContent>
-
-          {/* Edit */}
           <TabsContent value="edit" className="mt-6">
-            {profile && user && (
-              <ProfileEditForm profile={profile} userId={user.id} onSaved={fetchProfile} />
-            )}
+            {profile && user && <ProfileEditForm profile={profile} userId={user.id} onSaved={fetchProfile} />}
           </TabsContent>
 
-          {/* Privacy */}
           <TabsContent value="privacy" className="mt-6">
-            {profile && user && (
-              <ProfilePrivacySettings profile={profile} userId={user.id} onSaved={fetchProfile} />
-            )}
+            {profile && user && <ProfilePrivacySettings profile={profile} userId={user.id} onSaved={fetchProfile} />}
           </TabsContent>
         </Tabs>
       </main>
