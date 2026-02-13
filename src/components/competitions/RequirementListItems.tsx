@@ -16,6 +16,7 @@ import { Plus, Trash2, Search, Package } from "lucide-react";
 import { AIRequirementsSuggest } from "./AIRequirementsSuggest";
 
 import { ORDER_CATEGORIES, ITEM_UNITS } from "./order-center/OrderCenterCategories";
+import { ITEM_STATUS_LABELS, PRIORITY_LABELS, getStatusLabel } from "./order-center/OrderStatusLabels";
 
 const ITEM_CATEGORIES = ORDER_CATEGORIES.map(c => ({
   value: c.value,
@@ -340,7 +341,7 @@ export function RequirementListItems({ listId, competitionId, listCategory = "ge
                     <TableCell>{item.estimated_cost ? `$${(Number(item.estimated_cost) * item.quantity).toLocaleString()}` : "—"}</TableCell>
                     <TableCell>
                       <Badge className={PRIORITY_COLORS[item.priority || "medium"]} variant="outline">
-                        {item.priority}
+                        {getStatusLabel(PRIORITY_LABELS, item.priority || "medium", language)}
                       </Badge>
                     </TableCell>
                     <TableCell>
@@ -350,7 +351,7 @@ export function RequirementListItems({ listId, competitionId, listCategory = "ge
                         </SelectTrigger>
                         <SelectContent>
                           {["pending", "sourced", "sponsored", "purchased", "delivered"].map((s) => (
-                            <SelectItem key={s} value={s}>{s}</SelectItem>
+                            <SelectItem key={s} value={s}>{getStatusLabel(ITEM_STATUS_LABELS, s, language)}</SelectItem>
                           ))}
                         </SelectContent>
                       </Select>

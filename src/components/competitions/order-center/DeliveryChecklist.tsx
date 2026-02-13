@@ -11,6 +11,7 @@ import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { CheckCircle, Package, Clock, AlertTriangle, Calendar } from "lucide-react";
 import { format, isPast } from "date-fns";
+import { ITEM_STATUS_LABELS, getStatusLabel } from "./OrderStatusLabels";
 
 interface Props {
   competitionId: string;
@@ -222,7 +223,7 @@ export function DeliveryChecklist({ competitionId, isOrganizer }: Props) {
                         </SelectTrigger>
                         <SelectContent>
                           {["pending", "sourced", "sponsored", "purchased", "delivered"].map((s) => (
-                            <SelectItem key={s} value={s} className="text-xs">{s}</SelectItem>
+                            <SelectItem key={s} value={s} className="text-xs">{getStatusLabel(ITEM_STATUS_LABELS, s, language)}</SelectItem>
                           ))}
                         </SelectContent>
                       </Select>

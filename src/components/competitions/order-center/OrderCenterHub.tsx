@@ -1,11 +1,12 @@
 import { useLanguage } from "@/i18n/LanguageContext";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { ClipboardList, Package, Lightbulb, CheckSquare, Send } from "lucide-react";
+import { LayoutDashboard, ClipboardList, Package, Lightbulb, CheckSquare, Send } from "lucide-react";
 import { RequirementsListPanel } from "../RequirementsListPanel";
 import { SuggestionPanel } from "./SuggestionPanel";
 import { DeliveryChecklist } from "./DeliveryChecklist";
 import { CatalogBrowser } from "./CatalogBrowser";
 import { QuoteRequestPanel } from "./QuoteRequestPanel";
+import { OrderOverviewDashboard } from "./OrderOverviewDashboard";
 
 interface Props {
   competitionId: string;
@@ -17,6 +18,7 @@ export function OrderCenterHub({ competitionId, isOrganizer }: Props) {
   const isAr = language === "ar";
 
   const tabs = [
+    { id: "overview", icon: <LayoutDashboard className="h-3.5 w-3.5" />, label: isAr ? "نظرة عامة" : "Overview" },
     { id: "lists", icon: <ClipboardList className="h-3.5 w-3.5" />, label: isAr ? "قوائم المتطلبات" : "Requirement Lists" },
     { id: "catalog", icon: <Package className="h-3.5 w-3.5" />, label: isAr ? "كتالوج العناصر" : "Item Catalog" },
     { id: "checklist", icon: <CheckSquare className="h-3.5 w-3.5" />, label: isAr ? "قائمة التحقق" : "Delivery Checklist" },
@@ -38,7 +40,7 @@ export function OrderCenterHub({ competitionId, isOrganizer }: Props) {
         </div>
       </div>
 
-      <Tabs defaultValue="lists" className="w-full">
+      <Tabs defaultValue="overview" className="w-full">
         <TabsList className="w-full justify-start overflow-x-auto">
           {tabs.map((tab) => (
             <TabsTrigger key={tab.id} value={tab.id} className="gap-1.5 text-xs">
@@ -46,6 +48,10 @@ export function OrderCenterHub({ competitionId, isOrganizer }: Props) {
             </TabsTrigger>
           ))}
         </TabsList>
+
+        <TabsContent value="overview" className="mt-4">
+          <OrderOverviewDashboard competitionId={competitionId} isOrganizer={isOrganizer} />
+        </TabsContent>
 
         <TabsContent value="lists" className="mt-4">
           <RequirementsListPanel competitionId={competitionId} isOrganizer={isOrganizer} />
