@@ -1101,7 +1101,7 @@ function FulfillmentTracker({
   setCompetitionFilter: (v: string) => void;
   onUpdateFulfillment: (id: string, updates: Record<string, any>) => void;
   isPending: boolean;
-}) {
+}): JSX.Element {
   const [statusFilter, setStatusFilter] = useState("all");
 
   const filtered = requests.filter(r => {
