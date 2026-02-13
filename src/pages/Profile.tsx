@@ -14,6 +14,7 @@ import { ProfileHeader } from "@/components/profile/ProfileHeader";
 import { ProfileEditForm } from "@/components/profile/ProfileEditForm";
 import { ProfilePrivacySettings } from "@/components/profile/ProfilePrivacySettings";
 import { ProfileMembershipTab } from "@/components/profile/ProfileMembershipTab";
+import { ProfessionalMembershipDashboard } from "@/components/profile/ProfessionalMembershipDashboard";
 import { ProfileStatsBar } from "@/components/profile/ProfileStatsBar";
 import { CompetitionHistory } from "@/components/profile/CompetitionHistory";
 import { UserBadgesDisplay } from "@/components/badges/UserBadgesDisplay";
@@ -200,7 +201,14 @@ export default function Profile() {
           {/* Membership Tab */}
           <TabsContent value="membership" className="mt-6">
             {profile && user && (
-              <ProfileMembershipTab profile={profile} userId={user.id} onMembershipChange={fetchProfile} />
+              <>
+                {(profile.membership_tier === "professional" || profile.membership_tier === "enterprise") && (
+                  <ProfessionalMembershipDashboard profile={profile} userId={user.id} />
+                )}
+                <div className={profile.membership_tier === "professional" || profile.membership_tier === "enterprise" ? "mt-6" : ""}>
+                  <ProfileMembershipTab profile={profile} userId={user.id} onMembershipChange={fetchProfile} />
+                </div>
+              </>
             )}
           </TabsContent>
 
