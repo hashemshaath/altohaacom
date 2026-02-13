@@ -547,7 +547,7 @@ export default function CompetitionDetail() {
                   )}
 
                   {/* Judging Panel Preview */}
-                  <JudgesList competitionId={competition.id} />
+                  <JudgesList competitionId={competition.id} isOrganizer={!!isOrganizer} />
 
                   {/* Timeline */}
                   <CompetitionTimeline
@@ -686,7 +686,7 @@ export default function CompetitionDetail() {
                 </>
               )}
 
-              {activeSection === "judges" && <JudgesList competitionId={competition.id} />}
+              {activeSection === "judges" && <JudgesList competitionId={competition.id} isOrganizer={!!isOrganizer} />}
               {activeSection === "contestants" && <ParticipantsList competitionId={competition.id} isOrganizer={!!isOrganizer} />}
               {activeSection === "categories" && <CategoryManagementPanel competitionId={competition.id} isOrganizer={isOrganizer} competitionStatus={competition.status} />}
               {activeSection === "criteria" && <CriteriaManagementPanel competitionId={competition.id} isOrganizer={isOrganizer} />}
