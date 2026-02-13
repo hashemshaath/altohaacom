@@ -7468,36 +7468,68 @@ export type Database = {
       }
       messages: {
         Row: {
+          attachment_names: string[] | null
+          attachment_urls: string[] | null
+          category: string
           content: string
           created_at: string
           id: string
+          is_archived: boolean
           is_read: boolean
+          is_starred: boolean
+          message_type: string
+          metadata: Json | null
           read_at: string | null
           receiver_id: string
+          reply_to_id: string | null
           sender_id: string
           updated_at: string
         }
         Insert: {
+          attachment_names?: string[] | null
+          attachment_urls?: string[] | null
+          category?: string
           content: string
           created_at?: string
           id?: string
+          is_archived?: boolean
           is_read?: boolean
+          is_starred?: boolean
+          message_type?: string
+          metadata?: Json | null
           read_at?: string | null
           receiver_id: string
+          reply_to_id?: string | null
           sender_id: string
           updated_at?: string
         }
         Update: {
+          attachment_names?: string[] | null
+          attachment_urls?: string[] | null
+          category?: string
           content?: string
           created_at?: string
           id?: string
+          is_archived?: boolean
           is_read?: boolean
+          is_starred?: boolean
+          message_type?: string
+          metadata?: Json | null
           read_at?: string | null
           receiver_id?: string
+          reply_to_id?: string | null
           sender_id?: string
           updated_at?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "messages_reply_to_id_fkey"
+            columns: ["reply_to_id"]
+            isOneToOne: false
+            referencedRelation: "messages"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       newsletter_subscribers: {
         Row: {
