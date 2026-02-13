@@ -13,12 +13,12 @@ import { Textarea } from "@/components/ui/textarea";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import {
   Search, Plus, Trash2, Edit, Package, Save, X, ChevronDown, ChevronRight,
   ShoppingCart, Apple, Beef, Leaf, GlassWater, Flame, Wrench, Shirt,
   ShieldCheck, Droplets, Plug, Wind, Cable, Truck, ClipboardList,
-  MapPin, Refrigerator, Sparkles, Store,
+  MapPin, Refrigerator, Sparkles, Store, ListPlus, Check,
 } from "lucide-react";
 import { ORDER_CATEGORIES, ITEM_UNITS } from "./OrderCenterCategories";
 
@@ -77,6 +77,7 @@ export function SupermarketCatalog() {
   const [editId, setEditId] = useState<string | null>(null);
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
+  const [showListPicker, setShowListPicker] = useState(false);
   const [form, setForm] = useState({
     name: "", name_ar: "", description: "", description_ar: "",
     category: "food_ingredients", subcategory: "", unit: "kg",
@@ -166,6 +167,44 @@ export function SupermarketCatalog() {
     },
   });
 
+  // Fetch all requirement lists for "Add to List" feature
+  const { data: allLists = [] } = useQuery({
+    queryKey: ["all-requirement-lists"],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("requirement_lists")
+        .select("id, title, title_ar, competition_id, category")
+        .order("created_at", { ascending: false })
+        .limit(100);
+      if (error) throw error;
+      return data;
+    },
+    enabled: showListPicker,
+  });
+
+  const addToListMutation = useMutation({
+    mutationFn: async (listId: string) => {
+      const selectedItems = items.filter(i => selectedIds.has(i.id));
+      const inserts = selectedItems.map(item => ({
+        list_id: listId,
+        item_id: item.id,
+        quantity: item.default_quantity || 1,
+        unit: item.unit || "piece",
+        estimated_cost: item.estimated_cost,
+        added_by: user!.id,
+      }));
+      const { error } = await supabase.from("requirement_list_items").insert(inserts);
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["requirement-list-items"] });
+      setSelectedIds(new Set());
+      setShowListPicker(false);
+      toast({ title: isAr ? "تمت إضافة العناصر للقائمة ✓" : "Items added to list ✓" });
+    },
+    onError: (e: Error) => toast({ variant: "destructive", title: "Error", description: e.message }),
+  });
+
   const resetForm = () => setForm({
     name: "", name_ar: "", description: "", description_ar: "",
     category: "food_ingredients", subcategory: "", unit: "kg",
@@ -228,12 +267,17 @@ export function SupermarketCatalog() {
             <Plus className="h-3.5 w-3.5" /> {isAr ? "إضافة صنف" : "Add Item"}
           </Button>
           {selectedIds.size > 0 && (
-            <Button size="sm" variant="destructive" className="gap-1 h-8" onClick={() => {
-              if (confirm(isAr ? `حذف ${selectedIds.size} عنصر؟` : `Delete ${selectedIds.size} items?`))
-                deleteMutation.mutate([...selectedIds]);
-            }}>
-              <Trash2 className="h-3.5 w-3.5" /> {selectedIds.size}
-            </Button>
+            <>
+              <Button size="sm" variant="outline" className="gap-1 h-8" onClick={() => setShowListPicker(true)}>
+                <ListPlus className="h-3.5 w-3.5" /> {isAr ? "أضف للقائمة" : "Add to List"} ({selectedIds.size})
+              </Button>
+              <Button size="sm" variant="destructive" className="gap-1 h-8" onClick={() => {
+                if (confirm(isAr ? `حذف ${selectedIds.size} عنصر؟` : `Delete ${selectedIds.size} items?`))
+                  deleteMutation.mutate([...selectedIds]);
+              }}>
+                <Trash2 className="h-3.5 w-3.5" /> {selectedIds.size}
+              </Button>
+            </>
           )}
         </div>
       </div>
@@ -460,6 +504,42 @@ export function SupermarketCatalog() {
           )}
         </div>
       </div>
+      {/* Add to List Dialog */}
+      <Dialog open={showListPicker} onOpenChange={setShowListPicker}>
+        <DialogContent className="max-w-md">
+          <DialogHeader>
+            <DialogTitle>{isAr ? "إضافة للقائمة" : "Add to List"}</DialogTitle>
+          </DialogHeader>
+          <p className="text-sm text-muted-foreground">
+            {isAr ? `${selectedIds.size} عنصر محدد` : `${selectedIds.size} items selected`}
+          </p>
+          {allLists.length === 0 ? (
+            <p className="text-sm text-muted-foreground py-4 text-center">
+              {isAr ? "لا توجد قوائم متاحة. أنشئ قائمة أولاً." : "No lists available. Create a list first."}
+            </p>
+          ) : (
+            <ScrollArea className="max-h-[300px]">
+              <div className="space-y-1">
+                {allLists.map(list => (
+                  <button
+                    key={list.id}
+                    onClick={() => addToListMutation.mutate(list.id)}
+                    disabled={addToListMutation.isPending}
+                    className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-start transition-all hover:bg-muted/50 border border-transparent hover:border-border"
+                  >
+                    <ClipboardList className="h-4 w-4 text-primary shrink-0" />
+                    <div className="flex-1 min-w-0">
+                      <p className="text-sm font-medium truncate">{isAr && list.title_ar ? list.title_ar : list.title}</p>
+                      <p className="text-[10px] text-muted-foreground capitalize">{list.category?.replace(/_/g, " ")}</p>
+                    </div>
+                    <Plus className="h-4 w-4 text-muted-foreground shrink-0" />
+                  </button>
+                ))}
+              </div>
+            </ScrollArea>
+          )}
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
