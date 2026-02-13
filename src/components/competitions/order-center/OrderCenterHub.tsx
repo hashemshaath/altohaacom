@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ClipboardList, Package, Lightbulb, CheckSquare, Send } from "lucide-react";
@@ -6,6 +5,7 @@ import { RequirementsListPanel } from "../RequirementsListPanel";
 import { SuggestionPanel } from "./SuggestionPanel";
 import { DeliveryChecklist } from "./DeliveryChecklist";
 import { CatalogBrowser } from "./CatalogBrowser";
+import { QuoteRequestPanel } from "./QuoteRequestPanel";
 
 interface Props {
   competitionId: string;
@@ -20,12 +20,12 @@ export function OrderCenterHub({ competitionId, isOrganizer }: Props) {
     { id: "lists", icon: <ClipboardList className="h-3.5 w-3.5" />, label: isAr ? "قوائم المتطلبات" : "Requirement Lists" },
     { id: "catalog", icon: <Package className="h-3.5 w-3.5" />, label: isAr ? "كتالوج العناصر" : "Item Catalog" },
     { id: "checklist", icon: <CheckSquare className="h-3.5 w-3.5" />, label: isAr ? "قائمة التحقق" : "Delivery Checklist" },
+    { id: "quotes", icon: <Send className="h-3.5 w-3.5" />, label: isAr ? "طلبات الأسعار" : "Quote Requests" },
     { id: "suggestions", icon: <Lightbulb className="h-3.5 w-3.5" />, label: isAr ? "الاقتراحات" : "Suggestions" },
   ];
 
   return (
     <div className="space-y-4">
-      {/* Header */}
       <div className="flex items-center gap-3">
         <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-primary/10 to-chart-4/10">
           <Package className="h-5 w-5 text-primary" />
@@ -57,6 +57,10 @@ export function OrderCenterHub({ competitionId, isOrganizer }: Props) {
 
         <TabsContent value="checklist" className="mt-4">
           <DeliveryChecklist competitionId={competitionId} isOrganizer={isOrganizer} />
+        </TabsContent>
+
+        <TabsContent value="quotes" className="mt-4">
+          <QuoteRequestPanel competitionId={competitionId} isOrganizer={isOrganizer} />
         </TabsContent>
 
         <TabsContent value="suggestions" className="mt-4">
