@@ -18,6 +18,7 @@ import {
   Package, Trophy, LayoutDashboard, BookTemplate, ClipboardList,
   Search, Plus, ChevronRight, Users, Shield, Eye, CheckCircle,
   XCircle, Download, Trash2, Copy, ArrowRight, FileInput, Clock, AlertTriangle,
+  Truck, PackageCheck, MapPin, CalendarClock,
 } from "lucide-react";
 import { ORDER_CATEGORIES } from "@/components/competitions/order-center/OrderCenterCategories";
 import { DISH_TEMPLATES, type DishTemplate } from "@/data/dishTemplates";
@@ -154,6 +155,18 @@ export default function OrderCenterAdmin() {
     },
   });
 
+  // Update fulfillment mutation
+  const updateFulfillment = useMutation({
+    mutationFn: async ({ id, updates }: { id: string; updates: Record<string, any> }) => {
+      const { error } = await supabase.from("order_item_requests").update(updates).eq("id", id);
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["order-center-all-requests"] });
+      toast({ title: isAr ? "تم تحديث حالة التسليم" : "Delivery status updated" });
+    },
+  });
+
 
   const applyDishTemplate = useMutation({
     mutationFn: async ({ template, competitionId }: { template: DishTemplate; competitionId: string }) => {
@@ -232,6 +245,12 @@ export default function OrderCenterAdmin() {
             <FileInput className="h-3.5 w-3.5" /> {isAr ? "طلبات العناصر" : "Item Requests"}
             {allRequests.filter((r: any) => r.status === "pending").length > 0 && (
               <Badge variant="destructive" className="ms-1 h-4 text-[9px] px-1">{allRequests.filter((r: any) => r.status === "pending").length}</Badge>
+            )}
+          </TabsTrigger>
+          <TabsTrigger value="fulfillment" className="gap-1.5 text-xs">
+            <Truck className="h-3.5 w-3.5" /> {isAr ? "تتبع التسليم" : "Fulfillment"}
+            {allRequests.filter((r: any) => r.status === "approved" && r.delivery_status !== "delivered").length > 0 && (
+              <Badge variant="secondary" className="ms-1 h-4 text-[9px] px-1">{allRequests.filter((r: any) => r.status === "approved" && r.delivery_status !== "delivered").length}</Badge>
             )}
           </TabsTrigger>
           <TabsTrigger value="templates" className="gap-1.5 text-xs">
@@ -531,6 +550,19 @@ export default function OrderCenterAdmin() {
           )}
         </TabsContent>
 
+        {/* ── Fulfillment Tracking ── */}
+        <TabsContent value="fulfillment" className="mt-4 space-y-4">
+          <FulfillmentTracker
+            requests={allRequests.filter((r: any) => r.status === "approved" || r.status === "fulfilled")}
+            competitions={competitions}
+            isAr={isAr}
+            competitionFilter={competitionFilter}
+            setCompetitionFilter={setCompetitionFilter}
+            onUpdateFulfillment={(id, updates) => updateFulfillment.mutate({ id, updates })}
+            isPending={updateFulfillment.isPending}
+          />
+        </TabsContent>
+
         {/* ── Dish Templates ── */}
         <TabsContent value="templates" className="mt-4 space-y-6">
           {selectedTemplate ? (
@@ -770,6 +802,182 @@ function TemplateDetail({
           </Table>
         </CardContent>
       </Card>
+    </div>
+  );
+}
+
+// ── Fulfillment Tracker Component ──
+const DELIVERY_STATUSES = [
+  { value: "not_started", labelEn: "Not Started", labelAr: "لم يبدأ", color: "bg-muted text-muted-foreground" },
+  { value: "sourcing", labelEn: "Sourcing", labelAr: "جاري التوريد", color: "bg-chart-3/15 text-chart-3" },
+  { value: "ordered", labelEn: "Ordered", labelAr: "تم الطلب", color: "bg-chart-4/15 text-chart-4" },
+  { value: "in_transit", labelEn: "In Transit", labelAr: "في الطريق", color: "bg-primary/15 text-primary" },
+  { value: "delivered", labelEn: "Delivered", labelAr: "تم التسليم", color: "bg-chart-5/15 text-chart-5" },
+];
+
+function FulfillmentTracker({
+  requests, competitions, isAr, competitionFilter, setCompetitionFilter, onUpdateFulfillment, isPending,
+}: {
+  requests: any[];
+  competitions: any[];
+  isAr: boolean;
+  competitionFilter: string;
+  setCompetitionFilter: (v: string) => void;
+  onUpdateFulfillment: (id: string, updates: Record<string, any>) => void;
+  isPending: boolean;
+}) {
+  const [statusFilter, setStatusFilter] = useState("all");
+
+  const filtered = requests.filter(r => {
+    if (competitionFilter !== "all" && r.competition_id !== competitionFilter) return false;
+    if (statusFilter !== "all" && r.delivery_status !== statusFilter) return false;
+    return true;
+  });
+
+  const delivered = requests.filter(r => r.delivery_status === "delivered").length;
+  const inTransit = requests.filter(r => r.delivery_status === "in_transit").length;
+  const sourcing = requests.filter(r => r.delivery_status === "sourcing" || r.delivery_status === "ordered").length;
+  const notStarted = requests.filter(r => !r.delivery_status || r.delivery_status === "not_started").length;
+  const pct = requests.length > 0 ? Math.round((delivered / requests.length) * 100) : 0;
+
+  return (
+    <div className="space-y-4">
+      {/* Progress summary */}
+      <div className="grid grid-cols-2 gap-3 sm:grid-cols-5">
+        <Card><CardContent className="p-3 text-center">
+          <p className="text-xl font-bold text-chart-5">{delivered}</p>
+          <p className="text-[10px] text-muted-foreground">{isAr ? "تم التسليم" : "Delivered"}</p>
+        </CardContent></Card>
+        <Card><CardContent className="p-3 text-center">
+          <p className="text-xl font-bold text-primary">{inTransit}</p>
+          <p className="text-[10px] text-muted-foreground">{isAr ? "في الطريق" : "In Transit"}</p>
+        </CardContent></Card>
+        <Card><CardContent className="p-3 text-center">
+          <p className="text-xl font-bold text-chart-4">{sourcing}</p>
+          <p className="text-[10px] text-muted-foreground">{isAr ? "جاري التوريد" : "Sourcing/Ordered"}</p>
+        </CardContent></Card>
+        <Card><CardContent className="p-3 text-center">
+          <p className="text-xl font-bold text-muted-foreground">{notStarted}</p>
+          <p className="text-[10px] text-muted-foreground">{isAr ? "لم يبدأ" : "Not Started"}</p>
+        </CardContent></Card>
+        <Card><CardContent className="p-3 text-center">
+          <p className="text-xl font-bold">{pct}%</p>
+          <p className="text-[10px] text-muted-foreground">{isAr ? "نسبة الإنجاز" : "Completion"}</p>
+        </CardContent></Card>
+      </div>
+
+      {/* Filters */}
+      <div className="flex flex-wrap gap-3">
+        <Select value={competitionFilter} onValueChange={setCompetitionFilter}>
+          <SelectTrigger className="w-[200px] h-9 text-xs"><SelectValue placeholder={isAr ? "كل المسابقات" : "All Competitions"} /></SelectTrigger>
+          <SelectContent>
+            <SelectItem value="all">{isAr ? "الكل" : "All"}</SelectItem>
+            {competitions.map((c: any) => (
+              <SelectItem key={c.id} value={c.id} className="text-xs">{isAr && c.title_ar ? c.title_ar : c.title}</SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+        <Select value={statusFilter} onValueChange={setStatusFilter}>
+          <SelectTrigger className="w-[180px] h-9 text-xs"><SelectValue /></SelectTrigger>
+          <SelectContent>
+            <SelectItem value="all">{isAr ? "كل الحالات" : "All Statuses"}</SelectItem>
+            {DELIVERY_STATUSES.map(s => (
+              <SelectItem key={s.value} value={s.value} className="text-xs">{isAr ? s.labelAr : s.labelEn}</SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+      </div>
+
+      {filtered.length === 0 ? (
+        <Card><CardContent className="py-12 text-center">
+          <Truck className="mx-auto mb-3 h-12 w-12 text-muted-foreground/30" />
+          <p className="text-muted-foreground">{isAr ? "لا توجد طلبات معتمدة للتتبع" : "No approved requests to track"}</p>
+        </CardContent></Card>
+      ) : (
+        <ScrollArea className="max-h-[600px]">
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead className="text-xs">{isAr ? "العنصر" : "Item"}</TableHead>
+                <TableHead className="text-xs">{isAr ? "المسابقة" : "Competition"}</TableHead>
+                <TableHead className="text-xs">{isAr ? "الكمية" : "Qty"}</TableHead>
+                <TableHead className="text-xs">{isAr ? "المورد" : "Vendor"}</TableHead>
+                <TableHead className="text-xs">{isAr ? "الموعد النهائي" : "Deadline"}</TableHead>
+                <TableHead className="text-xs">{isAr ? "حالة التسليم" : "Delivery Status"}</TableHead>
+                <TableHead className="text-xs">{isAr ? "الحالة" : "Status"}</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {filtered.map((req: any) => {
+                const dStatus = DELIVERY_STATUSES.find(s => s.value === (req.delivery_status || "not_started")) || DELIVERY_STATUSES[0];
+                return (
+                  <TableRow key={req.id}>
+                    <TableCell>
+                      <p className="text-sm font-medium">{isAr && req.item_name_ar ? req.item_name_ar : req.item_name}</p>
+                      {req.tracking_number && <p className="text-[10px] text-muted-foreground">#{req.tracking_number}</p>}
+                    </TableCell>
+                    <TableCell className="text-xs text-muted-foreground">
+                      {req.competitions ? (isAr && req.competitions.title_ar ? req.competitions.title_ar : req.competitions.title) : "—"}
+                    </TableCell>
+                    <TableCell className="text-xs">{req.quantity} {req.unit}</TableCell>
+                    <TableCell>
+                      <Input
+                        placeholder={isAr ? "اسم المورد..." : "Vendor..."}
+                        defaultValue={req.assigned_vendor || ""}
+                        className="h-7 text-xs w-28"
+                        onBlur={e => {
+                          if (e.target.value !== (req.assigned_vendor || "")) {
+                            onUpdateFulfillment(req.id, { assigned_vendor: e.target.value || null });
+                          }
+                        }}
+                      />
+                    </TableCell>
+                    <TableCell>
+                      <Input
+                        type="date"
+                        defaultValue={req.delivery_deadline || ""}
+                        className="h-7 text-xs w-32"
+                        onBlur={e => {
+                          if (e.target.value !== (req.delivery_deadline || "")) {
+                            onUpdateFulfillment(req.id, { delivery_deadline: e.target.value || null });
+                          }
+                        }}
+                      />
+                    </TableCell>
+                    <TableCell>
+                      <Select
+                        value={req.delivery_status || "not_started"}
+                        onValueChange={v => {
+                          const updates: Record<string, any> = { delivery_status: v };
+                          if (v === "delivered") {
+                            updates.delivered_at = new Date().toISOString();
+                            updates.status = "fulfilled";
+                          }
+                          onUpdateFulfillment(req.id, updates);
+                        }}
+                      >
+                        <SelectTrigger className="h-7 text-[10px] w-28">
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {DELIVERY_STATUSES.map(s => (
+                            <SelectItem key={s.value} value={s.value} className="text-xs">{isAr ? s.labelAr : s.labelEn}</SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </TableCell>
+                    <TableCell>
+                      <Badge className={`${dStatus.color} text-[9px]`} variant="outline">
+                        {isAr ? dStatus.labelAr : dStatus.labelEn}
+                      </Badge>
+                    </TableCell>
+                  </TableRow>
+                );
+              })}
+            </TableBody>
+          </Table>
+        </ScrollArea>
+      )}
     </div>
   );
 }
