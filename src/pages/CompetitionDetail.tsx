@@ -19,7 +19,7 @@ import {
   Settings, Pencil, Award, BookOpen, ClipboardList, Clock, Share2,
   ImageIcon, Twitter, Facebook, Linkedin, Link2, ChevronDown,
   Sparkles, Target, BarChart3, UsersRound, Eye, Flame, Shield, Building2,
-  Medal, Info, DoorOpen, Scale, FileSpreadsheet,
+  Medal, Info, DoorOpen, Scale, FileSpreadsheet, Radio,
 } from "lucide-react";
 import { countryFlag } from "@/lib/countryFlag";
 import {
@@ -52,6 +52,7 @@ import { CompetitionActivityFeed } from "@/components/competitions/CompetitionAc
 import { deriveCompetitionStatus } from "@/lib/competitionStatus";
 import { QRCodeDisplay } from "@/components/qr/QRCodeDisplay";
 import { useEntityQRCode } from "@/hooks/useQRCode";
+import { LiveScoringDashboard } from "@/components/competitions/LiveScoringDashboard";
 import type { Database } from "@/integrations/supabase/types";
 
 type CompetitionStatus = Database["public"]["Enums"]["competition_status"];
@@ -241,6 +242,7 @@ export default function CompetitionDetail() {
     { id: "contestants", icon: <Users className="h-3.5 w-3.5" />, label: isAr ? "المتسابقين" : "Contestants" },
     { id: "categories", icon: <Target className="h-3.5 w-3.5" />, label: isAr ? "الفئات" : "Categories" },
     { id: "criteria", icon: <BarChart3 className="h-3.5 w-3.5" />, label: isAr ? "المعايير" : "Criteria" },
+    { id: "live-scoring", icon: <Radio className="h-3.5 w-3.5" />, label: isAr ? "النتائج المباشرة" : "Live Scores" },
     { id: "winners", icon: <Medal className="h-3.5 w-3.5" />, label: isAr ? "الفائزين" : "Winners" },
     { id: "team", icon: <UsersRound className="h-3.5 w-3.5" />, label: isAr ? "الفريق" : "Team" },
     ...(canSeeKnowledge ? [{ id: "knowledge", icon: <BookOpen className="h-3.5 w-3.5" />, label: isAr ? "المعرفة" : "Knowledge" }] : []),
@@ -688,6 +690,7 @@ export default function CompetitionDetail() {
               {activeSection === "contestants" && <ParticipantsList competitionId={competition.id} isOrganizer={!!isOrganizer} />}
               {activeSection === "categories" && <CategoryManagementPanel competitionId={competition.id} isOrganizer={isOrganizer} competitionStatus={competition.status} />}
               {activeSection === "criteria" && <CriteriaManagementPanel competitionId={competition.id} isOrganizer={isOrganizer} />}
+              {activeSection === "live-scoring" && <LiveScoringDashboard competitionId={competition.id} isOrganizer={isOrganizer} />}
               {activeSection === "winners" && (
                 hasWinners ? (
                   <CompetitionLeaderboard competitionId={competition.id} />
