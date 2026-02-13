@@ -14,36 +14,39 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import {
-  Search, Plus, Trash2, Edit, Package, Save, X, ChevronDown, ChevronRight,
-  ShoppingCart, Apple, Beef, Leaf, GlassWater, Flame, Wrench, Shirt,
+  Search, Plus, Trash2, Edit, Package, Save, X, Check,
+  ShoppingCart, Beef, Leaf, GlassWater, Flame, Wrench, Shirt,
   ShieldCheck, Droplets, Plug, Wind, Cable, Truck, ClipboardList,
-  MapPin, Refrigerator, Sparkles, Store, ListPlus, Check,
+  MapPin, Refrigerator, Sparkles, Store, ListPlus, Filter,
+  BookTemplate, ChefHat, CookingPot,
 } from "lucide-react";
 import { ORDER_CATEGORIES, ITEM_UNITS } from "./OrderCenterCategories";
+import { DISH_TEMPLATES } from "@/data/dishTemplates";
 
 /* ── Supermarket aisle definitions ── */
 const SUPERMARKET_AISLES = [
-  { key: "all", labelEn: "All Aisles", labelAr: "جميع الأقسام", icon: Store, color: "text-primary" },
-  { key: "food_ingredients", labelEn: "Grocery & Pantry", labelAr: "البقالة والمؤن", icon: ShoppingCart, color: "text-orange-500" },
-  { key: "herbs_spices", labelEn: "Herbs & Spices", labelAr: "الأعشاب والتوابل", icon: Leaf, color: "text-green-600" },
-  { key: "meat_seafood", labelEn: "Meat & Seafood", labelAr: "اللحوم والمأكولات البحرية", icon: Beef, color: "text-red-500" },
-  { key: "decoration", labelEn: "Decoration & Serving", labelAr: "الديكور والتقديم", icon: Sparkles, color: "text-purple-500" },
-  { key: "light_equipment", labelEn: "Tools & Utensils", labelAr: "الأدوات والمعدات", icon: Wrench, color: "text-slate-600" },
-  { key: "equipment", labelEn: "Heavy Equipment", labelAr: "المعدات الثقيلة", icon: Package, color: "text-blue-600" },
-  { key: "cooking_stations", labelEn: "Cooking Stations", labelAr: "محطات الطهي", icon: Flame, color: "text-amber-600" },
-  { key: "beverage", labelEn: "Beverages", labelAr: "المشروبات", icon: GlassWater, color: "text-cyan-500" },
-  { key: "uniforms", labelEn: "Uniforms", labelAr: "الزي الرسمي", icon: Shirt, color: "text-indigo-500" },
-  { key: "cleaning", labelEn: "Cleaning", labelAr: "التنظيف", icon: Droplets, color: "text-sky-500" },
-  { key: "safety_hygiene", labelEn: "Safety & Hygiene", labelAr: "السلامة والنظافة", icon: ShieldCheck, color: "text-emerald-600" },
-  { key: "refrigeration", labelEn: "Refrigeration", labelAr: "التبريد", icon: Refrigerator, color: "text-blue-400" },
-  { key: "venue_setup", labelEn: "Venue Setup", labelAr: "الموقع", icon: MapPin, color: "text-pink-500" },
-  { key: "grilling", labelEn: "Grilling", labelAr: "الشوي", icon: Flame, color: "text-orange-600" },
-  { key: "utilities", labelEn: "Utilities", labelAr: "المرافق", icon: Plug, color: "text-yellow-600" },
-  { key: "ventilation", labelEn: "Ventilation", labelAr: "التهوية", icon: Wind, color: "text-teal-500" },
-  { key: "electrical", labelEn: "Electrical", labelAr: "الكهرباء", icon: Cable, color: "text-zinc-500" },
-  { key: "logistics", labelEn: "Logistics", labelAr: "اللوجستيات", icon: Truck, color: "text-stone-600" },
-  { key: "other", labelEn: "Other", labelAr: "أخرى", icon: ClipboardList, color: "text-muted-foreground" },
+  { key: "all", labelEn: "All", labelAr: "الكل", icon: Store },
+  { key: "food_ingredients", labelEn: "Grocery", labelAr: "البقالة", icon: ShoppingCart },
+  { key: "herbs_spices", labelEn: "Spices", labelAr: "التوابل", icon: Leaf },
+  { key: "meat_seafood", labelEn: "Meat", labelAr: "اللحوم", icon: Beef },
+  { key: "decoration", labelEn: "Décor", labelAr: "ديكور", icon: Sparkles },
+  { key: "light_equipment", labelEn: "Tools", labelAr: "أدوات", icon: Wrench },
+  { key: "equipment", labelEn: "Equipment", labelAr: "معدات", icon: Package },
+  { key: "cooking_stations", labelEn: "Stations", labelAr: "محطات", icon: Flame },
+  { key: "beverage", labelEn: "Drinks", labelAr: "مشروبات", icon: GlassWater },
+  { key: "uniforms", labelEn: "Uniforms", labelAr: "زي", icon: Shirt },
+  { key: "cleaning", labelEn: "Cleaning", labelAr: "تنظيف", icon: Droplets },
+  { key: "safety_hygiene", labelEn: "Safety", labelAr: "سلامة", icon: ShieldCheck },
+  { key: "refrigeration", labelEn: "Cooling", labelAr: "تبريد", icon: Refrigerator },
+  { key: "venue_setup", labelEn: "Venue", labelAr: "موقع", icon: MapPin },
+  { key: "grilling", labelEn: "Grill", labelAr: "شوي", icon: Flame },
+  { key: "utilities", labelEn: "Utilities", labelAr: "مرافق", icon: Plug },
+  { key: "ventilation", labelEn: "Vent", labelAr: "تهوية", icon: Wind },
+  { key: "electrical", labelEn: "Electric", labelAr: "كهرباء", icon: Cable },
+  { key: "logistics", labelEn: "Logistics", labelAr: "لوجستيات", icon: Truck },
+  { key: "other", labelEn: "Other", labelAr: "أخرى", icon: ClipboardList },
 ];
 
 interface CatalogItem {
@@ -76,15 +79,15 @@ export function SupermarketCatalog() {
   const [showAdd, setShowAdd] = useState(false);
   const [editId, setEditId] = useState<string | null>(null);
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
-  const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
   const [showListPicker, setShowListPicker] = useState(false);
+  const [showDishTemplates, setShowDishTemplates] = useState(false);
+  const [showMobileAisles, setShowMobileAisles] = useState(false);
   const [form, setForm] = useState({
     name: "", name_ar: "", description: "", description_ar: "",
     category: "food_ingredients", subcategory: "", unit: "kg",
     default_quantity: 1, estimated_cost: 0, brand: "",
   });
 
-  // Fetch all items
   const { data: items = [], isLoading } = useQuery({
     queryKey: ["supermarket-catalog"],
     queryFn: async () => {
@@ -100,7 +103,6 @@ export function SupermarketCatalog() {
     },
   });
 
-  // Filtered items
   const filtered = useMemo(() => {
     let result = items;
     if (activeAisle !== "all") result = result.filter(i => i.category === activeAisle);
@@ -117,14 +119,12 @@ export function SupermarketCatalog() {
     return result;
   }, [items, activeAisle, activeSubcategory, search]);
 
-  // Category counts
   const categoryCounts = useMemo(() => {
     const counts: Record<string, number> = {};
     items.forEach(i => { counts[i.category] = (counts[i.category] || 0) + 1; });
     return counts;
   }, [items]);
 
-  // Subcategory list for active aisle
   const subcategories = useMemo(() => {
     const aisleItems = activeAisle === "all" ? items : items.filter(i => i.category === activeAisle);
     const subs: Record<string, number> = {};
@@ -148,7 +148,6 @@ export function SupermarketCatalog() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["supermarket-catalog"] });
-      queryClient.invalidateQueries({ queryKey: ["catalog-browse"] });
       setShowAdd(false); setEditId(null); resetForm();
       toast({ title: isAr ? "تم الحفظ بنجاح" : "Saved successfully" });
     },
@@ -167,7 +166,6 @@ export function SupermarketCatalog() {
     },
   });
 
-  // Fetch all requirement lists for "Add to List" feature
   const { data: allLists = [] } = useQuery({
     queryKey: ["all-requirement-lists"],
     queryFn: async () => {
@@ -201,6 +199,35 @@ export function SupermarketCatalog() {
       setSelectedIds(new Set());
       setShowListPicker(false);
       toast({ title: isAr ? "تمت إضافة العناصر للقائمة ✓" : "Items added to list ✓" });
+    },
+    onError: (e: Error) => toast({ variant: "destructive", title: "Error", description: e.message }),
+  });
+
+  // Save selected items as a new template
+  const saveAsTemplateMutation = useMutation({
+    mutationFn: async (templateName: string) => {
+      const selectedItems = items.filter(i => selectedIds.has(i.id));
+      const templateItems = selectedItems.map(item => ({
+        custom_name: item.name,
+        custom_name_ar: item.name_ar || "",
+        quantity: item.default_quantity || 1,
+        unit: item.unit || "piece",
+        estimated_cost: item.estimated_cost,
+        category: item.category,
+      }));
+      const { error } = await supabase.from("requirement_templates" as any).insert({
+        name: templateName,
+        category: "general",
+        items: templateItems,
+        created_by: user!.id,
+        is_public: false,
+      });
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["requirement-templates"] });
+      setSelectedIds(new Set());
+      toast({ title: isAr ? "تم حفظ القالب ✓" : "Template saved ✓" });
     },
     onError: (e: Error) => toast({ variant: "destructive", title: "Error", description: e.message }),
   });
@@ -241,115 +268,222 @@ export function SupermarketCatalog() {
     setSelectedIds(next);
   };
 
+  const selectAll = () => {
+    if (selectedIds.size === filtered.length) {
+      setSelectedIds(new Set());
+    } else {
+      setSelectedIds(new Set(filtered.map(i => i.id)));
+    }
+  };
+
+  // Load dish template ingredients into selection
+  const loadDishTemplate = (templateId: string) => {
+    const template = DISH_TEMPLATES.find(t => t.id === templateId);
+    if (!template) return;
+    // Match template ingredients to catalog items by name
+    const matchedIds = new Set<string>();
+    template.ingredients.forEach(ing => {
+      const match = items.find(item =>
+        item.name.toLowerCase() === ing.name.toLowerCase() ||
+        (item.name_ar && item.name_ar === ing.nameAr)
+      );
+      if (match) matchedIds.add(match.id);
+    });
+    setSelectedIds(matchedIds);
+    setShowDishTemplates(false);
+    toast({
+      title: isAr ? `تم تحميل قالب ${template.nameAr}` : `Loaded ${template.name} template`,
+      description: isAr ? `${matchedIds.size} عنصر مطابق من ${template.ingredients.length}` : `${matchedIds.size} matched from ${template.ingredients.length} ingredients`,
+    });
+  };
+
+  /* ── Aisle sidebar content (shared between desktop sidebar and mobile sheet) ── */
+  const AisleList = () => (
+    <div className="space-y-0.5">
+      {SUPERMARKET_AISLES.map(aisle => {
+        const count = aisle.key === "all" ? items.length : (categoryCounts[aisle.key] || 0);
+        if (aisle.key !== "all" && count === 0) return null;
+        const AisleIcon = aisle.icon;
+        const isActive = activeAisle === aisle.key;
+        return (
+          <button
+            key={aisle.key}
+            onClick={() => { setActiveAisle(aisle.key); setActiveSubcategory(null); setShowMobileAisles(false); }}
+            className={`w-full flex items-center gap-2 px-3 py-2 rounded-lg text-start text-sm transition-all
+              ${isActive ? "bg-primary/10 text-primary font-medium" : "hover:bg-muted/50 text-foreground"}`}
+          >
+            <AisleIcon className="h-4 w-4 shrink-0" />
+            <span className="truncate flex-1">{isAr ? aisle.labelAr : aisle.labelEn}</span>
+            <Badge variant="secondary" className="text-[10px] h-5 min-w-[24px] justify-center">{count}</Badge>
+          </button>
+        );
+      })}
+    </div>
+  );
+
   return (
-    <div className="space-y-4">
+    <div className="space-y-3">
       {/* ── Header ── */}
-      <div className="flex items-center justify-between gap-3 flex-wrap">
-        <div className="flex items-center gap-2">
-          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary/10">
-            <Store className="h-5 w-5 text-primary" />
-          </div>
-          <div>
-            <h2 className="text-lg font-bold">{isAr ? "السوبرماركت" : "Supermarket"}</h2>
-            <p className="text-xs text-muted-foreground">
-              {items.length} {isAr ? "صنف" : "items"} · {subcategories.length} {isAr ? "تصنيف فرعي" : "subcategories"}
+      <div className="flex items-center justify-between gap-2 flex-wrap">
+        <div className="flex items-center gap-2 min-w-0">
+          <Store className="h-5 w-5 text-primary shrink-0" />
+          <div className="min-w-0">
+            <h2 className="text-base sm:text-lg font-bold truncate">{isAr ? "السوبرماركت" : "Supermarket"}</h2>
+            <p className="text-[10px] sm:text-xs text-muted-foreground">
+              {items.length} {isAr ? "صنف" : "items"}
             </p>
           </div>
         </div>
-        <div className="flex items-center gap-2">
-          <Button size="sm" variant={viewMode === "grid" ? "default" : "outline"} onClick={() => setViewMode("grid")} className="h-8 px-2.5 text-xs">
-            {isAr ? "بطاقات" : "Grid"}
+        <div className="flex items-center gap-1.5 flex-wrap">
+          {/* Dish Templates button */}
+          <Button size="sm" variant="outline" className="h-8 text-xs gap-1" onClick={() => setShowDishTemplates(true)}>
+            <ChefHat className="h-3.5 w-3.5" />
+            <span className="hidden sm:inline">{isAr ? "قوالب الأطباق" : "Dish Templates"}</span>
           </Button>
-          <Button size="sm" variant={viewMode === "list" ? "default" : "outline"} onClick={() => setViewMode("list")} className="h-8 px-2.5 text-xs">
-            {isAr ? "قائمة" : "List"}
+          <Button size="sm" onClick={() => { resetForm(); setEditId(null); setShowAdd(true); }} className="h-8 text-xs gap-1">
+            <Plus className="h-3.5 w-3.5" />
+            <span className="hidden sm:inline">{isAr ? "إضافة" : "Add"}</span>
           </Button>
-          <Button size="sm" onClick={() => { resetForm(); setEditId(null); setShowAdd(true); }} className="gap-1.5 h-8">
-            <Plus className="h-3.5 w-3.5" /> {isAr ? "إضافة صنف" : "Add Item"}
-          </Button>
-          {selectedIds.size > 0 && (
-            <>
-              <Button size="sm" variant="outline" className="gap-1 h-8" onClick={() => setShowListPicker(true)}>
-                <ListPlus className="h-3.5 w-3.5" /> {isAr ? "أضف للقائمة" : "Add to List"} ({selectedIds.size})
-              </Button>
-              <Button size="sm" variant="destructive" className="gap-1 h-8" onClick={() => {
-                if (confirm(isAr ? `حذف ${selectedIds.size} عنصر؟` : `Delete ${selectedIds.size} items?`))
-                  deleteMutation.mutate([...selectedIds]);
-              }}>
-                <Trash2 className="h-3.5 w-3.5" /> {selectedIds.size}
-              </Button>
-            </>
-          )}
         </div>
       </div>
 
-      {/* ── Search ── */}
-      <div className="relative">
-        <Search className="absolute start-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-        <Input
-          placeholder={isAr ? "ابحث في السوبرماركت... (اسم، فئة، وصف)" : "Search supermarket... (name, category, description)"}
-          value={search} onChange={e => { setSearch(e.target.value); }}
-          className="ps-9 h-10"
-        />
+      {/* ── Search + Mobile filter ── */}
+      <div className="flex gap-2">
+        <div className="relative flex-1">
+          <Search className="absolute start-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+          <Input
+            placeholder={isAr ? "ابحث في السوبرماركت..." : "Search supermarket..."}
+            value={search} onChange={e => setSearch(e.target.value)}
+            className="ps-9 h-9 text-sm"
+          />
+        </div>
+        {/* Mobile aisle filter button */}
+        <Sheet open={showMobileAisles} onOpenChange={setShowMobileAisles}>
+          <SheetTrigger asChild>
+            <Button variant="outline" size="icon" className="h-9 w-9 shrink-0 lg:hidden">
+              <Filter className="h-4 w-4" />
+            </Button>
+          </SheetTrigger>
+          <SheetContent side={isAr ? "right" : "left"} className="w-72 p-4">
+            <SheetHeader>
+              <SheetTitle>{isAr ? "أقسام السوبرماركت" : "Aisles"}</SheetTitle>
+            </SheetHeader>
+            <ScrollArea className="mt-4 h-[calc(100vh-120px)]">
+              <AisleList />
+            </ScrollArea>
+          </SheetContent>
+        </Sheet>
       </div>
 
-      <div className="flex gap-4 flex-col lg:flex-row">
-        {/* ── Sidebar: Aisles ── */}
-        <div className="w-full lg:w-56 shrink-0 space-y-1">
-          <p className="text-xs font-semibold text-muted-foreground mb-2 px-1">{isAr ? "أقسام السوبرماركت" : "SUPERMARKET AISLES"}</p>
-          <ScrollArea className="max-h-[600px]">
-            {SUPERMARKET_AISLES.map(aisle => {
-              const count = aisle.key === "all" ? items.length : (categoryCounts[aisle.key] || 0);
-              const AisleIcon = aisle.icon;
-              const isActive = activeAisle === aisle.key;
-              return (
-                <button
-                  key={aisle.key}
-                  onClick={() => { setActiveAisle(aisle.key); setActiveSubcategory(null); }}
-                  className={`w-full flex items-center gap-2 px-3 py-2 rounded-lg text-start text-sm transition-all mb-0.5
-                    ${isActive ? "bg-primary/10 text-primary font-medium" : "hover:bg-muted/50 text-foreground"}`}
-                >
-                  <AisleIcon className={`h-4 w-4 shrink-0 ${isActive ? "text-primary" : aisle.color}`} />
-                  <span className="truncate flex-1">{isAr ? aisle.labelAr : aisle.labelEn}</span>
-                  <Badge variant="secondary" className="text-[10px] h-5 min-w-[28px] justify-center">{count}</Badge>
-                </button>
-              );
-            })}
+      {/* ── Floating selection bar ── */}
+      {selectedIds.size > 0 && (
+        <div className="sticky top-0 z-20 flex items-center gap-2 flex-wrap rounded-xl border border-primary/30 bg-card p-2.5 shadow-lg">
+          <Badge variant="default" className="text-xs">
+            {selectedIds.size} {isAr ? "محدد" : "selected"}
+          </Badge>
+          <Button size="sm" variant="outline" className="h-7 text-xs gap-1" onClick={() => setShowListPicker(true)}>
+            <ListPlus className="h-3 w-3" /> {isAr ? "أضف لقائمة" : "Add to List"}
+          </Button>
+          <Button size="sm" variant="outline" className="h-7 text-xs gap-1" onClick={() => {
+            const name = prompt(isAr ? "اسم القالب:" : "Template name:");
+            if (name) saveAsTemplateMutation.mutate(name);
+          }}>
+            <BookTemplate className="h-3 w-3" /> {isAr ? "حفظ كقالب" : "Save as Template"}
+          </Button>
+          <Button size="sm" variant="ghost" className="h-7 text-xs gap-1 text-destructive" onClick={() => {
+            if (confirm(isAr ? `حذف ${selectedIds.size} عنصر؟` : `Delete ${selectedIds.size} items?`))
+              deleteMutation.mutate([...selectedIds]);
+          }}>
+            <Trash2 className="h-3 w-3" />
+          </Button>
+          <Button size="sm" variant="ghost" className="h-7 text-xs ms-auto" onClick={() => setSelectedIds(new Set())}>
+            <X className="h-3 w-3" />
+          </Button>
+        </div>
+      )}
+
+      <div className="flex gap-4">
+        {/* ── Desktop Sidebar ── */}
+        <div className="hidden lg:block w-48 shrink-0">
+          <p className="text-[10px] font-semibold text-muted-foreground mb-2 px-1 uppercase tracking-wider">
+            {isAr ? "الأقسام" : "AISLES"}
+          </p>
+          <ScrollArea className="max-h-[70vh]">
+            <AisleList />
           </ScrollArea>
         </div>
 
         {/* ── Main Content ── */}
         <div className="flex-1 min-w-0 space-y-3">
+          {/* Mobile aisle chips (horizontal scroll) */}
+          <div className="lg:hidden">
+            <ScrollArea className="w-full">
+              <div className="flex gap-1 pb-1">
+                {SUPERMARKET_AISLES.map(aisle => {
+                  const count = aisle.key === "all" ? items.length : (categoryCounts[aisle.key] || 0);
+                  if (aisle.key !== "all" && count === 0) return null;
+                  const AisleIcon = aisle.icon;
+                  const isActive = activeAisle === aisle.key;
+                  return (
+                    <button
+                      key={aisle.key}
+                      onClick={() => { setActiveAisle(aisle.key); setActiveSubcategory(null); }}
+                      className={`flex items-center gap-1 px-2.5 py-1.5 rounded-full text-[11px] font-medium whitespace-nowrap transition-all border shrink-0
+                        ${isActive ? "bg-primary text-primary-foreground border-primary" : "bg-background border-border hover:bg-muted"}`}
+                    >
+                      <AisleIcon className="h-3 w-3" />
+                      {isAr ? aisle.labelAr : aisle.labelEn}
+                      <span className="opacity-60">({count})</span>
+                    </button>
+                  );
+                })}
+              </div>
+            </ScrollArea>
+          </div>
+
           {/* Subcategory chips */}
           {subcategories.length > 1 && (
-            <div className="flex flex-wrap gap-1.5">
-              <button
-                onClick={() => setActiveSubcategory(null)}
-                className={`px-3 py-1 rounded-full text-xs font-medium transition-all border
-                  ${!activeSubcategory ? "bg-primary text-primary-foreground border-primary" : "bg-background border-border hover:bg-muted"}`}
-              >
-                {isAr ? "الكل" : "All"} ({activeAisle === "all" ? items.length : (categoryCounts[activeAisle] || 0)})
-              </button>
-              {subcategories.map(([sub, count]) => (
+            <ScrollArea className="w-full">
+              <div className="flex gap-1 pb-1">
                 <button
-                  key={sub}
-                  onClick={() => setActiveSubcategory(activeSubcategory === sub ? null : sub)}
-                  className={`px-3 py-1 rounded-full text-xs font-medium transition-all border capitalize
-                    ${activeSubcategory === sub ? "bg-primary text-primary-foreground border-primary" : "bg-background border-border hover:bg-muted"}`}
+                  onClick={() => setActiveSubcategory(null)}
+                  className={`px-2.5 py-1 rounded-full text-[11px] font-medium transition-all border shrink-0
+                    ${!activeSubcategory ? "bg-primary text-primary-foreground border-primary" : "bg-background border-border hover:bg-muted"}`}
                 >
-                  {sub.replace(/_/g, " ")} ({count})
+                  {isAr ? "الكل" : "All"}
                 </button>
-              ))}
+                {subcategories.map(([sub, count]) => (
+                  <button
+                    key={sub}
+                    onClick={() => setActiveSubcategory(activeSubcategory === sub ? null : sub)}
+                    className={`px-2.5 py-1 rounded-full text-[11px] font-medium transition-all border capitalize shrink-0
+                      ${activeSubcategory === sub ? "bg-primary text-primary-foreground border-primary" : "bg-background border-border hover:bg-muted"}`}
+                  >
+                    {sub.replace(/_/g, " ")} ({count})
+                  </button>
+                ))}
+              </div>
+            </ScrollArea>
+          )}
+
+          {/* Select all */}
+          {filtered.length > 0 && (
+            <div className="flex items-center justify-between">
+              <button onClick={selectAll} className="text-xs text-primary hover:underline">
+                {selectedIds.size === filtered.length ? (isAr ? "إلغاء تحديد الكل" : "Deselect all") : (isAr ? "تحديد الكل" : "Select all")}
+              </button>
+              <span className="text-xs text-muted-foreground">{filtered.length} {isAr ? "صنف" : "items"}</span>
             </div>
           )}
 
           {/* Add/Edit form */}
           {showAdd && (
             <Card className="border-primary/20">
-              <CardHeader className="pb-2 px-4 pt-3">
+              <CardHeader className="pb-2 px-3 pt-3">
                 <CardTitle className="text-sm">{editId ? (isAr ? "تعديل صنف" : "Edit Item") : (isAr ? "إضافة صنف جديد" : "Add New Item")}</CardTitle>
               </CardHeader>
-              <CardContent className="p-4 space-y-3">
-                <div className="grid grid-cols-2 gap-3">
+              <CardContent className="p-3 space-y-3">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   <div>
                     <Label className="text-xs">{isAr ? "الاسم (إنجليزي)" : "Name (English)"} *</Label>
                     <Input value={form.name} onChange={e => setForm({ ...form, name: e.target.value })} className="h-8 text-sm" />
@@ -359,17 +493,7 @@ export function SupermarketCatalog() {
                     <Input value={form.name_ar} onChange={e => setForm({ ...form, name_ar: e.target.value })} className="h-8 text-sm" dir="rtl" />
                   </div>
                 </div>
-                <div className="grid grid-cols-2 gap-3">
-                  <div>
-                    <Label className="text-xs">{isAr ? "الوصف" : "Description"}</Label>
-                    <Textarea value={form.description} onChange={e => setForm({ ...form, description: e.target.value })} className="text-sm min-h-[50px]" />
-                  </div>
-                  <div>
-                    <Label className="text-xs">{isAr ? "الوصف (عربي)" : "Description (Arabic)"}</Label>
-                    <Textarea value={form.description_ar} onChange={e => setForm({ ...form, description_ar: e.target.value })} className="text-sm min-h-[50px]" dir="rtl" />
-                  </div>
-                </div>
-                <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
                   <div>
                     <Label className="text-xs">{isAr ? "القسم" : "Aisle"}</Label>
                     <Select value={form.category} onValueChange={v => setForm({ ...form, category: v })}>
@@ -380,8 +504,8 @@ export function SupermarketCatalog() {
                     </Select>
                   </div>
                   <div>
-                    <Label className="text-xs">{isAr ? "التصنيف الفرعي" : "Subcategory"}</Label>
-                    <Input value={form.subcategory} onChange={e => setForm({ ...form, subcategory: e.target.value })} className="h-8 text-sm" placeholder={isAr ? "خضروات، بهارات..." : "vegetables, spices..."} />
+                    <Label className="text-xs">{isAr ? "الفرعي" : "Sub"}</Label>
+                    <Input value={form.subcategory} onChange={e => setForm({ ...form, subcategory: e.target.value })} className="h-8 text-sm" />
                   </div>
                   <div>
                     <Label className="text-xs">{isAr ? "الوحدة" : "Unit"}</Label>
@@ -397,16 +521,6 @@ export function SupermarketCatalog() {
                     <Input type="number" value={form.default_quantity} onChange={e => setForm({ ...form, default_quantity: Number(e.target.value) })} className="h-8 text-sm" />
                   </div>
                 </div>
-                <div className="grid grid-cols-2 gap-3">
-                  <div>
-                    <Label className="text-xs">{isAr ? "التكلفة التقديرية" : "Est. Cost"}</Label>
-                    <Input type="number" value={form.estimated_cost} onChange={e => setForm({ ...form, estimated_cost: Number(e.target.value) })} className="h-8 text-sm" />
-                  </div>
-                  <div>
-                    <Label className="text-xs">{isAr ? "العلامة التجارية" : "Brand"}</Label>
-                    <Input value={form.brand} onChange={e => setForm({ ...form, brand: e.target.value })} className="h-8 text-sm" />
-                  </div>
-                </div>
                 <div className="flex gap-2">
                   <Button size="sm" onClick={handleSave} disabled={!form.name || saveMutation.isPending}>
                     <Save className="me-1.5 h-3.5 w-3.5" /> {isAr ? "حفظ" : "Save"}
@@ -419,7 +533,7 @@ export function SupermarketCatalog() {
             </Card>
           )}
 
-          {/* Items */}
+          {/* Items grid - responsive */}
           {isLoading ? (
             <div className="flex justify-center py-12"><div className="h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent" /></div>
           ) : filtered.length === 0 ? (
@@ -427,86 +541,49 @@ export function SupermarketCatalog() {
               <Package className="mx-auto mb-3 h-12 w-12 text-muted-foreground/30" />
               <p className="text-muted-foreground">{isAr ? "لا توجد أصناف" : "No items found"}</p>
             </CardContent></Card>
-          ) : viewMode === "grid" ? (
-            <div>
-              <p className="text-xs text-muted-foreground mb-2">{filtered.length} {isAr ? "صنف" : "items"}</p>
-              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-2">
+          ) : (
+            <ScrollArea className="max-h-[60vh]">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-2">
                 {filtered.map(item => {
                   const isSelected = selectedIds.has(item.id);
                   return (
-                    <Card
+                    <div
                       key={item.id}
-                      className={`group cursor-pointer transition-all hover:shadow-md ${isSelected ? "ring-2 ring-primary border-primary" : "border-border/60"}`}
                       onClick={() => toggleSelect(item.id)}
+                      className={`group flex items-center gap-2.5 p-2.5 rounded-lg border cursor-pointer transition-all
+                        ${isSelected ? "bg-primary/5 border-primary/30 ring-1 ring-primary/20" : "border-border/60 hover:bg-muted/50 hover:border-primary/20"}`}
                     >
-                      <CardContent className="p-3 space-y-1.5">
-                        <div className="flex items-start justify-between gap-1">
-                          <p className="text-sm font-medium leading-tight line-clamp-2">{isAr && item.name_ar ? item.name_ar : item.name}</p>
-                          <Button
-                            size="icon" variant="ghost" className="h-6 w-6 shrink-0 opacity-0 group-hover:opacity-100"
-                            onClick={e => { e.stopPropagation(); startEdit(item); }}
-                          >
-                            <Edit className="h-3 w-3" />
-                          </Button>
+                      <div className={`flex h-5 w-5 shrink-0 items-center justify-center rounded border transition-all
+                        ${isSelected ? "bg-primary border-primary" : "border-muted-foreground/30"}`}>
+                        {isSelected && <Check className="h-3 w-3 text-primary-foreground" />}
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <p className="text-sm font-medium truncate">{isAr && item.name_ar ? item.name_ar : item.name}</p>
+                        <div className="flex items-center gap-1.5 text-[10px] text-muted-foreground">
+                          <span className="capitalize truncate">{(item.subcategory || item.category).replace(/_/g, " ")}</span>
+                          <span>·</span>
+                          <span className="shrink-0">{item.default_quantity || 1} {item.unit || "pc"}</span>
+                          {item.estimated_cost && <><span>·</span><span className="shrink-0 text-primary font-medium">${Number(item.estimated_cost).toLocaleString()}</span></>}
                         </div>
-                        {item.description && (
-                          <p className="text-[10px] text-muted-foreground line-clamp-1">{isAr && item.description_ar ? item.description_ar : item.description}</p>
-                        )}
-                        <div className="flex items-center justify-between gap-1">
-                          <Badge variant="outline" className="text-[9px] h-4 px-1.5 capitalize">{item.subcategory?.replace(/_/g, " ") || item.category.replace(/_/g, " ")}</Badge>
-                          <span className="text-[10px] text-muted-foreground">{item.default_quantity} {item.unit}</span>
-                        </div>
-                        {item.estimated_cost ? (
-                          <p className="text-[10px] font-medium text-primary">${Number(item.estimated_cost).toLocaleString()}</p>
-                        ) : null}
-                      </CardContent>
-                    </Card>
+                      </div>
+                      <Button
+                        size="icon" variant="ghost" className="h-6 w-6 shrink-0 opacity-0 group-hover:opacity-100"
+                        onClick={e => { e.stopPropagation(); startEdit(item); }}
+                      >
+                        <Edit className="h-3 w-3" />
+                      </Button>
+                    </div>
                   );
                 })}
               </div>
-            </div>
-          ) : (
-            <div>
-              <p className="text-xs text-muted-foreground mb-2">{filtered.length} {isAr ? "صنف" : "items"}</p>
-              <ScrollArea className="max-h-[600px]">
-                <div className="space-y-1">
-                  {filtered.map(item => {
-                    const isSelected = selectedIds.has(item.id);
-                    return (
-                      <div
-                        key={item.id}
-                        className={`flex items-center gap-3 px-3 py-2 rounded-lg cursor-pointer transition-all
-                          ${isSelected ? "bg-primary/5 ring-1 ring-primary/20" : "hover:bg-muted/50"}`}
-                        onClick={() => toggleSelect(item.id)}
-                      >
-                        <Checkbox checked={isSelected} className="shrink-0" />
-                        <div className="flex-1 min-w-0">
-                          <p className="text-sm font-medium truncate">{isAr && item.name_ar ? item.name_ar : item.name}</p>
-                          {item.description && <p className="text-[10px] text-muted-foreground truncate">{isAr && item.description_ar ? item.description_ar : item.description}</p>}
-                        </div>
-                        <Badge variant="outline" className="text-[9px] shrink-0 capitalize">{item.subcategory?.replace(/_/g, " ") || "—"}</Badge>
-                        <span className="text-xs text-muted-foreground shrink-0">{item.default_quantity} {item.unit}</span>
-                        <Button size="icon" variant="ghost" className="h-7 w-7 shrink-0" onClick={e => { e.stopPropagation(); startEdit(item); }}>
-                          <Edit className="h-3 w-3" />
-                        </Button>
-                        <Button size="icon" variant="ghost" className="h-7 w-7 shrink-0 text-destructive" onClick={e => {
-                          e.stopPropagation();
-                          if (confirm(isAr ? "حذف؟" : "Delete?")) deleteMutation.mutate([item.id]);
-                        }}>
-                          <Trash2 className="h-3 w-3" />
-                        </Button>
-                      </div>
-                    );
-                  })}
-                </div>
-              </ScrollArea>
-            </div>
+            </ScrollArea>
           )}
         </div>
       </div>
-      {/* Add to List Dialog */}
+
+      {/* ── Add to List Dialog ── */}
       <Dialog open={showListPicker} onOpenChange={setShowListPicker}>
-        <DialogContent className="max-w-md">
+        <DialogContent className="max-w-sm">
           <DialogHeader>
             <DialogTitle>{isAr ? "إضافة للقائمة" : "Add to List"}</DialogTitle>
           </DialogHeader>
@@ -515,7 +592,7 @@ export function SupermarketCatalog() {
           </p>
           {allLists.length === 0 ? (
             <p className="text-sm text-muted-foreground py-4 text-center">
-              {isAr ? "لا توجد قوائم متاحة. أنشئ قائمة أولاً." : "No lists available. Create a list first."}
+              {isAr ? "لا توجد قوائم. أنشئ قائمة أولاً." : "No lists available. Create a list first."}
             </p>
           ) : (
             <ScrollArea className="max-h-[300px]">
@@ -538,6 +615,44 @@ export function SupermarketCatalog() {
               </div>
             </ScrollArea>
           )}
+        </DialogContent>
+      </Dialog>
+
+      {/* ── Dish Templates Dialog ── */}
+      <Dialog open={showDishTemplates} onOpenChange={setShowDishTemplates}>
+        <DialogContent className="max-w-md">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <ChefHat className="h-5 w-5 text-primary" />
+              {isAr ? "قوالب الأطباق" : "Dish Templates"}
+            </DialogTitle>
+          </DialogHeader>
+          <p className="text-xs text-muted-foreground">
+            {isAr ? "اختر طبقاً لتحميل مكوناته تلقائياً من السوبرماركت" : "Select a dish to auto-load its ingredients from the supermarket"}
+          </p>
+          <ScrollArea className="max-h-[400px]">
+            <div className="grid grid-cols-1 gap-2">
+              {DISH_TEMPLATES.map(dish => {
+                const DishIcon = dish.icon;
+                return (
+                  <button
+                    key={dish.id}
+                    onClick={() => loadDishTemplate(dish.id)}
+                    className="w-full flex items-center gap-3 p-3 rounded-lg text-start transition-all hover:bg-muted/50 border border-border hover:border-primary/30"
+                  >
+                    <div className={`flex h-10 w-10 items-center justify-center rounded-xl bg-${dish.color}/10 shrink-0`}>
+                      <DishIcon className={`h-5 w-5 text-${dish.color}`} />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <p className="text-sm font-semibold">{isAr ? dish.nameAr : dish.name}</p>
+                      <p className="text-[11px] text-muted-foreground">{isAr ? dish.descriptionAr : dish.description}</p>
+                      <p className="text-[10px] text-primary mt-0.5">{dish.ingredients.length} {isAr ? "مكون" : "ingredients"}</p>
+                    </div>
+                  </button>
+                );
+              })}
+            </div>
+          </ScrollArea>
         </DialogContent>
       </Dialog>
     </div>

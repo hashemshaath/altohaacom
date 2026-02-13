@@ -77,18 +77,18 @@ export function OrderCenterHub({ competitionId, isOrganizer }: Props) {
         </div>
       </div>
 
-      {/* Grouped Tab Navigation */}
+      {/* Grouped Tab Navigation - responsive */}
       <div className="rounded-xl border border-border/60 bg-card overflow-hidden">
         <ScrollArea className="w-full">
-          <div className="flex items-stretch divide-x divide-border/40 rtl:divide-x-reverse min-w-max">
+          <div className="flex flex-col sm:flex-row sm:items-stretch sm:divide-x sm:divide-border/40 sm:rtl:divide-x-reverse min-w-max">
             {TAB_GROUPS.map((group) => (
               <div key={group.labelEn} className="flex flex-col">
-                <div className="px-3 py-1.5 bg-muted/40 border-b border-border/40">
+                <div className="px-3 py-1 bg-muted/40 border-b border-border/40">
                   <span className="text-[9px] font-semibold uppercase tracking-wider text-muted-foreground">
                     {isAr ? group.labelAr : group.labelEn}
                   </span>
                 </div>
-                <div className="flex items-center gap-0.5 px-1.5 py-1.5">
+                <div className="flex items-center gap-0.5 px-1 py-1 flex-wrap sm:flex-nowrap">
                   {group.tabs.map((tab) => {
                     const Icon = tab.icon;
                     const isActive = activeTab === tab.id;
@@ -97,14 +97,14 @@ export function OrderCenterHub({ competitionId, isOrganizer }: Props) {
                         key={tab.id}
                         onClick={() => setActiveTab(tab.id)}
                         className={`
-                          flex items-center gap-1.5 rounded-lg px-2.5 py-1.5 text-xs font-medium transition-all
+                          flex items-center gap-1 rounded-lg px-2 py-1.5 text-[11px] sm:text-xs font-medium transition-all
                           ${isActive
                             ? "bg-primary text-primary-foreground shadow-sm"
                             : "text-muted-foreground hover:bg-muted hover:text-foreground"
                           }
                         `}
                       >
-                        <Icon className="h-3.5 w-3.5" />
+                        <Icon className="h-3.5 w-3.5 shrink-0" />
                         <span className="whitespace-nowrap">{isAr ? tab.labelAr : tab.labelEn}</span>
                       </button>
                     );
