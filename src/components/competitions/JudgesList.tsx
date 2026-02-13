@@ -2,6 +2,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useAuth } from "@/contexts/AuthContext";
+import { useIsAdmin } from "@/hooks/useAdmin";
 import { Card, CardContent } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
@@ -42,7 +43,9 @@ interface JudgeProfile {
 export function JudgesList({ competitionId, isOrganizer = false }: JudgesListProps) {
   const { language } = useLanguage();
   const { user } = useAuth();
+  const isAdmin = useIsAdmin();
   const isAr = language === "ar";
+  const canAppoint = isOrganizer || isAdmin;
   const queryClient = useQueryClient();
   const [confirmDialog, setConfirmDialog] = useState<{ type: "appoint" | "remove"; judgeId: string; judgeName: string } | null>(null);
 
@@ -65,6 +68,7 @@ export function JudgesList({ competitionId, isOrganizer = false }: JudgesListPro
   const appointHeadJudgeMutation = useMutation({
     mutationFn: async ({ judgeId }: { judgeId: string }) => {
       // First, revoke any existing head_judge role
+      // Revoke any current active head_judge
       await supabase
         .from("competition_roles")
         .update({ status: "revoked", revoked_at: new Date().toISOString() })
@@ -72,15 +76,33 @@ export function JudgesList({ competitionId, isOrganizer = false }: JudgesListPro
         .eq("role", "head_judge")
         .eq("status", "active");
 
-      // Assign new head judge
-      const { error } = await supabase.from("competition_roles").insert({
-        competition_id: competitionId,
-        user_id: judgeId,
-        role: "head_judge",
-        assigned_by: user?.id,
-        status: "active",
-      });
-      if (error) throw error;
+      // Check if a revoked row already exists for this judge
+      const { data: existing } = await supabase
+        .from("competition_roles")
+        .select("id")
+        .eq("competition_id", competitionId)
+        .eq("user_id", judgeId)
+        .eq("role", "head_judge")
+        .maybeSingle();
+
+      if (existing) {
+        // Re-activate the existing revoked row
+        const { error } = await supabase
+          .from("competition_roles")
+          .update({ status: "active", assigned_by: user?.id, assigned_at: new Date().toISOString(), revoked_at: null })
+          .eq("id", existing.id);
+        if (error) throw error;
+      } else {
+        // Insert new row
+        const { error } = await supabase.from("competition_roles").insert({
+          competition_id: competitionId,
+          user_id: judgeId,
+          role: "head_judge",
+          assigned_by: user?.id,
+          status: "active",
+        });
+        if (error) throw error;
+      }
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["head-judge", competitionId] });
@@ -230,7 +252,7 @@ export function JudgesList({ competitionId, isOrganizer = false }: JudgesListPro
                   )}
 
                   {/* Organizer dropdown menu */}
-                  {isOrganizer && (
+                  {canAppoint && (
                     <div className="absolute top-2 end-2 z-10 opacity-0 group-hover:opacity-100 transition-opacity">
                       <DropdownMenu>
                         <DropdownMenuTrigger asChild>
