@@ -605,9 +605,9 @@ export default function CRMCustomerDetail() {
                             <p className="text-sm font-medium truncate">{isAr ? item.item_name_ar || item.item_name : item.item_name}</p>
                             <p className="text-xs text-muted-foreground">{item.item_type}</p>
                           </div>
-                          {item.item_price && (
-                            <span className="text-sm font-bold">{item.item_price} SAR</span>
-                          )}
+                           {item.item_price && (
+                             <span className="text-sm font-bold">{(() => { try { const { formatCurrency } = require('@/lib/currencyFormatter'); return formatCurrency(item.item_price, 'ar'); } catch { return `${item.item_price} SAR`; } })()}</span>
+                           )}
                         </div>
                       ))}
                     </div>

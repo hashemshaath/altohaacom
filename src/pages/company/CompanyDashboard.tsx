@@ -26,6 +26,7 @@ import {
   Calendar,
 } from "lucide-react";
 import { format } from "date-fns";
+import { formatCurrency } from "@/lib/currencyFormatter";
 
 export default function CompanyPortalDashboard() {
   const { language } = useLanguage();
@@ -172,7 +173,7 @@ export default function CompanyPortalDashboard() {
                   {language === "ar" ? "حد الائتمان" : "Credit Limit"}
                 </p>
                 <p className="text-xl font-bold">
-                  {company.currency || "USD"} {company.credit_limit?.toLocaleString() || "0"}
+                  {formatCurrency(company.credit_limit || 0, language as "en" | "ar")}
                 </p>
               </div>
             </CardContent>
@@ -187,7 +188,7 @@ export default function CompanyPortalDashboard() {
                   {language === "ar" ? "إجمالي المبالغ" : "Total Volume"}
                 </p>
                 <p className="text-xl font-bold">
-                  {company.currency || "USD"} {stats?.totalAmount?.toLocaleString() || "0"}
+                  {formatCurrency(stats?.totalAmount || 0, language as "en" | "ar")}
                 </p>
               </div>
             </CardContent>

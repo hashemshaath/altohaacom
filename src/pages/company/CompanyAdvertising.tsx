@@ -15,6 +15,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { toast } from "@/hooks/use-toast";
 import { Megaphone, Eye, MousePointer, DollarSign, Plus, Package, BarChart3, FileText, TrendingUp } from "lucide-react";
+import { formatCurrency } from "@/lib/currencyFormatter";
 
 const statusColors: Record<string, string> = {
   pending: "bg-warning/10 text-warning border-warning/20",
@@ -157,12 +158,12 @@ export default function CompanyAdvertising() {
 
       {/* KPIs */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-        {[
-          { icon: Megaphone, label: isAr ? "حملات نشطة" : "Active", value: activeCampaigns, color: "text-primary" },
-          { icon: Eye, label: isAr ? "المشاهدات" : "Impressions", value: totalImpressions.toLocaleString(), color: "text-chart-1" },
-          { icon: MousePointer, label: isAr ? "النقرات" : "Clicks", value: totalClicks.toLocaleString(), color: "text-chart-2" },
-          { icon: DollarSign, label: isAr ? "المصروف" : "Spent", value: `${totalSpent.toLocaleString()} SAR`, color: "text-chart-3" },
-        ].map(k => (
+         {[
+           { icon: Megaphone, label: isAr ? "حملات نشطة" : "Active", value: activeCampaigns, color: "text-primary" },
+           { icon: Eye, label: isAr ? "المشاهدات" : "Impressions", value: totalImpressions.toLocaleString(), color: "text-chart-1" },
+           { icon: MousePointer, label: isAr ? "النقرات" : "Clicks", value: totalClicks.toLocaleString(), color: "text-chart-2" },
+           { icon: DollarSign, label: isAr ? "المصروف" : "Spent", value: formatCurrency(totalSpent, language as "en" | "ar"), color: "text-chart-3" },
+         ].map(k => (
           <Card key={k.label}>
             <CardContent className="flex items-center gap-3 p-4">
               <div className={`flex h-10 w-10 items-center justify-center rounded-xl bg-muted ${k.color}`}>
@@ -208,12 +209,12 @@ export default function CompanyAdvertising() {
                       return (
                         <TableRow key={c.id}>
                           <TableCell className="font-medium">{isAr ? c.name_ar || c.name : c.name}</TableCell>
-                          <TableCell><Badge variant="outline">{c.billing_model}</Badge></TableCell>
-                          <TableCell>{c.budget} / {c.spent} {c.currency}</TableCell>
-                          <TableCell>{(c.total_impressions || 0).toLocaleString()}</TableCell>
-                          <TableCell>{(c.total_clicks || 0).toLocaleString()}</TableCell>
-                          <TableCell>{ctr}%</TableCell>
-                          <TableCell><Badge className={statusColors[c.status] || ""}>{c.status}</Badge></TableCell>
+                           <TableCell><Badge variant="outline">{c.billing_model}</Badge></TableCell>
+                           <TableCell>{formatCurrency(Number(c.budget), language as "en" | "ar")} / {formatCurrency(Number(c.spent), language as "en" | "ar")}</TableCell>
+                           <TableCell>{(c.total_impressions || 0).toLocaleString()}</TableCell>
+                           <TableCell>{(c.total_clicks || 0).toLocaleString()}</TableCell>
+                           <TableCell>{ctr}%</TableCell>
+                           <TableCell><Badge className={statusColors[c.status] || ""}>{c.status}</Badge></TableCell>
                         </TableRow>
                       );
                     })}
@@ -266,13 +267,14 @@ export default function CompanyAdvertising() {
                     {isAr ? pkg.name_ar || pkg.name : pkg.name}
                   </Badge>
                   <p className="text-3xl font-bold my-2">{pkg.price}<span className="text-sm text-muted-foreground ms-1">{pkg.currency}</span></p>
-                  <p className="text-xs text-muted-foreground mb-3">{pkg.duration_days} {isAr ? "يوم" : "days"}</p>
-                  <div className="text-xs text-muted-foreground space-y-1 text-start">
-                    <p>• {pkg.max_impressions ? `${pkg.max_impressions.toLocaleString()} ${isAr ? "مشاهدة" : "impressions"}` : isAr ? "غير محدود" : "Unlimited"}</p>
-                    <p>• {pkg.max_clicks ? `${pkg.max_clicks.toLocaleString()} ${isAr ? "نقرة" : "clicks"}` : isAr ? "غير محدود" : "Unlimited"}</p>
-                    <p>• {pkg.max_campaigns} {isAr ? "حملة" : "campaigns"}</p>
-                    <p>• {pkg.included_placements?.length || 0} {isAr ? "موقع" : "placements"}</p>
-                  </div>
+                   <p className="text-xs text-muted-foreground mb-3">{pkg.duration_days} {isAr ? "يوم" : "days"}</p>
+                   <div className="text-xs text-muted-foreground space-y-1 text-start">
+                     <p>• {pkg.max_impressions ? `${pkg.max_impressions.toLocaleString()} ${isAr ? "مشاهدة" : "impressions"}` : isAr ? "غير محدود" : "Unlimited"}</p>
+                     <p>• {pkg.max_clicks ? `${pkg.max_clicks.toLocaleString()} ${isAr ? "نقرة" : "clicks"}` : isAr ? "غير محدود" : "Unlimited"}</p>
+                     <p>• {pkg.max_campaigns} {isAr ? "حملة" : "campaigns"}</p>
+                     <p>• {pkg.included_placements?.length || 0} {isAr ? "موقع" : "placements"}</p>
+                   </div>
+                   {pkg.price && <p className="text-sm font-bold mt-3 text-primary">{formatCurrency(Number(pkg.price), language as "en" | "ar")}</p>}
                   <p className="text-xs mt-3">{isAr ? pkg.description_ar || pkg.description : pkg.description}</p>
                   <Button className="w-full mt-4" variant={pkg.tier === "platinum" ? "default" : "outline"} onClick={() => { setForm(f => ({ ...f, package_id: pkg.id, title: `${pkg.name} Campaign` })); setRequestOpen(true); }}>
                     {isAr ? "اشترك الآن" : "Subscribe Now"}

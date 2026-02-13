@@ -9,6 +9,7 @@ import {
   ClipboardList, Package, CheckCircle, Clock, AlertTriangle,
   Send, Lightbulb, Printer, TrendingUp, FileInput,
 } from "lucide-react";
+import { formatCurrency } from "@/lib/currencyFormatter";
 
 interface Props {
   competitionId: string;
@@ -123,7 +124,7 @@ export function OrderOverviewDashboard({ competitionId, isOrganizer }: Props) {
           <div class="stat"><div class="stat-value">${lists?.length || 0}</div><div class="stat-label">${isAr ? "القوائم" : "Lists"}</div></div>
           <div class="stat"><div class="stat-value">${totalItems}</div><div class="stat-label">${isAr ? "العناصر" : "Items"}</div></div>
           <div class="stat"><div class="stat-value">${delivered}</div><div class="stat-label">${isAr ? "تم التسليم" : "Delivered"}</div></div>
-          <div class="stat"><div class="stat-value">$${totalCost.toLocaleString()}</div><div class="stat-label">${isAr ? "التكلفة" : "Est. Cost"}</div></div>
+          <div class="stat"><div class="stat-value">${formatCurrency(totalCost, language as "en" | "ar").replace(/\s+/g, '')}</div><div class="stat-label">${isAr ? "التكلفة" : "Est. Cost"}</div></div>
         </div>
         <h2>${isAr ? "القوائم" : "Requirement Lists"}</h2>
         <table>
@@ -179,12 +180,12 @@ export function OrderOverviewDashboard({ competitionId, isOrganizer }: Props) {
           </CardContent>
         </Card>
         <Card className="border-border/60">
-          <CardContent className="p-3 text-center">
-            <TrendingUp className="mx-auto mb-1 h-5 w-5 text-chart-4" />
-            <p className="text-xl font-bold">${totalCost.toLocaleString()}</p>
-            <p className="text-[10px] text-muted-foreground uppercase">{isAr ? "التكلفة التقديرية" : "Est. Cost"}</p>
-          </CardContent>
-        </Card>
+           <CardContent className="p-3 text-center">
+             <TrendingUp className="mx-auto mb-1 h-5 w-5 text-chart-4" />
+             <p className="text-xl font-bold">{formatCurrency(totalCost, language as "en" | "ar")}</p>
+             <p className="text-[10px] text-muted-foreground uppercase">{isAr ? "التكلفة التقديرية" : "Est. Cost"}</p>
+           </CardContent>
+         </Card>
       </div>
 
       {/* Delivery Progress */}
@@ -197,7 +198,7 @@ export function OrderOverviewDashboard({ competitionId, isOrganizer }: Props) {
           <Progress value={deliveryProgress} className="h-2.5" />
           <div className="flex items-center justify-between mt-2 text-xs text-muted-foreground">
             <span>{delivered}/{totalItems} {isAr ? "مكتمل" : "complete"}</span>
-            <span>${deliveredCost.toLocaleString()} / ${totalCost.toLocaleString()}</span>
+            <span>{formatCurrency(deliveredCost, language as "en" | "ar")} / {formatCurrency(totalCost, language as "en" | "ar")}</span>
           </div>
         </CardContent>
       </Card>
