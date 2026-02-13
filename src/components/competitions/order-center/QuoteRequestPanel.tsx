@@ -16,6 +16,7 @@ import {
   Send, Building2, FileText, CheckCircle, Clock,
   XCircle, Mail,
 } from "lucide-react";
+import { notifyQuoteRequestSent } from "@/lib/notificationTriggers";
 
 interface Props {
   competitionId: string;
@@ -119,6 +120,16 @@ export function QuoteRequestPanel({ competitionId, isOrganizer }: Props) {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["req-sponsorship-requests", competitionId] });
+      const companyName = companies?.find(c => c.id === selectedCompanyId);
+      if (user) {
+        notifyQuoteRequestSent({
+          userId: user.id,
+          companyName: companyName ? (isAr && companyName.name_ar ? companyName.name_ar : companyName.name) : "",
+          requestTitle: title,
+          competitionId,
+          itemCount: selectedItems.length,
+        });
+      }
       setSelectedItems([]);
       setMessage("");
       setTitle("");

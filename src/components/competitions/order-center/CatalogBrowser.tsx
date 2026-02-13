@@ -1,13 +1,16 @@
 import { useState } from "react";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useLanguage } from "@/i18n/LanguageContext";
+import { useAuth } from "@/contexts/AuthContext";
+import { useToast } from "@/hooks/use-toast";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Search, Package, Image as ImageIcon, Filter } from "lucide-react";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { Search, Package, Image as ImageIcon, Filter, Plus, ListPlus } from "lucide-react";
 import { ORDER_CATEGORIES } from "./OrderCenterCategories";
 
 interface Props {
@@ -17,6 +20,9 @@ interface Props {
 
 export function CatalogBrowser({ competitionId, isOrganizer }: Props) {
   const { language } = useLanguage();
+  const { user } = useAuth();
+  const { toast } = useToast();
+  const queryClient = useQueryClient();
   const isAr = language === "ar";
   const [search, setSearch] = useState("");
   const [categoryFilter, setCategoryFilter] = useState("all");
@@ -39,6 +45,39 @@ export function CatalogBrowser({ competitionId, isOrganizer }: Props) {
       if (error) throw error;
       return data;
     },
+  });
+
+  const { data: lists } = useQuery({
+    queryKey: ["catalog-lists", competitionId],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("requirement_lists")
+        .select("id, title, title_ar")
+        .eq("competition_id", competitionId)
+        .order("created_at");
+      if (error) throw error;
+      return data;
+    },
+  });
+
+  const addToList = useMutation({
+    mutationFn: async ({ itemId, listId, item }: { itemId: string; listId: string; item: any }) => {
+      const { error } = await supabase.from("requirement_list_items").insert({
+        list_id: listId,
+        item_id: itemId,
+        quantity: item.default_quantity || 1,
+        unit: item.unit || "piece",
+        estimated_cost: item.estimated_cost,
+        added_by: user!.id,
+      });
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["requirement-list-items"] });
+      queryClient.invalidateQueries({ queryKey: ["checklist-items"] });
+      toast({ title: isAr ? "تمت إضافة العنصر للقائمة" : "Item added to list" });
+    },
+    onError: (e: Error) => toast({ variant: "destructive", title: "Error", description: e.message }),
   });
 
   // Group items by category
@@ -151,6 +190,31 @@ export function CatalogBrowser({ competitionId, isOrganizer }: Props) {
                           )}
                         </div>
                       </div>
+                      {isOrganizer && lists && lists.length > 0 && (
+                        <Popover>
+                          <PopoverTrigger asChild>
+                            <Button size="icon" variant="ghost" className="h-8 w-8 shrink-0">
+                              <ListPlus className="h-4 w-4 text-primary" />
+                            </Button>
+                          </PopoverTrigger>
+                          <PopoverContent className="w-48 p-1" align="end">
+                            <p className="px-2 py-1 text-xs font-medium text-muted-foreground">
+                              {isAr ? "إضافة إلى قائمة" : "Add to list"}
+                            </p>
+                            {lists.map((list) => (
+                              <Button
+                                key={list.id}
+                                variant="ghost"
+                                size="sm"
+                                className="w-full justify-start text-xs"
+                                onClick={() => addToList.mutate({ itemId: item.id, listId: list.id, item })}
+                              >
+                                {isAr && list.title_ar ? list.title_ar : list.title}
+                              </Button>
+                            ))}
+                          </PopoverContent>
+                        </Popover>
+                      )}
                     </CardContent>
                   </Card>
                 ))}
