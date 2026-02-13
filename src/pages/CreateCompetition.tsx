@@ -37,7 +37,7 @@ const initialData: CompetitionFormData = {
   judgeIds: [],
   registrationFeeType: "free",
   registrationFee: 0,
-  registrationCurrency: "USD",
+  registrationCurrency: "SAR",
   registrationTaxRate: 0,
   registrationTaxName: "VAT",
   registrationTaxNameAr: "ضريبة القيمة المضافة",

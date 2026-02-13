@@ -112,7 +112,7 @@ export default function ShopProduct() {
       title_ar: product.title_ar,
       image_url: product.image_url,
       price: Number(product.price),
-      currency: product.currency || "USD",
+      currency: product.currency || "SAR",
       stock_quantity: product.stock_quantity ?? 999,
     }, qty);
     toast({ title: isAr ? `تمت إضافة "${title}" إلى السلة` : `"${title}" added to cart` });
@@ -182,7 +182,7 @@ export default function ShopProduct() {
             </div>
 
             <p className="text-3xl font-bold text-primary">
-              {product.currency} {Number(product.price).toFixed(2)}
+              ﷼ {Number(product.price).toFixed(2)}
             </p>
 
             {description && (

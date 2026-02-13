@@ -563,7 +563,7 @@ export function SupermarketCatalog() {
                           <span className="capitalize truncate">{(item.subcategory || item.category).replace(/_/g, " ")}</span>
                           <span>·</span>
                           <span className="shrink-0">{item.default_quantity || 1} {item.unit || "pc"}</span>
-                          {item.estimated_cost && <><span>·</span><span className="shrink-0 text-primary font-medium">${Number(item.estimated_cost).toLocaleString()}</span></>}
+                          {item.estimated_cost && <><span>·</span><span className="shrink-0 text-primary font-medium">﷼ {Number(item.estimated_cost).toLocaleString()}</span></>}
                         </div>
                       </div>
                       <Button

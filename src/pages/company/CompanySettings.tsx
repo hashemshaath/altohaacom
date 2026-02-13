@@ -42,7 +42,7 @@ export default function CompanySettings() {
   });
 
   const [form, setForm] = useState({
-    currency: "USD",
+    currency: "SAR",
     payment_terms: 30,
     credit_limit: 0,
     tax_number: "",
@@ -52,7 +52,7 @@ export default function CompanySettings() {
   useEffect(() => {
     if (company) {
       setForm({
-        currency: company.currency || "USD",
+        currency: company.currency || "SAR",
         payment_terms: company.payment_terms || 30,
         credit_limit: company.credit_limit || 0,
         tax_number: company.tax_number || "",
@@ -128,10 +128,10 @@ export default function CompanySettings() {
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
+                  <SelectItem value="SAR">﷼ SAR - ريال سعودي</SelectItem>
                   <SelectItem value="USD">USD - US Dollar</SelectItem>
                   <SelectItem value="EUR">EUR - Euro</SelectItem>
                   <SelectItem value="GBP">GBP - British Pound</SelectItem>
-                  <SelectItem value="SAR">SAR - Saudi Riyal</SelectItem>
                   <SelectItem value="AED">AED - UAE Dirham</SelectItem>
                   <SelectItem value="KWD">KWD - Kuwaiti Dinar</SelectItem>
                   <SelectItem value="BHD">BHD - Bahraini Dinar</SelectItem>

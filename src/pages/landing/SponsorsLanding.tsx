@@ -48,14 +48,14 @@ const sponsorshipTiers = [
   {
     name: "Bronze",
     nameAr: "برونزي",
-    price: "$1,000",
+    price: "﷼ 1,000",
     features: ["Logo on event materials", "Social media mentions", "Certificate of appreciation"],
     featuresAr: ["الشعار على مواد الحدث", "ذكر على وسائل التواصل", "شهادة تقدير"],
   },
   {
     name: "Silver",
     nameAr: "فضي",
-    price: "$5,000",
+    price: "﷼ 5,000",
     popular: true,
     features: ["All Bronze benefits", "Booth at events", "Featured in newsletters", "Judge meet & greet"],
     featuresAr: ["جميع مزايا البرونزي", "كشك في الفعاليات", "ظهور في النشرات", "لقاء مع الحكام"],
@@ -63,7 +63,7 @@ const sponsorshipTiers = [
   {
     name: "Gold",
     nameAr: "ذهبي",
-    price: "$15,000",
+    price: "﷼ 15,000",
     features: ["All Silver benefits", "Naming rights", "VIP access", "Custom activations", "Exclusive content"],
     featuresAr: ["جميع مزايا الفضي", "حقوق التسمية", "وصول VIP", "تنشيطات مخصصة", "محتوى حصري"],
   },

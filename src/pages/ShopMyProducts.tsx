@@ -29,7 +29,7 @@ export default function ShopMyProducts() {
   const [form, setForm] = useState({
     title: "", title_ar: "", description: "", description_ar: "",
     product_type: "physical" as string, category: "general",
-    price: "", currency: "USD", stock_quantity: "0", image_url: "",
+    price: "", currency: "SAR", stock_quantity: "0", image_url: "",
   });
 
   const { data: products = [], isLoading } = useQuery({
@@ -104,7 +104,7 @@ export default function ShopMyProducts() {
   const resetForm = () => {
     setShowForm(false);
     setEditingId(null);
-    setForm({ title: "", title_ar: "", description: "", description_ar: "", product_type: "physical", category: "general", price: "", currency: "USD", stock_quantity: "0", image_url: "" });
+    setForm({ title: "", title_ar: "", description: "", description_ar: "", product_type: "physical", category: "general", price: "", currency: "SAR", stock_quantity: "0", image_url: "" });
   };
 
   const startEdit = (p: any) => {
@@ -112,7 +112,7 @@ export default function ShopMyProducts() {
     setForm({
       title: p.title, title_ar: p.title_ar || "", description: p.description || "",
       description_ar: p.description_ar || "", product_type: p.product_type,
-      category: p.category, price: String(p.price), currency: p.currency || "USD",
+      category: p.category, price: String(p.price), currency: p.currency || "SAR",
       stock_quantity: String(p.stock_quantity || 0), image_url: p.image_url || "",
     });
     setShowForm(true);

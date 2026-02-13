@@ -272,11 +272,11 @@ export default function Shop() {
                     <div className="mt-auto flex items-center justify-between pt-3 border-t border-border/50">
                       <div>
                         <span className="text-lg font-bold text-primary">
-                          {product.currency} {product.price.toFixed(2)}
+                          ﷼ {product.price.toFixed(2)}
                         </span>
                         {product.compare_at_price && product.compare_at_price > product.price && (
                           <span className="ms-1.5 text-xs text-muted-foreground line-through">
-                            {product.currency} {product.compare_at_price.toFixed(2)}
+                            ﷼ {product.compare_at_price.toFixed(2)}
                           </span>
                         )}
                       </div>

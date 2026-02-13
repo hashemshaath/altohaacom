@@ -317,7 +317,7 @@ export function AdminCatalogManager() {
                       <TableCell className="text-[10px] text-muted-foreground">{item.subcategory || "—"}</TableCell>
                       <TableCell className="text-center text-xs">{item.default_quantity || "—"}</TableCell>
                       <TableCell className="text-xs">{item.unit || "—"}</TableCell>
-                      <TableCell className="text-xs">{item.estimated_cost ? `$${Number(item.estimated_cost).toLocaleString()}` : "—"}</TableCell>
+                      <TableCell className="text-xs">{item.estimated_cost ? `﷼ ${Number(item.estimated_cost).toLocaleString()}` : "—"}</TableCell>
                       <TableCell>
                         <div className="flex gap-1">
                           <Button size="icon" variant="ghost" className="h-7 w-7" onClick={() => startEdit(item)}>

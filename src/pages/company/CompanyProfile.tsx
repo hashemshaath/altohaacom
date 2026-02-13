@@ -159,7 +159,7 @@ export default function CompanyProfile() {
                 {language === "ar" ? "حد الائتمان" : "Credit Limit"}
               </p>
               <p className="mt-1 text-xl font-bold text-primary">
-                {company.currency || "USD"} {company.credit_limit?.toLocaleString() || "0"}
+                ﷼ {company.credit_limit?.toLocaleString() || "0"}
               </p>
             </div>
             <Separator />
