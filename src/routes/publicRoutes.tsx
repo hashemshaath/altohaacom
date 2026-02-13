@@ -1,7 +1,8 @@
 import { lazy } from "react";
 import { Route, Navigate } from "react-router-dom";
 import Index from "@/pages/Index";
-import Auth from "@/pages/Auth";
+
+const Auth = lazy(() => import("@/pages/Auth"));
 
 const Competitions = lazy(() => import("@/pages/Competitions"));
 const CompetitionDetail = lazy(() => import("@/pages/CompetitionDetail"));
