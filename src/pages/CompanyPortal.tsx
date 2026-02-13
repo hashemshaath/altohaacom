@@ -26,6 +26,7 @@ import {
   Star,
   Package,
   Menu,
+  Crown,
   MoreHorizontal,
   Megaphone,
 } from "lucide-react";
@@ -58,6 +59,7 @@ export default function CompanyPortalLayout() {
     { to: "/company/orders", icon: ShoppingCart, label: language === "ar" ? "الطلبيات" : "Orders" },
     { to: "/company/invoices", icon: FileText, label: language === "ar" ? "الفواتير" : "Invoices" },
     { to: "/company/invitations", icon: FileText, label: language === "ar" ? "الدعوات" : "Invitations", roles: ["sponsor", "partner"] },
+    { to: "/company/sponsorships", icon: Crown, label: language === "ar" ? "فرص الرعاية" : "Sponsorships", roles: ["sponsor", "partner"] },
     { to: "/company/communications", icon: MessageSquare, label: language === "ar" ? "التواصل" : "Comms" },
     { to: "/company/statements", icon: BarChart3, label: language === "ar" ? "كشوفات الحساب" : "Statements" },
     { to: "/company/transactions", icon: FileText, label: language === "ar" ? "المعاملات" : "Transactions" },

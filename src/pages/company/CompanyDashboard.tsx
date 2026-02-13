@@ -5,8 +5,10 @@ import { supabase } from "@/integrations/supabase/client";
 import { useQuery } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Separator } from "@/components/ui/separator";
+import { Link } from "react-router-dom";
 import {
   BarChart3,
   FileText,
@@ -19,7 +21,11 @@ import {
   ArrowUpRight,
   ArrowDownRight,
   Clock,
+  Crown,
+  Trophy,
+  Calendar,
 } from "lucide-react";
+import { format } from "date-fns";
 
 export default function CompanyPortalDashboard() {
   const { language } = useLanguage();
@@ -204,6 +210,27 @@ export default function CompanyPortalDashboard() {
         </div>
       )}
 
+      {/* Sponsorship Opportunities Widget */}
+      <Card className="overflow-hidden">
+        <div className="flex items-center justify-between border-b bg-gradient-to-r from-chart-3/5 to-transparent px-5 py-3">
+          <h3 className="flex items-center gap-2 text-sm font-semibold">
+            <div className="flex h-6 w-6 items-center justify-center rounded-md bg-chart-3/10">
+              <Crown className="h-3.5 w-3.5 text-chart-3" />
+            </div>
+            {language === "ar" ? "فرص الرعاية" : "Sponsorship Opportunities"}
+          </h3>
+          <Button variant="ghost" size="sm" asChild className="text-xs">
+            <Link to="/company/sponsorships">
+              {language === "ar" ? "عرض الكل" : "View All"}
+              <ArrowUpRight className="ms-1 h-3 w-3" />
+            </Link>
+          </Button>
+        </div>
+        <CardContent className="p-5">
+          <SponsorshipWidget companyId={companyId} language={language} />
+        </CardContent>
+      </Card>
+
       {/* Recent Activity */}
       <Card className="overflow-hidden">
         <div className="flex items-center justify-between border-b bg-muted/30 px-5 py-3">
@@ -274,5 +301,69 @@ function StatCard({
         </div>
       </CardContent>
     </Card>
+  );
+}
+
+function SponsorshipWidget({ companyId, language }: { companyId: string | null; language: string }) {
+  const isAr = language === "ar";
+  const { data: opportunities = [] } = useQuery({
+    queryKey: ["company-dash-sponsor-opps", companyId],
+    queryFn: async () => {
+      const { data } = await supabase
+        .from("competitions")
+        .select("id, title, title_ar, competition_start, city, country, cover_image_url")
+        .in("status", ["registration_open", "upcoming"])
+        .order("competition_start", { ascending: true })
+        .limit(3);
+      return data || [];
+    },
+    enabled: !!companyId,
+    staleTime: 1000 * 60 * 5,
+  });
+
+  if (opportunities.length === 0) {
+    return (
+      <div className="flex flex-col items-center justify-center py-6 text-center">
+        <Crown className="mb-2 h-8 w-8 text-muted-foreground/30" />
+        <p className="text-sm text-muted-foreground">
+          {isAr ? "لا توجد فرص رعاية متاحة حالياً" : "No sponsorship opportunities available"}
+        </p>
+      </div>
+    );
+  }
+
+  return (
+    <div className="space-y-3">
+      {opportunities.map((comp: any) => {
+        const title = isAr && comp.title_ar ? comp.title_ar : comp.title;
+        return (
+          <Link
+            key={comp.id}
+            to={`/competitions/${comp.id}`}
+            className="flex items-center gap-3 rounded-lg border p-3 transition-colors hover:bg-muted/50"
+          >
+            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-chart-3/10">
+              <Trophy className="h-5 w-5 text-chart-3" />
+            </div>
+            <div className="flex-1 min-w-0">
+              <p className="truncate text-sm font-medium">{title}</p>
+              <div className="flex items-center gap-2 text-[11px] text-muted-foreground">
+                {comp.competition_start && (
+                  <span className="flex items-center gap-1">
+                    <Calendar className="h-3 w-3" />
+                    {format(new Date(comp.competition_start), "MMM d")}
+                  </span>
+                )}
+                {comp.city && <span>{comp.city}</span>}
+              </div>
+            </div>
+            <Badge variant="outline" className="shrink-0 text-[10px] bg-chart-3/5 text-chart-3 border-chart-3/30">
+              <Crown className="me-1 h-3 w-3" />
+              {isAr ? "رعاية" : "Sponsor"}
+            </Badge>
+          </Link>
+        );
+      })}
+    </div>
   );
 }
