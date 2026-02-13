@@ -182,7 +182,7 @@ export default function ShopProduct() {
             </div>
 
             <p className="text-3xl font-bold text-primary">
-              ﷼ {Number(product.price).toFixed(2)}
+              SAR {Number(product.price).toFixed(2)}
             </p>
 
             {description && (

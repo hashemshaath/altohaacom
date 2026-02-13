@@ -569,7 +569,7 @@ function InvoiceVerificationDetails({ details }: { details: any }) {
         <Award className="h-5 w-5 text-muted-foreground mt-0.5" />
         <div>
           <p className="text-sm text-muted-foreground">{isAr ? "المبلغ" : "Amount"}</p>
-          <p className="font-semibold">﷼ {details.total_amount}</p>
+          <p className="font-semibold">SAR {details.total_amount}</p>
         </div>
       </div>
       <div className="flex items-start gap-3">

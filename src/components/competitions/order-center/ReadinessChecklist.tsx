@@ -151,8 +151,8 @@ export function ReadinessChecklist({ competitionId }: Props) {
         labelAr: "تغطية الميزانية",
         icon: DollarSign,
         status: totalCost === 0 ? "incomplete" : sponsoredValue >= totalCost ? "complete" : sponsoredValue > 0 ? "partial" : "incomplete",
-        detail: `﷼ ${sponsoredValue.toLocaleString()} / ﷼ ${totalCost.toLocaleString()} covered`,
-        detailAr: `﷼ ${sponsoredValue.toLocaleString()} / ﷼ ${totalCost.toLocaleString()} مغطى`,
+        detail: `SAR ${sponsoredValue.toLocaleString()} / SAR ${totalCost.toLocaleString()} covered`,
+        detailAr: `SAR ${sponsoredValue.toLocaleString()} / SAR ${totalCost.toLocaleString()} مغطى`,
       },
       {
         id: "checklist",

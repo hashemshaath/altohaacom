@@ -93,7 +93,7 @@ export function ExhibitionOrganizerTicketsStep({ data, onChange }: Props) {
                 <Input
                   value={data.ticketPrice}
                   onChange={(e) => onChange({ ticketPrice: e.target.value })}
-                  placeholder="﷼ 50"
+                  placeholder="SAR 50"
                 />
               </div>
               <div>

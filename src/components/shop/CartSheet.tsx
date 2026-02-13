@@ -87,7 +87,7 @@ export function CartSheet({ open, onOpenChange, cart }: CartSheetProps) {
           subtotal: cart.subtotal,
           tax_amount: cart.taxAmount,
           discount_amount: cart.discountAmount,
-          currency: cart.items[0]?.currency || "USD",
+          currency: cart.items[0]?.currency || "SAR",
           order_number: "",
           payment_method: "pending",
           payment_status: "pending",
@@ -139,7 +139,7 @@ export function CartSheet({ open, onOpenChange, cart }: CartSheetProps) {
     }
   };
 
-  const currency = cart.items[0]?.currency || "USD";
+  const currency = cart.items[0]?.currency || "SAR";
 
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>

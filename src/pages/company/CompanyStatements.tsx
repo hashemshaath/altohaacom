@@ -67,7 +67,7 @@ export default function CompanyStatements() {
     .reduce((s, t) => s + (t.amount || 0), 0);
 
   const latestBalance = transactions.length > 0 ? transactions[transactions.length - 1].balance_after : null;
-  const currency = transactions[0]?.currency || "USD";
+  const currency = transactions[0]?.currency || "SAR";
 
   const loading = accessLoading || isLoading;
 

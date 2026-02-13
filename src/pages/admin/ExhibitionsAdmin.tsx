@@ -89,7 +89,7 @@ export default function ExhibitionsAdmin() {
   const [yearFilter, setYearFilter] = useState<string>("all");
   const [cityFilter, setCityFilter] = useState<string>("all");
   const [organizerFilter, setOrganizerFilter] = useState<string>("all");
-  const [currency, setCurrency] = useState("USD");
+  const [currency, setCurrency] = useState("SAR");
   const [includesCompetitions, setIncludesCompetitions] = useState(false);
   const [includesTraining, setIncludesTraining] = useState(false);
   const [includesSeminars, setIncludesSeminars] = useState(false);
@@ -222,7 +222,7 @@ export default function ExhibitionsAdmin() {
     setTagsInput("");
     setAudienceInput("");
     setOrganizer(null);
-    setCurrency("USD");
+    setCurrency("SAR");
     setIncludesCompetitions(false);
     setIncludesTraining(false);
     setIncludesSeminars(false);
@@ -265,7 +265,7 @@ export default function ExhibitionsAdmin() {
     } else {
       setOrganizer(null);
     }
-    setCurrency(ex.currency || "USD");
+    setCurrency(ex.currency || "SAR");
     setIncludesCompetitions(ex.includes_competitions || false);
     setIncludesTraining(ex.includes_training || false);
     setIncludesSeminars(ex.includes_seminars || false);
