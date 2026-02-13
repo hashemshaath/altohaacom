@@ -34,7 +34,7 @@ export function UnifiedMembershipTab({ profile, userId, onMembershipChange }: Un
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const cardRef = useRef<HTMLDivElement>(null);
-  const [showCode, setShowCode] = useState(false);
+  const [_showCode, _setShowCode] = useState(false);
   const [orientation, setOrientation] = useState<"horizontal" | "vertical">("horizontal");
 
   // Fetch membership card
@@ -133,7 +133,7 @@ export function UnifiedMembershipTab({ profile, userId, onMembershipChange }: Un
   const tierBg = isEnterprise ? "bg-chart-2/10" : "bg-primary/10";
   const genderLabel = profile?.gender === "male" ? (isAr ? "ذكر" : "Male") : profile?.gender === "female" ? (isAr ? "أنثى" : "Female") : "";
   const isTrial = card?.is_trial && card?.trial_ends_at && new Date(card.trial_ends_at) > new Date();
-  const maskedCode = card?.verification_code ? card.verification_code.substring(0, 4) + "••••••••" + card.verification_code.substring(card.verification_code.length - 4) : "";
+  const shortCode = profile?.account_number ? profile.account_number.replace(/\D/g, "").slice(-4).padStart(4, "0") : "0000";
   const isVertical = orientation === "vertical";
 
   const profileCompletion = [
@@ -203,7 +203,7 @@ export function UnifiedMembershipTab({ profile, userId, onMembershipChange }: Un
           <div
             ref={cardRef}
             className={`relative overflow-hidden rounded-2xl shadow-2xl ${isVertical ? "max-w-[320px] mx-auto" : "max-w-[560px]"}`}
-            style={{ background: "linear-gradient(135deg, #1a1a2e 0%, #16213e 40%, #0f3460 100%)", aspectRatio: isVertical ? "9/16" : "16/9" }}
+            style={{ background: "linear-gradient(135deg, hsl(36, 20%, 12%) 0%, hsl(36, 25%, 16%) 40%, hsl(36, 30%, 20%) 100%)", aspectRatio: isVertical ? "9/16" : "16/9" }}
           >
             <div className="absolute inset-0 overflow-hidden">
               <div className="absolute top-0 right-0 w-1/2 h-full opacity-10" style={{ background: "linear-gradient(180deg, #d4af37 0%, transparent 100%)" }} />
@@ -257,12 +257,11 @@ export function UnifiedMembershipTab({ profile, userId, onMembershipChange }: Un
               </div>
               <div className="flex items-end justify-between">
                 <div>
-                  <p className="text-[8px] uppercase tracking-wider text-gray-500 mb-0.5">{isAr ? "رمز التحقق" : "VERIFICATION CODE"}</p>
-                  <div className="flex items-center gap-1.5">
-                    <p className="text-[10px] font-mono text-gray-400">{showCode ? card.verification_code : maskedCode}</p>
-                    <button onClick={() => setShowCode(!showCode)} className="text-gray-500 hover:text-gray-300 transition-colors">
-                      {showCode ? <EyeOff className="h-3 w-3" /> : <Eye className="h-3 w-3" />}
-                    </button>
+                  <p className="text-[8px] uppercase tracking-wider text-gray-500 mb-0.5">{isAr ? "كود التحقق" : "CODE"}</p>
+                  <div className="flex items-center gap-1">
+                    {shortCode.split("").map((d, i) => (
+                      <span key={i} className="inline-flex h-6 w-5 items-center justify-center rounded border font-mono text-xs font-bold" style={{ borderColor: "rgba(212,175,55,0.3)", background: "rgba(212,175,55,0.1)", color: "#d4af37" }}>{d}</span>
+                    ))}
                   </div>
                 </div>
                 <div className="text-right">
