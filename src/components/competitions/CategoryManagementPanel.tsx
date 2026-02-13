@@ -17,6 +17,7 @@ import {
   Eye, ArrowLeft, Trophy, Pause, Play, FileText,
   Save, X, Loader2,
 } from "lucide-react";
+import { GENDER_OPTIONS, PARTICIPANT_LEVELS, genderDisplay, levelDisplay, categoryBadgeText } from "@/lib/categoryUtils";
 
 interface CategoryManagementPanelProps {
   competitionId: string;
@@ -31,13 +32,14 @@ interface CategoryFormData {
   description_ar: string;
   max_participants: number | null;
   gender: string;
+  participant_level: string;
   status: string;
   cover_image_url: string;
 }
 
 const emptyForm: CategoryFormData = {
   name: "", name_ar: "", description: "", description_ar: "",
-  max_participants: null, gender: "mixed", status: "active", cover_image_url: "",
+  max_participants: null, gender: "open", participant_level: "open", status: "active", cover_image_url: "",
 };
 
 export function CategoryManagementPanel({ competitionId, isOrganizer, competitionStatus }: CategoryManagementPanelProps) {
@@ -100,8 +102,9 @@ export function CategoryManagementPanel({ competitionId, isOrganizer, competitio
           description: form.description || null, description_ar: form.description_ar || null,
           max_participants: form.max_participants,
           gender: form.gender, status: form.status,
+          participant_level: form.participant_level,
           cover_image_url: form.cover_image_url || null,
-        }).eq("id", editingId);
+        } as any).eq("id", editingId);
         if (error) throw error;
       } else {
         const sortOrder = (categories.length || 0) + 1;
@@ -111,9 +114,10 @@ export function CategoryManagementPanel({ competitionId, isOrganizer, competitio
           description: form.description || null, description_ar: form.description_ar || null,
           max_participants: form.max_participants,
           gender: form.gender, status: form.status,
+          participant_level: form.participant_level,
           cover_image_url: form.cover_image_url || null,
           sort_order: sortOrder,
-        });
+        } as any);
         if (error) throw error;
       }
     },
@@ -166,9 +170,8 @@ export function CategoryManagementPanel({ competitionId, isOrganizer, competitio
     registrations.filter((r: any) => r.category_id === catId);
 
   const genderLabel = (g: string) => {
-    if (g === "male") return isAr ? "ذكور" : "Male";
-    if (g === "female") return isAr ? "إناث" : "Female";
-    return isAr ? "مختلط" : "Mixed";
+    const d = genderDisplay(g, isAr);
+    return `${d.symbol} ${d.label}`;
   };
 
   const statusBadge = (s: string) => {
@@ -185,7 +188,9 @@ export function CategoryManagementPanel({ competitionId, isOrganizer, competitio
     setForm({
       name: cat.name, name_ar: cat.name_ar || "", description: cat.description || "",
       description_ar: cat.description_ar || "", max_participants: cat.max_participants,
-      gender: cat.gender || "mixed", status: cat.status || "active",
+      gender: cat.gender === "mixed" ? "open" : (cat.gender || "open"),
+      participant_level: cat.participant_level || "open",
+      status: cat.status || "active",
       cover_image_url: cat.cover_image_url || "",
     });
     setView("form");
@@ -232,7 +237,7 @@ export function CategoryManagementPanel({ competitionId, isOrganizer, competitio
               </div>
               <div className="flex gap-2">
                 {statusBadge(cat.status || "active")}
-                <Badge variant="outline">{genderLabel(cat.gender || "mixed")}</Badge>
+                <Badge variant="outline">{categoryBadgeText(cat.gender, cat.participant_level, isAr)}</Badge>
               </div>
             </div>
           </CardHeader>
@@ -368,7 +373,7 @@ export function CategoryManagementPanel({ competitionId, isOrganizer, competitio
                 <Textarea value={form.description_ar} onChange={(e) => setForm({ ...form, description_ar: e.target.value })} rows={3} dir="rtl" />
               </div>
             </div>
-            <div className="grid gap-4 sm:grid-cols-3">
+            <div className="grid gap-4 sm:grid-cols-4">
               <div className="space-y-2">
                 <Label>{isAr ? "الحد الأقصى للمشاركين" : "Max Participants"}</Label>
                 <Input type="number" value={form.max_participants || ""} onChange={(e) => setForm({ ...form, max_participants: e.target.value ? parseInt(e.target.value) : null })} />
@@ -378,9 +383,24 @@ export function CategoryManagementPanel({ competitionId, isOrganizer, competitio
                 <Select value={form.gender} onValueChange={(v) => setForm({ ...form, gender: v })}>
                   <SelectTrigger><SelectValue /></SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="mixed">{isAr ? "مختلط" : "Mixed"}</SelectItem>
-                    <SelectItem value="male">{isAr ? "ذكور" : "Male"}</SelectItem>
-                    <SelectItem value="female">{isAr ? "إناث" : "Female"}</SelectItem>
+                    {GENDER_OPTIONS.map(opt => (
+                      <SelectItem key={opt.value} value={opt.value}>
+                        {opt.symbol} {isAr ? opt.ar : opt.en}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+              <div className="space-y-2">
+                <Label>{isAr ? "مستوى المشاركين" : "Participant Level"}</Label>
+                <Select value={form.participant_level} onValueChange={(v) => setForm({ ...form, participant_level: v })}>
+                  <SelectTrigger><SelectValue /></SelectTrigger>
+                  <SelectContent>
+                    {PARTICIPANT_LEVELS.map(opt => (
+                      <SelectItem key={opt.value} value={opt.value}>
+                        {isAr ? opt.ar : opt.en}
+                      </SelectItem>
+                    ))}
                   </SelectContent>
                 </Select>
               </div>
@@ -455,9 +475,9 @@ export function CategoryManagementPanel({ competitionId, isOrganizer, competitio
             <SelectTrigger className="w-32 h-9 text-sm"><SelectValue placeholder={isAr ? "الجنس" : "Gender"} /></SelectTrigger>
             <SelectContent>
               <SelectItem value="all">{isAr ? "الكل" : "All"}</SelectItem>
-              <SelectItem value="mixed">{isAr ? "مختلط" : "Mixed"}</SelectItem>
-              <SelectItem value="male">{isAr ? "ذكور" : "Male"}</SelectItem>
-              <SelectItem value="female">{isAr ? "إناث" : "Female"}</SelectItem>
+              {GENDER_OPTIONS.map(opt => (
+                <SelectItem key={opt.value} value={opt.value}>{opt.symbol} {isAr ? opt.ar : opt.en}</SelectItem>
+              ))}
             </SelectContent>
           </Select>
           <Select value={filterStatus} onValueChange={setFilterStatus}>
@@ -521,7 +541,7 @@ export function CategoryManagementPanel({ competitionId, isOrganizer, competitio
                       {approvedCount}{cat.max_participants ? `/${cat.max_participants}` : ""}
                       {pendingCount > 0 && <span className="text-primary">(+{pendingCount})</span>}
                     </span>
-                    <Badge variant="outline" className="text-[10px] h-5">{genderLabel(cat.gender || "mixed")}</Badge>
+                    <Badge variant="outline" className="text-[10px] h-5">{categoryBadgeText(cat.gender, cat.participant_level, isAr)}</Badge>
                   </div>
                   {cat.max_participants && (
                     <Progress value={fill} className="h-1.5" />

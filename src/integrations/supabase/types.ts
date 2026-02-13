@@ -2624,6 +2624,7 @@ export type Database = {
           max_participants: number | null
           name: string
           name_ar: string | null
+          participant_level: string | null
           sort_order: number | null
           status: string | null
         }
@@ -2638,6 +2639,7 @@ export type Database = {
           max_participants?: number | null
           name: string
           name_ar?: string | null
+          participant_level?: string | null
           sort_order?: number | null
           status?: string | null
         }
@@ -2652,6 +2654,7 @@ export type Database = {
           max_participants?: number | null
           name?: string
           name_ar?: string | null
+          participant_level?: string | null
           sort_order?: number | null
           status?: string | null
         }
@@ -7906,6 +7909,7 @@ export type Database = {
           is_active: boolean | null
           name: string
           name_ar: string | null
+          participant_level: string | null
           sort_order: number | null
           type_id: string | null
         }
@@ -7919,6 +7923,7 @@ export type Database = {
           is_active?: boolean | null
           name: string
           name_ar?: string | null
+          participant_level?: string | null
           sort_order?: number | null
           type_id?: string | null
         }
@@ -7932,6 +7937,7 @@ export type Database = {
           is_active?: boolean | null
           name?: string
           name_ar?: string | null
+          participant_level?: string | null
           sort_order?: number | null
           type_id?: string | null
         }

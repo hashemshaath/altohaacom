@@ -56,7 +56,7 @@ export default function CompetitionsAdmin() {
     queryFn: async () => {
       let query = supabase
         .from("competitions")
-        .select("*, exhibition:exhibitions!competitions_exhibition_id_fkey(id, title, title_ar)")
+        .select("*, exhibition:exhibitions!competitions_exhibition_id_fkey(id, title, title_ar, organizer_name, organizer_name_ar, organizer_logo_url, organizer_entity_id, organizer_company_id)")
         .order("created_at", { ascending: false })
         .limit(100);
 
@@ -69,21 +69,44 @@ export default function CompetitionsAdmin() {
       const { data, error } = await query;
       if (error) throw error;
 
-      // Fetch organizer profiles separately (no FK exists)
-      const organizerIds = [...new Set((data || []).map(c => c.organizer_id).filter(Boolean))];
-      let organizerMap: Record<string, any> = {};
-      if (organizerIds.length > 0) {
-        const { data: profiles } = await supabase
-          .from("profiles")
-          .select("user_id, full_name, full_name_ar, avatar_url")
-          .in("user_id", organizerIds);
-        profiles?.forEach(p => { organizerMap[p.user_id] = p; });
+      // Collect entity IDs from exhibitions for organizer display
+      const entityIds = [...new Set((data || []).map(c => (c.exhibition as any)?.organizer_entity_id).filter(Boolean))];
+      const companyIds = [...new Set((data || []).map(c => (c.exhibition as any)?.organizer_company_id).filter(Boolean))];
+
+      let entityMap: Record<string, any> = {};
+      let companyMap: Record<string, any> = {};
+
+      if (entityIds.length > 0) {
+        const { data: entities } = await supabase
+          .from("culinary_entities")
+          .select("id, name, name_ar, logo_url, abbreviation")
+          .in("id", entityIds);
+        entities?.forEach(e => { entityMap[e.id] = e; });
       }
 
-      return (data || []).map(c => ({
-        ...c,
-        organizer: c.organizer_id ? organizerMap[c.organizer_id] || null : null,
-      }));
+      if (companyIds.length > 0) {
+        const { data: companies } = await supabase
+          .from("companies")
+          .select("id, name, name_ar, logo_url")
+          .in("id", companyIds);
+        companies?.forEach(c => { companyMap[c.id] = c; });
+      }
+
+      return (data || []).map(c => {
+        const exh = c.exhibition as any;
+        // Derive organizer from exhibition entity/company first, fallback to exhibition name
+        let derivedOrganizer: any = null;
+        if (exh?.organizer_entity_id && entityMap[exh.organizer_entity_id]) {
+          const ent = entityMap[exh.organizer_entity_id];
+          derivedOrganizer = { name: ent.name, name_ar: ent.name_ar, logo_url: ent.logo_url, type: "entity" };
+        } else if (exh?.organizer_company_id && companyMap[exh.organizer_company_id]) {
+          const comp = companyMap[exh.organizer_company_id];
+          derivedOrganizer = { name: comp.name, name_ar: comp.name_ar, logo_url: comp.logo_url, type: "company" };
+        } else if (exh?.organizer_name) {
+          derivedOrganizer = { name: exh.organizer_name, name_ar: exh.organizer_name_ar, logo_url: exh.organizer_logo_url, type: "exhibition" };
+        }
+        return { ...c, derivedOrganizer };
+      });
     },
   });
 
@@ -119,9 +142,9 @@ export default function CompetitionsAdmin() {
     },
   });
 
-  // Unique organizers for filter
+  // Unique organizers for filter (derived from exhibition)
   const uniqueOrganizers = competitions?.reduce((acc, c) => {
-    if (c.organizer && !acc.find((o: any) => o.user_id === c.organizer.user_id)) acc.push(c.organizer);
+    if (c.derivedOrganizer && !acc.find((o: any) => o.name === c.derivedOrganizer.name)) acc.push(c.derivedOrganizer);
     return acc;
   }, [] as any[]) || [];
 
@@ -272,9 +295,9 @@ export default function CompetitionsAdmin() {
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="all">{isAr ? "جميع المنظمين" : "All Organizers"}</SelectItem>
-                {uniqueOrganizers.map((org: any) => (
-                  <SelectItem key={org.user_id} value={org.user_id}>
-                    {isAr && org.full_name_ar ? org.full_name_ar : org.full_name || org.user_id.slice(0, 8)}
+                {uniqueOrganizers.map((org: any, i: number) => (
+                  <SelectItem key={org.name + i} value={org.name}>
+                    {isAr && org.name_ar ? org.name_ar : org.name}
                   </SelectItem>
                 ))}
               </SelectContent>
@@ -379,24 +402,26 @@ export default function CompetitionsAdmin() {
                       </TableCell>
                       <TableCell>
                         <div className="space-y-1">
-                          {comp.organizer && (
+                          {comp.derivedOrganizer ? (
                             <div className="flex items-center gap-2">
-                              {comp.organizer.avatar_url ? (
-                                <img src={comp.organizer.avatar_url} alt="" className="h-6 w-6 rounded-full object-cover" />
+                              {comp.derivedOrganizer.logo_url ? (
+                                <img src={comp.derivedOrganizer.logo_url} alt="" className="h-6 w-6 rounded-lg object-contain" />
                               ) : (
-                                <div className="h-6 w-6 rounded-full bg-muted flex items-center justify-center">
-                                  <Users className="h-3 w-3 text-muted-foreground" />
+                                <div className="h-6 w-6 rounded-lg bg-primary/10 flex items-center justify-center">
+                                  <Building2 className="h-3 w-3 text-primary/50" />
                                 </div>
                               )}
                               <span className="text-xs truncate max-w-[120px]">
-                                {isAr && comp.organizer.full_name_ar ? comp.organizer.full_name_ar : comp.organizer.full_name || "—"}
+                                {isAr && comp.derivedOrganizer.name_ar ? comp.derivedOrganizer.name_ar : comp.derivedOrganizer.name}
                               </span>
                             </div>
+                          ) : (
+                            <span className="text-xs text-muted-foreground">—</span>
                           )}
                           {comp.exhibition && (
                             <div className="flex items-center gap-1.5 text-[10px] text-muted-foreground">
                               <Building2 className="h-3 w-3" />
-                              <span className="truncate max-w-[120px]">{isAr && comp.exhibition.title_ar ? comp.exhibition.title_ar : comp.exhibition.title}</span>
+                              <span className="truncate max-w-[120px]">{isAr && (comp.exhibition as any).title_ar ? (comp.exhibition as any).title_ar : (comp.exhibition as any).title}</span>
                             </div>
                           )}
                         </div>
