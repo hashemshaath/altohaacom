@@ -12,6 +12,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { CheckCircle, Package, Clock, AlertTriangle, Calendar } from "lucide-react";
 import { format, isPast } from "date-fns";
 import { ITEM_STATUS_LABELS, getStatusLabel } from "./OrderStatusLabels";
+import { logOrderActivity } from "./orderActivityLogger";
 
 interface Props {
   competitionId: string;
@@ -64,7 +65,18 @@ export function DeliveryChecklist({ competitionId, isOrganizer }: Props) {
       const { error } = await supabase.from("requirement_list_items").update(updates).eq("id", id);
       if (error) throw error;
     },
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["checklist-items", competitionId] }),
+    onSuccess: (_data, variables) => {
+      queryClient.invalidateQueries({ queryKey: ["checklist-items", competitionId] });
+      if (user && variables.checked) {
+        logOrderActivity({
+          competitionId,
+          userId: user.id,
+          actionType: "item_checked",
+          entityType: "item",
+          entityId: variables.id,
+        });
+      }
+    },
   });
 
   const updateStatus = useMutation({
@@ -74,8 +86,18 @@ export function DeliveryChecklist({ competitionId, isOrganizer }: Props) {
       const { error } = await supabase.from("requirement_list_items").update(updates).eq("id", id);
       if (error) throw error;
     },
-    onSuccess: () => {
+    onSuccess: (_data, variables) => {
       queryClient.invalidateQueries({ queryKey: ["checklist-items", competitionId] });
+      if (user) {
+        logOrderActivity({
+          competitionId,
+          userId: user.id,
+          actionType: variables.status === "delivered" ? "delivery_confirmed" : "status_changed",
+          entityType: "item",
+          entityId: variables.id,
+          details: { to_status: variables.status },
+        });
+      }
       toast({ title: isAr ? "تم تحديث الحالة" : "Status updated" });
     },
   });
