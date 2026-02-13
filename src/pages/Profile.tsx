@@ -7,7 +7,7 @@ import { Footer } from "@/components/Footer";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Skeleton } from "@/components/ui/skeleton";
 import { SEOHead } from "@/components/SEOHead";
-import { User, Briefcase, Award, Edit, Shield, Crown } from "lucide-react";
+import { User, Briefcase, Award, Edit, Shield, Crown, BarChart3 } from "lucide-react";
 import type { Database } from "@/integrations/supabase/types";
 
 import { ProfileHeader } from "@/components/profile/ProfileHeader";
@@ -20,6 +20,7 @@ import { ProfileEditForm } from "@/components/profile/ProfileEditForm";
 import { ProfilePrivacySettings } from "@/components/profile/ProfilePrivacySettings";
 import { ProfileMembershipTab } from "@/components/profile/ProfileMembershipTab";
 import { ProfessionalMembershipDashboard } from "@/components/profile/ProfessionalMembershipDashboard";
+import { ProfileAnalyticsDashboard } from "@/components/profile/ProfileAnalyticsDashboard";
 import { useSearchParams } from "react-router-dom";
 
 type Profile = Database["public"]["Tables"]["profiles"]["Row"];
@@ -77,6 +78,7 @@ export default function Profile() {
     { id: "career", label: isAr ? "السيرة المهنية" : "Career", icon: Briefcase },
     { id: "certificates", label: isAr ? "الشهادات والإنجازات" : "Achievements", icon: Award },
     { id: "membership", label: isAr ? "العضوية" : "Membership", icon: Crown },
+    { id: "analytics", label: isAr ? "الإحصائيات" : "Analytics", icon: BarChart3 },
     { id: "edit", label: isAr ? "تعديل" : "Edit", icon: Edit },
     { id: "privacy", label: isAr ? "الخصوصية" : "Privacy", icon: Shield },
   ];
@@ -140,6 +142,11 @@ export default function Profile() {
                 </div>
               </>
             )}
+          </TabsContent>
+
+          {/* Analytics */}
+          <TabsContent value="analytics" className="mt-6">
+            {user && <ProfileAnalyticsDashboard userId={user.id} />}
           </TabsContent>
 
           {/* Edit */}
