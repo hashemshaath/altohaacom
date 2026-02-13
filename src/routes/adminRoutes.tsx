@@ -50,6 +50,7 @@ const CRMDashboard = lazy(() => import("@/pages/admin/CRMDashboard"));
 const CRMCustomerDetail = lazy(() => import("@/pages/admin/CRMCustomerDetail"));
 const AdvertisingAdmin = lazy(() => import("@/pages/admin/AdvertisingAdmin"));
 const TranslationSEOAdmin = lazy(() => import("@/pages/admin/TranslationSEOAdmin"));
+const OrderCenterAdmin = lazy(() => import("@/pages/admin/OrderCenterAdmin"));
 
 export const adminRoutes = (
   <Route path="/admin" element={<ProtectedRoute><AdminLayout /></ProtectedRoute>}>
@@ -100,5 +101,6 @@ export const adminRoutes = (
     <Route path="crm" element={<CRMDashboard />} />
     <Route path="advertising" element={<AdvertisingAdmin />} />
     <Route path="translation-seo" element={<TranslationSEOAdmin />} />
+    <Route path="order-center" element={<OrderCenterAdmin />} />
   </Route>
 );
