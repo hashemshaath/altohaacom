@@ -11599,7 +11599,69 @@ export type Database = {
       }
     }
     Views: {
-      [_ in never]: never
+      judge_profiles_public: {
+        Row: {
+          certifications: string[] | null
+          country_of_residence: string | null
+          created_at: string | null
+          culinary_specialties: string[] | null
+          current_employer: string | null
+          current_position: string | null
+          education: string | null
+          education_ar: string | null
+          id: string | null
+          judge_category: string | null
+          judge_level: string | null
+          judge_title: string | null
+          judge_title_ar: string | null
+          languages_spoken: string[] | null
+          nationality: string | null
+          profile_photo_url: string | null
+          user_id: string | null
+          years_of_experience: number | null
+        }
+        Insert: {
+          certifications?: string[] | null
+          country_of_residence?: string | null
+          created_at?: string | null
+          culinary_specialties?: string[] | null
+          current_employer?: string | null
+          current_position?: string | null
+          education?: string | null
+          education_ar?: string | null
+          id?: string | null
+          judge_category?: string | null
+          judge_level?: string | null
+          judge_title?: string | null
+          judge_title_ar?: string | null
+          languages_spoken?: string[] | null
+          nationality?: string | null
+          profile_photo_url?: string | null
+          user_id?: string | null
+          years_of_experience?: number | null
+        }
+        Update: {
+          certifications?: string[] | null
+          country_of_residence?: string | null
+          created_at?: string | null
+          culinary_specialties?: string[] | null
+          current_employer?: string | null
+          current_position?: string | null
+          education?: string | null
+          education_ar?: string | null
+          id?: string | null
+          judge_category?: string | null
+          judge_level?: string | null
+          judge_title?: string | null
+          judge_title_ar?: string | null
+          languages_spoken?: string[] | null
+          nationality?: string | null
+          profile_photo_url?: string | null
+          user_id?: string | null
+          years_of_experience?: number | null
+        }
+        Relationships: []
+      }
     }
     Functions: {
       generate_account_number: {
