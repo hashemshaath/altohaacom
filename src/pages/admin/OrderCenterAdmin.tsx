@@ -14,16 +14,20 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
+import { Progress } from "@/components/ui/progress";
 import {
   Package, Trophy, LayoutDashboard, BookTemplate, ClipboardList,
   Search, Plus, ChevronRight, Users, Shield, Eye, CheckCircle,
   XCircle, Download, Trash2, Copy, ArrowRight, FileInput, Clock, AlertTriangle,
-  Truck, PackageCheck, MapPin, CalendarClock,
+  Truck, PackageCheck, MapPin, CalendarClock, Database, TrendingUp,
+  Layers, Star, BarChart3,
 } from "lucide-react";
 import { ORDER_CATEGORIES } from "@/components/competitions/order-center/OrderCenterCategories";
 import { DISH_TEMPLATES, type DishTemplate } from "@/data/dishTemplates";
 import { downloadCSV } from "@/lib/exportUtils";
 import { notifyItemRequestReviewed, notifyItemRequestFulfilled } from "@/lib/notificationTriggers";
+import { AdminCatalogManager } from "@/components/competitions/order-center/AdminCatalogManager";
+import { AdminListDetailPanel } from "@/components/competitions/order-center/AdminListDetailPanel";
 
 // ── Access level config ──
 const ACCESS_LEVELS = [
@@ -59,6 +63,7 @@ export default function OrderCenterAdmin() {
   const [competitionFilter, setCompetitionFilter] = useState("all");
 
   const [competitionSearch, setCompetitionSearch] = useState("");
+  const [selectedListId, setSelectedListId] = useState<string | null>(null);
 
   // Fetch ALL competitions (past, current, future, draft) for full admin access
   const { data: allCompetitions = [] } = useQuery({
@@ -358,6 +363,9 @@ export default function OrderCenterAdmin() {
           <TabsTrigger value="lists" className="gap-1.5 text-xs">
             <ClipboardList className="h-3.5 w-3.5" /> {isAr ? "قوائم المتطلبات" : "Requirement Lists"}
           </TabsTrigger>
+          <TabsTrigger value="catalog" className="gap-1.5 text-xs">
+            <Database className="h-3.5 w-3.5" /> {isAr ? "كتالوج العناصر" : "Item Catalog"}
+          </TabsTrigger>
           <TabsTrigger value="requests" className="gap-1.5 text-xs">
             <FileInput className="h-3.5 w-3.5" /> {isAr ? "طلبات العناصر" : "Item Requests"}
             {allRequests.filter((r: any) => r.status === "pending").length > 0 && (
@@ -380,33 +388,106 @@ export default function OrderCenterAdmin() {
 
         {/* ── Overview ── */}
         <TabsContent value="overview" className="mt-4 space-y-4">
-          {/* Stats Cards */}
-          <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
-            <Card>
-              <CardContent className="p-4 text-center">
-                <p className="text-2xl font-bold text-primary">{competitions.length}</p>
-                <p className="text-xs text-muted-foreground">{isAr ? "مسابقات نشطة" : "Active Competitions"}</p>
-              </CardContent>
-            </Card>
-            <Card>
-              <CardContent className="p-4 text-center">
-                <p className="text-2xl font-bold text-chart-3">{totalLists}</p>
-                <p className="text-xs text-muted-foreground">{isAr ? "قوائم متطلبات" : "Requirement Lists"}</p>
-              </CardContent>
-            </Card>
-            <Card>
-              <CardContent className="p-4 text-center">
-                <p className="text-2xl font-bold text-chart-4">{pendingItems}/{totalItems}</p>
-                <p className="text-xs text-muted-foreground">{isAr ? "عناصر معلقة" : "Pending Items"}</p>
-              </CardContent>
-            </Card>
-            <Card>
-              <CardContent className="p-4 text-center">
-                <p className="text-2xl font-bold text-chart-5">{totalEstCost.toLocaleString()} SAR</p>
-                <p className="text-xs text-muted-foreground">{isAr ? "التكلفة التقديرية" : "Estimated Cost"}</p>
-              </CardContent>
-            </Card>
+          {/* Enhanced Stats */}
+          <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-6">
+            <Card><CardContent className="p-3 text-center">
+              <Trophy className="mx-auto mb-1 h-5 w-5 text-primary" />
+              <p className="text-xl font-bold">{competitions.length}</p>
+              <p className="text-[10px] text-muted-foreground">{isAr ? "المسابقات" : "Competitions"}</p>
+            </CardContent></Card>
+            <Card><CardContent className="p-3 text-center">
+              <ClipboardList className="mx-auto mb-1 h-5 w-5 text-chart-3" />
+              <p className="text-xl font-bold">{totalLists}</p>
+              <p className="text-[10px] text-muted-foreground">{isAr ? "قوائم المتطلبات" : "Req. Lists"}</p>
+            </CardContent></Card>
+            <Card><CardContent className="p-3 text-center">
+              <Package className="mx-auto mb-1 h-5 w-5 text-chart-1" />
+              <p className="text-xl font-bold">{totalItems}</p>
+              <p className="text-[10px] text-muted-foreground">{isAr ? "إجمالي العناصر" : "Total Items"}</p>
+            </CardContent></Card>
+            <Card><CardContent className="p-3 text-center">
+              <Clock className="mx-auto mb-1 h-5 w-5 text-chart-4" />
+              <p className="text-xl font-bold">{pendingItems}</p>
+              <p className="text-[10px] text-muted-foreground">{isAr ? "عناصر معلقة" : "Pending"}</p>
+            </CardContent></Card>
+            <Card><CardContent className="p-3 text-center">
+              <CheckCircle className="mx-auto mb-1 h-5 w-5 text-chart-5" />
+              <p className="text-xl font-bold">{fulfilledItems}</p>
+              <p className="text-[10px] text-muted-foreground">{isAr ? "تم التسليم" : "Fulfilled"}</p>
+            </CardContent></Card>
+            <Card><CardContent className="p-3 text-center">
+              <TrendingUp className="mx-auto mb-1 h-5 w-5 text-primary" />
+              <p className="text-xl font-bold">{totalEstCost.toLocaleString()}</p>
+              <p className="text-[10px] text-muted-foreground">{isAr ? "التكلفة (SAR)" : "Est. Cost (SAR)"}</p>
+            </CardContent></Card>
           </div>
+
+          {/* Progress */}
+          {totalItems > 0 && (
+            <Card className="border-border/60">
+              <CardContent className="p-4">
+                <div className="flex items-center justify-between mb-2">
+                  <p className="text-sm font-medium">{isAr ? "تقدم الإنجاز الإجمالي" : "Overall Fulfillment Progress"}</p>
+                  <p className="text-sm font-bold text-primary">{totalItems > 0 ? Math.round((fulfilledItems / totalItems) * 100) : 0}%</p>
+                </div>
+                <Progress value={totalItems > 0 ? Math.round((fulfilledItems / totalItems) * 100) : 0} className="h-2" />
+                <p className="text-xs text-muted-foreground mt-1">{fulfilledItems}/{totalItems} {isAr ? "مكتمل" : "complete"}</p>
+              </CardContent>
+            </Card>
+          )}
+
+          {/* Category Breakdown */}
+          <Card>
+            <CardHeader className="pb-2">
+              <CardTitle className="text-sm flex items-center gap-2">
+                <Layers className="h-4 w-4 text-primary" />
+                {isAr ? "توزيع العناصر حسب الفئة" : "Items by Category"}
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-4">
+                {ORDER_CATEGORIES.map(cat => {
+                  const CatIcon = cat.icon;
+                  const count = allLists.filter((l: any) => l.category === cat.value).length;
+                  if (count === 0) return null;
+                  return (
+                    <div key={cat.value} className="flex items-center gap-2 rounded-lg border p-2">
+                      <CatIcon className="h-4 w-4 text-primary shrink-0" />
+                      <div className="min-w-0">
+                        <p className="text-xs font-medium truncate">{isAr ? cat.labelAr : cat.label}</p>
+                        <p className="text-[10px] text-muted-foreground">{count} {isAr ? "قائمة" : "lists"}</p>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Urgent Items */}
+          {allRequests.filter((r: any) => r.priority === "urgent" && r.status === "pending").length > 0 && (
+            <Card className="border-destructive/20">
+              <CardHeader className="pb-2">
+                <CardTitle className="text-sm flex items-center gap-2">
+                  <AlertTriangle className="h-4 w-4 text-destructive" />
+                  {isAr ? "طلبات عاجلة بحاجة لمراجعة" : "Urgent Requests Awaiting Review"}
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-1.5">
+                  {allRequests.filter((r: any) => r.priority === "urgent" && r.status === "pending").slice(0, 5).map((req: any) => (
+                    <div key={req.id} className="flex items-center justify-between rounded border border-destructive/10 p-2 bg-destructive/5">
+                      <div>
+                        <p className="text-sm font-medium">{isAr && req.item_name_ar ? req.item_name_ar : req.item_name}</p>
+                        <p className="text-[10px] text-muted-foreground">{req.profiles?.full_name || "—"} · {req.competitions?.title || "—"}</p>
+                      </div>
+                      <Badge variant="destructive" className="text-[9px]">{isAr ? "عاجل" : "Urgent"}</Badge>
+                    </div>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+          )}
 
           {/* Competitions with Order Status */}
           <Card>
@@ -418,10 +499,10 @@ export default function OrderCenterAdmin() {
             </CardHeader>
             <CardContent>
               {competitions.length === 0 ? (
-                <p className="text-center text-sm text-muted-foreground py-6">{isAr ? "لا توجد مسابقات نشطة" : "No active competitions"}</p>
+                <p className="text-center text-sm text-muted-foreground py-6">{isAr ? "لا توجد مسابقات" : "No competitions"}</p>
               ) : (
                 <div className="space-y-2">
-                  {competitions.map((comp: any) => {
+                  {competitions.slice(0, 20).map((comp: any) => {
                     const compLists = allLists.filter((l: any) => l.competition_id === comp.id);
                     const compItems = allItems.filter((i: any) => compLists.some((l: any) => l.id === i.list_id));
                     const fulfilled = compItems.filter((i: any) => i.status === "fulfilled").length;
@@ -452,122 +533,99 @@ export default function OrderCenterAdmin() {
 
         {/* ── Requirement Lists ── */}
         <TabsContent value="lists" className="mt-4 space-y-4">
-          <div className="flex flex-wrap items-center gap-3">
-            <div className="relative flex-1 min-w-[200px]">
-              <Search className="absolute start-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-              <Input
-                placeholder={isAr ? "بحث..." : "Search..."}
-                value={searchQuery}
-                onChange={e => setSearchQuery(e.target.value)}
-                className="ps-9 h-9"
-              />
-            </div>
-            <Select value={competitionFilter} onValueChange={setCompetitionFilter}>
-              <SelectTrigger className="w-[220px] h-9 text-xs">
-                <SelectValue placeholder={isAr ? "كل المسابقات" : "All Competitions"} />
-              </SelectTrigger>
-              <SelectContent>
-                <div className="px-2 pb-2">
-                  <Input
-                    placeholder={isAr ? "بحث بالاسم..." : "Search by name..."}
-                    value={competitionSearch}
-                    onChange={e => setCompetitionSearch(e.target.value)}
-                    className="h-7 text-xs"
-                    onClick={e => e.stopPropagation()}
-                  />
-                </div>
-                <SelectItem value="all">{isAr ? "الكل" : "All"}</SelectItem>
-                <SelectItem value="unlinked">{isAr ? "بدون مسابقة (مسودات)" : "Unlinked (Drafts)"}</SelectItem>
-                {filteredCompetitions.map((c: any) => (
-                  <SelectItem key={c.id} value={c.id} className="text-xs">
-                    {isAr && c.title_ar ? c.title_ar : c.title}
-                    <span className="ms-1 text-[9px] text-muted-foreground">({c.status})</span>
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
-
-          {listsLoading ? (
-            <div className="flex justify-center py-8">
-              <div className="h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent" />
-            </div>
-          ) : allLists.length === 0 ? (
-            <Card>
-              <CardContent className="py-12 text-center">
-                <ClipboardList className="mx-auto mb-3 h-12 w-12 text-muted-foreground/30" />
-                <p className="text-muted-foreground">{isAr ? "لا توجد قوائم" : "No requirement lists found"}</p>
-              </CardContent>
-            </Card>
+          {selectedListId ? (
+            <AdminListDetailPanel listId={selectedListId} onBack={() => setSelectedListId(null)} />
           ) : (
-            <ScrollArea className="max-h-[600px]">
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead className="text-xs">{isAr ? "القائمة" : "List"}</TableHead>
-                    <TableHead className="text-xs">{isAr ? "المسابقة" : "Competition"}</TableHead>
-                    <TableHead className="text-xs">{isAr ? "الفئة" : "Category"}</TableHead>
-                    <TableHead className="text-xs text-center">{isAr ? "العناصر" : "Items"}</TableHead>
-                    <TableHead className="text-xs">{isAr ? "الحالة" : "Status"}</TableHead>
-                    <TableHead className="text-xs">{isAr ? "إجراءات" : "Actions"}</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {allLists.map((list: any) => {
-                    const catDef = ORDER_CATEGORIES.find(c => c.value === list.category);
-                    const listItems = allItems.filter((i: any) => i.list_id === list.id);
-                    return (
-                      <TableRow key={list.id}>
-                        <TableCell className="text-sm font-medium">
-                          {isAr && list.title_ar ? list.title_ar : list.title}
-                        </TableCell>
-                        <TableCell className="text-xs text-muted-foreground">
-                          {list.competitions ? (isAr && list.competitions.title_ar ? list.competitions.title_ar : list.competitions.title) : (
-                            <Badge variant="outline" className="text-[9px] text-chart-4">{isAr ? "بدون مسابقة" : "Unlinked"}</Badge>
-                          )}
-                        </TableCell>
-                        <TableCell>
-                          <Badge variant="outline" className="text-[10px]">
-                            {catDef ? (isAr ? catDef.labelAr : catDef.label) : list.category}
-                          </Badge>
-                        </TableCell>
-                        <TableCell className="text-center text-xs">{listItems.length}</TableCell>
-                        <TableCell>
-                          <Badge variant="secondary" className="text-[10px]">
-                            {list.status || (isAr ? "مسودة" : "Draft")}
-                          </Badge>
-                        </TableCell>
-                        <TableCell>
-                          <div className="flex gap-1">
-                            <Button
-                              size="icon"
-                              variant="ghost"
-                              className="h-7 w-7"
-                              title={isAr ? "نسخ القائمة" : "Copy list"}
-                              onClick={() => copyList(list)}
-                            >
-                              <Copy className="h-3.5 w-3.5" />
-                            </Button>
-                            <Button
-                              size="icon"
-                              variant="ghost"
-                              className="h-7 w-7 text-destructive hover:text-destructive"
-                              title={isAr ? "حذف" : "Delete"}
-                              onClick={() => {
-                                if (confirm(isAr ? "حذف هذه القائمة؟" : "Delete this list?")) deleteList(list.id);
-                              }}
-                            >
-                              <Trash2 className="h-3.5 w-3.5" />
-                            </Button>
-                          </div>
-                        </TableCell>
+            <>
+              <div className="flex flex-wrap items-center gap-3">
+                <div className="relative flex-1 min-w-[200px]">
+                  <Search className="absolute start-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+                  <Input placeholder={isAr ? "بحث..." : "Search..."} value={searchQuery} onChange={e => setSearchQuery(e.target.value)} className="ps-9 h-9" />
+                </div>
+                <Select value={competitionFilter} onValueChange={setCompetitionFilter}>
+                  <SelectTrigger className="w-[220px] h-9 text-xs">
+                    <SelectValue placeholder={isAr ? "كل المسابقات" : "All Competitions"} />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <div className="px-2 pb-2">
+                      <Input placeholder={isAr ? "بحث بالاسم..." : "Search by name..."} value={competitionSearch} onChange={e => setCompetitionSearch(e.target.value)} className="h-7 text-xs" onClick={e => e.stopPropagation()} />
+                    </div>
+                    <SelectItem value="all">{isAr ? "الكل" : "All"}</SelectItem>
+                    <SelectItem value="unlinked">{isAr ? "بدون مسابقة (مسودات)" : "Unlinked (Drafts)"}</SelectItem>
+                    {filteredCompetitions.map((c: any) => (
+                      <SelectItem key={c.id} value={c.id} className="text-xs">
+                        {isAr && c.title_ar ? c.title_ar : c.title}
+                        <span className="ms-1 text-[9px] text-muted-foreground">({c.status})</span>
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+
+              {listsLoading ? (
+                <div className="flex justify-center py-8"><div className="h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent" /></div>
+              ) : allLists.length === 0 ? (
+                <Card><CardContent className="py-12 text-center">
+                  <ClipboardList className="mx-auto mb-3 h-12 w-12 text-muted-foreground/30" />
+                  <p className="text-muted-foreground">{isAr ? "لا توجد قوائم" : "No requirement lists found"}</p>
+                </CardContent></Card>
+              ) : (
+                <ScrollArea className="max-h-[600px]">
+                  <Table>
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead className="text-xs">{isAr ? "القائمة" : "List"}</TableHead>
+                        <TableHead className="text-xs">{isAr ? "المسابقة" : "Competition"}</TableHead>
+                        <TableHead className="text-xs">{isAr ? "الفئة" : "Category"}</TableHead>
+                        <TableHead className="text-xs text-center">{isAr ? "العناصر" : "Items"}</TableHead>
+                        <TableHead className="text-xs">{isAr ? "الحالة" : "Status"}</TableHead>
+                        <TableHead className="text-xs">{isAr ? "إجراءات" : "Actions"}</TableHead>
                       </TableRow>
-                    );
-                  })}
-                </TableBody>
-              </Table>
-            </ScrollArea>
+                    </TableHeader>
+                    <TableBody>
+                      {allLists.map((list: any) => {
+                        const catDef = ORDER_CATEGORIES.find(c => c.value === list.category);
+                        const listItems = allItems.filter((i: any) => i.list_id === list.id);
+                        return (
+                          <TableRow key={list.id} className="cursor-pointer hover:bg-muted/30" onClick={() => setSelectedListId(list.id)}>
+                            <TableCell className="text-sm font-medium">
+                              {isAr && list.title_ar ? list.title_ar : list.title}
+                            </TableCell>
+                            <TableCell className="text-xs text-muted-foreground">
+                              {list.competitions ? (isAr && list.competitions.title_ar ? list.competitions.title_ar : list.competitions.title) : (
+                                <Badge variant="outline" className="text-[9px] text-chart-4">{isAr ? "بدون مسابقة" : "Unlinked"}</Badge>
+                              )}
+                            </TableCell>
+                            <TableCell><Badge variant="outline" className="text-[10px]">{catDef ? (isAr ? catDef.labelAr : catDef.label) : list.category}</Badge></TableCell>
+                            <TableCell className="text-center text-xs">{listItems.length}</TableCell>
+                            <TableCell><Badge variant="secondary" className="text-[10px]">{list.status || (isAr ? "مسودة" : "Draft")}</Badge></TableCell>
+                            <TableCell>
+                              <div className="flex gap-1" onClick={e => e.stopPropagation()}>
+                                <Button size="icon" variant="ghost" className="h-7 w-7" title={isAr ? "عرض التفاصيل" : "View details"} onClick={() => setSelectedListId(list.id)}>
+                                  <Eye className="h-3.5 w-3.5" />
+                                </Button>
+                                <Button size="icon" variant="ghost" className="h-7 w-7" title={isAr ? "نسخ" : "Copy"} onClick={() => copyList(list)}>
+                                  <Copy className="h-3.5 w-3.5" />
+                                </Button>
+                                <Button size="icon" variant="ghost" className="h-7 w-7 text-destructive hover:text-destructive" title={isAr ? "حذف" : "Delete"} onClick={() => { if (confirm(isAr ? "حذف؟" : "Delete?")) deleteList(list.id); }}>
+                                  <Trash2 className="h-3.5 w-3.5" />
+                                </Button>
+                              </div>
+                            </TableCell>
+                          </TableRow>
+                        );
+                      })}
+                    </TableBody>
+                  </Table>
+                </ScrollArea>
+              )}
+            </>
           )}
+        </TabsContent>
+
+        {/* ── Catalog ── */}
+        <TabsContent value="catalog" className="mt-4">
+          <AdminCatalogManager />
         </TabsContent>
 
         {/* ── Item Requests ── */}
