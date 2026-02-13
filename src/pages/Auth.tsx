@@ -28,6 +28,14 @@ import {
 
 const usernameRegex = /^[a-zA-Z][a-zA-Z0-9_]{2,29}$/;
 
+const loginSchema = z.object({
+  email: z.string().trim().email().max(255),
+  password: z.string().min(6).max(128),
+});
+
+const MAX_LOGIN_ATTEMPTS = 5;
+const LOCKOUT_DURATION_MS = 5 * 60 * 1000; // 5 minutes
+
 type SignUpStep = "contact" | "verify" | "details" | "credentials";
 type SignUpMethod = "phone" | "email";
 type SignInMethod = "phone" | "email";
@@ -84,12 +92,16 @@ export default function Auth() {
 
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const [loginAttempts, setLoginAttempts] = useState(0);
+  const [lockoutUntil, setLockoutUntil] = useState<number | null>(null);
 
   const { user } = useAuth();
   const { language } = useLanguage();
   const navigate = useNavigate();
   const { toast } = useToast();
   const isAr = language === "ar";
+
+  const isLockedOut = lockoutUntil !== null && Date.now() < lockoutUntil;
 
   useEffect(() => {
     if (user && !isResetMode) navigate("/", { replace: true });
@@ -139,23 +151,61 @@ export default function Auth() {
   // ── Sign In with Email ──
   const handleSignInEmail = async () => {
     setErrors({});
+
+    // Rate limiting check
+    if (isLockedOut) {
+      const remainingSec = Math.ceil(((lockoutUntil || 0) - Date.now()) / 1000);
+      toast({
+        variant: "destructive",
+        title: isAr ? "محاولات كثيرة" : "Too many attempts",
+        description: isAr
+          ? `يرجى الانتظار ${remainingSec} ثانية قبل المحاولة مجدداً`
+          : `Please wait ${remainingSec} seconds before trying again`,
+      });
+      return;
+    }
+
     const errs: Record<string, string> = {};
-    const emailResult = z.string().email().safeParse(signInEmail);
+    const emailVal = signInEmail.trim();
+    const emailResult = loginSchema.shape.email.safeParse(emailVal);
     if (!emailResult.success) errs.signInEmail = isAr ? "البريد الإلكتروني غير صالح" : "Invalid email";
     if (signInPassword.length < 6) errs.signInPassword = isAr ? "كلمة المرور قصيرة جداً" : "Password too short";
+    if (signInPassword.length > 128) errs.signInPassword = isAr ? "كلمة المرور طويلة جداً" : "Password too long";
     if (Object.keys(errs).length > 0) { setErrors(errs); return; }
 
     setLoading(true);
-    const { error } = await supabase.auth.signInWithPassword({ email: signInEmail, password: signInPassword });
+    const { error } = await supabase.auth.signInWithPassword({ email: emailVal, password: signInPassword });
     setLoading(false);
+
     if (error) {
+      const newAttempts = loginAttempts + 1;
+      setLoginAttempts(newAttempts);
+
+      if (newAttempts >= MAX_LOGIN_ATTEMPTS) {
+        setLockoutUntil(Date.now() + LOCKOUT_DURATION_MS);
+        setLoginAttempts(0);
+        toast({
+          variant: "destructive",
+          title: isAr ? "تم قفل الحساب مؤقتاً" : "Account temporarily locked",
+          description: isAr
+            ? "محاولات كثيرة. يرجى الانتظار 5 دقائق"
+            : "Too many failed attempts. Please wait 5 minutes",
+        });
+        return;
+      }
+
       let msg = error.message;
       if (error.message.includes("Email not confirmed")) {
         msg = isAr ? "لم يتم تأكيد البريد الإلكتروني. يرجى التحقق من بريدك الوارد" : "Email not confirmed. Please check your inbox";
       } else if (error.message.includes("Invalid login credentials")) {
-        msg = isAr ? "بيانات الدخول غير صحيحة. تحقق من البريد وكلمة المرور" : "Invalid credentials. Check your email and password";
+        msg = isAr
+          ? `بيانات الدخول غير صحيحة. (${MAX_LOGIN_ATTEMPTS - newAttempts} محاولات متبقية)`
+          : `Invalid credentials. (${MAX_LOGIN_ATTEMPTS - newAttempts} attempts remaining)`;
       }
       toast({ variant: "destructive", title: isAr ? "خطأ" : "Error", description: msg });
+    } else {
+      setLoginAttempts(0);
+      setLockoutUntil(null);
     }
   };
 
@@ -188,13 +238,29 @@ export default function Auth() {
 
   const handleSignInPhonePassword = async () => {
     setErrors({});
+
+    if (isLockedOut) {
+      const remainingSec = Math.ceil(((lockoutUntil || 0) - Date.now()) / 1000);
+      toast({
+        variant: "destructive",
+        title: isAr ? "محاولات كثيرة" : "Too many attempts",
+        description: isAr
+          ? `يرجى الانتظار ${remainingSec} ثانية`
+          : `Please wait ${remainingSec} seconds`,
+      });
+      return;
+    }
+
     if (signInPassword.length < 6) {
       setErrors({ signInPassword: isAr ? "كلمة المرور قصيرة جداً" : "Password too short" });
       return;
     }
+    if (signInPassword.length > 128) {
+      setErrors({ signInPassword: isAr ? "كلمة المرور طويلة جداً" : "Password too long" });
+      return;
+    }
 
     setLoading(true);
-    // Find the email linked to this phone using raw query to access email column
     const { data: profile } = await (supabase
       .from("profiles") as any)
       .select("user_id, email")
@@ -224,14 +290,34 @@ export default function Auth() {
 
     const { error } = await supabase.auth.signInWithPassword({ email: accountEmail, password: signInPassword });
     setLoading(false);
+
     if (error) {
+      const newAttempts = loginAttempts + 1;
+      setLoginAttempts(newAttempts);
+
+      if (newAttempts >= MAX_LOGIN_ATTEMPTS) {
+        setLockoutUntil(Date.now() + LOCKOUT_DURATION_MS);
+        setLoginAttempts(0);
+        toast({
+          variant: "destructive",
+          title: isAr ? "تم قفل الحساب مؤقتاً" : "Account temporarily locked",
+          description: isAr ? "محاولات كثيرة. يرجى الانتظار 5 دقائق" : "Too many failed attempts. Please wait 5 minutes",
+        });
+        return;
+      }
+
       let msg = error.message;
       if (error.message.includes("Invalid login credentials")) {
-        msg = isAr ? "كلمة المرور غير صحيحة" : "Incorrect password";
+        msg = isAr
+          ? `كلمة المرور غير صحيحة (${MAX_LOGIN_ATTEMPTS - newAttempts} محاولات متبقية)`
+          : `Incorrect password (${MAX_LOGIN_ATTEMPTS - newAttempts} attempts remaining)`;
       } else if (error.message.includes("Email not confirmed")) {
         msg = isAr ? "لم يتم تأكيد البريد الإلكتروني. يرجى التحقق من بريدك الوارد" : "Email not confirmed. Please check your inbox";
       }
       toast({ variant: "destructive", title: isAr ? "خطأ" : "Error", description: msg });
+    } else {
+      setLoginAttempts(0);
+      setLockoutUntil(null);
     }
   };
 
@@ -924,16 +1010,36 @@ export default function Auth() {
                 </>
               ) : (
                 <>
+                  {isLockedOut && (
+                    <div className="rounded-lg border border-destructive/30 bg-destructive/5 p-3 text-center">
+                      <p className="text-sm font-medium text-destructive">
+                        {isAr ? "تم قفل تسجيل الدخول مؤقتاً بسبب محاولات كثيرة" : "Login temporarily locked due to too many attempts"}
+                      </p>
+                      <p className="text-xs text-muted-foreground mt-1">
+                        {isAr ? "يرجى الانتظار 5 دقائق" : "Please wait 5 minutes"}
+                      </p>
+                    </div>
+                  )}
+
                   <div className="space-y-1.5">
                     <Label htmlFor="signInEmail" className="text-xs">{isAr ? "البريد الإلكتروني" : "Email"}</Label>
                     <Input
                       id="signInEmail"
                       type="email"
                       value={signInEmail}
-                      onChange={(e) => setSignInEmail(e.target.value)}
+                      onChange={(e) => {
+                        setSignInEmail(e.target.value);
+                        if (errors.signInEmail) setErrors((prev) => ({ ...prev, signInEmail: "" }));
+                      }}
                       placeholder={isAr ? "البريد الإلكتروني" : "Email address"}
                       onKeyDown={(e) => e.key === "Enter" && document.getElementById("signInPassword")?.focus()}
+                      maxLength={255}
+                      autoComplete="email"
+                      disabled={isLockedOut}
                     />
+                    {signInEmail && !z.string().email().safeParse(signInEmail.trim()).success && (
+                      <p className="text-[10px] text-muted-foreground">{isAr ? "يرجى إدخال بريد إلكتروني صحيح" : "Please enter a valid email"}</p>
+                    )}
                     {errors.signInEmail && <p className="text-xs text-destructive">{errors.signInEmail}</p>}
                   </div>
 
@@ -948,14 +1054,20 @@ export default function Auth() {
                       id="signInPassword"
                       type="password"
                       value={signInPassword}
-                      onChange={(e) => setSignInPassword(e.target.value)}
+                      onChange={(e) => {
+                        setSignInPassword(e.target.value);
+                        if (errors.signInPassword) setErrors((prev) => ({ ...prev, signInPassword: "" }));
+                      }}
                       placeholder="••••••••"
                       onKeyDown={(e) => e.key === "Enter" && handleSignInEmail()}
+                      maxLength={128}
+                      autoComplete="current-password"
+                      disabled={isLockedOut}
                     />
                     {errors.signInPassword && <p className="text-xs text-destructive">{errors.signInPassword}</p>}
                   </div>
 
-                  <Button className="w-full gap-2" size="lg" disabled={loading} onClick={handleSignInEmail}>
+                  <Button className="w-full gap-2" size="lg" disabled={loading || isLockedOut} onClick={handleSignInEmail}>
                     {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : <LogIn className="h-4 w-4" />}
                     {loading ? (isAr ? "جاري الدخول..." : "Signing in...") : (isAr ? "تسجيل الدخول" : "Sign In")}
                   </Button>
