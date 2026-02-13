@@ -7527,6 +7527,7 @@ export type Database = {
       }
       order_item_requests: {
         Row: {
+          admin_notes: string | null
           assigned_vendor: string | null
           assigned_vendor_ar: string | null
           category: string
@@ -7537,6 +7538,7 @@ export type Database = {
           delivery_deadline: string | null
           delivery_notes: string | null
           delivery_status: string | null
+          dish_template_id: string | null
           fulfilled_at: string | null
           fulfilled_by: string | null
           id: string
@@ -7559,6 +7561,7 @@ export type Database = {
           vendor_id: string | null
         }
         Insert: {
+          admin_notes?: string | null
           assigned_vendor?: string | null
           assigned_vendor_ar?: string | null
           category?: string
@@ -7569,6 +7572,7 @@ export type Database = {
           delivery_deadline?: string | null
           delivery_notes?: string | null
           delivery_status?: string | null
+          dish_template_id?: string | null
           fulfilled_at?: string | null
           fulfilled_by?: string | null
           id?: string
@@ -7591,6 +7595,7 @@ export type Database = {
           vendor_id?: string | null
         }
         Update: {
+          admin_notes?: string | null
           assigned_vendor?: string | null
           assigned_vendor_ar?: string | null
           category?: string
@@ -7601,6 +7606,7 @@ export type Database = {
           delivery_deadline?: string | null
           delivery_notes?: string | null
           delivery_status?: string | null
+          dish_template_id?: string | null
           fulfilled_at?: string | null
           fulfilled_by?: string | null
           id?: string
