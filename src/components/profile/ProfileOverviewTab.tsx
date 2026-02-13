@@ -16,7 +16,7 @@ interface ProfileOverviewTabProps {
 }
 
 /* ── Simple SVG barcode from a string value ── */
-function SimpleBarcode({ value, height = 48 }: { value: string; height?: number }) {
+function SimpleBarcode({ value, height = 50 }: { value: string; height?: number }) {
   const bars: number[] = [];
   bars.push(1, 1, 0, 1, 1, 0);
   for (const char of value) {
@@ -29,20 +29,20 @@ function SimpleBarcode({ value, height = 48 }: { value: string; height?: number 
   bars.push(0, 1, 1, 0, 1, 1);
 
   return (
-    <div className="flex flex-col items-center gap-1.5">
+    <div className="flex flex-col items-center gap-1">
       <svg
         viewBox={`0 0 ${bars.length} ${height}`}
-        className="w-full max-w-[220px]"
+        className="w-full max-w-[200px]"
         height={height}
         preserveAspectRatio="none"
       >
         {bars.map((bar, i) =>
           bar ? (
-            <rect key={i} x={i} y={0} width={0.7} height={height} className="fill-foreground" />
+            <rect key={i} x={i} y={0} width={0.7} height={height} fill="hsl(36, 60%, 35%)" fillOpacity={0.85} />
           ) : null
         )}
       </svg>
-      <span className="font-mono text-[11px] tracking-[0.25em] text-muted-foreground">
+      <span className="font-mono text-[10px] tracking-[0.3em] text-muted-foreground uppercase">
         {value}
       </span>
     </div>
@@ -67,9 +67,11 @@ export function ProfileOverviewTab({ profile, userId }: ProfileOverviewTabProps)
   const { data: qrCode } = useEntityQRCode("user", profile?.username || undefined, "account");
   const verificationUrl = qrCode ? getVerificationUrl(qrCode.code) : "";
 
+  const verificationDigits = qrCode ? qrCode.code.slice(-4) : "";
+
   const handleCopyCode = () => {
-    if (!qrCode) return;
-    navigator.clipboard.writeText(qrCode.code.slice(-4));
+    if (!verificationDigits) return;
+    navigator.clipboard.writeText(verificationDigits);
     toast({ title: isAr ? "تم النسخ" : "Copied" });
   };
 
@@ -113,7 +115,7 @@ export function ProfileOverviewTab({ profile, userId }: ProfileOverviewTabProps)
         </section>
       )}
 
-      {/* ── Career Timeline (Education, Work, Memberships, Competitions, Awards) ── */}
+      {/* ── Career Timeline ── */}
       <section>
         <UserCareerTimeline userId={userId} isAr={isAr} />
       </section>
@@ -146,64 +148,106 @@ export function ProfileOverviewTab({ profile, userId }: ProfileOverviewTabProps)
         </section>
       )}
 
-      {/* ── QR Code · Barcode · Profile Image · Logo ── */}
+      {/* ══════ Premium Golden Identity Card ══════ */}
       {qrCode && (
-        <Card className="overflow-hidden">
-          <CardContent className="py-8">
-            <div className="flex flex-col items-center gap-5">
-              {/* Profile Image */}
-              {profile?.avatar_url && (
+        <section>
+          <div className="relative overflow-hidden rounded-2xl border border-primary/20 bg-gradient-to-br from-primary/10 via-card to-primary/5 shadow-lg">
+            {/* Decorative gold corner accents */}
+            <div className="absolute top-0 left-0 h-20 w-20 border-t-2 border-l-2 border-primary/30 rounded-tl-2xl pointer-events-none" />
+            <div className="absolute bottom-0 right-0 h-20 w-20 border-b-2 border-r-2 border-primary/30 rounded-br-2xl pointer-events-none" />
+
+            {/* Card Content */}
+            <div className="relative z-10 px-6 py-8 sm:px-10 sm:py-10">
+              {/* Header: Logo + Title */}
+              <div className="flex items-center justify-between mb-8">
                 <img
-                  src={profile.avatar_url}
-                  alt={profile.full_name || ""}
-                  className="h-20 w-20 rounded-2xl object-cover ring-2 ring-border shadow-md"
+                  src="/altohaa-logo.png"
+                  alt="Altohaa"
+                  className="h-12 sm:h-14 object-contain"
                 />
-              )}
-
-              {/* Logo */}
-              <img
-                src="/altohaa-logo.png"
-                alt="Altohaa"
-                className="h-14 object-contain"
-              />
-
-              {/* QR Code */}
-              <div className="rounded-xl border bg-background p-4 shadow-sm">
-                <QRCodeSVG
-                  id={`qr-${qrCode.code}`}
-                  value={verificationUrl}
-                  size={150}
-                  level="M"
-                  includeMargin
-                />
+                <span className="text-[10px] sm:text-xs font-semibold tracking-[0.2em] uppercase text-primary/70">
+                  {isAr ? "بطاقة التحقق" : "Verification Card"}
+                </span>
               </div>
 
-              {/* 4-digit Verification Code */}
-              <Badge
-                variant="outline"
-                className="font-mono text-sm tracking-[0.3em] px-4 py-1.5"
-              >
-                {qrCode.code.slice(-4)}
-              </Badge>
+              {/* Center: Avatar + QR side by side */}
+              <div className="flex flex-col sm:flex-row items-center gap-6 sm:gap-10 mb-8">
+                {/* Avatar + Name */}
+                <div className="flex flex-col items-center gap-3 min-w-[140px]">
+                  {profile?.avatar_url ? (
+                    <img
+                      src={profile.avatar_url}
+                      alt={profile.full_name || ""}
+                      className="h-24 w-24 rounded-2xl object-cover ring-2 ring-primary/30 shadow-md"
+                    />
+                  ) : (
+                    <div className="h-24 w-24 rounded-2xl bg-primary/10 flex items-center justify-center">
+                      <span className="text-3xl font-bold text-primary/50">
+                        {(profile?.full_name || "?")[0]}
+                      </span>
+                    </div>
+                  )}
+                  <div className="text-center">
+                    <p className="font-semibold text-sm text-foreground leading-tight">
+                      {isAr ? (profile?.full_name_ar || profile?.full_name) : profile?.full_name}
+                    </p>
+                    {profile?.account_number && (
+                      <p className="font-mono text-[10px] text-muted-foreground mt-0.5 tracking-wider">
+                        {profile.account_number}
+                      </p>
+                    )}
+                  </div>
+                </div>
+
+                {/* QR Code */}
+                <div className="flex flex-col items-center gap-3">
+                  <div className="rounded-xl border border-primary/15 bg-background p-3 shadow-sm">
+                    <QRCodeSVG
+                      id={`qr-${qrCode.code}`}
+                      value={verificationUrl}
+                      size={130}
+                      level="M"
+                      includeMargin
+                      fgColor="hsl(36, 60%, 35%)"
+                    />
+                  </div>
+                  {/* 4-Digit Verification Code */}
+                  <div className="flex items-center gap-1.5">
+                    {verificationDigits.split("").map((digit, i) => (
+                      <span
+                        key={i}
+                        className="inline-flex h-9 w-8 items-center justify-center rounded-lg border border-primary/20 bg-primary/5 font-mono text-lg font-bold text-primary tracking-wide"
+                      >
+                        {digit}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              </div>
 
               {/* Barcode */}
-              <SimpleBarcode value={profile?.account_number || qrCode.code} />
+              <div className="mb-6">
+                <SimpleBarcode value={profile?.account_number || qrCode.code} />
+              </div>
+
+              {/* Divider */}
+              <div className="h-px bg-gradient-to-r from-transparent via-primary/20 to-transparent mb-5" />
 
               {/* Actions */}
-              <div className="flex flex-wrap justify-center gap-2">
+              <div className="flex flex-wrap justify-center gap-2.5">
                 <Button
                   variant="outline"
                   size="sm"
-                  className="gap-1.5 text-xs"
+                  className="gap-1.5 text-xs border-primary/20 hover:bg-primary/5"
                   onClick={handleCopyCode}
                 >
                   <Copy className="h-3.5 w-3.5" />
                   {isAr ? "نسخ الكود" : "Copy Code"}
                 </Button>
                 <Button
-                  variant="secondary"
+                  variant="outline"
                   size="sm"
-                  className="gap-1.5 text-xs"
+                  className="gap-1.5 text-xs border-primary/20 hover:bg-primary/5"
                   onClick={handleSaveContact}
                 >
                   <UserPlus className="h-3.5 w-3.5" />
@@ -211,8 +255,8 @@ export function ProfileOverviewTab({ profile, userId }: ProfileOverviewTabProps)
                 </Button>
               </div>
             </div>
-          </CardContent>
-        </Card>
+          </div>
+        </section>
       )}
     </div>
   );
