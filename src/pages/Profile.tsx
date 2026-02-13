@@ -200,7 +200,7 @@ export default function Profile() {
           {/* Membership Tab */}
           <TabsContent value="membership" className="mt-6">
             {profile && user && (
-              <ProfileMembershipTab profile={profile} userId={user.id} />
+              <ProfileMembershipTab profile={profile} userId={user.id} onMembershipChange={fetchProfile} />
             )}
           </TabsContent>
 

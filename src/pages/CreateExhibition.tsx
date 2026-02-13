@@ -16,6 +16,7 @@ import { ExhibitionOrganizerTicketsStep } from "@/components/exhibitions/wizard/
 import { ExhibitionReviewStep } from "@/components/exhibitions/wizard/ReviewStep";
 import { initialExhibitionData } from "@/components/exhibitions/wizard/types";
 import type { ExhibitionFormData } from "@/components/exhibitions/wizard/types";
+import { EventCreationGate } from "@/components/permissions/EventCreationGate";
 
 export default function CreateExhibition() {
   const { language } = useLanguage();
@@ -107,6 +108,7 @@ export default function CreateExhibition() {
     <div className="flex min-h-screen flex-col">
       <Header />
       <main className="container flex-1 py-8">
+        <EventCreationGate eventType="exhibition">
         <Button variant="ghost" size="sm" onClick={() => navigate("/exhibitions")} className="mb-4">
           <ArrowLeft className="me-2 h-4 w-4" />
           {isAr ? "العودة للفعاليات" : "Back to Events"}
@@ -162,6 +164,7 @@ export default function CreateExhibition() {
             )}
           </div>
         </div>
+        </EventCreationGate>
       </main>
       <Footer />
     </div>

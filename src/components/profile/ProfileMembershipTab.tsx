@@ -1,26 +1,72 @@
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { supabase } from "@/integrations/supabase/client";
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
-import { Separator } from "@/components/ui/separator";
-import { Crown, Star, Shield, Check, ArrowUpCircle, Calendar, AlertTriangle, RefreshCw, Clock } from "lucide-react";
+import { Crown, Star, Shield, Check, ArrowUpCircle, Calendar, AlertTriangle, RefreshCw, Clock, Loader2 } from "lucide-react";
 import { format } from "date-fns";
 import { ar } from "date-fns/locale";
 import { useVerificationStatus } from "@/hooks/useVerification";
 import { Link } from "react-router-dom";
+import { useToast } from "@/hooks/use-toast";
 
 interface ProfileMembershipTabProps {
   profile: any;
   userId: string;
+  onMembershipChange?: () => void;
 }
 
-export function ProfileMembershipTab({ profile, userId }: ProfileMembershipTabProps) {
+export function ProfileMembershipTab({ profile, userId, onMembershipChange }: ProfileMembershipTabProps) {
   const { language } = useLanguage();
   const isAr = language === "ar";
   const { data: verificationStatus } = useVerificationStatus();
+  const { toast } = useToast();
+  const queryClient = useQueryClient();
+
+  const upgradeMutation = useMutation({
+    mutationFn: async (newTier: "basic" | "professional" | "enterprise") => {
+      const expiresAt = new Date();
+      expiresAt.setFullYear(expiresAt.getFullYear() + 1);
+
+      const prevTier = (profile?.membership_tier || "basic") as "basic" | "professional" | "enterprise";
+
+      // Record history
+      await supabase.from("membership_history").insert([{
+        user_id: userId,
+        previous_tier: prevTier,
+        new_tier: newTier,
+      }]);
+
+      // Update profile
+      const { error } = await supabase
+        .from("profiles")
+        .update({
+          membership_tier: newTier,
+          membership_status: "active",
+          membership_expires_at: expiresAt.toISOString(),
+        })
+        .eq("user_id", userId);
+
+      if (error) throw error;
+      return newTier;
+    },
+    onSuccess: (newTier) => {
+      queryClient.invalidateQueries({ queryKey: ["membership-history", userId] });
+      queryClient.invalidateQueries({ queryKey: ["profile-membership", userId] });
+      onMembershipChange?.();
+      toast({
+        title: isAr ? "تم تحديث العضوية!" : "Membership updated!",
+        description: isAr
+          ? `تم ترقية عضويتك إلى ${newTier === "professional" ? "احترافي" : newTier === "enterprise" ? "مؤسسي" : "أساسي"}`
+          : `Your membership has been changed to ${newTier}`,
+      });
+    },
+    onError: (err: any) => {
+      toast({ variant: "destructive", title: "Error", description: err.message });
+    },
+  });
 
   const { data: history } = useQuery({
     queryKey: ["membership-history", userId],
@@ -158,8 +204,8 @@ export function ProfileMembershipTab({ profile, userId }: ProfileMembershipTabPr
 
             {/* Actions */}
             {isExpired && (
-              <Button className="w-full gap-2">
-                <RefreshCw className="h-4 w-4" />
+              <Button className="w-full gap-2" onClick={() => upgradeMutation.mutate((currentTier || "basic") as "basic" | "professional" | "enterprise")} disabled={upgradeMutation.isPending}>
+                {upgradeMutation.isPending ? <Loader2 className="h-4 w-4 animate-spin" /> : <RefreshCw className="h-4 w-4" />}
                 {isAr ? "تجديد العضوية" : "Renew Membership"}
               </Button>
             )}
@@ -197,9 +243,18 @@ export function ProfileMembershipTab({ profile, userId }: ProfileMembershipTabPr
                   {isCurrentTier ? (
                     <Button variant="outline" disabled className="w-full">{isAr ? "خطتك الحالية" : "Current Plan"}</Button>
                   ) : (
-                    <Button variant={tier.featured ? "default" : "outline"} className="w-full gap-1.5">
-                      <ArrowUpCircle className="h-4 w-4" />
-                      {isAr ? "ترقية" : "Upgrade"}
+                    <Button
+                      variant={tier.featured ? "default" : "outline"}
+                      className="w-full gap-1.5"
+                      disabled={upgradeMutation.isPending}
+                      onClick={() => upgradeMutation.mutate(tier.id as "basic" | "professional" | "enterprise")}
+                    >
+                      {upgradeMutation.isPending && upgradeMutation.variables === tier.id ? (
+                        <Loader2 className="h-4 w-4 animate-spin" />
+                      ) : (
+                        <ArrowUpCircle className="h-4 w-4" />
+                      )}
+                      {isAr ? (tier.id === "basic" ? "تخفيض" : "ترقية") : (tier.id === "basic" ? "Downgrade" : "Upgrade")}
                     </Button>
                   )}
                 </CardContent>

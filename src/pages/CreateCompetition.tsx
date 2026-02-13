@@ -19,6 +19,7 @@ import { SupervisingBodiesStep } from "@/components/competitions/wizard/Supervis
 import { ReviewStep } from "@/components/competitions/wizard/ReviewStep";
 import { emptyCategory, emptyCriteria } from "@/components/competitions/wizard/types";
 import type { CompetitionFormData } from "@/components/competitions/wizard/types";
+import { EventCreationGate } from "@/components/permissions/EventCreationGate";
 
 const initialData: CompetitionFormData = {
   title: "", titleAr: "", description: "", descriptionAr: "",
@@ -214,6 +215,7 @@ export default function CreateCompetition() {
     <div className="flex min-h-screen flex-col bg-background">
       <Header />
       <main className="flex-1 py-6 px-3 sm:px-4 md:px-6">
+        <EventCreationGate eventType="competition">
         <div className="mx-auto max-w-2xl">
           <Button variant="ghost" size="sm" onClick={() => navigate("/competitions")} className="mb-3 -ms-2">
             <ArrowLeft className="me-2 h-4 w-4" />
@@ -296,6 +298,7 @@ export default function CreateCompetition() {
             )}
           </div>
         </div>
+        </EventCreationGate>
       </main>
       <Footer />
     </div>
