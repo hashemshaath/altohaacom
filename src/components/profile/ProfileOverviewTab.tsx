@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { useEntityQRCode } from "@/hooks/useQRCode";
 import { UserCareerTimeline } from "@/components/admin/UserCareerTimeline";
 import { UserBadgesDisplay } from "@/components/badges/UserBadgesDisplay";
-import { FileText, Globe, Copy, UserPlus } from "lucide-react";
+import { FileText, Globe, Copy, UserPlus, Download } from "lucide-react";
 import { QRCodeSVG } from "qrcode.react";
 import { useToast } from "@/hooks/use-toast";
 import { getVerificationUrl, generateVCard, downloadVCard } from "@/lib/qrCode";
@@ -13,40 +13,6 @@ import { getVerificationUrl, generateVCard, downloadVCard } from "@/lib/qrCode";
 interface ProfileOverviewTabProps {
   profile: any;
   userId: string;
-}
-
-/* ── Simple SVG barcode from a string value ── */
-function SimpleBarcode({ value, height = 50 }: { value: string; height?: number }) {
-  const bars: number[] = [];
-  bars.push(1, 1, 0, 1, 1, 0);
-  for (const char of value) {
-    const code = char.charCodeAt(0);
-    for (let i = 7; i >= 0; i--) {
-      bars.push((code >> i) & 1);
-    }
-    bars.push(0);
-  }
-  bars.push(0, 1, 1, 0, 1, 1);
-
-  return (
-    <div className="flex flex-col items-center gap-1">
-      <svg
-        viewBox={`0 0 ${bars.length} ${height}`}
-        className="w-full max-w-[200px]"
-        height={height}
-        preserveAspectRatio="none"
-      >
-        {bars.map((bar, i) =>
-          bar ? (
-            <rect key={i} x={i} y={0} width={0.7} height={height} fill="hsl(36, 60%, 35%)" fillOpacity={0.85} />
-          ) : null
-        )}
-      </svg>
-      <span className="font-mono text-[10px] tracking-[0.3em] text-muted-foreground uppercase">
-        {value}
-      </span>
-    </div>
-  );
 }
 
 /* ── Section Title ── */
@@ -59,6 +25,30 @@ function SectionTitle({ icon: Icon, label }: { icon: any; label: string }) {
   );
 }
 
+/* ── Barcode SVG ── */
+function Barcode({ value, height = 44 }: { value: string; height?: number }) {
+  const bars: number[] = [1, 1, 0, 1, 1, 0];
+  for (const char of value) {
+    const code = char.charCodeAt(0);
+    for (let i = 7; i >= 0; i--) bars.push((code >> i) & 1);
+    bars.push(0);
+  }
+  bars.push(0, 1, 1, 0, 1, 1);
+
+  return (
+    <svg
+      viewBox={`0 0 ${bars.length} ${height}`}
+      className="w-full"
+      height={height}
+      preserveAspectRatio="none"
+    >
+      {bars.map((bar, i) =>
+        bar ? <rect key={i} x={i} y={0} width={0.7} height={height} className="fill-primary/70" /> : null
+      )}
+    </svg>
+  );
+}
+
 /* ── Main Component ── */
 export function ProfileOverviewTab({ profile, userId }: ProfileOverviewTabProps) {
   const { language } = useLanguage();
@@ -66,12 +56,11 @@ export function ProfileOverviewTab({ profile, userId }: ProfileOverviewTabProps)
   const isAr = language === "ar";
   const { data: qrCode } = useEntityQRCode("user", profile?.username || undefined, "account");
   const verificationUrl = qrCode ? getVerificationUrl(qrCode.code) : "";
-
-  const verificationDigits = qrCode ? qrCode.code.slice(-4) : "";
+  const digits = qrCode ? qrCode.code.slice(-4) : "";
 
   const handleCopyCode = () => {
-    if (!verificationDigits) return;
-    navigator.clipboard.writeText(verificationDigits);
+    if (!digits) return;
+    navigator.clipboard.writeText(digits);
     toast({ title: isAr ? "تم النسخ" : "Copied" });
   };
 
@@ -83,9 +72,31 @@ export function ProfileOverviewTab({ profile, userId }: ProfileOverviewTabProps)
       website: profile.website || undefined,
       location: profile.location || undefined,
       accountNumber: profile.account_number || undefined,
-      profileUrl: profile.username ? `https://altohaacom.lovable.app/${profile.username}` : undefined,
+      profileUrl: profile.username
+        ? `https://altohaacom.lovable.app/${profile.username}`
+        : undefined,
     });
     downloadVCard(vcard, (profile.full_name || "contact").replace(/\s+/g, "_"));
+  };
+
+  const handleDownloadQR = () => {
+    if (!qrCode) return;
+    const svg = document.getElementById(`qr-${qrCode.code}`);
+    if (!svg) return;
+    const svgData = new XMLSerializer().serializeToString(svg);
+    const canvas = document.createElement("canvas");
+    const ctx = canvas.getContext("2d");
+    const img = new Image();
+    img.onload = () => {
+      canvas.width = img.width;
+      canvas.height = img.height;
+      ctx?.drawImage(img, 0, 0);
+      const a = document.createElement("a");
+      a.download = `qr-${digits}.png`;
+      a.href = canvas.toDataURL("image/png");
+      a.click();
+    };
+    img.src = "data:image/svg+xml;base64," + btoa(svgData);
   };
 
   const socialLinks = [
@@ -148,113 +159,169 @@ export function ProfileOverviewTab({ profile, userId }: ProfileOverviewTabProps)
         </section>
       )}
 
-      {/* ══════ Premium Golden Identity Card ══════ */}
+      {/* ═══════════════════════════════════════════════
+          ██  PREMIUM IDENTITY CARD – from scratch  ██
+          ═══════════════════════════════════════════════ */}
       {qrCode && (
         <section>
-          <div className="relative overflow-hidden rounded-2xl border border-primary/20 bg-gradient-to-br from-primary/10 via-card to-primary/5 shadow-lg">
-            {/* Decorative gold corner accents */}
-            <div className="absolute top-0 left-0 h-20 w-20 border-t-2 border-l-2 border-primary/30 rounded-tl-2xl pointer-events-none" />
-            <div className="absolute bottom-0 right-0 h-20 w-20 border-b-2 border-r-2 border-primary/30 rounded-br-2xl pointer-events-none" />
+          <div
+            className="relative rounded-2xl overflow-hidden"
+            style={{
+              background:
+                "linear-gradient(145deg, hsl(var(--primary) / 0.12) 0%, hsl(var(--card)) 40%, hsl(var(--primary) / 0.06) 100%)",
+            }}
+          >
+            {/* ── Subtle pattern overlay ── */}
+            <div
+              className="absolute inset-0 pointer-events-none opacity-[0.03]"
+              style={{
+                backgroundImage:
+                  "radial-gradient(circle at 1px 1px, hsl(var(--primary)) 1px, transparent 0)",
+                backgroundSize: "24px 24px",
+              }}
+            />
 
-            {/* Card Content */}
-            <div className="relative z-10 px-6 py-8 sm:px-10 sm:py-10">
-              {/* Header: Logo + Title */}
-              <div className="flex items-center justify-between mb-8">
+            {/* ── Gold border line on top ── */}
+            <div className="h-1 bg-gradient-to-r from-primary/40 via-primary to-primary/40" />
+
+            <div className="relative z-10 p-6 sm:p-8">
+              {/* ── Top Row: Logo + Card Title ── */}
+              <div className="flex items-center justify-between mb-6">
                 <img
                   src="/altohaa-logo.png"
                   alt="Altohaa"
-                  className="h-12 sm:h-14 object-contain"
+                  className="h-10 sm:h-12 object-contain"
                 />
-                <span className="text-[10px] sm:text-xs font-semibold tracking-[0.2em] uppercase text-primary/70">
-                  {isAr ? "بطاقة التحقق" : "Verification Card"}
-                </span>
+                <div className="text-end">
+                  <p className="text-[10px] font-semibold tracking-[0.25em] uppercase text-primary">
+                    {isAr ? "بطاقة التحقق الرقمية" : "Digital Verification"}
+                  </p>
+                  <p className="text-[9px] text-muted-foreground tracking-wider mt-0.5">
+                    {isAr ? "بطاقة هوية المنصة" : "Platform Identity Card"}
+                  </p>
+                </div>
               </div>
 
-              {/* Center: Avatar + QR side by side */}
-              <div className="flex flex-col sm:flex-row items-center gap-6 sm:gap-10 mb-8">
-                {/* Avatar + Name */}
-                <div className="flex flex-col items-center gap-3 min-w-[140px]">
+              {/* ── Thin gold separator ── */}
+              <div className="h-px bg-gradient-to-r from-transparent via-primary/25 to-transparent mb-6" />
+
+              {/* ── Main body: avatar + info + QR ── */}
+              <div className="flex flex-col sm:flex-row items-center sm:items-start gap-6">
+                {/* Left: Avatar */}
+                <div className="shrink-0 flex flex-col items-center gap-2">
                   {profile?.avatar_url ? (
                     <img
                       src={profile.avatar_url}
                       alt={profile.full_name || ""}
-                      className="h-24 w-24 rounded-2xl object-cover ring-2 ring-primary/30 shadow-md"
+                      className="h-[88px] w-[88px] rounded-xl object-cover ring-2 ring-primary/25 shadow-lg"
                     />
                   ) : (
-                    <div className="h-24 w-24 rounded-2xl bg-primary/10 flex items-center justify-center">
-                      <span className="text-3xl font-bold text-primary/50">
+                    <div className="h-[88px] w-[88px] rounded-xl bg-primary/10 flex items-center justify-center ring-2 ring-primary/20">
+                      <span className="text-3xl font-bold text-primary/60">
                         {(profile?.full_name || "?")[0]}
                       </span>
                     </div>
                   )}
-                  <div className="text-center">
-                    <p className="font-semibold text-sm text-foreground leading-tight">
-                      {isAr ? (profile?.full_name_ar || profile?.full_name) : profile?.full_name}
-                    </p>
-                    {profile?.account_number && (
-                      <p className="font-mono text-[10px] text-muted-foreground mt-0.5 tracking-wider">
-                        {profile.account_number}
-                      </p>
-                    )}
-                  </div>
                 </div>
 
-                {/* QR Code */}
-                <div className="flex flex-col items-center gap-3">
-                  <div className="rounded-xl border border-primary/15 bg-background p-3 shadow-sm">
-                    <QRCodeSVG
-                      id={`qr-${qrCode.code}`}
-                      value={verificationUrl}
-                      size={130}
-                      level="M"
-                      includeMargin
-                      fgColor="hsl(36, 60%, 35%)"
-                    />
-                  </div>
-                  {/* 4-Digit Verification Code */}
-                  <div className="flex items-center gap-1.5">
-                    {verificationDigits.split("").map((digit, i) => (
+                {/* Center: User info */}
+                <div className="flex-1 text-center sm:text-start min-w-0">
+                  <h4 className="text-lg font-bold text-foreground leading-tight truncate">
+                    {isAr
+                      ? profile?.full_name_ar || profile?.full_name
+                      : profile?.full_name}
+                  </h4>
+                  {profile?.current_title && (
+                    <p className="text-xs text-muted-foreground mt-1">
+                      {profile.current_title}
+                    </p>
+                  )}
+                  {profile?.account_number && (
+                    <p className="font-mono text-[11px] text-primary/70 mt-2 tracking-[0.15em]">
+                      {profile.account_number}
+                    </p>
+                  )}
+
+                  {/* 4-digit verification inline */}
+                  <div className="flex items-center gap-1 mt-3 justify-center sm:justify-start">
+                    <span className="text-[9px] text-muted-foreground me-1.5 uppercase tracking-wider">
+                      {isAr ? "كود" : "Code"}
+                    </span>
+                    {digits.split("").map((d, i) => (
                       <span
                         key={i}
-                        className="inline-flex h-9 w-8 items-center justify-center rounded-lg border border-primary/20 bg-primary/5 font-mono text-lg font-bold text-primary tracking-wide"
+                        className="inline-flex h-7 w-6 items-center justify-center rounded-md border border-primary/25 bg-primary/5 font-mono text-sm font-bold text-primary"
                       >
-                        {digit}
+                        {d}
                       </span>
                     ))}
                   </div>
                 </div>
+
+                {/* Right: QR code */}
+                <div className="shrink-0 flex flex-col items-center gap-2">
+                  <div className="rounded-lg border border-primary/15 bg-background p-2.5 shadow-sm">
+                    <QRCodeSVG
+                      id={`qr-${qrCode.code}`}
+                      value={verificationUrl}
+                      size={100}
+                      level="M"
+                      includeMargin={false}
+                      fgColor="hsl(36, 55%, 38%)"
+                      bgColor="transparent"
+                    />
+                  </div>
+                  <span className="text-[8px] text-muted-foreground tracking-widest uppercase">
+                    {isAr ? "امسح للتحقق" : "Scan to verify"}
+                  </span>
+                </div>
               </div>
 
-              {/* Barcode */}
-              <div className="mb-6">
-                <SimpleBarcode value={profile?.account_number || qrCode.code} />
+              {/* ── Barcode section ── */}
+              <div className="mt-6 px-4 sm:px-8">
+                <Barcode value={profile?.account_number || qrCode.code} />
+                <p className="text-center font-mono text-[9px] tracking-[0.35em] text-muted-foreground mt-1">
+                  {profile?.account_number || qrCode.code}
+                </p>
               </div>
 
-              {/* Divider */}
-              <div className="h-px bg-gradient-to-r from-transparent via-primary/20 to-transparent mb-5" />
+              {/* ── Bottom separator ── */}
+              <div className="h-px bg-gradient-to-r from-transparent via-primary/20 to-transparent mt-5 mb-4" />
 
-              {/* Actions */}
-              <div className="flex flex-wrap justify-center gap-2.5">
+              {/* ── Actions ── */}
+              <div className="flex flex-wrap justify-center gap-2">
                 <Button
                   variant="outline"
                   size="sm"
-                  className="gap-1.5 text-xs border-primary/20 hover:bg-primary/5"
+                  className="gap-1.5 text-[11px] h-8 border-primary/20 hover:bg-primary/5 hover:border-primary/30"
                   onClick={handleCopyCode}
                 >
-                  <Copy className="h-3.5 w-3.5" />
+                  <Copy className="h-3 w-3" />
                   {isAr ? "نسخ الكود" : "Copy Code"}
                 </Button>
                 <Button
                   variant="outline"
                   size="sm"
-                  className="gap-1.5 text-xs border-primary/20 hover:bg-primary/5"
+                  className="gap-1.5 text-[11px] h-8 border-primary/20 hover:bg-primary/5 hover:border-primary/30"
+                  onClick={handleDownloadQR}
+                >
+                  <Download className="h-3 w-3" />
+                  {isAr ? "تحميل QR" : "Download QR"}
+                </Button>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="gap-1.5 text-[11px] h-8 border-primary/20 hover:bg-primary/5 hover:border-primary/30"
                   onClick={handleSaveContact}
                 >
-                  <UserPlus className="h-3.5 w-3.5" />
+                  <UserPlus className="h-3 w-3" />
                   {isAr ? "حفظ جهة اتصال" : "Save Contact"}
                 </Button>
               </div>
             </div>
+
+            {/* ── Gold border line on bottom ── */}
+            <div className="h-1 bg-gradient-to-r from-primary/40 via-primary to-primary/40" />
           </div>
         </section>
       )}
