@@ -13,6 +13,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Label } from "@/components/ui/label";
 import { Lightbulb, Plus, CheckCircle, XCircle, Clock } from "lucide-react";
 import { ORDER_CATEGORIES, ITEM_UNITS } from "./OrderCenterCategories";
+import { notifySuggestionReviewed } from "@/lib/notificationTriggers";
 
 const STATUS_STYLES: Record<string, { icon: typeof Clock; color: string }> = {
   pending: { icon: Clock, color: "bg-muted text-muted-foreground" },
@@ -85,8 +86,18 @@ export function SuggestionPanel({ competitionId, isOrganizer }: Props) {
       }).eq("id", id);
       if (error) throw error;
     },
-    onSuccess: () => {
+    onSuccess: (_, variables) => {
       queryClient.invalidateQueries({ queryKey: ["requirement-suggestions", competitionId] });
+      // Find the suggestion to notify the submitter
+      const suggestion = suggestions?.find(s => s.id === variables.id);
+      if (suggestion?.suggested_by) {
+        notifySuggestionReviewed({
+          userId: suggestion.suggested_by,
+          itemName: suggestion.item_name,
+          status: variables.status,
+          competitionId,
+        });
+      }
       toast({ title: isAr ? "تم تحديث الاقتراح" : "Suggestion updated" });
     },
   });

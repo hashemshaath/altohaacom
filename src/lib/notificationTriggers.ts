@@ -555,3 +555,127 @@ export async function notifyAdminSupportTicket(params: {
     channels: ["in_app", "email"],
   });
 }
+
+// ═══════════════════════════════════════════════
+// ── Order Center Notification Triggers ──
+// ═══════════════════════════════════════════════
+
+/** Notify organizer when a new quote request is sent */
+export async function notifyQuoteRequestSent(params: {
+  userId: string;
+  companyName: string;
+  requestTitle: string;
+  competitionId: string;
+  itemCount: number;
+}) {
+  return sendNotification({
+    userId: params.userId,
+    title: `Quote Request Sent: ${params.requestTitle}`,
+    titleAr: `تم إرسال طلب أسعار: ${params.requestTitle}`,
+    body: `Quote request with ${params.itemCount} items sent to "${params.companyName}".`,
+    bodyAr: `تم إرسال طلب أسعار يحتوي على ${params.itemCount} عنصر إلى "${params.companyName}".`,
+    type: "success",
+    link: `/competitions/${params.competitionId}`,
+    channels: ["in_app"],
+  });
+}
+
+/** Notify when a suggestion is submitted */
+export async function notifySuggestionSubmitted(params: {
+  competitionId: string;
+  itemName: string;
+  suggestedByName: string;
+}) {
+  const { data: roles } = await supabase
+    .from("competition_roles")
+    .select("user_id")
+    .eq("competition_id", params.competitionId)
+    .in("role", ["organizer", "coordinator"])
+    .eq("status", "active");
+
+  if (roles?.length) {
+    await Promise.allSettled(
+      roles.map((r: any) =>
+        sendNotification({
+          userId: r.user_id,
+          title: `New Item Suggestion: ${params.itemName}`,
+          titleAr: `اقتراح عنصر جديد: ${params.itemName}`,
+          body: `${params.suggestedByName} suggested "${params.itemName}" for the competition requirements.`,
+          bodyAr: `${params.suggestedByName} اقترح "${params.itemName}" لمتطلبات المسابقة.`,
+          type: "info",
+          link: `/competitions/${params.competitionId}`,
+          channels: ["in_app"],
+        })
+      )
+    );
+  }
+}
+
+/** Notify when a suggestion is reviewed */
+export async function notifySuggestionReviewed(params: {
+  userId: string;
+  itemName: string;
+  status: string;
+  competitionId: string;
+}) {
+  return sendNotification({
+    userId: params.userId,
+    title: `Suggestion ${params.status}: ${params.itemName}`,
+    titleAr: `تم ${params.status === "approved" ? "قبول" : "رفض"} الاقتراح: ${params.itemName}`,
+    body: `Your suggestion "${params.itemName}" has been ${params.status}.`,
+    bodyAr: `تم ${params.status === "approved" ? "قبول" : "رفض"} اقتراحك "${params.itemName}".`,
+    type: params.status === "approved" ? "success" : "warning",
+    link: `/competitions/${params.competitionId}`,
+    channels: ["in_app"],
+  });
+}
+
+/** Notify when a delivery item is marked as delivered */
+export async function notifyItemDelivered(params: {
+  competitionId: string;
+  itemName: string;
+  deliveredCount: number;
+  totalCount: number;
+}) {
+  const { data: roles } = await supabase
+    .from("competition_roles")
+    .select("user_id")
+    .eq("competition_id", params.competitionId)
+    .in("role", ["organizer", "coordinator"])
+    .eq("status", "active");
+
+  if (roles?.length) {
+    await Promise.allSettled(
+      roles.map((r: any) =>
+        sendNotification({
+          userId: r.user_id,
+          title: `Item Delivered: ${params.itemName}`,
+          titleAr: `تم تسليم: ${params.itemName}`,
+          body: `${params.deliveredCount}/${params.totalCount} items delivered for the competition.`,
+          bodyAr: `${params.deliveredCount}/${params.totalCount} عناصر تم تسليمها للمسابقة.`,
+          type: "success",
+          channels: ["in_app"],
+        })
+      )
+    );
+  }
+}
+
+/** Notify about overdue delivery items */
+export async function notifyDeadlineApproaching(params: {
+  userId: string;
+  competitionId: string;
+  itemName: string;
+  deadline: string;
+}) {
+  return sendNotification({
+    userId: params.userId,
+    title: `Deadline Approaching: ${params.itemName}`,
+    titleAr: `اقتراب الموعد النهائي: ${params.itemName}`,
+    body: `The delivery deadline for "${params.itemName}" is ${params.deadline}. Please ensure timely delivery.`,
+    bodyAr: `الموعد النهائي لتسليم "${params.itemName}" هو ${params.deadline}. يرجى ضمان التسليم في الوقت المناسب.`,
+    type: "warning",
+    link: `/competitions/${params.competitionId}`,
+    channels: ["in_app"],
+  });
+}

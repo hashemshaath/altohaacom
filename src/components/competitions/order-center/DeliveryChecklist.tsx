@@ -7,9 +7,10 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Progress } from "@/components/ui/progress";
+import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { CheckCircle, Package, Clock, AlertTriangle } from "lucide-react";
-import { format, isPast, isWithinInterval, addDays } from "date-fns";
+import { CheckCircle, Package, Clock, AlertTriangle, Calendar } from "lucide-react";
+import { format, isPast } from "date-fns";
 
 interface Props {
   competitionId: string;
@@ -75,6 +76,17 @@ export function DeliveryChecklist({ competitionId, isOrganizer }: Props) {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["checklist-items", competitionId] });
       toast({ title: isAr ? "تم تحديث الحالة" : "Status updated" });
+    },
+  });
+
+  const updateDeadline = useMutation({
+    mutationFn: async ({ id, deadline }: { id: string; deadline: string | null }) => {
+      const { error } = await supabase.from("requirement_list_items").update({ deadline }).eq("id", id);
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["checklist-items", competitionId] });
+      toast({ title: isAr ? "تم تحديث الموعد النهائي" : "Deadline updated" });
     },
   });
 
@@ -186,11 +198,21 @@ export function DeliveryChecklist({ competitionId, isOrganizer }: Props) {
                       </p>
                       <div className="flex items-center gap-2 text-[10px] text-muted-foreground">
                         <span>{item.quantity} {item.unit}</span>
-                        {item.deadline && (
+                        {isOrganizer ? (
+                          <div className="flex items-center gap-1">
+                            <Calendar className="h-3 w-3" />
+                            <Input
+                              type="date"
+                              className="h-5 w-28 text-[10px] border-dashed px-1"
+                              value={item.deadline ? item.deadline.split("T")[0] : ""}
+                              onChange={(e) => updateDeadline.mutate({ id: item.id, deadline: e.target.value || null })}
+                            />
+                          </div>
+                        ) : item.deadline ? (
                           <span className={isOverdue ? "text-destructive font-medium" : ""}>
                             {isAr ? "الموعد:" : "Due:"} {format(new Date(item.deadline), "MMM d")}
                           </span>
-                        )}
+                        ) : null}
                       </div>
                     </div>
                     {isOrganizer && (
