@@ -130,7 +130,7 @@ export default function EditCompetition() {
         judgeIds: existingJudges.map((j) => j.judge_id),
         registrationFeeType: (competition as any).registration_fee_type || "free",
         registrationFee: (competition as any).registration_fee || 0,
-        registrationCurrency: (competition as any).registration_currency || "USD",
+        registrationCurrency: (competition as any).registration_currency || "SAR",
         registrationTaxRate: (competition as any).registration_tax_rate || 0,
         registrationTaxName: (competition as any).registration_tax_name || "VAT",
         registrationTaxNameAr: (competition as any).registration_tax_name_ar || "ضريبة القيمة المضافة",

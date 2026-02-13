@@ -65,7 +65,7 @@ export default function CompanyTransactions() {
   const totalAmount = transactions.reduce((s, t) => s + (t.amount || 0), 0);
   const reconciledCount = transactions.filter((t) => t.is_reconciled).length;
   const pendingCount = transactions.length - reconciledCount;
-  const currency = transactions[0]?.currency || "USD";
+  const currency = transactions[0]?.currency || "SAR";
 
   const typeOptions = [...new Set(transactions.map((t) => t.type))];
 

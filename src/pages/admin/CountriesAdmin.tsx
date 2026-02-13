@@ -68,7 +68,7 @@ const defaultForm = {
   code: "", code_alpha3: "", name: "", name_ar: "", name_local: "",
   flag_emoji: "", continent: "", region: "",
   default_language: "en", supported_languages: ["en"],
-  currency_code: "USD", currency_symbol: "$", currency_name: "", currency_name_ar: "",
+  currency_code: "SAR", currency_symbol: "SAR", currency_name: "", currency_name_ar: "",
   timezone: "UTC", date_format: "yyyy-MM-dd", phone_code: "", phone_format: "",
   is_active: false, is_featured: false, launch_date: "", sort_order: 0,
   tax_rate: 0, tax_name: "VAT", tax_name_ar: "ضريبة القيمة المضافة", requires_tax_number: false,
@@ -592,7 +592,7 @@ export default function CountriesAdmin() {
                   </div>
                   <div className="space-y-1.5">
                     <Label className="text-xs">{language === "ar" ? "رمز العملة" : "Symbol"}</Label>
-                    <Input value={form.currency_symbol} onChange={e => setForm({ ...form, currency_symbol: e.target.value })} placeholder="﷼" />
+                    <Input value={form.currency_symbol} onChange={e => setForm({ ...form, currency_symbol: e.target.value })} placeholder="SAR" />
                   </div>
                   <div className="space-y-1.5">
                     <Label className="text-xs">{language === "ar" ? "اسم العملة" : "Currency Name"}</Label>

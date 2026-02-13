@@ -128,7 +128,7 @@ export default function CompanySettings() {
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="SAR">﷼ SAR - ريال سعودي</SelectItem>
+                  <SelectItem value="SAR">SAR - ريال سعودي</SelectItem>
                   <SelectItem value="USD">USD - US Dollar</SelectItem>
                   <SelectItem value="EUR">EUR - Euro</SelectItem>
                   <SelectItem value="GBP">GBP - British Pound</SelectItem>

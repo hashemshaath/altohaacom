@@ -114,7 +114,7 @@ export default function CompanyOrders() {
                       </TableCell>
                       <TableCell>{getStatusBadge(order.status)}</TableCell>
                       <TableCell className="font-medium">
-                        {order.currency || "USD"} {order.total_amount?.toLocaleString() || "0"}
+                        SAR {order.total_amount?.toLocaleString() || "0"}
                       </TableCell>
                       <TableCell className="text-muted-foreground">
                         {order.created_at ? format(new Date(order.created_at), "MMM dd, yyyy") : "N/A"}

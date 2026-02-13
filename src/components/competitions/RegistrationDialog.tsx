@@ -109,7 +109,7 @@ export function RegistrationForm({
   const allowedTypes = (competition?.allowed_entry_types as string[]) || ["individual"];
   const isPaid = competition?.registration_fee_type === "paid" && (competition?.registration_fee || 0) > 0;
   const fee = competition?.registration_fee || 0;
-  const currency = competition?.registration_currency || "USD";
+  const currency = competition?.registration_currency || "SAR";
   const taxRate = competition?.registration_tax_rate || 0;
   const taxName = isAr ? (competition?.registration_tax_name_ar || "ضريبة") : (competition?.registration_tax_name || "Tax");
 

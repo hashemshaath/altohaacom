@@ -214,7 +214,7 @@ export function SuggestionPanel({ competitionId, isOrganizer }: Props) {
                       </p>
                       <p className="text-xs text-muted-foreground">
                         {isAr ? catInfo?.labelAr : catInfo?.label} · {s.quantity} {s.unit}
-                        {s.estimated_cost ? ` · ﷼ ${Number(s.estimated_cost).toLocaleString()}` : ""}
+                        {s.estimated_cost ? ` · SAR ${Number(s.estimated_cost).toLocaleString()}` : ""}
                       </p>
                     </div>
                   </div>
