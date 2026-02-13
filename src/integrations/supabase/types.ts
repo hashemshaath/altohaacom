@@ -8725,9 +8725,13 @@ export type Database = {
           delivered_by: string | null
           estimated_cost: number | null
           id: string
+          importance: string | null
           item_id: string | null
+          last_edited_at: string | null
+          last_edited_by: string | null
           list_id: string
           notes: string | null
+          notes_ar: string | null
           priority: string | null
           quantity: number
           sort_order: number | null
@@ -8758,9 +8762,13 @@ export type Database = {
           delivered_by?: string | null
           estimated_cost?: number | null
           id?: string
+          importance?: string | null
           item_id?: string | null
+          last_edited_at?: string | null
+          last_edited_by?: string | null
           list_id: string
           notes?: string | null
+          notes_ar?: string | null
           priority?: string | null
           quantity?: number
           sort_order?: number | null
@@ -8791,9 +8799,13 @@ export type Database = {
           delivered_by?: string | null
           estimated_cost?: number | null
           id?: string
+          importance?: string | null
           item_id?: string | null
+          last_edited_at?: string | null
+          last_edited_by?: string | null
           list_id?: string
           notes?: string | null
+          notes_ar?: string | null
           priority?: string | null
           quantity?: number
           sort_order?: number | null
