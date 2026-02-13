@@ -7,15 +7,11 @@ import { Footer } from "@/components/Footer";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Skeleton } from "@/components/ui/skeleton";
 import { SEOHead } from "@/components/SEOHead";
-import { User, Briefcase, Award, Edit, Shield, Crown, BarChart3, Wallet, FileText } from "lucide-react";
+import { User, Edit, Shield, Crown, BarChart3, Wallet, FileText } from "lucide-react";
 import type { Database } from "@/integrations/supabase/types";
 
 import { ProfileHeader } from "@/components/profile/ProfileHeader";
 import { ProfileOverviewTab } from "@/components/profile/ProfileOverviewTab";
-import { ProfileCareerTab } from "@/components/profile/ProfileCareerTab";
-import { ProfileCertificates } from "@/components/profile/ProfileCertificates";
-import { CompetitionHistory } from "@/components/profile/CompetitionHistory";
-import { UserBadgesDisplay } from "@/components/badges/UserBadgesDisplay";
 import { ProfileEditForm } from "@/components/profile/ProfileEditForm";
 import { ProfilePrivacySettings } from "@/components/profile/ProfilePrivacySettings";
 import { UnifiedMembershipTab } from "@/components/membership/UnifiedMembershipTab";
@@ -73,8 +69,6 @@ export default function Profile() {
 
   const tabs = [
     { id: "overview", label: isAr ? "نظرة عامة" : "Overview", icon: User },
-    { id: "career", label: isAr ? "السيرة المهنية" : "Career", icon: Briefcase },
-    { id: "achievements", label: isAr ? "الإنجازات" : "Achievements", icon: Award },
     { id: "membership", label: isAr ? "العضوية" : "Membership", icon: Crown },
     { id: "wallet", label: isAr ? "المحفظة" : "Wallet", icon: Wallet },
     { id: "invoices", label: isAr ? "الفواتير" : "Invoices", icon: FileText },
@@ -110,15 +104,6 @@ export default function Profile() {
             {profile && user && <ProfileOverviewTab profile={profile} userId={user.id} />}
           </TabsContent>
 
-          <TabsContent value="career" className="mt-6">
-            {user && <ProfileCareerTab userId={user.id} />}
-          </TabsContent>
-
-          <TabsContent value="achievements" className="mt-6 space-y-6">
-            {user && <ProfileCertificates userId={user.id} isOwner={true} />}
-            {user && <CompetitionHistory userId={user.id} />}
-            {user && <UserBadgesDisplay userId={user.id} />}
-          </TabsContent>
 
           <TabsContent value="membership" className="mt-6">
             {profile && user && (

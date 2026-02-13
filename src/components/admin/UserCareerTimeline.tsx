@@ -161,7 +161,7 @@ export function UserCareerTimeline({ userId, isAr }: Props) {
     queryKey: ["user-certificates-awards", userId],
     queryFn: async () => {
       const { data, error } = await supabase.from("certificates")
-        .select("id, issued_at, event_name, event_name_ar, achievement, achievement_ar, type, status")
+        .select("id, issued_at, event_name, event_name_ar, achievement, achievement_ar, type, status, verification_code")
         .eq("recipient_id", userId).eq("status", "issued").order("issued_at", { ascending: false });
       if (error) throw error;
       return data || [];
@@ -507,7 +507,7 @@ export function UserCareerTimeline({ userId, isAr }: Props) {
                       <CompactRow key={cert.id} icon={Award} color={section.color}
                         title={isAr ? (cert.event_name_ar || cert.event_name) : cert.event_name}
                         subtitle={isAr ? (cert.achievement_ar || cert.achievement || "") : (cert.achievement || "")}
-                        meta={cert.issued_at ? formatDateShort(cert.issued_at, isAr) : ""}
+                        meta={`${cert.verification_code ? cert.verification_code.slice(-4) : ""}${cert.issued_at ? ` · ${formatDateShort(cert.issued_at, isAr)}` : ""}`}
                         badge={cert.type} badgeVariant="outline"
                         isAr={isAr}
                       />
