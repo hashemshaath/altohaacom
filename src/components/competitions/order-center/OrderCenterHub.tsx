@@ -7,7 +7,7 @@ import { LayoutDashboard, ClipboardList, Package, Lightbulb, CheckSquare, Send, 
 import { RequirementsListPanel } from "../RequirementsListPanel";
 import { SuggestionPanel } from "./SuggestionPanel";
 import { DeliveryChecklist } from "./DeliveryChecklist";
-import { CatalogBrowser } from "./CatalogBrowser";
+import { SupermarketCatalog } from "./SupermarketCatalog";
 import { QuoteRequestPanel } from "./QuoteRequestPanel";
 import { OrderOverviewDashboard } from "./OrderOverviewDashboard";
 import { BudgetTracker } from "./BudgetTracker";
@@ -31,7 +31,7 @@ const TAB_GROUPS = [
       { id: "overview", icon: LayoutDashboard, labelEn: "Overview", labelAr: "نظرة عامة" },
       { id: "requests", icon: FileInput, labelEn: "Requests", labelAr: "الطلبات" },
       { id: "lists", icon: ClipboardList, labelEn: "Lists", labelAr: "القوائم" },
-      { id: "catalog", icon: Package, labelEn: "Catalog", labelAr: "الكتالوج" },
+      { id: "catalog", icon: Package, labelEn: "Supermarket", labelAr: "السوبرماركت" },
     ],
   },
   {
@@ -122,7 +122,7 @@ export function OrderCenterHub({ competitionId, isOrganizer }: Props) {
         {activeTab === "overview" && <OrderOverviewDashboard competitionId={competitionId} isOrganizer={isOrganizer} />}
         {activeTab === "requests" && <ItemRequestPanel competitionId={competitionId} isOrganizer={isOrganizer} />}
         {activeTab === "lists" && <RequirementsListPanel competitionId={competitionId} isOrganizer={isOrganizer} />}
-        {activeTab === "catalog" && <CatalogBrowser competitionId={competitionId} isOrganizer={isOrganizer} />}
+        {activeTab === "catalog" && <SupermarketCatalog />}
         {activeTab === "checklist" && <DeliveryChecklist competitionId={competitionId} isOrganizer={isOrganizer} />}
         {activeTab === "quotes" && <QuoteRequestPanel competitionId={competitionId} isOrganizer={isOrganizer} />}
         {activeTab === "budget" && <BudgetTracker competitionId={competitionId} isOrganizer={isOrganizer} />}
