@@ -748,6 +748,36 @@ export type Database = {
         }
         Relationships: []
       }
+      ai_analytics_reports: {
+        Row: {
+          content: string
+          created_at: string
+          data_snapshot: Json | null
+          generated_at: string
+          id: string
+          language: string
+          report_type: string
+        }
+        Insert: {
+          content: string
+          created_at?: string
+          data_snapshot?: Json | null
+          generated_at?: string
+          id?: string
+          language?: string
+          report_type?: string
+        }
+        Update: {
+          content?: string
+          created_at?: string
+          data_snapshot?: Json | null
+          generated_at?: string
+          id?: string
+          language?: string
+          report_type?: string
+        }
+        Relationships: []
+      }
       article_tags: {
         Row: {
           article_id: string
