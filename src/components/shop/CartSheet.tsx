@@ -11,6 +11,7 @@ import { toast } from "@/hooks/use-toast";
 import { useState } from "react";
 import type { useCart } from "@/hooks/useCart";
 import { useNavigate } from "react-router-dom";
+import { formatCurrency, SAR_SYMBOL } from "@/lib/currencyFormatter";
 
 interface CartSheetProps {
   open: boolean;
@@ -180,16 +181,16 @@ export function CartSheet({ open, onOpenChange, cart }: CartSheetProps) {
                     </div>
                     <div className="flex-1 min-w-0">
                       <p className="text-sm font-medium line-clamp-1">{title}</p>
-                      <div className="flex items-center gap-1.5">
-                        <p className="text-sm font-bold text-primary">
-                          {item.currency} {item.price.toFixed(2)}
-                        </p>
-                        {hasDiscount && (
-                          <p className="text-xs text-muted-foreground line-through">
-                            {item.currency} {item.compare_at_price!.toFixed(2)}
-                          </p>
-                        )}
-                      </div>
+                       <div className="flex items-center gap-1.5">
+                         <p className="text-sm font-bold text-primary">
+                           {formatCurrency(item.price, language as "en" | "ar")}
+                         </p>
+                         {hasDiscount && (
+                           <p className="text-xs text-muted-foreground line-through">
+                             {formatCurrency(item.compare_at_price!, language as "en" | "ar")}
+                           </p>
+                         )}
+                       </div>
                       <div className="mt-1.5 flex items-center gap-2">
                         <div className="flex items-center rounded border">
                           <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => cart.updateQuantity(item.product_id, item.quantity - 1)}>
@@ -206,7 +207,7 @@ export function CartSheet({ open, onOpenChange, cart }: CartSheetProps) {
                       </div>
                     </div>
                     <p className="text-sm font-semibold shrink-0">
-                      {item.currency} {(item.price * item.quantity).toFixed(2)}
+                      {formatCurrency(item.price * item.quantity, language as "en" | "ar")}
                     </p>
                   </div>
                 );
@@ -241,39 +242,39 @@ export function CartSheet({ open, onOpenChange, cart }: CartSheetProps) {
                 <div className="flex items-center gap-1.5 rounded-lg bg-chart-2/10 px-3 py-1.5 text-xs text-chart-2">
                   <Percent className="h-3 w-3" />
                   <span>
-                    {cart.appliedDiscount.code} – {cart.appliedDiscount.type === "percentage" ? `${cart.appliedDiscount.value}%` : `${currency} ${cart.appliedDiscount.value}`} {isAr ? "خصم" : "off"}
+                    {cart.appliedDiscount.code} – {cart.appliedDiscount.type === "percentage" ? `${cart.appliedDiscount.value}%` : formatCurrency(cart.appliedDiscount.value, language as "en" | "ar")} {isAr ? "خصم" : "off"}
                   </span>
                 </div>
               )}
 
               <Separator />
 
-              {/* Summary */}
-              <div className="space-y-1.5 text-sm">
-                <div className="flex justify-between">
-                  <span className="text-muted-foreground">{isAr ? "المجموع الفرعي" : "Subtotal"}</span>
-                  <span>{currency} {cart.subtotal.toFixed(2)}</span>
-                </div>
-                {cart.taxAmount > 0 && (
-                  <div className="flex justify-between">
-                    <span className="text-muted-foreground">{isAr ? "الضريبة" : "Tax"}</span>
-                    <span>{currency} {cart.taxAmount.toFixed(2)}</span>
-                  </div>
-                )}
-                {cart.discountAmount > 0 && (
-                  <div className="flex justify-between text-chart-2">
-                    <span>{isAr ? "الخصم" : "Discount"}</span>
-                    <span>-{currency} {cart.discountAmount.toFixed(2)}</span>
-                  </div>
-                )}
-              </div>
+               {/* Summary */}
+               <div className="space-y-1.5 text-sm">
+                 <div className="flex justify-between">
+                   <span className="text-muted-foreground">{isAr ? "المجموع الفرعي" : "Subtotal"}</span>
+                   <span>{formatCurrency(cart.subtotal, language as "en" | "ar")}</span>
+                 </div>
+                 {cart.taxAmount > 0 && (
+                   <div className="flex justify-between">
+                     <span className="text-muted-foreground">{isAr ? "الضريبة" : "Tax"}</span>
+                     <span>{formatCurrency(cart.taxAmount, language as "en" | "ar")}</span>
+                   </div>
+                 )}
+                 {cart.discountAmount > 0 && (
+                   <div className="flex justify-between text-chart-2">
+                     <span>{isAr ? "الخصم" : "Discount"}</span>
+                     <span>-{formatCurrency(cart.discountAmount, language as "en" | "ar")}</span>
+                   </div>
+                 )}
+               </div>
 
-              <Separator />
+               <Separator />
 
-              <div className="flex items-center justify-between text-lg font-bold">
-                <span>{isAr ? "الإجمالي" : "Total"}</span>
-                <span className="text-primary">{currency} {cart.totalPrice.toFixed(2)}</span>
-              </div>
+               <div className="flex items-center justify-between text-lg font-bold">
+                 <span>{isAr ? "الإجمالي" : "Total"}</span>
+                 <span className="text-primary">{formatCurrency(cart.totalPrice, language as "en" | "ar")}</span>
+               </div>
 
               <Button className="w-full" size="lg" onClick={handlePlaceOrder} disabled={isPlacing}>
                 {isPlacing ? (isAr ? "جارٍ تقديم الطلب..." : "Placing order...") : (isAr ? "تقديم الطلب" : "Place Order")}

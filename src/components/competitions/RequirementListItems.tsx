@@ -13,8 +13,8 @@ import { Trash2, Package, Store, ChevronDown, ChevronUp } from "lucide-react";
 import { AIRequirementsSuggest } from "./AIRequirementsSuggest";
 import { SupermarketListPicker } from "./order-center/SupermarketListPicker";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
-
 import { ITEM_STATUS_LABELS, PRIORITY_LABELS, getStatusLabel } from "./order-center/OrderStatusLabels";
+import { formatCurrency } from "@/lib/currencyFormatter";
 
 const PRIORITY_COLORS: Record<string, string> = {
   low: "bg-muted text-muted-foreground",
@@ -78,7 +78,7 @@ export function RequirementListItems({ listId, competitionId, listCategory = "ge
           <Badge variant="outline">{listItems?.length || 0} {language === "ar" ? "عنصر" : "items"}</Badge>
           {totalCost > 0 && (
             <Badge variant="secondary">
-              {language === "ar" ? "التكلفة التقديرية:" : "Est. Cost:"} ${totalCost.toLocaleString()}
+              {language === "ar" ? "التكلفة التقديرية:" : "Est. Cost:"} {formatCurrency(totalCost, language as "en" | "ar")}
             </Badge>
           )}
         </div>
@@ -162,7 +162,7 @@ export function RequirementListItems({ listId, competitionId, listCategory = "ge
                       {item.notes && <p className="text-xs text-muted-foreground">{item.notes}</p>}
                     </TableCell>
                     <TableCell>{item.quantity} {item.unit}</TableCell>
-                    <TableCell>{item.estimated_cost ? `$${(Number(item.estimated_cost) * item.quantity).toLocaleString()}` : "—"}</TableCell>
+                    <TableCell>{item.estimated_cost ? formatCurrency(Number(item.estimated_cost) * item.quantity, language as "en" | "ar") : "—"}</TableCell>
                     <TableCell>
                       <Badge className={PRIORITY_COLORS[item.priority || "medium"]} variant="outline">
                         {getStatusLabel(PRIORITY_LABELS, item.priority || "medium", language)}

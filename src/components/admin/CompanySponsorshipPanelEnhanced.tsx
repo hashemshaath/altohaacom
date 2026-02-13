@@ -10,6 +10,7 @@ import { Separator } from "@/components/ui/separator";
 import { useToast } from "@/hooks/use-toast";
 import { Crown, Star, Medal, Award, Package, Sparkles, Calendar, Loader2 } from "lucide-react";
 import { format } from "date-fns";
+import { formatCurrency } from "@/lib/currencyFormatter";
 
 const TIER_ICONS: Record<string, any> = {
   platinum: Crown, gold: Star, silver: Medal, bronze: Award, custom: Package,
@@ -189,9 +190,9 @@ export function CompanySponsorshipPanelEnhanced({ companyId }: Props) {
                           {isAr ? (s.sponsorship_packages?.name_ar || s.sponsorship_packages?.name) : s.sponsorship_packages?.name || "—"}
                         </Badge>
                       </TableCell>
-                      <TableCell className="font-medium">
-                        {s.sponsorship_packages?.price ? `${Number(s.sponsorship_packages.price).toLocaleString()} SAR` : "—"}
-                      </TableCell>
+                       <TableCell className="font-medium">
+                         {s.sponsorship_packages?.price ? formatCurrency(Number(s.sponsorship_packages.price), language as "en" | "ar") : "—"}
+                       </TableCell>
                       <TableCell>
                         <Badge variant={s.status === "active" ? "default" : "secondary"}>{s.status}</Badge>
                       </TableCell>

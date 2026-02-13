@@ -4,6 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { DollarSign, Receipt, Handshake, TrendingUp } from "lucide-react";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, Legend } from "recharts";
+import { formatCurrency, SAR_SYMBOL } from "@/lib/currencyFormatter";
 
 const COLORS = ["hsl(var(--primary))", "hsl(var(--chart-2))", "hsl(var(--chart-3))", "hsl(var(--chart-4))", "hsl(var(--chart-5))"];
 
@@ -67,10 +68,10 @@ export default function FinancialReports() {
   });
 
   const cards = [
-    { label: language === "ar" ? "إيرادات الطلبات" : "Order Revenue", value: `${(data?.totalOrderRevenue || 0).toLocaleString()} SAR`, icon: DollarSign },
+    { label: language === "ar" ? "إيرادات الطلبات" : "Order Revenue", value: formatCurrency(data?.totalOrderRevenue || 0, language as "en" | "ar"), icon: DollarSign },
     { label: language === "ar" ? "عدد الطلبات" : "Total Orders", value: data?.orderCount || 0, icon: Receipt },
-    { label: language === "ar" ? "إيرادات الرعاية" : "Sponsorship Revenue", value: `${(data?.totalSponsorship || 0).toLocaleString()} SAR`, icon: Handshake },
-    { label: language === "ar" ? "حجم المعاملات" : "Transaction Volume", value: `${(data?.totalTransactions || 0).toLocaleString()} SAR`, icon: TrendingUp },
+    { label: language === "ar" ? "إيرادات الرعاية" : "Sponsorship Revenue", value: formatCurrency(data?.totalSponsorship || 0, language as "en" | "ar"), icon: Handshake },
+    { label: language === "ar" ? "حجم المعاملات" : "Transaction Volume", value: formatCurrency(data?.totalTransactions || 0, language as "en" | "ar"), icon: TrendingUp },
   ];
 
   return (
@@ -101,7 +102,7 @@ export default function FinancialReports() {
                   <CartesianGrid strokeDasharray="3 3" />
                   <XAxis dataKey="month" />
                   <YAxis />
-                  <Tooltip formatter={(value: number) => `${value.toLocaleString()} SAR`} />
+                   <Tooltip formatter={(value: number) => formatCurrency(value, language as "en" | "ar")} />
                   <Bar dataKey="amount" fill="hsl(var(--primary))" radius={[4, 4, 0, 0]} />
                 </BarChart>
               </ResponsiveContainer>
@@ -124,7 +125,7 @@ export default function FinancialReports() {
                       <Cell key={i} fill={COLORS[i % COLORS.length]} />
                     ))}
                   </Pie>
-                  <Tooltip formatter={(value: number) => `${value.toLocaleString()} SAR`} />
+                  <Tooltip formatter={(value: number) => formatCurrency(value, language as "en" | "ar")} />
                   <Legend />
                 </PieChart>
               </ResponsiveContainer>

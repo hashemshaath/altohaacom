@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { Crown, Trophy, Calendar, MapPin, ArrowRight, Building2, Sparkles, Users } from "lucide-react";
 import { format } from "date-fns";
+import { formatCurrency, SAR_SYMBOL } from "@/lib/currencyFormatter";
 
 const TIER_LABELS: Record<string, { en: string; ar: string; color: string }> = {
   platinum: { en: "Platinum", ar: "بلاتيني", color: "bg-chart-3/10 text-chart-3 border-chart-3/30" },
@@ -97,11 +98,11 @@ export function SponsorshipOpportunities() {
                       <span className="text-xs font-medium">
                         {isAr && pkg.name_ar ? pkg.name_ar : pkg.name}
                       </span>
-                      {pkg.price && (
-                        <span className="text-xs font-bold">
-                          {Number(pkg.price).toLocaleString()} {pkg.currency || "SAR"}
-                        </span>
-                      )}
+                       {pkg.price && (
+                         <span className="text-xs font-bold">
+                           {formatCurrency(Number(pkg.price), language as "en" | "ar")}
+                         </span>
+                       )}
                     </div>
                   );
                 })}
