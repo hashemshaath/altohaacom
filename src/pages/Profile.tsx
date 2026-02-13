@@ -7,7 +7,7 @@ import { Footer } from "@/components/Footer";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Skeleton } from "@/components/ui/skeleton";
 import { SEOHead } from "@/components/SEOHead";
-import { User, Briefcase, Award, Edit, Shield, Crown, BarChart3 } from "lucide-react";
+import { User, Briefcase, Award, Edit, Shield, Crown, BarChart3, History } from "lucide-react";
 import type { Database } from "@/integrations/supabase/types";
 
 import { ProfileHeader } from "@/components/profile/ProfileHeader";
@@ -21,6 +21,7 @@ import { ProfilePrivacySettings } from "@/components/profile/ProfilePrivacySetti
 import { ProfileMembershipTab } from "@/components/profile/ProfileMembershipTab";
 import { ProfessionalMembershipDashboard } from "@/components/profile/ProfessionalMembershipDashboard";
 import { ProfileAnalyticsDashboard } from "@/components/profile/ProfileAnalyticsDashboard";
+import { UserModificationHistory } from "@/components/admin/UserModificationHistory";
 import { useSearchParams } from "react-router-dom";
 
 type Profile = Database["public"]["Tables"]["profiles"]["Row"];
@@ -79,12 +80,13 @@ export default function Profile() {
     { id: "certificates", label: isAr ? "الشهادات والإنجازات" : "Achievements", icon: Award },
     { id: "membership", label: isAr ? "العضوية" : "Membership", icon: Crown },
     { id: "analytics", label: isAr ? "الإحصائيات" : "Analytics", icon: BarChart3 },
+    { id: "history", label: isAr ? "سجل التعديلات" : "History", icon: History },
     { id: "edit", label: isAr ? "تعديل" : "Edit", icon: Edit },
     { id: "privacy", label: isAr ? "الخصوصية" : "Privacy", icon: Shield },
   ];
 
   return (
-    <div className="flex min-h-screen flex-col bg-background">
+    <div className="flex min-h-screen flex-col bg-background" dir={isAr ? "rtl" : "ltr"}>
       <SEOHead title="Profile" description="Your Altohaa profile" />
       <Header />
       <main className="container flex-1 py-6 md:py-8 max-w-5xl">
@@ -147,6 +149,18 @@ export default function Profile() {
           {/* Analytics */}
           <TabsContent value="analytics" className="mt-6">
             {user && <ProfileAnalyticsDashboard userId={user.id} />}
+          </TabsContent>
+
+          {/* Modification History */}
+          <TabsContent value="history" className="mt-6">
+            {user && (
+              <div className="space-y-4">
+                <p className="text-sm text-muted-foreground">
+                  {isAr ? "سجل جميع التعديلات التي تمت على ملفك الشخصي" : "A log of all modifications made to your profile"}
+                </p>
+                <UserModificationHistory userId={user.id} isAr={isAr} />
+              </div>
+            )}
           </TabsContent>
 
           {/* Edit */}

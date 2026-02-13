@@ -10,7 +10,7 @@ export function ProfileCareerTab({ userId }: ProfileCareerTabProps) {
   const isAr = language === "ar";
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-4" dir={isAr ? "rtl" : "ltr"}>
       <p className="text-sm text-muted-foreground">
         {isAr
           ? "أضف سجلك المهني والتعليمي والعضويات والجوائز لبناء ملفك الاحترافي."

@@ -97,7 +97,7 @@ export function ProfileCertificates({ userId, isOwner = false }: ProfileCertific
   };
 
   return (
-    <Card>
+    <Card dir={isAr ? "rtl" : "ltr"}>
       <CardHeader className="pb-3">
         <CardTitle className="flex items-center gap-2 text-base">
           <Award className="h-4 w-4 text-primary" />

@@ -98,7 +98,7 @@ export function ProfileOverviewTab({ profile, userId }: ProfileOverviewTabProps)
   const eduRecords = careerRecords.filter((r: any) => r.record_type === "education");
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6" dir={isAr ? "rtl" : "ltr"}>
       {/* About / Bio */}
       {(profile?.bio || profile?.bio_ar) && (
         <section>
