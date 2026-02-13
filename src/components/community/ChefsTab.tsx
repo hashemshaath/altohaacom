@@ -53,7 +53,7 @@ export function ChefsTab() {
     const [rolesRes, followingRes] = await Promise.all([
       supabase.from("user_roles").select("user_id, role").in("user_id", userIds),
       user
-        ? supabase.from("connections").select("following_id").eq("follower_id", user.id).in("following_id", userIds)
+        ? supabase.from("user_follows").select("following_id").eq("follower_id", user.id).in("following_id", userIds)
         : { data: [] },
     ]);
 
@@ -87,9 +87,9 @@ export function ChefsTab() {
       return;
     }
     if (isFollowing) {
-      await supabase.from("connections").delete().eq("follower_id", user.id).eq("following_id", targetId);
+      await supabase.from("user_follows").delete().eq("follower_id", user.id).eq("following_id", targetId);
     } else {
-      await supabase.from("connections").insert({ follower_id: user.id, following_id: targetId });
+      await supabase.from("user_follows").insert({ follower_id: user.id, following_id: targetId });
     }
     setChefs((prev) =>
       prev.map((c) => (c.user_id === targetId ? { ...c, is_following: !isFollowing } : c))

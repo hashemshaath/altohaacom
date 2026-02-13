@@ -23,14 +23,14 @@ import { QRCodeDisplay } from "@/components/qr/QRCodeDisplay";
 import { useEntityQRCode } from "@/hooks/useQRCode";
 import { SEOHead } from "@/components/SEOHead";
 import { ProfileShareButtons } from "@/components/profile/ProfileShareButtons";
-import { useFollowStats, useIsFollowing, useToggleFollow, useFollowersList } from "@/hooks/useFollow";
+import { useFollowStats, useIsFollowing, useToggleFollow, useFollowersList, useFollowPrivacy, usePendingFollowRequest } from "@/hooks/useFollow";
 import { useUserSpecialties } from "@/hooks/useSpecialties";
 import { useRecordProfileView } from "@/hooks/useProfileViews";
 import {
   User, MapPin, Globe, Award, BadgeCheck, Instagram, Twitter, Facebook,
   Linkedin, Youtube, ChefHat, ArrowLeft, Calendar, Earth, UserPlus,
   UserMinus, Loader2, Users, Briefcase, GraduationCap, Building2,
-  Mail, Phone, ExternalLink, Trophy, Medal, ImageIcon, Eye,
+  Mail, Phone, ExternalLink, Trophy, Medal, ImageIcon, Eye, Clock, Lock,
 } from "lucide-react";
 import { countryFlag } from "@/lib/countryFlag";
 import { useAllCountries } from "@/hooks/useCountries";
@@ -135,6 +135,8 @@ export default function PublicProfile() {
   const toggleFollow = useToggleFollow(profile?.user_id);
   const { data: followersList = [] } = useFollowersList(followListOpen ? profile?.user_id : undefined, followListOpen || "followers");
   const { data: userSpecialties = [] } = useUserSpecialties(profile?.user_id);
+  const { data: followPrivacy } = useFollowPrivacy(profile?.user_id);
+  const { data: pendingRequest } = usePendingFollowRequest(profile?.user_id);
 
   const { data: mediaFiles = [] } = useQuery({
     queryKey: ["user-media-gallery", profile?.user_id],
@@ -315,18 +317,28 @@ export default function PublicProfile() {
 
                 {/* Action Column */}
                 <div className="flex flex-col items-center gap-2 shrink-0">
-                  {user && !isOwnProfile && (
+                  {user && !isOwnProfile && followPrivacy !== "private" && (
                     <Button
-                      variant={isFollowing ? "outline" : "default"}
+                      variant={isFollowing ? "outline" : pendingRequest ? "secondary" : "default"}
                       size="sm"
-                      onClick={() => toggleFollow.mutate(!!isFollowing)}
-                      disabled={toggleFollow.isPending}
+                      onClick={() => !pendingRequest && toggleFollow.mutate(!!isFollowing)}
+                      disabled={toggleFollow.isPending || !!pendingRequest}
                       className="w-full"
                     >
                       {toggleFollow.isPending ? <Loader2 className="me-1.5 h-3.5 w-3.5 animate-spin" /> :
-                        isFollowing ? <UserMinus className="me-1.5 h-3.5 w-3.5" /> : <UserPlus className="me-1.5 h-3.5 w-3.5" />}
-                      {isFollowing ? (isAr ? "إلغاء" : "Unfollow") : (isAr ? "متابعة" : "Follow")}
+                        isFollowing ? <UserMinus className="me-1.5 h-3.5 w-3.5" /> :
+                        pendingRequest ? <Clock className="me-1.5 h-3.5 w-3.5" /> :
+                        <UserPlus className="me-1.5 h-3.5 w-3.5" />}
+                      {isFollowing ? (isAr ? "إلغاء" : "Unfollow") :
+                       pendingRequest ? (isAr ? "في الانتظار" : "Pending") :
+                       (isAr ? "متابعة" : "Follow")}
                     </Button>
+                  )}
+                  {user && !isOwnProfile && followPrivacy === "private" && (
+                    <Badge variant="secondary" className="text-xs gap-1">
+                      <Lock className="h-3 w-3" />
+                      {isAr ? "حساب خاص" : "Private Account"}
+                    </Badge>
                   )}
                   <div className="flex gap-2">
                     <MessageButton userId={profile.user_id} variant="outline" />

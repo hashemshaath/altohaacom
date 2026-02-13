@@ -5546,6 +5546,33 @@ export type Database = {
         }
         Relationships: []
       }
+      follow_requests: {
+        Row: {
+          created_at: string
+          id: string
+          requester_id: string
+          responded_at: string | null
+          status: string
+          target_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          requester_id: string
+          responded_at?: string | null
+          status?: string
+          target_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          requester_id?: string
+          responded_at?: string | null
+          status?: string
+          target_id?: string
+        }
+        Relationships: []
+      }
       global_awards_system: {
         Row: {
           award_type: string
@@ -8352,6 +8379,7 @@ export type Database = {
             | Database["public"]["Enums"]["experience_level"]
             | null
           facebook: string | null
+          follow_privacy: string
           full_name: string | null
           full_name_ar: string | null
           gender: string | null
@@ -8426,6 +8454,7 @@ export type Database = {
             | Database["public"]["Enums"]["experience_level"]
             | null
           facebook?: string | null
+          follow_privacy?: string
           full_name?: string | null
           full_name_ar?: string | null
           gender?: string | null
@@ -8502,6 +8531,7 @@ export type Database = {
             | Database["public"]["Enums"]["experience_level"]
             | null
           facebook?: string | null
+          follow_privacy?: string
           full_name?: string | null
           full_name_ar?: string | null
           gender?: string | null

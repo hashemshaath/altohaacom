@@ -11,7 +11,8 @@ import { ChefsTab } from "@/components/community/ChefsTab";
 import { GroupsTab } from "@/components/community/GroupsTab";
 import { RecipesTab } from "@/components/community/RecipesTab";
 import { EventsTab } from "@/components/community/EventsTab";
-import { Users, Newspaper, ChefHat, CalendarDays, UsersRound, Globe, MessageCircle } from "lucide-react";
+import { NetworkTab } from "@/components/community/NetworkTab";
+import { Users, Newspaper, ChefHat, CalendarDays, UsersRound, Globe, MessageCircle, UserPlus } from "lucide-react";
 
 export default function Community() {
   const { t, language } = useLanguage();
@@ -94,6 +95,10 @@ export default function Community() {
               <UsersRound className="h-3.5 w-3.5" />
               {t("groups")}
             </TabsTrigger>
+            <TabsTrigger value="network" className="gap-1.5 rounded-md text-xs data-[state=active]:bg-background data-[state=active]:shadow-sm sm:text-sm">
+              <UserPlus className="h-3.5 w-3.5" />
+              {isAr ? "الشبكة" : "Network"}
+            </TabsTrigger>
           </TabsList>
 
           <TabsContent value="feed"><FeedTab /></TabsContent>
@@ -101,6 +106,7 @@ export default function Community() {
           <TabsContent value="events"><EventsTab /></TabsContent>
           <TabsContent value="chefs"><ChefsTab /></TabsContent>
           <TabsContent value="groups"><GroupsTab /></TabsContent>
+          <TabsContent value="network"><NetworkTab /></TabsContent>
         </Tabs>
 
         {/* In-feed Ad */}
