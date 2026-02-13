@@ -2486,6 +2486,69 @@ export type Database = {
           },
         ]
       }
+      company_registration_requests: {
+        Row: {
+          additional_documents: Json | null
+          business_license_url: string | null
+          company_name: string
+          company_name_ar: string | null
+          company_type: string
+          contact_email: string
+          contact_name: string
+          contact_name_ar: string | null
+          contact_phone: string
+          country_code: string
+          created_at: string | null
+          id: string
+          registration_number: string | null
+          rejection_reason: string | null
+          reviewed_by: string | null
+          status: string | null
+          submitted_by: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          additional_documents?: Json | null
+          business_license_url?: string | null
+          company_name: string
+          company_name_ar?: string | null
+          company_type: string
+          contact_email: string
+          contact_name: string
+          contact_name_ar?: string | null
+          contact_phone: string
+          country_code: string
+          created_at?: string | null
+          id?: string
+          registration_number?: string | null
+          rejection_reason?: string | null
+          reviewed_by?: string | null
+          status?: string | null
+          submitted_by?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          additional_documents?: Json | null
+          business_license_url?: string | null
+          company_name?: string
+          company_name_ar?: string | null
+          company_type?: string
+          contact_email?: string
+          contact_name?: string
+          contact_name_ar?: string | null
+          contact_phone?: string
+          country_code?: string
+          created_at?: string | null
+          id?: string
+          registration_number?: string | null
+          rejection_reason?: string | null
+          reviewed_by?: string | null
+          status?: string | null
+          submitted_by?: string | null
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
       company_role_assignments: {
         Row: {
           assigned_at: string | null
@@ -4270,6 +4333,48 @@ export type Database = {
           is_active?: boolean | null
           name?: string
           name_ar?: string | null
+        }
+        Relationships: []
+      }
+      email_verifications: {
+        Row: {
+          attempts: number | null
+          created_at: string | null
+          email: string
+          expires_at: string
+          id: string
+          locked_until: string | null
+          max_attempts: number | null
+          updated_at: string | null
+          user_id: string | null
+          verification_code: string
+          verified_at: string | null
+        }
+        Insert: {
+          attempts?: number | null
+          created_at?: string | null
+          email: string
+          expires_at?: string
+          id?: string
+          locked_until?: string | null
+          max_attempts?: number | null
+          updated_at?: string | null
+          user_id?: string | null
+          verification_code: string
+          verified_at?: string | null
+        }
+        Update: {
+          attempts?: number | null
+          created_at?: string | null
+          email?: string
+          expires_at?: string
+          id?: string
+          locked_until?: string | null
+          max_attempts?: number | null
+          updated_at?: string | null
+          user_id?: string | null
+          verification_code?: string
+          verified_at?: string | null
         }
         Relationships: []
       }
@@ -7721,6 +7826,39 @@ export type Database = {
         }
         Relationships: []
       }
+      password_recovery_tokens: {
+        Row: {
+          contact_value: string
+          created_at: string | null
+          expires_at: string
+          id: string
+          recovery_method: string
+          token: string
+          used_at: string | null
+          user_id: string
+        }
+        Insert: {
+          contact_value: string
+          created_at?: string | null
+          expires_at?: string
+          id?: string
+          recovery_method: string
+          token: string
+          used_at?: string | null
+          user_id: string
+        }
+        Update: {
+          contact_value?: string
+          created_at?: string | null
+          expires_at?: string
+          id?: string
+          recovery_method?: string
+          token?: string
+          used_at?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       permissions: {
         Row: {
           category: string
@@ -7751,6 +7889,48 @@ export type Database = {
           id?: string
           name?: string
           name_ar?: string | null
+        }
+        Relationships: []
+      }
+      phone_verifications: {
+        Row: {
+          attempts: number | null
+          created_at: string | null
+          expires_at: string
+          id: string
+          locked_until: string | null
+          max_attempts: number | null
+          otp_code: string
+          phone_number: string
+          updated_at: string | null
+          user_id: string | null
+          verified_at: string | null
+        }
+        Insert: {
+          attempts?: number | null
+          created_at?: string | null
+          expires_at?: string
+          id?: string
+          locked_until?: string | null
+          max_attempts?: number | null
+          otp_code: string
+          phone_number: string
+          updated_at?: string | null
+          user_id?: string | null
+          verified_at?: string | null
+        }
+        Update: {
+          attempts?: number | null
+          created_at?: string | null
+          expires_at?: string
+          id?: string
+          locked_until?: string | null
+          max_attempts?: number | null
+          otp_code?: string
+          phone_number?: string
+          updated_at?: string | null
+          user_id?: string | null
+          verified_at?: string | null
         }
         Relationships: []
       }
@@ -7971,6 +8151,7 @@ export type Database = {
           education_institution: string | null
           education_level: string | null
           email: string | null
+          email_verified: boolean | null
           experience_level:
             | Database["public"]["Enums"]["experience_level"]
             | null
@@ -7987,6 +8168,7 @@ export type Database = {
           last_login_at: string | null
           linkedin: string | null
           location: string | null
+          login_method: string | null
           loyalty_points: number | null
           membership_expires_at: string | null
           membership_status:
@@ -7995,10 +8177,13 @@ export type Database = {
           membership_tier: Database["public"]["Enums"]["membership_tier"] | null
           nationality: string | null
           offers_services: boolean | null
+          password_last_changed: string | null
           phone: string | null
+          phone_verified: boolean | null
           preferred_language: string | null
           profile_completed: boolean | null
           profile_visibility: string
+          secondary_email: string | null
           section_visibility: Json | null
           services_description: string | null
           services_description_ar: string | null
@@ -8039,6 +8224,7 @@ export type Database = {
           education_institution?: string | null
           education_level?: string | null
           email?: string | null
+          email_verified?: boolean | null
           experience_level?:
             | Database["public"]["Enums"]["experience_level"]
             | null
@@ -8055,6 +8241,7 @@ export type Database = {
           last_login_at?: string | null
           linkedin?: string | null
           location?: string | null
+          login_method?: string | null
           loyalty_points?: number | null
           membership_expires_at?: string | null
           membership_status?:
@@ -8065,10 +8252,13 @@ export type Database = {
             | null
           nationality?: string | null
           offers_services?: boolean | null
+          password_last_changed?: string | null
           phone?: string | null
+          phone_verified?: boolean | null
           preferred_language?: string | null
           profile_completed?: boolean | null
           profile_visibility?: string
+          secondary_email?: string | null
           section_visibility?: Json | null
           services_description?: string | null
           services_description_ar?: string | null
@@ -8109,6 +8299,7 @@ export type Database = {
           education_institution?: string | null
           education_level?: string | null
           email?: string | null
+          email_verified?: boolean | null
           experience_level?:
             | Database["public"]["Enums"]["experience_level"]
             | null
@@ -8125,6 +8316,7 @@ export type Database = {
           last_login_at?: string | null
           linkedin?: string | null
           location?: string | null
+          login_method?: string | null
           loyalty_points?: number | null
           membership_expires_at?: string | null
           membership_status?:
@@ -8135,10 +8327,13 @@ export type Database = {
             | null
           nationality?: string | null
           offers_services?: boolean | null
+          password_last_changed?: string | null
           phone?: string | null
+          phone_verified?: boolean | null
           preferred_language?: string | null
           profile_completed?: boolean | null
           profile_visibility?: string
+          secondary_email?: string | null
           section_visibility?: Json | null
           services_description?: string | null
           services_description_ar?: string | null
