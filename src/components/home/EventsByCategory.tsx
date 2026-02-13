@@ -1,4 +1,3 @@
-import { forwardRef } from "react";
 import { Link } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -10,7 +9,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Trophy, Globe, Utensils, Coffee, ArrowRight, Calendar, MapPin } from "lucide-react";
 import { format } from "date-fns";
 
-export const EventsByCategory = forwardRef<HTMLElement>(function EventsByCategory(_, ref) {
+export function EventsByCategory() {
   const { language } = useLanguage();
   const isAr = language === "ar";
 
@@ -229,4 +228,4 @@ export const EventsByCategory = forwardRef<HTMLElement>(function EventsByCategor
       </Tabs>
     </section>
   );
-});
+}
