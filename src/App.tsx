@@ -38,6 +38,7 @@ const CompaniesLanding = lazy(() => import("./pages/landing/CompaniesLanding"));
 const ChefsLanding = lazy(() => import("./pages/landing/ChefsLanding"));
 const Install = lazy(() => import("./pages/Install"));
 const Verify = lazy(() => import("./pages/Verify"));
+const CertificateVerify = lazy(() => import("./pages/CertificateVerify"));
 const KnowledgePortal = lazy(() => import("./pages/KnowledgePortal"));
 const Masterclasses = lazy(() => import("./pages/Masterclasses"));
 const MasterclassDetail = lazy(() => import("./pages/MasterclassDetail"));
@@ -91,14 +92,12 @@ const OrdersAdmin = lazy(() => import("./pages/admin/OrdersAdmin"));
 const InvoicesAdmin = lazy(() => import("./pages/admin/InvoicesAdmin"));
 const InvoiceCustomization = lazy(() => import("./pages/admin/InvoiceCustomization"));
 const KnowledgeAdmin = lazy(() => import("./pages/admin/KnowledgeAdmin"));
-const SponsorsAdmin = lazy(() => import("./pages/admin/CompaniesAdmin"));
 const QRCodesAdmin = lazy(() => import("./pages/admin/QRCodesAdmin"));
 const MasterclassesAdmin = lazy(() => import("./pages/admin/MasterclassesAdmin"));
 const AnalyticsDashboard = lazy(() => import("./pages/admin/AnalyticsDashboard"));
 const ExhibitionsAdmin = lazy(() => import("./pages/admin/ExhibitionsAdmin"));
 const EntitiesAdmin = lazy(() => import("./pages/admin/EntitiesAdmin"));
 const JudgesAdmin = lazy(() => import("./pages/admin/JudgesAdmin"));
-const CompanyRolesAdmin = lazy(() => import("./pages/admin/CompaniesAdmin"));
 const CountriesAdmin = lazy(() => import("./pages/admin/CountriesAdmin"));
 const TastingsAdmin = lazy(() => import("./pages/admin/TastingsAdmin"));
 const CommunicationTemplatesAdmin = lazy(() => import("./pages/admin/CommunicationTemplatesAdmin"));
@@ -176,7 +175,6 @@ const App = () => (
                 <Route path="/competitions/:id" element={<CompetitionDetail />} />
                 <Route path="/competitions/:id/edit" element={<ProtectedRoute><EditCompetition /></ProtectedRoute>} />
                 <Route path="/competitions/:id/results" element={<CompetitionResults />} />
-                {/* Judging merged into tasting sessions */}
                 <Route path="/knowledge" element={<ProtectedRoute><KnowledgePortal /></ProtectedRoute>} />
                 <Route path="/notification-preferences" element={<ProtectedRoute><NotificationPreferences /></ProtectedRoute>} />
                 <Route path="/search" element={<Search />} />
@@ -192,6 +190,7 @@ const App = () => (
                 <Route path="/for-companies" element={<CompaniesLanding />} />
                 <Route path="/for-chefs" element={<ChefsLanding />} />
                 <Route path="/verify" element={<Verify />} />
+                <Route path="/verify/certificate" element={<CertificateVerify />} />
                 <Route path="/masterclasses" element={<Masterclasses />} />
                 <Route path="/masterclasses/:id" element={<MasterclassDetail />} />
                 <Route path="/install" element={<Install />} />
@@ -241,9 +240,9 @@ const App = () => (
                   <Route path="database" element={<DatabaseAdmin />} />
                   <Route path="certificates" element={<CertificatesAdmin />} />
                   <Route path="companies" element={<CompaniesAdmin />} />
-                   <Route path="orders" element={<OrdersAdmin />} />
-                   <Route path="invoices" element={<InvoicesAdmin />} />
-                   <Route path="invoice-customization" element={<InvoiceCustomization />} />
+                  <Route path="orders" element={<OrdersAdmin />} />
+                  <Route path="invoices" element={<InvoicesAdmin />} />
+                  <Route path="invoice-customization" element={<InvoiceCustomization />} />
                   <Route path="knowledge" element={<KnowledgeAdmin />} />
                   <Route path="sponsors" element={<CompaniesAdmin />} />
                   <Route path="masterclasses" element={<MasterclassesAdmin />} />
@@ -251,22 +250,22 @@ const App = () => (
                   <Route path="exhibitions" element={<ExhibitionsAdmin />} />
                   <Route path="qr-codes" element={<QRCodesAdmin />} />
                   <Route path="entities" element={<EntitiesAdmin />} />
-                   <Route path="judges" element={<JudgesAdmin />} />
-                   <Route path="evaluation" element={<EvaluationCenter />} />
-                   <Route path="tastings" element={<EvaluationCenter />} />
-                   <Route path="communications" element={<CommunicationsAdmin />} />
-                   <Route path="company-roles" element={<CompaniesAdmin />} />
-                   <Route path="countries" element={<CountriesAdmin />} />
-                   <Route path="templates" element={<CommunicationTemplatesAdmin />} />
-                   <Route path="mentorship" element={<MentorshipAdmin />} />
-                   <Route path="establishments" element={<EstablishmentsAdmin />} />
-                   <Route path="verification" element={<VerificationAdmin />} />
-                   <Route path="support-tickets" element={<SupportTicketsAdmin />} />
-                   <Route path="audience-segments" element={<AudienceSegments />} />
-                   <Route path="live-chat" element={<LiveChatAdmin />} />
-                   <Route path="crm" element={<CRMDashboard />} />
-                   <Route path="advertising" element={<AdvertisingAdmin />} />
-                   <Route path="translation-seo" element={<TranslationSEOAdmin />} />
+                  <Route path="judges" element={<JudgesAdmin />} />
+                  <Route path="evaluation" element={<EvaluationCenter />} />
+                  <Route path="tastings" element={<EvaluationCenter />} />
+                  <Route path="communications" element={<CommunicationsAdmin />} />
+                  <Route path="company-roles" element={<CompaniesAdmin />} />
+                  <Route path="countries" element={<CountriesAdmin />} />
+                  <Route path="templates" element={<CommunicationTemplatesAdmin />} />
+                  <Route path="mentorship" element={<MentorshipAdmin />} />
+                  <Route path="establishments" element={<EstablishmentsAdmin />} />
+                  <Route path="verification" element={<VerificationAdmin />} />
+                  <Route path="support-tickets" element={<SupportTicketsAdmin />} />
+                  <Route path="audience-segments" element={<AudienceSegments />} />
+                  <Route path="live-chat" element={<LiveChatAdmin />} />
+                  <Route path="crm" element={<CRMDashboard />} />
+                  <Route path="advertising" element={<AdvertisingAdmin />} />
+                  <Route path="translation-seo" element={<TranslationSEOAdmin />} />
                 </Route>
 
                 {/* Company Portal Routes */}

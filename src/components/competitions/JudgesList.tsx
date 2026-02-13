@@ -43,9 +43,9 @@ interface JudgeProfile {
 export function JudgesList({ competitionId, isOrganizer = false }: JudgesListProps) {
   const { language } = useLanguage();
   const { user } = useAuth();
-  const isAdmin = useIsAdmin();
+  const { data: isAdmin } = useIsAdmin();
   const isAr = language === "ar";
-  const canAppoint = isOrganizer || isAdmin;
+  const canAppoint = isOrganizer || !!isAdmin;
   const queryClient = useQueryClient();
   const [confirmDialog, setConfirmDialog] = useState<{ type: "appoint" | "remove"; judgeId: string; judgeName: string } | null>(null);
 
