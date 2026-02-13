@@ -7,7 +7,7 @@ import { Footer } from "@/components/Footer";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Skeleton } from "@/components/ui/skeleton";
 import { SEOHead } from "@/components/SEOHead";
-import { User, Briefcase, Award, Edit, Shield, Crown, BarChart3, Wallet } from "lucide-react";
+import { User, Briefcase, Award, Edit, Shield, Crown, BarChart3, Wallet, FileText } from "lucide-react";
 import type { Database } from "@/integrations/supabase/types";
 
 import { ProfileHeader } from "@/components/profile/ProfileHeader";
@@ -21,6 +21,7 @@ import { ProfilePrivacySettings } from "@/components/profile/ProfilePrivacySetti
 import { UnifiedMembershipTab } from "@/components/membership/UnifiedMembershipTab";
 import { ProfileAnalyticsDashboard } from "@/components/profile/ProfileAnalyticsDashboard";
 import { WalletDashboard } from "@/components/wallet/WalletDashboard";
+import { ProfileInvoicesTab } from "@/components/profile/ProfileInvoicesTab";
 import { useSearchParams } from "react-router-dom";
 
 type Profile = Database["public"]["Tables"]["profiles"]["Row"];
@@ -76,6 +77,7 @@ export default function Profile() {
     { id: "achievements", label: isAr ? "الإنجازات" : "Achievements", icon: Award },
     { id: "membership", label: isAr ? "العضوية" : "Membership", icon: Crown },
     { id: "wallet", label: isAr ? "المحفظة" : "Wallet", icon: Wallet },
+    { id: "invoices", label: isAr ? "الفواتير" : "Invoices", icon: FileText },
     { id: "analytics", label: isAr ? "الإحصائيات" : "Analytics", icon: BarChart3 },
     { id: "edit", label: isAr ? "تعديل" : "Edit", icon: Edit },
     { id: "privacy", label: isAr ? "الخصوصية" : "Privacy", icon: Shield },
@@ -130,6 +132,10 @@ export default function Profile() {
 
           <TabsContent value="analytics" className="mt-6">
             {user && <ProfileAnalyticsDashboard userId={user.id} />}
+          </TabsContent>
+
+          <TabsContent value="invoices" className="mt-6">
+            {user && <ProfileInvoicesTab userId={user.id} />}
           </TabsContent>
 
           <TabsContent value="edit" className="mt-6">
