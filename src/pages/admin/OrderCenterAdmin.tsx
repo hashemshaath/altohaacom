@@ -17,7 +17,7 @@ import { Separator } from "@/components/ui/separator";
 import {
   Package, Trophy, LayoutDashboard, BookTemplate, ClipboardList,
   Search, Plus, ChevronRight, Users, Shield, Eye, CheckCircle,
-  XCircle, Download, Trash2, Copy, ArrowRight,
+  XCircle, Download, Trash2, Copy, ArrowRight, FileInput, Clock, AlertTriangle,
 } from "lucide-react";
 import { ORDER_CATEGORIES } from "@/components/competitions/order-center/OrderCenterCategories";
 import { DISH_TEMPLATES, type DishTemplate } from "@/data/dishTemplates";
@@ -119,7 +119,42 @@ export default function OrderCenterAdmin() {
     },
   });
 
-  // Apply dish template to a competition
+  // Fetch all item requests across competitions
+  const { data: allRequests = [], isLoading: requestsLoading } = useQuery({
+    queryKey: ["order-center-all-requests", competitionFilter],
+    queryFn: async () => {
+      let query = supabase
+        .from("order_item_requests")
+        .select("*, profiles:requester_id(full_name, username, avatar_url), competitions:competition_id(id, title, title_ar)")
+        .order("created_at", { ascending: false })
+        .limit(200);
+      if (competitionFilter !== "all") {
+        query = query.eq("competition_id", competitionFilter);
+      }
+      const { data, error } = await query;
+      if (error) throw error;
+      return data;
+    },
+  });
+
+  // Review request mutation
+  const reviewRequestMutation = useMutation({
+    mutationFn: async ({ id, status, reason }: { id: string; status: string; reason?: string }) => {
+      const { error } = await supabase.from("order_item_requests").update({
+        status,
+        reviewed_by: user!.id,
+        reviewed_at: new Date().toISOString(),
+        rejection_reason: reason || null,
+      }).eq("id", id);
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["order-center-all-requests"] });
+      toast({ title: isAr ? "تم تحديث الطلب" : "Request updated" });
+    },
+  });
+
+
   const applyDishTemplate = useMutation({
     mutationFn: async ({ template, competitionId }: { template: DishTemplate; competitionId: string }) => {
       // Create list
@@ -192,6 +227,12 @@ export default function OrderCenterAdmin() {
           </TabsTrigger>
           <TabsTrigger value="lists" className="gap-1.5 text-xs">
             <ClipboardList className="h-3.5 w-3.5" /> {isAr ? "قوائم المتطلبات" : "Requirement Lists"}
+          </TabsTrigger>
+          <TabsTrigger value="requests" className="gap-1.5 text-xs">
+            <FileInput className="h-3.5 w-3.5" /> {isAr ? "طلبات العناصر" : "Item Requests"}
+            {allRequests.filter((r: any) => r.status === "pending").length > 0 && (
+              <Badge variant="destructive" className="ms-1 h-4 text-[9px] px-1">{allRequests.filter((r: any) => r.status === "pending").length}</Badge>
+            )}
           </TabsTrigger>
           <TabsTrigger value="templates" className="gap-1.5 text-xs">
             <BookTemplate className="h-3.5 w-3.5" /> {isAr ? "قوالب الأطباق" : "Dish Templates"}
@@ -345,6 +386,141 @@ export default function OrderCenterAdmin() {
                           <Badge variant="secondary" className="text-[10px]">
                             {list.status || (isAr ? "مسودة" : "Draft")}
                           </Badge>
+                        </TableCell>
+                      </TableRow>
+                    );
+                  })}
+                </TableBody>
+              </Table>
+            </ScrollArea>
+          )}
+        </TabsContent>
+
+        {/* ── Item Requests ── */}
+        <TabsContent value="requests" className="mt-4 space-y-4">
+          <div className="flex flex-wrap items-center gap-3">
+            <div className="relative flex-1 min-w-[200px]">
+              <Search className="absolute start-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+              <Input
+                placeholder={isAr ? "بحث في الطلبات..." : "Search requests..."}
+                className="ps-9 h-9"
+              />
+            </div>
+            <Select value={competitionFilter} onValueChange={setCompetitionFilter}>
+              <SelectTrigger className="w-[200px] h-9 text-xs">
+                <SelectValue placeholder={isAr ? "كل المسابقات" : "All Competitions"} />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">{isAr ? "الكل" : "All"}</SelectItem>
+                {competitions.map((c: any) => (
+                  <SelectItem key={c.id} value={c.id} className="text-xs">
+                    {isAr && c.title_ar ? c.title_ar : c.title}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+
+          {requestsLoading ? (
+            <div className="flex justify-center py-8">
+              <div className="h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent" />
+            </div>
+          ) : allRequests.length === 0 ? (
+            <Card>
+              <CardContent className="py-12 text-center">
+                <FileInput className="mx-auto mb-3 h-12 w-12 text-muted-foreground/30" />
+                <p className="text-muted-foreground">{isAr ? "لا توجد طلبات بعد" : "No item requests yet"}</p>
+                <p className="text-xs text-muted-foreground mt-1">
+                  {isAr ? "ستظهر هنا طلبات الشيفات والمتسابقين من جميع المسابقات" : "Chef and competitor requests from all competitions will appear here"}
+                </p>
+              </CardContent>
+            </Card>
+          ) : (
+            <ScrollArea className="max-h-[600px]">
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead className="text-xs">{isAr ? "العنصر" : "Item"}</TableHead>
+                    <TableHead className="text-xs">{isAr ? "مقدم الطلب" : "Requester"}</TableHead>
+                    <TableHead className="text-xs">{isAr ? "المسابقة" : "Competition"}</TableHead>
+                    <TableHead className="text-xs">{isAr ? "الفئة" : "Category"}</TableHead>
+                    <TableHead className="text-xs text-center">{isAr ? "الكمية" : "Qty"}</TableHead>
+                    <TableHead className="text-xs">{isAr ? "الأولوية" : "Priority"}</TableHead>
+                    <TableHead className="text-xs">{isAr ? "الحالة" : "Status"}</TableHead>
+                    <TableHead className="text-xs">{isAr ? "إجراءات" : "Actions"}</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {allRequests.map((req: any) => {
+                    const catDef = ORDER_CATEGORIES.find(c => c.value === req.category);
+                    const priorityColors: Record<string, string> = {
+                      low: "bg-muted text-muted-foreground",
+                      normal: "bg-chart-3/15 text-chart-3",
+                      high: "bg-chart-4/15 text-chart-4",
+                      urgent: "bg-destructive/15 text-destructive",
+                    };
+                    const statusColors: Record<string, string> = {
+                      pending: "bg-chart-4/15 text-chart-4",
+                      approved: "bg-chart-5/15 text-chart-5",
+                      rejected: "bg-destructive/15 text-destructive",
+                      fulfilled: "bg-primary/15 text-primary",
+                    };
+                    return (
+                      <TableRow key={req.id}>
+                        <TableCell>
+                          <div>
+                            <p className="text-sm font-medium">{isAr && req.item_name_ar ? req.item_name_ar : req.item_name}</p>
+                            {req.notes && <p className="text-[10px] text-muted-foreground line-clamp-1">{req.notes}</p>}
+                            {req.rejection_reason && (
+                              <p className="text-[10px] text-destructive flex items-center gap-0.5">
+                                <AlertTriangle className="h-2.5 w-2.5" /> {req.rejection_reason}
+                              </p>
+                            )}
+                          </div>
+                        </TableCell>
+                        <TableCell className="text-xs">
+                          {req.profiles?.full_name || req.profiles?.username || "—"}
+                        </TableCell>
+                        <TableCell className="text-xs text-muted-foreground">
+                          {req.competitions ? (isAr && req.competitions.title_ar ? req.competitions.title_ar : req.competitions.title) : "—"}
+                        </TableCell>
+                        <TableCell>
+                          <Badge variant="outline" className="text-[9px]">
+                            {catDef ? (isAr ? catDef.labelAr : catDef.label) : req.category}
+                          </Badge>
+                        </TableCell>
+                        <TableCell className="text-center text-xs">{req.quantity} {req.unit}</TableCell>
+                        <TableCell>
+                          <Badge className={`${priorityColors[req.priority] || ""} text-[9px]`} variant="outline">
+                            {req.priority}
+                          </Badge>
+                        </TableCell>
+                        <TableCell>
+                          <Badge className={`${statusColors[req.status] || ""} text-[9px]`} variant="outline">
+                            {req.status}
+                          </Badge>
+                        </TableCell>
+                        <TableCell>
+                          {req.status === "pending" && (
+                            <div className="flex gap-1">
+                              <Button
+                                size="icon"
+                                variant="ghost"
+                                className="h-7 w-7"
+                                onClick={() => reviewRequestMutation.mutate({ id: req.id, status: "approved" })}
+                              >
+                                <CheckCircle className="h-4 w-4 text-chart-5" />
+                              </Button>
+                              <Button
+                                size="icon"
+                                variant="ghost"
+                                className="h-7 w-7"
+                                onClick={() => reviewRequestMutation.mutate({ id: req.id, status: "rejected", reason: "Not available" })}
+                              >
+                                <XCircle className="h-4 w-4 text-destructive" />
+                              </Button>
+                            </div>
+                          )}
                         </TableCell>
                       </TableRow>
                     );

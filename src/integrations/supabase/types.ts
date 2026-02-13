@@ -7525,6 +7525,87 @@ export type Database = {
           },
         ]
       }
+      order_item_requests: {
+        Row: {
+          category: string
+          competition_id: string
+          created_at: string
+          id: string
+          item_name: string
+          item_name_ar: string | null
+          list_id: string | null
+          notes: string | null
+          notes_ar: string | null
+          priority: string
+          quantity: number
+          rejection_reason: string | null
+          requester_id: string
+          requester_role: string
+          reviewed_at: string | null
+          reviewed_by: string | null
+          status: string
+          unit: string
+          updated_at: string
+        }
+        Insert: {
+          category?: string
+          competition_id: string
+          created_at?: string
+          id?: string
+          item_name: string
+          item_name_ar?: string | null
+          list_id?: string | null
+          notes?: string | null
+          notes_ar?: string | null
+          priority?: string
+          quantity?: number
+          rejection_reason?: string | null
+          requester_id: string
+          requester_role?: string
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          status?: string
+          unit?: string
+          updated_at?: string
+        }
+        Update: {
+          category?: string
+          competition_id?: string
+          created_at?: string
+          id?: string
+          item_name?: string
+          item_name_ar?: string | null
+          list_id?: string | null
+          notes?: string | null
+          notes_ar?: string | null
+          priority?: string
+          quantity?: number
+          rejection_reason?: string | null
+          requester_id?: string
+          requester_role?: string
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          status?: string
+          unit?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "order_item_requests_competition_id_fkey"
+            columns: ["competition_id"]
+            isOneToOne: false
+            referencedRelation: "competitions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "order_item_requests_list_id_fkey"
+            columns: ["list_id"]
+            isOneToOne: false
+            referencedRelation: "requirement_lists"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       partner_logos: {
         Row: {
           category: string
