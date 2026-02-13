@@ -7,38 +7,34 @@ import { Footer } from "@/components/Footer";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Skeleton } from "@/components/ui/skeleton";
 import { SEOHead } from "@/components/SEOHead";
-import { User, Edit, Shield, Crown, Trophy, Award, FileText } from "lucide-react";
+import { User, Briefcase, Award, Edit, Shield, Crown } from "lucide-react";
 import type { Database } from "@/integrations/supabase/types";
 
 import { ProfileHeader } from "@/components/profile/ProfileHeader";
+import { ProfileOverviewTab } from "@/components/profile/ProfileOverviewTab";
+import { ProfileCareerTab } from "@/components/profile/ProfileCareerTab";
+import { ProfileCertificates } from "@/components/profile/ProfileCertificates";
+import { CompetitionHistory } from "@/components/profile/CompetitionHistory";
+import { UserBadgesDisplay } from "@/components/badges/UserBadgesDisplay";
 import { ProfileEditForm } from "@/components/profile/ProfileEditForm";
 import { ProfilePrivacySettings } from "@/components/profile/ProfilePrivacySettings";
 import { ProfileMembershipTab } from "@/components/profile/ProfileMembershipTab";
 import { ProfessionalMembershipDashboard } from "@/components/profile/ProfessionalMembershipDashboard";
-import { ProfileStatsBar } from "@/components/profile/ProfileStatsBar";
-import { CompetitionHistory } from "@/components/profile/CompetitionHistory";
-import { UserBadgesDisplay } from "@/components/badges/UserBadgesDisplay";
-import { ProfileActivityTimeline } from "@/components/profile/ProfileActivityTimeline";
-import { ProfileCertificates } from "@/components/profile/ProfileCertificates";
-import { QRCodeDisplay } from "@/components/qr/QRCodeDisplay";
-import { useEntityQRCode } from "@/hooks/useQRCode";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Separator } from "@/components/ui/separator";
+import { useSearchParams } from "react-router-dom";
 
 type Profile = Database["public"]["Tables"]["profiles"]["Row"];
 type AppRole = Database["public"]["Enums"]["app_role"];
 
 export default function Profile() {
   const { user } = useAuth();
-  const { t, language } = useLanguage();
+  const { language } = useLanguage();
   const isAr = language === "ar";
+  const [searchParams] = useSearchParams();
+  const initialTab = searchParams.get("tab") || "overview";
   const [profile, setProfile] = useState<Profile | null>(null);
   const [roles, setRoles] = useState<AppRole[]>([]);
   const [loading, setLoading] = useState(true);
-  const [activeTab, setActiveTab] = useState("overview");
-
-  const { data: qrCode } = useEntityQRCode("user", profile?.username || undefined, "account");
+  const [activeTab, setActiveTab] = useState(initialTab);
 
   const fetchProfile = async () => {
     if (!user) return;
@@ -52,6 +48,12 @@ export default function Profile() {
   };
 
   useEffect(() => { fetchProfile(); }, [user]);
+
+  // Sync tab from URL query param
+  useEffect(() => {
+    const tab = searchParams.get("tab");
+    if (tab) setActiveTab(tab);
+  }, [searchParams]);
 
   if (loading) {
     return (
@@ -68,10 +70,14 @@ export default function Profile() {
     );
   }
 
+  const isPro = profile?.membership_tier === "professional" || profile?.membership_tier === "enterprise";
+
   const tabs = [
     { id: "overview", label: isAr ? "نظرة عامة" : "Overview", icon: User },
-    { id: "edit", label: isAr ? "تعديل الملف" : "Edit Profile", icon: Edit },
+    { id: "career", label: isAr ? "السيرة المهنية" : "Career", icon: Briefcase },
+    { id: "certificates", label: isAr ? "الشهادات والإنجازات" : "Achievements", icon: Award },
     { id: "membership", label: isAr ? "العضوية" : "Membership", icon: Crown },
+    { id: "edit", label: isAr ? "تعديل" : "Edit", icon: Edit },
     { id: "privacy", label: isAr ? "الخصوصية" : "Privacy", icon: Shield },
   ];
 
@@ -80,7 +86,7 @@ export default function Profile() {
       <SEOHead title="Profile" description="Your Altohaa profile" />
       <Header />
       <main className="container flex-1 py-6 md:py-8 max-w-5xl">
-        {/* Profile Header with Avatar & Cover */}
+        {/* Profile Header */}
         {profile && user && (
           <ProfileHeader
             profile={profile}
@@ -88,13 +94,6 @@ export default function Profile() {
             userId={user.id}
             onProfileUpdate={fetchProfile}
           />
-        )}
-
-        {/* Stats Bar */}
-        {user && (
-          <div className="mt-4">
-            <ProfileStatsBar userId={user.id} />
-          </div>
         )}
 
         {/* Tabs */}
@@ -112,107 +111,45 @@ export default function Profile() {
             ))}
           </TabsList>
 
-          {/* Overview Tab */}
+          {/* Overview */}
           <TabsContent value="overview" className="mt-6">
-            <div className="grid gap-6 lg:grid-cols-3">
-              <div className="lg:col-span-2 space-y-6">
-                {/* Bio */}
-                {(profile?.bio || profile?.bio_ar) && (
-                  <Card>
-                    <CardHeader className="pb-2">
-                      <CardTitle className="flex items-center gap-2 text-base">
-                        <FileText className="h-4 w-4 text-primary" />
-                        {isAr ? "النبذة" : "About"}
-                      </CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                      <p className="text-sm leading-relaxed whitespace-pre-wrap" dir={isAr ? "rtl" : "ltr"}>
-                        {isAr ? (profile?.bio_ar || profile?.bio) : profile?.bio}
-                      </p>
-                    </CardContent>
-                  </Card>
-                )}
-
-                {/* Social Media */}
-                {(profile?.instagram || profile?.twitter || profile?.facebook || profile?.linkedin || profile?.youtube || profile?.tiktok || profile?.snapchat) && (
-                  <Card>
-                    <CardHeader className="pb-2">
-                      <CardTitle className="text-base">{isAr ? "التواصل الاجتماعي" : "Social Media"}</CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                      <div className="flex flex-wrap gap-1.5">
-                        {profile?.instagram && <Badge variant="outline" className="text-[10px]">IG: {profile.instagram}</Badge>}
-                        {profile?.twitter && <Badge variant="outline" className="text-[10px]">X: {profile.twitter}</Badge>}
-                        {profile?.facebook && <Badge variant="outline" className="text-[10px]">FB: {profile.facebook}</Badge>}
-                        {profile?.linkedin && <Badge variant="outline" className="text-[10px]">LI: {profile.linkedin}</Badge>}
-                        {profile?.youtube && <Badge variant="outline" className="text-[10px]">YT: {profile.youtube}</Badge>}
-                        {profile?.tiktok && <Badge variant="outline" className="text-[10px]">TT: {profile.tiktok}</Badge>}
-                        {profile?.snapchat && <Badge variant="outline" className="text-[10px]">SC: {profile.snapchat}</Badge>}
-                      </div>
-                    </CardContent>
-                  </Card>
-                )}
-
-                {/* Certificates */}
-                {user && <ProfileCertificates userId={user.id} isOwner={true} />}
-
-                {/* Competitions */}
-                {user && <CompetitionHistory userId={user.id} />}
-
-                {/* Badges */}
-                {user && <UserBadgesDisplay userId={user.id} limit={6} />}
-              </div>
-
-              <div className="space-y-6">
-                {/* QR Code */}
-                {qrCode && (
-                  <Card>
-                    <CardContent className="pt-5 flex justify-center">
-                      <QRCodeDisplay
-                        code={qrCode.code}
-                        label={isAr ? "رمز QR للحساب" : "My QR Code"}
-                        size={140}
-                        vCardData={{
-                          fullName: profile?.full_name || "",
-                          phone: profile?.phone || undefined,
-                          website: profile?.website || undefined,
-                          location: profile?.location || undefined,
-                          accountNumber: profile?.account_number || undefined,
-                          profileUrl: profile?.username ? `https://altohaacom.lovable.app/${profile.username}` : undefined,
-                        }}
-                      />
-                    </CardContent>
-                  </Card>
-                )}
-
-                {/* Activity Timeline */}
-                {user && <ProfileActivityTimeline userId={user.id} />}
-              </div>
-            </div>
+            {profile && user && <ProfileOverviewTab profile={profile} userId={user.id} />}
           </TabsContent>
 
-          {/* Edit Profile Tab */}
-          <TabsContent value="edit" className="mt-6">
-            {profile && user && (
-              <ProfileEditForm profile={profile} userId={user.id} onSaved={fetchProfile} />
-            )}
+          {/* Career */}
+          <TabsContent value="career" className="mt-6">
+            {user && <ProfileCareerTab userId={user.id} />}
           </TabsContent>
 
-          {/* Membership Tab */}
+          {/* Certificates & Achievements */}
+          <TabsContent value="certificates" className="mt-6 space-y-6">
+            {user && <ProfileCertificates userId={user.id} isOwner={true} />}
+            {user && <CompetitionHistory userId={user.id} />}
+            {user && <UserBadgesDisplay userId={user.id} />}
+          </TabsContent>
+
+          {/* Membership */}
           <TabsContent value="membership" className="mt-6">
             {profile && user && (
               <>
-                {(profile.membership_tier === "professional" || profile.membership_tier === "enterprise") && (
+                {isPro && (
                   <ProfessionalMembershipDashboard profile={profile} userId={user.id} />
                 )}
-                <div className={profile.membership_tier === "professional" || profile.membership_tier === "enterprise" ? "mt-6" : ""}>
+                <div className={isPro ? "mt-6" : ""}>
                   <ProfileMembershipTab profile={profile} userId={user.id} onMembershipChange={fetchProfile} />
                 </div>
               </>
             )}
           </TabsContent>
 
-          {/* Privacy Tab */}
+          {/* Edit */}
+          <TabsContent value="edit" className="mt-6">
+            {profile && user && (
+              <ProfileEditForm profile={profile} userId={user.id} onSaved={fetchProfile} />
+            )}
+          </TabsContent>
+
+          {/* Privacy */}
           <TabsContent value="privacy" className="mt-6">
             {profile && user && (
               <ProfilePrivacySettings profile={profile} userId={user.id} onSaved={fetchProfile} />
