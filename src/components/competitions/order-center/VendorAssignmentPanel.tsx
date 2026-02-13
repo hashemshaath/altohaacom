@@ -15,6 +15,7 @@ import {
 } from "lucide-react";
 import { ITEM_STATUS_LABELS, getStatusLabel } from "./OrderStatusLabels";
 import { ORDER_CATEGORIES } from "./OrderCenterCategories";
+import { logOrderActivity } from "./orderActivityLogger";
 
 interface Props {
   competitionId: string;
@@ -87,8 +88,19 @@ export function VendorAssignmentPanel({ competitionId, isOrganizer }: Props) {
         .eq("id", itemId);
       if (error) throw error;
     },
-    onSuccess: () => {
+    onSuccess: (_data, variables) => {
       queryClient.invalidateQueries({ queryKey: ["vendor-items", competitionId] });
+      const company = companies?.find(c => c.id === variables.companyId);
+      if (user) {
+        logOrderActivity({
+          competitionId,
+          userId: user.id,
+          actionType: variables.companyId ? "vendor_assigned" : "vendor_removed",
+          entityType: "vendor",
+          entityId: variables.itemId,
+          details: { company_name: company ? (isAr && company.name_ar ? company.name_ar : company.name) : "" },
+        });
+      }
       toast({ title: isAr ? "تم تحديث المورد" : "Vendor updated" });
     },
     onError: (e: Error) => toast({ variant: "destructive", title: "Error", description: e.message }),

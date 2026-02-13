@@ -1,6 +1,6 @@
 import { useLanguage } from "@/i18n/LanguageContext";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { LayoutDashboard, ClipboardList, Package, Lightbulb, CheckSquare, Send, Wallet, Truck } from "lucide-react";
+import { LayoutDashboard, ClipboardList, Package, Lightbulb, CheckSquare, Send, Wallet, Truck, Activity } from "lucide-react";
 import { RequirementsListPanel } from "../RequirementsListPanel";
 import { SuggestionPanel } from "./SuggestionPanel";
 import { DeliveryChecklist } from "./DeliveryChecklist";
@@ -9,6 +9,7 @@ import { QuoteRequestPanel } from "./QuoteRequestPanel";
 import { OrderOverviewDashboard } from "./OrderOverviewDashboard";
 import { BudgetTracker } from "./BudgetTracker";
 import { VendorAssignmentPanel } from "./VendorAssignmentPanel";
+import { OrderActivityLog } from "./OrderActivityLog";
 
 interface Props {
   competitionId: string;
@@ -28,6 +29,7 @@ export function OrderCenterHub({ competitionId, isOrganizer }: Props) {
     { id: "budget", icon: <Wallet className="h-3.5 w-3.5" />, label: isAr ? "الميزانية" : "Budget" },
     { id: "vendors", icon: <Truck className="h-3.5 w-3.5" />, label: isAr ? "الموردين" : "Vendors" },
     { id: "suggestions", icon: <Lightbulb className="h-3.5 w-3.5" />, label: isAr ? "الاقتراحات" : "Suggestions" },
+    { id: "activity", icon: <Activity className="h-3.5 w-3.5" />, label: isAr ? "سجل النشاط" : "Activity Log" },
   ];
 
   return (
@@ -83,6 +85,10 @@ export function OrderCenterHub({ competitionId, isOrganizer }: Props) {
 
         <TabsContent value="suggestions" className="mt-4">
           <SuggestionPanel competitionId={competitionId} isOrganizer={isOrganizer} />
+        </TabsContent>
+
+        <TabsContent value="activity" className="mt-4">
+          <OrderActivityLog competitionId={competitionId} isOrganizer={isOrganizer} />
         </TabsContent>
       </Tabs>
     </div>
