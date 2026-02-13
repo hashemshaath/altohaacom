@@ -1,3 +1,4 @@
+import { forwardRef } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { supabase } from "@/integrations/supabase/client";
@@ -305,21 +306,24 @@ export function ProfileOverviewTab({ profile, userId }: ProfileOverviewTabProps)
 
 // ── Helpers ──
 
-function SectionHeader({ icon: Icon, label, linkTo, linkLabel }: { icon: any; label: string; linkTo?: string; linkLabel?: string }) {
-  return (
-    <div className="flex items-center justify-between mb-2">
-      <h3 className="flex items-center gap-2 text-sm font-semibold">
-        <Icon className="h-4 w-4 text-primary" />
-        {label}
-      </h3>
-      {linkTo && (
-        <Link to={linkTo} className="flex items-center gap-0.5 text-xs text-primary hover:underline">
-          {linkLabel} <ChevronRight className="h-3 w-3" />
-        </Link>
-      )}
-    </div>
-  );
-}
+const SectionHeader = forwardRef<HTMLDivElement, { icon: any; label: string; linkTo?: string; linkLabel?: string }>(
+  ({ icon: Icon, label, linkTo, linkLabel }, ref) => {
+    return (
+      <div ref={ref} className="flex items-center justify-between mb-2">
+        <h3 className="flex items-center gap-2 text-sm font-semibold">
+          <Icon className="h-4 w-4 text-primary" />
+          {label}
+        </h3>
+        {linkTo && (
+          <Link to={linkTo} className="flex items-center gap-0.5 text-xs text-primary hover:underline">
+            {linkLabel} <ChevronRight className="h-3 w-3" />
+          </Link>
+        )}
+      </div>
+    );
+  }
+);
+SectionHeader.displayName = "SectionHeader";
 
 function SocialBadge({ label, value }: { label: string; value: string }) {
   return (
