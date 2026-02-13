@@ -68,9 +68,11 @@ export function UnifiedMembershipTab({ profile, userId, onMembershipChange }: Un
   });
 
   // Upgrade mutation
+  // Upgrade/Renew mutation - renewal starts from actual payment date
   const upgradeMutation = useMutation({
     mutationFn: async (newTier: "basic" | "professional" | "enterprise") => {
-      const expiresAt = new Date();
+      const now = new Date();
+      const expiresAt = new Date(now);
       expiresAt.setFullYear(expiresAt.getFullYear() + 1);
       const prevTier = (profile?.membership_tier || "basic") as "basic" | "professional" | "enterprise";
 
@@ -85,14 +87,26 @@ export function UnifiedMembershipTab({ profile, userId, onMembershipChange }: Un
         .update({
           membership_tier: newTier,
           membership_status: "active",
+          membership_started_at: now.toISOString(), // Start from actual payment date
           membership_expires_at: expiresAt.toISOString(),
         })
         .eq("user_id", userId);
       if (error) throw error;
+
+      // Update membership card expiry too
+      if (card) {
+        await supabase.from("membership_cards").update({
+          expires_at: expiresAt.toISOString(),
+          is_trial: false,
+          card_status: "active",
+        }).eq("id", card.id);
+      }
+
       return newTier;
     },
     onSuccess: (newTier) => {
       queryClient.invalidateQueries({ queryKey: ["membership-history", userId] });
+      queryClient.invalidateQueries({ queryKey: ["membership-card", userId] });
       onMembershipChange?.();
       toast({
         title: isAr ? "تم تحديث العضوية!" : "Membership updated!",
@@ -118,9 +132,21 @@ export function UnifiedMembershipTab({ profile, userId, onMembershipChange }: Un
     if (!cardRef.current) return;
     const printWindow = window.open("", "_blank");
     if (!printWindow) return;
-    printWindow.document.write(`<!DOCTYPE html><html dir="${isAr ? "rtl" : "ltr"}"><head><title>${isAr ? "بطاقة العضوية" : "Membership Card"}</title><style>*{margin:0;padding:0;box-sizing:border-box;}body{display:flex;justify-content:center;align-items:center;min-height:100vh;background:#f5f5f5;font-family:system-ui,sans-serif;}@media print{body{background:white;}}</style></head><body>${cardRef.current.outerHTML}</body></html>`);
+    const clone = cardRef.current.cloneNode(true) as HTMLElement;
+    // Remove interactive elements for print
+    clone.querySelectorAll("button").forEach(b => b.remove());
+    printWindow.document.write(`<!DOCTYPE html><html dir="${isAr ? "rtl" : "ltr"}"><head><title>${isAr ? "بطاقة العضوية" : "Membership Card"}</title><style>
+      *{margin:0;padding:0;box-sizing:border-box;-webkit-print-color-adjust:exact !important;print-color-adjust:exact !important;color-adjust:exact !important;}
+      body{display:flex;justify-content:center;align-items:center;min-height:100vh;background:#fff;font-family:'Segoe UI',system-ui,-apple-system,sans-serif;}
+      .card-wrapper{transform:scale(1.2);transform-origin:center center;}
+      @media print{
+        @page{size:auto;margin:10mm;}
+        body{background:white;min-height:auto;padding:0;}
+        .card-wrapper{transform:scale(1);page-break-inside:avoid;}
+      }
+    </style></head><body><div class="card-wrapper">${clone.outerHTML}</div></body></html>`);
     printWindow.document.close();
-    setTimeout(() => { printWindow.print(); printWindow.close(); }, 500);
+    setTimeout(() => { printWindow.focus(); printWindow.print(); }, 600);
   };
 
   const currentTier = profile?.membership_tier || "basic";
@@ -135,22 +161,16 @@ export function UnifiedMembershipTab({ profile, userId, onMembershipChange }: Un
   const tierBg = isEnterprise ? "bg-chart-2/10" : "bg-primary/10";
   const genderLabel = profile?.gender === "male" ? (isAr ? "ذكر" : "Male") : profile?.gender === "female" ? (isAr ? "أنثى" : "Female") : "";
   const isTrial = card?.is_trial && card?.trial_ends_at && new Date(card.trial_ends_at) > new Date();
-  const shortCode = profile?.account_number ? profile.account_number.replace(/\D/g, "").slice(-4).padStart(4, "0") : "0000";
-  const fullVerificationCode = card?.verification_code || "";
-
-  // Generate 1D barcode bars
-  const barcodeValue = profile?.account_number || card?.membership_number || "";
-  const barcodeBars: number[] = (() => {
-    const bars: number[] = [1, 1, 0, 1, 1, 0];
-    for (const char of barcodeValue) {
-      const code = char.charCodeAt(0);
-      for (let i = 7; i >= 0; i--) bars.push((code >> i) & 1);
-      bars.push(0);
-    }
-    bars.push(0, 1, 1, 0, 1, 1);
-    return bars;
-  })();
+  // Verification code: use random code from card record (first 4 chars), linked to card number
+  const verificationCode = card?.verification_code ? card.verification_code.slice(0, 4).toUpperCase() : "0000";
   const isVertical = orientation === "vertical";
+
+  // Expiration logic: trial_ends_at for trial, membership_expires_at for paid
+  const cardExpiresAt = isTrial ? card?.trial_ends_at : (expiresAt || card?.expires_at);
+  const cardExpiresDate = cardExpiresAt ? new Date(cardExpiresAt) : null;
+  const cardDaysLeft = cardExpiresDate ? Math.max(0, Math.ceil((cardExpiresDate.getTime() - Date.now()) / (1000 * 60 * 60 * 24))) : null;
+  const isCardExpired = cardExpiresDate ? cardExpiresDate < new Date() : false;
+  const showExpiryWarning = cardDaysLeft !== null && cardDaysLeft <= 14 && !isCardExpired;
 
   const profileCompletion = [
     profile?.full_name, profile?.bio, profile?.specialization || profile?.job_title,
@@ -346,30 +366,29 @@ export function UnifiedMembershipTab({ profile, userId, onMembershipChange }: Un
                     </div>
                     <div>
                       <p className="text-[7px] sm:text-[8px] uppercase tracking-[0.15em]" style={{ color: cardTheme === "classic" ? "rgba(255,255,255,0.3)" : "hsl(var(--muted-foreground) / 0.5)" }}>{isAr ? "الانتهاء" : "EXPIRES"}</p>
-                      <p className="text-[11px] sm:text-xs font-semibold" style={{ color: cardTheme === "classic" ? "rgba(255,255,255,0.75)" : "hsl(var(--foreground) / 0.7)" }}>{format(new Date(card.expires_at), "MM/yy")}</p>
+                      <p className="text-[11px] sm:text-xs font-semibold" style={{ color: isCardExpired ? "#f87171" : showExpiryWarning ? "#fbbf24" : cardTheme === "classic" ? "rgba(255,255,255,0.75)" : "hsl(var(--foreground) / 0.7)" }}>
+                        {cardExpiresDate ? format(cardExpiresDate, "dd/MM/yyyy") : "—"}
+                      </p>
+                      {cardDaysLeft !== null && cardDaysLeft <= 30 && !isCardExpired && (
+                        <p className="text-[7px] font-bold mt-0.5" style={{ color: cardDaysLeft <= 14 ? "#f87171" : "#fbbf24" }}>
+                          {cardDaysLeft} {isAr ? "يوم متبقي" : "days left"}
+                        </p>
+                      )}
                     </div>
                   </div>
                 </div>
               </div>
 
-              {/* ── Bottom: Barcode + Code + QR ── */}
+              {/* ── Bottom: Verification Code + QR ── */}
               <div className="space-y-2.5">
                 <div className="h-px" style={{ background: cardTheme === "classic" ? "linear-gradient(90deg, transparent, rgba(201,168,76,0.3), transparent)" : "linear-gradient(90deg, transparent, hsl(var(--primary) / 0.25), transparent)" }} />
 
                 <div className="flex items-end justify-between gap-4">
-                  {/* Left: Barcode + Verification */}
+                  {/* Left: Verification Code + Status */}
                   <div className="flex-1 min-w-0 space-y-2">
-                    <div className="flex flex-col">
-                      <svg viewBox={`0 0 ${barcodeBars.length} 32`} className="w-full max-w-[220px]" height={28} preserveAspectRatio="none">
-                        {barcodeBars.map((bar, i) => bar ? <rect key={i} x={i} y={0} width={0.7} height={32} fill={cardTheme === "classic" ? "rgba(201,168,76,0.55)" : "hsl(var(--primary) / 0.45)"} /> : null)}
-                      </svg>
-                      <span className="font-mono text-[8px] tracking-[0.25em]" style={{ color: cardTheme === "classic" ? "rgba(255,255,255,0.3)" : "hsl(var(--muted-foreground) / 0.5)" }}>{profile?.account_number || card.membership_number}</span>
-                    </div>
-
-                    {/* Verification Code */}
                     <div className="flex items-center gap-1.5">
-                      <span className="text-[8px] uppercase tracking-[0.15em] me-1" style={{ color: cardTheme === "classic" ? "rgba(201,168,76,0.45)" : "hsl(var(--primary) / 0.5)" }}>{isAr ? "كود" : "CODE"}</span>
-                      {shortCode.split("").map((d, i) => (
+                      <span className="text-[8px] uppercase tracking-[0.15em] me-1" style={{ color: cardTheme === "classic" ? "rgba(201,168,76,0.45)" : "hsl(var(--primary) / 0.5)" }}>{isAr ? "رمز التحقق" : "VERIFY CODE"}</span>
+                      {verificationCode.split("").map((d, i) => (
                         <span
                           key={i}
                           className="inline-flex h-7 w-6 sm:h-8 sm:w-7 items-center justify-center rounded-md font-mono text-sm sm:text-base font-bold"
@@ -384,16 +403,19 @@ export function UnifiedMembershipTab({ profile, userId, onMembershipChange }: Un
                       <button onClick={() => setShowCode(!showCode)} className="ms-1 p-0.5 transition-colors" style={{ color: cardTheme === "classic" ? "rgba(255,255,255,0.35)" : "hsl(var(--muted-foreground) / 0.5)" }}>
                         {showCode ? <EyeOff className="h-3.5 w-3.5" /> : <Eye className="h-3.5 w-3.5" />}
                       </button>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <span className="font-mono text-[9px] tracking-[0.15em]" style={{ color: cardTheme === "classic" ? "rgba(255,255,255,0.35)" : "hsl(var(--muted-foreground) / 0.5)" }}>{profile?.account_number || card.membership_number}</span>
                       <span
                         className="ms-auto text-[8px] font-bold uppercase tracking-wider rounded-full px-2.5 py-1"
-                        style={card.card_status === "active"
-                          ? { color: cardTheme === "classic" ? "#6ee7b7" : "hsl(142 71% 45%)", background: cardTheme === "classic" ? "rgba(52,211,153,0.12)" : "hsl(142 71% 45% / 0.1)" }
+                        style={isCardExpired
+                          ? { color: "#f87171", background: "rgba(248,113,113,0.12)" }
                           : card.card_status === "suspended"
                           ? { color: "#fbbf24", background: "rgba(251,191,36,0.12)" }
-                          : { color: "#f87171", background: "rgba(248,113,113,0.12)" }
+                          : { color: cardTheme === "classic" ? "#6ee7b7" : "hsl(142 71% 45%)", background: cardTheme === "classic" ? "rgba(52,211,153,0.12)" : "hsl(142 71% 45% / 0.1)" }
                         }
                       >
-                        {card.card_status === "active" ? (isAr ? "نشطة" : "ACTIVE") : card.card_status === "suspended" ? (isAr ? "معلقة" : "SUSPENDED") : (isAr ? "منتهية" : "EXPIRED")}
+                        {isCardExpired ? (isAr ? "منتهية" : "EXPIRED") : card.card_status === "suspended" ? (isAr ? "معلقة" : "SUSPENDED") : (isAr ? "نشطة" : "ACTIVE")}
                       </span>
                     </div>
                   </div>
@@ -409,7 +431,7 @@ export function UnifiedMembershipTab({ profile, userId, onMembershipChange }: Un
                     >
                       <QRCodeSVG
                         value={`https://altohaacom.lovable.app/verify?code=${profile?.account_number || card.membership_number}`}
-                        size={isVertical ? 58 : 54}
+                        size={isVertical ? 62 : 58}
                         level="M"
                         includeMargin={false}
                         fgColor={cardTheme === "classic" ? "#1a1a2e" : "hsl(25, 30%, 12%)"}
@@ -425,7 +447,33 @@ export function UnifiedMembershipTab({ profile, userId, onMembershipChange }: Un
         </div>
       )}
 
-      {/* ═══════════ MEMBERSHIP STATUS ═══════════ */}
+      {/* ═══════════ EXPIRY WARNING / RENEWAL INCENTIVE ═══════════ */}
+      {(isCardExpired || showExpiryWarning) && (
+        <Card className={`border-2 ${isCardExpired ? "border-destructive/50 bg-destructive/5" : "border-chart-4/50 bg-chart-4/5"}`}>
+          <CardContent className="p-4 flex items-center gap-4">
+            <div className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-full ${isCardExpired ? "bg-destructive/15" : "bg-chart-4/15"}`}>
+              {isCardExpired ? <AlertTriangle className="h-5 w-5 text-destructive" /> : <Bell className="h-5 w-5 text-chart-4" />}
+            </div>
+            <div className="flex-1 min-w-0">
+              <p className="text-sm font-semibold">
+                {isCardExpired
+                  ? (isAr ? "انتهت صلاحية عضويتك" : "Your membership has expired")
+                  : (isAr ? `تنتهي عضويتك خلال ${cardDaysLeft} يوم` : `Your membership expires in ${cardDaysLeft} days`)}
+              </p>
+              <p className="text-xs text-muted-foreground mt-0.5">
+                {isCardExpired
+                  ? (isAr ? "سيتم تخفيض مستوى عضويتك إلى أساسي. جدد الآن للحفاظ على مزاياك!" : "Your tier will drop to Basic. Renew now to keep your benefits!")
+                  : (isAr ? "جدد الآن واحصل على خصم 10% على السنة القادمة!" : "Renew now and get 10% off your next year!")}
+              </p>
+            </div>
+            <Button size="sm" className="shrink-0 gap-1.5" onClick={() => upgradeMutation.mutate((currentTier || "professional") as any)} disabled={upgradeMutation.isPending}>
+              {upgradeMutation.isPending ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <RefreshCw className="h-3.5 w-3.5" />}
+              {isAr ? "تجديد" : "Renew"}
+            </Button>
+          </CardContent>
+        </Card>
+      )}
+
       <Card className="overflow-hidden">
         <div className="bg-gradient-to-br from-primary/10 via-background to-accent/5 p-1">
           <CardHeader className="pb-3">
