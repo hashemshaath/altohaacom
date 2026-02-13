@@ -7561,7 +7561,7 @@ export type Database = {
           assigned_vendor: string | null
           assigned_vendor_ar: string | null
           category: string
-          competition_id: string
+          competition_id: string | null
           created_at: string
           delivered_at: string | null
           delivered_by: string | null
@@ -7595,7 +7595,7 @@ export type Database = {
           assigned_vendor?: string | null
           assigned_vendor_ar?: string | null
           category?: string
-          competition_id: string
+          competition_id?: string | null
           created_at?: string
           delivered_at?: string | null
           delivered_by?: string | null
@@ -7629,7 +7629,7 @@ export type Database = {
           assigned_vendor?: string | null
           assigned_vendor_ar?: string | null
           category?: string
-          competition_id?: string
+          competition_id?: string | null
           created_at?: string
           delivered_at?: string | null
           delivered_by?: string | null
@@ -8880,7 +8880,7 @@ export type Database = {
           approved_at: string | null
           approved_by: string | null
           category: string
-          competition_id: string
+          competition_id: string | null
           created_at: string | null
           created_by: string
           description: string | null
@@ -8896,7 +8896,7 @@ export type Database = {
           approved_at?: string | null
           approved_by?: string | null
           category?: string
-          competition_id: string
+          competition_id?: string | null
           created_at?: string | null
           created_by: string
           description?: string | null
@@ -8912,7 +8912,7 @@ export type Database = {
           approved_at?: string | null
           approved_by?: string | null
           category?: string
-          competition_id?: string
+          competition_id?: string | null
           created_at?: string | null
           created_by?: string
           description?: string | null

@@ -58,20 +58,36 @@ export default function OrderCenterAdmin() {
   const [selectedTemplate, setSelectedTemplate] = useState<DishTemplate | null>(null);
   const [competitionFilter, setCompetitionFilter] = useState("all");
 
-  // Fetch competitions for overview
-  const { data: competitions = [] } = useQuery({
-    queryKey: ["order-center-competitions"],
+  const [competitionSearch, setCompetitionSearch] = useState("");
+
+  // Fetch ALL competitions (past, current, future, draft) for full admin access
+  const { data: allCompetitions = [] } = useQuery({
+    queryKey: ["order-center-all-competitions"],
     queryFn: async () => {
       const { data, error } = await supabase
         .from("competitions")
-        .select("id, title, title_ar, status, country_code, start_date")
-        .in("status", ["upcoming", "registration_open", "in_progress", "judging"])
-        .order("start_date", { ascending: true })
-        .limit(100);
+        .select("id, title, title_ar, status, country_code, competition_start")
+        .order("competition_start", { ascending: false })
+        .limit(500);
       if (error) throw error;
       return data;
     },
   });
+
+  // Filter competitions by search query for selectors
+  const filteredCompetitions = allCompetitions.filter((c: any) => {
+    if (!competitionSearch) return true;
+    const q = competitionSearch.toLowerCase();
+    return (c.title?.toLowerCase().includes(q) || c.title_ar?.includes(competitionSearch));
+  });
+
+  // Active/future competitions for assignment
+  const assignableCompetitions = allCompetitions.filter((c: any) =>
+    ["draft", "upcoming", "registration_open", "in_progress", "judging"].includes(c.status)
+  );
+
+  // For backward compat
+  const competitions = allCompetitions;
 
   // Fetch all requirement lists across competitions
   const { data: allLists = [], isLoading: listsLoading } = useQuery({
@@ -83,7 +99,9 @@ export default function OrderCenterAdmin() {
         .order("created_at", { ascending: false })
         .limit(200);
 
-      if (competitionFilter !== "all") {
+      if (competitionFilter === "unlinked") {
+        query = query.is("competition_id", null);
+      } else if (competitionFilter !== "all") {
         query = query.eq("competition_id", competitionFilter);
       }
       if (searchQuery) {
@@ -205,6 +223,67 @@ export default function OrderCenterAdmin() {
     },
   });
 
+  // Copy list (duplicate as draft, optionally unlinked)
+  const copyList = async (list: any) => {
+    try {
+      const { data: newList, error: listError } = await supabase
+        .from("requirement_lists")
+        .insert({
+          competition_id: list.competition_id || null,
+          title: `${list.title} (copy)`,
+          title_ar: list.title_ar ? `${list.title_ar} (نسخة)` : null,
+          category: list.category,
+          created_by: user!.id,
+          description: list.description,
+          description_ar: list.description_ar,
+          status: "draft",
+        })
+        .select("id")
+        .single();
+      if (listError) throw listError;
+
+      // Copy items
+      const listItems = allItems.filter((i: any) => i.list_id === list.id);
+      if (listItems.length) {
+        const { data: origItems } = await supabase
+          .from("requirement_list_items")
+          .select("*")
+          .eq("list_id", list.id);
+        if (origItems?.length) {
+          const newItems = origItems.map((item: any, idx: number) => ({
+            list_id: newList.id,
+            custom_name: item.custom_name,
+            custom_name_ar: item.custom_name_ar,
+            item_id: item.item_id,
+            quantity: item.quantity,
+            unit: item.unit,
+            estimated_cost: item.estimated_cost,
+            sort_order: idx,
+          }));
+          await supabase.from("requirement_list_items").insert(newItems);
+        }
+      }
+      queryClient.invalidateQueries({ queryKey: ["order-center-all-lists"] });
+      queryClient.invalidateQueries({ queryKey: ["order-center-all-items"] });
+      toast({ title: isAr ? "تم نسخ القائمة" : "List copied" });
+    } catch (e: any) {
+      toast({ variant: "destructive", title: "Error", description: e.message });
+    }
+  };
+
+  // Delete list
+  const deleteList = async (id: string) => {
+    try {
+      await supabase.from("requirement_list_items").delete().eq("list_id", id);
+      const { error } = await supabase.from("requirement_lists").delete().eq("id", id);
+      if (error) throw error;
+      queryClient.invalidateQueries({ queryKey: ["order-center-all-lists"] });
+      queryClient.invalidateQueries({ queryKey: ["order-center-all-items"] });
+      toast({ title: isAr ? "تم حذف القائمة" : "List deleted" });
+    } catch (e: any) {
+      toast({ variant: "destructive", title: "Error", description: e.message });
+    }
+  };
 
   const applyDishTemplate = useMutation({
     mutationFn: async ({ template, competitionId }: { template: DishTemplate; competitionId: string }) => {
@@ -384,14 +463,25 @@ export default function OrderCenterAdmin() {
               />
             </div>
             <Select value={competitionFilter} onValueChange={setCompetitionFilter}>
-              <SelectTrigger className="w-[200px] h-9 text-xs">
+              <SelectTrigger className="w-[220px] h-9 text-xs">
                 <SelectValue placeholder={isAr ? "كل المسابقات" : "All Competitions"} />
               </SelectTrigger>
               <SelectContent>
+                <div className="px-2 pb-2">
+                  <Input
+                    placeholder={isAr ? "بحث بالاسم..." : "Search by name..."}
+                    value={competitionSearch}
+                    onChange={e => setCompetitionSearch(e.target.value)}
+                    className="h-7 text-xs"
+                    onClick={e => e.stopPropagation()}
+                  />
+                </div>
                 <SelectItem value="all">{isAr ? "الكل" : "All"}</SelectItem>
-                {competitions.map((c: any) => (
+                <SelectItem value="unlinked">{isAr ? "بدون مسابقة (مسودات)" : "Unlinked (Drafts)"}</SelectItem>
+                {filteredCompetitions.map((c: any) => (
                   <SelectItem key={c.id} value={c.id} className="text-xs">
                     {isAr && c.title_ar ? c.title_ar : c.title}
+                    <span className="ms-1 text-[9px] text-muted-foreground">({c.status})</span>
                   </SelectItem>
                 ))}
               </SelectContent>
@@ -419,6 +509,7 @@ export default function OrderCenterAdmin() {
                     <TableHead className="text-xs">{isAr ? "الفئة" : "Category"}</TableHead>
                     <TableHead className="text-xs text-center">{isAr ? "العناصر" : "Items"}</TableHead>
                     <TableHead className="text-xs">{isAr ? "الحالة" : "Status"}</TableHead>
+                    <TableHead className="text-xs">{isAr ? "إجراءات" : "Actions"}</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -431,7 +522,9 @@ export default function OrderCenterAdmin() {
                           {isAr && list.title_ar ? list.title_ar : list.title}
                         </TableCell>
                         <TableCell className="text-xs text-muted-foreground">
-                          {list.competitions ? (isAr && list.competitions.title_ar ? list.competitions.title_ar : list.competitions.title) : "—"}
+                          {list.competitions ? (isAr && list.competitions.title_ar ? list.competitions.title_ar : list.competitions.title) : (
+                            <Badge variant="outline" className="text-[9px] text-chart-4">{isAr ? "بدون مسابقة" : "Unlinked"}</Badge>
+                          )}
                         </TableCell>
                         <TableCell>
                           <Badge variant="outline" className="text-[10px]">
@@ -443,6 +536,30 @@ export default function OrderCenterAdmin() {
                           <Badge variant="secondary" className="text-[10px]">
                             {list.status || (isAr ? "مسودة" : "Draft")}
                           </Badge>
+                        </TableCell>
+                        <TableCell>
+                          <div className="flex gap-1">
+                            <Button
+                              size="icon"
+                              variant="ghost"
+                              className="h-7 w-7"
+                              title={isAr ? "نسخ القائمة" : "Copy list"}
+                              onClick={() => copyList(list)}
+                            >
+                              <Copy className="h-3.5 w-3.5" />
+                            </Button>
+                            <Button
+                              size="icon"
+                              variant="ghost"
+                              className="h-7 w-7 text-destructive hover:text-destructive"
+                              title={isAr ? "حذف" : "Delete"}
+                              onClick={() => {
+                                if (confirm(isAr ? "حذف هذه القائمة؟" : "Delete this list?")) deleteList(list.id);
+                              }}
+                            >
+                              <Trash2 className="h-3.5 w-3.5" />
+                            </Button>
+                          </div>
                         </TableCell>
                       </TableRow>
                     );
@@ -464,14 +581,23 @@ export default function OrderCenterAdmin() {
               />
             </div>
             <Select value={competitionFilter} onValueChange={setCompetitionFilter}>
-              <SelectTrigger className="w-[200px] h-9 text-xs">
+              <SelectTrigger className="w-[220px] h-9 text-xs">
                 <SelectValue placeholder={isAr ? "كل المسابقات" : "All Competitions"} />
               </SelectTrigger>
               <SelectContent>
+                <div className="px-2 pb-2">
+                  <Input
+                    placeholder={isAr ? "بحث بالاسم..." : "Search by name..."}
+                    value={competitionSearch}
+                    onChange={e => setCompetitionSearch(e.target.value)}
+                    className="h-7 text-xs"
+                    onClick={e => e.stopPropagation()}
+                  />
+                </div>
                 <SelectItem value="all">{isAr ? "الكل" : "All"}</SelectItem>
-                {competitions.map((c: any) => (
+                {filteredCompetitions.map((c: any) => (
                   <SelectItem key={c.id} value={c.id} className="text-xs">
-                    {isAr && c.title_ar ? c.title_ar : c.title}
+                    {isAr && c.title_ar ? c.title_ar : c.title} ({c.status})
                   </SelectItem>
                 ))}
               </SelectContent>
@@ -647,6 +773,7 @@ export default function OrderCenterAdmin() {
             <TemplateDetail
               template={selectedTemplate}
               competitions={competitions}
+              assignableCompetitions={assignableCompetitions}
               isAr={isAr}
               onBack={() => setSelectedTemplate(null)}
               onApply={(competitionId) => {
@@ -775,16 +902,18 @@ export default function OrderCenterAdmin() {
 
 // ── Template Detail View ──
 function TemplateDetail({
-  template, competitions, isAr, onBack, onApply, isApplying,
+  template, competitions, assignableCompetitions, isAr, onBack, onApply, isApplying,
 }: {
   template: DishTemplate;
   competitions: any[];
+  assignableCompetitions: any[];
   isAr: boolean;
   onBack: () => void;
   onApply: (competitionId: string) => void;
   isApplying: boolean;
 }) {
   const [targetCompetition, setTargetCompetition] = useState("");
+  const [tplCompSearch, setTplCompSearch] = useState("");
 
   return (
     <div className="space-y-4">
@@ -813,9 +942,20 @@ function TemplateDetail({
                 <SelectValue placeholder={isAr ? "اختر مسابقة..." : "Select competition..."} />
               </SelectTrigger>
               <SelectContent>
-                {competitions.map((c: any) => (
+                <div className="px-2 pb-2">
+                  <Input
+                    placeholder={isAr ? "بحث بالاسم..." : "Search by name..."}
+                    value={tplCompSearch}
+                    onChange={e => setTplCompSearch(e.target.value)}
+                    className="h-7 text-xs"
+                    onClick={e => e.stopPropagation()}
+                  />
+                </div>
+                {assignableCompetitions
+                  .filter((c: any) => !tplCompSearch || c.title?.toLowerCase().includes(tplCompSearch.toLowerCase()) || c.title_ar?.includes(tplCompSearch))
+                  .map((c: any) => (
                   <SelectItem key={c.id} value={c.id} className="text-xs">
-                    {isAr && c.title_ar ? c.title_ar : c.title}
+                    {isAr && c.title_ar ? c.title_ar : c.title} ({c.status})
                   </SelectItem>
                 ))}
               </SelectContent>
@@ -947,11 +1087,11 @@ function FulfillmentTracker({
       {/* Filters */}
       <div className="flex flex-wrap gap-3">
         <Select value={competitionFilter} onValueChange={setCompetitionFilter}>
-          <SelectTrigger className="w-[200px] h-9 text-xs"><SelectValue placeholder={isAr ? "كل المسابقات" : "All Competitions"} /></SelectTrigger>
+          <SelectTrigger className="w-[220px] h-9 text-xs"><SelectValue placeholder={isAr ? "كل المسابقات" : "All Competitions"} /></SelectTrigger>
           <SelectContent>
             <SelectItem value="all">{isAr ? "الكل" : "All"}</SelectItem>
             {competitions.map((c: any) => (
-              <SelectItem key={c.id} value={c.id} className="text-xs">{isAr && c.title_ar ? c.title_ar : c.title}</SelectItem>
+              <SelectItem key={c.id} value={c.id} className="text-xs">{isAr && c.title_ar ? c.title_ar : c.title} ({c.status})</SelectItem>
             ))}
           </SelectContent>
         </Select>
