@@ -21,16 +21,14 @@ import {
 } from "lucide-react";
 import { RequirementListItems } from "./RequirementListItems";
 import { SponsorshipRequestPanel } from "./SponsorshipRequestPanel";
+import { ORDER_CATEGORIES } from "./order-center/OrderCenterCategories";
 
-const LIST_CATEGORIES = [
-  { value: "general", label: "General", labelAr: "عام", icon: ClipboardList },
-  { value: "venue", label: "Venue & Setup", labelAr: "الموقع والإعداد", icon: MapPin },
-  { value: "equipment", label: "Equipment", labelAr: "المعدات", icon: Package },
-  { value: "food", label: "Food & Ingredients", labelAr: "الطعام والمكونات", icon: UtensilsCrossed },
-  { value: "safety", label: "Safety & Hygiene", labelAr: "السلامة والنظافة", icon: ShieldCheck },
-  { value: "decoration", label: "Decoration & Serving", labelAr: "الديكور والتقديم", icon: Lightbulb },
-  { value: "utilities", label: "Utilities (Gas/Water/Electricity)", labelAr: "المرافق", icon: Flame },
-];
+const LIST_CATEGORIES = ORDER_CATEGORIES.map(c => ({
+  value: c.value,
+  label: c.label,
+  labelAr: c.labelAr,
+  icon: c.icon,
+}));
 
 const STATUS_COLORS: Record<string, string> = {
   draft: "bg-muted text-muted-foreground",
