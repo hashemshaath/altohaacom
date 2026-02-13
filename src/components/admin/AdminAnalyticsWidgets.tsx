@@ -212,7 +212,7 @@ export function AdminAnalyticsWidgets() {
           ) : (
             <div className="grid grid-cols-3 gap-3">
               <div className="rounded-xl border border-border/50 p-3 text-center">
-                <p className="text-lg font-bold">${(revenue?.totalRevenue || 0).toLocaleString()}</p>
+                <p className="text-lg font-bold">﷼ {(revenue?.totalRevenue || 0).toLocaleString()}</p>
                 <p className="text-[10px] text-muted-foreground">{isAr ? "إجمالي الإيرادات" : "Total Revenue"}</p>
               </div>
               <div className="rounded-xl border border-border/50 p-3 text-center">

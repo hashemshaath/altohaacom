@@ -166,7 +166,7 @@ export default function CompaniesLanding() {
             <div className="grid md:grid-cols-3 gap-5 max-w-5xl mx-auto">
               {[
                 { name: isAr ? "أساسي" : "Starter", price: isAr ? "مجاني" : "Free", features: [isAr ? "ملف شركة أساسي" : "Basic company profile", isAr ? "كتالوج محدود" : "Limited catalog", isAr ? "لوحة تحكم" : "Dashboard"] },
-                { name: isAr ? "احترافي" : "Professional", price: "$99/mo", popular: true, features: [isAr ? "جميع مميزات الأساسي" : "All Starter features", isAr ? "فروع متعددة" : "Multiple branches", isAr ? "تحليلات متقدمة" : "Advanced analytics", isAr ? "فوترة تلقائية" : "Auto invoicing"] },
+                { name: isAr ? "احترافي" : "Professional", price: "﷼ 99/mo", popular: true, features: [isAr ? "جميع مميزات الأساسي" : "All Starter features", isAr ? "فروع متعددة" : "Multiple branches", isAr ? "تحليلات متقدمة" : "Advanced analytics", isAr ? "فوترة تلقائية" : "Auto invoicing"] },
                 { name: isAr ? "مؤسسي" : "Enterprise", price: isAr ? "مخصص" : "Custom", features: [isAr ? "جميع مميزات الاحترافي" : "All Pro features", isAr ? "API مخصص" : "Custom API", isAr ? "مدير حساب مخصص" : "Dedicated account manager", isAr ? "تكامل مخصص" : "Custom integrations"] },
               ].map((plan, i) => (
                 <Card key={i} className={`relative ${plan.popular ? "border-primary shadow-md ring-1 ring-primary/20" : "border-border/60"}`}>

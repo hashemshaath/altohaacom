@@ -165,7 +165,7 @@ export default function MembershipManagement() {
     },
     {
       tier: "professional" as MembershipTier,
-      price: "$19/" + (language === "ar" ? "شهر" : "month"),
+      price: "﷼ 19/" + (language === "ar" ? "شهر" : "month"),
       color: "border-primary",
       featured: true,
       features: [
@@ -179,7 +179,7 @@ export default function MembershipManagement() {
     },
     {
       tier: "enterprise" as MembershipTier,
-      price: "$99/" + (language === "ar" ? "شهر" : "month"),
+      price: "﷼ 99/" + (language === "ar" ? "شهر" : "month"),
       color: "border-chart-3",
       features: [
         language === "ar" ? "جميع مميزات الاحترافية" : "All Professional features",

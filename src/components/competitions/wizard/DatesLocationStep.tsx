@@ -34,7 +34,7 @@ export function DatesLocationStep({ data, onChange, competitionNumber }: DatesLo
     if (country) {
       const countryData = countries?.find((c: any) => c.code === code);
       if (countryData) {
-        updates.registrationCurrency = countryData.currency_code || "USD";
+        updates.registrationCurrency = countryData.currency_code || "SAR";
         updates.registrationTaxRate = Number(countryData.tax_rate) || 0;
         updates.registrationTaxName = countryData.tax_name || "VAT";
         updates.registrationTaxNameAr = countryData.tax_name_ar || "ضريبة القيمة المضافة";

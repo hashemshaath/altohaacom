@@ -215,7 +215,7 @@ const AdvertisingAdmin = forwardRef<HTMLDivElement>(function AdvertisingAdmin(_p
     { icon: Megaphone, label: isAr ? "الحملات النشطة" : "Active Campaigns", value: stats?.activeCampaigns || 0, color: "text-primary" },
     { icon: Eye, label: isAr ? "إجمالي المشاهدات" : "Total Impressions", value: (stats?.totalImpressions || 0).toLocaleString(), color: "text-chart-1" },
     { icon: MousePointer, label: isAr ? "إجمالي النقرات" : "Total Clicks", value: (stats?.totalClicks || 0).toLocaleString(), color: "text-chart-2" },
-    { icon: DollarSign, label: isAr ? "الإيرادات" : "Revenue", value: `${(stats?.totalRevenue || 0).toLocaleString()} SAR`, color: "text-chart-3" },
+    { icon: DollarSign, label: isAr ? "الإيرادات" : "Revenue", value: `﷼ ${(stats?.totalRevenue || 0).toLocaleString()}`, color: "text-chart-3" },
   ];
 
   const pendingRequests = requests.filter(r => r.status === "pending" || r.status === "under_review");
@@ -320,7 +320,7 @@ const AdvertisingAdmin = forwardRef<HTMLDivElement>(function AdvertisingAdmin(_p
                         <TableCell className="font-medium">{isAr ? req.companies?.name_ar : req.companies?.name}</TableCell>
                         <TableCell>{isAr ? req.title_ar || req.title : req.title}</TableCell>
                         <TableCell><Badge variant="outline">{req.request_type}</Badge></TableCell>
-                        <TableCell>{req.budget ? `${req.budget} ${req.currency}` : "—"}</TableCell>
+                        <TableCell>{req.budget ? `﷼ ${req.budget}` : "—"}</TableCell>
                         <TableCell>
                           <Badge className={statusColors[req.status] || ""}>{req.status}</Badge>
                         </TableCell>
@@ -490,8 +490,8 @@ const AdvertisingAdmin = forwardRef<HTMLDivElement>(function AdvertisingAdmin(_p
                       <TableCell><Badge variant="outline">{p.placement_type}</Badge></TableCell>
                       <TableCell>{p.page_location}</TableCell>
                       <TableCell>{p.width && p.height ? `${p.width}×${p.height}` : "—"}</TableCell>
-                      <TableCell>{p.base_cpm} SAR</TableCell>
-                      <TableCell>{p.base_cpc} SAR</TableCell>
+                      <TableCell>﷼ {p.base_cpm}</TableCell>
+                      <TableCell>﷼ {p.base_cpc}</TableCell>
                       <TableCell>{p.is_premium ? <Badge variant="secondary">Premium</Badge> : "—"}</TableCell>
                       <TableCell>
                         <Switch checked={p.is_active} onCheckedChange={(checked) => togglePlacement.mutate({ id: p.id, is_active: checked })} />
