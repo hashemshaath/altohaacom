@@ -607,7 +607,7 @@ export default function ExhibitionsAdmin() {
                   <>
                     <div>
                       <Label>{t("Ticket Price (English)", "سعر التذكرة (إنجليزي)")}</Label>
-                      <Input value={form.ticket_price || ""} onChange={e => updateField("ticket_price", e.target.value)} placeholder="$50 USD" />
+                      <Input value={form.ticket_price || ""} onChange={e => updateField("ticket_price", e.target.value)} placeholder="SAR 50" />
                     </div>
                     <div>
                       <Label>{t("Ticket Price (Arabic)", "سعر التذكرة (عربي)")}</Label>
