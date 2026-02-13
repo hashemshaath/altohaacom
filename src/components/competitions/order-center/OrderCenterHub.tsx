@@ -1,12 +1,13 @@
 import { useLanguage } from "@/i18n/LanguageContext";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { LayoutDashboard, ClipboardList, Package, Lightbulb, CheckSquare, Send } from "lucide-react";
+import { LayoutDashboard, ClipboardList, Package, Lightbulb, CheckSquare, Send, Wallet } from "lucide-react";
 import { RequirementsListPanel } from "../RequirementsListPanel";
 import { SuggestionPanel } from "./SuggestionPanel";
 import { DeliveryChecklist } from "./DeliveryChecklist";
 import { CatalogBrowser } from "./CatalogBrowser";
 import { QuoteRequestPanel } from "./QuoteRequestPanel";
 import { OrderOverviewDashboard } from "./OrderOverviewDashboard";
+import { BudgetTracker } from "./BudgetTracker";
 
 interface Props {
   competitionId: string;
@@ -23,6 +24,7 @@ export function OrderCenterHub({ competitionId, isOrganizer }: Props) {
     { id: "catalog", icon: <Package className="h-3.5 w-3.5" />, label: isAr ? "كتالوج العناصر" : "Item Catalog" },
     { id: "checklist", icon: <CheckSquare className="h-3.5 w-3.5" />, label: isAr ? "قائمة التحقق" : "Delivery Checklist" },
     { id: "quotes", icon: <Send className="h-3.5 w-3.5" />, label: isAr ? "طلبات الأسعار" : "Quote Requests" },
+    { id: "budget", icon: <Wallet className="h-3.5 w-3.5" />, label: isAr ? "الميزانية" : "Budget" },
     { id: "suggestions", icon: <Lightbulb className="h-3.5 w-3.5" />, label: isAr ? "الاقتراحات" : "Suggestions" },
   ];
 
@@ -67,6 +69,10 @@ export function OrderCenterHub({ competitionId, isOrganizer }: Props) {
 
         <TabsContent value="quotes" className="mt-4">
           <QuoteRequestPanel competitionId={competitionId} isOrganizer={isOrganizer} />
+        </TabsContent>
+
+        <TabsContent value="budget" className="mt-4">
+          <BudgetTracker competitionId={competitionId} isOrganizer={isOrganizer} />
         </TabsContent>
 
         <TabsContent value="suggestions" className="mt-4">
