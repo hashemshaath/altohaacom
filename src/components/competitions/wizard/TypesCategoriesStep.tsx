@@ -7,10 +7,12 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
 import { Flame, Cake, Eye, Monitor, Check, Plus, Trash2 } from "lucide-react";
 import type { CategoryForm } from "./types";
 import { emptyCategory } from "./types";
+import { GENDER_OPTIONS, PARTICIPANT_LEVELS, genderDisplay, categoryBadgeText } from "@/lib/categoryUtils";
 
 const iconMap: Record<string, React.ReactNode> = {
   flame: <Flame className="h-5 w-5" />,
@@ -87,7 +89,7 @@ export function TypesCategoriesStep({
           description: predef.description || "",
           description_ar: predef.description_ar || "",
           max_participants: predef.default_max_participants,
-          gender: predef.gender || "mixed",
+          gender: predef.gender === "mixed" ? "open" : (predef.gender || "open"),
         },
       ]);
     }
@@ -224,9 +226,7 @@ export function TypesCategoriesStep({
                   {cat.name ? (
                     <div className="flex items-center gap-2">
                       <span className="text-sm font-medium truncate">{isAr && cat.name_ar ? cat.name_ar : cat.name}</span>
-                      {cat.gender !== "mixed" && (
-                        <Badge variant="outline" className="text-[10px]">{cat.gender}</Badge>
-                      )}
+                      <Badge variant="outline" className="text-[10px]">{categoryBadgeText(cat.gender, undefined, isAr)}</Badge>
                       {cat.max_participants && (
                         <Badge variant="outline" className="text-[10px]">
                           {isAr ? `الحد: ${cat.max_participants}` : `Max: ${cat.max_participants}`}
@@ -251,9 +251,21 @@ export function TypesCategoriesStep({
                     </div>
                   )}
                 </div>
-                <Button type="button" variant="ghost" size="icon" className="h-7 w-7 shrink-0" onClick={() => removeCategory(index)}>
-                  <Trash2 className="h-3.5 w-3.5 text-destructive" />
-                </Button>
+                <div className="flex items-center gap-1.5 shrink-0">
+                  <Select value={cat.gender === "mixed" ? "open" : (cat.gender || "open")} onValueChange={(v) => updateCategory(index, "gender", v)}>
+                    <SelectTrigger className="h-7 w-24 text-[10px]"><SelectValue /></SelectTrigger>
+                    <SelectContent>
+                      {GENDER_OPTIONS.map(opt => (
+                        <SelectItem key={opt.value} value={opt.value} className="text-xs">
+                          {opt.symbol} {isAr ? opt.ar : opt.en}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  <Button type="button" variant="ghost" size="icon" className="h-7 w-7" onClick={() => removeCategory(index)}>
+                    <Trash2 className="h-3.5 w-3.5 text-destructive" />
+                  </Button>
+                </div>
               </div>
               {/* Description fields */}
               <div className="grid gap-2 sm:grid-cols-2">

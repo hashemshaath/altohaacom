@@ -71,7 +71,7 @@ export const emptyCategory: CategoryForm = {
   description: "",
   description_ar: "",
   max_participants: null,
-  gender: "mixed",
+  gender: "open",
 };
 
 export const emptyCriteria: CriteriaForm = {

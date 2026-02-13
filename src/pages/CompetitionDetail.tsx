@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { categoryBadgeText } from "@/lib/categoryUtils";
 import { useParams, Link } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -649,7 +650,7 @@ export default function CompetitionDetail() {
                                   <p className="text-sm font-semibold text-foreground">{isAr && cat.name_ar ? cat.name_ar : cat.name}</p>
                                   <div className="flex items-center gap-2 text-[10px] text-muted-foreground">
                                     {cat.max_participants && <span><Users className="inline h-2.5 w-2.5 me-0.5" />{cat.max_participants}</span>}
-                                    <Badge variant="outline" className="text-[9px] h-4 px-1 bg-background/60">{cat.gender === "male" ? (isAr ? "ذكور" : "Male") : cat.gender === "female" ? (isAr ? "إناث" : "Female") : (isAr ? "مختلط" : "Mixed")}</Badge>
+                                    <Badge variant="outline" className="text-[9px] h-4 px-1 bg-background/60">{categoryBadgeText(cat.gender, cat.participant_level, isAr)}</Badge>
                                   </div>
                                 </div>
                               </div>
@@ -665,7 +666,7 @@ export default function CompetitionDetail() {
                                   )}
                                   <div className="flex items-center gap-2 text-[10px] text-muted-foreground mt-0.5">
                                     {cat.max_participants && <span><Users className="inline h-2.5 w-2.5 me-0.5" />{cat.max_participants}</span>}
-                                    <Badge variant="outline" className="text-[9px] h-4 px-1">{cat.gender === "male" ? (isAr ? "ذكور" : "Male") : cat.gender === "female" ? (isAr ? "إناث" : "Female") : (isAr ? "مختلط" : "Mixed")}</Badge>
+                                    <Badge variant="outline" className="text-[9px] h-4 px-1">{categoryBadgeText(cat.gender, cat.participant_level, isAr)}</Badge>
                                   </div>
                                 </div>
                               </div>

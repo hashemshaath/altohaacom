@@ -7,6 +7,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { LanguageProvider } from "@/i18n/LanguageContext";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { ThemeProvider } from "@/components/ThemeProvider";
+import { FloatingHelpButton } from "@/components/FloatingHelpButton";
 
 const LiveChatWidget = lazy(() => import("@/components/crm/LiveChatWidget").then(m => ({ default: m.LiveChatWidget })));
 const NotFound = lazy(() => import("./pages/NotFound"));
@@ -41,6 +42,7 @@ const App = () => (
             <Toaster />
             <Sonner />
             <Suspense fallback={null}><LiveChatWidget /></Suspense>
+            <FloatingHelpButton />
             <BrowserRouter>
               <Suspense fallback={<div className="flex h-screen items-center justify-center"><div className="h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent" /></div>}>
               <Routes>

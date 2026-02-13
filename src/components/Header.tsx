@@ -209,6 +209,12 @@ export function Header() {
                       {t("notificationPreferences")}
                     </Link>
                   </DropdownMenuItem>
+                  <DropdownMenuItem asChild>
+                    <Link to="/help" className="flex items-center gap-2">
+                      <HelpCircle className="h-3.5 w-3.5" />
+                      {isAr ? "مركز المساعدة" : "Help Center"}
+                    </Link>
+                  </DropdownMenuItem>
                   {isAdmin && (
                     <>
                       <DropdownMenuSeparator />
@@ -336,6 +342,10 @@ export function Header() {
                         <Link to="/notification-preferences" onClick={() => setOpen(false)} className="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm text-muted-foreground hover:bg-muted hover:text-foreground transition-colors">
                           <Settings className="h-4 w-4" />
                           {t("notificationPreferences")}
+                        </Link>
+                        <Link to="/help" onClick={() => setOpen(false)} className="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm text-muted-foreground hover:bg-muted hover:text-foreground transition-colors">
+                          <HelpCircle className="h-4 w-4" />
+                          {isAr ? "مركز المساعدة" : "Help Center"}
                         </Link>
 
                         {/* Role-specific */}
