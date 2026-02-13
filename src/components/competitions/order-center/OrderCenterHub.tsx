@@ -1,6 +1,6 @@
 import { useLanguage } from "@/i18n/LanguageContext";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { LayoutDashboard, ClipboardList, Package, Lightbulb, CheckSquare, Send, Wallet, Truck, Activity } from "lucide-react";
+import { LayoutDashboard, ClipboardList, Package, Lightbulb, CheckSquare, Send, Wallet, Truck, Activity, BarChart3, ClipboardCheck, BookTemplate } from "lucide-react";
 import { RequirementsListPanel } from "../RequirementsListPanel";
 import { SuggestionPanel } from "./SuggestionPanel";
 import { DeliveryChecklist } from "./DeliveryChecklist";
@@ -10,6 +10,9 @@ import { OrderOverviewDashboard } from "./OrderOverviewDashboard";
 import { BudgetTracker } from "./BudgetTracker";
 import { VendorAssignmentPanel } from "./VendorAssignmentPanel";
 import { OrderActivityLog } from "./OrderActivityLog";
+import { VendorPerformance } from "./VendorPerformance";
+import { ReadinessChecklist } from "./ReadinessChecklist";
+import { RequirementTemplates } from "./RequirementTemplates";
 
 interface Props {
   competitionId: string;
@@ -28,7 +31,10 @@ export function OrderCenterHub({ competitionId, isOrganizer }: Props) {
     { id: "quotes", icon: <Send className="h-3.5 w-3.5" />, label: isAr ? "طلبات الأسعار" : "Quote Requests" },
     { id: "budget", icon: <Wallet className="h-3.5 w-3.5" />, label: isAr ? "الميزانية" : "Budget" },
     { id: "vendors", icon: <Truck className="h-3.5 w-3.5" />, label: isAr ? "الموردين" : "Vendors" },
+    { id: "performance", icon: <BarChart3 className="h-3.5 w-3.5" />, label: isAr ? "أداء الموردين" : "Performance" },
     { id: "suggestions", icon: <Lightbulb className="h-3.5 w-3.5" />, label: isAr ? "الاقتراحات" : "Suggestions" },
+    { id: "templates", icon: <BookTemplate className="h-3.5 w-3.5" />, label: isAr ? "القوالب" : "Templates" },
+    { id: "readiness", icon: <ClipboardCheck className="h-3.5 w-3.5" />, label: isAr ? "الجاهزية" : "Readiness" },
     { id: "activity", icon: <Activity className="h-3.5 w-3.5" />, label: isAr ? "سجل النشاط" : "Activity Log" },
   ];
 
@@ -83,8 +89,20 @@ export function OrderCenterHub({ competitionId, isOrganizer }: Props) {
           <VendorAssignmentPanel competitionId={competitionId} isOrganizer={isOrganizer} />
         </TabsContent>
 
+        <TabsContent value="performance" className="mt-4">
+          <VendorPerformance competitionId={competitionId} isOrganizer={isOrganizer} />
+        </TabsContent>
+
         <TabsContent value="suggestions" className="mt-4">
           <SuggestionPanel competitionId={competitionId} isOrganizer={isOrganizer} />
+        </TabsContent>
+
+        <TabsContent value="templates" className="mt-4">
+          <RequirementTemplates competitionId={competitionId} isOrganizer={isOrganizer} />
+        </TabsContent>
+
+        <TabsContent value="readiness" className="mt-4">
+          <ReadinessChecklist competitionId={competitionId} isOrganizer={isOrganizer} />
         </TabsContent>
 
         <TabsContent value="activity" className="mt-4">

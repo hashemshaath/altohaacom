@@ -16,6 +16,7 @@ import {
 import { ITEM_STATUS_LABELS, getStatusLabel } from "./OrderStatusLabels";
 import { ORDER_CATEGORIES } from "./OrderCenterCategories";
 import { logOrderActivity } from "./orderActivityLogger";
+import { notifyVendorAssigned } from "./OrderNotifications";
 
 interface Props {
   competitionId: string;
@@ -100,6 +101,14 @@ export function VendorAssignmentPanel({ competitionId, isOrganizer }: Props) {
           entityId: variables.itemId,
           details: { company_name: company ? (isAr && company.name_ar ? company.name_ar : company.name) : "" },
         });
+        if (variables.companyId && company) {
+          notifyVendorAssigned({
+            competitionId,
+            assignedBy: user.id,
+            vendorName: isAr && company.name_ar ? company.name_ar : company.name,
+            itemName: "item",
+          });
+        }
       }
       toast({ title: isAr ? "تم تحديث المورد" : "Vendor updated" });
     },

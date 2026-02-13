@@ -13,6 +13,7 @@ import { CheckCircle, Package, Clock, AlertTriangle, Calendar } from "lucide-rea
 import { format, isPast } from "date-fns";
 import { ITEM_STATUS_LABELS, getStatusLabel } from "./OrderStatusLabels";
 import { logOrderActivity } from "./orderActivityLogger";
+import { notifyDeliveryConfirmed } from "./OrderNotifications";
 
 interface Props {
   competitionId: string;
@@ -97,6 +98,16 @@ export function DeliveryChecklist({ competitionId, isOrganizer }: Props) {
           entityId: variables.id,
           details: { to_status: variables.status },
         });
+        if (variables.status === "delivered") {
+          const currentDelivered = (allItems || []).filter(i => i.status === "delivered").length + 1;
+          notifyDeliveryConfirmed({
+            competitionId,
+            confirmedBy: user.id,
+            itemName: "item",
+            totalDelivered: currentDelivered,
+            totalItems: allItems?.length || 0,
+          });
+        }
       }
       toast({ title: isAr ? "تم تحديث الحالة" : "Status updated" });
     },
