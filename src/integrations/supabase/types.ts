@@ -7982,6 +7982,8 @@ export type Database = {
           id: string
           instagram: string | null
           is_verified: boolean | null
+          job_title: string | null
+          job_title_ar: string | null
           last_login_at: string | null
           linkedin: string | null
           location: string | null
@@ -7996,13 +7998,16 @@ export type Database = {
           phone: string | null
           preferred_language: string | null
           profile_completed: boolean | null
+          profile_visibility: string
           section_visibility: Json | null
           services_description: string | null
           services_description_ar: string | null
+          snapchat: string | null
           specialization: string | null
           specialization_ar: string | null
           suspended_at: string | null
           suspended_reason: string | null
+          tiktok: string | null
           twitter: string | null
           updated_at: string
           user_id: string
@@ -8045,6 +8050,8 @@ export type Database = {
           id?: string
           instagram?: string | null
           is_verified?: boolean | null
+          job_title?: string | null
+          job_title_ar?: string | null
           last_login_at?: string | null
           linkedin?: string | null
           location?: string | null
@@ -8061,13 +8068,16 @@ export type Database = {
           phone?: string | null
           preferred_language?: string | null
           profile_completed?: boolean | null
+          profile_visibility?: string
           section_visibility?: Json | null
           services_description?: string | null
           services_description_ar?: string | null
+          snapchat?: string | null
           specialization?: string | null
           specialization_ar?: string | null
           suspended_at?: string | null
           suspended_reason?: string | null
+          tiktok?: string | null
           twitter?: string | null
           updated_at?: string
           user_id: string
@@ -8110,6 +8120,8 @@ export type Database = {
           id?: string
           instagram?: string | null
           is_verified?: boolean | null
+          job_title?: string | null
+          job_title_ar?: string | null
           last_login_at?: string | null
           linkedin?: string | null
           location?: string | null
@@ -8126,13 +8138,16 @@ export type Database = {
           phone?: string | null
           preferred_language?: string | null
           profile_completed?: boolean | null
+          profile_visibility?: string
           section_visibility?: Json | null
           services_description?: string | null
           services_description_ar?: string | null
+          snapchat?: string | null
           specialization?: string | null
           specialization_ar?: string | null
           suspended_at?: string | null
           suspended_reason?: string | null
+          tiktok?: string | null
           twitter?: string | null
           updated_at?: string
           user_id?: string
