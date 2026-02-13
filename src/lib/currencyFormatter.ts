@@ -3,8 +3,8 @@
  * Handles all currency conversions and displays for Saudi Riyal (SAR)
  */
 
-export const SAR_SYMBOL = "﷼"; // Official Saudi Riyal Symbol
-export const SAR_CODE = "SAR";
+export const SAR_SYMBOL = "ر.س"; // Saudi Riyal Abbreviation
+export const SAR_CODE = "ر.س";
 export const DEFAULT_CURRENCY = "SAR";
 
 export interface FormattingOptions {
