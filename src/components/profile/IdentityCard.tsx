@@ -1,9 +1,10 @@
+import { useState } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { Button } from "@/components/ui/button";
 import { useEntityQRCode } from "@/hooks/useQRCode";
 import { useToast } from "@/hooks/use-toast";
 import { getVerificationUrl, generateVCard, downloadVCard } from "@/lib/qrCode";
-import { Copy, Download, UserPlus } from "lucide-react";
+import { Copy, Download, UserPlus, Eye, EyeOff } from "lucide-react";
 import { QRCodeSVG } from "qrcode.react";
 
 interface IdentityCardProps {
@@ -40,6 +41,7 @@ export function IdentityCard({ profile, userId }: IdentityCardProps) {
   const { language } = useLanguage();
   const { toast } = useToast();
   const isAr = language === "ar";
+  const [showCode, setShowCode] = useState(false);
   const { data: qrCode } = useEntityQRCode("user", profile?.username || undefined, "account");
 
   if (!qrCode) return null;
@@ -124,7 +126,7 @@ export function IdentityCard({ profile, userId }: IdentityCardProps) {
           <div className="h-px bg-gradient-to-r from-transparent via-primary/25 to-transparent mb-6" />
 
           {/* Body: Avatar + Info + QR */}
-          <div className="flex flex-col sm:flex-row items-center sm:items-start gap-6">
+          <div className="flex flex-col sm:flex-row items-center sm:items-start gap-4 sm:gap-6">
             {/* Avatar */}
             <div className="shrink-0">
               {profile?.avatar_url ? (
@@ -157,18 +159,24 @@ export function IdentityCard({ profile, userId }: IdentityCardProps) {
               )}
 
               {/* 4-digit code */}
-              <div className="flex items-center gap-1 mt-3 justify-center sm:justify-start">
+              <div className="flex items-center gap-1.5 mt-3 justify-center sm:justify-start">
                 <span className="text-[9px] text-muted-foreground me-1.5 uppercase tracking-wider">
                   {isAr ? "كود" : "Code"}
                 </span>
                 {digits.split("").map((d, i) => (
                   <span
                     key={i}
-                    className="inline-flex h-7 w-6 items-center justify-center rounded-md border border-primary/25 bg-primary/5 font-mono text-sm font-bold text-primary"
+                    className="inline-flex h-8 w-7 sm:h-9 sm:w-8 items-center justify-center rounded-md border border-primary/25 bg-primary/5 font-mono text-base sm:text-lg font-bold text-primary"
                   >
-                    {d}
+                    {showCode ? d : "•"}
                   </span>
                 ))}
+                <button
+                  onClick={() => setShowCode(!showCode)}
+                  className="ms-1 text-muted-foreground hover:text-primary transition-colors p-1"
+                >
+                  {showCode ? <EyeOff className="h-3.5 w-3.5" /> : <Eye className="h-3.5 w-3.5" />}
+                </button>
               </div>
             </div>
 

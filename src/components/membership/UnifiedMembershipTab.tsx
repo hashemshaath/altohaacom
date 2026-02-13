@@ -34,7 +34,7 @@ export function UnifiedMembershipTab({ profile, userId, onMembershipChange }: Un
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const cardRef = useRef<HTMLDivElement>(null);
-  const [_showCode, _setShowCode] = useState(false);
+  const [showCode, setShowCode] = useState(false);
   const [orientation, setOrientation] = useState<"horizontal" | "vertical">("horizontal");
 
   // Fetch membership card
@@ -134,6 +134,7 @@ export function UnifiedMembershipTab({ profile, userId, onMembershipChange }: Un
   const genderLabel = profile?.gender === "male" ? (isAr ? "ذكر" : "Male") : profile?.gender === "female" ? (isAr ? "أنثى" : "Female") : "";
   const isTrial = card?.is_trial && card?.trial_ends_at && new Date(card.trial_ends_at) > new Date();
   const shortCode = profile?.account_number ? profile.account_number.replace(/\D/g, "").slice(-4).padStart(4, "0") : "0000";
+  const fullVerificationCode = card?.verification_code || "";
   const isVertical = orientation === "vertical";
 
   const profileCompletion = [
@@ -202,8 +203,8 @@ export function UnifiedMembershipTab({ profile, userId, onMembershipChange }: Un
 
           <div
             ref={cardRef}
-            className={`relative overflow-hidden rounded-2xl shadow-2xl ${isVertical ? "max-w-[320px] mx-auto" : "max-w-[560px]"}`}
-            style={{ background: "linear-gradient(135deg, hsl(36, 20%, 12%) 0%, hsl(36, 25%, 16%) 40%, hsl(36, 30%, 20%) 100%)", aspectRatio: isVertical ? "9/16" : "16/9" }}
+            className={`relative overflow-hidden rounded-2xl shadow-2xl ${isVertical ? "max-w-[320px] mx-auto" : "w-full max-w-[560px]"}`}
+            style={{ background: "linear-gradient(135deg, hsl(36, 20%, 12%) 0%, hsl(36, 25%, 16%) 40%, hsl(36, 30%, 20%) 100%)", aspectRatio: isVertical ? "9/16" : undefined, minHeight: isVertical ? undefined : "220px" }}
           >
             <div className="absolute inset-0 overflow-hidden">
               <div className="absolute top-0 right-0 w-1/2 h-full opacity-10" style={{ background: "linear-gradient(180deg, #d4af37 0%, transparent 100%)" }} />
@@ -255,13 +256,18 @@ export function UnifiedMembershipTab({ profile, userId, onMembershipChange }: Un
                   </div>
                 </div>
               </div>
-              <div className="flex items-end justify-between">
+              <div className="flex items-end justify-between flex-wrap gap-2">
                 <div>
-                  <p className="text-[8px] uppercase tracking-wider text-gray-500 mb-0.5">{isAr ? "كود التحقق" : "CODE"}</p>
-                  <div className="flex items-center gap-1">
+                  <p className="text-[8px] uppercase tracking-wider text-gray-500 mb-1">{isAr ? "كود التحقق" : "VERIFICATION CODE"}</p>
+                  <div className="flex items-center gap-1.5">
                     {shortCode.split("").map((d, i) => (
-                      <span key={i} className="inline-flex h-6 w-5 items-center justify-center rounded border font-mono text-xs font-bold" style={{ borderColor: "rgba(212,175,55,0.3)", background: "rgba(212,175,55,0.1)", color: "#d4af37" }}>{d}</span>
+                      <span key={i} className="inline-flex h-8 w-7 sm:h-9 sm:w-8 items-center justify-center rounded-md border font-mono text-sm sm:text-base font-bold" style={{ borderColor: "rgba(212,175,55,0.3)", background: "rgba(212,175,55,0.1)", color: "#d4af37" }}>
+                        {showCode ? d : "•"}
+                      </span>
                     ))}
+                    <button onClick={() => setShowCode(!showCode)} className="ms-1 text-gray-500 hover:text-gray-300 transition-colors p-1">
+                      {showCode ? <EyeOff className="h-3.5 w-3.5" /> : <Eye className="h-3.5 w-3.5" />}
+                    </button>
                   </div>
                 </div>
                 <div className="text-right">
