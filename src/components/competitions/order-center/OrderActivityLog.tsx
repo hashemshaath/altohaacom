@@ -1,13 +1,15 @@
 import { useQuery } from "@tanstack/react-query";
+import { downloadCSV } from "@/lib/exportUtils";
 import { supabase } from "@/integrations/supabase/client";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import {
   Activity, Plus, Minus, RefreshCw, Truck, Send, FileText,
   Lightbulb, CheckSquare, Calendar, ListPlus, Edit, PackageCheck,
-  Clock, Filter,
+  Clock, Filter, Download,
 } from "lucide-react";
 import { useState, useEffect } from "react";
 import { ACTION_LABELS } from "./orderActivityLogger";
@@ -127,6 +129,32 @@ export function OrderActivityLog({ competitionId }: Props) {
           ) : null}
         </div>
         <div className="flex items-center gap-2">
+          {filteredLogs.length > 0 && (
+            <Button
+              size="sm"
+              variant="outline"
+              className="h-7 text-xs"
+              onClick={() => downloadCSV(
+                filteredLogs.map(l => ({
+                  date: new Date(l.created_at).toLocaleString(),
+                  user: getProfileName(l.user_id),
+                  action: ACTION_LABELS[l.action_type]?.en || l.action_type,
+                  entity: l.entity_type,
+                  details: JSON.stringify(l.details || {}),
+                })),
+                `activity-log-${competitionId}`,
+                [
+                  { key: "date", label: isAr ? "التاريخ" : "Date" },
+                  { key: "user", label: isAr ? "المستخدم" : "User" },
+                  { key: "action", label: isAr ? "الإجراء" : "Action" },
+                  { key: "entity", label: isAr ? "النوع" : "Type" },
+                  { key: "details", label: isAr ? "التفاصيل" : "Details" },
+                ]
+              )}
+            >
+              <Download className="me-1 h-3 w-3" /> {isAr ? "تصدير" : "Export"}
+            </Button>
+          )}
           <Filter className="h-3.5 w-3.5 text-muted-foreground" />
           <Select value={filterEntity} onValueChange={setFilterEntity}>
             <SelectTrigger className="h-7 w-28 text-[10px]">

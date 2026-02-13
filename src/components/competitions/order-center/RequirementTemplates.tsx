@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, forwardRef } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useLanguage } from "@/i18n/LanguageContext";
@@ -22,7 +22,7 @@ interface Props {
   isOrganizer?: boolean;
 }
 
-export function RequirementTemplates({ competitionId, isOrganizer }: Props) {
+export const RequirementTemplates = forwardRef<HTMLDivElement, Props>(function RequirementTemplates({ competitionId, isOrganizer }, ref) {
   const { language } = useLanguage();
   const { user } = useAuth();
   const { toast } = useToast();
@@ -176,7 +176,7 @@ export function RequirementTemplates({ competitionId, isOrganizer }: Props) {
   }
 
   return (
-    <div className="space-y-6">
+    <div ref={ref} className="space-y-6">
       {/* Header */}
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
@@ -331,4 +331,4 @@ export function RequirementTemplates({ competitionId, isOrganizer }: Props) {
       )}
     </div>
   );
-}
+});
