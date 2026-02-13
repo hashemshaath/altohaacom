@@ -8,7 +8,8 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
-import { Building, Plus, Trash2, Crown, Award, Medal, Star } from "lucide-react";
+import { sendNotification } from "@/lib/notifications";
+import { Building, Plus, Trash2, Crown, Award, Medal, Star, CheckCircle, XCircle, Clock } from "lucide-react";
 
 interface CompetitionSponsorsPanelProps {
   competitionId: string;
@@ -21,6 +22,12 @@ const TIER_CONFIG = {
   silver: { icon: Medal, color: "text-muted-foreground", bg: "bg-muted", label: "Silver", labelAr: "فضي" },
   bronze: { icon: Award, color: "text-chart-2", bg: "bg-chart-2/10", label: "Bronze", labelAr: "برونزي" },
   custom: { icon: Star, color: "text-primary", bg: "bg-primary/10", label: "Custom", labelAr: "مخصص" },
+};
+
+const STATUS_COLORS: Record<string, string> = {
+  active: "bg-chart-5/10 text-chart-5",
+  pending: "bg-chart-4/10 text-chart-4",
+  rejected: "bg-destructive/10 text-destructive",
 };
 
 export function CompetitionSponsorsPanel({ competitionId, isOrganizer }: CompetitionSponsorsPanelProps) {
@@ -83,6 +90,7 @@ export function CompetitionSponsorsPanel({ competitionId, isOrganizer }: Competi
           company_id: selectedCompany,
           package_id: selectedPackage || null,
           tier: (pkg?.tier as any) || "bronze",
+          status: "active",
           created_by: user?.id,
         });
       if (error) throw error;
@@ -109,22 +117,59 @@ export function CompetitionSponsorsPanel({ competitionId, isOrganizer }: Competi
     },
   });
 
+  // Approval / rejection of pending applications
+  const updateStatusMutation = useMutation({
+    mutationFn: async ({ id, status, companyId }: { id: string; status: string; companyId?: string }) => {
+      const { error } = await supabase.from("competition_sponsors")
+        .update({ status } as any)
+        .eq("id", id);
+      if (error) throw error;
+
+      // Notify the company contacts
+      if (companyId) {
+        const { data: contacts } = await supabase
+          .from("company_contacts")
+          .select("user_id")
+          .eq("company_id", companyId)
+          .limit(5);
+        if (contacts) {
+          for (const contact of contacts) {
+            sendNotification({
+              userId: contact.user_id,
+              title: status === "active" ? "Sponsorship Approved!" : "Sponsorship Application Update",
+              titleAr: status === "active" ? "تمت الموافقة على الرعاية!" : "تحديث طلب الرعاية",
+              body: status === "active"
+                ? "Your sponsorship application has been approved. Welcome aboard!"
+                : "Your sponsorship application status has been updated.",
+              bodyAr: status === "active"
+                ? "تمت الموافقة على طلب الرعاية الخاص بكم. أهلاً بكم!"
+                : "تم تحديث حالة طلب الرعاية الخاص بكم.",
+              type: status === "active" ? "success" : "warning",
+              channels: ["in_app", "email"],
+            });
+          }
+        }
+      }
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["competition-sponsors", competitionId] });
+      toast({ title: isAr ? "تم تحديث الحالة" : "Status updated" });
+    },
+  });
+
   const existingSponsorIds = sponsors?.map((s: any) => s.company_id) || [];
   const availableCompanies = companies?.filter(c => !existingSponsorIds.includes(c.id)) || [];
+  const activeSponsors = sponsors?.filter((s: any) => s.status === "active") || [];
+  const pendingSponsors = sponsors?.filter((s: any) => s.status === "pending") || [];
 
-  // Marquee for public display (non-organizer view)
+  // Marquee for public display
   const scrollRef = useRef<HTMLDivElement>(null);
   const [shouldScroll, setShouldScroll] = useState(false);
-
   useEffect(() => {
-    if (sponsors && sponsors.length > 2) {
-      setShouldScroll(true);
-    }
-  }, [sponsors]);
+    if (activeSponsors.length > 2) setShouldScroll(true);
+  }, [activeSponsors.length]);
 
-  if (!sponsors || sponsors.length === 0) {
-    if (!isOrganizer) return null;
-  }
+  if (!sponsors || (sponsors.length === 0 && !isOrganizer)) return null;
 
   return (
     <Card>
@@ -140,6 +185,56 @@ export function CompetitionSponsorsPanel({ competitionId, isOrganizer }: Competi
         )}
       </CardHeader>
       <CardContent className="space-y-4">
+        {/* Pending Applications (organizer only) */}
+        {isOrganizer && pendingSponsors.length > 0 && (
+          <div className="space-y-2">
+            <p className="text-sm font-medium flex items-center gap-2">
+              <Clock className="h-4 w-4 text-chart-4" />
+              {isAr ? "طلبات رعاية قيد المراجعة" : "Pending Sponsorship Applications"}
+              <Badge variant="secondary" className="text-[10px]">{pendingSponsors.length}</Badge>
+            </p>
+            {pendingSponsors.map((sponsor: any) => {
+              const companyName = isAr && sponsor.companies?.name_ar ? sponsor.companies.name_ar : sponsor.companies?.name;
+              const tier = (sponsor.tier || "bronze") as keyof typeof TIER_CONFIG;
+              const config = TIER_CONFIG[tier] || TIER_CONFIG.bronze;
+              const Icon = config.icon;
+              return (
+                <div key={sponsor.id} className="flex items-center gap-3 rounded-lg border border-chart-4/30 bg-chart-4/5 p-3">
+                  {sponsor.companies?.logo_url ? (
+                    <img src={sponsor.companies.logo_url} alt={companyName} className="h-10 w-10 rounded-lg object-contain" />
+                  ) : (
+                    <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-muted">
+                      <Building className="h-5 w-5 text-muted-foreground" />
+                    </div>
+                  )}
+                  <div className="flex-1 min-w-0">
+                    <p className="truncate font-medium text-sm">{companyName}</p>
+                    <div className="flex items-center gap-1">
+                      <Icon className={`h-3 w-3 ${config.color}`} />
+                      <span className="text-xs text-muted-foreground">{isAr ? config.labelAr : config.label}</span>
+                    </div>
+                  </div>
+                  <div className="flex gap-1">
+                    <Button
+                      size="sm"
+                      onClick={() => updateStatusMutation.mutate({ id: sponsor.id, status: "active", companyId: sponsor.company_id })}
+                    >
+                      <CheckCircle className="me-1 h-3 w-3" /> {isAr ? "قبول" : "Approve"}
+                    </Button>
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      onClick={() => updateStatusMutation.mutate({ id: sponsor.id, status: "rejected", companyId: sponsor.company_id })}
+                    >
+                      <XCircle className="me-1 h-3 w-3" /> {isAr ? "رفض" : "Reject"}
+                    </Button>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        )}
+
         {/* Add Sponsor Form (organizer only) */}
         {isOrganizer && (
           <div className="flex flex-wrap gap-2 rounded-lg border p-3">
@@ -178,18 +273,17 @@ export function CompetitionSponsorsPanel({ competitionId, isOrganizer }: Competi
           </div>
         )}
 
-        {/* Sponsors Display - Marquee for public, grid for organizer */}
-        {sponsors && sponsors.length > 0 ? (
+        {/* Sponsors Display */}
+        {activeSponsors.length > 0 ? (
           isOrganizer ? (
             <div className="grid gap-3 sm:grid-cols-2">
-              {sponsors.map((sponsor: any) => {
+              {activeSponsors.map((sponsor: any) => {
                 const tier = (sponsor.tier || "bronze") as keyof typeof TIER_CONFIG;
                 const config = TIER_CONFIG[tier] || TIER_CONFIG.bronze;
                 const Icon = config.icon;
                 const companyName = isAr && sponsor.companies?.name_ar
                   ? sponsor.companies.name_ar
                   : sponsor.companies?.name;
-
                 return (
                   <div key={sponsor.id} className={`flex items-center gap-3 rounded-lg border p-3 ${config.bg}`}>
                     {sponsor.companies?.logo_url ? (
@@ -203,17 +297,10 @@ export function CompetitionSponsorsPanel({ competitionId, isOrganizer }: Competi
                       <p className="truncate font-medium text-sm">{companyName}</p>
                       <div className="flex items-center gap-1">
                         <Icon className={`h-3 w-3 ${config.color}`} />
-                        <span className="text-xs text-muted-foreground">
-                          {isAr ? config.labelAr : config.label}
-                        </span>
+                        <span className="text-xs text-muted-foreground">{isAr ? config.labelAr : config.label}</span>
                       </div>
                     </div>
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      className="h-8 w-8 shrink-0"
-                      onClick={() => removeSponsorMutation.mutate(sponsor.id)}
-                    >
+                    <Button variant="ghost" size="icon" className="h-8 w-8 shrink-0" onClick={() => removeSponsorMutation.mutate(sponsor.id)}>
                       <Trash2 className="h-4 w-4 text-destructive" />
                     </Button>
                   </div>
@@ -221,24 +308,17 @@ export function CompetitionSponsorsPanel({ competitionId, isOrganizer }: Competi
               })}
             </div>
           ) : (
-            /* Public marquee sponsor strip */
             <div className="relative overflow-hidden rounded-lg border bg-muted/20 py-3">
               <div
                 ref={scrollRef}
-                className={`flex items-center gap-6 px-4 ${shouldScroll ? "animate-marquee" : "justify-center"}`}
-                style={shouldScroll ? {
-                  animation: `marquee ${sponsors.length * 5}s linear infinite`,
-                } : {}}
+                className={`flex items-center gap-6 px-4 ${shouldScroll ? "" : "justify-center"}`}
+                style={shouldScroll ? { animation: `marquee ${activeSponsors.length * 5}s linear infinite` } : {}}
               >
-                {/* Double the items for seamless loop */}
-                {[...sponsors, ...(shouldScroll ? sponsors : [])].map((sponsor: any, idx: number) => {
+                {[...activeSponsors, ...(shouldScroll ? activeSponsors : [])].map((sponsor: any, idx: number) => {
                   const tier = (sponsor.tier || "bronze") as keyof typeof TIER_CONFIG;
                   const config = TIER_CONFIG[tier] || TIER_CONFIG.bronze;
                   const Icon = config.icon;
-                  const companyName = isAr && sponsor.companies?.name_ar
-                    ? sponsor.companies.name_ar
-                    : sponsor.companies?.name;
-
+                  const companyName = isAr && sponsor.companies?.name_ar ? sponsor.companies.name_ar : sponsor.companies?.name;
                   return (
                     <div key={`${sponsor.id}-${idx}`} className="flex items-center gap-3 shrink-0">
                       {sponsor.companies?.logo_url ? (
@@ -252,9 +332,7 @@ export function CompetitionSponsorsPanel({ competitionId, isOrganizer }: Competi
                         <p className="text-sm font-medium whitespace-nowrap">{companyName}</p>
                         <div className="flex items-center gap-1">
                           <Icon className={`h-3 w-3 ${config.color}`} />
-                          <span className="text-[10px] text-muted-foreground">
-                            {isAr ? config.labelAr : config.label}
-                          </span>
+                          <span className="text-[10px] text-muted-foreground">{isAr ? config.labelAr : config.label}</span>
                         </div>
                       </div>
                     </div>

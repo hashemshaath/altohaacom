@@ -12,6 +12,7 @@ const EventsByCategory = lazy(() => import("@/components/home/EventsByCategory")
 const RegionalEvents = lazy(() => import("@/components/home/RegionalEvents").then(m => ({ default: m.RegionalEvents })));
 const HomeArticles = lazy(() => import("@/components/home/HomeArticles").then(m => ({ default: m.HomeArticles })));
 const PlatformFeatures = lazy(() => import("@/components/home/PlatformFeatures").then(m => ({ default: m.PlatformFeatures })));
+const SponsorshipOpportunities = lazy(() => import("@/components/home/SponsorshipOpportunities").then(m => ({ default: m.SponsorshipOpportunities })));
 const NewsletterSignup = lazy(() => import("@/components/home/NewsletterSignup").then(m => ({ default: m.NewsletterSignup })));
 const PartnersLogos = lazy(() => import("@/components/home/PartnersLogos").then(m => ({ default: m.PartnersLogos })));
 const AdBanner = lazy(() => import("@/components/ads/AdBanner").then(m => ({ default: m.AdBanner })));
@@ -54,6 +55,9 @@ const Index = () => {
 
         {/* 6. Platform Services & Features */}
         <PlatformFeatures />
+
+        {/* 6.5. Sponsorship Opportunities */}
+        <SponsorshipOpportunities />
 
         {/* In-feed Ad */}
         <section className="container py-4">
