@@ -26,22 +26,22 @@ export function HomeStats() {
   });
 
   const items = [
-    { value: stats?.members || 0, label: isAr ? "عضو مسجل" : "Members", icon: Users },
-    { value: stats?.competitions || 0, label: isAr ? "مسابقة" : "Competitions", icon: Trophy },
-    { value: stats?.entities || 0, label: isAr ? "جهة معتمدة" : "Entities", icon: Building2 },
-    { value: stats?.exhibitions || 0, label: isAr ? "معرض" : "Exhibitions", icon: Globe },
+    { value: stats?.members || 0, label: isAr ? "عضو مسجل" : "Members", icon: Users, color: "text-chart-1" },
+    { value: stats?.competitions || 0, label: isAr ? "مسابقة" : "Competitions", icon: Trophy, color: "text-chart-2" },
+    { value: stats?.entities || 0, label: isAr ? "جهة معتمدة" : "Entities", icon: Building2, color: "text-chart-3" },
+    { value: stats?.exhibitions || 0, label: isAr ? "معرض" : "Exhibitions", icon: Globe, color: "text-chart-4" },
   ];
 
   return (
-    <section className="border-y bg-card/80 backdrop-blur-sm">
-      <div className="container grid grid-cols-4 py-6 sm:py-8">
-        {items.map((stat, i) => (
-          <div key={stat.label} className={`flex flex-col items-center gap-1 px-1 ${i > 0 ? "border-s border-border/50" : ""}`}>
-            <div className="mb-1 flex h-9 w-9 items-center justify-center rounded-xl bg-primary/10 sm:h-10 sm:w-10">
-              <stat.icon className="h-4 w-4 text-primary sm:h-5 sm:w-5" />
+    <section className="border-y bg-card/60 backdrop-blur-sm">
+      <div className="container grid grid-cols-2 sm:grid-cols-4 gap-4 py-8 sm:py-10">
+        {items.map((stat) => (
+          <div key={stat.label} className="flex flex-col items-center gap-2 px-2">
+            <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-primary/8 ring-1 ring-primary/10">
+              <stat.icon className={`h-5 w-5 ${stat.color}`} />
             </div>
-            <p className="text-xl font-bold sm:text-2xl md:text-3xl">{stat.value}+</p>
-            <p className="text-[10px] text-muted-foreground sm:text-xs">{stat.label}</p>
+            <p className="text-2xl font-bold sm:text-3xl md:text-4xl tracking-tight">{stat.value}+</p>
+            <p className="text-xs text-muted-foreground font-medium">{stat.label}</p>
           </div>
         ))}
       </div>
