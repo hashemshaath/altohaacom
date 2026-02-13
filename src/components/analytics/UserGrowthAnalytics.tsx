@@ -2,9 +2,12 @@ import { useQuery } from "@tanstack/react-query";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Users, UserCheck, UserX, Shield } from "lucide-react";
+import { Users, UserCheck, UserX, Shield, TrendingUp, TrendingDown, Minus } from "lucide-react";
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, Legend } from "recharts";
 import { CountryBreakdownChart } from "./CountryBreakdownChart";
+import { TrendForecastChart } from "./TrendForecastChart";
+import type { DataPoint } from "@/lib/trendPrediction";
+import { linearRegression } from "@/lib/trendPrediction";
 
 const COLORS = ["hsl(var(--primary))", "hsl(var(--chart-2))", "hsl(var(--chart-3))", "hsl(var(--chart-4))", "hsl(var(--chart-5))"];
 
@@ -45,6 +48,12 @@ export default function UserGrowthAnalytics() {
           return { month, signups: count, total: cumulative };
         });
 
+      // Trend data points for forecast chart
+      const trendPoints: DataPoint[] = Object.entries(monthCounts)
+        .sort(([a], [b]) => a.localeCompare(b))
+        .slice(-12)
+        .map(([date, value]) => ({ date, value }));
+
       // Role distribution
       const roleCounts: Record<string, number> = {};
       (roles || []).forEach((r: any) => {
@@ -59,6 +68,7 @@ export default function UserGrowthAnalytics() {
         totalRoles: (roles || []).length,
         growthData,
         roleData,
+        trendPoints,
       };
     },
     staleTime: 1000 * 60,
@@ -133,6 +143,16 @@ export default function UserGrowthAnalytics() {
           </CardContent>
         </Card>
       </div>
+
+      {/* Predictive Forecast */}
+      <TrendForecastChart
+        title={language === "ar" ? "تنبؤ نمو المستخدمين" : "User Growth Forecast"}
+        data={data?.trendPoints || []}
+        isLoading={isLoading}
+        forecastPeriods={3}
+        icon={TrendingUp}
+        color="primary"
+      />
 
       {/* Country Breakdown */}
       <div className="grid gap-6 lg:grid-cols-2">

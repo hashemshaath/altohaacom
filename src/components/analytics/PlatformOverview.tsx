@@ -2,9 +2,11 @@ import { useQuery } from "@tanstack/react-query";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Users, Trophy, Newspaper, GraduationCap, MessageSquare, Award } from "lucide-react";
+import { Users, Trophy, Newspaper, GraduationCap, MessageSquare, Award, TrendingUp, TrendingDown, Minus } from "lucide-react";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, Legend } from "recharts";
 import { CountryBreakdownChart } from "./CountryBreakdownChart";
+import { TrendForecastChart } from "./TrendForecastChart";
+import { linearRegression, type DataPoint } from "@/lib/trendPrediction";
 
 const COLORS = ["hsl(var(--primary))", "hsl(var(--chart-2))", "hsl(var(--chart-3))", "hsl(var(--chart-4))", "hsl(var(--chart-5))"];
 
@@ -23,6 +25,8 @@ export default function PlatformOverview() {
         { count: totalMessages },
         { data: roleDistribution },
         { data: competitionsByStatus },
+        { data: profileDates },
+        { data: competitionDates },
       ] = await Promise.all([
         supabase.from("profiles").select("*", { count: "exact", head: true }),
         supabase.from("competitions").select("*", { count: "exact", head: true }),
@@ -32,6 +36,8 @@ export default function PlatformOverview() {
         supabase.from("messages").select("*", { count: "exact", head: true }),
         supabase.from("user_roles").select("role"),
         supabase.from("competitions").select("status"),
+        supabase.from("profiles").select("created_at").order("created_at", { ascending: true }),
+        supabase.from("competitions").select("created_at").order("created_at", { ascending: true }),
       ]);
 
       // Aggregate role distribution
@@ -49,6 +55,28 @@ export default function PlatformOverview() {
       });
       const statusData = Object.entries(statusCounts).map(([name, value]) => ({ name, value }));
 
+      // Build monthly trend data for users
+      const userMonths: Record<string, number> = {};
+      (profileDates || []).forEach((p: any) => {
+        const m = p.created_at?.substring(0, 7);
+        if (m) userMonths[m] = (userMonths[m] || 0) + 1;
+      });
+      const userTrend: DataPoint[] = Object.entries(userMonths)
+        .sort(([a], [b]) => a.localeCompare(b))
+        .slice(-12)
+        .map(([date, value]) => ({ date, value }));
+
+      // Build monthly trend data for competitions
+      const compMonths: Record<string, number> = {};
+      (competitionDates || []).forEach((c: any) => {
+        const m = c.created_at?.substring(0, 7);
+        if (m) compMonths[m] = (compMonths[m] || 0) + 1;
+      });
+      const compTrend: DataPoint[] = Object.entries(compMonths)
+        .sort(([a], [b]) => a.localeCompare(b))
+        .slice(-12)
+        .map(([date, value]) => ({ date, value }));
+
       return {
         totalUsers: totalUsers || 0,
         totalCompetitions: totalCompetitions || 0,
@@ -58,6 +86,8 @@ export default function PlatformOverview() {
         totalMessages: totalMessages || 0,
         roleData,
         statusData,
+        userTrend,
+        compTrend,
       };
     },
     staleTime: 1000 * 60,
@@ -132,6 +162,24 @@ export default function PlatformOverview() {
             )}
           </CardContent>
         </Card>
+      </div>
+
+      {/* Predictive Forecasts */}
+      <div className="grid gap-6 lg:grid-cols-2">
+        <TrendForecastChart
+          title={language === "ar" ? "تنبؤ نمو المستخدمين" : "User Signup Forecast"}
+          data={stats?.userTrend || []}
+          isLoading={isLoading}
+          icon={Users}
+          color="primary"
+        />
+        <TrendForecastChart
+          title={language === "ar" ? "تنبؤ المسابقات" : "Competition Creation Forecast"}
+          data={stats?.compTrend || []}
+          isLoading={isLoading}
+          icon={Trophy}
+          color="chart-2"
+        />
       </div>
 
       {/* Country Breakdowns */}
