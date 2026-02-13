@@ -8510,7 +8510,10 @@ export type Database = {
           alternative_item_id: string | null
           alternative_notes: string | null
           alternative_notes_ar: string | null
+          assigned_at: string | null
+          assigned_by: string | null
           assigned_to: string | null
+          assigned_vendor_id: string | null
           category: string | null
           checked: boolean | null
           checked_at: string | null
@@ -8540,7 +8543,10 @@ export type Database = {
           alternative_item_id?: string | null
           alternative_notes?: string | null
           alternative_notes_ar?: string | null
+          assigned_at?: string | null
+          assigned_by?: string | null
           assigned_to?: string | null
+          assigned_vendor_id?: string | null
           category?: string | null
           checked?: boolean | null
           checked_at?: string | null
@@ -8570,7 +8576,10 @@ export type Database = {
           alternative_item_id?: string | null
           alternative_notes?: string | null
           alternative_notes_ar?: string | null
+          assigned_at?: string | null
+          assigned_by?: string | null
           assigned_to?: string | null
+          assigned_vendor_id?: string | null
           category?: string | null
           checked?: boolean | null
           checked_at?: string | null
@@ -8601,6 +8610,13 @@ export type Database = {
             columns: ["alternative_item_id"]
             isOneToOne: false
             referencedRelation: "requirement_items"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "requirement_list_items_assigned_vendor_id_fkey"
+            columns: ["assigned_vendor_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
             referencedColumns: ["id"]
           },
           {
