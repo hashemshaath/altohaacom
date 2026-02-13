@@ -52,7 +52,7 @@ export function ProfileHeader({ profile, roles, userId, onProfileUpdate }: Profi
   };
   const tier = tierConfig[profile?.membership_tier || "basic"];
   const TierIcon = tier.icon;
-  const profileViews = profile?.loyalty_points || 0;
+  const profileViews = (profile as any)?.view_count || 0;
 
   return (
     <div className="relative overflow-hidden rounded-2xl border bg-card shadow-lg">

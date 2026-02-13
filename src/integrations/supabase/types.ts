@@ -8131,6 +8131,54 @@ export type Database = {
           },
         ]
       }
+      profile_views: {
+        Row: {
+          browser: string | null
+          company_id: string | null
+          country: string | null
+          created_at: string
+          device_type: string | null
+          gender: string | null
+          id: string
+          profile_user_id: string
+          referrer: string | null
+          viewer_ip: string | null
+          viewer_type: string | null
+          viewer_user_agent: string | null
+          viewer_user_id: string | null
+        }
+        Insert: {
+          browser?: string | null
+          company_id?: string | null
+          country?: string | null
+          created_at?: string
+          device_type?: string | null
+          gender?: string | null
+          id?: string
+          profile_user_id: string
+          referrer?: string | null
+          viewer_ip?: string | null
+          viewer_type?: string | null
+          viewer_user_agent?: string | null
+          viewer_user_id?: string | null
+        }
+        Update: {
+          browser?: string | null
+          company_id?: string | null
+          country?: string | null
+          created_at?: string
+          device_type?: string | null
+          gender?: string | null
+          id?: string
+          profile_user_id?: string
+          referrer?: string | null
+          viewer_ip?: string | null
+          viewer_type?: string | null
+          viewer_user_agent?: string | null
+          viewer_user_id?: string | null
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           account_number: string | null
@@ -8200,6 +8248,7 @@ export type Database = {
           verification_badge: string | null
           verification_level: string | null
           verified_at: string | null
+          view_count: number | null
           wallet_balance: number | null
           website: string | null
           years_of_experience: number | null
@@ -8275,6 +8324,7 @@ export type Database = {
           verification_badge?: string | null
           verification_level?: string | null
           verified_at?: string | null
+          view_count?: number | null
           wallet_balance?: number | null
           website?: string | null
           years_of_experience?: number | null
@@ -8350,6 +8400,7 @@ export type Database = {
           verification_badge?: string | null
           verification_level?: string | null
           verified_at?: string | null
+          view_count?: number | null
           wallet_balance?: number | null
           website?: string | null
           years_of_experience?: number | null
