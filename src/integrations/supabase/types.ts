@@ -8335,8 +8335,52 @@ export type Database = {
           },
         ]
       }
+      requirement_delivery_logs: {
+        Row: {
+          action: string
+          action_by: string
+          created_at: string | null
+          id: string
+          list_item_id: string
+          notes: string | null
+          notes_ar: string | null
+          quantity_delivered: number | null
+        }
+        Insert: {
+          action: string
+          action_by: string
+          created_at?: string | null
+          id?: string
+          list_item_id: string
+          notes?: string | null
+          notes_ar?: string | null
+          quantity_delivered?: number | null
+        }
+        Update: {
+          action?: string
+          action_by?: string
+          created_at?: string | null
+          id?: string
+          list_item_id?: string
+          notes?: string | null
+          notes_ar?: string | null
+          quantity_delivered?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "requirement_delivery_logs_list_item_id_fkey"
+            columns: ["list_item_id"]
+            isOneToOne: false
+            referencedRelation: "requirement_list_items"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       requirement_items: {
         Row: {
+          alternatives: string[] | null
+          brand: string | null
+          brand_ar: string | null
           category: string
           created_at: string | null
           created_by: string | null
@@ -8348,13 +8392,24 @@ export type Database = {
           id: string
           image_url: string | null
           is_active: boolean | null
+          material: string | null
+          material_ar: string | null
           name: string
           name_ar: string | null
+          size: string | null
+          size_ar: string | null
+          specifications: Json | null
           subcategory: string | null
+          supplier_notes: string | null
+          supplier_notes_ar: string | null
+          tags: string[] | null
           unit: string | null
           updated_at: string | null
         }
         Insert: {
+          alternatives?: string[] | null
+          brand?: string | null
+          brand_ar?: string | null
           category: string
           created_at?: string | null
           created_by?: string | null
@@ -8366,13 +8421,24 @@ export type Database = {
           id?: string
           image_url?: string | null
           is_active?: boolean | null
+          material?: string | null
+          material_ar?: string | null
           name: string
           name_ar?: string | null
+          size?: string | null
+          size_ar?: string | null
+          specifications?: Json | null
           subcategory?: string | null
+          supplier_notes?: string | null
+          supplier_notes_ar?: string | null
+          tags?: string[] | null
           unit?: string | null
           updated_at?: string | null
         }
         Update: {
+          alternatives?: string[] | null
+          brand?: string | null
+          brand_ar?: string | null
           category?: string
           created_at?: string | null
           created_by?: string | null
@@ -8384,9 +8450,17 @@ export type Database = {
           id?: string
           image_url?: string | null
           is_active?: boolean | null
+          material?: string | null
+          material_ar?: string | null
           name?: string
           name_ar?: string | null
+          size?: string | null
+          size_ar?: string | null
+          specifications?: Json | null
           subcategory?: string | null
+          supplier_notes?: string | null
+          supplier_notes_ar?: string | null
+          tags?: string[] | null
           unit?: string | null
           updated_at?: string | null
         }
@@ -8433,10 +8507,21 @@ export type Database = {
       requirement_list_items: {
         Row: {
           added_by: string | null
+          alternative_item_id: string | null
+          alternative_notes: string | null
+          alternative_notes_ar: string | null
+          assigned_to: string | null
+          category: string | null
+          checked: boolean | null
+          checked_at: string | null
+          checked_by: string | null
           created_at: string | null
           currency: string | null
           custom_name: string | null
           custom_name_ar: string | null
+          deadline: string | null
+          delivered_at: string | null
+          delivered_by: string | null
           estimated_cost: number | null
           id: string
           item_id: string | null
@@ -8452,10 +8537,21 @@ export type Database = {
         }
         Insert: {
           added_by?: string | null
+          alternative_item_id?: string | null
+          alternative_notes?: string | null
+          alternative_notes_ar?: string | null
+          assigned_to?: string | null
+          category?: string | null
+          checked?: boolean | null
+          checked_at?: string | null
+          checked_by?: string | null
           created_at?: string | null
           currency?: string | null
           custom_name?: string | null
           custom_name_ar?: string | null
+          deadline?: string | null
+          delivered_at?: string | null
+          delivered_by?: string | null
           estimated_cost?: number | null
           id?: string
           item_id?: string | null
@@ -8471,10 +8567,21 @@ export type Database = {
         }
         Update: {
           added_by?: string | null
+          alternative_item_id?: string | null
+          alternative_notes?: string | null
+          alternative_notes_ar?: string | null
+          assigned_to?: string | null
+          category?: string | null
+          checked?: boolean | null
+          checked_at?: string | null
+          checked_by?: string | null
           created_at?: string | null
           currency?: string | null
           custom_name?: string | null
           custom_name_ar?: string | null
+          deadline?: string | null
+          delivered_at?: string | null
+          delivered_by?: string | null
           estimated_cost?: number | null
           id?: string
           item_id?: string | null
@@ -8489,6 +8596,13 @@ export type Database = {
           updated_at?: string | null
         }
         Relationships: [
+          {
+            foreignKeyName: "requirement_list_items_alternative_item_id_fkey"
+            columns: ["alternative_item_id"]
+            isOneToOne: false
+            referencedRelation: "requirement_items"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "requirement_list_items_item_id_fkey"
             columns: ["item_id"]
@@ -8696,6 +8810,96 @@ export type Database = {
             columns: ["sponsor_company_id"]
             isOneToOne: false
             referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      requirement_suggestions: {
+        Row: {
+          category: string
+          competition_id: string
+          created_at: string | null
+          currency: string | null
+          description: string | null
+          description_ar: string | null
+          estimated_cost: number | null
+          id: string
+          image_url: string | null
+          item_name: string
+          item_name_ar: string | null
+          list_id: string | null
+          priority: string | null
+          quantity: number | null
+          review_notes: string | null
+          reviewed_at: string | null
+          reviewed_by: string | null
+          status: string
+          subcategory: string | null
+          suggested_by: string
+          unit: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          category?: string
+          competition_id: string
+          created_at?: string | null
+          currency?: string | null
+          description?: string | null
+          description_ar?: string | null
+          estimated_cost?: number | null
+          id?: string
+          image_url?: string | null
+          item_name: string
+          item_name_ar?: string | null
+          list_id?: string | null
+          priority?: string | null
+          quantity?: number | null
+          review_notes?: string | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          status?: string
+          subcategory?: string | null
+          suggested_by: string
+          unit?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          category?: string
+          competition_id?: string
+          created_at?: string | null
+          currency?: string | null
+          description?: string | null
+          description_ar?: string | null
+          estimated_cost?: number | null
+          id?: string
+          image_url?: string | null
+          item_name?: string
+          item_name_ar?: string | null
+          list_id?: string | null
+          priority?: string | null
+          quantity?: number | null
+          review_notes?: string | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          status?: string
+          subcategory?: string | null
+          suggested_by?: string
+          unit?: string | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "requirement_suggestions_competition_id_fkey"
+            columns: ["competition_id"]
+            isOneToOne: false
+            referencedRelation: "competitions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "requirement_suggestions_list_id_fkey"
+            columns: ["list_id"]
+            isOneToOne: false
+            referencedRelation: "requirement_lists"
             referencedColumns: ["id"]
           },
         ]

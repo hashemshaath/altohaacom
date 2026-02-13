@@ -37,7 +37,7 @@ import { JudgesList } from "@/components/competitions/JudgesList";
 import { CompetitionKnowledgeTab } from "@/components/competitions/CompetitionKnowledgeTab";
 import { CompetitionSponsorsPanel } from "@/components/competitions/CompetitionSponsorsPanel";
 import { AutoIssueCertificates } from "@/components/competitions/AutoIssueCertificates";
-import { RequirementsListPanel } from "@/components/competitions/RequirementsListPanel";
+import { OrderCenterHub } from "@/components/competitions/order-center/OrderCenterHub";
 import { CategoryManagementPanel } from "@/components/competitions/CategoryManagementPanel";
 import { CompetitionTeamPanel } from "@/components/competitions/CompetitionTeamPanel";
 import { BulkImportPanel } from "@/components/admin/BulkImportPanel";
@@ -245,10 +245,8 @@ export default function CompetitionDetail() {
     { id: "team", icon: <UsersRound className="h-3.5 w-3.5" />, label: isAr ? "الفريق" : "Team" },
     ...(canSeeKnowledge ? [{ id: "knowledge", icon: <BookOpen className="h-3.5 w-3.5" />, label: isAr ? "المعرفة" : "Knowledge" }] : []),
     { id: "gallery", icon: <ImageIcon className="h-3.5 w-3.5" />, label: isAr ? "المعرض" : "Gallery" },
-    ...(isOrganizer ? [
-      { id: "requirements", icon: <ClipboardList className="h-3.5 w-3.5" />, label: isAr ? "المتطلبات" : "Requirements" },
-      { id: "manage", icon: <Settings className="h-3.5 w-3.5" />, label: isAr ? "إدارة" : "Manage" },
-    ] : []),
+    ...(user ? [{ id: "requirements", icon: <ClipboardList className="h-3.5 w-3.5" />, label: isAr ? "مركز الطلبات" : "Order Center" }] : []),
+    ...(isOrganizer ? [{ id: "manage", icon: <Settings className="h-3.5 w-3.5" />, label: isAr ? "إدارة" : "Manage" }] : []),
   ];
 
   return (
@@ -720,7 +718,7 @@ export default function CompetitionDetail() {
               {activeSection === "team" && <CompetitionTeamPanel competitionId={competition.id} isOrganizer={isOrganizer} />}
               {activeSection === "knowledge" && canSeeKnowledge && <CompetitionKnowledgeTab competitionId={competition.id} isOrganizer={isOrganizer} />}
               {activeSection === "gallery" && <ReferenceGalleryPanel competitionId={competition.id} isAdmin={isOrganizer} />}
-              {isOrganizer && activeSection === "requirements" && <RequirementsListPanel competitionId={competition.id} isOrganizer={isOrganizer} />}
+              {activeSection === "requirements" && user && <OrderCenterHub competitionId={competition.id} isOrganizer={!!isOrganizer} />}
               {isOrganizer && activeSection === "manage" && (
                 <div className="space-y-4">
                   <CompetitionStatusManager competitionId={competition.id} currentStatus={competition.status} competitionTitle={title} />

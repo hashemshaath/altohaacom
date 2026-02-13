@@ -15,17 +15,13 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Plus, Trash2, Search, Package } from "lucide-react";
 import { AIRequirementsSuggest } from "./AIRequirementsSuggest";
 
-const ITEM_CATEGORIES = [
-  { value: "venue_setup", label: "Venue Setup", labelAr: "إعداد الموقع" },
-  { value: "equipment", label: "Equipment", labelAr: "المعدات" },
-  { value: "safety_hygiene", label: "Safety & Hygiene", labelAr: "السلامة والنظافة" },
-  { value: "food_ingredients", label: "Food Ingredients", labelAr: "المكونات الغذائية" },
-  { value: "spices", label: "Spices", labelAr: "التوابل" },
-  { value: "decoration", label: "Decoration", labelAr: "الديكور" },
-  { value: "serving_utensils", label: "Serving Utensils", labelAr: "أدوات التقديم" },
-  { value: "utilities", label: "Utilities", labelAr: "المرافق" },
-  { value: "other", label: "Other", labelAr: "أخرى" },
-];
+import { ORDER_CATEGORIES, ITEM_UNITS } from "./order-center/OrderCenterCategories";
+
+const ITEM_CATEGORIES = ORDER_CATEGORIES.map(c => ({
+  value: c.value,
+  label: c.label,
+  labelAr: c.labelAr,
+}));
 
 const PRIORITY_COLORS: Record<string, string> = {
   low: "bg-muted text-muted-foreground",
