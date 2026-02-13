@@ -7,7 +7,7 @@ import { Footer } from "@/components/Footer";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Skeleton } from "@/components/ui/skeleton";
 import { SEOHead } from "@/components/SEOHead";
-import { User, Briefcase, Award, Edit, Shield, Crown, BarChart3, History } from "lucide-react";
+import { User, Briefcase, Award, Edit, Shield, Crown, BarChart3, History, CreditCard, Wallet, FileText } from "lucide-react";
 import type { Database } from "@/integrations/supabase/types";
 
 import { ProfileHeader } from "@/components/profile/ProfileHeader";
@@ -22,6 +22,9 @@ import { ProfileMembershipTab } from "@/components/profile/ProfileMembershipTab"
 import { ProfessionalMembershipDashboard } from "@/components/profile/ProfessionalMembershipDashboard";
 import { ProfileAnalyticsDashboard } from "@/components/profile/ProfileAnalyticsDashboard";
 import { UserModificationHistory } from "@/components/admin/UserModificationHistory";
+import { MembershipCard } from "@/components/membership/MembershipCard";
+import { WalletDashboard } from "@/components/wallet/WalletDashboard";
+import TaxReportGenerator from "@/components/finance/TaxReportGenerator";
 import { useSearchParams } from "react-router-dom";
 
 type Profile = Database["public"]["Tables"]["profiles"]["Row"];
@@ -76,9 +79,12 @@ export default function Profile() {
 
   const tabs = [
     { id: "overview", label: isAr ? "نظرة عامة" : "Overview", icon: User },
+    { id: "card", label: isAr ? "بطاقة العضوية" : "Card", icon: CreditCard },
     { id: "career", label: isAr ? "السيرة المهنية" : "Career", icon: Briefcase },
     { id: "certificates", label: isAr ? "الشهادات والإنجازات" : "Achievements", icon: Award },
     { id: "membership", label: isAr ? "العضوية" : "Membership", icon: Crown },
+    { id: "wallet", label: isAr ? "المحفظة" : "Wallet", icon: Wallet },
+    { id: "finance", label: isAr ? "التقارير الضريبية" : "Tax Reports", icon: FileText },
     { id: "analytics", label: isAr ? "الإحصائيات" : "Analytics", icon: BarChart3 },
     { id: "history", label: isAr ? "سجل التعديلات" : "History", icon: History },
     { id: "edit", label: isAr ? "تعديل" : "Edit", icon: Edit },
@@ -120,6 +126,11 @@ export default function Profile() {
             {profile && user && <ProfileOverviewTab profile={profile} userId={user.id} />}
           </TabsContent>
 
+          {/* Membership Card */}
+          <TabsContent value="card" className="mt-6">
+            {profile && user && <MembershipCard profile={profile} userId={user.id} />}
+          </TabsContent>
+
           {/* Career */}
           <TabsContent value="career" className="mt-6">
             {user && <ProfileCareerTab userId={user.id} />}
@@ -144,6 +155,16 @@ export default function Profile() {
                 </div>
               </>
             )}
+          </TabsContent>
+
+          {/* Wallet */}
+          <TabsContent value="wallet" className="mt-6">
+            {user && <WalletDashboard userId={user.id} />}
+          </TabsContent>
+
+          {/* Tax Reports */}
+          <TabsContent value="finance" className="mt-6">
+            <TaxReportGenerator />
           </TabsContent>
 
           {/* Analytics */}

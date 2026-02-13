@@ -29,6 +29,68 @@ export type Database = {
         }
         Relationships: []
       }
+      account_statements: {
+        Row: {
+          closing_balance: number
+          created_at: string
+          generated_at: string
+          generated_by: string | null
+          id: string
+          opening_balance: number
+          period_end: string
+          period_start: string
+          statement_number: string
+          total_credits: number
+          total_debits: number
+          total_points_earned: number
+          total_points_redeemed: number
+          transaction_count: number
+          wallet_id: string
+        }
+        Insert: {
+          closing_balance?: number
+          created_at?: string
+          generated_at?: string
+          generated_by?: string | null
+          id?: string
+          opening_balance?: number
+          period_end: string
+          period_start: string
+          statement_number: string
+          total_credits?: number
+          total_debits?: number
+          total_points_earned?: number
+          total_points_redeemed?: number
+          transaction_count?: number
+          wallet_id: string
+        }
+        Update: {
+          closing_balance?: number
+          created_at?: string
+          generated_at?: string
+          generated_by?: string | null
+          id?: string
+          opening_balance?: number
+          period_end?: string
+          period_start?: string
+          statement_number?: string
+          total_credits?: number
+          total_debits?: number
+          total_points_earned?: number
+          total_points_redeemed?: number
+          transaction_count?: number
+          wallet_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "account_statements_wallet_id_fkey"
+            columns: ["wallet_id"]
+            isOneToOne: false
+            referencedRelation: "user_wallets"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       ad_campaigns: {
         Row: {
           approved_at: string | null
@@ -6995,6 +7057,60 @@ export type Database = {
         }
         Relationships: []
       }
+      membership_cards: {
+        Row: {
+          card_orientation: string
+          card_status: string
+          created_at: string
+          expires_at: string
+          id: string
+          is_trial: boolean
+          issued_at: string
+          membership_number: string
+          renewed_at: string | null
+          suspended_at: string | null
+          suspended_reason: string | null
+          trial_ends_at: string | null
+          updated_at: string
+          user_id: string
+          verification_code: string
+        }
+        Insert: {
+          card_orientation?: string
+          card_status?: string
+          created_at?: string
+          expires_at?: string
+          id?: string
+          is_trial?: boolean
+          issued_at?: string
+          membership_number: string
+          renewed_at?: string | null
+          suspended_at?: string | null
+          suspended_reason?: string | null
+          trial_ends_at?: string | null
+          updated_at?: string
+          user_id: string
+          verification_code: string
+        }
+        Update: {
+          card_orientation?: string
+          card_status?: string
+          created_at?: string
+          expires_at?: string
+          id?: string
+          is_trial?: boolean
+          issued_at?: string
+          membership_number?: string
+          renewed_at?: string | null
+          suspended_at?: string | null
+          suspended_reason?: string | null
+          trial_ends_at?: string | null
+          updated_at?: string
+          user_id?: string
+          verification_code?: string
+        }
+        Relationships: []
+      }
       membership_history: {
         Row: {
           changed_by: string | null
@@ -10570,6 +10686,86 @@ export type Database = {
           },
         ]
       }
+      tax_reports: {
+        Row: {
+          company_id: string | null
+          created_at: string
+          currency: string
+          data_snapshot: Json | null
+          generated_by: string | null
+          id: string
+          notes: string | null
+          notes_ar: string | null
+          period_end: string
+          period_start: string
+          report_type: string
+          status: string
+          tax_amount: number
+          tax_rate: number
+          taxable_amount: number
+          total_expenses: number
+          total_revenue: number
+          updated_at: string
+          user_id: string | null
+          zakat_amount: number | null
+          zakat_base: number | null
+        }
+        Insert: {
+          company_id?: string | null
+          created_at?: string
+          currency?: string
+          data_snapshot?: Json | null
+          generated_by?: string | null
+          id?: string
+          notes?: string | null
+          notes_ar?: string | null
+          period_end: string
+          period_start: string
+          report_type: string
+          status?: string
+          tax_amount?: number
+          tax_rate?: number
+          taxable_amount?: number
+          total_expenses?: number
+          total_revenue?: number
+          updated_at?: string
+          user_id?: string | null
+          zakat_amount?: number | null
+          zakat_base?: number | null
+        }
+        Update: {
+          company_id?: string | null
+          created_at?: string
+          currency?: string
+          data_snapshot?: Json | null
+          generated_by?: string | null
+          id?: string
+          notes?: string | null
+          notes_ar?: string | null
+          period_end?: string
+          period_start?: string
+          report_type?: string
+          status?: string
+          tax_amount?: number
+          tax_rate?: number
+          taxable_amount?: number
+          total_expenses?: number
+          total_revenue?: number
+          updated_at?: string
+          user_id?: string | null
+          zakat_amount?: number | null
+          zakat_base?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "tax_reports_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       user_affiliations: {
         Row: {
           affiliation_type: string
@@ -10995,6 +11191,53 @@ export type Database = {
           },
         ]
       }
+      user_wallets: {
+        Row: {
+          balance: number
+          company_id: string | null
+          created_at: string
+          currency: string
+          id: string
+          points_balance: number
+          status: string
+          updated_at: string
+          user_id: string | null
+          wallet_number: string
+        }
+        Insert: {
+          balance?: number
+          company_id?: string | null
+          created_at?: string
+          currency?: string
+          id?: string
+          points_balance?: number
+          status?: string
+          updated_at?: string
+          user_id?: string | null
+          wallet_number: string
+        }
+        Update: {
+          balance?: number
+          company_id?: string | null
+          created_at?: string
+          currency?: string
+          id?: string
+          points_balance?: number
+          status?: string
+          updated_at?: string
+          user_id?: string | null
+          wallet_number?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_wallets_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       verification_audit_log: {
         Row: {
           action: string
@@ -11221,6 +11464,77 @@ export type Database = {
           },
         ]
       }
+      wallet_transactions: {
+        Row: {
+          amount: number
+          balance_after: number
+          balance_before: number
+          created_at: string
+          created_by: string | null
+          currency: string
+          description: string | null
+          description_ar: string | null
+          id: string
+          payment_method: string | null
+          payment_reference: string | null
+          points: number | null
+          reference_id: string | null
+          reference_type: string | null
+          status: string
+          transaction_number: string
+          type: string
+          wallet_id: string
+        }
+        Insert: {
+          amount?: number
+          balance_after?: number
+          balance_before?: number
+          created_at?: string
+          created_by?: string | null
+          currency?: string
+          description?: string | null
+          description_ar?: string | null
+          id?: string
+          payment_method?: string | null
+          payment_reference?: string | null
+          points?: number | null
+          reference_id?: string | null
+          reference_type?: string | null
+          status?: string
+          transaction_number: string
+          type: string
+          wallet_id: string
+        }
+        Update: {
+          amount?: number
+          balance_after?: number
+          balance_before?: number
+          created_at?: string
+          created_by?: string | null
+          currency?: string
+          description?: string | null
+          description_ar?: string | null
+          id?: string
+          payment_method?: string | null
+          payment_reference?: string | null
+          points?: number | null
+          reference_id?: string | null
+          reference_type?: string | null
+          status?: string
+          transaction_number?: string
+          type?: string
+          wallet_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "wallet_transactions_wallet_id_fkey"
+            columns: ["wallet_id"]
+            isOneToOne: false
+            referencedRelation: "user_wallets"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
@@ -11244,13 +11558,18 @@ export type Database = {
       }
       generate_entity_number: { Args: never; Returns: string }
       generate_invoice_number: { Args: never; Returns: string }
+      generate_membership_number: { Args: never; Returns: string }
+      generate_membership_verification: { Args: never; Returns: string }
       generate_order_number: { Args: never; Returns: string }
       generate_qr_code: { Args: { p_prefix?: string }; Returns: string }
       generate_registration_number: { Args: never; Returns: string }
       generate_shop_order_number: { Args: never; Returns: string }
+      generate_statement_number: { Args: never; Returns: string }
       generate_ticket_number: { Args: never; Returns: string }
       generate_transaction_number: { Args: never; Returns: string }
       generate_verification_code: { Args: never; Returns: string }
+      generate_wallet_number: { Args: never; Returns: string }
+      generate_wallet_txn_number: { Args: never; Returns: string }
       get_company_balance: { Args: { p_company_id: string }; Returns: number }
       get_user_company_id: { Args: { p_user_id: string }; Returns: string[] }
       get_user_competition_role: {
