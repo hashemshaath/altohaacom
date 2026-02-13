@@ -76,6 +76,8 @@ export function HeroSlider() {
             src={s.image_url}
             alt={isAr && s.title_ar ? s.title_ar : s.title}
             className="h-full w-full object-cover"
+            loading={i === 0 ? "eager" : "lazy"}
+            decoding="async"
           />
           <div className="absolute inset-0 bg-gradient-to-t from-background via-background/60 to-background/20" />
         </div>
