@@ -8961,6 +8961,48 @@ export type Database = {
           },
         ]
       }
+      requirement_templates: {
+        Row: {
+          category: string
+          created_at: string
+          created_by: string
+          description: string | null
+          id: string
+          is_public: boolean
+          items: Json
+          name: string
+          name_ar: string | null
+          updated_at: string
+          usage_count: number
+        }
+        Insert: {
+          category?: string
+          created_at?: string
+          created_by: string
+          description?: string | null
+          id?: string
+          is_public?: boolean
+          items?: Json
+          name: string
+          name_ar?: string | null
+          updated_at?: string
+          usage_count?: number
+        }
+        Update: {
+          category?: string
+          created_at?: string
+          created_by?: string
+          description?: string | null
+          id?: string
+          is_public?: boolean
+          items?: Json
+          name?: string
+          name_ar?: string | null
+          updated_at?: string
+          usage_count?: number
+        }
+        Relationships: []
+      }
       role_permissions: {
         Row: {
           created_at: string
