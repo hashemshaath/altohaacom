@@ -12,7 +12,8 @@ import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import {
-  ClipboardList, Plus, CheckCircle, XCircle, Clock, Send, AlertTriangle, Edit2, Download,
+  ClipboardList, Plus, CheckCircle, XCircle, Clock, Send, AlertTriangle,
+  Edit2, Download, RotateCcw, BookTemplate, MessageSquare, ChevronDown, ChevronUp,
 } from "lucide-react";
 import { ORDER_CATEGORIES, ITEM_UNITS } from "./OrderCenterCategories";
 import { DISH_TEMPLATES } from "@/data/dishTemplates";
@@ -33,6 +34,11 @@ const PRIORITY_STYLES: Record<string, { color: string; labelEn: string; labelAr:
   urgent: { color: "bg-destructive/15 text-destructive", labelEn: "Urgent", labelAr: "عاجلة" },
 };
 
+const emptyForm = {
+  item_name: "", item_name_ar: "", category: "food_ingredients",
+  quantity: 1, unit: "piece", notes: "", priority: "normal",
+};
+
 interface Props {
   competitionId: string;
   isOrganizer?: boolean;
@@ -45,10 +51,9 @@ export function ItemRequestPanel({ competitionId, isOrganizer }: Props) {
   const queryClient = useQueryClient();
   const isAr = language === "ar";
   const [showForm, setShowForm] = useState(false);
-  const [form, setForm] = useState({
-    item_name: "", item_name_ar: "", category: "food_ingredients",
-    quantity: 1, unit: "piece", notes: "", priority: "normal",
-  });
+  const [showTemplates, setShowTemplates] = useState(false);
+  const [editingId, setEditingId] = useState<string | null>(null);
+  const [form, setForm] = useState({ ...emptyForm });
 
   const { data: requests, isLoading } = useQuery({
     queryKey: ["item-requests", competitionId],
@@ -59,7 +64,6 @@ export function ItemRequestPanel({ competitionId, isOrganizer }: Props) {
         .eq("competition_id", competitionId)
         .order("created_at", { ascending: false });
       if (error) throw error;
-      // Fetch requester profiles separately
       if (!data?.length) return [];
       const userIds = [...new Set(data.map(r => r.requester_id).filter(Boolean))];
       const { data: profiles } = await supabase
@@ -71,7 +75,6 @@ export function ItemRequestPanel({ competitionId, isOrganizer }: Props) {
     },
   });
 
-  // Fetch competition title for notifications
   const { data: competition } = useQuery({
     queryKey: ["competition-title", competitionId],
     queryFn: async () => {
@@ -98,10 +101,43 @@ export function ItemRequestPanel({ competitionId, isOrganizer }: Props) {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["item-requests", competitionId] });
-      setShowForm(false);
-      setForm({ item_name: "", item_name_ar: "", category: "food_ingredients", quantity: 1, unit: "piece", notes: "", priority: "normal" });
+      resetForm();
       toast({ title: isAr ? "تم إرسال الطلب للمراجعة" : "Request submitted for review" });
-      // Notify admins
+      if (user && competition) {
+        notifyItemRequestSubmitted({
+          competitionId,
+          competitionTitle: competition.title,
+          competitionTitleAr: competition.title_ar || undefined,
+          requesterName: user.user_metadata?.full_name || user.email || "",
+          itemName: form.item_name,
+        });
+      }
+    },
+    onError: (e: Error) => toast({ variant: "destructive", title: "Error", description: e.message }),
+  });
+
+  const updateRequest = useMutation({
+    mutationFn: async () => {
+      if (!editingId) return;
+      const { error } = await supabase.from("order_item_requests").update({
+        item_name: form.item_name,
+        item_name_ar: form.item_name_ar || null,
+        category: form.category,
+        quantity: form.quantity,
+        unit: form.unit,
+        notes: form.notes || null,
+        priority: form.priority,
+        status: "pending",
+        rejection_reason: null,
+        reviewed_by: null,
+        reviewed_at: null,
+      }).eq("id", editingId);
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["item-requests", competitionId] });
+      resetForm();
+      toast({ title: isAr ? "تم إعادة إرسال الطلب" : "Request resubmitted for review" });
       if (user && competition) {
         notifyItemRequestSubmitted({
           competitionId,
@@ -129,7 +165,6 @@ export function ItemRequestPanel({ competitionId, isOrganizer }: Props) {
     onSuccess: (_, variables) => {
       queryClient.invalidateQueries({ queryKey: ["item-requests", competitionId] });
       toast({ title: isAr ? "تم تحديث الطلب" : "Request updated" });
-      // Notify requester
       const req = requests?.find(r => r.id === variables.id);
       if (req && competition) {
         notifyItemRequestReviewed({
@@ -144,6 +179,19 @@ export function ItemRequestPanel({ competitionId, isOrganizer }: Props) {
     },
   });
 
+  const addAdminNote = useMutation({
+    mutationFn: async ({ id, note }: { id: string; note: string }) => {
+      const { error } = await supabase.from("order_item_requests").update({
+        admin_notes: note || null,
+      }).eq("id", id);
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["item-requests", competitionId] });
+      toast({ title: isAr ? "تم حفظ الملاحظة" : "Note saved" });
+    },
+  });
+
   const deleteRequest = useMutation({
     mutationFn: async (id: string) => {
       const { error } = await supabase.from("order_item_requests").delete().eq("id", id);
@@ -154,6 +202,65 @@ export function ItemRequestPanel({ competitionId, isOrganizer }: Props) {
       toast({ title: isAr ? "تم حذف الطلب" : "Request deleted" });
     },
   });
+
+  const resetForm = () => {
+    setForm({ ...emptyForm });
+    setShowForm(false);
+    setShowTemplates(false);
+    setEditingId(null);
+  };
+
+  const startEdit = (r: any) => {
+    setForm({
+      item_name: r.item_name || "",
+      item_name_ar: r.item_name_ar || "",
+      category: r.category || "food_ingredients",
+      quantity: r.quantity || 1,
+      unit: r.unit || "piece",
+      notes: r.notes || "",
+      priority: r.priority || "normal",
+    });
+    setEditingId(r.id);
+    setShowForm(true);
+    setShowTemplates(false);
+  };
+
+  const applyTemplate = (templateId: string) => {
+    const t = DISH_TEMPLATES.find(d => d.id === templateId);
+    if (!t) return;
+    // Submit all items from the template as individual requests
+    const promises = t.ingredients.map(ing =>
+      supabase.from("order_item_requests").insert({
+        competition_id: competitionId,
+        requester_id: user!.id,
+        requester_role: "chef",
+        category: ing.category,
+        item_name: ing.name,
+        item_name_ar: ing.nameAr,
+        quantity: ing.quantity,
+        unit: ing.unit,
+        notes: `From template: ${t.name}`,
+        priority: "normal",
+        dish_template_id: t.id,
+      })
+    );
+    Promise.all(promises).then(() => {
+      queryClient.invalidateQueries({ queryKey: ["item-requests", competitionId] });
+      setShowTemplates(false);
+      toast({
+        title: isAr ? `تم إضافة ${t.ingredients.length} عنصر من قالب "${t.nameAr}"` : `Added ${t.ingredients.length} items from "${t.name}" template`,
+      });
+      if (user && competition) {
+        notifyItemRequestSubmitted({
+          competitionId,
+          competitionTitle: competition.title,
+          competitionTitleAr: competition.title_ar || undefined,
+          requesterName: user.user_metadata?.full_name || user.email || "",
+          itemName: `${t.name} (${t.ingredients.length} items)`,
+        });
+      }
+    });
+  };
 
   const myRequests = requests?.filter(r => r.requester_id === user?.id) || [];
   const otherRequests = requests?.filter(r => r.requester_id !== user?.id) || [];
@@ -172,6 +279,7 @@ export function ItemRequestPanel({ competitionId, isOrganizer }: Props) {
         status: r.status,
         requester: r.profiles?.full_name || r.profiles?.username || "",
         notes: r.notes || "",
+        admin_notes: r.admin_notes || "",
         created_at: r.created_at,
       })),
       `item-requests-${competitionId}`,
@@ -185,6 +293,7 @@ export function ItemRequestPanel({ competitionId, isOrganizer }: Props) {
         { key: "status", label: isAr ? "الحالة" : "Status" },
         { key: "requester", label: isAr ? "مقدم الطلب" : "Requester" },
         { key: "notes", label: isAr ? "ملاحظات" : "Notes" },
+        { key: "admin_notes", label: isAr ? "ملاحظات الإدارة" : "Admin Notes" },
         { key: "created_at", label: isAr ? "التاريخ" : "Date" },
       ]
     );
@@ -193,7 +302,7 @@ export function ItemRequestPanel({ competitionId, isOrganizer }: Props) {
   return (
     <div className="space-y-4">
       {/* Header */}
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-between flex-wrap gap-2">
         <div className="flex items-center gap-2">
           <ClipboardList className="h-5 w-5 text-primary" />
           <h4 className="font-semibold">{isAr ? "طلبات العناصر" : "Item Requests"}</h4>
@@ -208,17 +317,60 @@ export function ItemRequestPanel({ competitionId, isOrganizer }: Props) {
               {isAr ? "تصدير" : "Export"}
             </Button>
           )}
-          <Button size="sm" variant="outline" onClick={() => setShowForm(!showForm)}>
+          <Button size="sm" variant="outline" onClick={() => setShowTemplates(!showTemplates)}>
+            <BookTemplate className="me-1.5 h-3.5 w-3.5" />
+            {isAr ? "من قالب" : "From Template"}
+          </Button>
+          <Button size="sm" variant="outline" onClick={() => { resetForm(); setShowForm(!showForm); }}>
             <Plus className="me-1.5 h-3.5 w-3.5" />
             {isAr ? "طلب عنصر" : "Request Item"}
           </Button>
         </div>
       </div>
 
-      {/* Request Form */}
+      {/* Dish Template Picker */}
+      {showTemplates && (
+        <Card className="border-chart-1/30">
+          <CardContent className="p-3">
+            <p className="text-xs font-medium mb-2">{isAr ? "اختر قالب طبق لإضافة جميع مكوناته تلقائياً" : "Select a dish template to auto-add all its ingredients"}</p>
+            <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
+              {DISH_TEMPLATES.map(t => {
+                const Icon = t.icon;
+                return (
+                  <Button
+                    key={t.id}
+                    variant="outline"
+                    className="h-auto justify-start gap-2 p-2.5 text-start"
+                    onClick={() => applyTemplate(t.id)}
+                  >
+                    <div className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-${t.color}/10`}>
+                      <Icon className={`h-4 w-4 text-${t.color}`} />
+                    </div>
+                    <div className="min-w-0">
+                      <p className="text-xs font-medium">{isAr ? t.nameAr : t.name}</p>
+                      <p className="text-[10px] text-muted-foreground">{t.ingredients.length} {isAr ? "عنصر" : "items"}</p>
+                    </div>
+                  </Button>
+                );
+              })}
+            </div>
+            <Button size="sm" variant="ghost" className="mt-2 text-xs" onClick={() => setShowTemplates(false)}>
+              {isAr ? "إغلاق" : "Close"}
+            </Button>
+          </CardContent>
+        </Card>
+      )}
+
+      {/* Request Form (new or edit) */}
       {showForm && (
         <Card className="border-primary/20">
           <CardContent className="p-4 space-y-3">
+            {editingId && (
+              <div className="flex items-center gap-2 text-xs text-chart-4">
+                <RotateCcw className="h-3.5 w-3.5" />
+                {isAr ? "تعديل وإعادة إرسال الطلب" : "Edit & resubmit request"}
+              </div>
+            )}
             <div className="grid gap-3 sm:grid-cols-2">
               <div>
                 <Label className="text-xs">{isAr ? "اسم العنصر (إنجليزي)" : "Item Name (English)"}</Label>
@@ -273,11 +425,17 @@ export function ItemRequestPanel({ competitionId, isOrganizer }: Props) {
               <Textarea value={form.notes} onChange={e => setForm({ ...form, notes: e.target.value })} rows={2} className="text-sm" />
             </div>
             <div className="flex gap-2">
-              <Button size="sm" onClick={() => submitRequest.mutate()} disabled={!form.item_name || submitRequest.isPending}>
-                <Send className="me-1.5 h-3.5 w-3.5" />
-                {isAr ? "إرسال الطلب" : "Submit Request"}
+              <Button
+                size="sm"
+                onClick={() => editingId ? updateRequest.mutate() : submitRequest.mutate()}
+                disabled={!form.item_name || submitRequest.isPending || updateRequest.isPending}
+              >
+                {editingId ? <RotateCcw className="me-1.5 h-3.5 w-3.5" /> : <Send className="me-1.5 h-3.5 w-3.5" />}
+                {editingId
+                  ? (isAr ? "إعادة إرسال" : "Resubmit")
+                  : (isAr ? "إرسال الطلب" : "Submit Request")}
               </Button>
-              <Button size="sm" variant="ghost" onClick={() => setShowForm(false)}>
+              <Button size="sm" variant="ghost" onClick={resetForm}>
                 {isAr ? "إلغاء" : "Cancel"}
               </Button>
             </div>
@@ -285,7 +443,7 @@ export function ItemRequestPanel({ competitionId, isOrganizer }: Props) {
         </Card>
       )}
 
-      {/* Loading */}
+      {/* Loading / Empty */}
       {isLoading ? (
         <div className="flex justify-center py-6">
           <div className="h-6 w-6 animate-spin rounded-full border-4 border-primary border-t-transparent" />
@@ -314,6 +472,7 @@ export function ItemRequestPanel({ competitionId, isOrganizer }: Props) {
                     isAr={isAr}
                     isOwn
                     isOrganizer={isOrganizer}
+                    onEdit={() => startEdit(r)}
                     onDelete={() => { if (confirm(isAr ? "حذف الطلب؟" : "Delete request?")) deleteRequest.mutate(r.id); }}
                   />
                 ))}
@@ -334,6 +493,7 @@ export function ItemRequestPanel({ competitionId, isOrganizer }: Props) {
                     isOrganizer
                     onApprove={() => reviewRequest.mutate({ id: r.id, status: "approved" })}
                     onReject={(reason) => reviewRequest.mutate({ id: r.id, status: "rejected", reason })}
+                    onAddNote={(note) => addAdminNote.mutate({ id: r.id, note })}
                   />
                 ))}
               </div>
@@ -346,7 +506,7 @@ export function ItemRequestPanel({ competitionId, isOrganizer }: Props) {
 }
 
 function RequestCard({
-  request, isAr, isOwn, isOrganizer, onDelete, onApprove, onReject,
+  request, isAr, isOwn, isOrganizer, onDelete, onApprove, onReject, onEdit, onAddNote,
 }: {
   request: any;
   isAr: boolean;
@@ -355,22 +515,38 @@ function RequestCard({
   onDelete?: () => void;
   onApprove?: () => void;
   onReject?: (reason: string) => void;
+  onEdit?: () => void;
+  onAddNote?: (note: string) => void;
 }) {
   const [showRejectInput, setShowRejectInput] = useState(false);
   const [rejectReason, setRejectReason] = useState("");
+  const [showNoteInput, setShowNoteInput] = useState(false);
+  const [noteText, setNoteText] = useState(request.admin_notes || "");
+  const [expanded, setExpanded] = useState(false);
   const statusInfo = STATUS_STYLES[request.status] || STATUS_STYLES.pending;
   const priorityInfo = PRIORITY_STYLES[request.priority] || PRIORITY_STYLES.normal;
   const StatusIcon = statusInfo.icon;
   const catInfo = ORDER_CATEGORIES.find(c => c.value === request.category);
+  const templateInfo = request.dish_template_id
+    ? DISH_TEMPLATES.find(t => t.id === request.dish_template_id)
+    : null;
 
   return (
     <Card className="border-border/60">
       <CardContent className="p-3">
         <div className="flex items-start justify-between gap-2">
-          <div className="flex items-start gap-2.5 min-w-0">
+          <div className="flex items-start gap-2.5 min-w-0 flex-1">
             <StatusIcon className="h-4 w-4 mt-0.5 shrink-0" />
-            <div className="min-w-0">
-              <p className="text-sm font-medium">{isAr && request.item_name_ar ? request.item_name_ar : request.item_name}</p>
+            <div className="min-w-0 flex-1">
+              <div className="flex items-center gap-1.5">
+                <p className="text-sm font-medium">{isAr && request.item_name_ar ? request.item_name_ar : request.item_name}</p>
+                {templateInfo && (
+                  <Badge variant="outline" className="text-[9px] h-4 gap-0.5">
+                    <BookTemplate className="h-2.5 w-2.5" />
+                    {isAr ? templateInfo.nameAr : templateInfo.name}
+                  </Badge>
+                )}
+              </div>
               <div className="flex flex-wrap items-center gap-1.5 mt-1">
                 <Badge variant="outline" className="text-[9px] h-4">
                   {catInfo ? (isAr ? catInfo.labelAr : catInfo.label) : request.category}
@@ -396,9 +572,20 @@ function RequestCard({
                   <AlertTriangle className="h-2.5 w-2.5" /> {request.rejection_reason}
                 </p>
               )}
+              {/* Admin notes visible to both */}
+              {request.admin_notes && (
+                <p className="text-[10px] text-chart-1 mt-1 flex items-center gap-1">
+                  <MessageSquare className="h-2.5 w-2.5" />
+                  {isAr ? "ملاحظة الإدارة:" : "Admin note:"} {request.admin_notes}
+                </p>
+              )}
             </div>
           </div>
           <div className="flex items-center gap-1 shrink-0">
+            {/* Expand toggle for details */}
+            <Button size="icon" variant="ghost" className="h-7 w-7" onClick={() => setExpanded(!expanded)}>
+              {expanded ? <ChevronUp className="h-3.5 w-3.5" /> : <ChevronDown className="h-3.5 w-3.5" />}
+            </Button>
             {isOrganizer && request.status === "pending" && (
               <>
                 <Button size="icon" variant="ghost" className="h-7 w-7" onClick={onApprove}>
@@ -409,6 +596,18 @@ function RequestCard({
                 </Button>
               </>
             )}
+            {/* Organizer can add notes */}
+            {isOrganizer && (
+              <Button size="icon" variant="ghost" className="h-7 w-7" onClick={() => setShowNoteInput(!showNoteInput)}>
+                <MessageSquare className="h-3.5 w-3.5 text-chart-1" />
+              </Button>
+            )}
+            {/* Chef can edit rejected or pending requests */}
+            {isOwn && (request.status === "rejected" || request.status === "pending") && onEdit && (
+              <Button size="icon" variant="ghost" className="h-7 w-7" onClick={onEdit}>
+                <Edit2 className="h-3.5 w-3.5 text-chart-4" />
+              </Button>
+            )}
             {isOwn && request.status === "pending" && onDelete && (
               <Button size="icon" variant="ghost" className="h-7 w-7 text-destructive" onClick={onDelete}>
                 <XCircle className="h-3.5 w-3.5" />
@@ -416,6 +615,22 @@ function RequestCard({
             )}
           </div>
         </div>
+
+        {/* Expanded details */}
+        {expanded && (
+          <div className="mt-2 ps-6.5 space-y-1 text-[10px] text-muted-foreground border-t border-border/40 pt-2">
+            {request.item_name_ar && <p>{isAr ? "English" : "عربي"}: {isAr ? request.item_name : request.item_name_ar}</p>}
+            {request.notes && <p>{isAr ? "ملاحظات:" : "Notes:"} {request.notes}</p>}
+            <p>{isAr ? "تاريخ الإنشاء:" : "Created:"} {new Date(request.created_at).toLocaleDateString()}</p>
+            {request.reviewed_at && <p>{isAr ? "تاريخ المراجعة:" : "Reviewed:"} {new Date(request.reviewed_at).toLocaleDateString()}</p>}
+            {request.delivery_status && request.delivery_status !== "not_started" && (
+              <p>{isAr ? "حالة التسليم:" : "Delivery:"} {request.delivery_status}</p>
+            )}
+            {request.tracking_number && <p>{isAr ? "رقم التتبع:" : "Tracking:"} {request.tracking_number}</p>}
+          </div>
+        )}
+
+        {/* Reject reason input */}
         {showRejectInput && (
           <div className="mt-2 flex gap-2">
             <Input
@@ -435,6 +650,29 @@ function RequestCard({
               }}
             >
               {isAr ? "رفض" : "Reject"}
+            </Button>
+          </div>
+        )}
+
+        {/* Admin notes input */}
+        {showNoteInput && (
+          <div className="mt-2 flex gap-2">
+            <Input
+              placeholder={isAr ? "ملاحظة للطاهي..." : "Note for chef..."}
+              value={noteText}
+              onChange={e => setNoteText(e.target.value)}
+              className="h-7 text-xs"
+            />
+            <Button
+              size="sm"
+              variant="secondary"
+              className="h-7 text-xs"
+              onClick={() => {
+                onAddNote?.(noteText);
+                setShowNoteInput(false);
+              }}
+            >
+              {isAr ? "حفظ" : "Save"}
             </Button>
           </div>
         )}
