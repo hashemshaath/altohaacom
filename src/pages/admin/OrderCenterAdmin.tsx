@@ -26,7 +26,7 @@ import { ORDER_CATEGORIES } from "@/components/competitions/order-center/OrderCe
 import { DISH_TEMPLATES, type DishTemplate } from "@/data/dishTemplates";
 import { downloadCSV } from "@/lib/exportUtils";
 import { notifyItemRequestReviewed, notifyItemRequestFulfilled } from "@/lib/notificationTriggers";
-import { AdminCatalogManager } from "@/components/competitions/order-center/AdminCatalogManager";
+import { SupermarketCatalog } from "@/components/competitions/order-center/SupermarketCatalog";
 import { AdminListDetailPanel } from "@/components/competitions/order-center/AdminListDetailPanel";
 
 // ── Access level config ──
@@ -364,7 +364,7 @@ export default function OrderCenterAdmin() {
             <ClipboardList className="h-3.5 w-3.5" /> {isAr ? "قوائم المتطلبات" : "Requirement Lists"}
           </TabsTrigger>
           <TabsTrigger value="catalog" className="gap-1.5 text-xs">
-            <Database className="h-3.5 w-3.5" /> {isAr ? "كتالوج العناصر" : "Item Catalog"}
+            <Database className="h-3.5 w-3.5" /> {isAr ? "السوبرماركت" : "Supermarket"}
           </TabsTrigger>
           <TabsTrigger value="requests" className="gap-1.5 text-xs">
             <FileInput className="h-3.5 w-3.5" /> {isAr ? "طلبات العناصر" : "Item Requests"}
@@ -623,9 +623,9 @@ export default function OrderCenterAdmin() {
           )}
         </TabsContent>
 
-        {/* ── Catalog ── */}
+        {/* ── Supermarket ── */}
         <TabsContent value="catalog" className="mt-4">
-          <AdminCatalogManager />
+          <SupermarketCatalog />
         </TabsContent>
 
         {/* ── Item Requests ── */}
