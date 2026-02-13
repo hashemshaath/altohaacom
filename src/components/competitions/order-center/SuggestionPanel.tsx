@@ -14,6 +14,7 @@ import { Label } from "@/components/ui/label";
 import { Lightbulb, Plus, CheckCircle, XCircle, Clock } from "lucide-react";
 import { ORDER_CATEGORIES, ITEM_UNITS } from "./OrderCenterCategories";
 import { notifySuggestionReviewed } from "@/lib/notificationTriggers";
+import { SUGGESTION_STATUS_LABELS, getStatusLabel } from "./OrderStatusLabels";
 
 const STATUS_STYLES: Record<string, { icon: typeof Clock; color: string }> = {
   pending: { icon: Clock, color: "bg-muted text-muted-foreground" },
@@ -218,7 +219,7 @@ export function SuggestionPanel({ competitionId, isOrganizer }: Props) {
                     </div>
                   </div>
                   <div className="flex items-center gap-2 shrink-0">
-                    <Badge className={statusInfo.color} variant="outline">{s.status}</Badge>
+                    <Badge className={statusInfo.color} variant="outline">{getStatusLabel(SUGGESTION_STATUS_LABELS, s.status, language)}</Badge>
                     {isOrganizer && s.status === "pending" && (
                       <div className="flex gap-1">
                         <Button size="icon" variant="ghost" className="h-7 w-7" onClick={() => reviewSuggestion.mutate({ id: s.id, status: "approved" })}>

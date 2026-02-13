@@ -17,6 +17,7 @@ import {
   XCircle, Mail,
 } from "lucide-react";
 import { notifyQuoteRequestSent } from "@/lib/notificationTriggers";
+import { QUOTE_STATUS_LABELS, getStatusLabel } from "./OrderStatusLabels";
 
 interface Props {
   competitionId: string;
@@ -323,7 +324,7 @@ export function QuoteRequestPanel({ competitionId, isOrganizer }: Props) {
                     </div>
                     <Badge className={statusInfo.color} variant="outline">
                       <StatusIcon className="me-1 h-3 w-3" />
-                      {req.status}
+                      {getStatusLabel(QUOTE_STATUS_LABELS, req.status, language)}
                     </Badge>
                   </CardContent>
                 </Card>
