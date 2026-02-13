@@ -12,9 +12,12 @@ import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import {
-  ClipboardList, Plus, CheckCircle, XCircle, Clock, Send, AlertTriangle,
+  ClipboardList, Plus, CheckCircle, XCircle, Clock, Send, AlertTriangle, Edit2, Download,
 } from "lucide-react";
 import { ORDER_CATEGORIES, ITEM_UNITS } from "./OrderCenterCategories";
+import { DISH_TEMPLATES } from "@/data/dishTemplates";
+import { downloadCSV } from "@/lib/exportUtils";
+import { notifyItemRequestSubmitted, notifyItemRequestReviewed } from "@/lib/notificationTriggers";
 
 const STATUS_STYLES: Record<string, { icon: typeof Clock; color: string; labelEn: string; labelAr: string }> = {
   pending: { icon: Clock, color: "bg-chart-4/15 text-chart-4", labelEn: "Pending", labelAr: "قيد الانتظار" },
@@ -52,10 +55,27 @@ export function ItemRequestPanel({ competitionId, isOrganizer }: Props) {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("order_item_requests")
-        .select("*, profiles:requester_id(full_name, username, avatar_url)")
+        .select("*")
         .eq("competition_id", competitionId)
         .order("created_at", { ascending: false });
       if (error) throw error;
+      // Fetch requester profiles separately
+      if (!data?.length) return [];
+      const userIds = [...new Set(data.map(r => r.requester_id).filter(Boolean))];
+      const { data: profiles } = await supabase
+        .from("profiles")
+        .select("user_id, full_name, username, avatar_url")
+        .in("user_id", userIds as string[]);
+      const profileMap = new Map((profiles || []).map(p => [p.user_id, p]));
+      return data.map(r => ({ ...r, profiles: profileMap.get(r.requester_id!) || null }));
+    },
+  });
+
+  // Fetch competition title for notifications
+  const { data: competition } = useQuery({
+    queryKey: ["competition-title", competitionId],
+    queryFn: async () => {
+      const { data } = await supabase.from("competitions").select("title, title_ar").eq("id", competitionId).single();
       return data;
     },
   });
@@ -81,6 +101,16 @@ export function ItemRequestPanel({ competitionId, isOrganizer }: Props) {
       setShowForm(false);
       setForm({ item_name: "", item_name_ar: "", category: "food_ingredients", quantity: 1, unit: "piece", notes: "", priority: "normal" });
       toast({ title: isAr ? "تم إرسال الطلب للمراجعة" : "Request submitted for review" });
+      // Notify admins
+      if (user && competition) {
+        notifyItemRequestSubmitted({
+          competitionId,
+          competitionTitle: competition.title,
+          competitionTitleAr: competition.title_ar || undefined,
+          requesterName: user.user_metadata?.full_name || user.email || "",
+          itemName: form.item_name,
+        });
+      }
     },
     onError: (e: Error) => toast({ variant: "destructive", title: "Error", description: e.message }),
   });
@@ -94,10 +124,23 @@ export function ItemRequestPanel({ competitionId, isOrganizer }: Props) {
         rejection_reason: reason || null,
       }).eq("id", id);
       if (error) throw error;
+      return { id, status, reason };
     },
-    onSuccess: () => {
+    onSuccess: (_, variables) => {
       queryClient.invalidateQueries({ queryKey: ["item-requests", competitionId] });
       toast({ title: isAr ? "تم تحديث الطلب" : "Request updated" });
+      // Notify requester
+      const req = requests?.find(r => r.id === variables.id);
+      if (req && competition) {
+        notifyItemRequestReviewed({
+          userId: req.requester_id,
+          itemName: req.item_name,
+          status: variables.status as "approved" | "rejected",
+          reason: variables.reason,
+          competitionTitle: competition.title,
+          competitionTitleAr: competition.title_ar || undefined,
+        });
+      }
     },
   });
 
@@ -116,6 +159,37 @@ export function ItemRequestPanel({ competitionId, isOrganizer }: Props) {
   const otherRequests = requests?.filter(r => r.requester_id !== user?.id) || [];
   const pendingCount = requests?.filter(r => r.status === "pending").length || 0;
 
+  const handleExportCSV = () => {
+    if (!requests?.length) return;
+    downloadCSV(
+      requests.map(r => ({
+        item_name: r.item_name,
+        item_name_ar: r.item_name_ar || "",
+        category: r.category,
+        quantity: r.quantity,
+        unit: r.unit,
+        priority: r.priority,
+        status: r.status,
+        requester: r.profiles?.full_name || r.profiles?.username || "",
+        notes: r.notes || "",
+        created_at: r.created_at,
+      })),
+      `item-requests-${competitionId}`,
+      [
+        { key: "item_name", label: isAr ? "العنصر" : "Item" },
+        { key: "item_name_ar", label: isAr ? "العنصر (عربي)" : "Item (Arabic)" },
+        { key: "category", label: isAr ? "الفئة" : "Category" },
+        { key: "quantity", label: isAr ? "الكمية" : "Quantity" },
+        { key: "unit", label: isAr ? "الوحدة" : "Unit" },
+        { key: "priority", label: isAr ? "الأولوية" : "Priority" },
+        { key: "status", label: isAr ? "الحالة" : "Status" },
+        { key: "requester", label: isAr ? "مقدم الطلب" : "Requester" },
+        { key: "notes", label: isAr ? "ملاحظات" : "Notes" },
+        { key: "created_at", label: isAr ? "التاريخ" : "Date" },
+      ]
+    );
+  };
+
   return (
     <div className="space-y-4">
       {/* Header */}
@@ -127,10 +201,18 @@ export function ItemRequestPanel({ competitionId, isOrganizer }: Props) {
             <Badge variant="secondary">{pendingCount} {isAr ? "معلق" : "pending"}</Badge>
           )}
         </div>
-        <Button size="sm" variant="outline" onClick={() => setShowForm(!showForm)}>
-          <Plus className="me-1.5 h-3.5 w-3.5" />
-          {isAr ? "طلب عنصر" : "Request Item"}
-        </Button>
+        <div className="flex items-center gap-1.5">
+          {requests && requests.length > 0 && (
+            <Button size="sm" variant="ghost" onClick={handleExportCSV}>
+              <Download className="me-1.5 h-3.5 w-3.5" />
+              {isAr ? "تصدير" : "Export"}
+            </Button>
+          )}
+          <Button size="sm" variant="outline" onClick={() => setShowForm(!showForm)}>
+            <Plus className="me-1.5 h-3.5 w-3.5" />
+            {isAr ? "طلب عنصر" : "Request Item"}
+          </Button>
+        </div>
       </div>
 
       {/* Request Form */}

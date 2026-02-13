@@ -22,6 +22,8 @@ import {
 } from "lucide-react";
 import { ORDER_CATEGORIES } from "@/components/competitions/order-center/OrderCenterCategories";
 import { DISH_TEMPLATES, type DishTemplate } from "@/data/dishTemplates";
+import { downloadCSV } from "@/lib/exportUtils";
+import { notifyItemRequestReviewed, notifyItemRequestFulfilled } from "@/lib/notificationTriggers";
 
 // ── Access level config ──
 const ACCESS_LEVELS = [
@@ -126,7 +128,7 @@ export default function OrderCenterAdmin() {
     queryFn: async () => {
       let query = supabase
         .from("order_item_requests")
-        .select("*, profiles:requester_id(full_name, username, avatar_url), competitions:competition_id(id, title, title_ar)")
+        .select("*, competitions:competition_id(id, title, title_ar)")
         .order("created_at", { ascending: false })
         .limit(200);
       if (competitionFilter !== "all") {
@@ -134,7 +136,15 @@ export default function OrderCenterAdmin() {
       }
       const { data, error } = await query;
       if (error) throw error;
-      return data;
+      // Fetch requester profiles separately
+      if (!data?.length) return [];
+      const userIds = [...new Set(data.map(r => r.requester_id).filter(Boolean))];
+      const { data: profiles } = await supabase
+        .from("profiles")
+        .select("user_id, full_name, username, avatar_url")
+        .in("user_id", userIds as string[]);
+      const profileMap = new Map((profiles || []).map(p => [p.user_id, p]));
+      return data.map(r => ({ ...r, profiles: profileMap.get(r.requester_id!) || null }));
     },
   });
 
@@ -148,10 +158,25 @@ export default function OrderCenterAdmin() {
         rejection_reason: reason || null,
       }).eq("id", id);
       if (error) throw error;
+      return { id, status, reason };
     },
-    onSuccess: () => {
+    onSuccess: (_, variables) => {
       queryClient.invalidateQueries({ queryKey: ["order-center-all-requests"] });
       toast({ title: isAr ? "تم تحديث الطلب" : "Request updated" });
+      // Notify requester
+      const req = allRequests.find((r: any) => r.id === variables.id);
+      if (req) {
+        const compTitle = req.competitions?.title || "";
+        const compTitleAr = req.competitions?.title_ar || undefined;
+        notifyItemRequestReviewed({
+          userId: req.requester_id,
+          itemName: req.item_name,
+          status: variables.status as "approved" | "rejected",
+          reason: variables.reason,
+          competitionTitle: compTitle,
+          competitionTitleAr: compTitleAr,
+        });
+      }
     },
   });
 
@@ -160,10 +185,23 @@ export default function OrderCenterAdmin() {
     mutationFn: async ({ id, updates }: { id: string; updates: Record<string, any> }) => {
       const { error } = await supabase.from("order_item_requests").update(updates).eq("id", id);
       if (error) throw error;
+      return { id, updates };
     },
-    onSuccess: () => {
+    onSuccess: (_, variables) => {
       queryClient.invalidateQueries({ queryKey: ["order-center-all-requests"] });
       toast({ title: isAr ? "تم تحديث حالة التسليم" : "Delivery status updated" });
+      // Notify requester when delivered
+      if (variables.updates.delivery_status === "delivered") {
+        const req = allRequests.find((r: any) => r.id === variables.id);
+        if (req) {
+          notifyItemRequestFulfilled({
+            userId: req.requester_id,
+            itemName: req.item_name,
+            competitionTitle: req.competitions?.title || "",
+            competitionTitleAr: req.competitions?.title_ar || undefined,
+          });
+        }
+      }
     },
   });
 
@@ -438,6 +476,46 @@ export default function OrderCenterAdmin() {
                 ))}
               </SelectContent>
             </Select>
+            {allRequests.length > 0 && (
+              <Button size="sm" variant="outline" className="gap-1.5" onClick={() => {
+                downloadCSV(
+                  allRequests.map((r: any) => ({
+                    item_name: r.item_name,
+                    item_name_ar: r.item_name_ar || "",
+                    category: r.category,
+                    quantity: r.quantity,
+                    unit: r.unit,
+                    priority: r.priority,
+                    status: r.status,
+                    delivery_status: r.delivery_status || "not_started",
+                    requester: r.profiles?.full_name || r.profiles?.username || "",
+                    competition: r.competitions?.title || "",
+                    assigned_vendor: r.assigned_vendor || "",
+                    notes: r.notes || "",
+                    created_at: r.created_at,
+                  })),
+                  "all-item-requests",
+                  [
+                    { key: "item_name", label: "Item" },
+                    { key: "item_name_ar", label: "Item (AR)" },
+                    { key: "category", label: "Category" },
+                    { key: "quantity", label: "Qty" },
+                    { key: "unit", label: "Unit" },
+                    { key: "priority", label: "Priority" },
+                    { key: "status", label: "Status" },
+                    { key: "delivery_status", label: "Delivery" },
+                    { key: "requester", label: "Requester" },
+                    { key: "competition", label: "Competition" },
+                    { key: "assigned_vendor", label: "Vendor" },
+                    { key: "notes", label: "Notes" },
+                    { key: "created_at", label: "Date" },
+                  ]
+                );
+              }}>
+                <Download className="h-3.5 w-3.5" />
+                {isAr ? "تصدير CSV" : "Export CSV"}
+              </Button>
+            )}
           </div>
 
           {requestsLoading ? (

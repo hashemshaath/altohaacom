@@ -251,6 +251,67 @@ export async function notifyFromTemplate(params: {
 
 // ── Company invitation notification ──
 
+// ── Order Item Request Notifications ──
+
+export async function notifyItemRequestSubmitted(params: {
+  competitionId: string;
+  competitionTitle: string;
+  competitionTitleAr?: string;
+  requesterName: string;
+  itemName: string;
+}) {
+  return notifyAllAdmins({
+    title: `New Item Request: ${params.itemName}`,
+    titleAr: `طلب عنصر جديد: ${params.itemName}`,
+    body: `${params.requesterName} requested "${params.itemName}" for "${params.competitionTitle}".`,
+    bodyAr: `طلب ${params.requesterName} "${params.itemName}" لـ "${params.competitionTitleAr || params.competitionTitle}".`,
+    type: "info",
+    link: `/admin/order-center`,
+    channels: ["in_app"],
+  });
+}
+
+export async function notifyItemRequestReviewed(params: {
+  userId: string;
+  itemName: string;
+  status: "approved" | "rejected";
+  reason?: string;
+  competitionTitle: string;
+  competitionTitleAr?: string;
+}) {
+  const isApproved = params.status === "approved";
+  return sendNotification({
+    userId: params.userId,
+    title: isApproved ? `Request Approved: ${params.itemName}` : `Request Declined: ${params.itemName}`,
+    titleAr: isApproved ? `تمت الموافقة على الطلب: ${params.itemName}` : `تم رفض الطلب: ${params.itemName}`,
+    body: isApproved
+      ? `Your request for "${params.itemName}" in "${params.competitionTitle}" has been approved.`
+      : `Your request for "${params.itemName}" was declined${params.reason ? `: ${params.reason}` : ""}.`,
+    bodyAr: isApproved
+      ? `تمت الموافقة على طلبك "${params.itemName}" في "${params.competitionTitleAr || params.competitionTitle}".`
+      : `تم رفض طلبك "${params.itemName}"${params.reason ? `: ${params.reason}` : ""}.`,
+    type: isApproved ? "success" : "warning",
+    channels: ["in_app"],
+  });
+}
+
+export async function notifyItemRequestFulfilled(params: {
+  userId: string;
+  itemName: string;
+  competitionTitle: string;
+  competitionTitleAr?: string;
+}) {
+  return sendNotification({
+    userId: params.userId,
+    title: `Item Delivered: ${params.itemName}`,
+    titleAr: `تم تسليم العنصر: ${params.itemName}`,
+    body: `Your requested item "${params.itemName}" for "${params.competitionTitle}" has been delivered.`,
+    bodyAr: `تم تسليم العنصر المطلوب "${params.itemName}" لـ "${params.competitionTitleAr || params.competitionTitle}".`,
+    type: "success",
+    channels: ["in_app"],
+  });
+}
+
 export async function notifyCompanyInvitation(params: {
   userId: string;
   companyName: string;
