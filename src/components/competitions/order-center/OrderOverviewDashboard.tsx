@@ -7,7 +7,7 @@ import { Progress } from "@/components/ui/progress";
 import { Button } from "@/components/ui/button";
 import {
   ClipboardList, Package, CheckCircle, Clock, AlertTriangle,
-  Send, Lightbulb, Printer, TrendingUp,
+  Send, Lightbulb, Printer, TrendingUp, FileInput,
 } from "lucide-react";
 
 interface Props {
@@ -69,6 +69,18 @@ export function OrderOverviewDashboard({ competitionId, isOrganizer }: Props) {
     },
   });
 
+  const { data: itemRequests } = useQuery({
+    queryKey: ["order-overview-requests", competitionId],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("order_item_requests")
+        .select("id, status")
+        .eq("competition_id", competitionId);
+      if (error) throw error;
+      return data;
+    },
+  });
+
   const totalItems = allItems?.length || 0;
   const delivered = allItems?.filter(i => i.status === "delivered").length || 0;
   const pending = allItems?.filter(i => !i.status || i.status === "pending").length || 0;
@@ -80,6 +92,8 @@ export function OrderOverviewDashboard({ competitionId, isOrganizer }: Props) {
   const pendingQuotes = quoteRequests?.filter(q => q.status === "pending").length || 0;
   const acceptedQuotes = quoteRequests?.filter(q => q.status === "accepted").length || 0;
   const pendingSuggestions = suggestions?.filter(s => s.status === "pending").length || 0;
+  const pendingItemRequests = itemRequests?.filter(r => r.status === "pending").length || 0;
+  const totalItemRequests = itemRequests?.length || 0;
 
   const handlePrint = () => {
     const printContent = document.getElementById("order-overview-print");
@@ -189,7 +203,7 @@ export function OrderOverviewDashboard({ competitionId, isOrganizer }: Props) {
       </Card>
 
       {/* Status Breakdown */}
-      <div className="grid gap-3 sm:grid-cols-3">
+      <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
         {/* Pending Items */}
         <Card className="border-border/60">
           <CardHeader className="pb-2 px-4 pt-3">
@@ -207,6 +221,24 @@ export function OrderOverviewDashboard({ competitionId, isOrganizer }: Props) {
                   {overdue} {isAr ? "متأخرة" : "overdue"}
                 </span>
               </div>
+            )}
+          </CardContent>
+        </Card>
+
+        {/* Item Requests */}
+        <Card className="border-border/60">
+          <CardHeader className="pb-2 px-4 pt-3">
+            <CardTitle className="text-sm flex items-center gap-2">
+              <FileInput className="h-4 w-4 text-chart-3" />
+              {isAr ? "طلبات العناصر" : "Item Requests"}
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="px-4 pb-3">
+            <p className="text-2xl font-bold">{totalItemRequests}</p>
+            {pendingItemRequests > 0 && (
+              <Badge variant="secondary" className="text-[10px] mt-1">
+                {pendingItemRequests} {isAr ? "بانتظار الموافقة" : "awaiting approval"}
+              </Badge>
             )}
           </CardContent>
         </Card>

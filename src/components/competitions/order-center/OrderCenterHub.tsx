@@ -1,5 +1,8 @@
+import { useState } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
+import { Badge } from "@/components/ui/badge";
 import { LayoutDashboard, ClipboardList, Package, Lightbulb, CheckSquare, Send, Wallet, Truck, Activity, BarChart3, ClipboardCheck, BookTemplate, FileInput } from "lucide-react";
 import { RequirementsListPanel } from "../RequirementsListPanel";
 import { SuggestionPanel } from "./SuggestionPanel";
@@ -20,28 +23,48 @@ interface Props {
   isOrganizer?: boolean;
 }
 
+const TAB_GROUPS = [
+  {
+    labelEn: "Core",
+    labelAr: "أساسي",
+    tabs: [
+      { id: "overview", icon: LayoutDashboard, labelEn: "Overview", labelAr: "نظرة عامة" },
+      { id: "requests", icon: FileInput, labelEn: "Requests", labelAr: "الطلبات" },
+      { id: "lists", icon: ClipboardList, labelEn: "Lists", labelAr: "القوائم" },
+      { id: "catalog", icon: Package, labelEn: "Catalog", labelAr: "الكتالوج" },
+    ],
+  },
+  {
+    labelEn: "Logistics",
+    labelAr: "لوجستيات",
+    tabs: [
+      { id: "checklist", icon: CheckSquare, labelEn: "Checklist", labelAr: "التحقق" },
+      { id: "vendors", icon: Truck, labelEn: "Vendors", labelAr: "الموردين" },
+      { id: "quotes", icon: Send, labelEn: "Quotes", labelAr: "الأسعار" },
+      { id: "budget", icon: Wallet, labelEn: "Budget", labelAr: "الميزانية" },
+    ],
+  },
+  {
+    labelEn: "Insights",
+    labelAr: "تحليلات",
+    tabs: [
+      { id: "performance", icon: BarChart3, labelEn: "Performance", labelAr: "الأداء" },
+      { id: "suggestions", icon: Lightbulb, labelEn: "Suggestions", labelAr: "اقتراحات" },
+      { id: "templates", icon: BookTemplate, labelEn: "Templates", labelAr: "القوالب" },
+      { id: "readiness", icon: ClipboardCheck, labelEn: "Readiness", labelAr: "الجاهزية" },
+      { id: "activity", icon: Activity, labelEn: "Activity", labelAr: "النشاط" },
+    ],
+  },
+];
+
 export function OrderCenterHub({ competitionId, isOrganizer }: Props) {
   const { language } = useLanguage();
   const isAr = language === "ar";
-
-  const tabs = [
-    { id: "overview", icon: <LayoutDashboard className="h-3.5 w-3.5" />, label: isAr ? "نظرة عامة" : "Overview" },
-    { id: "requests", icon: <FileInput className="h-3.5 w-3.5" />, label: isAr ? "طلبات العناصر" : "Item Requests" },
-    { id: "lists", icon: <ClipboardList className="h-3.5 w-3.5" />, label: isAr ? "قوائم المتطلبات" : "Requirement Lists" },
-    { id: "catalog", icon: <Package className="h-3.5 w-3.5" />, label: isAr ? "كتالوج العناصر" : "Item Catalog" },
-    { id: "checklist", icon: <CheckSquare className="h-3.5 w-3.5" />, label: isAr ? "قائمة التحقق" : "Delivery Checklist" },
-    { id: "quotes", icon: <Send className="h-3.5 w-3.5" />, label: isAr ? "طلبات الأسعار" : "Quote Requests" },
-    { id: "budget", icon: <Wallet className="h-3.5 w-3.5" />, label: isAr ? "الميزانية" : "Budget" },
-    { id: "vendors", icon: <Truck className="h-3.5 w-3.5" />, label: isAr ? "الموردين" : "Vendors" },
-    { id: "performance", icon: <BarChart3 className="h-3.5 w-3.5" />, label: isAr ? "أداء الموردين" : "Performance" },
-    { id: "suggestions", icon: <Lightbulb className="h-3.5 w-3.5" />, label: isAr ? "الاقتراحات" : "Suggestions" },
-    { id: "templates", icon: <BookTemplate className="h-3.5 w-3.5" />, label: isAr ? "القوالب" : "Templates" },
-    { id: "readiness", icon: <ClipboardCheck className="h-3.5 w-3.5" />, label: isAr ? "الجاهزية" : "Readiness" },
-    { id: "activity", icon: <Activity className="h-3.5 w-3.5" />, label: isAr ? "سجل النشاط" : "Activity Log" },
-  ];
+  const [activeTab, setActiveTab] = useState("overview");
 
   return (
     <div className="space-y-4">
+      {/* Header */}
       <div className="flex items-center gap-3">
         <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-primary/10 to-chart-4/10">
           <Package className="h-5 w-5 text-primary" />
@@ -54,67 +77,62 @@ export function OrderCenterHub({ competitionId, isOrganizer }: Props) {
         </div>
       </div>
 
-      <Tabs defaultValue="overview" className="w-full">
-        <TabsList className="w-full justify-start overflow-x-auto">
-          {tabs.map((tab) => (
-            <TabsTrigger key={tab.id} value={tab.id} className="gap-1.5 text-xs">
-              {tab.icon} {tab.label}
-            </TabsTrigger>
-          ))}
-        </TabsList>
+      {/* Grouped Tab Navigation */}
+      <div className="rounded-xl border border-border/60 bg-card overflow-hidden">
+        <ScrollArea className="w-full">
+          <div className="flex items-stretch divide-x divide-border/40 rtl:divide-x-reverse min-w-max">
+            {TAB_GROUPS.map((group) => (
+              <div key={group.labelEn} className="flex flex-col">
+                <div className="px-3 py-1.5 bg-muted/40 border-b border-border/40">
+                  <span className="text-[9px] font-semibold uppercase tracking-wider text-muted-foreground">
+                    {isAr ? group.labelAr : group.labelEn}
+                  </span>
+                </div>
+                <div className="flex items-center gap-0.5 px-1.5 py-1.5">
+                  {group.tabs.map((tab) => {
+                    const Icon = tab.icon;
+                    const isActive = activeTab === tab.id;
+                    return (
+                      <button
+                        key={tab.id}
+                        onClick={() => setActiveTab(tab.id)}
+                        className={`
+                          flex items-center gap-1.5 rounded-lg px-2.5 py-1.5 text-xs font-medium transition-all
+                          ${isActive
+                            ? "bg-primary text-primary-foreground shadow-sm"
+                            : "text-muted-foreground hover:bg-muted hover:text-foreground"
+                          }
+                        `}
+                      >
+                        <Icon className="h-3.5 w-3.5" />
+                        <span className="whitespace-nowrap">{isAr ? tab.labelAr : tab.labelEn}</span>
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+            ))}
+          </div>
+          <ScrollBar orientation="horizontal" className="h-1.5" />
+        </ScrollArea>
+      </div>
 
-        <TabsContent value="overview" className="mt-4">
-          <OrderOverviewDashboard competitionId={competitionId} isOrganizer={isOrganizer} />
-        </TabsContent>
-
-        <TabsContent value="requests" className="mt-4">
-          <ItemRequestPanel competitionId={competitionId} isOrganizer={isOrganizer} />
-        </TabsContent>
-
-        <TabsContent value="lists" className="mt-4">
-          <RequirementsListPanel competitionId={competitionId} isOrganizer={isOrganizer} />
-        </TabsContent>
-
-        <TabsContent value="catalog" className="mt-4">
-          <CatalogBrowser competitionId={competitionId} isOrganizer={isOrganizer} />
-        </TabsContent>
-
-        <TabsContent value="checklist" className="mt-4">
-          <DeliveryChecklist competitionId={competitionId} isOrganizer={isOrganizer} />
-        </TabsContent>
-
-        <TabsContent value="quotes" className="mt-4">
-          <QuoteRequestPanel competitionId={competitionId} isOrganizer={isOrganizer} />
-        </TabsContent>
-
-        <TabsContent value="budget" className="mt-4">
-          <BudgetTracker competitionId={competitionId} isOrganizer={isOrganizer} />
-        </TabsContent>
-
-        <TabsContent value="vendors" className="mt-4">
-          <VendorAssignmentPanel competitionId={competitionId} isOrganizer={isOrganizer} />
-        </TabsContent>
-
-        <TabsContent value="performance" className="mt-4">
-          <VendorPerformance competitionId={competitionId} isOrganizer={isOrganizer} />
-        </TabsContent>
-
-        <TabsContent value="suggestions" className="mt-4">
-          <SuggestionPanel competitionId={competitionId} isOrganizer={isOrganizer} />
-        </TabsContent>
-
-        <TabsContent value="templates" className="mt-4">
-          <RequirementTemplates competitionId={competitionId} isOrganizer={isOrganizer} />
-        </TabsContent>
-
-        <TabsContent value="readiness" className="mt-4">
-          <ReadinessChecklist competitionId={competitionId} isOrganizer={isOrganizer} />
-        </TabsContent>
-
-        <TabsContent value="activity" className="mt-4">
-          <OrderActivityLog competitionId={competitionId} isOrganizer={isOrganizer} />
-        </TabsContent>
-      </Tabs>
+      {/* Tab Content */}
+      <div className="mt-4">
+        {activeTab === "overview" && <OrderOverviewDashboard competitionId={competitionId} isOrganizer={isOrganizer} />}
+        {activeTab === "requests" && <ItemRequestPanel competitionId={competitionId} isOrganizer={isOrganizer} />}
+        {activeTab === "lists" && <RequirementsListPanel competitionId={competitionId} isOrganizer={isOrganizer} />}
+        {activeTab === "catalog" && <CatalogBrowser competitionId={competitionId} isOrganizer={isOrganizer} />}
+        {activeTab === "checklist" && <DeliveryChecklist competitionId={competitionId} isOrganizer={isOrganizer} />}
+        {activeTab === "quotes" && <QuoteRequestPanel competitionId={competitionId} isOrganizer={isOrganizer} />}
+        {activeTab === "budget" && <BudgetTracker competitionId={competitionId} isOrganizer={isOrganizer} />}
+        {activeTab === "vendors" && <VendorAssignmentPanel competitionId={competitionId} isOrganizer={isOrganizer} />}
+        {activeTab === "performance" && <VendorPerformance competitionId={competitionId} isOrganizer={isOrganizer} />}
+        {activeTab === "suggestions" && <SuggestionPanel competitionId={competitionId} isOrganizer={isOrganizer} />}
+        {activeTab === "templates" && <RequirementTemplates competitionId={competitionId} isOrganizer={isOrganizer} />}
+        {activeTab === "readiness" && <ReadinessChecklist competitionId={competitionId} isOrganizer={isOrganizer} />}
+        {activeTab === "activity" && <OrderActivityLog competitionId={competitionId} isOrganizer={isOrganizer} />}
+      </div>
     </div>
   );
 }
