@@ -19,7 +19,7 @@ import { ar } from "date-fns/locale";
 import { useVerificationStatus } from "@/hooks/useVerification";
 import { Link } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
-import { useState, useRef, forwardRef } from "react";
+import { useState, useRef } from "react";
 
 interface UnifiedMembershipTabProps {
   profile: any;
@@ -27,7 +27,7 @@ interface UnifiedMembershipTabProps {
   onMembershipChange?: () => void;
 }
 
-export const UnifiedMembershipTab = forwardRef<HTMLDivElement, UnifiedMembershipTabProps>(function UnifiedMembershipTab({ profile, userId, onMembershipChange }, ref) {
+export function UnifiedMembershipTab({ profile, userId, onMembershipChange }: UnifiedMembershipTabProps) {
   const { language } = useLanguage();
   const isAr = language === "ar";
   const { data: verificationStatus } = useVerificationStatus();
@@ -473,4 +473,4 @@ export const UnifiedMembershipTab = forwardRef<HTMLDivElement, UnifiedMembership
       </Card>
     </div>
   );
-});
+}
