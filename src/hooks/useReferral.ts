@@ -84,6 +84,8 @@ export function useSendInvitation() {
   return useMutation({
     mutationFn: async ({ email, phone, channel, referralCodeId }: { email?: string; phone?: string; channel: string; referralCodeId: string }) => {
       if (!user) throw new Error("Not authenticated");
+
+      // Record the invitation
       const { error } = await supabase.from("referral_invitations").insert({
         referral_code_id: referralCodeId,
         referrer_id: user.id,
@@ -95,16 +97,40 @@ export function useSendInvitation() {
       });
       if (error) throw error;
 
+      // Send email if email channel with a recipient address
+      if (email && (channel === "email")) {
+        // Get referrer name & referral code
+        const [profileRes, codeRes] = await Promise.all([
+          supabase.from("profiles").select("full_name, username").eq("user_id", user.id).single(),
+          supabase.from("referral_codes").select("code").eq("id", referralCodeId).single(),
+        ]);
+
+        const referrerName = profileRes.data?.full_name || profileRes.data?.username || "A friend";
+        const code = codeRes.data?.code || "";
+        const referralLink = `${window.location.origin}/auth?ref=${code}`;
+
+        await supabase.functions.invoke("send-referral-email", {
+          body: {
+            to: email,
+            referrerName,
+            referralLink,
+            referralCode: code,
+            language: "en",
+          },
+        });
+      }
+
       // Update counter
       await supabase.from("referral_codes").update({
         total_invites_sent: (await supabase.from("referral_invitations").select("id", { count: "exact", head: true }).eq("referrer_id", user.id)).count || 0,
       }).eq("user_id", user.id);
     },
-    onSuccess: () => {
+    onSuccess: (_, variables) => {
       queryClient.invalidateQueries({ queryKey: ["referral-invitations"] });
       queryClient.invalidateQueries({ queryKey: ["referral-stats"] });
       queryClient.invalidateQueries({ queryKey: ["referral-code"] });
-      toast({ title: "Invitation sent!" });
+      const isEmail = variables.channel === "email" && variables.email;
+      toast({ title: isEmail ? "Invitation email sent!" : "Invitation sent!" });
     },
     onError: (err: any) => {
       toast({ variant: "destructive", title: "Error", description: err.message });
