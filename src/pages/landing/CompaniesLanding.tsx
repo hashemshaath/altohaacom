@@ -69,35 +69,32 @@ export default function CompaniesLanding() {
       <Header />
       <main className="flex-1">
         {/* Hero */}
-        <section className="relative py-20 md:py-28 overflow-hidden">
-          <div className="absolute inset-0 bg-gradient-to-br from-primary/15 via-primary/5 to-transparent" />
-          <div className="container mx-auto px-4 relative z-10">
-            <div className="max-w-3xl mx-auto text-center">
-              <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/5 px-4 py-1.5">
-                <Sparkles className="h-3.5 w-3.5 text-primary" />
-                <span className="text-xs font-medium text-primary">{isAr ? "حلول الأعمال" : "Business Solutions"}</span>
-              </div>
-              <h1 className="font-serif text-4xl font-bold md:text-5xl lg:text-6xl">
-                {isAr ? "طوّر أعمالك في صناعة الطهي" : "Grow Your Culinary Business"}
-              </h1>
-              <p className="mt-4 text-lg text-muted-foreground md:text-xl">
-                {isAr ? "منصة متكاملة لإدارة شركتك والوصول إلى آلاف المحترفين" : "A complete platform to manage your company and reach thousands of professionals"}
-              </p>
-              <div className="mt-8 flex gap-3 justify-center">
-                <Button size="lg" className="gap-2" asChild>
-                  <Link to="/register-company">{isAr ? "سجل شركتك" : "Register Your Company"}<ArrowRight className="h-4 w-4" /></Link>
-                </Button>
-                <Button size="lg" variant="outline" onClick={() => document.getElementById("company-contact")?.scrollIntoView({ behavior: "smooth" })}>
-                  {isAr ? "تواصل معنا" : "Contact Us"}
-                </Button>
-              </div>
+        <section className="border-b border-border/40 bg-gradient-to-b from-primary/5 to-background">
+          <div className="container py-10 md:py-14 max-w-4xl text-center">
+            <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/5 px-4 py-1.5">
+              <Sparkles className="h-3.5 w-3.5 text-primary" />
+              <span className="text-xs font-medium text-primary">{isAr ? "حلول الأعمال" : "Business Solutions"}</span>
+            </div>
+            <h1 className="font-serif text-3xl font-bold md:text-4xl">
+              {isAr ? "طوّر أعمالك في صناعة الطهي" : "Grow Your Culinary Business"}
+            </h1>
+            <p className="mt-3 text-muted-foreground max-w-lg mx-auto">
+              {isAr ? "منصة متكاملة لإدارة شركتك والوصول إلى آلاف المحترفين" : "A complete platform to manage your company and reach thousands of professionals"}
+            </p>
+            <div className="mt-6 flex gap-3 justify-center">
+              <Button size="lg" className="gap-2" asChild>
+                <Link to="/register-company">{isAr ? "سجل شركتك" : "Register Your Company"}<ArrowRight className="h-4 w-4" /></Link>
+              </Button>
+              <Button size="lg" variant="outline" onClick={() => document.getElementById("company-contact")?.scrollIntoView({ behavior: "smooth" })}>
+                {isAr ? "تواصل معنا" : "Contact Us"}
+              </Button>
             </div>
           </div>
         </section>
 
         {/* Stats */}
         <section className="border-y bg-card/80">
-          <div className="container grid grid-cols-3 py-8">
+          <div className="container max-w-4xl grid grid-cols-3 py-8">
             {[
               { value: "500+", label: isAr ? "شركة مسجلة" : "Registered Companies", icon: Building2 },
               { value: "10K+", label: isAr ? "محترف طهي" : "Culinary Professionals", icon: Users },
@@ -115,8 +112,8 @@ export default function CompaniesLanding() {
         </section>
 
         {/* Benefits */}
-        <section className="py-14 md:py-18">
-          <div className="container mx-auto px-4">
+        <section className="py-12 md:py-16">
+          <div className="container max-w-4xl">
             <div className="mb-10 text-center">
               <h2 className="text-3xl font-serif font-bold">{isAr ? "مميزات بوابة الشركات" : "Company Portal Features"}</h2>
               <p className="mt-2 text-muted-foreground max-w-xl mx-auto">{isAr ? "كل ما تحتاجه لإدارة أعمالك في مكان واحد" : "Everything you need to manage your business in one place"}</p>
@@ -138,8 +135,8 @@ export default function CompaniesLanding() {
         </section>
 
         {/* Company Types */}
-        <section className="py-14 md:py-18 bg-muted/30">
-          <div className="container mx-auto px-4">
+        <section className="py-12 md:py-16 bg-muted/30">
+          <div className="container max-w-4xl">
             <div className="mb-10 text-center">
               <h2 className="text-3xl font-serif font-bold">{isAr ? "أنواع الشركات" : "Company Types"}</h2>
               <p className="mt-2 text-muted-foreground">{isAr ? "نخدم جميع أنواع شركات صناعة الطهي" : "We serve all types of culinary industry companies"}</p>
@@ -158,8 +155,8 @@ export default function CompaniesLanding() {
         </section>
 
         {/* Pricing */}
-        <section className="py-14 md:py-18">
-          <div className="container mx-auto px-4">
+        <section className="py-12 md:py-16">
+          <div className="container max-w-4xl">
             <div className="mb-10 text-center">
               <h2 className="text-3xl font-serif font-bold">{isAr ? "الباقات" : "Plans"}</h2>
             </div>
@@ -195,8 +192,8 @@ export default function CompaniesLanding() {
         </section>
 
         {/* Contact Form */}
-        <section id="company-contact" className="py-14 md:py-18 bg-muted/30">
-          <div className="container mx-auto px-4">
+        <section id="company-contact" className="py-12 md:py-16 bg-muted/30">
+          <div className="container max-w-4xl">
             <div className="max-w-2xl mx-auto">
               <div className="mb-8 text-center">
                 <h2 className="text-3xl font-serif font-bold">{isAr ? "تواصل معنا" : "Get in Touch"}</h2>

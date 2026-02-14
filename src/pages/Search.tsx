@@ -123,11 +123,8 @@ export default function Search() {
       
       <main className="flex-1">
         {/* Hero Section */}
-        <section className="relative overflow-hidden border-b bg-gradient-to-b from-primary/5 via-background to-background py-12">
-          <div className="absolute -top-32 start-1/4 h-64 w-64 rounded-full bg-primary/8 blur-[100px] animate-pulse pointer-events-none" />
-          <div className="absolute -top-20 end-1/3 h-48 w-48 rounded-full bg-accent/10 blur-[80px] animate-pulse [animation-delay:1s] pointer-events-none" />
-          <div className="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-primary/20 to-transparent" />
-          <div className="container relative">
+        <section className="border-b border-border/40 bg-gradient-to-b from-primary/5 to-background">
+          <div className="container py-8 md:py-10 max-w-4xl">
             <div className="flex items-start gap-4">
               <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-primary/10 ring-1 ring-primary/15 shadow-sm">
                 <SearchIcon className="h-6 w-6 text-primary" />
@@ -140,7 +137,7 @@ export default function Search() {
           </div>
         </section>
 
-        <div className="container py-8">
+        <div className="container py-6 md:py-8 max-w-4xl">
 
         {/* Search Input */}
         <div className="flex gap-2 mb-6">

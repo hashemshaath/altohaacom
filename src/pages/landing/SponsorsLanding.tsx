@@ -123,36 +123,32 @@ export default function SponsorsLanding() {
       <Header />
       <main className="flex-1">
         {/* Hero */}
-        <section className="relative py-24 md:py-32 overflow-hidden">
-          <div className="absolute inset-0 bg-gradient-to-br from-primary/15 via-primary/5 to-transparent" />
-          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,hsl(var(--primary)/0.08),transparent_70%)]" />
-          <div className="container mx-auto px-4 relative z-10">
-            <div className="max-w-3xl mx-auto text-center">
-              <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/5 px-4 py-1.5">
-                <Sparkles className="h-3.5 w-3.5 text-primary" />
-                <span className="text-xs font-medium text-primary">
-                  {isAr ? "فرص رعاية حصرية" : "Exclusive Sponsorship Opportunities"}
-                </span>
-              </div>
-              <h1 className="font-serif text-4xl font-bold md:text-5xl lg:text-6xl">
-                {isAr ? "كن شريكاً في النجاح الطهوي" : "Partner with Culinary Excellence"}
-              </h1>
-              <p className="mt-4 text-lg text-muted-foreground md:text-xl">
-                {isAr
-                  ? "انضم كراعٍ واستفد من الوصول إلى شبكة عالمية من محترفي الطهي"
-                  : "Join as a sponsor and gain access to a global network of culinary professionals"}
-              </p>
-              <Button size="lg" className="mt-8 gap-2" onClick={() => document.getElementById("sponsor-contact")?.scrollIntoView({ behavior: "smooth" })}>
-                {isAr ? "ابدأ الآن" : "Get Started"}
-                <ArrowRight className="h-4 w-4" />
-              </Button>
+        <section className="border-b border-border/40 bg-gradient-to-b from-primary/5 to-background">
+          <div className="container py-10 md:py-14 max-w-4xl text-center">
+            <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/5 px-4 py-1.5">
+              <Sparkles className="h-3.5 w-3.5 text-primary" />
+              <span className="text-xs font-medium text-primary">
+                {isAr ? "فرص رعاية حصرية" : "Exclusive Sponsorship Opportunities"}
+              </span>
             </div>
+            <h1 className="font-serif text-3xl font-bold md:text-4xl">
+              {isAr ? "كن شريكاً في النجاح الطهوي" : "Partner with Culinary Excellence"}
+            </h1>
+            <p className="mt-3 text-muted-foreground max-w-lg mx-auto">
+              {isAr
+                ? "انضم كراعٍ واستفد من الوصول إلى شبكة عالمية من محترفي الطهي"
+                : "Join as a sponsor and gain access to a global network of culinary professionals"}
+            </p>
+            <Button size="lg" className="mt-6 gap-2" onClick={() => document.getElementById("sponsor-contact")?.scrollIntoView({ behavior: "smooth" })}>
+              {isAr ? "ابدأ الآن" : "Get Started"}
+              <ArrowRight className="h-4 w-4" />
+            </Button>
           </div>
         </section>
 
         {/* Benefits */}
-        <section className="py-16 md:py-20 bg-muted/30">
-          <div className="container mx-auto px-4">
+        <section className="py-12 md:py-16 bg-muted/30">
+          <div className="container max-w-4xl">
             <div className="mb-12 text-center">
               <h2 className="text-3xl font-serif font-bold">
                 {isAr ? "لماذا ترعانا؟" : "Why Sponsor Us?"}
@@ -184,9 +180,9 @@ export default function SponsorsLanding() {
         </section>
 
         {/* Tiers */}
-        <section className="py-16 md:py-20">
-          <div className="container mx-auto px-4">
-            <div className="mb-12 text-center">
+        <section className="py-12 md:py-16">
+          <div className="container max-w-4xl">
+            <div className="mb-10 text-center">
               <h2 className="text-3xl font-serif font-bold">
                 {isAr ? "باقات الرعاية" : "Sponsorship Tiers"}
               </h2>
@@ -237,8 +233,8 @@ export default function SponsorsLanding() {
         </section>
 
         {/* Contact Form */}
-        <section id="sponsor-contact" className="py-16 md:py-20 bg-muted/30">
-          <div className="container mx-auto px-4">
+        <section id="sponsor-contact" className="py-12 md:py-16 bg-muted/30">
+          <div className="container max-w-4xl">
             <div className="max-w-2xl mx-auto">
               <div className="mb-8 text-center">
                 <h2 className="text-3xl font-serif font-bold">
