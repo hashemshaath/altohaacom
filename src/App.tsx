@@ -11,6 +11,7 @@ import { FloatingHelpButton } from "@/components/FloatingHelpButton";
 import { MobileBottomNav } from "@/components/mobile/MobileBottomNav";
 import { SkipToContent } from "@/components/a11y/SkipToContent";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
+import { GoogleTrackingProvider } from "@/components/tracking/GoogleTrackingProvider";
 
 const LiveChatWidget = lazy(() => import("@/components/crm/LiveChatWidget").then(m => ({ default: m.LiveChatWidget })));
 const NotFound = lazy(() => import("./pages/NotFound"));
@@ -46,6 +47,7 @@ const App = () => (
             <Sonner />
             <BrowserRouter>
               <SkipToContent />
+              <GoogleTrackingProvider />
               <Suspense fallback={null}><LiveChatWidget /></Suspense>
               <FloatingHelpButton />
               <ErrorBoundary>

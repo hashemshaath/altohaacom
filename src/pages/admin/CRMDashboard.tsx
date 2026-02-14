@@ -1,4 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
+import { BehaviorAnalytics } from "@/components/crm/BehaviorAnalytics";
 import { supabase } from "@/integrations/supabase/client";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -371,7 +372,7 @@ export default function CRMDashboard() {
 
       {/* Tabbed Content */}
       <Tabs defaultValue="tickets" className="space-y-4">
-        <TabsList className="grid w-full grid-cols-3">
+        <TabsList className="grid w-full grid-cols-4">
           <TabsTrigger value="tickets" className="gap-2 text-xs">
             <Ticket className="h-3.5 w-3.5" />
             {isAr ? "التذاكر" : "Tickets"}
@@ -392,6 +393,10 @@ export default function CRMDashboard() {
             {(leadStats?.new ?? 0) > 0 && (
               <Badge variant="secondary" className="h-5 min-w-5 px-1 text-[10px]">{leadStats?.new}</Badge>
             )}
+          </TabsTrigger>
+          <TabsTrigger value="behavior" className="gap-2 text-xs">
+            <Activity className="h-3.5 w-3.5" />
+            {isAr ? "السلوك" : "Behavior"}
           </TabsTrigger>
         </TabsList>
 
@@ -591,6 +596,11 @@ export default function CRMDashboard() {
               </ScrollArea>
             </CardContent>
           </Card>
+        </TabsContent>
+
+        {/* Behavior Tab */}
+        <TabsContent value="behavior">
+          <BehaviorAnalytics />
         </TabsContent>
       </Tabs>
 
