@@ -7816,6 +7816,36 @@ export type Database = {
           },
         ]
       }
+      moderation_actions: {
+        Row: {
+          action: string
+          created_at: string
+          entity_id: string
+          entity_type: string
+          id: string
+          performed_by: string
+          reason: string | null
+        }
+        Insert: {
+          action: string
+          created_at?: string
+          entity_id: string
+          entity_type?: string
+          id?: string
+          performed_by: string
+          reason?: string | null
+        }
+        Update: {
+          action?: string
+          created_at?: string
+          entity_id?: string
+          entity_type?: string
+          id?: string
+          performed_by?: string
+          reason?: string | null
+        }
+        Relationships: []
+      }
       newsletter_subscribers: {
         Row: {
           email: string
@@ -8575,6 +8605,35 @@ export type Database = {
           },
         ]
       }
+      post_bookmarks: {
+        Row: {
+          created_at: string
+          id: string
+          post_id: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          post_id: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          post_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "post_bookmarks_post_id_fkey"
+            columns: ["post_id"]
+            isOneToOne: false
+            referencedRelation: "posts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       post_comments: {
         Row: {
           author_id: string
@@ -8649,6 +8708,82 @@ export type Database = {
           },
         ]
       }
+      post_reports: {
+        Row: {
+          created_at: string
+          id: string
+          post_id: string
+          reason: string
+          reason_detail: string | null
+          reporter_id: string
+          review_notes: string | null
+          reviewed_at: string | null
+          reviewed_by: string | null
+          status: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          post_id: string
+          reason: string
+          reason_detail?: string | null
+          reporter_id: string
+          review_notes?: string | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          status?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          post_id?: string
+          reason?: string
+          reason_detail?: string | null
+          reporter_id?: string
+          review_notes?: string | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          status?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "post_reports_post_id_fkey"
+            columns: ["post_id"]
+            isOneToOne: false
+            referencedRelation: "posts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      post_reposts: {
+        Row: {
+          created_at: string
+          id: string
+          post_id: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          post_id: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          post_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "post_reposts_post_id_fkey"
+            columns: ["post_id"]
+            isOneToOne: false
+            referencedRelation: "posts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       posts: {
         Row: {
           author_id: string
@@ -8657,7 +8792,19 @@ export type Database = {
           group_id: string | null
           id: string
           image_url: string | null
+          image_urls: string[] | null
+          is_pinned: boolean
+          link_preview: Json | null
+          link_url: string | null
+          moderated_at: string | null
+          moderated_by: string | null
+          moderation_reason: string | null
+          moderation_status: string
+          replies_count: number
+          reply_to_post_id: string | null
+          reposts_count: number
           updated_at: string
+          visibility: string
         }
         Insert: {
           author_id: string
@@ -8666,7 +8813,19 @@ export type Database = {
           group_id?: string | null
           id?: string
           image_url?: string | null
+          image_urls?: string[] | null
+          is_pinned?: boolean
+          link_preview?: Json | null
+          link_url?: string | null
+          moderated_at?: string | null
+          moderated_by?: string | null
+          moderation_reason?: string | null
+          moderation_status?: string
+          replies_count?: number
+          reply_to_post_id?: string | null
+          reposts_count?: number
           updated_at?: string
+          visibility?: string
         }
         Update: {
           author_id?: string
@@ -8675,7 +8834,19 @@ export type Database = {
           group_id?: string | null
           id?: string
           image_url?: string | null
+          image_urls?: string[] | null
+          is_pinned?: boolean
+          link_preview?: Json | null
+          link_url?: string | null
+          moderated_at?: string | null
+          moderated_by?: string | null
+          moderation_reason?: string | null
+          moderation_status?: string
+          replies_count?: number
+          reply_to_post_id?: string | null
+          reposts_count?: number
           updated_at?: string
+          visibility?: string
         }
         Relationships: [
           {
@@ -8683,6 +8854,13 @@ export type Database = {
             columns: ["group_id"]
             isOneToOne: false
             referencedRelation: "groups"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "posts_reply_to_post_id_fkey"
+            columns: ["reply_to_post_id"]
+            isOneToOne: false
+            referencedRelation: "posts"
             referencedColumns: ["id"]
           },
         ]
