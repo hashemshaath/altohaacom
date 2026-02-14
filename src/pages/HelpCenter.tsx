@@ -83,11 +83,8 @@ export default function HelpCenter() {
       <Header />
       <main className="flex-1">
         {/* Hero Section */}
-        <section className="relative overflow-hidden border-b bg-gradient-to-b from-primary/5 via-background to-background py-16">
-          <div className="absolute -top-32 start-1/4 h-64 w-64 rounded-full bg-primary/8 blur-[100px] animate-pulse pointer-events-none" />
-          <div className="absolute -top-20 end-1/3 h-48 w-48 rounded-full bg-accent/10 blur-[80px] animate-pulse [animation-delay:1s] pointer-events-none" />
-          <div className="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-primary/20 to-transparent" />
-          <div className="container relative text-center">
+        <section className="border-b border-border/40 bg-gradient-to-b from-primary/5 to-background">
+          <div className="container py-10 md:py-14 max-w-4xl relative text-center">
             <div className="flex justify-center mb-6">
               <div className="h-14 w-14 rounded-2xl bg-primary/10 flex items-center justify-center ring-1 ring-primary/15 shadow-sm">
                 <HelpCircle className="h-7 w-7 text-primary" />
@@ -114,7 +111,7 @@ export default function HelpCenter() {
           </div>
         </section>
 
-        <div className="container mx-auto px-4 py-12">
+        <div className="container max-w-4xl py-8 md:py-12">
           <div className="grid lg:grid-cols-3 gap-8">
             {/* Main Content */}
             <div className="lg:col-span-2 space-y-8">

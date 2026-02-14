@@ -119,45 +119,41 @@ export default function OrganizersLanding() {
       <Header />
       <main className="flex-1">
         {/* Hero */}
-        <section className="relative py-24 md:py-32 overflow-hidden">
-          <div className="absolute inset-0 bg-gradient-to-br from-primary/15 via-primary/5 to-transparent" />
-          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,hsl(var(--primary)/0.08),transparent_70%)]" />
-          <div className="container mx-auto px-4 relative z-10">
-            <div className="max-w-3xl mx-auto text-center">
-              <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/5 px-4 py-1.5">
-                <Sparkles className="h-3.5 w-3.5 text-primary" />
-                <span className="text-xs font-medium text-primary">
-                  {isAr ? "منصة إدارة المسابقات" : "Competition Management Platform"}
-                </span>
-              </div>
-              <h1 className="font-serif text-4xl font-bold md:text-5xl lg:text-6xl">
-                {isAr ? "أنشئ مسابقات طهوية استثنائية" : "Create Exceptional Culinary Competitions"}
-              </h1>
-              <p className="mt-4 text-lg text-muted-foreground md:text-xl">
-                {isAr
-                  ? "منصة متكاملة لإدارة المسابقات من التسجيل إلى الإعلان عن الفائزين"
-                  : "A complete platform to manage competitions from registration to announcing winners"}
-              </p>
-              <div className="mt-8 flex gap-3 justify-center">
-                <Button size="lg" className="gap-2" asChild>
-                  <Link to="/register">
-                    {isAr ? "ابدأ مجاناً" : "Start Free"}
-                    <ArrowRight className="h-4 w-4" />
-                  </Link>
-                </Button>
-                <Button size="lg" variant="outline" asChild>
-                  <Link to="/competitions">
-                    {isAr ? "شاهد المسابقات" : "View Competitions"}
-                  </Link>
-                </Button>
-              </div>
+        <section className="border-b border-border/40 bg-gradient-to-b from-primary/5 to-background">
+          <div className="container py-10 md:py-14 max-w-4xl text-center">
+            <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/5 px-4 py-1.5">
+              <Sparkles className="h-3.5 w-3.5 text-primary" />
+              <span className="text-xs font-medium text-primary">
+                {isAr ? "منصة إدارة المسابقات" : "Competition Management Platform"}
+              </span>
+            </div>
+            <h1 className="font-serif text-3xl font-bold md:text-4xl">
+              {isAr ? "أنشئ مسابقات طهوية استثنائية" : "Create Exceptional Culinary Competitions"}
+            </h1>
+            <p className="mt-3 text-muted-foreground max-w-lg mx-auto">
+              {isAr
+                ? "منصة متكاملة لإدارة المسابقات من التسجيل إلى الإعلان عن الفائزين"
+                : "A complete platform to manage competitions from registration to announcing winners"}
+            </p>
+            <div className="mt-6 flex gap-3 justify-center">
+              <Button size="lg" className="gap-2" asChild>
+                <Link to="/register">
+                  {isAr ? "ابدأ مجاناً" : "Start Free"}
+                  <ArrowRight className="h-4 w-4" />
+                </Link>
+              </Button>
+              <Button size="lg" variant="outline" asChild>
+                <Link to="/competitions">
+                  {isAr ? "شاهد المسابقات" : "View Competitions"}
+                </Link>
+              </Button>
             </div>
           </div>
         </section>
 
         {/* Features */}
-        <section className="py-16 md:py-20">
-          <div className="container mx-auto px-4">
+        <section className="py-12 md:py-16">
+          <div className="container max-w-4xl">
             <div className="mb-12 text-center">
               <h2 className="text-3xl font-serif font-bold">
                 {isAr ? "كل ما تحتاجه لتنظيم المسابقات" : "Everything You Need to Organize Competitions"}
@@ -189,8 +185,8 @@ export default function OrganizersLanding() {
         </section>
 
         {/* Testimonials */}
-        <section className="py-16 md:py-20 bg-muted/30">
-          <div className="container mx-auto px-4">
+        <section className="py-12 md:py-16 bg-muted/30">
+          <div className="container max-w-4xl">
             <div className="mb-12 text-center">
               <h2 className="text-3xl font-serif font-bold">
                 {isAr ? "ماذا يقول المنظمون" : "What Organizers Say"}
@@ -231,8 +227,8 @@ export default function OrganizersLanding() {
         </section>
 
         {/* CTA / Contact Form */}
-        <section className="py-16 md:py-20">
-          <div className="container mx-auto px-4">
+        <section className="py-12 md:py-16">
+          <div className="container max-w-4xl">
             <div className="grid lg:grid-cols-2 gap-12 items-start max-w-5xl mx-auto">
               <div className="lg:sticky lg:top-24">
                 <h2 className="text-3xl font-serif font-bold mb-3">
