@@ -424,7 +424,7 @@ function CompetitionCard({ competition, language, isAr }: { competition: Competi
 
   return (
     <Link to={`/competitions/${competition.id}`} className="group block h-full">
-      <Card className="flex h-full flex-col overflow-hidden border-border/40 bg-card/60 backdrop-blur-sm transition-all duration-500 hover:shadow-2xl hover:-translate-y-2 hover:border-primary/30 hover:bg-card">
+      <Card className="flex h-full flex-col overflow-hidden border-border/40 bg-card/60 backdrop-blur-sm transition-all duration-500 hover:shadow-xl hover:-translate-y-1 hover:border-primary/25 hover:bg-card">
         <div className="relative aspect-[16/10] shrink-0 overflow-hidden bg-muted">
           {competition.cover_image_url ? (
             <img src={competition.cover_image_url} alt={title} className="h-full w-full object-cover transition-transform duration-1000 group-hover:scale-110" loading="lazy" />
@@ -478,10 +478,10 @@ function CompetitionCard({ competition, language, isAr }: { competition: Competi
                 <span>{isAr ? "سعة المشاركة" : "Capacity"}</span>
                 <span className={fillPct > 80 ? "text-destructive" : "text-primary"}>{toEnglishDigits(fillPct)}%</span>
               </div>
-              <div className="h-2 w-full overflow-hidden rounded-full bg-muted/50 p-0.5 shadow-inner">
+              <div className="h-1.5 w-full overflow-hidden rounded-full bg-muted/50 shadow-inner">
                 <div 
-                  className={`h-full rounded-full transition-all duration-1000 ${
-                    fillPct > 80 ? "bg-destructive shadow-[0_0_8px_rgba(239,68,68,0.4)]" : "bg-primary shadow-[0_0_8px_rgba(var(--primary),0.4)]"
+                  className={`h-full rounded-full transition-all duration-1000 ease-out ${
+                    fillPct > 80 ? "bg-destructive" : "bg-primary"
                   }`}
                   style={{ width: `${fillPct}%` }}
                 />
@@ -500,8 +500,8 @@ function CompetitionCard({ competition, language, isAr }: { competition: Competi
                 </span>
               ) : null}
             </div>
-            <div className="flex h-8 w-8 items-center justify-center rounded-full bg-primary/5 text-primary transition-all duration-300 group-hover:bg-primary group-hover:text-primary-foreground group-hover:scale-110 shadow-sm">
-              <ArrowRight className="h-4 w-4" />
+            <div className="flex h-8 w-8 items-center justify-center rounded-full bg-primary/5 text-primary transition-all duration-300 group-hover:bg-primary group-hover:text-primary-foreground group-hover:scale-105">
+              <ArrowRight className="h-3.5 w-3.5 transition-transform duration-300 group-hover:translate-x-0.5" />
             </div>
           </div>
         </CardContent>
