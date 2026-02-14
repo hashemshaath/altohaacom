@@ -227,34 +227,41 @@ export default function PublicProfile() {
       {/* ═══════════════ HERO SECTION ═══════════════ */}
       <section className="relative overflow-hidden">
         {/* Cover Image */}
-        <div className="h-52 md:h-72 relative">
+        <div className="h-60 md:h-80 relative overflow-hidden">
           {(profile as any).cover_image_url ? (
-            <img src={(profile as any).cover_image_url} alt="Cover" className="w-full h-full object-cover" />
+            <img src={(profile as any).cover_image_url} alt="Cover" className="w-full h-full object-cover transition-transform duration-1000 hover:scale-105" />
           ) : (
-            <div className="w-full h-full bg-gradient-to-br from-primary/30 via-primary/10 to-secondary/20">
-              <div className="absolute top-10 start-1/4 h-40 w-40 rounded-full bg-primary/20 blur-[80px] animate-pulse" />
-              <div className="absolute bottom-4 end-1/3 h-32 w-32 rounded-full bg-primary/15 blur-[60px] animate-pulse" style={{ animationDelay: "1s" }} />
+            <div className="w-full h-full bg-gradient-to-br from-primary/20 via-primary/5 to-chart-3/10">
+              <div className="absolute top-10 start-1/4 h-64 w-64 rounded-full bg-primary/10 blur-[100px] animate-pulse" />
+              <div className="absolute bottom-4 end-1/3 h-48 w-48 rounded-full bg-chart-3/10 blur-[80px] animate-pulse" style={{ animationDelay: "1s" }} />
             </div>
           )}
           <div className="absolute inset-0 bg-gradient-to-t from-background via-background/40 to-transparent" />
+          <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-[0.03] pointer-events-none" />
         </div>
 
         {/* Profile Card overlapping cover */}
-        <div className="relative z-10 -mt-24 md:-mt-28 px-3 sm:px-4 md:px-6 max-w-5xl mx-auto w-full">
-          <Card className="border shadow-xl rounded-2xl backdrop-blur-sm bg-card/95">
-            <CardContent className="p-5 md:p-8">
-              <div className="flex flex-col md:flex-row items-center md:items-end gap-5 md:gap-8" dir={isAr ? "rtl" : "ltr"}>
+        <div className="relative z-10 -mt-20 md:-mt-24 px-3 sm:px-4 md:px-6 max-w-5xl mx-auto w-full animate-in fade-in slide-in-from-bottom-4 duration-700">
+          <Card className="border-border/40 shadow-2xl rounded-[2.5rem] backdrop-blur-xl bg-card/80 overflow-hidden">
+            <div className="absolute top-0 inset-x-0 h-1.5 bg-gradient-to-r from-primary/40 via-primary to-primary/40" />
+            <CardContent className="p-6 md:p-10">
+              <div className="flex flex-col md:flex-row items-center md:items-end gap-6 md:gap-10" dir={isAr ? "rtl" : "ltr"}>
                 {/* Avatar */}
-                <div className="-mt-20 md:-mt-24 shrink-0">
-                  <div className="h-32 w-32 md:h-40 md:w-40 ring-4 ring-card shadow-2xl rounded-2xl overflow-hidden border-2 border-border">
+                <div className="-mt-24 md:-mt-32 shrink-0 relative group">
+                  <div className="h-36 w-32 md:h-48 md:w-44 ring-8 ring-background/50 shadow-2xl rounded-[2rem] overflow-hidden border-2 border-border transition-transform duration-500 group-hover:scale-105 group-hover:rotate-1">
                     {profile.avatar_url ? (
                       <img src={profile.avatar_url} alt={displayName} className="h-full w-full object-cover" />
                     ) : (
-                      <div className="h-full w-full flex items-center justify-center bg-gradient-to-br from-primary/20 to-primary/5 text-primary text-5xl font-bold font-serif">
+                      <div className="h-full w-full flex items-center justify-center bg-gradient-to-br from-primary/20 to-primary/5 text-primary text-6xl font-bold font-serif italic">
                         {displayName[0]?.toUpperCase()}
                       </div>
                     )}
                   </div>
+                  {profile.is_verified && (
+                    <div className="absolute -bottom-2 -end-2 bg-primary text-white p-1.5 rounded-xl shadow-xl ring-4 ring-background animate-bounce-subtle">
+                      <BadgeCheck className="h-5 w-5" />
+                    </div>
+                  )}
                 </div>
 
                 {/* Info Column */}

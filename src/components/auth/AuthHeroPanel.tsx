@@ -105,35 +105,44 @@ export function AuthHeroPanel({ stage, isAr, currentStep, totalSteps = 4 }: Prop
 
   return (
     <div
-      className="hidden md:flex md:w-[380px] lg:w-[480px] xl:w-[540px] relative flex-col overflow-hidden"
+      className="hidden md:flex md:w-[420px] lg:w-[540px] xl:w-[620px] relative flex-col overflow-hidden border-e border-white/5"
       dir={isAr ? "rtl" : "ltr"}
     >
-      {/* Background image — ES6 import ensures it works in production */}
+      {/* Background image — Premium treatment */}
       <img
         src={authHeroImg}
         alt="Culinary excellence"
-        className="absolute inset-0 h-full w-full object-cover"
+        className="absolute inset-0 h-full w-full object-cover scale-105 blur-[1px] opacity-90 transition-transform duration-[10s] hover:scale-110"
       />
 
       {/* Gradient overlays */}
-      <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/50 to-black/30" />
-      <div className="absolute inset-0 bg-gradient-to-br from-primary/20 via-transparent to-transparent" />
+      <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/40 to-black/20" />
+      <div className="absolute inset-0 bg-gradient-to-br from-primary/30 via-transparent to-transparent opacity-60" />
+      <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-[0.05] pointer-events-none" />
 
-      {/* Logo */}
-      <div className="relative z-10 p-8 xl:p-10">
-        <img src="/altohaa-logo.png" alt="Altohaa" className="h-10 w-auto drop-shadow-lg" />
+      {/* Animated Floating Orbs */}
+      <div className="absolute -top-20 -start-20 h-64 w-64 rounded-full bg-primary/20 blur-[100px] animate-pulse" />
+      <div className="absolute top-1/2 -end-20 h-48 w-48 rounded-full bg-chart-3/15 blur-[80px] animate-pulse" style={{ animationDelay: "2s" }} />
+
+      {/* Logo Area */}
+      <div className="relative z-10 p-10 xl:p-14">
+        <div className="flex items-center gap-3 group cursor-pointer">
+          <img src="/altohaa-logo.png" alt="Altohaa" className="h-12 w-auto drop-shadow-2xl transition-transform group-hover:scale-110" />
+          <span className="font-serif text-2xl font-black text-white tracking-tighter drop-shadow-lg">Altohaa</span>
+        </div>
       </div>
 
       {/* Main heading */}
-      <div className="relative z-10 flex flex-1 flex-col justify-center px-8 xl:px-10">
-        <div className="space-y-5">
+      <div className="relative z-10 flex flex-1 flex-col justify-center px-10 xl:px-14">
+        <div className="space-y-6 animate-in fade-in slide-in-from-bottom-6 duration-1000">
           <h2
-            className={`${isAr ? "font-sans" : "font-serif"} text-3xl font-bold xl:text-4xl leading-tight whitespace-pre-line text-white`}
+            className={`${isAr ? "font-sans" : "font-serif"} text-4xl font-black xl:text-6xl leading-[1.1] whitespace-pre-line text-white drop-shadow-2xl tracking-tight`}
           >
             {isAr ? heading.ar : heading.en}
           </h2>
-          <p className="text-base leading-relaxed max-w-sm text-white/75">
-            {randomQuote}
+          <div className="h-1.5 w-20 bg-primary/60 rounded-full" />
+          <p className="text-lg leading-relaxed max-w-sm text-white/80 font-medium italic drop-shadow-md">
+            "{randomQuote}"
           </p>
         </div>
       </div>

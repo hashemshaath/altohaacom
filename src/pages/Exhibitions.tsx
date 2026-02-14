@@ -97,36 +97,40 @@ export default function Exhibitions() {
       />
       <Header />
 
-      {/* Hero Banner */}
-      <section className="relative overflow-hidden border-b bg-gradient-to-b from-primary/10 via-background to-background">
-        <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1414235077428-338989a2e8c0?auto=format&fit=crop&q=80')] bg-fixed bg-cover bg-center opacity-5 grayscale" />
-        <div className="absolute inset-0 bg-gradient-to-t from-background via-background/40 to-transparent" />
+      {/* Hero Banner - Premium */}
+      <section className="relative overflow-hidden border-b border-border/40 bg-gradient-to-br from-primary/5 via-background to-accent/5">
+        <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1414235077428-338989a2e8c0?auto=format&fit=crop&q=80')] bg-fixed bg-cover bg-center opacity-[0.03] grayscale pointer-events-none" />
+        <div className="absolute inset-0 bg-gradient-to-t from-background via-transparent to-transparent" />
         
-        <div className="absolute -top-32 start-1/4 h-64 w-64 rounded-full bg-primary/10 blur-[100px] animate-pulse" />
-        <div className="absolute -top-20 end-1/3 h-48 w-48 rounded-full bg-accent/15 blur-[80px] animate-pulse [animation-delay:1s]" />
+        <div className="absolute -top-40 start-1/4 h-96 w-96 rounded-full bg-primary/10 blur-[120px] animate-pulse pointer-events-none" />
+        <div className="absolute -bottom-20 end-1/3 h-72 w-72 rounded-full bg-accent/15 blur-[100px] animate-pulse [animation-delay:1.5s] pointer-events-none" />
+        <div className="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-primary/30 to-transparent" />
         
-        <div className="container relative py-12 md:py-16">
-          <div className="flex flex-col gap-8 lg:flex-row lg:items-center lg:justify-between">
-            <div className="flex-1 space-y-6">
-              <div className="inline-flex items-center gap-2 rounded-full bg-primary/10 px-3 py-1 ring-1 ring-primary/20 backdrop-blur-sm">
-                <div className="h-1.5 w-1.5 rounded-full bg-primary animate-pulse" />
-                <span className="text-[10px] font-bold uppercase tracking-widest text-primary">
+        <div className="container relative py-12 md:py-20">
+          <div className="flex flex-col gap-10 lg:flex-row lg:items-center lg:justify-between animate-fade-in">
+            <div className="flex-1 space-y-8">
+              <div className="inline-flex items-center gap-2 rounded-full bg-primary/10 px-4 py-1.5 ring-1 ring-primary/20 backdrop-blur-sm shadow-inner transition-transform hover:scale-105">
+                <div className="relative flex h-2 w-2">
+                  <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-primary opacity-75"></span>
+                  <span className="relative inline-flex h-2 w-2 rounded-full bg-primary"></span>
+                </div>
+                <span className="text-[10px] font-black uppercase tracking-[0.2em] text-primary">
                   {isAr ? "فعاليات الطهي العالمية" : "Global Culinary Events"}
                 </span>
               </div>
               
-              <div className="space-y-3">
-                <h1 className="font-serif text-4xl font-bold tracking-tight md:text-5xl lg:text-6xl text-balance leading-[1.1]">
+              <div className="space-y-4">
+                <h1 className="font-serif text-4xl font-black tracking-tight md:text-6xl lg:text-7xl text-balance leading-[1.05]">
                   {isAr ? (
-                    <>أبرز <span className="text-primary italic">المعارض</span> والفعاليات</>
+                    <>أبرز <span className="text-primary italic relative">المعارض<span className="absolute -bottom-2 inset-x-0 h-3 bg-primary/10 -rotate-2 -z-10" /></span> والفعاليات</>
                   ) : (
-                    <>Premier <span className="text-primary italic">Exhibitions</span> & Events</>
+                    <>Premier <span className="text-primary italic relative">Exhibitions<span className="absolute -bottom-2 inset-x-0 h-4 bg-primary/10 -rotate-1 -z-10" /></span> & Events</>
                   )}
                 </h1>
-                <p className="max-w-xl text-base text-muted-foreground/90 md:text-lg leading-relaxed">
+                <p className="max-w-xl text-lg text-muted-foreground font-medium md:text-xl leading-relaxed">
                   {isAr
                     ? "بوابتك لاكتشاف أبرز المعارض والمؤتمرات العالمية في عالم الضيافة وفنون الطهي"
-                    : "Your gateway to discovering the world's most prestigious hospitality and culinary trade shows"}
+                    : "Your gateway to discovering the world's most prestigious hospitality and culinary trade shows."}
                 </p>
               </div>
 
