@@ -3,6 +3,7 @@ import { useLanguage } from "@/i18n/LanguageContext";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import AdminPageHeader from "@/components/admin/AdminPageHeader";
 import {
   Table,
   TableBody,
@@ -58,20 +59,11 @@ export default function AuditLog() {
 
   return (
     <div className="space-y-6">
-      {/* Hero Header */}
-      <Card className="overflow-hidden border-border/50 bg-gradient-to-br from-primary/5 via-background to-accent/5">
-        <div className="flex items-center gap-4 p-5 md:p-6">
-          <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-primary/10">
-            <FileText className="h-6 w-6 text-primary" />
-          </div>
-          <div>
-            <h1 className="font-serif text-2xl font-bold">{t("auditLog")}</h1>
-            <p className="mt-0.5 text-sm text-muted-foreground">
-              {isAr ? "سجل جميع الإجراءات الإدارية" : "Track all administrative actions"}
-            </p>
-          </div>
-        </div>
-      </Card>
+      <AdminPageHeader
+        icon={FileText}
+        title={t("auditLog")}
+        description={isAr ? "سجل جميع الإجراءات الإدارية" : "Track all administrative actions"}
+      />
 
       <Card className="border-border/50">
         <CardHeader>

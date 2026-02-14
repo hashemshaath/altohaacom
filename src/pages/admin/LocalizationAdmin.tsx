@@ -17,6 +17,7 @@ import {
   Languages,
   Check,
 } from "lucide-react";
+import AdminPageHeader from "@/components/admin/AdminPageHeader";
 
 interface Language {
   code: string;
@@ -92,20 +93,17 @@ export default function LocalizationAdmin() {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="font-serif text-2xl font-bold">
-            {language === "ar" ? "إدارة اللغات" : "Localization Management"}
-          </h1>
-          <p className="text-muted-foreground">
-            {language === "ar" ? "إدارة اللغات والترجمات" : "Manage languages and translations"}
-          </p>
-        </div>
-        <Button onClick={handleSave}>
-          <Save className="mr-2 h-4 w-4" />
-          {language === "ar" ? "حفظ" : "Save Changes"}
-        </Button>
-      </div>
+      <AdminPageHeader
+        icon={Globe}
+        title={language === "ar" ? "إدارة اللغات" : "Localization Management"}
+        description={language === "ar" ? "إدارة اللغات والترجمات" : "Manage languages and translations"}
+        actions={
+          <Button onClick={handleSave}>
+            <Save className="mr-2 h-4 w-4" />
+            {language === "ar" ? "حفظ" : "Save Changes"}
+          </Button>
+        }
+      />
 
       <Tabs defaultValue="languages">
         <TabsList>

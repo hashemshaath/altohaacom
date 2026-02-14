@@ -20,6 +20,7 @@ import {
 import { useToast } from "@/hooks/use-toast";
 import { format } from "date-fns";
 import { CheckCircle, XCircle, ChevronDown, ChevronUp, AlertTriangle, Flag } from "lucide-react";
+import AdminPageHeader from "@/components/admin/AdminPageHeader";
 
 interface Report {
   id: string;
@@ -123,28 +124,19 @@ export default function ContentModeration() {
 
   return (
     <div className="space-y-6">
-      {/* Hero Header */}
-      <Card className="overflow-hidden border-border/50 bg-gradient-to-br from-primary/5 via-background to-accent/5">
-        <div className="flex items-center justify-between p-5 md:p-6">
-          <div className="flex items-center gap-4">
-            <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-primary/10">
-              <Flag className="h-6 w-6 text-primary" />
-            </div>
-            <div>
-              <h1 className="font-serif text-2xl font-bold">{t("contentModeration")}</h1>
-              <p className="mt-0.5 text-sm text-muted-foreground">
-                {language === "ar" ? "مراجعة البلاغات المقدمة" : "Review submitted reports"}
-              </p>
-            </div>
-          </div>
-          {pendingCount > 0 && (
+      <AdminPageHeader
+        icon={Flag}
+        title={t("contentModeration")}
+        description={language === "ar" ? "مراجعة البلاغات المقدمة" : "Review submitted reports"}
+        actions={
+          pendingCount > 0 ? (
             <Badge variant="destructive" className="flex items-center gap-1">
               <AlertTriangle className="h-3 w-3" />
               {pendingCount} {language === "ar" ? "معلق" : "pending"}
             </Badge>
-          )}
-        </div>
-      </Card>
+          ) : undefined
+        }
+      />
 
       <Card>
         <CardHeader>

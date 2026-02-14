@@ -6,6 +6,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import AdminPageHeader from "@/components/admin/AdminPageHeader";
 import { 
   Users, 
   UserCheck, 
@@ -114,28 +115,17 @@ export default function AdminDashboard() {
 
   return (
     <div className="space-y-6">
-      {/* Hero Header */}
-      <Card className="overflow-hidden border-border/50 bg-gradient-to-br from-primary/5 via-background to-accent/5">
-        <div className="flex items-center justify-between p-5 md:p-6">
-          <div className="flex items-center gap-4">
-            <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-primary/10">
-              <LayoutDashboard className="h-6 w-6 text-primary" />
-            </div>
-            <div>
-              <h1 className="font-serif text-2xl font-bold">
-                {isAr ? "لوحة التحكم" : "Admin Dashboard"}
-              </h1>
-              <p className="mt-0.5 text-sm text-muted-foreground">
-                {isAr ? "مرحباً، مدير النظام" : "Welcome, Super Admin"}
-              </p>
-            </div>
-          </div>
-          <Badge variant="secondary" className="hidden gap-1.5 sm:flex">
+      <AdminPageHeader
+        icon={LayoutDashboard}
+        title={isAr ? "لوحة التحكم" : "Admin Dashboard"}
+        description={isAr ? "مرحباً، مدير النظام" : "Welcome, Super Admin"}
+        actions={
+          <Badge variant="secondary" className="gap-1.5">
             <Shield className="h-3 w-3" />
             {isAr ? "صلاحيات كاملة" : "Full Access"}
           </Badge>
-        </div>
-      </Card>
+        }
+      />
 
       {/* Stats Grid */}
       <div className="grid gap-3 grid-cols-2 sm:grid-cols-3 lg:grid-cols-4">
