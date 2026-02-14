@@ -10,7 +10,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { toast } from "@/hooks/use-toast";
-import { Building2, Download, FileSpreadsheet, Plus, Search } from "lucide-react";
+import { Building2, Download, FileSpreadsheet, FilterX, Plus, Search } from "lucide-react";
 import { EntitySubModulesPanel } from "@/components/entities/EntitySubModulesPanel";
 import AdminPageHeader from "@/components/admin/AdminPageHeader";
 import EntityStatsCards from "@/components/admin/entities/EntityStatsCards";
@@ -311,13 +311,19 @@ export default function EntitiesAdmin() {
             {typeOptions.map(t => <SelectItem key={t.value} value={t.value}>{isAr ? t.ar : t.en}</SelectItem>)}
           </SelectContent>
         </Select>
-        <Select value={filterStatus} onValueChange={v => { setFilterStatus(v); setCurrentPage(1); }}>
+        <Select value={filterStatus === "visible" ? "all" : filterStatus} onValueChange={v => { setFilterStatus(v); setCurrentPage(1); }}>
           <SelectTrigger className="w-full sm:w-40"><SelectValue /></SelectTrigger>
           <SelectContent>
             <SelectItem value="all">{isAr ? "جميع الحالات" : "All Status"}</SelectItem>
             {statusOptions.map(s => <SelectItem key={s} value={s}>{isAr ? statusLabels[s]?.ar : statusLabels[s]?.en}</SelectItem>)}
           </SelectContent>
         </Select>
+        {(searchQuery || filterType !== "all" || filterStatus !== "all") && (
+          <Button variant="ghost" size="sm" className="gap-1 text-xs" onClick={() => { setSearchQuery(""); setFilterType("all"); setFilterStatus("all"); setCurrentPage(1); }}>
+            <FilterX className="h-3.5 w-3.5" />
+            {isAr ? "مسح" : "Clear"}
+          </Button>
+        )}
         <span className="text-xs text-muted-foreground whitespace-nowrap">
           {totalFiltered} {isAr ? "نتيجة" : "results"}
         </span>
