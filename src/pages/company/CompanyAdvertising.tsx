@@ -208,14 +208,14 @@ export default function CompanyAdvertising() {
                   </TableHeader>
                   <TableBody>
                     {campaigns.map((c: any) => {
-                      const ctr = c.total_impressions > 0 ? ((c.total_clicks / c.total_impressions) * 100).toFixed(2) : "0.00";
+                      const ctr = c.total_impressions > 0 ? toEnglishDigits(((c.total_clicks / c.total_impressions) * 100).toFixed(2)) : "0.00";
                       return (
                         <TableRow key={c.id} className="cursor-pointer hover:bg-muted/50" onClick={() => navigate(`/company/advertising/${c.id}`)}>
                           <TableCell className="font-medium">{isAr ? c.name_ar || c.name : c.name}</TableCell>
                            <TableCell><Badge variant="outline">{c.billing_model}</Badge></TableCell>
                            <TableCell>{formatCurrency(Number(c.budget), language as "en" | "ar")} / {formatCurrency(Number(c.spent), language as "en" | "ar")}</TableCell>
-                           <TableCell>{(c.total_impressions || 0).toLocaleString()}</TableCell>
-                           <TableCell>{(c.total_clicks || 0).toLocaleString()}</TableCell>
+                           <TableCell>{toEnglishDigits((c.total_impressions || 0).toLocaleString())}</TableCell>
+                           <TableCell>{toEnglishDigits((c.total_clicks || 0).toLocaleString())}</TableCell>
                            <TableCell>{ctr}%</TableCell>
                            <TableCell><Badge className={statusColors[c.status] || ""}>{c.status}</Badge></TableCell>
                         </TableRow>
@@ -251,7 +251,7 @@ export default function CompanyAdvertising() {
                         <TableCell><Badge variant="outline">{r.request_type}</Badge></TableCell>
                         <TableCell>{r.budget ? `${r.budget} ${r.currency}` : "—"}</TableCell>
                         <TableCell><Badge className={statusColors[r.status] || ""}>{r.status}</Badge></TableCell>
-                        <TableCell className="text-xs text-muted-foreground">{new Date(r.created_at).toLocaleDateString()}</TableCell>
+                        <TableCell className="text-xs text-muted-foreground">{toEnglishDigits(new Date(r.created_at).toLocaleDateString())}</TableCell>
                       </TableRow>
                     ))}
                   </TableBody>
@@ -269,13 +269,13 @@ export default function CompanyAdvertising() {
                   <Badge className="mb-2" variant={pkg.tier === "platinum" ? "default" : "secondary"}>
                     {isAr ? pkg.name_ar || pkg.name : pkg.name}
                   </Badge>
-                  <p className="text-3xl font-bold my-2">{pkg.price}<span className="text-sm text-muted-foreground ms-1">{pkg.currency}</span></p>
-                   <p className="text-xs text-muted-foreground mb-3">{pkg.duration_days} {isAr ? "يوم" : "days"}</p>
+                  <p className="text-3xl font-bold my-2">{toEnglishDigits(pkg.price)}<span className="text-sm text-muted-foreground ms-1">{pkg.currency}</span></p>
+                   <p className="text-xs text-muted-foreground mb-3">{toEnglishDigits(pkg.duration_days)} {isAr ? "يوم" : "days"}</p>
                    <div className="text-xs text-muted-foreground space-y-1 text-start">
-                     <p>• {pkg.max_impressions ? `${pkg.max_impressions.toLocaleString()} ${isAr ? "مشاهدة" : "impressions"}` : isAr ? "غير محدود" : "Unlimited"}</p>
-                     <p>• {pkg.max_clicks ? `${pkg.max_clicks.toLocaleString()} ${isAr ? "نقرة" : "clicks"}` : isAr ? "غير محدود" : "Unlimited"}</p>
-                     <p>• {pkg.max_campaigns} {isAr ? "حملة" : "campaigns"}</p>
-                     <p>• {pkg.included_placements?.length || 0} {isAr ? "موقع" : "placements"}</p>
+                     <p>• {pkg.max_impressions ? `${toEnglishDigits(pkg.max_impressions.toLocaleString())} ${isAr ? "مشاهدة" : "impressions"}` : isAr ? "غير محدود" : "Unlimited"}</p>
+                     <p>• {pkg.max_clicks ? `${toEnglishDigits(pkg.max_clicks.toLocaleString())} ${isAr ? "نقرة" : "clicks"}` : isAr ? "غير محدود" : "Unlimited"}</p>
+                     <p>• {toEnglishDigits(pkg.max_campaigns)} {isAr ? "حملة" : "campaigns"}</p>
+                     <p>• {toEnglishDigits(pkg.included_placements?.length || 0)} {isAr ? "موقع" : "placements"}</p>
                    </div>
                    {pkg.price && <p className="text-sm font-bold mt-3 text-primary">{formatCurrency(Number(pkg.price), language as "en" | "ar")}</p>}
                   <p className="text-xs mt-3">{isAr ? pkg.description_ar || pkg.description : pkg.description}</p>

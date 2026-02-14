@@ -11,6 +11,7 @@ import {
   AlertTriangle, CheckCircle, Package,
 } from "lucide-react";
 import { ORDER_CATEGORIES } from "./OrderCenterCategories";
+import { toEnglishDigits } from "@/lib/formatNumber";
 
 interface Props {
   competitionId: string;
@@ -137,28 +138,28 @@ export function BudgetTracker({ competitionId, isOrganizer }: Props) {
         <Card className="border-border/60">
           <CardContent className="p-3 text-center">
             <DollarSign className="mx-auto mb-1 h-5 w-5 text-primary" />
-            <p className="text-xl font-bold">${totalEstimated.toLocaleString()}</p>
+            <p className="text-xl font-bold">${toEnglishDigits(totalEstimated.toLocaleString())}</p>
             <p className="text-[10px] text-muted-foreground uppercase">{isAr ? "إجمالي التقدير" : "Total Estimated"}</p>
           </CardContent>
         </Card>
         <Card className="border-border/60">
           <CardContent className="p-3 text-center">
             <TrendingUp className="mx-auto mb-1 h-5 w-5 text-chart-5" />
-            <p className="text-xl font-bold">${sponsoredValue.toLocaleString()}</p>
+            <p className="text-xl font-bold">${toEnglishDigits(sponsoredValue.toLocaleString())}</p>
             <p className="text-[10px] text-muted-foreground uppercase">{isAr ? "مغطى بالرعاية" : "Sponsored"}</p>
           </CardContent>
         </Card>
         <Card className="border-border/60">
           <CardContent className="p-3 text-center">
             <TrendingDown className="mx-auto mb-1 h-5 w-5 text-chart-4" />
-            <p className="text-xl font-bold">${selfFunded > 0 ? selfFunded.toLocaleString() : "0"}</p>
+            <p className="text-xl font-bold">${selfFunded > 0 ? toEnglishDigits(selfFunded.toLocaleString()) : "0"}</p>
             <p className="text-[10px] text-muted-foreground uppercase">{isAr ? "تمويل ذاتي" : "Self-Funded"}</p>
           </CardContent>
         </Card>
         <Card className="border-border/60">
           <CardContent className="p-3 text-center">
             <PieChart className="mx-auto mb-1 h-5 w-5 text-chart-1" />
-            <p className="text-xl font-bold">{sponsorPercentage}%</p>
+            <p className="text-xl font-bold">{toEnglishDigits(sponsorPercentage)}%</p>
             <p className="text-[10px] text-muted-foreground uppercase">{isAr ? "نسبة الرعاية" : "Sponsor Coverage"}</p>
           </CardContent>
         </Card>
@@ -169,12 +170,12 @@ export function BudgetTracker({ competitionId, isOrganizer }: Props) {
         <CardContent className="p-4">
           <div className="flex items-center justify-between mb-2">
             <p className="text-sm font-medium">{isAr ? "تغطية الرعاية" : "Sponsorship Coverage"}</p>
-            <p className="text-sm font-bold text-primary">{sponsorPercentage}%</p>
+            <p className="text-sm font-bold text-primary">{toEnglishDigits(sponsorPercentage)}%</p>
           </div>
           <Progress value={sponsorPercentage} className="h-2.5" />
           <div className="flex items-center justify-between mt-2 text-xs text-muted-foreground">
-            <span>${sponsoredValue.toLocaleString()} {isAr ? "رعاية" : "sponsored"}</span>
-            <span>${totalEstimated.toLocaleString()} {isAr ? "إجمالي" : "total"}</span>
+            <span>${toEnglishDigits(sponsoredValue.toLocaleString())} {isAr ? "رعاية" : "sponsored"}</span>
+            <span>${toEnglishDigits(totalEstimated.toLocaleString())} {isAr ? "إجمالي" : "total"}</span>
           </div>
         </CardContent>
       </Card>
@@ -204,7 +205,7 @@ export function BudgetTracker({ competitionId, isOrganizer }: Props) {
                       key={cat.category}
                       className={`${chartColors[i % chartColors.length]} transition-all`}
                       style={{ width: `${pct}%` }}
-                      title={`${cat.label}: $${cat.estimatedCost.toLocaleString()} (${pct.toFixed(1)}%)`}
+                      title={`${cat.label}: $${toEnglishDigits(cat.estimatedCost.toLocaleString())} (${toEnglishDigits(pct.toFixed(1))}%)`}
                     />
                   );
                 })}
@@ -223,8 +224,8 @@ export function BudgetTracker({ competitionId, isOrganizer }: Props) {
                           <Badge variant="outline" className="text-[10px]">{cat.itemCount} {isAr ? "عنصر" : "items"}</Badge>
                         </div>
                         <div className="flex items-center gap-2">
-                          <span className="text-sm font-semibold">${cat.estimatedCost.toLocaleString()}</span>
-                          <span className="text-[10px] text-muted-foreground">({pct.toFixed(1)}%)</span>
+                          <span className="text-sm font-semibold">${toEnglishDigits(cat.estimatedCost.toLocaleString())}</span>
+                          <span className="text-[10px] text-muted-foreground">({toEnglishDigits(pct.toFixed(1))}%)</span>
                         </div>
                       </div>
                       <div className="mt-1 ms-5 flex items-center gap-3 text-[10px] text-muted-foreground">

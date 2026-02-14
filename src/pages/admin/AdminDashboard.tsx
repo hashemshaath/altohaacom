@@ -7,6 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import AdminPageHeader from "@/components/admin/AdminPageHeader";
+import { toEnglishDigits } from "@/lib/formatNumber";
 import { 
   Users, 
   UserCheck, 
@@ -138,7 +139,7 @@ export default function AdminDashboard() {
                 </div>
                 <div>
                   <p className="text-xl font-bold leading-none tracking-tight">
-                    {isLoading ? "…" : stat.value.toLocaleString()}
+                    {isLoading ? "…" : toEnglishDigits(stat.value.toLocaleString())}
                   </p>
                   <p className="mt-1 text-[11px] text-muted-foreground">{stat.title}</p>
                 </div>
