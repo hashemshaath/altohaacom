@@ -10,7 +10,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { toast } from "@/hooks/use-toast";
-import { Building2, FileSpreadsheet, Plus, Search } from "lucide-react";
+import { Building2, Download, FileSpreadsheet, Plus, Search } from "lucide-react";
 import { EntitySubModulesPanel } from "@/components/entities/EntitySubModulesPanel";
 import AdminPageHeader from "@/components/admin/AdminPageHeader";
 import EntityStatsCards from "@/components/admin/entities/EntityStatsCards";
@@ -22,6 +22,8 @@ import EntityFormTabs, {
 import type { Database } from "@/integrations/supabase/types";
 
 type EntityType = Database["public"]["Enums"]["entity_type"];
+
+const PAGE_SIZE_OPTIONS = [10, 25, 50];
 
 export default function EntitiesAdmin() {
   const { language } = useLanguage();
@@ -38,6 +40,8 @@ export default function EntitiesAdmin() {
   const [filterType, setFilterType] = useState("all");
   const [filterStatus, setFilterStatus] = useState("all");
   const [managingEntity, setManagingEntity] = useState<{ id: string; name: string } | null>(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [pageSize, setPageSize] = useState(10);
 
   const { data: entities, isLoading } = useQuery({
     queryKey: ["admin-entities"],
@@ -57,36 +61,21 @@ export default function EntitiesAdmin() {
     mutationFn: async () => {
       const slug = form.name.toLowerCase().replace(/\s+/g, "-").replace(/[^a-z0-9-]/g, "");
       const payload = {
-        name: form.name,
-        name_ar: form.name_ar || null,
-        abbreviation: form.abbreviation || null,
-        abbreviation_ar: form.abbreviation_ar || null,
-        description: form.description || null,
-        description_ar: form.description_ar || null,
-        type: form.type,
-        scope: form.scope,
-        status: form.status,
-        is_visible: form.is_visible,
-        is_verified: form.is_verified,
-        country: form.country || null,
-        city: form.city || null,
-        address: form.address || null,
-        address_ar: form.address_ar || null,
+        name: form.name, name_ar: form.name_ar || null,
+        abbreviation: form.abbreviation || null, abbreviation_ar: form.abbreviation_ar || null,
+        description: form.description || null, description_ar: form.description_ar || null,
+        type: form.type, scope: form.scope, status: form.status,
+        is_visible: form.is_visible, is_verified: form.is_verified,
+        country: form.country || null, city: form.city || null,
+        address: form.address || null, address_ar: form.address_ar || null,
         postal_code: form.postal_code || null,
-        email: form.email || null,
-        phone: form.phone || null,
-        fax: form.fax || null,
-        website: form.website || null,
-        logo_url: form.logo_url || null,
-        cover_image_url: form.cover_image_url || null,
-        president_name: form.president_name || null,
-        president_name_ar: form.president_name_ar || null,
-        secretary_name: form.secretary_name || null,
-        secretary_name_ar: form.secretary_name_ar || null,
-        founded_year: form.founded_year || null,
-        member_count: form.member_count || null,
-        mission: form.mission || null,
-        mission_ar: form.mission_ar || null,
+        email: form.email || null, phone: form.phone || null,
+        fax: form.fax || null, website: form.website || null,
+        logo_url: form.logo_url || null, cover_image_url: form.cover_image_url || null,
+        president_name: form.president_name || null, president_name_ar: form.president_name_ar || null,
+        secretary_name: form.secretary_name || null, secretary_name_ar: form.secretary_name_ar || null,
+        founded_year: form.founded_year || null, member_count: form.member_count || null,
+        mission: form.mission || null, mission_ar: form.mission_ar || null,
         username: form.username || null,
         registration_number: form.registration_number || null,
         license_number: form.license_number || null,
@@ -97,8 +86,7 @@ export default function EntitiesAdmin() {
         account_manager_id: selectedManager || null,
         latitude: form.latitude ? parseFloat(form.latitude) : null,
         longitude: form.longitude ? parseFloat(form.longitude) : null,
-        slug,
-        created_by: user?.id,
+        slug, created_by: user?.id,
       };
 
       if (editingId) {
@@ -191,6 +179,12 @@ export default function EntitiesAdmin() {
     return matchesSearch && matchesType && matchesStatus;
   });
 
+  // Pagination
+  const totalFiltered = filtered?.length || 0;
+  const totalPages = Math.max(1, Math.ceil(totalFiltered / pageSize));
+  const safeCurrentPage = Math.min(currentPage, totalPages);
+  const paginatedEntities = filtered?.slice((safeCurrentPage - 1) * pageSize, safeCurrentPage * pageSize);
+
   const stats = {
     total: entities?.length || 0,
     active: entities?.filter(e => e.status === "active").length || 0,
@@ -205,6 +199,25 @@ export default function EntitiesAdmin() {
     archived: { en: "Archived", ar: "مؤرشف" },
   };
 
+  const handleExportCSV = () => {
+    if (!filtered?.length) return;
+    const headers = ["Entity Number", "Name", "Name (AR)", "Type", "Scope", "Status", "Country", "City", "Email", "Phone", "Verified", "Visible"];
+    const rows = filtered.map(e => [
+      e.entity_number, e.name, e.name_ar || "", e.type, e.scope, e.status,
+      e.country || "", e.city || "", e.email || "", e.phone || "",
+      e.is_verified ? "Yes" : "No", e.is_visible ? "Yes" : "No",
+    ]);
+    const csv = [headers, ...rows].map(r => r.map(c => `"${String(c).replace(/"/g, '""')}"`).join(",")).join("\n");
+    const blob = new Blob(["\uFEFF" + csv], { type: "text/csv;charset=utf-8;" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `entities-export-${new Date().toISOString().slice(0, 10)}.csv`;
+    a.click();
+    URL.revokeObjectURL(url);
+    toast({ title: isAr ? "تم التصدير" : "Export complete" });
+  };
+
   return (
     <div className="space-y-6">
       <AdminPageHeader
@@ -213,6 +226,10 @@ export default function EntitiesAdmin() {
         description={isAr ? "إدارة الجمعيات والجهات الحكومية والخاصة المتعلقة بالطهي" : "Manage culinary associations, government & private entities"}
         actions={
           <div className="flex gap-2">
+            <Button variant="outline" size="sm" onClick={handleExportCSV} disabled={!filtered?.length}>
+              <Download className="me-2 h-4 w-4" />
+              {isAr ? "تصدير" : "Export"}
+            </Button>
             <Button variant={showBulkImport ? "secondary" : "outline"} size="sm" onClick={() => { setShowBulkImport(!showBulkImport); if (showForm) setShowForm(false); }}>
               <FileSpreadsheet className="me-2 h-4 w-4" />
               {isAr ? "استيراد" : "Import"}
@@ -244,69 +261,108 @@ export default function EntitiesAdmin() {
       )}
 
       {/* Filters */}
-      <div className="flex flex-col gap-4 sm:flex-row">
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
         <div className="relative flex-1">
           <Search className="absolute start-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-          <Input placeholder={isAr ? "بحث بالاسم أو الرقم..." : "Search by name or number..."} value={searchQuery} onChange={e => setSearchQuery(e.target.value)} className="ps-10" />
+          <Input
+            placeholder={isAr ? "بحث بالاسم أو الرقم..." : "Search by name or number..."}
+            value={searchQuery}
+            onChange={e => { setSearchQuery(e.target.value); setCurrentPage(1); }}
+            className="ps-10"
+          />
         </div>
-        <Select value={filterType} onValueChange={setFilterType}>
+        <Select value={filterType} onValueChange={v => { setFilterType(v); setCurrentPage(1); }}>
           <SelectTrigger className="w-full sm:w-48"><SelectValue /></SelectTrigger>
           <SelectContent>
             <SelectItem value="all">{isAr ? "جميع الأنواع" : "All Types"}</SelectItem>
             {typeOptions.map(t => <SelectItem key={t.value} value={t.value}>{isAr ? t.ar : t.en}</SelectItem>)}
           </SelectContent>
         </Select>
-        <Select value={filterStatus} onValueChange={setFilterStatus}>
+        <Select value={filterStatus} onValueChange={v => { setFilterStatus(v); setCurrentPage(1); }}>
           <SelectTrigger className="w-full sm:w-40"><SelectValue /></SelectTrigger>
           <SelectContent>
             <SelectItem value="all">{isAr ? "جميع الحالات" : "All Status"}</SelectItem>
             {statusOptions.map(s => <SelectItem key={s} value={s}>{isAr ? statusLabels[s]?.ar : statusLabels[s]?.en}</SelectItem>)}
           </SelectContent>
         </Select>
+        <span className="text-xs text-muted-foreground whitespace-nowrap">
+          {totalFiltered} {isAr ? "نتيجة" : "results"}
+        </span>
       </div>
 
       {/* Table */}
       <Card>
         <CardContent className="p-0">
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>{isAr ? "الرقم" : "#"}</TableHead>
-                <TableHead>{isAr ? "الجهة" : "Entity"}</TableHead>
-                <TableHead>{isAr ? "النوع" : "Type"}</TableHead>
-                <TableHead>{isAr ? "النطاق" : "Scope"}</TableHead>
-                <TableHead>{isAr ? "الحالة" : "Status"}</TableHead>
-                <TableHead>{isAr ? "الرؤية" : "Visibility"}</TableHead>
-                <TableHead>{isAr ? "المتابعون" : "Followers"}</TableHead>
-                <TableHead className="text-end">{isAr ? "الإجراءات" : "Actions"}</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {isLoading ? (
-                <TableRow><TableCell colSpan={8} className="text-center py-12">
-                  <div className="h-8 w-8 mx-auto animate-spin rounded-full border-4 border-primary border-t-transparent" />
-                </TableCell></TableRow>
-              ) : filtered?.length === 0 ? (
-                <TableRow><TableCell colSpan={8} className="text-center py-12 text-muted-foreground">
-                  <Building2 className="h-10 w-10 mx-auto mb-2 opacity-30" />
-                  <p>{isAr ? "لا توجد جهات مسجلة" : "No entities found"}</p>
-                </TableCell></TableRow>
-              ) : (
-                filtered?.map(entity => (
-                  <EntityTableRow
-                    key={entity.id}
-                    entity={entity as any}
-                    typeLabel={typeOptions.find(t => t.value === entity.type)}
-                    scopeLabel={scopeOptions.find(s => s.value === entity.scope)}
-                    onEdit={startEdit}
-                    onDelete={(id) => deleteMutation.mutate(id)}
-                    onToggleVisibility={(id, visible) => toggleVisibility.mutate({ id, visible })}
-                    onManage={(id, name) => setManagingEntity({ id, name })}
-                  />
-                ))
-              )}
-            </TableBody>
-          </Table>
+          <div className="overflow-x-auto">
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead className="hidden xl:table-cell w-[100px]">{isAr ? "الرقم" : "#"}</TableHead>
+                  <TableHead>{isAr ? "الجهة" : "Entity"}</TableHead>
+                  <TableHead className="hidden md:table-cell">{isAr ? "النوع" : "Type"}</TableHead>
+                  <TableHead className="hidden xl:table-cell">{isAr ? "النطاق" : "Scope"}</TableHead>
+                  <TableHead>{isAr ? "الحالة" : "Status"}</TableHead>
+                  <TableHead className="w-[44px]">{isAr ? "مرئي" : "Vis."}</TableHead>
+                  <TableHead className="hidden lg:table-cell w-[44px]">{isAr ? "متابع" : "Flw."}</TableHead>
+                  <TableHead className="text-end">{isAr ? "إجراءات" : "Actions"}</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {isLoading ? (
+                  <TableRow><TableCell colSpan={8} className="text-center py-12">
+                    <div className="h-8 w-8 mx-auto animate-spin rounded-full border-4 border-primary border-t-transparent" />
+                  </TableCell></TableRow>
+                ) : paginatedEntities?.length === 0 ? (
+                  <TableRow><TableCell colSpan={8} className="text-center py-12 text-muted-foreground">
+                    <Building2 className="h-10 w-10 mx-auto mb-2 opacity-30" />
+                    <p>{isAr ? "لا توجد جهات مسجلة" : "No entities found"}</p>
+                  </TableCell></TableRow>
+                ) : (
+                  paginatedEntities?.map(entity => (
+                    <EntityTableRow
+                      key={entity.id}
+                      entity={entity as any}
+                      typeLabel={typeOptions.find(t => t.value === entity.type)}
+                      scopeLabel={scopeOptions.find(s => s.value === entity.scope)}
+                      onEdit={startEdit}
+                      onDelete={(id) => deleteMutation.mutate(id)}
+                      onToggleVisibility={(id, visible) => toggleVisibility.mutate({ id, visible })}
+                      onManage={(id, name) => setManagingEntity({ id, name })}
+                    />
+                  ))
+                )}
+              </TableBody>
+            </Table>
+          </div>
+
+          {/* Pagination */}
+          {totalFiltered > 0 && (
+            <div className="flex flex-col gap-3 border-t p-3 sm:flex-row sm:items-center sm:justify-between">
+              <div className="flex items-center gap-2">
+                <span className="text-xs text-muted-foreground">{isAr ? "عرض" : "Show"}</span>
+                <Select value={String(pageSize)} onValueChange={v => { setPageSize(Number(v)); setCurrentPage(1); }}>
+                  <SelectTrigger className="h-8 w-[70px] text-xs"><SelectValue /></SelectTrigger>
+                  <SelectContent>
+                    {PAGE_SIZE_OPTIONS.map(s => <SelectItem key={s} value={String(s)}>{s}</SelectItem>)}
+                  </SelectContent>
+                </Select>
+                <span className="text-xs text-muted-foreground">
+                  {isAr ? `من ${totalFiltered}` : `of ${totalFiltered}`}
+                </span>
+              </div>
+              <div className="flex items-center gap-1">
+                <Button variant="outline" size="sm" className="h-8" disabled={safeCurrentPage <= 1} onClick={() => setCurrentPage(p => p - 1)}>
+                  {isAr ? "السابق" : "Prev"}
+                </Button>
+                <span className="px-3 text-xs text-muted-foreground">
+                  {safeCurrentPage} / {totalPages}
+                </span>
+                <Button variant="outline" size="sm" className="h-8" disabled={safeCurrentPage >= totalPages} onClick={() => setCurrentPage(p => p + 1)}>
+                  {isAr ? "التالي" : "Next"}
+                </Button>
+              </div>
+            </div>
+          )}
         </CardContent>
       </Card>
 

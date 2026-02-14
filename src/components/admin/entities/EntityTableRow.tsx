@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import {
   AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent,
   AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle,
@@ -53,19 +54,19 @@ export default function EntityTableRow({ entity, typeLabel, scopeLabel, onEdit, 
 
   return (
     <>
-      <TableRow>
-        <TableCell className="font-mono text-xs text-muted-foreground">{entity.entity_number}</TableCell>
+      <TableRow className="group">
+        <TableCell className="hidden xl:table-cell font-mono text-xs text-muted-foreground">{entity.entity_number}</TableCell>
         <TableCell>
           <div className="flex items-center gap-3">
             {entity.logo_url ? (
-              <img src={entity.logo_url} alt="" className="h-9 w-9 rounded-lg object-cover border" />
+              <img src={entity.logo_url} alt="" className="h-9 w-9 rounded-lg object-cover border shrink-0" />
             ) : (
-              <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary/10">
+              <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-primary/10">
                 <Building2 className="h-4 w-4 text-primary" />
               </div>
             )}
             <div className="min-w-0">
-              <p className="font-medium text-sm truncate max-w-[180px]">{displayName}</p>
+              <p className="font-medium text-sm truncate max-w-[200px]">{displayName}</p>
               {entity.username && <p className="text-xs text-muted-foreground">@{entity.username}</p>}
               {entity.city && (
                 <p className="text-xs text-muted-foreground truncate">
@@ -75,36 +76,56 @@ export default function EntityTableRow({ entity, typeLabel, scopeLabel, onEdit, 
             </div>
           </div>
         </TableCell>
-        <TableCell><Badge variant="secondary" className="text-xs">{isAr ? typeLabel?.ar : typeLabel?.en}</Badge></TableCell>
-        <TableCell><Badge variant="outline" className="text-xs">{isAr ? scopeLabel?.ar : scopeLabel?.en}</Badge></TableCell>
+        <TableCell className="hidden md:table-cell"><Badge variant="secondary" className="text-xs whitespace-nowrap">{isAr ? typeLabel?.ar : typeLabel?.en}</Badge></TableCell>
+        <TableCell className="hidden xl:table-cell"><Badge variant="outline" className="text-xs whitespace-nowrap">{isAr ? scopeLabel?.ar : scopeLabel?.en}</Badge></TableCell>
         <TableCell>
-          <Badge variant={sc.variant} className="gap-1">
+          <Badge variant={sc.variant} className="gap-1 whitespace-nowrap">
             {entity.is_verified && <ShieldCheck className="h-3 w-3" />}
             {isAr ? sc.labelAr : sc.labelEn}
           </Badge>
         </TableCell>
         <TableCell>
-          <Button size="icon" variant="ghost" className="h-8 w-8" onClick={() => onToggleVisibility(entity.id, !entity.is_visible)}>
-            {entity.is_visible ? <Eye className="h-4 w-4 text-chart-3" /> : <EyeOff className="h-4 w-4 text-muted-foreground" />}
-          </Button>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button size="icon" variant="ghost" className="h-8 w-8" onClick={() => onToggleVisibility(entity.id, !entity.is_visible)}>
+                {entity.is_visible ? <Eye className="h-4 w-4 text-chart-3" /> : <EyeOff className="h-4 w-4 text-muted-foreground" />}
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent>{entity.is_visible ? (isAr ? "مرئي" : "Visible") : (isAr ? "مخفي" : "Hidden")}</TooltipContent>
+          </Tooltip>
         </TableCell>
-        <TableCell>
+        <TableCell className="hidden lg:table-cell">
           <div className="flex items-center gap-1 text-sm text-muted-foreground">
             <Users className="h-3 w-3" />
             {followers}
           </div>
         </TableCell>
         <TableCell>
-          <div className="flex justify-end gap-1">
-            <Button size="icon" variant="ghost" className="h-8 w-8" title={isAr ? "إدارة" : "Manage"} onClick={() => onManage(entity.id, displayName)}>
-              <Settings2 className="h-4 w-4" />
-            </Button>
-            <Button size="icon" variant="ghost" className="h-8 w-8" onClick={() => onEdit(entity as any)}>
-              <Pencil className="h-4 w-4" />
-            </Button>
-            <Button size="icon" variant="ghost" className="h-8 w-8 text-destructive hover:text-destructive" onClick={() => setShowDeleteConfirm(true)}>
-              <Trash2 className="h-4 w-4" />
-            </Button>
+          <div className="flex justify-end gap-1 opacity-70 group-hover:opacity-100 transition-opacity">
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button size="icon" variant="ghost" className="h-8 w-8" onClick={() => onManage(entity.id, displayName)}>
+                  <Settings2 className="h-4 w-4" />
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>{isAr ? "إدارة" : "Manage"}</TooltipContent>
+            </Tooltip>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button size="icon" variant="ghost" className="h-8 w-8" onClick={() => onEdit(entity as any)}>
+                  <Pencil className="h-4 w-4" />
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>{isAr ? "تعديل" : "Edit"}</TooltipContent>
+            </Tooltip>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button size="icon" variant="ghost" className="h-8 w-8 text-destructive hover:text-destructive" onClick={() => setShowDeleteConfirm(true)}>
+                  <Trash2 className="h-4 w-4" />
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>{isAr ? "حذف" : "Delete"}</TooltipContent>
+            </Tooltip>
           </div>
         </TableCell>
       </TableRow>
