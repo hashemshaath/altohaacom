@@ -118,7 +118,7 @@ export function SponsorCarousel() {
         })()}
 
         {/* Scrolling marquee for other sponsors */}
-        <div className="relative">
+        <div className="relative overflow-hidden">
           <div className="absolute inset-y-0 start-0 w-20 bg-gradient-to-e from-background to-transparent z-10 pointer-events-none" />
           <div className="absolute inset-y-0 end-0 w-20 bg-gradient-to-s from-background to-transparent z-10 pointer-events-none" />
           <style>{`@keyframes marquee-scroll { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }`}</style>

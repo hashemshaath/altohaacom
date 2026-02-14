@@ -27,7 +27,7 @@ const Index = () => {
   useAdTracking();
   useEffect(() => { prefetchCommonRoutes(); }, []);
   return (
-    <div className="flex min-h-screen flex-col" role="document">
+    <div className="flex min-h-screen flex-col overflow-x-hidden" role="document">
       <SEOHead
         title="Altohaa - The Global Culinary Community"
         description="The premier culinary community platform for chefs, judges, organizers, and sponsors. Compete, learn, and connect worldwide."

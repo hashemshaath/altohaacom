@@ -115,8 +115,13 @@
   * {
     @apply border-border;
   }
+  html {
+    overflow-x: hidden;
+  }
   body {
     @apply bg-background text-foreground antialiased;
+    overflow-x: hidden;
+    -webkit-overflow-scrolling: touch;
   }
   [dir="rtl"] {
     font-family: 'Noto Sans Arabic', 'DM Sans', ui-sans-serif, system-ui, sans-serif;
