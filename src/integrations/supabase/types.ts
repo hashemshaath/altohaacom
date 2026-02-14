@@ -8109,6 +8109,182 @@ export type Database = {
         }
         Relationships: []
       }
+      points_earning_rules: {
+        Row: {
+          action_label: string
+          action_label_ar: string | null
+          action_type: string
+          created_at: string
+          id: string
+          is_active: boolean
+          max_per_day: number | null
+          max_per_user: number | null
+          points: number
+        }
+        Insert: {
+          action_label: string
+          action_label_ar?: string | null
+          action_type: string
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          max_per_day?: number | null
+          max_per_user?: number | null
+          points: number
+        }
+        Update: {
+          action_label?: string
+          action_label_ar?: string | null
+          action_type?: string
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          max_per_day?: number | null
+          max_per_user?: number | null
+          points?: number
+        }
+        Relationships: []
+      }
+      points_ledger: {
+        Row: {
+          action_type: string
+          balance_after: number
+          created_at: string
+          description: string | null
+          description_ar: string | null
+          id: string
+          metadata: Json | null
+          points: number
+          reference_id: string | null
+          reference_type: string | null
+          user_id: string
+        }
+        Insert: {
+          action_type: string
+          balance_after?: number
+          created_at?: string
+          description?: string | null
+          description_ar?: string | null
+          id?: string
+          metadata?: Json | null
+          points: number
+          reference_id?: string | null
+          reference_type?: string | null
+          user_id: string
+        }
+        Update: {
+          action_type?: string
+          balance_after?: number
+          created_at?: string
+          description?: string | null
+          description_ar?: string | null
+          id?: string
+          metadata?: Json | null
+          points?: number
+          reference_id?: string | null
+          reference_type?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
+      points_redemptions: {
+        Row: {
+          created_at: string
+          fulfilled_at: string | null
+          id: string
+          metadata: Json | null
+          points_spent: number
+          redemption_code: string | null
+          reward_id: string
+          status: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          fulfilled_at?: string | null
+          id?: string
+          metadata?: Json | null
+          points_spent: number
+          redemption_code?: string | null
+          reward_id: string
+          status?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          fulfilled_at?: string | null
+          id?: string
+          metadata?: Json | null
+          points_spent?: number
+          redemption_code?: string | null
+          reward_id?: string
+          status?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "points_redemptions_reward_id_fkey"
+            columns: ["reward_id"]
+            isOneToOne: false
+            referencedRelation: "points_rewards"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      points_rewards: {
+        Row: {
+          category: string
+          created_at: string
+          description: string | null
+          description_ar: string | null
+          id: string
+          image_url: string | null
+          is_active: boolean
+          name: string
+          name_ar: string | null
+          points_cost: number
+          reward_type: string
+          reward_value: Json
+          sort_order: number
+          stock: number | null
+          updated_at: string
+        }
+        Insert: {
+          category?: string
+          created_at?: string
+          description?: string | null
+          description_ar?: string | null
+          id?: string
+          image_url?: string | null
+          is_active?: boolean
+          name: string
+          name_ar?: string | null
+          points_cost: number
+          reward_type?: string
+          reward_value?: Json
+          sort_order?: number
+          stock?: number | null
+          updated_at?: string
+        }
+        Update: {
+          category?: string
+          created_at?: string
+          description?: string | null
+          description_ar?: string | null
+          id?: string
+          image_url?: string | null
+          is_active?: boolean
+          name?: string
+          name_ar?: string | null
+          points_cost?: number
+          reward_type?: string
+          reward_value?: Json
+          sort_order?: number
+          stock?: number | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
       poll_votes: {
         Row: {
           id: string
@@ -8918,6 +9094,259 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      referral_clicks: {
+        Row: {
+          clicked_at: string
+          country: string | null
+          device_type: string | null
+          id: string
+          ip_address: string | null
+          platform: string | null
+          referer_url: string | null
+          referral_code_id: string
+          user_agent: string | null
+        }
+        Insert: {
+          clicked_at?: string
+          country?: string | null
+          device_type?: string | null
+          id?: string
+          ip_address?: string | null
+          platform?: string | null
+          referer_url?: string | null
+          referral_code_id: string
+          user_agent?: string | null
+        }
+        Update: {
+          clicked_at?: string
+          country?: string | null
+          device_type?: string | null
+          id?: string
+          ip_address?: string | null
+          platform?: string | null
+          referer_url?: string | null
+          referral_code_id?: string
+          user_agent?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "referral_clicks_referral_code_id_fkey"
+            columns: ["referral_code_id"]
+            isOneToOne: false
+            referencedRelation: "referral_codes"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      referral_codes: {
+        Row: {
+          code: string
+          created_at: string
+          custom_slug: string | null
+          id: string
+          is_active: boolean
+          total_clicks: number
+          total_conversions: number
+          total_invites_sent: number
+          total_points_earned: number
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          code: string
+          created_at?: string
+          custom_slug?: string | null
+          id?: string
+          is_active?: boolean
+          total_clicks?: number
+          total_conversions?: number
+          total_invites_sent?: number
+          total_points_earned?: number
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          code?: string
+          created_at?: string
+          custom_slug?: string | null
+          id?: string
+          is_active?: boolean
+          total_clicks?: number
+          total_conversions?: number
+          total_invites_sent?: number
+          total_points_earned?: number
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      referral_conversions: {
+        Row: {
+          conversion_type: string
+          converted_at: string
+          id: string
+          invitation_id: string | null
+          metadata: Json | null
+          points_awarded_referred: number
+          points_awarded_referrer: number
+          referral_code_id: string
+          referred_user_id: string
+          referrer_id: string
+        }
+        Insert: {
+          conversion_type?: string
+          converted_at?: string
+          id?: string
+          invitation_id?: string | null
+          metadata?: Json | null
+          points_awarded_referred?: number
+          points_awarded_referrer?: number
+          referral_code_id: string
+          referred_user_id: string
+          referrer_id: string
+        }
+        Update: {
+          conversion_type?: string
+          converted_at?: string
+          id?: string
+          invitation_id?: string | null
+          metadata?: Json | null
+          points_awarded_referred?: number
+          points_awarded_referrer?: number
+          referral_code_id?: string
+          referred_user_id?: string
+          referrer_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "referral_conversions_invitation_id_fkey"
+            columns: ["invitation_id"]
+            isOneToOne: false
+            referencedRelation: "referral_invitations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "referral_conversions_referral_code_id_fkey"
+            columns: ["referral_code_id"]
+            isOneToOne: false
+            referencedRelation: "referral_codes"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      referral_invitations: {
+        Row: {
+          channel: string
+          clicked_at: string | null
+          created_at: string
+          id: string
+          invitee_email: string | null
+          invitee_phone: string | null
+          metadata: Json | null
+          platform: string | null
+          referral_code_id: string
+          referrer_id: string
+          registered_at: string | null
+          reminder_count: number
+          reminder_sent_at: string | null
+          sent_at: string
+          status: string
+        }
+        Insert: {
+          channel?: string
+          clicked_at?: string | null
+          created_at?: string
+          id?: string
+          invitee_email?: string | null
+          invitee_phone?: string | null
+          metadata?: Json | null
+          platform?: string | null
+          referral_code_id: string
+          referrer_id: string
+          registered_at?: string | null
+          reminder_count?: number
+          reminder_sent_at?: string | null
+          sent_at?: string
+          status?: string
+        }
+        Update: {
+          channel?: string
+          clicked_at?: string | null
+          created_at?: string
+          id?: string
+          invitee_email?: string | null
+          invitee_phone?: string | null
+          metadata?: Json | null
+          platform?: string | null
+          referral_code_id?: string
+          referrer_id?: string
+          registered_at?: string | null
+          reminder_count?: number
+          reminder_sent_at?: string | null
+          sent_at?: string
+          status?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "referral_invitations_referral_code_id_fkey"
+            columns: ["referral_code_id"]
+            isOneToOne: false
+            referencedRelation: "referral_codes"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      referral_milestones: {
+        Row: {
+          badge_icon: string | null
+          created_at: string
+          description: string | null
+          description_ar: string | null
+          id: string
+          is_active: boolean
+          name: string
+          name_ar: string | null
+          required_referrals: number
+          reward_description: string | null
+          reward_description_ar: string | null
+          reward_type: string
+          reward_value: number
+          sort_order: number
+        }
+        Insert: {
+          badge_icon?: string | null
+          created_at?: string
+          description?: string | null
+          description_ar?: string | null
+          id?: string
+          is_active?: boolean
+          name: string
+          name_ar?: string | null
+          required_referrals: number
+          reward_description?: string | null
+          reward_description_ar?: string | null
+          reward_type?: string
+          reward_value?: number
+          sort_order?: number
+        }
+        Update: {
+          badge_icon?: string | null
+          created_at?: string
+          description?: string | null
+          description_ar?: string | null
+          id?: string
+          is_active?: boolean
+          name?: string
+          name_ar?: string | null
+          required_referrals?: number
+          reward_description?: string | null
+          reward_description_ar?: string | null
+          reward_type?: string
+          reward_value?: number
+          sort_order?: number
+        }
+        Relationships: []
       }
       registration_team_members: {
         Row: {
@@ -11100,6 +11529,41 @@ export type Database = {
           },
         ]
       }
+      user_milestone_achievements: {
+        Row: {
+          achieved_at: string
+          id: string
+          milestone_id: string
+          reward_claimed: boolean
+          reward_claimed_at: string | null
+          user_id: string
+        }
+        Insert: {
+          achieved_at?: string
+          id?: string
+          milestone_id: string
+          reward_claimed?: boolean
+          reward_claimed_at?: string | null
+          user_id: string
+        }
+        Update: {
+          achieved_at?: string
+          id?: string
+          milestone_id?: string
+          reward_claimed?: boolean
+          reward_claimed_at?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_milestone_achievements_milestone_id_fkey"
+            columns: ["milestone_id"]
+            isOneToOne: false
+            referencedRelation: "referral_milestones"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       user_permission_overrides: {
         Row: {
           created_at: string
@@ -11664,6 +12128,18 @@ export type Database = {
       }
     }
     Functions: {
+      award_points: {
+        Args: {
+          p_action_type: string
+          p_description?: string
+          p_description_ar?: string
+          p_points: number
+          p_reference_id?: string
+          p_reference_type?: string
+          p_user_id: string
+        }
+        Returns: number
+      }
       generate_account_number: {
         Args: { p_role: Database["public"]["Enums"]["app_role"] }
         Returns: string
@@ -11686,6 +12162,7 @@ export type Database = {
       generate_membership_verification: { Args: never; Returns: string }
       generate_order_number: { Args: never; Returns: string }
       generate_qr_code: { Args: { p_prefix?: string }; Returns: string }
+      generate_referral_code: { Args: never; Returns: string }
       generate_registration_number: { Args: never; Returns: string }
       generate_shop_order_number: { Args: never; Returns: string }
       generate_statement_number: { Args: never; Returns: string }
