@@ -12,6 +12,7 @@ import { MobileBottomNav } from "@/components/mobile/MobileBottomNav";
 import { SkipToContent } from "@/components/a11y/SkipToContent";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
 import { GoogleTrackingProvider } from "@/components/tracking/GoogleTrackingProvider";
+import { PageTracker } from "@/components/tracking/PageTracker";
 
 const LiveChatWidget = lazy(() => import("@/components/crm/LiveChatWidget").then(m => ({ default: m.LiveChatWidget })));
 const NotFound = lazy(() => import("./pages/NotFound"));
@@ -48,6 +49,7 @@ const App = () => (
             <BrowserRouter>
               <SkipToContent />
               <GoogleTrackingProvider />
+              <PageTracker />
               <Suspense fallback={null}><LiveChatWidget /></Suspense>
               <FloatingHelpButton />
               <ErrorBoundary>

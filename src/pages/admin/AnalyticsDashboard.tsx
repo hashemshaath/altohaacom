@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { BarChart3, Trophy, Users, DollarSign, Brain, Activity, UserMinus, TrendingUp } from "lucide-react";
+import { BarChart3, Trophy, Users, DollarSign, Brain, Activity, UserMinus, TrendingUp, Megaphone } from "lucide-react";
 import AdminPageHeader from "@/components/admin/AdminPageHeader";
 import PlatformOverview from "@/components/analytics/PlatformOverview";
 import CompetitionAnalytics from "@/components/analytics/CompetitionAnalytics";
@@ -11,12 +11,14 @@ import AIInsightsPanel from "@/components/analytics/AIInsightsPanel";
 import EngagementMetrics from "@/components/analytics/EngagementMetrics";
 import { CohortRetentionChart } from "@/components/analytics/CohortRetentionChart";
 import { RevenueAnalytics } from "@/components/analytics/RevenueAnalytics";
+import { MarketingAnalytics } from "@/components/analytics/MarketingAnalytics";
 
 export default function AnalyticsDashboard() {
   const { language } = useLanguage();
 
   const tabs = [
     { value: "overview", icon: BarChart3, label: language === "ar" ? "نظرة عامة" : "Overview" },
+    { value: "marketing", icon: Megaphone, label: language === "ar" ? "التسويق" : "Marketing" },
     { value: "engagement", icon: Activity, label: language === "ar" ? "التفاعل" : "Engagement" },
     { value: "retention", icon: UserMinus, label: language === "ar" ? "الاحتفاظ" : "Retention" },
     { value: "competitions", icon: Trophy, label: language === "ar" ? "المسابقات" : "Competitions" },
@@ -36,7 +38,7 @@ export default function AnalyticsDashboard() {
 
       <Tabs defaultValue="overview">
         <div className="overflow-x-auto">
-          <TabsList className="inline-flex w-auto min-w-full md:grid md:grid-cols-8">
+          <TabsList className="inline-flex w-auto min-w-full md:grid md:grid-cols-9">
             {tabs.map((tab) => (
               <TabsTrigger key={tab.value} value={tab.value} className="gap-1.5 min-w-max">
                 <tab.icon className="h-4 w-4" />
@@ -47,6 +49,7 @@ export default function AnalyticsDashboard() {
         </div>
 
         <TabsContent value="overview"><PlatformOverview /></TabsContent>
+        <TabsContent value="marketing"><MarketingAnalytics /></TabsContent>
         <TabsContent value="engagement"><EngagementMetrics /></TabsContent>
         <TabsContent value="retention"><CohortRetentionChart /></TabsContent>
         <TabsContent value="competitions"><CompetitionAnalytics /></TabsContent>
