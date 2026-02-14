@@ -453,24 +453,26 @@ export default function Messages() {
   };
 
   return (
-    <div className="flex min-h-screen flex-col">
+    <div className="flex min-h-screen flex-col bg-background">
       <Header />
 
       <main className="container flex-1 py-4 md:py-6">
-        <Card className="mx-auto max-w-5xl overflow-hidden border-border/50 shadow-lg shadow-primary/5" style={{ height: "calc(100vh - 160px)", minHeight: 500 }}>
+        <Card className="mx-auto max-w-5xl overflow-hidden rounded-3xl border-border/40 bg-card/60 backdrop-blur-sm shadow-2xl shadow-primary/5" style={{ height: "calc(100vh - 160px)", minHeight: 500 }}>
           <div className="flex h-full">
             {/* Conversations List */}
             <div className={`w-full border-e md:w-80 flex flex-col ${selectedPartner ? "hidden md:flex" : ""}`}>
-              <div className="border-b p-3 space-y-2">
+              <div className="border-b border-border/40 p-4 space-y-3 bg-muted/10">
                 <div className="flex items-center justify-between">
-                  <h2 className="flex items-center gap-2 font-semibold text-sm">
-                    <MessageSquare className="h-4 w-4 text-primary" />
+                  <h2 className="flex items-center gap-2.5 font-black text-sm tracking-tight">
+                    <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-primary/10 shadow-inner">
+                      <MessageSquare className="h-4 w-4 text-primary" />
+                    </div>
                     {isAr ? "الرسائل" : "Messages"}
                     {counts.unread > 0 && (
-                      <Badge className="h-5 min-w-5 text-[10px] px-1.5">{counts.unread}</Badge>
+                      <Badge className="h-5 min-w-5 text-[9px] font-black px-1.5 animate-pulse">{counts.unread}</Badge>
                     )}
                   </h2>
-                  <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => setIsNewConvOpen(true)}>
+                  <Button variant="ghost" size="icon" className="h-9 w-9 rounded-xl hover:bg-primary/5 hover:text-primary transition-all" onClick={() => setIsNewConvOpen(true)}>
                     <Plus className="h-4 w-4" />
                   </Button>
                 </div>

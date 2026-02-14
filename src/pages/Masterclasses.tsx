@@ -100,30 +100,35 @@ export default function Masterclasses() {
   };
 
   return (
-    <div className="flex min-h-screen flex-col">
+    <div className="flex min-h-screen flex-col bg-background">
       <SEOHead
         title="Culinary Masterclasses"
         description="Learn from world-class chefs with our curated masterclasses. From French cuisine to pastry arts."
       />
       <Header />
-      {/* Hero Banner */}
-      <section className="relative overflow-hidden border-b bg-gradient-to-b from-primary/5 via-background to-background">
-        <div className="absolute -top-32 start-1/4 h-64 w-64 rounded-full bg-primary/8 blur-[100px] animate-pulse pointer-events-none" />
-        <div className="absolute -top-20 end-1/3 h-48 w-48 rounded-full bg-accent/10 blur-[80px] animate-pulse [animation-delay:1s] pointer-events-none" />
-        <div className="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-primary/20 to-transparent" />
-        <div className="container relative py-10 md:py-14">
-          <div className="flex items-start gap-3">
-            <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-primary/10 ring-1 ring-primary/15 shadow-sm">
-              <GraduationCap className="h-6 w-6 text-primary" />
+      {/* Hero Banner - Premium */}
+      <section className="relative overflow-hidden border-b border-border/40 bg-gradient-to-br from-primary/5 via-background to-chart-3/5">
+        <div className="absolute -top-32 start-1/4 h-80 w-80 rounded-full bg-primary/10 blur-[120px] animate-pulse pointer-events-none" />
+        <div className="absolute -bottom-20 end-1/3 h-64 w-64 rounded-full bg-chart-3/15 blur-[100px] animate-pulse [animation-delay:2s] pointer-events-none" />
+        <div className="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-primary/30 to-transparent" />
+        <div className="container relative py-12 md:py-16">
+          <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:gap-5 animate-fade-in">
+            <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded-3xl bg-primary/10 ring-4 ring-primary/5 shadow-inner transition-transform duration-500 hover:scale-110 hover:rotate-3">
+              <GraduationCap className="h-8 w-8 text-primary" />
             </div>
-            <div>
-              <h1 className="font-serif text-2xl font-bold md:text-3xl lg:text-4xl">
-                {isAr ? "الدورات التعليمية" : "Masterclasses"}
-              </h1>
-              <p className="mt-1 max-w-xl text-sm text-muted-foreground sm:text-base">
+            <div className="space-y-2">
+              <div className="flex items-center gap-3">
+                <h1 className="font-serif text-3xl font-black md:text-4xl lg:text-5xl tracking-tight">
+                  {isAr ? "الدورات التعليمية" : "Masterclasses"}
+                </h1>
+                <Badge variant="outline" className="gap-1.5 border-primary/20 bg-primary/5 text-primary py-1 px-3 font-bold">
+                  {filtered.length} {isAr ? "دورة" : "Available"}
+                </Badge>
+              </div>
+              <p className="max-w-xl text-base text-muted-foreground font-medium leading-relaxed">
                 {isAr
-                  ? "تعلم من أفضل الطهاة والخبراء في عالم الطهي"
-                  : "Learn from the best chefs and culinary experts"}
+                  ? "تعلم من أفضل الطهاة والخبراء في عالم الطهي العالمي"
+                  : "Master the art of culinary excellence with world-renowned chefs and industry experts."}
               </p>
             </div>
           </div>
@@ -132,57 +137,59 @@ export default function Masterclasses() {
 
       <main className="container flex-1 py-8 md:py-12">
 
-        {/* Filters */}
-        <div className="mb-8 flex flex-col gap-3 sm:flex-row">
-          <div className="relative flex-1 sm:max-w-xs">
-            <Search className="absolute start-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-            <Input
-              placeholder={isAr ? "ابحث عن دورة..." : "Search masterclasses..."}
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              className="ps-10"
-            />
+        {/* Sticky Glass Filters */}
+        <div className="sticky top-[64px] z-30 -mx-4 mb-10 bg-background/80 px-4 py-4 backdrop-blur-md border-y border-border/40 md:rounded-2xl md:border md:mx-0 md:px-6 shadow-sm">
+          <div className="flex flex-col gap-3 sm:flex-row">
+            <div className="relative flex-1 sm:max-w-sm">
+              <Search className="absolute start-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+              <Input
+                placeholder={isAr ? "ابحث عن دورة..." : "Search masterclasses..."}
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                className="ps-10 bg-card/50 border-border/40"
+              />
+            </div>
+            <Select value={levelFilter} onValueChange={setLevelFilter}>
+              <SelectTrigger className="w-full sm:w-40 bg-card/50 border-border/40">
+                <SelectValue placeholder={isAr ? "المستوى" : "Level"} />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">{isAr ? "جميع المستويات" : "All Levels"}</SelectItem>
+                <SelectItem value="beginner">{isAr ? "مبتدئ" : "Beginner"}</SelectItem>
+                <SelectItem value="intermediate">{isAr ? "متوسط" : "Intermediate"}</SelectItem>
+                <SelectItem value="advanced">{isAr ? "متقدم" : "Advanced"}</SelectItem>
+              </SelectContent>
+            </Select>
+            {categories.length > 1 && (
+              <Select value={categoryFilter} onValueChange={setCategoryFilter}>
+                <SelectTrigger className="w-full sm:w-40 bg-card/50 border-border/40">
+                  <SelectValue placeholder={isAr ? "التصنيف" : "Category"} />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">{isAr ? "الكل" : "All"}</SelectItem>
+                  {categories.map((cat) => (
+                    <SelectItem key={cat} value={cat}>{cat}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            )}
+            {countryCodes.length > 1 && (
+              <Select value={countryFilter} onValueChange={setCountryFilter}>
+                <SelectTrigger className="w-full sm:w-44 bg-card/50 border-border/40">
+                  <MapPin className="me-1.5 h-3.5 w-3.5 text-muted-foreground" />
+                  <SelectValue placeholder={isAr ? "الدولة" : "Country"} />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">{isAr ? "جميع الدول" : "All Countries"}</SelectItem>
+                  {countryCodes.map((code) => (
+                    <SelectItem key={code} value={code}>
+                      {countryFlag(code)} {getCountryName(code)}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            )}
           </div>
-          <Select value={levelFilter} onValueChange={setLevelFilter}>
-            <SelectTrigger className="w-full sm:w-40">
-              <SelectValue placeholder={isAr ? "المستوى" : "Level"} />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">{isAr ? "جميع المستويات" : "All Levels"}</SelectItem>
-              <SelectItem value="beginner">{isAr ? "مبتدئ" : "Beginner"}</SelectItem>
-              <SelectItem value="intermediate">{isAr ? "متوسط" : "Intermediate"}</SelectItem>
-              <SelectItem value="advanced">{isAr ? "متقدم" : "Advanced"}</SelectItem>
-            </SelectContent>
-          </Select>
-          {categories.length > 1 && (
-            <Select value={categoryFilter} onValueChange={setCategoryFilter}>
-              <SelectTrigger className="w-full sm:w-40">
-                <SelectValue placeholder={isAr ? "التصنيف" : "Category"} />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">{isAr ? "الكل" : "All"}</SelectItem>
-                {categories.map((cat) => (
-                  <SelectItem key={cat} value={cat}>{cat}</SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          )}
-          {countryCodes.length > 1 && (
-            <Select value={countryFilter} onValueChange={setCountryFilter}>
-              <SelectTrigger className="w-full sm:w-44">
-                <MapPin className="me-1.5 h-3.5 w-3.5 text-muted-foreground" />
-                <SelectValue placeholder={isAr ? "الدولة" : "Country"} />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">{isAr ? "جميع الدول" : "All Countries"}</SelectItem>
-                {countryCodes.map((code) => (
-                  <SelectItem key={code} value={code}>
-                    {countryFlag(code)} {getCountryName(code)}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          )}
         </div>
 
         {isLoading ? (
@@ -233,68 +240,81 @@ export default function Masterclasses() {
               return (
                 <Card
                   key={mc.id}
-                  className="group h-full overflow-hidden cursor-pointer transition-all hover:shadow-md hover:-translate-y-0.5 flex flex-col"
+                  className="group flex h-full flex-col overflow-hidden cursor-pointer border-border/40 bg-card/60 backdrop-blur-sm transition-all duration-500 hover:shadow-2xl hover:-translate-y-2 hover:border-primary/30 hover:bg-card"
                   onClick={() => navigate(`/masterclasses/${mc.id}`)}
                 >
-                  <div className="relative aspect-video overflow-hidden bg-muted">
+                  <div className="relative aspect-video shrink-0 overflow-hidden bg-muted">
                     {mc.cover_image_url ? (
                       <img
                         src={mc.cover_image_url}
                         alt={title}
-                        className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
+                        className="h-full w-full object-cover transition-transform duration-1000 group-hover:scale-110"
                         loading="lazy"
                       />
                     ) : (
-                      <div className="flex h-full items-center justify-center bg-gradient-to-br from-primary/5 to-muted">
-                        <BookOpen className="h-10 w-10 text-muted-foreground/20" />
+                      <div className="flex h-full items-center justify-center bg-gradient-to-br from-primary/10 to-chart-3/10">
+                        <BookOpen className="h-12 w-12 text-primary/15 animate-pulse" />
+                      </div>
+                    )}
+                    <div className="absolute inset-0 bg-gradient-to-t from-background/80 via-transparent to-transparent" />
+                    {/* Badges overlay */}
+                    <div className="absolute inset-x-0 top-0 flex items-center justify-between p-4">
+                      {getLevelBadge(mc.level)}
+                      <div className="flex gap-1.5">
+                        {mc.is_free && (
+                          <Badge className="bg-chart-2/20 text-chart-2 backdrop-blur-md border-0 text-[9px] font-black uppercase tracking-wider shadow-lg">
+                            {isAr ? "مجاني" : "Free"}
+                          </Badge>
+                        )}
+                        {isEnrolled && (
+                          <Badge className="bg-primary/20 text-primary backdrop-blur-md border-0 text-[9px] font-black uppercase tracking-wider shadow-lg animate-pulse">
+                            {isAr ? "مسجل" : "Enrolled"}
+                          </Badge>
+                        )}
+                      </div>
+                    </div>
+                    {/* Rating overlay */}
+                    {avgRating !== null && (
+                      <div className="absolute end-4 bottom-4">
+                        <Badge variant="secondary" className="gap-1.5 bg-background/80 backdrop-blur-md shadow-lg font-bold text-xs border-chart-4/30">
+                          <Star className="h-3 w-3 fill-chart-4 text-chart-4" />
+                          {avgRating.toFixed(1)}
+                        </Badge>
                       </div>
                     )}
                   </div>
-                  <CardContent className="flex flex-1 flex-col p-4">
-                    <div className="mb-2 flex flex-wrap items-center gap-1.5">
-                      {getLevelBadge(mc.level)}
-                      {mc.is_free && (
-                        <Badge variant="secondary" className="text-[10px]">
-                          {isAr ? "مجاني" : "Free"}
-                        </Badge>
-                      )}
-                      {isEnrolled && (
-                        <Badge variant="default" className="text-[10px]">
-                          {isAr ? "مسجل" : "Enrolled"}
-                        </Badge>
-                      )}
-                    </div>
-                    <h3 className="mb-1.5 text-sm font-semibold line-clamp-2 group-hover:text-primary transition-colors">
+                  <CardContent className="flex flex-1 flex-col p-5">
+                    <h3 className="mb-2 text-base font-black line-clamp-2 group-hover:text-primary transition-colors duration-300 leading-tight">
                       {title}
                     </h3>
-                    <p className="mb-3 flex-1 text-xs text-muted-foreground line-clamp-2 leading-relaxed">
+                    <p className="mb-5 flex-1 text-xs text-muted-foreground line-clamp-2 leading-relaxed font-medium">
                       {description}
                     </p>
-                    <div className="flex flex-wrap items-center gap-3 text-[11px] text-muted-foreground border-t pt-3">
-                      <span className="flex items-center gap-1">
-                        <BookOpen className="h-3 w-3" />
+                    <div className="flex flex-wrap items-center gap-4 text-[11px] font-bold text-muted-foreground border-t border-border/40 pt-4">
+                      <span className="flex items-center gap-1.5">
+                        <div className="flex h-6 w-6 items-center justify-center rounded-lg bg-primary/10">
+                          <BookOpen className="h-3 w-3 text-primary" />
+                        </div>
                         {moduleCount} {isAr ? "وحدة" : "modules"}
                       </span>
                       {mc.duration_hours && (
-                        <span className="flex items-center gap-1">
-                          <Clock className="h-3 w-3" />
+                        <span className="flex items-center gap-1.5">
+                          <div className="flex h-6 w-6 items-center justify-center rounded-lg bg-chart-4/10">
+                            <Clock className="h-3 w-3 text-chart-4" />
+                          </div>
                           {mc.duration_hours}h
                         </span>
                       )}
-                      <span className="flex items-center gap-1">
-                        <Users className="h-3 w-3" />
+                      <span className="flex items-center gap-1.5">
+                        <div className="flex h-6 w-6 items-center justify-center rounded-lg bg-chart-2/10">
+                          <Users className="h-3 w-3 text-chart-2" />
+                        </div>
                         {enrollmentCount}
                       </span>
-                      {avgRating !== null && (
-                        <span className="flex items-center gap-1">
-                          <Star className="h-3 w-3 fill-chart-4 text-chart-4" />
-                          {avgRating.toFixed(1)}
-                        </span>
-                      )}
                       {mc.country_code && (
-                        <span className="flex items-center gap-1">
-                          <MapPin className="h-3 w-3" />
-                          {countryFlag(mc.country_code)} {getCountryName(mc.country_code)}
+                        <span className="flex items-center gap-1.5 ms-auto">
+                          <MapPin className="h-3 w-3 text-primary" />
+                          {countryFlag(mc.country_code)}
                         </span>
                       )}
                     </div>
