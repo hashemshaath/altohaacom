@@ -23,6 +23,7 @@ const CompanyAdvertising = lazy(() => import("@/pages/company/CompanyAdvertising
 const CompanySponsorships = lazy(() => import("@/pages/company/CompanySponsorships"));
 const CompanyNotifications = lazy(() => import("@/pages/company/CompanyNotifications"));
 const CompanyAdminMessaging = lazy(() => import("@/pages/company/CompanyAdminMessaging"));
+const CompanyCampaignDetail = lazy(() => import("@/pages/company/CompanyCampaignDetail"));
 
 export const companyRoutes = (
   <Route path="/company" element={<ProtectedRoute><CompanyPortalLayout /></ProtectedRoute>}>
@@ -43,6 +44,7 @@ export const companyRoutes = (
     <Route path="invoices" element={<CompanyInvoices />} />
     <Route path="catalog" element={<CompanyCatalog />} />
     <Route path="advertising" element={<CompanyAdvertising />} />
+    <Route path="advertising/:campaignId" element={<CompanyCampaignDetail />} />
     <Route path="sponsorships" element={<CompanySponsorships />} />
     <Route path="notifications" element={<CompanyNotifications />} />
     <Route path="support" element={<CompanyAdminMessaging />} />
