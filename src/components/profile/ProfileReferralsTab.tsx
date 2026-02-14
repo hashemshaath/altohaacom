@@ -8,6 +8,7 @@ import { usePointsBalance } from "@/hooks/usePoints";
 import { useToast } from "@/hooks/use-toast";
 import { Copy, Gift, Star, Users, Send, TrendingUp, Trophy, CheckCircle2 } from "lucide-react";
 import { Link } from "react-router-dom";
+import { StaggeredList } from "@/components/ui/staggered-list";
 
 export function ProfileReferralsTab({ userId }: { userId: string }) {
   const { language } = useLanguage();
@@ -41,7 +42,7 @@ export function ProfileReferralsTab({ userId }: { userId: string }) {
   ];
 
   return (
-    <div className="space-y-6">
+    <StaggeredList className="space-y-6" stagger={80}>
       {/* Stats Grid */}
       <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
         {statItems.map((s) => (
@@ -193,6 +194,6 @@ export function ProfileReferralsTab({ userId }: { userId: string }) {
           </CardContent>
         </Card>
       )}
-    </div>
+    </StaggeredList>
   );
 }

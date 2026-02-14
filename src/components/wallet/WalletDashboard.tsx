@@ -6,6 +6,8 @@ import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Wallet, ArrowUpRight, ArrowDownLeft, Coins, Receipt, TrendingUp, CreditCard } from "lucide-react";
+import { EmptyState } from "@/components/ui/empty-state";
+import { StaggeredList } from "@/components/ui/staggered-list";
 import { formatCurrency } from "@/lib/currencyFormatter";
 import { format } from "date-fns";
 import { ar } from "date-fns/locale";
@@ -51,15 +53,11 @@ export function WalletDashboard({ userId }: WalletDashboardProps) {
 
   if (!wallet) {
     return (
-      <Card className="border-dashed border-2 border-muted-foreground/20">
-        <CardContent className="flex flex-col items-center justify-center py-12 text-center">
-          <Wallet className="h-12 w-12 text-muted-foreground/40 mb-4" />
-          <h3 className="text-lg font-bold mb-1">{isAr ? "المحفظة المالية" : "Financial Wallet"}</h3>
-          <p className="text-sm text-muted-foreground max-w-md">
-            {isAr ? "سيتم إنشاء محفظتك تلقائياً عند أول معاملة مالية" : "Your wallet will be created automatically with your first financial transaction"}
-          </p>
-        </CardContent>
-      </Card>
+      <EmptyState
+        icon={Wallet}
+        title={isAr ? "المحفظة المالية" : "Financial Wallet"}
+        description={isAr ? "سيتم إنشاء محفظتك تلقائياً عند أول معاملة مالية" : "Your wallet will be created automatically with your first financial transaction"}
+      />
     );
   }
 
@@ -78,7 +76,7 @@ export function WalletDashboard({ userId }: WalletDashboardProps) {
   };
 
   return (
-    <div className="space-y-6" dir={isAr ? "rtl" : "ltr"}>
+    <StaggeredList className="space-y-6" stagger={80}>
       {/* Wallet Summary */}
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         <Card className="border-s-[3px] border-s-primary">
@@ -200,13 +198,14 @@ export function WalletDashboard({ userId }: WalletDashboardProps) {
               </Table>
             </div>
           ) : (
-            <div className="flex flex-col items-center justify-center py-12">
-              <Receipt className="h-10 w-10 text-muted-foreground/30 mb-3" />
-              <p className="text-muted-foreground text-sm">{isAr ? "لا توجد معاملات بعد" : "No transactions yet"}</p>
-            </div>
+            <EmptyState
+              icon={Receipt}
+              title={isAr ? "لا توجد معاملات بعد" : "No transactions yet"}
+              description={isAr ? "ستظهر معاملاتك هنا" : "Your transactions will appear here"}
+            />
           )}
         </CardContent>
       </Card>
-    </div>
+    </StaggeredList>
   );
 }

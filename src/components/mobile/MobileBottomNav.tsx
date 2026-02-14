@@ -33,7 +33,8 @@ export function MobileBottomNav() {
 
   return (
     <nav
-      className="fixed bottom-0 inset-x-0 z-50 border-t border-border/60 bg-card/95 backdrop-blur-xl supports-[backdrop-filter]:bg-card/85 md:hidden safe-area-bottom"
+      className="fixed bottom-0 inset-x-0 z-50 border-t border-border/60 bg-card/95 backdrop-blur-xl supports-[backdrop-filter]:bg-card/85 md:hidden"
+      style={{ paddingBottom: "env(safe-area-inset-bottom, 0px)" }}
       role="navigation"
       aria-label="Mobile navigation"
     >
@@ -49,7 +50,7 @@ export function MobileBottomNav() {
               key={item.to}
               to={item.to}
               className={cn(
-                "flex flex-col items-center justify-center gap-0.5 flex-1 py-1.5 rounded-xl transition-all duration-200 active:scale-95",
+                "flex flex-col items-center justify-center gap-0.5 flex-1 py-1.5 rounded-xl transition-all duration-200 active:scale-95 min-h-[44px]",
                 isActive
                   ? "text-primary"
                   : "text-muted-foreground hover:text-foreground"

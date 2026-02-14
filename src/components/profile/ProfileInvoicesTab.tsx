@@ -12,6 +12,8 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Separator } from "@/components/ui/separator";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import PrintableInvoice from "@/components/invoices/PrintableInvoice";
+import { EmptyState } from "@/components/ui/empty-state";
+import { StaggeredList } from "@/components/ui/staggered-list";
 import {
   FileText, Search, Eye, Download, DollarSign, Clock,
   CheckCircle, XCircle, AlertTriangle,
@@ -141,7 +143,7 @@ export function ProfileInvoicesTab({ userId }: ProfileInvoicesTabProps) {
   }
 
   return (
-    <div className="space-y-6">
+    <StaggeredList className="space-y-6" stagger={80}>
       {/* Stats */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
         {statCards.map((stat) => (
@@ -200,19 +202,11 @@ export function ProfileInvoicesTab({ userId }: ProfileInvoicesTabProps) {
           </div>
 
           {invoices.length === 0 ? (
-            <div className="flex flex-col items-center justify-center py-12 text-center">
-              <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-muted mb-4">
-                <FileText className="h-8 w-8 text-muted-foreground" />
-              </div>
-              <h3 className="text-lg font-semibold">
-                {isAr ? "لا توجد فواتير" : "No Invoices"}
-              </h3>
-              <p className="text-sm text-muted-foreground mt-1 max-w-sm">
-                {isAr
-                  ? "ستظهر فواتيرك هنا عند إصدارها من قبل الإدارة"
-                  : "Your invoices will appear here when issued by the administration"}
-              </p>
-            </div>
+            <EmptyState
+              icon={FileText}
+              title={isAr ? "لا توجد فواتير" : "No Invoices"}
+              description={isAr ? "ستظهر فواتيرك هنا عند إصدارها من قبل الإدارة" : "Your invoices will appear here when issued by the administration"}
+            />
           ) : (
             <div className="rounded-lg border overflow-hidden">
               <Table>
@@ -316,6 +310,6 @@ export function ProfileInvoicesTab({ userId }: ProfileInvoicesTabProps) {
           )}
         </DialogContent>
       </Dialog>
-    </div>
+    </StaggeredList>
   );
 }
