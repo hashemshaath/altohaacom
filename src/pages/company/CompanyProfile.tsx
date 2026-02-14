@@ -60,43 +60,62 @@ export default function CompanyProfile() {
   };
 
   return (
-    <div className="space-y-6">
-      {/* Profile Hero */}
-      <div className="relative overflow-hidden rounded-2xl border bg-card p-6">
-        <div className="absolute -right-20 -top-20 h-48 w-48 rounded-full bg-primary/5 blur-3xl" />
-        <div className="relative flex flex-col gap-4 sm:flex-row sm:items-center">
-          <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded-2xl bg-primary/10">
-            <Building2 className="h-8 w-8 text-primary" />
+    <div className="space-y-8">
+      {/* Profile Hero Section */}
+      <div className="relative overflow-hidden rounded-[2.5rem] border border-border/40 bg-card shadow-2xl shadow-black/5">
+        <div className="absolute inset-0 bg-gradient-to-br from-primary/10 via-background to-accent/10" />
+        {company.cover_image_url && (
+          <img src={company.cover_image_url} className="absolute inset-0 h-full w-full object-cover opacity-20 grayscale" alt="" />
+        )}
+        <div className="absolute -end-24 -top-24 h-64 w-64 rounded-full bg-primary/10 blur-[100px] animate-pulse" />
+        
+        <div className="relative flex flex-col gap-8 p-8 md:flex-row md:items-center md:p-12">
+          <div className="flex h-24 w-24 shrink-0 items-center justify-center rounded-[2rem] bg-gradient-to-br from-primary to-primary-variant text-primary-foreground shadow-2xl shadow-primary/20 transition-transform hover:scale-105 duration-500">
+            {company.logo_url ? (
+              <img src={company.logo_url} className="h-16 w-16 object-contain brightness-0 invert" alt={company.name} />
+            ) : (
+              <Building2 className="h-12 w-12" />
+            )}
           </div>
-          <div className="min-w-0 flex-1">
-            <h1 className="text-2xl font-bold">{company.name}</h1>
-            {company.name_ar && language !== "ar" && (
-              <p className="text-sm text-muted-foreground">{company.name_ar}</p>
-            )}
+          
+          <div className="min-w-0 flex-1 space-y-4">
+            <div>
+              <div className="flex flex-wrap items-center gap-3">
+                <h1 className="font-serif text-3xl font-bold tracking-tight md:text-4xl lg:text-5xl">{company.name}</h1>
+                {getStatusBadge(company.status || null)}
+              </div>
+              {company.name_ar && language !== "ar" && (
+                <p className="mt-1 font-serif text-xl text-muted-foreground/60 italic">{company.name_ar}</p>
+              )}
+            </div>
+
             {company.description && (
-              <p className="mt-1 text-sm text-muted-foreground line-clamp-2">{company.description}</p>
+              <p className="max-w-3xl text-base text-muted-foreground/90 leading-relaxed line-clamp-3">{company.description}</p>
             )}
-            <div className="mt-3 flex flex-wrap items-center gap-2">
-              {getStatusBadge(company.status || null)}
-              <Badge variant="outline">{company.type}</Badge>
+
+            <div className="flex flex-wrap items-center gap-3">
+              <Badge variant="outline" className="bg-primary/5 border-primary/20 text-primary font-bold uppercase tracking-widest text-[10px] px-3 py-1.5">{company.type}</Badge>
               {company.company_number && (
-                <Badge variant="outline" className="font-mono text-xs">
-                  <Hash className="mr-1 h-3 w-3" />
+                <Badge variant="outline" className="bg-muted/50 font-mono text-[10px] px-3 py-1.5">
+                  <Hash className="me-1.5 h-3 w-3 text-muted-foreground" />
                   {company.company_number}
                 </Badge>
               )}
               {(company as any).country_code && (
-                <Badge variant="outline">
+                <Badge variant="outline" className="bg-muted/50 font-bold text-[10px] px-3 py-1.5">
                   {countryFlag((company as any).country_code)} {getCountryName((company as any).country_code)}
                 </Badge>
               )}
             </div>
+
             {(company as any).operating_countries && (company as any).operating_countries.length > 0 && (
-              <div className="mt-2 flex flex-wrap items-center gap-1.5">
-                <Earth className="h-3.5 w-3.5 text-muted-foreground" />
-                <span className="text-xs text-muted-foreground">{language === "ar" ? "يعمل في:" : "Operates in:"}</span>
+              <div className="flex flex-wrap items-center gap-2 pt-2 border-t border-border/40">
+                <span className="flex items-center gap-1.5 text-[10px] font-black uppercase tracking-widest text-muted-foreground">
+                  <Earth className="h-3 w-3" />
+                  {language === "ar" ? "مناطق العمل:" : "Regions:"}
+                </span>
                 {((company as any).operating_countries as string[]).map((cc) => (
-                  <Badge key={cc} variant="secondary" className="text-[10px] px-1.5 py-0">
+                  <Badge key={cc} variant="secondary" className="rounded-lg bg-muted/40 text-[10px] font-bold px-2 py-0.5">
                     {countryFlag(cc)} {getCountryName(cc)}
                   </Badge>
                 ))}
@@ -108,28 +127,33 @@ export default function CompanyProfile() {
 
       {/* QR Code */}
       {qrCode && (
-        <QRCodeDisplay
-          code={qrCode.code}
-          label={language === "ar" ? "رمز QR للشركة" : "Company QR Code"}
-          size={140}
-          vCardData={{
-            fullName: company.name,
-            phone: company.phone || undefined,
-            email: company.email || undefined,
-            organization: company.name,
-            website: company.website || undefined,
-            location: company.city || undefined,
-            accountNumber: company.company_number || undefined,
-          }}
-        />
+        <div className="flex justify-center md:justify-start">
+          <QRCodeDisplay
+            code={qrCode.code}
+            label={language === "ar" ? "رمز QR للشركة" : "Company QR Code"}
+            size={160}
+            className="rounded-[2rem] border-border/40 bg-card/50 p-6 backdrop-blur-md shadow-xl transition-all hover:scale-105"
+            vCardData={{
+              fullName: company.name,
+              phone: company.phone || undefined,
+              email: company.email || undefined,
+              organization: company.name,
+              website: company.website || undefined,
+              location: company.city || undefined,
+              accountNumber: company.company_number || undefined,
+            }}
+          />
+        </div>
       )}
 
-      <div className="grid gap-6 md:grid-cols-2">
+      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
         {/* Contact Information */}
-        <Card className="animate-fade-in">
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2 text-lg">
-              <Phone className="h-4 w-4 text-primary" />
+        <Card className="animate-fade-in group rounded-[2rem] border-border/40 shadow-lg transition-all hover:shadow-2xl hover:-translate-y-1">
+          <CardHeader className="pb-2">
+            <CardTitle className="flex items-center gap-3 text-lg font-bold">
+              <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary/10 text-primary">
+                <Phone className="h-4 w-4" />
+              </div>
               {language === "ar" ? "معلومات الاتصال" : "Contact Information"}
             </CardTitle>
           </CardHeader>
@@ -146,10 +170,12 @@ export default function CompanyProfile() {
         </Card>
 
         {/* Financial */}
-        <Card className="animate-fade-in" style={{ animationDelay: "0.05s" }}>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2 text-lg">
-              <CreditCard className="h-4 w-4 text-primary" />
+        <Card className="animate-fade-in group rounded-[2rem] border-border/40 shadow-lg transition-all hover:shadow-2xl hover:-translate-y-1" style={{ animationDelay: "0.05s" }}>
+          <CardHeader className="pb-2">
+            <CardTitle className="flex items-center gap-3 text-lg font-bold">
+              <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary/10 text-primary">
+                <CreditCard className="h-4 w-4" />
+              </div>
               {language === "ar" ? "معلومات مالية" : "Financial Information"}
             </CardTitle>
           </CardHeader>
@@ -176,10 +202,12 @@ export default function CompanyProfile() {
 
         {/* Address */}
         {(company.address || company.city || company.country) && (
-          <Card className="animate-fade-in" style={{ animationDelay: "0.1s" }}>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2 text-lg">
-                <MapPin className="h-4 w-4 text-primary" />
+          <Card className="animate-fade-in group rounded-[2rem] border-border/40 shadow-lg transition-all hover:shadow-2xl hover:-translate-y-1" style={{ animationDelay: "0.1s" }}>
+            <CardHeader className="pb-2">
+              <CardTitle className="flex items-center gap-3 text-lg font-bold">
+                <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary/10 text-primary">
+                  <MapPin className="h-4 w-4" />
+                </div>
                 {language === "ar" ? "العنوان" : "Address"}
               </CardTitle>
             </CardHeader>
@@ -198,10 +226,12 @@ export default function CompanyProfile() {
 
         {/* Registration */}
         {(company.registration_number || company.tax_number) && (
-          <Card className="animate-fade-in" style={{ animationDelay: "0.15s" }}>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2 text-lg">
-                <Shield className="h-4 w-4 text-primary" />
+          <Card className="animate-fade-in group rounded-[2rem] border-border/40 shadow-lg transition-all hover:shadow-2xl hover:-translate-y-1" style={{ animationDelay: "0.15s" }}>
+            <CardHeader className="pb-2">
+              <CardTitle className="flex items-center gap-3 text-lg font-bold">
+                <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary/10 text-primary">
+                  <Shield className="h-4 w-4" />
+                </div>
                 {language === "ar" ? "معلومات التسجيل" : "Registration Info"}
               </CardTitle>
             </CardHeader>

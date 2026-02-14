@@ -14,7 +14,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Search, CalendarDays, Landmark, MapPin, Plus, Globe, ArrowRight, Clock } from "lucide-react";
+import { Search, CalendarDays, Landmark, MapPin, Plus, Globe, ArrowRight, Clock, History, Building } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { countryFlag } from "@/lib/countryFlag";
@@ -40,7 +40,7 @@ export default function Exhibitions() {
   const isAr = language === "ar";
   const { user } = useAuth();
   useAdTracking();
-  const [search, setSearch] = useState("");
+  const [searchQuery, setSearchQuery] = useState("");
   const [activeTab, setActiveTab] = useState("all");
   const [typeFilter, setTypeFilter] = useState<string>("all");
   const [countryFilter, setCountryFilter] = useState<string>("all");
@@ -64,7 +64,7 @@ export default function Exhibitions() {
 
   const filtered = exhibitions?.filter((ex) => {
     const title = isAr && ex.title_ar ? ex.title_ar : ex.title;
-    const matchesSearch = title.toLowerCase().includes(search.toLowerCase());
+    const matchesSearch = title.toLowerCase().includes(searchQuery.toLowerCase());
     const matchesType = typeFilter === "all" || ex.type === typeFilter;
     const matchesCountry = countryFilter === "all" || ex.country === countryFilter;
 
@@ -98,65 +98,85 @@ export default function Exhibitions() {
       <Header />
 
       {/* Hero Banner */}
-      <section className="relative overflow-hidden border-b bg-gradient-to-b from-primary/5 via-background to-background">
-        <div className="absolute -top-32 start-1/4 h-64 w-64 rounded-full bg-primary/8 blur-[100px] animate-pulse" />
-        <div className="absolute -top-20 end-1/3 h-48 w-48 rounded-full bg-accent/10 blur-[80px] animate-pulse [animation-delay:1s]" />
-        <div className="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-primary/20 to-transparent" />
-
-        <div className="container relative py-10 md:py-14">
-          <div className="flex flex-col gap-6 sm:flex-row sm:items-end sm:justify-between">
-            <div className="flex items-start gap-3">
-              <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-primary/10 ring-1 ring-primary/15 shadow-sm">
-                <Landmark className="h-6 w-6 text-primary" />
+      <section className="relative overflow-hidden border-b bg-gradient-to-b from-primary/10 via-background to-background">
+        <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1414235077428-338989a2e8c0?auto=format&fit=crop&q=80')] bg-fixed bg-cover bg-center opacity-5 grayscale" />
+        <div className="absolute inset-0 bg-gradient-to-t from-background via-background/40 to-transparent" />
+        
+        <div className="absolute -top-32 start-1/4 h-64 w-64 rounded-full bg-primary/10 blur-[100px] animate-pulse" />
+        <div className="absolute -top-20 end-1/3 h-48 w-48 rounded-full bg-accent/15 blur-[80px] animate-pulse [animation-delay:1s]" />
+        
+        <div className="container relative py-12 md:py-16">
+          <div className="flex flex-col gap-8 lg:flex-row lg:items-center lg:justify-between">
+            <div className="flex-1 space-y-6">
+              <div className="inline-flex items-center gap-2 rounded-full bg-primary/10 px-3 py-1 ring-1 ring-primary/20 backdrop-blur-sm">
+                <div className="h-1.5 w-1.5 rounded-full bg-primary animate-pulse" />
+                <span className="text-[10px] font-bold uppercase tracking-widest text-primary">
+                  {isAr ? "فعاليات الطهي العالمية" : "Global Culinary Events"}
+                </span>
               </div>
-              <div>
-                <h1 className="font-serif text-2xl font-bold md:text-3xl lg:text-4xl">
-                  {isAr ? "المعارض والفعاليات" : "Exhibitions & Events"}
+              
+              <div className="space-y-3">
+                <h1 className="font-serif text-4xl font-bold tracking-tight md:text-5xl lg:text-6xl text-balance leading-[1.1]">
+                  {isAr ? (
+                    <>أبرز <span className="text-primary italic">المعارض</span> والفعاليات</>
+                  ) : (
+                    <>Premier <span className="text-primary italic">Exhibitions</span> & Events</>
+                  )}
                 </h1>
-                <p className="mt-1 max-w-xl text-sm text-muted-foreground sm:text-base">
+                <p className="max-w-xl text-base text-muted-foreground/90 md:text-lg leading-relaxed">
                   {isAr
-                    ? "اكتشف أبرز المعارض والمؤتمرات والفعاليات في عالم الطعام والطهي"
-                    : "Discover the top exhibitions, conferences, and events in the culinary world"}
+                    ? "بوابتك لاكتشاف أبرز المعارض والمؤتمرات العالمية في عالم الضيافة وفنون الطهي"
+                    : "Your gateway to discovering the world's most prestigious hospitality and culinary trade shows"}
                 </p>
               </div>
-            </div>
-            {user && (
-              <Button className="shadow-sm shadow-primary/20" asChild>
-                <Link to="/exhibitions/create">
-                  <Plus className="me-2 h-4 w-4" />
-                  {isAr ? "إنشاء فعالية" : "Create Event"}
-                </Link>
-              </Button>
-            )}
-          </div>
 
-          {/* Quick Stats Pills */}
-          {exhibitions && exhibitions.length > 0 && (
-            <div className="mt-6 flex flex-wrap gap-2">
-              <Badge variant="secondary" className="gap-1.5 px-3 py-1.5 text-xs">
-                <Landmark className="h-3 w-3" />
-                {exhibitions.length} {isAr ? "فعالية" : "Events"}
-              </Badge>
-              {happeningNowCount > 0 && (
-                <Badge className="gap-1.5 bg-chart-3/15 text-chart-3 border-chart-3/20 px-3 py-1.5 text-xs">
-                  <Clock className="h-3 w-3" />
-                  {happeningNowCount} {isAr ? "جارية الآن" : "Live Now"}
-                </Badge>
-              )}
-              {upcomingCount > 0 && (
-                <Badge variant="secondary" className="gap-1.5 px-3 py-1.5 text-xs">
-                  <CalendarDays className="h-3 w-3" />
-                  {upcomingCount} {isAr ? "قادمة" : "Upcoming"}
-                </Badge>
-              )}
-              {countriesCount > 1 && (
-                <Badge variant="secondary" className="gap-1.5 px-3 py-1.5 text-xs">
-                  <Globe className="h-3 w-3" />
-                  {countriesCount} {isAr ? "دولة" : "Countries"}
-                </Badge>
+              {/* Quick Stats Pills */}
+              {exhibitions && exhibitions.length > 0 && (
+                <div className="flex flex-wrap gap-2.5">
+                  <Badge variant="outline" className="gap-2 bg-background/50 px-4 py-2 text-xs backdrop-blur-md border-primary/20 hover:bg-primary/5 transition-colors">
+                    <Landmark className="h-3.5 w-3.5 text-primary" />
+                    <span className="font-bold">{exhibitions.length}</span>
+                    <span className="text-muted-foreground">{isAr ? "فعالية" : "Events"}</span>
+                  </Badge>
+                  {happeningNowCount > 0 && (
+                    <Badge className="gap-2 bg-chart-3/15 text-chart-3 border-chart-3/30 px-4 py-2 text-xs backdrop-blur-md">
+                      <div className="relative flex h-2 w-2">
+                        <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-chart-3 opacity-75"></span>
+                        <span className="relative inline-flex h-2 w-2 rounded-full bg-chart-3"></span>
+                      </div>
+                      <span className="font-bold">{happeningNowCount}</span>
+                      <span>{isAr ? "جارية الآن" : "Live Now"}</span>
+                    </Badge>
+                  )}
+                  {upcomingCount > 0 && (
+                    <Badge variant="outline" className="gap-2 bg-background/50 px-4 py-2 text-xs backdrop-blur-md hover:bg-primary/5 transition-colors">
+                      <CalendarDays className="h-3.5 w-3.5 text-primary" />
+                      <span className="font-bold">{upcomingCount}</span>
+                      <span className="text-muted-foreground">{isAr ? "قادمة" : "Upcoming"}</span>
+                    </Badge>
+                  )}
+                  {countriesCount > 0 && (
+                    <Badge variant="outline" className="gap-2 bg-background/50 px-4 py-2 text-xs backdrop-blur-md hover:bg-primary/5 transition-colors">
+                      <Globe className="h-3.5 w-3.5 text-primary" />
+                      <span className="font-bold">{countriesCount}</span>
+                      <span className="text-muted-foreground">{isAr ? "دولة" : "Countries"}</span>
+                    </Badge>
+                  )}
+                </div>
               )}
             </div>
-          )}
+
+            <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
+              {user && (
+                <Button size="lg" className="h-12 rounded-xl px-8 shadow-xl shadow-primary/20 transition-all hover:scale-105 active:scale-95" asChild>
+                  <Link to="/exhibitions/create">
+                    <Plus className="me-2 h-5 w-5" />
+                    {isAr ? "إضافة فعالية" : "Add Your Event"}
+                  </Link>
+                </Button>
+              )}
+            </div>
+          </div>
         </div>
       </section>
 
@@ -180,55 +200,75 @@ export default function Exhibitions() {
           </section>
         )}
 
-        {/* Search + Filters */}
-        <div className="mb-6 flex flex-col gap-3 sm:flex-row">
-          <div className="relative flex-1 sm:max-w-xs">
-            <Search className="absolute start-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-            <Input
-              placeholder={isAr ? "ابحث عن فعالية..." : "Search events..."}
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              className="ps-10"
-            />
+        {/* Sticky Filters Bar */}
+        <div className="sticky top-[64px] z-40 -mx-4 mb-8 border-y border-border/40 bg-background/80 px-4 py-4 backdrop-blur-md md:rounded-2xl md:border md:px-6">
+          <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+            <div className="flex flex-1 flex-col gap-3 sm:flex-row">
+              <div className="relative flex-1 lg:max-w-md">
+                <Search className="absolute start-4 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground/60" />
+                <Input
+                  placeholder={isAr ? "ابحث عن اسم الفعالية، المدينة..." : "Search event name, city..."}
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="h-11 border-border/40 bg-muted/20 ps-11 transition-all focus:bg-background focus:ring-primary/20 rounded-xl"
+                />
+              </div>
+              
+              <div className="flex gap-2">
+                <Select value={typeFilter} onValueChange={setTypeFilter}>
+                  <SelectTrigger className="h-11 w-full border-border/40 bg-muted/20 rounded-xl sm:w-44 focus:ring-primary/20">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent className="rounded-xl border-border/40">
+                    {typeOptions.map((opt) => (
+                      <SelectItem key={opt.value} value={opt.value} className="rounded-lg">
+                        {isAr ? opt.ar : opt.en}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+
+                {countries.length > 0 && (
+                  <Select value={countryFilter} onValueChange={setCountryFilter}>
+                    <SelectTrigger className="h-11 w-full border-border/40 bg-muted/20 rounded-xl sm:w-44 focus:ring-primary/20">
+                      <div className="flex items-center gap-2">
+                        <MapPin className="h-4 w-4 text-primary/60" />
+                        <SelectValue placeholder={isAr ? "كل الدول" : "All Countries"} />
+                      </div>
+                    </SelectTrigger>
+                    <SelectContent className="rounded-xl border-border/40">
+                      <SelectItem value="all" className="rounded-lg">{isAr ? "كل الدول" : "All Countries"}</SelectItem>
+                      {countries.map((c) => (
+                        <SelectItem key={c} value={c} className="rounded-lg">
+                          <span className="me-2">{countryFlag(c)}</span> {c}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                )}
+              </div>
+            </div>
           </div>
-          <Select value={typeFilter} onValueChange={setTypeFilter}>
-            <SelectTrigger className="w-full sm:w-44">
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent>
-              {typeOptions.map((opt) => (
-                <SelectItem key={opt.value} value={opt.value}>
-                  {isAr ? opt.ar : opt.en}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-          {countries.length > 1 && (
-            <Select value={countryFilter} onValueChange={setCountryFilter}>
-              <SelectTrigger className="w-full sm:w-40">
-                <MapPin className="me-1.5 h-3.5 w-3.5 text-muted-foreground" />
-                <SelectValue placeholder={isAr ? "الدولة" : "Country"} />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">{isAr ? "جميع الدول" : "All Countries"}</SelectItem>
-                {countries.map((c) => (
-                  <SelectItem key={c} value={c}>{countryFlag(c)} {c}</SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          )}
         </div>
 
         {/* Tabs */}
-        <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-          <TabsList className="h-auto w-full justify-start gap-1 overflow-x-auto bg-muted/50">
-            <TabsTrigger value="all" className="text-xs sm:text-sm">{isAr ? "الكل" : "All"}</TabsTrigger>
-            <TabsTrigger value="current" className="gap-1.5 text-xs sm:text-sm">
-              <CalendarDays className="hidden h-3.5 w-3.5 sm:inline" />
-              {isAr ? "جارية الآن" : "Happening Now"}
-            </TabsTrigger>
-            <TabsTrigger value="upcoming" className="text-xs sm:text-sm">{isAr ? "القادمة" : "Upcoming"}</TabsTrigger>
-            <TabsTrigger value="past" className="text-xs sm:text-sm">{isAr ? "السابقة" : "Past"}</TabsTrigger>
+        <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-8">
+          <TabsList className="h-auto w-full justify-start gap-1.5 overflow-x-auto bg-muted/40 p-1.5 rounded-2xl border border-border/40">
+            {[
+              { id: "all", label: isAr ? "الكل" : "All", icon: null },
+              { id: "current", label: isAr ? "يحدث الآن" : "Live", icon: Clock },
+              { id: "upcoming", label: isAr ? "القادمة" : "Upcoming", icon: CalendarDays },
+              { id: "past", label: isAr ? "السابقة" : "Past", icon: History }
+            ].map((t) => (
+              <TabsTrigger 
+                key={t.id} 
+                value={t.id} 
+                className="gap-2 rounded-xl px-5 py-2.5 text-xs font-bold uppercase tracking-wider transition-all data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-lg shadow-primary/20"
+              >
+                {t.icon && <t.icon className="h-3.5 w-3.5" />}
+                {t.label}
+              </TabsTrigger>
+            ))}
           </TabsList>
 
           <TabsContent value={activeTab} className="mt-6">
@@ -260,8 +300,8 @@ export default function Exhibitions() {
                 <p className="max-w-sm text-sm text-muted-foreground">
                   {isAr ? "جرب تعديل معايير البحث" : "Try adjusting your search or filters"}
                 </p>
-                {search && (
-                  <Button variant="outline" size="sm" className="mt-4" onClick={() => setSearch("")}>
+                {searchQuery && (
+                  <Button variant="outline" size="sm" className="mt-4" onClick={() => setSearchQuery("")}>
                     {isAr ? "مسح البحث" : "Clear search"}
                   </Button>
                 )}

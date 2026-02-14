@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Calendar, MapPin, Globe, ExternalLink, Clock, ArrowRight } from "lucide-react";
+import { Calendar, MapPin, Globe, ExternalLink, Clock, ArrowRight, Building } from "lucide-react";
 import { format, isPast, isFuture, isWithinInterval, differenceInDays } from "date-fns";
 import { countryFlag } from "@/lib/countryFlag";
 import type { Database } from "@/integrations/supabase/types";
@@ -90,118 +90,143 @@ export function ExhibitionCard({ exhibition, language }: ExhibitionCardProps) {
 
   return (
     <Link to={`/exhibitions/${exhibition.slug}`} className="group block">
-      <Card className={`flex h-full flex-col overflow-hidden border-border/50 transition-all duration-300 hover:shadow-lg hover:-translate-y-1 hover:border-primary/20 ${exhibition.is_featured ? "ring-1 ring-primary/10" : ""}`}>
+      <Card className={`group flex h-full flex-col overflow-hidden border-border/50 bg-card/50 backdrop-blur-sm transition-all duration-300 hover:shadow-2xl hover:-translate-y-2 hover:border-primary/30 ${exhibition.is_featured ? "ring-1 ring-primary/20 shadow-md shadow-primary/5" : ""}`}>
         {/* Image */}
         <div className="relative aspect-[16/10] overflow-hidden bg-gradient-to-br from-primary/10 to-accent/10">
           {exhibition.cover_image_url ? (
             <img
               src={exhibition.cover_image_url}
               alt={title}
-              className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+              className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-110"
               loading="lazy"
             />
           ) : (
             <div className="flex h-full items-center justify-center">
-              <span className="text-5xl opacity-40">🏛️</span>
+              <span className="text-5xl opacity-40 grayscale group-hover:grayscale-0 transition-all duration-500">🏛️</span>
             </div>
           )}
-          <div className="absolute inset-x-0 bottom-0 h-16 bg-gradient-to-t from-black/30 to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/10 to-transparent opacity-60 transition-opacity group-hover:opacity-80" />
 
           {/* Badges */}
-          <div className="absolute start-2.5 top-2.5 flex flex-wrap gap-1.5">
-            <Badge className={`${liveStatus.className} shadow-sm`}>
+          <div className="absolute start-3 top-3 flex flex-wrap gap-2 z-10">
+            <Badge className={`${liveStatus.className} shadow-lg backdrop-blur-md`}>
               {isAr ? liveStatus.labelAr : liveStatus.label}
             </Badge>
             {exhibition.is_featured && (
-              <Badge className="bg-primary/90 text-primary-foreground shadow-sm">⭐ {isAr ? "مميز" : "Featured"}</Badge>
+              <Badge className="bg-primary text-primary-foreground shadow-lg shadow-primary/20">⭐ {isAr ? "مميز" : "Featured"}</Badge>
             )}
           </div>
 
-          <div className="absolute end-2.5 top-2.5 flex flex-col gap-1.5">
-            <Badge variant="secondary" className="text-[10px] shadow-sm">
+          <div className="absolute end-3 top-3 flex flex-col gap-2 z-10">
+            <Badge variant="secondary" className="text-[10px] shadow-lg backdrop-blur-md bg-background/80">
               {isAr ? typeLabel.ar : typeLabel.en}
             </Badge>
             {daysLeft !== null && daysLeft > 0 && daysLeft <= 30 && (
-              <Badge variant="secondary" className="gap-1 text-[10px] shadow-sm">
-                <Clock className="h-2.5 w-2.5" />
-                {isAr ? `${daysLeft} يوم` : `${daysLeft}d`}
+              <Badge variant="secondary" className="gap-1 text-[10px] shadow-lg backdrop-blur-md bg-background/80 text-chart-4 border-chart-4/20">
+                <Clock className="h-2.5 w-2.5 animate-pulse" />
+                {isAr ? `باقي ${daysLeft} يوم` : `${daysLeft}d left`}
               </Badge>
             )}
           </div>
+          
+          {/* Country Overlay */}
+          {exhibition.country && (
+            <div className="absolute bottom-3 start-3 z-10">
+              <div className="flex items-center gap-1.5 rounded-full bg-black/40 px-2 py-1 text-[10px] text-white backdrop-blur-md ring-1 ring-white/20">
+                <span>{countryFlag(exhibition.country)}</span>
+                <span className="font-medium">{exhibition.country}</span>
+              </div>
+            </div>
+          )}
         </div>
 
         {/* Content */}
-        <CardContent className="flex flex-1 flex-col p-4">
-          <h3 className="line-clamp-2 text-base font-semibold leading-snug group-hover:text-primary transition-colors">
-            {title} <span className="text-primary font-bold">{new Date(exhibition.start_date).getFullYear()}</span>
-          </h3>
-          {organizer && (
-            <p className="mt-0.5 text-[11px] text-muted-foreground">{isAr ? "المنظم:" : "By:"} {organizer}</p>
-          )}
-
-          {description && (
-            <p className="mt-2 line-clamp-2 text-sm text-muted-foreground leading-relaxed">{description}</p>
-          )}
-
-          <div className="mt-auto space-y-1.5 pt-3 text-[13px] text-muted-foreground">
-            <div className="flex items-center gap-2">
-              <Calendar className="h-3.5 w-3.5 shrink-0 text-primary/60" />
-              <span>
-                {format(new Date(exhibition.start_date), "MMM d, yyyy")}
-                {" – "}
-                {format(new Date(exhibition.end_date), "MMM d, yyyy")}
-              </span>
+        <CardContent className="flex flex-1 flex-col p-5 relative">
+          <div className="flex-1 space-y-3">
+            <div>
+              <h3 className="line-clamp-2 text-base font-bold leading-tight group-hover:text-primary transition-colors duration-300">
+                {title} <span className="text-primary/60 font-serif italic ms-1">{new Date(exhibition.start_date).getFullYear()}</span>
+              </h3>
+              {organizer && (
+                <p className="mt-1 flex items-center gap-1.5 text-[11px] font-medium text-muted-foreground">
+                  <Building className="h-3 w-3 text-primary/50" />
+                  {isAr ? "تنظيم:" : "By:"} <span className="text-foreground/80">{organizer}</span>
+                </p>
+              )}
             </div>
 
-            {exhibition.is_virtual ? (
-              <div className="flex items-center gap-2">
-                <Globe className="h-3.5 w-3.5 shrink-0 text-primary/60" />
-                <span>{isAr ? "حدث افتراضي" : "Virtual Event"}</span>
-              </div>
-            ) : venue && (
-              <div className="flex items-center gap-2">
-                <MapPin className="h-3.5 w-3.5 shrink-0 text-primary/60" />
-                <span className="line-clamp-1">
-                  {exhibition.country && `${countryFlag(exhibition.country)} `}{venue}{exhibition.city && `, ${exhibition.city}`}{exhibition.country && `, ${exhibition.country}`}
-                </span>
-              </div>
+            {description && (
+              <p className="line-clamp-2 text-[13px] text-muted-foreground/90 leading-relaxed">
+                {description}
+              </p>
             )}
 
-            <div className="flex flex-wrap items-center gap-1.5 pt-1">
-              {exhibition.is_free ? (
-                <Badge variant="outline" className="text-[10px] text-chart-3 border-chart-3/30">{isAr ? "مجاني" : "Free Entry"}</Badge>
-              ) : exhibition.ticket_price && (
-                <Badge variant="outline" className="text-[10px]">{isAr && exhibition.ticket_price_ar ? exhibition.ticket_price_ar : exhibition.ticket_price}</Badge>
+            <div className="space-y-2 pt-1 text-[12px] text-muted-foreground">
+              <div className="flex items-center gap-2.5">
+                <div className="flex h-6 w-6 items-center justify-center rounded-full bg-primary/5">
+                  <Calendar className="h-3 w-3 text-primary" />
+                </div>
+                <span className="font-medium">
+                  {format(new Date(exhibition.start_date), "MMM d")} – {format(new Date(exhibition.end_date), "MMM d, yyyy")}
+                </span>
+              </div>
+
+              {exhibition.is_virtual ? (
+                <div className="flex items-center gap-2.5">
+                  <div className="flex h-6 w-6 items-center justify-center rounded-full bg-chart-1/5">
+                    <Globe className="h-3 w-3 text-chart-1" />
+                  </div>
+                  <span className="text-chart-1 font-medium">{isAr ? "حدث افتراضي" : "Virtual Event"}</span>
+                </div>
+              ) : venue && (
+                <div className="flex items-center gap-2.5">
+                  <div className="flex h-6 w-6 items-center justify-center rounded-full bg-primary/5">
+                    <MapPin className="h-3 w-3 text-primary" />
+                  </div>
+                  <span className="line-clamp-1 font-medium">
+                    {venue}{exhibition.city && `, ${exhibition.city}`}
+                  </span>
+                </div>
               )}
-              {exhibition.tags && exhibition.tags.slice(0, 2).map((tag) => (
-                <Badge key={tag} variant="secondary" className="text-[10px]">{tag}</Badge>
-              ))}
             </div>
+          </div>
+
+          <div className="mt-4 flex flex-wrap items-center gap-2">
+            {exhibition.is_free ? (
+              <Badge variant="outline" className="h-6 text-[10px] font-bold uppercase tracking-wider text-chart-3 border-chart-3/30 bg-chart-3/5">
+                {isAr ? "دخول مجاني" : "Free Entry"}
+              </Badge>
+            ) : exhibition.ticket_price && (
+              <Badge variant="outline" className="h-6 text-[10px] font-bold border-primary/20 bg-primary/5">
+                {isAr && exhibition.ticket_price_ar ? exhibition.ticket_price_ar : exhibition.ticket_price}
+              </Badge>
+            )}
+            {exhibition.tags && exhibition.tags.slice(0, 1).map((tag) => (
+              <Badge key={tag} variant="secondary" className="h-6 text-[10px] bg-muted/60">#{tag}</Badge>
+            ))}
           </div>
         </CardContent>
 
-        {/* Footer */}
-        <div className="flex items-center justify-between border-t px-4 py-3">
-          <span className="inline-flex items-center text-xs font-medium text-primary opacity-0 transition-opacity group-hover:opacity-100">
+        {/* Action Area */}
+        <div className="flex items-center justify-between border-t border-border/40 bg-muted/20 px-5 py-3 transition-colors group-hover:bg-muted/40">
+          <div className="flex items-center gap-1 text-[11px] font-bold uppercase tracking-wider text-primary">
             {isAr ? "عرض التفاصيل" : "View Details"}
-            <ArrowRight className="ms-1 h-3 w-3" />
-          </span>
-          <div className="flex gap-2">
-            <Button variant="outline" size="sm" tabIndex={-1}>
-              {isAr ? "عرض التفاصيل" : "View Details"}
-            </Button>
+            <ArrowRight className="ms-1 h-3 w-3 transition-transform group-hover:translate-x-1 rtl:group-hover:-translate-x-1" />
+          </div>
+          <div className="flex items-center gap-2">
             {exhibition.registration_url && (
               <Button
                 size="icon"
                 variant="ghost"
-                className="h-8 w-8"
+                className="h-8 w-8 rounded-full hover:bg-primary/10 hover:text-primary transition-all"
                 onClick={(e) => {
                   e.preventDefault();
                   e.stopPropagation();
                   window.open(exhibition.registration_url!, "_blank", "noopener,noreferrer");
                 }}
+                title={isAr ? "التسجيل" : "Register"}
               >
-                <ExternalLink className="h-3.5 w-3.5" />
+                <ExternalLink className="h-4 w-4" />
               </Button>
             )}
           </div>

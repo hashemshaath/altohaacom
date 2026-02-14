@@ -56,6 +56,16 @@ interface ScheduleItem {
   description_ar?: string;
 }
 
+const typeLabels: Record<string, { en: string; ar: string }> = {
+  exhibition: { en: "Exhibition", ar: "معرض" },
+  conference: { en: "Conference", ar: "مؤتمر" },
+  summit: { en: "Summit", ar: "قمة" },
+  workshop: { en: "Workshop", ar: "ورشة عمل" },
+  food_festival: { en: "Food Festival", ar: "مهرجان طعام" },
+  trade_show: { en: "Trade Show", ar: "معرض تجاري" },
+  competition_event: { en: "Competition Event", ar: "حدث تنافسي" },
+};
+
 interface Speaker {
   name?: string;
   name_ar?: string;
@@ -123,16 +133,17 @@ function CountdownTimer({ targetDate, isAr }: { targetDate: Date; isAr: boolean 
   ];
 
   return (
-    <div className="flex items-center justify-center gap-3 sm:gap-4">
+    <div className="flex items-center justify-center gap-4 py-2 sm:gap-6">
       {units.map((u, i) => (
         <div key={i} className="flex flex-col items-center">
-          <div className="relative flex h-20 w-20 items-center justify-center rounded-2xl border border-primary/20 bg-gradient-to-b from-primary/10 to-primary/5 shadow-sm sm:h-24 sm:w-24">
-            <span className="font-mono text-3xl font-bold text-primary sm:text-4xl">
+          <div className="group relative flex h-20 w-20 items-center justify-center rounded-2xl border border-primary/20 bg-gradient-to-b from-background to-primary/5 shadow-inner transition-all hover:scale-105 hover:border-primary/40 sm:h-24 sm:w-24">
+            <span className="font-mono text-3xl font-bold tracking-tighter text-primary drop-shadow-sm sm:text-4xl">
               {String(u.value).padStart(2, "0")}
             </span>
             <div className="absolute inset-x-0 top-1/2 h-px bg-primary/10" />
+            <div className="absolute -bottom-1 inset-x-4 h-1 rounded-full bg-primary/20 blur-[2px] opacity-0 group-hover:opacity-100 transition-opacity" />
           </div>
-          <span className="mt-2 text-[10px] font-semibold uppercase tracking-widest text-muted-foreground">{u.label}</span>
+          <span className="mt-3 text-[10px] font-bold uppercase tracking-[0.2em] text-muted-foreground/80">{u.label}</span>
         </div>
       ))}
     </div>
@@ -446,121 +457,177 @@ export default function ExhibitionDetail() {
       />
       <Header />
 
-      {/* ======== HERO ======== */}
-      <div className="relative overflow-hidden">
-        {exhibition.cover_image_url ? (
-          <img src={exhibition.cover_image_url} alt={title} className="h-56 w-full object-cover sm:h-64 md:h-80 lg:h-[26rem]" loading="eager" />
-        ) : (
-          <div className="h-56 w-full bg-gradient-to-br from-primary/20 via-accent/10 to-background sm:h-64 md:h-80 lg:h-[26rem]" />
-        )}
-        {/* Dark overlay for text readability */}
-        <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/60 to-black/20" />
-        <div className="absolute bottom-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-primary/30 to-transparent" />
-        <div className="absolute inset-x-0 bottom-0 container pb-6 md:pb-10">
-          <Button variant="ghost" size="sm" className="-ms-2 mb-4 text-white/80 hover:text-white" asChild>
-            <Link to="/exhibitions">
-              <ArrowLeft className="me-1.5 h-4 w-4" />
-              {isAr ? "الفعاليات" : "Events"}
-            </Link>
-          </Button>
+      {/* ======== HERO SECTION ======== */}
+      <div className="relative overflow-hidden bg-background">
+        <div className="relative aspect-video max-h-[550px] w-full overflow-hidden sm:aspect-[21/9]">
+          {exhibition.cover_image_url ? (
+            <img 
+              src={exhibition.cover_image_url} 
+              alt={title} 
+              className="h-full w-full object-cover transition-transform duration-1000 group-hover:scale-105" 
+              loading="eager" 
+            />
+          ) : (
+            <div className="h-full w-full bg-gradient-to-br from-primary/20 via-accent/10 to-background" />
+          )}
+          
+          {/* Multi-layered gradients for text legibility */}
+          <div className="absolute inset-0 bg-gradient-to-t from-background via-background/40 to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-r from-background/90 via-background/20 to-transparent rtl:bg-gradient-to-l" />
+          <div className="absolute inset-0 bg-black/20" />
+          
+          <div className="absolute inset-0 container flex flex-col justify-end pb-8 md:pb-16">
+            <div className="max-w-4xl space-y-6">
+              <Button 
+                variant="ghost" 
+                size="sm" 
+                className="group -ms-2 w-fit text-white/90 hover:bg-white/10 hover:text-white backdrop-blur-sm" 
+                asChild
+              >
+                <Link to="/exhibitions">
+                  <ArrowLeft className="me-2 h-4 w-4 transition-transform group-hover:-translate-x-1 rtl:group-hover:translate-x-1" />
+                  {isAr ? "جميع الفعاليات" : "All Events"}
+                </Link>
+              </Button>
 
-          <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
-            <div className="flex-1 min-w-0 space-y-2.5">
-              <div className="flex flex-wrap items-center gap-2">
-                {isHappening && <Badge className="bg-chart-3/20 text-chart-3 border-chart-3/30 shadow-sm">{isAr ? "🔴 يحدث الآن" : "🔴 Happening Now"}</Badge>}
-                {isUpcoming && <Badge className="bg-primary/20 text-primary border-primary/30 shadow-sm">{isAr ? "قادم" : "Upcoming"}</Badge>}
-                {hasEnded && <Badge variant="secondary" className="shadow-sm">{isAr ? "انتهى" : "Ended"}</Badge>}
-                <Badge variant="outline" className="gap-1 bg-background/60 backdrop-blur-sm shadow-sm">
-                  <span>{countryFlag}</span>
-                  {exhibition.city}{exhibition.country && `, ${exhibition.country}`}
-                </Badge>
-              </div>
+              <div className="space-y-4">
+                <div className="flex flex-wrap items-center gap-3">
+                  <Badge variant="secondary" className="bg-primary/20 text-primary border-primary/30 backdrop-blur-md font-bold uppercase tracking-wider text-[10px] px-3 py-1">
+                    {isAr ? typeLabels[exhibition.type].ar : typeLabels[exhibition.type].en}
+                  </Badge>
+                  
+                  {isHappening && (
+                    <Badge className="bg-chart-3 text-chart-3-foreground border-none shadow-lg shadow-chart-3/20 animate-pulse font-bold uppercase tracking-wider text-[10px] px-3 py-1">
+                      {isAr ? "🔴 مباشر الآن" : "🔴 Live Now"}
+                    </Badge>
+                  )}
+                  
+                  {isUpcoming && (
+                    <Badge className="bg-primary text-primary-foreground border-none shadow-lg shadow-primary/20 font-bold uppercase tracking-wider text-[10px] px-3 py-1">
+                      {isAr ? "قادم" : "Upcoming"}
+                    </Badge>
+                  )}
+                  
+                  <Badge variant="outline" className="bg-white/10 text-white border-white/20 backdrop-blur-md font-bold text-[10px] px-3 py-1">
+                    <MapPin className="me-1.5 h-3 w-3" />
+                    {exhibition.city}{exhibition.country && `, ${exhibition.country}`}
+                  </Badge>
+                </div>
 
-              <h1 className="font-serif text-3xl font-bold leading-tight sm:text-4xl md:text-5xl lg:text-6xl text-white drop-shadow-lg">
-                {title} <span className="text-primary">{new Date(exhibition.start_date).getFullYear()}</span>
-              </h1>
+                <h1 className="font-serif text-4xl font-bold leading-[1.1] tracking-tight sm:text-5xl md:text-6xl lg:text-7xl text-white drop-shadow-2xl">
+                  {title} <span className="text-primary italic">{new Date(exhibition.start_date).getFullYear()}</span>
+                </h1>
 
-              <div className="flex flex-wrap items-center gap-4 text-sm text-white/80">
-                <span className="flex items-center gap-1.5">
-                  <Calendar className="h-3.5 w-3.5" />
-                  {format(start, "MMM d")} – {format(end, "MMM d, yyyy")}
-                  <Badge variant="secondary" className="ms-1 text-[10px]">{totalDays} {isAr ? "أيام" : "days"}</Badge>
-                </span>
-                {!exhibition.is_virtual && venue && (
-                  <span className="flex items-center gap-1.5">
-                    <MapPin className="h-3.5 w-3.5" />
-                    {venue}
-                  </span>
-                )}
-                {exhibition.is_virtual && (
-                  <span className="flex items-center gap-1.5">
-                    <Globe className="h-3.5 w-3.5" />
-                    {isAr ? "حدث افتراضي" : "Virtual Event"}
-                  </span>
-                )}
-              </div>
-            </div>
-
-            <div className="flex gap-2 shrink-0">
-              {/* Organizer badge in hero */}
-              {organizer && (
-                <div className="hidden sm:flex items-center gap-3 rounded-xl border border-white/20 bg-black/40 px-4 py-3 backdrop-blur-sm shadow-sm">
-                  {organizerLogoUrl ? (
-                    <img src={organizerLogoUrl} alt={organizer} className="h-10 w-10 rounded-lg object-contain bg-white/90 p-0.5" />
-                  ) : (
-                    <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-white/20">
-                      <Building className="h-5 w-5 text-white" />
+                <div className="flex flex-wrap items-center gap-6 text-sm md:text-base text-white/90">
+                  <div className="flex items-center gap-2">
+                    <div className="flex h-8 w-8 items-center justify-center rounded-full bg-white/10 backdrop-blur-md">
+                      <Calendar className="h-4 w-4" />
+                    </div>
+                    <span className="font-medium">
+                      {format(start, "MMMM d")} – {format(end, "MMMM d, yyyy")}
+                    </span>
+                  </div>
+                  
+                  {!exhibition.is_virtual && venue && (
+                    <div className="flex items-center gap-2">
+                      <div className="flex h-8 w-8 items-center justify-center rounded-full bg-white/10 backdrop-blur-md">
+                        <MapPin className="h-4 w-4" />
+                      </div>
+                      <span className="font-medium opacity-90">{venue}</span>
                     </div>
                   )}
-                  <div>
-                    <p className="text-[10px] uppercase tracking-wider text-white/60">{isAr ? "المنظم" : "Organized by"}</p>
-                    <p className="font-semibold text-sm text-white">{organizer}</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Floating Actions Bar */}
+        <div className="border-y border-border/40 bg-card/80 backdrop-blur-md">
+          <div className="container py-4">
+            <div className="flex flex-wrap items-center justify-between gap-4">
+              <div className="flex items-center gap-4">
+                {organizer && (
+                  <div className="flex items-center gap-3">
+                    <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-primary/5 ring-1 ring-primary/10">
+                      {organizerLogoUrl ? (
+                        <img src={organizerLogoUrl} alt={organizer} className="h-8 w-8 object-contain" />
+                      ) : (
+                        <Building className="h-5 w-5 text-primary" />
+                      )}
+                    </div>
+                    <div className="hidden sm:block">
+                      <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">{isAr ? "المنظم" : "Organized by"}</p>
+                      <p className="text-sm font-bold text-foreground">{organizer}</p>
+                    </div>
+                  </div>
+                )}
+                <Separator orientation="vertical" className="h-8 hidden sm:block" />
+                <div className="flex items-center gap-4">
+                  <div className="text-center">
+                    <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">{isAr ? "المتابعين" : "Followers"}</p>
+                    <p className="text-sm font-bold text-foreground">{followerCount || 0}</p>
+                  </div>
+                  <div className="text-center">
+                    <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">{isAr ? "المسابقات" : "Competitions"}</p>
+                    <p className="text-sm font-bold text-foreground">{linkedCompetitions?.length || 0}</p>
                   </div>
                 </div>
-              )}
+              </div>
 
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button variant="outline" size="sm" className="bg-background/80 backdrop-blur-sm">
-                    <Share2 className="me-1.5 h-4 w-4" />
-                    {isAr ? "مشاركة" : "Share"}
+              <div className="flex items-center gap-3">
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button variant="outline" size="sm" className="h-10 rounded-xl px-4 font-bold border-border/60 hover:bg-muted/80">
+                      <Share2 className="me-2 h-4 w-4" />
+                      {isAr ? "مشاركة" : "Share"}
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end" className="w-56 rounded-xl border-border/40 p-2">
+                    <DropdownMenuItem className="cursor-pointer gap-3 rounded-lg py-2.5 font-medium" onClick={() => {
+                      const text = encodeURIComponent(`${title} - ${isAr ? "فعالية على التوحاء" : "Event on Altohaa"}`);
+                      const url = encodeURIComponent(window.location.href);
+                      window.open(`https://twitter.com/intent/tweet?text=${text}&url=${url}`, "_blank", "width=600,height=400");
+                    }}>
+                      <div className="flex h-8 w-8 items-center justify-center rounded-full bg-black/5"><Twitter className="h-4 w-4" /></div> Twitter / X
+                    </DropdownMenuItem>
+                    <DropdownMenuItem className="cursor-pointer gap-3 rounded-lg py-2.5 font-medium" onClick={() => {
+                      window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(window.location.href)}`, "_blank", "width=600,height=400");
+                    }}>
+                      <div className="flex h-8 w-8 items-center justify-center rounded-full bg-blue-500/10 text-blue-600"><Facebook className="h-4 w-4" /></div> Facebook
+                    </DropdownMenuItem>
+                    <DropdownMenuItem className="cursor-pointer gap-3 rounded-lg py-2.5 font-medium" onClick={() => {
+                      window.open(`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(window.location.href)}`, "_blank", "width=600,height=400");
+                    }}>
+                      <div className="flex h-8 w-8 items-center justify-center rounded-full bg-blue-700/10 text-blue-700"><Linkedin className="h-4 w-4" /></div> LinkedIn
+                    </DropdownMenuItem>
+                    <DropdownMenuItem className="cursor-pointer gap-3 rounded-lg py-2.5 font-medium" onClick={() => {
+                      navigator.clipboard.writeText(window.location.href);
+                      toast({ title: isAr ? "تم نسخ الرابط!" : "Link copied!" });
+                    }}>
+                      <div className="flex h-8 w-8 items-center justify-center rounded-full bg-muted"><Link2 className="h-4 w-4" /></div> {isAr ? "نسخ الرابط" : "Copy Link"}
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+
+                {isOwner && (
+                  <Button variant="outline" size="sm" className="h-10 rounded-xl px-4 font-bold border-border/60 hover:bg-muted/80" asChild>
+                    <Link to={`/exhibitions/${exhibition.slug}/edit`}>
+                      <Pencil className="me-2 h-4 w-4" />
+                      {isAr ? "تعديل" : "Edit"}
+                    </Link>
                   </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="end" className="w-48">
-                  <DropdownMenuItem className="cursor-pointer gap-2" onClick={() => {
-                    const text = encodeURIComponent(`${title} - ${isAr ? "فعالية على التوحاء" : "Event on Altohaa"}`);
-                    const url = encodeURIComponent(window.location.href);
-                    window.open(`https://twitter.com/intent/tweet?text=${text}&url=${url}`, "_blank", "width=600,height=400");
-                  }}>
-                    <Twitter className="h-4 w-4" /> Twitter / X
-                  </DropdownMenuItem>
-                  <DropdownMenuItem className="cursor-pointer gap-2" onClick={() => {
-                    window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(window.location.href)}`, "_blank", "width=600,height=400");
-                  }}>
-                    <Facebook className="h-4 w-4" /> Facebook
-                  </DropdownMenuItem>
-                  <DropdownMenuItem className="cursor-pointer gap-2" onClick={() => {
-                    window.open(`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(window.location.href)}`, "_blank", "width=600,height=400");
-                  }}>
-                    <Linkedin className="h-4 w-4" /> LinkedIn
-                  </DropdownMenuItem>
-                  <DropdownMenuItem className="cursor-pointer gap-2" onClick={() => {
-                    navigator.clipboard.writeText(window.location.href);
-                    toast({ title: isAr ? "تم نسخ الرابط!" : "Link copied!" });
-                  }}>
-                    <Link2 className="h-4 w-4" /> {isAr ? "نسخ الرابط" : "Copy Link"}
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
-
-              {isOwner && (
-                <Button variant="outline" size="sm" className="bg-background/80 backdrop-blur-sm" asChild>
-                  <Link to={`/exhibitions/${exhibition.slug}/edit`}>
-                    <Pencil className="me-1.5 h-4 w-4" />
-                    {isAr ? "تعديل" : "Edit"}
-                  </Link>
-                </Button>
-              )}
+                )}
+                
+                {exhibition.registration_url && !hasEnded && (
+                  <Button className="h-10 rounded-xl px-6 font-bold shadow-lg shadow-primary/20" asChild>
+                    <a href={exhibition.registration_url} target="_blank" rel="noopener noreferrer">
+                      <Ticket className="me-2 h-4 w-4" />
+                      {isAr ? "سجل الآن" : "Register Now"}
+                    </a>
+                  </Button>
+                )}
+              </div>
             </div>
           </div>
         </div>
@@ -623,48 +690,47 @@ export default function ExhibitionDetail() {
         <div className="grid gap-6 lg:grid-cols-3">
           {/* ======== MAIN CONTENT ======== */}
           <div className="lg:col-span-2">
-            <Tabs value={activeTab} onValueChange={setActiveTab}>
-              <div className="overflow-x-auto -mx-4 px-4 md:mx-0 md:px-0">
-                <TabsList className="h-auto w-max justify-start gap-0.5 bg-muted/50 p-1">
-                  <TabsTrigger value="overview" className="text-xs sm:text-sm">
+            <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-8">
+              <div className="sticky top-[136px] z-30 -mx-4 border-b border-border/40 bg-background/80 px-4 py-3 backdrop-blur-md md:mx-0 md:rounded-2xl md:border md:px-4">
+                <TabsList className="h-auto w-full justify-start gap-1 overflow-x-auto bg-transparent p-0">
+                  <TabsTrigger value="overview" className="rounded-xl px-5 py-2.5 text-xs font-bold uppercase tracking-wider transition-all data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-lg shadow-primary/20">
                     {isAr ? "نظرة عامة" : "Overview"}
                   </TabsTrigger>
                   {hasWinningDishes && (
-                    <TabsTrigger value="winning-dishes" className="gap-1 text-xs sm:text-sm">
-                      <Award className="h-3.5 w-3.5 hidden sm:block" />
-                      {isAr ? "الأطباق الفائزة" : "Winning Dishes"}
-                      <Badge variant="secondary" className="ms-0.5 h-4 px-1 text-[9px]">{winningDishes!.length}</Badge>
+                    <TabsTrigger value="winning-dishes" className="gap-2 rounded-xl px-5 py-2.5 text-xs font-bold uppercase tracking-wider transition-all data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
+                      <Award className="h-3.5 w-3.5" />
+                      {isAr ? "الأطباق" : "Winners"}
+                      <Badge variant="secondary" className="ms-1 h-5 rounded-full bg-background/20 text-current px-1.5 text-[10px]">{winningDishes!.length}</Badge>
                     </TabsTrigger>
                   )}
                   {hasCompetitions && (
-                    <TabsTrigger value="competitions" className="gap-1 text-xs sm:text-sm">
-                      <Trophy className="h-3.5 w-3.5 hidden sm:block" />
+                    <TabsTrigger value="competitions" className="gap-2 rounded-xl px-5 py-2.5 text-xs font-bold uppercase tracking-wider transition-all data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
+                      <Trophy className="h-3.5 w-3.5" />
                       {isAr ? "المسابقات" : "Competitions"}
-                      <Badge variant="secondary" className="ms-0.5 h-4 px-1 text-[9px]">{linkedCompetitions!.length}</Badge>
+                      <Badge variant="secondary" className="ms-1 h-5 rounded-full bg-background/20 text-current px-1.5 text-[10px]">{linkedCompetitions!.length}</Badge>
                     </TabsTrigger>
                   )}
                   {hasSchedule && (
-                    <TabsTrigger value="schedule" className="gap-1 text-xs sm:text-sm">
-                      <Calendar className="h-3.5 w-3.5 hidden sm:block" />
+                    <TabsTrigger value="schedule" className="gap-2 rounded-xl px-5 py-2.5 text-xs font-bold uppercase tracking-wider transition-all data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
+                      <Calendar className="h-3.5 w-3.5" />
                       {isAr ? "الجدول" : "Schedule"}
                     </TabsTrigger>
                   )}
                   {(hasJudges || hasSpeakers) && (
-                    <TabsTrigger value="people" className="gap-1 text-xs sm:text-sm">
-                      <Users className="h-3.5 w-3.5 hidden sm:block" />
+                    <TabsTrigger value="people" className="gap-2 rounded-xl px-5 py-2.5 text-xs font-bold uppercase tracking-wider transition-all data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
+                      <Users className="h-3.5 w-3.5" />
                       {isAr ? "الأشخاص" : "People"}
                     </TabsTrigger>
                   )}
                   {hasGallery && (
-                    <TabsTrigger value="gallery" className="gap-1 text-xs sm:text-sm">
-                      <ImageIcon className="h-3.5 w-3.5 hidden sm:block" />
+                    <TabsTrigger value="gallery" className="gap-2 rounded-xl px-5 py-2.5 text-xs font-bold uppercase tracking-wider transition-all data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
+                      <ImageIcon className="h-3.5 w-3.5" />
                       {isAr ? "المعرض" : "Gallery"}
-                      <Badge variant="secondary" className="ms-0.5 h-4 px-1 text-[9px]">{galleryUrls.length}</Badge>
                     </TabsTrigger>
                   )}
                   {hasSponsors && (
-                    <TabsTrigger value="sponsors" className="gap-1 text-xs sm:text-sm">
-                      <Star className="h-3.5 w-3.5 hidden sm:block" />
+                    <TabsTrigger value="sponsors" className="gap-2 rounded-xl px-5 py-2.5 text-xs font-bold uppercase tracking-wider transition-all data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
+                      <Star className="h-3.5 w-3.5" />
                       {isAr ? "الرعاة" : "Sponsors"}
                     </TabsTrigger>
                   )}
