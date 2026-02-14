@@ -11,9 +11,13 @@ import { Progress } from "@/components/ui/progress";
 import { useReferralCode, useReferralStats, useReferralInvitations, useReferralMilestones, useUserMilestones } from "@/hooks/useReferral";
 import { useReferralAnalytics } from "@/hooks/useReferralAnalytics";
 import { usePointsBalance } from "@/hooks/usePoints";
-import { Share2, Gift, Trophy, Users, TrendingUp, Send, Star, Mail, MessageCircle, BarChart3, Target, Zap, CheckCircle2, MousePointerClick, ArrowDownRight } from "lucide-react";
+import { Share2, Gift, Trophy, Users, TrendingUp, Send, Star, Mail, MessageCircle, BarChart3, Target, Zap, CheckCircle2, MousePointerClick, ArrowDownRight, Layers } from "lucide-react";
 import { Link } from "react-router-dom";
 import { ReferralShareSheet } from "@/components/referrals/ReferralShareSheet";
+import { ReferralLeaderboard } from "@/components/referrals/ReferralLeaderboard";
+import { BonusCampaignBanner } from "@/components/referrals/BonusCampaignBanner";
+import { SocialProofWidget } from "@/components/referrals/SocialProofWidget";
+import { TierProgressCard } from "@/components/referrals/TierProgressCard";
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, LineChart, Line, CartesianGrid, PieChart, Pie, Cell } from "recharts";
 
 export default function Referrals() {
@@ -113,12 +117,26 @@ export default function Referrals() {
           ))}
         </div>
 
+        {/* Bonus Campaign Banner */}
+        <div className="mb-4">
+          <BonusCampaignBanner />
+        </div>
+
+        {/* Social Proof */}
+        <div className="mb-8">
+          <SocialProofWidget />
+        </div>
+
         <Tabs defaultValue="share" className="space-y-6">
           <div className="sticky top-[64px] z-30 -mx-4 px-4 py-3 border-b border-border/40 bg-background/80 backdrop-blur-md">
-            <TabsList className="grid w-full grid-cols-4 bg-muted/60">
+            <TabsList className="grid w-full grid-cols-5 bg-muted/60">
               <TabsTrigger value="share" className="gap-1.5 data-[state=active]:shadow-md">
                 <Share2 className="h-4 w-4" />
                 <span className="hidden sm:inline">{isAr ? "مشاركة" : "Share"}</span>
+              </TabsTrigger>
+              <TabsTrigger value="leaderboard" className="gap-1.5 data-[state=active]:shadow-md">
+                <Trophy className="h-4 w-4" />
+                <span className="hidden sm:inline">{isAr ? "المتصدرين" : "Leaderboard"}</span>
               </TabsTrigger>
               <TabsTrigger value="milestones" className="gap-1.5 data-[state=active]:shadow-md">
                 <Target className="h-4 w-4" />
@@ -186,6 +204,14 @@ export default function Referrals() {
                 </div>
               </CardContent>
             </Card>
+          </TabsContent>
+
+          {/* Leaderboard Tab */}
+          <TabsContent value="leaderboard" className="space-y-6">
+            <div className="grid gap-6 lg:grid-cols-2">
+              <ReferralLeaderboard />
+              <TierProgressCard />
+            </div>
           </TabsContent>
 
           {/* Milestones Tab */}
