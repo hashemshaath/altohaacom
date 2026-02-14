@@ -7,6 +7,8 @@ import {
   AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
   PieChart, Pie, Cell, BarChart, Bar,
 } from "recharts";
+import { StaggeredList } from "@/components/ui/staggered-list";
+import { EmptyState } from "@/components/ui/empty-state";
 
 interface ProfileAnalyticsDashboardProps {
   userId: string;
@@ -25,13 +27,23 @@ export function ProfileAnalyticsDashboard({ userId }: ProfileAnalyticsDashboardP
   const isAr = language === "ar";
   const { data: analytics, isLoading } = useProfileAnalytics(userId);
 
-  if (isLoading || !analytics) {
+  if (isLoading) {
     return (
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
         {[1, 2, 3, 4].map(i => (
           <Card key={i}><CardContent className="p-4"><div className="h-16 animate-pulse bg-muted rounded" /></CardContent></Card>
         ))}
       </div>
+    );
+  }
+
+  if (!analytics || analytics.totalViews === 0) {
+    return (
+      <EmptyState
+        icon={Eye}
+        title={isAr ? "لا توجد بيانات بعد" : "No analytics data yet"}
+        description={isAr ? "ستظهر الإحصائيات عند زيارة ملفك الشخصي" : "Analytics will appear when your profile gets views"}
+      />
     );
   }
 
@@ -95,7 +107,7 @@ export function ProfileAnalyticsDashboard({ userId }: ProfileAnalyticsDashboardP
   }));
 
   return (
-    <div className="space-y-6">
+    <StaggeredList className="space-y-6" stagger={80}>
       {/* Stat Cards */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
         {statCards.map((stat) => (
@@ -256,6 +268,6 @@ export function ProfileAnalyticsDashboard({ userId }: ProfileAnalyticsDashboardP
           </CardContent>
         </Card>
       )}
-    </div>
+    </StaggeredList>
   );
 }
