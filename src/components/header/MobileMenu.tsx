@@ -3,9 +3,12 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useIsAdmin } from "@/hooks/useAdmin";
 import { useUserRoles } from "@/hooks/useUserRole";
+import { useQuery } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Separator } from "@/components/ui/separator";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { cn } from "@/lib/utils";
 import {
   Menu,
@@ -42,6 +45,25 @@ export function MobileMenu({ primaryNav, moreLinks }: MobileMenuProps) {
   const [open, setOpen] = useState(false);
   const location = useLocation();
   const isAr = language === "ar";
+
+  const { data: profile } = useQuery({
+    queryKey: ["header-profile", user?.id],
+    queryFn: async () => {
+      if (!user) return null;
+      const { data } = await supabase
+        .from("profiles")
+        .select("full_name, avatar_url")
+        .eq("user_id", user.id)
+        .single();
+      return data;
+    },
+    enabled: !!user,
+    staleTime: 60000,
+  });
+
+  const initials = profile?.full_name
+    ? profile.full_name.split(" ").map((n: string) => n[0]).join("").substring(0, 2).toUpperCase()
+    : user?.email?.[0]?.toUpperCase() || "U";
 
   const isActive = (path: string) =>
     location.pathname === path || (path !== "/" && location.pathname.startsWith(path + "/"));
@@ -90,10 +112,16 @@ export function MobileMenu({ primaryNav, moreLinks }: MobileMenuProps) {
             {user && (
               <div className="border-b px-4 py-3 bg-muted/10">
                 <div className="flex items-center gap-3">
-                  <div className="flex h-9 w-9 items-center justify-center rounded-full bg-primary/10 border border-primary/20">
-                    <User className="h-4 w-4 text-primary" />
-                  </div>
+                  <Avatar className="h-9 w-9 border border-primary/20">
+                    <AvatarImage src={profile?.avatar_url || undefined} alt={profile?.full_name || ""} />
+                    <AvatarFallback className="text-xs font-bold bg-primary/10 text-primary">
+                      {initials}
+                    </AvatarFallback>
+                  </Avatar>
                   <div className="min-w-0 flex-1">
+                    {profile?.full_name && (
+                      <p className="text-sm font-medium truncate">{profile.full_name}</p>
+                    )}
                     <p className="text-xs text-muted-foreground truncate">{user.email}</p>
                   </div>
                 </div>

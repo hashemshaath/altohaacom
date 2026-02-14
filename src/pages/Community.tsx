@@ -48,59 +48,42 @@ export default function Community() {
       />
       <Header />
 
-      {/* Hero Section - Premium */}
-      <section className="relative overflow-hidden border-b border-border/40 bg-gradient-to-br from-primary/5 via-background to-accent/5">
-        <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1556910103-1c02745aae4d?auto=format&fit=crop&q=80')] bg-fixed bg-cover bg-center opacity-[0.03] grayscale pointer-events-none" />
-        <div className="absolute inset-0 bg-gradient-to-t from-background via-transparent to-transparent" />
-        
-        <div className="absolute -top-40 start-1/4 h-96 w-96 rounded-full bg-primary/10 blur-[120px] animate-pulse pointer-events-none" />
-        <div className="absolute -bottom-32 end-1/4 h-80 w-80 rounded-full bg-accent/15 blur-[120px] animate-pulse [animation-delay:1.5s] pointer-events-none" />
-        <div className="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-primary/30 to-transparent" />
-
-        <div className="container relative py-12 md:py-20">
-          <div className="flex flex-col gap-12 lg:flex-row lg:items-center lg:justify-between animate-fade-in">
-            <div className="max-w-3xl space-y-8">
-              <div className="inline-flex items-center gap-2 rounded-full bg-primary/10 px-4 py-1.5 ring-1 ring-primary/20 backdrop-blur-sm shadow-inner transition-transform hover:scale-105">
+      {/* Compact Hero - consistent with other pages */}
+      <section className="border-b border-border/40 bg-gradient-to-b from-primary/5 to-background">
+        <div className="container py-8 md:py-12">
+          <div className="flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
+            <div className="space-y-3 max-w-2xl">
+              <div className="inline-flex items-center gap-2 rounded-full bg-primary/10 px-3 py-1 ring-1 ring-primary/20">
                 <div className="relative flex h-2 w-2">
-                  <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-primary opacity-75"></span>
-                  <span className="relative inline-flex h-2 w-2 rounded-full bg-primary"></span>
+                  <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-primary opacity-75" />
+                  <span className="relative inline-flex h-2 w-2 rounded-full bg-primary" />
                 </div>
-                <span className="text-[10px] font-black uppercase tracking-[0.2em] text-primary">
-                  {isAr ? "مجتمع الطهاة العالمي الفاخر" : "Global Elite Chef Community"}
+                <span className="text-[10px] font-bold uppercase tracking-widest text-primary">
+                  {isAr ? "مجتمع الطهاة" : "Chef Community"}
                 </span>
               </div>
-              
-              <div className="space-y-4 text-center md:text-start">
-                <h1 className="font-serif text-4xl font-black tracking-tight md:text-6xl lg:text-7xl text-balance leading-[1.05]">
-                  {isAr ? (
-                    <>تواصل، شارك، <span className="text-primary italic relative">وتألق<span className="absolute -bottom-2 inset-x-0 h-3 bg-primary/10 -rotate-2 -z-10" /></span></>
-                  ) : (
-                    <>Connect, Share, & <span className="text-primary italic relative">Thrive<span className="absolute -bottom-2 inset-x-0 h-4 bg-primary/10 -rotate-1 -z-10" /></span></>
-                  )}
-                </h1>
-                <p className="max-w-xl text-lg text-muted-foreground font-medium md:text-xl leading-relaxed">
-                  {isAr
-                    ? "انضم إلى نخبة الطهاة، شارك أسرار مهنتك، وابنِ شبكتك المهنية في أكبر تجمع طهوي."
-                    : "Join elite culinary professionals, share craft secrets, and build your professional network."}
-                </p>
-              </div>
+              <h1 className="font-serif text-3xl font-bold tracking-tight md:text-4xl">
+                {isAr ? "المجتمع" : "Community"}
+              </h1>
+              <p className="text-muted-foreground text-sm md:text-base leading-relaxed">
+                {isAr
+                  ? "تواصل مع الطهاة، شارك الوصفات، وابنِ شبكتك المهنية."
+                  : "Connect with chefs, share recipes, and build your professional network."}
+              </p>
             </div>
 
-            {/* Live Stats Glass Cards */}
-            <div className="grid grid-cols-3 gap-3 md:gap-4 lg:grid-cols-1">
+            {/* Compact Stats */}
+            <div className="flex gap-4 md:gap-6">
               {[
-                { label: isAr ? "عضو" : "Members", value: stats.members, color: "text-primary", bg: "bg-primary/5" },
-                { label: isAr ? "مجموعة" : "Groups", value: stats.groups, color: "text-chart-2", bg: "bg-chart-2/5" },
-                { label: isAr ? "وصفة" : "Recipes", value: stats.recipes, color: "text-chart-4", bg: "bg-chart-4/5" }
+                { label: isAr ? "عضو" : "Members", value: stats.members, color: "text-primary" },
+                { label: isAr ? "مجموعة" : "Groups", value: stats.groups, color: "text-chart-2" },
+                { label: isAr ? "وصفة" : "Recipes", value: stats.recipes, color: "text-chart-4" },
               ].map((stat, i) => (
-                <div 
-                  key={i} 
-                  className={`flex flex-col items-center justify-center rounded-[2rem] border border-border/40 ${stat.bg} p-4 text-center backdrop-blur-sm transition-all duration-300 hover:shadow-xl hover:shadow-primary/5 hover:-translate-y-1 md:p-6 lg:flex-row lg:justify-start lg:gap-6 lg:px-10 lg:py-5`}
-                >
-                  <div className={`text-2xl font-bold tracking-tighter ${stat.color} md:text-3xl lg:text-4xl`}>
+                <div key={i} className="text-center">
+                  <div className={`text-xl font-bold ${stat.color} md:text-2xl`}>
                     {stat.value.toLocaleString()}
                   </div>
-                  <div className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground md:text-xs">
+                  <div className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">
                     {stat.label}
                   </div>
                 </div>
@@ -110,7 +93,7 @@ export default function Community() {
         </div>
       </section>
 
-      <main className="container flex-1 py-4 md:py-6">
+      <main className="container flex-1 py-4 md:py-6 max-w-5xl">
         <Tabs defaultValue="feed" className="w-full">
           <div className="sticky top-[64px] z-40 -mx-4 border-b border-border/40 bg-background/80 px-4 py-3 backdrop-blur-md md:mx-0 md:rounded-2xl md:border md:px-4 md:shadow-sm">
             <TabsList className="h-auto w-full justify-start gap-1.5 overflow-x-auto bg-transparent p-0">
