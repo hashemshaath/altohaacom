@@ -11,6 +11,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Heart, MessageCircle, User, Send } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { PostComments } from "@/components/community/PostComments";
+import { toEnglishDigits } from "@/lib/formatNumber";
 
 interface Post {
   id: string;
@@ -139,7 +140,7 @@ export function FeedTab() {
     if (diffMins < 60) return language === "ar" ? `${diffMins}د` : `${diffMins}m`;
     if (diffHours < 24) return language === "ar" ? `${diffHours}س` : `${diffHours}h`;
     if (diffDays < 7) return language === "ar" ? `${diffDays}ي` : `${diffDays}d`;
-    return date.toLocaleDateString(undefined, { month: "short", day: "numeric" });
+    return toEnglishDigits(date.toLocaleDateString(language === "ar" ? "ar-SA" : "en-US", { month: "short", day: "numeric" }));
   };
 
   if (loading) {
