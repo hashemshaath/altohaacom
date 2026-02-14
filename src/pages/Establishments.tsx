@@ -57,20 +57,33 @@ export default function Establishments() {
       <SEOHead title={isAr ? "المنشآت | التحاء" : "Establishments | Altohaa"} description="Directory of restaurants, hotels, and food establishments" />
       <Header />
       <main className="min-h-screen bg-background">
-        {/* Hero */}
-        <section className="relative overflow-hidden border-b bg-gradient-to-br from-primary/5 via-background to-primary/10 py-16">
-          <div className="absolute inset-0 overflow-hidden">
-            <div className="absolute -top-40 end-0 h-80 w-80 rounded-full bg-primary/5 blur-3xl" />
-            <div className="absolute bottom-0 start-0 h-60 w-60 rounded-full bg-chart-2/5 blur-3xl" />
-          </div>
-          <div className="container relative text-center">
-            <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-primary/10">
-              <Building2 className="h-8 w-8 text-primary" />
+        {/* Hero - Premium */}
+        <section className="relative overflow-hidden border-b border-border/40 bg-gradient-to-br from-primary/5 via-background to-accent/5">
+          <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1517248135467-4c7ed9d42339?auto=format&fit=crop&q=80')] bg-fixed bg-cover bg-center opacity-[0.03] grayscale pointer-events-none" />
+          <div className="absolute inset-0 bg-gradient-to-t from-background via-transparent to-transparent" />
+          
+          <div className="absolute -top-40 end-0 h-96 w-96 rounded-full bg-primary/10 blur-[120px] animate-pulse pointer-events-none" />
+          <div className="absolute bottom-0 start-0 h-72 w-72 rounded-full bg-accent/15 blur-[100px] animate-pulse [animation-delay:1.5s] pointer-events-none" />
+          <div className="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-primary/30 to-transparent" />
+
+          <div className="container relative py-16 md:py-24 text-center animate-fade-in">
+            <div className="mx-auto mb-8 flex h-20 w-20 items-center justify-center rounded-[2rem] bg-primary/10 ring-4 ring-primary/5 shadow-2xl transition-transform hover:scale-110">
+              <Building2 className="h-10 w-10 text-primary" />
             </div>
-            <h1 className="text-3xl font-bold md:text-4xl">{isAr ? "دليل المنشآت" : "Establishments Directory"}</h1>
-            <p className="mx-auto mt-3 max-w-xl text-muted-foreground">
-              {isAr ? "تصفح المطاعم والفنادق ومنشآت الأغذية حيث يعمل الطهاة ويتدربون" : "Browse restaurants, hotels, and food establishments where chefs work and train"}
-            </p>
+            <div className="space-y-6">
+              <h1 className="font-serif text-4xl font-black tracking-tight md:text-6xl lg:text-7xl leading-[1.05]">
+                {isAr ? (
+                  <>دليل <span className="text-primary italic relative">المنشآت<span className="absolute -bottom-2 inset-x-0 h-3 bg-primary/10 -rotate-2 -z-10" /></span> الطهوية</>
+                ) : (
+                  <>Culinary <span className="text-primary italic relative">Establishments<span className="absolute -bottom-2 inset-x-0 h-4 bg-primary/10 -rotate-1 -z-10" /></span> Directory</>
+                )}
+              </h1>
+              <p className="mx-auto max-w-2xl text-lg text-muted-foreground font-medium md:text-xl leading-relaxed">
+                {isAr 
+                  ? "تصفح المطاعم والفنادق ومنشآت الأغذية حيث يعمل الطهاة ويتدربون." 
+                  : "Browse restaurants, hotels, and food establishments where chefs work and train."}
+              </p>
+            </div>
           </div>
         </section>
 

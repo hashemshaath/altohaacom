@@ -48,36 +48,40 @@ export default function Community() {
       />
       <Header />
 
-      {/* Premium Hero Section */}
-      <section className="relative overflow-hidden border-b bg-gradient-to-b from-primary/10 via-background to-background">
-        <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1556910103-1c02745aae4d?auto=format&fit=crop&q=80')] bg-cover bg-center opacity-5 grayscale" />
-        <div className="absolute inset-0 bg-gradient-to-t from-background via-background/40 to-transparent" />
+      {/* Hero Section - Premium */}
+      <section className="relative overflow-hidden border-b border-border/40 bg-gradient-to-br from-primary/5 via-background to-accent/5">
+        <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1556910103-1c02745aae4d?auto=format&fit=crop&q=80')] bg-fixed bg-cover bg-center opacity-[0.03] grayscale pointer-events-none" />
+        <div className="absolute inset-0 bg-gradient-to-t from-background via-transparent to-transparent" />
         
-        <div className="absolute -top-32 start-1/4 h-64 w-64 rounded-full bg-primary/10 blur-[100px] animate-pulse" />
-        <div className="absolute -bottom-32 end-1/4 h-64 w-64 rounded-full bg-accent/10 blur-[100px] animate-pulse [animation-delay:1.5s]" />
+        <div className="absolute -top-40 start-1/4 h-96 w-96 rounded-full bg-primary/10 blur-[120px] animate-pulse pointer-events-none" />
+        <div className="absolute -bottom-32 end-1/4 h-80 w-80 rounded-full bg-accent/15 blur-[120px] animate-pulse [animation-delay:1.5s] pointer-events-none" />
+        <div className="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-primary/30 to-transparent" />
 
-        <div className="container relative py-12 md:py-16">
-          <div className="flex flex-col gap-10 lg:flex-row lg:items-center lg:justify-between">
-            <div className="max-w-2xl space-y-6">
-              <div className="inline-flex items-center gap-2 rounded-full bg-primary/10 px-3 py-1 ring-1 ring-primary/20 backdrop-blur-sm">
-                <div className="h-1.5 w-1.5 rounded-full bg-primary animate-pulse" />
-                <span className="text-[10px] font-bold uppercase tracking-widest text-primary">
-                  {isAr ? "مجتمع الطهاة العالمي" : "Global Chef Community"}
+        <div className="container relative py-12 md:py-20">
+          <div className="flex flex-col gap-12 lg:flex-row lg:items-center lg:justify-between animate-fade-in">
+            <div className="max-w-3xl space-y-8">
+              <div className="inline-flex items-center gap-2 rounded-full bg-primary/10 px-4 py-1.5 ring-1 ring-primary/20 backdrop-blur-sm shadow-inner transition-transform hover:scale-105">
+                <div className="relative flex h-2 w-2">
+                  <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-primary opacity-75"></span>
+                  <span className="relative inline-flex h-2 w-2 rounded-full bg-primary"></span>
+                </div>
+                <span className="text-[10px] font-black uppercase tracking-[0.2em] text-primary">
+                  {isAr ? "مجتمع الطهاة العالمي الفاخر" : "Global Elite Chef Community"}
                 </span>
               </div>
               
               <div className="space-y-4 text-center md:text-start">
-                <h1 className="font-serif text-4xl font-bold tracking-tight md:text-5xl lg:text-6xl text-balance leading-[1.1]">
+                <h1 className="font-serif text-4xl font-black tracking-tight md:text-6xl lg:text-7xl text-balance leading-[1.05]">
                   {isAr ? (
-                    <>تواصل، شارك، <span className="text-primary italic">وتألق</span></>
+                    <>تواصل، شارك، <span className="text-primary italic relative">وتألق<span className="absolute -bottom-2 inset-x-0 h-3 bg-primary/10 -rotate-2 -z-10" /></span></>
                   ) : (
-                    <>Connect, Share, & <span className="text-primary italic">Thrive</span></>
+                    <>Connect, Share, & <span className="text-primary italic relative">Thrive<span className="absolute -bottom-2 inset-x-0 h-4 bg-primary/10 -rotate-1 -z-10" /></span></>
                   )}
                 </h1>
-                <p className="max-w-xl text-base text-muted-foreground/90 md:text-lg leading-relaxed">
+                <p className="max-w-xl text-lg text-muted-foreground font-medium md:text-xl leading-relaxed">
                   {isAr
-                    ? "انضم إلى نخبة الطهاة، شارك أسرار مهنتك، وابنِ شبكتك المهنية في أكبر تجمع لعشاق فنون الطهي"
-                    : "Join elite culinary professionals, share craft secrets, and build your professional network in the world's most focused gastronomy hub"}
+                    ? "انضم إلى نخبة الطهاة، شارك أسرار مهنتك، وابنِ شبكتك المهنية في أكبر تجمع طهوي."
+                    : "Join elite culinary professionals, share craft secrets, and build your professional network."}
                 </p>
               </div>
             </div>

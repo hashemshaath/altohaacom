@@ -132,50 +132,58 @@ export default function Entities() {
       <SEOHead title="Culinary Entities Directory" description="Discover culinary associations, government entities, and academies worldwide." />
       <Header />
 
-      {/* Hero Banner with Cover Image */}
-      <section className="relative overflow-hidden border-b">
+      {/* Hero Banner - Premium */}
+      <section className="relative overflow-hidden border-b border-border/40">
         {/* Background Image */}
         <div className="absolute inset-0">
-          <img src={entitiesHero} alt="" className="h-full w-full object-cover" />
-          <div className="absolute inset-0 bg-gradient-to-t from-background via-background/80 to-background/40" />
-          <div className="absolute inset-0 bg-gradient-to-r from-background/60 to-transparent" />
+          <img src={entitiesHero} alt="" className="h-full w-full object-cover scale-105 blur-[2px] opacity-20 pointer-events-none" />
+          <div className="absolute inset-0 bg-gradient-to-t from-background via-background/80 to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-r from-background via-transparent to-transparent" />
         </div>
 
         {/* Animated orbs */}
-        <div className="absolute -top-32 start-1/4 h-64 w-64 rounded-full bg-primary/10 blur-[100px] animate-pulse pointer-events-none" />
-        <div className="absolute -top-20 end-1/3 h-48 w-48 rounded-full bg-accent/10 blur-[80px] animate-pulse [animation-delay:1s] pointer-events-none" />
+        <div className="absolute -top-40 start-1/4 h-96 w-96 rounded-full bg-primary/10 blur-[120px] animate-pulse pointer-events-none" />
+        <div className="absolute -bottom-20 end-1/3 h-72 w-72 rounded-full bg-accent/15 blur-[100px] animate-pulse [animation-delay:1.5s] pointer-events-none" />
+        <div className="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-primary/30 to-transparent" />
 
-        <div className="container relative py-16 md:py-20">
-          <div className="max-w-2xl">
-            <div className="mb-4 flex items-center gap-3">
-              <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-primary/15 ring-1 ring-primary/20 shadow-lg backdrop-blur-sm">
-                <Building2 className="h-7 w-7 text-primary" />
+        <div className="container relative py-16 md:py-24">
+          <div className="max-w-3xl space-y-8 animate-fade-in">
+            <div className="flex items-center gap-4">
+              <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded-[2rem] bg-primary/10 ring-4 ring-primary/5 shadow-2xl backdrop-blur-md transition-transform hover:scale-110">
+                <Building2 className="h-8 w-8 text-primary" />
               </div>
-              <Badge variant="secondary" className="backdrop-blur-sm bg-secondary/80 text-xs">
-                {isAr ? "الدليل الرسمي" : "Official Directory"}
+              <Badge variant="secondary" className="backdrop-blur-md bg-background/80 px-4 py-1.5 text-[10px] font-black uppercase tracking-widest border-0 shadow-lg">
+                {isAr ? "الدليل المهني الرسمي" : "Official Professional Directory"}
               </Badge>
             </div>
-            <h1 className="font-serif text-3xl font-bold md:text-4xl lg:text-5xl">
-              {isAr ? "دليل جهات وجمعيات الطهي" : "Culinary Entities Directory"}
-            </h1>
-            <p className="mt-3 max-w-xl text-sm text-muted-foreground sm:text-base md:text-lg">
-              {isAr
-                ? "اكتشف وتابع جمعيات الطهي والجهات الحكومية والخاصة المعنية بالطهي محلياً ودولياً"
-                : "Discover and follow culinary associations, government entities, and private organizations locally and internationally"}
-            </p>
+            
+            <div className="space-y-4">
+              <h1 className="font-serif text-4xl font-black tracking-tight md:text-6xl lg:text-7xl leading-[1.05]">
+                {isAr ? (
+                  <>دليل <span className="text-primary italic relative">جهات<span className="absolute -bottom-2 inset-x-0 h-3 bg-primary/10 -rotate-2 -z-10" /></span> وجمعيات الطهي</>
+                ) : (
+                  <>Culinary <span className="text-primary italic relative">Entities<span className="absolute -bottom-2 inset-x-0 h-4 bg-primary/10 -rotate-1 -z-10" /></span> Directory</>
+                )}
+              </h1>
+              <p className="max-w-2xl text-lg text-muted-foreground font-medium md:text-xl leading-relaxed">
+                {isAr
+                  ? "اكتشف وتابع جمعيات الطهي والجهات الحكومية والخاصة المعنية بالطهي محلياً ودولياً."
+                  : "Discover and follow culinary associations, government entities, and private organizations globally."}
+              </p>
+            </div>
 
             {/* Quick stat pills */}
             {entities && entities.length > 0 && (
-              <div className="mt-6 flex flex-wrap gap-2">
-                <Badge variant="secondary" className="gap-1.5 px-3 py-1.5 text-xs backdrop-blur-sm bg-secondary/80">
+              <div className="flex flex-wrap gap-3">
+                <Badge variant="outline" className="gap-2 px-5 py-2 text-xs font-bold border-primary/20 bg-primary/5 text-primary rounded-full backdrop-blur-md">
                   <Building2 className="h-3.5 w-3.5" />
-                  {entities.length} {isAr ? "جهة مسجلة" : "Registered Entities"}
+                  {entities.length} {isAr ? "جهة" : "Entities"}
                 </Badge>
-                <Badge variant="secondary" className="gap-1.5 px-3 py-1.5 text-xs backdrop-blur-sm bg-secondary/80">
+                <Badge variant="outline" className="gap-2 px-5 py-2 text-xs font-bold border-chart-3/20 bg-chart-3/5 text-chart-3 rounded-full backdrop-blur-md">
                   <ShieldCheck className="h-3.5 w-3.5" />
-                  {entities.filter(e => e.is_verified).length} {isAr ? "جهة موثقة" : "Verified"}
+                  {entities.filter(e => e.is_verified).length} {isAr ? "موثقة" : "Verified"}
                 </Badge>
-                <Badge variant="secondary" className="gap-1.5 px-3 py-1.5 text-xs backdrop-blur-sm bg-secondary/80">
+                <Badge variant="outline" className="gap-2 px-5 py-2 text-xs font-bold border-chart-1/20 bg-chart-1/5 text-chart-1 rounded-full backdrop-blur-md">
                   <Globe className="h-3.5 w-3.5" />
                   {new Set(entities.map(e => e.country).filter(Boolean)).size} {isAr ? "دولة" : "Countries"}
                 </Badge>

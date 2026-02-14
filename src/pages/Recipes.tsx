@@ -44,15 +44,16 @@ function RecipeCard({ recipe, isAr }: { recipe: RecipeWithMeta; isAr: boolean })
 
   return (
     <Link to={`/recipes/${recipe.slug || recipe.id}`}>
-      <Card className="group h-full overflow-hidden transition-all duration-200 hover:shadow-md hover:-translate-y-0.5 hover:border-primary/20">
-        <div className="aspect-video overflow-hidden bg-muted">
+      <Card className="group h-full overflow-hidden border-border/40 bg-card/60 backdrop-blur-sm transition-all duration-500 hover:shadow-2xl hover:-translate-y-2 hover:border-primary/30 hover:bg-card">
+        <div className="aspect-video overflow-hidden bg-muted relative">
           {recipe.image_url ? (
-            <img src={recipe.image_url} alt={recipe.title} className="h-full w-full object-cover transition-transform group-hover:scale-105" loading="lazy" />
+            <img src={recipe.image_url} alt={recipe.title} className="h-full w-full object-cover transition-transform duration-1000 group-hover:scale-110" loading="lazy" />
           ) : (
-            <div className="flex h-full w-full items-center justify-center">
-              <UtensilsCrossed className="h-10 w-10 text-muted-foreground/30" />
+            <div className="flex h-full w-full items-center justify-center bg-gradient-to-br from-primary/5 to-chart-3/5">
+              <UtensilsCrossed className="h-12 w-12 text-primary/15 animate-pulse" />
             </div>
           )}
+          <div className="absolute inset-0 bg-gradient-to-t from-background/80 via-transparent to-transparent opacity-60 transition-opacity group-hover:opacity-80" />
         </div>
         <CardContent className="p-4">
           <div className="mb-2 flex items-start justify-between gap-2">
@@ -137,31 +138,43 @@ export default function Recipes() {
       <Header />
 
       <main className="flex-1">
-        {/* Hero */}
-        <div className="relative overflow-hidden bg-gradient-to-br from-primary/90 via-primary to-chart-3/80 py-16 text-primary-foreground">
-          <div className="absolute -right-20 -top-20 h-60 w-60 rounded-full bg-primary-foreground/10 blur-3xl" />
-          <div className="absolute -bottom-20 -left-20 h-48 w-48 rounded-full bg-primary-foreground/5 blur-2xl" />
-          <div className="container relative z-10 mx-auto px-4 text-center">
-            <div className="flex h-16 w-16 mx-auto items-center justify-center rounded-2xl bg-primary-foreground/20 backdrop-blur-sm mb-4">
-              <UtensilsCrossed className="h-8 w-8" />
+        {/* Hero - Premium */}
+        <div className="relative overflow-hidden border-b border-border/40 bg-gradient-to-br from-primary/5 via-background to-chart-3/5">
+          <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&q=80')] bg-fixed bg-cover bg-center opacity-[0.03] grayscale pointer-events-none" />
+          <div className="absolute inset-0 bg-gradient-to-t from-background via-transparent to-transparent" />
+          
+          <div className="absolute -top-40 start-1/4 h-96 w-96 rounded-full bg-primary/10 blur-[120px] animate-pulse pointer-events-none" />
+          <div className="absolute -bottom-20 end-1/3 h-72 w-72 rounded-full bg-chart-3/15 blur-[100px] animate-pulse [animation-delay:1.5s] pointer-events-none" />
+          <div className="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-primary/30 to-transparent" />
+
+          <div className="container relative py-12 md:py-20 text-center animate-fade-in">
+            <div className="inline-flex h-20 w-20 items-center justify-center rounded-3xl bg-primary/10 ring-4 ring-primary/5 shadow-inner mb-8 transition-transform hover:scale-110 hover:rotate-3">
+              <UtensilsCrossed className="h-10 w-10 text-primary" />
             </div>
-            <h1 className="text-3xl font-bold md:text-4xl">
-              {isAr ? "قاعدة الوصفات" : "Recipe Database"}
-            </h1>
-            <p className="mt-3 text-lg text-primary-foreground/80 max-w-2xl mx-auto">
-              {isAr
-                ? "اكتشف وصفات من طهاة محترفين حول العالم وشاركنا وصفاتك المميزة"
-                : "Discover recipes from professional chefs worldwide and share your own culinary creations"}
-            </p>
-            <div className="mt-6 flex flex-wrap justify-center gap-4 text-sm">
-              <Badge variant="outline" className="border-primary-foreground/30 text-primary-foreground px-3 py-1.5">
-                <ChefHat className="h-3 w-3 me-1" />
-                {recipes.length} {isAr ? "وصفة" : "Recipes"}
-              </Badge>
-              <Badge variant="outline" className="border-primary-foreground/30 text-primary-foreground px-3 py-1.5">
-                <Star className="h-3 w-3 me-1" />
-                {cuisines.length} {isAr ? "مطبخ" : "Cuisines"}
-              </Badge>
+            <div className="space-y-6">
+              <h1 className="font-serif text-4xl font-black tracking-tight md:text-6xl lg:text-7xl text-balance leading-[1.05]">
+                {isAr ? (
+                  <>قاعدة <span className="text-primary italic relative">الوصفات<span className="absolute -bottom-2 inset-x-0 h-3 bg-primary/10 -rotate-2 -z-10" /></span> العالمية</>
+                ) : (
+                  <>Global <span className="text-primary italic relative">Recipe<span className="absolute -bottom-2 inset-x-0 h-4 bg-primary/10 -rotate-1 -z-10" /></span> Vault</>
+                )}
+              </h1>
+              <p className="max-w-2xl mx-auto text-lg text-muted-foreground font-medium md:text-xl leading-relaxed">
+                {isAr
+                  ? "اكتشف وصفات من طهاة محترفين حول العالم وشاركنا وصفاتك المميزة."
+                  : "Discover recipes from professional chefs worldwide and share your own culinary creations."}
+              </p>
+              
+              <div className="flex flex-wrap justify-center gap-3">
+                <Badge variant="outline" className="border-primary/20 bg-primary/5 text-primary px-5 py-2 text-xs font-black uppercase tracking-widest rounded-full backdrop-blur-sm">
+                  <ChefHat className="h-3.5 w-3.5 me-2" />
+                  {recipes.length} {isAr ? "وصفة" : "Recipes"}
+                </Badge>
+                <Badge variant="outline" className="border-chart-4/20 bg-chart-4/5 text-chart-4 px-5 py-2 text-xs font-black uppercase tracking-widest rounded-full backdrop-blur-sm">
+                  <Star className="h-3.5 w-3.5 me-2" />
+                  {cuisines.length} {isAr ? "مطبخ" : "Cuisines"}
+                </Badge>
+              </div>
             </div>
           </div>
         </div>

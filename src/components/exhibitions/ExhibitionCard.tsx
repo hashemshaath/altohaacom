@@ -90,31 +90,47 @@ export function ExhibitionCard({ exhibition, language }: ExhibitionCardProps) {
 
   return (
     <Link to={`/exhibitions/${exhibition.slug}`} className="group block">
-      <Card className={`group flex h-full flex-col overflow-hidden border-border/50 bg-card/50 backdrop-blur-sm transition-all duration-300 hover:shadow-2xl hover:-translate-y-2 hover:border-primary/30 ${exhibition.is_featured ? "ring-1 ring-primary/20 shadow-md shadow-primary/5" : ""}`}>
-        {/* Image */}
-        <div className="relative aspect-[16/10] overflow-hidden bg-gradient-to-br from-primary/10 to-accent/10">
+      <Card className={`group flex h-full flex-col overflow-hidden border-border/40 bg-card/60 backdrop-blur-sm transition-all duration-500 hover:shadow-2xl hover:-translate-y-2 hover:border-primary/30 hover:bg-card ${exhibition.is_featured ? "ring-2 ring-primary/20 shadow-xl shadow-primary/5" : ""}`}>
+        {/* Image Section */}
+        <div className="relative aspect-[16/10] shrink-0 overflow-hidden bg-muted">
           {exhibition.cover_image_url ? (
             <img
               src={exhibition.cover_image_url}
               alt={title}
-              className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-110"
+              className="h-full w-full object-cover transition-transform duration-1000 group-hover:scale-110"
               loading="lazy"
             />
           ) : (
-            <div className="flex h-full items-center justify-center">
-              <span className="text-5xl opacity-40 grayscale group-hover:grayscale-0 transition-all duration-500">🏛️</span>
+            <div className="flex h-full items-center justify-center bg-gradient-to-br from-primary/10 to-accent/10">
+              <span className="text-5xl transition-transform duration-500 group-hover:scale-125 group-hover:rotate-3">🏛️</span>
             </div>
           )}
-          <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/10 to-transparent opacity-60 transition-opacity group-hover:opacity-80" />
+          <div className="absolute inset-0 bg-gradient-to-t from-background/90 via-transparent to-transparent opacity-60 transition-opacity group-hover:opacity-80" />
 
-          {/* Badges */}
-          <div className="absolute start-3 top-3 flex flex-wrap gap-2 z-10">
-            <Badge className={`${liveStatus.className} shadow-lg backdrop-blur-md`}>
-              {isAr ? liveStatus.labelAr : liveStatus.label}
-            </Badge>
-            {exhibition.is_featured && (
-              <Badge className="bg-primary text-primary-foreground shadow-lg shadow-primary/20">⭐ {isAr ? "مميز" : "Featured"}</Badge>
-            )}
+          {/* Badges Overlays */}
+          <div className="absolute inset-x-0 top-0 flex items-start justify-between p-4 z-10">
+            <div className="flex flex-col gap-2">
+              <Badge className={`${liveStatus.className} shadow-xl backdrop-blur-md border-0 text-[9px] font-black uppercase tracking-wider py-1 px-3`}>
+                {isAr ? liveStatus.labelAr : liveStatus.label}
+              </Badge>
+              {exhibition.is_featured && (
+                <Badge className="bg-primary text-primary-foreground shadow-xl shadow-primary/20 text-[9px] font-black uppercase tracking-wider py-1 px-3">
+                  ⭐ {isAr ? "مميز" : "Featured"}
+                </Badge>
+              )}
+            </div>
+
+            <div className="flex flex-col items-end gap-2">
+              <Badge variant="secondary" className="text-[9px] font-black uppercase tracking-wider bg-background/80 backdrop-blur-md shadow-lg border-0 py-1 px-3">
+                {isAr ? typeLabel.ar : typeLabel.en}
+              </Badge>
+              {daysLeft !== null && daysLeft > 0 && daysLeft <= 30 && (
+                <Badge className="gap-1.5 text-[9px] font-black uppercase tracking-wider bg-chart-4/90 text-white shadow-lg border-0 py-1 px-3 animate-pulse">
+                  <Clock className="h-2.5 w-2.5" />
+                  {isAr ? `باقي ${daysLeft} يوم` : `${daysLeft}d left`}
+                </Badge>
+              )}
+            </div>
           </div>
 
           <div className="absolute end-3 top-3 flex flex-col gap-2 z-10">

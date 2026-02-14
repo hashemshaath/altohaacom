@@ -88,36 +88,37 @@ export default function Shop() {
       />
       <Header />
 
-      {/* Premium Hero Banner */}
-      <section className="relative overflow-hidden border-b bg-gradient-to-b from-primary/10 via-background to-background">
-        <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1541832676-9b763b0239ab?auto=format&fit=crop&q=80')] bg-cover bg-center opacity-5 grayscale" />
-        <div className="absolute inset-0 bg-gradient-to-t from-background via-background/40 to-transparent" />
+      {/* Hero Banner - Premium */}
+      <section className="relative overflow-hidden border-b border-border/40 bg-gradient-to-br from-primary/5 via-background to-chart-4/5">
+        <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1541832676-9b763b0239ab?auto=format&fit=crop&q=80')] bg-fixed bg-cover bg-center opacity-[0.03] grayscale pointer-events-none" />
+        <div className="absolute inset-0 bg-gradient-to-t from-background via-transparent to-transparent" />
         
-        <div className="absolute -top-32 start-1/4 h-64 w-64 rounded-full bg-primary/10 blur-[100px] animate-pulse pointer-events-none" />
-        <div className="absolute -top-20 end-1/3 h-48 w-48 rounded-full bg-accent/10 blur-[80px] animate-pulse [animation-delay:1s] pointer-events-none" />
+        <div className="absolute -top-40 start-1/4 h-96 w-96 rounded-full bg-primary/10 blur-[120px] animate-pulse pointer-events-none" />
+        <div className="absolute -bottom-20 end-1/3 h-72 w-72 rounded-full bg-chart-4/15 blur-[100px] animate-pulse [animation-delay:1.5s] pointer-events-none" />
+        <div className="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-primary/30 to-transparent" />
 
-        <div className="container relative py-12 md:py-16">
-          <div className="flex flex-col gap-8 lg:flex-row lg:items-center lg:justify-between">
-            <div className="max-w-2xl space-y-6">
-              <div className="inline-flex items-center gap-2 rounded-full bg-primary/10 px-3 py-1 ring-1 ring-primary/20 backdrop-blur-sm">
+        <div className="container relative py-12 md:py-20">
+          <div className="flex flex-col gap-10 lg:flex-row lg:items-center lg:justify-between animate-fade-in">
+            <div className="max-w-3xl space-y-8">
+              <div className="inline-flex items-center gap-2 rounded-full bg-primary/10 px-4 py-1.5 ring-1 ring-primary/20 backdrop-blur-sm shadow-inner transition-transform hover:scale-105">
                 <ShoppingBag className="h-4 w-4 text-primary" />
-                <span className="text-[10px] font-bold uppercase tracking-widest text-primary">
-                  {isAr ? "سوق التوحاء الطهوي" : "Altohaa Culinary Marketplace"}
+                <span className="text-[10px] font-black uppercase tracking-[0.2em] text-primary">
+                  {isAr ? "سوق التوحاء الطهوي الفاخر" : "Altohaa Luxury Culinary Market"}
                 </span>
               </div>
               
               <div className="space-y-4">
-                <h1 className="font-serif text-4xl font-bold tracking-tight md:text-5xl lg:text-6xl text-balance leading-[1.1]">
+                <h1 className="font-serif text-4xl font-black tracking-tight md:text-6xl lg:text-7xl text-balance leading-[1.05]">
                   {isAr ? (
-                    <>أدوات <span className="text-primary italic">احترافية</span> للتميز الطهوي</>
+                    <>أدوات <span className="text-primary italic relative">احترافية<span className="absolute -bottom-2 inset-x-0 h-3 bg-primary/10 -rotate-2 -z-10" /></span> للتميز الطهوي</>
                   ) : (
-                    <>Professional <span className="text-primary italic">Tools</span> for Culinary Excellence</>
+                    <>Professional <span className="text-primary italic relative">Tools<span className="absolute -bottom-2 inset-x-0 h-4 bg-primary/10 -rotate-1 -z-10" /></span> for Excellence</>
                   )}
                 </h1>
-                <p className="max-w-xl text-base text-muted-foreground/90 md:text-lg leading-relaxed">
+                <p className="max-w-xl text-lg text-muted-foreground font-medium md:text-xl leading-relaxed">
                   {isAr
-                    ? "مجموعة مختارة بعناية من أدوات الطهي الفاخرة، الكتب المتخصصة، والخدمات المهنية للطهاة والذواقة"
-                    : "A curated selection of premium culinary tools, specialized books, and professional services for chefs and food enthusiasts"}
+                    ? "مجموعة مختارة بعناية من أدوات الطهي الفاخرة، الكتب المتخصصة، والخدمات المهنية."
+                    : "A curated selection of premium culinary tools, specialized books, and professional services."}
                 </p>
               </div>
             </div>

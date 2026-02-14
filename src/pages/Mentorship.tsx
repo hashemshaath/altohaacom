@@ -48,37 +48,60 @@ export default function Mentorship() {
       <Header />
 
       <main className="flex-1">
-        {/* Hero */}
-        <div className="relative overflow-hidden bg-gradient-to-br from-primary/90 via-primary to-chart-3/80 py-16 text-primary-foreground">
-          <div className="absolute -right-20 -top-20 h-60 w-60 rounded-full bg-primary-foreground/10 blur-3xl" />
-          <div className="absolute -bottom-20 -left-20 h-48 w-48 rounded-full bg-primary-foreground/5 blur-2xl" />
-          <div className="container relative z-10 mx-auto px-4 text-center">
-            <div className="flex h-16 w-16 mx-auto items-center justify-center rounded-2xl bg-primary-foreground/20 backdrop-blur-sm mb-4">
-              <GraduationCap className="h-8 w-8" />
-            </div>
-            <h1 className="text-3xl font-bold md:text-4xl">
-              {isAr ? "برنامج الإرشاد" : "Mentorship Program"}
-            </h1>
-            <p className="mt-3 text-lg text-primary-foreground/80 max-w-2xl mx-auto">
-              {isAr
-                ? "تواصل مع طهاة محترفين للتعلم والنمو في رحلتك في الطهي"
-                : "Connect with experienced chefs to learn, grow, and advance your culinary journey"}
-            </p>
-            <div className="mt-6 flex flex-wrap justify-center gap-3">
-              {user && !myApplication && (
-                <Link to="/mentorship/apply">
-                  <Button size="lg" variant="secondary" className="gap-2">
-                    <HandHeart className="h-4 w-4" />
-                    {isAr ? "تقدم كمرشد" : "Apply as Mentor"}
-                  </Button>
-                </Link>
-              )}
-              {myApplication && (
-                <Badge variant="outline" className="border-primary-foreground/30 text-primary-foreground px-4 py-2">
-                  <Sparkles className="h-3 w-3 me-1" />
-                  {isAr ? `طلب الإرشاد: ${myApplication.status}` : `Mentor Application: ${myApplication.status}`}
-                </Badge>
-              )}
+        {/* Hero - Premium */}
+        <div className="relative overflow-hidden border-b border-border/40 bg-gradient-to-br from-primary/5 via-background to-chart-3/5">
+          <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1556910103-1c02745aae4d?auto=format&fit=crop&q=80')] bg-fixed bg-cover bg-center opacity-[0.03] grayscale pointer-events-none" />
+          <div className="absolute inset-0 bg-gradient-to-t from-background via-transparent to-transparent" />
+          
+          <div className="absolute -top-40 start-1/4 h-96 w-96 rounded-full bg-primary/10 blur-[120px] animate-pulse pointer-events-none" />
+          <div className="absolute -bottom-20 end-1/3 h-72 w-72 rounded-full bg-chart-3/15 blur-[100px] animate-pulse [animation-delay:1.5s] pointer-events-none" />
+          <div className="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-primary/30 to-transparent" />
+
+          <div className="container relative py-12 md:py-20">
+            <div className="flex flex-col gap-10 lg:flex-row lg:items-center lg:justify-between animate-fade-in">
+              <div className="flex-1 space-y-8">
+                <div className="inline-flex items-center gap-2 rounded-full bg-primary/10 px-4 py-1.5 ring-1 ring-primary/20 backdrop-blur-sm shadow-inner transition-transform hover:scale-105">
+                  <div className="relative flex h-2 w-2">
+                    <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-primary opacity-75"></span>
+                    <span className="relative inline-flex h-2 w-2 rounded-full bg-primary"></span>
+                  </div>
+                  <span className="text-[10px] font-black uppercase tracking-[0.2em] text-primary">
+                    {isAr ? "برنامج التمكين المهني" : "Professional Empowerment Program"}
+                  </span>
+                </div>
+                
+                <div className="space-y-4">
+                  <h1 className="font-serif text-4xl font-black tracking-tight md:text-6xl lg:text-7xl text-balance leading-[1.05]">
+                    {isAr ? (
+                      <>برنامج <span className="text-primary italic relative">الإرشاد<span className="absolute -bottom-2 inset-x-0 h-3 bg-primary/10 -rotate-2 -z-10" /></span> المهني</>
+                    ) : (
+                      <>Culinary <span className="text-primary italic relative">Mentorship<span className="absolute -bottom-2 inset-x-0 h-4 bg-primary/10 -rotate-1 -z-10" /></span> Hub</>
+                    )}
+                  </h1>
+                  <p className="max-w-xl text-lg text-muted-foreground font-medium md:text-xl leading-relaxed">
+                    {isAr
+                      ? "تواصل مع طهاة محترفين للتعلم والنمو في رحلتك في الطهي."
+                      : "Connect with experienced chefs to learn, grow, and advance your culinary journey."}
+                  </p>
+                </div>
+
+                <div className="flex flex-wrap gap-4">
+                  {user && !myApplication && (
+                    <Link to="/mentorship/apply">
+                      <Button size="lg" className="h-14 rounded-2xl px-10 font-bold shadow-xl shadow-primary/20 transition-all hover:scale-105 active:scale-95">
+                        <HandHeart className="me-2 h-5 w-5" />
+                        {isAr ? "تقدم كمرشد" : "Apply as Mentor"}
+                      </Button>
+                    </Link>
+                  )}
+                  {myApplication && (
+                    <Badge variant="outline" className="border-primary/20 bg-primary/5 text-primary px-6 py-3 text-sm font-bold rounded-2xl">
+                      <Sparkles className="h-4 w-4 me-2 animate-pulse" />
+                      {isAr ? `طلب الإرشاد: ${myApplication.status}` : `Mentor Application: ${myApplication.status}`}
+                    </Badge>
+                  )}
+                </div>
+              </div>
             </div>
           </div>
         </div>
