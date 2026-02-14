@@ -2147,17 +2147,24 @@ export type Database = {
       }
       company_contacts: {
         Row: {
+          accepted_at: string | null
+          avatar_url: string | null
           can_login: boolean | null
           company_id: string
           created_at: string | null
           department: string
           email: string | null
           id: string
+          invitation_status: string | null
+          invitation_token: string | null
+          invited_at: string | null
+          invited_by: string | null
           is_primary: boolean | null
           mobile: string | null
           name: string
           name_ar: string | null
           phone: string | null
+          role: Database["public"]["Enums"]["company_contact_role"] | null
           title: string | null
           title_ar: string | null
           updated_at: string | null
@@ -2165,17 +2172,24 @@ export type Database = {
           whatsapp: string | null
         }
         Insert: {
+          accepted_at?: string | null
+          avatar_url?: string | null
           can_login?: boolean | null
           company_id: string
           created_at?: string | null
           department: string
           email?: string | null
           id?: string
+          invitation_status?: string | null
+          invitation_token?: string | null
+          invited_at?: string | null
+          invited_by?: string | null
           is_primary?: boolean | null
           mobile?: string | null
           name: string
           name_ar?: string | null
           phone?: string | null
+          role?: Database["public"]["Enums"]["company_contact_role"] | null
           title?: string | null
           title_ar?: string | null
           updated_at?: string | null
@@ -2183,17 +2197,24 @@ export type Database = {
           whatsapp?: string | null
         }
         Update: {
+          accepted_at?: string | null
+          avatar_url?: string | null
           can_login?: boolean | null
           company_id?: string
           created_at?: string | null
           department?: string
           email?: string | null
           id?: string
+          invitation_status?: string | null
+          invitation_token?: string | null
+          invited_at?: string | null
+          invited_by?: string | null
           is_primary?: boolean | null
           mobile?: string | null
           name?: string
           name_ar?: string | null
           phone?: string | null
+          role?: Database["public"]["Enums"]["company_contact_role"] | null
           title?: string | null
           title_ar?: string | null
           updated_at?: string | null
@@ -2263,6 +2284,71 @@ export type Database = {
           },
           {
             foreignKeyName: "company_drivers_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      company_employee_invites: {
+        Row: {
+          accepted_at: string | null
+          accepted_by: string | null
+          company_id: string
+          created_at: string | null
+          department: string | null
+          email: string
+          expires_at: string | null
+          id: string
+          invited_by: string
+          message: string | null
+          message_ar: string | null
+          role: Database["public"]["Enums"]["company_contact_role"] | null
+          status: string
+          title: string | null
+          title_ar: string | null
+          token: string
+        }
+        Insert: {
+          accepted_at?: string | null
+          accepted_by?: string | null
+          company_id: string
+          created_at?: string | null
+          department?: string | null
+          email: string
+          expires_at?: string | null
+          id?: string
+          invited_by: string
+          message?: string | null
+          message_ar?: string | null
+          role?: Database["public"]["Enums"]["company_contact_role"] | null
+          status?: string
+          title?: string | null
+          title_ar?: string | null
+          token?: string
+        }
+        Update: {
+          accepted_at?: string | null
+          accepted_by?: string | null
+          company_id?: string
+          created_at?: string | null
+          department?: string | null
+          email?: string
+          expires_at?: string | null
+          id?: string
+          invited_by?: string
+          message?: string | null
+          message_ar?: string | null
+          role?: Database["public"]["Enums"]["company_contact_role"] | null
+          status?: string
+          title?: string | null
+          title_ar?: string | null
+          token?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "company_employee_invites_company_id_fkey"
             columns: ["company_id"]
             isOneToOne: false
             referencedRelation: "companies"
@@ -5805,6 +5891,59 @@ export type Database = {
           updated_at?: string
         }
         Relationships: []
+      }
+      homepage_sponsors: {
+        Row: {
+          company_id: string | null
+          created_at: string | null
+          ends_at: string | null
+          id: string
+          is_active: boolean | null
+          logo_url: string
+          name: string
+          name_ar: string | null
+          sort_order: number | null
+          starts_at: string | null
+          tier: string | null
+          website_url: string | null
+        }
+        Insert: {
+          company_id?: string | null
+          created_at?: string | null
+          ends_at?: string | null
+          id?: string
+          is_active?: boolean | null
+          logo_url: string
+          name: string
+          name_ar?: string | null
+          sort_order?: number | null
+          starts_at?: string | null
+          tier?: string | null
+          website_url?: string | null
+        }
+        Update: {
+          company_id?: string | null
+          created_at?: string | null
+          ends_at?: string | null
+          id?: string
+          is_active?: boolean | null
+          logo_url?: string
+          name?: string
+          name_ar?: string | null
+          sort_order?: number | null
+          starts_at?: string | null
+          tier?: string | null
+          website_url?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "homepage_sponsors_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       integration_settings: {
         Row: {
@@ -12359,6 +12498,7 @@ export type Database = {
         | "judge"
         | "sponsor"
         | "volunteer"
+      company_contact_role: "owner" | "admin" | "manager" | "editor" | "viewer"
       company_status: "active" | "inactive" | "pending" | "suspended"
       company_type: "sponsor" | "supplier" | "partner" | "vendor"
       competition_status:
@@ -12610,6 +12750,7 @@ export const Constants = {
         "sponsor",
         "volunteer",
       ],
+      company_contact_role: ["owner", "admin", "manager", "editor", "viewer"],
       company_status: ["active", "inactive", "pending", "suspended"],
       company_type: ["sponsor", "supplier", "partner", "vendor"],
       competition_status: [

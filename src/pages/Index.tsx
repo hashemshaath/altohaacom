@@ -15,6 +15,7 @@ const PlatformFeatures = lazy(() => import("@/components/home/PlatformFeatures")
 const SponsorshipOpportunities = lazy(() => import("@/components/home/SponsorshipOpportunities").then(m => ({ default: m.SponsorshipOpportunities })));
 const NewsletterSignup = lazy(() => import("@/components/home/NewsletterSignup").then(m => ({ default: m.NewsletterSignup })));
 const PartnersLogos = lazy(() => import("@/components/home/PartnersLogos").then(m => ({ default: m.PartnersLogos })));
+const SponsorCarousel = lazy(() => import("@/components/home/SponsorCarousel").then(m => ({ default: m.SponsorCarousel })));
 const AdBanner = lazy(() => import("@/components/ads/AdBanner").then(m => ({ default: m.AdBanner })));
 const AdPopup = lazy(() => import("@/components/ads/AdPopup").then(m => ({ default: m.AdPopup })));
 
@@ -70,7 +71,10 @@ const Index = () => {
         {/* 8. Newsletter */}
         <NewsletterSignup />
 
-        {/* 9. Partners */}
+        {/* 9. Sponsor Carousel */}
+        <SponsorCarousel />
+
+        {/* 10. Partners */}
         <PartnersLogos />
 
         {/* Pop-up Ad */}
