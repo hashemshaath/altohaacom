@@ -22,6 +22,7 @@ import { format, differenceInDays, isFuture } from "date-fns";
 import { countryFlag } from "@/lib/countryFlag";
 import { useAllCountries } from "@/hooks/useCountries";
 import { deriveCompetitionStatus } from "@/lib/competitionStatus";
+import { toEnglishDigits } from "@/lib/formatNumber";
 import type { Database } from "@/integrations/supabase/types";
 
 type CompetitionStatus = Database["public"]["Enums"]["competition_status"];
@@ -186,7 +187,7 @@ export default function Competitions() {
               <div className="flex items-center gap-3">
                 <Badge variant="outline" className="gap-1.5 border-primary/20 bg-primary/5 text-primary px-3 py-1.5">
                   <Trophy className="h-3.5 w-3.5" />
-                  <span className="font-bold">{counts.all}</span>
+                  <span className="font-bold">{toEnglishDigits(counts.all)}</span>
                 </Badge>
                 {canCreate && (
                   <Button asChild className="shadow-sm shadow-primary/15">
@@ -261,7 +262,7 @@ export default function Competitions() {
                       ? "bg-primary-foreground/20 text-primary-foreground"
                       : "bg-muted text-muted-foreground group-hover:bg-primary/20"
                   }`}>
-                    {counts[tab]}
+                    {toEnglishDigits(counts[tab])}
                   </span>
                 </button>
               ))}
@@ -358,7 +359,7 @@ function FeaturedCard({ competition, language, isAr }: { competition: Competitio
                 {derived.daysLeft && derived.daysLeft > 0 && derived.daysLeft <= 60 && (
                   <Badge variant="outline" className="gap-1.5 text-[10px] font-bold bg-background/40 backdrop-blur-md border-border/40">
                     <Clock className="h-3 w-3 text-primary" />
-                    {isAr ? `${derived.daysLeft} يوم متبقي` : `${derived.daysLeft} DAYS LEFT`}
+                    {isAr ? `${toEnglishDigits(derived.daysLeft)} يوم متبقي` : `${derived.daysLeft} DAYS LEFT`}
                   </Badge>
                 )}
               </div>
@@ -370,7 +371,7 @@ function FeaturedCard({ competition, language, isAr }: { competition: Competitio
                 <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-muted group-hover/icon:bg-primary/10 transition-colors">
                   <Calendar className="h-4 w-4 text-muted-foreground group-hover/icon:text-primary" />
                 </div>
-                {format(new Date(competition.competition_start), "MMMM d, yyyy")}
+                {toEnglishDigits(format(new Date(competition.competition_start), "MMMM d, yyyy"))}
               </div>
               {competition.is_virtual ? (
                 <div className="flex items-center gap-2 group/icon">
@@ -391,7 +392,7 @@ function FeaturedCard({ competition, language, isAr }: { competition: Competitio
                 <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-muted group-hover/icon:bg-primary/10 transition-colors">
                   <Users className="h-4 w-4 text-muted-foreground group-hover/icon:text-primary" />
                 </div>
-                {regCount} {isAr ? "مسجل" : "Registered"}
+                {toEnglishDigits(regCount)} {isAr ? "مسجل" : "Registered"}
               </div>
               <div className="ms-auto">
                 <Button variant="ghost" className="gap-2 text-primary hover:bg-primary/5 p-0 hover:p-2 transition-all group/btn">
@@ -443,7 +444,7 @@ function CompetitionCard({ competition, language, isAr }: { competition: Competi
             {derived.daysLeft && derived.daysLeft > 0 && derived.daysLeft <= 30 && (
               <Badge variant="secondary" className="gap-1.5 px-2 py-0.5 text-[9px] font-bold bg-background/80 backdrop-blur-md shadow-lg border-border/40 text-foreground">
                 <Clock className="h-2.5 w-2.5 text-primary" />
-                {isAr ? `${derived.daysLeft} يوم` : `${derived.daysLeft}D`}
+                {isAr ? `${toEnglishDigits(derived.daysLeft)} يوم` : `${derived.daysLeft}D`}
               </Badge>
             )}
           </div>
@@ -455,12 +456,12 @@ function CompetitionCard({ competition, language, isAr }: { competition: Competi
                 <div className="flex h-6 w-6 items-center justify-center rounded-lg bg-background/60 backdrop-blur-md shadow-sm">
                   <Calendar className="h-3 w-3 text-primary" />
                 </div>
-                {format(new Date(competition.competition_start), "MMM d, yyyy")}
+                {toEnglishDigits(format(new Date(competition.competition_start), "MMM d, yyyy"))}
               </span>
               {maxP && (
                 <Badge variant="secondary" className="gap-1.5 px-2 py-0.5 text-[10px] font-bold bg-primary/10 backdrop-blur-md border-primary/20 text-primary shadow-sm">
                   <Users className="h-3 w-3" />
-                  {regCount} <span className="opacity-50 text-[8px]">/</span> {maxP}
+                  {toEnglishDigits(regCount)} <span className="opacity-50 text-[8px]">/</span> {toEnglishDigits(maxP)}
                 </Badge>
               )}
             </div>
@@ -475,7 +476,7 @@ function CompetitionCard({ competition, language, isAr }: { competition: Competi
             <div className="mb-5 space-y-2">
               <div className="flex items-center justify-between text-[10px] font-bold uppercase tracking-wider text-muted-foreground">
                 <span>{isAr ? "سعة المشاركة" : "Capacity"}</span>
-                <span className={fillPct > 80 ? "text-destructive" : "text-primary"}>{fillPct}%</span>
+                <span className={fillPct > 80 ? "text-destructive" : "text-primary"}>{toEnglishDigits(fillPct)}%</span>
               </div>
               <div className="h-2 w-full overflow-hidden rounded-full bg-muted/50 p-0.5 shadow-inner">
                 <div 

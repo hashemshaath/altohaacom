@@ -13,6 +13,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { toEnglishDigits } from "@/lib/formatNumber";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
 import { Crown, Star, Medal, Award, Plus, Edit, Trash2, Building, Package, Send, CheckCircle, XCircle, Clock, Mail } from "lucide-react";
@@ -331,7 +332,7 @@ export default function SponsorsAdmin() {
                     <CardTitle className="text-base">{language === "ar" && pkg.name_ar ? pkg.name_ar : pkg.name}</CardTitle>
                   </CardHeader>
                   <CardContent className="space-y-2">
-                    {pkg.price && <p className="text-lg font-bold text-primary">{Number(pkg.price).toLocaleString()} SAR</p>}
+                    {pkg.price && <p className="text-lg font-bold text-primary">{toEnglishDigits(Number(pkg.price).toLocaleString())} SAR</p>}
                     {benefits.length > 0 && (
                       <ul className="space-y-1 text-xs text-muted-foreground">
                         {(benefits as string[]).slice(0, 4).map((b, i) => (

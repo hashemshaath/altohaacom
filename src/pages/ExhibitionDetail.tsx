@@ -28,6 +28,7 @@ import {
   CheckCircle2, ImageIcon, Twitter, Facebook, Linkedin, Link2,
 } from "lucide-react";
 import { SEOHead } from "@/components/SEOHead";
+import { toEnglishDigits } from "@/lib/formatNumber";
 import { ImageLightbox } from "@/components/competitions/ImageLightbox";
 import { countryFlag as getCountryFlagUtil } from "@/lib/countryFlag";
 import { format, isPast, isFuture, isWithinInterval, differenceInDays } from "date-fns";
@@ -1367,7 +1368,7 @@ export default function ExhibitionDetail() {
                       <Users className="h-4 w-4 text-muted-foreground shrink-0" />
                       <div>
                         <p className="text-[10px] uppercase tracking-wider text-muted-foreground">{isAr ? "السعة" : "Capacity"}</p>
-                        <p className="text-sm font-medium">{exhibition.max_attendees.toLocaleString()} {isAr ? "مقعد" : "attendees"}</p>
+                        <p className="text-sm font-medium">{toEnglishDigits(exhibition.max_attendees.toLocaleString())} {isAr ? "مقعد" : "attendees"}</p>
                       </div>
                     </div>
                   </>

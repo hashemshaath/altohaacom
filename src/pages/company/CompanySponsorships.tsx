@@ -15,6 +15,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Separator } from "@/components/ui/separator";
 import { useToast } from "@/hooks/use-toast";
 import { sendNotification } from "@/lib/notifications";
+import { toEnglishDigits } from "@/lib/formatNumber";
 import {
   Crown, Trophy, Calendar, MapPin, Building2, CheckCircle, XCircle, Clock,
   Send, Star, Medal, Award, ArrowRight, Sparkles, Package, Eye
@@ -324,7 +325,7 @@ export default function CompanySponsorships() {
                         </Badge>
                         <span className="text-xs text-muted-foreground">
                           {isAr ? tier.labelAr : tier.label}
-                          {pkg?.price ? ` · ${Number(pkg.price).toLocaleString()} SAR` : ""}
+                          {pkg?.price ? ` · ${toEnglishDigits(Number(pkg.price).toLocaleString())} SAR` : ""}
                         </span>
                       </div>
                     </div>
@@ -405,7 +406,7 @@ export default function CompanySponsorships() {
                     </CardTitle>
                     {pkg.price && (
                       <p className="text-2xl font-bold text-primary mt-1">
-                        {Number(pkg.price).toLocaleString()} <span className="text-sm">{pkg.currency || "SAR"}</span>
+                        {toEnglishDigits(Number(pkg.price).toLocaleString())} <span className="text-sm">{pkg.currency || "SAR"}</span>
                       </p>
                     )}
                   </CardHeader>
@@ -462,7 +463,7 @@ export default function CompanySponsorships() {
                     {packages.map((pkg: any) => (
                       <SelectItem key={pkg.id} value={pkg.id}>
                         {isAr && pkg.name_ar ? pkg.name_ar : pkg.name}
-                        {pkg.price ? ` - ${Number(pkg.price).toLocaleString()} SAR` : ""}
+                        {pkg.price ? ` - ${toEnglishDigits(Number(pkg.price).toLocaleString())} SAR` : ""}
                       </SelectItem>
                     ))}
                   </SelectContent>

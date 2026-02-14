@@ -7,6 +7,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from "recharts";
 import { TrendingUp, Users, Trophy, FileText, DollarSign, Landmark, GraduationCap } from "lucide-react";
 import { CountryBreakdownChart } from "@/components/analytics/CountryBreakdownChart";
+import { toEnglishDigits } from "@/lib/formatNumber";
 
 export function AdminAnalyticsWidgets() {
   const { language } = useLanguage();
@@ -212,7 +213,7 @@ export function AdminAnalyticsWidgets() {
           ) : (
             <div className="grid grid-cols-3 gap-3">
               <div className="rounded-xl border border-border/50 p-3 text-center">
-                <p className="text-lg font-bold">SAR {(revenue?.totalRevenue || 0).toLocaleString()}</p>
+                <p className="text-lg font-bold">SAR {toEnglishDigits((revenue?.totalRevenue || 0).toLocaleString())}</p>
                 <p className="text-[10px] text-muted-foreground">{isAr ? "إجمالي الإيرادات" : "Total Revenue"}</p>
               </div>
               <div className="rounded-xl border border-border/50 p-3 text-center">

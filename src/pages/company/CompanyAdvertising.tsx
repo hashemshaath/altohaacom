@@ -17,6 +17,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { toast } from "@/hooks/use-toast";
 import { Megaphone, Eye, MousePointer, DollarSign, Plus, Package, BarChart3, FileText, TrendingUp } from "lucide-react";
 import { formatCurrency } from "@/lib/currencyFormatter";
+import { toEnglishDigits } from "@/lib/formatNumber";
 
 const statusColors: Record<string, string> = {
   pending: "bg-warning/10 text-warning border-warning/20",
@@ -162,8 +163,8 @@ export default function CompanyAdvertising() {
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
          {[
            { icon: Megaphone, label: isAr ? "حملات نشطة" : "Active", value: activeCampaigns, color: "text-primary" },
-           { icon: Eye, label: isAr ? "المشاهدات" : "Impressions", value: totalImpressions.toLocaleString(), color: "text-chart-1" },
-           { icon: MousePointer, label: isAr ? "النقرات" : "Clicks", value: totalClicks.toLocaleString(), color: "text-chart-2" },
+           { icon: Eye, label: isAr ? "المشاهدات" : "Impressions", value: toEnglishDigits(totalImpressions.toLocaleString()), color: "text-chart-1" },
+           { icon: MousePointer, label: isAr ? "النقرات" : "Clicks", value: toEnglishDigits(totalClicks.toLocaleString()), color: "text-chart-2" },
            { icon: DollarSign, label: isAr ? "المصروف" : "Spent", value: formatCurrency(totalSpent, language as "en" | "ar"), color: "text-chart-3" },
          ].map(k => (
           <Card key={k.label}>

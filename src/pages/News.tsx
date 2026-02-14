@@ -18,6 +18,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Link } from "react-router-dom";
 import { format } from "date-fns";
 import { ar, enUS } from "date-fns/locale";
+import { toEnglishDigits } from "@/lib/formatNumber";
 
 interface Article {
   id: string;
@@ -96,9 +97,9 @@ export default function News() {
   const regularArticles = filteredArticles.filter((a) => !a.is_featured);
 
   const formatDate = (date: string) => {
-    return format(new Date(date), "MMM dd, yyyy", {
+    return toEnglishDigits(format(new Date(date), "MMM dd, yyyy", {
       locale: isAr ? ar : enUS,
-    });
+    }));
   };
 
   return (
