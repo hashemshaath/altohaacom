@@ -10,11 +10,12 @@ import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
 } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
-import { Plus, Search, Filter } from "lucide-react";
+import { Plus, Search, Filter, Upload } from "lucide-react";
 import { CatalogItem, CatalogFormData, defaultForm, categories } from "@/components/company/catalog/catalogTypes";
 import { CatalogStats } from "@/components/company/catalog/CatalogStats";
 import { CatalogTable } from "@/components/company/catalog/CatalogTable";
 import { CatalogFormDialog } from "@/components/company/catalog/CatalogFormDialog";
+import { CatalogBulkImport } from "@/components/company/catalog/CatalogBulkImport";
 
 export default function CompanyCatalog() {
   const { language } = useLanguage();
@@ -27,6 +28,7 @@ export default function CompanyCatalog() {
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editingItem, setEditingItem] = useState<CatalogItem | null>(null);
   const [form, setForm] = useState<CatalogFormData>(defaultForm);
+  const [importOpen, setImportOpen] = useState(false);
 
   const { data: items = [], isLoading } = useQuery({
     queryKey: ["companyCatalog", companyId, searchQuery, categoryFilter],
@@ -146,10 +148,16 @@ export default function CompanyCatalog() {
             {language === "ar" ? "إدارة منتجاتكم وخدماتكم" : "Manage your products and services"}
           </p>
         </div>
-        <Button onClick={openNew}>
-          <Plus className="me-2 h-4 w-4" />
-          {language === "ar" ? "إضافة منتج" : "Add Product"}
-        </Button>
+        <div className="flex gap-2">
+          <Button variant="outline" onClick={() => setImportOpen(true)}>
+            <Upload className="me-2 h-4 w-4" />
+            {language === "ar" ? "استيراد" : "Import"}
+          </Button>
+          <Button onClick={openNew}>
+            <Plus className="me-2 h-4 w-4" />
+            {language === "ar" ? "إضافة منتج" : "Add Product"}
+          </Button>
+        </div>
       </div>
 
       <CatalogStats total={items.length} active={activeCount} inStock={inStockCount} language={language} />
@@ -203,6 +211,13 @@ export default function CompanyCatalog() {
         isPending={saveMutation.isPending}
         language={language}
         companyId={companyId || ""}
+      />
+
+      <CatalogBulkImport
+        open={importOpen}
+        onOpenChange={setImportOpen}
+        companyId={companyId || ""}
+        language={language}
       />
     </div>
   );
