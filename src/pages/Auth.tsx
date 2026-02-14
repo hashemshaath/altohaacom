@@ -110,6 +110,10 @@ export default function Auth() {
   useEffect(() => {
     if (refCode) {
       localStorage.setItem("altohaa_ref_code", refCode);
+      // Track referral link click
+      supabase.functions.invoke("track-referral-click", {
+        body: { code: refCode, source: searchParams.get("utm_source") || "direct" },
+      }).catch(() => {});
     }
   }, [refCode]);
 

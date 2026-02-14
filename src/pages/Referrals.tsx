@@ -9,10 +9,12 @@ import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Progress } from "@/components/ui/progress";
 import { useReferralCode, useReferralStats, useReferralInvitations, useReferralMilestones, useUserMilestones } from "@/hooks/useReferral";
+import { useReferralAnalytics } from "@/hooks/useReferralAnalytics";
 import { usePointsBalance } from "@/hooks/usePoints";
-import { Share2, Gift, Trophy, Users, TrendingUp, Send, Star, Mail, MessageCircle, BarChart3, Target, Zap, CheckCircle2 } from "lucide-react";
+import { Share2, Gift, Trophy, Users, TrendingUp, Send, Star, Mail, MessageCircle, BarChart3, Target, Zap, CheckCircle2, MousePointerClick, ArrowDownRight } from "lucide-react";
 import { Link } from "react-router-dom";
 import { ReferralShareSheet } from "@/components/referrals/ReferralShareSheet";
+import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, LineChart, Line, CartesianGrid, PieChart, Pie, Cell } from "recharts";
 
 export default function Referrals() {
   const { language } = useLanguage();
@@ -25,6 +27,7 @@ export default function Referrals() {
   const { data: milestones } = useReferralMilestones();
   const { data: userMilestones } = useUserMilestones();
   const { data: pointsBalance } = usePointsBalance();
+  const { data: analytics } = useReferralAnalytics();
 
   const referralLink = referralCode?.code
     ? `${window.location.origin}/auth?ref=${referralCode.code}`
@@ -273,8 +276,75 @@ export default function Referrals() {
           </TabsContent>
 
           {/* Analytics Tab */}
-          <TabsContent value="analytics">
+          <TabsContent value="analytics" className="space-y-6">
+            {/* Conversion Funnel */}
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-base flex items-center gap-2">
+                  <ArrowDownRight className="h-4 w-4 text-primary" />
+                  {isAr ? "قمع التحويل" : "Conversion Funnel"}
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                {analytics?.funnel ? (
+                  <div className="flex items-end justify-center gap-6 py-4">
+                    {analytics.funnel.map((step, i) => {
+                      const maxVal = Math.max(...analytics.funnel.map((f) => f.value), 1);
+                      const height = Math.max((step.value / maxVal) * 140, 24);
+                      const colors = ["bg-chart-3", "bg-chart-4", "bg-chart-2"];
+                      return (
+                        <div key={step.stage} className="flex flex-col items-center gap-2">
+                          <span className="text-xl font-bold">{step.value}</span>
+                          <div className={`w-20 rounded-t-lg ${colors[i]} transition-all`} style={{ height }} />
+                          <span className="text-xs text-muted-foreground text-center">
+                            {isAr ? step.stageAr : step.stage}
+                          </span>
+                        </div>
+                      );
+                    })}
+                  </div>
+                ) : (
+                  <p className="text-center text-sm text-muted-foreground py-8">{isAr ? "لا توجد بيانات" : "No data yet"}</p>
+                )}
+              </CardContent>
+            </Card>
+
+            {/* Daily Trend Chart */}
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-base flex items-center gap-2">
+                  <TrendingUp className="h-4 w-4 text-primary" />
+                  {isAr ? "النشاط اليومي (14 يوم)" : "Daily Activity (14 days)"}
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                {analytics?.dailyTrend?.length ? (
+                  <ResponsiveContainer width="100%" height={220}>
+                    <LineChart data={analytics.dailyTrend}>
+                      <CartesianGrid strokeDasharray="3 3" className="stroke-border" />
+                      <XAxis
+                        dataKey="date"
+                        tickFormatter={(v) => new Date(v).toLocaleDateString(isAr ? "ar" : "en", { day: "numeric", month: "short" })}
+                        className="text-xs"
+                        tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 10 }}
+                      />
+                      <YAxis tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 10 }} />
+                      <Tooltip
+                        contentStyle={{ background: "hsl(var(--card))", border: "1px solid hsl(var(--border))", borderRadius: 8 }}
+                        labelFormatter={(v) => new Date(v).toLocaleDateString(isAr ? "ar" : "en")}
+                      />
+                      <Line type="monotone" dataKey="clicks" stroke="hsl(var(--chart-3))" strokeWidth={2} name={isAr ? "نقرات" : "Clicks"} dot={false} />
+                      <Line type="monotone" dataKey="conversions" stroke="hsl(var(--chart-2))" strokeWidth={2} name={isAr ? "تحويلات" : "Conversions"} dot={false} />
+                    </LineChart>
+                  </ResponsiveContainer>
+                ) : (
+                  <p className="text-center text-sm text-muted-foreground py-8">{isAr ? "لا توجد بيانات" : "No data yet"}</p>
+                )}
+              </CardContent>
+            </Card>
+
             <div className="grid gap-6 lg:grid-cols-2">
+              {/* Performance Summary */}
               <Card>
                 <CardHeader>
                   <CardTitle className="text-base flex items-center gap-2">
@@ -282,52 +352,54 @@ export default function Referrals() {
                     {isAr ? "ملخص الأداء" : "Performance Summary"}
                   </CardTitle>
                 </CardHeader>
-                <CardContent className="space-y-4">
-                  <div className="space-y-3">
-                    {[
-                      { label: isAr ? "معدل التحويل" : "Conversion Rate", value: stats?.invitationsCount ? `${Math.round(((stats?.conversionsCount || 0) / stats.invitationsCount) * 100)}%` : "0%" },
-                      { label: isAr ? "معدل النقر" : "Click Rate", value: stats?.invitationsCount ? `${Math.round(((stats?.codeStats?.total_clicks || 0) / Math.max(stats.invitationsCount, 1)) * 100)}%` : "0%" },
-                      { label: isAr ? "متوسط النقاط لكل إحالة" : "Avg Points/Referral", value: stats?.conversionsCount ? Math.round((stats?.codeStats?.total_points_earned || 0) / stats.conversionsCount) : 0 },
-                    ].map((item) => (
-                      <div key={item.label} className="flex items-center justify-between rounded-lg border p-3">
-                        <span className="text-sm text-muted-foreground">{item.label}</span>
-                        <span className="font-bold">{item.value}</span>
-                      </div>
-                    ))}
-                  </div>
+                <CardContent className="space-y-3">
+                  {[
+                    { label: isAr ? "معدل التحويل" : "Conversion Rate", value: stats?.invitationsCount ? `${Math.round(((stats?.conversionsCount || 0) / stats.invitationsCount) * 100)}%` : "0%" },
+                    { label: isAr ? "معدل النقر" : "Click Rate", value: stats?.invitationsCount ? `${Math.round(((stats?.codeStats?.total_clicks || 0) / Math.max(stats.invitationsCount, 1)) * 100)}%` : "0%" },
+                    { label: isAr ? "متوسط النقاط لكل إحالة" : "Avg Points/Referral", value: stats?.conversionsCount ? Math.round((stats?.codeStats?.total_points_earned || 0) / stats.conversionsCount) : 0 },
+                  ].map((item) => (
+                    <div key={item.label} className="flex items-center justify-between rounded-lg border p-3">
+                      <span className="text-sm text-muted-foreground">{item.label}</span>
+                      <span className="font-bold">{item.value}</span>
+                    </div>
+                  ))}
                 </CardContent>
               </Card>
 
+              {/* Channel Performance with Conversion Rate */}
               <Card>
                 <CardHeader>
                   <CardTitle className="text-base flex items-center gap-2">
                     <Share2 className="h-4 w-4 text-primary" />
-                    {isAr ? "القنوات" : "Channel Breakdown"}
+                    {isAr ? "أداء القنوات" : "Channel Performance"}
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
-                  {(() => {
-                    const channelCounts: Record<string, number> = {};
-                    invitations?.forEach((inv) => {
-                      channelCounts[inv.channel] = (channelCounts[inv.channel] || 0) + 1;
-                    });
-                    const channels = Object.entries(channelCounts).sort((a, b) => b[1] - a[1]);
-                    if (!channels.length) return <p className="text-center text-sm text-muted-foreground py-6">{isAr ? "لا توجد بيانات" : "No data yet"}</p>;
-                    const max = channels[0][1];
-                    return (
-                      <div className="space-y-3">
-                        {channels.map(([ch, count]) => (
-                          <div key={ch}>
-                            <div className="flex items-center justify-between text-sm mb-1">
-                              <span className="capitalize">{ch}</span>
-                              <span className="font-medium">{count}</span>
+                  {analytics?.channelStats && Object.keys(analytics.channelStats).length > 0 ? (
+                    <div className="space-y-3">
+                      {Object.entries(analytics.channelStats)
+                        .sort((a, b) => b[1].sent - a[1].sent)
+                        .map(([ch, data]) => {
+                          const rate = data.sent > 0 ? Math.round((data.converted / data.sent) * 100) : 0;
+                          return (
+                            <div key={ch} className="rounded-lg border p-3">
+                              <div className="flex items-center justify-between mb-1.5">
+                                <span className="text-sm font-medium capitalize">{ch}</span>
+                                <div className="flex items-center gap-2 text-xs">
+                                  <span className="text-muted-foreground">{data.sent} {isAr ? "مرسلة" : "sent"}</span>
+                                  <Badge variant="outline" className={rate > 0 ? "bg-chart-2/10 text-chart-2" : ""}>
+                                    {rate}% {isAr ? "تحويل" : "conv."}
+                                  </Badge>
+                                </div>
+                              </div>
+                              <Progress value={rate} className="h-1.5" />
                             </div>
-                            <Progress value={(count / max) * 100} className="h-2" />
-                          </div>
-                        ))}
-                      </div>
-                    );
-                  })()}
+                          );
+                        })}
+                    </div>
+                  ) : (
+                    <p className="text-center text-sm text-muted-foreground py-6">{isAr ? "لا توجد بيانات" : "No data yet"}</p>
+                  )}
                 </CardContent>
               </Card>
             </div>
