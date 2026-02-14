@@ -2,6 +2,7 @@ import { useLanguage } from "@/i18n/LanguageContext";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { Card, CardContent } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 import { Trophy, Users, GraduationCap, Landmark, Newspaper, MessageSquare, ShoppingBag, Sparkles, Award, Star, Gift } from "lucide-react";
 import { Link } from "react-router-dom";
 import { UpcomingCompetitionsWidget } from "@/components/dashboard/UpcomingCompetitionsWidget";
@@ -9,6 +10,7 @@ import { RecentActivityWidget } from "@/components/dashboard/RecentActivityWidge
 import { ReferralWidget } from "@/components/dashboard/ReferralWidget";
 import { QuickStatsWidget } from "@/components/dashboard/QuickStatsWidget";
 import { MasterclassProgressWidget } from "@/components/dashboard/MasterclassProgressWidget";
+import { ArrowRight } from "lucide-react";
 import { NotificationsSummaryWidget } from "@/components/dashboard/NotificationsSummaryWidget";
 import { UpcomingExhibitionsWidget } from "@/components/dashboard/UpcomingExhibitionsWidget";
 import { EventsCalendarWidget } from "@/components/dashboard/EventsCalendarWidget";
@@ -70,40 +72,45 @@ export default function Dashboard() {
       <Header />
       <main className="container flex-1 py-6 md:py-10">
         {/* Welcome Banner */}
-        <Card className="mb-8 overflow-hidden border-primary/15 bg-gradient-to-br from-primary/5 via-background to-accent/5 relative group">
-          {/* Decorative glows */}
-          <div className="pointer-events-none absolute -end-16 -top-16 h-48 w-48 rounded-full bg-primary/8 blur-[80px] animate-pulse" />
-          <div className="pointer-events-none absolute -start-10 -bottom-10 h-36 w-36 rounded-full bg-accent/10 blur-[60px] animate-pulse [animation-delay:1s]" />
-          <div className="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-primary/25 to-transparent" />
-          <CardContent className="relative flex flex-col gap-4 p-5 sm:flex-row sm:items-center sm:justify-between sm:p-6">
-            <div className="flex items-center gap-4">
-              <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-primary/10 ring-4 ring-primary/5 shadow-sm transition-transform duration-300 group-hover:scale-105">
-                <Sparkles className="h-6 w-6 text-primary" />
+        <div className="relative mb-8 overflow-hidden rounded-3xl border border-primary/10 bg-gradient-to-br from-primary/10 via-background to-accent/10 p-6 sm:p-8 group shadow-sm transition-all duration-500 hover:shadow-lg hover:border-primary/20">
+          <div className="pointer-events-none absolute -end-24 -top-24 h-64 w-64 rounded-full bg-primary/15 blur-[100px] animate-pulse" />
+          <div className="pointer-events-none absolute -start-10 -bottom-10 h-48 w-48 rounded-full bg-accent/15 blur-[80px] animate-pulse [animation-delay:2s]" />
+          <div className="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-primary/30 to-transparent" />
+          
+          <div className="relative flex flex-col gap-5 sm:flex-row sm:items-center sm:justify-between">
+            <div className="flex items-center gap-5">
+              <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded-2xl bg-primary/10 ring-4 ring-primary/5 shadow-inner transition-transform duration-500 group-hover:scale-110 group-hover:rotate-3">
+                <Sparkles className="h-8 w-8 text-primary animate-pulse" />
               </div>
               <div>
-                <h1 className="font-serif text-xl font-bold sm:text-2xl md:text-3xl">{greeting} 👋</h1>
-                <p className="mt-1 text-sm text-muted-foreground">
+                <h1 className="font-serif text-2xl font-bold sm:text-3xl md:text-4xl tracking-tight text-foreground">{greeting} 👋</h1>
+                <p className="mt-1.5 text-sm text-muted-foreground font-medium max-w-md">
                   {isAr
                     ? "إليك ملخص نشاطك ومسابقاتك القادمة"
-                    : "Here's a summary of your activity and upcoming events"}
+                    : "Discover your progress and upcoming culinary milestones below."}
                 </p>
               </div>
             </div>
-          </CardContent>
-        </Card>
+            <Link to="/profile?tab=edit">
+              <Button variant="secondary" className="bg-background/40 backdrop-blur-md border-border/40 hover:bg-background/60 gap-2 shadow-sm rounded-xl">
+                {isAr ? "إدارة الملف الشخصي" : "Manage Profile"}
+                <ArrowRight className="h-4 w-4" />
+              </Button>
+            </Link>
+          </div>
+        </div>
 
-        {/* Quick Navigation */}
-        <div className="mb-8">
-          <div className="grid gap-2.5 grid-cols-4 sm:grid-cols-4 lg:grid-cols-8">
+        {/* Quick Navigation - Premium Pill Grid */}
+        <div className="mb-10">
+          <div className="grid grid-cols-4 gap-3 sm:grid-cols-4 md:grid-cols-4 lg:grid-cols-8">
             {sections.map((s, i) => (
-              <Link key={s.title} to={s.href}>
-                <Card className="group h-full transition-all duration-200 hover:shadow-md hover:-translate-y-1 border-border/50 hover:border-primary/20 bg-card/80"
-                  style={{ animationDelay: `${i * 50}ms` }}>
-                  <CardContent className="flex flex-col items-center gap-2.5 p-3 text-center sm:p-4">
-                    <div className={`flex h-11 w-11 items-center justify-center rounded-xl ${s.bg} transition-all duration-200 group-hover:scale-110 ring-2 ring-transparent group-hover:ring-primary/10 group-hover:shadow-sm`}>
-                      <s.icon className={`h-5 w-5 ${s.color}`} />
+              <Link key={s.title} to={s.href} className="group">
+                <Card className="h-full border-border/40 bg-card/50 backdrop-blur-sm transition-all duration-300 hover:shadow-xl hover:-translate-y-2 hover:border-primary/30 hover:bg-card">
+                  <CardContent className="flex flex-col items-center gap-3 p-4 text-center">
+                    <div className={`flex h-12 w-12 items-center justify-center rounded-2xl ${s.bg} transition-all duration-300 group-hover:scale-110 group-hover:shadow-lg group-hover:rotate-3 ring-2 ring-transparent group-hover:ring-primary/10`}>
+                      <s.icon className={`h-6 w-6 ${s.color}`} />
                     </div>
-                    <h3 className="text-[11px] font-medium leading-tight sm:text-xs">{s.title}</h3>
+                    <span className="text-[11px] font-semibold tracking-tight sm:text-xs text-foreground/80 group-hover:text-primary transition-colors">{s.title}</span>
                   </CardContent>
                 </Card>
               </Link>

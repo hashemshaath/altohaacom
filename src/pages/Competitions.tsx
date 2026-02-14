@@ -162,40 +162,42 @@ export default function Competitions() {
         <div className="container mt-4">
           <AdBanner placementSlug="competitions-top-banner" className="w-full aspect-[5/1]" />
         </div>
-        {/* Hero Banner */}
-        <section className="relative overflow-hidden border-b bg-gradient-to-b from-primary/5 via-background to-background">
-          <div className="absolute -top-32 start-1/4 h-64 w-64 rounded-full bg-primary/8 blur-[100px] animate-pulse pointer-events-none" />
-          <div className="absolute -top-20 end-1/3 h-48 w-48 rounded-full bg-accent/10 blur-[80px] animate-pulse [animation-delay:1s] pointer-events-none" />
-          <div className="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-primary/20 to-transparent" />
+        {/* Hero Banner - Enhanced Premium Look */}
+        <section className="relative overflow-hidden border-b border-border/40 bg-gradient-to-br from-primary/5 via-background to-accent/5">
+          <div className="absolute -top-32 start-1/4 h-80 w-80 rounded-full bg-primary/10 blur-[120px] animate-pulse pointer-events-none" />
+          <div className="absolute -bottom-20 end-1/3 h-64 w-64 rounded-full bg-accent/15 blur-[100px] animate-pulse [animation-delay:2s] pointer-events-none" />
+          <div className="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-primary/30 to-transparent" />
 
-          <div className="container relative py-10 md:py-14">
-            <div className="flex flex-col gap-6 md:flex-row md:items-center md:justify-between">
-              <div className="max-w-xl space-y-3">
-                <div className="flex items-center gap-2">
-                  <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-primary/10 ring-1 ring-primary/15 shadow-sm">
-                    <Trophy className="h-6 w-6 text-primary" />
+          <div className="container relative py-12 md:py-16">
+            <div className="flex flex-col gap-8 md:flex-row md:items-center md:justify-between">
+              <div className="max-w-2xl space-y-4 animate-fade-in">
+                <div className="flex items-center gap-3">
+                  <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-primary/10 ring-4 ring-primary/5 shadow-inner">
+                    <Trophy className="h-7 w-7 text-primary" />
                   </div>
-                  <Badge variant="outline" className="gap-1.5 border-primary/20 text-primary">
-                    <Sparkles className="h-3 w-3" />
-                    {counts.all} {isAr ? "مسابقة" : "Competitions"}
+                  <Badge variant="outline" className="gap-2 border-primary/20 bg-primary/5 text-primary py-1 px-3">
+                    <Sparkles className="h-3.5 w-3.5 animate-pulse" />
+                    <span className="font-bold">{counts.all}</span> {isAr ? "مسابقة متاحة" : "Active Competitions"}
                   </Badge>
                 </div>
-                <h1 className="font-serif text-2xl font-bold md:text-3xl lg:text-4xl">
-                  {isAr ? "مسابقات الطهي" : "Culinary Competitions"}
+                <h1 className="font-serif text-3xl font-black sm:text-4xl md:text-5xl lg:text-6xl tracking-tight text-foreground drop-shadow-sm">
+                  {isAr ? "مسابقات الطهي العالمية" : "Global Culinary Competitions"}
                 </h1>
-                <p className="text-sm text-muted-foreground leading-relaxed sm:text-base">
+                <p className="text-base text-muted-foreground leading-relaxed max-w-xl font-medium">
                   {isAr
                     ? "اكتشف مسابقات الطهي واشترك فيها. أظهر مهاراتك وتنافس مع أفضل الطهاة."
-                    : "Discover world-class culinary competitions. Showcase your skills, compete with top chefs, and earn recognition."}
+                    : "Experience the pinnacle of culinary excellence. Compete with top chefs worldwide and gain global recognition for your craft."}
                 </p>
               </div>
               {canCreate && (
-                <Button asChild size="lg" className="w-full md:w-auto shadow-lg shadow-primary/20">
-                  <Link to="/competitions/create">
-                    <Plus className="me-2 h-4 w-4" />
-                    {t("createCompetition")}
-                  </Link>
-                </Button>
+                <div className="shrink-0 animate-fade-in [animation-delay:200ms]">
+                  <Button asChild size="lg" className="w-full md:w-auto shadow-2xl shadow-primary/30 rounded-2xl py-7 px-8 text-lg font-bold transition-all hover:scale-105 active:scale-95">
+                    <Link to="/competitions/create">
+                      <Plus className="me-2 h-5 w-5" />
+                      {t("createCompetition")}
+                    </Link>
+                  </Button>
+                </div>
               )}
             </div>
           </div>
@@ -239,28 +241,33 @@ export default function Competitions() {
             )}
           </div>
 
-          {/* Tab Pills */}
-          <div className="mb-8 flex flex-wrap gap-2">
-            {TAB_FILTERS.map((tab) => (
-              <button
-                key={tab}
-                onClick={() => setActiveTab(tab)}
-                className={`inline-flex items-center gap-1.5 rounded-full border px-4 py-2 text-sm font-medium transition-all ${
-                  activeTab === tab
-                    ? "border-primary bg-primary text-primary-foreground shadow-sm shadow-primary/20"
-                    : "border-border bg-card hover:border-primary/30 hover:bg-primary/5 text-foreground"
-                }`}
-              >
-                {isAr ? tabLabels[tab].ar : tabLabels[tab].en}
-                <span className={`ms-1 inline-flex h-5 min-w-5 items-center justify-center rounded-full px-1.5 text-[10px] font-bold ${
-                  activeTab === tab
-                    ? "bg-primary-foreground/20 text-primary-foreground"
-                    : "bg-muted text-muted-foreground"
-                }`}>
-                  {counts[tab]}
-                </span>
-              </button>
-            ))}
+          {/* Tab Pills - Premium Glass Sticky Navigation */}
+          <div className="sticky top-[64px] z-30 -mx-4 mb-8 bg-background/80 px-4 py-4 backdrop-blur-md border-y border-border/40 md:rounded-2xl md:border md:mx-0 md:px-6">
+            <div className="flex flex-wrap gap-2.5">
+              {TAB_FILTERS.map((tab) => (
+                <button
+                  key={tab}
+                  onClick={() => setActiveTab(tab)}
+                  className={`relative inline-flex items-center gap-2 rounded-xl px-5 py-2.5 text-sm font-bold transition-all duration-300 ${
+                    activeTab === tab
+                      ? "text-primary-foreground"
+                      : "text-muted-foreground hover:bg-primary/5 hover:text-primary"
+                  }`}
+                >
+                  {activeTab === tab && (
+                    <div className="absolute inset-0 rounded-xl bg-primary shadow-lg shadow-primary/20 animate-in fade-in zoom-in-95 duration-300" />
+                  )}
+                  <span className="relative z-10">{isAr ? tabLabels[tab].ar : tabLabels[tab].en}</span>
+                  <span className={`relative z-10 ms-1 inline-flex h-5 min-w-[20px] items-center justify-center rounded-lg px-1.5 text-[10px] font-black ${
+                    activeTab === tab
+                      ? "bg-primary-foreground/20 text-primary-foreground"
+                      : "bg-muted text-muted-foreground group-hover:bg-primary/20"
+                  }`}>
+                    {counts[tab]}
+                  </span>
+                </button>
+              ))}
+            </div>
           </div>
 
           {/* Grid */}
@@ -323,60 +330,77 @@ function FeaturedCard({ competition, language, isAr }: { competition: Competitio
   const regCount = competition.competition_registrations?.length || 0;
 
   return (
-    <Link to={`/competitions/${competition.id}`} className="group mb-8 block">
-      <Card className="relative overflow-hidden border-primary/15 transition-all hover:shadow-xl hover:shadow-primary/5">
-        <div className="pointer-events-none absolute -top-16 -end-16 h-40 w-40 rounded-full bg-primary/5 blur-[50px]" />
+    <Link to={`/competitions/${competition.id}`} className="group mb-12 block">
+      <Card className="relative overflow-hidden border-primary/15 bg-card/60 backdrop-blur-sm shadow-sm transition-all duration-500 hover:shadow-2xl hover:shadow-primary/5 hover:border-primary/30">
+        <div className="pointer-events-none absolute -top-24 -end-24 h-64 w-64 rounded-full bg-primary/10 blur-[80px] transition-all duration-500 group-hover:bg-primary/15" />
         <div className="relative flex flex-col md:flex-row">
-          <div className="relative aspect-[16/9] w-full overflow-hidden md:aspect-auto md:w-2/5 lg:w-1/3">
+          <div className="relative aspect-[16/9] w-full overflow-hidden md:aspect-auto md:w-2/5 lg:w-1/2">
             {competition.cover_image_url ? (
-              <img src={competition.cover_image_url} alt={title} className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105" />
+              <img src={competition.cover_image_url} alt={title} className="h-full w-full object-cover transition-transform duration-1000 group-hover:scale-110 group-hover:rotate-1" />
             ) : (
-              <div className="flex h-full min-h-[200px] items-center justify-center bg-gradient-to-br from-primary/10 to-accent/10">
-                <Trophy className="h-16 w-16 text-primary/20" />
+              <div className="flex h-full min-h-[250px] items-center justify-center bg-gradient-to-br from-primary/10 to-accent/10">
+                <Trophy className="h-24 w-24 text-primary/10 animate-pulse" />
               </div>
             )}
-            <div className="absolute start-4 top-4">
-              <Badge className="gap-1.5 bg-primary text-primary-foreground shadow-lg">
-                <Flame className="h-3 w-3" />
-                {isAr ? "مميزة" : "Featured"}
+            <div className="absolute inset-0 bg-gradient-to-t from-background/60 via-transparent to-transparent opacity-60" />
+            <div className="absolute start-5 top-5">
+              <Badge className="gap-2 bg-primary px-4 py-1.5 text-xs font-bold shadow-xl animate-pulse ring-4 ring-primary/20">
+                <Flame className="h-3.5 w-3.5" />
+                {isAr ? "مسابقة مميزة" : "Featured Spotlight"}
               </Badge>
             </div>
           </div>
-          <div className="flex flex-1 flex-col justify-between p-5 md:p-7">
-            <div>
-              <div className="mb-3 flex items-center gap-2 flex-wrap">
-                <Badge className={derived.color}>
-                  <span className={`me-1.5 inline-block h-1.5 w-1.5 rounded-full ${derived.dot}`} />
+          <div className="flex flex-1 flex-col justify-between p-6 md:p-10">
+            <div className="space-y-4">
+              <div className="flex items-center gap-3 flex-wrap">
+                <Badge className={`${derived.color} px-3 py-1 font-bold text-[10px] tracking-wider uppercase`}>
+                  <span className={`me-2 inline-block h-2 w-2 rounded-full ${derived.dot} animate-pulse`} />
                   {isAr ? derived.labelAr : derived.label}
                 </Badge>
                 {derived.daysLeft && derived.daysLeft > 0 && derived.daysLeft <= 60 && (
-                  <Badge variant="outline" className="gap-1 text-xs">
-                    <Clock className="h-3 w-3" />
-                    {isAr ? `${derived.daysLeft} يوم` : `${derived.daysLeft} days left`}
+                  <Badge variant="outline" className="gap-1.5 text-[10px] font-bold bg-background/40 backdrop-blur-md border-border/40">
+                    <Clock className="h-3 w-3 text-primary" />
+                    {isAr ? `${derived.daysLeft} يوم متبقي` : `${derived.daysLeft} DAYS LEFT`}
                   </Badge>
                 )}
               </div>
-              <h2 className="mb-2 font-serif text-xl font-bold md:text-2xl group-hover:text-primary transition-colors">{title}</h2>
-              {desc && <p className="mb-4 line-clamp-2 text-sm text-muted-foreground leading-relaxed">{desc}</p>}
+              <h2 className="font-serif text-2xl font-black md:text-3xl lg:text-4xl leading-tight group-hover:text-primary transition-colors duration-300">{title}</h2>
+              {desc && <p className="line-clamp-3 text-sm md:text-base text-muted-foreground font-medium leading-relaxed">{desc}</p>}
             </div>
-            <div className="flex flex-wrap items-center gap-4 text-sm text-muted-foreground">
-              <span className="flex items-center gap-1.5">
-                <Calendar className="h-3.5 w-3.5" />
-                {format(new Date(competition.competition_start), "MMM d, yyyy")}
-              </span>
+            <div className="mt-8 flex flex-wrap items-center gap-6 text-sm font-semibold text-foreground/80">
+              <div className="flex items-center gap-2 group/icon">
+                <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-muted group-hover/icon:bg-primary/10 transition-colors">
+                  <Calendar className="h-4 w-4 text-muted-foreground group-hover/icon:text-primary" />
+                </div>
+                {format(new Date(competition.competition_start), "MMMM d, yyyy")}
+              </div>
               {competition.is_virtual ? (
-                <span className="flex items-center gap-1.5"><Globe className="h-3.5 w-3.5" />{isAr ? "عبر الإنترنت" : "Virtual"}</span>
+                <div className="flex items-center gap-2 group/icon">
+                  <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-muted group-hover/icon:bg-primary/10 transition-colors">
+                    <Globe className="h-4 w-4 text-muted-foreground group-hover/icon:text-primary" />
+                  </div>
+                  {isAr ? "مسابقة افتراضية" : "Virtual Competition"}
+                </div>
               ) : competition.city && (
-                <span className="flex items-center gap-1.5">
-                  <MapPin className="h-3.5 w-3.5" />
+                <div className="flex items-center gap-2 group/icon">
+                  <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-muted group-hover/icon:bg-primary/10 transition-colors">
+                    <MapPin className="h-4 w-4 text-muted-foreground group-hover/icon:text-primary" />
+                  </div>
                   {competition.country_code ? `${countryFlag(competition.country_code)} ` : ""}{competition.city}{competition.country ? `, ${competition.country}` : ""}
-                </span>
+                </div>
               )}
-              <span className="flex items-center gap-1.5"><Users className="h-3.5 w-3.5" />{regCount} {isAr ? "مشارك" : "registered"}</span>
-              <span className="ms-auto flex items-center gap-1 text-primary font-medium text-xs group-hover:gap-2 transition-all">
-                {isAr ? "عرض التفاصيل" : "View Details"}
-                <ArrowRight className="h-3.5 w-3.5" />
-              </span>
+              <div className="flex items-center gap-2 group/icon">
+                <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-muted group-hover/icon:bg-primary/10 transition-colors">
+                  <Users className="h-4 w-4 text-muted-foreground group-hover/icon:text-primary" />
+                </div>
+                {regCount} {isAr ? "مسجل" : "Registered"}
+              </div>
+              <div className="ms-auto">
+                <Button variant="ghost" className="gap-2 text-primary hover:bg-primary/5 p-0 hover:p-2 transition-all group/btn">
+                  <span className="font-bold uppercase tracking-widest text-xs">{isAr ? "استكشف الآن" : "Explore Now"}</span>
+                  <ArrowRight className="h-4 w-4 transition-transform group-hover/btn:translate-x-1" />
+                </Button>
+              </div>
             </div>
           </div>
         </div>
@@ -400,63 +424,86 @@ function CompetitionCard({ competition, language, isAr }: { competition: Competi
   });
 
   return (
-    <Link to={`/competitions/${competition.id}`} className="group block">
-      <Card className="h-full overflow-hidden transition-all duration-300 hover:shadow-lg hover:-translate-y-1 border-border/50 hover:border-primary/20">
-        <div className="relative aspect-[16/10] overflow-hidden bg-muted">
+    <Link to={`/competitions/${competition.id}`} className="group block h-full">
+      <Card className="flex h-full flex-col overflow-hidden border-border/40 bg-card/60 backdrop-blur-sm transition-all duration-500 hover:shadow-2xl hover:-translate-y-2 hover:border-primary/30 hover:bg-card">
+        <div className="relative aspect-[16/10] shrink-0 overflow-hidden bg-muted">
           {competition.cover_image_url ? (
-            <img src={competition.cover_image_url} alt={title} className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105" loading="lazy" />
+            <img src={competition.cover_image_url} alt={title} className="h-full w-full object-cover transition-transform duration-1000 group-hover:scale-110" loading="lazy" />
           ) : (
-            <div className="flex h-full items-center justify-center bg-gradient-to-br from-primary/5 to-accent/5">
-              <Trophy className="h-12 w-12 text-primary/15" />
+            <div className="flex h-full items-center justify-center bg-gradient-to-br from-primary/10 to-accent/10">
+              <Trophy className="h-14 w-14 text-primary/15 animate-pulse" />
             </div>
           )}
-          <div className="absolute inset-0 bg-gradient-to-t from-background/80 via-transparent to-transparent" />
-          <div className="absolute start-3 top-3 flex flex-wrap gap-1.5">
-            <Badge className={`text-[10px] font-semibold border-0 shadow-sm backdrop-blur-sm ${derived.color}`}>
-              <span className={`me-1 inline-block h-1.5 w-1.5 rounded-full ${derived.dot}`} />
+          <div className="absolute inset-0 bg-gradient-to-t from-background/90 via-background/20 to-transparent" />
+          
+          {/* Top Info Bar */}
+          <div className="absolute inset-x-0 top-0 flex items-center justify-between p-4">
+            <Badge className={`px-2.5 py-1 text-[9px] font-black uppercase tracking-wider border-0 shadow-xl backdrop-blur-md ${derived.color} ring-1 ring-white/10`}>
+              <span className={`me-1.5 inline-block h-1.5 w-1.5 rounded-full ${derived.dot} animate-pulse`} />
               {isAr ? derived.labelAr : derived.label}
             </Badge>
-          </div>
-          {derived.daysLeft && derived.daysLeft > 0 && derived.daysLeft <= 30 && (
-            <div className="absolute end-3 top-3">
-              <Badge variant="secondary" className="gap-1 text-[10px] bg-background/80 backdrop-blur-sm shadow-sm font-semibold">
-                <Clock className="h-2.5 w-2.5" />
-                {isAr ? `${derived.daysLeft} يوم` : `${derived.daysLeft}d`}
+            {derived.daysLeft && derived.daysLeft > 0 && derived.daysLeft <= 30 && (
+              <Badge variant="secondary" className="gap-1.5 px-2 py-0.5 text-[9px] font-bold bg-background/80 backdrop-blur-md shadow-lg border-border/40 text-foreground">
+                <Clock className="h-2.5 w-2.5 text-primary" />
+                {isAr ? `${derived.daysLeft} يوم` : `${derived.daysLeft}D`}
               </Badge>
-            </div>
-          )}
-          <div className="absolute inset-x-0 bottom-0 p-3">
+            )}
+          </div>
+
+          {/* Bottom Info Bar */}
+          <div className="absolute inset-x-0 bottom-0 p-4">
             <div className="flex items-center justify-between">
-              <span className="flex items-center gap-1.5 text-[11px] text-foreground/80 font-medium">
-                <Calendar className="h-3 w-3" />
+              <span className="flex items-center gap-2 text-[10px] font-bold text-foreground drop-shadow-md">
+                <div className="flex h-6 w-6 items-center justify-center rounded-lg bg-background/60 backdrop-blur-md shadow-sm">
+                  <Calendar className="h-3 w-3 text-primary" />
+                </div>
                 {format(new Date(competition.competition_start), "MMM d, yyyy")}
               </span>
               {maxP && (
-                <Badge variant="secondary" className="gap-1 text-[10px] bg-background/80 backdrop-blur-sm">
-                  <Users className="h-2.5 w-2.5" />
-                  {regCount}/{maxP}
+                <Badge variant="secondary" className="gap-1.5 px-2 py-0.5 text-[10px] font-bold bg-primary/10 backdrop-blur-md border-primary/20 text-primary shadow-sm">
+                  <Users className="h-3 w-3" />
+                  {regCount} <span className="opacity-50 text-[8px]">/</span> {maxP}
                 </Badge>
               )}
             </div>
           </div>
         </div>
-        <CardContent className="p-4 space-y-3">
-          <h3 className="line-clamp-2 text-sm font-bold leading-snug group-hover:text-primary transition-colors">{title}</h3>
+        <CardContent className="flex flex-1 flex-col p-5">
+          <h3 className="mb-4 flex-1 line-clamp-2 text-base font-black leading-tight group-hover:text-primary transition-colors duration-300">
+            {title}
+          </h3>
+          
           {maxP && maxP > 0 && (
-            <div className="space-y-1">
-              <Progress value={fillPct} className="h-1.5" />
-              <p className="text-[10px] text-muted-foreground">{fillPct}% {isAr ? "ممتلئ" : "filled"}</p>
+            <div className="mb-5 space-y-2">
+              <div className="flex items-center justify-between text-[10px] font-bold uppercase tracking-wider text-muted-foreground">
+                <span>{isAr ? "سعة المشاركة" : "Capacity"}</span>
+                <span className={fillPct > 80 ? "text-destructive" : "text-primary"}>{fillPct}%</span>
+              </div>
+              <div className="h-2 w-full overflow-hidden rounded-full bg-muted/50 p-0.5 shadow-inner">
+                <div 
+                  className={`h-full rounded-full transition-all duration-1000 ${
+                    fillPct > 80 ? "bg-destructive shadow-[0_0_8px_rgba(239,68,68,0.4)]" : "bg-primary shadow-[0_0_8px_rgba(var(--primary),0.4)]"
+                  }`}
+                  style={{ width: `${fillPct}%` }}
+                />
+              </div>
             </div>
           )}
-          <div className="flex items-center gap-3 text-[11px] text-muted-foreground">
-            {competition.is_virtual ? (
-              <span className="flex items-center gap-1"><Globe className="h-3 w-3" />{isAr ? "افتراضية" : "Virtual"}</span>
-            ) : competition.city ? (
-              <span className="flex items-center gap-1 truncate">
-                <MapPin className="h-3 w-3 shrink-0" />
-                {competition.country_code ? `${countryFlag(competition.country_code)} ` : ""}{competition.city}{competition.country ? `, ${competition.country}` : ""}
-              </span>
-            ) : null}
+
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3 text-[11px] font-bold text-muted-foreground">
+              {competition.is_virtual ? (
+                <span className="flex items-center gap-1.5"><Globe className="h-3.5 w-3.5 text-primary" />{isAr ? "افتراضية" : "Virtual"}</span>
+              ) : competition.city ? (
+                <span className="flex items-center gap-1.5 truncate max-w-[140px]">
+                  <MapPin className="h-3.5 w-3.5 shrink-0 text-primary" />
+                  {competition.country_code ? `${countryFlag(competition.country_code)} ` : ""}{competition.city}
+                </span>
+              ) : null}
+            </div>
+            <div className="flex h-8 w-8 items-center justify-center rounded-full bg-primary/5 text-primary transition-all duration-300 group-hover:bg-primary group-hover:text-primary-foreground group-hover:scale-110 shadow-sm">
+              <ArrowRight className="h-4 w-4" />
+            </div>
           </div>
         </CardContent>
       </Card>

@@ -77,7 +77,7 @@ function Section({
 }) {
   const [open, setOpen] = useState(defaultOpen);
   return (
-    <Collapsible open={open} onOpenChange={setOpen} className="animate-fade-in">
+    <Collapsible open={open} onOpenChange={setOpen} className="animate-fade-in scroll-mt-36" id={`section-${title.toLowerCase().replace(/\s+/g, '-')}`}>
       <Card className="overflow-hidden border-border/50 shadow-sm transition-all duration-300 hover:border-primary/20">
         <CollapsibleTrigger className="flex w-full items-center justify-between gap-3 px-5 py-4 text-start hover:bg-muted/30 transition-colors group">
           <div className="flex items-center gap-4">
@@ -106,6 +106,18 @@ export default function CompetitionDetail() {
   const { user } = useAuth();
   const isAdmin = useIsAdmin();
   const [activeSection, setActiveSection] = useState<string>("overview");
+  const setActiveTab = (id: string) => {
+    setActiveSection(id);
+    const el = document.getElementById(`section-${id}`);
+    if (el) {
+      const offset = 140; // sticky header + subnav
+      const bodyRect = document.body.getBoundingClientRect().top;
+      const elementRect = el.getBoundingClientRect().top;
+      const elementPosition = elementRect - bodyRect;
+      const offsetPosition = elementPosition - offset;
+      window.scrollTo({ top: offsetPosition, behavior: "smooth" });
+    }
+  };
   const [showRegistrationForm, setShowRegistrationForm] = useState(false);
   const isAr = language === "ar";
   const { data: qrCode } = useEntityQRCode("competition", id, "competition");
@@ -240,18 +252,18 @@ export default function CompetitionDetail() {
   const accreditors = supervisingBodies?.filter(b => b.bodyRole !== "supervisor") || [];
 
   const navItems = [
-    { id: "overview", icon: <Eye className="h-3.5 w-3.5" />, label: isAr ? "نظرة عامة" : "Overview" },
-    { id: "judges", icon: <Scale className="h-3.5 w-3.5" />, label: isAr ? "لجنة التحكيم" : "Judging Panel" },
-    { id: "contestants", icon: <Users className="h-3.5 w-3.5" />, label: isAr ? "المتسابقين" : "Contestants" },
-    { id: "categories", icon: <Target className="h-3.5 w-3.5" />, label: isAr ? "الفئات" : "Categories" },
-    { id: "criteria", icon: <BarChart3 className="h-3.5 w-3.5" />, label: isAr ? "المعايير" : "Criteria" },
-    { id: "live-scoring", icon: <Radio className="h-3.5 w-3.5" />, label: isAr ? "النتائج المباشرة" : "Live Scores" },
-    { id: "winners", icon: <Medal className="h-3.5 w-3.5" />, label: isAr ? "الفائزين" : "Winners" },
-    { id: "team", icon: <UsersRound className="h-3.5 w-3.5" />, label: isAr ? "الفريق" : "Team" },
-    ...(canSeeKnowledge ? [{ id: "knowledge", icon: <BookOpen className="h-3.5 w-3.5" />, label: isAr ? "المعرفة" : "Knowledge" }] : []),
-    { id: "gallery", icon: <ImageIcon className="h-3.5 w-3.5" />, label: isAr ? "المعرض" : "Gallery" },
-    ...(user ? [{ id: "requirements", icon: <ClipboardList className="h-3.5 w-3.5" />, label: isAr ? "مركز الطلبات" : "Order Center" }] : []),
-    ...(isOrganizer ? [{ id: "manage", icon: <Settings className="h-3.5 w-3.5" />, label: isAr ? "إدارة" : "Manage" }] : []),
+    { id: "overview", icon: <Eye className="h-4 w-4" />, label: isAr ? "نظرة عامة" : "Overview" },
+    { id: "judges", icon: <Scale className="h-4 w-4" />, label: isAr ? "لجنة التحكيم" : "Judging Panel" },
+    { id: "contestants", icon: <Users className="h-4 w-4" />, label: isAr ? "المتسابقين" : "Contestants" },
+    { id: "categories", icon: <Target className="h-4 w-4" />, label: isAr ? "الفئات" : "Categories" },
+    { id: "criteria", icon: <BarChart3 className="h-4 w-4" />, label: isAr ? "المعايير" : "Criteria" },
+    { id: "live-scoring", icon: <Radio className="h-4 w-4" />, label: isAr ? "النتائج المباشرة" : "Live Scores" },
+    { id: "winners", icon: <Medal className="h-4 w-4" />, label: isAr ? "الفائزين" : "Winners" },
+    { id: "team", icon: <UsersRound className="h-4 w-4" />, label: isAr ? "الفريق" : "Team" },
+    ...(canSeeKnowledge ? [{ id: "knowledge", icon: <BookOpen className="h-4 w-4" />, label: isAr ? "المعرفة" : "Knowledge" }] : []),
+    { id: "gallery", icon: <ImageIcon className="h-4 w-4" />, label: isAr ? "المعرض" : "Gallery" },
+    ...(user ? [{ id: "requirements", icon: <ClipboardList className="h-4 w-4" />, label: isAr ? "مركز الطلبات" : "Order Center" }] : []),
+    ...(isOrganizer ? [{ id: "manage", icon: <Settings className="h-4 w-4" />, label: isAr ? "إدارة" : "Manage" }] : []),
   ];
 
   return (
@@ -299,52 +311,54 @@ export default function CompetitionDetail() {
           </div>
 
           <div className="absolute inset-0 flex flex-col justify-end">
-            <div className="container pb-8 md:pb-12">
-              <Button 
-                variant="ghost" 
-                size="sm" 
-                asChild 
-                className="mb-6 -ms-2 text-foreground/70 hover:text-primary hover:bg-primary/5 transition-all group"
-              >
-                <Link to="/competitions">
-                  <ArrowLeft className="me-2 h-4 w-4 transition-transform group-hover:-translate-x-1" />
-                  {isAr ? "جميع المسابقات" : "All Competitions"}
-                </Link>
-              </Button>
-
+            <div className="container pb-10 md:pb-16">
               <div className="flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
-                <div className="space-y-4 max-w-3xl animate-fade-in">
-                  <div className="flex items-center gap-2 flex-wrap">
-                    <Badge className={`${statusConfig[competition.status as CompetitionStatus].bg} px-3 py-1 shadow-sm`}>
-                      <span className={`me-2 inline-block h-2 w-2 rounded-full ${statusConfig[competition.status as CompetitionStatus].dot} animate-pulse`} />
+                <div className="space-y-5 max-w-4xl animate-fade-in">
+                  <div className="flex items-center gap-2.5 flex-wrap">
+                    <Badge className={`${statusConfig[competition.status as CompetitionStatus].bg} px-4 py-1.5 font-black uppercase tracking-widest text-[10px] shadow-lg ring-1 ring-white/10`}>
+                      <span className={`me-2.5 inline-block h-2.5 w-2.5 rounded-full ${statusConfig[competition.status as CompetitionStatus].dot} animate-pulse`} />
                       {isAr ? statusConfig[competition.status as CompetitionStatus].labelAr : statusConfig[competition.status as CompetitionStatus].label}
                     </Badge>
                     {competition.edition_year && (
-                      <Badge variant="outline" className="bg-background/40 backdrop-blur-md text-xs border-primary/20 px-2.5 py-0.5">{competition.edition_year}</Badge>
+                      <Badge variant="outline" className="bg-background/20 backdrop-blur-xl text-xs font-bold border-white/20 px-3 py-1 text-foreground shadow-sm">{competition.edition_year}</Badge>
                     )}
                     {competition.competition_number && (
-                      <Badge variant="outline" className="font-mono text-[10px] bg-primary/5 border-primary/20 px-2.5 py-0.5 text-primary uppercase tracking-wider">{competition.competition_number}</Badge>
+                      <Badge variant="outline" className="font-mono text-[10px] font-black bg-primary/20 border-primary/40 px-3 py-1 text-primary uppercase tracking-[0.2em] shadow-inner">{competition.competition_number}</Badge>
                     )}
                   </div>
-                  <h1 className="font-serif text-3xl font-bold sm:text-4xl md:text-5xl lg:text-6xl leading-tight tracking-tight text-foreground drop-shadow-sm">
+                  <h1 className="font-serif text-3xl font-black sm:text-5xl md:text-6xl lg:text-7xl leading-[1.1] tracking-tighter text-foreground drop-shadow-2xl">
                     {title}
                   </h1>
-                  <div className="flex items-center gap-5 text-sm font-medium text-muted-foreground flex-wrap">
-                    <span className="flex items-center gap-2 bg-background/50 backdrop-blur-sm px-3 py-1.5 rounded-full border border-border/40">
-                      <Calendar className="h-4 w-4 text-primary" />
-                      {format(new Date(competition.competition_start), "MMM d")} – {format(new Date(competition.competition_end), "MMM d, yyyy")}
-                    </span>
+                  <div className="flex items-center gap-6 text-sm font-bold text-foreground flex-wrap">
+                    <div className="flex items-center gap-2.5 group/info">
+                      <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-background/40 backdrop-blur-md shadow-sm transition-transform group-hover/info:scale-110 ring-1 ring-white/10">
+                        <Calendar className="h-4 w-4 text-primary" />
+                      </div>
+                      <div className="flex flex-col">
+                        <span className="text-[10px] uppercase tracking-widest text-muted-foreground">{isAr ? "التاريخ" : "Schedule"}</span>
+                        <span>{format(new Date(competition.competition_start), "MMM d")} – {format(new Date(competition.competition_end), "MMM d, yyyy")}</span>
+                      </div>
+                    </div>
                     {competition.is_virtual ? (
-                      <span className="flex items-center gap-2 bg-background/50 backdrop-blur-sm px-3 py-1.5 rounded-full border border-border/40">
-                        <Globe className="h-4 w-4 text-primary" />
-                        {isAr ? "افتراضية" : "Virtual"}
-                      </span>
+                      <div className="flex items-center gap-2.5 group/info">
+                        <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-background/40 backdrop-blur-md shadow-sm transition-transform group-hover/info:scale-110 ring-1 ring-white/10">
+                          <Globe className="h-4 w-4 text-primary" />
+                        </div>
+                        <div className="flex flex-col">
+                          <span className="text-[10px] uppercase tracking-widest text-muted-foreground">{isAr ? "الموقع" : "Location"}</span>
+                          <span>{isAr ? "مسابقة افتراضية" : "Virtual Arena"}</span>
+                        </div>
+                      </div>
                     ) : (venue || competition.city) && (
-                      <span className="flex items-center gap-2 bg-background/50 backdrop-blur-sm px-3 py-1.5 rounded-full border border-border/40">
-                        <MapPin className="h-4 w-4 text-primary" />
-                        {competition.country_code ? `${countryFlag(competition.country_code)} ` : ""}
-                        {venue || competition.city}
-                      </span>
+                      <div className="flex items-center gap-2.5 group/info">
+                        <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-background/40 backdrop-blur-md shadow-sm transition-transform group-hover/info:scale-110 ring-1 ring-white/10">
+                          <MapPin className="h-4 w-4 text-primary" />
+                        </div>
+                        <div className="flex flex-col">
+                          <span className="text-[10px] uppercase tracking-widest text-muted-foreground">{isAr ? "المكان" : "Venue"}</span>
+                          <span className="max-w-[200px] truncate">{competition.country_code ? `${countryFlag(competition.country_code)} ` : ""}{venue || competition.city}</span>
+                        </div>
+                      </div>
                     )}
                   </div>
                 </div>
