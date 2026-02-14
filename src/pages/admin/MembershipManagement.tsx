@@ -207,7 +207,20 @@ export default function MembershipManagement() {
 
   return (
     <div className="space-y-6">
-      <h1 className="font-serif text-2xl font-bold">{t("membershipControl")}</h1>
+      {/* Hero Header */}
+      <Card className="overflow-hidden border-border/50 bg-gradient-to-br from-primary/5 via-background to-accent/5">
+        <div className="flex items-center gap-4 p-5 md:p-6">
+          <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-primary/10">
+            <CreditCard className="h-6 w-6 text-primary" />
+          </div>
+          <div>
+            <h1 className="font-serif text-2xl font-bold">{t("membershipControl")}</h1>
+            <p className="mt-0.5 text-sm text-muted-foreground">
+              {language === "ar" ? "إدارة مستويات العضوية والاشتراكات" : "Manage membership tiers and subscriptions"}
+            </p>
+          </div>
+        </div>
+      </Card>
 
       {/* Stats */}
       <div className="grid gap-4 sm:grid-cols-4">
@@ -294,12 +307,12 @@ export default function MembershipManagement() {
           {/* Filters */}
           <div className="flex flex-wrap gap-4">
             <div className="relative flex-1 min-w-[200px]">
-              <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+              <Search className="absolute start-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
               <Input
                 placeholder={language === "ar" ? "بحث..." : "Search..."}
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="pl-10"
+                className="ps-10"
               />
             </div>
             <Select value={tierFilter} onValueChange={setTierFilter}>
