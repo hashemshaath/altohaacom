@@ -102,15 +102,15 @@ export default function Dashboard() {
 
         {/* Quick Navigation - Premium Pill Grid */}
         <div className="mb-10">
-          <div className="grid grid-cols-4 gap-3 sm:grid-cols-4 md:grid-cols-4 lg:grid-cols-8">
-            {sections.map((s, i) => (
+          <div className="grid grid-cols-4 gap-2.5 sm:gap-3 lg:grid-cols-8">
+            {sections.map((s) => (
               <Link key={s.title} to={s.href} className="group">
-                <Card className="h-full border-border/40 bg-card/50 backdrop-blur-sm transition-all duration-300 hover:shadow-xl hover:-translate-y-2 hover:border-primary/30 hover:bg-card">
-                  <CardContent className="flex flex-col items-center gap-3 p-4 text-center">
-                    <div className={`flex h-12 w-12 items-center justify-center rounded-2xl ${s.bg} transition-all duration-300 group-hover:scale-110 group-hover:shadow-lg group-hover:rotate-3 ring-2 ring-transparent group-hover:ring-primary/10`}>
-                      <s.icon className={`h-6 w-6 ${s.color}`} />
+                <Card className="h-full border-border/40 bg-card/50 backdrop-blur-sm transition-all duration-300 hover:shadow-xl hover:-translate-y-1.5 hover:border-primary/30 hover:bg-card active:scale-95">
+                  <CardContent className="flex flex-col items-center gap-2.5 p-3 sm:p-4 text-center">
+                    <div className={`flex h-11 w-11 sm:h-12 sm:w-12 items-center justify-center rounded-2xl ${s.bg} transition-all duration-300 group-hover:scale-110 group-hover:shadow-lg ring-2 ring-transparent group-hover:ring-primary/10`}>
+                      <s.icon className={`h-5 w-5 sm:h-6 sm:w-6 ${s.color}`} />
                     </div>
-                    <span className="text-[11px] font-semibold tracking-tight sm:text-xs text-foreground/80 group-hover:text-primary transition-colors">{s.title}</span>
+                    <span className="text-[10px] font-semibold tracking-tight sm:text-xs text-foreground/80 group-hover:text-primary transition-colors leading-tight">{s.title}</span>
                   </CardContent>
                 </Card>
               </Link>

@@ -138,116 +138,119 @@ export default function Recipes() {
       <Header />
 
       <main className="flex-1">
-        {/* Hero - Premium */}
-        <div className="relative overflow-hidden border-b border-border/40 bg-gradient-to-br from-primary/5 via-background to-chart-3/5">
-          <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&q=80')] bg-fixed bg-cover bg-center opacity-[0.03] grayscale pointer-events-none" />
-          <div className="absolute inset-0 bg-gradient-to-t from-background via-transparent to-transparent" />
-          
-          <div className="absolute -top-40 start-1/4 h-96 w-96 rounded-full bg-primary/10 blur-[120px] animate-pulse pointer-events-none" />
-          <div className="absolute -bottom-20 end-1/3 h-72 w-72 rounded-full bg-chart-3/15 blur-[100px] animate-pulse [animation-delay:1.5s] pointer-events-none" />
-          <div className="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-primary/30 to-transparent" />
-
-          <div className="container relative py-12 md:py-20 text-center animate-fade-in">
-            <div className="inline-flex h-20 w-20 items-center justify-center rounded-3xl bg-primary/10 ring-4 ring-primary/5 shadow-inner mb-8 transition-transform hover:scale-110 hover:rotate-3">
-              <UtensilsCrossed className="h-10 w-10 text-primary" />
-            </div>
-            <div className="space-y-6">
-              <h1 className="font-serif text-4xl font-black tracking-tight md:text-6xl lg:text-7xl text-balance leading-[1.05]">
-                {isAr ? (
-                  <>قاعدة <span className="text-primary italic relative">الوصفات<span className="absolute -bottom-2 inset-x-0 h-3 bg-primary/10 -rotate-2 -z-10" /></span> العالمية</>
-                ) : (
-                  <>Global <span className="text-primary italic relative">Recipe<span className="absolute -bottom-2 inset-x-0 h-4 bg-primary/10 -rotate-1 -z-10" /></span> Vault</>
+        {/* Compact Hero */}
+        <section className="border-b border-border/40 bg-gradient-to-b from-primary/5 to-background">
+          <div className="container py-8 md:py-12">
+            <div className="flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
+              <div className="space-y-3 max-w-2xl">
+                <div className="inline-flex items-center gap-2 rounded-full bg-primary/10 px-3 py-1 ring-1 ring-primary/20">
+                  <UtensilsCrossed className="h-3.5 w-3.5 text-primary" />
+                  <span className="text-[10px] font-bold uppercase tracking-widest text-primary">
+                    {isAr ? "قاعدة الوصفات" : "Recipe Vault"}
+                  </span>
+                </div>
+                <h1 className="font-serif text-3xl font-bold tracking-tight md:text-4xl">
+                  {isAr ? "الوصفات" : "Recipes"}
+                </h1>
+                <p className="text-muted-foreground text-sm md:text-base leading-relaxed">
+                  {isAr
+                    ? "اكتشف وصفات من طهاة محترفين حول العالم وشاركنا وصفاتك المميزة."
+                    : "Discover recipes from professional chefs worldwide and share your own culinary creations."}
+                </p>
+              </div>
+              <div className="flex items-center gap-3 flex-wrap">
+                {recipes.length > 0 && (
+                  <Badge variant="outline" className="gap-1.5 border-primary/20 bg-primary/5 text-primary px-3 py-1.5">
+                    <ChefHat className="h-3.5 w-3.5" />
+                    <span className="font-bold">{recipes.length}</span>
+                    <span className="text-[10px]">{isAr ? "وصفة" : "Recipes"}</span>
+                  </Badge>
                 )}
-              </h1>
-              <p className="max-w-2xl mx-auto text-lg text-muted-foreground font-medium md:text-xl leading-relaxed">
-                {isAr
-                  ? "اكتشف وصفات من طهاة محترفين حول العالم وشاركنا وصفاتك المميزة."
-                  : "Discover recipes from professional chefs worldwide and share your own culinary creations."}
-              </p>
-              
-              <div className="flex flex-wrap justify-center gap-3">
-                <Badge variant="outline" className="border-primary/20 bg-primary/5 text-primary px-5 py-2 text-xs font-black uppercase tracking-widest rounded-full backdrop-blur-sm">
-                  <ChefHat className="h-3.5 w-3.5 me-2" />
-                  {recipes.length} {isAr ? "وصفة" : "Recipes"}
-                </Badge>
-                <Badge variant="outline" className="border-chart-4/20 bg-chart-4/5 text-chart-4 px-5 py-2 text-xs font-black uppercase tracking-widest rounded-full backdrop-blur-sm">
-                  <Star className="h-3.5 w-3.5 me-2" />
-                  {cuisines.length} {isAr ? "مطبخ" : "Cuisines"}
-                </Badge>
+                {user && (
+                  <Button className="shadow-sm shadow-primary/15" asChild>
+                    <Link to="/recipes/create">
+                      <Plus className="me-1.5 h-4 w-4" />
+                      {isAr ? "إضافة وصفة" : "Add Recipe"}
+                    </Link>
+                  </Button>
+                )}
               </div>
             </div>
           </div>
-        </div>
+        </section>
 
-        <div className="container py-8 space-y-6">
-          {/* Filters */}
-          <Card>
-            <CardContent className="flex flex-wrap items-center gap-3 py-4">
-              <div className="relative flex-1 min-w-[200px]">
-                <Search className="absolute start-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+        <div className="container py-4 md:py-6 space-y-8">
+          {/* Sticky Filters Bar */}
+          <div className="sticky top-[64px] z-40 -mx-4 mb-8 border-y border-border/40 bg-background/80 px-4 py-4 backdrop-blur-md md:rounded-2xl md:border md:px-6">
+            <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
+              <div className="relative flex-1 sm:max-w-md">
+                <Search className="absolute start-4 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground/60" />
                 <Input
                   value={search}
                   onChange={e => setSearch(e.target.value)}
                   placeholder={isAr ? "ابحث عن وصفة..." : "Search recipes..."}
-                  className="ps-9"
+                  className="h-11 border-border/40 bg-muted/20 ps-11 transition-all focus:bg-background focus:ring-primary/20 rounded-xl"
                 />
               </div>
-              <Select value={cuisine} onValueChange={setCuisine}>
-                <SelectTrigger className="w-40"><SelectValue placeholder={isAr ? "المطبخ" : "Cuisine"} /></SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">{isAr ? "كل المطابخ" : "All Cuisines"}</SelectItem>
-                  {cuisines.map(c => <SelectItem key={c} value={c}>{c}</SelectItem>)}
-                </SelectContent>
-              </Select>
-              <Select value={difficulty} onValueChange={setDifficulty}>
-                <SelectTrigger className="w-36"><SelectValue /></SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">{isAr ? "كل المستويات" : "All Levels"}</SelectItem>
-                  <SelectItem value="easy">{isAr ? "سهل" : "Easy"}</SelectItem>
-                  <SelectItem value="medium">{isAr ? "متوسط" : "Medium"}</SelectItem>
-                  <SelectItem value="hard">{isAr ? "صعب" : "Hard"}</SelectItem>
-                </SelectContent>
-              </Select>
-              <Select value={category} onValueChange={setCategory}>
-                <SelectTrigger className="w-40"><SelectValue /></SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">{isAr ? "كل الأنواع" : "All Categories"}</SelectItem>
-                  {Object.entries(categoryLabels).map(([key, val]) => (
-                    <SelectItem key={key} value={key}>{isAr ? val.ar : val.en}</SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </CardContent>
-          </Card>
+              <div className="flex gap-2 flex-wrap">
+                <Select value={cuisine} onValueChange={setCuisine}>
+                  <SelectTrigger className="h-11 w-full border-border/40 bg-muted/20 rounded-xl sm:w-40 focus:ring-primary/20"><SelectValue placeholder={isAr ? "المطبخ" : "Cuisine"} /></SelectTrigger>
+                  <SelectContent className="rounded-xl border-border/40">
+                    <SelectItem value="all" className="rounded-lg">{isAr ? "كل المطابخ" : "All Cuisines"}</SelectItem>
+                    {cuisines.map(c => <SelectItem key={c} value={c} className="rounded-lg">{c}</SelectItem>)}
+                  </SelectContent>
+                </Select>
+                <Select value={difficulty} onValueChange={setDifficulty}>
+                  <SelectTrigger className="h-11 w-full border-border/40 bg-muted/20 rounded-xl sm:w-36 focus:ring-primary/20"><SelectValue /></SelectTrigger>
+                  <SelectContent className="rounded-xl border-border/40">
+                    <SelectItem value="all" className="rounded-lg">{isAr ? "كل المستويات" : "All Levels"}</SelectItem>
+                    <SelectItem value="easy" className="rounded-lg">{isAr ? "سهل" : "Easy"}</SelectItem>
+                    <SelectItem value="medium" className="rounded-lg">{isAr ? "متوسط" : "Medium"}</SelectItem>
+                    <SelectItem value="hard" className="rounded-lg">{isAr ? "صعب" : "Hard"}</SelectItem>
+                  </SelectContent>
+                </Select>
+                <Select value={category} onValueChange={setCategory}>
+                  <SelectTrigger className="h-11 w-full border-border/40 bg-muted/20 rounded-xl sm:w-40 focus:ring-primary/20"><SelectValue /></SelectTrigger>
+                  <SelectContent className="rounded-xl border-border/40">
+                    <SelectItem value="all" className="rounded-lg">{isAr ? "كل الأنواع" : "All Categories"}</SelectItem>
+                    {Object.entries(categoryLabels).map(([key, val]) => (
+                      <SelectItem key={key} value={key} className="rounded-lg">{isAr ? val.ar : val.en}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+          </div>
 
           {/* Grid */}
           {isLoading ? (
             <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
               {[1, 2, 3, 4, 5, 6].map(i => (
-                <Card key={i}>
-                  <CardContent className="p-0">
-                    <Skeleton className="aspect-video w-full" />
-                    <div className="p-4 space-y-2">
-                      <Skeleton className="h-5 w-3/4" />
-                      <Skeleton className="h-3 w-full" />
-                      <Skeleton className="h-3 w-2/3" />
-                    </div>
-                  </CardContent>
+                <Card key={i} className="overflow-hidden">
+                  <Skeleton className="aspect-video w-full" />
+                  <div className="p-4 space-y-2">
+                    <Skeleton className="h-5 w-3/4" />
+                    <Skeleton className="h-3 w-full" />
+                    <Skeleton className="h-3 w-2/3" />
+                  </div>
                 </Card>
               ))}
             </div>
           ) : recipes.length === 0 ? (
-            <Card className="border-dashed">
-              <CardContent className="flex flex-col items-center py-16 text-center">
-                <div className="mb-3 flex h-14 w-14 items-center justify-center rounded-2xl bg-muted">
-                  <UtensilsCrossed className="h-7 w-7 text-muted-foreground" />
-                </div>
-                <h3 className="font-semibold">{isAr ? "لا توجد وصفات" : "No recipes found"}</h3>
-                <p className="text-sm text-muted-foreground mt-1">
-                  {isAr ? "جرب تغيير معايير البحث" : "Try adjusting your search filters"}
-                </p>
-              </CardContent>
-            </Card>
+            <div className="flex flex-col items-center justify-center py-20 text-center">
+              <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-muted/60 ring-1 ring-border/50">
+                <UtensilsCrossed className="h-8 w-8 text-muted-foreground/40" />
+              </div>
+              <h3 className="mb-1 text-lg font-semibold">{isAr ? "لا توجد وصفات" : "No recipes found"}</h3>
+              <p className="max-w-sm text-sm text-muted-foreground">
+                {isAr ? "جرب تغيير معايير البحث" : "Try adjusting your search filters"}
+              </p>
+              {search && (
+                <Button variant="outline" size="sm" className="mt-4" onClick={() => setSearch("")}>
+                  {isAr ? "مسح البحث" : "Clear search"}
+                </Button>
+              )}
+            </div>
           ) : (
             <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
               {recipes.map(recipe => (
