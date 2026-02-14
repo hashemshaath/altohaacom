@@ -308,43 +308,58 @@ export function CompetitionSponsorsPanel({ competitionId, isOrganizer }: Competi
               })}
             </div>
           ) : (
-            <div className="relative overflow-hidden rounded-lg border bg-muted/20 py-3">
-              <div
-                ref={scrollRef}
-                className={`flex items-center gap-6 px-4 ${shouldScroll ? "" : "justify-center"}`}
-                style={shouldScroll ? { animation: `marquee ${activeSponsors.length * 5}s linear infinite` } : {}}
-              >
-                {[...activeSponsors, ...(shouldScroll ? activeSponsors : [])].map((sponsor: any, idx: number) => {
-                  const tier = (sponsor.tier || "bronze") as keyof typeof TIER_CONFIG;
-                  const config = TIER_CONFIG[tier] || TIER_CONFIG.bronze;
-                  const Icon = config.icon;
-                  const companyName = isAr && sponsor.companies?.name_ar ? sponsor.companies.name_ar : sponsor.companies?.name;
-                  return (
-                    <div key={`${sponsor.id}-${idx}`} className="flex items-center gap-3 shrink-0">
-                      {sponsor.companies?.logo_url ? (
-                        <img src={sponsor.companies.logo_url} alt={companyName} className="h-10 w-10 rounded-lg object-contain" />
-                      ) : (
-                        <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-muted">
-                          <Building className="h-5 w-5 text-muted-foreground" />
-                        </div>
-                      )}
-                      <div className="min-w-0">
-                        <p className="text-sm font-medium whitespace-nowrap">{companyName}</p>
-                        <div className="flex items-center gap-1">
-                          <Icon className={`h-3 w-3 ${config.color}`} />
-                          <span className="text-[10px] text-muted-foreground">{isAr ? config.labelAr : config.label}</span>
-                        </div>
-                      </div>
+            /* Public tiered display */
+            <div className="space-y-6">
+              {(["platinum", "gold", "silver", "bronze", "custom"] as const).map(tierKey => {
+                const tierSponsors = activeSponsors.filter((s: any) => (s.tier || "bronze") === tierKey);
+                if (tierSponsors.length === 0) return null;
+                const config = TIER_CONFIG[tierKey];
+                const Icon = config.icon;
+                return (
+                  <div key={tierKey}>
+                    <div className="mb-3 flex items-center gap-2">
+                      <Icon className={`h-4 w-4 ${config.color}`} />
+                      <h4 className="text-sm font-bold uppercase tracking-wider">
+                        {isAr ? config.labelAr : config.label} {isAr ? "الرعاة" : "Sponsors"}
+                      </h4>
                     </div>
-                  );
-                })}
-              </div>
-              <style>{`
-                @keyframes marquee {
-                  0% { transform: translateX(0); }
-                  100% { transform: translateX(-50%); }
-                }
-              `}</style>
+                    <div className={`grid gap-3 ${tierKey === "platinum" ? "sm:grid-cols-1" : "sm:grid-cols-2 lg:grid-cols-3"}`}>
+                      {tierSponsors.map((sponsor: any) => {
+                        const companyName = isAr && sponsor.companies?.name_ar ? sponsor.companies.name_ar : sponsor.companies?.name;
+                        const isPlatinum = tierKey === "platinum";
+                        return (
+                          <a
+                            key={sponsor.id}
+                            href={`/companies/${sponsor.company_id}`}
+                            className={`group flex items-center gap-4 rounded-xl border p-4 transition-all duration-300 hover:shadow-lg hover:-translate-y-0.5 ${config.bg} ${isPlatinum ? "border-chart-4/30" : "border-border/50"}`}
+                          >
+                            {sponsor.companies?.logo_url || sponsor.logo_url ? (
+                              <img
+                                src={sponsor.logo_url || sponsor.companies?.logo_url}
+                                alt={companyName}
+                                className={`rounded-xl object-contain transition-transform group-hover:scale-110 ${isPlatinum ? "h-16 w-16" : "h-12 w-12"}`}
+                              />
+                            ) : (
+                              <div className={`flex items-center justify-center rounded-xl bg-muted ${isPlatinum ? "h-16 w-16" : "h-12 w-12"}`}>
+                                <Building className={`text-muted-foreground ${isPlatinum ? "h-8 w-8" : "h-5 w-5"}`} />
+                              </div>
+                            )}
+                            <div className="min-w-0 flex-1">
+                              <p className={`truncate font-semibold group-hover:text-primary transition-colors ${isPlatinum ? "text-base" : "text-sm"}`}>
+                                {companyName}
+                              </p>
+                              <Badge variant="outline" className={`mt-1 text-[9px] uppercase tracking-wider ${config.color}`}>
+                                <Icon className="me-1 h-2.5 w-2.5" />
+                                {isAr ? config.labelAr : config.label}
+                              </Badge>
+                            </div>
+                          </a>
+                        );
+                      })}
+                    </div>
+                  </div>
+                );
+              })}
             </div>
           )
         ) : (
