@@ -7,6 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { useToast } from "@/hooks/use-toast";
 import { useSendInvitation } from "@/hooks/useReferral";
+import { useAwardPoints } from "@/hooks/useAwardPoints";
 import { QRCodeSVG } from "qrcode.react";
 import {
   Copy, Mail, MessageCircle, Share2, Send, Loader2, QrCode, Smartphone, Link2
@@ -24,6 +25,7 @@ export function ReferralShareSheet({ referralLink, referralCode, referralCodeId,
   const isAr = language === "ar";
   const { toast } = useToast();
   const sendInvitation = useSendInvitation();
+  const awardPoints = useAwardPoints();
   const [inviteEmail, setInviteEmail] = useState("");
   const [invitePhone, setInvitePhone] = useState("");
   const [showQR, setShowQR] = useState(false);
@@ -38,36 +40,47 @@ export function ReferralShareSheet({ referralLink, referralCode, referralCodeId,
       ? `انضم إلى منصة ألطهاة! سجل الآن واحصل على نقاط إضافية: ${referralLink}`
       : `Join Altohaa! Sign up now and earn bonus points: ${referralLink}`;
 
+  const trackShare = (channel: string) => {
+    awardPoints.mutate({ actionType: "social_share", silent: true });
+    awardPoints.mutate({ actionType: "invite_sent", silent: true });
+  };
+
   const shareWhatsApp = () => {
     window.open(`https://wa.me/?text=${encodeURIComponent(getMessage())}`, "_blank");
     sendInvitation.mutate({ channel: "whatsapp", referralCodeId });
+    trackShare("whatsapp");
   };
 
   const shareTwitter = () => {
     const text = isAr ? "انضم إلى ألطهاة - المنصة الأولى للطهاة المحترفين" : "Join Altohaa - The #1 platform for professional chefs";
     window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(referralLink)}`, "_blank");
     sendInvitation.mutate({ channel: "twitter", referralCodeId });
+    trackShare("twitter");
   };
 
   const shareFacebook = () => {
     window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(referralLink)}`, "_blank");
     sendInvitation.mutate({ channel: "facebook", referralCodeId });
+    trackShare("facebook");
   };
 
   const shareLinkedIn = () => {
     window.open(`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(referralLink)}`, "_blank");
     sendInvitation.mutate({ channel: "linkedin", referralCodeId });
+    trackShare("linkedin");
   };
 
   const shareSMS = () => {
     const body = encodeURIComponent(getMessage());
     window.open(`sms:?body=${body}`, "_self");
     sendInvitation.mutate({ channel: "sms", referralCodeId });
+    trackShare("sms");
   };
 
   const shareTelegram = () => {
     window.open(`https://t.me/share/url?url=${encodeURIComponent(referralLink)}&text=${encodeURIComponent(getMessage())}`, "_blank");
     sendInvitation.mutate({ channel: "telegram", referralCodeId });
+    trackShare("telegram");
   };
 
   const shareNative = async () => {

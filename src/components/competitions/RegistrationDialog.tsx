@@ -4,6 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/hooks/use-toast";
+import { useAwardPoints } from "@/hooks/useAwardPoints";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -74,6 +75,7 @@ export function RegistrationForm({
   const { user } = useAuth();
   const { toast } = useToast();
   const queryClient = useQueryClient();
+  const awardPoints = useAwardPoints();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const isAr = language === "ar";
 
@@ -257,6 +259,8 @@ export function RegistrationForm({
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["my-registration", competitionId] });
+      // Award points for competition registration
+      awardPoints.mutate({ actionType: "competition_register", referenceType: "competition", referenceId: competitionId });
       toast({
         title: isAr ? "تم تقديم التسجيل!" : "Registration submitted!",
         description: isAr ? "تسجيلك في انتظار الموافقة." : "Your registration is pending approval.",
