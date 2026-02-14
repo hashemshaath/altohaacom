@@ -1,157 +1,183 @@
+import { useState } from "react";
 import { useCompanyAccess } from "@/hooks/useCompanyAccess";
 import { useLanguage } from "@/i18n/LanguageContext";
-import { useQuery } from "@tanstack/react-query";
+import { useAuth } from "@/contexts/AuthContext";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Skeleton } from "@/components/ui/skeleton";
+import { Card, CardContent } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
-import {
-  ShoppingCart,
-  Clock,
-  CheckCircle2,
-  XCircle,
-  Package,
-} from "lucide-react";
-import { format } from "date-fns";
+  Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
+} from "@/components/ui/select";
+import { useToast } from "@/hooks/use-toast";
+import { ShoppingCart, Plus, Search, Filter } from "lucide-react";
+import { CompanyOrder, OrderFormData, defaultOrderForm, ORDER_STATUSES, ORDER_CATEGORIES } from "@/components/company/orders/orderTypes";
+import { OrderStats } from "@/components/company/orders/OrderStats";
+import { OrdersTable } from "@/components/company/orders/OrdersTable";
+import { OrderFormDialog } from "@/components/company/orders/OrderFormDialog";
+import { OrderDetailDialog } from "@/components/company/orders/OrderDetailDialog";
 
 export default function CompanyOrders() {
   const { language } = useLanguage();
   const { companyId } = useCompanyAccess();
+  const { user } = useAuth();
+  const { toast } = useToast();
+  const queryClient = useQueryClient();
+  const isAr = language === "ar";
 
-  const { data: orders, isLoading } = useQuery({
-    queryKey: ["companyOrders", companyId],
+  const [searchQuery, setSearchQuery] = useState("");
+  const [statusFilter, setStatusFilter] = useState("all");
+  const [createOpen, setCreateOpen] = useState(false);
+  const [form, setForm] = useState<OrderFormData>(defaultOrderForm);
+  const [selectedOrder, setSelectedOrder] = useState<CompanyOrder | null>(null);
+
+  const { data: orders = [], isLoading } = useQuery({
+    queryKey: ["companyOrders", companyId, searchQuery, statusFilter],
     queryFn: async () => {
       if (!companyId) return [];
-      const { data, error } = await supabase
+      let query = supabase
         .from("company_orders")
         .select("*")
         .eq("company_id", companyId)
         .order("created_at", { ascending: false });
+
+      if (searchQuery) {
+        query = query.or(`title.ilike.%${searchQuery}%,order_number.ilike.%${searchQuery}%`);
+      }
+      if (statusFilter !== "all") {
+        query = query.eq("status", statusFilter as any);
+      }
+
+      const { data, error } = await query;
       if (error) throw error;
-      return data || [];
+      return (data || []) as unknown as CompanyOrder[];
     },
     enabled: !!companyId,
   });
 
-  const pending = orders?.filter(o => o.status === "pending").length || 0;
-  const completed = orders?.filter(o => o.status === "completed").length || 0;
-  const rejected = orders?.filter(o => o.status === "rejected").length || 0;
+  const createMutation = useMutation({
+    mutationFn: async (data: OrderFormData) => {
+      if (!companyId) throw new Error("No company");
+      const subtotal = data.items.reduce((s, i) => s + i.quantity * i.unit_price, 0);
+      const { error } = await supabase.from("company_orders").insert([{
+        company_id: companyId,
+        title: data.title,
+        title_ar: data.title_ar || null,
+        description: data.description || null,
+        description_ar: data.description_ar || null,
+        direction: data.direction as any,
+        category: data.category as any,
+        currency: data.currency,
+        delivery_date: data.delivery_date || null,
+        due_date: data.due_date || null,
+        notes: data.notes || null,
+        items: data.items as any,
+        subtotal,
+        total_amount: subtotal,
+        status: "draft" as any,
+        created_by: user?.id || null,
+      }]);
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["companyOrders"] });
+      setCreateOpen(false);
+      setForm(defaultOrderForm);
+      toast({ title: isAr ? "تم إنشاء الطلب" : "Order created" });
+    },
+    onError: () => {
+      toast({ title: isAr ? "حدث خطأ" : "Error creating order", variant: "destructive" });
+    },
+  });
 
-  const getStatusBadge = (status: string | null) => {
-    switch (status) {
-      case "completed":
-        return <Badge className="bg-chart-5/10 text-chart-5 border-chart-5/20">{language === "ar" ? "مكتمل" : "Completed"}</Badge>;
-      case "approved":
-      case "in_progress":
-        return <Badge className="bg-chart-1/10 text-chart-1 border-chart-1/20">{status === "approved" ? (language === "ar" ? "معتمد" : "Approved") : (language === "ar" ? "قيد التنفيذ" : "In Progress")}</Badge>;
-      case "rejected":
-        return <Badge variant="destructive">{language === "ar" ? "مرفوض" : "Rejected"}</Badge>;
-      case "draft":
-        return <Badge variant="outline">{language === "ar" ? "مسودة" : "Draft"}</Badge>;
-      default:
-        return <Badge variant="secondary">{language === "ar" ? "قيد الانتظار" : "Pending"}</Badge>;
-    }
-  };
+  const submitMutation = useMutation({
+    mutationFn: async (orderId: string) => {
+      const { error } = await supabase
+        .from("company_orders")
+        .update({ status: "pending" })
+        .eq("id", orderId);
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["companyOrders"] });
+      setSelectedOrder(null);
+      toast({ title: isAr ? "تم إرسال الطلب للمراجعة" : "Order submitted for review" });
+    },
+  });
+
+  const pending = orders.filter(o => o.status === "pending").length;
+  const completed = orders.filter(o => o.status === "completed").length;
+  const rejected = orders.filter(o => o.status === "rejected").length;
 
   return (
     <div className="space-y-6">
-      <div>
-        <h1 className="text-2xl font-bold flex items-center gap-2">
-          <ShoppingCart className="h-6 w-6 text-primary" />
-          {language === "ar" ? "الطلبيات" : "Orders"}
-        </h1>
-        <p className="mt-1 text-muted-foreground">
-          {language === "ar" ? "عرض وإدارة جميع الطلبيات" : "View and manage all orders"}
-        </p>
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-2xl font-bold flex items-center gap-2">
+            <ShoppingCart className="h-6 w-6 text-primary" />
+            {isAr ? "الطلبيات" : "Orders"}
+          </h1>
+          <p className="mt-1 text-muted-foreground">
+            {isAr ? "عرض وإدارة جميع الطلبيات" : "View and manage all orders"}
+          </p>
+        </div>
+        <Button onClick={() => { setForm(defaultOrderForm); setCreateOpen(true); }}>
+          <Plus className="me-2 h-4 w-4" />{isAr ? "طلب جديد" : "New Order"}
+        </Button>
       </div>
 
-      {/* Stats */}
-      <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
-        <MiniStat icon={Package} label={language === "ar" ? "الإجمالي" : "Total"} value={orders?.length || 0} accent="border-s-primary" isLoading={isLoading} />
-        <MiniStat icon={Clock} label={language === "ar" ? "قيد الانتظار" : "Pending"} value={pending} accent="border-s-amber-500" isLoading={isLoading} />
-        <MiniStat icon={CheckCircle2} label={language === "ar" ? "مكتمل" : "Completed"} value={completed} accent="border-s-emerald-500" isLoading={isLoading} />
-        <MiniStat icon={XCircle} label={language === "ar" ? "مرفوض" : "Rejected"} value={rejected} accent="border-s-destructive" isLoading={isLoading} />
-      </div>
+      <OrderStats total={orders.length} pending={pending} completed={completed} rejected={rejected} isLoading={isLoading} language={language} />
 
-      {/* Table */}
+      {/* Filters */}
       <Card>
-        <CardHeader>
-          <CardTitle>{language === "ar" ? "قائمة الطلبيات" : "Orders List"}</CardTitle>
-        </CardHeader>
-        <CardContent>
-          {isLoading ? (
-            <div className="space-y-3">
-              {[...Array(4)].map((_, i) => <Skeleton key={i} className="h-12" />)}
+        <CardContent className="pt-4">
+          <div className="flex flex-wrap items-center gap-4">
+            <div className="relative flex-1 min-w-[200px]">
+              <Search className="absolute start-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+              <Input
+                placeholder={isAr ? "بحث بالعنوان أو رقم الطلب..." : "Search by title or order number..."}
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="ps-10"
+              />
             </div>
-          ) : orders && orders.length > 0 ? (
-            <div className="overflow-x-auto">
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>{language === "ar" ? "رقم الطلب" : "Order #"}</TableHead>
-                    <TableHead>{language === "ar" ? "العنوان" : "Title"}</TableHead>
-                    <TableHead>{language === "ar" ? "النوع" : "Direction"}</TableHead>
-                    <TableHead>{language === "ar" ? "الحالة" : "Status"}</TableHead>
-                    <TableHead>{language === "ar" ? "المبلغ" : "Total"}</TableHead>
-                    <TableHead>{language === "ar" ? "التاريخ" : "Date"}</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {orders.map((order) => (
-                    <TableRow key={order.id} className="hover:bg-muted/50">
-                      <TableCell className="font-mono text-sm font-medium">{order.order_number}</TableCell>
-                      <TableCell className="font-medium">{order.title}</TableCell>
-                      <TableCell>
-                        <Badge variant="outline" className="capitalize">{order.direction}</Badge>
-                      </TableCell>
-                      <TableCell>{getStatusBadge(order.status)}</TableCell>
-                      <TableCell className="font-medium">
-                        SAR {order.total_amount?.toLocaleString() || "0"}
-                      </TableCell>
-                      <TableCell className="text-muted-foreground">
-                        {order.created_at ? format(new Date(order.created_at), "MMM dd, yyyy") : "N/A"}
-                      </TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </div>
-          ) : (
-            <div className="flex flex-col items-center justify-center py-12">
-              <div className="flex h-14 w-14 items-center justify-center rounded-full bg-muted mb-3">
-                <ShoppingCart className="h-6 w-6 text-muted-foreground" />
-              </div>
-              <p className="text-muted-foreground">
-                {language === "ar" ? "لا توجد طلبيات" : "No orders found"}
-              </p>
-            </div>
-          )}
+            <Select value={statusFilter} onValueChange={setStatusFilter}>
+              <SelectTrigger className="w-[180px]">
+                <Filter className="me-2 h-4 w-4" />
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">{isAr ? "كل الحالات" : "All Statuses"}</SelectItem>
+                {ORDER_STATUSES.map((s) => (
+                  <SelectItem key={s.value} value={s.value}>{isAr ? s.ar : s.en}</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
         </CardContent>
       </Card>
-    </div>
-  );
-}
 
-function MiniStat({ icon: Icon, label, value, accent, isLoading }: { icon: any; label: string; value: number; accent: string; isLoading: boolean }) {
-  return (
-    <Card className={`border-s-[3px] ${accent}`}>
-      <CardContent className="flex items-center gap-3 p-4">
-        <div className="rounded-lg bg-muted p-2">
-          <Icon className="h-4 w-4 text-muted-foreground" />
-        </div>
-        <div>
-          <p className="text-xs text-muted-foreground">{label}</p>
-          {isLoading ? <Skeleton className="h-6 w-8 mt-0.5" /> : <p className="text-xl font-bold">{value}</p>}
-        </div>
-      </CardContent>
-    </Card>
+      <OrdersTable orders={orders} isLoading={isLoading} language={language} onView={setSelectedOrder} />
+
+      <OrderFormDialog
+        open={createOpen}
+        onOpenChange={setCreateOpen}
+        form={form}
+        setForm={setForm}
+        onSave={() => createMutation.mutate(form)}
+        isPending={createMutation.isPending}
+        language={language}
+      />
+
+      <OrderDetailDialog
+        open={!!selectedOrder}
+        onOpenChange={(v) => { if (!v) setSelectedOrder(null); }}
+        order={selectedOrder}
+        language={language}
+        onSubmit={(id) => submitMutation.mutate(id)}
+        isSubmitting={submitMutation.isPending}
+      />
+    </div>
   );
 }
