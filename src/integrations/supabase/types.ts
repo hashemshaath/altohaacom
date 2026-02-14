@@ -2792,6 +2792,50 @@ export type Database = {
           },
         ]
       }
+      company_support_messages: {
+        Row: {
+          company_id: string
+          created_at: string
+          id: string
+          is_read: boolean | null
+          message: string
+          read_at: string | null
+          sender_id: string
+          sender_type: string
+          subject: string | null
+        }
+        Insert: {
+          company_id: string
+          created_at?: string
+          id?: string
+          is_read?: boolean | null
+          message: string
+          read_at?: string | null
+          sender_id: string
+          sender_type?: string
+          subject?: string | null
+        }
+        Update: {
+          company_id?: string
+          created_at?: string
+          id?: string
+          is_read?: boolean | null
+          message?: string
+          read_at?: string | null
+          sender_id?: string
+          sender_type?: string
+          subject?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "company_support_messages_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       company_transactions: {
         Row: {
           amount: number

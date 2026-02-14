@@ -31,6 +31,7 @@ import {
   MoreHorizontal,
   Megaphone,
   Bell,
+  Headphones,
 } from "lucide-react";
 
 export default function CompanyPortalLayout() {
@@ -73,6 +74,7 @@ export default function CompanyPortalLayout() {
     { to: "/company/drivers", icon: Truck, label: language === "ar" ? "السائقون" : "Drivers", roles: ["logistics", "supplier"], page: "drivers" },
     { to: "/company/working-hours", icon: Clock, label: language === "ar" ? "ساعات العمل" : "Hours", page: "working-hours" },
     { to: "/company/advertising", icon: Megaphone, label: language === "ar" ? "الإعلانات" : "Advertising", roles: ["sponsor", "partner", "vendor", "supplier"], page: "advertising" },
+    { to: "/company/support", icon: Headphones, label: language === "ar" ? "الدعم" : "Support", page: "communications" },
     { to: "/company/settings", icon: Settings, label: language === "ar" ? "الإعدادات" : "Settings", page: "settings" },
   ];
 
