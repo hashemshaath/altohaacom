@@ -5,6 +5,7 @@ import { UserCareerTimeline } from "@/components/admin/UserCareerTimeline";
 import { UserBadgesDisplay } from "@/components/badges/UserBadgesDisplay";
 import { IdentityCard } from "@/components/profile/IdentityCard";
 import { FileText, Globe } from "lucide-react";
+import { StaggeredList } from "@/components/ui/staggered-list";
 
 interface ProfileOverviewTabProps {
   profile: any;
@@ -36,7 +37,7 @@ export function ProfileOverviewTab({ profile, userId }: ProfileOverviewTabProps)
   ].filter((l) => l.value);
 
   return (
-    <div className="space-y-8" dir={isAr ? "rtl" : "ltr"}>
+    <StaggeredList className="space-y-8" stagger={80}>
       {/* Bio */}
       {(profile?.bio || profile?.bio_ar) && (
         <section>
@@ -86,6 +87,6 @@ export function ProfileOverviewTab({ profile, userId }: ProfileOverviewTabProps)
 
       {/* Identity Card */}
       <IdentityCard profile={profile} userId={userId} />
-    </div>
+    </StaggeredList>
   );
 }
