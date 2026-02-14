@@ -1049,6 +1049,42 @@ export type Database = {
         }
         Relationships: []
       }
+      automation_runs: {
+        Row: {
+          action: string
+          completed_at: string | null
+          created_at: string
+          error_message: string | null
+          id: string
+          results: Json | null
+          started_at: string
+          status: string
+          triggered_by: string | null
+        }
+        Insert: {
+          action: string
+          completed_at?: string | null
+          created_at?: string
+          error_message?: string | null
+          id?: string
+          results?: Json | null
+          started_at?: string
+          status?: string
+          triggered_by?: string | null
+        }
+        Update: {
+          action?: string
+          completed_at?: string | null
+          created_at?: string
+          error_message?: string | null
+          id?: string
+          results?: Json | null
+          started_at?: string
+          status?: string
+          triggered_by?: string | null
+        }
+        Relationships: []
+      }
       bonus_campaigns: {
         Row: {
           badge_text: string | null
