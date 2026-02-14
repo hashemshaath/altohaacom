@@ -16,6 +16,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "@/hooks/use-toast";
+import { toEnglishDigits } from "@/lib/formatNumber";
 import {
   ArrowLeft, User, Phone, Mail, MapPin, Globe, Calendar, Clock,
   ShoppingCart, DollarSign, Heart, Star, Wallet, Gift, Users,
@@ -307,7 +308,7 @@ export default function CRMCustomerDetail() {
             <div className="space-y-4">
               <div className="text-center">
                 <p className="text-sm text-muted-foreground">{isAr ? "الرصيد الحالي" : "Current Balance"}</p>
-                <p className="text-2xl font-bold">{(profile.wallet_balance || 0).toFixed(2)} SAR</p>
+                <p className="text-2xl font-bold">{toEnglishDigits((profile.wallet_balance || 0).toFixed(2))} SAR</p>
               </div>
               <div className="flex gap-2">
                 <Button

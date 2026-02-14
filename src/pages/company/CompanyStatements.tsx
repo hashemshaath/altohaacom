@@ -8,6 +8,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Separator } from "@/components/ui/separator";
+import { toEnglishDigits } from "@/lib/formatNumber";
 import {
   Select,
   SelectContent,
@@ -149,7 +150,7 @@ export default function CompanyStatements() {
               </div>
               <div>
                 <p className="text-xs text-muted-foreground">{isAr ? "إجمالي الإيرادات" : "Total Credits"}</p>
-                <p className="text-2xl font-bold">{currency} {totalCredits.toLocaleString()}</p>
+                <p className="text-2xl font-bold">{currency} {toEnglishDigits(totalCredits.toLocaleString())}</p>
               </div>
             </CardContent>
           </Card>
@@ -160,7 +161,7 @@ export default function CompanyStatements() {
               </div>
               <div>
                 <p className="text-xs text-muted-foreground">{isAr ? "إجمالي المصروفات" : "Total Debits"}</p>
-                <p className="text-2xl font-bold">{currency} {totalDebits.toLocaleString()}</p>
+                <p className="text-2xl font-bold">{currency} {toEnglishDigits(totalDebits.toLocaleString())}</p>
               </div>
             </CardContent>
           </Card>
@@ -172,7 +173,7 @@ export default function CompanyStatements() {
               <div>
                 <p className="text-xs text-muted-foreground">{isAr ? "صافي الرصيد" : "Net Balance"}</p>
                 <p className={`text-2xl font-bold ${netBalance >= 0 ? "text-chart-5" : "text-destructive"}`}>
-                  {currency} {netBalance.toLocaleString()}
+                  {currency} {toEnglishDigits(netBalance.toLocaleString())}
                 </p>
               </div>
             </CardContent>
@@ -184,7 +185,7 @@ export default function CompanyStatements() {
               </div>
               <div>
                 <p className="text-xs text-muted-foreground">{isAr ? "الرصيد الحالي" : "Current Balance"}</p>
-                <p className="text-2xl font-bold">{latestBalance !== null ? `${currency} ${latestBalance.toLocaleString()}` : "—"}</p>
+                <p className="text-2xl font-bold">{latestBalance !== null ? `${currency} ${toEnglishDigits(latestBalance.toLocaleString())}` : "—"}</p>
               </div>
             </CardContent>
           </Card>
@@ -198,7 +199,7 @@ export default function CompanyStatements() {
             {isAr ? "تفاصيل الكشف" : "Statement Details"}
           </CardTitle>
           <p className="text-sm text-muted-foreground">
-            {format(startDate, "MMM dd, yyyy")} – {format(endDate, "MMM dd, yyyy")}
+            {toEnglishDigits(format(startDate, "MMM dd, yyyy"))} – {toEnglishDigits(format(endDate, "MMM dd, yyyy"))}
           </p>
         </CardHeader>
         <CardContent className="p-0">
@@ -223,7 +224,7 @@ export default function CompanyStatements() {
                     return (
                       <TableRow key={t.id}>
                         <TableCell className="text-sm text-muted-foreground">
-                          {t.transaction_date ? format(new Date(t.transaction_date), "MMM dd, yyyy") : "—"}
+                          {t.transaction_date ? toEnglishDigits(format(new Date(t.transaction_date), "MMM dd, yyyy")) : "—"}
                         </TableCell>
                         <TableCell className="font-mono text-sm">{t.transaction_number}</TableCell>
                         <TableCell>{isAr ? t.description_ar || t.description : t.description || "—"}</TableCell>
@@ -233,10 +234,10 @@ export default function CompanyStatements() {
                           </Badge>
                         </TableCell>
                         <TableCell className={`text-right font-medium ${isCredit ? "text-chart-5" : "text-destructive"}`}>
-                          {isCredit ? "+" : "-"}{t.currency} {Math.abs(t.amount).toLocaleString()}
+                          {isCredit ? "+" : "-"}{t.currency} {toEnglishDigits(Math.abs(t.amount).toLocaleString())}
                         </TableCell>
                         <TableCell className="text-right font-medium">
-                          {t.balance_after !== null ? `${t.currency} ${t.balance_after?.toLocaleString()}` : "—"}
+                          {t.balance_after !== null ? `${t.currency} ${toEnglishDigits(t.balance_after?.toLocaleString())}` : "—"}
                         </TableCell>
                       </TableRow>
                     );

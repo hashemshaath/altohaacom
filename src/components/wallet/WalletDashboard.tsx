@@ -11,6 +11,7 @@ import { StaggeredList } from "@/components/ui/staggered-list";
 import { formatCurrency } from "@/lib/currencyFormatter";
 import { format } from "date-fns";
 import { ar } from "date-fns/locale";
+import { toEnglishDigits } from "@/lib/formatNumber";
 
 interface WalletDashboardProps {
   userId: string;
@@ -97,7 +98,7 @@ export function WalletDashboard({ userId }: WalletDashboardProps) {
             </div>
             <div>
               <p className="text-xs text-muted-foreground">{isAr ? "النقاط" : "Points"}</p>
-              <p className="text-2xl font-bold">{wallet.points_balance?.toLocaleString() || 0}</p>
+              <p className="text-2xl font-bold">{toEnglishDigits(wallet.points_balance?.toLocaleString() || 0)}</p>
             </div>
           </CardContent>
         </Card>
@@ -189,7 +190,7 @@ export function WalletDashboard({ userId }: WalletDashboardProps) {
                         </TableCell>
                         <TableCell className="text-right text-sm">{formatCurrency(Number(tx.balance_after), language as "en" | "ar")}</TableCell>
                         <TableCell className="text-xs text-muted-foreground">
-                          {format(new Date(tx.created_at), "dd/MM/yyyy", { locale: isAr ? ar : undefined })}
+                          {toEnglishDigits(format(new Date(tx.created_at), "dd/MM/yyyy", { locale: isAr ? ar : undefined }))}
                         </TableCell>
                       </TableRow>
                     );

@@ -16,6 +16,7 @@ import { useCart } from "@/hooks/useCart";
 import { CartSheet } from "@/components/shop/CartSheet";
 import { toast } from "@/hooks/use-toast";
 import { useState } from "react";
+import { toEnglishDigits } from "@/lib/formatNumber";
 
 export default function ShopProduct() {
   const { id } = useParams<{ id: string }>();
@@ -182,7 +183,7 @@ export default function ShopProduct() {
             </div>
 
             <p className="text-3xl font-bold text-primary">
-              SAR {Number(product.price).toFixed(2)}
+              SAR {toEnglishDigits(Number(product.price).toFixed(2))}
             </p>
 
             {description && (

@@ -8,6 +8,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Separator } from "@/components/ui/separator";
 import { useToast } from "@/hooks/use-toast";
+import { toEnglishDigits } from "@/lib/formatNumber";
 import { Crown, Star, Medal, Award, Package, Sparkles, Calendar, Loader2 } from "lucide-react";
 import { format } from "date-fns";
 import { formatCurrency } from "@/lib/currencyFormatter";
@@ -139,7 +140,7 @@ export function CompanySponsorshipPanelEnhanced({ companyId }: Props) {
         </Card>
         <Card>
           <CardContent className="pt-4 text-center">
-            <p className="text-2xl font-bold text-primary">{totalSpent.toLocaleString()}</p>
+            <p className="text-2xl font-bold text-primary">{toEnglishDigits(totalSpent.toLocaleString())}</p>
             <p className="text-sm text-muted-foreground">{isAr ? "إجمالي الإنفاق" : "Total Spent"}</p>
           </CardContent>
         </Card>

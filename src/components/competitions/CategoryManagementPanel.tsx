@@ -12,6 +12,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Separator } from "@/components/ui/separator";
 import { Progress } from "@/components/ui/progress";
 import { useToast } from "@/hooks/use-toast";
+import { toEnglishDigits } from "@/lib/formatNumber";
 import {
   Plus, Trash2, Pencil, Users, Image, Filter,
   Eye, ArrowLeft, Trophy, Pause, Play, FileText,
@@ -321,7 +322,7 @@ export function CategoryManagementPanel({ competitionId, isOrganizer, competitio
                             <span className="text-sm font-bold text-muted-foreground w-6">#{idx + 1}</span>
                             <p className="text-sm font-medium">{reg.profiles?.full_name || "—"}</p>
                           </div>
-                          <span className="text-sm font-semibold">{totalScore > 0 ? totalScore.toFixed(1) : "—"}</span>
+                          <span className="text-sm font-semibold">{totalScore > 0 ? toEnglishDigits(totalScore.toFixed(1)) : "—"}</span>
                         </div>
                       );
                     })}

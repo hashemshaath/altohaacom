@@ -11,6 +11,7 @@ import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
 import { Star, User, Trash2 } from "lucide-react";
 import { format } from "date-fns";
+import { toEnglishDigits } from "@/lib/formatNumber";
 
 interface Props {
   masterclassId: string;
@@ -42,7 +43,7 @@ export function MasterclassReviews({ masterclassId, hasCompleted }: Props) {
 
   const myReview = reviews.find((r: any) => r.user_id === user?.id);
   const avgRating = reviews.length > 0
-    ? (reviews.reduce((sum: number, r: any) => sum + r.rating, 0) / reviews.length).toFixed(1)
+    ? toEnglishDigits((reviews.reduce((sum: number, r: any) => sum + r.rating, 0) / reviews.length).toFixed(1))
     : null;
 
   const submitReview = useMutation({
