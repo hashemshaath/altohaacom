@@ -7549,6 +7549,57 @@ export type Database = {
         }
         Relationships: []
       }
+      membership_cancellation_requests: {
+        Row: {
+          admin_notes: string | null
+          created_at: string
+          current_tier: string
+          feedback: string | null
+          id: string
+          reason: string | null
+          reason_ar: string | null
+          retention_offer: string | null
+          retention_offer_ar: string | null
+          reviewed_at: string | null
+          reviewed_by: string | null
+          status: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          admin_notes?: string | null
+          created_at?: string
+          current_tier: string
+          feedback?: string | null
+          id?: string
+          reason?: string | null
+          reason_ar?: string | null
+          retention_offer?: string | null
+          retention_offer_ar?: string | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          status?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          admin_notes?: string | null
+          created_at?: string
+          current_tier?: string
+          feedback?: string | null
+          id?: string
+          reason?: string | null
+          reason_ar?: string | null
+          retention_offer?: string | null
+          retention_offer_ar?: string | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          status?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       membership_cards: {
         Row: {
           card_orientation: string
