@@ -87,14 +87,21 @@ export function ChefsTab() {
       toast({ title: isAr ? "يرجى تسجيل الدخول" : "Please sign in to follow chefs" });
       return;
     }
-    if (isFollowing) {
-      await supabase.from("user_follows").delete().eq("follower_id", user.id).eq("following_id", targetId);
-    } else {
-      await supabase.from("user_follows").insert({ follower_id: user.id, following_id: targetId });
+    try {
+      if (isFollowing) {
+        const { error } = await supabase.from("user_follows").delete().eq("follower_id", user.id).eq("following_id", targetId);
+        if (error) throw error;
+      } else {
+        const { error } = await supabase.from("user_follows").insert({ follower_id: user.id, following_id: targetId });
+        if (error) throw error;
+      }
+      setChefs((prev) =>
+        prev.map((c) => (c.user_id === targetId ? { ...c, is_following: !isFollowing } : c))
+      );
+    } catch (err: any) {
+      console.error("Follow error:", err);
+      toast({ title: isAr ? "حدث خطأ" : "Follow action failed", variant: "destructive" });
     }
-    setChefs((prev) =>
-      prev.map((c) => (c.user_id === targetId ? { ...c, is_following: !isFollowing } : c))
-    );
   };
 
   const filteredChefs = chefs.filter((c) => {
