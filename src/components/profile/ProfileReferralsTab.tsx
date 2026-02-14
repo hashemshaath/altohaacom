@@ -59,24 +59,62 @@ export function ProfileReferralsTab({ userId }: { userId: string }) {
         ))}
       </div>
 
-      {/* Referral Link */}
-      <Card>
+      {/* Referral Code & Link */}
+      <Card className="border-border/50">
         <CardHeader>
           <CardTitle className="text-base flex items-center gap-2">
             <Gift className="h-4 w-4 text-primary" />
-            {isAr ? "رابط الإحالة" : "Referral Link"}
+            {isAr ? "رمز وكود الإحالة" : "Referral Code & Link"}
           </CardTitle>
         </CardHeader>
-        <CardContent className="space-y-3">
-          <div className="flex gap-2">
-            <code className="flex-1 rounded-lg border bg-muted/50 px-3 py-2 text-sm font-mono truncate" dir="ltr">
-              {referralLink || "..."}
-            </code>
-            <Button onClick={copyLink} variant="outline" size="sm" className="gap-1.5 shrink-0">
-              <Copy className="h-3.5 w-3.5" />
-              {isAr ? "نسخ" : "Copy"}
-            </Button>
+        <CardContent className="space-y-4">
+          {/* Prominent Referral Code */}
+          {referralCode && (
+            <div className="relative overflow-hidden rounded-xl border-2 border-dashed border-primary/30 bg-gradient-to-br from-primary/5 via-background to-chart-4/5 p-5 text-center">
+              <div className="pointer-events-none absolute -end-12 -top-12 h-28 w-28 rounded-full bg-primary/8 blur-[50px]" />
+              <p className="text-xs uppercase tracking-widest text-muted-foreground mb-2">
+                {isAr ? "كود الإحالة الخاص بك" : "Your Referral Code"}
+              </p>
+              <div className="relative inline-flex items-center gap-3 rounded-xl bg-background/80 border border-primary/20 px-6 py-3 shadow-sm">
+                <span className="font-mono text-2xl font-bold tracking-[0.15em] text-primary select-all" dir="ltr">
+                  {referralCode.code}
+                </span>
+                <Button
+                  onClick={() => {
+                    navigator.clipboard.writeText(referralCode.code);
+                    toast({ title: isAr ? "تم نسخ الكود!" : "Code copied!" });
+                  }}
+                  variant="ghost"
+                  size="icon"
+                  className="h-8 w-8 shrink-0 text-primary hover:bg-primary/10"
+                >
+                  <Copy className="h-4 w-4" />
+                </Button>
+              </div>
+              <p className="text-[10px] text-muted-foreground mt-2.5 leading-relaxed">
+                {isAr
+                  ? "شارك هذا الكود مع أصدقائك ليستخدموه أثناء التسجيل"
+                  : "Share this code with friends to use during registration"}
+              </p>
+            </div>
+          )}
+
+          {/* Referral Link */}
+          <div>
+            <p className="text-xs text-muted-foreground mb-1.5">
+              {isAr ? "أو شارك الرابط المباشر:" : "Or share the direct link:"}
+            </p>
+            <div className="flex gap-2">
+              <code className="flex-1 rounded-lg border bg-muted/50 px-3 py-2 text-sm font-mono truncate" dir="ltr">
+                {referralLink || "..."}
+              </code>
+              <Button onClick={copyLink} variant="outline" size="sm" className="gap-1.5 shrink-0">
+                <Copy className="h-3.5 w-3.5" />
+                {isAr ? "نسخ" : "Copy"}
+              </Button>
+            </div>
           </div>
+
           <div className="flex gap-2">
             <Link to="/referrals">
               <Button size="sm" className="gap-1.5">
