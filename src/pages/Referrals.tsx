@@ -55,13 +55,14 @@ export default function Referrals() {
       <Header />
       <main className="container flex-1 py-6 md:py-10">
         {/* Hero */}
-        <div className="relative mb-8 overflow-hidden rounded-2xl bg-gradient-to-br from-primary/10 via-background to-chart-2/10 p-6 sm:p-8">
-          <div className="pointer-events-none absolute -end-20 -top-20 h-56 w-56 rounded-full bg-primary/8 blur-[100px]" />
-          <div className="pointer-events-none absolute -start-16 -bottom-16 h-40 w-40 rounded-full bg-chart-2/10 blur-[80px]" />
+        <div className="relative mb-8 overflow-hidden rounded-2xl bg-gradient-to-br from-primary/10 via-background to-chart-2/10 p-6 sm:p-8 border border-primary/10">
+          <div className="pointer-events-none absolute -end-20 -top-20 h-56 w-56 rounded-full bg-primary/8 blur-[100px] animate-pulse" />
+          <div className="pointer-events-none absolute -start-16 -bottom-16 h-40 w-40 rounded-full bg-chart-2/10 blur-[80px] animate-pulse [animation-delay:1.5s]" />
+          <div className="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-primary/25 to-transparent" />
           <div className="relative flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
             <div>
               <div className="flex items-center gap-3 mb-3">
-                <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-primary/10 ring-4 ring-primary/5">
+                <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-primary/10 ring-4 ring-primary/5 shadow-sm transition-transform hover:scale-105">
                   <Gift className="h-6 w-6 text-primary" />
                 </div>
                 <div>
@@ -76,12 +77,12 @@ export default function Referrals() {
             </div>
             <div className="flex items-center gap-3">
               <Link to="/rewards">
-                <Button variant="outline" className="gap-2">
+                <Button variant="outline" className="gap-2 transition-all hover:shadow-sm hover:border-primary/30">
                   <Trophy className="h-4 w-4" />
                   {isAr ? "المكافآت" : "Rewards"}
                 </Button>
               </Link>
-              <Badge variant="secondary" className="text-base px-4 py-2">
+              <Badge variant="secondary" className="text-base px-4 py-2 shadow-sm">
                 <Star className="h-4 w-4 me-1.5 text-chart-4" />
                 {pointsBalance || 0} {isAr ? "نقطة" : "pts"}
               </Badge>
@@ -92,13 +93,13 @@ export default function Referrals() {
         {/* Stats */}
         <div className="grid grid-cols-2 gap-3 sm:grid-cols-4 mb-6">
           {statCards.map((s) => (
-            <Card key={s.label} className="border-border/50">
+            <Card key={s.label} className="border-border/50 group transition-all duration-200 hover:shadow-md hover:-translate-y-0.5 hover:border-primary/15">
               <CardContent className="flex items-center gap-3 p-4">
-                <div className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-xl ${s.bg}`}>
+                <div className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-xl ${s.bg} transition-transform group-hover:scale-110`}>
                   <s.icon className={`h-5 w-5 ${s.color}`} />
                 </div>
                 <div>
-                  <p className="text-2xl font-bold">{s.value}</p>
+                  <p className="text-2xl font-bold tabular-nums">{s.value}</p>
                   <p className="text-[10px] uppercase tracking-wider text-muted-foreground">{s.label}</p>
                 </div>
               </CardContent>
@@ -200,18 +201,18 @@ export default function Referrals() {
                 return (
                   <Card
                     key={milestone.id}
-                    className={`transition-all ${achieved ? "border-chart-2/40 bg-chart-2/5" : reachable ? "border-primary/30 bg-primary/5" : "opacity-70"}`}
+                    className={`transition-all duration-200 hover:shadow-md hover:-translate-y-0.5 ${achieved ? "border-chart-2/40 bg-chart-2/5 shadow-sm shadow-chart-2/5" : reachable ? "border-primary/30 bg-primary/5" : "opacity-60 hover:opacity-80"}`}
                   >
                     <CardContent className="p-5">
                       <div className="flex items-start justify-between mb-3">
-                        <span className="text-3xl">{milestone.badge_icon}</span>
+                        <span className="text-3xl transition-transform hover:scale-110">{milestone.badge_icon}</span>
                         {achieved ? (
                           <Badge className="bg-chart-2/20 text-chart-2">
                             <CheckCircle2 className="h-3 w-3 me-1" />
                             {isAr ? "مُنجز" : "Achieved"}
                           </Badge>
                         ) : reachable ? (
-                          <Badge className="bg-primary/20 text-primary">{isAr ? "متاح" : "Available"}</Badge>
+                          <Badge className="bg-primary/20 text-primary animate-pulse">{isAr ? "متاح" : "Available"}</Badge>
                         ) : (
                           <Badge variant="outline">{milestone.required_referrals} {isAr ? "إحالة" : "referrals"}</Badge>
                         )}
@@ -247,7 +248,7 @@ export default function Referrals() {
                 ) : (
                   <div className="space-y-2 max-h-[400px] overflow-y-auto">
                     {invitations.map((inv) => (
-                      <div key={inv.id} className="flex items-center justify-between rounded-lg border p-3">
+                      <div key={inv.id} className="flex items-center justify-between rounded-lg border border-border/60 p-3 transition-colors hover:bg-muted/30">
                         <div className="flex items-center gap-3">
                           <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-muted">
                             {inv.channel === "email" ? <Mail className="h-4 w-4" /> :
@@ -263,7 +264,7 @@ export default function Referrals() {
                         </div>
                         <Badge
                           variant="outline"
-                          className={inv.status === "converted" ? "bg-chart-2/20 text-chart-2" : inv.status === "clicked" ? "bg-chart-4/20 text-chart-4" : ""}
+                          className={inv.status === "converted" ? "bg-chart-2/20 text-chart-2 border-chart-2/30" : inv.status === "clicked" ? "bg-chart-4/20 text-chart-4 border-chart-4/30" : ""}
                         >
                           {inv.status}
                         </Badge>
