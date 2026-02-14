@@ -517,6 +517,23 @@ export default function Auth() {
           localStorage.removeItem("altohaa_ref_code");
         }
       }
+
+      // Track signup conversion (fire-and-forget)
+      try {
+        const { sendGoogleConversion, pushToDataLayer } = await import("@/hooks/useGoogleTracking");
+        sendGoogleConversion("sign_up", { method: signUpMethod, currency: "SAR" });
+        pushToDataLayer("sign_up", { method: signUpMethod, userId: data.user.id });
+        supabase.from("conversion_events").insert([{
+          user_id: data.user.id,
+          event_name: "sign_up",
+          event_category: "engagement",
+          source: new URLSearchParams(window.location.search).get("utm_source") || null,
+          medium: new URLSearchParams(window.location.search).get("utm_medium") || null,
+          campaign: new URLSearchParams(window.location.search).get("utm_campaign") || null,
+          session_id: sessionStorage.getItem("ad_session_id") || null,
+          metadata: { method: signUpMethod, country: countryCode } as any,
+        }]).then(() => {});
+      } catch {}
     }
 
     setLoading(false);

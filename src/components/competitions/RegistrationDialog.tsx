@@ -261,6 +261,22 @@ export function RegistrationForm({
       queryClient.invalidateQueries({ queryKey: ["my-registration", competitionId] });
       // Award points for competition registration
       awardPoints.mutate({ actionType: "competition_register", referenceType: "competition", referenceId: competitionId });
+      
+      // Track competition registration conversion
+      try {
+        import("@/hooks/useGoogleTracking").then(({ sendGoogleConversion, pushToDataLayer }) => {
+          sendGoogleConversion("competition_registration", { event_category: "engagement", competition_id: competitionId });
+          pushToDataLayer("competition_registration", { competition_id: competitionId });
+        });
+        supabase.from("conversion_events").insert([{
+          event_name: "competition_registration",
+          event_category: "engagement",
+          user_id: user?.id || null,
+          session_id: sessionStorage.getItem("ad_session_id") || null,
+          metadata: { competition_id: competitionId } as any,
+        }]).then(() => {});
+      } catch {}
+
       toast({
         title: isAr ? "تم تقديم التسجيل!" : "Registration submitted!",
         description: isAr ? "تسجيلك في انتظار الموافقة." : "Your registration is pending approval.",
