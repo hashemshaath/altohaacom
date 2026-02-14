@@ -35,6 +35,8 @@ const Recipes = lazy(() => import("@/pages/Recipes"));
 const RecipeDetail = lazy(() => import("@/pages/RecipeDetail"));
 const Establishments = lazy(() => import("@/pages/Establishments"));
 const EstablishmentDetail = lazy(() => import("@/pages/EstablishmentDetail"));
+const CompanyPublicProfile = lazy(() => import("@/pages/CompanyPublicProfile"));
+const AcceptInvite = lazy(() => import("@/pages/AcceptInvite"));
 
 export const publicRoutes = (
   <>
@@ -74,6 +76,8 @@ export const publicRoutes = (
     <Route path="/recipes/:slug" element={<RecipeDetail />} />
     <Route path="/establishments" element={<Establishments />} />
     <Route path="/establishments/:id" element={<EstablishmentDetail />} />
+    <Route path="/companies/:id" element={<CompanyPublicProfile />} />
+    <Route path="/accept-invite" element={<AcceptInvite />} />
     <Route path="/profile/:username" element={<PublicProfile />} />
     <Route path="/:username" element={<PublicProfile />} />
   </>
