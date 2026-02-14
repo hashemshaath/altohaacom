@@ -108,6 +108,8 @@ export default defineConfig(({ mode }) => ({
     },
   },
   build: {
+    target: "es2020",
+    cssMinify: true,
     rollupOptions: {
       output: {
         manualChunks: {
@@ -115,7 +117,11 @@ export default defineConfig(({ mode }) => ({
           "vendor-supabase": ["@supabase/supabase-js"],
           "vendor-query": ["@tanstack/react-query"],
           "vendor-charts": ["recharts"],
-          "vendor-ui": ["@radix-ui/react-dialog", "@radix-ui/react-dropdown-menu", "@radix-ui/react-popover", "@radix-ui/react-tabs", "@radix-ui/react-tooltip"],
+          "vendor-ui-core": ["@radix-ui/react-dialog", "@radix-ui/react-dropdown-menu", "@radix-ui/react-popover", "@radix-ui/react-tabs", "@radix-ui/react-tooltip"],
+          "vendor-ui-form": ["@radix-ui/react-select", "@radix-ui/react-checkbox", "@radix-ui/react-radio-group", "@radix-ui/react-switch", "@radix-ui/react-slider"],
+          "vendor-ui-layout": ["@radix-ui/react-accordion", "@radix-ui/react-collapsible", "@radix-ui/react-scroll-area", "@radix-ui/react-separator"],
+          "vendor-form": ["react-hook-form", "@hookform/resolvers", "zod"],
+          "vendor-markdown": ["react-markdown"],
         },
       },
     },
