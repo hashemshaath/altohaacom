@@ -109,36 +109,31 @@ export default function News() {
       />
       <Header />
       <main className="flex-1">
-        <div className="container py-8 md:py-14">
-          {/* Hero Header - Premium */}
-          <section className="relative mb-12 overflow-hidden rounded-[2.5rem] border border-border/40 bg-card/60 backdrop-blur-sm p-10 md:p-16 shadow-2xl shadow-primary/5">
-            <div className="absolute inset-0 bg-gradient-to-br from-primary/10 via-background to-accent/10 pointer-events-none" />
-            <div className="absolute -end-32 -top-32 h-80 w-80 rounded-full bg-primary/10 blur-[120px] animate-pulse pointer-events-none" />
-            <div className="absolute -bottom-32 -start-32 h-80 w-80 rounded-full bg-accent/10 blur-[120px] animate-pulse [animation-delay:1.5s] pointer-events-none" />
-            <div className="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-primary/30 to-transparent" />
-            
-            <div className="relative flex flex-col items-center gap-10 text-center md:flex-row md:text-start animate-fade-in">
-              <div className="flex h-24 w-24 shrink-0 items-center justify-center rounded-[2.2rem] bg-gradient-to-br from-primary to-primary-variant text-primary-foreground shadow-2xl shadow-primary/30 transition-all hover:scale-110 hover:rotate-3 duration-500">
-                <Newspaper className="h-12 w-12" />
-              </div>
-              <div className="space-y-4">
-                <div className="inline-flex items-center gap-2 rounded-full bg-primary/10 px-4 py-1.5 ring-1 ring-primary/20 backdrop-blur-sm">
+        {/* Compact Hero */}
+        <section className="border-b border-border/40 bg-gradient-to-b from-primary/5 to-background">
+          <div className="container py-8 md:py-12 max-w-5xl">
+            <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
+              <div className="space-y-3 max-w-2xl">
+                <div className="inline-flex items-center gap-2 rounded-full bg-primary/10 px-3 py-1 ring-1 ring-primary/20">
                   <div className="h-2 w-2 rounded-full bg-primary animate-pulse" />
-                  <span className="text-[10px] font-black uppercase tracking-[0.2em] text-primary">
-                    {isAr ? "مركز الأخبار العالمي" : "Global News Center"}
+                  <span className="text-[10px] font-bold uppercase tracking-widest text-primary">
+                    {isAr ? "مركز الأخبار" : "News Center"}
                   </span>
                 </div>
-                <h1 className="font-serif text-4xl font-black tracking-tight md:text-6xl lg:text-7xl leading-[1.1]">
+                <h1 className="font-serif text-3xl font-bold tracking-tight md:text-4xl">
                   {isAr ? "الأخبار والمقالات" : "News & Articles"}
                 </h1>
-                <p className="max-w-xl text-lg text-muted-foreground font-medium md:text-xl leading-relaxed">
+                <p className="text-muted-foreground text-sm md:text-base leading-relaxed">
                   {isAr
-                    ? "بوابتك لكل جديد في عالم فنون الطهي، أخبار المسابقات، وقصص النجاح الملهمة."
-                    : "Your gateway to culinary trends, competition updates, and inspiring chef success stories."}
+                    ? "بوابتك لكل جديد في عالم فنون الطهي وأخبار المسابقات."
+                    : "Your gateway to culinary trends, competition updates, and chef stories."}
                 </p>
               </div>
             </div>
-          </section>
+          </div>
+        </section>
+
+        <div className="container py-4 md:py-6 max-w-5xl">
 
           {/* Filters Bar */}
           <div className="sticky top-[64px] z-40 -mx-4 mb-10 border-y border-border/40 bg-background/80 px-4 py-4 backdrop-blur-md md:rounded-2xl md:border md:px-6">

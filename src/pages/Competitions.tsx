@@ -159,51 +159,49 @@ export default function Competitions() {
 
       <main className="flex-1">
         {/* Top Banner Ad */}
-        <div className="container mt-4">
+        <div className="container mt-4 max-w-5xl">
           <AdBanner placementSlug="competitions-top-banner" className="w-full aspect-[5/1]" />
         </div>
-        {/* Hero Banner - Enhanced Premium Look */}
-        <section className="relative overflow-hidden border-b border-border/40 bg-gradient-to-br from-primary/5 via-background to-accent/5">
-          <div className="absolute -top-32 start-1/4 h-80 w-80 rounded-full bg-primary/10 blur-[120px] animate-pulse pointer-events-none" />
-          <div className="absolute -bottom-20 end-1/3 h-64 w-64 rounded-full bg-accent/15 blur-[100px] animate-pulse [animation-delay:2s] pointer-events-none" />
-          <div className="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-primary/30 to-transparent" />
 
-          <div className="container relative py-12 md:py-16">
-            <div className="flex flex-col gap-8 md:flex-row md:items-center md:justify-between">
-              <div className="max-w-2xl space-y-4 animate-fade-in">
-                <div className="flex items-center gap-3">
-                  <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-primary/10 ring-4 ring-primary/5 shadow-inner">
-                    <Trophy className="h-7 w-7 text-primary" />
-                  </div>
-                  <Badge variant="outline" className="gap-2 border-primary/20 bg-primary/5 text-primary py-1 px-3">
-                    <Sparkles className="h-3.5 w-3.5 animate-pulse" />
-                    <span className="font-bold">{counts.all}</span> {isAr ? "مسابقة متاحة" : "Active Competitions"}
-                  </Badge>
+        {/* Compact Hero */}
+        <section className="border-b border-border/40 bg-gradient-to-b from-primary/5 to-background">
+          <div className="container py-8 md:py-12 max-w-5xl">
+            <div className="flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
+              <div className="space-y-3 max-w-2xl">
+                <div className="inline-flex items-center gap-2 rounded-full bg-primary/10 px-3 py-1 ring-1 ring-primary/20">
+                  <Sparkles className="h-3.5 w-3.5 text-primary animate-pulse" />
+                  <span className="text-[10px] font-bold uppercase tracking-widest text-primary">
+                    {isAr ? "مسابقات الطهي" : "Culinary Competitions"}
+                  </span>
                 </div>
-                <h1 className="font-serif text-3xl font-black sm:text-4xl md:text-5xl lg:text-6xl tracking-tight text-foreground drop-shadow-sm">
-                  {isAr ? "مسابقات الطهي العالمية" : "Global Culinary Competitions"}
+                <h1 className="font-serif text-3xl font-bold tracking-tight md:text-4xl">
+                  {isAr ? "المسابقات" : "Competitions"}
                 </h1>
-                <p className="text-base text-muted-foreground leading-relaxed max-w-xl font-medium">
+                <p className="text-muted-foreground text-sm md:text-base leading-relaxed">
                   {isAr
-                    ? "اكتشف مسابقات الطهي واشترك فيها. أظهر مهاراتك وتنافس مع أفضل الطهاة."
-                    : "Experience the pinnacle of culinary excellence. Compete with top chefs worldwide and gain global recognition for your craft."}
+                    ? "اكتشف مسابقات الطهي واشترك فيها. تنافس مع أفضل الطهاة."
+                    : "Discover and join culinary competitions. Compete with top chefs worldwide."}
                 </p>
               </div>
-              {canCreate && (
-                <div className="shrink-0 animate-fade-in [animation-delay:200ms]">
-                  <Button asChild size="lg" className="w-full md:w-auto shadow-2xl shadow-primary/30 rounded-2xl py-7 px-8 text-lg font-bold transition-all hover:scale-105 active:scale-95">
+              <div className="flex items-center gap-3">
+                <Badge variant="outline" className="gap-1.5 border-primary/20 bg-primary/5 text-primary px-3 py-1.5">
+                  <Trophy className="h-3.5 w-3.5" />
+                  <span className="font-bold">{counts.all}</span>
+                </Badge>
+                {canCreate && (
+                  <Button asChild className="shadow-sm shadow-primary/15">
                     <Link to="/competitions/create">
-                      <Plus className="me-2 h-5 w-5" />
+                      <Plus className="me-1.5 h-4 w-4" />
                       {t("createCompetition")}
                     </Link>
                   </Button>
-                </div>
-              )}
+                )}
+              </div>
             </div>
           </div>
         </section>
 
-        <div className="container py-8">
+        <div className="container py-4 md:py-6 max-w-5xl">
           {/* Featured Competition */}
           {featured && !search && activeTab === "all" && (
             <FeaturedCard competition={featured as any} language={language} isAr={isAr} />

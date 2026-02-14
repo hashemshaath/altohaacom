@@ -88,59 +88,43 @@ export default function Shop() {
       />
       <Header />
 
-      {/* Hero Banner - Premium */}
-      <section className="relative overflow-hidden border-b border-border/40 bg-gradient-to-br from-primary/5 via-background to-chart-4/5">
-        <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1541832676-9b763b0239ab?auto=format&fit=crop&q=80')] bg-fixed bg-cover bg-center opacity-[0.03] grayscale pointer-events-none" />
-        <div className="absolute inset-0 bg-gradient-to-t from-background via-transparent to-transparent" />
-        
-        <div className="absolute -top-40 start-1/4 h-96 w-96 rounded-full bg-primary/10 blur-[120px] animate-pulse pointer-events-none" />
-        <div className="absolute -bottom-20 end-1/3 h-72 w-72 rounded-full bg-chart-4/15 blur-[100px] animate-pulse [animation-delay:1.5s] pointer-events-none" />
-        <div className="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-primary/30 to-transparent" />
-
-        <div className="container relative py-12 md:py-20">
-          <div className="flex flex-col gap-10 lg:flex-row lg:items-center lg:justify-between animate-fade-in">
-            <div className="max-w-3xl space-y-8">
-              <div className="inline-flex items-center gap-2 rounded-full bg-primary/10 px-4 py-1.5 ring-1 ring-primary/20 backdrop-blur-sm shadow-inner transition-transform hover:scale-105">
-                <ShoppingBag className="h-4 w-4 text-primary" />
-                <span className="text-[10px] font-black uppercase tracking-[0.2em] text-primary">
-                  {isAr ? "سوق التوحاء الطهوي الفاخر" : "Altohaa Luxury Culinary Market"}
+      {/* Compact Hero */}
+      <section className="border-b border-border/40 bg-gradient-to-b from-primary/5 to-background">
+        <div className="container py-8 md:py-12 max-w-5xl">
+          <div className="flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
+            <div className="space-y-3 max-w-2xl">
+              <div className="inline-flex items-center gap-2 rounded-full bg-primary/10 px-3 py-1 ring-1 ring-primary/20">
+                <ShoppingBag className="h-3.5 w-3.5 text-primary" />
+                <span className="text-[10px] font-bold uppercase tracking-widest text-primary">
+                  {isAr ? "المتجر" : "Culinary Shop"}
                 </span>
               </div>
-              
-              <div className="space-y-4">
-                <h1 className="font-serif text-4xl font-black tracking-tight md:text-6xl lg:text-7xl text-balance leading-[1.05]">
-                  {isAr ? (
-                    <>أدوات <span className="text-primary italic relative">احترافية<span className="absolute -bottom-2 inset-x-0 h-3 bg-primary/10 -rotate-2 -z-10" /></span> للتميز الطهوي</>
-                  ) : (
-                    <>Professional <span className="text-primary italic relative">Tools<span className="absolute -bottom-2 inset-x-0 h-4 bg-primary/10 -rotate-1 -z-10" /></span> for Excellence</>
-                  )}
-                </h1>
-                <p className="max-w-xl text-lg text-muted-foreground font-medium md:text-xl leading-relaxed">
-                  {isAr
-                    ? "مجموعة مختارة بعناية من أدوات الطهي الفاخرة، الكتب المتخصصة، والخدمات المهنية."
-                    : "A curated selection of premium culinary tools, specialized books, and professional services."}
-                </p>
-              </div>
+              <h1 className="font-serif text-3xl font-bold tracking-tight md:text-4xl">
+                {isAr ? "المتجر" : "Shop"}
+              </h1>
+              <p className="text-muted-foreground text-sm md:text-base leading-relaxed">
+                {isAr
+                  ? "مجموعة مختارة من أدوات الطهي الفاخرة والكتب والخدمات المهنية."
+                  : "A curated selection of premium culinary tools, books, and professional services."}
+              </p>
             </div>
-
-            <div className="flex flex-wrap items-center gap-3">
+            <div className="flex items-center gap-3 flex-wrap">
               {user && (
-                <Button variant="outline" size="lg" className="h-12 rounded-xl px-6 font-bold border-border/60 hover:bg-muted/80 transition-all" asChild>
+                <Button variant="outline" asChild>
                   <Link to="/shop/my-products">
-                    <Package className="me-2 h-5 w-5" />
-                    {isAr ? "إدارة منتجاتي" : "My Products"}
+                    <Package className="me-1.5 h-4 w-4" />
+                    {isAr ? "منتجاتي" : "My Products"}
                   </Link>
                 </Button>
               )}
               <Button
-                size="lg"
-                className="relative h-12 rounded-xl px-8 font-bold shadow-xl shadow-primary/20 transition-all hover:scale-105 active:scale-95"
+                className="relative shadow-sm shadow-primary/15"
                 onClick={() => setCartOpen(true)}
               >
-                <ShoppingCart className="me-2 h-5 w-5" />
-                {isAr ? "سلة التسوق" : "View Cart"}
+                <ShoppingCart className="me-1.5 h-4 w-4" />
+                {isAr ? "السلة" : "Cart"}
                 {cart.totalItems > 0 && (
-                  <Badge className="absolute -end-2 -top-2 flex h-6 min-w-6 items-center justify-center rounded-full bg-chart-4 text-chart-4-foreground p-1 text-[11px] ring-2 ring-background">
+                  <Badge className="absolute -end-2 -top-2 flex h-5 min-w-5 items-center justify-center rounded-full bg-chart-4 text-chart-4-foreground p-0.5 text-[10px] ring-2 ring-background">
                     {cart.totalItems}
                   </Badge>
                 )}
@@ -150,7 +134,7 @@ export default function Shop() {
         </div>
       </section>
 
-      <main className="container flex-1 py-8 md:py-12">
+      <main className="container flex-1 py-4 md:py-6 max-w-5xl">
         {/* Page Header - removed, now in hero */}
         {/* Header moved to hero banner above */}
 
