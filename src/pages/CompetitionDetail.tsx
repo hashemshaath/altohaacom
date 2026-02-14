@@ -77,21 +77,23 @@ function Section({
 }) {
   const [open, setOpen] = useState(defaultOpen);
   return (
-    <Collapsible open={open} onOpenChange={setOpen}>
-      <Card className="overflow-hidden border-border/60">
-        <CollapsibleTrigger className="flex w-full items-center justify-between gap-3 px-5 py-4 text-start hover:bg-muted/30 transition-colors">
-          <div className="flex items-center gap-3">
-            <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-primary/10 shrink-0">
-              {icon}
+    <Collapsible open={open} onOpenChange={setOpen} className="animate-fade-in">
+      <Card className="overflow-hidden border-border/50 shadow-sm transition-all duration-300 hover:border-primary/20">
+        <CollapsibleTrigger className="flex w-full items-center justify-between gap-3 px-5 py-4 text-start hover:bg-muted/30 transition-colors group">
+          <div className="flex items-center gap-4">
+            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary/5 ring-1 ring-primary/10 shrink-0 transition-transform group-hover:scale-110">
+              <span className="text-primary">{icon}</span>
             </div>
-            <h3 className="font-semibold text-sm">{title}</h3>
-            {badge}
+            <div>
+              <h3 className="font-semibold text-sm tracking-tight">{title}</h3>
+              {badge && <div className="mt-0.5">{badge}</div>}
+            </div>
           </div>
-          <ChevronDown className={`h-4 w-4 text-muted-foreground transition-transform ${open ? "rotate-180" : ""}`} />
+          <ChevronDown className={`h-4 w-4 text-muted-foreground transition-transform duration-300 ${open ? "rotate-180" : ""}`} />
         </CollapsibleTrigger>
-        <CollapsibleContent>
-          <Separator />
-          <div className="p-5">{children}</div>
+        <CollapsibleContent className="data-[state=open]:animate-accordion-down data-[state=closed]:animate-accordion-up">
+          <Separator className="opacity-50" />
+          <div className="p-6">{children}</div>
         </CollapsibleContent>
       </Card>
     </Collapsible>
@@ -277,49 +279,76 @@ export default function CompetitionDetail() {
 
       <main className="flex-1">
         {/* ─── Hero Section ─── */}
-        <section className="relative overflow-hidden">
-          {competition.cover_image_url ? (
-            <img src={competition.cover_image_url} alt={title} className="h-64 w-full object-cover sm:h-72 md:h-80 lg:h-[24rem]" loading="eager" />
-          ) : (
-            <div className="flex h-64 items-center justify-center bg-gradient-to-br from-primary/10 via-accent/5 to-primary/5 sm:h-72 md:h-80 lg:h-[24rem]">
-              <Trophy className="h-28 w-28 text-primary/10" />
-            </div>
-          )}
-          <div className="absolute inset-0 bg-gradient-to-t from-background via-background/70 to-transparent" />
+        <section className="relative overflow-hidden bg-background">
+          <div className="relative h-64 w-full sm:h-72 md:h-80 lg:h-[26rem] transition-all duration-700 ease-in-out">
+            {competition.cover_image_url ? (
+              <img 
+                src={competition.cover_image_url} 
+                alt={title} 
+                className="h-full w-full object-cover"
+                loading="eager" 
+              />
+            ) : (
+              <div className="flex h-full w-full items-center justify-center bg-gradient-to-br from-primary/20 via-background to-accent/10">
+                <Trophy className="h-32 w-32 text-primary/10 animate-pulse" />
+              </div>
+            )}
+            {/* Multi-layered gradients for perfect legibility */}
+            <div className="absolute inset-0 bg-gradient-to-t from-background via-background/40 to-transparent" />
+            <div className="absolute inset-0 bg-gradient-to-r from-background/60 via-transparent to-transparent hidden md:block" />
+          </div>
 
-          <div className="absolute inset-x-0 bottom-0">
-            <div className="container pb-6 md:pb-8">
-              <Button variant="ghost" size="sm" asChild className="mb-4 -ms-2 text-foreground/80 hover:text-foreground">
-                <Link to="/competitions"><ArrowLeft className="me-1.5 h-4 w-4" />{isAr ? "المسابقات" : "Competitions"}</Link>
+          <div className="absolute inset-0 flex flex-col justify-end">
+            <div className="container pb-8 md:pb-12">
+              <Button 
+                variant="ghost" 
+                size="sm" 
+                asChild 
+                className="mb-6 -ms-2 text-foreground/70 hover:text-primary hover:bg-primary/5 transition-all group"
+              >
+                <Link to="/competitions">
+                  <ArrowLeft className="me-2 h-4 w-4 transition-transform group-hover:-translate-x-1" />
+                  {isAr ? "جميع المسابقات" : "All Competitions"}
+                </Link>
               </Button>
 
-              <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
-                <div className="space-y-3 max-w-2xl">
+              <div className="flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
+                <div className="space-y-4 max-w-3xl animate-fade-in">
                   <div className="flex items-center gap-2 flex-wrap">
-                    <Badge className={statusConfig[competition.status as CompetitionStatus].bg}>
-                      <span className={`me-1.5 inline-block h-1.5 w-1.5 rounded-full ${statusConfig[competition.status as CompetitionStatus].dot}`} />
+                    <Badge className={`${statusConfig[competition.status as CompetitionStatus].bg} px-3 py-1 shadow-sm`}>
+                      <span className={`me-2 inline-block h-2 w-2 rounded-full ${statusConfig[competition.status as CompetitionStatus].dot} animate-pulse`} />
                       {isAr ? statusConfig[competition.status as CompetitionStatus].labelAr : statusConfig[competition.status as CompetitionStatus].label}
                     </Badge>
                     {competition.edition_year && (
-                      <Badge variant="outline" className="bg-background/60 backdrop-blur-sm text-xs">{competition.edition_year}</Badge>
+                      <Badge variant="outline" className="bg-background/40 backdrop-blur-md text-xs border-primary/20 px-2.5 py-0.5">{competition.edition_year}</Badge>
                     )}
                     {competition.competition_number && (
-                      <Badge variant="outline" className="font-mono text-xs bg-background/60 backdrop-blur-sm">{competition.competition_number}</Badge>
+                      <Badge variant="outline" className="font-mono text-[10px] bg-primary/5 border-primary/20 px-2.5 py-0.5 text-primary uppercase tracking-wider">{competition.competition_number}</Badge>
                     )}
                   </div>
-                  <h1 className="font-serif text-2xl font-bold sm:text-3xl md:text-4xl lg:text-5xl leading-tight drop-shadow-sm">{title}</h1>
-                  <div className="flex items-center gap-4 text-sm text-muted-foreground flex-wrap">
-                    <span className="flex items-center gap-1.5">
-                      <Calendar className="h-3.5 w-3.5" />
+                  <h1 className="font-serif text-3xl font-bold sm:text-4xl md:text-5xl lg:text-6xl leading-tight tracking-tight text-foreground drop-shadow-sm">
+                    {title}
+                  </h1>
+                  <div className="flex items-center gap-5 text-sm font-medium text-muted-foreground flex-wrap">
+                    <span className="flex items-center gap-2 bg-background/50 backdrop-blur-sm px-3 py-1.5 rounded-full border border-border/40">
+                      <Calendar className="h-4 w-4 text-primary" />
                       {format(new Date(competition.competition_start), "MMM d")} – {format(new Date(competition.competition_end), "MMM d, yyyy")}
                     </span>
                     {competition.is_virtual ? (
-                      <span className="flex items-center gap-1.5"><Globe className="h-3.5 w-3.5" />{isAr ? "افتراضية" : "Virtual"}</span>
+                      <span className="flex items-center gap-2 bg-background/50 backdrop-blur-sm px-3 py-1.5 rounded-full border border-border/40">
+                        <Globe className="h-4 w-4 text-primary" />
+                        {isAr ? "افتراضية" : "Virtual"}
+                      </span>
                     ) : (venue || competition.city) && (
-                      <span className="flex items-center gap-1.5"><MapPin className="h-3.5 w-3.5" />{competition.country_code ? `${countryFlag(competition.country_code)} ` : ""}{venue || competition.city}</span>
+                      <span className="flex items-center gap-2 bg-background/50 backdrop-blur-sm px-3 py-1.5 rounded-full border border-border/40">
+                        <MapPin className="h-4 w-4 text-primary" />
+                        {competition.country_code ? `${countryFlag(competition.country_code)} ` : ""}
+                        {venue || competition.city}
+                      </span>
                     )}
                   </div>
                 </div>
+
                 <div className="flex gap-2 shrink-0">
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild>
@@ -362,26 +391,30 @@ export default function CompetitionDetail() {
         </section>
 
         {/* ─── Navigation Tabs (pill style) ─── */}
-        <div className="sticky top-0 z-30 border-b bg-background/95 backdrop-blur-sm">
+        <div className="sticky top-[64px] z-30 border-b border-border/40 bg-background/80 backdrop-blur-md shadow-sm">
           <div className="container">
-            <div className="flex gap-1 overflow-x-auto py-2 scrollbar-none -mx-4 px-4 md:mx-0 md:px-0">
+            <div className="flex gap-1 overflow-x-auto py-2.5 scrollbar-none -mx-4 px-4 md:mx-0 md:px-0">
               {navItems.map((item) => (
                 <button
                   key={item.id}
                   onClick={() => setActiveSection(item.id)}
-                  className={`inline-flex shrink-0 items-center gap-1.5 rounded-full px-3.5 py-1.5 text-xs font-medium transition-all ${
-                    activeSection === item.id
-                      ? "bg-primary text-primary-foreground shadow-sm"
-                      : "text-muted-foreground hover:bg-muted hover:text-foreground"
-                  }`}
+                  className={`
+                    inline-flex shrink-0 items-center gap-2 rounded-xl px-4 py-2 text-xs font-semibold transition-all duration-200 group
+                    ${activeSection === item.id
+                      ? "bg-primary text-primary-foreground shadow-lg shadow-primary/20 scale-105"
+                      : "text-muted-foreground hover:bg-muted/80 hover:text-foreground hover:scale-105"}
+                  `}
                 >
-                  {item.icon}
+                  <span className={`transition-transform duration-200 group-hover:scale-110 ${activeSection === item.id ? "text-primary-foreground" : "text-primary"}`}>
+                    {item.icon}
+                  </span>
                   {item.label}
                 </button>
               ))}
             </div>
           </div>
         </div>
+
 
         {/* ─── Inline Registration Form ─── */}
         {showRegistrationForm && (
@@ -398,24 +431,27 @@ export default function CompetitionDetail() {
 
         <div className="container py-8">
           {/* ─── Quick Stats Bar ─── */}
-          <div className="mb-6 grid grid-cols-2 gap-3 sm:grid-cols-4">
+          <div className="mb-8 grid grid-cols-2 gap-4 sm:grid-cols-4 animate-fade-in">
             {[
               { icon: <Calendar className="h-4 w-4 text-primary" />, label: isAr ? "تاريخ البداية" : "Start Date", value: format(new Date(competition.competition_start), "MMM d, yyyy") },
               { icon: <Calendar className="h-4 w-4 text-accent" />, label: isAr ? "تاريخ النهاية" : "End Date", value: format(new Date(competition.competition_end), "MMM d, yyyy") },
               { icon: competition.is_virtual ? <Globe className="h-4 w-4 text-chart-3" /> : <MapPin className="h-4 w-4 text-chart-3" />, label: isAr ? "الموقع" : "Location", value: competition.is_virtual ? (isAr ? "افتراضية" : "Virtual") : (competition.city || venue || "—") },
               { icon: <Users className="h-4 w-4 text-chart-4" />, label: isAr ? "الحد الأقصى" : "Capacity", value: competition.max_participants ? `${competition.max_participants}` : (isAr ? "غير محدود" : "Unlimited") },
             ].map((stat, i) => (
-              <Card key={i} className="border-border/60">
-                <CardContent className="flex items-center gap-3 p-3.5">
-                  <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-muted shrink-0">{stat.icon}</div>
+              <Card key={i} className="border-border/50 group transition-all duration-300 hover:shadow-md hover:-translate-y-1 hover:border-primary/20">
+                <CardContent className="flex items-center gap-4 p-4">
+                  <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary/5 ring-1 ring-primary/10 shrink-0 transition-transform duration-300 group-hover:scale-110 group-hover:bg-primary/10">
+                    {stat.icon}
+                  </div>
                   <div className="min-w-0">
-                    <p className="text-[10px] uppercase tracking-wider text-muted-foreground">{stat.label}</p>
-                    <p className="text-sm font-semibold truncate">{stat.value}</p>
+                    <p className="text-[10px] uppercase font-bold tracking-widest text-muted-foreground/80">{stat.label}</p>
+                    <p className="text-sm font-bold truncate text-foreground/90">{stat.value}</p>
                   </div>
                 </CardContent>
               </Card>
             ))}
           </div>
+
 
           {/* ─── Registration CTA ─── */}
           {canRegister && !showRegistrationForm && (

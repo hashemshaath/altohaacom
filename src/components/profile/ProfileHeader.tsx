@@ -55,13 +55,18 @@ export function ProfileHeader({ profile, roles, userId, onProfileUpdate }: Profi
   const profileViews = (profile as any)?.view_count || 0;
 
   return (
-    <div className="relative overflow-hidden rounded-2xl border bg-card shadow-lg">
+    <div className="relative overflow-hidden rounded-2xl border border-border/50 bg-card shadow-lg transition-all duration-500 hover:shadow-xl group">
       {/* Cover Image */}
-      <div className="relative h-32 sm:h-44 bg-gradient-to-br from-primary/20 via-primary/10 to-accent/10">
+      <div className="relative h-36 sm:h-52 bg-gradient-to-br from-primary/15 via-background to-accent/15 overflow-hidden">
         {profile?.cover_image_url && (
-          <img src={profile.cover_image_url} alt="" className="absolute inset-0 h-full w-full object-cover" />
+          <img 
+            src={profile.cover_image_url} 
+            alt="" 
+            className="absolute inset-0 h-full w-full object-cover transition-transform duration-700 group-hover:scale-105" 
+          />
         )}
-        <div className="absolute inset-0 bg-gradient-to-t from-card/80 to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-t from-background via-background/20 to-transparent" />
+
         <Button
           variant="outline"
           size="sm"
@@ -80,12 +85,13 @@ export function ProfileHeader({ profile, roles, userId, onProfileUpdate }: Profi
         {/* Avatar */}
         <div className="relative -mt-12 sm:-mt-14 mb-3">
           <div className="relative inline-block">
-            <Avatar className="h-20 w-20 sm:h-24 sm:w-24 ring-4 ring-card shadow-lg">
+            <Avatar className="h-24 w-24 sm:h-28 sm:w-28 ring-4 ring-background shadow-2xl transition-transform duration-300 group-hover:scale-105">
               <AvatarImage src={profile?.avatar_url || undefined} />
-              <AvatarFallback className="text-2xl font-bold bg-primary/10 text-primary">
+              <AvatarFallback className="text-3xl font-bold bg-primary/10 text-primary">
                 {(profile?.full_name || "U")[0].toUpperCase()}
               </AvatarFallback>
             </Avatar>
+
             <button
               onClick={() => avatarInputRef.current?.click()}
               disabled={uploading}
@@ -125,17 +131,23 @@ export function ProfileHeader({ profile, roles, userId, onProfileUpdate }: Profi
             )}
           </div>
           <div className="flex items-center gap-2 flex-wrap">
-            <Badge className={`${tier.color} gap-1`}>
-              <TierIcon className="h-3 w-3" />
+            <Badge className={`${tier.color} gap-1.5 px-3 py-1 shadow-sm border-none`}>
+              <TierIcon className="h-3.5 w-3.5" />
               {isAr ? tier.labelAr : tier.label}
             </Badge>
             {roles.map((r) => (
-              <Badge key={r} variant="secondary" className="capitalize text-[10px]">{r}</Badge>
+              <Badge key={r} variant="secondary" className="capitalize text-[10px] bg-muted/50 border-border/40 px-2">
+                {r === 'admin' ? <Shield className="h-3 w-3 me-1 text-primary" /> : null}
+                {r}
+              </Badge>
             ))}
             {profile?.account_number && (
-              <Badge variant="outline" className="font-mono text-[10px]">{profile.account_number}</Badge>
+              <Badge variant="outline" className="font-mono text-[10px] border-primary/20 bg-primary/5 text-primary">
+                #{profile.account_number}
+              </Badge>
             )}
           </div>
+
         </div>
 
         {/* Quick stats */}

@@ -91,15 +91,16 @@ export function OrganizerCard({ organizerId, exhibitionId }: OrganizerCardProps)
     const abbr = entityOrganizer?.abbreviation;
 
     return (
-      <Card className="overflow-hidden">
-        <div className="border-b bg-muted/30 px-4 py-3">
-          <h3 className="flex items-center gap-2 font-semibold text-sm">
-            <div className="flex h-6 w-6 items-center justify-center rounded-md bg-chart-3/10">
-              <Building2 className="h-3.5 w-3.5 text-chart-3" />
+      <Card className="overflow-hidden border-border/50 group transition-all duration-300 hover:shadow-md hover:border-primary/20">
+        <div className="bg-gradient-to-r from-muted/50 to-transparent px-5 py-3 border-b border-border/40">
+          <h3 className="flex items-center gap-2.5 font-bold text-[11px] uppercase tracking-wider text-muted-foreground">
+            <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-primary/5 ring-1 ring-primary/10 transition-transform group-hover:scale-110">
+              <Building2 className="h-4 w-4 text-primary" />
             </div>
             {isAr ? "المنظم" : "Organizer"}
           </h3>
         </div>
+
         <CardContent className="p-4">
           <div className="flex items-center gap-3">
             {logo ? (
@@ -138,15 +139,16 @@ export function OrganizerCard({ organizerId, exhibitionId }: OrganizerCardProps)
     : "?";
 
   return (
-    <Card className="overflow-hidden">
-      <div className="border-b bg-muted/30 px-4 py-3">
-        <h3 className="flex items-center gap-2 font-semibold text-sm">
-          <div className="flex h-6 w-6 items-center justify-center rounded-md bg-chart-3/10">
-            <User className="h-3.5 w-3.5 text-chart-3" />
+    <Card className="overflow-hidden border-border/50 group transition-all duration-300 hover:shadow-md hover:border-primary/20">
+      <div className="bg-gradient-to-r from-muted/50 to-transparent px-5 py-3 border-b border-border/40">
+        <h3 className="flex items-center gap-2.5 font-bold text-[11px] uppercase tracking-wider text-muted-foreground">
+          <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-primary/5 ring-1 ring-primary/10 transition-transform group-hover:scale-110">
+            <User className="h-4 w-4 text-primary" />
           </div>
           {isAr ? "المنظم" : "Organizer"}
         </h3>
       </div>
+
       <CardContent className="p-4">
         <div className="flex items-center gap-3">
           <Avatar className="h-11 w-11">
