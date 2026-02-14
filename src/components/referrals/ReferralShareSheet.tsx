@@ -136,12 +136,39 @@ export function ReferralShareSheet({ referralLink, referralCode, referralCodeId,
 
   return (
     <div className="space-y-4">
+      {/* Prominent Referral Code */}
+      <div className="relative overflow-hidden rounded-xl border-2 border-dashed border-primary/30 bg-gradient-to-br from-primary/5 via-background to-chart-4/5 p-4 text-center">
+        <div className="pointer-events-none absolute -end-12 -top-12 h-28 w-28 rounded-full bg-primary/8 blur-[50px]" />
+        <p className="text-[10px] uppercase tracking-widest text-muted-foreground mb-1.5">
+          {isAr ? "كود الإحالة" : "Referral Code"}
+        </p>
+        <div className="relative inline-flex items-center gap-2 rounded-xl bg-background/80 border border-primary/20 px-5 py-2.5 shadow-sm">
+          <span className="font-mono text-xl font-bold tracking-[0.15em] text-primary select-all" dir="ltr">
+            {referralCode}
+          </span>
+          <Button
+            onClick={() => {
+              navigator.clipboard.writeText(referralCode);
+              toast({ title: isAr ? "تم نسخ الكود!" : "Code copied!" });
+            }}
+            variant="ghost"
+            size="icon"
+            className="h-7 w-7 shrink-0 text-primary hover:bg-primary/10"
+          >
+            <Copy className="h-3.5 w-3.5" />
+          </Button>
+        </div>
+        <p className="text-[10px] text-muted-foreground mt-2">
+          {isAr ? "يستخدمه الأصدقاء أثناء التسجيل" : "Friends use this during sign-up"}
+        </p>
+      </div>
+
       {/* Referral Link */}
       <div className="flex gap-2">
         <Input value={referralLink} readOnly className="font-mono text-sm" dir="ltr" />
         <Button onClick={copyLink} variant="outline" className="shrink-0 gap-1.5">
           <Copy className="h-4 w-4" />
-          {isAr ? "نسخ" : "Copy"}
+          {isAr ? "نسخ الرابط" : "Copy Link"}
         </Button>
       </div>
 

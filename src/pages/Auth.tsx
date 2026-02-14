@@ -23,7 +23,7 @@ import { PhoneInputWithFlag } from "@/components/auth/PhoneInputWithFlag";
 import { z } from "zod";
 import {
   CheckCircle, XCircle, Loader2, ShieldCheck, UserPlus, LogIn,
-  Phone, Mail, KeyRound,
+  Phone, Mail, KeyRound, Gift,
 } from "lucide-react";
 
 const usernameRegex = /^[a-zA-Z][a-zA-Z0-9_]{2,29}$/;
@@ -82,6 +82,7 @@ export default function Auth() {
   const [username, setUsername] = useState("");
   const [usernameStatus, setUsernameStatus] = useState<"idle" | "checking" | "available" | "taken">("idle");
   const [termsAccepted, setTermsAccepted] = useState(false);
+  const [manualRefCode, setManualRefCode] = useState("");
 
   // Password reset
   const [resetPassword, setResetPassword] = useState("");
@@ -504,7 +505,7 @@ export default function Auth() {
         .eq("user_id", data.user.id);
 
       // Process referral code via edge function
-      const storedRef = localStorage.getItem("altohaa_ref_code");
+      const storedRef = localStorage.getItem("altohaa_ref_code") || manualRefCode.trim().toUpperCase() || null;
       if (storedRef) {
         try {
           await supabase.functions.invoke("process-referral", {
@@ -762,6 +763,37 @@ export default function Auth() {
               )}
               {errors.confirmPassword && <p className="text-xs text-destructive">{errors.confirmPassword}</p>}
             </div>
+
+            {/* Referral Code (optional) */}
+            {!localStorage.getItem("altohaa_ref_code") && (
+              <div className="space-y-1.5">
+                <Label htmlFor="refCode" className="text-xs">{isAr ? "كود الإحالة (اختياري)" : "Referral Code (optional)"}</Label>
+                <div className="relative">
+                  <Input
+                    id="refCode"
+                    value={manualRefCode}
+                    onChange={(e) => setManualRefCode(e.target.value.toUpperCase().replace(/[^A-Z0-9]/g, ""))}
+                    placeholder={isAr ? "أدخل كود الإحالة" : "Enter referral code"}
+                    className="font-mono tracking-wider"
+                    dir="ltr"
+                    maxLength={8}
+                  />
+                </div>
+                <p className="text-[10px] text-muted-foreground">
+                  {isAr ? "إذا أحالك أحد الأصدقاء، أدخل الكود هنا" : "If a friend referred you, enter their code here"}
+                </p>
+              </div>
+            )}
+
+            {localStorage.getItem("altohaa_ref_code") && (
+              <div className="flex items-center gap-2 rounded-lg border border-primary/20 bg-primary/5 p-3">
+                <Gift className="h-4 w-4 text-primary shrink-0" />
+                <p className="text-sm">
+                  {isAr ? "كود الإحالة مُطبق:" : "Referral code applied:"}{" "}
+                  <span className="font-mono font-bold text-primary">{localStorage.getItem("altohaa_ref_code")}</span>
+                </p>
+              </div>
+            )}
 
             {/* Terms */}
             <TermsAgreement checked={termsAccepted} onCheckedChange={setTermsAccepted} error={errors.terms} />
