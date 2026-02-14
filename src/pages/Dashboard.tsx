@@ -16,6 +16,8 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { SEOHead } from "@/components/SEOHead";
+import { useAwardPoints } from "@/hooks/useAwardPoints";
+import { useEffect, useRef } from "react";
 
 export default function Dashboard() {
   const { t, language } = useLanguage();
@@ -35,6 +37,16 @@ export default function Dashboard() {
     },
     enabled: !!user,
   });
+
+  // Award daily login points once per session
+  const awardPoints = useAwardPoints();
+  const dailyLoginAwarded = useRef(false);
+  useEffect(() => {
+    if (user && !dailyLoginAwarded.current) {
+      dailyLoginAwarded.current = true;
+      awardPoints.mutate({ actionType: "daily_login", silent: true });
+    }
+  }, [user]);
 
   const firstName = profile?.full_name?.split(" ")[0] || "";
   const greeting = isAr
