@@ -107,89 +107,93 @@ export default function Masterclasses() {
         description="Learn from world-class chefs with our curated masterclasses. From French cuisine to pastry arts."
       />
       <Header />
-      {/* Hero Banner - Premium */}
-      <section className="relative overflow-hidden border-b border-border/40 bg-gradient-to-br from-primary/5 via-background to-chart-3/5">
-        <div className="absolute -top-32 start-1/4 h-80 w-80 rounded-full bg-primary/10 blur-[120px] animate-pulse pointer-events-none" />
-        <div className="absolute -bottom-20 end-1/3 h-64 w-64 rounded-full bg-chart-3/15 blur-[100px] animate-pulse [animation-delay:2s] pointer-events-none" />
-        <div className="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-primary/30 to-transparent" />
-        <div className="container relative py-12 md:py-16">
-          <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:gap-5 animate-fade-in">
-            <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded-3xl bg-primary/10 ring-4 ring-primary/5 shadow-inner transition-transform duration-500 hover:scale-110 hover:rotate-3">
-              <GraduationCap className="h-8 w-8 text-primary" />
-            </div>
-            <div className="space-y-2">
-              <div className="flex items-center gap-3">
-                <h1 className="font-serif text-3xl font-black md:text-4xl lg:text-5xl tracking-tight">
-                  {isAr ? "الدورات التعليمية" : "Masterclasses"}
-                </h1>
-                <Badge variant="outline" className="gap-1.5 border-primary/20 bg-primary/5 text-primary py-1 px-3 font-bold">
-                  {filtered.length} {isAr ? "دورة" : "Available"}
-                </Badge>
+      {/* Compact Hero */}
+      <section className="border-b border-border/40 bg-gradient-to-b from-primary/5 to-background">
+        <div className="container py-8 md:py-12">
+          <div className="flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
+            <div className="space-y-3 max-w-2xl">
+              <div className="inline-flex items-center gap-2 rounded-full bg-primary/10 px-3 py-1 ring-1 ring-primary/20">
+                <GraduationCap className="h-3.5 w-3.5 text-primary" />
+                <span className="text-[10px] font-bold uppercase tracking-widest text-primary">
+                  {isAr ? "التعلم المهني" : "Professional Learning"}
+                </span>
               </div>
-              <p className="max-w-xl text-base text-muted-foreground font-medium leading-relaxed">
+              <h1 className="font-serif text-3xl font-bold tracking-tight md:text-4xl">
+                {isAr ? "الدورات التعليمية" : "Masterclasses"}
+              </h1>
+              <p className="text-muted-foreground text-sm md:text-base leading-relaxed">
                 {isAr
                   ? "تعلم من أفضل الطهاة والخبراء في عالم الطهي العالمي"
                   : "Master the art of culinary excellence with world-renowned chefs and industry experts."}
               </p>
             </div>
+            <div className="flex items-center gap-3">
+              <Badge variant="outline" className="gap-1.5 border-primary/20 bg-primary/5 text-primary px-3 py-1.5">
+                <BookOpen className="h-3.5 w-3.5" />
+                <span className="font-bold">{filtered.length}</span>
+                <span className="text-[10px]">{isAr ? "دورة" : "Available"}</span>
+              </Badge>
+            </div>
           </div>
         </div>
       </section>
 
-      <main className="container flex-1 py-8 md:py-12">
+      <main className="container flex-1 py-4 md:py-6">
 
         {/* Sticky Glass Filters */}
-        <div className="sticky top-[64px] z-30 -mx-4 mb-10 bg-background/80 px-4 py-4 backdrop-blur-md border-y border-border/40 md:rounded-2xl md:border md:mx-0 md:px-6 shadow-sm">
+        <div className="sticky top-[64px] z-30 -mx-4 mb-10 bg-background/80 px-4 py-4 backdrop-blur-md border-y border-border/40 md:rounded-2xl md:border md:mx-0 md:px-6">
           <div className="flex flex-col gap-3 sm:flex-row">
-            <div className="relative flex-1 sm:max-w-sm">
-              <Search className="absolute start-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+            <div className="relative flex-1 sm:max-w-md">
+              <Search className="absolute start-4 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground/60" />
               <Input
                 placeholder={isAr ? "ابحث عن دورة..." : "Search masterclasses..."}
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
-                className="ps-10 bg-card/50 border-border/40"
+                className="h-11 border-border/40 bg-muted/20 ps-11 transition-all focus:bg-background focus:ring-primary/20 rounded-xl"
               />
             </div>
-            <Select value={levelFilter} onValueChange={setLevelFilter}>
-              <SelectTrigger className="w-full sm:w-40 bg-card/50 border-border/40">
-                <SelectValue placeholder={isAr ? "المستوى" : "Level"} />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">{isAr ? "جميع المستويات" : "All Levels"}</SelectItem>
-                <SelectItem value="beginner">{isAr ? "مبتدئ" : "Beginner"}</SelectItem>
-                <SelectItem value="intermediate">{isAr ? "متوسط" : "Intermediate"}</SelectItem>
-                <SelectItem value="advanced">{isAr ? "متقدم" : "Advanced"}</SelectItem>
-              </SelectContent>
-            </Select>
-            {categories.length > 1 && (
-              <Select value={categoryFilter} onValueChange={setCategoryFilter}>
-                <SelectTrigger className="w-full sm:w-40 bg-card/50 border-border/40">
-                  <SelectValue placeholder={isAr ? "التصنيف" : "Category"} />
+            <div className="flex gap-2 flex-wrap">
+              <Select value={levelFilter} onValueChange={setLevelFilter}>
+                <SelectTrigger className="h-11 w-full sm:w-40 border-border/40 bg-muted/20 rounded-xl focus:ring-primary/20">
+                  <SelectValue placeholder={isAr ? "المستوى" : "Level"} />
                 </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">{isAr ? "الكل" : "All"}</SelectItem>
-                  {categories.map((cat) => (
-                    <SelectItem key={cat} value={cat}>{cat}</SelectItem>
-                  ))}
+                <SelectContent className="rounded-xl border-border/40">
+                  <SelectItem value="all" className="rounded-lg">{isAr ? "جميع المستويات" : "All Levels"}</SelectItem>
+                  <SelectItem value="beginner" className="rounded-lg">{isAr ? "مبتدئ" : "Beginner"}</SelectItem>
+                  <SelectItem value="intermediate" className="rounded-lg">{isAr ? "متوسط" : "Intermediate"}</SelectItem>
+                  <SelectItem value="advanced" className="rounded-lg">{isAr ? "متقدم" : "Advanced"}</SelectItem>
                 </SelectContent>
               </Select>
-            )}
-            {countryCodes.length > 1 && (
-              <Select value={countryFilter} onValueChange={setCountryFilter}>
-                <SelectTrigger className="w-full sm:w-44 bg-card/50 border-border/40">
-                  <MapPin className="me-1.5 h-3.5 w-3.5 text-muted-foreground" />
-                  <SelectValue placeholder={isAr ? "الدولة" : "Country"} />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">{isAr ? "جميع الدول" : "All Countries"}</SelectItem>
-                  {countryCodes.map((code) => (
-                    <SelectItem key={code} value={code}>
-                      {countryFlag(code)} {getCountryName(code)}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            )}
+              {categories.length > 1 && (
+                <Select value={categoryFilter} onValueChange={setCategoryFilter}>
+                  <SelectTrigger className="h-11 w-full sm:w-40 border-border/40 bg-muted/20 rounded-xl focus:ring-primary/20">
+                    <SelectValue placeholder={isAr ? "التصنيف" : "Category"} />
+                  </SelectTrigger>
+                  <SelectContent className="rounded-xl border-border/40">
+                    <SelectItem value="all" className="rounded-lg">{isAr ? "الكل" : "All"}</SelectItem>
+                    {categories.map((cat) => (
+                      <SelectItem key={cat} value={cat} className="rounded-lg">{cat}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              )}
+              {countryCodes.length > 1 && (
+                <Select value={countryFilter} onValueChange={setCountryFilter}>
+                  <SelectTrigger className="h-11 w-full sm:w-44 border-border/40 bg-muted/20 rounded-xl focus:ring-primary/20">
+                    <MapPin className="me-1.5 h-3.5 w-3.5 text-muted-foreground" />
+                    <SelectValue placeholder={isAr ? "الدولة" : "Country"} />
+                  </SelectTrigger>
+                  <SelectContent className="rounded-xl border-border/40">
+                    <SelectItem value="all" className="rounded-lg">{isAr ? "جميع الدول" : "All Countries"}</SelectItem>
+                    {countryCodes.map((code) => (
+                      <SelectItem key={code} value={code} className="rounded-lg">
+                        {countryFlag(code)} {getCountryName(code)}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              )}
+            </div>
           </div>
         </div>
 

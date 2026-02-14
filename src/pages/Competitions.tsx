@@ -208,46 +208,46 @@ export default function Competitions() {
             <FeaturedCard competition={featured as any} language={language} isAr={isAr} />
           )}
 
-          {/* Search & Filter Bar */}
-          <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center">
-            <div className="relative flex-1 sm:max-w-sm">
-              <Search className="absolute start-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-              <Input
-                placeholder={isAr ? "ابحث عن مسابقة..." : "Search competitions..."}
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
-                className="ps-10"
-              />
+          {/* Sticky Filters + Tab Pills */}
+          <div className="sticky top-[64px] z-30 -mx-4 mb-8 border-y border-border/40 bg-background/80 px-4 py-4 backdrop-blur-md md:rounded-2xl md:border md:mx-0 md:px-6 space-y-4">
+            {/* Search & Filter */}
+            <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
+              <div className="relative flex-1 sm:max-w-md">
+                <Search className="absolute start-4 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground/60" />
+                <Input
+                  placeholder={isAr ? "ابحث عن مسابقة..." : "Search competitions..."}
+                  value={search}
+                  onChange={(e) => setSearch(e.target.value)}
+                  className="h-11 border-border/40 bg-muted/20 ps-11 transition-all focus:bg-background focus:ring-primary/20 rounded-xl"
+                />
+              </div>
+              {countryCodes.length > 1 && (
+                <Select value={countryFilter} onValueChange={setCountryFilter}>
+                  <SelectTrigger className="h-11 w-full sm:w-48 border-border/40 bg-muted/20 rounded-xl focus:ring-primary/20">
+                    <MapPin className="me-1.5 h-3.5 w-3.5 text-muted-foreground/60" />
+                    <SelectValue placeholder={isAr ? "الدولة" : "Country"} />
+                  </SelectTrigger>
+                  <SelectContent className="rounded-xl border-border/40">
+                    <SelectItem value="all" className="rounded-lg">{isAr ? "جميع الدول" : "All Countries"}</SelectItem>
+                    {countryCodes.map((code) => (
+                      <SelectItem key={code} value={code} className="rounded-lg">
+                        <span className="flex items-center gap-2">
+                          <span>{countryFlag(code)}</span>
+                          <span>{getCountryName(code)}</span>
+                        </span>
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              )}
             </div>
-            {countryCodes.length > 1 && (
-              <Select value={countryFilter} onValueChange={setCountryFilter}>
-                <SelectTrigger className="w-full sm:w-48">
-                  <Filter className="me-1.5 h-3.5 w-3.5 text-muted-foreground" />
-                  <SelectValue placeholder={isAr ? "الدولة" : "Country"} />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">{isAr ? "جميع الدول" : "All Countries"}</SelectItem>
-                  {countryCodes.map((code) => (
-                    <SelectItem key={code} value={code}>
-                      <span className="flex items-center gap-2">
-                        <span>{countryFlag(code)}</span>
-                        <span>{getCountryName(code)}</span>
-                      </span>
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            )}
-          </div>
-
-          {/* Tab Pills - Premium Glass Sticky Navigation */}
-          <div className="sticky top-[64px] z-30 -mx-4 mb-8 bg-background/80 px-4 py-4 backdrop-blur-md border-y border-border/40 md:rounded-2xl md:border md:mx-0 md:px-6">
-            <div className="flex flex-wrap gap-2.5">
+            {/* Tab Pills */}
+            <div className="flex flex-wrap gap-2">
               {TAB_FILTERS.map((tab) => (
                 <button
                   key={tab}
                   onClick={() => setActiveTab(tab)}
-                  className={`relative inline-flex items-center gap-2 rounded-xl px-5 py-2.5 text-sm font-bold transition-all duration-300 ${
+                  className={`relative inline-flex items-center gap-2 rounded-xl px-5 py-2.5 text-xs font-bold uppercase tracking-wider transition-all duration-300 ${
                     activeTab === tab
                       ? "text-primary-foreground"
                       : "text-muted-foreground hover:bg-primary/5 hover:text-primary"
@@ -260,7 +260,7 @@ export default function Competitions() {
                   <span className={`relative z-10 ms-1 inline-flex h-5 min-w-[20px] items-center justify-center rounded-lg px-1.5 text-[10px] font-black ${
                     activeTab === tab
                       ? "bg-primary-foreground/20 text-primary-foreground"
-                      : "bg-muted text-muted-foreground group-hover:bg-primary/20"
+                      : "bg-muted text-muted-foreground"
                   }`}>
                     {toEnglishDigits(counts[tab])}
                   </span>

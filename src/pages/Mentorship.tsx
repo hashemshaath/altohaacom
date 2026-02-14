@@ -48,81 +48,65 @@ export default function Mentorship() {
       <Header />
 
       <main className="flex-1">
-        {/* Hero - Premium */}
-        <div className="relative overflow-hidden border-b border-border/40 bg-gradient-to-br from-primary/5 via-background to-chart-3/5">
-          <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1556910103-1c02745aae4d?auto=format&fit=crop&q=80')] bg-fixed bg-cover bg-center opacity-[0.03] grayscale pointer-events-none" />
-          <div className="absolute inset-0 bg-gradient-to-t from-background via-transparent to-transparent" />
-          
-          <div className="absolute -top-40 start-1/4 h-96 w-96 rounded-full bg-primary/10 blur-[120px] animate-pulse pointer-events-none" />
-          <div className="absolute -bottom-20 end-1/3 h-72 w-72 rounded-full bg-chart-3/15 blur-[100px] animate-pulse [animation-delay:1.5s] pointer-events-none" />
-          <div className="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-primary/30 to-transparent" />
-
-          <div className="container relative py-12 md:py-20">
-            <div className="flex flex-col gap-10 lg:flex-row lg:items-center lg:justify-between animate-fade-in">
-              <div className="flex-1 space-y-8">
-                <div className="inline-flex items-center gap-2 rounded-full bg-primary/10 px-4 py-1.5 ring-1 ring-primary/20 backdrop-blur-sm shadow-inner transition-transform hover:scale-105">
-                  <div className="relative flex h-2 w-2">
-                    <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-primary opacity-75"></span>
-                    <span className="relative inline-flex h-2 w-2 rounded-full bg-primary"></span>
-                  </div>
-                  <span className="text-[10px] font-black uppercase tracking-[0.2em] text-primary">
-                    {isAr ? "برنامج التمكين المهني" : "Professional Empowerment Program"}
+        {/* Compact Hero */}
+        <section className="border-b border-border/40 bg-gradient-to-b from-primary/5 to-background">
+          <div className="container py-8 md:py-12">
+            <div className="flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
+              <div className="space-y-3 max-w-2xl">
+                <div className="inline-flex items-center gap-2 rounded-full bg-primary/10 px-3 py-1 ring-1 ring-primary/20">
+                  <HandHeart className="h-3.5 w-3.5 text-primary" />
+                  <span className="text-[10px] font-bold uppercase tracking-widest text-primary">
+                    {isAr ? "التمكين المهني" : "Professional Empowerment"}
                   </span>
                 </div>
-                
-                <div className="space-y-4">
-                  <h1 className="font-serif text-4xl font-black tracking-tight md:text-6xl lg:text-7xl text-balance leading-[1.05]">
-                    {isAr ? (
-                      <>برنامج <span className="text-primary italic relative">الإرشاد<span className="absolute -bottom-2 inset-x-0 h-3 bg-primary/10 -rotate-2 -z-10" /></span> المهني</>
-                    ) : (
-                      <>Culinary <span className="text-primary italic relative">Mentorship<span className="absolute -bottom-2 inset-x-0 h-4 bg-primary/10 -rotate-1 -z-10" /></span> Hub</>
-                    )}
-                  </h1>
-                  <p className="max-w-xl text-lg text-muted-foreground font-medium md:text-xl leading-relaxed">
-                    {isAr
-                      ? "تواصل مع طهاة محترفين للتعلم والنمو في رحلتك في الطهي."
-                      : "Connect with experienced chefs to learn, grow, and advance your culinary journey."}
-                  </p>
-                </div>
-
-                <div className="flex flex-wrap gap-4">
-                  {user && !myApplication && (
-                    <Link to="/mentorship/apply">
-                      <Button size="lg" className="h-14 rounded-2xl px-10 font-bold shadow-xl shadow-primary/20 transition-all hover:scale-105 active:scale-95">
-                        <HandHeart className="me-2 h-5 w-5" />
-                        {isAr ? "تقدم كمرشد" : "Apply as Mentor"}
-                      </Button>
-                    </Link>
-                  )}
-                  {myApplication && (
-                    <Badge variant="outline" className="border-primary/20 bg-primary/5 text-primary px-6 py-3 text-sm font-bold rounded-2xl">
-                      <Sparkles className="h-4 w-4 me-2 animate-pulse" />
-                      {isAr ? `طلب الإرشاد: ${myApplication.status}` : `Mentor Application: ${myApplication.status}`}
-                    </Badge>
-                  )}
-                </div>
+                <h1 className="font-serif text-3xl font-bold tracking-tight md:text-4xl">
+                  {isAr ? "برنامج الإرشاد" : "Mentorship"}
+                </h1>
+                <p className="text-muted-foreground text-sm md:text-base leading-relaxed">
+                  {isAr
+                    ? "تواصل مع طهاة محترفين للتعلم والنمو في رحلتك في الطهي."
+                    : "Connect with experienced chefs to learn, grow, and advance your culinary journey."}
+                </p>
+              </div>
+              <div className="flex items-center gap-3 flex-wrap">
+                {user && !myApplication && (
+                  <Link to="/mentorship/apply">
+                    <Button className="shadow-sm shadow-primary/15">
+                      <HandHeart className="me-1.5 h-4 w-4" />
+                      {isAr ? "تقدم كمرشد" : "Apply as Mentor"}
+                    </Button>
+                  </Link>
+                )}
+                {myApplication && (
+                  <Badge variant="outline" className="gap-1.5 border-primary/20 bg-primary/5 text-primary px-3 py-1.5">
+                    <Sparkles className="h-3.5 w-3.5 animate-pulse" />
+                    {isAr ? `طلب: ${myApplication.status}` : `Application: ${myApplication.status}`}
+                  </Badge>
+                )}
               </div>
             </div>
           </div>
-        </div>
+        </section>
 
-        <div className="container py-8 space-y-8">
+        <div className="container py-4 md:py-6 space-y-8">
           <Tabs defaultValue="programs">
-            <TabsList>
-              <TabsTrigger value="programs" className="gap-1.5">
-                <BookOpen className="h-4 w-4" />
-                {isAr ? "البرامج" : "Programs"}
-              </TabsTrigger>
-              {user && (
-                <TabsTrigger value="my-mentorship" className="gap-1.5">
-                  <Target className="h-4 w-4" />
-                  {isAr ? "إرشادي" : "My Mentorship"}
-                  {myMatches.length > 0 && (
-                    <Badge variant="secondary" className="ms-1 text-[10px]">{myMatches.length}</Badge>
-                  )}
+            <div className="sticky top-[64px] z-30 -mx-4 border-y border-border/40 bg-background/80 px-4 py-3 backdrop-blur-md md:rounded-2xl md:border md:mx-0 md:px-6">
+              <TabsList className="h-auto w-full justify-start gap-1.5 overflow-x-auto bg-transparent p-0 no-scrollbar">
+                <TabsTrigger value="programs" className="gap-2 rounded-xl px-5 py-2.5 text-xs font-bold uppercase tracking-wider transition-all data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-lg data-[state=active]:shadow-primary/20 hover:bg-primary/5 hover:text-primary">
+                  <BookOpen className="h-3.5 w-3.5" />
+                  {isAr ? "البرامج" : "Programs"}
                 </TabsTrigger>
-              )}
-            </TabsList>
+                {user && (
+                  <TabsTrigger value="my-mentorship" className="gap-2 rounded-xl px-5 py-2.5 text-xs font-bold uppercase tracking-wider transition-all data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-lg data-[state=active]:shadow-primary/20 hover:bg-primary/5 hover:text-primary">
+                    <Target className="h-3.5 w-3.5" />
+                    {isAr ? "إرشادي" : "My Mentorship"}
+                    {myMatches.length > 0 && (
+                      <Badge variant="secondary" className="ms-1 text-[10px]">{myMatches.length}</Badge>
+                    )}
+                  </TabsTrigger>
+                )}
+              </TabsList>
+            </div>
 
             <TabsContent value="programs" className="mt-6">
               {isLoading ? (
@@ -147,37 +131,37 @@ export default function Mentorship() {
                 <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
                   {programs.map(program => (
                     <Link key={program.id} to={`/mentorship/${program.id}`}>
-                      <Card className="h-full transition-all duration-200 hover:shadow-md hover:-translate-y-0.5">
+                      <Card className="group h-full overflow-hidden border-border/40 bg-card/60 backdrop-blur-sm transition-all duration-500 hover:shadow-2xl hover:-translate-y-2 hover:border-primary/30 hover:bg-card">
                         {program.cover_image_url && (
-                          <div className="aspect-video overflow-hidden rounded-t-lg">
-                            <img src={program.cover_image_url} alt={program.title} className="h-full w-full object-cover" />
+                          <div className="aspect-video overflow-hidden bg-muted relative">
+                            <img src={program.cover_image_url} alt={program.title} className="h-full w-full object-cover transition-transform duration-1000 group-hover:scale-110" loading="lazy" />
+                            <div className="absolute inset-0 bg-gradient-to-t from-background/60 via-transparent to-transparent" />
                           </div>
                         )}
-                        <CardHeader>
-                          <div className="flex items-start justify-between">
-                            <CardTitle className="text-lg">{isAr ? program.title_ar || program.title : program.title}</CardTitle>
-                            <Badge className={statusColors[program.status] || "bg-muted text-muted-foreground"}>
+                        <CardContent className="p-5">
+                          <div className="flex items-start justify-between gap-2 mb-3">
+                            <h3 className="text-base font-bold leading-tight group-hover:text-primary transition-colors duration-300">
+                              {isAr ? program.title_ar || program.title : program.title}
+                            </h3>
+                            <Badge variant="outline" className={`shrink-0 text-[10px] font-bold ${statusColors[program.status] || "bg-muted text-muted-foreground"}`}>
                               {program.status}
                             </Badge>
                           </div>
-                        </CardHeader>
-                        <CardContent>
-                          <p className="text-sm text-muted-foreground line-clamp-2">
+                          <p className="text-xs text-muted-foreground line-clamp-2 leading-relaxed mb-4">
                             {isAr ? program.description_ar || program.description : program.description}
                           </p>
-                          <div className="mt-4 flex items-center gap-4 text-xs text-muted-foreground">
-                            <span className="flex items-center gap-1">
-                              <Clock className="h-3 w-3" />
-                              {program.duration_weeks} {isAr ? "أسابيع" : "weeks"}
-                            </span>
-                            <span className="flex items-center gap-1">
-                              <Users className="h-3 w-3" />
-                              {isAr ? `${program.max_matches} حد أقصى` : `Max ${program.max_matches}`}
-                            </span>
-                          </div>
-                          <div className="mt-3 flex items-center gap-1 text-sm font-medium text-primary">
-                            {isAr ? "عرض التفاصيل" : "View Details"}
-                            <ArrowRight className="h-3 w-3" />
+                          <div className="flex items-center justify-between border-t border-border/40 pt-4">
+                            <div className="flex items-center gap-4 text-[11px] font-bold text-muted-foreground">
+                              <span className="flex items-center gap-1.5">
+                                <Clock className="h-3 w-3 text-primary" />
+                                {program.duration_weeks} {isAr ? "أسابيع" : "weeks"}
+                              </span>
+                              <span className="flex items-center gap-1.5">
+                                <Users className="h-3 w-3 text-chart-2" />
+                                {isAr ? `${program.max_matches} حد أقصى` : `Max ${program.max_matches}`}
+                              </span>
+                            </div>
+                            <ArrowRight className="h-3.5 w-3.5 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity" />
                           </div>
                         </CardContent>
                       </Card>
