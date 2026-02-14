@@ -11,6 +11,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { FileText } from "lucide-react";
 import { format } from "date-fns";
 
 interface AdminAction {
@@ -23,7 +24,7 @@ interface AdminAction {
 }
 
 export default function AuditLog() {
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
 
   const { data: actions, isLoading } = useQuery({
     queryKey: ["auditLog"],
@@ -53,11 +54,26 @@ export default function AuditLog() {
     );
   };
 
+  const isAr = language === "ar";
+
   return (
     <div className="space-y-6">
-      <h1 className="font-serif text-2xl font-bold">{t("auditLog")}</h1>
+      {/* Hero Header */}
+      <Card className="overflow-hidden border-border/50 bg-gradient-to-br from-primary/5 via-background to-accent/5">
+        <div className="flex items-center gap-4 p-5 md:p-6">
+          <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-primary/10">
+            <FileText className="h-6 w-6 text-primary" />
+          </div>
+          <div>
+            <h1 className="font-serif text-2xl font-bold">{t("auditLog")}</h1>
+            <p className="mt-0.5 text-sm text-muted-foreground">
+              {isAr ? "سجل جميع الإجراءات الإدارية" : "Track all administrative actions"}
+            </p>
+          </div>
+        </div>
+      </Card>
 
-      <Card>
+      <Card className="border-border/50">
         <CardHeader>
           <CardTitle>Recent Admin Actions</CardTitle>
         </CardHeader>

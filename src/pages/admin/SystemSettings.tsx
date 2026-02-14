@@ -58,19 +58,32 @@ export default function SystemSettings() {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <h1 className="font-serif text-2xl font-bold">
-          {language === "ar" ? "إعدادات النظام" : "System Settings"}
-        </h1>
-        <Button onClick={handleSave} className="gap-2">
-          <Save className="h-4 w-4" />
-          {language === "ar" ? "حفظ التغييرات" : "Save Changes"}
-        </Button>
-      </div>
+      {/* Hero Header */}
+      <Card className="overflow-hidden border-border/50 bg-gradient-to-br from-primary/5 via-background to-accent/5">
+        <div className="flex items-center justify-between p-5 md:p-6">
+          <div className="flex items-center gap-4">
+            <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-primary/10">
+              <Settings className="h-6 w-6 text-primary" />
+            </div>
+            <div>
+              <h1 className="font-serif text-2xl font-bold">
+                {language === "ar" ? "إعدادات النظام" : "System Settings"}
+              </h1>
+              <p className="mt-0.5 text-sm text-muted-foreground">
+                {language === "ar" ? "تكوين إعدادات المنصة والأمان" : "Configure platform and security settings"}
+              </p>
+            </div>
+          </div>
+          <Button onClick={handleSave} className="gap-2">
+            <Save className="h-4 w-4" />
+            {language === "ar" ? "حفظ التغييرات" : "Save Changes"}
+          </Button>
+        </div>
+      </Card>
 
       <div className="grid gap-6 lg:grid-cols-2">
         {/* General Settings */}
-        <Card>
+        <Card className="border-border/50">
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <Globe className="h-5 w-5 text-primary" />

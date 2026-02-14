@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
+import { Card } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { BarChart3, Trophy, Users, DollarSign, Brain, Activity } from "lucide-react";
 import PlatformOverview from "@/components/analytics/PlatformOverview";
@@ -23,14 +24,22 @@ export default function AnalyticsDashboard() {
 
   return (
     <div className="space-y-6">
-      <div>
-        <h1 className="font-serif text-2xl font-bold">
-          {language === "ar" ? "التحليلات المتقدمة" : "Advanced Analytics"}
-        </h1>
-        <p className="text-muted-foreground">
-          {language === "ar" ? "إحصائيات شاملة مع تحليلات ذكية وتنبؤات" : "Comprehensive insights with AI-powered analysis and predictions"}
-        </p>
-      </div>
+      {/* Hero Header */}
+      <Card className="overflow-hidden border-border/50 bg-gradient-to-br from-primary/5 via-background to-accent/5">
+        <div className="flex items-center gap-4 p-5 md:p-6">
+          <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-primary/10">
+            <BarChart3 className="h-6 w-6 text-primary" />
+          </div>
+          <div>
+            <h1 className="font-serif text-2xl font-bold">
+              {language === "ar" ? "التحليلات المتقدمة" : "Advanced Analytics"}
+            </h1>
+            <p className="mt-0.5 text-sm text-muted-foreground">
+              {language === "ar" ? "إحصائيات شاملة مع تحليلات ذكية وتنبؤات" : "Comprehensive insights with AI-powered analysis and predictions"}
+            </p>
+          </div>
+        </div>
+      </Card>
 
       <Tabs defaultValue="overview">
         <TabsList className="grid w-full grid-cols-6">

@@ -97,9 +97,20 @@ export default function RoleManagement() {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <h1 className="font-serif text-2xl font-bold">{t("rolePermissions")}</h1>
-      </div>
+      {/* Hero Header */}
+      <Card className="overflow-hidden border-border/50 bg-gradient-to-br from-primary/5 via-background to-accent/5">
+        <div className="flex items-center gap-4 p-5 md:p-6">
+          <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-primary/10">
+            <Shield className="h-6 w-6 text-primary" />
+          </div>
+          <div>
+            <h1 className="font-serif text-2xl font-bold">{t("rolePermissions")}</h1>
+            <p className="mt-0.5 text-sm text-muted-foreground">
+              {isAr ? "تعيين وإدارة صلاحيات كل دور" : "Assign and manage permissions per role"}
+            </p>
+          </div>
+        </div>
+      </Card>
 
       <Tabs value={activeRole} onValueChange={(v) => handleRoleChange(v as AppRole)}>
         <TabsList className="flex-wrap h-auto gap-1">
