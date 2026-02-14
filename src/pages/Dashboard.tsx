@@ -70,14 +70,14 @@ export default function Dashboard() {
       <Header />
       <main className="container flex-1 py-6 md:py-10">
         {/* Welcome Banner */}
-        <Card className="mb-8 overflow-hidden border-primary/15 bg-gradient-to-br from-primary/5 via-background to-accent/5 relative">
+        <Card className="mb-8 overflow-hidden border-primary/15 bg-gradient-to-br from-primary/5 via-background to-accent/5 relative group">
           {/* Decorative glows */}
           <div className="pointer-events-none absolute -end-16 -top-16 h-48 w-48 rounded-full bg-primary/8 blur-[80px] animate-pulse" />
           <div className="pointer-events-none absolute -start-10 -bottom-10 h-36 w-36 rounded-full bg-accent/10 blur-[60px] animate-pulse [animation-delay:1s]" />
-          <div className="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-primary/20 to-transparent" />
+          <div className="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-primary/25 to-transparent" />
           <CardContent className="relative flex flex-col gap-4 p-5 sm:flex-row sm:items-center sm:justify-between sm:p-6">
             <div className="flex items-center gap-4">
-              <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-primary/10 ring-4 ring-primary/5 shadow-sm">
+              <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-primary/10 ring-4 ring-primary/5 shadow-sm transition-transform duration-300 group-hover:scale-105">
                 <Sparkles className="h-6 w-6 text-primary" />
               </div>
               <div>
@@ -95,11 +95,12 @@ export default function Dashboard() {
         {/* Quick Navigation */}
         <div className="mb-8">
           <div className="grid gap-2.5 grid-cols-4 sm:grid-cols-4 lg:grid-cols-8">
-            {sections.map((s) => (
+            {sections.map((s, i) => (
               <Link key={s.title} to={s.href}>
-                <Card className="group h-full transition-all hover:shadow-md hover:-translate-y-1 border-border/50 hover:border-primary/20 bg-card/80">
+                <Card className="group h-full transition-all duration-200 hover:shadow-md hover:-translate-y-1 border-border/50 hover:border-primary/20 bg-card/80"
+                  style={{ animationDelay: `${i * 50}ms` }}>
                   <CardContent className="flex flex-col items-center gap-2.5 p-3 text-center sm:p-4">
-                    <div className={`flex h-11 w-11 items-center justify-center rounded-xl ${s.bg} transition-transform group-hover:scale-110 ring-2 ring-transparent group-hover:ring-primary/10`}>
+                    <div className={`flex h-11 w-11 items-center justify-center rounded-xl ${s.bg} transition-all duration-200 group-hover:scale-110 ring-2 ring-transparent group-hover:ring-primary/10 group-hover:shadow-sm`}>
                       <s.icon className={`h-5 w-5 ${s.color}`} />
                     </div>
                     <h3 className="text-[11px] font-medium leading-tight sm:text-xs">{s.title}</h3>
@@ -171,13 +172,13 @@ function AchievementsSummary({ userId, isAr }: { userId: string; isAr: boolean }
   return (
     <div className="grid grid-cols-3 gap-3">
       {items.map((item) => (
-        <Card key={item.label} className={`border-s-[3px] ${item.border} transition-all hover:shadow-sm`}>
+        <Card key={item.label} className={`border-s-[3px] ${item.border} transition-all duration-200 hover:shadow-md hover:-translate-y-0.5 group`}>
           <CardContent className="flex items-center gap-3 p-3 sm:p-4">
-            <div className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-xl ${item.bg}`}>
+            <div className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-xl ${item.bg} transition-transform group-hover:scale-110`}>
               <item.icon className={`h-4 w-4 ${item.color}`} />
             </div>
             <div>
-              <p className="text-lg font-bold sm:text-xl">{item.value}</p>
+              <p className="text-lg font-bold sm:text-xl tabular-nums">{item.value}</p>
               <p className="text-[10px] uppercase tracking-wider text-muted-foreground">{item.label}</p>
             </div>
           </CardContent>
