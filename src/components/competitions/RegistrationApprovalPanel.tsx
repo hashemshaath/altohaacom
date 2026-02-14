@@ -5,6 +5,7 @@ import { useLanguage } from "@/i18n/LanguageContext";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/hooks/use-toast";
 import { sendNotification } from "@/lib/notifications";
+import { executeWorkflow } from "@/lib/workflowAutomation";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -144,6 +145,12 @@ export function RegistrationApprovalPanel({ competitionId }: RegistrationApprova
           channels: ["in_app", "email"],
         });
       }
+
+      // Trigger workflow
+      executeWorkflow("registration_approved", {
+        competitionId,
+        userId: registration.participant?.user_id,
+      }).catch(() => {});
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["competition-registrations", competitionId] });
@@ -190,6 +197,13 @@ export function RegistrationApprovalPanel({ competitionId }: RegistrationApprova
           channels: ["in_app", "email"],
         });
       }
+
+      // Trigger workflow
+      executeWorkflow("registration_rejected", {
+        competitionId,
+        userId: registration.participant?.user_id,
+        metadata: { reason },
+      }).catch(() => {});
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["competition-registrations", competitionId] });

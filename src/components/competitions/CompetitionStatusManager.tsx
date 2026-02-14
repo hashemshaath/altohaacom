@@ -4,6 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useToast } from "@/hooks/use-toast";
 import { sendNotification } from "@/lib/notifications";
+import { executeWorkflow } from "@/lib/workflowAutomation";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -171,6 +172,12 @@ export function CompetitionStatusManager({
           }
         }
       }
+
+      // Trigger workflow automation
+      executeWorkflow("competition_status_changed", {
+        competitionId,
+        metadata: { newStatus },
+      }).catch(() => {});
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["competition", competitionId] });
