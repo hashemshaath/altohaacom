@@ -84,21 +84,26 @@ export default function Profile() {
       <SEOHead title="Profile" description="Your Altohaa profile" />
       <Header />
       <main className="container flex-1 py-6 md:py-8 max-w-5xl">
-        {profile && user && (
-          <ProfileHeader profile={profile} roles={roles} userId={user.id} onProfileUpdate={fetchProfile} />
-        )}
+        <div className="relative group">
+          {profile && user && (
+            <ProfileHeader profile={profile} roles={roles} userId={user.id} onProfileUpdate={fetchProfile} />
+          )}
+        </div>
 
-        <Tabs value={activeTab} onValueChange={setActiveTab} className="mt-8">
-          <div className="sticky top-[64px] z-20 bg-background/80 backdrop-blur-md py-3 -mx-2 px-2 border-b border-border/40">
-            <TabsList className="w-full justify-start gap-1 bg-transparent p-0 rounded-none h-auto flex-wrap overflow-x-auto no-scrollbar">
+        <Tabs value={activeTab} onValueChange={setActiveTab} className="mt-10">
+          <div className="sticky top-[64px] z-30 -mx-4 border-y border-border/40 bg-background/80 px-4 py-4 backdrop-blur-md md:rounded-2xl md:border md:mx-0 md:px-6 shadow-sm">
+            <TabsList className="h-auto w-full justify-start gap-2 overflow-x-auto bg-transparent p-0 no-scrollbar">
               {tabs.map((tab) => (
                 <TabsTrigger
                   key={tab.id}
                   value={tab.id}
-                  className="gap-2 text-xs sm:text-sm data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-md rounded-xl px-4 py-2 transition-all duration-200 group"
+                  className="group relative flex items-center gap-2.5 rounded-xl px-5 py-2.5 text-xs font-bold uppercase tracking-widest transition-all duration-300 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-lg data-[state=active]:shadow-primary/20 hover:bg-primary/5 hover:text-primary"
                 >
-                  <tab.icon className="h-4 w-4 transition-transform group-data-[state=active]:scale-110" />
-                  {tab.label}
+                  <tab.icon className="h-4 w-4 transition-transform duration-300 group-hover:scale-110 group-data-[state=active]:scale-110" />
+                  <span className="relative z-10">{tab.label}</span>
+                  {activeTab === tab.id && (
+                    <div className="absolute inset-0 z-0 rounded-xl bg-primary animate-in fade-in zoom-in-95 duration-300" />
+                  )}
                 </TabsTrigger>
               ))}
             </TabsList>

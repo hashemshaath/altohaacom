@@ -55,22 +55,25 @@ export function ProfileHeader({ profile, roles, userId, onProfileUpdate }: Profi
   const profileViews = (profile as any)?.view_count || 0;
 
   return (
-    <div className="relative overflow-hidden rounded-2xl border border-border/50 bg-card shadow-lg transition-all duration-500 hover:shadow-xl group">
-      {/* Cover Image */}
-      <div className="relative h-36 sm:h-52 bg-gradient-to-br from-primary/15 via-background to-accent/15 overflow-hidden">
+    <div className="relative overflow-hidden rounded-[2rem] border border-border/40 bg-card/60 backdrop-blur-sm shadow-xl transition-all duration-500 hover:shadow-2xl hover:border-primary/20 group">
+      {/* Cover Image - Premium Hero Style */}
+      <div className="relative h-44 sm:h-64 bg-gradient-to-br from-primary/10 via-background to-accent/10 overflow-hidden">
+        <div className="pointer-events-none absolute -top-12 -end-12 h-48 w-48 rounded-full bg-primary/10 blur-[60px] animate-pulse" />
+        <div className="pointer-events-none absolute -bottom-10 -start-10 h-32 w-32 rounded-full bg-accent/10 blur-[50px] animate-pulse [animation-delay:2s]" />
+        
         {profile?.cover_image_url && (
           <img 
             src={profile.cover_image_url} 
             alt="" 
-            className="absolute inset-0 h-full w-full object-cover transition-transform duration-700 group-hover:scale-105" 
+            className="absolute inset-0 h-full w-full object-cover transition-transform duration-1000 group-hover:scale-110" 
           />
         )}
-        <div className="absolute inset-0 bg-gradient-to-t from-background via-background/20 to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-t from-background via-background/40 to-transparent" />
 
         <Button
-          variant="outline"
+          variant="secondary"
           size="sm"
-          className="absolute end-3 top-3 h-8 gap-1.5 bg-background/60 backdrop-blur-sm text-xs"
+          className="absolute end-4 top-4 h-9 gap-2 bg-background/40 backdrop-blur-xl border-white/10 text-xs font-bold uppercase tracking-wider shadow-lg rounded-xl hover:bg-background/60 transition-all"
           onClick={() => coverInputRef.current?.click()}
           disabled={uploading}
         >
@@ -83,21 +86,23 @@ export function ProfileHeader({ profile, roles, userId, onProfileUpdate }: Profi
       {/* Profile Info */}
       <div className="relative px-4 pb-5 sm:px-6">
         {/* Avatar */}
-        <div className="relative -mt-12 sm:-mt-14 mb-3">
+        <div className="relative -mt-16 sm:-mt-20 mb-5">
           <div className="relative inline-block">
-            <Avatar className="h-24 w-24 sm:h-28 sm:w-28 ring-4 ring-background shadow-2xl transition-transform duration-300 group-hover:scale-105">
-              <AvatarImage src={profile?.avatar_url || undefined} />
-              <AvatarFallback className="text-3xl font-bold bg-primary/10 text-primary">
-                {(profile?.full_name || "U")[0].toUpperCase()}
-              </AvatarFallback>
-            </Avatar>
+            <div className="relative h-32 w-32 sm:h-40 sm:w-40 rounded-3xl p-1 bg-gradient-to-br from-primary via-primary-glow to-accent shadow-2xl transition-transform duration-500 group-hover:scale-105 group-hover:rotate-2">
+              <Avatar className="h-full w-full rounded-[1.4rem] ring-4 ring-background shadow-inner overflow-hidden bg-card">
+                <AvatarImage src={profile?.avatar_url || undefined} className="object-cover" />
+                <AvatarFallback className="text-4xl font-black bg-primary/10 text-primary">
+                  {(profile?.full_name || "U")[0].toUpperCase()}
+                </AvatarFallback>
+              </Avatar>
+            </div>
 
             <button
               onClick={() => avatarInputRef.current?.click()}
               disabled={uploading}
-              className="absolute bottom-0 end-0 flex h-7 w-7 items-center justify-center rounded-full bg-primary text-primary-foreground shadow-md hover:bg-primary/90 transition-colors"
+              className="absolute bottom-1 end-1 flex h-9 w-9 items-center justify-center rounded-2xl bg-primary text-primary-foreground shadow-xl hover:bg-primary/90 transition-all hover:scale-110 ring-4 ring-background"
             >
-              <Camera className="h-3.5 w-3.5" />
+              <Camera className="h-4 w-4" />
             </button>
             <input ref={avatarInputRef} type="file" accept="image/*" className="hidden" onChange={(e) => e.target.files?.[0] && uploadImage(e.target.files[0], "avatar")} />
           </div>
@@ -106,16 +111,16 @@ export function ProfileHeader({ profile, roles, userId, onProfileUpdate }: Profi
         <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
           <div>
             <div className="flex items-center gap-2 flex-wrap">
-              <h1 className="font-serif text-xl font-bold sm:text-2xl">
+              <h1 className="font-serif text-2xl font-black sm:text-3xl lg:text-4xl tracking-tight text-foreground drop-shadow-sm">
                 {isAr ? profile?.full_name_ar || profile?.full_name : profile?.full_name}
               </h1>
-              {profile?.is_verified && <VerifiedBadge level={profile.verification_level} size="md" />}
+              {profile?.is_verified && <VerifiedBadge level={profile.verification_level} size="lg" />}
             </div>
             {profile?.display_name && (
-              <p className="text-sm text-muted-foreground">{isAr ? profile.display_name_ar || profile.display_name : profile.display_name}</p>
+              <p className="text-base font-bold text-primary/80 tracking-wide mt-1">{isAr ? profile.display_name_ar || profile.display_name : profile.display_name}</p>
             )}
             {profile?.username && (
-              <p className="text-xs text-muted-foreground mt-0.5">@{profile.username}</p>
+              <p className="text-xs font-mono font-bold text-muted-foreground mt-1 bg-muted/30 w-fit px-2 py-0.5 rounded-lg border border-border/40">@{profile.username}</p>
             )}
             {(profile?.job_title || profile?.specialization) && (
               <div className="mt-1.5 flex items-center gap-1.5 text-sm">
