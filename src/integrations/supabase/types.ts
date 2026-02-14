@@ -1004,6 +1004,69 @@ export type Database = {
         }
         Relationships: []
       }
+      bonus_campaigns: {
+        Row: {
+          badge_text: string | null
+          badge_text_ar: string | null
+          banner_color: string | null
+          bonus_points: number | null
+          campaign_type: string
+          created_at: string | null
+          created_by: string | null
+          description: string | null
+          description_ar: string | null
+          ends_at: string
+          id: string
+          is_active: boolean | null
+          multiplier: number | null
+          name: string
+          name_ar: string | null
+          starts_at: string
+          target_actions: string[] | null
+          updated_at: string | null
+        }
+        Insert: {
+          badge_text?: string | null
+          badge_text_ar?: string | null
+          banner_color?: string | null
+          bonus_points?: number | null
+          campaign_type?: string
+          created_at?: string | null
+          created_by?: string | null
+          description?: string | null
+          description_ar?: string | null
+          ends_at: string
+          id?: string
+          is_active?: boolean | null
+          multiplier?: number | null
+          name: string
+          name_ar?: string | null
+          starts_at: string
+          target_actions?: string[] | null
+          updated_at?: string | null
+        }
+        Update: {
+          badge_text?: string | null
+          badge_text_ar?: string | null
+          banner_color?: string | null
+          bonus_points?: number | null
+          campaign_type?: string
+          created_at?: string | null
+          created_by?: string | null
+          description?: string | null
+          description_ar?: string | null
+          ends_at?: string
+          id?: string
+          is_active?: boolean | null
+          multiplier?: number | null
+          name?: string
+          name_ar?: string | null
+          starts_at?: string
+          target_actions?: string[] | null
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
       bulk_imports: {
         Row: {
           created_at: string
@@ -9345,6 +9408,36 @@ export type Database = {
           reward_type?: string
           reward_value?: number
           sort_order?: number
+        }
+        Relationships: []
+      }
+      referral_tier_bonuses: {
+        Row: {
+          bonus_points: number
+          created_at: string | null
+          id: string
+          label: string
+          label_ar: string | null
+          max_referrals: number | null
+          min_referrals: number
+        }
+        Insert: {
+          bonus_points?: number
+          created_at?: string | null
+          id?: string
+          label: string
+          label_ar?: string | null
+          max_referrals?: number | null
+          min_referrals: number
+        }
+        Update: {
+          bonus_points?: number
+          created_at?: string | null
+          id?: string
+          label?: string
+          label_ar?: string | null
+          max_referrals?: number | null
+          min_referrals?: number
         }
         Relationships: []
       }
