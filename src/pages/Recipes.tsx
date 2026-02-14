@@ -179,7 +179,7 @@ export default function Recipes() {
           </div>
         </div>
 
-        <div className="container mx-auto px-4 py-8 space-y-6">
+        <div className="container py-8 space-y-6">
           {/* Filters */}
           <Card>
             <CardContent className="flex flex-wrap items-center gap-3 py-4">

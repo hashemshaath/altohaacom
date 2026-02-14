@@ -99,7 +99,7 @@ export default function Exhibitions() {
 
       {/* Compact Hero */}
       <section className="border-b border-border/40 bg-gradient-to-b from-primary/5 to-background">
-        <div className="container py-8 md:py-12 max-w-5xl">
+        <div className="container py-8 md:py-12">
           <div className="flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
             <div className="space-y-3 max-w-2xl">
               <div className="inline-flex items-center gap-2 rounded-full bg-primary/10 px-3 py-1 ring-1 ring-primary/20">
@@ -152,7 +152,7 @@ export default function Exhibitions() {
         </div>
       </section>
 
-      <main className="container flex-1 py-4 md:py-6 max-w-5xl">
+      <main className="container flex-1 py-4 md:py-6">
         {/* Featured */}
         {featuredExhibitions && featuredExhibitions.length > 0 && (
           <section className="mb-10">

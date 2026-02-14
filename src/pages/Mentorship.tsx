@@ -106,7 +106,7 @@ export default function Mentorship() {
           </div>
         </div>
 
-        <div className="container mx-auto px-4 py-8 space-y-8">
+        <div className="container py-8 space-y-8">
           <Tabs defaultValue="programs">
             <TabsList>
               <TabsTrigger value="programs" className="gap-1.5">

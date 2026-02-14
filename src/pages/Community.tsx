@@ -93,7 +93,7 @@ export default function Community() {
         </div>
       </section>
 
-      <main className="container flex-1 py-4 md:py-6 max-w-5xl">
+      <main className="container flex-1 py-4 md:py-6">
         <Tabs defaultValue="feed" className="w-full">
           <div className="sticky top-[64px] z-40 -mx-4 border-b border-border/40 bg-background/80 px-4 py-3 backdrop-blur-md md:mx-0 md:rounded-2xl md:border md:px-4 md:shadow-sm">
             <TabsList className="h-auto w-full justify-start gap-1.5 overflow-x-auto bg-transparent p-0">

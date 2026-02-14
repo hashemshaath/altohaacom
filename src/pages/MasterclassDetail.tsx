@@ -219,7 +219,7 @@ export default function MasterclassDetail() {
     return (
       <div className="flex min-h-screen flex-col bg-background">
         <Header />
-        <main className="flex-1 container mx-auto px-4 py-16 text-center">
+        <main className="flex-1 container py-16 text-center">
           <p className="text-muted-foreground">{language === "ar" ? "الدورة غير موجودة" : "Masterclass not found"}</p>
         </main>
         <Footer />
@@ -246,7 +246,7 @@ export default function MasterclassDetail() {
       <main className="flex-1">
         {/* Hero */}
         <div className="bg-gradient-to-r from-primary/10 to-accent/10 py-12">
-          <div className="container mx-auto px-4">
+          <div className="container">
             <Button variant="ghost" onClick={() => navigate("/masterclasses")} className="mb-4">
               <ArrowLeft className="h-4 w-4 mr-2" />
               {language === "ar" ? "العودة" : "Back"}
@@ -345,7 +345,7 @@ export default function MasterclassDetail() {
 
         {/* What you'll learn */}
         {masterclass.what_you_learn && masterclass.what_you_learn.length > 0 && (
-          <div className="container mx-auto px-4 py-8">
+          <div className="container py-8">
             <Card>
               <CardHeader>
                 <CardTitle>{language === "ar" ? "ماذا ستتعلم" : "What you'll learn"}</CardTitle>
@@ -373,7 +373,7 @@ export default function MasterclassDetail() {
           const lesson = allLessons.find((l: any) => l.id === selectedLessonId);
           if (!lesson) return null;
           return (
-            <div className="container mx-auto px-4 pb-12">
+            <div className="container pb-12">
               <LessonViewer
                 lesson={lesson}
                 isCompleted={completedLessonIds.has(lesson.id)}
@@ -387,7 +387,7 @@ export default function MasterclassDetail() {
 
         {/* Course Content */}
         {!selectedLessonId && (
-          <div className="container mx-auto px-4 pb-12">
+          <div className="container pb-12">
             <h2 className="text-xl font-semibold mb-4">
               {language === "ar" ? "محتوى الدورة" : "Course Content"}
             </h2>

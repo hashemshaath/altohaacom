@@ -159,7 +159,7 @@ export default function PublicProfile() {
       <div className="flex min-h-screen flex-col">
         <Header />
         <div className="relative h-56 md:h-72 bg-gradient-to-br from-primary/20 via-primary/5 to-secondary animate-pulse" />
-        <main className="container flex-1 -mt-20 pb-8 max-w-5xl">
+        <main className="container flex-1 -mt-20 pb-8">
           <Skeleton className="h-32 rounded-2xl mb-4" />
           <Skeleton className="h-64 rounded-2xl" />
         </main>
@@ -241,7 +241,7 @@ export default function PublicProfile() {
         </div>
 
         {/* Profile Card overlapping cover */}
-        <div className="relative z-10 -mt-20 md:-mt-24 px-3 sm:px-4 md:px-6 max-w-5xl mx-auto w-full animate-in fade-in slide-in-from-bottom-4 duration-700">
+        <div className="relative z-10 -mt-20 md:-mt-24 px-3 sm:px-4 md:px-6 max-w-[1200px] mx-auto w-full animate-in fade-in slide-in-from-bottom-4 duration-700">
           <Card className="border-border/40 shadow-2xl rounded-[2.5rem] backdrop-blur-xl bg-card/80 overflow-hidden">
             <div className="absolute top-0 inset-x-0 h-1.5 bg-gradient-to-r from-primary/40 via-primary to-primary/40" />
             <CardContent className="p-6 md:p-10">
@@ -362,7 +362,7 @@ export default function PublicProfile() {
       </section>
 
       {/* ═══════════════ STATS BAR ═══════════════ */}
-      <div className="px-3 sm:px-4 md:px-6 max-w-5xl mx-auto w-full mt-4">
+      <div className="px-3 sm:px-4 md:px-6 max-w-[1200px] mx-auto w-full mt-4">
         <Card className="rounded-2xl">
           <CardContent className="p-0">
             <div className="flex items-center justify-between px-5 py-4 flex-wrap gap-4" dir={isAr ? "rtl" : "ltr"}>
@@ -408,7 +408,7 @@ export default function PublicProfile() {
       </div>
 
       {/* ═══════════════ MAIN CONTENT ═══════════════ */}
-      <main className="flex-1 px-3 sm:px-4 md:px-6 max-w-5xl mx-auto w-full mt-6 pb-10">
+      <main className="flex-1 px-3 sm:px-4 md:px-6 max-w-[1200px] mx-auto w-full mt-6 pb-10">
         <div className="space-y-8">
 
           {/* ── ABOUT SECTION ── */}

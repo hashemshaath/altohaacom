@@ -168,7 +168,7 @@ export default function TastingDetail() {
     return (
       <div className="min-h-screen bg-background">
         <Header />
-        <main className="container mx-auto px-4 py-8">
+        <main className="container py-8">
           <Skeleton className="mb-4 h-8 w-48" />
           <div className="grid gap-3 grid-cols-3 mb-6">
             {[1, 2, 3].map(i => <Skeleton key={i} className="h-20" />)}
@@ -207,7 +207,7 @@ export default function TastingDetail() {
       <SEOHead title={session.title} />
       <div className="min-h-screen bg-background" dir={isAr ? "rtl" : "ltr"}>
         <Header />
-        <main className="container mx-auto px-4 py-8">
+        <main className="container py-8">
           <Button variant="ghost" onClick={() => navigate("/tastings")} className="mb-4 gap-2">
             <ArrowLeft className="h-4 w-4" />
             {isAr ? "جلسات التذوق" : "Tasting Sessions"}

@@ -81,7 +81,7 @@ export default function CompanyPublicProfile() {
     return (
       <div className="flex min-h-screen flex-col">
         <Header />
-        <main className="container max-w-4xl flex-1 py-8">
+        <main className="container flex-1 py-8">
           <Skeleton className="h-64 rounded-2xl" />
           <div className="mt-6 grid gap-6 md:grid-cols-2">
             <Skeleton className="h-48" />
@@ -126,7 +126,7 @@ export default function CompanyPublicProfile() {
           {company.cover_image_url && (
             <img src={company.cover_image_url} className="absolute inset-0 h-full w-full object-cover opacity-15" alt="" />
           )}
-          <div className="container relative max-w-4xl py-12 md:py-16">
+          <div className="container relative py-12 md:py-16">
             <Button variant="ghost" size="sm" className="mb-6" onClick={() => navigate(-1)}>
               <ArrowLeft className="me-2 h-4 w-4" />
               {isAr ? "رجوع" : "Back"}
@@ -191,7 +191,7 @@ export default function CompanyPublicProfile() {
         </div>
 
         {/* Details */}
-        <div className="container max-w-4xl py-8">
+        <div className="container py-8">
           <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
             {/* Contact */}
             {(company.phone || company.email || company.website) && (

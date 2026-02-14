@@ -42,7 +42,7 @@ export default function PrivacyPolicy() {
       <Header />
       <main className="flex-1">
         <section className="border-b border-border/40 bg-gradient-to-b from-primary/5 to-background">
-          <div className="container py-10 md:py-14 max-w-5xl text-center">
+          <div className="container py-10 md:py-14 text-center">
             <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/5 px-4 py-1.5">
               <Shield className="h-3.5 w-3.5 text-primary" />
               <span className="text-xs font-medium text-primary">{isAr ? "سياسة الخصوصية" : "Privacy Policy"}</span>
@@ -55,7 +55,7 @@ export default function PrivacyPolicy() {
           </div>
         </section>
 
-        <div className="container py-8 md:py-12 max-w-5xl">
+        <div className="container py-8 md:py-12">
           <Card>
             <CardContent className="py-8 space-y-8">
               {sections.map((section, i) => (
