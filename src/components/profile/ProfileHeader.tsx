@@ -8,6 +8,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Camera, MapPin, ChefHat, Shield, Crown, Star, Eye } from "lucide-react";
 import { countryFlag } from "@/lib/countryFlag";
 import { VerifiedBadge } from "@/components/verification/VerifiedBadge";
+import { toEnglishDigits } from "@/lib/formatNumber";
 
 interface ProfileHeaderProps {
   profile: any;
@@ -157,8 +158,8 @@ export function ProfileHeader({ profile, roles, userId, onProfileUpdate }: Profi
 
         {/* Quick stats */}
         <div className="mt-4 flex items-center gap-4 text-xs text-muted-foreground">
-          <span className="flex items-center gap-1"><Eye className="h-3 w-3" /> {profileViews} {isAr ? "زيارة" : "views"}</span>
-          <span>{isAr ? "عضو منذ" : "Member since"} {new Date(profile?.created_at).toLocaleDateString(isAr ? "ar-SA" : "en-US", { year: "numeric", month: "short" })}</span>
+          <span className="flex items-center gap-1"><Eye className="h-3 w-3" /> {toEnglishDigits(profileViews)} {isAr ? "زيارة" : "views"}</span>
+          <span>{isAr ? "عضو منذ" : "Member since"} {toEnglishDigits(new Date(profile?.created_at).toLocaleDateString(isAr ? "ar-SA" : "en-US", { year: "numeric", month: "short" }))}</span>
         </div>
       </div>
     </div>

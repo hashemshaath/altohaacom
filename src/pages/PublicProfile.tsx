@@ -26,6 +26,7 @@ import { ProfileShareButtons } from "@/components/profile/ProfileShareButtons";
 import { useFollowStats, useIsFollowing, useToggleFollow, useFollowersList, useFollowPrivacy, usePendingFollowRequest } from "@/hooks/useFollow";
 import { useUserSpecialties } from "@/hooks/useSpecialties";
 import { useRecordProfileView } from "@/hooks/useProfileViews";
+import { toEnglishDigits } from "@/lib/formatNumber";
 import {
   User, MapPin, Globe, Award, BadgeCheck, Instagram, Twitter, Facebook,
   Linkedin, Youtube, ChefHat, ArrowLeft, Calendar, Earth, UserPlus,
@@ -46,7 +47,7 @@ const SOCIAL_ICONS: Record<string, typeof Instagram> = {
 
 const formatDate = (date: string | null, isAr: boolean) => {
   if (!date) return isAr ? "الحالي" : "Present";
-  return new Date(date).toLocaleDateString(isAr ? "ar-SA" : "en-US", { year: "numeric", month: "short" });
+  return toEnglishDigits(new Date(date).toLocaleDateString(isAr ? "ar-SA" : "en-US", { year: "numeric", month: "short" }));
 };
 
 export default function PublicProfile() {
@@ -663,7 +664,7 @@ export default function PublicProfile() {
                 <Separator />
                 <div className="flex items-center gap-1.5 text-[11px] text-muted-foreground">
                   <Calendar className="h-3 w-3" />
-                  {t("memberSince")}: {new Date(profile.created_at).toLocaleDateString(isAr ? "ar-SA" : "en-US", { year: "numeric", month: "long" })}
+                  {t("memberSince")}: {toEnglishDigits(new Date(profile.created_at).toLocaleDateString(isAr ? "ar-SA" : "en-US", { year: "numeric", month: "long" }))}
                 </div>
                 {profile.account_number && (
                   <Badge variant="outline" className="font-mono text-[10px]">{profile.account_number}</Badge>

@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Printer } from "lucide-react";
 import { QRCodeSVG } from "qrcode.react";
 import { getVerificationUrl } from "@/lib/qrCode";
+import { toEnglishDigits } from "@/lib/formatNumber";
 
 interface InvoiceItem {
   name: string;
@@ -149,9 +150,9 @@ export default function PrintableInvoice({ invoice, company, showPrintButton = t
 
   const formatDate = (date: string) => {
     try {
-      return new Date(date).toLocaleDateString(isAr ? "ar-SA" : "en-US", {
+      return toEnglishDigits(new Date(date).toLocaleDateString(isAr ? "ar-SA" : "en-US", {
         year: "numeric", month: "long", day: "numeric",
-      });
+      }));
     } catch { return date; }
   };
 

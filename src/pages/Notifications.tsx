@@ -19,6 +19,7 @@ import { formatDistanceToNow, format, isToday, isYesterday } from "date-fns";
 import { ar, enUS } from "date-fns/locale";
 import { useNavigate } from "react-router-dom";
 import { cn } from "@/lib/utils";
+import { toEnglishDigits } from "@/lib/formatNumber";
 
 type NotificationSection =
   | "all"
@@ -95,7 +96,7 @@ export default function Notifications() {
     let key: string;
     if (isToday(date)) key = isAr ? "اليوم" : "Today";
     else if (isYesterday(date)) key = isAr ? "أمس" : "Yesterday";
-    else key = format(date, "MMM d, yyyy", { locale: isAr ? ar : enUS });
+    else key = toEnglishDigits(format(date, "MMM d, yyyy", { locale: isAr ? ar : enUS }));
     if (!acc[key]) acc[key] = [];
     acc[key].push(n);
     return acc;
@@ -166,7 +167,7 @@ export default function Notifications() {
                 </h1>
                 {unreadCount > 0 && (
                   <p className="text-sm text-muted-foreground">
-                    {isAr ? `${unreadCount} إشعار غير مقروء` : `${unreadCount} unread`}
+                    {isAr ? `${toEnglishDigits(unreadCount)} إشعار غير مقروء` : `${unreadCount} unread`}
                   </p>
                 )}
               </div>
@@ -192,19 +193,19 @@ export default function Notifications() {
             <Card className="border-s-[3px] border-s-primary">
               <CardContent className="p-3 text-center">
                 <p className="text-xs text-muted-foreground">{isAr ? "الإجمالي" : "Total"}</p>
-                <p className="text-xl font-bold">{notifications.length}</p>
+                <p className="text-xl font-bold">{toEnglishDigits(notifications.length)}</p>
               </CardContent>
             </Card>
             <Card className="border-s-[3px] border-s-chart-4">
               <CardContent className="p-3 text-center">
                 <p className="text-xs text-muted-foreground">{isAr ? "غير مقروء" : "Unread"}</p>
-                <p className="text-xl font-bold">{unreadCount}</p>
+                <p className="text-xl font-bold">{toEnglishDigits(unreadCount)}</p>
               </CardContent>
             </Card>
             <Card className="border-s-[3px] border-s-chart-5">
               <CardContent className="p-3 text-center">
                 <p className="text-xs text-muted-foreground">{isAr ? "مقروء" : "Read"}</p>
-                <p className="text-xl font-bold">{notifications.length - unreadCount}</p>
+                <p className="text-xl font-bold">{toEnglishDigits(notifications.length - unreadCount)}</p>
               </CardContent>
             </Card>
           </div>
@@ -226,7 +227,7 @@ export default function Notifications() {
                   {isAr ? section.ar : section.en}
                   {count > 0 && (
                     <Badge variant="secondary" className="text-[10px] h-4 px-1.5 ms-1">
-                      {count}
+                      {toEnglishDigits(count)}
                     </Badge>
                   )}
                 </Button>
@@ -320,10 +321,10 @@ export default function Notifications() {
                               </div>
                               <div className="flex items-center gap-3 mt-2 text-xs text-muted-foreground flex-wrap">
                                 <span>
-                                  {formatDistanceToNow(new Date(notification.created_at), {
+                                  {toEnglishDigits(formatDistanceToNow(new Date(notification.created_at), {
                                     addSuffix: true,
                                     locale: isAr ? ar : enUS,
-                                  })}
+                                  }))}
                                 </span>
                                 <Badge variant="outline" className="text-[10px] px-1.5 py-0">
                                   {getTypeLabel(notification.type || "info")}
