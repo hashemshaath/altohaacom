@@ -2360,6 +2360,8 @@ export type Database = {
         Row: {
           communication_rating: number | null
           company_id: string
+          company_response: string | null
+          company_response_ar: string | null
           competition_id: string | null
           created_at: string | null
           delivery_rating: number | null
@@ -2369,6 +2371,8 @@ export type Database = {
           order_id: string | null
           overall_rating: number | null
           quality_rating: number | null
+          responded_at: string | null
+          responded_by: string | null
           review: string | null
           review_ar: string | null
           value_rating: number | null
@@ -2376,6 +2380,8 @@ export type Database = {
         Insert: {
           communication_rating?: number | null
           company_id: string
+          company_response?: string | null
+          company_response_ar?: string | null
           competition_id?: string | null
           created_at?: string | null
           delivery_rating?: number | null
@@ -2385,6 +2391,8 @@ export type Database = {
           order_id?: string | null
           overall_rating?: number | null
           quality_rating?: number | null
+          responded_at?: string | null
+          responded_by?: string | null
           review?: string | null
           review_ar?: string | null
           value_rating?: number | null
@@ -2392,6 +2400,8 @@ export type Database = {
         Update: {
           communication_rating?: number | null
           company_id?: string
+          company_response?: string | null
+          company_response_ar?: string | null
           competition_id?: string | null
           created_at?: string | null
           delivery_rating?: number | null
@@ -2401,6 +2411,8 @@ export type Database = {
           order_id?: string | null
           overall_rating?: number | null
           quality_rating?: number | null
+          responded_at?: string | null
+          responded_by?: string | null
           review?: string | null
           review_ar?: string | null
           value_rating?: number | null
