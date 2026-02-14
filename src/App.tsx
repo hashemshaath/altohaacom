@@ -10,6 +10,7 @@ import { ThemeProvider } from "@/components/ThemeProvider";
 import { FloatingHelpButton } from "@/components/FloatingHelpButton";
 import { MobileBottomNav } from "@/components/mobile/MobileBottomNav";
 import { SkipToContent } from "@/components/a11y/SkipToContent";
+import { ErrorBoundary } from "@/components/ErrorBoundary";
 
 const LiveChatWidget = lazy(() => import("@/components/crm/LiveChatWidget").then(m => ({ default: m.LiveChatWidget })));
 const NotFound = lazy(() => import("./pages/NotFound"));
@@ -47,6 +48,7 @@ const App = () => (
               <SkipToContent />
               <Suspense fallback={null}><LiveChatWidget /></Suspense>
               <FloatingHelpButton />
+              <ErrorBoundary>
               <Suspense fallback={<div className="flex h-screen items-center justify-center" role="status" aria-label="Loading"><div className="h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent" /><span className="sr-only">Loading page...</span></div>}>
               <main id="main-content" className="pb-16 md:pb-0">
               <Routes>
@@ -58,6 +60,7 @@ const App = () => (
               </Routes>
               </main>
               </Suspense>
+              </ErrorBoundary>
               <MobileBottomNav />
             </BrowserRouter>
           </TooltipProvider>
