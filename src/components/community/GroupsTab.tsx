@@ -243,7 +243,7 @@ export function GroupsTab() {
               <div className="flex items-center justify-between">
                 <span className="flex items-center gap-1.5 text-xs text-muted-foreground">
                   <Users className="h-3.5 w-3.5" />
-                  {group.members_count} {t("members")}
+                  {group.members_count} {isAr ? "عضو" : t("members")}
                 </span>
                 {user && group.created_by !== user.id && (
                   <Button

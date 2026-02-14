@@ -20,6 +20,7 @@ import {
 import { countryFlag } from "@/lib/countryFlag";
 import { useToast } from "@/hooks/use-toast";
 import { useState } from "react";
+import { toEnglishDigits } from "@/lib/formatNumber";
 
 function FollowButton({ userId }: { userId: string }) {
   const { data: isFollowing } = useIsFollowing(userId);
@@ -173,7 +174,7 @@ export function NetworkTab() {
                     <span className="text-xs font-medium text-center truncate max-w-[100px]">{f.full_name}</span>
                     <span className="text-[10px] text-muted-foreground flex items-center gap-1">
                       <Clock className="h-2.5 w-2.5" />
-                      {new Date(f.followed_at).toLocaleDateString(isAr ? "ar-SA" : "en-US", { month: "short", day: "numeric" })}
+                      {toEnglishDigits(new Date(f.followed_at).toLocaleDateString(isAr ? "ar-SA" : "en-US", { month: "short", day: "numeric" }))}
                     </span>
                     <FollowButton userId={f.user_id} />
                   </Link>

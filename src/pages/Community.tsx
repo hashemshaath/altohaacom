@@ -14,6 +14,7 @@ import { GroupsTab } from "@/components/community/GroupsTab";
 import { RecipesTab } from "@/components/community/RecipesTab";
 import { EventsTab } from "@/components/community/EventsTab";
 import { NetworkTab } from "@/components/community/NetworkTab";
+import { formatNumber } from "@/lib/formatNumber";
 import { Newspaper, ChefHat, CalendarDays, UsersRound, UserPlus, Users, BookOpen } from "lucide-react";
 
 export default function Community() {
@@ -43,12 +44,12 @@ export default function Community() {
   return (
     <div className="flex min-h-screen flex-col bg-background">
       <SEOHead
-        title="Culinary Community"
-        description="Connect with chefs, share recipes, join groups, and engage with the culinary community on Altohaa."
+        title={isAr ? "مجتمع الطهاة" : "Culinary Community"}
+        description={isAr ? "تواصل مع الطهاة وشارك الوصفات وانضم إلى المجموعات" : "Connect with chefs, share recipes, join groups, and engage with the culinary community on Altohaa."}
       />
       <Header />
 
-      {/* Compact Hero - consistent with other pages */}
+      {/* Compact Hero */}
       <section className="border-b border-border/40 bg-gradient-to-b from-primary/5 to-background">
         <div className="container py-8 md:py-12">
           <div className="flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
@@ -81,7 +82,7 @@ export default function Community() {
               ].map((stat, i) => (
                 <div key={i} className="text-center">
                   <div className={`text-xl font-bold ${stat.color} md:text-2xl`}>
-                    {stat.value.toLocaleString()}
+                    {formatNumber(stat.value)}
                   </div>
                   <div className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">
                     {stat.label}
@@ -95,7 +96,7 @@ export default function Community() {
 
       <main className="container flex-1 py-4 md:py-6">
         <Tabs defaultValue="feed" className="w-full">
-          <div className="sticky top-[64px] z-40 -mx-4 border-b border-border/40 bg-background/80 px-4 py-3 backdrop-blur-md md:mx-0 md:rounded-2xl md:border md:px-4 md:shadow-sm">
+          <div className="sticky top-[56px] z-40 -mx-4 border-b border-border/40 bg-background/80 px-4 py-3 backdrop-blur-md md:mx-0 md:rounded-2xl md:border md:px-4 md:shadow-sm">
             <TabsList className="h-auto w-full justify-start gap-1.5 overflow-x-auto bg-transparent p-0">
               {[
                 { id: "feed", label: isAr ? "المنشورات" : "Feed", icon: Newspaper },
@@ -104,14 +105,14 @@ export default function Community() {
                 { id: "groups", label: isAr ? "المجموعات" : "Groups", icon: UsersRound },
                 { id: "events", label: isAr ? "الفعاليات" : "Events", icon: CalendarDays },
                 ...(user ? [{ id: "network", label: isAr ? "شبكتي" : "My Network", icon: UserPlus }] : [])
-              ].map((t) => (
+              ].map((tab) => (
                 <TabsTrigger 
-                  key={t.id} 
-                  value={t.id} 
+                  key={tab.id} 
+                  value={tab.id} 
                   className="gap-2 rounded-xl px-5 py-2.5 text-xs font-bold uppercase tracking-wider transition-all data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-lg shadow-primary/20"
                 >
-                  <t.icon className="h-3.5 w-3.5" />
-                  {t.label}
+                  <tab.icon className="h-3.5 w-3.5" />
+                  {tab.label}
                 </TabsTrigger>
               ))}
             </TabsList>

@@ -14,6 +14,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Calendar, MapPin, Users, Plus, Check, X, BarChart3, CalendarDays } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { format } from "date-fns";
+import { toEnglishDigits } from "@/lib/formatNumber";
 
 interface CommunityEvent {
   id: string;
@@ -311,7 +312,7 @@ export function EventsTab() {
                     {event.event_date && (
                       <span className="flex items-center gap-1">
                         <Calendar className="h-3 w-3" />
-                        {format(new Date(event.event_date), "MMM d, yyyy HH:mm")}
+                        {toEnglishDigits(format(new Date(event.event_date), "MMM d, yyyy HH:mm"))}
                       </span>
                     )}
                     {event.location && (

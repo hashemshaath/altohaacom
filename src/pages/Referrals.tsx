@@ -13,6 +13,7 @@ import { useReferralCode, useReferralStats, useReferralInvitations, useReferralM
 import { useReferralAnalytics } from "@/hooks/useReferralAnalytics";
 import { usePointsBalance } from "@/hooks/usePoints";
 import { Share2, Gift, Trophy, Users, TrendingUp, Send, Star, Mail, MessageCircle, BarChart3, Target, Zap, CheckCircle2, MousePointerClick, ArrowDownRight, Layers, Clock, RefreshCw, Phone, Globe, Sparkles } from "lucide-react";
+import { toEnglishDigits, formatNumber } from "@/lib/formatNumber";
 import { Link } from "react-router-dom";
 import { ReferralShareSheet } from "@/components/referrals/ReferralShareSheet";
 import { ReferralLeaderboard } from "@/components/referrals/ReferralLeaderboard";
@@ -466,7 +467,7 @@ export default function Referrals() {
                                   {channelIcon && <span className="opacity-70">{channelLabel}</span>}
                                 </span>
                                 <span>•</span>
-                                <span>{sentDate.toLocaleDateString(isAr ? "ar" : "en", { day: "numeric", month: "short", year: "numeric" })}</span>
+                                <span>{toEnglishDigits(sentDate.toLocaleDateString(isAr ? "ar-SA" : "en-US", { day: "numeric", month: "short", year: "numeric" }))}</span>
                                 {isPending && daysSince >= 3 && (
                                   <>
                                     <span>•</span>
@@ -580,14 +581,14 @@ export default function Referrals() {
                       <CartesianGrid strokeDasharray="3 3" className="stroke-border" />
                       <XAxis
                         dataKey="date"
-                        tickFormatter={(v) => new Date(v).toLocaleDateString(isAr ? "ar" : "en", { day: "numeric", month: "short" })}
+                        tickFormatter={(v) => toEnglishDigits(new Date(v).toLocaleDateString(isAr ? "ar-SA" : "en-US", { day: "numeric", month: "short" }))}
                         className="text-xs"
                         tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 10 }}
                       />
                       <YAxis tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 10 }} />
                       <Tooltip
                         contentStyle={{ background: "hsl(var(--card))", border: "1px solid hsl(var(--border))", borderRadius: 8 }}
-                        labelFormatter={(v) => new Date(v).toLocaleDateString(isAr ? "ar" : "en")}
+                        labelFormatter={(v) => toEnglishDigits(new Date(v).toLocaleDateString(isAr ? "ar-SA" : "en-US"))}
                       />
                       <Line type="monotone" dataKey="clicks" stroke="hsl(var(--chart-3))" strokeWidth={2} name={isAr ? "نقرات" : "Clicks"} dot={false} />
                       <Line type="monotone" dataKey="conversions" stroke="hsl(var(--chart-2))" strokeWidth={2} name={isAr ? "تحويلات" : "Conversions"} dot={false} />
