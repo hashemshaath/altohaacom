@@ -107,6 +107,8 @@ export function ChefsTab() {
     );
   });
 
+  const { data: recommendations = [] } = useFollowRecommendations();
+
   if (loading) {
     return (
       <div className="space-y-4">
@@ -127,8 +129,6 @@ export function ChefsTab() {
       </div>
     );
   }
-
-  const { data: recommendations = [] } = useFollowRecommendations();
 
   return (
     <div className="space-y-5">
