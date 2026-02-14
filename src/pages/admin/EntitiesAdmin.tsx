@@ -1,16 +1,19 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { BulkImportPanel } from "@/components/admin/BulkImportPanel";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useLanguage } from "@/i18n/LanguageContext";
-import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { toast } from "@/hooks/use-toast";
-import { Building2, Download, FileSpreadsheet, FilterX, Plus, Search } from "lucide-react";
+import {
+  AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent,
+  AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
+import { ArrowDown, ArrowUp, ArrowUpDown, Building2, Download, FileSpreadsheet, FilterX, Plus, Search } from "lucide-react";
 import { EntitySubModulesPanel } from "@/components/entities/EntitySubModulesPanel";
 import AdminPageHeader from "@/components/admin/AdminPageHeader";
 import EntityStatsCards from "@/components/admin/entities/EntityStatsCards";
@@ -19,9 +22,8 @@ import EntityFormTabs, {
   emptyForm, typeOptions, scopeOptions, statusOptions,
   type EntityFormData,
 } from "@/components/admin/entities/EntityFormTabs";
+import { useEntityMutations } from "@/hooks/useEntityMutations";
 import type { Database } from "@/integrations/supabase/types";
-
-type EntityType = Database["public"]["Enums"]["entity_type"];
 
 const PAGE_SIZE_OPTIONS = [10, 25, 50];
 
@@ -34,10 +36,11 @@ function useDebounce(value: string, delay = 300) {
   return debounced;
 }
 
+type SortKey = "name" | "type" | "status" | "created_at";
+type SortDir = "asc" | "desc";
+
 export default function EntitiesAdmin() {
   const { language } = useLanguage();
-  const { user } = useAuth();
-  const queryClient = useQueryClient();
   const isAr = language === "ar";
 
   const [showForm, setShowForm] = useState(false);
@@ -52,6 +55,10 @@ export default function EntitiesAdmin() {
   const [managingEntity, setManagingEntity] = useState<{ id: string; name: string } | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
+  const [sortKey, setSortKey] = useState<SortKey>("created_at");
+  const [sortDir, setSortDir] = useState<SortDir>("desc");
+  const [showUnsavedWarning, setShowUnsavedWarning] = useState(false);
+  const [pendingClose, setPendingClose] = useState(false);
 
   const { data: entities, isLoading } = useQuery({
     queryKey: ["admin-entities"],
@@ -67,108 +74,32 @@ export default function EntitiesAdmin() {
 
   const updateField = (key: keyof EntityFormData, value: any) => setForm(prev => ({ ...prev, [key]: value }));
 
-  const saveMutation = useMutation({
-    mutationFn: async () => {
-      const slug = form.name.toLowerCase().replace(/\s+/g, "-").replace(/[^a-z0-9-]/g, "");
-      const payload = {
-        name: form.name, name_ar: form.name_ar || null,
-        abbreviation: form.abbreviation || null, abbreviation_ar: form.abbreviation_ar || null,
-        description: form.description || null, description_ar: form.description_ar || null,
-        type: form.type, scope: form.scope, status: form.status,
-        is_visible: form.is_visible, is_verified: form.is_verified,
-        country: form.country || null, city: form.city || null,
-        address: form.address || null, address_ar: form.address_ar || null,
-        postal_code: form.postal_code || null,
-        email: form.email || null, phone: form.phone || null,
-        fax: form.fax || null, website: form.website || null,
-        logo_url: form.logo_url || null, cover_image_url: form.cover_image_url || null,
-        president_name: form.president_name || null, president_name_ar: form.president_name_ar || null,
-        secretary_name: form.secretary_name || null, secretary_name_ar: form.secretary_name_ar || null,
-        founded_year: form.founded_year || null, member_count: form.member_count || null,
-        mission: form.mission || null, mission_ar: form.mission_ar || null,
-        username: form.username || null,
-        registration_number: form.registration_number || null,
-        license_number: form.license_number || null,
-        internal_notes: form.internal_notes || null,
-        services: form.services_input ? form.services_input.split(",").map(s => s.trim()) : [],
-        specializations: form.specializations_input ? form.specializations_input.split(",").map(s => s.trim()) : [],
-        tags: form.tags_input ? form.tags_input.split(",").map(s => s.trim()) : [],
-        account_manager_id: selectedManager || null,
-        latitude: form.latitude ? parseFloat(form.latitude) : null,
-        longitude: form.longitude ? parseFloat(form.longitude) : null,
-        slug, created_by: user?.id,
-      };
-
-      if (editingId) {
-        const { error } = await supabase.from("culinary_entities").update(payload).eq("id", editingId);
-        if (error) throw error;
-      } else {
-        const { error } = await supabase.from("culinary_entities").insert({ ...payload, entity_number: "" });
-        if (error) throw error;
-      }
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["admin-entities"] });
-      const wasCreating = !editingId;
-      toast({ title: editingId ? (isAr ? "تم تحديث الجهة" : "Entity updated") : (isAr ? "تم إنشاء الجهة" : "Entity created") });
-      if (wasCreating) {
-        import("@/lib/notificationTriggers").then(({ notifyAdminEntityReview }) => {
-          notifyAdminEntityReview({ entityName: form.name, entityNameAr: form.name_ar || undefined, submittedBy: "Admin" });
-        });
-      }
-      resetForm();
-    },
-    onError: (err: any) => {
-      toast({ title: isAr ? "خطأ" : "Error", description: err.message, variant: "destructive" });
-    },
-  });
-
-  const deleteMutation = useMutation({
-    mutationFn: async (id: string) => {
-      const { error } = await supabase.from("culinary_entities").delete().eq("id", id);
-      if (error) throw error;
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["admin-entities"] });
-      toast({ title: isAr ? "تم حذف الجهة" : "Entity deleted" });
-    },
-  });
-
-  const toggleVisibility = useMutation({
-    mutationFn: async ({ id, visible }: { id: string; visible: boolean }) => {
-      const { error } = await supabase.from("culinary_entities").update({ is_visible: visible }).eq("id", id);
-      if (error) throw error;
-    },
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["admin-entities"] }),
-  });
-
-  const changeStatus = useMutation({
-    mutationFn: async ({ id, status }: { id: string; status: Database["public"]["Enums"]["entity_status"] }) => {
-      const { error } = await supabase.from("culinary_entities").update({ status }).eq("id", id);
-      if (error) throw error;
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["admin-entities"] });
-      toast({ title: isAr ? "تم تحديث الحالة" : "Status updated" });
-    },
-  });
-
-  const changeVerified = useMutation({
-    mutationFn: async ({ id, verified }: { id: string; verified: boolean }) => {
-      const { error } = await supabase.from("culinary_entities").update({ is_verified: verified }).eq("id", id);
-      if (error) throw error;
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["admin-entities"] });
-      toast({ title: isAr ? "تم التحديث" : "Verified status updated" });
-    },
-  });
-
   const resetForm = () => {
     setForm(emptyForm);
     setSelectedManager("");
     setEditingId(null);
     setShowForm(false);
+  };
+
+  const { saveMutation, deleteMutation, toggleVisibility, changeStatus, changeVerified } = useEntityMutations({
+    form,
+    editingId,
+    selectedManager,
+    onSuccess: () => resetForm(),
+  });
+
+  const isDirty = useMemo(() => {
+    if (!showForm) return false;
+    return JSON.stringify(form) !== JSON.stringify(emptyForm) || selectedManager !== "";
+  }, [form, selectedManager, showForm]);
+
+  const handleCloseForm = () => {
+    if (isDirty) {
+      setShowUnsavedWarning(true);
+      setPendingClose(true);
+    } else {
+      resetForm();
+    }
   };
 
   const startEdit = (entity: any) => {
@@ -204,19 +135,45 @@ export default function EntitiesAdmin() {
     setShowForm(true);
   };
 
-  const filtered = entities?.filter(e => {
-    const matchesSearch = (e.name + (e.name_ar || "") + (e.entity_number || "")).toLowerCase().includes(debouncedSearch.toLowerCase());
-    const matchesType = filterType === "all" || e.type === filterType;
-    const matchesStatus = filterStatus === "all" || filterStatus === "visible" || e.status === filterStatus;
-    const matchesVisible = filterStatus === "visible" ? e.is_visible : true;
-    return matchesSearch && matchesType && matchesStatus && matchesVisible;
-  });
+  // Sort + Filter
+  const toggleSort = (key: SortKey) => {
+    if (sortKey === key) {
+      setSortDir(d => d === "asc" ? "desc" : "asc");
+    } else {
+      setSortKey(key);
+      setSortDir("asc");
+    }
+  };
 
-  // Pagination
-  const totalFiltered = filtered?.length || 0;
+  const SortIcon = ({ col }: { col: SortKey }) => {
+    if (sortKey !== col) return <ArrowUpDown className="h-3 w-3 ms-1 opacity-40" />;
+    return sortDir === "asc" ? <ArrowUp className="h-3 w-3 ms-1" /> : <ArrowDown className="h-3 w-3 ms-1" />;
+  };
+
+  const filtered = useMemo(() => {
+    let result = entities?.filter(e => {
+      const matchesSearch = (e.name + (e.name_ar || "") + (e.entity_number || "")).toLowerCase().includes(debouncedSearch.toLowerCase());
+      const matchesType = filterType === "all" || e.type === filterType;
+      const matchesStatus = filterStatus === "all" || filterStatus === "visible" || e.status === filterStatus;
+      const matchesVisible = filterStatus === "visible" ? e.is_visible : true;
+      return matchesSearch && matchesType && matchesStatus && matchesVisible;
+    }) || [];
+
+    result.sort((a, b) => {
+      let cmp = 0;
+      const valA = (a as any)[sortKey] || "";
+      const valB = (b as any)[sortKey] || "";
+      cmp = String(valA).localeCompare(String(valB));
+      return sortDir === "asc" ? cmp : -cmp;
+    });
+
+    return result;
+  }, [entities, debouncedSearch, filterType, filterStatus, sortKey, sortDir]);
+
+  const totalFiltered = filtered.length;
   const totalPages = Math.max(1, Math.ceil(totalFiltered / pageSize));
   const safeCurrentPage = Math.min(currentPage, totalPages);
-  const paginatedEntities = filtered?.slice((safeCurrentPage - 1) * pageSize, safeCurrentPage * pageSize);
+  const paginatedEntities = filtered.slice((safeCurrentPage - 1) * pageSize, safeCurrentPage * pageSize);
 
   const stats = {
     total: entities?.length || 0,
@@ -233,7 +190,7 @@ export default function EntitiesAdmin() {
   };
 
   const handleExportCSV = () => {
-    if (!filtered?.length) return;
+    if (!filtered.length) return;
     const headers = ["Entity Number", "Name", "Name (AR)", "Type", "Scope", "Status", "Country", "City", "Email", "Phone", "Verified", "Visible"];
     const rows = filtered.map(e => [
       e.entity_number, e.name, e.name_ar || "", e.type, e.scope, e.status,
@@ -259,15 +216,15 @@ export default function EntitiesAdmin() {
         description={isAr ? "إدارة الجمعيات والجهات الحكومية والخاصة المتعلقة بالطهي" : "Manage culinary associations, government & private entities"}
         actions={
           <div className="flex gap-2">
-            <Button variant="outline" size="sm" onClick={handleExportCSV} disabled={!filtered?.length}>
+            <Button variant="outline" size="sm" onClick={handleExportCSV} disabled={!filtered.length}>
               <Download className="me-2 h-4 w-4" />
               {isAr ? "تصدير" : "Export"}
             </Button>
-            <Button variant={showBulkImport ? "secondary" : "outline"} size="sm" onClick={() => { setShowBulkImport(!showBulkImport); if (showForm) setShowForm(false); }}>
+            <Button variant={showBulkImport ? "secondary" : "outline"} size="sm" onClick={() => { setShowBulkImport(!showBulkImport); if (showForm) handleCloseForm(); }}>
               <FileSpreadsheet className="me-2 h-4 w-4" />
               {isAr ? "استيراد" : "Import"}
             </Button>
-            <Button size="sm" onClick={() => { resetForm(); setShowForm(!showForm); if (showBulkImport) setShowBulkImport(false); }}>
+            <Button size="sm" onClick={() => { if (showForm) { handleCloseForm(); } else { resetForm(); setShowForm(true); } if (showBulkImport) setShowBulkImport(false); }}>
               {showForm ? (isAr ? "إغلاق" : "Close") : <><Plus className="me-2 h-4 w-4" />{isAr ? "إضافة جهة" : "Add Entity"}</>}
             </Button>
           </div>
@@ -277,7 +234,7 @@ export default function EntitiesAdmin() {
       <EntityStatsCards stats={stats} activeFilter={filterStatus} onFilterChange={(f) => { setFilterStatus(f); setCurrentPage(1); }} />
 
       {showBulkImport && (
-        <BulkImportPanel entityType="entity" onImportComplete={() => { setShowBulkImport(false); queryClient.invalidateQueries({ queryKey: ["admin-entities"] }); }} />
+        <BulkImportPanel entityType="entity" onImportComplete={() => { setShowBulkImport(false); }} />
       )}
 
       {showForm && (
@@ -289,7 +246,7 @@ export default function EntitiesAdmin() {
           onUpdate={updateField}
           onManagerChange={setSelectedManager}
           onSave={() => saveMutation.mutate()}
-          onCancel={resetForm}
+          onCancel={handleCloseForm}
         />
       )}
 
@@ -337,10 +294,22 @@ export default function EntitiesAdmin() {
               <TableHeader>
                 <TableRow>
                   <TableHead className="hidden xl:table-cell w-[100px]">{isAr ? "الرقم" : "#"}</TableHead>
-                  <TableHead>{isAr ? "الجهة" : "Entity"}</TableHead>
-                  <TableHead className="hidden md:table-cell">{isAr ? "النوع" : "Type"}</TableHead>
+                  <TableHead>
+                    <button className="flex items-center font-medium hover:text-foreground transition-colors" onClick={() => toggleSort("name")}>
+                      {isAr ? "الجهة" : "Entity"}<SortIcon col="name" />
+                    </button>
+                  </TableHead>
+                  <TableHead className="hidden md:table-cell">
+                    <button className="flex items-center font-medium hover:text-foreground transition-colors" onClick={() => toggleSort("type")}>
+                      {isAr ? "النوع" : "Type"}<SortIcon col="type" />
+                    </button>
+                  </TableHead>
                   <TableHead className="hidden xl:table-cell">{isAr ? "النطاق" : "Scope"}</TableHead>
-                  <TableHead>{isAr ? "الحالة" : "Status"}</TableHead>
+                  <TableHead>
+                    <button className="flex items-center font-medium hover:text-foreground transition-colors" onClick={() => toggleSort("status")}>
+                      {isAr ? "الحالة" : "Status"}<SortIcon col="status" />
+                    </button>
+                  </TableHead>
                   <TableHead className="w-[44px]">{isAr ? "مرئي" : "Vis."}</TableHead>
                   <TableHead className="hidden lg:table-cell w-[44px]">{isAr ? "متابع" : "Flw."}</TableHead>
                   <TableHead className="text-end">{isAr ? "إجراءات" : "Actions"}</TableHead>
@@ -351,13 +320,13 @@ export default function EntitiesAdmin() {
                   <TableRow><TableCell colSpan={8} className="text-center py-12">
                     <div className="h-8 w-8 mx-auto animate-spin rounded-full border-4 border-primary border-t-transparent" />
                   </TableCell></TableRow>
-                ) : paginatedEntities?.length === 0 ? (
+                ) : paginatedEntities.length === 0 ? (
                   <TableRow><TableCell colSpan={8} className="text-center py-12 text-muted-foreground">
                     <Building2 className="h-10 w-10 mx-auto mb-2 opacity-30" />
                     <p>{isAr ? "لا توجد جهات مسجلة" : "No entities found"}</p>
                   </TableCell></TableRow>
                 ) : (
-                  paginatedEntities?.map(entity => (
+                  paginatedEntities.map(entity => (
                     <EntityTableRow
                       key={entity.id}
                       entity={entity as any}
@@ -414,6 +383,28 @@ export default function EntitiesAdmin() {
           onClose={() => setManagingEntity(null)}
         />
       )}
+
+      {/* Unsaved changes warning */}
+      <AlertDialog open={showUnsavedWarning} onOpenChange={setShowUnsavedWarning}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>{isAr ? "تغييرات غير محفوظة" : "Unsaved Changes"}</AlertDialogTitle>
+            <AlertDialogDescription>
+              {isAr
+                ? "لديك تغييرات غير محفوظة. هل تريد تجاهلها والإغلاق؟"
+                : "You have unsaved changes. Discard them and close?"}
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel onClick={() => setPendingClose(false)}>
+              {isAr ? "متابعة التحرير" : "Keep Editing"}
+            </AlertDialogCancel>
+            <AlertDialogAction className="bg-destructive text-destructive-foreground hover:bg-destructive/90" onClick={() => { setShowUnsavedWarning(false); setPendingClose(false); resetForm(); }}>
+              {isAr ? "تجاهل والإغلاق" : "Discard & Close"}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 }
