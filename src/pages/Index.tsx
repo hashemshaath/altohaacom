@@ -22,7 +22,7 @@ const AdPopup = lazy(() => import("@/components/ads/AdPopup").then(m => ({ defau
 const Index = () => {
   useAdTracking();
   return (
-    <div className="flex min-h-screen flex-col">
+    <div className="flex min-h-screen flex-col" role="document">
       <SEOHead
         title="Altohaa - The Global Culinary Community"
         description="The premier culinary community platform for chefs, judges, organizers, and sponsors. Compete, learn, and connect worldwide."

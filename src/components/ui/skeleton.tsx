@@ -7,8 +7,12 @@ const Skeleton = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivEl
       <div
         ref={ref}
         className={cn("animate-pulse rounded-md bg-muted", className)}
+        role="status"
+        aria-label="Loading"
         {...props}
-      />
+      >
+        <span className="sr-only">Loading...</span>
+      </div>
     );
   }
 );

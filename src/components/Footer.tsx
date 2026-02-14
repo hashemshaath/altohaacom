@@ -10,7 +10,7 @@ export function Footer() {
   const isAr = language === "ar";
 
   return (
-    <footer className="border-t bg-card/80 backdrop-blur-sm">
+    <footer className="border-t bg-card/80 backdrop-blur-sm" role="contentinfo">
       <div className="container py-10 md:py-14">
         <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
           {/* Brand */}
@@ -35,7 +35,7 @@ export function Footer() {
           {/* Platform Links */}
           <div>
             <h4 className="mb-4 text-sm font-semibold">{isAr ? "المنصة" : "Platform"}</h4>
-            <nav className="flex flex-col gap-2.5 text-sm text-muted-foreground">
+            <nav aria-label="Platform links" className="flex flex-col gap-2.5 text-sm text-muted-foreground">
               <Link to="/competitions" className="flex items-center gap-2 transition-colors hover:text-primary">
                 <Trophy className="h-3.5 w-3.5 opacity-60" />{isAr ? "المسابقات" : "Competitions"}
               </Link>
@@ -59,7 +59,7 @@ export function Footer() {
 
           <div>
             <h4 className="mb-4 text-sm font-semibold">{isAr ? "للأعمال" : "For Business"}</h4>
-            <nav className="flex flex-col gap-2.5 text-sm text-muted-foreground">
+            <nav aria-label="Business links" className="flex flex-col gap-2.5 text-sm text-muted-foreground">
               <Link to="/sponsors" className="transition-colors hover:text-primary">
                 {isAr ? "فرص الرعاية" : "Sponsorship Opportunities"}
               </Link>
@@ -84,7 +84,7 @@ export function Footer() {
           {/* Quick Access */}
           <div>
             <h4 className="mb-4 text-sm font-semibold">{t("quickLinks")}</h4>
-            <nav className="flex flex-col gap-2.5 text-sm text-muted-foreground">
+            <nav aria-label="Quick links" className="flex flex-col gap-2.5 text-sm text-muted-foreground">
               <Link to="/" className="transition-colors hover:text-primary">{t("home")}</Link>
               {user ? (
                 <>
