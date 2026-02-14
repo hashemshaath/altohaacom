@@ -30,12 +30,16 @@ import {
   Wallet,
   Download,
   Calendar,
+  ArrowUpDown,
 } from "lucide-react";
 import { format, subMonths, startOfMonth, endOfMonth } from "date-fns";
+import { useToast } from "@/hooks/use-toast";
 
 export default function CompanyStatements() {
   const { language } = useLanguage();
   const { companyId, isLoading: accessLoading } = useCompanyAccess();
+  const { toast } = useToast();
+  const isAr = language === "ar";
   const [period, setPeriod] = useState("3");
 
   const startDate = startOfMonth(subMonths(new Date(), parseInt(period)));
@@ -67,9 +71,36 @@ export default function CompanyStatements() {
     .reduce((s, t) => s + (t.amount || 0), 0);
 
   const latestBalance = transactions.length > 0 ? transactions[transactions.length - 1].balance_after : null;
+  const netBalance = totalCredits - totalDebits;
   const currency = transactions[0]?.currency || "SAR";
 
   const loading = accessLoading || isLoading;
+
+  const exportCSV = () => {
+    if (transactions.length === 0) return;
+    const BOM = "\uFEFF";
+    const headers = ["Date", "Ref #", "Description", "Type", "Amount", "Balance"];
+    const rows = transactions.map((t) => {
+      const isCredit = ["payment", "credit", "refund"].includes(t.type);
+      return [
+        t.transaction_date ? format(new Date(t.transaction_date), "yyyy-MM-dd") : "",
+        t.transaction_number || "",
+        `"${(isAr ? t.description_ar || t.description : t.description) || ""}"`,
+        t.type,
+        `${isCredit ? "" : "-"}${Math.abs(t.amount)}`,
+        t.balance_after ?? "",
+      ].join(",");
+    });
+    const csv = BOM + [headers.join(","), ...rows].join("\n");
+    const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `statement_${format(startDate, "yyyyMMdd")}_${format(endDate, "yyyyMMdd")}.csv`;
+    a.click();
+    URL.revokeObjectURL(url);
+    toast({ title: isAr ? "تم تصدير الكشف" : "Statement exported" });
+  };
 
   return (
     <div className="space-y-6">
@@ -78,23 +109,27 @@ export default function CompanyStatements() {
         <div>
           <h1 className="text-2xl font-bold flex items-center gap-2">
             <FileText className="h-6 w-6 text-primary" />
-            {language === "ar" ? "كشوفات الحساب" : "Account Statements"}
+            {isAr ? "كشوفات الحساب" : "Account Statements"}
           </h1>
           <p className="mt-1 text-muted-foreground">
-            {language === "ar" ? "كشوف الحساب والأرصدة" : "Account statements and balances"}
+            {isAr ? "كشوف الحساب والأرصدة" : "Account statements and balances"}
           </p>
         </div>
         <div className="flex items-center gap-2">
+          <Button variant="outline" size="sm" onClick={exportCSV} disabled={transactions.length === 0}>
+            <Download className="me-2 h-4 w-4" />
+            {isAr ? "تصدير CSV" : "Export CSV"}
+          </Button>
           <Select value={period} onValueChange={setPeriod}>
             <SelectTrigger className="w-[160px]">
               <Calendar className="mr-2 h-4 w-4" />
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="1">{language === "ar" ? "شهر واحد" : "1 Month"}</SelectItem>
-              <SelectItem value="3">{language === "ar" ? "3 أشهر" : "3 Months"}</SelectItem>
-              <SelectItem value="6">{language === "ar" ? "6 أشهر" : "6 Months"}</SelectItem>
-              <SelectItem value="12">{language === "ar" ? "سنة" : "1 Year"}</SelectItem>
+              <SelectItem value="1">{isAr ? "شهر واحد" : "1 Month"}</SelectItem>
+              <SelectItem value="3">{isAr ? "3 أشهر" : "3 Months"}</SelectItem>
+              <SelectItem value="6">{isAr ? "6 أشهر" : "6 Months"}</SelectItem>
+              <SelectItem value="12">{isAr ? "سنة" : "1 Year"}</SelectItem>
             </SelectContent>
           </Select>
         </div>
@@ -102,18 +137,18 @@ export default function CompanyStatements() {
 
       {/* Stats */}
       {loading ? (
-        <div className="grid gap-4 sm:grid-cols-3">
-          {[...Array(3)].map((_, i) => <Skeleton key={i} className="h-24" />)}
+        <div className="grid gap-4 sm:grid-cols-4">
+          {[...Array(4)].map((_, i) => <Skeleton key={i} className="h-24" />)}
         </div>
       ) : (
-        <div className="grid gap-4 sm:grid-cols-3">
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
           <Card className="border-s-[3px] border-s-chart-5">
             <CardContent className="flex items-center gap-3 p-4">
               <div className="rounded-xl bg-chart-5/10 p-2.5">
                 <TrendingUp className="h-5 w-5 text-chart-5" />
               </div>
               <div>
-                <p className="text-xs text-muted-foreground">{language === "ar" ? "إجمالي الإيرادات" : "Total Credits"}</p>
+                <p className="text-xs text-muted-foreground">{isAr ? "إجمالي الإيرادات" : "Total Credits"}</p>
                 <p className="text-2xl font-bold">{currency} {totalCredits.toLocaleString()}</p>
               </div>
             </CardContent>
@@ -124,8 +159,21 @@ export default function CompanyStatements() {
                 <TrendingDown className="h-5 w-5 text-destructive" />
               </div>
               <div>
-                <p className="text-xs text-muted-foreground">{language === "ar" ? "إجمالي المصروفات" : "Total Debits"}</p>
+                <p className="text-xs text-muted-foreground">{isAr ? "إجمالي المصروفات" : "Total Debits"}</p>
                 <p className="text-2xl font-bold">{currency} {totalDebits.toLocaleString()}</p>
+              </div>
+            </CardContent>
+          </Card>
+          <Card className="border-s-[3px] border-s-chart-3">
+            <CardContent className="flex items-center gap-3 p-4">
+              <div className="rounded-xl bg-chart-3/10 p-2.5">
+                <ArrowUpDown className="h-5 w-5 text-chart-3" />
+              </div>
+              <div>
+                <p className="text-xs text-muted-foreground">{isAr ? "صافي الرصيد" : "Net Balance"}</p>
+                <p className={`text-2xl font-bold ${netBalance >= 0 ? "text-chart-5" : "text-destructive"}`}>
+                  {currency} {netBalance.toLocaleString()}
+                </p>
               </div>
             </CardContent>
           </Card>
@@ -135,7 +183,7 @@ export default function CompanyStatements() {
                 <Wallet className="h-5 w-5 text-primary" />
               </div>
               <div>
-                <p className="text-xs text-muted-foreground">{language === "ar" ? "الرصيد الحالي" : "Current Balance"}</p>
+                <p className="text-xs text-muted-foreground">{isAr ? "الرصيد الحالي" : "Current Balance"}</p>
                 <p className="text-2xl font-bold">{latestBalance !== null ? `${currency} ${latestBalance.toLocaleString()}` : "—"}</p>
               </div>
             </CardContent>
@@ -147,7 +195,7 @@ export default function CompanyStatements() {
       <Card>
         <CardHeader className="flex flex-row items-center justify-between">
           <CardTitle className="text-lg">
-            {language === "ar" ? "تفاصيل الكشف" : "Statement Details"}
+            {isAr ? "تفاصيل الكشف" : "Statement Details"}
           </CardTitle>
           <p className="text-sm text-muted-foreground">
             {format(startDate, "MMM dd, yyyy")} – {format(endDate, "MMM dd, yyyy")}
@@ -161,12 +209,12 @@ export default function CompanyStatements() {
               <Table>
                 <TableHeader>
                   <TableRow>
-                    <TableHead>{language === "ar" ? "التاريخ" : "Date"}</TableHead>
-                    <TableHead>{language === "ar" ? "الرقم" : "Ref #"}</TableHead>
-                    <TableHead>{language === "ar" ? "الوصف" : "Description"}</TableHead>
-                    <TableHead>{language === "ar" ? "النوع" : "Type"}</TableHead>
-                    <TableHead className="text-right">{language === "ar" ? "المبلغ" : "Amount"}</TableHead>
-                    <TableHead className="text-right">{language === "ar" ? "الرصيد" : "Balance"}</TableHead>
+                    <TableHead>{isAr ? "التاريخ" : "Date"}</TableHead>
+                    <TableHead>{isAr ? "الرقم" : "Ref #"}</TableHead>
+                    <TableHead>{isAr ? "الوصف" : "Description"}</TableHead>
+                    <TableHead>{isAr ? "النوع" : "Type"}</TableHead>
+                    <TableHead className="text-right">{isAr ? "المبلغ" : "Amount"}</TableHead>
+                    <TableHead className="text-right">{isAr ? "الرصيد" : "Balance"}</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -178,7 +226,7 @@ export default function CompanyStatements() {
                           {t.transaction_date ? format(new Date(t.transaction_date), "MMM dd, yyyy") : "—"}
                         </TableCell>
                         <TableCell className="font-mono text-sm">{t.transaction_number}</TableCell>
-                        <TableCell>{language === "ar" ? t.description_ar || t.description : t.description || "—"}</TableCell>
+                        <TableCell>{isAr ? t.description_ar || t.description : t.description || "—"}</TableCell>
                         <TableCell>
                           <Badge variant={isCredit ? "default" : "destructive"} className="capitalize">
                             {t.type}
@@ -202,7 +250,7 @@ export default function CompanyStatements() {
                 <FileText className="h-6 w-6 text-muted-foreground" />
               </div>
               <p className="text-muted-foreground">
-                {language === "ar" ? "لا توجد معاملات في هذه الفترة" : "No transactions in this period"}
+                {isAr ? "لا توجد معاملات في هذه الفترة" : "No transactions in this period"}
               </p>
             </div>
           )}
