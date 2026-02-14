@@ -77,11 +77,11 @@ function Section({
 }) {
   const [open, setOpen] = useState(defaultOpen);
   return (
-    <Collapsible open={open} onOpenChange={setOpen} className="animate-fade-in scroll-mt-36" id={`section-${title.toLowerCase().replace(/\s+/g, '-')}`}>
-      <Card className="overflow-hidden border-border/50 shadow-sm transition-all duration-300 hover:border-primary/20">
-        <CollapsibleTrigger className="flex w-full items-center justify-between gap-3 px-5 py-4 text-start hover:bg-muted/30 transition-colors group">
-          <div className="flex items-center gap-4">
-            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary/5 ring-1 ring-primary/10 shrink-0 transition-transform group-hover:scale-110">
+    <Collapsible open={open} onOpenChange={setOpen} className="scroll-mt-36" id={`section-${title.toLowerCase().replace(/\s+/g, '-')}`}>
+      <Card className="overflow-hidden border-border/50 shadow-sm transition-all duration-300 hover:border-primary/20 hover:shadow-md">
+        <CollapsibleTrigger className="flex w-full items-center justify-between gap-3 px-4 sm:px-5 py-3.5 text-start hover:bg-muted/30 transition-colors group">
+          <div className="flex items-center gap-3">
+            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-primary/5 ring-1 ring-primary/10 shrink-0 transition-all duration-300 group-hover:scale-110 group-hover:bg-primary/10">
               <span className="text-primary">{icon}</span>
             </div>
             <div>
@@ -89,11 +89,11 @@ function Section({
               {badge && <div className="mt-0.5">{badge}</div>}
             </div>
           </div>
-          <ChevronDown className={`h-4 w-4 text-muted-foreground transition-transform duration-300 ${open ? "rotate-180" : ""}`} />
+          <ChevronDown className={`h-4 w-4 text-muted-foreground transition-transform duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] ${open ? "rotate-180" : ""}`} />
         </CollapsibleTrigger>
         <CollapsibleContent className="data-[state=open]:animate-accordion-down data-[state=closed]:animate-accordion-up">
-          <Separator className="opacity-50" />
-          <div className="p-6">{children}</div>
+          <Separator className="opacity-40" />
+          <div className="p-4 sm:p-6">{children}</div>
         </CollapsibleContent>
       </Card>
     </Collapsible>
@@ -202,17 +202,35 @@ export default function CompetitionDetail() {
     return (
       <div className="flex min-h-screen flex-col bg-background">
         <Header />
-        <main className="container flex-1 py-8">
-          <Skeleton className="mb-4 h-7 w-36" />
-          <Skeleton className="h-64 w-full rounded-2xl" />
-          <div className="mt-8 grid gap-6 lg:grid-cols-3">
-            <div className="lg:col-span-2 space-y-4">
-              <Skeleton className="h-32 w-full rounded-xl" />
-              <Skeleton className="h-40 w-full rounded-xl" />
+        <main className="flex-1">
+          {/* Hero skeleton */}
+          <Skeleton className="h-64 w-full sm:h-72 md:h-80" />
+          {/* Nav skeleton */}
+          <div className="border-b border-border/40 px-4 py-3">
+            <div className="container flex gap-2">
+              {Array.from({ length: 5 }).map((_, i) => (
+                <Skeleton key={i} className="h-8 w-20 rounded-xl shrink-0" />
+              ))}
             </div>
-            <div className="space-y-4">
-              <Skeleton className="h-40 w-full rounded-xl" />
-              <Skeleton className="h-32 w-full rounded-xl" />
+          </div>
+          {/* Content skeleton */}
+          <div className="container py-8">
+            <div className="mb-8 grid grid-cols-2 gap-4 sm:grid-cols-4">
+              {Array.from({ length: 4 }).map((_, i) => (
+                <Skeleton key={i} className="h-20 rounded-xl" />
+              ))}
+            </div>
+            <div className="grid gap-6 lg:grid-cols-3">
+              <div className="lg:col-span-2 space-y-4">
+                <Skeleton className="h-40 w-full rounded-xl" />
+                <Skeleton className="h-56 w-full rounded-xl" />
+                <Skeleton className="h-32 w-full rounded-xl" />
+              </div>
+              <div className="space-y-4">
+                <Skeleton className="h-28 w-full rounded-xl" />
+                <Skeleton className="h-44 w-full rounded-xl" />
+                <Skeleton className="h-36 w-full rounded-xl" />
+              </div>
             </div>
           </div>
         </main>
@@ -405,24 +423,24 @@ export default function CompetitionDetail() {
         </section>
 
         {/* ─── Navigation Tabs (pill style) ─── */}
-        <div className="sticky top-[64px] z-30 border-b border-border/40 bg-background/80 backdrop-blur-md shadow-sm">
+        <div className="sticky top-[64px] z-30 border-b border-border/40 bg-background/90 backdrop-blur-xl shadow-sm">
           <div className="container">
-            <div className="flex gap-1 overflow-x-auto py-2.5 scrollbar-none -mx-4 px-4 md:mx-0 md:px-0">
+            <div className="flex gap-1.5 overflow-x-auto py-2.5 scrollbar-none -mx-4 px-4 md:mx-0 md:px-0 snap-x snap-mandatory">
               {navItems.map((item) => (
                 <button
                   key={item.id}
-                  onClick={() => setActiveSection(item.id)}
+                  onClick={() => setActiveTab(item.id)}
                   className={`
-                    inline-flex shrink-0 items-center gap-2 rounded-xl px-4 py-2 text-xs font-semibold transition-all duration-200 group
+                    snap-start inline-flex shrink-0 items-center gap-1.5 rounded-xl px-3.5 py-2 text-xs font-semibold transition-all duration-300 group relative
                     ${activeSection === item.id
-                      ? "bg-primary text-primary-foreground shadow-lg shadow-primary/20 scale-105"
-                      : "text-muted-foreground hover:bg-muted/80 hover:text-foreground hover:scale-105"}
+                      ? "bg-primary text-primary-foreground shadow-md shadow-primary/25"
+                      : "text-muted-foreground hover:bg-muted/60 hover:text-foreground"}
                   `}
                 >
                   <span className={`transition-transform duration-200 group-hover:scale-110 ${activeSection === item.id ? "text-primary-foreground" : "text-primary"}`}>
                     {item.icon}
                   </span>
-                  {item.label}
+                  <span className="whitespace-nowrap">{item.label}</span>
                 </button>
               ))}
             </div>
@@ -445,21 +463,25 @@ export default function CompetitionDetail() {
 
         <div className="container py-8">
           {/* ─── Quick Stats Bar ─── */}
-          <div className="mb-8 grid grid-cols-2 gap-4 sm:grid-cols-4 animate-fade-in">
+          <div className="mb-8 grid grid-cols-2 gap-3 sm:grid-cols-4">
             {[
               { icon: <Calendar className="h-4 w-4 text-primary" />, label: isAr ? "تاريخ البداية" : "Start Date", value: format(new Date(competition.competition_start), "MMM d, yyyy") },
               { icon: <Calendar className="h-4 w-4 text-accent" />, label: isAr ? "تاريخ النهاية" : "End Date", value: format(new Date(competition.competition_end), "MMM d, yyyy") },
               { icon: competition.is_virtual ? <Globe className="h-4 w-4 text-chart-3" /> : <MapPin className="h-4 w-4 text-chart-3" />, label: isAr ? "الموقع" : "Location", value: competition.is_virtual ? (isAr ? "افتراضية" : "Virtual") : (competition.city || venue || "—") },
               { icon: <Users className="h-4 w-4 text-chart-4" />, label: isAr ? "الحد الأقصى" : "Capacity", value: competition.max_participants ? `${competition.max_participants}` : (isAr ? "غير محدود" : "Unlimited") },
             ].map((stat, i) => (
-              <Card key={i} className="border-border/50 group transition-all duration-300 hover:shadow-md hover:-translate-y-1 hover:border-primary/20">
-                <CardContent className="flex items-center gap-4 p-4">
-                  <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary/5 ring-1 ring-primary/10 shrink-0 transition-transform duration-300 group-hover:scale-110 group-hover:bg-primary/10">
+              <Card
+                key={i}
+                className="border-border/50 group transition-all duration-300 hover:shadow-md hover:-translate-y-0.5 hover:border-primary/20"
+                style={{ animationDelay: `${i * 80}ms` }}
+              >
+                <CardContent className="flex items-center gap-3 p-3.5 sm:p-4">
+                  <div className="flex h-9 w-9 sm:h-10 sm:w-10 items-center justify-center rounded-xl bg-primary/5 ring-1 ring-primary/10 shrink-0 transition-transform duration-300 group-hover:scale-110 group-hover:bg-primary/10">
                     {stat.icon}
                   </div>
                   <div className="min-w-0">
-                    <p className="text-[10px] uppercase font-bold tracking-widest text-muted-foreground/80">{stat.label}</p>
-                    <p className="text-sm font-bold truncate text-foreground/90">{stat.value}</p>
+                    <p className="text-[9px] sm:text-[10px] uppercase font-bold tracking-widest text-muted-foreground/80">{stat.label}</p>
+                    <p className="text-xs sm:text-sm font-bold truncate text-foreground/90">{stat.value}</p>
                   </div>
                 </CardContent>
               </Card>
