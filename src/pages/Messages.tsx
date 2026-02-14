@@ -456,7 +456,7 @@ export default function Messages() {
     <div className="flex min-h-screen flex-col bg-background">
       <Header />
 
-      <main className="container flex-1 py-4 md:py-6">
+      <main className="container flex-1 py-4 md:py-6 max-w-5xl">
         <Card className="mx-auto max-w-5xl overflow-hidden rounded-3xl border-border/40 bg-card/60 backdrop-blur-sm shadow-2xl shadow-primary/5" style={{ height: "calc(100vh - 160px)", minHeight: 500 }}>
           <div className="flex h-full">
             {/* Conversations List */}
