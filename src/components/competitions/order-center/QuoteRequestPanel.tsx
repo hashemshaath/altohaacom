@@ -12,6 +12,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Checkbox } from "@/components/ui/checkbox";
+import { toEnglishDigits } from "@/lib/formatNumber";
 import {
   Send, Building2, FileText, CheckCircle, Clock,
   XCircle, Mail,
@@ -224,7 +225,7 @@ export function QuoteRequestPanel({ competitionId, isOrganizer }: Props) {
                           <p className="text-sm font-medium truncate">{name || "—"}</p>
                           <p className="text-[10px] text-muted-foreground">
                             {item.quantity} {item.unit}
-                            {item.estimated_cost ? ` · $${Number(item.estimated_cost).toLocaleString()}` : ""}
+                            {item.estimated_cost ? ` · $${toEnglishDigits(Number(item.estimated_cost).toLocaleString())}` : ""}
                           </p>
                         </div>
                       </div>
@@ -317,8 +318,8 @@ export function QuoteRequestPanel({ competitionId, isOrganizer }: Props) {
                       <div className="min-w-0">
                         <p className="text-sm font-medium truncate">{req.title}</p>
                         <p className="text-[10px] text-muted-foreground">
-                          {companyName} · {new Date(req.created_at || "").toLocaleDateString()}
-                          {req.total_estimated_cost ? ` · $${Number(req.total_estimated_cost).toLocaleString()}` : ""}
+                          {companyName} · {toEnglishDigits(new Date(req.created_at || "").toLocaleDateString())}
+                          {req.total_estimated_cost ? ` · $${toEnglishDigits(Number(req.total_estimated_cost).toLocaleString())}` : ""}
                         </p>
                       </div>
                     </div>
