@@ -27,6 +27,7 @@ import {
 } from "lucide-react";
 import { format } from "date-fns";
 import { formatCurrency } from "@/lib/currencyFormatter";
+import { CompanyAnalyticsCharts } from "@/components/company/CompanyAnalyticsCharts";
 
 export default function CompanyPortalDashboard() {
   const { language } = useLanguage();
@@ -232,30 +233,8 @@ export default function CompanyPortalDashboard() {
         </CardContent>
       </Card>
 
-      {/* Recent Activity */}
-      <Card className="overflow-hidden">
-        <div className="flex items-center justify-between border-b bg-muted/30 px-5 py-3">
-          <h3 className="flex items-center gap-2 text-sm font-semibold">
-            <div className="flex h-6 w-6 items-center justify-center rounded-md bg-primary/10">
-              <Activity className="h-3.5 w-3.5 text-primary" />
-            </div>
-            {language === "ar" ? "النشاط الأخير" : "Recent Activity"}
-          </h3>
-          <Badge variant="secondary" className="text-[10px]">
-            {language === "ar" ? "قريباً" : "Coming Soon"}
-          </Badge>
-        </div>
-        <CardContent className="p-5">
-          <div className="flex flex-col items-center justify-center py-8 text-center">
-            <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-muted/60 ring-1 ring-border/50 mb-3">
-              <TrendingUp className="h-6 w-6 text-muted-foreground/40" />
-            </div>
-            <p className="text-sm text-muted-foreground">
-              {language === "ar" ? "لا توجد أنشطة حديثة حالياً" : "No recent activity yet"}
-            </p>
-          </div>
-        </CardContent>
-      </Card>
+      {/* Analytics Charts */}
+      <CompanyAnalyticsCharts companyId={companyId} language={language} />
     </div>
   );
 }
