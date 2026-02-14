@@ -63,7 +63,7 @@ export function HeroSlider() {
   const linkLabel = isAr && slide.link_label_ar ? slide.link_label_ar : slide.link_label;
 
   return (
-    <section className="relative h-[440px] sm:h-[500px] md:h-[560px] lg:h-[620px] overflow-hidden">
+    <section className="relative h-[360px] sm:h-[440px] md:h-[560px] lg:h-[620px] overflow-hidden">
       {/* Slides */}
       {slides.map((s: any, i: number) => (
         <div
@@ -93,7 +93,7 @@ export function HeroSlider() {
       <div className="absolute inset-0 z-20 flex items-end pb-16 sm:pb-20 md:items-center md:pb-0">
         <div className="container">
           <div className="max-w-2xl animate-fade-in">
-            <h1 className="font-serif text-3xl font-bold text-foreground sm:text-4xl md:text-5xl lg:text-6xl drop-shadow-sm leading-tight">
+            <h1 className="font-serif text-2xl font-bold text-foreground sm:text-4xl md:text-5xl lg:text-6xl drop-shadow-sm leading-tight">
               {title}
             </h1>
             {subtitle && (
