@@ -70,7 +70,7 @@ export default function Dashboard() {
     <div className="flex min-h-screen flex-col bg-background">
       <SEOHead title="Dashboard" description="Your personal Altohaa dashboard" />
       <Header />
-      <main className="container flex-1 py-4 md:py-6 max-w-5xl">
+      <main className="container flex-1 py-4 md:py-6">
         {/* Welcome Banner */}
         <div className="relative mb-8 overflow-hidden rounded-3xl border border-primary/10 bg-gradient-to-br from-primary/10 via-background to-accent/10 p-6 sm:p-8 group shadow-sm transition-all duration-500 hover:shadow-lg hover:border-primary/20">
           <div className="pointer-events-none absolute -end-24 -top-24 h-64 w-64 rounded-full bg-primary/15 blur-[100px] animate-pulse" />

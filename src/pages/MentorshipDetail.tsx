@@ -37,7 +37,7 @@ export default function MentorshipDetail() {
     return (
       <div className="min-h-screen flex flex-col bg-background">
         <Header />
-        <main className="flex-1 container mx-auto px-4 py-8">
+        <main className="flex-1 container py-8">
           <Skeleton className="h-8 w-64 mb-4" />
           <Skeleton className="h-64 w-full" />
         </main>
@@ -50,7 +50,7 @@ export default function MentorshipDetail() {
     return (
       <div className="min-h-screen flex flex-col bg-background">
         <Header />
-        <main className="flex-1 container mx-auto px-4 py-16 text-center">
+        <main className="flex-1 container py-16 text-center">
           <GraduationCap className="h-12 w-12 mx-auto text-muted-foreground mb-3" />
           <h2 className="text-xl font-bold">{isAr ? "البرنامج غير موجود" : "Program not found"}</h2>
           <Link to="/mentorship">
@@ -111,7 +111,7 @@ export default function MentorshipDetail() {
           </div>
         </div>
 
-        <div className="container mx-auto px-4 py-8 grid gap-6 lg:grid-cols-3">
+        <div className="container py-8 grid gap-6 lg:grid-cols-3">
           <div className="lg:col-span-2 space-y-6">
             <Card>
               <CardHeader>

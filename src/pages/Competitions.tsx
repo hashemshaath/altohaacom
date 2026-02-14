@@ -159,13 +159,13 @@ export default function Competitions() {
 
       <main className="flex-1">
         {/* Top Banner Ad */}
-        <div className="container mt-4 max-w-5xl">
+        <div className="container mt-4">
           <AdBanner placementSlug="competitions-top-banner" className="w-full aspect-[5/1]" />
         </div>
 
         {/* Compact Hero */}
         <section className="border-b border-border/40 bg-gradient-to-b from-primary/5 to-background">
-          <div className="container py-8 md:py-12 max-w-5xl">
+          <div className="container py-8 md:py-12">
             <div className="flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
               <div className="space-y-3 max-w-2xl">
                 <div className="inline-flex items-center gap-2 rounded-full bg-primary/10 px-3 py-1 ring-1 ring-primary/20">
@@ -201,7 +201,7 @@ export default function Competitions() {
           </div>
         </section>
 
-        <div className="container py-4 md:py-6 max-w-5xl">
+        <div className="container py-4 md:py-6">
           {/* Featured Competition */}
           {featured && !search && activeTab === "all" && (
             <FeaturedCard competition={featured as any} language={language} isAr={isAr} />

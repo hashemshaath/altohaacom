@@ -124,7 +124,7 @@ export default function Search() {
       <main className="flex-1">
         {/* Hero Section */}
         <section className="border-b border-border/40 bg-gradient-to-b from-primary/5 to-background">
-          <div className="container py-8 md:py-10 max-w-5xl">
+          <div className="container py-8 md:py-10">
             <div className="flex items-start gap-4">
               <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-primary/10 ring-1 ring-primary/15 shadow-sm">
                 <SearchIcon className="h-6 w-6 text-primary" />
@@ -137,7 +137,7 @@ export default function Search() {
           </div>
         </section>
 
-        <div className="container py-6 md:py-8 max-w-5xl">
+        <div className="container py-6 md:py-8">
 
         {/* Search Input */}
         <div className="flex gap-2 mb-6">

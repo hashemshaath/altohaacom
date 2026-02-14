@@ -120,7 +120,7 @@ export default function OrganizersLanding() {
       <main className="flex-1">
         {/* Hero */}
         <section className="border-b border-border/40 bg-gradient-to-b from-primary/5 to-background">
-          <div className="container py-10 md:py-14 max-w-5xl text-center">
+          <div className="container py-10 md:py-14 text-center">
             <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/5 px-4 py-1.5">
               <Sparkles className="h-3.5 w-3.5 text-primary" />
               <span className="text-xs font-medium text-primary">
@@ -153,7 +153,7 @@ export default function OrganizersLanding() {
 
         {/* Features */}
         <section className="py-12 md:py-16">
-          <div className="container max-w-5xl">
+          <div className="container">
             <div className="mb-12 text-center">
               <h2 className="text-3xl font-serif font-bold">
                 {isAr ? "كل ما تحتاجه لتنظيم المسابقات" : "Everything You Need to Organize Competitions"}
@@ -186,13 +186,13 @@ export default function OrganizersLanding() {
 
         {/* Testimonials */}
         <section className="py-12 md:py-16 bg-muted/30">
-          <div className="container max-w-5xl">
+          <div className="container">
             <div className="mb-12 text-center">
               <h2 className="text-3xl font-serif font-bold">
                 {isAr ? "ماذا يقول المنظمون" : "What Organizers Say"}
               </h2>
             </div>
-            <div className="grid md:grid-cols-2 gap-5 max-w-5xl mx-auto">
+            <div className="grid md:grid-cols-2 gap-5">
               {testimonials.map((testimonial, i) => (
                 <Card key={i} className="border-border/60">
                   <CardContent className="p-6">
@@ -228,8 +228,8 @@ export default function OrganizersLanding() {
 
         {/* CTA / Contact Form */}
         <section className="py-12 md:py-16">
-          <div className="container max-w-5xl">
-            <div className="grid lg:grid-cols-2 gap-12 items-start max-w-5xl mx-auto">
+          <div className="container">
+            <div className="grid lg:grid-cols-2 gap-12 items-start mx-auto">
               <div className="lg:sticky lg:top-24">
                 <h2 className="text-3xl font-serif font-bold mb-3">
                   {isAr ? "جاهز للبدء؟" : "Ready to Get Started?"}

@@ -67,7 +67,7 @@ export default function Tastings() {
           </div>
         </section>
 
-        <main className="container mx-auto px-4 py-8">
+        <main className="container py-8">
           {/* Sticky Glass Search */}
           <div className="sticky top-[64px] z-30 -mx-4 mb-10 bg-background/80 px-4 py-4 backdrop-blur-md border-y border-border/40 md:rounded-2xl md:border md:mx-0 md:px-6 shadow-sm">
             <div className="relative max-w-md">

@@ -111,7 +111,7 @@ export default function News() {
       <main className="flex-1">
         {/* Compact Hero */}
         <section className="border-b border-border/40 bg-gradient-to-b from-primary/5 to-background">
-          <div className="container py-8 md:py-12 max-w-5xl">
+          <div className="container py-8 md:py-12">
             <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
               <div className="space-y-3 max-w-2xl">
                 <div className="inline-flex items-center gap-2 rounded-full bg-primary/10 px-3 py-1 ring-1 ring-primary/20">
@@ -133,7 +133,7 @@ export default function News() {
           </div>
         </section>
 
-        <div className="container py-4 md:py-6 max-w-5xl">
+        <div className="container py-4 md:py-6">
 
           {/* Filters Bar */}
           <div className="sticky top-[64px] z-40 -mx-4 mb-10 border-y border-border/40 bg-background/80 px-4 py-4 backdrop-blur-md md:rounded-2xl md:border md:px-6">

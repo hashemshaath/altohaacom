@@ -44,7 +44,7 @@ export default function MentorApply() {
     return (
       <div className="min-h-screen flex flex-col bg-background">
         <Header />
-        <main className="flex-1 container mx-auto px-4 py-16">
+        <main className="flex-1 container py-16">
           <Card className="max-w-lg mx-auto">
             <CardContent className="flex flex-col items-center py-12 text-center">
               <StatusIcon className="h-12 w-12 text-primary mb-4" />
@@ -96,7 +96,7 @@ export default function MentorApply() {
       <SEOHead title={isAr ? "تقدم كمرشد - الطهاة" : "Apply as Mentor - Altohaa"} description="Apply to become a mentor" />
       <Header />
 
-      <main className="flex-1 container mx-auto px-4 py-8 max-w-2xl">
+      <main className="flex-1 container py-8 max-w-2xl">
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">

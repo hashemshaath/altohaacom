@@ -87,7 +87,7 @@ export default function MentorshipMatch() {
     return (
       <div className="min-h-screen flex flex-col bg-background">
         <Header />
-        <main className="flex-1 container mx-auto px-4 py-8"><Skeleton className="h-64 w-full" /></main>
+        <main className="flex-1 container py-8"><Skeleton className="h-64 w-full" /></main>
         <Footer />
       </div>
     );
@@ -97,7 +97,7 @@ export default function MentorshipMatch() {
     return (
       <div className="min-h-screen flex flex-col bg-background">
         <Header />
-        <main className="flex-1 container mx-auto px-4 py-16 text-center">
+        <main className="flex-1 container py-16 text-center">
           <h2 className="text-xl font-bold">{isAr ? "لم يتم العثور" : "Match not found"}</h2>
           <Link to="/mentorship"><Button variant="outline" className="mt-4">{isAr ? "العودة" : "Go Back"}</Button></Link>
         </main>
@@ -150,7 +150,7 @@ export default function MentorshipMatch() {
   return (
     <div className="min-h-screen flex flex-col bg-background">
       <Header />
-      <main className="flex-1 container mx-auto px-4 py-8 space-y-6">
+      <main className="flex-1 container py-8 space-y-6">
         <Link to="/mentorship" className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground">
           <ArrowLeft className="h-3 w-3" /> {isAr ? "العودة" : "Back"}
         </Link>

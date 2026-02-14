@@ -115,7 +115,7 @@ export default function RecipeDetail() {
           </div>
         )}
 
-        <div className="container mx-auto px-4 py-8">
+        <div className="container py-8">
           {!recipe.image_url && (
             <Button variant="ghost" size="sm" className="mb-4 -ms-2" asChild>
               <Link to="/recipes"><ArrowLeft className="me-1.5 h-4 w-4" />{isAr ? "العودة للوصفات" : "Back to Recipes"}</Link>
