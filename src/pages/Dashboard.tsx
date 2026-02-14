@@ -2,10 +2,11 @@ import { useLanguage } from "@/i18n/LanguageContext";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { Card, CardContent } from "@/components/ui/card";
-import { Trophy, Users, GraduationCap, Landmark, Newspaper, MessageSquare, ShoppingBag, Sparkles, Award, Star } from "lucide-react";
+import { Trophy, Users, GraduationCap, Landmark, Newspaper, MessageSquare, ShoppingBag, Sparkles, Award, Star, Gift } from "lucide-react";
 import { Link } from "react-router-dom";
 import { UpcomingCompetitionsWidget } from "@/components/dashboard/UpcomingCompetitionsWidget";
 import { RecentActivityWidget } from "@/components/dashboard/RecentActivityWidget";
+import { ReferralWidget } from "@/components/dashboard/ReferralWidget";
 import { QuickStatsWidget } from "@/components/dashboard/QuickStatsWidget";
 import { MasterclassProgressWidget } from "@/components/dashboard/MasterclassProgressWidget";
 import { NotificationsSummaryWidget } from "@/components/dashboard/NotificationsSummaryWidget";
@@ -48,6 +49,7 @@ export default function Dashboard() {
     { icon: Newspaper, title: t("news") || "News", href: "/news", color: "text-chart-4", bg: "bg-chart-4/10" },
     { icon: MessageSquare, title: isAr ? "الرسائل" : "Messages", href: "/messages", color: "text-chart-1", bg: "bg-chart-1/10" },
     { icon: ShoppingBag, title: isAr ? "المتجر" : "Shop", href: "/shop", color: "text-accent-foreground", bg: "bg-accent/30" },
+    { icon: Gift, title: isAr ? "الإحالات" : "Referrals", href: "/referrals", color: "text-chart-4", bg: "bg-chart-4/10" },
   ];
 
   return (
@@ -80,7 +82,7 @@ export default function Dashboard() {
 
         {/* Quick Navigation */}
         <div className="mb-8">
-          <div className="grid gap-2.5 grid-cols-3 sm:grid-cols-4 lg:grid-cols-7">
+          <div className="grid gap-2.5 grid-cols-4 sm:grid-cols-4 lg:grid-cols-8">
             {sections.map((s) => (
               <Link key={s.title} to={s.href}>
                 <Card className="group h-full transition-all hover:shadow-md hover:-translate-y-1 border-border/50 hover:border-primary/20 bg-card/80">
@@ -118,6 +120,7 @@ export default function Dashboard() {
             {user && <MasterclassProgressWidget />}
           </div>
           <div className="space-y-6">
+            {user && <ReferralWidget />}
             {user && <EventsCalendarWidget />}
             {user && <NotificationsSummaryWidget />}
             <RecentActivityWidget />

@@ -22,6 +22,8 @@ const RegisterCompany = lazy(() => import("@/pages/RegisterCompany"));
 const MentorApply = lazy(() => import("@/pages/MentorApply"));
 const MentorshipMatchPage = lazy(() => import("@/pages/MentorshipMatch"));
 const Judging = lazy(() => import("@/pages/Judging"));
+const Referrals = lazy(() => import("@/pages/Referrals"));
+const Rewards = lazy(() => import("@/pages/Rewards"));
 
 export const protectedRoutes = (
   <>
@@ -45,5 +47,7 @@ export const protectedRoutes = (
     <Route path="/mentorship/apply" element={<ProtectedRoute><MentorApply /></ProtectedRoute>} />
     <Route path="/mentorship/match/:id" element={<ProtectedRoute><MentorshipMatchPage /></ProtectedRoute>} />
     <Route path="/judging" element={<ProtectedRoute><Judging /></ProtectedRoute>} />
+    <Route path="/referrals" element={<ProtectedRoute><Referrals /></ProtectedRoute>} />
+    <Route path="/rewards" element={<ProtectedRoute><Rewards /></ProtectedRoute>} />
   </>
 );
