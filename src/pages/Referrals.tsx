@@ -1,100 +1,36 @@
-import { useState } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useAuth } from "@/contexts/AuthContext";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { SEOHead } from "@/components/SEOHead";
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Progress } from "@/components/ui/progress";
-import { useToast } from "@/hooks/use-toast";
-import { useReferralCode, useReferralStats, useReferralInvitations, useSendInvitation, useReferralMilestones, useUserMilestones } from "@/hooks/useReferral";
+import { useReferralCode, useReferralStats, useReferralInvitations, useReferralMilestones, useUserMilestones } from "@/hooks/useReferral";
 import { usePointsBalance } from "@/hooks/usePoints";
-import { Copy, Mail, Share2, Gift, Trophy, Users, TrendingUp, Send, Star, Crown, Loader2, Link2, MessageCircle, QrCode, BarChart3, Target, Zap, CheckCircle2 } from "lucide-react";
+import { Share2, Gift, Trophy, Users, TrendingUp, Send, Star, Mail, MessageCircle, BarChart3, Target, Zap, CheckCircle2 } from "lucide-react";
 import { Link } from "react-router-dom";
+import { ReferralShareSheet } from "@/components/referrals/ReferralShareSheet";
 
 export default function Referrals() {
   const { language } = useLanguage();
   const isAr = language === "ar";
   const { user } = useAuth();
-  const { toast } = useToast();
-  const [inviteEmail, setInviteEmail] = useState("");
 
-  const { data: referralCode, isLoading: codeLoading } = useReferralCode();
+  const { data: referralCode } = useReferralCode();
   const { data: stats } = useReferralStats();
   const { data: invitations } = useReferralInvitations();
   const { data: milestones } = useReferralMilestones();
   const { data: userMilestones } = useUserMilestones();
   const { data: pointsBalance } = usePointsBalance();
-  const sendInvitation = useSendInvitation();
 
   const referralLink = referralCode?.code
     ? `${window.location.origin}/auth?ref=${referralCode.code}`
     : "";
 
-  const copyLink = () => {
-    navigator.clipboard.writeText(referralLink);
-    toast({ title: isAr ? "تم نسخ الرابط!" : "Link copied!" });
-  };
-
-  const shareNative = async () => {
-    if (navigator.share) {
-      await navigator.share({
-        title: isAr ? "انضم إلى ألطهاة" : "Join Altohaa",
-        text: isAr ? "انضم إلى منصة ألطهاة للطهاة المحترفين!" : "Join Altohaa - The professional culinary platform!",
-        url: referralLink,
-      });
-    } else {
-      copyLink();
-    }
-  };
-
-  const shareWhatsApp = () => {
-    const text = encodeURIComponent(
-      isAr
-        ? `انضم إلى منصة ألطهاة! سجل الآن واحصل على نقاط إضافية: ${referralLink}`
-        : `Join Altohaa! Sign up now and earn bonus points: ${referralLink}`
-    );
-    window.open(`https://wa.me/?text=${text}`, "_blank");
-    if (referralCode) {
-      sendInvitation.mutate({ channel: "whatsapp", referralCodeId: referralCode.id });
-    }
-  };
-
-  const shareTwitter = () => {
-    const text = encodeURIComponent(
-      isAr ? `انضم إلى ألطهاة - المنصة الأولى للطهاة المحترفين` : `Join Altohaa - The #1 platform for professional chefs`
-    );
-    window.open(`https://twitter.com/intent/tweet?text=${text}&url=${encodeURIComponent(referralLink)}`, "_blank");
-    if (referralCode) {
-      sendInvitation.mutate({ channel: "twitter", referralCodeId: referralCode.id });
-    }
-  };
-
-  const shareFacebook = () => {
-    window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(referralLink)}`, "_blank");
-    if (referralCode) {
-      sendInvitation.mutate({ channel: "facebook", referralCodeId: referralCode.id });
-    }
-  };
-
-  const shareLinkedIn = () => {
-    window.open(`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(referralLink)}`, "_blank");
-    if (referralCode) {
-      sendInvitation.mutate({ channel: "linkedin", referralCodeId: referralCode.id });
-    }
-  };
-
-  const sendEmailInvite = () => {
-    if (!inviteEmail || !referralCode) return;
-    sendInvitation.mutate(
-      { email: inviteEmail, channel: "email", referralCodeId: referralCode.id },
-      { onSuccess: () => setInviteEmail("") }
-    );
-  };
+  // Share functions moved to ReferralShareSheet component
 
   const totalConversions = stats?.conversionsCount || 0;
   const achievedMilestoneIds = new Set(userMilestones?.map((m) => m.milestone_id) || []);
@@ -189,92 +125,21 @@ export default function Referrals() {
 
           {/* Share Tab */}
           <TabsContent value="share" className="space-y-6">
-            {/* Referral Link */}
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2 text-base">
-                  <Link2 className="h-4 w-4 text-primary" />
-                  {isAr ? "رابط الإحالة الخاص بك" : "Your Referral Link"}
-                </CardTitle>
-                <CardDescription>
-                  {isAr ? "شارك هذا الرابط مع أصدقائك لكسب النقاط" : "Share this link with friends to earn points"}
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="flex gap-2">
-                  <Input value={referralLink} readOnly className="font-mono text-sm" dir="ltr" />
-                  <Button onClick={copyLink} variant="outline" className="shrink-0 gap-1.5">
-                    <Copy className="h-4 w-4" />
-                    {isAr ? "نسخ" : "Copy"}
-                  </Button>
-                </div>
-                <div className="flex items-center gap-2">
-                  <Badge variant="outline" className="text-xs">
-                    {isAr ? "الكود:" : "Code:"} {referralCode?.code || "..."}
-                  </Badge>
-                </div>
-              </CardContent>
-            </Card>
-
-            {/* Share Channels */}
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center gap-2 text-base">
                   <Share2 className="h-4 w-4 text-primary" />
-                  {isAr ? "شارك عبر" : "Share via"}
+                  {isAr ? "شارك واكسب النقاط" : "Share & Earn Points"}
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5">
-                  <Button onClick={shareWhatsApp} variant="outline" className="gap-2 h-12">
-                    <MessageCircle className="h-5 w-5 text-chart-2" />
-                    WhatsApp
-                  </Button>
-                  <Button onClick={shareTwitter} variant="outline" className="gap-2 h-12">
-                    <svg className="h-5 w-5" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" /></svg>
-                    X / Twitter
-                  </Button>
-                  <Button onClick={shareFacebook} variant="outline" className="gap-2 h-12">
-                    <svg className="h-5 w-5 text-chart-1" viewBox="0 0 24 24" fill="currentColor"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" /></svg>
-                    Facebook
-                  </Button>
-                  <Button onClick={shareLinkedIn} variant="outline" className="gap-2 h-12">
-                    <svg className="h-5 w-5 text-chart-4" viewBox="0 0 24 24" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z" /></svg>
-                    LinkedIn
-                  </Button>
-                  <Button onClick={shareNative} variant="outline" className="gap-2 h-12">
-                    <Share2 className="h-5 w-5 text-primary" />
-                    {isAr ? "المزيد" : "More"}
-                  </Button>
-                </div>
-              </CardContent>
-            </Card>
-
-            {/* Email Invite */}
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2 text-base">
-                  <Mail className="h-4 w-4 text-primary" />
-                  {isAr ? "دعوة عبر البريد الإلكتروني" : "Invite via Email"}
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="flex gap-2">
-                  <Input
-                    type="email"
-                    placeholder={isAr ? "أدخل البريد الإلكتروني" : "Enter email address"}
-                    value={inviteEmail}
-                    onChange={(e) => setInviteEmail(e.target.value)}
+                {referralCode && (
+                  <ReferralShareSheet
+                    referralLink={referralLink}
+                    referralCode={referralCode.code}
+                    referralCodeId={referralCode.id}
                   />
-                  <Button
-                    onClick={sendEmailInvite}
-                    disabled={!inviteEmail || sendInvitation.isPending}
-                    className="gap-1.5 shrink-0"
-                  >
-                    {sendInvitation.isPending ? <Loader2 className="h-4 w-4 animate-spin" /> : <Send className="h-4 w-4" />}
-                    {isAr ? "إرسال" : "Send"}
-                  </Button>
-                </div>
+                )}
               </CardContent>
             </Card>
 
