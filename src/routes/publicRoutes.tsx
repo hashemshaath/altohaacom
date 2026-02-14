@@ -37,6 +37,11 @@ const Establishments = lazy(() => import("@/pages/Establishments"));
 const EstablishmentDetail = lazy(() => import("@/pages/EstablishmentDetail"));
 const CompanyPublicProfile = lazy(() => import("@/pages/CompanyPublicProfile"));
 const AcceptInvite = lazy(() => import("@/pages/AcceptInvite"));
+const ContactUs = lazy(() => import("@/pages/ContactUs"));
+const PrivacyPolicy = lazy(() => import("@/pages/PrivacyPolicy"));
+const TermsConditions = lazy(() => import("@/pages/TermsConditions"));
+const AboutUs = lazy(() => import("@/pages/AboutUs"));
+const CookiePolicy = lazy(() => import("@/pages/CookiePolicy"));
 
 export const publicRoutes = (
   <>
@@ -78,6 +83,11 @@ export const publicRoutes = (
     <Route path="/establishments/:id" element={<EstablishmentDetail />} />
     <Route path="/companies/:id" element={<CompanyPublicProfile />} />
     <Route path="/accept-invite" element={<AcceptInvite />} />
+    <Route path="/contact" element={<ContactUs />} />
+    <Route path="/privacy" element={<PrivacyPolicy />} />
+    <Route path="/terms" element={<TermsConditions />} />
+    <Route path="/about" element={<AboutUs />} />
+    <Route path="/cookies" element={<CookiePolicy />} />
     <Route path="/profile/:username" element={<PublicProfile />} />
     <Route path="/:username" element={<PublicProfile />} />
   </>

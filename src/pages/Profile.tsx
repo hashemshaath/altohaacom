@@ -58,7 +58,7 @@ export default function Profile() {
       <div className="flex min-h-screen flex-col bg-background">
         <SEOHead title="Profile" description="Your Altohaa profile" />
         <Header />
-       <main className="container flex-1 py-4 md:py-6 max-w-5xl">
+        <main className="container flex-1 py-4 md:py-6 max-w-4xl">
           <Skeleton className="h-44 w-full rounded-2xl mb-6" />
           <Skeleton className="h-10 w-80 mb-6" />
           <Skeleton className="h-64 w-full rounded-xl" />
@@ -83,7 +83,7 @@ export default function Profile() {
     <div className="flex min-h-screen flex-col bg-background" dir={isAr ? "rtl" : "ltr"}>
       <SEOHead title="Profile" description="Your Altohaa profile" />
       <Header />
-      <main className="container flex-1 py-4 md:py-6 max-w-5xl">
+       <main className="container flex-1 py-4 md:py-6 max-w-4xl">
         <div className="relative group">
           {profile && user && (
             <ProfileHeader profile={profile} roles={roles} userId={user.id} onProfileUpdate={fetchProfile} />
