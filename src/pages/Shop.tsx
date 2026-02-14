@@ -88,46 +88,58 @@ export default function Shop() {
       />
       <Header />
 
-      {/* Hero Banner */}
-      <section className="relative overflow-hidden border-b bg-gradient-to-b from-primary/5 via-background to-background">
-        <div className="absolute -top-32 start-1/4 h-64 w-64 rounded-full bg-primary/8 blur-[100px] animate-pulse pointer-events-none" />
+      {/* Premium Hero Banner */}
+      <section className="relative overflow-hidden border-b bg-gradient-to-b from-primary/10 via-background to-background">
+        <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1541832676-9b763b0239ab?auto=format&fit=crop&q=80')] bg-cover bg-center opacity-5 grayscale" />
+        <div className="absolute inset-0 bg-gradient-to-t from-background via-background/40 to-transparent" />
+        
+        <div className="absolute -top-32 start-1/4 h-64 w-64 rounded-full bg-primary/10 blur-[100px] animate-pulse pointer-events-none" />
         <div className="absolute -top-20 end-1/3 h-48 w-48 rounded-full bg-accent/10 blur-[80px] animate-pulse [animation-delay:1s] pointer-events-none" />
-        <div className="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-primary/20 to-transparent" />
-        <div className="container relative py-10 md:py-14">
-          <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
-            <div className="flex items-start gap-3">
-              <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-primary/10 ring-1 ring-primary/15 shadow-sm">
-                <ShoppingBag className="h-6 w-6 text-primary" />
+
+        <div className="container relative py-12 md:py-16">
+          <div className="flex flex-col gap-8 lg:flex-row lg:items-center lg:justify-between">
+            <div className="max-w-2xl space-y-6">
+              <div className="inline-flex items-center gap-2 rounded-full bg-primary/10 px-3 py-1 ring-1 ring-primary/20 backdrop-blur-sm">
+                <ShoppingBag className="h-4 w-4 text-primary" />
+                <span className="text-[10px] font-bold uppercase tracking-widest text-primary">
+                  {isAr ? "سوق التوحاء الطهوي" : "Altohaa Culinary Marketplace"}
+                </span>
               </div>
-              <div>
-                <h1 className="font-serif text-2xl font-bold md:text-3xl lg:text-4xl">
-                  {isAr ? "المتجر الطهوي" : "Culinary Shop"}
+              
+              <div className="space-y-4">
+                <h1 className="font-serif text-4xl font-bold tracking-tight md:text-5xl lg:text-6xl text-balance leading-[1.1]">
+                  {isAr ? (
+                    <>أدوات <span className="text-primary italic">احترافية</span> للتميز الطهوي</>
+                  ) : (
+                    <>Professional <span className="text-primary italic">Tools</span> for Culinary Excellence</>
+                  )}
                 </h1>
-                <p className="mt-1 max-w-xl text-sm text-muted-foreground sm:text-base">
+                <p className="max-w-xl text-base text-muted-foreground/90 md:text-lg leading-relaxed">
                   {isAr
-                    ? "أدوات طهي فاخرة وكتب ومنتجات وخدمات مهنية"
-                    : "Premium culinary tools, books, products, and professional services"}
+                    ? "مجموعة مختارة بعناية من أدوات الطهي الفاخرة، الكتب المتخصصة، والخدمات المهنية للطهاة والذواقة"
+                    : "A curated selection of premium culinary tools, specialized books, and professional services for chefs and food enthusiasts"}
                 </p>
               </div>
             </div>
-            <div className="flex gap-2">
+
+            <div className="flex flex-wrap items-center gap-3">
               {user && (
-                <Button variant="outline" size="sm" asChild>
+                <Button variant="outline" size="lg" className="h-12 rounded-xl px-6 font-bold border-border/60 hover:bg-muted/80 transition-all" asChild>
                   <Link to="/shop/my-products">
-                    {isAr ? "منتجاتي" : "My Products"}
+                    <Package className="me-2 h-5 w-5" />
+                    {isAr ? "إدارة منتجاتي" : "My Products"}
                   </Link>
                 </Button>
               )}
               <Button
-                variant="outline"
-                size="sm"
-                className="relative"
+                size="lg"
+                className="relative h-12 rounded-xl px-8 font-bold shadow-xl shadow-primary/20 transition-all hover:scale-105 active:scale-95"
                 onClick={() => setCartOpen(true)}
               >
-                <ShoppingCart className="me-1.5 h-4 w-4" />
-                {isAr ? "السلة" : "Cart"}
+                <ShoppingCart className="me-2 h-5 w-5" />
+                {isAr ? "سلة التسوق" : "View Cart"}
                 {cart.totalItems > 0 && (
-                  <Badge className="absolute -end-2 -top-2 h-5 min-w-5 px-1.5 text-[10px]">
+                  <Badge className="absolute -end-2 -top-2 flex h-6 min-w-6 items-center justify-center rounded-full bg-chart-4 text-chart-4-foreground p-1 text-[11px] ring-2 ring-background">
                     {cart.totalItems}
                   </Badge>
                 )}
@@ -141,41 +153,49 @@ export default function Shop() {
         {/* Page Header - removed, now in hero */}
         {/* Header moved to hero banner above */}
 
-        {/* Filters */}
-        <div className="mb-6 flex flex-col gap-3 sm:flex-row">
-          <div className="relative flex-1 sm:max-w-xs">
-            <Search className="absolute start-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-            <Input
-              placeholder={isAr ? "ابحث عن منتج..." : "Search products..."}
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              className="ps-10"
-            />
+        {/* Sticky Filters Bar */}
+        <div className="sticky top-[64px] z-40 -mx-4 mb-10 border-y border-border/40 bg-background/80 px-4 py-4 backdrop-blur-md md:rounded-2xl md:border md:px-6">
+          <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+            <div className="flex flex-1 flex-col gap-3 sm:flex-row">
+              <div className="relative flex-1 sm:max-w-md">
+                <Search className="absolute start-4 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground/60" />
+                <Input
+                  placeholder={isAr ? "ابحث عن منتج، ماركة..." : "Search product, brand..."}
+                  value={search}
+                  onChange={(e) => setSearch(e.target.value)}
+                  className="h-11 border-border/40 bg-muted/20 ps-11 transition-all focus:bg-background focus:ring-primary/20 rounded-xl"
+                />
+              </div>
+              
+              <div className="flex gap-2">
+                {categories.length > 0 && (
+                  <Select value={categoryFilter} onValueChange={setCategoryFilter}>
+                    <SelectTrigger className="h-11 w-full border-border/40 bg-muted/20 rounded-xl sm:w-44 focus:ring-primary/20">
+                      <SelectValue placeholder={isAr ? "التصنيف" : "Category"} />
+                    </SelectTrigger>
+                    <SelectContent className="rounded-xl border-border/40">
+                      <SelectItem value="all" className="rounded-lg">{isAr ? "جميع التصنيفات" : "All Categories"}</SelectItem>
+                      {categories.map((cat) => (
+                        <SelectItem key={cat} value={cat} className="rounded-lg">{cat}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                )}
+                
+                <Select value={typeFilter} onValueChange={setTypeFilter}>
+                  <SelectTrigger className="h-11 w-full border-border/40 bg-muted/20 rounded-xl sm:w-44 focus:ring-primary/20">
+                    <SelectValue placeholder={isAr ? "النوع" : "Type"} />
+                  </SelectTrigger>
+                  <SelectContent className="rounded-xl border-border/40">
+                    <SelectItem value="all" className="rounded-lg">{isAr ? "جميع الأنواع" : "All Types"}</SelectItem>
+                    <SelectItem value="physical" className="rounded-lg">{isAr ? "منتج مادي" : "Physical"}</SelectItem>
+                    <SelectItem value="digital" className="rounded-lg">{isAr ? "رقمي" : "Digital"}</SelectItem>
+                    <SelectItem value="service" className="rounded-lg">{isAr ? "خدمة" : "Service"}</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
           </div>
-          {categories.length > 1 && (
-            <Select value={categoryFilter} onValueChange={setCategoryFilter}>
-              <SelectTrigger className="w-full sm:w-40">
-                <SelectValue placeholder={isAr ? "التصنيف" : "Category"} />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">{isAr ? "الكل" : "All"}</SelectItem>
-                {categories.map((cat) => (
-                  <SelectItem key={cat} value={cat}>{cat}</SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          )}
-          <Select value={typeFilter} onValueChange={setTypeFilter}>
-            <SelectTrigger className="w-full sm:w-40">
-              <SelectValue placeholder={isAr ? "النوع" : "Type"} />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">{isAr ? "الكل" : "All Types"}</SelectItem>
-              <SelectItem value="physical">{isAr ? "منتج مادي" : "Physical"}</SelectItem>
-              <SelectItem value="digital">{isAr ? "رقمي" : "Digital"}</SelectItem>
-              <SelectItem value="service">{isAr ? "خدمة" : "Service"}</SelectItem>
-            </SelectContent>
-          </Select>
         </div>
 
         {/* Products Grid */}
@@ -219,63 +239,75 @@ export default function Shop() {
               const isOutOfStock = product.product_type === "physical" && product.stock_quantity <= 0;
 
               return (
-                <Card key={product.id} className="group h-full overflow-hidden flex flex-col transition-all duration-300 hover:shadow-lg hover:-translate-y-1 hover:border-primary/20">
-                  <Link to={`/shop/${product.id}`} className="block">
+                <Card key={product.id} className="group flex h-full flex-col overflow-hidden border-border/40 bg-card/50 backdrop-blur-sm transition-all duration-300 hover:shadow-2xl hover:-translate-y-2 hover:border-primary/30">
+                  <Link to={`/shop/${product.id}`} className="block overflow-hidden">
                     <div className="relative aspect-square overflow-hidden bg-muted">
                       {product.image_url ? (
                         <img
                           src={product.image_url}
                           alt={title}
-                          className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110"
+                          className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-110"
                           loading="lazy"
                         />
                       ) : (
-                        <div className="flex h-full items-center justify-center bg-gradient-to-br from-primary/5 to-muted">
-                          <ShoppingBag className="h-10 w-10 text-muted-foreground/20" />
+                        <div className="flex h-full items-center justify-center bg-gradient-to-br from-primary/5 to-muted/20">
+                          <ShoppingBag className="h-12 w-12 text-muted-foreground/20" />
                         </div>
                       )}
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/10 via-transparent to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
-                      <div className="absolute start-2.5 top-2.5 flex flex-wrap gap-1.5">
+                      
+                      {/* Overlays */}
+                      <div className="absolute inset-0 bg-black/5 opacity-0 transition-opacity group-hover:opacity-100" />
+                      
+                      {/* Badges */}
+                      <div className="absolute start-3 top-3 flex flex-wrap gap-2 z-10">
                         {product.is_featured && (
-                          <Badge className="bg-chart-4/90 text-chart-4-foreground text-[10px] gap-1">
-                            <Star className="h-2.5 w-2.5" />
+                          <Badge className="bg-chart-4 text-white shadow-lg shadow-chart-4/20 text-[10px] gap-1 px-2.5 py-1 font-bold">
+                            <Star className="h-2.5 w-2.5 fill-current" />
                             {isAr ? "مميز" : "Featured"}
                           </Badge>
                         )}
-                        <Badge variant="secondary" className="text-[10px] gap-1">
+                        <Badge variant="secondary" className="bg-background/80 backdrop-blur-md text-[10px] gap-1 px-2.5 py-1 font-bold ring-1 ring-border/50">
                           <TypeIcon className="h-2.5 w-2.5" />
                           {product.product_type === "physical" ? (isAr ? "مادي" : "Physical") :
                            product.product_type === "digital" ? (isAr ? "رقمي" : "Digital") :
                            (isAr ? "خدمة" : "Service")}
                         </Badge>
                       </div>
+
+                      {product.discount_percent > 0 && !isOutOfStock && (
+                        <Badge className="absolute end-3 top-3 bg-destructive text-white shadow-lg shadow-destructive/20 text-[10px] px-2.5 py-1 font-bold">
+                          <Percent className="me-1 h-2.5 w-2.5" />
+                          {product.discount_percent}% {isAr ? "خصم" : "OFF"}
+                        </Badge>
+                      )}
+
                       {isOutOfStock && (
-                        <div className="absolute inset-0 flex items-center justify-center bg-background/60 backdrop-blur-sm">
-                          <Badge variant="destructive">{isAr ? "نفذت الكمية" : "Out of Stock"}</Badge>
+                        <div className="absolute inset-0 flex items-center justify-center bg-background/70 backdrop-blur-md z-20">
+                          <Badge variant="destructive" className="px-4 py-1.5 font-bold uppercase tracking-widest">{isAr ? "نفذت الكمية" : "Out of Stock"}</Badge>
                         </div>
                       )}
                     </div>
                   </Link>
-                  <CardContent className="flex flex-1 flex-col p-4">
-                    <Link to={`/shop/${product.id}`}>
-                      <h3 className="mb-1 text-sm font-semibold line-clamp-2 group-hover:text-primary transition-colors duration-200">
-                        {title}
-                      </h3>
-                    </Link>
-                    <Badge variant="outline" className="mb-2 w-fit text-[10px]">{product.category}</Badge>
-                    {product.discount_percent > 0 && (
-                      <Badge variant="destructive" className="absolute end-2.5 top-2.5 text-[10px] gap-0.5">
-                        <Percent className="h-2.5 w-2.5" />
-                        {product.discount_percent}% {isAr ? "خصم" : "OFF"}
+
+                  <CardContent className="flex flex-1 flex-col p-5">
+                    <div className="flex-1 space-y-2">
+                      <Badge variant="outline" className="text-[10px] font-bold uppercase tracking-widest border-primary/20 bg-primary/5 text-primary/80">
+                        {product.category}
                       </Badge>
-                    )}
-                    <div className="mt-auto flex items-center justify-between pt-3 border-t border-border/50">
-                      <div>
-                        <span className="text-lg font-bold text-primary">
+                      <Link to={`/shop/${product.id}`} className="block">
+                        <h3 className="text-base font-bold leading-tight group-hover:text-primary transition-colors duration-300 line-clamp-2">
+                          {title}
+                        </h3>
+                      </Link>
+                    </div>
+                    
+                    <div className="mt-5 flex items-center justify-between border-t border-border/40 pt-4">
+                      <div className="flex flex-col">
+                        <span className="text-xl font-black tracking-tight text-primary">
                           SAR {product.price.toFixed(2)}
                         </span>
                         {product.compare_at_price && product.compare_at_price > product.price && (
-                          <span className="ms-1.5 text-xs text-muted-foreground line-through">
+                          <span className="text-xs text-muted-foreground line-through opacity-60">
                             SAR {product.compare_at_price.toFixed(2)}
                           </span>
                         )}
@@ -284,9 +316,9 @@ export default function Shop() {
                         size="sm"
                         disabled={isOutOfStock}
                         onClick={(e) => { e.preventDefault(); handleAddToCart(product); }}
-                        className="transition-transform duration-200 active:scale-95"
+                        className={`h-10 rounded-xl px-5 font-bold transition-all active:scale-95 ${isOutOfStock ? "opacity-50" : "shadow-lg shadow-primary/20 hover:shadow-primary/30"}`}
                       >
-                        <ShoppingCart className="me-1 h-3.5 w-3.5" />
+                        <ShoppingCart className="me-1.5 h-4 w-4" />
                         {isAr ? "أضف" : "Add"}
                       </Button>
                     </div>

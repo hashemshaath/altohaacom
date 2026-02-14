@@ -186,21 +186,22 @@ export default function ArticleDetail() {
         {/* Hero Section */}
         <div className="relative">
           {article.featured_image_url ? (
-            <div className="relative h-64 md:h-96">
+            <div className="relative h-64 md:h-[450px]">
               <img
                 src={article.featured_image_url}
                 alt={title}
                 className="h-full w-full object-cover"
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-background via-background/50 to-transparent" />
+              <div className="absolute inset-0 bg-gradient-to-t from-background via-background/60 to-transparent" />
+              <div className="absolute inset-0 bg-black/20" />
             </div>
           ) : (
-            <div className="h-32 bg-gradient-to-br from-primary/20 to-accent/20" />
+            <div className="h-48 bg-gradient-to-br from-primary/20 via-accent/10 to-background" />
           )}
           
-          <div className="container relative -mt-16 md:-mt-24">
-            <Card className="mx-auto max-w-4xl">
-              <CardContent className="p-6 md:p-8">
+          <div className="container relative -mt-32 md:-mt-48 pb-12">
+            <Card className="mx-auto max-w-4xl border-none bg-card/90 backdrop-blur-xl shadow-2xl shadow-black/10">
+              <CardContent className="p-6 md:p-12">
                 {/* Back Button & Type Badge */}
                 <div className="mb-4 flex items-center justify-between">
                   <Button variant="ghost" size="sm" asChild>
@@ -215,11 +216,11 @@ export default function ArticleDetail() {
                 </div>
 
                 {/* Title */}
-                <h1 className="font-serif text-2xl font-bold md:text-4xl mb-4">{title}</h1>
+                <h1 className="font-serif text-3xl font-bold leading-tight md:text-5xl mb-6 text-balance">{title}</h1>
 
                 {/* Excerpt */}
                 {excerpt && (
-                  <p className="text-lg text-muted-foreground mb-6">{excerpt}</p>
+                  <p className="text-xl text-muted-foreground/90 leading-relaxed mb-8 font-medium italic border-s-4 border-primary/30 ps-6">{excerpt}</p>
                 )}
 
                 {/* Meta Info */}
@@ -305,8 +306,8 @@ export default function ArticleDetail() {
                 <Separator className="mb-6" />
 
                 {/* Article Content */}
-                <article className="prose prose-lg max-w-none dark:prose-invert">
-                  <div className="whitespace-pre-wrap">{content}</div>
+                <article className="prose prose-lg max-w-none dark:prose-invert prose-headings:font-serif prose-p:leading-loose prose-p:text-muted-foreground/90">
+                  <div className="whitespace-pre-wrap leading-relaxed">{content}</div>
                 </article>
 
                 {/* Gallery */}

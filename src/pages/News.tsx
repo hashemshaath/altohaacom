@@ -109,51 +109,61 @@ export default function News() {
       />
       <Header />
       <main className="flex-1">
-        <div className="container py-8 md:py-12">
+        <div className="container py-8 md:py-14">
           {/* Hero Header */}
-          <Card className="mb-8 overflow-hidden border-border/50 bg-gradient-to-br from-primary/5 via-background to-accent/5 relative">
-            <div className="pointer-events-none absolute -end-16 -top-16 h-48 w-48 rounded-full bg-primary/5 blur-3xl" />
-            <div className="relative flex items-center gap-4 p-5 md:p-6">
-              <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-primary/10 ring-4 ring-primary/5">
-                <Newspaper className="h-6 w-6 text-primary" />
+          <section className="relative mb-12 overflow-hidden rounded-[2rem] border border-border/40 bg-card p-8 md:p-12">
+            <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-background to-accent/5" />
+            <div className="absolute -end-24 -top-24 h-64 w-64 rounded-full bg-primary/5 blur-[100px] animate-pulse" />
+            <div className="absolute -bottom-24 -start-24 h-64 w-64 rounded-full bg-accent/5 blur-[100px] animate-pulse [animation-delay:1.5s]" />
+            
+            <div className="relative flex flex-col items-center gap-6 text-center md:flex-row md:text-start">
+              <div className="flex h-20 w-20 shrink-0 items-center justify-center rounded-[2rem] bg-gradient-to-br from-primary to-primary-variant text-primary-foreground shadow-2xl shadow-primary/20 transition-transform hover:scale-105 duration-500">
+                <Newspaper className="h-10 w-10" />
               </div>
-              <div>
-                <h1 className="font-serif text-2xl font-bold md:text-3xl">
+              <div className="space-y-2">
+                <div className="inline-flex items-center gap-2 rounded-full bg-primary/10 px-3 py-1 ring-1 ring-primary/20">
+                  <span className="text-[10px] font-bold uppercase tracking-widest text-primary">
+                    {isAr ? "مركز الأخبار" : "News Center"}
+                  </span>
+                </div>
+                <h1 className="font-serif text-4xl font-bold tracking-tight md:text-5xl">
                   {isAr ? "الأخبار والمقالات" : "News & Articles"}
                 </h1>
-                <p className="mt-1 text-sm text-muted-foreground">
+                <p className="max-w-xl text-base text-muted-foreground md:text-lg">
                   {isAr
-                    ? "ابق على اطلاع بأحدث أخبار المسابقات وفعاليات الطهي"
-                    : "Stay updated with the latest competition news and culinary events"}
+                    ? "بوابتك لكل جديد في عالم فنون الطهي، أخبار المسابقات، وقصص النجاح"
+                    : "Your gateway to culinary trends, competition updates, and chef success stories"}
                 </p>
               </div>
             </div>
-          </Card>
+          </section>
 
-          {/* Filters */}
-          <div className="mb-6 flex flex-col gap-3 sm:flex-row">
-            <div className="relative flex-1 sm:max-w-xs">
-              <Search className="absolute start-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-              <Input
-                placeholder={isAr ? "ابحث..." : "Search..."}
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="ps-10"
-              />
+          {/* Filters Bar */}
+          <div className="sticky top-[64px] z-40 -mx-4 mb-10 border-y border-border/40 bg-background/80 px-4 py-4 backdrop-blur-md md:rounded-2xl md:border md:px-6">
+            <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
+              <div className="relative flex-1 sm:max-w-md">
+                <Search className="absolute start-4 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground/60" />
+                <Input
+                  placeholder={isAr ? "ابحث عن مقال أو خبر..." : "Search articles or news..."}
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="h-11 border-border/40 bg-muted/20 ps-11 transition-all focus:bg-background focus:ring-primary/20 rounded-xl"
+                />
+              </div>
+              <Select value={selectedCategory} onValueChange={setSelectedCategory}>
+                <SelectTrigger className="h-11 w-full border-border/40 bg-muted/20 rounded-xl sm:w-48 focus:ring-primary/20">
+                  <SelectValue placeholder={isAr ? "التصنيف" : "Category"} />
+                </SelectTrigger>
+                <SelectContent className="rounded-xl border-border/40">
+                  <SelectItem value="all" className="rounded-lg">{isAr ? "جميع التصنيفات" : "All Categories"}</SelectItem>
+                  {categories.map((cat) => (
+                    <SelectItem key={cat.id} value={cat.id} className="rounded-lg">
+                      {isAr && cat.name_ar ? cat.name_ar : cat.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
             </div>
-            <Select value={selectedCategory} onValueChange={setSelectedCategory}>
-              <SelectTrigger className="w-full sm:w-44">
-                <SelectValue placeholder={isAr ? "التصنيف" : "Category"} />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">{isAr ? "جميع التصنيفات" : "All Categories"}</SelectItem>
-                {categories.map((cat) => (
-                  <SelectItem key={cat.id} value={cat.id}>
-                    {isAr && cat.name_ar ? cat.name_ar : cat.name}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
           </div>
 
           {/* Tabs */}
