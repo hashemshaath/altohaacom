@@ -103,6 +103,16 @@ export default function Auth() {
 
   const isLockedOut = lockoutUntil !== null && Date.now() < lockoutUntil;
 
+  // Capture referral code from URL
+  const searchParams = new URLSearchParams(location.search);
+  const refCode = searchParams.get("ref");
+
+  useEffect(() => {
+    if (refCode) {
+      localStorage.setItem("altohaa_ref_code", refCode);
+    }
+  }, [refCode]);
+
   useEffect(() => {
     if (user && !isResetMode) navigate("/", { replace: true });
   }, [user, navigate, isResetMode]);
@@ -488,6 +498,51 @@ export default function Auth() {
           email: accountEmail,
         } as any)
         .eq("user_id", data.user.id);
+
+      // Process referral code
+      const storedRef = localStorage.getItem("altohaa_ref_code");
+      if (storedRef) {
+        try {
+          const { data: refData } = await supabase
+            .from("referral_codes")
+            .select("id, user_id")
+            .eq("code", storedRef.toUpperCase())
+            .maybeSingle();
+
+          if (refData && refData.user_id !== data.user.id) {
+            // Record conversion
+            await supabase.from("referral_conversions").insert({
+              referral_code_id: refData.id,
+              referrer_id: refData.user_id,
+              converted_user_id: data.user.id,
+              points_awarded_referrer: 50,
+              points_awarded_invitee: 25,
+            } as any);
+
+            // Award points to referrer
+            await supabase.rpc("award_points", {
+              p_user_id: refData.user_id,
+              p_action_type: "referral_signup",
+              p_points: 50,
+              p_description: "Referral signup bonus",
+              p_description_ar: "مكافأة تسجيل إحالة",
+              p_reference_type: "referral",
+              p_reference_id: refData.id,
+            });
+
+            // Update referral code stats
+            await supabase
+              .from("referral_codes")
+              .update({
+                total_conversions: (refData as any).total_conversions ? (refData as any).total_conversions + 1 : 1,
+              } as any)
+              .eq("id", refData.id);
+          }
+          localStorage.removeItem("altohaa_ref_code");
+        } catch (e) {
+          console.error("Referral processing error:", e);
+        }
+      }
     }
 
     setLoading(false);
