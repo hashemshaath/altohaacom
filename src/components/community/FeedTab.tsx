@@ -6,7 +6,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Heart, MessageCircle, User, Send } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
@@ -18,6 +18,7 @@ interface Post {
   image_url: string | null;
   created_at: string;
   author_id: string;
+  author_avatar: string | null;
   author_name: string | null;
   author_username: string | null;
   author_specialization: string | null;
@@ -54,7 +55,7 @@ export function FeedTab() {
     const postIds = postsData?.map((p) => p.id) || [];
 
     const [profilesRes, likesRes, commentsRes, userLikesRes] = await Promise.all([
-      supabase.from("profiles").select("user_id, full_name, username, specialization").in("user_id", authorIds),
+      supabase.from("profiles").select("user_id, full_name, username, specialization, avatar_url").in("user_id", authorIds),
       supabase.from("post_likes").select("post_id").in("post_id", postIds),
       supabase.from("post_comments").select("post_id").in("post_id", postIds),
       user ? supabase.from("post_likes").select("post_id").eq("user_id", user.id).in("post_id", postIds) : { data: [] },
@@ -76,6 +77,7 @@ export function FeedTab() {
         image_url: p.image_url,
         created_at: p.created_at,
         author_id: p.author_id,
+        author_avatar: profile?.avatar_url || null,
         author_name: profile?.full_name || null,
         author_username: profile?.username || null,
         author_specialization: profile?.specialization || null,
@@ -211,6 +213,7 @@ export function FeedTab() {
               <div className="flex gap-3">
                 <Link to={`/${post.author_username || post.author_id}`} className="shrink-0">
                   <Avatar className="h-10 w-10 transition-opacity hover:opacity-80">
+                    <AvatarImage src={post.author_avatar || undefined} alt={post.author_name || ""} />
                     <AvatarFallback className="bg-primary/10 text-primary text-xs font-semibold">
                       {(post.author_name || "C")[0].toUpperCase()}
                     </AvatarFallback>
