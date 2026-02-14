@@ -477,12 +477,12 @@ export default function Messages() {
                   </Button>
                 </div>
                 <div className="relative">
-                  <Search className="absolute start-3 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-muted-foreground" />
+                  <Search className="absolute start-3.5 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-muted-foreground/60" />
                   <Input
-                    placeholder={isAr ? "بحث..." : "Search..."}
+                    placeholder={isAr ? "بحث في المحادثات..." : "Search conversations..."}
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
-                    className="ps-9 h-8 text-xs"
+                    className="ps-9 h-9 text-xs border-border/40 bg-muted/20 rounded-xl transition-all focus:bg-background focus:ring-primary/20"
                   />
                 </div>
                 <MessageCategoryFilter active={categoryFilter} onChange={setCategoryFilter} counts={counts} />
@@ -506,8 +506,8 @@ export default function Messages() {
                       <button
                         key={conv.user_id}
                         onClick={() => setSelectedPartner(conv)}
-                        className={`w-full flex items-center gap-3 rounded-lg p-2.5 transition-colors text-start ${
-                          selectedPartner?.user_id === conv.user_id ? "bg-accent" : "hover:bg-accent/50"
+                        className={`w-full flex items-center gap-3 rounded-xl p-3 transition-all duration-300 text-start ${
+                          selectedPartner?.user_id === conv.user_id ? "bg-primary/10 ring-1 ring-primary/20 shadow-sm" : "hover:bg-accent/50"
                         }`}
                       >
                         <div className="relative shrink-0">
@@ -555,7 +555,7 @@ export default function Messages() {
               {selectedPartner ? (
                 <>
                   {/* Chat Header */}
-                  <div className="border-b p-3 flex items-center gap-3">
+                  <div className="border-b border-border/40 p-3 flex items-center gap-3 bg-muted/5 backdrop-blur-sm">
                     <Button variant="ghost" size="icon" className="md:hidden h-8 w-8" onClick={() => setSelectedPartner(null)}>
                       <ArrowLeft className="h-4 w-4" />
                     </Button>

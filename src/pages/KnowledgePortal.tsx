@@ -111,10 +111,10 @@ export default function KnowledgePortal() {
   };
 
   return (
-    <div className="flex min-h-screen flex-col">
+    <div className="flex min-h-screen flex-col bg-background">
       <Header />
-      {/* Hero Banner */}
-      <section className="relative overflow-hidden border-b bg-gradient-to-b from-primary/5 via-background to-background">
+      {/* Compact Hero */}
+      <section className="relative overflow-hidden border-b border-border/40 bg-gradient-to-b from-primary/5 via-background to-background">
         <div className="absolute -top-32 start-1/4 h-64 w-64 rounded-full bg-primary/8 blur-[100px] animate-pulse pointer-events-none" />
         <div className="absolute -top-20 end-1/3 h-48 w-48 rounded-full bg-accent/10 blur-[80px] animate-pulse [animation-delay:1s] pointer-events-none" />
         <div className="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-primary/20 to-transparent" />
@@ -124,7 +124,13 @@ export default function KnowledgePortal() {
               <BookOpen className="h-6 w-6 text-primary" />
             </div>
             <div>
-              <h1 className="font-serif text-2xl font-bold md:text-3xl lg:text-4xl">
+              <div className="mb-2 inline-flex items-center gap-2 rounded-full bg-primary/10 px-3 py-1 ring-1 ring-primary/20">
+                <div className="h-2 w-2 rounded-full bg-primary animate-pulse" />
+                <span className="text-[10px] font-bold uppercase tracking-widest text-primary">
+                  {language === "ar" ? "مركز المعرفة" : "Knowledge Hub"}
+                </span>
+              </div>
+              <h1 className="font-serif text-2xl font-bold tracking-tight md:text-3xl lg:text-4xl">
                 {language === "ar" ? "بوابة المعرفة" : "Knowledge Portal"}
               </h1>
               <p className="mt-1 max-w-xl text-sm text-muted-foreground sm:text-base">
@@ -143,53 +149,56 @@ export default function KnowledgePortal() {
           {/* Main content */}
           <div className="lg:col-span-2">
             <Tabs defaultValue="resources">
-              <TabsList className="mb-4">
-                <TabsTrigger value="resources" className="gap-2">
-                  <BookOpen className="h-4 w-4" />
-                  {language === "ar" ? "الموارد" : "Resources"}
-                </TabsTrigger>
-                <TabsTrigger value="gallery" className="gap-2">
-                  <GalleryHorizontalEnd className="h-4 w-4" />
-                  {language === "ar" ? "معرض المراجع" : "Reference Gallery"}
-                </TabsTrigger>
-              </TabsList>
+              {/* Premium sticky tab bar */}
+              <div className="sticky top-[64px] z-30 -mx-4 mb-6 border-y border-border/40 bg-background/80 px-4 py-3 backdrop-blur-md md:rounded-2xl md:border md:mx-0 md:px-6 shadow-sm">
+                <TabsList className="h-auto w-full justify-start gap-1.5 overflow-x-auto bg-transparent p-0 no-scrollbar">
+                  <TabsTrigger value="resources" className="gap-2 rounded-xl px-5 py-2.5 text-xs font-bold uppercase tracking-wider data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-lg data-[state=active]:shadow-primary/20">
+                    <BookOpen className="h-4 w-4" />
+                    {language === "ar" ? "الموارد" : "Resources"}
+                  </TabsTrigger>
+                  <TabsTrigger value="gallery" className="gap-2 rounded-xl px-5 py-2.5 text-xs font-bold uppercase tracking-wider data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-lg data-[state=active]:shadow-primary/20">
+                    <GalleryHorizontalEnd className="h-4 w-4" />
+                    {language === "ar" ? "معرض المراجع" : "Reference Gallery"}
+                  </TabsTrigger>
+                </TabsList>
+              </div>
 
               <TabsContent value="resources" className="space-y-4">
-                {/* Filters */}
+                {/* Premium Filters */}
                 <div className="flex flex-wrap gap-3">
                   <div className="relative flex-1 min-w-[200px]">
-                    <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+                    <Search className="absolute start-4 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground/60" />
                     <Input
-                      className="pl-9"
+                      className="h-11 border-border/40 bg-muted/20 ps-11 transition-all focus:bg-background focus:ring-primary/20 rounded-xl"
                       placeholder={language === "ar" ? "بحث في الموارد..." : "Search resources..."}
                       value={searchQuery}
                       onChange={e => setSearchQuery(e.target.value)}
                     />
                   </div>
                   <Select value={selectedCategory} onValueChange={setSelectedCategory}>
-                    <SelectTrigger className="w-[160px]">
+                    <SelectTrigger className="h-11 w-full border-border/40 bg-muted/20 rounded-xl sm:w-48 focus:ring-primary/20">
                       <SelectValue placeholder={language === "ar" ? "التصنيف" : "Category"} />
                     </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="all">{language === "ar" ? "الكل" : "All"}</SelectItem>
+                    <SelectContent className="rounded-xl border-border/40">
+                      <SelectItem value="all" className="rounded-lg">{language === "ar" ? "الكل" : "All"}</SelectItem>
                       {categories?.map(c => (
-                        <SelectItem key={c.id} value={c.id}>
+                        <SelectItem key={c.id} value={c.id} className="rounded-lg">
                           {language === "ar" && c.name_ar ? c.name_ar : c.name}
                         </SelectItem>
                       ))}
                     </SelectContent>
                   </Select>
                   <Select value={selectedType} onValueChange={setSelectedType}>
-                    <SelectTrigger className="w-[140px]">
+                    <SelectTrigger className="h-11 w-full border-border/40 bg-muted/20 rounded-xl sm:w-40 focus:ring-primary/20">
                       <SelectValue placeholder={language === "ar" ? "النوع" : "Type"} />
                     </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="all">{language === "ar" ? "الكل" : "All"}</SelectItem>
-                      <SelectItem value="link">{language === "ar" ? "رابط" : "Link"}</SelectItem>
-                      <SelectItem value="file">{language === "ar" ? "ملف" : "File"}</SelectItem>
-                      <SelectItem value="document">{language === "ar" ? "مستند" : "Document"}</SelectItem>
-                      <SelectItem value="image">{language === "ar" ? "صورة" : "Image"}</SelectItem>
-                      <SelectItem value="law">{language === "ar" ? "قانون" : "Law"}</SelectItem>
+                    <SelectContent className="rounded-xl border-border/40">
+                      <SelectItem value="all" className="rounded-lg">{language === "ar" ? "الكل" : "All"}</SelectItem>
+                      <SelectItem value="link" className="rounded-lg">{language === "ar" ? "رابط" : "Link"}</SelectItem>
+                      <SelectItem value="file" className="rounded-lg">{language === "ar" ? "ملف" : "File"}</SelectItem>
+                      <SelectItem value="document" className="rounded-lg">{language === "ar" ? "مستند" : "Document"}</SelectItem>
+                      <SelectItem value="image" className="rounded-lg">{language === "ar" ? "صورة" : "Image"}</SelectItem>
+                      <SelectItem value="law" className="rounded-lg">{language === "ar" ? "قانون" : "Law"}</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
@@ -199,37 +208,37 @@ export default function KnowledgePortal() {
                 ) : filteredResources && filteredResources.length > 0 ? (
                   <div className="space-y-3">
                     {filteredResources.map(resource => (
-                      <Card key={resource.id} className="hover:border-primary/30 hover:shadow-md hover:-translate-y-0.5 transition-all duration-300">
+                      <Card key={resource.id} className="overflow-hidden border-border/40 bg-card/60 backdrop-blur-sm hover:border-primary/30 hover:shadow-lg hover:-translate-y-1 transition-all duration-500">
                         <CardContent className="flex items-start gap-4 p-4">
-                          <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-primary/10">
+                          <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-primary/10 ring-1 ring-primary/10">
                             {resourceTypeIcon(resource.resource_type)}
                           </div>
                           <div className="min-w-0 flex-1">
                             <div className="flex items-start justify-between gap-2">
-                              <h3 className="font-medium">
+                              <h3 className="font-semibold text-sm">
                                 {language === "ar" && resource.title_ar ? resource.title_ar : resource.title}
                               </h3>
                               {resource.url && (
-                                <a href={resource.url} target="_blank" rel="noopener noreferrer" className="shrink-0 text-primary hover:text-primary/80">
-                                  <ExternalLink className="h-4 w-4" />
+                                <a href={resource.url} target="_blank" rel="noopener noreferrer" className="shrink-0 rounded-lg bg-primary/10 p-1.5 text-primary hover:bg-primary/20 transition-colors">
+                                  <ExternalLink className="h-3.5 w-3.5" />
                                 </a>
                               )}
                             </div>
                             {resource.description && (
-                              <p className="text-sm text-muted-foreground mt-1 line-clamp-2">
+                              <p className="text-xs text-muted-foreground mt-1.5 line-clamp-2 leading-relaxed">
                                 {language === "ar" && resource.description_ar ? resource.description_ar : resource.description}
                               </p>
                             )}
-                            <div className="flex flex-wrap items-center gap-2 mt-2">
-                              <Badge variant="outline" className="text-xs">{resource.resource_type}</Badge>
+                            <div className="flex flex-wrap items-center gap-1.5 mt-2.5">
+                              <Badge variant="outline" className="text-[10px] rounded-lg">{resource.resource_type}</Badge>
                               {resource.is_judge_resource && (
-                                <Badge variant="secondary" className="text-xs">
-                                  <Scale className="mr-1 h-3 w-3" />
+                                <Badge variant="secondary" className="text-[10px] rounded-lg">
+                                  <Scale className="me-1 h-3 w-3" />
                                   {language === "ar" ? "للحكام" : "Judge Resource"}
                                 </Badge>
                               )}
                               {resource.tags?.map(tag => (
-                                <Badge key={tag} variant="outline" className="text-xs">{tag}</Badge>
+                                <Badge key={tag} variant="outline" className="text-[10px] rounded-lg">{tag}</Badge>
                               ))}
                             </div>
                           </div>
