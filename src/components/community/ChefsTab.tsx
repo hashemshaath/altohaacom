@@ -3,15 +3,16 @@ import { Link } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { supabase } from "@/integrations/supabase/client";
-import { Card, CardContent } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
-import { User, Search, UserPlus, UserMinus, MapPin, ChefHat } from "lucide-react";
+import { User, Search, UserPlus, UserMinus, MapPin, ChefHat, Sparkles } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { countryFlag } from "@/lib/countryFlag";
+import { useFollowRecommendations } from "@/hooks/useFollow";
 
 interface ChefProfile {
   user_id: string;
@@ -127,8 +128,45 @@ export function ChefsTab() {
     );
   }
 
+  const { data: recommendations = [] } = useFollowRecommendations();
+
   return (
     <div className="space-y-5">
+      {/* Follow Suggestions */}
+      {user && recommendations.length > 0 && (
+        <Card className="rounded-2xl border-primary/20">
+          <CardHeader className="pb-3">
+            <CardTitle className="text-sm flex items-center gap-2">
+              <Sparkles className="h-4 w-4 text-chart-2" />
+              {isAr ? "اقتراحات للمتابعة" : "Suggested for You"}
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="pb-4">
+            <div className="flex gap-3 overflow-x-auto pb-1">
+              {recommendations.slice(0, 6).map((rec: any) => (
+                <Link
+                  key={rec.user_id}
+                  to={`/${rec.username || rec.user_id}`}
+                  className="flex flex-col items-center gap-2 p-3 rounded-xl border border-border/50 bg-muted/20 hover:bg-muted/40 transition-colors min-w-[110px]"
+                >
+                  <Avatar className="h-12 w-12">
+                    <AvatarFallback className="bg-chart-2/10 text-chart-2 font-semibold">
+                      {(rec.full_name || "U")[0]}
+                    </AvatarFallback>
+                  </Avatar>
+                  <span className="text-xs font-medium text-center truncate max-w-[100px]">{rec.full_name}</span>
+                  {rec.specialization && (
+                    <span className="text-[10px] text-muted-foreground truncate max-w-[100px] flex items-center gap-1">
+                      <ChefHat className="h-2.5 w-2.5 shrink-0" />{rec.specialization}
+                    </span>
+                  )}
+                </Link>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
       <div className="relative max-w-md">
         <Search className="absolute start-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
         <Input

@@ -65,7 +65,7 @@ export default function PublicProfile() {
   };
 
   // ── Profile Query ──
-  const { data: profile, isLoading, error } = useQuery({
+  const { data: profile, isLoading, error, refetch: refetchProfile } = useQuery({
     queryKey: ["publicProfile", username],
     queryFn: async () => {
       const { data, error } = await supabase
@@ -80,7 +80,7 @@ export default function PublicProfile() {
     enabled: !!username,
   });
 
-  // Record profile view
+  // Record profile view (trigger auto-increments view_count, hook invalidates query)
   useRecordProfileView(profile?.user_id);
 
   const { data: qrCode } = useEntityQRCode("user", profile?.username || undefined, "account");
@@ -317,12 +317,15 @@ export default function PublicProfile() {
 
                 {/* Action Column */}
                 <div className="flex flex-col items-center gap-2 shrink-0">
-                  {user && !isOwnProfile && followPrivacy !== "private" && (
+                {user && !isOwnProfile && followPrivacy !== "private" && (
                     <Button
                       variant={isFollowing ? "outline" : pendingRequest ? "secondary" : "default"}
                       size="sm"
-                      onClick={() => !pendingRequest && toggleFollow.mutate(!!isFollowing)}
-                      disabled={toggleFollow.isPending || !!pendingRequest}
+                      onClick={() => {
+                        if (pendingRequest) return;
+                        toggleFollow.mutate(!!isFollowing);
+                      }}
+                      disabled={toggleFollow.isPending || !!pendingRequest || isFollowing === undefined}
                       className="w-full"
                     >
                       {toggleFollow.isPending ? <Loader2 className="me-1.5 h-3.5 w-3.5 animate-spin" /> :
@@ -365,7 +368,7 @@ export default function PublicProfile() {
                   <span className="text-xl font-bold">{followStats?.following || 0}</span>
                   <span className="text-[11px] text-muted-foreground">{isAr ? "يتابع" : "Following"}</span>
                 </button>
-                {(profile as any).years_of_experience && (
+                {(profile as any).years_of_experience != null && (profile as any).years_of_experience > 0 && (
                   <div className="flex flex-col items-center">
                     <span className="text-xl font-bold">{(profile as any).years_of_experience}+</span>
                     <span className="text-[11px] text-muted-foreground">{isAr ? "سنوات خبرة" : "Years Exp."}</span>

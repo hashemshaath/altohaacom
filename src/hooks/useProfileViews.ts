@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 
@@ -8,6 +8,7 @@ import { useAuth } from "@/contexts/AuthContext";
  */
 export function useRecordProfileView(profileUserId: string | undefined) {
   const { user } = useAuth();
+  const queryClient = useQueryClient();
 
   useEffect(() => {
     if (!profileUserId) return;
@@ -15,31 +16,44 @@ export function useRecordProfileView(profileUserId: string | undefined) {
     if (user?.id === profileUserId) return;
 
     const record = async () => {
-      const ua = navigator.userAgent;
-      const isMobile = /Mobi|Android/i.test(ua);
-      const browser = /Chrome/i.test(ua) ? "Chrome" : /Safari/i.test(ua) ? "Safari" : /Firefox/i.test(ua) ? "Firefox" : "Other";
-      
-      // Determine viewer type
-      let viewerType = "individual";
-      let companyId: string | null = null;
-      if (user?.id) {
-        const { data } = await supabase.rpc("get_user_company_id", { p_user_id: user.id });
-        if (data && data.length > 0) {
-          viewerType = "company";
-          companyId = data[0];
+      try {
+        const ua = navigator.userAgent;
+        const isMobile = /Mobi|Android/i.test(ua);
+        const browser = /Chrome/i.test(ua) ? "Chrome" : /Safari/i.test(ua) ? "Safari" : /Firefox/i.test(ua) ? "Firefox" : "Other";
+        
+        // Determine viewer type
+        let viewerType = "individual";
+        let companyId: string | null = null;
+        if (user?.id) {
+          try {
+            const { data } = await supabase.rpc("get_user_company_id", { p_user_id: user.id });
+            if (data && Array.isArray(data) && data.length > 0) {
+              viewerType = "company";
+              companyId = data[0];
+            }
+          } catch {
+            // Not a company user, continue as individual
+          }
         }
-      }
 
-      await supabase.from("profile_views").insert({
-        profile_user_id: profileUserId,
-        viewer_user_id: user?.id || null,
-        viewer_user_agent: ua,
-        referrer: document.referrer || null,
-        device_type: isMobile ? "mobile" : "desktop",
-        browser,
-        viewer_type: viewerType,
-        company_id: companyId,
-      });
+        await supabase.from("profile_views").insert({
+          profile_user_id: profileUserId,
+          viewer_user_id: user?.id || null,
+          viewer_user_agent: ua,
+          referrer: document.referrer || null,
+          device_type: isMobile ? "mobile" : "desktop",
+          browser,
+          viewer_type: viewerType,
+          company_id: companyId,
+        });
+
+        // Refetch the profile to reflect the updated view_count from the trigger
+        setTimeout(() => {
+          queryClient.invalidateQueries({ queryKey: ["publicProfile"] });
+        }, 500);
+      } catch (err) {
+        console.error("Failed to record profile view:", err);
+      }
     };
 
     record();
