@@ -35,3 +35,6 @@ verify_jwt = false
 
 [functions.marketing-automation]
 verify_jwt = false
+
+[functions.ad-lifecycle-manager]
+verify_jwt = false
