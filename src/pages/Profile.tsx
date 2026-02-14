@@ -7,7 +7,7 @@ import { Footer } from "@/components/Footer";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Skeleton } from "@/components/ui/skeleton";
 import { SEOHead } from "@/components/SEOHead";
-import { User, Edit, Shield, Crown, BarChart3, Wallet, FileText } from "lucide-react";
+import { User, Edit, Shield, Crown, BarChart3, Wallet, FileText, Gift } from "lucide-react";
 import type { Database } from "@/integrations/supabase/types";
 
 import { ProfileHeader } from "@/components/profile/ProfileHeader";
@@ -19,6 +19,7 @@ import { ProfileAnalyticsDashboard } from "@/components/profile/ProfileAnalytics
 import { WalletDashboard } from "@/components/wallet/WalletDashboard";
 import { ProfileInvoicesTab } from "@/components/profile/ProfileInvoicesTab";
 import { useSearchParams } from "react-router-dom";
+import { ProfileReferralsTab } from "@/components/profile/ProfileReferralsTab";
 
 type Profile = Database["public"]["Tables"]["profiles"]["Row"];
 type AppRole = Database["public"]["Enums"]["app_role"];
@@ -71,6 +72,7 @@ export default function Profile() {
     { id: "overview", label: isAr ? "نظرة عامة" : "Overview", icon: User },
     { id: "membership", label: isAr ? "العضوية" : "Membership", icon: Crown },
     { id: "wallet", label: isAr ? "المحفظة" : "Wallet", icon: Wallet },
+    { id: "referrals", label: isAr ? "الإحالات" : "Referrals", icon: Gift },
     { id: "invoices", label: isAr ? "الفواتير" : "Invoices", icon: FileText },
     { id: "analytics", label: isAr ? "الإحصائيات" : "Analytics", icon: BarChart3 },
     { id: "edit", label: isAr ? "تعديل" : "Edit", icon: Edit },
@@ -113,6 +115,10 @@ export default function Profile() {
 
           <TabsContent value="wallet" className="mt-6">
             {user && <WalletDashboard userId={user.id} />}
+          </TabsContent>
+
+          <TabsContent value="referrals" className="mt-6">
+            {user && <ProfileReferralsTab userId={user.id} />}
           </TabsContent>
 
           <TabsContent value="analytics" className="mt-6">
