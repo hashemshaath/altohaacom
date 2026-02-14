@@ -940,14 +940,14 @@ export default function Auth() {
             /* ── SIGN UP: Step 1 Contact ── */
             <>
               {/* Method Toggle */}
-              <div className="flex rounded-lg border border-border/50 p-1 gap-1">
+              <div className="flex rounded-xl border border-border/40 bg-muted/40 p-1 gap-1">
                 <button
                   type="button"
                   onClick={() => setSignUpMethod("phone")}
-                  className={`flex flex-1 items-center justify-center gap-2 rounded-md px-3 py-2 text-sm font-medium transition-colors ${
+                  className={`flex flex-1 items-center justify-center gap-2 rounded-lg px-3 py-2.5 text-sm font-bold transition-all duration-200 ${
                     signUpMethod === "phone"
-                      ? "bg-primary text-primary-foreground shadow-sm"
-                      : "text-muted-foreground hover:text-foreground"
+                      ? "bg-primary text-primary-foreground shadow-lg shadow-primary/20"
+                      : "text-muted-foreground hover:text-foreground hover:bg-background/60"
                   }`}
                 >
                   <Phone className="h-4 w-4" />
@@ -956,10 +956,10 @@ export default function Auth() {
                 <button
                   type="button"
                   onClick={() => setSignUpMethod("email")}
-                  className={`flex flex-1 items-center justify-center gap-2 rounded-md px-3 py-2 text-sm font-medium transition-colors ${
+                  className={`flex flex-1 items-center justify-center gap-2 rounded-lg px-3 py-2.5 text-sm font-bold transition-all duration-200 ${
                     signUpMethod === "email"
-                      ? "bg-primary text-primary-foreground shadow-sm"
-                      : "text-muted-foreground hover:text-foreground"
+                      ? "bg-primary text-primary-foreground shadow-lg shadow-primary/20"
+                      : "text-muted-foreground hover:text-foreground hover:bg-background/60"
                   }`}
                 >
                   <Mail className="h-4 w-4" />
@@ -1026,14 +1026,14 @@ export default function Auth() {
             /* ── SIGN IN ── */
             <>
               {/* Sign-in method toggle */}
-              <div className="flex rounded-lg border border-border/50 p-1 gap-1">
+              <div className="flex rounded-xl border border-border/40 bg-muted/40 p-1 gap-1">
                 <button
                   type="button"
                   onClick={() => { setSignInMethod("phone"); setErrors({}); }}
-                  className={`flex flex-1 items-center justify-center gap-2 rounded-md px-3 py-2 text-sm font-medium transition-colors ${
+                  className={`flex flex-1 items-center justify-center gap-2 rounded-lg px-3 py-2.5 text-sm font-bold transition-all duration-200 ${
                     signInMethod === "phone"
-                      ? "bg-primary text-primary-foreground shadow-sm"
-                      : "text-muted-foreground hover:text-foreground"
+                      ? "bg-primary text-primary-foreground shadow-lg shadow-primary/20"
+                      : "text-muted-foreground hover:text-foreground hover:bg-background/60"
                   }`}
                 >
                   <Phone className="h-4 w-4" />
@@ -1042,10 +1042,10 @@ export default function Auth() {
                 <button
                   type="button"
                   onClick={() => { setSignInMethod("email"); setErrors({}); }}
-                  className={`flex flex-1 items-center justify-center gap-2 rounded-md px-3 py-2 text-sm font-medium transition-colors ${
+                  className={`flex flex-1 items-center justify-center gap-2 rounded-lg px-3 py-2.5 text-sm font-bold transition-all duration-200 ${
                     signInMethod === "email"
-                      ? "bg-primary text-primary-foreground shadow-sm"
-                      : "text-muted-foreground hover:text-foreground"
+                      ? "bg-primary text-primary-foreground shadow-lg shadow-primary/20"
+                      : "text-muted-foreground hover:text-foreground hover:bg-background/60"
                   }`}
                 >
                   <Mail className="h-4 w-4" />
