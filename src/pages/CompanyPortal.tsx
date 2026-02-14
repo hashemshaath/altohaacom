@@ -30,6 +30,7 @@ import {
   Crown,
   MoreHorizontal,
   Megaphone,
+  Bell,
 } from "lucide-react";
 
 export default function CompanyPortalLayout() {
@@ -56,6 +57,7 @@ export default function CompanyPortalLayout() {
   const allNavItems = [
     { to: "/company", icon: LayoutDashboard, label: language === "ar" ? "لوحة التحكم" : "Dashboard", end: true, page: "dashboard" },
     { to: "/company/profile", icon: Building2, label: language === "ar" ? "ملف الشركة" : "Profile", page: "profile" },
+    { to: "/company/notifications", icon: Bell, label: language === "ar" ? "الإشعارات" : "Notifications", page: "communications" },
     { to: "/company/team", icon: Users, label: language === "ar" ? "فريق العمل" : "Team", page: "team" },
     { to: "/company/catalog", icon: Package, label: language === "ar" ? "كتالوج المنتجات" : "Catalog", roles: ["supplier", "vendor"], page: "catalog" },
     { to: "/company/orders", icon: ShoppingCart, label: language === "ar" ? "الطلبيات" : "Orders", page: "orders" },
