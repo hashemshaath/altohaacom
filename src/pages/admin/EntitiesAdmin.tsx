@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { BulkImportPanel } from "@/components/admin/BulkImportPanel";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -25,6 +25,15 @@ type EntityType = Database["public"]["Enums"]["entity_type"];
 
 const PAGE_SIZE_OPTIONS = [10, 25, 50];
 
+function useDebounce(value: string, delay = 300) {
+  const [debounced, setDebounced] = useState(value);
+  useEffect(() => {
+    const t = setTimeout(() => setDebounced(value), delay);
+    return () => clearTimeout(t);
+  }, [value, delay]);
+  return debounced;
+}
+
 export default function EntitiesAdmin() {
   const { language } = useLanguage();
   const { user } = useAuth();
@@ -37,6 +46,7 @@ export default function EntitiesAdmin() {
   const [form, setForm] = useState<EntityFormData>(emptyForm);
   const [selectedManager, setSelectedManager] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
+  const debouncedSearch = useDebounce(searchQuery, 300);
   const [filterType, setFilterType] = useState("all");
   const [filterStatus, setFilterStatus] = useState("all");
   const [managingEntity, setManagingEntity] = useState<{ id: string; name: string } | null>(null);
@@ -132,6 +142,28 @@ export default function EntitiesAdmin() {
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ["admin-entities"] }),
   });
 
+  const changeStatus = useMutation({
+    mutationFn: async ({ id, status }: { id: string; status: Database["public"]["Enums"]["entity_status"] }) => {
+      const { error } = await supabase.from("culinary_entities").update({ status }).eq("id", id);
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["admin-entities"] });
+      toast({ title: isAr ? "تم تحديث الحالة" : "Status updated" });
+    },
+  });
+
+  const changeVerified = useMutation({
+    mutationFn: async ({ id, verified }: { id: string; verified: boolean }) => {
+      const { error } = await supabase.from("culinary_entities").update({ is_verified: verified }).eq("id", id);
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["admin-entities"] });
+      toast({ title: isAr ? "تم التحديث" : "Verified status updated" });
+    },
+  });
+
   const resetForm = () => {
     setForm(emptyForm);
     setSelectedManager("");
@@ -173,10 +205,11 @@ export default function EntitiesAdmin() {
   };
 
   const filtered = entities?.filter(e => {
-    const matchesSearch = (e.name + (e.name_ar || "") + (e.entity_number || "")).toLowerCase().includes(searchQuery.toLowerCase());
+    const matchesSearch = (e.name + (e.name_ar || "") + (e.entity_number || "")).toLowerCase().includes(debouncedSearch.toLowerCase());
     const matchesType = filterType === "all" || e.type === filterType;
-    const matchesStatus = filterStatus === "all" || e.status === filterStatus;
-    return matchesSearch && matchesType && matchesStatus;
+    const matchesStatus = filterStatus === "all" || filterStatus === "visible" || e.status === filterStatus;
+    const matchesVisible = filterStatus === "visible" ? e.is_visible : true;
+    return matchesSearch && matchesType && matchesStatus && matchesVisible;
   });
 
   // Pagination
@@ -241,7 +274,7 @@ export default function EntitiesAdmin() {
         }
       />
 
-      <EntityStatsCards stats={stats} />
+      <EntityStatsCards stats={stats} activeFilter={filterStatus} onFilterChange={(f) => { setFilterStatus(f); setCurrentPage(1); }} />
 
       {showBulkImport && (
         <BulkImportPanel entityType="entity" onImportComplete={() => { setShowBulkImport(false); queryClient.invalidateQueries({ queryKey: ["admin-entities"] }); }} />
@@ -328,6 +361,8 @@ export default function EntitiesAdmin() {
                       onDelete={(id) => deleteMutation.mutate(id)}
                       onToggleVisibility={(id, visible) => toggleVisibility.mutate({ id, visible })}
                       onManage={(id, name) => setManagingEntity({ id, name })}
+                      onStatusChange={(id, status) => changeStatus.mutate({ id, status: status as Database["public"]["Enums"]["entity_status"] })}
+                      onVerifiedChange={(id, verified) => changeVerified.mutate({ id, verified })}
                     />
                   ))
                 )}

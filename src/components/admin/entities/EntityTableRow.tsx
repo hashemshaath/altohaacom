@@ -3,6 +3,7 @@ import { useLanguage } from "@/i18n/LanguageContext";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import {
   AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent,
   AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle,
@@ -35,6 +36,8 @@ interface Props {
   onDelete: (id: string) => void;
   onToggleVisibility: (id: string, visible: boolean) => void;
   onManage: (id: string, name: string) => void;
+  onStatusChange?: (id: string, status: string) => void;
+  onVerifiedChange?: (id: string, verified: boolean) => void;
 }
 
 const statusConfig: Record<string, { variant: "default" | "secondary" | "destructive" | "outline"; labelEn: string; labelAr: string }> = {
@@ -44,7 +47,7 @@ const statusConfig: Record<string, { variant: "default" | "secondary" | "destruc
   archived: { variant: "secondary", labelEn: "Archived", labelAr: "مؤرشف" },
 };
 
-export default function EntityTableRow({ entity, typeLabel, scopeLabel, onEdit, onDelete, onToggleVisibility, onManage }: Props) {
+export default function EntityTableRow({ entity, typeLabel, scopeLabel, onEdit, onDelete, onToggleVisibility, onManage, onStatusChange, onVerifiedChange }: Props) {
   const { language } = useLanguage();
   const isAr = language === "ar";
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
@@ -79,10 +82,36 @@ export default function EntityTableRow({ entity, typeLabel, scopeLabel, onEdit, 
         <TableCell className="hidden md:table-cell"><Badge variant="secondary" className="text-xs whitespace-nowrap">{isAr ? typeLabel?.ar : typeLabel?.en}</Badge></TableCell>
         <TableCell className="hidden xl:table-cell"><Badge variant="outline" className="text-xs whitespace-nowrap">{isAr ? scopeLabel?.ar : scopeLabel?.en}</Badge></TableCell>
         <TableCell>
-          <Badge variant={sc.variant} className="gap-1 whitespace-nowrap">
-            {entity.is_verified && <ShieldCheck className="h-3 w-3" />}
-            {isAr ? sc.labelAr : sc.labelEn}
-          </Badge>
+          {onStatusChange ? (
+            <Select value={entity.status} onValueChange={v => onStatusChange(entity.id, v)}>
+              <SelectTrigger className="h-7 w-[120px] text-xs border-none bg-transparent p-0">
+                <Badge variant={sc.variant} className="gap-1 whitespace-nowrap cursor-pointer">
+                  {entity.is_verified && (
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <ShieldCheck
+                          className="h-3 w-3 cursor-pointer"
+                          onClick={e => { e.stopPropagation(); onVerifiedChange?.(entity.id, !entity.is_verified); }}
+                        />
+                      </TooltipTrigger>
+                      <TooltipContent>{isAr ? "إلغاء التوثيق" : "Unverify"}</TooltipContent>
+                    </Tooltip>
+                  )}
+                  {isAr ? sc.labelAr : sc.labelEn}
+                </Badge>
+              </SelectTrigger>
+              <SelectContent>
+                {Object.entries(statusConfig).map(([k, v]) => (
+                  <SelectItem key={k} value={k}>{isAr ? v.labelAr : v.labelEn}</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          ) : (
+            <Badge variant={sc.variant} className="gap-1 whitespace-nowrap">
+              {entity.is_verified && <ShieldCheck className="h-3 w-3" />}
+              {isAr ? sc.labelAr : sc.labelEn}
+            </Badge>
+          )}
         </TableCell>
         <TableCell>
           <Tooltip>
