@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { BarChart3, Trophy, Users, DollarSign, Brain, Activity, UserMinus, TrendingUp, Megaphone } from "lucide-react";
+import { BarChart3, Trophy, Users, DollarSign, Brain, Activity, UserMinus, TrendingUp, Megaphone, Wifi, Cpu, FileText } from "lucide-react";
 import AdminPageHeader from "@/components/admin/AdminPageHeader";
 import PlatformOverview from "@/components/analytics/PlatformOverview";
 import CompetitionAnalytics from "@/components/analytics/CompetitionAnalytics";
@@ -12,6 +12,9 @@ import EngagementMetrics from "@/components/analytics/EngagementMetrics";
 import { CohortRetentionChart } from "@/components/analytics/CohortRetentionChart";
 import { RevenueAnalytics } from "@/components/analytics/RevenueAnalytics";
 import { MarketingAnalytics } from "@/components/analytics/MarketingAnalytics";
+import { RealTimeDashboard } from "@/components/analytics/RealTimeDashboard";
+import { MLPredictionsPanel } from "@/components/analytics/MLPredictionsPanel";
+import { CustomReportBuilder } from "@/components/analytics/CustomReportBuilder";
 import { AnalyticsDateRange, getPresetRange, type DateRange } from "@/components/analytics/AnalyticsDateRange";
 import { toast } from "@/hooks/use-toast";
 
@@ -30,6 +33,7 @@ export default function AnalyticsDashboard() {
 
   const tabs = [
     { value: "overview", icon: BarChart3, label: isAr ? "نظرة عامة" : "Overview" },
+    { value: "realtime", icon: Wifi, label: isAr ? "مباشر" : "Real-time" },
     { value: "marketing", icon: Megaphone, label: isAr ? "التسويق" : "Marketing" },
     { value: "engagement", icon: Activity, label: isAr ? "التفاعل" : "Engagement" },
     { value: "retention", icon: UserMinus, label: isAr ? "الاحتفاظ" : "Retention" },
@@ -37,6 +41,8 @@ export default function AnalyticsDashboard() {
     { value: "users", icon: Users, label: isAr ? "المستخدمين" : "Users" },
     { value: "revenue", icon: TrendingUp, label: isAr ? "الإيرادات" : "Revenue" },
     { value: "financial", icon: DollarSign, label: isAr ? "المالية" : "Financial" },
+    { value: "predictions", icon: Cpu, label: isAr ? "تنبؤات" : "Predictions" },
+    { value: "reports", icon: FileText, label: isAr ? "تقارير" : "Reports" },
     { value: "ai-insights", icon: Brain, label: isAr ? "ذكاء اصطناعي" : "AI Insights" },
   ];
 
@@ -53,7 +59,7 @@ export default function AnalyticsDashboard() {
 
       <Tabs value={activeTab} onValueChange={setActiveTab}>
         <div className="overflow-x-auto">
-          <TabsList className="inline-flex w-auto min-w-full md:grid md:grid-cols-9">
+          <TabsList className="inline-flex w-auto min-w-full md:grid md:grid-cols-12">
             {tabs.map((tab) => (
               <TabsTrigger key={tab.value} value={tab.value} className="gap-1.5 min-w-max">
                 <tab.icon className="h-4 w-4" />
@@ -64,6 +70,7 @@ export default function AnalyticsDashboard() {
         </div>
 
         <TabsContent value="overview"><PlatformOverview dateRange={dateRange} /></TabsContent>
+        <TabsContent value="realtime"><RealTimeDashboard /></TabsContent>
         <TabsContent value="marketing"><MarketingAnalytics /></TabsContent>
         <TabsContent value="engagement"><EngagementMetrics /></TabsContent>
         <TabsContent value="retention"><CohortRetentionChart /></TabsContent>
@@ -71,6 +78,8 @@ export default function AnalyticsDashboard() {
         <TabsContent value="users"><UserGrowthAnalytics /></TabsContent>
         <TabsContent value="revenue"><RevenueAnalytics /></TabsContent>
         <TabsContent value="financial"><FinancialReports /></TabsContent>
+        <TabsContent value="predictions"><MLPredictionsPanel /></TabsContent>
+        <TabsContent value="reports"><CustomReportBuilder /></TabsContent>
         <TabsContent value="ai-insights"><AIInsightsPanel /></TabsContent>
       </Tabs>
     </div>
