@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { supabase } from "@/integrations/supabase/client";
@@ -40,12 +40,12 @@ export function PostComposer({ onPosted, replyToPostId, placeholder, compact, au
   const [profile, setProfile] = useState<{ avatar_url: string | null } | null>(null);
 
   // Fetch user avatar
-  useState(() => {
+  useEffect(() => {
     if (!user) return;
     supabase.from("profiles").select("avatar_url").eq("user_id", user.id).single().then(({ data }) => {
       if (data) setProfile(data);
     });
-  });
+  }, [user]);
 
   const handleImageSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(e.target.files || []);
