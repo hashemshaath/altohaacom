@@ -76,13 +76,16 @@ export function HeroSlider() {
           <img
             src={s.image_url}
             alt={isAr && s.title_ar ? s.title_ar : s.title}
-            className="h-full w-full object-cover"
+            className={cn(
+              "h-full w-full object-cover transition-transform duration-[8000ms] ease-out",
+              i === current ? "scale-105" : "scale-100"
+            )}
             loading={i === 0 ? "eager" : "lazy"}
             decoding="async"
           />
           {/* Enhanced gradient overlay for better text readability */}
-          <div className="absolute inset-0 bg-gradient-to-t from-background via-background/70 to-background/30" />
-          <div className="absolute inset-0 bg-gradient-to-r from-background/40 to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-t from-background via-background/60 to-background/20" />
+          <div className="absolute inset-0 bg-gradient-to-r from-background/50 via-background/20 to-transparent" />
         </div>
       ))}
 

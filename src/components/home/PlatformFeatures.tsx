@@ -9,6 +9,8 @@ import {
   Globe, Scale, Award, ShieldCheck, ArrowRight, CheckCircle, ChefHat, Star,
   Coffee, BookOpen,
 } from "lucide-react";
+import { useScrollReveal } from "@/hooks/useScrollReveal";
+import { cn } from "@/lib/utils";
 
 export function PlatformFeatures() {
   const { language } = useLanguage();
@@ -40,10 +42,15 @@ export function PlatformFeatures() {
     { icon: ShieldCheck, title: isAr ? "آمن وموثوق" : "Secure & Trusted", desc: isAr ? "حماية بيانات احترافية" : "Enterprise-grade data protection" },
   ];
 
+  const servicesReveal = useScrollReveal();
+  const rolesReveal = useScrollReveal();
+  const whyReveal = useScrollReveal();
+  const ctaReveal = useScrollReveal();
+
   return (
     <>
       {/* Services */}
-      <section className="container py-12 md:py-16">
+      <section ref={servicesReveal.ref} className="container py-12 md:py-16">
         <div className="mb-8 text-center">
           <Badge variant="secondary" className="mb-3">{isAr ? "الخدمات" : "Services"}</Badge>
           <h2 className="font-serif text-2xl font-bold sm:text-3xl">{isAr ? "خدمات المنصة" : "Platform Services"}</h2>
@@ -51,7 +58,7 @@ export function PlatformFeatures() {
             {isAr ? "كل ما يحتاجه محترف الطهي في منصة واحدة" : "Everything a culinary professional needs in one platform"}
           </p>
         </div>
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        <div className={cn("grid gap-4 sm:grid-cols-2 lg:grid-cols-3 transition-all duration-700", servicesReveal.isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8")}>
           {services.map((s) => (
             <Link key={s.title} to={s.href} className="group block">
               <Card className="h-full border-border/50 transition-all duration-300 hover:shadow-lg hover:-translate-y-1 hover:border-primary/20">
@@ -72,7 +79,7 @@ export function PlatformFeatures() {
       </section>
 
       {/* Roles */}
-      <section className="bg-muted/30 py-12 md:py-16">
+      <section ref={rolesReveal.ref} className="bg-muted/30 py-12 md:py-16">
         <div className="container">
           <div className="mb-8 text-center">
             <h2 className="font-serif text-2xl font-bold sm:text-3xl">{isAr ? "لمن هذه المنصة؟" : "Who Is Altohaa For?"}</h2>
@@ -80,7 +87,7 @@ export function PlatformFeatures() {
               {isAr ? "منصة مصممة لخدمة كل المحترفين" : "A platform designed for every culinary professional"}
             </p>
           </div>
-          <div className="grid gap-3 grid-cols-2 sm:grid-cols-3 lg:grid-cols-6">
+          <div className={cn("grid gap-3 grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 transition-all duration-700", rolesReveal.isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8")}>
             {roles.map((role) => (
               <div key={role.title} className="group">
                 {role.href ? (
@@ -123,11 +130,11 @@ export function PlatformFeatures() {
       </section>
 
       {/* Why Altohaa */}
-      <section className="container py-12 md:py-16">
+      <section ref={whyReveal.ref} className="container py-12 md:py-16">
         <div className="mb-8 text-center">
           <h2 className="font-serif text-2xl font-bold sm:text-3xl">{isAr ? "لماذا الطهاة؟" : "Why Altohaa?"}</h2>
         </div>
-        <div className="grid gap-4 grid-cols-2 lg:grid-cols-4">
+        <div className={cn("grid gap-4 grid-cols-2 lg:grid-cols-4 transition-all duration-700", whyReveal.isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8")}>
           {whyUs.map((item) => (
             <Card key={item.title} className="border-border/50 text-center transition-all hover:shadow-md hover:-translate-y-1">
               <CardContent className="flex flex-col items-center p-5">
