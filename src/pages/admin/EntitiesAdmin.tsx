@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useState } from "react";
 import { BulkImportPanel } from "@/components/admin/BulkImportPanel";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -6,116 +6,38 @@ import { useLanguage } from "@/i18n/LanguageContext";
 import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
+import { Card, CardContent } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Switch } from "@/components/ui/switch";
-import { Label } from "@/components/ui/label";
-import { Separator } from "@/components/ui/separator";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Progress } from "@/components/ui/progress";
 import { toast } from "@/hooks/use-toast";
-import { CountrySelector } from "@/components/auth/CountrySelector";
-import { Plus, Pencil, Trash2, Building2, Eye, EyeOff, ShieldCheck, Search, Users, Settings2, Languages, Upload, Image, X, Loader2, MapPin, FileSpreadsheet } from "lucide-react";
+import { Building2, FileSpreadsheet, Plus, Search } from "lucide-react";
 import { EntitySubModulesPanel } from "@/components/entities/EntitySubModulesPanel";
-import { ChefSearchSelector } from "@/components/admin/ChefSearchSelector";
-import { EntityLeadershipPanel } from "@/components/entities/EntityLeadershipPanel";
+import AdminPageHeader from "@/components/admin/AdminPageHeader";
+import EntityStatsCards from "@/components/admin/entities/EntityStatsCards";
+import EntityTableRow from "@/components/admin/entities/EntityTableRow";
+import EntityFormTabs, {
+  emptyForm, typeOptions, scopeOptions, statusOptions,
+  type EntityFormData,
+} from "@/components/admin/entities/EntityFormTabs";
 import type { Database } from "@/integrations/supabase/types";
 
 type EntityType = Database["public"]["Enums"]["entity_type"];
-type EntityScope = Database["public"]["Enums"]["entity_scope"];
-type EntityStatus = Database["public"]["Enums"]["entity_status"];
-
-const typeOptions: { value: EntityType; en: string; ar: string }[] = [
-  { value: "culinary_association", en: "Culinary Association", ar: "جمعية طهي" },
-  { value: "government_entity", en: "Government Entity", ar: "جهة حكومية" },
-  { value: "private_association", en: "Private Association", ar: "جمعية خاصة" },
-  { value: "culinary_academy", en: "Culinary Academy", ar: "أكاديمية طهي" },
-  { value: "industry_body", en: "Industry Body", ar: "هيئة صناعية" },
-  { value: "university", en: "University", ar: "جامعة" },
-  { value: "college", en: "College", ar: "كلية" },
-  { value: "training_center", en: "Training Center", ar: "مركز تدريب" },
-];
-
-const scopeOptions: { value: EntityScope; en: string; ar: string }[] = [
-  { value: "local", en: "Local", ar: "محلي" },
-  { value: "national", en: "National", ar: "وطني" },
-  { value: "regional", en: "Regional", ar: "إقليمي" },
-  { value: "international", en: "International", ar: "دولي" },
-];
-
-const statusOptions: EntityStatus[] = ["pending", "active", "suspended", "archived"];
-
-interface FormData {
-  name: string; name_ar: string; abbreviation: string; abbreviation_ar: string;
-  description: string; description_ar: string;
-  type: EntityType; scope: EntityScope; status: EntityStatus;
-  is_visible: boolean; is_verified: boolean;
-  country: string; city: string; address: string; address_ar: string; postal_code: string;
-  email: string; phone: string; fax: string; website: string;
-  logo_url: string; cover_image_url: string;
-  president_name: string; president_name_ar: string;
-  secretary_name: string; secretary_name_ar: string;
-  founded_year: number | undefined; member_count: number | undefined;
-  mission: string; mission_ar: string;
-  username: string;
-  registration_number: string; license_number: string;
-  internal_notes: string;
-  services_input: string; specializations_input: string; tags_input: string;
-  latitude: string; longitude: string;
-}
-
-const emptyForm: FormData = {
-  name: "", name_ar: "", abbreviation: "", abbreviation_ar: "",
-  description: "", description_ar: "",
-  type: "culinary_association", scope: "local", status: "pending",
-  is_visible: false, is_verified: false,
-  country: "", city: "", address: "", address_ar: "", postal_code: "",
-  email: "", phone: "", fax: "", website: "",
-  logo_url: "", cover_image_url: "",
-  president_name: "", president_name_ar: "",
-  secretary_name: "", secretary_name_ar: "",
-  founded_year: undefined, member_count: undefined,
-  mission: "", mission_ar: "",
-  username: "",
-  registration_number: "", license_number: "",
-  internal_notes: "",
-  services_input: "", specializations_input: "", tags_input: "",
-  latitude: "", longitude: "",
-};
-
-// Bilingual field pairs for translation
-const bilingualPairs: { en: keyof FormData; ar: keyof FormData; label_en: string; label_ar: string }[] = [
-  { en: "name", ar: "name_ar", label_en: "Name", label_ar: "الاسم" },
-  { en: "abbreviation", ar: "abbreviation_ar", label_en: "Abbreviation", label_ar: "الاختصار" },
-  { en: "description", ar: "description_ar", label_en: "Description", label_ar: "الوصف" },
-  { en: "address", ar: "address_ar", label_en: "Address", label_ar: "العنوان" },
-  { en: "president_name", ar: "president_name_ar", label_en: "President Name", label_ar: "اسم الرئيس" },
-  { en: "secretary_name", ar: "secretary_name_ar", label_en: "Secretary Name", label_ar: "اسم الأمين العام" },
-  { en: "mission", ar: "mission_ar", label_en: "Mission", label_ar: "الرسالة" },
-];
 
 export default function EntitiesAdmin() {
   const { language } = useLanguage();
   const { user } = useAuth();
   const queryClient = useQueryClient();
   const isAr = language === "ar";
+
   const [showForm, setShowForm] = useState(false);
   const [showBulkImport, setShowBulkImport] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
-  const [form, setForm] = useState<FormData>(emptyForm);
+  const [form, setForm] = useState<EntityFormData>(emptyForm);
+  const [selectedManager, setSelectedManager] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
-  const [filterType, setFilterType] = useState<string>("all");
-  const [filterStatus, setFilterStatus] = useState<string>("all");
+  const [filterType, setFilterType] = useState("all");
+  const [filterStatus, setFilterStatus] = useState("all");
   const [managingEntity, setManagingEntity] = useState<{ id: string; name: string } | null>(null);
-  const [translatingField, setTranslatingField] = useState<string | null>(null);
-  const [uploadingLogo, setUploadingLogo] = useState(false);
-  const [uploadingCover, setUploadingCover] = useState(false);
-  const [showMediaPicker, setShowMediaPicker] = useState<"logo" | "cover" | null>(null);
-  const logoInputRef = useRef<HTMLInputElement>(null);
-  const coverInputRef = useRef<HTMLInputElement>(null);
 
   const { data: entities, isLoading } = useQuery({
     queryKey: ["admin-entities"],
@@ -129,114 +51,7 @@ export default function EntitiesAdmin() {
     },
   });
 
-  const { data: managers } = useQuery({
-    queryKey: ["admin-users-for-manager"],
-    queryFn: async () => {
-      const { data, error } = await supabase
-        .from("profiles")
-        .select("id, full_name")
-        .order("full_name");
-      if (error) throw error;
-      return data;
-    },
-  });
-
-  // Fetch media from company-media bucket for picker
-  const { data: mediaFiles } = useQuery({
-    queryKey: ["entity-media-files"],
-    queryFn: async () => {
-      const { data, error } = await supabase.storage.from("company-media").list("entities", { limit: 100 });
-      if (error) return [];
-      return data?.map(f => ({
-        name: f.name,
-        url: supabase.storage.from("company-media").getPublicUrl(`entities/${f.name}`).data.publicUrl,
-      })) || [];
-    },
-    enabled: showMediaPicker !== null,
-  });
-
-  const [selectedManager, setSelectedManager] = useState<string>("");
-
-  // AI SEO Optimize (same language)
-  const handleSeoOptimize = async (field: keyof FormData) => {
-    const text = form[field] as string;
-    if (!text?.trim()) {
-      toast({ title: isAr ? "لا يوجد نص" : "No text", variant: "destructive" });
-      return;
-    }
-    setTranslatingField(`seo-${String(field)}`);
-    try {
-      const isArabicField = String(field).endsWith("_ar");
-      const { data, error } = await supabase.functions.invoke("ai-translate-seo", {
-        body: { text, source_lang: isArabicField ? "ar" : "en", optimize_only: true },
-      });
-      if (error) throw error;
-      if (data?.optimized) {
-        setForm(prev => ({ ...prev, [field]: data.optimized }));
-        toast({ title: isAr ? "تم تحسين النص" : "Text optimized for SEO" });
-      }
-    } catch (err: any) {
-      toast({ title: isAr ? "خطأ" : "Error", description: err.message, variant: "destructive" });
-    } finally {
-      setTranslatingField(null);
-    }
-  };
-
-  // AI Translate + SEO
-  const handleTranslate = async (sourceField: keyof FormData, targetField: keyof FormData, direction: "en_to_ar" | "ar_to_en") => {
-    const sourceText = form[sourceField] as string;
-    if (!sourceText?.trim()) {
-      toast({ title: isAr ? "لا يوجد نص للترجمة" : "No text to translate", variant: "destructive" });
-      return;
-    }
-    setTranslatingField(String(sourceField));
-    try {
-      const { data, error } = await supabase.functions.invoke("ai-translate-seo", {
-        body: {
-          text: sourceText,
-          source_lang: direction === "en_to_ar" ? "en" : "ar",
-          target_lang: direction === "en_to_ar" ? "ar" : "en",
-          optimize_seo: true,
-        },
-      });
-      if (error) throw error;
-      if (data?.translated) {
-        setForm(prev => ({ ...prev, [targetField]: data.translated }));
-        toast({ title: isAr ? "تمت الترجمة + SEO" : "Translated + SEO optimized" });
-      }
-    } catch (err: any) {
-      toast({ title: isAr ? "خطأ في الترجمة" : "Translation error", description: err.message, variant: "destructive" });
-    } finally {
-      setTranslatingField(null);
-    }
-  };
-
-  // File upload handler
-  const handleFileUpload = async (file: File, type: "logo" | "cover") => {
-    const setter = type === "logo" ? setUploadingLogo : setUploadingCover;
-    setter(true);
-    try {
-      const ext = file.name.split(".").pop();
-      const path = `entities/${Date.now()}-${type}.${ext}`;
-      const { error: uploadErr } = await supabase.storage.from("company-media").upload(path, file);
-      if (uploadErr) throw uploadErr;
-      const { data: urlData } = supabase.storage.from("company-media").getPublicUrl(path);
-      const field = type === "logo" ? "logo_url" : "cover_image_url";
-      setForm(prev => ({ ...prev, [field]: urlData.publicUrl }));
-      toast({ title: isAr ? "تم الرفع بنجاح" : "Upload successful" });
-    } catch (err: any) {
-      toast({ title: isAr ? "خطأ في الرفع" : "Upload error", description: err.message, variant: "destructive" });
-    } finally {
-      setter(false);
-    }
-  };
-
-  // Completion percentage
-  const requiredFields: (keyof FormData)[] = ["name", "name_ar", "description", "description_ar", "type", "email", "phone", "country", "city", "logo_url"];
-  const completionPercent = Math.round((requiredFields.filter(f => {
-    const v = form[f];
-    return v !== undefined && v !== null && v !== "";
-  }).length / requiredFields.length) * 100);
+  const updateField = (key: keyof EntityFormData, value: any) => setForm(prev => ({ ...prev, [key]: value }));
 
   const saveMutation = useMutation({
     mutationFn: async () => {
@@ -290,25 +105,17 @@ export default function EntitiesAdmin() {
         const { error } = await supabase.from("culinary_entities").update(payload).eq("id", editingId);
         if (error) throw error;
       } else {
-        // entity_number is auto-assigned by DB trigger (empty string triggers it)
-        const { error } = await supabase.from("culinary_entities").insert({
-          ...payload,
-          entity_number: "",
-        });
+        const { error } = await supabase.from("culinary_entities").insert({ ...payload, entity_number: "" });
         if (error) throw error;
       }
     },
-    onSuccess: (_data, variables) => {
+    onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["admin-entities"] });
       const wasCreating = !editingId;
       toast({ title: editingId ? (isAr ? "تم تحديث الجهة" : "Entity updated") : (isAr ? "تم إنشاء الجهة" : "Entity created") });
       if (wasCreating) {
         import("@/lib/notificationTriggers").then(({ notifyAdminEntityReview }) => {
-          notifyAdminEntityReview({
-            entityName: form.name,
-            entityNameAr: form.name_ar || undefined,
-            submittedBy: "Admin",
-          });
+          notifyAdminEntityReview({ entityName: form.name, entityNameAr: form.name_ar || undefined, submittedBy: "Admin" });
         });
       }
       resetForm();
@@ -377,8 +184,6 @@ export default function EntitiesAdmin() {
     setShowForm(true);
   };
 
-  const updateField = (key: keyof FormData, value: any) => setForm(prev => ({ ...prev, [key]: value }));
-
   const filtered = entities?.filter(e => {
     const matchesSearch = (e.name + (e.name_ar || "") + (e.entity_number || "")).toLowerCase().includes(searchQuery.toLowerCase());
     const matchesType = filterType === "all" || e.type === filterType;
@@ -393,410 +198,49 @@ export default function EntitiesAdmin() {
     visible: entities?.filter(e => e.is_visible).length || 0,
   };
 
-  // SEO + Translate buttons component
-  const TranslateBtn = ({ enField, arField }: { enField: keyof FormData; arField: keyof FormData }) => {
-    const isSeoEn = translatingField === `seo-${String(enField)}`;
-    const isSeoAr = translatingField === `seo-${String(arField)}`;
-    const isTranslating = translatingField === String(enField) || translatingField === String(arField);
-    const anyLoading = isSeoEn || isSeoAr || isTranslating;
-    return (
-      <div className="flex flex-wrap items-center gap-1">
-        {/* SEO Optimize EN */}
-        <Button
-          type="button" size="sm" variant="secondary"
-          disabled={anyLoading || !(form[enField] as string)?.trim()}
-          onClick={() => handleSeoOptimize(enField)}
-          className="h-7 gap-1 text-xs"
-        >
-          {isSeoEn ? <Loader2 className="h-3 w-3 animate-spin" /> : <Search className="h-3 w-3" />}
-          SEO EN
-        </Button>
-        {/* SEO Optimize AR */}
-        <Button
-          type="button" size="sm" variant="secondary"
-          disabled={anyLoading || !(form[arField] as string)?.trim()}
-          onClick={() => handleSeoOptimize(arField)}
-          className="h-7 gap-1 text-xs"
-        >
-          {isSeoAr ? <Loader2 className="h-3 w-3 animate-spin" /> : <Search className="h-3 w-3" />}
-          SEO AR
-        </Button>
-        <Separator orientation="vertical" className="h-5 mx-1" />
-        {/* Translate EN→AR + SEO */}
-        <Button
-          type="button" size="sm" variant="outline"
-          disabled={anyLoading || !(form[enField] as string)?.trim()}
-          onClick={() => handleTranslate(enField, arField, "en_to_ar")}
-          className="h-7 gap-1 text-xs"
-        >
-          {isTranslating ? <Loader2 className="h-3 w-3 animate-spin" /> : <Languages className="h-3 w-3" />}
-          EN → AR + SEO
-        </Button>
-        {/* Translate AR→EN + SEO */}
-        <Button
-          type="button" size="sm" variant="outline"
-          disabled={anyLoading || !(form[arField] as string)?.trim()}
-          onClick={() => handleTranslate(arField, enField, "ar_to_en")}
-          className="h-7 gap-1 text-xs"
-        >
-          {isTranslating ? <Loader2 className="h-3 w-3 animate-spin" /> : <Languages className="h-3 w-3" />}
-          AR → EN + SEO
-        </Button>
-      </div>
-    );
-  };
-
-  // Image upload component
-  const ImageUploader = ({ type, url, fieldKey }: { type: "logo" | "cover"; url: string; fieldKey: keyof FormData }) => {
-    const isUploading = type === "logo" ? uploadingLogo : uploadingCover;
-    const inputRef = type === "logo" ? logoInputRef : coverInputRef;
-    return (
-      <div className="space-y-2">
-        <Label>{type === "logo" ? (isAr ? "الشعار" : "Logo") : (isAr ? "صورة الغلاف" : "Cover Image")}</Label>
-        {url && (
-          <div className="relative inline-block">
-            <img src={url} alt="" className={`rounded border object-cover ${type === "logo" ? "h-20 w-20" : "h-32 w-full max-w-md"}`} />
-            <Button size="icon" variant="destructive" className="absolute -top-2 -right-2 h-6 w-6" onClick={() => updateField(fieldKey, "")}>
-              <X className="h-3 w-3" />
-            </Button>
-          </div>
-        )}
-        <div className="flex flex-wrap gap-2">
-          <input type="file" accept="image/*" ref={inputRef} className="hidden" onChange={e => {
-            const f = e.target.files?.[0];
-            if (f) handleFileUpload(f, type);
-            e.target.value = "";
-          }} />
-          <Button type="button" size="sm" variant="outline" disabled={isUploading} onClick={() => inputRef.current?.click()} className="gap-1">
-            {isUploading ? <Loader2 className="h-3 w-3 animate-spin" /> : <Upload className="h-3 w-3" />}
-            {isAr ? "رفع من الجهاز" : "Upload"}
-          </Button>
-          <Button type="button" size="sm" variant="outline" onClick={() => setShowMediaPicker(type)} className="gap-1">
-            <Image className="h-3 w-3" />
-            {isAr ? "اختيار من الوسائط" : "From Media"}
-          </Button>
-        </div>
-        <Input value={url} onChange={e => updateField(fieldKey, e.target.value)} placeholder={isAr ? "أو أدخل الرابط" : "Or enter URL"} className="text-xs" />
-      </div>
-    );
+  const statusLabels: Record<string, { en: string; ar: string }> = {
+    pending: { en: "Pending", ar: "قيد المراجعة" },
+    active: { en: "Active", ar: "نشط" },
+    suspended: { en: "Suspended", ar: "موقوف" },
+    archived: { en: "Archived", ar: "مؤرشف" },
   };
 
   return (
     <div className="space-y-6">
-      {/* Header */}
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-2xl font-bold flex items-center gap-2">
-            <Building2 className="h-6 w-6" />
-            {isAr ? "سجل الجهات والجمعيات" : "Culinary Entities Registry"}
-          </h1>
-          <p className="text-muted-foreground text-sm">
-            {isAr ? "إدارة الجمعيات والجهات الحكومية والخاصة المتعلقة بالطهي" : "Manage culinary associations, government & private entities"}
-          </p>
-        </div>
-        <div className="flex gap-2">
-          <Button variant={showBulkImport ? "secondary" : "outline"} size="sm" onClick={() => { setShowBulkImport(!showBulkImport); if (showForm) setShowForm(false); }}>
-            <FileSpreadsheet className="me-2 h-4 w-4" />
-            {isAr ? "استيراد جماعي" : "Bulk Import"}
-          </Button>
-          <Button onClick={() => { resetForm(); setShowForm(!showForm); if (showBulkImport) setShowBulkImport(false); }}>
-            {showForm ? (isAr ? "إغلاق" : "Close") : <><Plus className="me-2 h-4 w-4" />{isAr ? "إضافة جهة" : "Add Entity"}</>}
-          </Button>
-        </div>
-      </div>
+      <AdminPageHeader
+        icon={Building2}
+        title={isAr ? "سجل الجهات والجمعيات" : "Culinary Entities Registry"}
+        description={isAr ? "إدارة الجمعيات والجهات الحكومية والخاصة المتعلقة بالطهي" : "Manage culinary associations, government & private entities"}
+        actions={
+          <div className="flex gap-2">
+            <Button variant={showBulkImport ? "secondary" : "outline"} size="sm" onClick={() => { setShowBulkImport(!showBulkImport); if (showForm) setShowForm(false); }}>
+              <FileSpreadsheet className="me-2 h-4 w-4" />
+              {isAr ? "استيراد" : "Import"}
+            </Button>
+            <Button size="sm" onClick={() => { resetForm(); setShowForm(!showForm); if (showBulkImport) setShowBulkImport(false); }}>
+              {showForm ? (isAr ? "إغلاق" : "Close") : <><Plus className="me-2 h-4 w-4" />{isAr ? "إضافة جهة" : "Add Entity"}</>}
+            </Button>
+          </div>
+        }
+      />
 
-      {/* Stats */}
-      <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
-        {[
-          { label: isAr ? "الإجمالي" : "Total", value: stats.total, color: "text-foreground" },
-          { label: isAr ? "نشطة" : "Active", value: stats.active, color: "text-chart-3" },
-          { label: isAr ? "قيد المراجعة" : "Pending", value: stats.pending, color: "text-chart-4" },
-          { label: isAr ? "مرئية" : "Visible", value: stats.visible, color: "text-primary" },
-        ].map(s => (
-          <Card key={s.label} className="p-4 text-center">
-            <p className={`text-2xl font-bold ${s.color}`}>{s.value}</p>
-            <p className="text-xs text-muted-foreground">{s.label}</p>
-          </Card>
-        ))}
-      </div>
+      <EntityStatsCards stats={stats} />
 
-      {/* Bulk Import */}
       {showBulkImport && (
         <BulkImportPanel entityType="entity" onImportComplete={() => { setShowBulkImport(false); queryClient.invalidateQueries({ queryKey: ["admin-entities"] }); }} />
       )}
 
-      {/* Inline Form */}
       {showForm && (
-        <Card>
-          <CardHeader>
-            <div className="flex items-center justify-between">
-              <CardTitle>{editingId ? (isAr ? "تعديل الجهة" : "Edit Entity") : (isAr ? "تسجيل جهة جديدة" : "Register New Entity")}</CardTitle>
-              <div className="flex items-center gap-3">
-                <span className="text-xs text-muted-foreground">{isAr ? "اكتمال البيانات" : "Completion"}: {completionPercent}%</span>
-                <Progress value={completionPercent} className="h-2 w-32" />
-              </div>
-            </div>
-          </CardHeader>
-          <CardContent>
-            <Tabs defaultValue="basic" className="space-y-6">
-              <TabsList className="flex-wrap">
-                <TabsTrigger value="basic">{isAr ? "الأساسية" : "Basic Info"}</TabsTrigger>
-                <TabsTrigger value="media">{isAr ? "الوسائط" : "Media"}</TabsTrigger>
-                <TabsTrigger value="contact">{isAr ? "الاتصال والموقع" : "Contact & Location"}</TabsTrigger>
-                <TabsTrigger value="leadership">{isAr ? "القيادة" : "Leadership"}</TabsTrigger>
-                <TabsTrigger value="details">{isAr ? "التفاصيل" : "Details"}</TabsTrigger>
-                <TabsTrigger value="management">{isAr ? "الإدارة" : "Management"}</TabsTrigger>
-              </TabsList>
-
-              {/* Basic Info Tab */}
-              <TabsContent value="basic" className="space-y-4">
-                <div className="grid gap-4 sm:grid-cols-2">
-                  <div><Label>{isAr ? "الاسم (EN)" : "Name (EN)"} *</Label><Input value={form.name} onChange={e => updateField("name", e.target.value)} /></div>
-                  <div><Label>{isAr ? "الاسم (AR)" : "Name (AR)"}</Label><Input value={form.name_ar} onChange={e => updateField("name_ar", e.target.value)} dir="rtl" /></div>
-                </div>
-                <TranslateBtn enField="name" arField="name_ar" />
-
-                <div className="grid gap-4 sm:grid-cols-2">
-                  <div><Label>{isAr ? "الاختصار (EN)" : "Abbreviation (EN)"}</Label><Input value={form.abbreviation} onChange={e => updateField("abbreviation", e.target.value)} placeholder="e.g. WACS" /></div>
-                  <div><Label>{isAr ? "الاختصار (AR)" : "Abbreviation (AR)"}</Label><Input value={form.abbreviation_ar} onChange={e => updateField("abbreviation_ar", e.target.value)} dir="rtl" /></div>
-                </div>
-                <TranslateBtn enField="abbreviation" arField="abbreviation_ar" />
-
-                <div className="grid gap-4 sm:grid-cols-2">
-                  <div><Label>{isAr ? "الوصف (EN)" : "Description (EN)"}</Label><Textarea value={form.description} onChange={e => updateField("description", e.target.value)} rows={3} /></div>
-                  <div><Label>{isAr ? "الوصف (AR)" : "Description (AR)"}</Label><Textarea value={form.description_ar} onChange={e => updateField("description_ar", e.target.value)} rows={3} dir="rtl" /></div>
-                </div>
-                <TranslateBtn enField="description" arField="description_ar" />
-
-                <div className="grid gap-4 sm:grid-cols-4">
-                  <div>
-                    <Label>{isAr ? "النوع" : "Type"} *</Label>
-                    <Select value={form.type} onValueChange={v => updateField("type", v as EntityType)}>
-                      <SelectTrigger><SelectValue /></SelectTrigger>
-                      <SelectContent>{typeOptions.map(t => <SelectItem key={t.value} value={t.value}>{isAr ? t.ar : t.en}</SelectItem>)}</SelectContent>
-                    </Select>
-                  </div>
-                  <div>
-                    <Label>{isAr ? "النطاق" : "Scope"}</Label>
-                    <Select value={form.scope} onValueChange={v => updateField("scope", v as EntityScope)}>
-                      <SelectTrigger><SelectValue /></SelectTrigger>
-                      <SelectContent>{scopeOptions.map(s => <SelectItem key={s.value} value={s.value}>{isAr ? s.ar : s.en}</SelectItem>)}</SelectContent>
-                    </Select>
-                  </div>
-                  <div>
-                    <Label>{isAr ? "الحالة" : "Status"}</Label>
-                    <Select value={form.status} onValueChange={v => updateField("status", v as EntityStatus)}>
-                      <SelectTrigger><SelectValue /></SelectTrigger>
-                      <SelectContent>{statusOptions.map(s => <SelectItem key={s} value={s}>{s}</SelectItem>)}</SelectContent>
-                    </Select>
-                  </div>
-                  <div><Label>{isAr ? "اسم المستخدم" : "Username"}</Label><Input value={form.username} onChange={e => updateField("username", e.target.value)} placeholder="e.g. wacs" /></div>
-                </div>
-                <div className="flex gap-6">
-                  <div className="flex items-center gap-2"><Switch checked={form.is_visible} onCheckedChange={v => updateField("is_visible", v)} /><Label>{isAr ? "مرئي للعامة" : "Publicly Visible"}</Label></div>
-                  <div className="flex items-center gap-2"><Switch checked={form.is_verified} onCheckedChange={v => updateField("is_verified", v)} /><Label>{isAr ? "موثق" : "Verified"}</Label></div>
-                </div>
-              </TabsContent>
-
-              {/* Media Tab */}
-              <TabsContent value="media" className="space-y-6">
-                <div className="grid gap-6 sm:grid-cols-2">
-                  <ImageUploader type="logo" url={form.logo_url} fieldKey="logo_url" />
-                  <ImageUploader type="cover" url={form.cover_image_url} fieldKey="cover_image_url" />
-                </div>
-
-                {/* Media Picker Modal */}
-                {showMediaPicker && (
-                  <Card className="border-primary">
-                    <CardHeader className="pb-2">
-                      <div className="flex items-center justify-between">
-                        <CardTitle className="text-sm">{isAr ? "اختر من مكتبة الوسائط" : "Select from Media Library"}</CardTitle>
-                        <Button size="icon" variant="ghost" onClick={() => setShowMediaPicker(null)}><X className="h-4 w-4" /></Button>
-                      </div>
-                    </CardHeader>
-                    <CardContent>
-                      {mediaFiles && mediaFiles.length > 0 ? (
-                        <div className="grid grid-cols-4 gap-2 sm:grid-cols-6">
-                          {mediaFiles.map(f => (
-                            <button
-                              key={f.name}
-                              className="group relative overflow-hidden rounded border hover:ring-2 hover:ring-primary"
-                              onClick={() => {
-                                const field = showMediaPicker === "logo" ? "logo_url" : "cover_image_url";
-                                updateField(field as keyof FormData, f.url);
-                                setShowMediaPicker(null);
-                                toast({ title: isAr ? "تم الاختيار" : "Selected" });
-                              }}
-                            >
-                              <img src={f.url} alt={f.name} className="h-16 w-full object-cover" />
-                            </button>
-                          ))}
-                        </div>
-                      ) : (
-                        <p className="text-sm text-muted-foreground">{isAr ? "لا توجد ملفات في المكتبة" : "No files in library"}</p>
-                      )}
-                    </CardContent>
-                  </Card>
-                )}
-              </TabsContent>
-
-              {/* Contact Tab */}
-              <TabsContent value="contact" className="space-y-4">
-                <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-                  <div><Label>{isAr ? "البريد الإلكتروني" : "Email"}</Label><Input type="email" value={form.email} onChange={e => updateField("email", e.target.value)} /></div>
-                  <div><Label>{isAr ? "الهاتف" : "Phone"}</Label><Input value={form.phone} onChange={e => updateField("phone", e.target.value)} /></div>
-                  <div><Label>{isAr ? "الفاكس" : "Fax"}</Label><Input value={form.fax} onChange={e => updateField("fax", e.target.value)} /></div>
-                  <div><Label>{isAr ? "الموقع الإلكتروني" : "Website"}</Label><Input value={form.website} onChange={e => updateField("website", e.target.value)} /></div>
-                  <CountrySelector
-                    value={form.country}
-                    onChange={(code) => updateField("country", code)}
-                    label={isAr ? "الدولة" : "Country"}
-                  />
-                  <div><Label>{isAr ? "المدينة" : "City"}</Label><Input value={form.city} onChange={e => updateField("city", e.target.value)} /></div>
-                </div>
-                <div className="grid gap-4 sm:grid-cols-2">
-                  <div><Label>{isAr ? "العنوان (EN)" : "Address (EN)"}</Label><Input value={form.address} onChange={e => updateField("address", e.target.value)} /></div>
-                  <div><Label>{isAr ? "العنوان (AR)" : "Address (AR)"}</Label><Input value={form.address_ar} onChange={e => updateField("address_ar", e.target.value)} dir="rtl" /></div>
-                </div>
-                <TranslateBtn enField="address" arField="address_ar" />
-                <div><Label>{isAr ? "الرمز البريدي" : "Postal Code"}</Label><Input value={form.postal_code} onChange={e => updateField("postal_code", e.target.value)} className="max-w-xs" /></div>
-                
-                {/* Google Maps Location */}
-                <Separator />
-                <div className="space-y-3">
-                  <Label className="flex items-center gap-1.5 text-sm font-semibold">
-                    <MapPin className="h-4 w-4" />
-                    {isAr ? "الموقع على الخريطة" : "Map Location"}
-                  </Label>
-                  <div className="grid gap-4 sm:grid-cols-2">
-                    <div><Label className="text-xs">{isAr ? "خط العرض" : "Latitude"}</Label><Input value={form.latitude} onChange={e => updateField("latitude", e.target.value)} placeholder="e.g. 24.7136" dir="ltr" /></div>
-                    <div><Label className="text-xs">{isAr ? "خط الطول" : "Longitude"}</Label><Input value={form.longitude} onChange={e => updateField("longitude", e.target.value)} placeholder="e.g. 46.6753" dir="ltr" /></div>
-                  </div>
-                  {form.latitude && form.longitude && (
-                    <div className="space-y-2">
-                      <iframe
-                        title="Google Maps"
-                        width="100%"
-                        height="250"
-                        className="rounded-md border"
-                        loading="lazy"
-                        src={`https://maps.google.com/maps?q=${form.latitude},${form.longitude}&z=14&output=embed`}
-                      />
-                      <a
-                        href={`https://www.google.com/maps?q=${form.latitude},${form.longitude}`}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="inline-flex items-center gap-1.5 text-xs text-primary hover:underline"
-                      >
-                        <MapPin className="h-3 w-3" />
-                        {isAr ? "فتح في خرائط جوجل" : "Open in Google Maps"}
-                      </a>
-                    </div>
-                  )}
-                </div>
-              </TabsContent>
-
-              {/* Leadership Tab */}
-              <TabsContent value="leadership" className="space-y-4">
-                {/* Quick president/secretary fields */}
-                <div className="grid gap-4 sm:grid-cols-2">
-                  <div>
-                    <Label>{isAr ? "الرئيس" : "President"}</Label>
-                    <ChefSearchSelector
-                      value={form.president_name ? "temp" : undefined}
-                      valueName={form.president_name}
-                      onChange={(_userId, name, nameAr) => {
-                        updateField("president_name", name);
-                        updateField("president_name_ar", nameAr);
-                      }}
-                      onClear={() => { updateField("president_name", ""); updateField("president_name_ar", ""); }}
-                      placeholder={isAr ? "ابحث عن الرئيس..." : "Search for president..."}
-                    />
-                  </div>
-                  <div>
-                    <Label>{isAr ? "الأمين العام" : "Secretary General"}</Label>
-                    <ChefSearchSelector
-                      value={form.secretary_name ? "temp" : undefined}
-                      valueName={form.secretary_name}
-                      onChange={(_userId, name, nameAr) => {
-                        updateField("secretary_name", name);
-                        updateField("secretary_name_ar", nameAr);
-                      }}
-                      onClear={() => { updateField("secretary_name", ""); updateField("secretary_name_ar", ""); }}
-                      placeholder={isAr ? "ابحث عن الأمين العام..." : "Search for secretary..."}
-                    />
-                  </div>
-                </div>
-
-                {/* Full positions management - only when editing */}
-                {editingId ? (
-                  <>
-                    <Separator />
-                    <h3 className="text-sm font-semibold">{isAr ? "جميع المناصب والأعضاء" : "All Positions & Members"}</h3>
-                    <EntityLeadershipPanel entityId={editingId} />
-                  </>
-                ) : (
-                  <div className="rounded-lg border border-dashed border-muted-foreground/30 p-4 text-center">
-                    <p className="text-sm text-muted-foreground">
-                      {isAr ? "احفظ الجهة أولاً لإدارة جميع المناصب القيادية" : "Save the entity first to manage all leadership positions"}
-                    </p>
-                  </div>
-                )}
-              </TabsContent>
-
-              {/* Details Tab */}
-              <TabsContent value="details" className="space-y-4">
-                <div className="grid gap-4 sm:grid-cols-2">
-                  <div><Label>{isAr ? "سنة التأسيس" : "Founded Year"}</Label><Input type="number" value={form.founded_year || ""} onChange={e => updateField("founded_year", parseInt(e.target.value) || undefined)} /></div>
-                  <div><Label>{isAr ? "عدد الأعضاء" : "Member Count"}</Label><Input type="number" value={form.member_count || ""} onChange={e => updateField("member_count", parseInt(e.target.value) || undefined)} /></div>
-                </div>
-                <div className="grid gap-4 sm:grid-cols-2">
-                  <div><Label>{isAr ? "الرسالة (EN)" : "Mission (EN)"}</Label><Textarea value={form.mission} onChange={e => updateField("mission", e.target.value)} rows={3} /></div>
-                  <div><Label>{isAr ? "الرسالة (AR)" : "Mission (AR)"}</Label><Textarea value={form.mission_ar} onChange={e => updateField("mission_ar", e.target.value)} rows={3} dir="rtl" /></div>
-                </div>
-                <TranslateBtn enField="mission" arField="mission_ar" />
-                <div className="grid gap-4 sm:grid-cols-3">
-                  <div><Label>{isAr ? "الخدمات (مفصولة بفواصل)" : "Services (comma-separated)"}</Label><Input value={form.services_input} onChange={e => updateField("services_input", e.target.value)} /></div>
-                  <div><Label>{isAr ? "التخصصات" : "Specializations"}</Label><Input value={form.specializations_input} onChange={e => updateField("specializations_input", e.target.value)} /></div>
-                  <div><Label>{isAr ? "الوسوم" : "Tags"}</Label><Input value={form.tags_input} onChange={e => updateField("tags_input", e.target.value)} /></div>
-                </div>
-                <div className="grid gap-4 sm:grid-cols-2">
-                  <div><Label>{isAr ? "رقم التسجيل" : "Registration Number"}</Label><Input value={form.registration_number} onChange={e => updateField("registration_number", e.target.value)} /></div>
-                  <div><Label>{isAr ? "رقم الترخيص" : "License Number"}</Label><Input value={form.license_number} onChange={e => updateField("license_number", e.target.value)} /></div>
-                </div>
-              </TabsContent>
-
-              {/* Management Tab */}
-              <TabsContent value="management" className="space-y-4">
-                <div>
-                  <Label>{isAr ? "مدير الحساب" : "Account Manager"}</Label>
-                  <Select value={selectedManager} onValueChange={setSelectedManager}>
-                    <SelectTrigger className="max-w-md"><SelectValue placeholder={isAr ? "اختر مدير حساب" : "Select account manager"} /></SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="none">{isAr ? "بدون مدير" : "No manager"}</SelectItem>
-                      {managers?.map(m => (
-                        <SelectItem key={m.id} value={m.id}>{m.full_name || m.id}</SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-                <div>
-                  <Label>{isAr ? "ملاحظات داخلية" : "Internal Notes"}</Label>
-                  <Textarea value={form.internal_notes} onChange={e => updateField("internal_notes", e.target.value)} rows={4} placeholder={isAr ? "ملاحظات للفريق فقط..." : "Notes visible to admins only..."} />
-                </div>
-              </TabsContent>
-            </Tabs>
-
-            <Separator className="my-6" />
-
-            <div className="flex gap-3">
-              <Button onClick={() => saveMutation.mutate()} disabled={saveMutation.isPending || !form.name}>
-                {saveMutation.isPending ? (isAr ? "جاري الحفظ..." : "Saving...") : editingId ? (isAr ? "تحديث" : "Update") : (isAr ? "تسجيل" : "Register")}
-              </Button>
-              <Button variant="outline" onClick={resetForm}>{isAr ? "إلغاء" : "Cancel"}</Button>
-            </div>
-          </CardContent>
-        </Card>
+        <EntityFormTabs
+          form={form}
+          editingId={editingId}
+          selectedManager={selectedManager}
+          isSaving={saveMutation.isPending}
+          onUpdate={updateField}
+          onManagerChange={setSelectedManager}
+          onSave={() => saveMutation.mutate()}
+          onCancel={resetForm}
+        />
       )}
 
       {/* Filters */}
@@ -816,7 +260,7 @@ export default function EntitiesAdmin() {
           <SelectTrigger className="w-full sm:w-40"><SelectValue /></SelectTrigger>
           <SelectContent>
             <SelectItem value="all">{isAr ? "جميع الحالات" : "All Status"}</SelectItem>
-            {statusOptions.map(s => <SelectItem key={s} value={s}>{s}</SelectItem>)}
+            {statusOptions.map(s => <SelectItem key={s} value={s}>{isAr ? statusLabels[s]?.ar : statusLabels[s]?.en}</SelectItem>)}
           </SelectContent>
         </Select>
       </div>
@@ -839,69 +283,33 @@ export default function EntitiesAdmin() {
             </TableHeader>
             <TableBody>
               {isLoading ? (
-                <TableRow><TableCell colSpan={8} className="text-center py-8">{isAr ? "جاري التحميل..." : "Loading..."}</TableCell></TableRow>
+                <TableRow><TableCell colSpan={8} className="text-center py-12">
+                  <div className="h-8 w-8 mx-auto animate-spin rounded-full border-4 border-primary border-t-transparent" />
+                </TableCell></TableRow>
               ) : filtered?.length === 0 ? (
-                <TableRow><TableCell colSpan={8} className="text-center py-8 text-muted-foreground">{isAr ? "لا توجد جهات مسجلة" : "No entities registered"}</TableCell></TableRow>
+                <TableRow><TableCell colSpan={8} className="text-center py-12 text-muted-foreground">
+                  <Building2 className="h-10 w-10 mx-auto mb-2 opacity-30" />
+                  <p>{isAr ? "لا توجد جهات مسجلة" : "No entities found"}</p>
+                </TableCell></TableRow>
               ) : (
-                filtered?.map(entity => {
-                  const typeLabel = typeOptions.find(t => t.value === entity.type);
-                  const scopeLabel = scopeOptions.find(s => s.value === entity.scope);
-                  return (
-                    <TableRow key={entity.id}>
-                      <TableCell className="font-mono text-xs">{entity.entity_number}</TableCell>
-                      <TableCell>
-                        <div className="flex items-center gap-3">
-                          {entity.logo_url ? (
-                            <img src={entity.logo_url} alt="" className="h-8 w-8 rounded object-cover" />
-                          ) : (
-                            <div className="flex h-8 w-8 items-center justify-center rounded bg-primary/10"><Building2 className="h-4 w-4 text-primary" /></div>
-                          )}
-                          <div>
-                            <p className="font-medium">{isAr && entity.name_ar ? entity.name_ar : entity.name}</p>
-                            {entity.username && <p className="text-xs text-muted-foreground">@{entity.username}</p>}
-                            {entity.city && <p className="text-xs text-muted-foreground">{entity.city}{entity.country ? `, ${entity.country}` : ""}</p>}
-                          </div>
-                        </div>
-                      </TableCell>
-                      <TableCell><Badge variant="secondary">{isAr ? typeLabel?.ar : typeLabel?.en}</Badge></TableCell>
-                      <TableCell><Badge variant="outline">{isAr ? scopeLabel?.ar : scopeLabel?.en}</Badge></TableCell>
-                      <TableCell>
-                        <Badge variant={entity.status === "active" ? "default" : "secondary"}>
-                          {entity.is_verified && <ShieldCheck className="me-1 h-3 w-3" />}
-                          {entity.status}
-                        </Badge>
-                      </TableCell>
-                      <TableCell>
-                        <Button
-                          size="icon" variant="ghost"
-                          onClick={() => toggleVisibility.mutate({ id: entity.id, visible: !entity.is_visible })}
-                        >
-                          {entity.is_visible ? <Eye className="h-4 w-4 text-chart-3" /> : <EyeOff className="h-4 w-4 text-muted-foreground" />}
-                        </Button>
-                      </TableCell>
-                      <TableCell>
-                        <div className="flex items-center gap-1 text-sm text-muted-foreground">
-                          <Users className="h-3 w-3" />
-                          {(entity as any).entity_followers?.length || 0}
-                        </div>
-                      </TableCell>
-                      <TableCell>
-                        <div className="flex justify-end gap-1">
-                          <Button size="icon" variant="ghost" title={isAr ? "إدارة" : "Manage"} onClick={() => setManagingEntity({ id: entity.id, name: isAr && entity.name_ar ? entity.name_ar : entity.name })}><Settings2 className="h-4 w-4" /></Button>
-                          <Button size="icon" variant="ghost" onClick={() => startEdit(entity)}><Pencil className="h-4 w-4" /></Button>
-                          <Button size="icon" variant="ghost" onClick={() => deleteMutation.mutate(entity.id)}><Trash2 className="h-4 w-4" /></Button>
-                        </div>
-                      </TableCell>
-                    </TableRow>
-                  );
-                })
+                filtered?.map(entity => (
+                  <EntityTableRow
+                    key={entity.id}
+                    entity={entity as any}
+                    typeLabel={typeOptions.find(t => t.value === entity.type)}
+                    scopeLabel={scopeOptions.find(s => s.value === entity.scope)}
+                    onEdit={startEdit}
+                    onDelete={(id) => deleteMutation.mutate(id)}
+                    onToggleVisibility={(id, visible) => toggleVisibility.mutate({ id, visible })}
+                    onManage={(id, name) => setManagingEntity({ id, name })}
+                  />
+                ))
               )}
             </TableBody>
           </Table>
         </CardContent>
       </Card>
 
-      {/* Entity Sub-Modules Management Panel */}
       {managingEntity && (
         <EntitySubModulesPanel
           entityId={managingEntity.id}
