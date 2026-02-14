@@ -52,6 +52,7 @@ const AdvertisingAdmin = lazy(() => import("@/pages/admin/AdvertisingAdmin"));
 const TranslationSEOAdmin = lazy(() => import("@/pages/admin/TranslationSEOAdmin"));
 const OrderCenterAdmin = lazy(() => import("@/pages/admin/OrderCenterAdmin"));
 const ModerationCenter = lazy(() => import("@/pages/admin/ModerationCenter"));
+const MarketingAutomationAdmin = lazy(() => import("@/pages/admin/MarketingAutomationAdmin"));
 
 export const adminRoutes = (
   <Route path="/admin" element={<AdminRoute><AdminLayout /></AdminRoute>}>
@@ -104,5 +105,6 @@ export const adminRoutes = (
     <Route path="translation-seo" element={<TranslationSEOAdmin />} />
     <Route path="order-center" element={<OrderCenterAdmin />} />
     <Route path="moderation-center" element={<ModerationCenter />} />
+    <Route path="marketing-automation" element={<MarketingAutomationAdmin />} />
   </Route>
 );
