@@ -35,7 +35,7 @@ import {
 
 type CompanyType = "sponsor" | "supplier" | "partner" | "vendor";
 
-const STEPS = ["company_info", "contact_details", "services", "review"] as const;
+const STEPS = ["company_info", "contact_details", "branding", "services", "review"] as const;
 type Step = typeof STEPS[number];
 
 export default function RegisterCompany() {
@@ -74,6 +74,8 @@ export default function RegisterCompany() {
     contact_phone: "",
     contact_title: "",
     contact_department: "management",
+    logo_url: "",
+    cover_image_url: "",
   });
 
   const stepIndex = STEPS.indexOf(currentStep);
@@ -117,6 +119,8 @@ export default function RegisterCompany() {
         return !!(form.name && form.type && form.country_code && form.registration_number);
       case "contact_details":
         return !!(form.email && form.phone && form.contact_name && form.contact_email);
+      case "branding":
+        return true;
       case "services":
         return true;
       case "review":
@@ -156,6 +160,8 @@ export default function RegisterCompany() {
           registration_number: form.registration_number || null,
           tax_number: form.tax_number || null,
           classifications: form.classifications.length > 0 ? form.classifications : null,
+          logo_url: form.logo_url || null,
+          cover_image_url: form.cover_image_url || null,
           status: "pending",
           created_by: user.id,
         })
@@ -441,6 +447,60 @@ export default function RegisterCompany() {
                         </SelectContent>
                       </Select>
                     </div>
+                  </div>
+                </CardContent>
+              </>
+            )}
+
+            {currentStep === "branding" && (
+              <>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <Building2 className="h-5 w-5 text-primary" />
+                    {isAr ? "الهوية البصرية" : "Branding & Identity"}
+                  </CardTitle>
+                  <CardDescription>{isAr ? "شعار الشركة وصورة الغلاف" : "Company logo and cover image"}</CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-6">
+                  <div className="space-y-2">
+                    <Label>{isAr ? "رابط شعار الشركة" : "Company Logo URL"}</Label>
+                    <Input
+                      value={form.logo_url}
+                      onChange={(e) => updateForm("logo_url", e.target.value)}
+                      placeholder="https://example.com/logo.png"
+                      dir="ltr"
+                    />
+                    {form.logo_url && (
+                      <div className="mt-3 flex items-center gap-4">
+                        <div className="flex h-20 w-20 items-center justify-center rounded-2xl border-2 border-dashed border-border bg-muted/50 p-2">
+                          <img src={form.logo_url} alt="Logo preview" className="max-h-full max-w-full object-contain" onError={(e) => (e.currentTarget.style.display = "none")} />
+                        </div>
+                        <p className="text-xs text-muted-foreground">{isAr ? "معاينة الشعار" : "Logo Preview"}</p>
+                      </div>
+                    )}
+                    <p className="text-xs text-muted-foreground">
+                      {isAr ? "أدخل رابط مباشر لصورة شعار الشركة (PNG, SVG مفضل)" : "Enter a direct URL to your company logo image (PNG, SVG preferred)"}
+                    </p>
+                  </div>
+
+                  <Separator />
+
+                  <div className="space-y-2">
+                    <Label>{isAr ? "رابط صورة الغلاف" : "Cover Image URL"}</Label>
+                    <Input
+                      value={form.cover_image_url}
+                      onChange={(e) => updateForm("cover_image_url", e.target.value)}
+                      placeholder="https://example.com/cover.jpg"
+                      dir="ltr"
+                    />
+                    {form.cover_image_url && (
+                      <div className="mt-3 overflow-hidden rounded-xl border border-border">
+                        <img src={form.cover_image_url} alt="Cover preview" className="h-32 w-full object-cover" onError={(e) => (e.currentTarget.style.display = "none")} />
+                      </div>
+                    )}
+                    <p className="text-xs text-muted-foreground">
+                      {isAr ? "صورة الغلاف تظهر في أعلى صفحة الشركة (نسبة 16:9 مفضلة)" : "Cover image appears at the top of your company page (16:9 ratio preferred)"}
+                    </p>
                   </div>
                 </CardContent>
               </>

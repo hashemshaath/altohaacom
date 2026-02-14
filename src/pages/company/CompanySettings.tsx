@@ -19,8 +19,9 @@ import {
 } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
 import { Settings, Save, CreditCard, Bell, Globe } from "lucide-react";
+import { CompanyPageGuard } from "@/components/company/CompanyPageGuard";
 
-export default function CompanySettings() {
+function CompanySettingsContent() {
   const { language } = useLanguage();
   const { companyId } = useCompanyAccess();
   const { toast } = useToast();
@@ -223,5 +224,13 @@ export default function CompanySettings() {
         </Card>
       )}
     </div>
+  );
+}
+
+export default function CompanySettings() {
+  return (
+    <CompanyPageGuard page="settings">
+      <CompanySettingsContent />
+    </CompanyPageGuard>
   );
 }

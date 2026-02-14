@@ -3,6 +3,7 @@ import { useLanguage } from "@/i18n/LanguageContext";
 import { Navigate, Outlet, NavLink, useLocation } from "react-router-dom";
 import { useCompanyAccess } from "@/hooks/useCompanyAccess";
 import { useActiveCompanyRoles } from "@/hooks/useCompanyRoles";
+import { useCompanyPagePermissions } from "@/hooks/useCompanyPermissions";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { cn } from "@/lib/utils";
@@ -38,6 +39,7 @@ export default function CompanyPortalLayout() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const location = useLocation();
   const activeRoles = useActiveCompanyRoles(companyId);
+  const permissions = useCompanyPagePermissions();
 
   if (isLoading) {
     return (
@@ -52,30 +54,31 @@ export default function CompanyPortalLayout() {
   }
 
   const allNavItems = [
-    { to: "/company", icon: LayoutDashboard, label: language === "ar" ? "لوحة التحكم" : "Dashboard", end: true },
-    { to: "/company/profile", icon: Building2, label: language === "ar" ? "ملف الشركة" : "Profile" },
-    { to: "/company/team", icon: Users, label: language === "ar" ? "فريق العمل" : "Team" },
-    { to: "/company/catalog", icon: Package, label: language === "ar" ? "كتالوج المنتجات" : "Catalog", roles: ["supplier", "vendor"] },
-    { to: "/company/orders", icon: ShoppingCart, label: language === "ar" ? "الطلبيات" : "Orders" },
-    { to: "/company/invoices", icon: FileText, label: language === "ar" ? "الفواتير" : "Invoices" },
-    { to: "/company/invitations", icon: FileText, label: language === "ar" ? "الدعوات" : "Invitations", roles: ["sponsor", "partner"] },
-    { to: "/company/sponsorships", icon: Crown, label: language === "ar" ? "فرص الرعاية" : "Sponsorships", roles: ["sponsor", "partner"] },
-    { to: "/company/communications", icon: MessageSquare, label: language === "ar" ? "التواصل" : "Comms" },
-    { to: "/company/statements", icon: BarChart3, label: language === "ar" ? "كشوفات الحساب" : "Statements" },
-    { to: "/company/transactions", icon: FileText, label: language === "ar" ? "المعاملات" : "Transactions" },
-    { to: "/company/evaluations", icon: Star, label: language === "ar" ? "التقييمات" : "Evaluations" },
-    { to: "/company/media", icon: Image, label: language === "ar" ? "مكتبة الوسائط" : "Media" },
-    { to: "/company/branches", icon: Building2, label: language === "ar" ? "الفروع" : "Branches" },
-    { to: "/company/drivers", icon: Truck, label: language === "ar" ? "السائقون" : "Drivers", roles: ["logistics", "supplier"] },
-    { to: "/company/working-hours", icon: Clock, label: language === "ar" ? "ساعات العمل" : "Hours" },
-    { to: "/company/advertising", icon: Megaphone, label: language === "ar" ? "الإعلانات" : "Advertising", roles: ["sponsor", "partner", "vendor", "supplier"] },
-    { to: "/company/settings", icon: Settings, label: language === "ar" ? "الإعدادات" : "Settings" },
+    { to: "/company", icon: LayoutDashboard, label: language === "ar" ? "لوحة التحكم" : "Dashboard", end: true, page: "dashboard" },
+    { to: "/company/profile", icon: Building2, label: language === "ar" ? "ملف الشركة" : "Profile", page: "profile" },
+    { to: "/company/team", icon: Users, label: language === "ar" ? "فريق العمل" : "Team", page: "team" },
+    { to: "/company/catalog", icon: Package, label: language === "ar" ? "كتالوج المنتجات" : "Catalog", roles: ["supplier", "vendor"], page: "catalog" },
+    { to: "/company/orders", icon: ShoppingCart, label: language === "ar" ? "الطلبيات" : "Orders", page: "orders" },
+    { to: "/company/invoices", icon: FileText, label: language === "ar" ? "الفواتير" : "Invoices", page: "invoices" },
+    { to: "/company/invitations", icon: FileText, label: language === "ar" ? "الدعوات" : "Invitations", roles: ["sponsor", "partner"], page: "invitations" },
+    { to: "/company/sponsorships", icon: Crown, label: language === "ar" ? "فرص الرعاية" : "Sponsorships", roles: ["sponsor", "partner"], page: "sponsorships" },
+    { to: "/company/communications", icon: MessageSquare, label: language === "ar" ? "التواصل" : "Comms", page: "communications" },
+    { to: "/company/statements", icon: BarChart3, label: language === "ar" ? "كشوفات الحساب" : "Statements", page: "statements" },
+    { to: "/company/transactions", icon: FileText, label: language === "ar" ? "المعاملات" : "Transactions", page: "transactions" },
+    { to: "/company/evaluations", icon: Star, label: language === "ar" ? "التقييمات" : "Evaluations", page: "evaluations" },
+    { to: "/company/media", icon: Image, label: language === "ar" ? "مكتبة الوسائط" : "Media", page: "media" },
+    { to: "/company/branches", icon: Building2, label: language === "ar" ? "الفروع" : "Branches", page: "branches" },
+    { to: "/company/drivers", icon: Truck, label: language === "ar" ? "السائقون" : "Drivers", roles: ["logistics", "supplier"], page: "drivers" },
+    { to: "/company/working-hours", icon: Clock, label: language === "ar" ? "ساعات العمل" : "Hours", page: "working-hours" },
+    { to: "/company/advertising", icon: Megaphone, label: language === "ar" ? "الإعلانات" : "Advertising", roles: ["sponsor", "partner", "vendor", "supplier"], page: "advertising" },
+    { to: "/company/settings", icon: Settings, label: language === "ar" ? "الإعدادات" : "Settings", page: "settings" },
   ];
 
   // Filter nav items based on active company roles (show all if no roles assigned yet)
-  const navItems = activeRoles.length > 0
+  const navItems = (activeRoles.length > 0
     ? allNavItems.filter(item => !item.roles || item.roles.some(r => activeRoles.includes(r)))
-    : allNavItems;
+    : allNavItems
+  ).filter(item => permissions.canAccess(item.page));
 
   // Bottom bar shows first 4 items + "More" on mobile
   const bottomBarItems = navItems.slice(0, 4);
