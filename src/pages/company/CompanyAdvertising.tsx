@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -29,6 +30,7 @@ const statusColors: Record<string, string> = {
 };
 
 export default function CompanyAdvertising() {
+  const navigate = useNavigate();
   const { language } = useLanguage();
   const isAr = language === "ar";
   const { companyId } = useCompanyAccess();
@@ -207,7 +209,7 @@ export default function CompanyAdvertising() {
                     {campaigns.map((c: any) => {
                       const ctr = c.total_impressions > 0 ? ((c.total_clicks / c.total_impressions) * 100).toFixed(2) : "0.00";
                       return (
-                        <TableRow key={c.id}>
+                        <TableRow key={c.id} className="cursor-pointer hover:bg-muted/50" onClick={() => navigate(`/company/advertising/${c.id}`)}>
                           <TableCell className="font-medium">{isAr ? c.name_ar || c.name : c.name}</TableCell>
                            <TableCell><Badge variant="outline">{c.billing_model}</Badge></TableCell>
                            <TableCell>{formatCurrency(Number(c.budget), language as "en" | "ar")} / {formatCurrency(Number(c.spent), language as "en" | "ar")}</TableCell>
