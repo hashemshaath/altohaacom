@@ -56,6 +56,7 @@ export function Header() {
 
   return (
     <header
+      role="banner"
       className={cn(
         "sticky top-0 z-50 border-b bg-card/90 backdrop-blur-xl supports-[backdrop-filter]:bg-card/80 transition-shadow duration-300",
         scrolled
@@ -63,11 +64,12 @@ export function Header() {
           : "border-border/40 shadow-none"
       )}
     >
-      <div className="container flex h-14 items-center gap-2">
+      <nav className="container flex h-14 items-center gap-2" aria-label="Main navigation">
         {/* Logo */}
         <Link
           to={user ? "/dashboard" : "/"}
-          className="flex shrink-0 items-center gap-2.5 me-2 group"
+          aria-label="Altohaa homepage"
+          className="flex shrink-0 items-center gap-2.5 me-2 group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:rounded-lg"
         >
           <img
             src="/altohaa-logo.png"
@@ -98,7 +100,7 @@ export function Header() {
           <UserDropdown />
           <MobileMenu primaryNav={primaryNav} moreLinks={moreLinks} />
         </div>
-      </div>
+      </nav>
     </header>
   );
 }
