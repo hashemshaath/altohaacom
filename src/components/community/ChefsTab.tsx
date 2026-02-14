@@ -3,21 +3,21 @@ import { Link } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { supabase } from "@/integrations/supabase/client";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
-import { User, Search, UserPlus, UserMinus, MapPin, ChefHat, Sparkles } from "lucide-react";
+import { User, Search, UserPlus, UserMinus, MapPin, ChefHat } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { countryFlag } from "@/lib/countryFlag";
-import { useFollowRecommendations } from "@/hooks/useFollow";
 
 interface ChefProfile {
   user_id: string;
   full_name: string | null;
   username: string | null;
+  avatar_url: string | null;
   specialization: string | null;
   experience_level: string | null;
   location: string | null;
@@ -39,7 +39,7 @@ export function ChefsTab() {
   const fetchChefs = async () => {
     const { data: profiles, error } = await supabase
       .from("profiles")
-      .select("user_id, full_name, username, specialization, experience_level, location, country_code, nationality")
+      .select("user_id, full_name, username, avatar_url, specialization, experience_level, location, country_code, nationality")
       .neq("user_id", user?.id || "")
       .limit(50);
 
@@ -65,6 +65,7 @@ export function ChefsTab() {
       user_id: p.user_id,
       full_name: p.full_name,
       username: p.username,
+      avatar_url: p.avatar_url,
       specialization: p.specialization,
       experience_level: p.experience_level,
       location: p.location,
@@ -114,17 +115,15 @@ export function ChefsTab() {
     );
   });
 
-  const { data: recommendations = [] } = useFollowRecommendations();
-
   if (loading) {
     return (
       <div className="space-y-4">
         <Skeleton className="h-10 w-full max-w-md" />
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {[1, 2, 3].map((i) => (
+        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+          {[1, 2, 3, 4, 5, 6].map((i) => (
             <Card key={i}>
               <CardContent className="flex items-center gap-3 p-4">
-                <Skeleton className="h-12 w-12 shrink-0 rounded-full" />
+                <Skeleton className="h-11 w-11 shrink-0 rounded-full" />
                 <div className="flex-1 space-y-2">
                   <Skeleton className="h-4 w-28" />
                   <Skeleton className="h-3 w-20" />
@@ -138,60 +137,28 @@ export function ChefsTab() {
   }
 
   return (
-    <div className="space-y-5">
-      {/* Follow Suggestions */}
-      {user && recommendations.length > 0 && (
-        <Card className="rounded-2xl border-primary/20">
-          <CardHeader className="pb-3">
-            <CardTitle className="text-sm flex items-center gap-2">
-              <Sparkles className="h-4 w-4 text-chart-2" />
-              {isAr ? "اقتراحات للمتابعة" : "Suggested for You"}
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="pb-4">
-            <div className="flex gap-3 overflow-x-auto pb-1">
-              {recommendations.slice(0, 6).map((rec: any) => (
-                <Link
-                  key={rec.user_id}
-                  to={`/${rec.username || rec.user_id}`}
-                  className="flex flex-col items-center gap-2 p-3 rounded-xl border border-border/50 bg-muted/20 hover:bg-muted/40 transition-colors min-w-[110px]"
-                >
-                  <Avatar className="h-12 w-12">
-                    <AvatarFallback className="bg-chart-2/10 text-chart-2 font-semibold">
-                      {(rec.full_name || "U")[0]}
-                    </AvatarFallback>
-                  </Avatar>
-                  <span className="text-xs font-medium text-center truncate max-w-[100px]">{rec.full_name}</span>
-                  {rec.specialization && (
-                    <span className="text-[10px] text-muted-foreground truncate max-w-[100px] flex items-center gap-1">
-                      <ChefHat className="h-2.5 w-2.5 shrink-0" />{rec.specialization}
-                    </span>
-                  )}
-                </Link>
-              ))}
-            </div>
-          </CardContent>
-        </Card>
-      )}
-
+    <div className="space-y-4">
+      {/* Search */}
       <div className="relative max-w-md">
         <Search className="absolute start-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
         <Input
-          placeholder={t("search")}
+          placeholder={isAr ? "ابحث عن طهاة..." : "Search chefs..."}
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
-          className="ps-10"
+          className="ps-10 rounded-xl border-border/50 bg-muted/20"
         />
       </div>
 
+      {/* Chefs Grid */}
       <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
         {filteredChefs.map((chef) => (
-          <Card key={chef.user_id} className="group border-border/50 transition-all hover:shadow-md hover:-translate-y-0.5 hover:border-primary/20">
+          <Card key={chef.user_id} className="group border-border/40 transition-all hover:shadow-md hover:-translate-y-0.5 hover:border-primary/20">
             <CardContent className="p-4">
               <div className="flex items-start gap-3">
                 <Link to={`/${chef.username || chef.user_id}`} className="shrink-0">
-                  <Avatar className="h-12 w-12 transition-opacity group-hover:opacity-90">
-                    <AvatarFallback className="bg-primary/10 text-primary font-semibold">
+                  <Avatar className="h-11 w-11 ring-2 ring-background shadow-sm transition-transform group-hover:scale-105">
+                    <AvatarImage src={chef.avatar_url || undefined} alt={chef.full_name || ""} />
+                    <AvatarFallback className="bg-primary/10 text-primary font-semibold text-sm">
                       {(chef.full_name || "C")[0].toUpperCase()}
                     </AvatarFallback>
                   </Avatar>
@@ -208,7 +175,7 @@ export function ChefsTab() {
                     </Badge>
                   )}
                   {chef.specialization && (
-                    <p className="mt-1.5 flex items-center gap-1 truncate text-xs text-muted-foreground">
+                    <p className="mt-1 flex items-center gap-1 truncate text-xs text-muted-foreground">
                       <ChefHat className="h-3 w-3 shrink-0" />
                       {chef.specialization}
                     </p>
@@ -224,7 +191,7 @@ export function ChefsTab() {
                   <Button
                     variant={chef.is_following ? "outline" : "default"}
                     size="sm"
-                    className="shrink-0 gap-1 text-xs"
+                    className="shrink-0 gap-1 text-xs h-8 rounded-lg"
                     onClick={() => handleFollow(chef.user_id, chef.is_following)}
                   >
                     {chef.is_following ? (
@@ -233,7 +200,7 @@ export function ChefsTab() {
                       <UserPlus className="h-3.5 w-3.5" />
                     )}
                     <span className="hidden sm:inline">
-                      {chef.is_following ? t("unfollow") : t("follow")}
+                      {chef.is_following ? (isAr ? "إلغاء" : "Unfollow") : (isAr ? "متابعة" : "Follow")}
                     </span>
                   </Button>
                 )}
