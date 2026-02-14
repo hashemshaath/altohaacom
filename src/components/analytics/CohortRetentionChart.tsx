@@ -5,6 +5,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Users, TrendingUp, UserMinus, BarChart3 } from "lucide-react";
+import { toEnglishDigits } from "@/lib/formatNumber";
 import {
   AreaChart, Area, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip,
   ResponsiveContainer, Legend,
@@ -124,7 +125,7 @@ export function CohortRetentionChart() {
             </div>
             <div>
               <p className="text-xs text-muted-foreground">{isAr ? "إجمالي المستخدمين" : "Total Users"}</p>
-              <p className="text-2xl font-bold">{data.totalUsers.toLocaleString()}</p>
+              <p className="text-2xl font-bold">{toEnglishDigits(data.totalUsers.toLocaleString())}</p>
             </div>
           </CardContent>
         </Card>
@@ -147,7 +148,7 @@ export function CohortRetentionChart() {
             <div>
               <p className="text-xs text-muted-foreground">{isAr ? "معدل النمو" : "Growth Rate"}</p>
               <p className={`text-2xl font-bold ${data.growthRate >= 0 ? "text-chart-2" : "text-destructive"}`}>
-                {data.growthRate >= 0 ? "+" : ""}{data.growthRate.toFixed(1)}%
+                {data.growthRate >= 0 ? "+" : ""}{toEnglishDigits(data.growthRate.toFixed(1))}%
               </p>
             </div>
           </CardContent>

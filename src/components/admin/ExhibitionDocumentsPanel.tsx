@@ -10,6 +10,7 @@ import { Switch } from "@/components/ui/switch";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { toast } from "@/hooks/use-toast";
 import { Upload, Trash2, Loader2, FileText, Bot, ExternalLink, Download } from "lucide-react";
+import { toEnglishDigits } from "@/lib/formatNumber";
 
 interface Props {
   exhibitionId: string;
@@ -115,9 +116,9 @@ export function ExhibitionDocumentsPanel({ exhibitionId }: Props) {
 
   const formatSize = (bytes: number | null) => {
     if (!bytes) return "";
-    if (bytes < 1024) return `${bytes} B`;
-    if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
-    return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
+    if (bytes < 1024) return `${toEnglishDigits(bytes)} B`;
+    if (bytes < 1024 * 1024) return `${toEnglishDigits((bytes / 1024).toFixed(1))} KB`;
+    return `${toEnglishDigits((bytes / (1024 * 1024)).toFixed(1))} MB`;
   };
 
   return (

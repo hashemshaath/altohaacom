@@ -10,6 +10,7 @@ import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { Slider } from "@/components/ui/slider";
 import { Textarea } from "@/components/ui/textarea";
+import { toEnglishDigits } from "@/lib/formatNumber";
 import {
   ClipboardList,
   Plus,
@@ -239,7 +240,7 @@ export function CriteriaManagementPanel({
           </div>
           <div className="space-y-2">
             <Label className="text-xs">
-              {isAr ? "الوزن" : "Weight"}: <span className="font-bold">{(form.weight * 100).toFixed(0)}%</span>
+              {isAr ? "الوزن" : "Weight"}: <span className="font-bold">{toEnglishDigits((form.weight * 100).toFixed(0))}%</span>
             </Label>
             <Slider
               value={[form.weight * 100]}
@@ -256,8 +257,8 @@ export function CriteriaManagementPanel({
           <div className="flex items-center gap-2 rounded-md bg-chart-4/10 px-3 py-2 text-xs text-chart-4">
             <AlertTriangle className="h-3.5 w-3.5 shrink-0" />
             {isAr
-              ? `مجموع الأوزان: ${(projectedTotalWeight * 100).toFixed(0)}% (يجب أن يكون 100%)`
-              : `Total weight: ${(projectedTotalWeight * 100).toFixed(0)}% (should be 100%)`}
+              ? `مجموع الأوزان: ${toEnglishDigits((projectedTotalWeight * 100).toFixed(0))}% (يجب أن يكون 100%)`
+              : `Total weight: ${toEnglishDigits((projectedTotalWeight * 100).toFixed(0))}% (should be 100%)`}
           </div>
         )}
 
@@ -314,7 +315,7 @@ export function CriteriaManagementPanel({
                   : "text-chart-4"
               }
             >
-              {(criteria.reduce((s, c) => s + Number(c.weight), 0) * 100).toFixed(0)}%
+              {toEnglishDigits((criteria.reduce((s, c) => s + Number(c.weight), 0) * 100).toFixed(0))}%
             </Badge>
           </div>
         )}
@@ -344,7 +345,7 @@ export function CriteriaManagementPanel({
                       <GripVertical className="h-4 w-4 text-muted-foreground/30 mt-0.5 shrink-0" />
                     )}
                     <div className="flex h-9 w-9 items-center justify-center rounded-md bg-primary/10 text-xs font-bold text-primary shrink-0">
-                      {(Number(crit.weight) * 100).toFixed(0)}%
+                      {toEnglishDigits((Number(crit.weight) * 100).toFixed(0))}%
                     </div>
                     <div className="flex-1 min-w-0">
                       <p className="text-sm font-medium">

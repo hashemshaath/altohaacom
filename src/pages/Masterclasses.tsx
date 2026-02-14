@@ -16,6 +16,7 @@ import { useNavigate } from "react-router-dom";
 import { BookOpen, Clock, Users, Search, GraduationCap, Star, MapPin } from "lucide-react";
 import { countryFlag } from "@/lib/countryFlag";
 import { useAllCountries } from "@/hooks/useCountries";
+import { toEnglishDigits } from "@/lib/formatNumber";
 
 export default function Masterclasses() {
   const { language } = useLanguage();
@@ -278,7 +279,7 @@ export default function Masterclasses() {
                       <div className="absolute end-4 bottom-4">
                         <Badge variant="secondary" className="gap-1.5 bg-background/80 backdrop-blur-md shadow-lg font-bold text-xs border-chart-4/30">
                           <Star className="h-3 w-3 fill-chart-4 text-chart-4" />
-                          {avgRating.toFixed(1)}
+                          {toEnglishDigits(avgRating.toFixed(1))}
                         </Badge>
                       </div>
                     )}
@@ -295,21 +296,21 @@ export default function Masterclasses() {
                         <div className="flex h-6 w-6 items-center justify-center rounded-lg bg-primary/10">
                           <BookOpen className="h-3 w-3 text-primary" />
                         </div>
-                        {moduleCount} {isAr ? "وحدة" : "modules"}
+                        {toEnglishDigits(moduleCount)} {isAr ? "وحدة" : "modules"}
                       </span>
                       {mc.duration_hours && (
                         <span className="flex items-center gap-1.5">
                           <div className="flex h-6 w-6 items-center justify-center rounded-lg bg-chart-4/10">
                             <Clock className="h-3 w-3 text-chart-4" />
                           </div>
-                          {mc.duration_hours}h
+                          {toEnglishDigits(mc.duration_hours)}h
                         </span>
                       )}
                       <span className="flex items-center gap-1.5">
                         <div className="flex h-6 w-6 items-center justify-center rounded-lg bg-chart-2/10">
                           <Users className="h-3 w-3 text-chart-2" />
                         </div>
-                        {enrollmentCount}
+                        {toEnglishDigits(enrollmentCount)}
                       </span>
                       {mc.country_code && (
                         <span className="flex items-center gap-1.5 ms-auto">

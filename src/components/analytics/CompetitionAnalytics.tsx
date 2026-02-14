@@ -4,6 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Trophy, Users, Star, ClipboardList } from "lucide-react";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, LineChart, Line } from "recharts";
+import { toEnglishDigits } from "@/lib/formatNumber";
 
 export default function CompetitionAnalytics() {
   const { language } = useLanguage();
@@ -77,7 +78,7 @@ export default function CompetitionAnalytics() {
               <card.icon className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">{isLoading ? "..." : (card.value || 0).toLocaleString()}</div>
+              <div className="text-2xl font-bold">{isLoading ? "..." : toEnglishDigits((card.value || 0).toLocaleString())}</div>
             </CardContent>
           </Card>
         ))}
