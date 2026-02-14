@@ -2,20 +2,51 @@ import { useQuery } from "@tanstack/react-query";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Users, Trophy, Newspaper, GraduationCap, MessageSquare, Award, TrendingUp, TrendingDown, Minus } from "lucide-react";
+import { Users, Trophy, Newspaper, GraduationCap, MessageSquare, Award } from "lucide-react";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, Legend } from "recharts";
 import { CountryBreakdownChart } from "./CountryBreakdownChart";
 import { TrendForecastChart } from "./TrendForecastChart";
-import { linearRegression, type DataPoint } from "@/lib/trendPrediction";
+import { SparklineCard } from "./SparklineCard";
+import type { DataPoint } from "@/lib/trendPrediction";
+import type { DateRange } from "./AnalyticsDateRange";
 
 const COLORS = ["hsl(var(--primary))", "hsl(var(--chart-2))", "hsl(var(--chart-3))", "hsl(var(--chart-4))", "hsl(var(--chart-5))"];
 
-export default function PlatformOverview() {
+interface Props {
+  dateRange?: DateRange;
+}
+
+export default function PlatformOverview({ dateRange }: Props) {
   const { language } = useLanguage();
 
+  const fromISO = dateRange?.from.toISOString();
+  const toISO = dateRange?.to.toISOString();
+
   const { data: stats, isLoading } = useQuery({
-    queryKey: ["analyticsOverview"],
+    queryKey: ["analyticsOverview", fromISO, toISO],
     queryFn: async () => {
+      const baseQueries = [
+        supabase.from("profiles").select("*", { count: "exact", head: true }),
+        supabase.from("competitions").select("*", { count: "exact", head: true }),
+        supabase.from("articles").select("*", { count: "exact", head: true }),
+        supabase.from("masterclasses").select("*", { count: "exact", head: true }),
+        supabase.from("certificates").select("*", { count: "exact", head: true }),
+        supabase.from("messages").select("*", { count: "exact", head: true }),
+        supabase.from("user_roles").select("role"),
+        supabase.from("competitions").select("status"),
+        supabase.from("profiles").select("created_at").order("created_at", { ascending: true }),
+        supabase.from("competitions").select("created_at").order("created_at", { ascending: true }),
+      ] as const;
+
+      // Date-filtered counts for the selected range
+      const rangeQueries = fromISO && toISO ? [
+        supabase.from("profiles").select("*", { count: "exact", head: true }).gte("created_at", fromISO).lte("created_at", toISO),
+        supabase.from("competitions").select("*", { count: "exact", head: true }).gte("created_at", fromISO).lte("created_at", toISO),
+        supabase.from("articles").select("*", { count: "exact", head: true }).gte("created_at", fromISO).lte("created_at", toISO),
+        supabase.from("certificates").select("*", { count: "exact", head: true }).gte("created_at", fromISO).lte("created_at", toISO),
+        supabase.from("messages").select("*", { count: "exact", head: true }).gte("created_at", fromISO).lte("created_at", toISO),
+      ] : [];
+
       const [
         { count: totalUsers },
         { count: totalCompetitions },
@@ -27,27 +58,23 @@ export default function PlatformOverview() {
         { data: competitionsByStatus },
         { data: profileDates },
         { data: competitionDates },
-      ] = await Promise.all([
-        supabase.from("profiles").select("*", { count: "exact", head: true }),
-        supabase.from("competitions").select("*", { count: "exact", head: true }),
-        supabase.from("articles").select("*", { count: "exact", head: true }),
-        supabase.from("masterclasses").select("*", { count: "exact", head: true }),
-        supabase.from("certificates").select("*", { count: "exact", head: true }),
-        supabase.from("messages").select("*", { count: "exact", head: true }),
-        supabase.from("user_roles").select("role"),
-        supabase.from("competitions").select("status"),
-        supabase.from("profiles").select("created_at").order("created_at", { ascending: true }),
-        supabase.from("competitions").select("created_at").order("created_at", { ascending: true }),
-      ]);
+        ...rangeResults
+      ] = await Promise.all([...baseQueries, ...rangeQueries]);
 
-      // Aggregate role distribution
+      const rangeUsers = rangeResults[0]?.count || 0;
+      const rangeCompetitions = rangeResults[1]?.count || 0;
+      const rangeArticles = rangeResults[2]?.count || 0;
+      const rangeCerts = rangeResults[3]?.count || 0;
+      const rangeMessages = rangeResults[4]?.count || 0;
+
+      // Role distribution
       const roleCounts: Record<string, number> = {};
       (roleDistribution || []).forEach((r: any) => {
         roleCounts[r.role] = (roleCounts[r.role] || 0) + 1;
       });
       const roleData = Object.entries(roleCounts).map(([name, value]) => ({ name, value }));
 
-      // Aggregate competition status
+      // Competition status
       const statusCounts: Record<string, number> = {};
       (competitionsByStatus || []).forEach((c: any) => {
         const label = c.status || "unknown";
@@ -55,27 +82,36 @@ export default function PlatformOverview() {
       });
       const statusData = Object.entries(statusCounts).map(([name, value]) => ({ name, value }));
 
-      // Build monthly trend data for users
-      const userMonths: Record<string, number> = {};
-      (profileDates || []).forEach((p: any) => {
-        const m = p.created_at?.substring(0, 7);
-        if (m) userMonths[m] = (userMonths[m] || 0) + 1;
-      });
-      const userTrend: DataPoint[] = Object.entries(userMonths)
-        .sort(([a], [b]) => a.localeCompare(b))
-        .slice(-12)
-        .map(([date, value]) => ({ date, value }));
+      // Build monthly trend data
+      const buildMonthlyTrend = (dates: any[]): DataPoint[] => {
+        const months: Record<string, number> = {};
+        (dates || []).forEach((p: any) => {
+          const m = p.created_at?.substring(0, 7);
+          if (m) months[m] = (months[m] || 0) + 1;
+        });
+        return Object.entries(months)
+          .sort(([a], [b]) => a.localeCompare(b))
+          .slice(-12)
+          .map(([date, value]) => ({ date, value }));
+      };
 
-      // Build monthly trend data for competitions
-      const compMonths: Record<string, number> = {};
-      (competitionDates || []).forEach((c: any) => {
-        const m = c.created_at?.substring(0, 7);
-        if (m) compMonths[m] = (compMonths[m] || 0) + 1;
-      });
-      const compTrend: DataPoint[] = Object.entries(compMonths)
-        .sort(([a], [b]) => a.localeCompare(b))
-        .slice(-12)
-        .map(([date, value]) => ({ date, value }));
+      const userTrend = buildMonthlyTrend(profileDates || []);
+      const compTrend = buildMonthlyTrend(competitionDates || []);
+
+      // Build daily sparkline data (last 7 points from trend)
+      const buildSparkline = (dates: any[]): { v: number }[] => {
+        const days: Record<string, number> = {};
+        (dates || []).forEach((p: any) => {
+          const d = p.created_at?.substring(0, 10);
+          if (d) days[d] = (days[d] || 0) + 1;
+        });
+        return Object.entries(days)
+          .sort(([a], [b]) => a.localeCompare(b))
+          .slice(-14)
+          .map(([_, value]) => ({ v: value }));
+      };
+
+      const userSparkline = buildSparkline(profileDates || []);
 
       return {
         totalUsers: totalUsers || 0,
@@ -84,37 +120,36 @@ export default function PlatformOverview() {
         totalMasterclasses: totalMasterclasses || 0,
         totalCertificates: totalCertificates || 0,
         totalMessages: totalMessages || 0,
-        roleData,
-        statusData,
-        userTrend,
-        compTrend,
+        rangeUsers, rangeCompetitions, rangeArticles, rangeCerts, rangeMessages,
+        roleData, statusData, userTrend, compTrend, userSparkline,
       };
     },
     staleTime: 1000 * 60,
   });
 
   const cards = [
-    { label: language === "ar" ? "المستخدمين" : "Users", value: stats?.totalUsers, icon: Users },
-    { label: language === "ar" ? "المسابقات" : "Competitions", value: stats?.totalCompetitions, icon: Trophy },
-    { label: language === "ar" ? "المقالات" : "Articles", value: stats?.totalArticles, icon: Newspaper },
-    { label: language === "ar" ? "الدورات" : "Masterclasses", value: stats?.totalMasterclasses, icon: GraduationCap },
-    { label: language === "ar" ? "الشهادات" : "Certificates", value: stats?.totalCertificates, icon: Award },
-    { label: language === "ar" ? "الرسائل" : "Messages", value: stats?.totalMessages, icon: MessageSquare },
+    { label: language === "ar" ? "المستخدمين" : "Users", value: stats?.totalUsers || 0, rangeValue: stats?.rangeUsers, icon: Users, color: "primary", border: "border-s-primary" },
+    { label: language === "ar" ? "المسابقات" : "Competitions", value: stats?.totalCompetitions || 0, rangeValue: stats?.rangeCompetitions, icon: Trophy, color: "chart-2", border: "border-s-chart-2" },
+    { label: language === "ar" ? "المقالات" : "Articles", value: stats?.totalArticles || 0, rangeValue: stats?.rangeArticles, icon: Newspaper, color: "chart-3", border: "border-s-chart-3" },
+    { label: language === "ar" ? "الدورات" : "Masterclasses", value: stats?.totalMasterclasses || 0, icon: GraduationCap, color: "chart-4", border: "border-s-chart-4" },
+    { label: language === "ar" ? "الشهادات" : "Certificates", value: stats?.totalCertificates || 0, rangeValue: stats?.rangeCerts, icon: Award, color: "chart-5", border: "border-s-chart-5" },
+    { label: language === "ar" ? "الرسائل" : "Messages", value: stats?.totalMessages || 0, rangeValue: stats?.rangeMessages, icon: MessageSquare, color: "primary", border: "border-s-primary" },
   ];
 
   return (
     <div className="space-y-6 mt-4">
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6">
         {cards.map((card) => (
-          <Card key={card.label}>
-            <CardHeader className="flex flex-row items-center justify-between pb-2">
-              <CardTitle className="text-xs font-medium text-muted-foreground">{card.label}</CardTitle>
-              <card.icon className="h-4 w-4 text-muted-foreground" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">{isLoading ? "..." : (card.value || 0).toLocaleString()}</div>
-            </CardContent>
-          </Card>
+          <SparklineCard
+            key={card.label}
+            icon={card.icon}
+            label={card.label}
+            value={isLoading ? "..." : card.value.toLocaleString()}
+            trend={card.rangeValue !== undefined && card.value > 0 ? Math.round((card.rangeValue / card.value) * 100) : undefined}
+            sparkData={card.label.includes("User") || card.label.includes("المستخدم") ? stats?.userSparkline : undefined}
+            color={card.color}
+            borderColor={card.border}
+          />
         ))}
       </div>
 

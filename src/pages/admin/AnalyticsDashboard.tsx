@@ -12,31 +12,46 @@ import EngagementMetrics from "@/components/analytics/EngagementMetrics";
 import { CohortRetentionChart } from "@/components/analytics/CohortRetentionChart";
 import { RevenueAnalytics } from "@/components/analytics/RevenueAnalytics";
 import { MarketingAnalytics } from "@/components/analytics/MarketingAnalytics";
+import { AnalyticsDateRange, getPresetRange, type DateRange } from "@/components/analytics/AnalyticsDateRange";
+import { toast } from "@/hooks/use-toast";
 
 export default function AnalyticsDashboard() {
   const { language } = useLanguage();
+  const isAr = language === "ar";
+  const [dateRange, setDateRange] = useState<DateRange>(() => getPresetRange("30d"));
+  const [activeTab, setActiveTab] = useState("overview");
+
+  const handleExport = () => {
+    toast({ title: isAr ? "جاري التصدير..." : "Exporting..." });
+    // The active tab component handles export logic
+    const event = new CustomEvent("analytics-export", { detail: { tab: activeTab, dateRange } });
+    window.dispatchEvent(event);
+  };
 
   const tabs = [
-    { value: "overview", icon: BarChart3, label: language === "ar" ? "نظرة عامة" : "Overview" },
-    { value: "marketing", icon: Megaphone, label: language === "ar" ? "التسويق" : "Marketing" },
-    { value: "engagement", icon: Activity, label: language === "ar" ? "التفاعل" : "Engagement" },
-    { value: "retention", icon: UserMinus, label: language === "ar" ? "الاحتفاظ" : "Retention" },
-    { value: "competitions", icon: Trophy, label: language === "ar" ? "المسابقات" : "Competitions" },
-    { value: "users", icon: Users, label: language === "ar" ? "المستخدمين" : "Users" },
-    { value: "revenue", icon: TrendingUp, label: language === "ar" ? "الإيرادات" : "Revenue" },
-    { value: "financial", icon: DollarSign, label: language === "ar" ? "المالية" : "Financial" },
-    { value: "ai-insights", icon: Brain, label: language === "ar" ? "ذكاء اصطناعي" : "AI Insights" },
+    { value: "overview", icon: BarChart3, label: isAr ? "نظرة عامة" : "Overview" },
+    { value: "marketing", icon: Megaphone, label: isAr ? "التسويق" : "Marketing" },
+    { value: "engagement", icon: Activity, label: isAr ? "التفاعل" : "Engagement" },
+    { value: "retention", icon: UserMinus, label: isAr ? "الاحتفاظ" : "Retention" },
+    { value: "competitions", icon: Trophy, label: isAr ? "المسابقات" : "Competitions" },
+    { value: "users", icon: Users, label: isAr ? "المستخدمين" : "Users" },
+    { value: "revenue", icon: TrendingUp, label: isAr ? "الإيرادات" : "Revenue" },
+    { value: "financial", icon: DollarSign, label: isAr ? "المالية" : "Financial" },
+    { value: "ai-insights", icon: Brain, label: isAr ? "ذكاء اصطناعي" : "AI Insights" },
   ];
 
   return (
     <div className="space-y-6">
       <AdminPageHeader
         icon={BarChart3}
-        title={language === "ar" ? "التحليلات المتقدمة" : "Advanced Analytics"}
-        description={language === "ar" ? "إحصائيات شاملة مع تحليلات ذكية وتنبؤات" : "Comprehensive insights with AI-powered analysis and predictions"}
+        title={isAr ? "التحليلات المتقدمة" : "Advanced Analytics"}
+        description={isAr ? "إحصائيات شاملة مع تحليلات ذكية وتنبؤات" : "Comprehensive insights with AI-powered analysis and predictions"}
+        actions={
+          <AnalyticsDateRange value={dateRange} onChange={setDateRange} onExport={handleExport} />
+        }
       />
 
-      <Tabs defaultValue="overview">
+      <Tabs value={activeTab} onValueChange={setActiveTab}>
         <div className="overflow-x-auto">
           <TabsList className="inline-flex w-auto min-w-full md:grid md:grid-cols-9">
             {tabs.map((tab) => (
@@ -48,7 +63,7 @@ export default function AnalyticsDashboard() {
           </TabsList>
         </div>
 
-        <TabsContent value="overview"><PlatformOverview /></TabsContent>
+        <TabsContent value="overview"><PlatformOverview dateRange={dateRange} /></TabsContent>
         <TabsContent value="marketing"><MarketingAnalytics /></TabsContent>
         <TabsContent value="engagement"><EngagementMetrics /></TabsContent>
         <TabsContent value="retention"><CohortRetentionChart /></TabsContent>
