@@ -8,6 +8,7 @@ import { Badge } from "@/components/ui/badge";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
+import { toEnglishDigits } from "@/lib/formatNumber";
 import { Separator } from "@/components/ui/separator";
 import { EntitySelector } from "@/components/admin/EntitySelector";
 import { toast } from "@/hooks/use-toast";
@@ -78,7 +79,7 @@ interface Props { userId: string; isAr: boolean; }
 const formatDateShort = (date: string | null, isAr: boolean) => {
   if (!date) return isAr ? "الحالي" : "Present";
   const d = new Date(date);
-  return d.toLocaleDateString(isAr ? "ar-SA" : "en-US", { year: "numeric", month: "short" });
+  return toEnglishDigits(d.toLocaleDateString(isAr ? "ar-SA" : "en-US", { year: "numeric", month: "short" }));
 };
 
 const labelFor = (key: string, list: { value: string; en: string; ar: string }[], isAr: boolean) => {

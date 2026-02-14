@@ -19,6 +19,7 @@ import {
 } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
 import { ar, enUS } from "date-fns/locale";
+import { toEnglishDigits } from "@/lib/formatNumber";
 
 interface SupportMessage {
   id: string;
@@ -208,7 +209,7 @@ export default function CompanyAdminMessaging() {
                       {showDate && (
                         <div className="flex items-center justify-center py-3">
                           <Badge variant="secondary" className="text-[10px] font-normal">
-                            {new Date(msg.created_at).toLocaleDateString(isAr ? "ar" : "en", { month: "short", day: "numeric", year: "numeric" })}
+                            {toEnglishDigits(new Date(msg.created_at).toLocaleDateString(isAr ? "ar" : "en", { month: "short", day: "numeric", year: "numeric" }))}
                           </Badge>
                         </div>
                       )}
@@ -226,7 +227,7 @@ export default function CompanyAdminMessaging() {
                           <p className="text-sm whitespace-pre-wrap">{msg.message}</p>
                           <div className={`flex items-center gap-1.5 mt-1.5 ${isCompany ? "justify-end" : "justify-start"}`}>
                             <span className={`text-[10px] ${isCompany ? "text-primary-foreground/60" : "text-muted-foreground"}`}>
-                              {formatDistanceToNow(new Date(msg.created_at), { addSuffix: true, locale: isAr ? ar : enUS })}
+                              {toEnglishDigits(formatDistanceToNow(new Date(msg.created_at), { addSuffix: true, locale: isAr ? ar : enUS }))}
                             </span>
                             {isCompany ? (
                               <User className="h-3 w-3 opacity-50" />

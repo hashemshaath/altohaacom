@@ -10,6 +10,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { usePointsBalance, usePointsLedger, usePointsRewards, useEarningRules, useRedeemReward, useMyRedemptions } from "@/hooks/usePoints";
 import { Star, Gift, History, ShoppingBag, Zap, TrendingUp, Loader2, CheckCircle2, Crown, ArrowUp, ArrowDown } from "lucide-react";
 import { Link } from "react-router-dom";
+import { toEnglishDigits } from "@/lib/formatNumber";
 
 export default function Rewards() {
   const { language } = useLanguage();
@@ -62,19 +63,19 @@ export default function Rewards() {
           <div className="grid grid-cols-3 gap-3 mt-6">
             <Card className="border-chart-4/20 bg-card/80">
               <CardContent className="p-4 text-center">
-                <p className="text-3xl font-bold text-chart-4">{balance || 0}</p>
+                <p className="text-3xl font-bold text-chart-4">{toEnglishDigits(balance || 0)}</p>
                 <p className="text-xs text-muted-foreground mt-1">{isAr ? "الرصيد الحالي" : "Current Balance"}</p>
               </CardContent>
             </Card>
             <Card className="border-chart-2/20 bg-card/80">
               <CardContent className="p-4 text-center">
-                <p className="text-3xl font-bold text-chart-2">{totalEarned}</p>
+                <p className="text-3xl font-bold text-chart-2">{toEnglishDigits(totalEarned)}</p>
                 <p className="text-xs text-muted-foreground mt-1">{isAr ? "إجمالي المكتسب" : "Total Earned"}</p>
               </CardContent>
             </Card>
             <Card className="border-primary/20 bg-card/80">
               <CardContent className="p-4 text-center">
-                <p className="text-3xl font-bold text-primary">{totalSpent}</p>
+                <p className="text-3xl font-bold text-primary">{toEnglishDigits(totalSpent)}</p>
                 <p className="text-xs text-muted-foreground mt-1">{isAr ? "إجمالي المستبدل" : "Total Redeemed"}</p>
               </CardContent>
             </Card>
@@ -112,8 +113,8 @@ export default function Rewards() {
                       <div className="flex items-start justify-between mb-3">
                         <Badge variant="outline" className="capitalize text-xs">{reward.category}</Badge>
                         <Badge className="bg-chart-4/20 text-chart-4 font-bold">
-                          <Star className="h-3 w-3 me-1" />
-                          {reward.points_cost}
+                         <Star className="h-3 w-3 me-1" />
+                          {toEnglishDigits(reward.points_cost)}
                         </Badge>
                       </div>
                       <h3 className="font-semibold">{isAr ? reward.name_ar : reward.name}</h3>
@@ -155,13 +156,13 @@ export default function Rewards() {
                           <p className="text-sm font-medium">{isAr ? rule.action_label_ar : rule.action_label}</p>
                           {rule.max_per_day && (
                             <p className="text-[10px] text-muted-foreground">
-                              {isAr ? `الحد الأقصى: ${rule.max_per_day}/يوم` : `Max: ${rule.max_per_day}/day`}
+                              {isAr ? `الحد الأقصى: ${toEnglishDigits(rule.max_per_day)}/يوم` : `Max: ${rule.max_per_day}/day`}
                             </p>
                           )}
                         </div>
                       </div>
                       <Badge className="bg-chart-4/20 text-chart-4 font-bold text-sm">
-                        +{rule.points}
+                        +{toEnglishDigits(rule.points)}
                       </Badge>
                     </div>
                   ))}
@@ -192,12 +193,12 @@ export default function Rewards() {
                           <div>
                             <p className="text-sm font-medium">{isAr ? entry.description_ar : entry.description}</p>
                             <p className="text-[10px] text-muted-foreground">
-                              {new Date(entry.created_at).toLocaleDateString(isAr ? "ar" : "en")} • {isAr ? "الرصيد:" : "Balance:"} {entry.balance_after}
+                              {toEnglishDigits(new Date(entry.created_at).toLocaleDateString(isAr ? "ar" : "en"))} • {isAr ? "الرصيد:" : "Balance:"} {toEnglishDigits(entry.balance_after)}
                             </p>
                           </div>
                         </div>
                         <span className={`font-bold ${entry.points > 0 ? "text-chart-2" : "text-destructive"}`}>
-                          {entry.points > 0 ? "+" : ""}{entry.points}
+                          {entry.points > 0 ? "+" : ""}{toEnglishDigits(Math.abs(entry.points))}
                         </span>
                       </div>
                     ))}
@@ -229,7 +230,7 @@ export default function Rewards() {
                           <div>
                             <p className="text-sm font-medium">{isAr ? r.points_rewards?.name_ar : r.points_rewards?.name}</p>
                             <p className="text-[10px] text-muted-foreground">
-                              {new Date(r.created_at).toLocaleDateString(isAr ? "ar" : "en")}
+                              {toEnglishDigits(new Date(r.created_at).toLocaleDateString(isAr ? "ar" : "en"))}
                             </p>
                           </div>
                         </div>

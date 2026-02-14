@@ -16,6 +16,7 @@ import { useLanguage } from "@/i18n/LanguageContext";
 import { formatDistanceToNow } from "date-fns";
 import { ar, enUS } from "date-fns/locale";
 import { useNavigate } from "react-router-dom";
+import { toEnglishDigits } from "@/lib/formatNumber";
 import { cn } from "@/lib/utils";
 
 type NotificationCategory = "all" | "approvals" | "orders" | "competitions" | "general";
@@ -162,10 +163,10 @@ export const NotificationBell = React.forwardRef<HTMLButtonElement, Record<strin
                     </p>
                     <div className="flex items-center gap-2 mt-1">
                       <p className="text-[10px] text-muted-foreground/70">
-                        {formatDistanceToNow(new Date(notification.created_at), {
+                        {toEnglishDigits(formatDistanceToNow(new Date(notification.created_at), {
                           addSuffix: true,
                           locale: isAr ? ar : enUS,
-                        })}
+                        }))}
                       </p>
                       <Badge variant="outline" className="text-[8px] h-4 px-1.5">
                         {isAr ? categoryLabels[categorizeNotification(notification)].ar : categoryLabels[categorizeNotification(notification)].en}

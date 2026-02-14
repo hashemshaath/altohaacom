@@ -43,6 +43,7 @@ import {
 } from "lucide-react";
 import { format, formatDistanceToNow } from "date-fns";
 import { ar, enUS } from "date-fns/locale";
+import { toEnglishDigits } from "@/lib/formatNumber";
 
 interface SupportTicket {
   id: string;
@@ -324,7 +325,7 @@ export default function SupportTickets() {
                   <Ticket className="h-8 w-8 text-primary" />
                   <div>
                     <p className="text-xs text-muted-foreground">{isAr ? "الإجمالي" : "Total"}</p>
-                    <p className="text-xl font-bold">{tickets.length}</p>
+                    <p className="text-xl font-bold">{toEnglishDigits(tickets.length)}</p>
                   </div>
                 </CardContent>
               </Card>
@@ -333,7 +334,7 @@ export default function SupportTickets() {
                   <Clock className="h-8 w-8 text-chart-4" />
                   <div>
                     <p className="text-xs text-muted-foreground">{isAr ? "مفتوحة" : "Open"}</p>
-                    <p className="text-xl font-bold">{openCount}</p>
+                    <p className="text-xl font-bold">{toEnglishDigits(openCount)}</p>
                   </div>
                 </CardContent>
               </Card>
@@ -342,7 +343,7 @@ export default function SupportTickets() {
                   <CheckCircle2 className="h-8 w-8 text-chart-5" />
                   <div>
                     <p className="text-xs text-muted-foreground">{isAr ? "محلولة" : "Resolved"}</p>
-                    <p className="text-xl font-bold">{resolvedCount}</p>
+                    <p className="text-xl font-bold">{toEnglishDigits(resolvedCount)}</p>
                   </div>
                 </CardContent>
               </Card>
@@ -368,7 +369,7 @@ export default function SupportTickets() {
                         {getStatusBadge(selectedTicket.status)}
                         {getPriorityBadge(selectedTicket.priority)}
                         <span className="text-xs text-muted-foreground">
-                          {format(new Date(selectedTicket.created_at), "yyyy-MM-dd HH:mm")}
+                          {toEnglishDigits(format(new Date(selectedTicket.created_at), "yyyy-MM-dd HH:mm"))}
                         </span>
                       </div>
                     </div>
@@ -383,7 +384,7 @@ export default function SupportTickets() {
 
                   <h4 className="text-sm font-semibold mb-3 flex items-center gap-2">
                     <MessageSquare className="h-4 w-4 text-primary" />
-                    {isAr ? "الردود" : "Replies"} ({ticketMessages.length})
+                    {isAr ? "الردود" : "Replies"} ({toEnglishDigits(ticketMessages.length)})
                   </h4>
 
                   {loadingMessages ? (
@@ -405,10 +406,10 @@ export default function SupportTickets() {
                                   {isMine ? (isAr ? "أنت" : "You") : (isAr ? "الدعم" : "Support")}
                                 </Badge>
                                 <span className="text-[10px] text-muted-foreground">
-                                  {formatDistanceToNow(new Date(msg.created_at), {
+                                  {toEnglishDigits(formatDistanceToNow(new Date(msg.created_at), {
                                     addSuffix: true,
                                     locale: isAr ? ar : enUS,
-                                  })}
+                                  }))}
                                 </span>
                               </div>
                               <p className="text-sm whitespace-pre-wrap">{msg.message}</p>
@@ -502,10 +503,10 @@ export default function SupportTickets() {
                         </div>
                         <div className="text-end shrink-0">
                           <p className="text-xs text-muted-foreground">
-                            {formatDistanceToNow(new Date(ticket.created_at), {
+                            {toEnglishDigits(formatDistanceToNow(new Date(ticket.created_at), {
                               addSuffix: true,
                               locale: isAr ? ar : enUS,
-                            })}
+                            }))}
                           </p>
                         </div>
                       </CardContent>
