@@ -20,6 +20,7 @@ import {
   Shield,
   Earth,
 } from "lucide-react";
+import { toEnglishDigits } from "@/lib/formatNumber";
 
 export default function CompanyProfile() {
   const { language } = useLanguage();
@@ -185,7 +186,7 @@ export default function CompanyProfile() {
                 {language === "ar" ? "حد الائتمان" : "Credit Limit"}
               </p>
               <p className="mt-1 text-xl font-bold text-primary">
-                SAR {company.credit_limit?.toLocaleString() || "0"}
+                SAR {toEnglishDigits(company.credit_limit?.toLocaleString() || "0")}
               </p>
             </div>
             <Separator />

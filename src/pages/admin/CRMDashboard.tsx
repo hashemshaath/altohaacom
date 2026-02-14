@@ -9,6 +9,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Progress } from "@/components/ui/progress";
+import { toEnglishDigits } from "@/lib/formatNumber";
 import {
   Ticket,
   Headphones,
@@ -296,7 +297,7 @@ export default function CRMDashboard() {
               <p className="text-xs text-muted-foreground">{isAr ? "شرائح الجمهور" : "Segments"}</p>
               <p className="text-2xl font-bold">{segmentStats?.total ?? "—"}</p>
               <p className="text-[10px] text-muted-foreground">
-                {(segmentStats?.totalReach ?? 0).toLocaleString()} {isAr ? "مستخدم" : "reach"}
+                {toEnglishDigits((segmentStats?.totalReach ?? 0).toLocaleString())} {isAr ? "مستخدم" : "reach"}
               </p>
             </div>
             <Button variant="ghost" size="icon" asChild className="shrink-0">
@@ -630,7 +631,7 @@ export default function CRMDashboard() {
               },
               {
                 label: isAr ? "الوصول الكلي" : "Total Reach",
-                value: (segmentStats?.totalReach ?? 0).toLocaleString(),
+                value: toEnglishDigits((segmentStats?.totalReach ?? 0).toLocaleString()),
                 icon: Users,
                 color: "text-chart-1",
               },

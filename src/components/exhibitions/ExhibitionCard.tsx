@@ -4,6 +4,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Calendar, MapPin, Globe, ExternalLink, Clock, ArrowRight, Building } from "lucide-react";
 import { format, isPast, isFuture, isWithinInterval, differenceInDays } from "date-fns";
+import { toEnglishDigits } from "@/lib/formatNumber";
 import { countryFlag } from "@/lib/countryFlag";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -145,7 +146,7 @@ export function ExhibitionCard({ exhibition, language }: ExhibitionCardProps) {
               {daysLeft !== null && daysLeft > 0 && daysLeft <= 30 && (
                 <Badge className="gap-1.5 text-[9px] font-black uppercase tracking-wider bg-chart-4/90 text-white shadow-lg border-0 py-1 px-3 animate-pulse">
                   <Clock className="h-2.5 w-2.5" />
-                  {isAr ? `باقي ${daysLeft} يوم` : `${daysLeft}d left`}
+                  {isAr ? `باقي ${toEnglishDigits(daysLeft)} يوم` : `${daysLeft}d left`}
                 </Badge>
               )}
             </div>
@@ -158,7 +159,7 @@ export function ExhibitionCard({ exhibition, language }: ExhibitionCardProps) {
             {daysLeft !== null && daysLeft > 0 && daysLeft <= 30 && (
               <Badge variant="secondary" className="gap-1 text-[10px] shadow-lg backdrop-blur-md bg-background/80 text-chart-4 border-chart-4/20">
                 <Clock className="h-2.5 w-2.5 animate-pulse" />
-                {isAr ? `باقي ${daysLeft} يوم` : `${daysLeft}d left`}
+                {isAr ? `باقي ${toEnglishDigits(daysLeft)} يوم` : `${daysLeft}d left`}
               </Badge>
             )}
           </div>
@@ -179,7 +180,7 @@ export function ExhibitionCard({ exhibition, language }: ExhibitionCardProps) {
           <div className="flex-1 space-y-3">
             <div>
               <h3 className="line-clamp-2 text-base font-bold leading-tight group-hover:text-primary transition-colors duration-300">
-                {title} <span className="text-primary/60 font-serif italic ms-1">{new Date(exhibition.start_date).getFullYear()}</span>
+                {title} <span className="text-primary/60 font-serif italic ms-1">{toEnglishDigits(new Date(exhibition.start_date).getFullYear())}</span>
               </h3>
               {organizer && (
                 <p className="mt-1 flex items-center gap-1.5 text-[11px] font-medium text-muted-foreground">
@@ -201,7 +202,7 @@ export function ExhibitionCard({ exhibition, language }: ExhibitionCardProps) {
                   <Calendar className="h-3 w-3 text-primary" />
                 </div>
                 <span className="font-medium">
-                  {format(new Date(exhibition.start_date), "MMM d")} – {format(new Date(exhibition.end_date), "MMM d, yyyy")}
+                  {toEnglishDigits(format(new Date(exhibition.start_date), "MMM d"))} – {toEnglishDigits(format(new Date(exhibition.end_date), "MMM d, yyyy"))}
                 </span>
               </div>
 

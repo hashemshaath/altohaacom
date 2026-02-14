@@ -17,6 +17,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Skeleton } from "@/components/ui/skeleton";
 import { toast } from "@/hooks/use-toast";
 import { formatCurrency } from "@/lib/currencyFormatter";
+import { toEnglishDigits } from "@/lib/formatNumber";
 import {
   ArrowLeft, Eye, MousePointer, DollarSign, TrendingUp, Plus,
   Image, Video, ExternalLink, Pause, Play, BarChart3, Megaphone,
@@ -248,11 +249,11 @@ export default function CompanyCampaignDetail() {
       {/* KPIs */}
       <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
         {[
-          { icon: Eye, label: isAr ? "المشاهدات" : "Impressions", value: ((campaign as any).total_impressions || 0).toLocaleString(), color: "text-chart-1" },
-          { icon: MousePointer, label: isAr ? "النقرات" : "Clicks", value: ((campaign as any).total_clicks || 0).toLocaleString(), color: "text-chart-2" },
-          { icon: TrendingUp, label: "CTR", value: `${ctr}%`, color: "text-chart-3" },
+          { icon: Eye, label: isAr ? "المشاهدات" : "Impressions", value: toEnglishDigits(((campaign as any).total_impressions || 0).toLocaleString()), color: "text-chart-1" },
+          { icon: MousePointer, label: isAr ? "النقرات" : "Clicks", value: toEnglishDigits(((campaign as any).total_clicks || 0).toLocaleString()), color: "text-chart-2" },
+          { icon: TrendingUp, label: "CTR", value: `${toEnglishDigits(ctr)}%`, color: "text-chart-3" },
           { icon: DollarSign, label: isAr ? "المصروف" : "Spent", value: formatCurrency(Number((campaign as any).spent || 0), language as "en" | "ar"), color: "text-chart-4" },
-          { icon: BarChart3, label: isAr ? "استهلاك الميزانية" : "Budget Used", value: `${budgetUsed}%`, color: "text-primary" },
+          { icon: BarChart3, label: isAr ? "استهلاك الميزانية" : "Budget Used", value: `${toEnglishDigits(budgetUsed)}%`, color: "text-primary" },
         ].map(k => (
           <Card key={k.label}>
             <CardContent className="flex items-center gap-3 p-4">
@@ -477,11 +478,11 @@ export default function CompanyCampaignDetail() {
                       <div className="grid grid-cols-3 gap-2 text-center">
                         <div className="rounded-lg bg-muted/50 p-2">
                           <p className="text-[10px] text-muted-foreground">{isAr ? "مشاهدات" : "Imp."}</p>
-                          <p className="text-sm font-bold">{(c.impressions || 0).toLocaleString()}</p>
+                          <p className="text-sm font-bold">{toEnglishDigits((c.impressions || 0).toLocaleString())}</p>
                         </div>
                         <div className="rounded-lg bg-muted/50 p-2">
                           <p className="text-[10px] text-muted-foreground">{isAr ? "نقرات" : "Clicks"}</p>
-                          <p className="text-sm font-bold">{(c.clicks || 0).toLocaleString()}</p>
+                          <p className="text-sm font-bold">{toEnglishDigits((c.clicks || 0).toLocaleString())}</p>
                         </div>
                         <div className="rounded-lg bg-muted/50 p-2">
                           <p className="text-[10px] text-muted-foreground">CTR</p>

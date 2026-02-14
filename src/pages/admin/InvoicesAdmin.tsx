@@ -21,6 +21,7 @@ import {
   DollarSign, Clock, CheckCircle, XCircle, Send, Copy,
 } from "lucide-react";
 import { format } from "date-fns";
+import { toEnglishDigits } from "@/lib/formatNumber";
 
 interface InvoiceItem {
   name: string;
@@ -363,9 +364,9 @@ export default function InvoicesAdmin() {
                               <p className="font-medium">{item.name}</p>
                               {item.description && <p className="text-xs text-muted-foreground">{item.description}</p>}
                             </TableCell>
-                            <TableCell className="text-center">{item.quantity}</TableCell>
-                            <TableCell className="text-right">{Number(item.unit_price).toLocaleString()}</TableCell>
-                            <TableCell className="text-right font-medium">{(item.quantity * item.unit_price).toLocaleString()}</TableCell>
+                            <TableCell className="text-center">{toEnglishDigits(item.quantity)}</TableCell>
+                            <TableCell className="text-right">{toEnglishDigits(Number(item.unit_price).toLocaleString())}</TableCell>
+                            <TableCell className="text-right font-medium">{toEnglishDigits((item.quantity * item.unit_price).toLocaleString())}</TableCell>
                           </TableRow>
                         ))}
                       </TableBody>
@@ -375,16 +376,16 @@ export default function InvoicesAdmin() {
                       <div className="w-64 space-y-2 text-sm">
                         <div className="flex justify-between">
                           <span className="text-muted-foreground">{language === "ar" ? "المجموع الفرعي" : "Subtotal"}</span>
-                          <span>{Number(invoiceDetails.subtotal).toLocaleString()}</span>
+                          <span>{toEnglishDigits(Number(invoiceDetails.subtotal).toLocaleString())}</span>
                         </div>
                         <div className="flex justify-between">
-                          <span className="text-muted-foreground">{language === "ar" ? "الضريبة" : "Tax"} ({invoiceDetails.tax_rate}%)</span>
-                          <span>{Number(invoiceDetails.tax_amount).toLocaleString()}</span>
+                          <span className="text-muted-foreground">{language === "ar" ? "الضريبة" : "Tax"} ({toEnglishDigits(invoiceDetails.tax_rate)}%)</span>
+                          <span>{toEnglishDigits(Number(invoiceDetails.tax_amount).toLocaleString())}</span>
                         </div>
                         <Separator />
                         <div className="flex justify-between font-bold text-base">
                           <span>{language === "ar" ? "الإجمالي" : "Total"}</span>
-                          <span>{Number(invoiceDetails.amount).toLocaleString()} {invoiceDetails.currency}</span>
+                          <span>{toEnglishDigits(Number(invoiceDetails.amount).toLocaleString())} {invoiceDetails.currency}</span>
                         </div>
                       </div>
                     </div>
@@ -518,7 +519,7 @@ export default function InvoicesAdmin() {
                     <Input placeholder={language === "ar" ? "اسم الصنف" : "Item name"} value={item.name} onChange={(e) => updateItem(i, "name", e.target.value)} />
                     <Input type="number" placeholder={language === "ar" ? "كمية" : "Qty"} value={item.quantity} onChange={(e) => updateItem(i, "quantity", parseInt(e.target.value) || 0)} min={1} />
                     <Input type="number" placeholder={language === "ar" ? "السعر" : "Price"} value={item.unit_price} onChange={(e) => updateItem(i, "unit_price", parseFloat(e.target.value) || 0)} min={0} />
-                    <div className="flex items-center justify-end font-medium">{(item.quantity * item.unit_price).toLocaleString()}</div>
+                    <div className="flex items-center justify-end font-medium">{toEnglishDigits((item.quantity * item.unit_price).toLocaleString())}</div>
                     <Button type="button" variant="ghost" size="icon" onClick={() => removeItem(i)} disabled={formData.items.length <= 1}>
                       <Trash2 className="h-4 w-4 text-destructive" />
                     </Button>
@@ -534,10 +535,10 @@ export default function InvoicesAdmin() {
             {/* Totals */}
             <div className="flex justify-end">
               <div className="w-64 space-y-2 text-sm">
-                <div className="flex justify-between"><span className="text-muted-foreground">{language === "ar" ? "المجموع الفرعي" : "Subtotal"}</span><span>{subtotal.toLocaleString()}</span></div>
-                <div className="flex justify-between"><span className="text-muted-foreground">{language === "ar" ? "الضريبة" : "Tax"} ({formData.tax_rate}%)</span><span>{taxAmount.toLocaleString()}</span></div>
+                <div className="flex justify-between"><span className="text-muted-foreground">{language === "ar" ? "المجموع الفرعي" : "Subtotal"}</span><span>{toEnglishDigits(subtotal.toLocaleString())}</span></div>
+                <div className="flex justify-between"><span className="text-muted-foreground">{language === "ar" ? "الضريبة" : "Tax"} ({toEnglishDigits(formData.tax_rate)}%)</span><span>{toEnglishDigits(taxAmount.toLocaleString())}</span></div>
                 <Separator />
-                <div className="flex justify-between font-bold text-base"><span>{language === "ar" ? "الإجمالي" : "Total"}</span><span>{total.toLocaleString()} {formData.currency}</span></div>
+                <div className="flex justify-between font-bold text-base"><span>{language === "ar" ? "الإجمالي" : "Total"}</span><span>{toEnglishDigits(total.toLocaleString())} {formData.currency}</span></div>
               </div>
             </div>
 
@@ -598,14 +599,14 @@ export default function InvoicesAdmin() {
         <Card>
           <CardContent className="pt-6 text-center">
             <DollarSign className="mx-auto mb-2 h-6 w-6 text-muted-foreground" />
-            <p className="text-2xl font-bold">{stats.totalAmount.toLocaleString()}</p>
+            <p className="text-2xl font-bold">{toEnglishDigits(stats.totalAmount.toLocaleString())}</p>
             <p className="text-sm text-muted-foreground">{language === "ar" ? "إجمالي المبلغ" : "Total Amount"}</p>
           </CardContent>
         </Card>
         <Card>
           <CardContent className="pt-6 text-center">
             <CheckCircle className="mx-auto mb-2 h-6 w-6 text-muted-foreground" />
-            <p className="text-2xl font-bold">{stats.paidAmount.toLocaleString()}</p>
+            <p className="text-2xl font-bold">{toEnglishDigits(stats.paidAmount.toLocaleString())}</p>
             <p className="text-sm text-muted-foreground">{language === "ar" ? "المحصّل" : "Collected"}</p>
           </CardContent>
         </Card>
@@ -673,7 +674,7 @@ export default function InvoicesAdmin() {
                         </Badge>
                       </TableCell>
                       <TableCell className="text-right font-medium">
-                        {Number(inv.amount).toLocaleString()} {inv.currency}
+                        {toEnglishDigits(Number(inv.amount).toLocaleString())} {inv.currency}
                       </TableCell>
                       <TableCell>
                         {inv.due_date ? format(new Date(inv.due_date), "MMM dd") : "—"}

@@ -20,6 +20,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { countryFlag } from "@/lib/countryFlag";
 import { ExhibitionCard, type Exhibition } from "@/components/exhibitions/ExhibitionCard";
 import { isPast, isFuture, isWithinInterval } from "date-fns";
+import { toEnglishDigits } from "@/lib/formatNumber";
 import type { Database } from "@/integrations/supabase/types";
 
 type ExhibitionType = Database["public"]["Enums"]["exhibition_type"];
@@ -125,7 +126,7 @@ export default function Exhibitions() {
                 <div className="flex gap-3">
                   <Badge variant="outline" className="gap-1.5 border-primary/20 bg-primary/5 text-primary px-3 py-1.5">
                     <Landmark className="h-3.5 w-3.5" />
-                    <span className="font-bold">{exhibitions.length}</span>
+                    <span className="font-bold">{toEnglishDigits(exhibitions.length)}</span>
                   </Badge>
                   {happeningNowCount > 0 && (
                     <Badge className="gap-1.5 bg-chart-3/15 text-chart-3 border-chart-3/30 px-3 py-1.5">
@@ -133,7 +134,7 @@ export default function Exhibitions() {
                         <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-chart-3 opacity-75" />
                         <span className="relative inline-flex h-2 w-2 rounded-full bg-chart-3" />
                       </div>
-                      <span className="font-bold">{happeningNowCount}</span>
+                      <span className="font-bold">{toEnglishDigits(happeningNowCount)}</span>
                       <span className="text-[10px]">{isAr ? "الآن" : "Live"}</span>
                     </Badge>
                   )}
