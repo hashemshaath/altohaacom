@@ -1,4 +1,5 @@
 import { lazy, Suspense, memo, useEffect } from "react";
+import { Skeleton } from "@/components/ui/skeleton";
 import { SEOHead } from "@/components/SEOHead";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
@@ -20,7 +21,18 @@ const SponsorCarousel = lazy(() => import("@/components/home/SponsorCarousel").t
 const AdBanner = lazy(() => import("@/components/ads/AdBanner").then(m => ({ default: m.AdBanner })));
 const AdPopup = lazy(() => import("@/components/ads/AdPopup").then(m => ({ default: m.AdPopup })));
 
-const LazyFallback = memo(() => <div className="h-32 animate-pulse bg-muted/30 rounded-lg mx-3 my-4" />);
+const LazyFallback = memo(() => (
+  <div className="container my-4">
+    <div className="space-y-3">
+      <Skeleton className="h-6 w-40 rounded-lg" />
+      <div className="grid gap-4 grid-cols-2 sm:grid-cols-3">
+        <Skeleton className="h-40 rounded-xl" />
+        <Skeleton className="h-40 rounded-xl" />
+        <Skeleton className="h-40 rounded-xl hidden sm:block" />
+      </div>
+    </div>
+  </div>
+));
 LazyFallback.displayName = "LazyFallback";
 
 const Index = () => {

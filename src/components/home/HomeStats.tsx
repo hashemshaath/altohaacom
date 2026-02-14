@@ -14,18 +14,18 @@ function StatItem({ value, label, icon: Icon, color, isVisible, delay }: {
   return (
     <div
       className={cn(
-        "flex flex-col items-center gap-2 px-2 transition-all duration-700",
-        isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"
+        "flex flex-col items-center gap-2.5 px-2 transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)]",
+        isVisible ? "opacity-100 translate-y-0 scale-100" : "opacity-0 translate-y-6 scale-95"
       )}
       style={{ transitionDelay: `${delay}ms` }}
     >
-      <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-primary/8 ring-1 ring-primary/10 transition-transform duration-500 hover:scale-110">
-        <Icon className={`h-5 w-5 ${color}`} />
+      <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-primary/8 ring-1 ring-primary/10 transition-all duration-500 hover:scale-110 hover:ring-primary/20 hover:bg-primary/10">
+        <Icon className={`h-6 w-6 ${color}`} />
       </div>
       <p className="text-2xl font-bold sm:text-3xl md:text-4xl tracking-tight tabular-nums">
         {count}+
       </p>
-      <p className="text-xs text-muted-foreground font-medium">{label}</p>
+      <p className="text-[11px] text-muted-foreground font-semibold uppercase tracking-wider">{label}</p>
     </div>
   );
 }
@@ -61,8 +61,8 @@ export function HomeStats() {
   ];
 
   return (
-    <section ref={ref} className="border-y bg-card/60 backdrop-blur-sm">
-      <div className="container grid grid-cols-2 sm:grid-cols-4 gap-4 py-8 sm:py-10">
+    <section ref={ref} className="border-y border-border/40 bg-card/60 backdrop-blur-sm">
+      <div className="container grid grid-cols-2 sm:grid-cols-4 gap-6 py-10 sm:py-12 divide-x divide-border/30 rtl:divide-x-reverse">
         {items.map((stat, i) => (
           <StatItem key={stat.label} {...stat} isVisible={isVisible} delay={i * 120} />
         ))}
