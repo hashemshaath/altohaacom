@@ -32,3 +32,6 @@ verify_jwt = false
 
 [functions.lifecycle-triggers]
 verify_jwt = false
+
+[functions.marketing-automation]
+verify_jwt = false

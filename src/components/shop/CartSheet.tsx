@@ -123,6 +123,23 @@ export function CartSheet({ open, onOpenChange, cart }: CartSheetProps) {
 
       cart.clearCart();
       onOpenChange(false);
+
+      // Track purchase conversion
+      try {
+        const { sendGoogleConversion, pushToDataLayer } = await import("@/hooks/useGoogleTracking");
+        sendGoogleConversion("purchase", { value: cart.totalPrice, currency: "SAR", transaction_id: order.id });
+        pushToDataLayer("purchase", { value: cart.totalPrice, currency: "SAR", order_id: order.id });
+        await supabase.from("conversion_events").insert([{
+          user_id: user.id,
+          event_name: "purchase",
+          event_category: "ecommerce",
+          event_value: cart.totalPrice,
+          currency: "SAR",
+          session_id: sessionStorage.getItem("ad_session_id") || null,
+          metadata: { order_id: order.id, order_number: order.order_number, items_count: items.length } as any,
+        }]);
+      } catch {}
+
       toast({
         title: isAr ? "تم تقديم الطلب بنجاح!" : "Order placed successfully!",
         description: isAr ? `رقم الطلب: ${order.order_number}` : `Order number: ${order.order_number}`,
