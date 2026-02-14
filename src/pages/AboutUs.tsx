@@ -32,7 +32,7 @@ export default function AboutUs() {
       <Header />
       <main className="flex-1">
         <section className="border-b border-border/40 bg-gradient-to-b from-primary/5 to-background">
-          <div className="container py-10 md:py-14 max-w-4xl text-center">
+          <div className="container py-10 md:py-14 max-w-5xl text-center">
             <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/5 px-4 py-1.5">
               <Info className="h-3.5 w-3.5 text-primary" />
               <span className="text-xs font-medium text-primary">{isAr ? "من نحن" : "About Us"}</span>
@@ -44,7 +44,7 @@ export default function AboutUs() {
           </div>
         </section>
 
-        <div className="container py-8 md:py-12 max-w-4xl space-y-10">
+        <div className="container py-8 md:py-12 max-w-5xl space-y-10">
           {/* Mission & Vision */}
           <div className="grid md:grid-cols-2 gap-6">
             <Card>

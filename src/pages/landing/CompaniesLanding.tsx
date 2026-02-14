@@ -70,7 +70,7 @@ export default function CompaniesLanding() {
       <main className="flex-1">
         {/* Hero */}
         <section className="border-b border-border/40 bg-gradient-to-b from-primary/5 to-background">
-          <div className="container py-10 md:py-14 max-w-4xl text-center">
+          <div className="container py-10 md:py-14 max-w-5xl text-center">
             <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/5 px-4 py-1.5">
               <Sparkles className="h-3.5 w-3.5 text-primary" />
               <span className="text-xs font-medium text-primary">{isAr ? "حلول الأعمال" : "Business Solutions"}</span>
@@ -94,7 +94,7 @@ export default function CompaniesLanding() {
 
         {/* Stats */}
         <section className="border-y bg-card/80">
-          <div className="container max-w-4xl grid grid-cols-3 py-8">
+          <div className="container max-w-5xl grid grid-cols-3 py-8">
             {[
               { value: "500+", label: isAr ? "شركة مسجلة" : "Registered Companies", icon: Building2 },
               { value: "10K+", label: isAr ? "محترف طهي" : "Culinary Professionals", icon: Users },
@@ -113,7 +113,7 @@ export default function CompaniesLanding() {
 
         {/* Benefits */}
         <section className="py-12 md:py-16">
-          <div className="container max-w-4xl">
+          <div className="container max-w-5xl">
             <div className="mb-10 text-center">
               <h2 className="text-3xl font-serif font-bold">{isAr ? "مميزات بوابة الشركات" : "Company Portal Features"}</h2>
               <p className="mt-2 text-muted-foreground max-w-xl mx-auto">{isAr ? "كل ما تحتاجه لإدارة أعمالك في مكان واحد" : "Everything you need to manage your business in one place"}</p>
@@ -136,12 +136,12 @@ export default function CompaniesLanding() {
 
         {/* Company Types */}
         <section className="py-12 md:py-16 bg-muted/30">
-          <div className="container max-w-4xl">
+          <div className="container max-w-5xl">
             <div className="mb-10 text-center">
               <h2 className="text-3xl font-serif font-bold">{isAr ? "أنواع الشركات" : "Company Types"}</h2>
               <p className="mt-2 text-muted-foreground">{isAr ? "نخدم جميع أنواع شركات صناعة الطهي" : "We serve all types of culinary industry companies"}</p>
             </div>
-            <div className="grid md:grid-cols-2 gap-4 max-w-4xl mx-auto">
+            <div className="grid md:grid-cols-2 gap-4 max-w-5xl mx-auto">
               {companyTypes.map((type, i) => (
                 <Card key={i} className="border-border/60">
                   <CardContent className="p-5">
@@ -156,7 +156,7 @@ export default function CompaniesLanding() {
 
         {/* Pricing */}
         <section className="py-12 md:py-16">
-          <div className="container max-w-4xl">
+          <div className="container max-w-5xl">
             <div className="mb-10 text-center">
               <h2 className="text-3xl font-serif font-bold">{isAr ? "الباقات" : "Plans"}</h2>
             </div>
@@ -193,7 +193,7 @@ export default function CompaniesLanding() {
 
         {/* Contact Form */}
         <section id="company-contact" className="py-12 md:py-16 bg-muted/30">
-          <div className="container max-w-4xl">
+          <div className="container max-w-5xl">
             <div className="max-w-2xl mx-auto">
               <div className="mb-8 text-center">
                 <h2 className="text-3xl font-serif font-bold">{isAr ? "تواصل معنا" : "Get in Touch"}</h2>

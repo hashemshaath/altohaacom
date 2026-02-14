@@ -84,7 +84,7 @@ export default function HelpCenter() {
       <main className="flex-1">
         {/* Hero Section */}
         <section className="border-b border-border/40 bg-gradient-to-b from-primary/5 to-background">
-          <div className="container py-10 md:py-14 max-w-4xl relative text-center">
+          <div className="container py-10 md:py-14 max-w-5xl relative text-center">
             <div className="flex justify-center mb-6">
               <div className="h-14 w-14 rounded-2xl bg-primary/10 flex items-center justify-center ring-1 ring-primary/15 shadow-sm">
                 <HelpCircle className="h-7 w-7 text-primary" />
@@ -111,7 +111,7 @@ export default function HelpCenter() {
           </div>
         </section>
 
-        <div className="container max-w-4xl py-8 md:py-12">
+        <div className="container max-w-5xl py-8 md:py-12">
           <div className="grid lg:grid-cols-3 gap-8">
             {/* Main Content */}
             <div className="lg:col-span-2 space-y-8">
