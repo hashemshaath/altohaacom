@@ -14,6 +14,51 @@ export type Database = {
   }
   public: {
     Tables: {
+      abandoned_carts: {
+        Row: {
+          cart_source: string | null
+          created_at: string
+          currency: string | null
+          id: string
+          items: Json
+          recovered_at: string | null
+          recovery_email_sent_at: string | null
+          recovery_status: string | null
+          session_id: string | null
+          total_amount: number | null
+          updated_at: string
+          user_id: string | null
+        }
+        Insert: {
+          cart_source?: string | null
+          created_at?: string
+          currency?: string | null
+          id?: string
+          items?: Json
+          recovered_at?: string | null
+          recovery_email_sent_at?: string | null
+          recovery_status?: string | null
+          session_id?: string | null
+          total_amount?: number | null
+          updated_at?: string
+          user_id?: string | null
+        }
+        Update: {
+          cart_source?: string | null
+          created_at?: string
+          currency?: string | null
+          id?: string
+          items?: Json
+          recovered_at?: string | null
+          recovery_email_sent_at?: string | null
+          recovery_status?: string | null
+          session_id?: string | null
+          total_amount?: number | null
+          updated_at?: string
+          user_id?: string | null
+        }
+        Relationships: []
+      }
       account_sequences: {
         Row: {
           last_number: number
@@ -3961,6 +4006,51 @@ export type Database = {
         }
         Relationships: []
       }
+      conversion_events: {
+        Row: {
+          campaign: string | null
+          created_at: string
+          currency: string | null
+          event_category: string | null
+          event_name: string
+          event_value: number | null
+          id: string
+          medium: string | null
+          metadata: Json | null
+          session_id: string | null
+          source: string | null
+          user_id: string | null
+        }
+        Insert: {
+          campaign?: string | null
+          created_at?: string
+          currency?: string | null
+          event_category?: string | null
+          event_name: string
+          event_value?: number | null
+          id?: string
+          medium?: string | null
+          metadata?: Json | null
+          session_id?: string | null
+          source?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          campaign?: string | null
+          created_at?: string
+          currency?: string | null
+          event_category?: string | null
+          event_name?: string
+          event_value?: number | null
+          id?: string
+          medium?: string | null
+          metadata?: Json | null
+          session_id?: string | null
+          source?: string | null
+          user_id?: string | null
+        }
+        Relationships: []
+      }
       countries: {
         Row: {
           code: string
@@ -6974,6 +7064,87 @@ export type Database = {
           source?: string | null
           status?: string | null
           type?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      lifecycle_triggers: {
+        Row: {
+          action_type: string
+          channels: string[] | null
+          conditions: Json | null
+          created_at: string
+          created_by: string | null
+          delay_minutes: number | null
+          id: string
+          is_active: boolean | null
+          name: string
+          name_ar: string | null
+          template_slug: string | null
+          trigger_event: string
+          updated_at: string
+        }
+        Insert: {
+          action_type?: string
+          channels?: string[] | null
+          conditions?: Json | null
+          created_at?: string
+          created_by?: string | null
+          delay_minutes?: number | null
+          id?: string
+          is_active?: boolean | null
+          name: string
+          name_ar?: string | null
+          template_slug?: string | null
+          trigger_event: string
+          updated_at?: string
+        }
+        Update: {
+          action_type?: string
+          channels?: string[] | null
+          conditions?: Json | null
+          created_at?: string
+          created_by?: string | null
+          delay_minutes?: number | null
+          id?: string
+          is_active?: boolean | null
+          name?: string
+          name_ar?: string | null
+          template_slug?: string | null
+          trigger_event?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      marketing_tracking_config: {
+        Row: {
+          config: Json | null
+          created_at: string
+          created_by: string | null
+          id: string
+          is_active: boolean | null
+          platform: string
+          tracking_id: string | null
+          updated_at: string
+        }
+        Insert: {
+          config?: Json | null
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          is_active?: boolean | null
+          platform: string
+          tracking_id?: string | null
+          updated_at?: string
+        }
+        Update: {
+          config?: Json | null
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          is_active?: boolean | null
+          platform?: string
+          tracking_id?: string | null
           updated_at?: string
         }
         Relationships: []
@@ -11935,6 +12106,63 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      user_engagement_scores: {
+        Row: {
+          activity_score: number | null
+          calculated_at: string | null
+          churn_risk: string | null
+          content_score: number | null
+          created_at: string
+          engagement_score: number | null
+          engagement_tier: string | null
+          id: string
+          last_active_at: string | null
+          purchase_score: number | null
+          social_score: number | null
+          total_actions: number | null
+          total_page_views: number | null
+          total_sessions: number | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          activity_score?: number | null
+          calculated_at?: string | null
+          churn_risk?: string | null
+          content_score?: number | null
+          created_at?: string
+          engagement_score?: number | null
+          engagement_tier?: string | null
+          id?: string
+          last_active_at?: string | null
+          purchase_score?: number | null
+          social_score?: number | null
+          total_actions?: number | null
+          total_page_views?: number | null
+          total_sessions?: number | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          activity_score?: number | null
+          calculated_at?: string | null
+          churn_risk?: string | null
+          content_score?: number | null
+          created_at?: string
+          engagement_score?: number | null
+          engagement_tier?: string | null
+          id?: string
+          last_active_at?: string | null
+          purchase_score?: number | null
+          social_score?: number | null
+          total_actions?: number | null
+          total_page_views?: number | null
+          total_sessions?: number | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
       }
       user_follows: {
         Row: {

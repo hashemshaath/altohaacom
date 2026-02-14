@@ -107,6 +107,7 @@ export function GoogleIntegrationPanel() {
     mutationFn: async (type: string) => {
       const cfg = configs[type];
       if (!cfg) return;
+      // Save to integration_settings
       const { error } = await supabase.from("integration_settings").upsert({
         integration_type: type,
         config: cfg.config as any,
@@ -114,6 +115,25 @@ export function GoogleIntegrationPanel() {
         updated_at: new Date().toISOString(),
       }, { onConflict: "integration_type" });
       if (error) throw error;
+
+      // Also sync to marketing_tracking_config for script injection
+      const platformMap: Record<string, string> = {
+        google_analytics: "google_analytics_4",
+        google_tag_manager: "google_tag_manager",
+        google_ads: "google_ads",
+      };
+      const platform = platformMap[type];
+      if (platform) {
+        const trackingIdKey = type === "google_analytics" ? "measurement_id"
+          : type === "google_tag_manager" ? "container_id"
+          : "conversion_id";
+        await supabase.from("marketing_tracking_config").update({
+          tracking_id: cfg.config?.[trackingIdKey] || null,
+          is_active: cfg.is_active,
+          config: cfg.config as any,
+          updated_at: new Date().toISOString(),
+        }).eq("platform", platform);
+      }
     },
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["integration-settings-google"] });
