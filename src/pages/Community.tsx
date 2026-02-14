@@ -148,14 +148,14 @@ export default function Community() {
           {/* Main Content */}
           <div className="flex-1 min-w-0 border-x border-border min-h-screen">
             {/* Mobile Tabs - Top horizontal scroll */}
-            <div className="sticky top-[56px] z-40 border-b border-border bg-background/80 backdrop-blur-md lg:hidden">
-              <div className="flex overflow-x-auto scrollbar-none">
+            <div className="sticky top-[56px] z-40 border-b border-border/40 bg-background/90 backdrop-blur-xl lg:hidden">
+              <div className="flex overflow-x-auto scrollbar-none snap-x snap-mandatory">
                 {tabs.filter(t => !t.requiresAuth || user).map((tab) => (
                   <button
                     key={tab.id}
                     onClick={() => setActiveTab(tab.id)}
                     className={cn(
-                      "flex-shrink-0 px-4 py-3 text-sm font-bold transition-colors relative",
+                      "snap-start flex-shrink-0 px-4 py-3 text-sm font-bold transition-colors relative",
                       activeTab === tab.id
                         ? "text-foreground"
                         : "text-muted-foreground hover:text-foreground"
@@ -163,7 +163,7 @@ export default function Community() {
                   >
                     {tab.label}
                     {activeTab === tab.id && (
-                      <div className="absolute bottom-0 inset-x-2 h-1 rounded-full bg-primary" />
+                      <div className="absolute bottom-0 inset-x-2 h-0.5 rounded-full bg-primary shadow-sm shadow-primary/30" />
                     )}
                   </button>
                 ))}

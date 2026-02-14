@@ -166,11 +166,11 @@ export default function News() {
 
           {/* Tabs */}
           <Tabs value={activeType} onValueChange={setActiveType} className="space-y-6">
-            <TabsList className="h-auto w-full justify-start gap-1 overflow-x-auto overflow-y-hidden whitespace-nowrap rounded-lg border border-border/50 bg-muted/30 p-1">
-              <TabsTrigger value="all" className="gap-1.5 rounded-md text-xs data-[state=active]:bg-background data-[state=active]:shadow-sm sm:text-sm">{isAr ? "الكل" : "All"}</TabsTrigger>
-              <TabsTrigger value="news" className="gap-1.5 rounded-md text-xs data-[state=active]:bg-background data-[state=active]:shadow-sm sm:text-sm">{isAr ? "أخبار" : "News"}</TabsTrigger>
-              <TabsTrigger value="blog" className="gap-1.5 rounded-md text-xs data-[state=active]:bg-background data-[state=active]:shadow-sm sm:text-sm">{isAr ? "مدونة" : "Blog"}</TabsTrigger>
-              <TabsTrigger value="exhibition" className="gap-1.5 rounded-md text-xs data-[state=active]:bg-background data-[state=active]:shadow-sm sm:text-sm">{isAr ? "معارض" : "Exhibitions"}</TabsTrigger>
+            <TabsList className="h-auto w-full justify-start gap-1.5 overflow-x-auto overflow-y-hidden whitespace-nowrap rounded-2xl border border-border/40 bg-muted/40 p-1.5">
+              <TabsTrigger value="all" className="gap-1.5 rounded-xl px-5 py-2.5 text-xs font-bold uppercase tracking-wider data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-lg data-[state=active]:shadow-primary/20 sm:text-sm">{isAr ? "الكل" : "All"}</TabsTrigger>
+              <TabsTrigger value="news" className="gap-1.5 rounded-xl px-5 py-2.5 text-xs font-bold uppercase tracking-wider data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-lg data-[state=active]:shadow-primary/20 sm:text-sm">{isAr ? "أخبار" : "News"}</TabsTrigger>
+              <TabsTrigger value="blog" className="gap-1.5 rounded-xl px-5 py-2.5 text-xs font-bold uppercase tracking-wider data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-lg data-[state=active]:shadow-primary/20 sm:text-sm">{isAr ? "مدونة" : "Blog"}</TabsTrigger>
+              <TabsTrigger value="exhibition" className="gap-1.5 rounded-xl px-5 py-2.5 text-xs font-bold uppercase tracking-wider data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-lg data-[state=active]:shadow-primary/20 sm:text-sm">{isAr ? "معارض" : "Exhibitions"}</TabsTrigger>
             </TabsList>
 
             <TabsContent value={activeType} className="mt-6">

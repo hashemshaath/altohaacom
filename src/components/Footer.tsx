@@ -10,7 +10,7 @@ export function Footer() {
   const isAr = language === "ar";
 
   return (
-    <footer className="border-t bg-card/80 backdrop-blur-sm" role="contentinfo">
+    <footer className="border-t border-border/40 bg-card/80 backdrop-blur-sm pb-20 md:pb-0" role="contentinfo">
       <div className="container py-10 md:py-14">
         <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
           {/* Brand */}
@@ -36,22 +36,22 @@ export function Footer() {
           <div>
             <h4 className="mb-4 text-sm font-semibold">{isAr ? "المنصة" : "Platform"}</h4>
             <nav aria-label="Platform links" className="flex flex-col gap-2.5 text-sm text-muted-foreground">
-              <Link to="/competitions" className="flex items-center gap-2 transition-colors hover:text-primary">
+              <Link to="/competitions" className="flex items-center gap-2 transition-all duration-200 hover:text-primary hover:translate-x-0.5 rtl:hover:-translate-x-0.5">
                 <Trophy className="h-3.5 w-3.5 opacity-60" />{isAr ? "المسابقات" : "Competitions"}
               </Link>
-              <Link to="/community" className="flex items-center gap-2 transition-colors hover:text-primary">
+              <Link to="/community" className="flex items-center gap-2 transition-all duration-200 hover:text-primary hover:translate-x-0.5 rtl:hover:-translate-x-0.5">
                 <Users className="h-3.5 w-3.5 opacity-60" />{isAr ? "المجتمع" : "Community"}
               </Link>
-              <Link to="/masterclasses" className="flex items-center gap-2 transition-colors hover:text-primary">
+              <Link to="/masterclasses" className="flex items-center gap-2 transition-all duration-200 hover:text-primary hover:translate-x-0.5 rtl:hover:-translate-x-0.5">
                 <GraduationCap className="h-3.5 w-3.5 opacity-60" />{isAr ? "الدروس المتقدمة" : "Masterclasses"}
               </Link>
-              <Link to="/entities" className="flex items-center gap-2 transition-colors hover:text-primary">
+              <Link to="/entities" className="flex items-center gap-2 transition-all duration-200 hover:text-primary hover:translate-x-0.5 rtl:hover:-translate-x-0.5">
                 <Building2 className="h-3.5 w-3.5 opacity-60" />{isAr ? "الجهات والجمعيات" : "Entities & Associations"}
               </Link>
-              <Link to="/news" className="flex items-center gap-2 transition-colors hover:text-primary">
+              <Link to="/news" className="flex items-center gap-2 transition-all duration-200 hover:text-primary hover:translate-x-0.5 rtl:hover:-translate-x-0.5">
                 <Newspaper className="h-3.5 w-3.5 opacity-60" />{isAr ? "الأخبار" : "News"}
               </Link>
-              <Link to="/exhibitions" className="flex items-center gap-2 transition-colors hover:text-primary">
+              <Link to="/exhibitions" className="flex items-center gap-2 transition-all duration-200 hover:text-primary hover:translate-x-0.5 rtl:hover:-translate-x-0.5">
                 <Globe className="h-3.5 w-3.5 opacity-60" />{isAr ? "المعارض" : "Exhibitions"}
               </Link>
             </nav>
