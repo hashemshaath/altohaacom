@@ -11,6 +11,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Skeleton } from "@/components/ui/skeleton";
 import { QrCode, Search, Eye, Copy, BarChart3, Hash, ScanLine, Filter } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import AdminPageHeader from "@/components/admin/AdminPageHeader";
 import { format } from "date-fns";
 
 const CATEGORIES = ["all", "account", "certificate", "invoice", "competition", "company", "exhibition", "participant", "judge", "team_member", "general"];
@@ -95,21 +96,11 @@ export default function QRCodesAdmin() {
 
   return (
     <div className="space-y-6">
-      {/* Hero */}
-      <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-primary/10 via-accent/5 to-primary/5 p-6 md:p-8">
-        <div className="absolute -top-10 -end-10 h-40 w-40 rounded-full bg-primary/5 blur-3xl" />
-        <div className="relative flex items-start gap-4">
-          <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-primary/10 shrink-0">
-            <QrCode className="h-6 w-6 text-primary" />
-          </div>
-          <div>
-            <h1 className="text-2xl font-bold">{isAr ? "إدارة رموز QR" : "QR Codes Management"}</h1>
-            <p className="mt-1 text-sm text-muted-foreground">
-              {isAr ? "عرض وتتبع جميع رموز QR المُصدرة في المنصة" : "View and track all QR codes issued across the platform"}
-            </p>
-          </div>
-        </div>
-      </div>
+      <AdminPageHeader
+        icon={QrCode}
+        title={isAr ? "إدارة رموز QR" : "QR Codes Management"}
+        description={isAr ? "عرض وتتبع جميع رموز QR المُصدرة في المنصة" : "View and track all QR codes issued across the platform"}
+      />
 
       {/* Stats */}
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
