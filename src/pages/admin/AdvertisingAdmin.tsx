@@ -5,19 +5,15 @@ import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import { toast } from "@/hooks/use-toast";
 import {
   Megaphone, BarChart3, Package, LayoutGrid, CheckCircle, XCircle,
-  Eye, MousePointer, DollarSign, TrendingUp, Clock, FileText, Plus,
-  Settings2, Target, Sparkles, Brain, Globe,
+  Eye, MousePointer, DollarSign, Clock, FileText,
+  Target, Brain, Globe, Sparkles, FileBarChart,
 } from "lucide-react";
 import { AdAnalyticsDashboard } from "@/components/ads/AdAnalyticsDashboard";
 import { AdBehaviorInsights } from "@/components/ads/AdBehaviorInsights";
@@ -25,6 +21,9 @@ import { GoogleIntegrationPanel } from "@/components/ads/GoogleIntegrationPanel"
 import { MetaPixelPanel } from "@/components/ads/MetaPixelPanel";
 import { TikTokPixelPanel } from "@/components/ads/TikTokPixelPanel";
 import { SnapPixelPanel } from "@/components/ads/SnapPixelPanel";
+import { AdAIInsightsPanel } from "@/components/ads/AdAIInsightsPanel";
+import { AdAdvancedReporting } from "@/components/ads/AdAdvancedReporting";
+import { AdRejectionDialog } from "@/components/ads/AdRejectionDialog";
 
 const statusColors: Record<string, string> = {
   pending: "bg-warning/10 text-warning border-warning/20",
@@ -43,6 +42,9 @@ const AdvertisingAdmin = forwardRef<HTMLDivElement>(function AdvertisingAdmin(_p
   const { language } = useLanguage();
   const isAr = language === "ar";
   const qc = useQueryClient();
+
+  // Rejection dialog state
+  const [rejectionTarget, setRejectionTarget] = useState<{ type: "request" | "campaign" | "creative"; id: string } | null>(null);
 
   // Fetch campaigns
   const { data: campaigns = [] } = useQuery({
@@ -112,13 +114,34 @@ const AdvertisingAdmin = forwardRef<HTMLDivElement>(function AdvertisingAdmin(_p
     enabled: campaigns.length >= 0,
   });
 
-  // Approve/reject mutations
+  // Approve/reject mutations with notification integration
+  const sendNotification = async (title: string, titleAr: string, body: string, bodyAr: string, type: string, metadata: Record<string, unknown>) => {
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return;
+      await supabase.from("notifications").insert([{
+        user_id: user.id, title, title_ar: titleAr, body, body_ar: bodyAr, type, metadata: metadata as any,
+      }]);
+    } catch { /* non-blocking */ }
+  };
+
   const approveRequest = useMutation({
     mutationFn: async ({ id, status, notes }: { id: string; status: string; notes?: string }) => {
       const { error } = await supabase.from("ad_requests").update({
         status, admin_notes: notes || null, reviewed_at: new Date().toISOString(),
       }).eq("id", id);
       if (error) throw error;
+      const req = requests.find(r => r.id === id);
+      if (req) {
+        await sendNotification(
+          `Ad request "${req.title}" ${status}`,
+          `طلب إعلان "${req.title_ar || req.title}" ${status === "approved" ? "تمت الموافقة" : "تم الرفض"}`,
+          status === "approved" ? "Your ad request has been approved." : `Your ad request was rejected. Reason: ${notes || "N/A"}`,
+          status === "approved" ? "تمت الموافقة على طلب الإعلان الخاص بك." : `تم رفض طلب الإعلان. السبب: ${notes || "غير محدد"}`,
+          "ad_status_change",
+          { request_id: id, status, company_id: req.company_id }
+        );
+      }
     },
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["admin-ad-requests"] });
@@ -129,12 +152,22 @@ const AdvertisingAdmin = forwardRef<HTMLDivElement>(function AdvertisingAdmin(_p
   const approveCampaign = useMutation({
     mutationFn: async ({ id, status, reason }: { id: string; status: string; reason?: string }) => {
       const update: Record<string, unknown> = { status };
-      if (status === "approved" || status === "active") {
-        update.approved_at = new Date().toISOString();
-      }
+      if (status === "approved" || status === "active") update.approved_at = new Date().toISOString();
       if (reason) update.rejection_reason = reason;
       const { error } = await supabase.from("ad_campaigns").update(update).eq("id", id);
       if (error) throw error;
+      const camp = campaigns.find(c => c.id === id);
+      if (camp) {
+        const statusLabel = { active: "activated", paused: "paused", rejected: "rejected", completed: "completed" }[status] || status;
+        await sendNotification(
+          `Campaign "${camp.name}" ${statusLabel}`,
+          `الحملة "${camp.name_ar || camp.name}" ${status === "active" ? "تم التفعيل" : status === "paused" ? "تم الإيقاف" : status === "rejected" ? "تم الرفض" : status}`,
+          reason ? `Status changed to ${statusLabel}. Reason: ${reason}` : `Campaign status changed to ${statusLabel}.`,
+          reason ? `تغيرت الحالة إلى ${statusLabel}. السبب: ${reason}` : `تغيرت حالة الحملة إلى ${statusLabel}.`,
+          "ad_status_change",
+          { campaign_id: id, status, company_id: camp.company_id }
+        );
+      }
     },
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["admin-ad-campaigns"] });
@@ -148,6 +181,14 @@ const AdvertisingAdmin = forwardRef<HTMLDivElement>(function AdvertisingAdmin(_p
       if (reason) update.rejection_reason = reason;
       const { error } = await supabase.from("ad_creatives").update(update).eq("id", id);
       if (error) throw error;
+      await sendNotification(
+        `Creative ${status === "approved" ? "approved" : "rejected"}`,
+        `المادة الإعلانية ${status === "approved" ? "تمت الموافقة" : "تم الرفض"}`,
+        reason ? `Reason: ${reason}` : `Your creative has been ${status}.`,
+        reason ? `السبب: ${reason}` : `تم ${status === "approved" ? "قبول" : "رفض"} المادة الإعلانية.`,
+        "ad_status_change",
+        { creative_id: id, status }
+      );
     },
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["admin-ad-creatives"] });
@@ -160,10 +201,7 @@ const AdvertisingAdmin = forwardRef<HTMLDivElement>(function AdvertisingAdmin(_p
       const { error } = await supabase.from("ad_creatives").update({ is_active }).eq("id", id);
       if (error) throw error;
     },
-    onSuccess: () => {
-      qc.invalidateQueries({ queryKey: ["admin-ad-creatives"] });
-      toast({ title: isAr ? "تم التحديث" : "Updated" });
-    },
+    onSuccess: () => qc.invalidateQueries({ queryKey: ["admin-ad-creatives"] }),
   });
 
   const generateInvoice = useMutation({
@@ -188,19 +226,13 @@ const AdvertisingAdmin = forwardRef<HTMLDivElement>(function AdvertisingAdmin(_p
         tax_amount: taxAmount,
         amount: total,
         status: "sent",
-        items: [
-          { name: `Campaign: ${campaign.name}`, description: `${campaign.total_impressions || 0} impressions, ${campaign.total_clicks || 0} clicks`, quantity: 1, unit_price: amount }
-        ],
+        items: [{ name: `Campaign: ${campaign.name}`, description: `${campaign.total_impressions || 0} impressions, ${campaign.total_clicks || 0} clicks`, quantity: 1, unit_price: amount }],
         issued_by: user.id,
       });
       if (error) throw error;
     },
-    onSuccess: () => {
-      toast({ title: isAr ? "تم إنشاء الفاتورة" : "Invoice generated" });
-    },
-    onError: (e: any) => {
-      toast({ title: isAr ? "خطأ" : "Error", description: e.message, variant: "destructive" });
-    },
+    onSuccess: () => toast({ title: isAr ? "تم إنشاء الفاتورة" : "Invoice generated" }),
+    onError: (e: any) => toast({ title: isAr ? "خطأ" : "Error", description: e.message, variant: "destructive" }),
   });
 
   const togglePlacement = useMutation({
@@ -210,6 +242,18 @@ const AdvertisingAdmin = forwardRef<HTMLDivElement>(function AdvertisingAdmin(_p
     },
     onSuccess: () => qc.invalidateQueries({ queryKey: ["admin-ad-placements"] }),
   });
+
+  const handleRejectionConfirm = (reason: string) => {
+    if (!rejectionTarget) return;
+    if (rejectionTarget.type === "request") {
+      approveRequest.mutate({ id: rejectionTarget.id, status: "rejected", notes: reason });
+    } else if (rejectionTarget.type === "campaign") {
+      approveCampaign.mutate({ id: rejectionTarget.id, status: "rejected", reason });
+    } else if (rejectionTarget.type === "creative") {
+      approveCreative.mutate({ id: rejectionTarget.id, status: "rejected", reason });
+    }
+    setRejectionTarget(null);
+  };
 
   const kpis = [
     { icon: Megaphone, label: isAr ? "الحملات النشطة" : "Active Campaigns", value: stats?.activeCampaigns || 0, color: "text-primary" },
@@ -275,7 +319,7 @@ const AdvertisingAdmin = forwardRef<HTMLDivElement>(function AdvertisingAdmin(_p
           </TabsTrigger>
           <TabsTrigger value="placements" className="gap-1">
             <Target className="h-3.5 w-3.5" />
-            {isAr ? "المواقع الإعلانية" : "Placements"}
+            {isAr ? "المواقع" : "Placements"}
           </TabsTrigger>
           <TabsTrigger value="packages" className="gap-1">
             <Package className="h-3.5 w-3.5" />
@@ -284,6 +328,14 @@ const AdvertisingAdmin = forwardRef<HTMLDivElement>(function AdvertisingAdmin(_p
           <TabsTrigger value="analytics" className="gap-1">
             <BarChart3 className="h-3.5 w-3.5" />
             {isAr ? "التحليلات" : "Analytics"}
+          </TabsTrigger>
+          <TabsTrigger value="reports" className="gap-1">
+            <FileBarChart className="h-3.5 w-3.5" />
+            {isAr ? "التقارير" : "Reports"}
+          </TabsTrigger>
+          <TabsTrigger value="ai-insights" className="gap-1">
+            <Sparkles className="h-3.5 w-3.5" />
+            {isAr ? "رؤى ذكية" : "AI Insights"}
           </TabsTrigger>
           <TabsTrigger value="behavior" className="gap-1">
             <Brain className="h-3.5 w-3.5" />
@@ -321,16 +373,14 @@ const AdvertisingAdmin = forwardRef<HTMLDivElement>(function AdvertisingAdmin(_p
                         <TableCell>{isAr ? req.title_ar || req.title : req.title}</TableCell>
                         <TableCell><Badge variant="outline">{req.request_type}</Badge></TableCell>
                         <TableCell>{req.budget ? `SAR ${req.budget}` : "—"}</TableCell>
-                        <TableCell>
-                          <Badge className={statusColors[req.status] || ""}>{req.status}</Badge>
-                        </TableCell>
+                        <TableCell><Badge className={statusColors[req.status] || ""}>{req.status}</Badge></TableCell>
                         <TableCell>
                           {(req.status === "pending" || req.status === "under_review") && (
                             <div className="flex gap-1">
                               <Button size="sm" variant="ghost" className="h-7 text-chart-2" onClick={() => approveRequest.mutate({ id: req.id, status: "approved" })}>
                                 <CheckCircle className="h-3.5 w-3.5" />
                               </Button>
-                              <Button size="sm" variant="ghost" className="h-7 text-destructive" onClick={() => approveRequest.mutate({ id: req.id, status: "rejected", notes: "Does not meet guidelines" })}>
+                              <Button size="sm" variant="ghost" className="h-7 text-destructive" onClick={() => setRejectionTarget({ type: "request", id: req.id })}>
                                 <XCircle className="h-3.5 w-3.5" />
                               </Button>
                             </div>
@@ -382,7 +432,7 @@ const AdvertisingAdmin = forwardRef<HTMLDivElement>(function AdvertisingAdmin(_p
                               <Button size="sm" variant="ghost" className="h-7 text-chart-2" onClick={() => approveCampaign.mutate({ id: c.id, status: "active" })}>
                                 <CheckCircle className="h-3.5 w-3.5" />
                               </Button>
-                              <Button size="sm" variant="ghost" className="h-7 text-destructive" onClick={() => approveCampaign.mutate({ id: c.id, status: "rejected", reason: "Does not meet guidelines" })}>
+                              <Button size="sm" variant="ghost" className="h-7 text-destructive" onClick={() => setRejectionTarget({ type: "campaign", id: c.id })}>
                                 <XCircle className="h-3.5 w-3.5" />
                               </Button>
                             </div>
@@ -451,7 +501,7 @@ const AdvertisingAdmin = forwardRef<HTMLDivElement>(function AdvertisingAdmin(_p
                             <Button size="sm" className="flex-1" onClick={() => approveCreative.mutate({ id: cr.id, status: "approved" })}>
                               <CheckCircle className="h-3.5 w-3.5 me-1" />{isAr ? "موافقة" : "Approve"}
                             </Button>
-                            <Button size="sm" variant="destructive" className="flex-1" onClick={() => approveCreative.mutate({ id: cr.id, status: "rejected", reason: "Content guidelines" })}>
+                            <Button size="sm" variant="destructive" className="flex-1" onClick={() => setRejectionTarget({ type: "creative", id: cr.id })}>
                               <XCircle className="h-3.5 w-3.5 me-1" />{isAr ? "رفض" : "Reject"}
                             </Button>
                           </div>
@@ -537,12 +587,22 @@ const AdvertisingAdmin = forwardRef<HTMLDivElement>(function AdvertisingAdmin(_p
           <AdAnalyticsDashboard />
         </TabsContent>
 
+        {/* Advanced Reports Tab */}
+        <TabsContent value="reports">
+          <AdAdvancedReporting />
+        </TabsContent>
+
+        {/* AI Insights Tab */}
+        <TabsContent value="ai-insights">
+          <AdAIInsightsPanel />
+        </TabsContent>
+
         {/* Behavior Tab */}
         <TabsContent value="behavior">
           <AdBehaviorInsights />
         </TabsContent>
 
-        {/* All Pixel & Tracking Integrations Tab */}
+        {/* Integrations Tab */}
         <TabsContent value="integrations" className="space-y-8">
           <GoogleIntegrationPanel />
           <MetaPixelPanel />
@@ -550,6 +610,14 @@ const AdvertisingAdmin = forwardRef<HTMLDivElement>(function AdvertisingAdmin(_p
           <SnapPixelPanel />
         </TabsContent>
       </Tabs>
+
+      {/* Rejection Dialog */}
+      <AdRejectionDialog
+        open={!!rejectionTarget}
+        onOpenChange={(open) => !open && setRejectionTarget(null)}
+        onConfirm={handleRejectionConfirm}
+        title={isAr ? "تأكيد الرفض" : "Confirm Rejection"}
+      />
     </div>
   );
 });

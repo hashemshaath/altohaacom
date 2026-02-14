@@ -107,28 +107,36 @@ Format as JSON with keys: summary, recommendations (array), targeting (array), b
     }
 
     // Call AI for deeper insights
-    const aiResponse = await fetch("https://api.lovable.dev/v1/chat/completions", {
-      method: "POST",
-      headers: { Authorization: `Bearer ${lovableKey}`, "Content-Type": "application/json" },
-      body: JSON.stringify({
-        model: "google/gemini-2.5-flash",
-        messages: [
-          { role: "system", content: "You are an advertising analytics AI. Analyze ad performance data and provide actionable insights in JSON format. Be specific and data-driven." },
-          { role: "user", content: dataPrompt },
-        ],
-        temperature: 0.3,
-      }),
-    });
-
-    const aiData = await aiResponse.json();
     let insights;
-
     try {
+      const aiResponse = await fetch("https://api.lovable.dev/v1/chat/completions", {
+        method: "POST",
+        headers: { Authorization: `Bearer ${lovableKey}`, "Content-Type": "application/json" },
+        body: JSON.stringify({
+          model: "google/gemini-2.5-flash",
+          messages: [
+            { role: "system", content: "You are an advertising analytics AI. Analyze ad performance data and provide actionable insights in JSON format. Be specific and data-driven. Return ONLY valid JSON, no markdown." },
+            { role: "user", content: dataPrompt },
+          ],
+          temperature: 0.3,
+        }),
+      });
+
+      const aiData = await aiResponse.json();
       const content = aiData.choices?.[0]?.message?.content || "";
-      const jsonMatch = content.match(/\{[\s\S]*\}/);
-      insights = jsonMatch ? JSON.parse(jsonMatch[0]) : { summary: content };
-    } catch {
-      insights = { summary: aiData.choices?.[0]?.message?.content || "Unable to generate insights" };
+      // Strip markdown code fences if present
+      const cleaned = content.replace(/```json\n?/g, "").replace(/```\n?/g, "").trim();
+      const jsonMatch = cleaned.match(/\{[\s\S]*\}/);
+      insights = jsonMatch ? JSON.parse(jsonMatch[0]) : { summary: cleaned };
+    } catch (aiErr) {
+      insights = {
+        summary: `Platform has ${totalImpressions} impressions and ${totalClicks} clicks with ${overallCTR}% CTR.`,
+        recommendations: ["Review campaign targeting", "Optimize ad creatives", "Adjust budget allocation"],
+        targeting: ["Focus on high-engagement categories"],
+        budget_advice: `${totalSpent} of ${totalBudget} SAR spent.`,
+        timing: `Peak activity at ${peakHour}:00.`,
+        retargeting: "Create segments for engaged but unconverted users.",
+      };
     }
 
     return new Response(JSON.stringify({
