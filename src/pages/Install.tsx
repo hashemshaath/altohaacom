@@ -73,43 +73,50 @@ export default function Install() {
     <div className="flex min-h-screen flex-col">
       <Header />
       <main className="flex-1">
-        <div className="container max-w-2xl py-12">
-          <div className="mb-8 text-center">
-            <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-primary">
-              <Download className="h-8 w-8 text-primary-foreground" />
+        {/* Hero Section */}
+        <section className="relative overflow-hidden border-b bg-gradient-to-b from-primary/5 via-background to-background py-16">
+          <div className="absolute -top-32 start-1/4 h-64 w-64 rounded-full bg-primary/8 blur-[100px] animate-pulse pointer-events-none" />
+          <div className="absolute -top-20 end-1/3 h-48 w-48 rounded-full bg-accent/10 blur-[80px] animate-pulse [animation-delay:1s] pointer-events-none" />
+          <div className="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-primary/20 to-transparent" />
+          <div className="container relative text-center max-w-2xl">
+            <div className="mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-2xl bg-primary/10 ring-1 ring-primary/15 shadow-lg shadow-primary/10">
+              <Download className="h-8 w-8 text-primary" />
             </div>
-            <h1 className="text-3xl font-bold">
+            <h1 className="font-serif text-3xl font-bold md:text-4xl">
               {isAr ? "ثبّت تطبيق Altohaa" : "Install Altohaa"}
             </h1>
-            <p className="mt-2 text-muted-foreground">
+            <p className="mt-3 text-base text-muted-foreground max-w-md mx-auto">
               {isAr
                 ? "أضف Altohaa إلى شاشتك الرئيسية للوصول السريع"
                 : "Add Altohaa to your home screen for quick access"}
             </p>
           </div>
+        </section>
 
+        <div className="container max-w-2xl py-10">
           {isInstalled ? (
-            <Card className="mb-8 border-primary/30 bg-primary/5">
+            <Card className="mb-8 border-chart-5/30 bg-chart-5/5">
               <CardContent className="flex items-center gap-3 pt-6">
-                <CheckCircle className="h-6 w-6 text-primary" />
+                <CheckCircle className="h-6 w-6 text-chart-5" />
                 <p className="font-medium">
                   {isAr ? "التطبيق مثبت بالفعل! 🎉" : "App is already installed! 🎉"}
                 </p>
               </CardContent>
             </Card>
           ) : deferredPrompt ? (
-            <Card className="mb-8">
+            <Card className="mb-8 border-primary/20">
               <CardContent className="pt-6 text-center">
-                <Button size="lg" onClick={handleInstall} className="gap-2">
+                <Button size="lg" onClick={handleInstall} className="gap-2 shadow-lg shadow-primary/20">
                   <Download className="h-5 w-5" />
                   {isAr ? "تثبيت التطبيق" : "Install App"}
                 </Button>
               </CardContent>
             </Card>
           ) : isIOS ? (
-            <Card className="mb-8">
+            <Card className="mb-8 border-border/50">
               <CardHeader>
-                <CardTitle className="text-lg">
+                <CardTitle className="text-lg flex items-center gap-2">
+                  <Smartphone className="h-5 w-5 text-primary" />
                   {isAr ? "كيفية التثبيت على iPhone" : "How to Install on iPhone"}
                 </CardTitle>
               </CardHeader>
@@ -120,7 +127,7 @@ export default function Install() {
               </CardContent>
             </Card>
           ) : (
-            <Card className="mb-8">
+            <Card className="mb-8 border-border/50">
               <CardContent className="pt-6 text-center text-muted-foreground">
                 <p>
                   {isAr
@@ -133,13 +140,13 @@ export default function Install() {
 
           <div className="grid gap-4 sm:grid-cols-2">
             {features.map((f, i) => (
-              <Card key={i}>
+              <Card key={i} className="border-border/50 transition-all duration-300 hover:shadow-md hover:-translate-y-1 hover:border-primary/20">
                 <CardContent className="flex items-start gap-3 pt-6">
-                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-primary/10">
+                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-primary/10 ring-1 ring-primary/10">
                     <f.icon className="h-5 w-5 text-primary" />
                   </div>
                   <div>
-                    <p className="font-medium">{f.title}</p>
+                    <p className="font-semibold">{f.title}</p>
                     <p className="text-sm text-muted-foreground">{f.desc}</p>
                   </div>
                 </CardContent>
