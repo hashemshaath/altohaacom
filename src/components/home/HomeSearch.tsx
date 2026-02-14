@@ -29,11 +29,11 @@ export function HomeSearch() {
   };
 
   return (
-    <section className="relative -mt-10 z-30 px-4">
+    <section className="relative -mt-8 z-30 px-3 sm:-mt-10 sm:px-4">
       <div className="container">
-        <div className="mx-auto max-w-3xl rounded-2xl border border-border/60 bg-card/95 backdrop-blur-lg p-5 shadow-2xl shadow-primary/8 ring-1 ring-primary/5">
+        <div className="mx-auto max-w-3xl rounded-2xl border border-border/60 bg-card/95 backdrop-blur-lg p-4 shadow-2xl shadow-primary/8 ring-1 ring-primary/5 sm:p-5">
           {/* Category pills */}
-          <div className="mb-4 flex flex-wrap gap-1.5">
+          <div className="mb-3 flex flex-wrap gap-1 sm:mb-4 sm:gap-1.5">
             {categories.map((cat) => (
               <button
                 key={cat.key}

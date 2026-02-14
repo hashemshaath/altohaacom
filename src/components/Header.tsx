@@ -64,17 +64,17 @@ export function Header() {
           : "border-border/40 shadow-none"
       )}
     >
-      <nav className="container flex h-14 items-center gap-2" aria-label="Main navigation">
+      <nav className="container flex h-14 items-center gap-1 sm:gap-2" aria-label="Main navigation">
         {/* Logo */}
         <Link
           to={user ? "/dashboard" : "/"}
           aria-label="Altohaa homepage"
-          className="flex shrink-0 items-center gap-2.5 me-2 group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:rounded-lg"
+          className="flex shrink-0 items-center gap-2 me-1 sm:me-2 group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:rounded-lg"
         >
           <img
             src="/altohaa-logo.png"
             alt="Altohaa"
-            className="h-8 w-auto transition-transform duration-200 group-hover:scale-105"
+            className="h-7 w-auto sm:h-8 transition-transform duration-200 group-hover:scale-105"
           />
           <span className="font-serif text-lg font-bold text-primary hidden sm:inline">
             Altohaa

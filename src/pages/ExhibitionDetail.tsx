@@ -134,17 +134,16 @@ function CountdownTimer({ targetDate, isAr }: { targetDate: Date; isAr: boolean 
   ];
 
   return (
-    <div className="flex items-center justify-center gap-4 py-2 sm:gap-6">
+    <div className="flex items-center justify-center gap-3 py-2 sm:gap-6">
       {units.map((u, i) => (
         <div key={i} className="flex flex-col items-center">
-          <div className="group relative flex h-20 w-20 items-center justify-center rounded-2xl border border-primary/20 bg-gradient-to-b from-background to-primary/5 shadow-inner transition-all hover:scale-105 hover:border-primary/40 sm:h-24 sm:w-24">
-            <span className="font-mono text-3xl font-bold tracking-tighter text-primary drop-shadow-sm sm:text-4xl">
+          <div className="group relative flex h-16 w-16 items-center justify-center rounded-2xl border border-primary/20 bg-gradient-to-b from-background to-primary/5 shadow-inner transition-all hover:scale-105 hover:border-primary/40 sm:h-24 sm:w-24">
+            <span className="font-mono text-2xl font-bold tracking-tighter text-primary drop-shadow-sm sm:text-4xl">
               {String(u.value).padStart(2, "0")}
             </span>
             <div className="absolute inset-x-0 top-1/2 h-px bg-primary/10" />
-            <div className="absolute -bottom-1 inset-x-4 h-1 rounded-full bg-primary/20 blur-[2px] opacity-0 group-hover:opacity-100 transition-opacity" />
           </div>
-          <span className="mt-3 text-[10px] font-bold uppercase tracking-[0.2em] text-muted-foreground/80">{u.label}</span>
+          <span className="mt-2 text-[9px] font-bold uppercase tracking-[0.15em] text-muted-foreground/80 sm:mt-3 sm:text-[10px] sm:tracking-[0.2em]">{u.label}</span>
         </div>
       ))}
     </div>
@@ -334,7 +333,7 @@ export default function ExhibitionDetail() {
   /* ---------- loading / not found ---------- */
   if (isLoading) {
     return (
-      <div className="flex min-h-screen flex-col bg-background">
+      <div className="flex min-h-screen flex-col overflow-x-hidden bg-background">
         <Header />
         <main className="container flex-1 py-8">
           <Skeleton className="mb-4 h-8 w-32 rounded-md" />
@@ -357,7 +356,7 @@ export default function ExhibitionDetail() {
 
   if (!exhibition) {
     return (
-      <div className="flex min-h-screen flex-col bg-background">
+      <div className="flex min-h-screen flex-col overflow-x-hidden bg-background">
         <Header />
         <main className="container flex-1 py-16 text-center">
           <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-muted/60">
@@ -436,7 +435,7 @@ export default function ExhibitionDetail() {
   const pastCompetitions = linkedCompetitions?.filter((c: any) => isPast(new Date(c.competition_end))) || [];
 
   return (
-    <div className="flex min-h-screen flex-col bg-background">
+    <div className="flex min-h-screen flex-col overflow-x-hidden bg-background">
       <SEOHead
         title={title}
         description={description || `${title} - Event on Altohaa`}
@@ -477,8 +476,8 @@ export default function ExhibitionDetail() {
           <div className="absolute inset-0 bg-gradient-to-r from-background/90 via-background/20 to-transparent rtl:bg-gradient-to-l" />
           <div className="absolute inset-0 bg-black/20" />
           
-          <div className="absolute inset-0 container flex flex-col justify-end pb-8 md:pb-16">
-            <div className="max-w-4xl space-y-6">
+          <div className="absolute inset-0 container flex flex-col justify-end pb-6 sm:pb-8 md:pb-16">
+            <div className="max-w-4xl space-y-4 sm:space-y-6">
               <Button 
                 variant="ghost" 
                 size="sm" 
@@ -515,11 +514,11 @@ export default function ExhibitionDetail() {
                   </Badge>
                 </div>
 
-                <h1 className="font-serif text-4xl font-bold leading-[1.1] tracking-tight sm:text-5xl md:text-6xl lg:text-7xl text-white drop-shadow-2xl">
-                  {title} <span className="text-primary italic">{new Date(exhibition.start_date).getFullYear()}</span>
+                <h1 className="font-serif text-2xl font-bold leading-[1.1] tracking-tight sm:text-4xl md:text-5xl lg:text-7xl text-white drop-shadow-2xl">
+                  {title} <span className="text-primary italic block sm:inline">{new Date(exhibition.start_date).getFullYear()}</span>
                 </h1>
 
-                <div className="flex flex-wrap items-center gap-6 text-sm md:text-base text-white/90">
+                <div className="flex flex-wrap items-center gap-3 sm:gap-6 text-xs sm:text-sm md:text-base text-white/90">
                   <div className="flex items-center gap-2">
                     <div className="flex h-8 w-8 items-center justify-center rounded-full bg-white/10 backdrop-blur-md">
                       <Calendar className="h-4 w-4" />
@@ -691,47 +690,47 @@ export default function ExhibitionDetail() {
         <div className="grid gap-6 lg:grid-cols-3">
           {/* ======== MAIN CONTENT ======== */}
           <div className="lg:col-span-2">
-            <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-8">
-              <div className="sticky top-[136px] z-30 -mx-4 border-b border-border/40 bg-background/80 px-4 py-3 backdrop-blur-md md:mx-0 md:rounded-2xl md:border md:px-4">
-                <TabsList className="h-auto w-full justify-start gap-1 overflow-x-auto bg-transparent p-0">
-                  <TabsTrigger value="overview" className="rounded-xl px-5 py-2.5 text-xs font-bold uppercase tracking-wider transition-all data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-lg shadow-primary/20">
+            <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6 sm:space-y-8">
+              <div className="sticky top-[57px] z-30 -mx-3 border-b border-border/40 bg-background/80 px-3 py-2.5 backdrop-blur-md sm:top-[136px] md:mx-0 md:rounded-2xl md:border md:px-4 md:py-3">
+                <TabsList className="h-auto w-full justify-start gap-0.5 overflow-x-auto bg-transparent p-0 scrollbar-none sm:gap-1">
+                  <TabsTrigger value="overview" className="rounded-xl px-3 py-2 text-[10px] font-bold uppercase tracking-wider transition-all data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-lg shadow-primary/20 sm:px-5 sm:py-2.5 sm:text-xs whitespace-nowrap">
                     {isAr ? "نظرة عامة" : "Overview"}
                   </TabsTrigger>
                   {hasWinningDishes && (
-                    <TabsTrigger value="winning-dishes" className="gap-2 rounded-xl px-5 py-2.5 text-xs font-bold uppercase tracking-wider transition-all data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
-                      <Award className="h-3.5 w-3.5" />
+                    <TabsTrigger value="winning-dishes" className="gap-1.5 rounded-xl px-3 py-2 text-[10px] font-bold uppercase tracking-wider transition-all data-[state=active]:bg-primary data-[state=active]:text-primary-foreground sm:gap-2 sm:px-5 sm:py-2.5 sm:text-xs whitespace-nowrap">
+                      <Award className="h-3 w-3 sm:h-3.5 sm:w-3.5" />
                       {isAr ? "الأطباق" : "Winners"}
                       <Badge variant="secondary" className="ms-1 h-5 rounded-full bg-background/20 text-current px-1.5 text-[10px]">{winningDishes!.length}</Badge>
                     </TabsTrigger>
                   )}
                   {hasCompetitions && (
-                    <TabsTrigger value="competitions" className="gap-2 rounded-xl px-5 py-2.5 text-xs font-bold uppercase tracking-wider transition-all data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
-                      <Trophy className="h-3.5 w-3.5" />
+                    <TabsTrigger value="competitions" className="gap-1.5 rounded-xl px-3 py-2 text-[10px] font-bold uppercase tracking-wider transition-all data-[state=active]:bg-primary data-[state=active]:text-primary-foreground sm:gap-2 sm:px-5 sm:py-2.5 sm:text-xs whitespace-nowrap">
+                      <Trophy className="h-3 w-3 sm:h-3.5 sm:w-3.5" />
                       {isAr ? "المسابقات" : "Competitions"}
                       <Badge variant="secondary" className="ms-1 h-5 rounded-full bg-background/20 text-current px-1.5 text-[10px]">{linkedCompetitions!.length}</Badge>
                     </TabsTrigger>
                   )}
                   {hasSchedule && (
-                    <TabsTrigger value="schedule" className="gap-2 rounded-xl px-5 py-2.5 text-xs font-bold uppercase tracking-wider transition-all data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
-                      <Calendar className="h-3.5 w-3.5" />
+                    <TabsTrigger value="schedule" className="gap-1.5 rounded-xl px-3 py-2 text-[10px] font-bold uppercase tracking-wider transition-all data-[state=active]:bg-primary data-[state=active]:text-primary-foreground sm:gap-2 sm:px-5 sm:py-2.5 sm:text-xs whitespace-nowrap">
+                      <Calendar className="h-3 w-3 sm:h-3.5 sm:w-3.5" />
                       {isAr ? "الجدول" : "Schedule"}
                     </TabsTrigger>
                   )}
                   {(hasJudges || hasSpeakers) && (
-                    <TabsTrigger value="people" className="gap-2 rounded-xl px-5 py-2.5 text-xs font-bold uppercase tracking-wider transition-all data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
-                      <Users className="h-3.5 w-3.5" />
+                    <TabsTrigger value="people" className="gap-1.5 rounded-xl px-3 py-2 text-[10px] font-bold uppercase tracking-wider transition-all data-[state=active]:bg-primary data-[state=active]:text-primary-foreground sm:gap-2 sm:px-5 sm:py-2.5 sm:text-xs whitespace-nowrap">
+                      <Users className="h-3 w-3 sm:h-3.5 sm:w-3.5" />
                       {isAr ? "الأشخاص" : "People"}
                     </TabsTrigger>
                   )}
                   {hasGallery && (
-                    <TabsTrigger value="gallery" className="gap-2 rounded-xl px-5 py-2.5 text-xs font-bold uppercase tracking-wider transition-all data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
-                      <ImageIcon className="h-3.5 w-3.5" />
+                    <TabsTrigger value="gallery" className="gap-1.5 rounded-xl px-3 py-2 text-[10px] font-bold uppercase tracking-wider transition-all data-[state=active]:bg-primary data-[state=active]:text-primary-foreground sm:gap-2 sm:px-5 sm:py-2.5 sm:text-xs whitespace-nowrap">
+                      <ImageIcon className="h-3 w-3 sm:h-3.5 sm:w-3.5" />
                       {isAr ? "المعرض" : "Gallery"}
                     </TabsTrigger>
                   )}
                   {hasSponsors && (
-                    <TabsTrigger value="sponsors" className="gap-2 rounded-xl px-5 py-2.5 text-xs font-bold uppercase tracking-wider transition-all data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
-                      <Star className="h-3.5 w-3.5" />
+                    <TabsTrigger value="sponsors" className="gap-1.5 rounded-xl px-3 py-2 text-[10px] font-bold uppercase tracking-wider transition-all data-[state=active]:bg-primary data-[state=active]:text-primary-foreground sm:gap-2 sm:px-5 sm:py-2.5 sm:text-xs whitespace-nowrap">
+                      <Star className="h-3 w-3 sm:h-3.5 sm:w-3.5" />
                       {isAr ? "الرعاة" : "Sponsors"}
                     </TabsTrigger>
                   )}
