@@ -5,6 +5,8 @@ import { Button } from "@/components/ui/button";
 import { Calendar, MapPin, Globe, ExternalLink, Clock, ArrowRight, Building } from "lucide-react";
 import { format, isPast, isFuture, isWithinInterval, differenceInDays } from "date-fns";
 import { countryFlag } from "@/lib/countryFlag";
+import { useQuery } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
 import type { Database } from "@/integrations/supabase/types";
 
 type ExhibitionStatus = Database["public"]["Enums"]["exhibition_status"];
@@ -73,6 +75,22 @@ export function ExhibitionCard({ exhibition, language }: ExhibitionCardProps) {
   const venue = isAr && exhibition.venue_ar ? exhibition.venue_ar : exhibition.venue;
   const organizer = isAr && exhibition.organizer_name_ar ? exhibition.organizer_name_ar : exhibition.organizer_name;
   const typeLabel = typeLabels[exhibition.type];
+
+  // Fetch exhibition sponsors via ad_section_sponsorships
+  const { data: sponsors = [] } = useQuery({
+    queryKey: ["exhibitionSponsors", exhibition.id],
+    queryFn: async () => {
+      const { data } = await supabase
+        .from("ad_section_sponsorships")
+        .select("id, label, label_ar, logo_url, companies:company_id(name, name_ar, logo_url)")
+        .eq("section_id", exhibition.id)
+        .eq("section_type", "exhibition")
+        .eq("is_active", true)
+        .limit(2);
+      return data || [];
+    },
+    staleTime: 1000 * 60 * 10,
+  });
 
   const liveStatus = (() => {
     const now = new Date();
@@ -208,6 +226,21 @@ export function ExhibitionCard({ exhibition, language }: ExhibitionCardProps) {
           </div>
 
           <div className="mt-4 flex flex-wrap items-center gap-2">
+            {/* Sponsor badges */}
+            {sponsors.length > 0 && sponsors.map((s: any) => {
+              const logo = s.logo_url || s.companies?.logo_url;
+              const name = isAr ? (s.label_ar || s.companies?.name_ar || s.companies?.name) : (s.label || s.companies?.name);
+              return (
+                <Badge key={s.id} variant="outline" className="gap-1 text-[9px] font-bold uppercase tracking-wider bg-chart-4/5 text-chart-4 border-chart-4/20 py-0.5 px-2">
+                  {logo ? (
+                    <img src={logo} alt={name} className="h-3 w-3 rounded-sm object-contain" />
+                  ) : (
+                    <Building className="h-2.5 w-2.5" />
+                  )}
+                  {name || (isAr ? "راعي" : "Sponsor")}
+                </Badge>
+              );
+            })}
             {exhibition.is_free ? (
               <Badge variant="outline" className="h-6 text-[10px] font-bold uppercase tracking-wider text-chart-3 border-chart-3/30 bg-chart-3/5">
                 {isAr ? "دخول مجاني" : "Free Entry"}
