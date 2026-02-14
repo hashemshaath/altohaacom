@@ -12,7 +12,7 @@ interface AuthLayoutProps {
 
 export function AuthLayout({ children, stage, isAr, showFooter = false, currentStep }: AuthLayoutProps) {
   return (
-    <div className="flex min-h-screen flex-col" dir={isAr ? "rtl" : "ltr"}>
+    <div className="flex min-h-screen flex-col overflow-x-hidden" dir={isAr ? "rtl" : "ltr"}>
       <Header />
       <main className="flex flex-1">
         {/* Hero panel — tablet & desktop */}
