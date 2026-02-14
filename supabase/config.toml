@@ -29,3 +29,6 @@ verify_jwt = false
 
 [functions.admin-user-management]
 verify_jwt = false
+
+[functions.lifecycle-triggers]
+verify_jwt = false
