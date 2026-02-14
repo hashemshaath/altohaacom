@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useAuth } from "@/contexts/AuthContext";
 import { Header } from "@/components/Header";
@@ -8,16 +9,17 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Progress } from "@/components/ui/progress";
-import { useReferralCode, useReferralStats, useReferralInvitations, useReferralMilestones, useUserMilestones } from "@/hooks/useReferral";
+import { useReferralCode, useReferralStats, useReferralInvitations, useReferralMilestones, useUserMilestones, useSendInvitation } from "@/hooks/useReferral";
 import { useReferralAnalytics } from "@/hooks/useReferralAnalytics";
 import { usePointsBalance } from "@/hooks/usePoints";
-import { Share2, Gift, Trophy, Users, TrendingUp, Send, Star, Mail, MessageCircle, BarChart3, Target, Zap, CheckCircle2, MousePointerClick, ArrowDownRight, Layers } from "lucide-react";
+import { Share2, Gift, Trophy, Users, TrendingUp, Send, Star, Mail, MessageCircle, BarChart3, Target, Zap, CheckCircle2, MousePointerClick, ArrowDownRight, Layers, Clock, RefreshCw, Phone, Globe, Sparkles } from "lucide-react";
 import { Link } from "react-router-dom";
 import { ReferralShareSheet } from "@/components/referrals/ReferralShareSheet";
 import { ReferralLeaderboard } from "@/components/referrals/ReferralLeaderboard";
 import { BonusCampaignBanner } from "@/components/referrals/BonusCampaignBanner";
 import { SocialProofWidget } from "@/components/referrals/SocialProofWidget";
 import { TierProgressCard } from "@/components/referrals/TierProgressCard";
+import { useToast } from "@/hooks/use-toast";
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, LineChart, Line, CartesianGrid, PieChart, Pie, Cell } from "recharts";
 
 export default function Referrals() {
@@ -25,6 +27,7 @@ export default function Referrals() {
   const isAr = language === "ar";
   const { user } = useAuth();
 
+  const { toast } = useToast();
   const { data: referralCode } = useReferralCode();
   const { data: stats } = useReferralStats();
   const { data: invitations } = useReferralInvitations();
@@ -32,6 +35,12 @@ export default function Referrals() {
   const { data: userMilestones } = useUserMilestones();
   const { data: pointsBalance } = usePointsBalance();
   const { data: analytics } = useReferralAnalytics();
+  const sendInvitation = useSendInvitation();
+
+  // Scroll to top on mount
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }, []);
 
   const referralLink = referralCode?.code
     ? `${window.location.origin}/auth?ref=${referralCode.code}`
@@ -216,58 +225,159 @@ export default function Referrals() {
 
           {/* Milestones Tab */}
           <TabsContent value="milestones" className="space-y-6">
-            {/* Progress to next */}
-            {nextMilestone && (
-              <Card className="border-primary/15">
-                <CardContent className="p-5">
-                  <div className="flex items-center justify-between mb-2">
-                    <span className="text-sm font-medium">
-                      {isAr ? "التقدم نحو:" : "Progress to:"} {isAr ? nextMilestone.name_ar : nextMilestone.name}
-                    </span>
-                    <span className="text-sm text-muted-foreground">
-                      {totalConversions}/{nextMilestone.required_referrals}
-                    </span>
-                  </div>
-                  <Progress value={progressToNext} className="h-3" />
-                </CardContent>
-              </Card>
-            )}
+            {/* Motivational Progress Header */}
+            {(() => {
+              const currentLevel = milestones?.filter((m) => totalConversions >= m.required_referrals).sort((a, b) => b.required_referrals - a.required_referrals)[0];
+              const currentLevelName = currentLevel ? (isAr ? currentLevel.name_ar : currentLevel.name) : (isAr ? "مبتدئ" : "Beginner");
+              const currentIcon = currentLevel?.badge_icon || "🌟";
+              
+              const motivationalTips = [
+                { en: "💡 Tip: Share your link on WhatsApp groups for best results!", ar: "💡 نصيحة: شارك رابطك في مجموعات الواتساب للحصول على أفضل النتائج!" },
+                { en: "🔥 Pro tip: Personalize your message to each friend for higher conversion!", ar: "🔥 نصيحة احترافية: خصص رسالتك لكل صديق لتحويل أعلى!" },
+                { en: "⚡ Quick win: Post your referral link in your Instagram bio!", ar: "⚡ فوز سريع: ضع رابط الإحالة في بايو الانستقرام!" },
+              ];
+              const randomTip = motivationalTips[Math.floor(Date.now() / 86400000) % motivationalTips.length];
 
-            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-              {milestones?.map((milestone) => {
+              return (
+                <Card className="border-primary/20 bg-gradient-to-br from-primary/8 via-background to-chart-4/8 overflow-hidden relative">
+                  <div className="pointer-events-none absolute -end-16 -top-16 h-40 w-40 rounded-full bg-primary/10 blur-[80px] animate-pulse" />
+                  <div className="pointer-events-none absolute -start-12 -bottom-12 h-32 w-32 rounded-full bg-chart-4/10 blur-[60px] animate-pulse [animation-delay:2s]" />
+                  <CardContent className="relative p-6">
+                    <div className="flex flex-col sm:flex-row sm:items-center gap-4 mb-5">
+                      <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-primary/10 ring-4 ring-primary/5 shadow-lg text-3xl transition-transform duration-300 hover:scale-110">
+                        {currentIcon}
+                      </div>
+                      <div className="flex-1">
+                        <p className="text-xs uppercase tracking-widest text-muted-foreground mb-1">
+                          {isAr ? "مستواك الحالي" : "Your Current Level"}
+                        </p>
+                        <h2 className="text-xl font-bold font-serif">{currentLevelName}</h2>
+                        {nextMilestone && (
+                          <p className="text-sm text-muted-foreground mt-1">
+                            <Sparkles className="inline h-3.5 w-3.5 text-chart-4 me-1" />
+                            {isAr 
+                              ? `${nextMilestone.required_referrals - totalConversions} إحالة للوصول إلى "${nextMilestone.name_ar}"`
+                              : `${nextMilestone.required_referrals - totalConversions} referral${nextMilestone.required_referrals - totalConversions > 1 ? "s" : ""} to reach "${nextMilestone.name}"`}
+                          </p>
+                        )}
+                      </div>
+                      <Badge variant="secondary" className="text-sm px-4 py-2 shadow-sm self-start">
+                        <Star className="h-3.5 w-3.5 me-1.5 text-chart-4" />
+                        {totalConversions} {isAr ? "إحالة" : "referrals"}
+                      </Badge>
+                    </div>
+
+                    {/* Animated Progress Bar */}
+                    {nextMilestone && (
+                      <div className="space-y-2">
+                        <div className="flex items-center justify-between text-xs">
+                          <span className="font-medium flex items-center gap-1">
+                            {currentLevel?.badge_icon || "🌟"} {currentLevelName}
+                          </span>
+                          <span className="font-medium flex items-center gap-1">
+                            {nextMilestone.badge_icon} {isAr ? nextMilestone.name_ar : nextMilestone.name}
+                          </span>
+                        </div>
+                        <div className="relative">
+                          <Progress value={progressToNext} className="h-4 rounded-full" />
+                          <div className="absolute inset-0 flex items-center justify-center">
+                            <span className="text-[10px] font-bold text-primary-foreground drop-shadow-sm">
+                              {Math.round(progressToNext)}%
+                            </span>
+                          </div>
+                        </div>
+                        <p className="text-center text-xs text-muted-foreground">
+                          {totalConversions}/{nextMilestone.required_referrals}
+                        </p>
+                      </div>
+                    )}
+
+                    {/* Smart Tip */}
+                    <div className="mt-4 rounded-xl border border-chart-4/20 bg-chart-4/5 px-4 py-3 text-xs text-muted-foreground">
+                      {isAr ? randomTip.ar : randomTip.en}
+                    </div>
+                  </CardContent>
+                </Card>
+              );
+            })()}
+
+            {/* 8 Chef-themed Levels Grid */}
+            <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+              {milestones?.map((milestone, idx) => {
                 const achieved = achievedMilestoneIds.has(milestone.id);
                 const reachable = totalConversions >= milestone.required_referrals;
+                const isNext = !reachable && (idx === 0 || (milestones[idx - 1] && totalConversions >= milestones[idx - 1].required_referrals));
+                const levelProgress = reachable ? 100 : isNext ? (totalConversions / milestone.required_referrals) * 100 : 0;
+
                 return (
                   <Card
                     key={milestone.id}
-                    className={`group transition-all duration-300 hover:shadow-lg hover:-translate-y-1 ${achieved ? "border-chart-2/40 bg-gradient-to-br from-chart-2/5 to-background shadow-sm shadow-chart-2/10" : reachable ? "border-primary/30 bg-gradient-to-br from-primary/5 to-background" : "opacity-60 hover:opacity-90"}`}
+                    className={`group relative overflow-hidden transition-all duration-300 hover:shadow-lg hover:-translate-y-1 ${
+                      achieved
+                        ? "border-chart-2/40 bg-gradient-to-br from-chart-2/8 to-background shadow-sm shadow-chart-2/10"
+                        : isNext
+                        ? "border-primary/30 bg-gradient-to-br from-primary/5 to-background ring-1 ring-primary/10"
+                        : reachable
+                        ? "border-chart-4/30 bg-gradient-to-br from-chart-4/5 to-background"
+                        : "opacity-50 hover:opacity-80"
+                    }`}
                   >
-                    <CardContent className="p-5">
-                      <div className="flex items-start justify-between mb-3">
-                        <span className="text-3xl transition-transform duration-300 group-hover:scale-125">{milestone.badge_icon}</span>
-                        {achieved ? (
-                          <Badge className="bg-chart-2/20 text-chart-2 shadow-sm">
-                            <CheckCircle2 className="h-3 w-3 me-1" />
-                            {isAr ? "مُنجز" : "Achieved"}
-                          </Badge>
-                        ) : reachable ? (
-                          <Badge className="bg-primary/20 text-primary animate-pulse">{isAr ? "متاح" : "Available"}</Badge>
-                        ) : (
-                          <Badge variant="outline">{milestone.required_referrals} {isAr ? "إحالة" : "referrals"}</Badge>
-                        )}
+                    {isNext && (
+                      <div className="absolute top-0 inset-x-0 h-0.5 bg-gradient-to-r from-transparent via-primary to-transparent animate-pulse" />
+                    )}
+                    <CardContent className="p-4">
+                      <div className="flex items-start justify-between mb-2">
+                        <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-muted/50 text-2xl transition-transform duration-300 group-hover:scale-110 group-hover:rotate-3">
+                          {milestone.badge_icon}
+                        </div>
+                        <div className="flex flex-col items-end gap-1">
+                          <span className="text-[9px] uppercase tracking-widest text-muted-foreground font-medium">
+                            {isAr ? `المستوى ${idx + 1}` : `Level ${idx + 1}`}
+                          </span>
+                          {achieved ? (
+                            <Badge className="bg-chart-2/20 text-chart-2 text-[9px] shadow-sm">
+                              <CheckCircle2 className="h-2.5 w-2.5 me-0.5" />
+                              {isAr ? "مُنجز" : "Achieved"}
+                            </Badge>
+                          ) : isNext ? (
+                            <Badge className="bg-primary/20 text-primary text-[9px] animate-pulse">
+                              {isAr ? "التالي" : "Next"}
+                            </Badge>
+                          ) : null}
+                        </div>
                       </div>
-                      <h3 className="font-semibold">{isAr ? milestone.name_ar : milestone.name}</h3>
-                      <p className="text-xs text-muted-foreground mt-1 leading-relaxed">
+                      <h3 className="font-semibold text-sm mb-0.5">{isAr ? milestone.name_ar : milestone.name}</h3>
+                      <p className="text-[10px] text-muted-foreground leading-relaxed line-clamp-2 mb-2">
                         {isAr ? milestone.description_ar : milestone.description}
                       </p>
-                      <div className="mt-3 flex items-center gap-1.5 text-xs text-primary font-medium">
-                        <Gift className="h-3.5 w-3.5" />
-                        {isAr ? milestone.reward_description_ar : milestone.reward_description}
+                      
+                      {/* Mini progress for this level */}
+                      <Progress value={levelProgress} className="h-1 mb-2" />
+                      
+                      <div className="flex items-center justify-between">
+                        <span className="text-[9px] text-muted-foreground">
+                          {milestone.required_referrals} {isAr ? "إحالة" : "referrals"}
+                        </span>
+                        <span className="text-[9px] text-primary font-medium flex items-center gap-0.5">
+                          <Gift className="h-2.5 w-2.5" />
+                          {isAr ? milestone.reward_description_ar : milestone.reward_description}
+                        </span>
                       </div>
                     </CardContent>
                   </Card>
                 );
               })}
+            </div>
+
+            {/* Motivational footer */}
+            <div className="text-center py-4">
+              <p className="text-sm text-muted-foreground">
+                {totalConversions === 0
+                  ? (isAr ? "🚀 ابدأ رحلتك الآن! شارك رابطك واحصل على أول إحالة" : "🚀 Start your journey now! Share your link and get your first referral")
+                  : totalConversions < 10
+                  ? (isAr ? "💪 أداء رائع! استمر في النمو وافتح المزيد من المكافآت" : "💪 Great progress! Keep growing and unlock more rewards")
+                  : (isAr ? "🌟 أنت نجم! تأثيرك يصنع الفرق في المجتمع" : "🌟 You're a star! Your influence is making a difference")}
+              </p>
             </div>
           </TabsContent>
 
@@ -280,6 +390,11 @@ export default function Referrals() {
                     <Mail className="h-4 w-4 text-chart-4" />
                   </div>
                   {isAr ? "سجل الدعوات" : "Invitation History"}
+                  {invitations?.length ? (
+                    <Badge variant="outline" className="ms-auto text-[10px]">
+                      {invitations.length} {isAr ? "دعوة" : "total"}
+                    </Badge>
+                  ) : null}
                 </CardTitle>
               </CardHeader>
               <CardContent>
@@ -288,35 +403,124 @@ export default function Referrals() {
                     <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-muted/50">
                       <Send className="h-8 w-8 text-muted-foreground/50" />
                     </div>
-                    <p className="text-sm text-muted-foreground">
-                      {isAr ? "لا توجد دعوات بعد. ابدأ بمشاركة رابطك!" : "No invitations yet. Start sharing your link!"}
+                    <p className="text-sm text-muted-foreground mb-1">
+                      {isAr ? "لا توجد دعوات بعد" : "No invitations yet"}
+                    </p>
+                    <p className="text-xs text-muted-foreground">
+                      {isAr ? "ابدأ بمشاركة رابطك من تبويب المشاركة!" : "Start sharing your link from the Share tab!"}
                     </p>
                   </div>
                 ) : (
-                  <div className="space-y-2 max-h-[400px] overflow-y-auto">
-                    {invitations.map((inv) => (
-                      <div key={inv.id} className="flex items-center justify-between rounded-xl border border-border/50 p-3.5 transition-all duration-200 hover:bg-muted/30 hover:shadow-sm hover:border-primary/10">
-                        <div className="flex items-center gap-3">
-                          <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-muted/80">
-                            {inv.channel === "email" ? <Mail className="h-4 w-4 text-chart-1" /> :
-                             inv.channel === "whatsapp" ? <MessageCircle className="h-4 w-4 text-chart-2" /> :
-                             <Share2 className="h-4 w-4 text-chart-4" />}
-                          </div>
-                          <div>
-                            <p className="text-sm font-medium">{inv.invitee_email || inv.invitee_phone || inv.channel}</p>
-                            <p className="text-[10px] text-muted-foreground">
-                              {new Date(inv.sent_at).toLocaleDateString(isAr ? "ar" : "en")}
-                            </p>
-                          </div>
-                        </div>
-                        <Badge
-                          variant="outline"
-                          className={inv.status === "converted" ? "bg-chart-2/20 text-chart-2 border-chart-2/30 shadow-sm" : inv.status === "clicked" ? "bg-chart-4/20 text-chart-4 border-chart-4/30" : ""}
+                  <div className="space-y-3 max-h-[500px] overflow-y-auto">
+                    {invitations.map((inv) => {
+                      const sentDate = new Date(inv.sent_at || inv.created_at);
+                      const daysSince = Math.floor((Date.now() - sentDate.getTime()) / (1000 * 60 * 60 * 24));
+                      const isPending = inv.status === "sent" || inv.status === "pending";
+                      const isConverted = inv.status === "converted";
+                      const isClicked = inv.status === "clicked";
+
+                      const channelIcon = inv.channel === "email" ? <Mail className="h-4 w-4 text-chart-1" /> :
+                        inv.channel === "whatsapp" ? <MessageCircle className="h-4 w-4 text-chart-2" /> :
+                        inv.channel === "sms" ? <Phone className="h-4 w-4 text-chart-3" /> :
+                        <Globe className="h-4 w-4 text-chart-4" />;
+
+                      const channelLabel = inv.channel === "email" ? (isAr ? "بريد إلكتروني" : "Email") :
+                        inv.channel === "whatsapp" ? "WhatsApp" :
+                        inv.channel === "sms" ? "SMS" :
+                        inv.channel === "telegram" ? "Telegram" :
+                        (isAr ? "رابط" : "Link");
+
+                      const statusBadge = isConverted
+                        ? <Badge className="bg-chart-2/20 text-chart-2 border-chart-2/30 text-[10px] shadow-sm"><CheckCircle2 className="h-2.5 w-2.5 me-0.5" />{isAr ? "مكتمل" : "Converted"}</Badge>
+                        : isClicked
+                        ? <Badge className="bg-chart-4/20 text-chart-4 border-chart-4/30 text-[10px]"><MousePointerClick className="h-2.5 w-2.5 me-0.5" />{isAr ? "تم النقر" : "Clicked"}</Badge>
+                        : <Badge variant="outline" className="text-[10px]"><Clock className="h-2.5 w-2.5 me-0.5" />{isAr ? "في الانتظار" : "Pending"}</Badge>;
+
+                      return (
+                        <div
+                          key={inv.id}
+                          className={`rounded-xl border p-4 transition-all duration-200 hover:shadow-sm ${
+                            isConverted ? "border-chart-2/20 bg-chart-2/5" :
+                            isClicked ? "border-chart-4/20 bg-chart-4/5" :
+                            "border-border/50 hover:border-primary/10"
+                          }`}
                         >
-                          {inv.status}
-                        </Badge>
-                      </div>
-                    ))}
+                          <div className="flex items-start gap-3">
+                            {/* Channel Icon */}
+                            <div className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-xl ${
+                              isConverted ? "bg-chart-2/10" : isClicked ? "bg-chart-4/10" : "bg-muted/80"
+                            }`}>
+                              {channelIcon}
+                            </div>
+
+                            {/* Details */}
+                            <div className="flex-1 min-w-0">
+                              <div className="flex items-center gap-2 mb-1">
+                                <p className="text-sm font-medium truncate">
+                                  {inv.invitee_email || inv.invitee_phone || (isAr ? "دعوة عبر رابط" : "Link invitation")}
+                                </p>
+                                {statusBadge}
+                              </div>
+                              <div className="flex items-center gap-3 text-[10px] text-muted-foreground">
+                                <span className="flex items-center gap-0.5">
+                                  {channelIcon && <span className="opacity-70">{channelLabel}</span>}
+                                </span>
+                                <span>•</span>
+                                <span>{sentDate.toLocaleDateString(isAr ? "ar" : "en", { day: "numeric", month: "short", year: "numeric" })}</span>
+                                {isPending && daysSince >= 3 && (
+                                  <>
+                                    <span>•</span>
+                                    <span className="text-chart-4 font-medium">
+                                      {isAr ? `${daysSince} يوم مضى` : `${daysSince} days ago`}
+                                    </span>
+                                  </>
+                                )}
+                              </div>
+                            </div>
+
+                            {/* Reminder Action for pending */}
+                            {isPending && daysSince >= 3 && inv.invitee_email && referralCode && (
+                              <Button
+                                variant="ghost"
+                                size="sm"
+                                className="shrink-0 text-xs gap-1 text-chart-4 hover:text-chart-4 hover:bg-chart-4/10"
+                                onClick={() => {
+                                  sendInvitation.mutate({
+                                    email: inv.invitee_email!,
+                                    channel: "email",
+                                    referralCodeId: referralCode.id,
+                                  });
+                                }}
+                                disabled={sendInvitation.isPending}
+                              >
+                                <RefreshCw className={`h-3 w-3 ${sendInvitation.isPending ? "animate-spin" : ""}`} />
+                                {isAr ? "تذكير" : "Remind"}
+                              </Button>
+                            )}
+                          </div>
+
+                          {/* Personalized message for converted */}
+                          {isConverted && (
+                            <div className="mt-2 ms-13 rounded-lg bg-chart-2/5 border border-chart-2/10 px-3 py-2 text-[11px] text-chart-2">
+                              <CheckCircle2 className="inline h-3 w-3 me-1" />
+                              {isAr
+                                ? "🎉 انضم بنجاح! حصلت على نقاط مكافأة"
+                                : "🎉 Successfully joined! You earned bonus points"}
+                            </div>
+                          )}
+
+                          {/* Pending reminder suggestion */}
+                          {isPending && daysSince >= 7 && (
+                            <div className="mt-2 ms-13 rounded-lg bg-chart-4/5 border border-chart-4/10 px-3 py-2 text-[11px] text-muted-foreground">
+                              <Clock className="inline h-3 w-3 me-1 text-chart-4" />
+                              {isAr
+                                ? "لم يسجل بعد. أرسل تذكيراً ودياً!"
+                                : "Haven't signed up yet. Send a friendly reminder!"}
+                            </div>
+                          )}
+                        </div>
+                      );
+                    })}
                   </div>
                 )}
               </CardContent>

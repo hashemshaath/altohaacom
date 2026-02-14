@@ -132,38 +132,60 @@ export function ProfileReferralsTab({ userId }: { userId: string }) {
         </CardContent>
       </Card>
 
-      {/* Milestone Progress */}
-      {nextMilestone && (
-        <Card className="border-primary/15">
-          <CardContent className="p-5">
-            <div className="flex items-center justify-between mb-2">
-              <span className="text-sm font-medium">
-                {isAr ? "التقدم نحو:" : "Next:"} {isAr ? nextMilestone.name_ar : nextMilestone.name}
-              </span>
-              <span className="text-sm text-muted-foreground">
-                {totalConversions}/{nextMilestone.required_referrals}
-              </span>
-            </div>
-            <Progress value={progress} className="h-2.5" />
-          </CardContent>
-        </Card>
-      )}
+      {/* Current Level & Progress */}
+      {(() => {
+        const currentLevel = milestones?.filter((m) => totalConversions >= m.required_referrals).sort((a, b) => b.required_referrals - a.required_referrals)[0];
+        const currentLevelName = currentLevel ? (isAr ? currentLevel.name_ar : currentLevel.name) : (isAr ? "مبتدئ" : "Beginner");
+        const currentIcon = currentLevel?.badge_icon || "🌟";
+        
+        return (
+          <Card className="border-primary/15 bg-gradient-to-br from-primary/5 via-background to-chart-4/5">
+            <CardContent className="p-5">
+              <div className="flex items-center gap-3 mb-3">
+                <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-primary/10 text-2xl">
+                  {currentIcon}
+                </div>
+                <div className="flex-1">
+                  <p className="text-[10px] uppercase tracking-widest text-muted-foreground">
+                    {isAr ? "مستواك" : "Your Level"}
+                  </p>
+                  <p className="font-semibold">{currentLevelName}</p>
+                </div>
+              </div>
+              {nextMilestone && (
+                <div className="space-y-1.5">
+                  <div className="flex items-center justify-between text-xs">
+                    <span>{isAr ? "التالي:" : "Next:"} {isAr ? nextMilestone.name_ar : nextMilestone.name} {nextMilestone.badge_icon}</span>
+                    <span className="text-muted-foreground">{totalConversions}/{nextMilestone.required_referrals}</span>
+                  </div>
+                  <div className="relative">
+                    <Progress value={progress} className="h-3" />
+                    <div className="absolute inset-0 flex items-center justify-center">
+                      <span className="text-[9px] font-bold text-primary-foreground drop-shadow-sm">{Math.round(progress)}%</span>
+                    </div>
+                  </div>
+                </div>
+              )}
+            </CardContent>
+          </Card>
+        );
+      })()}
 
-      {/* Achieved Milestones */}
+      {/* Chef Level Badges */}
       {milestones && milestones.length > 0 && (
         <Card>
           <CardHeader>
-            <CardTitle className="text-base">{isAr ? "الإنجازات" : "Milestones"}</CardTitle>
+            <CardTitle className="text-base">{isAr ? "مستويات الشيف" : "Chef Levels"}</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="grid grid-cols-3 sm:grid-cols-6 gap-3">
-              {milestones.map((m) => {
+            <div className="grid grid-cols-4 sm:grid-cols-8 gap-2">
+              {milestones.map((m, idx) => {
                 const achieved = achievedIds.has(m.id);
                 return (
-                  <div key={m.id} className={`text-center rounded-xl p-3 border ${achieved ? "border-chart-2/30 bg-chart-2/5" : "opacity-40"}`}>
-                    <span className="text-2xl block mb-1">{m.badge_icon}</span>
-                    <p className="text-[10px] font-medium">{isAr ? m.name_ar : m.name}</p>
-                    {achieved && <CheckCircle2 className="h-3 w-3 text-chart-2 mx-auto mt-1" />}
+                  <div key={m.id} className={`text-center rounded-xl p-2.5 border transition-all duration-200 ${achieved ? "border-chart-2/30 bg-chart-2/5 shadow-sm" : totalConversions >= m.required_referrals ? "border-primary/20 bg-primary/5" : "opacity-40"}`}>
+                    <span className="text-xl block mb-0.5">{m.badge_icon}</span>
+                    <p className="text-[8px] font-medium leading-tight">{isAr ? m.name_ar : m.name}</p>
+                    {achieved && <CheckCircle2 className="h-2.5 w-2.5 text-chart-2 mx-auto mt-0.5" />}
                   </div>
                 );
               })}
