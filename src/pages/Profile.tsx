@@ -88,19 +88,22 @@ export default function Profile() {
           <ProfileHeader profile={profile} roles={roles} userId={user.id} onProfileUpdate={fetchProfile} />
         )}
 
-        <Tabs value={activeTab} onValueChange={setActiveTab} className="mt-6">
-          <TabsList className="w-full justify-start gap-1 bg-muted/50 p-1 rounded-xl h-auto flex-wrap">
-            {tabs.map((tab) => (
-              <TabsTrigger
-                key={tab.id}
-                value={tab.id}
-                className="gap-1.5 text-xs sm:text-sm data-[state=active]:bg-background data-[state=active]:shadow-sm rounded-lg px-3 py-2"
-              >
-                <tab.icon className="h-3.5 w-3.5" />
-                {tab.label}
-              </TabsTrigger>
-            ))}
-          </TabsList>
+        <Tabs value={activeTab} onValueChange={setActiveTab} className="mt-8">
+          <div className="sticky top-[64px] z-20 bg-background/80 backdrop-blur-md py-3 -mx-2 px-2 border-b border-border/40">
+            <TabsList className="w-full justify-start gap-1 bg-transparent p-0 rounded-none h-auto flex-wrap overflow-x-auto no-scrollbar">
+              {tabs.map((tab) => (
+                <TabsTrigger
+                  key={tab.id}
+                  value={tab.id}
+                  className="gap-2 text-xs sm:text-sm data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-md rounded-xl px-4 py-2 transition-all duration-200 group"
+                >
+                  <tab.icon className="h-4 w-4 transition-transform group-data-[state=active]:scale-110" />
+                  {tab.label}
+                </TabsTrigger>
+              ))}
+            </TabsList>
+          </div>
+
 
           <TabsContent value="overview" className="mt-6">
             {profile && user && <ProfileOverviewTab profile={profile} userId={user.id} />}
