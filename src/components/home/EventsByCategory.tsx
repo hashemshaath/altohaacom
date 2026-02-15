@@ -6,7 +6,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Trophy, Globe, Utensils, Coffee, ArrowRight, Calendar, MapPin } from "lucide-react";
+import { Trophy, Globe, Coffee, ArrowRight, Calendar, MapPin } from "lucide-react";
 import { format } from "date-fns";
 
 export function EventsByCategory() {
@@ -68,7 +68,9 @@ export function EventsByCategory() {
                 {item.cover_image_url ? (
                   <img src={item.cover_image_url} alt={title} className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105" loading="lazy" />
                 ) : (
-                  <div className="flex h-full items-center justify-center"><Trophy className="h-8 w-8 text-muted-foreground/20" /></div>
+                  <div className="flex h-full items-center justify-center bg-gradient-to-br from-primary/10 to-primary/5">
+                    <Trophy className="h-8 w-8 text-primary/30" />
+                  </div>
                 )}
                 <div className="absolute inset-x-0 bottom-0 h-12 bg-gradient-to-t from-background/60 to-transparent" />
                 <Badge className="absolute end-2 top-2 text-[10px]">
@@ -114,7 +116,9 @@ export function EventsByCategory() {
                 {item.cover_image_url ? (
                   <img src={item.cover_image_url} alt={title} className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105" loading="lazy" />
                 ) : (
-                  <div className="flex h-full items-center justify-center"><Globe className="h-8 w-8 text-muted-foreground/20" /></div>
+                  <div className="flex h-full items-center justify-center bg-gradient-to-br from-primary/10 to-primary/5">
+                    <Globe className="h-8 w-8 text-primary/30" />
+                  </div>
                 )}
                 <Badge className="absolute end-2 top-2 text-[10px]">{item.status === "open" ? (isAr ? "نشط" : "Active") : (isAr ? "قادم" : "Upcoming")}</Badge>
               </div>
@@ -122,7 +126,6 @@ export function EventsByCategory() {
                 <h3 className="mb-1.5 line-clamp-2 text-sm font-semibold group-hover:text-primary transition-colors">
                   {title} {year && <span className="text-primary font-bold">{year}</span>}
                 </h3>
-                {/* Organizer with logo */}
                 {organizerName && (
                   <div className="mb-1.5 flex items-center gap-1.5 text-[11px] text-muted-foreground">
                     {item.logo_url ? (
@@ -182,13 +185,13 @@ export function EventsByCategory() {
   ];
 
   return (
-    <section className="container py-12 md:py-16">
-      <div className="mb-6 text-center">
-        <h2 className="font-serif text-2xl font-bold sm:text-3xl">
-          {isAr ? "استكشف الفعاليات" : "Explore Events"}
+    <section className="container py-14 md:py-20">
+      <div className="mb-8 text-center">
+        <h2 className="font-serif text-2xl font-bold sm:text-3xl md:text-4xl">
+          {isAr ? "استكشف عالم الفعاليات" : "Explore the World of Events"}
         </h2>
-        <p className="mt-1 text-sm text-muted-foreground">
-          {isAr ? "مسابقات ومعارض وجلسات تذوق من جميع أنحاء العالم" : "Competitions, exhibitions, and tastings from around the world"}
+        <p className="mt-2 text-sm text-muted-foreground">
+          {isAr ? "مسابقات ومعارض وجلسات تذوق تنتظرك من كل أنحاء العالم" : "Competitions, exhibitions & tastings await you from around the globe"}
         </p>
       </div>
 
@@ -220,7 +223,7 @@ export function EventsByCategory() {
               </>
             ) : (
               <div className="py-12 text-center text-muted-foreground">
-                {isAr ? "لا توجد فعاليات حالياً" : "No events available yet"}
+                {isAr ? "لا توجد فعاليات حالياً — ترقبوا الجديد!" : "No events yet — stay tuned for exciting updates!"}
               </div>
             )}
           </TabsContent>

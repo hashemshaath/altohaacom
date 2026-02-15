@@ -40,7 +40,9 @@ export function RegionalEvents() {
             {item.cover_image_url ? (
               <img src={item.cover_image_url} alt={title} className="h-full w-full object-cover transition-transform group-hover:scale-105" loading="lazy" />
             ) : (
-              <div className="flex h-full items-center justify-center"><Trophy className="h-8 w-8 text-muted-foreground/20" /></div>
+              <div className="flex h-full items-center justify-center bg-gradient-to-br from-primary/10 to-primary/5">
+                <Trophy className="h-8 w-8 text-primary/30" />
+              </div>
             )}
             <Badge className="absolute end-2 top-2 text-[10px]">
               {item.status === "registration_open" ? (isAr ? "مفتوح" : "Open") : (isAr ? "قادمة" : "Upcoming")}
@@ -65,14 +67,16 @@ export function RegionalEvents() {
   if (allComps.length === 0) return null;
 
   return (
-    <section className="bg-muted/30 py-12 md:py-16">
-      <div className="container">
-        <div className="mb-6 text-center">
-          <h2 className="font-serif text-2xl font-bold sm:text-3xl">
-            {isAr ? "الفعاليات حسب المنطقة" : "Events by Region"}
+    <section className="relative overflow-hidden py-14 md:py-20">
+      <div className="absolute inset-0 bg-muted/30" />
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom,hsl(var(--primary)/0.04),transparent_60%)]" />
+      <div className="container relative">
+        <div className="mb-8 text-center">
+          <h2 className="font-serif text-2xl font-bold sm:text-3xl md:text-4xl">
+            {isAr ? "فعاليات حسب المنطقة" : "Events by Region"}
           </h2>
-          <p className="mt-1 text-sm text-muted-foreground">
-            {isAr ? "اكتشف الأحداث القريبة منك والعالمية" : "Discover events near you and worldwide"}
+          <p className="mt-2 text-sm text-muted-foreground">
+            {isAr ? "اكتشف الأحداث القريبة منك والفعاليات الدولية المميزة" : "Discover events near you and standout international gatherings"}
           </p>
         </div>
 
@@ -91,7 +95,7 @@ export function RegionalEvents() {
               <div className="grid gap-4 grid-cols-2 sm:grid-cols-3 lg:grid-cols-4">{middleEast.map(renderComp)}</div>
             ) : (
               <div className="py-10 text-center text-muted-foreground">
-                {isAr ? "لا توجد فعاليات في الشرق الأوسط حالياً" : "No Middle East events currently"}
+                {isAr ? "لا توجد فعاليات حالياً — ترقبوا القادم!" : "No events currently — exciting ones are coming soon!"}
               </div>
             )}
           </TabsContent>
