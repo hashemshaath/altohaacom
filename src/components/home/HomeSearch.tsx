@@ -8,10 +8,10 @@ import { cn } from "@/lib/utils";
 
 const categories = [
   { key: "all", icon: Search, labelEn: "All", labelAr: "الكل" },
-  { key: "competitions", icon: Trophy, labelEn: "Competitions", labelAr: "مسابقات" },
-  { key: "exhibitions", icon: Globe, labelEn: "Exhibitions", labelAr: "معارض" },
-  { key: "chefs", icon: ChefHat, labelEn: "Chefs", labelAr: "طهاة" },
-  { key: "tastings", icon: Utensils, labelEn: "Tastings", labelAr: "تذوق" },
+  { key: "competitions", icon: Trophy, labelEn: "Competitions", labelAr: "المسابقات" },
+  { key: "exhibitions", icon: Globe, labelEn: "Exhibitions", labelAr: "المعارض" },
+  { key: "chefs", icon: ChefHat, labelEn: "Chefs", labelAr: "الطهاة" },
+  { key: "tastings", icon: Utensils, labelEn: "Tastings", labelAr: "التذوق" },
 ];
 
 export function HomeSearch() {
@@ -33,7 +33,7 @@ export function HomeSearch() {
       <div className="container">
         <div className="mx-auto max-w-3xl rounded-2xl border border-border/60 bg-card/95 backdrop-blur-lg p-4 shadow-2xl shadow-primary/8 ring-1 ring-primary/5 sm:p-5">
           {/* Category pills */}
-          <div className="mb-3 flex flex-wrap gap-1 sm:mb-4 sm:gap-1.5">
+          <div className="mb-3 flex flex-wrap gap-1.5 sm:mb-4">
             {categories.map((cat) => (
               <button
                 key={cat.key}

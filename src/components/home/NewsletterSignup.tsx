@@ -31,7 +31,7 @@ export function NewsletterSignup() {
           throw error;
         }
       } else {
-        toast({ title: isAr ? "تم الاشتراك!" : "Subscribed!", description: isAr ? "شكراً لاشتراكك في نشرتنا الإخبارية" : "Thank you for subscribing to our newsletter" });
+        toast({ title: isAr ? "تم الاشتراك!" : "Subscribed!", description: isAr ? "شكراً لانضمامك! سنرسل لك أحدث الأخبار." : "Thanks for joining! We'll send you the latest updates." });
         setEmail("");
       }
     } catch {
@@ -43,11 +43,11 @@ export function NewsletterSignup() {
 
   return (
     <section ref={ref} className="relative border-y overflow-hidden">
-      {/* Subtle gradient background */}
-      <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-card/80 to-accent/5" />
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,hsl(var(--primary)/0.06),transparent_70%)]" />
+      {/* Vibrant gradient background */}
+      <div className="absolute inset-0 bg-gradient-to-br from-primary/8 via-card/80 to-accent/8" />
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,hsl(var(--primary)/0.08),transparent_70%)]" />
 
-      <div className="container relative py-12 md:py-16">
+      <div className="container relative py-14 md:py-20">
         <div
           className={cn(
             "mx-auto max-w-xl text-center transition-all duration-700",
@@ -59,13 +59,15 @@ export function NewsletterSignup() {
           </div>
           <div className="mb-1 flex items-center justify-center gap-1.5 text-xs text-primary font-medium">
             <Sparkles className="h-3.5 w-3.5" />
-            {isAr ? "ابقَ على اطلاع" : "Stay Updated"}
+            {isAr ? "لا تفوّت الجديد" : "Stay in the Loop"}
           </div>
           <h2 className="font-serif text-xl font-bold sm:text-2xl">
-            {isAr ? "اشترك في النشرة الإخبارية" : "Subscribe to Our Newsletter"}
+            {isAr ? "اشترك في نشرتنا الإخبارية" : "Subscribe to Our Newsletter"}
           </h2>
           <p className="mt-2 text-sm text-muted-foreground leading-relaxed">
-            {isAr ? "احصل على آخر الأخبار والمسابقات والمقالات مباشرة" : "Get the latest news, competitions, and articles delivered to you"}
+            {isAr
+              ? "كن أول من يعرف عن المسابقات القادمة والمقالات الحصرية والفرص المميزة."
+              : "Be the first to know about upcoming competitions, exclusive articles & special opportunities."}
           </p>
           <form onSubmit={handleSubmit} className="mt-6 flex gap-2 sm:mx-auto sm:max-w-md">
             <Input
@@ -81,7 +83,7 @@ export function NewsletterSignup() {
             </Button>
           </form>
           <p className="mt-3 text-[11px] text-muted-foreground/60">
-            {isAr ? "لا رسائل مزعجة. يمكنك إلغاء الاشتراك في أي وقت." : "No spam. Unsubscribe anytime."}
+            {isAr ? "بدون إزعاج. يمكنك إلغاء الاشتراك في أي وقت." : "No spam ever. Unsubscribe anytime."}
           </p>
         </div>
       </div>

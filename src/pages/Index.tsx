@@ -9,7 +9,7 @@ import { HomeStats } from "@/components/home/HomeStats";
 import { useAdTracking } from "@/hooks/useAdTracking";
 import { prefetchCommonRoutes } from "@/lib/prefetch";
 
-// Lazy load below-fold components with granular Suspense boundaries
+// Lazy load below-fold components
 const EventsByCategory = lazy(() => import("@/components/home/EventsByCategory").then(m => ({ default: m.EventsByCategory })));
 const RegionalEvents = lazy(() => import("@/components/home/RegionalEvents").then(m => ({ default: m.RegionalEvents })));
 const HomeArticles = lazy(() => import("@/components/home/HomeArticles").then(m => ({ default: memo(m.HomeArticles) })));
@@ -38,6 +38,7 @@ LazyFallback.displayName = "LazyFallback";
 const Index = () => {
   useAdTracking();
   useEffect(() => { prefetchCommonRoutes(); }, []);
+
   return (
     <div className="flex min-h-screen flex-col overflow-x-hidden" role="document">
       <SEOHead
@@ -47,65 +48,76 @@ const Index = () => {
       />
       <Header />
 
-      {/* 1. Hero Slider */}
-      <HeroSlider />
+      <main>
+        {/* Hero Slider */}
+        <HeroSlider />
 
-      {/* 2. Search Bar */}
-      <HomeSearch />
+        {/* Search Bar */}
+        <HomeSearch />
 
-      {/* 3. Stats */}
-      <div className="mt-6">
-        <HomeStats />
-      </div>
+        {/* Stats */}
+        <div className="mt-6">
+          <HomeStats />
+        </div>
 
-      {/* Below-fold: granular Suspense boundaries for parallel loading */}
-      <Suspense fallback={<LazyFallback />}>
-        <section className="container py-4">
-          <AdBanner placementSlug="home-hero-banner" className="w-full rounded-xl overflow-hidden aspect-[728/90] sm:aspect-[970/90] max-h-[120px]" />
-        </section>
-      </Suspense>
+        {/* Ad Banner */}
+        <Suspense fallback={<LazyFallback />}>
+          <section className="container py-4">
+            <AdBanner placementSlug="home-hero-banner" className="w-full rounded-xl overflow-hidden aspect-[728/90] sm:aspect-[970/90] max-h-[120px]" />
+          </section>
+        </Suspense>
 
-      <Suspense fallback={<LazyFallback />}>
-        <EventsByCategory />
-      </Suspense>
+        {/* Events by Category */}
+        <Suspense fallback={<LazyFallback />}>
+          <EventsByCategory />
+        </Suspense>
 
-      <Suspense fallback={<LazyFallback />}>
-        <RegionalEvents />
-      </Suspense>
+        {/* Regional Events */}
+        <Suspense fallback={<LazyFallback />}>
+          <RegionalEvents />
+        </Suspense>
 
-      <Suspense fallback={<LazyFallback />}>
-        <PlatformFeatures />
-      </Suspense>
+        {/* Platform Features */}
+        <Suspense fallback={<LazyFallback />}>
+          <PlatformFeatures />
+        </Suspense>
 
-      <Suspense fallback={<LazyFallback />}>
-        <SponsorshipOpportunities />
-      </Suspense>
+        {/* Sponsorship */}
+        <Suspense fallback={<LazyFallback />}>
+          <SponsorshipOpportunities />
+        </Suspense>
 
-      <Suspense fallback={<LazyFallback />}>
-        <section className="container py-4">
-          <AdBanner placementSlug="in-feed" className="w-full max-w-3xl mx-auto rounded-xl overflow-hidden aspect-[728/90] sm:aspect-[970/250] max-h-[250px]" />
-        </section>
-      </Suspense>
+        {/* In-feed Ad */}
+        <Suspense fallback={<LazyFallback />}>
+          <section className="container py-4">
+            <AdBanner placementSlug="in-feed" className="w-full max-w-3xl mx-auto rounded-xl overflow-hidden aspect-[728/90] sm:aspect-[970/250] max-h-[250px]" />
+          </section>
+        </Suspense>
 
-      <Suspense fallback={<LazyFallback />}>
-        <HomeArticles />
-      </Suspense>
+        {/* Articles */}
+        <Suspense fallback={<LazyFallback />}>
+          <HomeArticles />
+        </Suspense>
 
-      <Suspense fallback={<LazyFallback />}>
-        <NewsletterSignup />
-      </Suspense>
+        {/* Newsletter */}
+        <Suspense fallback={<LazyFallback />}>
+          <NewsletterSignup />
+        </Suspense>
 
-      <Suspense fallback={<LazyFallback />}>
-        <SponsorCarousel />
-      </Suspense>
+        {/* Sponsors */}
+        <Suspense fallback={<LazyFallback />}>
+          <SponsorCarousel />
+        </Suspense>
 
-      <Suspense fallback={<LazyFallback />}>
-        <PartnersLogos />
-      </Suspense>
+        {/* Partners */}
+        <Suspense fallback={<LazyFallback />}>
+          <PartnersLogos />
+        </Suspense>
 
-      <Suspense fallback={null}>
-        <AdPopup />
-      </Suspense>
+        <Suspense fallback={null}>
+          <AdPopup />
+        </Suspense>
+      </main>
 
       <Footer />
     </div>

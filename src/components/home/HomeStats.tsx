@@ -62,7 +62,7 @@ export function HomeStats() {
 
   return (
     <section ref={ref} className="border-y border-border/40 bg-card/60 backdrop-blur-sm">
-      <div className="container grid grid-cols-2 sm:grid-cols-4 gap-6 py-10 sm:py-12 divide-x divide-border/30 rtl:divide-x-reverse">
+      <div className="container grid grid-cols-2 sm:grid-cols-4 gap-6 py-10 sm:py-12">
         {items.map((stat, i) => (
           <StatItem key={stat.label} {...stat} isVisible={isVisible} delay={i * 120} />
         ))}

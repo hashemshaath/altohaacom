@@ -6,9 +6,9 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
-import { Crown, Trophy, Calendar, MapPin, ArrowRight, Building2, Sparkles, Users } from "lucide-react";
+import { Crown, Trophy, Calendar, MapPin, ArrowRight, Building2, Sparkles } from "lucide-react";
 import { format } from "date-fns";
-import { formatCurrency, SAR_SYMBOL } from "@/lib/currencyFormatter";
+import { formatCurrency } from "@/lib/currencyFormatter";
 
 const TIER_LABELS: Record<string, { en: string; ar: string; color: string }> = {
   platinum: { en: "Platinum", ar: "بلاتيني", color: "bg-chart-3/10 text-chart-3 border-chart-3/30" },
@@ -21,7 +21,6 @@ export function SponsorshipOpportunities() {
   const { language } = useLanguage();
   const isAr = language === "ar";
 
-  // Fetch competitions that are open and have sponsorship packages available
   const { data: opportunities = [] } = useQuery({
     queryKey: ["home-sponsorship-opportunities"],
     queryFn: async () => {
@@ -35,7 +34,6 @@ export function SponsorshipOpportunities() {
         .order("competition_start", { ascending: true })
         .limit(8);
 
-      // Also get available packages
       const { data: packages } = await supabase
         .from("sponsorship_packages")
         .select("id, name, name_ar, tier, price, currency")
@@ -55,23 +53,24 @@ export function SponsorshipOpportunities() {
   if (opportunities.length === 0) return null;
 
   return (
-    <section className="py-12 md:py-16 bg-gradient-to-b from-transparent via-primary/[0.02] to-transparent">
-      <div className="container">
+    <section className="relative overflow-hidden py-14 md:py-20">
+      <div className="absolute inset-0 bg-gradient-to-b from-transparent via-primary/[0.03] to-transparent" />
+      <div className="container relative">
         <div className="mb-8 flex items-center justify-between">
           <div>
             <div className="mb-2 inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/5 px-3 py-1">
               <Sparkles className="h-3.5 w-3.5 text-primary" />
               <span className="text-xs font-medium text-primary">
-                {isAr ? "فرص رعاية حصرية" : "Sponsorship Opportunities"}
+                {isAr ? "فرص رعاية حصرية" : "Exclusive Sponsorship Opportunities"}
               </span>
             </div>
             <h2 className="font-serif text-2xl font-bold sm:text-3xl">
-              {isAr ? "كن شريكاً في النجاح" : "Partner with Excellence"}
+              {isAr ? "كن شريكاً في صناعة النجاح" : "Be a Partner in Shaping Success"}
             </h2>
             <p className="mt-1 text-sm text-muted-foreground">
               {isAr
-                ? "استثمر في رعاية مسابقات الطهي وارتبط بأفضل الطهاة في العالم"
-                : "Sponsor culinary competitions and connect with world-class chefs"}
+                ? "ادعم مسابقات الطهي العالمية واربط علامتك بأمهر الطهاة"
+                : "Support world-class culinary competitions & connect your brand with top chefs"}
             </p>
           </div>
           <Button variant="outline" size="sm" asChild className="hidden sm:inline-flex">
@@ -82,7 +81,7 @@ export function SponsorshipOpportunities() {
           </Button>
         </div>
 
-        {/* Sponsorship Packages Quick Overview */}
+        {/* Sponsorship Packages */}
         {opportunities[0]?.packages?.length > 0 && (
           <div className="mb-6">
             <ScrollArea className="w-full">
@@ -98,11 +97,11 @@ export function SponsorshipOpportunities() {
                       <span className="text-xs font-medium">
                         {isAr && pkg.name_ar ? pkg.name_ar : pkg.name}
                       </span>
-                       {pkg.price && (
-                         <span className="text-xs font-bold">
-                           {formatCurrency(Number(pkg.price), language as "en" | "ar")}
-                         </span>
-                       )}
+                      {pkg.price && (
+                        <span className="text-xs font-bold">
+                          {formatCurrency(Number(pkg.price), language as "en" | "ar")}
+                        </span>
+                      )}
                     </div>
                   );
                 })}
@@ -166,10 +165,10 @@ export function SponsorshipOpportunities() {
                     <div className="flex items-center justify-between pt-1 border-t border-border/50">
                       <div className="flex items-center gap-1 text-[11px] text-muted-foreground">
                         <Building2 className="h-3 w-3" />
-                        <span>{comp.currentSponsors} {isAr ? "راعي" : "sponsors"}</span>
+                        <span>{comp.currentSponsors} {isAr ? "راعٍ" : "sponsors"}</span>
                       </div>
                       <span className="text-[11px] font-medium text-primary">
-                        {isAr ? "تقدم الآن ←" : "Apply →"}
+                        {isAr ? "تقدّم الآن" : "Apply Now"} →
                       </span>
                     </div>
                   </CardContent>

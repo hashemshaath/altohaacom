@@ -28,16 +28,19 @@ export function HomeArticles() {
   if (articles.length === 0) return null;
 
   return (
-    <section className="container py-12 md:py-16">
-      <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+    <section className="container py-14 md:py-20">
+      <div className="mb-8 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
         <div>
           <Badge variant="secondary" className="mb-2">
             <Newspaper className="me-1 h-3 w-3" />
-            {isAr ? "أخبار ومقالات" : "News & Articles"}
+            {isAr ? "أحدث المقالات" : "Latest Articles"}
           </Badge>
           <h2 className="font-serif text-2xl font-bold sm:text-3xl">
-            {isAr ? "آخر الأخبار والمقالات" : "Latest News & Articles"}
+            {isAr ? "أخبار ومقالات ملهمة" : "Inspiring News & Articles"}
           </h2>
+          <p className="mt-1 text-sm text-muted-foreground">
+            {isAr ? "قصص نجاح ونصائح وأخبار من عالم الطهي" : "Success stories, tips & news from the culinary world"}
+          </p>
         </div>
         <Button variant="outline" size="sm" asChild>
           <Link to="/news">
@@ -57,7 +60,9 @@ export function HomeArticles() {
                   {article.featured_image_url ? (
                     <img src={article.featured_image_url} alt={title} className="h-full w-full object-cover transition-transform group-hover:scale-105" loading="lazy" />
                   ) : (
-                    <div className="flex h-full items-center justify-center"><Newspaper className="h-8 w-8 text-muted-foreground/20" /></div>
+                    <div className="flex h-full items-center justify-center bg-gradient-to-br from-primary/10 to-primary/5">
+                      <Newspaper className="h-8 w-8 text-primary/20" />
+                    </div>
                   )}
                   <Badge className="absolute start-2 top-2" variant="secondary">{article.type}</Badge>
                 </div>

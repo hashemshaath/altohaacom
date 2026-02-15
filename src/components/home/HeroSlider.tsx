@@ -4,7 +4,7 @@ import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { Button } from "@/components/ui/button";
-import { ArrowRight, ChevronLeft, ChevronRight } from "lucide-react";
+import { ArrowRight, ChevronLeft, ChevronRight, Sparkles } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 export function HeroSlider() {
@@ -38,20 +38,53 @@ export function HeroSlider() {
     return () => clearInterval(timer);
   }, [next, slides.length]);
 
+  // Fallback hero when no slides configured
   if (!slides.length) {
     return (
-      <section className="relative flex items-center justify-center overflow-hidden bg-gradient-to-br from-primary/10 via-background to-background py-28 md:py-40">
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,hsl(var(--primary)/0.08),transparent_70%)]" />
+      <section className="relative flex items-center justify-center overflow-hidden py-32 md:py-44">
+        {/* Animated gradient background */}
+        <div className="absolute inset-0 bg-gradient-to-br from-primary/15 via-background to-accent/10" />
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,hsl(var(--primary)/0.12),transparent_60%)]" />
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom_left,hsl(var(--accent)/0.08),transparent_60%)]" />
+        
+        {/* Floating orbs */}
+        <div className="absolute top-20 end-[15%] h-64 w-64 rounded-full bg-primary/8 blur-3xl animate-pulse" />
+        <div className="absolute bottom-10 start-[10%] h-48 w-48 rounded-full bg-accent/10 blur-3xl animate-pulse" style={{ animationDelay: "1.5s" }} />
+
         <div className="container relative text-center">
-          <div className="mx-auto mb-5 rounded-2xl bg-primary/5 p-5 ring-1 ring-primary/15 inline-block shadow-lg shadow-primary/5">
-            <img src="/altohaa-logo.png" alt="Altohaa" className="h-16 w-auto sm:h-20" />
+          <div className="mx-auto mb-6 inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/5 px-4 py-2 backdrop-blur-sm">
+            <Sparkles className="h-4 w-4 text-primary" />
+            <span className="text-sm font-medium text-primary">
+              {isAr ? "المنصة الأولى عالمياً" : "The World's #1 Culinary Platform"}
+            </span>
           </div>
-          <h1 className="font-serif text-4xl font-bold sm:text-5xl md:text-6xl">
-            <span className="bg-gradient-to-br from-primary via-primary/80 to-accent bg-clip-text text-transparent">Altohaa</span>
+          <h1 className="font-serif text-4xl font-bold sm:text-5xl md:text-6xl lg:text-7xl leading-tight">
+            <span className="bg-gradient-to-br from-primary via-primary/80 to-accent bg-clip-text text-transparent">
+              {isAr ? "ارتقِ بشغفك" : "Elevate Your"}
+            </span>
+            <br />
+            <span className="text-foreground">
+              {isAr ? "في عالم الطهي" : "Culinary Journey"}
+            </span>
           </h1>
-          <p className="mt-3 text-lg text-muted-foreground">
-            {isAr ? "منصة مجتمع الطهي العالمي" : "The Global Culinary Community"}
+          <p className="mx-auto mt-5 max-w-xl text-lg text-muted-foreground leading-relaxed">
+            {isAr
+              ? "تنافس، تعلّم، وتواصل مع أفضل الطهاة حول العالم. منصة واحدة تجمع المسابقات والمعارض والدروس الاحترافية."
+              : "Compete, learn, and connect with the finest chefs worldwide. One platform uniting competitions, exhibitions, and professional growth."}
           </p>
+          <div className="mt-8 flex flex-wrap justify-center gap-3">
+            <Button size="lg" className="shadow-lg shadow-primary/25 text-base px-8" asChild>
+              <Link to="/register">
+                {isAr ? "ابدأ رحلتك" : "Start Your Journey"}
+                <ArrowRight className="ms-2 h-4 w-4" />
+              </Link>
+            </Button>
+            <Button size="lg" variant="outline" className="text-base px-8" asChild>
+              <Link to="/competitions">
+                {isAr ? "استكشف المسابقات" : "Explore Competitions"}
+              </Link>
+            </Button>
+          </div>
         </div>
       </section>
     );
@@ -83,9 +116,14 @@ export function HeroSlider() {
             loading={i === 0 ? "eager" : "lazy"}
             decoding="async"
           />
-          {/* Enhanced gradient overlay for better text readability */}
+          {/* Enhanced gradient overlay */}
           <div className="absolute inset-0 bg-gradient-to-t from-background via-background/60 to-background/20" />
-          <div className="absolute inset-0 bg-gradient-to-r from-background/50 via-background/20 to-transparent" />
+          <div className={cn(
+            "absolute inset-0",
+            isAr
+              ? "bg-gradient-to-l from-background/50 via-background/20 to-transparent"
+              : "bg-gradient-to-r from-background/50 via-background/20 to-transparent"
+          )} />
         </div>
       ))}
 
@@ -119,14 +157,14 @@ export function HeroSlider() {
           <button
             onClick={prev}
             className="absolute start-4 top-1/2 z-30 -translate-y-1/2 flex h-11 w-11 items-center justify-center rounded-full bg-background/70 backdrop-blur-md text-foreground shadow-lg ring-1 ring-border/20 transition-all hover:bg-background/90 hover:scale-105"
-            aria-label="Previous slide"
+            aria-label={isAr ? "الشريحة السابقة" : "Previous slide"}
           >
             <ChevronLeft className="h-5 w-5" />
           </button>
           <button
             onClick={next}
             className="absolute end-4 top-1/2 z-30 -translate-y-1/2 flex h-11 w-11 items-center justify-center rounded-full bg-background/70 backdrop-blur-md text-foreground shadow-lg ring-1 ring-border/20 transition-all hover:bg-background/90 hover:scale-105"
-            aria-label="Next slide"
+            aria-label={isAr ? "الشريحة التالية" : "Next slide"}
           >
             <ChevronRight className="h-5 w-5" />
           </button>
@@ -141,7 +179,7 @@ export function HeroSlider() {
                   "h-2 rounded-full transition-all duration-500",
                   i === current ? "w-10 bg-primary shadow-sm shadow-primary/30" : "w-2 bg-foreground/25 hover:bg-foreground/40"
                 )}
-                aria-label={`Go to slide ${i + 1}`}
+                aria-label={`${isAr ? "انتقل للشريحة" : "Go to slide"} ${i + 1}`}
               />
             ))}
           </div>
