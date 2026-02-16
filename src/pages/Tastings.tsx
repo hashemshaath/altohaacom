@@ -11,6 +11,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Plus, Search, UtensilsCrossed, Calendar, MapPin, Eye, Trophy } from "lucide-react";
 import { format } from "date-fns";
 
@@ -29,10 +30,13 @@ export default function Tastings() {
   const { user } = useAuth();
   const { data: sessions, isLoading } = useTastingSessions();
   const [search, setSearch] = useState("");
+  const [statusFilter, setStatusFilter] = useState("all");
 
   const filtered = sessions?.filter(s => {
     const q = search.toLowerCase();
-    return s.title.toLowerCase().includes(q) || s.description?.toLowerCase().includes(q);
+    const matchSearch = s.title.toLowerCase().includes(q) || s.description?.toLowerCase().includes(q);
+    const matchStatus = statusFilter === "all" || s.status === statusFilter;
+    return matchSearch && matchStatus;
   });
 
   return (
@@ -69,10 +73,23 @@ export default function Tastings() {
 
         <main className="container py-8">
           {/* Sticky Glass Search */}
-          <div className="sticky top-[64px] z-30 -mx-4 mb-10 bg-background/80 px-4 py-4 backdrop-blur-md border-y border-border/40 md:rounded-2xl md:border md:mx-0 md:px-6 shadow-sm">
-            <div className="relative max-w-md">
-              <Search className="absolute start-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-              <Input placeholder={isAr ? "بحث..." : "Search sessions..."} value={search} onChange={e => setSearch(e.target.value)} className="ps-10 bg-card/50 border-border/40" />
+          <div className="sticky top-[64px] z-40 -mx-4 mb-10 bg-background/80 px-4 py-4 backdrop-blur-md border-y border-border/40 md:rounded-2xl md:border md:mx-0 md:px-6 shadow-sm">
+            <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
+              <div className="relative flex-1 sm:max-w-md">
+                <Search className="absolute start-4 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground/60" />
+                <Input placeholder={isAr ? "بحث..." : "Search sessions..."} value={search} onChange={e => setSearch(e.target.value)} className="h-11 border-border/40 bg-muted/20 ps-11 transition-all focus:bg-background focus:ring-primary/20 rounded-xl" />
+              </div>
+              <Select value={statusFilter} onValueChange={setStatusFilter}>
+                <SelectTrigger className="h-11 w-full border-border/40 bg-muted/20 rounded-xl sm:w-40 focus:ring-primary/20"><SelectValue /></SelectTrigger>
+                <SelectContent className="rounded-xl border-border/40">
+                  <SelectItem value="all" className="rounded-lg">{isAr ? "كل الحالات" : "All Statuses"}</SelectItem>
+                  <SelectItem value="draft" className="rounded-lg">{isAr ? "مسودة" : "Draft"}</SelectItem>
+                  <SelectItem value="open" className="rounded-lg">{isAr ? "مفتوح" : "Open"}</SelectItem>
+                  <SelectItem value="in_progress" className="rounded-lg">{isAr ? "قيد التنفيذ" : "In Progress"}</SelectItem>
+                  <SelectItem value="completed" className="rounded-lg">{isAr ? "مكتمل" : "Completed"}</SelectItem>
+                  <SelectItem value="cancelled" className="rounded-lg">{isAr ? "ملغي" : "Cancelled"}</SelectItem>
+                </SelectContent>
+              </Select>
             </div>
           </div>
 

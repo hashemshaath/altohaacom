@@ -120,6 +120,7 @@ export default function Recipes() {
   const [cuisine, setCuisine] = useState("all");
   const [difficulty, setDifficulty] = useState("all");
   const [category, setCategory] = useState("all");
+  const [sortBy, setSortBy] = useState("newest");
 
   const { data: cuisines = [] } = useDistinctCuisines();
   const { data: recipes = [], isLoading } = useRecipes({
@@ -225,6 +226,14 @@ export default function Recipes() {
                     ))}
                   </SelectContent>
                 </Select>
+                <Select value={sortBy} onValueChange={setSortBy}>
+                  <SelectTrigger className="h-11 w-full border-border/40 bg-muted/20 rounded-xl sm:w-36 focus:ring-primary/20"><SelectValue /></SelectTrigger>
+                  <SelectContent className="rounded-xl border-border/40">
+                    <SelectItem value="newest" className="rounded-lg">{isAr ? "الأحدث" : "Newest"}</SelectItem>
+                    <SelectItem value="top_rated" className="rounded-lg">{isAr ? "الأعلى تقييماً" : "Top Rated"}</SelectItem>
+                    <SelectItem value="quickest" className="rounded-lg">{isAr ? "الأسرع" : "Quickest"}</SelectItem>
+                  </SelectContent>
+                </Select>
               </div>
             </div>
           </div>
@@ -260,7 +269,11 @@ export default function Recipes() {
             </div>
           ) : (
             <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-              {recipes.map(recipe => (
+              {[...recipes].sort((a, b) => {
+                if (sortBy === "top_rated") return b.avg_rating - a.avg_rating;
+                if (sortBy === "quickest") return ((a.prep_time_minutes || 0) + (a.cook_time_minutes || 0)) - ((b.prep_time_minutes || 0) + (b.cook_time_minutes || 0));
+                return 0; // newest is default from API
+              }).map(recipe => (
                 <RecipeCard key={recipe.id} recipe={recipe} isAr={isAr} />
               ))}
             </div>
