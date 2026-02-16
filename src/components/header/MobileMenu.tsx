@@ -20,6 +20,7 @@ import {
   LogOut,
   MessageSquare,
   HelpCircle,
+  ArrowRight,
 } from "lucide-react";
 import { useState } from "react";
 
@@ -103,16 +104,18 @@ export function MobileMenu({ primaryNav, moreLinks }: MobileMenuProps) {
         <SheetContent side={isAr ? "right" : "left"} className="w-[300px] p-0">
           <div className="flex h-full flex-col">
             {/* Header */}
-            <div className="flex items-center gap-2.5 border-b p-4 bg-muted/20">
-              <img src="/altohaa-logo.png" alt="Altohaa" className="h-8 w-auto" />
-              <span className="font-serif text-lg font-bold text-primary">Altohaa</span>
+            <div className="flex items-center justify-between border-b p-4 bg-gradient-to-b from-primary/5 to-transparent">
+              <div className="flex items-center gap-2.5">
+                <img src="/altohaa-logo.png" alt="Altohaa" className="h-8 w-auto" />
+                <span className="font-serif text-lg font-bold text-primary">Altohaa</span>
+              </div>
             </div>
 
             {/* User info bar */}
             {user && (
-              <div className="border-b px-4 py-3 bg-muted/10">
-                <div className="flex items-center gap-3">
-                  <Avatar className="h-9 w-9 border border-primary/20">
+              <Link to="/profile" onClick={() => setOpen(false)} className="block border-b hover:bg-muted/20 transition-colors">
+                <div className="flex items-center gap-3 px-4 py-3">
+                  <Avatar className="h-10 w-10 border-2 border-primary/20 shadow-sm">
                     <AvatarImage src={profile?.avatar_url || undefined} alt={profile?.full_name || ""} />
                     <AvatarFallback className="text-xs font-bold bg-primary/10 text-primary">
                       {initials}
@@ -120,12 +123,13 @@ export function MobileMenu({ primaryNav, moreLinks }: MobileMenuProps) {
                   </Avatar>
                   <div className="min-w-0 flex-1">
                     {profile?.full_name && (
-                      <p className="text-sm font-medium truncate">{profile.full_name}</p>
+                      <p className="text-sm font-semibold truncate">{profile.full_name}</p>
                     )}
-                    <p className="text-xs text-muted-foreground truncate">{user.email}</p>
+                    <p className="text-[11px] text-muted-foreground truncate">{user.email}</p>
                   </div>
+                  <ArrowRight className="h-4 w-4 text-muted-foreground/50 shrink-0" />
                 </div>
-              </div>
+              </Link>
             )}
 
             <nav className="flex-1 overflow-y-auto p-3 space-y-1">

@@ -94,14 +94,14 @@ export default function Profile() {
   }
 
   const tabs = [
-    { id: "overview", label: isAr ? "نظرة عامة" : "Overview", icon: User },
-    { id: "membership", label: isAr ? "العضوية" : "Membership", icon: Crown },
-    { id: "wallet", label: isAr ? "المحفظة" : "Wallet", icon: Wallet },
-    { id: "referrals", label: isAr ? "الإحالات" : "Referrals", icon: Gift },
-    { id: "invoices", label: isAr ? "الفواتير" : "Invoices", icon: FileText },
-    { id: "analytics", label: isAr ? "الإحصائيات" : "Analytics", icon: BarChart3 },
-    { id: "edit", label: isAr ? "تعديل" : "Edit", icon: Edit },
-    { id: "privacy", label: isAr ? "الخصوصية" : "Privacy", icon: Shield },
+    { id: "overview", label: isAr ? "نظرة عامة" : "Overview", icon: User, description: isAr ? "ملخص عام" : "Your summary" },
+    { id: "membership", label: isAr ? "العضوية" : "Membership", icon: Crown, description: isAr ? "خطتك الحالية" : "Your plan" },
+    { id: "wallet", label: isAr ? "المحفظة" : "Wallet", icon: Wallet, description: isAr ? "الرصيد والنقاط" : "Balance & points" },
+    { id: "referrals", label: isAr ? "الإحالات" : "Referrals", icon: Gift, description: isAr ? "دعوة الأصدقاء" : "Invite friends" },
+    { id: "invoices", label: isAr ? "الفواتير" : "Invoices", icon: FileText, description: isAr ? "سجل الدفعات" : "Payment history" },
+    { id: "analytics", label: isAr ? "الإحصائيات" : "Analytics", icon: BarChart3, description: isAr ? "أداء الملف" : "Profile insights" },
+    { id: "edit", label: isAr ? "تعديل" : "Edit", icon: Edit, description: isAr ? "تحديث البيانات" : "Update info" },
+    { id: "privacy", label: isAr ? "الخصوصية" : "Privacy", icon: Shield, description: isAr ? "إعدادات الأمان" : "Security settings" },
   ];
 
   return (
@@ -115,17 +115,17 @@ export default function Profile() {
           )}
         </div>
 
-        <Tabs value={activeTab} onValueChange={setActiveTab} className="mt-10">
-          <div className="sticky top-[64px] z-30 -mx-4 border-y border-border/40 bg-background/80 px-4 py-3 backdrop-blur-md md:rounded-2xl md:border md:mx-0 md:px-6 shadow-sm">
-            <TabsList className="h-auto w-full justify-start gap-1.5 overflow-x-auto bg-transparent p-0 no-scrollbar snap-x snap-mandatory">
+        <Tabs value={activeTab} onValueChange={setActiveTab} className="mt-8">
+          <div className="sticky top-[56px] z-30 -mx-4 border-y border-border/30 bg-background/90 px-4 py-2 backdrop-blur-xl md:rounded-2xl md:border md:mx-0 md:px-4 shadow-sm">
+            <TabsList className="h-auto w-full justify-start gap-1 overflow-x-auto bg-transparent p-0 no-scrollbar snap-x snap-mandatory">
               {tabs.map((tab) => (
                 <TabsTrigger
                   key={tab.id}
                   value={tab.id}
-                  className="group relative flex items-center gap-2 rounded-xl px-4 py-2.5 text-xs font-bold uppercase tracking-widest transition-all duration-300 snap-start min-w-max data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-lg data-[state=active]:shadow-primary/20 hover:bg-primary/5 hover:text-primary"
+                  className="group relative flex items-center gap-2 rounded-xl px-3 py-2 text-xs font-semibold transition-all duration-200 snap-start min-w-max data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-md data-[state=active]:shadow-primary/20 hover:bg-muted/60"
                 >
-                  <tab.icon className="h-4 w-4 shrink-0 transition-transform duration-300 group-hover:scale-110 group-data-[state=active]:scale-110" />
-                  <span className="relative z-10">{tab.label}</span>
+                  <tab.icon className="h-3.5 w-3.5 shrink-0" />
+                  <span>{tab.label}</span>
                 </TabsTrigger>
               ))}
             </TabsList>
