@@ -74,7 +74,7 @@ export function ProfileHeader({ profile, roles, userId, onProfileUpdate }: Profi
         <Button
           variant="secondary"
           size="sm"
-          className="absolute end-4 top-4 h-9 gap-2 bg-background/40 backdrop-blur-xl border-white/10 text-xs font-bold uppercase tracking-wider shadow-lg rounded-xl hover:bg-background/60 transition-all"
+          className="absolute end-4 top-4 h-9 gap-2 bg-background/60 backdrop-blur-xl border-border/30 text-foreground text-xs font-bold uppercase tracking-wider shadow-lg rounded-xl hover:bg-background/80 transition-all"
           onClick={() => coverInputRef.current?.click()}
           disabled={uploading}
         >

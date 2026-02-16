@@ -92,7 +92,7 @@ export default function Dashboard() {
               </div>
             </div>
             <Link to="/profile?tab=edit">
-              <Button variant="secondary" className="bg-background/40 backdrop-blur-md border-border/40 hover:bg-background/60 gap-2 shadow-sm rounded-xl">
+              <Button variant="secondary" className="gap-2 shadow-sm rounded-xl">
                 {isAr ? "إدارة الملف الشخصي" : "Manage Profile"}
                 <ArrowRight className="h-4 w-4" />
               </Button>
