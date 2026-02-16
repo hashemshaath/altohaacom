@@ -12,6 +12,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { SEOHead } from "@/components/SEOHead";
+import { Input } from "@/components/ui/input";
 import {
   GraduationCap,
   Users,
@@ -22,12 +23,14 @@ import {
   Target,
   BookOpen,
   User,
+  Search,
 } from "lucide-react";
 
 export default function Mentorship() {
   const { language } = useLanguage();
   const { user } = useAuth();
   const isAr = language === "ar";
+  const [search, setSearch] = useState("");
   const { data: programs = [], isLoading } = useMentorshipPrograms("active");
   const { data: myMatches = [] } = useMyMentorshipMatches();
   const { data: myApplication } = useMyMentorApplication();
@@ -90,7 +93,11 @@ export default function Mentorship() {
 
         <div className="container py-4 md:py-6 space-y-8">
           <Tabs defaultValue="programs">
-            <div className="sticky top-[64px] z-30 -mx-4 border-y border-border/40 bg-background/80 px-4 py-3 backdrop-blur-md md:rounded-2xl md:border md:mx-0 md:px-6">
+            <div className="sticky top-[64px] z-40 -mx-4 border-y border-border/40 bg-background/80 px-4 py-3 backdrop-blur-md md:rounded-2xl md:border md:mx-0 md:px-6 space-y-3">
+              <div className="relative max-w-md">
+                <Search className="absolute start-4 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground/60" />
+                <Input placeholder={isAr ? "ابحث عن برنامج..." : "Search programs..."} value={search} onChange={e => setSearch(e.target.value)} className="h-11 border-border/40 bg-muted/20 ps-11 transition-all focus:bg-background focus:ring-primary/20 rounded-xl" />
+              </div>
               <TabsList className="h-auto w-full justify-start gap-1.5 overflow-x-auto bg-transparent p-0 no-scrollbar">
                 <TabsTrigger value="programs" className="gap-2 rounded-xl px-5 py-2.5 text-xs font-bold uppercase tracking-wider transition-all data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-lg data-[state=active]:shadow-primary/20 hover:bg-primary/5 hover:text-primary">
                   <BookOpen className="h-3.5 w-3.5" />
@@ -115,7 +122,13 @@ export default function Mentorship() {
                     <Card key={i}><CardContent className="py-8"><Skeleton className="h-40 w-full" /></CardContent></Card>
                   ))}
                 </div>
-              ) : programs.length === 0 ? (
+              ) : (() => {
+                const filteredPrograms = programs.filter(p => {
+                  if (!search) return true;
+                  const q = search.toLowerCase();
+                  return p.title?.toLowerCase().includes(q) || p.title_ar?.toLowerCase().includes(q) || p.description?.toLowerCase().includes(q);
+                });
+                return filteredPrograms.length === 0 ? (
                 <Card className="border-dashed">
                   <CardContent className="flex flex-col items-center py-16 text-center">
                     <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-muted mb-3">
@@ -127,9 +140,9 @@ export default function Mentorship() {
                     </p>
                   </CardContent>
                 </Card>
-              ) : (
+                ) : (
                 <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-                  {programs.map(program => (
+                  {filteredPrograms.map(program => (
                     <Link key={program.id} to={`/mentorship/${program.id}`}>
                       <Card className="group h-full overflow-hidden border-border/40 bg-card/60 backdrop-blur-sm transition-all duration-500 hover:shadow-2xl hover:-translate-y-2 hover:border-primary/30 hover:bg-card">
                         {program.cover_image_url && (
@@ -168,7 +181,8 @@ export default function Mentorship() {
                     </Link>
                   ))}
                 </div>
-              )}
+              );
+              })()}
             </TabsContent>
 
             {user && (

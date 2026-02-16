@@ -170,36 +170,45 @@ export default function Establishments() {
                 const typeLabel = establishmentTypes.find((t) => t.value === est.type);
                 return (
                   <Link key={est.id} to={`/establishments/${est.id}`}>
-                    <Card className="h-full transition-all hover:shadow-md hover:-translate-y-0.5">
+                    <Card className="group h-full overflow-hidden border-border/40 bg-card/60 backdrop-blur-sm transition-all duration-500 hover:shadow-2xl hover:-translate-y-2 hover:border-primary/30 hover:bg-card">
                       <CardContent className="p-5">
                         <div className="flex items-start gap-3">
                           {est.logo_url ? (
-                            <img src={est.logo_url} alt={name} className="h-12 w-12 rounded-lg object-cover" />
+                            <img src={est.logo_url} alt={name} className="h-12 w-12 rounded-xl object-cover ring-2 ring-border/30 transition-transform duration-300 group-hover:scale-110" />
                           ) : (
-                            <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-lg bg-primary/10">
+                            <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-primary/10 ring-2 ring-primary/5 transition-transform duration-300 group-hover:scale-110">
                               <Building2 className="h-6 w-6 text-primary" />
                             </div>
                           )}
                           <div className="min-w-0 flex-1">
-                            <h3 className="font-semibold truncate">{name}</h3>
-                            <div className="mt-1 flex flex-wrap gap-1.5">
-                              <Badge variant="secondary" className="text-xs">{isAr ? typeLabel?.ar : typeLabel?.en}</Badge>
-                              {est.is_verified && <Badge variant="outline" className="text-xs text-chart-3">{isAr ? "موثق" : "Verified"}</Badge>}
+                            <h3 className="font-bold truncate group-hover:text-primary transition-colors duration-300">{name}</h3>
+                            <div className="mt-1.5 flex flex-wrap gap-1.5">
+                              <Badge variant="secondary" className="text-[10px] font-bold uppercase tracking-wider">{isAr ? typeLabel?.ar : typeLabel?.en}</Badge>
+                              {est.is_verified && <Badge variant="outline" className="text-[10px] font-bold text-chart-3 border-chart-3/30 bg-chart-3/5">{isAr ? "موثق" : "Verified"}</Badge>}
                             </div>
                           </div>
                         </div>
                         {est.description && (
-                          <p className="mt-3 text-sm text-muted-foreground line-clamp-2">{isAr && est.description_ar ? est.description_ar : est.description}</p>
+                          <p className="mt-3 text-sm text-muted-foreground line-clamp-2 leading-relaxed">{isAr && est.description_ar ? est.description_ar : est.description}</p>
                         )}
-                        <div className="mt-3 flex flex-wrap gap-3 text-xs text-muted-foreground">
+                        <div className="mt-4 flex flex-wrap gap-3 text-xs font-bold text-muted-foreground">
                           {est.city && (
-                            <span className="flex items-center gap-1"><MapPin className="h-3 w-3" />{isAr && est.city_ar ? est.city_ar : est.city}</span>
+                            <span className="flex items-center gap-1.5">
+                              <div className="flex h-5 w-5 items-center justify-center rounded-md bg-primary/10"><MapPin className="h-3 w-3 text-primary" /></div>
+                              {isAr && est.city_ar ? est.city_ar : est.city}
+                            </span>
                           )}
                           {est.cuisine_type && (
-                            <span className="flex items-center gap-1"><Globe className="h-3 w-3" />{isAr && est.cuisine_type_ar ? est.cuisine_type_ar : est.cuisine_type}</span>
+                            <span className="flex items-center gap-1.5">
+                              <div className="flex h-5 w-5 items-center justify-center rounded-md bg-chart-4/10"><Globe className="h-3 w-3 text-chart-4" /></div>
+                              {isAr && est.cuisine_type_ar ? est.cuisine_type_ar : est.cuisine_type}
+                            </span>
                           )}
                           {est.star_rating && (
-                            <span className="flex items-center gap-1"><Star className="h-3 w-3 fill-chart-4 text-chart-4" />{est.star_rating}</span>
+                            <span className="flex items-center gap-1.5">
+                              <div className="flex h-5 w-5 items-center justify-center rounded-md bg-chart-4/10"><Star className="h-3 w-3 fill-chart-4 text-chart-4" /></div>
+                              {est.star_rating}
+                            </span>
                           )}
                         </div>
                       </CardContent>
