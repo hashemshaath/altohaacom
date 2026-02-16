@@ -1288,7 +1288,25 @@ export default function ExhibitionDetail() {
           </div>
 
           {/* ======== SIDEBAR ======== */}
-          <div className="hidden space-y-4 lg:block">
+          <div className="hidden space-y-4 lg:block lg:sticky lg:top-[144px] lg:self-start">
+            {/* Countdown */}
+            {(isUpcoming || isHappening) && (
+              <Card className="overflow-hidden border-primary/20 shadow-md">
+                <div className="border-b bg-gradient-to-r from-primary/10 via-primary/5 to-transparent px-4 py-3">
+                  <h3 className="flex items-center gap-2 text-sm font-semibold">
+                    <div className="flex h-6 w-6 items-center justify-center rounded-md bg-primary/10">
+                      <Timer className="h-3.5 w-3.5 text-primary" />
+                    </div>
+                    {isHappening
+                      ? (isAr ? "ينتهي خلال" : "Ends In")
+                      : (isAr ? "يبدأ خلال" : "Starts In")}
+                  </h3>
+                </div>
+                <CardContent className="py-5 px-3">
+                  <CountdownTimer targetDate={isHappening ? end : start} isAr={isAr} />
+                </CardContent>
+              </Card>
+            )}
             {/* Registration Status */}
             <ExhibitionRegistrationStatus
               registrationDeadline={exhibition.registration_deadline}
