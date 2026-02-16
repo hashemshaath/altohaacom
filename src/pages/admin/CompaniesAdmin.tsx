@@ -1505,18 +1505,91 @@ export default function CompaniesAdmin() {
 
       {/* Stats */}
       <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
-        <Card><CardContent className="pt-4"><div className="text-center"><p className="text-2xl font-bold">{stats.total}</p><p className="text-sm text-muted-foreground">{isAr ? "إجمالي الشركات" : "Total"}</p></div></CardContent></Card>
-        <Card><CardContent className="pt-4"><div className="text-center"><p className="text-2xl font-bold text-chart-5">{stats.active}</p><p className="text-sm text-muted-foreground">{isAr ? "نشطة" : "Active"}</p></div></CardContent></Card>
-        <Card><CardContent className="pt-4"><div className="text-center"><p className="text-2xl font-bold text-chart-4">{stats.pending}</p><p className="text-sm text-muted-foreground">{isAr ? "قيد الانتظار" : "Pending"}</p></div></CardContent></Card>
-        <Card><CardContent className="pt-4"><div className="text-center"><p className="text-2xl font-bold text-chart-3">{stats.sponsors}</p><p className="text-sm text-muted-foreground">{isAr ? "رعاة" : "Sponsors"}</p></div></CardContent></Card>
-        <Card><CardContent className="pt-4"><div className="text-center"><p className="text-2xl font-bold text-primary">{stats.suppliers}</p><p className="text-sm text-muted-foreground">{isAr ? "موردين" : "Suppliers"}</p></div></CardContent></Card>
+        <Card>
+          <CardContent className="pt-4">
+            <div className="flex items-center gap-3">
+              <div className="h-10 w-10 rounded-lg bg-primary/10 flex items-center justify-center">
+                <Building2 className="h-5 w-5 text-primary" />
+              </div>
+              <div>
+                <p className="text-xs text-muted-foreground">{isAr ? "إجمالي" : "Total"}</p>
+                <p className="text-xl font-bold">{stats.total}</p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardContent className="pt-4">
+            <div className="flex items-center gap-3">
+              <div className="h-10 w-10 rounded-lg bg-chart-5/10 flex items-center justify-center">
+                <CheckCircle className="h-5 w-5 text-chart-5" />
+              </div>
+              <div>
+                <p className="text-xs text-muted-foreground">{isAr ? "نشطة" : "Active"}</p>
+                <p className="text-xl font-bold text-chart-5">{stats.active}</p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardContent className="pt-4">
+            <div className="flex items-center gap-3">
+              <div className="h-10 w-10 rounded-lg bg-chart-4/10 flex items-center justify-center">
+                <Clock className="h-5 w-5 text-chart-4" />
+              </div>
+              <div>
+                <p className="text-xs text-muted-foreground">{isAr ? "قيد الانتظار" : "Pending"}</p>
+                <p className="text-xl font-bold text-chart-4">{stats.pending}</p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardContent className="pt-4">
+            <div className="flex items-center gap-3">
+              <div className="h-10 w-10 rounded-lg bg-chart-3/10 flex items-center justify-center">
+                <Star className="h-5 w-5 text-chart-3" />
+              </div>
+              <div>
+                <p className="text-xs text-muted-foreground">{isAr ? "رعاة" : "Sponsors"}</p>
+                <p className="text-xl font-bold text-chart-3">{stats.sponsors}</p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardContent className="pt-4">
+            <div className="flex items-center gap-3">
+              <div className="h-10 w-10 rounded-lg bg-accent/10 flex items-center justify-center">
+                <Truck className="h-5 w-5 text-accent-foreground" />
+              </div>
+              <div>
+                <p className="text-xs text-muted-foreground">{isAr ? "موردين" : "Suppliers"}</p>
+                <p className="text-xl font-bold">{stats.suppliers}</p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
       </div>
 
-      {/* Bulk Import */}
-      <div className="flex gap-2">
+      {/* Bulk Import & Export */}
+      <div className="flex flex-wrap gap-2">
         <Button variant={showBulkImport ? "secondary" : "outline"} size="sm" onClick={() => setShowBulkImport(!showBulkImport)}>
           <FileSpreadsheet className="me-2 h-4 w-4" />
           {isAr ? "استيراد جماعي" : "Bulk Import"}
+        </Button>
+        <Button variant="outline" size="sm" onClick={() => {
+          const csv = ["Name,Name (AR),Type,Status,Email,Phone,City,Country,Company Number,Created"];
+          companies.forEach(c => {
+            csv.push([c.name, c.name_ar || "", c.type, c.status, c.email || "", c.phone || "", c.city || "", c.country || "", c.company_number || "", c.created_at?.slice(0, 10) || ""].join(","));
+          });
+          const blob = new Blob([csv.join("\n")], { type: "text/csv" });
+          const url = URL.createObjectURL(blob);
+          const a = document.createElement("a"); a.href = url; a.download = `companies-export-${new Date().toISOString().slice(0, 10)}.csv`;
+          a.click(); URL.revokeObjectURL(url);
+        }}>
+          <Upload className="me-2 h-4 w-4 rotate-180" />
+          {isAr ? "تصدير CSV" : "Export CSV"}
         </Button>
       </div>
       {showBulkImport && (
