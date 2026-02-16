@@ -8,6 +8,8 @@ import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Trophy, Globe, Coffee, ArrowRight, Calendar, MapPin } from "lucide-react";
 import { format } from "date-fns";
+import { SectionReveal } from "@/components/ui/section-reveal";
+import { StaggeredList } from "@/components/ui/staggered-list";
 
 export function EventsByCategory() {
   const { language } = useLanguage();
@@ -63,7 +65,7 @@ export function EventsByCategory() {
         const title = isAr && item.title_ar ? item.title_ar : item.title;
         return (
           <Link key={item.id} to={`/competitions/${item.id}`} className="group block">
-            <Card className="h-full overflow-hidden border-border/50 transition-all duration-300 hover:shadow-lg hover:-translate-y-1 hover:border-primary/20">
+            <Card interactive className="h-full overflow-hidden border-border/50">
               <div className="relative aspect-[16/10] overflow-hidden bg-muted">
                 {item.cover_image_url ? (
                   <img src={item.cover_image_url} alt={title} className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105" loading="lazy" />
@@ -111,7 +113,7 @@ export function EventsByCategory() {
         const year = item.start_date ? new Date(item.start_date).getFullYear() : "";
         return (
           <Link key={item.id} to={`/exhibitions/${item.slug || item.id}`} className="group block">
-            <Card className="h-full overflow-hidden border-border/50 transition-all duration-300 hover:shadow-lg hover:-translate-y-1 hover:border-primary/20">
+            <Card interactive className="h-full overflow-hidden border-border/50">
               <div className="relative aspect-[16/10] overflow-hidden bg-muted">
                 {item.cover_image_url ? (
                   <img src={item.cover_image_url} alt={title} className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105" loading="lazy" />
@@ -161,9 +163,9 @@ export function EventsByCategory() {
         const title = isAr && item.title_ar ? item.title_ar : item.title;
         return (
           <Link key={item.id} to={`/tastings/${item.id}`} className="group block">
-            <Card className="h-full border-border/50 transition-all duration-300 hover:shadow-lg hover:-translate-y-1 hover:border-primary/20">
+            <Card interactive className="h-full border-border/50">
               <CardContent className="p-4">
-                <div className="mb-2 flex h-10 w-10 items-center justify-center rounded-xl bg-primary/10">
+                <div className="mb-2 flex h-10 w-10 items-center justify-center rounded-xl bg-primary/10 transition-transform duration-300 group-hover:scale-110">
                   <Coffee className="h-5 w-5 text-primary" />
                 </div>
                 <h3 className="mb-1.5 line-clamp-2 text-sm font-semibold group-hover:text-primary transition-colors">{title}</h3>
@@ -185,15 +187,17 @@ export function EventsByCategory() {
   ];
 
   return (
-    <section className="container py-14 md:py-20">
-      <div className="mb-8 text-center">
-        <h2 className="font-serif text-2xl font-bold sm:text-3xl md:text-4xl">
-          {isAr ? "استكشف عالم الفعاليات" : "Explore the World of Events"}
-        </h2>
-        <p className="mt-2 text-sm text-muted-foreground">
-          {isAr ? "مسابقات ومعارض وجلسات تذوق تنتظرك من كل أنحاء العالم" : "Competitions, exhibitions & tastings await you from around the globe"}
-        </p>
-      </div>
+    <section className="container py-14 md:py-20" aria-labelledby="events-cat-heading">
+      <SectionReveal>
+        <div className="mb-8 text-center">
+          <h2 id="events-cat-heading" className="font-serif text-2xl font-bold sm:text-3xl md:text-4xl">
+            {isAr ? "استكشف عالم الفعاليات" : "Explore the World of Events"}
+          </h2>
+          <p className="mt-2 text-sm text-muted-foreground">
+            {isAr ? "مسابقات ومعارض وجلسات تذوق تنتظرك من كل أنحاء العالم" : "Competitions, exhibitions & tastings await you from around the globe"}
+          </p>
+        </div>
+      </SectionReveal>
 
       <Tabs defaultValue="competitions" className="w-full">
         <TabsList className="mx-auto mb-6 flex w-fit">
@@ -209,9 +213,9 @@ export function EventsByCategory() {
           <TabsContent key={tab.key} value={tab.key}>
             {tab.items.length > 0 ? (
               <>
-                <div className="grid gap-4 grid-cols-2 sm:grid-cols-3 lg:grid-cols-4">
+                <StaggeredList className="grid gap-4 grid-cols-2 sm:grid-cols-3 lg:grid-cols-4" stagger={60}>
                   {tab.items.map(tab.renderItem)}
-                </div>
+                </StaggeredList>
                 <div className="mt-6 text-center">
                   <Button variant="outline" size="sm" asChild>
                     <Link to={tab.viewAllHref}>
