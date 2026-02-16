@@ -103,8 +103,15 @@ export default function Masterclasses() {
   return (
     <div className="flex min-h-screen flex-col bg-background">
       <SEOHead
-        title="Culinary Masterclasses"
-        description="Learn from world-class chefs with our curated masterclasses. From French cuisine to pastry arts."
+        title={isAr ? "الدروس المتقدمة — الطهاة" : "Culinary Masterclasses — Altohaa"}
+        description={isAr ? "تعلم من أمهر الطهاة عبر دروس حصرية" : "Learn from world-class chefs with our curated masterclasses. From French cuisine to pastry arts."}
+        jsonLd={{
+          "@context": "https://schema.org",
+          "@type": "CollectionPage",
+          name: isAr ? "الدروس المتقدمة" : "Culinary Masterclasses",
+          url: `${window.location.origin}/masterclasses`,
+          isPartOf: { "@type": "WebSite", name: "Altohaa", url: window.location.origin },
+        }}
       />
       <Header />
       {/* Compact Hero */}

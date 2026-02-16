@@ -98,7 +98,37 @@ export default function RecipeDetail() {
 
   return (
     <div className="min-h-screen flex flex-col bg-background">
-      <SEOHead title={`${title} - Altohaa`} description={description || ""} />
+      <SEOHead
+        title={`${title} - Altohaa`}
+        description={description || ""}
+        ogImage={recipe.image_url || undefined}
+        ogType="article"
+        jsonLd={{
+          "@context": "https://schema.org",
+          "@type": "Recipe",
+          name: title,
+          description: description || undefined,
+          image: recipe.image_url || undefined,
+          prepTime: recipe.prep_time_minutes ? `PT${recipe.prep_time_minutes}M` : undefined,
+          cookTime: recipe.cook_time_minutes ? `PT${recipe.cook_time_minutes}M` : undefined,
+          totalTime: totalTime ? `PT${totalTime}M` : undefined,
+          recipeYield: recipe.servings ? `${recipe.servings} servings` : undefined,
+          recipeCategory: recipe.cuisine || undefined,
+          nutrition: hasNutrition ? {
+            "@type": "NutritionInformation",
+            calories: recipe.calories ? `${recipe.calories} cal` : undefined,
+            proteinContent: recipe.protein_g ? `${recipe.protein_g}g` : undefined,
+            carbohydrateContent: recipe.carbs_g ? `${recipe.carbs_g}g` : undefined,
+            fatContent: recipe.fat_g ? `${recipe.fat_g}g` : undefined,
+          } : undefined,
+          recipeIngredient: ingredients.map((i: any) => typeof i === "string" ? i : i.name || ""),
+          recipeInstructions: steps.map((s: any, idx: number) => ({
+            "@type": "HowToStep",
+            position: idx + 1,
+            text: typeof s === "string" ? s : s.text || s.instruction || "",
+          })),
+        }}
+      />
       <Header />
 
       <main className="flex-1">
