@@ -77,7 +77,7 @@ export function PublicProfileHero({
 
       {/* Profile Card */}
       <div className="relative z-20 -mt-20 md:-mt-24 px-3 sm:px-4 md:px-6 max-w-[1200px] mx-auto w-full animate-in fade-in slide-in-from-bottom-4 duration-700">
-        <Card className="border-border/25 shadow-lg shadow-primary/5 rounded-2xl backdrop-blur-xl bg-card/90 overflow-hidden">
+        <Card className="border-border/25 shadow-lg shadow-primary/5 rounded-2xl backdrop-blur-xl bg-card/90 overflow-visible">
           <div className="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-primary/60 to-transparent" />
           <CardContent className="p-4 md:p-6">
             <div className="flex flex-col md:flex-row items-center md:items-end gap-4 md:gap-6" dir={isAr ? "rtl" : "ltr"}>
