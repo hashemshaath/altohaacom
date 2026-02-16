@@ -69,14 +69,28 @@ export default function PublicProfile() {
   const { data: profile, isLoading, error, refetch: refetchProfile } = useQuery({
     queryKey: ["publicProfile", username],
     queryFn: async () => {
+      // Try by username first
       const { data, error } = await supabase
         .from("profiles")
         .select("*")
         .eq("username", username?.toLowerCase())
         .maybeSingle();
       if (error) throw error;
-      if (!data) throw new Error("Profile not found");
-      return data as Profile & { section_visibility?: Record<string, boolean>; offers_services?: boolean; services_description?: string; services_description_ar?: string };
+      if (data) return data as Profile & { section_visibility?: Record<string, boolean>; offers_services?: boolean; services_description?: string; services_description_ar?: string };
+
+      // Fallback: try by user_id (for legacy /profile/:user_id links)
+      const isUuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(username || "");
+      if (isUuid) {
+        const { data: byId, error: err2 } = await supabase
+          .from("profiles")
+          .select("*")
+          .eq("user_id", username)
+          .maybeSingle();
+        if (err2) throw err2;
+        if (byId) return byId as Profile & { section_visibility?: Record<string, boolean>; offers_services?: boolean; services_description?: string; services_description_ar?: string };
+      }
+
+      throw new Error("Profile not found");
     },
     enabled: !!username,
   });
