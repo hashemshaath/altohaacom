@@ -200,10 +200,10 @@ export function EventsByCategory() {
       </SectionReveal>
 
       <Tabs defaultValue="competitions" className="w-full">
-        <TabsList className="mx-auto mb-6 flex w-fit">
+        <TabsList className="mx-auto mb-6 flex w-fit flex-wrap">
           {tabs.map((tab) => (
-            <TabsTrigger key={tab.key} value={tab.key} className="gap-1.5">
-              <tab.icon className="h-3.5 w-3.5" />
+            <TabsTrigger key={tab.key} value={tab.key} className="gap-1 text-xs sm:text-sm sm:gap-1.5">
+              <tab.icon className="h-3 w-3 sm:h-3.5 sm:w-3.5" />
               {isAr ? tab.labelAr : tab.labelEn}
             </TabsTrigger>
           ))}

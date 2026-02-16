@@ -22,7 +22,7 @@ function StatItem({ value, label, icon: Icon, color, isVisible, delay }: {
       <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-primary/8 ring-1 ring-primary/10 transition-all duration-500 hover:scale-110 hover:ring-primary/20 hover:bg-primary/10">
         <Icon className={`h-6 w-6 ${color}`} />
       </div>
-      <p className="text-2xl font-bold sm:text-3xl md:text-4xl tracking-tight tabular-nums">
+      <p className="text-xl font-bold sm:text-3xl md:text-4xl tracking-tight tabular-nums">
         {count}+
       </p>
       <p className="text-[11px] text-muted-foreground font-semibold uppercase tracking-wider">{label}</p>

@@ -101,7 +101,7 @@ export function SponsorCarousel() {
                   href={sponsor.website || "#"}
                   target={sponsor.website ? "_blank" : undefined}
                   rel="noopener noreferrer"
-                  className="group flex flex-col items-center gap-3 rounded-2xl border border-chart-4/30 bg-gradient-to-br from-chart-4/10 to-chart-4/5 p-6 transition-all duration-300 hover:shadow-xl hover:-translate-y-2 min-w-[160px]"
+                  className="group flex flex-col items-center gap-2 sm:gap-3 rounded-2xl border border-chart-4/30 bg-gradient-to-br from-chart-4/10 to-chart-4/5 p-4 sm:p-6 transition-all duration-300 hover:shadow-xl hover:-translate-y-2 min-w-[130px] sm:min-w-[160px]"
                 >
                   <div className="flex h-20 w-20 items-center justify-center rounded-2xl bg-background/90 p-3 shadow-md ring-1 ring-chart-4/20">
                     <img src={sponsor.logo} alt={sponsor.name} className="h-full w-full object-contain transition-transform group-hover:scale-110" loading="lazy" />
