@@ -28,7 +28,7 @@ export function FeaturedChefs() {
         const userIds = ranked.map((r: any) => r.user_id);
         const { data: profiles } = await supabase
           .from("profiles")
-          .select("user_id, full_name, full_name_ar, avatar_url, country_code, city, specialization, specialization_ar, is_verified")
+          .select("user_id, username, full_name, full_name_ar, avatar_url, country_code, city, specialization, specialization_ar, is_verified")
           .in("user_id", userIds);
 
         const profileMap = new Map((profiles || []).map((p: any) => [p.user_id, p]));
@@ -38,7 +38,7 @@ export function FeaturedChefs() {
       // Fallback: verified profiles
       const { data: profiles } = await supabase
         .from("profiles")
-        .select("user_id, full_name, full_name_ar, avatar_url, country_code, city, specialization, specialization_ar, is_verified, loyalty_points")
+        .select("user_id, username, full_name, full_name_ar, avatar_url, country_code, city, specialization, specialization_ar, is_verified, loyalty_points")
         .eq("is_verified", true)
         .order("loyalty_points", { ascending: false, nullsFirst: false })
         .limit(8);
@@ -92,7 +92,7 @@ export function FeaturedChefs() {
             const hasMedals = chef.gold_medals > 0 || chef.silver_medals > 0 || chef.bronze_medals > 0;
 
             return (
-              <Link key={chef.user_id || idx} to={`/profile/${chef.user_id}`} className="group block">
+              <Link key={chef.user_id || idx} to={chef.username ? `/${chef.username}` : `/profile/${chef.user_id}`} className="group block">
                 <Card className="h-full border-border/50 transition-all duration-300 hover:shadow-lg hover:-translate-y-1 hover:border-primary/20 overflow-hidden">
                   <CardContent className="p-4 text-center">
                     <div className="relative mx-auto mb-3 w-fit">

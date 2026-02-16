@@ -18,7 +18,7 @@ export function NewlyJoinedUsers() {
     queryFn: async () => {
       const { data } = await supabase
         .from("profiles")
-        .select("id, full_name, full_name_ar, avatar_url, country_code, city, specialization, specialization_ar, created_at")
+        .select("id, user_id, username, full_name, full_name_ar, avatar_url, country_code, city, specialization, specialization_ar, created_at")
         .order("created_at", { ascending: false })
         .limit(12);
       return data || [];
@@ -65,7 +65,7 @@ export function NewlyJoinedUsers() {
               : "?";
 
             return (
-              <Link key={user.id} to={`/profile/${user.id}`} className="group block">
+              <Link key={user.id} to={user.username ? `/${user.username}` : `/profile/${user.user_id}`} className="group block">
                 <Card className="h-full border-border/50 p-4 text-center transition-all duration-300 hover:shadow-md hover:-translate-y-1 hover:border-primary/20">
                   <Avatar className="mx-auto mb-3 h-16 w-16 ring-2 ring-background shadow-md transition-transform duration-300 group-hover:scale-105">
                     <AvatarImage src={user.avatar_url} alt={name} />
