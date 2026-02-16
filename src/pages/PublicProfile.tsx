@@ -188,15 +188,25 @@ export default function PublicProfile() {
     return (
       <div className="flex min-h-screen flex-col bg-background">
         <Header />
-        <div className="h-52 sm:h-64 md:h-80 bg-gradient-to-br from-primary/20 via-primary/5 to-secondary animate-pulse" />
+        <div className="h-48 sm:h-60 md:h-72 bg-gradient-to-br from-primary/15 via-primary/5 to-chart-3/8 animate-pulse" />
         <main className="px-3 sm:px-4 md:px-6 max-w-[1200px] mx-auto w-full -mt-20 pb-8">
-          <Skeleton className="h-36 rounded-2xl mb-4" />
-          <div className="grid md:grid-cols-[1fr_300px] gap-4 mt-4">
-            <div className="space-y-4">
-              <Skeleton className="h-48 rounded-2xl" />
-              <Skeleton className="h-32 rounded-2xl" />
+          <div className="rounded-2xl bg-card/90 backdrop-blur-xl border border-border/25 p-4 md:p-6">
+            <div className="flex flex-col md:flex-row items-center md:items-end gap-4">
+              <Skeleton className="h-28 w-28 md:h-36 md:w-36 rounded-full -mt-20 md:-mt-24 ring-4 ring-background" />
+              <div className="flex-1 space-y-2.5 w-full">
+                <Skeleton className="h-7 w-48 mx-auto md:mx-0" />
+                <Skeleton className="h-4 w-24 mx-auto md:mx-0" />
+                <Skeleton className="h-5 w-32 mx-auto md:mx-0" />
+              </div>
             </div>
-            <Skeleton className="h-64 rounded-2xl" />
+          </div>
+          <Skeleton className="h-14 rounded-2xl mt-4" />
+          <div className="grid md:grid-cols-[1fr_300px] gap-6 mt-6">
+            <div className="space-y-4">
+              <Skeleton className="h-40 rounded-2xl" />
+              <Skeleton className="h-28 rounded-2xl" />
+            </div>
+            <Skeleton className="h-52 rounded-2xl" />
           </div>
         </main>
         <Footer />
@@ -515,28 +525,28 @@ export default function PublicProfile() {
 
       {/* ── Follow List Dialog ── */}
       <Dialog open={!!followListOpen} onOpenChange={() => setFollowListOpen(null)}>
-        <DialogContent className="max-w-sm">
+        <DialogContent className="max-w-sm rounded-2xl">
           <DialogHeader>
-            <DialogTitle>{followListOpen === "followers" ? (isAr ? "المتابعون" : "Followers") : (isAr ? "يتابع" : "Following")}</DialogTitle>
+            <DialogTitle className="text-center font-serif">{followListOpen === "followers" ? (isAr ? "المتابعون" : "Followers") : (isAr ? "يتابع" : "Following")}</DialogTitle>
           </DialogHeader>
           <ScrollArea className="max-h-[60vh]">
-            <div className="space-y-2">
+            <div className="space-y-1">
               {followersList.length === 0 ? (
-                <p className="py-8 text-center text-sm text-muted-foreground">{isAr ? "لا يوجد" : "No users yet"}</p>
+                <p className="py-10 text-center text-sm text-muted-foreground/60">{isAr ? "لا يوجد" : "No users yet"}</p>
               ) : (
                 followersList.map((p: any) => (
                   <Link key={p.user_id} to={`/${p.username}`} onClick={() => setFollowListOpen(null)}
-                    className="flex items-center gap-3 rounded-lg p-2 hover:bg-muted/50 transition-colors">
-                    <Avatar className="h-10 w-10">
+                    className="flex items-center gap-3 rounded-xl p-2.5 hover:bg-muted/40 transition-all duration-200">
+                    <Avatar className="h-10 w-10 ring-2 ring-border/20">
                       <AvatarImage src={p.avatar_url || undefined} />
-                      <AvatarFallback>{(p.full_name || "U")[0].toUpperCase()}</AvatarFallback>
+                      <AvatarFallback className="bg-primary/10 text-primary font-semibold">{(p.full_name || "U")[0].toUpperCase()}</AvatarFallback>
                     </Avatar>
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-1">
                         <p className="text-sm font-medium truncate">{p.display_name || p.full_name || "Unknown"}</p>
                         {p.is_verified && <BadgeCheck className="h-3.5 w-3.5 text-primary shrink-0" />}
                       </div>
-                      <p className="text-xs text-muted-foreground truncate">@{p.username}</p>
+                      <p className="text-[11px] text-muted-foreground truncate">@{p.username}</p>
                     </div>
                   </Link>
                 ))
