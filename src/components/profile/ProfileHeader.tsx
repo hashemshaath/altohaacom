@@ -5,7 +5,7 @@ import { useToast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Camera, MapPin, ChefHat, Shield, Crown, Star, Eye } from "lucide-react";
+import { Camera, MapPin, ChefHat, Shield, Crown, Star, Eye, Award } from "lucide-react";
 import { countryFlag } from "@/lib/countryFlag";
 import { VerifiedBadge } from "@/components/verification/VerifiedBadge";
 import { toEnglishDigits } from "@/lib/formatNumber";
@@ -156,10 +156,24 @@ export function ProfileHeader({ profile, roles, userId, onProfileUpdate }: Profi
 
         </div>
 
-        {/* Quick stats */}
-        <div className="mt-4 flex items-center gap-4 text-xs text-muted-foreground">
-          <span className="flex items-center gap-1"><Eye className="h-3 w-3" /> {toEnglishDigits(profileViews)} {isAr ? "زيارة" : "views"}</span>
-          <span>{isAr ? "عضو منذ" : "Member since"} {toEnglishDigits(new Date(profile?.created_at).toLocaleDateString(isAr ? "ar-SA" : "en-US", { year: "numeric", month: "short" }))}</span>
+        {/* Quick stats bar */}
+        <div className="mt-4 flex items-center gap-1 flex-wrap">
+          <div className="flex items-center gap-1.5 rounded-lg bg-muted/40 px-2.5 py-1.5 text-xs text-muted-foreground border border-border/30">
+            <Eye className="h-3 w-3 text-primary/70" />
+            <span className="font-semibold text-foreground">{toEnglishDigits(profileViews)}</span>
+            <span>{isAr ? "زيارة" : "views"}</span>
+          </div>
+          <div className="flex items-center gap-1.5 rounded-lg bg-muted/40 px-2.5 py-1.5 text-xs text-muted-foreground border border-border/30">
+            <span>{isAr ? "عضو منذ" : "Joined"}</span>
+            <span className="font-semibold text-foreground">{toEnglishDigits(new Date(profile?.created_at).toLocaleDateString(isAr ? "ar-SA" : "en-US", { year: "numeric", month: "short" }))}</span>
+          </div>
+          {profile?.loyalty_points > 0 && (
+            <div className="flex items-center gap-1.5 rounded-lg bg-primary/5 px-2.5 py-1.5 text-xs border border-primary/20">
+              <Star className="h-3 w-3 text-primary" />
+              <span className="font-semibold text-primary">{toEnglishDigits(profile.loyalty_points)}</span>
+              <span className="text-muted-foreground">{isAr ? "نقطة" : "pts"}</span>
+            </div>
+          )}
         </div>
       </div>
     </div>

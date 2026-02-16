@@ -129,27 +129,27 @@ export default function AdminDashboard() {
         }
       />
 
-      {/* Stats Grid */}
-      <div className="grid gap-3 grid-cols-2 sm:grid-cols-3 lg:grid-cols-4">
+      {/* Stats Grid - improved with hover effects */}
+      <div className="grid gap-3 grid-cols-2 sm:grid-cols-4">
         {statCards.map((stat) => (
           <Link key={stat.title} to={stat.link}>
-            <Card className={`border-s-[3px] ${stat.accent} transition-all hover:shadow-md hover:-translate-y-0.5 ${stat.urgent ? "ring-1 ring-destructive/30" : ""}`}>
-              <CardContent className="flex items-center gap-3 p-3.5">
-                <div className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-xl ${stat.bg}`}>
-                  <stat.icon className={`h-4.5 w-4.5 ${stat.color}`} />
+            <Card className={`group border-s-[3px] ${stat.accent} transition-all duration-200 hover:shadow-lg hover:-translate-y-1 ${stat.urgent ? "ring-1 ring-destructive/30 animate-pulse" : ""}`}>
+              <CardContent className="flex items-center gap-3 p-4">
+                <div className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-xl ${stat.bg} transition-transform group-hover:scale-110`}>
+                  <stat.icon className={`h-5 w-5 ${stat.color}`} />
                 </div>
-                <div>
+                <div className="min-w-0">
                   {isLoading ? (
                     <>
-                      <Skeleton className="h-6 w-12 mb-1" />
+                      <Skeleton className="h-7 w-14 mb-1" />
                       <Skeleton className="h-3 w-20" />
                     </>
                   ) : (
                     <>
-                      <p className="text-xl font-bold leading-none tracking-tight">
+                      <p className="text-2xl font-black leading-none tracking-tight">
                         {toEnglishDigits(stat.value.toLocaleString())}
                       </p>
-                      <p className="mt-1 text-[11px] text-muted-foreground">{stat.title}</p>
+                      <p className="mt-1 text-[11px] text-muted-foreground truncate">{stat.title}</p>
                     </>
                   )}
                 </div>
