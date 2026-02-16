@@ -49,12 +49,12 @@ const formatDate = (date: string | null, isAr: boolean) => {
 
 function SectionTitle({ icon: Icon, label }: { icon: any; label: string }) {
   return (
-    <div className="flex items-center gap-2.5 mb-4">
-      <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-primary/10">
+    <div className="flex items-center gap-2.5 mb-3">
+      <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-primary/8">
         <Icon className="h-4 w-4 text-primary" />
       </div>
       <h2 className="font-serif text-base font-bold">{label}</h2>
-      <div className="flex-1 h-px bg-border/40" />
+      <div className="flex-1 h-px bg-border/25" />
     </div>
   );
 }
@@ -320,10 +320,10 @@ export default function PublicProfile() {
                     <SectionTitle icon={Briefcase} label={isAr ? "الخبرة المهنية" : "Professional Experience"} />
                     <div className="space-y-2.5">
                       {workRecords.map((record: any) => (
-                        <Card key={record.id} className="rounded-2xl border-border/40 hover:shadow-md transition-shadow">
+                        <Card key={record.id} className="rounded-2xl border-border/25 hover:shadow-md transition-all duration-300 hover:border-border/40">
                           <CardContent className="p-4" dir={isAr ? "rtl" : "ltr"}>
                             <div className="flex gap-3">
-                              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-chart-3/10">
+                              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-chart-3/8">
                                 <Briefcase className="h-4 w-4 text-chart-3" />
                               </div>
                               <div className="flex-1 min-w-0">
@@ -374,10 +374,10 @@ export default function PublicProfile() {
                     <SectionTitle icon={GraduationCap} label={isAr ? "التعليم" : "Education"} />
                     <div className="space-y-2.5">
                       {educationRecords.map((record: any) => (
-                        <Card key={record.id} className="rounded-2xl border-border/40 hover:shadow-md transition-shadow">
+                        <Card key={record.id} className="rounded-2xl border-border/25 hover:shadow-md transition-all duration-300 hover:border-border/40">
                           <CardContent className="p-4" dir={isAr ? "rtl" : "ltr"}>
                             <div className="flex gap-3">
-                              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-chart-2/10">
+                              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-chart-2/8">
                                 <GraduationCap className="h-4 w-4 text-chart-2" />
                               </div>
                               <div className="flex-1 min-w-0">
@@ -420,7 +420,7 @@ export default function PublicProfile() {
                     <SectionTitle icon={Building2} label={isAr ? "العضويات والجهات" : "Memberships & Entities"} />
                     <div className="grid gap-2.5 sm:grid-cols-2">
                       {memberships.map((m: any) => (
-                        <Card key={m.id} className="rounded-2xl border-border/40 hover:shadow-md transition-shadow">
+                        <Card key={m.id} className="rounded-2xl border-border/25 hover:shadow-md transition-all duration-300 hover:border-border/40">
                           <CardContent className="p-4 flex items-center gap-3" dir={isAr ? "rtl" : "ltr"}>
                             {m.culinary_entities?.logo_url ? (
                               <img src={m.culinary_entities.logo_url} alt="" className="h-10 w-10 rounded-xl object-cover border" />
