@@ -24,6 +24,7 @@ const MentorshipMatchPage = lazy(() => import("@/pages/MentorshipMatch"));
 const Judging = lazy(() => import("@/pages/Judging"));
 const Referrals = lazy(() => import("@/pages/Referrals"));
 const Rewards = lazy(() => import("@/pages/Rewards"));
+const CreateRecipe = lazy(() => import("@/pages/CreateRecipe"));
 
 export const protectedRoutes = (
   <>
@@ -49,5 +50,6 @@ export const protectedRoutes = (
     <Route path="/judging" element={<ProtectedRoute><Judging /></ProtectedRoute>} />
     <Route path="/referrals" element={<ProtectedRoute><Referrals /></ProtectedRoute>} />
     <Route path="/rewards" element={<ProtectedRoute><Rewards /></ProtectedRoute>} />
+    <Route path="/recipes/create" element={<ProtectedRoute><CreateRecipe /></ProtectedRoute>} />
   </>
 );

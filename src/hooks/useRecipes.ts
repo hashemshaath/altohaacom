@@ -170,6 +170,57 @@ export function useRateRecipe() {
   });
 }
 
+export function useCreateRecipe() {
+  const queryClient = useQueryClient();
+  const { user } = useAuth();
+  return useMutation({
+    mutationFn: async (recipe: {
+      title: string;
+      title_ar?: string;
+      description?: string;
+      description_ar?: string;
+      ingredients: any[];
+      steps: any[];
+      cuisine?: string;
+      difficulty?: string;
+      category?: string;
+      prep_time_minutes?: number;
+      cook_time_minutes?: number;
+      servings?: number;
+      calories?: number;
+      protein_g?: number;
+      carbs_g?: number;
+      fat_g?: number;
+      fiber_g?: number;
+      tags?: string[];
+      image_url?: string;
+      is_published?: boolean;
+    }) => {
+      if (!user?.id) throw new Error("Not authenticated");
+      const slug = recipe.title
+        .toLowerCase()
+        .replace(/[^a-z0-9]+/g, "-")
+        .replace(/(^-|-$)/g, "") + "-" + Date.now().toString(36);
+      const { data, error } = await supabase
+        .from("recipes")
+        .insert({
+          ...recipe,
+          author_id: user.id,
+          slug,
+          ingredients: recipe.ingredients as any,
+          steps: recipe.steps as any,
+        })
+        .select()
+        .single();
+      if (error) throw error;
+      return data;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["recipes"] });
+    },
+  });
+}
+
 export function useDistinctCuisines() {
   return useQuery({
     queryKey: ["recipeCuisines"],
