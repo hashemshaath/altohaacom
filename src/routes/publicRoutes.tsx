@@ -9,6 +9,7 @@ const CompetitionDetail = lazy(() => import("@/pages/CompetitionDetail"));
 const CompetitionResults = lazy(() => import("@/pages/CompetitionResults"));
 const Rankings = lazy(() => import("@/pages/Rankings"));
 const ChefPortfolio = lazy(() => import("@/pages/ChefPortfolio"));
+const CompetitionDiscovery = lazy(() => import("@/pages/CompetitionDiscovery"));
 const Search = lazy(() => import("@/pages/Search"));
 const PublicProfile = lazy(() => import("@/pages/PublicProfile"));
 const HelpCenter = lazy(() => import("@/pages/HelpCenter"));
@@ -54,6 +55,7 @@ export const publicRoutes = (
     <Route path="/company-login" element={<CompanyLogin />} />
     <Route path="/reset-password" element={<Auth />} />
     <Route path="/competitions" element={<Competitions />} />
+    <Route path="/discover" element={<CompetitionDiscovery />} />
     <Route path="/competitions/:id" element={<CompetitionDetail />} />
     <Route path="/competitions/:id/results" element={<CompetitionResults />} />
     <Route path="/rankings" element={<Rankings />} />

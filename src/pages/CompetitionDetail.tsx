@@ -65,6 +65,9 @@ import { CompetitionFeedbackPanel } from "@/components/competitions/CompetitionF
 import { PreparationChecklistPanel } from "@/components/competitions/PreparationChecklistPanel";
 import { JudgeAnalyticsPanel } from "@/components/competitions/JudgeAnalyticsPanel";
 import { TeamCollaborationPanel } from "@/components/competitions/TeamCollaborationPanel";
+import { CompetitionAnalyticsDashboard } from "@/components/competitions/CompetitionAnalyticsDashboard";
+import { AdvancedSchedulingPanel } from "@/components/competitions/AdvancedSchedulingPanel";
+import { NotificationHub } from "@/components/competitions/NotificationHub";
 import type { Database } from "@/integrations/supabase/types";
 
 type CompetitionStatus = Database["public"]["Enums"]["competition_status"];
@@ -301,6 +304,9 @@ export default function CompetitionDetail() {
     ...(canSeeKnowledge ? [{ id: "judge-analytics", icon: <BarChart3 className="h-4 w-4" />, label: isAr ? "تحليل الحكام" : "Judge Analytics" }] : []),
     ...(canSeeKnowledge ? [{ id: "deliberation", icon: <MessageSquare className="h-4 w-4" />, label: isAr ? "المداولات" : "Deliberation" }] : []),
     { id: "gallery", icon: <ImageIcon className="h-4 w-4" />, label: isAr ? "المعرض" : "Gallery" },
+    ...(isOrganizer ? [{ id: "analytics", icon: <BarChart3 className="h-4 w-4" />, label: isAr ? "التحليلات" : "Analytics" }] : []),
+    ...(isOrganizer ? [{ id: "adv-schedule", icon: <CalendarClock className="h-4 w-4" />, label: isAr ? "جدول متقدم" : "Adv. Schedule" }] : []),
+    ...(isOrganizer ? [{ id: "notifications", icon: <MessageSquare className="h-4 w-4" />, label: isAr ? "الإشعارات" : "Notifications" }] : []),
     ...(user ? [{ id: "requirements", icon: <ClipboardList className="h-4 w-4" />, label: isAr ? "مركز الطلبات" : "Order Center" }] : []),
     ...(isOrganizer ? [{ id: "manage", icon: <Settings className="h-4 w-4" />, label: isAr ? "إدارة" : "Manage" }] : []),
   ];
@@ -824,6 +830,9 @@ export default function CompetitionDetail() {
               {activeSection === "judge-analytics" && canSeeKnowledge && <JudgeAnalyticsPanel competitionId={competition.id} isOrganizer={!!isOrganizer} />}
               {activeSection === "knowledge" && canSeeKnowledge && <CompetitionKnowledgeTab competitionId={competition.id} isOrganizer={isOrganizer} />}
               {activeSection === "gallery" && <ReferenceGalleryPanel competitionId={competition.id} isAdmin={isOrganizer} />}
+              {activeSection === "analytics" && isOrganizer && <CompetitionAnalyticsDashboard competitionId={competition.id} language={language} />}
+              {activeSection === "adv-schedule" && isOrganizer && <AdvancedSchedulingPanel competitionId={competition.id} language={language} isOrganizer={true} />}
+              {activeSection === "notifications" && isOrganizer && <NotificationHub competitionId={competition.id} language={language} isOrganizer={true} />}
               {activeSection === "requirements" && user && <OrderCenterHub competitionId={competition.id} isOrganizer={!!isOrganizer} />}
               {isOrganizer && activeSection === "manage" && (
                 <div className="space-y-4">
