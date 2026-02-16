@@ -7,6 +7,8 @@ const CompanyLogin = lazy(() => import("@/pages/CompanyLogin"));
 const Competitions = lazy(() => import("@/pages/Competitions"));
 const CompetitionDetail = lazy(() => import("@/pages/CompetitionDetail"));
 const CompetitionResults = lazy(() => import("@/pages/CompetitionResults"));
+const Rankings = lazy(() => import("@/pages/Rankings"));
+const ChefPortfolio = lazy(() => import("@/pages/ChefPortfolio"));
 const Search = lazy(() => import("@/pages/Search"));
 const PublicProfile = lazy(() => import("@/pages/PublicProfile"));
 const HelpCenter = lazy(() => import("@/pages/HelpCenter"));
@@ -54,6 +56,8 @@ export const publicRoutes = (
     <Route path="/competitions" element={<Competitions />} />
     <Route path="/competitions/:id" element={<CompetitionDetail />} />
     <Route path="/competitions/:id/results" element={<CompetitionResults />} />
+    <Route path="/rankings" element={<Rankings />} />
+    <Route path="/portfolio/:userId" element={<ChefPortfolio />} />
     <Route path="/search" element={<Search />} />
     <Route path="/help" element={<HelpCenter />} />
     <Route path="/news" element={<News />} />
