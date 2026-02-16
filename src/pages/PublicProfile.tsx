@@ -285,6 +285,23 @@ export default function PublicProfile() {
                   <div className="flex items-center gap-2 flex-wrap justify-center md:justify-start">
                     <h1 className="font-serif text-2xl md:text-4xl font-bold text-foreground tracking-tight">{displayName}</h1>
                     {profile.is_verified && <BadgeCheck className="h-5 w-5 md:h-6 md:w-6 text-primary" />}
+                    {/* Nationality flags */}
+                    {(profile as any).show_nationality !== false && (profile as any).nationality && (
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <span className="text-lg leading-none cursor-default">{countryFlag((profile as any).nationality)}</span>
+                        </TooltipTrigger>
+                        <TooltipContent side="bottom" className="text-xs">{getCountryName((profile as any).nationality)}</TooltipContent>
+                      </Tooltip>
+                    )}
+                    {(profile as any).show_nationality !== false && (profile as any).second_nationality && (
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <span className="text-lg leading-none cursor-default">{countryFlag((profile as any).second_nationality)}</span>
+                        </TooltipTrigger>
+                        <TooltipContent side="bottom" className="text-xs">{getCountryName((profile as any).second_nationality)}</TooltipContent>
+                      </Tooltip>
+                    )}
                     {userAwards?.map((ua: any) => {
                       const award = ua.global_awards_system;
                       if (!award?.logo_url) return null;

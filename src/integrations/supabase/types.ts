@@ -9948,10 +9948,12 @@ export type Database = {
           preferred_language: string | null
           profile_completed: boolean | null
           profile_visibility: string
+          second_nationality: string | null
           secondary_email: string | null
           section_visibility: Json | null
           services_description: string | null
           services_description_ar: string | null
+          show_nationality: boolean | null
           snapchat: string | null
           specialization: string | null
           specialization_ar: string | null
@@ -10025,10 +10027,12 @@ export type Database = {
           preferred_language?: string | null
           profile_completed?: boolean | null
           profile_visibility?: string
+          second_nationality?: string | null
           secondary_email?: string | null
           section_visibility?: Json | null
           services_description?: string | null
           services_description_ar?: string | null
+          show_nationality?: boolean | null
           snapchat?: string | null
           specialization?: string | null
           specialization_ar?: string | null
@@ -10102,10 +10106,12 @@ export type Database = {
           preferred_language?: string | null
           profile_completed?: boolean | null
           profile_visibility?: string
+          second_nationality?: string | null
           secondary_email?: string | null
           section_visibility?: Json | null
           services_description?: string | null
           services_description_ar?: string | null
+          show_nationality?: boolean | null
           snapchat?: string | null
           specialization?: string | null
           specialization_ar?: string | null

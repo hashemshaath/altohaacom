@@ -8,10 +8,13 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { ArrowRight, Award, ChefHat, MapPin, Star, Trophy } from "lucide-react";
 import { SectionReveal } from "@/components/ui/section-reveal";
+import { countryFlag } from "@/lib/countryFlag";
+import { useAllCountries } from "@/hooks/useCountries";
 
 export function FeaturedChefs() {
   const { language } = useLanguage();
   const isAr = language === "ar";
+  const { data: allCountries = [] } = useAllCountries();
 
   const { data: chefs = [] } = useQuery({
     queryKey: ["featured-chefs-home"],
@@ -28,7 +31,7 @@ export function FeaturedChefs() {
         const userIds = ranked.map((r: any) => r.user_id);
         const { data: profiles } = await supabase
           .from("profiles")
-          .select("user_id, username, full_name, full_name_ar, avatar_url, country_code, city, specialization, specialization_ar, is_verified")
+          .select("user_id, username, full_name, full_name_ar, avatar_url, country_code, city, specialization, specialization_ar, is_verified, nationality, show_nationality")
           .in("user_id", userIds);
 
         const profileMap = new Map((profiles || []).map((p: any) => [p.user_id, p]));
@@ -38,7 +41,7 @@ export function FeaturedChefs() {
       // Fallback: verified profiles
       const { data: profiles } = await supabase
         .from("profiles")
-        .select("user_id, username, full_name, full_name_ar, avatar_url, country_code, city, specialization, specialization_ar, is_verified, loyalty_points")
+        .select("user_id, username, full_name, full_name_ar, avatar_url, country_code, city, specialization, specialization_ar, is_verified, loyalty_points, nationality, show_nationality")
         .eq("is_verified", true)
         .order("loyalty_points", { ascending: false, nullsFirst: false })
         .limit(8);
@@ -90,6 +93,10 @@ export function FeaturedChefs() {
             const spec = isAr && chef.specialization_ar ? chef.specialization_ar : chef.specialization;
             const initials = name ? name.split(" ").map((w: string) => w[0]).join("").slice(0, 2).toUpperCase() : "?";
             const hasMedals = chef.gold_medals > 0 || chef.silver_medals > 0 || chef.bronze_medals > 0;
+            const nationalityEmoji = chef.show_nationality !== false && chef.nationality ? countryFlag(chef.nationality) : "";
+            const countryObj = allCountries.find((c: any) => c.code === chef.country_code);
+            const countryName = countryObj ? (isAr ? countryObj.name_ar || countryObj.name : countryObj.name) : chef.country_code;
+            const locationParts = [chef.city, countryName].filter(Boolean).join(", ");
 
             return (
               <Link key={chef.user_id || idx} to={chef.username ? `/${chef.username}` : `/profile/${chef.user_id}`} className="group block">
@@ -107,6 +114,9 @@ export function FeaturedChefs() {
                           <Star className="h-3 w-3 fill-current" />
                         </div>
                       )}
+                      {nationalityEmoji && (
+                        <span className="absolute -top-1 -start-1 text-base leading-none drop-shadow">{nationalityEmoji}</span>
+                      )}
                     </div>
                     <h3 className="text-sm font-bold truncate group-hover:text-primary transition-colors">
                       {name || (isAr ? "طاهٍ" : "Chef")}
@@ -120,7 +130,7 @@ export function FeaturedChefs() {
                     {chef.country_code && (
                       <div className="mt-0.5 flex items-center justify-center gap-1 text-[10px] text-muted-foreground/70">
                         <MapPin className="h-2.5 w-2.5 shrink-0" />
-                        <span>{chef.city ? `${chef.city}, ` : ""}{chef.country_code}</span>
+                        <span>{countryFlag(chef.country_code)} {locationParts}</span>
                       </div>
                     )}
                     {hasMedals && (

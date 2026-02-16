@@ -9,6 +9,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
+import { Switch } from "@/components/ui/switch";
 import { CountrySelector } from "@/components/auth/CountrySelector";
 import { Save, User, Briefcase, Globe, Heart } from "lucide-react";
 import type { Database } from "@/integrations/supabase/types";
@@ -44,6 +45,8 @@ export function ProfileEditForm({ profile, userId, onSaved }: ProfileEditFormPro
     city: profile?.city || "",
     country_code: profile?.country_code || "",
     nationality: profile?.nationality || "",
+    second_nationality: profile?.second_nationality || "",
+    show_nationality: profile?.show_nationality !== false,
     phone: profile?.phone || "",
     website: profile?.website || "",
     instagram: profile?.instagram || "",
@@ -206,8 +209,17 @@ export function ProfileEditForm({ profile, userId, onSaved }: ProfileEditFormPro
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="grid gap-4 sm:grid-cols-2">
-            <CountrySelector value={form.country_code} onChange={(c) => update("country_code", c)} label={isAr ? "البلد" : "Country"} />
+            <CountrySelector value={form.country_code} onChange={(c) => update("country_code", c)} label={isAr ? "بلد الإقامة" : "Country of Residence"} />
             <CountrySelector value={form.nationality} onChange={(c) => update("nationality", c)} label={isAr ? "الجنسية" : "Nationality"} />
+          </div>
+          <div className="grid gap-4 sm:grid-cols-2">
+            <CountrySelector value={form.second_nationality} onChange={(c) => update("second_nationality", c)} label={isAr ? "الجنسية الثانية" : "Second Nationality"} />
+            <div className="flex items-center gap-3 pt-6">
+              <Switch checked={form.show_nationality} onCheckedChange={(v) => update("show_nationality", v)} id="show-nationality" />
+              <Label htmlFor="show-nationality" className="text-xs cursor-pointer">
+                {isAr ? "إظهار الجنسية في الملف الشخصي" : "Show nationality on profile"}
+              </Label>
+            </div>
           </div>
           <div className="grid gap-4 sm:grid-cols-2">
             <div className="space-y-1.5">
