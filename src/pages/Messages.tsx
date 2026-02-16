@@ -186,6 +186,7 @@ export default function Messages() {
     },
     enabled: !!user,
     refetchInterval: 15000,
+    staleTime: 1000 * 60 * 1,
   });
 
   // Fetch messages for selected conversation

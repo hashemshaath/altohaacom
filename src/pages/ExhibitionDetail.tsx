@@ -174,6 +174,7 @@ export default function ExhibitionDetail() {
       return data;
     },
     enabled: !!slug,
+    staleTime: 1000 * 60 * 5,
   });
 
   const { data: isFollowing } = useQuery({
@@ -202,6 +203,7 @@ export default function ExhibitionDetail() {
       return count || 0;
     },
     enabled: !!exhibition,
+    staleTime: 1000 * 60 * 5,
   });
 
   const { data: linkedCompetitions } = useQuery({
