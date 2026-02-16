@@ -3,7 +3,7 @@ import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Trophy, Users, GraduationCap, Landmark, Newspaper, MessageSquare, ShoppingBag, Sparkles, Award, Star, Gift } from "lucide-react";
+import { Trophy, Users, GraduationCap, Landmark, Newspaper, MessageSquare, ShoppingBag, Sparkles, Award, Star, Gift, UtensilsCrossed, HandHeart, ChefHat, Building2, AlertCircle } from "lucide-react";
 import { Link } from "react-router-dom";
 import { UpcomingCompetitionsWidget } from "@/components/dashboard/UpcomingCompetitionsWidget";
 import { RecentActivityWidget } from "@/components/dashboard/RecentActivityWidget";
@@ -32,7 +32,7 @@ export default function Dashboard() {
       if (!user) return null;
       const { data } = await supabase
         .from("profiles")
-        .select("full_name, username")
+        .select("full_name, username, profile_completed")
         .eq("user_id", user.id)
         .single();
       return data;
@@ -60,6 +60,10 @@ export default function Dashboard() {
     { icon: Users, title: t("communityTitle"), href: "/community", color: "text-chart-2", bg: "bg-chart-2/10" },
     { icon: GraduationCap, title: t("masterclassesTitle"), href: "/masterclasses", color: "text-chart-3", bg: "bg-chart-3/10" },
     { icon: Landmark, title: t("exhibitions") || "Exhibitions", href: "/exhibitions", color: "text-chart-5", bg: "bg-chart-5/10" },
+    { icon: ChefHat, title: isAr ? "الوصفات" : "Recipes", href: "/recipes", color: "text-chart-4", bg: "bg-chart-4/10" },
+    { icon: UtensilsCrossed, title: isAr ? "التذوق" : "Tastings", href: "/tastings", color: "text-chart-1", bg: "bg-chart-1/10" },
+    { icon: HandHeart, title: isAr ? "الإرشاد" : "Mentorship", href: "/mentorship", color: "text-chart-3", bg: "bg-chart-3/10" },
+    { icon: Building2, title: isAr ? "المنشآت" : "Establishments", href: "/establishments", color: "text-chart-5", bg: "bg-chart-5/10" },
     { icon: Newspaper, title: t("news") || "News", href: "/news", color: "text-chart-4", bg: "bg-chart-4/10" },
     { icon: MessageSquare, title: isAr ? "الرسائل" : "Messages", href: "/messages", color: "text-chart-1", bg: "bg-chart-1/10" },
     { icon: ShoppingBag, title: isAr ? "المتجر" : "Shop", href: "/shop", color: "text-accent-foreground", bg: "bg-accent/30" },
@@ -100,9 +104,29 @@ export default function Dashboard() {
           </div>
         </div>
 
+        {/* Profile Completion Nudge */}
+        {user && profile && !profile.profile_completed && (
+          <div className="mb-8 animate-fade-in">
+            <Link to="/onboarding">
+              <Card className="group border-chart-4/30 bg-gradient-to-r from-chart-4/5 to-transparent transition-all hover:shadow-md hover:-translate-y-0.5">
+                <CardContent className="flex items-center gap-4 py-4">
+                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-chart-4/10 ring-2 ring-chart-4/20">
+                    <AlertCircle className="h-5 w-5 text-chart-4" />
+                  </div>
+                  <div className="flex-1">
+                    <p className="text-sm font-semibold">{isAr ? "أكمل ملفك الشخصي" : "Complete Your Profile"}</p>
+                    <p className="text-xs text-muted-foreground">{isAr ? "أكمل معلوماتك لفتح جميع المزايا" : "Finish setting up your profile to unlock all features"}</p>
+                  </div>
+                  <ArrowRight className="h-4 w-4 text-muted-foreground group-hover:text-primary transition-colors" />
+                </CardContent>
+              </Card>
+            </Link>
+          </div>
+        )}
+
         {/* Quick Navigation - Premium Pill Grid */}
         <div className="mb-10">
-          <div className="grid grid-cols-4 gap-2.5 sm:gap-3 lg:grid-cols-8">
+          <div className="grid grid-cols-4 gap-2.5 sm:gap-3 md:grid-cols-6 lg:grid-cols-12">
             {sections.map((s) => (
               <Link key={s.title} to={s.href} className="group">
                 <Card className="h-full border-border/40 bg-card/50 backdrop-blur-sm transition-all duration-300 hover:shadow-xl hover:-translate-y-1.5 hover:border-primary/30 hover:bg-card active:scale-95">
