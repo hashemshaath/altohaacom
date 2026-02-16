@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { forwardRef, useEffect, useRef, useState } from "react";
 import { cn } from "@/lib/utils";
 
 interface SectionRevealProps {
@@ -10,51 +10,54 @@ interface SectionRevealProps {
   delay?: number;
 }
 
-export function SectionReveal({
-  children,
-  className,
-  direction = "up",
-  delay = 0,
-}: SectionRevealProps) {
-  const ref = useRef<HTMLDivElement>(null);
-  const [isVisible, setIsVisible] = useState(false);
+export const SectionReveal = forwardRef<HTMLDivElement, SectionRevealProps>(
+  ({ children, className, direction = "up", delay = 0 }, forwardedRef) => {
+    const innerRef = useRef<HTMLDivElement>(null);
+    const [isVisible, setIsVisible] = useState(false);
 
-  useEffect(() => {
-    const el = ref.current;
-    if (!el) return;
+    useEffect(() => {
+      const el = innerRef.current;
+      if (!el) return;
 
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          setIsVisible(true);
-          observer.unobserve(el);
-        }
-      },
-      { threshold: 0.08, rootMargin: "0px 0px -30px 0px" }
+      const observer = new IntersectionObserver(
+        ([entry]) => {
+          if (entry.isIntersecting) {
+            setIsVisible(true);
+            observer.unobserve(el);
+          }
+        },
+        { threshold: 0.08, rootMargin: "0px 0px -30px 0px" }
+      );
+
+      observer.observe(el);
+      return () => observer.disconnect();
+    }, []);
+
+    const hiddenTransform =
+      direction === "up"
+        ? "translate-y-6"
+        : direction === "left"
+        ? "-translate-x-6"
+        : "translate-x-6";
+
+    return (
+      <div
+        ref={(node) => {
+          (innerRef as React.MutableRefObject<HTMLDivElement | null>).current = node;
+          if (typeof forwardedRef === "function") forwardedRef(node);
+          else if (forwardedRef) (forwardedRef as React.MutableRefObject<HTMLDivElement | null>).current = node;
+        }}
+        className={cn(
+          "transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)]",
+          isVisible ? "opacity-100 translate-y-0 translate-x-0" : `opacity-0 ${hiddenTransform}`,
+          className
+        )}
+        style={{ transitionDelay: isVisible ? `${delay}ms` : "0ms" }}
+      >
+        {children}
+      </div>
     );
+  }
+);
 
-    observer.observe(el);
-    return () => observer.disconnect();
-  }, []);
-
-  const hiddenTransform =
-    direction === "up"
-      ? "translate-y-6"
-      : direction === "left"
-      ? "-translate-x-6"
-      : "translate-x-6";
-
-  return (
-    <div
-      ref={ref}
-      className={cn(
-        "transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)]",
-        isVisible ? "opacity-100 translate-y-0 translate-x-0" : `opacity-0 ${hiddenTransform}`,
-        className
-      )}
-      style={{ transitionDelay: isVisible ? `${delay}ms` : "0ms" }}
-    >
-      {children}
-    </div>
-  );
-}
+SectionReveal.displayName = "SectionReveal";
