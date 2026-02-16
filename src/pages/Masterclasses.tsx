@@ -40,6 +40,7 @@ export default function Masterclasses() {
       if (error) throw error;
       return data || [];
     },
+    staleTime: 1000 * 60 * 3,
   });
 
   const { data: myEnrollments = [] } = useQuery({
@@ -55,6 +56,7 @@ export default function Masterclasses() {
       return data?.map((e) => e.masterclass_id) || [];
     },
     enabled: !!user,
+    staleTime: 1000 * 60 * 2,
   });
 
   const countryCodes = Array.from(
