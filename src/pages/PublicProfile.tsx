@@ -36,6 +36,8 @@ import { PublicProfileStats } from "@/components/public-profile/PublicProfileSta
 import { PublicProfileSchedule } from "@/components/public-profile/PublicProfileSchedule";
 import { PublicProfileAbout } from "@/components/public-profile/PublicProfileAbout";
 import { PublicProfileSidebar } from "@/components/public-profile/PublicProfileSidebar";
+import { PublicProfileGallery } from "@/components/public-profile/PublicProfileGallery";
+import { PublicProfileEmptySection } from "@/components/public-profile/PublicProfileEmptySection";
 
 type Profile = Database["public"]["Tables"]["profiles"]["Row"];
 type AppRole = Database["public"]["Enums"]["app_role"];
@@ -85,7 +87,7 @@ export default function PublicProfile() {
   const isAr = language === "ar";
   const { data: allCountries = [] } = useAllCountries();
   const [followListOpen, setFollowListOpen] = useState<"followers" | "following" | null>(null);
-  const [lightboxImg, setLightboxImg] = useState<string | null>(null);
+  
 
   const getCountryName = (code: string | null) => {
     if (!code) return null;
@@ -282,13 +284,24 @@ export default function PublicProfile() {
           {/* ── LEFT COLUMN (Main Content) ── */}
           <div className="space-y-6 min-w-0">
             {/* About */}
-            {isVisible("bio") && (bio || specialization) && (
+            {isVisible("bio") && (
               <SectionReveal delay={150}>
-                <SectionTitle icon={User} label={isAr ? "نبذة" : "About"} />
-                <PublicProfileAbout
-                  profile={profile} bio={bio} specialization={specialization}
-                  userSpecialties={userSpecialties} isAr={isAr}
-                />
+                {(bio || specialization) ? (
+                  <>
+                    <SectionTitle icon={User} label={isAr ? "نبذة" : "About"} />
+                    <PublicProfileAbout
+                      profile={profile} bio={bio} specialization={specialization}
+                      userSpecialties={userSpecialties} isAr={isAr}
+                    />
+                  </>
+                ) : (
+                  <PublicProfileEmptySection
+                    icon={User}
+                    label={isAr ? "نبذة" : "About"}
+                    description={isAr ? "لم يتم إضافة نبذة بعد" : "No bio added yet"}
+                    isAr={isAr}
+                  />
+                )}
               </SectionReveal>
             )}
 
@@ -300,127 +313,160 @@ export default function PublicProfile() {
             )}
 
             {/* Experience */}
-            {isVisible("career") && workRecords.length > 0 && (
+            {isVisible("career") && (
               <SectionReveal delay={250}>
-                <SectionTitle icon={Briefcase} label={isAr ? "الخبرة المهنية" : "Professional Experience"} />
-                <div className="space-y-2.5">
-                  {workRecords.map((record: any) => (
-                    <Card key={record.id} className="rounded-2xl border-border/40 hover:shadow-md transition-shadow">
-                      <CardContent className="p-4" dir={isAr ? "rtl" : "ltr"}>
-                        <div className="flex gap-3">
-                          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-chart-3/10">
-                            <Briefcase className="h-4 w-4 text-chart-3" />
-                          </div>
-                          <div className="flex-1 min-w-0">
-                            <div className="flex items-center gap-2 flex-wrap">
-                              <h4 className="font-semibold text-sm">{isAr ? (record.title_ar || record.title) : record.title}</h4>
-                              {record.is_current && <Badge className="bg-chart-3/10 text-chart-3 text-[10px] h-5">{isAr ? "حالي" : "Current"}</Badge>}
+                {workRecords.length > 0 ? (
+                  <>
+                    <SectionTitle icon={Briefcase} label={isAr ? "الخبرة المهنية" : "Professional Experience"} />
+                    <div className="space-y-2.5">
+                      {workRecords.map((record: any) => (
+                        <Card key={record.id} className="rounded-2xl border-border/40 hover:shadow-md transition-shadow">
+                          <CardContent className="p-4" dir={isAr ? "rtl" : "ltr"}>
+                            <div className="flex gap-3">
+                              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-chart-3/10">
+                                <Briefcase className="h-4 w-4 text-chart-3" />
+                              </div>
+                              <div className="flex-1 min-w-0">
+                                <div className="flex items-center gap-2 flex-wrap">
+                                  <h4 className="font-semibold text-sm">{isAr ? (record.title_ar || record.title) : record.title}</h4>
+                                  {record.is_current && <Badge className="bg-chart-3/10 text-chart-3 text-[10px] h-5">{isAr ? "حالي" : "Current"}</Badge>}
+                                </div>
+                                {record.entity_name && (
+                                  record.entity_id ? (
+                                    <Link to={`/entities/${record.entity_id}`} className="text-xs text-primary font-medium hover:underline flex items-center gap-1 mt-0.5">
+                                      {record.entity_name}<ExternalLink className="h-2.5 w-2.5" />
+                                    </Link>
+                                  ) : <p className="text-xs text-muted-foreground mt-0.5">{record.entity_name}</p>
+                                )}
+                                <div className="flex flex-wrap gap-2 mt-1 text-[11px] text-muted-foreground">
+                                  <span className="flex items-center gap-1"><Calendar className="h-2.5 w-2.5" />{formatDate(record.start_date, isAr)} – {formatDate(record.end_date, isAr)}</span>
+                                  {record.employment_type && <Badge variant="outline" className="text-[9px] h-4">{record.employment_type}</Badge>}
+                                  {record.location && <span className="flex items-center gap-1"><MapPin className="h-2.5 w-2.5" />{record.location}</span>}
+                                </div>
+                                {(record.description || record.description_ar) && (
+                                  <p className="mt-1.5 text-[11px] text-muted-foreground leading-relaxed">
+                                    {isAr ? (record.description_ar || record.description) : (record.description || record.description_ar)}
+                                  </p>
+                                )}
+                              </div>
                             </div>
-                            {record.entity_name && (
-                              record.entity_id ? (
-                                <Link to={`/entities/${record.entity_id}`} className="text-xs text-primary font-medium hover:underline flex items-center gap-1 mt-0.5">
-                                  {record.entity_name}<ExternalLink className="h-2.5 w-2.5" />
-                                </Link>
-                              ) : <p className="text-xs text-muted-foreground mt-0.5">{record.entity_name}</p>
-                            )}
-                            <div className="flex flex-wrap gap-2 mt-1 text-[11px] text-muted-foreground">
-                              <span className="flex items-center gap-1"><Calendar className="h-2.5 w-2.5" />{formatDate(record.start_date, isAr)} – {formatDate(record.end_date, isAr)}</span>
-                              {record.employment_type && <Badge variant="outline" className="text-[9px] h-4">{record.employment_type}</Badge>}
-                              {record.location && <span className="flex items-center gap-1"><MapPin className="h-2.5 w-2.5" />{record.location}</span>}
-                            </div>
-                            {(record.description || record.description_ar) && (
-                              <p className="mt-1.5 text-[11px] text-muted-foreground leading-relaxed">
-                                {isAr ? (record.description_ar || record.description) : (record.description || record.description_ar)}
-                              </p>
-                            )}
-                          </div>
-                        </div>
-                      </CardContent>
-                    </Card>
-                  ))}
-                </div>
+                          </CardContent>
+                        </Card>
+                      ))}
+                    </div>
+                  </>
+                ) : (
+                  <PublicProfileEmptySection
+                    icon={Briefcase}
+                    label={isAr ? "الخبرة المهنية" : "Professional Experience"}
+                    description={isAr ? "لم يتم إضافة خبرة مهنية بعد" : "No experience added yet"}
+                    isAr={isAr}
+                  />
+                )}
               </SectionReveal>
             )}
 
             {/* Education */}
-            {isVisible("education") && educationRecords.length > 0 && (
+            {isVisible("education") && (
               <SectionReveal delay={300}>
-                <SectionTitle icon={GraduationCap} label={isAr ? "التعليم" : "Education"} />
-                <div className="space-y-2.5">
-                  {educationRecords.map((record: any) => (
-                    <Card key={record.id} className="rounded-2xl border-border/40 hover:shadow-md transition-shadow">
-                      <CardContent className="p-4" dir={isAr ? "rtl" : "ltr"}>
-                        <div className="flex gap-3">
-                          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-chart-2/10">
-                            <GraduationCap className="h-4 w-4 text-chart-2" />
-                          </div>
-                          <div className="flex-1 min-w-0">
-                            <h4 className="font-semibold text-sm">{isAr ? (record.title_ar || record.title) : record.title}</h4>
-                            {record.entity_name && (
-                              record.entity_id ? (
-                                <Link to={`/entities/${record.entity_id}`} className="text-xs text-primary font-medium hover:underline flex items-center gap-1 mt-0.5">
-                                  {record.entity_name}<ExternalLink className="h-2.5 w-2.5" />
-                                </Link>
-                              ) : <p className="text-xs text-muted-foreground mt-0.5">{record.entity_name}</p>
-                            )}
-                            <div className="flex flex-wrap gap-2 mt-1 text-[11px] text-muted-foreground">
-                              <span className="flex items-center gap-1"><Calendar className="h-2.5 w-2.5" />{formatDate(record.start_date, isAr)} – {formatDate(record.end_date, isAr)}</span>
-                              {record.education_level && <Badge variant="outline" className="text-[9px] h-4">{record.education_level}</Badge>}
-                              {record.field_of_study && <span>{isAr ? (record.field_of_study_ar || record.field_of_study) : record.field_of_study}</span>}
+                {educationRecords.length > 0 ? (
+                  <>
+                    <SectionTitle icon={GraduationCap} label={isAr ? "التعليم" : "Education"} />
+                    <div className="space-y-2.5">
+                      {educationRecords.map((record: any) => (
+                        <Card key={record.id} className="rounded-2xl border-border/40 hover:shadow-md transition-shadow">
+                          <CardContent className="p-4" dir={isAr ? "rtl" : "ltr"}>
+                            <div className="flex gap-3">
+                              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-chart-2/10">
+                                <GraduationCap className="h-4 w-4 text-chart-2" />
+                              </div>
+                              <div className="flex-1 min-w-0">
+                                <h4 className="font-semibold text-sm">{isAr ? (record.title_ar || record.title) : record.title}</h4>
+                                {record.entity_name && (
+                                  record.entity_id ? (
+                                    <Link to={`/entities/${record.entity_id}`} className="text-xs text-primary font-medium hover:underline flex items-center gap-1 mt-0.5">
+                                      {record.entity_name}<ExternalLink className="h-2.5 w-2.5" />
+                                    </Link>
+                                  ) : <p className="text-xs text-muted-foreground mt-0.5">{record.entity_name}</p>
+                                )}
+                                <div className="flex flex-wrap gap-2 mt-1 text-[11px] text-muted-foreground">
+                                  <span className="flex items-center gap-1"><Calendar className="h-2.5 w-2.5" />{formatDate(record.start_date, isAr)} – {formatDate(record.end_date, isAr)}</span>
+                                  {record.education_level && <Badge variant="outline" className="text-[9px] h-4">{record.education_level}</Badge>}
+                                  {record.field_of_study && <span>{isAr ? (record.field_of_study_ar || record.field_of_study) : record.field_of_study}</span>}
+                                </div>
+                              </div>
                             </div>
-                          </div>
-                        </div>
-                      </CardContent>
-                    </Card>
-                  ))}
-                </div>
+                          </CardContent>
+                        </Card>
+                      ))}
+                    </div>
+                  </>
+                ) : (
+                  <PublicProfileEmptySection
+                    icon={GraduationCap}
+                    label={isAr ? "التعليم" : "Education"}
+                    description={isAr ? "لم يتم إضافة تعليم بعد" : "No education added yet"}
+                    isAr={isAr}
+                  />
+                )}
               </SectionReveal>
             )}
 
             {/* Memberships */}
-            {isVisible("memberships") && memberships.length > 0 && (
+            {isVisible("memberships") && (
               <SectionReveal delay={350}>
-                <SectionTitle icon={Building2} label={isAr ? "العضويات والجهات" : "Memberships & Entities"} />
-                <div className="grid gap-2.5 sm:grid-cols-2">
-                  {memberships.map((m: any) => (
-                    <Card key={m.id} className="rounded-2xl border-border/40 hover:shadow-md transition-shadow">
-                      <CardContent className="p-4 flex items-center gap-3" dir={isAr ? "rtl" : "ltr"}>
-                        {m.culinary_entities?.logo_url ? (
-                          <img src={m.culinary_entities.logo_url} alt="" className="h-10 w-10 rounded-xl object-cover border" />
-                        ) : (
-                          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-primary/10">
-                            <Building2 className="h-5 w-5 text-primary" />
-                          </div>
-                        )}
-                        <div className="flex-1 min-w-0">
-                          <h4 className="font-semibold text-xs truncate">
-                            {isAr ? (m.culinary_entities?.name_ar || m.culinary_entities?.name) : (m.culinary_entities?.name || m.culinary_entities?.name_ar)}
-                          </h4>
-                          {m.title && <p className="text-[11px] text-muted-foreground truncate">{isAr ? (m.title_ar || m.title) : m.title}</p>}
-                          <Badge variant="outline" className="text-[9px] mt-1 h-4">{m.membership_type}</Badge>
-                        </div>
-                      </CardContent>
-                    </Card>
-                  ))}
-                </div>
+                {memberships.length > 0 ? (
+                  <>
+                    <SectionTitle icon={Building2} label={isAr ? "العضويات والجهات" : "Memberships & Entities"} />
+                    <div className="grid gap-2.5 sm:grid-cols-2">
+                      {memberships.map((m: any) => (
+                        <Card key={m.id} className="rounded-2xl border-border/40 hover:shadow-md transition-shadow">
+                          <CardContent className="p-4 flex items-center gap-3" dir={isAr ? "rtl" : "ltr"}>
+                            {m.culinary_entities?.logo_url ? (
+                              <img src={m.culinary_entities.logo_url} alt="" className="h-10 w-10 rounded-xl object-cover border" />
+                            ) : (
+                              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-primary/10">
+                                <Building2 className="h-5 w-5 text-primary" />
+                              </div>
+                            )}
+                            <div className="flex-1 min-w-0">
+                              <h4 className="font-semibold text-xs truncate">
+                                {isAr ? (m.culinary_entities?.name_ar || m.culinary_entities?.name) : (m.culinary_entities?.name || m.culinary_entities?.name_ar)}
+                              </h4>
+                              {m.title && <p className="text-[11px] text-muted-foreground truncate">{isAr ? (m.title_ar || m.title) : m.title}</p>}
+                              <Badge variant="outline" className="text-[9px] mt-1 h-4">{m.membership_type}</Badge>
+                            </div>
+                          </CardContent>
+                        </Card>
+                      ))}
+                    </div>
+                  </>
+                ) : (
+                  <PublicProfileEmptySection
+                    icon={Building2}
+                    label={isAr ? "العضويات والجهات" : "Memberships & Entities"}
+                    description={isAr ? "لم يتم إضافة عضويات بعد" : "No memberships added yet"}
+                    isAr={isAr}
+                  />
+                )}
               </SectionReveal>
             )}
 
-            {/* Certificates - component returns null when empty for non-owners */}
+            {/* Certificates */}
             {isVisible("certificates") && (
               <SectionReveal delay={400}>
                 <ProfileCertificates userId={profile.user_id} isOwner={isOwnProfile} />
               </SectionReveal>
             )}
 
-            {/* Competitions - only show if user has history */}
+            {/* Competitions */}
             {isVisible("competitions") && (
               <SectionReveal delay={450}>
                 <CompetitionHistoryWrapper userId={profile.user_id} isAr={isAr} />
               </SectionReveal>
             )}
 
-            {/* Badges - component returns null when empty */}
+            {/* Badges */}
             {isVisible("badges") && (
               <SectionReveal delay={500}>
                 <UserBadgesDisplay userId={profile.user_id} />
@@ -428,19 +474,18 @@ export default function PublicProfile() {
             )}
 
             {/* Gallery */}
-            {mediaFiles.length > 0 && (
-              <SectionReveal delay={550}>
-                <SectionTitle icon={ImageIcon} label={isAr ? "الألبوم" : "Gallery"} />
-                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2.5">
-                  {mediaFiles.map((file) => (
-                    <button key={file.name} onClick={() => setLightboxImg(file.url)}
-                      className="aspect-square rounded-xl overflow-hidden border border-border/40 bg-muted hover:opacity-90 transition-opacity hover:shadow-md">
-                      <img src={file.url} alt={file.name} className="w-full h-full object-cover" />
-                    </button>
-                  ))}
-                </div>
-              </SectionReveal>
-            )}
+            <SectionReveal delay={550}>
+              {mediaFiles.length > 0 ? (
+                <PublicProfileGallery mediaFiles={mediaFiles} isAr={isAr} />
+              ) : (
+                <PublicProfileEmptySection
+                  icon={ImageIcon}
+                  label={isAr ? "الألبوم" : "Gallery"}
+                  description={isAr ? "لم يتم إضافة صور بعد" : "No photos added yet"}
+                  isAr={isAr}
+                />
+              )}
+            </SectionReveal>
           </div>
 
           {/* ── RIGHT COLUMN (Sidebar) ── */}
@@ -467,12 +512,6 @@ export default function PublicProfile() {
         </div>
       </main>
 
-      {/* ── Image Lightbox ── */}
-      <Dialog open={!!lightboxImg} onOpenChange={() => setLightboxImg(null)}>
-        <DialogContent className="max-w-4xl p-2">
-          {lightboxImg && <img src={lightboxImg} alt="Gallery" className="w-full rounded-lg" />}
-        </DialogContent>
-      </Dialog>
 
       {/* ── Follow List Dialog ── */}
       <Dialog open={!!followListOpen} onOpenChange={() => setFollowListOpen(null)}>
