@@ -4,6 +4,7 @@ import { AdminAnalyticsWidgets } from "@/components/admin/AdminAnalyticsWidgets"
 import { useLanguage } from "@/i18n/LanguageContext";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import { Skeleton } from "@/components/ui/skeleton";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import AdminPageHeader from "@/components/admin/AdminPageHeader";
@@ -138,10 +139,19 @@ export default function AdminDashboard() {
                   <stat.icon className={`h-4.5 w-4.5 ${stat.color}`} />
                 </div>
                 <div>
-                  <p className="text-xl font-bold leading-none tracking-tight">
-                    {isLoading ? "…" : toEnglishDigits(stat.value.toLocaleString())}
-                  </p>
-                  <p className="mt-1 text-[11px] text-muted-foreground">{stat.title}</p>
+                  {isLoading ? (
+                    <>
+                      <Skeleton className="h-6 w-12 mb-1" />
+                      <Skeleton className="h-3 w-20" />
+                    </>
+                  ) : (
+                    <>
+                      <p className="text-xl font-bold leading-none tracking-tight">
+                        {toEnglishDigits(stat.value.toLocaleString())}
+                      </p>
+                      <p className="mt-1 text-[11px] text-muted-foreground">{stat.title}</p>
+                    </>
+                  )}
                 </div>
               </CardContent>
             </Card>

@@ -110,6 +110,7 @@ export function QuickSearch({ onClose }: QuickSearchProps) {
       };
     },
     enabled: debouncedQuery.length >= 2,
+    staleTime: 1000 * 60 * 2,
   });
 
   const hasResults = suggestions && (
