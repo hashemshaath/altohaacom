@@ -81,6 +81,7 @@ export default function Competitions() {
       if (error) throw error;
       return data as (Competition & { competition_registrations: { id: string }[] })[];
     },
+    staleTime: 1000 * 60 * 2,
   });
 
   const { data: userRoles } = useQuery({

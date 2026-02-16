@@ -128,17 +128,20 @@ export default function Community() {
             {/* Stats */}
             <div className="mt-4 rounded-2xl border border-border bg-card p-4">
               <h3 className="text-xs font-bold uppercase tracking-wider text-muted-foreground mb-3">
-                {isAr ? "إحصائيات" : "Stats"}
+                {isAr ? "إحصائيات" : "Community Stats"}
               </h3>
-              <div className="space-y-2">
+              <div className="space-y-2.5">
                 {[
-                  { label: isAr ? "عضو" : "Members", value: stats.members, color: "text-primary" },
-                  { label: isAr ? "مجموعة" : "Groups", value: stats.groups, color: "text-chart-2" },
-                  { label: isAr ? "وصفة" : "Recipes", value: stats.recipes, color: "text-chart-4" },
+                  { label: isAr ? "عضو" : "Members", value: stats.members, color: "text-primary", dot: "bg-chart-5" },
+                  { label: isAr ? "مجموعة" : "Groups", value: stats.groups, color: "text-chart-2", dot: "" },
+                  { label: isAr ? "وصفة" : "Recipes", value: stats.recipes, color: "text-chart-4", dot: "" },
                 ].map((stat, i) => (
                   <div key={i} className="flex items-center justify-between">
-                    <span className="text-xs text-muted-foreground">{stat.label}</span>
-                    <span className={cn("text-sm font-bold", stat.color)}>{formatNumber(stat.value)}</span>
+                    <span className="flex items-center gap-2 text-xs text-muted-foreground">
+                      {stat.dot && <span className={`h-2 w-2 rounded-full ${stat.dot} animate-pulse`} />}
+                      {stat.label}
+                    </span>
+                    <span className={cn("text-sm font-bold tabular-nums", stat.color)}>{formatNumber(stat.value)}</span>
                   </div>
                 ))}
               </div>

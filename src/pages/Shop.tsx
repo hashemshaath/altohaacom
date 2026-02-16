@@ -46,6 +46,7 @@ export default function Shop() {
       if (error) throw error;
       return data;
     },
+    staleTime: 1000 * 60 * 2,
   });
 
   const categories = [...new Set(products.map((p: any) => p.category))].sort();
@@ -109,6 +110,11 @@ export default function Shop() {
               </p>
             </div>
             <div className="flex items-center gap-3 flex-wrap">
+              <Badge variant="outline" className="gap-1.5 border-primary/20 bg-primary/5 text-primary px-3 py-1.5">
+                <Package className="h-3.5 w-3.5" />
+                <span className="font-bold">{filtered.length}</span>
+                <span className="text-[10px]">{isAr ? "منتج" : "products"}</span>
+              </Badge>
               {user && (
                 <Button variant="outline" asChild>
                   <Link to="/shop/my-products">
