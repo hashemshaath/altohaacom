@@ -83,6 +83,7 @@ export function FeaturedChefs() {
           </div>
         </SectionReveal>
 
+        <SectionReveal delay={100}>
         <div className="grid grid-cols-2 gap-2.5 sm:grid-cols-3 md:grid-cols-4">
           {chefs.map((chef: any, idx: number) => {
             const name = isAr && chef.full_name_ar ? chef.full_name_ar : chef.full_name;
@@ -135,6 +136,7 @@ export function FeaturedChefs() {
             );
           })}
         </div>
+        </SectionReveal>
       </div>
     </section>
   );

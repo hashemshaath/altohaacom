@@ -60,6 +60,7 @@ export function HomeMasterclasses() {
         </div>
       </SectionReveal>
 
+      <SectionReveal delay={100}>
       <div className="grid gap-3 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
         {classes.map((mc: any) => {
           const title = isAr && mc.title_ar ? mc.title_ar : mc.title;
@@ -108,6 +109,7 @@ export function HomeMasterclasses() {
           );
         })}
       </div>
+      </SectionReveal>
     </section>
   );
 }
