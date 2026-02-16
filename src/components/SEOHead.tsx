@@ -8,6 +8,7 @@ interface SEOHeadProps {
   canonical?: string;
   jsonLd?: Record<string, unknown>;
   noIndex?: boolean;
+  lang?: string;
 }
 
 export function SEOHead({
@@ -18,6 +19,7 @@ export function SEOHead({
   canonical,
   jsonLd,
   noIndex,
+  lang,
 }: SEOHeadProps) {
   useEffect(() => {
     // Title
@@ -44,10 +46,13 @@ export function SEOHead({
     setMeta("property", "og:title", fullTitle);
     setMeta("name", "twitter:title", fullTitle);
     setMeta("property", "og:type", ogType);
+    setMeta("property", "og:locale", lang === "ar" ? "ar_SA" : "en_US");
 
     if (ogImage) {
       const imageUrl = ogImage.startsWith("http") ? ogImage : `${window.location.origin}${ogImage}`;
       setMeta("property", "og:image", imageUrl);
+      setMeta("property", "og:image:width", "1200");
+      setMeta("property", "og:image:height", "630");
       setMeta("name", "twitter:image", imageUrl);
       setMeta("name", "twitter:card", "summary_large_image");
     }
@@ -55,6 +60,7 @@ export function SEOHead({
     setMeta("property", "og:url", canonical || window.location.href);
     setMeta("property", "og:site_name", "Altohaa");
     setMeta("name", "twitter:card", ogImage ? "summary_large_image" : "summary");
+    setMeta("name", "theme-color", "#1a1a2e");
 
     // Robots noindex
     if (noIndex) {
@@ -89,7 +95,7 @@ export function SEOHead({
       const ld = document.querySelector('script[data-seo-ld]');
       if (ld) ld.remove();
     };
-  }, [title, description, ogImage, ogType, canonical, jsonLd, noIndex]);
+  }, [title, description, ogImage, ogType, canonical, jsonLd, noIndex, lang]);
 
   return null;
 }

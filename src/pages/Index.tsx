@@ -1,4 +1,5 @@
 import { lazy, Suspense, memo, useEffect } from "react";
+import { useLanguage } from "@/i18n/LanguageContext";
 import { Skeleton } from "@/components/ui/skeleton";
 import { SEOHead } from "@/components/SEOHead";
 import { Header } from "@/components/Header";
@@ -39,6 +40,7 @@ const LazyFallback = memo(() => (
 LazyFallback.displayName = "LazyFallback";
 
 const Index = () => {
+  const { language } = useLanguage();
   useAdTracking();
   useEffect(() => { prefetchCommonRoutes(); }, []);
 
@@ -52,6 +54,7 @@ const Index = () => {
         title="Altohaa — The Global Culinary Community"
         description="The premier platform for chefs, judges, organizers, and food industry professionals. Compete in world-class competitions, master new skills, and connect with a vibrant culinary community."
         ogImage="/pwa-512x512.png"
+        lang={language}
         jsonLd={{
           "@context": "https://schema.org",
           "@type": "WebSite",
