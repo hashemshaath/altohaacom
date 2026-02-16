@@ -15,7 +15,7 @@ import { toEnglishDigits } from "@/lib/formatNumber";
 import {
   Building2, MapPin, Globe, Mail, Phone, Users, ShieldCheck,
   Bell, BellOff, ArrowLeft, ExternalLink, Share2, Calendar, Award, Target,
-  GraduationCap, BookOpen, Trophy, ArrowRight, Crown, Newspaper, Eye, Briefcase,
+  GraduationCap, BookOpen, Trophy, ArrowRight, Crown, Newspaper, Briefcase,
   Clock
 } from "lucide-react";
 import { QRCodeDisplay } from "@/components/qr/QRCodeDisplay";
@@ -29,6 +29,8 @@ import { EntityCompetitionsTab } from "@/components/entities/EntityCompetitionsT
 import { EntityNewsTab } from "@/components/entities/EntityNewsTab";
 import { EntityStatsStrip } from "@/components/entities/EntityStatsStrip";
 import { EntitySocialLinks } from "@/components/entities/EntitySocialLinks";
+import { EntityOverviewCard } from "@/components/entities/EntityOverviewCard";
+import { EntityNotificationsCard } from "@/components/entities/EntityNotificationsCard";
 import entitiesHero from "@/assets/entities-hero.jpg";
 import type { Database } from "@/integrations/supabase/types";
 
@@ -479,45 +481,15 @@ export default function EntityDetail() {
               </CardContent>
             </Card>
 
-            {/* Key Metrics Card */}
-            <Card className="overflow-hidden">
-              <div className="border-b bg-muted/30 px-4 py-3">
-                <h3 className="flex items-center gap-2 text-sm font-semibold">
-                  <div className="flex h-6 w-6 items-center justify-center rounded-lg bg-chart-3/10">
-                    <Eye className="h-3.5 w-3.5 text-chart-3" />
-                  </div>
-                  {isAr ? "نظرة عامة" : "Overview"}
-                </h3>
-              </div>
-              <CardContent className="p-0">
-                <div className="grid grid-cols-2 divide-x divide-y divide-border/50 rtl:divide-x-reverse">
-                  <MetricCell
-                    icon={Users}
-                    value={followerCount}
-                    label={isAr ? "متابعون" : "Followers"}
-                    color="text-primary"
-                  />
-                  <MetricCell
-                    icon={Users}
-                    value={entity.member_count || counts?.memberships || 0}
-                    label={isAr ? "أعضاء" : "Members"}
-                    color="text-chart-2"
-                  />
-                  <MetricCell
-                    icon={Briefcase}
-                    value={counts?.positions || 0}
-                    label={isAr ? "فريق العمل" : "Team"}
-                    color="text-chart-4"
-                  />
-                  <MetricCell
-                    icon={Trophy}
-                    value={counts?.competitions || 0}
-                    label={isAr ? "مسابقات" : "Competitions"}
-                    color="text-chart-5"
-                  />
-                </div>
-              </CardContent>
-            </Card>
+            {/* Overview Card */}
+            <EntityOverviewCard
+              entity={entity}
+              followerCount={followerCount}
+              counts={counts}
+            />
+
+            {/* Recent Activity */}
+            <EntityNotificationsCard entityId={entity.id} entityName={entity.name} />
 
             {/* Contact Info */}
             <Card className="overflow-hidden">
@@ -621,16 +593,6 @@ export default function EntityDetail() {
   );
 }
 
-// Helper components
-function MetricCell({ icon: Icon, value, label, color }: { icon: React.ElementType; value: number; label: string; color: string }) {
-  return (
-    <div className="flex flex-col items-center gap-1 p-4 text-center">
-      <Icon className={`h-4 w-4 ${color}`} />
-      <p className="text-lg font-bold">{toEnglishDigits(String(value))}</p>
-      <p className="text-[10px] text-muted-foreground">{label}</p>
-    </div>
-  );
-}
 
 function FactRow({ label, value, mono }: { label: string; value: string; mono?: boolean }) {
   return (
