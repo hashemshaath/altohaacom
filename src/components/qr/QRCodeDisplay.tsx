@@ -1,3 +1,4 @@
+import React from "react";
 import { QRCodeSVG } from "qrcode.react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -28,7 +29,7 @@ interface QRCodeDisplayProps {
   compact?: boolean;
 }
 
-export function QRCodeDisplay({
+export const QRCodeDisplay = React.forwardRef<HTMLDivElement, QRCodeDisplayProps>(function QRCodeDisplay({
   code,
   label,
   size = 180,
@@ -36,7 +37,7 @@ export function QRCodeDisplay({
   vCardData,
   className = "",
   compact = false,
-}: QRCodeDisplayProps) {
+}, ref) {
   const { language } = useLanguage();
   const { toast } = useToast();
   const isAr = language === "ar";
@@ -101,7 +102,7 @@ export function QRCodeDisplay({
   }
 
   return (
-    <Card className={`border-border/50 ${className}`}>
+    <Card ref={ref} className={`border-border/50 ${className}`}>
       <CardHeader className="pb-2">
         <CardTitle className="flex items-center gap-2 text-sm">
           <QrCode className="h-4 w-4" />
@@ -144,4 +145,6 @@ export function QRCodeDisplay({
       </CardContent>
     </Card>
   );
-}
+});
+
+QRCodeDisplay.displayName = "QRCodeDisplay";

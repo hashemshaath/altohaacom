@@ -1,16 +1,17 @@
+import React from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useAuth } from "@/contexts/AuthContext";
 import { Link } from "react-router-dom";
 import { Building2, Trophy, GraduationCap, Newspaper, Users, Globe, Mail, User, LayoutDashboard } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
 
-export function Footer() {
+export const Footer = React.forwardRef<HTMLElement, React.HTMLAttributes<HTMLElement>>(function Footer(_props, ref) {
   const { t, language } = useLanguage();
   const { user } = useAuth();
   const isAr = language === "ar";
 
   return (
-    <footer className="border-t border-border/40 bg-card/80 backdrop-blur-sm pb-20 md:pb-0" role="contentinfo">
+    <footer ref={ref} className="border-t border-border/40 bg-card/80 backdrop-blur-sm pb-20 md:pb-0" role="contentinfo">
       <div className="container py-10 md:py-14">
         <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
           {/* Brand */}
@@ -143,4 +144,5 @@ export function Footer() {
       </div>
     </footer>
   );
-}
+});
+Footer.displayName = "Footer";

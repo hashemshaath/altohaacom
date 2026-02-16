@@ -29,27 +29,27 @@ export function PublicProfileSchedule({ userId, isAr }: Props) {
       const items: ScheduleItem[] = [];
 
       const { data: compRegs }: any = await supabase
-        .from("competition_registrations" as any)
-        .select("id, status, competitions(id, title, title_ar, start_date, location, location_ar)")
-        .eq("user_id", userId)
+        .from("competition_registrations")
+        .select("id, status, competitions(id, title, title_ar, competition_start, venue, venue_ar)")
+        .eq("participant_id", userId)
         .in("status", ["approved", "pending"]);
 
       (compRegs || []).forEach((reg: any) => {
         const comp = reg.competitions;
-        if (comp?.start_date && comp.start_date >= now) {
+        if (comp?.competition_start && comp.competition_start >= now) {
           items.push({
             id: reg.id, type: "competition",
             title: isAr ? (comp.title_ar || comp.title) : comp.title,
-            date: comp.start_date,
-            location: isAr ? (comp.location_ar || comp.location) : comp.location,
+            date: comp.competition_start,
+            location: isAr ? (comp.venue_ar || comp.venue) : comp.venue,
             status: reg.status, link: `/competitions/${comp.id}`,
           });
         }
       });
 
       const { data: enrollments }: any = await supabase
-        .from("masterclass_enrollments" as any)
-        .select("id, status, masterclasses(id, title, title_ar, start_date, location)")
+        .from("masterclass_enrollments")
+        .select("id, status, masterclasses(id, title, title_ar, start_date)")
         .eq("user_id", userId)
         .in("status", ["active", "enrolled"]);
 
@@ -59,7 +59,7 @@ export function PublicProfileSchedule({ userId, isAr }: Props) {
           items.push({
             id: enr.id, type: "masterclass",
             title: isAr ? (mc.title_ar || mc.title) : mc.title,
-            date: mc.start_date, location: mc.location,
+            date: mc.start_date,
             status: enr.status, link: `/masterclasses/${mc.id}`,
           });
         }
