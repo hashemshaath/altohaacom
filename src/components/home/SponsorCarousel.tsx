@@ -117,15 +117,15 @@ export function SponsorCarousel() {
         {nonPlatinum.length > 0 && (
           <div className="relative overflow-hidden">
             {/* Fade edges using logical gradient directions */}
-            <div className="absolute inset-y-0 start-0 w-20 bg-gradient-to-e from-background to-transparent z-10 pointer-events-none" />
-            <div className="absolute inset-y-0 end-0 w-20 bg-gradient-to-s from-background to-transparent z-10 pointer-events-none" />
-            <style>{`@keyframes marquee-scroll { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
-[dir="rtl"] @keyframes marquee-scroll { 0% { transform: translateX(0); } 100% { transform: translateX(50%); } }`}</style>
+            <div className="absolute inset-y-0 start-0 w-20 z-10 pointer-events-none bg-gradient-to-e from-background to-transparent" />
+            <div className="absolute inset-y-0 end-0 w-20 z-10 pointer-events-none bg-gradient-to-s from-background to-transparent" />
+            <style>{`@keyframes marquee-ltr { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
+@keyframes marquee-rtl { 0% { transform: translateX(0); } 100% { transform: translateX(50%); } }`}</style>
             <div
               className="flex gap-6 py-4"
               style={{
                 width: "max-content",
-                animation: `marquee-scroll ${Math.max(20, nonPlatinum.length * 4)}s linear infinite`,
+                animation: `${isAr ? "marquee-rtl" : "marquee-ltr"} ${Math.max(20, nonPlatinum.length * 4)}s linear infinite`,
               }}
             >
               {[...nonPlatinum, ...nonPlatinum].map((sponsor, idx) => {
