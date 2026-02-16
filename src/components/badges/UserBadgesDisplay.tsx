@@ -37,19 +37,26 @@ export function UserBadgesDisplay({ userId, limit }: UserBadgesDisplayProps) {
 
   if (!isLoading && !badges?.length) return null;
 
+  const isAr = language === "ar";
+
   return (
     <div>
-      <h3 className="mb-3 flex items-center gap-2 font-semibold">
-        <Award className="h-5 w-5 text-primary" />
-        {language === "ar" ? "الشارات" : "Badges"}
+      {/* Section header - matches SectionTitle pattern */}
+      <div className="flex items-center gap-2.5 mb-3">
+        <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-primary/8">
+          <Award className="h-4 w-4 text-primary" />
+        </div>
+        <h2 className="font-serif text-base font-bold">{isAr ? "الشارات" : "Badges"}</h2>
         {badges?.length ? (
-          <Badge variant="secondary" className="text-[10px] h-5 px-1.5">{badges.length}</Badge>
+          <Badge variant="secondary" className="text-[10px] h-5 rounded-lg">{badges.length}</Badge>
         ) : null}
-      </h3>
+        <div className="flex-1 h-px bg-border/25" />
+      </div>
+
       {isLoading ? (
-        <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
+        <div className="grid grid-cols-2 gap-2.5 sm:grid-cols-3 lg:grid-cols-4">
           {Array.from({ length: 4 }).map((_, i) => (
-            <Card key={i}>
+            <Card key={i} className="rounded-2xl border-border/25">
               <CardContent className="flex flex-col items-center p-5">
                 <Skeleton className="h-18 w-18 rounded-2xl mb-3" />
                 <Skeleton className="h-4 w-20" />
@@ -59,24 +66,24 @@ export function UserBadgesDisplay({ userId, limit }: UserBadgesDisplayProps) {
           ))}
         </div>
       ) : (
-      <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
-        {badges.map((ub: any) => {
-          const compTitle = language === "ar" && ub.competitions?.title_ar
-            ? ub.competitions.title_ar
-            : ub.competitions?.title;
+        <div className="grid grid-cols-2 gap-2.5 sm:grid-cols-3 lg:grid-cols-4">
+          {badges.map((ub: any) => {
+            const compTitle = language === "ar" && ub.competitions?.title_ar
+              ? ub.competitions.title_ar
+              : ub.competitions?.title;
 
-          return (
-            <BadgeCard
-              key={ub.id}
-              badge={ub.digital_badges}
-              competitionTitle={compTitle}
-              earnedAt={ub.earned_at}
-              shareToken={ub.share_token}
-              showShare
-            />
-          );
-        })}
-      </div>
+            return (
+              <BadgeCard
+                key={ub.id}
+                badge={ub.digital_badges}
+                competitionTitle={compTitle}
+                earnedAt={ub.earned_at}
+                shareToken={ub.share_token}
+                showShare
+              />
+            );
+          })}
+        </div>
       )}
     </div>
   );
