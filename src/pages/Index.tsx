@@ -18,6 +18,7 @@ const SponsorshipOpportunities = lazy(() => import("@/components/home/Sponsorshi
 const NewsletterSignup = lazy(() => import("@/components/home/NewsletterSignup").then(m => ({ default: m.NewsletterSignup })));
 const PartnersLogos = lazy(() => import("@/components/home/PartnersLogos").then(m => ({ default: m.PartnersLogos })));
 const SponsorCarousel = lazy(() => import("@/components/home/SponsorCarousel").then(m => ({ default: m.SponsorCarousel })));
+const NewlyJoinedUsers = lazy(() => import("@/components/home/NewlyJoinedUsers").then(m => ({ default: m.NewlyJoinedUsers })));
 const AdBanner = lazy(() => import("@/components/ads/AdBanner").then(m => ({ default: m.AdBanner })));
 const AdPopup = lazy(() => import("@/components/ads/AdPopup").then(m => ({ default: m.AdPopup })));
 
@@ -65,67 +66,72 @@ const Index = () => {
       <Header />
 
       <main id="main-content">
-        {/* Hero Slider */}
+        {/* 1. Hero Slider */}
         <HeroSlider />
 
-        {/* Search Bar */}
+        {/* 2. Search Bar */}
         <HomeSearch />
 
-        {/* Stats */}
+        {/* 3. Platform Stats */}
         <div className="mt-6">
           <HomeStats />
         </div>
 
-        {/* Ad Banner */}
+        {/* 4. Events by Category (primary content) */}
+        <Suspense fallback={<LazyFallback />}>
+          <EventsByCategory />
+        </Suspense>
+
+        {/* 5. Ad Banner */}
         <Suspense fallback={<LazyFallback />}>
           <section className="container py-4">
             <AdBanner placementSlug="home-hero-banner" className="w-full rounded-xl overflow-hidden aspect-[728/90] sm:aspect-[970/90] max-h-[120px]" />
           </section>
         </Suspense>
 
-        {/* Events by Category */}
-        <Suspense fallback={<LazyFallback />}>
-          <EventsByCategory />
-        </Suspense>
-
-        {/* Regional Events */}
+        {/* 6. Regional Events */}
         <Suspense fallback={<LazyFallback />}>
           <RegionalEvents />
         </Suspense>
 
-        {/* Platform Features */}
+        {/* 7. Newly Joined Members */}
         <Suspense fallback={<LazyFallback />}>
-          <PlatformFeatures />
+          <NewlyJoinedUsers />
         </Suspense>
 
-        {/* Sponsorship */}
+        {/* 8. Sponsors Marquee */}
         <Suspense fallback={<LazyFallback />}>
-          <SponsorshipOpportunities />
+          <SponsorCarousel />
         </Suspense>
 
-        {/* In-feed Ad */}
+        {/* 9. In-feed Ad */}
         <Suspense fallback={<LazyFallback />}>
           <section className="container py-4">
             <AdBanner placementSlug="in-feed" className="w-full max-w-3xl mx-auto rounded-xl overflow-hidden aspect-[728/90] sm:aspect-[970/250] max-h-[250px]" />
           </section>
         </Suspense>
 
-        {/* Articles */}
+        {/* 10. Sponsorship Opportunities */}
+        <Suspense fallback={<LazyFallback />}>
+          <SponsorshipOpportunities />
+        </Suspense>
+
+        {/* 11. Articles */}
         <Suspense fallback={<LazyFallback />}>
           <HomeArticles />
         </Suspense>
 
-        {/* Newsletter */}
+        {/* 12. Platform Features & Why Altohaa */}
+        <Suspense fallback={<LazyFallback />}>
+          <PlatformFeatures />
+        </Suspense>
+
+        {/* 13. Newsletter */}
         <Suspense fallback={<LazyFallback />}>
           <NewsletterSignup />
         </Suspense>
 
-        {/* Sponsors */}
-        <Suspense fallback={<LazyFallback />}>
-          <SponsorCarousel />
-        </Suspense>
-
-        {/* Partners */}
+        {/* 14. Partners */}
         <Suspense fallback={<LazyFallback />}>
           <PartnersLogos />
         </Suspense>
