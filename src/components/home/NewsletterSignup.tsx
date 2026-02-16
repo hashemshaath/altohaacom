@@ -42,7 +42,7 @@ export function NewsletterSignup() {
   };
 
   return (
-    <section ref={ref} className="relative border-y overflow-hidden">
+    <section ref={ref} className="relative border-y overflow-hidden" aria-label={isAr ? "النشرة الإخبارية" : "Newsletter signup"}>
       {/* Vibrant gradient background */}
       <div className="absolute inset-0 bg-gradient-to-br from-primary/8 via-card/80 to-accent/8" />
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,hsl(var(--primary)/0.08),transparent_70%)]" />

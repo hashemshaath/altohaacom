@@ -41,7 +41,7 @@ export function HeroSlider() {
   // Fallback hero when no slides configured
   if (!slides.length) {
     return (
-      <section className="relative flex items-center justify-center overflow-hidden py-32 md:py-44">
+      <section className="relative flex items-center justify-center overflow-hidden py-32 md:py-44" aria-label={isAr ? "القسم الرئيسي" : "Hero section"}>
         {/* Animated gradient background */}
         <div className="absolute inset-0 bg-gradient-to-br from-primary/15 via-background to-accent/10" />
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,hsl(var(--primary)/0.12),transparent_60%)]" />
@@ -96,7 +96,7 @@ export function HeroSlider() {
   const linkLabel = isAr && slide.link_label_ar ? slide.link_label_ar : slide.link_label;
 
   return (
-    <section className="relative h-[360px] sm:h-[440px] md:h-[560px] lg:h-[620px] overflow-hidden">
+    <section className="relative h-[360px] sm:h-[440px] md:h-[560px] lg:h-[620px] overflow-hidden" aria-label={isAr ? "القسم الرئيسي" : "Hero slider"} role="region">
       {/* Slides */}
       {slides.map((s: any, i: number) => (
         <div
