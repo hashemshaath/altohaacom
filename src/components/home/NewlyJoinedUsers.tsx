@@ -18,7 +18,7 @@ export function NewlyJoinedUsers() {
     queryFn: async () => {
       const { data } = await supabase
         .from("profiles")
-        .select("id, full_name, full_name_ar, avatar_url, country, specialty, specialty_ar, created_at")
+        .select("id, full_name, full_name_ar, avatar_url, country_code, city, specialization, specialization_ar, created_at")
         .order("created_at", { ascending: false })
         .limit(12);
       return data || [];
@@ -59,7 +59,7 @@ export function NewlyJoinedUsers() {
         <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6">
           {users.map((user: any) => {
             const name = isAr && user.full_name_ar ? user.full_name_ar : user.full_name;
-            const specialty = isAr && user.specialty_ar ? user.specialty_ar : user.specialty;
+            const spec = isAr && user.specialization_ar ? user.specialization_ar : user.specialization;
             const initials = name
               ? name.split(" ").map((w: string) => w[0]).join("").slice(0, 2).toUpperCase()
               : "?";
@@ -76,16 +76,16 @@ export function NewlyJoinedUsers() {
                   <h3 className="text-sm font-semibold truncate group-hover:text-primary transition-colors">
                     {name || (isAr ? "عضو جديد" : "New Member")}
                   </h3>
-                  {specialty && (
+                  {spec && (
                     <div className="mt-1 flex items-center justify-center gap-1 text-[11px] text-muted-foreground">
                       <ChefHat className="h-3 w-3 shrink-0" />
-                      <span className="truncate">{specialty}</span>
+                      <span className="truncate">{spec}</span>
                     </div>
                   )}
-                  {user.country && (
+                  {user.country_code && (
                     <div className="mt-0.5 flex items-center justify-center gap-1 text-[10px] text-muted-foreground/70">
                       <MapPin className="h-2.5 w-2.5 shrink-0" />
-                      <span className="truncate">{user.country}</span>
+                      <span className="truncate">{user.city ? `${user.city}, ` : ""}{user.country_code}</span>
                     </div>
                   )}
                 </Card>
