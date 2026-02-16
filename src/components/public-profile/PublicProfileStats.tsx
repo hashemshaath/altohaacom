@@ -1,6 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { Eye, Globe, Instagram, Twitter, Facebook, Linkedin, Youtube } from "lucide-react";
+import { Separator } from "@/components/ui/separator";
+import { Eye, Globe, Instagram, Twitter, Facebook, Linkedin, Youtube, Users, UserCheck } from "lucide-react";
 import { toEnglishDigits } from "@/lib/formatNumber";
 
 const SOCIAL_ICONS: Record<string, typeof Instagram> = {
@@ -19,26 +20,25 @@ interface Props {
 
 export function PublicProfileStats({ profile, followStats, socialLinks, isAr, isVisible, onFollowClick }: Props) {
   const stats = [
-    { value: followStats?.followers || 0, label: isAr ? "متابعون" : "Followers", onClick: () => onFollowClick("followers") },
-    { value: followStats?.following || 0, label: isAr ? "يتابع" : "Following", onClick: () => onFollowClick("following") },
+    { value: followStats?.followers || 0, label: isAr ? "متابعون" : "Followers", onClick: () => onFollowClick("followers"), icon: Users },
+    { value: followStats?.following || 0, label: isAr ? "يتابع" : "Following", onClick: () => onFollowClick("following"), icon: UserCheck },
     ...(profile.years_of_experience > 0 ? [{ value: `${profile.years_of_experience}+`, label: isAr ? "سنوات خبرة" : "Years Exp." }] : []),
     { value: profile.view_count || 0, label: isAr ? "زيارة" : "Views", icon: Eye },
   ];
 
   return (
-    <Card className="rounded-2xl border-border/40">
+    <Card className="rounded-2xl border-border/30 bg-card/80 backdrop-blur-sm">
       <CardContent className="p-0">
-        <div className="flex items-center justify-between px-4 py-3 flex-wrap gap-3" dir={isAr ? "rtl" : "ltr"}>
-          <div className="flex gap-6 sm:gap-8">
+        <div className="flex items-center justify-between px-2 sm:px-4 py-2.5 flex-wrap gap-2" dir={isAr ? "rtl" : "ltr"}>
+          <div className="flex gap-1 sm:gap-2">
             {stats.map((stat, i) => (
               <button
                 key={i}
                 onClick={(stat as any).onClick}
-                className={`flex flex-col items-center transition-colors ${(stat as any).onClick ? "hover:text-primary cursor-pointer" : "cursor-default"}`}
+                className={`flex flex-col items-center px-3 sm:px-4 py-1.5 rounded-xl transition-all duration-200 ${(stat as any).onClick ? "hover:bg-primary/5 hover:text-primary cursor-pointer" : "cursor-default"}`}
               >
-                <span className="text-lg sm:text-xl font-bold tabular-nums">{typeof stat.value === 'number' ? toEnglishDigits(stat.value) : stat.value}</span>
-                <span className="text-[10px] sm:text-[11px] text-muted-foreground flex items-center gap-1">
-                  {(stat as any).icon && <Eye className="h-3 w-3" />}
+                <span className="text-base sm:text-lg font-bold tabular-nums leading-tight">{typeof stat.value === 'number' ? toEnglishDigits(stat.value) : stat.value}</span>
+                <span className="text-[10px] text-muted-foreground flex items-center gap-1 mt-0.5">
                   {stat.label}
                 </span>
               </button>
@@ -46,18 +46,21 @@ export function PublicProfileStats({ profile, followStats, socialLinks, isAr, is
           </div>
 
           {isVisible("social") && socialLinks.length > 0 && (
-            <div className="flex gap-0.5">
-              {socialLinks.map((link) => {
-                const Icon = SOCIAL_ICONS[link.key] || Globe;
-                return (
-                  <Button key={link.key} variant="ghost" size="icon" className="h-8 w-8 rounded-full" asChild>
-                    <a href={link.value?.startsWith("http") ? link.value : `https://${link.value}`} target="_blank" rel="noopener noreferrer" title={link.label}>
-                      <Icon className="h-3.5 w-3.5" />
-                    </a>
-                  </Button>
-                );
-              })}
-            </div>
+            <>
+              <Separator orientation="vertical" className="h-8 bg-border/30 hidden sm:block" />
+              <div className="flex gap-0.5">
+                {socialLinks.map((link) => {
+                  const Icon = SOCIAL_ICONS[link.key] || Globe;
+                  return (
+                    <Button key={link.key} variant="ghost" size="icon" className="h-8 w-8 rounded-full hover:bg-primary/10 hover:text-primary transition-colors" asChild>
+                      <a href={link.value?.startsWith("http") ? link.value : `https://${link.value}`} target="_blank" rel="noopener noreferrer" title={link.label}>
+                        <Icon className="h-3.5 w-3.5" />
+                      </a>
+                    </Button>
+                  );
+                })}
+              </div>
+            </>
           )}
         </div>
       </CardContent>
