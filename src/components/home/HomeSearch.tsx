@@ -29,7 +29,7 @@ export function HomeSearch() {
   };
 
   return (
-    <section className="relative -mt-8 z-30 px-3 sm:-mt-10 sm:px-4">
+    <section className="relative -mt-8 z-30 px-3 sm:-mt-10 sm:px-4" aria-label={isAr ? "البحث السريع" : "Quick search"}>
       <div className="container">
         <div className="mx-auto max-w-3xl rounded-2xl border border-border/60 bg-card/95 backdrop-blur-lg p-4 shadow-2xl shadow-primary/8 ring-1 ring-primary/5 sm:p-5">
           {/* Category pills */}

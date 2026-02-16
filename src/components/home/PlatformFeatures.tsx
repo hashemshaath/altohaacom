@@ -49,10 +49,10 @@ export function PlatformFeatures() {
   return (
     <>
       {/* Services */}
-      <section ref={servicesReveal.ref} className="container py-14 md:py-20">
+      <section ref={servicesReveal.ref} className="container py-14 md:py-20" aria-labelledby="services-heading">
         <div className="mb-10 text-center">
           <Badge variant="secondary" className="mb-3">{isAr ? "الخدمات" : "Services"}</Badge>
-          <h2 className="font-serif text-2xl font-bold sm:text-3xl md:text-4xl">
+          <h2 id="services-heading" className="font-serif text-2xl font-bold sm:text-3xl md:text-4xl">
             {isAr ? "كل ما يحتاجه عالم الطهي" : "Everything the Culinary World Needs"}
           </h2>
           <p className="mx-auto mt-2 max-w-xl text-sm text-muted-foreground leading-relaxed">
@@ -81,12 +81,12 @@ export function PlatformFeatures() {
       </section>
 
       {/* Roles */}
-      <section ref={rolesReveal.ref} className="relative overflow-hidden py-14 md:py-20">
+      <section ref={rolesReveal.ref} className="relative overflow-hidden py-14 md:py-20" aria-labelledby="roles-heading">
         <div className="absolute inset-0 bg-muted/30" />
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,hsl(var(--primary)/0.04),transparent_70%)]" />
         <div className="container relative">
           <div className="mb-10 text-center">
-            <h2 className="font-serif text-2xl font-bold sm:text-3xl md:text-4xl">
+            <h2 id="roles-heading" className="font-serif text-2xl font-bold sm:text-3xl md:text-4xl">
               {isAr ? "لمن صُممت هذه المنصة؟" : "Who Is Altohaa For?"}
             </h2>
             <p className="mx-auto mt-2 max-w-xl text-sm text-muted-foreground">
@@ -127,9 +127,9 @@ export function PlatformFeatures() {
       </section>
 
       {/* Why Altohaa */}
-      <section ref={whyReveal.ref} className="container py-14 md:py-20">
+      <section ref={whyReveal.ref} className="container py-14 md:py-20" aria-labelledby="why-heading">
         <div className="mb-10 text-center">
-          <h2 className="font-serif text-2xl font-bold sm:text-3xl md:text-4xl">
+          <h2 id="why-heading" className="font-serif text-2xl font-bold sm:text-3xl md:text-4xl">
             {isAr ? "لماذا الطهاة؟" : "Why Altohaa?"}
           </h2>
           <p className="mx-auto mt-2 max-w-md text-sm text-muted-foreground">
