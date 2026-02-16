@@ -76,17 +76,17 @@ export function PublicProfileHero({
       </div>
 
       {/* Profile Card */}
-      <div className="relative z-10 -mt-20 md:-mt-24 px-3 sm:px-4 md:px-6 max-w-[1200px] mx-auto w-full animate-in fade-in slide-in-from-bottom-4 duration-700">
-        <Card className="border-border/25 shadow-xl rounded-2xl backdrop-blur-xl bg-card/90 overflow-hidden">
+      <div className="relative z-20 -mt-20 md:-mt-24 px-3 sm:px-4 md:px-6 max-w-[1200px] mx-auto w-full animate-in fade-in slide-in-from-bottom-4 duration-700">
+        <Card className="border-border/25 shadow-lg shadow-primary/5 rounded-2xl backdrop-blur-xl bg-card/90 overflow-hidden">
           <div className="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-primary/60 to-transparent" />
           <CardContent className="p-4 md:p-6">
             <div className="flex flex-col md:flex-row items-center md:items-end gap-4 md:gap-6" dir={isAr ? "rtl" : "ltr"}>
               {/* Avatar - Premium circular design */}
-              <div className="-mt-20 md:-mt-24 shrink-0 relative group">
+              <div className="-mt-20 md:-mt-24 shrink-0 relative group z-10">
                 <div className="relative">
-                  {/* Outer glow ring */}
-                  <div className="absolute -inset-1 rounded-full bg-gradient-to-br from-primary/40 via-primary/20 to-chart-3/30 blur-sm opacity-80 group-hover:opacity-100 transition-opacity duration-500" />
-                  <div className="relative h-28 w-28 md:h-36 md:w-36 rounded-full ring-4 ring-background shadow-2xl overflow-hidden border-2 border-border/20 transition-all duration-500 group-hover:scale-[1.03] group-hover:shadow-primary/15">
+                  {/* Outer glow border */}
+                  <div className="absolute -inset-1 rounded-2xl bg-gradient-to-br from-primary/40 via-primary/20 to-chart-3/30 blur-sm opacity-80 group-hover:opacity-100 transition-opacity duration-500" />
+                  <div className="relative h-28 w-28 md:h-36 md:w-36 rounded-2xl ring-4 ring-background shadow-2xl overflow-hidden border-2 border-border/20 transition-all duration-500 group-hover:scale-[1.03] group-hover:shadow-primary/15">
                     {profile.avatar_url ? (
                       <img src={profile.avatar_url} alt={displayName} className="h-full w-full object-cover" />
                     ) : (
@@ -97,7 +97,7 @@ export function PublicProfileHero({
                   </div>
                 </div>
                 {profile.is_verified && (
-                  <div className="absolute -bottom-0.5 -end-0.5 bg-primary text-primary-foreground p-1.5 rounded-full shadow-lg ring-2 ring-background">
+                  <div className="absolute -bottom-1 -end-1 bg-primary text-primary-foreground p-1.5 rounded-lg shadow-lg ring-2 ring-background z-20">
                     <BadgeCheck className="h-3.5 w-3.5" />
                   </div>
                 )}
