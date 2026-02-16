@@ -48,6 +48,7 @@ export default function CompanyAdvertising() {
       return data;
     },
     enabled: !!companyId,
+    staleTime: 1000 * 60 * 2,
   });
 
   const { data: requests = [] } = useQuery({

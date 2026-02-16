@@ -34,6 +34,7 @@ export default function KnowledgePortal() {
       if (error) throw error;
       return data;
     },
+    staleTime: 1000 * 60 * 3,
   });
 
   const { data: categories } = useQuery({
@@ -46,6 +47,7 @@ export default function KnowledgePortal() {
       if (error) throw error;
       return data;
     },
+    staleTime: 1000 * 60 * 10,
   });
 
   const { data: references } = useQuery({
@@ -59,6 +61,7 @@ export default function KnowledgePortal() {
       if (error) throw error;
       return data;
     },
+    staleTime: 1000 * 60 * 10,
   });
 
   const { data: competitions } = useQuery({
@@ -72,6 +75,7 @@ export default function KnowledgePortal() {
       if (error) throw error;
       return data;
     },
+    staleTime: 1000 * 60 * 5,
   });
 
   const filteredResources = resources?.filter(r => {

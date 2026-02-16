@@ -32,6 +32,7 @@ export function WalletDashboard({ userId }: WalletDashboardProps) {
       if (error) throw error;
       return data;
     },
+    staleTime: 1000 * 60 * 2,
   });
 
   const { data: transactions = [], isLoading: txLoading } = useQuery({
@@ -50,7 +51,27 @@ export function WalletDashboard({ userId }: WalletDashboardProps) {
     enabled: !!wallet?.id,
   });
 
-  if (walletLoading) return <Skeleton className="h-64 w-full rounded-xl" />;
+  if (walletLoading) {
+    return (
+      <div className="space-y-4">
+        <div className="grid gap-4 sm:grid-cols-3">
+          {Array.from({ length: 3 }).map((_, i) => (
+            <Card key={i}><CardContent className="pt-6"><Skeleton className="h-5 w-20 mb-2" /><Skeleton className="h-8 w-32" /></CardContent></Card>
+          ))}
+        </div>
+        <Card><CardContent className="p-0">
+          <div className="space-y-3 p-4">
+            {Array.from({ length: 4 }).map((_, i) => (
+              <div key={i} className="flex items-center justify-between">
+                <div className="flex items-center gap-3"><Skeleton className="h-8 w-8 rounded-lg" /><div><Skeleton className="h-4 w-24" /><Skeleton className="h-3 w-16 mt-1" /></div></div>
+                <Skeleton className="h-5 w-20" />
+              </div>
+            ))}
+          </div>
+        </CardContent></Card>
+      </div>
+    );
+  }
 
   if (!wallet) {
     return (
