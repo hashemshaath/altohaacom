@@ -35,6 +35,12 @@ import { format, isPast, isFuture, isWithinInterval, differenceInDays } from "da
 import { useState, useEffect, useMemo } from "react";
 import { QRCodeDisplay } from "@/components/qr/QRCodeDisplay";
 import { useEntityQRCode } from "@/hooks/useQRCode";
+import { ExhibitionDayIndicator } from "@/components/exhibitions/detail/ExhibitionDayIndicator";
+import { ExhibitionMapEmbed } from "@/components/exhibitions/detail/ExhibitionMapEmbed";
+import { ExhibitionRegistrationStatus } from "@/components/exhibitions/detail/ExhibitionRegistrationStatus";
+import { ExhibitionSocialLinks } from "@/components/exhibitions/detail/ExhibitionSocialLinks";
+import { ExhibitionDocuments } from "@/components/exhibitions/detail/ExhibitionDocuments";
+import { ExhibitionContactCard } from "@/components/exhibitions/detail/ExhibitionContactCard";
 
 /* ---------- types ---------- */
 interface ScheduleDay {
@@ -687,6 +693,59 @@ export default function ExhibitionDetail() {
               </CardContent>
             </Card>
           )}
+
+          {/* Mobile Day Indicator */}
+          <ExhibitionDayIndicator
+            startDate={exhibition.start_date}
+            endDate={exhibition.end_date}
+            isAr={isAr}
+          />
+
+          {/* Mobile Registration Status */}
+          <ExhibitionRegistrationStatus
+            registrationDeadline={exhibition.registration_deadline}
+            registrationUrl={exhibition.registration_url}
+            maxAttendees={exhibition.max_attendees}
+            isFree={exhibition.is_free}
+            ticketPrice={exhibition.ticket_price}
+            ticketPriceAr={exhibition.ticket_price_ar}
+            startDate={exhibition.start_date}
+            endDate={exhibition.end_date}
+            isAr={isAr}
+          />
+
+          {/* Mobile Map */}
+          {!exhibition.is_virtual && (
+            <ExhibitionMapEmbed
+              mapUrl={exhibition.map_url}
+              venue={venue}
+              city={exhibition.city}
+              country={exhibition.country}
+              address={(exhibition as any).address || null}
+              isAr={isAr}
+            />
+          )}
+
+          {/* Mobile Contact & Social */}
+          <ExhibitionContactCard
+            organizerName={organizer}
+            organizerLogo={organizerLogoUrl}
+            email={exhibition.organizer_email}
+            phone={exhibition.organizer_phone}
+            website={exhibition.organizer_website}
+            isAr={isAr}
+          />
+
+          <ExhibitionSocialLinks
+            socialLinks={exhibition.social_links as any}
+            websiteUrl={exhibition.website_url}
+            isAr={isAr}
+          />
+
+          <ExhibitionDocuments
+            documents={(exhibition as any).documents}
+            isAr={isAr}
+          />
         </div>
 
         <div className="grid gap-6 lg:grid-cols-3">
@@ -1230,6 +1289,26 @@ export default function ExhibitionDetail() {
 
           {/* ======== SIDEBAR ======== */}
           <div className="hidden space-y-4 lg:block">
+            {/* Registration Status */}
+            <ExhibitionRegistrationStatus
+              registrationDeadline={exhibition.registration_deadline}
+              registrationUrl={exhibition.registration_url}
+              maxAttendees={exhibition.max_attendees}
+              isFree={exhibition.is_free}
+              ticketPrice={exhibition.ticket_price}
+              ticketPriceAr={exhibition.ticket_price_ar}
+              startDate={exhibition.start_date}
+              endDate={exhibition.end_date}
+              isAr={isAr}
+            />
+
+            {/* Day Indicator */}
+            <ExhibitionDayIndicator
+              startDate={exhibition.start_date}
+              endDate={exhibition.end_date}
+              isAr={isAr}
+            />
+
             {/* Actions */}
             <Card className="relative overflow-hidden shadow-md border-primary/15">
               <div className="absolute -top-12 -end-12 h-32 w-32 rounded-full bg-primary/5 blur-[40px]" />
@@ -1278,6 +1357,41 @@ export default function ExhibitionDetail() {
                 </p>
               </CardContent>
             </Card>
+
+            {/* Contact Card */}
+            <ExhibitionContactCard
+              organizerName={organizer}
+              organizerLogo={organizerLogoUrl}
+              email={exhibition.organizer_email}
+              phone={exhibition.organizer_phone}
+              website={exhibition.organizer_website}
+              isAr={isAr}
+            />
+
+            {/* Interactive Map */}
+            {!exhibition.is_virtual && (
+              <ExhibitionMapEmbed
+                mapUrl={exhibition.map_url}
+                venue={venue}
+                city={exhibition.city}
+                country={exhibition.country}
+                address={(exhibition as any).address || null}
+                isAr={isAr}
+              />
+            )}
+
+            {/* Social Links */}
+            <ExhibitionSocialLinks
+              socialLinks={exhibition.social_links as any}
+              websiteUrl={exhibition.website_url}
+              isAr={isAr}
+            />
+
+            {/* Documents / Brochures */}
+            <ExhibitionDocuments
+              documents={(exhibition as any).documents}
+              isAr={isAr}
+            />
 
             {/* Event Details */}
             <Card className="overflow-hidden transition-all hover:shadow-sm">
@@ -1339,11 +1453,6 @@ export default function ExhibitionDetail() {
                           {exhibition.city && <><br />{exhibition.city}</>}
                           {exhibition.country && `, ${exhibition.country}`}
                         </p>
-                        {exhibition.map_url && (
-                          <a href={exhibition.map_url} target="_blank" rel="noopener noreferrer" className="text-xs text-primary underline">
-                            {isAr ? "عرض الخريطة" : "View Map"}
-                          </a>
-                        )}
                       </div>
                     </div>
                     <Separator />
@@ -1376,54 +1485,6 @@ export default function ExhibitionDetail() {
                 )}
               </CardContent>
             </Card>
-
-            {/* Organizer */}
-            {organizer && (
-              <Card className="overflow-hidden transition-all hover:shadow-sm">
-                <div className="border-b bg-muted/30 px-4 py-3">
-                  <h3 className="flex items-center gap-2 text-sm font-semibold">
-                    <div className="flex h-6 w-6 items-center justify-center rounded-md bg-primary/10">
-                      <Building className="h-3.5 w-3.5 text-primary" />
-                    </div>
-                    {isAr ? "المنظم" : "Organizer"}
-                  </h3>
-                </div>
-                <CardContent className="p-4">
-                  <div className="flex items-center gap-3 mb-3">
-                    {organizerLogoUrl ? (
-                      <img src={organizerLogoUrl} alt={organizer} className="h-14 w-14 rounded-xl object-contain bg-muted/30 p-1.5 border" />
-                    ) : (
-                      <div className="flex h-14 w-14 items-center justify-center rounded-xl bg-primary/10 border">
-                        <Building className="h-7 w-7 text-primary" />
-                      </div>
-                    )}
-                    <div>
-                      <p className="font-semibold">{organizer}</p>
-                      {exhibition.organizer_email && (
-                        <a href={`mailto:${exhibition.organizer_email}`} className="text-xs text-primary hover:underline">{exhibition.organizer_email}</a>
-                      )}
-                    </div>
-                  </div>
-
-                  <div className="space-y-2 text-sm">
-                    {exhibition.organizer_phone && (
-                      <div className="flex items-center gap-2 text-muted-foreground">
-                        <Phone className="h-3.5 w-3.5" />
-                        <span className="font-mono text-xs">{exhibition.organizer_phone}</span>
-                      </div>
-                    )}
-                    {exhibition.organizer_website && (
-                      <Button variant="outline" size="sm" className="w-full mt-2" asChild>
-                        <a href={exhibition.organizer_website} target="_blank" rel="noopener noreferrer">
-                          <Globe className="me-1.5 h-3.5 w-3.5" />
-                          {isAr ? "موقع المنظم" : "Organizer Website"}
-                        </a>
-                      </Button>
-                    )}
-                  </div>
-                </CardContent>
-              </Card>
-            )}
 
             {/* QR Code */}
             {exhibitionQrCode && (
