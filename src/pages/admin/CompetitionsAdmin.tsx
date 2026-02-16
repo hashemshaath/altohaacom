@@ -6,6 +6,7 @@ import { useLanguage } from "@/i18n/LanguageContext";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent } from "@/components/ui/card";
+import { Skeleton } from "@/components/ui/skeleton";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -108,6 +109,7 @@ export default function CompetitionsAdmin() {
         return { ...c, derivedOrganizer };
       });
     },
+    staleTime: 1000 * 60 * 2,
   });
 
   // Fetch categories for display
@@ -117,6 +119,7 @@ export default function CompetitionsAdmin() {
       const { data } = await supabase.from("competition_categories").select("id, competition_id, name, name_ar");
       return data || [];
     },
+    staleTime: 1000 * 60 * 5,
   });
 
   // Fetch type assignments
@@ -126,6 +129,7 @@ export default function CompetitionsAdmin() {
       const { data } = await supabase.from("competition_type_assignments").select("competition_id, type:competition_types(id, name, name_ar)");
       return data || [];
     },
+    staleTime: 1000 * 60 * 5,
   });
 
   const { data: participantCounts } = useQuery({
@@ -253,7 +257,7 @@ export default function CompetitionsAdmin() {
             <CardContent className="flex items-center gap-3 p-4">
               <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-muted shrink-0">{stat.icon}</div>
               <div>
-                <p className="text-2xl font-bold">{stat.value}</p>
+                <p className="text-2xl font-bold tabular-nums">{stat.value}</p>
                 <p className="text-[10px] uppercase tracking-wider text-muted-foreground">{stat.label}</p>
               </div>
             </CardContent>
@@ -340,8 +344,33 @@ export default function CompetitionsAdmin() {
       <Card className="border-border/60 overflow-hidden">
         <CardContent className="p-0">
           {isLoading ? (
-            <div className="flex justify-center py-12">
-              <div className="h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent" />
+            <div className="p-0">
+              <Table>
+                <TableHeader>
+                  <TableRow className="bg-muted/30 hover:bg-muted/30">
+                    <TableHead className="font-semibold">{isAr ? "المسابقة" : "Competition"}</TableHead>
+                    <TableHead className="font-semibold">{isAr ? "المنظم / المعرض" : "Organizer / Exhibition"}</TableHead>
+                    <TableHead className="font-semibold">{isAr ? "الحالة" : "Status"}</TableHead>
+                    <TableHead className="font-semibold">{isAr ? "التاريخ" : "Date"}</TableHead>
+                    <TableHead className="font-semibold">{isAr ? "الفئات" : "Categories"}</TableHead>
+                    <TableHead className="font-semibold">{isAr ? "المشاركين" : "Participants"}</TableHead>
+                    <TableHead className="w-12"></TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {Array.from({ length: 6 }).map((_, i) => (
+                    <TableRow key={i}>
+                      <TableCell><Skeleton className="h-5 w-36" /><Skeleton className="h-3 w-20 mt-1.5" /></TableCell>
+                      <TableCell><div className="flex items-center gap-2"><Skeleton className="h-6 w-6 rounded-lg" /><Skeleton className="h-4 w-24" /></div></TableCell>
+                      <TableCell><Skeleton className="h-5 w-20 rounded-full" /></TableCell>
+                      <TableCell><Skeleton className="h-4 w-20" /></TableCell>
+                      <TableCell><Skeleton className="h-5 w-16 rounded-full" /></TableCell>
+                      <TableCell><Skeleton className="h-4 w-12" /></TableCell>
+                      <TableCell><Skeleton className="h-7 w-7 rounded" /></TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
             </div>
           ) : competitions?.length === 0 ? (
             <div className="flex flex-col items-center justify-center py-16 text-center">

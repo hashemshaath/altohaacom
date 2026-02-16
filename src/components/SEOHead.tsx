@@ -7,6 +7,7 @@ interface SEOHeadProps {
   ogType?: string;
   canonical?: string;
   jsonLd?: Record<string, unknown>;
+  noIndex?: boolean;
 }
 
 export function SEOHead({
@@ -16,6 +17,7 @@ export function SEOHead({
   ogType = "website",
   canonical,
   jsonLd,
+  noIndex,
 }: SEOHeadProps) {
   useEffect(() => {
     // Title
@@ -51,6 +53,16 @@ export function SEOHead({
     }
 
     setMeta("property", "og:url", canonical || window.location.href);
+    setMeta("property", "og:site_name", "Altohaa");
+    setMeta("name", "twitter:card", ogImage ? "summary_large_image" : "summary");
+
+    // Robots noindex
+    if (noIndex) {
+      setMeta("name", "robots", "noindex, nofollow");
+    } else {
+      const robotsEl = document.querySelector('meta[name="robots"]');
+      if (robotsEl) robotsEl.remove();
+    }
 
     // Canonical link
     let link = document.querySelector('link[rel="canonical"]') as HTMLLinkElement | null;
@@ -77,7 +89,7 @@ export function SEOHead({
       const ld = document.querySelector('script[data-seo-ld]');
       if (ld) ld.remove();
     };
-  }, [title, description, ogImage, ogType, canonical, jsonLd]);
+  }, [title, description, ogImage, ogType, canonical, jsonLd, noIndex]);
 
   return null;
 }
