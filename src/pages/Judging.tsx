@@ -77,7 +77,8 @@ export default function Judging() {
         .from("competitions")
         .select("*")
         .in("id", competitionIds)
-        .in("status", ["in_progress", "judging"]);
+        .in("status", ["in_progress", "judging"])
+        .order("competition_start", { ascending: false });
       
       if (compError) throw compError;
       return competitions || [];

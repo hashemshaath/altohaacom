@@ -50,6 +50,7 @@ export default function Rankings() {
       const profileMap = new Map(profiles?.map(p => [p.user_id, p]) || []);
       return data.map(r => ({ ...r, profile: profileMap.get(r.user_id) }));
     },
+    staleTime: 1000 * 60 * 3,
   });
 
   const { data: countries } = useQuery({
@@ -62,6 +63,7 @@ export default function Rankings() {
       const unique = [...new Set(data?.map(d => d.country_code).filter(Boolean))];
       return unique as string[];
     },
+    staleTime: 1000 * 60 * 10,
   });
 
   const filteredRankings = rankings?.filter(r => {
