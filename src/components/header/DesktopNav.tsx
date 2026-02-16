@@ -5,9 +5,11 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
+  DropdownMenuSeparator,
+  DropdownMenuLabel,
 } from "@/components/ui/dropdown-menu";
 import { cn } from "@/lib/utils";
-import { Scale, Building, ChevronDown } from "lucide-react";
+import { Scale, ChevronDown, Grid3X3 } from "lucide-react";
 
 interface NavLink {
   to: string;
@@ -39,7 +41,7 @@ export function DesktopNav({ primaryNav, moreLinks, isJudge, isAr }: DesktopNavP
           size="sm"
           asChild
           className={cn(
-            "text-muted-foreground h-8 px-3 transition-all duration-200 hover:bg-primary/5",
+            "text-muted-foreground h-8 px-2.5 text-[13px] transition-all duration-200 hover:bg-primary/5",
             isActive(link.to) &&
               "bg-primary/10 text-primary font-medium shadow-sm shadow-primary/5"
           )}
@@ -51,38 +53,13 @@ export function DesktopNav({ primaryNav, moreLinks, isJudge, isAr }: DesktopNavP
         </Button>
       ))}
 
-      {/* More dropdown */}
-      <DropdownMenu>
-        <DropdownMenuTrigger asChild>
-          <Button
-            variant="ghost"
-            size="sm"
-            className="text-muted-foreground h-8 px-3 gap-1 hover:bg-primary/5"
-          >
-            <Building className="h-3.5 w-3.5" />
-            {label("More", "المزيد")}
-            <ChevronDown className="h-3 w-3 opacity-50 transition-transform duration-200 group-data-[state=open]:rotate-180" />
-          </Button>
-        </DropdownMenuTrigger>
-        <DropdownMenuContent align="center" className="w-52 animate-in fade-in-0 zoom-in-95">
-          {moreLinks.map((link) => (
-            <DropdownMenuItem key={link.to} asChild>
-              <Link to={link.to} className="flex items-center gap-2.5">
-                <link.icon className="h-4 w-4 text-muted-foreground" />
-                {label(link.labelEn, link.labelAr)}
-              </Link>
-            </DropdownMenuItem>
-          ))}
-        </DropdownMenuContent>
-      </DropdownMenu>
-
       {isJudge && (
         <Button
           variant="ghost"
           size="sm"
           asChild
           className={cn(
-            "text-muted-foreground h-8 px-3 hover:bg-primary/5",
+            "text-muted-foreground h-8 px-2.5 text-[13px] hover:bg-primary/5",
             isActive("/tastings") && "bg-primary/10 text-primary font-medium"
           )}
         >
@@ -92,6 +69,38 @@ export function DesktopNav({ primaryNav, moreLinks, isJudge, isAr }: DesktopNavP
           </Link>
         </Button>
       )}
+
+      {/* More dropdown - mega menu style */}
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>
+          <Button
+            variant="ghost"
+            size="sm"
+            className="text-muted-foreground h-8 px-2.5 text-[13px] gap-1 hover:bg-primary/5 group"
+          >
+            <Grid3X3 className="h-3.5 w-3.5" />
+            {label("More", "المزيد")}
+            <ChevronDown className="h-3 w-3 opacity-50 transition-transform duration-200 group-data-[state=open]:rotate-180" />
+          </Button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent align="center" className="w-64 p-1 animate-in fade-in-0 zoom-in-95">
+          <DropdownMenuLabel className="text-xs text-muted-foreground">
+            {label("Explore", "اكتشف")}
+          </DropdownMenuLabel>
+          <div className="grid grid-cols-1 gap-0.5">
+            {moreLinks.map((link) => (
+              <DropdownMenuItem key={link.to} asChild className="rounded-md">
+                <Link to={link.to} className="flex items-center gap-2.5 px-2 py-1.5">
+                  <div className="flex h-7 w-7 items-center justify-center rounded-md bg-primary/5">
+                    <link.icon className="h-3.5 w-3.5 text-primary" />
+                  </div>
+                  <span className="text-sm">{label(link.labelEn, link.labelAr)}</span>
+                </Link>
+              </DropdownMenuItem>
+            ))}
+          </div>
+        </DropdownMenuContent>
+      </DropdownMenu>
     </nav>
   );
 }

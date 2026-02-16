@@ -65,6 +65,9 @@ export function Header() {
       )}
     >
       <nav className="container flex h-14 items-center gap-1 sm:gap-2" aria-label="Main navigation">
+        {/* Mobile menu - placed first for left alignment */}
+        <MobileMenu primaryNav={primaryNav} moreLinks={moreLinks} />
+
         {/* Logo */}
         <Link
           to={user ? "/dashboard" : "/"}
@@ -89,7 +92,7 @@ export function Header() {
           isAr={isAr}
         />
 
-        {/* Right side */}
+        {/* Right side - consolidated */}
         <div className="flex items-center gap-1 ms-auto">
           <div className="hidden md:block">
             <QuickSearch />
@@ -98,7 +101,6 @@ export function Header() {
           <ThemeToggle />
           <LanguageSwitcher />
           <UserDropdown />
-          <MobileMenu primaryNav={primaryNav} moreLinks={moreLinks} />
         </div>
       </nav>
     </header>

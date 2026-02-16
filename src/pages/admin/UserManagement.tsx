@@ -24,11 +24,12 @@ import { UserPersonalDetailsTab } from "@/components/admin/UserPersonalDetailsTa
 import { UserCareerTimeline } from "@/components/admin/UserCareerTimeline";
 import { UserModificationHistory } from "@/components/admin/UserModificationHistory";
 import { UserBioOptimizer } from "@/components/admin/UserBioOptimizer";
+import { BulkUserImport } from "@/components/admin/BulkUserImport";
 import {
   Search, UserX, UserCheck, Eye, Edit, ChevronRight, ChevronLeft, X, Save,
   UserPlus, KeyRound, Mail, Loader2, Upload, Image as ImageIcon, Users, Plus,
   Trash2, Camera, CheckCircle2, AlertCircle, History, UserCircle, Languages, Briefcase,
-  ChefHat, Pencil, Check,
+  ChefHat, Pencil, Check, FileSpreadsheet, Download, Shield, BarChart3,
 } from "lucide-react";
 import { format } from "date-fns";
 import type { Database } from "@/integrations/supabase/types";
@@ -540,6 +541,8 @@ export default function UserManagement() {
 
   const isSaving = updateProfileMutation.isPending || updateRolesMutation.isPending;
 
+  const [showBulkImport, setShowBulkImport] = useState(false);
+
   return (
     <div className="space-y-6">
       {/* Header */}
@@ -556,6 +559,62 @@ export default function UserManagement() {
           </Badge>
           <UserStatsQuickView language={language} />
         </div>
+      </div>
+
+      {/* Stats Cards */}
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+        <Card>
+          <CardContent className="pt-4">
+            <div className="flex items-center gap-3">
+              <div className="h-10 w-10 rounded-lg bg-primary/10 flex items-center justify-center">
+                <Users className="h-5 w-5 text-primary" />
+              </div>
+              <div>
+                <p className="text-xs text-muted-foreground">{isAr ? "إجمالي المستخدمين" : "Total Users"}</p>
+                <p className="text-xl font-bold">{usersData?.totalCount || 0}</p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardContent className="pt-4">
+            <div className="flex items-center gap-3">
+              <div className="h-10 w-10 rounded-lg bg-chart-5/10 flex items-center justify-center">
+                <CheckCircle2 className="h-5 w-5 text-chart-5" />
+              </div>
+              <div>
+                <p className="text-xs text-muted-foreground">{isAr ? "نشط" : "Active"}</p>
+                <p className="text-xl font-bold">{filteredUsers?.filter(u => u.account_status === "active").length || 0}</p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardContent className="pt-4">
+            <div className="flex items-center gap-3">
+              <div className="h-10 w-10 rounded-lg bg-chart-4/10 flex items-center justify-center">
+                <Shield className="h-5 w-5 text-chart-4" />
+              </div>
+              <div>
+                <p className="text-xs text-muted-foreground">{isAr ? "معلق" : "Pending"}</p>
+                <p className="text-xl font-bold">{filteredUsers?.filter(u => u.account_status === "pending").length || 0}</p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardContent className="pt-4">
+            <div className="flex items-center gap-3">
+              <div className="h-10 w-10 rounded-lg bg-destructive/10 flex items-center justify-center">
+                <UserX className="h-5 w-5 text-destructive" />
+              </div>
+              <div>
+                <p className="text-xs text-muted-foreground">{isAr ? "موقوف/محظور" : "Suspended"}</p>
+                <p className="text-xl font-bold">{filteredUsers?.filter(u => u.account_status === "suspended" || u.account_status === "banned").length || 0}</p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
       </div>
 
       {/* Action Buttons */}
@@ -638,7 +697,34 @@ export default function UserManagement() {
             </DialogFooter>
           </DialogContent>
         </Dialog>
+
+        <Button variant="outline" onClick={() => setShowBulkImport(!showBulkImport)}>
+          <FileSpreadsheet className="me-2 h-4 w-4" />
+          {isAr ? "استيراد من ملف" : "Import from File"}
+        </Button>
+
+        <Button variant="outline" onClick={() => {
+          const csv = ["Name,Email,Phone,Role,Status,Account Number,Country,Membership"];
+          filteredUsers?.forEach(u => {
+            csv.push([
+              u.full_name || "", u.email || "", u.phone || "",
+              u.roles?.map(r => r.role).join(";") || "", u.account_status || "",
+              u.account_number || "", u.country_code || "", u.membership_tier || ""
+            ].join(","));
+          });
+          const blob = new Blob([csv.join("\n")], { type: "text/csv" });
+          const url = URL.createObjectURL(blob);
+          const a = document.createElement("a");
+          a.href = url; a.download = `users-export-${new Date().toISOString().slice(0, 10)}.csv`;
+          a.click(); URL.revokeObjectURL(url);
+        }}>
+          <Download className="me-2 h-4 w-4" />
+          {isAr ? "تصدير CSV" : "Export CSV"}
+        </Button>
       </div>
+
+      {/* Bulk Import Panel */}
+      {showBulkImport && <BulkUserImport />}
 
       {/* Reset Password Dialog */}
       <Dialog open={resetOpen} onOpenChange={setResetOpen}>
