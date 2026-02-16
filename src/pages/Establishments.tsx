@@ -87,70 +87,71 @@ export default function Establishments() {
           </div>
         </section>
 
-        {/* Filters */}
-        <div className="container py-6">
-          <div className="flex flex-wrap items-center gap-3">
-            <div className="relative flex-1 min-w-[200px]">
-              <Search className="absolute start-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-              <Input
-                placeholder={isAr ? "ابحث عن منشأة..." : "Search establishments..."}
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
-                className="ps-9"
-              />
+        {/* Sticky Glassmorphism Filter Bar */}
+        <div className="container py-4 md:py-6">
+          <div className="sticky top-[64px] z-40 -mx-4 mb-8 border-y border-border/40 bg-background/80 px-4 py-4 backdrop-blur-md md:rounded-2xl md:border md:mx-0 md:px-6 shadow-sm">
+            <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
+              <div className="relative flex-1 sm:max-w-md">
+                <Search className="absolute start-4 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground/60" />
+                <Input
+                  placeholder={isAr ? "ابحث عن منشأة..." : "Search establishments..."}
+                  value={search}
+                  onChange={(e) => setSearch(e.target.value)}
+                  className="h-11 border-border/40 bg-muted/20 ps-11 transition-all focus:bg-background focus:ring-primary/20 rounded-xl"
+                />
+              </div>
+              <Select value={typeFilter} onValueChange={setTypeFilter}>
+                <SelectTrigger className="h-11 w-full border-border/40 bg-muted/20 rounded-xl sm:w-44 focus:ring-primary/20">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent className="rounded-xl border-border/40">
+                  <SelectItem value="all" className="rounded-lg">{isAr ? "جميع الأنواع" : "All Types"}</SelectItem>
+                  {establishmentTypes.map((t) => (
+                    <SelectItem key={t.value} value={t.value} className="rounded-lg">{isAr ? t.ar : t.en}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              {user && (
+                <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
+                  <DialogTrigger asChild>
+                    <Button className="shadow-sm shadow-primary/15"><Plus className="me-2 h-4 w-4" />{isAr ? "إضافة منشأة" : "Add Establishment"}</Button>
+                  </DialogTrigger>
+                  <DialogContent className="max-w-md">
+                    <DialogHeader>
+                      <DialogTitle>{isAr ? "إضافة منشأة جديدة" : "Add New Establishment"}</DialogTitle>
+                    </DialogHeader>
+                    <div className="space-y-3">
+                      <div><Label>{isAr ? "الاسم" : "Name"} *</Label><Input value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} /></div>
+                      <div><Label>{isAr ? "الاسم بالعربية" : "Name (Arabic)"}</Label><Input value={form.name_ar} onChange={(e) => setForm({ ...form, name_ar: e.target.value })} dir="rtl" /></div>
+                      <div>
+                        <Label>{isAr ? "النوع" : "Type"}</Label>
+                        <Select value={form.type} onValueChange={(v) => setForm({ ...form, type: v })}>
+                          <SelectTrigger><SelectValue /></SelectTrigger>
+                          <SelectContent>
+                            {establishmentTypes.map((t) => (
+                              <SelectItem key={t.value} value={t.value}>{isAr ? t.ar : t.en}</SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </div>
+                      <div><Label>{isAr ? "المدينة" : "City"}</Label><Input value={form.city} onChange={(e) => setForm({ ...form, city: e.target.value })} /></div>
+                      <div><Label>{isAr ? "الوصف" : "Description"}</Label><Textarea value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })} rows={2} /></div>
+                      <div><Label>{isAr ? "نوع المطبخ" : "Cuisine Type"}</Label><Input value={form.cuisine_type} onChange={(e) => setForm({ ...form, cuisine_type: e.target.value })} /></div>
+                      <div className="grid grid-cols-2 gap-3">
+                        <div><Label>{isAr ? "الهاتف" : "Phone"}</Label><Input value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })} /></div>
+                        <div><Label>{isAr ? "البريد" : "Email"}</Label><Input value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} /></div>
+                      </div>
+                      <div><Label>{isAr ? "الموقع الإلكتروني" : "Website"}</Label><Input value={form.website} onChange={(e) => setForm({ ...form, website: e.target.value })} /></div>
+                      <Button className="w-full" onClick={handleCreate} disabled={!form.name || createMutation.isPending}>
+                        {createMutation.isPending ? (isAr ? "جاري الإضافة..." : "Adding...") : (isAr ? "إضافة" : "Add")}
+                      </Button>
+                    </div>
+                  </DialogContent>
+                </Dialog>
+              )}
             </div>
-            <Select value={typeFilter} onValueChange={setTypeFilter}>
-              <SelectTrigger className="w-[180px]">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">{isAr ? "جميع الأنواع" : "All Types"}</SelectItem>
-                {establishmentTypes.map((t) => (
-                  <SelectItem key={t.value} value={t.value}>{isAr ? t.ar : t.en}</SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-            {user && (
-              <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
-                <DialogTrigger asChild>
-                  <Button><Plus className="me-2 h-4 w-4" />{isAr ? "إضافة منشأة" : "Add Establishment"}</Button>
-                </DialogTrigger>
-                <DialogContent className="max-w-md">
-                  <DialogHeader>
-                    <DialogTitle>{isAr ? "إضافة منشأة جديدة" : "Add New Establishment"}</DialogTitle>
-                  </DialogHeader>
-                  <div className="space-y-3">
-                    <div><Label>{isAr ? "الاسم" : "Name"} *</Label><Input value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} /></div>
-                    <div><Label>{isAr ? "الاسم بالعربية" : "Name (Arabic)"}</Label><Input value={form.name_ar} onChange={(e) => setForm({ ...form, name_ar: e.target.value })} dir="rtl" /></div>
-                    <div>
-                      <Label>{isAr ? "النوع" : "Type"}</Label>
-                      <Select value={form.type} onValueChange={(v) => setForm({ ...form, type: v })}>
-                        <SelectTrigger><SelectValue /></SelectTrigger>
-                        <SelectContent>
-                          {establishmentTypes.map((t) => (
-                            <SelectItem key={t.value} value={t.value}>{isAr ? t.ar : t.en}</SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                    </div>
-                    <div><Label>{isAr ? "المدينة" : "City"}</Label><Input value={form.city} onChange={(e) => setForm({ ...form, city: e.target.value })} /></div>
-                    <div><Label>{isAr ? "الوصف" : "Description"}</Label><Textarea value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })} rows={2} /></div>
-                    <div><Label>{isAr ? "نوع المطبخ" : "Cuisine Type"}</Label><Input value={form.cuisine_type} onChange={(e) => setForm({ ...form, cuisine_type: e.target.value })} /></div>
-                    <div className="grid grid-cols-2 gap-3">
-                      <div><Label>{isAr ? "الهاتف" : "Phone"}</Label><Input value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })} /></div>
-                      <div><Label>{isAr ? "البريد" : "Email"}</Label><Input value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} /></div>
-                    </div>
-                    <div><Label>{isAr ? "الموقع الإلكتروني" : "Website"}</Label><Input value={form.website} onChange={(e) => setForm({ ...form, website: e.target.value })} /></div>
-                    <Button className="w-full" onClick={handleCreate} disabled={!form.name || createMutation.isPending}>
-                      {createMutation.isPending ? (isAr ? "جاري الإضافة..." : "Adding...") : (isAr ? "إضافة" : "Add")}
-                    </Button>
-                  </div>
-                </DialogContent>
-              </Dialog>
-            )}
           </div>
         </div>
-
         {/* Grid */}
         <div className="container pb-16">
           {isLoading ? (
