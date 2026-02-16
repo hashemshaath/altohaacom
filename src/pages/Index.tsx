@@ -19,6 +19,8 @@ const NewsletterSignup = lazy(() => import("@/components/home/NewsletterSignup")
 const PartnersLogos = lazy(() => import("@/components/home/PartnersLogos").then(m => ({ default: m.PartnersLogos })));
 const SponsorCarousel = lazy(() => import("@/components/home/SponsorCarousel").then(m => ({ default: m.SponsorCarousel })));
 const NewlyJoinedUsers = lazy(() => import("@/components/home/NewlyJoinedUsers").then(m => ({ default: m.NewlyJoinedUsers })));
+const FeaturedChefs = lazy(() => import("@/components/home/FeaturedChefs").then(m => ({ default: m.FeaturedChefs })));
+const HomeMasterclasses = lazy(() => import("@/components/home/HomeMasterclasses").then(m => ({ default: m.HomeMasterclasses })));
 const AdBanner = lazy(() => import("@/components/ads/AdBanner").then(m => ({ default: m.AdBanner })));
 const AdPopup = lazy(() => import("@/components/ads/AdPopup").then(m => ({ default: m.AdPopup })));
 
@@ -94,24 +96,34 @@ const Index = () => {
           <RegionalEvents />
         </Suspense>
 
-        {/* 7. Newly Joined Members */}
+        {/* 7. Featured Chefs */}
+        <Suspense fallback={<LazyFallback />}>
+          <FeaturedChefs />
+        </Suspense>
+
+        {/* 8. Newly Joined Members */}
         <Suspense fallback={<LazyFallback />}>
           <NewlyJoinedUsers />
         </Suspense>
 
-        {/* 8. Sponsors Marquee */}
+        {/* 9. Sponsors Marquee */}
         <Suspense fallback={<LazyFallback />}>
           <SponsorCarousel />
         </Suspense>
 
-        {/* 9. In-feed Ad */}
+        {/* 10. Masterclasses */}
+        <Suspense fallback={<LazyFallback />}>
+          <HomeMasterclasses />
+        </Suspense>
+
+        {/* 11. In-feed Ad */}
         <Suspense fallback={<LazyFallback />}>
           <section className="container py-4">
             <AdBanner placementSlug="in-feed" className="w-full max-w-3xl mx-auto rounded-xl overflow-hidden aspect-[728/90] sm:aspect-[970/250] max-h-[250px]" />
           </section>
         </Suspense>
 
-        {/* 10. Sponsorship Opportunities */}
+        {/* 12. Sponsorship Opportunities */}
         <Suspense fallback={<LazyFallback />}>
           <SponsorshipOpportunities />
         </Suspense>
