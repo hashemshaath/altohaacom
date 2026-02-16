@@ -6,7 +6,6 @@ import {
   LayoutDashboard,
   Trophy,
   Users,
-  Newspaper,
   Search,
   Home,
 } from "lucide-react";
@@ -14,8 +13,8 @@ import {
 const navItems = [
   { to: "/", icon: Home, labelEn: "Home", labelAr: "الرئيسية", authOnly: false, exact: true },
   { to: "/competitions", icon: Trophy, labelEn: "Compete", labelAr: "المسابقات", authOnly: false },
+  { to: "/search", icon: Search, labelEn: "Search", labelAr: "بحث", authOnly: false },
   { to: "/community", icon: Users, labelEn: "Community", labelAr: "المجتمع", authOnly: false },
-  { to: "/news", icon: Newspaper, labelEn: "News", labelAr: "الأخبار", authOnly: false },
   { to: "/dashboard", icon: LayoutDashboard, labelEn: "Dashboard", labelAr: "لوحتي", authOnly: true },
 ];
 

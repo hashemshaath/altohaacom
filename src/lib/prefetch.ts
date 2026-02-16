@@ -44,6 +44,8 @@ export function prefetchCommonRoutes() {
     () => import("@/pages/News"),
     () => import("@/pages/Auth"),
     () => import("@/pages/Shop"),
+    () => import("@/pages/Search"),
+    () => import("@/pages/Masterclasses"),
   ];
 
   // Delay prefetching to prioritize initial render
