@@ -28,6 +28,7 @@ import {
 import { format } from "date-fns";
 import { formatCurrency } from "@/lib/currencyFormatter";
 import { CompanyAnalyticsCharts } from "@/components/company/CompanyAnalyticsCharts";
+import { CompanyRecentOrdersWidget } from "@/components/company/CompanyRecentOrdersWidget";
 
 export default function CompanyPortalDashboard() {
   const { language } = useLanguage();
@@ -212,26 +213,32 @@ export default function CompanyPortalDashboard() {
         </div>
       )}
 
-      {/* Sponsorship Opportunities Widget */}
-      <Card className="overflow-hidden">
-        <div className="flex items-center justify-between border-b bg-gradient-to-r from-chart-3/5 to-transparent px-5 py-3">
-          <h3 className="flex items-center gap-2 text-sm font-semibold">
-            <div className="flex h-6 w-6 items-center justify-center rounded-md bg-chart-3/10">
-              <Crown className="h-3.5 w-3.5 text-chart-3" />
-            </div>
-            {language === "ar" ? "فرص الرعاية" : "Sponsorship Opportunities"}
-          </h3>
-          <Button variant="ghost" size="sm" asChild className="text-xs">
-            <Link to="/company/sponsorships">
-              {language === "ar" ? "عرض الكل" : "View All"}
-              <ArrowUpRight className="ms-1 h-3 w-3" />
-            </Link>
-          </Button>
-        </div>
-        <CardContent className="p-5">
-          <SponsorshipWidget companyId={companyId} language={language} />
-        </CardContent>
-      </Card>
+      {/* Recent Orders & Sponsorship Opportunities */}
+      <div className="grid gap-4 lg:grid-cols-2">
+        {/* Recent Orders Widget */}
+        <CompanyRecentOrdersWidget companyId={companyId} language={language} />
+
+        {/* Sponsorship Opportunities Widget */}
+        <Card className="overflow-hidden">
+          <div className="flex items-center justify-between border-b bg-gradient-to-r from-chart-3/5 to-transparent px-5 py-3">
+            <h3 className="flex items-center gap-2 text-sm font-semibold">
+              <div className="flex h-6 w-6 items-center justify-center rounded-md bg-chart-3/10">
+                <Crown className="h-3.5 w-3.5 text-chart-3" />
+              </div>
+              {language === "ar" ? "فرص الرعاية" : "Sponsorship Opportunities"}
+            </h3>
+            <Button variant="ghost" size="sm" asChild className="text-xs">
+              <Link to="/company/sponsorships">
+                {language === "ar" ? "عرض الكل" : "View All"}
+                <ArrowUpRight className="ms-1 h-3 w-3" />
+              </Link>
+            </Button>
+          </div>
+          <CardContent className="p-5">
+            <SponsorshipWidget companyId={companyId} language={language} />
+          </CardContent>
+        </Card>
+      </div>
 
       {/* Analytics Charts */}
       <CompanyAnalyticsCharts companyId={companyId} language={language} />
