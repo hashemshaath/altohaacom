@@ -6,6 +6,7 @@ import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Card, CardContent } from "@/components/ui/card";
 import { SEOHead } from "@/components/SEOHead";
 import { User, Edit, Shield, Crown, BarChart3, Wallet, FileText, Gift } from "lucide-react";
 import type { Database } from "@/integrations/supabase/types";
@@ -59,9 +60,33 @@ export default function Profile() {
         <SEOHead title="Profile" description="Your Altohaa profile" />
         <Header />
         <main className="container flex-1 py-4 md:py-6">
-          <Skeleton className="h-44 w-full rounded-2xl mb-6" />
-          <Skeleton className="h-10 w-80 mb-6" />
-          <Skeleton className="h-64 w-full rounded-xl" />
+          {/* Profile header skeleton */}
+          <div className="rounded-2xl border bg-card p-6 mb-6">
+            <div className="flex items-center gap-4">
+              <Skeleton className="h-20 w-20 rounded-full shrink-0" />
+              <div className="flex-1 space-y-2">
+                <Skeleton className="h-6 w-48" />
+                <Skeleton className="h-4 w-32" />
+                <div className="flex gap-2 pt-1">
+                  <Skeleton className="h-5 w-16 rounded-full" />
+                  <Skeleton className="h-5 w-20 rounded-full" />
+                </div>
+              </div>
+            </div>
+          </div>
+          {/* Tab bar skeleton */}
+          <Skeleton className="h-12 w-full rounded-xl mb-6" />
+          {/* Content skeleton */}
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            {Array.from({ length: 3 }).map((_, i) => (
+              <Card key={i}><CardContent className="pt-6"><Skeleton className="h-5 w-24 mb-2" /><Skeleton className="h-8 w-32" /></CardContent></Card>
+            ))}
+          </div>
+          <div className="mt-4 space-y-3">
+            {Array.from({ length: 3 }).map((_, i) => (
+              <Skeleton key={i} className="h-16 w-full rounded-lg" />
+            ))}
+          </div>
         </main>
         <Footer />
       </div>

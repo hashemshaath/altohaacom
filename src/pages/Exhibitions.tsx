@@ -56,6 +56,7 @@ export default function Exhibitions() {
       if (error) throw error;
       return data as Exhibition[];
     },
+    staleTime: 1000 * 60 * 3,
   });
 
   // Derive unique countries for filter
