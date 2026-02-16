@@ -6126,6 +6126,7 @@ export type Database = {
           currency: string | null
           description: string | null
           description_ar: string | null
+          documents: Json | null
           early_bird_deadline: string | null
           end_date: string
           gallery_urls: string[] | null
@@ -6184,6 +6185,7 @@ export type Database = {
           currency?: string | null
           description?: string | null
           description_ar?: string | null
+          documents?: Json | null
           early_bird_deadline?: string | null
           end_date: string
           gallery_urls?: string[] | null
@@ -6242,6 +6244,7 @@ export type Database = {
           currency?: string | null
           description?: string | null
           description_ar?: string | null
+          documents?: Json | null
           early_bird_deadline?: string | null
           end_date?: string
           gallery_urls?: string[] | null
