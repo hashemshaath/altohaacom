@@ -9,6 +9,8 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Textarea } from "@/components/ui/textarea";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Skeleton } from "@/components/ui/skeleton";
 import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
 } from "@/components/ui/select";
@@ -19,7 +21,7 @@ import {
   Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle,
 } from "@/components/ui/dialog";
 import { useToast } from "@/hooks/use-toast";
-import { Search, ArrowUpCircle, Mail, RefreshCw, UserCheck, AlertTriangle } from "lucide-react";
+import { Search, ArrowUpCircle, Mail, RefreshCw, UserCheck, AlertTriangle, CheckSquare } from "lucide-react";
 import { format, differenceInDays } from "date-fns";
 import type { Database } from "@/integrations/supabase/types";
 
@@ -52,6 +54,10 @@ export default function MembershipMembersTab() {
   const [changeUser, setChangeUser] = useState<MemberProfile | null>(null);
   const [newTier, setNewTier] = useState<MembershipTier>("professional");
   const [changeReason, setChangeReason] = useState("");
+  const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
+  const [bulkDialogOpen, setBulkDialogOpen] = useState(false);
+  const [bulkTier, setBulkTier] = useState<MembershipTier>("professional");
+  const [bulkReason, setBulkReason] = useState("");
 
   const { data: members, isLoading } = useQuery({
     queryKey: ["admin-membership-members", searchQuery, tierFilter, statusFilter],
@@ -72,6 +78,7 @@ export default function MembershipMembersTab() {
       if (error) throw error;
       return data as MemberProfile[];
     },
+    staleTime: 1000 * 60 * 2,
   });
 
   const changeTierMutation = useMutation({
@@ -146,6 +153,71 @@ export default function MembershipMembersTab() {
     },
   });
 
+  const bulkChangeTierMutation = useMutation({
+    mutationFn: async ({ userIds, tier, reason }: { userIds: string[]; tier: MembershipTier; reason: string }) => {
+      for (const userId of userIds) {
+        const { data: currentProfile } = await supabase
+          .from("profiles")
+          .select("membership_tier")
+          .eq("user_id", userId)
+          .single();
+
+        await supabase
+          .from("profiles")
+          .update({
+            membership_tier: tier,
+            membership_status: "active",
+            membership_expires_at: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000).toISOString(),
+          })
+          .eq("user_id", userId);
+
+        await supabase.from("membership_history").insert({
+          user_id: userId,
+          previous_tier: currentProfile?.membership_tier,
+          new_tier: tier,
+          changed_by: user!.id,
+          reason: reason || "Bulk admin change",
+        });
+
+        await supabase.from("admin_actions").insert({
+          admin_id: user!.id,
+          target_user_id: userId,
+          action_type: "bulk_change_membership",
+          details: { previous: currentProfile?.membership_tier, new: tier, reason },
+        });
+      }
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["admin-membership-members"] });
+      queryClient.invalidateQueries({ queryKey: ["membership-overview-stats"] });
+      toast({ title: isAr ? `تم تحديث ${selectedIds.size} عضو بنجاح` : `${selectedIds.size} members updated successfully` });
+      setSelectedIds(new Set());
+      setBulkDialogOpen(false);
+      setBulkReason("");
+    },
+    onError: (error) => {
+      toast({ variant: "destructive", title: "Error", description: error.message });
+    },
+  });
+
+  const toggleSelectAll = () => {
+    if (!members) return;
+    if (selectedIds.size === members.length) {
+      setSelectedIds(new Set());
+    } else {
+      setSelectedIds(new Set(members.map(m => m.user_id)));
+    }
+  };
+
+  const toggleSelect = (userId: string) => {
+    setSelectedIds(prev => {
+      const next = new Set(prev);
+      if (next.has(userId)) next.delete(userId);
+      else next.add(userId);
+      return next;
+    });
+  };
+
   const getStatusBadge = (status: string | null, expiresAt: string | null) => {
     const days = expiresAt ? differenceInDays(new Date(expiresAt), new Date()) : null;
     if (days !== null && days < 0) return <Badge variant="destructive">{isAr ? "منتهي" : "Expired"}</Badge>;
@@ -169,8 +241,50 @@ export default function MembershipMembersTab() {
     return <Badge className={config[tier || "basic"]}>{labels[tier || "basic"]}</Badge>;
   };
 
+  const TableSkeleton = () => (
+    <div className="space-y-3 py-4">
+      {Array.from({ length: 5 }).map((_, i) => (
+        <div key={i} className="flex items-center gap-4 px-2">
+          <Skeleton className="h-4 w-4 rounded" />
+          <Skeleton className="h-8 w-8 rounded-full" />
+          <div className="flex-1 space-y-1.5">
+            <Skeleton className="h-4 w-32" />
+            <Skeleton className="h-3 w-20" />
+          </div>
+          <Skeleton className="h-5 w-16 rounded-full" />
+          <Skeleton className="h-5 w-14 rounded-full" />
+          <Skeleton className="h-4 w-24" />
+          <Skeleton className="h-8 w-8 rounded" />
+        </div>
+      ))}
+    </div>
+  );
+
   return (
     <div className="space-y-4">
+      {/* Bulk Action Bar */}
+      {selectedIds.size > 0 && (
+        <Card className="border-primary/30 bg-primary/5 animate-fade-in">
+          <CardContent className="flex items-center justify-between py-3">
+            <div className="flex items-center gap-2">
+              <CheckSquare className="h-4 w-4 text-primary" />
+              <span className="text-sm font-medium">
+                {isAr ? `${selectedIds.size} عضو محدد` : `${selectedIds.size} member(s) selected`}
+              </span>
+            </div>
+            <div className="flex gap-2">
+              <Button variant="outline" size="sm" onClick={() => setSelectedIds(new Set())}>
+                {isAr ? "إلغاء التحديد" : "Clear"}
+              </Button>
+              <Button size="sm" onClick={() => setBulkDialogOpen(true)}>
+                <ArrowUpCircle className="h-3.5 w-3.5 me-1.5" />
+                {isAr ? "تغيير المستوى" : "Change Tier"}
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
       <Card>
         <CardHeader>
           <CardTitle>{isAr ? "إدارة الأعضاء" : "Manage Members"}</CardTitle>
@@ -212,14 +326,18 @@ export default function MembershipMembersTab() {
           </div>
 
           {isLoading ? (
-            <div className="flex justify-center py-8">
-              <div className="h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent" />
-            </div>
+            <TableSkeleton />
           ) : (
             <div className="overflow-x-auto">
               <Table>
                 <TableHeader>
                   <TableRow>
+                    <TableHead className="w-10">
+                      <Checkbox
+                        checked={members?.length ? selectedIds.size === members.length : false}
+                        onCheckedChange={toggleSelectAll}
+                      />
+                    </TableHead>
                     <TableHead>{isAr ? "العضو" : "Member"}</TableHead>
                     <TableHead>{isAr ? "المستوى" : "Tier"}</TableHead>
                     <TableHead>{isAr ? "الحالة" : "Status"}</TableHead>
@@ -233,7 +351,13 @@ export default function MembershipMembersTab() {
                       ? differenceInDays(new Date(member.membership_expires_at), new Date())
                       : null;
                     return (
-                      <TableRow key={member.id} className={daysLeft !== null && daysLeft <= 14 && daysLeft >= 0 ? "bg-destructive/5" : ""}>
+                      <TableRow key={member.id} className={`transition-colors ${daysLeft !== null && daysLeft <= 14 && daysLeft >= 0 ? "bg-destructive/5" : ""} ${selectedIds.has(member.user_id) ? "bg-primary/5" : ""}`}>
+                        <TableCell>
+                          <Checkbox
+                            checked={selectedIds.has(member.user_id)}
+                            onCheckedChange={() => toggleSelect(member.user_id)}
+                          />
+                        </TableCell>
                         <TableCell>
                           <div className="flex items-center gap-3">
                             <Avatar className="h-8 w-8">
@@ -281,7 +405,7 @@ export default function MembershipMembersTab() {
         </CardContent>
       </Card>
 
-      {/* Change Tier Dialog */}
+      {/* Single Change Tier Dialog */}
       <Dialog open={!!changeUser} onOpenChange={() => setChangeUser(null)}>
         <DialogContent>
           <DialogHeader>
@@ -332,6 +456,57 @@ export default function MembershipMembersTab() {
               disabled={changeTierMutation.isPending}
             >
               {isAr ? "تأكيد التغيير" : "Confirm Change"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Bulk Change Tier Dialog */}
+      <Dialog open={bulkDialogOpen} onOpenChange={setBulkDialogOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>{isAr ? "تغيير مستوى جماعي" : "Bulk Tier Change"}</DialogTitle>
+            <DialogDescription>
+              {isAr
+                ? `تغيير المستوى لـ ${selectedIds.size} عضو`
+                : `Change tier for ${selectedIds.size} member(s)`}
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4 py-4">
+            <div>
+              <label className="text-sm font-medium mb-1 block">{isAr ? "المستوى الجديد" : "New Tier"}</label>
+              <Select value={bulkTier} onValueChange={(v) => setBulkTier(v as MembershipTier)}>
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="basic">{isAr ? "أساسي" : "Basic"}</SelectItem>
+                  <SelectItem value="professional">{isAr ? "احترافي" : "Professional"}</SelectItem>
+                  <SelectItem value="enterprise">{isAr ? "مؤسسي" : "Enterprise"}</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            <div>
+              <label className="text-sm font-medium">{isAr ? "سبب التغيير" : "Reason"}</label>
+              <Textarea
+                value={bulkReason}
+                onChange={(e) => setBulkReason(e.target.value)}
+                placeholder={isAr ? "أدخل سبب التغيير الجماعي..." : "Enter reason for bulk change..."}
+                className="mt-1"
+              />
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setBulkDialogOpen(false)}>
+              {isAr ? "إلغاء" : "Cancel"}
+            </Button>
+            <Button
+              onClick={() => bulkChangeTierMutation.mutate({ userIds: Array.from(selectedIds), tier: bulkTier, reason: bulkReason })}
+              disabled={bulkChangeTierMutation.isPending}
+            >
+              {bulkChangeTierMutation.isPending
+                ? (isAr ? "جاري التحديث..." : "Updating...")
+                : (isAr ? `تحديث ${selectedIds.size} عضو` : `Update ${selectedIds.size} Members`)}
             </Button>
           </DialogFooter>
         </DialogContent>
