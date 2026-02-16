@@ -132,8 +132,15 @@ export default function Recipes() {
   return (
     <div className="min-h-screen flex flex-col bg-background">
       <SEOHead
-        title={isAr ? "الوصفات - الطهاة" : "Recipe Database - Altohaa"}
+        title={isAr ? "الوصفات — الطهاة" : "Recipe Database — Altohaa"}
         description={isAr ? "اكتشف وشارك وصفات الطهي" : "Discover and share culinary recipes with ingredients, steps, and nutritional data"}
+        jsonLd={{
+          "@context": "https://schema.org",
+          "@type": "CollectionPage",
+          name: isAr ? "وصفات الطهي" : "Culinary Recipes",
+          url: `${window.location.origin}/recipes`,
+          isPartOf: { "@type": "WebSite", name: "Altohaa", url: window.location.origin },
+        }}
       />
       <Header />
 

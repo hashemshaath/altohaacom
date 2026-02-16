@@ -93,8 +93,15 @@ export default function Exhibitions() {
   return (
     <div className="flex min-h-screen flex-col bg-background">
       <SEOHead
-        title="Food Exhibitions & Events"
-        description="Discover food exhibitions, conferences, and culinary events worldwide. Stay updated with the latest in gastronomy."
+        title={isAr ? "المعارض والفعاليات — الطهاة" : "Food Exhibitions & Events — Altohaa"}
+        description={isAr ? "اكتشف معارض الطعام والمؤتمرات والفعاليات" : "Discover food exhibitions, conferences, and culinary events worldwide. Stay updated with the latest in gastronomy."}
+        jsonLd={{
+          "@context": "https://schema.org",
+          "@type": "CollectionPage",
+          name: isAr ? "المعارض والفعاليات" : "Food Exhibitions & Events",
+          url: `${window.location.origin}/exhibitions`,
+          isPartOf: { "@type": "WebSite", name: "Altohaa", url: window.location.origin },
+        }}
       />
       <Header />
 

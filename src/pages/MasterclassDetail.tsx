@@ -6,6 +6,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
+import { SEOHead } from "@/components/SEOHead";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -242,6 +243,31 @@ export default function MasterclassDetail() {
 
   return (
     <div className="flex min-h-screen flex-col bg-background">
+      <SEOHead
+        title={`${masterclass.title} — Altohaa`}
+        description={masterclass.description || `Learn ${masterclass.title} on Altohaa`}
+        ogImage={masterclass.cover_image_url || undefined}
+        ogType="article"
+        jsonLd={{
+          "@context": "https://schema.org",
+          "@type": "Course",
+          name: masterclass.title,
+          description: masterclass.description || undefined,
+          provider: {
+            "@type": "Organization",
+            name: "Altohaa",
+            url: window.location.origin,
+          },
+          ...(instructor ? { instructor: { "@type": "Person", name: instructor.full_name } } : {}),
+          educationalLevel: masterclass.level || undefined,
+          image: masterclass.cover_image_url || undefined,
+          numberOfCredits: totalLessons,
+          hasCourseInstance: {
+            "@type": "CourseInstance",
+            courseMode: "online",
+          },
+        }}
+      />
       <Header />
       <main className="flex-1">
         {/* Hero */}
