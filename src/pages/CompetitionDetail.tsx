@@ -21,6 +21,7 @@ import {
   ImageIcon, Twitter, Facebook, Linkedin, Link2, ChevronDown,
   Sparkles, Target, BarChart3, UsersRound, Eye, Flame, Shield, Building2,
   Medal, Info, DoorOpen, Scale, FileSpreadsheet, Radio,
+  Swords, Layers, EyeOff, CalendarClock, ChefHat, MessageSquare, ClipboardCheck, MessageCircle,
 } from "lucide-react";
 import { countryFlag } from "@/lib/countryFlag";
 import {
@@ -54,6 +55,14 @@ import { deriveCompetitionStatus } from "@/lib/competitionStatus";
 import { QRCodeDisplay } from "@/components/qr/QRCodeDisplay";
 import { useEntityQRCode } from "@/hooks/useQRCode";
 import { LiveScoringDashboard } from "@/components/competitions/LiveScoringDashboard";
+import { TournamentRoundsPanel } from "@/components/competitions/TournamentRoundsPanel";
+import { BlindJudgingPanel } from "@/components/competitions/BlindJudgingPanel";
+import { EvaluationStagesPanel } from "@/components/competitions/EvaluationStagesPanel";
+import { CompetitionSchedulePanel } from "@/components/competitions/CompetitionSchedulePanel";
+import { KitchenStationsPanel } from "@/components/competitions/KitchenStationsPanel";
+import { JudgeDeliberationPanel } from "@/components/competitions/JudgeDeliberationPanel";
+import { CompetitionFeedbackPanel } from "@/components/competitions/CompetitionFeedbackPanel";
+import { PreparationChecklistPanel } from "@/components/competitions/PreparationChecklistPanel";
 import type { Database } from "@/integrations/supabase/types";
 
 type CompetitionStatus = Database["public"]["Enums"]["competition_status"];
@@ -271,14 +280,21 @@ export default function CompetitionDetail() {
 
   const navItems = [
     { id: "overview", icon: <Eye className="h-4 w-4" />, label: isAr ? "نظرة عامة" : "Overview" },
+    { id: "rounds", icon: <Swords className="h-4 w-4" />, label: isAr ? "الجولات" : "Rounds" },
     { id: "judges", icon: <Scale className="h-4 w-4" />, label: isAr ? "لجنة التحكيم" : "Judging Panel" },
     { id: "contestants", icon: <Users className="h-4 w-4" />, label: isAr ? "المتسابقين" : "Contestants" },
     { id: "categories", icon: <Target className="h-4 w-4" />, label: isAr ? "الفئات" : "Categories" },
     { id: "criteria", icon: <BarChart3 className="h-4 w-4" />, label: isAr ? "المعايير" : "Criteria" },
+    { id: "stages", icon: <Layers className="h-4 w-4" />, label: isAr ? "مراحل التقييم" : "Eval Stages" },
     { id: "live-scoring", icon: <Radio className="h-4 w-4" />, label: isAr ? "النتائج المباشرة" : "Live Scores" },
+    { id: "schedule", icon: <CalendarClock className="h-4 w-4" />, label: isAr ? "الجدول" : "Schedule" },
+    { id: "stations", icon: <ChefHat className="h-4 w-4" />, label: isAr ? "المحطات" : "Stations" },
     { id: "winners", icon: <Medal className="h-4 w-4" />, label: isAr ? "الفائزين" : "Winners" },
+    { id: "feedback", icon: <MessageCircle className="h-4 w-4" />, label: isAr ? "الملاحظات" : "Feedback" },
+    { id: "checklist", icon: <ClipboardCheck className="h-4 w-4" />, label: isAr ? "قائمة التحضير" : "Prep List" },
     { id: "team", icon: <UsersRound className="h-4 w-4" />, label: isAr ? "الفريق" : "Team" },
     ...(canSeeKnowledge ? [{ id: "knowledge", icon: <BookOpen className="h-4 w-4" />, label: isAr ? "المعرفة" : "Knowledge" }] : []),
+    ...(canSeeKnowledge ? [{ id: "deliberation", icon: <MessageSquare className="h-4 w-4" />, label: isAr ? "المداولات" : "Deliberation" }] : []),
     { id: "gallery", icon: <ImageIcon className="h-4 w-4" />, label: isAr ? "المعرض" : "Gallery" },
     ...(user ? [{ id: "requirements", icon: <ClipboardList className="h-4 w-4" />, label: isAr ? "مركز الطلبات" : "Order Center" }] : []),
     ...(isOrganizer ? [{ id: "manage", icon: <Settings className="h-4 w-4" />, label: isAr ? "إدارة" : "Manage" }] : []),
@@ -759,11 +775,18 @@ export default function CompetitionDetail() {
                 </>
               )}
 
+              {activeSection === "rounds" && <TournamentRoundsPanel competitionId={competition.id} isOrganizer={!!isOrganizer} />}
               {activeSection === "judges" && <JudgesList competitionId={competition.id} isOrganizer={!!isOrganizer} />}
               {activeSection === "contestants" && <ParticipantsList competitionId={competition.id} isOrganizer={!!isOrganizer} />}
               {activeSection === "categories" && <CategoryManagementPanel competitionId={competition.id} isOrganizer={isOrganizer} competitionStatus={competition.status} />}
               {activeSection === "criteria" && <CriteriaManagementPanel competitionId={competition.id} isOrganizer={isOrganizer} />}
+              {activeSection === "stages" && <EvaluationStagesPanel competitionId={competition.id} isOrganizer={!!isOrganizer} />}
               {activeSection === "live-scoring" && <LiveScoringDashboard competitionId={competition.id} isOrganizer={isOrganizer} />}
+              {activeSection === "schedule" && <CompetitionSchedulePanel competitionId={competition.id} isOrganizer={!!isOrganizer} />}
+              {activeSection === "stations" && <KitchenStationsPanel competitionId={competition.id} isOrganizer={!!isOrganizer} />}
+              {activeSection === "feedback" && <CompetitionFeedbackPanel competitionId={competition.id} />}
+              {activeSection === "checklist" && <PreparationChecklistPanel competitionId={competition.id} />}
+              {activeSection === "deliberation" && canSeeKnowledge && <JudgeDeliberationPanel competitionId={competition.id} />}
               {activeSection === "winners" && (
                 hasWinners ? (
                   <CompetitionLeaderboard competitionId={competition.id} />
@@ -798,6 +821,7 @@ export default function CompetitionDetail() {
               {isOrganizer && activeSection === "manage" && (
                 <div className="space-y-4">
                   <CompetitionStatusManager competitionId={competition.id} currentStatus={competition.status} competitionTitle={title} />
+                  <BlindJudgingPanel competitionId={competition.id} isOrganizer={true} blindJudgingEnabled={competition.blind_judging_enabled} blindCodePrefix={competition.blind_code_prefix || "ENTRY"} />
                   <JudgeAssignmentPanel competitionId={competition.id} />
                   <RegistrationApprovalPanel competitionId={competition.id} />
                   {competition.status === "completed" && <AutoIssueCertificates competitionId={competition.id} />}
