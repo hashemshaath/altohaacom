@@ -1085,6 +1085,55 @@ export type Database = {
         }
         Relationships: []
       }
+      blind_judging_codes: {
+        Row: {
+          blind_code: string
+          competition_id: string
+          created_at: string | null
+          id: string
+          registration_id: string
+          round_id: string | null
+        }
+        Insert: {
+          blind_code: string
+          competition_id: string
+          created_at?: string | null
+          id?: string
+          registration_id: string
+          round_id?: string | null
+        }
+        Update: {
+          blind_code?: string
+          competition_id?: string
+          created_at?: string | null
+          id?: string
+          registration_id?: string
+          round_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "blind_judging_codes_competition_id_fkey"
+            columns: ["competition_id"]
+            isOneToOne: false
+            referencedRelation: "competitions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "blind_judging_codes_registration_id_fkey"
+            columns: ["registration_id"]
+            isOneToOne: false
+            referencedRelation: "competition_registrations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "blind_judging_codes_round_id_fkey"
+            columns: ["round_id"]
+            isOneToOne: false
+            referencedRelation: "competition_rounds"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       bonus_campaigns: {
         Row: {
           badge_text: string | null
@@ -1713,6 +1762,66 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      chef_rankings: {
+        Row: {
+          average_score: number | null
+          bronze_medals: number
+          competitions_entered: number
+          competitions_won: number
+          country_code: string | null
+          gold_medals: number
+          id: string
+          period_value: string | null
+          previous_rank: number | null
+          rank: number | null
+          rank_change: number | null
+          ranking_period: string
+          silver_medals: number
+          specialty: string | null
+          total_points: number
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          average_score?: number | null
+          bronze_medals?: number
+          competitions_entered?: number
+          competitions_won?: number
+          country_code?: string | null
+          gold_medals?: number
+          id?: string
+          period_value?: string | null
+          previous_rank?: number | null
+          rank?: number | null
+          rank_change?: number | null
+          ranking_period?: string
+          silver_medals?: number
+          specialty?: string | null
+          total_points?: number
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          average_score?: number | null
+          bronze_medals?: number
+          competitions_entered?: number
+          competitions_won?: number
+          country_code?: string | null
+          gold_medals?: number
+          id?: string
+          period_value?: string | null
+          previous_rank?: number | null
+          rank?: number | null
+          rank_change?: number | null
+          ranking_period?: string
+          silver_medals?: number
+          specialty?: string | null
+          total_points?: number
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: []
       }
       communication_templates: {
         Row: {
@@ -3079,6 +3188,63 @@ export type Database = {
           },
         ]
       }
+      competition_feedback: {
+        Row: {
+          category: string | null
+          comment: string | null
+          comment_ar: string | null
+          competition_id: string
+          created_at: string | null
+          id: string
+          is_visible: boolean | null
+          judge_id: string | null
+          registration_id: string
+          released_at: string | null
+          score_breakdown: Json | null
+        }
+        Insert: {
+          category?: string | null
+          comment?: string | null
+          comment_ar?: string | null
+          competition_id: string
+          created_at?: string | null
+          id?: string
+          is_visible?: boolean | null
+          judge_id?: string | null
+          registration_id: string
+          released_at?: string | null
+          score_breakdown?: Json | null
+        }
+        Update: {
+          category?: string | null
+          comment?: string | null
+          comment_ar?: string | null
+          competition_id?: string
+          created_at?: string | null
+          id?: string
+          is_visible?: boolean | null
+          judge_id?: string | null
+          registration_id?: string
+          released_at?: string | null
+          score_breakdown?: Json | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "competition_feedback_competition_id_fkey"
+            columns: ["competition_id"]
+            isOneToOne: false
+            referencedRelation: "competitions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "competition_feedback_registration_id_fkey"
+            columns: ["registration_id"]
+            isOneToOne: false
+            referencedRelation: "competition_registrations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       competition_invitations: {
         Row: {
           category_id: string | null
@@ -3191,6 +3357,79 @@ export type Database = {
             columns: ["competition_id"]
             isOneToOne: false
             referencedRelation: "competitions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      competition_portfolio_entries: {
+        Row: {
+          certificate_id: string | null
+          competition_id: string
+          created_at: string | null
+          dish_photos: string[] | null
+          final_rank: number | null
+          final_score: number | null
+          id: string
+          is_public: boolean | null
+          medal: string | null
+          personal_notes: string | null
+          personal_notes_ar: string | null
+          registration_id: string | null
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          certificate_id?: string | null
+          competition_id: string
+          created_at?: string | null
+          dish_photos?: string[] | null
+          final_rank?: number | null
+          final_score?: number | null
+          id?: string
+          is_public?: boolean | null
+          medal?: string | null
+          personal_notes?: string | null
+          personal_notes_ar?: string | null
+          registration_id?: string | null
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          certificate_id?: string | null
+          competition_id?: string
+          created_at?: string | null
+          dish_photos?: string[] | null
+          final_rank?: number | null
+          final_score?: number | null
+          id?: string
+          is_public?: boolean | null
+          medal?: string | null
+          personal_notes?: string | null
+          personal_notes_ar?: string | null
+          registration_id?: string | null
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "competition_portfolio_entries_certificate_id_fkey"
+            columns: ["certificate_id"]
+            isOneToOne: false
+            referencedRelation: "certificates"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "competition_portfolio_entries_competition_id_fkey"
+            columns: ["competition_id"]
+            isOneToOne: false
+            referencedRelation: "competitions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "competition_portfolio_entries_registration_id_fkey"
+            columns: ["registration_id"]
+            isOneToOne: false
+            referencedRelation: "competition_registrations"
             referencedColumns: ["id"]
           },
         ]
@@ -3347,6 +3586,150 @@ export type Database = {
             columns: ["competition_id"]
             isOneToOne: false
             referencedRelation: "competitions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      competition_rounds: {
+        Row: {
+          advancement_count: number | null
+          advancement_rule: string | null
+          competition_id: string
+          created_at: string | null
+          end_time: string | null
+          format: string
+          id: string
+          max_participants: number | null
+          name: string
+          name_ar: string | null
+          round_number: number
+          round_type: string
+          sort_order: number
+          start_time: string | null
+          status: string
+          threshold_score: number | null
+          updated_at: string | null
+        }
+        Insert: {
+          advancement_count?: number | null
+          advancement_rule?: string | null
+          competition_id: string
+          created_at?: string | null
+          end_time?: string | null
+          format?: string
+          id?: string
+          max_participants?: number | null
+          name: string
+          name_ar?: string | null
+          round_number?: number
+          round_type?: string
+          sort_order?: number
+          start_time?: string | null
+          status?: string
+          threshold_score?: number | null
+          updated_at?: string | null
+        }
+        Update: {
+          advancement_count?: number | null
+          advancement_rule?: string | null
+          competition_id?: string
+          created_at?: string | null
+          end_time?: string | null
+          format?: string
+          id?: string
+          max_participants?: number | null
+          name?: string
+          name_ar?: string | null
+          round_number?: number
+          round_type?: string
+          sort_order?: number
+          start_time?: string | null
+          status?: string
+          threshold_score?: number | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "competition_rounds_competition_id_fkey"
+            columns: ["competition_id"]
+            isOneToOne: false
+            referencedRelation: "competitions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      competition_schedule_slots: {
+        Row: {
+          category_id: string | null
+          competition_id: string
+          created_at: string | null
+          end_time: string
+          id: string
+          location: string | null
+          location_ar: string | null
+          notes: string | null
+          round_id: string | null
+          slot_type: string | null
+          sort_order: number | null
+          start_time: string
+          station_number: string | null
+          title: string
+          title_ar: string | null
+        }
+        Insert: {
+          category_id?: string | null
+          competition_id: string
+          created_at?: string | null
+          end_time: string
+          id?: string
+          location?: string | null
+          location_ar?: string | null
+          notes?: string | null
+          round_id?: string | null
+          slot_type?: string | null
+          sort_order?: number | null
+          start_time: string
+          station_number?: string | null
+          title: string
+          title_ar?: string | null
+        }
+        Update: {
+          category_id?: string | null
+          competition_id?: string
+          created_at?: string | null
+          end_time?: string
+          id?: string
+          location?: string | null
+          location_ar?: string | null
+          notes?: string | null
+          round_id?: string | null
+          slot_type?: string | null
+          sort_order?: number | null
+          start_time?: string
+          station_number?: string | null
+          title?: string
+          title_ar?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "competition_schedule_slots_category_id_fkey"
+            columns: ["category_id"]
+            isOneToOne: false
+            referencedRelation: "competition_categories"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "competition_schedule_slots_competition_id_fkey"
+            columns: ["competition_id"]
+            isOneToOne: false
+            referencedRelation: "competitions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "competition_schedule_slots_round_id_fkey"
+            columns: ["round_id"]
+            isOneToOne: false
+            referencedRelation: "competition_rounds"
             referencedColumns: ["id"]
           },
         ]
@@ -3740,6 +4123,8 @@ export type Database = {
       competitions: {
         Row: {
           allowed_entry_types: string[] | null
+          blind_code_prefix: string | null
+          blind_judging_enabled: boolean | null
           city: string | null
           competition_end: string
           competition_number: string | null
@@ -3784,6 +4169,8 @@ export type Database = {
         }
         Insert: {
           allowed_entry_types?: string[] | null
+          blind_code_prefix?: string | null
+          blind_judging_enabled?: boolean | null
           city?: string | null
           competition_end: string
           competition_number?: string | null
@@ -3828,6 +4215,8 @@ export type Database = {
         }
         Update: {
           allowed_entry_types?: string[] | null
+          blind_code_prefix?: string | null
+          blind_judging_enabled?: boolean | null
           city?: string | null
           competition_end?: string
           competition_number?: string | null
@@ -4687,6 +5076,41 @@ export type Database = {
         }
         Relationships: []
       }
+      deliberation_messages: {
+        Row: {
+          created_at: string | null
+          deliberation_id: string
+          id: string
+          message: string
+          message_ar: string | null
+          sender_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          deliberation_id: string
+          id?: string
+          message: string
+          message_ar?: string | null
+          sender_id: string
+        }
+        Update: {
+          created_at?: string | null
+          deliberation_id?: string
+          id?: string
+          message?: string
+          message_ar?: string | null
+          sender_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "deliberation_messages_deliberation_id_fkey"
+            columns: ["deliberation_id"]
+            isOneToOne: false
+            referencedRelation: "judge_deliberations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       digital_badges: {
         Row: {
           badge_type: Database["public"]["Enums"]["badge_type"]
@@ -5416,6 +5840,50 @@ export type Database = {
           website?: string | null
         }
         Relationships: []
+      }
+      evaluation_stages: {
+        Row: {
+          competition_id: string
+          created_at: string | null
+          id: string
+          is_active: boolean | null
+          name: string
+          name_ar: string | null
+          sort_order: number | null
+          stage_type: string
+          weight_percentage: number | null
+        }
+        Insert: {
+          competition_id: string
+          created_at?: string | null
+          id?: string
+          is_active?: boolean | null
+          name: string
+          name_ar?: string | null
+          sort_order?: number | null
+          stage_type?: string
+          weight_percentage?: number | null
+        }
+        Update: {
+          competition_id?: string
+          created_at?: string | null
+          id?: string
+          is_active?: boolean | null
+          name?: string
+          name_ar?: string | null
+          sort_order?: number | null
+          stage_type?: string
+          weight_percentage?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "evaluation_stages_competition_id_fkey"
+            columns: ["competition_id"]
+            isOneToOne: false
+            referencedRelation: "competitions"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       event_attendees: {
         Row: {
@@ -6465,6 +6933,107 @@ export type Database = {
           },
         ]
       }
+      judge_analytics: {
+        Row: {
+          avg_score_given: number | null
+          avg_scoring_time_seconds: number | null
+          bias_indicator: number | null
+          competition_id: string
+          completion_rate: number | null
+          computed_at: string | null
+          consistency_score: number | null
+          id: string
+          judge_id: string
+          score_std_deviation: number | null
+          scores_count: number | null
+        }
+        Insert: {
+          avg_score_given?: number | null
+          avg_scoring_time_seconds?: number | null
+          bias_indicator?: number | null
+          competition_id: string
+          completion_rate?: number | null
+          computed_at?: string | null
+          consistency_score?: number | null
+          id?: string
+          judge_id: string
+          score_std_deviation?: number | null
+          scores_count?: number | null
+        }
+        Update: {
+          avg_score_given?: number | null
+          avg_scoring_time_seconds?: number | null
+          bias_indicator?: number | null
+          competition_id?: string
+          completion_rate?: number | null
+          computed_at?: string | null
+          consistency_score?: number | null
+          id?: string
+          judge_id?: string
+          score_std_deviation?: number | null
+          scores_count?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "judge_analytics_competition_id_fkey"
+            columns: ["competition_id"]
+            isOneToOne: false
+            referencedRelation: "competitions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      judge_deliberations: {
+        Row: {
+          competition_id: string
+          created_at: string | null
+          created_by: string
+          id: string
+          resolved_at: string | null
+          round_id: string | null
+          status: string | null
+          topic: string
+          topic_ar: string | null
+        }
+        Insert: {
+          competition_id: string
+          created_at?: string | null
+          created_by: string
+          id?: string
+          resolved_at?: string | null
+          round_id?: string | null
+          status?: string | null
+          topic: string
+          topic_ar?: string | null
+        }
+        Update: {
+          competition_id?: string
+          created_at?: string | null
+          created_by?: string
+          id?: string
+          resolved_at?: string | null
+          round_id?: string | null
+          status?: string | null
+          topic?: string
+          topic_ar?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "judge_deliberations_competition_id_fkey"
+            columns: ["competition_id"]
+            isOneToOne: false
+            referencedRelation: "competitions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "judge_deliberations_round_id_fkey"
+            columns: ["round_id"]
+            isOneToOne: false
+            referencedRelation: "competition_rounds"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       judge_documents: {
         Row: {
           created_at: string
@@ -6870,6 +7439,67 @@ export type Database = {
           updated_at?: string
         }
         Relationships: []
+      }
+      kitchen_stations: {
+        Row: {
+          assigned_registration_id: string | null
+          assigned_slot_id: string | null
+          competition_id: string
+          created_at: string | null
+          equipment_list: Json | null
+          id: string
+          station_name: string | null
+          station_name_ar: string | null
+          station_number: string
+          status: string | null
+        }
+        Insert: {
+          assigned_registration_id?: string | null
+          assigned_slot_id?: string | null
+          competition_id: string
+          created_at?: string | null
+          equipment_list?: Json | null
+          id?: string
+          station_name?: string | null
+          station_name_ar?: string | null
+          station_number: string
+          status?: string | null
+        }
+        Update: {
+          assigned_registration_id?: string | null
+          assigned_slot_id?: string | null
+          competition_id?: string
+          created_at?: string | null
+          equipment_list?: Json | null
+          id?: string
+          station_name?: string | null
+          station_name_ar?: string | null
+          station_number?: string
+          status?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "kitchen_stations_assigned_registration_id_fkey"
+            columns: ["assigned_registration_id"]
+            isOneToOne: false
+            referencedRelation: "competition_registrations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "kitchen_stations_assigned_slot_id_fkey"
+            columns: ["assigned_slot_id"]
+            isOneToOne: false
+            referencedRelation: "competition_schedule_slots"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "kitchen_stations_competition_id_fkey"
+            columns: ["competition_id"]
+            isOneToOne: false
+            referencedRelation: "competitions"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       knowledge_articles: {
         Row: {
@@ -9176,6 +9806,44 @@ export type Database = {
           },
         ]
       }
+      preparation_checklists: {
+        Row: {
+          competition_id: string
+          created_at: string | null
+          id: string
+          items: Json
+          progress_percentage: number | null
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          competition_id: string
+          created_at?: string | null
+          id?: string
+          items?: Json
+          progress_percentage?: number | null
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          competition_id?: string
+          created_at?: string | null
+          id?: string
+          items?: Json
+          progress_percentage?: number | null
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "preparation_checklists_competition_id_fkey"
+            columns: ["competition_id"]
+            isOneToOne: false
+            referencedRelation: "competitions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       profile_views: {
         Row: {
           browser: string | null
@@ -9583,6 +10251,50 @@ export type Database = {
             columns: ["qr_code_id"]
             isOneToOne: false
             referencedRelation: "qr_codes"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      ranking_points_log: {
+        Row: {
+          awarded_at: string | null
+          competition_id: string | null
+          competition_name: string | null
+          competition_name_ar: string | null
+          id: string
+          points: number
+          reason: string
+          reason_ar: string | null
+          user_id: string
+        }
+        Insert: {
+          awarded_at?: string | null
+          competition_id?: string | null
+          competition_name?: string | null
+          competition_name_ar?: string | null
+          id?: string
+          points: number
+          reason: string
+          reason_ar?: string | null
+          user_id: string
+        }
+        Update: {
+          awarded_at?: string | null
+          competition_id?: string | null
+          competition_name?: string | null
+          competition_name_ar?: string | null
+          id?: string
+          points?: number
+          reason?: string
+          reason_ar?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ranking_points_log_competition_id_fkey"
+            columns: ["competition_id"]
+            isOneToOne: false
+            referencedRelation: "competitions"
             referencedColumns: ["id"]
           },
         ]
@@ -10799,6 +11511,64 @@ export type Database = {
           },
         ]
       }
+      round_participants: {
+        Row: {
+          advanced_to_round_id: string | null
+          created_at: string | null
+          id: string
+          rank: number | null
+          registration_id: string
+          round_id: string
+          seed_position: number | null
+          status: string
+          total_score: number | null
+        }
+        Insert: {
+          advanced_to_round_id?: string | null
+          created_at?: string | null
+          id?: string
+          rank?: number | null
+          registration_id: string
+          round_id: string
+          seed_position?: number | null
+          status?: string
+          total_score?: number | null
+        }
+        Update: {
+          advanced_to_round_id?: string | null
+          created_at?: string | null
+          id?: string
+          rank?: number | null
+          registration_id?: string
+          round_id?: string
+          seed_position?: number | null
+          status?: string
+          total_score?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "round_participants_advanced_to_round_id_fkey"
+            columns: ["advanced_to_round_id"]
+            isOneToOne: false
+            referencedRelation: "competition_rounds"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "round_participants_registration_id_fkey"
+            columns: ["registration_id"]
+            isOneToOne: false
+            referencedRelation: "competition_registrations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "round_participants_round_id_fkey"
+            columns: ["round_id"]
+            isOneToOne: false
+            referencedRelation: "competition_rounds"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       seo_ai_models: {
         Row: {
           capabilities: string[] | null
@@ -11393,6 +12163,60 @@ export type Database = {
         }
         Relationships: []
       }
+      stage_scores: {
+        Row: {
+          evidence_urls: string[] | null
+          id: string
+          judge_id: string
+          max_score: number
+          notes: string | null
+          notes_ar: string | null
+          registration_id: string
+          score: number
+          scored_at: string | null
+          stage_id: string
+        }
+        Insert: {
+          evidence_urls?: string[] | null
+          id?: string
+          judge_id: string
+          max_score?: number
+          notes?: string | null
+          notes_ar?: string | null
+          registration_id: string
+          score?: number
+          scored_at?: string | null
+          stage_id: string
+        }
+        Update: {
+          evidence_urls?: string[] | null
+          id?: string
+          judge_id?: string
+          max_score?: number
+          notes?: string | null
+          notes_ar?: string | null
+          registration_id?: string
+          score?: number
+          scored_at?: string | null
+          stage_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "stage_scores_registration_id_fkey"
+            columns: ["registration_id"]
+            isOneToOne: false
+            referencedRelation: "competition_registrations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "stage_scores_stage_id_fkey"
+            columns: ["stage_id"]
+            isOneToOne: false
+            referencedRelation: "evaluation_stages"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       support_ticket_messages: {
         Row: {
           attachments: string[] | null
@@ -11977,6 +12801,60 @@ export type Database = {
             columns: ["company_id"]
             isOneToOne: false
             referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      team_workspaces: {
+        Row: {
+          competition_id: string
+          created_at: string | null
+          id: string
+          name: string
+          name_ar: string | null
+          practice_schedule: Json | null
+          recipe_plan: Json | null
+          registration_id: string
+          task_board: Json | null
+          updated_at: string | null
+        }
+        Insert: {
+          competition_id: string
+          created_at?: string | null
+          id?: string
+          name: string
+          name_ar?: string | null
+          practice_schedule?: Json | null
+          recipe_plan?: Json | null
+          registration_id: string
+          task_board?: Json | null
+          updated_at?: string | null
+        }
+        Update: {
+          competition_id?: string
+          created_at?: string | null
+          id?: string
+          name?: string
+          name_ar?: string | null
+          practice_schedule?: Json | null
+          recipe_plan?: Json | null
+          registration_id?: string
+          task_board?: Json | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "team_workspaces_competition_id_fkey"
+            columns: ["competition_id"]
+            isOneToOne: false
+            referencedRelation: "competitions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "team_workspaces_registration_id_fkey"
+            columns: ["registration_id"]
+            isOneToOne: false
+            referencedRelation: "competition_registrations"
             referencedColumns: ["id"]
           },
         ]
