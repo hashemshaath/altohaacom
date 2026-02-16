@@ -57,6 +57,27 @@ function SectionTitle({ icon: Icon, label }: { icon: any; label: string }) {
   );
 }
 
+function CompetitionHistoryWrapper({ userId, isAr }: { userId: string; isAr: boolean }) {
+  const { data: regs } = useQuery({
+    queryKey: ["user-competition-count", userId],
+    queryFn: async () => {
+      const { count } = await supabase
+        .from("competition_registrations")
+        .select("id", { count: "exact", head: true })
+        .eq("participant_id", userId);
+      return count || 0;
+    },
+    enabled: !!userId,
+  });
+  if (!regs) return null;
+  return (
+    <>
+      <SectionTitle icon={Trophy} label={isAr ? "المسابقات" : "Competitions"} />
+      <CompetitionHistory userId={userId} />
+    </>
+  );
+}
+
 export default function PublicProfile() {
   const { username } = useParams<{ username: string }>();
   const { t, language } = useLanguage();
@@ -385,26 +406,23 @@ export default function PublicProfile() {
               </SectionReveal>
             )}
 
-            {/* Certificates */}
+            {/* Certificates - component returns null when empty for non-owners */}
             {isVisible("certificates") && (
               <SectionReveal delay={400}>
-                <SectionTitle icon={Award} label={isAr ? "الشهادات" : "Certificates"} />
                 <ProfileCertificates userId={profile.user_id} isOwner={isOwnProfile} />
               </SectionReveal>
             )}
 
-            {/* Competitions */}
+            {/* Competitions - only show if user has history */}
             {isVisible("competitions") && (
               <SectionReveal delay={450}>
-                <SectionTitle icon={Trophy} label={isAr ? "المسابقات" : "Competitions"} />
-                <CompetitionHistory userId={profile.user_id} />
+                <CompetitionHistoryWrapper userId={profile.user_id} isAr={isAr} />
               </SectionReveal>
             )}
 
-            {/* Badges */}
+            {/* Badges - component returns null when empty */}
             {isVisible("badges") && (
               <SectionReveal delay={500}>
-                <SectionTitle icon={Medal} label={isAr ? "الأوسمة" : "Badges"} />
                 <UserBadgesDisplay userId={profile.user_id} />
               </SectionReveal>
             )}
