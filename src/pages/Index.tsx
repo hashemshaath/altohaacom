@@ -42,9 +42,21 @@ const Index = () => {
   return (
     <div className="flex min-h-screen flex-col overflow-x-hidden" role="document">
       <SEOHead
-        title="Altohaa - The Global Culinary Community"
-        description="The premier culinary community platform for chefs, judges, organizers, and sponsors. Compete, learn, and connect worldwide."
+        title="Altohaa — The Global Culinary Community"
+        description="The premier platform for chefs, judges, organizers, and food industry professionals. Compete in world-class competitions, master new skills, and connect with a vibrant culinary community."
         ogImage="/pwa-512x512.png"
+        jsonLd={{
+          "@context": "https://schema.org",
+          "@type": "WebSite",
+          name: "Altohaa",
+          url: window.location.origin,
+          description: "The premier culinary community platform for chefs, judges, organizers, and sponsors.",
+          potentialAction: {
+            "@type": "SearchAction",
+            target: `${window.location.origin}/search?q={search_term_string}`,
+            "query-input": "required name=search_term_string",
+          },
+        }}
       />
       <Header />
 

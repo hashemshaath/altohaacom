@@ -28,18 +28,18 @@ export function HomeArticles() {
   if (articles.length === 0) return null;
 
   return (
-    <section className="container py-14 md:py-20">
+    <section className="container py-14 md:py-20" aria-labelledby="articles-heading">
       <div className="mb-8 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
         <div>
           <Badge variant="secondary" className="mb-2">
             <Newspaper className="me-1 h-3 w-3" />
             {isAr ? "أحدث المقالات" : "Latest Articles"}
           </Badge>
-          <h2 className="font-serif text-2xl font-bold sm:text-3xl">
-            {isAr ? "أخبار ومقالات ملهمة" : "Inspiring News & Articles"}
+          <h2 id="articles-heading" className="font-serif text-2xl font-bold sm:text-3xl">
+            {isAr ? "قصص ملهمة من عالم الطهي" : "Inspiring Culinary Stories"}
           </h2>
           <p className="mt-1 text-sm text-muted-foreground">
-            {isAr ? "قصص نجاح ونصائح وأخبار من عالم الطهي" : "Success stories, tips & news from the culinary world"}
+            {isAr ? "أخبار الطهاة والشركات والجمعيات مع نصائح ملهمة" : "Chef stories, company news, and association updates"}
           </p>
         </div>
         <Button variant="outline" size="sm" asChild>
