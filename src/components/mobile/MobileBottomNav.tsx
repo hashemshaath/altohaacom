@@ -37,7 +37,7 @@ export function MobileBottomNav() {
       role="navigation"
       aria-label="Mobile navigation"
     >
-      <div className="flex items-center justify-around px-1 h-16">
+      <div className="flex items-center justify-around px-2 h-16">
         {visible.map((item) => {
           const isActive = item.exact
             ? location.pathname === item.to
@@ -49,7 +49,7 @@ export function MobileBottomNav() {
               key={item.to}
               to={item.to}
               className={cn(
-                "flex flex-col items-center justify-center gap-0.5 flex-1 py-1.5 rounded-xl transition-all duration-200 active:scale-95 min-h-[44px]",
+                "flex flex-col items-center justify-center gap-0.5 flex-1 py-1.5 rounded-xl transition-all duration-200 active:scale-[0.92] min-h-[48px] touch-manipulation",
                 isActive
                   ? "text-primary"
                   : "text-muted-foreground hover:text-foreground"

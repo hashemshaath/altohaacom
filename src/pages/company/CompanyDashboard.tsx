@@ -273,7 +273,7 @@ function StatCard({
               <Skeleton className="mt-2 h-8 w-16" />
             ) : (
               <>
-                <p className="mt-1 text-3xl font-bold">{value}</p>
+                <p className="mt-1 text-3xl font-bold tabular-nums">{value}</p>
                 {subLabel && subValue !== undefined && (
                   <p className="mt-1 text-xs text-muted-foreground">
                     {subValue} {subLabel}

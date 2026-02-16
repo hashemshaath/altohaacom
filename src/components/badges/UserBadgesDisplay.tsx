@@ -3,6 +3,9 @@ import { supabase } from "@/integrations/supabase/client";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { BadgeCard } from "./BadgeCard";
 import { Award } from "lucide-react";
+import { Card, CardContent } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Skeleton } from "@/components/ui/skeleton";
 
 interface UserBadgesDisplayProps {
   userId: string;
@@ -12,8 +15,9 @@ interface UserBadgesDisplayProps {
 export function UserBadgesDisplay({ userId, limit }: UserBadgesDisplayProps) {
   const { language } = useLanguage();
 
-  const { data: badges } = useQuery({
+  const { data: badges, isLoading } = useQuery({
     queryKey: ["user-badges", userId],
+    staleTime: 1000 * 60 * 5,
     queryFn: async () => {
       let query = supabase
         .from("user_badges")
@@ -31,14 +35,30 @@ export function UserBadgesDisplay({ userId, limit }: UserBadgesDisplayProps) {
     enabled: !!userId,
   });
 
-  if (!badges?.length) return null;
+  if (!isLoading && !badges?.length) return null;
 
   return (
     <div>
       <h3 className="mb-3 flex items-center gap-2 font-semibold">
         <Award className="h-5 w-5 text-primary" />
         {language === "ar" ? "الشارات" : "Badges"}
+        {badges?.length ? (
+          <Badge variant="secondary" className="text-[10px] h-5 px-1.5">{badges.length}</Badge>
+        ) : null}
       </h3>
+      {isLoading ? (
+        <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
+          {Array.from({ length: 4 }).map((_, i) => (
+            <Card key={i}>
+              <CardContent className="flex flex-col items-center p-5">
+                <Skeleton className="h-18 w-18 rounded-2xl mb-3" />
+                <Skeleton className="h-4 w-20" />
+                <Skeleton className="h-3 w-16 mt-2" />
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+      ) : (
       <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
         {badges.map((ub: any) => {
           const compTitle = language === "ar" && ub.competitions?.title_ar
@@ -57,6 +77,7 @@ export function UserBadgesDisplay({ userId, limit }: UserBadgesDisplayProps) {
           );
         })}
       </div>
+      )}
     </div>
   );
 }
