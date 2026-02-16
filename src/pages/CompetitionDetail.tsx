@@ -145,6 +145,7 @@ export default function CompetitionDetail() {
       return data;
     },
     enabled: !!id,
+    staleTime: 1000 * 60 * 3,
   });
 
   const { data: categories } = useQuery({
@@ -155,6 +156,7 @@ export default function CompetitionDetail() {
       return data;
     },
     enabled: !!id,
+    staleTime: 1000 * 60 * 5,
   });
 
   const { data: criteria } = useQuery({
@@ -165,6 +167,7 @@ export default function CompetitionDetail() {
       return data;
     },
     enabled: !!id,
+    staleTime: 1000 * 60 * 5,
   });
 
   const { data: myRegistration } = useQuery({
