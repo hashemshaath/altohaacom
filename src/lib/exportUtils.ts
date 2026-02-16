@@ -26,26 +26,34 @@ export function downloadJSON(data: any, filename: string) {
   triggerDownload(blob, `${filename}.json`);
 }
 
-export function printableReport(elementId: string, title: string) {
+export function printableReport(elementId: string, title: string, options?: { subtitle?: string; orientation?: "portrait" | "landscape" }) {
   const el = document.getElementById(elementId);
   if (!el) return;
   const win = window.open("", "_blank");
   if (!win) return;
+  const orient = options?.orientation || "portrait";
   win.document.write(`
     <!DOCTYPE html>
     <html><head>
       <title>${title}</title>
       <style>
-        body { font-family: system-ui, sans-serif; padding: 2rem; direction: auto; }
+        @page { size: ${orient}; margin: 1.5cm; }
+        body { font-family: system-ui, -apple-system, sans-serif; padding: 2rem; direction: auto; color: #1a1a1a; }
         table { width: 100%; border-collapse: collapse; margin: 1rem 0; }
-        th, td { border: 1px solid #ddd; padding: 8px; text-align: start; font-size: 13px; }
+        th, td { border: 1px solid #e0e0e0; padding: 8px 10px; text-align: start; font-size: 13px; }
         th { background: #f5f5f5; font-weight: 600; }
+        tr:nth-child(even) { background: #fafafa; }
         .badge { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 11px; }
+        .report-header { border-bottom: 2px solid #333; padding-bottom: 0.5rem; margin-bottom: 1rem; }
+        .report-meta { color: #888; font-size: 12px; margin-bottom: 1rem; }
         @media print { body { padding: 0; } }
       </style>
     </head><body>
-      <h1 style="font-size:18px;margin-bottom:0.5rem;">${title}</h1>
-      <p style="color:#888;font-size:12px;margin-bottom:1rem;">Generated: ${new Date().toLocaleString()}</p>
+      <div class="report-header">
+        <h1 style="font-size:18px;margin:0;">${title}</h1>
+        ${options?.subtitle ? `<p style="font-size:13px;color:#666;margin:4px 0 0;">${options.subtitle}</p>` : ""}
+      </div>
+      <p class="report-meta">Generated: ${new Date().toLocaleString()} | Altohaa Platform</p>
       ${el.innerHTML}
     </body></html>
   `);
