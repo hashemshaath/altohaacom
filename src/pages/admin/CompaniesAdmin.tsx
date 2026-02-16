@@ -1693,14 +1693,102 @@ export default function CompaniesAdmin() {
           </CardContent>
         </Card>
       ) : (
+      <div className="space-y-6">
+        {/* Stats Cards */}
+        <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
+          <Card className="group hover:shadow-md transition-shadow">
+            <CardContent className="pt-4 pb-3">
+              <div className="flex items-center gap-3">
+                <div className="h-10 w-10 rounded-lg bg-primary/10 flex items-center justify-center">
+                  <Building2 className="h-5 w-5 text-primary" />
+                </div>
+                <div>
+                  <p className="text-xs text-muted-foreground">{isAr ? "الإجمالي" : "Total"}</p>
+                  <p className="text-xl font-bold">{stats.total}</p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+          <Card className="group hover:shadow-md transition-shadow">
+            <CardContent className="pt-4 pb-3">
+              <div className="flex items-center gap-3">
+                <div className="h-10 w-10 rounded-lg bg-chart-5/10 flex items-center justify-center">
+                  <CheckCircle className="h-5 w-5 text-chart-5" />
+                </div>
+                <div>
+                  <p className="text-xs text-muted-foreground">{isAr ? "نشط" : "Active"}</p>
+                  <p className="text-xl font-bold">{stats.active}</p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+          <Card className="group hover:shadow-md transition-shadow">
+            <CardContent className="pt-4 pb-3">
+              <div className="flex items-center gap-3">
+                <div className="h-10 w-10 rounded-lg bg-chart-4/10 flex items-center justify-center">
+                  <Clock className="h-5 w-5 text-chart-4" />
+                </div>
+                <div>
+                  <p className="text-xs text-muted-foreground">{isAr ? "قيد الانتظار" : "Pending"}</p>
+                  <p className="text-xl font-bold">{stats.pending}</p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+          <Card className="group hover:shadow-md transition-shadow">
+            <CardContent className="pt-4 pb-3">
+              <div className="flex items-center gap-3">
+                <div className="h-10 w-10 rounded-lg bg-chart-3/10 flex items-center justify-center">
+                  <Star className="h-5 w-5 text-chart-3" />
+                </div>
+                <div>
+                  <p className="text-xs text-muted-foreground">{isAr ? "الرعاة" : "Sponsors"}</p>
+                  <p className="text-xl font-bold">{stats.sponsors}</p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+          <Card className="group hover:shadow-md transition-shadow">
+            <CardContent className="pt-4 pb-3">
+              <div className="flex items-center gap-3">
+                <div className="h-10 w-10 rounded-lg bg-chart-2/10 flex items-center justify-center">
+                  <Truck className="h-5 w-5 text-chart-2" />
+                </div>
+                <div>
+                  <p className="text-xs text-muted-foreground">{isAr ? "الموردون" : "Suppliers"}</p>
+                  <p className="text-xl font-bold">{stats.suppliers}</p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+
+        {/* Action Bar */}
+        <div className="flex flex-wrap items-center gap-2">
+          <Button onClick={() => setShowCompanyForm(true)}>
+            <Plus className="h-4 w-4 me-2" />{isAr ? "شركة جديدة" : "New Company"}
+          </Button>
+          <Button variant="outline" onClick={() => setShowBulkImport(!showBulkImport)}>
+            <Upload className="h-4 w-4 me-2" />{isAr ? "استيراد" : "Import"}
+          </Button>
+          <Button variant="outline" onClick={() => {
+            const csv = ["Name,Name (AR),Type,Status,Email,Phone,City,Country,Company Number,Created"];
+            companies.forEach(c => {
+              csv.push([c.name, c.name_ar || "", c.type, c.status, c.email || "", c.phone || "", c.city || "", c.country || "", c.company_number || "", format(new Date(c.created_at), "yyyy-MM-dd")].join(","));
+            });
+            const blob = new Blob([csv.join("\n")], { type: "text/csv" });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement("a"); a.href = url; a.download = `companies-export-${new Date().toISOString().slice(0, 10)}.csv`; a.click(); URL.revokeObjectURL(url);
+          }}>
+            <FileSpreadsheet className="h-4 w-4 me-2" />{isAr ? "تصدير CSV" : "Export CSV"}
+          </Button>
+        </div>
+
+        {showBulkImport && <BulkImportPanel entityType="company" />}
+
+        {/* Company List */}
         <Card>
-          <CardHeader>
-            <div className="flex items-center justify-between">
-              <CardTitle>{isAr ? "جميع الشركات" : "All Companies"}</CardTitle>
-              <Button onClick={() => setShowCompanyForm(true)}><Plus className="h-4 w-4 mr-2" />{isAr ? "شركة جديدة" : "New Company"}</Button>
-            </div>
-          </CardHeader>
-          <CardContent>
+          <CardContent className="pt-6">
             <div className="flex flex-wrap gap-4 mb-4">
               <div className="flex-1 min-w-[200px]">
                 <div className="relative">
@@ -1765,6 +1853,7 @@ export default function CompaniesAdmin() {
             </ScrollArea>
           </CardContent>
         </Card>
+      </div>
       )}
     </div>
   );

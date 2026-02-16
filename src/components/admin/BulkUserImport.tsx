@@ -137,8 +137,14 @@ export function BulkUserImport() {
   };
 
   const downloadTemplate = () => {
-    const csv = "name,email,phone,role\nJohn Doe,john@example.com,+966501234567,chef\nJane Smith,jane@example.com,+966502345678,judge\n";
-    const blob = new Blob([csv], { type: "text/csv" });
+    const csv = [
+      "name,email,phone,role",
+      "محمد أحمد / Mohammed Ahmed,mohammed@example.com,+966501234567,chef",
+      "سارة خالد / Sara Khalid,sara@example.com,+966502345678,judge",
+      "علي حسن / Ali Hassan,ali@example.com,+971501234567,student",
+      "فاطمة يوسف / Fatima Yousef,fatima@example.com,+966503456789,volunteer",
+    ].join("\n");
+    const blob = new Blob(["\ufeff" + csv], { type: "text/csv;charset=utf-8" });
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
@@ -159,41 +165,45 @@ export function BulkUserImport() {
   };
 
   return (
-    <Card>
+    <Card className="border-primary/20">
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           <FileSpreadsheet className="h-5 w-5 text-primary" />
-          {isAr ? "استيراد المستخدمين من ملف" : "Import Users from File"}
+          {isAr ? "استيراد المستخدمين من ملف" : "Bulk Import Users"}
         </CardTitle>
         <CardDescription>
-          {isAr ? "قم بتحميل ملف CSV يحتوي على أعمدة name و email لإضافة مستخدمين بشكل جماعي" : "Upload a CSV file with 'name' and 'email' columns to bulk-add users"}
+          {isAr 
+            ? "قم بتحميل ملف CSV يحتوي على أعمدة name و email لإضافة مستخدمين. يمكنك أيضاً تضمين phone و role." 
+            : "Upload a CSV with 'name' and 'email' columns. Optionally include 'phone' and 'role'."}
         </CardDescription>
       </CardHeader>
       <CardContent>
         {step === "upload" && (
           <div className="space-y-4">
             <div
-              className="flex flex-col items-center justify-center gap-3 rounded-lg border-2 border-dashed border-border/60 bg-muted/20 p-8 transition-colors hover:border-primary/40 hover:bg-muted/30 cursor-pointer"
+              className="flex flex-col items-center justify-center gap-4 rounded-xl border-2 border-dashed border-border/60 bg-muted/10 p-10 transition-all duration-300 hover:border-primary/40 hover:bg-primary/5 cursor-pointer group"
               onClick={() => fileRef.current?.click()}
             >
-              <Upload className="h-10 w-10 text-muted-foreground" />
-              <div className="text-center">
-                <p className="text-sm font-medium">{isAr ? "اضغط لتحميل الملف أو اسحبه هنا" : "Click to upload or drag file here"}</p>
-                <p className="text-xs text-muted-foreground mt-1">{isAr ? "ملفات CSV فقط" : "CSV files only"}</p>
+              <div className="h-14 w-14 rounded-full bg-primary/10 flex items-center justify-center transition-transform duration-300 group-hover:scale-110">
+                <Upload className="h-7 w-7 text-primary" />
               </div>
-              <input ref={fileRef} type="file" accept=".csv" className="hidden" onChange={handleFileSelect} />
+              <div className="text-center">
+                <p className="text-sm font-semibold">{isAr ? "اضغط لتحميل الملف أو اسحبه هنا" : "Click to upload or drag file here"}</p>
+                <p className="text-xs text-muted-foreground mt-1">{isAr ? "ملفات CSV - الحد الأقصى 1000 مستخدم" : "CSV files — up to 1,000 users per import"}</p>
+              </div>
+              <input ref={fileRef} type="file" accept=".csv,.txt" className="hidden" onChange={handleFileSelect} />
             </div>
-            <div className="flex items-center justify-between">
+            <div className="flex items-center justify-between rounded-lg bg-muted/30 px-4 py-3">
               <Button variant="outline" size="sm" className="gap-2" onClick={downloadTemplate}>
                 <Download className="h-4 w-4" />
                 {isAr ? "تحميل القالب" : "Download Template"}
               </Button>
               <div className="flex items-center gap-2">
-                <Label className="text-xs">{isAr ? "الدور الافتراضي" : "Default Role"}</Label>
+                <Label className="text-xs text-muted-foreground">{isAr ? "الدور الافتراضي" : "Default Role"}</Label>
                 <Select value={defaultRole} onValueChange={(v) => setDefaultRole(v as AppRole)}>
                   <SelectTrigger className="w-32 h-8 text-xs"><SelectValue /></SelectTrigger>
                   <SelectContent>
-                    {ALL_ROLES.map(r => <SelectItem key={r} value={r}>{r}</SelectItem>)}
+                    {ALL_ROLES.map(r => <SelectItem key={r} value={r} className="capitalize">{r}</SelectItem>)}
                   </SelectContent>
                 </Select>
               </div>
