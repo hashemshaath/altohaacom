@@ -63,6 +63,8 @@ import { KitchenStationsPanel } from "@/components/competitions/KitchenStationsP
 import { JudgeDeliberationPanel } from "@/components/competitions/JudgeDeliberationPanel";
 import { CompetitionFeedbackPanel } from "@/components/competitions/CompetitionFeedbackPanel";
 import { PreparationChecklistPanel } from "@/components/competitions/PreparationChecklistPanel";
+import { JudgeAnalyticsPanel } from "@/components/competitions/JudgeAnalyticsPanel";
+import { TeamCollaborationPanel } from "@/components/competitions/TeamCollaborationPanel";
 import type { Database } from "@/integrations/supabase/types";
 
 type CompetitionStatus = Database["public"]["Enums"]["competition_status"];
@@ -293,7 +295,10 @@ export default function CompetitionDetail() {
     { id: "feedback", icon: <MessageCircle className="h-4 w-4" />, label: isAr ? "الملاحظات" : "Feedback" },
     { id: "checklist", icon: <ClipboardCheck className="h-4 w-4" />, label: isAr ? "قائمة التحضير" : "Prep List" },
     { id: "team", icon: <UsersRound className="h-4 w-4" />, label: isAr ? "الفريق" : "Team" },
+    { id: "collaboration", icon: <ClipboardList className="h-4 w-4" />, label: isAr ? "التعاون" : "Collaboration" },
     ...(canSeeKnowledge ? [{ id: "knowledge", icon: <BookOpen className="h-4 w-4" />, label: isAr ? "المعرفة" : "Knowledge" }] : []),
+    ...(canSeeKnowledge ? [{ id: "deliberation", icon: <MessageSquare className="h-4 w-4" />, label: isAr ? "المداولات" : "Deliberation" }] : []),
+    ...(canSeeKnowledge ? [{ id: "judge-analytics", icon: <BarChart3 className="h-4 w-4" />, label: isAr ? "تحليل الحكام" : "Judge Analytics" }] : []),
     ...(canSeeKnowledge ? [{ id: "deliberation", icon: <MessageSquare className="h-4 w-4" />, label: isAr ? "المداولات" : "Deliberation" }] : []),
     { id: "gallery", icon: <ImageIcon className="h-4 w-4" />, label: isAr ? "المعرض" : "Gallery" },
     ...(user ? [{ id: "requirements", icon: <ClipboardList className="h-4 w-4" />, label: isAr ? "مركز الطلبات" : "Order Center" }] : []),
@@ -815,6 +820,8 @@ export default function CompetitionDetail() {
                 )
               )}
               {activeSection === "team" && <CompetitionTeamPanel competitionId={competition.id} isOrganizer={isOrganizer} />}
+              {activeSection === "collaboration" && <TeamCollaborationPanel competitionId={competition.id} isOrganizer={!!isOrganizer} />}
+              {activeSection === "judge-analytics" && canSeeKnowledge && <JudgeAnalyticsPanel competitionId={competition.id} isOrganizer={!!isOrganizer} />}
               {activeSection === "knowledge" && canSeeKnowledge && <CompetitionKnowledgeTab competitionId={competition.id} isOrganizer={isOrganizer} />}
               {activeSection === "gallery" && <ReferenceGalleryPanel competitionId={competition.id} isAdmin={isOrganizer} />}
               {activeSection === "requirements" && user && <OrderCenterHub competitionId={competition.id} isOrganizer={!!isOrganizer} />}
