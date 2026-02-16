@@ -150,7 +150,7 @@ export default function Masterclasses() {
       <main className="container flex-1 py-4 md:py-6">
 
         {/* Sticky Glass Filters */}
-        <div className="sticky top-[64px] z-30 -mx-4 mb-10 bg-background/80 px-4 py-4 backdrop-blur-md border-y border-border/40 md:rounded-2xl md:border md:mx-0 md:px-6">
+        <div className="sticky top-[56px] z-30 -mx-3 mb-6 bg-background/80 px-3 py-3 backdrop-blur-md border-y border-border/40 sm:rounded-2xl sm:border sm:mx-0 sm:px-6 sm:mb-10">
           <div className="flex flex-col gap-3 sm:flex-row">
             <div className="relative flex-1 sm:max-w-md">
               <Search className="absolute start-4 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground/60" />
@@ -239,7 +239,7 @@ export default function Masterclasses() {
             )}
           </div>
         ) : (
-          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
             {filtered.map((mc: any) => {
               const isEnrolled = myEnrollments.includes(mc.id);
               const moduleCount = mc.masterclass_modules?.length || 0;

@@ -60,7 +60,7 @@ export function HomeMasterclasses() {
         </div>
       </SectionReveal>
 
-      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+      <div className="grid gap-3 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
         {classes.map((mc: any) => {
           const title = isAr && mc.title_ar ? mc.title_ar : mc.title;
           const levelLabel = LEVEL_LABELS[mc.level];

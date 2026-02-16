@@ -56,7 +56,7 @@ export function NewlyJoinedUsers() {
           </div>
         </SectionReveal>
 
-        <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6">
+        <div className="grid grid-cols-3 gap-2.5 sm:grid-cols-4 md:grid-cols-6">
           {users.map((user: any) => {
             const name = isAr && user.full_name_ar ? user.full_name_ar : user.full_name;
             const spec = isAr && user.specialization_ar ? user.specialization_ar : user.specialization;
