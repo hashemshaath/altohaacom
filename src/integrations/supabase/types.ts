@@ -9737,6 +9737,38 @@ export type Database = {
           },
         ]
       }
+      post_edits: {
+        Row: {
+          edited_at: string
+          edited_by: string
+          id: string
+          post_id: string
+          previous_content: string
+        }
+        Insert: {
+          edited_at?: string
+          edited_by: string
+          id?: string
+          post_id: string
+          previous_content: string
+        }
+        Update: {
+          edited_at?: string
+          edited_by?: string
+          id?: string
+          post_id?: string
+          previous_content?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "post_edits_post_id_fkey"
+            columns: ["post_id"]
+            isOneToOne: false
+            referencedRelation: "posts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       post_likes: {
         Row: {
           created_at: string
@@ -9985,6 +10017,7 @@ export type Database = {
           author_id: string
           content: string
           created_at: string
+          edited_at: string | null
           group_id: string | null
           id: string
           image_url: string | null
@@ -10009,6 +10042,7 @@ export type Database = {
           author_id: string
           content: string
           created_at?: string
+          edited_at?: string | null
           group_id?: string | null
           id?: string
           image_url?: string | null
@@ -10033,6 +10067,7 @@ export type Database = {
           author_id?: string
           content?: string
           created_at?: string
+          edited_at?: string | null
           group_id?: string | null
           id?: string
           image_url?: string | null
