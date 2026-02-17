@@ -4327,6 +4327,51 @@ export type Database = {
         }
         Relationships: []
       }
+      content_audit_log: {
+        Row: {
+          action_type: string
+          author_id: string | null
+          content_snapshot: string | null
+          created_at: string
+          entity_id: string | null
+          entity_type: string
+          id: string
+          image_urls: string[] | null
+          metadata: Json | null
+          reason: string | null
+          reason_ar: string | null
+          user_id: string | null
+        }
+        Insert: {
+          action_type: string
+          author_id?: string | null
+          content_snapshot?: string | null
+          created_at?: string
+          entity_id?: string | null
+          entity_type?: string
+          id?: string
+          image_urls?: string[] | null
+          metadata?: Json | null
+          reason?: string | null
+          reason_ar?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          action_type?: string
+          author_id?: string | null
+          content_snapshot?: string | null
+          created_at?: string
+          entity_id?: string | null
+          entity_type?: string
+          id?: string
+          image_urls?: string[] | null
+          metadata?: Json | null
+          reason?: string | null
+          reason_ar?: string | null
+          user_id?: string | null
+        }
+        Relationships: []
+      }
       content_categories: {
         Row: {
           created_at: string

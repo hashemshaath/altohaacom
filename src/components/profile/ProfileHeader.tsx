@@ -56,7 +56,7 @@ export function ProfileHeader({ profile, roles, userId, onProfileUpdate }: Profi
   const profileViews = (profile as any)?.view_count || 0;
 
   return (
-    <div className="relative overflow-hidden rounded-[2rem] border border-border/40 bg-card/60 backdrop-blur-sm shadow-xl transition-all duration-500 hover:shadow-2xl hover:border-primary/20 group">
+    <div className="relative overflow-visible rounded-[2rem] border border-border/40 bg-card/60 backdrop-blur-sm shadow-xl transition-all duration-500 hover:shadow-2xl hover:border-primary/20 group">
       {/* Cover Image - Premium Hero Style */}
       <div className="relative h-44 sm:h-64 bg-gradient-to-br from-primary/10 via-background to-accent/10 overflow-hidden">
         <div className="pointer-events-none absolute -top-12 -end-12 h-48 w-48 rounded-full bg-primary/10 blur-[60px] animate-pulse" />
@@ -112,8 +112,8 @@ export function ProfileHeader({ profile, roles, userId, onProfileUpdate }: Profi
         <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
           <div>
             <div className="flex items-center gap-2 flex-wrap">
-              <h1 className="font-serif text-2xl font-black sm:text-3xl lg:text-4xl tracking-tight text-foreground drop-shadow-sm">
-                {isAr ? profile?.full_name_ar || profile?.full_name : profile?.full_name}
+              <h1 className="font-serif text-2xl font-black sm:text-3xl lg:text-4xl tracking-tight text-foreground drop-shadow-sm break-words">
+                {isAr ? (profile?.display_name_ar || profile?.full_name_ar || profile?.full_name) : (profile?.display_name || profile?.full_name)}
               </h1>
               {profile?.is_verified && <VerifiedBadge level={profile.verification_level} size="lg" />}
             </div>

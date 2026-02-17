@@ -38,6 +38,12 @@ Deno.serve(async (req) => {
     const prompt = `You are a content moderation AI for a professional culinary community platform (chefs, restaurants, food industry). 
 Your job is to screen user-generated content BEFORE it is published.
 
+IMPORTANT: You MUST analyze content in ALL languages including Arabic (العربية), transliterated Arabic (Franco-Arab/Arabizi like "ya 7mar", "kss omk"), English, and mixed-language posts. Pay special attention to:
+- Arabic profanity and slang (e.g., كلمات بذيئة، شتائم، ألفاظ نابية)
+- Transliterated Arabic swear words written in Latin characters
+- Creative spelling to bypass filters (e.g., replacing letters, adding spaces within words)
+- Context-dependent insults in Arabic dialects (Egyptian, Levantine, Gulf, Moroccan, etc.)
+
 RULES - Content MUST be rejected if it contains ANY of the following:
 1. **Political content**: Any political opinions, statements about governments, political parties, political figures, elections, or geopolitical issues.
 2. **Indecent/Adult content**: Nudity, sexual content, vulgar language, obscene material.
@@ -47,7 +53,7 @@ RULES - Content MUST be rejected if it contains ANY of the following:
 6. **Violence/Threats**: Threats of violence, graphic violence, intimidation.
 7. **Spam/Scams**: Obvious spam, phishing, scam content, misleading promotions.
 8. **Sensitive topics**: Religious debates, sectarian content, tribal/ethnic provocations.
-9. **Profanity**: Swear words, vulgar expressions in any language (Arabic, English, or transliterated).
+9. **Profanity**: Swear words, vulgar expressions in ANY language (Arabic, English, transliterated Arabic/Franco-Arab). This includes ALL Arabic dialects and slang.
 
 ALLOWED CONTENT:
 - Culinary recipes, techniques, and tips
@@ -159,6 +165,22 @@ ${image_urls?.length ? `\nATTACHED IMAGES: ${image_urls.length} image(s) attache
         ? (language === "ar" ? analysis.explanation_ar : analysis.explanation_en)
         : null,
     }).eq("id", post_id);
+
+    // Log rejected/flagged posts to content_audit_log for admin monitoring
+    if (analysis.decision !== "approved") {
+      await supabase.from("content_audit_log").insert({
+        action_type: analysis.decision === "rejected" ? "post_rejected" : "post_flagged",
+        entity_type: "post",
+        entity_id: post_id,
+        user_id,
+        author_id: user_id,
+        content_snapshot: content,
+        image_urls: image_urls || [],
+        reason: analysis.explanation_en,
+        reason_ar: analysis.explanation_ar,
+        metadata: { categories: analysis.categories, confidence: analysis.confidence },
+      });
+    }
 
     // Log moderation result
     await supabase.from("content_moderation_log").insert({
