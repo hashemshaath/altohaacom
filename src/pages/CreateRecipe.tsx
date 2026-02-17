@@ -1,7 +1,9 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { useLanguage } from "@/i18n/LanguageContext";
+import { useAuth } from "@/contexts/AuthContext";
 import { useCreateRecipe } from "@/hooks/useRecipes";
+import { supabase } from "@/integrations/supabase/client";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { SEOHead } from "@/components/SEOHead";
@@ -14,7 +16,7 @@ import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
 import { Switch } from "@/components/ui/switch";
-import { ArrowLeft, Plus, Trash2, UtensilsCrossed, GripVertical } from "lucide-react";
+import { ArrowLeft, Plus, Trash2, UtensilsCrossed, GripVertical, Image as ImageIcon, Upload, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 
 const categoryOptions = [
@@ -32,9 +34,11 @@ const categoryOptions = [
 
 export default function CreateRecipe() {
   const { language } = useLanguage();
+  const { user } = useAuth();
   const isAr = language === "ar";
   const navigate = useNavigate();
   const createRecipe = useCreateRecipe();
+  const imageInputRef = useRef<HTMLInputElement>(null);
 
   const [title, setTitle] = useState("");
   const [titleAr, setTitleAr] = useState("");
@@ -51,6 +55,30 @@ export default function CreateRecipe() {
   const [steps, setSteps] = useState<string[]>([""]);
   const [tags, setTags] = useState("");
   const [isPublished, setIsPublished] = useState(true);
+  const [uploadingImage, setUploadingImage] = useState(false);
+  const [imagePreview, setImagePreview] = useState<string | null>(null);
+
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file || !user) return;
+    if (file.size > 5 * 1024 * 1024) {
+      toast.error(isAr ? "الحد الأقصى 5 ميجابايت" : "Max file size is 5MB");
+      return;
+    }
+    setUploadingImage(true);
+    const ext = file.name.split(".").pop() || "jpg";
+    const path = `recipes/${user.id}/${Date.now()}.${ext}`;
+    const { error } = await supabase.storage.from("user-media").upload(path, file, { contentType: file.type });
+    if (error) {
+      toast.error(error.message);
+      setUploadingImage(false);
+      return;
+    }
+    const { data: urlData } = supabase.storage.from("user-media").getPublicUrl(path);
+    setImageUrl(urlData.publicUrl);
+    setImagePreview(URL.createObjectURL(file));
+    setUploadingImage(false);
+  };
 
   // Nutrition
   const [calories, setCalories] = useState("");
@@ -168,8 +196,37 @@ export default function CreateRecipe() {
                   <Textarea value={descriptionAr} onChange={e => setDescriptionAr(e.target.value)} rows={2} dir="rtl" />
                 </div>
                 <div className="space-y-2">
-                  <Label>{isAr ? "رابط الصورة" : "Image URL"}</Label>
-                  <Input value={imageUrl} onChange={e => setImageUrl(e.target.value)} placeholder="https://..." />
+                  <Label>{isAr ? "صورة الوصفة" : "Recipe Image"}</Label>
+                  <input ref={imageInputRef} type="file" accept="image/*" className="hidden" onChange={handleImageUpload} />
+                  {imagePreview || imageUrl ? (
+                    <div className="relative rounded-xl border border-border overflow-hidden group">
+                      <img src={imagePreview || imageUrl} alt="" className="w-full h-48 object-cover" />
+                      <div className="absolute inset-0 bg-background/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
+                        <Button variant="secondary" size="sm" onClick={() => imageInputRef.current?.click()}>
+                          {isAr ? "تغيير" : "Change"}
+                        </Button>
+                        <Button variant="destructive" size="sm" onClick={() => { setImageUrl(""); setImagePreview(null); }}>
+                          <Trash2 className="h-3.5 w-3.5" />
+                        </Button>
+                      </div>
+                    </div>
+                  ) : (
+                    <button
+                      type="button"
+                      onClick={() => imageInputRef.current?.click()}
+                      disabled={uploadingImage}
+                      className="w-full h-32 rounded-xl border-2 border-dashed border-border/50 hover:border-primary/30 bg-muted/20 flex flex-col items-center justify-center gap-2 transition-colors"
+                    >
+                      {uploadingImage ? (
+                        <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
+                      ) : (
+                        <>
+                          <Upload className="h-6 w-6 text-muted-foreground/50" />
+                          <span className="text-xs text-muted-foreground">{isAr ? "اضغط لرفع صورة" : "Click to upload image"}</span>
+                        </>
+                      )}
+                    </button>
+                  )}
                 </div>
                 <div className="grid gap-4 sm:grid-cols-3">
                   <div className="space-y-2">
