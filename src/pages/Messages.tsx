@@ -9,11 +9,15 @@ import { usePresence } from "@/hooks/usePresence";
 import { NewConversationDialog } from "@/components/messages/NewConversationDialog";
 import { EmojiPicker } from "@/components/messages/EmojiPicker";
 import { MessageAttachments } from "@/components/messages/MessageAttachments";
+import { CreateGroupDialog } from "@/components/messages/CreateGroupDialog";
+import { GroupChatView } from "@/components/messages/GroupChatView";
 import { ApprovalMessage } from "@/components/messages/ApprovalMessage";
 import { ApprovalTemplateDialog } from "@/components/messages/ApprovalTemplateDialog";
 import { MessageCategoryFilter, type MessageFilter } from "@/components/messages/MessageCategoryFilter";
 import { TypingIndicator } from "@/components/messages/TypingIndicator";
 import { MessageStatus } from "@/components/messages/MessageStatus";
+import { VoiceMessageRecorder } from "@/components/messages/VoiceMessageRecorder";
+import { VoiceMessagePlayer } from "@/components/messages/VoiceMessagePlayer";
 import { ChatSearchBar } from "@/components/messages/ChatSearchBar";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
@@ -50,6 +54,7 @@ import {
   Music,
   Trash2,
   Link2,
+  Users,
 } from "lucide-react";
 import { format, isToday, isYesterday } from "date-fns";
 import { ar, enUS } from "date-fns/locale";
@@ -129,6 +134,8 @@ export default function Messages() {
   const [uploading, setUploading] = useState(false);
   const [chatSearchOpen, setChatSearchOpen] = useState(false);
   const [highlightedMsgId, setHighlightedMsgId] = useState<string | null>(null);
+  const [isGroupDialogOpen, setIsGroupDialogOpen] = useState(false);
+  const [activeGroupId, setActiveGroupId] = useState<string | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const typingDebounceRef = useRef<ReturnType<typeof setTimeout>>();
@@ -190,6 +197,27 @@ export default function Messages() {
     enabled: !!user,
     refetchInterval: 15000,
     staleTime: 1000 * 60 * 1,
+  });
+
+  // Fetch user's groups
+  const { data: chatGroups = [] } = useQuery({
+    queryKey: ["chatGroups", user?.id],
+    queryFn: async () => {
+      if (!user) return [];
+      const { data: memberRows } = await supabase
+        .from("chat_group_members")
+        .select("group_id")
+        .eq("user_id", user.id);
+      if (!memberRows?.length) return [];
+      const groupIds = memberRows.map((m) => m.group_id);
+      const { data: groups } = await supabase
+        .from("chat_groups")
+        .select("*")
+        .in("id", groupIds)
+        .order("updated_at", { ascending: false });
+      return groups || [];
+    },
+    enabled: !!user,
   });
 
   // Fetch messages for selected conversation
@@ -464,7 +492,7 @@ export default function Messages() {
         <Card className="mx-auto overflow-hidden rounded-3xl border-border/40 bg-card/60 backdrop-blur-sm shadow-2xl shadow-primary/5" style={{ height: "calc(100vh - 160px)", minHeight: 500 }}>
           <div className="flex h-full">
             {/* Conversations List */}
-            <div className={`w-full border-e md:w-80 flex flex-col ${selectedPartner ? "hidden md:flex" : ""}`}>
+            <div className={`w-full border-e md:w-80 flex flex-col ${selectedPartner || activeGroupId ? "hidden md:flex" : ""}`}>
               <div className="border-b border-border/40 p-4 space-y-3 bg-muted/10">
                 <div className="flex items-center justify-between">
                   <h2 className="flex items-center gap-2.5 font-black text-sm tracking-tight">
@@ -476,9 +504,14 @@ export default function Messages() {
                       <Badge className="h-5 min-w-5 text-[9px] font-black px-1.5 animate-pulse">{counts.unread}</Badge>
                     )}
                   </h2>
-                  <Button variant="ghost" size="icon" className="h-9 w-9 rounded-xl hover:bg-primary/5 hover:text-primary transition-all" onClick={() => setIsNewConvOpen(true)}>
-                    <Plus className="h-4 w-4" />
-                  </Button>
+                  <div className="flex items-center gap-1">
+                    <Button variant="ghost" size="icon" className="h-9 w-9 rounded-xl hover:bg-primary/5 hover:text-primary transition-all" onClick={() => setIsGroupDialogOpen(true)} title={isAr ? "مجموعة جديدة" : "New Group"}>
+                      <Users className="h-4 w-4" />
+                    </Button>
+                    <Button variant="ghost" size="icon" className="h-9 w-9 rounded-xl hover:bg-primary/5 hover:text-primary transition-all" onClick={() => setIsNewConvOpen(true)}>
+                      <Plus className="h-4 w-4" />
+                    </Button>
+                  </div>
                 </div>
                 <div className="relative">
                   <Search className="absolute start-3.5 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-muted-foreground/60" />
@@ -506,10 +539,39 @@ export default function Messages() {
                   </div>
                 ) : (
                   <div className="p-1.5 space-y-0.5">
+                    {/* Group Chats */}
+                    {chatGroups.length > 0 && (
+                      <>
+                        <p className="px-3 pt-2 pb-1 text-[10px] font-bold uppercase tracking-wider text-muted-foreground">
+                          {isAr ? "المجموعات" : "Groups"}
+                        </p>
+                        {chatGroups.map((g) => (
+                          <button
+                            key={g.id}
+                            onClick={() => { setActiveGroupId(g.id); setSelectedPartner(null); }}
+                            className={`w-full flex items-center gap-3 rounded-xl p-3 transition-all duration-300 text-start ${
+                              activeGroupId === g.id ? "bg-primary/10 ring-1 ring-primary/20 shadow-sm" : "hover:bg-accent/50"
+                            }`}
+                          >
+                            <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary/10 shrink-0">
+                              <Users className="h-4 w-4 text-primary" />
+                            </div>
+                            <div className="flex-1 min-w-0">
+                              <p className="text-sm font-medium truncate">{g.name}</p>
+                              <p className="text-xs text-muted-foreground">{isAr ? "مجموعة" : "Group"}</p>
+                            </div>
+                          </button>
+                        ))}
+                        <Separator className="my-1" />
+                        <p className="px-3 pt-1 pb-1 text-[10px] font-bold uppercase tracking-wider text-muted-foreground">
+                          {isAr ? "المحادثات" : "Direct"}
+                        </p>
+                      </>
+                    )}
                     {filteredConversations.map((conv) => (
                       <button
                         key={conv.user_id}
-                        onClick={() => setSelectedPartner(conv)}
+                        onClick={() => { setSelectedPartner(conv); setActiveGroupId(null); }}
                         className={`w-full flex items-center gap-3 rounded-xl p-3 transition-all duration-300 text-start ${
                           selectedPartner?.user_id === conv.user_id ? "bg-primary/10 ring-1 ring-primary/20 shadow-sm" : "hover:bg-accent/50"
                         }`}
@@ -555,8 +617,10 @@ export default function Messages() {
             </div>
 
             {/* Chat Area */}
-            <div className={`flex-1 flex flex-col ${!selectedPartner ? "hidden md:flex" : ""}`}>
-              {selectedPartner ? (
+            <div className={`flex-1 flex flex-col ${!selectedPartner && !activeGroupId ? "hidden md:flex" : ""}`}>
+              {activeGroupId ? (
+                <GroupChatView groupId={activeGroupId} onBack={() => setActiveGroupId(null)} />
+              ) : selectedPartner ? (
                 <>
                   {/* Chat Header */}
                   <div className="border-b border-border/40 p-3 flex items-center gap-3 bg-muted/5 backdrop-blur-sm">
@@ -671,6 +735,11 @@ export default function Messages() {
                                       metadata={msg.metadata || {}}
                                       isMine={isMine}
                                     />
+                                  ) : msg.message_type === "audio" && msg.attachment_urls?.[0] ? (
+                                    <VoiceMessagePlayer
+                                      url={msg.attachment_urls[0]}
+                                      isMine={isMine}
+                                    />
                                   ) : (
                                     renderContent(msg)
                                   )}
@@ -731,6 +800,29 @@ export default function Messages() {
                         <Button variant="ghost" size="icon" className="h-9 w-9 shrink-0" type="button" onClick={() => fileInputRef.current?.click()}>
                           <Paperclip className="h-4 w-4 text-muted-foreground" />
                         </Button>
+                        <VoiceMessageRecorder
+                          disabled={sendMessage.isPending || uploading}
+                          onSend={async (blob, dur) => {
+                            setUploading(true);
+                            try {
+                              const filePath = `${user!.id}/${Date.now()}-voice.webm`;
+                              const { error } = await supabase.storage.from("message-attachments").upload(filePath, blob);
+                              if (error) throw error;
+                              const { data: urlData } = supabase.storage.from("message-attachments").getPublicUrl(filePath);
+                              sendMessage.mutate({
+                                content: isAr ? "🎤 رسالة صوتية" : "🎤 Voice message",
+                                message_type: "audio",
+                                attachment_urls: [urlData.publicUrl],
+                                attachment_names: ["voice.webm"],
+                                metadata: { duration: dur },
+                              });
+                            } catch (err: any) {
+                              toast({ variant: "destructive", title: isAr ? "فشل الرفع" : "Upload failed", description: err.message });
+                            } finally {
+                              setUploading(false);
+                            }
+                          }}
+                        />
                       </div>
                       <Input
                         value={newMessage}
@@ -779,6 +871,16 @@ export default function Messages() {
         onOpenChange={setIsApprovalOpen}
         onSend={handleSendApproval}
         isPending={sendMessage.isPending}
+      />
+
+      <CreateGroupDialog
+        open={isGroupDialogOpen}
+        onOpenChange={setIsGroupDialogOpen}
+        onCreated={(gid) => {
+          setActiveGroupId(gid);
+          setSelectedPartner(null);
+          queryClient.invalidateQueries({ queryKey: ["chatGroups"] });
+        }}
       />
 
       <Footer />
