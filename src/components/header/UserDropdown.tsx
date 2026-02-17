@@ -21,6 +21,7 @@ import {
   Settings,
   HelpCircle,
   Shield,
+  LayoutDashboard,
 } from "lucide-react";
 
 export function UserDropdown() {
@@ -101,6 +102,12 @@ export function UserDropdown() {
             </div>
           </DropdownMenuLabel>
           <DropdownMenuSeparator />
+          <DropdownMenuItem asChild>
+            <Link to="/dashboard" className="flex items-center gap-2.5">
+              <LayoutDashboard className="h-4 w-4 text-muted-foreground" />
+              {label("Dashboard", "لوحة التحكم")}
+            </Link>
+          </DropdownMenuItem>
           <DropdownMenuItem asChild>
             <Link to="/profile" className="flex items-center gap-2.5">
               <User className="h-4 w-4 text-muted-foreground" />

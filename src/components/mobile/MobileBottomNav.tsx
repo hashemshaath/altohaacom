@@ -15,7 +15,7 @@ const navItems = [
   { to: "/competitions", icon: Trophy, labelEn: "Compete", labelAr: "المسابقات", authOnly: false },
   { to: "/search", icon: Search, labelEn: "Search", labelAr: "بحث", authOnly: false },
   { to: "/community", icon: Users, labelEn: "Community", labelAr: "المجتمع", authOnly: false },
-  { to: "/dashboard", icon: LayoutDashboard, labelEn: "Dashboard", labelAr: "لوحتي", authOnly: true },
+  { to: "/dashboard", icon: LayoutDashboard, labelEn: "My Space", labelAr: "مساحتي", authOnly: true },
 ];
 
 export function MobileBottomNav() {

@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Separator } from "@/components/ui/separator";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { cn } from "@/lib/utils";
 import {
   Menu,
@@ -21,6 +22,9 @@ import {
   MessageSquare,
   HelpCircle,
   ArrowRight,
+  ChevronDown,
+  LayoutDashboard,
+  Settings,
 } from "lucide-react";
 import { useState } from "react";
 
@@ -44,6 +48,11 @@ export function MobileMenu({ primaryNav, moreLinks }: MobileMenuProps) {
   const { data: userRoles = [] } = useUserRoles();
   const isJudge = userRoles.includes("judge");
   const [open, setOpen] = useState(false);
+  const [sectionsOpen, setSectionsOpen] = useState<Record<string, boolean>>({
+    main: true,
+    explore: false,
+    account: false,
+  });
   const location = useLocation();
   const isAr = language === "ar";
 
@@ -69,7 +78,10 @@ export function MobileMenu({ primaryNav, moreLinks }: MobileMenuProps) {
   const isActive = (path: string) =>
     location.pathname === path || (path !== "/" && location.pathname.startsWith(path + "/"));
   const label = (en: string, ar: string) => (isAr ? ar : en);
-  const visiblePrimary = primaryNav.filter((l) => !l.authOnly || user);
+
+  const toggleSection = (key: string) => {
+    setSectionsOpen((prev) => ({ ...prev, [key]: !prev[key] }));
+  };
 
   const NavItem = ({ to, icon: Icon, children, active }: { to: string; icon: React.ElementType; children: React.ReactNode; active?: boolean }) => (
     <Link
@@ -87,10 +99,24 @@ export function MobileMenu({ primaryNav, moreLinks }: MobileMenuProps) {
     </Link>
   );
 
-  const SectionLabel = ({ children }: { children: React.ReactNode }) => (
-    <p className="px-3 py-1.5 text-[10px] font-semibold uppercase tracking-widest text-muted-foreground/50">
-      {children}
-    </p>
+  const SectionToggle = ({ label: sectionLabel, sectionKey, count }: { label: string; sectionKey: string; count?: number }) => (
+    <CollapsibleTrigger
+      onClick={() => toggleSection(sectionKey)}
+      className="flex w-full items-center justify-between px-3 py-2 rounded-lg hover:bg-muted/40 transition-colors"
+    >
+      <span className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground/60">
+        {sectionLabel}
+        {count !== undefined && (
+          <span className="ms-1.5 text-[9px] text-muted-foreground/40">({count})</span>
+        )}
+      </span>
+      <ChevronDown
+        className={cn(
+          "h-3 w-3 text-muted-foreground/40 transition-transform duration-200",
+          sectionsOpen[sectionKey] && "rotate-180"
+        )}
+      />
+    </CollapsibleTrigger>
   );
 
   return (
@@ -105,10 +131,10 @@ export function MobileMenu({ primaryNav, moreLinks }: MobileMenuProps) {
           <div className="flex h-full flex-col">
             {/* Header */}
             <div className="flex items-center justify-between border-b p-4 bg-gradient-to-b from-primary/5 to-transparent">
-              <div className="flex items-center gap-2.5">
+              <Link to="/" onClick={() => setOpen(false)} className="flex items-center gap-2.5">
                 <img src="/altohaa-logo.png" alt="Altohaa" className="h-8 w-auto" />
                 <span className="font-serif text-lg font-bold text-primary">Altohaa</span>
-              </div>
+              </Link>
             </div>
 
             {/* User info bar */}
@@ -135,46 +161,67 @@ export function MobileMenu({ primaryNav, moreLinks }: MobileMenuProps) {
             <nav className="flex-1 overflow-y-auto p-3 space-y-1">
               {user ? (
                 <>
+                  {/* Quick actions - always visible */}
+                  <NavItem to="/dashboard" icon={LayoutDashboard} active={isActive("/dashboard")}>
+                    {label("Dashboard", "لوحة التحكم")}
+                  </NavItem>
                   <NavItem to="/search" icon={Search}>
                     {label("Search", "بحث")}
                   </NavItem>
 
                   <Separator className="my-2" />
-                  <SectionLabel>{label("Navigate", "التنقل")}</SectionLabel>
 
-                  {visiblePrimary.map((link) => (
-                    <NavItem key={link.to} to={link.to} icon={link.icon} active={isActive(link.to)}>
-                      {label(link.labelEn, link.labelAr)}
-                    </NavItem>
-                  ))}
-
-                  {isJudge && (
-                    <NavItem to="/tastings" icon={Scale} active={isActive("/tastings")}>
-                      {label("Evaluation", "التقييم")}
-                    </NavItem>
-                  )}
-
-                  <Separator className="my-2" />
-                  <SectionLabel>{label("Explore", "اكتشف")}</SectionLabel>
-
-                  {moreLinks.map((link) => (
-                    <NavItem key={link.to} to={link.to} icon={link.icon} active={isActive(link.to)}>
-                      {label(link.labelEn, link.labelAr)}
-                    </NavItem>
-                  ))}
+                  {/* Main Navigation - Collapsible */}
+                  <Collapsible open={sectionsOpen.main}>
+                    <SectionToggle label={label("Navigate", "التنقل")} sectionKey="main" count={primaryNav.length + (isJudge ? 1 : 0)} />
+                    <CollapsibleContent className="space-y-0.5 mt-1">
+                      {primaryNav.map((link) => (
+                        <NavItem key={link.to} to={link.to} icon={link.icon} active={isActive(link.to)}>
+                          {label(link.labelEn, link.labelAr)}
+                        </NavItem>
+                      ))}
+                      {isJudge && (
+                        <NavItem to="/tastings" icon={Scale} active={isActive("/tastings")}>
+                          {label("Evaluation", "التقييم")}
+                        </NavItem>
+                      )}
+                    </CollapsibleContent>
+                  </Collapsible>
 
                   <Separator className="my-2" />
-                  <SectionLabel>{label("Account", "الحساب")}</SectionLabel>
 
-                  <NavItem to="/profile" icon={User} active={isActive("/profile")}>
-                    {t("myProfile")}
-                  </NavItem>
-                  <NavItem to="/messages" icon={MessageSquare}>
-                    {label("Messages", "الرسائل")}
-                  </NavItem>
-                  <NavItem to="/help" icon={HelpCircle}>
-                    {label("Help Center", "مركز المساعدة")}
-                  </NavItem>
+                  {/* Explore - Collapsible */}
+                  <Collapsible open={sectionsOpen.explore}>
+                    <SectionToggle label={label("Explore", "اكتشف")} sectionKey="explore" count={moreLinks.length} />
+                    <CollapsibleContent className="space-y-0.5 mt-1">
+                      {moreLinks.map((link) => (
+                        <NavItem key={link.to} to={link.to} icon={link.icon} active={isActive(link.to)}>
+                          {label(link.labelEn, link.labelAr)}
+                        </NavItem>
+                      ))}
+                    </CollapsibleContent>
+                  </Collapsible>
+
+                  <Separator className="my-2" />
+
+                  {/* Account - Collapsible */}
+                  <Collapsible open={sectionsOpen.account}>
+                    <SectionToggle label={label("Account", "الحساب")} sectionKey="account" />
+                    <CollapsibleContent className="space-y-0.5 mt-1">
+                      <NavItem to="/profile" icon={User} active={isActive("/profile")}>
+                        {t("myProfile")}
+                      </NavItem>
+                      <NavItem to="/messages" icon={MessageSquare}>
+                        {label("Messages", "الرسائل")}
+                      </NavItem>
+                      <NavItem to="/notification-preferences" icon={Settings}>
+                        {label("Settings", "الإعدادات")}
+                      </NavItem>
+                      <NavItem to="/help" icon={HelpCircle}>
+                        {label("Help Center", "مركز المساعدة")}
+                      </NavItem>
+                    </CollapsibleContent>
+                  </Collapsible>
 
                   {isAdmin && (
                     <>

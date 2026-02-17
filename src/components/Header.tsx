@@ -27,7 +27,6 @@ import {
 } from "lucide-react";
 
 const primaryNav = [
-  { to: "/dashboard", icon: LayoutDashboard, labelEn: "Dashboard", labelAr: "لوحة التحكم", authOnly: true },
   { to: "/competitions", icon: Trophy, labelEn: "Competitions", labelAr: "المسابقات" },
   { to: "/exhibitions", icon: Landmark, labelEn: "Exhibitions", labelAr: "المعارض" },
   { to: "/community", icon: Users, labelEn: "Community", labelAr: "المجتمع" },
@@ -52,7 +51,7 @@ export function Header() {
   const isAr = language === "ar";
   const scrolled = useScrolled();
 
-  const visiblePrimary = primaryNav.filter((l) => !l.authOnly || user);
+  const visiblePrimary = primaryNav;
 
   return (
     <header
@@ -70,7 +69,7 @@ export function Header() {
 
         {/* Logo */}
         <Link
-          to={user ? "/dashboard" : "/"}
+          to="/"
           aria-label="Altohaa homepage"
           className="flex shrink-0 items-center gap-2 me-2 sm:me-3 group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:rounded-lg"
         >
