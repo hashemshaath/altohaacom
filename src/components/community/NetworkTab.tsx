@@ -33,7 +33,7 @@ function FollowButton({ userId }: { userId: string }) {
     <Button
       variant={isFollowing ? "outline" : "default"}
       size="sm"
-      className="shrink-0 gap-1 text-xs"
+      className="shrink-0 gap-1.5 text-xs h-8 rounded-xl font-semibold transition-all duration-200"
       disabled={toggleFollow.isPending}
       onClick={() => {
         toggleFollow.mutate(!!isFollowing, {
@@ -46,7 +46,7 @@ function FollowButton({ userId }: { userId: string }) {
       }}
     >
       {isFollowing ? <UserMinus className="h-3.5 w-3.5" /> : <UserPlus className="h-3.5 w-3.5" />}
-      <span className="hidden sm:inline">{isFollowing ? (isAr ? "إلغاء" : "Unfollow") : (isAr ? "متابعة" : "Follow")}</span>
+      {isFollowing ? (isAr ? "إلغاء" : "Unfollow") : (isAr ? "متابعة" : "Follow")}
     </Button>
   );
 }
@@ -203,30 +203,30 @@ export function NetworkTab() {
               {isAr ? "لا توجد اقتراحات حالياً" : "No suggestions available right now"}
             </p>
           ) : (
-            <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+            <div className="grid gap-3 grid-cols-2 sm:grid-cols-3 lg:grid-cols-4">
               {recommendations.map((rec: any) => (
-                <div key={rec.user_id} className="flex items-start gap-3 p-3 rounded-xl border border-border/50 bg-muted/20 hover:bg-muted/40 transition-colors">
+                <div key={rec.user_id} className="group flex flex-col items-center text-center gap-2.5 p-4 rounded-xl border border-border/30 bg-card/60 backdrop-blur-sm hover:shadow-lg hover:-translate-y-1 transition-all duration-300">
                   <Link to={`/${rec.username || rec.user_id}`}>
-                    <Avatar className="h-10 w-10">
+                    <Avatar className="h-14 w-14 ring-2 ring-primary/15 shadow-md transition-all duration-300 group-hover:scale-105 group-hover:ring-primary/30">
                       <AvatarImage src={rec.avatar_url} />
-                      <AvatarFallback className="bg-primary/10 text-primary text-sm font-semibold">
+                      <AvatarFallback className="bg-primary/10 text-primary font-bold text-lg">
                         {(rec.full_name || "U")[0]}
                       </AvatarFallback>
                     </Avatar>
                   </Link>
-                  <div className="flex-1 min-w-0">
-                    <Link to={`/${rec.username || rec.user_id}`} className="text-sm font-semibold hover:text-primary truncate block">
+                  <div className="min-w-0 w-full space-y-0.5">
+                    <Link to={`/${rec.username || rec.user_id}`} className="text-xs font-bold hover:text-primary truncate block transition-colors">
                       {rec.full_name}
                     </Link>
                     {rec.specialization && (
-                      <p className="text-[10px] text-muted-foreground truncate flex items-center gap-1">
-                        <ChefHat className="h-2.5 w-2.5" />
+                      <p className="text-[10px] text-muted-foreground truncate flex items-center justify-center gap-1">
+                        <ChefHat className="h-2.5 w-2.5 shrink-0" />
                         {rec.specialization}
                       </p>
                     )}
                     {rec.country_code && (
-                      <p className="text-[10px] text-muted-foreground flex items-center gap-1">
-                        <MapPin className="h-2.5 w-2.5" />
+                      <p className="text-[10px] text-muted-foreground flex items-center justify-center gap-1">
+                        <MapPin className="h-2.5 w-2.5 shrink-0" />
                         {countryFlag(rec.country_code)}
                       </p>
                     )}
