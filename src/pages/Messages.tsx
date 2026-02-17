@@ -12,6 +12,9 @@ import { MessageAttachments } from "@/components/messages/MessageAttachments";
 import { ApprovalMessage } from "@/components/messages/ApprovalMessage";
 import { ApprovalTemplateDialog } from "@/components/messages/ApprovalTemplateDialog";
 import { MessageCategoryFilter, type MessageFilter } from "@/components/messages/MessageCategoryFilter";
+import { TypingIndicator } from "@/components/messages/TypingIndicator";
+import { MessageStatus } from "@/components/messages/MessageStatus";
+import { ChatSearchBar } from "@/components/messages/ChatSearchBar";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { Button } from "@/components/ui/button";
@@ -34,8 +37,6 @@ import {
   MessageSquare,
   Send,
   Search,
-  Check,
-  CheckCheck,
   ArrowLeft,
   Plus,
   Star,
@@ -126,6 +127,8 @@ export default function Messages() {
   const [categoryFilter, setCategoryFilter] = useState<MessageFilter>("all");
   const [pendingFiles, setPendingFiles] = useState<File[]>([]);
   const [uploading, setUploading] = useState(false);
+  const [chatSearchOpen, setChatSearchOpen] = useState(false);
+  const [highlightedMsgId, setHighlightedMsgId] = useState<string | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const typingDebounceRef = useRef<ReturnType<typeof setTimeout>>();
@@ -588,6 +591,11 @@ export default function Messages() {
                         </Button>
                       </DropdownMenuTrigger>
                       <DropdownMenuContent align="end">
+                        <DropdownMenuItem onClick={() => setChatSearchOpen(true)}>
+                          <Search className="h-4 w-4 me-2" />
+                          {isAr ? "بحث في الرسائل" : "Search Messages"}
+                        </DropdownMenuItem>
+                        <DropdownMenuSeparator />
                         <DropdownMenuItem onClick={() => setIsApprovalOpen(true)}>
                           <CheckSquare className="h-4 w-4 me-2" />
                           {isAr ? "طلب موافقة" : "Request Approval"}
@@ -600,6 +608,20 @@ export default function Messages() {
                       </DropdownMenuContent>
                     </DropdownMenu>
                   </div>
+
+                  {/* In-Chat Search */}
+                  {chatSearchOpen && messages && (
+                    <ChatSearchBar
+                      messages={messages}
+                      onHighlight={(id) => {
+                        setHighlightedMsgId(id);
+                        if (id) {
+                          document.getElementById(`msg-${id}`)?.scrollIntoView({ behavior: "smooth", block: "center" });
+                        }
+                      }}
+                      onClose={() => { setChatSearchOpen(false); setHighlightedMsgId(null); }}
+                    />
+                  )}
 
                   {/* Messages */}
                   <ScrollArea className="flex-1 p-4">
@@ -614,8 +636,8 @@ export default function Messages() {
                           const isApproval = msg.message_type === "approval_request" || msg.message_type === "approval_response";
 
                           return (
-                            <div key={msg.id} className={`group flex ${isMine ? "justify-end" : "justify-start"} animate-fade-in`}>
-                              <div className={`relative max-w-[75%] ${isMine ? "" : ""}`}>
+                            <div key={msg.id} id={`msg-${msg.id}`} className={`group flex ${isMine ? "justify-end" : "justify-start"} animate-fade-in ${highlightedMsgId === msg.id ? "ring-2 ring-primary/40 rounded-2xl" : ""}`}>
+                              <div className={`relative max-w-[75%]`}>
                                 {/* Message Actions */}
                                 <div className={`absolute top-0 ${isMine ? "start-0 -translate-x-full" : "end-0 translate-x-full"} opacity-0 group-hover:opacity-100 transition-opacity flex gap-0.5 px-1`}>
                                   <Button
@@ -666,17 +688,21 @@ export default function Messages() {
                                   <div className={`flex items-center gap-1 mt-1 text-[10px] ${isMine ? "text-primary-foreground/60 justify-end" : "text-muted-foreground"}`}>
                                     {msg.message_type !== "text" && msg.message_type !== "link" && getMessageTypeIcon(msg.message_type)}
                                     <span>{formatMessageDate(msg.created_at)}</span>
-                                    {isMine && (
-                                      msg.is_read 
-                                        ? <span title={msg.read_at ? `${isAr ? "قُرئت" : "Read"} ${new Date(msg.read_at).toLocaleTimeString(isAr ? "ar" : "en", { hour: "2-digit", minute: "2-digit" })}` : ""}><CheckCheck className="h-3 w-3 text-primary-foreground/80" /></span>
-                                        : <Check className="h-3 w-3" />
-                                    )}
+                                    <MessageStatus
+                                      isMine={isMine}
+                                      isRead={msg.is_read}
+                                      readAt={msg.read_at}
+                                      createdAt={msg.created_at}
+                                    />
                                   </div>
                                 </div>
                               </div>
                             </div>
                           );
                         })}
+                        {partnerTyping && (
+                          <TypingIndicator partnerName={selectedPartner?.full_name || selectedPartner?.username || undefined} />
+                        )}
                         <div ref={messagesEndRef} />
                       </div>
                     )}
