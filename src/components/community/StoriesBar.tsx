@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { supabase } from "@/integrations/supabase/client";
@@ -6,7 +6,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Plus, X, ChevronLeft, ChevronRight, Eye } from "lucide-react";
+import { Plus, X, ChevronLeft, ChevronRight, Eye, Move } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { cn } from "@/lib/utils";
 import { toEnglishDigits } from "@/lib/formatNumber";
@@ -45,6 +45,31 @@ export function StoriesBar() {
   const [caption, setCaption] = useState("");
   const [showCaptionInput, setShowCaptionInput] = useState(false);
   const [pendingFile, setPendingFile] = useState<File | null>(null);
+  const [imagePosition, setImagePosition] = useState(50); // percentage 0-100, 50 = center
+  const [isDragging, setIsDragging] = useState(false);
+  const [dragStartX, setDragStartX] = useState(0);
+  const [dragStartPos, setDragStartPos] = useState(50);
+  const previewContainerRef = useRef<HTMLDivElement>(null);
+
+  const handlePointerDown = useCallback((e: React.PointerEvent) => {
+    setIsDragging(true);
+    setDragStartX(e.clientX);
+    setDragStartPos(imagePosition);
+    (e.target as HTMLElement).setPointerCapture(e.pointerId);
+  }, [imagePosition]);
+
+  const handlePointerMove = useCallback((e: React.PointerEvent) => {
+    if (!isDragging || !previewContainerRef.current) return;
+    const containerWidth = previewContainerRef.current.offsetWidth;
+    const dx = e.clientX - dragStartX;
+    const pctChange = (dx / containerWidth) * 100;
+    const newPos = Math.max(0, Math.min(100, dragStartPos - pctChange));
+    setImagePosition(newPos);
+  }, [isDragging, dragStartX, dragStartPos]);
+
+  const handlePointerUp = useCallback(() => {
+    setIsDragging(false);
+  }, []);
 
   useEffect(() => {
     fetchStories();
@@ -117,6 +142,7 @@ export function StoriesBar() {
       return;
     }
     setPendingFile(file);
+    setImagePosition(50);
     setShowCaptionInput(true);
     if (fileRef.current) fileRef.current.value = "";
   };
@@ -246,11 +272,34 @@ export function StoriesBar() {
         <DialogContent className="sm:max-w-md">
           <DialogTitle>{isAr ? "أضف تعليقاً" : "Add a caption"}</DialogTitle>
           {pendingFile && (
-            <div className="rounded-xl overflow-hidden border border-border max-h-[300px]">
-              {pendingFile.type.startsWith("video/")
-                ? <video src={URL.createObjectURL(pendingFile)} className="w-full max-h-[300px] object-cover" controls />
-                : <img src={URL.createObjectURL(pendingFile)} className="w-full max-h-[300px] object-cover" alt="" />
-              }
+            <div className="space-y-2">
+              <div
+                ref={previewContainerRef}
+                className="relative rounded-xl overflow-hidden border border-border aspect-[9/16] max-h-[350px] cursor-grab active:cursor-grabbing select-none touch-none"
+                onPointerDown={handlePointerDown}
+                onPointerMove={handlePointerMove}
+                onPointerUp={handlePointerUp}
+                onPointerCancel={handlePointerUp}
+              >
+                {pendingFile.type.startsWith("video/")
+                  ? <video src={URL.createObjectURL(pendingFile)} className="w-full h-full object-cover" controls />
+                  : <img
+                      src={URL.createObjectURL(pendingFile)}
+                      className="w-full h-full object-cover pointer-events-none"
+                      style={{ objectPosition: `${imagePosition}% 50%` }}
+                      alt=""
+                      draggable={false}
+                    />
+                }
+                {!pendingFile.type.startsWith("video/") && (
+                  <div className="absolute bottom-2 inset-x-0 flex justify-center">
+                    <div className="flex items-center gap-1.5 rounded-full bg-background/70 backdrop-blur-sm px-3 py-1 text-[10px] text-muted-foreground font-medium">
+                      <Move className="h-3 w-3" />
+                      {isAr ? "اسحب لضبط الصورة" : "Drag to adjust"}
+                    </div>
+                  </div>
+                )}
+              </div>
             </div>
           )}
           <Input

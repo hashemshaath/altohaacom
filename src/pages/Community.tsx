@@ -144,10 +144,10 @@ export default function Community() {
       <Header />
 
       <main className="container flex-1">
-        <div className="mx-auto max-w-[1200px] flex gap-0">
+        <div className="mx-auto max-w-[1200px] flex gap-0 lg:gap-4">
           {/* Left Sidebar - Desktop only */}
           <aside className={cn(
-            "hidden lg:flex flex-col shrink-0 sticky top-[60px] self-start py-4 transition-all duration-300 ease-in-out",
+            "hidden lg:flex flex-col shrink-0 sticky top-[60px] self-start py-4 pe-2 transition-all duration-300 ease-in-out",
             leftSidebarOpen ? "w-[240px]" : "w-[52px]"
           )}>
             {/* Toggle button */}
@@ -264,7 +264,7 @@ export default function Community() {
 
           {/* Right Sidebar - Desktop only */}
           <aside className={cn(
-            "hidden xl:flex flex-col shrink-0 sticky top-[60px] self-start py-4 transition-all duration-300 ease-in-out",
+            "hidden xl:flex flex-col shrink-0 sticky top-[60px] self-start py-4 ps-2 transition-all duration-300 ease-in-out",
             rightSidebarOpen ? "w-[280px]" : "w-[52px]"
           )}>
             {/* Toggle button */}
