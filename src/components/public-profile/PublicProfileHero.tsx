@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Link } from "react-router-dom";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -188,10 +189,12 @@ export function PublicProfileHero({
                 {hashtags.length > 0 && (
                   <div className="flex flex-wrap gap-1.5 justify-center md:justify-start pt-1">
                     {hashtags.map((tag, i) => (
-                      <Badge key={i} variant="outline" className="text-[10px] sm:text-[11px] h-5 sm:h-6 rounded-lg border-primary/20 text-primary/80 bg-primary/5 hover:bg-primary/10 transition-colors gap-0.5 px-2">
-                        <Hash className="h-2.5 w-2.5" />
-                        {tag}
-                      </Badge>
+                      <Link key={i} to={`/community?search=${encodeURIComponent(tag)}`}>
+                        <Badge variant="outline" className="text-[10px] sm:text-[11px] h-5 sm:h-6 rounded-lg border-primary/20 text-primary/80 bg-primary/5 hover:bg-primary/10 transition-colors gap-0.5 px-2 cursor-pointer">
+                          <Hash className="h-2.5 w-2.5" />
+                          {tag}
+                        </Badge>
+                      </Link>
                     ))}
                   </div>
                 )}

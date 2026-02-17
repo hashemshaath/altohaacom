@@ -3,7 +3,7 @@ import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Trophy, Users, GraduationCap, Landmark, Newspaper, MessageSquare, ShoppingBag, Sparkles, Award, Star, Gift, UtensilsCrossed, HandHeart, ChefHat, Building2, AlertCircle } from "lucide-react";
+import { Trophy, Users, GraduationCap, Landmark, MessageSquare, ShoppingBag, Sparkles, Award, Star, UtensilsCrossed, HandHeart, AlertCircle } from "lucide-react";
 import { Link } from "react-router-dom";
 import { UpcomingCompetitionsWidget } from "@/components/dashboard/UpcomingCompetitionsWidget";
 import { RecentActivityWidget } from "@/components/dashboard/RecentActivityWidget";
@@ -56,18 +56,14 @@ export default function Dashboard() {
     : `Welcome back${firstName ? `, ${firstName}` : ""}`;
 
   const sections = [
-    { icon: Trophy, title: t("competitionsTitle"), href: "/competitions", color: "text-primary", bg: "bg-primary/10" },
-    { icon: Users, title: t("communityTitle"), href: "/community", color: "text-chart-2", bg: "bg-chart-2/10" },
-    { icon: GraduationCap, title: t("masterclassesTitle"), href: "/masterclasses", color: "text-chart-3", bg: "bg-chart-3/10" },
-    { icon: Landmark, title: t("exhibitions") || "Exhibitions", href: "/exhibitions", color: "text-chart-5", bg: "bg-chart-5/10" },
-    { icon: ChefHat, title: isAr ? "الوصفات" : "Recipes", href: "/recipes", color: "text-chart-4", bg: "bg-chart-4/10" },
-    { icon: UtensilsCrossed, title: isAr ? "التذوق" : "Tastings", href: "/tastings", color: "text-chart-1", bg: "bg-chart-1/10" },
-    { icon: HandHeart, title: isAr ? "الإرشاد" : "Mentorship", href: "/mentorship", color: "text-chart-3", bg: "bg-chart-3/10" },
-    { icon: Building2, title: isAr ? "المنشآت" : "Establishments", href: "/establishments", color: "text-chart-5", bg: "bg-chart-5/10" },
-    { icon: Newspaper, title: t("news") || "News", href: "/news", color: "text-chart-4", bg: "bg-chart-4/10" },
-    { icon: MessageSquare, title: isAr ? "الرسائل" : "Messages", href: "/messages", color: "text-chart-1", bg: "bg-chart-1/10" },
+    { icon: Trophy, title: isAr ? "المسابقات" : "Competitions", href: "/competitions", color: "text-primary", bg: "bg-primary/10" },
+    { icon: Users, title: isAr ? "المجتمع" : "Community", href: "/community", color: "text-chart-2", bg: "bg-chart-2/10" },
+    { icon: GraduationCap, title: isAr ? "الدورات" : "Courses", href: "/masterclasses", color: "text-chart-3", bg: "bg-chart-3/10" },
+    { icon: Landmark, title: isAr ? "المعارض" : "Exhibitions", href: "/exhibitions", color: "text-chart-5", bg: "bg-chart-5/10" },
+    { icon: UtensilsCrossed, title: isAr ? "الوصفات" : "Recipes", href: "/recipes", color: "text-chart-4", bg: "bg-chart-4/10" },
+    { icon: HandHeart, title: isAr ? "الإرشاد" : "Mentorship", href: "/mentorship", color: "text-chart-1", bg: "bg-chart-1/10" },
     { icon: ShoppingBag, title: isAr ? "المتجر" : "Shop", href: "/shop", color: "text-accent-foreground", bg: "bg-accent/30" },
-    { icon: Gift, title: isAr ? "الإحالات" : "Referrals", href: "/referrals", color: "text-chart-4", bg: "bg-chart-4/10" },
+    { icon: MessageSquare, title: isAr ? "الرسائل" : "Messages", href: "/messages", color: "text-chart-2", bg: "bg-chart-2/10" },
   ];
 
   return (
@@ -126,7 +122,11 @@ export default function Dashboard() {
 
         {/* Quick Navigation - Premium Pill Grid */}
         <div className="mb-10">
-          <div className="grid grid-cols-4 gap-2.5 sm:gap-3 md:grid-cols-6 lg:grid-cols-12">
+          <h2 className="text-sm font-bold uppercase tracking-wider text-muted-foreground mb-3 flex items-center gap-2">
+            <Sparkles className="h-3.5 w-3.5 text-primary" />
+            {isAr ? "الوصول السريع" : "Quick Access"}
+          </h2>
+          <div className="grid grid-cols-4 gap-2.5 sm:gap-3 md:grid-cols-4 lg:grid-cols-8">
             {sections.map((s) => (
               <Link key={s.title} to={s.href} className="group">
                 <Card className="h-full border-border/40 bg-card/50 backdrop-blur-sm transition-all duration-300 hover:shadow-xl hover:-translate-y-1.5 hover:border-primary/30 hover:bg-card active:scale-95">
