@@ -4,10 +4,13 @@ import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Award, Calendar, MapPin, Trophy, ShieldCheck, Eye, EyeOff, Lock } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Award, Calendar, MapPin, Trophy, ShieldCheck, Eye, EyeOff, Lock, Share2, Link2, MessageSquare } from "lucide-react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useToast } from "@/hooks/use-toast";
+import { useNavigate } from "react-router-dom";
 
 interface ProfileCertificatesProps {
   userId: string;
@@ -43,6 +46,7 @@ export function ProfileCertificates({ userId, isOwner = false }: ProfileCertific
   const { user } = useAuth();
   const { toast } = useToast();
   const queryClient = useQueryClient();
+  const navigate = useNavigate();
   const isAr = language === "ar";
 
   const { data: certificates = [], isLoading } = useQuery({
@@ -80,6 +84,35 @@ export function ProfileCertificates({ userId, isOwner = false }: ProfileCertific
     },
   });
 
+  const handleShareAsPost = async (cert: any) => {
+    if (!user) return;
+    const eventName = isAr && cert.event_name_ar ? cert.event_name_ar : cert.event_name;
+    const achievement = isAr && cert.achievement_ar ? cert.achievement_ar : cert.achievement;
+    const typeLabel = typeLabels[cert.type] ? (isAr ? typeLabels[cert.type].ar : typeLabels[cert.type].en) : cert.type;
+
+    const content = isAr
+      ? `🏆 حصلت على شهادة ${typeLabel}${achievement ? ` - ${achievement}` : ""}${eventName ? `\nفي ${eventName}` : ""}\n\n🔗 رمز التحقق: ${cert.verification_code}\n\n#شهادة #إنجاز #طهاة`
+      : `🏆 Earned a ${typeLabel} certificate${achievement ? ` - ${achievement}` : ""}${eventName ? `\nat ${eventName}` : ""}\n\n🔗 Verification: ${cert.verification_code}\n\n#certificate #achievement #culinary`;
+
+    const { error } = await supabase.from("posts").insert({
+      author_id: user.id,
+      content,
+      visibility: "public",
+    });
+
+    if (!error) {
+      toast({ title: isAr ? "تمت مشاركة الشهادة ✓" : "Certificate shared ✓" });
+    } else {
+      toast({ variant: "destructive", title: "Error", description: error.message });
+    }
+  };
+
+  const handleCopyLink = (cert: any) => {
+    const url = `${window.location.origin}/verify?code=${cert.verification_code}`;
+    navigator.clipboard.writeText(url);
+    toast({ title: isAr ? "تم نسخ الرابط ✓" : "Link copied ✓" });
+  };
+
   if (isLoading) return null;
   if (certificates.length === 0 && !isOwner) return null;
 
@@ -97,7 +130,7 @@ export function ProfileCertificates({ userId, isOwner = false }: ProfileCertific
 
   return (
     <div dir={isAr ? "rtl" : "ltr"}>
-      {/* Section header - matches SectionTitle pattern */}
+      {/* Section header */}
       <div className="flex items-center gap-2.5 mb-3">
         <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-primary/8">
           <Award className="h-4 w-4 text-primary" />
@@ -156,27 +189,50 @@ export function ProfileCertificates({ userId, isOwner = false }: ProfileCertific
                         )}
                       </div>
                     </div>
-                    {isOwner && (
-                      <Select
-                        value={cert.visibility || "public"}
-                        onValueChange={(v) => visibilityMutation.mutate({ certId: cert.id, visibility: v })}
-                      >
-                        <SelectTrigger className="w-auto h-7 text-[10px] gap-1 border-none bg-muted/30 rounded-lg">
-                          {visibilityIcon(cert.visibility || "public")}
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="public">
-                            <span className="flex items-center gap-1.5"><Eye className="h-3 w-3" />{isAr ? "عام" : "Public"}</span>
-                          </SelectItem>
-                          <SelectItem value="followers">
-                            <span className="flex items-center gap-1.5"><EyeOff className="h-3 w-3" />{isAr ? "المتابعين" : "Followers"}</span>
-                          </SelectItem>
-                          <SelectItem value="private">
-                            <span className="flex items-center gap-1.5"><Lock className="h-3 w-3" />{isAr ? "خاص" : "Private"}</span>
-                          </SelectItem>
-                        </SelectContent>
-                      </Select>
-                    )}
+                    <div className="flex items-center gap-1">
+                      {/* Share button */}
+                      {isOwner && (
+                        <DropdownMenu>
+                          <DropdownMenuTrigger asChild>
+                            <Button variant="ghost" size="icon" className="h-7 w-7 rounded-lg text-muted-foreground hover:text-primary">
+                              <Share2 className="h-3.5 w-3.5" />
+                            </Button>
+                          </DropdownMenuTrigger>
+                          <DropdownMenuContent align="end">
+                            <DropdownMenuItem onClick={() => handleShareAsPost(cert)}>
+                              <MessageSquare className="h-3.5 w-3.5 me-2" />
+                              {isAr ? "مشاركة كمنشور" : "Share as post"}
+                            </DropdownMenuItem>
+                            <DropdownMenuItem onClick={() => handleCopyLink(cert)}>
+                              <Link2 className="h-3.5 w-3.5 me-2" />
+                              {isAr ? "نسخ رابط التحقق" : "Copy verification link"}
+                            </DropdownMenuItem>
+                          </DropdownMenuContent>
+                        </DropdownMenu>
+                      )}
+                      {/* Visibility selector */}
+                      {isOwner && (
+                        <Select
+                          value={cert.visibility || "public"}
+                          onValueChange={(v) => visibilityMutation.mutate({ certId: cert.id, visibility: v })}
+                        >
+                          <SelectTrigger className="w-auto h-7 text-[10px] gap-1 border-none bg-muted/30 rounded-lg">
+                            {visibilityIcon(cert.visibility || "public")}
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="public">
+                              <span className="flex items-center gap-1.5"><Eye className="h-3 w-3" />{isAr ? "عام" : "Public"}</span>
+                            </SelectItem>
+                            <SelectItem value="followers">
+                              <span className="flex items-center gap-1.5"><EyeOff className="h-3 w-3" />{isAr ? "المتابعين" : "Followers"}</span>
+                            </SelectItem>
+                            <SelectItem value="private">
+                              <span className="flex items-center gap-1.5"><Lock className="h-3 w-3" />{isAr ? "خاص" : "Private"}</span>
+                            </SelectItem>
+                          </SelectContent>
+                        </Select>
+                      )}
+                    </div>
                   </div>
                 </CardContent>
               </Card>

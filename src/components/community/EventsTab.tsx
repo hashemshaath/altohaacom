@@ -11,7 +11,7 @@ import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Calendar, MapPin, Users, Plus, Check, X, BarChart3, CalendarDays, MessageSquare } from "lucide-react";
+import { Calendar, MapPin, Users, Plus, Check, X, BarChart3, CalendarDays, MessageSquare, Share2 } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { useToast } from "@/hooks/use-toast";
 import { format } from "date-fns";
@@ -340,12 +340,29 @@ export function EventsTab() {
                       {event.attendees_count}{event.max_attendees ? `/${event.max_attendees}` : ""}
                     </span>
                   </div>
-                  <div className="mt-auto pt-2">
+                  <div className="mt-auto pt-2 flex gap-2">
+                    {user && (
+                      <Button
+                        size="sm"
+                        variant="ghost"
+                        className="gap-1.5 text-xs rounded-xl h-9 text-muted-foreground hover:text-primary"
+                        onClick={async () => {
+                          const content = isAr
+                            ? `📅 فعالية: ${event.title}${event.description ? `\n${event.description}` : ""}${event.event_date ? `\n🗓 ${toEnglishDigits(format(new Date(event.event_date), "MMM d, yyyy HH:mm"))}` : ""}${event.location ? `\n📍 ${event.location}` : ""}\n\n#فعالية #مجتمع_الطهاة`
+                            : `📅 Event: ${event.title}${event.description ? `\n${event.description}` : ""}${event.event_date ? `\n🗓 ${toEnglishDigits(format(new Date(event.event_date), "MMM d, yyyy HH:mm"))}` : ""}${event.location ? `\n📍 ${event.location}` : ""}\n\n#event #culinary_community`;
+                          const { error } = await supabase.from("posts").insert({ author_id: user.id, content, visibility: "public" });
+                          if (!error) toast({ title: isAr ? "تمت المشاركة ✓" : "Shared ✓" });
+                        }}
+                      >
+                        <Share2 className="h-3.5 w-3.5" />
+                        {isAr ? "مشاركة" : "Share"}
+                      </Button>
+                    )}
                     {user && event.organizer_id !== user.id && (
                       <Button
                         size="sm"
                         variant={event.is_attending ? "outline" : "default"}
-                        className="w-full gap-1.5 text-xs rounded-xl font-semibold h-9"
+                        className="flex-1 gap-1.5 text-xs rounded-xl font-semibold h-9"
                         onClick={() => {
                           if (event.is_attending) {
                             handleAttend(event.id, true);
