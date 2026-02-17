@@ -14,6 +14,7 @@ import { GroupsTab } from "@/components/community/GroupsTab";
 import { RecipesTab } from "@/components/community/RecipesTab";
 import { EventsTab } from "@/components/community/EventsTab";
 import { NetworkTab } from "@/components/community/NetworkTab";
+import { LiveSessionsTab } from "@/components/community/LiveSessionsTab";
 import { formatNumber } from "@/lib/formatNumber";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Input } from "@/components/ui/input";
@@ -21,12 +22,12 @@ import { Button } from "@/components/ui/button";
 import {
   Newspaper, ChefHat, CalendarDays, UsersRound, UserPlus, Users, BookOpen,
   Search, TrendingUp, Hash, Activity, PanelLeftClose, PanelLeftOpen,
-  PanelRightClose, PanelRightOpen,
+  PanelRightClose, PanelRightOpen, Radio,
 } from "lucide-react";
 import { Link } from "react-router-dom";
 import { cn } from "@/lib/utils";
 
-type CommunityTab = "feed" | "chefs" | "recipes" | "groups" | "events" | "network";
+type CommunityTab = "feed" | "chefs" | "recipes" | "groups" | "events" | "network" | "live";
 
 const FALLBACK_TOPICS_EN = [
   { tag: "CookingCompetitions", count: 128 },
@@ -132,6 +133,7 @@ export default function Community() {
     { id: "recipes", label: isAr ? "الوصفات" : "Recipes", icon: BookOpen },
     { id: "groups", label: isAr ? "المجموعات" : "Groups", icon: UsersRound },
     { id: "events", label: isAr ? "الفعاليات" : "Events", icon: CalendarDays },
+    { id: "live", label: isAr ? "جلسات مباشرة" : "Live Sessions", icon: Radio },
     { id: "network", label: isAr ? "شبكتي" : "My Network", icon: UserPlus, requiresAuth: true },
   ];
 
@@ -259,6 +261,7 @@ export default function Community() {
             {activeTab === "recipes" && <div className="p-4"><RecipesTab /></div>}
             {activeTab === "groups" && <div className="p-4"><GroupsTab /></div>}
             {activeTab === "events" && <div className="p-4"><EventsTab /></div>}
+            {activeTab === "live" && <div className="p-4"><LiveSessionsTab /></div>}
             {activeTab === "network" && user && <div className="p-4"><NetworkTab /></div>}
           </div>
 
