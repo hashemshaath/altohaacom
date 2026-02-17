@@ -128,8 +128,50 @@ export function PostComposer({ onPosted, replyToPostId, placeholder, compact, au
       };
       if (replyToPostId) postData.reply_to_post_id = replyToPostId;
 
-      const { error } = await supabase.from("posts").insert(postData);
+      const { data: insertedPost, error } = await supabase.from("posts").insert(postData).select("id").single();
       if (error) throw error;
+
+      // Trigger AI content moderation
+      try {
+        const modRes = await fetch(
+          `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/moderate-content`,
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY}`,
+            },
+            body: JSON.stringify({
+              post_id: insertedPost.id,
+              content: finalContent,
+              image_urls: uploadedUrls,
+              user_id: user.id,
+              language,
+            }),
+          }
+        );
+        const modResult = await modRes.json();
+        if (modResult.decision === "rejected") {
+          toast({
+            variant: "destructive",
+            title: isAr ? "تم رفض المنشور" : "Post Rejected",
+            description: modResult.explanation || (isAr ? "المحتوى يخالف سياسات المجتمع" : "Content violates community guidelines"),
+          });
+        } else if (modResult.decision === "flagged" || modResult.moderation_status === "pending") {
+          toast({
+            title: isAr ? "المنشور قيد المراجعة" : "Post Under Review",
+            description: isAr ? "سيتم نشر المنشور بعد مراجعته من قبل فريق الإشراف" : "Your post will be published after review by the moderation team",
+          });
+        } else {
+          toast({ title: isAr ? "تم النشر ✓" : "Posted ✓" });
+        }
+      } catch {
+        // If moderation fails, post stays pending — that's fine
+        toast({
+          title: isAr ? "المنشور قيد المراجعة" : "Post Under Review",
+          description: isAr ? "سيتم نشر المنشور بعد المراجعة" : "Your post will be published after review",
+        });
+      }
 
       setContent("");
       setImages([]);
