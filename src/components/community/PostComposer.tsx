@@ -126,7 +126,7 @@ export function PostComposer({ onPosted, replyToPostId, placeholder, compact, au
       const uploadedUrls: string[] = [];
       for (const img of images) {
         const ext = img.file.name.split(".").pop() || "jpg";
-        const path = `posts/${user.id}/${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`;
+        const path = `${user.id}/posts/${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`;
         const { error: upErr } = await supabase.storage.from("user-media").upload(path, img.file, { contentType: img.file.type });
         if (upErr) throw upErr;
         const { data: urlData } = supabase.storage.from("user-media").getPublicUrl(path);
@@ -137,7 +137,7 @@ export function PostComposer({ onPosted, replyToPostId, placeholder, compact, au
       let videoUrl: string | null = null;
       if (video) {
         const ext = video.file.name.split(".").pop() || "mp4";
-        const path = `posts/${user.id}/${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`;
+        const path = `${user.id}/posts/${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`;
         const { error: upErr } = await supabase.storage.from("user-media").upload(path, video.file, { contentType: video.file.type });
         if (upErr) throw upErr;
         const { data: urlData } = supabase.storage.from("user-media").getPublicUrl(path);
