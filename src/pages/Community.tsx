@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
+import { useQuery } from "@tanstack/react-query";
 import { SEOHead } from "@/components/SEOHead";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
@@ -15,16 +16,29 @@ import { EventsTab } from "@/components/community/EventsTab";
 import { NetworkTab } from "@/components/community/NetworkTab";
 import { formatNumber } from "@/lib/formatNumber";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
   Newspaper, ChefHat, CalendarDays, UsersRound, UserPlus, Users, BookOpen,
-  Search, TrendingUp, User, Sparkles, Hash,
+  Search, TrendingUp, Hash, Activity,
 } from "lucide-react";
 import { Link } from "react-router-dom";
 import { cn } from "@/lib/utils";
 
 type CommunityTab = "feed" | "chefs" | "recipes" | "groups" | "events" | "network";
+
+// Curated fallback topics
+const FALLBACK_TOPICS_EN = [
+  { tag: "CookingCompetitions", count: 128 },
+  { tag: "RamadanRecipes", count: 96 },
+  { tag: "CulinaryArts", count: 74 },
+  { tag: "ArabChefs", count: 52 },
+];
+const FALLBACK_TOPICS_AR = [
+  { tag: "مسابقات_الطهي", count: 128 },
+  { tag: "وصفات_رمضان", count: 96 },
+  { tag: "فن_الطهي", count: 74 },
+  { tag: "طهاة_العرب", count: 52 },
+];
 
 export default function Community() {
   const { t, language } = useLanguage();
@@ -33,37 +47,86 @@ export default function Community() {
   useAdTracking();
 
   const [activeTab, setActiveTab] = useState<CommunityTab>("feed");
-  const [stats, setStats] = useState({ members: 0, groups: 0, recipes: 0 });
-  const [profile, setProfile] = useState<{ full_name: string; avatar_url: string | null; username: string | null } | null>(null);
-  const [trendingTopics] = useState([
-    { tag: isAr ? "مسابقات_الطهي" : "CookingCompetitions", count: 128 },
-    { tag: isAr ? "وصفات_رمضان" : "RamadanRecipes", count: 96 },
-    { tag: isAr ? "فن_الطهي" : "CulinaryArts", count: 74 },
-    { tag: isAr ? "طهاة_العرب" : "ArabChefs", count: 52 },
-  ]);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      const [membersRes, groupsRes, recipesRes] = await Promise.all([
+  // Fetch community stats
+  const { data: stats = { members: 0, groups: 0, recipes: 0, posts: 0 } } = useQuery({
+    queryKey: ["community-stats"],
+    queryFn: async () => {
+      const [membersRes, groupsRes, recipesRes, postsRes] = await Promise.all([
         supabase.from("profiles").select("*", { count: "exact", head: true }),
         supabase.from("groups").select("*", { count: "exact", head: true }),
         supabase.from("recipes").select("*", { count: "exact", head: true }).eq("is_published", true),
+        supabase.from("posts").select("*", { count: "exact", head: true }).is("reply_to_post_id", null),
       ]);
-      setStats({
+      return {
         members: membersRes.count || 0,
         groups: groupsRes.count || 0,
         recipes: recipesRes.count || 0,
-      });
-    };
-    fetchData();
-  }, []);
+        posts: postsRes.count || 0,
+      };
+    },
+    staleTime: 1000 * 60 * 5,
+  });
 
-  useEffect(() => {
-    if (!user) return;
-    supabase.from("profiles").select("full_name, avatar_url, username").eq("user_id", user.id).single().then(({ data }) => {
-      if (data) setProfile(data);
-    });
-  }, [user]);
+  // Fetch trending hashtags from real posts
+  const { data: trendingTopics = [] } = useQuery({
+    queryKey: ["community-trending", isAr],
+    queryFn: async () => {
+      const { data: posts } = await supabase
+        .from("posts")
+        .select("content")
+        .is("reply_to_post_id", null)
+        .order("created_at", { ascending: false })
+        .limit(200);
+
+      if (!posts?.length) return isAr ? FALLBACK_TOPICS_AR : FALLBACK_TOPICS_EN;
+
+      // Extract hashtags from post content
+      const tagCounts: Record<string, number> = {};
+      posts.forEach((post) => {
+        const matches = post.content?.match(/#([^\s#]+)/g);
+        if (matches) {
+          matches.forEach((m: string) => {
+            const tag = m.replace("#", "");
+            tagCounts[tag] = (tagCounts[tag] || 0) + 1;
+          });
+        }
+      });
+
+      const sorted = Object.entries(tagCounts)
+        .sort(([, a], [, b]) => b - a)
+        .slice(0, 6)
+        .map(([tag, count]) => ({ tag, count }));
+
+      // If not enough real data, supplement with fallbacks
+      if (sorted.length < 4) {
+        const fallbacks = isAr ? FALLBACK_TOPICS_AR : FALLBACK_TOPICS_EN;
+        const existing = new Set(sorted.map((s) => s.tag));
+        fallbacks.forEach((f) => {
+          if (!existing.has(f.tag) && sorted.length < 6) sorted.push(f);
+        });
+      }
+
+      return sorted;
+    },
+    staleTime: 1000 * 60 * 10,
+  });
+
+  // Fetch user profile
+  const { data: profile } = useQuery({
+    queryKey: ["community-profile", user?.id],
+    queryFn: async () => {
+      if (!user) return null;
+      const { data } = await supabase
+        .from("profiles")
+        .select("full_name, avatar_url, username")
+        .eq("user_id", user.id)
+        .single();
+      return data;
+    },
+    enabled: !!user,
+    staleTime: 60000,
+  });
 
   const tabs: { id: CommunityTab; label: string; icon: any; requiresAuth?: boolean }[] = [
     { id: "feed", label: isAr ? "الخلاصة" : "Feed", icon: Newspaper },
@@ -88,9 +151,9 @@ export default function Community() {
           <aside className="hidden lg:block w-[260px] shrink-0 sticky top-[60px] self-start py-4">
             {/* Profile card */}
             {user && profile && (
-              <Link to={`/${profile.username || user.id}`} className="block mb-4 rounded-2xl border border-border bg-card p-4 hover:bg-muted/30 transition-colors">
+              <Link to={`/${profile.username || user.id}`} className="block mb-4 rounded-2xl border border-border bg-card p-4 hover:bg-muted/30 transition-colors group">
                 <div className="flex items-center gap-3">
-                  <Avatar className="h-10 w-10 ring-2 ring-primary/20">
+                  <Avatar className="h-10 w-10 ring-2 ring-primary/20 transition-transform group-hover:scale-105">
                     <AvatarImage src={profile.avatar_url || undefined} />
                     <AvatarFallback className="bg-primary/10 text-primary font-bold">
                       {(profile.full_name || "C")[0].toUpperCase()}
@@ -113,10 +176,10 @@ export default function Community() {
                   key={tab.id}
                   onClick={() => setActiveTab(tab.id)}
                   className={cn(
-                    "flex w-full items-center gap-3 rounded-xl px-4 py-2.5 text-sm font-medium transition-colors",
+                    "flex w-full items-center gap-3 rounded-xl px-4 py-2.5 text-sm font-medium transition-all duration-200",
                     activeTab === tab.id
                       ? "bg-primary text-primary-foreground shadow-lg shadow-primary/20"
-                      : "text-foreground hover:bg-muted"
+                      : "text-foreground hover:bg-muted active:scale-[0.98]"
                   )}
                 >
                   <tab.icon className="h-5 w-5" />
@@ -127,20 +190,19 @@ export default function Community() {
 
             {/* Stats */}
             <div className="mt-4 rounded-2xl border border-border bg-card p-4">
-              <h3 className="text-xs font-bold uppercase tracking-wider text-muted-foreground mb-3">
-                {isAr ? "إحصائيات" : "Community Stats"}
+              <h3 className="text-xs font-bold uppercase tracking-wider text-muted-foreground mb-3 flex items-center gap-1.5">
+                <Activity className="h-3.5 w-3.5 text-primary" />
+                {isAr ? "إحصائيات المجتمع" : "Community Stats"}
               </h3>
               <div className="space-y-2.5">
                 {[
-                  { label: isAr ? "عضو" : "Members", value: stats.members, color: "text-primary", dot: "bg-chart-5" },
-                  { label: isAr ? "مجموعة" : "Groups", value: stats.groups, color: "text-chart-2", dot: "" },
-                  { label: isAr ? "وصفة" : "Recipes", value: stats.recipes, color: "text-chart-4", dot: "" },
+                  { label: isAr ? "عضو" : "Members", value: stats.members, color: "text-primary" },
+                  { label: isAr ? "منشور" : "Posts", value: stats.posts, color: "text-chart-2" },
+                  { label: isAr ? "مجموعة" : "Groups", value: stats.groups, color: "text-chart-3" },
+                  { label: isAr ? "وصفة" : "Recipes", value: stats.recipes, color: "text-chart-4" },
                 ].map((stat, i) => (
                   <div key={i} className="flex items-center justify-between">
-                    <span className="flex items-center gap-2 text-xs text-muted-foreground">
-                      {stat.dot && <span className={`h-2 w-2 rounded-full ${stat.dot} animate-pulse`} />}
-                      {stat.label}
-                    </span>
+                    <span className="text-xs text-muted-foreground">{stat.label}</span>
                     <span className={cn("text-sm font-bold tabular-nums", stat.color)}>{formatNumber(stat.value)}</span>
                   </div>
                 ))}
@@ -150,7 +212,7 @@ export default function Community() {
 
           {/* Main Content */}
           <div className="flex-1 min-w-0 border-x border-border min-h-screen">
-            {/* Mobile Tabs - Top horizontal scroll */}
+            {/* Mobile Tabs */}
             <div className="sticky top-[56px] z-40 border-b border-border/40 bg-background/90 backdrop-blur-xl lg:hidden">
               <div className="flex overflow-x-auto scrollbar-none snap-x snap-mandatory">
                 {tabs.filter(t => !t.requiresAuth || user).map((tab) => (
@@ -193,7 +255,7 @@ export default function Community() {
               />
             </div>
 
-            {/* Trending */}
+            {/* Trending - Dynamic */}
             <div className="rounded-2xl border border-border bg-card overflow-hidden">
               <h3 className="px-4 pt-3 pb-2 text-base font-bold flex items-center gap-2">
                 <TrendingUp className="h-4 w-4 text-primary" />
@@ -201,12 +263,13 @@ export default function Community() {
               </h3>
               <div className="divide-y divide-border">
                 {trendingTopics.map((topic, i) => (
-                  <div key={i} className="px-4 py-2.5 hover:bg-muted/30 transition-colors cursor-pointer">
+                  <div key={i} className="px-4 py-2.5 hover:bg-muted/30 transition-colors cursor-pointer group">
                     <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
                       <Hash className="h-3 w-3" />
-                      {isAr ? "رائج" : "Trending"}
+                      <span>{isAr ? "رائج" : "Trending"}</span>
+                      {i === 0 && <span className="ms-auto text-[9px] text-primary font-bold">{isAr ? "الأول" : "#1"}</span>}
                     </div>
-                    <p className="text-sm font-bold mt-0.5">#{topic.tag}</p>
+                    <p className="text-sm font-bold mt-0.5 group-hover:text-primary transition-colors">#{topic.tag}</p>
                     <p className="text-xs text-muted-foreground mt-0.5">
                       {formatNumber(topic.count)} {isAr ? "منشور" : "posts"}
                     </p>
