@@ -56,14 +56,14 @@ export default function Dashboard() {
     : `Welcome back${firstName ? `, ${firstName}` : ""}`;
 
   const sections = [
-    { icon: Trophy, title: isAr ? "المسابقات" : "Competitions", href: "/competitions", color: "text-primary", bg: "bg-primary/10" },
-    { icon: Users, title: isAr ? "المجتمع" : "Community", href: "/community", color: "text-chart-2", bg: "bg-chart-2/10" },
-    { icon: GraduationCap, title: isAr ? "الدورات" : "Courses", href: "/masterclasses", color: "text-chart-3", bg: "bg-chart-3/10" },
-    { icon: Landmark, title: isAr ? "المعارض" : "Exhibitions", href: "/exhibitions", color: "text-chart-5", bg: "bg-chart-5/10" },
-    { icon: UtensilsCrossed, title: isAr ? "الوصفات" : "Recipes", href: "/recipes", color: "text-chart-4", bg: "bg-chart-4/10" },
-    { icon: HandHeart, title: isAr ? "الإرشاد" : "Mentorship", href: "/mentorship", color: "text-chart-1", bg: "bg-chart-1/10" },
-    { icon: ShoppingBag, title: isAr ? "المتجر" : "Shop", href: "/shop", color: "text-accent-foreground", bg: "bg-accent/30" },
-    { icon: MessageSquare, title: isAr ? "الرسائل" : "Messages", href: "/messages", color: "text-chart-2", bg: "bg-chart-2/10" },
+    { icon: Trophy, title: isAr ? "المسابقات" : "Competitions", href: "/competitions", color: "text-primary", bg: "bg-primary/10", ring: "ring-primary/15", glow: "group-hover:shadow-primary/10" },
+    { icon: Users, title: isAr ? "المجتمع" : "Community", href: "/community", color: "text-chart-2", bg: "bg-chart-2/10", ring: "ring-chart-2/15", glow: "group-hover:shadow-chart-2/10" },
+    { icon: GraduationCap, title: isAr ? "الدورات" : "Courses", href: "/masterclasses", color: "text-chart-3", bg: "bg-chart-3/10", ring: "ring-chart-3/15", glow: "group-hover:shadow-chart-3/10" },
+    { icon: Landmark, title: isAr ? "المعارض" : "Exhibitions", href: "/exhibitions", color: "text-chart-5", bg: "bg-chart-5/10", ring: "ring-chart-5/15", glow: "group-hover:shadow-chart-5/10" },
+    { icon: UtensilsCrossed, title: isAr ? "الوصفات" : "Recipes", href: "/recipes", color: "text-chart-4", bg: "bg-chart-4/10", ring: "ring-chart-4/15", glow: "group-hover:shadow-chart-4/10" },
+    { icon: HandHeart, title: isAr ? "الإرشاد" : "Mentorship", href: "/mentorship", color: "text-chart-1", bg: "bg-chart-1/10", ring: "ring-chart-1/15", glow: "group-hover:shadow-chart-1/10" },
+    { icon: ShoppingBag, title: isAr ? "المتجر" : "Shop", href: "/shop", color: "text-primary", bg: "bg-primary/8", ring: "ring-primary/10", glow: "group-hover:shadow-primary/10" },
+    { icon: MessageSquare, title: isAr ? "الرسائل" : "Messages", href: "/messages", color: "text-chart-2", bg: "bg-chart-2/10", ring: "ring-chart-2/15", glow: "group-hover:shadow-chart-2/10" },
   ];
 
   return (
@@ -129,12 +129,12 @@ export default function Dashboard() {
           <div className="grid grid-cols-4 gap-2.5 sm:gap-3 md:grid-cols-4 lg:grid-cols-8">
             {sections.map((s) => (
               <Link key={s.title} to={s.href} className="group">
-                <Card className="h-full border-border/40 bg-card/50 backdrop-blur-sm transition-all duration-300 hover:shadow-xl hover:-translate-y-1.5 hover:border-primary/30 hover:bg-card active:scale-95">
-                  <CardContent className="flex flex-col items-center gap-2.5 p-3 sm:p-4 text-center">
-                    <div className={`flex h-11 w-11 sm:h-12 sm:w-12 items-center justify-center rounded-2xl ${s.bg} transition-all duration-300 group-hover:scale-110 group-hover:shadow-lg ring-2 ring-transparent group-hover:ring-primary/10`}>
-                      <s.icon className={`h-5 w-5 sm:h-6 sm:w-6 ${s.color}`} />
+                <Card className={`h-full border-border/30 bg-card/60 backdrop-blur-sm transition-all duration-300 hover:shadow-xl hover:-translate-y-1.5 hover:border-border/50 hover:bg-card active:scale-95 ${s.glow}`}>
+                  <CardContent className="flex flex-col items-center gap-2 p-3 sm:p-4 text-center">
+                    <div className={`flex h-12 w-12 sm:h-14 sm:w-14 items-center justify-center rounded-2xl ${s.bg} ring-1 ${s.ring} transition-all duration-300 group-hover:scale-110 group-hover:shadow-lg`}>
+                      <s.icon className={`h-5 w-5 sm:h-6 sm:w-6 ${s.color} transition-transform duration-300 group-hover:scale-110`} />
                     </div>
-                    <span className="text-[10px] font-semibold tracking-tight sm:text-xs text-foreground/80 group-hover:text-primary transition-colors leading-tight">{s.title}</span>
+                    <span className="text-[10px] font-semibold tracking-tight sm:text-xs text-foreground/80 group-hover:text-foreground transition-colors leading-tight">{s.title}</span>
                   </CardContent>
                 </Card>
               </Link>
