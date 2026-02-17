@@ -116,19 +116,23 @@ export function ChefsTab() {
       <div className="grid gap-3 grid-cols-2 sm:grid-cols-3 lg:grid-cols-4">
         {filteredChefs.map((chef) => (
           <Card key={chef.user_id} className="group border-border/30 bg-card/60 backdrop-blur-sm transition-all duration-300 hover:shadow-xl hover:-translate-y-1 hover:border-border/50 active:scale-[0.98] h-full">
-            <CardContent className="p-4 h-full">
-              <div className="flex flex-col items-center text-center gap-3 h-full">
+            <CardContent className="p-3 sm:p-4 h-full">
+              <div className="flex flex-col items-center text-center gap-2 h-full">
                 <Link to={`/${chef.username || chef.user_id}`} className="shrink-0">
-                  <Avatar className="h-16 w-16 ring-2 ring-primary/15 shadow-md transition-all duration-300 group-hover:scale-105 group-hover:ring-primary/30 group-hover:shadow-lg">
+                  <Avatar className="h-14 w-14 sm:h-16 sm:w-16 ring-2 ring-primary/15 shadow-md transition-all duration-300 group-hover:scale-105 group-hover:ring-primary/30 group-hover:shadow-lg">
                     <AvatarImage src={chef.avatar_url || undefined} alt={chef.full_name || ""} />
                     <AvatarFallback className="bg-primary/10 text-primary font-bold text-lg">
                       {(chef.full_name || "C")[0].toUpperCase()}
                     </AvatarFallback>
                   </Avatar>
                 </Link>
-                <div className="min-w-0 w-full flex-1 space-y-1">
+                <div className="min-w-0 w-full flex-1 space-y-0.5">
                   <Link to={`/${chef.username || chef.user_id}`} className="block">
-                    <h3 className="truncate text-sm font-bold group-hover:text-primary transition-colors leading-tight inline-flex items-center gap-1">
+                    <h3
+                      className={`font-bold group-hover:text-primary transition-colors leading-tight text-center break-words ${
+                        (chef.full_name || "Chef").length > 16 ? "text-[11px] sm:text-xs" : "text-xs sm:text-sm"
+                      }`}
+                    >
                       {chef.full_name || "Chef"}
                       <ChefBadge userId={chef.user_id} />
                     </h3>
@@ -152,7 +156,7 @@ export function ChefsTab() {
                   )}
                 </div>
                 {user && (
-                  <div className="flex items-center gap-1.5 w-full">
+                  <div className="flex items-center gap-1.5 w-full mt-auto pt-1">
                     <FollowButton userId={chef.user_id} userName={chef.full_name || undefined} fullWidth />
                     <MessageButton userId={chef.user_id} variant="outline" size="sm" />
                   </div>
