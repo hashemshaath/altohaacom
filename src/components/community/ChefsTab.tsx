@@ -152,36 +152,36 @@ export function ChefsTab() {
       {/* Chefs Grid */}
       <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
         {filteredChefs.map((chef) => (
-          <Card key={chef.user_id} className="group border-border/40 transition-all hover:shadow-md hover:-translate-y-0.5 hover:border-primary/20">
+          <Card key={chef.user_id} className="group border-border/30 bg-card/60 backdrop-blur-sm transition-all duration-300 hover:shadow-xl hover:-translate-y-1 hover:border-border/50 active:scale-[0.98]">
             <CardContent className="p-4">
-              <div className="flex items-start gap-3">
+              <div className="flex flex-col items-center text-center gap-3">
                 <Link to={`/${chef.username || chef.user_id}`} className="shrink-0">
-                  <Avatar className="h-11 w-11 ring-2 ring-background shadow-sm transition-transform group-hover:scale-105">
+                  <Avatar className="h-16 w-16 ring-2 ring-primary/15 shadow-md transition-all duration-300 group-hover:scale-105 group-hover:ring-primary/30 group-hover:shadow-lg">
                     <AvatarImage src={chef.avatar_url || undefined} alt={chef.full_name || ""} />
-                    <AvatarFallback className="bg-primary/10 text-primary font-semibold text-sm">
+                    <AvatarFallback className="bg-primary/10 text-primary font-bold text-lg">
                       {(chef.full_name || "C")[0].toUpperCase()}
                     </AvatarFallback>
                   </Avatar>
                 </Link>
-                <div className="min-w-0 flex-1">
+                <div className="min-w-0 w-full space-y-1">
                   <Link to={`/${chef.username || chef.user_id}`} className="block">
-                    <h3 className="truncate text-sm font-semibold group-hover:text-primary transition-colors">
+                    <h3 className="truncate text-sm font-bold group-hover:text-primary transition-colors">
                       {chef.full_name || "Chef"}
                     </h3>
                   </Link>
                   {chef.role && (
-                    <Badge variant="secondary" className="mt-0.5 capitalize text-[10px]">
+                    <Badge variant="secondary" className="capitalize text-[10px] px-2">
                       {t(chef.role as any)}
                     </Badge>
                   )}
                   {chef.specialization && (
-                    <p className="mt-1 flex items-center gap-1 truncate text-xs text-muted-foreground">
+                    <p className="flex items-center justify-center gap-1 truncate text-xs text-muted-foreground">
                       <ChefHat className="h-3 w-3 shrink-0" />
                       {chef.specialization}
                     </p>
                   )}
                   {chef.location && (
-                    <p className="mt-0.5 flex items-center gap-1 text-[10px] text-muted-foreground">
+                    <p className="flex items-center justify-center gap-1 text-[10px] text-muted-foreground">
                       <MapPin className="h-2.5 w-2.5 shrink-0" />
                       {chef.country_code ? `${countryFlag(chef.country_code)} ` : ""}{chef.location}
                     </p>
@@ -191,7 +191,7 @@ export function ChefsTab() {
                   <Button
                     variant={chef.is_following ? "outline" : "default"}
                     size="sm"
-                    className="shrink-0 gap-1 text-xs h-8 rounded-lg"
+                    className="w-full gap-1.5 text-xs h-8 rounded-xl font-semibold transition-all duration-200"
                     onClick={() => handleFollow(chef.user_id, chef.is_following)}
                   >
                     {chef.is_following ? (
@@ -199,9 +199,7 @@ export function ChefsTab() {
                     ) : (
                       <UserPlus className="h-3.5 w-3.5" />
                     )}
-                    <span className="hidden sm:inline">
-                      {chef.is_following ? (isAr ? "إلغاء" : "Unfollow") : (isAr ? "متابعة" : "Follow")}
-                    </span>
+                    {chef.is_following ? (isAr ? "إلغاء المتابعة" : "Unfollow") : (isAr ? "متابعة" : "Follow")}
                   </Button>
                 )}
               </div>
