@@ -9,8 +9,10 @@ import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
 import {
   Image as ImageIcon, X, Globe, Lock, Users as UsersIcon, Loader2, User,
-  Trophy, CalendarDays, Quote, Sparkles, Video,
+  Trophy, CalendarDays, Quote, Sparkles, Video, Clock,
 } from "lucide-react";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { Input } from "@/components/ui/input";
 import { PollComposer } from "./PollComposer";
 import {
   DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger,
@@ -55,6 +57,7 @@ export function PostComposer({ onPosted, replyToPostId, placeholder, compact, au
   const [postType, setPostType] = useState<PostType>("text");
   const [pollData, setPollData] = useState<{ options: string[] } | null>(null);
   const [video, setVideo] = useState<{ file: File; preview: string } | null>(null);
+  const [scheduledAt, setScheduledAt] = useState<string>("");
 
   useEffect(() => {
     if (!user) return;
@@ -160,6 +163,7 @@ export function PostComposer({ onPosted, replyToPostId, placeholder, compact, au
         image_urls: uploadedUrls,
         image_url: uploadedUrls[0] || null,
         video_url: videoUrl,
+        ...(scheduledAt ? { scheduled_at: new Date(scheduledAt).toISOString(), is_scheduled: true } : {}),
       };
       if (replyToPostId) postData.reply_to_post_id = replyToPostId;
 
@@ -227,6 +231,7 @@ export function PostComposer({ onPosted, replyToPostId, placeholder, compact, au
       setImages([]);
       setPostType("text");
       setPollData(null);
+      setScheduledAt("");
       removeVideo();
       onPosted();
     } catch (err: any) {
@@ -385,6 +390,36 @@ export function PostComposer({ onPosted, replyToPostId, placeholder, compact, au
               {!replyToPostId && <PollComposer onPollChange={setPollData} />}
 
               {!replyToPostId && (
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className={cn("h-8 w-8 rounded-full", scheduledAt ? "text-chart-3" : "text-primary")}
+                      title={isAr ? "جدولة المنشور" : "Schedule post"}
+                    >
+                      <Clock className="h-4 w-4" />
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-64 p-3" align="start">
+                    <p className="text-xs font-semibold mb-2">{isAr ? "جدولة النشر" : "Schedule Post"}</p>
+                    <Input
+                      type="datetime-local"
+                      value={scheduledAt}
+                      onChange={(e) => setScheduledAt(e.target.value)}
+                      min={new Date().toISOString().slice(0, 16)}
+                      className="text-xs h-8"
+                    />
+                    {scheduledAt && (
+                      <Button variant="ghost" size="sm" className="mt-1.5 text-xs w-full" onClick={() => setScheduledAt("")}>
+                        {isAr ? "إلغاء الجدولة" : "Remove schedule"}
+                      </Button>
+                    )}
+                  </PopoverContent>
+                </Popover>
+              )}
+
+              {!replyToPostId && (
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
                     <Button variant="ghost" size="sm" className="h-8 gap-1 rounded-full px-2 text-xs text-primary">
@@ -415,13 +450,19 @@ export function PostComposer({ onPosted, replyToPostId, placeholder, compact, au
                   {charsLeft}
                 </span>
               )}
+              {scheduledAt && (
+                <Badge variant="secondary" className="text-[10px] gap-1 text-chart-3">
+                  <Clock className="h-3 w-3" />
+                  {new Date(scheduledAt).toLocaleDateString(isAr ? "ar" : "en", { month: "short", day: "numeric", hour: "2-digit", minute: "2-digit" })}
+                </Badge>
+              )}
               <Button
                 size="sm"
                 className="rounded-full px-5 font-bold"
                 disabled={posting || (content.trim().length === 0 && images.length === 0 && !video) || isOverLimit}
                 onClick={handlePost}
               >
-                {posting ? <Loader2 className="h-4 w-4 animate-spin" /> : (replyToPostId ? (isAr ? "رد" : "Reply") : (isAr ? "نشر" : "Post"))}
+                {posting ? <Loader2 className="h-4 w-4 animate-spin" /> : scheduledAt ? (isAr ? "جدولة" : "Schedule") : (replyToPostId ? (isAr ? "رد" : "Reply") : (isAr ? "نشر" : "Post"))}
               </Button>
             </div>
           </div>

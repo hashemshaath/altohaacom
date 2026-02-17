@@ -666,7 +666,11 @@ export default function Messages() {
                                   <div className={`flex items-center gap-1 mt-1 text-[10px] ${isMine ? "text-primary-foreground/60 justify-end" : "text-muted-foreground"}`}>
                                     {msg.message_type !== "text" && msg.message_type !== "link" && getMessageTypeIcon(msg.message_type)}
                                     <span>{formatMessageDate(msg.created_at)}</span>
-                                    {isMine && (msg.is_read ? <CheckCheck className="h-3 w-3 text-primary-foreground/80" /> : <Check className="h-3 w-3" />)}
+                                    {isMine && (
+                                      msg.is_read 
+                                        ? <span title={msg.read_at ? `${isAr ? "قُرئت" : "Read"} ${new Date(msg.read_at).toLocaleTimeString(isAr ? "ar" : "en", { hour: "2-digit", minute: "2-digit" })}` : ""}><CheckCheck className="h-3 w-3 text-primary-foreground/80" /></span>
+                                        : <Check className="h-3 w-3" />
+                                    )}
                                   </div>
                                 </div>
                               </div>

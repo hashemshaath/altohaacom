@@ -25,6 +25,7 @@ import { MentionText } from "./MentionText";
 import { StoriesBar } from "./StoriesBar";
 import { PollDisplay } from "./PollDisplay";
 import { LiveSessionsSection } from "./LiveSessionsSection";
+import { FeedRecommendations } from "./FeedRecommendations";
 import { cn } from "@/lib/utils";
 
 export interface CommunityPost {
@@ -238,6 +239,9 @@ export function CommunityFeed() {
           placeholder={isAr ? "ماذا يحدث في مجتمع الطهاة؟" : "What's happening in the chef community?"}
         />
       )}
+
+      {/* AI Recommendations */}
+      <FeedRecommendations />
 
       {/* Feed */}
       <div className="divide-y divide-border">
