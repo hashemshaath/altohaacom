@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { AdminAnalyticsWidgets } from "@/components/admin/AdminAnalyticsWidgets";
+import { MLAnalyticsDashboard } from "@/components/admin/MLAnalyticsDashboard";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
@@ -162,6 +163,9 @@ export default function AdminDashboard() {
 
       {/* Analytics Widgets */}
       <AdminAnalyticsWidgets />
+
+      {/* ML-Powered Insights */}
+      <MLAnalyticsDashboard />
 
       <div className="grid gap-6 lg:grid-cols-2">
         {/* Quick Actions */}
