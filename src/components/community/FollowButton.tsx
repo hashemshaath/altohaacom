@@ -12,7 +12,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
-import { UserPlus, UserMinus, Loader2 } from "lucide-react";
+import { UserRoundPlus, UserRoundCheck, Loader2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
 interface FollowButtonProps {
@@ -65,9 +65,9 @@ export function FollowButton({ userId, userName, fullWidth = false, className = 
         {toggleFollow.isPending ? (
           <Loader2 className="h-3.5 w-3.5 animate-spin" />
         ) : isFollowing ? (
-          <UserMinus className="h-3.5 w-3.5" />
+          <UserRoundCheck className="h-3.5 w-3.5" />
         ) : (
-          <UserPlus className="h-3.5 w-3.5" />
+          <UserRoundPlus className="h-3.5 w-3.5" />
         )}
         {isFollowing ? (isAr ? "متابَع" : "Following") : (isAr ? "متابعة" : "Follow")}
       </Button>
