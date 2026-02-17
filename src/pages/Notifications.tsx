@@ -9,6 +9,7 @@ import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Input } from "@/components/ui/input";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { SwipeableNotificationCard } from "@/components/notifications/SwipeableNotificationCard";
 import {
   Select,
   SelectContent,
@@ -344,96 +345,102 @@ export default function Notifications() {
                     {items.map((notification) => {
                       const profile = getProfile(notification.metadata as any);
                       return (
-                        <Card
+                        <SwipeableNotificationCard
                           key={notification.id}
-                          className={cn(
-                            "cursor-pointer transition-all duration-200 hover:shadow-md hover:-translate-y-0.5 group",
-                            !notification.is_read && "border-s-[3px] border-s-primary bg-primary/5"
-                          )}
-                          onClick={() => handleNotificationClick(notification)}
+                          isRead={notification.is_read}
+                          onMarkRead={() => markAsRead(notification.id)}
+                          onDelete={() => deleteNotification(notification.id)}
                         >
-                          <CardContent className="p-4">
-                            <div className="flex items-start gap-3">
-                              {/* Avatar or icon */}
-                              {profile ? (
-                                <div className="relative shrink-0 mt-0.5">
-                                  <Avatar className="h-10 w-10">
-                                    <AvatarImage src={profile.avatar_url || undefined} />
-                                    <AvatarFallback className="text-sm">{(profile.full_name || "U")[0].toUpperCase()}</AvatarFallback>
-                                  </Avatar>
-                                  <span className={cn(
-                                    "absolute -bottom-0.5 -end-0.5 flex h-5 w-5 items-center justify-center rounded-full ring-2 ring-card",
-                                    getTypeColor(notification.type || "info")
-                                  )}>
-                                    {React.cloneElement(getTypeIcon(notification.type || "info") as React.ReactElement, { className: "h-2.5 w-2.5" })}
-                                  </span>
-                                </div>
-                              ) : (
-                                <div className={cn("mt-0.5 rounded-lg p-2 shrink-0", getTypeColor(notification.type || "info"))}>
-                                  {getTypeIcon(notification.type || "info")}
-                                </div>
-                              )}
-                              <div className="flex-1 min-w-0">
-                                <div className="flex items-start justify-between gap-3">
-                                  <div>
-                                    {profile && (
-                                      <p className="text-xs text-muted-foreground mb-0.5">
-                                        {profile.full_name || profile.username}
-                                      </p>
-                                    )}
-                                    <h3 className={cn("text-sm", !notification.is_read ? "font-semibold" : "font-medium")}>
-                                      {isAr && notification.title_ar ? notification.title_ar : notification.title}
-                                    </h3>
-                                    <p className="text-sm text-muted-foreground mt-0.5 line-clamp-2">
-                                      {isAr && notification.body_ar ? notification.body_ar : notification.body}
-                                    </p>
+                          <Card
+                            className={cn(
+                              "cursor-pointer transition-all duration-200 hover:shadow-md hover:-translate-y-0.5 group",
+                              !notification.is_read && "border-s-[3px] border-s-primary bg-primary/5"
+                            )}
+                            onClick={() => handleNotificationClick(notification)}
+                          >
+                            <CardContent className="p-4">
+                              <div className="flex items-start gap-3">
+                                {/* Avatar or icon */}
+                                {profile ? (
+                                  <div className="relative shrink-0 mt-0.5">
+                                    <Avatar className="h-10 w-10">
+                                      <AvatarImage src={profile.avatar_url || undefined} />
+                                      <AvatarFallback className="text-sm">{(profile.full_name || "U")[0].toUpperCase()}</AvatarFallback>
+                                    </Avatar>
+                                    <span className={cn(
+                                      "absolute -bottom-0.5 -end-0.5 flex h-5 w-5 items-center justify-center rounded-full ring-2 ring-card",
+                                      getTypeColor(notification.type || "info")
+                                    )}>
+                                      {React.cloneElement(getTypeIcon(notification.type || "info") as React.ReactElement, { className: "h-2.5 w-2.5" })}
+                                    </span>
                                   </div>
-                                  <div className="flex items-center gap-1 shrink-0 opacity-0 group-hover:opacity-100 transition-opacity">
-                                    {!notification.is_read && (
+                                ) : (
+                                  <div className={cn("mt-0.5 rounded-lg p-2 shrink-0", getTypeColor(notification.type || "info"))}>
+                                    {getTypeIcon(notification.type || "info")}
+                                  </div>
+                                )}
+                                <div className="flex-1 min-w-0">
+                                  <div className="flex items-start justify-between gap-3">
+                                    <div>
+                                      {profile && (
+                                        <p className="text-xs text-muted-foreground mb-0.5">
+                                          {profile.full_name || profile.username}
+                                        </p>
+                                      )}
+                                      <h3 className={cn("text-sm", !notification.is_read ? "font-semibold" : "font-medium")}>
+                                        {isAr && notification.title_ar ? notification.title_ar : notification.title}
+                                      </h3>
+                                      <p className="text-sm text-muted-foreground mt-0.5 line-clamp-2">
+                                        {isAr && notification.body_ar ? notification.body_ar : notification.body}
+                                      </p>
+                                    </div>
+                                    <div className="flex items-center gap-1 shrink-0 opacity-0 group-hover:opacity-100 transition-opacity">
+                                      {!notification.is_read && (
+                                        <Button
+                                          variant="ghost"
+                                          size="icon"
+                                          className="h-7 w-7"
+                                          onClick={(e) => { e.stopPropagation(); markAsRead(notification.id); }}
+                                          title={isAr ? "قراءة" : "Mark as read"}
+                                        >
+                                          <Check className="h-3.5 w-3.5 text-primary" />
+                                        </Button>
+                                      )}
                                       <Button
                                         variant="ghost"
                                         size="icon"
                                         className="h-7 w-7"
-                                        onClick={(e) => { e.stopPropagation(); markAsRead(notification.id); }}
-                                        title={isAr ? "قراءة" : "Mark as read"}
+                                        onClick={(e) => { e.stopPropagation(); deleteNotification(notification.id); }}
                                       >
-                                        <Check className="h-3.5 w-3.5 text-primary" />
+                                        <X className="h-3.5 w-3.5 text-muted-foreground" />
                                       </Button>
+                                    </div>
+                                  </div>
+                                  <div className="flex items-center gap-3 mt-2 text-xs text-muted-foreground flex-wrap">
+                                    <span>
+                                      {toEnglishDigits(formatDistanceToNow(new Date(notification.created_at), {
+                                        addSuffix: true,
+                                        locale: isAr ? ar : enUS,
+                                      }))}
+                                    </span>
+                                    <Badge variant="outline" className="text-[10px] px-1.5 py-0">
+                                      {getTypeLabel(notification.type || "info")}
+                                    </Badge>
+                                    <Badge variant="secondary" className="text-[10px] px-1.5 py-0">
+                                      {getSectionLabel(notification)}
+                                    </Badge>
+                                    {notification.is_read && notification.read_at && (
+                                      <span className="flex items-center gap-1">
+                                        <Check className="h-3 w-3" />
+                                        {isAr ? "تمت القراءة" : "Read"}
+                                      </span>
                                     )}
-                                    <Button
-                                      variant="ghost"
-                                      size="icon"
-                                      className="h-7 w-7"
-                                      onClick={(e) => { e.stopPropagation(); deleteNotification(notification.id); }}
-                                    >
-                                      <X className="h-3.5 w-3.5 text-muted-foreground" />
-                                    </Button>
                                   </div>
                                 </div>
-                                <div className="flex items-center gap-3 mt-2 text-xs text-muted-foreground flex-wrap">
-                                  <span>
-                                    {toEnglishDigits(formatDistanceToNow(new Date(notification.created_at), {
-                                      addSuffix: true,
-                                      locale: isAr ? ar : enUS,
-                                    }))}
-                                  </span>
-                                  <Badge variant="outline" className="text-[10px] px-1.5 py-0">
-                                    {getTypeLabel(notification.type || "info")}
-                                  </Badge>
-                                  <Badge variant="secondary" className="text-[10px] px-1.5 py-0">
-                                    {getSectionLabel(notification)}
-                                  </Badge>
-                                  {notification.is_read && notification.read_at && (
-                                    <span className="flex items-center gap-1">
-                                      <Check className="h-3 w-3" />
-                                      {isAr ? "تمت القراءة" : "Read"}
-                                    </span>
-                                  )}
-                                </div>
                               </div>
-                            </div>
-                          </CardContent>
-                        </Card>
+                            </CardContent>
+                          </Card>
+                        </SwipeableNotificationCard>
                       );
                     })}
                   </div>
