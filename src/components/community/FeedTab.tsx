@@ -99,14 +99,25 @@ export function FeedTab() {
   const handlePost = async () => {
     if (!user || !newPost.trim()) return;
     setPosting(true);
-    const { error } = await supabase.from("posts").insert({
+    const { data: insertedPost, error } = await supabase.from("posts").insert({
       author_id: user.id,
       content: newPost.trim(),
-    });
+    }).select("id").single();
     setPosting(false);
     if (error) {
       toast({ variant: "destructive", title: "Error", description: error.message });
     } else {
+      // Trigger AI moderation
+      try {
+        await fetch(
+          `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/moderate-content`,
+          {
+            method: "POST",
+            headers: { "Content-Type": "application/json", Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY}` },
+            body: JSON.stringify({ post_id: insertedPost.id, content: newPost.trim(), user_id: user.id }),
+          }
+        );
+      } catch {}
       setNewPost("");
       fetchPosts();
     }

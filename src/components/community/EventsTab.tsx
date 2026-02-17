@@ -163,7 +163,10 @@ export function EventsTab() {
       if (note?.trim()) {
         const event = events.find(e => e.id === eventId);
         const postContent = `${note.trim()}\n\n${isAr ? "📅 سجلت في فعالية:" : "📅 Registered for event:"} ${event?.title || ""}\n\n#${isAr ? "فعالية" : "event"} #${isAr ? "تسجيل" : "registration"}`;
-        await supabase.from("posts").insert({ author_id: user.id, content: postContent });
+        const { data: insertedPost } = await supabase.from("posts").insert({ author_id: user.id, content: postContent }).select("id").single();
+        if (insertedPost) {
+          try { await fetch(`${import.meta.env.VITE_SUPABASE_URL}/functions/v1/moderate-content`, { method: "POST", headers: { "Content-Type": "application/json", Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY}` }, body: JSON.stringify({ post_id: insertedPost.id, content: postContent, user_id: user.id }) }); } catch {}
+        }
       }
     }
     setEvents((prev) => prev.map((e) => e.id === eventId ? { ...e, is_attending: !isAttending, attendees_count: isAttending ? e.attendees_count - 1 : e.attendees_count + 1 } : e));

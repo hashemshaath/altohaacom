@@ -4374,6 +4374,60 @@ export type Database = {
           },
         ]
       }
+      content_moderation_log: {
+        Row: {
+          ai_categories: string[] | null
+          ai_confidence: number | null
+          ai_decision: string
+          ai_explanation: string | null
+          ai_explanation_ar: string | null
+          content_text: string | null
+          created_at: string
+          entity_id: string
+          entity_type: string
+          final_decision: string | null
+          id: string
+          image_urls: string[] | null
+          reviewed_at: string | null
+          reviewed_by: string | null
+          user_id: string | null
+        }
+        Insert: {
+          ai_categories?: string[] | null
+          ai_confidence?: number | null
+          ai_decision?: string
+          ai_explanation?: string | null
+          ai_explanation_ar?: string | null
+          content_text?: string | null
+          created_at?: string
+          entity_id: string
+          entity_type?: string
+          final_decision?: string | null
+          id?: string
+          image_urls?: string[] | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          ai_categories?: string[] | null
+          ai_confidence?: number | null
+          ai_decision?: string
+          ai_explanation?: string | null
+          ai_explanation_ar?: string | null
+          content_text?: string | null
+          created_at?: string
+          entity_id?: string
+          entity_type?: string
+          final_decision?: string | null
+          id?: string
+          image_urls?: string[] | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          user_id?: string | null
+        }
+        Relationships: []
+      }
       content_reports: {
         Row: {
           content_id: string
