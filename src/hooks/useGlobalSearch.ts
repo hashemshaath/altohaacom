@@ -7,7 +7,7 @@ type CompetitionStatus = Database["public"]["Enums"]["competition_status"];
 
 export interface SearchFilters {
   query: string;
-  type: "all" | "competitions" | "articles" | "members";
+  type: "all" | "competitions" | "articles" | "members" | "posts";
   // Competition filters
   competitionStatus?: CompetitionStatus | "all";
   isVirtual?: boolean | null;
@@ -67,10 +67,23 @@ export interface MemberResult {
   is_verified: boolean | null;
 }
 
+export interface PostResult {
+  id: string;
+  content: string;
+  image_url: string | null;
+  video_url: string | null;
+  created_at: string;
+  author_id: string;
+  author_name: string | null;
+  author_username: string | null;
+  author_avatar: string | null;
+}
+
 export interface SearchResults {
   competitions: CompetitionResult[];
   articles: ArticleResult[];
   members: MemberResult[];
+  posts: PostResult[];
 }
 
 const DEFAULT_FILTERS: SearchFilters = {
@@ -215,14 +228,58 @@ export function useGlobalSearch() {
     enabled: filters.type === "all" || filters.type === "members",
   });
 
+  // Search posts
+  const { data: postsData, isLoading: postsLoading } = useQuery({
+    queryKey: ["search-posts", filters.query],
+    queryFn: async () => {
+      if (!filters.query) return [];
+      
+      const { data: posts, error } = await supabase
+        .from("posts")
+        .select("id, content, image_url, video_url, created_at, author_id")
+        .eq("moderation_status", "approved")
+        .ilike("content", `%${filters.query}%`)
+        .order("created_at", { ascending: false })
+        .limit(20);
+
+      if (error) throw error;
+      if (!posts?.length) return [];
+
+      const authorIds = [...new Set(posts.map(p => p.author_id))];
+      const { data: profiles } = await supabase
+        .from("profiles")
+        .select("user_id, full_name, username, avatar_url")
+        .in("user_id", authorIds);
+      
+      const profileMap = new Map(profiles?.map(p => [p.user_id, p]) || []);
+
+      return posts.map(p => {
+        const profile = profileMap.get(p.author_id);
+        return {
+          id: p.id,
+          content: p.content,
+          image_url: p.image_url,
+          video_url: (p as any).video_url || null,
+          created_at: p.created_at,
+          author_id: p.author_id,
+          author_name: profile?.full_name || null,
+          author_username: profile?.username || null,
+          author_avatar: profile?.avatar_url || null,
+        };
+      }) as PostResult[];
+    },
+    enabled: filters.type === "all" || filters.type === "posts",
+  });
+
   const results: SearchResults = {
     competitions: competitionsData || [],
     articles: articlesData || [],
     members: membersData || [],
+    posts: postsData || [],
   };
 
-  const totalResults = results.competitions.length + results.articles.length + results.members.length;
-  const isLoading = competitionsLoading || articlesLoading || membersLoading;
+  const totalResults = results.competitions.length + results.articles.length + results.members.length + results.posts.length;
+  const isLoading = competitionsLoading || articlesLoading || membersLoading || postsLoading;
 
   return {
     filters,

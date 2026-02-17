@@ -23,6 +23,7 @@ import { PostReactions } from "./PostReactions";
 import { ChefBadge } from "./ChefBadge";
 import { MentionText } from "./MentionText";
 import { StoriesBar } from "./StoriesBar";
+import { PollDisplay } from "./PollDisplay";
 import { LiveSessionsSection } from "./LiveSessionsSection";
 import { cn } from "@/lib/utils";
 
@@ -32,6 +33,7 @@ export interface CommunityPost {
   image_url: string | null;
   image_urls: string[];
   link_url: string | null;
+  video_url: string | null;
   created_at: string;
   author_id: string;
   author_avatar: string | null;
@@ -111,6 +113,7 @@ export function CommunityFeed() {
         image_url: p.image_url,
         image_urls: (p as any).image_urls || [],
         link_url: (p as any).link_url || null,
+        video_url: (p as any).video_url || null,
         created_at: p.created_at,
         author_id: p.author_id,
         author_avatar: profile?.avatar_url || null,
@@ -348,6 +351,21 @@ export function CommunityFeed() {
                       ))}
                     </div>
                   )}
+
+                  {/* Video */}
+                  {post.video_url && (
+                    <div className="mt-2 overflow-hidden rounded-2xl border border-border" onClick={(e) => e.stopPropagation()}>
+                      <video
+                        src={post.video_url}
+                        controls
+                        preload="metadata"
+                        className="w-full max-h-[512px]"
+                      />
+                    </div>
+                  )}
+
+                  {/* Poll */}
+                  <PollDisplay postId={post.id} />
 
                   {/* Link preview */}
                   {post.link_url && (

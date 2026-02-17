@@ -27,6 +27,7 @@ import {
   CheckCircle2,
   Clock,
   Trash2,
+  MessageSquare,
 } from "lucide-react";
 import { format } from "date-fns";
 import { useGlobalSearch, type SearchFilters } from "@/hooks/useGlobalSearch";
@@ -308,6 +309,10 @@ export default function Search() {
               <User className="h-4 w-4" />
               {t("members")} {filters.query && `(${results.members.length})`}
             </TabsTrigger>
+            <TabsTrigger value="posts" className="gap-2">
+              <MessageSquare className="h-4 w-4" />
+              {language === "ar" ? "المنشورات" : "Posts"} {filters.query && `(${results.posts.length})`}
+            </TabsTrigger>
           </TabsList>
 
           {/* All Results */}
@@ -467,6 +472,37 @@ export default function Search() {
                     language={language}
                     t={t}
                   />
+                ))}
+              </div>
+            )}
+          </TabsContent>
+
+          {/* Posts Tab */}
+          <TabsContent value="posts">
+            {isLoading ? (
+              <SearchSkeleton />
+            ) : results.posts.length === 0 ? (
+              <EmptySearch message={filters.query ? (language === "ar" ? "لا توجد منشورات" : "No posts found") : (language === "ar" ? "ابحث عن منشورات" : "Search for posts")} />
+            ) : (
+              <div className="space-y-3">
+                {results.posts.map((post) => (
+                  <Link key={post.id} to={`/community`}>
+                    <Card className="transition-all hover:shadow-md hover:border-primary/15 p-4">
+                      <div className="flex gap-3">
+                        <Avatar className="h-9 w-9 shrink-0">
+                          <AvatarImage src={post.author_avatar || undefined} />
+                          <AvatarFallback className="bg-primary/10 text-primary text-xs">{(post.author_name || "C")[0]}</AvatarFallback>
+                        </Avatar>
+                        <div className="min-w-0 flex-1">
+                          <div className="flex items-center gap-2">
+                            <span className="text-sm font-semibold truncate">{post.author_name || "Chef"}</span>
+                            {post.author_username && <span className="text-xs text-muted-foreground">@{post.author_username}</span>}
+                          </div>
+                          <p className="mt-1 text-sm text-muted-foreground line-clamp-3 whitespace-pre-wrap">{post.content}</p>
+                        </div>
+                      </div>
+                    </Card>
+                  </Link>
                 ))}
               </div>
             )}
