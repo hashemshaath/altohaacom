@@ -1,5 +1,5 @@
-import { useState, useMemo } from "react";
-import { Bell, Check, CheckCheck, Trash2, X, Filter, Info, AlertTriangle, CircleCheck, CircleX, ShoppingCart, Trophy, FileText, Building2, GraduationCap, Users, Handshake, HeadphonesIcon, CreditCard, CalendarDays, Settings } from "lucide-react";
+import React, { useState, useMemo } from "react";
+import { Bell, Check, CheckCheck, Trash2, X, Filter, Info, AlertTriangle, CircleCheck, CircleX, ShoppingCart, Trophy, FileText, Building2, GraduationCap, Users, Handshake, HeadphonesIcon, CreditCard, CalendarDays, Settings, Search } from "lucide-react";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { Button } from "@/components/ui/button";
@@ -7,6 +7,8 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Input } from "@/components/ui/input";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   Select,
   SelectContent,
@@ -15,6 +17,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useNotifications } from "@/hooks/useNotifications";
+import { useNotificationProfiles } from "@/hooks/useNotificationProfiles";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { formatDistanceToNow, format, isToday, isYesterday } from "date-fns";
 import { ar, enUS } from "date-fns/locale";
@@ -68,11 +71,13 @@ function categorizeNotification(n: { link?: string | null; title?: string; title
 
 export default function Notifications() {
   const { notifications, unreadCount, markAsRead, markAllAsRead, deleteNotification, clearAllRead, loading } = useNotifications();
+  const { getProfile } = useNotificationProfiles(notifications);
   const { language } = useLanguage();
   const navigate = useNavigate();
   const [filter, setFilter] = useState("all");
   const [typeFilter, setTypeFilter] = useState("all");
   const [sectionFilter, setSectionFilter] = useState<NotificationSection>("all");
+  const [searchQuery, setSearchQuery] = useState("");
   const isAr = language === "ar";
 
   const sectionCounts = useMemo(() => {
@@ -88,7 +93,12 @@ export default function Notifications() {
     const matchesRead = filter === "all" || (filter === "unread" ? !n.is_read : n.is_read);
     const matchesType = typeFilter === "all" || n.type === typeFilter;
     const matchesSection = sectionFilter === "all" || categorizeNotification(n) === sectionFilter;
-    return matchesRead && matchesType && matchesSection;
+    const matchesSearch = !searchQuery || 
+      (n.title || "").toLowerCase().includes(searchQuery.toLowerCase()) ||
+      (n.title_ar || "").toLowerCase().includes(searchQuery.toLowerCase()) ||
+      (n.body || "").toLowerCase().includes(searchQuery.toLowerCase()) ||
+      (n.body_ar || "").toLowerCase().includes(searchQuery.toLowerCase());
+    return matchesRead && matchesType && matchesSection && matchesSearch;
   });
 
   // Group by date
@@ -146,7 +156,12 @@ export default function Notifications() {
     }
   };
 
-  // Active sections (only show tabs that have notifications)
+  // Bulk mark filtered as read
+  const markFilteredAsRead = async () => {
+    const unreadFiltered = filteredNotifications.filter((n) => !n.is_read);
+    await Promise.allSettled(unreadFiltered.map((n) => markAsRead(n.id)));
+  };
+
   const activeSections = sectionConfig.filter(
     (s) => s.key === "all" || (sectionCounts[s.key] || 0) > 0
   );
@@ -174,6 +189,10 @@ export default function Notifications() {
               </div>
             </div>
             <div className="flex items-center gap-2">
+              <Button variant="outline" size="sm" onClick={() => navigate("/notification-preferences")}>
+                <Settings className="me-2 h-4 w-4" />
+                {isAr ? "الإعدادات" : "Settings"}
+              </Button>
               {unreadCount > 0 && (
                 <Button variant="outline" size="sm" onClick={markAllAsRead}>
                   <CheckCheck className="me-2 h-4 w-4" />
@@ -209,6 +228,17 @@ export default function Notifications() {
                 <p className="text-xl font-bold">{toEnglishDigits(notifications.length - unreadCount)}</p>
               </CardContent>
             </Card>
+          </div>
+
+          {/* Search */}
+          <div className="relative">
+            <Search className="absolute start-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+            <Input
+              placeholder={isAr ? "بحث في الإشعارات..." : "Search notifications..."}
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="ps-10"
+            />
           </div>
 
           {/* Section Tabs */}
@@ -258,6 +288,12 @@ export default function Notifications() {
                 <SelectItem value="error">{isAr ? "خطأ" : "Error"}</SelectItem>
               </SelectContent>
             </Select>
+            {filter === "unread" && filteredNotifications.some((n) => !n.is_read) && (
+              <Button variant="ghost" size="sm" onClick={markFilteredAsRead} className="text-xs text-primary">
+                <CheckCheck className="me-1 h-3 w-3" />
+                {isAr ? "قراءة المعروضة" : "Mark visible read"}
+              </Button>
+            )}
           </div>
 
           {/* Notifications List */}
@@ -267,7 +303,7 @@ export default function Notifications() {
                 <Card key={i}>
                   <CardContent className="p-4">
                     <div className="flex items-start gap-3">
-                      <Skeleton className="h-10 w-10 rounded-lg shrink-0" />
+                      <Skeleton className="h-10 w-10 rounded-full shrink-0" />
                       <div className="flex-1 space-y-2">
                         <Skeleton className="h-4 w-3/4" />
                         <Skeleton className="h-3 w-1/2" />
@@ -288,7 +324,9 @@ export default function Notifications() {
                   <Bell className="h-6 w-6 text-muted-foreground" />
                 </div>
                 <p className="text-muted-foreground">
-                  {filter === "unread"
+                  {searchQuery
+                    ? (isAr ? "لا توجد نتائج" : "No results found")
+                    : filter === "unread"
                     ? (isAr ? "لا توجد إشعارات غير مقروءة" : "No unread notifications")
                     : (isAr ? "لا توجد إشعارات" : "No notifications")}
                 </p>
@@ -303,64 +341,101 @@ export default function Notifications() {
                 <div key={dateLabel}>
                   <p className="mb-3 text-sm font-medium text-muted-foreground">{dateLabel}</p>
                   <div className="space-y-2">
-                    {items.map((notification) => (
-                      <Card
-                        key={notification.id}
-                        className={cn(
-                          "cursor-pointer transition-all duration-200 hover:shadow-md hover:-translate-y-0.5",
-                          !notification.is_read && "border-s-[3px] border-s-primary bg-primary/5"
-                        )}
-                        onClick={() => handleNotificationClick(notification)}
-                      >
-                        <CardContent className="p-4">
-                          <div className="flex items-start gap-3">
-                            <div className={cn("mt-0.5 rounded-lg p-2 shrink-0", getTypeColor(notification.type || "info"))}>
-                              {getTypeIcon(notification.type || "info")}
-                            </div>
-                            <div className="flex-1 min-w-0">
-                              <div className="flex items-start justify-between gap-3">
-                                <div>
-                                  <h3 className={cn("text-sm", !notification.is_read ? "font-semibold" : "font-medium")}>
-                                    {isAr && notification.title_ar ? notification.title_ar : notification.title}
-                                  </h3>
-                                  <p className="text-sm text-muted-foreground mt-0.5 line-clamp-2">
-                                    {isAr && notification.body_ar ? notification.body_ar : notification.body}
-                                  </p>
-                                </div>
-                                <Button
-                                  variant="ghost"
-                                  size="icon"
-                                  className="h-7 w-7 shrink-0"
-                                  onClick={(e) => { e.stopPropagation(); deleteNotification(notification.id); }}
-                                >
-                                  <X className="h-3.5 w-3.5 text-muted-foreground" />
-                                </Button>
-                              </div>
-                              <div className="flex items-center gap-3 mt-2 text-xs text-muted-foreground flex-wrap">
-                                <span>
-                                  {toEnglishDigits(formatDistanceToNow(new Date(notification.created_at), {
-                                    addSuffix: true,
-                                    locale: isAr ? ar : enUS,
-                                  }))}
-                                </span>
-                                <Badge variant="outline" className="text-[10px] px-1.5 py-0">
-                                  {getTypeLabel(notification.type || "info")}
-                                </Badge>
-                                <Badge variant="secondary" className="text-[10px] px-1.5 py-0">
-                                  {getSectionLabel(notification)}
-                                </Badge>
-                                {notification.is_read && notification.read_at && (
-                                  <span className="flex items-center gap-1">
-                                    <Check className="h-3 w-3" />
-                                    {isAr ? "تمت القراءة" : "Read"}
+                    {items.map((notification) => {
+                      const profile = getProfile(notification.metadata as any);
+                      return (
+                        <Card
+                          key={notification.id}
+                          className={cn(
+                            "cursor-pointer transition-all duration-200 hover:shadow-md hover:-translate-y-0.5 group",
+                            !notification.is_read && "border-s-[3px] border-s-primary bg-primary/5"
+                          )}
+                          onClick={() => handleNotificationClick(notification)}
+                        >
+                          <CardContent className="p-4">
+                            <div className="flex items-start gap-3">
+                              {/* Avatar or icon */}
+                              {profile ? (
+                                <div className="relative shrink-0 mt-0.5">
+                                  <Avatar className="h-10 w-10">
+                                    <AvatarImage src={profile.avatar_url || undefined} />
+                                    <AvatarFallback className="text-sm">{(profile.full_name || "U")[0].toUpperCase()}</AvatarFallback>
+                                  </Avatar>
+                                  <span className={cn(
+                                    "absolute -bottom-0.5 -end-0.5 flex h-5 w-5 items-center justify-center rounded-full ring-2 ring-card",
+                                    getTypeColor(notification.type || "info")
+                                  )}>
+                                    {React.cloneElement(getTypeIcon(notification.type || "info") as React.ReactElement, { className: "h-2.5 w-2.5" })}
                                   </span>
-                                )}
+                                </div>
+                              ) : (
+                                <div className={cn("mt-0.5 rounded-lg p-2 shrink-0", getTypeColor(notification.type || "info"))}>
+                                  {getTypeIcon(notification.type || "info")}
+                                </div>
+                              )}
+                              <div className="flex-1 min-w-0">
+                                <div className="flex items-start justify-between gap-3">
+                                  <div>
+                                    {profile && (
+                                      <p className="text-xs text-muted-foreground mb-0.5">
+                                        {profile.full_name || profile.username}
+                                      </p>
+                                    )}
+                                    <h3 className={cn("text-sm", !notification.is_read ? "font-semibold" : "font-medium")}>
+                                      {isAr && notification.title_ar ? notification.title_ar : notification.title}
+                                    </h3>
+                                    <p className="text-sm text-muted-foreground mt-0.5 line-clamp-2">
+                                      {isAr && notification.body_ar ? notification.body_ar : notification.body}
+                                    </p>
+                                  </div>
+                                  <div className="flex items-center gap-1 shrink-0 opacity-0 group-hover:opacity-100 transition-opacity">
+                                    {!notification.is_read && (
+                                      <Button
+                                        variant="ghost"
+                                        size="icon"
+                                        className="h-7 w-7"
+                                        onClick={(e) => { e.stopPropagation(); markAsRead(notification.id); }}
+                                        title={isAr ? "قراءة" : "Mark as read"}
+                                      >
+                                        <Check className="h-3.5 w-3.5 text-primary" />
+                                      </Button>
+                                    )}
+                                    <Button
+                                      variant="ghost"
+                                      size="icon"
+                                      className="h-7 w-7"
+                                      onClick={(e) => { e.stopPropagation(); deleteNotification(notification.id); }}
+                                    >
+                                      <X className="h-3.5 w-3.5 text-muted-foreground" />
+                                    </Button>
+                                  </div>
+                                </div>
+                                <div className="flex items-center gap-3 mt-2 text-xs text-muted-foreground flex-wrap">
+                                  <span>
+                                    {toEnglishDigits(formatDistanceToNow(new Date(notification.created_at), {
+                                      addSuffix: true,
+                                      locale: isAr ? ar : enUS,
+                                    }))}
+                                  </span>
+                                  <Badge variant="outline" className="text-[10px] px-1.5 py-0">
+                                    {getTypeLabel(notification.type || "info")}
+                                  </Badge>
+                                  <Badge variant="secondary" className="text-[10px] px-1.5 py-0">
+                                    {getSectionLabel(notification)}
+                                  </Badge>
+                                  {notification.is_read && notification.read_at && (
+                                    <span className="flex items-center gap-1">
+                                      <Check className="h-3 w-3" />
+                                      {isAr ? "تمت القراءة" : "Read"}
+                                    </span>
+                                  )}
+                                </div>
                               </div>
                             </div>
-                          </div>
-                        </CardContent>
-                      </Card>
-                    ))}
+                          </CardContent>
+                        </Card>
+                      );
+                    })}
                   </div>
                 </div>
               ))}

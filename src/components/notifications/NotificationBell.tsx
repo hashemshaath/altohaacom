@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Bell, ShoppingCart, CheckCircle, Trophy, FileText, Users, Heart, MessageCircle, UserPlus, Radio, Eye, Flame } from "lucide-react";
+import { Bell, ShoppingCart, CheckCircle, Trophy, FileText, Users, Heart, MessageCircle, UserPlus, Radio, Eye, Flame, Settings } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu, DropdownMenuContent, DropdownMenuItem,
@@ -7,7 +7,9 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Badge } from "@/components/ui/badge";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useNotifications } from "@/hooks/useNotifications";
+import { useNotificationProfiles } from "@/hooks/useNotificationProfiles";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useNavigate } from "react-router-dom";
 import { toEnglishDigits } from "@/lib/formatNumber";
@@ -19,7 +21,6 @@ function categorizeNotification(notification: { link?: string | null; title?: st
   const link = notification.link || "";
   const title = (notification.title || "").toLowerCase();
   const type = notification.type || "";
-  // Social notifications
   if (["reaction", "follow", "follow_request", "story_view", "live_session", "comment", "mention"].includes(type)) return "social";
   if (link.includes("/community") || title.includes("follow") || title.includes("react") || title.includes("متابع") || title.includes("تفاعل")) return "social";
   if (link.includes("/admin/") || title.includes("approv") || title.includes("review") || title.includes("verif") || title.includes("موافق") || title.includes("مراجع") || title.includes("توثيق")) return "approvals";
@@ -46,9 +47,40 @@ function formatRelativeTime(dateStr: string, isAr: boolean): string {
   return toEnglishDigits(date.toLocaleDateString(isAr ? "ar-SA" : "en-US", { month: "short", day: "numeric" }));
 }
 
+/** Group similar notifications (same type within 1 hour) */
+function groupNotifications(notifications: any[]) {
+  const groups: { key: string; items: any[]; type: string | null }[] = [];
+  const used = new Set<string>();
+
+  for (const n of notifications) {
+    if (used.has(n.id)) continue;
+    const type = n.type || "info";
+    const similar = notifications.filter(
+      (other) =>
+        !used.has(other.id) &&
+        other.type === type &&
+        other.id !== n.id &&
+        Math.abs(new Date(other.created_at).getTime() - new Date(n.created_at).getTime()) < 3600000
+    );
+
+    if (similar.length >= 2) {
+      // Group 3+ similar notifications
+      const all = [n, ...similar];
+      all.forEach((item) => used.add(item.id));
+      groups.push({ key: `group-${n.id}`, items: all, type });
+    } else {
+      used.add(n.id);
+      groups.push({ key: n.id, items: [n], type });
+    }
+  }
+
+  return groups;
+}
+
 export const NotificationBell = React.forwardRef<HTMLButtonElement, Record<string, never>>(function NotificationBell(_props, _ref) {
   const { notifications, unreadCount, markAsRead, markAllAsRead, loading } = useNotifications();
-  const { language, t } = useLanguage();
+  const { getProfile } = useNotificationProfiles(notifications);
+  const { language } = useLanguage();
   const navigate = useNavigate();
   const isAr = language === "ar";
   const [category, setCategory] = useState<NotificationCategory>("all");
@@ -57,6 +89,8 @@ export const NotificationBell = React.forwardRef<HTMLButtonElement, Record<strin
     ? notifications
     : notifications.filter(n => categorizeNotification(n) === category);
 
+  const grouped = groupNotifications(filteredNotifications.slice(0, 30));
+
   const handleNotificationClick = async (notification: typeof notifications[0]) => {
     await markAsRead(notification.id);
     if (notification.link) navigate(notification.link);
@@ -64,15 +98,15 @@ export const NotificationBell = React.forwardRef<HTMLButtonElement, Record<strin
 
   const getNotificationIcon = (type: string | null) => {
     switch (type) {
-      case "reaction": return <Flame className="h-4 w-4" />;
-      case "follow": case "follow_request": return <UserPlus className="h-4 w-4" />;
-      case "comment": case "mention": return <MessageCircle className="h-4 w-4" />;
-      case "story_view": return <Eye className="h-4 w-4" />;
-      case "live_session": return <Radio className="h-4 w-4" />;
-      case "success": return <CheckCircle className="h-4 w-4" />;
-      case "warning": return <Trophy className="h-4 w-4" />;
-      case "error": return <Bell className="h-4 w-4" />;
-      default: return <Bell className="h-4 w-4" />;
+      case "reaction": return <Flame className="h-3.5 w-3.5" />;
+      case "follow": case "follow_request": return <UserPlus className="h-3.5 w-3.5" />;
+      case "comment": case "mention": return <MessageCircle className="h-3.5 w-3.5" />;
+      case "story_view": return <Eye className="h-3.5 w-3.5" />;
+      case "live_session": return <Radio className="h-3.5 w-3.5" />;
+      case "success": return <CheckCircle className="h-3.5 w-3.5" />;
+      case "warning": return <Trophy className="h-3.5 w-3.5" />;
+      case "error": return <Bell className="h-3.5 w-3.5" />;
+      default: return <Bell className="h-3.5 w-3.5" />;
     }
   };
 
@@ -99,11 +133,9 @@ export const NotificationBell = React.forwardRef<HTMLButtonElement, Record<strin
     general: { en: "General", ar: "عام", icon: <FileText className="h-3 w-3" /> },
   };
 
-  // Get the correct title/body based on language
   const getTitle = (n: typeof notifications[0]) => {
     if (isAr && n.title_ar) return n.title_ar;
     if (!isAr && n.title) return n.title;
-    // Fallback: prefer Arabic for Arabic locale, English otherwise
     return isAr ? (n.title_ar || n.title) : (n.title || n.title_ar);
   };
 
@@ -128,14 +160,19 @@ export const NotificationBell = React.forwardRef<HTMLButtonElement, Record<strin
           )}
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent align="end" className={cn("w-[380px]", isAr && "text-right")}>
+      <DropdownMenuContent align="end" className={cn("w-[400px]", isAr && "text-right")}>
         <div className="flex items-center justify-between px-4 py-3 border-b border-border">
           <h3 className="font-bold text-base">{isAr ? "الإشعارات" : "Notifications"}</h3>
-          {unreadCount > 0 && (
-            <Button variant="ghost" size="sm" onClick={markAllAsRead} className="text-xs h-7 text-primary">
-              {isAr ? "قراءة الكل" : "Mark all read"}
+          <div className="flex items-center gap-1">
+            {unreadCount > 0 && (
+              <Button variant="ghost" size="sm" onClick={markAllAsRead} className="text-xs h-7 text-primary">
+                {isAr ? "قراءة الكل" : "Mark all read"}
+              </Button>
+            )}
+            <Button variant="ghost" size="icon" className="h-7 w-7" onClick={(e) => { e.preventDefault(); navigate("/notification-preferences"); }}>
+              <Settings className="h-3.5 w-3.5 text-muted-foreground" />
             </Button>
-          )}
+          </div>
         </div>
 
         {/* Category chips */}
@@ -160,50 +197,119 @@ export const NotificationBell = React.forwardRef<HTMLButtonElement, Record<strin
           })}
         </div>
 
-        <ScrollArea className="h-[340px]">
+        <ScrollArea className="h-[380px]">
           {loading ? (
             <div className="flex items-center justify-center py-8">
               <div className="h-6 w-6 animate-spin rounded-full border-2 border-primary border-t-transparent" />
             </div>
-          ) : filteredNotifications.length === 0 ? (
+          ) : grouped.length === 0 ? (
             <div className="py-12 text-center">
               <Bell className="mx-auto mb-2 h-8 w-8 text-muted-foreground/30" />
               <p className="text-sm text-muted-foreground">{isAr ? "لا توجد إشعارات" : "No notifications"}</p>
             </div>
           ) : (
-            filteredNotifications.map((notification) => (
-              <DropdownMenuItem
-                key={notification.id}
-                className={cn(
-                  "flex items-start gap-3 p-3 cursor-pointer transition-colors focus:bg-muted/50",
-                  !notification.is_read && "bg-primary/5"
-                )}
-                onClick={() => handleNotificationClick(notification)}
-              >
-                <span className={cn(
-                  "flex h-8 w-8 shrink-0 items-center justify-center rounded-full mt-0.5",
-                  getNotificationIconColor(notification.type)
-                )}>
-                  {getNotificationIcon(notification.type)}
-                </span>
-                <div className="flex-1 min-w-0">
-                  <p className={cn("text-sm leading-snug", !notification.is_read && "font-semibold")}>
-                    {getTitle(notification)}
-                  </p>
-                  {getBody(notification) && (
-                    <p className="text-xs text-muted-foreground mt-0.5 line-clamp-2">
-                      {getBody(notification)}
-                    </p>
+            grouped.map((group) => {
+              if (group.items.length > 1) {
+                // Grouped notification
+                const first = group.items[0];
+                const count = group.items.length;
+                const anyUnread = group.items.some((i) => !i.is_read);
+                const typeLabel = first.type === "reaction"
+                  ? (isAr ? "تفاعل" : "reactions")
+                  : first.type === "follow"
+                  ? (isAr ? "متابعة" : "follows")
+                  : first.type === "story_view"
+                  ? (isAr ? "مشاهدة" : "story views")
+                  : (isAr ? "إشعار" : "notifications");
+
+                return (
+                  <DropdownMenuItem
+                    key={group.key}
+                    className={cn(
+                      "flex items-start gap-3 p-3 cursor-pointer transition-colors focus:bg-muted/50",
+                      anyUnread && "bg-primary/5"
+                    )}
+                    onClick={() => navigate("/notifications")}
+                  >
+                    {/* Stacked avatars */}
+                    <div className="relative shrink-0 w-9 h-9 mt-0.5">
+                      <div className={cn("flex h-9 w-9 items-center justify-center rounded-full", getNotificationIconColor(first.type))}>
+                        {getNotificationIcon(first.type)}
+                      </div>
+                      <Badge className="absolute -bottom-1 -end-1 h-4 min-w-4 text-[9px] px-1 justify-center">
+                        {count}
+                      </Badge>
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <p className={cn("text-sm leading-snug", anyUnread && "font-semibold")}>
+                        {toEnglishDigits(count.toString())} {typeLabel}
+                      </p>
+                      <p className="text-xs text-muted-foreground mt-0.5 line-clamp-1">
+                        {getTitle(first)} {isAr ? "و أخرى" : "and more"}
+                      </p>
+                      <p className="text-[10px] text-muted-foreground/70 mt-1">
+                        {formatRelativeTime(first.created_at, isAr)}
+                      </p>
+                    </div>
+                    {anyUnread && <div className="h-2 w-2 rounded-full bg-primary flex-shrink-0 mt-2 animate-pulse" />}
+                  </DropdownMenuItem>
+                );
+              }
+
+              // Single notification with avatar
+              const notification = group.items[0];
+              const profile = getProfile(notification.metadata as Record<string, any> | null);
+
+              return (
+                <DropdownMenuItem
+                  key={group.key}
+                  className={cn(
+                    "flex items-start gap-3 p-3 cursor-pointer transition-colors focus:bg-muted/50",
+                    !notification.is_read && "bg-primary/5"
                   )}
-                  <p className="text-[10px] text-muted-foreground/70 mt-1">
-                    {formatRelativeTime(notification.created_at, isAr)}
-                  </p>
-                </div>
-                {!notification.is_read && (
-                  <div className="h-2 w-2 rounded-full bg-primary flex-shrink-0 mt-2 animate-pulse" />
-                )}
-              </DropdownMenuItem>
-            ))
+                  onClick={() => handleNotificationClick(notification)}
+                >
+                  {/* Avatar or icon */}
+                  {profile ? (
+                    <div className="relative shrink-0 mt-0.5">
+                      <Avatar className="h-9 w-9">
+                        <AvatarImage src={profile.avatar_url || undefined} />
+                        <AvatarFallback className="text-xs">{(profile.full_name || "U")[0].toUpperCase()}</AvatarFallback>
+                      </Avatar>
+                      <span className={cn(
+                        "absolute -bottom-0.5 -end-0.5 flex h-4 w-4 items-center justify-center rounded-full ring-2 ring-card",
+                        getNotificationIconColor(notification.type)
+                      )}>
+                        {React.cloneElement(getNotificationIcon(notification.type) as React.ReactElement, { className: "h-2.5 w-2.5" })}
+                      </span>
+                    </div>
+                  ) : (
+                    <span className={cn(
+                      "flex h-9 w-9 shrink-0 items-center justify-center rounded-full mt-0.5",
+                      getNotificationIconColor(notification.type)
+                    )}>
+                      {getNotificationIcon(notification.type)}
+                    </span>
+                  )}
+                  <div className="flex-1 min-w-0">
+                    <p className={cn("text-sm leading-snug", !notification.is_read && "font-semibold")}>
+                      {getTitle(notification)}
+                    </p>
+                    {getBody(notification) && (
+                      <p className="text-xs text-muted-foreground mt-0.5 line-clamp-2">
+                        {getBody(notification)}
+                      </p>
+                    )}
+                    <p className="text-[10px] text-muted-foreground/70 mt-1">
+                      {formatRelativeTime(notification.created_at, isAr)}
+                    </p>
+                  </div>
+                  {!notification.is_read && (
+                    <div className="h-2 w-2 rounded-full bg-primary flex-shrink-0 mt-2 animate-pulse" />
+                  )}
+                </DropdownMenuItem>
+              );
+            })
           )}
         </ScrollArea>
         {notifications.length > 0 && (
