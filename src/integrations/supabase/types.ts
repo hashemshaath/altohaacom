@@ -1970,6 +1970,36 @@ export type Database = {
         }
         Relationships: []
       }
+      community_stories: {
+        Row: {
+          caption: string | null
+          created_at: string
+          expires_at: string
+          id: string
+          media_type: string
+          media_url: string
+          user_id: string
+        }
+        Insert: {
+          caption?: string | null
+          created_at?: string
+          expires_at?: string
+          id?: string
+          media_type?: string
+          media_url: string
+          user_id: string
+        }
+        Update: {
+          caption?: string | null
+          created_at?: string
+          expires_at?: string
+          id?: string
+          media_type?: string
+          media_url?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       companies: {
         Row: {
           address: string | null
@@ -7785,6 +7815,89 @@ export type Database = {
         }
         Relationships: []
       }
+      live_session_attendees: {
+        Row: {
+          id: string
+          registered_at: string
+          session_id: string
+          user_id: string
+        }
+        Insert: {
+          id?: string
+          registered_at?: string
+          session_id: string
+          user_id: string
+        }
+        Update: {
+          id?: string
+          registered_at?: string
+          session_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "live_session_attendees_session_id_fkey"
+            columns: ["session_id"]
+            isOneToOne: false
+            referencedRelation: "live_sessions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      live_sessions: {
+        Row: {
+          cover_image_url: string | null
+          created_at: string
+          description: string | null
+          description_ar: string | null
+          duration_minutes: number | null
+          host_id: string
+          id: string
+          max_attendees: number | null
+          scheduled_at: string
+          status: string
+          stream_url: string | null
+          tags: string[] | null
+          title: string
+          title_ar: string | null
+          updated_at: string
+        }
+        Insert: {
+          cover_image_url?: string | null
+          created_at?: string
+          description?: string | null
+          description_ar?: string | null
+          duration_minutes?: number | null
+          host_id: string
+          id?: string
+          max_attendees?: number | null
+          scheduled_at: string
+          status?: string
+          stream_url?: string | null
+          tags?: string[] | null
+          title: string
+          title_ar?: string | null
+          updated_at?: string
+        }
+        Update: {
+          cover_image_url?: string | null
+          created_at?: string
+          description?: string | null
+          description_ar?: string | null
+          duration_minutes?: number | null
+          host_id?: string
+          id?: string
+          max_attendees?: number | null
+          scheduled_at?: string
+          status?: string
+          stream_url?: string | null
+          tags?: string[] | null
+          title?: string
+          title_ar?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
       marketing_tracking_config: {
         Row: {
           config: Json | null
@@ -9592,6 +9705,38 @@ export type Database = {
         Relationships: [
           {
             foreignKeyName: "post_likes_post_id_fkey"
+            columns: ["post_id"]
+            isOneToOne: false
+            referencedRelation: "posts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      post_reactions: {
+        Row: {
+          created_at: string
+          id: string
+          post_id: string
+          reaction_type: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          post_id: string
+          reaction_type: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          post_id?: string
+          reaction_type?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "post_reactions_post_id_fkey"
             columns: ["post_id"]
             isOneToOne: false
             referencedRelation: "posts"
@@ -12222,6 +12367,35 @@ export type Database = {
             columns: ["stage_id"]
             isOneToOne: false
             referencedRelation: "evaluation_stages"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      story_views: {
+        Row: {
+          id: string
+          story_id: string
+          viewed_at: string
+          viewer_id: string
+        }
+        Insert: {
+          id?: string
+          story_id: string
+          viewed_at?: string
+          viewer_id: string
+        }
+        Update: {
+          id?: string
+          story_id?: string
+          viewed_at?: string
+          viewer_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "story_views_story_id_fkey"
+            columns: ["story_id"]
+            isOneToOne: false
+            referencedRelation: "community_stories"
             referencedColumns: ["id"]
           },
         ]
