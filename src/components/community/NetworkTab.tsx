@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/i18n/LanguageContext";
-import { useNewFollowers, useFollowRecommendations, useIncomingFollowRequests, useToggleFollow, useIsFollowing } from "@/hooks/useFollow";
+import { useNewFollowers, useFollowRecommendations, useIncomingFollowRequests } from "@/hooks/useFollow";
 import { useUpdateFollowPrivacy } from "@/hooks/useFollow";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -14,42 +14,13 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Skeleton } from "@/components/ui/skeleton";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import {
-  UserPlus, UserMinus, UserCheck, Bell, Shield, Globe, Lock,
+  UserPlus, UserCheck, Bell, Shield, Globe, Lock,
   Clock, Sparkles, Check, X, ChefHat, MapPin, Users,
 } from "lucide-react";
 import { countryFlag } from "@/lib/countryFlag";
 import { useToast } from "@/hooks/use-toast";
-import { useState } from "react";
 import { toEnglishDigits } from "@/lib/formatNumber";
-
-function FollowButton({ userId }: { userId: string }) {
-  const { data: isFollowing } = useIsFollowing(userId);
-  const toggleFollow = useToggleFollow(userId);
-  const { language } = useLanguage();
-  const isAr = language === "ar";
-  const { toast } = useToast();
-
-  return (
-    <Button
-      variant={isFollowing ? "outline" : "default"}
-      size="sm"
-      className="shrink-0 gap-1.5 text-xs h-8 rounded-xl font-semibold transition-all duration-200"
-      disabled={toggleFollow.isPending}
-      onClick={() => {
-        toggleFollow.mutate(!!isFollowing, {
-          onSuccess: (result: any) => {
-            if (result?.type === "request_sent") {
-              toast({ title: isAr ? "تم إرسال طلب المتابعة" : "Follow request sent" });
-            }
-          },
-        });
-      }}
-    >
-      {isFollowing ? <UserMinus className="h-3.5 w-3.5" /> : <UserPlus className="h-3.5 w-3.5" />}
-      {isFollowing ? (isAr ? "إلغاء" : "Unfollow") : (isAr ? "متابعة" : "Follow")}
-    </Button>
-  );
-}
+import { FollowButton } from "./FollowButton";
 
 export function NetworkTab() {
   const { user } = useAuth();
@@ -96,27 +67,27 @@ export function NetworkTab() {
           </CardHeader>
           <CardContent className="space-y-3">
             {followRequests.map((req: any) => (
-              <div key={req.id} className="flex items-center gap-3 p-3 rounded-xl bg-muted/30 border border-border/50">
+              <div key={req.id} className="flex items-center gap-3 p-3 rounded-xl bg-muted/30 border border-border/30">
                 <Link to={`/${req.profile?.username || req.requester_id}`}>
-                  <Avatar className="h-10 w-10">
+                  <Avatar className="h-12 w-12 ring-2 ring-primary/10">
                     <AvatarImage src={req.profile?.avatar_url} />
-                    <AvatarFallback className="bg-primary/10 text-primary text-sm font-semibold">
+                    <AvatarFallback className="bg-primary/10 text-primary font-bold">
                       {(req.profile?.full_name || "U")[0]}
                     </AvatarFallback>
                   </Avatar>
                 </Link>
                 <div className="flex-1 min-w-0">
-                  <Link to={`/${req.profile?.username || req.requester_id}`} className="text-sm font-semibold hover:text-primary truncate block">
+                  <Link to={`/${req.profile?.username || req.requester_id}`} className="text-sm font-bold hover:text-primary truncate block transition-colors">
                     {req.profile?.full_name || (isAr ? "مستخدم" : "User")}
                   </Link>
                   {req.profile?.specialization && (
-                    <p className="text-[10px] text-muted-foreground truncate">{req.profile.specialization}</p>
+                    <p className="text-xs text-muted-foreground truncate mt-0.5">{req.profile.specialization}</p>
                   )}
                 </div>
-                <div className="flex gap-1.5">
+                <div className="flex gap-1.5 shrink-0">
                   <Button
                     size="sm"
-                    className="h-8 gap-1 text-xs"
+                    className="h-8 gap-1 text-xs rounded-xl font-semibold"
                     onClick={() => respondToRequest.mutate({ requestId: req.id, accept: true })}
                     disabled={respondToRequest.isPending}
                   >
@@ -126,7 +97,7 @@ export function NetworkTab() {
                   <Button
                     variant="outline"
                     size="sm"
-                    className="h-8 gap-1 text-xs"
+                    className="h-8 gap-1 text-xs rounded-xl"
                     onClick={() => respondToRequest.mutate({ requestId: req.id, accept: false })}
                     disabled={respondToRequest.isPending}
                   >
@@ -153,7 +124,7 @@ export function NetworkTab() {
         <CardContent>
           {loadingNew ? (
             <div className="flex gap-3">
-              {[1, 2, 3].map(i => <Skeleton key={i} className="h-20 w-32 rounded-xl" />)}
+              {[1, 2, 3].map(i => <Skeleton key={i} className="h-[180px] w-[150px] rounded-xl" />)}
             </div>
           ) : newFollowers.length === 0 ? (
             <p className="text-sm text-muted-foreground text-center py-6">
@@ -163,21 +134,26 @@ export function NetworkTab() {
             <ScrollArea className="w-full">
               <div className="flex gap-3 pb-2">
                 {newFollowers.map((f: any) => (
-                  <Link key={f.user_id} to={`/${f.username || f.user_id}`}
-                    className="flex flex-col items-center gap-2 p-3 rounded-xl border border-border/50 bg-muted/20 hover:bg-muted/40 transition-colors min-w-[120px]">
-                    <Avatar className="h-12 w-12">
-                      <AvatarImage src={f.avatar_url} />
-                      <AvatarFallback className="bg-chart-2/10 text-chart-2 font-semibold">
-                        {(f.full_name || "U")[0]}
-                      </AvatarFallback>
-                    </Avatar>
-                    <span className="text-xs font-medium text-center truncate max-w-[100px]">{f.full_name}</span>
-                    <span className="text-[10px] text-muted-foreground flex items-center gap-1">
-                      <Clock className="h-2.5 w-2.5" />
-                      {toEnglishDigits(new Date(f.followed_at).toLocaleDateString(isAr ? "ar-SA" : "en-US", { month: "short", day: "numeric" }))}
-                    </span>
-                    <FollowButton userId={f.user_id} />
-                  </Link>
+                  <div key={f.user_id} className="group flex flex-col items-center gap-2.5 p-4 rounded-xl border border-border/30 bg-card/60 backdrop-blur-sm hover:shadow-lg hover:-translate-y-1 transition-all duration-300 min-w-[150px] w-[150px]">
+                    <Link to={`/${f.username || f.user_id}`}>
+                      <Avatar className="h-14 w-14 ring-2 ring-chart-2/15 shadow-md transition-all duration-300 group-hover:scale-105 group-hover:ring-chart-2/30">
+                        <AvatarImage src={f.avatar_url} />
+                        <AvatarFallback className="bg-chart-2/10 text-chart-2 font-bold text-lg">
+                          {(f.full_name || "U")[0]}
+                        </AvatarFallback>
+                      </Avatar>
+                    </Link>
+                    <div className="min-w-0 w-full space-y-0.5 text-center">
+                      <Link to={`/${f.username || f.user_id}`} className="text-sm font-bold hover:text-primary truncate block transition-colors">
+                        {f.full_name}
+                      </Link>
+                      <span className="text-[10px] text-muted-foreground flex items-center justify-center gap-1">
+                        <Clock className="h-2.5 w-2.5 shrink-0" />
+                        {toEnglishDigits(new Date(f.followed_at).toLocaleDateString(isAr ? "ar-SA" : "en-US", { month: "short", day: "numeric" }))}
+                      </span>
+                    </div>
+                    <FollowButton userId={f.user_id} userName={f.full_name} fullWidth />
+                  </div>
                 ))}
               </div>
             </ScrollArea>
@@ -195,8 +171,8 @@ export function NetworkTab() {
         </CardHeader>
         <CardContent>
           {loadingRecs ? (
-            <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-              {[1, 2, 3].map(i => <Skeleton key={i} className="h-24 rounded-xl" />)}
+            <div className="grid gap-3 grid-cols-2 sm:grid-cols-3 lg:grid-cols-4">
+              {[1, 2, 3, 4].map(i => <Skeleton key={i} className="h-[200px] rounded-xl" />)}
             </div>
           ) : recommendations.length === 0 ? (
             <p className="text-sm text-muted-foreground text-center py-6">
@@ -205,33 +181,33 @@ export function NetworkTab() {
           ) : (
             <div className="grid gap-3 grid-cols-2 sm:grid-cols-3 lg:grid-cols-4">
               {recommendations.map((rec: any) => (
-                <div key={rec.user_id} className="group flex flex-col items-center text-center gap-2.5 p-4 rounded-xl border border-border/30 bg-card/60 backdrop-blur-sm hover:shadow-lg hover:-translate-y-1 transition-all duration-300">
+                <div key={rec.user_id} className="group flex flex-col items-center text-center gap-2.5 p-4 rounded-xl border border-border/30 bg-card/60 backdrop-blur-sm hover:shadow-lg hover:-translate-y-1 transition-all duration-300 h-full">
                   <Link to={`/${rec.username || rec.user_id}`}>
-                    <Avatar className="h-14 w-14 ring-2 ring-primary/15 shadow-md transition-all duration-300 group-hover:scale-105 group-hover:ring-primary/30">
+                    <Avatar className="h-16 w-16 ring-2 ring-primary/15 shadow-md transition-all duration-300 group-hover:scale-105 group-hover:ring-primary/30">
                       <AvatarImage src={rec.avatar_url} />
                       <AvatarFallback className="bg-primary/10 text-primary font-bold text-lg">
                         {(rec.full_name || "U")[0]}
                       </AvatarFallback>
                     </Avatar>
                   </Link>
-                  <div className="min-w-0 w-full space-y-0.5">
-                    <Link to={`/${rec.username || rec.user_id}`} className="text-xs font-bold hover:text-primary truncate block transition-colors">
+                  <div className="min-w-0 w-full flex-1 space-y-1">
+                    <Link to={`/${rec.username || rec.user_id}`} className="text-sm font-bold hover:text-primary truncate block transition-colors leading-tight">
                       {rec.full_name}
                     </Link>
                     {rec.specialization && (
-                      <p className="text-[10px] text-muted-foreground truncate flex items-center justify-center gap-1">
-                        <ChefHat className="h-2.5 w-2.5 shrink-0" />
+                      <p className="text-[11px] text-muted-foreground truncate flex items-center justify-center gap-1">
+                        <ChefHat className="h-3 w-3 shrink-0" />
                         {rec.specialization}
                       </p>
                     )}
                     {rec.country_code && (
-                      <p className="text-[10px] text-muted-foreground flex items-center justify-center gap-1">
-                        <MapPin className="h-2.5 w-2.5 shrink-0" />
+                      <p className="text-[11px] text-muted-foreground flex items-center justify-center gap-1">
+                        <MapPin className="h-3 w-3 shrink-0" />
                         {countryFlag(rec.country_code)}
                       </p>
                     )}
                   </div>
-                  <FollowButton userId={rec.user_id} />
+                  <FollowButton userId={rec.user_id} userName={rec.full_name} fullWidth />
                 </div>
               ))}
             </div>
