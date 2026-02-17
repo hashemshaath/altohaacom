@@ -3,7 +3,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Trophy, Award, GraduationCap, FileCheck, Clock } from "lucide-react";
+import { Trophy, Award, GraduationCap, FileCheck, Clock, MessageCircle, Heart, Users } from "lucide-react";
 import { format } from "date-fns";
 
 interface ProfileActivityTimelineProps {
@@ -88,11 +88,31 @@ export function ProfileActivityTimeline({ userId }: ProfileActivityTimelineProps
         });
       });
 
+      // Recent community posts
+      const { data: posts } = await supabase
+        .from("posts")
+        .select("id, content, created_at")
+        .eq("author_id", userId)
+        .eq("moderation_status", "approved")
+        .order("created_at", { ascending: false })
+        .limit(5);
+
+      (posts || []).forEach((p) => {
+        timeline.push({
+          id: `post-${p.id}`,
+          type: "registration",
+          title: `${isAr ? "نشر في المجتمع:" : "Posted:"} ${p.content?.slice(0, 60)}${(p.content?.length || 0) > 60 ? "..." : ""}`,
+          date: p.created_at,
+          icon: MessageCircle,
+          color: "text-chart-2",
+        });
+      });
+
       // Sort by date descending
       return timeline
         .filter((e) => e.date)
         .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
-        .slice(0, 8);
+        .slice(0, 10);
     },
     enabled: !!userId,
     staleTime: 1000 * 60 * 5,

@@ -39,6 +39,7 @@ import { PublicProfileSidebar } from "@/components/public-profile/PublicProfileS
 import { PublicProfileGallery } from "@/components/public-profile/PublicProfileGallery";
 import { PublicProfileEmptySection } from "@/components/public-profile/PublicProfileEmptySection";
 import { PublicProfileAchievements } from "@/components/public-profile/PublicProfileAchievements";
+import { ProfileActivityTimeline } from "@/components/profile/ProfileActivityTimeline";
 
 type Profile = Database["public"]["Tables"]["profiles"]["Row"];
 type AppRole = Database["public"]["Enums"]["app_role"];
@@ -516,6 +517,9 @@ export default function PublicProfile() {
                   isVisible={isVisible} getCountryName={getCountryName}
                   profileUrl={profileUrl} t={t}
                 />
+              </SectionReveal>
+              <SectionReveal delay={300} direction="right">
+                <ProfileActivityTimeline userId={profile.user_id} />
               </SectionReveal>
             </div>
           </div>
