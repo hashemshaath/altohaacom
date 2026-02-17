@@ -94,7 +94,7 @@ export default function Profile() {
   }
 
   const tabs = [
-    { id: "overview", label: isAr ? "نظرة عامة" : "Overview", icon: User, description: isAr ? "ملخص عام" : "Your summary" },
+    { id: "overview", label: isAr ? "مساحتي" : "My Space", icon: User, description: isAr ? "ملخص عام" : "Your summary" },
     { id: "membership", label: isAr ? "العضوية" : "Membership", icon: Crown, description: isAr ? "خطتك الحالية" : "Your plan" },
     { id: "wallet", label: isAr ? "المحفظة" : "Wallet", icon: Wallet, description: isAr ? "الرصيد والنقاط" : "Balance & points" },
     { id: "referrals", label: isAr ? "الإحالات" : "Referrals", icon: Gift, description: isAr ? "دعوة الأصدقاء" : "Invite friends" },

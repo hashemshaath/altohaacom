@@ -134,7 +134,7 @@ export function NetworkTab() {
             <ScrollArea className="w-full">
               <div className="flex gap-3 pb-2">
                 {newFollowers.map((f: any) => (
-                  <div key={f.user_id} className="group flex flex-col items-center gap-2.5 p-4 rounded-xl border border-border/30 bg-card/60 backdrop-blur-sm hover:shadow-lg hover:-translate-y-1 transition-all duration-300 min-w-[150px] w-[150px]">
+                  <div key={f.user_id} className="group flex flex-col items-center gap-2 p-3 rounded-xl border border-border/30 bg-card/60 backdrop-blur-sm hover:shadow-lg hover:-translate-y-1 transition-all duration-300 min-w-[130px] w-[130px]">
                     <Link to={`/${f.username || f.user_id}`}>
                       <Avatar className="h-14 w-14 ring-2 ring-chart-2/15 shadow-md transition-all duration-300 group-hover:scale-105 group-hover:ring-chart-2/30">
                         <AvatarImage src={f.avatar_url} />
@@ -144,7 +144,7 @@ export function NetworkTab() {
                       </Avatar>
                     </Link>
                     <div className="min-w-0 w-full space-y-0.5 text-center">
-                      <Link to={`/${f.username || f.user_id}`} className="text-sm font-bold hover:text-primary truncate block transition-colors">
+                      <Link to={`/${f.username || f.user_id}`} className={`font-bold hover:text-primary block transition-colors leading-tight text-center break-words ${(f.full_name || "U").length > 14 ? "text-[11px]" : "text-xs sm:text-sm"}`}>
                         {f.full_name}
                       </Link>
                       <span className="text-[10px] text-muted-foreground flex items-center justify-center gap-1">
@@ -179,19 +179,19 @@ export function NetworkTab() {
               {isAr ? "لا توجد اقتراحات حالياً" : "No suggestions available right now"}
             </p>
           ) : (
-            <div className="grid gap-3 grid-cols-2 sm:grid-cols-3 lg:grid-cols-4">
+            <div className="grid gap-2.5 grid-cols-2 sm:grid-cols-3 lg:grid-cols-4">
               {recommendations.map((rec: any) => (
-                <div key={rec.user_id} className="group flex flex-col items-center text-center gap-2.5 p-4 rounded-xl border border-border/30 bg-card/60 backdrop-blur-sm hover:shadow-lg hover:-translate-y-1 transition-all duration-300 h-full">
+                <div key={rec.user_id} className="group flex flex-col items-center text-center gap-2 p-3 rounded-xl border border-border/30 bg-card/60 backdrop-blur-sm hover:shadow-lg hover:-translate-y-1 transition-all duration-300 h-full">
                   <Link to={`/${rec.username || rec.user_id}`}>
-                    <Avatar className="h-16 w-16 ring-2 ring-primary/15 shadow-md transition-all duration-300 group-hover:scale-105 group-hover:ring-primary/30">
+                    <Avatar className="h-14 w-14 sm:h-16 sm:w-16 ring-2 ring-primary/15 shadow-md transition-all duration-300 group-hover:scale-105 group-hover:ring-primary/30">
                       <AvatarImage src={rec.avatar_url} />
                       <AvatarFallback className="bg-primary/10 text-primary font-bold text-lg">
                         {(rec.full_name || "U")[0]}
                       </AvatarFallback>
                     </Avatar>
                   </Link>
-                  <div className="min-w-0 w-full flex-1 space-y-1">
-                    <Link to={`/${rec.username || rec.user_id}`} className="text-sm font-bold hover:text-primary truncate block transition-colors leading-tight">
+                  <div className="min-w-0 w-full flex-1 space-y-0.5">
+                    <Link to={`/${rec.username || rec.user_id}`} className={`font-bold hover:text-primary block transition-colors leading-tight text-center break-words ${(rec.full_name || "U").length > 14 ? "text-[11px]" : "text-xs sm:text-sm"}`}>
                       {rec.full_name}
                     </Link>
                     {rec.specialization && (
