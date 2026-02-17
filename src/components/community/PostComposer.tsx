@@ -5,9 +5,11 @@ import { supabase } from "@/integrations/supabase/client";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
+import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
 import {
   Image as ImageIcon, X, Globe, Lock, Users as UsersIcon, Loader2, User,
+  Trophy, CalendarDays, Quote, Sparkles,
 } from "lucide-react";
 import {
   DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger,
@@ -16,7 +18,9 @@ import { cn } from "@/lib/utils";
 
 const MAX_CHARS = 1000;
 const MAX_IMAGES = 4;
-const MAX_IMAGE_SIZE = 5 * 1024 * 1024; // 5MB
+const MAX_IMAGE_SIZE = 5 * 1024 * 1024;
+
+type PostType = "text" | "competition" | "event" | "testimonial";
 
 interface PostComposerProps {
   onPosted: () => void;
@@ -25,6 +29,13 @@ interface PostComposerProps {
   compact?: boolean;
   autoFocus?: boolean;
 }
+
+const POST_TYPE_CONFIG = {
+  text: { icon: Sparkles, color: "text-primary", bg: "bg-primary/10" },
+  competition: { icon: Trophy, color: "text-chart-2", bg: "bg-chart-2/10" },
+  event: { icon: CalendarDays, color: "text-chart-3", bg: "bg-chart-3/10" },
+  testimonial: { icon: Quote, color: "text-chart-4", bg: "bg-chart-4/10" },
+};
 
 export function PostComposer({ onPosted, replyToPostId, placeholder, compact, autoFocus }: PostComposerProps) {
   const { user } = useAuth();
@@ -38,8 +49,8 @@ export function PostComposer({ onPosted, replyToPostId, placeholder, compact, au
   const [visibility, setVisibility] = useState<"public" | "followers">("public");
   const [posting, setPosting] = useState(false);
   const [profile, setProfile] = useState<{ avatar_url: string | null } | null>(null);
+  const [postType, setPostType] = useState<PostType>("text");
 
-  // Fetch user avatar
   useEffect(() => {
     if (!user) return;
     supabase.from("profiles").select("avatar_url").eq("user_id", user.id).single().then(({ data }) => {
@@ -54,11 +65,7 @@ export function PostComposer({ onPosted, replyToPostId, placeholder, compact, au
 
     for (const file of selected) {
       if (file.size > MAX_IMAGE_SIZE) {
-        toast({
-          variant: "destructive",
-          title: isAr ? "الملف كبير جداً" : "File too large",
-          description: isAr ? "الحد الأقصى 5 ميجابايت" : "Maximum 5MB per image",
-        });
+        toast({ variant: "destructive", title: isAr ? "الملف كبير جداً" : "File too large", description: isAr ? "الحد الأقصى 5 ميجابايت" : "Maximum 5MB per image" });
         continue;
       }
       if (!file.type.startsWith("image/")) continue;
@@ -75,40 +82,58 @@ export function PostComposer({ onPosted, replyToPostId, placeholder, compact, au
     });
   };
 
+  const getPlaceholder = () => {
+    if (placeholder) return placeholder;
+    switch (postType) {
+      case "competition": return isAr ? "شارك تجربتك في المسابقة..." : "Share your competition experience...";
+      case "event": return isAr ? "أخبرنا عن الفعالية..." : "Tell us about the event...";
+      case "testimonial": return isAr ? "شارك شهادتك أو تجربتك..." : "Share your testimonial or experience...";
+      default: return isAr ? "ماذا يحدث في المطبخ؟" : "What's cooking?";
+    }
+  };
+
   const handlePost = async () => {
     if (!user || (!content.trim() && images.length === 0)) return;
     setPosting(true);
 
     try {
-      // Upload images
       const uploadedUrls: string[] = [];
       for (const img of images) {
         const ext = img.file.name.split(".").pop() || "jpg";
         const path = `posts/${user.id}/${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`;
-        const { error: upErr } = await supabase.storage
-          .from("user-media")
-          .upload(path, img.file, { contentType: img.file.type });
+        const { error: upErr } = await supabase.storage.from("user-media").upload(path, img.file, { contentType: img.file.type });
         if (upErr) throw upErr;
         const { data: urlData } = supabase.storage.from("user-media").getPublicUrl(path);
         uploadedUrls.push(urlData.publicUrl);
       }
 
+      // Build content with post type prefix
+      let finalContent = content.trim();
+      if (postType === "competition" && !finalContent.includes("#competition")) {
+        finalContent += isAr ? "\n\n#مسابقة #طهي" : "\n\n#competition #culinary";
+      }
+      if (postType === "event" && !finalContent.includes("#event")) {
+        finalContent += isAr ? "\n\n#فعالية #تسجيل" : "\n\n#event #registration";
+      }
+      if (postType === "testimonial" && !finalContent.includes("#testimonial")) {
+        finalContent += isAr ? "\n\n#شهادة #تجربة" : "\n\n#testimonial #experience";
+      }
+
       const postData: any = {
         author_id: user.id,
-        content: content.trim(),
+        content: finalContent,
         visibility,
         image_urls: uploadedUrls,
         image_url: uploadedUrls[0] || null,
       };
-      if (replyToPostId) {
-        postData.reply_to_post_id = replyToPostId;
-      }
+      if (replyToPostId) postData.reply_to_post_id = replyToPostId;
 
       const { error } = await supabase.from("posts").insert(postData);
       if (error) throw error;
 
       setContent("");
       setImages([]);
+      setPostType("text");
       onPosted();
     } catch (err: any) {
       toast({ variant: "destructive", title: "Error", description: err.message });
@@ -121,6 +146,7 @@ export function PostComposer({ onPosted, replyToPostId, placeholder, compact, au
 
   const charsLeft = MAX_CHARS - content.length;
   const isOverLimit = charsLeft < 0;
+  const TypeIcon = POST_TYPE_CONFIG[postType].icon;
 
   return (
     <div className={cn("border-b border-border px-4 py-3", compact && "px-3 py-2")}>
@@ -132,8 +158,49 @@ export function PostComposer({ onPosted, replyToPostId, placeholder, compact, au
           </AvatarFallback>
         </Avatar>
         <div className="flex-1 min-w-0">
+          {/* Post type selector - only for new posts */}
+          {!replyToPostId && !compact && (
+            <div className="flex items-center gap-1.5 mb-2 pb-2 border-b border-border/30">
+              {(["text", "competition", "event", "testimonial"] as PostType[]).map((type) => {
+                const config = POST_TYPE_CONFIG[type];
+                const Icon = config.icon;
+                const labels: Record<PostType, { en: string; ar: string }> = {
+                  text: { en: "Post", ar: "منشور" },
+                  competition: { en: "Competition", ar: "مسابقة" },
+                  event: { en: "Event", ar: "فعالية" },
+                  testimonial: { en: "Testimonial", ar: "شهادة" },
+                };
+                return (
+                  <button
+                    key={type}
+                    onClick={() => setPostType(type)}
+                    className={cn(
+                      "flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-semibold transition-all duration-200",
+                      postType === type
+                        ? `${config.bg} ${config.color} ring-1 ring-current/20`
+                        : "text-muted-foreground hover:bg-muted/50"
+                    )}
+                  >
+                    <Icon className="h-3.5 w-3.5" />
+                    <span className="hidden sm:inline">{isAr ? labels[type].ar : labels[type].en}</span>
+                  </button>
+                );
+              })}
+            </div>
+          )}
+
+          {/* Post type badge */}
+          {postType !== "text" && !compact && (
+            <Badge variant="secondary" className={cn("mb-2 gap-1 text-[10px]", POST_TYPE_CONFIG[postType].color)}>
+              <TypeIcon className="h-3 w-3" />
+              {postType === "competition" && (isAr ? "مشاركة مسابقة" : "Competition Entry")}
+              {postType === "event" && (isAr ? "تسجيل فعالية" : "Event Attendance")}
+              {postType === "testimonial" && (isAr ? "شهادة" : "Testimonial")}
+            </Badge>
+          )}
+
           <Textarea
-            placeholder={placeholder || (isAr ? "ماذا يحدث في المطبخ؟" : "What's cooking?")}
+            placeholder={getPlaceholder()}
             value={content}
             onChange={(e) => setContent(e.target.value.slice(0, MAX_CHARS + 50))}
             className="resize-none border-0 bg-transparent px-0 py-1 text-base shadow-none placeholder:text-muted-foreground/60 focus-visible:ring-0"
@@ -152,10 +219,7 @@ export function PostComposer({ onPosted, replyToPostId, placeholder, compact, au
                   <img
                     src={img.preview}
                     alt=""
-                    className={cn(
-                      "w-full object-cover",
-                      images.length === 1 ? "max-h-[300px]" : "aspect-square"
-                    )}
+                    className={cn("w-full object-cover", images.length === 1 ? "max-h-[300px]" : "aspect-square")}
                   />
                   <button
                     onClick={() => removeImage(idx)}

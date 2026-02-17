@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
@@ -17,16 +17,17 @@ import { NetworkTab } from "@/components/community/NetworkTab";
 import { formatNumber } from "@/lib/formatNumber";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
 import {
   Newspaper, ChefHat, CalendarDays, UsersRound, UserPlus, Users, BookOpen,
-  Search, TrendingUp, Hash, Activity,
+  Search, TrendingUp, Hash, Activity, PanelLeftClose, PanelLeftOpen,
+  PanelRightClose, PanelRightOpen,
 } from "lucide-react";
 import { Link } from "react-router-dom";
 import { cn } from "@/lib/utils";
 
 type CommunityTab = "feed" | "chefs" | "recipes" | "groups" | "events" | "network";
 
-// Curated fallback topics
 const FALLBACK_TOPICS_EN = [
   { tag: "CookingCompetitions", count: 128 },
   { tag: "RamadanRecipes", count: 96 },
@@ -47,8 +48,9 @@ export default function Community() {
   useAdTracking();
 
   const [activeTab, setActiveTab] = useState<CommunityTab>("feed");
+  const [leftSidebarOpen, setLeftSidebarOpen] = useState(true);
+  const [rightSidebarOpen, setRightSidebarOpen] = useState(true);
 
-  // Fetch community stats
   const { data: stats = { members: 0, groups: 0, recipes: 0, posts: 0 } } = useQuery({
     queryKey: ["community-stats"],
     queryFn: async () => {
@@ -68,7 +70,6 @@ export default function Community() {
     staleTime: 1000 * 60 * 5,
   });
 
-  // Fetch trending hashtags from real posts
   const { data: trendingTopics = [] } = useQuery({
     queryKey: ["community-trending", isAr],
     queryFn: async () => {
@@ -81,7 +82,6 @@ export default function Community() {
 
       if (!posts?.length) return isAr ? FALLBACK_TOPICS_AR : FALLBACK_TOPICS_EN;
 
-      // Extract hashtags from post content
       const tagCounts: Record<string, number> = {};
       posts.forEach((post) => {
         const matches = post.content?.match(/#([^\s#]+)/g);
@@ -98,7 +98,6 @@ export default function Community() {
         .slice(0, 6)
         .map(([tag, count]) => ({ tag, count }));
 
-      // If not enough real data, supplement with fallbacks
       if (sorted.length < 4) {
         const fallbacks = isAr ? FALLBACK_TOPICS_AR : FALLBACK_TOPICS_EN;
         const existing = new Set(sorted.map((s) => s.tag));
@@ -112,7 +111,6 @@ export default function Community() {
     staleTime: 1000 * 60 * 10,
   });
 
-  // Fetch user profile
   const { data: profile } = useQuery({
     queryKey: ["community-profile", user?.id],
     queryFn: async () => {
@@ -146,11 +144,27 @@ export default function Community() {
       <Header />
 
       <main className="container flex-1">
-        <div className="mx-auto max-w-[1100px] flex gap-0 lg:gap-6">
+        <div className="mx-auto max-w-[1200px] flex gap-0">
           {/* Left Sidebar - Desktop only */}
-          <aside className="hidden lg:block w-[260px] shrink-0 sticky top-[60px] self-start py-4">
+          <aside className={cn(
+            "hidden lg:flex flex-col shrink-0 sticky top-[60px] self-start py-4 transition-all duration-300 ease-in-out",
+            leftSidebarOpen ? "w-[240px]" : "w-[52px]"
+          )}>
+            {/* Toggle button */}
+            <Button
+              variant="ghost"
+              size="icon"
+              className="h-8 w-8 mb-3 self-end rounded-full text-muted-foreground hover:text-foreground"
+              onClick={() => setLeftSidebarOpen(!leftSidebarOpen)}
+            >
+              {leftSidebarOpen
+                ? (isAr ? <PanelRightClose className="h-4 w-4" /> : <PanelLeftClose className="h-4 w-4" />)
+                : (isAr ? <PanelRightOpen className="h-4 w-4" /> : <PanelLeftOpen className="h-4 w-4" />)
+              }
+            </Button>
+
             {/* Profile card */}
-            {user && profile && (
+            {user && profile && leftSidebarOpen && (
               <Link to={`/${profile.username || user.id}`} className="block mb-4 rounded-2xl border border-border bg-card p-4 hover:bg-muted/30 transition-colors group">
                 <div className="flex items-center gap-3">
                   <Avatar className="h-10 w-10 ring-2 ring-primary/20 transition-transform group-hover:scale-105">
@@ -175,39 +189,43 @@ export default function Community() {
                 <button
                   key={tab.id}
                   onClick={() => setActiveTab(tab.id)}
+                  title={!leftSidebarOpen ? tab.label : undefined}
                   className={cn(
-                    "flex w-full items-center gap-3 rounded-xl px-4 py-2.5 text-sm font-medium transition-all duration-200",
+                    "flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition-all duration-200",
+                    !leftSidebarOpen && "justify-center px-0",
                     activeTab === tab.id
                       ? "bg-primary text-primary-foreground shadow-lg shadow-primary/20"
                       : "text-foreground hover:bg-muted active:scale-[0.98]"
                   )}
                 >
-                  <tab.icon className="h-5 w-5" />
-                  {tab.label}
+                  <tab.icon className="h-5 w-5 shrink-0" />
+                  {leftSidebarOpen && tab.label}
                 </button>
               ))}
             </nav>
 
             {/* Stats */}
-            <div className="mt-4 rounded-2xl border border-border bg-card p-4">
-              <h3 className="text-xs font-bold uppercase tracking-wider text-muted-foreground mb-3 flex items-center gap-1.5">
-                <Activity className="h-3.5 w-3.5 text-primary" />
-                {isAr ? "إحصائيات المجتمع" : "Community Stats"}
-              </h3>
-              <div className="space-y-2.5">
-                {[
-                  { label: isAr ? "عضو" : "Members", value: stats.members, color: "text-primary" },
-                  { label: isAr ? "منشور" : "Posts", value: stats.posts, color: "text-chart-2" },
-                  { label: isAr ? "مجموعة" : "Groups", value: stats.groups, color: "text-chart-3" },
-                  { label: isAr ? "وصفة" : "Recipes", value: stats.recipes, color: "text-chart-4" },
-                ].map((stat, i) => (
-                  <div key={i} className="flex items-center justify-between">
-                    <span className="text-xs text-muted-foreground">{stat.label}</span>
-                    <span className={cn("text-sm font-bold tabular-nums", stat.color)}>{formatNumber(stat.value)}</span>
-                  </div>
-                ))}
+            {leftSidebarOpen && (
+              <div className="mt-4 rounded-2xl border border-border bg-card p-4">
+                <h3 className="text-xs font-bold uppercase tracking-wider text-muted-foreground mb-3 flex items-center gap-1.5">
+                  <Activity className="h-3.5 w-3.5 text-primary" />
+                  {isAr ? "إحصائيات المجتمع" : "Community Stats"}
+                </h3>
+                <div className="space-y-2.5">
+                  {[
+                    { label: isAr ? "عضو" : "Members", value: stats.members, color: "text-primary" },
+                    { label: isAr ? "منشور" : "Posts", value: stats.posts, color: "text-chart-2" },
+                    { label: isAr ? "مجموعة" : "Groups", value: stats.groups, color: "text-chart-3" },
+                    { label: isAr ? "وصفة" : "Recipes", value: stats.recipes, color: "text-chart-4" },
+                  ].map((stat, i) => (
+                    <div key={i} className="flex items-center justify-between">
+                      <span className="text-xs text-muted-foreground">{stat.label}</span>
+                      <span className={cn("text-sm font-bold tabular-nums", stat.color)}>{formatNumber(stat.value)}</span>
+                    </div>
+                  ))}
+                </div>
               </div>
-            </div>
+            )}
           </aside>
 
           {/* Main Content */}
@@ -245,50 +263,70 @@ export default function Community() {
           </div>
 
           {/* Right Sidebar - Desktop only */}
-          <aside className="hidden xl:block w-[300px] shrink-0 sticky top-[60px] self-start py-4 space-y-4">
-            {/* Search */}
-            <div className="relative">
-              <Search className="absolute start-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-              <Input
-                placeholder={isAr ? "بحث في المجتمع..." : "Search community..."}
-                className="ps-9 rounded-full bg-muted/50 border-0 focus-visible:ring-1"
-              />
-            </div>
+          <aside className={cn(
+            "hidden xl:flex flex-col shrink-0 sticky top-[60px] self-start py-4 transition-all duration-300 ease-in-out",
+            rightSidebarOpen ? "w-[280px]" : "w-[52px]"
+          )}>
+            {/* Toggle button */}
+            <Button
+              variant="ghost"
+              size="icon"
+              className="h-8 w-8 mb-3 self-start rounded-full text-muted-foreground hover:text-foreground"
+              onClick={() => setRightSidebarOpen(!rightSidebarOpen)}
+            >
+              {rightSidebarOpen
+                ? (isAr ? <PanelLeftClose className="h-4 w-4" /> : <PanelRightClose className="h-4 w-4" />)
+                : (isAr ? <PanelLeftOpen className="h-4 w-4" /> : <PanelRightOpen className="h-4 w-4" />)
+              }
+            </Button>
 
-            {/* Trending - Dynamic */}
-            <div className="rounded-2xl border border-border bg-card overflow-hidden">
-              <h3 className="px-4 pt-3 pb-2 text-base font-bold flex items-center gap-2">
-                <TrendingUp className="h-4 w-4 text-primary" />
-                {isAr ? "الأكثر تداولاً" : "Trending"}
-              </h3>
-              <div className="divide-y divide-border">
-                {trendingTopics.map((topic, i) => (
-                  <div key={i} className="px-4 py-2.5 hover:bg-muted/30 transition-colors cursor-pointer group">
-                    <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
-                      <Hash className="h-3 w-3" />
-                      <span>{isAr ? "رائج" : "Trending"}</span>
-                      {i === 0 && <span className="ms-auto text-[9px] text-primary font-bold">{isAr ? "الأول" : "#1"}</span>}
-                    </div>
-                    <p className="text-sm font-bold mt-0.5 group-hover:text-primary transition-colors">#{topic.tag}</p>
-                    <p className="text-xs text-muted-foreground mt-0.5">
-                      {formatNumber(topic.count)} {isAr ? "منشور" : "posts"}
-                    </p>
+            {rightSidebarOpen && (
+              <div className="space-y-4">
+                {/* Search */}
+                <div className="relative">
+                  <Search className="absolute start-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+                  <Input
+                    placeholder={isAr ? "بحث في المجتمع..." : "Search community..."}
+                    className="ps-9 rounded-full bg-muted/50 border-0 focus-visible:ring-1"
+                  />
+                </div>
+
+                {/* Trending */}
+                <div className="rounded-2xl border border-border bg-card overflow-hidden">
+                  <h3 className="px-4 pt-3 pb-2 text-base font-bold flex items-center gap-2">
+                    <TrendingUp className="h-4 w-4 text-primary" />
+                    {isAr ? "الأكثر تداولاً" : "Trending"}
+                  </h3>
+                  <div className="divide-y divide-border">
+                    {trendingTopics.map((topic, i) => (
+                      <div key={i} className="px-4 py-2.5 hover:bg-muted/30 transition-colors cursor-pointer group">
+                        <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
+                          <Hash className="h-3 w-3" />
+                          <span>{isAr ? "رائج" : "Trending"}</span>
+                          {i === 0 && <span className="ms-auto text-[9px] text-primary font-bold">{isAr ? "الأول" : "#1"}</span>}
+                        </div>
+                        <p className="text-sm font-bold mt-0.5 group-hover:text-primary transition-colors">#{topic.tag}</p>
+                        <p className="text-xs text-muted-foreground mt-0.5">
+                          {formatNumber(topic.count)} {isAr ? "منشور" : "posts"}
+                        </p>
+                      </div>
+                    ))}
                   </div>
-                ))}
+                </div>
+
+                {/* Ad */}
+                <AdBanner placementSlug="sidebar" className="rounded-2xl overflow-hidden" />
+
+                {/* Footer links */}
+                <div className="px-4">
+                  <p className="text-[10px] text-muted-foreground leading-relaxed">
+                    {isAr ? "الشروط · الخصوصية · سياسة ملفات تعريف الارتباط · حول" : "Terms · Privacy · Cookie Policy · About"}
+                    <br />
+                    © {new Date().getFullYear()} Altohaa
+                  </p>
+                </div>
               </div>
-            </div>
-
-            {/* Ad */}
-            <AdBanner placementSlug="sidebar" className="rounded-2xl overflow-hidden" />
-
-            {/* Footer links */}
-            <div className="px-4">
-              <p className="text-[10px] text-muted-foreground leading-relaxed">
-                {isAr ? "الشروط · الخصوصية · سياسة ملفات تعريف الارتباط · حول" : "Terms · Privacy · Cookie Policy · About"}
-                <br />
-                © {new Date().getFullYear()} Altohaa
-              </p>
-            </div>
+            )}
           </aside>
         </div>
       </main>
