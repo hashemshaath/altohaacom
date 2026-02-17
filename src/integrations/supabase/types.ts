@@ -9990,6 +9990,7 @@ export type Database = {
           image_url: string | null
           image_urls: string[] | null
           is_pinned: boolean
+          is_scheduled: boolean | null
           link_preview: Json | null
           link_url: string | null
           moderated_at: string | null
@@ -9999,6 +10000,7 @@ export type Database = {
           replies_count: number
           reply_to_post_id: string | null
           reposts_count: number
+          scheduled_at: string | null
           updated_at: string
           video_url: string | null
           visibility: string
@@ -10012,6 +10014,7 @@ export type Database = {
           image_url?: string | null
           image_urls?: string[] | null
           is_pinned?: boolean
+          is_scheduled?: boolean | null
           link_preview?: Json | null
           link_url?: string | null
           moderated_at?: string | null
@@ -10021,6 +10024,7 @@ export type Database = {
           replies_count?: number
           reply_to_post_id?: string | null
           reposts_count?: number
+          scheduled_at?: string | null
           updated_at?: string
           video_url?: string | null
           visibility?: string
@@ -10034,6 +10038,7 @@ export type Database = {
           image_url?: string | null
           image_urls?: string[] | null
           is_pinned?: boolean
+          is_scheduled?: boolean | null
           link_preview?: Json | null
           link_url?: string | null
           moderated_at?: string | null
@@ -10043,6 +10048,7 @@ export type Database = {
           replies_count?: number
           reply_to_post_id?: string | null
           reposts_count?: number
+          scheduled_at?: string | null
           updated_at?: string
           video_url?: string | null
           visibility?: string
