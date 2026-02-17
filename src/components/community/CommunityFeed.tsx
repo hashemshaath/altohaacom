@@ -318,9 +318,7 @@ export function CommunityFeed() {
       {/* Stories */}
       {!tagFilter && <StoriesBar />}
 
-      {/* Live Sessions */}
-      {!tagFilter && <LiveSessionsSection />}
-
+      {/* Live Sessions - moved to sidebar tab only */}
       {/* Composer */}
       {user && !tagFilter && (
         <PostComposer
@@ -351,16 +349,25 @@ export function CommunityFeed() {
             <article
               key={post.id}
               className={cn(
-                "px-4 py-3 transition-colors hover:bg-muted/30 cursor-pointer",
+                "transition-colors",
+                editingPost?.id !== post.id && "px-4 py-3 hover:bg-muted/30 cursor-pointer",
                 post.is_pinned && "bg-primary/5"
               )}
             >
-              {post.is_pinned && (
+              {editingPost?.id === post.id && (
+                <PostEditDialog
+                  post={post}
+                  onClose={() => setEditingPost(null)}
+                  onSaved={handleEditSaved}
+                />
+              )}
+              {editingPost?.id !== post.id && post.is_pinned && (
                 <div className="flex items-center gap-1 ps-12 mb-1 text-[10px] font-bold text-muted-foreground">
                   <Pin className="h-3 w-3" />
                   {isAr ? "منشور مثبت" : "Pinned"}
                 </div>
               )}
+              {editingPost?.id !== post.id && (
               <div className="flex gap-3">
                 <Link to={`/${post.author_username || post.author_id}`} className="shrink-0">
                   <Avatar className="h-10 w-10 transition-opacity hover:opacity-80">
@@ -562,6 +569,8 @@ export function CommunityFeed() {
                   </div>
                 </div>
               </div>
+              )}
+
             </article>
           ))
         )}
@@ -592,14 +601,7 @@ export function CommunityFeed() {
         />
       )}
 
-      {/* Edit dialog */}
-      {editingPost && (
-        <PostEditDialog
-          post={editingPost}
-          onClose={() => setEditingPost(null)}
-          onSaved={handleEditSaved}
-        />
-      )}
+      {/* Edit is now inline per-post */}
 
       {/* Edit history */}
       {historyPostId && (
