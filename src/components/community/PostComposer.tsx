@@ -88,7 +88,7 @@ export function PostComposer({ onPosted, replyToPostId, placeholder, compact, au
       case "competition": return isAr ? "شارك تجربتك في المسابقة..." : "Share your competition experience...";
       case "event": return isAr ? "أخبرنا عن الفعالية..." : "Tell us about the event...";
       case "testimonial": return isAr ? "شارك شهادتك أو تجربتك..." : "Share your testimonial or experience...";
-      default: return isAr ? "ماذا يحدث في المطبخ؟" : "What's cooking?";
+      default: return isAr ? "ماذا يحدث في مجتمع الطهاة؟" : "What's happening in the chef community?";
     }
   };
 
