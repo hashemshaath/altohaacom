@@ -235,8 +235,24 @@ export function CommunityFeed() {
 
   const handleDelete = async (postId: string) => {
     if (!user) return;
+    // Snapshot the post content before deleting for audit log
+    const deletedPost = posts.find((p) => p.id === postId);
     const { error } = await supabase.from("posts").delete().eq("id", postId).eq("author_id", user.id);
     if (!error) {
+      // Log deletion to audit log
+      if (deletedPost) {
+        supabase.from("content_audit_log").insert({
+          action_type: "post_deleted",
+          entity_type: "post",
+          entity_id: postId,
+          user_id: user.id,
+          author_id: deletedPost.author_id,
+          content_snapshot: deletedPost.content,
+          image_urls: deletedPost.image_urls || [],
+          reason: "User deleted own post",
+          reason_ar: "حذف المستخدم منشوره",
+        }).then(() => {});
+      }
       setPosts((prev) => prev.filter((p) => p.id !== postId));
       toast({ title: isAr ? "تم حذف المنشور" : "Post deleted" });
     }

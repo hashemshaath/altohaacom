@@ -128,7 +128,7 @@ export default function Community() {
   });
 
   const tabs: { id: CommunityTab; label: string; icon: any; requiresAuth?: boolean }[] = [
-    { id: "feed", label: isAr ? "الخلاصة" : "Feed", icon: Newspaper },
+    { id: "feed", label: isAr ? "مساحتي" : "My Space", icon: Newspaper },
     { id: "chefs", label: isAr ? "الطهاة" : "Chefs", icon: Users },
     { id: "recipes", label: isAr ? "الوصفات" : "Recipes", icon: BookOpen },
     { id: "groups", label: isAr ? "المجموعات" : "Groups", icon: UsersRound },
@@ -146,17 +146,17 @@ export default function Community() {
       <Header />
 
       <main className="container flex-1">
-        <div className="mx-auto max-w-[1200px] flex gap-0 lg:gap-4">
+        <div className="mx-auto max-w-[1200px] flex gap-0 lg:gap-2">
           {/* Left Sidebar - Desktop only */}
           <aside className={cn(
-            "hidden lg:flex flex-col shrink-0 sticky top-[60px] self-start py-4 pe-2 transition-all duration-300 ease-in-out",
-            leftSidebarOpen ? "w-[240px]" : "w-[52px]"
+            "hidden lg:flex flex-col shrink-0 sticky top-[56px] self-start py-2 pe-1 transition-all duration-300 ease-in-out",
+            leftSidebarOpen ? "w-[220px]" : "w-[48px]"
           )}>
             {/* Toggle button */}
             <Button
               variant="ghost"
               size="icon"
-              className="h-8 w-8 mb-3 self-end rounded-full text-muted-foreground hover:text-foreground"
+              className="h-7 w-7 mb-2 self-end rounded-full text-muted-foreground hover:text-foreground"
               onClick={() => setLeftSidebarOpen(!leftSidebarOpen)}
             >
               {leftSidebarOpen
@@ -167,7 +167,7 @@ export default function Community() {
 
             {/* Profile card */}
             {user && profile && leftSidebarOpen && (
-              <Link to={`/${profile.username || user.id}`} className="block mb-4 rounded-2xl border border-border bg-card p-4 hover:bg-muted/30 transition-colors group">
+              <Link to={`/${profile.username || user.id}`} className="block mb-2 rounded-xl border border-border bg-card p-3 hover:bg-muted/30 transition-colors group">
                 <div className="flex items-center gap-3">
                   <Avatar className="h-10 w-10 ring-2 ring-primary/20 transition-transform group-hover:scale-105">
                     <AvatarImage src={profile.avatar_url || undefined} />
@@ -267,14 +267,14 @@ export default function Community() {
 
           {/* Right Sidebar - Desktop only */}
           <aside className={cn(
-            "hidden xl:flex flex-col shrink-0 sticky top-[60px] self-start py-4 ps-2 transition-all duration-300 ease-in-out",
-            rightSidebarOpen ? "w-[280px]" : "w-[52px]"
+            "hidden xl:flex flex-col shrink-0 sticky top-[56px] self-start py-2 ps-1 transition-all duration-300 ease-in-out",
+            rightSidebarOpen ? "w-[260px]" : "w-[48px]"
           )}>
             {/* Toggle button */}
             <Button
               variant="ghost"
               size="icon"
-              className="h-8 w-8 mb-3 self-start rounded-full text-muted-foreground hover:text-foreground"
+              className="h-7 w-7 mb-2 self-start rounded-full text-muted-foreground hover:text-foreground"
               onClick={() => setRightSidebarOpen(!rightSidebarOpen)}
             >
               {rightSidebarOpen
