@@ -1,5 +1,5 @@
-import { useState, useEffect, useCallback } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useState, useEffect, useCallback, useRef } from "react";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { supabase } from "@/integrations/supabase/client";
@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import {
   Heart, MessageCircle, Repeat2, Bookmark, Share2, MoreHorizontal,
-  Flag, Trash2, Pin, Eye, EyeOff, User, Mail,
+  Flag, Trash2, Pin, Eye, EyeOff, User, Mail, Pencil, History, X, Loader2,
 } from "lucide-react";
 import {
   DropdownMenu, DropdownMenuContent, DropdownMenuItem,
@@ -26,6 +26,8 @@ import { StoriesBar } from "./StoriesBar";
 import { PollDisplay } from "./PollDisplay";
 import { LiveSessionsSection } from "./LiveSessionsSection";
 import { FeedRecommendations } from "./FeedRecommendations";
+import { PostEditDialog } from "./PostEditDialog";
+import { PostEditHistory } from "./PostEditHistory";
 import { cn } from "@/lib/utils";
 
 export interface CommunityPost {
@@ -36,6 +38,7 @@ export interface CommunityPost {
   link_url: string | null;
   video_url: string | null;
   created_at: string;
+  edited_at: string | null;
   author_id: string;
   author_avatar: string | null;
   author_name: string | null;
@@ -54,33 +57,31 @@ export interface CommunityPost {
   moderation_status: string;
 }
 
+const PAGE_SIZE = 20;
+
 export function CommunityFeed() {
   const { user } = useAuth();
   const { language } = useLanguage();
   const { toast } = useToast();
   const isAr = language === "ar";
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const tagFilter = searchParams.get("tag");
+
   const [posts, setPosts] = useState<CommunityPost[]>([]);
   const [loading, setLoading] = useState(true);
-  const [replyingTo, setReplyingTo] = useState<string | null>(null);
+  const [loadingMore, setLoadingMore] = useState(false);
+  const [hasMore, setHasMore] = useState(true);
   const [threadPostId, setThreadPostId] = useState<string | null>(null);
   const [reportPostId, setReportPostId] = useState<string | null>(null);
+  const [editingPost, setEditingPost] = useState<CommunityPost | null>(null);
+  const [historyPostId, setHistoryPostId] = useState<string | null>(null);
+  const sentinelRef = useRef<HTMLDivElement>(null);
 
-  const fetchPosts = useCallback(async () => {
-    const { data: postsData, error } = await supabase
-      .from("posts")
-      .select("*")
-      .is("group_id", null)
-      .is("reply_to_post_id", null)
-      .eq("moderation_status", "approved")
-      .order("is_pinned", { ascending: false })
-      .order("created_at", { ascending: false })
-      .limit(50);
-
-    if (error) { setLoading(false); return; }
-
-    const authorIds = [...new Set(postsData?.map((p) => p.author_id) || [])];
-    const postIds = postsData?.map((p) => p.id) || [];
+  const enrichPosts = useCallback(async (postsData: any[]) => {
+    if (!postsData.length) return [];
+    const authorIds = [...new Set(postsData.map((p) => p.author_id))];
+    const postIds = postsData.map((p) => p.id);
 
     const [profilesRes, likesRes, commentsRes, repliesRes, userLikesRes, userBookmarksRes, userRepostsRes] = await Promise.all([
       supabase.from("profiles").select("user_id, full_name, username, specialization, avatar_url").in("user_id", authorIds),
@@ -106,7 +107,7 @@ export function CommunityFeed() {
       if (r.reply_to_post_id) repliesMap.set(r.reply_to_post_id, (repliesMap.get(r.reply_to_post_id) || 0) + 1);
     });
 
-    const enriched: CommunityPost[] = (postsData || []).map((p) => {
+    return postsData.map((p) => {
       const profile = profilesMap.get(p.author_id);
       return {
         id: p.id,
@@ -116,6 +117,7 @@ export function CommunityFeed() {
         link_url: (p as any).link_url || null,
         video_url: (p as any).video_url || null,
         created_at: p.created_at,
+        edited_at: (p as any).edited_at || null,
         author_id: p.author_id,
         author_avatar: profile?.avatar_url || null,
         author_name: profile?.full_name || null,
@@ -132,14 +134,64 @@ export function CommunityFeed() {
         is_reposted: userRepostedSet.has(p.id),
         is_pinned: (p as any).is_pinned || false,
         moderation_status: (p as any).moderation_status || "approved",
-      };
+      } as CommunityPost;
     });
-
-    setPosts(enriched);
-    setLoading(false);
   }, [user]);
 
-  useEffect(() => { fetchPosts(); }, [fetchPosts]);
+  const fetchPosts = useCallback(async (offset = 0, append = false) => {
+    if (offset === 0) setLoading(true);
+    else setLoadingMore(true);
+
+    let query = supabase
+      .from("posts")
+      .select("*")
+      .is("group_id", null)
+      .is("reply_to_post_id", null)
+      .eq("moderation_status", "approved");
+
+    if (tagFilter) {
+      query = query.ilike("content", `%#${tagFilter}%`);
+    }
+
+    const { data: postsData, error } = await query
+      .order("is_pinned", { ascending: false })
+      .order("created_at", { ascending: false })
+      .range(offset, offset + PAGE_SIZE - 1);
+
+    if (error) { setLoading(false); setLoadingMore(false); return; }
+
+    const enriched = await enrichPosts(postsData || []);
+
+    if (append) {
+      setPosts((prev) => [...prev, ...enriched]);
+    } else {
+      setPosts(enriched);
+    }
+    setHasMore((postsData?.length || 0) >= PAGE_SIZE);
+    setLoading(false);
+    setLoadingMore(false);
+  }, [user, tagFilter, enrichPosts]);
+
+  useEffect(() => {
+    setPosts([]);
+    setHasMore(true);
+    fetchPosts(0, false);
+  }, [fetchPosts]);
+
+  // Infinite scroll observer
+  useEffect(() => {
+    if (!sentinelRef.current || !hasMore || loading || loadingMore) return;
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting && hasMore && !loadingMore) {
+          fetchPosts(posts.length, true);
+        }
+      },
+      { rootMargin: "200px" }
+    );
+    observer.observe(sentinelRef.current);
+    return () => observer.disconnect();
+  }, [hasMore, loading, loadingMore, posts.length, fetchPosts]);
 
   const handleLike = async (postId: string, isLiked: boolean) => {
     if (!user) return;
@@ -190,6 +242,12 @@ export function CommunityFeed() {
     }
   };
 
+  const handleEditSaved = (postId: string, newContent: string) => {
+    setPosts((prev) =>
+      prev.map((p) => p.id === postId ? { ...p, content: newContent, edited_at: new Date().toISOString() } : p)
+    );
+  };
+
   const formatDate = (dateStr: string) => {
     const date = new Date(dateStr);
     const now = new Date();
@@ -225,23 +283,39 @@ export function CommunityFeed() {
 
   return (
     <>
+      {/* Tag filter banner */}
+      {tagFilter && (
+        <div className="flex items-center gap-2 border-b border-border px-4 py-3 bg-primary/5">
+          <span className="text-sm font-bold text-primary">#{tagFilter}</span>
+          <span className="text-xs text-muted-foreground">{isAr ? "المنشورات المصفاة" : "Filtered posts"}</span>
+          <Button
+            variant="ghost"
+            size="icon"
+            className="h-6 w-6 ms-auto rounded-full"
+            onClick={() => navigate("/community")}
+          >
+            <X className="h-3.5 w-3.5" />
+          </Button>
+        </div>
+      )}
+
       {/* Stories */}
-      <StoriesBar />
+      {!tagFilter && <StoriesBar />}
 
       {/* Live Sessions */}
-      <LiveSessionsSection />
+      {!tagFilter && <LiveSessionsSection />}
 
       {/* Composer */}
-      {user && (
+      {user && !tagFilter && (
         <PostComposer
-          onPosted={fetchPosts}
+          onPosted={() => fetchPosts(0, false)}
           replyToPostId={null}
           placeholder={isAr ? "ماذا يحدث في مجتمع الطهاة؟" : "What's happening in the chef community?"}
         />
       )}
 
       {/* AI Recommendations */}
-      <FeedRecommendations />
+      {!tagFilter && <FeedRecommendations />}
 
       {/* Feed */}
       <div className="divide-y divide-border">
@@ -250,7 +324,11 @@ export function CommunityFeed() {
             <div className="mb-3 flex h-14 w-14 items-center justify-center rounded-full bg-muted/60">
               <MessageCircle className="h-7 w-7 text-muted-foreground/40" />
             </div>
-            <p className="text-sm text-muted-foreground">{isAr ? "لا توجد منشورات. كن أول من ينشر!" : "No posts yet. Be the first to share!"}</p>
+            <p className="text-sm text-muted-foreground">
+              {tagFilter
+                ? (isAr ? `لا توجد منشورات بهاشتاق #${tagFilter}` : `No posts with #${tagFilter}`)
+                : (isAr ? "لا توجد منشورات. كن أول من ينشر!" : "No posts yet. Be the first to share!")}
+            </p>
           </div>
         ) : (
           posts.map((post) => (
@@ -295,6 +373,15 @@ export function CommunityFeed() {
                     <span className="shrink-0 text-xs text-muted-foreground">
                       {formatDate(post.created_at)}
                     </span>
+                    {post.edited_at && (
+                      <button
+                        className="shrink-0 text-[10px] text-muted-foreground hover:text-primary transition-colors"
+                        onClick={(e) => { e.stopPropagation(); setHistoryPostId(post.id); }}
+                        title={isAr ? "تم التعديل" : "Edited"}
+                      >
+                        ({isAr ? "معدّل" : "edited"})
+                      </button>
+                    )}
                     <div className="ms-auto">
                       <DropdownMenu>
                         <DropdownMenuTrigger asChild>
@@ -304,10 +391,16 @@ export function CommunityFeed() {
                         </DropdownMenuTrigger>
                         <DropdownMenuContent align="end" className="w-48">
                           {user?.id === post.author_id ? (
-                            <DropdownMenuItem onClick={() => handleDelete(post.id)} className="text-destructive">
-                              <Trash2 className="h-4 w-4 me-2" />
-                              {isAr ? "حذف" : "Delete"}
-                            </DropdownMenuItem>
+                            <>
+                              <DropdownMenuItem onClick={() => setEditingPost(post)}>
+                                <Pencil className="h-4 w-4 me-2" />
+                                {isAr ? "تعديل" : "Edit"}
+                              </DropdownMenuItem>
+                              <DropdownMenuItem onClick={() => handleDelete(post.id)} className="text-destructive">
+                                <Trash2 className="h-4 w-4 me-2" />
+                                {isAr ? "حذف" : "Delete"}
+                              </DropdownMenuItem>
+                            </>
                           ) : (
                             <>
                               <DropdownMenuItem onClick={() => navigate(`/messages?user=${post.author_id}`)}>
@@ -318,6 +411,15 @@ export function CommunityFeed() {
                               <DropdownMenuItem onClick={() => setReportPostId(post.id)}>
                                 <Flag className="h-4 w-4 me-2" />
                                 {isAr ? "إبلاغ" : "Report"}
+                              </DropdownMenuItem>
+                            </>
+                          )}
+                          {post.edited_at && (
+                            <>
+                              <DropdownMenuSeparator />
+                              <DropdownMenuItem onClick={() => setHistoryPostId(post.id)}>
+                                <History className="h-4 w-4 me-2" />
+                                {isAr ? "سجل التعديلات" : "Edit History"}
                               </DropdownMenuItem>
                             </>
                           )}
@@ -359,12 +461,7 @@ export function CommunityFeed() {
                   {/* Video */}
                   {post.video_url && (
                     <div className="mt-2 overflow-hidden rounded-2xl border border-border" onClick={(e) => e.stopPropagation()}>
-                      <video
-                        src={post.video_url}
-                        controls
-                        preload="metadata"
-                        className="w-full max-h-[512px]"
-                      />
+                      <video src={post.video_url} controls preload="metadata" className="w-full max-h-[512px]" />
                     </div>
                   )}
 
@@ -387,7 +484,6 @@ export function CommunityFeed() {
                   {/* Actions bar */}
                   <div className="mt-2 flex items-center justify-between -ms-2" onClick={(e) => e.stopPropagation()}>
                     <div className="flex items-center">
-                      {/* Reply */}
                       <Button
                         variant="ghost"
                         size="sm"
@@ -397,8 +493,6 @@ export function CommunityFeed() {
                         <MessageCircle className="h-4 w-4" />
                         {(post.replies_count + post.comments_count) > 0 && toEnglishDigits(`${post.replies_count + post.comments_count}`)}
                       </Button>
-
-                      {/* Repost */}
                       <Button
                         variant="ghost"
                         size="sm"
@@ -411,8 +505,6 @@ export function CommunityFeed() {
                         <Repeat2 className="h-4 w-4" />
                         {post.reposts_count > 0 && toEnglishDigits(`${post.reposts_count}`)}
                       </Button>
-
-                      {/* Like */}
                       <Button
                         variant="ghost"
                         size="sm"
@@ -425,13 +517,9 @@ export function CommunityFeed() {
                         <Heart className={cn("h-4 w-4", post.is_liked && "fill-current")} />
                         {post.likes_count > 0 && toEnglishDigits(`${post.likes_count}`)}
                       </Button>
-
-                      {/* Reactions */}
                       <PostReactions postId={post.id} />
                     </div>
-
                     <div className="flex items-center">
-                      {/* Bookmark */}
                       <Button
                         variant="ghost"
                         size="sm"
@@ -443,8 +531,6 @@ export function CommunityFeed() {
                       >
                         <Bookmark className={cn("h-4 w-4", post.is_bookmarked && "fill-current")} />
                       </Button>
-
-                      {/* Share */}
                       <Button
                         variant="ghost"
                         size="sm"
@@ -465,12 +551,20 @@ export function CommunityFeed() {
         )}
       </div>
 
+      {/* Infinite scroll sentinel */}
+      <div ref={sentinelRef} className="py-4 flex justify-center">
+        {loadingMore && <Loader2 className="h-5 w-5 animate-spin text-muted-foreground" />}
+        {!hasMore && posts.length > 0 && (
+          <p className="text-xs text-muted-foreground">{isAr ? "لا مزيد من المنشورات" : "No more posts"}</p>
+        )}
+      </div>
+
       {/* Thread modal */}
       {threadPostId && (
         <PostThread
           postId={threadPostId}
           onClose={() => setThreadPostId(null)}
-          onPostUpdated={fetchPosts}
+          onPostUpdated={() => fetchPosts(0, false)}
         />
       )}
 
@@ -479,6 +573,23 @@ export function CommunityFeed() {
         <ReportDialog
           postId={reportPostId}
           onClose={() => setReportPostId(null)}
+        />
+      )}
+
+      {/* Edit dialog */}
+      {editingPost && (
+        <PostEditDialog
+          post={editingPost}
+          onClose={() => setEditingPost(null)}
+          onSaved={handleEditSaved}
+        />
+      )}
+
+      {/* Edit history */}
+      {historyPostId && (
+        <PostEditHistory
+          postId={historyPostId}
+          onClose={() => setHistoryPostId(null)}
         />
       )}
     </>
