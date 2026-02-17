@@ -19,6 +19,11 @@ import { toEnglishDigits } from "@/lib/formatNumber";
 import { PostComposer } from "./PostComposer";
 import { PostThread } from "./PostThread";
 import { ReportDialog } from "./ReportDialog";
+import { PostReactions } from "./PostReactions";
+import { ChefBadge } from "./ChefBadge";
+import { MentionText } from "./MentionText";
+import { StoriesBar } from "./StoriesBar";
+import { LiveSessionsSection } from "./LiveSessionsSection";
 import { cn } from "@/lib/utils";
 
 export interface CommunityPost {
@@ -215,12 +220,18 @@ export function CommunityFeed() {
 
   return (
     <>
+      {/* Stories */}
+      <StoriesBar />
+
+      {/* Live Sessions */}
+      <LiveSessionsSection />
+
       {/* Composer */}
       {user && (
         <PostComposer
           onPosted={fetchPosts}
           replyToPostId={null}
-          placeholder={isAr ? "ماذا يحدث في المطبخ؟" : "What's cooking?"}
+          placeholder={isAr ? "ماذا يحدث في مجتمع الطهاة؟" : "What's happening in the chef community?"}
         />
       )}
 
@@ -266,6 +277,7 @@ export function CommunityFeed() {
                     >
                       {post.author_name || "Chef"}
                     </Link>
+                    <ChefBadge userId={post.author_id} />
                     {post.author_username && (
                       <span className="truncate text-xs text-muted-foreground">
                         @{post.author_username}
@@ -304,7 +316,7 @@ export function CommunityFeed() {
                     className="mt-1 text-sm leading-relaxed whitespace-pre-wrap break-words"
                     onClick={() => setThreadPostId(post.id)}
                   >
-                    {post.content}
+                    <MentionText content={post.content} />
                   </div>
 
                   {/* Images */}
@@ -408,7 +420,11 @@ export function CommunityFeed() {
                     >
                       <Share2 className="h-4 w-4" />
                     </Button>
+                  {/* Reactions */}
+                  <div className="mt-1" onClick={(e) => e.stopPropagation()}>
+                    <PostReactions postId={post.id} />
                   </div>
+                </div>
                 </div>
               </div>
             </article>
