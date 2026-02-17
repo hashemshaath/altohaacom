@@ -38,6 +38,7 @@ import { PublicProfileAbout } from "@/components/public-profile/PublicProfileAbo
 import { PublicProfileSidebar } from "@/components/public-profile/PublicProfileSidebar";
 import { PublicProfileGallery } from "@/components/public-profile/PublicProfileGallery";
 import { PublicProfileEmptySection } from "@/components/public-profile/PublicProfileEmptySection";
+import { PublicProfileAchievements } from "@/components/public-profile/PublicProfileAchievements";
 
 type Profile = Database["public"]["Tables"]["profiles"]["Row"];
 type AppRole = Database["public"]["Enums"]["app_role"];
@@ -323,6 +324,13 @@ export default function PublicProfile() {
               </SectionReveal>
             )}
 
+            {/* Achievements */}
+            {profile.user_id && (
+              <SectionReveal delay={225}>
+                <PublicProfileAchievements userId={profile.user_id} isAr={isAr} />
+              </SectionReveal>
+            )}
+
             {/* Experience */}
             {isVisible("career") && (
               <SectionReveal delay={250}>
@@ -331,11 +339,11 @@ export default function PublicProfile() {
                     <SectionTitle icon={Briefcase} label={isAr ? "الخبرة المهنية" : "Professional Experience"} />
                     <div className="space-y-2.5">
                       {workRecords.map((record: any) => (
-                        <Card key={record.id} className="rounded-2xl border-border/25 hover:shadow-md transition-all duration-300 hover:border-border/40">
+                        <Card key={record.id} className="rounded-2xl border-border/25 hover:shadow-md transition-all duration-300 hover:border-border/40 hover:-translate-y-0.5 group/card">
                           <CardContent className="p-4" dir={isAr ? "rtl" : "ltr"}>
                             <div className="flex gap-3">
-                              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-chart-3/8">
-                                <Briefcase className="h-4 w-4 text-chart-3" />
+                              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-chart-3/8 group-hover/card:scale-110 transition-transform duration-300">
+                                <Briefcase className="h-4 w-4 text-chart-3 group-hover/card:text-chart-3" />
                               </div>
                               <div className="flex-1 min-w-0">
                                 <div className="flex items-center gap-2 flex-wrap">
@@ -385,11 +393,11 @@ export default function PublicProfile() {
                     <SectionTitle icon={GraduationCap} label={isAr ? "التعليم" : "Education"} />
                     <div className="space-y-2.5">
                       {educationRecords.map((record: any) => (
-                        <Card key={record.id} className="rounded-2xl border-border/25 hover:shadow-md transition-all duration-300 hover:border-border/40">
+                        <Card key={record.id} className="rounded-2xl border-border/25 hover:shadow-md transition-all duration-300 hover:border-border/40 hover:-translate-y-0.5 group/card">
                           <CardContent className="p-4" dir={isAr ? "rtl" : "ltr"}>
                             <div className="flex gap-3">
-                              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-chart-2/8">
-                                <GraduationCap className="h-4 w-4 text-chart-2" />
+                              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-chart-2/8 group-hover/card:scale-110 transition-transform duration-300">
+                                <GraduationCap className="h-4 w-4 text-chart-2 group-hover/card:text-chart-2" />
                               </div>
                               <div className="flex-1 min-w-0">
                                 <h4 className="font-semibold text-sm">{isAr ? (record.title_ar || record.title) : record.title}</h4>
@@ -431,7 +439,7 @@ export default function PublicProfile() {
                     <SectionTitle icon={Building2} label={isAr ? "العضويات والجهات" : "Memberships & Entities"} />
                     <div className="grid gap-2.5 sm:grid-cols-2">
                       {memberships.map((m: any) => (
-                        <Card key={m.id} className="rounded-2xl border-border/25 hover:shadow-md transition-all duration-300 hover:border-border/40">
+                        <Card key={m.id} className="rounded-2xl border-border/25 hover:shadow-md transition-all duration-300 hover:border-border/40 hover:-translate-y-0.5 group/card">
                           <CardContent className="p-4 flex items-center gap-3" dir={isAr ? "rtl" : "ltr"}>
                             {m.culinary_entities?.logo_url ? (
                               <img src={m.culinary_entities.logo_url} alt="" className="h-10 w-10 rounded-xl object-cover border" />
