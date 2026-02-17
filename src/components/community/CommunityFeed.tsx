@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { supabase } from "@/integrations/supabase/client";
@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import {
   Heart, MessageCircle, Repeat2, Bookmark, Share2, MoreHorizontal,
-  Flag, Trash2, Pin, Eye, EyeOff, User,
+  Flag, Trash2, Pin, Eye, EyeOff, User, Mail,
 } from "lucide-react";
 import {
   DropdownMenu, DropdownMenuContent, DropdownMenuItem,
@@ -56,6 +56,7 @@ export function CommunityFeed() {
   const { language } = useLanguage();
   const { toast } = useToast();
   const isAr = language === "ar";
+  const navigate = useNavigate();
   const [posts, setPosts] = useState<CommunityPost[]>([]);
   const [loading, setLoading] = useState(true);
   const [replyingTo, setReplyingTo] = useState<string | null>(null);
@@ -301,10 +302,17 @@ export function CommunityFeed() {
                               {isAr ? "حذف" : "Delete"}
                             </DropdownMenuItem>
                           ) : (
-                            <DropdownMenuItem onClick={() => setReportPostId(post.id)}>
-                              <Flag className="h-4 w-4 me-2" />
-                              {isAr ? "إبلاغ" : "Report"}
-                            </DropdownMenuItem>
+                            <>
+                              <DropdownMenuItem onClick={() => navigate(`/messages?user=${post.author_id}`)}>
+                                <Mail className="h-4 w-4 me-2" />
+                                {isAr ? "إرسال رسالة" : "Message"}
+                              </DropdownMenuItem>
+                              <DropdownMenuSeparator />
+                              <DropdownMenuItem onClick={() => setReportPostId(post.id)}>
+                                <Flag className="h-4 w-4 me-2" />
+                                {isAr ? "إبلاغ" : "Report"}
+                              </DropdownMenuItem>
+                            </>
                           )}
                         </DropdownMenuContent>
                       </DropdownMenu>

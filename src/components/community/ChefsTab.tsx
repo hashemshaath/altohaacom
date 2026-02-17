@@ -12,6 +12,8 @@ import { User, Search, MapPin, ChefHat } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { countryFlag } from "@/lib/countryFlag";
 import { FollowButton } from "./FollowButton";
+import { ChefBadge } from "./ChefBadge";
+import { MessageButton } from "./MessageButton";
 
 interface ChefProfile {
   user_id: string;
@@ -126,8 +128,9 @@ export function ChefsTab() {
                 </Link>
                 <div className="min-w-0 w-full flex-1 space-y-1">
                   <Link to={`/${chef.username || chef.user_id}`} className="block">
-                    <h3 className="truncate text-sm font-bold group-hover:text-primary transition-colors leading-tight">
+                    <h3 className="truncate text-sm font-bold group-hover:text-primary transition-colors leading-tight inline-flex items-center gap-1">
                       {chef.full_name || "Chef"}
+                      <ChefBadge userId={chef.user_id} />
                     </h3>
                   </Link>
                   {chef.role && (
@@ -149,7 +152,10 @@ export function ChefsTab() {
                   )}
                 </div>
                 {user && (
-                  <FollowButton userId={chef.user_id} userName={chef.full_name || undefined} fullWidth />
+                  <div className="flex items-center gap-1.5 w-full">
+                    <FollowButton userId={chef.user_id} userName={chef.full_name || undefined} fullWidth />
+                    <MessageButton userId={chef.user_id} variant="outline" size="sm" />
+                  </div>
                 )}
               </div>
             </CardContent>
