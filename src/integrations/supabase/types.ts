@@ -9766,6 +9766,112 @@ export type Database = {
           },
         ]
       }
+      post_poll_options: {
+        Row: {
+          created_at: string
+          id: string
+          option_text: string
+          poll_id: string
+          sort_order: number
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          option_text: string
+          poll_id: string
+          sort_order?: number
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          option_text?: string
+          poll_id?: string
+          sort_order?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "post_poll_options_poll_id_fkey"
+            columns: ["poll_id"]
+            isOneToOne: false
+            referencedRelation: "post_polls"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      post_poll_votes: {
+        Row: {
+          created_at: string
+          id: string
+          option_id: string
+          poll_id: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          option_id: string
+          poll_id: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          option_id?: string
+          poll_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "post_poll_votes_option_id_fkey"
+            columns: ["option_id"]
+            isOneToOne: false
+            referencedRelation: "post_poll_options"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "post_poll_votes_poll_id_fkey"
+            columns: ["poll_id"]
+            isOneToOne: false
+            referencedRelation: "post_polls"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      post_polls: {
+        Row: {
+          allows_multiple: boolean | null
+          created_at: string
+          ends_at: string | null
+          id: string
+          post_id: string
+          question: string | null
+        }
+        Insert: {
+          allows_multiple?: boolean | null
+          created_at?: string
+          ends_at?: string | null
+          id?: string
+          post_id: string
+          question?: string | null
+        }
+        Update: {
+          allows_multiple?: boolean | null
+          created_at?: string
+          ends_at?: string | null
+          id?: string
+          post_id?: string
+          question?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "post_polls_post_id_fkey"
+            columns: ["post_id"]
+            isOneToOne: true
+            referencedRelation: "posts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       post_reactions: {
         Row: {
           created_at: string
@@ -9894,6 +10000,7 @@ export type Database = {
           reply_to_post_id: string | null
           reposts_count: number
           updated_at: string
+          video_url: string | null
           visibility: string
         }
         Insert: {
@@ -9915,6 +10022,7 @@ export type Database = {
           reply_to_post_id?: string | null
           reposts_count?: number
           updated_at?: string
+          video_url?: string | null
           visibility?: string
         }
         Update: {
@@ -9936,6 +10044,7 @@ export type Database = {
           reply_to_post_id?: string | null
           reposts_count?: number
           updated_at?: string
+          video_url?: string | null
           visibility?: string
         }
         Relationships: [

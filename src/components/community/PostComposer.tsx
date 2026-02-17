@@ -9,8 +9,9 @@ import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
 import {
   Image as ImageIcon, X, Globe, Lock, Users as UsersIcon, Loader2, User,
-  Trophy, CalendarDays, Quote, Sparkles,
+  Trophy, CalendarDays, Quote, Sparkles, Video,
 } from "lucide-react";
+import { PollComposer } from "./PollComposer";
 import {
   DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
@@ -19,6 +20,7 @@ import { cn } from "@/lib/utils";
 const MAX_CHARS = 1000;
 const MAX_IMAGES = 4;
 const MAX_IMAGE_SIZE = 5 * 1024 * 1024;
+const MAX_VIDEO_SIZE = 20 * 1024 * 1024;
 
 type PostType = "text" | "competition" | "event" | "testimonial";
 
@@ -43,6 +45,7 @@ export function PostComposer({ onPosted, replyToPostId, placeholder, compact, au
   const { toast } = useToast();
   const isAr = language === "ar";
   const fileRef = useRef<HTMLInputElement>(null);
+  const videoRef = useRef<HTMLInputElement>(null);
 
   const [content, setContent] = useState("");
   const [images, setImages] = useState<{ file: File; preview: string }[]>([]);
@@ -50,6 +53,8 @@ export function PostComposer({ onPosted, replyToPostId, placeholder, compact, au
   const [posting, setPosting] = useState(false);
   const [profile, setProfile] = useState<{ avatar_url: string | null } | null>(null);
   const [postType, setPostType] = useState<PostType>("text");
+  const [pollData, setPollData] = useState<{ options: string[] } | null>(null);
+  const [video, setVideo] = useState<{ file: File; preview: string } | null>(null);
 
   useEffect(() => {
     if (!user) return;
@@ -82,6 +87,24 @@ export function PostComposer({ onPosted, replyToPostId, placeholder, compact, au
     });
   };
 
+  const handleVideoSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    if (file.size > MAX_VIDEO_SIZE) {
+      toast({ variant: "destructive", title: isAr ? "الملف كبير جداً" : "File too large", description: isAr ? "الحد الأقصى 20 ميجابايت" : "Maximum 20MB for video" });
+      return;
+    }
+    if (!file.type.startsWith("video/")) return;
+    setVideo({ file, preview: URL.createObjectURL(file) });
+    setImages([]); // Clear images when adding video
+    if (videoRef.current) videoRef.current.value = "";
+  };
+
+  const removeVideo = () => {
+    if (video) URL.revokeObjectURL(video.preview);
+    setVideo(null);
+  };
+
   const getPlaceholder = () => {
     if (placeholder) return placeholder;
     switch (postType) {
@@ -93,7 +116,7 @@ export function PostComposer({ onPosted, replyToPostId, placeholder, compact, au
   };
 
   const handlePost = async () => {
-    if (!user || (!content.trim() && images.length === 0)) return;
+    if (!user || (!content.trim() && images.length === 0 && !video)) return;
     setPosting(true);
 
     try {
@@ -105,6 +128,17 @@ export function PostComposer({ onPosted, replyToPostId, placeholder, compact, au
         if (upErr) throw upErr;
         const { data: urlData } = supabase.storage.from("user-media").getPublicUrl(path);
         uploadedUrls.push(urlData.publicUrl);
+      }
+
+      // Upload video if present
+      let videoUrl: string | null = null;
+      if (video) {
+        const ext = video.file.name.split(".").pop() || "mp4";
+        const path = `posts/${user.id}/${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`;
+        const { error: upErr } = await supabase.storage.from("user-media").upload(path, video.file, { contentType: video.file.type });
+        if (upErr) throw upErr;
+        const { data: urlData } = supabase.storage.from("user-media").getPublicUrl(path);
+        videoUrl = urlData.publicUrl;
       }
 
       // Build content with post type prefix
@@ -125,11 +159,27 @@ export function PostComposer({ onPosted, replyToPostId, placeholder, compact, au
         visibility,
         image_urls: uploadedUrls,
         image_url: uploadedUrls[0] || null,
+        video_url: videoUrl,
       };
       if (replyToPostId) postData.reply_to_post_id = replyToPostId;
 
       const { data: insertedPost, error } = await supabase.from("posts").insert(postData).select("id").single();
       if (error) throw error;
+
+      // Create poll if present
+      if (pollData && pollData.options.filter((o) => o.trim()).length >= 2) {
+        const { data: pollRow } = await supabase
+          .from("post_polls")
+          .insert({ post_id: insertedPost.id })
+          .select("id")
+          .single();
+        if (pollRow) {
+          const pollOptions = pollData.options
+            .filter((o) => o.trim())
+            .map((text, idx) => ({ poll_id: pollRow.id, option_text: text.trim(), sort_order: idx }));
+          await supabase.from("post_poll_options").insert(pollOptions);
+        }
+      }
 
       // Trigger AI content moderation
       try {
@@ -176,6 +226,8 @@ export function PostComposer({ onPosted, replyToPostId, placeholder, compact, au
       setContent("");
       setImages([]);
       setPostType("text");
+      setPollData(null);
+      removeVideo();
       onPosted();
     } catch (err: any) {
       toast({ variant: "destructive", title: "Error", description: err.message });
@@ -274,6 +326,24 @@ export function PostComposer({ onPosted, replyToPostId, placeholder, compact, au
             </div>
           )}
 
+          {/* Video preview */}
+          {video && (
+            <div className="mt-2 relative group rounded-2xl border border-border overflow-hidden">
+              <video src={video.preview} className="w-full max-h-[300px] object-cover" controls />
+              <button
+                onClick={removeVideo}
+                className="absolute top-1 end-1 h-7 w-7 rounded-full bg-background/80 backdrop-blur flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
+              >
+                <X className="h-4 w-4" />
+              </button>
+            </div>
+          )}
+
+          {/* Poll composer */}
+          {pollData && (
+            <PollComposer onPollChange={setPollData} />
+          )}
+
           {/* Toolbar */}
           <div className="mt-2 flex items-center justify-between border-t border-border/50 pt-2">
             <div className="flex items-center gap-1">
@@ -285,15 +355,34 @@ export function PostComposer({ onPosted, replyToPostId, placeholder, compact, au
                 className="hidden"
                 onChange={handleImageSelect}
               />
+              <input
+                ref={videoRef}
+                type="file"
+                accept="video/mp4,video/webm,video/quicktime"
+                className="hidden"
+                onChange={handleVideoSelect}
+              />
               <Button
                 variant="ghost"
                 size="icon"
                 className="h-8 w-8 rounded-full text-primary"
                 onClick={() => fileRef.current?.click()}
-                disabled={images.length >= MAX_IMAGES}
+                disabled={images.length >= MAX_IMAGES || !!video}
               >
                 <ImageIcon className="h-4 w-4" />
               </Button>
+              <Button
+                variant="ghost"
+                size="icon"
+                className="h-8 w-8 rounded-full text-primary"
+                onClick={() => videoRef.current?.click()}
+                disabled={!!video || images.length > 0}
+                title={isAr ? "إضافة فيديو" : "Add video"}
+              >
+                <Video className="h-4 w-4" />
+              </Button>
+
+              {!replyToPostId && <PollComposer onPollChange={setPollData} />}
 
               {!replyToPostId && (
                 <DropdownMenu>
@@ -329,7 +418,7 @@ export function PostComposer({ onPosted, replyToPostId, placeholder, compact, au
               <Button
                 size="sm"
                 className="rounded-full px-5 font-bold"
-                disabled={posting || (content.trim().length === 0 && images.length === 0) || isOverLimit}
+                disabled={posting || (content.trim().length === 0 && images.length === 0 && !video) || isOverLimit}
                 onClick={handlePost}
               >
                 {posting ? <Loader2 className="h-4 w-4 animate-spin" /> : (replyToPostId ? (isAr ? "رد" : "Reply") : (isAr ? "نشر" : "Post"))}

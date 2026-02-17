@@ -19,6 +19,7 @@ import {
 } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { toEnglishDigits, formatLocalizedDate } from "@/lib/formatNumber";
+import { CommunityAnalytics } from "@/components/admin/CommunityAnalytics";
 
 interface Report {
   id: string;
@@ -295,6 +296,10 @@ export default function ModerationCenter() {
                 <Badge variant="outline" className="h-5 px-1.5 text-[10px]">{statsData?.pending}</Badge>
               )}
             </TabsTrigger>
+            <TabsTrigger value="analytics" className="gap-1.5">
+              <BarChart3 className="h-3.5 w-3.5" />
+              {isAr ? "التحليلات" : "Analytics"}
+            </TabsTrigger>
           </TabsList>
 
           {/* ─── Content Queue Tab ─── */}
@@ -484,6 +489,11 @@ export default function ModerationCenter() {
                 )}
               </TabsContent>
             </Tabs>
+          </TabsContent>
+
+          {/* ─── Analytics Tab ─── */}
+          <TabsContent value="analytics" className="mt-4">
+            <CommunityAnalytics />
           </TabsContent>
         </Tabs>
       </div>
