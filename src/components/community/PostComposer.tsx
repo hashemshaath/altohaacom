@@ -185,9 +185,10 @@ export function PostComposer({ onPosted, replyToPostId, placeholder, compact, au
         }
       }
 
-      // Trigger AI content moderation
+      // Trigger AI content moderation (async — post is already published with default 'approved')
+      // If content violates rules, moderation will change status to 'rejected' or 'pending'
       try {
-        const modRes = await fetch(
+        fetch(
           `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/moderate-content`,
           {
             method: "POST",
@@ -204,28 +205,10 @@ export function PostComposer({ onPosted, replyToPostId, placeholder, compact, au
             }),
           }
         );
-        const modResult = await modRes.json();
-        if (modResult.decision === "rejected") {
-          toast({
-            variant: "destructive",
-            title: isAr ? "تم رفض المنشور" : "Post Rejected",
-            description: modResult.explanation || (isAr ? "المحتوى يخالف سياسات المجتمع" : "Content violates community guidelines"),
-          });
-        } else if (modResult.decision === "flagged" || modResult.moderation_status === "pending") {
-          toast({
-            title: isAr ? "المنشور قيد المراجعة" : "Post Under Review",
-            description: isAr ? "سيتم نشر المنشور بعد مراجعته من قبل فريق الإشراف" : "Your post will be published after review by the moderation team",
-          });
-        } else {
-          toast({ title: isAr ? "تم النشر ✓" : "Posted ✓" });
-        }
       } catch {
-        // If moderation fails, post stays pending — that's fine
-        toast({
-          title: isAr ? "المنشور قيد المراجعة" : "Post Under Review",
-          description: isAr ? "سيتم نشر المنشور بعد المراجعة" : "Your post will be published after review",
-        });
+        // Moderation failure is non-blocking — post stays approved
       }
+      toast({ title: isAr ? "تم النشر ✓" : "Posted ✓" });
 
       setContent("");
       setImages([]);
