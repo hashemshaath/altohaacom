@@ -13,6 +13,9 @@ import { SkipToContent } from "@/components/a11y/SkipToContent";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
 import { GoogleTrackingProvider } from "@/components/tracking/GoogleTrackingProvider";
 import { PageTracker } from "@/components/tracking/PageTracker";
+import { SmartInstallBanner } from "@/components/pwa/SmartInstallBanner";
+import { OfflineBanner } from "@/components/pwa/OfflineBanner";
+import { UpdatePrompt } from "@/components/pwa/UpdatePrompt";
 
 const LiveChatWidget = lazy(() => import("@/components/crm/LiveChatWidget").then(m => ({ default: m.LiveChatWidget })));
 const NotFound = lazy(() => import("./pages/NotFound"));
@@ -70,6 +73,9 @@ const App = () => (
               </Suspense>
               </ErrorBoundary>
               <MobileBottomNav />
+              <SmartInstallBanner />
+              <OfflineBanner />
+              <UpdatePrompt />
             </BrowserRouter>
           </TooltipProvider>
         </AuthProvider>
