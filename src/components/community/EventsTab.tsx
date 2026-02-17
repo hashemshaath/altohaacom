@@ -11,7 +11,8 @@ import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Calendar, MapPin, Users, Plus, Check, X, BarChart3, CalendarDays } from "lucide-react";
+import { Calendar, MapPin, Users, Plus, Check, X, BarChart3, CalendarDays, MessageSquare } from "lucide-react";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { useToast } from "@/hooks/use-toast";
 import { format } from "date-fns";
 import { toEnglishDigits } from "@/lib/formatNumber";
@@ -56,6 +57,8 @@ export function EventsTab() {
   const [showEventForm, setShowEventForm] = useState(false);
   const [showPollForm, setShowPollForm] = useState(false);
   const [creating, setCreating] = useState(false);
+  const [registerDialog, setRegisterDialog] = useState<{ eventId: string; title: string } | null>(null);
+  const [registerNote, setRegisterNote] = useState("");
   const [eventForm, setEventForm] = useState({
     title: "", description: "", event_date: "", location: "", is_virtual: false, max_attendees: "",
   });
@@ -150,11 +153,22 @@ export function EventsTab() {
     else { setShowPollForm(false); setPollForm({ question: "", options: ["", ""] }); fetchData(); }
   };
 
-  const handleAttend = async (eventId: string, isAttending: boolean) => {
+  const handleAttend = async (eventId: string, isAttending: boolean, note?: string) => {
     if (!user) return;
-    if (isAttending) { await supabase.from("event_attendees").delete().eq("event_id", eventId).eq("user_id", user.id); }
-    else { await supabase.from("event_attendees").insert({ event_id: eventId, user_id: user.id }); }
+    if (isAttending) {
+      await supabase.from("event_attendees").delete().eq("event_id", eventId).eq("user_id", user.id);
+    } else {
+      await supabase.from("event_attendees").insert({ event_id: eventId, user_id: user.id });
+      // If note provided, create a post about attending
+      if (note?.trim()) {
+        const event = events.find(e => e.id === eventId);
+        const postContent = `${note.trim()}\n\n${isAr ? "📅 سجلت في فعالية:" : "📅 Registered for event:"} ${event?.title || ""}\n\n#${isAr ? "فعالية" : "event"} #${isAr ? "تسجيل" : "registration"}`;
+        await supabase.from("posts").insert({ author_id: user.id, content: postContent });
+      }
+    }
     setEvents((prev) => prev.map((e) => e.id === eventId ? { ...e, is_attending: !isAttending, attendees_count: isAttending ? e.attendees_count - 1 : e.attendees_count + 1 } : e));
+    setRegisterDialog(null);
+    setRegisterNote("");
   };
 
   const handleVote = async (pollId: string, optionIndex: number) => {
@@ -294,10 +308,10 @@ export function EventsTab() {
         <TabsContent value="events">
           <div className="grid gap-3 sm:grid-cols-2">
             {events.map((event) => (
-              <Card key={event.id} className="border-border/50 transition-all hover:shadow-md hover:-translate-y-0.5 hover:border-primary/20">
-                <CardContent className="p-4">
+              <Card key={event.id} className="group border-border/30 bg-card/60 backdrop-blur-sm transition-all duration-300 hover:shadow-lg hover:-translate-y-1 h-full">
+                <CardContent className="p-4 flex flex-col h-full">
                   <div className="mb-2 flex items-start justify-between gap-2">
-                    <h3 className="text-sm font-semibold">{event.title}</h3>
+                    <h3 className="text-sm font-bold leading-tight">{event.title}</h3>
                     <Badge
                       variant={event.status === "upcoming" ? "default" : "secondary"}
                       className="shrink-0 text-[10px]"
@@ -306,37 +320,45 @@ export function EventsTab() {
                     </Badge>
                   </div>
                   {event.description && (
-                    <p className="mb-3 line-clamp-2 text-xs text-muted-foreground">{event.description}</p>
+                    <p className="mb-3 line-clamp-2 text-xs text-muted-foreground leading-relaxed">{event.description}</p>
                   )}
-                  <div className="mb-3 flex flex-wrap gap-2.5 text-[10px] text-muted-foreground">
+                  <div className="mb-3 flex flex-wrap gap-2.5 text-[11px] text-muted-foreground">
                     {event.event_date && (
                       <span className="flex items-center gap-1">
-                        <Calendar className="h-3 w-3" />
+                        <Calendar className="h-3 w-3 shrink-0" />
                         {toEnglishDigits(format(new Date(event.event_date), "MMM d, yyyy HH:mm"))}
                       </span>
                     )}
                     {event.location && (
-                      <span className="flex items-center gap-1"><MapPin className="h-3 w-3" />{event.location}</span>
+                      <span className="flex items-center gap-1"><MapPin className="h-3 w-3 shrink-0" />{event.location}</span>
                     )}
                     <span className="flex items-center gap-1">
-                      <Users className="h-3 w-3" />
+                      <Users className="h-3 w-3 shrink-0" />
                       {event.attendees_count}{event.max_attendees ? `/${event.max_attendees}` : ""}
                     </span>
                   </div>
-                  {user && event.organizer_id !== user.id && (
-                    <Button
-                      size="sm"
-                      variant={event.is_attending ? "outline" : "default"}
-                      className="gap-1 text-xs"
-                      onClick={() => handleAttend(event.id, event.is_attending)}
-                    >
-                      {event.is_attending ? (
-                        <><Check className="h-3.5 w-3.5" />{isAr ? "مسجل" : "Registered"}</>
-                      ) : (
-                        isAr ? "سجّل الآن" : "Register"
-                      )}
-                    </Button>
-                  )}
+                  <div className="mt-auto pt-2">
+                    {user && event.organizer_id !== user.id && (
+                      <Button
+                        size="sm"
+                        variant={event.is_attending ? "outline" : "default"}
+                        className="w-full gap-1.5 text-xs rounded-xl font-semibold h-9"
+                        onClick={() => {
+                          if (event.is_attending) {
+                            handleAttend(event.id, true);
+                          } else {
+                            setRegisterDialog({ eventId: event.id, title: event.title });
+                          }
+                        }}
+                      >
+                        {event.is_attending ? (
+                          <><Check className="h-3.5 w-3.5" />{isAr ? "مسجل ✓" : "Registered ✓"}</>
+                        ) : (
+                          <><CalendarDays className="h-3.5 w-3.5" />{isAr ? "سجّل الآن" : "Register Now"}</>
+                        )}
+                      </Button>
+                    )}
+                  </div>
                 </CardContent>
               </Card>
             ))}
@@ -413,6 +435,45 @@ export function EventsTab() {
           </div>
         </TabsContent>
       </Tabs>
+
+      {/* Registration Dialog with note */}
+      <Dialog open={!!registerDialog} onOpenChange={(open) => { if (!open) { setRegisterDialog(null); setRegisterNote(""); } }}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <CalendarDays className="h-5 w-5 text-primary" />
+              {isAr ? "تسجيل في الفعالية" : "Register for Event"}
+            </DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4 py-2">
+            <div className="rounded-xl bg-muted/30 border border-border/30 p-3">
+              <p className="text-sm font-bold">{registerDialog?.title}</p>
+            </div>
+            <div className="space-y-2">
+              <Label className="text-xs font-medium">
+                <MessageSquare className="h-3.5 w-3.5 inline me-1.5" />
+                {isAr ? "أضف تعليقًا (اختياري) - سيُنشر كمنشور" : "Add a note (optional) - will be shared as a post"}
+              </Label>
+              <Textarea
+                value={registerNote}
+                onChange={(e) => setRegisterNote(e.target.value)}
+                placeholder={isAr ? "متحمس للحضور! 🎉" : "Excited to attend! 🎉"}
+                rows={3}
+                className="resize-none rounded-xl"
+              />
+            </div>
+          </div>
+          <DialogFooter className="gap-2 sm:gap-0">
+            <Button variant="outline" onClick={() => { setRegisterDialog(null); setRegisterNote(""); }}>
+              {isAr ? "إلغاء" : "Cancel"}
+            </Button>
+            <Button onClick={() => registerDialog && handleAttend(registerDialog.eventId, false, registerNote)} className="gap-1.5">
+              <Check className="h-4 w-4" />
+              {isAr ? "تأكيد التسجيل" : "Confirm Registration"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
