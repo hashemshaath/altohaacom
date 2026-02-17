@@ -12,7 +12,7 @@ import { MessageButton } from "@/components/profile/MessageButton";
 import { ProfileShareButtons } from "@/components/profile/ProfileShareButtons";
 import { countryFlag } from "@/lib/countryFlag";
 import {
-  BadgeCheck, Briefcase, MapPin, UserPlus, UserMinus, Loader2, Clock, Lock,
+  BadgeCheck, Briefcase, MapPin, UserPlus, UserMinus, Loader2, Clock, Lock, Hash,
 } from "lucide-react";
 
 interface PublicProfileHeroProps {
@@ -30,11 +30,13 @@ interface PublicProfileHeroProps {
   toggleFollow: any;
   user: any;
   getCountryName: (code: string | null) => string | null;
+  userSpecialties?: any[];
 }
 
 export function PublicProfileHero({
   profile, displayName, currentWork, roles, roleLabels, userAwards,
   isAr, isOwnProfile, isFollowing, pendingRequest, followPrivacy, toggleFollow, user, getCountryName,
+  userSpecialties = [],
 }: PublicProfileHeroProps) {
   const [showUnfollowConfirm, setShowUnfollowConfirm] = useState(false);
   const [unfollowText, setUnfollowText] = useState("");
@@ -57,10 +59,31 @@ export function PublicProfileHero({
 
   const unfollowConfirmWord = isAr ? "إلغاء" : "unfollow";
 
+  // Build professional hashtags from roles, specialization, and specialties
+  const hashtags: string[] = [];
+  if (roles?.length) {
+    roles.forEach((role: string) => {
+      const label = isAr ? roleLabels[role]?.ar : roleLabels[role]?.en;
+      if (label) hashtags.push(label);
+    });
+  }
+  if (profile.specialization) {
+    hashtags.push(isAr ? (profile.specialization_ar || profile.specialization) : profile.specialization);
+  }
+  if (userSpecialties?.length) {
+    userSpecialties.forEach((us: any) => {
+      const name = isAr ? us.specialties?.name_ar || us.specialties?.name : us.specialties?.name;
+      if (name && !hashtags.includes(name)) hashtags.push(name);
+    });
+  }
+  if (profile.job_title) {
+    hashtags.push(isAr ? (profile.job_title_ar || profile.job_title) : profile.job_title);
+  }
+
   return (
     <section className="relative overflow-hidden">
       {/* Cover */}
-      <div className="h-48 sm:h-60 md:h-72 relative overflow-hidden">
+      <div className="h-44 sm:h-56 md:h-72 relative overflow-hidden">
         {profile.cover_image_url ? (
           <img src={profile.cover_image_url} alt="Cover" className="w-full h-full object-cover transition-transform duration-[2s] hover:scale-105" />
         ) : (
@@ -79,18 +102,17 @@ export function PublicProfileHero({
       <div className="relative z-20 -mt-20 md:-mt-24 px-3 sm:px-4 md:px-6 max-w-[1200px] mx-auto w-full animate-in fade-in slide-in-from-bottom-4 duration-700">
         <Card className="border-border/25 shadow-lg shadow-primary/5 rounded-2xl backdrop-blur-xl bg-card/90 overflow-visible">
           <div className="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-primary/60 to-transparent" />
-          <CardContent className="p-4 md:p-6">
-            <div className="flex flex-col md:flex-row items-center md:items-end gap-4 md:gap-6" dir={isAr ? "rtl" : "ltr"}>
-              {/* Avatar - Premium circular design */}
+          <CardContent className="p-4 sm:p-5 md:p-6">
+            <div className="flex flex-col items-center md:flex-row md:items-start gap-4 md:gap-5" dir={isAr ? "rtl" : "ltr"}>
+              {/* Avatar */}
               <div className="-mt-20 md:-mt-24 shrink-0 relative group z-10">
                 <div className="relative">
-                  {/* Outer glow border */}
                   <div className="absolute -inset-1 rounded-2xl bg-gradient-to-br from-primary/40 via-primary/20 to-chart-3/30 blur-sm opacity-80 group-hover:opacity-100 transition-opacity duration-500" />
-                  <div className="relative h-28 w-28 md:h-36 md:w-36 rounded-2xl ring-4 ring-background shadow-2xl overflow-hidden border-2 border-border/20 transition-all duration-500 group-hover:scale-[1.03] group-hover:shadow-primary/15">
+                  <div className="relative h-24 w-24 sm:h-28 sm:w-28 md:h-36 md:w-36 rounded-2xl ring-4 ring-background shadow-2xl overflow-hidden border-2 border-border/20 transition-all duration-500 group-hover:scale-[1.03] group-hover:shadow-primary/15">
                     {profile.avatar_url ? (
                       <img src={profile.avatar_url} alt={displayName} className="h-full w-full object-cover" />
                     ) : (
-                      <div className="h-full w-full flex items-center justify-center bg-gradient-to-br from-primary/20 to-primary/5 text-primary text-4xl md:text-5xl font-bold font-serif">
+                      <div className="h-full w-full flex items-center justify-center bg-gradient-to-br from-primary/20 to-primary/5 text-primary text-3xl sm:text-4xl md:text-5xl font-bold font-serif">
                         {displayName[0]?.toUpperCase()}
                       </div>
                     )}
@@ -104,14 +126,15 @@ export function PublicProfileHero({
               </div>
 
               {/* Info */}
-              <div className="flex-1 min-w-0 text-center md:text-start space-y-2">
+              <div className="flex-1 min-w-0 text-center md:text-start space-y-1.5 md:pt-2">
+                {/* Name row */}
                 <div className="flex items-center gap-2 flex-wrap justify-center md:justify-start">
-                  <h1 className="font-serif text-xl sm:text-2xl md:text-3xl font-bold tracking-tight">{displayName}</h1>
-                  {profile.is_verified && <BadgeCheck className="h-5 w-5 text-primary" />}
+                  <h1 className="font-serif text-lg sm:text-xl md:text-2xl lg:text-3xl font-bold tracking-tight leading-tight">{displayName}</h1>
+                  {profile.is_verified && <BadgeCheck className="h-4 w-4 sm:h-5 sm:w-5 text-primary shrink-0" />}
                   {profile.show_nationality !== false && profile.nationality && (
                     <Tooltip>
                       <TooltipTrigger asChild>
-                        <span className="text-lg leading-none cursor-default">{countryFlag(profile.nationality)}</span>
+                        <span className="text-base sm:text-lg leading-none cursor-default">{countryFlag(profile.nationality)}</span>
                       </TooltipTrigger>
                       <TooltipContent side="bottom" className="text-xs">{getCountryName(profile.nationality)}</TooltipContent>
                     </Tooltip>
@@ -119,7 +142,7 @@ export function PublicProfileHero({
                   {profile.show_nationality !== false && profile.second_nationality && (
                     <Tooltip>
                       <TooltipTrigger asChild>
-                        <span className="text-lg leading-none cursor-default">{countryFlag(profile.second_nationality)}</span>
+                        <span className="text-base sm:text-lg leading-none cursor-default">{countryFlag(profile.second_nationality)}</span>
                       </TooltipTrigger>
                       <TooltipContent side="bottom" className="text-xs">{getCountryName(profile.second_nationality)}</TooltipContent>
                     </Tooltip>
@@ -141,6 +164,7 @@ export function PublicProfileHero({
 
                 <p className="text-xs text-muted-foreground">@{profile.username}</p>
 
+                {/* Current work */}
                 {currentWork && (
                   <div className="inline-flex items-center gap-2 bg-primary/5 border border-primary/10 rounded-xl px-3 py-1.5">
                     <Briefcase className="h-3.5 w-3.5 text-primary shrink-0" />
@@ -151,6 +175,7 @@ export function PublicProfileHero({
                   </div>
                 )}
 
+                {/* Location */}
                 {(profile.country_code || profile.location) && (
                   <p className="text-xs text-muted-foreground flex items-center gap-1.5 justify-center md:justify-start">
                     <MapPin className="h-3 w-3 text-primary shrink-0" />
@@ -159,27 +184,37 @@ export function PublicProfileHero({
                   </p>
                 )}
 
-                <div className="flex flex-wrap gap-1.5 justify-center md:justify-start">
-                  {roles?.map((role: string) => (
-                    <Badge key={role} variant="secondary" className="text-[10px] h-5 rounded-lg">{isAr ? roleLabels[role]?.ar || role : roleLabels[role]?.en || role}</Badge>
-                  ))}
-                  {profile.membership_tier && profile.membership_tier !== "basic" && (
+                {/* Professional Hashtags */}
+                {hashtags.length > 0 && (
+                  <div className="flex flex-wrap gap-1.5 justify-center md:justify-start pt-1">
+                    {hashtags.map((tag, i) => (
+                      <Badge key={i} variant="outline" className="text-[10px] sm:text-[11px] h-5 sm:h-6 rounded-lg border-primary/20 text-primary/80 bg-primary/5 hover:bg-primary/10 transition-colors gap-0.5 px-2">
+                        <Hash className="h-2.5 w-2.5" />
+                        {tag}
+                      </Badge>
+                    ))}
+                  </div>
+                )}
+
+                {/* Role badges - only show if no hashtags cover them already */}
+                {profile.membership_tier && profile.membership_tier !== "basic" && (
+                  <div className="flex flex-wrap gap-1.5 justify-center md:justify-start">
                     <Badge variant="outline" className="text-[10px] h-5 border-primary/30 text-primary rounded-lg">
                       {profile.membership_tier === "professional" ? (isAr ? "محترف" : "Pro") : profile.membership_tier}
                     </Badge>
-                  )}
-                </div>
+                  </div>
+                )}
               </div>
 
               {/* Actions */}
-              <div className="flex flex-col items-center gap-2 shrink-0">
+              <div className="flex flex-row md:flex-col items-center gap-2 shrink-0 md:pt-2">
                 {user && !isOwnProfile && followPrivacy !== "private" && (
                   <Button
                     variant={isFollowing ? "outline" : pendingRequest ? "secondary" : "default"}
                     size="sm"
                     onClick={handleFollowClick}
                     disabled={toggleFollow.isPending || !!pendingRequest || isFollowing === undefined}
-                    className={`w-full min-w-[130px] rounded-xl transition-all duration-300 ${
+                    className={`min-w-[120px] sm:min-w-[130px] rounded-xl transition-all duration-300 text-xs sm:text-sm ${
                       isFollowing ? "hover:border-destructive/50 hover:text-destructive" : ""
                     }`}
                   >
@@ -205,9 +240,9 @@ export function PublicProfileHero({
         </Card>
       </div>
 
-      {/* Unfollow Confirmation - requires typing "unfollow" */}
+      {/* Unfollow Confirmation */}
       <AlertDialog open={showUnfollowConfirm} onOpenChange={(open) => { setShowUnfollowConfirm(open); if (!open) setUnfollowText(""); }}>
-        <AlertDialogContent className="rounded-2xl max-w-sm">
+        <AlertDialogContent className="rounded-2xl max-w-sm mx-3">
           <AlertDialogHeader>
             <div className="flex justify-center mb-3">
               <div className="h-14 w-14 rounded-full bg-destructive/10 flex items-center justify-center">

@@ -276,6 +276,7 @@ export default function PublicProfile() {
         isAr={isAr} isOwnProfile={isOwnProfile} isFollowing={isFollowing}
         pendingRequest={pendingRequest} followPrivacy={followPrivacy}
         toggleFollow={toggleFollow} user={user} getCountryName={getCountryName}
+        userSpecialties={userSpecialties}
       />
 
       {/* ═══ STATS BAR ═══ */}
@@ -289,8 +290,8 @@ export default function PublicProfile() {
       </div>
 
       {/* ═══ MAIN CONTENT (2-column layout) ═══ */}
-      <main className="flex-1 px-3 sm:px-4 md:px-6 max-w-[1200px] mx-auto w-full mt-6 pb-10">
-        <div className="grid md:grid-cols-[1fr_280px] lg:grid-cols-[1fr_320px] gap-6">
+      <main className="flex-1 px-3 sm:px-4 md:px-6 max-w-[1200px] mx-auto w-full mt-4 sm:mt-6 pb-10">
+        <div className="grid grid-cols-1 md:grid-cols-[1fr_280px] lg:grid-cols-[1fr_320px] gap-4 sm:gap-6">
           {/* ── LEFT COLUMN (Main Content) ── */}
           <div className="space-y-6 min-w-0">
             {/* About */}
