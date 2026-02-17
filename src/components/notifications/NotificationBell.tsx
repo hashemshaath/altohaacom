@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Bell, ShoppingCart, CheckCircle, Trophy, FileText, Users } from "lucide-react";
+import { Bell, ShoppingCart, CheckCircle, Trophy, FileText, Users, Heart, MessageCircle, UserPlus, Radio, Eye, Flame } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu, DropdownMenuContent, DropdownMenuItem,
@@ -13,11 +13,15 @@ import { useNavigate } from "react-router-dom";
 import { toEnglishDigits } from "@/lib/formatNumber";
 import { cn } from "@/lib/utils";
 
-type NotificationCategory = "all" | "approvals" | "orders" | "competitions" | "general";
+type NotificationCategory = "all" | "social" | "approvals" | "orders" | "competitions" | "general";
 
 function categorizeNotification(notification: { link?: string | null; title?: string; type?: string | null }): NotificationCategory {
   const link = notification.link || "";
   const title = (notification.title || "").toLowerCase();
+  const type = notification.type || "";
+  // Social notifications
+  if (["reaction", "follow", "follow_request", "story_view", "live_session", "comment", "mention"].includes(type)) return "social";
+  if (link.includes("/community") || title.includes("follow") || title.includes("react") || title.includes("متابع") || title.includes("تفاعل")) return "social";
   if (link.includes("/admin/") || title.includes("approv") || title.includes("review") || title.includes("verif") || title.includes("موافق") || title.includes("مراجع") || title.includes("توثيق")) return "approvals";
   if (link.includes("/order") || link.includes("/invoice") || title.includes("order") || title.includes("invoice") || title.includes("payment") || title.includes("طلب") || title.includes("فاتور") || title.includes("دفع")) return "orders";
   if (link.includes("/competition") || title.includes("competition") || title.includes("judge") || title.includes("score") || title.includes("مسابق") || title.includes("حكم") || title.includes("تقييم")) return "competitions";
@@ -60,6 +64,11 @@ export const NotificationBell = React.forwardRef<HTMLButtonElement, Record<strin
 
   const getNotificationIcon = (type: string | null) => {
     switch (type) {
+      case "reaction": return <Flame className="h-4 w-4" />;
+      case "follow": case "follow_request": return <UserPlus className="h-4 w-4" />;
+      case "comment": case "mention": return <MessageCircle className="h-4 w-4" />;
+      case "story_view": return <Eye className="h-4 w-4" />;
+      case "live_session": return <Radio className="h-4 w-4" />;
       case "success": return <CheckCircle className="h-4 w-4" />;
       case "warning": return <Trophy className="h-4 w-4" />;
       case "error": return <Bell className="h-4 w-4" />;
@@ -67,8 +76,23 @@ export const NotificationBell = React.forwardRef<HTMLButtonElement, Record<strin
     }
   };
 
+  const getNotificationIconColor = (type: string | null) => {
+    switch (type) {
+      case "reaction": return "bg-destructive/10 text-destructive";
+      case "follow": case "follow_request": return "bg-primary/10 text-primary";
+      case "comment": case "mention": return "bg-chart-3/10 text-chart-3";
+      case "story_view": return "bg-chart-4/10 text-chart-4";
+      case "live_session": return "bg-destructive/10 text-destructive";
+      case "success": return "bg-chart-3/10 text-chart-3";
+      case "warning": return "bg-chart-4/10 text-chart-4";
+      case "error": return "bg-destructive/10 text-destructive";
+      default: return "bg-primary/10 text-primary";
+    }
+  };
+
   const categoryLabels: Record<NotificationCategory, { en: string; ar: string; icon: React.ReactNode }> = {
     all: { en: "All", ar: "الكل", icon: <Bell className="h-3 w-3" /> },
+    social: { en: "Social", ar: "اجتماعي", icon: <Heart className="h-3 w-3" /> },
     approvals: { en: "Approvals", ar: "الموافقات", icon: <CheckCircle className="h-3 w-3" /> },
     orders: { en: "Orders", ar: "الطلبات", icon: <ShoppingCart className="h-3 w-3" /> },
     competitions: { en: "Events", ar: "الفعاليات", icon: <Trophy className="h-3 w-3" /> },
@@ -158,10 +182,7 @@ export const NotificationBell = React.forwardRef<HTMLButtonElement, Record<strin
               >
                 <span className={cn(
                   "flex h-8 w-8 shrink-0 items-center justify-center rounded-full mt-0.5",
-                  notification.type === "success" && "bg-chart-3/10 text-chart-3",
-                  notification.type === "warning" && "bg-chart-4/10 text-chart-4",
-                  notification.type === "error" && "bg-destructive/10 text-destructive",
-                  (!notification.type || notification.type === "info") && "bg-primary/10 text-primary",
+                  getNotificationIconColor(notification.type)
                 )}>
                   {getNotificationIcon(notification.type)}
                 </span>

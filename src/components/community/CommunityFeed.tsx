@@ -363,76 +363,79 @@ export function CommunityFeed() {
                   )}
 
                   {/* Actions bar */}
-                  <div className="mt-2 flex items-center -ms-2" onClick={(e) => e.stopPropagation()}>
-                    {/* Reply */}
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      className="h-8 gap-1 rounded-full px-3 text-xs text-muted-foreground hover:text-primary hover:bg-primary/10"
-                      onClick={() => setThreadPostId(post.id)}
-                    >
-                      <MessageCircle className="h-4 w-4" />
-                      {(post.replies_count + post.comments_count) > 0 && toEnglishDigits(`${post.replies_count + post.comments_count}`)}
-                    </Button>
+                  <div className="mt-2 flex items-center justify-between -ms-2" onClick={(e) => e.stopPropagation()}>
+                    <div className="flex items-center">
+                      {/* Reply */}
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        className="h-8 gap-1 rounded-full px-3 text-xs text-muted-foreground hover:text-primary hover:bg-primary/10"
+                        onClick={() => setThreadPostId(post.id)}
+                      >
+                        <MessageCircle className="h-4 w-4" />
+                        {(post.replies_count + post.comments_count) > 0 && toEnglishDigits(`${post.replies_count + post.comments_count}`)}
+                      </Button>
 
-                    {/* Repost */}
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      className={cn(
-                        "h-8 gap-1 rounded-full px-3 text-xs hover:text-chart-3 hover:bg-chart-3/10",
-                        post.is_reposted ? "text-chart-3" : "text-muted-foreground"
-                      )}
-                      onClick={() => handleRepost(post.id, post.is_reposted)}
-                    >
-                      <Repeat2 className="h-4 w-4" />
-                      {post.reposts_count > 0 && toEnglishDigits(`${post.reposts_count}`)}
-                    </Button>
+                      {/* Repost */}
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        className={cn(
+                          "h-8 gap-1 rounded-full px-3 text-xs hover:text-chart-3 hover:bg-chart-3/10",
+                          post.is_reposted ? "text-chart-3" : "text-muted-foreground"
+                        )}
+                        onClick={() => handleRepost(post.id, post.is_reposted)}
+                      >
+                        <Repeat2 className="h-4 w-4" />
+                        {post.reposts_count > 0 && toEnglishDigits(`${post.reposts_count}`)}
+                      </Button>
 
-                    {/* Like */}
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      className={cn(
-                        "h-8 gap-1 rounded-full px-3 text-xs hover:text-destructive hover:bg-destructive/10",
-                        post.is_liked ? "text-destructive" : "text-muted-foreground"
-                      )}
-                      onClick={() => handleLike(post.id, post.is_liked)}
-                    >
-                      <Heart className={cn("h-4 w-4", post.is_liked && "fill-current")} />
-                      {post.likes_count > 0 && toEnglishDigits(`${post.likes_count}`)}
-                    </Button>
+                      {/* Like */}
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        className={cn(
+                          "h-8 gap-1 rounded-full px-3 text-xs hover:text-destructive hover:bg-destructive/10",
+                          post.is_liked ? "text-destructive" : "text-muted-foreground"
+                        )}
+                        onClick={() => handleLike(post.id, post.is_liked)}
+                      >
+                        <Heart className={cn("h-4 w-4", post.is_liked && "fill-current")} />
+                        {post.likes_count > 0 && toEnglishDigits(`${post.likes_count}`)}
+                      </Button>
 
-                    {/* Bookmark */}
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      className={cn(
-                        "h-8 rounded-full px-2 text-xs hover:text-primary hover:bg-primary/10",
-                        post.is_bookmarked ? "text-primary" : "text-muted-foreground"
-                      )}
-                      onClick={() => handleBookmark(post.id, post.is_bookmarked)}
-                    >
-                      <Bookmark className={cn("h-4 w-4", post.is_bookmarked && "fill-current")} />
-                    </Button>
+                      {/* Reactions */}
+                      <PostReactions postId={post.id} />
+                    </div>
 
-                    {/* Share */}
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      className="h-8 rounded-full px-2 text-xs text-muted-foreground hover:text-primary hover:bg-primary/10"
-                      onClick={() => {
-                        navigator.clipboard.writeText(window.location.origin + `/community/post/${post.id}`);
-                        toast({ title: isAr ? "تم نسخ الرابط" : "Link copied" });
-                      }}
-                    >
-                      <Share2 className="h-4 w-4" />
-                    </Button>
-                  {/* Reactions */}
-                  <div className="mt-1" onClick={(e) => e.stopPropagation()}>
-                    <PostReactions postId={post.id} />
+                    <div className="flex items-center">
+                      {/* Bookmark */}
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        className={cn(
+                          "h-8 rounded-full px-2 text-xs hover:text-primary hover:bg-primary/10",
+                          post.is_bookmarked ? "text-primary" : "text-muted-foreground"
+                        )}
+                        onClick={() => handleBookmark(post.id, post.is_bookmarked)}
+                      >
+                        <Bookmark className={cn("h-4 w-4", post.is_bookmarked && "fill-current")} />
+                      </Button>
+
+                      {/* Share */}
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        className="h-8 rounded-full px-2 text-xs text-muted-foreground hover:text-primary hover:bg-primary/10"
+                        onClick={() => {
+                          navigator.clipboard.writeText(window.location.origin + `/community/post/${post.id}`);
+                          toast({ title: isAr ? "تم نسخ الرابط" : "Link copied" });
+                        }}
+                      >
+                        <Share2 className="h-4 w-4" />
+                      </Button>
+                    </div>
                   </div>
-                </div>
                 </div>
               </div>
             </article>
