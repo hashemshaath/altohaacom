@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { BarChart3, Trophy, Users, DollarSign, Brain, Activity, UserMinus, TrendingUp, Megaphone, Wifi, Cpu, FileText, Flame, Globe, MessageSquareText } from "lucide-react";
+import { BarChart3, Trophy, Users, DollarSign, Brain, Activity, UserMinus, TrendingUp, Megaphone, Wifi, Cpu, FileText, Flame, Globe, MessageSquareText, Filter, AlertTriangle, FlaskConical, FileBarChart } from "lucide-react";
 import AdminPageHeader from "@/components/admin/AdminPageHeader";
 import PlatformOverview from "@/components/analytics/PlatformOverview";
 import CompetitionAnalytics from "@/components/analytics/CompetitionAnalytics";
@@ -18,6 +18,10 @@ import { CustomReportBuilder } from "@/components/analytics/CustomReportBuilder"
 import { ActivityHeatmap } from "@/components/analytics/ActivityHeatmap";
 import { GeographicDistribution } from "@/components/analytics/GeographicDistribution";
 import { AIAnalyticsChat } from "@/components/analytics/AIAnalyticsChat";
+import { FunnelAnalysis } from "@/components/analytics/FunnelAnalysis";
+import { AnomalyDetection } from "@/components/analytics/AnomalyDetection";
+import { ABTestingDashboard } from "@/components/analytics/ABTestingDashboard";
+import { ExecutiveSummary } from "@/components/analytics/ExecutiveSummary";
 import { AnalyticsDateRange, getPresetRange, type DateRange } from "@/components/analytics/AnalyticsDateRange";
 import { toast } from "@/hooks/use-toast";
 
@@ -47,7 +51,11 @@ export default function AnalyticsDashboard() {
     { value: "predictions", icon: Cpu, label: isAr ? "تنبؤات" : "Predictions" },
     { value: "heatmap", icon: Flame, label: isAr ? "خريطة حرارية" : "Heatmap" },
     { value: "geographic", icon: Globe, label: isAr ? "جغرافي" : "Geographic" },
+    { value: "funnel", icon: Filter, label: isAr ? "مسار التحويل" : "Funnel" },
+    { value: "anomaly", icon: AlertTriangle, label: isAr ? "كشف الشذوذ" : "Anomaly" },
+    { value: "ab-testing", icon: FlaskConical, label: isAr ? "اختبار A/B" : "A/B Testing" },
     { value: "reports", icon: FileText, label: isAr ? "تقارير" : "Reports" },
+    { value: "executive", icon: FileBarChart, label: isAr ? "ملخص تنفيذي" : "Executive" },
     { value: "ai-insights", icon: Brain, label: isAr ? "ذكاء اصطناعي" : "AI Insights" },
     { value: "ai-chat", icon: MessageSquareText, label: isAr ? "محادثة ذكية" : "AI Chat" },
   ];
@@ -65,7 +73,7 @@ export default function AnalyticsDashboard() {
 
       <Tabs value={activeTab} onValueChange={setActiveTab}>
         <div className="overflow-x-auto">
-          <TabsList className="inline-flex w-auto min-w-full md:grid md:grid-cols-15">
+          <TabsList className="inline-flex w-auto min-w-full flex-wrap gap-1">
             {tabs.map((tab) => (
               <TabsTrigger key={tab.value} value={tab.value} className="gap-1.5 min-w-max">
                 <tab.icon className="h-4 w-4" />
@@ -87,7 +95,11 @@ export default function AnalyticsDashboard() {
         <TabsContent value="predictions"><MLPredictionsPanel /></TabsContent>
         <TabsContent value="heatmap"><ActivityHeatmap /></TabsContent>
         <TabsContent value="geographic"><GeographicDistribution /></TabsContent>
+        <TabsContent value="funnel"><FunnelAnalysis /></TabsContent>
+        <TabsContent value="anomaly"><AnomalyDetection /></TabsContent>
+        <TabsContent value="ab-testing"><ABTestingDashboard /></TabsContent>
         <TabsContent value="reports"><CustomReportBuilder /></TabsContent>
+        <TabsContent value="executive"><ExecutiveSummary /></TabsContent>
         <TabsContent value="ai-insights"><AIInsightsPanel /></TabsContent>
         <TabsContent value="ai-chat"><AIAnalyticsChat /></TabsContent>
       </Tabs>
