@@ -152,7 +152,7 @@ export function StoriesBar() {
     setUploading(true);
     try {
       const ext = pendingFile.name.split(".").pop() || "jpg";
-      const path = `stories/${user.id}/${Date.now()}.${ext}`;
+      const path = `${user.id}/stories/${Date.now()}.${ext}`;
       const { error: upErr } = await supabase.storage.from("user-media").upload(path, pendingFile, { contentType: pendingFile.type });
       if (upErr) throw upErr;
       const { data: urlData } = supabase.storage.from("user-media").getPublicUrl(path);

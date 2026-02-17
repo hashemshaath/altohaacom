@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Heart, MessageCircle, User, Send } from "lucide-react";
+import { Heart, MessageCircle, User, Send, Globe, Users } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { PostComments } from "@/components/community/PostComments";
 import { toEnglishDigits } from "@/lib/formatNumber";
@@ -29,6 +29,8 @@ interface Post {
   showComments?: boolean;
 }
 
+type FeedFilter = "all" | "following";
+
 export function FeedTab() {
   const { user } = useAuth();
   const { t, language } = useLanguage();
@@ -37,14 +39,40 @@ export function FeedTab() {
   const [newPost, setNewPost] = useState("");
   const [loading, setLoading] = useState(true);
   const [posting, setPosting] = useState(false);
+  const [feedFilter, setFeedFilter] = useState<FeedFilter>("all");
 
   const fetchPosts = async () => {
-    const { data: postsData, error } = await supabase
+    setLoading(true);
+
+    // If filtering by following, first get followed user IDs
+    let followingIds: string[] = [];
+    if (feedFilter === "following" && user) {
+      const { data: followsData } = await supabase
+        .from("user_follows")
+        .select("following_id")
+        .eq("follower_id", user.id);
+      followingIds = followsData?.map((f) => f.following_id) || [];
+      // Include own posts
+      followingIds.push(user.id);
+    }
+
+    let query = supabase
       .from("posts")
       .select("*")
       .is("group_id", null)
       .order("created_at", { ascending: false })
       .limit(50);
+
+    if (feedFilter === "following" && user) {
+      if (followingIds.length === 0) {
+        setPosts([]);
+        setLoading(false);
+        return;
+      }
+      query = query.in("author_id", followingIds);
+    }
+
+    const { data: postsData, error } = await query;
 
     if (error) {
       console.error("Error fetching posts:", error);
@@ -94,7 +122,7 @@ export function FeedTab() {
 
   useEffect(() => {
     fetchPosts();
-  }, [user]);
+  }, [user, feedFilter]);
 
   const handlePost = async () => {
     if (!user || !newPost.trim()) return;
@@ -177,6 +205,30 @@ export function FeedTab() {
 
   return (
     <div className="mx-auto max-w-2xl space-y-4">
+      {/* Feed filter */}
+      {user && (
+        <div className="flex items-center gap-2">
+          <Button
+            variant={feedFilter === "all" ? "default" : "outline"}
+            size="sm"
+            className="gap-1.5 rounded-full"
+            onClick={() => setFeedFilter("all")}
+          >
+            <Globe className="h-3.5 w-3.5" />
+            {language === "ar" ? "الكل" : "All"}
+          </Button>
+          <Button
+            variant={feedFilter === "following" ? "default" : "outline"}
+            size="sm"
+            className="gap-1.5 rounded-full"
+            onClick={() => setFeedFilter("following")}
+          >
+            <Users className="h-3.5 w-3.5" />
+            {language === "ar" ? "المتابَعين" : "Following"}
+          </Button>
+        </div>
+      )}
+
       {/* Create post */}
       {user && (
         <Card className="relative overflow-hidden border-primary/15">
