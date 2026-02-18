@@ -3,7 +3,7 @@ import { useLanguage } from "@/i18n/LanguageContext";
 import { Outlet, NavLink } from "react-router-dom";
 import { AdminHeader } from "@/components/admin/AdminHeader";
 import { cn } from "@/lib/utils";
-import { GraduationCap, BarChart3, Landmark, Building2, MessageSquare as MessageSquareIcon, Earth, QrCode, UtensilsCrossed, MailOpen, HandHeart, ShieldCheck, Ticket, Target, Headphones, Activity, Megaphone, Languages, Package, ChefHat, ClipboardCheck } from "lucide-react";
+import { GraduationCap, BarChart3, Landmark, Building2, MessageSquare as MessageSquareIcon, Earth, QrCode, UtensilsCrossed, MailOpen, HandHeart, ShieldCheck, Ticket, Target, Headphones, Activity, Megaphone, Languages, Package, ChefHat, ClipboardCheck, Calculator } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
@@ -69,18 +69,23 @@ export default function AdminLayout() {
         { to: "/admin/competitions", icon: Trophy, label: language === "ar" ? "المسابقات" : "Competitions" },
         { to: "/admin/chefs-table", icon: ChefHat, label: language === "ar" ? "طاولة الشيف" : "Chef's Table" },
         { to: "/admin/evaluation", icon: ClipboardCheck, label: language === "ar" ? "مركز التقييم" : "Evaluation Center" },
-        { to: "/admin/order-center", icon: Package, label: language === "ar" ? "مركز الطلبات" : "Order Center" },
         { to: "/admin/exhibitions", icon: Landmark, label: language === "ar" ? "المعارض والفعاليات" : "Exhibitions & Events" },
         { to: "/admin/certificates", icon: Award, label: language === "ar" ? "الشهادات" : "Certificates" },
         { to: "/admin/qr-codes", icon: QrCode, label: language === "ar" ? "رموز QR" : "QR Codes" },
-        { to: "/admin/orders", icon: CreditCard, label: language === "ar" ? "الطلبات" : "Orders" },
         { to: "/admin/mentorship", icon: HandHeart, label: language === "ar" ? "الإرشاد" : "Mentorship" },
         { to: "/admin/media", icon: Image, label: language === "ar" ? "مكتبة الوسائط" : "Media Library" },
         { to: "/admin/moderation", icon: Flag, label: language === "ar" ? "إدارة المحتوى" : "Moderation" },
-        { to: "/admin/invoices", icon: FileText, label: language === "ar" ? "الفواتير" : "Invoices" },
-        { to: "/admin/cost-center", icon: CreditCard, label: language === "ar" ? "مركز التكلفة" : "Cost Center" },
-        { to: "/admin/invoice-customization", icon: FileText, label: language === "ar" ? "تخصيص الفواتير" : "Invoice Settings" },
         { to: "/admin/advertising", icon: Megaphone, label: language === "ar" ? "مركز الإعلانات" : "Advertising" },
+      ],
+    },
+    {
+      title: language === "ar" ? "المالية والعمليات" : "Finance & Operations",
+      items: [
+        { to: "/admin/cost-center", icon: Calculator, label: language === "ar" ? "مركز التكلفة" : "Cost Center" },
+        { to: "/admin/invoices", icon: FileText, label: language === "ar" ? "الفواتير" : "Invoices" },
+        { to: "/admin/invoice-customization", icon: FileText, label: language === "ar" ? "تخصيص الفواتير" : "Invoice Settings" },
+        { to: "/admin/orders", icon: CreditCard, label: language === "ar" ? "الطلبات" : "Orders" },
+        { to: "/admin/order-center", icon: Package, label: language === "ar" ? "مركز الطلبات" : "Order Center" },
       ],
     },
     {
