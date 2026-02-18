@@ -14,6 +14,7 @@ import { ArrowRight } from "lucide-react";
 import { NotificationsSummaryWidget } from "@/components/dashboard/NotificationsSummaryWidget";
 import { UpcomingExhibitionsWidget } from "@/components/dashboard/UpcomingExhibitionsWidget";
 import { EventsCalendarWidget } from "@/components/dashboard/EventsCalendarWidget";
+import { ChefScheduleWidget } from "@/components/dashboard/ChefScheduleWidget";
 import { ContentStatsWidget } from "@/components/dashboard/ContentStatsWidget";
 import { useAuth } from "@/contexts/AuthContext";
 import { useQuery } from "@tanstack/react-query";
@@ -167,6 +168,7 @@ export default function Dashboard() {
           <div className="space-y-6">
             {user && <ContentStatsWidget />}
             {user && <ReferralWidget />}
+            {user && <ChefScheduleWidget />}
             {user && <EventsCalendarWidget />}
             {user && <NotificationsSummaryWidget />}
             <RecentActivityWidget />
