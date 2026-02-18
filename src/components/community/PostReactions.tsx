@@ -35,7 +35,8 @@ export function PostReactions({ postId }: PostReactionsProps) {
 
   useEffect(() => {
     fetchReactions();
-  }, [postId, user]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [postId, user?.id]);
 
   const fetchReactions = async () => {
     const { data: allReactions } = await supabase
