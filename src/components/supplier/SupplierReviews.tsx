@@ -89,7 +89,15 @@ export function SupplierReviews({ companyId }: Props) {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["supplierReviews", companyId] });
+      queryClient.invalidateQueries({ queryKey: ["supplierReviewStats", companyId] });
       toast({ title: isAr ? "تم إرسال تقييمك" : "Review submitted" });
+
+      // Notify company about new review
+      import("@/lib/notificationTriggers").then(({ notifySupplierNewReview }) => {
+        const displayName = user?.user_metadata?.full_name || user?.email || "User";
+        notifySupplierNewReview({ companyId, reviewerName: displayName, rating });
+      });
+
       setShowForm(false);
       setRating(0);
       setTitle("");

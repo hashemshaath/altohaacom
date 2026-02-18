@@ -777,6 +777,37 @@ export async function notifySupplierFeatured(params: {
   }
 }
 
+/** Notify company when they receive a new review */
+export async function notifySupplierNewReview(params: {
+  companyId: string;
+  reviewerName: string;
+  rating: number;
+}) {
+  const { data: contacts } = await supabase
+    .from("company_contacts")
+    .select("user_id")
+    .eq("company_id", params.companyId)
+    .eq("is_primary", true)
+    .not("user_id", "is", null);
+
+  if (!contacts?.length) return;
+
+  const stars = "★".repeat(params.rating) + "☆".repeat(5 - params.rating);
+  for (const contact of contacts) {
+    if (!contact.user_id) continue;
+    await sendNotification({
+      userId: contact.user_id,
+      title: `New ${params.rating}-star review from ${params.reviewerName}`,
+      titleAr: `تقييم جديد ${stars} من ${params.reviewerName}`,
+      body: `${params.reviewerName} left a ${params.rating}-star review on your supplier profile`,
+      bodyAr: `${params.reviewerName} ترك تقييم ${params.rating} نجوم على ملفك التعريفي`,
+      type: "info",
+      link: "/company/supplier-profile",
+      channels: ["in_app"],
+    });
+  }
+}
+
 /** Notify company when they receive a contact inquiry */
 export async function notifySupplierInquiry(params: {
   companyId: string;

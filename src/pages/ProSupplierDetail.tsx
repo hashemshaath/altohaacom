@@ -158,8 +158,50 @@ export default function ProSupplierDetail() {
   return (
     <div className="flex min-h-screen flex-col">
       <SEOHead
-        title={`${company.name} | ${isAr ? "التحاء" : "Altohaa"}`}
-        description={company.description || `${company.name} - Professional chef product supplier`}
+        title={`${company.name} | ${isAr ? "الموردين المحترفين" : "Pro Suppliers"}`}
+        description={
+          (company as any).tagline
+            ? `${(company as any).tagline} - ${company.name}`
+            : company.description || `${company.name} - Professional chef product supplier`
+        }
+        ogType="business.business"
+        ogImage={company.logo_url || company.cover_image_url || undefined}
+        canonical={`${window.location.origin}/pro-suppliers/${company.id}`}
+        lang={language}
+        keywords={[
+          company.name,
+          (company as any).supplier_category,
+          ...(((company as any).specializations as string[]) || []),
+          "chef supplier",
+          "professional kitchen",
+        ].filter(Boolean).join(", ")}
+        jsonLd={{
+          "@context": "https://schema.org",
+          "@type": "Organization",
+          name: company.name,
+          description: company.description || undefined,
+          url: company.website || `${window.location.origin}/pro-suppliers/${company.id}`,
+          logo: company.logo_url || undefined,
+          image: company.cover_image_url || company.logo_url || undefined,
+          telephone: company.phone || undefined,
+          email: company.email || undefined,
+          address: company.address ? {
+            "@type": "PostalAddress",
+            streetAddress: company.address,
+            addressLocality: company.city || undefined,
+            postalCode: company.postal_code || undefined,
+            addressCountry: company.country_code || undefined,
+          } : undefined,
+          ...(reviewStats && reviewStats.count > 0 ? {
+            aggregateRating: {
+              "@type": "AggregateRating",
+              ratingValue: reviewStats.avg.toFixed(1),
+              reviewCount: reviewStats.count,
+              bestRating: 5,
+              worstRating: 1,
+            },
+          } : {}),
+        }}
       />
       <Header />
       <main className="flex-1">
