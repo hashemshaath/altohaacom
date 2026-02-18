@@ -2,9 +2,10 @@ import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Calendar, Trophy, BookOpen, MapPin, Clock } from "lucide-react";
+import { Calendar, Trophy, BookOpen, MapPin, Clock, Tv, ChefHat, Landmark } from "lucide-react";
 import { toEnglishDigits } from "@/lib/formatNumber";
 import { Link } from "react-router-dom";
+import { usePublicChefSchedule, EVENT_TYPE_CONFIG, type ScheduleEventType } from "@/hooks/useChefSchedule";
 
 interface Props {
   userId: string;
@@ -22,8 +23,10 @@ interface ScheduleItem {
 }
 
 export function PublicProfileSchedule({ userId, isAr }: Props) {
+  const { data: chefEvents = [] } = usePublicChefSchedule(userId);
+
   const { data: schedule = [] } = useQuery({
-    queryKey: ["user-schedule", userId],
+    queryKey: ["user-schedule", userId, chefEvents.length],
     queryFn: async () => {
       const now = new Date().toISOString();
       const items: ScheduleItem[] = [];
@@ -65,8 +68,20 @@ export function PublicProfileSchedule({ userId, isAr }: Props) {
         }
       });
 
+      // Merge public chef schedule events
+      chefEvents.forEach((ev: any) => {
+        const config = EVENT_TYPE_CONFIG[(ev.event_type as ScheduleEventType) || "other"];
+        items.push({
+          id: ev.id,
+          type: ev.event_type === "tv_interview" ? "event" : (ev.event_type || "event"),
+          title: ev.show_details_publicly ? (isAr && ev.title_ar ? ev.title_ar : ev.title) : (isAr ? config?.ar : config?.en) || "Event",
+          date: ev.start_date,
+          location: ev.show_details_publicly ? (isAr && ev.venue_ar ? ev.venue_ar : ev.city || ev.venue) : undefined,
+        });
+      });
+
       items.sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
-      return items.slice(0, 6);
+      return items.slice(0, 8);
     },
     enabled: !!userId,
     staleTime: 1000 * 60 * 5,
@@ -78,6 +93,9 @@ export function PublicProfileSchedule({ userId, isAr }: Props) {
     competition: { icon: Trophy, color: "text-chart-4", bg: "bg-chart-4/10" },
     masterclass: { icon: BookOpen, color: "text-chart-2", bg: "bg-chart-2/10" },
     event: { icon: Calendar, color: "text-chart-5", bg: "bg-chart-5/10" },
+    chefs_table: { icon: ChefHat, color: "text-chart-2", bg: "bg-chart-2/10" },
+    exhibition: { icon: Landmark, color: "text-chart-3", bg: "bg-chart-3/10" },
+    tv_interview: { icon: Tv, color: "text-chart-4", bg: "bg-chart-4/10" },
   };
 
   const getDaysUntil = (dateStr: string) => {
