@@ -6750,6 +6750,87 @@ export type Database = {
         }
         Relationships: []
       }
+      evaluation_invitations: {
+        Row: {
+          chef_id: string
+          created_at: string
+          currency: string | null
+          decline_reason: string | null
+          domain_slug: string
+          evaluation_date: string | null
+          evaluation_location: string | null
+          evaluation_location_ar: string | null
+          expected_duration_minutes: number | null
+          id: string
+          invited_by: string | null
+          notes: string | null
+          notes_ar: string | null
+          offered_amount: number | null
+          product_description: string | null
+          product_description_ar: string | null
+          product_images: string[] | null
+          product_name: string | null
+          product_name_ar: string | null
+          responded_at: string | null
+          response_deadline: string | null
+          session_id: string | null
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          chef_id: string
+          created_at?: string
+          currency?: string | null
+          decline_reason?: string | null
+          domain_slug?: string
+          evaluation_date?: string | null
+          evaluation_location?: string | null
+          evaluation_location_ar?: string | null
+          expected_duration_minutes?: number | null
+          id?: string
+          invited_by?: string | null
+          notes?: string | null
+          notes_ar?: string | null
+          offered_amount?: number | null
+          product_description?: string | null
+          product_description_ar?: string | null
+          product_images?: string[] | null
+          product_name?: string | null
+          product_name_ar?: string | null
+          responded_at?: string | null
+          response_deadline?: string | null
+          session_id?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          chef_id?: string
+          created_at?: string
+          currency?: string | null
+          decline_reason?: string | null
+          domain_slug?: string
+          evaluation_date?: string | null
+          evaluation_location?: string | null
+          evaluation_location_ar?: string | null
+          expected_duration_minutes?: number | null
+          id?: string
+          invited_by?: string | null
+          notes?: string | null
+          notes_ar?: string | null
+          offered_amount?: number | null
+          product_description?: string | null
+          product_description_ar?: string | null
+          product_images?: string[] | null
+          product_name?: string | null
+          product_name_ar?: string | null
+          responded_at?: string | null
+          response_deadline?: string | null
+          session_id?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       evaluation_reports: {
         Row: {
           category_scores: Json | null
@@ -6915,6 +6996,65 @@ export type Database = {
             columns: ["competition_id"]
             isOneToOne: false
             referencedRelation: "competitions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      evaluation_templates: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          criteria_snapshot: Json
+          description: string | null
+          description_ar: string | null
+          domain_id: string
+          id: string
+          is_active: boolean | null
+          is_default: boolean | null
+          name: string
+          name_ar: string | null
+          product_category: string | null
+          template_type: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          criteria_snapshot?: Json
+          description?: string | null
+          description_ar?: string | null
+          domain_id: string
+          id?: string
+          is_active?: boolean | null
+          is_default?: boolean | null
+          name: string
+          name_ar?: string | null
+          product_category?: string | null
+          template_type?: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          criteria_snapshot?: Json
+          description?: string | null
+          description_ar?: string | null
+          domain_id?: string
+          id?: string
+          is_active?: boolean | null
+          is_default?: boolean | null
+          name?: string
+          name_ar?: string | null
+          product_category?: string | null
+          template_type?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "evaluation_templates_domain_id_fkey"
+            columns: ["domain_id"]
+            isOneToOne: false
+            referencedRelation: "evaluation_domains"
             referencedColumns: ["id"]
           },
         ]
