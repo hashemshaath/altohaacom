@@ -41,13 +41,14 @@ export function EventsByCategory() {
     },
   });
 
-  const { data: tastings = [] } = useQuery({
-    queryKey: ["home-tastings-cat"],
+  const { data: chefsTableSessions = [] } = useQuery({
+    queryKey: ["home-chefs-table-cat"],
     queryFn: async () => {
       const { data } = await supabase
-        .from("tasting_sessions")
-        .select("id, title, title_ar, status, session_date, venue, evaluation_category")
-        .in("status", ["draft", "open", "in_progress"])
+        .from("chefs_table_sessions")
+        .select("id, title, title_ar, status, session_date, venue, product_category, product_name, is_published")
+        .eq("is_published", true)
+        .in("status", ["scheduled", "in_progress"])
         .order("session_date", { ascending: true })
         .limit(6);
       return data || [];
@@ -154,15 +155,15 @@ export function EventsByCategory() {
       viewAllHref: "/exhibitions",
     },
     {
-      key: "tastings",
+      key: "chefs-table",
       icon: Coffee,
-      labelEn: "Tastings & Beverages",
-      labelAr: "التذوق والمشروبات",
-      items: tastings,
+      labelEn: "Chef's Table",
+      labelAr: "طاولة الشيف",
+      items: chefsTableSessions,
       renderItem: (item: any) => {
         const title = isAr && item.title_ar ? item.title_ar : item.title;
         return (
-          <Link key={item.id} to={`/tastings/${item.id}`} className="group block">
+          <Link key={item.id} to={`/chefs-table/${item.id}`} className="group block">
             <Card interactive className="h-full border-border/50">
               <CardContent className="p-4">
                 <div className="mb-2 flex h-10 w-10 items-center justify-center rounded-xl bg-primary/10 transition-transform duration-300 group-hover:scale-110">
@@ -170,8 +171,8 @@ export function EventsByCategory() {
                 </div>
                 <h3 className="mb-1.5 line-clamp-2 text-sm font-semibold group-hover:text-primary transition-colors">{title}</h3>
                 <div className="space-y-1 text-[11px] text-muted-foreground">
-                  {item.evaluation_category && (
-                    <Badge variant="secondary" className="text-[10px]">{item.evaluation_category}</Badge>
+                  {item.product_category && (
+                    <Badge variant="secondary" className="text-[10px]">{item.product_category}</Badge>
                   )}
                   {item.session_date && (
                     <div className="flex items-center gap-1.5"><Calendar className="h-3 w-3 shrink-0" /><span>{format(new Date(item.session_date), "MMM d, yyyy")}</span></div>
@@ -182,7 +183,7 @@ export function EventsByCategory() {
           </Link>
         );
       },
-      viewAllHref: "/tastings",
+      viewAllHref: "/chefs-table",
     },
   ];
 

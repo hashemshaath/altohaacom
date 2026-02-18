@@ -49,7 +49,7 @@ function detectCategory(path: string): string {
     exhibitions: "exhibitions",
     knowledge: "knowledge",
     mentorship: "mentorship",
-    tastings: "tastings",
+    "chefs-table": "chefs-table",
     profile: "profile",
     admin: "admin",
     company: "company",

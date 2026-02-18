@@ -17,7 +17,7 @@ const CreateExhibition = lazy(() => import("@/pages/CreateExhibition"));
 const EditExhibition = lazy(() => import("@/pages/EditExhibition"));
 const ShopOrders = lazy(() => import("@/pages/ShopOrders"));
 const ShopMyProducts = lazy(() => import("@/pages/ShopMyProducts"));
-const CreateTasting = lazy(() => import("@/pages/CreateTasting"));
+const ChefsTableRequest = lazy(() => import("@/pages/ChefsTableRequest"));
 const RegisterCompany = lazy(() => import("@/pages/RegisterCompany"));
 const MentorApply = lazy(() => import("@/pages/MentorApply"));
 const MentorshipMatchPage = lazy(() => import("@/pages/MentorshipMatch"));
@@ -43,7 +43,7 @@ export const protectedRoutes = (
     <Route path="/exhibitions/:slug/edit" element={<ProtectedRoute><EditExhibition /></ProtectedRoute>} />
     <Route path="/shop/orders" element={<ProtectedRoute><ShopOrders /></ProtectedRoute>} />
     <Route path="/shop/my-products" element={<ProtectedRoute><ShopMyProducts /></ProtectedRoute>} />
-    <Route path="/tastings/create" element={<ProtectedRoute><CreateTasting /></ProtectedRoute>} />
+    <Route path="/chefs-table/request" element={<ProtectedRoute><ChefsTableRequest /></ProtectedRoute>} />
     <Route path="/register-company" element={<ProtectedRoute><RegisterCompany /></ProtectedRoute>} />
     <Route path="/mentorship/apply" element={<ProtectedRoute><MentorApply /></ProtectedRoute>} />
     <Route path="/mentorship/match/:id" element={<ProtectedRoute><MentorshipMatchPage /></ProtectedRoute>} />

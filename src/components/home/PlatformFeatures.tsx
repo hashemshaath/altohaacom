@@ -19,7 +19,7 @@ export function PlatformFeatures() {
 
   const services = [
     { icon: Trophy, title: isAr ? "مسابقات الطهي" : "Culinary Competitions", desc: isAr ? "تحدَّ نفسك في مسابقات عالمية ومحلية مع نظام تحكيم رقمي احترافي." : "Challenge yourself in global & local competitions with a professional digital judging system.", href: "/competitions" },
-    { icon: Coffee, title: isAr ? "تقييم وتذوق" : "Tasting & Evaluation", desc: isAr ? "نظام تقييم احترافي للقهوة والمشروبات والأطباق بمعايير عالمية." : "Professional evaluation system for coffee, beverages & dishes with world-class standards.", href: "/tastings" },
+    { icon: Coffee, title: isAr ? "طاولة الشيف" : "Chef's Table", desc: isAr ? "خدمة تقييم المنتجات الغذائية من قبل طهاة محترفين للشركات." : "Professional food product evaluation by expert chefs for B2B companies.", href: "/chefs-table" },
     { icon: Globe, title: isAr ? "المعارض والفعاليات" : "Exhibitions & Events", desc: isAr ? "اكتشف أبرز معارض وفعاليات الطهي محلياً ودولياً." : "Discover top culinary exhibitions & events locally and internationally.", href: "/exhibitions" },
     { icon: GraduationCap, title: isAr ? "الدروس المتقدمة" : "Masterclasses", desc: isAr ? "تعلّم أسرار المهنة من أمهر الطهاة عبر دروس حصرية." : "Learn the secrets of the craft from master chefs through exclusive lessons.", href: "/masterclasses" },
     { icon: Users, title: isAr ? "المجتمع المهني" : "Professional Network", desc: isAr ? "تواصل مع طهاة ومحترفين من مختلف أنحاء العالم وابنِ شبكتك." : "Connect with chefs & professionals worldwide and build your network.", href: "/community" },

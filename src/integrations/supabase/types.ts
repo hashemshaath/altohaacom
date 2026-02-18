@@ -1929,6 +1929,532 @@ export type Database = {
         }
         Relationships: []
       }
+      chefs_table_criteria_presets: {
+        Row: {
+          created_at: string
+          criteria: Json
+          id: string
+          is_system: boolean | null
+          preset_name: string
+          preset_name_ar: string | null
+          product_category: string
+        }
+        Insert: {
+          created_at?: string
+          criteria?: Json
+          id?: string
+          is_system?: boolean | null
+          preset_name: string
+          preset_name_ar?: string | null
+          product_category?: string
+        }
+        Update: {
+          created_at?: string
+          criteria?: Json
+          id?: string
+          is_system?: boolean | null
+          preset_name?: string
+          preset_name_ar?: string | null
+          product_category?: string
+        }
+        Relationships: []
+      }
+      chefs_table_evaluations: {
+        Row: {
+          allow_publish: boolean | null
+          aroma_score: number | null
+          chef_id: string
+          cons: string | null
+          cons_ar: string | null
+          cooking_experience: string | null
+          cooking_experience_ar: string | null
+          created_at: string
+          dishes_prepared: string | null
+          dishes_prepared_ar: string | null
+          endorsement_text: string | null
+          endorsement_text_ar: string | null
+          id: string
+          invitation_id: string
+          is_recommended: boolean | null
+          overall_score: number | null
+          presentation_score: number | null
+          pros: string | null
+          pros_ar: string | null
+          recommendation_level: string | null
+          review_text: string | null
+          review_text_ar: string | null
+          review_title: string | null
+          review_title_ar: string | null
+          session_id: string
+          status: string
+          submitted_at: string | null
+          taste_score: number | null
+          texture_score: number | null
+          updated_at: string
+          usage_suggestions: string | null
+          usage_suggestions_ar: string | null
+          value_score: number | null
+          versatility_score: number | null
+        }
+        Insert: {
+          allow_publish?: boolean | null
+          aroma_score?: number | null
+          chef_id: string
+          cons?: string | null
+          cons_ar?: string | null
+          cooking_experience?: string | null
+          cooking_experience_ar?: string | null
+          created_at?: string
+          dishes_prepared?: string | null
+          dishes_prepared_ar?: string | null
+          endorsement_text?: string | null
+          endorsement_text_ar?: string | null
+          id?: string
+          invitation_id: string
+          is_recommended?: boolean | null
+          overall_score?: number | null
+          presentation_score?: number | null
+          pros?: string | null
+          pros_ar?: string | null
+          recommendation_level?: string | null
+          review_text?: string | null
+          review_text_ar?: string | null
+          review_title?: string | null
+          review_title_ar?: string | null
+          session_id: string
+          status?: string
+          submitted_at?: string | null
+          taste_score?: number | null
+          texture_score?: number | null
+          updated_at?: string
+          usage_suggestions?: string | null
+          usage_suggestions_ar?: string | null
+          value_score?: number | null
+          versatility_score?: number | null
+        }
+        Update: {
+          allow_publish?: boolean | null
+          aroma_score?: number | null
+          chef_id?: string
+          cons?: string | null
+          cons_ar?: string | null
+          cooking_experience?: string | null
+          cooking_experience_ar?: string | null
+          created_at?: string
+          dishes_prepared?: string | null
+          dishes_prepared_ar?: string | null
+          endorsement_text?: string | null
+          endorsement_text_ar?: string | null
+          id?: string
+          invitation_id?: string
+          is_recommended?: boolean | null
+          overall_score?: number | null
+          presentation_score?: number | null
+          pros?: string | null
+          pros_ar?: string | null
+          recommendation_level?: string | null
+          review_text?: string | null
+          review_text_ar?: string | null
+          review_title?: string | null
+          review_title_ar?: string | null
+          session_id?: string
+          status?: string
+          submitted_at?: string | null
+          taste_score?: number | null
+          texture_score?: number | null
+          updated_at?: string
+          usage_suggestions?: string | null
+          usage_suggestions_ar?: string | null
+          value_score?: number | null
+          versatility_score?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "chefs_table_evaluations_invitation_id_fkey"
+            columns: ["invitation_id"]
+            isOneToOne: false
+            referencedRelation: "chefs_table_invitations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "chefs_table_evaluations_session_id_fkey"
+            columns: ["session_id"]
+            isOneToOne: false
+            referencedRelation: "chefs_table_sessions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      chefs_table_invitations: {
+        Row: {
+          chef_id: string
+          confirmed_at: string | null
+          cooking_date: string | null
+          cooking_location: string | null
+          cooking_location_ar: string | null
+          created_at: string
+          declined_reason: string | null
+          id: string
+          invitation_message: string | null
+          invitation_message_ar: string | null
+          invited_by: string
+          responded_at: string | null
+          response_message: string | null
+          sample_shipped_at: string | null
+          sample_tracking_number: string | null
+          session_id: string
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          chef_id: string
+          confirmed_at?: string | null
+          cooking_date?: string | null
+          cooking_location?: string | null
+          cooking_location_ar?: string | null
+          created_at?: string
+          declined_reason?: string | null
+          id?: string
+          invitation_message?: string | null
+          invitation_message_ar?: string | null
+          invited_by: string
+          responded_at?: string | null
+          response_message?: string | null
+          sample_shipped_at?: string | null
+          sample_tracking_number?: string | null
+          session_id: string
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          chef_id?: string
+          confirmed_at?: string | null
+          cooking_date?: string | null
+          cooking_location?: string | null
+          cooking_location_ar?: string | null
+          created_at?: string
+          declined_reason?: string | null
+          id?: string
+          invitation_message?: string | null
+          invitation_message_ar?: string | null
+          invited_by?: string
+          responded_at?: string | null
+          response_message?: string | null
+          sample_shipped_at?: string | null
+          sample_tracking_number?: string | null
+          session_id?: string
+          status?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "chefs_table_invitations_session_id_fkey"
+            columns: ["session_id"]
+            isOneToOne: false
+            referencedRelation: "chefs_table_sessions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      chefs_table_media: {
+        Row: {
+          created_at: string
+          description: string | null
+          description_ar: string | null
+          evaluation_id: string | null
+          id: string
+          is_featured: boolean | null
+          media_type: string
+          media_url: string
+          session_id: string
+          sort_order: number | null
+          thumbnail_url: string | null
+          title: string | null
+          title_ar: string | null
+          uploaded_by: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          description_ar?: string | null
+          evaluation_id?: string | null
+          id?: string
+          is_featured?: boolean | null
+          media_type?: string
+          media_url: string
+          session_id: string
+          sort_order?: number | null
+          thumbnail_url?: string | null
+          title?: string | null
+          title_ar?: string | null
+          uploaded_by: string
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          description_ar?: string | null
+          evaluation_id?: string | null
+          id?: string
+          is_featured?: boolean | null
+          media_type?: string
+          media_url?: string
+          session_id?: string
+          sort_order?: number | null
+          thumbnail_url?: string | null
+          title?: string | null
+          title_ar?: string | null
+          uploaded_by?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "chefs_table_media_evaluation_id_fkey"
+            columns: ["evaluation_id"]
+            isOneToOne: false
+            referencedRelation: "chefs_table_evaluations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "chefs_table_media_session_id_fkey"
+            columns: ["session_id"]
+            isOneToOne: false
+            referencedRelation: "chefs_table_sessions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      chefs_table_requests: {
+        Row: {
+          admin_notes: string | null
+          budget: number | null
+          chef_count: number | null
+          company_id: string
+          created_at: string
+          currency: string | null
+          description: string | null
+          description_ar: string | null
+          experience_type: string
+          id: string
+          preferred_city: string | null
+          preferred_country_code: string | null
+          preferred_date_end: string | null
+          preferred_date_start: string | null
+          preferred_venue: string | null
+          preferred_venue_ar: string | null
+          product_category: string
+          product_description: string | null
+          product_description_ar: string | null
+          product_images: string[] | null
+          product_name: string
+          product_name_ar: string | null
+          rejection_reason: string | null
+          request_number: string | null
+          requested_by: string
+          reviewed_at: string | null
+          reviewed_by: string | null
+          special_requirements: string | null
+          special_requirements_ar: string | null
+          status: string
+          title: string
+          title_ar: string | null
+          updated_at: string
+        }
+        Insert: {
+          admin_notes?: string | null
+          budget?: number | null
+          chef_count?: number | null
+          company_id: string
+          created_at?: string
+          currency?: string | null
+          description?: string | null
+          description_ar?: string | null
+          experience_type?: string
+          id?: string
+          preferred_city?: string | null
+          preferred_country_code?: string | null
+          preferred_date_end?: string | null
+          preferred_date_start?: string | null
+          preferred_venue?: string | null
+          preferred_venue_ar?: string | null
+          product_category?: string
+          product_description?: string | null
+          product_description_ar?: string | null
+          product_images?: string[] | null
+          product_name: string
+          product_name_ar?: string | null
+          rejection_reason?: string | null
+          request_number?: string | null
+          requested_by: string
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          special_requirements?: string | null
+          special_requirements_ar?: string | null
+          status?: string
+          title: string
+          title_ar?: string | null
+          updated_at?: string
+        }
+        Update: {
+          admin_notes?: string | null
+          budget?: number | null
+          chef_count?: number | null
+          company_id?: string
+          created_at?: string
+          currency?: string | null
+          description?: string | null
+          description_ar?: string | null
+          experience_type?: string
+          id?: string
+          preferred_city?: string | null
+          preferred_country_code?: string | null
+          preferred_date_end?: string | null
+          preferred_date_start?: string | null
+          preferred_venue?: string | null
+          preferred_venue_ar?: string | null
+          product_category?: string
+          product_description?: string | null
+          product_description_ar?: string | null
+          product_images?: string[] | null
+          product_name?: string
+          product_name_ar?: string | null
+          rejection_reason?: string | null
+          request_number?: string | null
+          requested_by?: string
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          special_requirements?: string | null
+          special_requirements_ar?: string | null
+          status?: string
+          title?: string
+          title_ar?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "chefs_table_requests_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      chefs_table_sessions: {
+        Row: {
+          chef_selection_method: string | null
+          city: string | null
+          company_id: string
+          country_code: string | null
+          cover_image_url: string | null
+          created_at: string
+          description: string | null
+          description_ar: string | null
+          experience_type: string
+          id: string
+          is_published: boolean | null
+          max_chefs: number | null
+          notes: string | null
+          notes_ar: string | null
+          organizer_id: string
+          product_category: string
+          product_name: string
+          product_name_ar: string | null
+          published_at: string | null
+          request_id: string
+          sample_delivery_address: string | null
+          sample_delivery_notes: string | null
+          session_date: string | null
+          session_end: string | null
+          session_number: string | null
+          status: string
+          title: string
+          title_ar: string | null
+          updated_at: string
+          venue: string | null
+          venue_ar: string | null
+        }
+        Insert: {
+          chef_selection_method?: string | null
+          city?: string | null
+          company_id: string
+          country_code?: string | null
+          cover_image_url?: string | null
+          created_at?: string
+          description?: string | null
+          description_ar?: string | null
+          experience_type?: string
+          id?: string
+          is_published?: boolean | null
+          max_chefs?: number | null
+          notes?: string | null
+          notes_ar?: string | null
+          organizer_id: string
+          product_category?: string
+          product_name: string
+          product_name_ar?: string | null
+          published_at?: string | null
+          request_id: string
+          sample_delivery_address?: string | null
+          sample_delivery_notes?: string | null
+          session_date?: string | null
+          session_end?: string | null
+          session_number?: string | null
+          status?: string
+          title: string
+          title_ar?: string | null
+          updated_at?: string
+          venue?: string | null
+          venue_ar?: string | null
+        }
+        Update: {
+          chef_selection_method?: string | null
+          city?: string | null
+          company_id?: string
+          country_code?: string | null
+          cover_image_url?: string | null
+          created_at?: string
+          description?: string | null
+          description_ar?: string | null
+          experience_type?: string
+          id?: string
+          is_published?: boolean | null
+          max_chefs?: number | null
+          notes?: string | null
+          notes_ar?: string | null
+          organizer_id?: string
+          product_category?: string
+          product_name?: string
+          product_name_ar?: string | null
+          published_at?: string | null
+          request_id?: string
+          sample_delivery_address?: string | null
+          sample_delivery_notes?: string | null
+          session_date?: string | null
+          session_end?: string | null
+          session_number?: string | null
+          status?: string
+          title?: string
+          title_ar?: string | null
+          updated_at?: string
+          venue?: string | null
+          venue_ar?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "chefs_table_sessions_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "chefs_table_sessions_request_id_fkey"
+            columns: ["request_id"]
+            isOneToOne: false
+            referencedRelation: "chefs_table_requests"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       communication_templates: {
         Row: {
           body: string
