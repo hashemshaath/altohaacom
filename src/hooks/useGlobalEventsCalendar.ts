@@ -24,11 +24,15 @@ export interface GlobalEvent {
   link: string | null;
   color: string;
   icon: string;
-  source: "competition" | "exhibition" | "chef_schedule";
+  source: "competition" | "exhibition" | "chef_schedule" | "global_event";
   participation_type?: string | null;
   channel_name?: string | null;
   program_name?: string | null;
   broadcast_type?: string | null;
+  cover_image_url?: string | null;
+  logo_url?: string | null;
+  organizer_name?: string | null;
+  organizer_name_ar?: string | null;
 }
 
 export const GLOBAL_EVENT_COLORS: Record<GlobalEventType, { bg: string; text: string; border: string; dot: string }> = {
@@ -77,7 +81,7 @@ export function useGlobalEventsCalendar(filters?: {
       // 1. Fetch competitions
       let compQuery = supabase
         .from("competitions")
-        .select("id, title, title_ar, competition_start, competition_end, country_code, city, venue, venue_ar, status")
+        .select("id, title, title_ar, competition_start, competition_end, country_code, city, venue, venue_ar, status, cover_image_url")
         .neq("status", "draft");
 
       if (filters?.country) compQuery = compQuery.eq("country_code", filters.country);
@@ -105,6 +109,7 @@ export function useGlobalEventsCalendar(filters?: {
             color: "chart-1",
             icon: "Trophy",
             source: "competition",
+            cover_image_url: c.cover_image_url,
           });
         }
       }
@@ -112,7 +117,7 @@ export function useGlobalEventsCalendar(filters?: {
       // 2. Fetch exhibitions
       let exhQuery = supabase
         .from("exhibitions")
-        .select("id, title, title_ar, start_date, end_date, country, city, venue, venue_ar, status, slug");
+        .select("id, title, title_ar, start_date, end_date, country, city, venue, venue_ar, status, slug, cover_image_url, logo_url, organizer_name, organizer_name_ar");
 
       if (filters?.country) exhQuery = exhQuery.eq("country", filters.country);
 
@@ -139,6 +144,10 @@ export function useGlobalEventsCalendar(filters?: {
             color: "chart-3",
             icon: "Landmark",
             source: "exhibition",
+            cover_image_url: e.cover_image_url,
+            logo_url: e.logo_url,
+            organizer_name: e.organizer_name,
+            organizer_name_ar: e.organizer_name_ar,
           });
         }
       }
@@ -207,7 +216,11 @@ export function useGlobalEventsCalendar(filters?: {
             link: ge.link,
             color: GLOBAL_EVENT_LABELS[geType]?.icon ? `chart-${(EVENT_TYPES_ORDER.indexOf(geType) % 5) + 1}` : "chart-4",
             icon: GLOBAL_EVENT_LABELS[geType]?.icon || "MoreHorizontal",
-            source: "global_event" as any,
+            source: "global_event",
+            cover_image_url: ge.cover_image_url,
+            logo_url: ge.logo_url,
+            organizer_name: ge.organizer_name,
+            organizer_name_ar: ge.organizer_name_ar,
           });
         }
       }
