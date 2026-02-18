@@ -86,6 +86,7 @@ export default function Community() {
         .from("posts")
         .select("content")
         .is("reply_to_post_id", null)
+        .eq("moderation_status", "approved")
         .order("created_at", { ascending: false })
         .limit(200);
 
