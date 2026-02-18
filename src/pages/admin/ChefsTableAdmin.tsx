@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, lazy, Suspense } from "react";
 import { useNavigate } from "react-router-dom";
 import { useLanguage } from "@/i18n/LanguageContext";
 import {
@@ -18,12 +18,16 @@ import {
   Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter,
 } from "@/components/ui/dialog";
 import AdminPageHeader from "@/components/admin/AdminPageHeader";
+import { InvitationManager } from "@/components/evaluation/InvitationManager";
 import {
   ChefHat, Search, Eye, Package, Calendar, FileText,
-  Clock, Check, X, Building2, ThumbsUp, ThumbsDown, MapPin, Image,
+  Clock, Check, X, ThumbsUp, ThumbsDown, MapPin, Image,
+  Send, Gavel, Printer,
 } from "lucide-react";
 import { format } from "date-fns";
 import { toast } from "sonner";
+
+const JudgesAdmin = lazy(() => import("./JudgesAdmin"));
 
 const experienceLabels: Record<string, { en: string; ar: string }> = {
   venue: { en: "On-Site", ar: "في الموقع" },
@@ -40,6 +44,7 @@ export default function ChefsTableAdmin() {
   const approveRequest = useApproveRequest();
   const rejectRequest = useRejectRequest();
 
+  const [activeTab, setActiveTab] = useState("requests");
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
   const [selectedRequest, setSelectedRequest] = useState<any>(null);
@@ -89,11 +94,17 @@ export default function ChefsTableAdmin() {
 
   return (
     <div className="space-y-6">
-      <AdminPageHeader
-        icon={ChefHat}
-        title={isAr ? "طاولة الشيف" : "Chef's Table"}
-        description={isAr ? "إدارة طلبات وجلسات تقييم المنتجات" : "Manage product evaluation requests & sessions"}
-      />
+      <div className="flex items-center justify-between">
+        <AdminPageHeader
+          icon={ChefHat}
+          title={isAr ? "طاولة الشيف" : "Chef's Table"}
+          description={isAr ? "إدارة طلبات تقييم المنتجات، التسعير، الموافقات، تعيين الطهاة والمحكمين" : "Manage product evaluation requests, pricing, approvals, chef & judge assignments"}
+        />
+        <Button variant="outline" size="sm" className="gap-1.5 print:hidden" onClick={() => window.print()}>
+          <Printer className="h-3.5 w-3.5" />
+          {isAr ? "طباعة" : "Print"}
+        </Button>
+      </div>
 
       {/* Stats */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
@@ -117,8 +128,8 @@ export default function ChefsTableAdmin() {
         ))}
       </div>
 
-      <Tabs defaultValue="requests">
-        <TabsList>
+      <Tabs value={activeTab} onValueChange={setActiveTab}>
+        <TabsList className="flex-wrap print:hidden">
           <TabsTrigger value="requests" className="gap-1.5">
             <FileText className="h-3.5 w-3.5" />
             {isAr ? "الطلبات" : "Requests"}
@@ -129,6 +140,14 @@ export default function ChefsTableAdmin() {
           <TabsTrigger value="sessions" className="gap-1.5">
             <ChefHat className="h-3.5 w-3.5" />
             {isAr ? "الجلسات" : "Sessions"}
+          </TabsTrigger>
+          <TabsTrigger value="invitations" className="gap-1.5">
+            <Send className="h-3.5 w-3.5" />
+            {isAr ? "دعوات الطهاة" : "Chef Invitations"}
+          </TabsTrigger>
+          <TabsTrigger value="judges" className="gap-1.5">
+            <Gavel className="h-3.5 w-3.5" />
+            {isAr ? "المحكمين" : "Judges"}
           </TabsTrigger>
         </TabsList>
 
@@ -185,7 +204,6 @@ export default function ChefsTableAdmin() {
                           <p className="text-sm text-muted-foreground line-clamp-2">{req.product_description}</p>
                         )}
 
-                        {/* Product Images Thumbnails */}
                         {req.product_images && (req.product_images as string[]).length > 0 && (
                           <div className="flex gap-2 mt-1">
                             {(req.product_images as string[]).slice(0, 4).map((url: string, i: number) => (
@@ -213,7 +231,7 @@ export default function ChefsTableAdmin() {
                         )}
                       </div>
 
-                      <div className="flex items-center gap-2 shrink-0">
+                      <div className="flex items-center gap-2 shrink-0 print:hidden">
                         <Button
                           size="sm"
                           variant="ghost"
@@ -263,7 +281,7 @@ export default function ChefsTableAdmin() {
 
         {/* Sessions Tab */}
         <TabsContent value="sessions" className="space-y-4">
-          <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
+          <div className="flex flex-col gap-3 sm:flex-row sm:items-center print:hidden">
             <div className="relative flex-1 sm:max-w-sm">
               <Search className="absolute start-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
               <Input placeholder={isAr ? "بحث..." : "Search..."} value={search} onChange={e => setSearch(e.target.value)} className="ps-9" />
@@ -299,7 +317,7 @@ export default function ChefsTableAdmin() {
                     <TableHead>{isAr ? "النوع" : "Type"}</TableHead>
                     <TableHead>{isAr ? "الحالة" : "Status"}</TableHead>
                     <TableHead>{isAr ? "التاريخ" : "Date"}</TableHead>
-                    <TableHead></TableHead>
+                    <TableHead className="print:hidden"></TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -323,7 +341,7 @@ export default function ChefsTableAdmin() {
                       <TableCell className="text-sm text-muted-foreground">
                         {session.session_date ? format(new Date(session.session_date), "MMM d, yyyy") : "—"}
                       </TableCell>
-                      <TableCell>
+                      <TableCell className="print:hidden">
                         <Button variant="ghost" size="icon" className="h-8 w-8">
                           <Eye className="h-4 w-4" />
                         </Button>
@@ -334,6 +352,18 @@ export default function ChefsTableAdmin() {
               </Table>
             </Card>
           )}
+        </TabsContent>
+
+        {/* Invitations Tab */}
+        <TabsContent value="invitations">
+          <InvitationManager />
+        </TabsContent>
+
+        {/* Judges Tab */}
+        <TabsContent value="judges">
+          <Suspense fallback={<Skeleton className="h-96" />}>
+            <JudgesAdmin />
+          </Suspense>
         </TabsContent>
       </Tabs>
 
@@ -355,7 +385,6 @@ export default function ChefsTableAdmin() {
               </DialogHeader>
 
               <div className="space-y-4">
-                {/* Product Info Grid */}
                 <div className="grid grid-cols-2 gap-3">
                   {[
                     { label: isAr ? "المنتج" : "Product", value: selectedRequest.product_name, icon: Package },
@@ -373,7 +402,6 @@ export default function ChefsTableAdmin() {
                   ))}
                 </div>
 
-                {/* Description */}
                 {selectedRequest.product_description && (
                   <div className="rounded-lg border border-border/40 p-4">
                     <p className="text-xs font-bold text-muted-foreground mb-2">{isAr ? "وصف المنتج" : "Product Description"}</p>
@@ -381,7 +409,6 @@ export default function ChefsTableAdmin() {
                   </div>
                 )}
 
-                {/* Product Images */}
                 {selectedRequest.product_images && (selectedRequest.product_images as string[]).length > 0 && (
                   <div>
                     <p className="text-xs font-bold text-muted-foreground mb-2 flex items-center gap-1.5">
@@ -398,7 +425,6 @@ export default function ChefsTableAdmin() {
                   </div>
                 )}
 
-                {/* Special Requirements */}
                 {selectedRequest.special_requirements && (
                   <div className="rounded-lg border border-border/40 p-4">
                     <p className="text-xs font-bold text-muted-foreground mb-2">{isAr ? "متطلبات خاصة" : "Special Requirements"}</p>
