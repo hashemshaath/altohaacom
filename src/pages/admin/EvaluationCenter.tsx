@@ -1,9 +1,13 @@
 import { useState } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { UtensilsCrossed, Gavel, BarChart3, Award } from "lucide-react";
+import { UtensilsCrossed, Gavel, BarChart3, Award, Settings2, ChefHat, Trophy, Wrench } from "lucide-react";
 import { lazy, Suspense } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Card, CardContent } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { useEvaluationDomains } from "@/hooks/useEvaluationSystem";
+import { CriteriaManager } from "@/components/evaluation/CriteriaManager";
 
 const ChefsTableAdmin = lazy(() => import("./ChefsTableAdmin"));
 const JudgesAdmin = lazy(() => import("./JudgesAdmin"));
@@ -45,10 +49,49 @@ function CertificatesOverview() {
   );
 }
 
+function DomainStats() {
+  const { language } = useLanguage();
+  const isAr = language === "ar";
+  const { data: domains } = useEvaluationDomains();
+
+  const domainIcons: Record<string, React.ElementType> = {
+    chefs_table: ChefHat,
+    competition: Trophy,
+    equipment: Wrench,
+    beverage: UtensilsCrossed,
+  };
+
+  return (
+    <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+      {domains?.map(d => {
+        const Icon = domainIcons[d.slug] || UtensilsCrossed;
+        return (
+          <Card key={d.id} className="border-border/40">
+            <CardContent className="p-4 flex items-center gap-3">
+              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-primary/10">
+                <Icon className="h-5 w-5 text-primary" />
+              </div>
+              <div>
+                <p className="text-sm font-bold">{isAr && d.name_ar ? d.name_ar : d.name}</p>
+                <p className="text-xs text-muted-foreground line-clamp-1">
+                  {isAr && d.description_ar ? d.description_ar : d.description}
+                </p>
+              </div>
+              <Badge variant={d.is_active ? "default" : "secondary"} className="ms-auto text-[9px]">
+                {d.is_active ? (isAr ? "نشط" : "Active") : (isAr ? "معطل" : "Inactive")}
+              </Badge>
+            </CardContent>
+          </Card>
+        );
+      })}
+    </div>
+  );
+}
+
 export default function EvaluationCenter() {
   const { language } = useLanguage();
   const isAr = language === "ar";
-  const [activeTab, setActiveTab] = useState("sessions");
+  const [activeTab, setActiveTab] = useState("criteria");
 
   return (
     <div className="space-y-6">
@@ -61,14 +104,21 @@ export default function EvaluationCenter() {
           <h1 className="text-2xl font-bold">{isAr ? "مركز التقييم" : "Evaluation Center"}</h1>
           <p className="text-sm text-muted-foreground">
             {isAr
-              ? "إدارة جلسات التقييم والتذوق والمحكمين والنتائج والشهادات"
-              : "Manage evaluation & tasting sessions, judges, results, and certificates"}
+              ? "نظام تقييم شامل يدعم طاولة الشيف، المسابقات، المعدات والمشروبات — بمعايير WACS و ACF الدولية"
+              : "Comprehensive evaluation system supporting Chef's Table, Competitions, Equipment & Beverages — aligned with WACS & ACF standards"}
           </p>
         </div>
       </div>
 
+      {/* Domain Stats */}
+      <DomainStats />
+
       <Tabs value={activeTab} onValueChange={setActiveTab}>
         <TabsList className="flex-wrap">
+          <TabsTrigger value="criteria" className="gap-1.5">
+            <Settings2 className="h-3.5 w-3.5" />
+            {isAr ? "معايير التقييم" : "Evaluation Criteria"}
+          </TabsTrigger>
           <TabsTrigger value="sessions" className="gap-1.5">
             <UtensilsCrossed className="h-3.5 w-3.5" />
             {isAr ? "الجلسات" : "Sessions"}
@@ -86,6 +136,10 @@ export default function EvaluationCenter() {
             {isAr ? "الشهادات" : "Certificates"}
           </TabsTrigger>
         </TabsList>
+
+        <TabsContent value="criteria">
+          <CriteriaManager />
+        </TabsContent>
 
         <TabsContent value="sessions">
           <Suspense fallback={<Skeleton className="h-96" />}>
