@@ -6,6 +6,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { CountrySelector } from "@/components/auth/CountrySelector";
 import { CompanyClassificationsPanel } from "@/components/admin/CompanyClassificationsPanel";
 import { CompanySponsorshipPanelEnhanced } from "@/components/admin/CompanySponsorshipPanelEnhanced";
+import { AdminSupplierControls } from "@/components/admin/AdminSupplierControls";
 import { CompanyEditPanel } from "@/components/admin/CompanyEditPanel";
 import { useAllCountries } from "@/hooks/useCountries";
 import { countryFlag } from "@/lib/countryFlag";
@@ -26,7 +27,7 @@ import {
   Building2, Users, Package, FileText, Send, Search, Plus, Edit, Trash2, Eye,
   CheckCircle, XCircle, Clock, MapPin, Phone, Mail, Globe, ChevronLeft, Save, X,
   Truck, DollarSign, Star, Image, CalendarCheck, MessageSquare, UserPlus, Building,
-  Upload, FolderOpen, FileImage, File, Sparkles, FileSpreadsheet,
+  Upload, FolderOpen, FileImage, File, Sparkles, FileSpreadsheet, Factory,
 } from "lucide-react";
 import { format } from "date-fns";
 
@@ -92,6 +93,7 @@ export default function CompaniesAdmin() {
   const [statusFilter, setStatusFilter] = useState<string>("all");
   const [showCompanyForm, setShowCompanyForm] = useState(false);
   const [showBulkImport, setShowBulkImport] = useState(false);
+  const [mainTab, setMainTab] = useState<"companies" | "suppliers">("companies");
   const [selectedCompany, setSelectedCompany] = useState<string | null>(null);
   const [companyDetailTab, setCompanyDetailTab] = useState("overview");
 
@@ -1694,6 +1696,20 @@ export default function CompaniesAdmin() {
         </Card>
       ) : (
       <div className="space-y-6">
+        {/* Main Tabs: Companies vs Pro Suppliers */}
+        <div className="flex gap-2 border-b pb-3">
+          <Button variant={mainTab === "companies" ? "default" : "outline"} size="sm" onClick={() => setMainTab("companies")}>
+            <Building2 className="me-1.5 h-3.5 w-3.5" />{isAr ? "الشركات" : "Companies"}
+          </Button>
+          <Button variant={mainTab === "suppliers" ? "default" : "outline"} size="sm" onClick={() => setMainTab("suppliers")}>
+            <Factory className="me-1.5 h-3.5 w-3.5" />{isAr ? "الموردون المحترفون" : "Pro Suppliers"}
+          </Button>
+        </div>
+
+        {mainTab === "suppliers" ? (
+          <AdminSupplierControls />
+        ) : (
+        <>
         {/* Stats Cards */}
         <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
           <Card className="group hover:shadow-md transition-shadow">
@@ -1853,6 +1869,8 @@ export default function CompaniesAdmin() {
             </ScrollArea>
           </CardContent>
         </Card>
+        </>
+        )}
       </div>
       )}
     </div>
