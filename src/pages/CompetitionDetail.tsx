@@ -21,7 +21,7 @@ import {
   ImageIcon, Twitter, Facebook, Linkedin, Link2, ChevronDown,
   Sparkles, Target, BarChart3, UsersRound, Eye, Flame, Shield, Building2,
   Medal, Info, DoorOpen, Scale, FileSpreadsheet, Radio,
-  Swords, Layers, EyeOff, CalendarClock, ChefHat, MessageSquare, ClipboardCheck, MessageCircle,
+  Swords, Layers, CalendarClock, ChefHat, MessageSquare, ClipboardCheck, MessageCircle,
 } from "lucide-react";
 import { countryFlag } from "@/lib/countryFlag";
 import {
@@ -345,7 +345,9 @@ export default function CompetitionDetail() {
                 src={competition.cover_image_url} 
                 alt={title} 
                 className="h-full w-full object-cover"
-                loading="eager" 
+                loading="eager"
+                decoding="async"
+                fetchPriority="high"
               />
             ) : (
               <div className="flex h-full w-full items-center justify-center bg-gradient-to-br from-primary/20 via-background to-accent/10">
@@ -568,7 +570,7 @@ export default function CompetitionDetail() {
                           <div key={type.id} className="group relative overflow-hidden rounded-xl border border-border/60 hover:shadow-md transition-all hover:-translate-y-0.5">
                             {type.cover_image_url ? (
                               <div className="relative h-28">
-                                <img src={type.cover_image_url} alt={type.name} className="h-full w-full object-cover group-hover:scale-105 transition-transform duration-300" />
+                                <img src={type.cover_image_url} alt={type.name} className="h-full w-full object-cover group-hover:scale-105 transition-transform duration-300" loading="lazy" decoding="async" />
                                 <div className="absolute inset-0 bg-gradient-to-t from-background/90 via-background/40 to-transparent" />
                                 <div className="absolute bottom-0 inset-x-0 p-3">
                                   <p className="text-sm font-semibold text-foreground">{isAr && type.name_ar ? type.name_ar : type.name}</p>
@@ -599,7 +601,7 @@ export default function CompetitionDetail() {
                         {supervisors.map((entity) => (
                           <div key={entity.id} className="flex items-center gap-3 rounded-xl border border-border/60 p-3">
                             {entity.logo_url ? (
-                              <img src={entity.logo_url} alt="" className="h-10 w-10 rounded-lg object-cover shrink-0" />
+                              <img src={entity.logo_url} alt="" className="h-10 w-10 rounded-lg object-cover shrink-0" loading="lazy" />
                             ) : (
                               <div className="h-10 w-10 rounded-lg bg-primary/5 flex items-center justify-center shrink-0">
                                 <Building2 className="h-4 w-4 text-primary/30" />
@@ -627,7 +629,7 @@ export default function CompetitionDetail() {
                         {accreditors.map((entity) => (
                           <div key={entity.id} className="flex items-center gap-3 rounded-xl border border-primary/20 p-3 bg-primary/5">
                             {entity.logo_url ? (
-                              <img src={entity.logo_url} alt="" className="h-10 w-10 rounded-lg object-cover shrink-0" />
+                              <img src={entity.logo_url} alt="" className="h-10 w-10 rounded-lg object-cover shrink-0" loading="lazy" />
                             ) : (
                               <div className="h-10 w-10 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
                                 <Award className="h-4 w-4 text-primary/50" />
@@ -745,7 +747,7 @@ export default function CompetitionDetail() {
                           >
                             {cat.cover_image_url ? (
                               <div className="relative h-24">
-                                <img src={cat.cover_image_url} alt={cat.name} className="h-full w-full object-cover group-hover:scale-105 transition-transform duration-300" />
+                                <img src={cat.cover_image_url} alt={cat.name} className="h-full w-full object-cover group-hover:scale-105 transition-transform duration-300" loading="lazy" decoding="async" />
                                 <div className="absolute inset-0 bg-gradient-to-t from-background/90 via-background/40 to-transparent" />
                                 <div className="absolute bottom-0 inset-x-0 p-3">
                                   <p className="text-sm font-semibold text-foreground">{isAr && cat.name_ar ? cat.name_ar : cat.name}</p>
@@ -871,7 +873,7 @@ export default function CompetitionDetail() {
             </div>
 
             {/* ─── Sidebar ─── */}
-            <div className="space-y-4">
+            <div className="space-y-4 lg:sticky lg:top-[120px] lg:self-start">
               {/* Countdown */}
               {competition.status === "registration_open" && competition.registration_end && (
                 <CompetitionCountdown targetDate={competition.registration_end} label="Registration Closes In" labelAr="ينتهي التسجيل خلال" />
