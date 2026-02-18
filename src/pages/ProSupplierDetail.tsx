@@ -63,6 +63,24 @@ export default function ProSupplierDetail() {
     enabled: !!id,
   });
 
+  const { data: reviewStats } = useQuery({
+    queryKey: ["supplierReviewStats", id],
+    queryFn: async () => {
+      if (!id) return { count: 0, avg: 0 };
+      const { data } = await supabase
+        .from("supplier_reviews")
+        .select("rating")
+        .eq("company_id", id)
+        .eq("status", "published");
+      const ratings = data || [];
+      return {
+        count: ratings.length,
+        avg: ratings.length > 0 ? ratings.reduce((s: number, r: any) => s + r.rating, 0) / ratings.length : 0,
+      };
+    },
+    enabled: !!id,
+  });
+
   const { data: sponsorships = [] } = useQuery({
     queryKey: ["supplierSponsorships", id],
     queryFn: async () => {
@@ -207,6 +225,13 @@ export default function ProSupplierDetail() {
                     <span className="font-semibold">{products.length}</span>
                     <span className="text-muted-foreground">{isAr ? "منتج" : "Products"}</span>
                   </div>
+                  {reviewStats && reviewStats.count > 0 && (
+                    <div className="flex items-center gap-1.5 text-sm">
+                      <Star className="h-4 w-4 fill-chart-4 text-chart-4" />
+                      <span className="font-semibold">{reviewStats.avg.toFixed(1)}</span>
+                      <span className="text-muted-foreground">({reviewStats.count} {isAr ? "تقييم" : "reviews"})</span>
+                    </div>
+                  )}
                   <div className="flex items-center gap-1.5 text-sm">
                     <Crown className="h-4 w-4 text-chart-4" />
                     <span className="font-semibold">{sponsorships.length}</span>

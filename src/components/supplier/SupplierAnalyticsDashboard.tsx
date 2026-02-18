@@ -1,0 +1,165 @@
+import { useLanguage } from "@/i18n/LanguageContext";
+import { useQuery } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
+import { useCompanyAccess } from "@/hooks/useCompanyAccess";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { BarChart3, Package, MessageSquare, Star, Eye, TrendingUp } from "lucide-react";
+
+export function SupplierAnalyticsDashboard() {
+  const { language } = useLanguage();
+  const isAr = language === "ar";
+  const { companyId } = useCompanyAccess();
+
+  const { data: products = [] } = useQuery({
+    queryKey: ["supplierAnalyticsProducts", companyId],
+    queryFn: async () => {
+      if (!companyId) return [];
+      const { data } = await supabase.from("company_catalog").select("id, is_active, in_stock").eq("company_id", companyId);
+      return data || [];
+    },
+    enabled: !!companyId,
+  });
+
+  const { data: reviews = [] } = useQuery({
+    queryKey: ["supplierAnalyticsReviews", companyId],
+    queryFn: async () => {
+      if (!companyId) return [];
+      const { data } = await supabase
+        .from("supplier_reviews")
+        .select("id, rating, created_at")
+        .eq("company_id", companyId)
+        .eq("status", "published");
+      return data || [];
+    },
+    enabled: !!companyId,
+  });
+
+  const { data: inquiries = [] } = useQuery({
+    queryKey: ["supplierAnalyticsInquiries", companyId],
+    queryFn: async () => {
+      if (!companyId) return [];
+      const { data } = await supabase
+        .from("company_communications")
+        .select("id, created_at, status")
+        .eq("company_id", companyId)
+        .eq("direction", "inbound")
+        .order("created_at", { ascending: false })
+        .limit(100);
+      return data || [];
+    },
+    enabled: !!companyId,
+  });
+
+  const totalProducts = products.length;
+  const activeProducts = products.filter((p: any) => p.is_active).length;
+  const inStockProducts = products.filter((p: any) => p.in_stock).length;
+  const avgRating = reviews.length > 0
+    ? (reviews.reduce((sum: number, r: any) => sum + r.rating, 0) / reviews.length).toFixed(1)
+    : "—";
+  const totalReviews = reviews.length;
+  const totalInquiries = inquiries.length;
+  const unreadInquiries = inquiries.filter((i: any) => i.status === "unread").length;
+
+  // Recent reviews (last 30 days)
+  const thirtyDaysAgo = new Date();
+  thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+  const recentReviews = reviews.filter((r: any) => new Date(r.created_at) > thirtyDaysAgo).length;
+  const recentInquiries = inquiries.filter((i: any) => new Date(i.created_at) > thirtyDaysAgo).length;
+
+  // Rating distribution
+  const ratingDist = [5, 4, 3, 2, 1].map(s => ({
+    star: s,
+    count: reviews.filter((r: any) => r.rating === s).length,
+    pct: reviews.length > 0 ? Math.round((reviews.filter((r: any) => r.rating === s).length / reviews.length) * 100) : 0,
+  }));
+
+  const statCards = [
+    { icon: Package, label: isAr ? "المنتجات" : "Products", value: totalProducts, sub: isAr ? `${activeProducts} نشط` : `${activeProducts} active`, color: "text-primary" },
+    { icon: Star, label: isAr ? "التقييم" : "Rating", value: avgRating, sub: isAr ? `${totalReviews} تقييم` : `${totalReviews} reviews`, color: "text-chart-4" },
+    { icon: MessageSquare, label: isAr ? "الاستفسارات" : "Inquiries", value: totalInquiries, sub: isAr ? `${unreadInquiries} غير مقروء` : `${unreadInquiries} unread`, color: "text-chart-2" },
+    { icon: TrendingUp, label: isAr ? "آخر 30 يوم" : "Last 30 Days", value: recentReviews + recentInquiries, sub: isAr ? `${recentReviews} تقييم · ${recentInquiries} استفسار` : `${recentReviews} reviews · ${recentInquiries} inquiries`, color: "text-chart-5" },
+  ];
+
+  return (
+    <div className="space-y-6">
+      <div>
+        <h2 className="text-xl font-bold flex items-center gap-2">
+          <BarChart3 className="h-5 w-5 text-primary" />
+          {isAr ? "تحليلات المورد" : "Supplier Analytics"}
+        </h2>
+        <p className="text-sm text-muted-foreground mt-1">
+          {isAr ? "نظرة عامة على أداء ملفك التعريفي" : "Overview of your supplier profile performance"}
+        </p>
+      </div>
+
+      {/* Stat Cards */}
+      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        {statCards.map((s, i) => (
+          <Card key={i} className="rounded-xl">
+            <CardContent className="p-4">
+              <div className="flex items-center justify-between">
+                <s.icon className={`h-5 w-5 ${s.color}`} />
+                <Badge variant="outline" className="text-[9px]">{s.label}</Badge>
+              </div>
+              <p className="mt-3 text-3xl font-bold">{s.value}</p>
+              <p className="text-xs text-muted-foreground mt-1">{s.sub}</p>
+            </CardContent>
+          </Card>
+        ))}
+      </div>
+
+      <div className="grid gap-6 md:grid-cols-2">
+        {/* Rating Distribution */}
+        <Card className="rounded-xl">
+          <CardHeader className="pb-3">
+            <CardTitle className="text-base flex items-center gap-2">
+              <Star className="h-4 w-4 text-chart-4" />
+              {isAr ? "توزيع التقييمات" : "Rating Distribution"}
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-2">
+            {ratingDist.map(({ star, count, pct }) => (
+              <div key={star} className="flex items-center gap-3 text-sm">
+                <span className="w-4 font-medium">{star}</span>
+                <Star className="h-3.5 w-3.5 fill-chart-4 text-chart-4" />
+                <div className="flex-1 h-2.5 rounded-full bg-muted overflow-hidden">
+                  <div className="h-full bg-chart-4 rounded-full transition-all" style={{ width: `${pct}%` }} />
+                </div>
+                <span className="w-10 text-end text-xs text-muted-foreground">{count} ({pct}%)</span>
+              </div>
+            ))}
+          </CardContent>
+        </Card>
+
+        {/* Product Status */}
+        <Card className="rounded-xl">
+          <CardHeader className="pb-3">
+            <CardTitle className="text-base flex items-center gap-2">
+              <Package className="h-4 w-4 text-primary" />
+              {isAr ? "حالة المنتجات" : "Product Status"}
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div className="flex items-center justify-between">
+              <span className="text-sm text-muted-foreground">{isAr ? "إجمالي المنتجات" : "Total Products"}</span>
+              <span className="text-sm font-semibold">{totalProducts}</span>
+            </div>
+            <div className="flex items-center justify-between">
+              <span className="text-sm text-muted-foreground">{isAr ? "نشط" : "Active"}</span>
+              <Badge className="bg-chart-5/10 text-chart-5 border-chart-5/20 text-xs">{activeProducts}</Badge>
+            </div>
+            <div className="flex items-center justify-between">
+              <span className="text-sm text-muted-foreground">{isAr ? "متوفر" : "In Stock"}</span>
+              <Badge className="bg-chart-2/10 text-chart-2 border-chart-2/20 text-xs">{inStockProducts}</Badge>
+            </div>
+            <div className="flex items-center justify-between">
+              <span className="text-sm text-muted-foreground">{isAr ? "نفد المخزون" : "Out of Stock"}</span>
+              <Badge variant="destructive" className="text-xs">{totalProducts - inStockProducts}</Badge>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    </div>
+  );
+}
