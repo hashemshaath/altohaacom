@@ -46,10 +46,12 @@ const PrivacyPolicy = lazy(() => import("@/pages/PrivacyPolicy"));
 const TermsConditions = lazy(() => import("@/pages/TermsConditions"));
 const AboutUs = lazy(() => import("@/pages/AboutUs"));
 const CookiePolicy = lazy(() => import("@/pages/CookiePolicy"));
+const EventsCalendar = lazy(() => import("@/pages/EventsCalendar"));
 
 export const publicRoutes = (
   <>
     <Route path="/" element={<Index />} />
+    <Route path="/events-calendar" element={<EventsCalendar />} />
     <Route path="/auth" element={<Navigate to="/login" replace />} />
     <Route path="/login" element={<Auth />} />
     <Route path="/register" element={<Auth />} />

@@ -12,6 +12,7 @@ import { prefetchCommonRoutes } from "@/lib/prefetch";
 
 // Lazy load below-fold components
 const EventsByCategory = lazy(() => import("@/components/home/EventsByCategory").then(m => ({ default: m.EventsByCategory })));
+const HomeEventsCalendarPreview = lazy(() => import("@/components/home/HomeEventsCalendarPreview").then(m => ({ default: m.HomeEventsCalendarPreview })));
 const RegionalEvents = lazy(() => import("@/components/home/RegionalEvents").then(m => ({ default: m.RegionalEvents })));
 const HomeArticles = lazy(() => import("@/components/home/HomeArticles").then(m => ({ default: m.HomeArticles })));
 const PlatformFeatures = lazy(() => import("@/components/home/PlatformFeatures").then(m => ({ default: m.PlatformFeatures })));
@@ -111,6 +112,11 @@ const Index = () => {
         {/* 6. Regional Events */}
         <Suspense fallback={<LazyFallback />}>
           <RegionalEvents />
+        </Suspense>
+
+        {/* 6b. Events Calendar Preview */}
+        <Suspense fallback={<LazyFallback />}>
+          <HomeEventsCalendarPreview />
         </Suspense>
 
         {/* 7. Featured Chefs */}
