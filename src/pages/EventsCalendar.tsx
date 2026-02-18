@@ -151,8 +151,8 @@ export default function EventsCalendar() {
                   </h1>
                   <p className="text-sm text-muted-foreground mt-0.5">
                     {isAr
-                      ? "اكتشف المسابقات والمعارض والفعاليات القادمة في مكان واحد"
-                      : "Discover upcoming competitions, exhibitions & culinary events in one place"}
+                      ? "الفعاليات القادمة محلياً ودولياً"
+                      : "Discover upcoming competitions, exhibitions & culinary events"}
                   </p>
                 </div>
               </div>
@@ -175,112 +175,110 @@ export default function EventsCalendar() {
         <div className="container py-5 space-y-4">
           {/* Toolbar */}
           <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3">
-            <Tabs value={viewMode} onValueChange={(v) => setViewMode(v as ViewMode)}>
-              <TabsList className="h-9">
-                <TabsTrigger value="day" className="h-7 px-2.5 text-xs gap-1">
-                  <CalendarDays className="h-3 w-3" />{isAr ? "يوم" : "Day"}
-                </TabsTrigger>
-                <TabsTrigger value="week" className="h-7 px-2.5 text-xs gap-1">
-                  <CalendarRange className="h-3 w-3" />{isAr ? "أسبوع" : "Week"}
-                </TabsTrigger>
-                <TabsTrigger value="month" className="h-7 px-2.5 text-xs gap-1">
-                  <LayoutGrid className="h-3 w-3" />{isAr ? "شهر" : "Month"}
-                </TabsTrigger>
-                <TabsTrigger value="year" className="h-7 px-2.5 text-xs gap-1">
-                  <Calendar className="h-3 w-3" />{isAr ? "سنة" : "Year"}
-                </TabsTrigger>
-                <TabsTrigger value="list" className="h-7 px-2.5 text-xs gap-1">
-                  <List className="h-3 w-3" />{isAr ? "قائمة" : "List"}
-                </TabsTrigger>
-              </TabsList>
-            </Tabs>
+            {/* Type filter chips inline */}
+            <div className="flex items-center gap-1.5 flex-wrap flex-1">
+              <Button
+                variant={selectedTypes.length === 0 ? "default" : "outline"}
+                size="sm"
+                className="h-8 rounded-full text-xs px-4"
+                onClick={() => setSelectedTypes([])}
+              >
+                {isAr ? "الكل" : "All"}
+              </Button>
+              {EVENT_TYPES.filter(t => (typeCounts[t] || 0) > 0).map(type => {
+                const label = GLOBAL_EVENT_LABELS[type];
+                const colors = GLOBAL_EVENT_COLORS[type];
+                const active = selectedTypes.includes(type);
+                const count = typeCounts[type] || 0;
+                return (
+                  <Button
+                    key={type}
+                    variant={active ? "default" : "outline"}
+                    size="sm"
+                    className={cn(
+                      "h-8 rounded-full text-xs px-3 gap-1 transition-all",
+                      !active && "hover:bg-accent/50"
+                    )}
+                    onClick={() => toggleType(type)}
+                  >
+                    {isAr ? label.ar : label.en}
+                    {count > 0 && <span className="opacity-60 text-[10px]">({count})</span>}
+                  </Button>
+                );
+              })}
+            </div>
 
-            {viewMode !== "list" && (
-              <div className="flex items-center gap-1.5">
-                <Button variant="outline" size="icon" className="h-8 w-8" onClick={navigatePrev}>
-                  <ChevronLeft className="h-4 w-4" />
+            {/* View toggle + Calendar/List */}
+            <div className="flex items-center gap-2">
+              <div className="flex items-center rounded-full border bg-muted/30 p-0.5">
+                <Button
+                  variant={viewMode === "month" || viewMode === "week" || viewMode === "day" || viewMode === "year" ? "default" : "ghost"}
+                  size="icon"
+                  className="h-8 w-8 rounded-full"
+                  onClick={() => setViewMode("month")}
+                >
+                  <Calendar className="h-3.5 w-3.5" />
                 </Button>
-                <Button variant="ghost" size="sm" className="h-8 text-xs font-semibold min-w-[140px] justify-center" onClick={goToday}>
-                  {headerLabel}
-                </Button>
-                <Button variant="outline" size="icon" className="h-8 w-8" onClick={navigateNext}>
-                  <ChevronRight className="h-4 w-4" />
-                </Button>
-                <Button variant="outline" size="sm" className="h-8 text-xs ms-1" onClick={goToday}>
-                  {isAr ? "اليوم" : "Today"}
+                <Button
+                  variant={viewMode === "list" ? "default" : "ghost"}
+                  size="icon"
+                  className="h-8 w-8 rounded-full"
+                  onClick={() => setViewMode("list")}
+                >
+                  <List className="h-3.5 w-3.5" />
                 </Button>
               </div>
-            )}
-
-            <div className="flex items-center gap-2 sm:ms-auto">
-              <Button
-                variant={showFilters ? "secondary" : "outline"}
-                size="sm"
-                className="h-8 text-xs gap-1.5"
-                onClick={() => setShowFilters(!showFilters)}
-              >
-                <Filter className="h-3 w-3" />
-                {isAr ? "تصفية" : "Filter"}
-                {selectedTypes.length > 0 && (
-                  <Badge className="h-4 min-w-[16px] px-1 text-[9px] bg-primary text-primary-foreground">{selectedTypes.length}</Badge>
-                )}
-              </Button>
-              <Select value={selectedCountry} onValueChange={setSelectedCountry}>
-                <SelectTrigger className="w-[150px] h-8 text-xs">
-                  <SelectValue placeholder={isAr ? "جميع الدول" : "All Countries"} />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">{isAr ? "جميع الدول" : "All Countries"}</SelectItem>
-                  {COUNTRIES.map(c => (
-                    <SelectItem key={c.code} value={c.code}>{isAr ? c.ar : c.en}</SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+              {viewMode !== "list" && (
+                <Button variant="ghost" size="sm" className="h-8 text-xs gap-1 text-primary" onClick={() => {
+                  const views: ViewMode[] = ["day", "week", "month", "year"];
+                  const idx = views.indexOf(viewMode);
+                  setViewMode(views[(idx + 1) % views.length]);
+                }}>
+                  {isAr ? "عرض التقويم" : "Calendar View"}
+                  <ArrowRight className="h-3 w-3" />
+                </Button>
+              )}
             </div>
           </div>
 
-          {/* Filter Panel */}
-          {showFilters && (
-            <Card className="animate-in slide-in-from-top-2 duration-200">
-              <CardContent className="p-3">
-                <div className="flex items-center justify-between mb-2">
-                  <span className="text-xs font-medium text-muted-foreground">{isAr ? "تصفية حسب النوع" : "Filter by Event Type"}</span>
-                  {selectedTypes.length > 0 && (
-                    <Button variant="ghost" size="sm" className="h-6 text-[10px] gap-1" onClick={() => setSelectedTypes([])}>
-                      <X className="h-2.5 w-2.5" />{isAr ? "مسح" : "Clear"}
-                    </Button>
-                  )}
-                </div>
-                <div className="flex flex-wrap gap-1.5">
-                  {EVENT_TYPES.map(type => {
-                    const label = GLOBAL_EVENT_LABELS[type];
-                    const colors = GLOBAL_EVENT_COLORS[type];
-                    const active = selectedTypes.includes(type);
-                    const IconComp = ICONS[label.icon] || MoreHorizontal;
-                    const count = typeCounts[type] || 0;
-                    return (
-                      <Button
-                        key={type}
-                        variant={active ? "default" : "outline"}
-                        size="sm"
-                        className={cn("h-7 text-[11px] gap-1 transition-all", !active && `${colors.bg} ${colors.text} ${colors.border} border`)}
-                        onClick={() => toggleType(type)}
-                      >
-                        <IconComp className="h-3 w-3" />
-                        {isAr ? label.ar : label.en}
-                        {count > 0 && <span className="opacity-50 text-[9px]">({count})</span>}
-                      </Button>
-                    );
-                  })}
-                </div>
-              </CardContent>
-            </Card>
+          {/* Calendar Sub-tabs (only when in calendar modes) */}
+          {viewMode !== "list" && (
+            <div className="flex items-center justify-between">
+              <Tabs value={viewMode} onValueChange={(v) => setViewMode(v as ViewMode)}>
+                <TabsList className="h-9 bg-transparent p-0 gap-1">
+                  <TabsTrigger value="day" className="h-8 px-3 text-xs rounded-full data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
+                    {isAr ? "يوم" : "Day"}
+                  </TabsTrigger>
+                  <TabsTrigger value="week" className="h-8 px-3 text-xs rounded-full data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
+                    {isAr ? "أسبوع" : "Week"}
+                  </TabsTrigger>
+                  <TabsTrigger value="month" className="h-8 px-3 text-xs rounded-full data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
+                    {isAr ? "شهر" : "Month"}
+                  </TabsTrigger>
+                  <TabsTrigger value="year" className="h-8 px-3 text-xs rounded-full data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
+                    {isAr ? "سنة" : "Year"}
+                  </TabsTrigger>
+                </TabsList>
+              </Tabs>
+
+              <div className="flex items-center gap-1">
+                <Button variant="ghost" size="icon" className="h-8 w-8 rounded-full" onClick={navigateNext}>
+                  <ChevronRight className="h-4 w-4" />
+                </Button>
+                <Button variant="ghost" size="sm" className="h-8 text-sm font-semibold min-w-[160px] justify-center tracking-tight" onClick={goToday}>
+                  {headerLabel}
+                </Button>
+                <Button variant="ghost" size="icon" className="h-8 w-8 rounded-full" onClick={navigatePrev}>
+                  <ChevronLeft className="h-4 w-4" />
+                </Button>
+              </div>
+            </div>
           )}
 
           {/* Content */}
           {isLoading ? (
             <div className="space-y-3">
-              {Array.from({ length: 4 }).map((_, i) => <Skeleton key={i} className="h-20 w-full rounded-lg" />)}
+              {Array.from({ length: 4 }).map((_, i) => <Skeleton key={i} className="h-20 w-full rounded-xl" />)}
             </div>
           ) : (
             <>
@@ -368,13 +366,13 @@ function EventChip({ event, isAr, compact = false }: { event: GlobalEvent; isAr:
 
   const chip = (
     <div className={cn(
-      "flex items-center gap-1 rounded-md px-1.5 py-0.5 border truncate transition-all cursor-default",
-      colors.bg, colors.text, colors.border,
-      "hover:shadow-sm hover:scale-[1.02]",
-      compact ? "text-[8px]" : "text-[10px]"
+      "flex items-center gap-1 rounded-lg px-2 py-1 transition-all cursor-default",
+      colors.bg, colors.text,
+      "hover:shadow-sm hover:brightness-95",
+      compact ? "text-[9px]" : "text-[11px]"
     )}>
-      <IconComp className={cn(compact ? "h-2 w-2 shrink-0" : "h-2.5 w-2.5 shrink-0")} />
-      <span className="truncate font-medium">{isAr && event.title_ar ? event.title_ar : event.title}</span>
+      <IconComp className={cn(compact ? "h-2.5 w-2.5 shrink-0" : "h-3 w-3 shrink-0")} />
+      <span className="truncate font-medium leading-tight">{isAr && event.title_ar ? event.title_ar : event.title}</span>
     </div>
   );
 
@@ -403,13 +401,15 @@ function MonthView({ events, currentDate, selectedDay, onSelectDay, isAr }: {
   const getEventsForDay = (day: Date) => events.filter(e => isSameDay(new Date(e.start_date), day));
 
   return (
-    <Card className="overflow-hidden shadow-sm">
+    <Card className="overflow-hidden border-border/40 shadow-sm">
       <CardContent className="p-0">
-        <div className="grid grid-cols-7 bg-muted/40">
+        {/* Day name headers */}
+        <div className="grid grid-cols-7">
           {dayNames.map(d => (
-            <div key={d} className="px-2 py-2.5 text-center text-[11px] font-bold text-muted-foreground uppercase tracking-wider border-b">{d}</div>
+            <div key={d} className="py-3 text-center text-xs font-medium text-muted-foreground tracking-wide border-b border-border/30">{d}</div>
           ))}
         </div>
+        {/* Day cells */}
         <div className="grid grid-cols-7">
           {days.map((day, i) => {
             const dayEvents = getEventsForDay(day);
@@ -422,41 +422,33 @@ function MonthView({ events, currentDate, selectedDay, onSelectDay, isAr }: {
                 key={i}
                 onClick={() => onSelectDay(day)}
                 className={cn(
-                  "min-h-[90px] md:min-h-[110px] p-1.5 border-b border-e border-border/15 transition-all cursor-pointer relative group",
-                  !isCurrentMonth && "bg-muted/5 opacity-35",
-                  isToday && "bg-primary/5 border-primary/20",
-                  isSelected && "bg-primary/10 ring-2 ring-inset ring-primary/30 shadow-inner",
-                  hasEvents && "hover:bg-accent/30",
-                  !hasEvents && "hover:bg-muted/20"
+                  "min-h-[100px] md:min-h-[120px] p-2 border-b border-e border-border/20 transition-all cursor-pointer",
+                  !isCurrentMonth && "opacity-30",
+                  isSelected && "bg-primary/5",
+                  hasEvents && isCurrentMonth && "hover:bg-accent/20",
+                  !hasEvents && isCurrentMonth && "hover:bg-muted/10"
                 )}
               >
                 {/* Day number */}
-                <div className="flex items-center justify-between mb-1 px-0.5">
-                  <div className={cn(
-                    "flex items-center justify-center h-6 w-6 rounded-full text-xs font-semibold transition-colors",
-                    isToday && "bg-primary text-primary-foreground shadow-sm",
-                    !isToday && isSelected && "text-primary font-bold",
+                <div className="flex items-start justify-center mb-1.5">
+                  <span className={cn(
+                    "flex items-center justify-center h-7 w-7 rounded-full text-sm tabular-nums transition-colors",
+                    isToday && "bg-primary text-primary-foreground font-bold",
+                    !isToday && isCurrentMonth && "font-medium text-foreground",
+                    !isToday && hasEvents && isCurrentMonth && "text-primary font-semibold",
                   )}>
                     {day.getDate()}
-                  </div>
-                  {hasEvents && (
-                    <span className={cn(
-                      "text-[9px] font-bold tabular-nums px-1 rounded-full",
-                      isToday ? "bg-primary/20 text-primary" : "bg-muted text-muted-foreground"
-                    )}>
-                      {dayEvents.length}
-                    </span>
-                  )}
+                  </span>
                 </div>
-                {/* Event dots row for compact display */}
-                {hasEvents && (
+                {/* Event list */}
+                {hasEvents && isCurrentMonth && (
                   <div className="space-y-0.5">
-                    {dayEvents.slice(0, 3).map(ev => (
+                    {dayEvents.slice(0, 2).map(ev => (
                       <EventChip key={ev.id} event={ev} isAr={isAr} compact />
                     ))}
-                    {dayEvents.length > 3 && (
-                      <p className="text-[8px] text-center text-muted-foreground font-semibold opacity-70">
-                        +{dayEvents.length - 3} {isAr ? "المزيد" : "more"}
+                    {dayEvents.length > 2 && (
+                      <p className="text-[9px] text-center text-muted-foreground font-medium mt-0.5">
+                        +{dayEvents.length - 2} {isAr ? "المزيد" : "more"}
                       </p>
                     )}
                   </div>
@@ -477,25 +469,25 @@ function WeekView({ events, currentDate, isAr }: { events: GlobalEvent[]; curren
   const getEventsForDay = (day: Date) => events.filter(e => isSameDay(new Date(e.start_date), day));
 
   return (
-    <Card className="overflow-hidden shadow-sm">
+    <Card className="overflow-hidden border-border/40 shadow-sm">
       <CardContent className="p-0">
-        <div className="grid grid-cols-7 divide-x divide-border/15">
+        <div className="grid grid-cols-7 divide-x divide-border/20">
           {weekDays.map((day, i) => {
             const dayEvents = getEventsForDay(day);
             const isToday = isSameDay(day, new Date());
             return (
-              <div key={i} className={cn("min-h-[350px]", isToday && "bg-primary/3")}>
+              <div key={i} className={cn("min-h-[380px]", isToday && "bg-primary/3")}>
                 <div className={cn(
-                  "text-center py-3 border-b transition-colors",
-                  isToday ? "bg-primary/10" : "bg-muted/20"
+                  "text-center py-4 border-b border-border/20 transition-colors",
+                  isToday ? "bg-primary/8" : ""
                 )}>
-                  <p className="text-[10px] text-muted-foreground uppercase font-semibold tracking-wider">{format(day, "EEE")}</p>
+                  <p className="text-[11px] text-muted-foreground uppercase font-medium tracking-wider">{format(day, "EEE")}</p>
                   <p className={cn(
-                    "text-xl font-bold tabular-nums mt-0.5",
+                    "text-2xl font-bold tabular-nums mt-1",
                     isToday ? "text-primary" : "text-foreground"
                   )}>{day.getDate()}</p>
                   {dayEvents.length > 0 && (
-                    <div className="flex items-center justify-center gap-0.5 mt-1">
+                    <div className="flex items-center justify-center gap-0.5 mt-1.5">
                       {dayEvents.slice(0, 4).map(ev => {
                         const colors = GLOBAL_EVENT_COLORS[ev.type];
                         return <div key={ev.id} className={cn("h-1.5 w-1.5 rounded-full", colors.dot)} />;
@@ -505,7 +497,7 @@ function WeekView({ events, currentDate, isAr }: { events: GlobalEvent[]; curren
                 </div>
                 <div className="p-1.5 space-y-1">
                   {dayEvents.length === 0 && (
-                    <p className="text-[9px] text-muted-foreground/30 text-center pt-8">—</p>
+                    <p className="text-[10px] text-muted-foreground/20 text-center pt-10">—</p>
                   )}
                   {dayEvents.map(ev => (
                     <EventChip key={ev.id} event={ev} isAr={isAr} />
@@ -526,27 +518,27 @@ function DayView({ events, currentDate, isAr }: { events: GlobalEvent[]; current
   const isToday = isSameDay(currentDate, new Date());
 
   return (
-    <Card className="shadow-sm">
-      <div className={cn("flex items-center gap-3 px-4 py-4 border-b", isToday && "bg-primary/5")}>
+    <Card className="shadow-sm border-border/40">
+      <div className={cn("flex items-center gap-4 px-5 py-5 border-b border-border/20", isToday && "bg-primary/5")}>
         <div className={cn(
-          "flex h-14 w-14 flex-col items-center justify-center rounded-xl shadow-sm",
+          "flex h-16 w-16 flex-col items-center justify-center rounded-2xl shadow-sm",
           isToday ? "bg-primary text-primary-foreground" : "bg-muted"
         )}>
-          <span className="text-[10px] font-bold uppercase leading-none">{format(currentDate, "EEE")}</span>
-          <span className="text-2xl font-bold leading-none tabular-nums mt-0.5">{currentDate.getDate()}</span>
+          <span className="text-[10px] font-bold uppercase leading-none tracking-wider">{format(currentDate, "EEE")}</span>
+          <span className="text-3xl font-bold leading-none tabular-nums mt-1">{currentDate.getDate()}</span>
         </div>
         <div>
-          <h3 className="text-base font-bold">{format(currentDate, isAr ? "d MMMM yyyy" : "MMMM d, yyyy")}</h3>
-          <p className="text-xs text-muted-foreground">
+          <h3 className="text-lg font-bold">{format(currentDate, isAr ? "d MMMM yyyy" : "MMMM d, yyyy")}</h3>
+          <p className="text-sm text-muted-foreground">
             {dayEvents.length} {isAr ? "فعاليات مجدولة" : "events scheduled"}
             {isToday && <span className="text-primary font-semibold ms-1.5">• {isAr ? "اليوم" : "Today"}</span>}
           </p>
         </div>
       </div>
-      <CardContent className="p-4">
+      <CardContent className="p-5">
         {dayEvents.length === 0 ? (
           <div className="text-center py-16">
-            <Calendar className="h-10 w-10 text-muted-foreground/20 mx-auto mb-3" />
+            <Calendar className="h-10 w-10 text-muted-foreground/15 mx-auto mb-3" />
             <p className="text-sm text-muted-foreground">{isAr ? "لا توجد فعاليات في هذا اليوم" : "No events scheduled for this day"}</p>
           </div>
         ) : (
@@ -566,8 +558,7 @@ function DayEventCard({ event, isAr }: { event: GlobalEvent; isAr: boolean }) {
   const countdown = getCountdown(event.start_date, isAr);
 
   const content = (
-    <div className={cn("flex gap-3 p-3.5 rounded-xl border transition-all hover:shadow-md group", colors.border, "hover:bg-muted/20")}>
-      {/* Cover or icon */}
+    <div className={cn("flex gap-3 p-4 rounded-xl border transition-all hover:shadow-md group", colors.border, "hover:bg-muted/20")}>
       {event.cover_image_url ? (
         <div className="w-20 h-20 rounded-lg overflow-hidden shrink-0 bg-muted">
           <img src={event.cover_image_url} alt="" className="w-full h-full object-cover" />
@@ -628,7 +619,7 @@ function YearView({ events, currentDate, onNavigate, isAr }: {
           <Card
             key={mi}
             className={cn(
-              "cursor-pointer transition-all hover:shadow-md hover:border-primary/30",
+              "cursor-pointer transition-all hover:shadow-md hover:border-primary/30 border-border/40",
               isCurrentMonth && "ring-1 ring-primary/30 border-primary/20"
             )}
             onClick={() => onNavigate(monthDate)}
@@ -681,7 +672,7 @@ function MiniMonthGrid({ monthDate, events }: { monthDate: Date; events: GlobalE
   );
 }
 
-// ─── List View (Rich Cards with Countdown) ──
+// ─── List View ──────────────────────────────
 function ListView({ events, isAr }: { events: GlobalEvent[]; isAr: boolean }) {
   const upcomingEvents = events.filter(e => new Date(e.start_date) >= new Date());
   const pastEvents = events.filter(e => new Date(e.start_date) < new Date());
@@ -689,7 +680,7 @@ function ListView({ events, isAr }: { events: GlobalEvent[]; isAr: boolean }) {
   if (events.length === 0) {
     return (
       <div className="text-center py-16">
-        <Calendar className="h-10 w-10 text-muted-foreground/20 mx-auto mb-3" />
+        <Calendar className="h-10 w-10 text-muted-foreground/15 mx-auto mb-3" />
         <p className="text-sm text-muted-foreground">{isAr ? "لا توجد فعاليات" : "No events found"}</p>
       </div>
     );
@@ -697,7 +688,6 @@ function ListView({ events, isAr }: { events: GlobalEvent[]; isAr: boolean }) {
 
   return (
     <div className="space-y-6">
-      {/* Upcoming */}
       {upcomingEvents.length > 0 && (
         <div>
           <h3 className="text-sm font-bold text-foreground mb-3 flex items-center gap-2">
@@ -710,8 +700,6 @@ function ListView({ events, isAr }: { events: GlobalEvent[]; isAr: boolean }) {
           </div>
         </div>
       )}
-
-      {/* Past */}
       {pastEvents.length > 0 && (
         <div>
           <h3 className="text-sm font-bold text-muted-foreground mb-3 flex items-center gap-2">
@@ -736,12 +724,10 @@ function ListEventCard({ event, isAr }: { event: GlobalEvent; isAr: boolean }) {
 
   const card = (
     <Card className={cn(
-      "overflow-hidden transition-all hover:shadow-lg group border",
-      colors.border,
+      "overflow-hidden transition-all hover:shadow-lg group border-border/40",
       countdown.past && "opacity-75"
     )}>
       <div className="flex">
-        {/* Cover Image / Logo area */}
         <div className={cn(
           "w-28 sm:w-36 shrink-0 relative overflow-hidden",
           !event.cover_image_url && colors.bg
@@ -753,30 +739,22 @@ function ListEventCard({ event, isAr }: { event: GlobalEvent; isAr: boolean }) {
               <IconComp className={cn("h-8 w-8 opacity-40", colors.text)} />
             </div>
           )}
-          {/* Logo overlay */}
           {event.logo_url && (
             <div className="absolute bottom-1.5 start-1.5 h-8 w-8 rounded-md bg-background/90 shadow-sm flex items-center justify-center overflow-hidden">
               <img src={event.logo_url} alt="" className="h-6 w-6 object-contain" />
             </div>
           )}
-          {/* Countdown badge */}
           {!countdown.past && (
             <div className={cn(
               "absolute top-1.5 end-1.5 rounded-md px-1.5 py-0.5 text-[10px] font-bold shadow-sm",
-              countdown.urgent
-                ? "bg-destructive text-destructive-foreground"
-                : "bg-background/90 text-foreground"
+              countdown.urgent ? "bg-destructive text-destructive-foreground" : "bg-background/90 text-foreground"
             )}>
-              <Timer className="h-2.5 w-2.5 inline me-0.5" />
-              {countdown.text}
+              <Timer className="h-2.5 w-2.5 inline me-0.5" />{countdown.text}
             </div>
           )}
         </div>
-
-        {/* Content */}
         <div className="flex-1 min-w-0 p-3 sm:p-4 flex flex-col justify-between">
           <div>
-            {/* Type + Status row */}
             <div className="flex items-center gap-1.5 flex-wrap mb-1.5">
               <Badge variant="outline" className={cn("text-[10px] px-1.5 py-0 border gap-0.5", colors.bg, colors.text, colors.border)}>
                 <IconComp className="h-2.5 w-2.5" />
@@ -789,13 +767,9 @@ function ListEventCard({ event, isAr }: { event: GlobalEvent; isAr: boolean }) {
                 <Badge variant="secondary" className="text-[9px] px-1 py-0 capitalize">{event.status}</Badge>
               )}
             </div>
-
-            {/* Title */}
             <h4 className="text-sm sm:text-base font-bold line-clamp-2 group-hover:text-primary transition-colors">
               {isAr && event.title_ar ? event.title_ar : event.title}
             </h4>
-
-            {/* Details grid */}
             <div className="flex flex-wrap items-center gap-x-3 gap-y-1 mt-2 text-xs text-muted-foreground">
               <span className="flex items-center gap-1 font-medium">
                 <Calendar className="h-3 w-3 text-primary" />
@@ -823,13 +797,8 @@ function ListEventCard({ event, isAr }: { event: GlobalEvent; isAr: boolean }) {
               {event.channel_name && (
                 <span className="flex items-center gap-1"><Tv className="h-3 w-3" />{event.channel_name}</span>
               )}
-              {event.program_name && (
-                <span className="text-[10px]">{event.program_name}</span>
-              )}
             </div>
           </div>
-
-          {/* Footer */}
           {event.link && (
             <div className="flex items-center justify-end mt-2 pt-2 border-t border-border/20">
               <span className="text-[11px] text-primary font-medium flex items-center gap-1 group-hover:gap-1.5 transition-all">
