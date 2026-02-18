@@ -4,7 +4,8 @@ import { supabase } from "@/integrations/supabase/client";
 import { useCompanyAccess } from "@/hooks/useCompanyAccess";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { BarChart3, Package, MessageSquare, Star, Eye, TrendingUp, Heart } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { BarChart3, Package, MessageSquare, Star, Eye, TrendingUp, Heart, Download } from "lucide-react";
 
 export function SupplierAnalyticsDashboard() {
   const { language } = useLanguage();
@@ -114,16 +115,36 @@ export function SupplierAnalyticsDashboard() {
     { icon: TrendingUp, label: isAr ? "آخر 30 يوم" : "Last 30 Days", value: recentReviews + recentInquiries + recentViews, sub: isAr ? `${recentViews} مشاهدة · ${recentReviews} تقييم · ${recentInquiries} استفسار` : `${recentViews} views · ${recentReviews} reviews · ${recentInquiries} inquiries`, color: "text-chart-1" },
   ];
 
+  const exportCSV = () => {
+    const bom = "\uFEFF";
+    const headers = ["Metric", "Value", "Details"];
+    const rows = statCards.map((s) => [s.label, String(s.value), s.sub]);
+    const csv = bom + [headers, ...rows].map((r) => r.map((c) => `"${c}"`).join(",")).join("\n");
+    const blob = new Blob([csv], { type: "text/csv;charset=utf-8" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `supplier-analytics-${new Date().toISOString().slice(0, 10)}.csv`;
+    a.click();
+    URL.revokeObjectURL(url);
+  };
+
   return (
     <div className="space-y-6">
-      <div>
-        <h2 className="text-xl font-bold flex items-center gap-2">
-          <BarChart3 className="h-5 w-5 text-primary" />
-          {isAr ? "تحليلات المورد" : "Supplier Analytics"}
-        </h2>
-        <p className="text-sm text-muted-foreground mt-1">
-          {isAr ? "نظرة عامة على أداء ملفك التعريفي" : "Overview of your supplier profile performance"}
-        </p>
+      <div className="flex items-center justify-between">
+        <div>
+          <h2 className="text-xl font-bold flex items-center gap-2">
+            <BarChart3 className="h-5 w-5 text-primary" />
+            {isAr ? "تحليلات المورد" : "Supplier Analytics"}
+          </h2>
+          <p className="text-sm text-muted-foreground mt-1">
+            {isAr ? "نظرة عامة على أداء ملفك التعريفي" : "Overview of your supplier profile performance"}
+          </p>
+        </div>
+        <Button variant="outline" size="sm" onClick={exportCSV}>
+          <Download className="me-1.5 h-3.5 w-3.5" />
+          {isAr ? "تصدير CSV" : "Export CSV"}
+        </Button>
       </div>
 
       {/* Stat Cards */}

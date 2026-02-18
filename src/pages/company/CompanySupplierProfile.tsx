@@ -13,11 +13,12 @@ import { Switch } from "@/components/ui/switch";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
-import { Factory, Save, Plus, X, Sparkles, Eye, Package, BarChart3 } from "lucide-react";
+import { Factory, Save, Plus, X, Sparkles, Eye, Package, BarChart3, MessageSquare } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { SupplierCatalogManager } from "@/components/supplier/SupplierCatalogManager";
 import { SupplierAnalyticsDashboard } from "@/components/supplier/SupplierAnalyticsDashboard";
 import { SupplierProfileCompletion } from "@/components/supplier/SupplierProfileCompletion";
+import { SupplierInquiryInbox } from "@/components/supplier/SupplierInquiryInbox";
 import { useEffect } from "react";
 
 const SUPPLIER_CATEGORIES = [
@@ -140,6 +141,10 @@ export default function CompanySupplierProfile() {
           <TabsTrigger value="analytics">
             <BarChart3 className="me-1.5 h-3.5 w-3.5" />
             {isAr ? "التحليلات" : "Analytics"}
+          </TabsTrigger>
+          <TabsTrigger value="inbox">
+            <MessageSquare className="me-1.5 h-3.5 w-3.5" />
+            {isAr ? "الاستفسارات" : "Inbox"}
           </TabsTrigger>
         </TabsList>
 
@@ -283,6 +288,10 @@ export default function CompanySupplierProfile() {
 
         <TabsContent value="analytics" className="mt-6">
           <SupplierAnalyticsDashboard />
+        </TabsContent>
+
+        <TabsContent value="inbox" className="mt-6">
+          <SupplierInquiryInbox />
         </TabsContent>
       </Tabs>
     </div>

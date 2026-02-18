@@ -16,7 +16,7 @@ import { countryFlag } from "@/lib/countryFlag";
 import {
   Building2, Search, ChefHat, UtensilsCrossed, Package, Shirt,
   Wrench, Boxes, Grid3X3, CheckCircle, ArrowRight, Sparkles,
-  Factory, Globe, ArrowUpDown, Star, Scale,
+  Factory, Globe, ArrowUpDown, Star, Scale, Trophy,
 } from "lucide-react";
 import { SupplierBadges } from "@/components/supplier/SupplierBadges";
 
@@ -134,6 +134,12 @@ export default function ProSuppliers() {
                   ? "اكتشف الشركات الرائدة المتخصصة في تقديم أفضل المنتجات والأدوات للطهاة المحترفين"
                   : "Discover leading companies specializing in the finest products and tools for professional chefs"}
               </p>
+              <div className="mt-4 flex justify-center gap-2">
+                <Button variant="outline" size="sm" className="rounded-full gap-1.5" onClick={() => navigate("/pro-suppliers/leaderboard")}>
+                  <Trophy className="h-3.5 w-3.5 text-chart-4" />
+                  {isAr ? "ترتيب الموردين" : "Leaderboard"}
+                </Button>
+              </div>
             </div>
 
             {/* Search */}
