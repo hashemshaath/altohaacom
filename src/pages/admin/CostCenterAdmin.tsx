@@ -7,7 +7,8 @@ import {
   useCostTemplates, useCreateCostEstimate, useUpdateCostEstimate,
   useSaveCostEstimateItem, useDeleteCostEstimateItem,
   useSubmitForApproval, useApproveCostEstimate, useRejectCostEstimate,
-  useConvertToInvoice, useSaveCostTemplate, recalcEstimateTotals,
+  useConvertToInvoice, useSaveCostTemplate, useDuplicateCostEstimate,
+  recalcEstimateTotals,
   COST_ITEM_CATEGORIES, MODULE_TYPES, ESTIMATE_STATUS_CONFIG,
   type CostEstimate, type CostEstimateItem, type CostModuleType,
   type CostEstimateStatus, type CostItemCategory, type CostTemplate,
@@ -74,6 +75,7 @@ export default function CostCenterAdmin() {
   const rejectEstimate = useRejectCostEstimate();
   const convertToInvoice = useConvertToInvoice();
   const saveTemplate = useSaveCostTemplate();
+  const duplicateEstimate = useDuplicateCostEstimate();
 
   const selectedEstimate = estimates.find(e => e.id === selectedEstimateId);
 
@@ -191,6 +193,16 @@ export default function CostCenterAdmin() {
     toast.success(isAr ? "تم تطبيق القالب" : "Template applied");
   };
 
+  const handleDuplicate = async (id: string) => {
+    try {
+      const result = await duplicateEstimate.mutateAsync(id);
+      toast.success(isAr ? "تم نسخ التقدير" : "Estimate duplicated");
+      setSelectedEstimateId(result.id);
+    } catch {
+      toast.error(isAr ? "حدث خطأ" : "Error duplicating estimate");
+    }
+  };
+
   // ─── Detail View ──────────────────────────
 
   if (selectedEstimateId && selectedEstimate) {
@@ -243,6 +255,9 @@ export default function CostCenterAdmin() {
                 <Receipt className="h-3.5 w-3.5" />{isAr ? "إنشاء فاتورة" : "Create Invoice"}
               </Button>
             )}
+            <Button size="sm" variant="outline" className="gap-1" onClick={() => handleDuplicate(selectedEstimateId!)}>
+              <Copy className="h-3.5 w-3.5" />{isAr ? "نسخ" : "Duplicate"}
+            </Button>
             <Button size="sm" variant="outline" className="gap-1" onClick={() => window.print()}>
               <Printer className="h-3.5 w-3.5" />
             </Button>

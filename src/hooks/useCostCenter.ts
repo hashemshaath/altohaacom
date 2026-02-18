@@ -2,6 +2,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { toast } from "sonner";
+import { sendNotification } from "@/lib/notifications";
 
 // ─── Types ──────────────────────────────────
 
@@ -328,12 +329,11 @@ export function useSubmitForApproval() {
 
   return useMutation({
     mutationFn: async ({ estimateId, comments }: { estimateId: string; comments?: string }) => {
-      // Update status
+      const { data: est } = await supabase.from("cost_estimates" as any).select("estimate_number, title").eq("id", estimateId).single();
       await supabase
         .from("cost_estimates" as any)
         .update({ status: "pending_approval" } as any)
         .eq("id", estimateId);
-      // Log
       await supabase
         .from("cost_approval_log" as any)
         .insert({
@@ -344,10 +344,61 @@ export function useSubmitForApproval() {
           previous_status: "draft",
           new_status: "pending_approval",
         } as any);
+      // Notify admins
+      const { data: admins } = await supabase.from("user_roles" as any).select("user_id").eq("role", "supervisor");
+      if (admins && est) {
+        for (const a of (admins as any[])) {
+          sendNotification({
+            userId: a.user_id,
+            title: `Cost Estimate Submitted: ${(est as any).estimate_number}`,
+            titleAr: `تم تقديم تقدير تكلفة: ${(est as any).estimate_number}`,
+            body: `"${(est as any).title}" needs your approval`,
+            bodyAr: `"${(est as any).title}" يحتاج موافقتك`,
+            type: "info",
+            link: "/admin/cost-center",
+            channels: ["in_app"],
+          });
+        }
+      }
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["cost-estimates"] });
       queryClient.invalidateQueries({ queryKey: ["cost-approval-log"] });
+    },
+  });
+}
+
+export function useDuplicateCostEstimate() {
+  const queryClient = useQueryClient();
+  const { user } = useAuth();
+
+  return useMutation({
+    mutationFn: async (sourceId: string) => {
+      const { data: source, error: srcErr } = await supabase
+        .from("cost_estimates" as any).select("*").eq("id", sourceId).single();
+      if (srcErr) throw srcErr;
+      const src = source as unknown as CostEstimate;
+
+      const { data: items, error: itemsErr } = await supabase
+        .from("cost_estimate_items" as any).select("*").eq("estimate_id", sourceId).order("sort_order");
+      if (itemsErr) throw itemsErr;
+
+      const { id, estimate_number, created_at, updated_at, status, approved_by, approved_at, rejection_reason, invoice_id, ...rest } = src;
+      const { data: newEst, error: newErr } = await supabase
+        .from("cost_estimates" as any)
+        .insert({ ...rest, title: `${src.title} (Copy)`, status: "draft", prepared_by: user?.id, version: (src.version || 1) + 1, parent_estimate_id: sourceId } as any)
+        .select().single();
+      if (newErr) throw newErr;
+
+      const lineItems = (items || []) as unknown as CostEstimateItem[];
+      for (const item of lineItems) {
+        const { id: _, estimate_id: __, created_at: ___, ...itemRest } = item;
+        await supabase.from("cost_estimate_items" as any).insert({ ...itemRest, estimate_id: (newEst as any).id } as any);
+      }
+      return newEst as unknown as CostEstimate;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["cost-estimates"] });
     },
   });
 }
@@ -358,6 +409,7 @@ export function useApproveCostEstimate() {
 
   return useMutation({
     mutationFn: async ({ estimateId, comments }: { estimateId: string; comments?: string }) => {
+      const { data: est } = await supabase.from("cost_estimates" as any).select("estimate_number, title, prepared_by").eq("id", estimateId).single();
       await supabase
         .from("cost_estimates" as any)
         .update({ status: "approved", approved_by: user?.id, approved_at: new Date().toISOString() } as any)
@@ -365,13 +417,19 @@ export function useApproveCostEstimate() {
       await supabase
         .from("cost_approval_log" as any)
         .insert({
-          estimate_id: estimateId,
-          action: "approved",
-          performed_by: user?.id,
-          comments,
-          previous_status: "pending_approval",
-          new_status: "approved",
+          estimate_id: estimateId, action: "approved", performed_by: user?.id,
+          comments, previous_status: "pending_approval", new_status: "approved",
         } as any);
+      if (est && (est as any).prepared_by) {
+        sendNotification({
+          userId: (est as any).prepared_by,
+          title: `Estimate Approved: ${(est as any).estimate_number}`,
+          titleAr: `تمت الموافقة على التقدير: ${(est as any).estimate_number}`,
+          body: `"${(est as any).title}" has been approved`,
+          bodyAr: `تمت الموافقة على "${(est as any).title}"`,
+          type: "success", link: "/admin/cost-center", channels: ["in_app"],
+        });
+      }
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["cost-estimates"] });
@@ -386,6 +444,7 @@ export function useRejectCostEstimate() {
 
   return useMutation({
     mutationFn: async ({ estimateId, reason, comments }: { estimateId: string; reason: string; comments?: string }) => {
+      const { data: est } = await supabase.from("cost_estimates" as any).select("estimate_number, title, prepared_by").eq("id", estimateId).single();
       await supabase
         .from("cost_estimates" as any)
         .update({ status: "rejected", rejection_reason: reason } as any)
@@ -393,13 +452,19 @@ export function useRejectCostEstimate() {
       await supabase
         .from("cost_approval_log" as any)
         .insert({
-          estimate_id: estimateId,
-          action: "rejected",
-          performed_by: user?.id,
-          comments: comments || reason,
-          previous_status: "pending_approval",
-          new_status: "rejected",
+          estimate_id: estimateId, action: "rejected", performed_by: user?.id,
+          comments: comments || reason, previous_status: "pending_approval", new_status: "rejected",
         } as any);
+      if (est && (est as any).prepared_by) {
+        sendNotification({
+          userId: (est as any).prepared_by,
+          title: `Estimate Rejected: ${(est as any).estimate_number}`,
+          titleAr: `تم رفض التقدير: ${(est as any).estimate_number}`,
+          body: `"${(est as any).title}" was rejected: ${reason}`,
+          bodyAr: `تم رفض "${(est as any).title}": ${reason}`,
+          type: "warning", link: "/admin/cost-center", channels: ["in_app"],
+        });
+      }
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["cost-estimates"] });
