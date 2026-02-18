@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -11,11 +11,12 @@ import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { countryFlag } from "@/lib/countryFlag";
 import {
   Building2, Search, ChefHat, UtensilsCrossed, Package, Shirt,
   Wrench, Boxes, Grid3X3, CheckCircle, ArrowRight, Sparkles,
-  Factory, Globe,
+  Factory, Globe, ArrowUpDown, Star,
 } from "lucide-react";
 
 const SUPPLIER_CATEGORIES = [
@@ -28,36 +29,60 @@ const SUPPLIER_CATEGORIES = [
   { value: "accessories", en: "Accessories & Tools", ar: "إكسسوارات وأدوات", icon: ChefHat },
 ];
 
+type SortOption = "featured" | "name" | "newest";
+
 export default function ProSuppliers() {
   const { language } = useLanguage();
   const navigate = useNavigate();
   const isAr = language === "ar";
   const [search, setSearch] = useState("");
   const [category, setCategory] = useState("all");
+  const [sortBy, setSortBy] = useState<SortOption>("featured");
+  const [countryFilter, setCountryFilter] = useState("all");
 
   const { data: companies = [], isLoading } = useQuery({
-    queryKey: ["proSuppliers", search, category],
+    queryKey: ["proSuppliers"],
     queryFn: async () => {
-      let query = supabase
+      const { data, error } = await supabase
         .from("companies")
-        .select("id, name, name_ar, type, logo_url, city, country_code, description, description_ar, classifications, is_verified, tagline, tagline_ar, supplier_category, specializations, cover_image_url")
+        .select("id, name, name_ar, type, logo_url, city, country_code, description, description_ar, classifications, is_verified, tagline, tagline_ar, supplier_category, specializations, cover_image_url, created_at, featured_order")
         .eq("status", "active")
+        .eq("is_pro_supplier", true)
         .order("featured_order", { ascending: true, nullsFirst: false })
         .order("name");
-
-      if (search) {
-        query = query.or(`name.ilike.%${search}%,name_ar.ilike.%${search}%,description.ilike.%${search}%`);
-      }
-      if (category !== "all") {
-        query = query.eq("supplier_category", category);
-      }
-
-      const { data, error } = await query;
       if (error) throw error;
       return data || [];
     },
   });
 
+  // Derive unique countries
+  const availableCountries = useMemo(() => {
+    const codes = new Set(companies.map((c: any) => c.country_code).filter(Boolean));
+    return Array.from(codes) as string[];
+  }, [companies]);
+
+  // Client-side filtering & sorting
+  const filteredCompanies = useMemo(() => {
+    let result = [...companies];
+    if (search) {
+      const s = search.toLowerCase();
+      result = result.filter((c: any) =>
+        c.name?.toLowerCase().includes(s) || c.name_ar?.toLowerCase().includes(s) || c.description?.toLowerCase().includes(s)
+      );
+    }
+    if (category !== "all") {
+      result = result.filter((c: any) => c.supplier_category === category);
+    }
+    if (countryFilter !== "all") {
+      result = result.filter((c: any) => c.country_code === countryFilter);
+    }
+    if (sortBy === "name") {
+      result.sort((a: any, b: any) => (a.name || "").localeCompare(b.name || ""));
+    } else if (sortBy === "newest") {
+      result.sort((a: any, b: any) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
+    }
+    return result;
+  }, [companies, search, category, countryFilter, sortBy]);
   const { data: catalogCounts = {} } = useQuery({
     queryKey: ["supplierCatalogCounts"],
     queryFn: async () => {
@@ -134,10 +159,39 @@ export default function ProSuppliers() {
               })}
             </div>
 
+            {/* Sort & Country Filter */}
+            <div className="mx-auto mt-4 flex max-w-xl justify-center gap-3">
+              <Select value={sortBy} onValueChange={(v) => setSortBy(v as SortOption)}>
+                <SelectTrigger className="w-40 h-9 text-xs rounded-full">
+                  <ArrowUpDown className="me-1.5 h-3 w-3" />
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="featured">{isAr ? "مميز" : "Featured"}</SelectItem>
+                  <SelectItem value="name">{isAr ? "الاسم" : "Name"}</SelectItem>
+                  <SelectItem value="newest">{isAr ? "الأحدث" : "Newest"}</SelectItem>
+                </SelectContent>
+              </Select>
+              {availableCountries.length > 1 && (
+                <Select value={countryFilter} onValueChange={setCountryFilter}>
+                  <SelectTrigger className="w-40 h-9 text-xs rounded-full">
+                    <Globe className="me-1.5 h-3 w-3" />
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">{isAr ? "كل البلدان" : "All Countries"}</SelectItem>
+                    {availableCountries.map((cc) => (
+                      <SelectItem key={cc} value={cc}>{countryFlag(cc)} {cc}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              )}
+            </div>
+
             {/* Stats */}
             <div className="mx-auto mt-6 flex max-w-md justify-center gap-8 text-center text-sm text-muted-foreground">
               <div>
-                <span className="block text-2xl font-bold text-foreground">{companies.length}</span>
+                <span className="block text-2xl font-bold text-foreground">{filteredCompanies.length}</span>
                 {isAr ? "شركة" : "Companies"}
               </div>
               <div>
@@ -156,7 +210,7 @@ export default function ProSuppliers() {
                 <Skeleton key={i} className="h-64 rounded-2xl" />
               ))}
             </div>
-          ) : companies.length === 0 ? (
+          ) : filteredCompanies.length === 0 ? (
             <div className="flex flex-col items-center justify-center py-20 text-center">
               <Building2 className="mb-4 h-16 w-16 text-muted-foreground/20" />
               <h3 className="text-lg font-semibold">{isAr ? "لا توجد شركات" : "No companies found"}</h3>
@@ -166,7 +220,7 @@ export default function ProSuppliers() {
             </div>
           ) : (
             <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-              {companies.map((company: any) => {
+              {filteredCompanies.map((company: any) => {
                 const productCount = catalogCounts[company.id] || 0;
                 return (
                   <Card

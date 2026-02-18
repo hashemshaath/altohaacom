@@ -21,6 +21,7 @@ import {
 } from "lucide-react";
 import { SupplierContactForm } from "@/components/supplier/SupplierContactForm";
 import { SupplierShareButtons } from "@/components/supplier/SupplierShareButtons";
+import { SupplierReviews } from "@/components/supplier/SupplierReviews";
 
 export default function ProSupplierDetail() {
   const { id } = useParams();
@@ -236,6 +237,9 @@ export default function ProSupplierDetail() {
               </TabsTrigger>
               <TabsTrigger value="contact">
                 <Mail className="me-1 h-3.5 w-3.5" />{isAr ? "تواصل" : "Contact"}
+              </TabsTrigger>
+              <TabsTrigger value="reviews">
+                <Star className="me-1 h-3.5 w-3.5" />{isAr ? "التقييمات" : "Reviews"}
               </TabsTrigger>
             </TabsList>
 
@@ -548,6 +552,11 @@ export default function ProSupplierDetail() {
                   </div>
                 </div>
               </div>
+            </TabsContent>
+
+            {/* Reviews Tab */}
+            <TabsContent value="reviews">
+              <SupplierReviews companyId={company.id} />
             </TabsContent>
           </Tabs>
         </div>

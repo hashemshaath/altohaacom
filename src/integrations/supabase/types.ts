@@ -14652,6 +14652,53 @@ export type Database = {
           },
         ]
       }
+      supplier_reviews: {
+        Row: {
+          comment: string | null
+          company_id: string
+          created_at: string
+          id: string
+          is_verified_purchase: boolean | null
+          rating: number
+          status: string | null
+          title: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          comment?: string | null
+          company_id: string
+          created_at?: string
+          id?: string
+          is_verified_purchase?: boolean | null
+          rating: number
+          status?: string | null
+          title?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          comment?: string | null
+          company_id?: string
+          created_at?: string
+          id?: string
+          is_verified_purchase?: boolean | null
+          rating?: number
+          status?: string | null
+          title?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "supplier_reviews_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       support_ticket_messages: {
         Row: {
           attachments: string[] | null
