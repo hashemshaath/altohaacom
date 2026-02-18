@@ -78,6 +78,7 @@ export default function AdminLayout() {
         { to: "/admin/media", icon: Image, label: language === "ar" ? "مكتبة الوسائط" : "Media Library" },
         { to: "/admin/moderation", icon: Flag, label: language === "ar" ? "إدارة المحتوى" : "Moderation" },
         { to: "/admin/invoices", icon: FileText, label: language === "ar" ? "الفواتير" : "Invoices" },
+        { to: "/admin/cost-center", icon: CreditCard, label: language === "ar" ? "مركز التكلفة" : "Cost Center" },
         { to: "/admin/invoice-customization", icon: FileText, label: language === "ar" ? "تخصيص الفواتير" : "Invoice Settings" },
         { to: "/admin/advertising", icon: Megaphone, label: language === "ar" ? "مركز الإعلانات" : "Advertising" },
       ],
