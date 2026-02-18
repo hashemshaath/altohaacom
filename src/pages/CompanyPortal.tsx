@@ -33,6 +33,7 @@ import {
   Megaphone,
   Bell,
   Headphones,
+  Factory,
 } from "lucide-react";
 
 export default function CompanyPortalLayout() {
@@ -74,6 +75,7 @@ export default function CompanyPortalLayout() {
     { to: "/company/branches", icon: Building2, label: language === "ar" ? "الفروع" : "Branches", page: "branches" },
     { to: "/company/drivers", icon: Truck, label: language === "ar" ? "السائقون" : "Drivers", roles: ["logistics", "supplier"], page: "drivers" },
     { to: "/company/working-hours", icon: Clock, label: language === "ar" ? "ساعات العمل" : "Hours", page: "working-hours" },
+    { to: "/company/supplier-profile", icon: Factory, label: language === "ar" ? "ملف المورد" : "Supplier Profile", roles: ["supplier", "vendor"], page: "profile" },
     { to: "/company/advertising", icon: Megaphone, label: language === "ar" ? "الإعلانات" : "Advertising", roles: ["sponsor", "partner", "vendor", "supplier"], page: "advertising" },
     { to: "/company/support", icon: Headphones, label: language === "ar" ? "الدعم" : "Support", page: "communications" },
     { to: "/company/reports", icon: FileSpreadsheet, label: language === "ar" ? "التقارير" : "Reports", page: "statements" },

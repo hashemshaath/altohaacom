@@ -19,6 +19,8 @@ import {
   Package, Crown, Hash, Earth, Calendar, Sparkles,
   ExternalLink, ShoppingCart, Star, ChefHat,
 } from "lucide-react";
+import { SupplierContactForm } from "@/components/supplier/SupplierContactForm";
+import { SupplierShareButtons } from "@/components/supplier/SupplierShareButtons";
 
 export default function ProSupplierDetail() {
   const { id } = useParams();
@@ -231,6 +233,9 @@ export default function ProSupplierDetail() {
               </TabsTrigger>
               <TabsTrigger value="sponsorships">
                 {isAr ? "الرعايات" : "Sponsorships"} ({sponsorships.length})
+              </TabsTrigger>
+              <TabsTrigger value="contact">
+                <Mail className="me-1 h-3.5 w-3.5" />{isAr ? "تواصل" : "Contact"}
               </TabsTrigger>
             </TabsList>
 
@@ -509,6 +514,40 @@ export default function ProSupplierDetail() {
                   </div>
                 </div>
               )}
+            </TabsContent>
+
+            {/* Contact Tab */}
+            <TabsContent value="contact">
+              <div className="grid gap-6 md:grid-cols-2">
+                <SupplierContactForm companyId={company.id} companyName={isAr && company.name_ar ? company.name_ar : company.name} />
+                <div className="space-y-4">
+                  {(company.phone || company.email || company.website) && (
+                    <Card className="rounded-2xl border-border/40">
+                      <CardContent className="p-5 space-y-3">
+                        {company.phone && (
+                          <a href={`tel:${company.phone}`} className="flex items-center gap-2 text-sm text-muted-foreground hover:text-primary">
+                            <Phone className="h-4 w-4" /> {company.phone}
+                          </a>
+                        )}
+                        {company.email && (
+                          <a href={`mailto:${company.email}`} className="flex items-center gap-2 text-sm text-muted-foreground hover:text-primary">
+                            <Mail className="h-4 w-4" /> {company.email}
+                          </a>
+                        )}
+                        {company.website && (
+                          <a href={company.website} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 text-sm text-muted-foreground hover:text-primary">
+                            <Globe className="h-4 w-4" /> {company.website}
+                          </a>
+                        )}
+                      </CardContent>
+                    </Card>
+                  )}
+                  <div>
+                    <p className="text-sm font-medium mb-2">{isAr ? "مشاركة" : "Share"}</p>
+                    <SupplierShareButtons companyName={company.name} companyId={company.id} />
+                  </div>
+                </div>
+              </div>
             </TabsContent>
           </Tabs>
         </div>

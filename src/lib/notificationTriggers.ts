@@ -740,3 +740,69 @@ export async function notifyDeadlineApproaching(params: {
     channels: ["in_app"],
   });
 }
+
+// ═══════════════════════════════════════════════
+// ── Pro Supplier Notification Triggers ──
+// ═══════════════════════════════════════════════
+
+/** Notify company contacts when supplier profile is approved/featured */
+export async function notifySupplierFeatured(params: {
+  companyId: string;
+  companyName: string;
+  companyNameAr?: string;
+}) {
+  // Get company contact user IDs
+  const { data: contacts } = await supabase
+    .from("company_contacts")
+    .select("user_id")
+    .eq("company_id", params.companyId)
+    .not("user_id", "is", null);
+
+  if (!contacts?.length) return;
+
+  for (const contact of contacts) {
+    if (!contact.user_id) continue;
+    await sendNotification({
+      userId: contact.user_id,
+      title: `Your company "${params.companyName}" is now featured in Pro Suppliers!`,
+      titleAr: params.companyNameAr
+        ? `شركتك "${params.companyNameAr}" مميّزة الآن في دليل الموردين المحترفين!`
+        : undefined,
+      body: "Your supplier profile is live and visible to all professional chefs.",
+      bodyAr: "ملفك كمورد أصبح مباشراً ومرئياً لجميع الشيفات المحترفين.",
+      type: "success",
+      link: `/pro-suppliers/${params.companyId}`,
+      channels: ["in_app", "email"],
+    });
+  }
+}
+
+/** Notify company when they receive a contact inquiry */
+export async function notifySupplierInquiry(params: {
+  companyId: string;
+  senderName: string;
+  subject: string;
+}) {
+  const { data: contacts } = await supabase
+    .from("company_contacts")
+    .select("user_id")
+    .eq("company_id", params.companyId)
+    .eq("is_primary", true)
+    .not("user_id", "is", null);
+
+  if (!contacts?.length) return;
+
+  for (const contact of contacts) {
+    if (!contact.user_id) continue;
+    await sendNotification({
+      userId: contact.user_id,
+      title: `New inquiry from ${params.senderName}`,
+      titleAr: `استفسار جديد من ${params.senderName}`,
+      body: params.subject,
+      bodyAr: params.subject,
+      type: "info",
+      link: "/company/communications",
+      channels: ["in_app", "email"],
+    });
+  }
+}
