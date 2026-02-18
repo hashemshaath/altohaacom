@@ -1754,6 +1754,99 @@ export type Database = {
         }
         Relationships: []
       }
+      chef_cost_profiles: {
+        Row: {
+          accommodation_currency: string | null
+          chef_id: string
+          city: string | null
+          country_code: string | null
+          created_at: string
+          created_by: string | null
+          daily_allowance: number | null
+          estimated_days: number | null
+          estimated_total_cost: number | null
+          evaluation_fee: number | null
+          fee_currency: string | null
+          flight_cost_estimate: number | null
+          hotel_cost_per_night: number | null
+          id: string
+          is_active: boolean | null
+          local_transport_cost: number | null
+          notes: string | null
+          notes_ar: string | null
+          preferred_hotel: string | null
+          preferred_hotel_ar: string | null
+          transport_currency: string | null
+          transport_notes: string | null
+          updated_at: string
+          visa_currency: string | null
+          visa_fee: number | null
+          visa_required: boolean | null
+          visa_type: string | null
+          visa_valid_until: string | null
+        }
+        Insert: {
+          accommodation_currency?: string | null
+          chef_id: string
+          city?: string | null
+          country_code?: string | null
+          created_at?: string
+          created_by?: string | null
+          daily_allowance?: number | null
+          estimated_days?: number | null
+          estimated_total_cost?: number | null
+          evaluation_fee?: number | null
+          fee_currency?: string | null
+          flight_cost_estimate?: number | null
+          hotel_cost_per_night?: number | null
+          id?: string
+          is_active?: boolean | null
+          local_transport_cost?: number | null
+          notes?: string | null
+          notes_ar?: string | null
+          preferred_hotel?: string | null
+          preferred_hotel_ar?: string | null
+          transport_currency?: string | null
+          transport_notes?: string | null
+          updated_at?: string
+          visa_currency?: string | null
+          visa_fee?: number | null
+          visa_required?: boolean | null
+          visa_type?: string | null
+          visa_valid_until?: string | null
+        }
+        Update: {
+          accommodation_currency?: string | null
+          chef_id?: string
+          city?: string | null
+          country_code?: string | null
+          created_at?: string
+          created_by?: string | null
+          daily_allowance?: number | null
+          estimated_days?: number | null
+          estimated_total_cost?: number | null
+          evaluation_fee?: number | null
+          fee_currency?: string | null
+          flight_cost_estimate?: number | null
+          hotel_cost_per_night?: number | null
+          id?: string
+          is_active?: boolean | null
+          local_transport_cost?: number | null
+          notes?: string | null
+          notes_ar?: string | null
+          preferred_hotel?: string | null
+          preferred_hotel_ar?: string | null
+          transport_currency?: string | null
+          transport_notes?: string | null
+          updated_at?: string
+          visa_currency?: string | null
+          visa_fee?: number | null
+          visa_required?: boolean | null
+          visa_type?: string | null
+          visa_valid_until?: string | null
+        }
+        Relationships: []
+      }
       chef_establishment_associations: {
         Row: {
           association_type: string
@@ -1985,6 +2078,101 @@ export type Database = {
           user_id?: string
         }
         Relationships: []
+      }
+      chef_travel_records: {
+        Row: {
+          chef_id: string
+          created_at: string
+          created_by: string | null
+          currency: string | null
+          daily_allowance_total: number | null
+          destination_city: string | null
+          destination_country_code: string | null
+          flight_cost: number | null
+          hotel_cost: number | null
+          hotel_name: string | null
+          hotel_nights: number | null
+          id: string
+          local_transport_cost: number | null
+          notes: string | null
+          notes_ar: string | null
+          other_costs: number | null
+          return_date: string | null
+          session_id: string | null
+          total_cost: number | null
+          travel_date: string | null
+          updated_at: string
+          visa_cost: number | null
+          visa_expiry_date: string | null
+          visa_issued_date: string | null
+          visa_number: string | null
+          visa_type: string | null
+        }
+        Insert: {
+          chef_id: string
+          created_at?: string
+          created_by?: string | null
+          currency?: string | null
+          daily_allowance_total?: number | null
+          destination_city?: string | null
+          destination_country_code?: string | null
+          flight_cost?: number | null
+          hotel_cost?: number | null
+          hotel_name?: string | null
+          hotel_nights?: number | null
+          id?: string
+          local_transport_cost?: number | null
+          notes?: string | null
+          notes_ar?: string | null
+          other_costs?: number | null
+          return_date?: string | null
+          session_id?: string | null
+          total_cost?: number | null
+          travel_date?: string | null
+          updated_at?: string
+          visa_cost?: number | null
+          visa_expiry_date?: string | null
+          visa_issued_date?: string | null
+          visa_number?: string | null
+          visa_type?: string | null
+        }
+        Update: {
+          chef_id?: string
+          created_at?: string
+          created_by?: string | null
+          currency?: string | null
+          daily_allowance_total?: number | null
+          destination_city?: string | null
+          destination_country_code?: string | null
+          flight_cost?: number | null
+          hotel_cost?: number | null
+          hotel_name?: string | null
+          hotel_nights?: number | null
+          id?: string
+          local_transport_cost?: number | null
+          notes?: string | null
+          notes_ar?: string | null
+          other_costs?: number | null
+          return_date?: string | null
+          session_id?: string | null
+          total_cost?: number | null
+          travel_date?: string | null
+          updated_at?: string
+          visa_cost?: number | null
+          visa_expiry_date?: string | null
+          visa_issued_date?: string | null
+          visa_number?: string | null
+          visa_type?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "chef_travel_records_session_id_fkey"
+            columns: ["session_id"]
+            isOneToOne: false
+            referencedRelation: "chefs_table_sessions"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       chefs_table_criteria_presets: {
         Row: {
@@ -2399,7 +2587,7 @@ export type Database = {
         Row: {
           chef_selection_method: string | null
           city: string | null
-          company_id: string
+          company_id: string | null
           country_code: string | null
           cover_image_url: string | null
           created_at: string
@@ -2439,7 +2627,7 @@ export type Database = {
         Insert: {
           chef_selection_method?: string | null
           city?: string | null
-          company_id: string
+          company_id?: string | null
           country_code?: string | null
           cover_image_url?: string | null
           created_at?: string
@@ -2479,7 +2667,7 @@ export type Database = {
         Update: {
           chef_selection_method?: string | null
           city?: string | null
-          company_id?: string
+          company_id?: string | null
           country_code?: string | null
           cover_image_url?: string | null
           created_at?: string
