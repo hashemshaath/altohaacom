@@ -24,6 +24,7 @@ import {
   Star,
   BookOpen,
   HandHeart,
+  Factory,
 } from "lucide-react";
 
 const primaryNav = [
@@ -39,6 +40,7 @@ const moreLinks = [
   { to: "/shop", icon: ShoppingBag, labelEn: "Shop", labelAr: "المتجر" },
   { to: "/entities", icon: Star, labelEn: "Entities", labelAr: "الجهات" },
   { to: "/establishments", icon: Building2, labelEn: "Establishments", labelAr: "المؤسسات" },
+  { to: "/pro-suppliers", icon: Factory, labelEn: "Pro Suppliers", labelAr: "الموردون المحترفون" },
   { to: "/mentorship", icon: HandHeart, labelEn: "Mentorship", labelAr: "الإرشاد" },
   { to: "/knowledge", icon: BookOpen, labelEn: "Knowledge", labelAr: "المعرفة" },
 ];

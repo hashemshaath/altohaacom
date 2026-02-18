@@ -25,6 +25,7 @@ const FeaturedChefs = lazy(() => import("@/components/home/FeaturedChefs").then(
 const HomeMasterclasses = lazy(() => import("@/components/home/HomeMasterclasses").then(m => ({ default: m.HomeMasterclasses })));
 const AdBanner = lazy(() => import("@/components/ads/AdBanner").then(m => ({ default: m.AdBanner })));
 const AdPopup = lazy(() => import("@/components/ads/AdPopup").then(m => ({ default: m.AdPopup })));
+const HomeProSuppliers = lazy(() => import("@/components/home/HomeProSuppliers").then(m => ({ default: m.HomeProSuppliers })));
 
 const LazyFallback = memo(({ type = "grid" }: { type?: "grid" | "cards" | "banner" }) => {
   if (type === "banner") {
@@ -132,6 +133,11 @@ const Index = () => {
         {/* 9. Sponsors Marquee */}
         <Suspense fallback={<LazyFallback />}>
           <SponsorCarousel />
+        </Suspense>
+
+        {/* 9.5. Pro Suppliers */}
+        <Suspense fallback={<LazyFallback />}>
+          <HomeProSuppliers />
         </Suspense>
 
         {/* 10. Masterclasses */}
