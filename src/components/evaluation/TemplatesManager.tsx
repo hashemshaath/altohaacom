@@ -3,12 +3,14 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useEvaluationDomains, useEvaluationCriteriaByDomain } from "@/hooks/useEvaluationSystem";
+import { EvaluationReportPreview } from "./EvaluationReportPreview";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { Textarea } from "@/components/ui/textarea";
+import { Progress } from "@/components/ui/progress";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Switch } from "@/components/ui/switch";
@@ -16,7 +18,7 @@ import { Separator } from "@/components/ui/separator";
 import { toast } from "sonner";
 import {
   Plus, Copy, Pencil, Trash2, Save, FileText, ChefHat, Trophy, Wrench, Coffee,
-  Layers, Star, Download, Printer,
+  Layers, Star, Eye, Package, Target,
 } from "lucide-react";
 
 const DOMAIN_ICONS: Record<string, React.ElementType> = {
@@ -24,6 +26,15 @@ const DOMAIN_ICONS: Record<string, React.ElementType> = {
   competition: Trophy,
   equipment: Wrench,
   beverage: Coffee,
+};
+
+const CATEGORY_ICONS: Record<string, string> = {
+  beverage: "🥤",
+  meat: "🥩",
+  seafood: "🐟",
+  dairy: "🥛",
+  spices: "🌶️",
+  general: "📦",
 };
 
 const TEMPLATE_TYPES = [
@@ -72,15 +83,13 @@ export function TemplatesManager() {
   const [selectedDomain, setSelectedDomain] = useState<string>("");
   const [editingTemplate, setEditingTemplate] = useState<Partial<Template> | null>(null);
   const [isCreating, setIsCreating] = useState(false);
+  const [previewTemplate, setPreviewTemplate] = useState<Template | null>(null);
 
   const domainObj = domains?.find(d => d.id === selectedDomain || d.slug === selectedDomain);
   const domainId = domainObj?.id;
   const { data: templates } = useEvaluationTemplates(domainId);
-
-  // Fetch current criteria for the domain to use as snapshot source
   const { data: criteriaData } = useEvaluationCriteriaByDomain(domainObj?.slug || "");
 
-  // Set default domain
   if (!selectedDomain && domains?.length) {
     setSelectedDomain(domains[0].id);
   }
@@ -165,7 +174,17 @@ export function TemplatesManager() {
     setIsCreating(true);
   };
 
-  // Inline editor
+  // ─── Preview Mode ───
+  if (previewTemplate) {
+    return (
+      <EvaluationReportPreview
+        template={previewTemplate}
+        onClose={() => setPreviewTemplate(null)}
+      />
+    );
+  }
+
+  // ─── Editor Mode ───
   if (editingTemplate) {
     const snapshot = editingTemplate.criteria_snapshot || [];
     const totalCriteria = Array.isArray(snapshot)
@@ -270,6 +289,7 @@ export function TemplatesManager() {
     );
   }
 
+  // ─── List Mode ───
   return (
     <div className="space-y-6">
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
@@ -307,46 +327,98 @@ export function TemplatesManager() {
           </CardContent>
         </Card>
       ) : (
-        <div className="grid gap-4 md:grid-cols-2">
+        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
           {templates.map(t => {
             const totalCriteria = Array.isArray(t.criteria_snapshot)
               ? (t.criteria_snapshot as any[]).reduce((sum, cat: any) => sum + (cat.criteria?.length || 0), 0)
               : 0;
             const categories = Array.isArray(t.criteria_snapshot) ? (t.criteria_snapshot as any[]).length : 0;
+            const emoji = CATEGORY_ICONS[t.product_category || "general"] || "📦";
+            const totalWeight = Array.isArray(t.criteria_snapshot)
+              ? (t.criteria_snapshot as any[]).reduce((sum, cat: any) =>
+                  sum + (cat.criteria || []).reduce((cs: number, cr: any) => cs + (cr.weight || 0), 0), 0)
+              : 0;
 
             return (
-              <Card key={t.id} className="border-border/40">
+              <Card key={t.id} className="border-border/40 hover:border-primary/30 transition-all group">
                 <CardContent className="p-5">
-                  <div className="flex items-start justify-between gap-3">
+                  <div className="flex items-start gap-3 mb-3">
+                    <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-xl">
+                      {emoji}
+                    </div>
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2 flex-wrap">
-                        <h3 className="font-bold text-sm">{isAr && t.name_ar ? t.name_ar : t.name}</h3>
-                        {t.is_default && <Badge className="text-[9px]">{isAr ? "افتراضي" : "Default"}</Badge>}
-                        <Badge variant="outline" className="text-[9px]">
+                        <h3 className="font-bold text-sm truncate">
+                          {isAr && t.name_ar ? t.name_ar : t.name}
+                        </h3>
+                      </div>
+                      <div className="flex items-center gap-1.5 mt-0.5 flex-wrap">
+                        {t.is_default && <Badge className="text-[8px] h-4">{isAr ? "افتراضي" : "Default"}</Badge>}
+                        <Badge variant="outline" className="text-[8px] h-4">
                           {TEMPLATE_TYPES.find(tt => tt.value === t.template_type)?.[isAr ? "ar" : "en"] || t.template_type}
                         </Badge>
-                      </div>
-                      {t.description && (
-                        <p className="text-xs text-muted-foreground mt-1 line-clamp-2">
-                          {isAr && t.description_ar ? t.description_ar : t.description}
-                        </p>
-                      )}
-                      <div className="flex gap-3 mt-2 text-xs text-muted-foreground">
-                        <span>{categories} {isAr ? "فئات" : "categories"}</span>
-                        <span>{totalCriteria} {isAr ? "معايير" : "criteria"}</span>
+                        {t.product_category && (
+                          <Badge variant="secondary" className="text-[8px] h-4">{t.product_category}</Badge>
+                        )}
                       </div>
                     </div>
-                    <div className="flex gap-1 shrink-0">
-                      <Button size="icon" variant="ghost" className="h-7 w-7" onClick={() => setEditingTemplate(t)}>
-                        <Pencil className="h-3.5 w-3.5" />
-                      </Button>
-                      <Button size="icon" variant="ghost" className="h-7 w-7" onClick={() => handleDuplicate(t)}>
-                        <Copy className="h-3.5 w-3.5" />
-                      </Button>
-                      <Button size="icon" variant="ghost" className="h-7 w-7 text-destructive" onClick={() => deleteMutation.mutate(t.id)}>
-                        <Trash2 className="h-3.5 w-3.5" />
-                      </Button>
+                  </div>
+
+                  {t.description && (
+                    <p className="text-xs text-muted-foreground line-clamp-2 mb-3">
+                      {isAr && t.description_ar ? t.description_ar : t.description}
+                    </p>
+                  )}
+
+                  {/* Stats */}
+                  <div className="grid grid-cols-3 gap-2 mb-3">
+                    <div className="rounded-lg bg-muted/50 p-2 text-center">
+                      <p className="text-lg font-black tabular-nums">{categories}</p>
+                      <p className="text-[9px] text-muted-foreground">{isAr ? "فئات" : "Categories"}</p>
                     </div>
+                    <div className="rounded-lg bg-muted/50 p-2 text-center">
+                      <p className="text-lg font-black tabular-nums">{totalCriteria}</p>
+                      <p className="text-[9px] text-muted-foreground">{isAr ? "معايير" : "Criteria"}</p>
+                    </div>
+                    <div className="rounded-lg bg-muted/50 p-2 text-center">
+                      <p className="text-lg font-black tabular-nums">{totalWeight}%</p>
+                      <p className="text-[9px] text-muted-foreground">{isAr ? "الأوزان" : "Weight"}</p>
+                    </div>
+                  </div>
+
+                  {/* Category breakdown mini-bars */}
+                  <div className="space-y-1.5 mb-4">
+                    {Array.isArray(t.criteria_snapshot) && (t.criteria_snapshot as any[]).slice(0, 4).map((cat: any, i: number) => {
+                      const catWeight = (cat.criteria || []).reduce((s: number, c: any) => s + (c.weight || 0), 0);
+                      return (
+                        <div key={i} className="flex items-center gap-2">
+                          <span className="text-[9px] text-muted-foreground truncate flex-1 min-w-0">
+                            {isAr && cat.category?.name_ar ? cat.category.name_ar : cat.category?.name}
+                          </span>
+                          <div className="w-16 shrink-0">
+                            <Progress value={Math.min(catWeight, 100)} className="h-1" />
+                          </div>
+                          <span className="text-[9px] font-bold tabular-nums w-8 text-end">{catWeight}%</span>
+                        </div>
+                      );
+                    })}
+                  </div>
+
+                  {/* Actions */}
+                  <div className="flex items-center gap-1 border-t border-border/30 pt-3">
+                    <Button size="sm" variant="outline" className="gap-1 h-7 text-[10px] flex-1" onClick={() => setPreviewTemplate(t)}>
+                      <Eye className="h-3 w-3" />
+                      {isAr ? "معاينة التقرير" : "Preview Report"}
+                    </Button>
+                    <Button size="icon" variant="ghost" className="h-7 w-7" onClick={() => setEditingTemplate(t)}>
+                      <Pencil className="h-3 w-3" />
+                    </Button>
+                    <Button size="icon" variant="ghost" className="h-7 w-7" onClick={() => handleDuplicate(t)}>
+                      <Copy className="h-3 w-3" />
+                    </Button>
+                    <Button size="icon" variant="ghost" className="h-7 w-7 text-destructive" onClick={() => deleteMutation.mutate(t.id)}>
+                      <Trash2 className="h-3 w-3" />
+                    </Button>
                   </div>
                 </CardContent>
               </Card>
