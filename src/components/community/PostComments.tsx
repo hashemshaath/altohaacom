@@ -4,7 +4,7 @@ import { useLanguage } from "@/i18n/LanguageContext";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { User, Reply, ChevronDown, ChevronUp } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { format } from "date-fns";
@@ -15,6 +15,7 @@ interface Comment {
   created_at: string;
   user_id: string;
   author_name: string | null;
+  author_avatar: string | null;
   parent_comment_id: string | null;
   replies: Comment[];
 }
@@ -50,20 +51,24 @@ export function PostComments({ postId, onCommentCountChange }: PostCommentsProps
     const userIds = [...new Set(data?.map((c) => c.author_id) || [])];
     const { data: profiles } = await supabase
       .from("profiles")
-      .select("user_id, full_name")
+      .select("user_id, full_name, avatar_url")
       .in("user_id", userIds);
 
-    const profileMap = new Map(profiles?.map((p) => [p.user_id, p.full_name]) || []);
+    const profileMap = new Map(profiles?.map((p) => [p.user_id, p]) || []);
 
-    const allComments: Comment[] = (data || []).map((c) => ({
-      id: c.id,
-      content: c.content,
-      created_at: c.created_at,
-      user_id: c.author_id,
-      author_name: profileMap.get(c.author_id) || null,
-      parent_comment_id: c.parent_comment_id || null,
-      replies: [],
-    }));
+    const allComments: Comment[] = (data || []).map((c) => {
+      const profile = profileMap.get(c.author_id);
+      return {
+        id: c.id,
+        content: c.content,
+        created_at: c.created_at,
+        user_id: c.author_id,
+        author_name: (profile as any)?.full_name || null,
+        author_avatar: (profile as any)?.avatar_url || null,
+        parent_comment_id: c.parent_comment_id || null,
+        replies: [],
+      };
+    });
 
     // Build tree
     const rootComments: Comment[] = [];
@@ -117,8 +122,9 @@ export function PostComments({ postId, onCommentCountChange }: PostCommentsProps
     <div key={comment.id} className={depth > 0 ? "ms-8 border-s-2 border-border ps-4" : ""}>
       <div className="flex gap-2 py-2">
         <Avatar className="h-7 w-7">
-          <AvatarFallback className="text-xs">
-            <User className="h-3 w-3" />
+          <AvatarImage src={comment.author_avatar || undefined} alt={comment.author_name || ""} />
+          <AvatarFallback className="bg-primary/10 text-primary text-[10px] font-semibold">
+            {(comment.author_name || "U")[0].toUpperCase()}
           </AvatarFallback>
         </Avatar>
         <div className="flex-1">
