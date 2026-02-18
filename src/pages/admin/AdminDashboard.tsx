@@ -12,7 +12,8 @@ import AdminPageHeader from "@/components/admin/AdminPageHeader";
 import { toEnglishDigits } from "@/lib/formatNumber";
 import { 
   Users, 
-  UserCheck, 
+  UserCheck,
+  UserPlus,
   Flag, 
   Trophy, 
   FileText,
@@ -25,6 +26,9 @@ import {
   Package,
   GraduationCap,
   LayoutDashboard,
+  Zap,
+  MessageSquare,
+  AlertTriangle,
 } from "lucide-react";
 import { format } from "date-fns";
 
@@ -79,6 +83,29 @@ export default function AdminDashboard() {
       };
     },
     staleTime: 1000 * 30,
+  });
+
+  // Today's activity summary
+  const { data: todayStats } = useQuery({
+    queryKey: ["admin-today-stats"],
+    queryFn: async () => {
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      const todayISO = today.toISOString();
+      const [newUsers, newPosts, newOrders, newReports] = await Promise.all([
+        supabase.from("profiles").select("*", { count: "exact", head: true }).gte("created_at", todayISO),
+        supabase.from("posts").select("*", { count: "exact", head: true }).gte("created_at", todayISO),
+        supabase.from("company_orders").select("*", { count: "exact", head: true }).gte("created_at", todayISO),
+        supabase.from("content_reports").select("*", { count: "exact", head: true }).gte("created_at", todayISO),
+      ]);
+      return {
+        newUsers: newUsers.count || 0,
+        newPosts: newPosts.count || 0,
+        newOrders: newOrders.count || 0,
+        newReports: newReports.count || 0,
+      };
+    },
+    staleTime: 1000 * 60,
   });
 
   const statCards = [
@@ -160,6 +187,34 @@ export default function AdminDashboard() {
         ))}
       </div>
 
+
+      {/* Today's Activity Summary */}
+      <Card className="border-border/50 bg-gradient-to-r from-primary/5 to-transparent">
+        <CardContent className="p-4">
+          <div className="flex items-center gap-2 mb-3">
+            <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-primary/10">
+              <Zap className="h-3.5 w-3.5 text-primary" />
+            </div>
+            <h3 className="text-sm font-bold">{isAr ? "نشاط اليوم" : "Today's Activity"}</h3>
+          </div>
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+            {[
+              { label: isAr ? "مستخدمون جدد" : "New Users", value: todayStats?.newUsers || 0, icon: UserPlus, color: "text-primary" },
+              { label: isAr ? "منشورات" : "Posts", value: todayStats?.newPosts || 0, icon: MessageSquare, color: "text-chart-2" },
+              { label: isAr ? "طلبات" : "Orders", value: todayStats?.newOrders || 0, icon: Package, color: "text-chart-3" },
+              { label: isAr ? "بلاغات" : "Reports", value: todayStats?.newReports || 0, icon: AlertTriangle, color: todayStats?.newReports ? "text-destructive" : "text-muted-foreground" },
+            ].map((item, i) => (
+              <div key={i} className="flex items-center gap-2.5 rounded-lg border border-border/40 bg-card p-3">
+                <item.icon className={`h-4 w-4 shrink-0 ${item.color}`} />
+                <div>
+                  <p className={`text-lg font-black leading-none ${item.color}`}>{toEnglishDigits(item.value.toString())}</p>
+                  <p className="text-[10px] text-muted-foreground mt-0.5">{item.label}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </CardContent>
+      </Card>
 
       {/* Analytics Widgets */}
       <AdminAnalyticsWidgets />

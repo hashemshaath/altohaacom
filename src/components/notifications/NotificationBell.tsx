@@ -203,9 +203,14 @@ export const NotificationBell = React.forwardRef<HTMLButtonElement, Record<strin
               <div className="h-6 w-6 animate-spin rounded-full border-2 border-primary border-t-transparent" />
             </div>
           ) : grouped.length === 0 ? (
-            <div className="py-12 text-center">
-              <Bell className="mx-auto mb-2 h-8 w-8 text-muted-foreground/30" />
-              <p className="text-sm text-muted-foreground">{isAr ? "لا توجد إشعارات" : "No notifications"}</p>
+            <div className="py-12 text-center space-y-3">
+              <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-muted/60">
+                <Bell className="h-7 w-7 text-muted-foreground/30" />
+              </div>
+              <div>
+                <p className="text-sm font-medium text-muted-foreground">{isAr ? "لا توجد إشعارات" : "No notifications yet"}</p>
+                <p className="text-xs text-muted-foreground/60 mt-1">{isAr ? "ستظهر الإشعارات الجديدة هنا" : "New notifications will appear here"}</p>
+              </div>
             </div>
           ) : (
             grouped.map((group) => {

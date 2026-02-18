@@ -11,6 +11,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Heart, MessageCircle, User, Send, Globe, Users } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { PostComments } from "@/components/community/PostComments";
+import { MentionText } from "@/components/community/MentionText";
 import { toEnglishDigits } from "@/lib/formatNumber";
 
 interface Post {
@@ -300,7 +301,7 @@ export function FeedTab() {
                       {formatDate(post.created_at)}
                     </span>
                   </div>
-                  <p className="mt-2.5 whitespace-pre-wrap text-sm leading-relaxed">{post.content}</p>
+                  <MentionText content={post.content} className="mt-2.5 whitespace-pre-wrap text-sm leading-relaxed block" />
                   {post.image_url && (
                     <img
                       src={post.image_url}
