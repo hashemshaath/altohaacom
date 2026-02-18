@@ -10,6 +10,10 @@ import {
   getDaysInMonth,
   type ChefScheduleEvent, type ScheduleEventType, type ScheduleVisibility, type ScheduleStatus,
 } from "@/hooks/useChefSchedule";
+import {
+  useGlobalEventsCalendar, GLOBAL_EVENT_COLORS, GLOBAL_EVENT_LABELS,
+  type GlobalEvent, type GlobalEventType,
+} from "@/hooks/useGlobalEventsCalendar";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -22,12 +26,13 @@ import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { toast } from "sonner";
 import { format, isSameDay, isSameMonth, isToday, parseISO } from "date-fns";
+import { Link } from "react-router-dom";
 import {
   Calendar as CalendarIcon, Plus, ChevronLeft, ChevronRight,
   Trophy, ChefHat, Landmark, Tv, Mic, GraduationCap, MessageSquare,
   MapPin, User, Plane, Ban, MoreHorizontal, Eye, EyeOff, Lock,
   Globe, Shield, Settings, Clock, Edit2, Trash2, Save, X,
-  Briefcase, DollarSign,
+  Briefcase, DollarSign, BookOpen, UtensilsCrossed, Palmtree, Users,
 } from "lucide-react";
 
 const EVENT_ICONS: Record<string, any> = {
@@ -35,6 +40,11 @@ const EVENT_ICONS: Record<string, any> = {
   tv_interview: Tv, conference: Mic, training: GraduationCap,
   consultation: MessageSquare, visit: MapPin, personal: User,
   travel: Plane, unavailable: Ban, other: MoreHorizontal,
+};
+
+const GLOBAL_ICONS: Record<string, any> = {
+  Trophy, Landmark, ChefHat, Tv, Mic, GraduationCap, MapPin, Plane, Users,
+  MoreHorizontal, BookOpen, UtensilsCrossed, Palmtree, Ban,
 };
 
 const VISIBILITY_ICONS: Record<string, any> = { private: Lock, management: Shield, public: Globe };
@@ -53,6 +63,7 @@ export function ChefCalendar({ chefId, isAdmin = false }: Props) {
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
   const [editingEvent, setEditingEvent] = useState<Partial<ChefScheduleEvent> | null>(null);
   const [viewMode, setViewMode] = useState<"month" | "week" | "list">("month");
+  const [calendarScope, setCalendarScope] = useState<"my" | "global">("my");
   const [showSettings, setShowSettings] = useState(false);
 
   const year = currentDate.getFullYear();
@@ -61,6 +72,7 @@ export function ChefCalendar({ chefId, isAdmin = false }: Props) {
   const monthEnd = new Date(year, month + 1, 0, 23, 59, 59).toISOString();
 
   const { data: events = [], isLoading } = useChefScheduleEvents(chefId, { start: monthStart, end: monthEnd });
+  const { data: globalEvents = [] } = useGlobalEventsCalendar();
   const { data: settings } = useChefScheduleSettings(chefId);
   const createEvent = useCreateScheduleEvent();
   const updateEvent = useUpdateScheduleEvent();
@@ -69,6 +81,7 @@ export function ChefCalendar({ chefId, isAdmin = false }: Props) {
 
   const days = useMemo(() => getDaysInMonth(year, month), [year, month]);
 
+  // Private events by date
   const eventsByDate = useMemo(() => {
     const map: Record<string, ChefScheduleEvent[]> = {};
     events.forEach(ev => {
@@ -79,11 +92,29 @@ export function ChefCalendar({ chefId, isAdmin = false }: Props) {
     return map;
   }, [events]);
 
-  const selectedDateEvents = useMemo(() => {
+  // Global events by date (for overlay)
+  const globalEventsByDate = useMemo(() => {
+    const map: Record<string, GlobalEvent[]> = {};
+    if (calendarScope !== "global") return map;
+    globalEvents.forEach(ge => {
+      const dateKey = format(parseISO(ge.start_date), "yyyy-MM-dd");
+      if (!map[dateKey]) map[dateKey] = [];
+      map[dateKey].push(ge);
+    });
+    return map;
+  }, [globalEvents, calendarScope]);
+
+  const selectedDatePrivateEvents = useMemo(() => {
     if (!selectedDate) return [];
     const key = format(selectedDate, "yyyy-MM-dd");
     return eventsByDate[key] || [];
   }, [selectedDate, eventsByDate]);
+
+  const selectedDateGlobalEvents = useMemo(() => {
+    if (!selectedDate || calendarScope !== "global") return [];
+    const key = format(selectedDate, "yyyy-MM-dd");
+    return globalEventsByDate[key] || [];
+  }, [selectedDate, globalEventsByDate, calendarScope]);
 
   const stats = useMemo(() => ({
     total: events.length,
@@ -91,7 +122,8 @@ export function ChefCalendar({ chefId, isAdmin = false }: Props) {
     tentative: events.filter(e => e.status === "tentative").length,
     contracted: events.filter(e => e.is_contracted).length,
     publicEvents: events.filter(e => e.visibility === "public").length,
-  }), [events]);
+    globalCount: globalEvents.length,
+  }), [events, globalEvents]);
 
   const navigate = (dir: number) => {
     setCurrentDate(new Date(year, month + dir, 1));
@@ -422,6 +454,30 @@ export function ChefCalendar({ chefId, isAdmin = false }: Props) {
   // ─── Main Calendar View ────────────────
   return (
     <div className="space-y-4">
+      {/* Calendar Scope Toggle */}
+      <div className="flex items-center gap-2 p-1.5 rounded-lg border border-border/40 bg-muted/20 w-fit">
+        <Button
+          variant={calendarScope === "my" ? "default" : "ghost"}
+          size="sm"
+          className="h-7 text-xs gap-1.5 px-3"
+          onClick={() => setCalendarScope("my")}
+        >
+          <Lock className="h-3 w-3" />
+          {isAr ? "تقويمي" : "My Calendar"}
+          <Badge variant="secondary" className="text-[9px] px-1 h-4">{stats.total}</Badge>
+        </Button>
+        <Button
+          variant={calendarScope === "global" ? "default" : "ghost"}
+          size="sm"
+          className="h-7 text-xs gap-1.5 px-3"
+          onClick={() => setCalendarScope("global")}
+        >
+          <Globe className="h-3 w-3" />
+          {isAr ? "التقويم العام" : "Global Calendar"}
+          <Badge variant="secondary" className="text-[9px] px-1 h-4">{stats.globalCount}</Badge>
+        </Button>
+      </div>
+
       {/* Header */}
       <div className="flex items-center justify-between flex-wrap gap-2">
         <div className="flex items-center gap-2">
@@ -616,6 +672,8 @@ export function ChefCalendar({ chefId, isAdmin = false }: Props) {
           {days.map((day, i) => {
             const dateKey = format(day, "yyyy-MM-dd");
             const dayEvents = eventsByDate[dateKey] || [];
+            const dayGlobalEvents = globalEventsByDate[dateKey] || [];
+            const totalEvents = dayEvents.length + dayGlobalEvents.length;
             const isCurrentMonth = isSameMonth(day, currentDate);
             const isSelected = selectedDate && isSameDay(day, selectedDate);
             const today = isToday(day);
@@ -634,7 +692,8 @@ export function ChefCalendar({ chefId, isAdmin = false }: Props) {
                   {day.getDate()}
                 </div>
                 <div className="space-y-0.5">
-                  {dayEvents.slice(0, 3).map(ev => {
+                  {/* Private events */}
+                  {dayEvents.slice(0, calendarScope === "global" ? 2 : 3).map(ev => {
                     const config = EVENT_TYPE_CONFIG[ev.event_type as ScheduleEventType] || EVENT_TYPE_CONFIG.other;
                     return (
                       <div
@@ -647,8 +706,21 @@ export function ChefCalendar({ chefId, isAdmin = false }: Props) {
                       </div>
                     );
                   })}
-                  {dayEvents.length > 3 && (
-                    <p className="text-[8px] text-muted-foreground text-center">+{dayEvents.length - 3}</p>
+                  {/* Global events overlay */}
+                  {calendarScope === "global" && dayGlobalEvents.slice(0, 2).map(ge => {
+                    const colors = GLOBAL_EVENT_COLORS[ge.type];
+                    return (
+                      <div
+                        key={`g-${ge.id}`}
+                        className={cn("text-[9px] rounded px-1 py-0.5 truncate font-medium border opacity-80", colors.bg, colors.text, colors.border)}
+                        title={`🌐 ${ge.title}`}
+                      >
+                        🌐 {ge.title}
+                      </div>
+                    );
+                  })}
+                  {totalEvents > (calendarScope === "global" ? 4 : 3) && (
+                    <p className="text-[8px] text-muted-foreground text-center">+{totalEvents - (calendarScope === "global" ? 4 : 3)}</p>
                   )}
                 </div>
               </div>
@@ -666,7 +738,9 @@ export function ChefCalendar({ chefId, isAdmin = false }: Props) {
               <CardTitle className="text-sm flex items-center gap-2">
                 <CalendarIcon className="h-4 w-4" />
                 {format(selectedDate, isAr ? "EEEE, d MMMM yyyy" : "EEEE, MMMM d, yyyy")}
-                <Badge variant="outline" className="text-[10px]">{selectedDateEvents.length} {isAr ? "أحداث" : "events"}</Badge>
+                <Badge variant="outline" className="text-[10px]">
+                  {selectedDatePrivateEvents.length + selectedDateGlobalEvents.length} {isAr ? "أحداث" : "events"}
+                </Badge>
               </CardTitle>
               <Button size="sm" className="h-7 text-xs gap-1" onClick={() => openNewEvent(selectedDate)}>
                 <Plus className="h-3 w-3" />{isAr ? "إضافة" : "Add"}
@@ -674,7 +748,7 @@ export function ChefCalendar({ chefId, isAdmin = false }: Props) {
             </div>
           </CardHeader>
           <CardContent className="p-0">
-            {selectedDateEvents.length === 0 ? (
+            {selectedDatePrivateEvents.length === 0 && selectedDateGlobalEvents.length === 0 ? (
               <div className="py-8 text-center text-muted-foreground text-sm">
                 {isAr ? "لا توجد أحداث في هذا اليوم" : "No events on this day"}
                 <br />
@@ -684,7 +758,8 @@ export function ChefCalendar({ chefId, isAdmin = false }: Props) {
               </div>
             ) : (
               <div className="divide-y divide-border/20">
-                {selectedDateEvents.map(ev => {
+                {/* Private events */}
+                {selectedDatePrivateEvents.map(ev => {
                   const config = EVENT_TYPE_CONFIG[ev.event_type as ScheduleEventType] || EVENT_TYPE_CONFIG.other;
                   const Icon = EVENT_ICONS[ev.event_type] || MoreHorizontal;
                   const VisIcon = VISIBILITY_ICONS[ev.visibility] || Lock;
@@ -729,6 +804,40 @@ export function ChefCalendar({ chefId, isAdmin = false }: Props) {
                           <Button variant="ghost" size="sm" className="h-7 w-7 p-0 text-destructive" onClick={() => handleDeleteEvent(ev.id)}>
                             <Trash2 className="h-3 w-3" />
                           </Button>
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })}
+                {/* Global events */}
+                {selectedDateGlobalEvents.map(ge => {
+                  const colors = GLOBAL_EVENT_COLORS[ge.type];
+                  const label = GLOBAL_EVENT_LABELS[ge.type];
+                  const IconComp = GLOBAL_ICONS[label?.icon] || MoreHorizontal;
+                  return (
+                    <div key={`g-${ge.id}`} className="p-4 hover:bg-muted/20 transition-colors">
+                      <div className="flex items-start gap-3">
+                        <div className={cn("flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border", colors.bg, colors.border)}>
+                          <IconComp className={cn("h-4 w-4", colors.text)} />
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-center gap-2 flex-wrap">
+                            <Badge className={cn("text-[9px] border", colors.bg, colors.text, colors.border)}>
+                              🌐 {isAr ? label?.ar : label?.en}
+                            </Badge>
+                            {ge.is_recurring && <Badge variant="outline" className="text-[9px]">{isAr ? "سنوي" : "Annual"}</Badge>}
+                          </div>
+                          {ge.link ? (
+                            <Link to={ge.link} className="text-sm font-semibold hover:text-primary transition-colors mt-0.5 block">{ge.title}</Link>
+                          ) : (
+                            <p className="text-sm font-semibold mt-0.5">{ge.title}</p>
+                          )}
+                          <div className="flex items-center gap-3 mt-1 text-xs text-muted-foreground flex-wrap">
+                            {ge.end_date && <span>→ {format(parseISO(ge.end_date), "MMM d")}</span>}
+                            {ge.city && <span className="flex items-center gap-1"><MapPin className="h-3 w-3" />{ge.city}</span>}
+                            {ge.venue && <span>{ge.venue}</span>}
+                            {ge.channel_name && <span className="flex items-center gap-1"><Tv className="h-3 w-3" />{ge.channel_name}</span>}
+                          </div>
                         </div>
                       </div>
                     </div>
