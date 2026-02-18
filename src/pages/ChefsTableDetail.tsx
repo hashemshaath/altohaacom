@@ -18,9 +18,10 @@ import { EvaluationRadarChart } from "@/components/evaluation/EvaluationRadarCha
 import { EvaluationBarChart } from "@/components/evaluation/EvaluationBarChart";
 import { EvaluationScoreCard } from "@/components/evaluation/EvaluationScoreCard";
 import { ChefScoringForm } from "@/components/evaluation/ChefScoringForm";
+import { EvaluationReport } from "@/components/evaluation/EvaluationReport";
 import { 
   ArrowLeft, ChefHat, Calendar, MapPin, Package, Star, ThumbsUp, ThumbsDown, 
-  Users, Image, FileText, Check, X, Clock, BarChart3, ClipboardCheck
+  Users, Image, FileText, Check, X, Clock, BarChart3, ClipboardCheck, ScrollText
 } from "lucide-react";
 import { format } from "date-fns";
 import { toast } from "sonner";
@@ -240,6 +241,10 @@ export default function ChefsTableDetail() {
               <TabsTrigger value="chefs" className="rounded-lg gap-1.5">
                 <Users className="h-3.5 w-3.5" />
                 {isAr ? "الطهاة" : "Chefs"} ({invitations.length})
+              </TabsTrigger>
+              <TabsTrigger value="report" className="rounded-lg gap-1.5">
+                <ScrollText className="h-3.5 w-3.5" />
+                {isAr ? "التقرير" : "Report"}
               </TabsTrigger>
             </TabsList>
 
@@ -495,6 +500,17 @@ export default function ChefsTableDetail() {
                   ))}
                 </div>
               )}
+            </TabsContent>
+
+            {/* Report Tab */}
+            <TabsContent value="report">
+              <EvaluationReport
+                session={session}
+                evaluations={evaluations}
+                media={media}
+                invitationCount={invitations.length}
+                isAr={isAr}
+              />
             </TabsContent>
 
             {/* Chefs Tab */}
