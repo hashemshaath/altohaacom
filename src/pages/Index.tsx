@@ -62,10 +62,6 @@ const Index = () => {
 
   return (
     <div className="flex min-h-screen flex-col overflow-x-hidden" role="document">
-      {/* Skip to content link for keyboard users */}
-      <a href="#main-content" className="sr-only focus:not-sr-only focus:absolute focus:z-[100] focus:bg-primary focus:text-primary-foreground focus:px-4 focus:py-2 focus:top-2 focus:start-2 focus:rounded-md">
-        Skip to content
-      </a>
       <SEOHead
         title="Altohaa — The Global Culinary Community"
         description="The premier platform for chefs, judges, organizers, and food industry professionals. Compete in world-class competitions, master new skills, and connect with a vibrant culinary community."
@@ -86,7 +82,7 @@ const Index = () => {
       />
       <Header />
 
-      <main id="main-content">
+      <div>
         {/* 1. Hero Slider */}
         <HeroSlider />
 
@@ -180,7 +176,7 @@ const Index = () => {
         <Suspense fallback={null}>
           <AdPopup />
         </Suspense>
-      </main>
+      </div>
 
       <Footer />
     </div>

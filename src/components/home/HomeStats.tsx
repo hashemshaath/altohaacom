@@ -39,16 +39,16 @@ export function HomeStats() {
     queryKey: ["home-stats"],
     queryFn: async () => {
       const [profiles, comps, ents, exhs] = await Promise.all([
-        supabase.from("profiles").select("id"),
-        supabase.from("competitions").select("id"),
-        supabase.from("culinary_entities").select("id"),
-        supabase.from("exhibitions").select("id"),
+        supabase.from("profiles").select("*", { count: "exact", head: true }),
+        supabase.from("competitions").select("*", { count: "exact", head: true }),
+        supabase.from("culinary_entities").select("*", { count: "exact", head: true }),
+        supabase.from("exhibitions").select("*", { count: "exact", head: true }),
       ]);
       return {
-        members: profiles.data?.length || 0,
-        competitions: comps.data?.length || 0,
-        entities: ents.data?.length || 0,
-        exhibitions: exhs.data?.length || 0,
+        members: profiles.count || 0,
+        competitions: comps.count || 0,
+        entities: ents.count || 0,
+        exhibitions: exhs.count || 0,
       };
     },
     staleTime: 1000 * 60 * 5,
