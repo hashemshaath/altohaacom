@@ -305,7 +305,6 @@ export default function CompetitionDetail() {
     ...(canSeeKnowledge ? [{ id: "knowledge", icon: <BookOpen className="h-4 w-4" />, label: isAr ? "المعرفة" : "Knowledge" }] : []),
     ...(canSeeKnowledge ? [{ id: "deliberation", icon: <MessageSquare className="h-4 w-4" />, label: isAr ? "المداولات" : "Deliberation" }] : []),
     ...(canSeeKnowledge ? [{ id: "judge-analytics", icon: <BarChart3 className="h-4 w-4" />, label: isAr ? "تحليل الحكام" : "Judge Analytics" }] : []),
-    ...(canSeeKnowledge ? [{ id: "deliberation", icon: <MessageSquare className="h-4 w-4" />, label: isAr ? "المداولات" : "Deliberation" }] : []),
     { id: "gallery", icon: <ImageIcon className="h-4 w-4" />, label: isAr ? "المعرض" : "Gallery" },
     ...(isOrganizer ? [{ id: "analytics", icon: <BarChart3 className="h-4 w-4" />, label: isAr ? "التحليلات" : "Analytics" }] : []),
     ...(isOrganizer ? [{ id: "adv-schedule", icon: <CalendarClock className="h-4 w-4" />, label: isAr ? "جدول متقدم" : "Adv. Schedule" }] : []),
