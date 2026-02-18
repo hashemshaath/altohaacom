@@ -1,14 +1,16 @@
 import { useState } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
-import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import {
-  Package, Calendar, MapPin, ChefHat, Users, Eye, EyeOff,
-  Clock, CheckCircle2, XCircle, PlayCircle
+  Package, Calendar, MapPin, ChefHat, Users, Eye,
+  Clock, CheckCircle2, XCircle, PlayCircle, Receipt,
+  Globe, Copy, ExternalLink
 } from "lucide-react";
 import { format } from "date-fns";
+import { toast } from "sonner";
+import { ChefsTableInvoiceGenerator } from "./ChefsTableInvoiceGenerator";
 import type { ChefsTableSession } from "@/hooks/useChefsTable";
 
 interface Props {
@@ -75,6 +77,46 @@ export function ChefsTableSessionDetail({ session, onNavigate }: Props) {
             {isAr ? "ملاحظات" : "Notes"}
           </p>
           <p className="text-sm">{session.notes}</p>
+        </div>
+      )}
+
+      {/* Invoice & Billing */}
+      <Separator />
+      <ChefsTableInvoiceGenerator session={session} />
+
+      {/* Public Report Link */}
+      {(session as any).report_token && (
+        <div className="rounded-lg border border-primary/20 bg-primary/5 p-4">
+          <div className="flex items-center gap-2 mb-2">
+            <Globe className="h-4 w-4 text-primary" />
+            <p className="text-[10px] font-bold text-primary uppercase tracking-wider">
+              {isAr ? "رابط التقرير العام" : "Public Report Link"}
+            </p>
+          </div>
+          <div className="flex items-center gap-2">
+            <code className="flex-1 text-xs bg-background border border-border/30 rounded px-3 py-2 truncate font-mono">
+              {`${window.location.origin}/evaluation-report/${(session as any).report_token}`}
+            </code>
+            <Button
+              size="sm"
+              variant="outline"
+              className="gap-1 shrink-0"
+              onClick={() => {
+                navigator.clipboard.writeText(`${window.location.origin}/evaluation-report/${(session as any).report_token}`);
+                toast.success(isAr ? "تم نسخ الرابط" : "Link copied!");
+              }}
+            >
+              <Copy className="h-3 w-3" />
+            </Button>
+            <Button
+              size="sm"
+              variant="outline"
+              className="gap-1 shrink-0"
+              onClick={() => window.open(`/evaluation-report/${(session as any).report_token}`, "_blank")}
+            >
+              <ExternalLink className="h-3 w-3" />
+            </Button>
+          </div>
         </div>
       )}
 
