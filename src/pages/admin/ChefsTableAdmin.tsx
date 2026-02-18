@@ -5,7 +5,7 @@ import {
   useChefsTableSessions, useChefsTableRequests,
   useApproveRequest, useRejectRequest,
 } from "@/hooks/useChefsTable";
-import { Card, CardContent } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -14,15 +14,14 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Skeleton } from "@/components/ui/skeleton";
-import {
-  Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter,
-} from "@/components/ui/dialog";
+import { Separator } from "@/components/ui/separator";
 import AdminPageHeader from "@/components/admin/AdminPageHeader";
 import { InvitationManager } from "@/components/evaluation/InvitationManager";
 import {
   ChefHat, Search, Eye, Package, Calendar, FileText,
   Clock, Check, X, ThumbsUp, ThumbsDown, MapPin, Image,
-  Send, Gavel, Printer,
+  Send, Gavel, Printer, ChevronDown, ChevronUp, DollarSign,
+  Users, AlertCircle,
 } from "lucide-react";
 import { format } from "date-fns";
 import { toast } from "sonner";
@@ -30,9 +29,23 @@ import { toast } from "sonner";
 const JudgesAdmin = lazy(() => import("./JudgesAdmin"));
 
 const experienceLabels: Record<string, { en: string; ar: string }> = {
-  venue: { en: "On-Site", ar: "في الموقع" },
+  venue: { en: "On-Site Venue", ar: "في الموقع" },
   chef_kitchen: { en: "Chef's Kitchen", ar: "مطبخ الشيف" },
   sample_delivery: { en: "Sample Delivery", ar: "توصيل عينات" },
+};
+
+const statusConfig: Record<string, { variant: "secondary" | "default" | "destructive" | "outline"; icon: any; color: string }> = {
+  pending: { variant: "secondary", icon: Clock, color: "text-chart-4" },
+  approved: { variant: "default", icon: Check, color: "text-chart-5" },
+  rejected: { variant: "destructive", icon: X, color: "text-destructive" },
+  cancelled: { variant: "outline", icon: X, color: "text-muted-foreground" },
+};
+
+const sessionStatusConfig: Record<string, { variant: "secondary" | "default" | "destructive" | "outline"; color: string }> = {
+  scheduled: { variant: "outline", color: "bg-primary/10 text-primary border-primary/20" },
+  in_progress: { variant: "secondary", color: "bg-chart-4/10 text-chart-4 border-chart-4/20" },
+  completed: { variant: "default", color: "bg-chart-5/10 text-chart-5 border-chart-5/20" },
+  cancelled: { variant: "destructive", color: "bg-destructive/10 text-destructive border-destructive/20" },
 };
 
 export default function ChefsTableAdmin() {
@@ -47,11 +60,11 @@ export default function ChefsTableAdmin() {
   const [activeTab, setActiveTab] = useState("requests");
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
-  const [selectedRequest, setSelectedRequest] = useState<any>(null);
-  const [detailDialogOpen, setDetailDialogOpen] = useState(false);
-  const [rejectDialogOpen, setRejectDialogOpen] = useState(false);
+  const [expandedRequestId, setExpandedRequestId] = useState<string | null>(null);
+  const [rejectingId, setRejectingId] = useState<string | null>(null);
   const [rejectionReason, setRejectionReason] = useState("");
   const [processingId, setProcessingId] = useState<string | null>(null);
+  const [requestStatusFilter, setRequestStatusFilter] = useState("all");
 
   const filteredSessions = useMemo(() => {
     return sessions?.filter(s => {
@@ -62,6 +75,13 @@ export default function ChefsTableAdmin() {
     });
   }, [sessions, search, statusFilter]);
 
+  const filteredRequests = useMemo(() => {
+    return requests?.filter(r => {
+      const matchStatus = requestStatusFilter === "all" || r.status === requestStatusFilter;
+      return matchStatus;
+    });
+  }, [requests, requestStatusFilter]);
+
   const pendingRequests = requests?.filter(r => r.status === "pending") || [];
 
   const handleApprove = async (req: any) => {
@@ -69,6 +89,7 @@ export default function ChefsTableAdmin() {
     try {
       await approveRequest.mutateAsync({ id: req.id });
       toast.success(isAr ? "تمت الموافقة وإنشاء الجلسة" : "Approved & session created");
+      setExpandedRequestId(null);
     } catch {
       toast.error(isAr ? "حدث خطأ" : "Failed to approve");
     } finally {
@@ -76,15 +97,14 @@ export default function ChefsTableAdmin() {
     }
   };
 
-  const handleReject = async () => {
-    if (!selectedRequest || !rejectionReason.trim()) return;
-    setProcessingId(selectedRequest.id);
+  const handleReject = async (req: any) => {
+    if (!rejectionReason.trim()) return;
+    setProcessingId(req.id);
     try {
-      await rejectRequest.mutateAsync({ id: selectedRequest.id, rejection_reason: rejectionReason });
+      await rejectRequest.mutateAsync({ id: req.id, rejection_reason: rejectionReason });
       toast.success(isAr ? "تم رفض الطلب" : "Request rejected");
-      setRejectDialogOpen(false);
+      setRejectingId(null);
       setRejectionReason("");
-      setSelectedRequest(null);
     } catch {
       toast.error(isAr ? "حدث خطأ" : "Failed to reject");
     } finally {
@@ -107,21 +127,22 @@ export default function ChefsTableAdmin() {
       </div>
 
       {/* Stats */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+      <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
         {[
-          { label: isAr ? "الطلبات المعلقة" : "Pending Requests", count: pendingRequests.length, icon: Clock, color: "text-chart-4" },
-          { label: isAr ? "الجلسات المجدولة" : "Scheduled", count: sessions?.filter(s => s.status === "scheduled").length || 0, icon: Calendar, color: "text-primary" },
-          { label: isAr ? "قيد التنفيذ" : "In Progress", count: sessions?.filter(s => s.status === "in_progress").length || 0, icon: ChefHat, color: "text-chart-5" },
+          { label: isAr ? "إجمالي الطلبات" : "Total Requests", count: requests?.length || 0, icon: FileText, color: "text-muted-foreground" },
+          { label: isAr ? "طلبات معلقة" : "Pending", count: pendingRequests.length, icon: Clock, color: "text-chart-4", pulse: pendingRequests.length > 0 },
+          { label: isAr ? "جلسات مجدولة" : "Scheduled", count: sessions?.filter(s => s.status === "scheduled").length || 0, icon: Calendar, color: "text-primary" },
+          { label: isAr ? "قيد التنفيذ" : "In Progress", count: sessions?.filter(s => s.status === "in_progress").length || 0, icon: ChefHat, color: "text-chart-4" },
           { label: isAr ? "مكتملة" : "Completed", count: sessions?.filter(s => s.status === "completed").length || 0, icon: Check, color: "text-chart-5" },
         ].map((stat, i) => (
           <Card key={i} className="border-border/40">
             <CardContent className="p-4 flex items-center gap-3">
               <div className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-muted ${stat.color}`}>
-                <stat.icon className="h-5 w-5" />
+                <stat.icon className={`h-5 w-5 ${stat.pulse ? "animate-pulse" : ""}`} />
               </div>
               <div>
-                <p className="text-2xl font-black">{stat.count}</p>
-                <p className="text-xs text-muted-foreground font-medium">{stat.label}</p>
+                <p className="text-2xl font-black tabular-nums">{stat.count}</p>
+                <p className="text-[11px] text-muted-foreground font-medium leading-tight">{stat.label}</p>
               </div>
             </CardContent>
           </Card>
@@ -151,145 +172,235 @@ export default function ChefsTableAdmin() {
           </TabsTrigger>
         </TabsList>
 
-        {/* Requests Tab */}
+        {/* ──────────── Requests Tab ──────────── */}
         <TabsContent value="requests" className="space-y-4">
+          <div className="flex items-center gap-3 print:hidden">
+            <Select value={requestStatusFilter} onValueChange={setRequestStatusFilter}>
+              <SelectTrigger className="w-40"><SelectValue /></SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">{isAr ? "جميع الحالات" : "All Status"}</SelectItem>
+                <SelectItem value="pending">{isAr ? "معلق" : "Pending"}</SelectItem>
+                <SelectItem value="approved">{isAr ? "موافق عليه" : "Approved"}</SelectItem>
+                <SelectItem value="rejected">{isAr ? "مرفوض" : "Rejected"}</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+
           {requestsLoading ? (
-            <Skeleton className="h-64 rounded-xl" />
-          ) : requests?.length === 0 ? (
-            <Card>
-              <CardContent className="py-12 text-center">
-                <FileText className="mx-auto h-10 w-10 text-muted-foreground/30" />
-                <p className="mt-3 font-medium">{isAr ? "لا توجد طلبات" : "No requests"}</p>
+            <div className="space-y-3">
+              {[1, 2, 3].map(i => <Skeleton key={i} className="h-28 rounded-xl" />)}
+            </div>
+          ) : filteredRequests?.length === 0 ? (
+            <Card className="border-dashed">
+              <CardContent className="py-16 text-center">
+                <FileText className="mx-auto h-12 w-12 text-muted-foreground/20" />
+                <p className="mt-4 font-semibold">{isAr ? "لا توجد طلبات" : "No requests found"}</p>
+                <p className="text-sm text-muted-foreground mt-1">{isAr ? "ستظهر الطلبات الجديدة هنا" : "New requests will appear here"}</p>
               </CardContent>
             </Card>
           ) : (
             <div className="space-y-3">
-              {requests?.map(req => (
-                <Card key={req.id} className="border-border/40">
-                  <CardContent className="p-5">
-                    <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
-                      <div className="flex-1 space-y-2">
-                        <div className="flex items-center gap-2 flex-wrap">
-                          <h3 className="font-bold text-base">
-                            {isAr && req.title_ar ? req.title_ar : req.title}
-                          </h3>
-                          <Badge
-                            variant={req.status === "pending" ? "secondary" : req.status === "approved" ? "default" : "destructive"}
-                            className="text-[10px] uppercase tracking-wider"
-                          >
-                            {req.status === "pending" && <Clock className="h-3 w-3 me-1" />}
-                            {req.status === "approved" && <Check className="h-3 w-3 me-1" />}
-                            {req.status === "rejected" && <X className="h-3 w-3 me-1" />}
-                            {req.status}
-                          </Badge>
+              {filteredRequests?.map(req => {
+                const isExpanded = expandedRequestId === req.id;
+                const isRejecting = rejectingId === req.id;
+                const sc = statusConfig[req.status] || statusConfig.pending;
+                const StatusIcon = sc.icon;
+
+                return (
+                  <Card key={req.id} className={`border-border/40 transition-all ${isExpanded ? "ring-1 ring-primary/20" : ""}`}>
+                    <CardContent className="p-0">
+                      {/* Summary Row */}
+                      <div
+                        className="flex items-center gap-4 p-4 cursor-pointer hover:bg-muted/30 transition-colors"
+                        onClick={() => setExpandedRequestId(isExpanded ? null : req.id)}
+                      >
+                        <div className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-muted ${sc.color}`}>
+                          <StatusIcon className="h-4 w-4" />
                         </div>
 
-                        <div className="flex flex-wrap gap-3 text-sm text-muted-foreground">
-                          <span className="flex items-center gap-1.5">
-                            <Package className="h-3.5 w-3.5" />
-                            {isAr && req.product_name_ar ? req.product_name_ar : req.product_name}
-                          </span>
-                          <Badge variant="secondary" className="text-[10px]">{req.product_category}</Badge>
-                          <span className="flex items-center gap-1.5">
-                            <MapPin className="h-3.5 w-3.5" />
-                            {experienceLabels[req.experience_type]?.[isAr ? "ar" : "en"] || req.experience_type}
-                          </span>
-                          <span className="flex items-center gap-1.5">
-                            <ChefHat className="h-3.5 w-3.5" />
-                            {req.chef_count} {isAr ? "طاهٍ" : "chefs"}
-                          </span>
-                        </div>
-
-                        {req.product_description && (
-                          <p className="text-sm text-muted-foreground line-clamp-2">{req.product_description}</p>
-                        )}
-
-                        {req.product_images && (req.product_images as string[]).length > 0 && (
-                          <div className="flex gap-2 mt-1">
-                            {(req.product_images as string[]).slice(0, 4).map((url: string, i: number) => (
-                              <div key={i} className="h-12 w-12 rounded-lg overflow-hidden border border-border/40">
-                                <img src={url} alt="" className="h-full w-full object-cover" />
-                              </div>
-                            ))}
-                            {(req.product_images as string[]).length > 4 && (
-                              <div className="h-12 w-12 rounded-lg bg-muted flex items-center justify-center text-xs font-bold text-muted-foreground">
-                                +{(req.product_images as string[]).length - 4}
-                              </div>
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-center gap-2 flex-wrap">
+                            <h3 className="font-bold text-sm truncate">
+                              {isAr && req.title_ar ? req.title_ar : req.title}
+                            </h3>
+                            <Badge variant={sc.variant} className="text-[10px] uppercase tracking-wider shrink-0">
+                              {req.status}
+                            </Badge>
+                            {req.request_number && (
+                              <span className="text-[10px] text-muted-foreground font-mono">#{req.request_number}</span>
                             )}
                           </div>
-                        )}
-
-                        <p className="text-xs text-muted-foreground">
-                          {format(new Date(req.created_at), "MMM d, yyyy 'at' HH:mm")}
-                        </p>
-
-                        {req.rejection_reason && (
-                          <div className="mt-2 rounded-lg bg-destructive/5 border border-destructive/20 p-3">
-                            <p className="text-xs font-bold text-destructive mb-1">{isAr ? "سبب الرفض" : "Rejection Reason"}</p>
-                            <p className="text-sm text-destructive/80">{req.rejection_reason}</p>
+                          <div className="flex items-center gap-3 mt-0.5 text-xs text-muted-foreground">
+                            <span className="flex items-center gap-1">
+                              <Package className="h-3 w-3" />
+                              {isAr && req.product_name_ar ? req.product_name_ar : req.product_name}
+                            </span>
+                            <span>{req.product_category}</span>
+                            <span className="flex items-center gap-1">
+                              <Users className="h-3 w-3" />
+                              {req.chef_count}
+                            </span>
+                            <span>{format(new Date(req.created_at), "MMM d, yyyy")}</span>
                           </div>
-                        )}
-                      </div>
+                        </div>
 
-                      <div className="flex items-center gap-2 shrink-0 print:hidden">
-                        <Button
-                          size="sm"
-                          variant="ghost"
-                          className="gap-1.5"
-                          onClick={() => {
-                            setSelectedRequest(req);
-                            setDetailDialogOpen(true);
-                          }}
-                        >
-                          <Eye className="h-3.5 w-3.5" />
-                          {isAr ? "عرض" : "View"}
-                        </Button>
+                        {/* Quick actions for pending */}
                         {req.status === "pending" && (
-                          <>
-                            <Button
-                              size="sm"
-                              className="gap-1.5"
-                              disabled={processingId === req.id}
-                              onClick={() => handleApprove(req)}
-                            >
-                              <ThumbsUp className="h-3.5 w-3.5" />
+                          <div className="flex items-center gap-1.5 shrink-0 print:hidden" onClick={e => e.stopPropagation()}>
+                            <Button size="sm" className="gap-1 h-8 text-xs" disabled={processingId === req.id} onClick={() => handleApprove(req)}>
+                              <ThumbsUp className="h-3 w-3" />
                               {isAr ? "موافقة" : "Approve"}
                             </Button>
                             <Button
-                              size="sm"
-                              variant="outline"
-                              className="gap-1.5 text-destructive hover:text-destructive"
+                              size="sm" variant="outline"
+                              className="gap-1 h-8 text-xs text-destructive hover:text-destructive"
                               disabled={processingId === req.id}
-                              onClick={() => {
-                                setSelectedRequest(req);
-                                setRejectDialogOpen(true);
-                              }}
+                              onClick={() => { setRejectingId(isRejecting ? null : req.id); setRejectionReason(""); }}
                             >
-                              <ThumbsDown className="h-3.5 w-3.5" />
+                              <ThumbsDown className="h-3 w-3" />
                               {isAr ? "رفض" : "Reject"}
                             </Button>
-                          </>
+                          </div>
                         )}
+
+                        <ChevronDown className={`h-4 w-4 text-muted-foreground shrink-0 transition-transform ${isExpanded ? "rotate-180" : ""}`} />
                       </div>
-                    </div>
-                  </CardContent>
-                </Card>
-              ))}
+
+                      {/* Inline Rejection Form */}
+                      {isRejecting && (
+                        <div className="px-4 pb-4 border-t border-border/40" onClick={e => e.stopPropagation()}>
+                          <div className="mt-3 rounded-lg bg-destructive/5 border border-destructive/20 p-4 space-y-3">
+                            <div className="flex items-center gap-2">
+                              <AlertCircle className="h-4 w-4 text-destructive" />
+                              <p className="text-sm font-bold text-destructive">{isAr ? "تأكيد الرفض" : "Confirm Rejection"}</p>
+                            </div>
+                            <Textarea
+                              value={rejectionReason}
+                              onChange={e => setRejectionReason(e.target.value)}
+                              placeholder={isAr ? "اكتب سبب الرفض..." : "Enter rejection reason..."}
+                              rows={2}
+                              className="text-sm"
+                            />
+                            <div className="flex items-center gap-2 justify-end">
+                              <Button size="sm" variant="ghost" onClick={() => { setRejectingId(null); setRejectionReason(""); }}>
+                                {isAr ? "إلغاء" : "Cancel"}
+                              </Button>
+                              <Button
+                                size="sm" variant="destructive"
+                                disabled={!rejectionReason.trim() || processingId === req.id}
+                                onClick={() => handleReject(req)}
+                              >
+                                {isAr ? "تأكيد الرفض" : "Confirm Reject"}
+                              </Button>
+                            </div>
+                          </div>
+                        </div>
+                      )}
+
+                      {/* Expanded Detail Panel */}
+                      {isExpanded && (
+                        <div className="border-t border-border/40 bg-muted/20">
+                          <div className="p-5 space-y-5">
+                            {/* Key Details Grid */}
+                            <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                              {[
+                                { label: isAr ? "المنتج" : "Product", value: isAr && req.product_name_ar ? req.product_name_ar : req.product_name, icon: Package },
+                                { label: isAr ? "الفئة" : "Category", value: req.product_category, icon: FileText },
+                                { label: isAr ? "نوع التجربة" : "Experience Type", value: experienceLabels[req.experience_type]?.[isAr ? "ar" : "en"] || req.experience_type, icon: MapPin },
+                                { label: isAr ? "عدد الطهاة" : "Chef Count", value: req.chef_count, icon: ChefHat },
+                                { label: isAr ? "الميزانية" : "Budget", value: `${req.budget?.toLocaleString() || 0} ${req.currency}`, icon: DollarSign },
+                                { label: isAr ? "المدينة" : "City", value: req.preferred_city || "—", icon: MapPin },
+                                { label: isAr ? "تاريخ البدء" : "Start Date", value: req.preferred_date_start ? format(new Date(req.preferred_date_start), "MMM d, yyyy") : "—", icon: Calendar },
+                                { label: isAr ? "تاريخ الانتهاء" : "End Date", value: req.preferred_date_end ? format(new Date(req.preferred_date_end), "MMM d, yyyy") : "—", icon: Calendar },
+                              ].map((item, i) => (
+                                <div key={i} className="rounded-lg border border-border/30 bg-background p-3">
+                                  <div className="flex items-center gap-1.5 mb-1">
+                                    <item.icon className="h-3 w-3 text-muted-foreground" />
+                                    <span className="text-[10px] text-muted-foreground font-medium uppercase tracking-wider">{item.label}</span>
+                                  </div>
+                                  <p className="text-sm font-bold">{item.value}</p>
+                                </div>
+                              ))}
+                            </div>
+
+                            {/* Description */}
+                            {req.product_description && (
+                              <div className="rounded-lg border border-border/30 bg-background p-4">
+                                <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider mb-2">
+                                  {isAr ? "وصف المنتج" : "Product Description"}
+                                </p>
+                                <p className="text-sm leading-relaxed whitespace-pre-line">{req.product_description}</p>
+                              </div>
+                            )}
+
+                            {/* Product Images */}
+                            {req.product_images && (req.product_images as string[]).length > 0 && (
+                              <div>
+                                <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider mb-2 flex items-center gap-1.5">
+                                  <Image className="h-3 w-3" />
+                                  {isAr ? "صور المنتج" : "Product Images"} ({(req.product_images as string[]).length})
+                                </p>
+                                <div className="grid grid-cols-4 md:grid-cols-6 gap-2">
+                                  {(req.product_images as string[]).map((url: string, i: number) => (
+                                    <div key={i} className="aspect-square rounded-lg overflow-hidden border border-border/30 bg-background">
+                                      <img src={url} alt="" className="h-full w-full object-cover hover:scale-105 transition-transform" />
+                                    </div>
+                                  ))}
+                                </div>
+                              </div>
+                            )}
+
+                            {/* Special Requirements */}
+                            {req.special_requirements && (
+                              <div className="rounded-lg border border-chart-4/20 bg-chart-4/5 p-4">
+                                <p className="text-[10px] font-bold text-chart-4 uppercase tracking-wider mb-2">
+                                  {isAr ? "متطلبات خاصة" : "Special Requirements"}
+                                </p>
+                                <p className="text-sm">{req.special_requirements}</p>
+                              </div>
+                            )}
+
+                            {/* Venue */}
+                            {req.preferred_venue && (
+                              <div className="rounded-lg border border-border/30 bg-background p-4">
+                                <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider mb-2">
+                                  {isAr ? "المكان المفضل" : "Preferred Venue"}
+                                </p>
+                                <p className="text-sm font-medium">{isAr && req.preferred_venue_ar ? req.preferred_venue_ar : req.preferred_venue}</p>
+                              </div>
+                            )}
+
+                            {/* Rejection Reason (for already rejected) */}
+                            {req.rejection_reason && (
+                              <div className="rounded-lg bg-destructive/5 border border-destructive/20 p-4">
+                                <p className="text-[10px] font-bold text-destructive uppercase tracking-wider mb-2">
+                                  {isAr ? "سبب الرفض" : "Rejection Reason"}
+                                </p>
+                                <p className="text-sm text-destructive/80">{req.rejection_reason}</p>
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                      )}
+                    </CardContent>
+                  </Card>
+                );
+              })}
             </div>
           )}
         </TabsContent>
 
-        {/* Sessions Tab */}
+        {/* ──────────── Sessions Tab ──────────── */}
         <TabsContent value="sessions" className="space-y-4">
           <div className="flex flex-col gap-3 sm:flex-row sm:items-center print:hidden">
             <div className="relative flex-1 sm:max-w-sm">
               <Search className="absolute start-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-              <Input placeholder={isAr ? "بحث..." : "Search..."} value={search} onChange={e => setSearch(e.target.value)} className="ps-9" />
+              <Input placeholder={isAr ? "بحث بالعنوان أو المنتج..." : "Search by title or product..."} value={search} onChange={e => setSearch(e.target.value)} className="ps-9" />
             </div>
             <Select value={statusFilter} onValueChange={setStatusFilter}>
               <SelectTrigger className="w-40"><SelectValue /></SelectTrigger>
               <SelectContent>
-                <SelectItem value="all">{isAr ? "الكل" : "All"}</SelectItem>
+                <SelectItem value="all">{isAr ? "جميع الحالات" : "All Status"}</SelectItem>
                 <SelectItem value="scheduled">{isAr ? "مجدول" : "Scheduled"}</SelectItem>
                 <SelectItem value="in_progress">{isAr ? "قيد التنفيذ" : "In Progress"}</SelectItem>
                 <SelectItem value="completed">{isAr ? "مكتمل" : "Completed"}</SelectItem>
@@ -298,56 +409,75 @@ export default function ChefsTableAdmin() {
           </div>
 
           {sessionsLoading ? (
-            <Skeleton className="h-64 rounded-xl" />
+            <div className="space-y-3">
+              {[1, 2, 3].map(i => <Skeleton key={i} className="h-20 rounded-xl" />)}
+            </div>
           ) : filteredSessions?.length === 0 ? (
-            <Card>
-              <CardContent className="py-12 text-center">
-                <ChefHat className="mx-auto h-10 w-10 text-muted-foreground/30" />
-                <p className="mt-3 font-medium">{isAr ? "لا توجد جلسات" : "No sessions yet"}</p>
+            <Card className="border-dashed">
+              <CardContent className="py-16 text-center">
+                <ChefHat className="mx-auto h-12 w-12 text-muted-foreground/20" />
+                <p className="mt-4 font-semibold">{isAr ? "لا توجد جلسات" : "No sessions yet"}</p>
                 <p className="text-sm text-muted-foreground mt-1">{isAr ? "وافق على طلب لإنشاء جلسة تلقائياً" : "Approve a request to auto-create a session"}</p>
               </CardContent>
             </Card>
           ) : (
-            <Card className="border-border/40">
+            <Card className="border-border/40 overflow-hidden">
               <Table>
                 <TableHeader>
-                  <TableRow>
-                    <TableHead>{isAr ? "الجلسة" : "Session"}</TableHead>
-                    <TableHead>{isAr ? "المنتج" : "Product"}</TableHead>
-                    <TableHead>{isAr ? "النوع" : "Type"}</TableHead>
-                    <TableHead>{isAr ? "الحالة" : "Status"}</TableHead>
-                    <TableHead>{isAr ? "التاريخ" : "Date"}</TableHead>
-                    <TableHead className="print:hidden"></TableHead>
+                  <TableRow className="bg-muted/30">
+                    <TableHead className="font-bold text-[11px] uppercase tracking-wider">{isAr ? "الجلسة" : "Session"}</TableHead>
+                    <TableHead className="font-bold text-[11px] uppercase tracking-wider">{isAr ? "المنتج" : "Product"}</TableHead>
+                    <TableHead className="font-bold text-[11px] uppercase tracking-wider">{isAr ? "النوع" : "Type"}</TableHead>
+                    <TableHead className="font-bold text-[11px] uppercase tracking-wider">{isAr ? "الحالة" : "Status"}</TableHead>
+                    <TableHead className="font-bold text-[11px] uppercase tracking-wider">{isAr ? "التاريخ" : "Date"}</TableHead>
+                    <TableHead className="font-bold text-[11px] uppercase tracking-wider">{isAr ? "الطهاة" : "Chefs"}</TableHead>
+                    <TableHead className="print:hidden w-12"></TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {filteredSessions?.map(session => (
-                    <TableRow key={session.id} className="cursor-pointer hover:bg-muted/50" onClick={() => navigate(`/chefs-table/${session.id}`)}>
-                      <TableCell className="font-medium">{isAr && session.title_ar ? session.title_ar : session.title}</TableCell>
-                      <TableCell>
-                        <div className="flex items-center gap-2">
-                          <Package className="h-3.5 w-3.5 text-muted-foreground" />
-                          {isAr && session.product_name_ar ? session.product_name_ar : session.product_name}
-                        </div>
-                      </TableCell>
-                      <TableCell>
-                        <Badge variant="secondary" className="text-[10px]">
-                          {experienceLabels[session.experience_type]?.[isAr ? "ar" : "en"] || session.experience_type}
-                        </Badge>
-                      </TableCell>
-                      <TableCell>
-                        <Badge variant="outline" className="text-[10px] uppercase">{session.status}</Badge>
-                      </TableCell>
-                      <TableCell className="text-sm text-muted-foreground">
-                        {session.session_date ? format(new Date(session.session_date), "MMM d, yyyy") : "—"}
-                      </TableCell>
-                      <TableCell className="print:hidden">
-                        <Button variant="ghost" size="icon" className="h-8 w-8">
-                          <Eye className="h-4 w-4" />
-                        </Button>
-                      </TableCell>
-                    </TableRow>
-                  ))}
+                  {filteredSessions?.map(session => {
+                    const sc = sessionStatusConfig[session.status] || sessionStatusConfig.scheduled;
+                    return (
+                      <TableRow key={session.id} className="cursor-pointer hover:bg-muted/40 transition-colors" onClick={() => navigate(`/chefs-table/${session.id}`)}>
+                        <TableCell>
+                          <div>
+                            <p className="font-bold text-sm">{isAr && session.title_ar ? session.title_ar : session.title}</p>
+                            {session.session_number && <p className="text-[10px] text-muted-foreground font-mono">#{session.session_number}</p>}
+                          </div>
+                        </TableCell>
+                        <TableCell>
+                          <div className="flex items-center gap-2">
+                            <Package className="h-3.5 w-3.5 text-muted-foreground shrink-0" />
+                            <span className="text-sm">{isAr && session.product_name_ar ? session.product_name_ar : session.product_name}</span>
+                          </div>
+                        </TableCell>
+                        <TableCell>
+                          <Badge variant="secondary" className="text-[10px]">
+                            {experienceLabels[session.experience_type]?.[isAr ? "ar" : "en"] || session.experience_type}
+                          </Badge>
+                        </TableCell>
+                        <TableCell>
+                          <span className={`inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider border ${sc.color}`}>
+                            {session.status.replace("_", " ")}
+                          </span>
+                        </TableCell>
+                        <TableCell className="text-sm text-muted-foreground tabular-nums">
+                          {session.session_date ? format(new Date(session.session_date), "MMM d, yyyy") : "—"}
+                        </TableCell>
+                        <TableCell>
+                          <div className="flex items-center gap-1">
+                            <Users className="h-3 w-3 text-muted-foreground" />
+                            <span className="text-sm font-medium">{session.max_chefs}</span>
+                          </div>
+                        </TableCell>
+                        <TableCell className="print:hidden">
+                          <Button variant="ghost" size="icon" className="h-8 w-8">
+                            <Eye className="h-4 w-4" />
+                          </Button>
+                        </TableCell>
+                      </TableRow>
+                    );
+                  })}
                 </TableBody>
               </Table>
             </Card>
@@ -366,134 +496,6 @@ export default function ChefsTableAdmin() {
           </Suspense>
         </TabsContent>
       </Tabs>
-
-      {/* Request Detail Dialog */}
-      <Dialog open={detailDialogOpen} onOpenChange={setDetailDialogOpen}>
-        <DialogContent className="max-w-2xl max-h-[85vh] overflow-y-auto">
-          {selectedRequest && (
-            <>
-              <DialogHeader>
-                <DialogTitle className="text-lg">
-                  {isAr && selectedRequest.title_ar ? selectedRequest.title_ar : selectedRequest.title}
-                </DialogTitle>
-                <DialogDescription className="flex items-center gap-2 flex-wrap">
-                  <Badge variant={selectedRequest.status === "pending" ? "secondary" : selectedRequest.status === "approved" ? "default" : "destructive"} className="text-[10px] uppercase">
-                    {selectedRequest.status}
-                  </Badge>
-                  <span className="text-xs">{format(new Date(selectedRequest.created_at), "PPP 'at' HH:mm")}</span>
-                </DialogDescription>
-              </DialogHeader>
-
-              <div className="space-y-4">
-                <div className="grid grid-cols-2 gap-3">
-                  {[
-                    { label: isAr ? "المنتج" : "Product", value: selectedRequest.product_name, icon: Package },
-                    { label: isAr ? "الفئة" : "Category", value: selectedRequest.product_category, icon: Package },
-                    { label: isAr ? "نوع التجربة" : "Experience", value: experienceLabels[selectedRequest.experience_type]?.[isAr ? "ar" : "en"] || selectedRequest.experience_type, icon: MapPin },
-                    { label: isAr ? "عدد الطهاة" : "Chefs", value: selectedRequest.chef_count, icon: ChefHat },
-                  ].map((item, i) => (
-                    <div key={i} className="rounded-lg border border-border/40 p-3">
-                      <div className="flex items-center gap-1.5 mb-1">
-                        <item.icon className="h-3.5 w-3.5 text-muted-foreground" />
-                        <span className="text-[11px] text-muted-foreground font-medium">{item.label}</span>
-                      </div>
-                      <p className="text-sm font-bold">{item.value}</p>
-                    </div>
-                  ))}
-                </div>
-
-                {selectedRequest.product_description && (
-                  <div className="rounded-lg border border-border/40 p-4">
-                    <p className="text-xs font-bold text-muted-foreground mb-2">{isAr ? "وصف المنتج" : "Product Description"}</p>
-                    <p className="text-sm whitespace-pre-line">{selectedRequest.product_description}</p>
-                  </div>
-                )}
-
-                {selectedRequest.product_images && (selectedRequest.product_images as string[]).length > 0 && (
-                  <div>
-                    <p className="text-xs font-bold text-muted-foreground mb-2 flex items-center gap-1.5">
-                      <Image className="h-3.5 w-3.5" />
-                      {isAr ? "صور المنتج" : "Product Images"}
-                    </p>
-                    <div className="grid grid-cols-3 gap-3">
-                      {(selectedRequest.product_images as string[]).map((url: string, i: number) => (
-                        <div key={i} className="aspect-square rounded-xl overflow-hidden border border-border/40">
-                          <img src={url} alt="" className="h-full w-full object-cover" />
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                )}
-
-                {selectedRequest.special_requirements && (
-                  <div className="rounded-lg border border-border/40 p-4">
-                    <p className="text-xs font-bold text-muted-foreground mb-2">{isAr ? "متطلبات خاصة" : "Special Requirements"}</p>
-                    <p className="text-sm">{selectedRequest.special_requirements}</p>
-                  </div>
-                )}
-              </div>
-
-              {selectedRequest.status === "pending" && (
-                <DialogFooter className="gap-2">
-                  <Button
-                    className="gap-1.5"
-                    disabled={processingId === selectedRequest.id}
-                    onClick={() => {
-                      handleApprove(selectedRequest);
-                      setDetailDialogOpen(false);
-                    }}
-                  >
-                    <ThumbsUp className="h-4 w-4" />
-                    {isAr ? "موافقة" : "Approve"}
-                  </Button>
-                  <Button
-                    variant="outline"
-                    className="gap-1.5 text-destructive hover:text-destructive"
-                    disabled={processingId === selectedRequest.id}
-                    onClick={() => {
-                      setDetailDialogOpen(false);
-                      setRejectDialogOpen(true);
-                    }}
-                  >
-                    <ThumbsDown className="h-4 w-4" />
-                    {isAr ? "رفض" : "Reject"}
-                  </Button>
-                </DialogFooter>
-              )}
-            </>
-          )}
-        </DialogContent>
-      </Dialog>
-
-      {/* Reject Dialog */}
-      <Dialog open={rejectDialogOpen} onOpenChange={setRejectDialogOpen}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>{isAr ? "رفض الطلب" : "Reject Request"}</DialogTitle>
-            <DialogDescription>
-              {isAr ? "يرجى تقديم سبب الرفض" : "Please provide a reason for rejecting this request"}
-            </DialogDescription>
-          </DialogHeader>
-          <Textarea
-            value={rejectionReason}
-            onChange={e => setRejectionReason(e.target.value)}
-            placeholder={isAr ? "سبب الرفض..." : "Rejection reason..."}
-            rows={3}
-          />
-          <DialogFooter>
-            <Button variant="outline" onClick={() => setRejectDialogOpen(false)}>
-              {isAr ? "إلغاء" : "Cancel"}
-            </Button>
-            <Button
-              variant="destructive"
-              onClick={handleReject}
-              disabled={!rejectionReason.trim() || processingId !== null}
-            >
-              {isAr ? "رفض الطلب" : "Reject Request"}
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
     </div>
   );
 }
