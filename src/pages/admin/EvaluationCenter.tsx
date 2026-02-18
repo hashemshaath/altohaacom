@@ -1,13 +1,16 @@
 import { useState } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { UtensilsCrossed, Gavel, BarChart3, Award, Settings2, ChefHat, Trophy, Wrench } from "lucide-react";
+import { UtensilsCrossed, Gavel, BarChart3, Award, Settings2, ChefHat, Trophy, Wrench, FileText, Send, Printer } from "lucide-react";
 import { lazy, Suspense } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { useEvaluationDomains } from "@/hooks/useEvaluationSystem";
 import { CriteriaManager } from "@/components/evaluation/CriteriaManager";
+import { TemplatesManager } from "@/components/evaluation/TemplatesManager";
+import { InvitationManager } from "@/components/evaluation/InvitationManager";
 
 const ChefsTableAdmin = lazy(() => import("./ChefsTableAdmin"));
 const JudgesAdmin = lazy(() => import("./JudgesAdmin"));
@@ -96,28 +99,42 @@ export default function EvaluationCenter() {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="flex items-center gap-3">
-        <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary/10">
-          <UtensilsCrossed className="h-5 w-5 text-primary" />
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-3">
+          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary/10">
+            <UtensilsCrossed className="h-5 w-5 text-primary" />
+          </div>
+          <div>
+            <h1 className="text-2xl font-bold">{isAr ? "مركز التقييم" : "Evaluation Center"}</h1>
+            <p className="text-sm text-muted-foreground">
+              {isAr
+                ? "نظام تقييم شامل يدعم طاولة الشيف، المسابقات، المعدات والمشروبات — بمعايير WACS و ACF الدولية"
+                : "Comprehensive evaluation system supporting Chef's Table, Competitions, Equipment & Beverages — aligned with WACS & ACF standards"}
+            </p>
+          </div>
         </div>
-        <div>
-          <h1 className="text-2xl font-bold">{isAr ? "مركز التقييم" : "Evaluation Center"}</h1>
-          <p className="text-sm text-muted-foreground">
-            {isAr
-              ? "نظام تقييم شامل يدعم طاولة الشيف، المسابقات، المعدات والمشروبات — بمعايير WACS و ACF الدولية"
-              : "Comprehensive evaluation system supporting Chef's Table, Competitions, Equipment & Beverages — aligned with WACS & ACF standards"}
-          </p>
-        </div>
+        <Button variant="outline" size="sm" className="gap-1.5 print:hidden" onClick={() => window.print()}>
+          <Printer className="h-3.5 w-3.5" />
+          {isAr ? "طباعة" : "Print"}
+        </Button>
       </div>
 
       {/* Domain Stats */}
       <DomainStats />
 
       <Tabs value={activeTab} onValueChange={setActiveTab}>
-        <TabsList className="flex-wrap">
+        <TabsList className="flex-wrap print:hidden">
           <TabsTrigger value="criteria" className="gap-1.5">
             <Settings2 className="h-3.5 w-3.5" />
-            {isAr ? "معايير التقييم" : "Evaluation Criteria"}
+            {isAr ? "معايير التقييم" : "Criteria"}
+          </TabsTrigger>
+          <TabsTrigger value="templates" className="gap-1.5">
+            <FileText className="h-3.5 w-3.5" />
+            {isAr ? "القوالب" : "Templates"}
+          </TabsTrigger>
+          <TabsTrigger value="invitations" className="gap-1.5">
+            <Send className="h-3.5 w-3.5" />
+            {isAr ? "الدعوات" : "Invitations"}
           </TabsTrigger>
           <TabsTrigger value="sessions" className="gap-1.5">
             <UtensilsCrossed className="h-3.5 w-3.5" />
@@ -139,6 +156,14 @@ export default function EvaluationCenter() {
 
         <TabsContent value="criteria">
           <CriteriaManager />
+        </TabsContent>
+
+        <TabsContent value="templates">
+          <TemplatesManager />
+        </TabsContent>
+
+        <TabsContent value="invitations">
+          <InvitationManager />
         </TabsContent>
 
         <TabsContent value="sessions">
