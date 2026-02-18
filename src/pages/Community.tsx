@@ -302,7 +302,11 @@ export default function Community() {
                   </h3>
                   <div className="divide-y divide-border">
                     {trendingTopics.map((topic, i) => (
-                      <div key={i} className="px-4 py-2.5 hover:bg-muted/30 transition-colors cursor-pointer group">
+                      <Link
+                        key={i}
+                        to={`/community?tag=${encodeURIComponent(topic.tag)}`}
+                        className="block px-4 py-2.5 hover:bg-muted/30 transition-colors cursor-pointer group"
+                      >
                         <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
                           <Hash className="h-3 w-3" />
                           <span>{isAr ? "رائج" : "Trending"}</span>
@@ -312,7 +316,7 @@ export default function Community() {
                         <p className="text-xs text-muted-foreground mt-0.5">
                           {formatNumber(topic.count)} {isAr ? "منشور" : "posts"}
                         </p>
-                      </div>
+                      </Link>
                     ))}
                   </div>
                 </div>
