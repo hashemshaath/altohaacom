@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -11,6 +11,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Checkbox } from "@/components/ui/checkbox";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
@@ -20,8 +21,11 @@ import {
   Calendar, Trophy, ChefHat, Landmark, Tv, Mic, GraduationCap, MessageSquare,
   MapPin, User, Plane, Ban, MoreHorizontal, Clock, Eye, EyeOff,
   Lock, Shield, Globe, Search, Filter, CheckCircle, AlertCircle,
-  Briefcase, DollarSign, Users, BarChart3, Trash2,
+  Briefcase, DollarSign, Users, BarChart3, Trash2, Plus, Download, Edit,
+  CalendarDays,
 } from "lucide-react";
+import ChefScheduleEventForm from "@/components/admin/chef-schedule/ChefScheduleEventForm";
+import AdminScheduleCalendar from "@/components/admin/chef-schedule/AdminScheduleCalendar";
 
 const EVENT_ICONS: Record<string, any> = {
   competition: Trophy, chefs_table: ChefHat, exhibition: Landmark,
@@ -40,11 +44,18 @@ export default function ChefScheduleAdmin() {
   const [statusFilter, setStatusFilter] = useState("all");
   const [visFilter, setVisFilter] = useState("all");
 
+  // Inline form state
+  const [showForm, setShowForm] = useState(false);
+  const [editingEvent, setEditingEvent] = useState<ChefScheduleEvent | null>(null);
+  const [defaultDate, setDefaultDate] = useState<string>("");
+
+  // Bulk selection
+  const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
+
   const { data: allEvents = [], isLoading } = useChefScheduleEvents();
   const updateEvent = useUpdateScheduleEvent();
   const deleteEvent = useDeleteScheduleEvent();
 
-  // Get chef profiles for display
   const { data: profiles = [] } = useQuery({
     queryKey: ["admin-chef-profiles"],
     queryFn: async () => {
@@ -55,7 +66,7 @@ export default function ChefScheduleAdmin() {
 
   const profileMap = Object.fromEntries(profiles.map(p => [p.user_id, p]));
 
-  const filtered = allEvents.filter(ev => {
+  const filtered = useMemo(() => allEvents.filter(ev => {
     if (typeFilter !== "all" && ev.event_type !== typeFilter) return false;
     if (statusFilter !== "all" && ev.status !== statusFilter) return false;
     if (visFilter !== "all" && ev.visibility !== visFilter) return false;
@@ -64,7 +75,7 @@ export default function ChefScheduleAdmin() {
       return ev.title?.toLowerCase().includes(q) || ev.location?.toLowerCase().includes(q) || ev.city?.toLowerCase().includes(q) || ev.channel_name?.toLowerCase().includes(q);
     }
     return true;
-  });
+  }), [allEvents, typeFilter, statusFilter, visFilter, search]);
 
   const stats = {
     total: allEvents.length,
@@ -91,8 +102,93 @@ export default function ChefScheduleAdmin() {
   const handleDelete = async (id: string) => {
     try {
       await deleteEvent.mutateAsync(id);
+      setSelectedIds(prev => { const n = new Set(prev); n.delete(id); return n; });
       toast.success(isAr ? "تم الحذف" : "Deleted");
     } catch { toast.error(isAr ? "خطأ" : "Error"); }
+  };
+
+  const handleEdit = (ev: ChefScheduleEvent) => {
+    setEditingEvent(ev);
+    setShowForm(true);
+  };
+
+  const handleAddNew = () => {
+    setEditingEvent(null);
+    setDefaultDate("");
+    setShowForm(true);
+  };
+
+  const handleDateClick = (date: string) => {
+    setEditingEvent(null);
+    setDefaultDate(date);
+    setShowForm(true);
+  };
+
+  const handleFormClose = () => {
+    setShowForm(false);
+    setEditingEvent(null);
+    setDefaultDate("");
+  };
+
+  // Bulk actions
+  const toggleSelect = (id: string) => {
+    setSelectedIds(prev => {
+      const n = new Set(prev);
+      n.has(id) ? n.delete(id) : n.add(id);
+      return n;
+    });
+  };
+
+  const toggleAll = () => {
+    if (selectedIds.size === filtered.length) {
+      setSelectedIds(new Set());
+    } else {
+      setSelectedIds(new Set(filtered.map(e => e.id)));
+    }
+  };
+
+  const bulkUpdateStatus = async (status: string) => {
+    try {
+      await Promise.all(Array.from(selectedIds).map(id => updateEvent.mutateAsync({ id, status: status as any })));
+      toast.success(isAr ? `تم تحديث ${selectedIds.size} حدث` : `Updated ${selectedIds.size} events`);
+      setSelectedIds(new Set());
+    } catch { toast.error(isAr ? "خطأ" : "Error"); }
+  };
+
+  const bulkDelete = async () => {
+    try {
+      await Promise.all(Array.from(selectedIds).map(id => deleteEvent.mutateAsync(id)));
+      toast.success(isAr ? `تم حذف ${selectedIds.size} حدث` : `Deleted ${selectedIds.size} events`);
+      setSelectedIds(new Set());
+    } catch { toast.error(isAr ? "خطأ" : "Error"); }
+  };
+
+  const exportCSV = () => {
+    const headers = ["Chef", "Type", "Title", "Start Date", "End Date", "City", "Country", "Venue", "Status", "Visibility", "Contracted", "Fee", "Currency"];
+    const rows = filtered.map(ev => [
+      profileMap[ev.chef_id]?.full_name || "",
+      EVENT_TYPE_CONFIG[ev.event_type as ScheduleEventType]?.en || ev.event_type,
+      ev.title,
+      ev.start_date,
+      ev.end_date,
+      ev.city || "",
+      ev.country_code || "",
+      ev.venue || "",
+      ev.status,
+      ev.visibility,
+      ev.is_contracted ? "Yes" : "No",
+      ev.fee_amount || "",
+      ev.fee_currency || "",
+    ]);
+    const csv = [headers, ...rows].map(r => r.map(c => `"${c}"`).join(",")).join("\n");
+    const blob = new Blob([csv], { type: "text/csv" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `chef-schedule-${format(new Date(), "yyyy-MM-dd")}.csv`;
+    a.click();
+    URL.revokeObjectURL(url);
+    toast.success(isAr ? "تم التصدير" : "Exported");
   };
 
   return (
@@ -108,7 +204,24 @@ export default function ChefScheduleAdmin() {
             {isAr ? "عرض وإدارة جداول جميع الطهاة والفعاليات" : "View and manage all chef schedules and events"}
           </p>
         </div>
+        <div className="flex gap-2">
+          <Button variant="outline" size="sm" onClick={exportCSV} className="gap-1.5">
+            <Download className="h-3.5 w-3.5" />{isAr ? "تصدير" : "Export CSV"}
+          </Button>
+          <Button size="sm" onClick={handleAddNew} className="gap-1.5">
+            <Plus className="h-3.5 w-3.5" />{isAr ? "إضافة حدث" : "Add Event"}
+          </Button>
+        </div>
       </div>
+
+      {/* Inline Form */}
+      {showForm && (
+        <ChefScheduleEventForm
+          event={editingEvent}
+          onClose={handleFormClose}
+          defaultDate={defaultDate}
+        />
+      )}
 
       {/* KPIs */}
       <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-3">
@@ -138,6 +251,7 @@ export default function ChefScheduleAdmin() {
       <Tabs defaultValue="events">
         <TabsList>
           <TabsTrigger value="events" className="gap-1.5"><Calendar className="h-3.5 w-3.5" />{isAr ? "الأحداث" : "Events"}</TabsTrigger>
+          <TabsTrigger value="calendar" className="gap-1.5"><CalendarDays className="h-3.5 w-3.5" />{isAr ? "التقويم" : "Calendar"}</TabsTrigger>
           <TabsTrigger value="overview" className="gap-1.5"><BarChart3 className="h-3.5 w-3.5" />{isAr ? "نظرة عامة" : "Overview"}</TabsTrigger>
         </TabsList>
 
@@ -177,11 +291,34 @@ export default function ChefScheduleAdmin() {
             </Select>
           </div>
 
+          {/* Bulk Actions Bar */}
+          {selectedIds.size > 0 && (
+            <div className="flex items-center gap-2 p-2.5 rounded-lg border border-primary/20 bg-primary/5">
+              <span className="text-xs font-medium">{selectedIds.size} {isAr ? "محدد" : "selected"}</span>
+              <div className="flex-1" />
+              <Button variant="outline" size="sm" className="h-7 text-xs gap-1" onClick={() => bulkUpdateStatus("confirmed")}>
+                <CheckCircle className="h-3 w-3" />{isAr ? "تأكيد الكل" : "Confirm All"}
+              </Button>
+              <Button variant="outline" size="sm" className="h-7 text-xs gap-1" onClick={() => bulkUpdateStatus("cancelled")}>
+                <Ban className="h-3 w-3" />{isAr ? "إلغاء الكل" : "Cancel All"}
+              </Button>
+              <Button variant="destructive" size="sm" className="h-7 text-xs gap-1" onClick={bulkDelete}>
+                <Trash2 className="h-3 w-3" />{isAr ? "حذف" : "Delete"}
+              </Button>
+            </div>
+          )}
+
           {/* Events Table */}
           <Card className="border-border/40 overflow-hidden">
             <Table>
               <TableHeader>
                 <TableRow>
+                  <TableHead className="w-8">
+                    <Checkbox
+                      checked={filtered.length > 0 && selectedIds.size === filtered.length}
+                      onCheckedChange={toggleAll}
+                    />
+                  </TableHead>
                   <TableHead className="text-xs">{isAr ? "الشيف" : "Chef"}</TableHead>
                   <TableHead className="text-xs">{isAr ? "النوع" : "Type"}</TableHead>
                   <TableHead className="text-xs">{isAr ? "العنوان" : "Title"}</TableHead>
@@ -195,7 +332,7 @@ export default function ChefScheduleAdmin() {
               <TableBody>
                 {filtered.length === 0 ? (
                   <TableRow>
-                    <TableCell colSpan={8} className="text-center py-12 text-muted-foreground">
+                    <TableCell colSpan={9} className="text-center py-12 text-muted-foreground">
                       {isAr ? "لا توجد أحداث" : "No events found"}
                     </TableCell>
                   </TableRow>
@@ -207,6 +344,12 @@ export default function ChefScheduleAdmin() {
                     const chef = profileMap[ev.chef_id];
                     return (
                       <TableRow key={ev.id} className={ev.status === "cancelled" ? "opacity-50" : ""}>
+                        <TableCell>
+                          <Checkbox
+                            checked={selectedIds.has(ev.id)}
+                            onCheckedChange={() => toggleSelect(ev.id)}
+                          />
+                        </TableCell>
                         <TableCell className="text-xs font-medium">{isAr && chef?.full_name_ar ? chef.full_name_ar : chef?.full_name || "—"}</TableCell>
                         <TableCell>
                           <Badge className={`text-[9px] border gap-1 ${config.color}`}>
@@ -230,6 +373,9 @@ export default function ChefScheduleAdmin() {
                         <TableCell><VisIcon className="h-3.5 w-3.5 text-muted-foreground" /></TableCell>
                         <TableCell>
                           <div className="flex items-center gap-1">
+                            <Button variant="ghost" size="sm" className="h-7 w-7 p-0" onClick={() => handleEdit(ev)} title={isAr ? "تعديل" : "Edit"}>
+                              <Edit className="h-3.5 w-3.5" />
+                            </Button>
                             {ev.status === "tentative" && (
                               <Button variant="ghost" size="sm" className="h-7 w-7 p-0 text-chart-5" onClick={() => handleApprove(ev.id)} title={isAr ? "تأكيد" : "Confirm"}>
                                 <CheckCircle className="h-3.5 w-3.5" />
@@ -247,6 +393,16 @@ export default function ChefScheduleAdmin() {
               </TableBody>
             </Table>
           </Card>
+        </TabsContent>
+
+        {/* Calendar View */}
+        <TabsContent value="calendar" className="mt-4">
+          <AdminScheduleCalendar
+            events={allEvents}
+            profileMap={profileMap}
+            onEventClick={handleEdit}
+            onDateClick={handleDateClick}
+          />
         </TabsContent>
 
         <TabsContent value="overview" className="space-y-4 mt-4">
@@ -287,7 +443,7 @@ export default function ChefScheduleAdmin() {
                     const config = EVENT_TYPE_CONFIG[ev.event_type as ScheduleEventType] || EVENT_TYPE_CONFIG.other;
                     const chef = profileMap[ev.chef_id];
                     return (
-                      <div key={ev.id} className="flex items-center gap-3 p-3 rounded-lg border border-border/30 hover:bg-muted/20">
+                      <div key={ev.id} className="flex items-center gap-3 p-3 rounded-lg border border-border/30 hover:bg-muted/20 cursor-pointer" onClick={() => handleEdit(ev)}>
                         <div className="flex-1 min-w-0">
                           <p className="text-sm font-medium truncate">{ev.title}</p>
                           <p className="text-xs text-muted-foreground">{chef?.full_name || "—"} · {format(parseISO(ev.start_date), "MMM d, yyyy")}</p>
