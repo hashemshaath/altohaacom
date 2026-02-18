@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, forwardRef } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useIsFollowing, useToggleFollow } from "@/hooks/useFollow";
 import { Button } from "@/components/ui/button";
@@ -22,7 +22,7 @@ interface FollowButtonProps {
   className?: string;
 }
 
-export function FollowButton({ userId, userName, fullWidth = false, className = "" }: FollowButtonProps) {
+export const FollowButton = forwardRef<HTMLDivElement, FollowButtonProps>(function FollowButton({ userId, userName, fullWidth = false, className = "" }, ref) {
   const { data: isFollowing } = useIsFollowing(userId);
   const toggleFollow = useToggleFollow(userId);
   const { language } = useLanguage();
@@ -54,7 +54,7 @@ export function FollowButton({ userId, userName, fullWidth = false, className = 
   };
 
   return (
-    <>
+    <div ref={ref}>
       <Button
         variant={isFollowing ? "outline" : "default"}
         size="sm"
@@ -95,6 +95,6 @@ export function FollowButton({ userId, userName, fullWidth = false, className = 
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
-    </>
+    </div>
   );
-}
+});

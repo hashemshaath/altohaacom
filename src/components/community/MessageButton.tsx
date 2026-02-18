@@ -1,3 +1,4 @@
+import { forwardRef } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { Button } from "@/components/ui/button";
@@ -12,7 +13,7 @@ interface MessageButtonProps {
   iconOnly?: boolean;
 }
 
-export function MessageButton({ userId, className = "", variant = "ghost", size = "icon", iconOnly = true }: MessageButtonProps) {
+export const MessageButton = forwardRef<HTMLButtonElement, MessageButtonProps>(function MessageButton({ userId, className = "", variant = "ghost", size = "icon", iconOnly = true }, ref) {
   const { user } = useAuth();
   const { language } = useLanguage();
   const isAr = language === "ar";
@@ -27,6 +28,7 @@ export function MessageButton({ userId, className = "", variant = "ghost", size 
 
   return (
     <Button
+      ref={ref}
       variant={variant}
       size={size}
       className={`rounded-xl text-muted-foreground hover:text-primary hover:bg-primary/10 ${className}`}
@@ -41,4 +43,4 @@ export function MessageButton({ userId, className = "", variant = "ghost", size 
       )}
     </Button>
   );
-}
+});
