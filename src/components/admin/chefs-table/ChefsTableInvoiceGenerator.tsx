@@ -10,6 +10,7 @@ import { Separator } from "@/components/ui/separator";
 import { toast } from "sonner";
 import { FileText, DollarSign, Receipt, ChefHat, Send, CheckCircle2 } from "lucide-react";
 import { useState } from "react";
+import { executeEvaluationWorkflow } from "@/lib/evaluationWorkflows";
 
 interface PricingPlan {
   id: string; name: string; name_ar: string | null;
@@ -88,6 +89,7 @@ export function ChefsTableInvoiceGenerator({ session }: { session: any }) {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["chefs-table-sessions"] });
       toast.success(isAr ? "تم إنشاء الفاتورة بنجاح" : "Invoice generated successfully");
+      executeEvaluationWorkflow("invoice_generated", { sessionId: session.id });
     },
     onError: () => toast.error(isAr ? "حدث خطأ" : "Failed to generate invoice"),
   });
