@@ -24,6 +24,7 @@ import { SupplierShareButtons } from "@/components/supplier/SupplierShareButtons
 import { SupplierReviews } from "@/components/supplier/SupplierReviews";
 import { SupplierWishlistButton } from "@/components/supplier/SupplierWishlistButton";
 import { SupplierBadges } from "@/components/supplier/SupplierBadges";
+import { ProductQuickView } from "@/components/supplier/ProductQuickView";
 import { useSupplierViewTracker } from "@/hooks/useSupplierViewTracker";
 
 export default function ProSupplierDetail() {
@@ -33,6 +34,7 @@ export default function ProSupplierDetail() {
   const isAr = language === "ar";
   const { data: countries = [] } = useAllCountries();
   const [activeTab, setActiveTab] = useState("overview");
+  const [quickViewProduct, setQuickViewProduct] = useState<any>(null);
   useSupplierViewTracker(id);
 
   const { data: company, isLoading } = useQuery({
@@ -453,7 +455,7 @@ export default function ProSupplierDetail() {
                   </div>
                   <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
                     {products.slice(0, 4).map((p: any) => (
-                      <Card key={p.id} className="rounded-xl overflow-hidden">
+                      <Card key={p.id} className="rounded-xl overflow-hidden cursor-pointer hover:shadow-md transition-shadow" onClick={() => setQuickViewProduct(p)}>
                         {p.image_url ? (
                           <div className="h-32 bg-muted">
                             <img src={p.image_url} className="h-full w-full object-cover" alt={p.name} />
@@ -499,7 +501,7 @@ export default function ProSupplierDetail() {
                       </h3>
                       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
                         {items.map((p: any) => (
-                          <Card key={p.id} className="rounded-xl overflow-hidden group">
+                          <Card key={p.id} className="rounded-xl overflow-hidden group cursor-pointer" onClick={() => setQuickViewProduct(p)}>
                             {p.image_url ? (
                               <div className="h-40 bg-muted overflow-hidden">
                                 <img src={p.image_url} className="h-full w-full object-cover transition-transform group-hover:scale-105" alt={p.name} />
@@ -636,6 +638,7 @@ export default function ProSupplierDetail() {
         </div>
       </main>
       <Footer />
+      <ProductQuickView product={quickViewProduct} open={!!quickViewProduct} onClose={() => setQuickViewProduct(null)} />
     </div>
   );
 }
