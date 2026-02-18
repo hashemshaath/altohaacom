@@ -6602,6 +6602,279 @@ export type Database = {
         }
         Relationships: []
       }
+      evaluation_criteria: {
+        Row: {
+          category_id: string
+          created_at: string
+          description: string | null
+          description_ar: string | null
+          id: string
+          is_active: boolean | null
+          is_required: boolean | null
+          max_score: number
+          name: string
+          name_ar: string | null
+          scoring_guide: Json | null
+          scoring_guide_ar: Json | null
+          sort_order: number | null
+          updated_at: string
+          weight: number
+        }
+        Insert: {
+          category_id: string
+          created_at?: string
+          description?: string | null
+          description_ar?: string | null
+          id?: string
+          is_active?: boolean | null
+          is_required?: boolean | null
+          max_score?: number
+          name: string
+          name_ar?: string | null
+          scoring_guide?: Json | null
+          scoring_guide_ar?: Json | null
+          sort_order?: number | null
+          updated_at?: string
+          weight?: number
+        }
+        Update: {
+          category_id?: string
+          created_at?: string
+          description?: string | null
+          description_ar?: string | null
+          id?: string
+          is_active?: boolean | null
+          is_required?: boolean | null
+          max_score?: number
+          name?: string
+          name_ar?: string | null
+          scoring_guide?: Json | null
+          scoring_guide_ar?: Json | null
+          sort_order?: number | null
+          updated_at?: string
+          weight?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "evaluation_criteria_category_id_fkey"
+            columns: ["category_id"]
+            isOneToOne: false
+            referencedRelation: "evaluation_criteria_categories"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      evaluation_criteria_categories: {
+        Row: {
+          created_at: string
+          description: string | null
+          description_ar: string | null
+          domain_id: string
+          id: string
+          is_active: boolean | null
+          name: string
+          name_ar: string | null
+          product_category: string | null
+          sort_order: number | null
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          description_ar?: string | null
+          domain_id: string
+          id?: string
+          is_active?: boolean | null
+          name: string
+          name_ar?: string | null
+          product_category?: string | null
+          sort_order?: number | null
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          description_ar?: string | null
+          domain_id?: string
+          id?: string
+          is_active?: boolean | null
+          name?: string
+          name_ar?: string | null
+          product_category?: string | null
+          sort_order?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "evaluation_criteria_categories_domain_id_fkey"
+            columns: ["domain_id"]
+            isOneToOne: false
+            referencedRelation: "evaluation_domains"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      evaluation_domains: {
+        Row: {
+          created_at: string
+          description: string | null
+          description_ar: string | null
+          icon: string | null
+          id: string
+          is_active: boolean | null
+          name: string
+          name_ar: string | null
+          slug: string
+          sort_order: number | null
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          description_ar?: string | null
+          icon?: string | null
+          id?: string
+          is_active?: boolean | null
+          name: string
+          name_ar?: string | null
+          slug: string
+          sort_order?: number | null
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          description_ar?: string | null
+          icon?: string | null
+          id?: string
+          is_active?: boolean | null
+          name?: string
+          name_ar?: string | null
+          slug?: string
+          sort_order?: number | null
+        }
+        Relationships: []
+      }
+      evaluation_reports: {
+        Row: {
+          category_scores: Json | null
+          created_at: string
+          criteria_count: number | null
+          domain_slug: string
+          entity_id: string
+          evaluator_count: number | null
+          generated_at: string | null
+          generated_by: string | null
+          id: string
+          images: string[] | null
+          overall_score: number | null
+          recommendations: Json | null
+          report_number: string | null
+          status: string
+          strengths: Json | null
+          summary: string | null
+          summary_ar: string | null
+          title: string
+          title_ar: string | null
+          updated_at: string
+          weaknesses: Json | null
+        }
+        Insert: {
+          category_scores?: Json | null
+          created_at?: string
+          criteria_count?: number | null
+          domain_slug: string
+          entity_id: string
+          evaluator_count?: number | null
+          generated_at?: string | null
+          generated_by?: string | null
+          id?: string
+          images?: string[] | null
+          overall_score?: number | null
+          recommendations?: Json | null
+          report_number?: string | null
+          status?: string
+          strengths?: Json | null
+          summary?: string | null
+          summary_ar?: string | null
+          title: string
+          title_ar?: string | null
+          updated_at?: string
+          weaknesses?: Json | null
+        }
+        Update: {
+          category_scores?: Json | null
+          created_at?: string
+          criteria_count?: number | null
+          domain_slug?: string
+          entity_id?: string
+          evaluator_count?: number | null
+          generated_at?: string | null
+          generated_by?: string | null
+          id?: string
+          images?: string[] | null
+          overall_score?: number | null
+          recommendations?: Json | null
+          report_number?: string | null
+          status?: string
+          strengths?: Json | null
+          summary?: string | null
+          summary_ar?: string | null
+          title?: string
+          title_ar?: string | null
+          updated_at?: string
+          weaknesses?: Json | null
+        }
+        Relationships: []
+      }
+      evaluation_scores: {
+        Row: {
+          created_at: string
+          criterion_id: string
+          domain_slug: string
+          entity_id: string
+          evaluator_id: string
+          evidence_urls: string[] | null
+          id: string
+          notes: string | null
+          notes_ar: string | null
+          score: number
+          subject_id: string | null
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          criterion_id: string
+          domain_slug: string
+          entity_id: string
+          evaluator_id: string
+          evidence_urls?: string[] | null
+          id?: string
+          notes?: string | null
+          notes_ar?: string | null
+          score: number
+          subject_id?: string | null
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          criterion_id?: string
+          domain_slug?: string
+          entity_id?: string
+          evaluator_id?: string
+          evidence_urls?: string[] | null
+          id?: string
+          notes?: string | null
+          notes_ar?: string | null
+          score?: number
+          subject_id?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "evaluation_scores_criterion_id_fkey"
+            columns: ["criterion_id"]
+            isOneToOne: false
+            referencedRelation: "evaluation_criteria"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       evaluation_stages: {
         Row: {
           competition_id: string

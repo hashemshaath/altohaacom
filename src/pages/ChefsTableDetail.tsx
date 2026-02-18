@@ -14,9 +14,12 @@ import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Progress } from "@/components/ui/progress";
+import { EvaluationRadarChart } from "@/components/evaluation/EvaluationRadarChart";
+import { EvaluationBarChart } from "@/components/evaluation/EvaluationBarChart";
+import { EvaluationScoreCard } from "@/components/evaluation/EvaluationScoreCard";
 import { 
   ArrowLeft, ChefHat, Calendar, MapPin, Package, Star, ThumbsUp, ThumbsDown, 
-  Users, Image, FileText, Check, X, Clock, Building2
+  Users, Image, FileText, Check, X, Clock, BarChart3
 } from "lucide-react";
 import { format } from "date-fns";
 import { toast } from "sonner";
@@ -50,6 +53,40 @@ export default function ChefsTableDetail() {
     const scores = submittedEvaluations.map(e => (e as any)[s.key]).filter((v: any) => v != null);
     return { ...s, avg: scores.length ? scores.reduce((a: number, b: number) => a + b, 0) / scores.length : 0 };
   });
+
+  // Compute overall score
+  const overallAvg = avgScores.length ? avgScores.reduce((s, c) => s + c.avg, 0) / avgScores.length : 0;
+
+  // Radar chart data
+  const radarData = avgScores.map(s => ({
+    name: isAr ? s.ar : s.en,
+    score: parseFloat(s.avg.toFixed(1)),
+    maxScore: 10,
+    fullMark: 10,
+  }));
+
+  // Per-evaluator data for overlay radar
+  const evaluatorData = submittedEvaluations.map((ev, i) => ({
+    name: `${isAr ? "مقيّم" : "Evaluator"} ${i + 1}`,
+    scores: scoreLabels.map(s => ({
+      name: isAr ? s.ar : s.en,
+      score: (ev as any)[s.key] || 0,
+    })),
+  }));
+
+  // Bar chart data
+  const barData = avgScores.map(s => ({
+    name: isAr ? s.ar : s.en,
+    score: parseFloat(s.avg.toFixed(1)),
+    maxScore: 10,
+  }));
+
+  // Category scores for score card
+  const categoryScores = avgScores.map(s => ({
+    name: isAr ? s.ar : s.en,
+    score: parseFloat(s.avg.toFixed(1)),
+    weight: Math.round(100 / avgScores.length),
+  }));
 
   const handleInvitationResponse = async (status: "accepted" | "declined") => {
     if (!myInvitation) return;
@@ -183,6 +220,10 @@ export default function ChefsTableDetail() {
                 <Star className="h-3.5 w-3.5" />
                 {isAr ? "التقييمات" : "Evaluations"} ({submittedEvaluations.length})
               </TabsTrigger>
+              <TabsTrigger value="charts" className="rounded-lg gap-1.5">
+                <BarChart3 className="h-3.5 w-3.5" />
+                {isAr ? "التحليل البياني" : "Analysis Charts"}
+              </TabsTrigger>
               <TabsTrigger value="gallery" className="rounded-lg gap-1.5">
                 <Image className="h-3.5 w-3.5" />
                 {isAr ? "المعرض" : "Gallery"} ({media.length})
@@ -195,13 +236,22 @@ export default function ChefsTableDetail() {
 
             {/* Evaluations Tab */}
             <TabsContent value="evaluations" className="space-y-6">
-              {/* Summary Card */}
+              {/* Score Summary Card */}
+              {submittedEvaluations.length > 0 && (
+                <EvaluationScoreCard
+                  overallScore={parseFloat(overallAvg.toFixed(1))}
+                  maxScore={10}
+                  evaluatorCount={submittedEvaluations.length}
+                  criteriaCount={scoreLabels.length}
+                  categoryScores={categoryScores}
+                  isAr={isAr}
+                />
+              )}
+
+              {/* Recommendation Summary */}
               {submittedEvaluations.length > 0 && (
                 <Card className="border-border/40">
-                  <CardHeader>
-                    <CardTitle className="text-lg">{isAr ? "ملخص التقييم" : "Evaluation Summary"}</CardTitle>
-                  </CardHeader>
-                  <CardContent className="space-y-4">
+                  <CardContent className="p-6">
                     <div className="flex items-center gap-6 flex-wrap">
                       <div className="flex items-center gap-2">
                         <ThumbsUp className="h-5 w-5 text-chart-5" />
@@ -213,17 +263,16 @@ export default function ChefsTableDetail() {
                         <span className="text-2xl font-black">{submittedEvaluations.length - recommendedCount}</span>
                         <span className="text-sm text-muted-foreground">{isAr ? "لا يوصي" : "Don't Recommend"}</span>
                       </div>
-                    </div>
-                    <div className="space-y-3">
-                      {avgScores.map(s => (
-                        <div key={s.key} className="space-y-1">
-                          <div className="flex justify-between text-sm">
-                            <span className="font-medium">{isAr ? s.ar : s.en}</span>
-                            <span className="font-bold">{s.avg.toFixed(1)}/10</span>
-                          </div>
-                          <Progress value={s.avg * 10} className="h-2" />
+                      <div className="ms-auto">
+                        <div className="flex items-center gap-2">
+                          <span className="text-sm text-muted-foreground">{isAr ? "نسبة التوصية" : "Recommendation Rate"}</span>
+                          <span className="text-lg font-black text-primary">
+                            {submittedEvaluations.length > 0 
+                              ? Math.round((recommendedCount / submittedEvaluations.length) * 100) 
+                              : 0}%
+                          </span>
                         </div>
-                      ))}
+                      </div>
                     </div>
                   </CardContent>
                 </Card>
@@ -238,17 +287,24 @@ export default function ChefsTableDetail() {
                   </CardContent>
                 </Card>
               ) : (
-                submittedEvaluations.map(ev => (
+                submittedEvaluations.map((ev, idx) => (
                   <Card key={ev.id} className="border-border/40">
                     <CardContent className="p-6">
                       <div className="flex items-start justify-between gap-4 mb-4">
-                        <div>
-                          <h3 className="font-bold text-lg">{isAr && ev.review_title_ar ? ev.review_title_ar : ev.review_title || (isAr ? "تقييم" : "Evaluation")}</h3>
-                          {ev.submitted_at && (
-                            <p className="text-xs text-muted-foreground mt-1">
-                              {format(new Date(ev.submitted_at), "PPP")}
-                            </p>
-                          )}
+                        <div className="flex items-center gap-3">
+                          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-primary/10">
+                            <ChefHat className="h-5 w-5 text-primary" />
+                          </div>
+                          <div>
+                            <h3 className="font-bold text-lg">
+                              {isAr && ev.review_title_ar ? ev.review_title_ar : ev.review_title || `${isAr ? "مقيّم" : "Evaluator"} ${idx + 1}`}
+                            </h3>
+                            {ev.submitted_at && (
+                              <p className="text-xs text-muted-foreground mt-0.5">
+                                {format(new Date(ev.submitted_at), "PPP")}
+                              </p>
+                            )}
+                          </div>
                         </div>
                         <Badge variant={ev.is_recommended ? "default" : "destructive"} className="gap-1.5">
                           {ev.is_recommended ? <ThumbsUp className="h-3 w-3" /> : <ThumbsDown className="h-3 w-3" />}
@@ -271,17 +327,34 @@ export default function ChefsTableDetail() {
                         </div>
                       )}
 
-                      <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+                      {/* Individual scores grid */}
+                      <div className="grid grid-cols-2 md:grid-cols-3 gap-3 mb-4">
                         {scoreLabels.map(s => {
                           const val = (ev as any)[s.key];
                           if (val == null) return null;
                           return (
-                            <div key={s.key} className="flex items-center gap-2 text-sm">
-                              <span className="text-muted-foreground">{isAr ? s.ar : s.en}:</span>
-                              <span className="font-bold">{val}/10</span>
+                            <div key={s.key} className="flex items-center justify-between rounded-lg border border-border/50 p-2.5">
+                              <span className="text-xs text-muted-foreground">{isAr ? s.ar : s.en}</span>
+                              <span className="text-sm font-black">{val}/10</span>
                             </div>
                           );
                         })}
+                      </div>
+
+                      {/* Pros & Cons */}
+                      <div className="grid md:grid-cols-2 gap-3">
+                        {ev.pros && (
+                          <div className="rounded-lg bg-chart-5/5 border border-chart-5/20 p-3">
+                            <p className="text-xs font-bold text-chart-5 mb-1">{isAr ? "المميزات" : "Strengths"}</p>
+                            <p className="text-sm">{isAr && ev.pros_ar ? ev.pros_ar : ev.pros}</p>
+                          </div>
+                        )}
+                        {ev.cons && (
+                          <div className="rounded-lg bg-destructive/5 border border-destructive/20 p-3">
+                            <p className="text-xs font-bold text-destructive mb-1">{isAr ? "نقاط التحسين" : "Areas to Improve"}</p>
+                            <p className="text-sm">{isAr && ev.cons_ar ? ev.cons_ar : ev.cons}</p>
+                          </div>
+                        )}
                       </div>
 
                       {ev.endorsement_text && (
@@ -294,6 +367,85 @@ export default function ChefsTableDetail() {
                     </CardContent>
                   </Card>
                 ))
+              )}
+            </TabsContent>
+
+            {/* Charts & Analysis Tab */}
+            <TabsContent value="charts" className="space-y-6">
+              {submittedEvaluations.length === 0 ? (
+                <Card>
+                  <CardContent className="py-12 text-center">
+                    <BarChart3 className="mx-auto h-10 w-10 text-muted-foreground/30" />
+                    <p className="mt-3 font-medium">{isAr ? "لا توجد بيانات كافية للتحليل" : "Not enough data for analysis"}</p>
+                    <p className="text-sm text-muted-foreground mt-1">
+                      {isAr ? "تحتاج إلى تقييم واحد على الأقل" : "Need at least one evaluation"}
+                    </p>
+                  </CardContent>
+                </Card>
+              ) : (
+                <>
+                  <div className="grid lg:grid-cols-2 gap-6">
+                    <EvaluationRadarChart
+                      title={isAr ? "تحليل الأبعاد — المتوسط العام" : "Multi-Dimensional Analysis — Overall Average"}
+                      data={radarData}
+                      evaluatorData={evaluatorData.length > 1 ? evaluatorData : undefined}
+                      isAr={isAr}
+                    />
+                    <EvaluationBarChart
+                      title={isAr ? "متوسط الدرجات حسب المعيار" : "Average Scores by Criterion"}
+                      data={barData}
+                      isAr={isAr}
+                    />
+                  </div>
+
+                  {/* Per-evaluator comparison */}
+                  {evaluatorData.length > 1 && (
+                    <Card>
+                      <CardHeader>
+                        <CardTitle className="text-base">{isAr ? "مقارنة تقييمات الطهاة" : "Chef Evaluations Comparison"}</CardTitle>
+                      </CardHeader>
+                      <CardContent>
+                        <div className="overflow-x-auto">
+                          <table className="w-full text-sm">
+                            <thead>
+                              <tr className="border-b">
+                                <th className="text-start p-2 font-bold">{isAr ? "المعيار" : "Criterion"}</th>
+                                {evaluatorData.map(ev => (
+                                  <th key={ev.name} className="text-center p-2 font-bold">{ev.name}</th>
+                                ))}
+                                <th className="text-center p-2 font-bold text-primary">{isAr ? "المتوسط" : "Average"}</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              {scoreLabels.map(s => (
+                                <tr key={s.key} className="border-b border-border/30">
+                                  <td className="p-2 font-medium">{isAr ? s.ar : s.en}</td>
+                                  {evaluatorData.map(ev => {
+                                    const found = ev.scores.find(sc => sc.name === (isAr ? s.ar : s.en));
+                                    return (
+                                      <td key={ev.name} className="text-center p-2">{found?.score || "—"}</td>
+                                    );
+                                  })}
+                                  <td className="text-center p-2 font-black text-primary">
+                                    {avgScores.find(a => a.key === s.key)?.avg.toFixed(1)}
+                                  </td>
+                                </tr>
+                              ))}
+                              <tr className="bg-muted/30">
+                                <td className="p-2 font-black">{isAr ? "الإجمالي" : "Overall"}</td>
+                                {evaluatorData.map(ev => {
+                                  const total = ev.scores.reduce((s, c) => s + c.score, 0) / ev.scores.length;
+                                  return <td key={ev.name} className="text-center p-2 font-bold">{total.toFixed(1)}</td>;
+                                })}
+                                <td className="text-center p-2 font-black text-primary">{overallAvg.toFixed(1)}</td>
+                              </tr>
+                            </tbody>
+                          </table>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  )}
+                </>
               )}
             </TabsContent>
 
