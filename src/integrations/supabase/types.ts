@@ -14652,6 +14652,41 @@ export type Database = {
           },
         ]
       }
+      supplier_profile_views: {
+        Row: {
+          company_id: string
+          id: string
+          referrer: string | null
+          session_id: string | null
+          viewed_at: string
+          viewer_id: string | null
+        }
+        Insert: {
+          company_id: string
+          id?: string
+          referrer?: string | null
+          session_id?: string | null
+          viewed_at?: string
+          viewer_id?: string | null
+        }
+        Update: {
+          company_id?: string
+          id?: string
+          referrer?: string | null
+          session_id?: string | null
+          viewed_at?: string
+          viewer_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "supplier_profile_views_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       supplier_reviews: {
         Row: {
           comment: string | null
@@ -14692,6 +14727,35 @@ export type Database = {
         Relationships: [
           {
             foreignKeyName: "supplier_reviews_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      supplier_wishlists: {
+        Row: {
+          company_id: string
+          created_at: string
+          id: string
+          user_id: string
+        }
+        Insert: {
+          company_id: string
+          created_at?: string
+          id?: string
+          user_id: string
+        }
+        Update: {
+          company_id?: string
+          created_at?: string
+          id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "supplier_wishlists_company_id_fkey"
             columns: ["company_id"]
             isOneToOne: false
             referencedRelation: "companies"

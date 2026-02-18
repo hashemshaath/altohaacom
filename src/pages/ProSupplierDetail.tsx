@@ -22,6 +22,8 @@ import {
 import { SupplierContactForm } from "@/components/supplier/SupplierContactForm";
 import { SupplierShareButtons } from "@/components/supplier/SupplierShareButtons";
 import { SupplierReviews } from "@/components/supplier/SupplierReviews";
+import { SupplierWishlistButton } from "@/components/supplier/SupplierWishlistButton";
+import { useSupplierViewTracker } from "@/hooks/useSupplierViewTracker";
 
 export default function ProSupplierDetail() {
   const { id } = useParams();
@@ -30,6 +32,7 @@ export default function ProSupplierDetail() {
   const isAr = language === "ar";
   const { data: countries = [] } = useAllCountries();
   const [activeTab, setActiveTab] = useState("overview");
+  useSupplierViewTracker(id);
 
   const { data: company, isLoading } = useQuery({
     queryKey: ["proSupplier", id],
@@ -211,9 +214,12 @@ export default function ProSupplierDetail() {
             <img src={company.cover_image_url} className="absolute inset-0 h-full w-full object-cover opacity-15" alt="" />
           )}
           <div className="container relative py-10 md:py-16">
-            <Button variant="ghost" size="sm" className="mb-6" onClick={() => navigate("/pro-suppliers")}>
-              <ArrowLeft className="me-2 h-4 w-4" />{isAr ? "دليل الموردين" : "Suppliers Directory"}
-            </Button>
+            <div className="flex items-center justify-between mb-6">
+              <Button variant="ghost" size="sm" onClick={() => navigate("/pro-suppliers")}>
+                <ArrowLeft className="me-2 h-4 w-4" />{isAr ? "دليل الموردين" : "Suppliers Directory"}
+              </Button>
+              <SupplierWishlistButton companyId={company.id} />
+            </div>
 
             <div className="flex flex-col gap-6 md:flex-row md:items-start">
               <div className="flex h-24 w-24 shrink-0 items-center justify-center rounded-[2rem] bg-gradient-to-br from-primary to-primary/80 text-primary-foreground shadow-2xl shadow-primary/20">

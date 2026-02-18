@@ -4,7 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useCompanyAccess } from "@/hooks/useCompanyAccess";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { BarChart3, Package, MessageSquare, Star, Eye, TrendingUp } from "lucide-react";
+import { BarChart3, Package, MessageSquare, Star, Eye, TrendingUp, Heart } from "lucide-react";
 
 export function SupplierAnalyticsDashboard() {
   const { language } = useLanguage();
@@ -51,6 +51,34 @@ export function SupplierAnalyticsDashboard() {
     enabled: !!companyId,
   });
 
+  const { data: profileViews = [] } = useQuery({
+    queryKey: ["supplierAnalyticsViews", companyId],
+    queryFn: async () => {
+      if (!companyId) return [];
+      const { data } = await supabase
+        .from("supplier_profile_views")
+        .select("id, viewed_at")
+        .eq("company_id", companyId)
+        .order("viewed_at", { ascending: false })
+        .limit(500);
+      return data || [];
+    },
+    enabled: !!companyId,
+  });
+
+  const { data: wishlists = [] } = useQuery({
+    queryKey: ["supplierAnalyticsWishlists", companyId],
+    queryFn: async () => {
+      if (!companyId) return [];
+      const { data } = await supabase
+        .from("supplier_wishlists")
+        .select("id, created_at")
+        .eq("company_id", companyId);
+      return data || [];
+    },
+    enabled: !!companyId,
+  });
+
   const totalProducts = products.length;
   const activeProducts = products.filter((p: any) => p.is_active).length;
   const inStockProducts = products.filter((p: any) => p.in_stock).length;
@@ -60,12 +88,15 @@ export function SupplierAnalyticsDashboard() {
   const totalReviews = reviews.length;
   const totalInquiries = inquiries.length;
   const unreadInquiries = inquiries.filter((i: any) => i.status === "unread").length;
+  const totalViews = profileViews.length;
+  const totalWishlists = wishlists.length;
 
-  // Recent reviews (last 30 days)
+  // Recent (last 30 days)
   const thirtyDaysAgo = new Date();
   thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
   const recentReviews = reviews.filter((r: any) => new Date(r.created_at) > thirtyDaysAgo).length;
   const recentInquiries = inquiries.filter((i: any) => new Date(i.created_at) > thirtyDaysAgo).length;
+  const recentViews = profileViews.filter((v: any) => new Date(v.viewed_at) > thirtyDaysAgo).length;
 
   // Rating distribution
   const ratingDist = [5, 4, 3, 2, 1].map(s => ({
@@ -75,10 +106,12 @@ export function SupplierAnalyticsDashboard() {
   }));
 
   const statCards = [
-    { icon: Package, label: isAr ? "المنتجات" : "Products", value: totalProducts, sub: isAr ? `${activeProducts} نشط` : `${activeProducts} active`, color: "text-primary" },
+    { icon: Eye, label: isAr ? "المشاهدات" : "Views", value: totalViews, sub: isAr ? `${recentViews} آخر 30 يوم` : `${recentViews} last 30 days`, color: "text-primary" },
+    { icon: Package, label: isAr ? "المنتجات" : "Products", value: totalProducts, sub: isAr ? `${activeProducts} نشط` : `${activeProducts} active`, color: "text-chart-2" },
     { icon: Star, label: isAr ? "التقييم" : "Rating", value: avgRating, sub: isAr ? `${totalReviews} تقييم` : `${totalReviews} reviews`, color: "text-chart-4" },
-    { icon: MessageSquare, label: isAr ? "الاستفسارات" : "Inquiries", value: totalInquiries, sub: isAr ? `${unreadInquiries} غير مقروء` : `${unreadInquiries} unread`, color: "text-chart-2" },
-    { icon: TrendingUp, label: isAr ? "آخر 30 يوم" : "Last 30 Days", value: recentReviews + recentInquiries, sub: isAr ? `${recentReviews} تقييم · ${recentInquiries} استفسار` : `${recentReviews} reviews · ${recentInquiries} inquiries`, color: "text-chart-5" },
+    { icon: Heart, label: isAr ? "المفضلة" : "Saved", value: totalWishlists, sub: isAr ? "مرة حفظ" : "times saved", color: "text-destructive" },
+    { icon: MessageSquare, label: isAr ? "الاستفسارات" : "Inquiries", value: totalInquiries, sub: isAr ? `${unreadInquiries} غير مقروء` : `${unreadInquiries} unread`, color: "text-chart-5" },
+    { icon: TrendingUp, label: isAr ? "آخر 30 يوم" : "Last 30 Days", value: recentReviews + recentInquiries + recentViews, sub: isAr ? `${recentViews} مشاهدة · ${recentReviews} تقييم · ${recentInquiries} استفسار` : `${recentViews} views · ${recentReviews} reviews · ${recentInquiries} inquiries`, color: "text-chart-1" },
   ];
 
   return (
@@ -94,7 +127,7 @@ export function SupplierAnalyticsDashboard() {
       </div>
 
       {/* Stat Cards */}
-      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {statCards.map((s, i) => (
           <Card key={i} className="rounded-xl">
             <CardContent className="p-4">
