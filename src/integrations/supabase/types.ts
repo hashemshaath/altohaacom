@@ -3142,7 +3142,10 @@ export type Database = {
           description: string | null
           description_ar: string | null
           email: string | null
+          featured_order: number | null
+          founded_year: number | null
           id: string
+          is_pro_supplier: boolean | null
           is_verified: boolean | null
           logo_url: string | null
           name: string
@@ -3152,7 +3155,12 @@ export type Database = {
           phone: string | null
           postal_code: string | null
           registration_number: string | null
+          social_links: Json | null
+          specializations: string[] | null
           status: Database["public"]["Enums"]["company_status"] | null
+          supplier_category: string | null
+          tagline: string | null
+          tagline_ar: string | null
           tax_number: string | null
           type: Database["public"]["Enums"]["company_type"]
           updated_at: string | null
@@ -3177,7 +3185,10 @@ export type Database = {
           description?: string | null
           description_ar?: string | null
           email?: string | null
+          featured_order?: number | null
+          founded_year?: number | null
           id?: string
+          is_pro_supplier?: boolean | null
           is_verified?: boolean | null
           logo_url?: string | null
           name: string
@@ -3187,7 +3198,12 @@ export type Database = {
           phone?: string | null
           postal_code?: string | null
           registration_number?: string | null
+          social_links?: Json | null
+          specializations?: string[] | null
           status?: Database["public"]["Enums"]["company_status"] | null
+          supplier_category?: string | null
+          tagline?: string | null
+          tagline_ar?: string | null
           tax_number?: string | null
           type: Database["public"]["Enums"]["company_type"]
           updated_at?: string | null
@@ -3212,7 +3228,10 @@ export type Database = {
           description?: string | null
           description_ar?: string | null
           email?: string | null
+          featured_order?: number | null
+          founded_year?: number | null
           id?: string
+          is_pro_supplier?: boolean | null
           is_verified?: boolean | null
           logo_url?: string | null
           name?: string
@@ -3222,7 +3241,12 @@ export type Database = {
           phone?: string | null
           postal_code?: string | null
           registration_number?: string | null
+          social_links?: Json | null
+          specializations?: string[] | null
           status?: Database["public"]["Enums"]["company_status"] | null
+          supplier_category?: string | null
+          tagline?: string | null
+          tagline_ar?: string | null
           tax_number?: string | null
           type?: Database["public"]["Enums"]["company_type"]
           updated_at?: string | null
