@@ -24,7 +24,7 @@ export function MasterclassProgressWidget() {
         .select("id, status, progress_percent, masterclass_id, masterclasses(id, title, title_ar, cover_image_url, category)")
         .eq("user_id", user.id)
         .eq("status", "active")
-        .order("created_at", { ascending: false })
+        .order("enrolled_at", { ascending: false })
         .limit(3);
       if (error) throw error;
       return data || [];

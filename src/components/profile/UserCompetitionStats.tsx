@@ -19,7 +19,7 @@ export function UserCompetitionStats({ userId }: UserCompetitionStatsProps) {
   const { data, isLoading } = useQuery({
     queryKey: ["user-competition-stats", userId],
     queryFn: async () => {
-      const regRes = await (supabase as any).from("competition_registrations").select("id, status, registered_at").eq("user_id", userId);
+      const regRes = await (supabase as any).from("competition_registrations").select("id, status, registered_at").eq("participant_id", userId);
       const scoreRes = await (supabase as any).from("competition_scores").select("score, registration_id");
       const certRes = await (supabase as any).from("certificates").select("id, type, achievement, event_name, issued_at").eq("recipient_id", userId).eq("status", "issued");
       

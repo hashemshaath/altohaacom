@@ -29,9 +29,7 @@ const VirtualOTPService = {
     const otp = Math.floor(100000 + Math.random() * 900000).toString();
     VirtualOTPService.generatedOTP = otp;
     
-    // In development, we return the OTP for testing
-    // In production, this would be sent via SMS
-    console.log(`[Virtual SMS] OTP for ${phone}: ${otp}`);
+    // OTP generated for virtual verification
     
     return { success: true, otp };
   },

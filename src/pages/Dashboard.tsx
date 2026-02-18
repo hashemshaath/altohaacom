@@ -185,7 +185,7 @@ function AchievementsSummary({ userId, isAr }: { userId: string; isAr: boolean }
     queryKey: ["dashboard-achievements", userId],
     queryFn: async (): Promise<{ certificates: number; competitions: number; badges: number }> => {
       const certsRes = await (supabase.from("certificates").select("id", { count: "exact", head: true }) as any).eq("recipient_id", userId);
-      const regsRes = await (supabase.from("competition_registrations").select("id", { count: "exact", head: true }) as any).eq("user_id", userId);
+      const regsRes = await (supabase.from("competition_registrations").select("id", { count: "exact", head: true }) as any).eq("participant_id", userId);
       const badgesRes = await (supabase.from("user_badges").select("id", { count: "exact", head: true }) as any).eq("user_id", userId);
       return {
         certificates: certsRes.count || 0,

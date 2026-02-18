@@ -37,7 +37,7 @@ export function PollDisplay({ postId }: PollDisplayProps) {
       .from("post_polls")
       .select("id, question, ends_at")
       .eq("post_id", postId)
-      .single();
+      .maybeSingle();
 
     if (!pollData) return;
     setPoll(pollData);
