@@ -16,8 +16,9 @@ import { countryFlag } from "@/lib/countryFlag";
 import {
   Building2, Search, ChefHat, UtensilsCrossed, Package, Shirt,
   Wrench, Boxes, Grid3X3, CheckCircle, ArrowRight, Sparkles,
-  Factory, Globe, ArrowUpDown, Star,
+  Factory, Globe, ArrowUpDown, Star, Scale,
 } from "lucide-react";
+import { SupplierBadges } from "@/components/supplier/SupplierBadges";
 
 const SUPPLIER_CATEGORIES = [
   { value: "all", en: "All", ar: "الكل", icon: Grid3X3 },
@@ -98,6 +99,15 @@ export default function ProSuppliers() {
     },
     staleTime: 1000 * 60 * 5,
   });
+
+  // Compare selection
+  const [compareIds, setCompareIds] = useState<string[]>([]);
+  const toggleCompare = (id: string, e: React.MouseEvent) => {
+    e.stopPropagation();
+    setCompareIds((prev) =>
+      prev.includes(id) ? prev.filter((i) => i !== id) : prev.length < 4 ? [...prev, id] : prev
+    );
+  };
 
   return (
     <div className="flex min-h-screen flex-col">
@@ -199,6 +209,27 @@ export default function ProSuppliers() {
                 {isAr ? "تصنيف" : "Categories"}
               </div>
             </div>
+
+            {/* Compare Bar */}
+            {compareIds.length > 0 && (
+              <div className="mx-auto mt-6 flex max-w-xl items-center justify-center gap-3">
+                <Badge variant="secondary" className="text-xs">
+                  {compareIds.length} {isAr ? "مختار" : "selected"}
+                </Badge>
+                <Button
+                  size="sm"
+                  className="rounded-full gap-1.5"
+                  disabled={compareIds.length < 2}
+                  onClick={() => navigate(`/pro-suppliers/compare?ids=${compareIds.join(",")}`)}
+                >
+                  <Scale className="h-3.5 w-3.5" />
+                  {isAr ? "قارن الآن" : "Compare Now"}
+                </Button>
+                <Button variant="ghost" size="sm" onClick={() => setCompareIds([])}>
+                  {isAr ? "مسح" : "Clear"}
+                </Button>
+              </div>
+            )}
           </div>
         </div>
 
@@ -243,14 +274,19 @@ export default function ProSuppliers() {
                           )}
                         </div>
                       </div>
-                      {company.is_verified && (
-                        <div className="absolute end-3 top-3">
-                          <Badge className="bg-chart-5/90 text-chart-5-foreground border-0 gap-1 text-[9px]">
-                            <CheckCircle className="h-2.5 w-2.5" />
-                            {isAr ? "موثّق" : "Verified"}
-                          </Badge>
-                        </div>
-                      )}
+                      <div className="absolute end-3 top-3 flex items-center gap-1.5">
+                        <button
+                          onClick={(e) => toggleCompare(company.id, e)}
+                          className={`flex h-7 w-7 items-center justify-center rounded-full border transition-colors ${
+                            compareIds.includes(company.id)
+                              ? "bg-primary text-primary-foreground border-primary"
+                              : "bg-background/80 text-muted-foreground border-border/60 hover:border-primary"
+                          }`}
+                          title={isAr ? "قارن" : "Compare"}
+                        >
+                          <Scale className="h-3.5 w-3.5" />
+                        </button>
+                      </div>
                     </div>
 
                     <CardContent className="pt-10 pb-5">
@@ -284,6 +320,12 @@ export default function ProSuppliers() {
                           </Badge>
                         )}
                       </div>
+                      <SupplierBadges
+                        isVerified={company.is_verified}
+                        productCount={productCount}
+                        foundedYear={company.founded_year}
+                        variant="compact"
+                      />
 
                       <div className="mt-4 flex items-center justify-between">
                         <div className="flex flex-wrap gap-1">

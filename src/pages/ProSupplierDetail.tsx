@@ -23,6 +23,7 @@ import { SupplierContactForm } from "@/components/supplier/SupplierContactForm";
 import { SupplierShareButtons } from "@/components/supplier/SupplierShareButtons";
 import { SupplierReviews } from "@/components/supplier/SupplierReviews";
 import { SupplierWishlistButton } from "@/components/supplier/SupplierWishlistButton";
+import { SupplierBadges } from "@/components/supplier/SupplierBadges";
 import { useSupplierViewTracker } from "@/hooks/useSupplierViewTracker";
 
 export default function ProSupplierDetail() {
@@ -241,14 +242,14 @@ export default function ProSupplierDetail() {
                   )}
                 </div>
                 <div className="flex flex-wrap items-center gap-2">
-                  <Badge className="bg-primary/10 text-primary border-primary/20 uppercase text-[10px] tracking-widest px-3 py-1">
-                    {company.type}
-                  </Badge>
-                  {company.is_verified && (
-                    <Badge className="bg-chart-5/10 text-chart-5 border-chart-5/20 gap-1 text-[10px]">
-                      <CheckCircle className="h-3 w-3" />{isAr ? "موثّق" : "Verified"}
-                    </Badge>
-                  )}
+                  <SupplierBadges
+                    isVerified={company.is_verified}
+                    reviewCount={reviewStats?.count || 0}
+                    avgRating={reviewStats?.avg || 0}
+                    productCount={products.length}
+                    foundedYear={(company as any).founded_year}
+                    sponsorshipCount={sponsorships.length}
+                  />
                   {company.company_number && (
                     <Badge variant="outline" className="bg-muted/50 font-mono text-[10px]">
                       <Hash className="me-1 h-3 w-3" />{company.company_number}
@@ -300,18 +301,18 @@ export default function ProSupplierDetail() {
         {/* Tabs */}
         <div className="container py-6">
           <Tabs value={activeTab} onValueChange={setActiveTab}>
-            <TabsList className="mb-6">
-              <TabsTrigger value="overview">{isAr ? "نظرة عامة" : "Overview"}</TabsTrigger>
-              <TabsTrigger value="products">
+            <TabsList className="mb-6 w-full justify-start overflow-x-auto">
+              <TabsTrigger value="overview" className="min-w-fit">{isAr ? "نظرة عامة" : "Overview"}</TabsTrigger>
+              <TabsTrigger value="products" className="min-w-fit">
                 {isAr ? "المنتجات" : "Products"} ({products.length})
               </TabsTrigger>
-              <TabsTrigger value="sponsorships">
+              <TabsTrigger value="sponsorships" className="min-w-fit">
                 {isAr ? "الرعايات" : "Sponsorships"} ({sponsorships.length})
               </TabsTrigger>
-              <TabsTrigger value="contact">
+              <TabsTrigger value="contact" className="min-w-fit">
                 <Mail className="me-1 h-3.5 w-3.5" />{isAr ? "تواصل" : "Contact"}
               </TabsTrigger>
-              <TabsTrigger value="reviews">
+              <TabsTrigger value="reviews" className="min-w-fit">
                 <Star className="me-1 h-3.5 w-3.5" />{isAr ? "التقييمات" : "Reviews"}
               </TabsTrigger>
             </TabsList>
