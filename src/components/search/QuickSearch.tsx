@@ -16,6 +16,8 @@ import {
   X,
   Clock,
   Trash2,
+  MessageSquare,
+  Building2,
 } from "lucide-react";
 import { getRecentSearches, addRecentSearch, clearRecentSearches } from "@/lib/recentSearches";
 
@@ -83,7 +85,7 @@ export function QuickSearch({ onClose }: QuickSearchProps) {
 
       const searchPattern = `%${debouncedQuery}%`;
 
-      const [competitionsRes, articlesRes, membersRes] = await Promise.all([
+      const [competitionsRes, articlesRes, membersRes, postsRes, entitiesRes] = await Promise.all([
         supabase
           .from("competitions")
           .select("id, title, title_ar, status, cover_image_url")
@@ -101,12 +103,26 @@ export function QuickSearch({ onClose }: QuickSearchProps) {
           .select("id, user_id, username, full_name, avatar_url, specialization")
           .or(`full_name.ilike.${searchPattern},username.ilike.${searchPattern},specialization.ilike.${searchPattern}`)
           .limit(3),
+        supabase
+          .from("posts")
+          .select("id, content, created_at, author_id")
+          .eq("visibility", "public")
+          .ilike("content", searchPattern)
+          .order("created_at", { ascending: false })
+          .limit(3),
+        supabase
+          .from("entities" as any)
+          .select("id, name, name_ar, type, logo_url")
+          .or(`name.ilike.${searchPattern},name_ar.ilike.${searchPattern}`)
+          .limit(3),
       ]);
 
       return {
         competitions: competitionsRes.data || [],
         articles: articlesRes.data || [],
         members: membersRes.data || [],
+        posts: postsRes.data || [],
+        entities: (entitiesRes.data as any[]) || [],
       };
     },
     enabled: debouncedQuery.length >= 2,
@@ -116,7 +132,9 @@ export function QuickSearch({ onClose }: QuickSearchProps) {
   const hasResults = suggestions && (
     suggestions.competitions.length > 0 || 
     suggestions.articles.length > 0 || 
-    suggestions.members.length > 0
+    suggestions.members.length > 0 ||
+    suggestions.posts.length > 0 ||
+    suggestions.entities.length > 0
   );
 
   const handleSearch = (e?: React.FormEvent) => {
@@ -316,6 +334,65 @@ export function QuickSearch({ onClose }: QuickSearchProps) {
                           <p className="text-xs text-muted-foreground truncate">
                             {member.specialization}
                           </p>
+                        )}
+                      </div>
+                    </Link>
+                  ))}
+                </div>
+              )}
+
+              {/* Posts */}
+              {suggestions.posts.length > 0 && (
+                <div>
+                  <p className="mb-1 px-2 text-xs font-semibold text-muted-foreground uppercase">
+                    {language === "ar" ? "المنشورات" : "Posts"}
+                  </p>
+                  {suggestions.posts.map((post: any) => (
+                    <button
+                      key={post.id}
+                      onClick={() => { handleResultClick(); navigate(`/community?post=${post.id}`); }}
+                      className="flex items-center gap-3 rounded-md p-2 hover:bg-accent transition-colors w-full text-start"
+                    >
+                      <div className="flex h-8 w-8 items-center justify-center rounded bg-chart-3/10">
+                        <MessageSquare className="h-4 w-4 text-chart-3" />
+                      </div>
+                      <p className="text-sm truncate flex-1 min-w-0">
+                        {post.content?.slice(0, 80)}{post.content?.length > 80 ? "..." : ""}
+                      </p>
+                    </button>
+                  ))}
+                </div>
+              )}
+
+              {/* Entities */}
+              {suggestions.entities.length > 0 && (
+                <div>
+                  <p className="mb-1 px-2 text-xs font-semibold text-muted-foreground uppercase">
+                    {language === "ar" ? "الجهات" : "Organizations"}
+                  </p>
+                  {suggestions.entities.map((entity: any) => (
+                    <Link
+                      key={entity.id}
+                      to={`/entities/${entity.id}`}
+                      onClick={handleResultClick}
+                      className="flex items-center gap-3 rounded-md p-2 hover:bg-accent transition-colors"
+                    >
+                      {entity.logo_url ? (
+                        <Avatar className="h-8 w-8">
+                          <AvatarImage src={entity.logo_url} />
+                          <AvatarFallback><Building2 className="h-4 w-4" /></AvatarFallback>
+                        </Avatar>
+                      ) : (
+                        <div className="flex h-8 w-8 items-center justify-center rounded bg-chart-4/10">
+                          <Building2 className="h-4 w-4 text-chart-4" />
+                        </div>
+                      )}
+                      <div className="flex-1 min-w-0">
+                        <p className="text-sm font-medium truncate">
+                          {language === "ar" && entity.name_ar ? entity.name_ar : entity.name}
+                        </p>
+                        {entity.type && (
+                          <Badge variant="secondary" className="text-xs capitalize">{entity.type}</Badge>
                         )}
                       </div>
                     </Link>
