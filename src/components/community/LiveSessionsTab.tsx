@@ -44,7 +44,7 @@ export function LiveSessionsTab() {
   const [creating, setCreating] = useState(false);
   const [form, setForm] = useState({ title: "", titleAr: "", description: "", descriptionAr: "", scheduledAt: "", duration: "60" });
 
-  useEffect(() => { fetchSessions(); }, [user]);
+  useEffect(() => { fetchSessions(); }, [user?.id]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const fetchSessions = async () => {
     const now = new Date().toISOString();

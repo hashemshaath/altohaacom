@@ -136,7 +136,7 @@ export function CommunityFeed() {
         moderation_status: (p as any).moderation_status || "approved",
       } as CommunityPost;
     });
-  }, [user]);
+  }, [user?.id]);
 
   const fetchPosts = useCallback(async (offset = 0, append = false) => {
     if (offset === 0) setLoading(true);

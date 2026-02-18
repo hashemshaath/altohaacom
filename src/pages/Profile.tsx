@@ -47,7 +47,7 @@ export default function Profile() {
     setLoading(false);
   };
 
-  useEffect(() => { fetchProfile(); }, [user]);
+  useEffect(() => { fetchProfile(); }, [user?.id]); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
     const tab = searchParams.get("tab");

@@ -86,7 +86,7 @@ export function GroupsTab() {
 
   useEffect(() => {
     fetchGroups();
-  }, [user]);
+  }, [user?.id]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const handleCreate = async () => {
     if (!user || !form.name.trim()) return;

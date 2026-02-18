@@ -59,7 +59,7 @@ export function useRealtimeMessages(partnerId: string | null) {
       event: "typing",
       payload: { userId: user.id },
     });
-  }, [user]);
+  }, [user?.id]);
 
   return { partnerTyping, sendTypingIndicator };
 }

@@ -64,7 +64,7 @@ export function PostComposer({ onPosted, replyToPostId, placeholder, compact, au
     supabase.from("profiles").select("avatar_url").eq("user_id", user.id).single().then(({ data }) => {
       if (data) setProfile(data);
     });
-  }, [user]);
+  }, [user?.id]);
 
   const handleImageSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(e.target.files || []);

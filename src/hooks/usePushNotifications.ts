@@ -74,7 +74,7 @@ export function usePushNotifications() {
     } finally {
       setIsLoading(false);
     }
-  }, [user]);
+  }, [user?.id]);
 
   const unsubscribe = useCallback(async () => {
     try {
