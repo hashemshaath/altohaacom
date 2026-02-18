@@ -1,12 +1,12 @@
-import { useMemo, useCallback } from "react";
+import { useMemo } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { isSameMonth, isSameDay, isWithinInterval } from "date-fns";
+import { isSameMonth, isSameDay } from "date-fns";
 import { cn } from "@/lib/utils";
 import { getDaysInMonth } from "@/hooks/useChefSchedule";
 import type { GlobalEvent } from "@/hooks/useGlobalEventsCalendar";
 import { EventChip } from "./EventChip";
-
+import { getEventsForDay } from "./utils";
 export function MonthView({ events, currentDate, selectedDay, onSelectDay, isAr }: {
   events: GlobalEvent[]; currentDate: Date;
   selectedDay: Date | null; onSelectDay: (d: Date) => void; isAr: boolean;
@@ -16,17 +16,7 @@ export function MonthView({ events, currentDate, selectedDay, onSelectDay, isAr 
     ? ["أحد", "إثنين", "ثلاثاء", "أربعاء", "خميس", "جمعة", "سبت"]
     : ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
-  const getEventsForDay = useCallback((day: Date) => {
-    return events.filter(e => {
-      const start = new Date(e.start_date);
-      if (isSameDay(start, day)) return true;
-      if (e.end_date) {
-        const end = new Date(e.end_date);
-        return isWithinInterval(day, { start, end });
-      }
-      return false;
-    });
-  }, [events]);
+  const getDayEvents = (day: Date) => getEventsForDay(events, day);
 
   return (
     <Card className="overflow-hidden border-border/40 shadow-sm">
@@ -38,7 +28,7 @@ export function MonthView({ events, currentDate, selectedDay, onSelectDay, isAr 
         </div>
         <div className="grid grid-cols-7">
           {days.map((day, i) => {
-            const dayEvents = getEventsForDay(day);
+            const dayEvents = getDayEvents(day);
             const isCurrentMonth = isSameMonth(day, currentDate);
             const isToday = isSameDay(day, new Date());
             const isSelected = selectedDay && isSameDay(day, selectedDay);

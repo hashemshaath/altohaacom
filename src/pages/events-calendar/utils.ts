@@ -1,4 +1,5 @@
-import { differenceInDays, differenceInHours } from "date-fns";
+import { differenceInDays, differenceInHours, isSameDay, isWithinInterval } from "date-fns";
+import type { GlobalEvent } from "@/hooks/useGlobalEventsCalendar";
 
 export function getCountdown(startDate: string, isAr: boolean): { text: string; urgent: boolean; past: boolean } {
   const now = new Date();
@@ -15,4 +16,14 @@ export function getCountdown(startDate: string, isAr: boolean): { text: string; 
   if (diffDays <= 30) return { text: isAr ? `${diffDays} يوم` : `${diffDays} days`, urgent: false, past: false };
   const months = Math.floor(diffDays / 30);
   return { text: isAr ? `${months} شهر` : `${months}mo`, urgent: false, past: false };
+}
+
+/** Shared helper: returns events active on a given day (start date match OR within multi-day range). */
+export function getEventsForDay(events: GlobalEvent[], day: Date): GlobalEvent[] {
+  return events.filter(e => {
+    const start = new Date(e.start_date);
+    if (isSameDay(start, day)) return true;
+    if (e.end_date) return isWithinInterval(day, { start, end: new Date(e.end_date) });
+    return false;
+  });
 }
