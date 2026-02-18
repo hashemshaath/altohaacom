@@ -388,6 +388,46 @@ export default function GlobalEventsAdmin() {
         ))}
       </div>
 
+      {/* Type Breakdown Bar */}
+      <Card className="border-border/40">
+        <CardContent className="p-3">
+          <div className="flex items-center gap-2 mb-2">
+            <Eye className="h-3.5 w-3.5 text-muted-foreground" />
+            <span className="text-xs font-medium text-muted-foreground">{isAr ? "توزيع الأنواع" : "Type Distribution"}</span>
+          </div>
+          <div className="flex gap-0.5 h-3 rounded-full overflow-hidden bg-muted">
+            {EVENT_TYPES.map(type => {
+              const count = events.filter(e => e.type === type).length;
+              if (count === 0) return null;
+              const pct = (count / Math.max(events.length, 1)) * 100;
+              const colors = GLOBAL_EVENT_COLORS[type];
+              return (
+                <div
+                  key={type}
+                  className={cn("h-full transition-all", colors.dot)}
+                  style={{ width: `${pct}%` }}
+                  title={`${GLOBAL_EVENT_LABELS[type]?.en}: ${count}`}
+                />
+              );
+            })}
+          </div>
+          <div className="flex flex-wrap gap-x-3 gap-y-1 mt-2">
+            {EVENT_TYPES.map(type => {
+              const count = events.filter(e => e.type === type).length;
+              if (count === 0) return null;
+              const label = GLOBAL_EVENT_LABELS[type];
+              const colors = GLOBAL_EVENT_COLORS[type];
+              return (
+                <span key={type} className="flex items-center gap-1 text-[10px] text-muted-foreground">
+                  <span className={cn("h-2 w-2 rounded-full", colors.dot)} />
+                  {isAr ? label?.ar : label?.en} ({count})
+                </span>
+              );
+            })}
+          </div>
+        </CardContent>
+      </Card>
+
       {/* Filters */}
       <div className="flex flex-wrap gap-2">
         <div className="relative flex-1 min-w-[200px]">

@@ -9,7 +9,8 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Trophy, Landmark, ChefHat, Tv, Mic, GraduationCap, MapPin, Plane, Users, MoreHorizontal, Calendar, List, Clock, ChevronLeft, ChevronRight, Globe, Filter, BookOpen, UtensilsCrossed, Palmtree, Ban } from "lucide-react";
+import { Skeleton } from "@/components/ui/skeleton";
+import { Trophy, Landmark, ChefHat, Tv, Mic, GraduationCap, MapPin, Plane, Users, MoreHorizontal, Calendar, List, Clock, ChevronLeft, ChevronRight, Globe, Filter, BookOpen, UtensilsCrossed, Palmtree, Ban, ExternalLink, X } from "lucide-react";
 import { format, parseISO, isSameMonth, isSameDay, startOfMonth, endOfMonth, addMonths, subMonths } from "date-fns";
 import { cn } from "@/lib/utils";
 import { Link } from "react-router-dom";
@@ -49,6 +50,7 @@ export default function EventsCalendar() {
   const [selectedTypes, setSelectedTypes] = useState<GlobalEventType[]>([]);
   const [selectedCountry, setSelectedCountry] = useState<string>("");
   const [currentDate, setCurrentDate] = useState(new Date());
+  const [selectedDay, setSelectedDay] = useState<Date | null>(null);
 
   const { data: events = [], isLoading } = useGlobalEventsCalendar({
     types: selectedTypes.length > 0 ? selectedTypes : undefined,
@@ -75,6 +77,15 @@ export default function EventsCalendar() {
     [currentDate]
   );
 
+  const upcomingEvents = useMemo(() => {
+    return events.filter(e => new Date(e.start_date) >= new Date()).length;
+  }, [events]);
+
+  const selectedDayEvents = useMemo(() => {
+    if (!selectedDay) return [];
+    return events.filter(e => isSameDay(new Date(e.start_date), selectedDay));
+  }, [selectedDay, events]);
+
   return (
     <>
       <SEOHead
@@ -87,14 +98,21 @@ export default function EventsCalendar() {
         <div className="border-b bg-gradient-to-b from-primary/5 to-background">
           <div className="container py-8 md:py-12">
             <div className="flex items-center gap-3 mb-3">
-              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary/10">
+              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary/10 ring-1 ring-primary/20">
                 <Globe className="h-5 w-5 text-primary" />
               </div>
-              <h1 className="text-2xl md:text-3xl font-bold">
-                {isAr ? "تقويم الفعاليات العالمية" : "Global Events Calendar"}
-              </h1>
+              <div>
+                <h1 className="text-2xl md:text-3xl font-bold">
+                  {isAr ? "تقويم الفعاليات العالمية" : "Global Events Calendar"}
+                </h1>
+                <p className="text-sm text-muted-foreground">
+                  {isAr
+                    ? `${events.length} فعالية • ${upcomingEvents} قادمة`
+                    : `${events.length} events • ${upcomingEvents} upcoming`}
+                </p>
+              </div>
             </div>
-            <p className="text-muted-foreground max-w-2xl">
+            <p className="text-muted-foreground max-w-2xl text-sm">
               {isAr
                 ? "تصفح جميع المسابقات والمعارض والمقابلات التلفزيونية والفعاليات المحلية والدولية في مكان واحد"
                 : "Browse all competitions, exhibitions, TV interviews, and local & international events in one place"}
@@ -116,21 +134,24 @@ export default function EventsCalendar() {
                   const colors = GLOBAL_EVENT_COLORS[type];
                   const active = selectedTypes.includes(type);
                   const IconComp = ICONS[label.icon] || MoreHorizontal;
+                  const count = events.filter(e => e.type === type).length;
                   return (
                     <Button
                       key={type}
                       variant={active ? "default" : "outline"}
                       size="sm"
-                      className={cn("h-8 text-xs gap-1.5", !active && `${colors.bg} ${colors.text} ${colors.border} border`)}
+                      className={cn("h-8 text-xs gap-1.5 transition-all", !active && `${colors.bg} ${colors.text} ${colors.border} border`)}
                       onClick={() => toggleType(type)}
                     >
                       <IconComp className="h-3 w-3" />
                       {isAr ? label.ar : label.en}
+                      {count > 0 && <span className="opacity-60 text-[10px]">({count})</span>}
                     </Button>
                   );
                 })}
                 {selectedTypes.length > 0 && (
-                  <Button variant="ghost" size="sm" className="h-8 text-xs" onClick={() => setSelectedTypes([])}>
+                  <Button variant="ghost" size="sm" className="h-8 text-xs gap-1" onClick={() => setSelectedTypes([])}>
+                    <X className="h-3 w-3" />
                     {isAr ? "مسح الكل" : "Clear All"}
                   </Button>
                 )}
@@ -178,13 +199,13 @@ export default function EventsCalendar() {
               const colors = GLOBAL_EVENT_COLORS[stat.type];
               const IconComp = ICONS[label.icon] || MoreHorizontal;
               return (
-                <Card key={stat.type} className={cn("border", colors.border)}>
+                <Card key={stat.type} className={cn("border transition-shadow hover:shadow-sm", colors.border)}>
                   <CardContent className="p-3 flex items-center gap-3">
                     <div className={cn("flex h-9 w-9 items-center justify-center rounded-lg", colors.bg)}>
                       <IconComp className={cn("h-4 w-4", colors.text)} />
                     </div>
                     <div>
-                      <p className="text-lg font-bold">{stat.count}</p>
+                      <p className="text-lg font-bold tabular-nums">{stat.count}</p>
                       <p className="text-[10px] text-muted-foreground">{isAr ? label.ar : label.en}</p>
                     </div>
                   </CardContent>
@@ -195,16 +216,75 @@ export default function EventsCalendar() {
 
           {/* Content */}
           {isLoading ? (
-            <div className="text-center py-12 text-muted-foreground">{isAr ? "جاري التحميل..." : "Loading..."}</div>
+            <div className="space-y-3">
+              {Array.from({ length: 3 }).map((_, i) => (
+                <Skeleton key={i} className="h-24 w-full rounded-lg" />
+              ))}
+            </div>
           ) : viewMode === "calendar" ? (
-            <CalendarView
-              events={monthEvents}
-              days={calendarDays}
-              currentDate={currentDate}
-              onPrev={() => setCurrentDate(d => subMonths(d, 1))}
-              onNext={() => setCurrentDate(d => addMonths(d, 1))}
-              isAr={isAr}
-            />
+            <div className="space-y-4">
+              <CalendarView
+                events={monthEvents}
+                days={calendarDays}
+                currentDate={currentDate}
+                onPrev={() => { setCurrentDate(d => subMonths(d, 1)); setSelectedDay(null); }}
+                onNext={() => { setCurrentDate(d => addMonths(d, 1)); setSelectedDay(null); }}
+                selectedDay={selectedDay}
+                onSelectDay={setSelectedDay}
+                isAr={isAr}
+              />
+              {/* Selected Day Detail Panel */}
+              {selectedDay && selectedDayEvents.length > 0 && (
+                <Card className="border-primary/20 animate-in slide-in-from-top-2 duration-200">
+                  <CardContent className="p-4 space-y-3">
+                    <div className="flex items-center justify-between">
+                      <h3 className="text-sm font-bold flex items-center gap-2">
+                        <Calendar className="h-4 w-4 text-primary" />
+                        {format(selectedDay, isAr ? "EEEE, d MMMM yyyy" : "EEEE, MMMM d, yyyy")}
+                      </h3>
+                      <div className="flex items-center gap-2">
+                        <Badge variant="outline" className="text-[10px]">
+                          {selectedDayEvents.length} {isAr ? "فعاليات" : "events"}
+                        </Badge>
+                        <Button variant="ghost" size="icon" className="h-6 w-6" onClick={() => setSelectedDay(null)}>
+                          <X className="h-3 w-3" />
+                        </Button>
+                      </div>
+                    </div>
+                    <div className="grid gap-2 sm:grid-cols-2">
+                      {selectedDayEvents.map(ev => {
+                        const colors = GLOBAL_EVENT_COLORS[ev.type];
+                        const label = GLOBAL_EVENT_LABELS[ev.type];
+                        const IconComp = ICONS[label?.icon] || MoreHorizontal;
+                        return (
+                          <div key={ev.id} className={cn("flex items-start gap-3 p-3 rounded-lg border transition-colors hover:bg-muted/30", colors.border)}>
+                            <div className={cn("flex h-9 w-9 shrink-0 items-center justify-center rounded-lg", colors.bg)}>
+                              <IconComp className={cn("h-4 w-4", colors.text)} />
+                            </div>
+                            <div className="min-w-0 flex-1">
+                              <Badge variant="outline" className={cn("text-[9px] px-1.5 py-0 mb-1 border", colors.bg, colors.text, colors.border)}>
+                                {isAr ? label?.ar : label?.en}
+                              </Badge>
+                              {ev.link ? (
+                                <Link to={ev.link} className="text-sm font-semibold hover:text-primary transition-colors line-clamp-1 block">{ev.title}</Link>
+                              ) : (
+                                <p className="text-sm font-semibold line-clamp-1">{ev.title}</p>
+                              )}
+                              <div className="flex items-center gap-2 text-[10px] text-muted-foreground mt-1 flex-wrap">
+                                {ev.city && <span className="flex items-center gap-0.5"><MapPin className="h-2.5 w-2.5" />{ev.city}</span>}
+                                {ev.venue && <span>• {ev.venue}</span>}
+                                {ev.end_date && <span>→ {format(parseISO(ev.end_date), "MMM d")}</span>}
+                                {ev.channel_name && <span>📺 {ev.channel_name}</span>}
+                              </div>
+                            </div>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </CardContent>
+                </Card>
+              )}
+            </div>
           ) : viewMode === "timeline" ? (
             <TimelineView events={events} isAr={isAr} />
           ) : (
@@ -218,9 +298,11 @@ export default function EventsCalendar() {
 }
 
 // ─── Calendar View ─────────────────────────
-function CalendarView({ events, days, currentDate, onPrev, onNext, isAr }: {
+function CalendarView({ events, days, currentDate, onPrev, onNext, selectedDay, onSelectDay, isAr }: {
   events: GlobalEvent[]; days: Date[]; currentDate: Date;
-  onPrev: () => void; onNext: () => void; isAr: boolean;
+  onPrev: () => void; onNext: () => void;
+  selectedDay: Date | null; onSelectDay: (d: Date) => void;
+  isAr: boolean;
 }) {
   const dayNames = isAr
     ? ["أحد", "إثنين", "ثلاثاء", "أربعاء", "خميس", "جمعة", "سبت"]
@@ -233,7 +315,10 @@ function CalendarView({ events, days, currentDate, onPrev, onNext, isAr }: {
     <Card>
       <div className="flex items-center justify-between px-4 py-3 border-b">
         <Button variant="ghost" size="icon" onClick={onPrev}><ChevronLeft className="h-4 w-4" /></Button>
-        <h3 className="font-semibold">{format(currentDate, "MMMM yyyy")}</h3>
+        <div className="text-center">
+          <h3 className="font-semibold">{format(currentDate, "MMMM yyyy")}</h3>
+          <p className="text-[10px] text-muted-foreground">{events.length} {isAr ? "فعاليات هذا الشهر" : "events this month"}</p>
+        </div>
         <Button variant="ghost" size="icon" onClick={onNext}><ChevronRight className="h-4 w-4" /></Button>
       </div>
       <CardContent className="p-2">
@@ -245,18 +330,23 @@ function CalendarView({ events, days, currentDate, onPrev, onNext, isAr }: {
             const dayEvents = getEventsForDay(day);
             const isCurrentMonth = isSameMonth(day, currentDate);
             const isToday = isSameDay(day, new Date());
+            const isSelected = selectedDay && isSameDay(day, selectedDay);
             return (
               <div
                 key={i}
+                onClick={() => dayEvents.length > 0 && onSelectDay(day)}
                 className={cn(
-                  "min-h-[80px] md:min-h-[100px] p-1 border border-border/30 rounded-md transition-colors",
+                  "min-h-[80px] md:min-h-[100px] p-1 border border-border/30 rounded-md transition-all",
                   !isCurrentMonth && "opacity-40",
-                  isToday && "bg-primary/5 border-primary/30"
+                  isToday && "bg-primary/5 border-primary/30",
+                  isSelected && "ring-2 ring-primary/40 bg-primary/10",
+                  dayEvents.length > 0 && "cursor-pointer hover:border-primary/40 hover:shadow-sm"
                 )}
               >
                 <div className={cn(
                   "text-xs font-medium mb-1 text-center",
-                  isToday && "text-primary font-bold"
+                  isToday && "text-primary font-bold",
+                  isSelected && "text-primary"
                 )}>
                   {day.getDate()}
                 </div>
@@ -265,9 +355,7 @@ function CalendarView({ events, days, currentDate, onPrev, onNext, isAr }: {
                     const colors = GLOBAL_EVENT_COLORS[ev.type];
                     return (
                       <div key={ev.id} className={cn("text-[9px] px-1 py-0.5 rounded truncate border", colors.bg, colors.text, colors.border)}>
-                        {ev.link ? (
-                          <Link to={ev.link} className="hover:underline">{ev.title}</Link>
-                        ) : ev.title}
+                        {ev.title}
                       </div>
                     );
                   })}
@@ -306,6 +394,7 @@ function TimelineView({ events, isAr }: { events: GlobalEvent[]; isAr: boolean }
         <div key={month}>
           <h3 className="text-sm font-semibold text-primary mb-3 sticky top-0 bg-background py-1 z-10">
             {format(parseISO(month + "-01"), "MMMM yyyy")}
+            <Badge variant="outline" className="ms-2 text-[10px]">{monthEvents.length}</Badge>
           </h3>
           <div className="relative ps-6">
             <div className="absolute start-[11px] top-2 bottom-2 w-0.5 bg-border" />
@@ -327,11 +416,11 @@ function EventTimelineItem({ event, isAr }: { event: GlobalEvent; isAr: boolean 
   const IconComp = ICONS[label?.icon] || MoreHorizontal;
 
   return (
-    <div className="relative flex items-start gap-3">
-      <div className={cn("relative z-10 flex h-6 w-6 shrink-0 items-center justify-center rounded-full border", colors.bg, colors.border)}>
+    <div className="relative flex items-start gap-3 group">
+      <div className={cn("relative z-10 flex h-6 w-6 shrink-0 items-center justify-center rounded-full border transition-shadow group-hover:shadow-sm", colors.bg, colors.border)}>
         <IconComp className={cn("h-3 w-3", colors.text)} />
       </div>
-      <Card className={cn("flex-1 border", colors.border)}>
+      <Card className={cn("flex-1 border transition-shadow group-hover:shadow-sm", colors.border)}>
         <CardContent className="p-3">
           <div className="flex items-start justify-between gap-2">
             <div className="min-w-0">
