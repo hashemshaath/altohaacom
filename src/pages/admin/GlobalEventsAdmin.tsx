@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useAuth } from "@/contexts/AuthContext";
 import {
@@ -13,16 +13,18 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";
+import { Checkbox } from "@/components/ui/checkbox";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { toast } from "sonner";
 import { format, parseISO } from "date-fns";
 import { cn } from "@/lib/utils";
+import { downloadCSV } from "@/lib/exportUtils";
 import {
   Globe, Plus, Search, Edit2, Trash2, Save, X, Calendar, MapPin,
   Trophy, Landmark, ChefHat, Tv, Mic, GraduationCap, Plane, Users,
   MoreHorizontal, BookOpen, UtensilsCrossed, Palmtree, Ban, ExternalLink,
-  CheckCircle, XCircle, RefreshCw, Eye,
+  CheckCircle, XCircle, RefreshCw, Eye, Download, Filter,
 } from "lucide-react";
 
 const ICONS: Record<string, any> = {
@@ -50,18 +52,21 @@ export default function GlobalEventsAdmin() {
   const { user } = useAuth();
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
+  const [typeFilter, setTypeFilter] = useState("all");
   const [editing, setEditing] = useState<Partial<GlobalEventRecord> | null>(null);
+  const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
 
   const { data: events = [], isLoading } = useGlobalEvents({ status: statusFilter });
   const createEvent = useCreateGlobalEvent();
   const updateEvent = useUpdateGlobalEvent();
   const deleteEvent = useDeleteGlobalEvent();
 
-  const filtered = events.filter(ev => {
+  const filtered = useMemo(() => events.filter(ev => {
+    if (typeFilter !== "all" && ev.type !== typeFilter) return false;
     if (!search) return true;
     const q = search.toLowerCase();
     return ev.title?.toLowerCase().includes(q) || ev.title_ar?.toLowerCase().includes(q) || ev.city?.toLowerCase().includes(q);
-  });
+  }), [events, typeFilter, search]);
 
   const handleSave = async () => {
     if (!editing?.title || !editing?.start_date) {
@@ -85,6 +90,7 @@ export default function GlobalEventsAdmin() {
   const handleDelete = async (id: string) => {
     try {
       await deleteEvent.mutateAsync(id);
+      setSelectedIds(prev => { const n = new Set(prev); n.delete(id); return n; });
       toast.success(isAr ? "تم الحذف" : "Deleted");
     } catch {
       toast.error(isAr ? "خطأ" : "Error");
@@ -105,6 +111,59 @@ export default function GlobalEventsAdmin() {
       status: "active",
       priority: 0,
     });
+  };
+
+  // Bulk actions
+  const toggleSelect = (id: string) => {
+    setSelectedIds(prev => { const n = new Set(prev); n.has(id) ? n.delete(id) : n.add(id); return n; });
+  };
+  const toggleAll = () => {
+    setSelectedIds(prev => prev.size === filtered.length ? new Set() : new Set(filtered.map(e => e.id)));
+  };
+  const bulkUpdateStatus = async (status: string) => {
+    try {
+      await Promise.all(Array.from(selectedIds).map(id => updateEvent.mutateAsync({ id, status } as any)));
+      toast.success(isAr ? `تم تحديث ${selectedIds.size} فعالية` : `Updated ${selectedIds.size} events`);
+      setSelectedIds(new Set());
+    } catch { toast.error(isAr ? "خطأ" : "Error"); }
+  };
+  const bulkDelete = async () => {
+    try {
+      await Promise.all(Array.from(selectedIds).map(id => deleteEvent.mutateAsync(id)));
+      toast.success(isAr ? `تم حذف ${selectedIds.size} فعالية` : `Deleted ${selectedIds.size} events`);
+      setSelectedIds(new Set());
+    } catch { toast.error(isAr ? "خطأ" : "Error"); }
+  };
+
+  const exportEvents = () => {
+    downloadCSV(filtered.map(ev => ({
+      type: GLOBAL_EVENT_LABELS[ev.type as GlobalEventType]?.en || ev.type,
+      title: ev.title,
+      title_ar: ev.title_ar || "",
+      start_date: ev.start_date,
+      end_date: ev.end_date || "",
+      city: ev.city || "",
+      country_code: ev.country_code || "",
+      venue: ev.venue || "",
+      organizer: ev.organizer || "",
+      status: ev.status,
+      international: ev.is_international ? "Yes" : "No",
+      recurring: ev.is_recurring ? "Yes" : "No",
+    })), `global-events-${format(new Date(), "yyyy-MM-dd")}`, [
+      { key: "type", label: "Type" },
+      { key: "title", label: "Title" },
+      { key: "title_ar", label: "Title (AR)" },
+      { key: "start_date", label: "Start Date" },
+      { key: "end_date", label: "End Date" },
+      { key: "city", label: "City" },
+      { key: "country_code", label: "Country" },
+      { key: "venue", label: "Venue" },
+      { key: "organizer", label: "Organizer" },
+      { key: "status", label: "Status" },
+      { key: "international", label: "International" },
+      { key: "recurring", label: "Recurring" },
+    ]);
+    toast.success(isAr ? "تم التصدير" : "Exported");
   };
 
   // ─── Inline Edit Form ─────────────────
@@ -297,9 +356,14 @@ export default function GlobalEventsAdmin() {
             {isAr ? "إدارة الفعاليات العالمية والمحلية المتكررة" : "Manage global and local recurring events"}
           </p>
         </div>
-        <Button className="gap-1.5" onClick={openNew}>
-          <Plus className="h-4 w-4" />{isAr ? "فعالية جديدة" : "New Event"}
-        </Button>
+        <div className="flex gap-2">
+          <Button variant="outline" size="sm" onClick={exportEvents} className="gap-1.5">
+            <Download className="h-3.5 w-3.5" />{isAr ? "تصدير" : "Export CSV"}
+          </Button>
+          <Button className="gap-1.5" onClick={openNew}>
+            <Plus className="h-4 w-4" />{isAr ? "فعالية جديدة" : "New Event"}
+          </Button>
+        </div>
       </div>
 
       {/* KPIs */}
@@ -330,6 +394,16 @@ export default function GlobalEventsAdmin() {
           <Search className="absolute start-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground" />
           <Input value={search} onChange={e => setSearch(e.target.value)} placeholder={isAr ? "بحث..." : "Search..."} className="ps-9 h-9" />
         </div>
+        <Select value={typeFilter} onValueChange={setTypeFilter}>
+          <SelectTrigger className="w-[150px] h-9"><SelectValue /></SelectTrigger>
+          <SelectContent>
+            <SelectItem value="all">{isAr ? "جميع الأنواع" : "All Types"}</SelectItem>
+            {EVENT_TYPES.map(t => {
+              const l = GLOBAL_EVENT_LABELS[t];
+              return <SelectItem key={t} value={t}>{isAr ? l?.ar : l?.en}</SelectItem>;
+            })}
+          </SelectContent>
+        </Select>
         <Select value={statusFilter} onValueChange={setStatusFilter}>
           <SelectTrigger className="w-[140px] h-9"><SelectValue /></SelectTrigger>
           <SelectContent>
@@ -341,11 +415,34 @@ export default function GlobalEventsAdmin() {
         </Select>
       </div>
 
+      {/* Bulk Actions Bar */}
+      {selectedIds.size > 0 && (
+        <div className="flex items-center gap-2 p-2.5 rounded-lg border border-primary/20 bg-primary/5">
+          <span className="text-xs font-medium">{selectedIds.size} {isAr ? "محدد" : "selected"}</span>
+          <div className="flex-1" />
+          <Button variant="outline" size="sm" className="h-7 text-xs gap-1" onClick={() => bulkUpdateStatus("active")}>
+            <CheckCircle className="h-3 w-3" />{isAr ? "تنشيط" : "Activate"}
+          </Button>
+          <Button variant="outline" size="sm" className="h-7 text-xs gap-1" onClick={() => bulkUpdateStatus("cancelled")}>
+            <Ban className="h-3 w-3" />{isAr ? "إلغاء" : "Cancel"}
+          </Button>
+          <Button variant="destructive" size="sm" className="h-7 text-xs gap-1" onClick={bulkDelete}>
+            <Trash2 className="h-3 w-3" />{isAr ? "حذف" : "Delete"}
+          </Button>
+        </div>
+      )}
+
       {/* Table */}
       <Card className="border-border/40 overflow-hidden">
         <Table>
           <TableHeader>
             <TableRow>
+              <TableHead className="w-8">
+                <Checkbox
+                  checked={filtered.length > 0 && selectedIds.size === filtered.length}
+                  onCheckedChange={toggleAll}
+                />
+              </TableHead>
               <TableHead className="text-xs">{isAr ? "النوع" : "Type"}</TableHead>
               <TableHead className="text-xs">{isAr ? "العنوان" : "Title"}</TableHead>
               <TableHead className="text-xs">{isAr ? "التاريخ" : "Date"}</TableHead>
@@ -357,9 +454,9 @@ export default function GlobalEventsAdmin() {
           </TableHeader>
           <TableBody>
             {isLoading ? (
-              <TableRow><TableCell colSpan={7} className="text-center py-12 text-muted-foreground">{isAr ? "جاري التحميل..." : "Loading..."}</TableCell></TableRow>
+              <TableRow><TableCell colSpan={8} className="text-center py-12 text-muted-foreground">{isAr ? "جاري التحميل..." : "Loading..."}</TableCell></TableRow>
             ) : filtered.length === 0 ? (
-              <TableRow><TableCell colSpan={7} className="text-center py-12 text-muted-foreground">{isAr ? "لا توجد فعاليات" : "No events"}</TableCell></TableRow>
+              <TableRow><TableCell colSpan={8} className="text-center py-12 text-muted-foreground">{isAr ? "لا توجد فعاليات" : "No events"}</TableCell></TableRow>
             ) : (
               filtered.map(ev => {
                 const typeKey = ev.type as GlobalEventType;
@@ -368,6 +465,9 @@ export default function GlobalEventsAdmin() {
                 const IconComp = ICONS[label?.icon] || MoreHorizontal;
                 return (
                   <TableRow key={ev.id} className={ev.status === "cancelled" ? "opacity-50" : ""}>
+                    <TableCell>
+                      <Checkbox checked={selectedIds.has(ev.id)} onCheckedChange={() => toggleSelect(ev.id)} />
+                    </TableCell>
                     <TableCell>
                       <Badge className={cn("text-[9px] border gap-1", colors.bg, colors.text, colors.border)}>
                         <IconComp className="h-3 w-3" />{isAr ? label?.ar : label?.en}
