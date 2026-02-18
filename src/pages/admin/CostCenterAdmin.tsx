@@ -13,6 +13,7 @@ import {
   type CostEstimate, type CostEstimateItem, type CostModuleType,
   type CostEstimateStatus, type CostItemCategory, type CostTemplate,
 } from "@/hooks/useCostCenter";
+import { ChefCostCenter } from "@/components/admin/chefs-table/ChefCostCenter";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -31,7 +32,8 @@ import {
   Calculator, Plus, Search, FileText, Eye, Edit2, Trash2,
   Save, Send, CheckCircle2, XCircle, Receipt, ChevronDown,
   DollarSign, BarChart3, Clock, ArrowRight, Copy,
-  Printer, LayoutTemplate, History, AlertCircle,
+  Printer, LayoutTemplate, History, AlertCircle, Users,
+  Trophy, ChefHat, Landmark, Calendar, TrendingUp,
 } from "lucide-react";
 
 export default function CostCenterAdmin() {
@@ -39,7 +41,7 @@ export default function CostCenterAdmin() {
   const isAr = language === "ar";
   const { user } = useAuth();
 
-  const [activeTab, setActiveTab] = useState("estimates");
+  const [activeTab, setActiveTab] = useState("overview");
   const [moduleFilter, setModuleFilter] = useState("all");
   const [statusFilter, setStatusFilter] = useState("all");
   const [search, setSearch] = useState("");
@@ -99,6 +101,10 @@ export default function CostCenterAdmin() {
       approved: all.filter(e => e.status === "approved").length,
       totalValue: all.reduce((s, e) => s + e.total_amount, 0),
       approvedValue: all.filter(e => e.status === "approved" || e.status === "invoiced").reduce((s, e) => s + e.total_amount, 0),
+      byModule: Object.keys(MODULE_TYPES).reduce((acc, key) => {
+        acc[key] = all.filter(e => e.module_type === key).length;
+        return acc;
+      }, {} as Record<string, number>),
     };
   }, [estimates]);
 
@@ -110,6 +116,7 @@ export default function CostCenterAdmin() {
       toast.success(isAr ? "تم إنشاء التقدير" : "Estimate created");
       setShowForm(false);
       setSelectedEstimateId(result.id);
+      setActiveTab("estimates");
       setFormData({ module_type: "competition", title: "", currency: "SAR", tax_rate: 15, discount_amount: 0, status: "draft" });
     } catch {
       toast.error(isAr ? "حدث خطأ" : "Error creating estimate");
@@ -122,7 +129,6 @@ export default function CostCenterAdmin() {
       await saveItem.mutateAsync({ ...editingItem, estimate_id: selectedEstimateId } as any);
       toast.success(isAr ? "تم الحفظ" : "Item saved");
       setEditingItem(null);
-      // Recalc totals
       setTimeout(async () => {
         const { data: items } = await (supabase as any).from("cost_estimate_items").select("*").eq("estimate_id", selectedEstimateId);
         if (items) {
@@ -227,6 +233,9 @@ export default function CostCenterAdmin() {
               <Badge className={`text-[10px] ${sc.color}`}>{isAr ? sc.ar : sc.en}</Badge>
               <Badge variant="outline" className="text-[10px]">{isAr ? mt.ar : mt.en}</Badge>
               <span className="text-xs text-muted-foreground font-mono">{selectedEstimate.estimate_number}</span>
+              {selectedEstimate.version > 1 && (
+                <Badge variant="secondary" className="text-[10px]">v{selectedEstimate.version}</Badge>
+              )}
             </div>
             {selectedEstimate.module_title && (
               <p className="text-xs text-muted-foreground mt-0.5">
@@ -478,15 +487,15 @@ export default function CostCenterAdmin() {
     );
   }
 
-  // ─── Main List View ───────────────────────
+  // ─── Main View ───────────────────────
 
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <AdminPageHeader
           icon={Calculator}
-          title={isAr ? "مركز التكلفة" : "Cost Center"}
-          description={isAr ? "إعداد التقديرات والعروض والموافقات لجميع الأقسام" : "Estimates, proposals & approvals for all modules"}
+          title={isAr ? "مركز التكلفة والتسعير" : "Cost & Pricing Center"}
+          description={isAr ? "إدارة التكاليف والتقديرات والموافقات والفواتير لجميع الأقسام" : "Manage costs, estimates, approvals & invoicing across all modules"}
         />
         <Button size="sm" variant="outline" className="gap-1.5 print:hidden" onClick={() => window.print()}>
           <Printer className="h-3.5 w-3.5" />{isAr ? "طباعة" : "Print"}
@@ -494,18 +503,19 @@ export default function CostCenterAdmin() {
       </div>
 
       {/* Stats */}
-      <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
+      <div className="grid grid-cols-2 md:grid-cols-6 gap-3">
         {[
           { label: isAr ? "إجمالي التقديرات" : "Total Estimates", value: stats.total, icon: FileText, color: "text-primary" },
           { label: isAr ? "مسودات" : "Drafts", value: stats.drafts, icon: Edit2, color: "text-muted-foreground" },
-          { label: isAr ? "بانتظار الموافقة" : "Pending", value: stats.pending, icon: Clock, color: "text-chart-4" },
+          { label: isAr ? "بانتظار الموافقة" : "Pending", value: stats.pending, icon: Clock, color: "text-chart-4", pulse: stats.pending > 0 },
           { label: isAr ? "معتمدة" : "Approved", value: stats.approved, icon: CheckCircle2, color: "text-chart-5" },
-          { label: isAr ? "القيمة المعتمدة" : "Approved Value", value: `${stats.approvedValue.toLocaleString()} SAR`, icon: DollarSign, color: "text-primary" },
+          { label: isAr ? "القيمة الإجمالية" : "Total Value", value: `${stats.totalValue.toLocaleString()}`, icon: DollarSign, color: "text-primary" },
+          { label: isAr ? "القيمة المعتمدة" : "Approved Value", value: `${stats.approvedValue.toLocaleString()}`, icon: TrendingUp, color: "text-chart-5" },
         ].map((s, i) => (
           <Card key={i} className="border-border/40">
             <CardContent className="p-4">
               <div className="flex items-center gap-2 mb-2">
-                <s.icon className={`h-4 w-4 ${s.color}`} />
+                <s.icon className={`h-4 w-4 ${s.color} ${(s as any).pulse ? "animate-pulse" : ""}`} />
                 <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider">{s.label}</span>
               </div>
               <p className="text-lg font-black tabular-nums">{s.value}</p>
@@ -514,15 +524,130 @@ export default function CostCenterAdmin() {
         ))}
       </div>
 
+      {/* Module Breakdown */}
+      <div className="grid grid-cols-3 md:grid-cols-6 gap-2">
+        {Object.entries(MODULE_TYPES).map(([key, val]) => {
+          const moduleIcons: Record<string, any> = {
+            competition: Trophy, chefs_table: ChefHat, exhibition: Landmark,
+            event: Calendar, project: FileText, other: BarChart3,
+          };
+          const Icon = moduleIcons[key] || FileText;
+          const count = stats.byModule[key] || 0;
+          return (
+            <button
+              key={key}
+              onClick={() => { setModuleFilter(key); setActiveTab("estimates"); }}
+              className={`rounded-lg border p-3 text-center transition-all hover:border-primary/30 hover:bg-primary/5 ${moduleFilter === key ? "border-primary/40 bg-primary/10" : "border-border/40"}`}
+            >
+              <Icon className="h-4 w-4 mx-auto mb-1 text-muted-foreground" />
+              <p className="text-lg font-black tabular-nums">{count}</p>
+              <p className="text-[9px] text-muted-foreground font-bold uppercase tracking-wider">{isAr ? val.ar : val.en}</p>
+            </button>
+          );
+        })}
+      </div>
+
       <Tabs value={activeTab} onValueChange={setActiveTab}>
-        <TabsList className="print:hidden">
+        <TabsList className="print:hidden flex-wrap">
+          <TabsTrigger value="overview" className="gap-1.5">
+            <BarChart3 className="h-3.5 w-3.5" />{isAr ? "نظرة عامة" : "Overview"}
+          </TabsTrigger>
           <TabsTrigger value="estimates" className="gap-1.5">
             <FileText className="h-3.5 w-3.5" />{isAr ? "التقديرات" : "Estimates"}
+            {stats.pending > 0 && <Badge variant="destructive" className="ms-1 h-5 min-w-5 px-1.5 text-[10px]">{stats.pending}</Badge>}
+          </TabsTrigger>
+          <TabsTrigger value="chef-costs" className="gap-1.5">
+            <ChefHat className="h-3.5 w-3.5" />{isAr ? "تكاليف الطهاة" : "Chef Costs"}
           </TabsTrigger>
           <TabsTrigger value="templates" className="gap-1.5">
             <LayoutTemplate className="h-3.5 w-3.5" />{isAr ? "القوالب" : "Templates"}
           </TabsTrigger>
         </TabsList>
+
+        {/* ─── Overview Tab ──────────── */}
+        <TabsContent value="overview" className="space-y-4">
+          <div className="grid md:grid-cols-2 gap-4">
+            {/* Recent Estimates */}
+            <Card className="border-border/40">
+              <CardHeader className="pb-3">
+                <CardTitle className="text-sm flex items-center gap-2">
+                  <Clock className="h-4 w-4" />{isAr ? "أحدث التقديرات" : "Recent Estimates"}
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="p-0">
+                {estimates.slice(0, 5).map(est => {
+                  const sc = ESTIMATE_STATUS_CONFIG[est.status];
+                  return (
+                    <div key={est.id} className="flex items-center gap-3 px-4 py-3 border-b border-border/20 last:border-0 cursor-pointer hover:bg-muted/30 transition-colors"
+                      onClick={() => { setSelectedEstimateId(est.id); }}>
+                      <div className="flex-1 min-w-0">
+                        <p className="text-sm font-bold truncate">{est.title}</p>
+                        <p className="text-[10px] text-muted-foreground font-mono">{est.estimate_number}</p>
+                      </div>
+                      <Badge className={`text-[9px] ${sc.color}`}>{isAr ? sc.ar : sc.en}</Badge>
+                      <span className="text-sm font-bold tabular-nums">{est.total_amount.toLocaleString()}</span>
+                    </div>
+                  );
+                })}
+                {estimates.length === 0 && (
+                  <div className="py-8 text-center text-muted-foreground text-sm">{isAr ? "لا توجد تقديرات بعد" : "No estimates yet"}</div>
+                )}
+              </CardContent>
+            </Card>
+
+            {/* Pending Approvals */}
+            <Card className="border-border/40">
+              <CardHeader className="pb-3">
+                <CardTitle className="text-sm flex items-center gap-2">
+                  <AlertCircle className="h-4 w-4 text-chart-4" />{isAr ? "بانتظار الموافقة" : "Pending Approvals"}
+                  {stats.pending > 0 && <Badge variant="destructive" className="text-[10px]">{stats.pending}</Badge>}
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="p-0">
+                {estimates.filter(e => e.status === "pending_approval").slice(0, 5).map(est => {
+                  const mt = MODULE_TYPES[est.module_type];
+                  return (
+                    <div key={est.id} className="flex items-center gap-3 px-4 py-3 border-b border-border/20 last:border-0 cursor-pointer hover:bg-muted/30 transition-colors"
+                      onClick={() => setSelectedEstimateId(est.id)}>
+                      <div className="flex-1 min-w-0">
+                        <p className="text-sm font-bold truncate">{est.title}</p>
+                        <Badge variant="outline" className="text-[9px]">{isAr ? mt.ar : mt.en}</Badge>
+                      </div>
+                      <span className="text-sm font-bold tabular-nums text-chart-4">{est.total_amount.toLocaleString()} SAR</span>
+                      <ArrowRight className="h-3.5 w-3.5 text-muted-foreground" />
+                    </div>
+                  );
+                })}
+                {stats.pending === 0 && (
+                  <div className="py-8 text-center text-muted-foreground text-sm">
+                    <CheckCircle2 className="h-6 w-6 mx-auto mb-2 opacity-30" />
+                    {isAr ? "لا توجد تقديرات معلقة" : "No pending approvals"}
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+          </div>
+
+          {/* Quick Create */}
+          <Card className="border-dashed border-primary/20 bg-primary/5">
+            <CardContent className="p-5">
+              <div className="flex items-center gap-4">
+                <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-primary/10">
+                  <Plus className="h-6 w-6 text-primary" />
+                </div>
+                <div className="flex-1">
+                  <h3 className="font-bold text-sm">{isAr ? "إنشاء تقدير تكلفة جديد" : "Create New Cost Estimate"}</h3>
+                  <p className="text-xs text-muted-foreground">
+                    {isAr ? "للمسابقات، طاولة الشيف، المعارض، الفعاليات، أو المشاريع" : "For competitions, chef's table, exhibitions, events, or projects"}
+                  </p>
+                </div>
+                <Button className="gap-1.5" onClick={() => { setShowForm(true); setActiveTab("estimates"); }}>
+                  <Plus className="h-4 w-4" />{isAr ? "تقدير جديد" : "New Estimate"}
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+        </TabsContent>
 
         {/* ─── Estimates Tab ──────────── */}
         <TabsContent value="estimates" className="space-y-4">
@@ -619,19 +744,25 @@ export default function CostCenterAdmin() {
               {filteredEstimates.map(est => {
                 const sc = ESTIMATE_STATUS_CONFIG[est.status];
                 const mt = MODULE_TYPES[est.module_type];
+                const moduleIcons: Record<string, any> = {
+                  competition: Trophy, chefs_table: ChefHat, exhibition: Landmark,
+                  event: Calendar, project: FileText, other: BarChart3,
+                };
+                const ModIcon = moduleIcons[est.module_type] || Calculator;
                 return (
                   <Card key={est.id} className="border-border/40 hover:border-border/60 transition-all cursor-pointer"
                     onClick={() => setSelectedEstimateId(est.id)}>
                     <CardContent className="p-4">
                       <div className="flex items-center gap-4">
                         <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-primary/10">
-                          <Calculator className="h-5 w-5 text-primary" />
+                          <ModIcon className="h-5 w-5 text-primary" />
                         </div>
                         <div className="flex-1 min-w-0">
                           <div className="flex items-center gap-2 flex-wrap">
                             <h3 className="font-bold text-sm truncate">{est.title}</h3>
                             <Badge className={`text-[10px] ${sc.color}`}>{isAr ? sc.ar : sc.en}</Badge>
                             <Badge variant="outline" className="text-[10px]">{isAr ? mt.ar : mt.en}</Badge>
+                            {est.version > 1 && <Badge variant="secondary" className="text-[10px]">v{est.version}</Badge>}
                           </div>
                           <div className="flex items-center gap-3 mt-0.5 text-xs text-muted-foreground">
                             <span className="font-mono">{est.estimate_number}</span>
@@ -651,6 +782,11 @@ export default function CostCenterAdmin() {
               })}
             </div>
           )}
+        </TabsContent>
+
+        {/* ─── Chef Costs Tab ─────────── */}
+        <TabsContent value="chef-costs">
+          <ChefCostCenter />
         </TabsContent>
 
         {/* ─── Templates Tab ─────────── */}
@@ -673,18 +809,38 @@ export default function CostCenterAdmin() {
             <div className="grid gap-3 md:grid-cols-2 lg:grid-cols-3">
               {templates.map(t => {
                 const mt = MODULE_TYPES[t.module_type];
+                const moduleIcons: Record<string, any> = {
+                  competition: Trophy, chefs_table: ChefHat, exhibition: Landmark,
+                  event: Calendar, project: FileText, other: BarChart3,
+                };
+                const ModIcon = moduleIcons[t.module_type] || LayoutTemplate;
+                const totalValue = t.items.reduce((s, item) => s + item.unit_price * item.default_quantity, 0);
                 return (
-                  <Card key={t.id} className="border-border/40">
+                  <Card key={t.id} className="border-border/40 hover:border-border/60 transition-all">
                     <CardContent className="p-4">
                       <div className="flex items-start justify-between mb-2">
                         <div>
                           <h4 className="font-bold text-sm">{isAr && t.name_ar ? t.name_ar : t.name}</h4>
-                          <Badge variant="outline" className="text-[8px] mt-1">{isAr ? mt.ar : mt.en}</Badge>
+                          <Badge variant="outline" className="text-[8px] mt-1 gap-1">
+                            <ModIcon className="h-2.5 w-2.5" />{isAr ? mt.ar : mt.en}
+                          </Badge>
                         </div>
-                        <LayoutTemplate className="h-4 w-4 text-muted-foreground" />
+                        <div className="text-end">
+                          <p className="text-sm font-black tabular-nums text-primary">{totalValue.toLocaleString()}</p>
+                          <p className="text-[9px] text-muted-foreground">SAR</p>
+                        </div>
                       </div>
                       {t.description && <p className="text-xs text-muted-foreground mt-2">{isAr && t.description_ar ? t.description_ar : t.description}</p>}
-                      <p className="text-[10px] text-muted-foreground mt-2">{t.items.length} {isAr ? "بنود" : "items"}</p>
+                      <div className="flex items-center justify-between mt-3 pt-3 border-t border-border/20">
+                        <p className="text-[10px] text-muted-foreground">{t.items.length} {isAr ? "بنود" : "items"}</p>
+                        <div className="flex gap-1 flex-wrap">
+                          {[...new Set(t.items.map(i => i.category))].slice(0, 3).map(cat => (
+                            <Badge key={cat} variant="secondary" className="text-[8px]">
+                              {isAr ? COST_ITEM_CATEGORIES[cat as CostItemCategory]?.ar : COST_ITEM_CATEGORIES[cat as CostItemCategory]?.en}
+                            </Badge>
+                          ))}
+                        </div>
+                      </div>
                     </CardContent>
                   </Card>
                 );

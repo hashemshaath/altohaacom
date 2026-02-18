@@ -21,12 +21,12 @@ import { ChefsTablePipeline } from "@/components/admin/chefs-table/ChefsTablePip
 import { ChefsTableSessionDetail } from "@/components/admin/chefs-table/ChefsTableSessionDetail";
 import { ChefsTablePricing } from "@/components/admin/chefs-table/ChefsTablePricing";
 import { ChefsTableChefRegistrations } from "@/components/admin/chefs-table/ChefsTableChefRegistrations";
-import { ChefCostCenter } from "@/components/admin/chefs-table/ChefCostCenter";
+
 import {
   ChefHat, Search, Eye, Package, Calendar, FileText,
   Clock, Check, X, ThumbsUp, ThumbsDown, MapPin, Image,
   Send, Gavel, Printer, ChevronDown, DollarSign,
-  Users, AlertCircle, BarChart3, UserPlus, Receipt, Calculator,
+  Users, AlertCircle, BarChart3, UserPlus, Receipt,
 } from "lucide-react";
 import { format } from "date-fns";
 import { toast } from "sonner";
@@ -188,10 +188,6 @@ export default function ChefsTableAdmin() {
           <TabsTrigger value="registrations" className="gap-1.5">
             <UserPlus className="h-3.5 w-3.5" />
             {isAr ? "تسجيل الطهاة" : "Chef Registration"}
-          </TabsTrigger>
-          <TabsTrigger value="cost-center" className="gap-1.5">
-            <Calculator className="h-3.5 w-3.5" />
-            {isAr ? "مركز التكلفة" : "Cost Center"}
           </TabsTrigger>
         </TabsList>
 
@@ -513,10 +509,6 @@ export default function ChefsTableAdmin() {
           <ChefsTableChefRegistrations />
         </TabsContent>
 
-        {/* Chef Cost Center Tab */}
-        <TabsContent value="cost-center">
-          <ChefCostCenter />
-        </TabsContent>
       </Tabs>
     </div>
   );
