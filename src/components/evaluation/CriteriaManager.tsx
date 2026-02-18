@@ -9,7 +9,7 @@ import {
   useCreateCriteriaCategory,
   type EvaluationCriterion,
 } from "@/hooks/useEvaluationSystem";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -17,13 +17,13 @@ import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { Textarea } from "@/components/ui/textarea";
+import { Separator } from "@/components/ui/separator";
 import { Skeleton } from "@/components/ui/skeleton";
 import { toast } from "sonner";
 import {
   Plus, Pencil, Trash2, GripVertical, ChefHat, Trophy, Wrench, Coffee,
-  ClipboardCheck, Scale, Star, Settings2, Layers,
+  ClipboardCheck, Scale, Settings2, Layers, X, Save,
 } from "lucide-react";
 
 const PRODUCT_CATEGORIES = [
@@ -52,8 +52,8 @@ export function CriteriaManager() {
   const [activeDomain, setActiveDomain] = useState<string>("");
   const [productFilter, setProductFilter] = useState("all");
   const [editCriterion, setEditCriterion] = useState<EvaluationCriterion | null>(null);
-  const [showAddDialog, setShowAddDialog] = useState(false);
-  const [showAddCategoryDialog, setShowAddCategoryDialog] = useState(false);
+  const [showAddForm, setShowAddForm] = useState(false);
+  const [showAddCategoryForm, setShowAddCategoryForm] = useState(false);
   const [newCriterion, setNewCriterion] = useState({ name: "", name_ar: "", description: "", description_ar: "", max_score: 10, weight: 10, category_id: "" });
   const [newCategory, setNewCategory] = useState({ name: "", name_ar: "", product_category: "" });
 
@@ -68,7 +68,6 @@ export function CriteriaManager() {
   const deleteCriterion = useDeleteCriterion();
   const createCategory = useCreateCriteriaCategory();
 
-  // Set default domain
   if (!activeDomain && domains?.length) {
     setActiveDomain(domains[0].slug);
   }
@@ -78,7 +77,7 @@ export function CriteriaManager() {
     try {
       await createCriterion.mutateAsync(newCriterion);
       toast.success(isAr ? "تمت إضافة المعيار" : "Criterion added");
-      setShowAddDialog(false);
+      setShowAddForm(false);
       setNewCriterion({ name: "", name_ar: "", description: "", description_ar: "", max_score: 10, weight: 10, category_id: "" });
     } catch {
       toast.error(isAr ? "حدث خطأ" : "Failed to add");
@@ -115,7 +114,7 @@ export function CriteriaManager() {
         product_category: newCategory.product_category || null,
       });
       toast.success(isAr ? "تمت إضافة الفئة" : "Category added");
-      setShowAddCategoryDialog(false);
+      setShowAddCategoryForm(false);
       setNewCategory({ name: "", name_ar: "", product_category: "" });
     } catch {
       toast.error(isAr ? "حدث خطأ" : "Failed to add category");
@@ -128,7 +127,7 @@ export function CriteriaManager() {
     <div className="space-y-6">
       {/* Domain Tabs */}
       <Tabs value={activeDomain || domains?.[0]?.slug} onValueChange={setActiveDomain}>
-        <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+        <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between print:hidden">
           <TabsList className="flex-wrap">
             {domains?.map(d => {
               const Icon = DOMAIN_ICONS[d.slug] || ClipboardCheck;
@@ -154,16 +153,119 @@ export function CriteriaManager() {
                 </SelectContent>
               </Select>
             )}
-            <Button size="sm" variant="outline" onClick={() => setShowAddCategoryDialog(true)} className="gap-1.5">
+            <Button size="sm" variant="outline" onClick={() => { setShowAddCategoryForm(v => !v); setShowAddForm(false); }} className="gap-1.5">
               <Layers className="h-3.5 w-3.5" />
               {isAr ? "فئة جديدة" : "New Category"}
             </Button>
-            <Button size="sm" onClick={() => setShowAddDialog(true)} className="gap-1.5">
+            <Button size="sm" onClick={() => { setShowAddForm(v => !v); setShowAddCategoryForm(false); }} className="gap-1.5">
               <Plus className="h-3.5 w-3.5" />
               {isAr ? "معيار جديد" : "New Criterion"}
             </Button>
           </div>
         </div>
+
+        {/* Inline Add Category Form */}
+        {showAddCategoryForm && (
+          <Card className="mt-4 border-primary/20 border-2">
+            <CardContent className="p-5 space-y-4">
+              <div className="flex items-center justify-between">
+                <h4 className="font-bold text-sm">{isAr ? "إضافة فئة معايير" : "Add Criteria Category"}</h4>
+                <Button size="icon" variant="ghost" className="h-7 w-7" onClick={() => setShowAddCategoryForm(false)}>
+                  <X className="h-4 w-4" />
+                </Button>
+              </div>
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                <div>
+                  <Label>{isAr ? "الاسم (إنجليزي)" : "Name (English)"}</Label>
+                  <Input value={newCategory.name} onChange={e => setNewCategory(p => ({ ...p, name: e.target.value }))} />
+                </div>
+                <div>
+                  <Label>{isAr ? "الاسم (عربي)" : "Name (Arabic)"}</Label>
+                  <Input value={newCategory.name_ar} onChange={e => setNewCategory(p => ({ ...p, name_ar: e.target.value }))} dir="rtl" />
+                </div>
+                <div>
+                  <Label>{isAr ? "فئة المنتج" : "Product Category"}</Label>
+                  <Select value={newCategory.product_category || "none"} onValueChange={v => setNewCategory(p => ({ ...p, product_category: v === "none" ? "" : v }))}>
+                    <SelectTrigger><SelectValue placeholder={isAr ? "جميع المنتجات" : "All Products"} /></SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="none">{isAr ? "جميع المنتجات" : "All Products"}</SelectItem>
+                      {PRODUCT_CATEGORIES.filter(c => c.value !== "all").map(c => (
+                        <SelectItem key={c.value} value={c.value}>{isAr ? c.ar : c.en}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+              <div className="flex justify-end gap-2">
+                <Button variant="outline" size="sm" onClick={() => setShowAddCategoryForm(false)}>{isAr ? "إلغاء" : "Cancel"}</Button>
+                <Button size="sm" onClick={handleAddCategory} disabled={!newCategory.name} className="gap-1.5">
+                  <Save className="h-3.5 w-3.5" />
+                  {isAr ? "إضافة الفئة" : "Add Category"}
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+        )}
+
+        {/* Inline Add Criterion Form */}
+        {showAddForm && (
+          <Card className="mt-4 border-primary/20 border-2">
+            <CardContent className="p-5 space-y-4">
+              <div className="flex items-center justify-between">
+                <h4 className="font-bold text-sm">{isAr ? "إضافة معيار تقييم" : "Add Evaluation Criterion"}</h4>
+                <Button size="icon" variant="ghost" className="h-7 w-7" onClick={() => setShowAddForm(false)}>
+                  <X className="h-4 w-4" />
+                </Button>
+              </div>
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                <div>
+                  <Label>{isAr ? "الفئة" : "Category"}</Label>
+                  <Select value={newCriterion.category_id} onValueChange={v => setNewCriterion(p => ({ ...p, category_id: v }))}>
+                    <SelectTrigger><SelectValue placeholder={isAr ? "اختر فئة" : "Select category"} /></SelectTrigger>
+                    <SelectContent>
+                      {criteriaData?.categories.map(c => (
+                        <SelectItem key={c.id} value={c.id}>{isAr && c.name_ar ? c.name_ar : c.name}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div>
+                  <Label>{isAr ? "الاسم (إنجليزي)" : "Name (EN)"}</Label>
+                  <Input value={newCriterion.name} onChange={e => setNewCriterion(p => ({ ...p, name: e.target.value }))} />
+                </div>
+                <div>
+                  <Label>{isAr ? "الاسم (عربي)" : "Name (AR)"}</Label>
+                  <Input value={newCriterion.name_ar} onChange={e => setNewCriterion(p => ({ ...p, name_ar: e.target.value }))} dir="rtl" />
+                </div>
+              </div>
+              <div className="grid grid-cols-1 sm:grid-cols-4 gap-4">
+                <div>
+                  <Label>{isAr ? "الوصف (EN)" : "Description (EN)"}</Label>
+                  <Textarea value={newCriterion.description} onChange={e => setNewCriterion(p => ({ ...p, description: e.target.value }))} rows={2} />
+                </div>
+                <div>
+                  <Label>{isAr ? "الوصف (AR)" : "Description (AR)"}</Label>
+                  <Textarea value={newCriterion.description_ar} onChange={e => setNewCriterion(p => ({ ...p, description_ar: e.target.value }))} rows={2} dir="rtl" />
+                </div>
+                <div>
+                  <Label>{isAr ? "أقصى درجة" : "Max Score"}</Label>
+                  <Input type="number" value={newCriterion.max_score} onChange={e => setNewCriterion(p => ({ ...p, max_score: +e.target.value }))} />
+                </div>
+                <div>
+                  <Label>{isAr ? "الوزن %" : "Weight %"}</Label>
+                  <Input type="number" value={newCriterion.weight} onChange={e => setNewCriterion(p => ({ ...p, weight: +e.target.value }))} />
+                </div>
+              </div>
+              <div className="flex justify-end gap-2">
+                <Button variant="outline" size="sm" onClick={() => setShowAddForm(false)}>{isAr ? "إلغاء" : "Cancel"}</Button>
+                <Button size="sm" onClick={handleAddCriterion} disabled={!newCriterion.name || !newCriterion.category_id} className="gap-1.5">
+                  <Save className="h-3.5 w-3.5" />
+                  {isAr ? "إضافة المعيار" : "Add Criterion"}
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+        )}
 
         {domains?.map(d => (
           <TabsContent key={d.slug} value={d.slug} className="mt-4">
@@ -196,40 +298,75 @@ export function CriteriaManager() {
                       <AccordionContent className="pb-4">
                         <div className="space-y-2">
                           {catCriteria.map(criterion => (
-                            <div
-                              key={criterion.id}
-                              className="flex items-center gap-3 rounded-lg border border-border/50 p-3 hover:bg-muted/30 transition-colors"
-                            >
-                              <GripVertical className="h-4 w-4 text-muted-foreground/40 shrink-0" />
-                              <div className="flex-1 min-w-0">
-                                <div className="flex items-center gap-2">
-                                  <p className="text-sm font-medium">{isAr && criterion.name_ar ? criterion.name_ar : criterion.name}</p>
-                                  {criterion.is_required && (
-                                    <Badge variant="destructive" className="text-[9px] h-4 px-1">{isAr ? "مطلوب" : "Required"}</Badge>
-                                  )}
+                            <div key={criterion.id}>
+                              {editCriterion?.id === criterion.id ? (
+                                /* Inline Edit Form */
+                                <div className="rounded-lg border-2 border-primary/20 p-4 space-y-3 bg-muted/20">
+                                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                                    <div>
+                                      <Label className="text-xs">{isAr ? "الاسم (EN)" : "Name (EN)"}</Label>
+                                      <Input value={editCriterion.name} onChange={e => setEditCriterion(p => p ? { ...p, name: e.target.value } : null)} className="h-8 text-sm" />
+                                    </div>
+                                    <div>
+                                      <Label className="text-xs">{isAr ? "الاسم (AR)" : "Name (AR)"}</Label>
+                                      <Input value={editCriterion.name_ar || ""} onChange={e => setEditCriterion(p => p ? { ...p, name_ar: e.target.value } : null)} dir="rtl" className="h-8 text-sm" />
+                                    </div>
+                                    <div>
+                                      <Label className="text-xs">{isAr ? "أقصى درجة" : "Max Score"}</Label>
+                                      <Input type="number" value={editCriterion.max_score} onChange={e => setEditCriterion(p => p ? { ...p, max_score: +e.target.value } : null)} className="h-8 text-sm" />
+                                    </div>
+                                    <div>
+                                      <Label className="text-xs">{isAr ? "الوزن %" : "Weight %"}</Label>
+                                      <Input type="number" value={editCriterion.weight} onChange={e => setEditCriterion(p => p ? { ...p, weight: +e.target.value } : null)} className="h-8 text-sm" />
+                                    </div>
+                                  </div>
+                                  <div>
+                                    <Label className="text-xs">{isAr ? "الوصف" : "Description"}</Label>
+                                    <Textarea value={editCriterion.description || ""} onChange={e => setEditCriterion(p => p ? { ...p, description: e.target.value } : null)} rows={2} className="text-sm" />
+                                  </div>
+                                  <div className="flex justify-end gap-2">
+                                    <Button size="sm" variant="ghost" onClick={() => setEditCriterion(null)}>{isAr ? "إلغاء" : "Cancel"}</Button>
+                                    <Button size="sm" onClick={handleUpdateCriterion} className="gap-1.5">
+                                      <Save className="h-3.5 w-3.5" />
+                                      {isAr ? "حفظ" : "Save"}
+                                    </Button>
+                                  </div>
                                 </div>
-                                {criterion.description && (
-                                  <p className="text-xs text-muted-foreground mt-0.5 line-clamp-1">
-                                    {isAr && criterion.description_ar ? criterion.description_ar : criterion.description}
-                                  </p>
-                                )}
-                              </div>
-                              <div className="flex items-center gap-3 shrink-0">
-                                <div className="text-center">
-                                  <p className="text-xs text-muted-foreground">{isAr ? "أقصى" : "Max"}</p>
-                                  <p className="text-sm font-bold">{criterion.max_score}</p>
+                              ) : (
+                                /* Display Row */
+                                <div className="flex items-center gap-3 rounded-lg border border-border/50 p-3 hover:bg-muted/30 transition-colors">
+                                  <GripVertical className="h-4 w-4 text-muted-foreground/40 shrink-0 print:hidden" />
+                                  <div className="flex-1 min-w-0">
+                                    <div className="flex items-center gap-2">
+                                      <p className="text-sm font-medium">{isAr && criterion.name_ar ? criterion.name_ar : criterion.name}</p>
+                                      {criterion.is_required && (
+                                        <Badge variant="destructive" className="text-[9px] h-4 px-1">{isAr ? "مطلوب" : "Required"}</Badge>
+                                      )}
+                                    </div>
+                                    {criterion.description && (
+                                      <p className="text-xs text-muted-foreground mt-0.5 line-clamp-1">
+                                        {isAr && criterion.description_ar ? criterion.description_ar : criterion.description}
+                                      </p>
+                                    )}
+                                  </div>
+                                  <div className="flex items-center gap-3 shrink-0">
+                                    <div className="text-center">
+                                      <p className="text-xs text-muted-foreground">{isAr ? "أقصى" : "Max"}</p>
+                                      <p className="text-sm font-bold">{criterion.max_score}</p>
+                                    </div>
+                                    <div className="text-center">
+                                      <p className="text-xs text-muted-foreground">{isAr ? "وزن" : "Wt"}</p>
+                                      <p className="text-sm font-bold">{criterion.weight}%</p>
+                                    </div>
+                                    <Button size="icon" variant="ghost" className="h-7 w-7 print:hidden" onClick={() => setEditCriterion(criterion)}>
+                                      <Pencil className="h-3.5 w-3.5" />
+                                    </Button>
+                                    <Button size="icon" variant="ghost" className="h-7 w-7 text-destructive print:hidden" onClick={() => handleDeleteCriterion(criterion.id)}>
+                                      <Trash2 className="h-3.5 w-3.5" />
+                                    </Button>
+                                  </div>
                                 </div>
-                                <div className="text-center">
-                                  <p className="text-xs text-muted-foreground">{isAr ? "وزن" : "Wt"}</p>
-                                  <p className="text-sm font-bold">{criterion.weight}%</p>
-                                </div>
-                                <Button size="icon" variant="ghost" className="h-7 w-7" onClick={() => setEditCriterion(criterion)}>
-                                  <Pencil className="h-3.5 w-3.5" />
-                                </Button>
-                                <Button size="icon" variant="ghost" className="h-7 w-7 text-destructive" onClick={() => handleDeleteCriterion(criterion.id)}>
-                                  <Trash2 className="h-3.5 w-3.5" />
-                                </Button>
-                              </div>
+                              )}
                             </div>
                           ))}
                           {catCriteria.length === 0 && (
@@ -258,144 +395,6 @@ export function CriteriaManager() {
           </TabsContent>
         ))}
       </Tabs>
-
-      {/* Add Criterion Dialog */}
-      <Dialog open={showAddDialog} onOpenChange={setShowAddDialog}>
-        <DialogContent className="max-w-md">
-          <DialogHeader>
-            <DialogTitle>{isAr ? "إضافة معيار تقييم" : "Add Evaluation Criterion"}</DialogTitle>
-          </DialogHeader>
-          <div className="space-y-4">
-            <div>
-              <Label>{isAr ? "الفئة" : "Category"}</Label>
-              <Select value={newCriterion.category_id} onValueChange={v => setNewCriterion(p => ({ ...p, category_id: v }))}>
-                <SelectTrigger><SelectValue placeholder={isAr ? "اختر فئة" : "Select category"} /></SelectTrigger>
-                <SelectContent>
-                  {criteriaData?.categories.map(c => (
-                    <SelectItem key={c.id} value={c.id}>{isAr && c.name_ar ? c.name_ar : c.name}</SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-            <div className="grid grid-cols-2 gap-3">
-              <div>
-                <Label>{isAr ? "الاسم (إنجليزي)" : "Name (English)"}</Label>
-                <Input value={newCriterion.name} onChange={e => setNewCriterion(p => ({ ...p, name: e.target.value }))} />
-              </div>
-              <div>
-                <Label>{isAr ? "الاسم (عربي)" : "Name (Arabic)"}</Label>
-                <Input value={newCriterion.name_ar} onChange={e => setNewCriterion(p => ({ ...p, name_ar: e.target.value }))} dir="rtl" />
-              </div>
-            </div>
-            <div className="grid grid-cols-2 gap-3">
-              <div>
-                <Label>{isAr ? "الوصف (إنجليزي)" : "Description"}</Label>
-                <Textarea value={newCriterion.description} onChange={e => setNewCriterion(p => ({ ...p, description: e.target.value }))} rows={2} />
-              </div>
-              <div>
-                <Label>{isAr ? "الوصف (عربي)" : "Description (Arabic)"}</Label>
-                <Textarea value={newCriterion.description_ar} onChange={e => setNewCriterion(p => ({ ...p, description_ar: e.target.value }))} rows={2} dir="rtl" />
-              </div>
-            </div>
-            <div className="grid grid-cols-2 gap-3">
-              <div>
-                <Label>{isAr ? "أقصى درجة" : "Max Score"}</Label>
-                <Input type="number" value={newCriterion.max_score} onChange={e => setNewCriterion(p => ({ ...p, max_score: +e.target.value }))} />
-              </div>
-              <div>
-                <Label>{isAr ? "الوزن %" : "Weight %"}</Label>
-                <Input type="number" value={newCriterion.weight} onChange={e => setNewCriterion(p => ({ ...p, weight: +e.target.value }))} />
-              </div>
-            </div>
-          </div>
-          <DialogFooter>
-            <Button variant="outline" onClick={() => setShowAddDialog(false)}>{isAr ? "إلغاء" : "Cancel"}</Button>
-            <Button onClick={handleAddCriterion} disabled={!newCriterion.name || !newCriterion.category_id}>
-              {isAr ? "إضافة" : "Add"}
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
-
-      {/* Edit Criterion Dialog */}
-      <Dialog open={!!editCriterion} onOpenChange={open => !open && setEditCriterion(null)}>
-        <DialogContent className="max-w-md">
-          <DialogHeader>
-            <DialogTitle>{isAr ? "تعديل المعيار" : "Edit Criterion"}</DialogTitle>
-          </DialogHeader>
-          {editCriterion && (
-            <div className="space-y-4">
-              <div className="grid grid-cols-2 gap-3">
-                <div>
-                  <Label>{isAr ? "الاسم (إنجليزي)" : "Name (English)"}</Label>
-                  <Input value={editCriterion.name} onChange={e => setEditCriterion(p => p ? { ...p, name: e.target.value } : null)} />
-                </div>
-                <div>
-                  <Label>{isAr ? "الاسم (عربي)" : "Name (Arabic)"}</Label>
-                  <Input value={editCriterion.name_ar || ""} onChange={e => setEditCriterion(p => p ? { ...p, name_ar: e.target.value } : null)} dir="rtl" />
-                </div>
-              </div>
-              <div className="grid grid-cols-2 gap-3">
-                <div>
-                  <Label>{isAr ? "أقصى درجة" : "Max Score"}</Label>
-                  <Input type="number" value={editCriterion.max_score} onChange={e => setEditCriterion(p => p ? { ...p, max_score: +e.target.value } : null)} />
-                </div>
-                <div>
-                  <Label>{isAr ? "الوزن %" : "Weight %"}</Label>
-                  <Input type="number" value={editCriterion.weight} onChange={e => setEditCriterion(p => p ? { ...p, weight: +e.target.value } : null)} />
-                </div>
-              </div>
-              <div>
-                <Label>{isAr ? "الوصف" : "Description"}</Label>
-                <Textarea
-                  value={editCriterion.description || ""}
-                  onChange={e => setEditCriterion(p => p ? { ...p, description: e.target.value } : null)}
-                  rows={2}
-                />
-              </div>
-            </div>
-          )}
-          <DialogFooter>
-            <Button variant="outline" onClick={() => setEditCriterion(null)}>{isAr ? "إلغاء" : "Cancel"}</Button>
-            <Button onClick={handleUpdateCriterion}>{isAr ? "حفظ" : "Save"}</Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
-
-      {/* Add Category Dialog */}
-      <Dialog open={showAddCategoryDialog} onOpenChange={setShowAddCategoryDialog}>
-        <DialogContent className="max-w-sm">
-          <DialogHeader>
-            <DialogTitle>{isAr ? "إضافة فئة معايير" : "Add Criteria Category"}</DialogTitle>
-          </DialogHeader>
-          <div className="space-y-4">
-            <div>
-              <Label>{isAr ? "الاسم (إنجليزي)" : "Name (English)"}</Label>
-              <Input value={newCategory.name} onChange={e => setNewCategory(p => ({ ...p, name: e.target.value }))} />
-            </div>
-            <div>
-              <Label>{isAr ? "الاسم (عربي)" : "Name (Arabic)"}</Label>
-              <Input value={newCategory.name_ar} onChange={e => setNewCategory(p => ({ ...p, name_ar: e.target.value }))} dir="rtl" />
-            </div>
-            <div>
-              <Label>{isAr ? "فئة المنتج" : "Product Category"}</Label>
-              <Select value={newCategory.product_category} onValueChange={v => setNewCategory(p => ({ ...p, product_category: v === "none" ? "" : v }))}>
-                <SelectTrigger><SelectValue placeholder={isAr ? "جميع المنتجات" : "All Products"} /></SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="none">{isAr ? "جميع المنتجات" : "All Products"}</SelectItem>
-                  {PRODUCT_CATEGORIES.filter(c => c.value !== "all").map(c => (
-                    <SelectItem key={c.value} value={c.value}>{isAr ? c.ar : c.en}</SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-          </div>
-          <DialogFooter>
-            <Button variant="outline" onClick={() => setShowAddCategoryDialog(false)}>{isAr ? "إلغاء" : "Cancel"}</Button>
-            <Button onClick={handleAddCategory} disabled={!newCategory.name}>{isAr ? "إضافة" : "Add"}</Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
     </div>
   );
 }
