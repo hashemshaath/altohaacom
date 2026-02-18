@@ -25,18 +25,32 @@ const HomeMasterclasses = lazy(() => import("@/components/home/HomeMasterclasses
 const AdBanner = lazy(() => import("@/components/ads/AdBanner").then(m => ({ default: m.AdBanner })));
 const AdPopup = lazy(() => import("@/components/ads/AdPopup").then(m => ({ default: m.AdPopup })));
 
-const LazyFallback = memo(() => (
-  <div className="container my-4">
-    <div className="space-y-3">
-      <Skeleton className="h-6 w-40 rounded-lg" />
-      <div className="grid gap-4 grid-cols-2 sm:grid-cols-3">
-        <Skeleton className="h-40 rounded-xl" />
-        <Skeleton className="h-40 rounded-xl" />
-        <Skeleton className="h-40 rounded-xl hidden sm:block" />
+const LazyFallback = memo(({ type = "grid" }: { type?: "grid" | "cards" | "banner" }) => {
+  if (type === "banner") {
+    return (
+      <div className="container my-4">
+        <Skeleton className="h-[90px] w-full rounded-xl" />
+      </div>
+    );
+  }
+  return (
+    <div className="container my-4">
+      <div className="space-y-3">
+        <Skeleton className="h-6 w-40 rounded-lg" />
+        <Skeleton className="h-4 w-64 rounded-md" />
+        <div className="grid gap-4 grid-cols-2 sm:grid-cols-3 lg:grid-cols-4">
+          {Array.from({ length: 4 }).map((_, i) => (
+            <div key={i} className="space-y-2">
+              <Skeleton className="aspect-[16/10] rounded-xl" />
+              <Skeleton className="h-4 w-3/4 rounded-md" />
+              <Skeleton className="h-3 w-1/2 rounded-md" />
+            </div>
+          ))}
+        </div>
       </div>
     </div>
-  </div>
-));
+  );
+});
 LazyFallback.displayName = "LazyFallback";
 
 const Index = () => {
@@ -88,7 +102,7 @@ const Index = () => {
         </Suspense>
 
         {/* 5. Ad Banner */}
-        <Suspense fallback={<LazyFallback />}>
+        <Suspense fallback={<LazyFallback type="banner" />}>
           <section className="container py-4">
             <AdBanner placementSlug="home-hero-banner" className="w-full rounded-xl overflow-hidden aspect-[728/90] sm:aspect-[970/90] max-h-[120px]" />
           </section>
@@ -120,7 +134,7 @@ const Index = () => {
         </Suspense>
 
         {/* 11. In-feed Ad */}
-        <Suspense fallback={<LazyFallback />}>
+        <Suspense fallback={<LazyFallback type="banner" />}>
           <section className="container py-4">
             <AdBanner placementSlug="in-feed" className="w-full max-w-3xl mx-auto rounded-xl overflow-hidden aspect-[728/90] sm:aspect-[970/250] max-h-[250px]" />
           </section>
