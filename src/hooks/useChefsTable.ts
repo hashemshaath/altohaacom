@@ -421,60 +421,15 @@ export function useAddChefsTableMedia() {
 
 export function useApproveRequest() {
   const queryClient = useQueryClient();
-  const { user } = useAuth();
 
   return useMutation({
     mutationFn: async ({ id, admin_notes }: { id: string; admin_notes?: string }) => {
-      // Update request status
-      const { error: reqError } = await supabase
-        .from("chefs_table_requests" as any)
-        .update({
-          status: "approved",
-          reviewed_by: user?.id,
-          reviewed_at: new Date().toISOString(),
-          admin_notes: admin_notes || null,
-        } as any)
-        .eq("id", id);
-      if (reqError) throw reqError;
-
-      // Fetch request to create session from it
-      const { data: req, error: fetchError } = await supabase
-        .from("chefs_table_requests" as any)
-        .select("*")
-        .eq("id", id)
-        .single();
-      if (fetchError) throw fetchError;
-      const r = req as any;
-
-      // Auto-create session from approved request
-      const { data: session, error: sessError } = await supabase
-        .from("chefs_table_sessions" as any)
-        .insert({
-          request_id: r.id,
-          company_id: r.company_id,
-          title: r.title,
-          title_ar: r.title_ar,
-          description: r.product_description,
-          description_ar: r.product_description_ar,
-          product_name: r.product_name,
-          product_name_ar: r.product_name_ar,
-          product_category: r.product_category,
-          experience_type: r.experience_type,
-          venue: r.preferred_venue,
-          venue_ar: r.preferred_venue_ar,
-          city: r.preferred_city,
-          country_code: r.preferred_country_code,
-          session_date: r.preferred_date_start,
-          session_end: r.preferred_date_end,
-          organizer_id: user?.id,
-          chef_selection_method: "admin_select",
-          max_chefs: r.chef_count || 3,
-          status: "scheduled",
-        } as any)
-        .select()
-        .single();
-      if (sessError) throw sessError;
-      return session as unknown as ChefsTableSession;
+      const { data, error } = await supabase.rpc("approve_chefs_table_request", {
+        p_request_id: id,
+        p_admin_notes: admin_notes || null,
+      });
+      if (error) throw error;
+      return data as string; // session_id
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["chefs-table-requests"] });
@@ -485,19 +440,13 @@ export function useApproveRequest() {
 
 export function useRejectRequest() {
   const queryClient = useQueryClient();
-  const { user } = useAuth();
 
   return useMutation({
     mutationFn: async ({ id, rejection_reason }: { id: string; rejection_reason: string }) => {
-      const { error } = await supabase
-        .from("chefs_table_requests" as any)
-        .update({
-          status: "rejected",
-          reviewed_by: user?.id,
-          reviewed_at: new Date().toISOString(),
-          rejection_reason,
-        } as any)
-        .eq("id", id);
+      const { error } = await supabase.rpc("reject_chefs_table_request", {
+        p_request_id: id,
+        p_rejection_reason: rejection_reason,
+      });
       if (error) throw error;
     },
     onSuccess: () => {

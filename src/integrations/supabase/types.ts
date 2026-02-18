@@ -15578,6 +15578,10 @@ export type Database = {
       }
     }
     Functions: {
+      approve_chefs_table_request: {
+        Args: { p_admin_notes?: string; p_request_id: string }
+        Returns: string
+      }
       award_points: {
         Args: {
           p_action_type: string
@@ -15638,6 +15642,10 @@ export type Database = {
       is_admin: { Args: { p_user_id: string }; Returns: boolean }
       is_admin_user: { Args: never; Returns: boolean }
       is_free_preview: { Args: { p_module_id: string }; Returns: boolean }
+      reject_chefs_table_request: {
+        Args: { p_rejection_reason: string; p_request_id: string }
+        Returns: undefined
+      }
       user_has_permission: {
         Args: { p_permission_code: string; p_user_id: string }
         Returns: boolean
