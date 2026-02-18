@@ -1,5 +1,6 @@
 import { useState, useMemo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
+import { cn } from "@/lib/utils";
 import { useAuth } from "@/contexts/AuthContext";
 import {
   useChefScheduleEvents, useChefScheduleSettings,
@@ -51,7 +52,7 @@ export function ChefCalendar({ chefId, isAdmin = false }: Props) {
   const [currentDate, setCurrentDate] = useState(new Date());
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
   const [editingEvent, setEditingEvent] = useState<Partial<ChefScheduleEvent> | null>(null);
-  const [viewMode, setViewMode] = useState<"month" | "list">("month");
+  const [viewMode, setViewMode] = useState<"month" | "week" | "list">("month");
   const [showSettings, setShowSettings] = useState(false);
 
   const year = currentDate.getFullYear();
@@ -446,6 +447,14 @@ export function ChefCalendar({ chefId, isAdmin = false }: Props) {
               <Briefcase className="h-3 w-3" />{stats.contracted} {isAr ? "عقد" : "contracted"}
             </Badge>
           )}
+          <div className="hidden sm:flex border rounded-lg overflow-hidden">
+            <Button variant={viewMode === "month" ? "default" : "ghost"} size="sm" className="h-7 text-[10px] rounded-none px-2" onClick={() => setViewMode("month")}>
+              {isAr ? "شهر" : "Month"}
+            </Button>
+            <Button variant={viewMode === "week" ? "default" : "ghost"} size="sm" className="h-7 text-[10px] rounded-none px-2" onClick={() => setViewMode("week")}>
+              {isAr ? "أسبوع" : "Week"}
+            </Button>
+          </div>
           <Button variant="outline" size="sm" className="h-7 text-xs gap-1" onClick={() => setShowSettings(true)}>
             <Settings className="h-3 w-3" />
           </Button>
@@ -471,7 +480,74 @@ export function ChefCalendar({ chefId, isAdmin = false }: Props) {
         })}
       </div>
 
-      {/* Calendar Grid */}
+      {/* Week View */}
+      {viewMode === "week" && (() => {
+        const startOfWeek = new Date(currentDate);
+        startOfWeek.setDate(startOfWeek.getDate() - startOfWeek.getDay());
+        const weekDaysFull = Array.from({ length: 7 }, (_, i) => {
+          const d = new Date(startOfWeek);
+          d.setDate(d.getDate() + i);
+          return d;
+        });
+        const hours = Array.from({ length: 12 }, (_, i) => i + 7); // 7am-6pm
+
+        return (
+          <Card className="border-border/40 overflow-hidden">
+            <div className="grid grid-cols-8">
+              {/* Time column header */}
+              <div className="p-2 border-b border-r border-border/30 bg-muted/30" />
+              {weekDaysFull.map((d, i) => (
+                <div key={i} className={cn(
+                  "p-2 text-center border-b border-border/30 bg-muted/30",
+                  isToday(d) && "bg-primary/10"
+                )}>
+                  <div className="text-[10px] text-muted-foreground">{weekDays[d.getDay()]}</div>
+                  <div className={cn("text-sm font-bold", isToday(d) && "text-primary")}>{d.getDate()}</div>
+                </div>
+              ))}
+              {/* Time slots */}
+              {hours.map(hour => (
+                <>
+                  <div key={`t-${hour}`} className="p-1 text-[10px] text-muted-foreground text-end pe-2 border-r border-border/20 h-16 flex items-start justify-end">
+                    {`${hour}:00`}
+                  </div>
+                  {weekDaysFull.map((d, di) => {
+                    const dateKey = format(d, "yyyy-MM-dd");
+                    const hourEvents = (eventsByDate[dateKey] || []).filter(ev => {
+                      if (ev.all_day) return hour === 7;
+                      const h = new Date(ev.start_date).getHours();
+                      return h === hour;
+                    });
+                    return (
+                      <div
+                        key={`${hour}-${di}`}
+                        className={cn("border-r border-b border-border/10 h-16 p-0.5 cursor-pointer hover:bg-muted/20", isToday(d) && "bg-primary/5")}
+                        onClick={() => { setSelectedDate(d); openNewEvent(d); }}
+                      >
+                        {hourEvents.map(ev => {
+                          const config = EVENT_TYPE_CONFIG[ev.event_type as ScheduleEventType] || EVENT_TYPE_CONFIG.other;
+                          return (
+                            <div
+                              key={ev.id}
+                              className={`text-[8px] rounded px-1 py-0.5 truncate border ${config.color} cursor-pointer mb-0.5`}
+                              onClick={e => { e.stopPropagation(); setEditingEvent(ev); }}
+                            >
+                              {ev.title}
+                            </div>
+                          );
+                        })}
+                      </div>
+                    );
+                  })}
+                </>
+              ))}
+            </div>
+          </Card>
+        );
+      })()}
+
+      {/* Month Calendar Grid */}
+      {viewMode === "month" && (
       <Card className="border-border/40 overflow-hidden">
         <div className="grid grid-cols-7">
           {/* Week Day Headers */}
@@ -525,6 +601,7 @@ export function ChefCalendar({ chefId, isAdmin = false }: Props) {
           })}
         </div>
       </Card>
+      )}
 
       {/* Selected Date Detail */}
       {selectedDate && (

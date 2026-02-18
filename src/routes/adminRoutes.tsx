@@ -55,6 +55,7 @@ const ModerationCenter = lazy(() => import("@/pages/admin/ModerationCenter"));
 const MarketingAutomationAdmin = lazy(() => import("@/pages/admin/MarketingAutomationAdmin"));
 const CostCenterAdmin = lazy(() => import("@/pages/admin/CostCenterAdmin"));
 const ChefScheduleAdmin = lazy(() => import("@/pages/admin/ChefScheduleAdmin"));
+const GlobalEventsAdmin = lazy(() => import("@/pages/admin/GlobalEventsAdmin"));
 
 export const adminRoutes = (
   <Route path="/admin" element={<AdminRoute><AdminLayout /></AdminRoute>}>
@@ -110,5 +111,6 @@ export const adminRoutes = (
     <Route path="marketing-automation" element={<MarketingAutomationAdmin />} />
     <Route path="cost-center" element={<CostCenterAdmin />} />
     <Route path="chef-schedule" element={<ChefScheduleAdmin />} />
+    <Route path="global-events" element={<GlobalEventsAdmin />} />
   </Route>
 );

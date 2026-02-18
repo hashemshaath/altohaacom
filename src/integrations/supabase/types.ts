@@ -8423,6 +8423,108 @@ export type Database = {
         }
         Relationships: []
       }
+      global_events: {
+        Row: {
+          all_day: boolean
+          city: string | null
+          color: string | null
+          country_code: string | null
+          created_at: string
+          created_by: string | null
+          description: string | null
+          description_ar: string | null
+          end_date: string | null
+          end_time: string | null
+          id: string
+          image_url: string | null
+          is_international: boolean | null
+          is_recurring: boolean | null
+          link: string | null
+          organizer: string | null
+          organizer_ar: string | null
+          priority: number | null
+          recurrence_rule: string | null
+          start_date: string
+          start_time: string | null
+          status: string
+          tags: string[] | null
+          target_audience: string[] | null
+          timezone: string | null
+          title: string
+          title_ar: string | null
+          type: string
+          updated_at: string
+          venue: string | null
+          venue_ar: string | null
+        }
+        Insert: {
+          all_day?: boolean
+          city?: string | null
+          color?: string | null
+          country_code?: string | null
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          description_ar?: string | null
+          end_date?: string | null
+          end_time?: string | null
+          id?: string
+          image_url?: string | null
+          is_international?: boolean | null
+          is_recurring?: boolean | null
+          link?: string | null
+          organizer?: string | null
+          organizer_ar?: string | null
+          priority?: number | null
+          recurrence_rule?: string | null
+          start_date: string
+          start_time?: string | null
+          status?: string
+          tags?: string[] | null
+          target_audience?: string[] | null
+          timezone?: string | null
+          title: string
+          title_ar?: string | null
+          type?: string
+          updated_at?: string
+          venue?: string | null
+          venue_ar?: string | null
+        }
+        Update: {
+          all_day?: boolean
+          city?: string | null
+          color?: string | null
+          country_code?: string | null
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          description_ar?: string | null
+          end_date?: string | null
+          end_time?: string | null
+          id?: string
+          image_url?: string | null
+          is_international?: boolean | null
+          is_recurring?: boolean | null
+          link?: string | null
+          organizer?: string | null
+          organizer_ar?: string | null
+          priority?: number | null
+          recurrence_rule?: string | null
+          start_date?: string
+          start_time?: string | null
+          status?: string
+          tags?: string[] | null
+          target_audience?: string[] | null
+          timezone?: string | null
+          title?: string
+          title_ar?: string | null
+          type?: string
+          updated_at?: string
+          venue?: string | null
+          venue_ar?: string | null
+        }
+        Relationships: []
+      }
       group_members: {
         Row: {
           group_id: string
