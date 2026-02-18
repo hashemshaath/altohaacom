@@ -56,17 +56,18 @@ export default function ChefsTableRequest() {
 
   // Fetch user's company
   const [companies, setCompanies] = useState<Array<{ id: string; name: string }>>([]);
-  useState(() => {
-    if (user?.id) {
-      supabase
-        .from("companies")
-        .select("id, name")
-        .then(({ data }) => {
-          if (data) setCompanies(data);
-          if (data?.length === 1) setCompanyId(data[0].id);
-        });
-    }
-  });
+  const [companiesLoaded, setCompaniesLoaded] = useState(false);
+  
+  if (!companiesLoaded && user?.id) {
+    setCompaniesLoaded(true);
+    supabase
+      .from("companies")
+      .select("id, name")
+      .then(({ data }) => {
+        if (data) setCompanies(data);
+        if (data?.length === 1) setCompanyId(data[0].id);
+      });
+  }
 
   const handleSubmit = async () => {
     if (!companyId || !title || !productName) {
