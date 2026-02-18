@@ -20,7 +20,7 @@ import {
 import AdminPageHeader from "@/components/admin/AdminPageHeader";
 import {
   ChefHat, Search, Eye, Package, Calendar, FileText,
-  Clock, Check, X, Building2, ThumbsUp, ThumbsDown, MapPin,
+  Clock, Check, X, Building2, ThumbsUp, ThumbsDown, MapPin, Image,
 } from "lucide-react";
 import { format } from "date-fns";
 import { toast } from "sonner";
@@ -43,6 +43,7 @@ export default function ChefsTableAdmin() {
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
   const [selectedRequest, setSelectedRequest] = useState<any>(null);
+  const [detailDialogOpen, setDetailDialogOpen] = useState(false);
   const [rejectDialogOpen, setRejectDialogOpen] = useState(false);
   const [rejectionReason, setRejectionReason] = useState("");
   const [processingId, setProcessingId] = useState<string | null>(null);
@@ -184,6 +185,22 @@ export default function ChefsTableAdmin() {
                           <p className="text-sm text-muted-foreground line-clamp-2">{req.product_description}</p>
                         )}
 
+                        {/* Product Images Thumbnails */}
+                        {req.product_images && (req.product_images as string[]).length > 0 && (
+                          <div className="flex gap-2 mt-1">
+                            {(req.product_images as string[]).slice(0, 4).map((url: string, i: number) => (
+                              <div key={i} className="h-12 w-12 rounded-lg overflow-hidden border border-border/40">
+                                <img src={url} alt="" className="h-full w-full object-cover" />
+                              </div>
+                            ))}
+                            {(req.product_images as string[]).length > 4 && (
+                              <div className="h-12 w-12 rounded-lg bg-muted flex items-center justify-center text-xs font-bold text-muted-foreground">
+                                +{(req.product_images as string[]).length - 4}
+                              </div>
+                            )}
+                          </div>
+                        )}
+
                         <p className="text-xs text-muted-foreground">
                           {format(new Date(req.created_at), "MMM d, yyyy 'at' HH:mm")}
                         </p>
@@ -196,32 +213,46 @@ export default function ChefsTableAdmin() {
                         )}
                       </div>
 
-                      {req.status === "pending" && (
-                        <div className="flex items-center gap-2 shrink-0">
-                          <Button
-                            size="sm"
-                            className="gap-1.5"
-                            disabled={processingId === req.id}
-                            onClick={() => handleApprove(req)}
-                          >
-                            <ThumbsUp className="h-3.5 w-3.5" />
-                            {isAr ? "موافقة" : "Approve"}
-                          </Button>
-                          <Button
-                            size="sm"
-                            variant="outline"
-                            className="gap-1.5 text-destructive hover:text-destructive"
-                            disabled={processingId === req.id}
-                            onClick={() => {
-                              setSelectedRequest(req);
-                              setRejectDialogOpen(true);
-                            }}
-                          >
-                            <ThumbsDown className="h-3.5 w-3.5" />
-                            {isAr ? "رفض" : "Reject"}
-                          </Button>
-                        </div>
-                      )}
+                      <div className="flex items-center gap-2 shrink-0">
+                        <Button
+                          size="sm"
+                          variant="ghost"
+                          className="gap-1.5"
+                          onClick={() => {
+                            setSelectedRequest(req);
+                            setDetailDialogOpen(true);
+                          }}
+                        >
+                          <Eye className="h-3.5 w-3.5" />
+                          {isAr ? "عرض" : "View"}
+                        </Button>
+                        {req.status === "pending" && (
+                          <>
+                            <Button
+                              size="sm"
+                              className="gap-1.5"
+                              disabled={processingId === req.id}
+                              onClick={() => handleApprove(req)}
+                            >
+                              <ThumbsUp className="h-3.5 w-3.5" />
+                              {isAr ? "موافقة" : "Approve"}
+                            </Button>
+                            <Button
+                              size="sm"
+                              variant="outline"
+                              className="gap-1.5 text-destructive hover:text-destructive"
+                              disabled={processingId === req.id}
+                              onClick={() => {
+                                setSelectedRequest(req);
+                                setRejectDialogOpen(true);
+                              }}
+                            >
+                              <ThumbsDown className="h-3.5 w-3.5" />
+                              {isAr ? "رفض" : "Reject"}
+                            </Button>
+                          </>
+                        )}
+                      </div>
                     </div>
                   </CardContent>
                 </Card>
@@ -305,6 +336,108 @@ export default function ChefsTableAdmin() {
           )}
         </TabsContent>
       </Tabs>
+
+      {/* Request Detail Dialog */}
+      <Dialog open={detailDialogOpen} onOpenChange={setDetailDialogOpen}>
+        <DialogContent className="max-w-2xl max-h-[85vh] overflow-y-auto">
+          {selectedRequest && (
+            <>
+              <DialogHeader>
+                <DialogTitle className="text-lg">
+                  {isAr && selectedRequest.title_ar ? selectedRequest.title_ar : selectedRequest.title}
+                </DialogTitle>
+                <DialogDescription className="flex items-center gap-2 flex-wrap">
+                  <Badge variant={selectedRequest.status === "pending" ? "secondary" : selectedRequest.status === "approved" ? "default" : "destructive"} className="text-[10px] uppercase">
+                    {selectedRequest.status}
+                  </Badge>
+                  <span className="text-xs">{format(new Date(selectedRequest.created_at), "PPP 'at' HH:mm")}</span>
+                </DialogDescription>
+              </DialogHeader>
+
+              <div className="space-y-4">
+                {/* Product Info Grid */}
+                <div className="grid grid-cols-2 gap-3">
+                  {[
+                    { label: isAr ? "المنتج" : "Product", value: selectedRequest.product_name, icon: Package },
+                    { label: isAr ? "الفئة" : "Category", value: selectedRequest.product_category, icon: Package },
+                    { label: isAr ? "نوع التجربة" : "Experience", value: experienceLabels[selectedRequest.experience_type]?.[isAr ? "ar" : "en"] || selectedRequest.experience_type, icon: MapPin },
+                    { label: isAr ? "عدد الطهاة" : "Chefs", value: selectedRequest.chef_count, icon: ChefHat },
+                  ].map((item, i) => (
+                    <div key={i} className="rounded-lg border border-border/40 p-3">
+                      <div className="flex items-center gap-1.5 mb-1">
+                        <item.icon className="h-3.5 w-3.5 text-muted-foreground" />
+                        <span className="text-[11px] text-muted-foreground font-medium">{item.label}</span>
+                      </div>
+                      <p className="text-sm font-bold">{item.value}</p>
+                    </div>
+                  ))}
+                </div>
+
+                {/* Description */}
+                {selectedRequest.product_description && (
+                  <div className="rounded-lg border border-border/40 p-4">
+                    <p className="text-xs font-bold text-muted-foreground mb-2">{isAr ? "وصف المنتج" : "Product Description"}</p>
+                    <p className="text-sm whitespace-pre-line">{selectedRequest.product_description}</p>
+                  </div>
+                )}
+
+                {/* Product Images */}
+                {selectedRequest.product_images && (selectedRequest.product_images as string[]).length > 0 && (
+                  <div>
+                    <p className="text-xs font-bold text-muted-foreground mb-2 flex items-center gap-1.5">
+                      <Image className="h-3.5 w-3.5" />
+                      {isAr ? "صور المنتج" : "Product Images"}
+                    </p>
+                    <div className="grid grid-cols-3 gap-3">
+                      {(selectedRequest.product_images as string[]).map((url: string, i: number) => (
+                        <div key={i} className="aspect-square rounded-xl overflow-hidden border border-border/40">
+                          <img src={url} alt="" className="h-full w-full object-cover" />
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* Special Requirements */}
+                {selectedRequest.special_requirements && (
+                  <div className="rounded-lg border border-border/40 p-4">
+                    <p className="text-xs font-bold text-muted-foreground mb-2">{isAr ? "متطلبات خاصة" : "Special Requirements"}</p>
+                    <p className="text-sm">{selectedRequest.special_requirements}</p>
+                  </div>
+                )}
+              </div>
+
+              {selectedRequest.status === "pending" && (
+                <DialogFooter className="gap-2">
+                  <Button
+                    className="gap-1.5"
+                    disabled={processingId === selectedRequest.id}
+                    onClick={() => {
+                      handleApprove(selectedRequest);
+                      setDetailDialogOpen(false);
+                    }}
+                  >
+                    <ThumbsUp className="h-4 w-4" />
+                    {isAr ? "موافقة" : "Approve"}
+                  </Button>
+                  <Button
+                    variant="outline"
+                    className="gap-1.5 text-destructive hover:text-destructive"
+                    disabled={processingId === selectedRequest.id}
+                    onClick={() => {
+                      setDetailDialogOpen(false);
+                      setRejectDialogOpen(true);
+                    }}
+                  >
+                    <ThumbsDown className="h-4 w-4" />
+                    {isAr ? "رفض" : "Reject"}
+                  </Button>
+                </DialogFooter>
+              )}
+            </>
+          )}
+        </DialogContent>
+      </Dialog>
 
       {/* Reject Dialog */}
       <Dialog open={rejectDialogOpen} onOpenChange={setRejectDialogOpen}>

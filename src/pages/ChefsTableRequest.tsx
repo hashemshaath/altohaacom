@@ -21,6 +21,7 @@ import {
   Utensils, Flame, Leaf
 } from "lucide-react";
 import { toast } from "sonner";
+import { ProductImageUpload } from "@/components/chefs-table/ProductImageUpload";
 
 // ─── Step Configuration ─────────────────────────
 
@@ -98,7 +99,7 @@ export default function ChefsTableRequest() {
   const [productDescription, setProductDescription] = useState("");
   const [marketStatus, setMarketStatus] = useState("");
   const [productWebsite, setProductWebsite] = useState("");
-
+  const [productImages, setProductImages] = useState<string[]>([]);
   // Experience
   const [experienceType, setExperienceType] = useState<ExperienceType | "">("");
   const [preferredVenue, setPreferredVenue] = useState("");
@@ -153,6 +154,7 @@ export default function ChefsTableRequest() {
         product_name: productName,
         product_name_ar: productNameAr || null,
         product_category: productCategory,
+        product_images: productImages.length > 0 ? productImages : null,
         product_description: [
           productDescription,
           marketStatus ? `Market Status: ${marketStatus}` : "",
@@ -269,6 +271,9 @@ export default function ChefsTableRequest() {
                 setMarketStatus={setMarketStatus}
                 productWebsite={productWebsite}
                 setProductWebsite={setProductWebsite}
+                productImages={productImages}
+                setProductImages={setProductImages}
+                userId={user?.id || "anon"}
               />
             )}
             {step === 2 && (
@@ -299,6 +304,7 @@ export default function ChefsTableRequest() {
                 experienceType={experienceType}
                 chefCount={chefCount}
                 goals={goals}
+                productImages={productImages}
               />
             )}
           </div>
@@ -471,7 +477,7 @@ function StepCompany({ isAr, isRegistered, companyName, companyLoading, companyN
   );
 }
 
-function StepProduct({ isAr, productName, setProductName, productNameAr, setProductNameAr, productCategory, setProductCategory, productDescription, setProductDescription, marketStatus, setMarketStatus, productWebsite, setProductWebsite }: any) {
+function StepProduct({ isAr, productName, setProductName, productNameAr, setProductNameAr, productCategory, setProductCategory, productDescription, setProductDescription, marketStatus, setMarketStatus, productWebsite, setProductWebsite, productImages, setProductImages, userId }: any) {
   return (
     <div className="space-y-5">
       <Card className="border-border/40">
@@ -559,6 +565,28 @@ function StepProduct({ isAr, productName, setProductName, productNameAr, setProd
             <Label className="text-xs font-bold">{isAr ? "رابط صفحة المنتج (اختياري)" : "Product Page URL (optional)"}</Label>
             <Input value={productWebsite} onChange={e => setProductWebsite(e.target.value)} className="mt-1.5 rounded-xl" placeholder="https://www.example.com/product" />
           </div>
+        </CardContent>
+      </Card>
+
+      {/* Product Images */}
+      <Card className="border-border/40">
+        <CardHeader className="pb-2">
+          <CardTitle className="text-base flex items-center gap-2">
+            <Camera className="h-4 w-4 text-primary" />
+            {isAr ? "صور المنتج" : "Product Images"}
+          </CardTitle>
+          <CardDescription className="text-xs">
+            {isAr ? "أضف صور المنتج والتغليف لمساعدة الطهاة في التقييم" : "Add product & packaging photos to help chefs evaluate"}
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <ProductImageUpload
+            images={productImages}
+            onImagesChange={setProductImages}
+            userId={userId}
+            maxImages={5}
+            isAr={isAr}
+          />
         </CardContent>
       </Card>
     </div>
@@ -680,7 +708,7 @@ function StepExperience({ isAr, experienceType, setExperienceType, preferredVenu
   );
 }
 
-function StepReview({ isAr, companyName, brandName, productName, productCategory, marketStatus, experienceType, chefCount, goals }: any) {
+function StepReview({ isAr, companyName, brandName, productName, productCategory, marketStatus, experienceType, chefCount, goals, productImages }: any) {
   const categoryLabel = productCategories.find(c => c.value === productCategory);
   const expLabel = experienceTypes.find(t => t.value === experienceType);
   const marketLabel = marketStatusOptions.find(m => m.value === marketStatus);
@@ -720,6 +748,19 @@ function StepReview({ isAr, companyName, brandName, productName, productCategory
             <div className="mt-4 rounded-xl bg-card/80 border border-border/40 p-4">
               <p className="text-xs font-bold text-muted-foreground mb-1">{isAr ? "الأهداف" : "Goals"}</p>
               <p className="text-sm text-foreground">{goals}</p>
+            </div>
+          )}
+
+          {productImages && productImages.length > 0 && (
+            <div className="mt-4">
+              <p className="text-xs font-bold text-muted-foreground mb-2">{isAr ? "صور المنتج" : "Product Images"}</p>
+              <div className="grid grid-cols-5 gap-2">
+                {productImages.map((url: string, i: number) => (
+                  <div key={i} className="aspect-square rounded-lg overflow-hidden border border-border/40">
+                    <img src={url} alt="" className="h-full w-full object-cover" />
+                  </div>
+                ))}
+              </div>
             </div>
           )}
         </CardContent>
