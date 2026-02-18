@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useSearchParams } from "react-router-dom";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
@@ -48,9 +49,16 @@ export default function Community() {
   const isAr = language === "ar";
   useAdTracking();
 
+  const [searchParams] = useSearchParams();
+  const tagParam = searchParams.get("tag");
   const [activeTab, setActiveTab] = useState<CommunityTab>("feed");
   const [leftSidebarOpen, setLeftSidebarOpen] = useState(true);
   const [rightSidebarOpen, setRightSidebarOpen] = useState(true);
+
+  // Auto-switch to feed tab when hashtag filter is active
+  useEffect(() => {
+    if (tagParam) setActiveTab("feed");
+  }, [tagParam]);
 
   const { data: stats = { members: 0, groups: 0, recipes: 0, posts: 0 } } = useQuery({
     queryKey: ["community-stats"],
