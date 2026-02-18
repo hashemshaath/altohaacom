@@ -1869,6 +1869,63 @@ export type Database = {
           },
         ]
       }
+      chef_evaluation_registrations: {
+        Row: {
+          availability_end: string | null
+          availability_start: string | null
+          chef_id: string
+          created_at: string
+          experience_years: number | null
+          id: string
+          matched_at: string | null
+          matched_by: string | null
+          motivation: string | null
+          motivation_ar: string | null
+          preferred_city: string | null
+          preferred_country_code: string | null
+          session_id: string | null
+          specialties: string[] | null
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          availability_end?: string | null
+          availability_start?: string | null
+          chef_id: string
+          created_at?: string
+          experience_years?: number | null
+          id?: string
+          matched_at?: string | null
+          matched_by?: string | null
+          motivation?: string | null
+          motivation_ar?: string | null
+          preferred_city?: string | null
+          preferred_country_code?: string | null
+          session_id?: string | null
+          specialties?: string[] | null
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          availability_end?: string | null
+          availability_start?: string | null
+          chef_id?: string
+          created_at?: string
+          experience_years?: number | null
+          id?: string
+          matched_at?: string | null
+          matched_by?: string | null
+          motivation?: string | null
+          motivation_ar?: string | null
+          preferred_city?: string | null
+          preferred_country_code?: string | null
+          session_id?: string | null
+          specialties?: string[] | null
+          status?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       chef_rankings: {
         Row: {
           average_score: number | null
@@ -2350,15 +2407,20 @@ export type Database = {
           description_ar: string | null
           experience_type: string
           id: string
+          invoice_id: string | null
           is_published: boolean | null
           max_chefs: number | null
           notes: string | null
           notes_ar: string | null
           organizer_id: string
+          pricing_id: string | null
           product_category: string
           product_name: string
           product_name_ar: string | null
           published_at: string | null
+          report_published: boolean | null
+          report_published_at: string | null
+          report_token: string | null
           request_id: string
           sample_delivery_address: string | null
           sample_delivery_notes: string | null
@@ -2366,8 +2428,10 @@ export type Database = {
           session_end: string | null
           session_number: string | null
           status: string
+          template_id: string | null
           title: string
           title_ar: string | null
+          total_cost: number | null
           updated_at: string
           venue: string | null
           venue_ar: string | null
@@ -2383,15 +2447,20 @@ export type Database = {
           description_ar?: string | null
           experience_type?: string
           id?: string
+          invoice_id?: string | null
           is_published?: boolean | null
           max_chefs?: number | null
           notes?: string | null
           notes_ar?: string | null
           organizer_id: string
+          pricing_id?: string | null
           product_category?: string
           product_name: string
           product_name_ar?: string | null
           published_at?: string | null
+          report_published?: boolean | null
+          report_published_at?: string | null
+          report_token?: string | null
           request_id: string
           sample_delivery_address?: string | null
           sample_delivery_notes?: string | null
@@ -2399,8 +2468,10 @@ export type Database = {
           session_end?: string | null
           session_number?: string | null
           status?: string
+          template_id?: string | null
           title: string
           title_ar?: string | null
+          total_cost?: number | null
           updated_at?: string
           venue?: string | null
           venue_ar?: string | null
@@ -2416,15 +2487,20 @@ export type Database = {
           description_ar?: string | null
           experience_type?: string
           id?: string
+          invoice_id?: string | null
           is_published?: boolean | null
           max_chefs?: number | null
           notes?: string | null
           notes_ar?: string | null
           organizer_id?: string
+          pricing_id?: string | null
           product_category?: string
           product_name?: string
           product_name_ar?: string | null
           published_at?: string | null
+          report_published?: boolean | null
+          report_published_at?: string | null
+          report_token?: string | null
           request_id?: string
           sample_delivery_address?: string | null
           sample_delivery_notes?: string | null
@@ -2432,8 +2508,10 @@ export type Database = {
           session_end?: string | null
           session_number?: string | null
           status?: string
+          template_id?: string | null
           title?: string
           title_ar?: string | null
+          total_cost?: number | null
           updated_at?: string
           venue?: string | null
           venue_ar?: string | null
@@ -6831,6 +6909,51 @@ export type Database = {
         }
         Relationships: []
       }
+      evaluation_pricing: {
+        Row: {
+          base_fee: number
+          created_at: string
+          currency: string
+          description: string | null
+          description_ar: string | null
+          id: string
+          is_active: boolean | null
+          name: string
+          name_ar: string | null
+          per_chef_fee: number
+          product_category: string | null
+          updated_at: string
+        }
+        Insert: {
+          base_fee?: number
+          created_at?: string
+          currency?: string
+          description?: string | null
+          description_ar?: string | null
+          id?: string
+          is_active?: boolean | null
+          name: string
+          name_ar?: string | null
+          per_chef_fee?: number
+          product_category?: string | null
+          updated_at?: string
+        }
+        Update: {
+          base_fee?: number
+          created_at?: string
+          currency?: string
+          description?: string | null
+          description_ar?: string | null
+          id?: string
+          is_active?: boolean | null
+          name?: string
+          name_ar?: string | null
+          per_chef_fee?: number
+          product_category?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
       evaluation_reports: {
         Row: {
           category_scores: Json | null
@@ -7981,6 +8104,7 @@ export type Database = {
           paid_at: string | null
           payment_method: string | null
           payment_reference: string | null
+          session_id: string | null
           status: string | null
           subtotal: number | null
           tax_amount: number | null
@@ -8010,6 +8134,7 @@ export type Database = {
           paid_at?: string | null
           payment_method?: string | null
           payment_reference?: string | null
+          session_id?: string | null
           status?: string | null
           subtotal?: number | null
           tax_amount?: number | null
@@ -8039,6 +8164,7 @@ export type Database = {
           paid_at?: string | null
           payment_method?: string | null
           payment_reference?: string | null
+          session_id?: string | null
           status?: string | null
           subtotal?: number | null
           tax_amount?: number | null
@@ -15300,6 +15426,7 @@ export type Database = {
       generate_qr_code: { Args: { p_prefix?: string }; Returns: string }
       generate_referral_code: { Args: never; Returns: string }
       generate_registration_number: { Args: never; Returns: string }
+      generate_report_token: { Args: never; Returns: string }
       generate_shop_order_number: { Args: never; Returns: string }
       generate_statement_number: { Args: never; Returns: string }
       generate_ticket_number: { Args: never; Returns: string }
