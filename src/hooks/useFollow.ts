@@ -8,12 +8,12 @@ export function useFollowStats(userId: string | undefined) {
     queryFn: async () => {
       if (!userId) return { followers: 0, following: 0 };
       const [followersRes, followingRes] = await Promise.all([
-        supabase.from("user_follows").select("id", { count: "exact", head: true }).eq("following_id", userId),
-        supabase.from("user_follows").select("id", { count: "exact", head: true }).eq("follower_id", userId),
+        supabase.from("user_follows").select("id").eq("following_id", userId),
+        supabase.from("user_follows").select("id").eq("follower_id", userId),
       ]);
       return {
-        followers: followersRes.count || 0,
-        following: followingRes.count || 0,
+        followers: followersRes.data?.length || 0,
+        following: followingRes.data?.length || 0,
       };
     },
     enabled: !!userId,
