@@ -5503,6 +5503,297 @@ export type Database = {
         }
         Relationships: []
       }
+      cost_approval_log: {
+        Row: {
+          action: string
+          comments: string | null
+          comments_ar: string | null
+          created_at: string
+          estimate_id: string
+          id: string
+          new_status: string | null
+          performed_by: string
+          previous_status: string | null
+        }
+        Insert: {
+          action: string
+          comments?: string | null
+          comments_ar?: string | null
+          created_at?: string
+          estimate_id: string
+          id?: string
+          new_status?: string | null
+          performed_by: string
+          previous_status?: string | null
+        }
+        Update: {
+          action?: string
+          comments?: string | null
+          comments_ar?: string | null
+          created_at?: string
+          estimate_id?: string
+          id?: string
+          new_status?: string | null
+          performed_by?: string
+          previous_status?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "cost_approval_log_estimate_id_fkey"
+            columns: ["estimate_id"]
+            isOneToOne: false
+            referencedRelation: "cost_estimates"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      cost_estimate_items: {
+        Row: {
+          category: Database["public"]["Enums"]["cost_item_category"]
+          cost_profile_id: string | null
+          created_at: string
+          description: string | null
+          description_ar: string | null
+          estimate_id: string
+          id: string
+          notes: string | null
+          person_id: string | null
+          person_role: string | null
+          quantity: number
+          sort_order: number
+          title: string
+          title_ar: string | null
+          total_price: number
+          unit: string | null
+          unit_ar: string | null
+          unit_price: number
+        }
+        Insert: {
+          category?: Database["public"]["Enums"]["cost_item_category"]
+          cost_profile_id?: string | null
+          created_at?: string
+          description?: string | null
+          description_ar?: string | null
+          estimate_id: string
+          id?: string
+          notes?: string | null
+          person_id?: string | null
+          person_role?: string | null
+          quantity?: number
+          sort_order?: number
+          title: string
+          title_ar?: string | null
+          total_price?: number
+          unit?: string | null
+          unit_ar?: string | null
+          unit_price?: number
+        }
+        Update: {
+          category?: Database["public"]["Enums"]["cost_item_category"]
+          cost_profile_id?: string | null
+          created_at?: string
+          description?: string | null
+          description_ar?: string | null
+          estimate_id?: string
+          id?: string
+          notes?: string | null
+          person_id?: string | null
+          person_role?: string | null
+          quantity?: number
+          sort_order?: number
+          title?: string
+          title_ar?: string | null
+          total_price?: number
+          unit?: string | null
+          unit_ar?: string | null
+          unit_price?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "cost_estimate_items_cost_profile_id_fkey"
+            columns: ["cost_profile_id"]
+            isOneToOne: false
+            referencedRelation: "chef_cost_profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "cost_estimate_items_estimate_id_fkey"
+            columns: ["estimate_id"]
+            isOneToOne: false
+            referencedRelation: "cost_estimates"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      cost_estimates: {
+        Row: {
+          approved_at: string | null
+          approved_by: string | null
+          company_id: string | null
+          created_at: string
+          currency: string
+          description: string | null
+          description_ar: string | null
+          discount_amount: number
+          estimate_number: string
+          id: string
+          internal_notes: string | null
+          invoice_id: string | null
+          module_id: string | null
+          module_title: string | null
+          module_title_ar: string | null
+          module_type: Database["public"]["Enums"]["cost_module_type"]
+          notes: string | null
+          notes_ar: string | null
+          parent_estimate_id: string | null
+          prepared_by: string | null
+          rejection_reason: string | null
+          status: Database["public"]["Enums"]["cost_estimate_status"]
+          subtotal: number
+          tags: string[] | null
+          tax_amount: number
+          tax_rate: number
+          title: string
+          title_ar: string | null
+          total_amount: number
+          updated_at: string
+          valid_until: string | null
+          version: number
+        }
+        Insert: {
+          approved_at?: string | null
+          approved_by?: string | null
+          company_id?: string | null
+          created_at?: string
+          currency?: string
+          description?: string | null
+          description_ar?: string | null
+          discount_amount?: number
+          estimate_number?: string
+          id?: string
+          internal_notes?: string | null
+          invoice_id?: string | null
+          module_id?: string | null
+          module_title?: string | null
+          module_title_ar?: string | null
+          module_type: Database["public"]["Enums"]["cost_module_type"]
+          notes?: string | null
+          notes_ar?: string | null
+          parent_estimate_id?: string | null
+          prepared_by?: string | null
+          rejection_reason?: string | null
+          status?: Database["public"]["Enums"]["cost_estimate_status"]
+          subtotal?: number
+          tags?: string[] | null
+          tax_amount?: number
+          tax_rate?: number
+          title: string
+          title_ar?: string | null
+          total_amount?: number
+          updated_at?: string
+          valid_until?: string | null
+          version?: number
+        }
+        Update: {
+          approved_at?: string | null
+          approved_by?: string | null
+          company_id?: string | null
+          created_at?: string
+          currency?: string
+          description?: string | null
+          description_ar?: string | null
+          discount_amount?: number
+          estimate_number?: string
+          id?: string
+          internal_notes?: string | null
+          invoice_id?: string | null
+          module_id?: string | null
+          module_title?: string | null
+          module_title_ar?: string | null
+          module_type?: Database["public"]["Enums"]["cost_module_type"]
+          notes?: string | null
+          notes_ar?: string | null
+          parent_estimate_id?: string | null
+          prepared_by?: string | null
+          rejection_reason?: string | null
+          status?: Database["public"]["Enums"]["cost_estimate_status"]
+          subtotal?: number
+          tags?: string[] | null
+          tax_amount?: number
+          tax_rate?: number
+          title?: string
+          title_ar?: string | null
+          total_amount?: number
+          updated_at?: string
+          valid_until?: string | null
+          version?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "cost_estimates_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "cost_estimates_invoice_id_fkey"
+            columns: ["invoice_id"]
+            isOneToOne: false
+            referencedRelation: "invoices"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "cost_estimates_parent_estimate_id_fkey"
+            columns: ["parent_estimate_id"]
+            isOneToOne: false
+            referencedRelation: "cost_estimates"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      cost_templates: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          description: string | null
+          description_ar: string | null
+          id: string
+          is_active: boolean
+          items: Json
+          module_type: Database["public"]["Enums"]["cost_module_type"]
+          name: string
+          name_ar: string | null
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          description_ar?: string | null
+          id?: string
+          is_active?: boolean
+          items?: Json
+          module_type: Database["public"]["Enums"]["cost_module_type"]
+          name: string
+          name_ar?: string | null
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          description_ar?: string | null
+          id?: string
+          is_active?: boolean
+          items?: Json
+          module_type?: Database["public"]["Enums"]["cost_module_type"]
+          name?: string
+          name_ar?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
       countries: {
         Row: {
           code: string
@@ -15610,6 +15901,7 @@ export type Database = {
         Args: { p_country_code: string; p_year: number }
         Returns: string
       }
+      generate_cost_estimate_number: { Args: never; Returns: string }
       generate_entity_number: { Args: never; Returns: string }
       generate_invoice_number: { Args: never; Returns: string }
       generate_membership_number: { Args: never; Returns: string }
@@ -15737,6 +16029,33 @@ export type Database = {
         | "judging"
         | "completed"
         | "cancelled"
+      cost_estimate_status:
+        | "draft"
+        | "pending_approval"
+        | "approved"
+        | "rejected"
+        | "invoiced"
+        | "cancelled"
+      cost_item_category:
+        | "personnel"
+        | "equipment"
+        | "venue"
+        | "travel"
+        | "accommodation"
+        | "catering"
+        | "materials"
+        | "logistics"
+        | "marketing"
+        | "insurance"
+        | "permits"
+        | "miscellaneous"
+      cost_module_type:
+        | "competition"
+        | "chefs_table"
+        | "exhibition"
+        | "event"
+        | "project"
+        | "other"
       entity_scope: "local" | "national" | "regional" | "international"
       entity_status: "pending" | "active" | "suspended" | "archived"
       entity_type:
@@ -15989,6 +16308,36 @@ export const Constants = {
         "judging",
         "completed",
         "cancelled",
+      ],
+      cost_estimate_status: [
+        "draft",
+        "pending_approval",
+        "approved",
+        "rejected",
+        "invoiced",
+        "cancelled",
+      ],
+      cost_item_category: [
+        "personnel",
+        "equipment",
+        "venue",
+        "travel",
+        "accommodation",
+        "catering",
+        "materials",
+        "logistics",
+        "marketing",
+        "insurance",
+        "permits",
+        "miscellaneous",
+      ],
+      cost_module_type: [
+        "competition",
+        "chefs_table",
+        "exhibition",
+        "event",
+        "project",
+        "other",
       ],
       entity_scope: ["local", "national", "regional", "international"],
       entity_status: ["pending", "active", "suspended", "archived"],
