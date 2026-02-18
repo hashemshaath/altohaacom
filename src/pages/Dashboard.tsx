@@ -184,13 +184,15 @@ function AchievementsSummary({ userId, isAr }: { userId: string; isAr: boolean }
   const { data } = useQuery({
     queryKey: ["dashboard-achievements", userId],
     queryFn: async (): Promise<{ certificates: number; competitions: number; badges: number }> => {
-      const certsRes = await (supabase.from("certificates").select("id", { count: "exact", head: true }) as any).eq("recipient_id", userId);
-      const regsRes = await (supabase.from("competition_registrations").select("id", { count: "exact", head: true }) as any).eq("participant_id", userId);
-      const badgesRes = await (supabase.from("user_badges").select("id", { count: "exact", head: true }) as any).eq("user_id", userId);
+      const [certsRes, regsRes, badgesRes] = await Promise.all([
+        (supabase as any).from("certificates").select("id").eq("recipient_id", userId),
+        (supabase as any).from("competition_registrations").select("id").eq("participant_id", userId),
+        (supabase as any).from("user_badges").select("id").eq("user_id", userId),
+      ]);
       return {
-        certificates: certsRes.count || 0,
-        competitions: regsRes.count || 0,
-        badges: badgesRes.count || 0,
+        certificates: certsRes.data?.length || 0,
+        competitions: regsRes.data?.length || 0,
+        badges: badgesRes.data?.length || 0,
       };
     },
     staleTime: 1000 * 60 * 5,

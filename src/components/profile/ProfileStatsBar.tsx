@@ -15,35 +15,18 @@ export function ProfileStatsBar({ userId }: ProfileStatsBarProps) {
   const { data: stats } = useQuery({
     queryKey: ["profile-stats", userId],
     queryFn: async () => {
-      const [
-        { count: competitions },
-        { count: certificates },
-        { count: badges },
-        { count: masterclasses },
-      ] = await Promise.all([
-        supabase
-          .from("competition_registrations")
-          .select("*", { count: "exact", head: true })
-          .eq("participant_id", userId),
-        supabase
-          .from("certificates")
-          .select("*", { count: "exact", head: true })
-          .eq("recipient_id", userId),
-        supabase
-          .from("user_badges")
-          .select("*", { count: "exact", head: true })
-          .eq("user_id", userId),
-        supabase
-          .from("masterclass_enrollments")
-          .select("*", { count: "exact", head: true })
-          .eq("user_id", userId),
+      const [compsRes, certsRes, badgesRes, mcRes] = await Promise.all([
+        supabase.from("competition_registrations").select("id").eq("participant_id", userId),
+        supabase.from("certificates").select("id").eq("recipient_id", userId),
+        supabase.from("user_badges").select("id").eq("user_id", userId),
+        supabase.from("masterclass_enrollments").select("id").eq("user_id", userId),
       ]);
 
       return [
-        { label: isAr ? "المسابقات" : "Competitions", value: competitions || 0, icon: Trophy },
-        { label: isAr ? "الشهادات" : "Certificates", value: certificates || 0, icon: Award },
-        { label: isAr ? "الشارات" : "Badges", value: badges || 0, icon: Star },
-        { label: isAr ? "الدورات" : "Courses", value: masterclasses || 0, icon: GraduationCap },
+        { label: isAr ? "المسابقات" : "Competitions", value: compsRes.data?.length || 0, icon: Trophy },
+        { label: isAr ? "الشهادات" : "Certificates", value: certsRes.data?.length || 0, icon: Award },
+        { label: isAr ? "الشارات" : "Badges", value: badgesRes.data?.length || 0, icon: Star },
+        { label: isAr ? "الدورات" : "Courses", value: mcRes.data?.length || 0, icon: GraduationCap },
       ];
     },
     enabled: !!userId,

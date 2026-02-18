@@ -35,21 +35,21 @@ export function ContentStatsWidget() {
         profilesRecent,
         profilesPrev,
       ] = await Promise.all([
-        supabase.from("articles").select("id", { count: "exact", head: true }),
-        supabase.from("articles").select("id", { count: "exact", head: true }).gte("created_at", thirtyDaysAgo),
-        supabase.from("articles").select("id", { count: "exact", head: true }).gte("created_at", sixtyDaysAgo).lt("created_at", thirtyDaysAgo),
-        supabase.from("competitions").select("id", { count: "exact", head: true }),
-        supabase.from("competitions").select("id", { count: "exact", head: true }).gte("created_at", thirtyDaysAgo),
-        supabase.from("competitions").select("id", { count: "exact", head: true }).gte("created_at", sixtyDaysAgo).lt("created_at", thirtyDaysAgo),
-        supabase.from("profiles").select("id", { count: "exact", head: true }),
-        supabase.from("profiles").select("id", { count: "exact", head: true }).gte("created_at", thirtyDaysAgo),
-        supabase.from("profiles").select("id", { count: "exact", head: true }).gte("created_at", sixtyDaysAgo).lt("created_at", thirtyDaysAgo),
+        supabase.from("articles").select("id"),
+        supabase.from("articles").select("id").gte("created_at", thirtyDaysAgo),
+        supabase.from("articles").select("id").gte("created_at", sixtyDaysAgo).lt("created_at", thirtyDaysAgo),
+        supabase.from("competitions").select("id"),
+        supabase.from("competitions").select("id").gte("created_at", thirtyDaysAgo),
+        supabase.from("competitions").select("id").gte("created_at", sixtyDaysAgo).lt("created_at", thirtyDaysAgo),
+        supabase.from("profiles").select("id"),
+        supabase.from("profiles").select("id").gte("created_at", thirtyDaysAgo),
+        supabase.from("profiles").select("id").gte("created_at", sixtyDaysAgo).lt("created_at", thirtyDaysAgo),
       ]);
 
       return {
-        articles: { total: articlesTotal.count || 0, recent: articlesRecent.count || 0, prev: articlesPrev.count || 0 },
-        competitions: { total: compsTotal.count || 0, recent: compsRecent.count || 0, prev: compsPrev.count || 0 },
-        profiles: { total: profilesTotal.count || 0, recent: profilesRecent.count || 0, prev: profilesPrev.count || 0 },
+        articles: { total: articlesTotal.data?.length || 0, recent: articlesRecent.data?.length || 0, prev: articlesPrev.data?.length || 0 },
+        competitions: { total: compsTotal.data?.length || 0, recent: compsRecent.data?.length || 0, prev: compsPrev.data?.length || 0 },
+        profiles: { total: profilesTotal.data?.length || 0, recent: profilesRecent.data?.length || 0, prev: profilesPrev.data?.length || 0 },
       };
     },
     staleTime: 1000 * 60 * 5,
