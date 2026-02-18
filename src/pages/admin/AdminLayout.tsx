@@ -3,7 +3,7 @@ import { useLanguage } from "@/i18n/LanguageContext";
 import { Outlet, NavLink } from "react-router-dom";
 import { AdminHeader } from "@/components/admin/AdminHeader";
 import { cn } from "@/lib/utils";
-import { GraduationCap, BarChart3, Landmark, Building2, MessageSquare as MessageSquareIcon, Earth, QrCode, UtensilsCrossed, MailOpen, HandHeart, ShieldCheck, Ticket, Target, Headphones, Activity, Megaphone, Languages, Package } from "lucide-react";
+import { GraduationCap, BarChart3, Landmark, Building2, MessageSquare as MessageSquareIcon, Earth, QrCode, UtensilsCrossed, MailOpen, HandHeart, ShieldCheck, Ticket, Target, Headphones, Activity, Megaphone, Languages, Package, ChefHat, ClipboardCheck } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
@@ -54,7 +54,6 @@ export default function AdminLayout() {
         { to: "/admin/users", icon: Users, label: language === "ar" ? "المستخدمين" : "Users" },
         { to: "/admin/companies", icon: Building, label: language === "ar" ? "الشركات والرعاة" : "Companies & Sponsors" },
         { to: "/admin/entities", icon: Building2, label: language === "ar" ? "الجهات والجمعيات" : "Entities Registry" },
-        { to: "/admin/evaluation", icon: UtensilsCrossed, label: language === "ar" ? "مركز التقييم" : "Evaluation Center" },
         { to: "/admin/establishments", icon: Building, label: language === "ar" ? "المنشآت" : "Establishments" },
         { to: "/admin/roles", icon: Shield, label: language === "ar" ? "الأدوار والصلاحيات" : "Roles & Permissions" },
         { to: "/admin/memberships", icon: CreditCard, label: language === "ar" ? "العضويات" : "Memberships" },
@@ -68,6 +67,8 @@ export default function AdminLayout() {
         { to: "/admin/masterclasses", icon: GraduationCap, label: language === "ar" ? "الدورات التعليمية" : "Masterclasses" },
         { to: "/admin/articles", icon: Newspaper, label: language === "ar" ? "المقالات والأخبار" : "Articles & News" },
         { to: "/admin/competitions", icon: Trophy, label: language === "ar" ? "المسابقات" : "Competitions" },
+        { to: "/admin/chefs-table", icon: ChefHat, label: language === "ar" ? "طاولة الشيف" : "Chef's Table" },
+        { to: "/admin/evaluation", icon: ClipboardCheck, label: language === "ar" ? "مركز التقييم" : "Evaluation Center" },
         { to: "/admin/order-center", icon: Package, label: language === "ar" ? "مركز الطلبات" : "Order Center" },
         { to: "/admin/exhibitions", icon: Landmark, label: language === "ar" ? "المعارض والفعاليات" : "Exhibitions & Events" },
         { to: "/admin/certificates", icon: Award, label: language === "ar" ? "الشهادات" : "Certificates" },
