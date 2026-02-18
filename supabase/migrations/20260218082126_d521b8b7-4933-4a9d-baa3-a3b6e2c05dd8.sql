@@ -1,0 +1,1 @@
+ALTER TABLE public.chefs_table_requests ALTER COLUMN company_id DROP NOT NULL;

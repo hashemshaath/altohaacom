@@ -2227,7 +2227,7 @@ export type Database = {
           admin_notes: string | null
           budget: number | null
           chef_count: number | null
-          company_id: string
+          company_id: string | null
           created_at: string
           currency: string | null
           description: string | null
@@ -2262,7 +2262,7 @@ export type Database = {
           admin_notes?: string | null
           budget?: number | null
           chef_count?: number | null
-          company_id: string
+          company_id?: string | null
           created_at?: string
           currency?: string | null
           description?: string | null
@@ -2297,7 +2297,7 @@ export type Database = {
           admin_notes?: string | null
           budget?: number | null
           chef_count?: number | null
-          company_id?: string
+          company_id?: string | null
           created_at?: string
           currency?: string | null
           description?: string | null

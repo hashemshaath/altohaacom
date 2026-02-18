@@ -148,13 +148,13 @@ export default function ChefsTableRequest() {
     setIsSubmitting(true);
     try {
       const requestData: any = {
-        company_id: companyId || null,
+        company_id: companyId || undefined,
         title: `${productName} — ${brandName || companyName}`,
         title_ar: productNameAr ? `${productNameAr} — ${brandNameAr || companyNameAr}` : null,
         product_name: productName,
         product_name_ar: productNameAr || null,
         product_category: productCategory,
-        product_images: productImages.length > 0 ? productImages : null,
+        product_images: productImages.length > 0 ? productImages : [],
         product_description: [
           productDescription,
           marketStatus ? `Market Status: ${marketStatus}` : "",
