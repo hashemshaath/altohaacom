@@ -122,7 +122,7 @@ export function EventsTab() {
     setLoading(false);
   };
 
-  useEffect(() => { fetchData(); }, [user]);
+  useEffect(() => { fetchData(); }, [user?.id]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const handleCreateEvent = async () => {
     if (!user || !eventForm.title.trim()) return;

@@ -30,7 +30,7 @@ export function usePresence() {
     return () => {
       supabase.removeChannel(channel);
     };
-  }, [user]);
+  }, [user?.id]);
 
   const isOnline = (userId: string) => onlineUsers.has(userId);
 

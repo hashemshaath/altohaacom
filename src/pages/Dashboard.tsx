@@ -50,7 +50,7 @@ export default function Dashboard() {
       dailyLoginAwarded.current = true;
       awardPoints.mutate({ actionType: "daily_login", silent: true });
     }
-  }, [user]);
+  }, [user?.id]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const firstName = profile?.full_name?.split(" ")[0] || "";
   const greeting = isAr

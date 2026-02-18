@@ -61,7 +61,7 @@ export default function NotificationPreferences() {
   useEffect(() => {
     if (!user) return;
     fetchPreferences();
-  }, [user]);
+  }, [user?.id]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const fetchPreferences = async () => {
     try {

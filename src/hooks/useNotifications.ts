@@ -40,7 +40,7 @@ export function useNotifications() {
     } finally {
       setLoading(false);
     }
-  }, [user]);
+  }, [user?.id]);
 
   const markAsRead = useCallback(async (notificationId: string) => {
     if (!user) return;
@@ -63,7 +63,7 @@ export function useNotifications() {
     } catch (error) {
       console.error("Error marking notification as read:", error);
     }
-  }, [user]);
+  }, [user?.id]);
 
   const markAllAsRead = useCallback(async () => {
     if (!user) return;
@@ -84,7 +84,7 @@ export function useNotifications() {
     } catch (error) {
       console.error("Error marking all as read:", error);
     }
-  }, [user]);
+  }, [user?.id]);
 
   const deleteNotification = useCallback(async (notificationId: string) => {
     if (!user) return;
@@ -103,7 +103,7 @@ export function useNotifications() {
     } catch (error) {
       console.error("Error deleting notification:", error);
     }
-  }, [user, notifications]);
+  }, [user?.id, notifications]);
 
   const clearAllRead = useCallback(async () => {
     if (!user) return;
@@ -118,7 +118,7 @@ export function useNotifications() {
     } catch (error) {
       console.error("Error clearing read notifications:", error);
     }
-  }, [user]);
+  }, [user?.id]);
 
   // Initial fetch
   useEffect(() => {
@@ -165,7 +165,7 @@ export function useNotifications() {
     return () => {
       supabase.removeChannel(channel);
     };
-  }, [user]);
+  }, [user?.id]);
 
   return {
     notifications,
