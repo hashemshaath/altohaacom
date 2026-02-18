@@ -2079,6 +2079,233 @@ export type Database = {
         }
         Relationships: []
       }
+      chef_schedule_events: {
+        Row: {
+          all_day: boolean | null
+          attachments: string[] | null
+          broadcast_type: string | null
+          channel_name: string | null
+          channel_name_ar: string | null
+          chef_id: string
+          city: string | null
+          color: string | null
+          contract_status: string | null
+          country_code: string | null
+          created_at: string
+          created_by: string | null
+          description: string | null
+          description_ar: string | null
+          end_date: string
+          event_type: string
+          fee_amount: number | null
+          fee_currency: string | null
+          id: string
+          internal_notes: string | null
+          is_contracted: boolean | null
+          is_recurring: boolean | null
+          linked_entity_id: string | null
+          linked_entity_type: string | null
+          location: string | null
+          location_ar: string | null
+          media_url: string | null
+          notes: string | null
+          notes_ar: string | null
+          organizer: string | null
+          organizer_ar: string | null
+          parent_event_id: string | null
+          participation_type: string | null
+          participation_type_ar: string | null
+          priority: string | null
+          program_name: string | null
+          program_name_ar: string | null
+          recurrence_end_date: string | null
+          recurrence_rule: string | null
+          show_details_publicly: boolean | null
+          start_date: string
+          status: string
+          tags: string[] | null
+          timezone: string | null
+          title: string
+          title_ar: string | null
+          updated_at: string
+          updated_by: string | null
+          venue: string | null
+          venue_ar: string | null
+          visibility: string
+        }
+        Insert: {
+          all_day?: boolean | null
+          attachments?: string[] | null
+          broadcast_type?: string | null
+          channel_name?: string | null
+          channel_name_ar?: string | null
+          chef_id: string
+          city?: string | null
+          color?: string | null
+          contract_status?: string | null
+          country_code?: string | null
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          description_ar?: string | null
+          end_date: string
+          event_type?: string
+          fee_amount?: number | null
+          fee_currency?: string | null
+          id?: string
+          internal_notes?: string | null
+          is_contracted?: boolean | null
+          is_recurring?: boolean | null
+          linked_entity_id?: string | null
+          linked_entity_type?: string | null
+          location?: string | null
+          location_ar?: string | null
+          media_url?: string | null
+          notes?: string | null
+          notes_ar?: string | null
+          organizer?: string | null
+          organizer_ar?: string | null
+          parent_event_id?: string | null
+          participation_type?: string | null
+          participation_type_ar?: string | null
+          priority?: string | null
+          program_name?: string | null
+          program_name_ar?: string | null
+          recurrence_end_date?: string | null
+          recurrence_rule?: string | null
+          show_details_publicly?: boolean | null
+          start_date: string
+          status?: string
+          tags?: string[] | null
+          timezone?: string | null
+          title: string
+          title_ar?: string | null
+          updated_at?: string
+          updated_by?: string | null
+          venue?: string | null
+          venue_ar?: string | null
+          visibility?: string
+        }
+        Update: {
+          all_day?: boolean | null
+          attachments?: string[] | null
+          broadcast_type?: string | null
+          channel_name?: string | null
+          channel_name_ar?: string | null
+          chef_id?: string
+          city?: string | null
+          color?: string | null
+          contract_status?: string | null
+          country_code?: string | null
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          description_ar?: string | null
+          end_date?: string
+          event_type?: string
+          fee_amount?: number | null
+          fee_currency?: string | null
+          id?: string
+          internal_notes?: string | null
+          is_contracted?: boolean | null
+          is_recurring?: boolean | null
+          linked_entity_id?: string | null
+          linked_entity_type?: string | null
+          location?: string | null
+          location_ar?: string | null
+          media_url?: string | null
+          notes?: string | null
+          notes_ar?: string | null
+          organizer?: string | null
+          organizer_ar?: string | null
+          parent_event_id?: string | null
+          participation_type?: string | null
+          participation_type_ar?: string | null
+          priority?: string | null
+          program_name?: string | null
+          program_name_ar?: string | null
+          recurrence_end_date?: string | null
+          recurrence_rule?: string | null
+          show_details_publicly?: boolean | null
+          start_date?: string
+          status?: string
+          tags?: string[] | null
+          timezone?: string | null
+          title?: string
+          title_ar?: string | null
+          updated_at?: string
+          updated_by?: string | null
+          venue?: string | null
+          venue_ar?: string | null
+          visibility?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "chef_schedule_events_parent_event_id_fkey"
+            columns: ["parent_event_id"]
+            isOneToOne: false
+            referencedRelation: "chef_schedule_events"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      chef_schedule_settings: {
+        Row: {
+          auto_sync_chefs_table: boolean | null
+          auto_sync_competitions: boolean | null
+          auto_sync_exhibitions: boolean | null
+          chef_id: string
+          created_at: string
+          default_visibility: string | null
+          id: string
+          share_publicly: boolean | null
+          share_with_management: boolean | null
+          show_availability_on_profile: boolean | null
+          unavailable_message: string | null
+          unavailable_message_ar: string | null
+          updated_at: string
+          working_days: number[] | null
+          working_hours_end: string | null
+          working_hours_start: string | null
+        }
+        Insert: {
+          auto_sync_chefs_table?: boolean | null
+          auto_sync_competitions?: boolean | null
+          auto_sync_exhibitions?: boolean | null
+          chef_id: string
+          created_at?: string
+          default_visibility?: string | null
+          id?: string
+          share_publicly?: boolean | null
+          share_with_management?: boolean | null
+          show_availability_on_profile?: boolean | null
+          unavailable_message?: string | null
+          unavailable_message_ar?: string | null
+          updated_at?: string
+          working_days?: number[] | null
+          working_hours_end?: string | null
+          working_hours_start?: string | null
+        }
+        Update: {
+          auto_sync_chefs_table?: boolean | null
+          auto_sync_competitions?: boolean | null
+          auto_sync_exhibitions?: boolean | null
+          chef_id?: string
+          created_at?: string
+          default_visibility?: string | null
+          id?: string
+          share_publicly?: boolean | null
+          share_with_management?: boolean | null
+          show_availability_on_profile?: boolean | null
+          unavailable_message?: string | null
+          unavailable_message_ar?: string | null
+          updated_at?: string
+          working_days?: number[] | null
+          working_hours_end?: string | null
+          working_hours_start?: string | null
+        }
+        Relationships: []
+      }
       chef_travel_records: {
         Row: {
           chef_id: string
