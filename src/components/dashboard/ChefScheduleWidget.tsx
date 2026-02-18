@@ -1,3 +1,4 @@
+import { useMemo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useAuth } from "@/contexts/AuthContext";
 import { useChefScheduleEvents, EVENT_TYPE_CONFIG, type ChefScheduleEvent, type ScheduleEventType } from "@/hooks/useChefSchedule";
@@ -20,14 +21,14 @@ export function ChefScheduleWidget() {
   const isAr = language === "ar";
   const { user } = useAuth();
 
-  const now = new Date();
-  const threeMonths = new Date(now);
-  threeMonths.setMonth(now.getMonth() + 3);
+  const dateRange = useMemo(() => {
+    const now = new Date();
+    const threeMonths = new Date(now);
+    threeMonths.setMonth(now.getMonth() + 3);
+    return { start: now.toISOString(), end: threeMonths.toISOString() };
+  }, []);
 
-  const { data: events = [] } = useChefScheduleEvents(user?.id, {
-    start: now.toISOString(),
-    end: threeMonths.toISOString(),
-  });
+  const { data: events = [] } = useChefScheduleEvents(user?.id, dateRange);
 
   const upcoming = events
     .filter(e => e.status !== "cancelled")
