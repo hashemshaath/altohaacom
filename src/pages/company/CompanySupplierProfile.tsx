@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useCompanyAccess, useCompanyProfile } from "@/hooks/useCompanyAccess";
 import { useCompanyPagePermissions } from "@/hooks/useCompanyPermissions";
@@ -13,13 +13,13 @@ import { Switch } from "@/components/ui/switch";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
-import { Factory, Save, Plus, X, Sparkles, Eye, Package, BarChart3, MessageSquare } from "lucide-react";
+import { Factory, Save, Plus, X, Sparkles, Eye, Package, BarChart3, MessageSquare, Wand2 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { SupplierCatalogManager } from "@/components/supplier/SupplierCatalogManager";
 import { SupplierAnalyticsDashboard } from "@/components/supplier/SupplierAnalyticsDashboard";
 import { SupplierProfileCompletion } from "@/components/supplier/SupplierProfileCompletion";
 import { SupplierInquiryInbox } from "@/components/supplier/SupplierInquiryInbox";
-import { useEffect } from "react";
+import { SupplierOnboardingWizard } from "@/components/supplier/SupplierOnboardingWizard";
 
 const SUPPLIER_CATEGORIES = [
   { value: "equipment", en: "Equipment", ar: "معدات" },
@@ -40,6 +40,7 @@ export default function CompanySupplierProfile() {
   const queryClient = useQueryClient();
   const navigate = useNavigate();
 
+  const [showWizard, setShowWizard] = useState(false);
   const [tagline, setTagline] = useState("");
   const [taglineAr, setTaglineAr] = useState("");
   const [supplierCategory, setSupplierCategory] = useState("");
@@ -121,6 +122,10 @@ export default function CompanySupplierProfile() {
           </p>
         </div>
         <div className="flex gap-2">
+          <Button variant="outline" size="sm" onClick={() => setShowWizard(!showWizard)}>
+            <Wand2 className="me-1.5 h-3.5 w-3.5" />
+            {isAr ? "معالج الإعداد" : "Setup Wizard"}
+          </Button>
           <Button variant="outline" size="sm" onClick={() => navigate(`/pro-suppliers/${companyId}`)}>
             <Eye className="me-1.5 h-3.5 w-3.5" />
             {isAr ? "معاينة" : "Preview"}
@@ -128,6 +133,9 @@ export default function CompanySupplierProfile() {
         </div>
       </div>
 
+      {showWizard ? (
+        <SupplierOnboardingWizard onComplete={() => setShowWizard(false)} />
+      ) : (
       <Tabs defaultValue="profile">
         <TabsList>
           <TabsTrigger value="profile">
@@ -294,6 +302,7 @@ export default function CompanySupplierProfile() {
           <SupplierInquiryInbox />
         </TabsContent>
       </Tabs>
+      )}
     </div>
   );
 }
