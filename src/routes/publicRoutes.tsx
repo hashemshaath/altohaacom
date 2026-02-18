@@ -30,8 +30,8 @@ const Entities = lazy(() => import("@/pages/Entities"));
 const EntityDetail = lazy(() => import("@/pages/EntityDetail"));
 const Shop = lazy(() => import("@/pages/Shop"));
 const ShopProduct = lazy(() => import("@/pages/ShopProduct"));
-const Tastings = lazy(() => import("@/pages/Tastings"));
-const TastingDetail = lazy(() => import("@/pages/TastingDetail"));
+const ChefsTable = lazy(() => import("@/pages/ChefsTable"));
+const ChefsTableDetail = lazy(() => import("@/pages/ChefsTableDetail"));
 const Mentorship = lazy(() => import("@/pages/Mentorship"));
 const MentorshipDetail = lazy(() => import("@/pages/MentorshipDetail"));
 const Recipes = lazy(() => import("@/pages/Recipes"));
@@ -79,8 +79,8 @@ export const publicRoutes = (
     <Route path="/entities/:slug" element={<EntityDetail />} />
     <Route path="/shop" element={<Shop />} />
     <Route path="/shop/:id" element={<ShopProduct />} />
-    <Route path="/tastings" element={<Tastings />} />
-    <Route path="/tastings/:id" element={<TastingDetail />} />
+    <Route path="/chefs-table" element={<ChefsTable />} />
+    <Route path="/chefs-table/:id" element={<ChefsTableDetail />} />
     <Route path="/mentorship" element={<Mentorship />} />
     <Route path="/mentorship/:id" element={<MentorshipDetail />} />
     <Route path="/recipes" element={<Recipes />} />

@@ -11,7 +11,7 @@ const categories = [
   { key: "competitions", icon: Trophy, labelEn: "Competitions", labelAr: "المسابقات" },
   { key: "exhibitions", icon: Globe, labelEn: "Exhibitions", labelAr: "المعارض" },
   { key: "chefs", icon: ChefHat, labelEn: "Chefs", labelAr: "الطهاة" },
-  { key: "tastings", icon: Utensils, labelEn: "Tastings", labelAr: "التذوق" },
+  { key: "chefs-table", icon: Utensils, labelEn: "Chef's Table", labelAr: "طاولة الشيف" },
 ];
 
 export function HomeSearch() {

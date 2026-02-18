@@ -180,11 +180,9 @@ export function MobileMenu({ primaryNav, moreLinks }: MobileMenuProps) {
                           {label(link.labelEn, link.labelAr)}
                         </NavItem>
                       ))}
-                      {isJudge && (
-                        <NavItem to="/tastings" icon={Scale} active={isActive("/tastings")}>
-                          {label("Evaluation", "التقييم")}
-                        </NavItem>
-                      )}
+                      <NavItem to="/chefs-table" icon={Scale} active={isActive("/chefs-table")}>
+                        {label("Chef's Table", "طاولة الشيف")}
+                      </NavItem>
                     </CollapsibleContent>
                   </Collapsible>
 

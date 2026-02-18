@@ -49,7 +49,7 @@ export function useAdTracking() {
     if (url.includes("/masterclass")) return "masterclasses";
     if (url.includes("/knowledge")) return "knowledge";
     if (url.includes("/mentorship")) return "mentorship";
-    if (url.includes("/tastings")) return "tastings";
+    if (url.includes("/chefs-table")) return "chefs-table";
     if (url === "/" || url === "") return "home";
     return "other";
   }, []);

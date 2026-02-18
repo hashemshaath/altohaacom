@@ -38,7 +38,7 @@ const EntitiesAdmin = lazy(() => import("@/pages/admin/EntitiesAdmin"));
 const JudgesAdmin = lazy(() => import("@/pages/admin/JudgesAdmin"));
 const EvaluationCenter = lazy(() => import("@/pages/admin/EvaluationCenter"));
 const CountriesAdmin = lazy(() => import("@/pages/admin/CountriesAdmin"));
-const TastingsAdmin = lazy(() => import("@/pages/admin/TastingsAdmin"));
+const ChefsTableAdmin = lazy(() => import("@/pages/admin/ChefsTableAdmin"));
 const CommunicationTemplatesAdmin = lazy(() => import("@/pages/admin/CommunicationTemplatesAdmin"));
 const MentorshipAdmin = lazy(() => import("@/pages/admin/MentorshipAdmin"));
 const EstablishmentsAdmin = lazy(() => import("@/pages/admin/EstablishmentsAdmin"));
@@ -90,7 +90,7 @@ export const adminRoutes = (
     <Route path="entities" element={<EntitiesAdmin />} />
     <Route path="judges" element={<JudgesAdmin />} />
     <Route path="evaluation" element={<EvaluationCenter />} />
-    <Route path="tastings" element={<TastingsAdmin />} />
+    <Route path="chefs-table" element={<ChefsTableAdmin />} />
     <Route path="communications" element={<CommunicationsAdmin />} />
     <Route path="countries" element={<CountriesAdmin />} />
     <Route path="templates" element={<CommunicationTemplatesAdmin />} />

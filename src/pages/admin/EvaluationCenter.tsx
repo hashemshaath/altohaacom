@@ -5,7 +5,7 @@ import { UtensilsCrossed, Gavel, BarChart3, Award } from "lucide-react";
 import { lazy, Suspense } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
 
-const TastingsAdmin = lazy(() => import("./TastingsAdmin"));
+const ChefsTableAdmin = lazy(() => import("./ChefsTableAdmin"));
 const JudgesAdmin = lazy(() => import("./JudgesAdmin"));
 
 // Inline Results Overview for admin
@@ -89,7 +89,7 @@ export default function EvaluationCenter() {
 
         <TabsContent value="sessions">
           <Suspense fallback={<Skeleton className="h-96" />}>
-            <TastingsAdmin />
+            <ChefsTableAdmin />
           </Suspense>
         </TabsContent>
 

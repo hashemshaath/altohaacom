@@ -139,7 +139,7 @@ export function BehaviorAnalytics() {
     home: { en: "Home", ar: "الرئيسية" },
     knowledge: { en: "Knowledge", ar: "المعرفة" },
     mentorship: { en: "Mentorship", ar: "الإرشاد" },
-    tastings: { en: "Tastings", ar: "التذوق" },
+    "chefs-table": { en: "Chef's Table", ar: "طاولة الشيف" },
     other: { en: "Other", ar: "أخرى" },
   };
 

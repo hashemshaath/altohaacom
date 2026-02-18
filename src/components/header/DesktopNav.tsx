@@ -56,25 +56,23 @@ export function DesktopNav({ primaryNav, moreLinks, isJudge, isAr }: DesktopNavP
         </Button>
       ))}
 
-      {isJudge && (
-        <Button
-          variant="ghost"
-          size="sm"
-          asChild
-          className={cn(
-            "text-muted-foreground h-8 px-3 text-[13px] font-medium hover:bg-primary/5 hover:text-foreground relative",
-            isActive("/tastings") && "bg-primary/10 text-primary"
+      <Button
+        variant="ghost"
+        size="sm"
+        asChild
+        className={cn(
+          "text-muted-foreground h-8 px-3 text-[13px] font-medium hover:bg-primary/5 hover:text-foreground relative",
+          isActive("/chefs-table") && "bg-primary/10 text-primary"
+        )}
+      >
+        <Link to="/chefs-table" className="flex items-center gap-1.5">
+          <Scale className="h-3.5 w-3.5" />
+          {label("Chef's Table", "طاولة الشيف")}
+          {isActive("/chefs-table") && (
+            <span className="absolute -bottom-[9px] inset-x-3 h-0.5 rounded-full bg-primary" />
           )}
-        >
-          <Link to="/tastings" className="flex items-center gap-1.5">
-            <Scale className="h-3.5 w-3.5" />
-            {label("Evaluation", "التقييم")}
-            {isActive("/tastings") && (
-              <span className="absolute -bottom-[9px] inset-x-3 h-0.5 rounded-full bg-primary" />
-            )}
-          </Link>
-        </Button>
-      )}
+        </Link>
+      </Button>
 
       {/* More dropdown - 2-column mega menu */}
       <DropdownMenu>
