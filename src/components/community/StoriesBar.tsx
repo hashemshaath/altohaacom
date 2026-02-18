@@ -73,7 +73,8 @@ export function StoriesBar() {
 
   useEffect(() => {
     fetchStories();
-  }, [user]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [user?.id]);
 
   const fetchStories = async () => {
     const { data: stories } = await supabase

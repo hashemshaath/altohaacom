@@ -12,6 +12,7 @@ import {
 import { Heart, MessageCircle, Repeat2, Bookmark, Share2, User, X } from "lucide-react";
 import { toEnglishDigits } from "@/lib/formatNumber";
 import { PostComposer } from "./PostComposer";
+import { MentionText } from "./MentionText";
 import { cn } from "@/lib/utils";
 
 interface ThreadReply {
@@ -99,7 +100,7 @@ export function PostThread({ postId, onClose, onPostUpdated }: PostThreadProps) 
     setLoading(false);
   };
 
-  useEffect(() => { fetchThread(); }, [postId]);
+  useEffect(() => { fetchThread(); }, [postId]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const handleLikeReply = async (replyId: string, isLiked: boolean) => {
     if (!user) return;
@@ -159,7 +160,9 @@ export function PostThread({ postId, onClose, onPostUpdated }: PostThreadProps) 
                     )}
                   </div>
                 </div>
-                <p className="mt-3 text-base leading-relaxed whitespace-pre-wrap">{parentPost.content}</p>
+                <div className="mt-3 text-base leading-relaxed whitespace-pre-wrap break-words">
+                  <MentionText content={parentPost.content} />
+                </div>
 
                 {/* Images */}
                 {((parentPost as any).image_urls?.length > 0 || parentPost.image_url) && (
@@ -209,7 +212,9 @@ export function PostThread({ postId, onClose, onPostUpdated }: PostThreadProps) 
                           <span className="text-muted-foreground">·</span>
                           <span className="text-xs text-muted-foreground shrink-0">{formatDate(reply.created_at)}</span>
                         </div>
-                        <p className="mt-1 text-sm whitespace-pre-wrap">{reply.content}</p>
+                        <div className="mt-1 text-sm whitespace-pre-wrap break-words">
+                          <MentionText content={reply.content} />
+                        </div>
 
                         {(reply.image_urls.length > 0 || reply.image_url) && (
                           <div className="mt-2 overflow-hidden rounded-xl border border-border">
