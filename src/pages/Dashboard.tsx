@@ -14,6 +14,7 @@ import { ArrowRight } from "lucide-react";
 import { NotificationsSummaryWidget } from "@/components/dashboard/NotificationsSummaryWidget";
 import { UpcomingExhibitionsWidget } from "@/components/dashboard/UpcomingExhibitionsWidget";
 import { EventsCalendarWidget } from "@/components/dashboard/EventsCalendarWidget";
+import { ContentStatsWidget } from "@/components/dashboard/ContentStatsWidget";
 import { useAuth } from "@/contexts/AuthContext";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -164,6 +165,7 @@ export default function Dashboard() {
             {user && <MasterclassProgressWidget />}
           </div>
           <div className="space-y-6">
+            {user && <ContentStatsWidget />}
             {user && <ReferralWidget />}
             {user && <EventsCalendarWidget />}
             {user && <NotificationsSummaryWidget />}
