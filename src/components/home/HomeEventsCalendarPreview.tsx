@@ -6,37 +6,17 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import {
-  Calendar, MapPin, Trophy, Landmark, ChefHat, Tv, Mic, GraduationCap, Plane, Users,
-  MoreHorizontal, ArrowRight, Globe, BookOpen, UtensilsCrossed, Palmtree, Ban,
-  ChevronLeft, ChevronRight, List, Clock, Timer, Building2,
+  Calendar, MapPin, MoreHorizontal, ArrowRight, Globe,
+  ChevronLeft, ChevronRight, List, Timer, Building2,
 } from "lucide-react";
-import { format, parseISO, isSameDay, isSameMonth, addMonths, subMonths, differenceInDays, differenceInHours } from "date-fns";
+import { format, parseISO, isSameDay, isSameMonth, addMonths, subMonths } from "date-fns";
 import { cn } from "@/lib/utils";
 import { Link } from "react-router-dom";
 import { getDaysInMonth } from "@/hooks/useChefSchedule";
-
-const ICONS: Record<string, any> = {
-  Trophy, Landmark, ChefHat, Tv, Mic, GraduationCap, MapPin, Plane, Users,
-  MoreHorizontal, BookOpen, UtensilsCrossed, Palmtree, Ban,
-};
+import { ICONS } from "@/pages/events-calendar/constants";
+import { getCountdown } from "@/pages/events-calendar/utils";
 
 const FILTER_TYPES: GlobalEventType[] = ["competition", "exhibition", "conference", "tv_interview", "training", "chefs_table"];
-
-function getCountdown(startDate: string, isAr: boolean): { text: string; urgent: boolean; past: boolean } {
-  const now = new Date();
-  const start = new Date(startDate);
-  const diffDays = differenceInDays(start, now);
-  const diffHours = differenceInHours(start, now);
-  if (diffDays < 0) return { text: isAr ? "انتهى" : "Ended", urgent: false, past: true };
-  if (diffDays === 0) {
-    if (diffHours <= 0) return { text: isAr ? "الآن" : "Now", urgent: true, past: false };
-    return { text: isAr ? `${diffHours} ساعة` : `${diffHours}h left`, urgent: true, past: false };
-  }
-  if (diffDays <= 3) return { text: isAr ? `${diffDays} أيام` : `${diffDays} days`, urgent: true, past: false };
-  if (diffDays <= 30) return { text: isAr ? `${diffDays} يوم` : `${diffDays} days`, urgent: false, past: false };
-  const months = Math.floor(diffDays / 30);
-  return { text: isAr ? `${months} شهر` : `${months}mo`, urgent: false, past: false };
-}
 
 export function HomeEventsCalendarPreview() {
   const { language } = useLanguage();
