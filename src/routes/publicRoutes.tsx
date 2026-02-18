@@ -40,6 +40,8 @@ const RecipeDetail = lazy(() => import("@/pages/RecipeDetail"));
 const Establishments = lazy(() => import("@/pages/Establishments"));
 const EstablishmentDetail = lazy(() => import("@/pages/EstablishmentDetail"));
 const CompanyPublicProfile = lazy(() => import("@/pages/CompanyPublicProfile"));
+const ProSuppliers = lazy(() => import("@/pages/ProSuppliers"));
+const ProSupplierDetail = lazy(() => import("@/pages/ProSupplierDetail"));
 const AcceptInvite = lazy(() => import("@/pages/AcceptInvite"));
 const ContactUs = lazy(() => import("@/pages/ContactUs"));
 const PrivacyPolicy = lazy(() => import("@/pages/PrivacyPolicy"));
@@ -92,6 +94,8 @@ export const publicRoutes = (
     <Route path="/establishments" element={<Establishments />} />
     <Route path="/establishments/:id" element={<EstablishmentDetail />} />
     <Route path="/companies/:id" element={<CompanyPublicProfile />} />
+    <Route path="/pro-suppliers" element={<ProSuppliers />} />
+    <Route path="/pro-suppliers/:id" element={<ProSupplierDetail />} />
     <Route path="/accept-invite" element={<AcceptInvite />} />
     <Route path="/contact" element={<ContactUs />} />
     <Route path="/privacy" element={<PrivacyPolicy />} />
