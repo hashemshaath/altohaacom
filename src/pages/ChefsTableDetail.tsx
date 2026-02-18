@@ -17,9 +17,10 @@ import { Progress } from "@/components/ui/progress";
 import { EvaluationRadarChart } from "@/components/evaluation/EvaluationRadarChart";
 import { EvaluationBarChart } from "@/components/evaluation/EvaluationBarChart";
 import { EvaluationScoreCard } from "@/components/evaluation/EvaluationScoreCard";
+import { ChefScoringForm } from "@/components/evaluation/ChefScoringForm";
 import { 
   ArrowLeft, ChefHat, Calendar, MapPin, Package, Star, ThumbsUp, ThumbsDown, 
-  Users, Image, FileText, Check, X, Clock, BarChart3
+  Users, Image, FileText, Check, X, Clock, BarChart3, ClipboardCheck
 } from "lucide-react";
 import { format } from "date-fns";
 import { toast } from "sonner";
@@ -47,6 +48,8 @@ export default function ChefsTableDetail() {
   const respondToInvitation = useRespondToInvitation();
 
   const myInvitation = invitations.find(inv => inv.chef_id === user?.id);
+  const myEvaluation = evaluations.find(e => e.chef_id === user?.id);
+  const canEvaluate = myInvitation?.status === "accepted" && (!myEvaluation || myEvaluation.status === "draft");
   const submittedEvaluations = evaluations.filter(e => e.status === "submitted");
   const recommendedCount = submittedEvaluations.filter(e => e.is_recommended).length;
   const avgScores = scoreLabels.map(s => {
@@ -214,8 +217,14 @@ export default function ChefsTableDetail() {
           )}
 
           {/* Tabs */}
-          <Tabs defaultValue="evaluations" className="space-y-4">
-            <TabsList className="h-11 rounded-xl bg-muted/50 p-1">
+          <Tabs defaultValue={canEvaluate ? "evaluate" : "evaluations"} className="space-y-4">
+            <TabsList className="h-11 rounded-xl bg-muted/50 p-1 flex-wrap">
+              {canEvaluate && (
+                <TabsTrigger value="evaluate" className="rounded-lg gap-1.5">
+                  <ClipboardCheck className="h-3.5 w-3.5" />
+                  {isAr ? "قيّم المنتج" : "Evaluate"}
+                </TabsTrigger>
+              )}
               <TabsTrigger value="evaluations" className="rounded-lg gap-1.5">
                 <Star className="h-3.5 w-3.5" />
                 {isAr ? "التقييمات" : "Evaluations"} ({submittedEvaluations.length})
@@ -233,6 +242,21 @@ export default function ChefsTableDetail() {
                 {isAr ? "الطهاة" : "Chefs"} ({invitations.length})
               </TabsTrigger>
             </TabsList>
+
+            {/* Evaluate Tab */}
+            {canEvaluate && (
+              <TabsContent value="evaluate">
+                <ChefScoringForm
+                  sessionId={session.id}
+                  invitationId={myInvitation!.id}
+                  productCategory={session.product_category}
+                  entityId={session.id}
+                  evaluatorId={user!.id}
+                  subjectId={session.id}
+                  existingEvaluation={myEvaluation}
+                />
+              </TabsContent>
+            )}
 
             {/* Evaluations Tab */}
             <TabsContent value="evaluations" className="space-y-6">
