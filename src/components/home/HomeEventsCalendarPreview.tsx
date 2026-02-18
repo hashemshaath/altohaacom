@@ -4,8 +4,13 @@ import { useGlobalEventsCalendar, GLOBAL_EVENT_COLORS, GLOBAL_EVENT_LABELS, type
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Calendar, MapPin, Trophy, Landmark, ChefHat, Tv, Mic, GraduationCap, Plane, Users, MoreHorizontal, ArrowRight, Globe, BookOpen, UtensilsCrossed, Palmtree, Ban, ChevronLeft, ChevronRight, List, Clock, ExternalLink } from "lucide-react";
-import { format, parseISO, isSameDay, isSameMonth, addMonths, subMonths } from "date-fns";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import {
+  Calendar, MapPin, Trophy, Landmark, ChefHat, Tv, Mic, GraduationCap, Plane, Users,
+  MoreHorizontal, ArrowRight, Globe, BookOpen, UtensilsCrossed, Palmtree, Ban,
+  ChevronLeft, ChevronRight, List, Clock, Timer, Building2,
+} from "lucide-react";
+import { format, parseISO, isSameDay, isSameMonth, addMonths, subMonths, differenceInDays, differenceInHours } from "date-fns";
 import { cn } from "@/lib/utils";
 import { Link } from "react-router-dom";
 import { getDaysInMonth } from "@/hooks/useChefSchedule";
@@ -16,6 +21,22 @@ const ICONS: Record<string, any> = {
 };
 
 const FILTER_TYPES: GlobalEventType[] = ["competition", "exhibition", "conference", "tv_interview", "training", "chefs_table"];
+
+function getCountdown(startDate: string, isAr: boolean): { text: string; urgent: boolean; past: boolean } {
+  const now = new Date();
+  const start = new Date(startDate);
+  const diffDays = differenceInDays(start, now);
+  const diffHours = differenceInHours(start, now);
+  if (diffDays < 0) return { text: isAr ? "انتهى" : "Ended", urgent: false, past: true };
+  if (diffDays === 0) {
+    if (diffHours <= 0) return { text: isAr ? "الآن" : "Now", urgent: true, past: false };
+    return { text: isAr ? `${diffHours} ساعة` : `${diffHours}h left`, urgent: true, past: false };
+  }
+  if (diffDays <= 3) return { text: isAr ? `${diffDays} أيام` : `${diffDays} days`, urgent: true, past: false };
+  if (diffDays <= 30) return { text: isAr ? `${diffDays} يوم` : `${diffDays} days`, urgent: false, past: false };
+  const months = Math.floor(diffDays / 30);
+  return { text: isAr ? `${months} شهر` : `${months}mo`, urgent: false, past: false };
+}
 
 export function HomeEventsCalendarPreview() {
   const { language } = useLanguage();
@@ -33,10 +54,12 @@ export function HomeEventsCalendarPreview() {
   }, [events, selectedFilter]);
 
   const calDays = useMemo(() => getDaysInMonth(calDate.getFullYear(), calDate.getMonth()), [calDate]);
-  const dayNames = isAr ? ["أ", "إ", "ث", "أ", "خ", "ج", "س"] : ["S", "M", "T", "W", "T", "F", "S"];
+  const dayNames = isAr
+    ? ["أحد", "إثنين", "ثلاثاء", "أربعاء", "خميس", "جمعة", "سبت"]
+    : ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
   const getEventsForDay = (day: Date) => events.filter(e => isSameDay(new Date(e.start_date), day));
-  
+
   const selectedDayEvents = useMemo(() => {
     if (!selectedDay) return [];
     return getEventsForDay(selectedDay);
@@ -45,218 +68,343 @@ export function HomeEventsCalendarPreview() {
   if (events.length === 0) return null;
 
   return (
-    <section className="container py-8">
-      <div className="flex items-center justify-between mb-4">
-        <div className="flex items-center gap-2">
-          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary/10">
-            <Globe className="h-4 w-4 text-primary" />
+    <TooltipProvider delayDuration={200}>
+      <section className="container py-8">
+        {/* Header */}
+        <div className="flex items-center justify-between mb-4">
+          <div className="flex items-center gap-2">
+            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-primary/10 ring-1 ring-primary/20">
+              <Globe className="h-4 w-4 text-primary" />
+            </div>
+            <div>
+              <h2 className="text-lg font-bold tracking-tight">{isAr ? "تقويم الفعاليات" : "Events Calendar"}</h2>
+              <p className="text-xs text-muted-foreground">{isAr ? "الفعاليات القادمة محلياً ودولياً" : "Upcoming local & international events"}</p>
+            </div>
           </div>
-          <div>
-            <h2 className="text-lg font-bold">{isAr ? "تقويم الفعاليات" : "Events Calendar"}</h2>
-            <p className="text-xs text-muted-foreground">{isAr ? "الفعاليات القادمة محلياً ودولياً" : "Upcoming local & international events"}</p>
-          </div>
-        </div>
-        <div className="flex items-center gap-2">
-          <div className="hidden sm:flex border rounded-lg overflow-hidden">
-            <Button
-              variant={viewMode === "cards" ? "default" : "ghost"}
-              size="sm"
-              className="h-7 text-xs rounded-none px-2.5"
-              onClick={() => setViewMode("cards")}
-            >
-              <List className="h-3 w-3" />
-            </Button>
-            <Button
-              variant={viewMode === "mini-cal" ? "default" : "ghost"}
-              size="sm"
-              className="h-7 text-xs rounded-none px-2.5"
-              onClick={() => setViewMode("mini-cal")}
-            >
-              <Calendar className="h-3 w-3" />
-            </Button>
-          </div>
-          <Link to="/events-calendar">
-            <Button variant="outline" size="sm" className="gap-1.5 text-xs">
-              {isAr ? "عرض التقويم" : "View Calendar"}
-              <ArrowRight className="h-3 w-3" />
-            </Button>
-          </Link>
-        </div>
-      </div>
-
-      {/* Type Filter Chips */}
-      <div className="flex flex-wrap gap-1.5 mb-4">
-        <Button
-          variant={selectedFilter === null ? "default" : "outline"}
-          size="sm"
-          className="h-6 text-[10px] px-2"
-          onClick={() => setSelectedFilter(null)}
-        >
-          {isAr ? "الكل" : "All"}
-        </Button>
-        {FILTER_TYPES.map(type => {
-          const label = GLOBAL_EVENT_LABELS[type];
-          const colors = GLOBAL_EVENT_COLORS[type];
-          const active = selectedFilter === type;
-          const count = events.filter(e => e.type === type && new Date(e.start_date) >= new Date()).length;
-          return (
-            <Button
-              key={type}
-              variant={active ? "default" : "outline"}
-              size="sm"
-              className={cn("h-6 text-[10px] px-2 gap-1", !active && `${colors.bg} ${colors.text} ${colors.border} border`)}
-              onClick={() => setSelectedFilter(active ? null : type)}
-            >
-              {isAr ? label?.ar : label?.en}
-              {count > 0 && <span className="opacity-60">({count})</span>}
-            </Button>
-          );
-        })}
-      </div>
-
-      {viewMode === "mini-cal" ? (
-        /* ─── Mini Calendar View ─── */
-        <div className="space-y-3">
-          <Card>
-            <div className="flex items-center justify-between px-3 py-2 border-b">
-              <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => setCalDate(d => subMonths(d, 1))}>
-                <ChevronLeft className="h-3.5 w-3.5" />
+          <div className="flex items-center gap-2">
+            <div className="hidden sm:flex items-center rounded-full border bg-muted/30 p-0.5">
+              <Button
+                variant={viewMode === "cards" ? "default" : "ghost"}
+                size="icon"
+                className="h-7 w-7 rounded-full"
+                onClick={() => setViewMode("cards")}
+              >
+                <List className="h-3 w-3" />
               </Button>
-              <span className="text-xs font-semibold">{format(calDate, "MMMM yyyy")}</span>
-              <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => setCalDate(d => addMonths(d, 1))}>
-                <ChevronRight className="h-3.5 w-3.5" />
+              <Button
+                variant={viewMode === "mini-cal" ? "default" : "ghost"}
+                size="icon"
+                className="h-7 w-7 rounded-full"
+                onClick={() => setViewMode("mini-cal")}
+              >
+                <Calendar className="h-3 w-3" />
               </Button>
             </div>
-            <CardContent className="p-2">
-              <div className="grid grid-cols-7 gap-px">
-                {dayNames.map((d, i) => (
-                  <div key={i} className="p-1 text-center text-[10px] font-medium text-muted-foreground">{d}</div>
-                ))}
-                {calDays.map((day, i) => {
-                  const dayEvts = getEventsForDay(day);
-                  const isCurrentMonth = isSameMonth(day, calDate);
-                  const isToday = isSameDay(day, new Date());
-                  const isSelected = selectedDay && isSameDay(day, selectedDay);
-                  return (
-                    <div
-                      key={i}
-                      onClick={() => dayEvts.length > 0 && setSelectedDay(day)}
-                      className={cn(
-                        "min-h-[50px] p-0.5 rounded-sm transition-colors cursor-pointer",
-                        !isCurrentMonth && "opacity-30",
-                        isToday && "bg-primary/5 ring-1 ring-primary/20",
-                        isSelected && "bg-primary/10 ring-1 ring-primary/40",
-                        dayEvts.length > 0 && "hover:bg-muted/40"
-                      )}
-                    >
-                      <div className={cn("text-[10px] text-center mb-0.5", isToday && "text-primary font-bold")}>
-                        {day.getDate()}
-                      </div>
-                      {dayEvts.slice(0, 2).map(ev => {
-                        const colors = GLOBAL_EVENT_COLORS[ev.type];
-                        return (
-                          <div key={ev.id} className={cn("text-[7px] leading-[9px] px-0.5 rounded truncate mb-px", colors.bg, colors.text)}>
-                            {ev.title}
-                          </div>
-                        );
-                      })}
-                      {dayEvts.length > 2 && (
-                        <div className="text-[7px] text-muted-foreground text-center">+{dayEvts.length - 2}</div>
-                      )}
-                    </div>
-                  );
-                })}
-              </div>
-            </CardContent>
-          </Card>
+            <Link to="/events-calendar">
+              <Button variant="outline" size="sm" className="gap-1.5 text-xs rounded-full">
+                {isAr ? "عرض التقويم" : "View Calendar"}
+                <ArrowRight className="h-3 w-3" />
+              </Button>
+            </Link>
+          </div>
+        </div>
 
-          {/* Selected Day Detail */}
-          {selectedDay && selectedDayEvents.length > 0 && (
-            <Card className="border-primary/20">
-              <CardContent className="p-3 space-y-2">
-                <div className="flex items-center justify-between">
-                  <p className="text-xs font-bold">{format(selectedDay, isAr ? "EEEE, d MMMM" : "EEEE, MMMM d")}</p>
-                  <Badge variant="outline" className="text-[9px]">{selectedDayEvents.length} {isAr ? "فعاليات" : "events"}</Badge>
+        {/* Type Filter Chips */}
+        <div className="flex flex-wrap gap-1.5 mb-4">
+          <Button
+            variant={selectedFilter === null ? "default" : "outline"}
+            size="sm"
+            className="h-7 rounded-full text-xs px-3"
+            onClick={() => setSelectedFilter(null)}
+          >
+            {isAr ? "الكل" : "All"}
+          </Button>
+          {FILTER_TYPES.map(type => {
+            const label = GLOBAL_EVENT_LABELS[type];
+            const active = selectedFilter === type;
+            const count = events.filter(e => e.type === type && new Date(e.start_date) >= new Date()).length;
+            return (
+              <Button
+                key={type}
+                variant={active ? "default" : "outline"}
+                size="sm"
+                className={cn("h-7 rounded-full text-xs px-3 gap-1 transition-all", !active && "hover:bg-accent/50")}
+                onClick={() => setSelectedFilter(active ? null : type)}
+              >
+                {isAr ? label?.ar : label?.en}
+                {count > 0 && <span className="opacity-60 text-[10px]">({count})</span>}
+              </Button>
+            );
+          })}
+        </div>
+
+        {viewMode === "mini-cal" ? (
+          /* ─── Modern Calendar Grid ─── */
+          <div className="space-y-3">
+            <Card className="overflow-hidden border-border/40 shadow-sm">
+              {/* Month navigation */}
+              <div className="flex items-center justify-between px-4 py-3 border-b border-border/30">
+                <Button variant="ghost" size="icon" className="h-8 w-8 rounded-full" onClick={() => setCalDate(d => subMonths(d, 1))}>
+                  <ChevronLeft className="h-4 w-4" />
+                </Button>
+                <span className="text-sm font-bold tracking-tight">{format(calDate, "MMMM yyyy")}</span>
+                <Button variant="ghost" size="icon" className="h-8 w-8 rounded-full" onClick={() => setCalDate(d => addMonths(d, 1))}>
+                  <ChevronRight className="h-4 w-4" />
+                </Button>
+              </div>
+              <CardContent className="p-0">
+                {/* Day name headers */}
+                <div className="grid grid-cols-7">
+                  {dayNames.map((d, i) => (
+                    <div key={i} className="py-2.5 text-center text-[11px] font-medium text-muted-foreground tracking-wide border-b border-border/20">{d}</div>
+                  ))}
                 </div>
-                {selectedDayEvents.map(ev => {
-                  const colors = GLOBAL_EVENT_COLORS[ev.type];
-                  const label = GLOBAL_EVENT_LABELS[ev.type];
-                  const IconComp = ICONS[label?.icon] || MoreHorizontal;
-                  return (
-                    <div key={ev.id} className="flex items-center gap-2 p-2 rounded-lg border border-border/30 hover:bg-muted/20 transition-colors">
-                      <div className={cn("flex h-7 w-7 shrink-0 items-center justify-center rounded-md", colors.bg)}>
-                        <IconComp className={cn("h-3 w-3", colors.text)} />
-                      </div>
-                      <div className="flex-1 min-w-0">
-                        {ev.link ? (
-                          <Link to={ev.link} className="text-xs font-semibold hover:text-primary transition-colors truncate block">{ev.title}</Link>
-                        ) : (
-                          <p className="text-xs font-semibold truncate">{ev.title}</p>
+                {/* Day cells */}
+                <div className="grid grid-cols-7">
+                  {calDays.map((day, i) => {
+                    const dayEvts = getEventsForDay(day);
+                    const isCurrentMonth = isSameMonth(day, calDate);
+                    const isToday = isSameDay(day, new Date());
+                    const isSelected = selectedDay && isSameDay(day, selectedDay);
+                    const hasEvents = dayEvts.length > 0;
+                    return (
+                      <div
+                        key={i}
+                        onClick={() => hasEvents && setSelectedDay(day)}
+                        className={cn(
+                          "min-h-[72px] p-1.5 border-b border-e border-border/15 transition-all cursor-pointer",
+                          !isCurrentMonth && "opacity-25",
+                          isSelected && "bg-primary/5",
+                          hasEvents && isCurrentMonth && "hover:bg-accent/20",
+                          !hasEvents && isCurrentMonth && "hover:bg-muted/10"
                         )}
-                        <div className="flex items-center gap-1.5 text-[9px] text-muted-foreground">
-                          {ev.city && <span className="flex items-center gap-0.5"><MapPin className="h-2 w-2" />{ev.city}</span>}
-                          {ev.is_recurring && <Badge variant="outline" className="text-[7px] px-1 py-0">{isAr ? "سنوي" : "Annual"}</Badge>}
+                      >
+                        <div className="flex items-start justify-center mb-1">
+                          <span className={cn(
+                            "flex items-center justify-center h-6 w-6 rounded-full text-xs tabular-nums transition-colors",
+                            isToday && "bg-primary text-primary-foreground font-bold",
+                            !isToday && isCurrentMonth && "font-medium text-foreground",
+                            !isToday && hasEvents && isCurrentMonth && "text-primary font-semibold",
+                          )}>
+                            {day.getDate()}
+                          </span>
                         </div>
+                        {hasEvents && isCurrentMonth && (
+                          <div className="space-y-0.5">
+                            {dayEvts.slice(0, 2).map(ev => {
+                              const colors = GLOBAL_EVENT_COLORS[ev.type];
+                              const evLabel = GLOBAL_EVENT_LABELS[ev.type];
+                              const IconComp = ICONS[evLabel?.icon] || MoreHorizontal;
+                              return (
+                                <Tooltip key={ev.id}>
+                                  <TooltipTrigger asChild>
+                                    <div className={cn("flex items-center gap-0.5 rounded-md px-1 py-0.5 text-[8px] leading-tight truncate", colors.bg, colors.text, "hover:shadow-sm hover:brightness-95 transition-all cursor-default")}>
+                                      <IconComp className="h-2 w-2 shrink-0" />
+                                      <span className="truncate font-medium">{ev.title}</span>
+                                    </div>
+                                  </TooltipTrigger>
+                                  <TooltipContent side="top" className="p-2">
+                                    <MiniTooltip event={ev} isAr={isAr} />
+                                  </TooltipContent>
+                                </Tooltip>
+                              );
+                            })}
+                            {dayEvts.length > 2 && (
+                              <p className="text-[8px] text-center text-muted-foreground font-medium">+{dayEvts.length - 2}</p>
+                            )}
+                          </div>
+                        )}
                       </div>
-                    </div>
-                  );
-                })}
+                    );
+                  })}
+                </div>
               </CardContent>
             </Card>
-          )}
+
+            {/* Selected Day Detail */}
+            {selectedDay && selectedDayEvents.length > 0 && (
+              <Card className="border-primary/20 animate-in slide-in-from-top-2 duration-200 shadow-sm">
+                <CardContent className="p-4 space-y-2">
+                  <div className="flex items-center justify-between">
+                    <h3 className="text-xs font-bold flex items-center gap-2">
+                      <Calendar className="h-3.5 w-3.5 text-primary" />
+                      {format(selectedDay, isAr ? "EEEE, d MMMM" : "EEEE, MMMM d")}
+                    </h3>
+                    <Badge variant="outline" className="text-[9px] tabular-nums">{selectedDayEvents.length} {isAr ? "فعاليات" : "events"}</Badge>
+                  </div>
+                  {selectedDayEvents.map(ev => <CompactEventCard key={ev.id} event={ev} isAr={isAr} />)}
+                </CardContent>
+              </Card>
+            )}
+          </div>
+        ) : (
+          /* ─── Modern Cards View ─── */
+          <div className="space-y-3">
+            {upcoming.length === 0 ? (
+              <div className="text-center py-10">
+                <Calendar className="h-10 w-10 text-muted-foreground/15 mx-auto mb-3" />
+                <p className="text-sm text-muted-foreground">{isAr ? "لا توجد فعاليات قادمة" : "No upcoming events"}</p>
+              </div>
+            ) : (
+              upcoming.map(ev => <HomeListEventCard key={ev.id} event={ev} isAr={isAr} />)
+            )}
+          </div>
+        )}
+      </section>
+    </TooltipProvider>
+  );
+}
+
+/* ─── Mini Tooltip ─── */
+function MiniTooltip({ event, isAr }: { event: GlobalEvent; isAr: boolean }) {
+  const label = GLOBAL_EVENT_LABELS[event.type];
+  const colors = GLOBAL_EVENT_COLORS[event.type];
+  const countdown = getCountdown(event.start_date, isAr);
+  return (
+    <div className="max-w-[240px] space-y-1">
+      <div className="flex items-center gap-1.5">
+        <Badge variant="outline" className={cn("text-[9px] px-1 py-0 border", colors.bg, colors.text, colors.border)}>
+          {isAr ? label?.ar : label?.en}
+        </Badge>
+        {!countdown.past && (
+          <Badge variant={countdown.urgent ? "destructive" : "outline"} className="text-[9px] px-1 py-0">
+            <Timer className="h-2 w-2 me-0.5" />{countdown.text}
+          </Badge>
+        )}
+      </div>
+      <p className="text-xs font-semibold leading-snug">{isAr && event.title_ar ? event.title_ar : event.title}</p>
+      <div className="flex flex-col gap-0.5 text-[10px] text-muted-foreground">
+        <span className="flex items-center gap-1">
+          <Calendar className="h-2.5 w-2.5" />
+          {format(parseISO(event.start_date), "MMM d, yyyy")}
+        </span>
+        {event.city && <span className="flex items-center gap-1"><MapPin className="h-2.5 w-2.5" />{event.city}{event.country_code ? `, ${event.country_code}` : ""}</span>}
+      </div>
+    </div>
+  );
+}
+
+/* ─── Compact Event Card (for selected day) ─── */
+function CompactEventCard({ event, isAr }: { event: GlobalEvent; isAr: boolean }) {
+  const colors = GLOBAL_EVENT_COLORS[event.type];
+  const label = GLOBAL_EVENT_LABELS[event.type];
+  const IconComp = ICONS[label?.icon] || MoreHorizontal;
+  const countdown = getCountdown(event.start_date, isAr);
+
+  const content = (
+    <div className={cn("flex gap-3 p-3 rounded-xl border transition-all hover:shadow-md group", colors.border, "hover:bg-muted/20")}>
+      {event.cover_image_url ? (
+        <div className="w-14 h-14 rounded-lg overflow-hidden shrink-0 bg-muted">
+          <img src={event.cover_image_url} alt="" className="w-full h-full object-cover" />
         </div>
       ) : (
-        /* ─── Cards View ─── */
-        <div className="grid gap-3 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
-          {upcoming.length === 0 ? (
-            <div className="col-span-full text-center text-sm text-muted-foreground py-8">
-              {isAr ? "لا توجد فعاليات قادمة" : "No upcoming events"}
-            </div>
-          ) : (
-            upcoming.map(ev => {
-              const colors = GLOBAL_EVENT_COLORS[ev.type];
-              const label = GLOBAL_EVENT_LABELS[ev.type];
-              const IconComp = ICONS[label?.icon] || MoreHorizontal;
-              return (
-                <Card key={ev.id} className={cn("border overflow-hidden hover:shadow-md transition-shadow group", colors.border)}>
-                  <CardContent className="p-3">
-                    <div className="flex items-start gap-3">
-                      <div className={cn("flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border", colors.bg, colors.border)}>
-                        <IconComp className={cn("h-4 w-4", colors.text)} />
-                      </div>
-                      <div className="min-w-0 flex-1">
-                        <Badge variant="outline" className={cn("text-[9px] px-1.5 py-0 mb-1 border", colors.bg, colors.text, colors.border)}>
-                          {isAr ? label?.ar : label?.en}
-                        </Badge>
-                        {ev.link ? (
-                          <Link to={ev.link} className="text-sm font-semibold hover:text-primary transition-colors line-clamp-1 block">{ev.title}</Link>
-                        ) : (
-                          <p className="text-sm font-semibold line-clamp-1">{ev.title}</p>
-                        )}
-                        <div className="flex items-center gap-2 text-[10px] text-muted-foreground mt-1">
-                          <span className="flex items-center gap-0.5">
-                            <Calendar className="h-2.5 w-2.5" />
-                            {format(parseISO(ev.start_date), "MMM d, yyyy")}
-                          </span>
-                          {ev.city && (
-                            <span className="flex items-center gap-0.5">
-                              <MapPin className="h-2.5 w-2.5" />{ev.city}
-                            </span>
-                          )}
-                          {ev.is_recurring && (
-                            <Badge variant="outline" className="text-[8px] px-1 py-0">{isAr ? "سنوي" : "Annual"}</Badge>
-                          )}
-                        </div>
-                      </div>
-                      <div className={cn("w-1 h-10 rounded-full shrink-0", colors.dot)} />
-                    </div>
-                  </CardContent>
-                </Card>
-              );
-            })
-          )}
+        <div className={cn("flex h-10 w-10 shrink-0 items-center justify-center rounded-xl", colors.bg)}>
+          <IconComp className={cn("h-4 w-4", colors.text)} />
         </div>
       )}
-    </section>
+      <div className="flex-1 min-w-0">
+        <div className="flex items-center gap-1.5 mb-0.5">
+          <Badge variant="outline" className={cn("text-[9px] px-1 py-0 border", colors.bg, colors.text, colors.border)}>
+            {isAr ? label?.ar : label?.en}
+          </Badge>
+          {!countdown.past && (
+            <Badge variant={countdown.urgent ? "destructive" : "secondary"} className="text-[9px] px-1 py-0 gap-0.5">
+              <Timer className="h-2 w-2" />{countdown.text}
+            </Badge>
+          )}
+        </div>
+        {event.link ? (
+          <Link to={event.link} className="text-xs font-bold hover:text-primary transition-colors line-clamp-1 block">{event.title}</Link>
+        ) : (
+          <p className="text-xs font-bold line-clamp-1">{event.title}</p>
+        )}
+        <div className="flex items-center gap-2 text-[10px] text-muted-foreground mt-0.5">
+          {event.city && <span className="flex items-center gap-0.5"><MapPin className="h-2.5 w-2.5" />{event.city}</span>}
+          {event.organizer_name && <span className="flex items-center gap-0.5"><Building2 className="h-2.5 w-2.5" />{isAr && event.organizer_name_ar ? event.organizer_name_ar : event.organizer_name}</span>}
+        </div>
+      </div>
+    </div>
   );
+
+  return event.link ? <Link to={event.link}>{content}</Link> : content;
+}
+
+/* ─── Home List Event Card (modern style matching EventsCalendar) ─── */
+function HomeListEventCard({ event, isAr }: { event: GlobalEvent; isAr: boolean }) {
+  const colors = GLOBAL_EVENT_COLORS[event.type];
+  const label = GLOBAL_EVENT_LABELS[event.type];
+  const IconComp = ICONS[label?.icon] || MoreHorizontal;
+  const countdown = getCountdown(event.start_date, isAr);
+
+  const card = (
+    <Card className={cn("overflow-hidden transition-all hover:shadow-lg group border-border/40")}>
+      <div className="flex">
+        <div className={cn("w-24 sm:w-32 shrink-0 relative overflow-hidden", !event.cover_image_url && colors.bg)}>
+          {event.cover_image_url ? (
+            <img src={event.cover_image_url} alt="" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
+          ) : (
+            <div className="flex items-center justify-center h-full">
+              <IconComp className={cn("h-7 w-7 opacity-40", colors.text)} />
+            </div>
+          )}
+          {event.logo_url && (
+            <div className="absolute bottom-1.5 start-1.5 h-7 w-7 rounded-md bg-background/90 shadow-sm flex items-center justify-center overflow-hidden">
+              <img src={event.logo_url} alt="" className="h-5 w-5 object-contain" />
+            </div>
+          )}
+          {!countdown.past && (
+            <div className={cn(
+              "absolute top-1.5 end-1.5 rounded-md px-1.5 py-0.5 text-[10px] font-bold shadow-sm",
+              countdown.urgent ? "bg-destructive text-destructive-foreground" : "bg-background/90 text-foreground"
+            )}>
+              <Timer className="h-2.5 w-2.5 inline me-0.5" />{countdown.text}
+            </div>
+          )}
+        </div>
+        <div className="flex-1 min-w-0 p-3 flex flex-col justify-between">
+          <div>
+            <div className="flex items-center gap-1.5 flex-wrap mb-1">
+              <Badge variant="outline" className={cn("text-[10px] px-1.5 py-0 border gap-0.5", colors.bg, colors.text, colors.border)}>
+                <IconComp className="h-2.5 w-2.5" />
+                {isAr ? label?.ar : label?.en}
+              </Badge>
+              {event.is_recurring && (
+                <Badge variant="outline" className="text-[9px] px-1 py-0">{isAr ? "سنوي" : "Annual"}</Badge>
+              )}
+            </div>
+            <h4 className="text-sm font-bold line-clamp-1 group-hover:text-primary transition-colors">
+              {isAr && event.title_ar ? event.title_ar : event.title}
+            </h4>
+            <div className="flex flex-wrap items-center gap-x-3 gap-y-0.5 mt-1.5 text-[11px] text-muted-foreground">
+              <span className="flex items-center gap-1 font-medium">
+                <Calendar className="h-3 w-3 text-primary" />
+                {format(parseISO(event.start_date), "MMM d, yyyy")}
+                {event.end_date && ` – ${format(parseISO(event.end_date), "MMM d")}`}
+              </span>
+              {event.city && (
+                <span className="flex items-center gap-1">
+                  <MapPin className="h-3 w-3" />{event.city}{event.country_code ? `, ${event.country_code}` : ""}
+                </span>
+              )}
+              {event.organizer_name && (
+                <span className="flex items-center gap-1">
+                  <Building2 className="h-3 w-3" />{isAr && event.organizer_name_ar ? event.organizer_name_ar : event.organizer_name}
+                </span>
+              )}
+            </div>
+          </div>
+          {event.link && (
+            <div className="flex items-center justify-end mt-1.5 pt-1.5 border-t border-border/20">
+              <span className="text-[11px] text-primary font-medium flex items-center gap-1 group-hover:gap-1.5 transition-all">
+                {isAr ? "التفاصيل" : "Details"}
+                <ArrowRight className="h-3 w-3" />
+              </span>
+            </div>
+          )}
+        </div>
+      </div>
+    </Card>
+  );
+
+  return event.link ? <Link to={event.link} className="block">{card}</Link> : card;
 }
