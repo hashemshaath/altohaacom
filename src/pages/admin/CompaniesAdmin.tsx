@@ -7,6 +7,7 @@ import { CountrySelector } from "@/components/auth/CountrySelector";
 import { CompanyClassificationsPanel } from "@/components/admin/CompanyClassificationsPanel";
 import { CompanySponsorshipPanelEnhanced } from "@/components/admin/CompanySponsorshipPanelEnhanced";
 import { AdminSupplierControls } from "@/components/admin/AdminSupplierControls";
+import { AdminReviewsModeration } from "@/components/admin/AdminReviewsModeration";
 import { CompanyEditPanel } from "@/components/admin/CompanyEditPanel";
 import { useAllCountries } from "@/hooks/useCountries";
 import { countryFlag } from "@/lib/countryFlag";
@@ -93,7 +94,7 @@ export default function CompaniesAdmin() {
   const [statusFilter, setStatusFilter] = useState<string>("all");
   const [showCompanyForm, setShowCompanyForm] = useState(false);
   const [showBulkImport, setShowBulkImport] = useState(false);
-  const [mainTab, setMainTab] = useState<"companies" | "suppliers">("companies");
+  const [mainTab, setMainTab] = useState<"companies" | "suppliers" | "reviews">("companies");
   const [selectedCompany, setSelectedCompany] = useState<string | null>(null);
   const [companyDetailTab, setCompanyDetailTab] = useState("overview");
 
@@ -1704,10 +1705,15 @@ export default function CompaniesAdmin() {
           <Button variant={mainTab === "suppliers" ? "default" : "outline"} size="sm" onClick={() => setMainTab("suppliers")}>
             <Factory className="me-1.5 h-3.5 w-3.5" />{isAr ? "الموردون المحترفون" : "Pro Suppliers"}
           </Button>
+          <Button variant={mainTab === "reviews" ? "default" : "outline"} size="sm" onClick={() => setMainTab("reviews")}>
+            <Star className="me-1.5 h-3.5 w-3.5" />{isAr ? "التقييمات" : "Reviews"}
+          </Button>
         </div>
 
         {mainTab === "suppliers" ? (
           <AdminSupplierControls />
+        ) : mainTab === "reviews" ? (
+          <AdminReviewsModeration />
         ) : (
         <>
         {/* Stats Cards */}
