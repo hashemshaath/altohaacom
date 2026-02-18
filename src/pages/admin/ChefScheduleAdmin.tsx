@@ -410,15 +410,19 @@ export default function ChefScheduleAdmin() {
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
             {typeBreakdown.map(({ key, config, count }) => {
               const Icon = EVENT_ICONS[key] || MoreHorizontal;
+              const pct = allEvents.length ? Math.round((count / allEvents.length) * 100) : 0;
               return (
                 <Card key={key} className="border-border/40">
                   <CardContent className="p-4 flex items-center gap-3">
                     <div className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border ${config.color}`}>
                       <Icon className="h-4 w-4" />
                     </div>
-                    <div>
+                    <div className="flex-1 min-w-0">
                       <p className="text-xl font-black tabular-nums">{count}</p>
                       <p className="text-xs text-muted-foreground">{isAr ? config.ar : config.en}</p>
+                      <div className="mt-1 h-1.5 rounded-full bg-muted overflow-hidden">
+                        <div className="h-full rounded-full bg-primary/60 transition-all" style={{ width: `${pct}%` }} />
+                      </div>
                     </div>
                   </CardContent>
                 </Card>
@@ -426,12 +430,47 @@ export default function ChefScheduleAdmin() {
             })}
           </div>
 
+          {/* Monthly Distribution */}
+          <Card className="border-border/40">
+            <CardHeader className="pb-3">
+              <CardTitle className="text-sm flex items-center gap-2">
+                <BarChart3 className="h-4 w-4 text-primary" />
+                {isAr ? "التوزيع الشهري" : "Monthly Distribution"}
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              {(() => {
+                const monthCounts: Record<string, number> = {};
+                allEvents.forEach(ev => {
+                  const m = format(parseISO(ev.start_date), "MMM yyyy");
+                  monthCounts[m] = (monthCounts[m] || 0) + 1;
+                });
+                const entries = Object.entries(monthCounts).slice(-12);
+                const maxCount = Math.max(...entries.map(([, c]) => c), 1);
+                return entries.length === 0 ? (
+                  <p className="text-sm text-muted-foreground text-center py-6">{isAr ? "لا توجد بيانات" : "No data"}</p>
+                ) : (
+                  <div className="flex items-end gap-1.5 h-32">
+                    {entries.map(([month, count]) => (
+                      <div key={month} className="flex-1 flex flex-col items-center gap-1">
+                        <span className="text-[9px] font-bold tabular-nums">{count}</span>
+                        <div className="w-full rounded-t bg-primary/70 transition-all" style={{ height: `${(count / maxCount) * 100}%`, minHeight: 4 }} />
+                        <span className="text-[8px] text-muted-foreground whitespace-nowrap">{month.split(" ")[0]}</span>
+                      </div>
+                    ))}
+                  </div>
+                );
+              })()}
+            </CardContent>
+          </Card>
+
           {/* Contracted Events Summary */}
           <Card className="border-border/40">
             <CardHeader className="pb-3">
               <CardTitle className="text-sm flex items-center gap-2">
                 <Briefcase className="h-4 w-4 text-primary" />
                 {isAr ? "الأحداث التعاقدية" : "Contracted Events"}
+                <Badge variant="outline" className="ms-auto text-[10px]">{allEvents.filter(e => e.is_contracted).length}</Badge>
               </CardTitle>
             </CardHeader>
             <CardContent>
@@ -443,7 +482,7 @@ export default function ChefScheduleAdmin() {
                     const config = EVENT_TYPE_CONFIG[ev.event_type as ScheduleEventType] || EVENT_TYPE_CONFIG.other;
                     const chef = profileMap[ev.chef_id];
                     return (
-                      <div key={ev.id} className="flex items-center gap-3 p-3 rounded-lg border border-border/30 hover:bg-muted/20 cursor-pointer" onClick={() => handleEdit(ev)}>
+                      <div key={ev.id} className="flex items-center gap-3 p-3 rounded-lg border border-border/30 hover:bg-muted/20 cursor-pointer transition-colors" onClick={() => handleEdit(ev)}>
                         <div className="flex-1 min-w-0">
                           <p className="text-sm font-medium truncate">{ev.title}</p>
                           <p className="text-xs text-muted-foreground">{chef?.full_name || "—"} · {format(parseISO(ev.start_date), "MMM d, yyyy")}</p>
