@@ -454,6 +454,9 @@ export function ChefCalendar({ chefId, isAdmin = false }: Props) {
             <Button variant={viewMode === "week" ? "default" : "ghost"} size="sm" className="h-7 text-[10px] rounded-none px-2" onClick={() => setViewMode("week")}>
               {isAr ? "أسبوع" : "Week"}
             </Button>
+            <Button variant={viewMode === "list" ? "default" : "ghost"} size="sm" className="h-7 text-[10px] rounded-none px-2" onClick={() => setViewMode("list")}>
+              {isAr ? "قائمة" : "List"}
+            </Button>
           </div>
           <Button variant="outline" size="sm" className="h-7 text-xs gap-1" onClick={() => setShowSettings(true)}>
             <Settings className="h-3 w-3" />
@@ -545,6 +548,58 @@ export function ChefCalendar({ chefId, isAdmin = false }: Props) {
           </Card>
         );
       })()}
+
+      {/* List View */}
+      {viewMode === "list" && (
+        <Card className="border-border/40">
+          <CardHeader className="pb-2">
+            <CardTitle className="text-sm flex items-center gap-2">
+              <CalendarIcon className="h-4 w-4" />
+              {isAr ? "جميع الأحداث" : "All Events"} 
+              <Badge variant="outline" className="text-[10px]">{events.length}</Badge>
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="p-0">
+            {events.length === 0 ? (
+              <div className="py-8 text-center text-muted-foreground text-sm">
+                {isAr ? "لا توجد أحداث هذا الشهر" : "No events this month"}
+              </div>
+            ) : (
+              <div className="divide-y divide-border/20">
+                {events.map(ev => {
+                  const config = EVENT_TYPE_CONFIG[ev.event_type as ScheduleEventType] || EVENT_TYPE_CONFIG.other;
+                  const Icon = EVENT_ICONS[ev.event_type] || MoreHorizontal;
+                  const VisIcon = VISIBILITY_ICONS[ev.visibility] || Lock;
+                  return (
+                    <div key={ev.id} className="p-3 hover:bg-muted/20 transition-colors flex items-center gap-3">
+                      <div className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-lg border ${config.color}`}>
+                        <Icon className="h-3.5 w-3.5" />
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center gap-2">
+                          <h4 className={`font-semibold text-xs ${ev.status === "cancelled" ? "line-through opacity-50" : ""}`}>{ev.title}</h4>
+                          <VisIcon className="h-3 w-3 text-muted-foreground shrink-0" />
+                          {ev.is_contracted && <Briefcase className="h-3 w-3 text-chart-2 shrink-0" />}
+                        </div>
+                        <div className="flex items-center gap-2 text-[10px] text-muted-foreground mt-0.5">
+                          <span>{format(parseISO(ev.start_date), "MMM d")} {!ev.all_day && format(parseISO(ev.start_date), "HH:mm")}</span>
+                          {ev.city && <span>· {ev.city}</span>}
+                          {ev.channel_name && <span>· {ev.channel_name}</span>}
+                        </div>
+                      </div>
+                      <Badge className={`text-[8px] border shrink-0 ${config.color}`}>{isAr ? config.ar : config.en}</Badge>
+                      <div className="flex items-center gap-0.5 shrink-0">
+                        <Button variant="ghost" size="sm" className="h-6 w-6 p-0" onClick={() => setEditingEvent(ev)}><Edit2 className="h-3 w-3" /></Button>
+                        <Button variant="ghost" size="sm" className="h-6 w-6 p-0 text-destructive" onClick={() => handleDeleteEvent(ev.id)}><Trash2 className="h-3 w-3" /></Button>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            )}
+          </CardContent>
+        </Card>
+      )}
 
       {/* Month Calendar Grid */}
       {viewMode === "month" && (
