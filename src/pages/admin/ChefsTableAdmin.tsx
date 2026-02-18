@@ -19,11 +19,13 @@ import { InvitationManager } from "@/components/evaluation/InvitationManager";
 import { ChefsTableAnalytics } from "@/components/admin/chefs-table/ChefsTableAnalytics";
 import { ChefsTablePipeline } from "@/components/admin/chefs-table/ChefsTablePipeline";
 import { ChefsTableSessionDetail } from "@/components/admin/chefs-table/ChefsTableSessionDetail";
+import { ChefsTablePricing } from "@/components/admin/chefs-table/ChefsTablePricing";
+import { ChefsTableChefRegistrations } from "@/components/admin/chefs-table/ChefsTableChefRegistrations";
 import {
   ChefHat, Search, Eye, Package, Calendar, FileText,
   Clock, Check, X, ThumbsUp, ThumbsDown, MapPin, Image,
   Send, Gavel, Printer, ChevronDown, DollarSign,
-  Users, AlertCircle, BarChart3,
+  Users, AlertCircle, BarChart3, UserPlus, Receipt,
 } from "lucide-react";
 import { format } from "date-fns";
 import { toast } from "sonner";
@@ -177,6 +179,14 @@ export default function ChefsTableAdmin() {
           <TabsTrigger value="judges" className="gap-1.5">
             <Gavel className="h-3.5 w-3.5" />
             {isAr ? "المحكمين" : "Judges"}
+          </TabsTrigger>
+          <TabsTrigger value="pricing" className="gap-1.5">
+            <Receipt className="h-3.5 w-3.5" />
+            {isAr ? "التسعير" : "Pricing"}
+          </TabsTrigger>
+          <TabsTrigger value="registrations" className="gap-1.5">
+            <UserPlus className="h-3.5 w-3.5" />
+            {isAr ? "تسجيل الطهاة" : "Chef Registration"}
           </TabsTrigger>
         </TabsList>
 
@@ -486,6 +496,16 @@ export default function ChefsTableAdmin() {
           <Suspense fallback={<Skeleton className="h-96" />}>
             <JudgesAdmin />
           </Suspense>
+        </TabsContent>
+
+        {/* Pricing Tab */}
+        <TabsContent value="pricing">
+          <ChefsTablePricing />
+        </TabsContent>
+
+        {/* Chef Registration Tab */}
+        <TabsContent value="registrations">
+          <ChefsTableChefRegistrations />
         </TabsContent>
       </Tabs>
     </div>

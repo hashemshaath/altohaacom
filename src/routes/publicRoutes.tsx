@@ -32,6 +32,7 @@ const Shop = lazy(() => import("@/pages/Shop"));
 const ShopProduct = lazy(() => import("@/pages/ShopProduct"));
 const ChefsTable = lazy(() => import("@/pages/ChefsTable"));
 const ChefsTableDetail = lazy(() => import("@/pages/ChefsTableDetail"));
+const EvaluationReport = lazy(() => import("@/pages/EvaluationReport"));
 const Mentorship = lazy(() => import("@/pages/Mentorship"));
 const MentorshipDetail = lazy(() => import("@/pages/MentorshipDetail"));
 const Recipes = lazy(() => import("@/pages/Recipes"));
@@ -81,6 +82,7 @@ export const publicRoutes = (
     <Route path="/shop/:id" element={<ShopProduct />} />
     <Route path="/chefs-table" element={<ChefsTable />} />
     <Route path="/chefs-table/:id" element={<ChefsTableDetail />} />
+    <Route path="/evaluation-report/:token" element={<EvaluationReport />} />
     <Route path="/mentorship" element={<Mentorship />} />
     <Route path="/mentorship/:id" element={<MentorshipDetail />} />
     <Route path="/recipes" element={<Recipes />} />
