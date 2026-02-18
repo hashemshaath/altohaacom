@@ -1,31 +1,24 @@
-import { useCallback } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { GLOBAL_EVENT_COLORS } from "@/hooks/useGlobalEventsCalendar";
 import type { GlobalEvent } from "@/hooks/useGlobalEventsCalendar";
-import { isSameDay, isWithinInterval, startOfWeek, endOfWeek, eachDayOfInterval, format } from "date-fns";
+import { isSameDay, startOfWeek, endOfWeek, eachDayOfInterval, format } from "date-fns";
 import { cn } from "@/lib/utils";
 import { EventChip } from "./EventChip";
+import { getEventsForDay } from "./utils";
 
 export function WeekView({ events, currentDate, isAr }: { events: GlobalEvent[]; currentDate: Date; isAr: boolean }) {
   const weekStart = startOfWeek(currentDate, { weekStartsOn: 0 });
   const weekDays = eachDayOfInterval({ start: weekStart, end: endOfWeek(currentDate, { weekStartsOn: 0 }) });
 
-  const getEventsForDay = useCallback((day: Date) => {
-    return events.filter(e => {
-      const start = new Date(e.start_date);
-      if (isSameDay(start, day)) return true;
-      if (e.end_date) return isWithinInterval(day, { start, end: new Date(e.end_date) });
-      return false;
-    });
-  }, [events]);
+  const getDayEvents = (day: Date) => getEventsForDay(events, day);
 
   return (
     <Card className="overflow-hidden border-border/40 shadow-sm">
       <CardContent className="p-0">
         <div className="grid grid-cols-7 divide-x divide-border/20">
           {weekDays.map((day, i) => {
-            const dayEvents = getEventsForDay(day);
+            const dayEvents = getDayEvents(day);
             const isToday = isSameDay(day, new Date());
             return (
               <div key={i} className={cn("min-h-[380px]", isToday && "bg-primary/3")}>

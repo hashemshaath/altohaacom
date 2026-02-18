@@ -3,19 +3,14 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { GLOBAL_EVENT_COLORS, GLOBAL_EVENT_LABELS, type GlobalEvent } from "@/hooks/useGlobalEventsCalendar";
 import { Calendar, Clock, MapPin, Timer, Building2, ArrowRight, MoreHorizontal } from "lucide-react";
-import { format, parseISO, isSameDay, isWithinInterval } from "date-fns";
+import { format, parseISO, isSameDay } from "date-fns";
 import { cn } from "@/lib/utils";
 import { Link } from "react-router-dom";
 import { ICONS } from "./constants";
-import { getCountdown } from "./utils";
+import { getCountdown, getEventsForDay } from "./utils";
 
 export function DayView({ events, currentDate, isAr }: { events: GlobalEvent[]; currentDate: Date; isAr: boolean }) {
-  const dayEvents = useMemo(() => events.filter(e => {
-    const start = new Date(e.start_date);
-    if (isSameDay(start, currentDate)) return true;
-    if (e.end_date) return isWithinInterval(currentDate, { start, end: new Date(e.end_date) });
-    return false;
-  }), [events, currentDate]);
+  const dayEvents = useMemo(() => getEventsForDay(events, currentDate), [events, currentDate]);
   const isToday = isSameDay(currentDate, new Date());
 
   return (
