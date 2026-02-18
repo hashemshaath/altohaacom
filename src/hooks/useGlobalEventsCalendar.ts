@@ -179,6 +179,39 @@ export function useGlobalEventsCalendar(filters?: {
         }
       }
 
+      // 4. Fetch admin-managed global events
+      const { data: globalEvents } = await (supabase as any)
+        .from("global_events")
+        .select("*")
+        .eq("status", "active");
+
+      if (globalEvents) {
+        for (const ge of globalEvents) {
+          if (!ge.start_date) continue;
+          const geType = ge.type as GlobalEventType;
+          events.push({
+            id: ge.id,
+            type: geType,
+            title: ge.title,
+            title_ar: ge.title_ar,
+            start_date: ge.start_date,
+            end_date: ge.end_date,
+            all_day: ge.all_day ?? true,
+            city: ge.city,
+            country_code: ge.country_code,
+            venue: ge.venue,
+            venue_ar: ge.venue_ar,
+            status: "upcoming",
+            is_international: ge.is_international ?? false,
+            is_recurring: ge.is_recurring ?? false,
+            link: ge.link,
+            color: GLOBAL_EVENT_LABELS[geType]?.icon ? `chart-${(EVENT_TYPES_ORDER.indexOf(geType) % 5) + 1}` : "chart-4",
+            icon: GLOBAL_EVENT_LABELS[geType]?.icon || "MoreHorizontal",
+            source: "global_event" as any,
+          });
+        }
+      }
+
       // Apply type filter
       let filtered = events;
       if (filters?.types && filters.types.length > 0) {
@@ -192,3 +225,8 @@ export function useGlobalEventsCalendar(filters?: {
     },
   });
 }
+
+const EVENT_TYPES_ORDER: GlobalEventType[] = [
+  "competition", "exhibition", "chefs_table", "tv_interview", "conference",
+  "training", "masterclass", "tasting", "visit", "travel", "vacation", "meeting", "other",
+];

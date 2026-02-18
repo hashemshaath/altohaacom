@@ -69,6 +69,7 @@ export default function AdminLayout() {
         { to: "/admin/competitions", icon: Trophy, label: language === "ar" ? "المسابقات" : "Competitions" },
         { to: "/admin/chefs-table", icon: ChefHat, label: language === "ar" ? "طاولة الشيف" : "Chef's Table" },
         { to: "/admin/chef-schedule", icon: Calendar, label: language === "ar" ? "جداول الطهاة" : "Chef Schedules" },
+        { to: "/admin/global-events", icon: Earth, label: language === "ar" ? "التقويم العالمي" : "Global Events" },
         { to: "/admin/evaluation", icon: ClipboardCheck, label: language === "ar" ? "مركز التقييم" : "Evaluation Center" },
         { to: "/admin/exhibitions", icon: Landmark, label: language === "ar" ? "المعارض والفعاليات" : "Exhibitions & Events" },
         { to: "/admin/certificates", icon: Award, label: language === "ar" ? "الشهادات" : "Certificates" },
