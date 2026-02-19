@@ -1,4 +1,5 @@
 import { useEffect } from "react";
+import { useSiteSettingsContext } from "@/contexts/SiteSettingsContext";
 
 interface SEOHeadProps {
   title: string;
@@ -33,9 +34,15 @@ export function SEOHead({
   modifiedTime,
   author,
 }: SEOHeadProps) {
+  const siteSettings = useSiteSettingsContext();
+  const brandCfg = siteSettings.branding || {};
+  const seoCfg = siteSettings.seo || {};
+
+  const siteName = brandCfg.siteName || "Altoha";
+
   useEffect(() => {
-    // Title - keep under 60 chars
-    const fullTitle = title.includes("Altoha") ? title : `${title} | Altoha`;
+    const fullTitle = title.includes(siteName) ? title : `${title} | ${siteName}`;
+    document.title = fullTitle;
     document.title = fullTitle;
 
     // Helper to set/create meta tags
@@ -49,23 +56,27 @@ export function SEOHead({
       el.setAttribute("content", content);
     };
 
-    if (description) {
-      setMeta("name", "description", description);
-      setMeta("property", "og:description", description);
-      setMeta("name", "twitter:description", description);
+    const effectiveDescription = description || (lang === "ar" ? seoCfg.defaultDescriptionAr : seoCfg.defaultDescription) || "";
+    if (effectiveDescription) {
+      setMeta("name", "description", effectiveDescription);
+      setMeta("property", "og:description", effectiveDescription);
+      setMeta("name", "twitter:description", effectiveDescription);
     }
 
     setMeta("property", "og:title", fullTitle);
     setMeta("name", "twitter:title", fullTitle);
     setMeta("property", "og:type", ogType);
     setMeta("property", "og:locale", lang === "ar" ? "ar_SA" : "en_US");
+    setMeta("property", "og:site_name", siteName);
+    setMeta("property", "og:locale", lang === "ar" ? "ar_SA" : "en_US");
 
     // Alternate language
     const altLang = lang === "ar" ? "en_US" : "ar_SA";
     setMeta("property", "og:locale:alternate", altLang);
 
-    if (ogImage) {
-      const imageUrl = ogImage.startsWith("http") ? ogImage : `${window.location.origin}${ogImage}`;
+    const effectiveOgImage = ogImage || seoCfg.ogImageUrl;
+    if (effectiveOgImage) {
+      const imageUrl = effectiveOgImage.startsWith("http") ? effectiveOgImage : `${window.location.origin}${effectiveOgImage}`;
       setMeta("property", "og:image", imageUrl);
       setMeta("property", "og:image:width", "1200");
       setMeta("property", "og:image:height", "630");
@@ -74,8 +85,7 @@ export function SEOHead({
     }
 
     setMeta("property", "og:url", canonical || window.location.href);
-    setMeta("property", "og:site_name", "Altoha");
-    setMeta("name", "twitter:card", ogImage ? "summary_large_image" : "summary");
+    setMeta("name", "twitter:card", effectiveOgImage ? "summary_large_image" : "summary");
     setMeta("name", "theme-color", "#1a1a2e");
 
     // Keywords
@@ -133,7 +143,7 @@ export function SEOHead({
       const ld = document.querySelector('script[data-seo-ld]');
       if (ld) ld.remove();
     };
-  }, [title, description, ogImage, ogType, canonical, jsonLd, noIndex, lang, keywords, publishedTime, modifiedTime, author]);
+  }, [title, description, ogImage, ogType, canonical, jsonLd, noIndex, lang, keywords, publishedTime, modifiedTime, author, siteName, seoCfg]);
 
   return null;
 }
