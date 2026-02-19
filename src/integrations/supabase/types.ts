@@ -3460,13 +3460,17 @@ export type Database = {
           created_at: string
           direction: string
           id: string
+          is_archived: boolean | null
           is_internal_note: boolean | null
+          is_starred: boolean | null
           message: string
           parent_id: string | null
           priority: string | null
+          response_time_minutes: number | null
           sender_id: string
           status: string
           subject: string
+          tags: string[] | null
           updated_at: string
         }
         Insert: {
@@ -3474,13 +3478,17 @@ export type Database = {
           created_at?: string
           direction?: string
           id?: string
+          is_archived?: boolean | null
           is_internal_note?: boolean | null
+          is_starred?: boolean | null
           message: string
           parent_id?: string | null
           priority?: string | null
+          response_time_minutes?: number | null
           sender_id: string
           status?: string
           subject: string
+          tags?: string[] | null
           updated_at?: string
         }
         Update: {
@@ -3488,13 +3496,17 @@ export type Database = {
           created_at?: string
           direction?: string
           id?: string
+          is_archived?: boolean | null
           is_internal_note?: boolean | null
+          is_starred?: boolean | null
           message?: string
           parent_id?: string | null
           priority?: string | null
+          response_time_minutes?: number | null
           sender_id?: string
           status?: string
           subject?: string
+          tags?: string[] | null
           updated_at?: string
         }
         Relationships: [
