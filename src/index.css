@@ -118,8 +118,11 @@
   html {
     overflow-x: hidden;
   }
+  html {
+    font-size: 16px;
+  }
   body {
-    @apply bg-background text-foreground antialiased;
+    @apply bg-background text-foreground antialiased text-base leading-relaxed;
     overflow-x: hidden;
     -webkit-overflow-scrolling: touch;
   }
