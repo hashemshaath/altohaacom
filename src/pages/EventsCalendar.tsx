@@ -121,7 +121,7 @@ export default function EventsCalendar() {
   return (
     <TooltipProvider delayDuration={200}>
       <SEOHead
-        title={isAr ? "تقويم الفعاليات العالمية — Altohaa" : "Global Events Calendar — Altohaa"}
+        title={isAr ? "تقويم الفعاليات العالمية — Altoha" : "Global Events Calendar — Altoha"}
         description={isAr ? "تصفح جميع المسابقات والمعارض والفعاليات الطهوية" : "Browse all competitions, exhibitions, and culinary events worldwide"}
       />
       <Header />

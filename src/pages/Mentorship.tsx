@@ -45,7 +45,7 @@ export default function Mentorship() {
   return (
     <div className="min-h-screen flex flex-col bg-background">
       <SEOHead
-        title={isAr ? "برنامج الإرشاد - الطهاة" : "Mentorship Program - Altohaa"}
+        title={isAr ? "برنامج الإرشاد - الطهاة" : "Mentorship Program - Altoha"}
         description={isAr ? "برنامج إرشاد الطهاة" : "Chef-to-student mentoring program"}
       />
       <Header />

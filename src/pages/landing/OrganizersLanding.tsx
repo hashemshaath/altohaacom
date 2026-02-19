@@ -50,7 +50,7 @@ const testimonials = [
     nameAr: "الشيف أحمد الحسن",
     role: "Competition Organizer",
     roleAr: "منظم مسابقات",
-    quote: "Altohaa transformed how we run our culinary events. The platform is intuitive and powerful.",
+    quote: "Altoha transformed how we run our culinary events. The platform is intuitive and powerful.",
     quoteAr: "غيّرت الطهاة طريقة إدارتنا لفعاليات الطهي. المنصة سهلة الاستخدام وقوية.",
     initials: "AH",
   },
@@ -59,7 +59,7 @@ const testimonials = [
     nameAr: "سارة ميتشل",
     role: "Culinary School Director",
     roleAr: "مديرة مدرسة طهي",
-    quote: "Our students love participating in competitions through Altohaa. It's professional and easy to use.",
+    quote: "Our students love participating in competitions through Altoha. It's professional and easy to use.",
     quoteAr: "يحب طلابنا المشاركة في المسابقات عبر الطهاة. إنها احترافية وسهلة الاستخدام.",
     initials: "SM",
   },
@@ -115,7 +115,7 @@ export default function OrganizersLanding() {
 
   return (
     <div className="flex min-h-screen flex-col bg-background">
-      <SEOHead title="For Organizers" description="Create and manage exceptional culinary competitions with Altohaa" />
+      <SEOHead title="For Organizers" description="Create and manage exceptional culinary competitions with Altoha" />
       <Header />
       <main className="flex-1">
         {/* Hero */}
@@ -237,7 +237,7 @@ export default function OrganizersLanding() {
                 <p className="text-muted-foreground mb-6">
                   {isAr
                     ? "انضم إلى مئات المنظمين الذين يثقون في الطهاة لإدارة مسابقاتهم"
-                    : "Join hundreds of organizers who trust Altohaa to manage their competitions"}
+                    : "Join hundreds of organizers who trust Altoha to manage their competitions"}
                 </p>
                 <ul className="space-y-3">
                   {[

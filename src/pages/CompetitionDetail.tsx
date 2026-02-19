@@ -317,7 +317,7 @@ export default function CompetitionDetail() {
     <div className="flex min-h-screen flex-col bg-background">
       <SEOHead
         title={title}
-        description={description || `${title} - Culinary competition on Altohaa`}
+        description={description || `${title} - Culinary competition on Altoha`}
         ogImage={competition.cover_image_url || undefined}
         ogType="article"
         jsonLd={{

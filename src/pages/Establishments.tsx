@@ -54,7 +54,7 @@ export default function Establishments() {
 
   return (
     <>
-      <SEOHead title={isAr ? "المنشآت | التحاء" : "Establishments | Altohaa"} description="Directory of restaurants, hotels, and food establishments" />
+      <SEOHead title={isAr ? "المنشآت | التحاء" : "Establishments | Altoha"} description="Directory of restaurants, hotels, and food establishments" />
       <Header />
       <main className="min-h-screen bg-background">
         {/* Hero - Premium */}

@@ -25,8 +25,8 @@ export function ProfileShareButtons({ username, displayName, variant = "icon" }:
 
   const profileUrl = `https://altoha.com/${username}`;
   const shareText = isAr
-    ? `تعرّف على ${displayName} على الطهاة - Altohaa`
-    : `Check out ${displayName}'s profile on Altohaa`;
+    ? `تعرّف على ${displayName} على الطهاة - Altoha`
+    : `Check out ${displayName}'s profile on Altoha`;
 
   const copyLink = async () => {
     await navigator.clipboard.writeText(profileUrl);

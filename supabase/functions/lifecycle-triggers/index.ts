@@ -57,7 +57,7 @@ serve(async (req) => {
         // Build notification content based on trigger
         const notificationMap: Record<string, { title: string; title_ar: string; body: string; body_ar: string }> = {
           user_signup: {
-            title: `Welcome to Altohaa, ${userName}!`,
+            title: `Welcome to Altoha, ${userName}!`,
             title_ar: `مرحباً بك في الطهاة، ${userName}!`,
             body: "Complete your profile to unlock all features.",
             body_ar: "أكمل ملفك الشخصي لفتح جميع المميزات.",

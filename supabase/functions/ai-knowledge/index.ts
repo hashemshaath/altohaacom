@@ -64,7 +64,7 @@ serve(async (req) => {
 ${knowledgeContext}
 
 إذا لم تجد الإجابة في المعلومات المتوفرة، قدم إجابة عامة مفيدة تتعلق بمسابقات الطهي. أجب باللغة العربية.`
-      : `You are a helpful assistant for Altohaa, a culinary competition platform. Use the following knowledge base to answer questions:
+      : `You are a helpful assistant for Altoha, a culinary competition platform. Use the following knowledge base to answer questions:
 
 ${knowledgeContext}
 

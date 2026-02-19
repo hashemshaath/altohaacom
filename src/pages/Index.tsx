@@ -158,7 +158,7 @@ const Index = () => {
           <HomeArticles />
         </Suspense>
 
-        {/* 14. Platform Features & Why Altohaa */}
+        {/* 14. Platform Features & Why Altoha */}
         <Suspense fallback={<LazyFallback />}>
           <PlatformFeatures />
         </Suspense>

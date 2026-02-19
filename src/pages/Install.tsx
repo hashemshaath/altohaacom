@@ -83,12 +83,12 @@ export default function Install() {
               <Download className="h-8 w-8 text-primary" />
             </div>
             <h1 className="font-serif text-3xl font-bold md:text-4xl">
-              {isAr ? "ثبّت تطبيق Altohaa" : "Install Altohaa"}
+              {isAr ? "ثبّت تطبيق Altoha" : "Install Altoha"}
             </h1>
             <p className="mt-3 text-base text-muted-foreground max-w-md mx-auto">
               {isAr
-                ? "أضف Altohaa إلى شاشتك الرئيسية للوصول السريع"
-                : "Add Altohaa to your home screen for quick access"}
+                ? "أضف Altoha إلى شاشتك الرئيسية للوصول السريع"
+                : "Add Altoha to your home screen for quick access"}
             </p>
           </div>
         </section>

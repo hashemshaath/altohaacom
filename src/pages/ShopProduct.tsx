@@ -124,7 +124,7 @@ export default function ShopProduct() {
 
   return (
     <div className="flex min-h-screen flex-col">
-      <SEOHead title={title} description={description || `${title} on Altohaa Shop`} ogImage={product.image_url || undefined} />
+      <SEOHead title={title} description={description || `${title} on Altoha Shop`} ogImage={product.image_url || undefined} />
       <Header />
 
       <main className="container flex-1 py-6 md:py-8">

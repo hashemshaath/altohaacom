@@ -150,7 +150,7 @@ export default function SupplierCompare() {
   return (
     <div className="flex min-h-screen flex-col">
       <SEOHead
-        title={isAr ? "مقارنة الموردين | التحاء" : "Compare Suppliers | Altohaa"}
+        title={isAr ? "مقارنة الموردين | التحاء" : "Compare Suppliers | Altoha"}
         description={isAr ? "قارن بين الموردين المحترفين جنباً إلى جنب" : "Compare professional suppliers side by side"}
       />
       <Header />

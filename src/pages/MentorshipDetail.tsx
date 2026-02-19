@@ -82,7 +82,7 @@ export default function MentorshipDetail() {
 
   return (
     <div className="min-h-screen flex flex-col bg-background">
-      <SEOHead title={`${program.title} - Altohaa`} description={program.description || ""} />
+      <SEOHead title={`${program.title} - Altoha`} description={program.description || ""} />
       <Header />
 
       <main className="flex-1">

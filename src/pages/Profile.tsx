@@ -57,7 +57,7 @@ export default function Profile() {
   if (loading) {
     return (
       <div className="flex min-h-screen flex-col bg-background">
-        <SEOHead title="Profile" description="Your Altohaa profile" />
+        <SEOHead title="Profile" description="Your Altoha profile" />
         <Header />
         <main className="container flex-1 py-4 md:py-6">
           {/* Profile header skeleton */}
@@ -106,7 +106,7 @@ export default function Profile() {
 
   return (
     <div className="flex min-h-screen flex-col bg-background" dir={isAr ? "rtl" : "ltr"}>
-      <SEOHead title="Profile" description="Your Altohaa profile" />
+      <SEOHead title="Profile" description="Your Altoha profile" />
       <Header />
        <main className="container flex-1 py-4 md:py-6">
         <div className="relative group">

@@ -55,7 +55,7 @@ export default function Onboarding() {
 
   return (
     <div className="flex min-h-screen flex-col">
-      <SEOHead title="Complete Your Profile" description="Set up your Altohaa profile" />
+      <SEOHead title="Complete Your Profile" description="Set up your Altoha profile" />
       <Header />
       <main className="container flex-1 py-8 md:py-10">
         <OnboardingWizard />

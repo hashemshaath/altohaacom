@@ -93,7 +93,7 @@ export default function MentorApply() {
 
   return (
     <div className="min-h-screen flex flex-col bg-background">
-      <SEOHead title={isAr ? "تقدم كمرشد - الطهاة" : "Apply as Mentor - Altohaa"} description="Apply to become a mentor" />
+      <SEOHead title={isAr ? "تقدم كمرشد - الطهاة" : "Apply as Mentor - Altoha"} description="Apply to become a mentor" />
       <Header />
 
       <main className="flex-1 container py-8 max-w-2xl">

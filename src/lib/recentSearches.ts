@@ -1,4 +1,4 @@
-const STORAGE_KEY = "altohaa_recent_searches";
+const STORAGE_KEY = "altoha_recent_searches";
 const MAX_RECENT = 8;
 
 export function getRecentSearches(): string[] {

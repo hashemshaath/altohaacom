@@ -65,7 +65,7 @@ export default function CompaniesLanding() {
 
   return (
     <div className="flex min-h-screen flex-col bg-background">
-      <SEOHead title="For Companies" description="Complete business solutions for food companies on the Altohaa platform" />
+      <SEOHead title="For Companies" description="Complete business solutions for food companies on the Altoha platform" />
       <Header />
       <main className="flex-1">
         {/* Hero */}

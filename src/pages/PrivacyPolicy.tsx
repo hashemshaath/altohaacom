@@ -23,7 +23,7 @@ export default function PrivacyPolicy() {
     { title: "١٠. التعديلات على السياسة", content: "نحتفظ بحق تعديل هذه السياسة في أي وقت. سيتم إشعاركم بأي تغييرات جوهرية عبر البريد الإلكتروني أو إشعارات المنصة. يُعد استمراركم في استخدام المنصة بعد التعديل موافقة على السياسة المحدثة." },
     { title: "١١. التواصل", content: "لأي استفسارات تتعلق بسياسة الخصوصية أو لممارسة حقوقكم:\n\n• البريد الإلكتروني: info@altoha.com\n• الهاتف: +966569220777\n• الموقع: المملكة العربية السعودية" },
   ] : [
-    { title: "1. Introduction", content: "Welcome to Altohaa (\"the Platform\"). We are committed to protecting your privacy and personal data in accordance with the Personal Data Protection Law (PDPL) issued by Royal Decree No. (M/19) dated 09/02/1443H and its implementing regulations in the Kingdom of Saudi Arabia. This policy explains how we collect, use, protect, and share your personal data." },
+    { title: "1. Introduction", content: "Welcome to Altoha (\"the Platform\"). We are committed to protecting your privacy and personal data in accordance with the Personal Data Protection Law (PDPL) issued by Royal Decree No. (M/19) dated 09/02/1443H and its implementing regulations in the Kingdom of Saudi Arabia. This policy explains how we collect, use, protect, and share your personal data." },
     { title: "2. Data We Collect", content: "We collect the following types of data:\n\n• Registration data: Full name, email address, phone number, nationality, country of residence.\n• Professional profile data: Job title, experience, certifications, profile photos.\n• Usage data: Browsing history, interactions, devices used.\n• Transaction data: Competition and event participation records.\n• Communication data: Messages exchanged through the Platform." },
     { title: "3. Legal Basis for Processing", content: "We process your personal data based on the following legal grounds under the Saudi PDPL:\n\n• Your explicit consent upon registration.\n• Performance of the contract with you to provide our services.\n• Compliance with legal obligations.\n• Legitimate interest in improving and developing our services." },
     { title: "4. How We Use Your Data", content: "We use your data for the following purposes:\n\n• Managing your account and providing Platform services.\n• Registering you for competitions, events, and exhibitions.\n• Issuing and verifying certificates.\n• Communicating updates and notifications.\n• Improving user experience and Platform development.\n• Compliance with regulatory and legal requirements." },
@@ -38,7 +38,7 @@ export default function PrivacyPolicy() {
 
   return (
     <div className="flex min-h-screen flex-col bg-background" dir={isAr ? "rtl" : "ltr"}>
-      <SEOHead title={isAr ? "سياسة الخصوصية" : "Privacy Policy"} description={isAr ? "سياسة الخصوصية لمنصة الطهاة" : "Altohaa Privacy Policy"} />
+      <SEOHead title={isAr ? "سياسة الخصوصية" : "Privacy Policy"} description={isAr ? "سياسة الخصوصية لمنصة الطهاة" : "Altoha Privacy Policy"} />
       <Header />
       <main className="flex-1">
         <section className="border-b border-border/40 bg-gradient-to-b from-primary/5 to-background">

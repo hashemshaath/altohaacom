@@ -16,7 +16,7 @@ serve(async (req) => {
     const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
     if (!LOVABLE_API_KEY) throw new Error("LOVABLE_API_KEY is not configured");
 
-    const systemPrompt = `You are an expert identity verification and fraud detection AI assistant for a professional culinary platform called Altohaa. Your job is to analyze verification requests and documents to assess authenticity and risk.
+    const systemPrompt = `You are an expert identity verification and fraud detection AI assistant for a professional culinary platform called Altoha. Your job is to analyze verification requests and documents to assess authenticity and risk.
 
 You must evaluate:
 1. Document consistency - Does the document type match what was submitted?

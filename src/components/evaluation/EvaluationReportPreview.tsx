@@ -452,7 +452,7 @@ export function EvaluationReportPreview({ template, onClose }: TemplatePreviewPr
 
             {/* Footer */}
             <div className="mt-8 pt-4 border-t border-border/30 flex items-center justify-between text-[10px] text-muted-foreground">
-              <span>Altohaa Chef's Table — {isAr ? "تقرير تقييم المنتج" : "Product Evaluation Report"}</span>
+              <span>Altoha Chef's Table — {isAr ? "تقرير تقييم المنتج" : "Product Evaluation Report"}</span>
               <span>{reportId}</span>
               <span>{new Date().toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" })}</span>
             </div>

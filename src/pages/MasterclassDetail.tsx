@@ -244,8 +244,8 @@ export default function MasterclassDetail() {
   return (
     <div className="flex min-h-screen flex-col bg-background">
       <SEOHead
-        title={`${masterclass.title} — Altohaa`}
-        description={masterclass.description || `Learn ${masterclass.title} on Altohaa`}
+        title={`${masterclass.title} — Altoha`}
+        description={masterclass.description || `Learn ${masterclass.title} on Altoha`}
         ogImage={masterclass.cover_image_url || undefined}
         ogType="article"
         jsonLd={{
@@ -255,7 +255,7 @@ export default function MasterclassDetail() {
           description: masterclass.description || undefined,
           provider: {
             "@type": "Organization",
-            name: "Altohaa",
+            name: "Altoha",
             url: window.location.origin,
           },
           ...(instructor ? { instructor: { "@type": "Person", name: instructor.full_name } } : {}),
