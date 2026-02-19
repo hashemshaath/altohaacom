@@ -3,33 +3,25 @@ import { useLanguage } from "@/i18n/LanguageContext";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { notifyFromTemplate } from "@/lib/notificationTriggers";
+import AdminPageHeader from "@/components/admin/AdminPageHeader";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Switch } from "@/components/ui/switch";
 import { Separator } from "@/components/ui/separator";
+import { Checkbox } from "@/components/ui/checkbox";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
 import {
-  MessageSquare,
-  Plus,
-  Edit,
-  Trash2,
-  Search,
-  Mail,
-  Phone,
-  Send,
-  Eye,
-  Copy,
-  Filter,
-  FileText,
-  Variable,
-  Zap,
+  MessageSquare, Plus, Edit, Trash2, Search, Mail, Phone, Send, Eye, Copy, Filter, FileText,
+  Variable, Zap, ChevronDown, ChevronUp, CheckSquare, XSquare, Download, LayoutGrid, List,
 } from "lucide-react";
 
 interface Template {
@@ -78,44 +70,27 @@ export default function CommunicationTemplatesAdmin() {
   const [editDialogOpen, setEditDialogOpen] = useState(false);
   const [previewDialogOpen, setPreviewDialogOpen] = useState(false);
   const [sendDialogOpen, setSendDialogOpen] = useState(false);
+  const [deleteTarget, setDeleteTarget] = useState<Template | null>(null);
   const [editingTemplate, setEditingTemplate] = useState<Template | null>(null);
   const [sendUserId, setSendUserId] = useState("");
   const [sendPhone, setSendPhone] = useState("");
   const [sendVars, setSendVars] = useState<Record<string, string>>({});
+  const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
+  const [expandedId, setExpandedId] = useState<string | null>(null);
+  const [viewMode, setViewMode] = useState<"table" | "grid">("table");
 
   const [form, setForm] = useState({
-    name: "",
-    name_ar: "",
-    slug: "",
-    category: "general",
-    channel: "email",
-    subject: "",
-    subject_ar: "",
-    body: "",
-    body_ar: "",
-    variables: "",
-    is_active: true,
+    name: "", name_ar: "", slug: "", category: "general", channel: "email",
+    subject: "", subject_ar: "", body: "", body_ar: "", variables: "", is_active: true,
   });
 
   const { data: templates = [], isLoading } = useQuery({
     queryKey: ["communication-templates", search, categoryFilter, channelFilter],
     queryFn: async () => {
-      let query = supabase
-        .from("communication_templates")
-        .select("*")
-        .order("category")
-        .order("name");
-
-      if (search) {
-        query = query.or(`name.ilike.%${search}%,slug.ilike.%${search}%`);
-      }
-      if (categoryFilter !== "all") {
-        query = query.eq("category", categoryFilter);
-      }
-      if (channelFilter !== "all") {
-        query = query.eq("channel", channelFilter);
-      }
-
+      let query = supabase.from("communication_templates").select("*").order("category").order("name");
+      if (search) query = query.or(`name.ilike.%${search}%,slug.ilike.%${search}%`);
+      if (categoryFilter !== "all") query = query.eq("category", categoryFilter);
+      if (channelFilter !== "all") query = query.eq("channel", channelFilter);
       const { data, error } = await query;
       if (error) throw error;
       return data as Template[];
@@ -125,19 +100,13 @@ export default function CommunicationTemplatesAdmin() {
   const saveMutation = useMutation({
     mutationFn: async (data: typeof form & { id?: string }) => {
       const payload = {
-        name: data.name,
-        name_ar: data.name_ar || null,
-        slug: data.slug,
-        category: data.category,
-        channel: data.channel,
-        subject: data.subject || null,
-        subject_ar: data.subject_ar || null,
-        body: data.body,
-        body_ar: data.body_ar || null,
+        name: data.name, name_ar: data.name_ar || null, slug: data.slug,
+        category: data.category, channel: data.channel,
+        subject: data.subject || null, subject_ar: data.subject_ar || null,
+        body: data.body, body_ar: data.body_ar || null,
         variables: data.variables ? data.variables.split(",").map((v) => v.trim()).filter(Boolean) : [],
         is_active: data.is_active,
       };
-
       if (data.id) {
         const { error } = await supabase.from("communication_templates").update(payload).eq("id", data.id);
         if (error) throw error;
@@ -163,6 +132,7 @@ export default function CommunicationTemplatesAdmin() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["communication-templates"] });
+      setDeleteTarget(null);
       toast({ title: isAr ? "تم الحذف" : "Template deleted" });
     },
   });
@@ -172,26 +142,47 @@ export default function CommunicationTemplatesAdmin() {
       const { error } = await supabase.from("communication_templates").update({ is_active }).eq("id", id);
       if (error) throw error;
     },
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["communication-templates"] }),
+  });
+
+  const bulkToggleMutation = useMutation({
+    mutationFn: async (active: boolean) => {
+      const ids = Array.from(selectedIds);
+      const { error } = await supabase.from("communication_templates").update({ is_active: active }).in("id", ids);
+      if (error) throw error;
+    },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["communication-templates"] });
+      setSelectedIds(new Set());
+      toast({ title: isAr ? "تم التحديث" : "Templates updated" });
     },
   });
+
+  const bulkDeleteMutation = useMutation({
+    mutationFn: async () => {
+      const ids = Array.from(selectedIds);
+      const { error } = await supabase.from("communication_templates").delete().in("id", ids);
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["communication-templates"] });
+      setSelectedIds(new Set());
+      toast({ title: isAr ? "تم الحذف" : "Templates deleted" });
+    },
+  });
+
   const sendMutation = useMutation({
     mutationFn: async () => {
       if (!editingTemplate || !sendUserId) throw new Error("Missing data");
       await notifyFromTemplate({
-        userId: sendUserId,
-        templateSlug: editingTemplate.slug,
-        variables: sendVars,
-        channels: [editingTemplate.channel],
+        userId: sendUserId, templateSlug: editingTemplate.slug,
+        variables: sendVars, channels: [editingTemplate.channel],
         phone: sendPhone || undefined,
       });
     },
     onSuccess: () => {
       setSendDialogOpen(false);
-      setSendUserId("");
-      setSendPhone("");
-      setSendVars({});
+      setSendUserId(""); setSendPhone(""); setSendVars({});
       toast({ title: isAr ? "تم الإرسال" : "Notification sent" });
     },
     onError: (e: any) => {
@@ -199,13 +190,43 @@ export default function CommunicationTemplatesAdmin() {
     },
   });
 
+  const duplicateTemplate = async (t: Template) => {
+    const payload = {
+      name: `${t.name} (Copy)`, name_ar: t.name_ar ? `${t.name_ar} (نسخة)` : null,
+      slug: `${t.slug}-copy-${Date.now().toString(36)}`,
+      category: t.category, channel: t.channel,
+      subject: t.subject, subject_ar: t.subject_ar,
+      body: t.body, body_ar: t.body_ar,
+      variables: t.variables, is_active: false,
+    };
+    const { error } = await supabase.from("communication_templates").insert(payload);
+    if (error) {
+      toast({ title: isAr ? "فشل النسخ" : "Duplicate failed", description: error.message, variant: "destructive" });
+    } else {
+      queryClient.invalidateQueries({ queryKey: ["communication-templates"] });
+      toast({ title: isAr ? "تم النسخ" : "Template duplicated" });
+    }
+  };
+
+  const exportCSV = () => {
+    const headers = ["Name", "Slug", "Category", "Channel", "Subject", "Active", "Variables"];
+    const rows = templates.map(t => [
+      t.name, t.slug, t.category, t.channel, t.subject || "", t.is_active ? "Yes" : "No",
+      (t.variables || []).join("; "),
+    ]);
+    const csv = [headers, ...rows].map(r => r.map(c => `"${c}"`).join(",")).join("\n");
+    const blob = new Blob([csv], { type: "text/csv" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url; a.download = "communication-templates.csv"; a.click();
+    URL.revokeObjectURL(url);
+  };
+
   const openSendDialog = (t: Template) => {
     setEditingTemplate(t);
     const vars: Record<string, string> = {};
     (t.variables || []).forEach((v) => { vars[v] = ""; });
-    setSendVars(vars);
-    setSendUserId("");
-    setSendPhone("");
+    setSendVars(vars); setSendUserId(""); setSendPhone("");
     setSendDialogOpen(true);
   };
 
@@ -218,17 +239,9 @@ export default function CommunicationTemplatesAdmin() {
   const openEdit = (t: Template) => {
     setEditingTemplate(t);
     setForm({
-      name: t.name,
-      name_ar: t.name_ar || "",
-      slug: t.slug,
-      category: t.category,
-      channel: t.channel,
-      subject: t.subject || "",
-      subject_ar: t.subject_ar || "",
-      body: t.body,
-      body_ar: t.body_ar || "",
-      variables: (t.variables || []).join(", "),
-      is_active: t.is_active,
+      name: t.name, name_ar: t.name_ar || "", slug: t.slug, category: t.category, channel: t.channel,
+      subject: t.subject || "", subject_ar: t.subject_ar || "", body: t.body, body_ar: t.body_ar || "",
+      variables: (t.variables || []).join(", "), is_active: t.is_active,
     });
     setEditDialogOpen(true);
   };
@@ -237,8 +250,22 @@ export default function CommunicationTemplatesAdmin() {
     const c = categories.find((c) => c.value === cat);
     return isAr ? c?.labelAr : c?.label || cat;
   };
-
   const getChannelInfo = (ch: string) => channels.find((c) => c.value === ch);
+
+  const toggleSelect = (id: string) => {
+    setSelectedIds(prev => {
+      const next = new Set(prev);
+      next.has(id) ? next.delete(id) : next.add(id);
+      return next;
+    });
+  };
+  const toggleSelectAll = () => {
+    if (selectedIds.size === templates.length) {
+      setSelectedIds(new Set());
+    } else {
+      setSelectedIds(new Set(templates.map(t => t.id)));
+    }
+  };
 
   const stats = {
     total: templates.length,
@@ -249,16 +276,23 @@ export default function CommunicationTemplatesAdmin() {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-2xl font-bold">{isAr ? "قوالب الاتصالات" : "Communication Templates"}</h1>
-          <p className="text-muted-foreground">{isAr ? "إدارة قوالب البريد الإلكتروني والرسائل" : "Manage email, WhatsApp, and SMS templates"}</p>
-        </div>
-        <Button onClick={openCreate}>
-          <Plus className="mr-2 h-4 w-4" />
-          {isAr ? "إضافة قالب" : "Add Template"}
-        </Button>
-      </div>
+      <AdminPageHeader
+        icon={MessageSquare}
+        title={isAr ? "قوالب الاتصالات" : "Communication Templates"}
+        description={isAr ? "إدارة قوالب البريد الإلكتروني والرسائل النصية والواتساب" : "Manage email, WhatsApp, SMS and in-app notification templates"}
+        actions={
+          <div className="flex items-center gap-2">
+            <Button variant="outline" size="sm" onClick={exportCSV}>
+              <Download className="mr-2 h-4 w-4" />
+              {isAr ? "تصدير" : "Export CSV"}
+            </Button>
+            <Button onClick={openCreate}>
+              <Plus className="mr-2 h-4 w-4" />
+              {isAr ? "إضافة قالب" : "Add Template"}
+            </Button>
+          </div>
+        }
+      />
 
       {/* Stats */}
       <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
@@ -282,6 +316,34 @@ export default function CommunicationTemplatesAdmin() {
         ))}
       </div>
 
+      {/* Bulk Actions Bar */}
+      {selectedIds.size > 0 && (
+        <Card className="border-primary/30 bg-primary/5">
+          <CardContent className="flex items-center justify-between p-3">
+            <span className="text-sm font-medium">
+              {selectedIds.size} {isAr ? "محدد" : "selected"}
+            </span>
+            <div className="flex items-center gap-2">
+              <Button variant="outline" size="sm" onClick={() => bulkToggleMutation.mutate(true)}>
+                <CheckSquare className="mr-1 h-3.5 w-3.5" />
+                {isAr ? "تفعيل" : "Activate"}
+              </Button>
+              <Button variant="outline" size="sm" onClick={() => bulkToggleMutation.mutate(false)}>
+                <XSquare className="mr-1 h-3.5 w-3.5" />
+                {isAr ? "تعطيل" : "Deactivate"}
+              </Button>
+              <Button variant="destructive" size="sm" onClick={() => bulkDeleteMutation.mutate()}>
+                <Trash2 className="mr-1 h-3.5 w-3.5" />
+                {isAr ? "حذف" : "Delete"}
+              </Button>
+              <Button variant="ghost" size="sm" onClick={() => setSelectedIds(new Set())}>
+                {isAr ? "إلغاء" : "Cancel"}
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
       {/* Filters */}
       <div className="flex flex-wrap items-center gap-3">
         <div className="relative flex-1 min-w-[200px]">
@@ -292,101 +354,249 @@ export default function CommunicationTemplatesAdmin() {
           <SelectTrigger className="w-[150px]"><Filter className="mr-2 h-4 w-4" /><SelectValue /></SelectTrigger>
           <SelectContent>
             <SelectItem value="all">{isAr ? "كل الفئات" : "All Categories"}</SelectItem>
-            {categories.map((c) => (
-              <SelectItem key={c.value} value={c.value}>{isAr ? c.labelAr : c.label}</SelectItem>
-            ))}
+            {categories.map((c) => <SelectItem key={c.value} value={c.value}>{isAr ? c.labelAr : c.label}</SelectItem>)}
           </SelectContent>
         </Select>
         <Select value={channelFilter} onValueChange={setChannelFilter}>
           <SelectTrigger className="w-[140px]"><SelectValue /></SelectTrigger>
           <SelectContent>
             <SelectItem value="all">{isAr ? "كل القنوات" : "All Channels"}</SelectItem>
-            {channels.map((c) => (
-              <SelectItem key={c.value} value={c.value}>{isAr ? c.labelAr : c.label}</SelectItem>
-            ))}
+            {channels.map((c) => <SelectItem key={c.value} value={c.value}>{isAr ? c.labelAr : c.label}</SelectItem>)}
           </SelectContent>
         </Select>
+        <div className="flex items-center border rounded-md">
+          <Button variant={viewMode === "table" ? "secondary" : "ghost"} size="icon" className="h-9 w-9" onClick={() => setViewMode("table")}>
+            <List className="h-4 w-4" />
+          </Button>
+          <Button variant={viewMode === "grid" ? "secondary" : "ghost"} size="icon" className="h-9 w-9" onClick={() => setViewMode("grid")}>
+            <LayoutGrid className="h-4 w-4" />
+          </Button>
+        </div>
       </div>
 
-      {/* Templates Table */}
-      <Card>
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead>{isAr ? "القالب" : "Template"}</TableHead>
-              <TableHead>{isAr ? "الفئة" : "Category"}</TableHead>
-              <TableHead>{isAr ? "القناة" : "Channel"}</TableHead>
-              <TableHead>{isAr ? "المتغيرات" : "Variables"}</TableHead>
-              <TableHead>{isAr ? "نشط" : "Active"}</TableHead>
-              <TableHead>{isAr ? "إجراءات" : "Actions"}</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {templates.map((t) => {
-              const ch = getChannelInfo(t.channel);
-              const ChIcon = ch?.icon || Mail;
-              return (
-                <TableRow key={t.id}>
-                  <TableCell>
-                    <div>
-                      <p className="font-medium">{isAr && t.name_ar ? t.name_ar : t.name}</p>
-                      <p className="text-xs text-muted-foreground font-mono">{t.slug}</p>
+      {/* Grid View */}
+      {viewMode === "grid" ? (
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          {templates.map(t => {
+            const ch = getChannelInfo(t.channel);
+            const ChIcon = ch?.icon || Mail;
+            return (
+              <Card key={t.id} className={`transition-all hover:shadow-md ${!t.is_active ? "opacity-60" : ""}`}>
+                <CardContent className="p-4 space-y-3">
+                  <div className="flex items-start justify-between">
+                    <div className="flex items-center gap-2">
+                      <div className="flex h-8 w-8 items-center justify-center rounded-md bg-primary/10">
+                        <ChIcon className="h-4 w-4 text-primary" />
+                      </div>
+                      <div>
+                        <p className="font-medium text-sm">{isAr && t.name_ar ? t.name_ar : t.name}</p>
+                        <p className="text-[10px] text-muted-foreground font-mono">{t.slug}</p>
+                      </div>
                     </div>
-                  </TableCell>
-                  <TableCell>
-                    <Badge variant="outline">{getCategoryLabel(t.category)}</Badge>
-                  </TableCell>
-                  <TableCell>
-                    <div className="flex items-center gap-1.5">
-                      <ChIcon className="h-3.5 w-3.5" />
-                      <span className="text-sm">{isAr ? ch?.labelAr : ch?.label}</span>
-                    </div>
-                  </TableCell>
-                  <TableCell>
+                    <Switch checked={t.is_active} onCheckedChange={(checked) => toggleActiveMutation.mutate({ id: t.id, is_active: checked })} />
+                  </div>
+                  <div className="flex items-center gap-1.5">
+                    <Badge variant="outline" className="text-[10px]">{getCategoryLabel(t.category)}</Badge>
+                    <Badge variant="secondary" className="text-[10px]">{isAr ? ch?.labelAr : ch?.label}</Badge>
+                  </div>
+                  {(t.variables || []).length > 0 && (
                     <div className="flex flex-wrap gap-1">
-                      {(t.variables || []).slice(0, 3).map((v) => (
-                        <Badge key={v} variant="secondary" className="text-[10px] font-mono">{`{{${v}}}`}</Badge>
+                      {(t.variables || []).slice(0, 3).map(v => (
+                        <Badge key={v} variant="secondary" className="text-[9px] font-mono">{`{{${v}}}`}</Badge>
                       ))}
                       {(t.variables || []).length > 3 && (
-                        <Badge variant="secondary" className="text-[10px]">+{(t.variables || []).length - 3}</Badge>
+                        <Badge variant="secondary" className="text-[9px]">+{(t.variables || []).length - 3}</Badge>
                       )}
                     </div>
-                  </TableCell>
-                  <TableCell>
-                    <Switch
-                      checked={t.is_active}
-                      onCheckedChange={(checked) => toggleActiveMutation.mutate({ id: t.id, is_active: checked })}
-                    />
-                  </TableCell>
-                  <TableCell>
-                    <div className="flex items-center gap-1">
-                      <Button variant="ghost" size="icon" onClick={() => openSendDialog(t)} title={isAr ? "إرسال" : "Send"}>
-                        <Zap className="h-4 w-4 text-chart-4" />
-                      </Button>
-                      <Button variant="ghost" size="icon" onClick={() => { setEditingTemplate(t); setPreviewDialogOpen(true); }}>
-                        <Eye className="h-4 w-4" />
-                      </Button>
-                      <Button variant="ghost" size="icon" onClick={() => openEdit(t)}>
-                        <Edit className="h-4 w-4" />
-                      </Button>
-                      <Button variant="ghost" size="icon" onClick={() => { if (confirm(isAr ? "حذف هذا القالب؟" : "Delete this template?")) deleteMutation.mutate(t.id); }}>
-                        <Trash2 className="h-4 w-4 text-destructive" />
-                      </Button>
-                    </div>
+                  )}
+                  <Separator />
+                  <div className="flex items-center gap-1">
+                    <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => openSendDialog(t)}><Zap className="h-3.5 w-3.5 text-chart-4" /></Button>
+                    <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => { setEditingTemplate(t); setPreviewDialogOpen(true); }}><Eye className="h-3.5 w-3.5" /></Button>
+                    <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => openEdit(t)}><Edit className="h-3.5 w-3.5" /></Button>
+                    <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => duplicateTemplate(t)}><Copy className="h-3.5 w-3.5" /></Button>
+                    <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => setDeleteTarget(t)}><Trash2 className="h-3.5 w-3.5 text-destructive" /></Button>
+                  </div>
+                </CardContent>
+              </Card>
+            );
+          })}
+          {templates.length === 0 && (
+            <div className="col-span-full py-12 text-center text-muted-foreground">
+              {isAr ? "لا توجد قوالب" : "No templates found"}
+            </div>
+          )}
+        </div>
+      ) : (
+        /* Table View */
+        <Card>
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead className="w-10">
+                  <Checkbox checked={selectedIds.size === templates.length && templates.length > 0} onCheckedChange={toggleSelectAll} />
+                </TableHead>
+                <TableHead>{isAr ? "القالب" : "Template"}</TableHead>
+                <TableHead>{isAr ? "الفئة" : "Category"}</TableHead>
+                <TableHead>{isAr ? "القناة" : "Channel"}</TableHead>
+                <TableHead>{isAr ? "المتغيرات" : "Variables"}</TableHead>
+                <TableHead>{isAr ? "نشط" : "Active"}</TableHead>
+                <TableHead>{isAr ? "إجراءات" : "Actions"}</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {templates.map((t) => {
+                const ch = getChannelInfo(t.channel);
+                const ChIcon = ch?.icon || Mail;
+                const isExpanded = expandedId === t.id;
+                return (
+                  <>
+                    <TableRow key={t.id} className={`cursor-pointer ${isExpanded ? "bg-muted/30" : ""}`}>
+                      <TableCell onClick={(e) => e.stopPropagation()}>
+                        <Checkbox checked={selectedIds.has(t.id)} onCheckedChange={() => toggleSelect(t.id)} />
+                      </TableCell>
+                      <TableCell onClick={() => setExpandedId(isExpanded ? null : t.id)}>
+                        <div className="flex items-center gap-2">
+                          {isExpanded ? <ChevronUp className="h-3.5 w-3.5 text-muted-foreground" /> : <ChevronDown className="h-3.5 w-3.5 text-muted-foreground" />}
+                          <div>
+                            <p className="font-medium">{isAr && t.name_ar ? t.name_ar : t.name}</p>
+                            <p className="text-xs text-muted-foreground font-mono">{t.slug}</p>
+                          </div>
+                        </div>
+                      </TableCell>
+                      <TableCell><Badge variant="outline">{getCategoryLabel(t.category)}</Badge></TableCell>
+                      <TableCell>
+                        <div className="flex items-center gap-1.5">
+                          <ChIcon className="h-3.5 w-3.5" />
+                          <span className="text-sm">{isAr ? ch?.labelAr : ch?.label}</span>
+                        </div>
+                      </TableCell>
+                      <TableCell>
+                        <div className="flex flex-wrap gap-1">
+                          {(t.variables || []).slice(0, 3).map((v) => (
+                            <Badge key={v} variant="secondary" className="text-[10px] font-mono">{`{{${v}}}`}</Badge>
+                          ))}
+                          {(t.variables || []).length > 3 && (
+                            <Badge variant="secondary" className="text-[10px]">+{(t.variables || []).length - 3}</Badge>
+                          )}
+                        </div>
+                      </TableCell>
+                      <TableCell>
+                        <Switch checked={t.is_active} onCheckedChange={(checked) => toggleActiveMutation.mutate({ id: t.id, is_active: checked })} />
+                      </TableCell>
+                      <TableCell>
+                        <div className="flex items-center gap-1">
+                          <Button variant="ghost" size="icon" onClick={() => openSendDialog(t)} title={isAr ? "إرسال" : "Send"}>
+                            <Zap className="h-4 w-4 text-chart-4" />
+                          </Button>
+                          <Button variant="ghost" size="icon" onClick={() => { setEditingTemplate(t); setPreviewDialogOpen(true); }}>
+                            <Eye className="h-4 w-4" />
+                          </Button>
+                          <Button variant="ghost" size="icon" onClick={() => openEdit(t)}>
+                            <Edit className="h-4 w-4" />
+                          </Button>
+                          <Button variant="ghost" size="icon" onClick={() => duplicateTemplate(t)}>
+                            <Copy className="h-4 w-4" />
+                          </Button>
+                          <Button variant="ghost" size="icon" onClick={() => setDeleteTarget(t)}>
+                            <Trash2 className="h-4 w-4 text-destructive" />
+                          </Button>
+                        </div>
+                      </TableCell>
+                    </TableRow>
+                    {/* Inline Detail Panel */}
+                    {isExpanded && (
+                      <TableRow key={`${t.id}-detail`}>
+                        <TableCell colSpan={7} className="bg-muted/20 p-0">
+                          <div className="p-4 space-y-4">
+                            <Tabs defaultValue="preview">
+                              <TabsList>
+                                <TabsTrigger value="preview">{isAr ? "معاينة" : "Preview"}</TabsTrigger>
+                                <TabsTrigger value="preview_ar">{isAr ? "معاينة عربي" : "Preview (Arabic)"}</TabsTrigger>
+                                <TabsTrigger value="info">{isAr ? "معلومات" : "Info"}</TabsTrigger>
+                              </TabsList>
+                              <TabsContent value="preview" className="space-y-2 mt-3">
+                                {t.subject && (
+                                  <div>
+                                    <p className="text-xs text-muted-foreground mb-1">{isAr ? "الموضوع" : "Subject"}</p>
+                                    <p className="font-medium text-sm">{t.subject}</p>
+                                  </div>
+                                )}
+                                <div className="rounded-lg border bg-background p-4 text-sm whitespace-pre-wrap">
+                                  {t.body}
+                                </div>
+                              </TabsContent>
+                              <TabsContent value="preview_ar" className="space-y-2 mt-3">
+                                {t.subject_ar && (
+                                  <div dir="rtl">
+                                    <p className="text-xs text-muted-foreground mb-1">الموضوع</p>
+                                    <p className="font-medium text-sm">{t.subject_ar}</p>
+                                  </div>
+                                )}
+                                <div className="rounded-lg border bg-background p-4 text-sm whitespace-pre-wrap" dir="rtl">
+                                  {t.body_ar || <span className="text-muted-foreground italic">{isAr ? "لا يوجد محتوى عربي" : "No Arabic content"}</span>}
+                                </div>
+                              </TabsContent>
+                              <TabsContent value="info" className="mt-3">
+                                <div className="grid gap-3 sm:grid-cols-3">
+                                  <div>
+                                    <p className="text-xs text-muted-foreground">{isAr ? "تاريخ الإنشاء" : "Created"}</p>
+                                    <p className="text-sm">{new Date(t.created_at).toLocaleDateString()}</p>
+                                  </div>
+                                  <div>
+                                    <p className="text-xs text-muted-foreground">{isAr ? "آخر تحديث" : "Updated"}</p>
+                                    <p className="text-sm">{new Date(t.updated_at).toLocaleDateString()}</p>
+                                  </div>
+                                  <div>
+                                    <p className="text-xs text-muted-foreground">{isAr ? "المتغيرات" : "Variables"}</p>
+                                    <div className="flex flex-wrap gap-1 mt-1">
+                                      {(t.variables || []).map(v => (
+                                        <Badge key={v} variant="secondary" className="text-[10px] font-mono">{`{{${v}}}`}</Badge>
+                                      ))}
+                                      {!(t.variables || []).length && <span className="text-sm text-muted-foreground">—</span>}
+                                    </div>
+                                  </div>
+                                </div>
+                              </TabsContent>
+                            </Tabs>
+                          </div>
+                        </TableCell>
+                      </TableRow>
+                    )}
+                  </>
+                );
+              })}
+              {templates.length === 0 && (
+                <TableRow>
+                  <TableCell colSpan={7} className="py-8 text-center text-muted-foreground">
+                    {isAr ? "لا توجد قوالب" : "No templates found"}
                   </TableCell>
                 </TableRow>
-              );
-            })}
-            {templates.length === 0 && (
-              <TableRow>
-                <TableCell colSpan={6} className="py-8 text-center text-muted-foreground">
-                  {isAr ? "لا توجد قوالب" : "No templates found"}
-                </TableCell>
-              </TableRow>
-            )}
-          </TableBody>
-        </Table>
-      </Card>
+              )}
+            </TableBody>
+          </Table>
+        </Card>
+      )}
+
+      {/* Delete Confirmation */}
+      <AlertDialog open={!!deleteTarget} onOpenChange={(open) => !open && setDeleteTarget(null)}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>{isAr ? "حذف القالب" : "Delete Template"}</AlertDialogTitle>
+            <AlertDialogDescription>
+              {isAr
+                ? `هل أنت متأكد من حذف "${deleteTarget?.name_ar || deleteTarget?.name}"؟ لا يمكن التراجع عن هذا الإجراء.`
+                : `Are you sure you want to delete "${deleteTarget?.name}"? This action cannot be undone.`}
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>{isAr ? "إلغاء" : "Cancel"}</AlertDialogCancel>
+            <AlertDialogAction className="bg-destructive text-destructive-foreground hover:bg-destructive/90" onClick={() => deleteTarget && deleteMutation.mutate(deleteTarget.id)}>
+              {isAr ? "حذف" : "Delete"}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
 
       {/* Edit Dialog */}
       <Dialog open={editDialogOpen} onOpenChange={setEditDialogOpen}>
@@ -407,7 +617,6 @@ export default function CommunicationTemplatesAdmin() {
                 <Input value={form.name_ar} onChange={(e) => setForm((p) => ({ ...p, name_ar: e.target.value }))} dir="rtl" />
               </div>
             </div>
-
             <div className="grid gap-4 sm:grid-cols-3">
               <div className="space-y-2">
                 <Label>Slug</Label>
@@ -418,9 +627,7 @@ export default function CommunicationTemplatesAdmin() {
                 <Select value={form.category} onValueChange={(v) => setForm((p) => ({ ...p, category: v }))}>
                   <SelectTrigger><SelectValue /></SelectTrigger>
                   <SelectContent>
-                    {categories.map((c) => (
-                      <SelectItem key={c.value} value={c.value}>{isAr ? c.labelAr : c.label}</SelectItem>
-                    ))}
+                    {categories.map((c) => <SelectItem key={c.value} value={c.value}>{isAr ? c.labelAr : c.label}</SelectItem>)}
                   </SelectContent>
                 </Select>
               </div>
@@ -429,14 +636,11 @@ export default function CommunicationTemplatesAdmin() {
                 <Select value={form.channel} onValueChange={(v) => setForm((p) => ({ ...p, channel: v }))}>
                   <SelectTrigger><SelectValue /></SelectTrigger>
                   <SelectContent>
-                    {channels.map((c) => (
-                      <SelectItem key={c.value} value={c.value}>{isAr ? c.labelAr : c.label}</SelectItem>
-                    ))}
+                    {channels.map((c) => <SelectItem key={c.value} value={c.value}>{isAr ? c.labelAr : c.label}</SelectItem>)}
                   </SelectContent>
                 </Select>
               </div>
             </div>
-
             {form.channel === "email" && (
               <div className="grid gap-4 sm:grid-cols-2">
                 <div className="space-y-2">
@@ -449,7 +653,6 @@ export default function CommunicationTemplatesAdmin() {
                 </div>
               </div>
             )}
-
             <div className="grid gap-4 sm:grid-cols-2">
               <div className="space-y-2">
                 <Label>{isAr ? "المحتوى (إنجليزي)" : "Body (English)"}</Label>
@@ -460,23 +663,14 @@ export default function CommunicationTemplatesAdmin() {
                 <Textarea value={form.body_ar} onChange={(e) => setForm((p) => ({ ...p, body_ar: e.target.value }))} rows={6} dir="rtl" />
               </div>
             </div>
-
             <div className="space-y-2">
               <Label className="flex items-center gap-2">
                 <Variable className="h-4 w-4" />
                 {isAr ? "المتغيرات (مفصولة بفواصل)" : "Variables (comma-separated)"}
               </Label>
-              <Input
-                value={form.variables}
-                onChange={(e) => setForm((p) => ({ ...p, variables: e.target.value }))}
-                placeholder="company_name, order_number, amount"
-                className="font-mono text-sm"
-              />
-              <p className="text-xs text-muted-foreground">
-                {isAr ? "استخدم {{variable_name}} في المحتوى" : "Use {{variable_name}} in the body text"}
-              </p>
+              <Input value={form.variables} onChange={(e) => setForm((p) => ({ ...p, variables: e.target.value }))} placeholder="company_name, order_number, amount" className="font-mono text-sm" />
+              <p className="text-xs text-muted-foreground">{isAr ? "استخدم {{variable_name}} في المحتوى" : "Use {{variable_name}} in the body text"}</p>
             </div>
-
             <div className="flex items-center gap-2">
               <Switch checked={form.is_active} onCheckedChange={(checked) => setForm((p) => ({ ...p, is_active: checked }))} />
               <Label>{isAr ? "نشط" : "Active"}</Label>
@@ -546,28 +740,16 @@ export default function CommunicationTemplatesAdmin() {
                 <p className="font-medium text-sm">{isAr && editingTemplate.name_ar ? editingTemplate.name_ar : editingTemplate.name}</p>
                 <p className="text-xs text-muted-foreground font-mono">{editingTemplate.slug} • {editingTemplate.channel}</p>
               </div>
-
               <div className="space-y-2">
                 <Label>{isAr ? "معرف المستخدم" : "User ID"}</Label>
-                <Input
-                  value={sendUserId}
-                  onChange={(e) => setSendUserId(e.target.value)}
-                  placeholder="UUID of the recipient user"
-                  className="font-mono text-sm"
-                />
+                <Input value={sendUserId} onChange={(e) => setSendUserId(e.target.value)} placeholder="UUID of the recipient user" className="font-mono text-sm" />
               </div>
-
               {(editingTemplate.channel === "whatsapp" || editingTemplate.channel === "sms") && (
                 <div className="space-y-2">
                   <Label>{isAr ? "رقم الهاتف" : "Phone Number"}</Label>
-                  <Input
-                    value={sendPhone}
-                    onChange={(e) => setSendPhone(e.target.value)}
-                    placeholder="+966XXXXXXXXX"
-                  />
+                  <Input value={sendPhone} onChange={(e) => setSendPhone(e.target.value)} placeholder="+966XXXXXXXXX" />
                 </div>
               )}
-
               {(editingTemplate.variables || []).length > 0 && (
                 <>
                   <Separator />
@@ -576,11 +758,7 @@ export default function CommunicationTemplatesAdmin() {
                     {(editingTemplate.variables || []).map((v) => (
                       <div key={v} className="space-y-1">
                         <Label className="text-xs font-mono">{`{{${v}}}`}</Label>
-                        <Input
-                          value={sendVars[v] || ""}
-                          onChange={(e) => setSendVars((p) => ({ ...p, [v]: e.target.value }))}
-                          placeholder={v}
-                        />
+                        <Input value={sendVars[v] || ""} onChange={(e) => setSendVars((p) => ({ ...p, [v]: e.target.value }))} placeholder={v} />
                       </div>
                     ))}
                   </div>
