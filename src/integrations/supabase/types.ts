@@ -4723,6 +4723,13 @@ export type Database = {
             referencedRelation: "profiles"
             referencedColumns: ["user_id"]
           },
+          {
+            foreignKeyName: "competition_registrations_participant_id_fkey"
+            columns: ["participant_id"]
+            isOneToOne: false
+            referencedRelation: "profiles_public"
+            referencedColumns: ["user_id"]
+          },
         ]
       }
       competition_roles: {
@@ -7174,6 +7181,13 @@ export type Database = {
             columns: ["user_id"]
             isOneToOne: false
             referencedRelation: "profiles"
+            referencedColumns: ["user_id"]
+          },
+          {
+            foreignKeyName: "entity_positions_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles_public"
             referencedColumns: ["user_id"]
           },
         ]
@@ -16331,6 +16345,220 @@ export type Database = {
         }
         Relationships: []
       }
+      profiles_public: {
+        Row: {
+          account_number: string | null
+          account_status: Database["public"]["Enums"]["account_status"] | null
+          avatar_url: string | null
+          bio: string | null
+          bio_ar: string | null
+          city: string | null
+          company_id: string | null
+          company_role: string | null
+          country_code: string | null
+          cover_image_url: string | null
+          created_at: string | null
+          display_name: string | null
+          display_name_ar: string | null
+          education_entity_id: string | null
+          education_institution: string | null
+          education_level: string | null
+          experience_level:
+            | Database["public"]["Enums"]["experience_level"]
+            | null
+          facebook: string | null
+          follow_privacy: string | null
+          full_name: string | null
+          full_name_ar: string | null
+          gender: string | null
+          global_awards: Json | null
+          id: string | null
+          instagram: string | null
+          is_verified: boolean | null
+          job_title: string | null
+          job_title_ar: string | null
+          linkedin: string | null
+          location: string | null
+          membership_expires_at: string | null
+          membership_status:
+            | Database["public"]["Enums"]["membership_status"]
+            | null
+          membership_tier: Database["public"]["Enums"]["membership_tier"] | null
+          nationality: string | null
+          offers_services: boolean | null
+          preferred_language: string | null
+          profile_completed: boolean | null
+          profile_visibility: string | null
+          second_nationality: string | null
+          section_visibility: Json | null
+          services_description: string | null
+          services_description_ar: string | null
+          show_nationality: boolean | null
+          snapchat: string | null
+          specialization: string | null
+          specialization_ar: string | null
+          tiktok: string | null
+          twitter: string | null
+          updated_at: string | null
+          user_id: string | null
+          username: string | null
+          verification_badge: string | null
+          verification_level: string | null
+          verified_at: string | null
+          view_count: number | null
+          website: string | null
+          years_of_experience: number | null
+          youtube: string | null
+        }
+        Insert: {
+          account_number?: string | null
+          account_status?: Database["public"]["Enums"]["account_status"] | null
+          avatar_url?: string | null
+          bio?: string | null
+          bio_ar?: string | null
+          city?: string | null
+          company_id?: string | null
+          company_role?: string | null
+          country_code?: string | null
+          cover_image_url?: string | null
+          created_at?: string | null
+          display_name?: string | null
+          display_name_ar?: string | null
+          education_entity_id?: string | null
+          education_institution?: string | null
+          education_level?: string | null
+          experience_level?:
+            | Database["public"]["Enums"]["experience_level"]
+            | null
+          facebook?: string | null
+          follow_privacy?: string | null
+          full_name?: string | null
+          full_name_ar?: string | null
+          gender?: string | null
+          global_awards?: Json | null
+          id?: string | null
+          instagram?: string | null
+          is_verified?: boolean | null
+          job_title?: string | null
+          job_title_ar?: string | null
+          linkedin?: string | null
+          location?: string | null
+          membership_expires_at?: string | null
+          membership_status?:
+            | Database["public"]["Enums"]["membership_status"]
+            | null
+          membership_tier?:
+            | Database["public"]["Enums"]["membership_tier"]
+            | null
+          nationality?: string | null
+          offers_services?: boolean | null
+          preferred_language?: string | null
+          profile_completed?: boolean | null
+          profile_visibility?: string | null
+          second_nationality?: string | null
+          section_visibility?: Json | null
+          services_description?: string | null
+          services_description_ar?: string | null
+          show_nationality?: boolean | null
+          snapchat?: string | null
+          specialization?: string | null
+          specialization_ar?: string | null
+          tiktok?: string | null
+          twitter?: string | null
+          updated_at?: string | null
+          user_id?: string | null
+          username?: string | null
+          verification_badge?: string | null
+          verification_level?: string | null
+          verified_at?: string | null
+          view_count?: number | null
+          website?: string | null
+          years_of_experience?: number | null
+          youtube?: string | null
+        }
+        Update: {
+          account_number?: string | null
+          account_status?: Database["public"]["Enums"]["account_status"] | null
+          avatar_url?: string | null
+          bio?: string | null
+          bio_ar?: string | null
+          city?: string | null
+          company_id?: string | null
+          company_role?: string | null
+          country_code?: string | null
+          cover_image_url?: string | null
+          created_at?: string | null
+          display_name?: string | null
+          display_name_ar?: string | null
+          education_entity_id?: string | null
+          education_institution?: string | null
+          education_level?: string | null
+          experience_level?:
+            | Database["public"]["Enums"]["experience_level"]
+            | null
+          facebook?: string | null
+          follow_privacy?: string | null
+          full_name?: string | null
+          full_name_ar?: string | null
+          gender?: string | null
+          global_awards?: Json | null
+          id?: string | null
+          instagram?: string | null
+          is_verified?: boolean | null
+          job_title?: string | null
+          job_title_ar?: string | null
+          linkedin?: string | null
+          location?: string | null
+          membership_expires_at?: string | null
+          membership_status?:
+            | Database["public"]["Enums"]["membership_status"]
+            | null
+          membership_tier?:
+            | Database["public"]["Enums"]["membership_tier"]
+            | null
+          nationality?: string | null
+          offers_services?: boolean | null
+          preferred_language?: string | null
+          profile_completed?: boolean | null
+          profile_visibility?: string | null
+          second_nationality?: string | null
+          section_visibility?: Json | null
+          services_description?: string | null
+          services_description_ar?: string | null
+          show_nationality?: boolean | null
+          snapchat?: string | null
+          specialization?: string | null
+          specialization_ar?: string | null
+          tiktok?: string | null
+          twitter?: string | null
+          updated_at?: string | null
+          user_id?: string | null
+          username?: string | null
+          verification_badge?: string | null
+          verification_level?: string | null
+          verified_at?: string | null
+          view_count?: number | null
+          website?: string | null
+          years_of_experience?: number | null
+          youtube?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "profiles_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "profiles_education_entity_id_fkey"
+            columns: ["education_entity_id"]
+            isOneToOne: false
+            referencedRelation: "culinary_entities"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Functions: {
       approve_chefs_table_request: {
@@ -16349,6 +16577,8 @@ export type Database = {
         }
         Returns: number
       }
+      check_email_exists: { Args: { p_email: string }; Returns: boolean }
+      check_phone_exists: { Args: { p_phone: string }; Returns: boolean }
       generate_account_number: {
         Args: { p_role: Database["public"]["Enums"]["app_role"] }
         Returns: string
@@ -16384,6 +16614,13 @@ export type Database = {
       generate_wallet_txn_number: { Args: never; Returns: string }
       get_company_balance: { Args: { p_company_id: string }; Returns: number }
       get_profile_safe: { Args: { p_profile_user_id: string }; Returns: Json }
+      get_user_by_phone: {
+        Args: { p_phone: string }
+        Returns: {
+          email: string
+          user_id: string
+        }[]
+      }
       get_user_chat_group_ids: {
         Args: { p_user_id: string }
         Returns: string[]

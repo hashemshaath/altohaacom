@@ -58,11 +58,11 @@ export default function Verify() {
       switch (qrResult.entity_type) {
         case "user": {
           const { data } = await supabase
-            .from("profiles")
-            .select("full_name, username, specialization, experience_level, location, phone, bio, account_number, avatar_url, country_code, website")
+            .from("profiles_public" as any)
+            .select("full_name, username, specialization, experience_level, location, bio, account_number, avatar_url, country_code, website")
             .eq("username", qrResult.entity_id)
             .maybeSingle();
-          return data ? { ...data, type: "user" } : null;
+          return data ? { ...(data as any), type: "user" } : null;
         }
         case "certificate": {
           const { data } = await supabase.rpc("verify_certificate", { p_code: qrResult.entity_id });

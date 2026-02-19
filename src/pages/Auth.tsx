@@ -137,7 +137,7 @@ export default function Auth() {
     setUsernameStatus("checking");
     const timer = setTimeout(async () => {
       const { data } = await supabase
-        .from("profiles")
+        .from("profiles_public" as any)
         .select("username")
         .eq("username", username.toLowerCase())
         .maybeSingle();
@@ -230,11 +230,8 @@ export default function Auth() {
     setSignInVerifiedPhone(normalizedPhone);
     // Lookup account by phone (try both normalized and raw)
     setLoading(true);
-    const { data: profile } = await supabase
-      .from("profiles")
-      .select("user_id")
-      .eq("phone", normalizedPhone)
-      .maybeSingle();
+    const { data: phoneExists } = await supabase.rpc("check_phone_exists", { p_phone: normalizedPhone });
+    const profile = phoneExists ? { user_id: "found" } : null;
 
     if (!profile) {
       setLoading(false);
@@ -276,11 +273,8 @@ export default function Auth() {
     }
 
     setLoading(true);
-    const { data: profile } = await (supabase
-      .from("profiles") as any)
-      .select("user_id, email")
-      .eq("phone", signInVerifiedPhone)
-      .maybeSingle();
+    const { data: phoneData } = await supabase.rpc("get_user_by_phone", { p_phone: signInVerifiedPhone });
+    const profile = (phoneData as any)?.[0] || null;
 
     if (!profile) {
       setLoading(false);
@@ -378,11 +372,8 @@ export default function Auth() {
       // Check if phone already registered
       if (!errs.phone) {
         setLoading(true);
-        const { data: existingPhone } = await supabase
-          .from("profiles")
-          .select("user_id")
-          .eq("phone", fullPhone)
-          .maybeSingle();
+        const { data: phoneExists } = await supabase.rpc("check_phone_exists", { p_phone: fullPhone });
+        const existingPhone = phoneExists ? { user_id: "found" } : null;
         setLoading(false);
         if (existingPhone) {
           errs.phone = isAr ? "هذا الرقم مسجل بالفعل. يرجى تسجيل الدخول" : "This number is already registered. Please sign in";
@@ -395,11 +386,8 @@ export default function Auth() {
       // Check if email already registered
       if (!errs.email) {
         setLoading(true);
-        const { data: existingEmail } = await (supabase
-          .from("profiles") as any)
-          .select("user_id")
-          .eq("email", emailInput.trim().toLowerCase())
-          .maybeSingle();
+        const { data: emailExists } = await supabase.rpc("check_email_exists", { p_email: emailInput.trim().toLowerCase() });
+        const existingEmail = emailExists ? { user_id: "found" } : null;
         setLoading(false);
         if (existingEmail) {
           errs.email = isAr ? "هذا البريد مسجل بالفعل. يرجى تسجيل الدخول" : "This email is already registered. Please sign in";
@@ -442,11 +430,8 @@ export default function Auth() {
       // Check if email already registered
       if (!errs.email && email) {
         setLoading(true);
-        const { data: existingEmail } = await (supabase
-          .from("profiles") as any)
-          .select("user_id")
-          .eq("email", email.trim().toLowerCase())
-          .maybeSingle();
+        const { data: emailExists2 } = await supabase.rpc("check_email_exists", { p_email: email.trim().toLowerCase() });
+        const existingEmail = emailExists2 ? { user_id: "found" } : null;
         setLoading(false);
         if (existingEmail) {
           errs.email = isAr ? "هذا البريد مسجل بالفعل" : "This email is already registered";
