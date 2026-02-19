@@ -12,6 +12,34 @@ serve(async (req) => {
   }
 
   try {
+    // --- Authentication ---
+    const authHeader = req.headers.get("Authorization");
+    if (!authHeader?.startsWith("Bearer ")) {
+      return new Response(
+        JSON.stringify({ error: "Unauthorized" }),
+        { status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
+
+    const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
+    const supabaseKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
+    const anonKey = Deno.env.get("SUPABASE_ANON_KEY")!;
+
+    const userClient = createClient(supabaseUrl, anonKey, {
+      global: { headers: { Authorization: authHeader } },
+    });
+    const token = authHeader.replace("Bearer ", "");
+    const { data: claimsData, error: claimsError } = await userClient.auth.getClaims(token);
+    if (claimsError || !claimsData?.claims) {
+      return new Response(
+        JSON.stringify({ error: "Unauthorized" }),
+        { status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
+
+    const userId = claimsData.claims.sub as string;
+    const supabase = createClient(supabaseUrl, supabaseKey);
+
     const { question, competition_id, language = "en", conversation_history = [] } = await req.json();
 
     if (!question) {
@@ -21,16 +49,36 @@ serve(async (req) => {
       );
     }
 
+    // --- Role check: user must be a judge for the competition or an admin ---
+    const { data: isAdmin } = await supabase.rpc("is_admin", { p_user_id: userId });
+    if (!isAdmin && competition_id) {
+      const { data: roles } = await supabase.rpc("get_user_competition_role", {
+        p_user_id: userId,
+        p_competition_id: competition_id,
+      });
+      const hasJudgeRole = Array.isArray(roles) && roles.some((r: string) =>
+        ["judge", "head_judge", "lead_judge"].includes(r.toLowerCase())
+      );
+      if (!hasJudgeRole) {
+        return new Response(
+          JSON.stringify({ error: "Forbidden: judge role required" }),
+          { status: 403, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+        );
+      }
+    } else if (!isAdmin && !competition_id) {
+      // Without a competition_id, only admins can use the general assistant
+      return new Response(
+        JSON.stringify({ error: "Forbidden: competition_id required for non-admin users" }),
+        { status: 403, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
+
     const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
     if (!LOVABLE_API_KEY) {
       throw new Error("LOVABLE_API_KEY is not configured");
     }
 
-    const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
-    const supabaseKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
-    const supabase = createClient(supabaseUrl, supabaseKey);
-
-    // Fetch knowledge resources relevant to judging
+    // --- Fetch knowledge resources ---
     const resourceQuery = supabase
       .from("knowledge_resources")
       .select("title, title_ar, description, description_ar, resource_type, scraped_content, scraped_content_ar, tags")
@@ -44,7 +92,7 @@ serve(async (req) => {
 
     const { data: resources } = await resourceQuery;
 
-    // Fetch judging criteria and competition rules
+    // --- Fetch judging criteria and competition rules ---
     let criteriaContext = "";
     let rulesContext = "";
     if (competition_id) {
@@ -80,28 +128,28 @@ serve(async (req) => {
       }
     }
 
-    // Fetch rubric templates
+    // --- Fetch rubric templates ---
     const { data: rubrics } = await supabase
       .from("judging_rubric_templates")
       .select("name, name_ar, description, description_ar, criteria, competition_type, category_type")
       .eq("is_active", true)
       .limit(5);
 
-    // Fetch reference gallery info
+    // --- Fetch reference gallery ---
     const { data: references } = await supabase
       .from("reference_gallery")
       .select("title, title_ar, description, description_ar, rating, score_range_min, score_range_max, competition_category")
       .eq("is_active", true)
       .limit(10);
 
-    // Fetch FAQs related to judging
+    // --- Fetch FAQs ---
     const { data: faqs } = await supabase
       .from("faqs")
       .select("question, question_ar, answer, answer_ar, category")
       .ilike("category", "%judg%")
       .limit(10);
 
-    // Build comprehensive context
+    // --- Build context ---
     const knowledgeContext = [
       ...(resources || []).map(r =>
         language === "ar"
