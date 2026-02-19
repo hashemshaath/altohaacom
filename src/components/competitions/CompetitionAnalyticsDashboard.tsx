@@ -5,12 +5,12 @@ import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
-  BarChart, Bar, LineChart, Line,
-  XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
+  BarChart, Bar, LineChart, Line, AreaChart, Area,
+  XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell,
 } from "recharts";
 import {
   BarChart3, Users, Trophy, TrendingUp, Target, Medal,
-  UserCheck, Clock, Star, Activity,
+  UserCheck, Clock, Star, Activity, ArrowUp, ArrowDown,
 } from "lucide-react";
 
 const COLORS = [
@@ -43,7 +43,6 @@ export function CompetitionAnalyticsDashboard({ competitionId, language }: Props
       const pending = data.filter(r => r.status === "pending").length;
       const rejected = data.filter(r => r.status === "rejected").length;
 
-      // Registration timeline
       const timeMap: Record<string, number> = {};
       data.forEach(r => {
         const d = r.registered_at?.slice(0, 10) || "";
@@ -51,9 +50,23 @@ export function CompetitionAnalyticsDashboard({ competitionId, language }: Props
       });
       const timeline = Object.entries(timeMap)
         .sort(([a], [b]) => a.localeCompare(b))
-        .map(([date, count]) => ({ date: date.slice(5), count }));
+        .map(([date, count], idx, arr) => ({
+          date: date.slice(5),
+          count,
+          cumulative: arr.slice(0, idx + 1).reduce((sum, [, c]) => sum + c, 0),
+        }));
 
-      return { total, approved, pending, rejected, timeline };
+      // Approval rate
+      const approvalRate = total > 0 ? Math.round((approved / total) * 100) : 0;
+
+      // Status pie data
+      const statusPie = [
+        { name: isAr ? "مقبول" : "Approved", value: approved, fill: "hsl(var(--chart-3))" },
+        { name: isAr ? "قيد الانتظار" : "Pending", value: pending, fill: "hsl(var(--chart-4))" },
+        { name: isAr ? "مرفوض" : "Rejected", value: rejected, fill: "hsl(var(--destructive))" },
+      ].filter(s => s.value > 0);
+
+      return { total, approved, pending, rejected, timeline, approvalRate, statusPie };
     },
     enabled: !!competitionId,
     staleTime: 1000 * 60 * 3,
@@ -62,7 +75,6 @@ export function CompetitionAnalyticsDashboard({ competitionId, language }: Props
   const { data: scoringStats, isLoading: scoreLoading } = useQuery({
     queryKey: ["comp-analytics-scores", competitionId],
     queryFn: async () => {
-      // Get registrations for this competition first, then scores
       const { data: regs } = await supabase
         .from("competition_registrations")
         .select("id")
@@ -79,22 +91,22 @@ export function CompetitionAnalyticsDashboard({ competitionId, language }: Props
       const avg = scores.reduce((a, b) => a + b, 0) / scores.length;
       const max = Math.max(...scores);
       const min = Math.min(...scores);
+      const median = [...scores].sort((a, b) => a - b)[Math.floor(scores.length / 2)];
 
-      // Score distribution
       const buckets = [0, 2, 4, 6, 8, 10];
       const dist = buckets.slice(0, -1).map((lo, i) => ({
         range: `${lo}-${buckets[i + 1]}`,
         count: scores.filter(s => s >= lo && s < buckets[i + 1]).length,
       }));
 
-      // Judge activity
       const judgeMap: Record<string, number> = {};
       data.forEach(s => {
         if (s.judge_id) judgeMap[s.judge_id] = (judgeMap[s.judge_id] || 0) + 1;
       });
       const uniqueJudges = Object.keys(judgeMap).length;
+      const avgPerJudge = uniqueJudges > 0 ? Math.round(data.length / uniqueJudges) : 0;
 
-      return { avg: Math.round(avg * 10) / 10, max, min, dist, uniqueJudges, totalScores: data.length };
+      return { avg: Math.round(avg * 10) / 10, max, min, median, dist, uniqueJudges, totalScores: data.length, avgPerJudge };
     },
     enabled: !!competitionId,
     staleTime: 1000 * 60 * 3,
@@ -121,7 +133,7 @@ export function CompetitionAnalyticsDashboard({ competitionId, language }: Props
           };
         })
       );
-      return results;
+      return results.sort((a, b) => b.participants - a.participants);
     },
     enabled: !!competitionId,
     staleTime: 1000 * 60 * 5,
@@ -139,34 +151,10 @@ export function CompetitionAnalyticsDashboard({ competitionId, language }: Props
     <div className="space-y-6">
       {/* KPI Cards */}
       <div className="grid gap-3 grid-cols-2 lg:grid-cols-4">
-        <KPICard
-          icon={Users}
-          label={isAr ? "المسجلين" : "Registrations"}
-          value={registrationStats?.total || 0}
-          loading={regLoading}
-          accent="text-primary bg-primary/10"
-        />
-        <KPICard
-          icon={UserCheck}
-          label={isAr ? "المقبولين" : "Approved"}
-          value={registrationStats?.approved || 0}
-          loading={regLoading}
-          accent="text-chart-3 bg-chart-3/10"
-        />
-        <KPICard
-          icon={Star}
-          label={isAr ? "متوسط الدرجات" : "Avg Score"}
-          value={scoringStats?.avg || 0}
-          loading={scoreLoading}
-          accent="text-chart-4 bg-chart-4/10"
-        />
-        <KPICard
-          icon={Medal}
-          label={isAr ? "الحكام النشطين" : "Active Judges"}
-          value={scoringStats?.uniqueJudges || 0}
-          loading={scoreLoading}
-          accent="text-chart-5 bg-chart-5/10"
-        />
+        <KPICard icon={Users} label={isAr ? "المسجلين" : "Registrations"} value={registrationStats?.total || 0} loading={regLoading} accent="text-primary bg-primary/10" />
+        <KPICard icon={UserCheck} label={isAr ? "نسبة القبول" : "Approval Rate"} value={`${registrationStats?.approvalRate || 0}%`} loading={regLoading} accent="text-chart-3 bg-chart-3/10" trend={registrationStats?.approvalRate && registrationStats.approvalRate > 70 ? "up" : undefined} />
+        <KPICard icon={Star} label={isAr ? "متوسط الدرجات" : "Avg Score"} value={scoringStats?.avg || 0} loading={scoreLoading} accent="text-chart-4 bg-chart-4/10" />
+        <KPICard icon={Medal} label={isAr ? "الحكام النشطين" : "Active Judges"} value={scoringStats?.uniqueJudges || 0} loading={scoreLoading} accent="text-chart-5 bg-chart-5/10" subtitle={scoringStats?.avgPerJudge ? `~${scoringStats.avgPerJudge} ${isAr ? "تقييم/حكم" : "scores/judge"}` : undefined} />
       </div>
 
       <Tabs defaultValue="registrations" className="space-y-4">
@@ -178,7 +166,7 @@ export function CompetitionAnalyticsDashboard({ competitionId, language }: Props
 
         <TabsContent value="registrations" className="space-y-4">
           <div className="grid gap-4 lg:grid-cols-2">
-            {/* Registration Timeline */}
+            {/* Registration Timeline - now Area chart with cumulative */}
             <Card>
               <CardHeader className="pb-2">
                 <CardTitle className="text-sm flex items-center gap-2">
@@ -189,40 +177,57 @@ export function CompetitionAnalyticsDashboard({ competitionId, language }: Props
               <CardContent>
                 {regLoading ? <Skeleton className="h-[200px]" /> : registrationStats?.timeline && registrationStats.timeline.length > 0 ? (
                   <ResponsiveContainer width="100%" height={200}>
-                    <LineChart data={registrationStats.timeline}>
+                    <AreaChart data={registrationStats.timeline}>
+                      <defs>
+                        <linearGradient id="regGrad" x1="0" y1="0" x2="0" y2="1">
+                          <stop offset="5%" stopColor="hsl(var(--primary))" stopOpacity={0.3} />
+                          <stop offset="95%" stopColor="hsl(var(--primary))" stopOpacity={0} />
+                        </linearGradient>
+                      </defs>
                       <CartesianGrid strokeDasharray="3 3" className="stroke-border/50" />
                       <XAxis dataKey="date" tick={{ fontSize: 10 }} className="fill-muted-foreground" />
                       <YAxis tick={{ fontSize: 10 }} allowDecimals={false} className="fill-muted-foreground" />
                       <Tooltip contentStyle={tooltipStyle} />
-                      <Line type="monotone" dataKey="count" stroke="hsl(var(--primary))" strokeWidth={2} dot={{ r: 3 }} />
-                    </LineChart>
+                      <Area type="monotone" dataKey="cumulative" stroke="hsl(var(--primary))" fill="url(#regGrad)" strokeWidth={2} name={isAr ? "الإجمالي التراكمي" : "Cumulative"} />
+                      <Line type="monotone" dataKey="count" stroke="hsl(var(--chart-4))" strokeWidth={1.5} dot={{ r: 2 }} name={isAr ? "يومي" : "Daily"} />
+                    </AreaChart>
                   </ResponsiveContainer>
                 ) : <EmptyState isAr={isAr} />}
               </CardContent>
             </Card>
 
-            {/* Registration Status Summary */}
+            {/* Status Pie Chart */}
             <Card>
               <CardHeader className="pb-2">
                 <CardTitle className="text-sm flex items-center gap-2">
                   <Target className="h-4 w-4 text-chart-4" />
-                  {isAr ? "ملخص الحالات" : "Status Summary"}
+                  {isAr ? "توزيع الحالات" : "Status Distribution"}
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="flex flex-col gap-3">
-                  {[
-                    { label: isAr ? "إجمالي" : "Total", value: registrationStats?.total || 0, color: "text-foreground" },
-                    { label: isAr ? "مقبول" : "Approved", value: registrationStats?.approved || 0, color: "text-chart-3" },
-                    { label: isAr ? "قيد الانتظار" : "Pending", value: registrationStats?.pending || 0, color: "text-chart-4" },
-                    { label: isAr ? "مرفوض" : "Rejected", value: registrationStats?.rejected || 0, color: "text-destructive" },
-                  ].map(s => (
-                    <div key={s.label} className="flex items-center justify-between">
-                      <span className="text-sm text-muted-foreground">{s.label}</span>
-                      <span className={`text-lg font-bold ${s.color}`}>{s.value}</span>
+                {registrationStats?.statusPie && registrationStats.statusPie.length > 0 ? (
+                  <div className="flex items-center gap-4">
+                    <ResponsiveContainer width="50%" height={180}>
+                      <PieChart>
+                        <Pie data={registrationStats.statusPie} cx="50%" cy="50%" innerRadius={40} outerRadius={70} paddingAngle={3} dataKey="value">
+                          {registrationStats.statusPie.map((entry, i) => (
+                            <Cell key={i} fill={entry.fill} />
+                          ))}
+                        </Pie>
+                        <Tooltip contentStyle={tooltipStyle} />
+                      </PieChart>
+                    </ResponsiveContainer>
+                    <div className="flex flex-col gap-2">
+                      {registrationStats.statusPie.map(s => (
+                        <div key={s.name} className="flex items-center gap-2">
+                          <div className="h-3 w-3 rounded-full" style={{ backgroundColor: s.fill }} />
+                          <span className="text-xs text-muted-foreground">{s.name}</span>
+                          <span className="text-xs font-bold">{s.value}</span>
+                        </div>
+                      ))}
                     </div>
-                  ))}
-                </div>
+                  </div>
+                ) : <EmptyState isAr={isAr} />}
               </CardContent>
             </Card>
 
@@ -241,7 +246,7 @@ export function CompetitionAnalyticsDashboard({ competitionId, language }: Props
                     { label: isAr ? "قيد الانتظار" : "Pending", value: registrationStats?.pending || 0, color: "bg-chart-4/10 text-chart-4" },
                     { label: isAr ? "مرفوض" : "Rejected", value: registrationStats?.rejected || 0, color: "bg-destructive/10 text-destructive" },
                   ].map(s => (
-                    <div key={s.label} className="flex items-center gap-2 rounded-lg border p-3 flex-1 min-w-[120px]">
+                    <div key={s.label} className="flex items-center gap-2 rounded-lg border p-3 flex-1 min-w-[120px] transition-all hover:shadow-sm">
                       <div className={`rounded-full px-2 py-0.5 text-xs font-medium ${s.color}`}>{s.value}</div>
                       <span className="text-sm text-muted-foreground">{s.label}</span>
                     </div>
@@ -266,34 +271,47 @@ export function CompetitionAnalyticsDashboard({ competitionId, language }: Props
                 {scoreLoading ? <Skeleton className="h-[200px]" /> : scoringStats?.dist && scoringStats.dist.length > 0 ? (
                   <ResponsiveContainer width="100%" height={200}>
                     <BarChart data={scoringStats.dist}>
+                      <defs>
+                        <linearGradient id="scoreGrad" x1="0" y1="0" x2="0" y2="1">
+                          <stop offset="0%" stopColor="hsl(var(--chart-5))" stopOpacity={1} />
+                          <stop offset="100%" stopColor="hsl(var(--chart-5))" stopOpacity={0.4} />
+                        </linearGradient>
+                      </defs>
                       <CartesianGrid strokeDasharray="3 3" className="stroke-border/50" />
                       <XAxis dataKey="range" tick={{ fontSize: 10 }} className="fill-muted-foreground" />
                       <YAxis tick={{ fontSize: 10 }} allowDecimals={false} className="fill-muted-foreground" />
                       <Tooltip contentStyle={tooltipStyle} />
-                      <Bar dataKey="count" fill="hsl(var(--chart-5))" radius={[4, 4, 0, 0]} />
+                      <Bar dataKey="count" fill="url(#scoreGrad)" radius={[6, 6, 0, 0]} />
                     </BarChart>
                   </ResponsiveContainer>
                 ) : <EmptyState isAr={isAr} />}
               </CardContent>
             </Card>
 
-            {/* Score Stats */}
-
-            {/* Score Summary */}
-            <Card className="lg:col-span-2">
+            {/* Score Summary - enhanced */}
+            <Card>
               <CardContent className="pt-6">
-                <div className="flex flex-wrap gap-6 justify-center">
+                <div className="grid grid-cols-2 gap-4">
                   {[
-                    { label: isAr ? "أعلى درجة" : "Highest", value: scoringStats?.max || 0 },
-                    { label: isAr ? "المتوسط" : "Average", value: scoringStats?.avg || 0 },
-                    { label: isAr ? "أقل درجة" : "Lowest", value: scoringStats?.min || 0 },
-                    { label: isAr ? "إجمالي التقييمات" : "Total Scores", value: scoringStats?.totalScores || 0 },
-                  ].map(s => (
-                    <div key={s.label} className="text-center">
-                      <p className="text-2xl font-bold">{s.value}</p>
-                      <p className="text-xs text-muted-foreground">{s.label}</p>
-                    </div>
-                  ))}
+                    { label: isAr ? "أعلى درجة" : "Highest", value: scoringStats?.max || 0, icon: ArrowUp, color: "text-chart-3" },
+                    { label: isAr ? "المتوسط" : "Average", value: scoringStats?.avg || 0, icon: Target, color: "text-primary" },
+                    { label: isAr ? "الوسيط" : "Median", value: scoringStats?.median || 0, icon: BarChart3, color: "text-chart-4" },
+                    { label: isAr ? "أقل درجة" : "Lowest", value: scoringStats?.min || 0, icon: ArrowDown, color: "text-chart-5" },
+                  ].map(s => {
+                    const Icon = s.icon;
+                    return (
+                      <div key={s.label} className="rounded-lg border p-3 text-center transition-all hover:shadow-sm">
+                        <Icon className={`mx-auto h-4 w-4 mb-1 ${s.color}`} />
+                        <p className="text-xl font-bold">{s.value}</p>
+                        <p className="text-[10px] text-muted-foreground">{s.label}</p>
+                      </div>
+                    );
+                  })}
+                </div>
+                <div className="mt-4 flex items-center justify-center gap-4 text-sm text-muted-foreground border-t pt-3">
+                  <span>{isAr ? "إجمالي التقييمات" : "Total Scores"}: <strong className="text-foreground">{scoringStats?.totalScores || 0}</strong></span>
+                  <span>·</span>
+                  <span>{isAr ? "حكام" : "Judges"}: <strong className="text-foreground">{scoringStats?.uniqueJudges || 0}</strong></span>
                 </div>
               </CardContent>
             </Card>
@@ -311,18 +329,12 @@ export function CompetitionAnalyticsDashboard({ competitionId, language }: Props
             <CardContent>
               {categoryStats && categoryStats.length > 0 ? (
                 <ResponsiveContainer width="100%" height={250}>
-                  <BarChart data={categoryStats}>
+                  <BarChart data={categoryStats} layout="vertical">
                     <CartesianGrid strokeDasharray="3 3" className="stroke-border/50" />
-                    <XAxis dataKey="name" tick={{ fontSize: 10 }} className="fill-muted-foreground" angle={-20} textAnchor="end" height={60} />
-                    <YAxis tick={{ fontSize: 10 }} allowDecimals={false} className="fill-muted-foreground" />
-                    <Tooltip contentStyle={{
-                      backgroundColor: "hsl(var(--popover))",
-                      border: "1px solid hsl(var(--border))",
-                      borderRadius: "8px",
-                      color: "hsl(var(--popover-foreground))",
-                      fontSize: 12,
-                    }} />
-                    <Bar dataKey="participants" name={isAr ? "المشاركون" : "Participants"} fill="hsl(var(--chart-3))" radius={[4, 4, 0, 0]} />
+                    <XAxis type="number" tick={{ fontSize: 10 }} allowDecimals={false} className="fill-muted-foreground" />
+                    <YAxis type="category" dataKey="name" tick={{ fontSize: 10 }} className="fill-muted-foreground" width={100} />
+                    <Tooltip contentStyle={tooltipStyle} />
+                    <Bar dataKey="participants" name={isAr ? "المشاركون" : "Participants"} fill="hsl(var(--chart-3))" radius={[0, 4, 4, 0]} />
                   </BarChart>
                 </ResponsiveContainer>
               ) : <EmptyState isAr={isAr} />}
@@ -334,19 +346,24 @@ export function CompetitionAnalyticsDashboard({ competitionId, language }: Props
   );
 }
 
-function KPICard({ icon: Icon, label, value, loading, accent }: {
-  icon: any; label: string; value: number; loading: boolean; accent: string;
+function KPICard({ icon: Icon, label, value, loading, accent, trend, subtitle }: {
+  icon: any; label: string; value: number | string; loading: boolean; accent: string; trend?: "up" | "down"; subtitle?: string;
 }) {
   return (
-    <Card className="animate-fade-in">
+    <Card className="transition-all hover:shadow-md hover:-translate-y-0.5">
       <CardContent className="pt-4 pb-3">
         <div className="flex items-center gap-3">
           <div className={`flex h-9 w-9 items-center justify-center rounded-lg ${accent}`}>
             <Icon className="h-4 w-4" />
           </div>
-          <div>
-            {loading ? <Skeleton className="h-6 w-12" /> : <p className="text-xl font-bold">{value}</p>}
-            <p className="text-[11px] text-muted-foreground">{label}</p>
+          <div className="min-w-0">
+            <div className="flex items-center gap-1.5">
+              {loading ? <Skeleton className="h-6 w-12" /> : <p className="text-xl font-bold">{value}</p>}
+              {trend === "up" && <ArrowUp className="h-3.5 w-3.5 text-chart-3" />}
+              {trend === "down" && <ArrowDown className="h-3.5 w-3.5 text-destructive" />}
+            </div>
+            <p className="text-[11px] text-muted-foreground truncate">{label}</p>
+            {subtitle && <p className="text-[9px] text-muted-foreground/70">{subtitle}</p>}
           </div>
         </div>
       </CardContent>

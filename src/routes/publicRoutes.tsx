@@ -1,7 +1,7 @@
 import { lazy } from "react";
 import { Route, Navigate } from "react-router-dom";
 import Index from "@/pages/Index";
-
+const OfflinePage = lazy(() => import("@/pages/OfflinePage"));
 const Auth = lazy(() => import("@/pages/Auth"));
 const CompanyLogin = lazy(() => import("@/pages/CompanyLogin"));
 const Competitions = lazy(() => import("@/pages/Competitions"));
@@ -107,6 +107,7 @@ export const publicRoutes = (
     <Route path="/about" element={<AboutUs />} />
     <Route path="/cookies" element={<CookiePolicy />} />
     <Route path="/profile/:username" element={<PublicProfile />} />
+    <Route path="/offline" element={<OfflinePage />} />
     <Route path="/:username" element={<PublicProfile />} />
   </>
 );
