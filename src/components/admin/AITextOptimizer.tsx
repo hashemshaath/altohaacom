@@ -13,9 +13,13 @@ interface Props {
   onTranslated?: (translated: string) => void;
   /** Compact mode for inline usage next to labels */
   compact?: boolean;
+  /** Field type for AI context-aware length limits */
+  fieldType?: "title" | "meta_title" | "meta_description" | "excerpt" | "description" | "bio" | "body" | "tag" | "slug" | "text";
+  /** Override max character length */
+  maxLength?: number;
 }
 
-export function AITextOptimizer({ text, lang, onOptimized, onTranslated, compact }: Props) {
+export function AITextOptimizer({ text, lang, onOptimized, onTranslated, compact, fieldType, maxLength }: Props) {
   const { toast } = useToast();
   const [optimizing, setOptimizing] = useState(false);
   const [translating, setTranslating] = useState(false);
@@ -26,7 +30,7 @@ export function AITextOptimizer({ text, lang, onOptimized, onTranslated, compact
     setOptimizing(true);
     try {
       const { data, error } = await supabase.functions.invoke("ai-translate-seo", {
-        body: { text, source_lang: lang, optimize_only: true },
+        body: { text, source_lang: lang, optimize_only: true, field_type: fieldType, max_length: maxLength },
       });
       if (error) throw error;
       if (data?.optimized) {
@@ -46,7 +50,7 @@ export function AITextOptimizer({ text, lang, onOptimized, onTranslated, compact
     try {
       const targetLang = lang === "ar" ? "en" : "ar";
       const { data, error } = await supabase.functions.invoke("ai-translate-seo", {
-        body: { text, source_lang: lang, target_lang: targetLang, optimize_seo: true },
+        body: { text, source_lang: lang, target_lang: targetLang, optimize_seo: true, field_type: fieldType, max_length: maxLength },
       });
       if (error) throw error;
       if (data?.translated) {

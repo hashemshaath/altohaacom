@@ -14181,6 +14181,7 @@ export type Database = {
           description_ar: string | null
           field_name: string
           field_name_ar: string
+          field_type: string
           id: string
           is_active: boolean
           is_required: boolean
@@ -14200,6 +14201,7 @@ export type Database = {
           description_ar?: string | null
           field_name: string
           field_name_ar: string
+          field_type?: string
           id?: string
           is_active?: boolean
           is_required?: boolean
@@ -14219,6 +14221,7 @@ export type Database = {
           description_ar?: string | null
           field_name?: string
           field_name_ar?: string
+          field_type?: string
           id?: string
           is_active?: boolean
           is_required?: boolean
