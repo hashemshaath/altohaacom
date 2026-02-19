@@ -398,8 +398,8 @@ export default function CompanyLogin() {
   return (
     <AuthLayout stage="login" isAr={isAr} showFooter>
       <SEOHead
-        title={isAr ? "تسجيل دخول الشركة - Altohaa" : "Company Login - Altohaa"}
-        description="Sign in to your company or organization account on Altohaa."
+        title={isAr ? "تسجيل دخول الشركة - Altoha" : "Company Login - Altoha"}
+        description="Sign in to your company or organization account on Altoha."
       />
 
       {/* Header */}

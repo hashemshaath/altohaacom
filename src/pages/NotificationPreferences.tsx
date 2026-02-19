@@ -118,7 +118,7 @@ export default function NotificationPreferences() {
   return (
     <div className="flex min-h-screen flex-col bg-background">
       <SEOHead
-        title={isAr ? "تفضيلات الإشعارات | Altohaa" : "Notification Preferences | Altohaa"}
+        title={isAr ? "تفضيلات الإشعارات | Altoha" : "Notification Preferences | Altoha"}
         description={isAr ? "تحكم بقنوات وفئات الإشعارات الخاصة بك على منصة الطهاة" : "Manage your notification channels and categories on the culinary platform"}
       />
       <Header />

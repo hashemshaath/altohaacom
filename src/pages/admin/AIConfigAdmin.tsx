@@ -44,7 +44,7 @@ export default function AIConfigAdmin() {
     imageCaptioning: false,
     
     // Prompts
-    systemPrompt: "You are a helpful culinary assistant for the Altohaa platform. You help chefs, judges, and organizers with questions about competitions, recipes, and culinary techniques.",
+    systemPrompt: "You are a helpful culinary assistant for the Altoha platform. You help chefs, judges, and organizers with questions about competitions, recipes, and culinary techniques.",
     moderationPrompt: "Analyze the following content for inappropriate material, spam, or policy violations.",
     
     // Limits

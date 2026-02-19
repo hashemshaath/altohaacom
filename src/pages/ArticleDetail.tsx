@@ -168,7 +168,7 @@ export default function ArticleDetail() {
     <div className="flex min-h-screen flex-col">
       <SEOHead
         title={title}
-        description={excerpt || `${title} - Altohaa`}
+        description={excerpt || `${title} - Altoha`}
         ogImage={article.featured_image_url || undefined}
         ogType="article"
         jsonLd={{

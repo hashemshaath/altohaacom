@@ -85,7 +85,7 @@ export default function Shop() {
     <div className="flex min-h-screen flex-col">
       <SEOHead
         title="Culinary Shop"
-        description="Browse culinary tools, books, ingredients, and professional services on Altohaa."
+        description="Browse culinary tools, books, ingredients, and professional services on Altoha."
       />
       <Header />
 

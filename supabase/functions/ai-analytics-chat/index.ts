@@ -78,7 +78,7 @@ serve(async (req) => {
 
     const summary = await gatherPlatformSummary(supabase);
 
-    const systemPrompt = `You are an AI analytics assistant for the Altohaa culinary community platform. You have access to the following real-time platform data:
+    const systemPrompt = `You are an AI analytics assistant for the Altoha culinary community platform. You have access to the following real-time platform data:
 
 PLATFORM SUMMARY:
 - Total users: ${summary.totalUsers} (${summary.recentUsers} new in last 30 days)

@@ -110,7 +110,7 @@ export default function Auth() {
 
   useEffect(() => {
     if (refCode) {
-      localStorage.setItem("altohaa_ref_code", refCode);
+      localStorage.setItem("altoha_ref_code", refCode);
       // Track referral link click
       supabase.functions.invoke("track-referral-click", {
         body: { code: refCode, source: searchParams.get("utm_source") || "direct" },
@@ -505,16 +505,16 @@ export default function Auth() {
         .eq("user_id", data.user.id);
 
       // Process referral code via edge function
-      const storedRef = localStorage.getItem("altohaa_ref_code") || manualRefCode.trim().toUpperCase() || null;
+      const storedRef = localStorage.getItem("altoha_ref_code") || manualRefCode.trim().toUpperCase() || null;
       if (storedRef) {
         try {
           await supabase.functions.invoke("process-referral", {
             body: { referralCode: storedRef, newUserId: data.user.id },
           });
-          localStorage.removeItem("altohaa_ref_code");
+          localStorage.removeItem("altoha_ref_code");
         } catch (e) {
           console.error("Referral processing error:", e);
-          localStorage.removeItem("altohaa_ref_code");
+          localStorage.removeItem("altoha_ref_code");
         }
       }
 
@@ -782,7 +782,7 @@ export default function Auth() {
             </div>
 
             {/* Referral Code (optional) */}
-            {!localStorage.getItem("altohaa_ref_code") && (
+            {!localStorage.getItem("altoha_ref_code") && (
               <div className="space-y-1.5">
                 <Label htmlFor="refCode" className="text-xs">{isAr ? "كود الإحالة (اختياري)" : "Referral Code (optional)"}</Label>
                 <div className="relative">
@@ -802,12 +802,12 @@ export default function Auth() {
               </div>
             )}
 
-            {localStorage.getItem("altohaa_ref_code") && (
+            {localStorage.getItem("altoha_ref_code") && (
               <div className="flex items-center gap-2 rounded-lg border border-primary/20 bg-primary/5 p-3">
                 <Gift className="h-4 w-4 text-primary shrink-0" />
                 <p className="text-sm">
                   {isAr ? "كود الإحالة مُطبق:" : "Referral code applied:"}{" "}
-                  <span className="font-mono font-bold text-primary">{localStorage.getItem("altohaa_ref_code")}</span>
+                  <span className="font-mono font-bold text-primary">{localStorage.getItem("altoha_ref_code")}</span>
                 </p>
               </div>
             )}
@@ -899,8 +899,8 @@ export default function Auth() {
   return (
     <AuthLayout stage={getStage()} isAr={isAr} showFooter currentStep={isSignUp ? 0 : undefined}>
       <SEOHead
-        title={isSignUp ? (isAr ? "إنشاء حساب - Altohaa" : "Sign Up - Altohaa") : (isAr ? "تسجيل الدخول - Altohaa" : "Sign In - Altohaa")}
-        description="Join the global culinary community. Sign in or create your free account on Altohaa."
+        title={isSignUp ? (isAr ? "إنشاء حساب - Altoha" : "Sign Up - Altoha") : (isAr ? "تسجيل الدخول - Altoha" : "Sign In - Altoha")}
+        description="Join the global culinary community. Sign in or create your free account on Altoha."
       />
 
       {/* Header */}

@@ -219,7 +219,7 @@ serve(async (req) => {
 استخدم Markdown مع emoji. أجب باللغة العربية. كن محدداً وقدم أرقاماً. قارن بين الفترات الزمنية.
 
 ${summary}`
-      : `You are an expert data analyst for Altohaa, a culinary competition & community platform. Analyze the following data and provide a comprehensive report:
+      : `You are an expert data analyst for Altoha, a culinary competition & community platform. Analyze the following data and provide a comprehensive report:
 
 1. **📊 Executive Summary** (4-5 sentences summarizing overall health)
 2. **📈 Growth Trends** (4-6 bullet points with precise numbers and percentages)

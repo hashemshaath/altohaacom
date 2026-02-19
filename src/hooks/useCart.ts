@@ -16,7 +16,7 @@ export interface CartItem {
   tax_inclusive?: boolean;
 }
 
-const CART_KEY = "altohaa_cart";
+const CART_KEY = "altoha_cart";
 
 function loadCart(): CartItem[] {
   try {

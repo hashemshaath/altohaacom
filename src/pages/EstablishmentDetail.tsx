@@ -98,7 +98,7 @@ export default function EstablishmentDetail() {
 
   return (
     <>
-      <SEOHead title={`${name} | Altohaa`} description={est.description || `${name} - culinary establishment`} />
+      <SEOHead title={`${name} | Altoha`} description={est.description || `${name} - culinary establishment`} />
       <Header />
       <main className="min-h-screen bg-background">
         {/* Hero */}

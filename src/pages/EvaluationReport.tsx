@@ -281,7 +281,7 @@ export default function EvaluationReport() {
 
             {/* Footer */}
             <div className="pt-4 border-t border-border/30 flex items-center justify-between text-[10px] text-muted-foreground">
-              <span>Altohaa Chef's Table — {isAr ? "تقرير معتمد" : "Verified Report"}</span>
+              <span>Altoha Chef's Table — {isAr ? "تقرير معتمد" : "Verified Report"}</span>
               <span>#{session.session_number || session.report_token}</span>
               <span>{session.report_published_at ? format(new Date(session.report_published_at), "MMMM d, yyyy") : ""}</span>
             </div>

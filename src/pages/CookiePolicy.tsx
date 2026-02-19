@@ -24,7 +24,7 @@ export default function CookiePolicy() {
 
   return (
     <div className="flex min-h-screen flex-col bg-background" dir={isAr ? "rtl" : "ltr"}>
-      <SEOHead title={isAr ? "سياسة ملفات تعريف الارتباط" : "Cookie Policy"} description={isAr ? "سياسة الكوكيز لمنصة الطهاة" : "Altohaa Cookie Policy"} />
+      <SEOHead title={isAr ? "سياسة ملفات تعريف الارتباط" : "Cookie Policy"} description={isAr ? "سياسة الكوكيز لمنصة الطهاة" : "Altoha Cookie Policy"} />
       <Header />
       <main className="flex-1">
         <section className="border-b border-border/40 bg-gradient-to-b from-primary/5 to-background">

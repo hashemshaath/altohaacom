@@ -112,7 +112,7 @@ export default function ProSuppliers() {
   return (
     <div className="flex min-h-screen flex-col">
       <SEOHead
-        title={isAr ? "دليل موردي الشيفات المحترفين | التحاء" : "Pro Chef Suppliers Directory | Altohaa"}
+        title={isAr ? "دليل موردي الشيفات المحترفين | التحاء" : "Pro Chef Suppliers Directory | Altoha"}
         description={isAr ? "اكتشف أفضل موردي المنتجات الاحترافية للشيفات" : "Discover the best professional chef product suppliers"}
       />
       <Header />

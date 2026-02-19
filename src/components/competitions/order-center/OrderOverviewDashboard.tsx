@@ -131,7 +131,7 @@ export function OrderOverviewDashboard({ competitionId, isOrganizer }: Props) {
           <thead><tr><th>${isAr ? "القائمة" : "List"}</th><th>${isAr ? "الفئة" : "Category"}</th><th>${isAr ? "الحالة" : "Status"}</th></tr></thead>
           <tbody>${lists?.map(l => `<tr><td>${isAr && l.title_ar ? l.title_ar : l.title}</td><td>${l.category}</td><td>${l.status}</td></tr>`).join("") || ""}</tbody>
         </table>
-        <div class="footer">${isAr ? "تم الإنشاء" : "Generated"}: ${new Date().toLocaleDateString()} · Altohaa Platform</div>
+        <div class="footer">${isAr ? "تم الإنشاء" : "Generated"}: ${new Date().toLocaleDateString()} · Altoha Platform</div>
       </body></html>
     `);
     printWindow.document.close();

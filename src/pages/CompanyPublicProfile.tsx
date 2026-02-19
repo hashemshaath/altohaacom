@@ -118,7 +118,7 @@ export default function CompanyPublicProfile() {
 
   return (
     <div className="flex min-h-screen flex-col">
-      <SEOHead title={`${company.name} - Altohaa`} description={company.description || `${company.name} company profile`} />
+      <SEOHead title={`${company.name} - Altoha`} description={company.description || `${company.name} company profile`} />
       <Header />
       <main className="flex-1">
         {/* Hero */}

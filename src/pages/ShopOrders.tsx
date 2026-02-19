@@ -58,7 +58,7 @@ export default function ShopOrders() {
 
   return (
     <div className="flex min-h-screen flex-col">
-      <SEOHead title="My Orders" description="View your shop orders on Altohaa." />
+      <SEOHead title="My Orders" description="View your shop orders on Altoha." />
       <Header />
 
       <main className="container flex-1 py-8 md:py-12">

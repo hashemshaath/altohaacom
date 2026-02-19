@@ -141,7 +141,7 @@ ${knowledgeContext}
 - ساعد في مقارنة المشاركين بالمراجع المتوفرة
 - كن موضوعيًا ومهنيًا في إجاباتك
 أجب باللغة العربية.`
-      : `You are an expert judging assistant for Altohaa, a culinary competition platform. You help judges evaluate participants and understand judging criteria.
+      : `You are an expert judging assistant for Altoha, a culinary competition platform. You help judges evaluate participants and understand judging criteria.
 
 ${criteriaContext ? `Current Competition Criteria:\n${criteriaContext}\n` : ""}
 ${rulesContext ? `${rulesContext}\n` : ""}

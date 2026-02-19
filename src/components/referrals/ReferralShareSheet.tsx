@@ -52,7 +52,7 @@ export function ReferralShareSheet({ referralLink, referralCode, referralCodeId,
   };
 
   const shareTwitter = () => {
-    const text = isAr ? "انضم إلى ألطهاة - المنصة الأولى للطهاة المحترفين" : "Join Altohaa - The #1 platform for professional chefs";
+    const text = isAr ? "انضم إلى ألطهاة - المنصة الأولى للطهاة المحترفين" : "Join Altoha - The #1 platform for professional chefs";
     window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(referralLink)}`, "_blank");
     sendInvitation.mutate({ channel: "twitter", referralCodeId });
     trackShare("twitter");

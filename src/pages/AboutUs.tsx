@@ -28,7 +28,7 @@ export default function AboutUs() {
 
   return (
     <div className="flex min-h-screen flex-col bg-background" dir={isAr ? "rtl" : "ltr"}>
-      <SEOHead title={isAr ? "من نحن" : "About Us"} description={isAr ? "تعرف على منصة الطهاة" : "Learn about Altohaa"} />
+      <SEOHead title={isAr ? "من نحن" : "About Us"} description={isAr ? "تعرف على منصة الطهاة" : "Learn about Altoha"} />
       <Header />
       <main className="flex-1">
         <section className="border-b border-border/40 bg-gradient-to-b from-primary/5 to-background">
@@ -37,7 +37,7 @@ export default function AboutUs() {
               <Info className="h-3.5 w-3.5 text-primary" />
               <span className="text-xs font-medium text-primary">{isAr ? "من نحن" : "About Us"}</span>
             </div>
-            <h1 className="font-serif text-3xl font-bold md:text-4xl">{isAr ? "عن منصة الطهاة" : "About Altohaa"}</h1>
+            <h1 className="font-serif text-3xl font-bold md:text-4xl">{isAr ? "عن منصة الطهاة" : "About Altoha"}</h1>
             <p className="mt-3 text-muted-foreground max-w-lg mx-auto">
               {isAr ? "المنصة الرائدة لمجتمع الطهي العالمي — نجمع الطهاة والحكام والمنظمين والرعاة في مكان واحد." : "The premier global culinary community platform — uniting chefs, judges, organizers, and sponsors in one place."}
             </p>
@@ -96,7 +96,7 @@ export default function AboutUs() {
           {/* CTA */}
           <Card className="bg-primary/5 border-primary/10">
             <CardContent className="py-8 text-center">
-              <h2 className="text-xl font-bold mb-2">{isAr ? "انضم إلى مجتمع الطهاة" : "Join the Altohaa Community"}</h2>
+              <h2 className="text-xl font-bold mb-2">{isAr ? "انضم إلى مجتمع الطهاة" : "Join the Altoha Community"}</h2>
               <p className="text-sm text-muted-foreground mb-5 max-w-md mx-auto">
                 {isAr ? "كن جزءاً من أكبر مجتمع طهي عربي وعالمي" : "Be part of the largest Arab and global culinary community"}
               </p>

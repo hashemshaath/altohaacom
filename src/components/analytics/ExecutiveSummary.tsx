@@ -74,7 +74,7 @@ export function ExecutiveSummary() {
     printWindow.document.write(`
       <html dir="${isAr ? "rtl" : "ltr"}">
       <head>
-        <title>${isAr ? "الملخص التنفيذي" : "Executive Summary"} - Altohaa</title>
+        <title>${isAr ? "الملخص التنفيذي" : "Executive Summary"} - Altoha</title>
         <style>
           * { margin: 0; padding: 0; box-sizing: border-box; font-family: system-ui, -apple-system, sans-serif; }
           body { padding: 40px; color: #1a1a1a; }
@@ -100,7 +100,7 @@ export function ExecutiveSummary() {
       </head>
       <body>
         <div class="header">
-          <h1>${isAr ? "الملخص التنفيذي — منصة الطهاة" : "Executive Summary — Altohaa Platform"}</h1>
+          <h1>${isAr ? "الملخص التنفيذي — منصة الطهاة" : "Executive Summary — Altoha Platform"}</h1>
           <p>${isAr ? "الفترة:" : "Period:"} ${period === "7d" ? "7" : period === "30d" ? "30" : "90"} ${isAr ? "يوم" : "days"} | ${isAr ? "تاريخ الإنشاء:" : "Generated:"} ${format(new Date(), "dd/MM/yyyy HH:mm", { locale: isAr ? ar : undefined })}</p>
         </div>
         <div class="kpi-grid">
@@ -127,7 +127,7 @@ export function ExecutiveSummary() {
             <div class="metric-item"><div class="label">${isAr ? "المنشورات" : "Posts"}</div><div class="value">${stats?.posts || 0}</div></div>
           </div>
         </div>
-        <div class="footer">${isAr ? "تقرير آلي من منصة الطهاة — سري" : "Auto-generated report by Altohaa Platform — Confidential"}</div>
+        <div class="footer">${isAr ? "تقرير آلي من منصة الطهاة — سري" : "Auto-generated report by Altoha Platform — Confidential"}</div>
       </body>
       </html>
     `);
@@ -176,7 +176,7 @@ export function ExecutiveSummary() {
         {/* Header */}
         <Card className="bg-primary/5 border-primary/20">
           <CardContent className="py-4 text-center">
-            <h2 className="text-xl font-bold">{isAr ? "الملخص التنفيذي — منصة الطهاة" : "Executive Summary — Altohaa Platform"}</h2>
+            <h2 className="text-xl font-bold">{isAr ? "الملخص التنفيذي — منصة الطهاة" : "Executive Summary — Altoha Platform"}</h2>
             <p className="text-xs text-muted-foreground mt-1">
               {isAr ? "الفترة:" : "Period:"} {period === "7d" ? "7" : period === "30d" ? "30" : "90"} {isAr ? "يوم" : "days"} |{" "}
               {isAr ? "تاريخ الإنشاء:" : "Generated:"} {format(new Date(), "dd/MM/yyyy HH:mm", { locale: isAr ? ar : undefined })}

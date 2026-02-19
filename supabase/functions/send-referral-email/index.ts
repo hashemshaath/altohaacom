@@ -23,7 +23,7 @@ function buildEmailHtml(payload: ReferralEmailPayload): string {
 
   const title = isAr
     ? `${referrerName} يدعوك للانضمام إلى ألطهاة!`
-    : `${referrerName} invites you to join Altohaa!`;
+    : `${referrerName} invites you to join Altoha!`;
 
   const subtitle = isAr
     ? "المنصة الأولى للطهاة المحترفين في العالم العربي"
@@ -31,7 +31,7 @@ function buildEmailHtml(payload: ReferralEmailPayload): string {
 
   const bodyText = isAr
     ? `لقد تمت دعوتك من قبل <strong>${referrerName}</strong> للانضمام إلى مجتمع ألطهاة. سجّل الآن واحصل على <strong>25 نقطة مكافأة</strong> فوراً!`
-    : `You've been invited by <strong>${referrerName}</strong> to join the Altohaa community. Sign up now and receive <strong>25 bonus points</strong> instantly!`;
+    : `You've been invited by <strong>${referrerName}</strong> to join the Altoha community. Sign up now and receive <strong>25 bonus points</strong> instantly!`;
 
   const benefits = isAr
     ? [
@@ -51,7 +51,7 @@ function buildEmailHtml(payload: ReferralEmailPayload): string {
   const codeLabel = isAr ? "رمز الدعوة الخاص بك" : "Your invitation code";
   const footer = isAr
     ? "تم إرسال هذه الدعوة عبر منصة ألطهاة"
-    : "This invitation was sent via the Altohaa platform";
+    : "This invitation was sent via the Altoha platform";
 
   return `
 <!DOCTYPE html>
@@ -61,7 +61,7 @@ function buildEmailHtml(payload: ReferralEmailPayload): string {
   <div style="max-width:600px;margin:0 auto;padding:24px;">
     <!-- Header -->
     <div style="text-align:center;padding:32px 20px;background:linear-gradient(135deg,#8B4513,#D2691E);border-radius:16px 16px 0 0;">
-      <h1 style="color:#fff;margin:0;font-size:28px;letter-spacing:1px;">Altohaa</h1>
+      <h1 style="color:#fff;margin:0;font-size:28px;letter-spacing:1px;">Altoha</h1>
       <p style="color:rgba(255,255,255,0.85);margin:8px 0 0;font-size:14px;">${subtitle}</p>
     </div>
 
@@ -92,7 +92,7 @@ function buildEmailHtml(payload: ReferralEmailPayload): string {
     </div>
 
     <!-- Footer -->
-    <p style="text-align:center;color:#aaa;font-size:11px;margin:20px 0 0;">&copy; ${new Date().getFullYear()} Altohaa. ${footer}</p>
+    <p style="text-align:center;color:#aaa;font-size:11px;margin:20px 0 0;">&copy; ${new Date().getFullYear()} Altoha. ${footer}</p>
   </div>
 </body>
 </html>`;
@@ -125,7 +125,7 @@ serve(async (req) => {
     const isAr = payload.language === "ar";
     const subject = isAr
       ? `${payload.referrerName} يدعوك للانضمام إلى ألطهاة!`
-      : `${payload.referrerName} invites you to join Altohaa!`;
+      : `${payload.referrerName} invites you to join Altoha!`;
 
     const emailResult = await resend.emails.send({
       from: "Altoha <noreply@altoha.com>",

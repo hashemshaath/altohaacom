@@ -48,7 +48,7 @@ serve(async (req) => {
         // Send in-app notification
         await supabase.from("notifications").insert({
           user_id: profile.user_id,
-          title: isAr ? `مرحباً بك في الطهاة، ${name}! 🎉` : `Welcome to Altohaa, ${name}! 🎉`,
+          title: isAr ? `مرحباً بك في الطهاة، ${name}! 🎉` : `Welcome to Altoha, ${name}! 🎉`,
           title_ar: `مرحباً بك في الطهاة، ${name}! 🎉`,
           body: isAr ? "أكمل ملفك الشخصي واستكشف المجتمع والمسابقات." : "Complete your profile and explore the community & competitions.",
           body_ar: "أكمل ملفك الشخصي واستكشف المجتمع والمسابقات.",

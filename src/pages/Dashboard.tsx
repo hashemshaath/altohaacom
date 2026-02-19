@@ -70,7 +70,7 @@ export default function Dashboard() {
 
   return (
     <div className="flex min-h-screen flex-col bg-background">
-      <SEOHead title="Dashboard" description="Your personal Altohaa dashboard" />
+      <SEOHead title="Dashboard" description="Your personal Altoha dashboard" />
       <Header />
       <main className="container flex-1 py-4 md:py-6">
         {/* Welcome Banner */}

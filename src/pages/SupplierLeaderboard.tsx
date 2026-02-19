@@ -116,7 +116,7 @@ export default function SupplierLeaderboard() {
   return (
     <div className="flex min-h-screen flex-col">
       <SEOHead
-        title={isAr ? "ترتيب الموردين | التحاء" : "Supplier Leaderboard | Altohaa"}
+        title={isAr ? "ترتيب الموردين | التحاء" : "Supplier Leaderboard | Altoha"}
         description={isAr ? "أفضل الموردين المحترفين" : "Top professional suppliers ranked"}
       />
       <Header />

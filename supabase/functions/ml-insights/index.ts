@@ -92,7 +92,7 @@ serve(async (req) => {
     const supabase = createClient(Deno.env.get("SUPABASE_URL")!, Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!);
     const data = await gatherMLData(supabase);
 
-    const prompt = `You are an ML analytics engine for Altohaa culinary platform. Analyze this data and return structured predictions.
+    const prompt = `You are an ML analytics engine for Altoha culinary platform. Analyze this data and return structured predictions.
 
 MONTHLY DATA (last 12 months):
 ${JSON.stringify(data.monthlyData, null, 1)}

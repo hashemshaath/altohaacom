@@ -122,7 +122,7 @@ export default function News() {
   return (
     <div className="flex min-h-screen flex-col bg-background">
       <SEOHead
-        title={isAr ? "أخبار ومقالات الطهاة | Altohaa" : "Culinary News & Articles | Altohaa"}
+        title={isAr ? "أخبار ومقالات الطهاة | Altoha" : "Culinary News & Articles | Altoha"}
         description={isAr ? "أحدث أخبار الطهاة والشركات والجمعيات ومقالات ملهمة من عالم فنون الطهي" : "Latest culinary news about chefs, companies, associations, and inspiring articles from the food industry"}
         jsonLd={jsonLd}
       />

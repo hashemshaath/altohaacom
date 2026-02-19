@@ -266,8 +266,8 @@ export default function PublicProfile() {
   return (
     <div className="flex min-h-screen flex-col bg-background" dir={isAr ? "rtl" : "ltr"}>
       <SEOHead
-        title={`${displayName} (@${profile.username}) - Altohaa`}
-        description={bio || `${displayName}'s professional culinary profile on Altohaa`}
+        title={`${displayName} (@${profile.username}) - Altoha`}
+        description={bio || `${displayName}'s professional culinary profile on Altoha`}
       />
       <Header />
 

@@ -68,11 +68,11 @@ serve(async (req) => {
         const emailResult = await resend.emails.send({
           from: "Altoha <noreply@altoha.com>",
           to: [userEmail],
-          subject: payload.subject || payload.title || "Notification from Altohaa",
+          subject: payload.subject || payload.title || "Notification from Altoha",
           html: `
             <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
               <div style="text-align: center; margin-bottom: 20px;">
-                <h2 style="color: #8B4513; margin: 0;">Altohaa</h2>
+                <h2 style="color: #8B4513; margin: 0;">Altoha</h2>
               </div>
               <div style="background: #fff; border-radius: 8px; padding: 24px; border: 1px solid #eee;">
                 <h3 style="margin-top: 0; color: #333;">${payload.title || ""}</h3>
@@ -80,7 +80,7 @@ serve(async (req) => {
                 ${payload.link ? `<p style="margin-top: 20px;"><a href="${payload.link}" style="background: #8B4513; color: white; padding: 10px 20px; border-radius: 6px; text-decoration: none;">View Details</a></p>` : ""}
               </div>
               <p style="text-align: center; color: #999; font-size: 12px; margin-top: 20px;">
-                &copy; ${new Date().getFullYear()} Altohaa. All rights reserved.
+                &copy; ${new Date().getFullYear()} Altoha. All rights reserved.
               </p>
             </div>
           `,

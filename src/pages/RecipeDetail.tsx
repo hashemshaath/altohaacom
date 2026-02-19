@@ -99,7 +99,7 @@ export default function RecipeDetail() {
   return (
     <div className="min-h-screen flex flex-col bg-background">
       <SEOHead
-        title={`${title} - Altohaa`}
+        title={`${title} - Altoha`}
         description={description || ""}
         ogImage={recipe.image_url || undefined}
         ogType="article"

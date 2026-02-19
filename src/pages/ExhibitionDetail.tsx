@@ -446,7 +446,7 @@ export default function ExhibitionDetail() {
     <div className="flex min-h-screen flex-col overflow-x-hidden bg-background">
       <SEOHead
         title={title}
-        description={description || `${title} - Event on Altohaa`}
+        description={description || `${title} - Event on Altoha`}
         ogImage={exhibition.cover_image_url || undefined}
         ogType="article"
         jsonLd={{
@@ -593,7 +593,7 @@ export default function ExhibitionDetail() {
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="end" className="w-56 rounded-xl border-border/40 p-2">
                     <DropdownMenuItem className="cursor-pointer gap-3 rounded-lg py-2.5 font-medium" onClick={() => {
-                      const text = encodeURIComponent(`${title} - ${isAr ? "فعالية على التوحاء" : "Event on Altohaa"}`);
+                      const text = encodeURIComponent(`${title} - ${isAr ? "فعالية على التوحاء" : "Event on Altoha"}`);
                       const url = encodeURIComponent(window.location.href);
                       window.open(`https://twitter.com/intent/tweet?text=${text}&url=${url}`, "_blank", "width=600,height=400");
                     }}>
