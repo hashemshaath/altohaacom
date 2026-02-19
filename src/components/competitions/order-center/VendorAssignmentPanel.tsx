@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useMemo, useCallback } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useLanguage } from "@/i18n/LanguageContext";
@@ -10,11 +10,21 @@ import { VendorStatsRow } from "./VendorStatsRow";
 import { VendorSummaryCard } from "./VendorSummaryCard";
 import { VendorItemAssignment } from "./VendorItemAssignment";
 import { OrderExportActions } from "./OrderExportActions";
+import { OrderSearchFilter } from "./OrderSearchFilter";
+import { BulkActionBar } from "./BulkActionBar";
 import { useRealtimeOrderUpdates } from "@/hooks/useRealtimeOrderUpdates";
+import { Checkbox } from "@/components/ui/checkbox";
 
 interface Props {
   competitionId: string;
   isOrganizer?: boolean;
+}
+
+function getItemName(item: any, isAr: boolean): string {
+  if (item.item_id && item.requirement_items) {
+    return isAr && item.requirement_items.name_ar ? item.requirement_items.name_ar : item.requirement_items.name;
+  }
+  return isAr && item.custom_name_ar ? item.custom_name_ar : item.custom_name || "—";
 }
 
 export function VendorAssignmentPanel({ competitionId, isOrganizer }: Props) {
@@ -23,9 +33,12 @@ export function VendorAssignmentPanel({ competitionId, isOrganizer }: Props) {
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const isAr = language === "ar";
-  const [filterCategory, setFilterCategory] = useState<string>("all");
 
-  // Enable realtime updates
+  const [filterCategory, setFilterCategory] = useState("all");
+  const [searchQuery, setSearchQuery] = useState("");
+  const [statusFilter, setStatusFilter] = useState("all");
+  const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
+
   useRealtimeOrderUpdates(competitionId, true);
 
   const { data: lists } = useQuery({
@@ -87,26 +100,79 @@ export function VendorAssignmentPanel({ competitionId, isOrganizer }: Props) {
       const company = companies?.find(c => c.id === variables.companyId);
       if (user) {
         logOrderActivity({
-          competitionId,
-          userId: user.id,
+          competitionId, userId: user.id,
           actionType: variables.companyId ? "vendor_assigned" : "vendor_removed",
-          entityType: "vendor",
-          entityId: variables.itemId,
+          entityType: "vendor", entityId: variables.itemId,
           details: { company_name: company ? (isAr && company.name_ar ? company.name_ar : company.name) : "" },
         });
         if (variables.companyId && company) {
-          notifyVendorAssigned({
-            competitionId,
-            assignedBy: user.id,
-            vendorName: isAr && company.name_ar ? company.name_ar : company.name,
-            itemName: "item",
-          });
+          notifyVendorAssigned({ competitionId, assignedBy: user.id, vendorName: isAr && company.name_ar ? company.name_ar : company.name, itemName: "item" });
         }
       }
       toast({ title: isAr ? "تم تحديث المورد" : "Vendor updated" });
     },
     onError: (e: Error) => toast({ variant: "destructive", title: "Error", description: e.message }),
   });
+
+  const bulkAssignVendor = useMutation({
+    mutationFn: async (companyId: string) => {
+      const ids = Array.from(selectedIds);
+      const { error } = await supabase
+        .from("requirement_list_items")
+        .update({
+          assigned_vendor_id: companyId,
+          assigned_at: new Date().toISOString(),
+          assigned_by: user!.id,
+        } as any)
+        .in("id", ids);
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["vendor-items", competitionId] });
+      setSelectedIds(new Set());
+      toast({ title: isAr ? "تم تعيين المورد للعناصر المحددة" : "Vendor assigned to selected items" });
+    },
+  });
+
+  const bulkUpdateStatus = useMutation({
+    mutationFn: async (status: string) => {
+      const ids = Array.from(selectedIds);
+      const updates: Record<string, unknown> = { status };
+      if (status === "delivered") updates.delivered_at = new Date().toISOString();
+      const { error } = await supabase.from("requirement_list_items").update(updates).in("id", ids);
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["vendor-items", competitionId] });
+      setSelectedIds(new Set());
+      toast({ title: isAr ? "تم تحديث العناصر" : "Items updated" });
+    },
+  });
+
+  // Filtering
+  const filteredItems = useMemo(() => {
+    if (!allItems) return [];
+    return allItems.filter((item) => {
+      if (filterCategory !== "all") {
+        const cat = item.item_id && (item as any).requirement_items ? (item as any).requirement_items.category : null;
+        if (cat !== filterCategory) return false;
+      }
+      if (statusFilter !== "all" && (item.status || "pending") !== statusFilter) return false;
+      if (searchQuery) {
+        const name = getItemName(item, isAr).toLowerCase();
+        if (!name.includes(searchQuery.toLowerCase())) return false;
+      }
+      return true;
+    });
+  }, [allItems, filterCategory, statusFilter, searchQuery, isAr]);
+
+  const toggleSelect = useCallback((id: string) => {
+    setSelectedIds((prev) => {
+      const next = new Set(prev);
+      next.has(id) ? next.delete(id) : next.add(id);
+      return next;
+    });
+  }, []);
 
   if (isLoading) {
     return (
@@ -136,14 +202,6 @@ export function VendorAssignmentPanel({ competitionId, isOrganizer }: Props) {
   });
   const vendorSummary = Array.from(vendorMap.entries()).sort((a, b) => b[1].count - a[1].count);
 
-  // Filter & group
-  const filteredItems = filterCategory === "all"
-    ? items
-    : items.filter(i => {
-        const cat = i.item_id && (i as any).requirement_items ? (i as any).requirement_items.category : null;
-        return cat === filterCategory;
-      });
-
   const grouped = lists?.map(list => ({
     ...list,
     title_ar: list.title_ar || null,
@@ -152,18 +210,10 @@ export function VendorAssignmentPanel({ competitionId, isOrganizer }: Props) {
 
   // Export data
   const exportData = items.map(item => {
-    const name = item.item_id && (item as any).requirement_items
-      ? (item as any).requirement_items.name
-      : item.custom_name;
+    const name = getItemName(item, false);
     const vendorId = (item as any).assigned_vendor_id;
     const company = vendorId ? companies?.find(c => c.id === vendorId) : null;
-    return {
-      item_name: name || "—",
-      quantity: item.quantity,
-      unit: item.unit,
-      status: item.status || "pending",
-      vendor: company ? company.name : "Unassigned",
-    };
+    return { item_name: name, quantity: item.quantity, unit: item.unit, status: item.status || "pending", vendor: company ? company.name : "Unassigned" };
   });
 
   const exportColumns = [
@@ -175,24 +225,42 @@ export function VendorAssignmentPanel({ competitionId, isOrganizer }: Props) {
   ];
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4">
       <div className="flex items-center justify-between">
         <div />
-        <OrderExportActions
-          data={exportData}
-          filename={`vendor-assignments-${competitionId}`}
-          columns={exportColumns}
-        />
+        <OrderExportActions data={exportData} filename={`vendor-assignments-${competitionId}`} columns={exportColumns} />
       </div>
-      <VendorStatsRow
-        totalItems={totalItems}
-        assignedItems={assignedItems}
-        unassignedItems={unassignedItems}
-        vendorCount={vendorSummary.length}
-        assignmentRate={assignmentRate}
+      <VendorStatsRow totalItems={totalItems} assignedItems={assignedItems} unassignedItems={unassignedItems} vendorCount={vendorSummary.length} assignmentRate={assignmentRate} isAr={isAr} />
+      <VendorSummaryCard vendorSummary={vendorSummary} isAr={isAr} />
+
+      {/* Search & Filter */}
+      <OrderSearchFilter
+        searchQuery={searchQuery}
+        onSearchChange={setSearchQuery}
+        statusFilter={statusFilter}
+        onStatusChange={setStatusFilter}
+        categoryFilter={filterCategory}
+        onCategoryChange={setFilterCategory}
+        resultCount={filteredItems.length}
         isAr={isAr}
       />
-      <VendorSummaryCard vendorSummary={vendorSummary} isAr={isAr} />
+
+      {/* Select all */}
+      {isOrganizer && filteredItems.length > 0 && (
+        <div className="flex items-center gap-2">
+          <Checkbox
+            checked={selectedIds.size === filteredItems.length && filteredItems.length > 0}
+            onCheckedChange={() => {
+              if (selectedIds.size === filteredItems.length) setSelectedIds(new Set());
+              else setSelectedIds(new Set(filteredItems.map(i => i.id)));
+            }}
+          />
+          <span className="text-xs text-muted-foreground">
+            {isAr ? "تحديد الكل" : "Select all"} ({filteredItems.length})
+          </span>
+        </div>
+      )}
+
       <VendorItemAssignment
         grouped={grouped}
         companies={companies || []}
@@ -202,6 +270,19 @@ export function VendorAssignmentPanel({ competitionId, isOrganizer }: Props) {
         isOrganizer={isOrganizer}
         isAr={isAr}
         language={language}
+        selectedIds={selectedIds}
+        onToggleSelect={toggleSelect}
+      />
+
+      {/* Bulk Action Bar */}
+      <BulkActionBar
+        selectedCount={selectedIds.size}
+        onClearSelection={() => setSelectedIds(new Set())}
+        onBulkStatusChange={(status) => bulkUpdateStatus.mutate(status)}
+        onBulkVendorAssign={(vendorId) => bulkAssignVendor.mutate(vendorId)}
+        vendors={companies?.map(c => ({ id: c.id, name: c.name, name_ar: c.name_ar })) || []}
+        isAr={isAr}
+        isLoading={bulkAssignVendor.isPending || bulkUpdateStatus.isPending}
       />
     </div>
   );
