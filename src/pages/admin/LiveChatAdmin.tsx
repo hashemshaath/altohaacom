@@ -10,7 +10,6 @@ import { Badge } from "@/components/ui/badge";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Separator } from "@/components/ui/separator";
 import { useToast } from "@/hooks/use-toast";
 import {
   MessageCircle,
@@ -21,8 +20,11 @@ import {
   Users,
   Headphones,
   Star,
+  Search,
+  ArrowRightLeft,
+  BarChart3,
 } from "lucide-react";
-import { formatDistanceToNow } from "date-fns";
+import { formatDistanceToNow, differenceInMinutes } from "date-fns";
 import { ar, enUS } from "date-fns/locale";
 
 export default function LiveChatAdmin() {
@@ -35,6 +37,7 @@ export default function LiveChatAdmin() {
   const [selectedSessionId, setSelectedSessionId] = useState<string | null>(null);
   const [newMessage, setNewMessage] = useState("");
   const [statusFilter, setStatusFilter] = useState("active");
+  const [searchQuery, setSearchQuery] = useState("");
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   // Fetch sessions
@@ -116,7 +119,7 @@ export default function LiveChatAdmin() {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
-  // Join session (mark as active with agent)
+  // Join session
   const joinSession = useMutation({
     mutationFn: async (sessionId: string) => {
       if (!user) throw new Error("Not authenticated");
@@ -148,6 +151,21 @@ export default function LiveChatAdmin() {
     },
   });
 
+  // Transfer session (release agent so another can pick up)
+  const transferSession = useMutation({
+    mutationFn: async (sessionId: string) => {
+      const { error } = await supabase
+        .from("chat_sessions")
+        .update({ agent_id: null, status: "waiting" })
+        .eq("id", sessionId);
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["adminChatSessions"] });
+      toast({ title: isAr ? "تم تحويل المحادثة" : "Chat transferred to queue" });
+    },
+  });
+
   // Send message
   const sendMessage = useMutation({
     mutationFn: async () => {
@@ -168,6 +186,26 @@ export default function LiveChatAdmin() {
   const waitingCount = sessions.filter(s => s.status === "waiting").length;
   const activeCount = sessions.filter(s => s.status === "active").length;
 
+  // Compute avg wait time for waiting sessions
+  const avgWaitMins = (() => {
+    const waiting = sessions.filter(s => s.status === "waiting");
+    if (waiting.length === 0) return 0;
+    const total = waiting.reduce((sum, s) => sum + differenceInMinutes(new Date(), new Date(s.created_at)), 0);
+    return Math.round(total / waiting.length);
+  })();
+
+  // Filter sessions by search
+  const filteredSessions = sessions.filter(s => {
+    if (!searchQuery) return true;
+    const q = searchQuery.toLowerCase();
+    const profile = profileMap.get(s.user_id);
+    return (
+      profile?.full_name?.toLowerCase().includes(q) ||
+      profile?.username?.toLowerCase().includes(q) ||
+      s.subject?.toLowerCase().includes(q)
+    );
+  });
+
   return (
     <div className="space-y-6">
       <div className="flex items-center gap-3">
@@ -185,7 +223,7 @@ export default function LiveChatAdmin() {
       </div>
 
       {/* Stats */}
-      <div className="grid grid-cols-3 gap-4">
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
         <Card className="border-s-4 border-s-chart-4">
           <CardContent className="flex items-center gap-3 py-4">
             <div className="rounded-full bg-chart-4/10 p-2.5">
@@ -205,6 +243,17 @@ export default function LiveChatAdmin() {
             <div>
               <p className="text-xs text-muted-foreground">{isAr ? "نشطة" : "Active"}</p>
               <p className="text-2xl font-bold">{activeCount}</p>
+            </div>
+          </CardContent>
+        </Card>
+        <Card className="border-s-4 border-s-chart-3">
+          <CardContent className="flex items-center gap-3 py-4">
+            <div className="rounded-full bg-chart-3/10 p-2.5">
+              <BarChart3 className="h-5 w-5 text-chart-3" />
+            </div>
+            <div>
+              <p className="text-xs text-muted-foreground">{isAr ? "متوسط الانتظار" : "Avg. Wait"}</p>
+              <p className="text-2xl font-bold">{avgWaitMins}<span className="text-sm font-normal">m</span></p>
             </div>
           </CardContent>
         </Card>
@@ -240,22 +289,32 @@ export default function LiveChatAdmin() {
       {/* Chat Interface */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6" style={{ height: 500 }}>
         {/* Sessions List */}
-        <Card className="lg:col-span-1 overflow-hidden">
-          <CardHeader className="py-3">
+        <Card className="lg:col-span-1 overflow-hidden flex flex-col">
+          <CardHeader className="py-3 space-y-2">
             <CardTitle className="text-sm">{isAr ? "المحادثات" : "Conversations"}</CardTitle>
+            <div className="relative">
+              <Search className="absolute start-2 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground" />
+              <Input
+                placeholder={isAr ? "بحث..." : "Search..."}
+                value={searchQuery}
+                onChange={e => setSearchQuery(e.target.value)}
+                className="ps-8 h-8 text-xs"
+              />
+            </div>
           </CardHeader>
-          <ScrollArea className="h-[420px]">
+          <ScrollArea className="flex-1">
             <div className="px-3 pb-3 space-y-1">
               {isLoading ? (
                 [1, 2, 3].map(i => <Skeleton key={i} className="h-16 w-full" />)
-              ) : sessions.length === 0 ? (
+              ) : filteredSessions.length === 0 ? (
                 <div className="flex flex-col items-center py-12 text-center">
                   <MessageCircle className="h-10 w-10 text-muted-foreground/30 mb-3" />
                   <p className="text-sm text-muted-foreground">{isAr ? "لا توجد محادثات" : "No chats"}</p>
                 </div>
               ) : (
-                sessions.map(session => {
+                filteredSessions.map(session => {
                   const profile = profileMap.get(session.user_id);
+                  const waitMins = session.status === "waiting" ? differenceInMinutes(new Date(), new Date(session.created_at)) : null;
                   return (
                     <button
                       key={session.id}
@@ -264,12 +323,17 @@ export default function LiveChatAdmin() {
                         selectedSessionId === session.id ? "bg-accent" : "hover:bg-accent/50"
                       }`}
                     >
-                      <Avatar className="h-9 w-9">
-                        <AvatarImage src={profile?.avatar_url || undefined} />
-                        <AvatarFallback className="text-sm">
-                          {(profile?.full_name || "U")[0].toUpperCase()}
-                        </AvatarFallback>
-                      </Avatar>
+                      <div className="relative">
+                        <Avatar className="h-9 w-9">
+                          <AvatarImage src={profile?.avatar_url || undefined} />
+                          <AvatarFallback className="text-sm">
+                            {(profile?.full_name || "U")[0].toUpperCase()}
+                          </AvatarFallback>
+                        </Avatar>
+                        <div className={`absolute bottom-0 end-0 h-2.5 w-2.5 rounded-full border-2 border-card ${
+                          session.status === "waiting" ? "bg-chart-4" : session.status === "active" ? "bg-chart-5" : "bg-muted-foreground"
+                        }`} />
+                      </div>
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center justify-between">
                           <p className="text-sm font-medium truncate">
@@ -292,7 +356,18 @@ export default function LiveChatAdmin() {
                               : isAr ? "مغلق" : "Closed"}
                           </Badge>
                         </div>
-                        <p className="text-[11px] text-muted-foreground truncate">{session.subject}</p>
+                        <div className="flex items-center gap-2">
+                          <p className="text-[11px] text-muted-foreground truncate flex-1">{session.subject}</p>
+                          {waitMins !== null && waitMins > 5 && (
+                            <span className="text-[9px] text-chart-4 font-medium">{waitMins}m</span>
+                          )}
+                        </div>
+                        {session.rating && (
+                          <div className="flex items-center gap-1 mt-0.5">
+                            <Star className="h-3 w-3 text-chart-5 fill-chart-5" />
+                            <span className="text-[10px] text-chart-5 font-medium">{session.rating}</span>
+                          </div>
+                        )}
                       </div>
                     </button>
                   );
@@ -329,6 +404,12 @@ export default function LiveChatAdmin() {
                     <Button size="sm" onClick={() => joinSession.mutate(selectedSession.id)} className="gap-1">
                       <CheckCircle2 className="h-3 w-3" />
                       {isAr ? "انضمام" : "Join"}
+                    </Button>
+                  )}
+                  {selectedSession.status === "active" && (
+                    <Button variant="outline" size="sm" onClick={() => transferSession.mutate(selectedSession.id)} className="gap-1">
+                      <ArrowRightLeft className="h-3 w-3" />
+                      {isAr ? "تحويل" : "Transfer"}
                     </Button>
                   )}
                   {selectedSession.status !== "closed" && (

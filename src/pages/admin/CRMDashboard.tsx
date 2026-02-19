@@ -1,3 +1,4 @@
+import { useState, useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { BehaviorAnalytics } from "@/components/crm/BehaviorAnalytics";
 import { CustomerHealthScores } from "@/components/crm/CustomerHealthScores";
@@ -14,6 +15,13 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Progress } from "@/components/ui/progress";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { toEnglishDigits } from "@/lib/formatNumber";
 import {
   Ticket,
@@ -25,6 +33,7 @@ import {
   CheckCircle2,
   AlertCircle,
   TrendingUp,
+  TrendingDown,
   Users,
   Activity,
   BarChart3,
@@ -34,14 +43,21 @@ import {
   Phone,
   Zap,
   PieChart,
+  Calendar,
 } from "lucide-react";
 import { Link } from "react-router-dom";
-import { formatDistanceToNow } from "date-fns";
+import { formatDistanceToNow, subDays, isAfter } from "date-fns";
 import { ar, enUS } from "date-fns/locale";
 
 export default function CRMDashboard() {
   const { language } = useLanguage();
   const isAr = language === "ar";
+  const [dateRange, setDateRange] = useState("7d");
+
+  const dateRangeStart = useMemo(() => {
+    const days = dateRange === "1d" ? 1 : dateRange === "7d" ? 7 : dateRange === "30d" ? 30 : 90;
+    return subDays(new Date(), days);
+  }, [dateRange]);
 
   // Ticket stats
   const { data: ticketStats } = useQuery({
@@ -214,6 +230,22 @@ export default function CRMDashboard() {
     ? Math.round((totalResolved / (ticketStats?.total ?? 1)) * 100)
     : 0;
 
+  // Fetch all tickets for trend
+  const { data: allTicketsForTrend } = useQuery({
+    queryKey: ["crmAllTickets"],
+    queryFn: async () => {
+      const { data } = await supabase.from("support_tickets").select("id, created_at, status");
+      return data || [];
+    },
+  });
+
+  // Trend calculations
+  const ticketTrend = useMemo(() => {
+    if (!allTicketsForTrend?.length) return { current: 0, direction: "stable" as const };
+    const recentCount = allTicketsForTrend.filter((t: any) => isAfter(new Date(t.created_at), dateRangeStart)).length;
+    return { current: recentCount, direction: recentCount > (allTicketsForTrend.length / 2) ? "up" as const : "down" as const };
+  }, [allTicketsForTrend, dateRangeStart]);
+
   return (
     <div className="space-y-6">
       {/* Header */}
@@ -231,6 +263,18 @@ export default function CRMDashboard() {
             </p>
           </div>
         </div>
+        <Select value={dateRange} onValueChange={setDateRange}>
+          <SelectTrigger className="w-[120px] gap-1">
+            <Calendar className="h-3.5 w-3.5" />
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="1d">{isAr ? "اليوم" : "Today"}</SelectItem>
+            <SelectItem value="7d">{isAr ? "7 أيام" : "7 Days"}</SelectItem>
+            <SelectItem value="30d">{isAr ? "30 يوم" : "30 Days"}</SelectItem>
+            <SelectItem value="90d">{isAr ? "90 يوم" : "90 Days"}</SelectItem>
+          </SelectContent>
+        </Select>
       </div>
 
       {/* Top KPI Cards */}
