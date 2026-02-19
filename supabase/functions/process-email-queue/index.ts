@@ -66,7 +66,7 @@ serve(async (req) => {
         const payload = item.payload as Record<string, any>;
 
         const emailResult = await resend.emails.send({
-          from: "Altohaa <noreply@altohaa.com>",
+          from: "Altoha <noreply@altoha.com>",
           to: [userEmail],
           subject: payload.subject || payload.title || "Notification from Altohaa",
           html: `

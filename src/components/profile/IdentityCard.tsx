@@ -84,7 +84,7 @@ export function IdentityCard({ profile, userId }: IdentityCardProps) {
       website: profile.website || undefined,
       location: profile.location || undefined,
       accountNumber: profile.account_number || undefined,
-      profileUrl: profile.username ? `https://altohaacom.lovable.app/${profile.username}` : undefined,
+      profileUrl: profile.username ? `https://altoha.com/${profile.username}` : undefined,
     });
     downloadVCard(vcard, (profile.full_name || "contact").replace(/\s+/g, "_"));
   };

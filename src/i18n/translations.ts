@@ -126,7 +126,7 @@ export const translations = {
 
     // Account & Username
     username: "Username",
-    usernameHint: "Your unique profile URL: altohaa.com/",
+    usernameHint: "Your unique profile URL: altoha.com/",
     usernameRequired: "Username is required",
     usernameInvalid: "Username must be 3-30 characters, start with a letter, and contain only letters, numbers, or underscores",
     usernameTaken: "This username is already taken",
@@ -434,7 +434,7 @@ export const translations = {
 
     // Account & Username
     username: "اسم المستخدم",
-    usernameHint: "رابط ملفك الشخصي: altohaa.com/",
+    usernameHint: "رابط ملفك الشخصي: altoha.com/",
     usernameRequired: "اسم المستخدم مطلوب",
     usernameInvalid: "يجب أن يكون اسم المستخدم من 3-30 حرف، يبدأ بحرف، ويحتوي فقط على حروف وأرقام أو شرطة سفلية",
     usernameTaken: "اسم المستخدم هذا محجوز",

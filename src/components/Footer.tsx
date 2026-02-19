@@ -25,11 +25,11 @@ export const Footer = React.forwardRef<HTMLElement, React.HTMLAttributes<HTMLEle
                 ? "المنصة الرائدة لمجتمع الطهي العالمي — تجمع الطهاة والحكام والمنظمين والرعاة في مكان واحد."
                 : "The premier global culinary community platform — uniting chefs, judges, organizers, and sponsors in one place."}
             </p>
-            <a href="mailto:info@altohaa.com" className="inline-flex items-center gap-2 text-sm text-muted-foreground transition-colors hover:text-primary group">
+            <a href="mailto:info@altoha.com" className="inline-flex items-center gap-2 text-sm text-muted-foreground transition-colors hover:text-primary group">
               <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-primary/8 group-hover:bg-primary/15 transition-colors">
                 <Mail className="h-3.5 w-3.5 text-primary" />
               </div>
-              info@altohaa.com
+              info@altoha.com
             </a>
           </div>
 

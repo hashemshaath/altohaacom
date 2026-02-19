@@ -755,7 +755,7 @@ export default function Auth() {
                 </div>
               </div>
               <p className="text-[10px] text-muted-foreground">
-                altohaa.com/<span className="font-medium">{username || "username"}</span>
+                altoha.com/<span className="font-medium">{username || "username"}</span>
               </p>
               {errors.username && <p className="text-xs text-destructive">{errors.username}</p>}
               {usernameStatus === "taken" && (

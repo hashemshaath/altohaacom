@@ -23,7 +23,7 @@ export function ProfileShareButtons({ username, displayName, variant = "icon" }:
   const { toast } = useToast();
   const [copied, setCopied] = useState(false);
 
-  const profileUrl = `https://altohaacom.lovable.app/${username}`;
+  const profileUrl = `https://altoha.com/${username}`;
   const shareText = isAr
     ? `تعرّف على ${displayName} على الطهاة - Altohaa`
     : `Check out ${displayName}'s profile on Altohaa`;

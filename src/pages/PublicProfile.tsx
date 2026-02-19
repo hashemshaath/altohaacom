@@ -261,7 +261,7 @@ export default function PublicProfile() {
     sponsor: { en: "Sponsor", ar: "راعي" }, supervisor: { en: "Supervisor", ar: "مشرف" },
   };
 
-  const profileUrl = `https://altohaacom.lovable.app/${profile.username}`;
+  const profileUrl = `https://altoha.com/${profile.username}`;
 
   return (
     <div className="flex min-h-screen flex-col bg-background" dir={isAr ? "rtl" : "ltr"}>
