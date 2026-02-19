@@ -29,6 +29,8 @@ import { format } from "date-fns";
 import { formatCurrency } from "@/lib/currencyFormatter";
 import { CompanyAnalyticsCharts } from "@/components/company/CompanyAnalyticsCharts";
 import { CompanyRecentOrdersWidget } from "@/components/company/CompanyRecentOrdersWidget";
+import { CompanyQuickActions } from "@/components/company/CompanyQuickActions";
+import { CompanyActivityFeed } from "@/components/company/CompanyActivityFeed";
 
 export default function CompanyPortalDashboard() {
   const { language } = useLanguage();
@@ -125,6 +127,9 @@ export default function CompanyPortalDashboard() {
           )}
         </div>
       </div>
+
+      {/* Quick Actions */}
+      <CompanyQuickActions />
 
       {/* Quick Stats */}
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
@@ -239,6 +244,9 @@ export default function CompanyPortalDashboard() {
           </CardContent>
         </Card>
       </div>
+
+      {/* Activity Feed */}
+      <CompanyActivityFeed companyId={companyId} />
 
       {/* Analytics Charts */}
       <CompanyAnalyticsCharts companyId={companyId} language={language} />

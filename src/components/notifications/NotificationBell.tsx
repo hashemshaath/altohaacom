@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Bell, ShoppingCart, CheckCircle, Trophy, FileText, Users, Heart, MessageCircle, UserPlus, Radio, Eye, Flame, Settings } from "lucide-react";
+import { Bell, BellOff, ShoppingCart, CheckCircle, Trophy, FileText, Users, Heart, MessageCircle, UserPlus, Radio, Eye, Flame, Settings, Volume2, VolumeX } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu, DropdownMenuContent, DropdownMenuItem,
@@ -8,7 +8,7 @@ import {
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { useNotifications } from "@/hooks/useNotifications";
+import { useNotifications, useNotificationPrefs } from "@/hooks/useNotifications";
 import { useNotificationProfiles } from "@/hooks/useNotificationProfiles";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useNavigate } from "react-router-dom";
@@ -80,6 +80,7 @@ function groupNotifications(notifications: any[]) {
 export const NotificationBell = React.forwardRef<HTMLButtonElement, Record<string, never>>(function NotificationBell(_props, _ref) {
   const { notifications, unreadCount, markAsRead, markAllAsRead, loading } = useNotifications();
   const { getProfile } = useNotificationProfiles(notifications);
+  const { soundEnabled, setSoundEnabled, dndMode, setDndMode } = useNotificationPrefs();
   const { language } = useLanguage();
   const navigate = useNavigate();
   const isAr = language === "ar";
@@ -149,8 +150,12 @@ export const NotificationBell = React.forwardRef<HTMLButtonElement, Record<strin
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <Button variant="ghost" size="icon" className="relative group">
-          <Bell className="h-5 w-5 transition-transform group-hover:rotate-12" />
-          {unreadCount > 0 && (
+          {dndMode ? (
+            <BellOff className="h-5 w-5 text-muted-foreground" />
+          ) : (
+            <Bell className="h-5 w-5 transition-transform group-hover:rotate-12" />
+          )}
+          {unreadCount > 0 && !dndMode && (
             <Badge
               variant="destructive"
               className="absolute -top-1 -right-1 h-5 w-5 flex items-center justify-center p-0 text-xs animate-scale-in"
@@ -169,6 +174,20 @@ export const NotificationBell = React.forwardRef<HTMLButtonElement, Record<strin
                 {isAr ? "قراءة الكل" : "Mark all read"}
               </Button>
             )}
+            <Button
+              variant="ghost" size="icon" className="h-7 w-7"
+              onClick={(e) => { e.preventDefault(); setSoundEnabled(!soundEnabled); }}
+              title={soundEnabled ? "Mute" : "Unmute"}
+            >
+              {soundEnabled ? <Volume2 className="h-3.5 w-3.5 text-muted-foreground" /> : <VolumeX className="h-3.5 w-3.5 text-muted-foreground" />}
+            </Button>
+            <Button
+              variant="ghost" size="icon" className={cn("h-7 w-7", dndMode && "text-destructive")}
+              onClick={(e) => { e.preventDefault(); setDndMode(!dndMode); }}
+              title={dndMode ? "Disable DND" : "Enable DND"}
+            >
+              {dndMode ? <BellOff className="h-3.5 w-3.5" /> : <Bell className="h-3.5 w-3.5 text-muted-foreground" />}
+            </Button>
             <Button variant="ghost" size="icon" className="h-7 w-7" onClick={(e) => { e.preventDefault(); navigate("/notification-preferences"); }}>
               <Settings className="h-3.5 w-3.5 text-muted-foreground" />
             </Button>
