@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import { Card, CardContent } from "@/components/ui/card";
 import {
   ShoppingCart, FileText, Users, Megaphone, Package, BarChart3,
-  MessageSquare, Settings, Calendar, CreditCard, Truck, Image,
+  MessageSquare, Image,
 } from "lucide-react";
 
 const QUICK_ACTIONS = [
@@ -23,16 +23,19 @@ export function CompanyQuickActions() {
 
   return (
     <div className="grid grid-cols-4 sm:grid-cols-8 gap-2">
-      {QUICK_ACTIONS.map((action) => {
+      {QUICK_ACTIONS.map((action, idx) => {
         const Icon = action.icon;
         return (
           <Link key={action.to} to={action.to}>
-            <Card className="group cursor-pointer transition-all duration-200 hover:shadow-md hover:-translate-y-0.5 border-transparent hover:border-border">
+            <Card
+              className="group cursor-pointer transition-all duration-200 hover:shadow-md active:scale-[0.97] hover:-translate-y-0.5 border-transparent hover:border-border animate-fade-in"
+              style={{ animationDelay: `${idx * 0.03}s` }}
+            >
               <CardContent className="flex flex-col items-center gap-1.5 p-3">
-                <div className={`flex h-10 w-10 items-center justify-center rounded-xl ${action.color} transition-transform group-hover:scale-110`}>
+                <div className={`flex h-10 w-10 items-center justify-center rounded-xl ${action.color} transition-transform group-hover:scale-110 group-active:scale-95`}>
                   <Icon className="h-5 w-5" />
                 </div>
-                <span className="text-[10px] font-medium text-muted-foreground group-hover:text-foreground text-center leading-tight">
+                <span className="text-[10px] font-medium text-muted-foreground group-hover:text-foreground text-center leading-tight transition-colors">
                   {isAr ? action.labelAr : action.labelEn}
                 </span>
               </CardContent>

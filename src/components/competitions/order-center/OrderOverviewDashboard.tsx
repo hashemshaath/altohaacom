@@ -7,7 +7,7 @@ import { Progress } from "@/components/ui/progress";
 import { Button } from "@/components/ui/button";
 import {
   ClipboardList, Package, CheckCircle, Clock, AlertTriangle,
-  Send, Lightbulb, Printer, TrendingUp, FileInput,
+  Send, Lightbulb, Printer, TrendingUp, FileInput, ArrowUp, ArrowDown, Minus,
 } from "lucide-react";
 import { formatCurrency } from "@/lib/currencyFormatter";
 
@@ -84,6 +84,9 @@ export function OrderOverviewDashboard({ competitionId, isOrganizer }: Props) {
 
   const totalItems = allItems?.length || 0;
   const delivered = allItems?.filter(i => i.status === "delivered").length || 0;
+  const inTransit = allItems?.filter(i => i.status === "in_transit").length || 0;
+  const ordered = allItems?.filter(i => i.status === "ordered").length || 0;
+  const sourcing = allItems?.filter(i => i.status === "sourcing").length || 0;
   const pending = allItems?.filter(i => !i.status || i.status === "pending").length || 0;
   const overdue = allItems?.filter(i => i.deadline && new Date(i.deadline) < new Date() && i.status !== "delivered").length || 0;
   const totalCost = allItems?.reduce((sum, i) => sum + (Number(i.estimated_cost) || 0) * (i.quantity || 1), 0) || 0;
@@ -96,9 +99,16 @@ export function OrderOverviewDashboard({ competitionId, isOrganizer }: Props) {
   const pendingItemRequests = itemRequests?.filter(r => r.status === "pending").length || 0;
   const totalItemRequests = itemRequests?.length || 0;
 
+  // Fulfillment pipeline stages
+  const pipeline = [
+    { labelEn: "Pending", labelAr: "انتظار", count: pending, color: "bg-muted text-muted-foreground" },
+    { labelEn: "Sourcing", labelAr: "بحث", count: sourcing, color: "bg-chart-4/10 text-chart-4" },
+    { labelEn: "Ordered", labelAr: "طُلب", count: ordered, color: "bg-chart-1/10 text-chart-1" },
+    { labelEn: "In Transit", labelAr: "شحن", count: inTransit, color: "bg-chart-3/10 text-chart-3" },
+    { labelEn: "Delivered", labelAr: "تسليم", count: delivered, color: "bg-chart-5/10 text-chart-5" },
+  ];
+
   const handlePrint = () => {
-    const printContent = document.getElementById("order-overview-print");
-    if (!printContent) return;
     const printWindow = window.open("", "_blank");
     if (!printWindow) return;
     printWindow.document.write(`
@@ -156,44 +166,73 @@ export function OrderOverviewDashboard({ competitionId, isOrganizer }: Props) {
         )}
       </div>
 
-      {/* Key Metrics */}
+      {/* Key Metrics - enhanced with trend indicators */}
       <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
-        <Card className="border-border/60">
-          <CardContent className="p-3 text-center">
-            <ClipboardList className="mx-auto mb-1 h-5 w-5 text-primary" />
-            <p className="text-xl font-bold">{lists?.length || 0}</p>
-            <p className="text-[10px] text-muted-foreground uppercase">{isAr ? "القوائم" : "Lists"}</p>
-          </CardContent>
-        </Card>
-        <Card className="border-border/60">
-          <CardContent className="p-3 text-center">
-            <Package className="mx-auto mb-1 h-5 w-5 text-chart-1" />
-            <p className="text-xl font-bold">{totalItems}</p>
-            <p className="text-[10px] text-muted-foreground uppercase">{isAr ? "العناصر" : "Items"}</p>
-          </CardContent>
-        </Card>
-        <Card className="border-border/60">
-          <CardContent className="p-3 text-center">
-            <CheckCircle className="mx-auto mb-1 h-5 w-5 text-chart-5" />
-            <p className="text-xl font-bold">{delivered}</p>
-            <p className="text-[10px] text-muted-foreground uppercase">{isAr ? "تم التسليم" : "Delivered"}</p>
-          </CardContent>
-        </Card>
-        <Card className="border-border/60">
-           <CardContent className="p-3 text-center">
-             <TrendingUp className="mx-auto mb-1 h-5 w-5 text-chart-4" />
-             <p className="text-xl font-bold">{formatCurrency(totalCost, language as "en" | "ar")}</p>
-             <p className="text-[10px] text-muted-foreground uppercase">{isAr ? "التكلفة التقديرية" : "Est. Cost"}</p>
-           </CardContent>
-         </Card>
+        <MetricCard
+          icon={ClipboardList}
+          value={lists?.length || 0}
+          label={isAr ? "القوائم" : "Lists"}
+          iconColor="text-primary"
+          trend={lists?.filter(l => l.status === "active").length || 0}
+          trendLabel={isAr ? "نشطة" : "active"}
+        />
+        <MetricCard
+          icon={Package}
+          value={totalItems}
+          label={isAr ? "العناصر" : "Items"}
+          iconColor="text-chart-1"
+        />
+        <MetricCard
+          icon={CheckCircle}
+          value={delivered}
+          label={isAr ? "تم التسليم" : "Delivered"}
+          iconColor="text-chart-5"
+          trend={deliveryProgress}
+          trendLabel="%"
+          trendPositive
+        />
+        <MetricCard
+          icon={TrendingUp}
+          value={formatCurrency(totalCost, language as "en" | "ar")}
+          label={isAr ? "التكلفة التقديرية" : "Est. Cost"}
+          iconColor="text-chart-4"
+          isValueString
+        />
       </div>
+
+      {/* Fulfillment Pipeline - NEW visual 5-stage tracker */}
+      <Card className="border-border/60 overflow-hidden">
+        <CardContent className="p-4">
+          <p className="text-sm font-medium mb-3">{isAr ? "مراحل التجهيز" : "Fulfillment Pipeline"}</p>
+          <div className="flex items-center gap-1">
+            {pipeline.map((stage, idx) => {
+              const width = totalItems > 0 ? Math.max((stage.count / totalItems) * 100, stage.count > 0 ? 8 : 2) : 20;
+              return (
+                <div key={stage.labelEn} className="flex flex-col items-center" style={{ width: `${width}%`, minWidth: "40px" }}>
+                  <div className={`w-full h-2.5 rounded-full ${stage.color.split(" ")[0]} transition-all duration-500`} />
+                  <span className="text-[10px] font-bold mt-1.5">{stage.count}</span>
+                  <span className="text-[9px] text-muted-foreground">{isAr ? stage.labelAr : stage.labelEn}</span>
+                </div>
+              );
+            })}
+          </div>
+        </CardContent>
+      </Card>
 
       {/* Delivery Progress */}
       <Card className="border-border/60">
         <CardContent className="p-4">
           <div className="flex items-center justify-between mb-2">
             <p className="text-sm font-medium">{isAr ? "تقدم التسليم الإجمالي" : "Overall Delivery Progress"}</p>
-            <p className="text-sm font-bold text-primary">{deliveryProgress}%</p>
+            <div className="flex items-center gap-1.5">
+              {overdue > 0 && (
+                <Badge variant="destructive" className="text-[10px] px-1.5 py-0">
+                  <AlertTriangle className="me-0.5 h-3 w-3" />
+                  {overdue} {isAr ? "متأخرة" : "overdue"}
+                </Badge>
+              )}
+              <span className="text-sm font-bold text-primary">{deliveryProgress}%</span>
+            </div>
           </div>
           <Progress value={deliveryProgress} className="h-2.5" />
           <div className="flex items-center justify-between mt-2 text-xs text-muted-foreground">
@@ -205,8 +244,7 @@ export function OrderOverviewDashboard({ competitionId, isOrganizer }: Props) {
 
       {/* Status Breakdown */}
       <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-        {/* Pending Items */}
-        <Card className="border-border/60">
+        <Card className="border-border/60 transition-all duration-200 hover:shadow-sm hover:-translate-y-0.5">
           <CardHeader className="pb-2 px-4 pt-3">
             <CardTitle className="text-sm flex items-center gap-2">
               <Clock className="h-4 w-4 text-muted-foreground" />
@@ -215,19 +253,10 @@ export function OrderOverviewDashboard({ competitionId, isOrganizer }: Props) {
           </CardHeader>
           <CardContent className="px-4 pb-3">
             <p className="text-2xl font-bold">{pending}</p>
-            {overdue > 0 && (
-              <div className="flex items-center gap-1 mt-1">
-                <AlertTriangle className="h-3 w-3 text-destructive" />
-                <span className="text-xs text-destructive font-medium">
-                  {overdue} {isAr ? "متأخرة" : "overdue"}
-                </span>
-              </div>
-            )}
           </CardContent>
         </Card>
 
-        {/* Item Requests */}
-        <Card className="border-border/60">
+        <Card className="border-border/60 transition-all duration-200 hover:shadow-sm hover:-translate-y-0.5">
           <CardHeader className="pb-2 px-4 pt-3">
             <CardTitle className="text-sm flex items-center gap-2">
               <FileInput className="h-4 w-4 text-chart-3" />
@@ -244,8 +273,7 @@ export function OrderOverviewDashboard({ competitionId, isOrganizer }: Props) {
           </CardContent>
         </Card>
 
-        {/* Quote Requests */}
-        <Card className="border-border/60">
+        <Card className="border-border/60 transition-all duration-200 hover:shadow-sm hover:-translate-y-0.5">
           <CardHeader className="pb-2 px-4 pt-3">
             <CardTitle className="text-sm flex items-center gap-2">
               <Send className="h-4 w-4 text-chart-1" />
@@ -261,8 +289,7 @@ export function OrderOverviewDashboard({ competitionId, isOrganizer }: Props) {
           </CardContent>
         </Card>
 
-        {/* Suggestions */}
-        <Card className="border-border/60">
+        <Card className="border-border/60 transition-all duration-200 hover:shadow-sm hover:-translate-y-0.5">
           <CardHeader className="pb-2 px-4 pt-3">
             <CardTitle className="text-sm flex items-center gap-2">
               <Lightbulb className="h-4 w-4 text-chart-4" />
@@ -280,5 +307,40 @@ export function OrderOverviewDashboard({ competitionId, isOrganizer }: Props) {
         </Card>
       </div>
     </div>
+  );
+}
+
+function MetricCard({
+  icon: Icon,
+  value,
+  label,
+  iconColor,
+  trend,
+  trendLabel,
+  trendPositive,
+  isValueString,
+}: {
+  icon: any;
+  value: number | string;
+  label: string;
+  iconColor: string;
+  trend?: number;
+  trendLabel?: string;
+  trendPositive?: boolean;
+  isValueString?: boolean;
+}) {
+  return (
+    <Card className="border-border/60 transition-all duration-200 hover:shadow-sm hover:-translate-y-0.5">
+      <CardContent className="p-3 text-center">
+        <Icon className={`mx-auto mb-1.5 h-5 w-5 ${iconColor}`} />
+        <p className={`font-bold ${isValueString ? "text-base" : "text-xl"}`}>{value}</p>
+        <p className="text-[10px] text-muted-foreground uppercase">{label}</p>
+        {trend !== undefined && trendLabel && (
+          <p className={`text-[10px] mt-0.5 font-medium ${trendPositive ? "text-chart-5" : "text-muted-foreground"}`}>
+            {trend} {trendLabel}
+          </p>
+        )}
+      </CardContent>
+    </Card>
   );
 }

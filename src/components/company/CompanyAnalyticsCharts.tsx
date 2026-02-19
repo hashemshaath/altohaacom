@@ -1,14 +1,15 @@
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Badge } from "@/components/ui/badge";
 import {
-  BarChart, Bar, LineChart, Line, PieChart, Pie, Cell,
+  BarChart, Bar, PieChart, Pie, Cell, AreaChart, Area,
   XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend,
 } from "recharts";
 import { format, subMonths, startOfMonth, endOfMonth } from "date-fns";
-import { BarChart3, PieChart as PieIcon, TrendingUp, Receipt } from "lucide-react";
+import { TrendingUp, PieChart as PieIcon, Receipt, ArrowUpRight, ArrowDownRight } from "lucide-react";
+import { formatCurrency } from "@/lib/currencyFormatter";
 
 const CHART_COLORS = [
   "hsl(var(--primary))",
@@ -106,132 +107,212 @@ export function CompanyAnalyticsCharts({ companyId, language }: CompanyAnalytics
     staleTime: 1000 * 60 * 5,
   });
 
+  // Calculate month-over-month growth
+  const currentMonth = monthlyOrders?.[monthlyOrders.length - 1]?.orders || 0;
+  const prevMonth = monthlyOrders?.[monthlyOrders.length - 2]?.orders || 0;
+  const growth = prevMonth > 0 ? Math.round(((currentMonth - prevMonth) / prevMonth) * 100) : 0;
+  const totalRevenue = revenueData?.reduce((sum, r) => sum + r.value, 0) || 0;
+
   return (
-    <div className="grid gap-4 lg:grid-cols-2">
-      {/* Order Trends */}
-      <Card className="animate-fade-in">
-        <CardHeader className="pb-2">
-          <CardTitle className="flex items-center gap-2 text-sm font-semibold">
-            <div className="flex h-6 w-6 items-center justify-center rounded-md bg-primary/10">
-              <TrendingUp className="h-3.5 w-3.5 text-primary" />
-            </div>
-            {isAr ? "اتجاه الطلبات (6 أشهر)" : "Order Trends (6 Months)"}
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          {ordersLoading ? (
-            <Skeleton className="h-[220px] w-full" />
-          ) : monthlyOrders && monthlyOrders.length > 0 ? (
-            <ResponsiveContainer width="100%" height={220}>
-              <BarChart data={monthlyOrders} barGap={4}>
-                <CartesianGrid strokeDasharray="3 3" className="stroke-border/50" />
-                <XAxis dataKey="label" tick={{ fontSize: 11 }} className="fill-muted-foreground" />
-                <YAxis tick={{ fontSize: 11 }} className="fill-muted-foreground" allowDecimals={false} />
-                <Tooltip
-                  contentStyle={{
-                    backgroundColor: "hsl(var(--popover))",
-                    border: "1px solid hsl(var(--border))",
-                    borderRadius: "8px",
-                    color: "hsl(var(--popover-foreground))",
-                    fontSize: 12,
-                  }}
-                />
-                <Bar dataKey="orders" name={isAr ? "الطلبات" : "Orders"} fill="hsl(var(--primary))" radius={[4, 4, 0, 0]} />
-                <Bar dataKey="completed" name={isAr ? "مكتملة" : "Completed"} fill="hsl(var(--chart-3))" radius={[4, 4, 0, 0]} />
-              </BarChart>
-            </ResponsiveContainer>
-          ) : (
-            <EmptyChart isAr={isAr} />
-          )}
-        </CardContent>
-      </Card>
+    <div className="space-y-4">
+      {/* Mini KPI row */}
+      <div className="grid grid-cols-3 gap-3">
+        <MiniKPI
+          label={isAr ? "طلبات هذا الشهر" : "This Month Orders"}
+          value={currentMonth}
+          change={growth}
+          isAr={isAr}
+        />
+        <MiniKPI
+          label={isAr ? "حجم المعاملات" : "Transaction Volume"}
+          value={formatCurrency(totalRevenue, language as "en" | "ar")}
+          isString
+          isAr={isAr}
+        />
+        <MiniKPI
+          label={isAr ? "إجمالي الفواتير" : "Total Invoices"}
+          value={invoiceStats?.reduce((s, i) => s + i.count, 0) || 0}
+          isAr={isAr}
+        />
+      </div>
 
-      {/* Transaction Breakdown */}
-      <Card className="animate-fade-in" style={{ animationDelay: "0.05s" }}>
-        <CardHeader className="pb-2">
-          <CardTitle className="flex items-center gap-2 text-sm font-semibold">
-            <div className="flex h-6 w-6 items-center justify-center rounded-md bg-chart-4/10">
-              <PieIcon className="h-3.5 w-3.5 text-chart-4" />
-            </div>
-            {isAr ? "توزيع المعاملات" : "Transaction Breakdown"}
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          {revenueLoading ? (
-            <Skeleton className="h-[220px] w-full" />
-          ) : revenueData && revenueData.length > 0 ? (
-            <ResponsiveContainer width="100%" height={220}>
-              <PieChart>
-                <Pie
-                  data={revenueData}
-                  cx="50%"
-                  cy="50%"
-                  innerRadius={50}
-                  outerRadius={80}
-                  paddingAngle={3}
-                  dataKey="value"
-                  nameKey="name"
-                >
-                  {revenueData.map((_, idx) => (
-                    <Cell key={idx} fill={CHART_COLORS[idx % CHART_COLORS.length]} />
+      <div className="grid gap-4 lg:grid-cols-2">
+        {/* Order Trends - Area chart for smoother look */}
+        <Card className="animate-fade-in">
+          <CardHeader className="pb-2">
+            <CardTitle className="flex items-center gap-2 text-sm font-semibold">
+              <div className="flex h-6 w-6 items-center justify-center rounded-md bg-primary/10">
+                <TrendingUp className="h-3.5 w-3.5 text-primary" />
+              </div>
+              {isAr ? "اتجاه الطلبات (6 أشهر)" : "Order Trends (6 Months)"}
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            {ordersLoading ? (
+              <Skeleton className="h-[220px] w-full" />
+            ) : monthlyOrders && monthlyOrders.length > 0 ? (
+              <ResponsiveContainer width="100%" height={220}>
+                <AreaChart data={monthlyOrders}>
+                  <defs>
+                    <linearGradient id="orderGradient" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="5%" stopColor="hsl(var(--primary))" stopOpacity={0.3} />
+                      <stop offset="95%" stopColor="hsl(var(--primary))" stopOpacity={0} />
+                    </linearGradient>
+                    <linearGradient id="completedGradient" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="5%" stopColor="hsl(var(--chart-3))" stopOpacity={0.3} />
+                      <stop offset="95%" stopColor="hsl(var(--chart-3))" stopOpacity={0} />
+                    </linearGradient>
+                  </defs>
+                  <CartesianGrid strokeDasharray="3 3" className="stroke-border/50" />
+                  <XAxis dataKey="label" tick={{ fontSize: 11 }} className="fill-muted-foreground" />
+                  <YAxis tick={{ fontSize: 11 }} className="fill-muted-foreground" allowDecimals={false} />
+                  <Tooltip
+                    contentStyle={{
+                      backgroundColor: "hsl(var(--popover))",
+                      border: "1px solid hsl(var(--border))",
+                      borderRadius: "8px",
+                      color: "hsl(var(--popover-foreground))",
+                      fontSize: 12,
+                    }}
+                  />
+                  <Area type="monotone" dataKey="orders" name={isAr ? "الطلبات" : "Orders"} stroke="hsl(var(--primary))" fill="url(#orderGradient)" strokeWidth={2} />
+                  <Area type="monotone" dataKey="completed" name={isAr ? "مكتملة" : "Completed"} stroke="hsl(var(--chart-3))" fill="url(#completedGradient)" strokeWidth={2} />
+                  <Legend wrapperStyle={{ fontSize: 11 }} />
+                </AreaChart>
+              </ResponsiveContainer>
+            ) : (
+              <EmptyChart isAr={isAr} />
+            )}
+          </CardContent>
+        </Card>
+
+        {/* Transaction Breakdown */}
+        <Card className="animate-fade-in" style={{ animationDelay: "0.05s" }}>
+          <CardHeader className="pb-2">
+            <CardTitle className="flex items-center gap-2 text-sm font-semibold">
+              <div className="flex h-6 w-6 items-center justify-center rounded-md bg-chart-4/10">
+                <PieIcon className="h-3.5 w-3.5 text-chart-4" />
+              </div>
+              {isAr ? "توزيع المعاملات" : "Transaction Breakdown"}
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            {revenueLoading ? (
+              <Skeleton className="h-[220px] w-full" />
+            ) : revenueData && revenueData.length > 0 ? (
+              <ResponsiveContainer width="100%" height={220}>
+                <PieChart>
+                  <Pie
+                    data={revenueData}
+                    cx="50%"
+                    cy="50%"
+                    innerRadius={50}
+                    outerRadius={80}
+                    paddingAngle={3}
+                    dataKey="value"
+                    nameKey="name"
+                  >
+                    {revenueData.map((_, idx) => (
+                      <Cell key={idx} fill={CHART_COLORS[idx % CHART_COLORS.length]} />
+                    ))}
+                  </Pie>
+                  <Tooltip
+                    contentStyle={{
+                      backgroundColor: "hsl(var(--popover))",
+                      border: "1px solid hsl(var(--border))",
+                      borderRadius: "8px",
+                      color: "hsl(var(--popover-foreground))",
+                      fontSize: 12,
+                    }}
+                    formatter={(value: number) => [`SAR ${value.toLocaleString()}`, ""]}
+                  />
+                  <Legend wrapperStyle={{ fontSize: 11 }} />
+                </PieChart>
+              </ResponsiveContainer>
+            ) : (
+              <EmptyChart isAr={isAr} />
+            )}
+          </CardContent>
+        </Card>
+
+        {/* Invoice Status */}
+        <Card className="animate-fade-in lg:col-span-2" style={{ animationDelay: "0.1s" }}>
+          <CardHeader className="pb-2">
+            <CardTitle className="flex items-center gap-2 text-sm font-semibold">
+              <div className="flex h-6 w-6 items-center justify-center rounded-md bg-chart-5/10">
+                <Receipt className="h-3.5 w-3.5 text-chart-5" />
+              </div>
+              {isAr ? "ملخص الفواتير" : "Invoice Summary"}
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            {invoiceLoading ? (
+              <Skeleton className="h-[180px] w-full" />
+            ) : invoiceStats && invoiceStats.length > 0 ? (
+              <div className="grid gap-4 sm:grid-cols-2">
+                <ResponsiveContainer width="100%" height={180}>
+                  <BarChart data={invoiceStats} layout="vertical" barSize={20}>
+                    <CartesianGrid strokeDasharray="3 3" className="stroke-border/50" horizontal={false} />
+                    <XAxis type="number" tick={{ fontSize: 11 }} className="fill-muted-foreground" allowDecimals={false} />
+                    <YAxis dataKey="name" type="category" tick={{ fontSize: 11 }} className="fill-muted-foreground" width={80} />
+                    <Tooltip
+                      contentStyle={{
+                        backgroundColor: "hsl(var(--popover))",
+                        border: "1px solid hsl(var(--border))",
+                        borderRadius: "8px",
+                        color: "hsl(var(--popover-foreground))",
+                        fontSize: 12,
+                      }}
+                    />
+                    <Bar dataKey="count" name={isAr ? "العدد" : "Count"} fill="hsl(var(--chart-5))" radius={[0, 4, 4, 0]} />
+                  </BarChart>
+                </ResponsiveContainer>
+                {/* Invoice total summary */}
+                <div className="flex flex-col justify-center gap-2">
+                  {invoiceStats.map((inv, idx) => (
+                    <div key={inv.status} className="flex items-center justify-between rounded-lg border border-border/40 px-3 py-2">
+                      <div className="flex items-center gap-2">
+                        <div className="h-2.5 w-2.5 rounded-full" style={{ backgroundColor: CHART_COLORS[idx % CHART_COLORS.length] }} />
+                        <span className="text-xs font-medium">{inv.name}</span>
+                      </div>
+                      <div className="text-end">
+                        <p className="text-xs font-bold">{formatCurrency(inv.total, language as "en" | "ar")}</p>
+                        <p className="text-[10px] text-muted-foreground">{inv.count} {isAr ? "فاتورة" : "invoices"}</p>
+                      </div>
+                    </div>
                   ))}
-                </Pie>
-                <Tooltip
-                  contentStyle={{
-                    backgroundColor: "hsl(var(--popover))",
-                    border: "1px solid hsl(var(--border))",
-                    borderRadius: "8px",
-                    color: "hsl(var(--popover-foreground))",
-                    fontSize: 12,
-                  }}
-                  formatter={(value: number) => [`SAR ${value.toLocaleString()}`, ""]}
-                />
-                <Legend wrapperStyle={{ fontSize: 11 }} />
-              </PieChart>
-            </ResponsiveContainer>
-          ) : (
-            <EmptyChart isAr={isAr} />
-          )}
-        </CardContent>
-      </Card>
-
-      {/* Invoice Status */}
-      <Card className="animate-fade-in lg:col-span-2" style={{ animationDelay: "0.1s" }}>
-        <CardHeader className="pb-2">
-          <CardTitle className="flex items-center gap-2 text-sm font-semibold">
-            <div className="flex h-6 w-6 items-center justify-center rounded-md bg-chart-5/10">
-              <Receipt className="h-3.5 w-3.5 text-chart-5" />
-            </div>
-            {isAr ? "ملخص الفواتير" : "Invoice Summary"}
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          {invoiceLoading ? (
-            <Skeleton className="h-[180px] w-full" />
-          ) : invoiceStats && invoiceStats.length > 0 ? (
-            <ResponsiveContainer width="100%" height={180}>
-              <BarChart data={invoiceStats} layout="vertical" barSize={20}>
-                <CartesianGrid strokeDasharray="3 3" className="stroke-border/50" horizontal={false} />
-                <XAxis type="number" tick={{ fontSize: 11 }} className="fill-muted-foreground" allowDecimals={false} />
-                <YAxis dataKey="name" type="category" tick={{ fontSize: 11 }} className="fill-muted-foreground" width={80} />
-                <Tooltip
-                  contentStyle={{
-                    backgroundColor: "hsl(var(--popover))",
-                    border: "1px solid hsl(var(--border))",
-                    borderRadius: "8px",
-                    color: "hsl(var(--popover-foreground))",
-                    fontSize: 12,
-                  }}
-                />
-                <Bar dataKey="count" name={isAr ? "العدد" : "Count"} fill="hsl(var(--chart-5))" radius={[0, 4, 4, 0]} />
-              </BarChart>
-            </ResponsiveContainer>
-          ) : (
-            <EmptyChart isAr={isAr} />
-          )}
-        </CardContent>
-      </Card>
+                </div>
+              </div>
+            ) : (
+              <EmptyChart isAr={isAr} />
+            )}
+          </CardContent>
+        </Card>
+      </div>
     </div>
+  );
+}
+
+function MiniKPI({
+  label, value, change, isString, isAr,
+}: {
+  label: string; value: number | string; change?: number; isString?: boolean; isAr: boolean;
+}) {
+  return (
+    <Card className="border-border/60 transition-all duration-200 hover:shadow-sm">
+      <CardContent className="p-3">
+        <p className="text-[10px] text-muted-foreground uppercase tracking-wide">{label}</p>
+        <div className="flex items-end justify-between mt-1">
+          <p className={`font-bold ${isString ? "text-sm" : "text-lg"}`}>{value}</p>
+          {change !== undefined && change !== 0 && (
+            <Badge variant="outline" className={`text-[10px] px-1.5 py-0 ${change > 0 ? "text-chart-5 border-chart-5/30" : "text-destructive border-destructive/30"}`}>
+              {change > 0 ? <ArrowUpRight className="h-3 w-3 me-0.5" /> : <ArrowDownRight className="h-3 w-3 me-0.5" />}
+              {Math.abs(change)}%
+            </Badge>
+          )}
+        </div>
+      </CardContent>
+    </Card>
   );
 }
 
