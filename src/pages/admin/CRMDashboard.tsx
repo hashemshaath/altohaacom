@@ -1,5 +1,9 @@
 import { useQuery } from "@tanstack/react-query";
 import { BehaviorAnalytics } from "@/components/crm/BehaviorAnalytics";
+import { CustomerHealthScores } from "@/components/crm/CustomerHealthScores";
+import { PipelineFunnelView } from "@/components/crm/PipelineFunnelView";
+import { TeamPerformanceMetrics } from "@/components/crm/TeamPerformanceMetrics";
+import { ActivityTimelineFeed } from "@/components/crm/ActivityTimelineFeed";
 import { supabase } from "@/integrations/supabase/client";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -370,9 +374,20 @@ export default function CRMDashboard() {
         </Card>
       </div>
 
+      {/* New Insights Row: Health + Funnel + Team */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+        <CustomerHealthScores />
+        <PipelineFunnelView />
+        <TeamPerformanceMetrics />
+      </div>
+
       {/* Tabbed Content */}
-      <Tabs defaultValue="tickets" className="space-y-4">
-        <TabsList className="grid w-full grid-cols-4">
+      <Tabs defaultValue="timeline" className="space-y-4">
+        <TabsList className="grid w-full grid-cols-5">
+          <TabsTrigger value="timeline" className="gap-2 text-xs">
+            <Activity className="h-3.5 w-3.5" />
+            {isAr ? "النشاط" : "Timeline"}
+          </TabsTrigger>
           <TabsTrigger value="tickets" className="gap-2 text-xs">
             <Ticket className="h-3.5 w-3.5" />
             {isAr ? "التذاكر" : "Tickets"}
@@ -399,6 +414,11 @@ export default function CRMDashboard() {
             {isAr ? "السلوك" : "Behavior"}
           </TabsTrigger>
         </TabsList>
+
+        {/* Timeline Tab */}
+        <TabsContent value="timeline">
+          <ActivityTimelineFeed />
+        </TabsContent>
 
         {/* Tickets Tab */}
         <TabsContent value="tickets">
