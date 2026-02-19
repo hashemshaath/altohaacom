@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useEffect } from "react";
+import React, { createContext, useContext, useState, useEffect, useRef } from "react";
 import { User, Session } from "@supabase/supabase-js";
 import { supabase } from "@/integrations/supabase/client";
 
@@ -15,20 +15,27 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [session, setSession] = useState<Session | null>(null);
   const [loading, setLoading] = useState(true);
+  const listenerFired = useRef(false);
 
   useEffect(() => {
+    // 1. Set up the auth state listener FIRST — this is the single source of truth.
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      (_event, session) => {
-        setSession(session);
-        setUser(session?.user ?? null);
+      (_event, newSession) => {
+        listenerFired.current = true;
+        setSession(newSession);
+        setUser(newSession?.user ?? null);
         setLoading(false);
       }
     );
 
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setSession(session);
-      setUser(session?.user ?? null);
-      setLoading(false);
+    // 2. Bootstrap with getSession ONLY if the listener hasn't fired yet.
+    //    This prevents a stale cached session from overwriting a fresh one.
+    supabase.auth.getSession().then(({ data: { session: initialSession } }) => {
+      if (!listenerFired.current) {
+        setSession(initialSession);
+        setUser(initialSession?.user ?? null);
+        setLoading(false);
+      }
     });
 
     return () => subscription.unsubscribe();
