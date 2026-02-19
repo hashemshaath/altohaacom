@@ -1,34 +1,20 @@
 import { useState, useEffect, useCallback, useRef } from "react";
-import { Link, useNavigate, useSearchParams } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { supabase } from "@/integrations/supabase/client";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
-import {
-  Heart, MessageCircle, Repeat2, Bookmark, Share2, MoreHorizontal,
-  Flag, Trash2, Pin, Eye, EyeOff, User, Mail, Pencil, History, X, Loader2,
-} from "lucide-react";
-import {
-  DropdownMenu, DropdownMenuContent, DropdownMenuItem,
-  DropdownMenuSeparator, DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+import { MessageCircle, X, Loader2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { toEnglishDigits } from "@/lib/formatNumber";
 import { PostComposer } from "./PostComposer";
 import { PostThread } from "./PostThread";
 import { ReportDialog } from "./ReportDialog";
-import { PostReactions } from "./PostReactions";
-import { ChefBadge } from "./ChefBadge";
-import { MentionText } from "./MentionText";
 import { StoriesBar } from "./StoriesBar";
-import { PollDisplay } from "./PollDisplay";
-import { LiveSessionsSection } from "./LiveSessionsSection";
 import { FeedRecommendations } from "./FeedRecommendations";
-import { PostEditDialog } from "./PostEditDialog";
 import { PostEditHistory } from "./PostEditHistory";
-import { cn } from "@/lib/utils";
+import { PostCard } from "./PostCard";
 
 export interface CommunityPost {
   id: string;
@@ -107,34 +93,34 @@ export function CommunityFeed() {
       if (r.reply_to_post_id) repliesMap.set(r.reply_to_post_id, (repliesMap.get(r.reply_to_post_id) || 0) + 1);
     });
 
-    return postsData.map((p) => {
+    return postsData.map((p): CommunityPost => {
       const profile = profilesMap.get(p.author_id);
       return {
         id: p.id,
         content: p.content,
         image_url: p.image_url,
-        image_urls: (p as any).image_urls || [],
-        link_url: (p as any).link_url || null,
-        video_url: (p as any).video_url || null,
+        image_urls: p.image_urls || [],
+        link_url: p.link_url || null,
+        video_url: p.video_url || null,
         created_at: p.created_at,
-        edited_at: (p as any).edited_at || null,
+        edited_at: p.edited_at || null,
         author_id: p.author_id,
         author_avatar: profile?.avatar_url || null,
         author_name: profile?.full_name || null,
         author_username: profile?.username || null,
         author_specialization: profile?.specialization || null,
-        visibility: (p as any).visibility || "public",
-        reply_to_post_id: (p as any).reply_to_post_id || null,
+        visibility: p.visibility || "public",
+        reply_to_post_id: p.reply_to_post_id || null,
         likes_count: likesMap.get(p.id) || 0,
         comments_count: commentsMap.get(p.id) || 0,
         replies_count: repliesMap.get(p.id) || 0,
-        reposts_count: (p as any).reposts_count || 0,
+        reposts_count: p.reposts_count || 0,
         is_liked: userLikedSet.has(p.id),
         is_bookmarked: userBookmarkedSet.has(p.id),
         is_reposted: userRepostedSet.has(p.id),
-        is_pinned: (p as any).is_pinned || false,
-        moderation_status: (p as any).moderation_status || "approved",
-      } as CommunityPost;
+        is_pinned: p.is_pinned || false,
+        moderation_status: p.moderation_status || "approved",
+      };
     });
   }, [user?.id]);
 
@@ -235,11 +221,9 @@ export function CommunityFeed() {
 
   const handleDelete = async (postId: string) => {
     if (!user) return;
-    // Snapshot the post content before deleting for audit log
     const deletedPost = posts.find((p) => p.id === postId);
     const { error } = await supabase.from("posts").delete().eq("id", postId).eq("author_id", user.id);
     if (!error) {
-      // Log deletion to audit log
       if (deletedPost) {
         supabase.from("content_audit_log").insert({
           action_type: "post_deleted",
@@ -318,7 +302,6 @@ export function CommunityFeed() {
       {/* Stories */}
       {!tagFilter && <StoriesBar />}
 
-      {/* Live Sessions - moved to sidebar tab only */}
       {/* Composer */}
       {user && !tagFilter && (
         <PostComposer
@@ -346,232 +329,22 @@ export function CommunityFeed() {
           </div>
         ) : (
           posts.map((post) => (
-            <article
+            <PostCard
               key={post.id}
-              className={cn(
-                "transition-colors",
-                editingPost?.id !== post.id && "px-4 py-3 hover:bg-muted/30 cursor-pointer",
-                post.is_pinned && "bg-primary/5"
-              )}
-            >
-              {editingPost?.id === post.id && (
-                <PostEditDialog
-                  post={post}
-                  onClose={() => setEditingPost(null)}
-                  onSaved={handleEditSaved}
-                />
-              )}
-              {editingPost?.id !== post.id && post.is_pinned && (
-                <div className="flex items-center gap-1 ps-12 mb-1 text-[10px] font-bold text-muted-foreground">
-                  <Pin className="h-3 w-3" />
-                  {isAr ? "منشور مثبت" : "Pinned"}
-                </div>
-              )}
-              {editingPost?.id !== post.id && (
-              <div className="flex gap-3">
-                <Link to={`/${post.author_username || post.author_id}`} className="shrink-0">
-                  <Avatar className="h-10 w-10 transition-opacity hover:opacity-80">
-                    <AvatarImage src={post.author_avatar || undefined} />
-                    <AvatarFallback className="bg-primary/10 text-primary text-xs font-bold">
-                      {(post.author_name || "C")[0].toUpperCase()}
-                    </AvatarFallback>
-                  </Avatar>
-                </Link>
-                <div className="min-w-0 flex-1">
-                  {/* Header */}
-                  <div className="flex items-center gap-1.5">
-                    <Link
-                      to={`/${post.author_username || post.author_id}`}
-                      className="truncate text-sm font-bold hover:underline"
-                    >
-                      {post.author_name || "Chef"}
-                    </Link>
-                    <ChefBadge userId={post.author_id} />
-                    {post.author_username && (
-                      <span className="truncate text-xs text-muted-foreground">
-                        @{post.author_username}
-                      </span>
-                    )}
-                    <span className="text-muted-foreground">·</span>
-                    <span className="shrink-0 text-xs text-muted-foreground">
-                      {formatDate(post.created_at)}
-                    </span>
-                    {post.edited_at && (
-                      <button
-                        className="shrink-0 text-[10px] text-muted-foreground hover:text-primary transition-colors"
-                        onClick={(e) => { e.stopPropagation(); setHistoryPostId(post.id); }}
-                        title={isAr ? "تم التعديل" : "Edited"}
-                      >
-                        ({isAr ? "معدّل" : "edited"})
-                      </button>
-                    )}
-                    <div className="ms-auto">
-                      <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
-                          <Button variant="ghost" size="icon" className="h-7 w-7 rounded-full text-muted-foreground hover:text-foreground">
-                            <MoreHorizontal className="h-4 w-4" />
-                          </Button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent align="end" className="w-48">
-                          {user?.id === post.author_id ? (
-                            <>
-                              <DropdownMenuItem onClick={() => setEditingPost(post)}>
-                                <Pencil className="h-4 w-4 me-2" />
-                                {isAr ? "تعديل" : "Edit"}
-                              </DropdownMenuItem>
-                              <DropdownMenuItem onClick={() => handleDelete(post.id)} className="text-destructive">
-                                <Trash2 className="h-4 w-4 me-2" />
-                                {isAr ? "حذف" : "Delete"}
-                              </DropdownMenuItem>
-                            </>
-                          ) : (
-                            <>
-                              <DropdownMenuItem onClick={() => navigate(`/messages?user=${post.author_id}`)}>
-                                <Mail className="h-4 w-4 me-2" />
-                                {isAr ? "إرسال رسالة" : "Message"}
-                              </DropdownMenuItem>
-                              <DropdownMenuSeparator />
-                              <DropdownMenuItem onClick={() => setReportPostId(post.id)}>
-                                <Flag className="h-4 w-4 me-2" />
-                                {isAr ? "إبلاغ" : "Report"}
-                              </DropdownMenuItem>
-                            </>
-                          )}
-                          {post.edited_at && (
-                            <>
-                              <DropdownMenuSeparator />
-                              <DropdownMenuItem onClick={() => setHistoryPostId(post.id)}>
-                                <History className="h-4 w-4 me-2" />
-                                {isAr ? "سجل التعديلات" : "Edit History"}
-                              </DropdownMenuItem>
-                            </>
-                          )}
-                        </DropdownMenuContent>
-                      </DropdownMenu>
-                    </div>
-                  </div>
-
-                  {/* Content */}
-                  <div
-                    className="mt-1 text-sm leading-relaxed whitespace-pre-wrap break-words"
-                    onClick={() => setThreadPostId(post.id)}
-                  >
-                    <MentionText content={post.content} />
-                  </div>
-
-                  {/* Images */}
-                  {(post.image_urls.length > 0 || post.image_url) && (
-                    <div className={cn(
-                      "mt-2 overflow-hidden rounded-2xl border border-border",
-                      post.image_urls.length === 1 && "max-h-[512px]",
-                      post.image_urls.length >= 2 && "grid grid-cols-2 gap-0.5",
-                    )}>
-                      {(post.image_urls.length > 0 ? post.image_urls : [post.image_url!]).slice(0, 4).map((url, idx) => (
-                        <img
-                          key={idx}
-                          src={url}
-                          alt=""
-                          className={cn(
-                            "w-full object-cover",
-                            post.image_urls.length === 1 ? "max-h-[512px]" : "aspect-square",
-                          )}
-                          loading="lazy"
-                        />
-                      ))}
-                    </div>
-                  )}
-
-                  {/* Video */}
-                  {post.video_url && (
-                    <div className="mt-2 overflow-hidden rounded-2xl border border-border" onClick={(e) => e.stopPropagation()}>
-                      <video src={post.video_url} controls preload="metadata" className="w-full max-h-[512px]" />
-                    </div>
-                  )}
-
-                  {/* Poll */}
-                  <PollDisplay postId={post.id} />
-
-                  {/* Link preview */}
-                  {post.link_url && (
-                    <a
-                      href={post.link_url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="mt-2 block rounded-2xl border border-border overflow-hidden hover:bg-muted/30 transition-colors"
-                      onClick={(e) => e.stopPropagation()}
-                    >
-                      <div className="p-3 text-xs text-muted-foreground truncate">{post.link_url}</div>
-                    </a>
-                  )}
-
-                  {/* Actions bar */}
-                  <div className="mt-2 flex items-center justify-between -ms-2" onClick={(e) => e.stopPropagation()}>
-                    <div className="flex items-center">
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        className="h-8 gap-1 rounded-full px-3 text-xs text-muted-foreground hover:text-primary hover:bg-primary/10"
-                        onClick={() => setThreadPostId(post.id)}
-                      >
-                        <MessageCircle className="h-4 w-4" />
-                        {(post.replies_count + post.comments_count) > 0 && toEnglishDigits(`${post.replies_count + post.comments_count}`)}
-                      </Button>
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        className={cn(
-                          "h-8 gap-1 rounded-full px-3 text-xs hover:text-chart-3 hover:bg-chart-3/10",
-                          post.is_reposted ? "text-chart-3" : "text-muted-foreground"
-                        )}
-                        onClick={() => handleRepost(post.id, post.is_reposted)}
-                      >
-                        <Repeat2 className="h-4 w-4" />
-                        {post.reposts_count > 0 && toEnglishDigits(`${post.reposts_count}`)}
-                      </Button>
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        className={cn(
-                          "h-8 gap-1 rounded-full px-3 text-xs hover:text-destructive hover:bg-destructive/10",
-                          post.is_liked ? "text-destructive" : "text-muted-foreground"
-                        )}
-                        onClick={() => handleLike(post.id, post.is_liked)}
-                      >
-                        <Heart className={cn("h-4 w-4", post.is_liked && "fill-current")} />
-                        {post.likes_count > 0 && toEnglishDigits(`${post.likes_count}`)}
-                      </Button>
-                      <PostReactions postId={post.id} />
-                    </div>
-                    <div className="flex items-center">
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        className={cn(
-                          "h-8 rounded-full px-2 text-xs hover:text-primary hover:bg-primary/10",
-                          post.is_bookmarked ? "text-primary" : "text-muted-foreground"
-                        )}
-                        onClick={() => handleBookmark(post.id, post.is_bookmarked)}
-                      >
-                        <Bookmark className={cn("h-4 w-4", post.is_bookmarked && "fill-current")} />
-                      </Button>
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        className="h-8 rounded-full px-2 text-xs text-muted-foreground hover:text-primary hover:bg-primary/10"
-                        onClick={() => {
-                          navigator.clipboard.writeText(window.location.origin + `/community/post/${post.id}`);
-                          toast({ title: isAr ? "تم نسخ الرابط" : "Link copied" });
-                        }}
-                      >
-                        <Share2 className="h-4 w-4" />
-                      </Button>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              )}
-
-            </article>
+              post={post}
+              isEditing={editingPost?.id === post.id}
+              onEdit={setEditingPost}
+              onEditClose={() => setEditingPost(null)}
+              onEditSaved={handleEditSaved}
+              onDelete={handleDelete}
+              onLike={handleLike}
+              onBookmark={handleBookmark}
+              onRepost={handleRepost}
+              onOpenThread={setThreadPostId}
+              onReport={setReportPostId}
+              onViewHistory={setHistoryPostId}
+              formatDate={formatDate}
+            />
           ))
         )}
       </div>
@@ -600,8 +373,6 @@ export function CommunityFeed() {
           onClose={() => setReportPostId(null)}
         />
       )}
-
-      {/* Edit is now inline per-post */}
 
       {/* Edit history */}
       {historyPostId && (

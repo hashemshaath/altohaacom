@@ -327,9 +327,11 @@ export function PostComposer({ onPosted, replyToPostId, placeholder, compact, au
             </div>
           )}
 
-          {/* Poll composer */}
+          {/* Poll options display (when active) */}
           {pollData && (
-            <PollComposer onPollChange={setPollData} />
+            <div className="mt-2 rounded-xl border border-primary/20 bg-primary/5 p-3 space-y-2">
+              <p className="text-xs font-semibold text-primary">{isAr ? "تم إضافة استطلاع" : "Poll added"}</p>
+            </div>
           )}
 
           {/* Toolbar */}

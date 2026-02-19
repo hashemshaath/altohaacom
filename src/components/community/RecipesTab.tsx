@@ -43,7 +43,7 @@ export function RecipesTab() {
   const { language } = useLanguage();
   const { toast } = useToast();
   const isAr = language === "ar";
-  const [recipes, setRecipes] = useState<Recipe[]>([]);
+  const [allRecipes, setAllRecipes] = useState<Recipe[]>([]);
   const [loading, setLoading] = useState(true);
   const [showForm, setShowForm] = useState(false);
   const [creating, setCreating] = useState(false);
@@ -53,6 +53,7 @@ export function RecipesTab() {
     prep_time_minutes: "", cook_time_minutes: "", servings: "",
     ingredients: "", steps: "",
   });
+
 
   const fetchRecipes = async () => {
     const { data, error } = await supabase
@@ -93,11 +94,13 @@ export function RecipesTab() {
       };
     });
 
-    setRecipes(filter === "all" ? enriched : enriched.filter((r) => r.difficulty === filter));
+    setAllRecipes(enriched);
     setLoading(false);
   };
 
-  useEffect(() => { fetchRecipes(); }, [filter]);
+  useEffect(() => { fetchRecipes(); }, []);
+
+  const recipes = filter === "all" ? allRecipes : allRecipes.filter((r) => r.difficulty === filter);
 
   const handleCreate = async () => {
     if (!user || !form.title.trim()) return;
