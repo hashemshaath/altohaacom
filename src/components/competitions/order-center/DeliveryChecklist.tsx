@@ -17,6 +17,8 @@ import { logOrderActivity } from "./orderActivityLogger";
 import { notifyDeliveryConfirmed } from "./OrderNotifications";
 import { OrderSearchFilter } from "./OrderSearchFilter";
 import { BulkActionBar } from "./BulkActionBar";
+import { OrderEmptyState } from "./OrderEmptyState";
+import { ChecklistSkeleton } from "./OrderSkeletonCards";
 
 interface Props {
   competitionId: string;
@@ -52,6 +54,7 @@ export function DeliveryChecklist({ competitionId, isOrganizer }: Props) {
       if (error) throw error;
       return data;
     },
+    staleTime: 2 * 60 * 1000,
   });
 
   const { data: allItems, isLoading } = useQuery({
@@ -67,6 +70,7 @@ export function DeliveryChecklist({ competitionId, isOrganizer }: Props) {
       return data;
     },
     enabled: !!lists?.length,
+    staleTime: 60 * 1000,
   });
 
   const toggleCheck = useMutation({
@@ -167,12 +171,12 @@ export function DeliveryChecklist({ competitionId, isOrganizer }: Props) {
     }
   }, [filteredItems, selectedIds.size]);
 
-  if (isLoading || !allItems) {
-    return (
-      <div className="flex justify-center py-8">
-        <div className="h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent" />
-      </div>
-    );
+  if (isLoading) {
+    return <ChecklistSkeleton />;
+  }
+
+  if (!allItems?.length) {
+    return <OrderEmptyState type="checklist" />;
   }
 
   const total = allItems.length;
