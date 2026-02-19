@@ -7,11 +7,14 @@ import { Progress } from "@/components/ui/progress";
 import { Button } from "@/components/ui/button";
 import {
   ClipboardList, Package, CheckCircle, Clock, AlertTriangle,
-  Send, Lightbulb, Printer, TrendingUp, FileInput, ArrowRight,
+  Send, Lightbulb, Printer, TrendingUp, FileInput, Download,
 } from "lucide-react";
 import { formatCurrency } from "@/lib/currencyFormatter";
 import { format, isPast, differenceInDays } from "date-fns";
 import { calcOrderStats, getItemDisplayName } from "./orderCenterUtils";
+import { OrderExportActions } from "./OrderExportActions";
+import { DashboardSkeleton } from "./OrderSkeletonCards";
+import { OrderEmptyState } from "./OrderEmptyState";
 
 interface Props {
   competitionId: string;
@@ -32,9 +35,10 @@ export function OrderOverviewDashboard({ competitionId, isOrganizer }: Props) {
       if (error) throw error;
       return data;
     },
+    staleTime: 2 * 60 * 1000,
   });
 
-  const { data: allItems } = useQuery({
+  const { data: allItems, isLoading: itemsLoading } = useQuery({
     queryKey: ["order-overview-items", competitionId],
     queryFn: async () => {
       if (!lists?.length) return [];
@@ -46,6 +50,7 @@ export function OrderOverviewDashboard({ competitionId, isOrganizer }: Props) {
       return data;
     },
     enabled: !!lists?.length,
+    staleTime: 60 * 1000,
   });
 
   const { data: quoteRequests } = useQuery({
@@ -58,6 +63,7 @@ export function OrderOverviewDashboard({ competitionId, isOrganizer }: Props) {
       if (error) throw error;
       return data;
     },
+    staleTime: 2 * 60 * 1000,
   });
 
   const { data: suggestions } = useQuery({
@@ -70,6 +76,7 @@ export function OrderOverviewDashboard({ competitionId, isOrganizer }: Props) {
       if (error) throw error;
       return data;
     },
+    staleTime: 2 * 60 * 1000,
   });
 
   const { data: itemRequests } = useQuery({
@@ -82,6 +89,7 @@ export function OrderOverviewDashboard({ competitionId, isOrganizer }: Props) {
       if (error) throw error;
       return data;
     },
+    staleTime: 2 * 60 * 1000,
   });
 
   const stats = calcOrderStats(allItems || []);
@@ -165,6 +173,33 @@ export function OrderOverviewDashboard({ competitionId, isOrganizer }: Props) {
     printWindow.print();
   };
 
+  // Export data for CSV
+  const exportData = (allItems || []).map(item => ({
+    name: getItemDisplayName(item, false),
+    name_ar: getItemDisplayName(item, true),
+    status: item.status || "pending",
+    quantity: item.quantity || 1,
+    estimated_cost: item.estimated_cost || 0,
+    deadline: item.deadline || "",
+  }));
+
+  const exportColumns = [
+    { key: "name", label: "Item Name" },
+    { key: "name_ar", label: "اسم العنصر" },
+    { key: "status", label: "Status" },
+    { key: "quantity", label: "Quantity" },
+    { key: "estimated_cost", label: "Est. Cost" },
+    { key: "deadline", label: "Deadline" },
+  ];
+
+  if (itemsLoading) {
+    return <DashboardSkeleton />;
+  }
+
+  if (!lists?.length) {
+    return <OrderEmptyState type="lists" />;
+  }
+
   return (
     <div className="space-y-4">
       {/* Header */}
@@ -175,12 +210,21 @@ export function OrderOverviewDashboard({ competitionId, isOrganizer }: Props) {
             {isAr ? "ملخص شامل لحالة جميع المتطلبات" : "Comprehensive summary of all requirements & supplies"}
           </p>
         </div>
-        {isOrganizer && (
-          <Button variant="outline" size="sm" onClick={handlePrint}>
-            <Printer className="me-1.5 h-3.5 w-3.5" />
-            {isAr ? "طباعة" : "Print"}
-          </Button>
-        )}
+        <div className="flex items-center gap-1.5">
+          {isOrganizer && exportData.length > 0 && (
+            <OrderExportActions
+              data={exportData}
+              filename={`order-summary-${competitionId.slice(0, 8)}`}
+              columns={exportColumns}
+            />
+          )}
+          {isOrganizer && (
+            <Button variant="outline" size="sm" onClick={handlePrint}>
+              <Printer className="me-1.5 h-3.5 w-3.5" />
+              {isAr ? "طباعة" : "Print"}
+            </Button>
+          )}
+        </div>
       </div>
 
       {/* Overdue Alert */}
