@@ -14,12 +14,12 @@ export default function CookiePolicy() {
     { title: "١. ما هي ملفات تعريف الارتباط؟", content: "ملفات تعريف الارتباط (الكوكيز) هي ملفات نصية صغيرة يتم تخزينها على جهازكم عند زيارة المنصة. تساعدنا هذه الملفات في تحسين تجربتكم وتقديم خدمات أفضل." },
     { title: "٢. أنواع الكوكيز المستخدمة", content: "• كوكيز ضرورية: لازمة لتشغيل المنصة وتأمين حسابكم.\n• كوكيز الأداء: لتحليل كيفية استخدام المنصة وتحسينها.\n• كوكيز الوظائف: لتذكر تفضيلاتكم مثل اللغة والإعدادات.\n• كوكيز التحليلات: لفهم سلوك المستخدمين وتحسين الخدمات." },
     { title: "٣. إدارة الكوكيز", content: "يمكنكم التحكم في ملفات تعريف الارتباط من خلال إعدادات متصفحكم. يرجى ملاحظة أن تعطيل بعض الكوكيز قد يؤثر على وظائف المنصة." },
-    { title: "٤. التواصل", content: "لأي استفسارات حول سياسة ملفات تعريف الارتباط:\n\n• البريد الإلكتروني: info@altohaa.com\n• الهاتف: +966569220777" },
+    { title: "٤. التواصل", content: "لأي استفسارات حول سياسة ملفات تعريف الارتباط:\n\n• البريد الإلكتروني: info@altoha.com\n• الهاتف: +966569220777" },
   ] : [
     { title: "1. What Are Cookies?", content: "Cookies are small text files stored on your device when you visit the Platform. They help us improve your experience and provide better services." },
     { title: "2. Types of Cookies Used", content: "• Essential cookies: Required for Platform operation and account security.\n• Performance cookies: To analyze how the Platform is used and improve it.\n• Functionality cookies: To remember your preferences such as language and settings.\n• Analytics cookies: To understand user behavior and improve services." },
     { title: "3. Managing Cookies", content: "You can control cookies through your browser settings. Please note that disabling some cookies may affect Platform functionality." },
-    { title: "4. Contact Us", content: "For any inquiries about our Cookie Policy:\n\n• Email: info@altohaa.com\n• Phone: +966569220777" },
+    { title: "4. Contact Us", content: "For any inquiries about our Cookie Policy:\n\n• Email: info@altoha.com\n• Phone: +966569220777" },
   ];
 
   return (

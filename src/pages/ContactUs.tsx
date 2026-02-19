@@ -22,7 +22,7 @@ export default function ContactUs() {
 
   const contactInfo = [
     { icon: Phone, label: isAr ? "الهاتف" : "Phone", value: "+966 56 922 0777", href: "tel:+966569220777" },
-    { icon: Mail, label: isAr ? "البريد الإلكتروني" : "Email", value: "info@altohaa.com", href: "mailto:info@altohaa.com" },
+    { icon: Mail, label: isAr ? "البريد الإلكتروني" : "Email", value: "info@altoha.com", href: "mailto:info@altoha.com" },
     { icon: MapPin, label: isAr ? "الموقع" : "Location", value: isAr ? "المملكة العربية السعودية" : "Kingdom of Saudi Arabia", href: null },
     { icon: Clock, label: isAr ? "ساعات العمل" : "Working Hours", value: isAr ? "الأحد - الخميس: ٩ ص - ٦ م" : "Sun - Thu: 9 AM - 6 PM", href: null },
   ];

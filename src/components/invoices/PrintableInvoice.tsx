@@ -382,7 +382,7 @@ export default function PrintableInvoice({ invoice, company, showPrintButton = t
         <div style={{ marginTop: "60px", display: "flex", justifyContent: "space-between", alignItems: "center", fontSize: "12px", color: "#9ca3af", borderTop: "1px solid #e5e7eb", paddingTop: "20px" }}>
           <div>
             <p>{isAr ? "شكراً لتعاملكم معنا" : "Thank you for your business"}</p>
-            <p style={{ marginTop: "4px" }}>Altohaa Platform • altohaa.com</p>
+            <p style={{ marginTop: "4px" }}>Altoha Platform • altoha.com</p>
             {cfg.show_store_address && cfg.store_address && (
               <p style={{ marginTop: "4px" }}>{isAr ? cfg.store_address_ar || cfg.store_address : cfg.store_address}</p>
             )}

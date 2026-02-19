@@ -128,7 +128,7 @@ serve(async (req) => {
       : `${payload.referrerName} invites you to join Altohaa!`;
 
     const emailResult = await resend.emails.send({
-      from: "Altohaa <noreply@altohaa.com>",
+      from: "Altoha <noreply@altoha.com>",
       to: [payload.to],
       subject,
       html: buildEmailHtml(payload),

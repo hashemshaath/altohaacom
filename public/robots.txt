@@ -26,4 +26,4 @@ Disallow: /onboarding
 Disallow: /messages
 Disallow: /dashboard
 
-Sitemap: https://altohaacom.lovable.app/sitemap.xml
+Sitemap: https://altoha.com/sitemap.xml

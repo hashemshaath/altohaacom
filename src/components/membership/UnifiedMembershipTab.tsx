@@ -585,7 +585,7 @@ export function UnifiedMembershipTab({ profile, userId, onMembershipChange }: Un
                       }
                     >
                       <QRCodeSVG
-                        value={`https://altohaacom.lovable.app/verify?code=${profile?.account_number || card.membership_number}`}
+                        value={`https://altoha.com/verify?code=${profile?.account_number || card.membership_number}`}
                         size={isVertical ? 62 : 58}
                         level="M"
                         includeMargin={false}

@@ -159,7 +159,7 @@ export default function Verify() {
       website: entityDetails.website || undefined,
       location: entityDetails.location || undefined,
       accountNumber: entityDetails.account_number || undefined,
-      profileUrl: `https://altohaacom.lovable.app/${entityDetails.username}`,
+      profileUrl: `https://altoha.com/${entityDetails.username}`,
     });
     downloadVCard(vcard, entityDetails.full_name || "contact");
   };

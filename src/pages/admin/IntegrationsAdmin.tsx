@@ -87,7 +87,7 @@ const integrations: Integration[] = [
     connected: false,
     configFields: [
       { key: "api_key", label: "API Key", labelAr: "مفتاح API", type: "password" },
-      { key: "from_email", label: "From Email", labelAr: "البريد المرسل", type: "email", placeholder: "noreply@altohaa.com" },
+      { key: "from_email", label: "From Email", labelAr: "البريد المرسل", type: "email", placeholder: "noreply@altoha.com" },
     ],
   },
   {

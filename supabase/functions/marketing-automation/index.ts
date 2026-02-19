@@ -64,12 +64,12 @@ serve(async (req) => {
               method: "POST",
               headers: { Authorization: `Bearer ${resendKey}`, "Content-Type": "application/json" },
               body: JSON.stringify({
-                from: "Altohaa <noreply@altohaa.com>",
+                from: "Altoha <noreply@altoha.com>",
                 to: [profile.email],
-                subject: isAr ? `مرحباً بك في الطهاة، ${name}!` : `Welcome to Altohaa, ${name}!`,
+                subject: isAr ? `مرحباً بك في الطهاة، ${name}!` : `Welcome to Altoha, ${name}!`,
                 html: isAr
-                  ? `<div dir="rtl" style="font-family:Arial,sans-serif;max-width:600px;margin:0 auto;padding:20px"><h1>مرحباً ${name}! 🎉</h1><p>شكراً لانضمامك إلى مجتمع الطهاة. أكمل ملفك الشخصي للاستفادة من جميع المميزات.</p><a href="https://altohaacom.lovable.app/profile/edit" style="display:inline-block;background:#c8a97e;color:#fff;padding:12px 24px;border-radius:8px;text-decoration:none;margin-top:16px">أكمل ملفك الشخصي</a></div>`
-                  : `<div style="font-family:Arial,sans-serif;max-width:600px;margin:0 auto;padding:20px"><h1>Welcome ${name}! 🎉</h1><p>Thank you for joining the Altohaa community. Complete your profile to unlock all features.</p><a href="https://altohaacom.lovable.app/profile/edit" style="display:inline-block;background:#c8a97e;color:#fff;padding:12px 24px;border-radius:8px;text-decoration:none;margin-top:16px">Complete Your Profile</a></div>`,
+                  ? `<div dir="rtl" style="font-family:Arial,sans-serif;max-width:600px;margin:0 auto;padding:20px"><h1>مرحباً ${name}! 🎉</h1><p>شكراً لانضمامك إلى مجتمع الطهاة. أكمل ملفك الشخصي للاستفادة من جميع المميزات.</p><a href="https://altoha.com/profile/edit" style="display:inline-block;background:#c8a97e;color:#fff;padding:12px 24px;border-radius:8px;text-decoration:none;margin-top:16px">أكمل ملفك الشخصي</a></div>`
+                  : `<div style="font-family:Arial,sans-serif;max-width:600px;margin:0 auto;padding:20px"><h1>Welcome ${name}! 🎉</h1><p>Thank you for joining the Altoha community. Complete your profile to unlock all features.</p><a href="https://altoha.com/profile/edit" style="display:inline-block;background:#c8a97e;color:#fff;padding:12px 24px;border-radius:8px;text-decoration:none;margin-top:16px">Complete Your Profile</a></div>`,
               }),
             });
           } catch (e) {
@@ -126,12 +126,12 @@ serve(async (req) => {
               method: "POST",
               headers: { Authorization: `Bearer ${resendKey}`, "Content-Type": "application/json" },
               body: JSON.stringify({
-                from: "Altohaa <noreply@altohaa.com>",
+                from: "Altoha <noreply@altoha.com>",
                 to: [profile.email],
                 subject: isAr ? `${name}، أكمل طلبك!` : `${name}, complete your order!`,
                 html: isAr
-                  ? `<div dir="rtl" style="font-family:Arial,sans-serif;max-width:600px;margin:0 auto;padding:20px"><h2>لديك منتجات في السلة 🛒</h2><p>مرحباً ${name}، لديك منتجات بقيمة <strong>${amount} SAR</strong> في سلة التسوق.</p><a href="https://altohaacom.lovable.app/shop" style="display:inline-block;background:#c8a97e;color:#fff;padding:12px 24px;border-radius:8px;text-decoration:none;margin-top:16px">أكمل الشراء</a></div>`
-                  : `<div style="font-family:Arial,sans-serif;max-width:600px;margin:0 auto;padding:20px"><h2>You left items in your cart 🛒</h2><p>Hi ${name}, you have items worth <strong>${amount} SAR</strong> waiting for you.</p><a href="https://altohaacom.lovable.app/shop" style="display:inline-block;background:#c8a97e;color:#fff;padding:12px 24px;border-radius:8px;text-decoration:none;margin-top:16px">Complete Purchase</a></div>`,
+                  ? `<div dir="rtl" style="font-family:Arial,sans-serif;max-width:600px;margin:0 auto;padding:20px"><h2>لديك منتجات في السلة 🛒</h2><p>مرحباً ${name}، لديك منتجات بقيمة <strong>${amount} SAR</strong> في سلة التسوق.</p><a href="https://altoha.com/shop" style="display:inline-block;background:#c8a97e;color:#fff;padding:12px 24px;border-radius:8px;text-decoration:none;margin-top:16px">أكمل الشراء</a></div>`
+                  : `<div style="font-family:Arial,sans-serif;max-width:600px;margin:0 auto;padding:20px"><h2>You left items in your cart 🛒</h2><p>Hi ${name}, you have items worth <strong>${amount} SAR</strong> waiting for you.</p><a href="https://altoha.com/shop" style="display:inline-block;background:#c8a97e;color:#fff;padding:12px 24px;border-radius:8px;text-decoration:none;margin-top:16px">Complete Purchase</a></div>`,
               }),
             });
           } catch (e) {
@@ -190,12 +190,12 @@ serve(async (req) => {
               method: "POST",
               headers: { Authorization: `Bearer ${resendKey}`, "Content-Type": "application/json" },
               body: JSON.stringify({
-                from: "Altohaa <noreply@altohaa.com>",
+                from: "Altoha <noreply@altoha.com>",
                 to: [profile.email],
                 subject: isAr ? `${name}، نفتقدك!` : `${name}, we miss you!`,
                 html: isAr
-                  ? `<div dir="rtl" style="font-family:Arial,sans-serif;max-width:600px;margin:0 auto;padding:20px"><h2>نفتقدك! 👋</h2><p>مرحباً ${name}، هناك الكثير من الجديد في انتظارك.</p><a href="https://altohaacom.lovable.app/community" style="display:inline-block;background:#c8a97e;color:#fff;padding:12px 24px;border-radius:8px;text-decoration:none;margin-top:16px">استكشف الجديد</a></div>`
-                  : `<div style="font-family:Arial,sans-serif;max-width:600px;margin:0 auto;padding:20px"><h2>We miss you! 👋</h2><p>Hi ${name}, there's a lot of new activity waiting for you.</p><a href="https://altohaacom.lovable.app/community" style="display:inline-block;background:#c8a97e;color:#fff;padding:12px 24px;border-radius:8px;text-decoration:none;margin-top:16px">See What's New</a></div>`,
+                  ? `<div dir="rtl" style="font-family:Arial,sans-serif;max-width:600px;margin:0 auto;padding:20px"><h2>نفتقدك! 👋</h2><p>مرحباً ${name}، هناك الكثير من الجديد في انتظارك.</p><a href="https://altoha.com/community" style="display:inline-block;background:#c8a97e;color:#fff;padding:12px 24px;border-radius:8px;text-decoration:none;margin-top:16px">استكشف الجديد</a></div>`
+                  : `<div style="font-family:Arial,sans-serif;max-width:600px;margin:0 auto;padding:20px"><h2>We miss you! 👋</h2><p>Hi ${name}, there's a lot of new activity waiting for you.</p><a href="https://altoha.com/community" style="display:inline-block;background:#c8a97e;color:#fff;padding:12px 24px;border-radius:8px;text-decoration:none;margin-top:16px">See What's New</a></div>`,
               }),
             });
           } catch (e) {

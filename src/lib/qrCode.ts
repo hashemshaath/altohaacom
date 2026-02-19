@@ -2,7 +2,7 @@
  * QR Code utilities - code generation, URL building, vCard generation
  */
 
-const BASE_URL = "https://altohaacom.lovable.app";
+const BASE_URL = "https://altoha.com";
 
 export type QREntityType = "user" | "certificate" | "invoice" | "competition" | "company" | "exhibition" | "participant" | "judge" | "team_member";
 
