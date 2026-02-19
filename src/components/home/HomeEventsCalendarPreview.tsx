@@ -48,6 +48,7 @@ export function HomeEventsCalendarPreview() {
   if (events.length === 0) return null;
 
   return (
+    <div>
     <TooltipProvider delayDuration={200}>
       <section className="container py-8">
         {/* Header */}
@@ -232,6 +233,7 @@ export function HomeEventsCalendarPreview() {
         )}
       </section>
     </TooltipProvider>
+    </div>
   );
 }
 
