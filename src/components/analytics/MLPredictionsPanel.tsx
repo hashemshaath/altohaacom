@@ -1,4 +1,4 @@
-import { useState, useCallback } from "react";
+import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { supabase } from "@/integrations/supabase/client";
@@ -6,296 +6,306 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Progress } from "@/components/ui/progress";
 import {
-  Brain,
-  RefreshCw,
-  TrendingUp,
-  TrendingDown,
-  Users,
-  Trophy,
-  DollarSign,
-  AlertTriangle,
-  Target,
-  Sparkles,
+  Brain, RefreshCw, TrendingUp, TrendingDown, Users, Trophy,
+  DollarSign, AlertTriangle, Target, Sparkles, Lightbulb, ShieldAlert, Activity,
 } from "lucide-react";
 import {
-  ComposedChart,
-  Area,
-  Line,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-  ResponsiveContainer,
-  Legend,
+  ComposedChart, Area, Line, Bar, XAxis, YAxis, CartesianGrid,
+  Tooltip, ResponsiveContainer, Legend, RadarChart, Radar, PolarGrid,
+  PolarAngleAxis, PolarRadiusAxis,
 } from "recharts";
-import { linearRegression, forecast, detectAnomalies, type DataPoint } from "@/lib/trendPrediction";
 
-type MetricType = "users" | "competitions" | "revenue" | "engagement";
-
-interface PredictionResult {
-  metric: MetricType;
-  historical: DataPoint[];
-  predicted: DataPoint[];
-  anomalies: DataPoint[];
-  confidence: number;
+interface Forecast {
+  metric: string;
+  current_value: number;
+  forecast_3m: number;
+  forecast_6m: number;
+  forecast_12m: number;
   trend: "up" | "down" | "stable";
-  growthRate: number;
-  nextValue: number;
+  confidence: number;
 }
+
+interface ChurnRisk {
+  segment: string;
+  risk_level: "low" | "medium" | "high" | "critical";
+  affected_users_estimate: number;
+  reason: string;
+  mitigation: string;
+}
+
+interface Recommendation {
+  title: string;
+  description: string;
+  impact: "low" | "medium" | "high";
+  effort: "low" | "medium" | "high";
+  category: string;
+  estimated_roi: string;
+}
+
+interface HealthScore {
+  overall: number;
+  growth: number;
+  engagement: number;
+  revenue: number;
+  retention: number;
+}
+
+interface MLInsightsData {
+  forecasts: Forecast[];
+  churn_risks: ChurnRisk[];
+  recommendations: Recommendation[];
+  health_score: HealthScore;
+  anomalies: { metric: string; description: string; severity: string }[];
+  monthlyData?: { month: string; users: number; competitions: number; orders: number; revenue: number }[];
+}
+
+const metricIcons: Record<string, React.ElementType> = {
+  users: Users, revenue: DollarSign, competitions: Trophy, engagement: Activity,
+  orders: Target, registrations: Users,
+};
 
 export function MLPredictionsPanel() {
   const { language } = useLanguage();
   const isAr = language === "ar";
-  const [selectedMetric, setSelectedMetric] = useState<MetricType>("users");
-  const [forecastMonths, setForecastMonths] = useState(6);
 
-  const metricConfig: Record<MetricType, { label: string; labelAr: string; icon: React.ElementType; color: string; table: string }> = {
-    users: { label: "User Growth", labelAr: "نمو المستخدمين", icon: Users, color: "primary", table: "profiles" },
-    competitions: { label: "Competitions", labelAr: "المسابقات", icon: Trophy, color: "chart-2", table: "competitions" },
-    revenue: { label: "Revenue", labelAr: "الإيرادات", icon: DollarSign, color: "chart-3", table: "company_transactions" },
-    engagement: { label: "Engagement", labelAr: "التفاعل", icon: Target, color: "chart-4", table: "messages" },
-  };
-
-  const { data: prediction, isLoading, refetch } = useQuery({
-    queryKey: ["ml-prediction", selectedMetric, forecastMonths],
-    queryFn: async (): Promise<PredictionResult> => {
-      const config = metricConfig[selectedMetric];
-      
-      const { data: records } = await supabase
-        .from(config.table as any)
-        .select("created_at")
-        .order("created_at", { ascending: true });
-
-      // Build monthly data
-      const months: Record<string, number> = {};
-      (records || []).forEach((r: any) => {
-        const m = r.created_at?.substring(0, 7);
-        if (m) months[m] = (months[m] || 0) + 1;
+  const { data, isLoading, refetch, isFetching } = useQuery<MLInsightsData>({
+    queryKey: ["ml-insights-ai"],
+    queryFn: async () => {
+      const { data: result, error } = await supabase.functions.invoke("ml-insights", {
+        body: { language },
       });
-
-      const historical: DataPoint[] = Object.entries(months)
-        .sort(([a], [b]) => a.localeCompare(b))
-        .slice(-24)
-        .map(([date, value]) => ({ date, value }));
-
-      if (historical.length < 2) {
-        return {
-          metric: selectedMetric,
-          historical: [],
-          predicted: [],
-          anomalies: [],
-          confidence: 0,
-          trend: "stable",
-          growthRate: 0,
-          nextValue: 0,
-        };
-      }
-
-      const trend = linearRegression(historical);
-      const predicted = forecast(historical, forecastMonths);
-      const anomalies = detectAnomalies(historical);
-
-      // Calculate growth rate
-      const first = historical[0]?.value || 1;
-      const last = historical[historical.length - 1]?.value || 0;
-      const growthRate = ((last / Math.max(first, 1)) ** (1 / Math.max(historical.length - 1, 1)) - 1) * 100;
-
-      return {
-        metric: selectedMetric,
-        historical,
-        predicted,
-        anomalies,
-        confidence: Math.round(trend.r2 * 100),
-        trend: trend.direction,
-        growthRate,
-        nextValue: Math.round(trend.predictedNext),
-      };
+      if (error) throw error;
+      return result;
     },
-    staleTime: 1000 * 60 * 5,
+    staleTime: 1000 * 60 * 10,
+    retry: 1,
   });
 
-  const chartData = prediction ? [
-    ...prediction.historical.map(d => ({
-      label: d.date,
-      actual: d.value,
-      predicted: null as number | null,
-    })),
-    ...(prediction.historical.length > 0 ? [{
-      label: prediction.historical[prediction.historical.length - 1].date,
-      actual: prediction.historical[prediction.historical.length - 1].value,
-      predicted: prediction.historical[prediction.historical.length - 1].value,
-    }] : []),
-    ...prediction.predicted.map(d => ({
-      label: d.date,
-      actual: null as number | null,
-      predicted: d.value,
-    })),
-  ] : [];
+  const healthData = data?.health_score
+    ? [
+        { subject: isAr ? "النمو" : "Growth", value: data.health_score.growth },
+        { subject: isAr ? "التفاعل" : "Engagement", value: data.health_score.engagement },
+        { subject: isAr ? "الإيرادات" : "Revenue", value: data.health_score.revenue },
+        { subject: isAr ? "الاحتفاظ" : "Retention", value: data.health_score.retention },
+      ]
+    : [];
 
-  // Remove duplicate bridge point
-  const uniqueChartData = chartData.filter((d, i, arr) =>
-    i === 0 || d.label !== arr[i - 1].label || d.predicted !== arr[i - 1].predicted
-  );
+  const getTrendIcon = (trend: string) =>
+    trend === "up" ? TrendingUp : trend === "down" ? TrendingDown : Target;
 
-  const config = metricConfig[selectedMetric];
-  const Icon = config.icon;
+  const getRiskColor = (level: string) => {
+    if (level === "critical") return "bg-destructive/10 text-destructive border-destructive/20";
+    if (level === "high") return "bg-chart-5/10 text-chart-5 border-chart-5/20";
+    if (level === "medium") return "bg-chart-3/10 text-chart-3 border-chart-3/20";
+    return "bg-chart-2/10 text-chart-2 border-chart-2/20";
+  };
+
+  const getImpactColor = (impact: string) => {
+    if (impact === "high") return "text-chart-2";
+    if (impact === "medium") return "text-chart-3";
+    return "text-muted-foreground";
+  };
 
   return (
     <div className="space-y-6 mt-4">
       {/* Controls */}
       <Card>
-        <CardContent className="flex flex-wrap items-center gap-4 py-4">
+        <CardContent className="flex flex-wrap items-center justify-between gap-4 py-4">
           <div className="flex items-center gap-2">
             <Brain className="h-5 w-5 text-primary" />
-            <span className="text-sm font-medium">{isAr ? "التنبؤات الذكية" : "ML Predictions"}</span>
+            <span className="text-sm font-medium">{isAr ? "التنبؤات الذكية بالذكاء الاصطناعي" : "AI-Powered ML Predictions"}</span>
+            <Badge variant="secondary" className="text-[10px] gap-1">
+              <Sparkles className="h-3 w-3" />
+              Gemini
+            </Badge>
           </div>
-          <Select value={selectedMetric} onValueChange={(v) => setSelectedMetric(v as MetricType)}>
-            <SelectTrigger className="w-[180px]">
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent>
-              {Object.entries(metricConfig).map(([key, val]) => (
-                <SelectItem key={key} value={key}>
-                  {isAr ? val.labelAr : val.label}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-          <Select value={String(forecastMonths)} onValueChange={(v) => setForecastMonths(Number(v))}>
-            <SelectTrigger className="w-[140px]">
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="3">{isAr ? "3 أشهر" : "3 months"}</SelectItem>
-              <SelectItem value="6">{isAr ? "6 أشهر" : "6 months"}</SelectItem>
-              <SelectItem value="12">{isAr ? "12 شهر" : "12 months"}</SelectItem>
-            </SelectContent>
-          </Select>
-          <Button variant="outline" size="sm" onClick={() => refetch()} className="gap-1.5">
-            <RefreshCw className="h-3.5 w-3.5" />
+          <Button variant="outline" size="sm" onClick={() => refetch()} disabled={isFetching} className="gap-1.5">
+            <RefreshCw className={`h-3.5 w-3.5 ${isFetching ? "animate-spin" : ""}`} />
             {isAr ? "تحديث" : "Refresh"}
           </Button>
         </CardContent>
       </Card>
 
-      {/* Summary Cards */}
-      <div className="grid gap-4 sm:grid-cols-4">
-        {[
-          {
-            label: isAr ? "الاتجاه" : "Trend",
-            value: prediction?.trend === "up" ? (isAr ? "صاعد" : "Upward") : prediction?.trend === "down" ? (isAr ? "هابط" : "Downward") : (isAr ? "مستقر" : "Stable"),
-            icon: prediction?.trend === "up" ? TrendingUp : prediction?.trend === "down" ? TrendingDown : Target,
-            badge: prediction?.trend === "up" ? "text-chart-2" : prediction?.trend === "down" ? "text-destructive" : "text-muted-foreground",
-          },
-          {
-            label: isAr ? "الثقة" : "Confidence",
-            value: `${prediction?.confidence || 0}%`,
-            icon: Sparkles,
-            badge: (prediction?.confidence || 0) > 70 ? "text-chart-2" : "text-chart-5",
-          },
-          {
-            label: isAr ? "النمو الشهري" : "Monthly Growth",
-            value: `${(prediction?.growthRate || 0).toFixed(1)}%`,
-            icon: TrendingUp,
-            badge: (prediction?.growthRate || 0) >= 0 ? "text-chart-2" : "text-destructive",
-          },
-          {
-            label: isAr ? "القيمة التالية" : "Next Predicted",
-            value: prediction?.nextValue?.toLocaleString() || "—",
-            icon: Brain,
-            badge: "text-primary",
-          },
-        ].map((card) => (
-          <Card key={card.label}>
-            <CardContent className="pt-4 pb-3">
-              {isLoading ? (
-                <Skeleton className="h-16 w-full" />
-              ) : (
-                <>
-                  <div className="flex items-center justify-between">
-                    <p className="text-xs text-muted-foreground">{card.label}</p>
-                    <card.icon className={`h-4 w-4 ${card.badge}`} />
-                  </div>
-                  <p className="mt-1 text-xl font-bold">{card.value}</p>
-                </>
-              )}
-            </CardContent>
-          </Card>
-        ))}
-      </div>
-
-      {/* Main Chart */}
-      <Card>
-        <CardHeader className="pb-3">
-          <div className="flex items-center justify-between flex-wrap gap-2">
-            <CardTitle className="flex items-center gap-2 text-base">
-              <Icon className={`h-4 w-4 text-${config.color}`} />
-              {isAr ? config.labelAr : config.label} — {isAr ? "التنبؤ" : "Forecast"}
-            </CardTitle>
-            <div className="flex gap-2">
-              {prediction && prediction.anomalies.length > 0 && (
-                <Badge variant="outline" className="gap-1 text-[10px] text-chart-5 border-chart-5/30">
-                  <AlertTriangle className="h-3 w-3" />
-                  {prediction.anomalies.length} {isAr ? "شذوذ" : "anomalies"}
-                </Badge>
-              )}
-            </div>
-          </div>
-        </CardHeader>
-        <CardContent>
-          {isLoading ? (
-            <Skeleton className="h-[350px] w-full" />
-          ) : uniqueChartData.length < 2 ? (
-            <p className="py-16 text-center text-muted-foreground">
-              {isAr ? "بيانات غير كافية للتنبؤ" : "Insufficient data for predictions"}
+      {isLoading ? (
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          {[1, 2, 3, 4].map(i => <Skeleton key={i} className="h-32" />)}
+          <Skeleton className="sm:col-span-2 lg:col-span-4 h-80" />
+        </div>
+      ) : !data ? (
+        <Card className="border-dashed">
+          <CardContent className="flex flex-col items-center gap-3 py-12 text-center">
+            <Brain className="h-10 w-10 text-muted-foreground" />
+            <p className="text-sm text-muted-foreground">
+              {isAr ? "اضغط تحديث لتوليد التنبؤات" : "Click Refresh to generate AI predictions"}
             </p>
-          ) : (
-            <ResponsiveContainer width="100%" height={350}>
-              <ComposedChart data={uniqueChartData}>
-                <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
-                <XAxis dataKey="label" tick={{ fontSize: 11, fill: "hsl(var(--muted-foreground))" }} />
-                <YAxis allowDecimals={false} tick={{ fontSize: 11, fill: "hsl(var(--muted-foreground))" }} />
-                <Tooltip
-                  contentStyle={{
-                    background: "hsl(var(--popover))",
-                    border: "1px solid hsl(var(--border))",
-                    borderRadius: "8px",
-                    fontSize: 12,
-                  }}
-                  formatter={(value: number, name: string) => [
-                    value?.toLocaleString() ?? "—",
-                    name === "actual" ? (isAr ? "فعلي" : "Actual") : (isAr ? "تنبؤ" : "Predicted"),
-                  ]}
-                />
-                <Legend
-                  formatter={(value: string) =>
-                    value === "actual" ? (isAr ? "فعلي" : "Actual") : (isAr ? "تنبؤ" : "Predicted")
-                  }
-                />
-                <Area
-                  type="monotone"
-                  dataKey="actual"
-                  stroke={`hsl(var(--${config.color}))`}
-                  fill={`hsl(var(--${config.color}) / 0.15)`}
-                  strokeWidth={2}
-                  connectNulls={false}
-                />
-                <Line
-                  type="monotone"
-                  dataKey="predicted"
-                  stroke="hsl(var(--chart-4))"
-                  strokeWidth={2}
-                  strokeDasharray="6 4"
-                  dot={{ r: 4, fill: "hsl(var(--chart-4))", strokeWidth: 0 }}
-                  connectNulls={false}
-                />
-              </ComposedChart>
-            </ResponsiveContainer>
+          </CardContent>
+        </Card>
+      ) : (
+        <>
+          {/* Health Score Radar + Overall */}
+          <div className="grid gap-4 md:grid-cols-5">
+            <Card className="md:col-span-2">
+              <CardHeader className="pb-2">
+                <CardTitle className="text-sm flex items-center gap-2">
+                  <Activity className="h-4 w-4 text-primary" />
+                  {isAr ? "صحة المنصة" : "Platform Health"}
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="flex flex-col items-center gap-2">
+                  <div className="relative flex h-24 w-24 items-center justify-center">
+                    <svg className="h-24 w-24 -rotate-90" viewBox="0 0 100 100">
+                      <circle cx="50" cy="50" r="42" fill="none" stroke="hsl(var(--muted))" strokeWidth="8" />
+                      <circle cx="50" cy="50" r="42" fill="none" stroke="hsl(var(--primary))" strokeWidth="8"
+                        strokeDasharray={`${(data.health_score.overall / 100) * 264} 264`}
+                        strokeLinecap="round" />
+                    </svg>
+                    <span className="absolute text-2xl font-bold">{data.health_score.overall}</span>
+                  </div>
+                  <p className="text-xs text-muted-foreground">{isAr ? "النقاط من 100" : "Score out of 100"}</p>
+                </div>
+              </CardContent>
+            </Card>
+            <Card className="md:col-span-3">
+              <CardContent className="pt-4">
+                <ResponsiveContainer width="100%" height={180}>
+                  <RadarChart data={healthData}>
+                    <PolarGrid stroke="hsl(var(--border))" />
+                    <PolarAngleAxis dataKey="subject" tick={{ fontSize: 11, fill: "hsl(var(--muted-foreground))" }} />
+                    <PolarRadiusAxis domain={[0, 100]} tick={false} axisLine={false} />
+                    <Radar dataKey="value" stroke="hsl(var(--primary))" fill="hsl(var(--primary))" fillOpacity={0.2} strokeWidth={2} />
+                  </RadarChart>
+                </ResponsiveContainer>
+              </CardContent>
+            </Card>
+          </div>
+
+          {/* Forecast Cards */}
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            {data.forecasts.map((f) => {
+              const Icon = metricIcons[f.metric] || Target;
+              const TIcon = getTrendIcon(f.trend);
+              return (
+                <Card key={f.metric}>
+                  <CardContent className="pt-4 space-y-3">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-2">
+                        <Icon className="h-4 w-4 text-primary" />
+                        <span className="text-sm font-medium capitalize">{f.metric}</span>
+                      </div>
+                      <Badge variant="outline" className="gap-1 text-[10px]">
+                        <TIcon className={`h-3 w-3 ${f.trend === "up" ? "text-chart-2" : f.trend === "down" ? "text-destructive" : "text-muted-foreground"}`} />
+                        {f.trend}
+                      </Badge>
+                    </div>
+                    <div className="text-2xl font-bold">{f.current_value.toLocaleString()}</div>
+                    <div className="grid grid-cols-3 gap-2 text-xs">
+                      <div className="text-center p-2 rounded-lg bg-muted/50">
+                        <div className="text-muted-foreground">{isAr ? "3 أشهر" : "3mo"}</div>
+                        <div className="font-semibold mt-0.5">{f.forecast_3m.toLocaleString()}</div>
+                      </div>
+                      <div className="text-center p-2 rounded-lg bg-muted/50">
+                        <div className="text-muted-foreground">{isAr ? "6 أشهر" : "6mo"}</div>
+                        <div className="font-semibold mt-0.5">{f.forecast_6m.toLocaleString()}</div>
+                      </div>
+                      <div className="text-center p-2 rounded-lg bg-muted/50">
+                        <div className="text-muted-foreground">{isAr ? "12 شهر" : "12mo"}</div>
+                        <div className="font-semibold mt-0.5">{f.forecast_12m.toLocaleString()}</div>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <span className="text-[10px] text-muted-foreground">{isAr ? "الثقة" : "Confidence"}</span>
+                      <Progress value={f.confidence} className="flex-1 h-1.5" />
+                      <span className="text-[10px] font-medium">{f.confidence}%</span>
+                    </div>
+                  </CardContent>
+                </Card>
+              );
+            })}
+          </div>
+
+          {/* Monthly Trend Chart */}
+          {data.monthlyData && data.monthlyData.length > 0 && (
+            <Card>
+              <CardHeader className="pb-2">
+                <CardTitle className="text-sm">{isAr ? "الاتجاه الشهري" : "Monthly Trends"}</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <ResponsiveContainer width="100%" height={300}>
+                  <ComposedChart data={data.monthlyData}>
+                    <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
+                    <XAxis dataKey="month" tick={{ fontSize: 11, fill: "hsl(var(--muted-foreground))" }} />
+                    <YAxis tick={{ fontSize: 11, fill: "hsl(var(--muted-foreground))" }} />
+                    <Tooltip contentStyle={{ background: "hsl(var(--popover))", border: "1px solid hsl(var(--border))", borderRadius: "8px", fontSize: 12 }} />
+                    <Legend />
+                    <Area type="monotone" dataKey="users" name={isAr ? "المستخدمين" : "Users"} stroke="hsl(var(--primary))" fill="hsl(var(--primary) / 0.1)" />
+                    <Bar dataKey="competitions" name={isAr ? "المسابقات" : "Competitions"} fill="hsl(var(--chart-2))" radius={[4, 4, 0, 0]} />
+                    <Line type="monotone" dataKey="orders" name={isAr ? "الطلبات" : "Orders"} stroke="hsl(var(--chart-3))" strokeWidth={2} />
+                  </ComposedChart>
+                </ResponsiveContainer>
+              </CardContent>
+            </Card>
           )}
-        </CardContent>
-      </Card>
+
+          {/* Anomalies */}
+          {data.anomalies?.length > 0 && (
+            <Card>
+              <CardHeader className="pb-2">
+                <CardTitle className="text-sm flex items-center gap-2">
+                  <AlertTriangle className="h-4 w-4 text-chart-5" />
+                  {isAr ? "حالات شاذة مكتشفة" : "Detected Anomalies"}
+                  <Badge variant="secondary" className="text-[10px]">{data.anomalies.length}</Badge>
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-2">
+                {data.anomalies.map((a, i) => (
+                  <div key={i} className="flex items-start gap-3 p-3 rounded-lg border">
+                    <ShieldAlert className={`h-4 w-4 mt-0.5 shrink-0 ${a.severity === "critical" ? "text-destructive" : a.severity === "warning" ? "text-chart-3" : "text-muted-foreground"}`} />
+                    <div>
+                      <p className="text-sm font-medium">{a.metric}</p>
+                      <p className="text-xs text-muted-foreground">{a.description}</p>
+                    </div>
+                    <Badge variant="outline" className="ml-auto text-[10px] shrink-0">{a.severity}</Badge>
+                  </div>
+                ))}
+              </CardContent>
+            </Card>
+          )}
+
+          {/* Recommendations */}
+          {data.recommendations?.length > 0 && (
+            <Card>
+              <CardHeader className="pb-2">
+                <CardTitle className="text-sm flex items-center gap-2">
+                  <Lightbulb className="h-4 w-4 text-chart-4" />
+                  {isAr ? "توصيات ذكية" : "AI Recommendations"}
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-3">
+                {data.recommendations.map((r, i) => (
+                  <div key={i} className="p-3 rounded-lg border space-y-1.5">
+                    <div className="flex items-center justify-between gap-2">
+                      <p className="text-sm font-medium">{r.title}</p>
+                      <div className="flex gap-1 shrink-0">
+                        <Badge variant="outline" className={`text-[10px] ${getImpactColor(r.impact)}`}>
+                          {isAr ? "الأثر:" : "Impact:"} {r.impact}
+                        </Badge>
+                        <Badge variant="outline" className="text-[10px]">
+                          {isAr ? "الجهد:" : "Effort:"} {r.effort}
+                        </Badge>
+                      </div>
+                    </div>
+                    <p className="text-xs text-muted-foreground">{r.description}</p>
+                    <p className="text-[10px] text-primary">{isAr ? "العائد المتوقع:" : "Est. ROI:"} {r.estimated_roi}</p>
+                  </div>
+                ))}
+              </CardContent>
+            </Card>
+          )}
+        </>
+      )}
     </div>
   );
 }
