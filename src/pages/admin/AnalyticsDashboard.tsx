@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { BarChart3, Trophy, Users, DollarSign, Brain, Activity, UserMinus, TrendingUp, Megaphone, Wifi, Cpu, FileText, Flame, Globe, MessageSquareText, Filter, AlertTriangle, FlaskConical, FileBarChart, Landmark, PiggyBank } from "lucide-react";
+import { BarChart3, Trophy, Users, DollarSign, Brain, Activity, UserMinus, TrendingUp, Megaphone, Wifi, Cpu, FileText, Flame, Globe, MessageSquareText, Filter, AlertTriangle, FlaskConical, FileBarChart, Landmark, PiggyBank, Layers } from "lucide-react";
 import AdminPageHeader from "@/components/admin/AdminPageHeader";
 import PlatformOverview from "@/components/analytics/PlatformOverview";
 import CompetitionAnalytics from "@/components/analytics/CompetitionAnalytics";
@@ -24,6 +24,8 @@ import { ABTestingDashboard } from "@/components/analytics/ABTestingDashboard";
 import { ExecutiveSummary } from "@/components/analytics/ExecutiveSummary";
 import { FinancialForecasting } from "@/components/analytics/FinancialForecasting";
 import { TaxComplianceAnalytics } from "@/components/analytics/TaxComplianceAnalytics";
+import { PredictiveChurnDashboard } from "@/components/analytics/PredictiveChurnDashboard";
+import { MultiMetricComparison } from "@/components/analytics/MultiMetricComparison";
 import { AnalyticsDateRange, getPresetRange, type DateRange } from "@/components/analytics/AnalyticsDateRange";
 import { toast } from "@/hooks/use-toast";
 
@@ -35,7 +37,6 @@ export default function AnalyticsDashboard() {
 
   const handleExport = () => {
     toast({ title: isAr ? "جاري التصدير..." : "Exporting..." });
-    // The active tab component handles export logic
     const event = new CustomEvent("analytics-export", { detail: { tab: activeTab, dateRange } });
     window.dispatchEvent(event);
   };
@@ -46,13 +47,15 @@ export default function AnalyticsDashboard() {
     { value: "marketing", icon: Megaphone, label: isAr ? "التسويق" : "Marketing" },
     { value: "engagement", icon: Activity, label: isAr ? "التفاعل" : "Engagement" },
     { value: "retention", icon: UserMinus, label: isAr ? "الاحتفاظ" : "Retention" },
+    { value: "churn", icon: UserMinus, label: isAr ? "تنبؤ المغادرة" : "Churn" },
     { value: "competitions", icon: Trophy, label: isAr ? "المسابقات" : "Competitions" },
     { value: "users", icon: Users, label: isAr ? "المستخدمين" : "Users" },
+    { value: "comparison", icon: Layers, label: isAr ? "مقارنة" : "Compare" },
     { value: "revenue", icon: TrendingUp, label: isAr ? "الإيرادات" : "Revenue" },
     { value: "financial", icon: DollarSign, label: isAr ? "المالية" : "Financial" },
     { value: "forecasting", icon: PiggyBank, label: isAr ? "التنبؤ المالي" : "Forecasting" },
     { value: "tax", icon: Landmark, label: isAr ? "الضرائب" : "Tax" },
-    { value: "predictions", icon: Cpu, label: isAr ? "تنبؤات" : "Predictions" },
+    { value: "predictions", icon: Cpu, label: isAr ? "تنبؤات AI" : "AI Predictions" },
     { value: "heatmap", icon: Flame, label: isAr ? "خريطة حرارية" : "Heatmap" },
     { value: "geographic", icon: Globe, label: isAr ? "جغرافي" : "Geographic" },
     { value: "funnel", icon: Filter, label: isAr ? "مسار التحويل" : "Funnel" },
@@ -92,8 +95,10 @@ export default function AnalyticsDashboard() {
         <TabsContent value="marketing"><MarketingAnalytics /></TabsContent>
         <TabsContent value="engagement"><EngagementMetrics /></TabsContent>
         <TabsContent value="retention"><CohortRetentionChart /></TabsContent>
+        <TabsContent value="churn"><PredictiveChurnDashboard /></TabsContent>
         <TabsContent value="competitions"><CompetitionAnalytics /></TabsContent>
         <TabsContent value="users"><UserGrowthAnalytics /></TabsContent>
+        <TabsContent value="comparison"><MultiMetricComparison /></TabsContent>
         <TabsContent value="revenue"><RevenueAnalytics /></TabsContent>
         <TabsContent value="financial"><FinancialReports /></TabsContent>
         <TabsContent value="forecasting"><FinancialForecasting /></TabsContent>
