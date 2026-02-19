@@ -3,6 +3,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useUserRoles } from "@/hooks/useUserRole";
 import { useScrolled } from "@/hooks/useScrolled";
+import { useSiteSettingsContext } from "@/contexts/SiteSettingsContext";
 import { LanguageSwitcher } from "./LanguageSwitcher";
 import { ThemeToggle } from "./ThemeToggle";
 import { NotificationBell } from "./notifications/NotificationBell";
@@ -52,6 +53,9 @@ export function Header() {
   const isJudge = userRoles.includes("judge");
   const isAr = language === "ar";
   const scrolled = useScrolled();
+  const siteSettings = useSiteSettingsContext();
+  const headerCfg = siteSettings.header || {};
+  const brandCfg = siteSettings.branding || {};
 
   const visiblePrimary = primaryNav;
 
@@ -60,6 +64,7 @@ export function Header() {
       role="banner"
       className={cn(
         "sticky top-0 z-50 border-b bg-card/90 backdrop-blur-xl supports-[backdrop-filter]:bg-card/80 transition-shadow duration-300",
+        headerCfg.stickyHeader === false && "relative",
         scrolled
           ? "border-border/60 shadow-sm shadow-foreground/[0.03]"
           : "border-border/40 shadow-none"
@@ -75,14 +80,18 @@ export function Header() {
           aria-label="Altoha homepage"
           className="flex shrink-0 items-center gap-2 me-2 sm:me-3 group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:rounded-lg"
         >
-          <img
-            src="/altoha-logo.png"
-            alt="Altoha"
-            className="h-7 w-auto sm:h-8 transition-transform duration-200 group-hover:scale-105"
-          />
-          <span className="font-serif text-lg font-bold text-primary hidden sm:inline tracking-tight">
-            Altoha
-          </span>
+          {headerCfg.showLogo !== false && (
+            <img
+              src={brandCfg.logoUrl || "/altoha-logo.png"}
+              alt={brandCfg.siteName || "Altoha"}
+              className="h-7 w-auto sm:h-8 transition-transform duration-200 group-hover:scale-105"
+            />
+          )}
+          {headerCfg.showBrandName !== false && (
+            <span className="font-serif text-lg font-bold text-primary hidden sm:inline tracking-tight">
+              {isAr ? (brandCfg.siteNameAr || "الطهاة") : (brandCfg.siteName || "Altoha")}
+            </span>
+          )}
         </Link>
 
         {/* Desktop Nav */}
@@ -95,12 +104,14 @@ export function Header() {
 
         {/* Right side - consolidated */}
         <div className="flex items-center gap-1 ms-auto">
-          <div className="hidden md:block">
-            <QuickSearch />
-          </div>
-          {user && <NotificationBell />}
-          <ThemeToggle />
-          <LanguageSwitcher />
+          {headerCfg.showSearch !== false && (
+            <div className="hidden md:block">
+              <QuickSearch />
+            </div>
+          )}
+          {user && headerCfg.showNotifications !== false && <NotificationBell />}
+          {headerCfg.showThemeToggle !== false && <ThemeToggle />}
+          {headerCfg.showLanguageSwitcher !== false && <LanguageSwitcher />}
           <UserDropdown />
         </div>
       </nav>

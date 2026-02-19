@@ -7,6 +7,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { LanguageProvider } from "@/i18n/LanguageContext";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { ThemeProvider } from "@/components/ThemeProvider";
+import { SiteSettingsProvider } from "@/contexts/SiteSettingsContext";
 import { FloatingHelpButton } from "@/components/FloatingHelpButton";
 import { MobileBottomNav } from "@/components/mobile/MobileBottomNav";
 import { SkipToContent } from "@/components/a11y/SkipToContent";
@@ -50,6 +51,7 @@ const App = () => (
     >
       <LanguageProvider>
         <AuthProvider>
+          <SiteSettingsProvider>
           <TooltipProvider>
             <Toaster />
             <Sonner />
@@ -78,6 +80,7 @@ const App = () => (
               <UpdatePrompt />
             </BrowserRouter>
           </TooltipProvider>
+          </SiteSettingsProvider>
         </AuthProvider>
       </LanguageProvider>
     </ThemeProvider>
