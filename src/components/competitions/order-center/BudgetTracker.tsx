@@ -12,6 +12,8 @@ import {
 } from "lucide-react";
 import { ORDER_CATEGORIES } from "./OrderCenterCategories";
 import { toEnglishDigits } from "@/lib/formatNumber";
+import { OrderExportActions } from "./OrderExportActions";
+import { useRealtimeOrderUpdates } from "@/hooks/useRealtimeOrderUpdates";
 
 interface Props {
   competitionId: string;
@@ -31,6 +33,7 @@ interface CategoryBudget {
 export function BudgetTracker({ competitionId, isOrganizer }: Props) {
   const { language } = useLanguage();
   const isAr = language === "ar";
+  useRealtimeOrderUpdates(competitionId, true);
 
   const { data: lists } = useQuery({
     queryKey: ["budget-lists", competitionId],
@@ -123,14 +126,39 @@ export function BudgetTracker({ competitionId, isOrganizer }: Props) {
     "bg-chart-4", "bg-chart-5", "bg-accent",
   ];
 
+  const exportData = budgetByCategory.map(cat => ({
+    category: isAr ? cat.labelAr : cat.label,
+    estimated_cost: `$${cat.estimatedCost.toLocaleString()}`,
+    items: cat.itemCount,
+    delivered: cat.deliveredCount,
+    sponsored: cat.sponsoredCount,
+    pending: cat.itemCount - cat.deliveredCount - cat.sponsoredCount,
+  }));
+
+  const exportColumns = [
+    { key: "category", label: isAr ? "الفئة" : "Category" },
+    { key: "estimated_cost", label: isAr ? "التكلفة" : "Cost" },
+    { key: "items", label: isAr ? "العناصر" : "Items" },
+    { key: "delivered", label: isAr ? "تم التسليم" : "Delivered" },
+    { key: "sponsored", label: isAr ? "برعاية" : "Sponsored" },
+    { key: "pending", label: isAr ? "معلق" : "Pending" },
+  ];
+
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div>
-        <h3 className="text-lg font-semibold">{isAr ? "تتبع الميزانية" : "Budget Tracker"}</h3>
-        <p className="text-xs text-muted-foreground">
-          {isAr ? "تحليل التكاليف التقديرية والرعاية حسب الفئة" : "Estimated cost analysis & sponsorship breakdown by category"}
-        </p>
+      <div className="flex items-center justify-between">
+        <div>
+          <h3 className="text-lg font-semibold">{isAr ? "تتبع الميزانية" : "Budget Tracker"}</h3>
+          <p className="text-xs text-muted-foreground">
+            {isAr ? "تحليل التكاليف التقديرية والرعاية حسب الفئة" : "Estimated cost analysis & sponsorship breakdown by category"}
+          </p>
+        </div>
+        <OrderExportActions
+          data={exportData}
+          filename={`budget-${competitionId}`}
+          columns={exportColumns}
+        />
       </div>
 
       {/* Summary Cards */}
