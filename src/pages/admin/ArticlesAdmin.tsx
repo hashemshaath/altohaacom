@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { supabase } from "@/integrations/supabase/client";
@@ -11,18 +11,12 @@ import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { Switch } from "@/components/ui/switch";
 import { useToast } from "@/hooks/use-toast";
 import { format } from "date-fns";
 import { 
-  Plus, 
-  Search, 
-  Pencil, 
-  Trash2, 
-  Eye, 
-  FileText,
-  X,
-  Save,
-  ArrowLeft,
+  Plus, Search, Pencil, Trash2, Eye, FileText, X, Save, ArrowLeft,
+  Calendar, Clock, Star, Download, BarChart3, TrendingUp,
 } from "lucide-react";
 
 type ViewMode = "list" | "create" | "edit";
@@ -48,6 +42,8 @@ export default function ArticlesAdmin() {
     type: "news",
     status: "draft",
     featured_image_url: "",
+    is_featured: false,
+    published_at: "",
   });
 
   const { data: articles, isLoading } = useQuery({
@@ -136,6 +132,8 @@ export default function ArticlesAdmin() {
       type: "news",
       status: "draft",
       featured_image_url: "",
+      is_featured: false,
+      published_at: "",
     });
   };
 
@@ -152,16 +150,52 @@ export default function ArticlesAdmin() {
       type: article.type || "news",
       status: article.status || "draft",
       featured_image_url: article.featured_image_url || "",
+      is_featured: article.is_featured || false,
+      published_at: article.published_at || "",
     });
     setViewMode("edit");
   };
 
   const handleSubmit = () => {
+    const submitData = {
+      ...formData,
+      published_at: formData.published_at || (formData.status === "published" ? new Date().toISOString() : null),
+    };
     if (viewMode === "edit" && editingArticleId) {
-      updateMutation.mutate({ id: editingArticleId, data: formData });
+      updateMutation.mutate({ id: editingArticleId, data: submitData });
     } else {
-      createMutation.mutate(formData);
+      createMutation.mutate(submitData);
     }
+  };
+
+  // Stats
+  const stats = useMemo(() => {
+    if (!articles) return { total: 0, published: 0, drafts: 0, totalViews: 0, featured: 0 };
+    return {
+      total: articles.length,
+      published: articles.filter(a => a.status === "published").length,
+      drafts: articles.filter(a => a.status === "draft").length,
+      totalViews: articles.reduce((sum, a) => sum + (a.view_count || 0), 0),
+      featured: articles.filter(a => a.is_featured).length,
+    };
+  }, [articles]);
+
+  const exportArticlesCSV = () => {
+    if (!articles?.length) return;
+    const headers = ["Title", "Type", "Status", "Views", "Featured", "Published", "Created"];
+    const rows = articles.map(a => [
+      a.title, a.type, a.status, a.view_count || 0, a.is_featured ? "Yes" : "No",
+      a.published_at ? format(new Date(a.published_at), "yyyy-MM-dd") : "",
+      format(new Date(a.created_at), "yyyy-MM-dd"),
+    ]);
+    const csv = "\uFEFF" + [headers, ...rows].map(r => r.map(c => `"${String(c).replace(/"/g, '""')}"`).join(",")).join("\n");
+    const blob = new Blob([csv], { type: "text/csv;charset=utf-8" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `articles-${format(new Date(), "yyyyMMdd")}.csv`;
+    a.click();
+    URL.revokeObjectURL(url);
   };
 
   const handleBackToList = () => {
@@ -293,9 +327,7 @@ export default function ArticlesAdmin() {
                 <div className="space-y-2">
                   <Label>Type</Label>
                   <Select value={formData.type} onValueChange={(v) => setFormData({ ...formData, type: v })}>
-                    <SelectTrigger>
-                      <SelectValue />
-                    </SelectTrigger>
+                    <SelectTrigger><SelectValue /></SelectTrigger>
                     <SelectContent>
                       <SelectItem value="news">News</SelectItem>
                       <SelectItem value="article">Article</SelectItem>
@@ -306,15 +338,48 @@ export default function ArticlesAdmin() {
                 <div className="space-y-2">
                   <Label>Status</Label>
                   <Select value={formData.status} onValueChange={(v) => setFormData({ ...formData, status: v })}>
-                    <SelectTrigger>
-                      <SelectValue />
-                    </SelectTrigger>
+                    <SelectTrigger><SelectValue /></SelectTrigger>
                     <SelectContent>
                       <SelectItem value="draft">Draft</SelectItem>
                       <SelectItem value="published">Published</SelectItem>
                       <SelectItem value="archived">Archived</SelectItem>
                     </SelectContent>
                   </Select>
+                </div>
+              </div>
+
+              {/* Scheduling & Featured */}
+              <div className="grid gap-4 sm:grid-cols-2">
+                <div className="space-y-2">
+                  <Label className="flex items-center gap-1.5">
+                    <Calendar className="h-3.5 w-3.5" />
+                    {language === "ar" ? "جدولة النشر" : "Schedule Publication"}
+                  </Label>
+                  <Input
+                    type="datetime-local"
+                    value={formData.published_at ? formData.published_at.slice(0, 16) : ""}
+                    onChange={(e) => setFormData({ ...formData, published_at: e.target.value ? new Date(e.target.value).toISOString() : "" })}
+                  />
+                  <p className="text-[10px] text-muted-foreground">
+                    {language === "ar" ? "اتركه فارغاً للنشر الفوري" : "Leave empty for immediate publishing"}
+                  </p>
+                </div>
+                <div className="space-y-2">
+                  <Label className="flex items-center gap-1.5">
+                    <Star className="h-3.5 w-3.5" />
+                    {language === "ar" ? "مقال مميز" : "Featured Article"}
+                  </Label>
+                  <div className="flex items-center gap-2 pt-2">
+                    <Switch
+                      checked={formData.is_featured}
+                      onCheckedChange={(v) => setFormData({ ...formData, is_featured: v })}
+                    />
+                    <span className="text-sm text-muted-foreground">
+                      {formData.is_featured
+                        ? (language === "ar" ? "مميز - يظهر في الواجهة" : "Featured - shown on homepage")
+                        : (language === "ar" ? "عادي" : "Regular")}
+                    </span>
+                  </div>
                 </div>
               </div>
 
@@ -354,10 +419,44 @@ export default function ArticlesAdmin() {
             </p>
           </div>
         </div>
-        <Button onClick={() => setViewMode("create")}>
-          <Plus className="mr-2 h-4 w-4" />
-          {language === "ar" ? "مقال جديد" : "New Article"}
-        </Button>
+        <div className="flex gap-2">
+          <Button variant="outline" size="sm" onClick={exportArticlesCSV} className="gap-1.5">
+            <Download className="h-3.5 w-3.5" /> CSV
+          </Button>
+          <Button onClick={() => setViewMode("create")}>
+            <Plus className="mr-2 h-4 w-4" />
+            {language === "ar" ? "مقال جديد" : "New Article"}
+          </Button>
+        </div>
+      </div>
+
+      {/* Stats */}
+      <div className="grid grid-cols-2 gap-3 sm:grid-cols-5">
+        <Card><CardContent className="p-3 text-center">
+          <FileText className="mx-auto mb-1 h-4 w-4 text-primary" />
+          <p className="text-lg font-bold">{stats.total}</p>
+          <p className="text-[10px] text-muted-foreground">{language === "ar" ? "إجمالي" : "Total"}</p>
+        </CardContent></Card>
+        <Card><CardContent className="p-3 text-center">
+          <TrendingUp className="mx-auto mb-1 h-4 w-4 text-chart-2" />
+          <p className="text-lg font-bold">{stats.published}</p>
+          <p className="text-[10px] text-muted-foreground">{language === "ar" ? "منشور" : "Published"}</p>
+        </CardContent></Card>
+        <Card><CardContent className="p-3 text-center">
+          <Clock className="mx-auto mb-1 h-4 w-4 text-chart-4" />
+          <p className="text-lg font-bold">{stats.drafts}</p>
+          <p className="text-[10px] text-muted-foreground">{language === "ar" ? "مسودات" : "Drafts"}</p>
+        </CardContent></Card>
+        <Card><CardContent className="p-3 text-center">
+          <BarChart3 className="mx-auto mb-1 h-4 w-4 text-chart-3" />
+          <p className="text-lg font-bold">{stats.totalViews.toLocaleString()}</p>
+          <p className="text-[10px] text-muted-foreground">{language === "ar" ? "مشاهدات" : "Views"}</p>
+        </CardContent></Card>
+        <Card><CardContent className="p-3 text-center">
+          <Star className="mx-auto mb-1 h-4 w-4 text-chart-1" />
+          <p className="text-lg font-bold">{stats.featured}</p>
+          <p className="text-[10px] text-muted-foreground">{language === "ar" ? "مميز" : "Featured"}</p>
+        </CardContent></Card>
       </div>
 
       {/* Filters */}
