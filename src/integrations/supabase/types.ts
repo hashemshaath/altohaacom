@@ -6169,6 +6169,39 @@ export type Database = {
         }
         Relationships: []
       }
+      country_audit_log: {
+        Row: {
+          action: string
+          changed_by: string | null
+          changes: Json | null
+          country_code: string
+          created_at: string
+          id: string
+          summary: string | null
+          summary_ar: string | null
+        }
+        Insert: {
+          action: string
+          changed_by?: string | null
+          changes?: Json | null
+          country_code: string
+          created_at?: string
+          id?: string
+          summary?: string | null
+          summary_ar?: string | null
+        }
+        Update: {
+          action?: string
+          changed_by?: string | null
+          changes?: Json | null
+          country_code?: string
+          created_at?: string
+          id?: string
+          summary?: string | null
+          summary_ar?: string | null
+        }
+        Relationships: []
+      }
       country_services: {
         Row: {
           country_id: string
