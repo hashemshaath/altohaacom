@@ -132,11 +132,29 @@ export function OrderOverviewDashboard({ competitionId, isOrganizer }: Props) {
     if (!printWindow) return;
     const dir = isAr ? "rtl" : "ltr";
     const align = isAr ? "right" : "left";
+
+    // Build full items table rows
+    const itemRows = (allItems || []).map(item => {
+      const name = getItemDisplayName(item, isAr);
+      const status = item.status || "pending";
+      const qty = item.quantity || 1;
+      const cost = Number(item.estimated_cost) || 0;
+      const deadline = item.deadline ? format(new Date(item.deadline), "MMM d, yyyy") : "—";
+      const isOverdue = item.deadline && isPast(new Date(item.deadline)) && status !== "delivered";
+      return `<tr${isOverdue ? ' style="background:#fff5f5;"' : ""}>
+        <td>${name}</td>
+        <td><span class="badge ${status === "delivered" ? "bg-green" : status === "pending" ? "bg-gray" : "bg-blue"}">${status}</span></td>
+        <td>${qty}</td>
+        <td>${formatCurrency(cost * qty, language as "en" | "ar")}</td>
+        <td${isOverdue ? ' style="color:#dc2626;font-weight:600;"' : ""}>${deadline}</td>
+      </tr>`;
+    }).join("");
+
     printWindow.document.write(`
       <html dir="${dir}"><head><title>${isAr ? "ملخص الطلبات" : "Order Summary"}</title>
       <style>
         * { box-sizing: border-box; margin: 0; padding: 0; }
-        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; padding: 2rem; color: #1a1a1a; max-width: 900px; margin: 0 auto; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; padding: 2rem; color: #1a1a1a; max-width: 1000px; margin: 0 auto; }
         h1 { font-size: 1.4rem; margin-bottom: 0.25rem; }
         .subtitle { font-size: 0.75rem; color: #666; margin-bottom: 1.5rem; }
         .stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.75rem; margin-bottom: 1.5rem; }
@@ -150,10 +168,16 @@ export function OrderOverviewDashboard({ competitionId, isOrganizer }: Props) {
         .section-title { font-size: 0.9rem; font-weight: 600; margin-top: 1.5rem; margin-bottom: 0.5rem; border-bottom: 2px solid #e5e5e5; padding-bottom: 4px; }
         .footer { margin-top: 2rem; font-size: 0.65rem; color: #999; text-align: center; border-top: 1px solid #eee; padding-top: 0.75rem; }
         .alert { background: #fff3cd; border: 1px solid #ffc107; border-radius: 6px; padding: 0.5rem 0.75rem; font-size: 0.75rem; margin-bottom: 1rem; }
-        @media print { body { padding: 1rem; } }
+        .badge { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: 500; }
+        .bg-green { background: #dcfce7; color: #166534; }
+        .bg-gray { background: #f3f4f6; color: #4b5563; }
+        .bg-blue { background: #dbeafe; color: #1e40af; }
+        .pipeline { display: flex; gap: 4px; margin: 1rem 0; }
+        .pipeline-stage { flex: 1; text-align: center; padding: 6px; border-radius: 6px; font-size: 11px; }
+        @media print { body { padding: 1rem; } @page { size: landscape; margin: 1.5cm; } }
       </style></head><body>
         <h1>${isAr ? "ملخص طلبات المسابقة" : "Competition Order Summary"}</h1>
-        <p class="subtitle">${isAr ? "تم الإنشاء" : "Generated"}: ${format(new Date(), "PPP")}</p>
+        <p class="subtitle">${isAr ? "تم الإنشاء" : "Generated"}: ${format(new Date(), "PPP p")}</p>
         ${stats.overdue > 0 ? `<div class="alert">⚠️ ${stats.overdue} ${isAr ? "عناصر متأخرة تحتاج اهتمام" : "overdue items need attention"}</div>` : ""}
         <div class="stats">
           <div class="stat"><div class="stat-value">${lists?.length || 0}</div><div class="stat-label">${isAr ? "القوائم" : "Lists"}</div></div>
@@ -161,6 +185,18 @@ export function OrderOverviewDashboard({ competitionId, isOrganizer }: Props) {
           <div class="stat"><div class="stat-value">${stats.delivered}</div><div class="stat-label">${isAr ? "تم التسليم" : "Delivered"}</div></div>
           <div class="stat"><div class="stat-value">${formatCurrency(totalCost, language as "en" | "ar").replace(/\s+/g, '')}</div><div class="stat-label">${isAr ? "التكلفة" : "Est. Cost"}</div></div>
         </div>
+        <div class="section-title">${isAr ? "مراحل التجهيز" : "Fulfillment Pipeline"}</div>
+        <div class="pipeline">
+          ${pipeline.map(s => `<div class="pipeline-stage" style="background:${s.count > 0 ? '#e0f2fe' : '#f9fafb'};">
+            <div style="font-weight:700;font-size:14px;">${s.count}</div>
+            <div style="font-size:10px;color:#666;">${isAr ? s.labelAr : s.labelEn}</div>
+          </div>`).join("")}
+        </div>
+        <div class="section-title">${isAr ? "تفاصيل العناصر" : "Item Details"} (${stats.total})</div>
+        <table>
+          <thead><tr><th>${isAr ? "العنصر" : "Item"}</th><th>${isAr ? "الحالة" : "Status"}</th><th>${isAr ? "الكمية" : "Qty"}</th><th>${isAr ? "التكلفة" : "Cost"}</th><th>${isAr ? "الموعد" : "Deadline"}</th></tr></thead>
+          <tbody>${itemRows}</tbody>
+        </table>
         <div class="section-title">${isAr ? "القوائم" : "Requirement Lists"}</div>
         <table>
           <thead><tr><th>${isAr ? "القائمة" : "List"}</th><th>${isAr ? "الفئة" : "Category"}</th><th>${isAr ? "الحالة" : "Status"}</th></tr></thead>
@@ -229,17 +265,17 @@ export function OrderOverviewDashboard({ competitionId, isOrganizer }: Props) {
 
       {/* Overdue Alert */}
       {overdueItems.length > 0 && (
-        <Card className="border-destructive/30 bg-destructive/5">
+        <Card className="border-destructive/30 bg-destructive/5 animate-in fade-in slide-in-from-top-2 duration-300">
           <CardContent className="p-3">
             <div className="flex items-center gap-2 mb-2">
-              <AlertTriangle className="h-4 w-4 text-destructive" />
+              <AlertTriangle className="h-4 w-4 text-destructive animate-pulse" />
               <p className="text-sm font-semibold text-destructive">
                 {overdueItems.length} {isAr ? "عناصر متأخرة" : "Overdue Items"}
               </p>
             </div>
             <div className="space-y-1">
-              {overdueItems.map((item) => (
-                <div key={item.id} className="flex items-center justify-between text-xs">
+              {overdueItems.map((item, idx) => (
+                <div key={item.id} className="flex items-center justify-between text-xs animate-in fade-in slide-in-from-left-2" style={{ animationDelay: `${idx * 50}ms` }}>
                   <span className="truncate">{getItemDisplayName(item, isAr)}</span>
                   <Badge variant="destructive" className="text-[9px] shrink-0">
                     {format(new Date(item.deadline!), "MMM d")}
@@ -342,9 +378,11 @@ function MetricCard({ icon: Icon, value, label, iconColor, trend, trendLabel, tr
   trend?: number; trendLabel?: string; trendPositive?: boolean; isValueString?: boolean;
 }) {
   return (
-    <Card className="border-border/60 transition-all duration-200 hover:shadow-sm hover:-translate-y-0.5">
+    <Card className="border-border/60 transition-all duration-300 hover:shadow-md hover:-translate-y-0.5 active:scale-[0.98]">
       <CardContent className="p-3 text-center">
-        <Icon className={`mx-auto mb-1.5 h-5 w-5 ${iconColor}`} />
+        <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-muted/50 mx-auto mb-1.5">
+          <Icon className={`h-4.5 w-4.5 ${iconColor}`} />
+        </div>
         <p className={`font-bold ${isValueString ? "text-base" : "text-xl"}`}>{value}</p>
         <p className="text-[10px] text-muted-foreground uppercase">{label}</p>
         {trend !== undefined && trendLabel && (
@@ -361,14 +399,16 @@ function StatusCard({ icon: Icon, iconColor, label, value, badge }: {
   icon: any; iconColor: string; label: string; value: number; badge?: string;
 }) {
   return (
-    <Card className="border-border/60 transition-all duration-200 hover:shadow-sm hover:-translate-y-0.5">
+    <Card className="border-border/60 transition-all duration-300 hover:shadow-md hover:-translate-y-0.5 active:scale-[0.98]">
       <CardContent className="p-3">
         <div className="flex items-center gap-2 mb-1">
-          <Icon className={`h-4 w-4 ${iconColor}`} />
+          <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-muted/50">
+            <Icon className={`h-3.5 w-3.5 ${iconColor}`} />
+          </div>
           <span className="text-xs font-medium truncate">{label}</span>
         </div>
         <p className="text-2xl font-bold">{value}</p>
-        {badge && <Badge variant="secondary" className="text-[10px] mt-1">{badge}</Badge>}
+        {badge && <Badge variant="secondary" className="text-[10px] mt-1 animate-in fade-in">{badge}</Badge>}
       </CardContent>
     </Card>
   );
