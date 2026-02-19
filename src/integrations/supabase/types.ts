@@ -16383,6 +16383,7 @@ export type Database = {
       generate_wallet_number: { Args: never; Returns: string }
       generate_wallet_txn_number: { Args: never; Returns: string }
       get_company_balance: { Args: { p_company_id: string }; Returns: number }
+      get_profile_safe: { Args: { p_profile_user_id: string }; Returns: Json }
       get_user_chat_group_ids: {
         Args: { p_user_id: string }
         Returns: string[]
