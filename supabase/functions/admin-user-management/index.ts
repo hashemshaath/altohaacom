@@ -73,7 +73,8 @@ Deno.serve(async (req) => {
         });
 
         if (createError) {
-          return new Response(JSON.stringify({ error: createError.message }), {
+          console.error("Create user error:", createError.message);
+          return new Response(JSON.stringify({ error: "Failed to create user. Please check the provided details." }), {
             status: 400,
             headers: { ...corsHeaders, "Content-Type": "application/json" },
           });
@@ -114,7 +115,8 @@ Deno.serve(async (req) => {
         });
 
         if (resetError) {
-          return new Response(JSON.stringify({ error: resetError.message }), {
+          console.error("Reset password error:", resetError.message);
+          return new Response(JSON.stringify({ error: "Failed to reset password." }), {
             status: 400,
             headers: { ...corsHeaders, "Content-Type": "application/json" },
           });
@@ -144,7 +146,8 @@ Deno.serve(async (req) => {
         const { error: inviteError } = await adminClient.auth.admin.inviteUserByEmail(inviteEmail);
 
         if (inviteError) {
-          return new Response(JSON.stringify({ error: inviteError.message }), {
+          console.error("Send invitation error:", inviteError.message);
+          return new Response(JSON.stringify({ error: "Failed to send invitation." }), {
             status: 400,
             headers: { ...corsHeaders, "Content-Type": "application/json" },
           });
@@ -181,7 +184,8 @@ Deno.serve(async (req) => {
         const { error: deleteError } = await adminClient.auth.admin.deleteUser(deleteUserId);
 
         if (deleteError) {
-          return new Response(JSON.stringify({ error: deleteError.message }), {
+          console.error("Delete user error:", deleteError.message);
+          return new Response(JSON.stringify({ error: "Failed to delete user." }), {
             status: 400,
             headers: { ...corsHeaders, "Content-Type": "application/json" },
           });
@@ -206,7 +210,8 @@ Deno.serve(async (req) => {
         });
     }
   } catch (error) {
-    return new Response(JSON.stringify({ error: error.message }), {
+    console.error("Admin user management error:", error);
+    return new Response(JSON.stringify({ error: "Service temporarily unavailable" }), {
       status: 500,
       headers: { ...corsHeaders, "Content-Type": "application/json" },
     });
