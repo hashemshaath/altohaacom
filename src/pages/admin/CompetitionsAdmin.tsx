@@ -7,6 +7,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -15,7 +16,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { useToast } from "@/hooks/use-toast";
-import { Search, MoreHorizontal, Eye, Edit, Trash2, Trophy, Users, Calendar, MapPin, Sparkles, Filter, Globe, Plus, Copy, Building2, Tag, FileSpreadsheet } from "lucide-react";
+import { Search, MoreHorizontal, Eye, Edit, Trash2, Trophy, Users, Calendar, MapPin, Sparkles, Filter, Globe, Plus, Copy, Building2, Tag, FileSpreadsheet, Gavel, Medal, BarChart3 } from "lucide-react";
 import { format } from "date-fns";
 import type { Database } from "@/integrations/supabase/types";
 
@@ -50,6 +51,7 @@ export default function CompetitionsAdmin() {
   const [exhibitionFilter, setExhibitionFilter] = useState<string>("all");
   const [yearFilter, setYearFilter] = useState<string>("all");
   const [showBulkImport, setShowBulkImport] = useState(false);
+  const [viewTab, setViewTab] = useState<"list" | "judging" | "results">("list");
 
   // Fetch competitions with organizer and exhibition info
   const { data: competitions, isLoading } = useQuery({
@@ -244,6 +246,30 @@ export default function CompetitionsAdmin() {
       {showBulkImport && (
         <BulkImportPanel entityType="competition" onImportComplete={() => { setShowBulkImport(false); queryClient.invalidateQueries({ queryKey: ["adminCompetitions"] }); }} />
       )}
+
+      {/* View Tabs */}
+      <Tabs value={viewTab} onValueChange={(v) => setViewTab(v as any)}>
+        <TabsList>
+          <TabsTrigger value="list" className="gap-1.5">
+            <Trophy className="h-3.5 w-3.5" /> {isAr ? "المسابقات" : "Competitions"}
+          </TabsTrigger>
+          <TabsTrigger value="judging" className="gap-1.5">
+            <Gavel className="h-3.5 w-3.5" /> {isAr ? "التحكيم" : "Judging"}
+          </TabsTrigger>
+          <TabsTrigger value="results" className="gap-1.5">
+            <Medal className="h-3.5 w-3.5" /> {isAr ? "النتائج" : "Results"}
+          </TabsTrigger>
+        </TabsList>
+
+        <TabsContent value="judging">
+          <JudgingPanel competitions={competitions || []} isAr={isAr} />
+        </TabsContent>
+
+        <TabsContent value="results">
+          <ResultsPanel competitions={competitions || []} isAr={isAr} />
+        </TabsContent>
+
+        <TabsContent value="list">
 
       {/* Stats */}
       <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
@@ -559,6 +585,164 @@ export default function CompetitionsAdmin() {
           )}
         </CardContent>
       </Card>
+        </TabsContent>
+      </Tabs>
+    </div>
+  );
+}
+
+// ── Judging Panel ──────────────────────────
+function JudgingPanel({ competitions, isAr }: { competitions: any[]; isAr: boolean }) {
+  const judgingComps = competitions.filter(c => ["judging", "in_progress"].includes(c.status));
+
+  const { data: judgingData = [] } = useQuery({
+    queryKey: ["judging-overview"],
+    queryFn: async () => {
+      const compIds = judgingComps.map(c => c.id);
+      if (compIds.length === 0) return [];
+      const { data } = await supabase
+        .from("competition_registrations")
+        .select("id, competition_id, participant_id, status")
+        .in("competition_id", compIds)
+        .limit(500);
+      return (data || []) as any[];
+    },
+    enabled: judgingComps.length > 0,
+  });
+
+  if (judgingComps.length === 0) {
+    return (
+      <Card>
+        <CardContent className="py-12 text-center">
+          <Gavel className="h-10 w-10 text-muted-foreground/30 mx-auto mb-3" />
+          <p className="text-sm text-muted-foreground">{isAr ? "لا توجد مسابقات في مرحلة التحكيم" : "No competitions in judging phase"}</p>
+        </CardContent>
+      </Card>
+    );
+  }
+
+  return (
+    <div className="space-y-4">
+      {judgingComps.map(comp => {
+        const regs = judgingData.filter((s: any) => s.competition_id === comp.id);
+        const approvedRegs = regs.filter((s: any) => s.status === "approved");
+        const uniqueParticipants = approvedRegs.length;
+        const progress = comp.max_participants ? Math.round((uniqueParticipants / comp.max_participants) * 100) : 50;
+
+        return (
+          <Card key={comp.id}>
+            <CardContent className="p-4 space-y-3">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm font-semibold">{isAr && comp.title_ar ? comp.title_ar : comp.title}</p>
+                  <p className="text-[10px] text-muted-foreground font-mono">{comp.competition_number}</p>
+                </div>
+                <Badge className={statusConfig[comp.status as CompetitionStatus]?.bg || "bg-muted"}>
+                  {isAr ? statusConfig[comp.status as CompetitionStatus]?.labelAr : statusConfig[comp.status as CompetitionStatus]?.label}
+                </Badge>
+              </div>
+              <div className="grid grid-cols-3 gap-3">
+                <div className="text-center rounded-lg border p-2">
+                  <p className="text-lg font-bold">{regs.length}</p>
+                  <p className="text-[10px] text-muted-foreground">{isAr ? "مسجلين" : "Registered"}</p>
+                </div>
+                <div className="text-center rounded-lg border p-2">
+                  <p className="text-lg font-bold">{uniqueParticipants}</p>
+                  <p className="text-[10px] text-muted-foreground">{isAr ? "معتمدين" : "Approved"}</p>
+                </div>
+                <div className="text-center rounded-lg border p-2">
+                  <p className="text-lg font-bold">{regs.filter((r: any) => r.status === "pending").length}</p>
+                  <p className="text-[10px] text-muted-foreground">{isAr ? "معلق" : "Pending"}</p>
+                </div>
+              </div>
+              <div className="space-y-1">
+                <div className="flex justify-between text-[10px] text-muted-foreground">
+                  <span>{isAr ? "تقدم التحكيم" : "Judging Progress"}</span>
+                  <span>{progress}%</span>
+                </div>
+                <Progress value={progress} className="h-2" />
+              </div>
+            </CardContent>
+          </Card>
+        );
+      })}
+    </div>
+  );
+}
+
+// ── Results Panel ──────────────────────────
+function ResultsPanel({ competitions, isAr }: { competitions: any[]; isAr: boolean }) {
+  const completedComps = competitions.filter(c => c.status === "completed");
+
+  const { data: resultsData = [] } = useQuery({
+    queryKey: ["results-overview"],
+    queryFn: async () => {
+      const compIds = completedComps.map(c => c.id);
+      if (compIds.length === 0) return [];
+      const { data } = await supabase
+        .from("competition_registrations")
+        .select("id, competition_id, participant_id, status, final_rank")
+        .in("competition_id", compIds)
+        .not("final_rank", "is", null)
+        .order("final_rank", { ascending: true })
+        .limit(100);
+      return (data || []) as any[];
+    },
+    enabled: completedComps.length > 0,
+  });
+
+  if (completedComps.length === 0) {
+    return (
+      <Card>
+        <CardContent className="py-12 text-center">
+          <Medal className="h-10 w-10 text-muted-foreground/30 mx-auto mb-3" />
+          <p className="text-sm text-muted-foreground">{isAr ? "لا توجد مسابقات مكتملة بنتائج" : "No completed competitions with results"}</p>
+        </CardContent>
+      </Card>
+    );
+  }
+
+  const medalEmoji = (rank: number) => rank === 1 ? "🥇" : rank === 2 ? "🥈" : rank === 3 ? "🥉" : `#${rank}`;
+
+  return (
+    <div className="space-y-4">
+      {completedComps.map(comp => {
+        const compResults = resultsData.filter(r => r.competition_id === comp.id);
+        return (
+          <Card key={comp.id}>
+            <CardContent className="p-4 space-y-3">
+              <div className="flex items-center justify-between">
+                <p className="text-sm font-semibold">{isAr && comp.title_ar ? comp.title_ar : comp.title}</p>
+                <Badge variant="secondary" className="text-[10px]">{compResults.length} {isAr ? "نتيجة" : "results"}</Badge>
+              </div>
+              {compResults.length > 0 ? (
+                <div className="space-y-2">
+                  {compResults.slice(0, 5).map((result: any) => {
+                    return (
+                      <div key={result.id} className="flex items-center gap-3 rounded-lg border p-2.5">
+                        <span className="text-lg w-8 text-center">{medalEmoji(result.final_rank)}</span>
+                        <div className="flex-1 min-w-0">
+                          <p className="text-xs font-medium truncate">
+                            {isAr ? "مشارك" : "Participant"} #{result.participant_id?.slice(0, 8)}
+                          </p>
+                        </div>
+                        {result.total_score != null && (
+                          <Badge variant="outline" className="text-[10px]">{result.total_score} {isAr ? "نقطة" : "pts"}</Badge>
+                        )}
+                        {result.medal && (
+                          <Badge className="text-[10px] bg-chart-4/10 text-chart-4 border-0">{result.medal}</Badge>
+                        )}
+                      </div>
+                    );
+                  })}
+                </div>
+              ) : (
+                <p className="text-xs text-muted-foreground text-center py-4">{isAr ? "لم يتم إدخال النتائج بعد" : "No results entered yet"}</p>
+              )}
+            </CardContent>
+          </Card>
+        );
+      })}
     </div>
   );
 }
