@@ -126,7 +126,7 @@ serve(async (req) => {
     if (convError) {
       console.error("Conversion insert error:", convError);
       return new Response(
-        JSON.stringify({ error: convError.message }),
+        JSON.stringify({ error: "Failed to process referral. Please try again." }),
         { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
       );
     }
@@ -203,7 +203,7 @@ serve(async (req) => {
   } catch (error) {
     console.error("Process referral error:", error);
     return new Response(
-      JSON.stringify({ error: error instanceof Error ? error.message : "Unknown error" }),
+      JSON.stringify({ error: "Service temporarily unavailable" }),
       { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
     );
   }
