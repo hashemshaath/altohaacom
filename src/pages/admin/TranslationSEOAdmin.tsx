@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -19,8 +20,23 @@ import { useToast } from "@/hooks/use-toast";
 import {
   Languages, Search, Sparkles, Globe, FileText, Shield, AlertTriangle,
   CheckCircle, Settings, BookOpen, Plus, Edit, Trash2, Loader2, Cpu,
-  Database, Save, X, Zap,
+  Database, Save, X, Zap, TestTube, Copy, ArrowRightLeft, Type,
+  Hash, FileCheck, BarChart3,
 } from "lucide-react";
+
+// ── Field Types ────────────────────────────────────
+const FIELD_TYPES = [
+  { value: "title", label: "Title", label_ar: "عنوان", maxHint: 60 },
+  { value: "meta_title", label: "Meta Title", label_ar: "عنوان ميتا", maxHint: 60 },
+  { value: "meta_description", label: "Meta Description", label_ar: "وصف ميتا", maxHint: 160 },
+  { value: "excerpt", label: "Excerpt", label_ar: "مقتطف", maxHint: 200 },
+  { value: "description", label: "Description", label_ar: "وصف", maxHint: 500 },
+  { value: "bio", label: "Bio", label_ar: "نبذة", maxHint: 300 },
+  { value: "body", label: "Body", label_ar: "محتوى", maxHint: 10000 },
+  { value: "tag", label: "Tag", label_ar: "وسم", maxHint: 30 },
+  { value: "slug", label: "Slug", label_ar: "رابط", maxHint: 80 },
+  { value: "text", label: "Text", label_ar: "نص", maxHint: 500 },
+] as const;
 
 // ── Hooks ──────────────────────────────────────────
 
@@ -91,6 +107,7 @@ export default function TranslationSEOAdmin() {
 
   const [search, setSearch] = useState("");
   const [categoryFilter, setCategoryFilter] = useState("all");
+  const [fieldTypeFilter, setFieldTypeFilter] = useState("all");
 
   const { data: fields = [], isLoading: fieldsLoading } = useSeoFields();
   const { data: rules = [], isLoading: rulesLoading } = useSeoRules();
@@ -105,14 +122,15 @@ export default function TranslationSEOAdmin() {
   const [editingItem, setEditingItem] = useState<any>(null);
 
   // ── Filtered data ─────────────────────────────
-
   const filteredFields = fields.filter((f: any) => {
     const matchesSearch = !search ||
       f.label?.toLowerCase().includes(search.toLowerCase()) ||
       f.label_ar?.includes(search) ||
-      f.table_name?.toLowerCase().includes(search.toLowerCase());
+      f.table_name?.toLowerCase().includes(search.toLowerCase()) ||
+      f.field_name?.toLowerCase().includes(search.toLowerCase());
     const matchesCategory = categoryFilter === "all" || f.category === categoryFilter;
-    return matchesSearch && matchesCategory;
+    const matchesType = fieldTypeFilter === "all" || f.field_type === fieldTypeFilter;
+    return matchesSearch && matchesCategory && matchesType;
   });
 
   const seoFields = fields.filter((f: any) => f.seo_optimize);
@@ -121,7 +139,6 @@ export default function TranslationSEOAdmin() {
   const enabledRules = rules.filter((r: any) => r.is_enabled);
 
   // ── Generic CRUD mutations ────────────────────
-
   const upsertMutation = useMutation({
     mutationFn: async ({ table, data, id }: { table: string; data: any; id?: string }) => {
       if (id) {
@@ -173,6 +190,12 @@ export default function TranslationSEOAdmin() {
 
   const isLoading = fieldsLoading || rulesLoading || modelsLoading || sourcesLoading;
 
+  // Field type stats
+  const fieldTypeStats = FIELD_TYPES.map(ft => ({
+    ...ft,
+    count: fields.filter((f: any) => f.field_type === ft.value).length,
+  })).filter(ft => ft.count > 0);
+
   return (
     <div className="space-y-6">
       {/* Header */}
@@ -183,8 +206,8 @@ export default function TranslationSEOAdmin() {
           </h1>
           <p className="text-sm text-muted-foreground">
             {isAr
-              ? "إدارة كاملة للحقول والقواعد والنماذج والمصادر — قابلة للتعديل والترقية"
-              : "Full management of fields, rules, AI models, and content sources — editable & upgradable"}
+              ? "إدارة كاملة للحقول والقواعد والنماذج والمصادر — مع تحسين ذكي يراعي نوع الحقل وطوله"
+              : "Full management of fields, rules, AI models & sources — with field-type-aware AI optimization"}
           </p>
         </div>
         <div className="flex flex-wrap gap-2">
@@ -199,7 +222,7 @@ export default function TranslationSEOAdmin() {
         <div className="flex justify-center py-12"><Loader2 className="h-8 w-8 animate-spin text-primary" /></div>
       ) : (
         <Tabs defaultValue="fields">
-          <TabsList className="grid w-full grid-cols-4">
+          <TabsList className="grid w-full grid-cols-5">
             <TabsTrigger value="fields" className="gap-1.5">
               <Languages className="h-4 w-4" /><span className="hidden sm:inline">{isAr ? "الحقول" : "Fields"}</span>
             </TabsTrigger>
@@ -212,6 +235,9 @@ export default function TranslationSEOAdmin() {
             <TabsTrigger value="sources" className="gap-1.5">
               <Database className="h-4 w-4" /><span className="hidden sm:inline">{isAr ? "المصادر" : "Sources"}</span>
             </TabsTrigger>
+            <TabsTrigger value="playground" className="gap-1.5">
+              <TestTube className="h-4 w-4" /><span className="hidden sm:inline">{isAr ? "المختبر" : "Playground"}</span>
+            </TabsTrigger>
           </TabsList>
 
           {/* ═══════════ FIELDS TAB ═══════════ */}
@@ -223,11 +249,20 @@ export default function TranslationSEOAdmin() {
                   <Input placeholder={isAr ? "بحث في الحقول..." : "Search fields..."} value={search} onChange={(e) => setSearch(e.target.value)} className="ps-10" />
                 </div>
                 <Select value={categoryFilter} onValueChange={setCategoryFilter}>
-                  <SelectTrigger className="w-48"><SelectValue /></SelectTrigger>
+                  <SelectTrigger className="w-40"><SelectValue /></SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="all">{isAr ? "كل الحقول" : "All Fields"}</SelectItem>
+                    <SelectItem value="all">{isAr ? "كل الأقسام" : "All Sections"}</SelectItem>
                     {sources.map((s: any) => (
                       <SelectItem key={s.source_key} value={s.source_key}>{isAr ? s.name_ar : s.name}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                <Select value={fieldTypeFilter} onValueChange={setFieldTypeFilter}>
+                  <SelectTrigger className="w-40"><SelectValue /></SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">{isAr ? "كل الأنواع" : "All Types"}</SelectItem>
+                    {FIELD_TYPES.map((ft) => (
+                      <SelectItem key={ft.value} value={ft.value}>{isAr ? ft.label_ar : ft.label} ({ft.maxHint})</SelectItem>
                     ))}
                   </SelectContent>
                 </Select>
@@ -240,7 +275,7 @@ export default function TranslationSEOAdmin() {
             <Card>
               <CardHeader>
                 <CardTitle>{isAr ? "خريطة الحقول ثنائية اللغة" : "Bilingual Field Map"}</CardTitle>
-                <CardDescription>{isAr ? "جميع الحقول القابلة للترجمة والتحسين — انقر للتعديل" : "All translatable and optimizable fields — click to edit"}</CardDescription>
+                <CardDescription>{isAr ? "جميع الحقول القابلة للترجمة — نوع الحقل يحدد الطول الأمثل للذكاء الاصطناعي" : "All translatable fields — field type determines optimal AI output length"}</CardDescription>
               </CardHeader>
               <CardContent>
                 <ScrollArea className="h-[500px]">
@@ -249,7 +284,7 @@ export default function TranslationSEOAdmin() {
                       <TableRow>
                         <TableHead>{isAr ? "القسم" : "Section"}</TableHead>
                         <TableHead>{isAr ? "الحقل" : "Field"}</TableHead>
-                        <TableHead>{isAr ? "الحقل العربي" : "Arabic"}</TableHead>
+                        <TableHead>{isAr ? "النوع" : "Type"}</TableHead>
                         <TableHead>{isAr ? "الحد" : "Max"}</TableHead>
                         <TableHead>{isAr ? "مطلوب" : "Req."}</TableHead>
                         <TableHead>SEO</TableHead>
@@ -260,6 +295,7 @@ export default function TranslationSEOAdmin() {
                     <TableBody>
                       {filteredFields.map((f: any) => {
                         const src = sources.find((s: any) => s.source_key === f.category);
+                        const ft = FIELD_TYPES.find(t => t.value === f.field_type);
                         return (
                           <TableRow key={f.id} className={!f.is_active ? "opacity-50" : ""}>
                             <TableCell>
@@ -267,9 +303,26 @@ export default function TranslationSEOAdmin() {
                                 {isAr ? src?.name_ar || f.category : src?.name || f.category}
                               </Badge>
                             </TableCell>
-                            <TableCell className="font-mono text-xs">{f.field_name}</TableCell>
-                            <TableCell className="font-mono text-xs" dir="rtl">{f.field_name_ar}</TableCell>
-                            <TableCell><Badge variant="secondary" className="text-xs">{f.max_length}</Badge></TableCell>
+                            <TableCell>
+                              <div>
+                                <span className="font-mono text-xs">{f.field_name}</span>
+                                {f.label && <p className="text-[10px] text-muted-foreground">{isAr ? f.label_ar || f.label : f.label}</p>}
+                              </div>
+                            </TableCell>
+                            <TableCell>
+                              <Badge variant="secondary" className="text-[10px] gap-1">
+                                <Type className="h-2.5 w-2.5" />
+                                {isAr ? ft?.label_ar || f.field_type : ft?.label || f.field_type}
+                              </Badge>
+                            </TableCell>
+                            <TableCell>
+                              <div className="flex items-center gap-1">
+                                <Badge variant="outline" className="text-xs tabular-nums">{f.max_length}</Badge>
+                                {ft && f.max_length > ft.maxHint && (
+                                  <span title={isAr ? `الحد الموصى: ${ft.maxHint}` : `Recommended: ${ft.maxHint}`}><AlertTriangle className="h-3 w-3 text-chart-4" /></span>
+                                )}
+                              </div>
+                            </TableCell>
                             <TableCell>{f.is_required ? <CheckCircle className="h-4 w-4 text-chart-3" /> : <span className="text-muted-foreground text-xs">—</span>}</TableCell>
                             <TableCell>{f.seo_optimize ? <Sparkles className="h-4 w-4 text-chart-4" /> : <span className="text-muted-foreground text-xs">—</span>}</TableCell>
                             <TableCell>
@@ -290,17 +343,39 @@ export default function TranslationSEOAdmin() {
               </CardContent>
             </Card>
 
-            {/* Summary */}
-            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+            {/* Stats & Field Type Distribution */}
+            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
               {[
                 { value: fields.length, label: isAr ? "إجمالي الحقول" : "Total Fields", color: "text-primary" },
                 { value: requiredFields.length, label: isAr ? "حقول مطلوبة" : "Required", color: "text-chart-3" },
                 { value: seoFields.length, label: isAr ? "محسّنة SEO" : "SEO Optimized", color: "text-chart-4" },
                 { value: new Set(fields.map((f: any) => f.category)).size, label: isAr ? "أقسام" : "Sections", color: "text-chart-1" },
+                { value: new Set(fields.map((f: any) => f.field_type)).size, label: isAr ? "أنواع حقول" : "Field Types", color: "text-chart-2" },
               ].map((s, i) => (
-                <Card key={i}><CardContent className="p-4 text-center"><p className={`text-3xl font-bold ${s.color}`}>{s.value}</p><p className="text-sm text-muted-foreground">{s.label}</p></CardContent></Card>
+                <Card key={i}><CardContent className="p-4 text-center"><p className={`text-3xl font-bold tabular-nums ${s.color}`}>{s.value}</p><p className="text-sm text-muted-foreground">{s.label}</p></CardContent></Card>
               ))}
             </div>
+
+            {/* Field Type Distribution */}
+            {fieldTypeStats.length > 0 && (
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2 text-base"><BarChart3 className="h-4 w-4" />{isAr ? "توزيع أنواع الحقول" : "Field Type Distribution"}</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="flex flex-wrap gap-3">
+                    {fieldTypeStats.map(ft => (
+                      <div key={ft.value} className="flex items-center gap-2 rounded-lg border px-3 py-2">
+                        <Type className="h-3.5 w-3.5 text-muted-foreground" />
+                        <span className="text-sm font-medium">{isAr ? ft.label_ar : ft.label}</span>
+                        <Badge variant="secondary" className="tabular-nums text-xs">{ft.count}</Badge>
+                        <span className="text-[10px] text-muted-foreground">≤{ft.maxHint}</span>
+                      </div>
+                    ))}
+                  </div>
+                </CardContent>
+              </Card>
+            )}
           </TabsContent>
 
           {/* ═══════════ RULES TAB ═══════════ */}
@@ -440,14 +515,230 @@ export default function TranslationSEOAdmin() {
               </CardContent>
             </Card>
           </TabsContent>
+
+          {/* ═══════════ PLAYGROUND TAB ═══════════ */}
+          <TabsContent value="playground" className="mt-6">
+            <AIPlayground isAr={isAr} />
+          </TabsContent>
         </Tabs>
       )}
 
       {/* ═══════════ DIALOGS ═══════════ */}
-      <FieldDialog open={fieldDialog} onClose={() => setFieldDialog(false)} item={editingItem} sources={sources} onSave={(data, id) => upsertMutation.mutate({ table: "seo_translatable_fields", data, id })} isAr={isAr} saving={upsertMutation.isPending} />
-      <RuleDialog open={ruleDialog} onClose={() => setRuleDialog(false)} item={editingItem} onSave={(data, id) => upsertMutation.mutate({ table: "seo_rules", data, id })} isAr={isAr} saving={upsertMutation.isPending} />
-      <ModelDialog open={modelDialog} onClose={() => setModelDialog(false)} item={editingItem} onSave={(data, id) => upsertMutation.mutate({ table: "seo_ai_models", data, id })} isAr={isAr} saving={upsertMutation.isPending} />
-      <SourceDialog open={sourceDialog} onClose={() => setSourceDialog(false)} item={editingItem} onSave={(data, id) => upsertMutation.mutate({ table: "seo_content_sources", data, id })} isAr={isAr} saving={upsertMutation.isPending} />
+      <FieldDialog open={fieldDialog} onClose={() => setFieldDialog(false)} item={editingItem} sources={sources} onSave={(data: any, id?: string) => upsertMutation.mutate({ table: "seo_translatable_fields", data, id })} isAr={isAr} saving={upsertMutation.isPending} />
+      <RuleDialog open={ruleDialog} onClose={() => setRuleDialog(false)} item={editingItem} onSave={(data: any, id?: string) => upsertMutation.mutate({ table: "seo_rules", data, id })} isAr={isAr} saving={upsertMutation.isPending} />
+      <ModelDialog open={modelDialog} onClose={() => setModelDialog(false)} item={editingItem} onSave={(data: any, id?: string) => upsertMutation.mutate({ table: "seo_ai_models", data, id })} isAr={isAr} saving={upsertMutation.isPending} />
+      <SourceDialog open={sourceDialog} onClose={() => setSourceDialog(false)} item={editingItem} onSave={(data: any, id?: string) => upsertMutation.mutate({ table: "seo_content_sources", data, id })} isAr={isAr} saving={upsertMutation.isPending} />
+    </div>
+  );
+}
+
+// ═══════════════════════════════════════════════════
+// AI Playground — Live Testing Panel
+// ═══════════════════════════════════════════════════
+
+function AIPlayground({ isAr }: { isAr: boolean }) {
+  const { toast } = useToast();
+  const [inputText, setInputText] = useState("");
+  const [outputText, setOutputText] = useState("");
+  const [fieldType, setFieldType] = useState("title");
+  const [sourceLang, setSourceLang] = useState<"en" | "ar">("en");
+  const [mode, setMode] = useState<"optimize" | "translate">("optimize");
+  const [loading, setLoading] = useState(false);
+  const [maxLength, setMaxLength] = useState(60);
+
+  // Auto-update maxLength when fieldType changes
+  const handleFieldTypeChange = (val: string) => {
+    setFieldType(val);
+    const ft = FIELD_TYPES.find(f => f.value === val);
+    if (ft) setMaxLength(ft.maxHint);
+  };
+
+  const handleRun = async () => {
+    if (!inputText.trim()) return;
+    setLoading(true);
+    setOutputText("");
+    try {
+      const body: any = {
+        text: inputText,
+        source_lang: sourceLang,
+        field_type: fieldType,
+        max_length: maxLength,
+      };
+      if (mode === "optimize") {
+        body.optimize_only = true;
+      } else {
+        body.target_lang = sourceLang === "en" ? "ar" : "en";
+        body.optimize_seo = true;
+      }
+      const { data, error } = await supabase.functions.invoke("ai-translate-seo", { body });
+      if (error) throw error;
+      const result = data?.optimized || data?.translated || "";
+      setOutputText(result);
+    } catch (err: any) {
+      toast({ variant: "destructive", title: isAr ? "خطأ" : "Error", description: err.message });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const copyOutput = () => {
+    if (outputText) {
+      navigator.clipboard.writeText(outputText);
+      toast({ title: isAr ? "تم النسخ" : "Copied!" });
+    }
+  };
+
+  const inputLen = inputText.length;
+  const outputLen = outputText.length;
+  const isOverLimit = outputLen > maxLength;
+
+  return (
+    <div className="grid gap-6 lg:grid-cols-2">
+      {/* Input */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2 text-base">
+            <FileText className="h-4 w-4" />
+            {isAr ? "النص المصدر" : "Source Text"}
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <div className="grid gap-3 grid-cols-2">
+            <div className="space-y-1.5">
+              <Label className="text-xs">{isAr ? "نوع الحقل" : "Field Type"}</Label>
+              <Select value={fieldType} onValueChange={handleFieldTypeChange}>
+                <SelectTrigger><SelectValue /></SelectTrigger>
+                <SelectContent>
+                  {FIELD_TYPES.map(ft => (
+                    <SelectItem key={ft.value} value={ft.value}>
+                      {isAr ? ft.label_ar : ft.label} (≤{ft.maxHint})
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="space-y-1.5">
+              <Label className="text-xs">{isAr ? "اللغة المصدر" : "Source Language"}</Label>
+              <Select value={sourceLang} onValueChange={(v) => setSourceLang(v as "en" | "ar")}>
+                <SelectTrigger><SelectValue /></SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="en">English</SelectItem>
+                  <SelectItem value="ar">العربية</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
+
+          <div className="grid gap-3 grid-cols-2">
+            <div className="space-y-1.5">
+              <Label className="text-xs">{isAr ? "الوضع" : "Mode"}</Label>
+              <Select value={mode} onValueChange={(v) => setMode(v as "optimize" | "translate")}>
+                <SelectTrigger><SelectValue /></SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="optimize">{isAr ? "تحسين SEO" : "SEO Optimize"}</SelectItem>
+                  <SelectItem value="translate">{isAr ? "ترجمة + تحسين" : "Translate + SEO"}</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="space-y-1.5">
+              <Label className="text-xs">{isAr ? "الحد الأقصى" : "Max Length"}</Label>
+              <Input type="number" value={maxLength} onChange={(e) => setMaxLength(parseInt(e.target.value) || 60)} dir="ltr" />
+            </div>
+          </div>
+
+          <div className="space-y-1.5">
+            <div className="flex items-center justify-between">
+              <Label className="text-xs">{isAr ? "النص" : "Text"}</Label>
+              <span className={`text-[10px] tabular-nums ${inputLen > maxLength ? "text-destructive font-medium" : "text-muted-foreground"}`}>
+                {inputLen}/{maxLength}
+              </span>
+            </div>
+            <Textarea
+              value={inputText}
+              onChange={(e) => setInputText(e.target.value)}
+              rows={5}
+              dir={sourceLang === "ar" ? "rtl" : "ltr"}
+              placeholder={isAr ? "أدخل النص هنا للاختبار..." : "Enter text here to test..."}
+            />
+          </div>
+
+          <Button onClick={handleRun} disabled={loading || !inputText.trim()} className="w-full gap-2">
+            {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : mode === "optimize" ? <Sparkles className="h-4 w-4" /> : <ArrowRightLeft className="h-4 w-4" />}
+            {mode === "optimize" ? (isAr ? "تحسين SEO" : "Optimize SEO") : (isAr ? "ترجمة وتحسين" : "Translate & Optimize")}
+          </Button>
+        </CardContent>
+      </Card>
+
+      {/* Output */}
+      <Card>
+        <CardHeader>
+          <div className="flex items-center justify-between">
+            <CardTitle className="flex items-center gap-2 text-base">
+              <Sparkles className="h-4 w-4" />
+              {isAr ? "النتيجة" : "Result"}
+            </CardTitle>
+            {outputText && (
+              <Button variant="ghost" size="sm" onClick={copyOutput} className="gap-1 text-xs h-7">
+                <Copy className="h-3 w-3" />{isAr ? "نسخ" : "Copy"}
+              </Button>
+            )}
+          </div>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          {outputText ? (
+            <>
+              <div className="rounded-lg border p-4 min-h-[120px]" dir={mode === "translate" ? (sourceLang === "en" ? "rtl" : "ltr") : sourceLang === "ar" ? "rtl" : "ltr"}>
+                <p className="text-sm leading-relaxed">{outputText}</p>
+              </div>
+
+              {/* Analysis */}
+              <div className="grid gap-3 grid-cols-3">
+                <div className="rounded-lg border p-3 text-center">
+                  <p className="text-xs text-muted-foreground">{isAr ? "الطول" : "Length"}</p>
+                  <p className={`text-lg font-bold tabular-nums ${isOverLimit ? "text-destructive" : "text-chart-3"}`}>{outputLen}</p>
+                </div>
+                <div className="rounded-lg border p-3 text-center">
+                  <p className="text-xs text-muted-foreground">{isAr ? "الحد" : "Limit"}</p>
+                  <p className="text-lg font-bold tabular-nums">{maxLength}</p>
+                </div>
+                <div className="rounded-lg border p-3 text-center">
+                  <p className="text-xs text-muted-foreground">{isAr ? "الحالة" : "Status"}</p>
+                  {isOverLimit ? (
+                    <div className="flex items-center justify-center gap-1 text-destructive">
+                      <AlertTriangle className="h-4 w-4" />
+                      <span className="text-sm font-medium">{isAr ? "طويل" : "Over"}</span>
+                    </div>
+                  ) : (
+                    <div className="flex items-center justify-center gap-1 text-chart-3">
+                      <CheckCircle className="h-4 w-4" />
+                      <span className="text-sm font-medium">{isAr ? "مقبول" : "OK"}</span>
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              {/* Character bar */}
+              <div className="space-y-1">
+                <div className="h-2 rounded-full bg-muted overflow-hidden">
+                  <div
+                    className={`h-full rounded-full transition-all ${isOverLimit ? "bg-destructive" : "bg-chart-3"}`}
+                    style={{ width: `${Math.min(100, (outputLen / maxLength) * 100)}%` }}
+                  />
+                </div>
+                <p className="text-[10px] text-muted-foreground text-end tabular-nums">
+                  {outputLen}/{maxLength} ({Math.round((outputLen / maxLength) * 100)}%)
+                </p>
+              </div>
+            </>
+          ) : (
+            <div className="flex flex-col items-center justify-center py-12 text-muted-foreground gap-3">
+              <TestTube className="h-10 w-10 opacity-30" />
+              <p className="text-sm">{isAr ? "أدخل نصاً واضغط على زر التحسين أو الترجمة لرؤية النتيجة" : "Enter text and click optimize or translate to see results"}</p>
+              <p className="text-[10px]">{isAr ? "يراعي الذكاء الاصطناعي نوع الحقل والحد الأقصى تلقائياً" : "AI automatically respects field type and max length constraints"}</p>
+            </div>
+          )}
+        </CardContent>
+      </Card>
     </div>
   );
 }
@@ -464,8 +755,14 @@ function FieldDialog({ open, onClose, item, sources, onSave, isAr, saving }: any
     if (item) {
       setForm({ ...item });
     } else {
-      setForm({ table_name: "", field_name: "", field_name_ar: "", label: "", label_ar: "", category: sources?.[0]?.source_key || "", max_length: 500, is_required: false, seo_optimize: false, description: "", description_ar: "", is_active: true, sort_order: 0 });
+      setForm({ table_name: "", field_name: "", field_name_ar: "", label: "", label_ar: "", category: sources?.[0]?.source_key || "", field_type: "text", max_length: 500, is_required: false, seo_optimize: false, description: "", description_ar: "", is_active: true, sort_order: 0 });
     }
+  };
+
+  // Auto-suggest max_length on field_type change
+  const handleFieldTypeChange = (val: string) => {
+    const ft = FIELD_TYPES.find(f => f.value === val);
+    setForm({ ...form, field_type: val, max_length: ft?.maxHint || form.max_length });
   };
 
   if (open && Object.keys(form).length === 0) resetForm();
@@ -514,6 +811,40 @@ function FieldDialog({ open, onClose, item, sources, onSave, isAr, saving }: any
               <Input value={form.label_ar || ""} onChange={(e) => setForm({ ...form, label_ar: e.target.value })} placeholder="اسم المسابقة" dir="rtl" />
             </div>
           </div>
+
+          {/* Field Type + Max Length */}
+          <div className="grid gap-4 grid-cols-2">
+            <div className="space-y-2">
+              <Label className="flex items-center gap-1"><Type className="h-3 w-3" />{isAr ? "نوع الحقل" : "Field Type"}</Label>
+              <Select value={form.field_type || "text"} onValueChange={handleFieldTypeChange}>
+                <SelectTrigger><SelectValue /></SelectTrigger>
+                <SelectContent>
+                  {FIELD_TYPES.map(ft => (
+                    <SelectItem key={ft.value} value={ft.value}>
+                      {isAr ? ft.label_ar : ft.label} (≤{ft.maxHint})
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              <p className="text-[10px] text-muted-foreground">
+                {isAr ? "يحدد الطول الأمثل للذكاء الاصطناعي" : "Controls AI output length & context"}
+              </p>
+            </div>
+            <div className="space-y-2">
+              <Label className="flex items-center gap-1"><Hash className="h-3 w-3" />{isAr ? "الحد الأقصى للأحرف" : "Max Length"}</Label>
+              <Input type="number" value={form.max_length || 500} onChange={(e) => setForm({ ...form, max_length: parseInt(e.target.value) || 500 })} dir="ltr" />
+              {(() => {
+                const ft = FIELD_TYPES.find(f => f.value === form.field_type);
+                return ft && form.max_length > ft.maxHint ? (
+                  <p className="text-[10px] text-chart-4 flex items-center gap-1">
+                    <AlertTriangle className="h-3 w-3" />
+                    {isAr ? `الحد الموصى لـ ${ft.label_ar}: ${ft.maxHint}` : `Recommended for ${ft.label}: ${ft.maxHint}`}
+                  </p>
+                ) : null;
+              })()}
+            </div>
+          </div>
+
           <div className="grid gap-4 grid-cols-2">
             <div className="space-y-2">
               <Label>{isAr ? "الوصف (EN)" : "Description (EN)"}</Label>
@@ -524,15 +855,9 @@ function FieldDialog({ open, onClose, item, sources, onSave, isAr, saving }: any
               <Input value={form.description_ar || ""} onChange={(e) => setForm({ ...form, description_ar: e.target.value })} dir="rtl" />
             </div>
           </div>
-          <div className="grid gap-4 grid-cols-2">
-            <div className="space-y-2">
-              <Label>{isAr ? "الحد الأقصى للأحرف" : "Max Length"}</Label>
-              <Input type="number" value={form.max_length || 500} onChange={(e) => setForm({ ...form, max_length: parseInt(e.target.value) || 500 })} dir="ltr" />
-            </div>
-            <div className="space-y-2">
-              <Label>{isAr ? "الترتيب" : "Sort Order"}</Label>
-              <Input type="number" value={form.sort_order || 0} onChange={(e) => setForm({ ...form, sort_order: parseInt(e.target.value) || 0 })} dir="ltr" />
-            </div>
+          <div className="space-y-2">
+            <Label>{isAr ? "الترتيب" : "Sort Order"}</Label>
+            <Input type="number" value={form.sort_order || 0} onChange={(e) => setForm({ ...form, sort_order: parseInt(e.target.value) || 0 })} dir="ltr" />
           </div>
           <div className="flex flex-wrap gap-6">
             <div className="flex items-center gap-2">
