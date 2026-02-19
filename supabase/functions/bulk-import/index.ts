@@ -457,7 +457,52 @@ serve(async (req) => {
 
         const cleaned: Record<string, any> = {};
         template.columns.forEach(col => {
-          cleaned[col] = row[col] !== undefined ? String(row[col]).trim() : "";
+          let val = row[col] !== undefined ? String(row[col]).trim() : "";
+          
+          // String length validation (max 2000 chars)
+          if (val.length > 2000) {
+            errors.push({ row: idx + 2, message: `Field ${col} exceeds max length of 2000 characters` });
+            val = val.substring(0, 2000);
+          }
+
+          // Email validation
+          if (col.includes("email") && val) {
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(val) || val.length > 255) {
+              errors.push({ row: idx + 2, message: `Invalid email format for ${col}: "${val}"` });
+            }
+          }
+
+          // URL validation - only allow http/https
+          if ((col.includes("url") || col === "website") && val) {
+            if (!/^https?:\/\//i.test(val)) {
+              errors.push({ row: idx + 2, message: `Invalid URL for ${col}: must start with http:// or https://` });
+              val = "";
+            }
+          }
+
+          // Phone validation
+          if (col.includes("phone") && val) {
+            if (!/^\+?[\d\s\-()]{6,20}$/.test(val)) {
+              errors.push({ row: idx + 2, message: `Invalid phone format for ${col}: "${val}"` });
+            }
+          }
+
+          // Numeric validation
+          if ((col === "amount" || col === "ticket_price" || col === "score") && val) {
+            if (isNaN(Number(val)) || Number(val) < 0) {
+              errors.push({ row: idx + 2, message: `Invalid numeric value for ${col}: "${val}"` });
+            }
+          }
+
+          // Integer validation
+          if ((col === "max_participants" || col === "max_attendees" || col === "member_count" || col === "rank" || col === "edition_year" || col === "founded_year") && val) {
+            if (!Number.isInteger(Number(val)) || Number(val) < 0) {
+              errors.push({ row: idx + 2, message: `Invalid integer value for ${col}: "${val}"` });
+            }
+          }
+
+          cleaned[col] = val;
         });
 
         const hasArabic = Object.values(cleaned).some(v => /[\u0600-\u06FF]/.test(String(v)));
