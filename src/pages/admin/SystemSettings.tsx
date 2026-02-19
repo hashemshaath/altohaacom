@@ -25,7 +25,7 @@ export default function SystemSettings() {
 
   const [settings, setSettings] = useState({
     // General
-    siteName: "Altohaa",
+    siteName: "Altoha",
     siteDescription: "Culinary Competition Platform",
     maintenanceMode: false,
     

@@ -154,15 +154,15 @@ export default function Competitions() {
   return (
     <div className="flex min-h-screen flex-col bg-background">
       <SEOHead
-        title={isAr ? "مسابقات الطهي — الطهاة" : "Culinary Competitions — Altohaa"}
+        title={isAr ? "مسابقات الطهي — الطهاة" : "Culinary Competitions — Altoha"}
         description={isAr ? "تصفح وانضم لمسابقات الطهي حول العالم. أبرز مهاراتك وتنافس مع أفضل الطهاة." : "Browse and join culinary competitions worldwide. Showcase your cooking skills and compete with the best chefs."}
         jsonLd={{
           "@context": "https://schema.org",
           "@type": "CollectionPage",
           name: isAr ? "مسابقات الطهي" : "Culinary Competitions",
-          description: "Browse culinary competitions on Altohaa",
+          description: "Browse culinary competitions on Altoha",
           url: `${window.location.origin}/competitions`,
-          isPartOf: { "@type": "WebSite", name: "Altohaa", url: window.location.origin },
+          isPartOf: { "@type": "WebSite", name: "Altoha", url: window.location.origin },
         }}
       />
       <Header />

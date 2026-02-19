@@ -18,7 +18,7 @@ export function SmartInstallBanner() {
         </div>
         <div className="flex-1 min-w-0">
           <p className="text-sm font-semibold line-clamp-1">
-            {isAr ? "ثبّت Altohaa" : "Install Altohaa"}
+            {isAr ? "ثبّت Altoha" : "Install Altoha"}
           </p>
           <p className="text-xs text-muted-foreground line-clamp-1">
             {isAr ? "أضفه لشاشتك الرئيسية" : "Add to your home screen"}

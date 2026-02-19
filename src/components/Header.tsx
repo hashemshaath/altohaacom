@@ -72,16 +72,16 @@ export function Header() {
         {/* Logo */}
         <Link
           to="/"
-          aria-label="Altohaa homepage"
+          aria-label="Altoha homepage"
           className="flex shrink-0 items-center gap-2 me-2 sm:me-3 group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:rounded-lg"
         >
           <img
-            src="/altohaa-logo.png"
-            alt="Altohaa"
+            src="/altoha-logo.png"
+            alt="Altoha"
             className="h-7 w-auto sm:h-8 transition-transform duration-200 group-hover:scale-105"
           />
           <span className="font-serif text-lg font-bold text-primary hidden sm:inline tracking-tight">
-            Altohaa
+            Altoha
           </span>
         </Link>
 

@@ -87,7 +87,7 @@ export function PlatformFeatures() {
         <div className="container relative">
           <div className="mb-10 text-center">
             <h2 id="roles-heading" className="font-serif text-2xl font-bold sm:text-3xl md:text-4xl">
-              {isAr ? "لمن صُممت هذه المنصة؟" : "Who Is Altohaa For?"}
+              {isAr ? "لمن صُممت هذه المنصة؟" : "Who Is Altoha For?"}
             </h2>
             <p className="mx-auto mt-2 max-w-xl text-sm text-muted-foreground">
               {isAr ? "مصممة لخدمة كل دور في منظومة الطهي الاحترافية" : "Designed to serve every role in the professional culinary ecosystem"}
@@ -126,11 +126,11 @@ export function PlatformFeatures() {
         </div>
       </section>
 
-      {/* Why Altohaa */}
+      {/* Why Altoha */}
       <section ref={whyReveal.ref} className="container py-14 md:py-20" aria-labelledby="why-heading">
         <div className="mb-10 text-center">
           <h2 id="why-heading" className="font-serif text-2xl font-bold sm:text-3xl md:text-4xl">
-            {isAr ? "لماذا الطهاة؟" : "Why Altohaa?"}
+            {isAr ? "لماذا الطهاة؟" : "Why Altoha?"}
           </h2>
           <p className="mx-auto mt-2 max-w-md text-sm text-muted-foreground">
             {isAr ? "ما يميزنا عن أي منصة أخرى" : "What sets us apart from any other platform"}

@@ -63,14 +63,14 @@ const Index = () => {
   return (
     <div className="flex min-h-screen flex-col overflow-x-hidden" role="document">
       <SEOHead
-        title="Altohaa — The Global Culinary Community"
+        title="Altoha — The Global Culinary Community"
         description="The premier platform for chefs, judges, organizers, and food industry professionals. Compete in world-class competitions, master new skills, and connect with a vibrant culinary community."
         ogImage="/pwa-512x512.png"
         lang={language}
         jsonLd={{
           "@context": "https://schema.org",
           "@type": "WebSite",
-          name: "Altohaa",
+          name: "Altoha",
           url: window.location.origin,
           description: "The premier culinary community platform for chefs, judges, organizers, and sponsors.",
           potentialAction: {

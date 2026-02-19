@@ -132,8 +132,8 @@ export function MobileMenu({ primaryNav, moreLinks }: MobileMenuProps) {
             {/* Header */}
             <div className="flex items-center justify-between border-b p-4 bg-gradient-to-b from-primary/5 to-transparent">
               <Link to="/" onClick={() => setOpen(false)} className="flex items-center gap-2.5">
-                <img src="/altohaa-logo.png" alt="Altohaa" className="h-8 w-auto" />
-                <span className="font-serif text-lg font-bold text-primary">Altohaa</span>
+                <img src="/altoha-logo.png" alt="Altoha" className="h-8 w-auto" />
+                <span className="font-serif text-lg font-bold text-primary">Altoha</span>
               </Link>
             </div>
 
