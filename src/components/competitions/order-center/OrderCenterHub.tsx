@@ -4,6 +4,7 @@ import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import { LayoutDashboard, ClipboardList, Package, Lightbulb, CheckSquare, Send, Wallet, Truck, Activity, BarChart3, ClipboardCheck, BookTemplate, FileInput } from "lucide-react";
+import { useDeadlineAlerts } from "./useDeadlineAlerts";
 
 // Lazy load all tab panels for performance
 const RequirementsListPanel = lazy(() => import("../RequirementsListPanel").then(m => ({ default: m.RequirementsListPanel })));
@@ -77,6 +78,9 @@ export function OrderCenterHub({ competitionId, isOrganizer }: Props) {
   const { language } = useLanguage();
   const isAr = language === "ar";
   const [activeTab, setActiveTab] = useState("overview");
+
+  // Show toast alerts for overdue/upcoming deadlines on load
+  useDeadlineAlerts(competitionId);
 
   const renderTabContent = () => {
     const props = { competitionId, isOrganizer };
