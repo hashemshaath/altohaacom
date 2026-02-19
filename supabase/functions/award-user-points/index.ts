@@ -140,7 +140,7 @@ serve(async (req) => {
     if (awardError) {
       console.error("Award points error:", awardError);
       return new Response(
-        JSON.stringify({ error: awardError.message }),
+        JSON.stringify({ error: "Failed to award points. Please try again." }),
         { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
       );
     }
@@ -160,7 +160,7 @@ serve(async (req) => {
   } catch (error) {
     console.error("Award points error:", error);
     return new Response(
-      JSON.stringify({ error: error instanceof Error ? error.message : "Unknown error" }),
+      JSON.stringify({ error: "Service temporarily unavailable" }),
       { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
     );
   }
