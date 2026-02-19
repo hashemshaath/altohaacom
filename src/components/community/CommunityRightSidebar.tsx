@@ -1,15 +1,18 @@
 import { useLanguage } from "@/i18n/LanguageContext";
+import { useAuth } from "@/contexts/AuthContext";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { formatNumber } from "@/lib/formatNumber";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Badge } from "@/components/ui/badge";
 import { AdBanner } from "@/components/ads/AdBanner";
 import {
-  Search, TrendingUp, Hash,
+  Search, TrendingUp, Hash, UserPlus, Sparkles,
   PanelLeftClose, PanelLeftOpen, PanelRightClose, PanelRightOpen,
 } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { cn } from "@/lib/utils";
 
 const FALLBACK_TOPICS_EN = [
@@ -32,6 +35,8 @@ interface CommunityRightSidebarProps {
 
 export function CommunityRightSidebar({ rightSidebarOpen, setRightSidebarOpen }: CommunityRightSidebarProps) {
   const { language } = useLanguage();
+  const { user } = useAuth();
+  const navigate = useNavigate();
   const isAr = language === "ar";
 
   const { data: trendingTopics = [] } = useQuery({
@@ -73,6 +78,22 @@ export function CommunityRightSidebar({ rightSidebarOpen, setRightSidebarOpen }:
 
       return sorted;
     },
+    staleTime: 1000 * 60 * 10,
+  });
+
+  const { data: suggestedUsers = [] } = useQuery({
+    queryKey: ["community-suggested-users", user?.id],
+    queryFn: async () => {
+      const { data } = await supabase
+        .from("profiles")
+        .select("user_id, full_name, username, avatar_url, is_verified, professional_title")
+        .eq("account_status", "active")
+        .neq("user_id", user?.id || "")
+        .order("view_count", { ascending: false })
+        .limit(5);
+      return data || [];
+    },
+    enabled: !!user?.id,
     staleTime: 1000 * 60 * 10,
   });
 
@@ -128,6 +149,47 @@ export function CommunityRightSidebar({ rightSidebarOpen, setRightSidebarOpen }:
               ))}
             </div>
           </div>
+
+          {/* Who to Follow */}
+          {suggestedUsers.length > 0 && (
+            <div className="rounded-2xl border border-border bg-card overflow-hidden">
+              <h3 className="px-4 pt-3 pb-2 text-base font-bold flex items-center gap-2">
+                <Sparkles className="h-4 w-4 text-chart-4" />
+                {isAr ? "من تتابع" : "Who to Follow"}
+              </h3>
+              <div className="divide-y divide-border">
+                {suggestedUsers.slice(0, 3).map((profile: any) => (
+                  <div
+                    key={profile.user_id}
+                    className="flex items-center gap-2.5 px-4 py-2.5 hover:bg-muted/30 transition-colors cursor-pointer"
+                    onClick={() => navigate(`/chef/${profile.user_id}`)}
+                  >
+                    <Avatar className="h-8 w-8">
+                      <AvatarImage src={profile.avatar_url || undefined} />
+                      <AvatarFallback className="text-xs">
+                        {(profile.full_name || "U")[0].toUpperCase()}
+                      </AvatarFallback>
+                    </Avatar>
+                    <div className="flex-1 min-w-0">
+                      <p className="text-sm font-semibold truncate flex items-center gap-1">
+                        {profile.full_name || profile.username}
+                        {profile.is_verified && (
+                          <Badge variant="secondary" className="h-3.5 w-3.5 p-0 rounded-full bg-primary/10 text-primary text-[8px]">✓</Badge>
+                        )}
+                      </p>
+                      <p className="text-[10px] text-muted-foreground truncate">
+                        {profile.professional_title || (isAr ? "طاهٍ" : "Chef")}
+                      </p>
+                    </div>
+                    <Button variant="outline" size="sm" className="h-7 text-[10px] rounded-full px-3">
+                      <UserPlus className="h-3 w-3 me-1" />
+                      {isAr ? "تابع" : "Follow"}
+                    </Button>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
 
           <AdBanner placementSlug="sidebar" className="rounded-2xl overflow-hidden" />
 
