@@ -11517,6 +11517,48 @@ export type Database = {
         }
         Relationships: []
       }
+      platform_languages: {
+        Row: {
+          code: string
+          created_at: string
+          flag_emoji: string | null
+          id: string
+          is_default: boolean
+          is_enabled: boolean
+          is_rtl: boolean
+          name: string
+          native_name: string
+          sort_order: number
+          updated_at: string
+        }
+        Insert: {
+          code: string
+          created_at?: string
+          flag_emoji?: string | null
+          id?: string
+          is_default?: boolean
+          is_enabled?: boolean
+          is_rtl?: boolean
+          name: string
+          native_name: string
+          sort_order?: number
+          updated_at?: string
+        }
+        Update: {
+          code?: string
+          created_at?: string
+          flag_emoji?: string | null
+          id?: string
+          is_default?: boolean
+          is_enabled?: boolean
+          is_rtl?: boolean
+          name?: string
+          native_name?: string
+          sort_order?: number
+          updated_at?: string
+        }
+        Relationships: []
+      }
       points_earning_rules: {
         Row: {
           action_label: string
@@ -15442,6 +15484,48 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      translation_keys: {
+        Row: {
+          ar: string
+          auto_translated: boolean
+          context: string | null
+          created_at: string
+          en: string
+          id: string
+          is_verified: boolean
+          key: string
+          namespace: string
+          updated_at: string
+          updated_by: string | null
+        }
+        Insert: {
+          ar?: string
+          auto_translated?: boolean
+          context?: string | null
+          created_at?: string
+          en?: string
+          id?: string
+          is_verified?: boolean
+          key: string
+          namespace?: string
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Update: {
+          ar?: string
+          auto_translated?: boolean
+          context?: string | null
+          created_at?: string
+          en?: string
+          id?: string
+          is_verified?: boolean
+          key?: string
+          namespace?: string
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Relationships: []
       }
       user_affiliations: {
         Row: {
