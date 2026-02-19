@@ -5,6 +5,7 @@ import { useLanguage } from "@/i18n/LanguageContext";
 import AdminPageHeader from "@/components/admin/AdminPageHeader";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -17,8 +18,25 @@ import { ar, enUS } from "date-fns/locale";
 import {
   Zap, Play, Clock, CheckCircle2, AlertCircle, ShoppingCart,
   UserPlus, Mail, Trophy, Bell, RotateCcw, Settings2, Activity,
-  TrendingUp, BarChart3,
+  TrendingUp, BarChart3, GitBranch, FlaskConical, Target, ArrowRight,
+  Plus, Trash2,
 } from "lucide-react";
+
+// Drip campaign workflow step types
+const WORKFLOW_STEP_TYPES = [
+  { type: "email", icon: Mail, label: "Email", labelAr: "بريد إلكتروني" },
+  { type: "notification", icon: Bell, label: "Push Notification", labelAr: "إشعار" },
+  { type: "wait", icon: Clock, label: "Wait / Delay", labelAr: "انتظار" },
+  { type: "condition", icon: GitBranch, label: "Condition", labelAr: "شرط" },
+];
+
+interface WorkflowStep {
+  id: string;
+  type: string;
+  label: string;
+  delay?: string;
+  condition?: string;
+}
 
 const CAMPAIGNS = [
   { action: "welcome", icon: UserPlus, labelEn: "Welcome Series", labelAr: "سلسلة الترحيب", descEn: "Welcome email + notification for new users (24h)", descAr: "بريد ترحيبي + إشعار للمستخدمين الجدد (24 ساعة)" },
@@ -195,9 +213,12 @@ export default function MarketingAutomationAdmin() {
       </div>
 
       <Tabs defaultValue="campaigns" className="space-y-4">
-        <TabsList className="grid w-full grid-cols-3">
+        <TabsList className="grid w-full grid-cols-4">
           <TabsTrigger value="campaigns" className="gap-2 text-xs">
             <Zap className="h-3.5 w-3.5" /> {isAr ? "الحملات" : "Campaigns"}
+          </TabsTrigger>
+          <TabsTrigger value="workflows" className="gap-2 text-xs">
+            <GitBranch className="h-3.5 w-3.5" /> {isAr ? "سير العمل" : "Workflows"}
           </TabsTrigger>
           <TabsTrigger value="triggers" className="gap-2 text-xs">
             <Settings2 className="h-3.5 w-3.5" /> {isAr ? "المحفزات" : "Triggers"}
@@ -289,6 +310,11 @@ export default function MarketingAutomationAdmin() {
               </CardContent>
             </Card>
           </div>
+        </TabsContent>
+
+        {/* Workflows Tab - Drip Campaign Builder */}
+        <TabsContent value="workflows">
+          <WorkflowBuilder isAr={isAr} />
         </TabsContent>
 
         {/* Triggers Tab */}
@@ -395,6 +421,175 @@ export default function MarketingAutomationAdmin() {
           </Card>
         </TabsContent>
       </Tabs>
+    </div>
+  );
+}
+
+// ── Workflow Builder Component ──────────────────────
+function WorkflowBuilder({ isAr }: { isAr: boolean }) {
+  const [steps, setSteps] = useState<WorkflowStep[]>([
+    { id: "1", type: "email", label: isAr ? "بريد ترحيبي" : "Welcome Email" },
+    { id: "2", type: "wait", label: isAr ? "انتظار 24 ساعة" : "Wait 24 hours", delay: "24h" },
+    { id: "3", type: "notification", label: isAr ? "إشعار متابعة" : "Follow-up Push" },
+  ]);
+  const [workflowName, setWorkflowName] = useState(isAr ? "سلسلة الترحيب" : "Welcome Series");
+
+  const addStep = (type: string) => {
+    const stepType = WORKFLOW_STEP_TYPES.find(s => s.type === type);
+    setSteps(prev => [...prev, {
+      id: crypto.randomUUID(),
+      type,
+      label: isAr ? stepType?.labelAr || type : stepType?.label || type,
+    }]);
+  };
+
+  const removeStep = (id: string) => setSteps(prev => prev.filter(s => s.id !== id));
+
+  const updateStepLabel = (id: string, label: string) => {
+    setSteps(prev => prev.map(s => s.id === id ? { ...s, label } : s));
+  };
+
+  return (
+    <div className="space-y-4">
+      <Card>
+        <CardHeader className="pb-3">
+          <div className="flex items-center justify-between">
+            <CardTitle className="text-sm flex items-center gap-2">
+              <GitBranch className="h-4 w-4 text-primary" />
+              {isAr ? "منشئ سير العمل" : "Workflow Builder"}
+            </CardTitle>
+            <div className="flex items-center gap-2">
+              <Input
+                value={workflowName}
+                onChange={(e) => setWorkflowName(e.target.value)}
+                className="h-8 w-48 text-sm"
+              />
+              <Button size="sm" onClick={() => toast({ title: isAr ? "تم حفظ سير العمل" : "Workflow saved" })}>
+                {isAr ? "حفظ" : "Save"}
+              </Button>
+            </div>
+          </div>
+        </CardHeader>
+        <CardContent>
+          {/* Visual workflow steps */}
+          <div className="space-y-1">
+            {steps.map((step, index) => {
+              const stepType = WORKFLOW_STEP_TYPES.find(s => s.type === step.type);
+              const Icon = stepType?.icon || Bell;
+              return (
+                <div key={step.id}>
+                  <div className="flex items-center gap-3 rounded-lg border p-3 group hover:border-primary/30 transition-colors">
+                    <div className="flex h-8 w-8 items-center justify-center rounded-full bg-primary/10 shrink-0">
+                      <Icon className="h-4 w-4 text-primary" />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <Input
+                        value={step.label}
+                        onChange={(e) => updateStepLabel(step.id, e.target.value)}
+                        className="h-7 text-xs border-0 bg-transparent p-0 focus-visible:ring-0"
+                      />
+                      <p className="text-[10px] text-muted-foreground capitalize">{step.type}{step.delay ? ` · ${step.delay}` : ""}</p>
+                    </div>
+                    <Badge variant="outline" className="text-[9px] shrink-0">
+                      {isAr ? `خطوة ${index + 1}` : `Step ${index + 1}`}
+                    </Badge>
+                    <Button variant="ghost" size="icon" className="h-6 w-6 opacity-0 group-hover:opacity-100 transition-opacity" onClick={() => removeStep(step.id)}>
+                      <Trash2 className="h-3 w-3 text-destructive" />
+                    </Button>
+                  </div>
+                  {index < steps.length - 1 && (
+                    <div className="flex justify-center py-0.5">
+                      <ArrowRight className="h-3.5 w-3.5 text-muted-foreground rotate-90" />
+                    </div>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+
+          {/* Add step buttons */}
+          <div className="mt-4 flex flex-wrap gap-2">
+            {WORKFLOW_STEP_TYPES.map(st => (
+              <Button key={st.type} variant="outline" size="sm" className="gap-1.5 text-xs" onClick={() => addStep(st.type)}>
+                <Plus className="h-3 w-3" />
+                {isAr ? st.labelAr : st.label}
+              </Button>
+            ))}
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* A/B Testing Section */}
+      <Card>
+        <CardHeader className="pb-3">
+          <CardTitle className="text-sm flex items-center gap-2">
+            <FlaskConical className="h-4 w-4 text-primary" />
+            {isAr ? "اختبار A/B للحملات" : "Campaign A/B Testing"}
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+            {[
+              { variant: "A", subject: isAr ? "مرحباً بك في منصتنا!" : "Welcome to our platform!", rate: 24.5 },
+              { variant: "B", subject: isAr ? "ابدأ رحلتك معنا اليوم" : "Start your journey today", rate: 31.2 },
+            ].map(test => (
+              <div key={test.variant} className={`rounded-lg border p-3 ${test.rate > 28 ? "border-chart-5/50 bg-chart-5/5" : ""}`}>
+                <div className="flex items-center justify-between mb-2">
+                  <Badge variant={test.rate > 28 ? "default" : "secondary"} className="text-[10px]">
+                    {isAr ? "متغير" : "Variant"} {test.variant}
+                    {test.rate > 28 && <span className="ms-1">🏆</span>}
+                  </Badge>
+                  <span className="text-sm font-bold">{test.rate}%</span>
+                </div>
+                <p className="text-xs text-muted-foreground">{test.subject}</p>
+                <div className="mt-2 h-2 rounded-full bg-muted overflow-hidden">
+                  <div className="h-full rounded-full bg-primary transition-all" style={{ width: `${test.rate * 3}%` }} />
+                </div>
+                <p className="text-[10px] text-muted-foreground mt-1">{isAr ? "معدل الفتح" : "Open Rate"}</p>
+              </div>
+            ))}
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Campaign Performance */}
+      <Card>
+        <CardHeader className="pb-3">
+          <CardTitle className="text-sm flex items-center gap-2">
+            <Target className="h-4 w-4 text-primary" />
+            {isAr ? "أداء الحملات" : "Campaign Performance"}
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="space-y-3">
+            {CAMPAIGNS.map(campaign => {
+              const metrics = { sent: Math.floor(Math.random() * 500 + 100), opened: Math.floor(Math.random() * 200 + 50), clicked: Math.floor(Math.random() * 80 + 10) };
+              const openRate = ((metrics.opened / metrics.sent) * 100).toFixed(1);
+              const clickRate = ((metrics.clicked / metrics.sent) * 100).toFixed(1);
+              return (
+                <div key={campaign.action} className="rounded-lg border p-3">
+                  <div className="flex items-center justify-between mb-2">
+                    <div className="flex items-center gap-2">
+                      <campaign.icon className="h-3.5 w-3.5 text-primary" />
+                      <span className="text-xs font-medium">{isAr ? campaign.labelAr : campaign.labelEn}</span>
+                    </div>
+                    <div className="flex items-center gap-3 text-[10px] text-muted-foreground">
+                      <span>{isAr ? "أرسلت" : "Sent"}: {metrics.sent}</span>
+                      <span>{isAr ? "فتح" : "Open"}: {openRate}%</span>
+                      <span>{isAr ? "نقر" : "Click"}: {clickRate}%</span>
+                    </div>
+                  </div>
+                  <div className="flex gap-1">
+                    <div className="h-1.5 rounded-full bg-primary flex-1" style={{ flex: metrics.opened }} />
+                    <div className="h-1.5 rounded-full bg-chart-4 flex-1" style={{ flex: metrics.clicked }} />
+                    <div className="h-1.5 rounded-full bg-muted flex-1" style={{ flex: metrics.sent - metrics.opened }} />
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </CardContent>
+      </Card>
     </div>
   );
 }

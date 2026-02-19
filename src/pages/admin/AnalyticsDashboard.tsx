@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { BarChart3, Trophy, Users, DollarSign, Brain, Activity, UserMinus, TrendingUp, Megaphone, Wifi, Cpu, FileText, Flame, Globe, MessageSquareText, Filter, AlertTriangle, FlaskConical, FileBarChart, Landmark, PiggyBank, Layers } from "lucide-react";
+import { BarChart3, Trophy, Users, DollarSign, Brain, Activity, UserMinus, TrendingUp, Megaphone, Wifi, Cpu, FileText, Flame, Globe, MessageSquareText, Filter, AlertTriangle, FlaskConical, FileBarChart, Landmark, PiggyBank, Layers, Bookmark, Download, Printer } from "lucide-react";
 import AdminPageHeader from "@/components/admin/AdminPageHeader";
 import PlatformOverview from "@/components/analytics/PlatformOverview";
 import CompetitionAnalytics from "@/components/analytics/CompetitionAnalytics";
@@ -28,17 +28,52 @@ import { PredictiveChurnDashboard } from "@/components/analytics/PredictiveChurn
 import { MultiMetricComparison } from "@/components/analytics/MultiMetricComparison";
 import { AnalyticsDateRange, getPresetRange, type DateRange } from "@/components/analytics/AnalyticsDateRange";
 import { toast } from "@/hooks/use-toast";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogDescription } from "@/components/ui/dialog";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+
+interface SavedReport {
+  id: string;
+  name: string;
+  tab: string;
+  createdAt: string;
+}
 
 export default function AnalyticsDashboard() {
   const { language } = useLanguage();
   const isAr = language === "ar";
   const [dateRange, setDateRange] = useState<DateRange>(() => getPresetRange("30d"));
   const [activeTab, setActiveTab] = useState("overview");
+  const [saveReportOpen, setSaveReportOpen] = useState(false);
+  const [reportName, setReportName] = useState("");
 
-  const handleExport = () => {
-    toast({ title: isAr ? "جاري التصدير..." : "Exporting..." });
-    const event = new CustomEvent("analytics-export", { detail: { tab: activeTab, dateRange } });
-    window.dispatchEvent(event);
+  const [savedReports, setSavedReports] = useState<SavedReport[]>(() => {
+    try { return JSON.parse(localStorage.getItem("altoha_saved_reports") || "[]"); } catch { return []; }
+  });
+
+  const handleExport = (format: "csv" | "pdf" | "print" = "csv") => {
+    if (format === "print") { window.print(); return; }
+    toast({ title: isAr ? `جاري التصدير كـ ${format.toUpperCase()}...` : `Exporting as ${format.toUpperCase()}...` });
+    window.dispatchEvent(new CustomEvent("analytics-export", { detail: { tab: activeTab, dateRange, format } }));
+  };
+
+  const handleSaveReport = () => {
+    if (!reportName.trim()) return;
+    const report: SavedReport = { id: crypto.randomUUID(), name: reportName, tab: activeTab, createdAt: new Date().toISOString() };
+    const updated = [...savedReports, report];
+    setSavedReports(updated);
+    localStorage.setItem("altoha_saved_reports", JSON.stringify(updated));
+    setSaveReportOpen(false);
+    setReportName("");
+    toast({ title: isAr ? "تم حفظ التقرير" : "Report saved" });
+  };
+
+  const handleDeleteReport = (id: string) => {
+    const updated = savedReports.filter(r => r.id !== id);
+    setSavedReports(updated);
+    localStorage.setItem("altoha_saved_reports", JSON.stringify(updated));
   };
 
   const tabs = [
@@ -74,9 +109,56 @@ export default function AnalyticsDashboard() {
         title={isAr ? "التحليلات المتقدمة" : "Advanced Analytics"}
         description={isAr ? "إحصائيات شاملة مع تحليلات ذكية وتنبؤات" : "Comprehensive insights with AI-powered analysis and predictions"}
         actions={
-          <AnalyticsDateRange value={dateRange} onChange={setDateRange} onExport={handleExport} />
+          <div className="flex items-center gap-2 flex-wrap">
+            <AnalyticsDateRange value={dateRange} onChange={setDateRange} onExport={() => handleExport()} />
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="outline" size="sm" className="gap-1.5">
+                  <Download className="h-3.5 w-3.5" />{isAr ? "تصدير" : "Export"}
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end">
+                <DropdownMenuItem onClick={() => handleExport("csv")}><FileText className="me-2 h-4 w-4" />CSV</DropdownMenuItem>
+                <DropdownMenuItem onClick={() => handleExport("pdf")}><FileBarChart className="me-2 h-4 w-4" />PDF</DropdownMenuItem>
+                <DropdownMenuItem onClick={() => handleExport("print")}><Printer className="me-2 h-4 w-4" />{isAr ? "طباعة" : "Print"}</DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+            <Button variant="outline" size="sm" className="gap-1.5" onClick={() => setSaveReportOpen(true)}>
+              <Bookmark className="h-3.5 w-3.5" />{isAr ? "حفظ" : "Save"}
+            </Button>
+          </div>
         }
       />
+
+      {/* Saved Reports Bar */}
+      {savedReports.length > 0 && (
+        <div className="flex items-center gap-2 overflow-x-auto pb-1">
+          <span className="text-xs text-muted-foreground whitespace-nowrap">
+            <Bookmark className="inline h-3 w-3 me-1" />{isAr ? "المحفوظة:" : "Saved:"}
+          </span>
+          {savedReports.map(report => (
+            <Badge key={report.id} variant="secondary" className="cursor-pointer hover:bg-primary/10 transition-colors gap-1 whitespace-nowrap" onClick={() => { setActiveTab(report.tab); toast({ title: `Loaded: ${report.name}` }); }}>
+              {report.name}
+              <button onClick={(e) => { e.stopPropagation(); handleDeleteReport(report.id); }} className="ms-1 text-muted-foreground hover:text-destructive">×</button>
+            </Badge>
+          ))}
+        </div>
+      )}
+
+      <Dialog open={saveReportOpen} onOpenChange={setSaveReportOpen}>
+        <DialogContent className="max-w-sm">
+          <DialogHeader>
+            <DialogTitle>{isAr ? "حفظ التقرير" : "Save Report"}</DialogTitle>
+            <DialogDescription>{isAr ? "احفظ العرض الحالي للوصول السريع" : "Save current view for quick access"}</DialogDescription>
+          </DialogHeader>
+          <Input placeholder={isAr ? "اسم التقرير" : "Report name"} value={reportName} onChange={(e) => setReportName(e.target.value)} />
+          <p className="text-xs text-muted-foreground">{isAr ? "العرض:" : "View:"} {tabs.find(t => t.value === activeTab)?.label}</p>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setSaveReportOpen(false)}>{isAr ? "إلغاء" : "Cancel"}</Button>
+            <Button onClick={handleSaveReport} disabled={!reportName.trim()}><Bookmark className="me-2 h-4 w-4" />{isAr ? "حفظ" : "Save"}</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
 
       <Tabs value={activeTab} onValueChange={setActiveTab}>
         <div className="overflow-x-auto">
