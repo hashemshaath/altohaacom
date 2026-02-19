@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { usePermissions, useRolePermissions } from "@/hooks/usePermissions";
 import { supabase } from "@/integrations/supabase/client";
@@ -20,9 +20,10 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/comp
 import {
   Shield, ChefHat, Award, Users, Hand, Heart, Headphones, Eye, Save, Loader2, Lock,
   Search, UserPlus, UserMinus, CheckCircle2, XCircle, BarChart3, Grid3X3, UserCog,
-  ShieldCheck, ShieldOff, ChevronDown, ChevronUp, AlertTriangle
+  ShieldCheck, ShieldOff, ChevronDown, ChevronUp, AlertTriangle, Activity, Download,
 } from "lucide-react";
 import type { Database } from "@/integrations/supabase/types";
+import { format } from "date-fns";
 
 type AppRole = Database["public"]["Enums"]["app_role"];
 
@@ -51,6 +52,7 @@ export default function RoleManagement() {
   const [lastSyncedRole, setLastSyncedRole] = useState<string | null>(null);
   const [userSearch, setUserSearch] = useState("");
   const [expandedCategories, setExpandedCategories] = useState<Set<string>>(new Set());
+  const [matrixSearch, setMatrixSearch] = useState("");
 
   const { data: permissions = [] } = usePermissions();
   const { data: rolePerms = [], isLoading: rolePermsLoading } = useRolePermissions(activeRole);
@@ -60,15 +62,30 @@ export default function RoleManagement() {
   const { data: roleStats = [] } = useQuery({
     queryKey: ["roleStats"],
     queryFn: async () => {
-      const { data, error } = await supabase
-        .from("user_roles")
-        .select("role");
+      const { data, error } = await supabase.from("user_roles").select("role");
       if (error) throw error;
       const counts: Record<string, number> = {};
       data?.forEach((r) => { counts[r.role] = (counts[r.role] || 0) + 1; });
       return ALL_ROLES.map((role) => ({ role, count: counts[role] || 0 }));
     },
     staleTime: 1000 * 60 * 2,
+  });
+
+  // Recent role changes for activity log
+  const { data: recentChanges = [] } = useQuery({
+    queryKey: ["roleActivityLog"],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("admin_actions")
+        .select("*")
+        .in("action_type", ["assign_role", "remove_role", "change_membership"])
+        .order("created_at", { ascending: false })
+        .limit(50);
+      if (error) throw error;
+      return data;
+    },
+    enabled: activeTab === "activity",
+    staleTime: 1000 * 60,
   });
 
   // Users with roles for assignment tab
@@ -85,15 +102,9 @@ export default function RoleManagement() {
       }
       const { data, error } = await query;
       if (error) throw error;
-
       const userIds = data?.map((u) => u.user_id) || [];
       if (userIds.length === 0) return [];
-
-      const { data: roles } = await supabase
-        .from("user_roles")
-        .select("user_id, role")
-        .in("user_id", userIds);
-
+      const { data: roles } = await supabase.from("user_roles").select("user_id, role").in("user_id", userIds);
       return data.map((u) => ({
         ...u,
         roles: (roles?.filter((r) => r.user_id === u.user_id) || []).map((r) => r.role),
@@ -113,15 +124,12 @@ export default function RoleManagement() {
         .order("created_at", { ascending: false })
         .limit(100);
       if (error) throw error;
-
       const userIds = [...new Set(data?.map((o) => o.user_id) || [])];
       if (userIds.length === 0) return [];
-
       const { data: profiles } = await supabase
         .from("profiles")
         .select("user_id, full_name, full_name_ar, username, avatar_url")
         .in("user_id", userIds);
-
       const profileMap = new Map(profiles?.map((p) => [p.user_id, p]) || []);
       return data.map((o) => ({ ...o, profile: profileMap.get(o.user_id) }));
     },
@@ -192,7 +200,6 @@ export default function RoleManagement() {
     }
   };
 
-  // Toggle role for user
   const toggleUserRole = useMutation({
     mutationFn: async ({ userId, role, add }: { userId: string; role: AppRole; add: boolean }) => {
       if (add) {
@@ -213,7 +220,6 @@ export default function RoleManagement() {
     },
   });
 
-  // Delete override
   const deleteOverride = useMutation({
     mutationFn: async (id: string) => {
       const { error } = await supabase.from("user_permission_overrides").delete().eq("id", id);
@@ -233,19 +239,47 @@ export default function RoleManagement() {
     return acc;
   }, {});
 
-  // Build matrix data
-  const matrixData = Object.entries(grouped).map(([category, perms]) => ({
-    category,
-    perms: perms.map((p) => ({
-      ...p,
-      roles: ALL_ROLES.reduce<Record<string, boolean>>((acc, role) => {
-        acc[role] = allRolePerms.some((rp: any) => rp.role === role && rp.permission_id === p.id);
-        return acc;
-      }, {}),
-    })),
-  }));
+  // Build matrix data with search filter
+  const matrixData = useMemo(() => {
+    return Object.entries(grouped).map(([category, perms]) => ({
+      category,
+      perms: perms
+        .filter(p => !matrixSearch || p.name.toLowerCase().includes(matrixSearch.toLowerCase()) || p.code.toLowerCase().includes(matrixSearch.toLowerCase()))
+        .map((p) => ({
+          ...p,
+          roles: ALL_ROLES.reduce<Record<string, boolean>>((acc, role) => {
+            acc[role] = allRolePerms.some((rp: any) => rp.role === role && rp.permission_id === p.id);
+            return acc;
+          }, {}),
+        })),
+    })).filter(g => g.perms.length > 0);
+  }, [grouped, allRolePerms, matrixSearch]);
+
+  // Security score
+  const securityScore = useMemo(() => {
+    const totalRoles = ALL_ROLES.length;
+    const rolesWithPerms = ALL_ROLES.filter(r => allRolePerms.some((rp: any) => rp.role === r)).length;
+    const overrideCount = overrides.length;
+    const score = Math.round((rolesWithPerms / totalRoles) * 100) - Math.min(overrideCount * 2, 20);
+    return Math.max(0, Math.min(100, score));
+  }, [allRolePerms, overrides]);
 
   const totalPerms = permissions.length;
+
+  const exportMatrixCSV = () => {
+    const headers = ["Category", "Permission", "Code", ...ALL_ROLES.map(r => ROLE_META[r].labelEn)];
+    const rows = matrixData.flatMap(({ category, perms }) =>
+      perms.map(p => [category, p.name, p.code, ...ALL_ROLES.map(r => p.roles[r] ? "✓" : "")])
+    );
+    const csv = "\uFEFF" + [headers, ...rows].map(r => r.join(",")).join("\n");
+    const blob = new Blob([csv], { type: "text/csv;charset=utf-8" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `permission-matrix-${format(new Date(), "yyyyMMdd")}.csv`;
+    a.click();
+    URL.revokeObjectURL(url);
+  };
 
   return (
     <div className="space-y-6">
@@ -255,13 +289,13 @@ export default function RoleManagement() {
         description={isAr ? "مركز التحكم الكامل في الأدوار والصلاحيات والاستثناءات" : "Full control center for roles, permissions, and overrides"}
         actions={
           <div className="flex items-center gap-2">
-            <Badge variant="outline" className="gap-1">
-              <Users className="h-3 w-3" />
-              {ALL_ROLES.length} {isAr ? "أدوار" : "Roles"}
+            <Badge variant={securityScore >= 80 ? "default" : securityScore >= 50 ? "secondary" : "destructive"} className="gap-1">
+              <Shield className="h-3 w-3" />
+              {securityScore}% {isAr ? "أمان" : "Secure"}
             </Badge>
             <Badge variant="outline" className="gap-1">
               <Lock className="h-3 w-3" />
-              {totalPerms} {isAr ? "صلاحية" : "Permissions"}
+              {totalPerms} {isAr ? "صلاحية" : "Perms"}
             </Badge>
           </div>
         }
@@ -308,19 +342,31 @@ export default function RoleManagement() {
             <AlertTriangle className="h-3.5 w-3.5" />
             {isAr ? "الاستثناءات" : "Overrides"}
           </TabsTrigger>
+          <TabsTrigger value="activity" className="gap-1.5 text-xs">
+            <Activity className="h-3.5 w-3.5" />
+            {isAr ? "سجل النشاط" : "Activity"}
+          </TabsTrigger>
         </TabsList>
 
         {/* ─── MATRIX TAB ─── */}
         <TabsContent value="overview" className="mt-4">
           <Card>
             <CardHeader className="pb-3">
-              <CardTitle className="text-sm flex items-center gap-2">
-                <Grid3X3 className="h-4 w-4 text-primary" />
-                {isAr ? "مصفوفة الصلاحيات لكل دور" : "Role-Permission Matrix"}
-              </CardTitle>
-              <CardDescription className="text-xs">
-                {isAr ? "نظرة شاملة على جميع الصلاحيات المعيّنة لكل دور" : "Overview of all permissions assigned to each role"}
-              </CardDescription>
+              <div className="flex flex-wrap items-center justify-between gap-2">
+                <CardTitle className="text-sm flex items-center gap-2">
+                  <Grid3X3 className="h-4 w-4 text-primary" />
+                  {isAr ? "مصفوفة الصلاحيات لكل دور" : "Role-Permission Matrix"}
+                </CardTitle>
+                <div className="flex gap-2">
+                  <div className="relative">
+                    <Search className="absolute start-2.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground" />
+                    <Input placeholder={isAr ? "بحث..." : "Filter..."} value={matrixSearch} onChange={e => setMatrixSearch(e.target.value)} className="ps-8 h-8 w-48 text-xs" />
+                  </div>
+                  <Button variant="outline" size="sm" className="gap-1.5 text-xs" onClick={exportMatrixCSV}>
+                    <Download className="h-3.5 w-3.5" /> CSV
+                  </Button>
+                </div>
+              </div>
             </CardHeader>
             <CardContent className="p-0">
               <ScrollArea className="w-full">
@@ -397,13 +443,8 @@ export default function RoleManagement() {
               const meta = ROLE_META[role];
               const Icon = meta.icon;
               return (
-                <Button
-                  key={role}
-                  variant={activeRole === role ? "default" : "outline"}
-                  size="sm"
-                  onClick={() => handleRoleChange(role)}
-                  className="gap-1.5 text-xs"
-                >
+                <Button key={role} variant={activeRole === role ? "default" : "outline"} size="sm"
+                  onClick={() => handleRoleChange(role)} className="gap-1.5 text-xs">
                   <Icon className="h-3.5 w-3.5" />
                   {isAr ? meta.labelAr : meta.labelEn}
                 </Button>
@@ -425,9 +466,7 @@ export default function RoleManagement() {
                     </CardDescription>
                   </div>
                 </div>
-                <Badge variant="secondary">
-                  {selectedPerms.size}/{totalPerms}
-                </Badge>
+                <Badge variant="secondary">{selectedPerms.size}/{totalPerms}</Badge>
               </div>
             </CardHeader>
             <CardContent className="space-y-3">
@@ -440,23 +479,17 @@ export default function RoleManagement() {
                   const catSelected = perms.filter((p) => selectedPerms.has(p.id)).length;
                   const allSelected = catSelected === perms.length;
                   const isExpanded = expandedCategories.has(category) || catSelected > 0;
-
                   return (
                     <div key={category} className="rounded-lg border">
-                      <button
-                        onClick={() => toggleCategory(category)}
-                        className="flex w-full items-center justify-between p-3 hover:bg-muted/30 transition-colors"
-                      >
+                      <button onClick={() => toggleCategory(category)}
+                        className="flex w-full items-center justify-between p-3 hover:bg-muted/30 transition-colors">
                         <div className="flex items-center gap-2">
                           <Lock className="h-3.5 w-3.5 text-muted-foreground" />
                           <h3 className="text-sm font-semibold capitalize">{category}</h3>
-                          <Badge variant="outline" className="text-[10px] h-5">
-                            {catSelected}/{perms.length}
-                          </Badge>
+                          <Badge variant="outline" className="text-[10px] h-5">{catSelected}/{perms.length}</Badge>
                         </div>
                         {isExpanded ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
                       </button>
-
                       {isExpanded && (
                         <div className="border-t px-3 pb-3 pt-2 space-y-2">
                           <div className="flex gap-2">
@@ -471,20 +504,13 @@ export default function RoleManagement() {
                           </div>
                           <div className="grid gap-1.5 sm:grid-cols-2 lg:grid-cols-3">
                             {perms.map((perm) => (
-                              <label
-                                key={perm.id}
+                              <label key={perm.id}
                                 className={`flex cursor-pointer items-center gap-2.5 rounded-lg border p-2.5 transition-colors hover:bg-muted/50 ${
                                   selectedPerms.has(perm.id) ? "border-primary/40 bg-primary/5" : ""
-                                }`}
-                              >
-                                <Checkbox
-                                  checked={selectedPerms.has(perm.id)}
-                                  onCheckedChange={() => togglePerm(perm.id)}
-                                />
+                                }`}>
+                                <Checkbox checked={selectedPerms.has(perm.id)} onCheckedChange={() => togglePerm(perm.id)} />
                                 <div className="min-w-0">
-                                  <p className="text-xs font-medium leading-tight">
-                                    {isAr ? perm.name_ar || perm.name : perm.name}
-                                  </p>
+                                  <p className="text-xs font-medium leading-tight">{isAr ? perm.name_ar || perm.name : perm.name}</p>
                                   <p className="text-[10px] text-muted-foreground font-mono">{perm.code}</p>
                                 </div>
                               </label>
@@ -496,7 +522,6 @@ export default function RoleManagement() {
                   );
                 })
               )}
-
               <div className="flex justify-end pt-2">
                 <Button onClick={handleSave} disabled={saving} className="gap-1.5">
                   {saving ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Save className="h-3.5 w-3.5" />}
@@ -522,18 +547,11 @@ export default function RoleManagement() {
             <CardContent className="space-y-4">
               <div className="relative">
                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                <Input
-                  placeholder={isAr ? "ابحث بالاسم أو البريد أو رقم الحساب..." : "Search by name, email, or account number..."}
-                  value={userSearch}
-                  onChange={(e) => setUserSearch(e.target.value)}
-                  className="pl-9"
-                />
+                <Input placeholder={isAr ? "ابحث بالاسم أو البريد أو رقم الحساب..." : "Search by name, email, or account number..."}
+                  value={userSearch} onChange={(e) => setUserSearch(e.target.value)} className="pl-9" />
               </div>
-
               {usersLoading ? (
-                <div className="flex justify-center py-8">
-                  <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
-                </div>
+                <div className="flex justify-center py-8"><Loader2 className="h-6 w-6 animate-spin text-muted-foreground" /></div>
               ) : (
                 <ScrollArea className="max-h-[500px]">
                   <div className="space-y-2">
@@ -546,12 +564,8 @@ export default function RoleManagement() {
                           </AvatarFallback>
                         </Avatar>
                         <div className="min-w-0 flex-1">
-                          <p className="text-sm font-medium truncate">
-                            {isAr ? user.full_name_ar || user.full_name : user.full_name}
-                          </p>
-                          <p className="text-[10px] text-muted-foreground">
-                            @{user.username} · {user.account_number}
-                          </p>
+                          <p className="text-sm font-medium truncate">{isAr ? user.full_name_ar || user.full_name : user.full_name}</p>
+                          <p className="text-[10px] text-muted-foreground">@{user.username} · {user.account_number}</p>
                         </div>
                         <div className="flex flex-wrap gap-1">
                           {ALL_ROLES.map((role) => {
@@ -561,13 +575,10 @@ export default function RoleManagement() {
                               <TooltipProvider key={role}>
                                 <Tooltip>
                                   <TooltipTrigger asChild>
-                                    <Button
-                                      variant={hasRole ? "default" : "outline"}
-                                      size="sm"
+                                    <Button variant={hasRole ? "default" : "outline"} size="sm"
                                       className={`h-6 w-6 p-0 ${hasRole ? "" : "opacity-30 hover:opacity-70"}`}
                                       onClick={() => toggleUserRole.mutate({ userId: user.user_id, role, add: !hasRole })}
-                                      disabled={toggleUserRole.isPending}
-                                    >
+                                      disabled={toggleUserRole.isPending}>
                                       {(() => { const Icon = meta.icon; return <Icon className="h-3 w-3" />; })()}
                                     </Button>
                                   </TooltipTrigger>
@@ -584,9 +595,7 @@ export default function RoleManagement() {
                       </div>
                     ))}
                     {usersForAssignment.length === 0 && (
-                      <p className="text-center text-sm text-muted-foreground py-8">
-                        {isAr ? "لا توجد نتائج" : "No results found"}
-                      </p>
+                      <p className="text-center text-sm text-muted-foreground py-8">{isAr ? "لا توجد نتائج" : "No results found"}</p>
                     )}
                   </div>
                 </ScrollArea>
@@ -602,6 +611,7 @@ export default function RoleManagement() {
               <CardTitle className="text-sm flex items-center gap-2">
                 <AlertTriangle className="h-4 w-4 text-chart-4" />
                 {isAr ? "استثناءات الصلاحيات" : "Permission Overrides"}
+                {overrides.length > 0 && <Badge variant="destructive" className="text-[10px]">{overrides.length}</Badge>}
               </CardTitle>
               <CardDescription className="text-xs">
                 {isAr ? "صلاحيات مُمنوحة أو مسحوبة من مستخدمين بشكل فردي" : "Permissions individually granted or revoked from specific users"}
@@ -609,13 +619,9 @@ export default function RoleManagement() {
             </CardHeader>
             <CardContent>
               {overridesLoading ? (
-                <div className="flex justify-center py-8">
-                  <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
-                </div>
+                <div className="flex justify-center py-8"><Loader2 className="h-6 w-6 animate-spin text-muted-foreground" /></div>
               ) : overrides.length === 0 ? (
-                <p className="text-center text-sm text-muted-foreground py-8">
-                  {isAr ? "لا توجد استثناءات حالياً" : "No overrides currently configured"}
-                </p>
+                <p className="text-center text-sm text-muted-foreground py-8">{isAr ? "لا توجد استثناءات حالياً" : "No overrides currently configured"}</p>
               ) : (
                 <div className="space-y-2">
                   {overrides.map((o: any) => (
@@ -643,13 +649,53 @@ export default function RoleManagement() {
                         {o.granted ? (isAr ? "ممنوح" : "Granted") : (isAr ? "محجوب" : "Revoked")}
                       </Badge>
                       <Button variant="ghost" size="sm" className="h-7 w-7 p-0"
-                        onClick={() => deleteOverride.mutate(o.id)}
-                        disabled={deleteOverride.isPending}>
+                        onClick={() => deleteOverride.mutate(o.id)} disabled={deleteOverride.isPending}>
                         <XCircle className="h-3.5 w-3.5 text-destructive" />
                       </Button>
                     </div>
                   ))}
                 </div>
+              )}
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        {/* ─── ACTIVITY LOG TAB ─── */}
+        <TabsContent value="activity" className="mt-4">
+          <Card>
+            <CardHeader className="pb-3">
+              <CardTitle className="text-sm flex items-center gap-2">
+                <Activity className="h-4 w-4 text-primary" />
+                {isAr ? "سجل تغييرات الأدوار" : "Role Change Activity Log"}
+              </CardTitle>
+              <CardDescription className="text-xs">
+                {isAr ? "آخر 50 تغيير في الأدوار والصلاحيات" : "Last 50 role and permission changes"}
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              {recentChanges.length === 0 ? (
+                <p className="text-center text-sm text-muted-foreground py-8">{isAr ? "لا توجد تغييرات" : "No changes recorded"}</p>
+              ) : (
+                <ScrollArea className="max-h-[500px]">
+                  <div className="space-y-2">
+                    {recentChanges.map((change: any) => (
+                      <div key={change.id} className="flex items-center gap-3 rounded-lg border p-3">
+                        <div className="rounded-full p-1.5 bg-primary/10">
+                          <Activity className="h-3.5 w-3.5 text-primary" />
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <p className="text-xs font-medium">{change.action_type.replace(/_/g, " ")}</p>
+                          <p className="text-[10px] text-muted-foreground">
+                            {change.details ? JSON.stringify(change.details) : "—"}
+                          </p>
+                        </div>
+                        <p className="text-[10px] text-muted-foreground whitespace-nowrap">
+                          {format(new Date(change.created_at), "MMM d, HH:mm")}
+                        </p>
+                      </div>
+                    ))}
+                  </div>
+                </ScrollArea>
               )}
             </CardContent>
           </Card>

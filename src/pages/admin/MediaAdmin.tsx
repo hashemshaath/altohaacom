@@ -1,37 +1,35 @@
-import { useState } from "react";
+import { useState, useMemo, useRef } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/contexts/AuthContext";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Progress } from "@/components/ui/progress";
 import { useToast } from "@/hooks/use-toast";
 import { format } from "date-fns";
 import { 
-  Search, 
-  Upload,
-  Image,
-  File,
-  Video,
-  MoreVertical,
-  Trash2,
-  Copy,
-  Download,
-  Grid,
-  List,
-  Filter,
+  Search, Upload, Image, File, Video, MoreVertical, Trash2, Copy, Download,
+  Grid, List, Filter, HardDrive, ImageIcon, FileVideo, FileText,
 } from "lucide-react";
 
 export default function MediaAdmin() {
   const { language } = useLanguage();
+  const { user } = useAuth();
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const [search, setSearch] = useState("");
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
   const [selectedMedia, setSelectedMedia] = useState<any>(null);
+  const [typeFilter, setTypeFilter] = useState("all");
+  const [uploading, setUploading] = useState(false);
+  const [uploadProgress, setUploadProgress] = useState(0);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const { data: media, isLoading } = useQuery({
     queryKey: ["admin-media", search],
@@ -86,8 +84,67 @@ export default function MediaAdmin() {
     });
   };
 
+  // Upload handler
+  const handleUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files;
+    if (!files?.length || !user?.id) return;
+    setUploading(true);
+    setUploadProgress(0);
+    const total = files.length;
+    let done = 0;
+
+    for (const file of Array.from(files)) {
+      const ext = file.name.split('.').pop();
+      const path = `${user.id}/${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`;
+      const { error: uploadError } = await supabase.storage.from("user-media").upload(path, file);
+      if (uploadError) {
+        toast({ variant: "destructive", title: "Upload failed", description: uploadError.message });
+        continue;
+      }
+      const { data: urlData } = supabase.storage.from("user-media").getPublicUrl(path);
+      await supabase.from("media_library").insert({
+        filename: path,
+        original_filename: file.name,
+        file_url: urlData.publicUrl,
+        file_type: file.type,
+        file_size: file.size,
+        uploaded_by: user.id,
+      });
+      done++;
+      setUploadProgress(Math.round((done / total) * 100));
+    }
+    queryClient.invalidateQueries({ queryKey: ["admin-media"] });
+    setUploading(false);
+    setUploadProgress(0);
+    if (fileInputRef.current) fileInputRef.current.value = "";
+    toast({ title: language === "ar" ? `تم رفع ${done} ملف` : `${done} file(s) uploaded` });
+  };
+
+  // Filter by type
+  const filteredMedia = useMemo(() => {
+    if (!media) return [];
+    return media.filter(f => {
+      if (typeFilter === "images" && !f.file_type.startsWith("image")) return false;
+      if (typeFilter === "videos" && !f.file_type.startsWith("video")) return false;
+      if (typeFilter === "documents" && (f.file_type.startsWith("image") || f.file_type.startsWith("video"))) return false;
+      return true;
+    });
+  }, [media, typeFilter]);
+
+  // Stats
+  const stats = useMemo(() => {
+    if (!media) return { total: 0, images: 0, videos: 0, totalSize: 0 };
+    return {
+      total: media.length,
+      images: media.filter(f => f.file_type.startsWith("image")).length,
+      videos: media.filter(f => f.file_type.startsWith("video")).length,
+      totalSize: media.reduce((sum, f) => sum + (f.file_size || 0), 0),
+    };
+  }, [media]);
+
   return (
     <div className="space-y-6">
+      <input ref={fileInputRef} type="file" multiple accept="image/*,video/*,application/pdf" className="hidden" onChange={handleUpload} />
       <div className="flex items-center justify-between">
         <div>
           <h1 className="font-serif text-2xl font-bold">
@@ -97,10 +154,36 @@ export default function MediaAdmin() {
             {language === "ar" ? "إدارة الصور والملفات" : "Manage images and files"}
           </p>
         </div>
-        <Button>
+        <Button onClick={() => fileInputRef.current?.click()} disabled={uploading}>
           <Upload className="me-2 h-4 w-4" />
-          {language === "ar" ? "رفع ملف" : "Upload File"}
+          {uploading ? `${uploadProgress}%` : (language === "ar" ? "رفع ملف" : "Upload File")}
         </Button>
+      </div>
+
+      {uploading && <Progress value={uploadProgress} className="h-2" />}
+
+      {/* Stats */}
+      <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+        <Card><CardContent className="p-3 text-center">
+          <HardDrive className="mx-auto mb-1 h-4 w-4 text-primary" />
+          <p className="text-lg font-bold">{stats.total}</p>
+          <p className="text-[10px] text-muted-foreground">{language === "ar" ? "إجمالي" : "Total"}</p>
+        </CardContent></Card>
+        <Card><CardContent className="p-3 text-center">
+          <ImageIcon className="mx-auto mb-1 h-4 w-4 text-chart-2" />
+          <p className="text-lg font-bold">{stats.images}</p>
+          <p className="text-[10px] text-muted-foreground">{language === "ar" ? "صور" : "Images"}</p>
+        </CardContent></Card>
+        <Card><CardContent className="p-3 text-center">
+          <FileVideo className="mx-auto mb-1 h-4 w-4 text-chart-3" />
+          <p className="text-lg font-bold">{stats.videos}</p>
+          <p className="text-[10px] text-muted-foreground">{language === "ar" ? "فيديو" : "Videos"}</p>
+        </CardContent></Card>
+        <Card><CardContent className="p-3 text-center">
+          <FileText className="mx-auto mb-1 h-4 w-4 text-chart-4" />
+          <p className="text-lg font-bold">{getFileSize(stats.totalSize)}</p>
+          <p className="text-[10px] text-muted-foreground">{language === "ar" ? "حجم التخزين" : "Storage"}</p>
+        </CardContent></Card>
       </div>
 
       {/* Filters */}
@@ -119,18 +202,19 @@ export default function MediaAdmin() {
               </div>
             </div>
             <div className="flex gap-2">
-              <Button
-                variant={viewMode === "grid" ? "default" : "outline"}
-                size="icon"
-                onClick={() => setViewMode("grid")}
-              >
+              <Select value={typeFilter} onValueChange={setTypeFilter}>
+                <SelectTrigger className="w-32 h-9 text-xs"><SelectValue /></SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">{language === "ar" ? "الكل" : "All Types"}</SelectItem>
+                  <SelectItem value="images">{language === "ar" ? "صور" : "Images"}</SelectItem>
+                  <SelectItem value="videos">{language === "ar" ? "فيديو" : "Videos"}</SelectItem>
+                  <SelectItem value="documents">{language === "ar" ? "مستندات" : "Documents"}</SelectItem>
+                </SelectContent>
+              </Select>
+              <Button variant={viewMode === "grid" ? "default" : "outline"} size="icon" onClick={() => setViewMode("grid")}>
                 <Grid className="h-4 w-4" />
               </Button>
-              <Button
-                variant={viewMode === "list" ? "default" : "outline"}
-                size="icon"
-                onClick={() => setViewMode("list")}
-              >
+              <Button variant={viewMode === "list" ? "default" : "outline"} size="icon" onClick={() => setViewMode("list")}>
                 <List className="h-4 w-4" />
               </Button>
             </div>
@@ -144,7 +228,7 @@ export default function MediaAdmin() {
           <CardTitle className="flex items-center justify-between">
             <span>
               {language === "ar" ? "الملفات" : "Files"} 
-              <Badge variant="secondary" className="ml-2">{media?.length || 0}</Badge>
+              <Badge variant="secondary" className="ml-2">{filteredMedia?.length || 0}</Badge>
             </span>
           </CardTitle>
         </CardHeader>
@@ -153,14 +237,14 @@ export default function MediaAdmin() {
             <div className="flex justify-center py-12">
               <div className="h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent" />
             </div>
-          ) : !media || media.length === 0 ? (
+          ) : !filteredMedia || filteredMedia.length === 0 ? (
             <div className="text-center py-12 text-muted-foreground">
               <Image className="mx-auto h-12 w-12 mb-4 opacity-50" />
               <p>{language === "ar" ? "لا توجد ملفات" : "No files found"}</p>
             </div>
           ) : viewMode === "grid" ? (
             <div className="grid gap-4 grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
-              {media.map((file) => {
+              {filteredMedia.map((file) => {
                 const FileIcon = getFileIcon(file.file_type);
                 return (
                   <div 
@@ -221,7 +305,7 @@ export default function MediaAdmin() {
             </div>
           ) : (
             <div className="space-y-2">
-              {media.map((file) => {
+              {filteredMedia.map((file) => {
                 const FileIcon = getFileIcon(file.file_type);
                 return (
                   <div 
