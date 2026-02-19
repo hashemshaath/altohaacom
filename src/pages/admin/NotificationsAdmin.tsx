@@ -67,6 +67,8 @@ export default function NotificationsAdmin() {
     targetMode: "all" as "all" | "segment" | "role" | "manual",
     targetSegmentId: "", targetRole: "", targetUsers: "",
     link: "",
+    sendMode: "now" as "now" | "scheduled",
+    scheduledAt: "",
   });
 
   const [channelSettings, setChannelSettings] = useState({
@@ -176,7 +178,7 @@ export default function NotificationsAdmin() {
           : `Notification sent to ${data?.totalUsers || 0} users`,
       });
       setIsCreateOpen(false);
-      setNewNotification({ title: "", title_ar: "", body: "", body_ar: "", type: "info", channels: ["in_app"], targetMode: "all", targetSegmentId: "", targetRole: "", targetUsers: "", link: "" });
+      setNewNotification({ title: "", title_ar: "", body: "", body_ar: "", type: "info", channels: ["in_app"], targetMode: "all", targetSegmentId: "", targetRole: "", targetUsers: "", link: "", sendMode: "now", scheduledAt: "" });
     },
     onError: (error) => toast({ variant: "destructive", title: isAr ? "فشل الإرسال" : "Send Failed", description: error.message }),
   });
@@ -1039,11 +1041,52 @@ export default function NotificationsAdmin() {
               )}
             </div>
           </div>
+          {/* Schedule Option */}
+          <div className="rounded-lg border p-4 space-y-3">
+            <Label className="flex items-center gap-2">
+              <Clock className="h-4 w-4 text-primary" />
+              {isAr ? "توقيت الإرسال" : "Send Timing"}
+            </Label>
+            <div className="flex gap-2">
+              <Button
+                variant={newNotification.sendMode === "now" ? "default" : "outline"}
+                size="sm"
+                onClick={() => setNewNotification({ ...newNotification, sendMode: "now" })}
+              >
+                <Zap className="mr-1 h-3.5 w-3.5" />
+                {isAr ? "الآن" : "Send Now"}
+              </Button>
+              <Button
+                variant={newNotification.sendMode === "scheduled" ? "default" : "outline"}
+                size="sm"
+                onClick={() => setNewNotification({ ...newNotification, sendMode: "scheduled" })}
+              >
+                <Clock className="mr-1 h-3.5 w-3.5" />
+                {isAr ? "مجدول" : "Schedule"}
+              </Button>
+            </div>
+            {newNotification.sendMode === "scheduled" && (
+              <Input
+                type="datetime-local"
+                value={newNotification.scheduledAt}
+                onChange={(e) => setNewNotification({ ...newNotification, scheduledAt: e.target.value })}
+                min={new Date().toISOString().slice(0, 16)}
+              />
+            )}
+          </div>
+
           <DialogFooter>
             <Button variant="outline" onClick={() => setIsCreateOpen(false)}>{isAr ? "إلغاء" : "Cancel"}</Button>
-            <Button onClick={() => sendMutation.mutate()} disabled={sendMutation.isPending || !newNotification.title || !newNotification.body || newNotification.channels.length === 0}>
+            <Button onClick={() => sendMutation.mutate()} disabled={
+              sendMutation.isPending || !newNotification.title || !newNotification.body || newNotification.channels.length === 0 ||
+              (newNotification.sendMode === "scheduled" && !newNotification.scheduledAt)
+            }>
               <Send className="mr-2 h-4 w-4" />
-              {sendMutation.isPending ? (isAr ? "جارٍ..." : "Sending...") : (isAr ? "بث الآن" : "Broadcast Now")}
+              {sendMutation.isPending
+                ? (isAr ? "جارٍ..." : "Sending...")
+                : newNotification.sendMode === "scheduled"
+                  ? (isAr ? "جدولة البث" : "Schedule Broadcast")
+                  : (isAr ? "بث الآن" : "Broadcast Now")}
             </Button>
           </DialogFooter>
         </DialogContent>

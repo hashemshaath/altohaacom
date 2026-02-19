@@ -26,6 +26,12 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { useToast } from "@/hooks/use-toast";
 import {
   Ticket,
@@ -39,9 +45,62 @@ import {
   ArrowLeft,
   UserCheck,
   XCircle,
+  Timer,
+  Zap,
+  MessageCircle,
 } from "lucide-react";
-import { format, formatDistanceToNow } from "date-fns";
+import { format, formatDistanceToNow, differenceInHours, differenceInMinutes } from "date-fns";
 import { ar, enUS } from "date-fns/locale";
+
+// ─── SLA Thresholds (hours) ─────────────────────────────────
+const SLA_THRESHOLDS: Record<string, { warning: number; breach: number }> = {
+  urgent: { warning: 1, breach: 4 },
+  high: { warning: 4, breach: 8 },
+  normal: { warning: 8, breach: 24 },
+  low: { warning: 24, breach: 72 },
+};
+
+// ─── Canned Responses ───────────────────────────────────────
+const CANNED_RESPONSES = [
+  { key: "ack", en: "Thank you for reaching out. We've received your request and are looking into it. We'll get back to you shortly.", ar: "شكرًا للتواصل معنا. لقد تلقينا طلبك وسنرد عليك قريبًا." },
+  { key: "info", en: "Could you please provide more details about the issue you're experiencing? Screenshots or error messages would be helpful.", ar: "هل يمكنك تقديم مزيد من التفاصيل حول المشكلة؟ لقطات الشاشة أو رسائل الخطأ ستكون مفيدة." },
+  { key: "resolved", en: "The issue has been resolved. Please let us know if you need any further assistance.", ar: "تم حل المشكلة. يرجى إعلامنا إذا كنت بحاجة إلى مزيد من المساعدة." },
+  { key: "escalated", en: "Your ticket has been escalated to our senior team for further investigation. We'll update you as soon as possible.", ar: "تم تصعيد تذكرتك إلى الفريق المتخصص لمزيد من التحقيق. سنحدثك في أقرب وقت." },
+  { key: "followup", en: "We're following up on your ticket. Is the issue still persisting, or has it been resolved?", ar: "نتابع تذكرتك. هل المشكلة لا تزال قائمة أم تم حلها؟" },
+];
+
+function getSlaIndicator(priority: string, createdAt: string, status: string, isAr: boolean) {
+  if (status === "resolved" || status === "closed") return null;
+  const thresholds = SLA_THRESHOLDS[priority] || SLA_THRESHOLDS.normal;
+  const hours = differenceInHours(new Date(), new Date(createdAt));
+  const mins = differenceInMinutes(new Date(), new Date(createdAt));
+
+  if (hours >= thresholds.breach) {
+    return (
+      <Badge variant="destructive" className="gap-1 text-[9px] animate-pulse">
+        <Timer className="h-3 w-3" />
+        {isAr ? "تجاوز SLA" : "SLA Breached"}
+      </Badge>
+    );
+  }
+  if (hours >= thresholds.warning) {
+    return (
+      <Badge className="gap-1 text-[9px] bg-chart-4/10 text-chart-4 border-chart-4/30" variant="outline">
+        <Timer className="h-3 w-3" />
+        {isAr ? "تحذير SLA" : "SLA Warning"}
+      </Badge>
+    );
+  }
+  const remaining = thresholds.breach * 60 - mins;
+  const remHours = Math.floor(remaining / 60);
+  const remMins = remaining % 60;
+  return (
+    <span className="text-[9px] text-muted-foreground flex items-center gap-1">
+      <Clock className="h-3 w-3" />
+      {remHours}h {remMins}m
+    </span>
+  );
+}
 
 export default function SupportTicketsAdmin() {
   const { user } = useAuth();
@@ -171,6 +230,11 @@ export default function SupportTicketsAdmin() {
     inProgress: tickets.filter(t => t.status === "in_progress").length,
     resolved: tickets.filter(t => t.status === "resolved" || t.status === "closed").length,
     urgent: tickets.filter(t => t.priority === "urgent" && t.status !== "closed").length,
+    slaBreach: tickets.filter(t => {
+      if (t.status === "resolved" || t.status === "closed") return false;
+      const thresh = SLA_THRESHOLDS[t.priority] || SLA_THRESHOLDS.normal;
+      return differenceInHours(new Date(), new Date(t.created_at)) >= thresh.breach;
+    }).length,
   };
 
   const getStatusBadge = (status: string) => {
@@ -208,13 +272,14 @@ export default function SupportTicketsAdmin() {
       </div>
 
       {/* Stats */}
-      <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
+      <div className="grid grid-cols-2 md:grid-cols-6 gap-4">
         {[
           { icon: Ticket, label: isAr ? "الإجمالي" : "Total", value: stats.total, color: "text-primary", bg: "bg-primary/10" },
           { icon: AlertCircle, label: isAr ? "مفتوحة" : "Open", value: stats.open, color: "text-chart-4", bg: "bg-chart-4/10" },
           { icon: Clock, label: isAr ? "قيد المعالجة" : "In Progress", value: stats.inProgress, color: "text-chart-3", bg: "bg-chart-3/10" },
           { icon: CheckCircle2, label: isAr ? "محلولة" : "Resolved", value: stats.resolved, color: "text-chart-5", bg: "bg-chart-5/10" },
           { icon: XCircle, label: isAr ? "عاجلة" : "Urgent", value: stats.urgent, color: "text-destructive", bg: "bg-destructive/10" },
+          { icon: Timer, label: isAr ? "تجاوز SLA" : "SLA Breached", value: stats.slaBreach, color: "text-destructive", bg: "bg-destructive/10" },
         ].map(s => (
           <Card key={s.label}>
             <CardContent className="flex items-center gap-3 py-4">
@@ -247,6 +312,7 @@ export default function SupportTicketsAdmin() {
                     <Badge variant="outline">{selectedTicket.ticket_number}</Badge>
                     {getStatusBadge(selectedTicket.status)}
                     {getPriorityBadge(selectedTicket.priority)}
+                    {getSlaIndicator(selectedTicket.priority, selectedTicket.created_at, selectedTicket.status, isAr)}
                     <Badge variant="outline">
                       <Users className="me-1 h-3 w-3" />
                       {profileMap.get(selectedTicket.user_id)?.full_name || "Unknown"}
@@ -295,9 +361,7 @@ export default function SupportTicketsAdmin() {
               <ScrollArea className="max-h-[400px]">
                 <div className="space-y-3">
                   {ticketMessages.map(msg => {
-                    const isSelf = msg.sender_id === user?.id;
                     const isUser = msg.sender_id === selectedTicket.user_id;
-                    const profile = profileMap.get(msg.sender_id);
 
                     return (
                       <div
@@ -337,7 +401,7 @@ export default function SupportTicketsAdmin() {
 
               {selectedTicket.status !== "closed" && (
                 <div className="mt-4 space-y-2">
-                  <div className="flex items-center gap-2">
+                  <div className="flex items-center justify-between gap-2">
                     <label className="flex items-center gap-2 text-sm cursor-pointer">
                       <input
                         type="checkbox"
@@ -347,6 +411,29 @@ export default function SupportTicketsAdmin() {
                       />
                       {isAr ? "ملاحظة داخلية (لن يراها المستخدم)" : "Internal note (hidden from user)"}
                     </label>
+                    {/* Canned Responses */}
+                    <DropdownMenu>
+                      <DropdownMenuTrigger asChild>
+                        <Button variant="outline" size="sm" className="gap-1.5">
+                          <Zap className="h-3 w-3" />
+                          {isAr ? "ردود سريعة" : "Quick Replies"}
+                        </Button>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent align="end" className="w-80">
+                        {CANNED_RESPONSES.map(r => (
+                          <DropdownMenuItem
+                            key={r.key}
+                            onClick={() => setNewReply(isAr ? r.ar : r.en)}
+                            className="flex-col items-start gap-1 py-2"
+                          >
+                            <span className="text-xs font-medium capitalize">{r.key}</span>
+                            <span className="text-[11px] text-muted-foreground line-clamp-2">
+                              {isAr ? r.ar : r.en}
+                            </span>
+                          </DropdownMenuItem>
+                        ))}
+                      </DropdownMenuContent>
+                    </DropdownMenu>
                   </div>
                   <form
                     onSubmit={e => {
@@ -426,6 +513,7 @@ export default function SupportTicketsAdmin() {
                       <TableHead>{isAr ? "المستخدم" : "User"}</TableHead>
                       <TableHead>{isAr ? "الحالة" : "Status"}</TableHead>
                       <TableHead>{isAr ? "الأولوية" : "Priority"}</TableHead>
+                      <TableHead>SLA</TableHead>
                       <TableHead>{isAr ? "التاريخ" : "Date"}</TableHead>
                     </TableRow>
                   </TableHeader>
@@ -452,6 +540,9 @@ export default function SupportTicketsAdmin() {
                           </TableCell>
                           <TableCell>{getStatusBadge(ticket.status)}</TableCell>
                           <TableCell>{getPriorityBadge(ticket.priority)}</TableCell>
+                          <TableCell>
+                            {getSlaIndicator(ticket.priority, ticket.created_at, ticket.status, isAr)}
+                          </TableCell>
                           <TableCell className="text-xs text-muted-foreground">
                             {formatDistanceToNow(new Date(ticket.created_at), {
                               addSuffix: true,
