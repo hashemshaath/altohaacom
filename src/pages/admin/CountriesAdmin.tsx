@@ -26,8 +26,13 @@ import {
   ToggleLeft, BarChart3, Download, Copy, Eye, EyeOff,
   AlertTriangle, CheckCheck, RefreshCw, ArrowUpDown, Filter,
   Zap, Shield, Phone, Mail, Building, Clock, DollarSign, Languages,
+  ArrowLeftRight, Upload, History,
 } from "lucide-react";
 import { CountryOverviewDashboard } from "@/components/admin/CountryOverviewDashboard";
+import { CountryCompletenessScore, getCompletenessScore } from "@/components/admin/countries/CountryCompletenessScore";
+import { CountryComparisonTool } from "@/components/admin/countries/CountryComparisonTool";
+import { CountryCSVImport } from "@/components/admin/countries/CountryCSVImport";
+import { CountryAuditLog } from "@/components/admin/countries/CountryAuditLog";
 
 interface Country {
   id: string;
@@ -162,6 +167,16 @@ export default function CountriesAdmin() {
     return list;
   }, [countries, searchQuery, regionFilter, statusFilter, continentFilter, sortField, sortAsc]);
 
+  const logAudit = async (code: string, action: string, summary: string, summaryAr: string, changes?: Record<string, { old: unknown; new: unknown }>) => {
+    await supabase.from("country_audit_log").insert([{
+      country_code: code,
+      action,
+      summary,
+      summary_ar: summaryAr,
+      changes: (changes || null) as any,
+    }]);
+  };
+
   const saveMutation = useMutation({
     mutationFn: async () => {
       const payload = {
@@ -200,15 +215,30 @@ export default function CountriesAdmin() {
       };
 
       if (editCountry) {
+        // Track changes for audit
+        const changes: Record<string, { old: unknown; new: unknown }> = {};
+        const ec = editCountry as unknown as Record<string, unknown>;
+        Object.entries(payload).forEach(([k, v]) => {
+          if (JSON.stringify(ec[k]) !== JSON.stringify(v)) {
+            changes[k] = { old: ec[k], new: v };
+          }
+        });
+
         const { error } = await supabase.from("countries").update(payload).eq("id", editCountry.id);
         if (error) throw error;
+
+        if (Object.keys(changes).length > 0) {
+          await logAudit(payload.code, "updated", `Updated ${Object.keys(changes).join(", ")}`, `تم تحديث ${Object.keys(changes).join(", ")}`, changes);
+        }
       } else {
         const { error } = await supabase.from("countries").insert(payload);
         if (error) throw error;
+        await logAudit(payload.code, "created", `Created country: ${payload.name}`, `تم إنشاء دولة: ${payload.name}`);
       }
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["admin-countries"] });
+      queryClient.invalidateQueries({ queryKey: ["country-audit-log"] });
       toast({ title: isAr ? "تم الحفظ بنجاح" : "Saved successfully" });
       closeForm();
     },
@@ -216,20 +246,26 @@ export default function CountriesAdmin() {
   });
 
   const toggleActiveMutation = useMutation({
-    mutationFn: async ({ id, active }: { id: string; active: boolean }) => {
+    mutationFn: async ({ id, active, code }: { id: string; active: boolean; code: string }) => {
       const { error } = await supabase.from("countries").update({ is_active: active }).eq("id", id);
       if (error) throw error;
-    },
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["admin-countries"] }),
-  });
-
-  const deleteMutation = useMutation({
-    mutationFn: async (id: string) => {
-      const { error } = await supabase.from("countries").delete().eq("id", id);
-      if (error) throw error;
+      await logAudit(code, active ? "activated" : "deactivated", `${active ? "Activated" : "Deactivated"} country`, `${active ? "تم تفعيل" : "تم إلغاء تفعيل"} الدولة`);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["admin-countries"] });
+      queryClient.invalidateQueries({ queryKey: ["country-audit-log"] });
+    },
+  });
+
+  const deleteMutation = useMutation({
+    mutationFn: async ({ id, code }: { id: string; code: string }) => {
+      const { error } = await supabase.from("countries").delete().eq("id", id);
+      if (error) throw error;
+      await logAudit(code, "deleted", `Deleted country`, `تم حذف الدولة`);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["admin-countries"] });
+      queryClient.invalidateQueries({ queryKey: ["country-audit-log"] });
       toast({ title: isAr ? "تم الحذف" : "Deleted" });
       setDeleteTarget(null);
     },
@@ -421,7 +457,7 @@ export default function CountriesAdmin() {
 
       {/* Tabs */}
       <Tabs value={activeTab} onValueChange={setActiveTab}>
-        <TabsList>
+        <TabsList className="flex-wrap">
           <TabsTrigger value="overview">
             <BarChart3 className="h-4 w-4 mr-1.5" />
             {isAr ? "نظرة عامة" : "Overview"}
@@ -434,6 +470,18 @@ export default function CountriesAdmin() {
           <TabsTrigger value="regions">
             <MapPin className="h-4 w-4 mr-1.5" />
             {isAr ? "حسب المنطقة" : "By Region"}
+          </TabsTrigger>
+          <TabsTrigger value="compare">
+            <ArrowLeftRight className="h-4 w-4 mr-1.5" />
+            {isAr ? "مقارنة" : "Compare"}
+          </TabsTrigger>
+          <TabsTrigger value="import">
+            <Upload className="h-4 w-4 mr-1.5" />
+            {isAr ? "استيراد" : "Import"}
+          </TabsTrigger>
+          <TabsTrigger value="audit">
+            <History className="h-4 w-4 mr-1.5" />
+            {isAr ? "السجل" : "Audit Log"}
           </TabsTrigger>
         </TabsList>
 
@@ -536,6 +584,7 @@ export default function CountriesAdmin() {
                       <SortHeader field="region">{isAr ? "المنطقة" : "Region"}</SortHeader>
                       <TableHead>{isAr ? "العملة" : "Currency"}</TableHead>
                       <TableHead>{isAr ? "الميزات" : "Features"}</TableHead>
+                      <TableHead>{isAr ? "الاكتمال" : "Health"}</TableHead>
                       <TableHead>{isAr ? "الحالة" : "Status"}</TableHead>
                       <TableHead className="w-[120px]">{isAr ? "الإجراءات" : "Actions"}</TableHead>
                     </TableRow>
@@ -591,10 +640,13 @@ export default function CountriesAdmin() {
                           </TooltipProvider>
                         </TableCell>
                         <TableCell>
+                          <CountryCompletenessScore country={c as any} isAr={isAr} compact />
+                        </TableCell>
+                        <TableCell>
                           <div className="flex items-center gap-1.5">
                             <Switch
                               checked={c.is_active}
-                              onCheckedChange={v => toggleActiveMutation.mutate({ id: c.id, active: v })}
+                              onCheckedChange={v => toggleActiveMutation.mutate({ id: c.id, active: v, code: c.code })}
                             />
                             {c.is_featured && <Star className="h-3.5 w-3.5 text-chart-2 fill-chart-2" />}
                           </div>
@@ -637,7 +689,7 @@ export default function CountriesAdmin() {
                     ))}
                     {filtered.length === 0 && (
                       <TableRow>
-                        <TableCell colSpan={9} className="text-center py-12 text-muted-foreground">
+                        <TableCell colSpan={10} className="text-center py-12 text-muted-foreground">
                           {isAr ? "لا توجد دول" : "No countries found"}
                         </TableCell>
                       </TableRow>
@@ -695,6 +747,8 @@ export default function CountriesAdmin() {
                     })}
                   </div>
                 </div>
+                <Separator className="my-3" />
+                <CountryCompletenessScore country={detailCountry as any} isAr={isAr} />
                 {detailCountry.local_office_address && (
                   <>
                     <Separator className="my-3" />
@@ -756,6 +810,21 @@ export default function CountriesAdmin() {
             </Card>
           ))}
         </TabsContent>
+
+        {/* Compare */}
+        <TabsContent value="compare" className="space-y-4">
+          <CountryComparisonTool countries={countries} />
+        </TabsContent>
+
+        {/* Import */}
+        <TabsContent value="import" className="space-y-4">
+          <CountryCSVImport />
+        </TabsContent>
+
+        {/* Audit Log */}
+        <TabsContent value="audit" className="space-y-4">
+          <CountryAuditLog />
+        </TabsContent>
       </Tabs>
 
       {/* ═══ Delete Confirmation ═══ */}
@@ -776,7 +845,7 @@ export default function CountriesAdmin() {
             <AlertDialogCancel>{isAr ? "إلغاء" : "Cancel"}</AlertDialogCancel>
             <AlertDialogAction
               className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
-              onClick={() => deleteTarget && deleteMutation.mutate(deleteTarget.id)}
+              onClick={() => deleteTarget && deleteMutation.mutate({ id: deleteTarget.id, code: deleteTarget.code })}
             >
               <Trash2 className="h-4 w-4 mr-2" />
               {isAr ? "حذف" : "Delete"}
