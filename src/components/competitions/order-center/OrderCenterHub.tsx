@@ -1,22 +1,24 @@
-import { useState } from "react";
+import { useState, lazy, Suspense } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { Badge } from "@/components/ui/badge";
+import { Skeleton } from "@/components/ui/skeleton";
 import { LayoutDashboard, ClipboardList, Package, Lightbulb, CheckSquare, Send, Wallet, Truck, Activity, BarChart3, ClipboardCheck, BookTemplate, FileInput } from "lucide-react";
-import { RequirementsListPanel } from "../RequirementsListPanel";
-import { SuggestionPanel } from "./SuggestionPanel";
-import { DeliveryChecklist } from "./DeliveryChecklist";
-import { SupermarketCatalog } from "./SupermarketCatalog";
-import { QuoteRequestPanel } from "./QuoteRequestPanel";
-import { OrderOverviewDashboard } from "./OrderOverviewDashboard";
-import { BudgetTracker } from "./BudgetTracker";
-import { VendorAssignmentPanel } from "./VendorAssignmentPanel";
-import { OrderActivityLog } from "./OrderActivityLog";
-import { VendorPerformance } from "./VendorPerformance";
-import { ReadinessChecklist } from "./ReadinessChecklist";
-import { RequirementTemplates } from "./RequirementTemplates";
-import { ItemRequestPanel } from "./ItemRequestPanel";
+
+// Lazy load all tab panels for performance
+const RequirementsListPanel = lazy(() => import("../RequirementsListPanel").then(m => ({ default: m.RequirementsListPanel })));
+const SuggestionPanel = lazy(() => import("./SuggestionPanel").then(m => ({ default: m.SuggestionPanel })));
+const DeliveryChecklist = lazy(() => import("./DeliveryChecklist").then(m => ({ default: m.DeliveryChecklist })));
+const SupermarketCatalog = lazy(() => import("./SupermarketCatalog").then(m => ({ default: m.SupermarketCatalog })));
+const QuoteRequestPanel = lazy(() => import("./QuoteRequestPanel").then(m => ({ default: m.QuoteRequestPanel })));
+const OrderOverviewDashboard = lazy(() => import("./OrderOverviewDashboard").then(m => ({ default: m.OrderOverviewDashboard })));
+const BudgetTracker = lazy(() => import("./BudgetTracker").then(m => ({ default: m.BudgetTracker })));
+const VendorAssignmentPanel = lazy(() => import("./VendorAssignmentPanel").then(m => ({ default: m.VendorAssignmentPanel })));
+const OrderActivityLog = lazy(() => import("./OrderActivityLog").then(m => ({ default: m.OrderActivityLog })));
+const VendorPerformance = lazy(() => import("./VendorPerformance").then(m => ({ default: m.VendorPerformance })));
+const ReadinessChecklist = lazy(() => import("./ReadinessChecklist").then(m => ({ default: m.ReadinessChecklist })));
+const RequirementTemplates = lazy(() => import("./RequirementTemplates").then(m => ({ default: m.RequirementTemplates })));
+const ItemRequestPanel = lazy(() => import("./ItemRequestPanel").then(m => ({ default: m.ItemRequestPanel })));
 
 interface Props {
   competitionId: string;
@@ -57,10 +59,44 @@ const TAB_GROUPS = [
   },
 ];
 
+function TabSkeleton() {
+  return (
+    <div className="space-y-4 p-4">
+      <div className="flex gap-3">
+        <Skeleton className="h-20 flex-1 rounded-xl" />
+        <Skeleton className="h-20 flex-1 rounded-xl" />
+        <Skeleton className="h-20 flex-1 rounded-xl" />
+      </div>
+      <Skeleton className="h-40 w-full rounded-xl" />
+      <Skeleton className="h-32 w-full rounded-xl" />
+    </div>
+  );
+}
+
 export function OrderCenterHub({ competitionId, isOrganizer }: Props) {
   const { language } = useLanguage();
   const isAr = language === "ar";
   const [activeTab, setActiveTab] = useState("overview");
+
+  const renderTabContent = () => {
+    const props = { competitionId, isOrganizer };
+    switch (activeTab) {
+      case "overview": return <OrderOverviewDashboard {...props} />;
+      case "requests": return <ItemRequestPanel {...props} />;
+      case "lists": return <RequirementsListPanel {...props} />;
+      case "catalog": return <SupermarketCatalog />;
+      case "checklist": return <DeliveryChecklist {...props} />;
+      case "quotes": return <QuoteRequestPanel {...props} />;
+      case "budget": return <BudgetTracker {...props} />;
+      case "vendors": return <VendorAssignmentPanel {...props} />;
+      case "performance": return <VendorPerformance {...props} />;
+      case "suggestions": return <SuggestionPanel {...props} />;
+      case "templates": return <RequirementTemplates {...props} />;
+      case "readiness": return <ReadinessChecklist {...props} />;
+      case "activity": return <OrderActivityLog {...props} />;
+      default: return null;
+    }
+  };
 
   return (
     <div className="space-y-4">
@@ -77,8 +113,8 @@ export function OrderCenterHub({ competitionId, isOrganizer }: Props) {
         </div>
       </div>
 
-      {/* Grouped Tab Navigation - responsive */}
-      <div className="rounded-xl border border-border/60 bg-card overflow-hidden">
+      {/* Sticky Grouped Tab Navigation */}
+      <div className="sticky top-0 z-20 rounded-xl border border-border/60 bg-card overflow-hidden shadow-sm">
         <ScrollArea className="w-full">
           <div className="flex flex-col sm:flex-row sm:items-stretch sm:divide-x sm:divide-border/40 sm:rtl:divide-x-reverse min-w-max">
             {TAB_GROUPS.map((group) => (
@@ -97,7 +133,7 @@ export function OrderCenterHub({ competitionId, isOrganizer }: Props) {
                         key={tab.id}
                         onClick={() => setActiveTab(tab.id)}
                         className={`
-                          flex items-center gap-1 rounded-lg px-2 py-1.5 text-[11px] sm:text-xs font-medium transition-all
+                          flex items-center gap-1 rounded-lg px-2 py-1.5 text-[11px] sm:text-xs font-medium transition-all active:scale-95
                           ${isActive
                             ? "bg-primary text-primary-foreground shadow-sm"
                             : "text-muted-foreground hover:bg-muted hover:text-foreground"
@@ -117,21 +153,11 @@ export function OrderCenterHub({ competitionId, isOrganizer }: Props) {
         </ScrollArea>
       </div>
 
-      {/* Tab Content */}
+      {/* Tab Content with Suspense */}
       <div className="mt-4">
-        {activeTab === "overview" && <OrderOverviewDashboard competitionId={competitionId} isOrganizer={isOrganizer} />}
-        {activeTab === "requests" && <ItemRequestPanel competitionId={competitionId} isOrganizer={isOrganizer} />}
-        {activeTab === "lists" && <RequirementsListPanel competitionId={competitionId} isOrganizer={isOrganizer} />}
-        {activeTab === "catalog" && <SupermarketCatalog />}
-        {activeTab === "checklist" && <DeliveryChecklist competitionId={competitionId} isOrganizer={isOrganizer} />}
-        {activeTab === "quotes" && <QuoteRequestPanel competitionId={competitionId} isOrganizer={isOrganizer} />}
-        {activeTab === "budget" && <BudgetTracker competitionId={competitionId} isOrganizer={isOrganizer} />}
-        {activeTab === "vendors" && <VendorAssignmentPanel competitionId={competitionId} isOrganizer={isOrganizer} />}
-        {activeTab === "performance" && <VendorPerformance competitionId={competitionId} isOrganizer={isOrganizer} />}
-        {activeTab === "suggestions" && <SuggestionPanel competitionId={competitionId} isOrganizer={isOrganizer} />}
-        {activeTab === "templates" && <RequirementTemplates competitionId={competitionId} isOrganizer={isOrganizer} />}
-        {activeTab === "readiness" && <ReadinessChecklist competitionId={competitionId} isOrganizer={isOrganizer} />}
-        {activeTab === "activity" && <OrderActivityLog competitionId={competitionId} isOrganizer={isOrganizer} />}
+        <Suspense fallback={<TabSkeleton />}>
+          {renderTabContent()}
+        </Suspense>
       </div>
     </div>
   );

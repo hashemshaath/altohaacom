@@ -9,6 +9,8 @@ import { notifyVendorAssigned } from "./OrderNotifications";
 import { VendorStatsRow } from "./VendorStatsRow";
 import { VendorSummaryCard } from "./VendorSummaryCard";
 import { VendorItemAssignment } from "./VendorItemAssignment";
+import { OrderExportActions } from "./OrderExportActions";
+import { useRealtimeOrderUpdates } from "@/hooks/useRealtimeOrderUpdates";
 
 interface Props {
   competitionId: string;
@@ -22,6 +24,9 @@ export function VendorAssignmentPanel({ competitionId, isOrganizer }: Props) {
   const queryClient = useQueryClient();
   const isAr = language === "ar";
   const [filterCategory, setFilterCategory] = useState<string>("all");
+
+  // Enable realtime updates
+  useRealtimeOrderUpdates(competitionId, true);
 
   const { data: lists } = useQuery({
     queryKey: ["vendor-lists", competitionId],
@@ -145,8 +150,40 @@ export function VendorAssignmentPanel({ competitionId, isOrganizer }: Props) {
     items: filteredItems.filter(i => i.list_id === list.id),
   })).filter(g => g.items.length > 0) || [];
 
+  // Export data
+  const exportData = items.map(item => {
+    const name = item.item_id && (item as any).requirement_items
+      ? (item as any).requirement_items.name
+      : item.custom_name;
+    const vendorId = (item as any).assigned_vendor_id;
+    const company = vendorId ? companies?.find(c => c.id === vendorId) : null;
+    return {
+      item_name: name || "—",
+      quantity: item.quantity,
+      unit: item.unit,
+      status: item.status || "pending",
+      vendor: company ? company.name : "Unassigned",
+    };
+  });
+
+  const exportColumns = [
+    { key: "item_name", label: isAr ? "العنصر" : "Item" },
+    { key: "quantity", label: isAr ? "الكمية" : "Quantity" },
+    { key: "unit", label: isAr ? "الوحدة" : "Unit" },
+    { key: "status", label: isAr ? "الحالة" : "Status" },
+    { key: "vendor", label: isAr ? "المورد" : "Vendor" },
+  ];
+
   return (
     <div className="space-y-6">
+      <div className="flex items-center justify-between">
+        <div />
+        <OrderExportActions
+          data={exportData}
+          filename={`vendor-assignments-${competitionId}`}
+          columns={exportColumns}
+        />
+      </div>
       <VendorStatsRow
         totalItems={totalItems}
         assignedItems={assignedItems}

@@ -11,7 +11,8 @@ import {
   Lightbulb, CheckSquare, Calendar, ListPlus, Edit, PackageCheck,
   Clock, Filter, Download,
 } from "lucide-react";
-import { useState, useEffect } from "react";
+import { useState } from "react";
+import { useRealtimeOrderUpdates } from "@/hooks/useRealtimeOrderUpdates";
 import { ACTION_LABELS } from "./orderActivityLogger";
 import { formatDistanceToNow } from "date-fns";
 
@@ -50,6 +51,7 @@ export function OrderActivityLog({ competitionId }: Props) {
   const isAr = language === "ar";
   const [filterAction, setFilterAction] = useState<string>("all");
   const [filterEntity, setFilterEntity] = useState<string>("all");
+  useRealtimeOrderUpdates(competitionId, true);
 
   const { data: logs, isLoading } = useQuery({
     queryKey: ["order-activity-log", competitionId],
@@ -65,22 +67,7 @@ export function OrderActivityLog({ competitionId }: Props) {
     },
   });
 
-  // Subscribe to realtime updates
-  useEffect(() => {
-    const channel = supabase
-      .channel("order-activity-" + competitionId)
-      .on("postgres_changes", {
-        event: "INSERT",
-        schema: "public",
-        table: "order_activity_log",
-        filter: `competition_id=eq.${competitionId}`,
-      }, () => {
-        // Refetch on new entries
-      })
-      .subscribe();
-
-    return () => { supabase.removeChannel(channel); };
-  }, [competitionId]);
+  // Realtime handled by useRealtimeOrderUpdates hook
 
   // Get user profiles for display
   const userIds = [...new Set(logs?.map(l => l.user_id) || [])];
