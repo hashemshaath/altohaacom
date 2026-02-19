@@ -13,6 +13,8 @@ import { MobileBottomNav } from "@/components/mobile/MobileBottomNav";
 import { SkipToContent } from "@/components/a11y/SkipToContent";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
 import { GoogleTrackingProvider } from "@/components/tracking/GoogleTrackingProvider";
+import { TrackingScriptsInjector } from "@/components/tracking/TrackingScriptsInjector";
+import { MaintenanceGuard } from "@/components/MaintenanceGuard";
 import { PageTracker } from "@/components/tracking/PageTracker";
 import { SmartInstallBanner } from "@/components/pwa/SmartInstallBanner";
 import { OfflineBanner } from "@/components/pwa/OfflineBanner";
@@ -58,9 +60,11 @@ const App = () => (
             <BrowserRouter>
               <SkipToContent />
               <GoogleTrackingProvider />
+              <TrackingScriptsInjector />
               <PageTracker />
               <Suspense fallback={null}><LiveChatWidget /></Suspense>
               <FloatingHelpButton />
+              <MaintenanceGuard>
               <ErrorBoundary>
               <Suspense fallback={<div className="flex h-screen items-center justify-center" role="status" aria-label="Loading"><div className="h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent" /><span className="sr-only">Loading page...</span></div>}>
               <main id="main-content" className="pb-16 md:pb-0 overflow-x-hidden">
@@ -74,6 +78,7 @@ const App = () => (
               </main>
               </Suspense>
               </ErrorBoundary>
+              </MaintenanceGuard>
               <MobileBottomNav />
               <SmartInstallBanner />
               <OfflineBanner />
