@@ -1,5 +1,6 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Checkbox } from "@/components/ui/checkbox";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Building2, Truck } from "lucide-react";
 import { ITEM_STATUS_LABELS, getStatusLabel } from "./OrderStatusLabels";
@@ -27,9 +28,11 @@ interface Props {
   isOrganizer?: boolean;
   isAr: boolean;
   language: string;
+  selectedIds?: Set<string>;
+  onToggleSelect?: (id: string) => void;
 }
 
-export function VendorItemAssignment({ grouped, companies, filterCategory, onFilterChange, onAssign, isOrganizer, isAr, language }: Props) {
+export function VendorItemAssignment({ grouped, companies, filterCategory, onFilterChange, onAssign, isOrganizer, isAr, language, selectedIds, onToggleSelect }: Props) {
   return (
     <div className="space-y-4">
       {/* Category Filter */}
@@ -81,7 +84,14 @@ export function VendorItemAssignment({ grouped, companies, filterCategory, onFil
                   : (isAr && item.custom_name_ar ? item.custom_name_ar : item.custom_name);
                 const currentVendor = (item as any).assigned_vendor_id;
                 return (
-                  <div key={item.id} className={`flex items-center gap-3 border-b last:border-0 px-4 py-2.5 transition-colors ${currentVendor ? "bg-chart-1/5" : ""}`}>
+                  <div key={item.id} className={`flex items-center gap-2 sm:gap-3 border-b last:border-0 px-3 sm:px-4 py-2.5 transition-colors ${currentVendor ? "bg-chart-1/5" : ""} ${selectedIds?.has(item.id) ? "ring-1 ring-inset ring-primary/30 bg-primary/5" : ""}`}>
+                    {isOrganizer && onToggleSelect && (
+                      <Checkbox
+                        checked={selectedIds?.has(item.id) || false}
+                        onCheckedChange={() => onToggleSelect(item.id)}
+                        className="shrink-0"
+                      />
+                    )}
                     <div className="flex-1 min-w-0">
                       <p className="text-sm font-medium truncate">{name || "—"}</p>
                       <div className="flex items-center gap-2 text-[10px] text-muted-foreground">
