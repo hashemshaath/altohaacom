@@ -135,7 +135,7 @@ export function CommunityRightSidebar({ rightSidebarOpen, setRightSidebarOpen }:
             <p className="text-[10px] text-muted-foreground leading-relaxed">
               {isAr ? "الشروط · الخصوصية · سياسة ملفات تعريف الارتباط · حول" : "Terms · Privacy · Cookie Policy · About"}
               <br />
-              © {new Date().getFullYear()} Altohaa
+              © {new Date().getFullYear()} Altoha
             </p>
           </div>
         </div>

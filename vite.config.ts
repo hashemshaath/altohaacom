@@ -18,10 +18,10 @@ export default defineConfig(({ mode }) => ({
     mode === "development" && componentTagger(),
     VitePWA({
       registerType: "autoUpdate",
-      includeAssets: ["favicon.ico", "altohaa-logo.png"],
+      includeAssets: ["favicon.ico", "altoha-logo.png"],
       manifest: {
-        name: "Altohaa - Culinary Community",
-        short_name: "Altohaa",
+        name: "Altoha - Culinary Community",
+        short_name: "Altoha",
         description: "The premier culinary community platform for chefs, judges, and food enthusiasts",
         theme_color: "#8B4513",
         background_color: "#FFF8F0",

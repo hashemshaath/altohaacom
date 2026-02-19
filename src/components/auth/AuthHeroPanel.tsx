@@ -127,8 +127,8 @@ export function AuthHeroPanel({ stage, isAr, currentStep, totalSteps = 4 }: Prop
       {/* Logo Area */}
       <div className="relative z-10 p-10 xl:p-14">
         <div className="flex items-center gap-3 group cursor-pointer">
-          <img src="/altohaa-logo.png" alt="Altohaa" className="h-12 w-auto drop-shadow-2xl transition-transform group-hover:scale-110" />
-          <span className="font-serif text-2xl font-black text-white tracking-tighter drop-shadow-lg">Altohaa</span>
+          <img src="/altoha-logo.png" alt="Altoha" className="h-12 w-auto drop-shadow-2xl transition-transform group-hover:scale-110" />
+          <span className="font-serif text-2xl font-black text-white tracking-tighter drop-shadow-lg">Altoha</span>
         </div>
       </div>
 

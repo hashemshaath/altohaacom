@@ -29,7 +29,7 @@ export const translations = {
 
     // Auth
     signInTitle: "Welcome Back",
-    signUpTitle: "Join Altohaa",
+    signUpTitle: "Join Altoha",
     email: "Email",
     password: "Password",
     fullName: "Full Name",
@@ -66,7 +66,7 @@ export const translations = {
     professional: "Professional",
     profileCompleted: "Profile Completed",
     completeProfile: "Complete Your Profile",
-    completeProfileDesc: "Tell us more about yourself to get the most out of Altohaa.",
+    completeProfileDesc: "Tell us more about yourself to get the most out of Altoha.",
 
     // Community
     feed: "Feed",
@@ -268,9 +268,9 @@ export const translations = {
 
      // Notification Preferences
      notificationPreferences: "Notification Preferences",
-     manageNotificationChannels: "Choose how you want to receive notifications from Altohaa",
+     manageNotificationChannels: "Choose how you want to receive notifications from Altoha",
      inApp: "In-App Notifications",
-     inAppDesc: "Receive notifications within the Altohaa platform",
+     inAppDesc: "Receive notifications within the Altoha platform",
      smsDesc: "Receive text messages for urgent notifications",
      whatsappDesc: "Get messages through WhatsApp",
      pushNotifications: "Push Notifications",

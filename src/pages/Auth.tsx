@@ -905,7 +905,7 @@ export default function Auth() {
 
       {/* Header */}
       <div className="flex flex-col items-center text-center">
-        <img src="/altohaa-logo.png" alt="Altohaa" className="mb-3 h-12 w-auto lg:hidden" />
+        <img src="/altoha-logo.png" alt="Altoha" className="mb-3 h-12 w-auto lg:hidden" />
         <h1 className={`${isAr ? "font-sans" : "font-serif"} text-2xl font-bold`}>
           {isSignUp ? (isAr ? "إنشاء حساب جديد" : "Create Account") : (isAr ? "تسجيل الدخول" : "Sign In")}
         </h1>

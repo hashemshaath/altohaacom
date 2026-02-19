@@ -44,9 +44,9 @@ export default function ThemeAdmin() {
     allowUserToggle: true,
     
     // Branding
-    logoUrl: "/altohaa-logo.png",
+    logoUrl: "/altoha-logo.png",
     faviconUrl: "/favicon.ico",
-    siteName: "Altohaa",
+    siteName: "Altoha",
     tagline: "Culinary Excellence Platform",
   });
 
@@ -96,9 +96,9 @@ export default function ThemeAdmin() {
       borderRadius: 8,
       defaultMode: "system",
       allowUserToggle: true,
-      logoUrl: "/altohaa-logo.png",
+      logoUrl: "/altoha-logo.png",
       faviconUrl: "/favicon.ico",
-      siteName: "Altohaa",
+      siteName: "Altoha",
       tagline: "Culinary Excellence Platform",
     });
     toast({

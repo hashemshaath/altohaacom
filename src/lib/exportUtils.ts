@@ -53,7 +53,7 @@ export function printableReport(elementId: string, title: string, options?: { su
         <h1 style="font-size:18px;margin:0;">${title}</h1>
         ${options?.subtitle ? `<p style="font-size:13px;color:#666;margin:4px 0 0;">${options.subtitle}</p>` : ""}
       </div>
-      <p class="report-meta">Generated: ${new Date().toLocaleString()} | Altohaa Platform</p>
+      <p class="report-meta">Generated: ${new Date().toLocaleString()} | Altoha Platform</p>
       ${el.innerHTML}
     </body></html>
   `);

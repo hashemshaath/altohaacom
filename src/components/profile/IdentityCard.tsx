@@ -112,7 +112,7 @@ export function IdentityCard({ profile, userId }: IdentityCardProps) {
         <div className="relative z-10 p-6 sm:p-8">
           {/* Header */}
           <div className="flex items-center justify-between mb-6">
-            <img src="/altohaa-logo.png" alt="Altohaa" className="h-10 sm:h-12 object-contain" />
+            <img src="/altoha-logo.png" alt="Altoha" className="h-10 sm:h-12 object-contain" />
             <div className="text-end">
               <p className="text-[10px] font-semibold tracking-[0.25em] uppercase text-primary">
                 {isAr ? "بطاقة التحقق الرقمية" : "Digital Verification"}

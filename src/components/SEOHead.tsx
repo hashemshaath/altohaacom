@@ -35,7 +35,7 @@ export function SEOHead({
 }: SEOHeadProps) {
   useEffect(() => {
     // Title - keep under 60 chars
-    const fullTitle = title.includes("Altohaa") ? title : `${title} | Altohaa`;
+    const fullTitle = title.includes("Altoha") ? title : `${title} | Altoha`;
     document.title = fullTitle;
 
     // Helper to set/create meta tags
@@ -74,7 +74,7 @@ export function SEOHead({
     }
 
     setMeta("property", "og:url", canonical || window.location.href);
-    setMeta("property", "og:site_name", "Altohaa");
+    setMeta("property", "og:site_name", "Altoha");
     setMeta("name", "twitter:card", ogImage ? "summary_large_image" : "summary");
     setMeta("name", "theme-color", "#1a1a2e");
 

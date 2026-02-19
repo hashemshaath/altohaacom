@@ -404,7 +404,7 @@ export default function CompanyLogin() {
 
       {/* Header */}
       <div className="flex flex-col items-center text-center">
-        <img src="/altohaa-logo.png" alt="Altohaa" className="mb-3 h-12 w-auto lg:hidden" />
+        <img src="/altoha-logo.png" alt="Altoha" className="mb-3 h-12 w-auto lg:hidden" />
         <div className="mb-3 flex h-14 w-14 items-center justify-center rounded-2xl bg-primary/10 ring-1 ring-primary/15">
           <Building2 className="h-7 w-7 text-primary" />
         </div>

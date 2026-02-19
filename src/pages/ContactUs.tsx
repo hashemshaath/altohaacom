@@ -7,13 +7,13 @@ import { Separator } from "@/components/ui/separator";
 import { Mail, Phone, MapPin, Clock, MessageSquare, Globe } from "lucide-react";
 
 const socialLinks = [
-  { name: "Instagram", handle: "@altohaacom", url: "https://instagram.com/altohaacom" },
-  { name: "X (Twitter)", handle: "@altohaacom", url: "https://x.com/altohaacom" },
-  { name: "TikTok", handle: "@altohaacom", url: "https://tiktok.com/@altohaacom" },
-  { name: "Snapchat", handle: "@altohaacom", url: "https://snapchat.com/add/altohaacom" },
-  { name: "LinkedIn", handle: "altohaacom", url: "https://linkedin.com/company/altohaacom" },
-  { name: "YouTube", handle: "@altohaacom", url: "https://youtube.com/@altohaacom" },
-  { name: "Facebook", handle: "altohaacom", url: "https://facebook.com/altohaacom" },
+  { name: "Instagram", handle: "@altohacom", url: "https://instagram.com/altohacom" },
+  { name: "X (Twitter)", handle: "@altohacom", url: "https://x.com/altohacom" },
+  { name: "TikTok", handle: "@altohacom", url: "https://tiktok.com/@altohacom" },
+  { name: "Snapchat", handle: "@altohacom", url: "https://snapchat.com/add/altohacom" },
+  { name: "LinkedIn", handle: "altohacom", url: "https://linkedin.com/company/altohacom" },
+  { name: "YouTube", handle: "@altohacom", url: "https://youtube.com/@altohacom" },
+  { name: "Facebook", handle: "altohacom", url: "https://facebook.com/altohacom" },
 ];
 
 export default function ContactUs() {
@@ -29,7 +29,7 @@ export default function ContactUs() {
 
   return (
     <div className="flex min-h-screen flex-col bg-background" dir={isAr ? "rtl" : "ltr"}>
-      <SEOHead title={isAr ? "اتصل بنا" : "Contact Us"} description={isAr ? "تواصل مع فريق الطهاة" : "Get in touch with the Altohaa team"} />
+      <SEOHead title={isAr ? "اتصل بنا" : "Contact Us"} description={isAr ? "تواصل مع فريق الطهاة" : "Get in touch with the Altoha team"} />
       <Header />
       <main className="flex-1">
         <section className="border-b border-border/40 bg-gradient-to-b from-primary/5 to-background">

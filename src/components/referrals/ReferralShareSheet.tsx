@@ -38,7 +38,7 @@ export function ReferralShareSheet({ referralLink, referralCode, referralCodeId,
   const getMessage = () =>
     isAr
       ? `انضم إلى منصة ألطهاة! سجل الآن واحصل على نقاط إضافية: ${referralLink}`
-      : `Join Altohaa! Sign up now and earn bonus points: ${referralLink}`;
+      : `Join Altoha! Sign up now and earn bonus points: ${referralLink}`;
 
   const trackShare = (channel: string) => {
     awardPoints.mutate({ actionType: "social_share", silent: true });
@@ -86,7 +86,7 @@ export function ReferralShareSheet({ referralLink, referralCode, referralCodeId,
   const shareNative = async () => {
     if (navigator.share) {
       await navigator.share({
-        title: isAr ? "انضم إلى ألطهاة" : "Join Altohaa",
+        title: isAr ? "انضم إلى ألطهاة" : "Join Altoha",
         text: getMessage(),
         url: referralLink,
       });

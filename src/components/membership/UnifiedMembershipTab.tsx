@@ -221,7 +221,7 @@ export function UnifiedMembershipTab({ profile, userId, onMembershipChange }: Un
     </head><body>
       <div>
         <div class="print-card-container">${clone.outerHTML}</div>
-        <div class="print-footer">ALTOHAA • ${isAr ? "بطاقة العضوية الرقمية" : "Digital Membership Card"} • ${new Date().getFullYear()}</div>
+        <div class="print-footer">ALTOHA • ${isAr ? "بطاقة العضوية الرقمية" : "Digital Membership Card"} • ${new Date().getFullYear()}</div>
       </div>
     </body></html>`);
     printWindow.document.close();
@@ -459,10 +459,10 @@ export function UnifiedMembershipTab({ profile, userId, onMembershipChange }: Un
                       : { background: "hsl(var(--primary) / 0.08)", border: "1px solid hsl(var(--primary) / 0.2)" }
                     }
                   >
-                    <img src="/altohaa-logo.png" alt="Altohaa" className="h-9 w-9 sm:h-11 sm:w-11 object-contain" style={cardTheme === "classic" ? { filter: "brightness(1.8)" } : {}} />
+                    <img src="/altoha-logo.png" alt="Altoha" className="h-9 w-9 sm:h-11 sm:w-11 object-contain" style={cardTheme === "classic" ? { filter: "brightness(1.8)" } : {}} />
                   </div>
                   <div>
-                    <p className="text-xs sm:text-sm font-bold uppercase tracking-[0.25em]" style={{ color: cardTheme === "classic" ? "#c9a84c" : "hsl(var(--primary))" }}>ALTOHAA</p>
+                    <p className="text-xs sm:text-sm font-bold uppercase tracking-[0.25em]" style={{ color: cardTheme === "classic" ? "#c9a84c" : "hsl(var(--primary))" }}>ALTOHA</p>
                     <p className="text-[8px] sm:text-[9px] uppercase tracking-[0.15em]" style={{ color: cardTheme === "classic" ? "rgba(201,168,76,0.5)" : "hsl(var(--muted-foreground))" }}>{isAr ? "بطاقة العضوية" : "MEMBERSHIP CARD"}</p>
                   </div>
                 </div>

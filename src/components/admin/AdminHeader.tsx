@@ -17,8 +17,8 @@ export function AdminHeader() {
         {/* Left: Logo + Admin label */}
         <div className="flex items-center gap-3">
           <Link to="/admin" className="flex items-center gap-2">
-            <img src="/altohaa-logo.png" alt="Altohaa" className="h-8 w-auto" />
-            <span className="font-serif text-lg font-bold text-primary">Altohaa</span>
+            <img src="/altoha-logo.png" alt="Altoha" className="h-8 w-auto" />
+            <span className="font-serif text-lg font-bold text-primary">Altoha</span>
           </Link>
           <span className="hidden rounded-md bg-primary/10 px-2 py-0.5 text-xs font-semibold text-primary sm:inline-block">
             {language === "ar" ? "لوحة الإدارة" : "Admin"}

@@ -12,13 +12,13 @@ const LanguageContext = createContext<LanguageContextType | undefined>(undefined
 
 export function LanguageProvider({ children }: { children: React.ReactNode }) {
   const [language, setLanguageState] = useState<Language>(() => {
-    const saved = localStorage.getItem("altohaa-lang");
+    const saved = localStorage.getItem("altoha-lang");
     return (saved === "ar" ? "ar" : "en") as Language;
   });
 
   const setLanguage = useCallback((lang: Language) => {
     setLanguageState(lang);
-    localStorage.setItem("altohaa-lang", lang);
+    localStorage.setItem("altoha-lang", lang);
   }, []);
 
   const t = useCallback(

@@ -213,7 +213,7 @@ export default function PrintableInvoice({ invoice, company, showPrintButton = t
               <img src={cfg.logo_url} alt="Logo" style={{ height: `${logoSize * 0.8}px`, maxWidth: "200px", objectFit: "contain" }} />
             ) : (
               <>
-                <div className="brand" style={{ fontSize: "24px", fontWeight: mainFW, color: primaryColor }}>Altohaa</div>
+                <div className="brand" style={{ fontSize: "24px", fontWeight: mainFW, color: primaryColor }}>Altoha</div>
                 <div className="brand-sub" style={{ fontSize: "12px", color: "#6b7280", marginTop: "4px", fontWeight: subFW }}>
                   {storePrefix}
                 </div>
