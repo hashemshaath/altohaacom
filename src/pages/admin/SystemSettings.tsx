@@ -18,6 +18,7 @@ import {
   Home,
   Layers,
   ArrowRight,
+  LayoutGrid,
 } from "lucide-react";
 import AdminPageHeader from "@/components/admin/AdminPageHeader";
 import { useSiteSettings } from "@/hooks/useSiteSettings";
@@ -112,27 +113,48 @@ export default function SystemSettings() {
             <HeaderFooterSettings settings={settings} onSave={handleSave} isPending={saveSetting.isPending} />
           </TabsContent>
 
-          <TabsContent value="homepage" className="mt-0 space-y-4">
-            {/* Hero Slides quick link */}
-            <Card className="border-primary/20 bg-primary/5">
-              <CardContent className="flex items-center justify-between gap-4 p-4">
-                <div className="flex items-center gap-3">
-                  <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary/10">
-                    <Layers className="h-4 w-4 text-primary" />
+          <TabsContent value="homepage" className="mt-0 space-y-3">
+            {/* Quick links */}
+            <div className="grid gap-3 sm:grid-cols-2">
+              <Card className="border-primary/20 bg-primary/5">
+                <CardContent className="flex items-center justify-between gap-3 p-4">
+                  <div className="flex items-center gap-3">
+                    <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary/10">
+                      <Layers className="h-4 w-4 text-primary" />
+                    </div>
+                    <div>
+                      <p className="text-sm font-semibold">{isAr ? "شرائح القسم الرئيسي" : "Hero Slides"}</p>
+                      <p className="text-xs text-muted-foreground">{isAr ? "5 قوالب احترافية" : "5 professional templates"}</p>
+                    </div>
                   </div>
-                  <div>
-                    <p className="text-sm font-semibold">{isAr ? "شرائح القسم الرئيسي" : "Hero Slides"}</p>
-                    <p className="text-xs text-muted-foreground">{isAr ? "5 قوالب احترافية قابلة للتخصيص الكامل" : "5 professional templates with full design control"}</p>
+                  <Button size="sm" variant="default" className="gap-1.5 shrink-0" asChild>
+                    <Link to="/admin/hero-slides">
+                      {isAr ? "إدارة" : "Manage"}
+                      <ArrowRight className="h-3.5 w-3.5" />
+                    </Link>
+                  </Button>
+                </CardContent>
+              </Card>
+              <Card className="border-border/50 bg-muted/20">
+                <CardContent className="flex items-center justify-between gap-3 p-4">
+                  <div className="flex items-center gap-3">
+                    <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-muted">
+                      <LayoutGrid className="h-4 w-4 text-muted-foreground" />
+                    </div>
+                    <div>
+                      <p className="text-sm font-semibold">{isAr ? "أقسام الصفحة الرئيسية" : "Homepage Sections"}</p>
+                      <p className="text-xs text-muted-foreground">{isAr ? "ترتيب وإظهار الأقسام" : "Order, visibility & design"}</p>
+                    </div>
                   </div>
-                </div>
-                <Button size="sm" variant="default" className="gap-1.5 shrink-0" asChild>
-                  <Link to="/admin/hero-slides">
-                    {isAr ? "إدارة الشرائح" : "Manage Slides"}
-                    <ArrowRight className="h-3.5 w-3.5" />
-                  </Link>
-                </Button>
-              </CardContent>
-            </Card>
+                  <Button size="sm" variant="outline" className="gap-1.5 shrink-0" asChild>
+                    <Link to="/admin/homepage-sections">
+                      {isAr ? "إدارة" : "Manage"}
+                      <ArrowRight className="h-3.5 w-3.5" />
+                    </Link>
+                  </Button>
+                </CardContent>
+              </Card>
+            </div>
             <HomepageSectionsManager />
           </TabsContent>
 
