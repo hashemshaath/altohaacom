@@ -82,7 +82,7 @@ export function RegionalEvents() {
       </div>
 
       {/* Content */}
-      <div className="relative -mt-6 z-10">
+      <div className="relative -mt-4 z-10">
         <div className="container">
           {/* Filter tabs */}
           <div className="mb-3 flex items-center justify-center">
@@ -127,8 +127,8 @@ export function RegionalEvents() {
             </div>
           )}
 
-          {/* View all — left aligned */}
-          <div className="mt-3 pb-6">
+      {/* View all */}
+          <div className="mt-3 pb-6 text-center">
             <Button variant="outline" size="sm" asChild>
               <Link to="/competitions">
                 {isAr ? "عرض جميع الفعاليات" : "View All Events"}
