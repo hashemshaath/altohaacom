@@ -11,6 +11,7 @@ import { SiteSettingsProvider } from "@/contexts/SiteSettingsContext";
 import { FloatingHelpButton } from "@/components/FloatingHelpButton";
 import { MobileBottomNav } from "@/components/mobile/MobileBottomNav";
 import { SkipToContent } from "@/components/a11y/SkipToContent";
+import { ScrollToTop } from "@/components/ScrollToTop";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
 import { GoogleTrackingProvider } from "@/components/tracking/GoogleTrackingProvider";
 import { TrackingScriptsInjector } from "@/components/tracking/TrackingScriptsInjector";
@@ -58,6 +59,7 @@ const App = () => (
             <Toaster />
             <Sonner />
             <BrowserRouter>
+              <ScrollToTop />
               <SkipToContent />
               <GoogleTrackingProvider />
               <TrackingScriptsInjector />
@@ -67,7 +69,7 @@ const App = () => (
               <MaintenanceGuard>
               <ErrorBoundary>
               <Suspense fallback={<div className="flex h-screen items-center justify-center" role="status" aria-label="Loading"><div className="h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent" /><span className="sr-only">Loading page...</span></div>}>
-              <main id="main-content" className="pb-16 md:pb-0 overflow-x-hidden">
+              <main id="main-content" className="pt-14 pb-16 md:pb-0 overflow-x-hidden">
               <Routes>
                 {publicRoutes}
                 {protectedRoutes}

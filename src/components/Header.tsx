@@ -63,11 +63,11 @@ export function Header() {
     <header
       role="banner"
       className={cn(
-        "sticky top-0 z-50 border-b bg-card/95 backdrop-blur-xl supports-[backdrop-filter]:bg-card/85 transition-all duration-300",
+        "fixed top-0 inset-x-0 z-50 border-b transition-all duration-300",
         headerCfg.stickyHeader === false && "relative",
         scrolled
-          ? "border-border/60 shadow-md shadow-foreground/[0.04]"
-          : "border-border/30 shadow-none"
+          ? "bg-card/80 backdrop-blur-xl border-border/50 shadow-lg shadow-foreground/[0.03]"
+          : "bg-card/60 backdrop-blur-md border-border/20 shadow-none"
       )}
     >
       <nav className="container flex h-14 items-center gap-2 sm:gap-2.5" aria-label="Main navigation">
