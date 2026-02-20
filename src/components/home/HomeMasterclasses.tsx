@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { ArrowRight, BookOpen, Clock, GraduationCap, Users } from "lucide-react";
 import { SectionReveal } from "@/components/ui/section-reveal";
+import { cn } from "@/lib/utils";
 
 const LEVEL_LABELS: Record<string, { en: string; ar: string }> = {
   beginner: { en: "Beginner", ar: "مبتدئ" },
@@ -44,7 +45,7 @@ export function HomeMasterclasses() {
               <GraduationCap className="h-3 w-3" />
               {isAr ? "دروس متقدمة" : "Masterclasses"}
             </Badge>
-            <h2 id="masterclasses-heading" className="font-serif text-xl font-bold sm:text-2xl">
+            <h2 id="masterclasses-heading" className={cn("text-xl font-bold sm:text-2xl", !isAr && "font-serif")}>
               {isAr ? "طوّر مهاراتك مع الخبراء" : "Level Up with Expert-Led Classes"}
             </h2>
             <p className="mt-1 text-sm text-muted-foreground">

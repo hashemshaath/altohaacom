@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ArrowRight, Calendar, MapPin, Trophy } from "lucide-react";
 import { format } from "date-fns";
+import { cn } from "@/lib/utils";
 import { SectionReveal } from "@/components/ui/section-reveal";
 import { StaggeredList } from "@/components/ui/staggered-list";
 
@@ -75,7 +76,7 @@ export function RegionalEvents() {
       <div className="container relative">
         <SectionReveal>
           <div className="mb-8 text-center">
-            <h2 id="regional-heading" className="font-serif text-xl font-bold sm:text-2xl md:text-3xl">
+            <h2 id="regional-heading" className={cn("text-xl font-bold sm:text-2xl md:text-3xl", !isAr && "font-serif")}>
               {isAr ? "فعاليات حسب المنطقة" : "Events by Region"}
             </h2>
             <p className="mt-2 text-sm text-muted-foreground">

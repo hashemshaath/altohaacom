@@ -7,6 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { ArrowRight, Award, ChefHat, MapPin, Star, Trophy } from "lucide-react";
+import { cn } from "@/lib/utils";
 import { SectionReveal } from "@/components/ui/section-reveal";
 import { countryFlag } from "@/lib/countryFlag";
 import { useAllCountries } from "@/hooks/useCountries";
@@ -70,7 +71,7 @@ export function FeaturedChefs() {
                 <Award className="h-3 w-3" />
                 {isAr ? "طهاة مميزون" : "Featured Chefs"}
               </Badge>
-              <h2 id="featured-chefs-heading" className="font-serif text-xl font-bold sm:text-2xl">
+              <h2 id="featured-chefs-heading" className={cn("text-xl font-bold sm:text-2xl", !isAr && "font-serif")}>
                 {isAr ? "أبرز الطهاة على المنصة" : "Top Chefs on the Platform"}
               </h2>
               <p className="mt-1 text-sm text-muted-foreground">

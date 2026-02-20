@@ -153,7 +153,7 @@ export function OnboardingWizard({ onComplete }: OnboardingWizardProps) {
           <div className="mb-2.5 flex h-12 w-12 items-center justify-center rounded-full bg-primary/10">
             <StepIcon className="h-6 w-6 text-primary" />
           </div>
-          <h2 className="font-serif text-xl font-bold">
+          <h2 className={`text-xl font-bold ${!isAr ? "font-serif" : ""}`}>
             {isAr ? current.titleAr : current.titleEn}
           </h2>
           <p className="mt-0.5 text-sm text-muted-foreground">

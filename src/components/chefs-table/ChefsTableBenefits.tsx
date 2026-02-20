@@ -69,7 +69,7 @@ export function ChefsTableBenefits({ isAr }: ChefsTableBenefitsProps) {
     <section className="border-y border-border/30 bg-muted/30">
       <div className="container py-16 md:py-20">
         <div className="mx-auto max-w-2xl text-center mb-12">
-          <h2 className="font-serif text-2xl font-black md:text-3xl lg:text-4xl">
+          <h2 className={`text-2xl font-black md:text-3xl lg:text-4xl ${!isAr ? "font-serif" : ""}`}>
             {isAr ? "لماذا طاولة الشيف؟" : "Why Chef's Table?"}
           </h2>
           <p className="mt-3 text-muted-foreground font-medium text-sm md:text-base max-w-xl mx-auto">

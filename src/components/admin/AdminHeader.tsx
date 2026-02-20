@@ -22,7 +22,7 @@ export function AdminHeader() {
         <div className="flex items-center gap-3">
           <Link to="/admin" className="flex items-center gap-2">
             <img src={brandCfg.logoUrl || "/altoha-logo.png"} alt={brandCfg.siteName || "Altoha"} className="h-8 w-auto" />
-            <span className="font-serif text-lg font-bold text-primary">
+            <span className={`text-lg font-bold text-primary ${isAr ? "" : "font-serif"}`}>
               {isAr ? (brandCfg.siteNameAr || "الطهاة") : (brandCfg.siteName || "Altoha")}
             </span>
           </Link>

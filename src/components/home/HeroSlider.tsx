@@ -58,7 +58,7 @@ export function HeroSlider() {
               {isAr ? "المنصة الأولى عالمياً" : "The World's #1 Culinary Platform"}
             </span>
           </div>
-          <h1 className="font-serif text-3xl font-bold sm:text-4xl md:text-5xl lg:text-6xl leading-tight">
+          <h1 className={cn("text-3xl font-bold sm:text-4xl md:text-5xl lg:text-6xl leading-tight", !isAr && "font-serif")}>
             <span className="bg-gradient-to-br from-primary via-primary/80 to-accent bg-clip-text text-transparent">
               {isAr ? "ارتقِ بشغفك" : "Elevate Your"}
             </span>
@@ -131,7 +131,7 @@ export function HeroSlider() {
       <div className="absolute inset-0 z-20 flex items-end pb-16 sm:pb-20 md:items-center md:pb-0">
         <div className="container">
           <div className="max-w-2xl animate-fade-in">
-            <h1 className="font-serif text-xl font-bold text-foreground sm:text-3xl md:text-5xl lg:text-6xl drop-shadow-sm leading-tight">
+            <h1 className={cn("text-xl font-bold text-foreground sm:text-3xl md:text-5xl lg:text-6xl drop-shadow-sm leading-tight", !isAr && "font-serif")}>
               {title}
             </h1>
             {subtitle && (

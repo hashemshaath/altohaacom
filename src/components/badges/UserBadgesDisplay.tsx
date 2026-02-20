@@ -46,7 +46,7 @@ export function UserBadgesDisplay({ userId, limit }: UserBadgesDisplayProps) {
         <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-primary/8">
           <Award className="h-4 w-4 text-primary" />
         </div>
-        <h2 className="font-serif text-base font-bold">{isAr ? "الشارات" : "Badges"}</h2>
+        <h2 className="text-base font-bold">{isAr ? "الشارات" : "Badges"}</h2>
         {badges?.length ? (
           <Badge variant="secondary" className="text-[10px] h-5 rounded-lg">{badges.length}</Badge>
         ) : null}

@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Trophy, Globe, Coffee, ArrowRight, Calendar, MapPin } from "lucide-react";
 import { format } from "date-fns";
+import { cn } from "@/lib/utils";
 import { SectionReveal } from "@/components/ui/section-reveal";
 import { StaggeredList } from "@/components/ui/staggered-list";
 
@@ -191,7 +192,7 @@ export function EventsByCategory() {
     <section className="container py-10 md:py-16" aria-labelledby="events-cat-heading">
       <SectionReveal>
         <div className="mb-8 text-center">
-          <h2 id="events-cat-heading" className="font-serif text-xl font-bold sm:text-2xl md:text-3xl">
+          <h2 id="events-cat-heading" className={cn("text-xl font-bold sm:text-2xl md:text-3xl", !isAr && "font-serif")}>
             {isAr ? "استكشف عالم الفعاليات" : "Explore the World of Events"}
           </h2>
           <p className="mt-2 text-sm text-muted-foreground">

@@ -43,7 +43,7 @@ export const Footer = React.forwardRef<HTMLElement, React.HTMLAttributes<HTMLEle
           <div className="sm:col-span-2 lg:col-span-1">
             <div className="mb-4 flex items-center gap-2.5">
               <img src={logoUrl} alt={siteName} className="h-9 w-auto" />
-              <span className="font-serif text-xl font-bold text-primary">{siteName}</span>
+              <span className={`text-xl font-bold text-primary ${isAr ? "" : "font-serif"}`}>{siteName}</span>
             </div>
             <p className="mb-5 text-sm leading-relaxed text-muted-foreground">{siteDesc}</p>
             <a href={`mailto:${contactEmail}`} className="inline-flex items-center gap-2 text-sm text-muted-foreground transition-colors hover:text-primary group">

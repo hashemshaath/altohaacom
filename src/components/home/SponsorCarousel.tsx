@@ -3,6 +3,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { Badge } from "@/components/ui/badge";
 import { Crown } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 const tierStyles: Record<string, { border: string; bg: string; label: string; labelAr: string }> = {
   platinum: { border: "border-chart-4/30", bg: "bg-gradient-to-br from-chart-4/10 to-chart-4/5", label: "Platinum", labelAr: "بلاتيني" },
@@ -75,7 +76,7 @@ export function SponsorCarousel() {
             <Crown className="h-3 w-3 text-chart-4" />
             {isAr ? "الرعاة الرسميون" : "Official Sponsors"}
           </Badge>
-          <h2 className="font-serif text-2xl font-bold sm:text-3xl">
+          <h2 className={cn("text-2xl font-bold sm:text-3xl", !isAr && "font-serif")}>
             {isAr ? "بدعم من أفضل الشركاء" : "Powered by Top Partners"}
           </h2>
           <p className="mt-2 text-sm text-muted-foreground max-w-lg mx-auto">

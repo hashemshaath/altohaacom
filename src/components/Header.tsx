@@ -88,7 +88,7 @@ export function Header() {
             />
           )}
           {headerCfg.showBrandName !== false && (
-            <span className="font-serif text-lg font-bold text-primary hidden sm:inline tracking-tight">
+            <span className={cn("text-lg font-bold text-primary hidden sm:inline tracking-tight", !isAr && "font-serif")}>
               {isAr ? (brandCfg.siteNameAr || "الطهاة") : (brandCfg.siteName || "Altoha")}
             </span>
           )}

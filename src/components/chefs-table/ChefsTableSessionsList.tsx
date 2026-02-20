@@ -47,7 +47,7 @@ export function ChefsTableSessionsList({ isAr, sessions, isLoading, search, onSe
   return (
     <main className="container py-8 pb-16">
       <div className="mx-auto max-w-2xl text-center mb-10">
-        <h2 className="font-serif text-2xl font-black md:text-3xl">
+        <h2 className={`text-2xl font-black md:text-3xl ${!isAr ? "font-serif" : ""}`}>
           {isAr ? "جلسات التقييم" : "Evaluation Sessions"}
         </h2>
         <p className="mt-2 text-sm text-muted-foreground">{isAr ? "استعرض جلسات التقييم المنشورة" : "Browse published evaluation sessions"}</p>
