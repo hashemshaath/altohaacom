@@ -158,14 +158,14 @@ export const NotificationBell = React.forwardRef<HTMLButtonElement, Record<strin
           {unreadCount > 0 && !dndMode && (
             <Badge
               variant="destructive"
-              className="absolute -top-1 -right-1 h-5 w-5 flex items-center justify-center p-0 text-xs animate-scale-in"
+              className="absolute -top-1 -end-1 h-5 w-5 flex items-center justify-center p-0 text-xs animate-scale-in"
             >
               {unreadCount > 9 ? "9+" : unreadCount}
             </Badge>
           )}
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent align="end" className={cn("w-[400px]", isAr && "text-right")}>
+      <DropdownMenuContent align="end" className="w-[400px]">
         <div className="flex items-center justify-between px-4 py-3 border-b border-border">
           <h3 className="font-bold text-base">{isAr ? "الإشعارات" : "Notifications"}</h3>
           <div className="flex items-center gap-1">
