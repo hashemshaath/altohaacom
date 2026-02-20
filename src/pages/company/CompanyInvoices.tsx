@@ -184,7 +184,7 @@ export default function CompanyInvoices() {
                     <TableHead>{language === "ar" ? "رقم الفاتورة" : "Invoice #"}</TableHead>
                     <TableHead>{language === "ar" ? "العنوان" : "Title"}</TableHead>
                     <TableHead>{language === "ar" ? "الحالة" : "Status"}</TableHead>
-                    <TableHead className="text-right">{language === "ar" ? "المبلغ" : "Amount"}</TableHead>
+                    <TableHead className="text-end">{language === "ar" ? "المبلغ" : "Amount"}</TableHead>
                     <TableHead>{language === "ar" ? "الاستحقاق" : "Due"}</TableHead>
                   </TableRow>
                 </TableHeader>
@@ -194,7 +194,7 @@ export default function CompanyInvoices() {
                       <TableCell className="font-mono text-sm font-medium">{inv.invoice_number}</TableCell>
                       <TableCell className="font-medium">{inv.title || inv.description || "—"}</TableCell>
                       <TableCell>{getStatusBadge(inv.status || "draft")}</TableCell>
-                      <TableCell className="text-right font-medium">
+                      <TableCell className="text-end font-medium">
                         {Number(inv.amount).toLocaleString()} {inv.currency}
                       </TableCell>
                       <TableCell className="text-muted-foreground">

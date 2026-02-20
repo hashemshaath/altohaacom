@@ -282,7 +282,7 @@ export function AutoIssueCertificates({ competitionId }: AutoIssueCertificatesPr
             <label htmlFor="issue-winners" className="text-sm font-medium cursor-pointer">
               {language === "ar" ? "شهادات الفائزين (أول 3)" : "Winner certificates (Top 3)"}
             </label>
-            <Badge variant="secondary" className="ml-auto">{winnerCount}</Badge>
+            <Badge variant="secondary" className="ms-auto">{winnerCount}</Badge>
           </div>
           <div className="flex items-center gap-2">
             <Checkbox
@@ -293,7 +293,7 @@ export function AutoIssueCertificates({ competitionId }: AutoIssueCertificatesPr
             <label htmlFor="issue-participation" className="text-sm font-medium cursor-pointer">
               {language === "ar" ? "شهادات المشاركة" : "Participation certificates"}
             </label>
-            <Badge variant="secondary" className="ml-auto">{totalParticipants}</Badge>
+            <Badge variant="secondary" className="ms-auto">{totalParticipants}</Badge>
           </div>
           <div className="flex items-center gap-2">
             <Checkbox
@@ -304,7 +304,7 @@ export function AutoIssueCertificates({ competitionId }: AutoIssueCertificatesPr
             <label htmlFor="issue-badges" className="text-sm font-medium cursor-pointer">
               {language === "ar" ? "شارات رقمية" : "Digital badges"}
             </label>
-            <Badge variant="secondary" className="ml-auto">
+            <Badge variant="secondary" className="ms-auto">
               {issueBadges ? totalParticipants : 0}
             </Badge>
           </div>

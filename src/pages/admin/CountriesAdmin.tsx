@@ -597,7 +597,7 @@ export default function CountriesAdmin() {
                         </TableCell>
                         <TableCell className="text-xl">{c.flag_emoji || "🏳️"}</TableCell>
                         <TableCell>
-                          <button className="text-left hover:text-primary transition-colors" onClick={() => setDetailCountry(detailCountry?.id === c.id ? null : c)}>
+                          <button className="text-start hover:text-primary transition-colors" onClick={() => setDetailCountry(detailCountry?.id === c.id ? null : c)}>
                             <p className="font-medium text-sm">{c.name}</p>
                             {c.name_ar && <p className="text-[11px] text-muted-foreground" dir="rtl">{c.name_ar}</p>}
                           </button>
