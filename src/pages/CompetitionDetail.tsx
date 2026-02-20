@@ -505,22 +505,22 @@ export default function CompetitionDetail() {
           </div>
         </div>
 
-        {/* ─── Navigation Tabs (pill style) ─── */}
-        <div className="sticky top-12 z-30 border-b border-border/40 bg-background/90 backdrop-blur-xl shadow-sm">
+        {/* ─── Navigation Tabs (pill style, mobile-optimized) ─── */}
+        <div className="sticky top-14 z-30 border-b border-border/40 bg-background/95 backdrop-blur-xl shadow-sm">
           <div className="container">
-            <div className="flex gap-1.5 overflow-x-auto py-2.5 scrollbar-none -mx-4 px-4 md:mx-0 md:px-0 snap-x snap-mandatory">
+            <div className="flex gap-1.5 overflow-x-auto py-2.5 scrollbar-none -mx-4 px-4 md:mx-0 md:px-0 snap-x">
               {navItems.map((item) => (
                 <button
                   key={item.id}
                   onClick={() => setActiveTab(item.id)}
                   className={`
-                    snap-start inline-flex shrink-0 items-center gap-1.5 rounded-xl px-3.5 py-2 text-xs font-semibold transition-all duration-300 group relative
+                    snap-start inline-flex shrink-0 items-center gap-1.5 rounded-full px-3.5 py-2 text-xs font-semibold transition-all duration-200 active:scale-[0.94] touch-manipulation
                     ${activeSection === item.id
                       ? "bg-primary text-primary-foreground shadow-md shadow-primary/25"
                       : "text-muted-foreground hover:bg-muted/60 hover:text-foreground"}
                   `}
                 >
-                  <span className={`transition-transform duration-200 group-hover:scale-110 ${activeSection === item.id ? "text-primary-foreground" : "text-primary"}`}>
+                  <span className={activeSection === item.id ? "text-primary-foreground" : "text-primary"}>
                     {item.icon}
                   </span>
                   <span className="whitespace-nowrap">{item.label}</span>
