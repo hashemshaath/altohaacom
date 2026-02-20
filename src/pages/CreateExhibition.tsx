@@ -138,26 +138,38 @@ export default function CreateExhibition() {
           {step === 3 && <ExhibitionOrganizerTicketsStep data={data} onChange={updateData} />}
           {step === 4 && <ExhibitionReviewStep data={data} />}
 
-          <div className="mt-6 flex justify-between">
-            <Button variant="outline" onClick={() => setStep(step - 1)} disabled={step === 1}>
-              <ArrowLeft className="me-2 h-4 w-4" />
+          <div className="mt-8 flex items-center justify-between rounded-xl border bg-card p-4">
+            <Button
+              variant="ghost"
+              size="lg"
+              onClick={() => setStep(step - 1)}
+              disabled={step === 1}
+              className="gap-2"
+            >
+              <ArrowLeft className="h-4 w-4" />
               {isAr ? "السابق" : "Previous"}
             </Button>
 
+            <span className="text-sm text-muted-foreground">
+              {step} / 4
+            </span>
+
             {step < 4 ? (
-              <Button onClick={() => setStep(step + 1)} disabled={!canProceed()}>
+              <Button size="lg" onClick={() => setStep(step + 1)} disabled={!canProceed()} className="gap-2">
                 {isAr ? "التالي" : "Next"}
-                <ArrowRight className="ms-2 h-4 w-4" />
+                <ArrowRight className="h-4 w-4" />
               </Button>
             ) : (
               <Button
+                size="lg"
                 onClick={() => createMutation.mutate()}
                 disabled={createMutation.isPending || !data.title.trim()}
+                className="gap-2"
               >
                 {createMutation.isPending ? (
-                  <Loader2 className="me-2 h-4 w-4 animate-spin" />
+                  <Loader2 className="h-4 w-4 animate-spin" />
                 ) : (
-                  <Save className="me-2 h-4 w-4" />
+                  <Save className="h-4 w-4" />
                 )}
                 {isAr ? "إنشاء الفعالية" : "Create Event"}
               </Button>
