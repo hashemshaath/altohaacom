@@ -13,36 +13,38 @@ export default function MembershipManagement() {
   const isAr = language === "ar";
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4 sm:space-y-6">
       <AdminPageHeader
         icon={CreditCard}
-        title={isAr ? "إدارة العضويات" : "Membership Management"}
-        description={isAr ? "إدارة شاملة لمستويات العضوية والاشتراكات والتجديدات" : "Comprehensive membership tiers, subscriptions, and renewals management"}
+        title={isAr ? "إدارة العضويات" : "Memberships"}
+        description={isAr ? "إدارة مستويات العضوية والاشتراكات" : "Tiers, subscriptions & renewals"}
       />
 
-      <Tabs defaultValue="overview" className="space-y-4">
-        <TabsList className="flex-wrap h-auto gap-1">
-          <TabsTrigger value="overview" className="gap-1.5">
-            <BarChart3 className="h-4 w-4" />
-            {isAr ? "نظرة عامة" : "Overview"}
-          </TabsTrigger>
-          <TabsTrigger value="members" className="gap-1.5">
-            <Users className="h-4 w-4" />
-            {isAr ? "الأعضاء" : "Members"}
-          </TabsTrigger>
-          <TabsTrigger value="benefits" className="gap-1.5">
-            <Star className="h-4 w-4" />
-            {isAr ? "المميزات" : "Benefits"}
-          </TabsTrigger>
-          <TabsTrigger value="cancellations" className="gap-1.5">
-            <UserX className="h-4 w-4" />
-            {isAr ? "الإلغاءات" : "Cancellations"}
-          </TabsTrigger>
-          <TabsTrigger value="history" className="gap-1.5">
-            <History className="h-4 w-4" />
-            {isAr ? "السجل" : "History"}
-          </TabsTrigger>
-        </TabsList>
+      <Tabs defaultValue="overview" className="space-y-3 sm:space-y-4">
+        <div className="overflow-x-auto scrollbar-none -mx-1 px-1">
+          <TabsList className="h-8 sm:h-9 gap-0.5 sm:gap-1 w-max">
+            <TabsTrigger value="overview" className="gap-1 text-xs sm:text-sm h-7 sm:h-8 px-2 sm:px-3">
+              <BarChart3 className="h-3 w-3 sm:h-4 sm:w-4" />
+              {isAr ? "عامة" : "Overview"}
+            </TabsTrigger>
+            <TabsTrigger value="members" className="gap-1 text-xs sm:text-sm h-7 sm:h-8 px-2 sm:px-3">
+              <Users className="h-3 w-3 sm:h-4 sm:w-4" />
+              {isAr ? "أعضاء" : "Members"}
+            </TabsTrigger>
+            <TabsTrigger value="benefits" className="gap-1 text-xs sm:text-sm h-7 sm:h-8 px-2 sm:px-3">
+              <Star className="h-3 w-3 sm:h-4 sm:w-4" />
+              {isAr ? "مميزات" : "Benefits"}
+            </TabsTrigger>
+            <TabsTrigger value="cancellations" className="gap-1 text-xs sm:text-sm h-7 sm:h-8 px-2 sm:px-3">
+              <UserX className="h-3 w-3 sm:h-4 sm:w-4" />
+              {isAr ? "إلغاء" : "Cancel"}
+            </TabsTrigger>
+            <TabsTrigger value="history" className="gap-1 text-xs sm:text-sm h-7 sm:h-8 px-2 sm:px-3">
+              <History className="h-3 w-3 sm:h-4 sm:w-4" />
+              {isAr ? "سجل" : "History"}
+            </TabsTrigger>
+          </TabsList>
+        </div>
 
         <TabsContent value="overview"><MembershipOverview /></TabsContent>
         <TabsContent value="members"><MembershipMembersTab /></TabsContent>
