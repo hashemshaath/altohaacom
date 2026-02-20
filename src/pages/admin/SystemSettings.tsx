@@ -1,7 +1,9 @@
 import { useState } from "react";
+import { Link } from "react-router-dom";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Card, CardContent } from "@/components/ui/card";
 import {
@@ -14,6 +16,8 @@ import {
   CheckCircle2,
   Loader2,
   Home,
+  Layers,
+  ArrowRight,
 } from "lucide-react";
 import AdminPageHeader from "@/components/admin/AdminPageHeader";
 import { useSiteSettings } from "@/hooks/useSiteSettings";
@@ -108,7 +112,27 @@ export default function SystemSettings() {
             <HeaderFooterSettings settings={settings} onSave={handleSave} isPending={saveSetting.isPending} />
           </TabsContent>
 
-          <TabsContent value="homepage" className="mt-0">
+          <TabsContent value="homepage" className="mt-0 space-y-4">
+            {/* Hero Slides quick link */}
+            <Card className="border-primary/20 bg-primary/5">
+              <CardContent className="flex items-center justify-between gap-4 p-4">
+                <div className="flex items-center gap-3">
+                  <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary/10">
+                    <Layers className="h-4 w-4 text-primary" />
+                  </div>
+                  <div>
+                    <p className="text-sm font-semibold">{isAr ? "شرائح القسم الرئيسي" : "Hero Slides"}</p>
+                    <p className="text-xs text-muted-foreground">{isAr ? "5 قوالب احترافية قابلة للتخصيص الكامل" : "5 professional templates with full design control"}</p>
+                  </div>
+                </div>
+                <Button size="sm" variant="default" className="gap-1.5 shrink-0" asChild>
+                  <Link to="/admin/hero-slides">
+                    {isAr ? "إدارة الشرائح" : "Manage Slides"}
+                    <ArrowRight className="h-3.5 w-3.5" />
+                  </Link>
+                </Button>
+              </CardContent>
+            </Card>
             <HomepageSectionsManager />
           </TabsContent>
 
