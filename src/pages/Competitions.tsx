@@ -175,8 +175,8 @@ export default function Competitions() {
 
         {/* Editorial Hero */}
         <section className="relative overflow-hidden border-b border-border/40">
-          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,hsl(var(--primary)/0.08),transparent_60%)]" />
-          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom_left,hsl(var(--accent)/0.06),transparent_50%)]" />
+          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,hsl(var(--primary)/0.12),transparent_60%)]" />
+          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom_left,hsl(var(--accent)/0.10),transparent_50%)]" />
           <div className="container relative py-10 md:py-14">
             <div className="flex flex-col gap-8 md:flex-row md:items-end md:justify-between">
               <div className="space-y-4 max-w-2xl">

@@ -15,8 +15,8 @@ export function MasterclassHero({ totalCount, filteredCount, totalEnrollments }:
   return (
     <section className="relative overflow-hidden border-b border-border/40">
       {/* Editorial gradient */}
-      <div className="absolute inset-0 bg-gradient-to-br from-primary/8 via-background to-chart-4/4" />
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,hsl(var(--primary)/0.06),transparent_70%)]" />
+      <div className="absolute inset-0 bg-gradient-to-br from-primary/12 via-background to-chart-4/6" />
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,hsl(var(--primary)/0.10),transparent_70%)]" />
 
       <div className="container relative py-10 md:py-14">
         <div className="flex flex-col gap-6 md:flex-row md:items-end md:justify-between">

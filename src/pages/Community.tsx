@@ -45,8 +45,8 @@ export default function Community() {
 
       {/* Editorial Community Hero */}
       <section className="relative overflow-hidden border-b border-border/40">
-        <div className="absolute inset-0 bg-gradient-to-br from-primary/8 via-background to-chart-2/4" />
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,hsl(var(--primary)/0.06),transparent_70%)]" />
+        <div className="absolute inset-0 bg-gradient-to-br from-primary/12 via-background to-chart-2/6" />
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,hsl(var(--primary)/0.10),transparent_70%)]" />
         <div className="container relative py-8 md:py-10">
           <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
             <div className="max-w-2xl space-y-3">

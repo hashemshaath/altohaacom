@@ -20,11 +20,13 @@ import { BrandingSettings } from "@/components/admin/settings/BrandingSettings";
 import { HeaderFooterSettings } from "@/components/admin/settings/HeaderFooterSettings";
 import { LayoutSEOSettings } from "@/components/admin/settings/LayoutSEOSettings";
 import { SecurityContentSettings } from "@/components/admin/settings/SecurityContentSettings";
+import { CoverSettings } from "@/components/admin/settings/CoverSettings";
 import { GoogleIntegrationPanel } from "@/components/ads/GoogleIntegrationPanel";
 
 const tabs = [
   { value: "branding", icon: Globe, en: "Branding", ar: "العلامة التجارية", descEn: "Logo, name & identity", descAr: "الشعار والاسم والهوية" },
   { value: "header-footer", icon: PanelTop, en: "Header & Footer", ar: "الرأس والتذييل", descEn: "Navigation & social links", descAr: "التنقل وروابط التواصل" },
+  { value: "cover", icon: Layout, en: "Cover & Themes", ar: "الأغلفة والمظهر", descEn: "Cover height, gradient & pages", descAr: "ارتفاع الغطاء والتدرج والصفحات" },
   { value: "layout-seo", icon: Layout, en: "Layout & SEO", ar: "التخطيط و SEO", descEn: "Container, animations & meta", descAr: "الحاوية والرسوم والبيانات الوصفية" },
   { value: "security", icon: Shield, en: "Security & Content", ar: "الأمان والمحتوى", descEn: "Passwords, moderation & alerts", descAr: "كلمات المرور والإشراف والتنبيهات" },
   { value: "tracking", icon: BarChart3, en: "Tracking & Analytics", ar: "التتبع والتحليلات", descEn: "Google, Meta, TikTok & more", descAr: "جوجل وميتا وتيك توك والمزيد" },
@@ -75,7 +77,7 @@ export default function SystemSettings() {
           {/* Tab Navigation - Card-style grid */}
           <Card className="border-border/50 bg-muted/30">
             <CardContent className="p-2">
-              <TabsList className="grid h-auto w-full grid-cols-2 gap-1.5 bg-transparent p-0 sm:grid-cols-3 lg:grid-cols-5">
+              <TabsList className="grid h-auto w-full grid-cols-2 gap-1.5 bg-transparent p-0 sm:grid-cols-3 lg:grid-cols-6">
                 {tabs.map(tab => (
                   <TabsTrigger
                     key={tab.value}
@@ -101,6 +103,10 @@ export default function SystemSettings() {
 
           <TabsContent value="header-footer" className="mt-0">
             <HeaderFooterSettings settings={settings} onSave={handleSave} isPending={saveSetting.isPending} />
+          </TabsContent>
+
+          <TabsContent value="cover" className="mt-0">
+            <CoverSettings settings={settings} onSave={handleSave} isPending={saveSetting.isPending} />
           </TabsContent>
 
           <TabsContent value="layout-seo" className="mt-0">

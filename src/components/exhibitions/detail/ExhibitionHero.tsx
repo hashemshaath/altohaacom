@@ -13,6 +13,7 @@ import {
   Twitter, Facebook, Linkedin, Link2,
 } from "lucide-react";
 import { format } from "date-fns";
+import { useCoverSettings } from "@/hooks/useCoverSettings";
 
 interface ExhibitionHeroProps {
   exhibition: any;
@@ -57,11 +58,15 @@ export function ExhibitionHero({
   };
 
   const shareUrl = typeof window !== "undefined" ? window.location.href : "";
+  const { height, isVisible, config } = useCoverSettings("exhibition-detail");
+  const intensity = (config.gradientIntensity ?? 70) / 100;
+  const gColor = config.gradientColor || "var(--background)";
 
   return (
     <div className="relative bg-background">
-      {/* Cover Image — with rich gradient overlay */}
-      <div className="relative w-full overflow-hidden" style={{ maxHeight: "360px" }}>
+      {/* Cover Image — only when visible */}
+      {isVisible && (
+      <div className="relative w-full overflow-hidden" style={{ maxHeight: height ? `${height}px` : "360px" }}>
         <div className="aspect-[21/9] w-full">
           {exhibition.cover_image_url ? (
             <img
@@ -74,9 +79,9 @@ export function ExhibitionHero({
             <div className="h-full w-full bg-gradient-to-br from-primary/20 via-accent/10 to-background" />
           )}
         </div>
-        {/* Multi-layer gradient for depth and clarity */}
-        <div className="absolute inset-0 bg-gradient-to-t from-background via-background/40 to-transparent" />
-        <div className="absolute inset-0 bg-gradient-to-r from-background/50 via-transparent to-background/50 rtl:bg-gradient-to-l" />
+        {/* Dynamic gradient overlays */}
+        <div className="absolute inset-0" style={{ background: `linear-gradient(to top, hsl(${gColor}) ${Math.round(intensity * 85)}%, hsl(${gColor} / ${(intensity * 0.3).toFixed(2)}) 60%, transparent)` }} />
+        <div className="absolute inset-0" style={{ background: `linear-gradient(to right, hsl(${gColor} / ${(intensity * 0.4).toFixed(2)}), transparent, hsl(${gColor} / ${(intensity * 0.4).toFixed(2)}))` }} />
         <div className="absolute inset-x-0 bottom-0 h-16 bg-gradient-to-t from-background to-transparent" />
 
         {/* Back button overlay */}
@@ -113,6 +118,7 @@ export function ExhibitionHero({
           )}
         </div>
       </div>
+      )}
 
       {/* Content bar — below the image */}
       <div className="border-b border-border/50 bg-card">

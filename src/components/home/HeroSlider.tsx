@@ -116,13 +116,13 @@ export function HeroSlider() {
             loading={i === 0 ? "eager" : "lazy"}
             decoding="async"
           />
-          {/* Enhanced gradient overlay */}
-          <div className="absolute inset-0 bg-gradient-to-t from-background via-background/60 to-background/20" />
+          {/* Enhanced dark gradient overlay */}
+          <div className="absolute inset-0 bg-gradient-to-t from-background via-background/70 to-background/30" />
           <div className={cn(
             "absolute inset-0",
             isAr
-              ? "bg-gradient-to-l from-background/50 via-background/20 to-transparent"
-              : "bg-gradient-to-r from-background/50 via-background/20 to-transparent"
+              ? "bg-gradient-to-l from-background/60 via-background/25 to-transparent"
+              : "bg-gradient-to-r from-background/60 via-background/25 to-transparent"
           )} />
         </div>
       ))}
