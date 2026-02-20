@@ -232,7 +232,7 @@ export default function JudgesAdmin() {
                 <TableHead>{isAr ? "المستندات" : "Docs"}</TableHead>
                 <TableHead>{isAr ? "العضويات" : "Memberships"}</TableHead>
                 <TableHead>{isAr ? "المشاركات" : "Participations"}</TableHead>
-                <TableHead className="text-right">{isAr ? "الإجراءات" : "Actions"}</TableHead>
+                <TableHead className="text-end">{isAr ? "الإجراءات" : "Actions"}</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>

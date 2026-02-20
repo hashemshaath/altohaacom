@@ -161,7 +161,7 @@ export function CertificateDesigner({
                   <Label className="text-sm font-medium block">{language === "ar" ? "القوالب الاحترافية" : "Professional Templates"}</Label>
                   <div className="grid grid-cols-2 gap-2">
                     {professionalTemplates.map(t => (
-                      <button key={t.id} onClick={() => applyTemplate(t.id)} className="p-3 border rounded-lg hover:border-primary transition-colors text-left">
+                      <button key={t.id} onClick={() => applyTemplate(t.id)} className="p-3 border rounded-lg hover:border-primary transition-colors text-start">
                         <div className="h-10 rounded mb-2 border-2" style={{ borderColor: t.preview, background: "#fff" }} />
                         <p className="text-xs font-medium">{language === "ar" ? t.nameAr : t.name}</p>
                       </button>

@@ -264,8 +264,8 @@ export function FinancialForecasting() {
               <TableHeader>
                 <TableRow>
                   <TableHead>{isAr ? "الفئة" : "Category"}</TableHead>
-                  <TableHead className="text-right">{isAr ? "المنفق" : "Spent"}</TableHead>
-                  <TableHead className="text-right">{isAr ? "الميزانية" : "Budget"}</TableHead>
+                  <TableHead className="text-end">{isAr ? "المنفق" : "Spent"}</TableHead>
+                  <TableHead className="text-end">{isAr ? "الميزانية" : "Budget"}</TableHead>
                   <TableHead>{isAr ? "التقدم" : "Progress"}</TableHead>
                   <TableHead>{isAr ? "الحالة" : "Status"}</TableHead>
                 </TableRow>
@@ -277,8 +277,8 @@ export function FinancialForecasting() {
                   return (
                     <TableRow key={cat}>
                       <TableCell className="font-medium capitalize">{cat}</TableCell>
-                      <TableCell className="text-right">{formatCurrency(spent, language as "en" | "ar")}</TableCell>
-                      <TableCell className="text-right text-muted-foreground">{formatCurrency(budget, language as "en" | "ar")}</TableCell>
+                      <TableCell className="text-end">{formatCurrency(spent, language as "en" | "ar")}</TableCell>
+                      <TableCell className="text-end text-muted-foreground">{formatCurrency(budget, language as "en" | "ar")}</TableCell>
                       <TableCell>
                         <div className="flex items-center gap-2">
                           <Progress value={pct} className="h-2 flex-1" />
@@ -325,18 +325,18 @@ export function FinancialForecasting() {
               <TableHeader>
                 <TableRow>
                   <TableHead>{isAr ? "الشهر" : "Month"}</TableHead>
-                  <TableHead className="text-right">{isAr ? "إيرادات متوقعة" : "Projected Revenue"}</TableHead>
-                  <TableHead className="text-right">{isAr ? "مصروفات متوقعة" : "Projected Expenses"}</TableHead>
-                  <TableHead className="text-right">{isAr ? "ربح متوقع" : "Projected Profit"}</TableHead>
+                  <TableHead className="text-end">{isAr ? "إيرادات متوقعة" : "Projected Revenue"}</TableHead>
+                  <TableHead className="text-end">{isAr ? "مصروفات متوقعة" : "Projected Expenses"}</TableHead>
+                  <TableHead className="text-end">{isAr ? "ربح متوقع" : "Projected Profit"}</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
                 {forecastData.map(f => (
                   <TableRow key={f.month}>
                     <TableCell className="font-medium">{f.month}</TableCell>
-                    <TableCell className="text-right">{formatCurrency(f.forecastRevenue, language as "en" | "ar")}</TableCell>
-                    <TableCell className="text-right">{formatCurrency(f.forecastExpenses, language as "en" | "ar")}</TableCell>
-                    <TableCell className={`text-right font-medium ${f.forecastProfit >= 0 ? "text-chart-5" : "text-destructive"}`}>
+                    <TableCell className="text-end">{formatCurrency(f.forecastRevenue, language as "en" | "ar")}</TableCell>
+                    <TableCell className="text-end">{formatCurrency(f.forecastExpenses, language as "en" | "ar")}</TableCell>
+                    <TableCell className={`text-end font-medium ${f.forecastProfit >= 0 ? "text-chart-5" : "text-destructive"}`}>
                       {formatCurrency(f.forecastProfit, language as "en" | "ar")}
                     </TableCell>
                   </TableRow>

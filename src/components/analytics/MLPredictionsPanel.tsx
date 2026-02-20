@@ -267,7 +267,7 @@ export function MLPredictionsPanel() {
                       <p className="text-sm font-medium">{a.metric}</p>
                       <p className="text-xs text-muted-foreground">{a.description}</p>
                     </div>
-                    <Badge variant="outline" className="ml-auto text-[10px] shrink-0">{a.severity}</Badge>
+                    <Badge variant="outline" className="ms-auto text-[10px] shrink-0">{a.severity}</Badge>
                   </div>
                 ))}
               </CardContent>

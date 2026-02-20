@@ -205,7 +205,7 @@ export function ModuleLessonManager({ masterclassId }: Props) {
             return (
               <AccordionItem key={module.id} value={module.id} className="border rounded-lg px-4">
                 <AccordionTrigger className="hover:no-underline">
-                  <div className="flex items-center gap-3 text-left flex-1">
+                  <div className="flex items-center gap-3 text-start flex-1">
                     <div className="flex flex-col gap-0.5">
                       <Button variant="ghost" size="icon" className="h-5 w-5" disabled={idx === 0}
                         onClick={(e) => { e.stopPropagation(); moveModuleMutation.mutate({ id: module.id, direction: "up" }); }}>

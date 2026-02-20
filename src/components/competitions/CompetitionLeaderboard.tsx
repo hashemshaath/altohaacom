@@ -250,7 +250,7 @@ export function CompetitionLeaderboard({
               </div>
 
               {/* Score */}
-              <div className="text-right">
+              <div className="text-end">
                 <p className="text-2xl font-bold text-primary">
                   {entry.total_weighted_score.toFixed(1)}
                 </p>
