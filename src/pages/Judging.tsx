@@ -290,7 +290,7 @@ export default function Judging() {
         <main className="container flex-1 py-8">
           <div className="mb-6">
             <Button variant="ghost" size="sm" onClick={handleBackToList}>
-              <ArrowLeft className="mr-2 h-4 w-4" />
+              <ArrowLeft className="me-2 h-4 w-4" />
               {language === "ar" ? "رجوع للقائمة" : "Back to list"}
             </Button>
           </div>
@@ -399,14 +399,14 @@ export default function Judging() {
 
                   <div className="flex justify-end gap-2 pt-4 border-t">
                     <Button variant="outline" onClick={handleBackToList}>
-                      <X className="mr-2 h-4 w-4" />
+                      <X className="me-2 h-4 w-4" />
                       {language === "ar" ? "إلغاء" : "Cancel"}
                     </Button>
                     <Button 
                       onClick={() => submitScoreMutation.mutate()}
                       disabled={submitScoreMutation.isPending}
                     >
-                      <Save className="mr-2 h-4 w-4" />
+                      <Save className="me-2 h-4 w-4" />
                       {submitScoreMutation.isPending
                         ? (language === "ar" ? "جاري الحفظ..." : "Saving...")
                         : (language === "ar" ? "حفظ الدرجات" : "Save Scores")}
@@ -593,7 +593,7 @@ export default function Judging() {
                             variant={hasScored(reg.id) ? "outline" : "default"}
                             onClick={() => openScoringView(reg)}
                           >
-                            <Star className="mr-2 h-4 w-4" />
+                            <Star className="me-2 h-4 w-4" />
                             {hasScored(reg.id) 
                               ? (language === "ar" ? "تعديل الدرجات" : "Edit Scores") 
                               : (language === "ar" ? "تقييم المشارك" : "Score Participant")}

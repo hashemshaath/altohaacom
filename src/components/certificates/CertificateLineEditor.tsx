@@ -78,7 +78,7 @@ export function CertificateLineEditor({ lines, onChange, selectedLineId, onSelec
       <div className="flex items-center justify-between">
         <Label className="text-sm font-medium">{language === "ar" ? "أسطر الشهادة" : "Certificate Lines"}</Label>
         <Button variant="outline" size="sm" onClick={addLine} className="h-7 text-xs">
-          <Plus className="h-3 w-3 mr-1" />{language === "ar" ? "إضافة سطر" : "Add Line"}
+          <Plus className="h-3 w-3 me-1" />{language === "ar" ? "إضافة سطر" : "Add Line"}
         </Button>
       </div>
 

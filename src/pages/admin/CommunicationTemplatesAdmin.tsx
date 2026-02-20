@@ -283,11 +283,11 @@ export default function CommunicationTemplatesAdmin() {
         actions={
           <div className="flex items-center gap-2">
             <Button variant="outline" size="sm" onClick={exportCSV}>
-              <Download className="mr-2 h-4 w-4" />
+              <Download className="me-2 h-4 w-4" />
               {isAr ? "تصدير" : "Export CSV"}
             </Button>
             <Button onClick={openCreate}>
-              <Plus className="mr-2 h-4 w-4" />
+              <Plus className="me-2 h-4 w-4" />
               {isAr ? "إضافة قالب" : "Add Template"}
             </Button>
           </div>
@@ -325,15 +325,15 @@ export default function CommunicationTemplatesAdmin() {
             </span>
             <div className="flex items-center gap-2">
               <Button variant="outline" size="sm" onClick={() => bulkToggleMutation.mutate(true)}>
-                <CheckSquare className="mr-1 h-3.5 w-3.5" />
+                <CheckSquare className="me-1 h-3.5 w-3.5" />
                 {isAr ? "تفعيل" : "Activate"}
               </Button>
               <Button variant="outline" size="sm" onClick={() => bulkToggleMutation.mutate(false)}>
-                <XSquare className="mr-1 h-3.5 w-3.5" />
+                <XSquare className="me-1 h-3.5 w-3.5" />
                 {isAr ? "تعطيل" : "Deactivate"}
               </Button>
               <Button variant="destructive" size="sm" onClick={() => bulkDeleteMutation.mutate()}>
-                <Trash2 className="mr-1 h-3.5 w-3.5" />
+                <Trash2 className="me-1 h-3.5 w-3.5" />
                 {isAr ? "حذف" : "Delete"}
               </Button>
               <Button variant="ghost" size="sm" onClick={() => setSelectedIds(new Set())}>
@@ -351,7 +351,7 @@ export default function CommunicationTemplatesAdmin() {
           <Input className="ps-9" placeholder={isAr ? "بحث..." : "Search..."} value={search} onChange={(e) => setSearch(e.target.value)} />
         </div>
         <Select value={categoryFilter} onValueChange={setCategoryFilter}>
-          <SelectTrigger className="w-[150px]"><Filter className="mr-2 h-4 w-4" /><SelectValue /></SelectTrigger>
+          <SelectTrigger className="w-[150px]"><Filter className="me-2 h-4 w-4" /><SelectValue /></SelectTrigger>
           <SelectContent>
             <SelectItem value="all">{isAr ? "كل الفئات" : "All Categories"}</SelectItem>
             {categories.map((c) => <SelectItem key={c.value} value={c.value}>{isAr ? c.labelAr : c.label}</SelectItem>)}
@@ -769,7 +769,7 @@ export default function CommunicationTemplatesAdmin() {
           <DialogFooter>
             <Button variant="outline" onClick={() => setSendDialogOpen(false)}>{isAr ? "إلغاء" : "Cancel"}</Button>
             <Button onClick={() => sendMutation.mutate()} disabled={!sendUserId || sendMutation.isPending}>
-              <Send className="mr-2 h-4 w-4" />
+              <Send className="me-2 h-4 w-4" />
               {sendMutation.isPending ? (isAr ? "جارٍ الإرسال..." : "Sending...") : (isAr ? "إرسال" : "Send")}
             </Button>
           </DialogFooter>

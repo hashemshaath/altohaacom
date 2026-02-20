@@ -283,24 +283,24 @@ export default function InvoicesAdmin() {
           </div>
           <div className="flex flex-wrap gap-2">
             <Button variant="outline" onClick={() => duplicateMutation.mutate(invoiceDetails.id)} disabled={duplicateMutation.isPending}>
-              <Copy className="mr-2 h-4 w-4" />
+              <Copy className="me-2 h-4 w-4" />
               {language === "ar" ? "نسخ" : "Duplicate"}
             </Button>
             {invoiceDetails.status === "draft" && (
               <Button onClick={() => updateStatusMutation.mutate({ id: invoiceDetails.id, status: "sent" })}>
-                <Send className="mr-2 h-4 w-4" />
+                <Send className="me-2 h-4 w-4" />
                 {language === "ar" ? "إرسال" : "Send"}
               </Button>
             )}
             {(invoiceDetails.status === "sent" || invoiceDetails.status === "pending") && (
               <Button onClick={() => updateStatusMutation.mutate({ id: invoiceDetails.id, status: "paid" })}>
-                <CheckCircle className="mr-2 h-4 w-4" />
+                <CheckCircle className="me-2 h-4 w-4" />
                 {language === "ar" ? "تأكيد الدفع" : "Mark Paid"}
               </Button>
             )}
             {invoiceDetails.status !== "cancelled" && invoiceDetails.status !== "paid" && (
               <Button variant="destructive" size="sm" onClick={() => updateStatusMutation.mutate({ id: invoiceDetails.id, status: "cancelled" })}>
-                <XCircle className="mr-2 h-4 w-4" />
+                <XCircle className="me-2 h-4 w-4" />
                 {language === "ar" ? "إلغاء" : "Cancel"}
               </Button>
             )}
@@ -526,7 +526,7 @@ export default function InvoicesAdmin() {
                   </div>
                 ))}
                 <Button type="button" variant="outline" size="sm" onClick={addItem}>
-                  <Plus className="mr-2 h-4 w-4" />
+                  <Plus className="me-2 h-4 w-4" />
                   {language === "ar" ? "إضافة بند" : "Add Item"}
                 </Button>
               </div>
@@ -554,7 +554,7 @@ export default function InvoicesAdmin() {
                 {language === "ar" ? "إلغاء" : "Cancel"}
               </Button>
               <Button onClick={() => createMutation.mutate()} disabled={createMutation.isPending || !formData.items.some((i) => i.name.trim())}>
-                <Save className="mr-2 h-4 w-4" />
+                <Save className="me-2 h-4 w-4" />
                 {language === "ar" ? "إنشاء الفاتورة" : "Create Invoice"}
               </Button>
             </div>
@@ -575,7 +575,7 @@ export default function InvoicesAdmin() {
           </p>
         </div>
         <Button onClick={() => setShowForm(true)}>
-          <Plus className="mr-2 h-4 w-4" />
+          <Plus className="me-2 h-4 w-4" />
           {language === "ar" ? "إنشاء فاتورة" : "Create Invoice"}
         </Button>
       </div>

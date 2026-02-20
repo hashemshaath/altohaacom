@@ -152,7 +152,7 @@ export function ModuleLessonManager({ masterclassId }: Props) {
           {language === "ar" ? "الوحدات والدروس" : "Modules & Lessons"}
         </h3>
         <Button size="sm" onClick={() => setShowAddModule(true)}>
-          <Plus className="mr-2 h-4 w-4" />
+          <Plus className="me-2 h-4 w-4" />
           {language === "ar" ? "إضافة وحدة" : "Add Module"}
         </Button>
       </div>
@@ -181,10 +181,10 @@ export function ModuleLessonManager({ masterclassId }: Props) {
             </div>
             <div className="flex gap-2">
               <Button size="sm" onClick={() => addModuleMutation.mutate()} disabled={!moduleForm.title}>
-                <Save className="mr-2 h-4 w-4" /> {language === "ar" ? "حفظ" : "Save"}
+                <Save className="me-2 h-4 w-4" /> {language === "ar" ? "حفظ" : "Save"}
               </Button>
               <Button size="sm" variant="outline" onClick={() => setShowAddModule(false)}>
-                <X className="mr-2 h-4 w-4" /> {language === "ar" ? "إلغاء" : "Cancel"}
+                <X className="me-2 h-4 w-4" /> {language === "ar" ? "إلغاء" : "Cancel"}
               </Button>
             </div>
           </CardContent>
@@ -293,7 +293,7 @@ export function ModuleLessonManager({ masterclassId }: Props) {
                           </div>
                           <div className="flex gap-2">
                             <Button size="sm" onClick={() => addLessonMutation.mutate(module.id)} disabled={!lessonForm.title}>
-                              <Save className="mr-2 h-4 w-4" /> {language === "ar" ? "حفظ" : "Save"}
+                              <Save className="me-2 h-4 w-4" /> {language === "ar" ? "حفظ" : "Save"}
                             </Button>
                             <Button size="sm" variant="outline" onClick={() => setAddingLessonToModule(null)}>
                               {language === "ar" ? "إلغاء" : "Cancel"}
@@ -303,7 +303,7 @@ export function ModuleLessonManager({ masterclassId }: Props) {
                       </Card>
                     ) : (
                       <Button variant="outline" size="sm" className="mt-2 w-full" onClick={() => setAddingLessonToModule(module.id)}>
-                        <Plus className="mr-2 h-4 w-4" />
+                        <Plus className="me-2 h-4 w-4" />
                         {language === "ar" ? "إضافة درس" : "Add Lesson"}
                       </Button>
                     )}

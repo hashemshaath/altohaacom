@@ -153,7 +153,7 @@ export function RequirementsListPanel({ competitionId, isOrganizer }: Props) {
         {isOrganizer && (
           <Dialog open={showCreateDialog} onOpenChange={setShowCreateDialog}>
             <DialogTrigger asChild>
-              <Button size="sm"><Plus className="mr-2 h-4 w-4" />{language === "ar" ? "قائمة جديدة" : "New List"}</Button>
+              <Button size="sm"><Plus className="me-2 h-4 w-4" />{language === "ar" ? "قائمة جديدة" : "New List"}</Button>
             </DialogTrigger>
             <DialogContent>
               <DialogHeader>
@@ -245,7 +245,7 @@ export function RequirementsListPanel({ competitionId, isOrganizer }: Props) {
                               onClick={() => { if (confirm(language === "ar" ? "حذف هذه القائمة؟" : "Delete this list?")) deleteListMutation.mutate(list.id); }}
                               className="text-destructive"
                             >
-                              <Trash2 className="mr-2 h-4 w-4" /> {language === "ar" ? "حذف" : "Delete"}
+                              <Trash2 className="me-2 h-4 w-4" /> {language === "ar" ? "حذف" : "Delete"}
                             </DropdownMenuItem>
                           </DropdownMenuContent>
                         </DropdownMenu>

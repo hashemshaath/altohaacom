@@ -325,9 +325,9 @@ export function AutoIssueCertificates({ competitionId }: AutoIssueCertificatesPr
           disabled={issueMutation.isPending || totalParticipants === 0}
         >
           {issueMutation.isPending ? (
-            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+            <Loader2 className="me-2 h-4 w-4 animate-spin" />
           ) : (
-            <Sparkles className="mr-2 h-4 w-4" />
+            <Sparkles className="me-2 h-4 w-4" />
           )}
           {language === "ar" ? "إصدار الشهادات والشارات" : "Issue Certificates & Badges"}
         </Button>
