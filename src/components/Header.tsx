@@ -63,14 +63,14 @@ export function Header() {
     <header
       role="banner"
       className={cn(
-        "sticky top-0 z-50 border-b bg-card/90 backdrop-blur-xl supports-[backdrop-filter]:bg-card/80 transition-shadow duration-300",
+        "sticky top-0 z-50 border-b bg-card/95 backdrop-blur-xl supports-[backdrop-filter]:bg-card/85 transition-all duration-300",
         headerCfg.stickyHeader === false && "relative",
         scrolled
-          ? "border-border/60 shadow-sm shadow-foreground/[0.03]"
-          : "border-border/40 shadow-none"
+          ? "border-border/60 shadow-md shadow-foreground/[0.04]"
+          : "border-border/30 shadow-none"
       )}
     >
-      <nav className="container flex h-14 items-center gap-1.5 sm:gap-2" aria-label="Main navigation">
+      <nav className="container flex h-14 items-center gap-2 sm:gap-2.5" aria-label="Main navigation">
         {/* Mobile menu */}
         <MobileMenu primaryNav={primaryNav} moreLinks={moreLinks} />
 
@@ -78,13 +78,13 @@ export function Header() {
         <Link
           to="/"
           aria-label="Altoha homepage"
-          className="flex shrink-0 items-center gap-2 me-2 sm:me-3 group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:rounded-lg"
+          className="flex shrink-0 items-center gap-2 me-1 sm:me-3 group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:rounded-lg"
         >
           {headerCfg.showLogo !== false && (
             <img
               src={brandCfg.logoUrl || "/altoha-logo.png"}
               alt={brandCfg.siteName || "Altoha"}
-              className="h-7 w-auto sm:h-8 transition-transform duration-200 group-hover:scale-105"
+              className="h-8 w-auto sm:h-9 transition-transform duration-200 group-hover:scale-105"
             />
           )}
           {headerCfg.showBrandName !== false && (
@@ -102,8 +102,8 @@ export function Header() {
           isAr={isAr}
         />
 
-        {/* Right side - consolidated */}
-        <div className="flex items-center gap-1 ms-auto">
+        {/* Right side */}
+        <div className="flex items-center gap-0.5 sm:gap-1 ms-auto">
           {headerCfg.showSearch !== false && (
             <div className="hidden md:block">
               <QuickSearch />

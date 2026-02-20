@@ -58,9 +58,7 @@ export function ExhibitionHero({
   };
 
   const shareUrl = typeof window !== "undefined" ? window.location.href : "";
-  const { height, isVisible, config } = useCoverSettings("exhibition-detail");
-  const intensity = (config.gradientIntensity ?? 70) / 100;
-  const gColor = config.gradientColor || "var(--background)";
+  const { height, isVisible, gradientOverlay } = useCoverSettings("exhibition-detail");
 
   return (
     <div className="relative bg-background">
@@ -79,10 +77,11 @@ export function ExhibitionHero({
             <div className="h-full w-full bg-gradient-to-br from-primary/20 via-accent/10 to-background" />
           )}
         </div>
-        {/* Dynamic gradient overlays */}
-        <div className="absolute inset-0" style={{ background: `linear-gradient(to top, hsl(${gColor}) ${Math.round(intensity * 85)}%, hsl(${gColor} / ${(intensity * 0.3).toFixed(2)}) 60%, transparent)` }} />
-        <div className="absolute inset-0" style={{ background: `linear-gradient(to right, hsl(${gColor} / ${(intensity * 0.4).toFixed(2)}), transparent, hsl(${gColor} / ${(intensity * 0.4).toFixed(2)}))` }} />
-        <div className="absolute inset-x-0 bottom-0 h-16 bg-gradient-to-t from-background to-transparent" />
+        {/* Dynamic gradient overlay from cover settings */}
+        {gradientOverlay && (
+          <div className="absolute inset-0" style={{ background: gradientOverlay }} />
+        )}
+        <div className="absolute inset-x-0 bottom-0 h-20 bg-gradient-to-t from-background to-transparent" />
 
         {/* Back button overlay */}
         <div className="absolute top-3 start-3 sm:top-4 sm:start-4">
