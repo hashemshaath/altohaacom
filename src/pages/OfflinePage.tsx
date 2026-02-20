@@ -7,7 +7,7 @@ export default function OfflinePage() {
   const isAr = language === "ar";
 
   return (
-    <div className="flex min-h-[80vh] flex-col items-center justify-center px-6 text-center" dir={isAr ? "rtl" : "ltr"}>
+    <div className="flex min-h-[80vh] flex-col items-center justify-center px-6 text-center">
       <div className="relative mb-8">
         <div className="flex h-24 w-24 items-center justify-center rounded-3xl bg-muted/50 shadow-inner">
           <WifiOff className="h-12 w-12 text-muted-foreground/60" />

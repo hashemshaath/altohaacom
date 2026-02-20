@@ -264,7 +264,7 @@ export default function PublicProfile() {
   const profileUrl = `https://altoha.com/${profile.username}`;
 
   return (
-    <div className="flex min-h-screen flex-col bg-background" dir={isAr ? "rtl" : "ltr"}>
+    <div className="flex min-h-screen flex-col bg-background">
       <SEOHead
         title={`${displayName} (@${profile.username}) - Altoha`}
         description={bio || `${displayName}'s professional culinary profile on Altoha`}
@@ -341,7 +341,7 @@ export default function PublicProfile() {
                     <div className="space-y-2.5">
                       {workRecords.map((record: any) => (
                         <Card key={record.id} className="rounded-2xl border-border/25 hover:shadow-md transition-all duration-300 hover:border-border/40 hover:-translate-y-0.5 group/card">
-                          <CardContent className="p-4" dir={isAr ? "rtl" : "ltr"}>
+                          <CardContent className="p-4">
                             <div className="flex gap-3">
                               <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-chart-3/8 group-hover/card:scale-110 transition-transform duration-300">
                                 <Briefcase className="h-4 w-4 text-chart-3 group-hover/card:text-chart-3" />
@@ -395,7 +395,7 @@ export default function PublicProfile() {
                     <div className="space-y-2.5">
                       {educationRecords.map((record: any) => (
                         <Card key={record.id} className="rounded-2xl border-border/25 hover:shadow-md transition-all duration-300 hover:border-border/40 hover:-translate-y-0.5 group/card">
-                          <CardContent className="p-4" dir={isAr ? "rtl" : "ltr"}>
+                          <CardContent className="p-4">
                             <div className="flex gap-3">
                               <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-chart-2/8 group-hover/card:scale-110 transition-transform duration-300">
                                 <GraduationCap className="h-4 w-4 text-chart-2 group-hover/card:text-chart-2" />
@@ -441,7 +441,7 @@ export default function PublicProfile() {
                     <div className="grid gap-2.5 sm:grid-cols-2">
                       {memberships.map((m: any) => (
                         <Card key={m.id} className="rounded-2xl border-border/25 hover:shadow-md transition-all duration-300 hover:border-border/40 hover:-translate-y-0.5 group/card">
-                          <CardContent className="p-4 flex items-center gap-3" dir={isAr ? "rtl" : "ltr"}>
+                          <CardContent className="p-4 flex items-center gap-3">
                             {m.culinary_entities?.logo_url ? (
                               <img src={m.culinary_entities.logo_url} alt="" className="h-10 w-10 rounded-xl object-cover border" />
                             ) : (

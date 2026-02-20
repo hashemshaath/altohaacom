@@ -58,7 +58,7 @@ export function FunnelAnalysis() {
   const maxCount = Math.max(...steps.map(s => s.count), 1);
 
   return (
-    <div className="space-y-6" dir={isAr ? "rtl" : "ltr"}>
+    <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
           <h3 className="text-lg font-semibold">{isAr ? "تحليل مسار التحويل" : "Conversion Funnel"}</h3>

@@ -105,7 +105,7 @@ export default function Profile() {
   ];
 
   return (
-    <div className="flex min-h-screen flex-col bg-background" dir={isAr ? "rtl" : "ltr"}>
+    <div className="flex min-h-screen flex-col bg-background">
       <SEOHead title="Profile" description="Your Altoha profile" />
       <Header />
        <main className="container flex-1 py-4 md:py-6">
@@ -115,7 +115,7 @@ export default function Profile() {
           )}
         </div>
 
-        <Tabs value={activeTab} onValueChange={setActiveTab} className="mt-8" dir={isAr ? "rtl" : "ltr"}>
+        <Tabs value={activeTab} onValueChange={setActiveTab} className="mt-8">
           <div className="sticky top-12 z-30 -mx-4 border-y border-border/30 bg-background/90 px-4 py-2 backdrop-blur-xl md:rounded-2xl md:border md:mx-0 md:px-4 shadow-sm">
             <TabsList className="h-auto w-full justify-start gap-1 overflow-x-auto bg-transparent p-0 no-scrollbar snap-x snap-mandatory">
               {tabs.map((tab) => (

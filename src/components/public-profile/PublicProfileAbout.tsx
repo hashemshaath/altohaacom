@@ -16,7 +16,7 @@ export function PublicProfileAbout({ profile, bio, specialization, userSpecialti
 
   return (
     <Card className="rounded-2xl border-border/30 bg-card/90">
-      <CardContent className="p-5 space-y-4" dir={isAr ? "rtl" : "ltr"}>
+      <CardContent className="p-5 space-y-4">
         {bio && <p className="text-sm leading-relaxed whitespace-pre-line text-foreground/90">{bio}</p>}
         
         {specialization && (

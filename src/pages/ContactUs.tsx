@@ -28,7 +28,7 @@ export default function ContactUs() {
   ];
 
   return (
-    <div className="flex min-h-screen flex-col bg-background" dir={isAr ? "rtl" : "ltr"}>
+    <div className="flex min-h-screen flex-col bg-background">
       <SEOHead title={isAr ? "اتصل بنا" : "Contact Us"} description={isAr ? "تواصل مع فريق الطهاة" : "Get in touch with the Altoha team"} />
       <Header />
       <main className="flex-1">

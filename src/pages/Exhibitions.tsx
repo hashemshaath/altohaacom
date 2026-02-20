@@ -242,7 +242,7 @@ export default function Exhibitions() {
         </div>
 
         {/* Tabs */}
-        <Tabs value={activeTab} onValueChange={setActiveTab} dir={isAr ? "rtl" : "ltr"} className="space-y-6">
+        <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
           <TabsList className="h-auto w-full justify-start gap-1 overflow-x-auto bg-muted/30 p-1 rounded-xl border border-border/30">
             {[
               { id: "all", label: isAr ? "الكل" : "All", icon: null, count: exhibitions?.length },

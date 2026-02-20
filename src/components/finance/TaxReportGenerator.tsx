@@ -60,7 +60,7 @@ export default function TaxReportGenerator() {
   };
 
   return (
-    <div className="space-y-6" dir={isAr ? "rtl" : "ltr"}>
+    <div className="space-y-6">
       {/* Report Type Selection */}
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         {reportTypes.map(rt => (

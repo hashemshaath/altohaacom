@@ -148,7 +148,7 @@ export default function CreateRecipe() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-background" dir={isAr ? "rtl" : "ltr"}>
+    <div className="min-h-screen flex flex-col bg-background">
       <SEOHead title={isAr ? "إضافة وصفة" : "Add Recipe"} />
       <Header />
 

@@ -182,7 +182,7 @@ export default function ChefsTableRequest() {
   return (
     <>
       <SEOHead title={isAr ? "طلب تقييم منتج | طاولة الشيف" : "Request Product Evaluation | Chef's Table"} />
-      <div className="min-h-screen bg-background" dir={isAr ? "rtl" : "ltr"}>
+      <div className="min-h-screen bg-background">
         <Header />
         <main className="container mx-auto max-w-3xl px-4 py-8">
           <Button variant="ghost" size="sm" onClick={() => navigate("/chefs-table")} className="mb-6 gap-1.5 text-muted-foreground">

@@ -27,7 +27,7 @@ export default function AboutUs() {
   ];
 
   return (
-    <div className="flex min-h-screen flex-col bg-background" dir={isAr ? "rtl" : "ltr"}>
+    <div className="flex min-h-screen flex-col bg-background">
       <SEOHead title={isAr ? "من نحن" : "About Us"} description={isAr ? "تعرف على منصة الطهاة" : "Learn about Altoha"} />
       <Header />
       <main className="flex-1">
