@@ -8,8 +8,9 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Slider } from "@/components/ui/slider";
 import { Separator } from "@/components/ui/separator";
 import { Badge } from "@/components/ui/badge";
-import { Save, Image, Layers, Eye } from "lucide-react";
-import type { CoverMode } from "@/hooks/useCoverSettings";
+import { Save, Image, Layers, Eye, Palette, ArrowUp, ArrowDown, ArrowLeft, ArrowRight, Circle, CornerDownRight, LayoutTemplate } from "lucide-react";
+import type { CoverMode, GradientDirection } from "@/hooks/useCoverSettings";
+import { COVER_TEMPLATES } from "@/hooks/useCoverSettings";
 
 interface Props {
   settings: Record<string, any>;
@@ -34,10 +35,32 @@ const PAGE_OPTIONS: { slug: string; en: string; ar: string }[] = [
 ];
 
 const MODE_OPTIONS: { value: CoverMode; en: string; ar: string }[] = [
-  { value: "full", en: "Full Cover", ar: "غطاء كامل" },
-  { value: "medium", en: "Medium Cover", ar: "غطاء متوسط" },
-  { value: "small", en: "Small Cover", ar: "غطاء صغير" },
+  { value: "full", en: "Full Cover (520px)", ar: "غطاء كامل (520px)" },
+  { value: "medium", en: "Medium Cover (340px)", ar: "غطاء متوسط (340px)" },
+  { value: "small", en: "Small Cover (200px)", ar: "غطاء صغير (200px)" },
   { value: "none", en: "No Cover", ar: "بدون غطاء" },
+];
+
+const DIRECTION_OPTIONS: { value: GradientDirection; en: string; ar: string; icon: typeof ArrowUp }[] = [
+  { value: "to-top", en: "Bottom → Top", ar: "أسفل → أعلى", icon: ArrowUp },
+  { value: "to-bottom", en: "Top → Bottom", ar: "أعلى → أسفل", icon: ArrowDown },
+  { value: "to-left", en: "Right → Left", ar: "يمين → يسار", icon: ArrowLeft },
+  { value: "to-right", en: "Left → Right", ar: "يسار → يمين", icon: ArrowRight },
+  { value: "radial", en: "Radial (Center)", ar: "شعاعي (من المركز)", icon: Circle },
+  { value: "diagonal", en: "Diagonal (135°)", ar: "قطري (135°)", icon: CornerDownRight },
+];
+
+const PRESET_COLORS = [
+  { hex: "#0a0a0a", label: "Black" },
+  { hex: "#1a1a2e", label: "Dark Navy" },
+  { hex: "#16213e", label: "Deep Blue" },
+  { hex: "#1b1a17", label: "Charcoal" },
+  { hex: "#2d132c", label: "Dark Purple" },
+  { hex: "#1a1a1a", label: "Neutral" },
+  { hex: "#0f3460", label: "Royal Blue" },
+  { hex: "#3a0000", label: "Dark Red" },
+  { hex: "#1e3a29", label: "Forest" },
+  { hex: "#2c2c34", label: "Gunmetal" },
 ];
 
 export function CoverSettings({ settings, onSave, isPending }: Props) {
@@ -49,6 +72,9 @@ export function CoverSettings({ settings, onSave, isPending }: Props) {
     defaultHeight: 340,
     gradientColor: "",
     gradientIntensity: 60,
+    gradientDirection: "to-top" as GradientDirection,
+    gradientOpacityStart: 90,
+    gradientOpacityEnd: 0,
     pages: {} as Record<string, { mode: CoverMode }>,
     ...coverCfg,
   });
@@ -58,6 +84,9 @@ export function CoverSettings({ settings, onSave, isPending }: Props) {
       defaultHeight: 340,
       gradientColor: "",
       gradientIntensity: 60,
+      gradientDirection: "to-top" as GradientDirection,
+      gradientOpacityStart: 90,
+      gradientOpacityEnd: 0,
       pages: {},
       ...coverCfg,
     });
@@ -70,69 +99,139 @@ export function CoverSettings({ settings, onSave, isPending }: Props) {
     }));
   };
 
-  // Preview gradient
-  const previewColor = cover.gradientColor || "25 30% 8%";
-  const previewAlpha = (cover.gradientIntensity ?? 60) / 100;
+  // Build live preview gradient
+  const previewColor = cover.gradientColor || "#1a1a1a";
+  const buildPreview = () => {
+    const isHex = previewColor.startsWith("#");
+    const dir = cover.gradientDirection || "to-top";
+    const os = ((cover.gradientOpacityStart ?? 90) / 100) * ((cover.gradientIntensity ?? 60) / 100);
+    const oe = ((cover.gradientOpacityEnd ?? 0) / 100) * ((cover.gradientIntensity ?? 60) / 100);
+    const start = isHex ? hexRgba(previewColor, os) : `hsl(${previewColor} / ${os.toFixed(2)})`;
+    const end = isHex ? hexRgba(previewColor, oe) : `hsl(${previewColor} / ${oe.toFixed(2)})`;
+    const cssDir: Record<string, string> = { "to-top": "to top", "to-bottom": "to bottom", "to-left": "to left", "to-right": "to right", "diagonal": "135deg", "radial": "radial" };
+    if (dir === "radial") return `radial-gradient(ellipse at center, ${end} 0%, ${start} 100%)`;
+    return `linear-gradient(${cssDir[dir]}, ${start} 0%, ${end} 100%)`;
+  };
+
+  const handleSave = () => onSave("cover", cover, "appearance");
 
   return (
     <div className="space-y-6">
-      {/* Global Cover Settings */}
+      {/* Color & Gradient Controls */}
       <Card className="border-border/50">
         <CardHeader>
           <CardTitle className="flex items-center gap-2 text-base">
-            <Image className="h-4.5 w-4.5 text-primary" />
-            {isAr ? "إعدادات الغطاء العامة" : "Global Cover Settings"}
+            <Palette className="h-4.5 w-4.5 text-primary" />
+            {isAr ? "لون الغطاء والتدرج" : "Cover Color & Gradient"}
           </CardTitle>
           <CardDescription className="text-xs">
             {isAr
-              ? "التحكم في ارتفاع صورة الغلاف ولون التدرج وشدته لجميع الصفحات"
-              : "Control cover image height, gradient color, and intensity across all pages"}
+              ? "اختر لون الخلفية من اللوحة أو أدخل الرمز، وتحكم في اتجاه التدرج والشفافية"
+              : "Pick a background color from the palette or enter a code, control gradient direction and opacity"}
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-5">
-          {/* Height */}
-          <div className="grid gap-4 sm:grid-cols-2">
-            <div className="space-y-1.5">
-              <Label className="text-xs">{isAr ? "الارتفاع الافتراضي (px)" : "Default Height (px)"}</Label>
-              <Input
-                type="number"
-                min={100}
-                max={800}
-                value={cover.defaultHeight}
-                onChange={e => setCover({ ...cover, defaultHeight: parseInt(e.target.value) || 340 })}
-              />
-              <p className="text-[10px] text-muted-foreground">
-                {isAr ? "يُطبق على الصفحات بوضع \"متوسط\"" : "Applied to pages with \"medium\" mode"}
-              </p>
+          {/* Color Picker Row */}
+          <div className="space-y-2">
+            <Label className="text-xs">{isAr ? "لون التدرج" : "Gradient Color"}</Label>
+            <div className="flex flex-wrap gap-2">
+              {PRESET_COLORS.map(c => (
+                <button
+                  key={c.hex}
+                  className={`h-8 w-8 rounded-lg border-2 transition-all hover:scale-110 ${cover.gradientColor === c.hex ? "border-primary ring-2 ring-primary/30 scale-110" : "border-border/40"}`}
+                  style={{ backgroundColor: c.hex }}
+                  title={c.label}
+                  onClick={() => setCover({ ...cover, gradientColor: c.hex })}
+                />
+              ))}
             </div>
-            <div className="space-y-1.5">
-              <Label className="text-xs">{isAr ? "لون التدرج (HSL)" : "Gradient Color (HSL)"}</Label>
-              <Input
-                value={cover.gradientColor}
-                onChange={e => setCover({ ...cover, gradientColor: e.target.value })}
-                placeholder="25 30% 8%"
-              />
-              <p className="text-[10px] text-muted-foreground">
-                {isAr ? "اتركه فارغاً لاستخدام لون الخلفية" : "Leave empty to use background color"}
-              </p>
+            <div className="flex gap-2 items-end mt-2">
+              <div className="space-y-1 flex-1">
+                <Label className="text-[10px] text-muted-foreground">{isAr ? "أو أدخل اللون (HEX أو HSL)" : "Or enter color (HEX or HSL)"}</Label>
+                <div className="flex gap-2">
+                  <Input
+                    value={cover.gradientColor}
+                    onChange={e => setCover({ ...cover, gradientColor: e.target.value })}
+                    placeholder="#1a1a2e  or  25 30% 8%"
+                    className="font-mono text-xs"
+                  />
+                  <input
+                    type="color"
+                    value={cover.gradientColor.startsWith("#") ? cover.gradientColor : "#1a1a1a"}
+                    onChange={e => setCover({ ...cover, gradientColor: e.target.value })}
+                    className="h-10 w-12 cursor-pointer rounded-md border border-input bg-background p-1"
+                  />
+                </div>
+              </div>
+              {cover.gradientColor && (
+                <Button variant="ghost" size="sm" className="text-xs h-8" onClick={() => setCover({ ...cover, gradientColor: "" })}>
+                  {isAr ? "إعادة تعيين" : "Reset"}
+                </Button>
+              )}
             </div>
           </div>
 
-          {/* Intensity Slider */}
+          <Separator />
+
+          {/* Gradient Direction */}
+          <div className="space-y-2">
+            <Label className="text-xs">{isAr ? "اتجاه التدرج" : "Gradient Direction"}</Label>
+            <div className="grid grid-cols-3 gap-2 sm:grid-cols-6">
+              {DIRECTION_OPTIONS.map(opt => {
+                const Icon = opt.icon;
+                const active = (cover.gradientDirection || "to-top") === opt.value;
+                return (
+                  <button
+                    key={opt.value}
+                    onClick={() => setCover({ ...cover, gradientDirection: opt.value })}
+                    className={`flex flex-col items-center gap-1 rounded-lg border px-2 py-2.5 text-[10px] transition-all ${active ? "border-primary bg-primary/10 text-primary" : "border-border/40 text-muted-foreground hover:bg-muted/30"}`}
+                  >
+                    <Icon className="h-4 w-4" />
+                    <span className="leading-tight text-center">{isAr ? opt.ar : opt.en}</span>
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+
+          <Separator />
+
+          {/* Opacity Start / End */}
+          <div className="grid gap-5 sm:grid-cols-2">
+            <div className="space-y-3">
+              <div className="flex items-center justify-between">
+                <Label className="text-xs">{isAr ? "شفافية البداية" : "Start Opacity"}</Label>
+                <Badge variant="outline" className="text-[10px] font-mono px-2">{cover.gradientOpacityStart ?? 90}%</Badge>
+              </div>
+              <Slider
+                value={[cover.gradientOpacityStart ?? 90]}
+                onValueChange={([v]) => setCover({ ...cover, gradientOpacityStart: v })}
+                min={0} max={100} step={5}
+              />
+            </div>
+            <div className="space-y-3">
+              <div className="flex items-center justify-between">
+                <Label className="text-xs">{isAr ? "شفافية النهاية" : "End Opacity"}</Label>
+                <Badge variant="outline" className="text-[10px] font-mono px-2">{cover.gradientOpacityEnd ?? 0}%</Badge>
+              </div>
+              <Slider
+                value={[cover.gradientOpacityEnd ?? 0]}
+                onValueChange={([v]) => setCover({ ...cover, gradientOpacityEnd: v })}
+                min={0} max={100} step={5}
+              />
+            </div>
+          </div>
+
+          {/* Intensity */}
           <div className="space-y-3">
             <div className="flex items-center justify-between">
-              <Label className="text-xs">{isAr ? "شدة التدرج" : "Gradient Intensity"}</Label>
-              <Badge variant="outline" className="text-[10px] font-mono px-2">
-                {cover.gradientIntensity ?? 60}%
-              </Badge>
+              <Label className="text-xs">{isAr ? "شدة التدرج الإجمالية" : "Overall Gradient Intensity"}</Label>
+              <Badge variant="outline" className="text-[10px] font-mono px-2">{cover.gradientIntensity ?? 60}%</Badge>
             </div>
             <Slider
               value={[cover.gradientIntensity ?? 60]}
               onValueChange={([v]) => setCover({ ...cover, gradientIntensity: v })}
-              min={0}
-              max={100}
-              step={5}
-              className="w-full"
+              min={0} max={100} step={5}
             />
             <div className="flex justify-between text-[10px] text-muted-foreground">
               <span>{isAr ? "شفاف" : "Transparent"}</span>
@@ -141,39 +240,87 @@ export function CoverSettings({ settings, onSave, isPending }: Props) {
             </div>
           </div>
 
-          {/* Preview */}
+          <Separator />
+
+          {/* Live Preview */}
           <div className="space-y-1.5">
             <Label className="text-xs flex items-center gap-1.5">
               <Eye className="h-3 w-3" />
-              {isAr ? "معاينة التدرج" : "Gradient Preview"}
+              {isAr ? "معاينة حية" : "Live Preview"}
             </Label>
             <div
-              className="relative h-24 w-full rounded-lg overflow-hidden border border-border/40"
+              className="relative h-28 w-full rounded-lg overflow-hidden border border-border/40"
               style={{
-                background: `linear-gradient(135deg, hsl(var(--primary) / 0.15), hsl(var(--accent) / 0.1))`,
+                background: `url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="400" height="200"><rect fill="%23334155"/><text x="50%25" y="50%25" dominant-baseline="middle" text-anchor="middle" font-family="sans-serif" font-size="14" fill="%2394a3b8">Cover Image</text></svg>') center/cover`,
               }}
             >
-              <div
-                className="absolute inset-0"
-                style={{
-                  background: `linear-gradient(to top, hsl(${previewColor}) ${Math.round(previewAlpha * 80)}%, transparent)`,
-                }}
-              />
-              <div
-                className="absolute inset-0"
-                style={{
-                  background: `linear-gradient(to right, hsl(${previewColor} / ${(previewAlpha * 0.5).toFixed(2)}), transparent, hsl(${previewColor} / ${(previewAlpha * 0.5).toFixed(2)}))`,
-                }}
-              />
-              <div className="absolute inset-x-0 bottom-2 text-center text-[10px] font-medium text-white/70">
-                {isAr ? "معاينة" : "Preview"}
+              <div className="absolute inset-0" style={{ background: buildPreview() }} />
+              <div className="absolute inset-x-0 bottom-2 text-center text-[10px] font-medium text-foreground/70">
+                {isAr ? "معاينة التدرج المباشر" : "Live Gradient Preview"}
               </div>
             </div>
           </div>
 
-          <Button size="sm" className="gap-1.5" onClick={() => onSave("cover", cover, "appearance")} disabled={isPending}>
+          {/* Height */}
+          <div className="space-y-1.5">
+            <Label className="text-xs">{isAr ? "الارتفاع الافتراضي (px)" : "Default Height (px)"}</Label>
+            <Input
+              type="number"
+              min={100} max={800}
+              value={cover.defaultHeight}
+              onChange={e => setCover({ ...cover, defaultHeight: parseInt(e.target.value) || 340 })}
+              className="max-w-[180px]"
+            />
+          </div>
+
+          <Button size="sm" className="gap-1.5" onClick={handleSave} disabled={isPending}>
             <Save className="h-3.5 w-3.5" />{isAr ? "حفظ الإعدادات" : "Save Settings"}
           </Button>
+        </CardContent>
+      </Card>
+
+      {/* Popular Templates */}
+      <Card className="border-border/50">
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2 text-base">
+            <LayoutTemplate className="h-4.5 w-4.5 text-primary" />
+            {isAr ? "قوالب الأغلفة الشائعة" : "Popular Cover Templates"}
+          </CardTitle>
+          <CardDescription className="text-xs">
+            {isAr
+              ? "أبعاد الأغلفة الأكثر استخداماً في المواقع العالمية ومنصات التواصل الاجتماعي"
+              : "Most popular cover dimensions used across global websites and social media platforms"}
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="grid gap-2 sm:grid-cols-2">
+            {COVER_TEMPLATES.map(t => (
+              <button
+                key={t.id}
+                onClick={() => setCover({ ...cover, defaultHeight: t.height > 800 ? 520 : Math.min(t.height, 800) })}
+                className="flex items-center justify-between rounded-lg border border-border/40 px-3 py-3 text-start transition-all hover:bg-muted/30 hover:border-primary/30 group"
+              >
+                <div>
+                  <span className="text-sm font-medium group-hover:text-primary transition-colors">
+                    {isAr ? t.ar : t.en}
+                  </span>
+                  <div className="flex gap-2 mt-0.5">
+                    <Badge variant="outline" className="text-[9px] font-mono px-1.5 py-0">{t.width}×{t.height}</Badge>
+                    <Badge variant="secondary" className="text-[9px] font-mono px-1.5 py-0">{t.ratio}</Badge>
+                  </div>
+                </div>
+                <div
+                  className="h-8 rounded border border-border/30 bg-muted/50 shrink-0"
+                  style={{ aspectRatio: `${t.width}/${t.height}`, maxWidth: "64px" }}
+                />
+              </button>
+            ))}
+          </div>
+          <p className="text-[10px] text-muted-foreground mt-3">
+            {isAr
+              ? "اضغط على أي قالب لتطبيق ارتفاعه كارتفاع افتراضي. الحد الأقصى 800px."
+              : "Click any template to apply its height as default. Max height is 800px."}
+          </p>
         </CardContent>
       </Card>
 
@@ -199,15 +346,13 @@ export function CoverSettings({ settings, onSave, isPending }: Props) {
               >
                 <div className="flex items-center gap-2">
                   <span className="text-sm font-medium">{isAr ? page.ar : page.en}</span>
-                  <Badge variant="outline" className="text-[9px] font-mono px-1.5 py-0">
-                    {page.slug}
-                  </Badge>
+                  <Badge variant="outline" className="text-[9px] font-mono px-1.5 py-0">{page.slug}</Badge>
                 </div>
                 <Select
                   value={cover.pages[page.slug]?.mode || "medium"}
                   onValueChange={(v) => updatePageMode(page.slug, v as CoverMode)}
                 >
-                  <SelectTrigger className="w-[140px] h-8 text-xs">
+                  <SelectTrigger className="w-[160px] h-8 text-xs">
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
@@ -224,11 +369,18 @@ export function CoverSettings({ settings, onSave, isPending }: Props) {
 
           <Separator className="my-4" />
 
-          <Button size="sm" className="gap-1.5" onClick={() => onSave("cover", cover, "appearance")} disabled={isPending}>
-            <Save className="h-3.5 w-3.5" />{isAr ? "حفظ إعدادات الصفحات" : "Save Page Settings"}
+          <Button size="sm" className="gap-1.5" onClick={handleSave} disabled={isPending}>
+            <Save className="h-3.5 w-3.5" />{isAr ? "حفظ جميع الإعدادات" : "Save All Settings"}
           </Button>
         </CardContent>
       </Card>
     </div>
   );
+}
+
+function hexRgba(hex: string, alpha: number): string {
+  const r = parseInt(hex.slice(1, 3), 16);
+  const g = parseInt(hex.slice(3, 5), 16);
+  const b = parseInt(hex.slice(5, 7), 16);
+  return `rgba(${r}, ${g}, ${b}, ${alpha})`;
 }
