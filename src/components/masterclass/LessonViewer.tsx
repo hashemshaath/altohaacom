@@ -48,7 +48,7 @@ export function LessonViewer({ lesson, isCompleted, isEnrolled, onComplete, onBa
     <div className="space-y-6">
       <div className="flex items-center gap-3">
         <Button variant="ghost" size="sm" onClick={onBack}>
-          <ArrowLeft className="h-4 w-4 mr-2" />
+          <ArrowLeft className="h-4 w-4 me-2" />
           {language === "ar" ? "رجوع" : "Back"}
         </Button>
         <div className="flex items-center gap-2">
@@ -105,7 +105,7 @@ export function LessonViewer({ lesson, isCompleted, isEnrolled, onComplete, onBa
       {isEnrolled && !isCompleted && (
         <div className="flex justify-end">
           <Button onClick={() => onComplete(lesson.id)}>
-            <CheckCircle className="mr-2 h-4 w-4" />
+            <CheckCircle className="me-2 h-4 w-4" />
             {language === "ar" ? "وضع علامة مكتمل" : "Mark as Complete"}
           </Button>
         </div>

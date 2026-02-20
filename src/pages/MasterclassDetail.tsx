@@ -274,7 +274,7 @@ export default function MasterclassDetail() {
         <div className="bg-gradient-to-r from-primary/10 to-accent/10 py-12">
           <div className="container">
             <Button variant="ghost" onClick={() => navigate("/masterclasses")} className="mb-4">
-              <ArrowLeft className="h-4 w-4 mr-2" />
+              <ArrowLeft className="h-4 w-4 me-2" />
               {language === "ar" ? "العودة" : "Back"}
             </Button>
             <div className="grid lg:grid-cols-3 gap-8">

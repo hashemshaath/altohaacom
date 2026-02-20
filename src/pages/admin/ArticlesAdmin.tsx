@@ -228,7 +228,7 @@ export default function ArticlesAdmin() {
       <div className="space-y-6">
         <div className="flex items-center gap-4">
           <Button variant="ghost" size="sm" onClick={handleBackToList}>
-            <ArrowLeft className="mr-2 h-4 w-4" />
+            <ArrowLeft className="me-2 h-4 w-4" />
             {language === "ar" ? "رجوع" : "Back"}
           </Button>
           <h1 className="font-serif text-2xl font-bold">
@@ -385,11 +385,11 @@ export default function ArticlesAdmin() {
 
               <div className="flex justify-end gap-2 pt-4 border-t">
                 <Button variant="outline" onClick={handleBackToList}>
-                  <X className="mr-2 h-4 w-4" />
+                  <X className="me-2 h-4 w-4" />
                   {language === "ar" ? "إلغاء" : "Cancel"}
                 </Button>
                 <Button onClick={handleSubmit} disabled={createMutation.isPending || updateMutation.isPending}>
-                  <Save className="mr-2 h-4 w-4" />
+                  <Save className="me-2 h-4 w-4" />
                   {viewMode === "edit" 
                     ? (language === "ar" ? "تحديث" : "Update")
                     : (language === "ar" ? "إنشاء" : "Create")}
@@ -424,7 +424,7 @@ export default function ArticlesAdmin() {
             <Download className="h-3.5 w-3.5" /> CSV
           </Button>
           <Button onClick={() => setViewMode("create")}>
-            <Plus className="mr-2 h-4 w-4" />
+            <Plus className="me-2 h-4 w-4" />
             {language === "ar" ? "مقال جديد" : "New Article"}
           </Button>
         </div>

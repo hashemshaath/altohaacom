@@ -145,8 +145,8 @@ export default function TaxReportGenerator() {
                   <TableRow>
                     <TableHead>{isAr ? "النوع" : "Type"}</TableHead>
                     <TableHead>{isAr ? "الفترة" : "Period"}</TableHead>
-                    <TableHead className="text-right">{isAr ? "الإيرادات" : "Revenue"}</TableHead>
-                    <TableHead className="text-right">{isAr ? "الضريبة" : "Tax"}</TableHead>
+                    <TableHead className="text-end">{isAr ? "الإيرادات" : "Revenue"}</TableHead>
+                    <TableHead className="text-end">{isAr ? "الضريبة" : "Tax"}</TableHead>
                     <TableHead>{isAr ? "الحالة" : "Status"}</TableHead>
                     <TableHead>{isAr ? "التاريخ" : "Date"}</TableHead>
                   </TableRow>
@@ -158,10 +158,10 @@ export default function TaxReportGenerator() {
                       <TableCell className="text-xs text-muted-foreground">
                         {report.period_start} → {report.period_end}
                       </TableCell>
-                      <TableCell className="text-right font-medium">
+                      <TableCell className="text-end font-medium">
                         {formatCurrency(Number(report.total_revenue), language as "en" | "ar")}
                       </TableCell>
-                      <TableCell className="text-right font-medium text-primary">
+                      <TableCell className="text-end font-medium text-primary">
                         {formatCurrency(Number(report.tax_amount) + Number(report.zakat_amount || 0), language as "en" | "ar")}
                       </TableCell>
                       <TableCell>{getStatusBadge(report.status)}</TableCell>

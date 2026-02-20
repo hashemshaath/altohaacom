@@ -168,8 +168,8 @@ export default function DatabaseAdmin() {
             <TableHeader>
               <TableRow>
                 <TableHead>{language === "ar" ? "الجدول" : "Table"}</TableHead>
-                <TableHead className="text-right">{language === "ar" ? "السجلات" : "Records"}</TableHead>
-                <TableHead className="text-right">{language === "ar" ? "الإجراءات" : "Actions"}</TableHead>
+                <TableHead className="text-end">{language === "ar" ? "السجلات" : "Records"}</TableHead>
+                <TableHead className="text-end">{language === "ar" ? "الإجراءات" : "Actions"}</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -186,10 +186,10 @@ export default function DatabaseAdmin() {
                       </div>
                     </div>
                   </TableCell>
-                  <TableCell className="text-right">
+                  <TableCell className="text-end">
                     <Badge variant="secondary">{table.count.toLocaleString()}</Badge>
                   </TableCell>
-                  <TableCell className="text-right">
+                  <TableCell className="text-end">
                     <Button variant="ghost" size="sm" onClick={() => handleExport(table.name)}>
                       <Download className="h-4 w-4" />
                     </Button>

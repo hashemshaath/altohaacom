@@ -317,7 +317,7 @@ export default function SponsorsAdmin() {
                   <CardHeader className="pb-2">
                     <div className="flex items-center justify-between">
                       <Badge className={TIER_COLORS[pkg.tier] || ""}>
-                        <Icon className="mr-1 h-3 w-3" />
+                        <Icon className="me-1 h-3 w-3" />
                         {pkg.tier.charAt(0).toUpperCase() + pkg.tier.slice(1)}
                       </Badge>
                       <div className="flex gap-1">

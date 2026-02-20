@@ -235,7 +235,7 @@ export default function CompanyCommunications() {
           </p>
         </div>
         <Button onClick={openNewMessage}>
-          <Plus className="mr-2 h-4 w-4" />
+          <Plus className="me-2 h-4 w-4" />
           {language === "ar" ? "رسالة جديدة" : "New Message"}
         </Button>
       </div>
@@ -365,12 +365,12 @@ export default function CompanyCommunications() {
                     <div className="mt-2 flex items-center gap-2 text-sm text-muted-foreground">
                       {selectedMessage.direction === "incoming" ? (
                         <Badge variant="outline">
-                          <ArrowDownLeft className="mr-1 h-3 w-3" />
+                          <ArrowDownLeft className="me-1 h-3 w-3" />
                           {language === "ar" ? "واردة" : "Incoming"}
                         </Badge>
                       ) : (
                         <Badge variant="outline">
-                          <ArrowUpRight className="mr-1 h-3 w-3" />
+                          <ArrowUpRight className="me-1 h-3 w-3" />
                           {language === "ar" ? "صادرة" : "Outgoing"}
                         </Badge>
                       )}
@@ -379,7 +379,7 @@ export default function CompanyCommunications() {
                     </div>
                   </div>
                   <Button variant="outline" size="sm" onClick={openReply}>
-                    <Reply className="mr-2 h-4 w-4" />
+                    <Reply className="me-2 h-4 w-4" />
                     {language === "ar" ? "رد" : "Reply"}
                   </Button>
                 </div>
@@ -400,7 +400,7 @@ export default function CompanyCommunications() {
                       <div
                         key={reply.id}
                         className={`rounded-lg border p-4 ${
-                          reply.direction === "outgoing" ? "ml-4 border-s-[3px] border-s-primary" : "mr-4"
+                          reply.direction === "outgoing" ? "ms-4 border-s-[3px] border-s-primary" : "me-4"
                         }`}
                       >
                         <div className="mb-2 flex items-center justify-between text-sm text-muted-foreground">
@@ -481,7 +481,7 @@ export default function CompanyCommunications() {
                 onClick={handleSend}
                 disabled={!form.subject || !form.message || sendMutation.isPending}
               >
-                <Send className="mr-2 h-4 w-4" />
+                <Send className="me-2 h-4 w-4" />
                 {sendMutation.isPending
                   ? language === "ar" ? "جارٍ الإرسال..." : "Sending..."
                   : language === "ar" ? "إرسال" : "Send"}
