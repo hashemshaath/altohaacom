@@ -1119,6 +1119,13 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
+            foreignKeyName: "blind_judging_codes_competition_id_fkey"
+            columns: ["competition_id"]
+            isOneToOne: false
+            referencedRelation: "competitions_public"
+            referencedColumns: ["id"]
+          },
+          {
             foreignKeyName: "blind_judging_codes_registration_id_fkey"
             columns: ["registration_id"]
             isOneToOne: false
@@ -1560,6 +1567,13 @@ export type Database = {
             columns: ["competition_id"]
             isOneToOne: false
             referencedRelation: "competitions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "certificates_competition_id_fkey"
+            columns: ["competition_id"]
+            isOneToOne: false
+            referencedRelation: "competitions_public"
             referencedColumns: ["id"]
           },
           {
@@ -3814,6 +3828,13 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
+            foreignKeyName: "company_evaluations_competition_id_fkey"
+            columns: ["competition_id"]
+            isOneToOne: false
+            referencedRelation: "competitions_public"
+            referencedColumns: ["id"]
+          },
+          {
             foreignKeyName: "company_evaluations_order_id_fkey"
             columns: ["order_id"]
             isOneToOne: false
@@ -3890,6 +3911,13 @@ export type Database = {
             columns: ["competition_id"]
             isOneToOne: false
             referencedRelation: "competitions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "company_invitations_competition_id_fkey"
+            columns: ["competition_id"]
+            isOneToOne: false
+            referencedRelation: "competitions_public"
             referencedColumns: ["id"]
           },
         ]
@@ -4079,6 +4107,13 @@ export type Database = {
             columns: ["competition_id"]
             isOneToOne: false
             referencedRelation: "competitions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "company_orders_competition_id_fkey"
+            columns: ["competition_id"]
+            isOneToOne: false
+            referencedRelation: "competitions_public"
             referencedColumns: ["id"]
           },
           {
@@ -4377,6 +4412,13 @@ export type Database = {
             referencedRelation: "competitions"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "competition_categories_competition_id_fkey"
+            columns: ["competition_id"]
+            isOneToOne: false
+            referencedRelation: "competitions_public"
+            referencedColumns: ["id"]
+          },
         ]
       }
       competition_feedback: {
@@ -4425,6 +4467,13 @@ export type Database = {
             columns: ["competition_id"]
             isOneToOne: false
             referencedRelation: "competitions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "competition_feedback_competition_id_fkey"
+            columns: ["competition_id"]
+            isOneToOne: false
+            referencedRelation: "competitions_public"
             referencedColumns: ["id"]
           },
           {
@@ -4518,6 +4567,13 @@ export type Database = {
             referencedRelation: "competitions"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "competition_invitations_competition_id_fkey"
+            columns: ["competition_id"]
+            isOneToOne: false
+            referencedRelation: "competitions_public"
+            referencedColumns: ["id"]
+          },
         ]
       }
       competition_judges: {
@@ -4548,6 +4604,13 @@ export type Database = {
             columns: ["competition_id"]
             isOneToOne: false
             referencedRelation: "competitions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "competition_judges_competition_id_fkey"
+            columns: ["competition_id"]
+            isOneToOne: false
+            referencedRelation: "competitions_public"
             referencedColumns: ["id"]
           },
         ]
@@ -4614,6 +4677,13 @@ export type Database = {
             columns: ["competition_id"]
             isOneToOne: false
             referencedRelation: "competitions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "competition_portfolio_entries_competition_id_fkey"
+            columns: ["competition_id"]
+            isOneToOne: false
+            referencedRelation: "competitions_public"
             referencedColumns: ["id"]
           },
           {
@@ -4729,6 +4799,13 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
+            foreignKeyName: "competition_registrations_competition_id_fkey"
+            columns: ["competition_id"]
+            isOneToOne: false
+            referencedRelation: "competitions_public"
+            referencedColumns: ["id"]
+          },
+          {
             foreignKeyName: "competition_registrations_participant_id_fkey"
             columns: ["participant_id"]
             isOneToOne: false
@@ -4784,6 +4861,13 @@ export type Database = {
             columns: ["competition_id"]
             isOneToOne: false
             referencedRelation: "competitions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "competition_roles_competition_id_fkey"
+            columns: ["competition_id"]
+            isOneToOne: false
+            referencedRelation: "competitions_public"
             referencedColumns: ["id"]
           },
         ]
@@ -4854,6 +4938,13 @@ export type Database = {
             referencedRelation: "competitions"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "competition_rounds_competition_id_fkey"
+            columns: ["competition_id"]
+            isOneToOne: false
+            referencedRelation: "competitions_public"
+            referencedColumns: ["id"]
+          },
         ]
       }
       competition_schedule_slots: {
@@ -4921,6 +5012,13 @@ export type Database = {
             columns: ["competition_id"]
             isOneToOne: false
             referencedRelation: "competitions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "competition_schedule_slots_competition_id_fkey"
+            columns: ["competition_id"]
+            isOneToOne: false
+            referencedRelation: "competitions_public"
             referencedColumns: ["id"]
           },
           {
@@ -5084,6 +5182,13 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
+            foreignKeyName: "competition_sponsors_competition_id_fkey"
+            columns: ["competition_id"]
+            isOneToOne: false
+            referencedRelation: "competitions_public"
+            referencedColumns: ["id"]
+          },
+          {
             foreignKeyName: "competition_sponsors_package_id_fkey"
             columns: ["package_id"]
             isOneToOne: false
@@ -5120,6 +5225,13 @@ export type Database = {
             columns: ["competition_id"]
             isOneToOne: false
             referencedRelation: "competitions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "competition_supervising_bodies_competition_id_fkey"
+            columns: ["competition_id"]
+            isOneToOne: false
+            referencedRelation: "competitions_public"
             referencedColumns: ["id"]
           },
           {
@@ -5194,6 +5306,13 @@ export type Database = {
             referencedRelation: "competitions"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "competition_team_members_competition_id_fkey"
+            columns: ["competition_id"]
+            isOneToOne: false
+            referencedRelation: "competitions_public"
+            referencedColumns: ["id"]
+          },
         ]
       }
       competition_type_assignments: {
@@ -5221,6 +5340,13 @@ export type Database = {
             columns: ["competition_id"]
             isOneToOne: false
             referencedRelation: "competitions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "competition_type_assignments_competition_id_fkey"
+            columns: ["competition_id"]
+            isOneToOne: false
+            referencedRelation: "competitions_public"
             referencedColumns: ["id"]
           },
           {
@@ -5314,6 +5440,13 @@ export type Database = {
             columns: ["competition_id"]
             isOneToOne: false
             referencedRelation: "competitions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "competition_updates_competition_id_fkey"
+            columns: ["competition_id"]
+            isOneToOne: false
+            referencedRelation: "competitions_public"
             referencedColumns: ["id"]
           },
         ]
@@ -6856,6 +6989,13 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
+            foreignKeyName: "entity_competition_participations_competition_id_fkey"
+            columns: ["competition_id"]
+            isOneToOne: false
+            referencedRelation: "competitions_public"
+            referencedColumns: ["id"]
+          },
+          {
             foreignKeyName: "entity_competition_participations_entity_id_fkey"
             columns: ["entity_id"]
             isOneToOne: false
@@ -7062,6 +7202,13 @@ export type Database = {
             columns: ["competition_id"]
             isOneToOne: false
             referencedRelation: "competitions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "entity_events_competition_id_fkey"
+            columns: ["competition_id"]
+            isOneToOne: false
+            referencedRelation: "competitions_public"
             referencedColumns: ["id"]
           },
           {
@@ -7908,6 +8055,13 @@ export type Database = {
             columns: ["competition_id"]
             isOneToOne: false
             referencedRelation: "competitions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "evaluation_stages_competition_id_fkey"
+            columns: ["competition_id"]
+            isOneToOne: false
+            referencedRelation: "competitions_public"
             referencedColumns: ["id"]
           },
         ]
@@ -9081,6 +9235,13 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
+            foreignKeyName: "invoices_competition_id_fkey"
+            columns: ["competition_id"]
+            isOneToOne: false
+            referencedRelation: "competitions_public"
+            referencedColumns: ["id"]
+          },
+          {
             foreignKeyName: "invoices_order_id_fkey"
             columns: ["order_id"]
             isOneToOne: false
@@ -9123,6 +9284,13 @@ export type Database = {
             columns: ["competition_id"]
             isOneToOne: false
             referencedRelation: "competitions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "judge_ai_conversations_competition_id_fkey"
+            columns: ["competition_id"]
+            isOneToOne: false
+            referencedRelation: "competitions_public"
             referencedColumns: ["id"]
           },
         ]
@@ -9175,6 +9343,13 @@ export type Database = {
             referencedRelation: "competitions"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "judge_analytics_competition_id_fkey"
+            columns: ["competition_id"]
+            isOneToOne: false
+            referencedRelation: "competitions_public"
+            referencedColumns: ["id"]
+          },
         ]
       }
       judge_deliberations: {
@@ -9217,6 +9392,13 @@ export type Database = {
             columns: ["competition_id"]
             isOneToOne: false
             referencedRelation: "competitions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "judge_deliberations_competition_id_fkey"
+            columns: ["competition_id"]
+            isOneToOne: false
+            referencedRelation: "competitions_public"
             referencedColumns: ["id"]
           },
           {
@@ -9540,6 +9722,13 @@ export type Database = {
             referencedRelation: "competitions"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "judge_visit_logs_competition_id_fkey"
+            columns: ["competition_id"]
+            isOneToOne: false
+            referencedRelation: "competitions_public"
+            referencedColumns: ["id"]
+          },
         ]
       }
       judging_criteria: {
@@ -9585,6 +9774,13 @@ export type Database = {
             columns: ["competition_id"]
             isOneToOne: false
             referencedRelation: "competitions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "judging_criteria_competition_id_fkey"
+            columns: ["competition_id"]
+            isOneToOne: false
+            referencedRelation: "competitions_public"
             referencedColumns: ["id"]
           },
         ]
@@ -9691,6 +9887,13 @@ export type Database = {
             columns: ["competition_id"]
             isOneToOne: false
             referencedRelation: "competitions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "kitchen_stations_competition_id_fkey"
+            columns: ["competition_id"]
+            isOneToOne: false
+            referencedRelation: "competitions_public"
             referencedColumns: ["id"]
           },
         ]
@@ -9873,6 +10076,13 @@ export type Database = {
             columns: ["competition_id"]
             isOneToOne: false
             referencedRelation: "competitions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "knowledge_resources_competition_id_fkey"
+            columns: ["competition_id"]
+            isOneToOne: false
+            referencedRelation: "competitions_public"
             referencedColumns: ["id"]
           },
         ]
@@ -11242,6 +11452,13 @@ export type Database = {
             referencedRelation: "competitions"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "order_activity_log_competition_id_fkey"
+            columns: ["competition_id"]
+            isOneToOne: false
+            referencedRelation: "competitions_public"
+            referencedColumns: ["id"]
+          },
         ]
       }
       order_communications: {
@@ -11400,6 +11617,13 @@ export type Database = {
             columns: ["competition_id"]
             isOneToOne: false
             referencedRelation: "competitions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "order_item_requests_competition_id_fkey"
+            columns: ["competition_id"]
+            isOneToOne: false
+            referencedRelation: "competitions_public"
             referencedColumns: ["id"]
           },
           {
@@ -12343,6 +12567,13 @@ export type Database = {
             referencedRelation: "competitions"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "preparation_checklists_competition_id_fkey"
+            columns: ["competition_id"]
+            isOneToOne: false
+            referencedRelation: "competitions_public"
+            referencedColumns: ["id"]
+          },
         ]
       }
       profile_views: {
@@ -12802,6 +13033,13 @@ export type Database = {
             columns: ["competition_id"]
             isOneToOne: false
             referencedRelation: "competitions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "ranking_points_log_competition_id_fkey"
+            columns: ["competition_id"]
+            isOneToOne: false
+            referencedRelation: "competitions_public"
             referencedColumns: ["id"]
           },
         ]
@@ -13761,6 +13999,13 @@ export type Database = {
             referencedRelation: "competitions"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "requirement_lists_competition_id_fkey"
+            columns: ["competition_id"]
+            isOneToOne: false
+            referencedRelation: "competitions_public"
+            referencedColumns: ["id"]
+          },
         ]
       }
       requirement_sponsorship_requests: {
@@ -13839,6 +14084,13 @@ export type Database = {
             columns: ["competition_id"]
             isOneToOne: false
             referencedRelation: "competitions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "requirement_sponsorship_requests_competition_id_fkey"
+            columns: ["competition_id"]
+            isOneToOne: false
+            referencedRelation: "competitions_public"
             referencedColumns: ["id"]
           },
           {
@@ -13936,6 +14188,13 @@ export type Database = {
             columns: ["competition_id"]
             isOneToOne: false
             referencedRelation: "competitions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "requirement_suggestions_competition_id_fkey"
+            columns: ["competition_id"]
+            isOneToOne: false
+            referencedRelation: "competitions_public"
             referencedColumns: ["id"]
           },
           {
@@ -15397,6 +15656,13 @@ export type Database = {
             referencedRelation: "competitions"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "tasting_sessions_competition_id_fkey"
+            columns: ["competition_id"]
+            isOneToOne: false
+            referencedRelation: "competitions_public"
+            referencedColumns: ["id"]
+          },
         ]
       }
       tax_reports: {
@@ -15522,6 +15788,13 @@ export type Database = {
             columns: ["competition_id"]
             isOneToOne: false
             referencedRelation: "competitions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "team_workspaces_competition_id_fkey"
+            columns: ["competition_id"]
+            isOneToOne: false
+            referencedRelation: "competitions_public"
             referencedColumns: ["id"]
           },
           {
@@ -15698,6 +15971,13 @@ export type Database = {
             columns: ["competition_id"]
             isOneToOne: false
             referencedRelation: "competitions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "user_badges_competition_id_fkey"
+            columns: ["competition_id"]
+            isOneToOne: false
+            referencedRelation: "competitions_public"
             referencedColumns: ["id"]
           },
         ]
@@ -16438,6 +16718,99 @@ export type Database = {
       }
     }
     Views: {
+      competitions_public: {
+        Row: {
+          city: string | null
+          competition_end: string | null
+          competition_number: string | null
+          competition_start: string | null
+          country_code: string | null
+          cover_image_url: string | null
+          created_at: string | null
+          description: string | null
+          description_ar: string | null
+          edition_year: number | null
+          exhibition_id: string | null
+          id: string | null
+          is_virtual: boolean | null
+          max_participants: number | null
+          registration_end: string | null
+          registration_start: string | null
+          series_id: string | null
+          status: Database["public"]["Enums"]["competition_status"] | null
+          title: string | null
+          title_ar: string | null
+          updated_at: string | null
+          venue: string | null
+          venue_ar: string | null
+        }
+        Insert: {
+          city?: string | null
+          competition_end?: string | null
+          competition_number?: string | null
+          competition_start?: string | null
+          country_code?: string | null
+          cover_image_url?: string | null
+          created_at?: string | null
+          description?: string | null
+          description_ar?: string | null
+          edition_year?: number | null
+          exhibition_id?: string | null
+          id?: string | null
+          is_virtual?: boolean | null
+          max_participants?: number | null
+          registration_end?: string | null
+          registration_start?: string | null
+          series_id?: string | null
+          status?: Database["public"]["Enums"]["competition_status"] | null
+          title?: string | null
+          title_ar?: string | null
+          updated_at?: string | null
+          venue?: string | null
+          venue_ar?: string | null
+        }
+        Update: {
+          city?: string | null
+          competition_end?: string | null
+          competition_number?: string | null
+          competition_start?: string | null
+          country_code?: string | null
+          cover_image_url?: string | null
+          created_at?: string | null
+          description?: string | null
+          description_ar?: string | null
+          edition_year?: number | null
+          exhibition_id?: string | null
+          id?: string | null
+          is_virtual?: boolean | null
+          max_participants?: number | null
+          registration_end?: string | null
+          registration_start?: string | null
+          series_id?: string | null
+          status?: Database["public"]["Enums"]["competition_status"] | null
+          title?: string | null
+          title_ar?: string | null
+          updated_at?: string | null
+          venue?: string | null
+          venue_ar?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "competitions_exhibition_id_fkey"
+            columns: ["exhibition_id"]
+            isOneToOne: false
+            referencedRelation: "exhibitions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "competitions_series_id_fkey"
+            columns: ["series_id"]
+            isOneToOne: false
+            referencedRelation: "competition_series"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       judge_profiles_public: {
         Row: {
           certifications: string[] | null
