@@ -546,9 +546,9 @@ export default function RoleManagement() {
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="relative">
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                <Search className="absolute start-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                 <Input placeholder={isAr ? "ابحث بالاسم أو البريد أو رقم الحساب..." : "Search by name, email, or account number..."}
-                  value={userSearch} onChange={(e) => setUserSearch(e.target.value)} className="pl-9" />
+                  value={userSearch} onChange={(e) => setUserSearch(e.target.value)} className="ps-9" />
               </div>
               {usersLoading ? (
                 <div className="flex justify-center py-8"><Loader2 className="h-6 w-6 animate-spin text-muted-foreground" /></div>

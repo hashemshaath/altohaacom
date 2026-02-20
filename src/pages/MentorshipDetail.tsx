@@ -88,7 +88,7 @@ export default function MentorshipDetail() {
       <main className="flex-1">
         {/* Hero */}
         <div className="relative overflow-hidden bg-gradient-to-br from-primary/90 via-primary to-chart-3/80 py-12 text-primary-foreground">
-          <div className="absolute -right-20 -top-20 h-48 w-48 rounded-full bg-primary-foreground/10 blur-3xl" />
+          <div className="absolute -end-20 -top-20 h-48 w-48 rounded-full bg-primary-foreground/10 blur-3xl" />
           <div className="container relative z-10 mx-auto px-4">
             <Link to="/mentorship" className="inline-flex items-center gap-1 text-sm text-primary-foreground/70 hover:text-primary-foreground mb-4">
               <ArrowLeft className="h-3 w-3" />

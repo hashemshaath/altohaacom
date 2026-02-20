@@ -154,7 +154,7 @@ export default function HelpCenter() {
                     <Accordion type="single" collapsible className="w-full">
                       {featuredFaqs.map((faq) => (
                         <AccordionItem key={faq.id} value={faq.id}>
-                          <AccordionTrigger className="text-left">
+                          <AccordionTrigger className="text-start">
                             {language === "ar" && faq.question_ar ? faq.question_ar : faq.question}
                           </AccordionTrigger>
                           <AccordionContent className="text-muted-foreground">
@@ -194,10 +194,10 @@ export default function HelpCenter() {
                     <Accordion type="single" collapsible className="w-full">
                       {filteredFaqs.map((faq) => (
                         <AccordionItem key={faq.id} value={faq.id}>
-                          <AccordionTrigger className="text-left">
+                          <AccordionTrigger className="text-start">
                             <div className="flex items-center gap-2">
                               {language === "ar" && faq.question_ar ? faq.question_ar : faq.question}
-                              <Badge variant="outline" className="ml-2">
+                              <Badge variant="outline" className="ms-2">
                                 {faq.category}
                               </Badge>
                             </div>

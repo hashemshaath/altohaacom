@@ -214,8 +214,8 @@ export default function CompanyStatements() {
                     <TableHead>{isAr ? "الرقم" : "Ref #"}</TableHead>
                     <TableHead>{isAr ? "الوصف" : "Description"}</TableHead>
                     <TableHead>{isAr ? "النوع" : "Type"}</TableHead>
-                    <TableHead className="text-right">{isAr ? "المبلغ" : "Amount"}</TableHead>
-                    <TableHead className="text-right">{isAr ? "الرصيد" : "Balance"}</TableHead>
+                    <TableHead className="text-end">{isAr ? "المبلغ" : "Amount"}</TableHead>
+                    <TableHead className="text-end">{isAr ? "الرصيد" : "Balance"}</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -233,10 +233,10 @@ export default function CompanyStatements() {
                             {t.type}
                           </Badge>
                         </TableCell>
-                        <TableCell className={`text-right font-medium ${isCredit ? "text-chart-5" : "text-destructive"}`}>
+                        <TableCell className={`text-end font-medium ${isCredit ? "text-chart-5" : "text-destructive"}`}>
                           {isCredit ? "+" : "-"}{t.currency} {toEnglishDigits(Math.abs(t.amount).toLocaleString())}
                         </TableCell>
-                        <TableCell className="text-right font-medium">
+                        <TableCell className="text-end font-medium">
                           {t.balance_after !== null ? `${t.currency} ${toEnglishDigits(t.balance_after?.toLocaleString())}` : "—"}
                         </TableCell>
                       </TableRow>

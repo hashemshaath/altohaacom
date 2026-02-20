@@ -274,7 +274,7 @@ export default function KnowledgePortal() {
                             className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
                             onError={(e) => { (e.target as HTMLImageElement).src = "/placeholder.svg"; }}
                           />
-                          <Badge className={`absolute top-2 ${language === "ar" ? "left-2" : "right-2"} ${ratingColors[ref.rating || "good"]}`}>
+                          <Badge className={`absolute top-2 end-2 ${ratingColors[ref.rating || "good"]}`}>
                             {ratingLabels[ref.rating || "good"]}
                           </Badge>
                         </div>

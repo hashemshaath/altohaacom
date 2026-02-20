@@ -426,7 +426,7 @@ export default function MasterclassDetail() {
                 return (
                   <AccordionItem key={module.id} value={module.id} className="border rounded-lg px-4">
                     <AccordionTrigger className="hover:no-underline">
-                      <div className="flex items-center gap-3 text-left">
+                      <div className="flex items-center gap-3 text-start">
                         <div>
                           <p className="font-medium">
                             {language === "ar" && module.title_ar ? module.title_ar : module.title}

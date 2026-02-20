@@ -696,7 +696,7 @@ export default function KnowledgeAdmin() {
                     className="h-full w-full object-cover"
                     onError={(e) => { (e.target as HTMLImageElement).src = "/placeholder.svg"; }}
                   />
-                  <Badge className={`absolute top-2 ${language === "ar" ? "left-2" : "right-2"} ${ratingColors[ref.rating || "good"]}`}>
+                  <Badge className={`absolute top-2 end-2 ${ratingColors[ref.rating || "good"]}`}>
                     {ref.rating}
                   </Badge>
                 </div>

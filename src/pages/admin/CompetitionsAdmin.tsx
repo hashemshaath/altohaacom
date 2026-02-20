@@ -295,12 +295,12 @@ export default function CompetitionsAdmin() {
       <Card className="border-border/60">
         <CardContent className="flex flex-wrap gap-3 p-4">
           <div className="relative flex-1 min-w-[200px]">
-            <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+            <Search className="absolute start-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
             <Input
               placeholder={isAr ? "بحث بالعنوان أو المدينة..." : "Search by title or city..."}
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="pl-10"
+              className="ps-10"
             />
           </div>
           <Select value={statusFilter} onValueChange={setStatusFilter}>

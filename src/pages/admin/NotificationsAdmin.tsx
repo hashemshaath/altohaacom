@@ -426,9 +426,9 @@ export default function NotificationsAdmin() {
           {/* Filters */}
           <div className="flex flex-wrap gap-2">
             <div className="relative flex-1 min-w-[180px] max-w-sm">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+              <Search className="absolute start-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
               <Input value={recentSearch} onChange={(e) => setRecentSearch(e.target.value)}
-                placeholder={isAr ? "بحث..." : "Search..."} className="pl-10" />
+                placeholder={isAr ? "بحث..." : "Search..."} className="ps-10" />
             </div>
             <Select value={recentTypeFilter} onValueChange={setRecentTypeFilter}>
               <SelectTrigger className="w-[120px]"><SelectValue /></SelectTrigger>

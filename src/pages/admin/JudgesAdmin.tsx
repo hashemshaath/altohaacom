@@ -189,12 +189,12 @@ export default function JudgesAdmin() {
       {/* Filters */}
       <div className="flex flex-col gap-4 sm:flex-row">
         <div className="relative flex-1">
-          <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+          <Search className="absolute start-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
           <Input
             placeholder={isAr ? "بحث بالاسم أو الجنسية أو الرقم..." : "Search by name, nationality, or number..."}
             value={searchQuery}
             onChange={e => setSearchQuery(e.target.value)}
-            className="pl-10"
+            className="ps-10"
           />
         </div>
         <Select value={filterCategory} onValueChange={setFilterCategory}>

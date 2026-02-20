@@ -143,19 +143,19 @@ export default function Search() {
         {/* Search Input */}
         <div className="flex gap-2 mb-6">
           <div className="relative flex-1">
-            <SearchIcon className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-muted-foreground" />
+            <SearchIcon className="absolute start-3 top-1/2 h-5 w-5 -translate-y-1/2 text-muted-foreground" />
             <Input
               placeholder={t("searchPlaceholder")}
               value={filters.query}
               onChange={(e) => handleSearch(e.target.value)}
-              className="pl-10 h-12 text-lg"
+              className="ps-10 h-12 text-lg"
               autoFocus
             />
             {filters.query && (
               <Button
                 variant="ghost"
                 size="icon"
-                className="absolute right-2 top-1/2 -translate-y-1/2 h-8 w-8"
+                className="absolute end-2 top-1/2 -translate-y-1/2 h-8 w-8"
                 onClick={() => handleSearch("")}
               >
                 <X className="h-4 w-4" />
@@ -540,7 +540,7 @@ function CompetitionCard({ competition, language, getStatusLabel, t }: {
             <Trophy className="h-10 w-10 text-primary/30" />
           </div>
         )}
-        <Badge className={`absolute right-2 top-2 ${statusColors[competition.status]}`}>
+        <Badge className={`absolute end-2 top-2 ${statusColors[competition.status]}`}>
           {getStatusLabel(competition.status)}
         </Badge>
       </div>
@@ -595,7 +595,7 @@ function ArticleCard({ article, language, t }: {
             <FileText className="h-10 w-10 text-primary/30" />
           </div>
         )}
-        <Badge className="absolute right-2 top-2 bg-background/80 text-foreground">
+        <Badge className="absolute end-2 top-2 bg-background/80 text-foreground">
           {article.type}
         </Badge>
       </div>

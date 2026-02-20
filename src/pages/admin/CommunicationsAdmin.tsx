@@ -507,9 +507,9 @@ export default function CommunicationsAdmin() {
           {/* Filters */}
           <div className="flex flex-wrap gap-2">
             <div className="relative flex-1 min-w-[200px] max-w-sm">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+              <Search className="absolute start-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
               <Input value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder={isAr ? "بحث في الرسائل..." : "Search messages..."} className="pl-10" />
+                placeholder={isAr ? "بحث في الرسائل..." : "Search messages..."} className="ps-10" />
             </div>
             <Select value={filter} onValueChange={setFilter}>
               <SelectTrigger className="w-[160px]"><SelectValue /></SelectTrigger>
