@@ -15,7 +15,7 @@ const SystemSettings = lazy(() => import("@/pages/admin/SystemSettings"));
 const IntegrationsAdmin = lazy(() => import("@/pages/admin/IntegrationsAdmin"));
 const AIConfigAdmin = lazy(() => import("@/pages/admin/AIConfigAdmin"));
 const ArticlesAdmin = lazy(() => import("@/pages/admin/ArticlesAdmin"));
-const ThemeAdmin = lazy(() => import("@/pages/admin/ThemeAdmin"));
+
 const ComponentsAdmin = lazy(() => import("@/pages/admin/ComponentsAdmin"));
 const MediaAdmin = lazy(() => import("@/pages/admin/MediaAdmin"));
 const NotificationsAdmin = lazy(() => import("@/pages/admin/NotificationsAdmin"));
@@ -71,7 +71,7 @@ export const adminRoutes = (
     <Route path="moderation" element={<ContentModeration />} />
     <Route path="integrations" element={<IntegrationsAdmin />} />
     <Route path="ai" element={<AIConfigAdmin />} />
-    <Route path="theme" element={<ThemeAdmin />} />
+    
     <Route path="components" element={<ComponentsAdmin />} />
     <Route path="settings" element={<SystemSettings />} />
     <Route path="notifications" element={<NotificationsAdmin />} />

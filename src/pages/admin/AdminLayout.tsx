@@ -18,7 +18,7 @@ import {
   UserSearch,
   Trophy,
   Settings,
-  Palette,
+  
   Plug,
   Bot,
   Newspaper,
@@ -98,13 +98,6 @@ export default function AdminLayout() {
       ],
     },
     {
-      title: language === "ar" ? "المظهر" : "Appearance",
-      items: [
-        { to: "/admin/theme", icon: Palette, label: language === "ar" ? "المظهر والألوان" : "Theme & Colors" },
-        { to: "/admin/components", icon: Eye, label: language === "ar" ? "إظهار المكونات" : "Component Visibility" },
-      ],
-    },
-    {
       title: language === "ar" ? "الدعم وإدارة العلاقات" : "CRM & Support",
       items: [
         { to: "/admin/crm", icon: Activity, label: language === "ar" ? "نظرة عامة" : "CRM Overview" },
@@ -118,6 +111,7 @@ export default function AdminLayout() {
       title: language === "ar" ? "النظام" : "System",
       items: [
         { to: "/admin/settings", icon: Settings, label: language === "ar" ? "الإعدادات العامة" : "General Settings" },
+        { to: "/admin/components", icon: Eye, label: language === "ar" ? "إظهار المكونات" : "Component Visibility" },
         { to: "/admin/notifications", icon: Bell, label: language === "ar" ? "الإشعارات" : "Notifications" },
         { to: "/admin/communications", icon: MessageSquareIcon, label: language === "ar" ? "صندوق التواصل" : "Communications" },
         { to: "/admin/templates", icon: MailOpen, label: language === "ar" ? "قوالب الاتصالات" : "Templates" },
