@@ -75,30 +75,31 @@ export default function Dashboard() {
       <SEOHead title="Dashboard" description="Your personal Altoha dashboard" />
       <Header />
       <main className="container flex-1 py-4 md:py-6">
-        {/* Welcome Banner */}
-        <div className="relative mb-8 overflow-hidden rounded-3xl border border-primary/10 bg-gradient-to-br from-primary/10 via-background to-accent/10 p-6 sm:p-8 group shadow-sm transition-all duration-500 hover:shadow-lg hover:border-primary/20">
-          <div className="pointer-events-none absolute -end-24 -top-24 h-64 w-64 rounded-full bg-primary/15 blur-[100px] animate-pulse" />
-          <div className="pointer-events-none absolute -start-10 -bottom-10 h-48 w-48 rounded-full bg-accent/15 blur-[80px] animate-pulse [animation-delay:2s]" />
+        {/* Welcome Banner — compact on mobile, spacious on desktop */}
+        <div className="relative mb-6 overflow-hidden rounded-2xl border border-primary/10 bg-gradient-to-br from-primary/10 via-background to-accent/10 p-4 sm:p-6 md:p-8 group shadow-sm transition-all duration-300 hover:shadow-md hover:border-primary/20">
+          <div className="pointer-events-none absolute -end-16 -top-16 h-48 w-48 rounded-full bg-primary/15 blur-[80px] animate-pulse" />
+          <div className="pointer-events-none absolute -start-8 -bottom-8 h-36 w-36 rounded-full bg-accent/15 blur-[60px] animate-pulse [animation-delay:2s]" />
           <div className="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-primary/30 to-transparent" />
-          
-          <div className="relative flex flex-col gap-5 sm:flex-row sm:items-center sm:justify-between">
-            <div className="flex items-center gap-5">
-              <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded-2xl bg-primary/10 ring-4 ring-primary/5 shadow-inner transition-transform duration-500 group-hover:scale-110 group-hover:rotate-3">
-                <Sparkles className="h-8 w-8 text-primary animate-pulse" />
+
+          <div className="relative flex items-center justify-between gap-4">
+            <div className="flex items-center gap-3 sm:gap-4 min-w-0">
+              <div className="flex h-12 w-12 sm:h-14 sm:w-14 shrink-0 items-center justify-center rounded-2xl bg-primary/10 ring-2 ring-primary/10 shadow-inner transition-transform duration-300 group-hover:scale-105">
+                <Sparkles className="h-6 w-6 sm:h-7 sm:w-7 text-primary animate-pulse" />
               </div>
-              <div>
-                <h1 className="font-serif text-2xl font-bold sm:text-3xl md:text-4xl tracking-tight text-foreground">{greeting} 👋</h1>
-                <p className="mt-1.5 text-sm text-muted-foreground font-medium max-w-md">
+              <div className="min-w-0">
+                <h1 className="font-serif text-xl sm:text-2xl md:text-3xl font-bold tracking-tight text-foreground truncate">{greeting} 👋</h1>
+                <p className="mt-0.5 text-xs sm:text-sm text-muted-foreground font-medium line-clamp-1 sm:line-clamp-none">
                   {isAr
                     ? "إليك ملخص نشاطك ومسابقاتك القادمة"
-                    : "Discover your progress and upcoming culinary milestones below."}
+                    : "Your culinary milestones await below."}
                 </p>
               </div>
             </div>
-            <Link to="/profile?tab=edit">
-              <Button variant="secondary" className="gap-2 shadow-sm rounded-xl">
-                {isAr ? "إدارة الملف الشخصي" : "Manage Profile"}
-                <ArrowRight className="h-4 w-4" />
+            <Link to="/profile?tab=edit" className="shrink-0">
+              <Button variant="secondary" size="sm" className="gap-1.5 shadow-sm rounded-xl text-xs sm:text-sm">
+                <span className="hidden sm:inline">{isAr ? "إدارة الملف" : "Manage Profile"}</span>
+                <span className="sm:hidden">{isAr ? "الملف" : "Profile"}</span>
+                <ArrowRight className="h-3.5 w-3.5" />
               </Button>
             </Link>
           </div>
@@ -106,39 +107,40 @@ export default function Dashboard() {
 
         {/* Profile Completion Nudge */}
         {user && profile && !profile.profile_completed && (
-          <div className="mb-8 animate-fade-in">
+          <div className="mb-5 animate-fade-in">
             <Link to="/onboarding">
-              <Card className="group border-chart-4/30 bg-gradient-to-r from-chart-4/5 to-transparent transition-all hover:shadow-md hover:-translate-y-0.5">
-                <CardContent className="flex items-center gap-4 py-4">
-                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-chart-4/10 ring-2 ring-chart-4/20">
-                    <AlertCircle className="h-5 w-5 text-chart-4" />
+              <Card className="group border-chart-4/30 bg-gradient-to-r from-chart-4/5 to-transparent transition-all hover:shadow-md active:scale-[0.99]">
+                <CardContent className="flex items-center gap-3 py-3.5 px-4">
+                  <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-chart-4/10 ring-2 ring-chart-4/20">
+                    <AlertCircle className="h-4 w-4 text-chart-4" />
                   </div>
-                  <div className="flex-1">
+                  <div className="flex-1 min-w-0">
                     <p className="text-sm font-semibold">{isAr ? "أكمل ملفك الشخصي" : "Complete Your Profile"}</p>
-                    <p className="text-xs text-muted-foreground">{isAr ? "أكمل معلوماتك لفتح جميع المزايا" : "Finish setting up your profile to unlock all features"}</p>
+                    <p className="text-xs text-muted-foreground truncate">{isAr ? "أكمل معلوماتك لفتح جميع المزايا" : "Finish setup to unlock all features"}</p>
                   </div>
-                  <ArrowRight className="h-4 w-4 text-muted-foreground group-hover:text-primary transition-colors" />
+                  <ArrowRight className="h-4 w-4 text-muted-foreground group-hover:text-primary transition-colors shrink-0" />
                 </CardContent>
               </Card>
             </Link>
           </div>
         )}
 
-        {/* Quick Navigation - Premium Pill Grid */}
-        <div className="mb-10">
-          <h2 className="text-sm font-bold uppercase tracking-wider text-muted-foreground mb-3 flex items-center gap-2">
-            <Sparkles className="h-3.5 w-3.5 text-primary" />
+        {/* Quick Navigation - Mobile-optimized scrollable row on small screens, grid on large */}
+        <div className="mb-8">
+          <h2 className="text-xs font-bold uppercase tracking-wider text-muted-foreground mb-3 flex items-center gap-2">
+            <Sparkles className="h-3 w-3 text-primary" />
             {isAr ? "الوصول السريع" : "Quick Access"}
           </h2>
-          <div className="grid grid-cols-5 gap-2 sm:gap-3 md:grid-cols-5 lg:grid-cols-10">
+          {/* Mobile: 2-row horizontal scroll. Desktop: wrap grid */}
+          <div className="flex gap-2.5 overflow-x-auto pb-1 scrollbar-none sm:grid sm:grid-cols-5 md:grid-cols-5 lg:grid-cols-10 sm:overflow-visible sm:pb-0" style={{ scrollbarWidth: "none" }}>
             {sections.map((s) => (
-              <Link key={s.title} to={s.href} className="group">
-                <Card className={`h-full border-border/30 bg-card/60 backdrop-blur-sm transition-all duration-300 hover:shadow-xl hover:-translate-y-1.5 hover:border-border/50 hover:bg-card active:scale-95 ${s.glow}`}>
-                  <CardContent className="flex flex-col items-center gap-2 p-3 sm:p-4 text-center">
-                    <div className={`flex h-12 w-12 sm:h-14 sm:w-14 items-center justify-center rounded-2xl ${s.bg} ring-1 ${s.ring} transition-all duration-300 group-hover:scale-110 group-hover:shadow-lg`}>
-                      <s.icon className={`h-5 w-5 sm:h-6 sm:w-6 ${s.color} transition-transform duration-300 group-hover:scale-110`} />
+              <Link key={s.title} to={s.href} className="group shrink-0 w-[72px] sm:w-auto">
+                <Card className={`h-full border-border/30 bg-card/60 backdrop-blur-sm transition-all duration-200 hover:shadow-lg hover:-translate-y-1 hover:border-border/50 hover:bg-card active:scale-[0.92] ${s.glow}`}>
+                  <CardContent className="flex flex-col items-center gap-1.5 p-2.5 sm:p-3 text-center">
+                    <div className={`flex h-11 w-11 sm:h-12 sm:w-12 items-center justify-center rounded-2xl ${s.bg} ring-1 ${s.ring} transition-all duration-200 group-hover:scale-110 group-hover:shadow-md`}>
+                      <s.icon className={`h-5 w-5 ${s.color}`} />
                     </div>
-                    <span className="text-[10px] font-semibold tracking-tight sm:text-xs text-foreground/80 group-hover:text-foreground transition-colors leading-tight">{s.title}</span>
+                    <span className="text-[10px] font-semibold tracking-tight text-foreground/80 group-hover:text-foreground transition-colors leading-tight line-clamp-1">{s.title}</span>
                   </CardContent>
                 </Card>
               </Link>
@@ -209,16 +211,16 @@ function AchievementsSummary({ userId, isAr }: { userId: string; isAr: boolean }
   ];
 
   return (
-    <div className="grid grid-cols-3 gap-3">
+    <div className="grid grid-cols-3 gap-2 sm:gap-3">
       {items.map((item) => (
-        <Card key={item.label} className={`border-s-[3px] ${item.border} transition-all duration-200 hover:shadow-md hover:-translate-y-0.5 group`}>
-          <CardContent className="flex items-center gap-3 p-3 sm:p-4">
-            <div className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-xl ${item.bg} transition-transform group-hover:scale-110`}>
+        <Card key={item.label} className={`border-s-[3px] ${item.border} transition-all duration-200 hover:shadow-md active:scale-[0.97] group`}>
+          <CardContent className="flex items-center gap-2 sm:gap-3 p-2.5 sm:p-4">
+            <div className={`hidden xs:flex h-9 w-9 shrink-0 items-center justify-center rounded-xl ${item.bg} sm:flex`}>
               <item.icon className={`h-4 w-4 ${item.color}`} />
             </div>
             <div>
-              <p className="text-lg font-bold sm:text-xl tabular-nums">{item.value}</p>
-              <p className="text-[10px] uppercase tracking-wider text-muted-foreground">{item.label}</p>
+              <p className="text-xl font-bold tabular-nums">{item.value}</p>
+              <p className="text-[10px] uppercase tracking-wider text-muted-foreground leading-tight">{item.label}</p>
             </div>
           </CardContent>
         </Card>
