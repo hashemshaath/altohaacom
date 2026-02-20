@@ -226,7 +226,7 @@ export function ProfileInvoicesTab({ userId }: ProfileInvoicesTabProps) {
                     const StatusIcon = cfg.icon;
                     return (
                       <TableRow key={inv.id} className="cursor-pointer hover:bg-accent/30" onClick={() => setSelectedInvoiceId(inv.id)}>
-                        <TableCell className="font-mono text-sm font-medium">
+                        <TableCell className="font-mono text-sm font-medium" dir="ltr">
                           {inv.invoice_number}
                         </TableCell>
                         <TableCell className="max-w-48 truncate">
@@ -238,10 +238,10 @@ export function ProfileInvoicesTab({ userId }: ProfileInvoicesTabProps) {
                             {getStatusLabel(inv.status || "draft")}
                           </Badge>
                         </TableCell>
-                        <TableCell className="text-end font-medium">
+                        <TableCell className="text-end font-medium" dir="ltr">
                           {Number(inv.amount).toLocaleString()} {inv.currency}
                         </TableCell>
-                        <TableCell className="text-sm text-muted-foreground">
+                        <TableCell className="text-sm text-muted-foreground" dir="ltr">
                           {format(new Date(inv.created_at), "yyyy-MM-dd")}
                         </TableCell>
                         <TableCell className="text-center">

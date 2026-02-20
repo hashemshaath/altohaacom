@@ -161,7 +161,7 @@ export function WalletDashboard({ userId }: WalletDashboardProps) {
           <div className="grid gap-3 sm:grid-cols-2">
             <div className="rounded-lg border p-3">
               <p className="text-xs text-muted-foreground">{isAr ? "رقم المحفظة" : "Wallet Number"}</p>
-              <p className="font-mono font-bold text-sm mt-1">{wallet.wallet_number}</p>
+              <p className="font-mono font-bold text-sm mt-1" dir="ltr">{wallet.wallet_number}</p>
             </div>
             <div className="rounded-lg border p-3">
               <p className="text-xs text-muted-foreground">{isAr ? "العملة" : "Currency"}</p>
@@ -198,7 +198,7 @@ export function WalletDashboard({ userId }: WalletDashboardProps) {
                     const isCredit = ["credit", "refund", "points_earned"].includes(tx.type);
                     return (
                       <TableRow key={tx.id}>
-                        <TableCell className="font-mono text-xs">{tx.transaction_number}</TableCell>
+                        <TableCell className="font-mono text-xs" dir="ltr">{tx.transaction_number}</TableCell>
                         <TableCell>
                           <Badge variant="outline" className="text-xs gap-1">
                             <typeInfo.icon className="h-3 w-3" />

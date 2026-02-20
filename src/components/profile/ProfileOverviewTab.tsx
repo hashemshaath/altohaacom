@@ -45,7 +45,7 @@ export function ProfileOverviewTab({ profile, userId }: ProfileOverviewTabProps)
           <SectionTitle icon={FileText} label={isAr ? "النبذة" : "About"} />
           <Card>
             <CardContent className="py-5">
-              <p className="text-[15px] leading-7 whitespace-pre-wrap text-foreground/90">
+              <p className="text-[15px] leading-7 whitespace-pre-wrap text-foreground/90" dir={isAr && profile?.bio_ar ? "rtl" : "ltr"}>
                 {isAr ? (profile?.bio_ar || profile?.bio) : profile?.bio}
               </p>
             </CardContent>
@@ -82,7 +82,7 @@ export function ProfileOverviewTab({ profile, userId }: ProfileOverviewTabProps)
                     className="text-xs gap-1.5 font-normal py-1.5 px-3"
                   >
                     <span className="font-semibold">{link.label}</span>
-                    <span className="text-muted-foreground">{link.value}</span>
+                    <span className="text-muted-foreground" dir="ltr">{link.value}</span>
                   </Badge>
                 ))}
               </div>
