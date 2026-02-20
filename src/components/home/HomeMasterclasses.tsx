@@ -36,7 +36,7 @@ export function HomeMasterclasses() {
   if (classes.length === 0) return null;
 
   return (
-    <section className="container py-12 md:py-16" aria-labelledby="masterclasses-heading">
+    <section className="container py-10 md:py-14" aria-labelledby="masterclasses-heading">
       <SectionReveal>
         <div className="mb-8 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
           <div>
@@ -44,7 +44,7 @@ export function HomeMasterclasses() {
               <GraduationCap className="h-3 w-3" />
               {isAr ? "دروس متقدمة" : "Masterclasses"}
             </Badge>
-            <h2 id="masterclasses-heading" className="font-serif text-2xl font-bold sm:text-3xl">
+            <h2 id="masterclasses-heading" className="font-serif text-xl font-bold sm:text-2xl">
               {isAr ? "طوّر مهاراتك مع الخبراء" : "Level Up with Expert-Led Classes"}
             </h2>
             <p className="mt-1 text-sm text-muted-foreground">
@@ -61,7 +61,7 @@ export function HomeMasterclasses() {
       </SectionReveal>
 
       <SectionReveal delay={100}>
-      <div className="grid gap-3 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
+      <div className="grid gap-2.5 grid-cols-2 sm:grid-cols-2 lg:grid-cols-4">
         {classes.map((mc: any) => {
           const title = isAr && mc.title_ar ? mc.title_ar : mc.title;
           const levelLabel = LEVEL_LABELS[mc.level];

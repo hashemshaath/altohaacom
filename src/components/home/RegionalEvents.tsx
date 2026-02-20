@@ -69,13 +69,13 @@ export function RegionalEvents() {
   if (allComps.length === 0) return null;
 
   return (
-    <section className="relative overflow-hidden py-14 md:py-20" aria-labelledby="regional-heading">
+    <section className="relative overflow-hidden py-10 md:py-16" aria-labelledby="regional-heading">
       <div className="absolute inset-0 bg-muted/30" />
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom,hsl(var(--primary)/0.04),transparent_60%)]" />
       <div className="container relative">
         <SectionReveal>
           <div className="mb-8 text-center">
-            <h2 id="regional-heading" className="font-serif text-2xl font-bold sm:text-3xl md:text-4xl">
+            <h2 id="regional-heading" className="font-serif text-xl font-bold sm:text-2xl md:text-3xl">
               {isAr ? "فعاليات حسب المنطقة" : "Events by Region"}
             </h2>
             <p className="mt-2 text-sm text-muted-foreground">
@@ -96,7 +96,7 @@ export function RegionalEvents() {
 
           <TabsContent value="middle-east">
             {middleEast.length > 0 ? (
-              <StaggeredList className="grid gap-4 grid-cols-2 sm:grid-cols-3 lg:grid-cols-4" stagger={60}>
+              <StaggeredList className="grid gap-2.5 grid-cols-2 sm:grid-cols-3 lg:grid-cols-4" stagger={60}>
                 {middleEast.map(renderComp)}
               </StaggeredList>
             ) : (
@@ -108,7 +108,7 @@ export function RegionalEvents() {
 
           <TabsContent value="global">
             {global.length > 0 ? (
-              <StaggeredList className="grid gap-4 grid-cols-2 sm:grid-cols-3 lg:grid-cols-4" stagger={60}>
+              <StaggeredList className="grid gap-2.5 grid-cols-2 sm:grid-cols-3 lg:grid-cols-4" stagger={60}>
                 {global.map(renderComp)}
               </StaggeredList>
             ) : (

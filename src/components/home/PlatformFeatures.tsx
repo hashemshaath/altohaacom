@@ -49,21 +49,21 @@ export function PlatformFeatures() {
   return (
     <>
       {/* Services */}
-      <section ref={servicesReveal.ref} className="container py-14 md:py-20" aria-labelledby="services-heading">
+      <section ref={servicesReveal.ref} className="container py-10 md:py-16" aria-labelledby="services-heading">
         <div className="mb-10 text-center">
           <Badge variant="secondary" className="mb-3">{isAr ? "الخدمات" : "Services"}</Badge>
-          <h2 id="services-heading" className="font-serif text-2xl font-bold sm:text-3xl md:text-4xl">
+          <h2 id="services-heading" className="font-serif text-xl font-bold sm:text-2xl md:text-3xl">
             {isAr ? "كل ما يحتاجه عالم الطهي" : "Everything the Culinary World Needs"}
           </h2>
           <p className="mx-auto mt-2 max-w-xl text-sm text-muted-foreground leading-relaxed">
             {isAr ? "منصة متكاملة صُممت لتمكين كل محترف في عالم الطهي" : "A comprehensive platform designed to empower every culinary professional"}
           </p>
         </div>
-        <div className={cn("grid gap-4 sm:grid-cols-2 lg:grid-cols-3 transition-all duration-700", servicesReveal.isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8")}>
+        <div className={cn("grid gap-2.5 grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 transition-all duration-700", servicesReveal.isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8")}>
           {services.map((s) => (
             <Link key={s.title} to={s.href} className="group block">
               <Card className="h-full border-border/50 transition-all duration-300 hover:shadow-lg hover:-translate-y-1 hover:border-primary/20">
-                <CardContent className="flex flex-col p-5">
+                <CardContent className="flex flex-col p-3.5 sm:p-5">
                   <div className="mb-3 flex h-10 w-10 items-center justify-center rounded-xl bg-primary/10 transition-all group-hover:bg-primary/15 group-hover:scale-110">
                     <s.icon className="h-5 w-5 text-primary" />
                   </div>
@@ -81,12 +81,12 @@ export function PlatformFeatures() {
       </section>
 
       {/* Roles */}
-      <section ref={rolesReveal.ref} className="relative overflow-hidden py-14 md:py-20" aria-labelledby="roles-heading">
+      <section ref={rolesReveal.ref} className="relative overflow-hidden py-10 md:py-16" aria-labelledby="roles-heading">
         <div className="absolute inset-0 bg-muted/30" />
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,hsl(var(--primary)/0.04),transparent_70%)]" />
         <div className="container relative">
           <div className="mb-10 text-center">
-            <h2 id="roles-heading" className="font-serif text-2xl font-bold sm:text-3xl md:text-4xl">
+            <h2 id="roles-heading" className="font-serif text-xl font-bold sm:text-2xl md:text-3xl">
               {isAr ? "لمن صُممت هذه المنصة؟" : "Who Is Altoha For?"}
             </h2>
             <p className="mx-auto mt-2 max-w-xl text-sm text-muted-foreground">
@@ -127,16 +127,16 @@ export function PlatformFeatures() {
       </section>
 
       {/* Why Altoha */}
-      <section ref={whyReveal.ref} className="container py-14 md:py-20" aria-labelledby="why-heading">
+      <section ref={whyReveal.ref} className="container py-10 md:py-16" aria-labelledby="why-heading">
         <div className="mb-10 text-center">
-          <h2 id="why-heading" className="font-serif text-2xl font-bold sm:text-3xl md:text-4xl">
+          <h2 id="why-heading" className="font-serif text-xl font-bold sm:text-2xl md:text-3xl">
             {isAr ? "لماذا الطهاة؟" : "Why Altoha?"}
           </h2>
           <p className="mx-auto mt-2 max-w-md text-sm text-muted-foreground">
             {isAr ? "ما يميزنا عن أي منصة أخرى" : "What sets us apart from any other platform"}
           </p>
         </div>
-        <div className={cn("grid gap-4 grid-cols-2 lg:grid-cols-4 transition-all duration-700", whyReveal.isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8")}>
+        <div className={cn("grid gap-2.5 grid-cols-2 lg:grid-cols-4 transition-all duration-700", whyReveal.isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8")}>
           {whyUs.map((item) => (
             <Card key={item.title} className="border-border/50 text-center transition-all hover:shadow-md hover:-translate-y-1">
               <CardContent className="flex flex-col items-center p-5">
@@ -152,8 +152,8 @@ export function PlatformFeatures() {
       </section>
 
       {/* CTA Cards */}
-      <section className="container pb-14 md:pb-20">
-        <div className="grid gap-4 md:grid-cols-2">
+      <section className="container pb-10 md:pb-16">
+        <div className="grid gap-2.5 md:grid-cols-2">
           <Card className="group relative overflow-hidden border-primary/15 bg-gradient-to-br from-primary/5 to-transparent transition-all hover:shadow-xl">
             <CardContent className="relative p-6 md:p-8">
               <div className="mb-3 flex h-11 w-11 items-center justify-center rounded-xl bg-primary/10 ring-1 ring-primary/15">
@@ -203,7 +203,7 @@ export function PlatformFeatures() {
             <div className="mx-auto mb-5 flex h-16 w-16 items-center justify-center rounded-2xl bg-primary/10 ring-1 ring-primary/15 shadow-lg shadow-primary/10">
               <ChefHat className="h-8 w-8 text-primary" />
             </div>
-            <h2 className="mb-3 font-serif text-2xl font-bold sm:text-3xl md:text-4xl">
+            <h2 className="mb-3 font-serif text-xl font-bold sm:text-2xl md:text-3xl">
               {isAr ? "رحلتك في عالم الطهي تبدأ هنا" : "Your Culinary Journey Starts Here"}
             </h2>
             <p className="mx-auto mb-7 max-w-lg text-sm text-muted-foreground leading-relaxed">
