@@ -32,23 +32,27 @@ export function HomeSearch() {
     <section className="relative -mt-7 z-30 px-2 sm:-mt-10 sm:px-3" aria-label={isAr ? "البحث السريع" : "Quick search"}>
       <div className="container">
         <div className="mx-auto max-w-3xl rounded-2xl border border-border/60 bg-card/95 backdrop-blur-lg p-3 shadow-2xl shadow-primary/8 ring-1 ring-primary/5 sm:p-5">
-          {/* Category pills */}
-          <div className="mb-3 flex flex-wrap gap-1.5 sm:mb-4">
-            {categories.map((cat) => (
-              <button
-                key={cat.key}
-                onClick={() => setActiveCategory(cat.key)}
-                className={cn(
-                  "inline-flex items-center gap-1.5 rounded-full px-3.5 py-2 text-xs font-medium transition-all duration-200",
-                  activeCategory === cat.key
-                    ? "bg-primary text-primary-foreground shadow-sm shadow-primary/20"
-                    : "bg-muted/60 text-muted-foreground hover:bg-muted hover:text-foreground"
-                )}
-              >
-                <cat.icon className="h-3.5 w-3.5" />
-                {isAr ? cat.labelAr : cat.labelEn}
-              </button>
-            ))}
+          {/* Category pills — single scrollable row on mobile */}
+          <div className="relative mb-3 sm:mb-4">
+            <div className="flex gap-1.5 overflow-x-auto scrollbar-none pb-0.5">
+              {categories.map((cat) => (
+                <button
+                  key={cat.key}
+                  onClick={() => setActiveCategory(cat.key)}
+                  className={cn(
+                    "inline-flex shrink-0 items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-medium transition-all duration-200 touch-manipulation",
+                    activeCategory === cat.key
+                      ? "bg-primary text-primary-foreground shadow-sm shadow-primary/20"
+                      : "bg-muted/60 text-muted-foreground hover:bg-muted hover:text-foreground"
+                  )}
+                >
+                  <cat.icon className="h-3 w-3 shrink-0" />
+                  {isAr ? cat.labelAr : cat.labelEn}
+                </button>
+              ))}
+            </div>
+            {/* Fade hint for scroll */}
+            <div className="pointer-events-none absolute end-0 top-0 bottom-0 w-6 bg-gradient-to-l from-card/95 to-transparent" />
           </div>
           {/* Search bar */}
           <form onSubmit={handleSearch} className="flex gap-2">
@@ -57,11 +61,11 @@ export function HomeSearch() {
               <Input
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
-                placeholder={isAr ? "ابحث عن مسابقات، معارض، طهاة..." : "Search competitions, exhibitions, chefs..."}
-                className="ps-10 h-11 text-sm"
+                placeholder={isAr ? "ابحث..." : "Search competitions, chefs..."}
+                className="ps-10 h-10 text-sm"
               />
             </div>
-            <Button type="submit" size="default" className="h-11 px-6 shadow-sm">
+            <Button type="submit" size="default" className="h-10 px-5 shadow-sm shrink-0">
               {isAr ? "بحث" : "Search"}
             </Button>
           </form>

@@ -28,24 +28,31 @@ export function CommunityMobileTabs({ activeTab, setActiveTab }: CommunityMobile
 
   return (
     <div className="sticky top-12 z-40 border-b border-border/40 bg-background/90 backdrop-blur-xl lg:hidden">
-      <div className="flex overflow-x-auto scrollbar-none snap-x snap-mandatory">
-        {tabs.filter(t => !t.requiresAuth || user).map((tab) => (
-          <button
-            key={tab.id}
-            onClick={() => setActiveTab(tab.id)}
-            className={cn(
-              "snap-start flex-shrink-0 px-4 py-3 text-sm font-bold transition-colors relative",
-              activeTab === tab.id
-                ? "text-foreground"
-                : "text-muted-foreground hover:text-foreground"
-            )}
-          >
-            {tab.label}
-            {activeTab === tab.id && (
-              <div className="absolute bottom-0 inset-x-2 h-0.5 rounded-full bg-primary shadow-sm shadow-primary/30" />
-            )}
-          </button>
-        ))}
+      <div className="relative">
+        <div className="flex overflow-x-auto scrollbar-none snap-x snap-mandatory">
+          {tabs.filter(t => !t.requiresAuth || user).map((tab) => {
+            const Icon = tab.icon;
+            const isActive = activeTab === tab.id;
+            return (
+              <button
+                key={tab.id}
+                onClick={() => setActiveTab(tab.id)}
+                className={cn(
+                  "snap-start flex-shrink-0 flex flex-col items-center gap-1 px-4 py-2.5 text-[10px] font-bold transition-colors relative touch-manipulation",
+                  isActive ? "text-primary" : "text-muted-foreground"
+                )}
+              >
+                <Icon className={cn("h-4 w-4 transition-colors", isActive ? "text-primary" : "text-muted-foreground/70")} />
+                <span className="whitespace-nowrap leading-none">{tab.label}</span>
+                {isActive && (
+                  <div className="absolute bottom-0 inset-x-2 h-0.5 rounded-full bg-primary shadow-sm shadow-primary/30" />
+                )}
+              </button>
+            );
+          })}
+        </div>
+        {/* Right fade scroll hint */}
+        <div className="pointer-events-none absolute end-0 top-0 bottom-0 w-8 bg-gradient-to-l from-background/90 to-transparent" />
       </div>
     </div>
   );
