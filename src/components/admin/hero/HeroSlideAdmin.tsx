@@ -896,12 +896,23 @@ export function HeroSlideAdmin() {
                             ))}
                           </div>
                         </div>
-                        <div className="rounded-xl overflow-hidden border border-border/50 bg-muted/30">
-                          <div className={cn(
-                            "mx-auto overflow-hidden transition-all duration-300",
-                            previewDevice === "desktop" ? "w-full" : previewDevice === "tablet" ? "max-w-[480px]" : "max-w-[280px]"
-                          )}>
-                            <div className="transform origin-top scale-[0.6] sm:scale-[0.7]" style={{ height: "calc(100% / 0.65)" }}>
+                        {/* Scaled preview — fixed outer height so the transform doesn't collapse the box */}
+                        <div className="rounded-xl overflow-hidden border border-border/50 bg-muted/30" style={{ height: 220 }}>
+                          <div
+                            className={cn(
+                              "mx-auto overflow-hidden transition-all duration-300 h-full",
+                              previewDevice === "desktop" ? "w-full" : previewDevice === "tablet" ? "max-w-[480px]" : "max-w-[280px]"
+                            )}
+                          >
+                            {/* Scale so the real slide fits inside the 220px preview box */}
+                            <div
+                              className="origin-top-left"
+                              style={{
+                                transform: "scale(0.42)",
+                                width: "calc(100% / 0.42)",
+                                height: "calc(220px / 0.42)",
+                              }}
+                            >
                               <HeroSlidePreview slide={slide} />
                             </div>
                           </div>
