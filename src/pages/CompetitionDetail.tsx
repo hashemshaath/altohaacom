@@ -454,7 +454,7 @@ export default function CompetitionDetail() {
         </section>
 
         {/* ─── Navigation Tabs (pill style) ─── */}
-        <div className="sticky top-[64px] z-30 border-b border-border/40 bg-background/90 backdrop-blur-xl shadow-sm">
+        <div className="sticky top-12 z-30 border-b border-border/40 bg-background/90 backdrop-blur-xl shadow-sm">
           <div className="container">
             <div className="flex gap-1.5 overflow-x-auto py-2.5 scrollbar-none -mx-4 px-4 md:mx-0 md:px-0 snap-x snap-mandatory">
               {navItems.map((item) => (

@@ -493,7 +493,7 @@ export default function ExhibitionDetail() {
                 asChild
               >
                 <Link to="/exhibitions">
-                  <ArrowLeft className="me-2 h-4 w-4 transition-transform group-hover:-translate-x-1 rtl:group-hover:translate-x-1" />
+                  <ArrowLeft className="me-2 h-4 w-4" />
                   {isAr ? "جميع الفعاليات" : "All Events"}
                 </Link>
               </Button>

@@ -168,7 +168,7 @@ export default function News() {
 
         <div className="container py-4 md:py-6">
           {/* Sticky Filters */}
-          <div className="sticky top-[56px] z-40 -mx-4 mb-8 border-y border-border/40 bg-background/80 px-4 py-3 backdrop-blur-md md:rounded-2xl md:border md:px-5">
+          <div className="sticky top-12 z-40 -mx-4 mb-8 border-y border-border/40 bg-background/80 px-4 py-3 backdrop-blur-md md:rounded-2xl md:border md:px-5">
             <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
               <div className="relative flex-1 sm:max-w-md">
                 <Search className="absolute start-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground/60" />

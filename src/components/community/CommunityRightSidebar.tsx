@@ -99,7 +99,7 @@ export function CommunityRightSidebar({ rightSidebarOpen, setRightSidebarOpen }:
 
   return (
     <aside className={cn(
-      "hidden xl:flex flex-col shrink-0 sticky top-[56px] self-start py-2 ps-1 transition-all duration-300 ease-in-out",
+      "hidden xl:flex flex-col shrink-0 sticky top-12 self-start py-2 ps-1 transition-all duration-300 ease-in-out",
       rightSidebarOpen ? "w-[260px]" : "w-[48px]"
     )}>
       <Button

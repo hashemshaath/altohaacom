@@ -339,7 +339,7 @@ export default function ProSuppliers() {
                             <span key={s} className="rounded-md bg-muted px-2 py-0.5 text-[9px] text-muted-foreground">{s}</span>
                           ))}
                         </div>
-                        <ArrowRight className="h-4 w-4 text-muted-foreground transition-transform group-hover:translate-x-1 rtl:rotate-180 rtl:group-hover:-translate-x-1" />
+                        <ArrowRight className="h-4 w-4 text-muted-foreground rtl:rotate-180" />
                       </div>
                     </CardContent>
                   </Card>

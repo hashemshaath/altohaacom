@@ -100,7 +100,7 @@ export default function Rankings() {
         </section>
 
         {/* Filters */}
-        <div className="sticky top-[64px] z-30 border-b border-border/40 bg-background/90 backdrop-blur-xl">
+        <div className="sticky top-12 z-30 border-b border-border/40 bg-background/90 backdrop-blur-xl">
           <div className="container py-3 flex flex-wrap gap-2 items-center">
             <div className="relative flex-1 min-w-[200px]">
               <Search className="absolute start-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
