@@ -42,7 +42,7 @@ export default function Tastings() {
   return (
     <>
       <SEOHead title={isAr ? "التقييم والتذوق" : "Evaluation & Tasting"} description={isAr ? "جلسات تقييم المسابقات وتذوق المنتجات" : "Competition evaluation and product tasting sessions"} />
-      <div className="min-h-screen bg-background" dir={isAr ? "rtl" : "ltr"}>
+      <div className="min-h-screen bg-background">
         <Header />
         
         {/* Premium Hero */}

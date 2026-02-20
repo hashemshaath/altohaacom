@@ -35,7 +35,7 @@ export default function ChefsTable() {
         title={isAr ? "طاولة الشيف — تقييم المنتجات الغذائية" : "Chef's Table — Food Product Evaluation"} 
         description={isAr ? "خدمة تقييم المنتجات الغذائية من قبل طهاة محترفين" : "Professional food product evaluation by expert chefs"} 
       />
-      <div className="min-h-screen bg-background" dir={isAr ? "rtl" : "ltr"}>
+      <div className="min-h-screen bg-background">
         <Header />
         <ChefsTableHero isAr={isAr} user={user} onRequestClick={() => navigate("/chefs-table/request")} />
         <ChefsTableBenefits isAr={isAr} />

@@ -29,7 +29,7 @@ export function PublicProfileStats({ profile, followStats, socialLinks, isAr, is
   return (
     <Card className="rounded-2xl border-border/30 bg-card/80 backdrop-blur-sm">
       <CardContent className="p-0">
-        <div className="flex flex-col sm:flex-row items-center justify-between px-2 sm:px-4 py-2.5 gap-2" dir={isAr ? "rtl" : "ltr"}>
+        <div className="flex flex-col sm:flex-row items-center justify-between px-2 sm:px-4 py-2.5 gap-2">
           <div className="flex flex-wrap justify-center sm:justify-start gap-0 sm:gap-1">
             {stats.map((stat, i) => (
               <button

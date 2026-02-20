@@ -106,7 +106,6 @@ export function AuthHeroPanel({ stage, isAr, currentStep, totalSteps = 4 }: Prop
   return (
     <div
       className="hidden md:flex md:w-[420px] lg:w-[540px] xl:w-[620px] relative flex-col overflow-hidden border-e border-white/5"
-      dir={isAr ? "rtl" : "ltr"}
     >
       {/* Background image — Premium treatment */}
       <img

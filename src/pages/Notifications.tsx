@@ -168,7 +168,7 @@ export default function Notifications() {
   );
 
   return (
-    <div className="flex min-h-screen flex-col bg-background" dir={isAr ? "rtl" : "ltr"}>
+    <div className="flex min-h-screen flex-col bg-background">
       <Header />
       <main className="container flex-1 py-6 md:py-8">
         <div className="mx-auto max-w-3xl space-y-6">

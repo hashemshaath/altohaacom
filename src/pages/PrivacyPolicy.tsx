@@ -37,7 +37,7 @@ export default function PrivacyPolicy() {
   ];
 
   return (
-    <div className="flex min-h-screen flex-col bg-background" dir={isAr ? "rtl" : "ltr"}>
+    <div className="flex min-h-screen flex-col bg-background">
       <SEOHead title={isAr ? "سياسة الخصوصية" : "Privacy Policy"} description={isAr ? "سياسة الخصوصية لمنصة الطهاة" : "Altoha Privacy Policy"} />
       <Header />
       <main className="flex-1">

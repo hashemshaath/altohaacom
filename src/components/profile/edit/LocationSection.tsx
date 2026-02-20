@@ -37,11 +37,11 @@ export function LocationSection({ form, update, isAr }: LocationSectionProps) {
         <div className="grid gap-4 sm:grid-cols-2">
           <div className="space-y-1.5">
             <Label className="text-xs">{isAr ? "المدينة" : "City"}</Label>
-            <Input value={form.city} onChange={(e) => update("city", e.target.value)} dir={isAr ? "rtl" : "ltr"} />
+            <Input value={form.city} onChange={(e) => update("city", e.target.value)} />
           </div>
           <div className="space-y-1.5">
             <Label className="text-xs">{isAr ? "العنوان" : "Location"}</Label>
-            <Input value={form.location} onChange={(e) => update("location", e.target.value)} dir={isAr ? "rtl" : "ltr"} />
+            <Input value={form.location} onChange={(e) => update("location", e.target.value)} />
           </div>
         </div>
         <div className="space-y-1.5">

@@ -129,7 +129,7 @@ export function ProfileCertificates({ userId, isOwner = false }: ProfileCertific
   };
 
   return (
-    <div dir={isAr ? "rtl" : "ltr"}>
+    <div>
       {/* Section header */}
       <div className="flex items-center gap-2.5 mb-3">
         <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-primary/8">

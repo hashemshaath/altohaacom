@@ -151,9 +151,9 @@ export function PublicProfileSchedule({ userId, isAr }: Props) {
             const cls = "flex items-center gap-3 px-5 py-3 hover:bg-muted/30 transition-colors group";
 
             return item.link ? (
-              <Link key={item.id} to={item.link} className={cls} dir={isAr ? "rtl" : "ltr"}>{inner}</Link>
+              <Link key={item.id} to={item.link} className={cls}>{inner}</Link>
             ) : (
-              <div key={item.id} className={cls} dir={isAr ? "rtl" : "ltr"}>{inner}</div>
+              <div key={item.id} className={cls}>{inner}</div>
             );
           })}
         </div>

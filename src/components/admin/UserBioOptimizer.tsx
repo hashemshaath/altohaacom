@@ -106,7 +106,7 @@ export function UserBioOptimizer({ bio, onBioChange, onTranslatedBioChange, lang
         value={bio}
         onChange={(e) => onBioChange(e.target.value)}
         rows={4}
-        dir={isAr ? "rtl" : "ltr"}
+        
         placeholder={
           isAr
             ? "نبذة مختصرة عن المستخدم وخبراته المهنية في مجال الطهي..."

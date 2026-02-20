@@ -390,7 +390,7 @@ export default function CreateTasting() {
   return (
     <>
       <SEOHead title={isAr ? "إنشاء جلسة تقييم" : "Create Evaluation Session"} />
-      <div className="min-h-screen bg-background" dir={isAr ? "rtl" : "ltr"}>
+      <div className="min-h-screen bg-background">
         <Header />
         <main className="container mx-auto max-w-2xl px-4 py-8">
           {/* Back */}

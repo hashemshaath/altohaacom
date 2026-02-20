@@ -106,7 +106,7 @@ export default function ChefsTableDetail() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-background" dir={isAr ? "rtl" : "ltr"}>
+      <div className="min-h-screen bg-background">
         <Header />
         <div className="container py-8 space-y-4">
           <Skeleton className="h-8 w-48" />
@@ -118,7 +118,7 @@ export default function ChefsTableDetail() {
 
   if (!session) {
     return (
-      <div className="min-h-screen bg-background" dir={isAr ? "rtl" : "ltr"}>
+      <div className="min-h-screen bg-background">
         <Header />
         <div className="container py-16 text-center">
           <ChefHat className="mx-auto h-12 w-12 text-muted-foreground/30" />
@@ -135,7 +135,7 @@ export default function ChefsTableDetail() {
   return (
     <>
       <SEOHead title={`${session.title} | ${isAr ? "طاولة الشيف" : "Chef's Table"}`} />
-      <div className="min-h-screen bg-background" dir={isAr ? "rtl" : "ltr"}>
+      <div className="min-h-screen bg-background">
         <Header />
         <main className="container py-8">
           <Button variant="ghost" onClick={() => navigate("/chefs-table")} className="mb-4 gap-2">

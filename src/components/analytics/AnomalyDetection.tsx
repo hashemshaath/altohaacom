@@ -108,7 +108,7 @@ export function AnomalyDetection() {
   };
 
   return (
-    <div className="space-y-6" dir={isAr ? "rtl" : "ltr"}>
+    <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
           <h3 className="text-lg font-semibold">{isAr ? "كشف الحالات الشاذة" : "Anomaly Detection"}</h3>

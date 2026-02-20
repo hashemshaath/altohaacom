@@ -85,7 +85,7 @@ export function RegionalEvents() {
           </div>
         </SectionReveal>
 
-        <Tabs defaultValue="middle-east" dir={isAr ? "rtl" : "ltr"}>
+        <Tabs defaultValue="middle-east">
           <TabsList className="mx-auto mb-6 flex w-fit">
             <TabsTrigger value="middle-east">
               {isAr ? "🌍 الشرق الأوسط" : "🌍 Middle East"}

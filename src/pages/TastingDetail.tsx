@@ -205,7 +205,7 @@ export default function TastingDetail() {
   return (
     <>
       <SEOHead title={session.title} />
-      <div className="min-h-screen bg-background" dir={isAr ? "rtl" : "ltr"}>
+      <div className="min-h-screen bg-background">
         <Header />
         <main className="container py-8">
           <Button variant="ghost" onClick={() => navigate("/tastings")} className="mb-4 gap-2">

@@ -9,7 +9,7 @@ const NotFound = () => {
   const isAr = language === "ar";
 
   return (
-    <div className="flex min-h-screen flex-col items-center justify-center bg-background px-4" dir={isAr ? "rtl" : "ltr"}>
+    <div className="flex min-h-screen flex-col items-center justify-center bg-background px-4">
       {/* Ambient glow */}
       <div className="absolute -top-32 start-1/4 h-64 w-64 rounded-full bg-primary/8 blur-[100px] animate-pulse pointer-events-none" />
       <div className="absolute -top-20 end-1/3 h-48 w-48 rounded-full bg-accent/10 blur-[80px] animate-pulse [animation-delay:1s] pointer-events-none" />
