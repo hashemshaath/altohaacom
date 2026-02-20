@@ -4,7 +4,14 @@ import { Check, ChevronRight, Circle } from "lucide-react";
 
 import { cn } from "@/lib/utils";
 
-const DropdownMenu = DropdownMenuPrimitive.Root;
+const DropdownMenu = React.forwardRef<
+  React.ElementRef<typeof DropdownMenuPrimitive.Root>,
+  React.ComponentPropsWithoutRef<typeof DropdownMenuPrimitive.Root>
+>(({ dir, ...props }, _ref) => {
+  const resolvedDir = dir ?? (document.documentElement.getAttribute("dir") as "ltr" | "rtl" | undefined) ?? undefined;
+  return <DropdownMenuPrimitive.Root dir={resolvedDir} {...props} />;
+}) as React.FC<React.ComponentPropsWithoutRef<typeof DropdownMenuPrimitive.Root>>;
+DropdownMenu.displayName = "DropdownMenu";
 
 const DropdownMenuTrigger = DropdownMenuPrimitive.Trigger;
 
