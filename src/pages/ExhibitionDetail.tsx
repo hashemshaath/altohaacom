@@ -321,27 +321,13 @@ export default function ExhibitionDetail() {
       />
 
       <main className="container flex-1 py-6 md:py-8">
-        {/* Mobile CTA + key details */}
+        {/* Mobile-only extras (follow, countdown, sidebar widgets) */}
         <div className="mb-6 space-y-3 lg:hidden">
-          {exhibition.registration_url && !hasEnded && (
-            <Button className="w-full" asChild>
-              <a href={exhibition.registration_url} target="_blank" rel="noopener noreferrer">
-                <Ticket className="me-2 h-4 w-4" />{isAr ? "سجل الآن" : "Register Now"}
-              </a>
-            </Button>
-          )}
           {user && (
             <Button variant={isFollowing ? "outline" : "secondary"} className="w-full" onClick={() => toggleFollow.mutate()} disabled={toggleFollow.isPending}>
               {isFollowing ? (<><BellOff className="me-2 h-4 w-4" />{isAr ? "إلغاء المتابعة" : "Unfollow"}</>) : (<><Bell className="me-2 h-4 w-4" />{isAr ? "تابع للإشعارات" : "Follow for Updates"}</>)}
             </Button>
           )}
-          <Card className="overflow-hidden">
-            <CardContent className="flex flex-wrap gap-x-6 gap-y-2 p-3 text-sm">
-              <div className="flex items-center gap-2"><Calendar className="h-3.5 w-3.5 text-muted-foreground" /><span>{format(start, "MMM d")} – {format(end, "MMM d, yyyy")}</span></div>
-              {!exhibition.is_virtual && venue && (<div className="flex items-center gap-2"><MapPin className="h-3.5 w-3.5 text-muted-foreground" /><span>{venue}</span></div>)}
-              <div className="flex items-center gap-2"><Ticket className="h-3.5 w-3.5 text-muted-foreground" /><span>{exhibition.is_free ? (isAr ? "مجاني" : "Free") : (isAr ? "مدفوع" : "Paid")}</span></div>
-            </CardContent>
-          </Card>
           {(isUpcoming || isHappening) && (
             <Card className="overflow-hidden border-primary/20"><CardContent className="py-6"><CountdownTimer targetDate={isHappening ? end : start} isAr={isAr} /></CardContent></Card>
           )}
