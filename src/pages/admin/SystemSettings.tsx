@@ -83,25 +83,27 @@ export default function SystemSettings() {
       ) : (
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
           {/* Tab Navigation - Card-style grid */}
-          <Card className="border-border/50 bg-muted/30">
-            <CardContent className="p-2">
-              <TabsList className="grid h-auto w-full grid-cols-2 gap-1.5 bg-transparent p-0 sm:grid-cols-4 lg:grid-cols-7">
+          {/* Tab Navigation - scrollable on mobile, grid on desktop */}
+          <Card className="border-border/50 bg-muted/30 overflow-hidden">
+            <CardContent className="p-1.5 sm:p-2 relative">
+              <TabsList className="flex sm:grid h-auto w-auto sm:w-full gap-1.5 overflow-x-auto scrollbar-none sm:overflow-visible sm:grid-cols-4 lg:grid-cols-7 bg-transparent p-0 justify-start sm:justify-center">
                 {tabs.map(tab => (
                   <TabsTrigger
                     key={tab.value}
                     value={tab.value}
-                    className="flex flex-col items-start gap-0.5 rounded-lg px-3 py-2.5 text-start transition-all data-[state=active]:bg-background data-[state=active]:shadow-sm data-[state=active]:border data-[state=active]:border-border/60 h-auto"
+                    className="flex sm:flex-col items-center sm:items-start gap-1.5 sm:gap-0.5 rounded-lg px-3 py-2 sm:py-2.5 whitespace-nowrap sm:whitespace-normal sm:text-start transition-all shrink-0 sm:shrink data-[state=active]:bg-background data-[state=active]:shadow-sm data-[state=active]:border data-[state=active]:border-border/60 h-auto"
                   >
                     <div className="flex items-center gap-1.5">
                       <tab.icon className="h-3.5 w-3.5 shrink-0" />
                       <span className="text-xs font-medium">{isAr ? tab.ar : tab.en}</span>
                     </div>
-                    <span className="text-[10px] text-muted-foreground leading-tight">
+                    <span className="hidden sm:block text-[10px] text-muted-foreground leading-tight">
                       {isAr ? tab.descAr : tab.descEn}
                     </span>
                   </TabsTrigger>
                 ))}
               </TabsList>
+              <div className="pointer-events-none absolute inset-y-0 right-0 w-8 bg-gradient-to-l from-muted/30 to-transparent sm:hidden" />
             </CardContent>
           </Card>
 
