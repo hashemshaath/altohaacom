@@ -467,22 +467,22 @@ export default function ExhibitionDetail() {
 
       {/* ======== HERO SECTION ======== */}
       <div className="relative overflow-hidden bg-background">
-        <div className="relative aspect-video max-h-[550px] w-full overflow-hidden sm:aspect-[21/9]">
+        <div className="relative aspect-[16/9] max-h-[520px] w-full overflow-hidden sm:aspect-[21/9] md:max-h-[480px]">
           {exhibition.cover_image_url ? (
             <img 
               src={exhibition.cover_image_url} 
               alt={title} 
-              className="h-full w-full object-cover transition-transform duration-1000 group-hover:scale-105" 
+              className="h-full w-full object-cover" 
               loading="eager" 
             />
           ) : (
-            <div className="h-full w-full bg-gradient-to-br from-primary/20 via-accent/10 to-background" />
+            <div className="h-full w-full bg-gradient-to-br from-primary/15 via-accent/8 to-background" />
           )}
           
           {/* Multi-layered gradients for text legibility */}
-          <div className="absolute inset-0 bg-gradient-to-t from-background via-background/40 to-transparent" />
-          <div className="absolute inset-0 bg-gradient-to-r from-background/90 via-background/20 to-transparent rtl:bg-gradient-to-l" />
-          <div className="absolute inset-0 bg-black/20" />
+          <div className="absolute inset-0 bg-gradient-to-t from-background via-background/50 to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-r from-background/80 via-background/20 to-transparent rtl:bg-gradient-to-l" />
+          <div className="absolute inset-0 bg-black/15" />
           
           <div className="absolute inset-0 container flex flex-col justify-end pb-6 sm:pb-8 md:pb-16">
             <div className="max-w-4xl space-y-4 sm:space-y-6">
@@ -522,8 +522,8 @@ export default function ExhibitionDetail() {
                   </Badge>
                 </div>
 
-                <h1 className="font-serif text-2xl font-bold leading-[1.1] tracking-tight sm:text-4xl md:text-5xl lg:text-7xl text-white drop-shadow-2xl">
-                  {title} <span className="text-primary italic block sm:inline">{new Date(exhibition.start_date).getFullYear()}</span>
+                <h1 className="font-serif text-2xl font-bold leading-[1.1] tracking-tight sm:text-4xl md:text-5xl lg:text-6xl text-white drop-shadow-2xl">
+                  {title} <span className="text-primary italic">{new Date(exhibition.start_date).getFullYear()}</span>
                 </h1>
 
                 <div className="flex flex-wrap items-center gap-3 sm:gap-6 text-xs sm:text-sm md:text-base text-white/90">
@@ -602,12 +602,12 @@ export default function ExhibitionDetail() {
                     <DropdownMenuItem className="cursor-pointer gap-3 rounded-lg py-2.5 font-medium" onClick={() => {
                       window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(window.location.href)}`, "_blank", "width=600,height=400");
                     }}>
-                      <div className="flex h-8 w-8 items-center justify-center rounded-full bg-blue-500/10 text-blue-600"><Facebook className="h-4 w-4" /></div> Facebook
+                      <div className="flex h-8 w-8 items-center justify-center rounded-full bg-primary/10 text-primary"><Facebook className="h-4 w-4" /></div> Facebook
                     </DropdownMenuItem>
                     <DropdownMenuItem className="cursor-pointer gap-3 rounded-lg py-2.5 font-medium" onClick={() => {
                       window.open(`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(window.location.href)}`, "_blank", "width=600,height=400");
                     }}>
-                      <div className="flex h-8 w-8 items-center justify-center rounded-full bg-blue-700/10 text-blue-700"><Linkedin className="h-4 w-4" /></div> LinkedIn
+                      <div className="flex h-8 w-8 items-center justify-center rounded-full bg-primary/10 text-primary"><Linkedin className="h-4 w-4" /></div> LinkedIn
                     </DropdownMenuItem>
                     <DropdownMenuItem className="cursor-pointer gap-3 rounded-lg py-2.5 font-medium" onClick={() => {
                       navigator.clipboard.writeText(window.location.href);

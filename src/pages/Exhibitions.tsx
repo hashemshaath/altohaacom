@@ -14,12 +14,12 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Search, CalendarDays, Landmark, MapPin, Plus, Globe, ArrowRight, Clock, History, Building } from "lucide-react";
+import { Search, CalendarDays, Landmark, MapPin, Plus, Globe, Clock, History, TrendingUp, Users } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { countryFlag } from "@/lib/countryFlag";
 import { ExhibitionCard, type Exhibition } from "@/components/exhibitions/ExhibitionCard";
-import { isPast, isFuture, isWithinInterval } from "date-fns";
+import { isPast, isFuture, isWithinInterval, format } from "date-fns";
 import { toEnglishDigits } from "@/lib/formatNumber";
 import type { Database } from "@/integrations/supabase/types";
 
@@ -59,7 +59,6 @@ export default function Exhibitions() {
     staleTime: 1000 * 60 * 3,
   });
 
-  // Derive unique countries for filter
   const countries = Array.from(
     new Set(exhibitions?.map(e => e.country).filter(Boolean) as string[])
   ).sort();
@@ -91,6 +90,9 @@ export default function Exhibitions() {
   const upcomingCount = exhibitions?.filter(e => isFuture(new Date(e.start_date))).length || 0;
   const countriesCount = new Set(exhibitions?.map(e => e.country).filter(Boolean)).size;
 
+  // Next upcoming event for hero highlight
+  const nextEvent = exhibitions?.find(e => isFuture(new Date(e.start_date)));
+
   return (
     <div className="flex min-h-screen flex-col bg-background">
       <SEOHead
@@ -106,50 +108,61 @@ export default function Exhibitions() {
       />
       <Header />
 
-      {/* Compact Hero */}
-      <section className="border-b border-border/40 bg-gradient-to-b from-primary/5 to-background">
-        <div className="container py-8 md:py-12">
-          <div className="flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
-            <div className="space-y-3 max-w-2xl">
-              <div className="inline-flex items-center gap-2 rounded-full bg-primary/10 px-3 py-1 ring-1 ring-primary/20">
+      {/* Editorial Hero */}
+      <section className="relative border-b border-border/30 overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-br from-primary/6 via-background to-accent/4" />
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,hsl(var(--primary)/0.08),transparent_60%)]" />
+        <div className="container relative py-10 md:py-14">
+          <div className="flex flex-col gap-8 md:flex-row md:items-end md:justify-between">
+            <div className="space-y-4 max-w-2xl">
+              <div className="inline-flex items-center gap-2 rounded-full bg-primary/10 px-3.5 py-1.5 ring-1 ring-primary/20">
                 <div className="relative flex h-2 w-2">
                   <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-primary opacity-75" />
                   <span className="relative inline-flex h-2 w-2 rounded-full bg-primary" />
                 </div>
-                <span className="text-[10px] font-bold uppercase tracking-widest text-primary">
-                  {isAr ? "فعاليات الطهي" : "Culinary Events"}
+                <span className="text-[10px] font-bold uppercase tracking-[0.15em] text-primary">
+                  {isAr ? "فعاليات الطهي العالمية" : "Global Culinary Events"}
                 </span>
               </div>
-              <h1 className="font-serif text-3xl font-bold tracking-tight md:text-4xl">
+              <h1 className="font-serif text-3xl font-bold tracking-tight md:text-5xl bg-gradient-to-br from-foreground via-foreground to-foreground/60 bg-clip-text">
                 {isAr ? "المعارض والفعاليات" : "Exhibitions & Events"}
               </h1>
-              <p className="text-muted-foreground text-sm md:text-base leading-relaxed">
+              <p className="text-muted-foreground text-sm md:text-base leading-relaxed max-w-lg">
                 {isAr
                   ? "اكتشف أبرز المعارض والمؤتمرات العالمية في عالم الضيافة وفنون الطهي."
-                  : "Discover prestigious hospitality and culinary trade shows worldwide."}
+                  : "Discover prestigious hospitality and culinary trade shows, conferences, and festivals worldwide."}
               </p>
-            </div>
-            <div className="flex items-center gap-3 flex-wrap">
+
+              {/* Quick stats */}
               {exhibitions && exhibitions.length > 0 && (
-                <div className="flex gap-3">
-                  <Badge variant="outline" className="gap-1.5 border-primary/20 bg-primary/5 text-primary px-3 py-1.5">
-                    <Landmark className="h-3.5 w-3.5" />
-                    <span className="font-bold">{toEnglishDigits(exhibitions.length)}</span>
-                  </Badge>
+                <div className="flex items-center gap-4 pt-1">
+                  <div className="flex items-center gap-1.5 text-sm">
+                    <Landmark className="h-4 w-4 text-primary/60" />
+                    <span className="font-bold text-foreground">{toEnglishDigits(exhibitions.length)}</span>
+                    <span className="text-muted-foreground text-xs">{isAr ? "فعالية" : "Events"}</span>
+                  </div>
                   {happeningNowCount > 0 && (
-                    <Badge className="gap-1.5 bg-chart-3/15 text-chart-3 border-chart-3/30 px-3 py-1.5">
+                    <div className="flex items-center gap-1.5 text-sm">
                       <div className="relative flex h-2 w-2">
                         <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-chart-3 opacity-75" />
                         <span className="relative inline-flex h-2 w-2 rounded-full bg-chart-3" />
                       </div>
-                      <span className="font-bold">{toEnglishDigits(happeningNowCount)}</span>
-                      <span className="text-[10px]">{isAr ? "الآن" : "Live"}</span>
-                    </Badge>
+                      <span className="font-bold text-chart-3">{toEnglishDigits(happeningNowCount)}</span>
+                      <span className="text-muted-foreground text-xs">{isAr ? "الآن" : "Live"}</span>
+                    </div>
                   )}
+                  <div className="flex items-center gap-1.5 text-sm">
+                    <Globe className="h-4 w-4 text-accent-foreground/40" />
+                    <span className="font-bold text-foreground">{toEnglishDigits(countriesCount)}</span>
+                    <span className="text-muted-foreground text-xs">{isAr ? "دولة" : "Countries"}</span>
+                  </div>
                 </div>
               )}
+            </div>
+
+            <div className="flex items-center gap-3 flex-shrink-0">
               {user && (
-                <Button className="shadow-sm shadow-primary/15" asChild>
+                <Button className="shadow-lg shadow-primary/15 rounded-xl" asChild>
                   <Link to="/exhibitions/create">
                     <Plus className="me-1.5 h-4 w-4" />
                     {isAr ? "إضافة فعالية" : "Add Event"}
@@ -161,67 +174,63 @@ export default function Exhibitions() {
         </div>
       </section>
 
-      <main className="container flex-1 py-4 md:py-6">
-        {/* Featured */}
+      <main className="container flex-1 py-6 md:py-8">
+        {/* Featured Hero Section */}
         {featuredExhibitions && featuredExhibitions.length > 0 && (
           <section className="mb-10">
-            <div className="mb-4 flex items-center gap-2">
-              <div className="h-px flex-1 bg-gradient-to-r from-primary/20 to-transparent" />
-              <h2 className="flex items-center gap-1.5 text-xs font-semibold uppercase tracking-widest text-primary">
+            <div className="mb-5 flex items-center gap-3">
+              <div className="h-px flex-1 bg-gradient-to-r from-primary/30 to-transparent" />
+              <h2 className="flex items-center gap-2 text-xs font-bold uppercase tracking-[0.2em] text-primary">
                 <span>⭐</span>
                 {isAr ? "فعاليات مميزة" : "Featured Events"}
               </h2>
-              <div className="h-px flex-1 bg-gradient-to-l from-primary/20 to-transparent" />
+              <div className="h-px flex-1 bg-gradient-to-l from-primary/30 to-transparent" />
             </div>
-            <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+            <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-3">
               {featuredExhibitions.slice(0, 3).map((ex) => (
-                <ExhibitionCard key={ex.id} exhibition={ex} language={language} />
+                <ExhibitionCard key={ex.id} exhibition={ex} language={language} variant="featured" />
               ))}
             </div>
           </section>
         )}
 
-        {/* Sticky Filters Bar */}
-        <div className="sticky top-12 z-40 -mx-4 mb-8 border-y border-border/40 bg-background/80 px-4 py-4 backdrop-blur-md md:rounded-2xl md:border md:px-6">
-          <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
-            <div className="flex flex-1 flex-col gap-3 sm:flex-row">
-              <div className="relative flex-1 lg:max-w-md">
-                <Search className="absolute start-4 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground/60" />
+        {/* Filters */}
+        <div className="sticky top-12 z-40 -mx-2 mb-8 border-y border-border/30 bg-background/90 px-2 py-3.5 backdrop-blur-xl sm:-mx-4 sm:px-4 md:rounded-2xl md:border md:px-5 md:shadow-sm">
+          <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
+            <div className="flex flex-1 flex-col gap-2.5 sm:flex-row">
+              <div className="relative flex-1 lg:max-w-sm">
+                <Search className="absolute start-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground/50" />
                 <Input
-                  placeholder={isAr ? "ابحث عن اسم الفعالية، المدينة..." : "Search event name, city..."}
+                  placeholder={isAr ? "ابحث عن فعالية..." : "Search events..."}
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="h-11 border-border/40 bg-muted/20 ps-11 transition-all focus:bg-background focus:ring-primary/20 rounded-xl"
+                  className="h-10 border-border/40 bg-muted/30 ps-10 rounded-xl text-sm transition-all focus:bg-background focus:ring-primary/20"
                 />
               </div>
-              
               <div className="flex gap-2">
                 <Select value={typeFilter} onValueChange={setTypeFilter}>
-                  <SelectTrigger className="h-11 w-full border-border/40 bg-muted/20 rounded-xl sm:w-44 focus:ring-primary/20">
+                  <SelectTrigger className="h-10 w-full border-border/40 bg-muted/30 rounded-xl sm:w-40 text-xs">
                     <SelectValue />
                   </SelectTrigger>
-                  <SelectContent className="rounded-xl border-border/40">
+                  <SelectContent className="rounded-xl">
                     {typeOptions.map((opt) => (
-                      <SelectItem key={opt.value} value={opt.value} className="rounded-lg">
-                        {isAr ? opt.ar : opt.en}
-                      </SelectItem>
+                      <SelectItem key={opt.value} value={opt.value}>{isAr ? opt.ar : opt.en}</SelectItem>
                     ))}
                   </SelectContent>
                 </Select>
-
                 {countries.length > 0 && (
                   <Select value={countryFilter} onValueChange={setCountryFilter}>
-                    <SelectTrigger className="h-11 w-full border-border/40 bg-muted/20 rounded-xl sm:w-44 focus:ring-primary/20">
-                      <div className="flex items-center gap-2">
-                        <MapPin className="h-4 w-4 text-primary/60" />
+                    <SelectTrigger className="h-10 w-full border-border/40 bg-muted/30 rounded-xl sm:w-40 text-xs">
+                      <div className="flex items-center gap-1.5">
+                        <MapPin className="h-3.5 w-3.5 text-primary/50" />
                         <SelectValue placeholder={isAr ? "كل الدول" : "All Countries"} />
                       </div>
                     </SelectTrigger>
-                    <SelectContent className="rounded-xl border-border/40">
-                      <SelectItem value="all" className="rounded-lg">{isAr ? "كل الدول" : "All Countries"}</SelectItem>
+                    <SelectContent className="rounded-xl">
+                      <SelectItem value="all">{isAr ? "كل الدول" : "All Countries"}</SelectItem>
                       {countries.map((c) => (
-                        <SelectItem key={c} value={c} className="rounded-lg">
-                          <span className="me-2">{countryFlag(c)}</span> {c}
+                        <SelectItem key={c} value={c}>
+                          <span className="me-1.5">{countryFlag(c)}</span>{c}
                         </SelectItem>
                       ))}
                     </SelectContent>
@@ -233,62 +242,70 @@ export default function Exhibitions() {
         </div>
 
         {/* Tabs */}
-        <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-8">
-          <TabsList className="h-auto w-full justify-start gap-1.5 overflow-x-auto bg-muted/40 p-1.5 rounded-2xl border border-border/40">
+        <Tabs value={activeTab} onValueChange={setActiveTab} dir={isAr ? "rtl" : "ltr"} className="space-y-6">
+          <TabsList className="h-auto w-full justify-start gap-1 overflow-x-auto bg-muted/30 p-1 rounded-xl border border-border/30">
             {[
-              { id: "all", label: isAr ? "الكل" : "All", icon: null },
-              { id: "current", label: isAr ? "يحدث الآن" : "Live", icon: Clock },
-              { id: "upcoming", label: isAr ? "القادمة" : "Upcoming", icon: CalendarDays },
-              { id: "past", label: isAr ? "السابقة" : "Past", icon: History }
+              { id: "all", label: isAr ? "الكل" : "All", icon: null, count: exhibitions?.length },
+              { id: "current", label: isAr ? "يحدث الآن" : "Live", icon: Clock, count: happeningNowCount },
+              { id: "upcoming", label: isAr ? "القادمة" : "Upcoming", icon: CalendarDays, count: upcomingCount },
+              { id: "past", label: isAr ? "السابقة" : "Past", icon: History, count: null },
             ].map((t) => (
-              <TabsTrigger 
-                key={t.id} 
-                value={t.id} 
-                className="gap-2 rounded-xl px-5 py-2.5 text-xs font-bold uppercase tracking-wider transition-all data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-lg shadow-primary/20"
+              <TabsTrigger
+                key={t.id}
+                value={t.id}
+                className="gap-1.5 rounded-lg px-4 py-2 text-[11px] font-bold uppercase tracking-wider transition-all data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-md"
               >
                 {t.icon && <t.icon className="h-3.5 w-3.5" />}
                 {t.label}
+                {t.count != null && t.count > 0 && (
+                  <span className="ms-1 text-[9px] opacity-70">({toEnglishDigits(t.count)})</span>
+                )}
               </TabsTrigger>
             ))}
           </TabsList>
 
-          <TabsContent value={activeTab} className="mt-6">
+          <TabsContent value={activeTab} className="mt-0">
             {isLoading ? (
-              <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+              <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
                 {[1, 2, 3, 4, 5, 6].map((i) => (
-                  <Card key={i} className="overflow-hidden">
+                  <Card key={i} className="overflow-hidden border-border/30">
                     <Skeleton className="aspect-[16/10] w-full" />
                     <div className="space-y-2.5 p-4">
                       <Skeleton className="h-5 w-3/4" />
                       <Skeleton className="h-4 w-1/2" />
-                      <div className="flex gap-2 pt-1">
-                        <Skeleton className="h-3.5 w-20" />
-                        <Skeleton className="h-3.5 w-24" />
+                      <Skeleton className="h-3.5 w-2/3" />
+                      <div className="flex gap-2 pt-2">
+                        <Skeleton className="h-5 w-16 rounded-full" />
+                        <Skeleton className="h-5 w-20 rounded-full" />
                       </div>
-                      <Skeleton className="mt-3 h-9 w-full rounded-md" />
                     </div>
                   </Card>
                 ))}
               </div>
             ) : filtered?.length === 0 ? (
-              <div className="flex flex-col items-center justify-center py-20 text-center">
-                <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-muted/60 ring-1 ring-border/50">
-                  <Landmark className="h-8 w-8 text-muted-foreground/40" />
+              <div className="flex flex-col items-center justify-center py-24 text-center">
+                <div className="mb-5 flex h-20 w-20 items-center justify-center rounded-3xl bg-muted/40 ring-1 ring-border/30">
+                  <Landmark className="h-10 w-10 text-muted-foreground/30" />
                 </div>
-                <h3 className="mb-1 text-lg font-semibold">
+                <h3 className="mb-1.5 text-lg font-bold">
                   {isAr ? "لم يتم العثور على فعاليات" : "No events found"}
                 </h3>
                 <p className="max-w-sm text-sm text-muted-foreground">
-                  {isAr ? "جرب تعديل معايير البحث" : "Try adjusting your search or filters"}
+                  {isAr ? "جرب تعديل معايير البحث أو الفلاتر" : "Try adjusting your search criteria or filters"}
                 </p>
-                {searchQuery && (
-                  <Button variant="outline" size="sm" className="mt-4" onClick={() => setSearchQuery("")}>
-                    {isAr ? "مسح البحث" : "Clear search"}
+                {(searchQuery || typeFilter !== "all" || countryFilter !== "all") && (
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="mt-5 rounded-xl"
+                    onClick={() => { setSearchQuery(""); setTypeFilter("all"); setCountryFilter("all"); }}
+                  >
+                    {isAr ? "مسح جميع الفلاتر" : "Clear all filters"}
                   </Button>
                 )}
               </div>
             ) : (
-              <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+              <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
                 {filtered?.map((ex) => (
                   <ExhibitionCard key={ex.id} exhibition={ex} language={language} />
                 ))}
@@ -297,20 +314,21 @@ export default function Exhibitions() {
           </TabsContent>
         </Tabs>
 
-        {/* Stats */}
+        {/* Stats Footer */}
         {exhibitions && exhibitions.length > 0 && (
-          <section className="mt-12 border-t pt-8">
+          <section className="mt-14 border-t border-border/30 pt-8">
             <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
               {[
-                { label: isAr ? "إجمالي الفعاليات" : "Total Events", value: exhibitions.length, color: "border-s-primary" },
-                { label: isAr ? "جارية الآن" : "Happening Now", value: happeningNowCount, color: "border-s-chart-3" },
-                { label: isAr ? "القادمة" : "Upcoming", value: upcomingCount, color: "border-s-chart-1" },
-                { label: isAr ? "الدول" : "Countries", value: countriesCount, color: "border-s-accent" },
+                { label: isAr ? "إجمالي الفعاليات" : "Total Events", value: exhibitions.length, icon: Landmark, color: "text-primary" },
+                { label: isAr ? "جارية الآن" : "Happening Now", value: happeningNowCount, icon: Clock, color: "text-chart-3" },
+                { label: isAr ? "القادمة" : "Upcoming", value: upcomingCount, icon: TrendingUp, color: "text-chart-1" },
+                { label: isAr ? "الدول" : "Countries", value: countriesCount, icon: Globe, color: "text-accent-foreground" },
               ].map((stat) => (
-                <Card key={stat.label} className={`border-s-[3px] ${stat.color} transition-all duration-200 hover:shadow-md hover:-translate-y-0.5`}>
-                  <CardContent className="p-4 text-center">
-                    <p className="text-2xl font-bold text-foreground sm:text-3xl">{stat.value}</p>
-                    <p className="mt-0.5 text-[10px] uppercase tracking-wider text-muted-foreground">{stat.label}</p>
+                <Card key={stat.label} className="border-border/30 bg-muted/10 transition-all duration-200 hover:shadow-md hover:-translate-y-0.5">
+                  <CardContent className="p-4 flex flex-col items-center text-center gap-1.5">
+                    <stat.icon className={`h-5 w-5 ${stat.color} opacity-60`} />
+                    <p className="text-2xl font-bold text-foreground sm:text-3xl">{toEnglishDigits(stat.value)}</p>
+                    <p className="text-[10px] uppercase tracking-wider text-muted-foreground font-medium">{stat.label}</p>
                   </CardContent>
                 </Card>
               ))}

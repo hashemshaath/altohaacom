@@ -1,7 +1,6 @@
 import { Link } from "react-router-dom";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
 import { Calendar, MapPin, Globe, ExternalLink, Clock, ArrowRight, Building } from "lucide-react";
 import { format, isPast, isFuture, isWithinInterval, differenceInDays } from "date-fns";
 import { toEnglishDigits } from "@/lib/formatNumber";
@@ -67,9 +66,10 @@ const typeLabels: Record<ExhibitionType, { en: string; ar: string }> = {
 interface ExhibitionCardProps {
   exhibition: Exhibition;
   language: string;
+  variant?: "default" | "featured";
 }
 
-export function ExhibitionCard({ exhibition, language }: ExhibitionCardProps) {
+export function ExhibitionCard({ exhibition, language, variant = "default" }: ExhibitionCardProps) {
   const isAr = language === "ar";
   const title = isAr && exhibition.title_ar ? exhibition.title_ar : exhibition.title;
   const description = isAr && exhibition.description_ar ? exhibition.description_ar : exhibition.description;
@@ -77,7 +77,6 @@ export function ExhibitionCard({ exhibition, language }: ExhibitionCardProps) {
   const organizer = isAr && exhibition.organizer_name_ar ? exhibition.organizer_name_ar : exhibition.organizer_name;
   const typeLabel = typeLabels[exhibition.type];
 
-  // Fetch exhibition sponsors via ad_section_sponsorships
   const { data: sponsors = [] } = useQuery({
     queryKey: ["exhibitionSponsors", exhibition.id],
     queryFn: async () => {
@@ -107,127 +106,119 @@ export function ExhibitionCard({ exhibition, language }: ExhibitionCardProps) {
     ? differenceInDays(new Date(exhibition.start_date), new Date())
     : null;
 
+  const isFeaturedVariant = variant === "featured";
+
   return (
     <Link to={`/exhibitions/${exhibition.slug}`} className="group block">
-      <Card className={`group flex h-full flex-col overflow-hidden border-border/40 bg-card/60 backdrop-blur-sm transition-all duration-500 hover:shadow-2xl hover:-translate-y-2 hover:border-primary/30 hover:bg-card ${exhibition.is_featured ? "ring-2 ring-primary/20 shadow-xl shadow-primary/5" : ""}`}>
-        {/* Image Section */}
-        <div className="relative aspect-[16/10] shrink-0 overflow-hidden bg-muted">
+      <Card className={`group flex h-full flex-col overflow-hidden border-border/40 bg-card/60 backdrop-blur-sm transition-all duration-500 hover:shadow-2xl hover:-translate-y-1.5 hover:border-primary/30 hover:bg-card ${exhibition.is_featured ? "ring-1 ring-primary/20 shadow-lg shadow-primary/5" : ""}`}>
+        {/* Image */}
+        <div className={`relative shrink-0 overflow-hidden bg-muted ${isFeaturedVariant ? "aspect-[16/9]" : "aspect-[16/10]"}`}>
           {exhibition.cover_image_url ? (
             <img
               src={exhibition.cover_image_url}
               alt={title}
-              className="h-full w-full object-cover transition-transform duration-1000 group-hover:scale-110"
+              className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
               loading="lazy"
             />
           ) : (
-            <div className="flex h-full items-center justify-center bg-gradient-to-br from-primary/10 to-accent/10">
-              <span className="text-5xl transition-transform duration-500 group-hover:scale-125 group-hover:rotate-3">🏛️</span>
+            <div className="flex h-full items-center justify-center bg-gradient-to-br from-primary/8 via-accent/5 to-muted">
+              <span className="text-5xl opacity-60 transition-transform duration-500 group-hover:scale-110">🏛️</span>
             </div>
           )}
-          <div className="absolute inset-0 bg-gradient-to-t from-background/90 via-transparent to-transparent opacity-60 transition-opacity group-hover:opacity-80" />
+          <div className="absolute inset-0 bg-gradient-to-t from-background/80 via-background/20 to-transparent" />
 
-          {/* Badges Overlays */}
-          <div className="absolute inset-x-0 top-0 flex items-start justify-between p-4 z-10">
-            <div className="flex flex-col gap-2">
-              <Badge className={`${liveStatus.className} shadow-xl backdrop-blur-md border-0 text-[9px] font-black uppercase tracking-wider py-1 px-3`}>
-                {isAr ? liveStatus.labelAr : liveStatus.label}
-              </Badge>
-              {exhibition.is_featured && (
-                <Badge className="bg-primary text-primary-foreground shadow-xl shadow-primary/20 text-[9px] font-black uppercase tracking-wider py-1 px-3">
-                  ⭐ {isAr ? "مميز" : "Featured"}
-                </Badge>
+          {/* Top-left: Status + Featured */}
+          <div className="absolute top-3 start-3 z-10 flex flex-col gap-1.5">
+            <Badge className={`${liveStatus.className} shadow-lg backdrop-blur-md border-0 text-[9px] font-black uppercase tracking-wider py-1 px-2.5`}>
+              {liveStatus.className.includes("chart-3") && (
+                <span className="relative me-1.5 flex h-1.5 w-1.5">
+                  <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-current opacity-75" />
+                  <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-current" />
+                </span>
               )}
-            </div>
-
-            <div className="flex flex-col items-end gap-2">
-              <Badge variant="secondary" className="text-[9px] font-black uppercase tracking-wider bg-background/80 backdrop-blur-md shadow-lg border-0 py-1 px-3">
-                {isAr ? typeLabel.ar : typeLabel.en}
+              {isAr ? liveStatus.labelAr : liveStatus.label}
+            </Badge>
+            {exhibition.is_featured && (
+              <Badge className="bg-primary text-primary-foreground shadow-lg shadow-primary/20 text-[9px] font-black uppercase tracking-wider py-1 px-2.5">
+                ⭐ {isAr ? "مميز" : "Featured"}
               </Badge>
-              {daysLeft !== null && daysLeft > 0 && daysLeft <= 30 && (
-                <Badge className="gap-1.5 text-[9px] font-black uppercase tracking-wider bg-chart-4/90 text-white shadow-lg border-0 py-1 px-3 animate-pulse">
-                  <Clock className="h-2.5 w-2.5" />
-                  {isAr ? `باقي ${toEnglishDigits(daysLeft)} يوم` : `${daysLeft}d left`}
-                </Badge>
-              )}
-            </div>
+            )}
           </div>
 
-          <div className="absolute end-3 top-3 flex flex-col gap-2 z-10">
-            <Badge variant="secondary" className="text-[10px] shadow-lg backdrop-blur-md bg-background/80">
+          {/* Top-right: Type */}
+          <div className="absolute top-3 end-3 z-10 flex flex-col items-end gap-1.5">
+            <Badge variant="secondary" className="text-[9px] font-black uppercase tracking-wider bg-background/80 backdrop-blur-md shadow-lg border-0 py-1 px-2.5">
               {isAr ? typeLabel.ar : typeLabel.en}
             </Badge>
             {daysLeft !== null && daysLeft > 0 && daysLeft <= 30 && (
-              <Badge variant="secondary" className="gap-1 text-[10px] shadow-lg backdrop-blur-md bg-background/80 text-chart-4 border-chart-4/20">
-                <Clock className="h-2.5 w-2.5 animate-pulse" />
+              <Badge className="gap-1 text-[9px] font-black uppercase tracking-wider bg-chart-4/90 text-chart-4-foreground shadow-lg border-0 py-1 px-2.5">
+                <Clock className="h-2.5 w-2.5" />
                 {isAr ? `باقي ${toEnglishDigits(daysLeft)} يوم` : `${daysLeft}d left`}
               </Badge>
             )}
           </div>
-          
-          {/* Country Overlay */}
-          {exhibition.country && (
-            <div className="absolute bottom-3 start-3 z-10">
-              <div className="flex items-center gap-1.5 rounded-full bg-black/40 px-2 py-1 text-[10px] text-white backdrop-blur-md ring-1 ring-white/20">
+
+          {/* Bottom: Country + Date overlay */}
+          <div className="absolute bottom-3 inset-x-3 z-10 flex items-end justify-between">
+            {exhibition.country && (
+              <div className="flex items-center gap-1.5 rounded-full bg-background/70 px-2.5 py-1 text-[10px] font-medium backdrop-blur-md ring-1 ring-border/20">
                 <span>{countryFlag(exhibition.country)}</span>
-                <span className="font-medium">{exhibition.country}</span>
+                <span className="text-foreground/90">{exhibition.country}</span>
               </div>
+            )}
+            <div className="flex items-center gap-1.5 rounded-full bg-background/70 px-2.5 py-1 text-[10px] font-medium backdrop-blur-md ring-1 ring-border/20">
+              <Calendar className="h-3 w-3 text-primary" />
+              <span className="text-foreground/90">
+                {toEnglishDigits(format(new Date(exhibition.start_date), "MMM d"))} – {toEnglishDigits(format(new Date(exhibition.end_date), "d, yyyy"))}
+              </span>
             </div>
-          )}
+          </div>
         </div>
 
         {/* Content */}
-        <CardContent className="flex flex-1 flex-col p-5 relative">
-          <div className="flex-1 space-y-3">
-            <div>
-              <h3 className="line-clamp-2 text-base font-bold leading-tight group-hover:text-primary transition-colors duration-300">
-                {title} <span className="text-primary/60 font-serif italic ms-1">{toEnglishDigits(new Date(exhibition.start_date).getFullYear())}</span>
-              </h3>
-              {organizer && (
-                <p className="mt-1 flex items-center gap-1.5 text-[11px] font-medium text-muted-foreground">
-                  <Building className="h-3 w-3 text-primary/50" />
-                  {isAr ? "تنظيم:" : "By:"} <span className="text-foreground/80">{organizer}</span>
-                </p>
-              )}
-            </div>
+        <CardContent className="flex flex-1 flex-col p-4 sm:p-5">
+          <div className="flex-1 space-y-2.5">
+            {/* Title + Year */}
+            <h3 className="line-clamp-2 text-base font-bold leading-snug group-hover:text-primary transition-colors duration-300">
+              {title}
+              <span className="text-primary/50 font-serif italic ms-1 text-sm">
+                {toEnglishDigits(new Date(exhibition.start_date).getFullYear())}
+              </span>
+            </h3>
 
+            {/* Organizer */}
+            {organizer && (
+              <p className="flex items-center gap-1.5 text-[11px] font-medium text-muted-foreground">
+                <Building className="h-3 w-3 text-primary/40" />
+                <span className="text-foreground/70">{organizer}</span>
+              </p>
+            )}
+
+            {/* Description */}
             {description && (
-              <p className="line-clamp-2 text-[13px] text-muted-foreground/90 leading-relaxed">
+              <p className="line-clamp-2 text-[12px] text-muted-foreground/80 leading-relaxed">
                 {description}
               </p>
             )}
 
-            <div className="space-y-2 pt-1 text-[12px] text-muted-foreground">
-              <div className="flex items-center gap-2.5">
-                <div className="flex h-6 w-6 items-center justify-center rounded-full bg-primary/5">
-                  <Calendar className="h-3 w-3 text-primary" />
-                </div>
-                <span className="font-medium">
-                  {toEnglishDigits(format(new Date(exhibition.start_date), "MMM d"))} – {toEnglishDigits(format(new Date(exhibition.end_date), "MMM d, yyyy"))}
+            {/* Location */}
+            {exhibition.is_virtual ? (
+              <div className="flex items-center gap-2 text-[11px]">
+                <Globe className="h-3 w-3 text-chart-1" />
+                <span className="text-chart-1 font-medium">{isAr ? "حدث افتراضي" : "Virtual Event"}</span>
+              </div>
+            ) : venue && (
+              <div className="flex items-center gap-2 text-[11px] text-muted-foreground">
+                <MapPin className="h-3 w-3 text-primary/50" />
+                <span className="line-clamp-1 font-medium">
+                  {venue}{exhibition.city && `, ${exhibition.city}`}
                 </span>
               </div>
-
-              {exhibition.is_virtual ? (
-                <div className="flex items-center gap-2.5">
-                  <div className="flex h-6 w-6 items-center justify-center rounded-full bg-chart-1/5">
-                    <Globe className="h-3 w-3 text-chart-1" />
-                  </div>
-                  <span className="text-chart-1 font-medium">{isAr ? "حدث افتراضي" : "Virtual Event"}</span>
-                </div>
-              ) : venue && (
-                <div className="flex items-center gap-2.5">
-                  <div className="flex h-6 w-6 items-center justify-center rounded-full bg-primary/5">
-                    <MapPin className="h-3 w-3 text-primary" />
-                  </div>
-                  <span className="line-clamp-1 font-medium">
-                    {venue}{exhibition.city && `, ${exhibition.city}`}
-                  </span>
-                </div>
-              )}
-            </div>
+            )}
           </div>
 
-          <div className="mt-4 flex flex-wrap items-center gap-2">
-            {/* Sponsor badges */}
+          {/* Tags row */}
+          <div className="mt-3 flex flex-wrap items-center gap-1.5">
             {sponsors.length > 0 && sponsors.map((s: any) => {
               const logo = s.logo_url || s.companies?.logo_url;
               const name = isAr ? (s.label_ar || s.companies?.name_ar || s.companies?.name) : (s.label || s.companies?.name);
@@ -243,43 +234,39 @@ export function ExhibitionCard({ exhibition, language }: ExhibitionCardProps) {
               );
             })}
             {exhibition.is_free ? (
-              <Badge variant="outline" className="h-6 text-[10px] font-bold uppercase tracking-wider text-chart-3 border-chart-3/30 bg-chart-3/5">
-                {isAr ? "دخول مجاني" : "Free Entry"}
+              <Badge variant="outline" className="text-[9px] font-bold uppercase tracking-wider text-chart-3 border-chart-3/30 bg-chart-3/5 py-0.5 px-2">
+                {isAr ? "مجاني" : "Free"}
               </Badge>
             ) : exhibition.ticket_price && (
-              <Badge variant="outline" className="h-6 text-[10px] font-bold border-primary/20 bg-primary/5">
+              <Badge variant="outline" className="text-[9px] font-bold border-primary/20 bg-primary/5 py-0.5 px-2">
                 {isAr && exhibition.ticket_price_ar ? exhibition.ticket_price_ar : exhibition.ticket_price}
               </Badge>
             )}
-            {exhibition.tags && exhibition.tags.slice(0, 1).map((tag) => (
-              <Badge key={tag} variant="secondary" className="h-6 text-[10px] bg-muted/60">#{tag}</Badge>
+            {exhibition.tags && exhibition.tags.slice(0, 2).map((tag) => (
+              <Badge key={tag} variant="secondary" className="text-[9px] bg-muted/50 py-0.5 px-2">#{tag}</Badge>
             ))}
           </div>
         </CardContent>
 
-        {/* Action Area */}
-        <div className="flex items-center justify-between border-t border-border/40 bg-muted/20 px-5 py-3 transition-colors group-hover:bg-muted/40">
-          <div className="flex items-center gap-1 text-[11px] font-bold uppercase tracking-wider text-primary">
+        {/* Footer */}
+        <div className="flex items-center justify-between border-t border-border/30 bg-muted/15 px-4 sm:px-5 py-2.5 transition-colors group-hover:bg-muted/30">
+          <span className="flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-wider text-primary">
             {isAr ? "عرض التفاصيل" : "View Details"}
-            <ArrowRight className="ms-1 h-3 w-3" />
-          </div>
-          <div className="flex items-center gap-2">
-            {exhibition.registration_url && (
-              <Button
-                size="icon"
-                variant="ghost"
-                className="h-8 w-8 rounded-full hover:bg-primary/10 hover:text-primary transition-all"
-                onClick={(e) => {
-                  e.preventDefault();
-                  e.stopPropagation();
-                  window.open(exhibition.registration_url!, "_blank", "noopener,noreferrer");
-                }}
-                title={isAr ? "التسجيل" : "Register"}
-              >
-                <ExternalLink className="h-4 w-4" />
-              </Button>
-            )}
-          </div>
+            <ArrowRight className="h-3 w-3 transition-transform group-hover:translate-x-0.5" />
+          </span>
+          {exhibition.registration_url && (
+            <button
+              className="flex h-7 w-7 items-center justify-center rounded-full text-muted-foreground hover:bg-primary/10 hover:text-primary transition-all"
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                window.open(exhibition.registration_url!, "_blank", "noopener,noreferrer");
+              }}
+              title={isAr ? "التسجيل" : "Register"}
+            >
+              <ExternalLink className="h-3.5 w-3.5" />
+            </button>
+          )}
         </div>
       </Card>
     </Link>
