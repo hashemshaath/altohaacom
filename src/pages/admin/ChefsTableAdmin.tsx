@@ -138,16 +138,16 @@ export default function ChefsTableAdmin() {
   );
 
   return (
-    <div className="space-y-6">
-      <div className="flex items-center justify-between">
+    <div className="space-y-4 sm:space-y-6">
+      <div className="flex items-center justify-between gap-2">
         <AdminPageHeader
           icon={ChefHat}
           title={isAr ? "طاولة الشيف" : "Chef's Table"}
-          description={isAr ? "إدارة طلبات تقييم المنتجات والجلسات والطهاة والمحكمين" : "Manage product evaluation requests, sessions, chefs & judges"}
+          description={isAr ? "إدارة طلبات التقييم والجلسات" : "Evaluations, sessions & judges"}
         />
-        <Button variant="outline" size="sm" className="gap-1.5 print:hidden" onClick={() => window.print()}>
+        <Button variant="outline" size="icon" className="h-8 w-8 sm:h-9 sm:w-auto sm:px-3 sm:gap-1.5 shrink-0 print:hidden" onClick={() => window.print()}>
           <Printer className="h-3.5 w-3.5" />
-          {isAr ? "طباعة" : "Print"}
+          <span className="hidden sm:inline text-xs">{isAr ? "طباعة" : "Print"}</span>
         </Button>
       </div>
 
@@ -157,39 +157,41 @@ export default function ChefsTableAdmin() {
       )}
 
       <Tabs value={activeTab} onValueChange={setActiveTab}>
-        <TabsList className="flex-wrap print:hidden">
-          <TabsTrigger value="overview" className="gap-1.5">
-            <BarChart3 className="h-3.5 w-3.5" />
-            {isAr ? "نظرة عامة" : "Overview"}
-          </TabsTrigger>
-          <TabsTrigger value="requests" className="gap-1.5">
-            <FileText className="h-3.5 w-3.5" />
-            {isAr ? "الطلبات" : "Requests"}
-            {pendingRequests.length > 0 && (
-              <Badge variant="destructive" className="ms-1 h-5 min-w-5 px-1.5 text-[10px]">{pendingRequests.length}</Badge>
-            )}
-          </TabsTrigger>
-          <TabsTrigger value="sessions" className="gap-1.5">
-            <ChefHat className="h-3.5 w-3.5" />
-            {isAr ? "الجلسات" : "Sessions"}
-          </TabsTrigger>
-          <TabsTrigger value="invitations" className="gap-1.5">
-            <Send className="h-3.5 w-3.5" />
-            {isAr ? "الدعوات" : "Invitations"}
-          </TabsTrigger>
-          <TabsTrigger value="judges" className="gap-1.5">
-            <Gavel className="h-3.5 w-3.5" />
-            {isAr ? "المحكمين" : "Judges"}
-          </TabsTrigger>
-          <TabsTrigger value="pricing" className="gap-1.5">
-            <Receipt className="h-3.5 w-3.5" />
-            {isAr ? "التسعير" : "Pricing"}
-          </TabsTrigger>
-          <TabsTrigger value="registrations" className="gap-1.5">
-            <UserPlus className="h-3.5 w-3.5" />
-            {isAr ? "تسجيل الطهاة" : "Chef Registration"}
-          </TabsTrigger>
-        </TabsList>
+        <div className="overflow-x-auto scrollbar-none -mx-1 px-1 print:hidden">
+          <TabsList className="h-8 sm:h-9 gap-0.5 w-max">
+            <TabsTrigger value="overview" className="gap-1 text-xs h-7 sm:h-8 px-2 sm:px-3">
+              <BarChart3 className="h-3 w-3 sm:h-3.5 sm:w-3.5" />
+              {isAr ? "عامة" : "Overview"}
+            </TabsTrigger>
+            <TabsTrigger value="requests" className="gap-1 text-xs h-7 sm:h-8 px-2 sm:px-3">
+              <FileText className="h-3 w-3 sm:h-3.5 sm:w-3.5" />
+              {isAr ? "طلبات" : "Requests"}
+              {pendingRequests.length > 0 && (
+                <Badge variant="destructive" className="ms-0.5 h-4 min-w-4 px-1 text-[9px]">{pendingRequests.length}</Badge>
+              )}
+            </TabsTrigger>
+            <TabsTrigger value="sessions" className="gap-1 text-xs h-7 sm:h-8 px-2 sm:px-3">
+              <ChefHat className="h-3 w-3 sm:h-3.5 sm:w-3.5" />
+              {isAr ? "جلسات" : "Sessions"}
+            </TabsTrigger>
+            <TabsTrigger value="invitations" className="gap-1 text-xs h-7 sm:h-8 px-2 sm:px-3">
+              <Send className="h-3 w-3 sm:h-3.5 sm:w-3.5" />
+              {isAr ? "دعوات" : "Invite"}
+            </TabsTrigger>
+            <TabsTrigger value="judges" className="gap-1 text-xs h-7 sm:h-8 px-2 sm:px-3">
+              <Gavel className="h-3 w-3 sm:h-3.5 sm:w-3.5" />
+              {isAr ? "محكمين" : "Judges"}
+            </TabsTrigger>
+            <TabsTrigger value="pricing" className="gap-1 text-xs h-7 sm:h-8 px-2 sm:px-3">
+              <Receipt className="h-3 w-3 sm:h-3.5 sm:w-3.5" />
+              {isAr ? "تسعير" : "Pricing"}
+            </TabsTrigger>
+            <TabsTrigger value="registrations" className="gap-1 text-xs h-7 sm:h-8 px-2 sm:px-3">
+              <UserPlus className="h-3 w-3 sm:h-3.5 sm:w-3.5" />
+              {isAr ? "تسجيل" : "Register"}
+            </TabsTrigger>
+          </TabsList>
+        </div>
 
         {/* ──────────── Overview / Analytics ──────────── */}
         <TabsContent value="overview">
@@ -204,18 +206,18 @@ export default function ChefsTableAdmin() {
         </TabsContent>
 
         {/* ──────────── Requests Tab ──────────── */}
-        <TabsContent value="requests" className="space-y-4">
-          <div className="flex items-center gap-3 print:hidden">
+        <TabsContent value="requests" className="space-y-3 sm:space-y-4">
+          <div className="flex items-center gap-2 sm:gap-3 print:hidden">
             <Select value={requestStatusFilter} onValueChange={setRequestStatusFilter}>
-              <SelectTrigger className="w-40"><SelectValue /></SelectTrigger>
+              <SelectTrigger className="w-28 sm:w-40 h-8 text-xs sm:text-sm"><SelectValue /></SelectTrigger>
               <SelectContent>
-                <SelectItem value="all">{isAr ? "جميع الحالات" : "All Status"}</SelectItem>
+                <SelectItem value="all">{isAr ? "الكل" : "All"}</SelectItem>
                 <SelectItem value="pending">{isAr ? "معلق" : "Pending"}</SelectItem>
-                <SelectItem value="approved">{isAr ? "موافق عليه" : "Approved"}</SelectItem>
+                <SelectItem value="approved">{isAr ? "موافق" : "Approved"}</SelectItem>
                 <SelectItem value="rejected">{isAr ? "مرفوض" : "Rejected"}</SelectItem>
               </SelectContent>
             </Select>
-            <span className="text-xs text-muted-foreground ms-auto">
+            <span className="text-[10px] sm:text-xs text-muted-foreground ms-auto">
               {filteredRequests.length} {isAr ? "طلب" : "requests"}
             </span>
           </div>
@@ -242,45 +244,43 @@ export default function ChefsTableAdmin() {
                     <CardContent className="p-0">
                       {/* Summary Row */}
                       <div
-                        className="flex items-center gap-4 p-4 cursor-pointer hover:bg-muted/30 transition-colors"
+                        className="flex items-start sm:items-center gap-2.5 sm:gap-4 p-3 sm:p-4 cursor-pointer hover:bg-muted/30 transition-colors active:scale-[0.99]"
                         onClick={() => setExpandedRequestId(isExpanded ? null : req.id)}
                       >
-                        <div className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-muted ${sc.color}`}>
-                          <StatusIcon className="h-4 w-4" />
+                        <div className={`flex h-8 w-8 sm:h-9 sm:w-9 shrink-0 items-center justify-center rounded-lg bg-muted ${sc.color}`}>
+                          <StatusIcon className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
                         </div>
                         <div className="flex-1 min-w-0">
-                          <div className="flex items-center gap-2 flex-wrap">
-                            <h3 className="font-bold text-sm truncate">
+                          <div className="flex items-center gap-1.5 sm:gap-2 flex-wrap">
+                            <h3 className="font-bold text-xs sm:text-sm truncate">
                               {isAr && req.title_ar ? req.title_ar : req.title}
                             </h3>
-                            <Badge variant={sc.variant} className="text-[10px] uppercase tracking-wider shrink-0">
+                            <Badge variant={sc.variant} className="text-[9px] sm:text-[10px] uppercase tracking-wider shrink-0">
                               {req.status}
                             </Badge>
-                            {req.request_number && (
-                              <span className="text-[10px] text-muted-foreground font-mono">#{req.request_number}</span>
-                            )}
                           </div>
-                          <div className="flex items-center gap-3 mt-0.5 text-xs text-muted-foreground">
-                            <span className="flex items-center gap-1"><Package className="h-3 w-3" />{isAr && req.product_name_ar ? req.product_name_ar : req.product_name}</span>
-                            <span>{req.product_category}</span>
-                            <span className="flex items-center gap-1"><Users className="h-3 w-3" />{req.chef_count}</span>
-                            <span className="flex items-center gap-1"><DollarSign className="h-3 w-3" />{req.budget?.toLocaleString()} {req.currency}</span>
-                            <span className="hidden sm:inline">{format(new Date(req.created_at), "MMM d, yyyy")}</span>
+                          <div className="flex items-center gap-2 sm:gap-3 mt-0.5 text-[10px] sm:text-xs text-muted-foreground flex-wrap">
+                            <span className="flex items-center gap-0.5 sm:gap-1"><Package className="h-2.5 w-2.5 sm:h-3 sm:w-3" />{isAr && req.product_name_ar ? req.product_name_ar : req.product_name}</span>
+                            <span className="hidden sm:inline">{req.product_category}</span>
+                            <span className="flex items-center gap-0.5"><Users className="h-2.5 w-2.5 sm:h-3 sm:w-3" />{req.chef_count}</span>
+                            <span className="flex items-center gap-0.5"><DollarSign className="h-2.5 w-2.5 sm:h-3 sm:w-3" />{req.budget?.toLocaleString()}</span>
                           </div>
                         </div>
                         {req.status === "pending" && (
-                          <div className="flex items-center gap-1.5 shrink-0 print:hidden" onClick={e => e.stopPropagation()}>
-                            <Button size="sm" className="gap-1 h-8 text-xs" disabled={processingId === req.id} onClick={() => handleApprove(req)}>
-                              <ThumbsUp className="h-3 w-3" />{isAr ? "موافقة" : "Approve"}
+                          <div className="flex items-center gap-1 shrink-0 print:hidden" onClick={e => e.stopPropagation()}>
+                            <Button size="icon" className="h-7 w-7 sm:h-8 sm:w-auto sm:px-2 sm:gap-1" disabled={processingId === req.id} onClick={() => handleApprove(req)}>
+                              <ThumbsUp className="h-3 w-3" />
+                              <span className="hidden sm:inline text-xs">{isAr ? "موافقة" : "OK"}</span>
                             </Button>
-                            <Button size="sm" variant="outline" className="gap-1 h-8 text-xs text-destructive hover:text-destructive" disabled={processingId === req.id}
+                            <Button size="icon" variant="outline" className="h-7 w-7 sm:h-8 sm:w-auto sm:px-2 sm:gap-1 text-destructive hover:text-destructive" disabled={processingId === req.id}
                               onClick={() => { setRejectingId(isRejecting ? null : req.id); setRejectionReason(""); }}
                             >
-                              <ThumbsDown className="h-3 w-3" />{isAr ? "رفض" : "Reject"}
+                              <ThumbsDown className="h-3 w-3" />
+                              <span className="hidden sm:inline text-xs">{isAr ? "رفض" : "No"}</span>
                             </Button>
                           </div>
                         )}
-                        <ChevronDown className={`h-4 w-4 text-muted-foreground shrink-0 transition-transform ${isExpanded ? "rotate-180" : ""}`} />
+                        <ChevronDown className={`h-3.5 w-3.5 sm:h-4 sm:w-4 text-muted-foreground shrink-0 transition-transform mt-1 sm:mt-0 ${isExpanded ? "rotate-180" : ""}`} />
                       </div>
 
                       {/* Inline Rejection Form */}
@@ -375,115 +375,158 @@ export default function ChefsTableAdmin() {
         </TabsContent>
 
         {/* ──────────── Sessions Tab ──────────── */}
-        <TabsContent value="sessions" className="space-y-4">
-          <div className="flex flex-col gap-3 sm:flex-row sm:items-center print:hidden">
+        <TabsContent value="sessions" className="space-y-3 sm:space-y-4">
+          <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:gap-3 print:hidden">
             <div className="relative flex-1 sm:max-w-sm">
-              <Search className="absolute start-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-              <Input placeholder={isAr ? "بحث..." : "Search sessions..."} value={search} onChange={e => setSearch(e.target.value)} className="ps-9" />
+              <Search className="absolute start-2.5 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-muted-foreground" />
+              <Input placeholder={isAr ? "بحث..." : "Search..."} value={search} onChange={e => setSearch(e.target.value)} className="ps-8 h-8 text-xs sm:text-sm" />
             </div>
-            <Select value={statusFilter} onValueChange={setStatusFilter}>
-              <SelectTrigger className="w-40"><SelectValue /></SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">{isAr ? "جميع الحالات" : "All Status"}</SelectItem>
-                <SelectItem value="scheduled">{isAr ? "مجدول" : "Scheduled"}</SelectItem>
-                <SelectItem value="in_progress">{isAr ? "قيد التنفيذ" : "In Progress"}</SelectItem>
-                <SelectItem value="completed">{isAr ? "مكتمل" : "Completed"}</SelectItem>
-              </SelectContent>
-            </Select>
-            <span className="text-xs text-muted-foreground ms-auto">
-              {filteredSessions.length} {isAr ? "جلسة" : "sessions"}
-            </span>
+            <div className="flex items-center gap-2">
+              <Select value={statusFilter} onValueChange={setStatusFilter}>
+                <SelectTrigger className="w-28 sm:w-40 h-8 text-xs sm:text-sm"><SelectValue /></SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">{isAr ? "الكل" : "All"}</SelectItem>
+                  <SelectItem value="scheduled">{isAr ? "مجدول" : "Scheduled"}</SelectItem>
+                  <SelectItem value="in_progress">{isAr ? "جاري" : "In Progress"}</SelectItem>
+                  <SelectItem value="completed">{isAr ? "مكتمل" : "Completed"}</SelectItem>
+                </SelectContent>
+              </Select>
+              <span className="text-[10px] sm:text-xs text-muted-foreground ms-auto">
+                {filteredSessions.length} {isAr ? "جلسة" : "sessions"}
+              </span>
+            </div>
           </div>
 
           {sessionsLoading ? (
-            <div className="space-y-3">{[1,2,3].map(i => <Skeleton key={i} className="h-20 rounded-xl" />)}</div>
+            <div className="space-y-2 sm:space-y-3">{[1,2,3].map(i => <Skeleton key={i} className="h-16 sm:h-20 rounded-xl" />)}</div>
           ) : filteredSessions.length === 0 ? (
             <Card className="border-dashed">
-              <CardContent className="py-16 text-center">
-                <ChefHat className="mx-auto h-12 w-12 text-muted-foreground/20" />
-                <p className="mt-4 font-semibold">{isAr ? "لا توجد جلسات" : "No sessions yet"}</p>
-                <p className="text-sm text-muted-foreground mt-1">{isAr ? "وافق على طلب لإنشاء جلسة" : "Approve a request to auto-create a session"}</p>
+              <CardContent className="py-12 sm:py-16 text-center">
+                <ChefHat className="mx-auto h-10 w-10 sm:h-12 sm:w-12 text-muted-foreground/20" />
+                <p className="mt-3 font-semibold text-sm">{isAr ? "لا توجد جلسات" : "No sessions yet"}</p>
+                <p className="text-xs text-muted-foreground mt-1">{isAr ? "وافق على طلب لإنشاء جلسة" : "Approve a request to create one"}</p>
               </CardContent>
             </Card>
           ) : (
-            <Card className="border-border/40 overflow-hidden">
-              <Table>
-                <TableHeader>
-                  <TableRow className="bg-muted/30">
-                    <TableHead className="font-bold text-[11px] uppercase tracking-wider cursor-pointer select-none" onClick={() => toggleSort("title")}>
-                      {isAr ? "الجلسة" : "Session"}<SortIndicator col="title" />
-                    </TableHead>
-                    <TableHead className="font-bold text-[11px] uppercase tracking-wider">{isAr ? "المنتج" : "Product"}</TableHead>
-                    <TableHead className="font-bold text-[11px] uppercase tracking-wider">{isAr ? "النوع" : "Type"}</TableHead>
-                    <TableHead className="font-bold text-[11px] uppercase tracking-wider cursor-pointer select-none" onClick={() => toggleSort("status")}>
-                      {isAr ? "الحالة" : "Status"}<SortIndicator col="status" />
-                    </TableHead>
-                    <TableHead className="font-bold text-[11px] uppercase tracking-wider cursor-pointer select-none" onClick={() => toggleSort("date")}>
-                      {isAr ? "التاريخ" : "Date"}<SortIndicator col="date" />
-                    </TableHead>
-                    <TableHead className="font-bold text-[11px] uppercase tracking-wider">{isAr ? "الطهاة" : "Chefs"}</TableHead>
-                    <TableHead className="print:hidden w-12" />
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {filteredSessions.map(session => {
-                    const sc = sessionStatusConfig[session.status] || sessionStatusConfig.scheduled;
-                    const isExpanded = expandedSessionId === session.id;
-                    return (
-                      <>
-                        <TableRow
-                          key={session.id}
-                          className={`cursor-pointer transition-colors ${isExpanded ? "bg-muted/40" : "hover:bg-muted/40"}`}
+            <>
+              {/* Mobile card list */}
+              <div className="sm:hidden space-y-2">
+                {filteredSessions.map(session => {
+                  const sc = sessionStatusConfig[session.status] || sessionStatusConfig.scheduled;
+                  const isExpanded = expandedSessionId === session.id;
+                  return (
+                    <Card key={session.id} className={`border-border/40 ${isExpanded ? "ring-1 ring-primary/20" : ""}`}>
+                      <CardContent className="p-0">
+                        <div
+                          className="flex items-start gap-2.5 p-3 cursor-pointer active:scale-[0.99]"
                           onClick={() => setExpandedSessionId(isExpanded ? null : session.id)}
                         >
-                          <TableCell>
-                            <div>
-                              <p className="font-bold text-sm">{isAr && session.title_ar ? session.title_ar : session.title}</p>
-                              {session.session_number && <p className="text-[10px] text-muted-foreground font-mono">#{session.session_number}</p>}
+                          <div className="flex-1 min-w-0">
+                            <div className="flex items-center gap-1.5">
+                              <p className="font-bold text-xs truncate">{isAr && session.title_ar ? session.title_ar : session.title}</p>
+                              <span className={`inline-flex items-center rounded-full px-1.5 py-0.5 text-[9px] font-bold uppercase border ${sc.color}`}>
+                                {session.status.replace("_", " ")}
+                              </span>
                             </div>
-                          </TableCell>
-                          <TableCell>
-                            <div className="flex items-center gap-2">
-                              <Package className="h-3.5 w-3.5 text-muted-foreground shrink-0" />
-                              <span className="text-sm">{isAr && session.product_name_ar ? session.product_name_ar : session.product_name}</span>
+                            <div className="flex items-center gap-2 mt-1 text-[10px] text-muted-foreground">
+                              <span className="flex items-center gap-0.5"><Package className="h-2.5 w-2.5" />{isAr && session.product_name_ar ? session.product_name_ar : session.product_name}</span>
+                              <span className="flex items-center gap-0.5"><Users className="h-2.5 w-2.5" />{session.max_chefs}</span>
+                              <span>{session.session_date ? format(new Date(session.session_date), "MMM d") : "—"}</span>
                             </div>
-                          </TableCell>
-                          <TableCell>
-                            <Badge variant="secondary" className="text-[10px]">
-                              {experienceLabels[session.experience_type]?.[isAr ? "ar" : "en"] || session.experience_type}
-                            </Badge>
-                          </TableCell>
-                          <TableCell>
-                            <span className={`inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider border ${sc.color}`}>
-                              {session.status.replace("_", " ")}
-                            </span>
-                          </TableCell>
-                          <TableCell className="text-sm text-muted-foreground tabular-nums">
-                            {session.session_date ? format(new Date(session.session_date), "MMM d, yyyy") : "—"}
-                          </TableCell>
-                          <TableCell>
-                            <div className="flex items-center gap-1">
-                              <Users className="h-3 w-3 text-muted-foreground" />
-                              <span className="text-sm font-medium">{session.max_chefs}</span>
-                            </div>
-                          </TableCell>
-                          <TableCell className="print:hidden">
-                            <ChevronDown className={`h-4 w-4 text-muted-foreground transition-transform ${isExpanded ? "rotate-180" : ""}`} />
-                          </TableCell>
-                        </TableRow>
+                          </div>
+                          <ChevronDown className={`h-3.5 w-3.5 text-muted-foreground shrink-0 mt-0.5 transition-transform ${isExpanded ? "rotate-180" : ""}`} />
+                        </div>
                         {isExpanded && (
-                          <TableRow key={`${session.id}-detail`}>
-                            <TableCell colSpan={7} className="p-0">
-                              <ChefsTableSessionDetail session={session} onNavigate={(id) => navigate(`/chefs-table/${id}`)} />
+                          <div className="border-t p-0">
+                            <ChefsTableSessionDetail session={session} onNavigate={(id) => navigate(`/chefs-table/${id}`)} />
+                          </div>
+                        )}
+                      </CardContent>
+                    </Card>
+                  );
+                })}
+              </div>
+
+              {/* Desktop table */}
+              <Card className="hidden sm:block border-border/40 overflow-hidden">
+                <Table>
+                  <TableHeader>
+                    <TableRow className="bg-muted/30">
+                      <TableHead className="font-bold text-[11px] uppercase tracking-wider cursor-pointer select-none" onClick={() => toggleSort("title")}>
+                        {isAr ? "الجلسة" : "Session"}<SortIndicator col="title" />
+                      </TableHead>
+                      <TableHead className="font-bold text-[11px] uppercase tracking-wider">{isAr ? "المنتج" : "Product"}</TableHead>
+                      <TableHead className="font-bold text-[11px] uppercase tracking-wider">{isAr ? "النوع" : "Type"}</TableHead>
+                      <TableHead className="font-bold text-[11px] uppercase tracking-wider cursor-pointer select-none" onClick={() => toggleSort("status")}>
+                        {isAr ? "الحالة" : "Status"}<SortIndicator col="status" />
+                      </TableHead>
+                      <TableHead className="font-bold text-[11px] uppercase tracking-wider cursor-pointer select-none" onClick={() => toggleSort("date")}>
+                        {isAr ? "التاريخ" : "Date"}<SortIndicator col="date" />
+                      </TableHead>
+                      <TableHead className="font-bold text-[11px] uppercase tracking-wider">{isAr ? "الطهاة" : "Chefs"}</TableHead>
+                      <TableHead className="print:hidden w-12" />
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {filteredSessions.map(session => {
+                      const sc = sessionStatusConfig[session.status] || sessionStatusConfig.scheduled;
+                      const isExpanded = expandedSessionId === session.id;
+                      return (
+                        <>
+                          <TableRow
+                            key={session.id}
+                            className={`cursor-pointer transition-colors ${isExpanded ? "bg-muted/40" : "hover:bg-muted/40"}`}
+                            onClick={() => setExpandedSessionId(isExpanded ? null : session.id)}
+                          >
+                            <TableCell>
+                              <div>
+                                <p className="font-bold text-sm">{isAr && session.title_ar ? session.title_ar : session.title}</p>
+                                {session.session_number && <p className="text-[10px] text-muted-foreground font-mono">#{session.session_number}</p>}
+                              </div>
+                            </TableCell>
+                            <TableCell>
+                              <div className="flex items-center gap-2">
+                                <Package className="h-3.5 w-3.5 text-muted-foreground shrink-0" />
+                                <span className="text-sm">{isAr && session.product_name_ar ? session.product_name_ar : session.product_name}</span>
+                              </div>
+                            </TableCell>
+                            <TableCell>
+                              <Badge variant="secondary" className="text-[10px]">
+                                {experienceLabels[session.experience_type]?.[isAr ? "ar" : "en"] || session.experience_type}
+                              </Badge>
+                            </TableCell>
+                            <TableCell>
+                              <span className={`inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider border ${sc.color}`}>
+                                {session.status.replace("_", " ")}
+                              </span>
+                            </TableCell>
+                            <TableCell className="text-sm text-muted-foreground tabular-nums">
+                              {session.session_date ? format(new Date(session.session_date), "MMM d, yyyy") : "—"}
+                            </TableCell>
+                            <TableCell>
+                              <div className="flex items-center gap-1">
+                                <Users className="h-3 w-3 text-muted-foreground" />
+                                <span className="text-sm font-medium">{session.max_chefs}</span>
+                              </div>
+                            </TableCell>
+                            <TableCell className="print:hidden">
+                              <ChevronDown className={`h-4 w-4 text-muted-foreground transition-transform ${isExpanded ? "rotate-180" : ""}`} />
                             </TableCell>
                           </TableRow>
-                        )}
-                      </>
-                    );
-                  })}
-                </TableBody>
-              </Table>
-            </Card>
+                          {isExpanded && (
+                            <TableRow key={`${session.id}-detail`}>
+                              <TableCell colSpan={7} className="p-0">
+                                <ChefsTableSessionDetail session={session} onNavigate={(id) => navigate(`/chefs-table/${id}`)} />
+                              </TableCell>
+                            </TableRow>
+                          )}
+                        </>
+                      );
+                    })}
+                  </TableBody>
+                </Table>
+              </Card>
+            </>
           )}
         </TabsContent>
 
