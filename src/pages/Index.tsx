@@ -9,6 +9,7 @@ import { HomeSearch } from "@/components/home/HomeSearch";
 import { HomeStats } from "@/components/home/HomeStats";
 import { useAdTracking } from "@/hooks/useAdTracking";
 import { prefetchCommonRoutes } from "@/lib/prefetch";
+import { useHomepageSections, type HomepageSection } from "@/hooks/useHomepageSections";
 
 // Lazy load below-fold components
 const EventsByCategory = lazy(() => import("@/components/home/EventsByCategory").then(m => ({ default: m.EventsByCategory })));
@@ -55,10 +56,33 @@ const LazyFallback = memo(({ type = "grid" }: { type?: "grid" | "cards" | "banne
 });
 LazyFallback.displayName = "LazyFallback";
 
+/* Map section_key → component */
+const SECTION_MAP: Record<string, { Component: React.LazyExoticComponent<any>; fallback?: "grid" | "banner" }> = {
+  events_by_category: { Component: EventsByCategory },
+  regional_events: { Component: RegionalEvents },
+  events_calendar: { Component: HomeEventsCalendarPreview },
+  featured_chefs: { Component: FeaturedChefs },
+  newly_joined: { Component: NewlyJoinedUsers },
+  sponsors: { Component: SponsorCarousel },
+  pro_suppliers: { Component: HomeProSuppliers },
+  masterclasses: { Component: HomeMasterclasses },
+  sponsorships: { Component: SponsorshipOpportunities },
+  articles: { Component: HomeArticles },
+  features: { Component: PlatformFeatures },
+  newsletter: { Component: NewsletterSignup },
+  partners: { Component: PartnersLogos },
+};
+
+function isVisible(sections: HomepageSection[], key: string): boolean {
+  const s = sections.find((sec) => sec.section_key === key);
+  return s ? s.is_visible : true; // default visible if not in DB
+}
+
 const Index = () => {
   const { language } = useLanguage();
   useAdTracking();
   useEffect(() => { prefetchCommonRoutes(); }, []);
+  const { data: sections = [] } = useHomepageSections();
 
   return (
     <div className="flex min-h-screen flex-col overflow-x-hidden" role="document">
@@ -84,94 +108,80 @@ const Index = () => {
 
       <div>
         {/* 1. Hero Slider */}
-        <HeroSlider />
+        {isVisible(sections, "hero") && <HeroSlider />}
 
         {/* 2. Search Bar */}
-        <HomeSearch />
+        {isVisible(sections, "search") && <HomeSearch />}
 
         {/* 3. Platform Stats */}
-        <div className="mt-4">
-          <HomeStats />
-        </div>
+        {isVisible(sections, "stats") && (
+          <div className="mt-4">
+            <HomeStats />
+          </div>
+        )}
 
-        {/* 4. Events by Category (primary content) */}
-        <Suspense fallback={<LazyFallback />}>
-          <EventsByCategory />
-        </Suspense>
+        {/* Dynamic lazy sections — sorted by sort_order from DB */}
+        {sections
+          .filter((s) => s.is_visible && SECTION_MAP[s.section_key])
+          .map((s) => {
+            // Ad banners are special
+            if (s.section_key === "ad_banner_top" || s.section_key === "ad_banner_mid") return null;
 
-        {/* 5. Ad Banner */}
-        <Suspense fallback={<LazyFallback type="banner" />}>
-          <section className="container py-4">
-            <AdBanner placementSlug="home-hero-banner" className="w-full rounded-xl overflow-hidden aspect-[728/90] sm:aspect-[970/90] max-h-[120px]" />
-          </section>
-        </Suspense>
+            const entry = SECTION_MAP[s.section_key];
+            if (!entry) return null;
 
-        {/* 6. Regional Events */}
-        <Suspense fallback={<LazyFallback />}>
-          <RegionalEvents />
-        </Suspense>
+            return (
+              <Suspense key={s.section_key} fallback={<LazyFallback type={entry.fallback} />}>
+                <entry.Component />
+              </Suspense>
+            );
+          })}
 
-        {/* 6b. Events Calendar Preview */}
-        <Suspense fallback={<LazyFallback />}>
-          <HomeEventsCalendarPreview />
-        </Suspense>
+        {/* Ad banners rendered in position */}
+        {isVisible(sections, "ad_banner_top") && (
+          <Suspense fallback={<LazyFallback type="banner" />}>
+            <section className="container py-4">
+              <AdBanner placementSlug="home-hero-banner" className="w-full rounded-xl overflow-hidden aspect-[728/90] sm:aspect-[970/90] max-h-[120px]" />
+            </section>
+          </Suspense>
+        )}
 
-        {/* 7. Featured Chefs */}
-        <Suspense fallback={<LazyFallback />}>
-          <FeaturedChefs />
-        </Suspense>
+        {isVisible(sections, "ad_banner_mid") && (
+          <Suspense fallback={<LazyFallback type="banner" />}>
+            <section className="container py-4">
+              <AdBanner placementSlug="in-feed" className="w-full max-w-3xl mx-auto rounded-xl overflow-hidden aspect-[728/90] sm:aspect-[970/250] max-h-[250px]" />
+            </section>
+          </Suspense>
+        )}
 
-        {/* 8. Newly Joined Members */}
-        <Suspense fallback={<LazyFallback />}>
-          <NewlyJoinedUsers />
-        </Suspense>
-
-        {/* 9. Sponsors Marquee */}
-        <Suspense fallback={<LazyFallback />}>
-          <SponsorCarousel />
-        </Suspense>
-
-        {/* 9.5. Pro Suppliers */}
-        <Suspense fallback={<LazyFallback />}>
-          <HomeProSuppliers />
-        </Suspense>
-
-        {/* 10. Masterclasses */}
-        <Suspense fallback={<LazyFallback />}>
-          <HomeMasterclasses />
-        </Suspense>
-
-        {/* 11. In-feed Ad */}
-        <Suspense fallback={<LazyFallback type="banner" />}>
-          <section className="container py-4">
-            <AdBanner placementSlug="in-feed" className="w-full max-w-3xl mx-auto rounded-xl overflow-hidden aspect-[728/90] sm:aspect-[970/250] max-h-[250px]" />
-          </section>
-        </Suspense>
-
-        {/* 12. Sponsorship Opportunities */}
-        <Suspense fallback={<LazyFallback />}>
-          <SponsorshipOpportunities />
-        </Suspense>
-
-        {/* 13. Articles */}
-        <Suspense fallback={<LazyFallback />}>
-          <HomeArticles />
-        </Suspense>
-
-        {/* 14. Platform Features & Why Altoha */}
-        <Suspense fallback={<LazyFallback />}>
-          <PlatformFeatures />
-        </Suspense>
-
-        {/* 13. Newsletter */}
-        <Suspense fallback={<LazyFallback />}>
-          <NewsletterSignup />
-        </Suspense>
-
-        {/* 14. Partners */}
-        <Suspense fallback={<LazyFallback />}>
-          <PartnersLogos />
-        </Suspense>
+        {/* Fallback: render all sections if DB returned nothing (first load) */}
+        {sections.length === 0 && (
+          <>
+            <Suspense fallback={<LazyFallback />}><EventsByCategory /></Suspense>
+            <Suspense fallback={<LazyFallback type="banner" />}>
+              <section className="container py-4">
+                <AdBanner placementSlug="home-hero-banner" className="w-full rounded-xl overflow-hidden aspect-[728/90] sm:aspect-[970/90] max-h-[120px]" />
+              </section>
+            </Suspense>
+            <Suspense fallback={<LazyFallback />}><RegionalEvents /></Suspense>
+            <Suspense fallback={<LazyFallback />}><HomeEventsCalendarPreview /></Suspense>
+            <Suspense fallback={<LazyFallback />}><FeaturedChefs /></Suspense>
+            <Suspense fallback={<LazyFallback />}><NewlyJoinedUsers /></Suspense>
+            <Suspense fallback={<LazyFallback />}><SponsorCarousel /></Suspense>
+            <Suspense fallback={<LazyFallback />}><HomeProSuppliers /></Suspense>
+            <Suspense fallback={<LazyFallback />}><HomeMasterclasses /></Suspense>
+            <Suspense fallback={<LazyFallback type="banner" />}>
+              <section className="container py-4">
+                <AdBanner placementSlug="in-feed" className="w-full max-w-3xl mx-auto rounded-xl overflow-hidden aspect-[728/90] sm:aspect-[970/250] max-h-[250px]" />
+              </section>
+            </Suspense>
+            <Suspense fallback={<LazyFallback />}><SponsorshipOpportunities /></Suspense>
+            <Suspense fallback={<LazyFallback />}><HomeArticles /></Suspense>
+            <Suspense fallback={<LazyFallback />}><PlatformFeatures /></Suspense>
+            <Suspense fallback={<LazyFallback />}><NewsletterSignup /></Suspense>
+            <Suspense fallback={<LazyFallback />}><PartnersLogos /></Suspense>
+          </>
+        )}
 
         <Suspense fallback={null}>
           <AdPopup />
