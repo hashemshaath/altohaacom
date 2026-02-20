@@ -5,6 +5,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { SEOHead } from "@/components/SEOHead";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
+import { Badge } from "@/components/ui/badge";
 import { useAdTracking } from "@/hooks/useAdTracking";
 import { CommunityFeed } from "@/components/community/CommunityFeed";
 import { ChefsTab } from "@/components/community/ChefsTab";
@@ -16,6 +17,7 @@ import { LiveSessionsTab } from "@/components/community/LiveSessionsTab";
 import { CommunityLeftSidebar, type CommunityTab } from "@/components/community/CommunityLeftSidebar";
 import { CommunityRightSidebar } from "@/components/community/CommunityRightSidebar";
 import { CommunityMobileTabs } from "@/components/community/CommunityMobileTabs";
+import { Users } from "lucide-react";
 
 export default function Community() {
   const { language } = useLanguage();
@@ -40,6 +42,32 @@ export default function Community() {
         description={isAr ? "تواصل مع الطهاة وشارك الوصفات وانضم إلى المجموعات" : "Connect with chefs, share recipes, join groups on Altoha."}
       />
       <Header />
+
+      {/* Editorial Community Hero */}
+      <section className="relative overflow-hidden border-b border-border/40">
+        <div className="absolute inset-0 bg-gradient-to-br from-primary/8 via-background to-chart-2/4" />
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,hsl(var(--primary)/0.06),transparent_70%)]" />
+        <div className="container relative py-8 md:py-10">
+          <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
+            <div className="max-w-2xl space-y-3">
+              <div className="inline-flex items-center gap-2 rounded-full bg-primary/10 px-3.5 py-1.5 ring-1 ring-primary/20">
+                <Users className="h-3.5 w-3.5 text-primary" />
+                <span className="text-[10px] font-bold uppercase tracking-[0.15em] text-primary">
+                  {isAr ? "مجتمع الطهاة" : "Culinary Community"}
+                </span>
+              </div>
+              <h1 className="font-serif text-3xl font-bold tracking-tight md:text-4xl">
+                {isAr ? "المجتمع" : "Community"}
+              </h1>
+              <p className="text-muted-foreground text-sm leading-relaxed md:text-base">
+                {isAr
+                  ? "ماذا يحدث في مجتمع الطهاة؟"
+                  : "What's happening in the chef community?"}
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
 
       <main className="container flex-1">
         <div className="mx-auto max-w-[1200px] flex gap-0 lg:gap-2">
