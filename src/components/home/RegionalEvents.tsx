@@ -70,7 +70,7 @@ export function RegionalEvents() {
     if (activeTab === "global") {
       return allComps.filter((c: any) => !c.country_code || !MIDDLE_EAST.includes(c.country_code.toUpperCase()));
     }
-    // country tab
+    // country tab — filter by selected country
     if (selectedCountry) {
       return allComps.filter((c: any) => c.country_code?.toUpperCase() === selectedCountry);
     }
@@ -119,131 +119,138 @@ export function RegionalEvents() {
   if (allComps.length === 0) return null;
 
   const tabs: { value: FilterTab; icon: React.ReactNode; label: string }[] = [
-    { value: "country", icon: <Flag className="h-3.5 w-3.5" />, label: isAr ? "حسب الدولة" : "Country" },
+    { value: "country", icon: <Flag className="h-3.5 w-3.5" />, label: isAr ? "حسب الدولة" : "By Country" },
     { value: "middle-east", icon: <span className="text-sm">🌍</span>, label: isAr ? "الشرق الأوسط" : "Middle East" },
     { value: "global", icon: <Globe className="h-3.5 w-3.5" />, label: isAr ? "عالمية" : "Global" },
   ];
 
   return (
-    <section className="relative overflow-hidden py-10 md:py-16" aria-labelledby="regional-heading">
-      {/* Section cover background */}
-      <div className="absolute inset-0 bg-muted/30" />
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom,hsl(var(--primary)/0.06),transparent_60%)]" />
-      <div className="absolute top-0 start-0 end-0 h-1 bg-gradient-to-r from-transparent via-primary/20 to-transparent" />
+    <section className="relative overflow-hidden" aria-labelledby="regional-heading">
+      {/* Cover image — 40% height, overlapping header content */}
+      <div className="relative h-[200px] sm:h-[240px] md:h-[280px] overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-br from-primary/20 via-primary/10 to-muted" />
+        <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBvcGFjaXR5PSIuMDUiPjxjaXJjbGUgY3g9IjMwIiBjeT0iMzAiIHI9IjIiIGZpbGw9ImN1cnJlbnRDb2xvciIvPjwvZz48L3N2Zz4=')] opacity-40" />
+        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-background" />
 
-      <div className="container relative">
-        <SectionReveal>
-          <div className="mb-6 text-center">
-            <h2 id="regional-heading" className={cn("text-xl font-bold sm:text-2xl md:text-3xl", !isAr && "font-serif")}>
-              {isAr ? "فعاليات حسب المنطقة" : "Events by Region"}
-            </h2>
-            <p className="mt-2 text-sm text-muted-foreground">
-              {isAr ? "اكتشف الأحداث القريبة منك والفعاليات العالمية المميزة" : "Discover events near you and standout global gatherings"}
-            </p>
-          </div>
-        </SectionReveal>
-
-        {/* Filter tabs in a single scrollable row */}
-        <div className="mb-4 flex items-center justify-center">
-          <div className="flex gap-1.5 rounded-lg bg-muted/60 p-1 overflow-x-auto no-scrollbar">
-            {tabs.map((tab) => (
-              <button
-                key={tab.value}
-                onClick={() => { setActiveTab(tab.value); if (tab.value !== "country") setSelectedCountry(null); }}
-                className={cn(
-                  "flex items-center gap-1.5 whitespace-nowrap rounded-md px-3 py-1.5 text-xs font-medium transition-all",
-                  activeTab === tab.value
-                    ? "bg-background text-foreground shadow-sm"
-                    : "text-muted-foreground hover:text-foreground hover:bg-background/50"
-                )}
-              >
-                {tab.icon}
-                {tab.label}
-              </button>
-            ))}
-          </div>
+        {/* Header content overlapping the cover */}
+        <div className="container relative flex h-full flex-col items-center justify-end pb-0">
+          <SectionReveal>
+            <div className="text-center pb-4">
+              <h2 id="regional-heading" className={cn("text-xl font-bold sm:text-2xl md:text-3xl text-foreground drop-shadow-sm", !isAr && "font-serif")}>
+                {isAr ? "فعاليات حسب المنطقة" : "Events by Region"}
+              </h2>
+              <p className="mt-1.5 text-sm text-muted-foreground">
+                {isAr ? "اكتشف الأحداث القريبة منك والفعاليات العالمية المميزة" : "Discover events near you and standout global gatherings"}
+              </p>
+            </div>
+          </SectionReveal>
         </div>
+      </div>
 
-        {/* Country sub-filters */}
-        {activeTab === "country" && availableCountries.length > 0 && (
-          <div className="mb-4">
-            <ScrollArea className="w-full" dir={isAr ? "rtl" : "ltr"}>
-              <div className="flex gap-1.5 pb-2 px-1">
+      {/* Content area — overlaps the cover by pulling up */}
+      <div className="relative -mt-10 z-10">
+        <div className="container">
+          {/* Filter tabs */}
+          <div className="mb-4 flex items-center justify-center">
+            <div className="flex gap-1.5 rounded-xl bg-background/80 backdrop-blur-sm border border-border/50 p-1 shadow-sm overflow-x-auto no-scrollbar">
+              {tabs.map((tab) => (
                 <button
-                  onClick={() => setSelectedCountry(null)}
+                  key={tab.value}
+                  onClick={() => { setActiveTab(tab.value); if (tab.value !== "country") setSelectedCountry(null); }}
                   className={cn(
-                    "whitespace-nowrap rounded-full border px-3 py-1 text-[11px] font-medium transition-all",
-                    !selectedCountry
-                      ? "border-primary bg-primary/10 text-primary"
-                      : "border-border text-muted-foreground hover:border-primary/50"
+                    "flex items-center gap-1.5 whitespace-nowrap rounded-lg px-3 py-1.5 text-xs font-medium transition-all",
+                    activeTab === tab.value
+                      ? "bg-primary text-primary-foreground shadow-sm"
+                      : "text-muted-foreground hover:text-foreground hover:bg-muted/60"
                   )}
                 >
-                  {isAr ? "الكل" : "All"}
+                  {tab.icon}
+                  {tab.label}
                 </button>
-                {availableCountries.map((code) => {
-                  const label = COUNTRY_LABELS[code];
-                  return (
-                    <button
-                      key={code}
-                      onClick={() => setSelectedCountry(code)}
-                      className={cn(
-                        "whitespace-nowrap rounded-full border px-3 py-1 text-[11px] font-medium transition-all",
-                        selectedCountry === code
-                          ? "border-primary bg-primary/10 text-primary"
-                          : "border-border text-muted-foreground hover:border-primary/50"
-                      )}
-                    >
-                      {label ? (isAr ? label.ar : label.en) : code}
-                    </button>
-                  );
-                })}
-              </div>
-              <ScrollBar orientation="horizontal" />
-            </ScrollArea>
-          </div>
-        )}
-
-        {/* Horizontally swipeable events row */}
-        {filteredComps.length > 0 ? (
-          <div className="relative group/scroll">
-            {/* Scroll arrows - desktop only */}
-            <button
-              onClick={() => scroll("left")}
-              className="absolute -start-2 top-1/2 z-10 -translate-y-1/2 hidden md:flex h-8 w-8 items-center justify-center rounded-full bg-background/90 border border-border shadow-sm opacity-0 group-hover/scroll:opacity-100 transition-opacity"
-              aria-label="Scroll left"
-            >
-              <ArrowLeft className="h-4 w-4" />
-            </button>
-            <button
-              onClick={() => scroll("right")}
-              className="absolute -end-2 top-1/2 z-10 -translate-y-1/2 hidden md:flex h-8 w-8 items-center justify-center rounded-full bg-background/90 border border-border shadow-sm opacity-0 group-hover/scroll:opacity-100 transition-opacity"
-              aria-label="Scroll right"
-            >
-              <ArrowRight className="h-4 w-4" />
-            </button>
-
-            <div
-              ref={scrollRef}
-              className="flex gap-3 overflow-x-auto pb-3 snap-x snap-mandatory no-scrollbar"
-              style={{ scrollbarWidth: "none" }}
-            >
-              {filteredComps.map(renderComp)}
+              ))}
             </div>
           </div>
-        ) : (
-          <div className="py-10 text-center text-muted-foreground">
-            {isAr ? "لا توجد فعاليات حالياً — ترقبوا القادم!" : "No events currently — exciting ones are coming soon!"}
-          </div>
-        )}
 
-        {/* View all button */}
-        <div className="mt-5 text-center">
-          <Button variant="outline" size="sm" asChild>
-            <Link to="/competitions">
-              {isAr ? "عرض جميع الفعاليات" : "View All Events"}
-              <ArrowRight className="ms-1 h-3.5 w-3.5" />
-            </Link>
-          </Button>
+          {/* Country sub-filters — shown when "By Country" is active */}
+          {activeTab === "country" && availableCountries.length > 0 && (
+            <div className="mb-4">
+              <ScrollArea className="w-full" dir={isAr ? "rtl" : "ltr"}>
+                <div className="flex gap-1.5 pb-2 px-1 justify-center flex-wrap">
+                  <button
+                    onClick={() => setSelectedCountry(null)}
+                    className={cn(
+                      "whitespace-nowrap rounded-full border px-3 py-1 text-[11px] font-medium transition-all",
+                      !selectedCountry
+                        ? "border-primary bg-primary/10 text-primary"
+                        : "border-border text-muted-foreground hover:border-primary/50"
+                    )}
+                  >
+                    {isAr ? "الكل" : "All"}
+                  </button>
+                  {availableCountries.map((code) => {
+                    const label = COUNTRY_LABELS[code];
+                    return (
+                      <button
+                        key={code}
+                        onClick={() => setSelectedCountry(code)}
+                        className={cn(
+                          "whitespace-nowrap rounded-full border px-3 py-1 text-[11px] font-medium transition-all",
+                          selectedCountry === code
+                            ? "border-primary bg-primary/10 text-primary"
+                            : "border-border text-muted-foreground hover:border-primary/50"
+                        )}
+                      >
+                        {label ? (isAr ? label.ar : label.en) : code}
+                      </button>
+                    );
+                  })}
+                </div>
+                <ScrollBar orientation="horizontal" />
+              </ScrollArea>
+            </div>
+          )}
+
+          {/* Horizontally swipeable events row */}
+          {filteredComps.length > 0 ? (
+            <div className="relative group/scroll">
+              <button
+                onClick={() => scroll("left")}
+                className="absolute -start-2 top-1/2 z-10 -translate-y-1/2 hidden md:flex h-8 w-8 items-center justify-center rounded-full bg-background/90 border border-border shadow-sm opacity-0 group-hover/scroll:opacity-100 transition-opacity"
+                aria-label="Scroll left"
+              >
+                <ArrowLeft className="h-4 w-4" />
+              </button>
+              <button
+                onClick={() => scroll("right")}
+                className="absolute -end-2 top-1/2 z-10 -translate-y-1/2 hidden md:flex h-8 w-8 items-center justify-center rounded-full bg-background/90 border border-border shadow-sm opacity-0 group-hover/scroll:opacity-100 transition-opacity"
+                aria-label="Scroll right"
+              >
+                <ArrowRight className="h-4 w-4" />
+              </button>
+
+              <div
+                ref={scrollRef}
+                className="flex gap-3 overflow-x-auto pb-3 snap-x snap-mandatory no-scrollbar"
+                style={{ scrollbarWidth: "none" }}
+              >
+                {filteredComps.map(renderComp)}
+              </div>
+            </div>
+          ) : (
+            <div className="py-10 text-center text-muted-foreground">
+              {isAr ? "لا توجد فعاليات حالياً — ترقبوا القادم!" : "No events currently — exciting ones are coming soon!"}
+            </div>
+          )}
+
+          {/* View all */}
+          <div className="mt-5 pb-10 text-center">
+            <Button variant="outline" size="sm" asChild>
+              <Link to="/competitions">
+                {isAr ? "عرض جميع الفعاليات" : "View All Events"}
+                <ArrowRight className="ms-1 h-3.5 w-3.5" />
+              </Link>
+            </Button>
+          </div>
         </div>
       </div>
     </section>
