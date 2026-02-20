@@ -25,7 +25,7 @@ export default function ChefPortfolio() {
   const { data: profile, isLoading: profileLoading } = useQuery({
     queryKey: ["portfolio-profile", targetUserId],
     queryFn: async () => {
-      const { data } = await (supabase.from("profiles_public" as any) as any).select("*").eq("user_id", targetUserId!).single();
+      const { data } = await supabase.from("profiles_public").select("*").eq("user_id", targetUserId!).single();
       return data;
     },
     enabled: !!targetUserId,

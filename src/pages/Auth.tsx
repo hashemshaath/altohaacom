@@ -137,7 +137,7 @@ export default function Auth() {
     setUsernameStatus("checking");
     const timer = setTimeout(async () => {
       const { data } = await supabase
-        .from("profiles_public" as any)
+        .from("profiles_public")
         .select("username")
         .eq("username", username.toLowerCase())
         .maybeSingle();
@@ -486,7 +486,7 @@ export default function Auth() {
           country_code: countryCode || null,
           preferred_language: language,
           email: accountEmail,
-        } as any)
+        })
         .eq("user_id", data.user.id);
 
       // Process referral code via edge function

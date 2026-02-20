@@ -118,7 +118,7 @@ export default function EntityDetail() {
         supabase.from("entity_competition_participations").select("id", { count: "exact", head: true }).eq("entity_id", entity.id),
         supabase.from("entity_programs").select("id", { count: "exact", head: true }).eq("entity_id", entity.id),
         supabase.from("entity_events").select("id", { count: "exact", head: true }).eq("entity_id", entity.id),
-        supabase.from("entity_positions" as any).select("id", { count: "exact", head: true }).eq("entity_id", entity.id).eq("is_active", true),
+        supabase.from("entity_positions").select("id", { count: "exact", head: true }).eq("entity_id", entity.id).eq("is_active", true),
         supabase.from("entity_memberships").select("id", { count: "exact", head: true }).eq("entity_id", entity.id),
       ]);
       return {

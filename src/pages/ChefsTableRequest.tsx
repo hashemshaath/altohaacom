@@ -117,11 +117,11 @@ export default function ChefsTableRequest() {
       setIsRegistered(true);
       setCompanyId(registeredCompanyId);
       setCompanyName(companyProfile.name || "");
-      setCompanyNameAr((companyProfile as any).name_ar || "");
+      setCompanyNameAr(companyProfile.name_ar || "");
       setBrandName(companyProfile.name || "");
-      setContactEmail((companyProfile as any).email || user?.email || "");
-      setContactPhone((companyProfile as any).phone || "");
-      setWebsite((companyProfile as any).website || "");
+      setContactEmail(companyProfile.email || user?.email || "");
+      setContactPhone(companyProfile.phone || "");
+      setWebsite(companyProfile.website || "");
     } else if (!companyLoading && !registeredCompanyId) {
       setIsRegistered(false);
     }

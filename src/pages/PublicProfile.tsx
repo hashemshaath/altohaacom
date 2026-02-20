@@ -101,14 +101,14 @@ export default function PublicProfile() {
     queryKey: ["publicProfile", username],
     queryFn: async () => {
       const { data, error } = await supabase
-        .from("profiles_public" as any).select("*").eq("username", username?.toLowerCase()).maybeSingle();
+        .from("profiles_public").select("*").eq("username", username?.toLowerCase()).maybeSingle();
       if (error) throw error;
-      if (data) return data as any;
+      if (data) return data;
       const isUuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(username || "");
       if (isUuid) {
-        const { data: byId, error: err2 } = await supabase.from("profiles_public" as any).select("*").eq("user_id", username).maybeSingle();
+        const { data: byId, error: err2 } = await supabase.from("profiles_public").select("*").eq("user_id", username).maybeSingle();
         if (err2) throw err2;
-        if (byId) return byId as any;
+        if (byId) return byId;
       }
       throw new Error("Profile not found");
     },

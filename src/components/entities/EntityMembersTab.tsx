@@ -57,7 +57,7 @@ export function EntityMembersTab({ entityId }: Props) {
     queryKey: ["entity-positions-public", entityId],
     queryFn: async () => {
       const { data, error } = await supabase
-        .from("entity_positions" as any)
+        .from("entity_positions")
         .select("*, profiles:user_id(id, user_id, full_name, full_name_ar, avatar_url, experience_level, username)")
         .eq("entity_id", entityId)
         .eq("is_active", true)
