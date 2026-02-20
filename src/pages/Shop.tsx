@@ -95,14 +95,14 @@ export default function Shop() {
         />
 
         {isLoading ? (
-          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+          <div className="grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-3 xl:grid-cols-4">
             {[1, 2, 3, 4, 5, 6, 7, 8].map((i) => (
               <Card key={i} className="overflow-hidden">
                 <Skeleton className="aspect-square w-full" />
-                <CardContent className="space-y-2.5 p-4">
-                  <Skeleton className="h-5 w-3/4" />
-                  <Skeleton className="h-4 w-1/2" />
-                  <Skeleton className="h-9 w-full" />
+                <CardContent className="space-y-2.5 p-3">
+                  <Skeleton className="h-4 w-3/4" />
+                  <Skeleton className="h-3 w-1/2" />
+                  <Skeleton className="h-8 w-full" />
                 </CardContent>
               </Card>
             ))}
@@ -110,7 +110,7 @@ export default function Shop() {
         ) : filtered.length === 0 ? (
           <ShopEmptyState search={search} onClearSearch={() => setSearch("")} />
         ) : (
-          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+          <div className="grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-3 xl:grid-cols-4">
             {filtered.map((product: any) => (
               <ShopProductCard key={product.id} product={product} onAddToCart={handleAddToCart} />
             ))}

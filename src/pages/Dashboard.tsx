@@ -125,26 +125,31 @@ export default function Dashboard() {
           </div>
         )}
 
-        {/* Quick Navigation - Mobile-optimized scrollable row on small screens, grid on large */}
+        {/* Quick Navigation - Scrollable 2-row on mobile, grid on desktop */}
         <div className="mb-8">
           <h2 className="text-xs font-bold uppercase tracking-wider text-muted-foreground mb-3 flex items-center gap-2">
             <Sparkles className="h-3 w-3 text-primary" />
             {isAr ? "الوصول السريع" : "Quick Access"}
           </h2>
-          {/* Mobile: 2-row horizontal scroll. Desktop: wrap grid */}
-          <div className="flex gap-2.5 overflow-x-auto pb-1 scrollbar-none sm:grid sm:grid-cols-5 md:grid-cols-5 lg:grid-cols-10 sm:overflow-visible sm:pb-0" style={{ scrollbarWidth: "none" }}>
-            {sections.map((s) => (
-              <Link key={s.title} to={s.href} className="group shrink-0 w-[72px] sm:w-auto">
-                <Card className={`h-full border-border/30 bg-card/60 backdrop-blur-sm transition-all duration-200 hover:shadow-lg hover:-translate-y-1 hover:border-border/50 hover:bg-card active:scale-[0.92] ${s.glow}`}>
-                  <CardContent className="flex flex-col items-center gap-1.5 p-2.5 sm:p-3 text-center">
-                    <div className={`flex h-11 w-11 sm:h-12 sm:w-12 items-center justify-center rounded-2xl ${s.bg} ring-1 ${s.ring} transition-all duration-200 group-hover:scale-110 group-hover:shadow-md`}>
+          {/* Mobile: horizontal scroll strip. Tablet+: grid */}
+          <div className="relative">
+            <div
+              className="flex gap-2 overflow-x-auto pb-2 sm:pb-0 sm:grid sm:grid-cols-5 lg:grid-cols-10 sm:overflow-visible"
+              style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
+            >
+              {sections.map((s) => (
+                <Link key={s.title} to={s.href} className="group shrink-0 sm:shrink">
+                  <div className={`flex flex-col items-center gap-2 p-2.5 rounded-2xl border border-border/30 bg-card/60 backdrop-blur-sm transition-all duration-200 hover:shadow-md hover:border-border/60 active:scale-[0.92] w-[76px] sm:w-auto ${s.glow}`}>
+                    <div className={`flex h-12 w-12 items-center justify-center rounded-xl ${s.bg} ring-1 ${s.ring} transition-all duration-200 group-hover:scale-105`}>
                       <s.icon className={`h-5 w-5 ${s.color}`} />
                     </div>
-                    <span className="text-[10px] font-semibold tracking-tight text-foreground/80 group-hover:text-foreground transition-colors leading-tight line-clamp-1">{s.title}</span>
-                  </CardContent>
-                </Card>
-              </Link>
-            ))}
+                    <span className="text-[10px] font-semibold text-center text-foreground/80 leading-tight w-full line-clamp-2">{s.title}</span>
+                  </div>
+                </Link>
+              ))}
+            </div>
+            {/* Right fade hint on mobile */}
+            <div className="pointer-events-none absolute end-0 top-0 bottom-2 w-6 bg-gradient-to-l from-background to-transparent sm:hidden" />
           </div>
         </div>
 
