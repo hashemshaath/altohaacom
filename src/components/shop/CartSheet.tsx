@@ -293,8 +293,8 @@ export function CartSheet({ open, onOpenChange, cart }: CartSheetProps) {
                  <span className="text-primary">{formatCurrency(cart.totalPrice, language as "en" | "ar")}</span>
                </div>
 
-              <Button className="w-full" size="lg" onClick={handlePlaceOrder} disabled={isPlacing}>
-                {isPlacing ? (isAr ? "جارٍ تقديم الطلب..." : "Placing order...") : (isAr ? "تقديم الطلب" : "Place Order")}
+              <Button className="w-full" size="lg" onClick={() => { onOpenChange(false); navigate("/checkout"); }}>
+                {isAr ? "المتابعة للدفع" : "Proceed to Checkout"} →
               </Button>
               <Button variant="outline" size="sm" className="w-full" onClick={() => cart.clearCart()}>
                 <Trash2 className="me-1.5 h-3.5 w-3.5" />
