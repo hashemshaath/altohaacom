@@ -41,7 +41,7 @@ export function HeroSlider() {
   // Fallback hero when no slides configured
   if (!slides.length) {
     return (
-      <section className="relative flex items-center justify-center overflow-hidden py-32 md:py-44" aria-label={isAr ? "القسم الرئيسي" : "Hero section"}>
+      <section className="relative flex items-center justify-center overflow-hidden py-20 md:py-36" aria-label={isAr ? "القسم الرئيسي" : "Hero section"}>
         {/* Animated gradient background */}
         <div className="absolute inset-0 bg-gradient-to-br from-primary/15 via-background to-accent/10" />
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,hsl(var(--primary)/0.12),transparent_60%)]" />
@@ -58,7 +58,7 @@ export function HeroSlider() {
               {isAr ? "المنصة الأولى عالمياً" : "The World's #1 Culinary Platform"}
             </span>
           </div>
-          <h1 className="font-serif text-4xl font-bold sm:text-5xl md:text-6xl lg:text-7xl leading-tight">
+          <h1 className="font-serif text-3xl font-bold sm:text-4xl md:text-5xl lg:text-6xl leading-tight">
             <span className="bg-gradient-to-br from-primary via-primary/80 to-accent bg-clip-text text-transparent">
               {isAr ? "ارتقِ بشغفك" : "Elevate Your"}
             </span>
@@ -96,7 +96,7 @@ export function HeroSlider() {
   const linkLabel = isAr && slide.link_label_ar ? slide.link_label_ar : slide.link_label;
 
   return (
-    <section className="relative h-[360px] sm:h-[440px] md:h-[560px] lg:h-[620px] overflow-hidden" aria-label={isAr ? "القسم الرئيسي" : "Hero slider"} role="region">
+    <section className="relative h-[280px] sm:h-[380px] md:h-[500px] lg:h-[580px] overflow-hidden" aria-label={isAr ? "القسم الرئيسي" : "Hero slider"} role="region">
       {/* Slides */}
       {slides.map((s: any, i: number) => (
         <div
@@ -131,11 +131,11 @@ export function HeroSlider() {
       <div className="absolute inset-0 z-20 flex items-end pb-16 sm:pb-20 md:items-center md:pb-0">
         <div className="container">
           <div className="max-w-2xl animate-fade-in">
-            <h1 className="font-serif text-2xl font-bold text-foreground sm:text-4xl md:text-5xl lg:text-6xl drop-shadow-sm leading-tight">
+            <h1 className="font-serif text-xl font-bold text-foreground sm:text-3xl md:text-5xl lg:text-6xl drop-shadow-sm leading-tight">
               {title}
             </h1>
             {subtitle && (
-              <p className="mt-4 text-base text-muted-foreground sm:text-lg md:text-xl max-w-lg leading-relaxed">
+              <p className="mt-2 text-sm text-muted-foreground sm:text-base md:text-lg max-w-lg leading-relaxed">
                 {subtitle}
               </p>
             )}

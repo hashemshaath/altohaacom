@@ -188,10 +188,10 @@ export function EventsByCategory() {
   ];
 
   return (
-    <section className="container py-14 md:py-20" aria-labelledby="events-cat-heading">
+    <section className="container py-10 md:py-16" aria-labelledby="events-cat-heading">
       <SectionReveal>
         <div className="mb-8 text-center">
-          <h2 id="events-cat-heading" className="font-serif text-2xl font-bold sm:text-3xl md:text-4xl">
+          <h2 id="events-cat-heading" className="font-serif text-xl font-bold sm:text-2xl md:text-3xl">
             {isAr ? "استكشف عالم الفعاليات" : "Explore the World of Events"}
           </h2>
           <p className="mt-2 text-sm text-muted-foreground">
@@ -214,7 +214,7 @@ export function EventsByCategory() {
           <TabsContent key={tab.key} value={tab.key}>
             {tab.items.length > 0 ? (
               <>
-                <StaggeredList className="grid gap-4 grid-cols-2 sm:grid-cols-3 lg:grid-cols-4" stagger={60}>
+                <StaggeredList className="grid gap-2.5 grid-cols-2 sm:grid-cols-3 lg:grid-cols-4" stagger={60}>
                   {tab.items.map(tab.renderItem)}
                 </StaggeredList>
                 <div className="mt-6 text-center">

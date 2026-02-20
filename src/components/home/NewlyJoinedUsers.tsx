@@ -32,7 +32,7 @@ export function NewlyJoinedUsers() {
   if (users.length === 0) return null;
 
   return (
-    <section className="py-12 md:py-16" aria-labelledby="new-users-heading">
+    <section className="py-10 md:py-14" aria-labelledby="new-users-heading">
       <div className="container">
         <SectionReveal>
           <div className="mb-8 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
@@ -41,7 +41,7 @@ export function NewlyJoinedUsers() {
                 <UserPlus className="h-3 w-3" />
                 {isAr ? "انضموا حديثاً" : "Newly Joined"}
               </Badge>
-              <h2 id="new-users-heading" className="font-serif text-2xl font-bold sm:text-3xl">
+              <h2 id="new-users-heading" className="font-serif text-xl font-bold sm:text-2xl">
                 {isAr ? "أحدث الأعضاء في مجتمعنا" : "Welcome Our Newest Members"}
               </h2>
               <p className="mt-1 text-sm text-muted-foreground">
@@ -59,7 +59,7 @@ export function NewlyJoinedUsers() {
           </div>
         </SectionReveal>
 
-        <div className="grid grid-cols-3 gap-2.5 sm:grid-cols-4 md:grid-cols-6">
+        <div className="grid grid-cols-3 gap-2 sm:grid-cols-4 md:grid-cols-6">
           {users.map((user: any) => {
             const name = isAr && user.full_name_ar ? user.full_name_ar : user.full_name;
             const spec = isAr && user.specialization_ar ? user.specialization_ar : user.specialization;
@@ -73,9 +73,9 @@ export function NewlyJoinedUsers() {
 
             return (
               <Link key={user.id} to={user.username ? `/${user.username}` : `/profile/${user.user_id}`} className="group block">
-                <Card className="h-full border-border/50 p-4 text-center transition-all duration-300 hover:shadow-md hover:-translate-y-1 hover:border-primary/20">
+                <Card className="h-full border-border/50 p-3 text-center transition-all duration-300 hover:shadow-md hover:-translate-y-1 hover:border-primary/20">
                   <div className="relative mx-auto mb-3 w-fit">
-                    <Avatar className="h-16 w-16 ring-2 ring-background shadow-md transition-transform duration-300 group-hover:scale-105">
+                    <Avatar className="h-12 w-12 sm:h-16 sm:w-16 ring-2 ring-background shadow-md transition-transform duration-300 group-hover:scale-105">
                       <AvatarImage src={user.avatar_url} alt={name} />
                       <AvatarFallback className="bg-primary/10 text-primary font-semibold text-sm">
                         {initials}

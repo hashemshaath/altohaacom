@@ -90,7 +90,7 @@ const Index = () => {
         <HomeSearch />
 
         {/* 3. Platform Stats */}
-        <div className="mt-6">
+        <div className="mt-4">
           <HomeStats />
         </div>
 

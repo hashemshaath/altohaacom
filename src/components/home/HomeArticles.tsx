@@ -30,7 +30,7 @@ export function HomeArticles() {
   if (articles.length === 0) return null;
 
   return (
-    <section className="container py-14 md:py-20" aria-labelledby="articles-heading">
+    <section className="container py-10 md:py-16" aria-labelledby="articles-heading">
       <SectionReveal>
         <div className="mb-8 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
           <div>
@@ -38,7 +38,7 @@ export function HomeArticles() {
               <Newspaper className="me-1 h-3 w-3" />
               {isAr ? "أحدث المقالات" : "Latest Articles"}
             </Badge>
-            <h2 id="articles-heading" className="font-serif text-2xl font-bold sm:text-3xl">
+            <h2 id="articles-heading" className="font-serif text-xl font-bold sm:text-2xl">
               {isAr ? "قصص ملهمة من عالم الطهي" : "Inspiring Culinary Stories"}
             </h2>
             <p className="mt-1 text-sm text-muted-foreground">
@@ -53,7 +53,7 @@ export function HomeArticles() {
           </Button>
         </div>
       </SectionReveal>
-      <StaggeredList className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4" stagger={80}>
+      <StaggeredList className="grid gap-2.5 grid-cols-2 sm:grid-cols-2 lg:grid-cols-4" stagger={80}>
         {articles.map((article: any) => {
           const title = isAr && article.title_ar ? article.title_ar : article.title;
           const excerpt = isAr && article.excerpt_ar ? article.excerpt_ar : article.excerpt;

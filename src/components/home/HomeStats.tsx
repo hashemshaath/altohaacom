@@ -19,10 +19,10 @@ function StatItem({ value, label, icon: Icon, color, isVisible, delay }: {
       )}
       style={{ transitionDelay: `${delay}ms` }}
     >
-      <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-primary/8 ring-1 ring-primary/10 transition-all duration-500 hover:scale-110 hover:ring-primary/20 hover:bg-primary/10">
-        <Icon className={`h-6 w-6 ${color}`} />
+      <div className="flex h-11 w-11 sm:h-14 sm:w-14 items-center justify-center rounded-2xl bg-primary/8 ring-1 ring-primary/10 transition-all duration-500 hover:scale-110 hover:ring-primary/20 hover:bg-primary/10">
+        <Icon className={`h-5 w-5 sm:h-6 sm:w-6 ${color}`} />
       </div>
-      <p className="text-xl font-bold sm:text-3xl md:text-4xl tracking-tight tabular-nums">
+      <p className="text-lg font-bold sm:text-2xl md:text-3xl tracking-tight tabular-nums">
         {count}+
       </p>
       <p className="text-[11px] text-muted-foreground font-semibold uppercase tracking-wider">{label}</p>
@@ -63,7 +63,7 @@ export function HomeStats() {
 
   return (
     <section ref={ref} className="border-y border-border/40 bg-card/60 backdrop-blur-sm" aria-label={isAr ? "إحصائيات المنصة" : "Platform statistics"}>
-      <div className="container grid grid-cols-2 sm:grid-cols-4 gap-6 py-10 sm:py-12">
+      <div className="container grid grid-cols-2 sm:grid-cols-4 gap-4 py-8 sm:py-10">
         {items.map((stat, i) => (
           <StatItem key={stat.label} {...stat} isVisible={isVisible} delay={i * 120} />
         ))}

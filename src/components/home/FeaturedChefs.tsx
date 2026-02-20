@@ -59,7 +59,7 @@ export function FeaturedChefs() {
   if (chefs.length === 0) return null;
 
   return (
-    <section className="relative overflow-hidden py-12 md:py-16" aria-labelledby="featured-chefs-heading">
+    <section className="relative overflow-hidden py-10 md:py-14" aria-labelledby="featured-chefs-heading">
       <div className="absolute inset-0 bg-muted/30" />
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,hsl(var(--primary)/0.04),transparent_60%)]" />
       <div className="container relative">
@@ -70,7 +70,7 @@ export function FeaturedChefs() {
                 <Award className="h-3 w-3" />
                 {isAr ? "طهاة مميزون" : "Featured Chefs"}
               </Badge>
-              <h2 id="featured-chefs-heading" className="font-serif text-2xl font-bold sm:text-3xl">
+              <h2 id="featured-chefs-heading" className="font-serif text-xl font-bold sm:text-2xl">
                 {isAr ? "أبرز الطهاة على المنصة" : "Top Chefs on the Platform"}
               </h2>
               <p className="mt-1 text-sm text-muted-foreground">
@@ -87,7 +87,7 @@ export function FeaturedChefs() {
         </SectionReveal>
 
         <SectionReveal delay={100}>
-        <div className="grid grid-cols-2 gap-2.5 sm:grid-cols-3 md:grid-cols-4">
+        <div className="grid grid-cols-2 gap-2 sm:grid-cols-3 md:grid-cols-4">
           {chefs.map((chef: any, idx: number) => {
             const name = isAr && chef.full_name_ar ? chef.full_name_ar : chef.full_name;
             const spec = isAr && chef.specialization_ar ? chef.specialization_ar : chef.specialization;
@@ -101,9 +101,9 @@ export function FeaturedChefs() {
             return (
               <Link key={chef.user_id || idx} to={chef.username ? `/${chef.username}` : `/profile/${chef.user_id}`} className="group block">
                 <Card className="h-full border-border/50 transition-all duration-300 hover:shadow-lg hover:-translate-y-1 hover:border-primary/20 overflow-hidden">
-                  <CardContent className="p-4 text-center">
+                  <CardContent className="p-3 text-center">
                     <div className="relative mx-auto mb-3 w-fit">
-                      <Avatar className="h-18 w-18 sm:h-20 sm:w-20 ring-2 ring-primary/20 shadow-lg transition-transform duration-300 group-hover:scale-105">
+                      <Avatar className="h-14 w-14 sm:h-18 sm:w-18 ring-2 ring-primary/20 shadow-lg transition-transform duration-300 group-hover:scale-105">
                         <AvatarImage src={chef.avatar_url} alt={name} />
                         <AvatarFallback className="bg-primary/10 text-primary font-bold text-base">
                           {initials}
