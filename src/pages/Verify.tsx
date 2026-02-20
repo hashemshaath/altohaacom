@@ -250,7 +250,7 @@ export default function Verify() {
                       <div className="h-4 w-4 animate-spin rounded-full border-2 border-background border-t-transparent" />
                     ) : (
                       <>
-                        <Search className="h-4 w-4 mr-2" />
+                        <Search className="h-4 w-4 me-2" />
                         {isAr ? "تحقق" : "Verify"}
                       </>
                     )}

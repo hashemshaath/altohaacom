@@ -64,7 +64,7 @@ export function CoverImageUpload({ currentUrl, onUrlChange }: CoverImageUploadPr
       {preview ? (
         <div className="relative">
           <img src={preview} alt="Cover" className="h-48 w-full rounded-lg object-cover" />
-          <Button type="button" variant="destructive" size="icon" className="absolute right-2 top-2" onClick={remove} disabled={uploading}>
+          <Button type="button" variant="destructive" size="icon" className="absolute end-2 top-2" onClick={remove} disabled={uploading}>
             <X className="h-4 w-4" />
           </Button>
         </div>
