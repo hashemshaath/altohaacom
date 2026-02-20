@@ -13,8 +13,9 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   Eye, EyeOff, ChevronDown, Save, Image, LayoutGrid, Type,
   Filter, GripVertical, Loader2, Palette, Sparkles, Smartphone,
-  Clock, Box,
+  Clock, Box, Settings2, RotateCcw, Copy, ExternalLink,
 } from "lucide-react";
+import { Textarea } from "@/components/ui/textarea";
 import { cn } from "@/lib/utils";
 import { SectionIcon } from "./SectionIcon";
 
@@ -60,6 +61,7 @@ interface SectionRowProps {
   onToggle: () => void;
   onUpdate: (u: Partial<HomepageSection>) => void;
   onQuickToggle: (visible: boolean) => void;
+  onDuplicate?: (section: HomepageSection) => void;
   isPending: boolean;
   isAr: boolean;
   isDragging?: boolean;
@@ -73,9 +75,10 @@ interface SectionRowProps {
 
 export function SectionRow({
   section, index, isOpen, onToggle, onUpdate, onQuickToggle,
-  isPending, isAr, isDragging, dragHandleProps,
+  onDuplicate, isPending, isAr, isDragging, dragHandleProps,
 }: SectionRowProps) {
   const [local, setLocal] = useState<Partial<HomepageSection>>({});
+  const [jsonError, setJsonError] = useState<string | null>(null);
   const merged = { ...section, ...local };
 
   const set = <K extends keyof HomepageSection>(key: K, value: HomepageSection[K]) => {
@@ -166,7 +169,7 @@ export function SectionRow({
           <div className="border-t border-border/50">
             <Tabs defaultValue="content" className="w-full">
               <div className="px-3 pt-2">
-                <TabsList className="h-8 w-full grid grid-cols-4 bg-muted/50">
+                <TabsList className="h-8 w-full grid grid-cols-5 bg-muted/50">
                   <TabsTrigger value="content" className="text-[10px] gap-1 h-7">
                     <Type className="h-3 w-3" /> {isAr ? "المحتوى" : "Content"}
                   </TabsTrigger>
@@ -178,6 +181,9 @@ export function SectionRow({
                   </TabsTrigger>
                   <TabsTrigger value="style" className="text-[10px] gap-1 h-7">
                     <Palette className="h-3 w-3" /> {isAr ? "المظهر" : "Style"}
+                  </TabsTrigger>
+                  <TabsTrigger value="advanced" className="text-[10px] gap-1 h-7">
+                    <Settings2 className="h-3 w-3" /> {isAr ? "متقدم" : "Advanced"}
                   </TabsTrigger>
                 </TabsList>
               </div>
@@ -376,49 +382,73 @@ export function SectionRow({
                 </div>
               </TabsContent>
 
-              {/* Style Tab */}
-              <TabsContent value="style" className="px-3 sm:px-4 py-4 space-y-4 mt-0">
+              {/* Advanced Tab */}
+              <TabsContent value="advanced" className="px-3 sm:px-4 py-4 space-y-4 mt-0">
                 <div className="space-y-3">
                   <Label className="text-xs font-semibold flex items-center gap-1.5">
-                    <Sparkles className="h-3 w-3" /> {isAr ? "الحركة" : "Animation"}
+                    <Settings2 className="h-3 w-3" /> {isAr ? "تكوين مخصص (JSON)" : "Custom Config (JSON)"}
                   </Label>
-                  <Select value={merged.animation} onValueChange={(v) => set("animation", v as HomepageSection["animation"])}>
-                    <SelectTrigger className="h-8 text-xs"><SelectValue /></SelectTrigger>
-                    <SelectContent>
-                      {ANIMATION_OPTIONS.map((opt) => (
-                        <SelectItem key={opt.value} value={opt.value} className="text-xs">{isAr ? opt.ar : opt.en}</SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
+                  <Textarea
+                    value={JSON.stringify(merged.custom_config || {}, null, 2)}
+                    onChange={(e) => {
+                      try {
+                        const parsed = JSON.parse(e.target.value);
+                        set("custom_config", parsed);
+                        setJsonError(null);
+                      } catch {
+                        setJsonError(isAr ? "JSON غير صالح" : "Invalid JSON");
+                      }
+                    }}
+                    className="text-xs font-mono min-h-[120px] resize-y"
+                    placeholder='{ "key": "value" }'
+                  />
+                  {jsonError && (
+                    <p className="text-[10px] text-destructive">{jsonError}</p>
+                  )}
                 </div>
 
                 <Separator />
 
                 <div className="space-y-3">
-                  <Label className="text-xs font-semibold">{isAr ? "لون الخلفية" : "Background Color"}</Label>
-                  <div className="flex items-center gap-2">
-                    <Input
-                      value={merged.bg_color || ""}
-                      onChange={(e) => set("bg_color", e.target.value)}
-                      placeholder={isAr ? "مثال: #f5f5f5 أو شفاف" : "e.g. #f5f5f5 or transparent"}
-                      className="text-xs h-8 flex-1"
-                    />
-                    {merged.bg_color && (
-                      <div className="h-8 w-8 rounded-md border border-border shrink-0" style={{ backgroundColor: merged.bg_color }} />
+                  <Label className="text-xs font-semibold">{isAr ? "إجراءات سريعة" : "Quick Actions"}</Label>
+                  <div className="flex flex-wrap gap-2">
+                    {onDuplicate && (
+                      <Button size="sm" variant="outline" className="h-7 text-[10px] gap-1" onClick={() => onDuplicate(section)}>
+                        <Copy className="h-3 w-3" /> {isAr ? "تكرار القسم" : "Duplicate"}
+                      </Button>
                     )}
+                    <Button size="sm" variant="outline" className="h-7 text-[10px] gap-1" onClick={() => {
+                      setLocal({
+                        animation: "fade",
+                        spacing: "normal",
+                        container_width: "default",
+                        bg_color: "",
+                        css_class: "",
+                        cover_type: "none",
+                        cover_overlay_opacity: 30,
+                        cover_height: 200,
+                      });
+                    }}>
+                      <RotateCcw className="h-3 w-3" /> {isAr ? "إعادة تعيين المظهر" : "Reset Style"}
+                    </Button>
+                    <Button size="sm" variant="outline" className="h-7 text-[10px] gap-1" asChild>
+                      <a href={`/#${section.section_key}`} target="_blank" rel="noopener noreferrer">
+                        <ExternalLink className="h-3 w-3" /> {isAr ? "معاينة" : "Preview"}
+                      </a>
+                    </Button>
                   </div>
                 </div>
 
                 <Separator />
 
-                <div className="space-y-3">
-                  <Label className="text-xs font-semibold">{isAr ? "CSS مخصص" : "Custom CSS Class"}</Label>
-                  <Input
-                    value={merged.css_class || ""}
-                    onChange={(e) => set("css_class", e.target.value)}
-                    placeholder="e.g. bg-gradient-to-b from-muted/30"
-                    className="text-xs h-8 font-mono"
-                  />
+                <div className="rounded-lg bg-muted/50 p-3 space-y-1.5">
+                  <p className="text-[10px] font-semibold text-muted-foreground">{isAr ? "معلومات القسم" : "Section Info"}</p>
+                  <div className="grid grid-cols-2 gap-x-4 gap-y-1 text-[10px] text-muted-foreground">
+                    <span>ID:</span><span className="font-mono truncate">{section.id}</span>
+                    <span>Key:</span><span className="font-mono">{section.section_key}</span>
+                    <span>Sort:</span><span>{section.sort_order}</span>
+                    <span>{isAr ? "آخر تحديث" : "Updated"}:</span><span>{lastUpdated}</span>
+                  </div>
                 </div>
               </TabsContent>
             </Tabs>
@@ -431,7 +461,7 @@ export function SectionRow({
                     {isPending ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Save className="h-3.5 w-3.5" />}
                     {isAr ? "حفظ" : "Save"}
                   </Button>
-                  <Button size="sm" variant="ghost" onClick={() => setLocal({})} className="text-xs h-8">
+                  <Button size="sm" variant="ghost" onClick={() => { setLocal({}); setJsonError(null); }} className="text-xs h-8">
                     {isAr ? "إلغاء" : "Cancel"}
                   </Button>
                 </div>

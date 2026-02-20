@@ -82,3 +82,16 @@ export function useBulkUpdateHomepageSections() {
     onSuccess: () => qc.invalidateQueries({ queryKey: QUERY_KEY }),
   });
 }
+
+export function useCreateHomepageSection() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: async (section: Omit<HomepageSection, "id" | "updated_at">) => {
+      const { error } = await supabase
+        .from("homepage_sections")
+        .insert(section as any);
+      if (error) throw error;
+    },
+    onSuccess: () => qc.invalidateQueries({ queryKey: QUERY_KEY }),
+  });
+}
