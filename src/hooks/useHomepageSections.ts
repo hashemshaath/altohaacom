@@ -8,6 +8,8 @@ export interface HomepageSection {
   title_ar: string;
   subtitle_en: string;
   subtitle_ar: string;
+  description_en: string;
+  description_ar: string;
   is_visible: boolean;
   sort_order: number;
   cover_type: "none" | "background" | "banner";
@@ -17,8 +19,14 @@ export interface HomepageSection {
   item_count: number;
   item_size: "small" | "medium" | "large";
   items_per_row: number;
+  max_items_mobile: number;
   show_filters: boolean;
   show_view_all: boolean;
+  spacing: "none" | "compact" | "normal" | "relaxed";
+  animation: "none" | "fade" | "slide-up" | "slide-left" | "scale" | "blur";
+  bg_color: string;
+  css_class: string;
+  container_width: "default" | "narrow" | "wide" | "full";
   custom_config: Record<string, any>;
   updated_at: string;
 }
