@@ -256,10 +256,10 @@ const AdvertisingAdmin = forwardRef<HTMLDivElement>(function AdvertisingAdmin(_p
   };
 
   const kpis = [
-    { icon: Megaphone, label: isAr ? "الحملات النشطة" : "Active Campaigns", value: stats?.activeCampaigns || 0, color: "text-primary" },
-    { icon: Eye, label: isAr ? "إجمالي المشاهدات" : "Total Impressions", value: (stats?.totalImpressions || 0).toLocaleString(), color: "text-chart-1" },
-    { icon: MousePointer, label: isAr ? "إجمالي النقرات" : "Total Clicks", value: (stats?.totalClicks || 0).toLocaleString(), color: "text-chart-2" },
-    { icon: DollarSign, label: isAr ? "الإيرادات" : "Revenue", value: `SAR ${(stats?.totalRevenue || 0).toLocaleString()}`, color: "text-chart-3" },
+    { icon: Megaphone, label: isAr ? "نشطة" : "Active", value: stats?.activeCampaigns || 0, color: "text-primary" },
+    { icon: Eye, label: isAr ? "مشاهدات" : "Impressions", value: (stats?.totalImpressions || 0).toLocaleString(), color: "text-chart-1" },
+    { icon: MousePointer, label: isAr ? "نقرات" : "Clicks", value: (stats?.totalClicks || 0).toLocaleString(), color: "text-chart-2" },
+    { icon: DollarSign, label: isAr ? "الإيرادات" : "Revenue", value: `${(stats?.totalRevenue || 0).toLocaleString()}`, color: "text-chart-3" },
   ];
 
   const pendingRequests = requests.filter(r => r.status === "pending" || r.status === "under_review");
@@ -267,32 +267,32 @@ const AdvertisingAdmin = forwardRef<HTMLDivElement>(function AdvertisingAdmin(_p
   const pendingCreatives = creatives.filter(c => c.status === "pending");
 
   return (
-    <div ref={ref} className="space-y-6">
+    <div ref={ref} className="space-y-4 sm:space-y-6">
       {/* Header */}
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-2xl font-bold">{isAr ? "مركز الإعلانات" : "Advertising Center"}</h1>
-          <p className="text-sm text-muted-foreground">{isAr ? "إدارة الإعلانات والحملات والتحليلات" : "Manage ads, campaigns, and analytics"}</p>
+      <div className="flex items-center justify-between gap-2">
+        <div className="min-w-0">
+          <h1 className="text-xl sm:text-2xl font-bold truncate">{isAr ? "مركز الإعلانات" : "Advertising Center"}</h1>
+          <p className="text-xs sm:text-sm text-muted-foreground">{isAr ? "إدارة الإعلانات والحملات" : "Manage ads, campaigns & analytics"}</p>
         </div>
         {pendingRequests.length > 0 && (
-          <Badge variant="destructive" className="gap-1">
+          <Badge variant="destructive" className="gap-1 shrink-0 text-[10px] sm:text-xs">
             <Clock className="h-3 w-3" />
-            {pendingRequests.length} {isAr ? "طلب بانتظار المراجعة" : "pending requests"}
+            {pendingRequests.length}
           </Badge>
         )}
       </div>
 
       {/* KPIs */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+      <div className="grid grid-cols-2 gap-2.5 sm:gap-4 md:grid-cols-4">
         {kpis.map((kpi) => (
           <Card key={kpi.label}>
-            <CardContent className="flex items-center gap-3 p-4">
-              <div className={`flex h-10 w-10 items-center justify-center rounded-xl bg-muted ${kpi.color}`}>
-                <kpi.icon className="h-5 w-5" />
+            <CardContent className="flex items-center gap-2.5 p-3 sm:p-4">
+              <div className={`flex h-8 w-8 sm:h-10 sm:w-10 items-center justify-center rounded-xl bg-muted shrink-0 ${kpi.color}`}>
+                <kpi.icon className="h-4 w-4 sm:h-5 sm:w-5" />
               </div>
-              <div>
-                <p className="text-xs text-muted-foreground">{kpi.label}</p>
-                <p className="text-xl font-bold">{kpi.value}</p>
+              <div className="min-w-0">
+                <p className="text-[10px] sm:text-xs text-muted-foreground">{kpi.label}</p>
+                <p className="text-sm sm:text-xl font-bold truncate">{kpi.value}</p>
               </div>
             </CardContent>
           </Card>
@@ -301,51 +301,54 @@ const AdvertisingAdmin = forwardRef<HTMLDivElement>(function AdvertisingAdmin(_p
 
       {/* Tabs */}
       <Tabs defaultValue="requests">
-        <TabsList className="w-full justify-start flex-wrap h-auto gap-1">
-          <TabsTrigger value="requests" className="gap-1">
-            <FileText className="h-3.5 w-3.5" />
-            {isAr ? "الطلبات" : "Requests"}
-            {pendingRequests.length > 0 && <Badge variant="destructive" className="ms-1 h-5 px-1.5 text-[10px]">{pendingRequests.length}</Badge>}
-          </TabsTrigger>
-          <TabsTrigger value="campaigns" className="gap-1">
-            <Megaphone className="h-3.5 w-3.5" />
-            {isAr ? "الحملات" : "Campaigns"}
-            {pendingCampaigns.length > 0 && <Badge variant="destructive" className="ms-1 h-5 px-1.5 text-[10px]">{pendingCampaigns.length}</Badge>}
-          </TabsTrigger>
-          <TabsTrigger value="creatives" className="gap-1">
-            <LayoutGrid className="h-3.5 w-3.5" />
-            {isAr ? "المواد الإعلانية" : "Creatives"}
-            {pendingCreatives.length > 0 && <Badge variant="destructive" className="ms-1 h-5 px-1.5 text-[10px]">{pendingCreatives.length}</Badge>}
-          </TabsTrigger>
-          <TabsTrigger value="placements" className="gap-1">
-            <Target className="h-3.5 w-3.5" />
-            {isAr ? "المواقع" : "Placements"}
-          </TabsTrigger>
-          <TabsTrigger value="packages" className="gap-1">
-            <Package className="h-3.5 w-3.5" />
-            {isAr ? "الباقات" : "Packages"}
-          </TabsTrigger>
-          <TabsTrigger value="analytics" className="gap-1">
-            <BarChart3 className="h-3.5 w-3.5" />
-            {isAr ? "التحليلات" : "Analytics"}
-          </TabsTrigger>
-          <TabsTrigger value="reports" className="gap-1">
-            <FileBarChart className="h-3.5 w-3.5" />
-            {isAr ? "التقارير" : "Reports"}
-          </TabsTrigger>
-          <TabsTrigger value="ai-insights" className="gap-1">
-            <Sparkles className="h-3.5 w-3.5" />
-            {isAr ? "رؤى ذكية" : "AI Insights"}
-          </TabsTrigger>
-          <TabsTrigger value="behavior" className="gap-1">
-            <Brain className="h-3.5 w-3.5" />
-            {isAr ? "السلوك" : "Behavior"}
-          </TabsTrigger>
-          <TabsTrigger value="integrations" className="gap-1">
-            <Globe className="h-3.5 w-3.5" />
-            {isAr ? "التكاملات" : "Integrations"}
-          </TabsTrigger>
-        </TabsList>
+        <div className="relative">
+          <TabsList className="flex h-auto w-auto gap-1 overflow-x-auto scrollbar-none bg-transparent justify-start p-0 sm:flex-wrap">
+            <TabsTrigger value="requests" className="gap-1 shrink-0 whitespace-nowrap text-xs sm:text-sm">
+              <FileText className="h-3.5 w-3.5" />
+              {isAr ? "الطلبات" : "Requests"}
+              {pendingRequests.length > 0 && <Badge variant="destructive" className="ms-0.5 h-4 px-1 text-[9px]">{pendingRequests.length}</Badge>}
+            </TabsTrigger>
+            <TabsTrigger value="campaigns" className="gap-1 shrink-0 whitespace-nowrap text-xs sm:text-sm">
+              <Megaphone className="h-3.5 w-3.5" />
+              {isAr ? "الحملات" : "Campaigns"}
+              {pendingCampaigns.length > 0 && <Badge variant="destructive" className="ms-0.5 h-4 px-1 text-[9px]">{pendingCampaigns.length}</Badge>}
+            </TabsTrigger>
+            <TabsTrigger value="creatives" className="gap-1 shrink-0 whitespace-nowrap text-xs sm:text-sm">
+              <LayoutGrid className="h-3.5 w-3.5" />
+              {isAr ? "المواد" : "Creatives"}
+              {pendingCreatives.length > 0 && <Badge variant="destructive" className="ms-0.5 h-4 px-1 text-[9px]">{pendingCreatives.length}</Badge>}
+            </TabsTrigger>
+            <TabsTrigger value="placements" className="gap-1 shrink-0 whitespace-nowrap text-xs sm:text-sm">
+              <Target className="h-3.5 w-3.5" />
+              {isAr ? "المواقع" : "Placements"}
+            </TabsTrigger>
+            <TabsTrigger value="packages" className="gap-1 shrink-0 whitespace-nowrap text-xs sm:text-sm">
+              <Package className="h-3.5 w-3.5" />
+              {isAr ? "الباقات" : "Packages"}
+            </TabsTrigger>
+            <TabsTrigger value="analytics" className="gap-1 shrink-0 whitespace-nowrap text-xs sm:text-sm">
+              <BarChart3 className="h-3.5 w-3.5" />
+              {isAr ? "التحليلات" : "Analytics"}
+            </TabsTrigger>
+            <TabsTrigger value="reports" className="gap-1 shrink-0 whitespace-nowrap text-xs sm:text-sm">
+              <FileBarChart className="h-3.5 w-3.5" />
+              {isAr ? "التقارير" : "Reports"}
+            </TabsTrigger>
+            <TabsTrigger value="ai-insights" className="gap-1 shrink-0 whitespace-nowrap text-xs sm:text-sm">
+              <Sparkles className="h-3.5 w-3.5" />
+              {isAr ? "AI" : "AI"}
+            </TabsTrigger>
+            <TabsTrigger value="behavior" className="gap-1 shrink-0 whitespace-nowrap text-xs sm:text-sm">
+              <Brain className="h-3.5 w-3.5" />
+              {isAr ? "السلوك" : "Behavior"}
+            </TabsTrigger>
+            <TabsTrigger value="integrations" className="gap-1 shrink-0 whitespace-nowrap text-xs sm:text-sm">
+              <Globe className="h-3.5 w-3.5" />
+              {isAr ? "تكاملات" : "Integrations"}
+            </TabsTrigger>
+          </TabsList>
+          <div className="pointer-events-none absolute inset-y-0 right-0 w-8 bg-gradient-to-l from-background to-transparent sm:hidden" />
+        </div>
 
         {/* Requests Tab */}
         <TabsContent value="requests">
