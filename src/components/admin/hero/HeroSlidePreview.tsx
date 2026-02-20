@@ -33,6 +33,13 @@ function getHeightStyle(slide: HeroSlide): React.CSSProperties {
   return { height: `${presets[slide.height_preset] || 520}px` };
 }
 
+function getImageStyle(slide: HeroSlide): React.CSSProperties {
+  return {
+    objectFit: (slide.object_fit || "cover") as React.CSSProperties["objectFit"],
+    objectPosition: slide.object_position || "center",
+  };
+}
+
 type TextPosition = {
   outer: string;
   inner: string;
@@ -57,7 +64,7 @@ function ClassicTemplate({ slide }: { slide: HeroSlide }) {
   const pos = getPositionClasses(slide.text_position);
   return (
     <section className="relative overflow-hidden" style={getHeightStyle(slide)}>
-      <img src={slide.image_url} alt={slide.title} className="absolute inset-0 h-full w-full object-cover scale-105" />
+      <img src={slide.image_url} alt={slide.title} className="absolute inset-0 h-full w-full scale-105" style={getImageStyle(slide)} />
       <div className="absolute inset-0" style={{ background: buildGradient(slide) }} />
       <div className="absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-background/70 to-transparent" />
       <div className={cn("absolute inset-0 flex", pos.outer)}>
@@ -96,7 +103,7 @@ function ClassicTemplate({ slide }: { slide: HeroSlide }) {
 function CenteredTemplate({ slide }: { slide: HeroSlide }) {
   return (
     <section className="relative flex items-center justify-center overflow-hidden" style={getHeightStyle(slide)}>
-      <img src={slide.image_url} alt={slide.title} className="absolute inset-0 h-full w-full object-cover scale-105" />
+      <img src={slide.image_url} alt={slide.title} className="absolute inset-0 h-full w-full scale-105" style={getImageStyle(slide)} />
       <div className="absolute inset-0" style={{ background: buildGradient(slide) }} />
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(0,0,0,0.4)_0%,transparent_70%)]" />
       <div className="relative z-10 container text-center max-w-3xl px-6">
@@ -134,7 +141,7 @@ function CenteredTemplate({ slide }: { slide: HeroSlide }) {
 function SplitTemplate({ slide }: { slide: HeroSlide }) {
   return (
     <section className="relative overflow-hidden" style={getHeightStyle(slide)}>
-      <img src={slide.image_url} alt={slide.title} className="absolute inset-0 h-full w-full object-cover" />
+      <img src={slide.image_url} alt={slide.title} className="absolute inset-0 h-full w-full" style={getImageStyle(slide)} />
       {/* Frosted panel */}
       <div className="absolute inset-y-0 start-0 w-full sm:w-[55%] flex items-center"
         style={{ background: buildGradient(slide) }}>
@@ -172,7 +179,7 @@ function SplitTemplate({ slide }: { slide: HeroSlide }) {
 function EditorialTemplate({ slide }: { slide: HeroSlide }) {
   return (
     <section className="relative overflow-hidden" style={getHeightStyle(slide)}>
-      <img src={slide.image_url} alt={slide.title} className="absolute inset-0 h-full w-full object-cover scale-[1.03]" />
+      <img src={slide.image_url} alt={slide.title} className="absolute inset-0 h-full w-full scale-[1.03]" style={getImageStyle(slide)} />
       <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/30 to-black/10" />
       <div className="absolute inset-x-0 bottom-0 z-10 pb-10 sm:pb-14">
         <div className="container text-center">
@@ -210,7 +217,7 @@ function EditorialTemplate({ slide }: { slide: HeroSlide }) {
 function MinimalTemplate({ slide }: { slide: HeroSlide }) {
   return (
     <section className="relative overflow-hidden" style={getHeightStyle(slide)}>
-      <img src={slide.image_url} alt={slide.title} className="absolute inset-0 h-full w-full object-cover" />
+      <img src={slide.image_url} alt={slide.title} className="absolute inset-0 h-full w-full" style={getImageStyle(slide)} />
       <div className="absolute inset-0" style={{ background: buildGradient(slide) }} />
       {/* Frosted bottom bar */}
       <div className="absolute inset-x-0 bottom-0 backdrop-blur-md bg-background/70 border-t border-border/20 px-6 py-4 sm:py-5">
