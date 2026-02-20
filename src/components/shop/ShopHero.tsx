@@ -20,8 +20,8 @@ export function ShopHero({ productCount, cart, onCartOpen }: ShopHeroProps) {
   return (
     <section className="relative overflow-hidden border-b border-border/40">
       {/* Editorial gradient background */}
-      <div className="absolute inset-0 bg-gradient-to-br from-primary/8 via-background to-primary/3" />
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,hsl(var(--primary)/0.06),transparent_70%)]" />
+      <div className="absolute inset-0 bg-gradient-to-br from-primary/12 via-background to-primary/5" />
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,hsl(var(--primary)/0.10),transparent_70%)]" />
 
       <div className="container relative py-10 md:py-14">
         <div className="flex flex-col gap-6 md:flex-row md:items-end md:justify-between">

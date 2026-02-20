@@ -14,8 +14,8 @@ export function ChefsTableHero({ isAr, user, onRequestClick }: ChefsTableHeroPro
       {/* Background Image */}
       <div className="absolute inset-0">
         <img src={heroImage} alt="Chef's Table" className="h-full w-full object-cover" />
-        <div className="absolute inset-0 bg-gradient-to-t from-background via-background/85 to-background/60" />
-        <div className="absolute inset-0 bg-gradient-to-r from-background/80 via-transparent to-background/80" />
+        <div className="absolute inset-0 bg-gradient-to-t from-background via-background/90 to-background/65" />
+        <div className="absolute inset-0 bg-gradient-to-r from-background/85 via-transparent to-background/85" />
       </div>
 
       <div className="container relative py-20 md:py-28 lg:py-36">
