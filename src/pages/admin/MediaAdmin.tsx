@@ -228,7 +228,7 @@ export default function MediaAdmin() {
           <CardTitle className="flex items-center justify-between">
             <span>
               {language === "ar" ? "الملفات" : "Files"} 
-              <Badge variant="secondary" className="ml-2">{filteredMedia?.length || 0}</Badge>
+              <Badge variant="secondary" className="ms-2">{filteredMedia?.length || 0}</Badge>
             </span>
           </CardTitle>
         </CardHeader>
@@ -281,12 +281,12 @@ export default function MediaAdmin() {
                       </DropdownMenuTrigger>
                       <DropdownMenuContent align="end">
                         <DropdownMenuItem onClick={(e) => { e.stopPropagation(); copyUrl(file.file_url); }}>
-                          <Copy className="mr-2 h-4 w-4" />
+                          <Copy className="me-2 h-4 w-4" />
                           {language === "ar" ? "نسخ الرابط" : "Copy URL"}
                         </DropdownMenuItem>
                         <DropdownMenuItem asChild>
                           <a href={file.file_url} download target="_blank" rel="noopener">
-                            <Download className="mr-2 h-4 w-4" />
+                            <Download className="me-2 h-4 w-4" />
                             {language === "ar" ? "تحميل" : "Download"}
                           </a>
                         </DropdownMenuItem>
@@ -294,7 +294,7 @@ export default function MediaAdmin() {
                           className="text-destructive"
                           onClick={(e) => { e.stopPropagation(); deleteMutation.mutate(file.id); }}
                         >
-                          <Trash2 className="mr-2 h-4 w-4" />
+                          <Trash2 className="me-2 h-4 w-4" />
                           {language === "ar" ? "حذف" : "Delete"}
                         </DropdownMenuItem>
                       </DropdownMenuContent>
@@ -338,14 +338,14 @@ export default function MediaAdmin() {
                       </DropdownMenuTrigger>
                       <DropdownMenuContent align="end">
                         <DropdownMenuItem onClick={(e) => { e.stopPropagation(); copyUrl(file.file_url); }}>
-                          <Copy className="mr-2 h-4 w-4" />
+                          <Copy className="me-2 h-4 w-4" />
                           {language === "ar" ? "نسخ الرابط" : "Copy URL"}
                         </DropdownMenuItem>
                         <DropdownMenuItem 
                           className="text-destructive"
                           onClick={(e) => { e.stopPropagation(); deleteMutation.mutate(file.id); }}
                         >
-                          <Trash2 className="mr-2 h-4 w-4" />
+                          <Trash2 className="me-2 h-4 w-4" />
                           {language === "ar" ? "حذف" : "Delete"}
                         </DropdownMenuItem>
                       </DropdownMenuContent>
@@ -389,12 +389,12 @@ export default function MediaAdmin() {
               </div>
               <div className="flex gap-2">
                 <Button className="flex-1" onClick={() => copyUrl(selectedMedia.file_url)}>
-                  <Copy className="mr-2 h-4 w-4" />
+                  <Copy className="me-2 h-4 w-4" />
                   {language === "ar" ? "نسخ الرابط" : "Copy URL"}
                 </Button>
                 <Button variant="outline" asChild>
                   <a href={selectedMedia.file_url} download target="_blank" rel="noopener">
-                    <Download className="mr-2 h-4 w-4" />
+                    <Download className="me-2 h-4 w-4" />
                     {language === "ar" ? "تحميل" : "Download"}
                   </a>
                 </Button>

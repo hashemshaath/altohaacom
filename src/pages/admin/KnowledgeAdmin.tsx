@@ -353,11 +353,11 @@ export default function KnowledgeAdmin() {
           {!showAddResource && !showScrapeUrl ? (
             <div className="flex gap-2">
               <Button onClick={() => setShowAddResource(true)}>
-                <Plus className="mr-2 h-4 w-4" />
+                <Plus className="me-2 h-4 w-4" />
                 {language === "ar" ? "إضافة مورد" : "Add Resource"}
               </Button>
               <Button variant="outline" onClick={() => setShowScrapeUrl(true)}>
-                <Globe className="mr-2 h-4 w-4" />
+                <Globe className="me-2 h-4 w-4" />
                 {language === "ar" ? "استخراج من رابط" : "Scrape URL"}
               </Button>
             </div>
@@ -386,10 +386,10 @@ export default function KnowledgeAdmin() {
                 </div>
                 <div className="flex justify-end gap-2">
                   <Button variant="outline" onClick={() => { setShowScrapeUrl(false); setScrapeUrl(""); }} disabled={isScraping}>
-                    <X className="mr-2 h-4 w-4" /> {language === "ar" ? "إلغاء" : "Cancel"}
+                    <X className="me-2 h-4 w-4" /> {language === "ar" ? "إلغاء" : "Cancel"}
                   </Button>
                   <Button onClick={handleScrapeUrl} disabled={!scrapeUrl.trim() || isScraping}>
-                    {isScraping ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Globe className="mr-2 h-4 w-4" />}
+                    {isScraping ? <Loader2 className="me-2 h-4 w-4 animate-spin" /> : <Globe className="me-2 h-4 w-4" />}
                     {isScraping
                       ? (language === "ar" ? "جاري الاستخراج..." : "Scraping...")
                       : (language === "ar" ? "استخراج" : "Scrape")}
@@ -487,11 +487,11 @@ export default function KnowledgeAdmin() {
                 </div>
                 <div className="flex justify-end gap-2">
                   <Button variant="outline" onClick={() => setShowAddResource(false)}>
-                    <X className="mr-2 h-4 w-4" />
+                    <X className="me-2 h-4 w-4" />
                     {language === "ar" ? "إلغاء" : "Cancel"}
                   </Button>
                   <Button onClick={() => addResourceMutation.mutate()} disabled={!resourceForm.title || addResourceMutation.isPending}>
-                    <Save className="mr-2 h-4 w-4" />
+                    <Save className="me-2 h-4 w-4" />
                     {language === "ar" ? "حفظ" : "Save"}
                   </Button>
                 </div>

@@ -338,7 +338,7 @@ export default function EditCompetition() {
       <Header />
       <main className="container flex-1 py-8">
         <Button variant="ghost" size="sm" onClick={() => navigate(`/competitions/${id}`)} className="mb-4">
-          <ArrowLeft className="mr-2 h-4 w-4" />
+          <ArrowLeft className="me-2 h-4 w-4" />
           {isAr ? "العودة للمسابقة" : "Back to Competition"}
         </Button>
 
@@ -384,14 +384,14 @@ export default function EditCompetition() {
 
           <div className="mt-6 flex justify-between">
             <Button variant="outline" onClick={() => setStep(step - 1)} disabled={step === 1}>
-              <ArrowLeft className="mr-2 h-4 w-4" />
+              <ArrowLeft className="me-2 h-4 w-4" />
               {isAr ? "السابق" : "Previous"}
             </Button>
 
             {step < totalSteps ? (
               <Button onClick={() => setStep(step + 1)} disabled={!canProceed()}>
                 {isAr ? "التالي" : "Next"}
-                <ArrowRight className="ml-2 h-4 w-4" />
+                <ArrowRight className="ms-2 h-4 w-4" />
               </Button>
             ) : (
               <Button
@@ -399,9 +399,9 @@ export default function EditCompetition() {
                 disabled={updateMutation.isPending || !data.title.trim()}
               >
                 {updateMutation.isPending ? (
-                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  <Loader2 className="me-2 h-4 w-4 animate-spin" />
                 ) : (
-                  <Save className="mr-2 h-4 w-4" />
+                  <Save className="me-2 h-4 w-4" />
                 )}
                 {isAr ? "حفظ التغييرات" : "Save Changes"}
               </Button>

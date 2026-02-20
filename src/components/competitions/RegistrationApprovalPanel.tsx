@@ -279,7 +279,7 @@ export function RegistrationApprovalPanel({ competitionId }: RegistrationApprova
             className="gap-1"
           >
             {filter.label}
-            <Badge variant="secondary" className="ml-1">
+            <Badge variant="secondary" className="ms-1">
               {statusCounts[filter.key] || 0}
             </Badge>
           </Button>
@@ -323,7 +323,7 @@ export function RegistrationApprovalPanel({ competitionId }: RegistrationApprova
                         </Badge>
                       )}
                       <Badge className={statusClass}>
-                        <StatusIcon className="mr-1 h-3 w-3" />
+                        <StatusIcon className="me-1 h-3 w-3" />
                         {registration.status}
                       </Badge>
                     </div>
@@ -361,7 +361,7 @@ export function RegistrationApprovalPanel({ competitionId }: RegistrationApprova
                         setViewDialogOpen(true);
                       }}
                     >
-                      <Eye className="mr-1 h-4 w-4" />
+                      <Eye className="me-1 h-4 w-4" />
                       {language === "ar" ? "عرض" : "View"}
                     </Button>
                     {registration.status === "pending" && (
@@ -504,7 +504,7 @@ export function RegistrationApprovalPanel({ competitionId }: RegistrationApprova
                   setRejectDialogOpen(true);
                 }}
               >
-                <XCircle className="mr-2 h-4 w-4" />
+                <XCircle className="me-2 h-4 w-4" />
                 {language === "ar" ? "رفض" : "Reject"}
               </Button>
               <Button
@@ -512,9 +512,9 @@ export function RegistrationApprovalPanel({ competitionId }: RegistrationApprova
                 disabled={approveMutation.isPending}
               >
                 {approveMutation.isPending ? (
-                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  <Loader2 className="me-2 h-4 w-4 animate-spin" />
                 ) : (
-                  <CheckCircle className="mr-2 h-4 w-4" />
+                  <CheckCircle className="me-2 h-4 w-4" />
                 )}
                 {language === "ar" ? "موافقة" : "Approve"}
               </Button>
@@ -570,9 +570,9 @@ export function RegistrationApprovalPanel({ competitionId }: RegistrationApprova
               disabled={rejectMutation.isPending}
             >
               {rejectMutation.isPending ? (
-                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                <Loader2 className="me-2 h-4 w-4 animate-spin" />
               ) : (
-                <XCircle className="mr-2 h-4 w-4" />
+                <XCircle className="me-2 h-4 w-4" />
               )}
               {language === "ar" ? "تأكيد الرفض" : "Confirm Rejection"}
             </Button>

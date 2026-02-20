@@ -424,7 +424,7 @@ export default function CountriesAdmin() {
               </Tooltip>
             </TooltipProvider>
             <Button onClick={openNew}>
-              <Plus className="h-4 w-4 mr-2" />
+              <Plus className="h-4 w-4 me-2" />
               {isAr ? "إضافة دولة" : "Add Country"}
             </Button>
           </div>
@@ -459,28 +459,28 @@ export default function CountriesAdmin() {
       <Tabs value={activeTab} onValueChange={setActiveTab}>
         <TabsList className="flex-wrap">
           <TabsTrigger value="overview">
-            <BarChart3 className="h-4 w-4 mr-1.5" />
+            <BarChart3 className="h-4 w-4 me-1.5" />
             {isAr ? "نظرة عامة" : "Overview"}
           </TabsTrigger>
           <TabsTrigger value="countries">
-            <Globe className="h-4 w-4 mr-1.5" />
+            <Globe className="h-4 w-4 me-1.5" />
             {isAr ? "الدول" : "Countries"}
-            <Badge variant="secondary" className="ml-1.5 text-[10px]">{filtered.length}</Badge>
+            <Badge variant="secondary" className="ms-1.5 text-[10px]">{filtered.length}</Badge>
           </TabsTrigger>
           <TabsTrigger value="regions">
-            <MapPin className="h-4 w-4 mr-1.5" />
+            <MapPin className="h-4 w-4 me-1.5" />
             {isAr ? "حسب المنطقة" : "By Region"}
           </TabsTrigger>
           <TabsTrigger value="compare">
-            <ArrowLeftRight className="h-4 w-4 mr-1.5" />
+            <ArrowLeftRight className="h-4 w-4 me-1.5" />
             {isAr ? "مقارنة" : "Compare"}
           </TabsTrigger>
           <TabsTrigger value="import">
-            <Upload className="h-4 w-4 mr-1.5" />
+            <Upload className="h-4 w-4 me-1.5" />
             {isAr ? "استيراد" : "Import"}
           </TabsTrigger>
           <TabsTrigger value="audit">
-            <History className="h-4 w-4 mr-1.5" />
+            <History className="h-4 w-4 me-1.5" />
             {isAr ? "السجل" : "Audit Log"}
           </TabsTrigger>
         </TabsList>
@@ -501,11 +501,11 @@ export default function CountriesAdmin() {
                 </p>
                 <div className="flex items-center gap-2">
                   <Button variant="outline" size="sm" onClick={() => bulkToggleMutation.mutate(true)} disabled={bulkToggleMutation.isPending}>
-                    <Eye className="h-3.5 w-3.5 mr-1.5" />
+                    <Eye className="h-3.5 w-3.5 me-1.5" />
                     {isAr ? "تفعيل" : "Activate"}
                   </Button>
                   <Button variant="outline" size="sm" onClick={() => bulkToggleMutation.mutate(false)} disabled={bulkToggleMutation.isPending}>
-                    <EyeOff className="h-3.5 w-3.5 mr-1.5" />
+                    <EyeOff className="h-3.5 w-3.5 me-1.5" />
                     {isAr ? "إلغاء التفعيل" : "Deactivate"}
                   </Button>
                   <Button variant="ghost" size="sm" onClick={() => setSelectedIds(new Set())}>
@@ -537,7 +537,7 @@ export default function CountriesAdmin() {
                 </div>
                 <Select value={continentFilter} onValueChange={setContinentFilter}>
                   <SelectTrigger className="w-[140px]">
-                    <Filter className="h-3.5 w-3.5 mr-1.5 text-muted-foreground" />
+                    <Filter className="h-3.5 w-3.5 me-1.5 text-muted-foreground" />
                     <SelectValue placeholder={isAr ? "القارة" : "Continent"} />
                   </SelectTrigger>
                   <SelectContent>
@@ -562,7 +562,7 @@ export default function CountriesAdmin() {
                 </Select>
                 {(searchQuery || regionFilter !== "all" || statusFilter !== "all" || continentFilter !== "all") && (
                   <Button variant="ghost" size="sm" onClick={() => { setSearchQuery(""); setRegionFilter("all"); setStatusFilter("all"); setContinentFilter("all"); }}>
-                    <RefreshCw className="h-3.5 w-3.5 mr-1" />
+                    <RefreshCw className="h-3.5 w-3.5 me-1" />
                     {isAr ? "مسح" : "Clear"}
                   </Button>
                 )}
@@ -712,7 +712,7 @@ export default function CountriesAdmin() {
                   </CardTitle>
                   <div className="flex items-center gap-2">
                     <Button variant="outline" size="sm" onClick={() => openEdit(detailCountry)}>
-                      <Edit className="h-3.5 w-3.5 mr-1.5" />
+                      <Edit className="h-3.5 w-3.5 me-1.5" />
                       {isAr ? "تعديل" : "Edit"}
                     </Button>
                     <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => setDetailCountry(null)}>
@@ -740,7 +740,7 @@ export default function CountriesAdmin() {
                       const enabled = (detailCountry.features || {})[key];
                       return (
                         <Badge key={key} variant={enabled ? "default" : "outline"} className={`text-xs ${!enabled ? "opacity-40" : ""}`}>
-                          {enabled ? <CheckCircle className="h-3 w-3 mr-1" /> : <XCircle className="h-3 w-3 mr-1" />}
+                          {enabled ? <CheckCircle className="h-3 w-3 me-1" /> : <XCircle className="h-3 w-3 me-1" />}
                           {isAr ? label.ar : label.en}
                         </Badge>
                       );
@@ -847,7 +847,7 @@ export default function CountriesAdmin() {
               className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
               onClick={() => deleteTarget && deleteMutation.mutate({ id: deleteTarget.id, code: deleteTarget.code })}
             >
-              <Trash2 className="h-4 w-4 mr-2" />
+              <Trash2 className="h-4 w-4 me-2" />
               {isAr ? "حذف" : "Delete"}
             </AlertDialogAction>
           </AlertDialogFooter>
@@ -1057,7 +1057,7 @@ export default function CountriesAdmin() {
                       Object.keys(featureLabels).forEach(k => all[k] = true);
                       setForm({ ...form, features: all });
                     }}>
-                      <CheckCheck className="h-3 w-3 mr-1" />
+                      <CheckCheck className="h-3 w-3 me-1" />
                       {isAr ? "تفعيل الكل" : "Enable All"}
                     </Button>
                     <Button variant="ghost" size="sm" className="text-xs h-7" onClick={() => {
@@ -1065,7 +1065,7 @@ export default function CountriesAdmin() {
                       Object.keys(featureLabels).forEach(k => none[k] = false);
                       setForm({ ...form, features: none });
                     }}>
-                      <X className="h-3 w-3 mr-1" />
+                      <X className="h-3 w-3 me-1" />
                       {isAr ? "إلغاء الكل" : "Disable All"}
                     </Button>
                   </div>
@@ -1115,10 +1115,10 @@ export default function CountriesAdmin() {
 
           <DialogFooter className="mt-4">
             <Button variant="outline" onClick={closeForm}>
-              <X className="h-4 w-4 mr-2" />{isAr ? "إلغاء" : "Cancel"}
+              <X className="h-4 w-4 me-2" />{isAr ? "إلغاء" : "Cancel"}
             </Button>
             <Button onClick={() => saveMutation.mutate()} disabled={!form.code || !form.name || saveMutation.isPending}>
-              <Save className="h-4 w-4 mr-2" />{isAr ? "حفظ" : "Save"}
+              <Save className="h-4 w-4 me-2" />{isAr ? "حفظ" : "Save"}
             </Button>
           </DialogFooter>
         </DialogContent>

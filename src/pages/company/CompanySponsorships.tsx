@@ -173,7 +173,7 @@ export default function CompanySponsorships() {
     <div className="space-y-6">
       {/* Header */}
       <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-chart-3/20 via-chart-4/10 to-primary/10 p-6 md:p-8">
-        <div className="absolute -right-10 -top-10 h-40 w-40 rounded-full bg-chart-3/10 blur-3xl" />
+        <div className="absolute -end-10 -top-10 h-40 w-40 rounded-full bg-chart-3/10 blur-3xl" />
         <div className="relative z-10 flex items-center gap-4">
           <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-background/80 backdrop-blur-sm shadow-sm">
             <Crown className="h-7 w-7 text-chart-3" />

@@ -385,7 +385,7 @@ export default function NotificationsAdmin() {
         description={isAr ? "إرسال وتتبع وتحليل إشعارات المستخدمين" : "Send, track, and analyze user notifications"}
         actions={
           <Button onClick={() => setIsCreateOpen(true)}>
-            <Send className="mr-2 h-4 w-4" />
+            <Send className="me-2 h-4 w-4" />
             {isAr ? "بث إشعار" : "Broadcast"}
           </Button>
         }
@@ -461,7 +461,7 @@ export default function NotificationsAdmin() {
               </SelectContent>
             </Select>
             <Button variant="outline" size="sm" className="h-10" onClick={exportNotifications}>
-              <Download className="mr-1 h-3.5 w-3.5" />{isAr ? "تصدير" : "Export"}
+              <Download className="me-1 h-3.5 w-3.5" />{isAr ? "تصدير" : "Export"}
             </Button>
           </div>
 
@@ -561,14 +561,14 @@ export default function NotificationsAdmin() {
                 <span className="text-sm font-medium">{selectedQueueIds.size} {isAr ? "محدد" : "selected"}</span>
                 <div className="flex items-center gap-2">
                   <Button variant="outline" size="sm" onClick={() => retryQueueMutation.mutate(Array.from(selectedQueueIds))}>
-                    <RotateCcw className="mr-1 h-3.5 w-3.5" />{isAr ? "إعادة" : "Retry"}
+                    <RotateCcw className="me-1 h-3.5 w-3.5" />{isAr ? "إعادة" : "Retry"}
                   </Button>
                   <Button variant="outline" size="sm" onClick={() => cancelQueueMutation.mutate(Array.from(selectedQueueIds))}>
-                    <XSquare className="mr-1 h-3.5 w-3.5" />{isAr ? "إلغاء" : "Cancel"}
+                    <XSquare className="me-1 h-3.5 w-3.5" />{isAr ? "إلغاء" : "Cancel"}
                   </Button>
                   <Button variant="destructive" size="sm"
                     onClick={() => setConfirmBulkAction({ action: "delete", ids: Array.from(selectedQueueIds) })}>
-                    <Trash2 className="mr-1 h-3.5 w-3.5" />{isAr ? "حذف" : "Delete"}
+                    <Trash2 className="me-1 h-3.5 w-3.5" />{isAr ? "حذف" : "Delete"}
                   </Button>
                   <Button variant="ghost" size="sm" onClick={() => setSelectedQueueIds(new Set())}>{isAr ? "إلغاء" : "Clear"}</Button>
                 </div>
@@ -600,7 +600,7 @@ export default function NotificationsAdmin() {
             </Select>
             <Button variant="outline" size="sm" className="h-10"
               onClick={() => { queryClient.invalidateQueries({ queryKey: ["notification-queue-items"] }); queryClient.invalidateQueries({ queryKey: ["notification-queue-stats"] }); }}>
-              <RefreshCw className="mr-2 h-3.5 w-3.5" />{isAr ? "تحديث" : "Refresh"}
+              <RefreshCw className="me-2 h-3.5 w-3.5" />{isAr ? "تحديث" : "Refresh"}
             </Button>
           </div>
 
@@ -1053,7 +1053,7 @@ export default function NotificationsAdmin() {
                 size="sm"
                 onClick={() => setNewNotification({ ...newNotification, sendMode: "now" })}
               >
-                <Zap className="mr-1 h-3.5 w-3.5" />
+                <Zap className="me-1 h-3.5 w-3.5" />
                 {isAr ? "الآن" : "Send Now"}
               </Button>
               <Button
@@ -1061,7 +1061,7 @@ export default function NotificationsAdmin() {
                 size="sm"
                 onClick={() => setNewNotification({ ...newNotification, sendMode: "scheduled" })}
               >
-                <Clock className="mr-1 h-3.5 w-3.5" />
+                <Clock className="me-1 h-3.5 w-3.5" />
                 {isAr ? "مجدول" : "Schedule"}
               </Button>
             </div>
@@ -1081,7 +1081,7 @@ export default function NotificationsAdmin() {
               sendMutation.isPending || !newNotification.title || !newNotification.body || newNotification.channels.length === 0 ||
               (newNotification.sendMode === "scheduled" && !newNotification.scheduledAt)
             }>
-              <Send className="mr-2 h-4 w-4" />
+              <Send className="me-2 h-4 w-4" />
               {sendMutation.isPending
                 ? (isAr ? "جارٍ..." : "Sending...")
                 : newNotification.sendMode === "scheduled"

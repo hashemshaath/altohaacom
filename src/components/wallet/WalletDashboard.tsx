@@ -187,8 +187,8 @@ export function WalletDashboard({ userId }: WalletDashboardProps) {
                     <TableHead>{isAr ? "الرقم" : "Txn #"}</TableHead>
                     <TableHead>{isAr ? "النوع" : "Type"}</TableHead>
                     <TableHead>{isAr ? "الوصف" : "Description"}</TableHead>
-                    <TableHead className="text-right">{isAr ? "المبلغ" : "Amount"}</TableHead>
-                    <TableHead className="text-right">{isAr ? "الرصيد" : "Balance"}</TableHead>
+                    <TableHead className="text-end">{isAr ? "المبلغ" : "Amount"}</TableHead>
+                    <TableHead className="text-end">{isAr ? "الرصيد" : "Balance"}</TableHead>
                     <TableHead>{isAr ? "التاريخ" : "Date"}</TableHead>
                   </TableRow>
                 </TableHeader>
@@ -206,10 +206,10 @@ export function WalletDashboard({ userId }: WalletDashboardProps) {
                           </Badge>
                         </TableCell>
                         <TableCell className="text-sm">{isAr ? tx.description_ar || tx.description : tx.description || "—"}</TableCell>
-                        <TableCell className={`text-right font-medium ${isCredit ? "text-chart-5" : "text-destructive"}`}>
+                        <TableCell className={`text-end font-medium ${isCredit ? "text-chart-5" : "text-destructive"}`}>
                           {isCredit ? "+" : "-"}{formatCurrency(Number(tx.amount), language as "en" | "ar")}
                         </TableCell>
-                        <TableCell className="text-right text-sm">{formatCurrency(Number(tx.balance_after), language as "en" | "ar")}</TableCell>
+                        <TableCell className="text-end text-sm">{formatCurrency(Number(tx.balance_after), language as "en" | "ar")}</TableCell>
                         <TableCell className="text-xs text-muted-foreground">
                           {toEnglishDigits(format(new Date(tx.created_at), "dd/MM/yyyy", { locale: isAr ? ar : undefined }))}
                         </TableCell>

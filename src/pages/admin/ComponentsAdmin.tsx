@@ -120,7 +120,7 @@ export default function ComponentsAdmin() {
           </p>
         </div>
         <Button onClick={handleSave}>
-          <Save className="mr-2 h-4 w-4" />
+          <Save className="me-2 h-4 w-4" />
           {language === "ar" ? "حفظ" : "Save Changes"}
         </Button>
       </div>
@@ -148,11 +148,11 @@ export default function ComponentsAdmin() {
                 </div>
                 <div className="flex gap-2">
                   <Button variant="outline" size="sm" onClick={() => toggleAll(page.id, true)}>
-                    <Eye className="mr-2 h-3 w-3" />
+                    <Eye className="me-2 h-3 w-3" />
                     {language === "ar" ? "إظهار الكل" : "Show All"}
                   </Button>
                   <Button variant="outline" size="sm" onClick={() => toggleAll(page.id, false)}>
-                    <EyeOff className="mr-2 h-3 w-3" />
+                    <EyeOff className="me-2 h-3 w-3" />
                     {language === "ar" ? "إخفاء الكل" : "Hide All"}
                   </Button>
                 </div>

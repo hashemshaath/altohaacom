@@ -632,11 +632,11 @@ export default function RoleManagement() {
                       <div className="flex-1 min-w-0">
                         <p className="text-sm font-medium">
                           {o.profile ? (isAr ? o.profile.full_name_ar || o.profile.full_name : o.profile.full_name) : "Unknown"}
-                          {o.profile?.username && <span className="text-muted-foreground text-xs ml-1">@{o.profile.username}</span>}
+                          {o.profile?.username && <span className="text-muted-foreground text-xs ms-1">@{o.profile.username}</span>}
                         </p>
                         <p className="text-xs text-muted-foreground">
                           {isAr ? o.permissions?.name_ar || o.permissions?.name : o.permissions?.name}
-                          <span className="font-mono ml-1">({o.permissions?.code})</span>
+                          <span className="font-mono ms-1">({o.permissions?.code})</span>
                         </p>
                         {o.reason && <p className="text-[10px] text-muted-foreground mt-0.5">{o.reason}</p>}
                         {o.expires_at && (

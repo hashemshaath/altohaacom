@@ -165,7 +165,7 @@ export function AnomalyDetection() {
           <CardTitle className="text-sm flex items-center gap-2">
             <AlertTriangle className="h-4 w-4 text-chart-3" />
             {isAr ? "التنبيهات المكتشفة" : "Detected Alerts"}
-            <Badge variant="secondary" className="ml-2">{data?.anomalies?.length || 0}</Badge>
+            <Badge variant="secondary" className="ms-2">{data?.anomalies?.length || 0}</Badge>
           </CardTitle>
         </CardHeader>
         <CardContent>
