@@ -66,11 +66,15 @@ export function RegionalEvents() {
       <div className="relative h-[160px] sm:h-[200px] md:h-[220px] overflow-hidden">
         <img src={regionalCover} alt="" className="absolute inset-0 h-full w-full object-cover" loading="lazy" />
         <div className="absolute inset-0 bg-gradient-to-b from-background/30 via-background/50 to-background" />
+      </div>
 
-        <div className="container relative flex h-full flex-col items-center justify-end pb-2">
+      {/* Content */}
+      <div className="relative -mt-4 z-10">
+        <div className="container">
+          {/* Section heading above filters */}
           <SectionReveal>
-            <div className="text-center">
-              <h2 id="regional-heading" className={cn("text-lg font-bold sm:text-xl md:text-2xl text-foreground drop-shadow-sm", !isAr && "font-serif")}>
+            <div className="text-center mb-3">
+              <h2 id="regional-heading" className={cn("text-lg font-bold sm:text-xl md:text-2xl text-foreground", !isAr && "font-serif")}>
                 {isAr ? "فعاليات حسب المنطقة" : "Events by Region"}
               </h2>
               <p className="mt-1 text-xs text-muted-foreground sm:text-sm">
@@ -78,12 +82,6 @@ export function RegionalEvents() {
               </p>
             </div>
           </SectionReveal>
-        </div>
-      </div>
-
-      {/* Content */}
-      <div className="relative -mt-4 z-10">
-        <div className="container">
           {/* Filter tabs */}
           <div className="mb-3 flex items-center justify-center">
             <div className="flex gap-1.5 rounded-xl bg-background/80 backdrop-blur-sm border border-border/50 p-1 shadow-sm">
