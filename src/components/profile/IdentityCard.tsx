@@ -153,7 +153,7 @@ export function IdentityCard({ profile, userId }: IdentityCardProps) {
                 <p className="text-xs text-muted-foreground mt-1">{subtitle}</p>
               )}
               {profile?.account_number && (
-                <p className="font-mono text-[11px] text-primary/70 mt-2 tracking-[0.15em]">
+                <p className="font-mono text-[11px] text-primary/70 mt-2 tracking-[0.15em]" dir="ltr">
                   {profile.account_number}
                 </p>
               )}
@@ -212,7 +212,7 @@ export function IdentityCard({ profile, userId }: IdentityCardProps) {
                   bar ? <rect key={i} x={i} y={0} width={0.7} height={44} className="fill-primary/70" /> : null
                 )}
               </svg>
-              <span className="font-mono text-[9px] tracking-[0.35em] text-muted-foreground">
+              <span className="font-mono text-[9px] tracking-[0.35em] text-muted-foreground" dir="ltr">
                 {barcodeValue}
               </span>
             </div>

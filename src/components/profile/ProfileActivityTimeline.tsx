@@ -144,7 +144,7 @@ export function ProfileActivityTimeline({ userId }: ProfileActivityTimelineProps
               </div>
               <div className="flex-1 pt-0.5">
                 <p className="text-sm leading-snug group-hover:text-foreground transition-colors">{event.title}</p>
-                <p className="mt-0.5 text-[10px] text-muted-foreground">
+                <p className="mt-0.5 text-[10px] text-muted-foreground" dir="ltr">
                   {format(new Date(event.date), "MMM d, yyyy")}
                 </p>
               </div>

@@ -121,7 +121,7 @@ export function ProfileHeader({ profile, roles, userId, onProfileUpdate }: Profi
               <p className="text-base font-bold text-primary/80 tracking-wide mt-1">{isAr ? profile.display_name_ar || profile.display_name : profile.display_name}</p>
             )}
             {profile?.username && (
-              <p className="text-xs font-mono font-bold text-muted-foreground mt-1 bg-muted/30 w-fit px-2 py-0.5 rounded-lg border border-border/40">@{profile.username}</p>
+              <p className="text-xs font-mono font-bold text-muted-foreground mt-1 bg-muted/30 w-fit px-2 py-0.5 rounded-lg border border-border/40" dir="ltr">@{profile.username}</p>
             )}
             {(profile?.job_title || profile?.specialization) && (
               <div className="mt-1.5 flex items-center gap-1.5 text-sm">
@@ -149,7 +149,7 @@ export function ProfileHeader({ profile, roles, userId, onProfileUpdate }: Profi
             ))}
             {profile?.account_number && (
               <Badge variant="outline" className="font-mono text-[10px] border-primary/20 bg-primary/5 text-primary">
-                #{profile.account_number}
+                <span dir="ltr">#{profile.account_number}</span>
               </Badge>
             )}
           </div>
