@@ -87,23 +87,44 @@ export function HeroSlider() {
 
   if (!slides.length) return <FallbackHero isAr={isAr} />;
 
-  const slide = slides[current];
-
-  // Localize the active slide for display
-  const localizedSlide: HeroSlide = {
-    ...slide,
-    title: isAr && slide.title_ar ? slide.title_ar : slide.title,
-    subtitle: isAr && slide.subtitle_ar ? slide.subtitle_ar : (slide.subtitle ?? null),
-    badge_text: isAr && slide.badge_text_ar ? slide.badge_text_ar : (slide.badge_text ?? null),
-    link_label: isAr && slide.link_label_ar ? slide.link_label_ar : (slide.link_label ?? null),
-    cta_secondary_label: isAr && slide.cta_secondary_label_ar ? slide.cta_secondary_label_ar : (slide.cta_secondary_label ?? null),
-  };
-
   return (
     <div className="relative" aria-label={isAr ? "القسم الرئيسي" : "Hero slider"} role="region">
-      {/* Render active slide via template */}
-      <div className="relative">
-        <HeroSlidePreview slide={localizedSlide} />
+      {/* Slide stack with animation */}
+      <div className="relative overflow-hidden">
+        {slides.map((rawSlide, i) => {
+          const isActive = i === current;
+          const effect = rawSlide.animation_effect || "fade";
+          const localizedSlide: HeroSlide = {
+            ...rawSlide,
+            title: isAr && rawSlide.title_ar ? rawSlide.title_ar : rawSlide.title,
+            subtitle: isAr && rawSlide.subtitle_ar ? rawSlide.subtitle_ar : (rawSlide.subtitle ?? null),
+            badge_text: isAr && rawSlide.badge_text_ar ? rawSlide.badge_text_ar : (rawSlide.badge_text ?? null),
+            link_label: isAr && rawSlide.link_label_ar ? rawSlide.link_label_ar : (rawSlide.link_label ?? null),
+            cta_secondary_label: isAr && rawSlide.cta_secondary_label_ar ? rawSlide.cta_secondary_label_ar : (rawSlide.cta_secondary_label ?? null),
+          };
+
+          return (
+            <div
+              key={rawSlide.id}
+              className={cn(
+                "transition-all duration-700",
+                !isActive && "absolute inset-0 pointer-events-none",
+                // Fade
+                effect === "fade" && (isActive ? "opacity-100" : "opacity-0"),
+                // Slide
+                effect === "slide" && (isActive ? "translate-x-0 opacity-100" : "translate-x-full opacity-0"),
+                // Zoom
+                effect === "zoom" && (isActive ? "scale-100 opacity-100" : "scale-110 opacity-0"),
+                // Blur
+                effect === "blur" && (isActive ? "blur-0 opacity-100" : "blur-md opacity-0"),
+                // None
+                effect === "none" && (isActive ? "opacity-100" : "opacity-0"),
+              )}
+            >
+              <HeroSlidePreview slide={localizedSlide} />
+            </div>
+          );
+        })}
       </div>
 
       {/* Navigation — only when multiple slides */}

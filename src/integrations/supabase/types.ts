@@ -8839,6 +8839,7 @@ export type Database = {
       hero_slides: {
         Row: {
           accent_color: string
+          animation_effect: string
           autoplay_interval: number
           badge_text: string | null
           badge_text_ar: string | null
@@ -8856,6 +8857,8 @@ export type Database = {
           link_label: string | null
           link_label_ar: string | null
           link_url: string | null
+          object_fit: string
+          object_position: string
           overlay_color: string
           overlay_opacity: number
           sort_order: number
@@ -8870,6 +8873,7 @@ export type Database = {
         }
         Insert: {
           accent_color?: string
+          animation_effect?: string
           autoplay_interval?: number
           badge_text?: string | null
           badge_text_ar?: string | null
@@ -8887,6 +8891,8 @@ export type Database = {
           link_label?: string | null
           link_label_ar?: string | null
           link_url?: string | null
+          object_fit?: string
+          object_position?: string
           overlay_color?: string
           overlay_opacity?: number
           sort_order?: number
@@ -8901,6 +8907,7 @@ export type Database = {
         }
         Update: {
           accent_color?: string
+          animation_effect?: string
           autoplay_interval?: number
           badge_text?: string | null
           badge_text_ar?: string | null
@@ -8918,6 +8925,8 @@ export type Database = {
           link_label?: string | null
           link_label_ar?: string | null
           link_url?: string | null
+          object_fit?: string
+          object_position?: string
           overlay_color?: string
           overlay_opacity?: number
           sort_order?: number
