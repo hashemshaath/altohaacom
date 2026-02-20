@@ -83,26 +83,26 @@ export function ShopProductCard({ product, onAddToCart }: ShopProductCardProps) 
         </div>
       </Link>
 
-      <CardContent className="flex flex-1 flex-col p-5">
-        <div className="flex-1 space-y-2">
-          <Badge variant="outline" className="text-[10px] font-bold uppercase tracking-widest border-primary/20 bg-primary/5 text-primary/80">
+      <CardContent className="flex flex-1 flex-col p-3 sm:p-4">
+        <div className="flex-1 space-y-1.5">
+          <Badge variant="outline" className="text-[9px] sm:text-[10px] font-bold uppercase tracking-widest border-primary/20 bg-primary/5 text-primary/80">
             {product.category}
           </Badge>
           <Link to={`/shop/${product.id}`} className="block">
-            <h3 className="text-base font-bold leading-tight group-hover:text-primary transition-colors duration-300 line-clamp-2">
+            <h3 className="text-sm sm:text-base font-bold leading-tight group-hover:text-primary transition-colors line-clamp-2">
               {title}
             </h3>
           </Link>
         </div>
 
-        <div className="mt-5 flex items-center justify-between border-t border-border/40 pt-4">
-          <div className="flex flex-col">
-            <span className="text-xl font-black tracking-tight text-primary">
-              SAR {product.price.toFixed(2)}
+        <div className="mt-3 flex items-center justify-between border-t border-border/40 pt-3 gap-1">
+          <div className="flex flex-col min-w-0">
+            <span className="text-base sm:text-lg font-black tracking-tight text-primary">
+              SAR {product.price.toFixed(0)}
             </span>
             {product.compare_at_price && product.compare_at_price > product.price && (
-              <span className="text-xs text-muted-foreground line-through opacity-60">
-                SAR {product.compare_at_price.toFixed(2)}
+              <span className="text-[10px] text-muted-foreground line-through opacity-60">
+                {product.compare_at_price.toFixed(0)}
               </span>
             )}
           </div>
@@ -110,10 +110,10 @@ export function ShopProductCard({ product, onAddToCart }: ShopProductCardProps) 
             size="sm"
             disabled={isOutOfStock}
             onClick={(e) => { e.preventDefault(); onAddToCart(product); }}
-            className={`h-10 rounded-xl px-5 font-bold transition-all active:scale-95 ${isOutOfStock ? "opacity-50" : "shadow-lg shadow-primary/20 hover:shadow-primary/30"}`}
+            className={`h-8 sm:h-9 rounded-xl px-2.5 sm:px-4 text-xs font-bold transition-all active:scale-95 shrink-0 ${isOutOfStock ? "opacity-50" : "shadow-md shadow-primary/20"}`}
           >
-            <ShoppingCart className="me-1.5 h-4 w-4" />
-            {isAr ? "أضف" : "Add"}
+            <ShoppingCart className="h-3.5 w-3.5 sm:me-1.5" />
+            <span className="hidden sm:inline">{isAr ? "أضف" : "Add"}</span>
           </Button>
         </div>
       </CardContent>
