@@ -7,9 +7,13 @@ import { Footer } from "@/components/Footer";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Card, CardContent } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 import { SEOHead } from "@/components/SEOHead";
-import { User, Edit, Shield, Crown, BarChart3, Wallet, FileText, Gift } from "lucide-react";
+import { User, Edit, Shield, Crown, BarChart3, Wallet, FileText, Gift, Trophy, ShoppingBag, ExternalLink } from "lucide-react";
 import type { Database } from "@/integrations/supabase/types";
+import { useQuery } from "@tanstack/react-query";
+import { format } from "date-fns";
 
 import { ProfileHeader } from "@/components/profile/ProfileHeader";
 import { ProfileOverviewTab } from "@/components/profile/ProfileOverviewTab";
@@ -19,8 +23,9 @@ import { UnifiedMembershipTab } from "@/components/membership/UnifiedMembershipT
 import { ProfileAnalyticsDashboard } from "@/components/profile/ProfileAnalyticsDashboard";
 import { WalletDashboard } from "@/components/wallet/WalletDashboard";
 import { ProfileInvoicesTab } from "@/components/profile/ProfileInvoicesTab";
-import { useSearchParams } from "react-router-dom";
+import { useSearchParams, Link } from "react-router-dom";
 import { ProfileReferralsTab } from "@/components/profile/ProfileReferralsTab";
+import { CompetitionHistory } from "@/components/profile/CompetitionHistory";
 
 type Profile = Database["public"]["Tables"]["profiles"]["Row"];
 type AppRole = Database["public"]["Enums"]["app_role"];
@@ -95,8 +100,10 @@ export default function Profile() {
 
   const tabs = [
     { id: "overview", label: isAr ? "مساحتي" : "My Space", icon: User, description: isAr ? "ملخص عام" : "Your summary" },
+    { id: "competitions", label: isAr ? "المسابقات" : "Competitions", icon: Trophy, description: isAr ? "سجل المسابقات" : "Competition history" },
     { id: "membership", label: isAr ? "العضوية" : "Membership", icon: Crown, description: isAr ? "خطتك الحالية" : "Your plan" },
     { id: "wallet", label: isAr ? "المحفظة" : "Wallet", icon: Wallet, description: isAr ? "الرصيد والنقاط" : "Balance & points" },
+    { id: "orders", label: isAr ? "الطلبات" : "Orders", icon: ShoppingBag, description: isAr ? "طلبات المتجر" : "Shop orders" },
     { id: "referrals", label: isAr ? "الإحالات" : "Referrals", icon: Gift, description: isAr ? "دعوة الأصدقاء" : "Invite friends" },
     { id: "invoices", label: isAr ? "الفواتير" : "Invoices", icon: FileText, description: isAr ? "سجل الدفعات" : "Payment history" },
     { id: "analytics", label: isAr ? "الإحصائيات" : "Analytics", icon: BarChart3, description: isAr ? "أداء الملف" : "Profile insights" },
@@ -136,6 +143,9 @@ export default function Profile() {
             {profile && user && <ProfileOverviewTab profile={profile} userId={user.id} />}
           </TabsContent>
 
+          <TabsContent value="competitions" className="mt-6">
+            {user && <CompetitionHistory userId={user.id} />}
+          </TabsContent>
 
           <TabsContent value="membership" className="mt-6">
             {profile && user && (
@@ -145,6 +155,10 @@ export default function Profile() {
 
           <TabsContent value="wallet" className="mt-6">
             {user && <WalletDashboard userId={user.id} />}
+          </TabsContent>
+
+          <TabsContent value="orders" className="mt-6">
+            {user && <ProfileOrdersTab userId={user.id} isAr={isAr} />}
           </TabsContent>
 
           <TabsContent value="referrals" className="mt-6">
@@ -169,6 +183,90 @@ export default function Profile() {
         </Tabs>
       </main>
       <Footer />
+    </div>
+  );
+}
+
+
+// ── Inline Orders Tab ─────────────────────────────────────────────────────────
+function ProfileOrdersTab({ userId, isAr }: { userId: string; isAr: boolean }) {
+  const { data: orders = [], isLoading } = useQuery({
+    queryKey: ["profile-shop-orders", userId],
+    queryFn: async () => {
+      const { data } = await supabase
+        .from("shop_orders")
+        .select("id, order_number, total_amount, currency, status, created_at")
+        .eq("buyer_id", userId)
+        .order("created_at", { ascending: false })
+        .limit(50);
+      return data || [];
+    },
+    staleTime: 1000 * 60 * 2,
+  });
+
+  const statusColors: Record<string, string> = {
+    pending: "bg-chart-4/15 text-chart-4",
+    processing: "bg-primary/15 text-primary",
+    shipped: "bg-chart-3/15 text-chart-3",
+    delivered: "bg-chart-5/15 text-chart-5",
+    cancelled: "bg-destructive/15 text-destructive",
+    refunded: "bg-muted text-muted-foreground",
+  };
+
+  if (isLoading) return (
+    <div className="space-y-3">
+      {[1,2,3].map(i => <Skeleton key={i} className="h-16 rounded-xl" />)}
+    </div>
+  );
+
+  if (!orders.length) return (
+    <Card>
+      <CardContent className="flex flex-col items-center py-12 text-center gap-3">
+        <ShoppingBag className="h-10 w-10 text-muted-foreground/30" />
+        <p className="font-medium text-muted-foreground">{isAr ? "لا توجد طلبات بعد" : "No orders yet"}</p>
+        <Link to="/shop">
+          <Button size="sm">{isAr ? "تسوق الآن" : "Shop Now"}</Button>
+        </Link>
+      </CardContent>
+    </Card>
+  );
+
+  return (
+    <div className="space-y-3">
+      <div className="flex items-center justify-between mb-4">
+        <h3 className="font-semibold">{isAr ? `${orders.length} طلبات` : `${orders.length} Orders`}</h3>
+        <Link to="/shop/orders">
+          <Button variant="outline" size="sm" className="gap-1.5 text-xs">
+            <ExternalLink className="h-3 w-3" />
+            {isAr ? "عرض الكل" : "View All"}
+          </Button>
+        </Link>
+      </div>
+      {orders.map((order: any) => (
+        <Card key={order.id} className="border-border/50 hover:shadow-sm transition-shadow">
+          <CardContent className="flex items-center gap-3 p-4">
+            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-primary/10">
+              <ShoppingBag className="h-4 w-4 text-primary" />
+            </div>
+            <div className="flex-1 min-w-0">
+              <p className="text-sm font-semibold" dir="ltr">{order.order_number || order.id.slice(0,8).toUpperCase()}</p>
+              <p className="text-xs text-muted-foreground">
+                {order.created_at ? format(new Date(order.created_at), "dd MMM yyyy") : "—"}
+              </p>
+            </div>
+            <div className="flex items-center gap-2 shrink-0">
+              <Badge className={`text-[10px] h-5 capitalize ${statusColors[order.status] || "bg-muted text-muted-foreground"}`}>
+                {isAr
+                  ? ({ pending: "قيد الانتظار", processing: "قيد المعالجة", shipped: "مشحون", delivered: "تم التسليم", cancelled: "ملغي", refunded: "مسترد" } as Record<string,string>)[order.status] || order.status
+                  : order.status}
+              </Badge>
+              <p className="text-sm font-bold text-primary">
+                {(order.total_amount || 0).toLocaleString()} <span className="text-xs text-muted-foreground">{order.currency || "SAR"}</span>
+              </p>
+            </div>
+          </CardContent>
+        </Card>
+      ))}
     </div>
   );
 }

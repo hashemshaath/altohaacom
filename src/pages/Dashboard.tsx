@@ -3,7 +3,7 @@ import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Trophy, Users, GraduationCap, Landmark, MessageSquare, ShoppingBag, Sparkles, Award, Star, UtensilsCrossed, HandHeart, AlertCircle } from "lucide-react";
+import { Trophy, Users, GraduationCap, Landmark, MessageSquare, ShoppingBag, Sparkles, Award, Star, UtensilsCrossed, HandHeart, AlertCircle, Megaphone, ClipboardList } from "lucide-react";
 import { Link } from "react-router-dom";
 import { UpcomingCompetitionsWidget } from "@/components/dashboard/UpcomingCompetitionsWidget";
 import { RecentActivityWidget } from "@/components/dashboard/RecentActivityWidget";
@@ -66,6 +66,8 @@ export default function Dashboard() {
     { icon: HandHeart, title: isAr ? "الإرشاد" : "Mentorship", href: "/mentorship", color: "text-chart-1", bg: "bg-chart-1/10", ring: "ring-chart-1/15", glow: "group-hover:shadow-chart-1/10" },
     { icon: ShoppingBag, title: isAr ? "المتجر" : "Shop", href: "/shop", color: "text-primary", bg: "bg-primary/8", ring: "ring-primary/10", glow: "group-hover:shadow-primary/10" },
     { icon: MessageSquare, title: isAr ? "الرسائل" : "Messages", href: "/messages", color: "text-chart-2", bg: "bg-chart-2/10", ring: "ring-chart-2/15", glow: "group-hover:shadow-chart-2/10" },
+    { icon: ClipboardList, title: isAr ? "طلباتي" : "My Orders", href: "/shop/orders", color: "text-chart-3", bg: "bg-chart-3/10", ring: "ring-chart-3/15", glow: "group-hover:shadow-chart-3/10" },
+    { icon: Megaphone, title: isAr ? "أعلن معنا" : "Advertise", href: "/advertise", color: "text-chart-4", bg: "bg-chart-4/10", ring: "ring-chart-4/15", glow: "group-hover:shadow-chart-4/10" },
   ];
 
   return (
@@ -128,7 +130,7 @@ export default function Dashboard() {
             <Sparkles className="h-3.5 w-3.5 text-primary" />
             {isAr ? "الوصول السريع" : "Quick Access"}
           </h2>
-          <div className="grid grid-cols-4 gap-2.5 sm:gap-3 md:grid-cols-4 lg:grid-cols-8">
+          <div className="grid grid-cols-5 gap-2 sm:gap-3 md:grid-cols-5 lg:grid-cols-10">
             {sections.map((s) => (
               <Link key={s.title} to={s.href} className="group">
                 <Card className={`h-full border-border/30 bg-card/60 backdrop-blur-sm transition-all duration-300 hover:shadow-xl hover:-translate-y-1.5 hover:border-border/50 hover:bg-card active:scale-95 ${s.glow}`}>
