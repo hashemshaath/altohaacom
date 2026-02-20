@@ -256,39 +256,40 @@ export default function SupportTicketsAdmin() {
   };
 
   return (
-    <div className="space-y-6">
-      <div className="flex items-center gap-3">
-        <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-primary/10">
-          <Ticket className="h-5 w-5 text-primary" />
+    <div className="space-y-4 sm:space-y-6">
+      {/* Header */}
+      <div className="flex items-center gap-2 sm:gap-3">
+        <div className="flex h-8 w-8 sm:h-10 sm:w-10 shrink-0 items-center justify-center rounded-xl bg-primary/10">
+          <Ticket className="h-4 w-4 sm:h-5 sm:w-5 text-primary" />
         </div>
-        <div>
-          <h1 className="font-serif text-xl font-bold sm:text-2xl">
-            {isAr ? "إدارة تذاكر الدعم" : "Support Tickets"}
+        <div className="min-w-0">
+          <h1 className="font-serif text-lg sm:text-2xl font-bold truncate">
+            {isAr ? "تذاكر الدعم" : "Support Tickets"}
           </h1>
-          <p className="text-xs text-muted-foreground">
-            {isAr ? "إدارة ومعالجة جميع طلبات الدعم" : "Manage and respond to all support requests"}
+          <p className="text-[11px] sm:text-xs text-muted-foreground truncate">
+            {isAr ? "إدارة طلبات الدعم" : "Manage support requests"}
           </p>
         </div>
       </div>
 
       {/* Stats */}
-      <div className="grid grid-cols-2 md:grid-cols-6 gap-4">
+      <div className="grid grid-cols-3 sm:grid-cols-6 gap-2 sm:gap-4">
         {[
-          { icon: Ticket, label: isAr ? "الإجمالي" : "Total", value: stats.total, color: "text-primary", bg: "bg-primary/10" },
+          { icon: Ticket, label: isAr ? "الكل" : "Total", value: stats.total, color: "text-primary", bg: "bg-primary/10" },
           { icon: AlertCircle, label: isAr ? "مفتوحة" : "Open", value: stats.open, color: "text-chart-4", bg: "bg-chart-4/10" },
-          { icon: Clock, label: isAr ? "قيد المعالجة" : "In Progress", value: stats.inProgress, color: "text-chart-3", bg: "bg-chart-3/10" },
-          { icon: CheckCircle2, label: isAr ? "محلولة" : "Resolved", value: stats.resolved, color: "text-chart-5", bg: "bg-chart-5/10" },
+          { icon: Clock, label: isAr ? "جارية" : "Active", value: stats.inProgress, color: "text-chart-3", bg: "bg-chart-3/10" },
+          { icon: CheckCircle2, label: isAr ? "محلولة" : "Done", value: stats.resolved, color: "text-chart-5", bg: "bg-chart-5/10" },
           { icon: XCircle, label: isAr ? "عاجلة" : "Urgent", value: stats.urgent, color: "text-destructive", bg: "bg-destructive/10" },
-          { icon: Timer, label: isAr ? "تجاوز SLA" : "SLA Breached", value: stats.slaBreach, color: "text-destructive", bg: "bg-destructive/10" },
+          { icon: Timer, label: "SLA", value: stats.slaBreach, color: "text-destructive", bg: "bg-destructive/10" },
         ].map(s => (
           <Card key={s.label}>
-            <CardContent className="flex items-center gap-3 py-4">
-              <div className={`rounded-full p-2 ${s.bg}`}>
-                <s.icon className={`h-4 w-4 ${s.color}`} />
+            <CardContent className="flex items-center gap-2 p-2 sm:py-4 sm:px-3">
+              <div className={`rounded-full p-1.5 sm:p-2 ${s.bg}`}>
+                <s.icon className={`h-3 w-3 sm:h-4 sm:w-4 ${s.color}`} />
               </div>
-              <div>
-                <p className="text-xs text-muted-foreground">{s.label}</p>
-                <p className="text-xl font-bold">{s.value}</p>
+              <div className="min-w-0">
+                <p className="text-[10px] sm:text-xs text-muted-foreground truncate">{s.label}</p>
+                <p className="text-base sm:text-xl font-bold">{s.value}</p>
               </div>
             </CardContent>
           </Card>
@@ -297,43 +298,45 @@ export default function SupportTicketsAdmin() {
 
       {selectedTicket ? (
         /* Detail View */
-        <div className="space-y-4">
-          <Button variant="ghost" size="sm" onClick={() => setSelectedTicketId(null)} className="gap-2">
-            <ArrowLeft className="h-4 w-4" />
+        <div className="space-y-3 sm:space-y-4">
+          <Button variant="ghost" size="sm" onClick={() => setSelectedTicketId(null)} className="gap-2 h-8">
+            <ArrowLeft className="h-3.5 w-3.5" />
             {isAr ? "العودة" : "Back"}
           </Button>
 
           <Card>
-            <CardHeader>
-              <div className="flex items-start justify-between">
-                <div>
-                  <CardTitle>{selectedTicket.subject}</CardTitle>
-                  <div className="mt-2 flex flex-wrap items-center gap-2">
-                    <Badge variant="outline">{selectedTicket.ticket_number}</Badge>
+            <CardHeader className="p-3 sm:p-6">
+              <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3">
+                <div className="min-w-0">
+                  <CardTitle className="text-sm sm:text-base">{selectedTicket.subject}</CardTitle>
+                  <div className="mt-2 flex flex-wrap items-center gap-1.5 sm:gap-2">
+                    <Badge variant="outline" className="text-[10px]">{selectedTicket.ticket_number}</Badge>
                     {getStatusBadge(selectedTicket.status)}
                     {getPriorityBadge(selectedTicket.priority)}
                     {getSlaIndicator(selectedTicket.priority, selectedTicket.created_at, selectedTicket.status, isAr)}
-                    <Badge variant="outline">
+                    <Badge variant="outline" className="text-[10px]">
                       <Users className="me-1 h-3 w-3" />
                       {profileMap.get(selectedTicket.user_id)?.full_name || "Unknown"}
                     </Badge>
                   </div>
                 </div>
-                <div className="flex gap-2">
+                <div className="flex gap-1.5 sm:gap-2 shrink-0">
                   {selectedTicket.status !== "resolved" && (
                     <Button
                       variant="outline"
                       size="sm"
+                      className="h-7 sm:h-8 text-xs px-2 sm:px-3"
                       onClick={() => updateStatus.mutate({ id: selectedTicket.id, status: "resolved" })}
                     >
                       <CheckCircle2 className="me-1 h-3 w-3" />
-                      {isAr ? "تم الحل" : "Resolve"}
+                      {isAr ? "حل" : "Resolve"}
                     </Button>
                   )}
                   {selectedTicket.status !== "closed" && (
                     <Button
                       variant="ghost"
                       size="sm"
+                      className="h-7 sm:h-8 text-xs px-2 sm:px-3"
                       onClick={() => updateStatus.mutate({ id: selectedTicket.id, status: "closed" })}
                     >
                       <XCircle className="me-1 h-3 w-3" />
@@ -343,30 +346,30 @@ export default function SupportTicketsAdmin() {
                 </div>
               </div>
             </CardHeader>
-            <CardContent>
-              <div className="rounded-lg bg-muted/50 p-4 mb-4">
-                <p className="whitespace-pre-wrap text-sm">{selectedTicket.description}</p>
+            <CardContent className="p-3 sm:p-6 pt-0 sm:pt-0">
+              <div className="rounded-lg bg-muted/50 p-3 sm:p-4 mb-3 sm:mb-4">
+                <p className="whitespace-pre-wrap text-xs sm:text-sm">{selectedTicket.description}</p>
                 <span className="text-[10px] text-muted-foreground block mt-2">
                   {format(new Date(selectedTicket.created_at), "yyyy-MM-dd HH:mm")}
                 </span>
               </div>
 
-              <Separator className="my-4" />
+              <Separator className="my-3 sm:my-4" />
 
-              <h4 className="text-sm font-semibold mb-3 flex items-center gap-2">
-                <MessageSquare className="h-4 w-4 text-primary" />
-                {isAr ? "الردود والملاحظات" : "Replies & Notes"} ({ticketMessages.length})
+              <h4 className="text-xs sm:text-sm font-semibold mb-2 sm:mb-3 flex items-center gap-2">
+                <MessageSquare className="h-3.5 w-3.5 text-primary" />
+                {isAr ? "الردود" : "Replies"} ({ticketMessages.length})
               </h4>
 
-              <ScrollArea className="max-h-[400px]">
-                <div className="space-y-3">
+              <ScrollArea className="max-h-[300px] sm:max-h-[400px]">
+                <div className="space-y-2 sm:space-y-3">
                   {ticketMessages.map(msg => {
                     const isUser = msg.sender_id === selectedTicket.user_id;
 
                     return (
                       <div
                         key={msg.id}
-                        className={`rounded-lg border p-3 ${
+                        className={`rounded-lg border p-2.5 sm:p-3 ${
                           msg.is_internal_note
                             ? "bg-chart-4/5 border-chart-4/30 border-dashed"
                             : isUser
@@ -375,13 +378,13 @@ export default function SupportTicketsAdmin() {
                         }`}
                       >
                         <div className="flex items-center justify-between mb-1">
-                          <div className="flex items-center gap-2">
-                            <Badge variant="outline" className="text-xs">
+                          <div className="flex items-center gap-1.5">
+                            <Badge variant="outline" className="text-[10px]">
                               {isUser ? (isAr ? "المستخدم" : "User") : (isAr ? "الدعم" : "Support")}
                             </Badge>
                             {msg.is_internal_note && (
-                              <Badge variant="secondary" className="text-[10px]">
-                                {isAr ? "ملاحظة داخلية" : "Internal Note"}
+                              <Badge variant="secondary" className="text-[9px]">
+                                {isAr ? "داخلية" : "Internal"}
                               </Badge>
                             )}
                           </div>
@@ -392,7 +395,7 @@ export default function SupportTicketsAdmin() {
                             })}
                           </span>
                         </div>
-                        <p className="text-sm whitespace-pre-wrap">{msg.message}</p>
+                        <p className="text-xs sm:text-sm whitespace-pre-wrap">{msg.message}</p>
                       </div>
                     );
                   })}
@@ -400,26 +403,26 @@ export default function SupportTicketsAdmin() {
               </ScrollArea>
 
               {selectedTicket.status !== "closed" && (
-                <div className="mt-4 space-y-2">
+                <div className="mt-3 sm:mt-4 space-y-2">
                   <div className="flex items-center justify-between gap-2">
-                    <label className="flex items-center gap-2 text-sm cursor-pointer">
+                    <label className="flex items-center gap-1.5 text-[11px] sm:text-sm cursor-pointer">
                       <input
                         type="checkbox"
                         checked={isInternalNote}
                         onChange={e => setIsInternalNote(e.target.checked)}
                         className="rounded"
                       />
-                      {isAr ? "ملاحظة داخلية (لن يراها المستخدم)" : "Internal note (hidden from user)"}
+                      {isAr ? "ملاحظة داخلية" : "Internal note"}
                     </label>
-                    {/* Canned Responses */}
                     <DropdownMenu>
                       <DropdownMenuTrigger asChild>
-                        <Button variant="outline" size="sm" className="gap-1.5">
+                        <Button variant="outline" size="sm" className="gap-1 h-7 text-[11px]">
                           <Zap className="h-3 w-3" />
-                          {isAr ? "ردود سريعة" : "Quick Replies"}
+                          <span className="hidden sm:inline">{isAr ? "ردود سريعة" : "Quick Replies"}</span>
+                          <span className="sm:hidden">{isAr ? "سريع" : "Quick"}</span>
                         </Button>
                       </DropdownMenuTrigger>
-                      <DropdownMenuContent align="end" className="w-80">
+                      <DropdownMenuContent align="end" className="w-72 sm:w-80">
                         {CANNED_RESPONSES.map(r => (
                           <DropdownMenuItem
                             key={r.key}
@@ -447,10 +450,10 @@ export default function SupportTicketsAdmin() {
                       onChange={e => setNewReply(e.target.value)}
                       placeholder={isAr ? "اكتب الرد..." : "Type your reply..."}
                       rows={2}
-                      className="flex-1"
+                      className="flex-1 text-xs sm:text-sm"
                     />
-                    <Button type="submit" disabled={!newReply.trim() || sendReply.isPending} className="self-end">
-                      <Send className="h-4 w-4" />
+                    <Button type="submit" size="sm" disabled={!newReply.trim() || sendReply.isPending} className="self-end h-8 w-8 sm:h-9 sm:w-9 p-0">
+                      <Send className="h-3.5 w-3.5" />
                     </Button>
                   </form>
                 </div>
@@ -461,30 +464,30 @@ export default function SupportTicketsAdmin() {
       ) : (
         /* List View */
         <>
-          <div className="flex flex-wrap gap-3">
-            <div className="relative flex-1 min-w-[200px]">
-              <Search className="absolute start-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+          <div className="flex flex-wrap gap-2 sm:gap-3">
+            <div className="relative flex-1 min-w-[140px] sm:min-w-[200px]">
+              <Search className="absolute start-2.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground" />
               <Input
                 placeholder={isAr ? "بحث..." : "Search..."}
                 value={searchQuery}
                 onChange={e => setSearchQuery(e.target.value)}
-                className="ps-10"
+                className="ps-8 h-8 sm:h-9 text-xs sm:text-sm"
               />
             </div>
             <Select value={statusFilter} onValueChange={setStatusFilter}>
-              <SelectTrigger className="w-[140px]"><SelectValue /></SelectTrigger>
+              <SelectTrigger className="w-[100px] sm:w-[140px] h-8 sm:h-9 text-xs sm:text-sm"><SelectValue /></SelectTrigger>
               <SelectContent>
                 <SelectItem value="all">{isAr ? "الكل" : "All"}</SelectItem>
                 <SelectItem value="open">{isAr ? "مفتوحة" : "Open"}</SelectItem>
-                <SelectItem value="in_progress">{isAr ? "قيد المعالجة" : "In Progress"}</SelectItem>
+                <SelectItem value="in_progress">{isAr ? "جارية" : "Active"}</SelectItem>
                 <SelectItem value="resolved">{isAr ? "محلولة" : "Resolved"}</SelectItem>
                 <SelectItem value="closed">{isAr ? "مغلقة" : "Closed"}</SelectItem>
               </SelectContent>
             </Select>
             <Select value={priorityFilter} onValueChange={setPriorityFilter}>
-              <SelectTrigger className="w-[140px]"><SelectValue /></SelectTrigger>
+              <SelectTrigger className="w-[100px] sm:w-[140px] h-8 sm:h-9 text-xs sm:text-sm"><SelectValue /></SelectTrigger>
               <SelectContent>
-                <SelectItem value="all">{isAr ? "كل الأولويات" : "All Priorities"}</SelectItem>
+                <SelectItem value="all">{isAr ? "الكل" : "All"}</SelectItem>
                 <SelectItem value="urgent">{isAr ? "عاجل" : "Urgent"}</SelectItem>
                 <SelectItem value="high">{isAr ? "مرتفع" : "High"}</SelectItem>
                 <SelectItem value="normal">{isAr ? "عادي" : "Normal"}</SelectItem>
@@ -496,64 +499,99 @@ export default function SupportTicketsAdmin() {
           <Card>
             <CardContent className="p-0">
               {isLoading ? (
-                <div className="p-6 space-y-3">
+                <div className="p-4 sm:p-6 space-y-3">
                   {[1, 2, 3].map(i => <Skeleton key={i} className="h-12 w-full" />)}
                 </div>
               ) : filteredTickets.length === 0 ? (
-                <div className="flex flex-col items-center justify-center py-16">
-                  <Ticket className="mb-4 h-12 w-12 text-muted-foreground/30" />
-                  <p className="text-muted-foreground">{isAr ? "لا توجد تذاكر" : "No tickets found"}</p>
+                <div className="flex flex-col items-center justify-center py-12 sm:py-16">
+                  <Ticket className="mb-3 h-10 w-10 text-muted-foreground/30" />
+                  <p className="text-sm text-muted-foreground">{isAr ? "لا توجد تذاكر" : "No tickets found"}</p>
                 </div>
               ) : (
-                <Table>
-                  <TableHeader>
-                    <TableRow>
-                      <TableHead>{isAr ? "الرقم" : "Ticket #"}</TableHead>
-                      <TableHead>{isAr ? "الموضوع" : "Subject"}</TableHead>
-                      <TableHead>{isAr ? "المستخدم" : "User"}</TableHead>
-                      <TableHead>{isAr ? "الحالة" : "Status"}</TableHead>
-                      <TableHead>{isAr ? "الأولوية" : "Priority"}</TableHead>
-                      <TableHead>SLA</TableHead>
-                      <TableHead>{isAr ? "التاريخ" : "Date"}</TableHead>
-                    </TableRow>
-                  </TableHeader>
-                   <TableBody>
+                <>
+                  {/* Mobile card list */}
+                  <div className="sm:hidden divide-y divide-border">
                     {filteredTickets.map(ticket => {
                       const profile = profileMap.get(ticket.user_id);
                       return (
-                        <TableRow
+                        <div
                           key={ticket.id}
-                          className="cursor-pointer hover:bg-accent/50 transition-colors"
+                          className="flex items-start gap-2.5 px-3 py-2.5 active:bg-accent/50 cursor-pointer transition-colors"
                           onClick={() => setSelectedTicketId(ticket.id)}
                         >
-                          <TableCell className="font-mono text-xs">{ticket.ticket_number}</TableCell>
-                          <TableCell>
-                            <p className="font-medium max-w-[240px] truncate">{ticket.subject}</p>
-                          </TableCell>
-                          <TableCell>
-                            <div className="flex items-center gap-2">
-                              <div className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-muted text-[10px] font-medium">
-                                {(profile?.full_name || "U")[0].toUpperCase()}
-                              </div>
-                              <span className="text-sm truncate">{profile?.full_name || "Unknown"}</span>
+                          <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-muted text-[10px] font-medium mt-0.5">
+                            {(profile?.full_name || "U")[0].toUpperCase()}
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <p className="text-xs font-medium truncate">{ticket.subject}</p>
+                            <div className="flex items-center gap-1.5 mt-1 flex-wrap">
+                              <span className="text-[10px] font-mono text-muted-foreground">{ticket.ticket_number}</span>
+                              {getStatusBadge(ticket.status)}
+                              {getPriorityBadge(ticket.priority)}
+                              {getSlaIndicator(ticket.priority, ticket.created_at, ticket.status, isAr)}
                             </div>
-                          </TableCell>
-                          <TableCell>{getStatusBadge(ticket.status)}</TableCell>
-                          <TableCell>{getPriorityBadge(ticket.priority)}</TableCell>
-                          <TableCell>
-                            {getSlaIndicator(ticket.priority, ticket.created_at, ticket.status, isAr)}
-                          </TableCell>
-                          <TableCell className="text-xs text-muted-foreground">
-                            {formatDistanceToNow(new Date(ticket.created_at), {
-                              addSuffix: true,
-                              locale: isAr ? ar : enUS,
-                            })}
-                          </TableCell>
-                        </TableRow>
+                            <p className="text-[10px] text-muted-foreground mt-0.5">
+                              {profile?.full_name || "Unknown"} · {formatDistanceToNow(new Date(ticket.created_at), { addSuffix: true, locale: isAr ? ar : enUS })}
+                            </p>
+                          </div>
+                        </div>
                       );
                     })}
-                  </TableBody>
-                </Table>
+                  </div>
+
+                  {/* Desktop table */}
+                  <div className="hidden sm:block overflow-x-auto">
+                    <Table>
+                      <TableHeader>
+                        <TableRow>
+                          <TableHead>{isAr ? "الرقم" : "Ticket #"}</TableHead>
+                          <TableHead>{isAr ? "الموضوع" : "Subject"}</TableHead>
+                          <TableHead>{isAr ? "المستخدم" : "User"}</TableHead>
+                          <TableHead>{isAr ? "الحالة" : "Status"}</TableHead>
+                          <TableHead>{isAr ? "الأولوية" : "Priority"}</TableHead>
+                          <TableHead>SLA</TableHead>
+                          <TableHead>{isAr ? "التاريخ" : "Date"}</TableHead>
+                        </TableRow>
+                      </TableHeader>
+                      <TableBody>
+                        {filteredTickets.map(ticket => {
+                          const profile = profileMap.get(ticket.user_id);
+                          return (
+                            <TableRow
+                              key={ticket.id}
+                              className="cursor-pointer hover:bg-accent/50 transition-colors"
+                              onClick={() => setSelectedTicketId(ticket.id)}
+                            >
+                              <TableCell className="font-mono text-xs">{ticket.ticket_number}</TableCell>
+                              <TableCell>
+                                <p className="font-medium max-w-[240px] truncate">{ticket.subject}</p>
+                              </TableCell>
+                              <TableCell>
+                                <div className="flex items-center gap-2">
+                                  <div className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-muted text-[10px] font-medium">
+                                    {(profile?.full_name || "U")[0].toUpperCase()}
+                                  </div>
+                                  <span className="text-sm truncate">{profile?.full_name || "Unknown"}</span>
+                                </div>
+                              </TableCell>
+                              <TableCell>{getStatusBadge(ticket.status)}</TableCell>
+                              <TableCell>{getPriorityBadge(ticket.priority)}</TableCell>
+                              <TableCell>
+                                {getSlaIndicator(ticket.priority, ticket.created_at, ticket.status, isAr)}
+                              </TableCell>
+                              <TableCell className="text-xs text-muted-foreground">
+                                {formatDistanceToNow(new Date(ticket.created_at), {
+                                  addSuffix: true,
+                                  locale: isAr ? ar : enUS,
+                                })}
+                              </TableCell>
+                            </TableRow>
+                          );
+                        })}
+                      </TableBody>
+                    </Table>
+                  </div>
+                </>
               )}
             </CardContent>
           </Card>
