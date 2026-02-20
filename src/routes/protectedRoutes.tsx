@@ -26,6 +26,8 @@ const Referrals = lazy(() => import("@/pages/Referrals"));
 const Rewards = lazy(() => import("@/pages/Rewards"));
 const CreateRecipe = lazy(() => import("@/pages/CreateRecipe"));
 const MyEvaluations = lazy(() => import("@/pages/MyEvaluations"));
+const Checkout = lazy(() => import("@/pages/Checkout"));
+const AdvertiseWithUs = lazy(() => import("@/pages/AdvertiseWithUs"));
 
 export const protectedRoutes = (
   <>
@@ -53,5 +55,7 @@ export const protectedRoutes = (
     <Route path="/rewards" element={<ProtectedRoute><Rewards /></ProtectedRoute>} />
     <Route path="/recipes/create" element={<ProtectedRoute><CreateRecipe /></ProtectedRoute>} />
     <Route path="/my-evaluations" element={<ProtectedRoute><MyEvaluations /></ProtectedRoute>} />
+    <Route path="/checkout" element={<ProtectedRoute><Checkout /></ProtectedRoute>} />
+    <Route path="/advertise" element={<ProtectedRoute><AdvertiseWithUs /></ProtectedRoute>} />
   </>
 );
