@@ -121,7 +121,7 @@ export function ProfileEditForm({ profile, userId, onSaved }: ProfileEditFormPro
             </div>
             <div className="space-y-1.5">
               <Label className="text-xs">{isAr ? "الجنس" : "Gender"}</Label>
-              <Select value={form.gender} onValueChange={(v) => update("gender", v)}>
+              <Select value={form.gender} onValueChange={(v) => update("gender", v)} dir={isAr ? "rtl" : "ltr"}>
                 <SelectTrigger><SelectValue placeholder={isAr ? "اختر" : "Select"} /></SelectTrigger>
                 <SelectContent>
                   {GENDERS.map((g) => <SelectItem key={g.value} value={g.value}>{isAr ? g.ar : g.en}</SelectItem>)}
@@ -130,7 +130,7 @@ export function ProfileEditForm({ profile, userId, onSaved }: ProfileEditFormPro
             </div>
             <div className="space-y-1.5">
               <Label className="text-xs">{isAr ? "اللغة المفضلة" : "Preferred Language"}</Label>
-              <Select value={form.preferred_language} onValueChange={(v) => update("preferred_language", v)}>
+              <Select value={form.preferred_language} onValueChange={(v) => update("preferred_language", v)} dir={isAr ? "rtl" : "ltr"}>
                 <SelectTrigger><SelectValue /></SelectTrigger>
                 <SelectContent>
                   <SelectItem value="ar">{isAr ? "العربية" : "Arabic"}</SelectItem>
@@ -182,7 +182,7 @@ export function ProfileEditForm({ profile, userId, onSaved }: ProfileEditFormPro
           <div className="grid gap-4 sm:grid-cols-2">
             <div className="space-y-1.5">
               <Label className="text-xs">{isAr ? "مستوى الخبرة" : "Experience Level"}</Label>
-              <Select value={form.experience_level} onValueChange={(v) => update("experience_level", v)}>
+              <Select value={form.experience_level} onValueChange={(v) => update("experience_level", v)} dir={isAr ? "rtl" : "ltr"}>
                 <SelectTrigger><SelectValue /></SelectTrigger>
                 <SelectContent>
                   <SelectItem value="beginner">{isAr ? "مبتدئ" : "Beginner"}</SelectItem>
@@ -224,11 +224,11 @@ export function ProfileEditForm({ profile, userId, onSaved }: ProfileEditFormPro
           <div className="grid gap-4 sm:grid-cols-2">
             <div className="space-y-1.5">
               <Label className="text-xs">{isAr ? "المدينة" : "City"}</Label>
-              <Input value={form.city} onChange={(e) => update("city", e.target.value)} />
+              <Input value={form.city} onChange={(e) => update("city", e.target.value)} dir={isAr ? "rtl" : "ltr"} />
             </div>
             <div className="space-y-1.5">
               <Label className="text-xs">{isAr ? "العنوان" : "Location"}</Label>
-              <Input value={form.location} onChange={(e) => update("location", e.target.value)} />
+              <Input value={form.location} onChange={(e) => update("location", e.target.value)} dir={isAr ? "rtl" : "ltr"} />
             </div>
           </div>
           <div className="space-y-1.5">
