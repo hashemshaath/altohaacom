@@ -41,7 +41,7 @@ export function DesktopNav({ primaryNav, moreLinks, isJudge, isAr }: DesktopNavP
           size="sm"
           asChild
           className={cn(
-            "text-muted-foreground h-8 px-3 text-[13px] font-medium transition-all duration-200 hover:bg-primary/5 hover:text-foreground relative",
+            "text-muted-foreground h-9 px-3.5 text-sm font-medium transition-all duration-200 hover:bg-primary/5 hover:text-foreground relative",
             isActive(link.to) &&
               "bg-primary/10 text-primary shadow-sm shadow-primary/5"
           )}
@@ -61,7 +61,7 @@ export function DesktopNav({ primaryNav, moreLinks, isJudge, isAr }: DesktopNavP
         size="sm"
         asChild
         className={cn(
-          "text-muted-foreground h-8 px-3 text-[13px] font-medium hover:bg-primary/5 hover:text-foreground relative",
+          "text-muted-foreground h-9 px-3.5 text-sm font-medium hover:bg-primary/5 hover:text-foreground relative",
           isActive("/chefs-table") && "bg-primary/10 text-primary"
         )}
       >
@@ -80,7 +80,7 @@ export function DesktopNav({ primaryNav, moreLinks, isJudge, isAr }: DesktopNavP
           <Button
             variant="ghost"
             size="sm"
-            className="text-muted-foreground h-8 px-3 text-[13px] font-medium gap-1.5 hover:bg-primary/5 hover:text-foreground group"
+            className="text-muted-foreground h-9 px-3.5 text-sm font-medium gap-1.5 hover:bg-primary/5 hover:text-foreground group"
           >
             <Compass className="h-3.5 w-3.5" />
             {label("Explore", "اكتشف")}
