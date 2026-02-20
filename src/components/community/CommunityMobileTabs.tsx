@@ -27,7 +27,7 @@ export function CommunityMobileTabs({ activeTab, setActiveTab }: CommunityMobile
   ];
 
   return (
-    <div className="sticky top-[56px] z-40 border-b border-border/40 bg-background/90 backdrop-blur-xl lg:hidden">
+    <div className="sticky top-12 z-40 border-b border-border/40 bg-background/90 backdrop-blur-xl lg:hidden">
       <div className="flex overflow-x-auto scrollbar-none snap-x snap-mandatory">
         {tabs.filter(t => !t.requiresAuth || user).map((tab) => (
           <button

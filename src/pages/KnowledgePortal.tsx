@@ -154,7 +154,7 @@ export default function KnowledgePortal() {
           <div className="lg:col-span-2">
             <Tabs defaultValue="resources">
               {/* Premium sticky tab bar */}
-              <div className="sticky top-[64px] z-30 -mx-4 mb-6 border-y border-border/40 bg-background/80 px-4 py-3 backdrop-blur-md md:rounded-2xl md:border md:mx-0 md:px-6 shadow-sm">
+              <div className="sticky top-12 z-30 -mx-4 mb-6 border-y border-border/40 bg-background/80 px-4 py-3 backdrop-blur-md md:rounded-2xl md:border md:mx-0 md:px-6 shadow-sm">
                 <TabsList className="h-auto w-full justify-start gap-1.5 overflow-x-auto bg-transparent p-0 no-scrollbar">
                   <TabsTrigger value="resources" className="gap-2 rounded-xl px-5 py-2.5 text-xs font-bold uppercase tracking-wider data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-lg data-[state=active]:shadow-primary/20">
                     <BookOpen className="h-4 w-4" />

@@ -72,7 +72,7 @@ export function CommunityLeftSidebar({ activeTab, setActiveTab, leftSidebarOpen,
 
   return (
     <aside className={cn(
-      "hidden lg:flex flex-col shrink-0 sticky top-[56px] self-start py-2 pe-1 transition-all duration-300 ease-in-out",
+      "hidden lg:flex flex-col shrink-0 sticky top-12 self-start py-2 pe-1 transition-all duration-300 ease-in-out",
       leftSidebarOpen ? "w-[220px]" : "w-[48px]"
     )}>
       <Button

@@ -218,7 +218,7 @@ export default function Competitions() {
           )}
 
           {/* Sticky Filters + Tab Pills */}
-          <div className="sticky top-[64px] z-30 -mx-4 mb-8 border-y border-border/40 bg-background/80 px-4 py-4 backdrop-blur-md md:rounded-2xl md:border md:mx-0 md:px-6 space-y-4">
+          <div className="sticky top-12 z-30 -mx-4 mb-8 border-y border-border/40 bg-background/80 px-4 py-4 backdrop-blur-md md:rounded-2xl md:border md:mx-0 md:px-6 space-y-4">
             {/* Search & Filter */}
             <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
               <div className="relative flex-1 sm:max-w-md">

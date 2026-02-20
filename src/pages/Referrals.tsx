@@ -138,7 +138,7 @@ export default function Referrals() {
         </div>
 
         <Tabs defaultValue="share" className="space-y-6">
-          <div className="sticky top-[64px] z-30 -mx-4 px-4 py-3 border-b border-border/40 bg-background/80 backdrop-blur-md">
+          <div className="sticky top-12 z-30 -mx-4 px-4 py-3 border-b border-border/40 bg-background/80 backdrop-blur-md">
             <TabsList className="grid w-full grid-cols-5 bg-muted/60">
               <TabsTrigger value="share" className="gap-1.5 data-[state=active]:shadow-md">
                 <Share2 className="h-4 w-4" />

@@ -93,7 +93,7 @@ export default function Mentorship() {
 
         <div className="container py-4 md:py-6 space-y-8">
           <Tabs defaultValue="programs">
-            <div className="sticky top-[64px] z-40 -mx-4 border-y border-border/40 bg-background/80 px-4 py-3 backdrop-blur-md md:rounded-2xl md:border md:mx-0 md:px-6 space-y-3">
+            <div className="sticky top-12 z-40 -mx-4 border-y border-border/40 bg-background/80 px-4 py-3 backdrop-blur-md md:rounded-2xl md:border md:mx-0 md:px-6 space-y-3">
               <div className="relative max-w-md">
                 <Search className="absolute start-4 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground/60" />
                 <Input placeholder={isAr ? "ابحث عن برنامج..." : "Search programs..."} value={search} onChange={e => setSearch(e.target.value)} className="h-11 border-border/40 bg-muted/20 ps-11 transition-all focus:bg-background focus:ring-primary/20 rounded-xl" />

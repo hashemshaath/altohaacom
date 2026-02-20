@@ -71,7 +71,7 @@ export function PlatformFeatures() {
                   <p className="mb-3 flex-1 text-sm text-muted-foreground leading-relaxed">{s.desc}</p>
                   <span className="inline-flex items-center text-xs font-medium text-primary">
                     {isAr ? "اكتشف المزيد" : "Explore"}
-                    <ArrowRight className="ms-1 h-3 w-3 transition-transform group-hover:translate-x-1 rtl:group-hover:-translate-x-1" />
+                    <ArrowRight className="ms-1 h-3 w-3" />
                   </span>
                 </CardContent>
               </Card>

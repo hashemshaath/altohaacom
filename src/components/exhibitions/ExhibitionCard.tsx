@@ -261,7 +261,7 @@ export function ExhibitionCard({ exhibition, language }: ExhibitionCardProps) {
         <div className="flex items-center justify-between border-t border-border/40 bg-muted/20 px-5 py-3 transition-colors group-hover:bg-muted/40">
           <div className="flex items-center gap-1 text-[11px] font-bold uppercase tracking-wider text-primary">
             {isAr ? "عرض التفاصيل" : "View Details"}
-            <ArrowRight className="ms-1 h-3 w-3 transition-transform group-hover:translate-x-1 rtl:group-hover:-translate-x-1" />
+            <ArrowRight className="ms-1 h-3 w-3" />
           </div>
           <div className="flex items-center gap-2">
             {exhibition.registration_url && (
