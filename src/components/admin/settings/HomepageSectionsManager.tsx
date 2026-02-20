@@ -1,46 +1,51 @@
-import { useState } from "react";
+import { useState, useCallback, useRef } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import {
   useHomepageSections,
   useUpdateHomepageSection,
+  useBulkUpdateHomepageSections,
   type HomepageSection,
 } from "@/hooks/useHomepageSections";
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Switch } from "@/components/ui/switch";
 import { Badge } from "@/components/ui/badge";
-import { Separator } from "@/components/ui/separator";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Slider } from "@/components/ui/slider";
-import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import {
-  Eye, EyeOff, ChevronDown, Save, Image, LayoutGrid, Type,
-  Filter, ArrowUpDown, GripVertical, Loader2,
+  Eye, EyeOff, ChevronDown, ChevronUp, Save, LayoutGrid,
+  Loader2, Search, RotateCcw, GripVertical,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useToast } from "@/hooks/use-toast";
-
-const SIZE_OPTIONS = [
-  { value: "small", en: "Small", ar: "صغير" },
-  { value: "medium", en: "Medium", ar: "متوسط" },
-  { value: "large", en: "Large", ar: "كبير" },
-];
-
-const COVER_TYPE_OPTIONS = [
-  { value: "none", en: "No Cover", ar: "بدون غلاف" },
-  { value: "background", en: "Background Image", ar: "صورة خلفية" },
-  { value: "banner", en: "Top Banner", ar: "بانر علوي" },
-];
+import { SectionRow } from "./homepage/SectionRow";
 
 export function HomepageSectionsManager() {
   const { language } = useLanguage();
   const isAr = language === "ar";
   const { data: sections = [], isLoading } = useHomepageSections();
   const updateSection = useUpdateHomepageSection();
+  const bulkUpdate = useBulkUpdateHomepageSections();
   const { toast } = useToast();
+
   const [openSections, setOpenSections] = useState<Set<string>>(new Set());
+  const [searchQuery, setSearchQuery] = useState("");
+  const [orderedSections, setOrderedSections] = useState<HomepageSection[] | null>(null);
+  const dragItem = useRef<number | null>(null);
+  const dragOverItem = useRef<number | null>(null);
+
+  const displaySections = orderedSections || sections;
+  const hasReorder = orderedSections !== null;
+
+  const filteredSections = searchQuery
+    ? displaySections.filter(
+        (s) =>
+          s.title_en.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          s.title_ar.includes(searchQuery) ||
+          s.section_key.includes(searchQuery.toLowerCase())
+      )
+    : displaySections;
+
+  const visibleCount = displaySections.filter((s) => s.is_visible).length;
+  const hiddenCount = displaySections.length - visibleCount;
 
   const toggle = (id: string) => {
     setOpenSections((prev) => {
@@ -62,6 +67,76 @@ export function HomepageSectionsManager() {
     }
   };
 
+  const handleQuickToggle = async (section: HomepageSection, visible: boolean) => {
+    try {
+      await updateSection.mutateAsync({ id: section.id, is_visible: visible });
+      toast({
+        title: visible ? (isAr ? "تم الإظهار" : "Shown") : (isAr ? "تم الإخفاء" : "Hidden"),
+        description: isAr ? section.title_ar : section.title_en,
+      });
+    } catch {
+      toast({ title: isAr ? "خطأ" : "Error", variant: "destructive" });
+    }
+  };
+
+  // Bulk actions
+  const toggleAll = async (visible: boolean) => {
+    const updates = displaySections.map((s) => ({ id: s.id, is_visible: visible }));
+    try {
+      await bulkUpdate.mutateAsync(updates);
+      toast({ title: isAr ? "تم التحديث" : "Updated" });
+    } catch {
+      toast({ title: isAr ? "خطأ" : "Error", variant: "destructive" });
+    }
+  };
+
+  const expandAll = () => setOpenSections(new Set(displaySections.map((s) => s.id)));
+  const collapseAll = () => setOpenSections(new Set());
+
+  // Drag and drop
+  const handleDragStart = useCallback((idx: number) => (e: React.DragEvent) => {
+    dragItem.current = idx;
+    e.dataTransfer.effectAllowed = "move";
+  }, []);
+
+  const handleDragOver = useCallback((idx: number) => (e: React.DragEvent) => {
+    e.preventDefault();
+    dragOverItem.current = idx;
+  }, []);
+
+  const handleDrop = useCallback(() => (e: React.DragEvent) => {
+    e.preventDefault();
+    if (dragItem.current === null || dragOverItem.current === null) return;
+    if (dragItem.current === dragOverItem.current) return;
+
+    const items = [...(orderedSections || sections)];
+    const [draggedItem] = items.splice(dragItem.current, 1);
+    items.splice(dragOverItem.current, 0, draggedItem);
+
+    setOrderedSections(items);
+    dragItem.current = null;
+    dragOverItem.current = null;
+  }, [orderedSections, sections]);
+
+  const handleDragEnd = useCallback(() => () => {
+    dragItem.current = null;
+    dragOverItem.current = null;
+  }, []);
+
+  const saveOrder = async () => {
+    if (!orderedSections) return;
+    const updates = orderedSections.map((s, idx) => ({ id: s.id, sort_order: idx + 1 }));
+    try {
+      await bulkUpdate.mutateAsync(updates);
+      setOrderedSections(null);
+      toast({ title: isAr ? "تم حفظ الترتيب" : "Order saved" });
+    } catch {
+      toast({ title: isAr ? "خطأ" : "Error", variant: "destructive" });
+    }
+  };
+
+  const cancelReorder = () => setOrderedSections(null);
+
   if (isLoading) {
     return (
       <div className="flex items-center justify-center py-12">
@@ -72,19 +147,77 @@ export function HomepageSectionsManager() {
 
   return (
     <div className="space-y-4">
-      {/* Summary bar */}
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-2 text-sm text-muted-foreground">
-          <LayoutGrid className="h-4 w-4" />
-          <span>{sections.length} {isAr ? "قسم" : "sections"}</span>
-          <span className="text-muted-foreground/50">·</span>
-          <span>{sections.filter((s) => s.is_visible).length} {isAr ? "مرئي" : "visible"}</span>
-        </div>
-      </div>
+      {/* Toolbar */}
+      <Card className="border-border/50 bg-muted/30">
+        <CardContent className="p-3 space-y-3">
+          {/* Stats row */}
+          <div className="flex items-center justify-between flex-wrap gap-2">
+            <div className="flex items-center gap-2 text-xs text-muted-foreground">
+              <LayoutGrid className="h-3.5 w-3.5" />
+              <span className="font-medium">{displaySections.length} {isAr ? "قسم" : "sections"}</span>
+              <span className="text-muted-foreground/40">·</span>
+              <span className="flex items-center gap-1">
+                <Eye className="h-3 w-3 text-primary" /> {visibleCount}
+              </span>
+              <span className="text-muted-foreground/40">·</span>
+              <span className="flex items-center gap-1">
+                <EyeOff className="h-3 w-3" /> {hiddenCount}
+              </span>
+            </div>
+
+            {/* Reorder save bar */}
+            {hasReorder && (
+              <div className="flex items-center gap-2">
+                <Badge variant="default" className="text-[10px] gap-1 animate-pulse">
+                  <GripVertical className="h-3 w-3" />
+                  {isAr ? "ترتيب جديد" : "New order"}
+                </Badge>
+                <Button size="sm" variant="default" className="h-7 text-xs gap-1" onClick={saveOrder} disabled={bulkUpdate.isPending}>
+                  {bulkUpdate.isPending ? <Loader2 className="h-3 w-3 animate-spin" /> : <Save className="h-3 w-3" />}
+                  {isAr ? "حفظ" : "Save"}
+                </Button>
+                <Button size="sm" variant="ghost" className="h-7 text-xs gap-1" onClick={cancelReorder}>
+                  <RotateCcw className="h-3 w-3" />
+                  {isAr ? "إلغاء" : "Cancel"}
+                </Button>
+              </div>
+            )}
+          </div>
+
+          {/* Actions row */}
+          <div className="flex items-center gap-2 flex-wrap">
+            {/* Search */}
+            <div className="relative flex-1 min-w-[180px] max-w-xs">
+              <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground" />
+              <Input
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                placeholder={isAr ? "بحث في الأقسام..." : "Search sections..."}
+                className="h-8 text-xs pl-8"
+              />
+            </div>
+
+            <div className="flex items-center gap-1">
+              <Button size="sm" variant="outline" className="h-7 text-[10px] gap-1" onClick={() => toggleAll(true)}>
+                <Eye className="h-3 w-3" /> {isAr ? "إظهار الكل" : "Show All"}
+              </Button>
+              <Button size="sm" variant="outline" className="h-7 text-[10px] gap-1" onClick={() => toggleAll(false)}>
+                <EyeOff className="h-3 w-3" /> {isAr ? "إخفاء الكل" : "Hide All"}
+              </Button>
+              <Button size="sm" variant="ghost" className="h-7 text-[10px] gap-1" onClick={expandAll}>
+                <ChevronDown className="h-3 w-3" /> {isAr ? "فتح" : "Expand"}
+              </Button>
+              <Button size="sm" variant="ghost" className="h-7 text-[10px] gap-1" onClick={collapseAll}>
+                <ChevronUp className="h-3 w-3" /> {isAr ? "إغلاق" : "Collapse"}
+              </Button>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
 
       {/* Section cards */}
-      <div className="space-y-2">
-        {sections.map((section, idx) => (
+      <div className="space-y-1.5">
+        {filteredSections.map((section, idx) => (
           <SectionRow
             key={section.id}
             section={section}
@@ -92,308 +225,24 @@ export function HomepageSectionsManager() {
             isOpen={openSections.has(section.id)}
             onToggle={() => toggle(section.id)}
             onUpdate={(u) => handleUpdate(section, u)}
+            onQuickToggle={(v) => handleQuickToggle(section, v)}
             isPending={updateSection.isPending}
             isAr={isAr}
+            dragHandleProps={{
+              onDragStart: handleDragStart(idx),
+              onDragEnd: handleDragEnd(),
+              onDragOver: handleDragOver(idx),
+              onDrop: handleDrop(),
+            }}
           />
         ))}
       </div>
+
+      {filteredSections.length === 0 && searchQuery && (
+        <div className="text-center py-8 text-sm text-muted-foreground">
+          {isAr ? "لا توجد أقسام مطابقة" : "No matching sections"}
+        </div>
+      )}
     </div>
-  );
-}
-
-/* ───────── Individual Section Row ───────── */
-
-interface SectionRowProps {
-  section: HomepageSection;
-  index: number;
-  isOpen: boolean;
-  onToggle: () => void;
-  onUpdate: (u: Partial<HomepageSection>) => void;
-  isPending: boolean;
-  isAr: boolean;
-}
-
-function SectionRow({ section, index, isOpen, onToggle, onUpdate, isPending, isAr }: SectionRowProps) {
-  const [local, setLocal] = useState<Partial<HomepageSection>>({});
-  const merged = { ...section, ...local };
-
-  const set = <K extends keyof HomepageSection>(key: K, value: HomepageSection[K]) => {
-    setLocal((prev) => ({ ...prev, [key]: value }));
-  };
-
-  const save = () => {
-    onUpdate(local);
-    setLocal({});
-  };
-
-  const hasChanges = Object.keys(local).length > 0;
-
-  return (
-    <Collapsible open={isOpen} onOpenChange={onToggle}>
-      <div
-        className={cn(
-          "rounded-lg border transition-all",
-          isOpen ? "border-primary/30 bg-card shadow-sm" : "border-border/50 hover:border-border",
-          !merged.is_visible && "opacity-60"
-        )}
-      >
-        {/* Header */}
-        <CollapsibleTrigger asChild>
-          <button className="flex w-full items-center gap-3 px-3 py-2.5 text-start">
-            <GripVertical className="h-4 w-4 text-muted-foreground/40 shrink-0" />
-            <Badge variant="outline" className="text-[10px] font-mono px-1.5 py-0 shrink-0">
-              {index + 1}
-            </Badge>
-            <div className="flex-1 min-w-0">
-              <span className="text-sm font-medium truncate block">
-                {isAr ? merged.title_ar : merged.title_en}
-              </span>
-              <span className="text-[10px] text-muted-foreground font-mono">{section.section_key}</span>
-            </div>
-            <div className="flex items-center gap-2 shrink-0">
-              {merged.cover_type !== "none" && (
-                <Badge variant="secondary" className="text-[9px] gap-1">
-                  <Image className="h-2.5 w-2.5" />
-                  {isAr ? "غلاف" : "Cover"}
-                </Badge>
-              )}
-              {merged.is_visible ? (
-                <Eye className="h-3.5 w-3.5 text-green-500" />
-              ) : (
-                <EyeOff className="h-3.5 w-3.5 text-muted-foreground" />
-              )}
-              <ChevronDown className={cn("h-4 w-4 text-muted-foreground transition-transform", isOpen && "rotate-180")} />
-            </div>
-          </button>
-        </CollapsibleTrigger>
-
-        {/* Expanded content */}
-        <CollapsibleContent>
-          <div className="border-t border-border/50 px-4 py-4 space-y-5">
-            {/* Visibility toggle */}
-            <div className="flex items-center justify-between">
-              <Label className="text-xs flex items-center gap-1.5">
-                <Eye className="h-3 w-3" /> {isAr ? "إظهار القسم" : "Show Section"}
-              </Label>
-              <Switch
-                checked={merged.is_visible}
-                onCheckedChange={(v) => set("is_visible", v)}
-              />
-            </div>
-
-            <Separator />
-
-            {/* Titles */}
-            <div className="space-y-3">
-              <Label className="text-xs flex items-center gap-1.5">
-                <Type className="h-3 w-3" /> {isAr ? "العناوين" : "Titles"}
-              </Label>
-              <div className="grid gap-3 sm:grid-cols-2">
-                <div className="space-y-1">
-                  <Label className="text-[10px] text-muted-foreground">English Title</Label>
-                  <Input
-                    value={merged.title_en}
-                    onChange={(e) => set("title_en", e.target.value)}
-                    className="text-xs h-8"
-                  />
-                </div>
-                <div className="space-y-1">
-                  <Label className="text-[10px] text-muted-foreground">العنوان بالعربية</Label>
-                  <Input
-                    value={merged.title_ar}
-                    onChange={(e) => set("title_ar", e.target.value)}
-                    className="text-xs h-8"
-                    dir="rtl"
-                  />
-                </div>
-                <div className="space-y-1">
-                  <Label className="text-[10px] text-muted-foreground">English Subtitle</Label>
-                  <Input
-                    value={merged.subtitle_en || ""}
-                    onChange={(e) => set("subtitle_en", e.target.value)}
-                    className="text-xs h-8"
-                  />
-                </div>
-                <div className="space-y-1">
-                  <Label className="text-[10px] text-muted-foreground">العنوان الفرعي بالعربية</Label>
-                  <Input
-                    value={merged.subtitle_ar || ""}
-                    onChange={(e) => set("subtitle_ar", e.target.value)}
-                    className="text-xs h-8"
-                    dir="rtl"
-                  />
-                </div>
-              </div>
-            </div>
-
-            <Separator />
-
-            {/* Cover settings */}
-            <div className="space-y-3">
-              <Label className="text-xs flex items-center gap-1.5">
-                <Image className="h-3 w-3" /> {isAr ? "إعدادات الغلاف" : "Cover Settings"}
-              </Label>
-              <div className="grid gap-3 sm:grid-cols-2">
-                <div className="space-y-1">
-                  <Label className="text-[10px] text-muted-foreground">{isAr ? "نوع الغلاف" : "Cover Type"}</Label>
-                  <Select
-                    value={merged.cover_type}
-                    onValueChange={(v) => set("cover_type", v as HomepageSection["cover_type"])}
-                  >
-                    <SelectTrigger className="h-8 text-xs">
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {COVER_TYPE_OPTIONS.map((opt) => (
-                        <SelectItem key={opt.value} value={opt.value} className="text-xs">
-                          {isAr ? opt.ar : opt.en}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-                {merged.cover_type !== "none" && (
-                  <>
-                    <div className="space-y-1">
-                      <Label className="text-[10px] text-muted-foreground">{isAr ? "رابط الصورة" : "Image URL"}</Label>
-                      <Input
-                        value={merged.cover_image_url || ""}
-                        onChange={(e) => set("cover_image_url", e.target.value)}
-                        placeholder="https://..."
-                        className="text-xs h-8 font-mono"
-                      />
-                    </div>
-                    <div className="space-y-2">
-                      <div className="flex items-center justify-between">
-                        <Label className="text-[10px] text-muted-foreground">{isAr ? "ارتفاع الغلاف" : "Cover Height"}</Label>
-                        <Badge variant="outline" className="text-[9px] font-mono">{merged.cover_height}px</Badge>
-                      </div>
-                      <Slider
-                        value={[merged.cover_height]}
-                        onValueChange={([v]) => set("cover_height", v)}
-                        min={100} max={500} step={10}
-                      />
-                    </div>
-                    <div className="space-y-2">
-                      <div className="flex items-center justify-between">
-                        <Label className="text-[10px] text-muted-foreground">{isAr ? "شفافية التراكب" : "Overlay Opacity"}</Label>
-                        <Badge variant="outline" className="text-[9px] font-mono">{merged.cover_overlay_opacity}%</Badge>
-                      </div>
-                      <Slider
-                        value={[merged.cover_overlay_opacity]}
-                        onValueChange={([v]) => set("cover_overlay_opacity", v)}
-                        min={0} max={100} step={5}
-                      />
-                    </div>
-                  </>
-                )}
-              </div>
-            </div>
-
-            <Separator />
-
-            {/* Layout controls */}
-            <div className="space-y-3">
-              <Label className="text-xs flex items-center gap-1.5">
-                <LayoutGrid className="h-3 w-3" /> {isAr ? "التخطيط والعرض" : "Layout & Display"}
-              </Label>
-              <div className="grid gap-3 sm:grid-cols-3">
-                <div className="space-y-1">
-                  <Label className="text-[10px] text-muted-foreground">{isAr ? "عدد العناصر" : "Item Count"}</Label>
-                  <Input
-                    type="number"
-                    min={1} max={50}
-                    value={merged.item_count}
-                    onChange={(e) => set("item_count", parseInt(e.target.value) || 8)}
-                    className="text-xs h-8"
-                  />
-                </div>
-                <div className="space-y-1">
-                  <Label className="text-[10px] text-muted-foreground">{isAr ? "حجم العنصر" : "Item Size"}</Label>
-                  <Select
-                    value={merged.item_size}
-                    onValueChange={(v) => set("item_size", v as HomepageSection["item_size"])}
-                  >
-                    <SelectTrigger className="h-8 text-xs">
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {SIZE_OPTIONS.map((opt) => (
-                        <SelectItem key={opt.value} value={opt.value} className="text-xs">
-                          {isAr ? opt.ar : opt.en}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-                <div className="space-y-1">
-                  <Label className="text-[10px] text-muted-foreground">{isAr ? "عناصر في الصف" : "Items per Row"}</Label>
-                  <Input
-                    type="number"
-                    min={1} max={8}
-                    value={merged.items_per_row}
-                    onChange={(e) => set("items_per_row", parseInt(e.target.value) || 4)}
-                    className="text-xs h-8"
-                  />
-                </div>
-              </div>
-            </div>
-
-            <Separator />
-
-            {/* Toggles */}
-            <div className="space-y-3">
-              <Label className="text-xs flex items-center gap-1.5">
-                <Filter className="h-3 w-3" /> {isAr ? "خيارات إضافية" : "Additional Options"}
-              </Label>
-              <div className="flex flex-wrap gap-4">
-                <div className="flex items-center gap-2">
-                  <Switch
-                    checked={merged.show_filters}
-                    onCheckedChange={(v) => set("show_filters", v)}
-                    id={`filters-${section.id}`}
-                  />
-                  <Label htmlFor={`filters-${section.id}`} className="text-xs">
-                    {isAr ? "إظهار الفلاتر" : "Show Filters"}
-                  </Label>
-                </div>
-                <div className="flex items-center gap-2">
-                  <Switch
-                    checked={merged.show_view_all}
-                    onCheckedChange={(v) => set("show_view_all", v)}
-                    id={`viewall-${section.id}`}
-                  />
-                  <Label htmlFor={`viewall-${section.id}`} className="text-xs">
-                    {isAr ? "عرض الكل" : "View All"}
-                  </Label>
-                </div>
-              </div>
-            </div>
-
-            {/* Sort order */}
-            <div className="flex items-center gap-3">
-              <Label className="text-xs flex items-center gap-1.5 shrink-0">
-                <ArrowUpDown className="h-3 w-3" /> {isAr ? "الترتيب" : "Sort Order"}
-              </Label>
-              <Input
-                type="number"
-                min={1} max={50}
-                value={merged.sort_order}
-                onChange={(e) => set("sort_order", parseInt(e.target.value) || 1)}
-                className="text-xs h-8 w-20"
-              />
-            </div>
-
-            {/* Save button */}
-            {hasChanges && (
-              <Button size="sm" className="gap-1.5" onClick={save} disabled={isPending}>
-                {isPending ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Save className="h-3.5 w-3.5" />}
-                {isAr ? "حفظ التغييرات" : "Save Changes"}
-              </Button>
-            )}
-          </div>
-        </CollapsibleContent>
-      </div>
-    </Collapsible>
   );
 }
