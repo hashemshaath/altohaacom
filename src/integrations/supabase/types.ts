@@ -8838,49 +8838,94 @@ export type Database = {
       }
       hero_slides: {
         Row: {
+          accent_color: string
+          autoplay_interval: number
+          badge_text: string | null
+          badge_text_ar: string | null
           created_at: string
           created_by: string | null
+          cta_secondary_label: string | null
+          cta_secondary_label_ar: string | null
+          cta_secondary_url: string | null
+          custom_height: number | null
+          gradient_direction: string
+          height_preset: string
           id: string
           image_url: string
           is_active: boolean
           link_label: string | null
           link_label_ar: string | null
           link_url: string | null
+          overlay_color: string
+          overlay_opacity: number
           sort_order: number
           subtitle: string | null
           subtitle_ar: string | null
+          template: string
+          text_color: string
+          text_position: string
           title: string
           title_ar: string | null
           updated_at: string
         }
         Insert: {
+          accent_color?: string
+          autoplay_interval?: number
+          badge_text?: string | null
+          badge_text_ar?: string | null
           created_at?: string
           created_by?: string | null
+          cta_secondary_label?: string | null
+          cta_secondary_label_ar?: string | null
+          cta_secondary_url?: string | null
+          custom_height?: number | null
+          gradient_direction?: string
+          height_preset?: string
           id?: string
           image_url: string
           is_active?: boolean
           link_label?: string | null
           link_label_ar?: string | null
           link_url?: string | null
+          overlay_color?: string
+          overlay_opacity?: number
           sort_order?: number
           subtitle?: string | null
           subtitle_ar?: string | null
+          template?: string
+          text_color?: string
+          text_position?: string
           title: string
           title_ar?: string | null
           updated_at?: string
         }
         Update: {
+          accent_color?: string
+          autoplay_interval?: number
+          badge_text?: string | null
+          badge_text_ar?: string | null
           created_at?: string
           created_by?: string | null
+          cta_secondary_label?: string | null
+          cta_secondary_label_ar?: string | null
+          cta_secondary_url?: string | null
+          custom_height?: number | null
+          gradient_direction?: string
+          height_preset?: string
           id?: string
           image_url?: string
           is_active?: boolean
           link_label?: string | null
           link_label_ar?: string | null
           link_url?: string | null
+          overlay_color?: string
+          overlay_opacity?: number
           sort_order?: number
           subtitle?: string | null
           subtitle_ar?: string | null
+          template?: string
+          text_color?: string
+          text_position?: string
           title?: string
           title_ar?: string | null
           updated_at?: string
