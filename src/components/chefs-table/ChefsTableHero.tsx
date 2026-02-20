@@ -25,7 +25,7 @@ export function ChefsTableHero({ isAr, user, onRequestClick }: ChefsTableHeroPro
             {isAr ? "خدمة حصرية للشركات" : "Exclusive B2B Service"}
           </div>
 
-          <h1 className="font-serif text-4xl font-black md:text-5xl lg:text-6xl tracking-tight leading-[1.1]">
+          <h1 className={`text-4xl font-black md:text-5xl lg:text-6xl tracking-tight leading-[1.1] ${!isAr ? "font-serif" : ""}`}>
             {isAr ? (
               <>طاولة الشيف<br /><span className="text-primary">تقييم المنتجات الغذائية</span></>
             ) : (

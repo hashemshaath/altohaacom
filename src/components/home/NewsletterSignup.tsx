@@ -61,7 +61,7 @@ export function NewsletterSignup() {
             <Sparkles className="h-3.5 w-3.5" />
             {isAr ? "لا تفوّت الجديد" : "Stay in the Loop"}
           </div>
-          <h2 className="font-serif text-xl font-bold sm:text-2xl">
+          <h2 className={cn("text-xl font-bold sm:text-2xl", !isAr && "font-serif")}>
             {isAr ? "اشترك في نشرتنا الإخبارية" : "Subscribe to Our Newsletter"}
           </h2>
           <p className="mt-2 text-sm text-muted-foreground leading-relaxed">

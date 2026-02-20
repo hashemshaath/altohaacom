@@ -7,6 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { Crown, Trophy, Calendar, MapPin, ArrowRight, Building2, Sparkles } from "lucide-react";
+import { cn } from "@/lib/utils";
 import { format } from "date-fns";
 import { formatCurrency } from "@/lib/currencyFormatter";
 
@@ -64,7 +65,7 @@ export function SponsorshipOpportunities() {
                 {isAr ? "فرص رعاية حصرية" : "Exclusive Sponsorship Opportunities"}
               </span>
             </div>
-            <h2 className="font-serif text-2xl font-bold sm:text-3xl">
+            <h2 className={cn("text-2xl font-bold sm:text-3xl", !isAr && "font-serif")}>
               {isAr ? "كن شريكاً في صناعة النجاح" : "Be a Partner in Shaping Success"}
             </h2>
             <p className="mt-1 text-sm text-muted-foreground">

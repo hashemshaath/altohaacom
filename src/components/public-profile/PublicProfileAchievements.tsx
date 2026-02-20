@@ -84,7 +84,7 @@ export function PublicProfileAchievements({ userId, isAr }: Props) {
         <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-chart-4/10">
           <Trophy className="h-4 w-4 text-chart-4" />
         </div>
-        <h2 className="font-serif text-base font-bold">{isAr ? "الإنجازات" : "Achievements"}</h2>
+        <h2 className="text-base font-bold">{isAr ? "الإنجازات" : "Achievements"}</h2>
         <div className="flex-1 h-px bg-border/25" />
       </div>
 

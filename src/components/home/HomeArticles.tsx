@@ -7,6 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Newspaper } from "lucide-react";
 import { format } from "date-fns";
+import { cn } from "@/lib/utils";
 import { SectionReveal } from "@/components/ui/section-reveal";
 import { StaggeredList } from "@/components/ui/staggered-list";
 
@@ -38,7 +39,7 @@ export function HomeArticles() {
               <Newspaper className="me-1 h-3 w-3" />
               {isAr ? "أحدث المقالات" : "Latest Articles"}
             </Badge>
-            <h2 id="articles-heading" className="font-serif text-xl font-bold sm:text-2xl">
+            <h2 id="articles-heading" className={cn("text-xl font-bold sm:text-2xl", !isAr && "font-serif")}>
               {isAr ? "قصص ملهمة من عالم الطهي" : "Inspiring Culinary Stories"}
             </h2>
             <p className="mt-1 text-sm text-muted-foreground">

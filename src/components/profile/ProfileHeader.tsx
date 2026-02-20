@@ -112,7 +112,7 @@ export function ProfileHeader({ profile, roles, userId, onProfileUpdate }: Profi
         <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
           <div>
             <div className="flex items-center gap-2 flex-wrap">
-              <h1 className="font-serif text-2xl font-black sm:text-3xl lg:text-4xl tracking-tight text-foreground drop-shadow-sm break-words">
+              <h1 className={`text-2xl font-black sm:text-3xl lg:text-4xl tracking-tight text-foreground drop-shadow-sm break-words ${language !== "ar" ? "font-serif" : ""}`}>
                 {isAr ? (profile?.display_name_ar || profile?.full_name_ar || profile?.full_name) : (profile?.display_name || profile?.full_name)}
               </h1>
               {profile?.is_verified && <VerifiedBadge level={profile.verification_level} size="lg" />}

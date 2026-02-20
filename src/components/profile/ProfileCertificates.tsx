@@ -135,7 +135,7 @@ export function ProfileCertificates({ userId, isOwner = false }: ProfileCertific
         <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-primary/8">
           <Award className="h-4 w-4 text-primary" />
         </div>
-        <h2 className="font-serif text-base font-bold">{isAr ? "الشهادات" : "Certificates"}</h2>
+        <h2 className={`text-base font-bold ${language !== "ar" ? "font-serif" : ""}`}>{isAr ? "الشهادات" : "Certificates"}</h2>
         <Badge variant="secondary" className="text-[10px] h-5 rounded-lg">{certificates.length}</Badge>
         <div className="flex-1 h-px bg-border/25" />
       </div>

@@ -7,6 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { countryFlag } from "@/lib/countryFlag";
 import { SectionReveal } from "@/components/ui/section-reveal";
+import { cn } from "@/lib/utils";
 import { Building2, ArrowRight, Factory, CheckCircle, Package } from "lucide-react";
 
 export function HomeProSuppliers() {
@@ -38,7 +39,7 @@ export function HomeProSuppliers() {
           <div>
             <div className="flex items-center gap-2 mb-1">
               <Factory className="h-5 w-5 text-primary" />
-              <h2 className="text-2xl font-bold font-serif">
+              <h2 className={cn("text-2xl font-bold", !isAr && "font-serif")}>
                 {isAr ? "الموردون المحترفون" : "Pro Suppliers"}
               </h2>
             </div>

@@ -4,6 +4,7 @@ import { useLanguage } from "@/i18n/LanguageContext";
 import { Badge } from "@/components/ui/badge";
 import { Building2 } from "lucide-react";
 import { SectionReveal } from "@/components/ui/section-reveal";
+import { cn } from "@/lib/utils";
 
 export function PartnersLogos() {
   const { language } = useLanguage();
@@ -60,7 +61,7 @@ export function PartnersLogos() {
               <Building2 className="me-1 h-3 w-3" />
               {isAr ? "الشركاء" : "Partners & Associations"}
             </Badge>
-            <h2 id="partners-heading" className="font-serif text-2xl font-bold sm:text-3xl">
+            <h2 id="partners-heading" className={cn("text-2xl font-bold sm:text-3xl", !isAr && "font-serif")}>
               {isAr ? "شركاؤنا ومؤسساتنا" : "Our Partners & Institutions"}
             </h2>
           </div>

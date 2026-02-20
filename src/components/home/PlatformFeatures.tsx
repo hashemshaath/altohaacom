@@ -52,7 +52,7 @@ export function PlatformFeatures() {
       <section ref={servicesReveal.ref} className="container py-10 md:py-16" aria-labelledby="services-heading">
         <div className="mb-10 text-center">
           <Badge variant="secondary" className="mb-3">{isAr ? "الخدمات" : "Services"}</Badge>
-          <h2 id="services-heading" className="font-serif text-xl font-bold sm:text-2xl md:text-3xl">
+          <h2 id="services-heading" className={cn("text-xl font-bold sm:text-2xl md:text-3xl", !isAr && "font-serif")}>
             {isAr ? "كل ما يحتاجه عالم الطهي" : "Everything the Culinary World Needs"}
           </h2>
           <p className="mx-auto mt-2 max-w-xl text-sm text-muted-foreground leading-relaxed">
@@ -86,7 +86,7 @@ export function PlatformFeatures() {
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,hsl(var(--primary)/0.04),transparent_70%)]" />
         <div className="container relative">
           <div className="mb-10 text-center">
-            <h2 id="roles-heading" className="font-serif text-xl font-bold sm:text-2xl md:text-3xl">
+            <h2 id="roles-heading" className={cn("text-xl font-bold sm:text-2xl md:text-3xl", !isAr && "font-serif")}>
               {isAr ? "لمن صُممت هذه المنصة؟" : "Who Is Altoha For?"}
             </h2>
             <p className="mx-auto mt-2 max-w-xl text-sm text-muted-foreground">
@@ -129,7 +129,7 @@ export function PlatformFeatures() {
       {/* Why Altoha */}
       <section ref={whyReveal.ref} className="container py-10 md:py-16" aria-labelledby="why-heading">
         <div className="mb-10 text-center">
-          <h2 id="why-heading" className="font-serif text-xl font-bold sm:text-2xl md:text-3xl">
+          <h2 id="why-heading" className={cn("text-xl font-bold sm:text-2xl md:text-3xl", !isAr && "font-serif")}>
             {isAr ? "لماذا الطهاة؟" : "Why Altoha?"}
           </h2>
           <p className="mx-auto mt-2 max-w-md text-sm text-muted-foreground">
@@ -159,7 +159,7 @@ export function PlatformFeatures() {
               <div className="mb-3 flex h-11 w-11 items-center justify-center rounded-xl bg-primary/10 ring-1 ring-primary/15">
                 <Star className="h-5 w-5 text-primary" />
               </div>
-              <h3 className="mb-2 font-serif text-xl font-bold">
+              <h3 className={cn("mb-2 text-xl font-bold", !isAr && "font-serif")}>
                 {isAr ? "هل أنت راعٍ أو شركة؟" : "Sponsor or Company?"}
               </h3>
               <p className="mb-5 text-sm text-muted-foreground">
@@ -180,7 +180,7 @@ export function PlatformFeatures() {
               <div className="mb-3 flex h-11 w-11 items-center justify-center rounded-xl bg-accent/10 ring-1 ring-accent/15">
                 <Trophy className="h-5 w-5 text-accent" />
               </div>
-              <h3 className="mb-2 font-serif text-xl font-bold">
+              <h3 className={cn("mb-2 text-xl font-bold", !isAr && "font-serif")}>
                 {isAr ? "تنظّم مسابقات طهي؟" : "Organizing Competitions?"}
               </h3>
               <p className="mb-5 text-sm text-muted-foreground">
@@ -203,7 +203,7 @@ export function PlatformFeatures() {
             <div className="mx-auto mb-5 flex h-16 w-16 items-center justify-center rounded-2xl bg-primary/10 ring-1 ring-primary/15 shadow-lg shadow-primary/10">
               <ChefHat className="h-8 w-8 text-primary" />
             </div>
-            <h2 className="mb-3 font-serif text-xl font-bold sm:text-2xl md:text-3xl">
+            <h2 className={cn("mb-3 text-xl font-bold sm:text-2xl md:text-3xl", !isAr && "font-serif")}>
               {isAr ? "رحلتك في عالم الطهي تبدأ هنا" : "Your Culinary Journey Starts Here"}
             </h2>
             <p className="mx-auto mb-7 max-w-lg text-sm text-muted-foreground leading-relaxed">

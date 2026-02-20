@@ -15,7 +15,7 @@ export function PublicProfileEmptySection({ icon: Icon, label, description }: Pu
         <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-primary/8">
           <Icon className="h-4 w-4 text-primary/60" />
         </div>
-        <h2 className="font-serif text-base font-bold text-foreground/70">{label}</h2>
+        <h2 className="text-base font-bold text-foreground/70">{label}</h2>
         <div className="flex-1 h-px bg-border/25" />
       </div>
       <Card className="rounded-2xl border border-dashed border-border/30 bg-muted/10">

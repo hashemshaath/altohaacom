@@ -8,6 +8,7 @@ import { Card } from "@/components/ui/card";
 import { Link } from "react-router-dom";
 import { UserPlus, ArrowRight, ChefHat, MapPin } from "lucide-react";
 import { SectionReveal } from "@/components/ui/section-reveal";
+import { cn } from "@/lib/utils";
 import { countryFlag } from "@/lib/countryFlag";
 import { useAllCountries } from "@/hooks/useCountries";
 
@@ -41,7 +42,7 @@ export function NewlyJoinedUsers() {
                 <UserPlus className="h-3 w-3" />
                 {isAr ? "انضموا حديثاً" : "Newly Joined"}
               </Badge>
-              <h2 id="new-users-heading" className="font-serif text-xl font-bold sm:text-2xl">
+              <h2 id="new-users-heading" className={cn("text-xl font-bold sm:text-2xl", !isAr && "font-serif")}>
                 {isAr ? "أحدث الأعضاء في مجتمعنا" : "Welcome Our Newest Members"}
               </h2>
               <p className="mt-1 text-sm text-muted-foreground">
