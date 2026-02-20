@@ -4,15 +4,17 @@ import {
   useHomepageSections,
   useUpdateHomepageSection,
   useBulkUpdateHomepageSections,
+  useCreateHomepageSection,
   type HomepageSection,
 } from "@/hooks/useHomepageSections";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import {
   Eye, EyeOff, ChevronDown, ChevronUp, Save, LayoutGrid,
-  Loader2, Search, RotateCcw, GripVertical,
+  Loader2, Search, RotateCcw, GripVertical, Filter,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useToast } from "@/hooks/use-toast";
@@ -24,10 +26,12 @@ export function HomepageSectionsManager() {
   const { data: sections = [], isLoading } = useHomepageSections();
   const updateSection = useUpdateHomepageSection();
   const bulkUpdate = useBulkUpdateHomepageSections();
+  const createSection = useCreateHomepageSection();
   const { toast } = useToast();
 
   const [openSections, setOpenSections] = useState<Set<string>>(new Set());
   const [searchQuery, setSearchQuery] = useState("");
+  const [visibilityFilter, setVisibilityFilter] = useState<"all" | "visible" | "hidden">("all");
   const [orderedSections, setOrderedSections] = useState<HomepageSection[] | null>(null);
   const dragItem = useRef<number | null>(null);
   const dragOverItem = useRef<number | null>(null);
@@ -35,14 +39,16 @@ export function HomepageSectionsManager() {
   const displaySections = orderedSections || sections;
   const hasReorder = orderedSections !== null;
 
-  const filteredSections = searchQuery
-    ? displaySections.filter(
-        (s) =>
-          s.title_en.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          s.title_ar.includes(searchQuery) ||
-          s.section_key.includes(searchQuery.toLowerCase())
-      )
-    : displaySections;
+  const filteredSections = displaySections.filter((s) => {
+    if (visibilityFilter === "visible" && !s.is_visible) return false;
+    if (visibilityFilter === "hidden" && s.is_visible) return false;
+    if (searchQuery) {
+      return s.title_en.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        s.title_ar.includes(searchQuery) ||
+        s.section_key.includes(searchQuery.toLowerCase());
+    }
+    return true;
+  });
 
   const visibleCount = displaySections.filter((s) => s.is_visible).length;
   const hiddenCount = displaySections.length - visibleCount;
@@ -137,6 +143,23 @@ export function HomepageSectionsManager() {
 
   const cancelReorder = () => setOrderedSections(null);
 
+  const handleDuplicate = async (section: HomepageSection) => {
+    const { id, updated_at, ...rest } = section;
+    try {
+      await createSection.mutateAsync({
+        ...rest,
+        section_key: `${section.section_key}_copy`,
+        title_en: `${section.title_en} (Copy)`,
+        title_ar: `${section.title_ar} (نسخة)`,
+        sort_order: displaySections.length + 1,
+        is_visible: false,
+      });
+      toast({ title: isAr ? "تم التكرار" : "Duplicated", description: isAr ? section.title_ar : section.title_en });
+    } catch {
+      toast({ title: isAr ? "خطأ" : "Error", variant: "destructive" });
+    }
+  };
+
   if (isLoading) {
     return (
       <div className="flex items-center justify-center py-12">
@@ -197,7 +220,18 @@ export function HomepageSectionsManager() {
               />
             </div>
 
-            <div className="flex items-center gap-1">
+            <div className="flex items-center gap-1 flex-wrap">
+              <Select value={visibilityFilter} onValueChange={(v) => setVisibilityFilter(v as any)}>
+                <SelectTrigger className="h-7 w-[110px] text-[10px]">
+                  <Filter className="h-3 w-3 mr-1" />
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all" className="text-xs">{isAr ? "الكل" : "All"}</SelectItem>
+                  <SelectItem value="visible" className="text-xs">{isAr ? "مرئي" : "Visible"}</SelectItem>
+                  <SelectItem value="hidden" className="text-xs">{isAr ? "مخفي" : "Hidden"}</SelectItem>
+                </SelectContent>
+              </Select>
               <Button size="sm" variant="outline" className="h-7 text-[10px] gap-1" onClick={() => toggleAll(true)}>
                 <Eye className="h-3 w-3" /> {isAr ? "إظهار الكل" : "Show All"}
               </Button>
@@ -226,6 +260,7 @@ export function HomepageSectionsManager() {
             onToggle={() => toggle(section.id)}
             onUpdate={(u) => handleUpdate(section, u)}
             onQuickToggle={(v) => handleQuickToggle(section, v)}
+            onDuplicate={handleDuplicate}
             isPending={updateSection.isPending}
             isAr={isAr}
             dragHandleProps={{
