@@ -169,12 +169,12 @@ export function CountryCSVImport() {
               </div>
               <div className="flex items-center gap-2">
                 <Badge variant="secondary" className="text-chart-3">
-                  <CheckCircle className="h-3 w-3 mr-1" />
+                  <CheckCircle className="h-3 w-3 me-1" />
                   {validRows.length} {isAr ? "صالح" : "valid"}
                 </Badge>
                 {invalidRows.length > 0 && (
                   <Badge variant="secondary" className="text-destructive">
-                    <XCircle className="h-3 w-3 mr-1" />
+                    <XCircle className="h-3 w-3 me-1" />
                     {invalidRows.length} {isAr ? "خطأ" : "errors"}
                   </Badge>
                 )}
@@ -227,9 +227,9 @@ export function CountryCSVImport() {
                 onClick={() => importMutation.mutate()}
               >
                 {importMutation.isPending ? (
-                  <Loader2 className="h-4 w-4 mr-1.5 animate-spin" />
+                  <Loader2 className="h-4 w-4 me-1.5 animate-spin" />
                 ) : (
-                  <Upload className="h-4 w-4 mr-1.5" />
+                  <Upload className="h-4 w-4 me-1.5" />
                 )}
                 {isAr ? `استيراد ${validRows.length} دولة` : `Import ${validRows.length} Countries`}
               </Button>

@@ -546,13 +546,13 @@ export default function CompetitionsAdmin() {
                           </DropdownMenuTrigger>
                           <DropdownMenuContent align="end">
                             <DropdownMenuItem asChild>
-                              <Link to={`/competitions/${comp.id}`}><Eye className="mr-2 h-4 w-4" />{isAr ? "عرض" : "View"}</Link>
+                              <Link to={`/competitions/${comp.id}`}><Eye className="me-2 h-4 w-4" />{isAr ? "عرض" : "View"}</Link>
                             </DropdownMenuItem>
                             <DropdownMenuItem asChild>
-                              <Link to={`/competitions/${comp.id}/edit`}><Edit className="mr-2 h-4 w-4" />{isAr ? "تعديل" : "Edit"}</Link>
+                              <Link to={`/competitions/${comp.id}/edit`}><Edit className="me-2 h-4 w-4" />{isAr ? "تعديل" : "Edit"}</Link>
                             </DropdownMenuItem>
                             <DropdownMenuItem onClick={() => duplicateMutation.mutate(comp)}>
-                              <Copy className="mr-2 h-4 w-4" />{isAr ? "نسخ" : "Duplicate"}
+                              <Copy className="me-2 h-4 w-4" />{isAr ? "نسخ" : "Duplicate"}
                             </DropdownMenuItem>
                             <DropdownMenuSeparator />
                             {ALL_STATUSES.filter(s => s !== comp.status).slice(0, 4).map(status => (
@@ -571,7 +571,7 @@ export default function CompetitionsAdmin() {
                                 }}
                                 className="text-destructive"
                               >
-                                <Trash2 className="mr-2 h-4 w-4" />{isAr ? "حذف" : "Delete"}
+                                <Trash2 className="me-2 h-4 w-4" />{isAr ? "حذف" : "Delete"}
                               </DropdownMenuItem>
                             )}
                           </DropdownMenuContent>

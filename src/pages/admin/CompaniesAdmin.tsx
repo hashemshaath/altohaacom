@@ -1336,7 +1336,7 @@ export default function CompaniesAdmin() {
             <h3 className="text-lg font-semibold">
               {isAr ? "سجل التواصل" : "Communication Log"}
               {communications.filter((c: any) => c.direction === "outgoing" && c.status === "unread").length > 0 && (
-                <Badge variant="destructive" className="ml-2">{communications.filter((c: any) => c.direction === "outgoing" && c.status === "unread").length}</Badge>
+                <Badge variant="destructive" className="ms-2">{communications.filter((c: any) => c.direction === "outgoing" && c.status === "unread").length}</Badge>
               )}
             </h3>
             {communications.length === 0 ? (

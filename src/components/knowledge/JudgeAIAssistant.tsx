@@ -62,7 +62,7 @@ export function JudgeAIAssistant({ competitionId, className }: JudgeAIAssistantP
         </div>
       </CardHeader>
       <CardContent className="flex flex-1 flex-col overflow-hidden p-4 pt-0">
-        <ScrollArea className="flex-1 pr-4" ref={scrollRef}>
+        <ScrollArea className="flex-1 pe-4" ref={scrollRef}>
           {messages.length === 0 ? (
             <div className="flex flex-col items-center justify-center h-full text-center space-y-4 py-6">
               <Scale className="h-10 w-10 text-muted-foreground/50" />

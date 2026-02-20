@@ -290,7 +290,7 @@ export default function JudgesAdmin() {
                     <TableCell>
                       <div className="flex justify-end">
                         <Button size="sm" variant="ghost" onClick={(e) => { e.stopPropagation(); setSelectedJudgeId(judge.user_id); }}>
-                          <Eye className="h-4 w-4 mr-1" /> {isAr ? "عرض" : "View"}
+                          <Eye className="h-4 w-4 me-1" /> {isAr ? "عرض" : "View"}
                         </Button>
                       </div>
                     </TableCell>

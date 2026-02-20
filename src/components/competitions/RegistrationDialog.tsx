@@ -379,12 +379,12 @@ export function RegistrationForm({
               <div className="space-y-2">
                 <Label className="text-xs">{isAr ? "أعضاء الفريق" : "Team Members"} ({teamMembers.length}/{competition?.max_team_size || 5})</Label>
                 <div className="relative">
-                  <Search className="absolute left-3 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-muted-foreground" />
+                  <Search className="absolute start-3 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-muted-foreground" />
                   <Input
                     placeholder={isAr ? "ابحث عن عضو من النظام..." : "Search for a member..."}
                     value={memberSearch}
                     onChange={(e) => setMemberSearch(e.target.value)}
-                    className="pl-9 h-8 text-xs"
+                    className="ps-9 h-8 text-xs"
                     disabled={uploading || teamMembers.length >= (competition?.max_team_size || 5)}
                   />
                 </div>
@@ -520,7 +520,7 @@ export function RegistrationForm({
             {imagePreview ? (
               <div className="relative">
                 <img src={imagePreview} alt="Dish preview" className="h-48 w-full rounded-lg object-cover" />
-                <Button type="button" variant="destructive" size="icon" className="absolute right-2 top-2" onClick={removeImage} disabled={uploading}>
+                <Button type="button" variant="destructive" size="icon" className="absolute end-2 top-2" onClick={removeImage} disabled={uploading}>
                   <X className="h-4 w-4" />
                 </Button>
               </div>

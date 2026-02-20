@@ -123,7 +123,7 @@ export default function CompanyStatements() {
           </Button>
           <Select value={period} onValueChange={setPeriod}>
             <SelectTrigger className="w-[160px]">
-              <Calendar className="mr-2 h-4 w-4" />
+              <Calendar className="me-2 h-4 w-4" />
               <SelectValue />
             </SelectTrigger>
             <SelectContent>

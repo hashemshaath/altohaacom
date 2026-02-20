@@ -131,7 +131,7 @@ export default function MasterclassesAdmin() {
       <div className="space-y-6">
         <div className="flex items-center gap-3">
           <Button variant="ghost" size="sm" onClick={() => setManagingModulesId(null)}>
-            <ArrowLeft className="h-4 w-4 mr-2" />
+            <ArrowLeft className="h-4 w-4 me-2" />
             {language === "ar" ? "رجوع" : "Back"}
           </Button>
           <h1 className="font-serif text-2xl font-bold">
@@ -250,7 +250,7 @@ export default function MasterclassesAdmin() {
               </div>
             )}
             <Button onClick={() => createMutation.mutate()} disabled={!form.title || createMutation.isPending}>
-              <Save className="mr-2 h-4 w-4" />
+              <Save className="me-2 h-4 w-4" />
               {createMutation.isPending ? (language === "ar" ? "جاري الإنشاء..." : "Creating...") : (language === "ar" ? "إنشاء" : "Create")}
             </Button>
           </CardContent>
@@ -325,18 +325,18 @@ export default function MasterclassesAdmin() {
                     <TableCell>
                       <div className="flex gap-1">
                         <Button size="sm" variant="outline" onClick={() => setManagingModulesId(mc.id)}>
-                          <BookOpen className="h-3 w-3 mr-1" />
+                          <BookOpen className="h-3 w-3 me-1" />
                           {language === "ar" ? "المحتوى" : "Content"}
                         </Button>
                         {mc.status === "draft" && (
                           <Button size="sm" variant="outline" onClick={() => updateStatusMutation.mutate({ id: mc.id, status: "published" })}>
-                            <Eye className="h-3 w-3 mr-1" />
+                            <Eye className="h-3 w-3 me-1" />
                             {language === "ar" ? "نشر" : "Publish"}
                           </Button>
                         )}
                         {mc.status === "published" && (
                           <Button size="sm" variant="outline" onClick={() => updateStatusMutation.mutate({ id: mc.id, status: "archived" })}>
-                            <EyeOff className="h-3 w-3 mr-1" />
+                            <EyeOff className="h-3 w-3 me-1" />
                             {language === "ar" ? "أرشفة" : "Archive"}
                           </Button>
                         )}

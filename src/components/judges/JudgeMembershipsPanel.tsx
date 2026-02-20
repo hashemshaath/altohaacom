@@ -111,7 +111,7 @@ export default function JudgeMembershipsPanel({ userId, isAdmin }: Props) {
       <div className="flex items-center justify-between">
         <h3 className="text-lg font-semibold">{isAr ? "العضويات والمنظمات" : "Organization Memberships"}</h3>
         <Button size="sm" onClick={() => { resetForm(); setShowForm(!showForm); }}>
-          {showForm ? (isAr ? "إغلاق" : "Close") : <><Plus className="mr-2 h-4 w-4" />{isAr ? "إضافة عضوية" : "Add Membership"}</>}
+          {showForm ? (isAr ? "إغلاق" : "Close") : <><Plus className="me-2 h-4 w-4" />{isAr ? "إضافة عضوية" : "Add Membership"}</>}
         </Button>
       </div>
 

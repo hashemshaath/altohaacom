@@ -554,7 +554,7 @@ export default function CommunicationsAdmin() {
                 <span className="text-xs text-muted-foreground">{isAr ? "تحديد الكل" : "Select All"}</span>
               </div>
               <ScrollArea className="h-[600px]">
-                <div className="space-y-2 pr-2">
+                <div className="space-y-2 pe-2">
                   {filteredMessages.length === 0 ? (
                     <Card>
                       <CardContent className="flex flex-col items-center justify-center py-16">
@@ -676,7 +676,7 @@ export default function CommunicationsAdmin() {
                         </p>
                         {replies.filter((r) => !r.is_internal_note).map((reply) => (
                           <div key={reply.id}
-                            className={`rounded-lg border p-4 ${reply.direction === "incoming" ? "ml-4 border-s-[3px] border-s-primary" : "mr-4"}`}>
+                            className={`rounded-lg border p-4 ${reply.direction === "incoming" ? "ms-4 border-s-[3px] border-s-primary" : "me-4"}`}>
                             <div className="mb-2 flex items-center justify-between text-sm text-muted-foreground">
                               <Badge variant="outline">
                                 {reply.direction === "incoming" ? (isAr ? "الإدارة" : "Admin") : (isAr ? "الشركة" : "Company")}
@@ -702,7 +702,7 @@ export default function CommunicationsAdmin() {
                             <div key={note.id} className="rounded-lg border border-chart-3/30 bg-chart-3/5 p-3">
                               <div className="flex items-center justify-between text-xs text-muted-foreground mb-1">
                                 <Badge variant="outline" className="text-chart-3 border-chart-3/30">
-                                  <StickyNote className="mr-1 h-3 w-3" />
+                                  <StickyNote className="me-1 h-3 w-3" />
                                   {isAr ? "ملاحظة" : "Note"}
                                 </Badge>
                                 <span>{format(new Date(note.created_at), "yyyy-MM-dd HH:mm")}</span>
@@ -725,7 +725,7 @@ export default function CommunicationsAdmin() {
                         placeholder={isAr ? "ملاحظة مرئية للإدارة فقط..." : "Note visible to admins only..."} />
                       <Button variant="outline" size="sm" disabled={!noteText || addNoteMutation.isPending}
                         onClick={() => addNoteMutation.mutate({ parentId: selectedMessage.id, companyId: selectedMessage.company_id, note: noteText })}>
-                        <StickyNote className="mr-2 h-3.5 w-3.5" />
+                        <StickyNote className="me-2 h-3.5 w-3.5" />
                         {addNoteMutation.isPending ? (isAr ? "جارٍ..." : "Adding...") : (isAr ? "إضافة" : "Add Note")}
                       </Button>
                     </div>
@@ -742,7 +742,7 @@ export default function CommunicationsAdmin() {
                       <div className="flex justify-end">
                         <Button disabled={!replyMessage || replyMutation.isPending}
                           onClick={() => replyMutation.mutate({ parentId: selectedMessage.id, companyId: selectedMessage.company_id })}>
-                          <Send className="mr-2 h-4 w-4" />
+                          <Send className="me-2 h-4 w-4" />
                           {replyMutation.isPending ? (isAr ? "جارٍ الإرسال..." : "Sending...") : (isAr ? "إرسال الرد" : "Send Reply")}
                         </Button>
                       </div>
@@ -942,7 +942,7 @@ export default function CommunicationsAdmin() {
             <Button variant="outline" onClick={() => setComposeOpen(false)}>{isAr ? "إلغاء" : "Cancel"}</Button>
             <Button disabled={!composeForm.company_id || !composeForm.subject || !composeForm.message || composeMutation.isPending}
               onClick={() => composeMutation.mutate()}>
-              <Send className="mr-2 h-4 w-4" />
+              <Send className="me-2 h-4 w-4" />
               {composeMutation.isPending ? (isAr ? "جارٍ..." : "Sending...") : (isAr ? "إرسال" : "Send")}
             </Button>
           </DialogFooter>
