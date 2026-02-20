@@ -181,7 +181,7 @@ export function QuickSearch({ onClose }: QuickSearchProps) {
     <div ref={containerRef} className="relative w-full max-w-sm">
       <form onSubmit={handleSearch}>
         <div className="relative">
-          <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+          <Search className="absolute start-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
           <Input
             ref={inputRef}
             type="text"
@@ -192,14 +192,14 @@ export function QuickSearch({ onClose }: QuickSearchProps) {
               setIsOpen(true);
             }}
             onFocus={() => setIsOpen(true)}
-            className="pl-9 pr-8"
+            className="ps-9 pe-8"
           />
           {query && (
             <Button
               type="button"
               variant="ghost"
               size="icon"
-              className="absolute right-1 top-1/2 h-6 w-6 -translate-y-1/2"
+              className="absolute end-1 top-1/2 h-6 w-6 -translate-y-1/2"
               onClick={() => {
                 setQuery("");
                 inputRef.current?.focus();
@@ -213,7 +213,7 @@ export function QuickSearch({ onClose }: QuickSearchProps) {
 
       {/* Recent Searches Dropdown */}
       {showRecent && (
-        <div className="absolute top-full left-0 right-0 z-50 mt-1 rounded-xl border bg-popover p-2.5 shadow-xl animate-fade-in">
+        <div className="absolute top-full inset-x-0 z-50 mt-1 rounded-xl border bg-popover p-2.5 shadow-xl animate-fade-in">
           <div className="flex items-center justify-between px-2 mb-1.5">
             <p className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider">
               {language === "ar" ? "عمليات البحث الأخيرة" : "Recent Searches"}
@@ -238,7 +238,7 @@ export function QuickSearch({ onClose }: QuickSearchProps) {
 
       {/* Search Results Dropdown */}
       {showResults && (
-        <div className="absolute top-full left-0 right-0 z-50 mt-1 rounded-xl border bg-popover p-2.5 shadow-xl animate-fade-in">
+        <div className="absolute top-full inset-x-0 z-50 mt-1 rounded-xl border bg-popover p-2.5 shadow-xl animate-fade-in">
           {isLoading ? (
             <div className="flex items-center justify-center py-4">
               <div className="h-5 w-5 animate-spin rounded-full border-2 border-primary border-t-transparent" />

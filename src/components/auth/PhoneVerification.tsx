@@ -210,7 +210,7 @@ export function PhoneVerification({ onVerified, onBack, initialPhone = "", phone
               disabled={loading || !phone}
             >
               {loading ? (
-                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                <Loader2 className="me-2 h-4 w-4 animate-spin" />
               ) : null}
               {language === "ar" ? "إرسال الرمز" : "Send Code"}
             </Button>
@@ -245,9 +245,9 @@ export function PhoneVerification({ onVerified, onBack, initialPhone = "", phone
             disabled={loading || otp.length !== 6}
           >
             {loading ? (
-              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+              <Loader2 className="me-2 h-4 w-4 animate-spin" />
             ) : (
-              <CheckCircle className="mr-2 h-4 w-4" />
+              <CheckCircle className="me-2 h-4 w-4" />
             )}
             {language === "ar" ? "تحقق" : "Verify"}
           </Button>
