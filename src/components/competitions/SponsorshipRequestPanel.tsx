@@ -158,7 +158,7 @@ export function SponsorshipRequestPanel({ listId, competitionId }: Props) {
         <h4 className="font-medium">{language === "ar" ? "طلبات الرعاية والدعم" : "Sponsorship & Support Requests"}</h4>
         <Dialog open={showCreateDialog} onOpenChange={setShowCreateDialog}>
           <DialogTrigger asChild>
-            <Button size="sm"><Send className="mr-2 h-4 w-4" />{language === "ar" ? "إرسال طلب" : "Send Request"}</Button>
+            <Button size="sm"><Send className="me-2 h-4 w-4" />{language === "ar" ? "إرسال طلب" : "Send Request"}</Button>
           </DialogTrigger>
           <DialogContent>
             <DialogHeader>
@@ -258,7 +258,7 @@ export function SponsorshipRequestPanel({ listId, competitionId }: Props) {
                     </Badge>
                     {req.status === "pending" && (
                       <Button size="sm" variant="outline" onClick={() => updateStatusMutation.mutate({ id: req.id, status: "sent" })}>
-                        <Send className="mr-1 h-3 w-3" /> {language === "ar" ? "إرسال" : "Send"}
+                        <Send className="me-1 h-3 w-3" /> {language === "ar" ? "إرسال" : "Send"}
                       </Button>
                     )}
                   </div>

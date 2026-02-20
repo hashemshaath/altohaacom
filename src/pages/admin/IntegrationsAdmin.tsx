@@ -275,11 +275,11 @@ export default function IntegrationsAdmin() {
                           ))}
                           <div className="flex gap-2 pt-2">
                             <Button size="sm" onClick={() => handleSaveConfig(integration.id)}>
-                              <Check className="mr-1 h-3 w-3" />
+                              <Check className="me-1 h-3 w-3" />
                               {language === "ar" ? "حفظ" : "Save"}
                             </Button>
                             <Button size="sm" variant="outline" onClick={() => setActiveConfig(null)}>
-                              <X className="mr-1 h-3 w-3" />
+                              <X className="me-1 h-3 w-3" />
                               {language === "ar" ? "إلغاء" : "Cancel"}
                             </Button>
                           </div>
@@ -293,7 +293,7 @@ export default function IntegrationsAdmin() {
                           className="w-full"
                           onClick={() => setActiveConfig(integration.id)}
                         >
-                          <Settings className="mr-2 h-3 w-3" />
+                          <Settings className="me-2 h-3 w-3" />
                           {language === "ar" ? "إعدادات" : "Configure"}
                         </Button>
                       )}

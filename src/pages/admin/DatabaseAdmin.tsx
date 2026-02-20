@@ -97,7 +97,7 @@ export default function DatabaseAdmin() {
           </p>
         </div>
         <Button onClick={handleRefresh} disabled={isRefreshing}>
-          <RefreshCw className={`mr-2 h-4 w-4 ${isRefreshing ? "animate-spin" : ""}`} />
+          <RefreshCw className={`me-2 h-4 w-4 ${isRefreshing ? "animate-spin" : ""}`} />
           {language === "ar" ? "تحديث" : "Refresh"}
         </Button>
       </div>
@@ -257,15 +257,15 @@ export default function DatabaseAdmin() {
         <CardContent>
           <div className="flex flex-wrap gap-3">
             <Button variant="outline">
-              <Download className="mr-2 h-4 w-4" />
+              <Download className="me-2 h-4 w-4" />
               {language === "ar" ? "تصدير قاعدة البيانات" : "Export Database"}
             </Button>
             <Button variant="outline">
-              <RefreshCw className="mr-2 h-4 w-4" />
+              <RefreshCw className="me-2 h-4 w-4" />
               {language === "ar" ? "تحديث الفهارس" : "Refresh Indexes"}
             </Button>
             <Button variant="outline" className="text-destructive">
-              <Trash2 className="mr-2 h-4 w-4" />
+              <Trash2 className="me-2 h-4 w-4" />
               {language === "ar" ? "تنظيف الملفات المؤقتة" : "Clean Temp Files"}
             </Button>
           </div>

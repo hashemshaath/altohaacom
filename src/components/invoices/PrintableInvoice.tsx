@@ -180,7 +180,7 @@ export default function PrintableInvoice({ invoice, company, showPrintButton = t
       {showPrintButton && (
         <div className="flex justify-end mb-4 print:hidden gap-2">
           <Button onClick={handlePrint} variant="outline">
-            <Printer className="mr-2 h-4 w-4" />
+            <Printer className="me-2 h-4 w-4" />
             {isAr ? "طباعة / تحميل PDF" : "Print / Download PDF"}
           </Button>
           {cfg.issue_english_copy && isAr && (
@@ -191,7 +191,7 @@ export default function PrintableInvoice({ invoice, company, showPrintButton = t
               // Re-render with English would require a separate approach
               // For now, we redirect
             }} variant="outline">
-              <Printer className="mr-2 h-4 w-4" />
+              <Printer className="me-2 h-4 w-4" />
               Print in English
             </Button>
           )}

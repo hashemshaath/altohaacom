@@ -198,7 +198,7 @@ export function TypesCategoriesStep({
                           }`}
                           onClick={() => togglePredefinedCategory(predef)}
                         >
-                          {isSelected && <Check className="mr-1 h-3 w-3" />}
+                          {isSelected && <Check className="me-1 h-3 w-3" />}
                           {isAr && predef.name_ar ? predef.name_ar : predef.name}
                         </Badge>
                       );
@@ -287,7 +287,7 @@ export function TypesCategoriesStep({
           ))}
 
           <Button type="button" variant="outline" onClick={addCustomCategory} className="w-full">
-            <Plus className="mr-2 h-4 w-4" />
+            <Plus className="me-2 h-4 w-4" />
             {isAr ? "إضافة فئة مخصصة" : "Add Custom Category"}
           </Button>
         </CardContent>

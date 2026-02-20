@@ -206,7 +206,7 @@ export default function ArticleDetail() {
                 <div className="mb-4 flex items-center justify-between">
                   <Button variant="ghost" size="sm" asChild>
                     <Link to="/news">
-                      <ArrowLeft className="mr-2 h-4 w-4" />
+                      <ArrowLeft className="me-2 h-4 w-4" />
                       {language === "ar" ? "العودة للأخبار" : "Back to News"}
                     </Link>
                   </Button>

@@ -124,11 +124,11 @@ export default function AIConfigAdmin() {
         </div>
         <div className="flex gap-2">
           <Button variant="outline" onClick={handleTestConnection}>
-            <Zap className="mr-2 h-4 w-4" />
+            <Zap className="me-2 h-4 w-4" />
             {language === "ar" ? "اختبار الاتصال" : "Test Connection"}
           </Button>
           <Button onClick={handleSave}>
-            <Save className="mr-2 h-4 w-4" />
+            <Save className="me-2 h-4 w-4" />
             {language === "ar" ? "حفظ" : "Save"}
           </Button>
         </div>

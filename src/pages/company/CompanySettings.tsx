@@ -107,7 +107,7 @@ function CompanySettingsContent() {
           </p>
         </div>
         <Button onClick={() => saveMutation.mutate()} disabled={saveMutation.isPending}>
-          <Save className="mr-2 h-4 w-4" />
+          <Save className="me-2 h-4 w-4" />
           {saveMutation.isPending ? (language === "ar" ? "جارٍ الحفظ..." : "Saving...") : (language === "ar" ? "حفظ" : "Save")}
         </Button>
       </div>

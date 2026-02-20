@@ -138,7 +138,7 @@ export default function JudgeVisitLogsPanel({ userId, isAdmin }: Props) {
       <div className="flex items-center justify-between">
         <h3 className="text-lg font-semibold">{isAr ? "سجل الزيارات والمشاركات" : "Visit & Participation Log"}</h3>
         <Button size="sm" onClick={() => { resetForm(); setShowForm(!showForm); }}>
-          {showForm ? (isAr ? "إغلاق" : "Close") : <><Plus className="mr-2 h-4 w-4" />{isAr ? "إضافة سجل" : "Add Entry"}</>}
+          {showForm ? (isAr ? "إغلاق" : "Close") : <><Plus className="me-2 h-4 w-4" />{isAr ? "إضافة سجل" : "Add Entry"}</>}
         </Button>
       </div>
 
@@ -208,7 +208,7 @@ export default function JudgeVisitLogsPanel({ userId, isAdmin }: Props) {
                 <TableHead>{isAr ? "الدور" : "Role"}</TableHead>
                 <TableHead>{isAr ? "الموقع" : "Location"}</TableHead>
                 <TableHead>{isAr ? "الإنجازات" : "Achievements"}</TableHead>
-                <TableHead className="text-right">{isAr ? "الإجراءات" : "Actions"}</TableHead>
+                <TableHead className="text-end">{isAr ? "الإجراءات" : "Actions"}</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -237,7 +237,7 @@ export default function JudgeVisitLogsPanel({ userId, isAdmin }: Props) {
                       </TableCell>
                       <TableCell>
                         {log.achievements ? (
-                          <Badge className="bg-chart-4/20 text-chart-4"><Trophy className="mr-1 h-3 w-3" />{log.achievements}</Badge>
+                          <Badge className="bg-chart-4/20 text-chart-4"><Trophy className="me-1 h-3 w-3" />{log.achievements}</Badge>
                         ) : "—"}
                       </TableCell>
                       <TableCell>

@@ -578,9 +578,9 @@ export function RegistrationForm({
             </Button>
             <Button type="submit" disabled={uploading || registerMutation.isPending}>
               {uploading || registerMutation.isPending ? (
-                <><Loader2 className="mr-2 h-4 w-4 animate-spin" />{isAr ? "جاري التسجيل..." : "Registering..."}</>
+                <><Loader2 className="me-2 h-4 w-4 animate-spin" />{isAr ? "جاري التسجيل..." : "Registering..."}</>
               ) : (
-                <><Upload className="mr-2 h-4 w-4" />{isAr ? "تقديم التسجيل" : "Submit Registration"}</>
+                <><Upload className="me-2 h-4 w-4" />{isAr ? "تقديم التسجيل" : "Submit Registration"}</>
               )}
             </Button>
           </div>

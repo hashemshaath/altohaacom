@@ -714,12 +714,12 @@ export default function CompaniesAdmin() {
           <div className="flex gap-2">
             {companyDetails.status === "pending" && (
               <Button onClick={() => updateStatusMutation.mutate({ id: companyDetails.id, status: "active" })}>
-                <CheckCircle className="h-4 w-4 mr-2" />{isAr ? "تفعيل" : "Activate"}
+                <CheckCircle className="h-4 w-4 me-2" />{isAr ? "تفعيل" : "Activate"}
               </Button>
             )}
             {companyDetails.status === "active" && (
               <Button variant="outline" onClick={() => updateStatusMutation.mutate({ id: companyDetails.id, status: "suspended" })}>
-                <XCircle className="h-4 w-4 mr-2" />{isAr ? "تعليق" : "Suspend"}
+                <XCircle className="h-4 w-4 me-2" />{isAr ? "تعليق" : "Suspend"}
               </Button>
             )}
           </div>
@@ -761,7 +761,7 @@ export default function CompaniesAdmin() {
             <div className="flex justify-between items-center">
               <h3 className="text-lg font-semibold">{isAr ? "جهات الاتصال" : "Contacts"}</h3>
               <Button onClick={() => setShowContactForm(!showContactForm)}>
-                {showContactForm ? <><X className="h-4 w-4 mr-2" />{isAr ? "إلغاء" : "Cancel"}</> : <><UserPlus className="h-4 w-4 mr-2" />{isAr ? "إضافة جهة اتصال" : "Add Contact"}</>}
+                {showContactForm ? <><X className="h-4 w-4 me-2" />{isAr ? "إلغاء" : "Cancel"}</> : <><UserPlus className="h-4 w-4 me-2" />{isAr ? "إضافة جهة اتصال" : "Add Contact"}</>}
               </Button>
             </div>
 
@@ -830,7 +830,7 @@ export default function CompaniesAdmin() {
                     </div>
                   </div>
                   <Button onClick={() => addContactMutation.mutate()} disabled={!contactForm.name || !contactForm.department || addContactMutation.isPending}>
-                    <Save className="h-4 w-4 mr-2" />{isAr ? "حفظ" : "Save"}
+                    <Save className="h-4 w-4 me-2" />{isAr ? "حفظ" : "Save"}
                   </Button>
                 </CardContent>
               </Card>
@@ -878,7 +878,7 @@ export default function CompaniesAdmin() {
             <div className="flex justify-between items-center">
               <h3 className="text-lg font-semibold">{isAr ? "الفروع" : "Branches"}</h3>
               <Button onClick={() => setShowBranchForm(!showBranchForm)}>
-                {showBranchForm ? <><X className="h-4 w-4 mr-2" />{isAr ? "إلغاء" : "Cancel"}</> : <><Plus className="h-4 w-4 mr-2" />{isAr ? "إضافة فرع" : "Add Branch"}</>}
+                {showBranchForm ? <><X className="h-4 w-4 me-2" />{isAr ? "إلغاء" : "Cancel"}</> : <><Plus className="h-4 w-4 me-2" />{isAr ? "إضافة فرع" : "Add Branch"}</>}
               </Button>
             </div>
 
@@ -929,7 +929,7 @@ export default function CompaniesAdmin() {
                     <Label className="cursor-pointer">{isAr ? "المقر الرئيسي" : "Headquarters"}</Label>
                   </div>
                   <Button onClick={() => addBranchMutation.mutate()} disabled={!branchForm.name || addBranchMutation.isPending}>
-                    <Save className="h-4 w-4 mr-2" />{isAr ? "حفظ" : "Save"}
+                    <Save className="h-4 w-4 me-2" />{isAr ? "حفظ" : "Save"}
                   </Button>
                 </CardContent>
               </Card>
@@ -1044,7 +1044,7 @@ export default function CompaniesAdmin() {
             <div className="flex justify-between items-center">
               <h3 className="text-lg font-semibold">{isAr ? "الدعوات" : "Invitations"}</h3>
               <Button onClick={() => setShowInvitationForm(!showInvitationForm)}>
-                {showInvitationForm ? <><X className="h-4 w-4 mr-2" />{isAr ? "إلغاء" : "Cancel"}</> : <><Send className="h-4 w-4 mr-2" />{isAr ? "دعوة جديدة" : "New Invitation"}</>}
+                {showInvitationForm ? <><X className="h-4 w-4 me-2" />{isAr ? "إلغاء" : "Cancel"}</> : <><Send className="h-4 w-4 me-2" />{isAr ? "دعوة جديدة" : "New Invitation"}</>}
               </Button>
             </div>
 
@@ -1092,7 +1092,7 @@ export default function CompaniesAdmin() {
                     </div>
                   </div>
                   <Button onClick={() => sendInvitationMutation.mutate()} disabled={!invitationForm.title || sendInvitationMutation.isPending}>
-                    <Send className="mr-2 h-4 w-4" />{isAr ? "إرسال" : "Send"}
+                    <Send className="me-2 h-4 w-4" />{isAr ? "إرسال" : "Send"}
                   </Button>
                 </CardContent>
               </Card>
@@ -1154,7 +1154,7 @@ export default function CompaniesAdmin() {
             <div className="flex justify-between items-center">
               <h3 className="text-lg font-semibold">{isAr ? "كتالوج المنتجات" : "Product Catalog"}</h3>
               <Button onClick={() => setShowCatalogForm(!showCatalogForm)}>
-                {showCatalogForm ? <><X className="h-4 w-4 mr-2" />{isAr ? "إلغاء" : "Cancel"}</> : <><Plus className="h-4 w-4 mr-2" />{isAr ? "إضافة منتج" : "Add Product"}</>}
+                {showCatalogForm ? <><X className="h-4 w-4 me-2" />{isAr ? "إلغاء" : "Cancel"}</> : <><Plus className="h-4 w-4 me-2" />{isAr ? "إضافة منتج" : "Add Product"}</>}
               </Button>
             </div>
 
@@ -1207,7 +1207,7 @@ export default function CompaniesAdmin() {
                     </div>
                   )}
                   <Button onClick={() => addCatalogMutation.mutate()} disabled={!catalogForm.name || !catalogForm.category || addCatalogMutation.isPending}>
-                    <Save className="h-4 w-4 mr-2" />{isAr ? "حفظ" : "Save"}
+                    <Save className="h-4 w-4 me-2" />{isAr ? "حفظ" : "Save"}
                   </Button>
                 </CardContent>
               </Card>
@@ -1254,7 +1254,7 @@ export default function CompaniesAdmin() {
             <div className="flex justify-between items-center">
               <h3 className="text-lg font-semibold">{isAr ? "السائقون" : "Drivers"}</h3>
               <Button onClick={() => setShowDriverForm(!showDriverForm)}>
-                {showDriverForm ? <><X className="h-4 w-4 mr-2" />{isAr ? "إلغاء" : "Cancel"}</> : <><Plus className="h-4 w-4 mr-2" />{isAr ? "إضافة سائق" : "Add Driver"}</>}
+                {showDriverForm ? <><X className="h-4 w-4 me-2" />{isAr ? "إلغاء" : "Cancel"}</> : <><Plus className="h-4 w-4 me-2" />{isAr ? "إضافة سائق" : "Add Driver"}</>}
               </Button>
             </div>
 
@@ -1293,7 +1293,7 @@ export default function CompaniesAdmin() {
                     <Label className="cursor-pointer">{isAr ? "متاح" : "Available"}</Label>
                   </div>
                   <Button onClick={() => addDriverMutation.mutate()} disabled={!driverForm.name || !driverForm.phone || addDriverMutation.isPending}>
-                    <Save className="h-4 w-4 mr-2" />{isAr ? "حفظ" : "Save"}
+                    <Save className="h-4 w-4 me-2" />{isAr ? "حفظ" : "Save"}
                   </Button>
                 </CardContent>
               </Card>
@@ -1367,7 +1367,7 @@ export default function CompaniesAdmin() {
                               {msg.status === "unread" ? (isAr ? "جديد" : "New") : (isAr ? "مقروءة" : "Read")}
                             </Badge>
                             <Button variant="outline" size="sm" className="h-7 text-xs" onClick={() => { setReplyTarget(msg.id); setReplyMessage(""); }}>
-                              <Send className="h-3 w-3 mr-1" />{isAr ? "رد" : "Reply"}
+                              <Send className="h-3 w-3 me-1" />{isAr ? "رد" : "Reply"}
                             </Button>
                           </div>
                         </div>
@@ -1376,7 +1376,7 @@ export default function CompaniesAdmin() {
                             <Textarea value={replyMessage} onChange={e => setReplyMessage(e.target.value)} rows={2} placeholder={isAr ? "اكتب ردك هنا..." : "Type your reply..."} />
                             <div className="flex gap-2">
                               <Button size="sm" disabled={!replyMessage || replyMutation.isPending} onClick={() => replyMutation.mutate({ parentId: msg.id, message: replyMessage })}>
-                                <Send className="h-3 w-3 mr-1" />{isAr ? "إرسال" : "Send"}
+                                <Send className="h-3 w-3 me-1" />{isAr ? "إرسال" : "Send"}
                               </Button>
                               <Button variant="outline" size="sm" onClick={() => setReplyTarget(null)}>{isAr ? "إلغاء" : "Cancel"}</Button>
                             </div>
@@ -1395,7 +1395,7 @@ export default function CompaniesAdmin() {
             <div className="flex justify-between items-center">
               <h3 className="text-lg font-semibold">{isAr ? "مكتبة الوسائط" : "Media Library"}</h3>
               <Button onClick={() => setShowMediaUpload(!showMediaUpload)}>
-                {showMediaUpload ? <><X className="h-4 w-4 mr-2" />{isAr ? "إلغاء" : "Cancel"}</> : <><Upload className="h-4 w-4 mr-2" />{isAr ? "رفع ملف" : "Upload File"}</>}
+                {showMediaUpload ? <><X className="h-4 w-4 me-2" />{isAr ? "إلغاء" : "Cancel"}</> : <><Upload className="h-4 w-4 me-2" />{isAr ? "رفع ملف" : "Upload File"}</>}
               </Button>
             </div>
 
@@ -1459,7 +1459,7 @@ export default function CompaniesAdmin() {
                               <p className="text-xs font-medium truncate">{item.title || item.filename}</p>
                               {item.file_size && <p className="text-[10px] text-muted-foreground">{(item.file_size / 1024).toFixed(0)} KB</p>}
                             </div>
-                            <Button variant="ghost" size="icon" className="absolute top-1 right-1 h-6 w-6 opacity-0 group-hover:opacity-100 bg-background/80" onClick={() => deleteMediaMutation.mutate(item.id)}>
+                            <Button variant="ghost" size="icon" className="absolute top-1 end-1 h-6 w-6 opacity-0 group-hover:opacity-100 bg-background/80" onClick={() => deleteMediaMutation.mutate(item.id)}>
                               <Trash2 className="h-3 w-3 text-destructive" />
                             </Button>
                           </div>
@@ -1690,8 +1690,8 @@ export default function CompaniesAdmin() {
             </div>
 
             <div className="flex gap-2">
-              <Button onClick={() => createCompanyMutation.mutate(companyForm)} disabled={!companyForm.name}><Save className="h-4 w-4 mr-2" />{isAr ? "حفظ الشركة" : "Save Company"}</Button>
-              <Button variant="outline" onClick={() => { setShowCompanyForm(false); resetCompanyForm(); }}><X className="h-4 w-4 mr-2" />{isAr ? "إلغاء" : "Cancel"}</Button>
+              <Button onClick={() => createCompanyMutation.mutate(companyForm)} disabled={!companyForm.name}><Save className="h-4 w-4 me-2" />{isAr ? "حفظ الشركة" : "Save Company"}</Button>
+              <Button variant="outline" onClick={() => { setShowCompanyForm(false); resetCompanyForm(); }}><X className="h-4 w-4 me-2" />{isAr ? "إلغاء" : "Cancel"}</Button>
             </div>
           </CardContent>
         </Card>

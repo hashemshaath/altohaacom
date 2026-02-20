@@ -178,7 +178,7 @@ export function CertificateLogoManager({ logos, onChange }: CertificateLogoManag
       <div className="grid grid-cols-2 gap-1.5">
         {positions.map(pos => (
           <Button key={pos} variant="outline" size="sm" className="h-7 text-[10px]" onClick={() => addLogo(pos)}>
-            <Plus className="h-3 w-3 mr-0.5" />
+            <Plus className="h-3 w-3 me-0.5" />
             {language === "ar" ? positionLabels[pos].ar : positionLabels[pos].en}
           </Button>
         ))}
