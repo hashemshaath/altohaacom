@@ -1,5 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Plus, ArrowRight, Sparkles } from "lucide-react";
+import { useCoverSettings } from "@/hooks/useCoverSettings";
 import heroImage from "@/assets/chefs-table-hero.jpg";
 
 interface ChefsTableHeroProps {
@@ -9,13 +10,19 @@ interface ChefsTableHeroProps {
 }
 
 export function ChefsTableHero({ isAr, user, onRequestClick }: ChefsTableHeroProps) {
+  const { gradientOverlay, isVisible } = useCoverSettings("chefs-table");
+
+  if (!isVisible) return null;
+
   return (
     <section className="relative overflow-hidden">
       {/* Background Image */}
       <div className="absolute inset-0">
         <img src={heroImage} alt="Chef's Table" className="h-full w-full object-cover" />
-        <div className="absolute inset-0 bg-gradient-to-t from-background via-background/90 to-background/65" />
-        <div className="absolute inset-0 bg-gradient-to-r from-background/85 via-transparent to-background/85" />
+        {gradientOverlay && (
+          <div className="absolute inset-0" style={{ background: gradientOverlay }} />
+        )}
+        <div className="absolute inset-x-0 bottom-0 h-20 bg-gradient-to-t from-background to-transparent" />
       </div>
 
       <div className="container relative py-20 md:py-28 lg:py-36">
