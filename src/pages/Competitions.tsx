@@ -177,54 +177,53 @@ export default function Competitions() {
         <section className="relative overflow-hidden border-b border-border/40">
           <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,hsl(var(--primary)/0.12),transparent_60%)]" />
           <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom_left,hsl(var(--accent)/0.10),transparent_50%)]" />
-          <div className="container relative py-10 md:py-14">
-            <div className="flex flex-col gap-8 md:flex-row md:items-end md:justify-between">
-              <div className="space-y-4 max-w-2xl">
-                <div className="inline-flex items-center gap-2 rounded-full bg-primary/10 px-3.5 py-1.5 ring-1 ring-primary/20">
-                  <Sparkles className="h-3.5 w-3.5 text-primary animate-pulse" />
-                  <span className="text-[10px] font-bold uppercase tracking-widest text-primary">
+          <div className="container relative py-5 md:py-14">
+            <div className="flex items-end justify-between gap-4">
+              <div className="space-y-2 sm:space-y-4 max-w-2xl">
+                <div className="inline-flex items-center gap-2 rounded-full bg-primary/10 px-3 py-1 ring-1 ring-primary/20">
+                  <Sparkles className="h-3 w-3 text-primary animate-pulse" />
+                  <span className="text-[9px] sm:text-[10px] font-bold uppercase tracking-widest text-primary">
                     {isAr ? "مسابقات الطهي" : "Culinary Competitions"}
                   </span>
                 </div>
-                <h1 className="font-serif text-3xl font-bold tracking-tight md:text-5xl">
+                <h1 className="font-serif text-2xl sm:text-3xl font-bold tracking-tight md:text-5xl">
                   {isAr ? "المسابقات" : "Competitions"}
                 </h1>
-                <p className="text-muted-foreground text-sm md:text-base leading-relaxed max-w-xl">
+                <p className="hidden sm:block text-muted-foreground text-sm md:text-base leading-relaxed max-w-xl">
                   {isAr
                     ? "اكتشف مسابقات الطهي واشترك فيها. تنافس مع أفضل الطهاة."
                     : "Discover and join culinary competitions. Compete with top chefs worldwide."}
                 </p>
 
-                {/* Editorial Stats */}
-                <div className="flex items-center gap-4 sm:gap-6 pt-2">
+                {/* Stats row */}
+                <div className="flex items-center gap-3 sm:gap-6">
                   {[
-                    { value: toEnglishDigits(counts.all), label: isAr ? "المسابقات" : "Total", icon: <Trophy className="h-3.5 w-3.5" /> },
-                    { value: toEnglishDigits(counts.active), label: isAr ? "نشطة الآن" : "Live Now", icon: <Flame className="h-3.5 w-3.5" />, live: counts.active > 0 },
-                    { value: toEnglishDigits(countryCodes.length), label: isAr ? "الدول" : "Countries", icon: <Globe className="h-3.5 w-3.5" /> },
+                    { value: toEnglishDigits(counts.all), label: isAr ? "المسابقات" : "Total", icon: <Trophy className="h-3 w-3 sm:h-3.5 sm:w-3.5" /> },
+                    { value: toEnglishDigits(counts.active), label: isAr ? "نشطة الآن" : "Live Now", icon: <Flame className="h-3 w-3 sm:h-3.5 sm:w-3.5" />, live: counts.active > 0 },
+                    { value: toEnglishDigits(countryCodes.length), label: isAr ? "الدول" : "Countries", icon: <Globe className="h-3 w-3 sm:h-3.5 sm:w-3.5" /> },
                   ].map((stat, i) => (
-                    <div key={i} className="flex items-center gap-2.5">
-                      <div className={`flex h-9 w-9 items-center justify-center rounded-xl ${stat.live ? "bg-chart-3/10 text-chart-3" : "bg-primary/10 text-primary"} ring-1 ${stat.live ? "ring-chart-3/20" : "ring-primary/10"}`}>
+                    <div key={i} className="flex items-center gap-2">
+                      <div className={`flex h-7 w-7 sm:h-9 sm:w-9 items-center justify-center rounded-xl ${stat.live ? "bg-chart-3/10 text-chart-3" : "bg-primary/10 text-primary"} ring-1 ${stat.live ? "ring-chart-3/20" : "ring-primary/10"}`}>
                         {stat.icon}
                       </div>
                       <div>
-                        <p className="text-lg font-black leading-none">{stat.value}</p>
-                        <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">{stat.label}</p>
+                        <p className="text-base sm:text-lg font-black leading-none">{stat.value}</p>
+                        <p className="text-[9px] sm:text-[10px] font-bold uppercase tracking-widest text-muted-foreground">{stat.label}</p>
                       </div>
                     </div>
                   ))}
                 </div>
               </div>
 
-              <div className="flex items-center gap-3 shrink-0">
-                {canCreate && (
-                  <Button asChild className="shadow-lg shadow-primary/20 rounded-xl px-6 h-11 font-bold">
-                    <Link to="/competitions/create">
-                      <Plus className="me-1.5 h-4 w-4" />
-                      {t("createCompetition")}
-                    </Link>
-                  </Button>
-                )}
-              </div>
+              {canCreate && (
+                <Button asChild size="sm" className="shadow-lg shadow-primary/20 rounded-xl shrink-0 font-bold">
+                  <Link to="/competitions/create">
+                    <Plus className="me-1 h-4 w-4" />
+                    <span className="hidden sm:inline">{t("createCompetition")}</span>
+                    <span className="sm:hidden">{isAr ? "إنشاء" : "Create"}</span>
+                  </Link>
+                </Button>
+              )}
             </div>
           </div>
         </section>
@@ -236,23 +235,23 @@ export default function Competitions() {
           )}
 
           {/* Sticky Filters + Tab Pills */}
-          <div className="sticky top-12 z-30 -mx-4 mb-8 border-y border-border/40 bg-background/80 px-4 py-4 backdrop-blur-md md:rounded-2xl md:border md:mx-0 md:px-6 space-y-4">
-            {/* Search & Filter */}
-            <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
-              <div className="relative flex-1 sm:max-w-md">
-                <Search className="absolute start-4 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground/60" />
+          <div className="sticky top-12 z-30 -mx-4 mb-6 border-y border-border/40 bg-background/90 px-4 py-3 backdrop-blur-md md:rounded-2xl md:border md:mx-0 md:px-6 space-y-3">
+            {/* Search & Filter — inline on mobile */}
+            <div className="flex gap-2 items-center">
+              <div className="relative flex-1">
+                <Search className="absolute start-3.5 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-muted-foreground/60" />
                 <Input
-                  placeholder={isAr ? "ابحث عن مسابقة..." : "Search competitions..."}
+                  placeholder={isAr ? "ابحث..." : "Search..."}
                   value={search}
                   onChange={(e) => setSearch(e.target.value)}
-                  className="h-11 border-border/40 bg-muted/20 ps-11 transition-all focus:bg-background focus:ring-primary/20 rounded-xl"
+                  className="h-9 border-border/40 bg-muted/20 ps-9 text-sm transition-all focus:bg-background rounded-xl"
                 />
               </div>
               {countryCodes.length > 1 && (
                 <Select value={countryFilter} onValueChange={setCountryFilter}>
-                  <SelectTrigger className="h-11 w-full sm:w-48 border-border/40 bg-muted/20 rounded-xl focus:ring-primary/20">
-                    <MapPin className="me-1.5 h-3.5 w-3.5 text-muted-foreground/60" />
-                    <SelectValue placeholder={isAr ? "الدولة" : "Country"} />
+                  <SelectTrigger className="h-9 w-auto min-w-[42px] max-w-[120px] border-border/40 bg-muted/20 rounded-xl text-xs px-2.5">
+                    <MapPin className="h-3.5 w-3.5 text-muted-foreground/60 shrink-0" />
+                    <SelectValue placeholder={isAr ? "دولة" : "Country"} />
                   </SelectTrigger>
                   <SelectContent className="rounded-xl border-border/40">
                     <SelectItem value="all" className="rounded-lg">{isAr ? "جميع الدول" : "All Countries"}</SelectItem>
@@ -260,7 +259,7 @@ export default function Competitions() {
                       <SelectItem key={code} value={code} className="rounded-lg">
                         <span className="flex items-center gap-2">
                           <span>{countryFlag(code)}</span>
-                          <span>{getCountryName(code)}</span>
+                          <span className="hidden sm:inline">{getCountryName(code)}</span>
                         </span>
                       </SelectItem>
                     ))}
@@ -268,13 +267,13 @@ export default function Competitions() {
                 </Select>
               )}
             </div>
-            {/* Tab Pills */}
-            <div className="flex flex-wrap gap-2">
+            {/* Tab Pills — scrollable */}
+            <div className="flex gap-1.5 overflow-x-auto scrollbar-none">
               {TAB_FILTERS.map((tab) => (
                 <button
                   key={tab}
                   onClick={() => setActiveTab(tab)}
-                  className={`relative inline-flex items-center gap-2 rounded-xl px-5 py-2.5 text-xs font-bold uppercase tracking-wider transition-all duration-300 ${
+                  className={`relative inline-flex shrink-0 items-center gap-1.5 rounded-xl px-3.5 py-1.5 text-xs font-bold uppercase tracking-wider transition-all duration-300 touch-manipulation ${
                     activeTab === tab
                       ? "text-primary-foreground"
                       : "text-muted-foreground hover:bg-primary/5 hover:text-primary"
@@ -284,7 +283,7 @@ export default function Competitions() {
                     <div className="absolute inset-0 rounded-xl bg-primary shadow-lg shadow-primary/20 animate-in fade-in zoom-in-95 duration-300" />
                   )}
                   <span className="relative z-10">{isAr ? tabLabels[tab].ar : tabLabels[tab].en}</span>
-                  <span className={`relative z-10 ms-1 inline-flex h-5 min-w-[20px] items-center justify-center rounded-lg px-1.5 text-[10px] font-black ${
+                  <span className={`relative z-10 ms-1 inline-flex h-4 min-w-[16px] items-center justify-center rounded-md px-1 text-[9px] font-black ${
                     activeTab === tab
                       ? "bg-primary-foreground/20 text-primary-foreground"
                       : "bg-muted text-muted-foreground"
@@ -298,27 +297,26 @@ export default function Competitions() {
 
           {/* Grid */}
           {isLoading ? (
-            <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+            <div className="grid grid-cols-2 gap-3 sm:gap-5 lg:grid-cols-3">
               {[1, 2, 3, 4, 5, 6].map((i) => (
                 <Card key={i} className="overflow-hidden">
                   <Skeleton className="aspect-[16/10] w-full" />
-                  <CardContent className="space-y-3 p-5">
-                    <Skeleton className="h-5 w-3/4" />
-                    <Skeleton className="h-4 w-1/2" />
-                    <Skeleton className="h-3 w-full" />
+                  <CardContent className="space-y-2 p-3">
+                    <Skeleton className="h-4 w-3/4" />
+                    <Skeleton className="h-3 w-1/2" />
                   </CardContent>
                 </Card>
               ))}
             </div>
           ) : filteredCompetitions?.length === 0 ? (
-            <div className="flex flex-col items-center justify-center py-24 text-center">
-              <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-muted">
-                <Trophy className="h-8 w-8 text-muted-foreground/30" />
+            <div className="flex flex-col items-center justify-center py-16 text-center">
+              <div className="mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-muted">
+                <Trophy className="h-7 w-7 text-muted-foreground/30" />
               </div>
-              <h3 className="mb-1.5 text-lg font-semibold">{isAr ? "لا توجد مسابقات" : "No competitions found"}</h3>
+              <h3 className="mb-1.5 text-base font-semibold">{isAr ? "لا توجد مسابقات" : "No competitions found"}</h3>
               <p className="max-w-sm text-sm text-muted-foreground">
                 {search
-                  ? (isAr ? "جرّب كلمات بحث مختلفة" : "Try different search terms or clear your filters")
+                  ? (isAr ? "جرّب كلمات بحث مختلفة" : "Try different search terms")
                   : (isAr ? "لا توجد مسابقات في هذه الفئة حالياً" : "No competitions in this category yet")}
               </p>
               {search && (
@@ -328,7 +326,7 @@ export default function Competitions() {
               )}
             </div>
           ) : (
-            <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+            <div className="grid grid-cols-2 gap-3 sm:gap-5 lg:grid-cols-3">
               {filteredCompetitions?.map((comp) => (
                 <CompetitionCard key={comp.id} competition={comp} language={language} isAr={isAr} />
               ))}
@@ -508,22 +506,20 @@ function CompetitionCard({ competition, language, isAr }: { competition: Competi
             </div>
           </div>
         </div>
-        <CardContent className="flex flex-1 flex-col p-5">
-          <h3 className="mb-4 flex-1 line-clamp-2 text-base font-black leading-tight group-hover:text-primary transition-colors duration-300">
+        <CardContent className="flex flex-1 flex-col p-3 sm:p-5">
+          <h3 className="mb-2 sm:mb-4 flex-1 line-clamp-2 text-sm sm:text-base font-black leading-tight group-hover:text-primary transition-colors duration-300">
             {title}
           </h3>
           
           {maxP && maxP > 0 && (
-            <div className="mb-5 space-y-2">
-              <div className="flex items-center justify-between text-[10px] font-bold uppercase tracking-wider text-muted-foreground">
+            <div className="mb-2 sm:mb-4 space-y-1">
+              <div className="flex items-center justify-between text-[9px] sm:text-[10px] font-bold uppercase tracking-wider text-muted-foreground">
                 <span>{isAr ? "سعة المشاركة" : "Capacity"}</span>
                 <span className={fillPct > 80 ? "text-destructive" : "text-primary"}>{toEnglishDigits(fillPct)}%</span>
               </div>
-              <div className="h-1.5 w-full overflow-hidden rounded-full bg-muted/50 shadow-inner">
+              <div className="h-1 w-full overflow-hidden rounded-full bg-muted/50">
                 <div 
-                  className={`h-full rounded-full transition-all duration-1000 ease-out ${
-                    fillPct > 80 ? "bg-destructive" : "bg-primary"
-                  }`}
+                  className={`h-full rounded-full transition-all duration-1000 ease-out ${fillPct > 80 ? "bg-destructive" : "bg-primary"}`}
                   style={{ width: `${fillPct}%` }}
                 />
               </div>
@@ -531,18 +527,18 @@ function CompetitionCard({ competition, language, isAr }: { competition: Competi
           )}
 
           <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3 text-[11px] font-bold text-muted-foreground">
+            <div className="flex items-center gap-1.5 text-[10px] font-bold text-muted-foreground min-w-0">
               {competition.is_virtual ? (
-                <span className="flex items-center gap-1.5"><Globe className="h-3.5 w-3.5 text-primary" />{isAr ? "افتراضية" : "Virtual"}</span>
+                <span className="flex items-center gap-1 truncate"><Globe className="h-3 w-3 text-primary shrink-0" /><span className="truncate">{isAr ? "افتراضية" : "Virtual"}</span></span>
               ) : competition.city ? (
-                <span className="flex items-center gap-1.5 truncate max-w-[140px]">
-                  <MapPin className="h-3.5 w-3.5 shrink-0 text-primary" />
-                  {competition.country_code ? `${countryFlag(competition.country_code)} ` : ""}{competition.city}
+                <span className="flex items-center gap-1 truncate">
+                  <MapPin className="h-3 w-3 shrink-0 text-primary" />
+                  <span className="truncate">{competition.country_code ? `${countryFlag(competition.country_code)} ` : ""}{competition.city}</span>
                 </span>
               ) : null}
             </div>
-            <div className="flex h-8 w-8 items-center justify-center rounded-full bg-primary/5 text-primary transition-all duration-300 group-hover:bg-primary group-hover:text-primary-foreground group-hover:scale-105">
-              <ArrowRight className="h-3.5 w-3.5 transition-transform duration-300 group-hover:translate-x-0.5" />
+            <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-primary/5 text-primary transition-all duration-300 group-hover:bg-primary group-hover:text-primary-foreground group-hover:scale-105">
+              <ArrowRight className="h-3 w-3" />
             </div>
           </div>
         </CardContent>
