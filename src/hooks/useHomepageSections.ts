@@ -1,0 +1,76 @@
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
+
+export interface HomepageSection {
+  id: string;
+  section_key: string;
+  title_en: string;
+  title_ar: string;
+  subtitle_en: string;
+  subtitle_ar: string;
+  is_visible: boolean;
+  sort_order: number;
+  cover_type: "none" | "background" | "banner";
+  cover_image_url: string;
+  cover_height: number;
+  cover_overlay_opacity: number;
+  item_count: number;
+  item_size: "small" | "medium" | "large";
+  items_per_row: number;
+  show_filters: boolean;
+  show_view_all: boolean;
+  custom_config: Record<string, any>;
+  updated_at: string;
+}
+
+const QUERY_KEY = ["homepage-sections"];
+
+export function useHomepageSections() {
+  return useQuery<HomepageSection[]>({
+    queryKey: QUERY_KEY,
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("homepage_sections")
+        .select("*")
+        .order("sort_order", { ascending: true });
+      if (error) throw error;
+      return (data || []) as unknown as HomepageSection[];
+    },
+    staleTime: 1000 * 60 * 5,
+  });
+}
+
+export function useHomepageSection(sectionKey: string) {
+  const { data: sections } = useHomepageSections();
+  return sections?.find((s) => s.section_key === sectionKey) ?? null;
+}
+
+export function useUpdateHomepageSection() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: async ({ id, ...updates }: Partial<HomepageSection> & { id: string }) => {
+      const { error } = await supabase
+        .from("homepage_sections")
+        .update(updates as any)
+        .eq("id", id);
+      if (error) throw error;
+    },
+    onSuccess: () => qc.invalidateQueries({ queryKey: QUERY_KEY }),
+  });
+}
+
+export function useBulkUpdateHomepageSections() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: async (sections: (Partial<HomepageSection> & { id: string })[]) => {
+      for (const { id, ...updates } of sections) {
+        const { error } = await supabase
+          .from("homepage_sections")
+          .update(updates as any)
+          .eq("id", id);
+        if (error) throw error;
+      }
+    },
+    onSuccess: () => qc.invalidateQueries({ queryKey: QUERY_KEY }),
+  });
+}

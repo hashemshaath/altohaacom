@@ -8887,6 +8887,75 @@ export type Database = {
         }
         Relationships: []
       }
+      homepage_sections: {
+        Row: {
+          cover_height: number | null
+          cover_image_url: string | null
+          cover_overlay_opacity: number | null
+          cover_type: string | null
+          custom_config: Json | null
+          id: string
+          is_visible: boolean
+          item_count: number | null
+          item_size: string | null
+          items_per_row: number | null
+          section_key: string
+          show_filters: boolean | null
+          show_view_all: boolean | null
+          sort_order: number
+          subtitle_ar: string | null
+          subtitle_en: string | null
+          title_ar: string
+          title_en: string
+          updated_at: string
+          updated_by: string | null
+        }
+        Insert: {
+          cover_height?: number | null
+          cover_image_url?: string | null
+          cover_overlay_opacity?: number | null
+          cover_type?: string | null
+          custom_config?: Json | null
+          id?: string
+          is_visible?: boolean
+          item_count?: number | null
+          item_size?: string | null
+          items_per_row?: number | null
+          section_key: string
+          show_filters?: boolean | null
+          show_view_all?: boolean | null
+          sort_order?: number
+          subtitle_ar?: string | null
+          subtitle_en?: string | null
+          title_ar?: string
+          title_en?: string
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Update: {
+          cover_height?: number | null
+          cover_image_url?: string | null
+          cover_overlay_opacity?: number | null
+          cover_type?: string | null
+          custom_config?: Json | null
+          id?: string
+          is_visible?: boolean
+          item_count?: number | null
+          item_size?: string | null
+          items_per_row?: number | null
+          section_key?: string
+          show_filters?: boolean | null
+          show_view_all?: boolean | null
+          sort_order?: number
+          subtitle_ar?: string | null
+          subtitle_en?: string | null
+          title_ar?: string
+          title_en?: string
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Relationships: []
+      }
       homepage_sponsors: {
         Row: {
           company_id: string | null
