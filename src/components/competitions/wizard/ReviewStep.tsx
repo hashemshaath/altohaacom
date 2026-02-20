@@ -163,13 +163,13 @@ export function ReviewStep({ data }: ReviewStepProps) {
           <div className="flex flex-wrap items-center gap-2 text-sm">
             {data.isVirtual ? (
               <Badge variant="secondary">
-                <Globe className="mr-1 h-3 w-3" />
+                <Globe className="me-1 h-3 w-3" />
                 {isAr ? "افتراضية" : "Virtual"}
               </Badge>
             ) : (
               data.venue && (
                 <Badge variant="secondary">
-                  <MapPin className="mr-1 h-3 w-3" />
+                  <MapPin className="me-1 h-3 w-3" />
                   {data.venue}{data.city ? `, ${data.city}` : ""}
                 </Badge>
               )
@@ -179,7 +179,7 @@ export function ReviewStep({ data }: ReviewStepProps) {
             )}
             {data.maxParticipants && (
               <Badge variant="outline">
-                <Users className="mr-1 h-3 w-3" />
+                <Users className="me-1 h-3 w-3" />
                 {isAr ? `${data.maxParticipants} مشارك كحد أقصى` : `Max ${data.maxParticipants}`}
               </Badge>
             )}

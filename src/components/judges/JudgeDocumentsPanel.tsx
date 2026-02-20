@@ -124,7 +124,7 @@ export default function JudgeDocumentsPanel({ userId, isAdmin }: Props) {
       <div className="flex items-center justify-between">
         <h3 className="text-lg font-semibold">{isAr ? "المستندات والوثائق" : "Documents & Files"}</h3>
         <Button size="sm" onClick={() => setShowForm(!showForm)}>
-          {showForm ? (isAr ? "إغلاق" : "Close") : <><Plus className="mr-2 h-4 w-4" />{isAr ? "رفع مستند" : "Upload Document"}</>}
+          {showForm ? (isAr ? "إغلاق" : "Close") : <><Plus className="me-2 h-4 w-4" />{isAr ? "رفع مستند" : "Upload Document"}</>}
         </Button>
       </div>
 
@@ -150,7 +150,7 @@ export default function JudgeDocumentsPanel({ userId, isAdmin }: Props) {
               <Input type="file" onChange={e => setFile(e.target.files?.[0] || null)} accept=".pdf,.jpg,.jpeg,.png,.doc,.docx" />
             </div>
             <Button onClick={() => uploadMutation.mutate()} disabled={!file || uploading}>
-              <Upload className="mr-2 h-4 w-4" />
+              <Upload className="me-2 h-4 w-4" />
               {uploading ? (isAr ? "جاري الرفع..." : "Uploading...") : (isAr ? "رفع" : "Upload")}
             </Button>
           </CardContent>
@@ -166,7 +166,7 @@ export default function JudgeDocumentsPanel({ userId, isAdmin }: Props) {
                 <TableHead>{isAr ? "العنوان" : "Title"}</TableHead>
                 <TableHead>{isAr ? "الانتهاء" : "Expiry"}</TableHead>
                 <TableHead>{isAr ? "التوثيق" : "Verified"}</TableHead>
-                <TableHead className="text-right">{isAr ? "الإجراءات" : "Actions"}</TableHead>
+                <TableHead className="text-end">{isAr ? "الإجراءات" : "Actions"}</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -195,7 +195,7 @@ export default function JudgeDocumentsPanel({ userId, isAdmin }: Props) {
                       </TableCell>
                       <TableCell>
                         {doc.is_verified ? (
-                          <Badge className="bg-chart-3/20 text-chart-3"><ShieldCheck className="mr-1 h-3 w-3" />{isAr ? "موثق" : "Verified"}</Badge>
+                          <Badge className="bg-chart-3/20 text-chart-3"><ShieldCheck className="me-1 h-3 w-3" />{isAr ? "موثق" : "Verified"}</Badge>
                         ) : (
                           isAdmin ? (
                             <Button size="sm" variant="outline" onClick={() => verifyMutation.mutate(doc.id)}>

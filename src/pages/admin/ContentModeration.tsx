@@ -231,14 +231,14 @@ export default function ContentModeration() {
                               onClick={() => handleResolve(report.id, "dismissed")}
                               disabled={resolveReportMutation.isPending}
                             >
-                              <XCircle className="mr-2 h-4 w-4" />
+                              <XCircle className="me-2 h-4 w-4" />
                               {language === "ar" ? "رفض" : "Dismiss"}
                             </Button>
                             <Button
                               onClick={() => handleResolve(report.id, "resolved")}
                               disabled={resolveReportMutation.isPending}
                             >
-                              <CheckCircle className="mr-2 h-4 w-4" />
+                              <CheckCircle className="me-2 h-4 w-4" />
                               {language === "ar" ? "حل" : "Resolve"}
                             </Button>
                           </div>

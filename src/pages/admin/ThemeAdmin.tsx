@@ -120,11 +120,11 @@ export default function ThemeAdmin() {
         </div>
         <div className="flex gap-2">
           <Button variant="outline" onClick={handleReset}>
-            <RotateCcw className="mr-2 h-4 w-4" />
+            <RotateCcw className="me-2 h-4 w-4" />
             {language === "ar" ? "إعادة" : "Reset"}
           </Button>
           <Button onClick={handleSave}>
-            <Save className="mr-2 h-4 w-4" />
+            <Save className="me-2 h-4 w-4" />
             {language === "ar" ? "حفظ" : "Save"}
           </Button>
         </div>

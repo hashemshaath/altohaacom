@@ -614,23 +614,23 @@ export default function RegisterCompany() {
                 variant="ghost"
                 onClick={() => stepIndex > 0 ? setCurrentStep(STEPS[stepIndex - 1]) : navigate(-1)}
               >
-                {isAr ? <ArrowRight className="mr-2 h-4 w-4" /> : <ArrowLeft className="mr-2 h-4 w-4" />}
+                {isAr ? <ArrowRight className="me-2 h-4 w-4" /> : <ArrowLeft className="me-2 h-4 w-4" />}
                 {isAr ? "السابق" : "Back"}
               </Button>
 
               {currentStep === "review" ? (
                 <Button onClick={handleSubmit} disabled={isSubmitting || !user}>
                   {isSubmitting ? (
-                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    <Loader2 className="me-2 h-4 w-4 animate-spin" />
                   ) : (
-                    <CheckCircle className="mr-2 h-4 w-4" />
+                    <CheckCircle className="me-2 h-4 w-4" />
                   )}
                   {isAr ? "تقديم التسجيل" : "Submit Registration"}
                 </Button>
               ) : (
                 <Button onClick={() => setCurrentStep(STEPS[stepIndex + 1])} disabled={!canProceed()}>
                   {isAr ? "التالي" : "Next"}
-                  {isAr ? <ArrowLeft className="ml-2 h-4 w-4" /> : <ArrowRight className="ml-2 h-4 w-4" />}
+                  {isAr ? <ArrowLeft className="ms-2 h-4 w-4" /> : <ArrowRight className="ms-2 h-4 w-4" />}
                 </Button>
               )}
             </div>

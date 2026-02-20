@@ -358,11 +358,11 @@ export default function ChefScheduleAdmin() {
                         </TableCell>
                         <TableCell className="text-xs font-medium max-w-[200px] truncate">
                           {ev.title}
-                          {ev.channel_name && <span className="text-muted-foreground ml-1">({ev.channel_name})</span>}
+                          {ev.channel_name && <span className="text-muted-foreground ms-1">({ev.channel_name})</span>}
                         </TableCell>
                         <TableCell className="text-xs tabular-nums">
                           {format(parseISO(ev.start_date), "MMM d, yyyy")}
-                          {!ev.all_day && <span className="text-muted-foreground ml-1">{format(parseISO(ev.start_date), "HH:mm")}</span>}
+                          {!ev.all_day && <span className="text-muted-foreground ms-1">{format(parseISO(ev.start_date), "HH:mm")}</span>}
                         </TableCell>
                         <TableCell className="text-xs text-muted-foreground">{ev.city || ev.location || "—"}</TableCell>
                         <TableCell>

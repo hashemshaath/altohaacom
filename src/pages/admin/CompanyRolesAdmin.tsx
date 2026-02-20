@@ -248,7 +248,7 @@ export default function CompanyRolesAdmin() {
           </p>
         </div>
         <Button onClick={() => setAssignDialogOpen(true)}>
-          <Plus className="mr-2 h-4 w-4" />
+          <Plus className="me-2 h-4 w-4" />
           {language === "ar" ? "تعيين دور" : "Assign Role"}
         </Button>
       </div>
@@ -502,7 +502,7 @@ export default function CompanyRolesAdmin() {
               onClick={() => assignMutation.mutate()}
               disabled={!selectedCompanyId || !selectedRole || assignMutation.isPending}
             >
-              <Plus className="mr-2 h-4 w-4" />
+              <Plus className="me-2 h-4 w-4" />
               {assignMutation.isPending
                 ? (language === "ar" ? "جارٍ التعيين..." : "Assigning...")
                 : (language === "ar" ? "تعيين" : "Assign")}

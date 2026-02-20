@@ -192,7 +192,7 @@ export function RubricTemplatesPanel({ competitionId, isAdmin }: RubricTemplates
           </div>
           {isAdmin && !showForm && (
             <Button size="sm" onClick={() => setShowForm(true)}>
-              <Plus className="mr-2 h-4 w-4" />
+              <Plus className="me-2 h-4 w-4" />
               {language === "ar" ? "قالب جديد" : "New Template"}
             </Button>
           )}
@@ -230,7 +230,7 @@ export function RubricTemplatesPanel({ competitionId, isAdmin }: RubricTemplates
               <div className="flex items-center justify-between">
                 <Label className="text-sm font-medium">{language === "ar" ? "المعايير" : "Criteria"}</Label>
                 <Button variant="outline" size="sm" onClick={addCriterion}>
-                  <Plus className="mr-1 h-3 w-3" /> {language === "ar" ? "إضافة معيار" : "Add Criterion"}
+                  <Plus className="me-1 h-3 w-3" /> {language === "ar" ? "إضافة معيار" : "Add Criterion"}
                 </Button>
               </div>
               {form.criteria.map((c, i) => (
@@ -253,7 +253,7 @@ export function RubricTemplatesPanel({ competitionId, isAdmin }: RubricTemplates
                   {language === "ar" ? "المجموع:" : "Total weight:"}{" "}
                   {form.criteria.reduce((s, c) => s + c.weight, 0).toFixed(2)}
                   {form.criteria.reduce((s, c) => s + c.weight, 0) !== 1 && (
-                    <span className="text-destructive ml-2">({language === "ar" ? "يجب أن يكون 1.0" : "should be 1.0"})</span>
+                    <span className="text-destructive ms-2">({language === "ar" ? "يجب أن يكون 1.0" : "should be 1.0"})</span>
                   )}
                 </p>
               )}
@@ -266,10 +266,10 @@ export function RubricTemplatesPanel({ competitionId, isAdmin }: RubricTemplates
 
             <div className="flex justify-end gap-2">
               <Button variant="outline" size="sm" onClick={resetForm}>
-                <X className="mr-2 h-4 w-4" /> {language === "ar" ? "إلغاء" : "Cancel"}
+                <X className="me-2 h-4 w-4" /> {language === "ar" ? "إلغاء" : "Cancel"}
               </Button>
               <Button size="sm" onClick={() => saveMutation.mutate()} disabled={!form.name || saveMutation.isPending}>
-                <Save className="mr-2 h-4 w-4" /> {language === "ar" ? "حفظ" : "Save"}
+                <Save className="me-2 h-4 w-4" /> {language === "ar" ? "حفظ" : "Save"}
               </Button>
             </div>
           </div>

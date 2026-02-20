@@ -318,11 +318,11 @@ export function CompetitionKnowledgeTab({ competitionId, isOrganizer }: Competit
             {isOrganizer && !editRules && (
               <div className="flex gap-2">
                 <Button variant="outline" size="sm" onClick={handleAISummarize} disabled={isSummarizing}>
-                  {isSummarizing ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Sparkles className="mr-2 h-4 w-4" />}
+                  {isSummarizing ? <Loader2 className="me-2 h-4 w-4 animate-spin" /> : <Sparkles className="me-2 h-4 w-4" />}
                   {language === "ar" ? "تلخيص بالذكاء الاصطناعي" : "AI Summarize"}
                 </Button>
                 <Button size="sm" onClick={startEditRules}>
-                  <Save className="mr-2 h-4 w-4" />
+                   <Save className="me-2 h-4 w-4" />
                   {language === "ar" ? "تعديل" : "Edit"}
                 </Button>
               </div>
@@ -355,10 +355,10 @@ export function CompetitionKnowledgeTab({ competitionId, isOrganizer }: Competit
               </div>
               <div className="flex justify-end gap-2">
                 <Button variant="outline" onClick={() => setEditRules(false)}>
-                  <X className="mr-2 h-4 w-4" /> {language === "ar" ? "إلغاء" : "Cancel"}
+                  <X className="me-2 h-4 w-4" /> {language === "ar" ? "إلغاء" : "Cancel"}
                 </Button>
                 <Button onClick={() => saveRulesMutation.mutate()} disabled={saveRulesMutation.isPending}>
-                  <Save className="mr-2 h-4 w-4" /> {language === "ar" ? "حفظ" : "Save"}
+                  <Save className="me-2 h-4 w-4" /> {language === "ar" ? "حفظ" : "Save"}
                 </Button>
               </div>
             </div>
@@ -422,7 +422,7 @@ export function CompetitionKnowledgeTab({ competitionId, isOrganizer }: Competit
                       </p>
                     )}
                   </div>
-                  <div className="text-right shrink-0 ml-2">
+                  <div className="text-end shrink-0 ms-2">
                     <Badge variant="secondary">{c.max_score} pts</Badge>
                     <p className="text-xs text-muted-foreground mt-0.5">
                       {language === "ar" ? `وزن: ${c.weight}` : `Weight: ${c.weight}`}
@@ -446,11 +446,11 @@ export function CompetitionKnowledgeTab({ competitionId, isOrganizer }: Competit
             {isOrganizer && !showAddResource && !showScrape && (
               <div className="flex gap-2">
                 <Button variant="outline" size="sm" onClick={() => setShowScrape(true)}>
-                  <Globe className="mr-2 h-4 w-4" />
+                   <Globe className="me-2 h-4 w-4" />
                   {language === "ar" ? "استخراج من رابط" : "Scrape URL"}
                 </Button>
                 <Button size="sm" onClick={() => setShowAddResource(true)}>
-                  <Plus className="mr-2 h-4 w-4" />
+                  <Plus className="me-2 h-4 w-4" />
                   {language === "ar" ? "إضافة" : "Add"}
                 </Button>
               </div>
@@ -470,10 +470,10 @@ export function CompetitionKnowledgeTab({ competitionId, isOrganizer }: Competit
               />
               <div className="flex justify-end gap-2">
                 <Button variant="outline" size="sm" onClick={() => { setShowScrape(false); setScrapeUrl(""); }} disabled={isScraping}>
-                  <X className="mr-2 h-4 w-4" /> {language === "ar" ? "إلغاء" : "Cancel"}
+                  <X className="me-2 h-4 w-4" /> {language === "ar" ? "إلغاء" : "Cancel"}
                 </Button>
                 <Button size="sm" onClick={handleScrape} disabled={!scrapeUrl.trim() || isScraping}>
-                  {isScraping ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Globe className="mr-2 h-4 w-4" />}
+                  {isScraping ? <Loader2 className="me-2 h-4 w-4 animate-spin" /> : <Globe className="me-2 h-4 w-4" />}
                   {isScraping ? (language === "ar" ? "جاري..." : "Scraping...") : (language === "ar" ? "استخراج" : "Scrape")}
                 </Button>
               </div>
@@ -524,10 +524,10 @@ export function CompetitionKnowledgeTab({ competitionId, isOrganizer }: Competit
               </div>
               <div className="flex justify-end gap-2">
                 <Button variant="outline" size="sm" onClick={() => setShowAddResource(false)}>
-                  <X className="mr-2 h-4 w-4" /> {language === "ar" ? "إلغاء" : "Cancel"}
+                  <X className="me-2 h-4 w-4" /> {language === "ar" ? "إلغاء" : "Cancel"}
                 </Button>
                 <Button size="sm" onClick={() => addResourceMutation.mutate()} disabled={!resourceForm.title || addResourceMutation.isPending}>
-                  <Save className="mr-2 h-4 w-4" /> {language === "ar" ? "حفظ" : "Save"}
+                  <Save className="me-2 h-4 w-4" /> {language === "ar" ? "حفظ" : "Save"}
                 </Button>
               </div>
             </div>

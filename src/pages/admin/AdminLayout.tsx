@@ -194,7 +194,7 @@ export default function AdminLayout() {
               </div>
             </SheetContent>
           </Sheet>
-          <span className="ml-2 text-sm font-medium text-muted-foreground">
+          <span className="ms-2 text-sm font-medium text-muted-foreground">
             {language === "ar" ? "القائمة" : "Menu"}
           </span>
         </div>

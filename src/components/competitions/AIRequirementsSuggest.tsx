@@ -114,7 +114,7 @@ export function AIRequirementsSuggest({ competitionId, listId, listCategory, exi
     <Dialog open={open} onOpenChange={handleOpen}>
       <DialogTrigger asChild>
         <Button variant="outline" size="sm">
-          <Sparkles className="mr-2 h-4 w-4" />
+          <Sparkles className="me-2 h-4 w-4" />
           {language === "ar" ? "اقتراحات الذكاء الاصطناعي" : "AI Suggest"}
         </Button>
       </DialogTrigger>
@@ -177,7 +177,7 @@ export function AIRequirementsSuggest({ competitionId, listId, listCategory, exi
                   disabled={selected.size === 0 || addSelectedMutation.isPending}
                 >
                   {addSelectedMutation.isPending ? (
-                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    <Loader2 className="me-2 h-4 w-4 animate-spin" />
                   ) : null}
                   {language === "ar" ? "إضافة المحدد" : `Add ${selected.size} Items`}
                 </Button>

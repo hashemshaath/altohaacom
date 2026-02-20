@@ -185,7 +185,7 @@ export default function CompanyInvitations() {
                                   onClick={() => respondMutation.mutate({ id: inv.id, status: "accepted" })}
                                   disabled={respondMutation.isPending}
                                 >
-                                  <CheckCircle className="mr-1 h-3.5 w-3.5" />
+                                  <CheckCircle className="me-1 h-3.5 w-3.5" />
                                   {language === "ar" ? "قبول" : "Accept"}
                                 </Button>
                                 <Button
@@ -193,7 +193,7 @@ export default function CompanyInvitations() {
                                   variant="outline"
                                   onClick={() => { setViewInvitation(inv); setResponseNotes(""); }}
                                 >
-                                  <XCircle className="mr-1 h-3.5 w-3.5" />
+                                  <XCircle className="me-1 h-3.5 w-3.5" />
                                   {language === "ar" ? "رفض" : "Decline"}
                                 </Button>
                               </>
@@ -292,7 +292,7 @@ export default function CompanyInvitations() {
                         onClick={() => respondMutation.mutate({ id: viewInvitation.id, status: "accepted" })}
                         disabled={respondMutation.isPending}
                       >
-                        <CheckCircle className="mr-2 h-4 w-4" />
+                        <CheckCircle className="me-2 h-4 w-4" />
                         {language === "ar" ? "قبول الدعوة" : "Accept Invitation"}
                       </Button>
                       <Button
@@ -301,7 +301,7 @@ export default function CompanyInvitations() {
                         onClick={() => respondMutation.mutate({ id: viewInvitation.id, status: "declined" })}
                         disabled={respondMutation.isPending}
                       >
-                        <XCircle className="mr-2 h-4 w-4" />
+                        <XCircle className="me-2 h-4 w-4" />
                         {language === "ar" ? "رفض" : "Decline"}
                       </Button>
                     </div>

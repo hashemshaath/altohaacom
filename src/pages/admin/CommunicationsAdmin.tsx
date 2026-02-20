@@ -434,7 +434,7 @@ export default function CommunicationsAdmin() {
         description={isAr ? "عرض والرد على جميع رسائل الشركات مع التحليلات والعلامات" : "View and respond to company messages with analytics, tags & notes"}
         actions={
           <Button onClick={() => setComposeOpen(true)}>
-            <Plus className="mr-2 h-4 w-4" />
+            <Plus className="me-2 h-4 w-4" />
             {isAr ? "رسالة جديدة" : "New Message"}
           </Button>
         }
@@ -485,15 +485,15 @@ export default function CommunicationsAdmin() {
                 </span>
                 <div className="flex items-center gap-2">
                   <Button variant="outline" size="sm" onClick={() => bulkMarkReadMutation.mutate()}>
-                    <Eye className="mr-1 h-3.5 w-3.5" />
+                    <Eye className="me-1 h-3.5 w-3.5" />
                     {isAr ? "قراءة" : "Mark Read"}
                   </Button>
                   <Button variant="outline" size="sm" onClick={() => bulkArchiveMutation.mutate()}>
-                    <Archive className="mr-1 h-3.5 w-3.5" />
+                    <Archive className="me-1 h-3.5 w-3.5" />
                     {isAr ? "أرشفة" : "Archive"}
                   </Button>
                   <Button variant="destructive" size="sm" onClick={() => bulkDeleteMutation.mutate()}>
-                    <Trash2 className="mr-1 h-3.5 w-3.5" />
+                    <Trash2 className="me-1 h-3.5 w-3.5" />
                     {isAr ? "حذف" : "Delete"}
                   </Button>
                   <Button variant="ghost" size="sm" onClick={() => setSelectedIds(new Set())}>
@@ -532,14 +532,14 @@ export default function CommunicationsAdmin() {
               </SelectContent>
             </Select>
             <Select value={tagFilter} onValueChange={setTagFilter}>
-              <SelectTrigger className="w-[140px]"><Tag className="mr-1 h-3.5 w-3.5" /><SelectValue /></SelectTrigger>
+              <SelectTrigger className="w-[140px]"><Tag className="me-1 h-3.5 w-3.5" /><SelectValue /></SelectTrigger>
               <SelectContent>
                 <SelectItem value="all">{isAr ? "كل العلامات" : "All Tags"}</SelectItem>
                 {TAG_OPTIONS.map((t) => <SelectItem key={t.value} value={t.value}>{isAr ? t.labelAr : t.label}</SelectItem>)}
               </SelectContent>
             </Select>
             <Button variant={showArchived ? "secondary" : "outline"} size="sm" className="h-10" onClick={() => setShowArchived(!showArchived)}>
-              <Archive className="mr-1 h-3.5 w-3.5" />
+              <Archive className="me-1 h-3.5 w-3.5" />
               {isAr ? "الأرشيف" : "Archive"}
             </Button>
           </div>
@@ -625,13 +625,13 @@ export default function CommunicationsAdmin() {
                         <CardTitle>{selectedMessage.subject}</CardTitle>
                         <div className="mt-2 flex flex-wrap items-center gap-2 text-sm text-muted-foreground">
                           <Badge variant="outline">
-                            <Building2 className="mr-1 h-3 w-3" />
+                          <Building2 className="me-1 h-3 w-3" />
                             {(() => { const c = companyMap.get(selectedMessage.company_id); return c ? (isAr && c.name_ar ? c.name_ar : c.name) : "Unknown"; })()}
                           </Badge>
                           {selectedMessage.direction === "outgoing" ? (
-                            <Badge variant="outline"><ArrowDownLeft className="mr-1 h-3 w-3" />{isAr ? "من الشركة" : "From Company"}</Badge>
+                            <Badge variant="outline"><ArrowDownLeft className="me-1 h-3 w-3" />{isAr ? "من الشركة" : "From Company"}</Badge>
                           ) : (
-                            <Badge variant="outline"><ArrowUpRight className="mr-1 h-3 w-3" />{isAr ? "من الإدارة" : "From Admin"}</Badge>
+                            <Badge variant="outline"><ArrowUpRight className="me-1 h-3 w-3" />{isAr ? "من الإدارة" : "From Admin"}</Badge>
                           )}
                           {getPriorityBadge(selectedMessage.priority)}
                           <span>{format(new Date(selectedMessage.created_at), "yyyy-MM-dd HH:mm")}</span>
