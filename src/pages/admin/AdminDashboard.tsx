@@ -1,3 +1,4 @@
+import { useMemo } from "react";
 import { Link } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { AdminAnalyticsWidgets } from "@/components/admin/AdminAnalyticsWidgets";
@@ -108,7 +109,7 @@ export default function AdminDashboard() {
     staleTime: 1000 * 60,
   });
 
-  const statCards = [
+  const statCards = useMemo(() => [
     { title: isAr ? "إجمالي المستخدمين" : "Total Users", value: stats?.totalUsers || 0, icon: Users, accent: "border-s-primary", bg: "bg-primary/10", color: "text-primary", link: "/admin/users" },
     { title: isAr ? "المستخدمين النشطين" : "Active Users", value: stats?.activeUsers || 0, icon: UserCheck, accent: "border-s-primary", bg: "bg-primary/10", color: "text-primary", link: "/admin/users?status=active" },
     { title: isAr ? "تقارير معلقة" : "Pending Reports", value: stats?.pendingReports || 0, icon: Flag, accent: "border-s-destructive", bg: "bg-destructive/10", color: "text-destructive", link: "/admin/moderation", urgent: (stats?.pendingReports || 0) > 0 },
@@ -117,14 +118,14 @@ export default function AdminDashboard() {
     { title: isAr ? "الدورات" : "Masterclasses", value: stats?.totalMasterclasses || 0, icon: GraduationCap, accent: "border-s-primary", bg: "bg-primary/10", color: "text-primary", link: "/admin/masterclasses" },
     { title: isAr ? "المقالات" : "Articles", value: stats?.totalArticles || 0, icon: FileText, accent: "border-s-primary", bg: "bg-primary/10", color: "text-primary", link: "/admin/articles" },
     { title: isAr ? "الطلبات" : "Orders", value: stats?.totalOrders || 0, icon: Package, accent: "border-s-primary", bg: "bg-primary/10", color: "text-primary", link: "/admin/orders" },
-  ];
+  ], [stats, isAr]);
 
-  const quickActions = [
+  const quickActions = useMemo(() => [
     { title: isAr ? "إدارة المستخدمين" : "User Management", description: isAr ? "عرض وتعديل جميع المستخدمين" : "View and edit all users", icon: Users, link: "/admin/users" },
     { title: isAr ? "إدارة الأدوار" : "Role Management", description: isAr ? "تعيين وإدارة صلاحيات المستخدمين" : "Assign and manage user permissions", icon: Shield, link: "/admin/roles" },
     { title: isAr ? "العضويات" : "Memberships", description: isAr ? "ترقية وتخفيض عضويات المستخدمين" : "Upgrade and downgrade memberships", icon: CreditCard, link: "/admin/memberships" },
     { title: isAr ? "مراجعة المحتوى" : "Content Moderation", description: isAr ? "مراجعة التقارير والمحتوى المُبلغ عنه" : "Review reports and flagged content", icon: Flag, link: "/admin/moderation", badge: stats?.pendingReports },
-  ];
+  ], [isAr, stats?.pendingReports]);
 
   const getActionBadge = (actionType: string) => {
     const colors: Record<string, string> = {

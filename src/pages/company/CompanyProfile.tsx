@@ -1,3 +1,4 @@
+import React from "react";
 import { useCompanyAccess, useCompanyProfile } from "@/hooks/useCompanyAccess";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -264,7 +265,7 @@ export default function CompanyProfile() {
   );
 }
 
-function InfoRow({
+const InfoRow = React.memo(function InfoRow({
   icon: Icon,
   label,
   value,
@@ -293,4 +294,4 @@ function InfoRow({
       </div>
     </div>
   );
-}
+});
