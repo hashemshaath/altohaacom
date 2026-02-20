@@ -12,29 +12,27 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 import { toast } from "@/hooks/use-toast";
 import {
   Calendar, MapPin, Globe, ExternalLink, Bell, BellOff,
-  Clock, Users, Tag, Building, Phone, Mail, ArrowLeft,
-  Share2, Ticket, Trophy, Landmark, Timer, Flag,
-  ChevronRight, ChevronDown, Star, Target, Award, Mic2, Pencil,
-  CheckCircle2, ImageIcon, Twitter, Facebook, Linkedin, Link2,
+  Clock, Users, Tag, Building, Ticket, Trophy, Landmark, Timer,
+  ChevronDown, Star, Target, Award, Pencil,
+  ImageIcon,
 } from "lucide-react";
 import { SEOHead } from "@/components/SEOHead";
 import { toEnglishDigits } from "@/lib/formatNumber";
 import { ImageLightbox } from "@/components/competitions/ImageLightbox";
 import { countryFlag as getCountryFlagUtil } from "@/lib/countryFlag";
 import { format, isPast, isFuture, isWithinInterval, differenceInDays } from "date-fns";
-import { useState, useEffect, useMemo } from "react";
+import { useState, useMemo } from "react";
 import { QRCodeDisplay } from "@/components/qr/QRCodeDisplay";
 import { useEntityQRCode } from "@/hooks/useQRCode";
+
+// Detail sub-components
+import { ExhibitionHero } from "@/components/exhibitions/detail/ExhibitionHero";
+import { CountdownTimer } from "@/components/exhibitions/detail/CountdownTimer";
+import { ExhibitionCompetitionsTab } from "@/components/exhibitions/detail/ExhibitionCompetitionsTab";
+import { ExhibitionPeopleTab } from "@/components/exhibitions/detail/ExhibitionPeopleTab";
 import { ExhibitionDayIndicator } from "@/components/exhibitions/detail/ExhibitionDayIndicator";
 import { ExhibitionMapEmbed } from "@/components/exhibitions/detail/ExhibitionMapEmbed";
 import { ExhibitionRegistrationStatus } from "@/components/exhibitions/detail/ExhibitionRegistrationStatus";
@@ -44,24 +42,21 @@ import { ExhibitionContactCard } from "@/components/exhibitions/detail/Exhibitio
 
 /* ---------- types ---------- */
 interface ScheduleDay {
-  day?: string;
-  day_ar?: string;
-  title?: string;
-  title_ar?: string;
-  items?: ScheduleItem[];
-  events?: ScheduleItem[];
-  time?: string;
-  description?: string;
-  description_ar?: string;
+  day?: string; day_ar?: string; title?: string; title_ar?: string;
+  items?: ScheduleItem[]; events?: ScheduleItem[];
+  time?: string; description?: string; description_ar?: string;
 }
-
 interface ScheduleItem {
-  time?: string;
-  title?: string;
-  title_ar?: string;
-  description?: string;
-  description_ar?: string;
+  time?: string; title?: string; title_ar?: string;
+  description?: string; description_ar?: string;
 }
+interface Speaker {
+  name?: string; name_ar?: string; title?: string; title_ar?: string;
+  role?: string; role_ar?: string; topic?: string; topic_ar?: string;
+  image_url?: string; country?: string;
+}
+interface SponsorInfo { name?: string; name_ar?: string; tier?: string; logo_url?: string; }
+interface Section { name?: string; name_ar?: string; description?: string; description_ar?: string; }
 
 const typeLabels: Record<string, { en: string; ar: string }> = {
   exhibition: { en: "Exhibition", ar: "معرض" },
@@ -73,40 +68,11 @@ const typeLabels: Record<string, { en: string; ar: string }> = {
   competition_event: { en: "Competition Event", ar: "حدث تنافسي" },
 };
 
-interface Speaker {
-  name?: string;
-  name_ar?: string;
-  title?: string;
-  title_ar?: string;
-  role?: string;
-  role_ar?: string;
-  topic?: string;
-  topic_ar?: string;
-  image_url?: string;
-  country?: string;
-}
-
-interface SponsorInfo {
-  name?: string;
-  name_ar?: string;
-  tier?: string;
-  logo_url?: string;
-}
-
-interface Section {
-  name?: string;
-  name_ar?: string;
-  description?: string;
-  description_ar?: string;
-}
-
-/* ---------- country flag helper ---------- */
 function getCountryFlag(country?: string): string {
   if (!country) return "🏳️";
   return getCountryFlagUtil(country) || "🏳️";
 }
 
-/* ---------- Tier Config ---------- */
 const TIER_CONFIG: Record<string, { icon: typeof Star; gradient: string; label: string; labelAr: string; order: number }> = {
   patron: { icon: Award, gradient: "from-chart-4/20 to-chart-4/5", label: "Patron", labelAr: "راعي رسمي", order: 0 },
   platinum: { icon: Star, gradient: "from-chart-3/20 to-chart-3/5", label: "Platinum", labelAr: "بلاتيني", order: 1 },
@@ -115,46 +81,6 @@ const TIER_CONFIG: Record<string, { icon: typeof Star; gradient: string; label: 
   silver: { icon: Star, gradient: "from-muted-foreground/20 to-muted-foreground/5", label: "Silver", labelAr: "فضي", order: 4 },
   bronze: { icon: Star, gradient: "from-chart-2/20 to-chart-2/5", label: "Bronze", labelAr: "برونزي", order: 5 },
 };
-
-/* ---------- Countdown ---------- */
-function CountdownTimer({ targetDate, isAr }: { targetDate: Date; isAr: boolean }) {
-  const [now, setNow] = useState(new Date());
-  useEffect(() => {
-    const id = setInterval(() => setNow(new Date()), 1000);
-    return () => clearInterval(id);
-  }, []);
-
-  if (isPast(targetDate)) return null;
-
-  const totalSeconds = Math.max(0, Math.floor((targetDate.getTime() - now.getTime()) / 1000));
-  const days = Math.floor(totalSeconds / 86400);
-  const hours = Math.floor((totalSeconds % 86400) / 3600);
-  const minutes = Math.floor((totalSeconds % 3600) / 60);
-  const seconds = totalSeconds % 60;
-
-  const units = [
-    { value: days, label: isAr ? "يوم" : "Days" },
-    { value: hours, label: isAr ? "ساعة" : "Hours" },
-    { value: minutes, label: isAr ? "دقيقة" : "Min" },
-    { value: seconds, label: isAr ? "ثانية" : "Sec" },
-  ];
-
-  return (
-    <div className="flex items-center justify-center gap-3 py-2 sm:gap-6">
-      {units.map((u, i) => (
-        <div key={i} className="flex flex-col items-center">
-          <div className="group relative flex h-16 w-16 items-center justify-center rounded-2xl border border-primary/20 bg-gradient-to-b from-background to-primary/5 shadow-inner transition-all hover:scale-105 hover:border-primary/40 sm:h-24 sm:w-24">
-            <span className="font-mono text-2xl font-bold tracking-tighter text-primary drop-shadow-sm sm:text-4xl">
-              {String(u.value).padStart(2, "0")}
-            </span>
-            <div className="absolute inset-x-0 top-1/2 h-px bg-primary/10" />
-          </div>
-          <span className="mt-2 text-[9px] font-bold uppercase tracking-[0.15em] text-muted-foreground/80 sm:mt-3 sm:text-[10px] sm:tracking-[0.2em]">{u.label}</span>
-        </div>
-      ))}
-    </div>
-  );
-}
 
 /* ---------- main ---------- */
 export default function ExhibitionDetail() {
@@ -167,14 +93,11 @@ export default function ExhibitionDetail() {
   const [lightboxOpen, setLightboxOpen] = useState(false);
   const [lightboxIndex, setLightboxIndex] = useState(0);
 
+  // --- Queries ---
   const { data: exhibition, isLoading } = useQuery({
     queryKey: ["exhibition", slug],
     queryFn: async () => {
-      const { data, error } = await supabase
-        .from("exhibitions")
-        .select("*")
-        .eq("slug", slug!)
-        .maybeSingle();
+      const { data, error } = await supabase.from("exhibitions").select("*").eq("slug", slug!).maybeSingle();
       if (error) throw error;
       if (!data) throw new Error("Exhibition not found");
       return data;
@@ -187,12 +110,7 @@ export default function ExhibitionDetail() {
     queryKey: ["exhibition-follow", exhibition?.id, user?.id],
     queryFn: async () => {
       if (!user || !exhibition) return false;
-      const { data } = await supabase
-        .from("exhibition_followers")
-        .select("id")
-        .eq("exhibition_id", exhibition.id)
-        .eq("user_id", user.id)
-        .maybeSingle();
+      const { data } = await supabase.from("exhibition_followers").select("id").eq("exhibition_id", exhibition.id).eq("user_id", user.id).maybeSingle();
       return !!data;
     },
     enabled: !!user && !!exhibition,
@@ -202,10 +120,7 @@ export default function ExhibitionDetail() {
     queryKey: ["exhibition-followers-count", exhibition?.id],
     queryFn: async () => {
       if (!exhibition) return 0;
-      const { count } = await supabase
-        .from("exhibition_followers")
-        .select("id", { count: "exact", head: true })
-        .eq("exhibition_id", exhibition.id);
+      const { count } = await supabase.from("exhibition_followers").select("id", { count: "exact", head: true }).eq("exhibition_id", exhibition.id);
       return count || 0;
     },
     enabled: !!exhibition,
@@ -218,14 +133,7 @@ export default function ExhibitionDetail() {
       if (!exhibition) return [];
       const { data, error } = await supabase
         .from("competitions")
-        .select(`
-          id, title, title_ar, status, competition_start, competition_end, 
-          cover_image_url, city, country, is_virtual, registration_start, registration_end,
-          max_participants, description, description_ar,
-          competition_categories(id, name, name_ar, max_participants),
-          competition_registrations(id),
-          competition_judges(id, judge_id)
-        `)
+        .select(`id, title, title_ar, status, competition_start, competition_end, cover_image_url, city, country, is_virtual, registration_start, registration_end, max_participants, description, description_ar, competition_categories(id, name, name_ar, max_participants), competition_registrations(id), competition_judges(id, judge_id)`)
         .eq("exhibition_id", exhibition.id)
         .order("competition_start", { ascending: true });
       if (error) throw error;
@@ -234,50 +142,34 @@ export default function ExhibitionDetail() {
     enabled: !!exhibition,
   });
 
-  // Fetch winning dishes (scored registrations with dish info)
   const competitionIds = useMemo(() => linkedCompetitions?.map((c: any) => c.id) || [], [linkedCompetitions]);
-  
+
   const { data: winningDishes } = useQuery({
     queryKey: ["exhibition-winning-dishes", competitionIds],
     queryFn: async () => {
       if (competitionIds.length === 0) return [];
-      // Get registrations with scores for these competitions
       const { data: regs, error } = await supabase
         .from("competition_registrations")
-        .select(`
-          id, dish_name, dish_description, dish_image_url, competition_id, participant_id, entry_type, team_name, team_name_ar,
-          competition_scores(score, criteria_id)
-        `)
+        .select(`id, dish_name, dish_description, dish_image_url, competition_id, participant_id, entry_type, team_name, team_name_ar, competition_scores(score, criteria_id)`)
         .in("competition_id", competitionIds)
         .eq("status", "approved")
         .not("dish_name", "is", null);
       if (error) throw error;
-      
-      // Calculate total scores and filter those with scores
+
       const scored = (regs || [])
-        .map((r: any) => ({
-          ...r,
-          totalScore: (r.competition_scores || []).reduce((sum: number, s: any) => sum + Number(s.score || 0), 0),
-          scoreCount: (r.competition_scores || []).length,
-        }))
+        .map((r: any) => ({ ...r, totalScore: (r.competition_scores || []).reduce((sum: number, s: any) => sum + Number(s.score || 0), 0), scoreCount: (r.competition_scores || []).length }))
         .filter((r: any) => r.scoreCount > 0)
         .sort((a: any, b: any) => b.totalScore - a.totalScore);
-      
-      // Get participant profiles
+
       const participantIds = [...new Set(scored.map((r: any) => r.participant_id))];
       if (participantIds.length > 0) {
-        const { data: profiles } = await supabase
-          .from("profiles")
-          .select("user_id, full_name, username, avatar_url")
-          .in("user_id", participantIds);
+        const { data: profiles } = await supabase.from("profiles").select("user_id, full_name, username, avatar_url").in("user_id", participantIds);
         const profileMap = new Map((profiles || []).map(p => [p.user_id, p]));
         scored.forEach((r: any) => { r.participant = profileMap.get(r.participant_id) || null; });
       }
-      
-      // Attach competition title
+
       const compMap = new Map(linkedCompetitions!.map((c: any) => [c.id, c]));
       scored.forEach((r: any) => { r.competition = compMap.get(r.competition_id) || null; });
-      
       return scored;
     },
     enabled: competitionIds.length > 0,
@@ -286,9 +178,7 @@ export default function ExhibitionDetail() {
   const allJudgeIds = useMemo(() => {
     if (!linkedCompetitions) return [];
     const ids = new Set<string>();
-    linkedCompetitions.forEach((c: any) => {
-      c.competition_judges?.forEach((j: any) => ids.add(j.judge_id));
-    });
+    linkedCompetitions.forEach((c: any) => { c.competition_judges?.forEach((j: any) => ids.add(j.judge_id)); });
     return Array.from(ids);
   }, [linkedCompetitions]);
 
@@ -296,21 +186,10 @@ export default function ExhibitionDetail() {
     queryKey: ["exhibition-judge-profiles", allJudgeIds],
     queryFn: async () => {
       if (allJudgeIds.length === 0) return [];
-      const { data: profiles } = await supabase
-        .from("profiles")
-        .select("user_id, full_name, username, avatar_url, specialization, is_verified, location, bio")
-        .in("user_id", allJudgeIds);
-
-      const { data: judgeExtras } = await supabase
-        .from("judge_profiles")
-        .select("user_id, judge_title, judge_title_ar, judge_category, judge_level, nationality, profile_photo_url, current_position, current_employer")
-        .in("user_id", allJudgeIds);
-
+      const { data: profiles } = await supabase.from("profiles").select("user_id, full_name, username, avatar_url, specialization, is_verified, location, bio").in("user_id", allJudgeIds);
+      const { data: judgeExtras } = await supabase.from("judge_profiles").select("user_id, judge_title, judge_title_ar, judge_category, judge_level, nationality, profile_photo_url, current_position, current_employer").in("user_id", allJudgeIds);
       const extrasMap = new Map(judgeExtras?.map(j => [j.user_id, j]) || []);
-      return (profiles || []).map(p => ({
-        ...p,
-        judgeExtra: extrasMap.get(p.user_id) || null,
-      }));
+      return (profiles || []).map(p => ({ ...p, judgeExtra: extrasMap.get(p.user_id) || null }));
     },
     enabled: allJudgeIds.length > 0,
   });
@@ -329,9 +208,7 @@ export default function ExhibitionDetail() {
       queryClient.invalidateQueries({ queryKey: ["exhibition-followers-count"] });
       toast({
         title: isFollowing ? (isAr ? "تم إلغاء المتابعة" : "Unfollowed") : (isAr ? "تم المتابعة" : "Following"),
-        description: isFollowing
-          ? (isAr ? "لن تتلقى إشعارات بعد الآن" : "You won't receive updates anymore")
-          : (isAr ? "ستتلقى إشعارات حول هذا الحدث" : "You'll receive updates about this event"),
+        description: isFollowing ? (isAr ? "لن تتلقى إشعارات بعد الآن" : "You won't receive updates anymore") : (isAr ? "ستتلقى إشعارات حول هذا الحدث" : "You'll receive updates about this event"),
       });
     },
   });
@@ -347,14 +224,8 @@ export default function ExhibitionDetail() {
           <Skeleton className="mb-4 h-8 w-32 rounded-md" />
           <Skeleton className="mb-8 h-64 w-full rounded-2xl md:h-80" />
           <div className="grid gap-8 lg:grid-cols-3">
-            <div className="space-y-4 lg:col-span-2">
-              <Skeleton className="h-10 w-full rounded-lg" />
-              <Skeleton className="h-40 w-full rounded-lg" />
-            </div>
-            <div className="space-y-4">
-              <Skeleton className="h-44 w-full rounded-xl" />
-              <Skeleton className="h-56 w-full rounded-xl" />
-            </div>
+            <div className="space-y-4 lg:col-span-2"><Skeleton className="h-10 w-full rounded-lg" /><Skeleton className="h-40 w-full rounded-lg" /></div>
+            <div className="space-y-4"><Skeleton className="h-44 w-full rounded-xl" /><Skeleton className="h-56 w-full rounded-xl" /></div>
           </div>
         </main>
         <Footer />
@@ -371,14 +242,8 @@ export default function ExhibitionDetail() {
             <Landmark className="h-8 w-8 text-muted-foreground/40" />
           </div>
           <p className="text-lg font-semibold">{isAr ? "الحدث غير موجود" : "Event not found"}</p>
-          <p className="mt-1 text-sm text-muted-foreground">
-            {isAr ? "قد يكون قد تم حذفه أو نقله" : "It may have been removed or moved"}
-          </p>
           <Button variant="outline" className="mt-4" asChild>
-            <Link to="/exhibitions">
-              <ArrowLeft className="me-2 h-4 w-4" />
-              {isAr ? "العودة للفعاليات" : "Back to Events"}
-            </Link>
+            <Link to="/exhibitions"><Calendar className="me-2 h-4 w-4" />{isAr ? "العودة للفعاليات" : "Back to Events"}</Link>
           </Button>
         </main>
         <Footer />
@@ -407,40 +272,20 @@ export default function ExhibitionDetail() {
   const tags = (exhibition.tags as string[]) || [];
   const galleryUrls = (exhibition.gallery_urls as string[]) || [];
 
-  const totalDays = differenceInDays(end, start) + 1;
   const countryFlag = getCountryFlag(exhibition.country || undefined);
-
-  const sortedSponsors = [...sponsorsInfo].sort((a, b) => {
-    const orderA = TIER_CONFIG[a.tier || ""]?.order ?? 99;
-    const orderB = TIER_CONFIG[b.tier || ""]?.order ?? 99;
-    return orderA - orderB;
-  });
-
-  const sponsorsByTier = sortedSponsors.reduce<Record<string, SponsorInfo[]>>((acc, s) => {
-    const tier = s.tier || "other";
-    if (!acc[tier]) acc[tier] = [];
-    acc[tier].push(s);
-    return acc;
-  }, {});
+  const sortedSponsors = [...sponsorsInfo].sort((a, b) => (TIER_CONFIG[a.tier || ""]?.order ?? 99) - (TIER_CONFIG[b.tier || ""]?.order ?? 99));
+  const sponsorsByTier = sortedSponsors.reduce<Record<string, SponsorInfo[]>>((acc, s) => { const tier = s.tier || "other"; if (!acc[tier]) acc[tier] = []; acc[tier].push(s); return acc; }, {});
 
   const organizerLogoUrl = (exhibition as any).organizer_logo_url || exhibition.logo_url;
   const isOwner = user && exhibition.created_by === user.id;
-  
 
   const hasWinningDishes = winningDishes && winningDishes.length > 0;
-
-  // Count content for tab badges
   const hasCompetitions = linkedCompetitions && linkedCompetitions.length > 0;
   const hasSchedule = schedule.length > 0;
   const hasJudges = judgeProfiles && judgeProfiles.length > 0;
   const hasSpeakers = speakers.length > 0;
   const hasGallery = galleryUrls.length > 0;
   const hasSponsors = sortedSponsors.length > 0;
-
-  // Classify competitions by status
-  const liveCompetitions = linkedCompetitions?.filter((c: any) => isWithinInterval(now, { start: new Date(c.competition_start), end: new Date(c.competition_end) })) || [];
-  const upcomingCompetitions = linkedCompetitions?.filter((c: any) => isFuture(new Date(c.competition_start))) || [];
-  const pastCompetitions = linkedCompetitions?.filter((c: any) => isPast(new Date(c.competition_end))) || [];
 
   return (
     <div className="flex min-h-screen flex-col overflow-x-hidden bg-background">
@@ -450,196 +295,30 @@ export default function ExhibitionDetail() {
         ogImage={exhibition.cover_image_url || undefined}
         ogType="article"
         jsonLd={{
-          "@context": "https://schema.org",
-          "@type": "Event",
-          name: title,
-          description: description || undefined,
-          startDate: exhibition.start_date,
-          endDate: exhibition.end_date,
-          location: exhibition.is_virtual
-            ? { "@type": "VirtualLocation" }
-            : { "@type": "Place", name: venue || undefined, address: { "@type": "PostalAddress", addressLocality: exhibition.city, addressCountry: exhibition.country } },
+          "@context": "https://schema.org", "@type": "Event", name: title,
+          description: description || undefined, startDate: exhibition.start_date, endDate: exhibition.end_date,
+          location: exhibition.is_virtual ? { "@type": "VirtualLocation" } : { "@type": "Place", name: venue || undefined, address: { "@type": "PostalAddress", addressLocality: exhibition.city, addressCountry: exhibition.country } },
           image: exhibition.cover_image_url || undefined,
           organizer: organizer ? { "@type": "Organization", name: organizer } : undefined,
         }}
       />
       <Header />
 
-      {/* ======== HERO SECTION ======== */}
-      <div className="relative overflow-hidden bg-background">
-        <div className="relative aspect-[16/9] max-h-[520px] w-full overflow-hidden sm:aspect-[21/9] md:max-h-[480px]">
-          {exhibition.cover_image_url ? (
-            <img 
-              src={exhibition.cover_image_url} 
-              alt={title} 
-              className="h-full w-full object-cover" 
-              loading="eager" 
-            />
-          ) : (
-            <div className="h-full w-full bg-gradient-to-br from-primary/15 via-accent/8 to-background" />
-          )}
-          
-          {/* Multi-layered gradients for text legibility */}
-          <div className="absolute inset-0 bg-gradient-to-t from-background via-background/50 to-transparent" />
-          <div className="absolute inset-0 bg-gradient-to-r from-background/80 via-background/20 to-transparent rtl:bg-gradient-to-l" />
-          <div className="absolute inset-0 bg-black/15" />
-          
-          <div className="absolute inset-0 container flex flex-col justify-end pb-6 sm:pb-8 md:pb-16">
-            <div className="max-w-4xl space-y-4 sm:space-y-6">
-              <Button 
-                variant="ghost" 
-                size="sm" 
-                className="group -ms-2 w-fit text-white/90 hover:bg-white/10 hover:text-white backdrop-blur-sm" 
-                asChild
-              >
-                <Link to="/exhibitions">
-                  <ArrowLeft className="me-2 h-4 w-4" />
-                  {isAr ? "جميع الفعاليات" : "All Events"}
-                </Link>
-              </Button>
-
-              <div className="space-y-4">
-                <div className="flex flex-wrap items-center gap-3">
-                  <Badge variant="secondary" className="bg-primary/20 text-primary border-primary/30 backdrop-blur-md font-bold uppercase tracking-wider text-[10px] px-3 py-1">
-                    {isAr ? typeLabels[exhibition.type].ar : typeLabels[exhibition.type].en}
-                  </Badge>
-                  
-                  {isHappening && (
-                    <Badge className="bg-chart-3 text-chart-3-foreground border-none shadow-lg shadow-chart-3/20 animate-pulse font-bold uppercase tracking-wider text-[10px] px-3 py-1">
-                      {isAr ? "🔴 مباشر الآن" : "🔴 Live Now"}
-                    </Badge>
-                  )}
-                  
-                  {isUpcoming && (
-                    <Badge className="bg-primary text-primary-foreground border-none shadow-lg shadow-primary/20 font-bold uppercase tracking-wider text-[10px] px-3 py-1">
-                      {isAr ? "قادم" : "Upcoming"}
-                    </Badge>
-                  )}
-                  
-                  <Badge variant="outline" className="bg-white/10 text-white border-white/20 backdrop-blur-md font-bold text-[10px] px-3 py-1">
-                    <MapPin className="me-1.5 h-3 w-3" />
-                    {exhibition.city}{exhibition.country && `, ${exhibition.country}`}
-                  </Badge>
-                </div>
-
-                <h1 className="font-serif text-2xl font-bold leading-[1.1] tracking-tight sm:text-4xl md:text-5xl lg:text-6xl text-white drop-shadow-2xl">
-                  {title} <span className="text-primary italic">{new Date(exhibition.start_date).getFullYear()}</span>
-                </h1>
-
-                <div className="flex flex-wrap items-center gap-3 sm:gap-6 text-xs sm:text-sm md:text-base text-white/90">
-                  <div className="flex items-center gap-2">
-                    <div className="flex h-8 w-8 items-center justify-center rounded-full bg-white/10 backdrop-blur-md">
-                      <Calendar className="h-4 w-4" />
-                    </div>
-                    <span className="font-medium">
-                      {format(start, "MMMM d")} – {format(end, "MMMM d, yyyy")}
-                    </span>
-                  </div>
-                  
-                  {!exhibition.is_virtual && venue && (
-                    <div className="flex items-center gap-2">
-                      <div className="flex h-8 w-8 items-center justify-center rounded-full bg-white/10 backdrop-blur-md">
-                        <MapPin className="h-4 w-4" />
-                      </div>
-                      <span className="font-medium opacity-90">{venue}</span>
-                    </div>
-                  )}
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Floating Actions Bar */}
-        <div className="border-y border-border/40 bg-card/80 backdrop-blur-md">
-          <div className="container py-4">
-            <div className="flex flex-wrap items-center justify-between gap-4">
-              <div className="flex items-center gap-4">
-                {organizer && (
-                  <div className="flex items-center gap-3">
-                    <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-primary/5 ring-1 ring-primary/10">
-                      {organizerLogoUrl ? (
-                        <img src={organizerLogoUrl} alt={organizer} className="h-8 w-8 object-contain" />
-                      ) : (
-                        <Building className="h-5 w-5 text-primary" />
-                      )}
-                    </div>
-                    <div className="hidden sm:block">
-                      <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">{isAr ? "المنظم" : "Organized by"}</p>
-                      <p className="text-sm font-bold text-foreground">{organizer}</p>
-                    </div>
-                  </div>
-                )}
-                <Separator orientation="vertical" className="h-8 hidden sm:block" />
-                <div className="flex items-center gap-4">
-                  <div className="text-center">
-                    <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">{isAr ? "المتابعين" : "Followers"}</p>
-                    <p className="text-sm font-bold text-foreground">{followerCount || 0}</p>
-                  </div>
-                  <div className="text-center">
-                    <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">{isAr ? "المسابقات" : "Competitions"}</p>
-                    <p className="text-sm font-bold text-foreground">{linkedCompetitions?.length || 0}</p>
-                  </div>
-                </div>
-              </div>
-
-              <div className="flex items-center gap-3">
-                <DropdownMenu>
-                  <DropdownMenuTrigger asChild>
-                    <Button variant="outline" size="sm" className="h-10 rounded-xl px-4 font-bold border-border/60 hover:bg-muted/80">
-                      <Share2 className="me-2 h-4 w-4" />
-                      {isAr ? "مشاركة" : "Share"}
-                    </Button>
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent align="end" className="w-56 rounded-xl border-border/40 p-2">
-                    <DropdownMenuItem className="cursor-pointer gap-3 rounded-lg py-2.5 font-medium" onClick={() => {
-                      const text = encodeURIComponent(`${title} - ${isAr ? "فعالية على التوحاء" : "Event on Altoha"}`);
-                      const url = encodeURIComponent(window.location.href);
-                      window.open(`https://twitter.com/intent/tweet?text=${text}&url=${url}`, "_blank", "width=600,height=400");
-                    }}>
-                      <div className="flex h-8 w-8 items-center justify-center rounded-full bg-black/5"><Twitter className="h-4 w-4" /></div> Twitter / X
-                    </DropdownMenuItem>
-                    <DropdownMenuItem className="cursor-pointer gap-3 rounded-lg py-2.5 font-medium" onClick={() => {
-                      window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(window.location.href)}`, "_blank", "width=600,height=400");
-                    }}>
-                      <div className="flex h-8 w-8 items-center justify-center rounded-full bg-primary/10 text-primary"><Facebook className="h-4 w-4" /></div> Facebook
-                    </DropdownMenuItem>
-                    <DropdownMenuItem className="cursor-pointer gap-3 rounded-lg py-2.5 font-medium" onClick={() => {
-                      window.open(`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(window.location.href)}`, "_blank", "width=600,height=400");
-                    }}>
-                      <div className="flex h-8 w-8 items-center justify-center rounded-full bg-primary/10 text-primary"><Linkedin className="h-4 w-4" /></div> LinkedIn
-                    </DropdownMenuItem>
-                    <DropdownMenuItem className="cursor-pointer gap-3 rounded-lg py-2.5 font-medium" onClick={() => {
-                      navigator.clipboard.writeText(window.location.href);
-                      toast({ title: isAr ? "تم نسخ الرابط!" : "Link copied!" });
-                    }}>
-                      <div className="flex h-8 w-8 items-center justify-center rounded-full bg-muted"><Link2 className="h-4 w-4" /></div> {isAr ? "نسخ الرابط" : "Copy Link"}
-                    </DropdownMenuItem>
-                  </DropdownMenuContent>
-                </DropdownMenu>
-
-                {isOwner && (
-                  <Button variant="outline" size="sm" className="h-10 rounded-xl px-4 font-bold border-border/60 hover:bg-muted/80" asChild>
-                    <Link to={`/exhibitions/${exhibition.slug}/edit`}>
-                      <Pencil className="me-2 h-4 w-4" />
-                      {isAr ? "تعديل" : "Edit"}
-                    </Link>
-                  </Button>
-                )}
-                
-                {exhibition.registration_url && !hasEnded && (
-                  <Button className="h-10 rounded-xl px-6 font-bold shadow-lg shadow-primary/20" asChild>
-                    <a href={exhibition.registration_url} target="_blank" rel="noopener noreferrer">
-                      <Ticket className="me-2 h-4 w-4" />
-                      {isAr ? "سجل الآن" : "Register Now"}
-                    </a>
-                  </Button>
-                )}
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
+      {/* ======== HERO ======== */}
+      <ExhibitionHero
+        exhibition={exhibition}
+        title={title}
+        venue={venue}
+        organizer={organizer}
+        organizerLogoUrl={organizerLogoUrl}
+        isHappening={isHappening}
+        isUpcoming={isUpcoming}
+        hasEnded={hasEnded}
+        isOwner={!!isOwner}
+        followerCount={followerCount || 0}
+        linkedCompetitionsCount={linkedCompetitions?.length || 0}
+        isAr={isAr}
+      />
 
       <main className="container flex-1 py-6 md:py-8">
         {/* Mobile CTA + key details */}
@@ -647,105 +326,31 @@ export default function ExhibitionDetail() {
           {exhibition.registration_url && !hasEnded && (
             <Button className="w-full" asChild>
               <a href={exhibition.registration_url} target="_blank" rel="noopener noreferrer">
-                <Ticket className="me-2 h-4 w-4" />
-                {isAr ? "سجل الآن" : "Register Now"}
+                <Ticket className="me-2 h-4 w-4" />{isAr ? "سجل الآن" : "Register Now"}
               </a>
             </Button>
           )}
           {user && (
-            <Button
-              variant={isFollowing ? "outline" : "secondary"}
-              className="w-full"
-              onClick={() => toggleFollow.mutate()}
-              disabled={toggleFollow.isPending}
-            >
-              {isFollowing ? (
-                <><BellOff className="me-2 h-4 w-4" />{isAr ? "إلغاء المتابعة" : "Unfollow"}</>
-              ) : (
-                <><Bell className="me-2 h-4 w-4" />{isAr ? "تابع للإشعارات" : "Follow for Updates"}</>
-              )}
+            <Button variant={isFollowing ? "outline" : "secondary"} className="w-full" onClick={() => toggleFollow.mutate()} disabled={toggleFollow.isPending}>
+              {isFollowing ? (<><BellOff className="me-2 h-4 w-4" />{isAr ? "إلغاء المتابعة" : "Unfollow"}</>) : (<><Bell className="me-2 h-4 w-4" />{isAr ? "تابع للإشعارات" : "Follow for Updates"}</>)}
             </Button>
           )}
           <Card className="overflow-hidden">
             <CardContent className="flex flex-wrap gap-x-6 gap-y-2 p-3 text-sm">
-              <div className="flex items-center gap-2">
-                <Calendar className="h-3.5 w-3.5 text-muted-foreground" />
-                <span>{format(start, "MMM d")} – {format(end, "MMM d, yyyy")}</span>
-              </div>
-              {!exhibition.is_virtual && venue && (
-                <div className="flex items-center gap-2">
-                  <MapPin className="h-3.5 w-3.5 text-muted-foreground" />
-                  <span>{venue}</span>
-                </div>
-              )}
-              <div className="flex items-center gap-2">
-                <Ticket className="h-3.5 w-3.5 text-muted-foreground" />
-                <span>{exhibition.is_free ? (isAr ? "مجاني" : "Free") : (isAr ? "مدفوع" : "Paid")}</span>
-              </div>
+              <div className="flex items-center gap-2"><Calendar className="h-3.5 w-3.5 text-muted-foreground" /><span>{format(start, "MMM d")} – {format(end, "MMM d, yyyy")}</span></div>
+              {!exhibition.is_virtual && venue && (<div className="flex items-center gap-2"><MapPin className="h-3.5 w-3.5 text-muted-foreground" /><span>{venue}</span></div>)}
+              <div className="flex items-center gap-2"><Ticket className="h-3.5 w-3.5 text-muted-foreground" /><span>{exhibition.is_free ? (isAr ? "مجاني" : "Free") : (isAr ? "مدفوع" : "Paid")}</span></div>
             </CardContent>
           </Card>
-
-          {/* Mobile countdown */}
           {(isUpcoming || isHappening) && (
-            <Card className="overflow-hidden border-primary/20">
-              <CardContent className="py-6">
-                <CountdownTimer targetDate={isHappening ? end : start} isAr={isAr} />
-              </CardContent>
-            </Card>
+            <Card className="overflow-hidden border-primary/20"><CardContent className="py-6"><CountdownTimer targetDate={isHappening ? end : start} isAr={isAr} /></CardContent></Card>
           )}
-
-          {/* Mobile Day Indicator */}
-          <ExhibitionDayIndicator
-            startDate={exhibition.start_date}
-            endDate={exhibition.end_date}
-            isAr={isAr}
-          />
-
-          {/* Mobile Registration Status */}
-          <ExhibitionRegistrationStatus
-            registrationDeadline={exhibition.registration_deadline}
-            registrationUrl={exhibition.registration_url}
-            maxAttendees={exhibition.max_attendees}
-            isFree={exhibition.is_free}
-            ticketPrice={exhibition.ticket_price}
-            ticketPriceAr={exhibition.ticket_price_ar}
-            startDate={exhibition.start_date}
-            endDate={exhibition.end_date}
-            isAr={isAr}
-          />
-
-          {/* Mobile Map */}
-          {!exhibition.is_virtual && (
-            <ExhibitionMapEmbed
-              mapUrl={exhibition.map_url}
-              venue={venue}
-              city={exhibition.city}
-              country={exhibition.country}
-              address={(exhibition as any).address || null}
-              isAr={isAr}
-            />
-          )}
-
-          {/* Mobile Contact & Social */}
-          <ExhibitionContactCard
-            organizerName={organizer}
-            organizerLogo={organizerLogoUrl}
-            email={exhibition.organizer_email}
-            phone={exhibition.organizer_phone}
-            website={exhibition.organizer_website}
-            isAr={isAr}
-          />
-
-          <ExhibitionSocialLinks
-            socialLinks={exhibition.social_links as any}
-            websiteUrl={exhibition.website_url}
-            isAr={isAr}
-          />
-
-          <ExhibitionDocuments
-            documents={(exhibition as any).documents}
-            isAr={isAr}
-          />
+          <ExhibitionDayIndicator startDate={exhibition.start_date} endDate={exhibition.end_date} isAr={isAr} />
+          <ExhibitionRegistrationStatus registrationDeadline={exhibition.registration_deadline} registrationUrl={exhibition.registration_url} maxAttendees={exhibition.max_attendees} isFree={exhibition.is_free} ticketPrice={exhibition.ticket_price} ticketPriceAr={exhibition.ticket_price_ar} startDate={exhibition.start_date} endDate={exhibition.end_date} isAr={isAr} />
+          {!exhibition.is_virtual && <ExhibitionMapEmbed mapUrl={exhibition.map_url} venue={venue} city={exhibition.city} country={exhibition.country} address={(exhibition as any).address || null} isAr={isAr} />}
+          <ExhibitionContactCard organizerName={organizer} organizerLogo={organizerLogoUrl} email={exhibition.organizer_email} phone={exhibition.organizer_phone} website={exhibition.organizer_website} isAr={isAr} />
+          <ExhibitionSocialLinks socialLinks={exhibition.social_links as any} websiteUrl={exhibition.website_url} isAr={isAr} />
+          <ExhibitionDocuments documents={(exhibition as any).documents} isAr={isAr} />
         </div>
 
         <div className="grid gap-6 lg:grid-cols-3">
@@ -759,40 +364,34 @@ export default function ExhibitionDetail() {
                   </TabsTrigger>
                   {hasWinningDishes && (
                     <TabsTrigger value="winning-dishes" className="gap-1.5 rounded-xl px-3 py-2 text-[10px] font-bold uppercase tracking-wider transition-all data-[state=active]:bg-primary data-[state=active]:text-primary-foreground sm:gap-2 sm:px-5 sm:py-2.5 sm:text-xs whitespace-nowrap">
-                      <Award className="h-3 w-3 sm:h-3.5 sm:w-3.5" />
-                      {isAr ? "الأطباق" : "Winners"}
+                      <Award className="h-3 w-3 sm:h-3.5 sm:w-3.5" />{isAr ? "الأطباق" : "Winners"}
                       <Badge variant="secondary" className="ms-1 h-5 rounded-full bg-background/20 text-current px-1.5 text-[10px]">{winningDishes!.length}</Badge>
                     </TabsTrigger>
                   )}
                   {hasCompetitions && (
                     <TabsTrigger value="competitions" className="gap-1.5 rounded-xl px-3 py-2 text-[10px] font-bold uppercase tracking-wider transition-all data-[state=active]:bg-primary data-[state=active]:text-primary-foreground sm:gap-2 sm:px-5 sm:py-2.5 sm:text-xs whitespace-nowrap">
-                      <Trophy className="h-3 w-3 sm:h-3.5 sm:w-3.5" />
-                      {isAr ? "المسابقات" : "Competitions"}
+                      <Trophy className="h-3 w-3 sm:h-3.5 sm:w-3.5" />{isAr ? "المسابقات" : "Competitions"}
                       <Badge variant="secondary" className="ms-1 h-5 rounded-full bg-background/20 text-current px-1.5 text-[10px]">{linkedCompetitions!.length}</Badge>
                     </TabsTrigger>
                   )}
                   {hasSchedule && (
                     <TabsTrigger value="schedule" className="gap-1.5 rounded-xl px-3 py-2 text-[10px] font-bold uppercase tracking-wider transition-all data-[state=active]:bg-primary data-[state=active]:text-primary-foreground sm:gap-2 sm:px-5 sm:py-2.5 sm:text-xs whitespace-nowrap">
-                      <Calendar className="h-3 w-3 sm:h-3.5 sm:w-3.5" />
-                      {isAr ? "الجدول" : "Schedule"}
+                      <Calendar className="h-3 w-3 sm:h-3.5 sm:w-3.5" />{isAr ? "الجدول" : "Schedule"}
                     </TabsTrigger>
                   )}
                   {(hasJudges || hasSpeakers) && (
                     <TabsTrigger value="people" className="gap-1.5 rounded-xl px-3 py-2 text-[10px] font-bold uppercase tracking-wider transition-all data-[state=active]:bg-primary data-[state=active]:text-primary-foreground sm:gap-2 sm:px-5 sm:py-2.5 sm:text-xs whitespace-nowrap">
-                      <Users className="h-3 w-3 sm:h-3.5 sm:w-3.5" />
-                      {isAr ? "الأشخاص" : "People"}
+                      <Users className="h-3 w-3 sm:h-3.5 sm:w-3.5" />{isAr ? "الأشخاص" : "People"}
                     </TabsTrigger>
                   )}
                   {hasGallery && (
                     <TabsTrigger value="gallery" className="gap-1.5 rounded-xl px-3 py-2 text-[10px] font-bold uppercase tracking-wider transition-all data-[state=active]:bg-primary data-[state=active]:text-primary-foreground sm:gap-2 sm:px-5 sm:py-2.5 sm:text-xs whitespace-nowrap">
-                      <ImageIcon className="h-3 w-3 sm:h-3.5 sm:w-3.5" />
-                      {isAr ? "المعرض" : "Gallery"}
+                      <ImageIcon className="h-3 w-3 sm:h-3.5 sm:w-3.5" />{isAr ? "المعرض" : "Gallery"}
                     </TabsTrigger>
                   )}
                   {hasSponsors && (
                     <TabsTrigger value="sponsors" className="gap-1.5 rounded-xl px-3 py-2 text-[10px] font-bold uppercase tracking-wider transition-all data-[state=active]:bg-primary data-[state=active]:text-primary-foreground sm:gap-2 sm:px-5 sm:py-2.5 sm:text-xs whitespace-nowrap">
-                      <Star className="h-3 w-3 sm:h-3.5 sm:w-3.5" />
-                      {isAr ? "الرعاة" : "Sponsors"}
+                      <Star className="h-3 w-3 sm:h-3.5 sm:w-3.5" />{isAr ? "الرعاة" : "Sponsors"}
                     </TabsTrigger>
                   )}
                 </TabsList>
@@ -800,32 +399,24 @@ export default function ExhibitionDetail() {
 
               {/* === OVERVIEW TAB === */}
               <TabsContent value="overview" className="mt-6 space-y-6">
-                {/* Countdown (desktop) */}
                 {(isUpcoming || isHappening) && (
                   <Card className="relative overflow-hidden border-primary/20 shadow-md hidden lg:block">
                     <div className="absolute -top-16 -end-16 h-40 w-40 rounded-full bg-primary/5 blur-[50px] animate-pulse" />
                     <div className="bg-gradient-to-r from-primary/10 via-primary/5 to-transparent px-6 py-4">
                       <h3 className="flex items-center gap-2.5 font-semibold">
-                        <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-primary/15">
-                          <Timer className="h-4.5 w-4.5 text-primary" />
-                        </div>
-                        {isHappening
-                          ? (isAr ? "الحدث جارٍ الآن — ينتهي خلال" : "Event is Live — Ends in")
-                          : (isAr ? "العد التنازلي" : "Event Countdown")}
+                        <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-primary/15"><Timer className="h-4.5 w-4.5 text-primary" /></div>
+                        {isHappening ? (isAr ? "الحدث جارٍ الآن — ينتهي خلال" : "Event is Live — Ends in") : (isAr ? "العد التنازلي" : "Event Countdown")}
                       </h3>
                     </div>
                     <CardContent className="py-8">
                       <CountdownTimer targetDate={isHappening ? end : start} isAr={isAr} />
                       <p className="mt-5 text-center text-sm text-muted-foreground">
-                        {isHappening
-                          ? (isAr ? `ينتهي في ${format(end, "d MMMM yyyy")}` : `Ends on ${format(end, "MMMM d, yyyy")}`)
-                          : (isAr ? `يبدأ في ${format(start, "d MMMM yyyy")}` : `Starts on ${format(start, "MMMM d, yyyy")}`)}
+                        {isHappening ? (isAr ? `ينتهي في ${format(end, "d MMMM yyyy")}` : `Ends on ${format(end, "MMMM d, yyyy")}`) : (isAr ? `يبدأ في ${format(start, "d MMMM yyyy")}` : `Starts on ${format(start, "MMMM d, yyyy")}`)}
                       </p>
                     </CardContent>
                   </Card>
                 )}
 
-                {/* Description */}
                 {description && (
                   <Card className="border-s-[3px] border-s-primary/40">
                     <CardContent className="prose prose-sm max-w-none p-4 md:p-6 dark:prose-invert">
@@ -834,14 +425,11 @@ export default function ExhibitionDetail() {
                   </Card>
                 )}
 
-                {/* Sections */}
                 {sections.length > 0 && (
                   <Card className="overflow-hidden">
                     <div className="border-b bg-muted/30 px-4 py-3">
                       <h3 className="flex items-center gap-2 font-semibold text-sm">
-                        <div className="flex h-6 w-6 items-center justify-center rounded-md bg-primary/10">
-                          <Landmark className="h-3.5 w-3.5 text-primary" />
-                        </div>
+                        <div className="flex h-6 w-6 items-center justify-center rounded-md bg-primary/10"><Landmark className="h-3.5 w-3.5 text-primary" /></div>
                         {isAr ? "أقسام الحدث" : "Event Sections"}
                       </h3>
                     </div>
@@ -851,9 +439,7 @@ export default function ExhibitionDetail() {
                           <div key={i} className="rounded-lg border p-3">
                             <p className="font-medium text-sm">{isAr && section.name_ar ? section.name_ar : section.name}</p>
                             {(section.description || section.description_ar) && (
-                              <p className="mt-1 text-xs text-muted-foreground">
-                                {isAr && section.description_ar ? section.description_ar : section.description}
-                              </p>
+                              <p className="mt-1 text-xs text-muted-foreground">{isAr && section.description_ar ? section.description_ar : section.description}</p>
                             )}
                           </div>
                         ))}
@@ -862,40 +448,31 @@ export default function ExhibitionDetail() {
                   </Card>
                 )}
 
-                {/* Quick competition preview */}
                 {hasCompetitions && (
                   <Card className="overflow-hidden">
                     <div className="border-b bg-muted/30 px-4 py-3 flex items-center justify-between">
                       <h3 className="flex items-center gap-2 font-semibold text-sm">
-                        <div className="flex h-6 w-6 items-center justify-center rounded-md bg-primary/10">
-                          <Trophy className="h-3.5 w-3.5 text-primary" />
-                        </div>
+                        <div className="flex h-6 w-6 items-center justify-center rounded-md bg-primary/10"><Trophy className="h-3.5 w-3.5 text-primary" /></div>
                         {isAr ? "المسابقات" : "Competitions"}
                         <Badge variant="secondary" className="ms-1">{linkedCompetitions!.length}</Badge>
                       </h3>
-                      <Button variant="ghost" size="sm" className="text-xs" onClick={() => setActiveTab("competitions")}>
-                        {isAr ? "عرض الكل" : "View All"}
-                      </Button>
+                      <Button variant="ghost" size="sm" className="text-xs" onClick={() => setActiveTab("competitions")}>{isAr ? "عرض الكل" : "View All"}</Button>
                     </div>
                     <CardContent className="p-4">
                       <div className="space-y-2">
                         {linkedCompetitions!.slice(0, 3).map((comp: any) => {
                           const compTitle = isAr && comp.title_ar ? comp.title_ar : comp.title;
-                          const compStart = new Date(comp.competition_start);
                           return (
                             <Link key={comp.id} to={`/competitions/${comp.id}`} className="flex items-center gap-3 rounded-lg border p-2.5 hover:bg-muted/30 transition-colors group">
                               {comp.cover_image_url ? (
                                 <img src={comp.cover_image_url} alt={compTitle} className="h-10 w-10 rounded-md object-cover shrink-0" />
                               ) : (
-                                <div className="h-10 w-10 rounded-md bg-primary/5 flex items-center justify-center shrink-0">
-                                  <Trophy className="h-4 w-4 text-primary/30" />
-                                </div>
+                                <div className="h-10 w-10 rounded-md bg-primary/5 flex items-center justify-center shrink-0"><Trophy className="h-4 w-4 text-primary/30" /></div>
                               )}
                               <div className="min-w-0 flex-1">
                                 <p className="text-sm font-medium truncate group-hover:text-primary transition-colors">{compTitle}</p>
-                                <p className="text-[10px] text-muted-foreground">{format(compStart, "MMM d, yyyy")}</p>
+                                <p className="text-[10px] text-muted-foreground">{format(new Date(comp.competition_start), "MMM d, yyyy")}</p>
                               </div>
-                              <ChevronRight className="h-4 w-4 text-muted-foreground shrink-0" />
                             </Link>
                           );
                         })}
@@ -904,54 +481,38 @@ export default function ExhibitionDetail() {
                   </Card>
                 )}
 
-                {/* Target audience */}
                 {targetAudience.length > 0 && (
                   <Card className="overflow-hidden">
                     <div className="border-b bg-muted/30 px-4 py-3">
                       <h3 className="flex items-center gap-2 font-semibold text-sm">
-                        <div className="flex h-6 w-6 items-center justify-center rounded-md bg-muted/60">
-                          <Target className="h-3.5 w-3.5 text-muted-foreground" />
-                        </div>
+                        <div className="flex h-6 w-6 items-center justify-center rounded-md bg-muted/60"><Target className="h-3.5 w-3.5 text-muted-foreground" /></div>
                         {isAr ? "الفئة المستهدفة" : "Target Audience"}
                       </h3>
                     </div>
                     <CardContent className="p-4">
                       <div className="flex flex-wrap gap-2">
-                        {targetAudience.map((audience) => (
-                          <Badge key={audience} variant="outline" className="py-1.5 capitalize">{audience.replace(/_/g, " ")}</Badge>
-                        ))}
+                        {targetAudience.map((a) => <Badge key={a} variant="outline" className="py-1.5 capitalize">{a.replace(/_/g, " ")}</Badge>)}
                       </div>
                     </CardContent>
                   </Card>
                 )}
 
-                {/* Gallery preview */}
                 {hasGallery && (
                   <Card className="overflow-hidden">
                     <div className="border-b bg-muted/30 px-4 py-3 flex items-center justify-between">
                       <h3 className="flex items-center gap-2 font-semibold text-sm">
-                        <div className="flex h-6 w-6 items-center justify-center rounded-md bg-primary/10">
-                          <ImageIcon className="h-3.5 w-3.5 text-primary" />
-                        </div>
+                        <div className="flex h-6 w-6 items-center justify-center rounded-md bg-primary/10"><ImageIcon className="h-3.5 w-3.5 text-primary" /></div>
                         {isAr ? "معرض الصور" : "Gallery"}
                       </h3>
-                      <Button variant="ghost" size="sm" className="text-xs" onClick={() => setActiveTab("gallery")}>
-                        {isAr ? "عرض الكل" : "View All"}
-                      </Button>
+                      <Button variant="ghost" size="sm" className="text-xs" onClick={() => setActiveTab("gallery")}>{isAr ? "عرض الكل" : "View All"}</Button>
                     </div>
                     <CardContent className="p-4">
                       <div className="grid grid-cols-3 gap-2">
                         {galleryUrls.slice(0, 6).map((url, i) => (
-                          <button
-                            key={i}
-                            onClick={() => { setLightboxIndex(i); setLightboxOpen(true); }}
-                            className="relative aspect-square rounded-lg overflow-hidden group"
-                          >
+                          <button key={i} onClick={() => { setLightboxIndex(i); setLightboxOpen(true); }} className="relative aspect-square rounded-lg overflow-hidden group">
                             <img src={url} alt={`${title} ${i + 1}`} className="h-full w-full object-cover transition-transform group-hover:scale-105" />
                             {i === 5 && galleryUrls.length > 6 && (
-                              <div className="absolute inset-0 flex items-center justify-center bg-background/60 backdrop-blur-sm">
-                                <span className="font-bold text-lg">+{galleryUrls.length - 6}</span>
-                              </div>
+                              <div className="absolute inset-0 flex items-center justify-center bg-background/60 backdrop-blur-sm"><span className="font-bold text-lg">+{galleryUrls.length - 6}</span></div>
                             )}
                           </button>
                         ))}
@@ -976,39 +537,20 @@ export default function ExhibitionDetail() {
                             <div className="relative h-44 overflow-hidden">
                               <img src={dish.dish_image_url} alt={dish.dish_name} className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105" />
                               <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
-                              <div className="absolute top-3 start-3">
-                                <Badge className="bg-chart-4/90 text-chart-4-foreground text-sm font-bold shadow-md">{medal}</Badge>
-                              </div>
-                              <div className="absolute bottom-3 start-3 end-3">
-                                <p className="font-bold text-lg leading-tight text-white drop-shadow-md">{dish.dish_name}</p>
-                              </div>
+                              <div className="absolute top-3 start-3"><Badge className="bg-chart-4/90 text-chart-4-foreground text-sm font-bold shadow-md">{medal}</Badge></div>
+                              <div className="absolute bottom-3 start-3 end-3"><p className="font-bold text-lg leading-tight text-white drop-shadow-md">{dish.dish_name}</p></div>
                             </div>
                           ) : (
                             <div className="relative h-32 bg-gradient-to-br from-chart-4/20 via-chart-4/10 to-background flex items-center justify-center">
                               <Trophy className="h-10 w-10 text-chart-4/30" />
-                              <div className="absolute top-3 start-3">
-                                <Badge className="bg-chart-4/90 text-chart-4-foreground text-sm font-bold shadow-md">{medal}</Badge>
-                              </div>
-                              <div className="absolute bottom-3 start-3 end-3">
-                                <p className="font-bold text-lg leading-tight">{dish.dish_name}</p>
-                              </div>
+                              <div className="absolute top-3 start-3"><Badge className="bg-chart-4/90 text-chart-4-foreground text-sm font-bold shadow-md">{medal}</Badge></div>
+                              <div className="absolute bottom-3 start-3 end-3"><p className="font-bold text-lg leading-tight">{dish.dish_name}</p></div>
                             </div>
                           )}
                           <CardContent className="p-4 space-y-2">
-                            {dish.dish_description && (
-                              <p className="text-xs text-muted-foreground line-clamp-2">{dish.dish_description}</p>
-                            )}
+                            {dish.dish_description && <p className="text-xs text-muted-foreground line-clamp-2">{dish.dish_description}</p>}
                             <div className="flex items-center gap-2">
-                              {dish.participant?.avatar_url ? (
-                                <Avatar className="h-6 w-6">
-                                  <AvatarImage src={dish.participant.avatar_url} />
-                                  <AvatarFallback className="text-[9px]">{participantName.slice(0, 2)}</AvatarFallback>
-                                </Avatar>
-                              ) : (
-                                <div className="h-6 w-6 rounded-full bg-primary/10 flex items-center justify-center">
-                                  <Users className="h-3 w-3 text-primary" />
-                                </div>
-                              )}
+                              <div className="h-6 w-6 rounded-full bg-primary/10 flex items-center justify-center"><Users className="h-3 w-3 text-primary" /></div>
                               <span className="text-sm font-medium truncate">{participantName}</span>
                             </div>
                             <div className="flex items-center justify-between">
@@ -1023,54 +565,10 @@ export default function ExhibitionDetail() {
                 </TabsContent>
               )}
 
-              {/* === COMPETITIONS TAB (Classified) === */}
+              {/* === COMPETITIONS TAB === */}
               {hasCompetitions && (
-                <TabsContent value="competitions" className="mt-6 space-y-6">
-                  {/* Live Competitions */}
-                  {liveCompetitions.length > 0 && (
-                    <section>
-                      <h3 className="flex items-center gap-2 mb-3 font-semibold text-sm">
-                        <div className="h-2 w-2 rounded-full bg-chart-3 animate-pulse" />
-                        {isAr ? "مسابقات جارية" : "Live Competitions"}
-                        <Badge variant="secondary" className="text-[9px]">{liveCompetitions.length}</Badge>
-                      </h3>
-                      <div className="space-y-3">
-                        {liveCompetitions.map((comp: any) => <CompetitionClassifiedCard key={comp.id} comp={comp} isAr={isAr} now={now} />)}
-                      </div>
-                    </section>
-                  )}
-
-                  {/* Upcoming Competitions */}
-                  {upcomingCompetitions.length > 0 && (
-                    <section>
-                      <h3 className="flex items-center gap-2 mb-3 font-semibold text-sm">
-                        <div className="flex h-5 w-5 items-center justify-center rounded-md bg-primary/10">
-                          <Flag className="h-3 w-3 text-primary" />
-                        </div>
-                        {isAr ? "مسابقات قادمة" : "Upcoming Competitions"}
-                        <Badge variant="secondary" className="text-[9px]">{upcomingCompetitions.length}</Badge>
-                      </h3>
-                      <div className="space-y-3">
-                        {upcomingCompetitions.map((comp: any) => <CompetitionClassifiedCard key={comp.id} comp={comp} isAr={isAr} now={now} />)}
-                      </div>
-                    </section>
-                  )}
-
-                  {/* Past Competitions */}
-                  {pastCompetitions.length > 0 && (
-                    <section>
-                      <h3 className="flex items-center gap-2 mb-3 font-semibold text-sm">
-                        <div className="flex h-5 w-5 items-center justify-center rounded-md bg-muted">
-                          <CheckCircle2 className="h-3 w-3 text-muted-foreground" />
-                        </div>
-                        {isAr ? "مسابقات منتهية" : "Past Competitions"}
-                        <Badge variant="secondary" className="text-[9px]">{pastCompetitions.length}</Badge>
-                      </h3>
-                      <div className="space-y-3">
-                        {pastCompetitions.map((comp: any) => <CompetitionClassifiedCard key={comp.id} comp={comp} isAr={isAr} now={now} />)}
-                      </div>
-                    </section>
-                  )}
+                <TabsContent value="competitions" className="mt-6">
+                  <ExhibitionCompetitionsTab competitions={linkedCompetitions!} isAr={isAr} />
                 </TabsContent>
               )}
 
@@ -1081,32 +579,15 @@ export default function ExhibitionDetail() {
                     const dayEvents = dayOrItem.items || dayOrItem.events || [];
                     const dayLabel = isAr && dayOrItem.day_ar ? dayOrItem.day_ar : dayOrItem.day;
                     const dayTitle = isAr && dayOrItem.title_ar ? dayOrItem.title_ar : dayOrItem.title;
-
                     if (dayEvents.length > 0) {
-                      return (
-                        <CollapsibleDay
-                          key={i}
-                          index={i}
-                          dayLabel={dayLabel}
-                          dayTitle={dayTitle}
-                          events={dayEvents}
-                          isAr={isAr}
-                          defaultOpen={i === 0}
-                          coverImageUrl={exhibition.cover_image_url}
-                        />
-                      );
+                      return <CollapsibleDay key={i} index={i} dayLabel={dayLabel} dayTitle={dayTitle} events={dayEvents} isAr={isAr} defaultOpen={i === 0} />;
                     }
-
                     return (
                       <div key={i} className="flex gap-4 rounded-xl border bg-card p-4 shadow-sm">
                         <div className="shrink-0 font-mono text-sm font-semibold text-primary">{dayOrItem.time || dayLabel}</div>
                         <div>
                           <p className="font-medium">{isAr && dayOrItem.title_ar ? dayOrItem.title_ar : dayOrItem.title}</p>
-                          {(dayOrItem.description || dayOrItem.description_ar) && (
-                            <p className="text-sm text-muted-foreground">
-                              {isAr && dayOrItem.description_ar ? dayOrItem.description_ar : dayOrItem.description}
-                            </p>
-                          )}
+                          {(dayOrItem.description || dayOrItem.description_ar) && <p className="text-sm text-muted-foreground">{isAr && dayOrItem.description_ar ? dayOrItem.description_ar : dayOrItem.description}</p>}
                         </div>
                       </div>
                     );
@@ -1114,134 +595,20 @@ export default function ExhibitionDetail() {
                 </TabsContent>
               )}
 
-              {/* === PEOPLE TAB (Judges + Speakers) === */}
+              {/* === PEOPLE TAB === */}
               {(hasJudges || hasSpeakers) && (
-                <TabsContent value="people" className="mt-6 space-y-8">
-                  {/* Judges */}
-                  {hasJudges && (
-                    <section>
-                      <h2 className="mb-4 flex items-center gap-2.5 text-lg font-bold">
-                        <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-chart-4/10">
-                          <Award className="h-4 w-4 text-chart-4" />
-                        </div>
-                        {isAr ? "لجنة التحكيم" : "Judging Committee"}
-                        <Badge variant="secondary" className="ms-1">{judgeProfiles!.length}</Badge>
-                      </h2>
-                      <div className="grid gap-4 sm:grid-cols-2">
-                        {judgeProfiles!.map((judge: any) => {
-                          const judgeName = judge.full_name;
-                          const jp = judge.judgeExtra;
-                          const photo = jp?.profile_photo_url || judge.avatar_url;
-                          const judgeTitle = isAr && jp?.judge_title_ar ? jp.judge_title_ar : jp?.judge_title;
-                          const initials = (judgeName || "J").split(" ").map((n: string) => n[0]).join("").slice(0, 2).toUpperCase();
-                          const nationalityFlag = getCountryFlag(jp?.nationality || judge.location);
-
-                          return (
-                            <Link
-                              key={judge.user_id}
-                              to={`/${judge.username || judge.user_id}`}
-                              className="group block rounded-xl border bg-card overflow-hidden hover:shadow-lg transition-all hover:-translate-y-0.5"
-                            >
-                              <div className="flex gap-4 p-5">
-                                <Avatar className="h-16 w-16 rounded-xl shrink-0 ring-2 ring-background shadow-md">
-                                  <AvatarImage src={photo || undefined} alt={judgeName} className="object-cover" />
-                                  <AvatarFallback className="rounded-xl bg-primary/10 text-primary text-lg font-bold">
-                                    {initials}
-                                  </AvatarFallback>
-                                </Avatar>
-                                <div className="flex-1 min-w-0 space-y-1">
-                                  <div className="flex items-center gap-1.5">
-                                    <span className="text-sm font-bold truncate group-hover:text-primary transition-colors">
-                                      {judgeName || (isAr ? "حكم" : "Judge")}
-                                    </span>
-                                    {judge.is_verified && <CheckCircle2 className="h-3.5 w-3.5 text-primary shrink-0" />}
-                                    <span className="text-base leading-none ms-0.5">{nationalityFlag}</span>
-                                  </div>
-                                  {judgeTitle && <p className="text-xs text-primary/80 font-medium truncate">{judgeTitle}</p>}
-                                  {(jp?.current_position || jp?.current_employer) && (
-                                    <p className="text-[11px] text-muted-foreground truncate">
-                                      {jp.current_position}{jp.current_position && jp.current_employer ? " · " : ""}{jp.current_employer}
-                                    </p>
-                                  )}
-                                </div>
-                              </div>
-                              <div className="border-t bg-muted/20 px-5 py-2.5 flex items-center gap-2 flex-wrap">
-                                {jp?.judge_level && (
-                                  <Badge variant="outline" className="text-[9px] h-5 gap-0.5">
-                                    <Award className="h-2.5 w-2.5" />
-                                    {jp.judge_level}
-                                  </Badge>
-                                )}
-                                {jp?.judge_category && (
-                                  <Badge variant="secondary" className="text-[9px] h-5">{jp.judge_category}</Badge>
-                                )}
-                              </div>
-                            </Link>
-                          );
-                        })}
-                      </div>
-                    </section>
-                  )}
-
-                  {/* Speakers */}
-                  {hasSpeakers && (
-                    <section>
-                      <h2 className="mb-4 flex items-center gap-2.5 text-lg font-bold">
-                        <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-primary/10">
-                          <Mic2 className="h-4 w-4 text-primary" />
-                        </div>
-                        {isAr ? "المتحدثون" : "Speakers"}
-                      </h2>
-                      <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-3">
-                        {speakers.map((speaker, i) => (
-                          <Card key={i} className="overflow-hidden transition-all hover:shadow-md hover:-translate-y-0.5">
-                            <CardContent className="flex flex-col items-center p-5 text-center">
-                              {speaker.image_url ? (
-                                <img src={speaker.image_url} alt={speaker.name} className="mb-3 h-16 w-16 rounded-full object-cover ring-2 ring-border" />
-                              ) : (
-                                <div className="mb-3 flex h-16 w-16 items-center justify-center rounded-full bg-accent/10 ring-2 ring-border">
-                                  <Mic2 className="h-7 w-7 text-accent/60" />
-                                </div>
-                              )}
-                              <p className="font-semibold">{isAr && speaker.name_ar ? speaker.name_ar : speaker.name}</p>
-                              {(speaker.title || speaker.title_ar || speaker.role || speaker.role_ar) && (
-                                <p className="mt-0.5 text-xs text-muted-foreground">
-                                  {isAr && (speaker.title_ar || speaker.role_ar) ? (speaker.title_ar || speaker.role_ar) : (speaker.title || speaker.role)}
-                                </p>
-                              )}
-                              {speaker.country && (
-                                <span className="mt-1 text-sm">{getCountryFlag(speaker.country)}</span>
-                              )}
-                              {(speaker.topic || speaker.topic_ar) && (
-                                <Badge variant="outline" className="mt-2 text-[10px]">
-                                  {isAr && speaker.topic_ar ? speaker.topic_ar : speaker.topic}
-                                </Badge>
-                              )}
-                            </CardContent>
-                          </Card>
-                        ))}
-                      </div>
-                    </section>
-                  )}
+                <TabsContent value="people" className="mt-6">
+                  <ExhibitionPeopleTab judgeProfiles={judgeProfiles || null} speakers={speakers} isAr={isAr} />
                 </TabsContent>
               )}
 
               {/* === GALLERY TAB === */}
               {hasGallery && (
                 <TabsContent value="gallery" className="mt-6">
-                  <div className="grid grid-cols-2 gap-3 md:grid-cols-3 lg:grid-cols-3">
+                  <div className="grid grid-cols-2 gap-3 md:grid-cols-3">
                     {galleryUrls.map((url, i) => (
-                      <button
-                        key={i}
-                        onClick={() => { setLightboxIndex(i); setLightboxOpen(true); }}
-                        className="relative aspect-video rounded-xl overflow-hidden shadow-sm group cursor-pointer"
-                      >
-                        <img
-                          src={url}
-                          alt={`${title} ${i + 1}`}
-                          className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
-                          loading="lazy"
-                        />
+                      <button key={i} onClick={() => { setLightboxIndex(i); setLightboxOpen(true); }} className="relative aspect-video rounded-xl overflow-hidden shadow-sm group cursor-pointer">
+                        <img src={url} alt={`${title} ${i + 1}`} className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105" loading="lazy" />
                         <div className="absolute inset-0 bg-background/0 group-hover:bg-background/20 transition-colors flex items-center justify-center">
                           <ImageIcon className="h-6 w-6 text-foreground opacity-0 group-hover:opacity-70 transition-opacity" />
                         </div>
@@ -1258,28 +625,29 @@ export default function ExhibitionDetail() {
                     const config = TIER_CONFIG[tier];
                     const tierLabel = config ? (isAr ? config.labelAr : config.label) : tier;
                     return (
-                      <div key={tier}>
-                        <p className="mb-4 text-[10px] font-bold uppercase tracking-widest text-muted-foreground">
+                      <section key={tier}>
+                        <h3 className="mb-4 flex items-center gap-2 text-sm font-bold uppercase tracking-wider">
+                          <div className={`flex h-6 w-6 items-center justify-center rounded-md bg-gradient-to-br ${config?.gradient || "from-muted to-muted/50"}`}>
+                            {config ? <config.icon className="h-3.5 w-3.5" /> : <Star className="h-3.5 w-3.5" />}
+                          </div>
                           {tierLabel}
-                        </p>
-                        <div className="flex flex-wrap items-start gap-6">
-                          {sponsors.map((sponsor, i) => {
-                            const sponsorName = isAr && sponsor.name_ar ? sponsor.name_ar : sponsor.name;
-                            return (
-                              <div key={i} className="flex flex-col items-center text-center w-28">
-                                <div className={`flex h-20 w-20 items-center justify-center rounded-2xl border bg-gradient-to-b ${config?.gradient || 'from-muted/20 to-muted/5'} shadow-sm`}>
-                                  {sponsor.logo_url ? (
-                                    <img src={sponsor.logo_url} alt={sponsorName || ""} className="h-14 w-14 rounded-lg object-contain" />
-                                  ) : (
-                                    <Building className="h-8 w-8 text-muted-foreground/50" />
-                                  )}
-                                </div>
-                                <p className="mt-2 text-xs font-semibold leading-tight line-clamp-2">{sponsorName}</p>
-                              </div>
-                            );
-                          })}
+                          <Badge variant="outline" className="text-[9px] ms-1">{sponsors.length}</Badge>
+                        </h3>
+                        <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4">
+                          {sponsors.map((sponsor, i) => (
+                            <Card key={i} className="overflow-hidden transition-all hover:shadow-md hover:-translate-y-0.5">
+                              <CardContent className="flex flex-col items-center p-4 text-center">
+                                {sponsor.logo_url ? (
+                                  <img src={sponsor.logo_url} alt={sponsor.name} className="mb-2 h-12 w-auto max-w-[120px] object-contain" />
+                                ) : (
+                                  <div className="mb-2 flex h-12 w-12 items-center justify-center rounded-lg bg-muted"><Building className="h-5 w-5 text-muted-foreground" /></div>
+                                )}
+                                <p className="text-xs font-medium">{isAr && sponsor.name_ar ? sponsor.name_ar : sponsor.name}</p>
+                              </CardContent>
+                            </Card>
+                          ))}
                         </div>
-                      </div>
+                      </section>
                     );
                   })}
                 </TabsContent>
@@ -1287,137 +655,63 @@ export default function ExhibitionDetail() {
             </Tabs>
           </div>
 
-          {/* ======== SIDEBAR ======== */}
-          <div className="hidden space-y-4 lg:block lg:sticky lg:top-[144px] lg:self-start">
-            {/* Countdown */}
+          {/* ======== SIDEBAR (Desktop) ======== */}
+          <div className="hidden space-y-5 lg:block">
             {(isUpcoming || isHappening) && (
-              <Card className="overflow-hidden border-primary/20 shadow-md">
-                <div className="border-b bg-gradient-to-r from-primary/10 via-primary/5 to-transparent px-4 py-3">
+              <Card className="relative overflow-hidden shadow-md border-primary/15">
+                <div className="absolute -top-12 -end-12 h-32 w-32 rounded-full bg-primary/5 blur-[40px]" />
+                <div className="bg-gradient-to-r from-primary/10 via-primary/5 to-transparent px-4 py-3">
                   <h3 className="flex items-center gap-2 text-sm font-semibold">
-                    <div className="flex h-6 w-6 items-center justify-center rounded-md bg-primary/10">
-                      <Timer className="h-3.5 w-3.5 text-primary" />
-                    </div>
-                    {isHappening
-                      ? (isAr ? "ينتهي خلال" : "Ends In")
-                      : (isAr ? "يبدأ خلال" : "Starts In")}
+                    <div className="flex h-6 w-6 items-center justify-center rounded-md bg-primary/10"><Timer className="h-3.5 w-3.5 text-primary" /></div>
+                    {isHappening ? (isAr ? "ينتهي خلال" : "Ends In") : (isAr ? "يبدأ خلال" : "Starts In")}
                   </h3>
                 </div>
-                <CardContent className="py-5 px-3">
-                  <CountdownTimer targetDate={isHappening ? end : start} isAr={isAr} />
-                </CardContent>
+                <CardContent className="py-5 px-3"><CountdownTimer targetDate={isHappening ? end : start} isAr={isAr} /></CardContent>
               </Card>
             )}
-            {/* Registration Status */}
-            <ExhibitionRegistrationStatus
-              registrationDeadline={exhibition.registration_deadline}
-              registrationUrl={exhibition.registration_url}
-              maxAttendees={exhibition.max_attendees}
-              isFree={exhibition.is_free}
-              ticketPrice={exhibition.ticket_price}
-              ticketPriceAr={exhibition.ticket_price_ar}
-              startDate={exhibition.start_date}
-              endDate={exhibition.end_date}
-              isAr={isAr}
-            />
 
-            {/* Day Indicator */}
-            <ExhibitionDayIndicator
-              startDate={exhibition.start_date}
-              endDate={exhibition.end_date}
-              isAr={isAr}
-            />
+            <ExhibitionRegistrationStatus registrationDeadline={exhibition.registration_deadline} registrationUrl={exhibition.registration_url} maxAttendees={exhibition.max_attendees} isFree={exhibition.is_free} ticketPrice={exhibition.ticket_price} ticketPriceAr={exhibition.ticket_price_ar} startDate={exhibition.start_date} endDate={exhibition.end_date} isAr={isAr} />
+            <ExhibitionDayIndicator startDate={exhibition.start_date} endDate={exhibition.end_date} isAr={isAr} />
 
             {/* Actions */}
             <Card className="relative overflow-hidden shadow-md border-primary/15">
               <div className="absolute -top-12 -end-12 h-32 w-32 rounded-full bg-primary/5 blur-[40px]" />
               <div className="border-b bg-gradient-to-r from-primary/10 via-primary/5 to-transparent px-4 py-3">
                 <h3 className="flex items-center gap-2 text-sm font-semibold">
-                  <div className="flex h-6 w-6 items-center justify-center rounded-md bg-primary/10">
-                    <Ticket className="h-3.5 w-3.5 text-primary" />
-                  </div>
+                  <div className="flex h-6 w-6 items-center justify-center rounded-md bg-primary/10"><Ticket className="h-3.5 w-3.5 text-primary" /></div>
                   {isAr ? "إجراءات" : "Actions"}
                 </h3>
               </div>
               <CardContent className="space-y-3 p-4">
                 {exhibition.registration_url && !hasEnded && (
                   <Button className="w-full" asChild>
-                    <a href={exhibition.registration_url} target="_blank" rel="noopener noreferrer">
-                      <Ticket className="me-2 h-4 w-4" />
-                      {isAr ? "سجل الآن" : "Register Now"}
-                    </a>
+                    <a href={exhibition.registration_url} target="_blank" rel="noopener noreferrer"><Ticket className="me-2 h-4 w-4" />{isAr ? "سجل الآن" : "Register Now"}</a>
                   </Button>
                 )}
                 {user && (
-                  <Button
-                    variant={isFollowing ? "outline" : "secondary"}
-                    className="w-full"
-                    onClick={() => toggleFollow.mutate()}
-                    disabled={toggleFollow.isPending}
-                  >
-                    {isFollowing ? (
-                      <><BellOff className="me-2 h-4 w-4" />{isAr ? "إلغاء المتابعة" : "Unfollow"}</>
-                    ) : (
-                      <><Bell className="me-2 h-4 w-4" />{isAr ? "تابع للإشعارات" : "Follow for Updates"}</>
-                    )}
+                  <Button variant={isFollowing ? "outline" : "secondary"} className="w-full" onClick={() => toggleFollow.mutate()} disabled={toggleFollow.isPending}>
+                    {isFollowing ? (<><BellOff className="me-2 h-4 w-4" />{isAr ? "إلغاء المتابعة" : "Unfollow"}</>) : (<><Bell className="me-2 h-4 w-4" />{isAr ? "تابع للإشعارات" : "Follow for Updates"}</>)}
                   </Button>
                 )}
                 {exhibition.website_url && (
                   <Button variant="outline" className="w-full" asChild>
-                    <a href={exhibition.website_url} target="_blank" rel="noopener noreferrer">
-                      <ExternalLink className="me-2 h-4 w-4" />
-                      {isAr ? "الموقع الرسمي" : "Official Website"}
-                    </a>
+                    <a href={exhibition.website_url} target="_blank" rel="noopener noreferrer"><ExternalLink className="me-2 h-4 w-4" />{isAr ? "الموقع الرسمي" : "Official Website"}</a>
                   </Button>
                 )}
-                <p className="text-center text-xs text-muted-foreground">
-                  <Users className="mb-0.5 me-1 inline h-3 w-3" />
-                  {followerCount} {isAr ? "متابع" : "followers"}
-                </p>
+                <p className="text-center text-xs text-muted-foreground"><Users className="mb-0.5 me-1 inline h-3 w-3" />{followerCount} {isAr ? "متابع" : "followers"}</p>
               </CardContent>
             </Card>
 
-            {/* Contact Card */}
-            <ExhibitionContactCard
-              organizerName={organizer}
-              organizerLogo={organizerLogoUrl}
-              email={exhibition.organizer_email}
-              phone={exhibition.organizer_phone}
-              website={exhibition.organizer_website}
-              isAr={isAr}
-            />
-
-            {/* Interactive Map */}
-            {!exhibition.is_virtual && (
-              <ExhibitionMapEmbed
-                mapUrl={exhibition.map_url}
-                venue={venue}
-                city={exhibition.city}
-                country={exhibition.country}
-                address={(exhibition as any).address || null}
-                isAr={isAr}
-              />
-            )}
-
-            {/* Social Links */}
-            <ExhibitionSocialLinks
-              socialLinks={exhibition.social_links as any}
-              websiteUrl={exhibition.website_url}
-              isAr={isAr}
-            />
-
-            {/* Documents / Brochures */}
-            <ExhibitionDocuments
-              documents={(exhibition as any).documents}
-              isAr={isAr}
-            />
+            <ExhibitionContactCard organizerName={organizer} organizerLogo={organizerLogoUrl} email={exhibition.organizer_email} phone={exhibition.organizer_phone} website={exhibition.organizer_website} isAr={isAr} />
+            {!exhibition.is_virtual && <ExhibitionMapEmbed mapUrl={exhibition.map_url} venue={venue} city={exhibition.city} country={exhibition.country} address={(exhibition as any).address || null} isAr={isAr} />}
+            <ExhibitionSocialLinks socialLinks={exhibition.social_links as any} websiteUrl={exhibition.website_url} isAr={isAr} />
+            <ExhibitionDocuments documents={(exhibition as any).documents} isAr={isAr} />
 
             {/* Event Details */}
             <Card className="overflow-hidden transition-all hover:shadow-sm">
               <div className="border-b bg-muted/30 px-4 py-3">
                 <h3 className="flex items-center gap-2 text-sm font-semibold">
-                  <div className="flex h-6 w-6 items-center justify-center rounded-md bg-accent/10">
-                    <Calendar className="h-3.5 w-3.5 text-accent-foreground" />
-                  </div>
+                  <div className="flex h-6 w-6 items-center justify-center rounded-md bg-accent/10"><Calendar className="h-3.5 w-3.5 text-accent-foreground" /></div>
                   {isAr ? "تفاصيل الحدث" : "Event Details"}
                 </h3>
               </div>
@@ -1430,7 +724,6 @@ export default function ExhibitionDetail() {
                   </div>
                 </div>
                 <Separator />
-
                 {exhibition.registration_deadline && (
                   <>
                     <div className="flex items-center gap-3 px-4 py-3">
@@ -1443,7 +736,6 @@ export default function ExhibitionDetail() {
                     <Separator />
                   </>
                 )}
-
                 {exhibition.is_virtual ? (
                   <>
                     <div className="flex items-center gap-3 px-4 py-3">
@@ -1451,11 +743,7 @@ export default function ExhibitionDetail() {
                       <div>
                         <p className="text-[10px] uppercase tracking-wider text-muted-foreground">{isAr ? "الموقع" : "Location"}</p>
                         <p className="text-sm font-medium">{isAr ? "حدث افتراضي" : "Virtual Event"}</p>
-                        {exhibition.virtual_link && !hasEnded && (
-                          <a href={exhibition.virtual_link} target="_blank" rel="noopener noreferrer" className="text-xs text-primary underline">
-                            {isAr ? "رابط الدخول" : "Join Link"}
-                          </a>
-                        )}
+                        {exhibition.virtual_link && !hasEnded && <a href={exhibition.virtual_link} target="_blank" rel="noopener noreferrer" className="text-xs text-primary underline">{isAr ? "رابط الدخول" : "Join Link"}</a>}
                       </div>
                     </div>
                     <Separator />
@@ -1466,29 +754,19 @@ export default function ExhibitionDetail() {
                       <MapPin className="h-4 w-4 text-muted-foreground shrink-0" />
                       <div className="min-w-0">
                         <p className="text-[10px] uppercase tracking-wider text-muted-foreground">{isAr ? "الموقع" : "Location"}</p>
-                        <p className="text-sm font-medium">
-                          {countryFlag} {venue}
-                          {exhibition.city && <><br />{exhibition.city}</>}
-                          {exhibition.country && `, ${exhibition.country}`}
-                        </p>
+                        <p className="text-sm font-medium">{countryFlag} {venue}{exhibition.city && <><br />{exhibition.city}</>}{exhibition.country && `, ${exhibition.country}`}</p>
                       </div>
                     </div>
                     <Separator />
                   </>
                 ) : null}
-
                 <div className="flex items-center gap-3 px-4 py-3">
                   <Ticket className="h-4 w-4 text-muted-foreground shrink-0" />
                   <div>
                     <p className="text-[10px] uppercase tracking-wider text-muted-foreground">{isAr ? "التذاكر" : "Tickets"}</p>
-                    <p className="text-sm font-medium">
-                      {exhibition.is_free
-                        ? (isAr ? "دخول مجاني" : "Free Entry")
-                        : (isAr && exhibition.ticket_price_ar ? exhibition.ticket_price_ar : exhibition.ticket_price || (isAr ? "راجع الموقع" : "See website"))}
-                    </p>
+                    <p className="text-sm font-medium">{exhibition.is_free ? (isAr ? "دخول مجاني" : "Free Entry") : (isAr && exhibition.ticket_price_ar ? exhibition.ticket_price_ar : exhibition.ticket_price || (isAr ? "راجع الموقع" : "See website"))}</p>
                   </div>
                 </div>
-
                 {exhibition.max_attendees && (
                   <>
                     <Separator />
@@ -1504,33 +782,18 @@ export default function ExhibitionDetail() {
               </CardContent>
             </Card>
 
-            {/* QR Code */}
-            {exhibitionQrCode && (
-              <QRCodeDisplay
-                code={exhibitionQrCode.code}
-                label={isAr ? "رمز QR للفعالية" : "Exhibition QR Code"}
-                size={140}
-                compact={false}
-              />
-            )}
+            {exhibitionQrCode && <QRCodeDisplay code={exhibitionQrCode.code} label={isAr ? "رمز QR للفعالية" : "Exhibition QR Code"} size={140} compact={false} />}
 
-            {/* Tags */}
             {tags.length > 0 && (
               <Card className="overflow-hidden transition-all hover:shadow-sm">
                 <div className="border-b bg-muted/30 px-4 py-3">
                   <h3 className="flex items-center gap-2 text-sm font-semibold">
-                    <div className="flex h-6 w-6 items-center justify-center rounded-md bg-accent/10">
-                      <Tag className="h-3.5 w-3.5 text-accent-foreground" />
-                    </div>
+                    <div className="flex h-6 w-6 items-center justify-center rounded-md bg-accent/10"><Tag className="h-3.5 w-3.5 text-accent-foreground" /></div>
                     {isAr ? "الوسوم" : "Tags"}
                   </h3>
                 </div>
                 <CardContent className="p-4">
-                  <div className="flex flex-wrap gap-1.5">
-                    {tags.map((tag) => (
-                      <Badge key={tag} variant="secondary" className="text-[10px]">{tag}</Badge>
-                    ))}
-                  </div>
+                  <div className="flex flex-wrap gap-1.5">{tags.map((tag) => <Badge key={tag} variant="secondary" className="text-[10px]">{tag}</Badge>)}</div>
                 </CardContent>
               </Card>
             )}
@@ -1538,41 +801,19 @@ export default function ExhibitionDetail() {
         </div>
       </main>
 
-      {/* Gallery Lightbox */}
       {lightboxOpen && (
-        <ImageLightbox
-          images={galleryUrls.map((url, i) => ({ url, title: `${title} ${i + 1}` }))}
-          currentIndex={lightboxIndex}
-          onClose={() => setLightboxOpen(false)}
-          onNavigate={setLightboxIndex}
-        />
+        <ImageLightbox images={galleryUrls.map((url, i) => ({ url, title: `${title} ${i + 1}` }))} currentIndex={lightboxIndex} onClose={() => setLightboxOpen(false)} onNavigate={setLightboxIndex} />
       )}
-
       <Footer />
     </div>
   );
 }
 
 /* ---------- Collapsible Day Component ---------- */
-function CollapsibleDay({
-  index,
-  dayLabel,
-  dayTitle,
-  events,
-  isAr,
-  defaultOpen,
-  coverImageUrl,
-}: {
-  index: number;
-  dayLabel?: string;
-  dayTitle?: string;
-  events: ScheduleItem[];
-  isAr: boolean;
-  defaultOpen: boolean;
-  coverImageUrl?: string | null;
+function CollapsibleDay({ index, dayLabel, dayTitle, events, isAr, defaultOpen }: {
+  index: number; dayLabel?: string; dayTitle?: string; events: ScheduleItem[]; isAr: boolean; defaultOpen: boolean;
 }) {
   const [open, setOpen] = useState(defaultOpen);
-
   return (
     <Collapsible open={open} onOpenChange={setOpen}>
       <Card className="overflow-hidden shadow-sm">
@@ -1582,9 +823,7 @@ function CollapsibleDay({
               <div className="absolute inset-0 bg-gradient-to-r from-primary/10 via-primary/5 to-accent/5" />
               <div className="relative flex items-center justify-between px-5 py-4">
                 <div className="flex items-center gap-3">
-                  <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary/15 font-bold text-primary text-sm">
-                    {index + 1}
-                  </div>
+                  <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary/15 font-bold text-primary text-sm">{index + 1}</div>
                   <div>
                     <p className="text-xs text-muted-foreground">{dayLabel}</p>
                     {dayTitle && <p className="font-semibold">{dayTitle}</p>}
@@ -1596,7 +835,6 @@ function CollapsibleDay({
             </div>
           </button>
         </CollapsibleTrigger>
-
         <CollapsibleContent>
           <div className="border-t px-5 py-4 space-y-4">
             <div className="relative border-s-2 border-border ps-6 space-y-5">
@@ -1605,11 +843,7 @@ function CollapsibleDay({
                   <div className="absolute -start-[29px] top-0.5 h-3.5 w-3.5 rounded-full border-2 border-primary bg-background" />
                   {event.time && <p className="font-mono text-xs font-semibold text-primary">{event.time}</p>}
                   <p className="font-medium text-sm">{isAr && event.title_ar ? event.title_ar : event.title}</p>
-                  {(event.description || event.description_ar) && (
-                    <p className="mt-0.5 text-xs text-muted-foreground">
-                      {isAr && event.description_ar ? event.description_ar : event.description}
-                    </p>
-                  )}
+                  {(event.description || event.description_ar) && <p className="mt-0.5 text-xs text-muted-foreground">{isAr && event.description_ar ? event.description_ar : event.description}</p>}
                 </div>
               ))}
             </div>
@@ -1617,88 +851,5 @@ function CollapsibleDay({
         </CollapsibleContent>
       </Card>
     </Collapsible>
-  );
-}
-
-/* ---------- Competition Classified Card ---------- */
-function CompetitionClassifiedCard({ comp, isAr, now }: { comp: any; isAr: boolean; now: Date }) {
-  const compTitle = isAr && comp.title_ar ? comp.title_ar : comp.title;
-  const compDesc = isAr && comp.description_ar ? comp.description_ar : comp.description;
-  const compStart = new Date(comp.competition_start);
-  const compEnd = new Date(comp.competition_end);
-  const compIsLive = isWithinInterval(now, { start: compStart, end: compEnd });
-  const compIsPast = isPast(compEnd);
-  const categories = comp.competition_categories || [];
-  const regCount = comp.competition_registrations?.length || 0;
-  const regEnd = comp.registration_end ? new Date(comp.registration_end) : null;
-  const regStart = comp.registration_start ? new Date(comp.registration_start) : null;
-  const regOpen = regStart && regEnd && !isPast(regEnd) && isPast(regStart);
-  const maxParts = comp.max_participants;
-
-  return (
-    <Card className="overflow-hidden transition-all hover:shadow-md hover:-translate-y-0.5">
-      <div className="flex flex-col sm:flex-row">
-        {comp.cover_image_url && (
-          <div className="sm:w-48 shrink-0">
-            <img src={comp.cover_image_url} alt={compTitle} className="h-40 w-full object-cover sm:h-full" />
-          </div>
-        )}
-        <div className="flex-1 p-5">
-          <div className="flex flex-wrap items-center gap-2 mb-2">
-            <Badge variant={compIsLive ? "default" : compIsPast ? "secondary" : "outline"} className="text-[10px]">
-              {compIsLive ? (isAr ? "🔴 جارية" : "🔴 Live") : compIsPast ? (isAr ? "انتهت" : "Ended") : (isAr ? "قادمة" : "Upcoming")}
-            </Badge>
-            {regOpen && <Badge className="bg-chart-3/20 text-chart-3 border-chart-3/30 text-[10px]">{isAr ? "التسجيل مفتوح" : "Registration Open"}</Badge>}
-          </div>
-
-          <Link to={`/competitions/${comp.id}`} className="group">
-            <h3 className="text-lg font-semibold group-hover:text-primary transition-colors">{compTitle}</h3>
-          </Link>
-
-          {compDesc && <p className="mt-1 text-sm text-muted-foreground line-clamp-2">{compDesc}</p>}
-
-          <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-1.5 text-xs text-muted-foreground">
-            <span className="flex items-center gap-1">
-              <Calendar className="h-3 w-3" />
-              {format(compStart, "MMM d")} – {format(compEnd, "MMM d, yyyy")}
-            </span>
-            <span className="flex items-center gap-1">
-              <Users className="h-3 w-3" />
-              {regCount}{maxParts ? `/${maxParts}` : ""} {isAr ? "مسجل" : "registered"}
-            </span>
-          </div>
-
-          {categories.length > 0 && (
-            <div className="mt-3 flex flex-wrap gap-1.5">
-              {categories.slice(0, 5).map((cat: any) => (
-                <Badge key={cat.id} variant="secondary" className="text-[10px]">
-                  {isAr && cat.name_ar ? cat.name_ar : cat.name}
-                </Badge>
-              ))}
-              {categories.length > 5 && (
-                <Badge variant="outline" className="text-[10px]">+{categories.length - 5}</Badge>
-              )}
-            </div>
-          )}
-
-          <div className="mt-4 flex flex-wrap gap-2">
-            {regOpen && (
-              <Button size="sm" asChild>
-                <Link to={`/competitions/${comp.id}`}>
-                  <Trophy className="me-1.5 h-3.5 w-3.5" />
-                  {isAr ? "سجّل الآن" : "Register Now"}
-                </Link>
-              </Button>
-            )}
-            <Button size="sm" variant="outline" asChild>
-              <Link to={`/competitions/${comp.id}`}>
-                {isAr ? "عرض التفاصيل" : "View Details"}
-                <ChevronRight className="ms-1 h-3 w-3" />
-              </Link>
-            </Button>
-          </div>
-        </div>
-      </div>
-    </Card>
   );
 }
