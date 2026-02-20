@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import React, { useState, useMemo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useGlobalEventsCalendar, GLOBAL_EVENT_COLORS, GLOBAL_EVENT_LABELS, type GlobalEvent, type GlobalEventType } from "@/hooks/useGlobalEventsCalendar";
 import { Card, CardContent } from "@/components/ui/card";
