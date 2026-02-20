@@ -201,7 +201,7 @@ export function EventsByCategory() {
         </div>
       </SectionReveal>
 
-      <Tabs defaultValue="competitions" className="w-full">
+      <Tabs defaultValue="competitions" className="w-full" dir={isAr ? "rtl" : "ltr"}>
         <TabsList className="mx-auto mb-6 flex w-fit flex-wrap">
           {tabs.map((tab) => (
             <TabsTrigger key={tab.key} value={tab.key} className="gap-1 text-xs sm:text-sm sm:gap-1.5">
