@@ -1,3 +1,4 @@
+import React from "react";
 import {
   Sparkles, Search, BarChart3, CalendarDays, MapPin, ChefHat,
   UserPlus, Heart, Truck, GraduationCap, Megaphone, Newspaper,
@@ -25,7 +26,16 @@ const ICON_MAP: Record<string, React.ElementType> = {
   partners: Handshake,
 };
 
-export function SectionIcon({ sectionKey, className }: { sectionKey: string; className?: string }) {
+export const SectionIcon = React.forwardRef<
+  HTMLSpanElement,
+  { sectionKey: string; className?: string } & React.HTMLAttributes<HTMLSpanElement>
+>(({ sectionKey, className, ...props }, ref) => {
   const Icon = ICON_MAP[sectionKey] || Layout;
-  return <Icon className={className} />;
-}
+  return (
+    <span ref={ref} {...props} className="inline-flex">
+      <Icon className={className} />
+    </span>
+  );
+});
+
+SectionIcon.displayName = "SectionIcon";

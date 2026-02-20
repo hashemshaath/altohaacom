@@ -382,6 +382,68 @@ export function SectionRow({
                 </div>
               </TabsContent>
 
+              {/* Style Tab */}
+              <TabsContent value="style" className="px-3 sm:px-4 py-4 space-y-4 mt-0">
+                <div className="space-y-3">
+                  <Label className="text-xs font-semibold flex items-center gap-1.5">
+                    <Sparkles className="h-3 w-3" /> {isAr ? "الحركة" : "Animation"}
+                  </Label>
+                  <Select value={merged.animation} onValueChange={(v) => set("animation", v as HomepageSection["animation"])}>
+                    <SelectTrigger className="h-8 text-xs"><SelectValue /></SelectTrigger>
+                    <SelectContent>
+                      {ANIMATION_OPTIONS.map((opt) => (
+                        <SelectItem key={opt.value} value={opt.value} className="text-xs">{isAr ? opt.ar : opt.en}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                <Separator />
+
+                <div className="space-y-3">
+                  <Label className="text-xs font-semibold flex items-center gap-1.5">
+                    <Palette className="h-3 w-3" /> {isAr ? "لون الخلفية" : "Background Color"}
+                  </Label>
+                  <div className="flex items-center gap-2">
+                    <Input
+                      type="color"
+                      value={merged.bg_color || "#ffffff"}
+                      onChange={(e) => set("bg_color", e.target.value)}
+                      className="h-8 w-12 p-1 cursor-pointer"
+                    />
+                    <Input
+                      value={merged.bg_color || ""}
+                      onChange={(e) => set("bg_color", e.target.value)}
+                      placeholder={isAr ? "مثال: #f5f5f5 أو اتركه فارغاً" : "e.g. #f5f5f5 or leave empty"}
+                      className="text-xs h-8 font-mono flex-1"
+                    />
+                    {merged.bg_color && (
+                      <Button size="sm" variant="ghost" className="h-8 text-[10px]" onClick={() => set("bg_color", "")}>
+                        {isAr ? "مسح" : "Clear"}
+                      </Button>
+                    )}
+                  </div>
+                  {merged.bg_color && (
+                    <div className="rounded-md border border-border/50 h-8 w-full" style={{ backgroundColor: merged.bg_color }} />
+                  )}
+                </div>
+
+                <Separator />
+
+                <div className="space-y-3">
+                  <Label className="text-xs font-semibold">{isAr ? "فئة CSS مخصصة" : "Custom CSS Class"}</Label>
+                  <Input
+                    value={merged.css_class || ""}
+                    onChange={(e) => set("css_class", e.target.value)}
+                    placeholder={isAr ? "مثال: bg-gradient-to-r from-primary/5" : "e.g. bg-gradient-to-r from-primary/5"}
+                    className="text-xs h-8 font-mono"
+                  />
+                  <p className="text-[10px] text-muted-foreground">
+                    {isAr ? "أضف فئات Tailwind CSS مخصصة لهذا القسم" : "Add custom Tailwind CSS classes to this section"}
+                  </p>
+                </div>
+              </TabsContent>
+
               {/* Advanced Tab */}
               <TabsContent value="advanced" className="px-3 sm:px-4 py-4 space-y-4 mt-0">
                 <div className="space-y-3">
