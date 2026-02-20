@@ -106,12 +106,12 @@ export function SupervisingBodiesStep({
         </CardHeader>
         <CardContent className="space-y-3">
           <div className="relative">
-            <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+            <Search className="absolute start-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
             <Input
               placeholder={isAr ? "بحث في الجهات..." : "Search entities..."}
               value={entitySearch}
               onChange={(e) => setEntitySearch(e.target.value)}
-              className="pl-10"
+              className="ps-10"
             />
           </div>
 
@@ -188,12 +188,12 @@ export function SupervisingBodiesStep({
         </CardHeader>
         <CardContent className="space-y-3">
           <div className="relative">
-            <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+            <Search className="absolute start-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
             <Input
               placeholder={isAr ? "بحث في الحكام..." : "Search judges..."}
               value={judgeSearch}
               onChange={(e) => setJudgeSearch(e.target.value)}
-              className="pl-10"
+              className="ps-10"
             />
           </div>
 

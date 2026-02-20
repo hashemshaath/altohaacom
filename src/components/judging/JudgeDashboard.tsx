@@ -207,7 +207,7 @@ export function JudgeDashboard({ onSelectCompetition }: JudgeDashboardProps) {
                   <button
                     key={comp.id}
                     onClick={() => onSelectCompetition?.(comp.id)}
-                    className="group w-full rounded-xl border bg-card p-4 text-left transition-all hover:shadow-md hover:-translate-y-0.5"
+                    className="group w-full rounded-xl border bg-card p-4 text-start transition-all hover:shadow-md hover:-translate-y-0.5"
                   >
                     <div className="flex items-center justify-between mb-3">
                       <h4 className="font-medium text-sm group-hover:text-primary transition-colors">

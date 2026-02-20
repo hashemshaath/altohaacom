@@ -464,7 +464,7 @@ export function CategoryManagementPanel({ competitionId, isOrganizer, competitio
       <Card>
         <CardContent className="flex flex-wrap gap-3 pt-4 pb-3">
           <div className="relative flex-1 min-w-[150px]">
-            <Filter className="absolute left-3 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-muted-foreground" />
+            <Filter className="absolute start-3 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-muted-foreground" />
             <Input
               placeholder={isAr ? "بحث..." : "Search..."}
               value={searchQuery}
