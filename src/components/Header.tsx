@@ -70,7 +70,7 @@ export function Header() {
           : "border-border/40 shadow-none"
       )}
     >
-      <nav className="container flex h-12 items-center gap-1 sm:gap-1.5" aria-label="Main navigation">
+      <nav className="container flex h-14 items-center gap-1.5 sm:gap-2" aria-label="Main navigation">
         {/* Mobile menu */}
         <MobileMenu primaryNav={primaryNav} moreLinks={moreLinks} />
 

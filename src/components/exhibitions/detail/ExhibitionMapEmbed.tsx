@@ -47,7 +47,7 @@ export function ExhibitionMapEmbed({ mapUrl, venue, city, country, address, isAr
       <CardContent className="p-0">
         {/* Map embed */}
         {embedUrl ? (
-          <div className="relative aspect-[4/3] w-full overflow-hidden bg-muted">
+          <div className="relative aspect-[16/9] w-full overflow-hidden bg-muted rounded-b-none">
             <iframe
               src={embedUrl}
               className="h-full w-full border-0"
@@ -58,7 +58,7 @@ export function ExhibitionMapEmbed({ mapUrl, venue, city, country, address, isAr
             />
           </div>
         ) : (
-          <div className="flex aspect-[4/3] items-center justify-center bg-gradient-to-br from-muted/50 to-muted/20">
+          <div className="flex aspect-[16/9] items-center justify-center bg-gradient-to-br from-muted/50 to-muted/20">
             <div className="text-center space-y-2">
               <Navigation className="h-10 w-10 text-muted-foreground/30 mx-auto" />
               <p className="text-xs text-muted-foreground">{isAr ? "لا تتوفر خريطة" : "Map not available"}</p>

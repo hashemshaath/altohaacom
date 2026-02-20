@@ -60,8 +60,8 @@ export function ExhibitionHero({
 
   return (
     <div className="relative bg-background">
-      {/* Cover Image — compact, clean */}
-      <div className="relative w-full overflow-hidden" style={{ maxHeight: "340px" }}>
+      {/* Cover Image — with rich gradient overlay */}
+      <div className="relative w-full overflow-hidden" style={{ maxHeight: "360px" }}>
         <div className="aspect-[21/9] w-full">
           {exhibition.cover_image_url ? (
             <img
@@ -71,11 +71,13 @@ export function ExhibitionHero({
               loading="eager"
             />
           ) : (
-            <div className="h-full w-full bg-gradient-to-br from-primary/15 via-accent/8 to-background" />
+            <div className="h-full w-full bg-gradient-to-br from-primary/20 via-accent/10 to-background" />
           )}
         </div>
-        {/* Minimal bottom gradient for transition */}
-        <div className="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-background to-transparent" />
+        {/* Multi-layer gradient for depth and clarity */}
+        <div className="absolute inset-0 bg-gradient-to-t from-background via-background/40 to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-r from-background/50 via-transparent to-background/50 rtl:bg-gradient-to-l" />
+        <div className="absolute inset-x-0 bottom-0 h-16 bg-gradient-to-t from-background to-transparent" />
 
         {/* Back button overlay */}
         <div className="absolute top-3 start-3 sm:top-4 sm:start-4">

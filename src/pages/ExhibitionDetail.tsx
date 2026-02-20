@@ -343,7 +343,7 @@ export default function ExhibitionDetail() {
           {/* ======== MAIN CONTENT ======== */}
           <div className="lg:col-span-2">
             <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6 sm:space-y-8">
-              <div className="sticky top-[57px] z-30 -mx-3 border-b border-border/40 bg-background/80 px-3 py-2.5 backdrop-blur-md sm:top-[136px] md:mx-0 md:rounded-2xl md:border md:px-4 md:py-3">
+              <div className="sticky top-14 z-30 -mx-3 border-b border-border/40 bg-background/80 px-3 py-2.5 backdrop-blur-md md:mx-0 md:rounded-2xl md:border md:px-4 md:py-3">
                 <TabsList className="h-auto w-full justify-start gap-0.5 overflow-x-auto bg-transparent p-0 scrollbar-none sm:gap-1">
                   <TabsTrigger value="overview" className="rounded-xl px-3 py-2 text-[10px] font-bold uppercase tracking-wider transition-all data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-lg shadow-primary/20 sm:px-5 sm:py-2.5 sm:text-xs whitespace-nowrap">
                     {isAr ? "نظرة عامة" : "Overview"}
