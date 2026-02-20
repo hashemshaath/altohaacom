@@ -347,7 +347,7 @@ export function CertificateDesigner({
                   <div className="flex items-center justify-between">
                     <Label className="text-xs">{language === "ar" ? "التوقيعات" : "Signatures"}</Label>
                     <Button variant="outline" size="sm" onClick={addSignature} className="h-7 text-xs">
-                      <Plus className="h-3 w-3 mr-1" />{language === "ar" ? "إضافة" : "Add"}
+                      <Plus className="h-3 w-3 me-1" />{language === "ar" ? "إضافة" : "Add"}
                     </Button>
                   </div>
 
@@ -384,7 +384,7 @@ export function CertificateDesigner({
         {/* Action Buttons */}
         <div className="flex gap-2">
           <Button className="flex-1" onClick={() => onSave?.(design)}>
-            <Save className="h-4 w-4 mr-2" />
+            <Save className="h-4 w-4 me-2" />
             {language === "ar" ? "حفظ التصميم" : "Save Design"}
           </Button>
           {onPrint && (

@@ -564,7 +564,7 @@ export default function KnowledgeAdmin() {
         <TabsContent value="categories" className="space-y-4">
           {!showAddCategory ? (
             <Button onClick={() => setShowAddCategory(true)}>
-              <Plus className="mr-2 h-4 w-4" />
+              <Plus className="me-2 h-4 w-4" />
               {language === "ar" ? "إضافة تصنيف" : "Add Category"}
             </Button>
           ) : (
@@ -585,10 +585,10 @@ export default function KnowledgeAdmin() {
                 </div>
                 <div className="flex justify-end gap-2">
                   <Button variant="outline" onClick={() => setShowAddCategory(false)}>
-                    <X className="mr-2 h-4 w-4" /> {language === "ar" ? "إلغاء" : "Cancel"}
+                    <X className="me-2 h-4 w-4" /> {language === "ar" ? "إلغاء" : "Cancel"}
                   </Button>
                   <Button onClick={() => addCategoryMutation.mutate()} disabled={!categoryForm.name}>
-                    <Save className="mr-2 h-4 w-4" /> {language === "ar" ? "حفظ" : "Save"}
+                    <Save className="me-2 h-4 w-4" /> {language === "ar" ? "حفظ" : "Save"}
                   </Button>
                 </div>
               </CardContent>
@@ -615,7 +615,7 @@ export default function KnowledgeAdmin() {
         <TabsContent value="gallery" className="space-y-4">
           {!showAddReference ? (
             <Button onClick={() => setShowAddReference(true)}>
-              <Plus className="mr-2 h-4 w-4" />
+              <Plus className="me-2 h-4 w-4" />
               {language === "ar" ? "إضافة مرجع" : "Add Reference"}
             </Button>
           ) : (
@@ -676,10 +676,10 @@ export default function KnowledgeAdmin() {
                 </div>
                 <div className="flex justify-end gap-2">
                   <Button variant="outline" onClick={() => setShowAddReference(false)}>
-                    <X className="mr-2 h-4 w-4" /> {language === "ar" ? "إلغاء" : "Cancel"}
+                    <X className="me-2 h-4 w-4" /> {language === "ar" ? "إلغاء" : "Cancel"}
                   </Button>
                   <Button onClick={() => addReferenceMutation.mutate()} disabled={!referenceForm.title || !referenceForm.image_url}>
-                    <Save className="mr-2 h-4 w-4" /> {language === "ar" ? "حفظ" : "Save"}
+                    <Save className="me-2 h-4 w-4" /> {language === "ar" ? "حفظ" : "Save"}
                   </Button>
                 </div>
               </CardContent>
@@ -718,7 +718,7 @@ export default function KnowledgeAdmin() {
         <TabsContent value="rubrics" className="space-y-4">
           {!showAddRubric ? (
             <Button onClick={() => setShowAddRubric(true)}>
-              <Plus className="mr-2 h-4 w-4" />
+              <Plus className="me-2 h-4 w-4" />
               {language === "ar" ? "إضافة قالب تقييم" : "Add Rubric Template"}
             </Button>
           ) : (
@@ -759,10 +759,10 @@ export default function KnowledgeAdmin() {
                 </div>
                 <div className="flex justify-end gap-2">
                   <Button variant="outline" onClick={() => setShowAddRubric(false)}>
-                    <X className="mr-2 h-4 w-4" /> {language === "ar" ? "إلغاء" : "Cancel"}
+                    <X className="me-2 h-4 w-4" /> {language === "ar" ? "إلغاء" : "Cancel"}
                   </Button>
                   <Button onClick={() => addRubricMutation.mutate()} disabled={!rubricForm.name}>
-                    <Save className="mr-2 h-4 w-4" /> {language === "ar" ? "حفظ" : "Save"}
+                    <Save className="me-2 h-4 w-4" /> {language === "ar" ? "حفظ" : "Save"}
                   </Button>
                 </div>
               </CardContent>

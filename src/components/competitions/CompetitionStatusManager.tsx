@@ -309,7 +309,7 @@ export function CompetitionStatusManager({
                     onClick={cancelStatusChange}
                     disabled={updateStatusMutation.isPending}
                   >
-                    <X className="mr-1 h-4 w-4" />
+                    <X className="me-1 h-4 w-4" />
                     {language === "ar" ? "إلغاء" : "Cancel"}
                   </Button>
                   <Button
@@ -318,7 +318,7 @@ export function CompetitionStatusManager({
                     disabled={updateStatusMutation.isPending}
                     className={pendingStatus === "cancelled" ? "bg-destructive hover:bg-destructive/90" : ""}
                   >
-                    <CheckCircle className="mr-1 h-4 w-4" />
+                    <CheckCircle className="me-1 h-4 w-4" />
                     {updateStatusMutation.isPending
                       ? language === "ar"
                         ? "جاري التحديث..."
@@ -353,7 +353,7 @@ export function CompetitionStatusManager({
                     onClick={() => handleStatusChange(nextStatus)}
                     disabled={updateStatusMutation.isPending}
                   >
-                    <StatusIcon className="mr-1 h-4 w-4" />
+                    <StatusIcon className="me-1 h-4 w-4" />
                     {language === "ar" ? config.labelAr : config.label}
                   </Button>
                 );

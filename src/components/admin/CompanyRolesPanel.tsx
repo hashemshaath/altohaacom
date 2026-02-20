@@ -89,7 +89,7 @@ export function CompanyRolesPanel({ companyId }: CompanyRolesPanelProps) {
             </Select>
           </div>
           <Button onClick={handleAssign} disabled={!newRole || assignMutation.isPending}>
-            <Plus className="h-4 w-4 mr-2" />
+            <Plus className="h-4 w-4 me-2" />
             {language === "ar" ? "تعيين" : "Assign"}
           </Button>
         </CardContent>

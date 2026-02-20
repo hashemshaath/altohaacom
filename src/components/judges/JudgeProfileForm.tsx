@@ -364,7 +364,7 @@ export default function JudgeProfileForm({ userId, isAdmin }: Props) {
       </Card>
 
       <Button onClick={() => saveMutation.mutate()} disabled={saveMutation.isPending} size="lg">
-        <Save className="mr-2 h-4 w-4" />
+        <Save className="me-2 h-4 w-4" />
         {saveMutation.isPending ? (isAr ? "جاري الحفظ..." : "Saving...") : (isAr ? "حفظ الملف" : "Save Profile")}
       </Button>
     </div>
