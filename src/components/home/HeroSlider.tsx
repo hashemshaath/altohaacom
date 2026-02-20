@@ -1,23 +1,30 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, memo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, ChevronLeft, ChevronRight, Sparkles } from "lucide-react";
-import { Badge } from "@/components/ui/badge";
 import { Link } from "react-router-dom";
 import { cn } from "@/lib/utils";
 import type { HeroSlide } from "@/components/admin/hero/HeroSlideAdmin";
 import { HeroSlidePreview } from "@/components/admin/hero/HeroSlidePreview";
 
-function FallbackHero({ isAr }: { isAr: boolean }) {
+// ── Fallback (no DB slides) ───────────────────────────────────────────────────
+const FallbackHero = memo(function FallbackHero({ isAr }: { isAr: boolean }) {
   return (
-    <section className="relative flex items-center justify-center overflow-hidden py-20 md:py-36" aria-label={isAr ? "القسم الرئيسي" : "Hero section"}>
+    <section
+      className="relative flex items-center justify-center overflow-hidden"
+      style={{ minHeight: 520 }}
+      aria-label={isAr ? "القسم الرئيسي" : "Hero section"}
+    >
       <div className="absolute inset-0 bg-gradient-to-br from-primary/15 via-background to-accent/10" />
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,hsl(var(--primary)/0.12),transparent_60%)]" />
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom_left,hsl(var(--accent)/0.08),transparent_60%)]" />
       <div className="absolute top-20 end-[15%] h-64 w-64 rounded-full bg-primary/8 blur-3xl animate-pulse" />
-      <div className="absolute bottom-10 start-[10%] h-48 w-48 rounded-full bg-accent/10 blur-3xl animate-pulse" style={{ animationDelay: "1.5s" }} />
+      <div
+        className="absolute bottom-10 start-[10%] h-48 w-48 rounded-full bg-accent/10 blur-3xl animate-pulse"
+        style={{ animationDelay: "1.5s" }}
+      />
       <div className="container relative text-center">
         <div className="mx-auto mb-6 inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/5 px-4 py-2 backdrop-blur-sm">
           <Sparkles className="h-4 w-4 text-primary" />
@@ -25,14 +32,12 @@ function FallbackHero({ isAr }: { isAr: boolean }) {
             {isAr ? "المنصة الأولى عالمياً" : "The World's #1 Culinary Platform"}
           </span>
         </div>
-        <h1 className={cn("text-3xl font-bold sm:text-4xl md:text-5xl lg:text-6xl leading-tight", !isAr && "font-serif")}>
+        <h1 className="text-3xl font-bold sm:text-4xl md:text-5xl lg:text-6xl leading-tight">
           <span className="bg-gradient-to-br from-primary via-primary/80 to-accent bg-clip-text text-transparent">
             {isAr ? "ارتقِ بشغفك" : "Elevate Your"}
           </span>
           <br />
-          <span className="text-foreground">
-            {isAr ? "في عالم الطهي" : "Culinary Journey"}
-          </span>
+          <span className="text-foreground">{isAr ? "في عالم الطهي" : "Culinary Journey"}</span>
         </h1>
         <p className="mx-auto mt-5 max-w-xl text-lg text-muted-foreground leading-relaxed">
           {isAr
@@ -41,7 +46,10 @@ function FallbackHero({ isAr }: { isAr: boolean }) {
         </p>
         <div className="mt-8 flex flex-wrap justify-center gap-3">
           <Button size="lg" className="shadow-lg shadow-primary/25 text-base px-8" asChild>
-            <Link to="/register">{isAr ? "ابدأ رحلتك" : "Start Your Journey"} <ArrowRight className="ms-2 h-4 w-4" /></Link>
+            <Link to="/register">
+              {isAr ? "ابدأ رحلتك" : "Start Your Journey"}{" "}
+              <ArrowRight className="ms-2 h-4 w-4" />
+            </Link>
           </Button>
           <Button size="lg" variant="outline" className="text-base px-8" asChild>
             <Link to="/competitions">{isAr ? "استكشف المسابقات" : "Explore Competitions"}</Link>
@@ -50,14 +58,54 @@ function FallbackHero({ isAr }: { isAr: boolean }) {
       </div>
     </section>
   );
+});
+
+// ── Height helper (mirrors HeroSlidePreview) ─────────────────────────────────
+function resolveHeight(slide: HeroSlide): number {
+  if (slide.height_preset === "viewport") return window.innerHeight;
+  if (slide.height_preset === "custom" && slide.custom_height) return slide.custom_height;
+  const map: Record<string, number> = { compact: 360, medium: 520, large: 680, cinematic: 800 };
+  return map[slide.height_preset] ?? 520;
 }
 
+// ── Slide wrapper with per-slide transition ───────────────────────────────────
+const SlideWrapper = memo(function SlideWrapper({
+  slide,
+  isActive,
+  height,
+}: {
+  slide: HeroSlide;
+  isActive: boolean;
+  height: number;
+}) {
+  const effect = slide.animation_effect || "fade";
+
+  return (
+    <div
+      className={cn(
+        "w-full transition-all duration-700",
+        !isActive && "absolute inset-0 pointer-events-none",
+        effect === "fade"  && (isActive ? "opacity-100"                       : "opacity-0"),
+        effect === "slide" && (isActive ? "translate-x-0 opacity-100"         : "translate-x-full opacity-0"),
+        effect === "zoom"  && (isActive ? "scale-100 opacity-100"             : "scale-110 opacity-0"),
+        effect === "blur"  && (isActive ? "blur-0 opacity-100"                : "blur-md opacity-0"),
+        effect === "none"  && (isActive ? "opacity-100"                       : "opacity-0"),
+      )}
+      aria-hidden={!isActive}
+      style={!isActive ? { height } : undefined}
+    >
+      <HeroSlidePreview slide={slide} />
+    </div>
+  );
+});
+
+// ── Main slider ───────────────────────────────────────────────────────────────
 export function HeroSlider() {
   const { language } = useLanguage();
   const isAr = language === "ar";
   const [current, setCurrent] = useState(0);
 
-  const { data: slides = [] } = useQuery<HeroSlide[]>({
+  const { data: rawSlides = [] } = useQuery<HeroSlide[]>({
     queryKey: ["hero-slides"],
     queryFn: async () => {
       const { data } = await supabase
@@ -67,14 +115,25 @@ export function HeroSlider() {
         .order("sort_order");
       return (data || []) as HeroSlide[];
     },
+    staleTime: 1000 * 60 * 5, // 5 min cache — avoids refetch on navigation
   });
 
+  // Localise slide content for the active language
+  const slides: HeroSlide[] = rawSlides.map((s) => ({
+    ...s,
+    title:               isAr && s.title_ar              ? s.title_ar              : s.title,
+    subtitle:            isAr && s.subtitle_ar           ? s.subtitle_ar           : s.subtitle,
+    badge_text:          isAr && s.badge_text_ar         ? s.badge_text_ar         : s.badge_text,
+    link_label:          isAr && s.link_label_ar         ? s.link_label_ar         : s.link_label,
+    cta_secondary_label: isAr && s.cta_secondary_label_ar ? s.cta_secondary_label_ar : s.cta_secondary_label,
+  }));
+
   const next = useCallback(() => {
-    if (slides.length > 0) setCurrent(c => (c + 1) % slides.length);
+    if (slides.length > 0) setCurrent((c) => (c + 1) % slides.length);
   }, [slides.length]);
 
   const prev = useCallback(() => {
-    if (slides.length > 0) setCurrent(c => (c - 1 + slides.length) % slides.length);
+    if (slides.length > 0) setCurrent((c) => (c - 1 + slides.length) % slides.length);
   }, [slides.length]);
 
   useEffect(() => {
@@ -87,47 +146,27 @@ export function HeroSlider() {
 
   if (!slides.length) return <FallbackHero isAr={isAr} />;
 
+  // The container height = active slide's resolved height so the slider never collapses
+  const activeHeight = resolveHeight(slides[current]);
+
   return (
-    <div className="relative" aria-label={isAr ? "القسم الرئيسي" : "Hero slider"} role="region">
-      {/* Slide stack with animation */}
-      <div className="relative overflow-hidden">
-        {slides.map((rawSlide, i) => {
-          const isActive = i === current;
-          const effect = rawSlide.animation_effect || "fade";
-          const localizedSlide: HeroSlide = {
-            ...rawSlide,
-            title: isAr && rawSlide.title_ar ? rawSlide.title_ar : rawSlide.title,
-            subtitle: isAr && rawSlide.subtitle_ar ? rawSlide.subtitle_ar : (rawSlide.subtitle ?? null),
-            badge_text: isAr && rawSlide.badge_text_ar ? rawSlide.badge_text_ar : (rawSlide.badge_text ?? null),
-            link_label: isAr && rawSlide.link_label_ar ? rawSlide.link_label_ar : (rawSlide.link_label ?? null),
-            cta_secondary_label: isAr && rawSlide.cta_secondary_label_ar ? rawSlide.cta_secondary_label_ar : (rawSlide.cta_secondary_label ?? null),
-          };
+    <section
+      className="relative overflow-hidden"
+      style={{ height: activeHeight, transition: "height 0.5s ease" }}
+      aria-label={isAr ? "القسم الرئيسي" : "Hero slider"}
+      role="region"
+    >
+      {/* Slide stack */}
+      {slides.map((slide, i) => (
+        <SlideWrapper
+          key={slide.id}
+          slide={slide}
+          isActive={i === current}
+          height={activeHeight}
+        />
+      ))}
 
-          return (
-            <div
-              key={rawSlide.id}
-              className={cn(
-                "transition-all duration-700",
-                !isActive && "absolute inset-0 pointer-events-none",
-                // Fade
-                effect === "fade" && (isActive ? "opacity-100" : "opacity-0"),
-                // Slide
-                effect === "slide" && (isActive ? "translate-x-0 opacity-100" : "translate-x-full opacity-0"),
-                // Zoom
-                effect === "zoom" && (isActive ? "scale-100 opacity-100" : "scale-110 opacity-0"),
-                // Blur
-                effect === "blur" && (isActive ? "blur-0 opacity-100" : "blur-md opacity-0"),
-                // None
-                effect === "none" && (isActive ? "opacity-100" : "opacity-0"),
-              )}
-            >
-              <HeroSlidePreview slide={localizedSlide} />
-            </div>
-          );
-        })}
-      </div>
-
-      {/* Navigation — only when multiple slides */}
+      {/* Navigation — only with multiple slides */}
       {slides.length > 1 && (
         <>
           <button
@@ -146,7 +185,7 @@ export function HeroSlider() {
           </button>
 
           {/* Progress dots */}
-          <div className="absolute bottom-3 inset-x-0 z-30 flex justify-center gap-2">
+          <div className="absolute bottom-4 inset-x-0 z-30 flex justify-center gap-2">
             {slides.map((_: HeroSlide, i: number) => (
               <button
                 key={i}
@@ -163,6 +202,6 @@ export function HeroSlider() {
           </div>
         </>
       )}
-    </div>
+    </section>
   );
 }

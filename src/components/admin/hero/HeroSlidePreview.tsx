@@ -64,7 +64,7 @@ function ClassicTemplate({ slide }: { slide: HeroSlide }) {
   const pos = getPositionClasses(slide.text_position);
   return (
     <section className="relative overflow-hidden" style={getHeightStyle(slide)}>
-      <img src={slide.image_url} alt={slide.title} className="absolute inset-0 h-full w-full scale-105" style={getImageStyle(slide)} />
+      <img src={slide.image_url} alt={slide.title} fetchPriority="high" decoding="async" className="absolute inset-0 h-full w-full scale-105" style={getImageStyle(slide)} />
       <div className="absolute inset-0" style={{ background: buildGradient(slide) }} />
       <div className="absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-background/70 to-transparent" />
       <div className={cn("absolute inset-0 flex", pos.outer)}>
