@@ -103,19 +103,19 @@ export default function QRCodesAdmin() {
       />
 
       {/* Stats */}
-      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+      <div className="grid grid-cols-2 gap-2.5 sm:gap-4 lg:grid-cols-4">
         {[
-          { icon: <Hash className="h-4 w-4" />, label: isAr ? "إجمالي الرموز" : "Total Codes", value: stats?.total ?? "—" },
+          { icon: <Hash className="h-4 w-4" />, label: isAr ? "إجمالي" : "Total", value: stats?.total ?? "—" },
           { icon: <QrCode className="h-4 w-4" />, label: isAr ? "النشطة" : "Active", value: stats?.active ?? "—" },
           { icon: <ScanLine className="h-4 w-4" />, label: isAr ? "أعلى مسح" : "Top Scans", value: stats?.topScanned ?? "—" },
-          { icon: <BarChart3 className="h-4 w-4" />, label: isAr ? "أكثر كود مسحاً" : "Most Scanned", value: stats?.topCode ?? "—" },
+          { icon: <BarChart3 className="h-4 w-4" />, label: isAr ? "أكثر كود" : "Top Code", value: stats?.topCode ?? "—" },
         ].map((s, i) => (
           <Card key={i}>
-            <CardContent className="flex items-center gap-3 p-4">
-              <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-primary/10 text-primary">{s.icon}</div>
-              <div>
-                <p className="text-xs text-muted-foreground">{s.label}</p>
-                <p className="text-lg font-bold">{s.value}</p>
+            <CardContent className="flex items-center gap-2.5 p-3 sm:p-4">
+              <div className="flex h-8 w-8 sm:h-9 sm:w-9 items-center justify-center rounded-xl bg-primary/10 text-primary shrink-0">{s.icon}</div>
+              <div className="min-w-0">
+                <p className="text-[10px] sm:text-xs text-muted-foreground">{s.label}</p>
+                <p className="text-sm sm:text-lg font-bold truncate">{s.value}</p>
               </div>
             </CardContent>
           </Card>
@@ -124,18 +124,18 @@ export default function QRCodesAdmin() {
 
       {/* Filters */}
       <Card>
-        <CardContent className="flex flex-col gap-3 p-4 sm:flex-row sm:items-center">
+        <CardContent className="flex flex-col gap-2.5 p-3 sm:flex-row sm:items-center sm:p-4">
           <div className="relative flex-1">
             <Search className="absolute start-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
             <Input
               placeholder={isAr ? "بحث بالكود أو النوع..." : "Search by code or type..."}
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="ps-9"
+              className="ps-9 h-9"
             />
           </div>
           <Select value={category} onValueChange={setCategory}>
-            <SelectTrigger className="w-full sm:w-44">
+            <SelectTrigger className="w-full sm:w-44 h-9">
               <Filter className="me-2 h-4 w-4" />
               <SelectValue />
             </SelectTrigger>
@@ -149,39 +149,69 @@ export default function QRCodesAdmin() {
         </CardContent>
       </Card>
 
-      {/* Table */}
+      {/* Table / Cards */}
       <Card>
-        <CardHeader className="pb-3">
+        <CardHeader className="pb-3 px-3 sm:px-6">
           <CardTitle className="text-sm">{isAr ? "الرموز المُصدرة" : "Issued Codes"} ({filtered?.length || 0})</CardTitle>
         </CardHeader>
         <CardContent className="p-0">
           {isLoading ? (
-            <div className="space-y-2 p-4">
+            <div className="space-y-2 p-3 sm:p-4">
               {[...Array(5)].map((_, i) => <Skeleton key={i} className="h-10 w-full" />)}
             </div>
+          ) : filtered?.length === 0 ? (
+            <div className="py-8 text-center text-muted-foreground text-sm">
+              {isAr ? "لا توجد رموز" : "No QR codes found"}
+            </div>
           ) : (
-            <div className="overflow-x-auto">
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>{isAr ? "الكود" : "Code"}</TableHead>
-                    <TableHead>{isAr ? "النوع" : "Entity Type"}</TableHead>
-                    <TableHead>{isAr ? "الفئة" : "Category"}</TableHead>
-                    <TableHead className="text-center">{isAr ? "المسح" : "Scans"}</TableHead>
-                    <TableHead>{isAr ? "الحالة" : "Status"}</TableHead>
-                    <TableHead>{isAr ? "التاريخ" : "Created"}</TableHead>
-                    <TableHead className="text-end">{isAr ? "إجراءات" : "Actions"}</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {filtered?.length === 0 ? (
+            <>
+              {/* Mobile cards */}
+              <div className="sm:hidden divide-y divide-border">
+                {filtered?.map((qr) => (
+                  <div key={qr.id} className="flex items-center gap-3 px-3 py-2.5">
+                    <div className="min-w-0 flex-1">
+                      <div className="flex items-center gap-1.5">
+                        <span className="font-mono text-xs tracking-wider truncate">{qr.code}</span>
+                        <Badge variant={qr.is_active ? "default" : "destructive"} className="text-[9px] px-1.5 py-0 shrink-0">
+                          {qr.is_active ? (isAr ? "نشط" : "Active") : (isAr ? "معطل" : "Off")}
+                        </Badge>
+                      </div>
+                      <div className="flex items-center gap-2 mt-0.5">
+                        <Badge variant="outline" className="text-[9px] px-1.5 py-0">{qr.entity_type}</Badge>
+                        <Badge variant="secondary" className="text-[9px] px-1.5 py-0">{categoryLabel(qr.category)}</Badge>
+                        <span className="text-[10px] text-muted-foreground">{qr.scan_count} scans</span>
+                      </div>
+                    </div>
+                    <div className="flex gap-0.5 shrink-0">
+                      <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => copyCode(qr.code)}>
+                        <Copy className="h-3.5 w-3.5" />
+                      </Button>
+                      <Button variant="ghost" size="icon" className="h-7 w-7" asChild>
+                        <a href={`/verify?code=${qr.code}`} target="_blank" rel="noopener noreferrer">
+                          <Eye className="h-3.5 w-3.5" />
+                        </a>
+                      </Button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              {/* Desktop table */}
+              <div className="hidden sm:block overflow-x-auto">
+                <Table>
+                  <TableHeader>
                     <TableRow>
-                      <TableCell colSpan={7} className="py-8 text-center text-muted-foreground">
-                        {isAr ? "لا توجد رموز" : "No QR codes found"}
-                      </TableCell>
+                      <TableHead>{isAr ? "الكود" : "Code"}</TableHead>
+                      <TableHead>{isAr ? "النوع" : "Entity Type"}</TableHead>
+                      <TableHead>{isAr ? "الفئة" : "Category"}</TableHead>
+                      <TableHead className="text-center">{isAr ? "المسح" : "Scans"}</TableHead>
+                      <TableHead>{isAr ? "الحالة" : "Status"}</TableHead>
+                      <TableHead>{isAr ? "التاريخ" : "Created"}</TableHead>
+                      <TableHead className="text-end">{isAr ? "إجراءات" : "Actions"}</TableHead>
                     </TableRow>
-                  ) : (
-                    filtered?.map((qr) => (
+                  </TableHeader>
+                  <TableBody>
+                    {filtered?.map((qr) => (
                       <TableRow key={qr.id}>
                         <TableCell>
                           <span className="font-mono text-xs tracking-widest">{qr.code}</span>
@@ -214,11 +244,11 @@ export default function QRCodesAdmin() {
                           </div>
                         </TableCell>
                       </TableRow>
-                    ))
-                  )}
-                </TableBody>
-              </Table>
-            </div>
+                    ))}
+                  </TableBody>
+                </Table>
+              </div>
+            </>
           )}
         </CardContent>
       </Card>
