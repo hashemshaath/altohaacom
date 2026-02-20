@@ -350,108 +350,160 @@ export default function CompetitionDetail() {
                 fetchPriority="high"
               />
             ) : (
-              <div className="flex h-full w-full items-center justify-center bg-gradient-to-br from-primary/20 via-background to-accent/10">
+              <div className="flex h-full w-full items-center justify-center bg-gradient-to-br from-primary/15 via-accent/8 to-background">
                 <Trophy className="h-32 w-32 text-primary/10 animate-pulse" />
               </div>
             )}
             {/* Multi-layered gradients for perfect legibility */}
-            <div className="absolute inset-0 bg-gradient-to-t from-background via-background/40 to-transparent" />
-            <div className="absolute inset-0 bg-gradient-to-r from-background/60 via-transparent to-transparent hidden md:block" />
+            <div className="absolute inset-0 bg-gradient-to-t from-background via-background/50 to-transparent" />
+            <div className="absolute inset-0 bg-gradient-to-r from-background/80 via-background/20 to-transparent rtl:bg-gradient-to-l" />
+            <div className="absolute inset-0 bg-black/15" />
           </div>
 
           <div className="absolute inset-0 flex flex-col justify-end">
-            <div className="container pb-10 md:pb-16">
-              <div className="flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
-                <div className="space-y-5 max-w-4xl animate-fade-in">
-                  <div className="flex items-center gap-2.5 flex-wrap">
-                    <Badge className={`${statusConfig[competition.status as CompetitionStatus].bg} px-4 py-1.5 font-black uppercase tracking-widest text-[10px] shadow-lg ring-1 ring-white/10`}>
-                      <span className={`me-2.5 inline-block h-2.5 w-2.5 rounded-full ${statusConfig[competition.status as CompetitionStatus].dot} animate-pulse`} />
+            <div className="container pb-6 sm:pb-8 md:pb-16">
+              <div className="max-w-4xl space-y-4 sm:space-y-6 animate-fade-in">
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="group -ms-2 w-fit text-white/90 hover:bg-white/10 hover:text-white backdrop-blur-sm"
+                  asChild
+                >
+                  <Link to="/competitions">
+                    <ArrowLeft className="me-2 h-4 w-4" />
+                    {isAr ? "جميع المسابقات" : "All Competitions"}
+                  </Link>
+                </Button>
+
+                <div className="space-y-4">
+                  <div className="flex items-center gap-3 flex-wrap">
+                    <Badge className={`${statusConfig[competition.status as CompetitionStatus].bg} px-3 py-1 font-bold uppercase tracking-wider text-[10px] shadow-lg backdrop-blur-md ring-1 ring-white/10`}>
+                      {statusConfig[competition.status as CompetitionStatus].dot.includes("chart-3") ? (
+                        <span className="relative me-2 flex h-2 w-2">
+                          <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-current opacity-75" />
+                          <span className="relative inline-flex h-2 w-2 rounded-full bg-current" />
+                        </span>
+                      ) : (
+                        <span className={`me-2 inline-block h-2 w-2 rounded-full ${statusConfig[competition.status as CompetitionStatus].dot}`} />
+                      )}
                       {isAr ? statusConfig[competition.status as CompetitionStatus].labelAr : statusConfig[competition.status as CompetitionStatus].label}
                     </Badge>
                     {competition.edition_year && (
-                      <Badge variant="outline" className="bg-background/20 backdrop-blur-xl text-xs font-bold border-white/20 px-3 py-1 text-foreground shadow-sm">{competition.edition_year}</Badge>
+                      <Badge variant="outline" className="bg-white/10 text-white border-white/20 backdrop-blur-md font-bold text-[10px] px-3 py-1">{competition.edition_year}</Badge>
                     )}
                     {competition.competition_number && (
-                      <Badge variant="outline" className="font-mono text-[10px] font-black bg-primary/20 border-primary/40 px-3 py-1 text-primary uppercase tracking-[0.2em] shadow-inner">{competition.competition_number}</Badge>
+                      <Badge variant="outline" className="font-mono text-[10px] font-bold bg-white/10 border-white/20 px-3 py-1 text-white/90 uppercase tracking-[0.15em] backdrop-blur-md">{competition.competition_number}</Badge>
                     )}
                   </div>
-                  <h1 className="font-serif text-3xl font-black sm:text-5xl md:text-6xl lg:text-7xl leading-[1.1] tracking-tighter text-foreground drop-shadow-2xl">
+
+                  <h1 className="font-serif text-2xl font-bold leading-[1.1] tracking-tight sm:text-4xl md:text-5xl lg:text-6xl text-white drop-shadow-2xl">
                     {title}
                   </h1>
-                  <div className="flex items-center gap-6 text-sm font-bold text-foreground flex-wrap">
-                    <div className="flex items-center gap-2.5 group/info">
-                      <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-background/40 backdrop-blur-md shadow-sm transition-transform group-hover/info:scale-110 ring-1 ring-white/10">
-                        <Calendar className="h-4 w-4 text-primary" />
+
+                  <div className="flex items-center gap-3 sm:gap-6 text-xs sm:text-sm text-white/90 flex-wrap">
+                    <div className="flex items-center gap-2">
+                      <div className="flex h-8 w-8 items-center justify-center rounded-full bg-white/10 backdrop-blur-md">
+                        <Calendar className="h-4 w-4" />
                       </div>
-                      <div className="flex flex-col">
-                        <span className="text-[10px] uppercase tracking-widest text-muted-foreground">{isAr ? "التاريخ" : "Schedule"}</span>
-                        <span>{format(new Date(competition.competition_start), "MMM d")} – {format(new Date(competition.competition_end), "MMM d, yyyy")}</span>
-                      </div>
+                      <span className="font-medium">{format(new Date(competition.competition_start), "MMM d")} – {format(new Date(competition.competition_end), "MMM d, yyyy")}</span>
                     </div>
                     {competition.is_virtual ? (
-                      <div className="flex items-center gap-2.5 group/info">
-                        <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-background/40 backdrop-blur-md shadow-sm transition-transform group-hover/info:scale-110 ring-1 ring-white/10">
-                          <Globe className="h-4 w-4 text-primary" />
+                      <div className="flex items-center gap-2">
+                        <div className="flex h-8 w-8 items-center justify-center rounded-full bg-white/10 backdrop-blur-md">
+                          <Globe className="h-4 w-4" />
                         </div>
-                        <div className="flex flex-col">
-                          <span className="text-[10px] uppercase tracking-widest text-muted-foreground">{isAr ? "الموقع" : "Location"}</span>
-                          <span>{isAr ? "مسابقة افتراضية" : "Virtual Arena"}</span>
-                        </div>
+                        <span className="font-medium opacity-90">{isAr ? "افتراضية" : "Virtual"}</span>
                       </div>
                     ) : (venue || competition.city) && (
-                      <div className="flex items-center gap-2.5 group/info">
-                        <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-background/40 backdrop-blur-md shadow-sm transition-transform group-hover/info:scale-110 ring-1 ring-white/10">
-                          <MapPin className="h-4 w-4 text-primary" />
+                      <div className="flex items-center gap-2">
+                        <div className="flex h-8 w-8 items-center justify-center rounded-full bg-white/10 backdrop-blur-md">
+                          <MapPin className="h-4 w-4" />
                         </div>
-                        <div className="flex flex-col">
-                          <span className="text-[10px] uppercase tracking-widest text-muted-foreground">{isAr ? "المكان" : "Venue"}</span>
-                          <span className="max-w-[200px] truncate">{competition.country_code ? `${countryFlag(competition.country_code)} ` : ""}{venue || competition.city}</span>
-                        </div>
+                        <span className="font-medium opacity-90">{competition.country_code ? `${countryFlag(competition.country_code)} ` : ""}{venue || competition.city}</span>
                       </div>
                     )}
                   </div>
-                </div>
-
-                <div className="flex gap-2 shrink-0">
-                  <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                      <Button variant="outline" size="sm" className="bg-background/80 backdrop-blur-sm">
-                        <Share2 className="me-1.5 h-4 w-4" />{isAr ? "مشاركة" : "Share"}
-                      </Button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent align="end" className="w-48">
-                      <DropdownMenuItem className="cursor-pointer gap-2" onClick={() => {
-                        const text = encodeURIComponent(`${title}`);
-                        const url = encodeURIComponent(window.location.href);
-                        window.open(`https://twitter.com/intent/tweet?text=${text}&url=${url}`, "_blank", "width=600,height=400");
-                      }}><Twitter className="h-4 w-4" /> Twitter / X</DropdownMenuItem>
-                      <DropdownMenuItem className="cursor-pointer gap-2" onClick={() => {
-                        window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(window.location.href)}`, "_blank", "width=600,height=400");
-                      }}><Facebook className="h-4 w-4" /> Facebook</DropdownMenuItem>
-                      <DropdownMenuItem className="cursor-pointer gap-2" onClick={() => {
-                        window.open(`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(window.location.href)}`, "_blank", "width=600,height=400");
-                      }}><Linkedin className="h-4 w-4" /> LinkedIn</DropdownMenuItem>
-                      <DropdownMenuItem className="cursor-pointer gap-2" onClick={() => {
-                        navigator.clipboard.writeText(window.location.href);
-                        toast({ title: isAr ? "تم نسخ الرابط!" : "Link copied!" });
-                      }}><Link2 className="h-4 w-4" /> {isAr ? "نسخ الرابط" : "Copy Link"}</DropdownMenuItem>
-                    </DropdownMenuContent>
-                  </DropdownMenu>
-                  {competition.status === "completed" && (
-                    <Button asChild variant="secondary" size="sm" className="bg-background/80 backdrop-blur-sm">
-                      <Link to={`/competitions/${id}/results`}><Award className="me-1.5 h-4 w-4" />{isAr ? "النتائج" : "Results"}</Link>
-                    </Button>
-                  )}
-                  {isOrganizer && (
-                    <Button asChild variant="outline" size="sm" className="bg-background/80 backdrop-blur-sm">
-                      <Link to={`/competitions/${id}/edit`}><Pencil className="me-1.5 h-4 w-4" />{isAr ? "تعديل" : "Edit"}</Link>
-                    </Button>
-                  )}
                 </div>
               </div>
             </div>
           </div>
         </section>
+
+        {/* ─── Floating Actions Bar ─── */}
+        <div className="border-y border-border/40 bg-card/80 backdrop-blur-md">
+          <div className="container py-4">
+            <div className="flex flex-wrap items-center justify-between gap-4">
+              <div className="flex items-center gap-4">
+                <div className="flex items-center gap-4">
+                  <div className="text-center">
+                    <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">
+                      {isAr ? "الفئات" : "Categories"}
+                    </p>
+                    <p className="text-sm font-bold text-foreground">{categories?.length || 0}</p>
+                  </div>
+                  <Separator orientation="vertical" className="h-8 hidden sm:block" />
+                  <div className="text-center">
+                    <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">
+                      {isAr ? "المعايير" : "Criteria"}
+                    </p>
+                    <p className="text-sm font-bold text-foreground">{criteria?.length || 0}</p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="flex items-center gap-3">
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button variant="outline" size="sm" className="h-10 rounded-xl px-4 font-bold border-border/60 hover:bg-muted/80">
+                      <Share2 className="me-2 h-4 w-4" />{isAr ? "مشاركة" : "Share"}
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end" className="w-56 rounded-xl border-border/40 p-2">
+                    <DropdownMenuItem className="cursor-pointer gap-3 rounded-lg py-2.5 font-medium" onClick={() => {
+                      const text = encodeURIComponent(`${title}`);
+                      const url = encodeURIComponent(window.location.href);
+                      window.open(`https://twitter.com/intent/tweet?text=${text}&url=${url}`, "_blank", "width=600,height=400");
+                    }}>
+                      <div className="flex h-8 w-8 items-center justify-center rounded-full bg-black/5"><Twitter className="h-4 w-4" /></div> Twitter / X
+                    </DropdownMenuItem>
+                    <DropdownMenuItem className="cursor-pointer gap-3 rounded-lg py-2.5 font-medium" onClick={() => {
+                      window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(window.location.href)}`, "_blank", "width=600,height=400");
+                    }}>
+                      <div className="flex h-8 w-8 items-center justify-center rounded-full bg-primary/10 text-primary"><Facebook className="h-4 w-4" /></div> Facebook
+                    </DropdownMenuItem>
+                    <DropdownMenuItem className="cursor-pointer gap-3 rounded-lg py-2.5 font-medium" onClick={() => {
+                      window.open(`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(window.location.href)}`, "_blank", "width=600,height=400");
+                    }}>
+                      <div className="flex h-8 w-8 items-center justify-center rounded-full bg-primary/10 text-primary"><Linkedin className="h-4 w-4" /></div> LinkedIn
+                    </DropdownMenuItem>
+                    <DropdownMenuItem className="cursor-pointer gap-3 rounded-lg py-2.5 font-medium" onClick={() => {
+                      navigator.clipboard.writeText(window.location.href);
+                      toast({ title: isAr ? "تم نسخ الرابط!" : "Link copied!" });
+                    }}>
+                      <div className="flex h-8 w-8 items-center justify-center rounded-full bg-muted"><Link2 className="h-4 w-4" /></div> {isAr ? "نسخ الرابط" : "Copy Link"}
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+
+                {competition.status === "completed" && (
+                  <Button asChild variant="outline" size="sm" className="h-10 rounded-xl px-4 font-bold border-border/60 hover:bg-muted/80">
+                    <Link to={`/competitions/${id}/results`}><Award className="me-2 h-4 w-4" />{isAr ? "النتائج" : "Results"}</Link>
+                  </Button>
+                )}
+                {isOrganizer && (
+                  <Button asChild variant="outline" size="sm" className="h-10 rounded-xl px-4 font-bold border-border/60 hover:bg-muted/80">
+                    <Link to={`/competitions/${id}/edit`}><Pencil className="me-2 h-4 w-4" />{isAr ? "تعديل" : "Edit"}</Link>
+                  </Button>
+                )}
+                {canRegister && !showRegistrationForm && (
+                  <Button className="h-10 rounded-xl px-6 font-bold shadow-lg shadow-primary/20" onClick={() => setShowRegistrationForm(true)}>
+                    <Sparkles className="me-2 h-4 w-4" />{t("registerNow")}
+                  </Button>
+                )}
+              </div>
+            </div>
+          </div>
+        </div>
 
         {/* ─── Navigation Tabs (pill style) ─── */}
         <div className="sticky top-12 z-30 border-b border-border/40 bg-background/90 backdrop-blur-xl shadow-sm">

@@ -173,33 +173,51 @@ export default function Competitions() {
           <AdBanner placementSlug="competitions-top-banner" className="w-full aspect-[5/1]" />
         </div>
 
-        {/* Compact Hero */}
-        <section className="border-b border-border/40 bg-gradient-to-b from-primary/5 to-background">
-          <div className="container py-8 md:py-12">
-            <div className="flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
-              <div className="space-y-3 max-w-2xl">
-                <div className="inline-flex items-center gap-2 rounded-full bg-primary/10 px-3 py-1 ring-1 ring-primary/20">
+        {/* Editorial Hero */}
+        <section className="relative overflow-hidden border-b border-border/40">
+          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,hsl(var(--primary)/0.08),transparent_60%)]" />
+          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom_left,hsl(var(--accent)/0.06),transparent_50%)]" />
+          <div className="container relative py-10 md:py-14">
+            <div className="flex flex-col gap-8 md:flex-row md:items-end md:justify-between">
+              <div className="space-y-4 max-w-2xl">
+                <div className="inline-flex items-center gap-2 rounded-full bg-primary/10 px-3.5 py-1.5 ring-1 ring-primary/20">
                   <Sparkles className="h-3.5 w-3.5 text-primary animate-pulse" />
                   <span className="text-[10px] font-bold uppercase tracking-widest text-primary">
                     {isAr ? "مسابقات الطهي" : "Culinary Competitions"}
                   </span>
                 </div>
-                <h1 className="font-serif text-3xl font-bold tracking-tight md:text-4xl">
+                <h1 className="font-serif text-3xl font-bold tracking-tight md:text-5xl">
                   {isAr ? "المسابقات" : "Competitions"}
                 </h1>
-                <p className="text-muted-foreground text-sm md:text-base leading-relaxed">
+                <p className="text-muted-foreground text-sm md:text-base leading-relaxed max-w-xl">
                   {isAr
                     ? "اكتشف مسابقات الطهي واشترك فيها. تنافس مع أفضل الطهاة."
                     : "Discover and join culinary competitions. Compete with top chefs worldwide."}
                 </p>
+
+                {/* Editorial Stats */}
+                <div className="flex items-center gap-4 sm:gap-6 pt-2">
+                  {[
+                    { value: toEnglishDigits(counts.all), label: isAr ? "المسابقات" : "Total", icon: <Trophy className="h-3.5 w-3.5" /> },
+                    { value: toEnglishDigits(counts.active), label: isAr ? "نشطة الآن" : "Live Now", icon: <Flame className="h-3.5 w-3.5" />, live: counts.active > 0 },
+                    { value: toEnglishDigits(countryCodes.length), label: isAr ? "الدول" : "Countries", icon: <Globe className="h-3.5 w-3.5" /> },
+                  ].map((stat, i) => (
+                    <div key={i} className="flex items-center gap-2.5">
+                      <div className={`flex h-9 w-9 items-center justify-center rounded-xl ${stat.live ? "bg-chart-3/10 text-chart-3" : "bg-primary/10 text-primary"} ring-1 ${stat.live ? "ring-chart-3/20" : "ring-primary/10"}`}>
+                        {stat.icon}
+                      </div>
+                      <div>
+                        <p className="text-lg font-black leading-none">{stat.value}</p>
+                        <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">{stat.label}</p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
               </div>
-              <div className="flex items-center gap-3">
-                <Badge variant="outline" className="gap-1.5 border-primary/20 bg-primary/5 text-primary px-3 py-1.5">
-                  <Trophy className="h-3.5 w-3.5" />
-                  <span className="font-bold">{toEnglishDigits(counts.all)}</span>
-                </Badge>
+
+              <div className="flex items-center gap-3 shrink-0">
                 {canCreate && (
-                  <Button asChild className="shadow-sm shadow-primary/15">
+                  <Button asChild className="shadow-lg shadow-primary/20 rounded-xl px-6 h-11 font-bold">
                     <Link to="/competitions/create">
                       <Plus className="me-1.5 h-4 w-4" />
                       {t("createCompetition")}
@@ -361,8 +379,15 @@ function FeaturedCard({ competition, language, isAr }: { competition: Competitio
           <div className="flex flex-1 flex-col justify-between p-6 md:p-10">
             <div className="space-y-4">
               <div className="flex items-center gap-3 flex-wrap">
-                <Badge className={`${derived.color} px-3 py-1 font-bold text-[10px] tracking-wider uppercase`}>
-                  <span className={`me-2 inline-block h-2 w-2 rounded-full ${derived.dot} animate-pulse`} />
+                <Badge className={`${derived.color} px-3 py-1 font-bold text-[10px] tracking-wider uppercase backdrop-blur-md`}>
+                  {derived.color.includes("chart-3") ? (
+                    <span className="relative me-2 flex h-2 w-2">
+                      <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-current opacity-75" />
+                      <span className="relative inline-flex h-2 w-2 rounded-full bg-current" />
+                    </span>
+                  ) : (
+                    <span className={`me-2 inline-block h-2 w-2 rounded-full ${derived.dot}`} />
+                  )}
                   {isAr ? derived.labelAr : derived.label}
                 </Badge>
                 {derived.daysLeft && derived.daysLeft > 0 && derived.daysLeft <= 60 && (
@@ -447,7 +472,14 @@ function CompetitionCard({ competition, language, isAr }: { competition: Competi
           {/* Top Info Bar */}
           <div className="absolute inset-x-0 top-0 flex items-center justify-between p-4">
             <Badge className={`px-2.5 py-1 text-[9px] font-black uppercase tracking-wider border-0 shadow-xl backdrop-blur-md ${derived.color} ring-1 ring-white/10`}>
-              <span className={`me-1.5 inline-block h-1.5 w-1.5 rounded-full ${derived.dot} animate-pulse`} />
+              {derived.color.includes("chart-3") ? (
+                <span className="relative me-1.5 flex h-1.5 w-1.5">
+                  <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-current opacity-75" />
+                  <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-current" />
+                </span>
+              ) : (
+                <span className={`me-1.5 inline-block h-1.5 w-1.5 rounded-full ${derived.dot}`} />
+              )}
               {isAr ? derived.labelAr : derived.label}
             </Badge>
             {derived.daysLeft && derived.daysLeft > 0 && derived.daysLeft <= 30 && (
