@@ -103,7 +103,7 @@ export function SupplierProfileCompletion() {
     enabled: !!companyId,
   });
 
-  const c = company as any;
+  const c = company;
   const completed = STEPS.filter((s) => s.check(c, products));
   const pct = Math.round((completed.length / STEPS.length) * 100);
   const nextStep = STEPS.find((s) => !s.check(c, products));

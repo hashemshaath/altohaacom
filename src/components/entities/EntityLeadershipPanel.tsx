@@ -58,7 +58,7 @@ export function EntityLeadershipPanel({ entityId }: Props) {
     queryKey: ["entity-positions", entityId],
     queryFn: async () => {
       const { data, error } = await supabase
-        .from("entity_positions" as any)
+        .from("entity_positions")
         .select("*, profiles:user_id(id, full_name, full_name_ar, avatar_url, experience_level)")
         .eq("entity_id", entityId)
         .order("sort_order", { ascending: true });
@@ -70,7 +70,7 @@ export function EntityLeadershipPanel({ entityId }: Props) {
   const addMutation = useMutation({
     mutationFn: async () => {
       if (!selectedUserId) throw new Error("Select a chef");
-      const { error } = await supabase.from("entity_positions" as any).insert({
+      const { error } = await supabase.from("entity_positions").insert({
         entity_id: entityId,
         user_id: selectedUserId,
         position_type: positionType,
@@ -94,7 +94,7 @@ export function EntityLeadershipPanel({ entityId }: Props) {
 
   const deleteMutation = useMutation({
     mutationFn: async (id: string) => {
-      const { error } = await supabase.from("entity_positions" as any).delete().eq("id", id);
+      const { error } = await supabase.from("entity_positions").delete().eq("id", id);
       if (error) throw error;
     },
     onSuccess: () => {
@@ -105,7 +105,7 @@ export function EntityLeadershipPanel({ entityId }: Props) {
 
   const toggleActiveMutation = useMutation({
     mutationFn: async ({ id, active }: { id: string; active: boolean }) => {
-      const { error } = await supabase.from("entity_positions" as any).update({ is_active: active }).eq("id", id);
+      const { error } = await supabase.from("entity_positions").update({ is_active: active }).eq("id", id);
       if (error) throw error;
     },
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ["entity-positions", entityId] }),
