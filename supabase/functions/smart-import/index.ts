@@ -103,7 +103,7 @@ async function firecrawlScrape(url: string, apiKey: string, timeoutMs = 15000, f
     url: formatted, formats, onlyMainContent: formats.length === 1 && formats[0] === 'markdown',
   }, apiKey, timeoutMs);
   
-  if (formats.includes('links') || formats.includes('markdown')) {
+  if (formats.includes('links') && formats.length > 1) {
     const result = {
       markdown: data?.data?.markdown || null,
       links: data?.data?.links || [],
