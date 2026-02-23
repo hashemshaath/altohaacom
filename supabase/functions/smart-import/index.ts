@@ -11,15 +11,8 @@ interface PlaceResult {
   formatted_phone_number?: string;
   international_phone_number?: string;
   website?: string;
-  opening_hours?: {
-    weekday_text?: string[];
-    periods?: any[];
-  };
-  address_components?: {
-    long_name: string;
-    short_name: string;
-    types: string[];
-  }[];
+  opening_hours?: { weekday_text?: string[]; periods?: any[] };
+  address_components?: { long_name: string; short_name: string; types: string[] }[];
   geometry?: { location: { lat: number; lng: number } };
   types?: string[];
   business_status?: string;
@@ -31,21 +24,14 @@ interface PlaceResult {
 
 async function searchGooglePlaces(query: string, apiKey: string, location?: string): Promise<PlaceResult | null> {
   const searchQuery = location ? `${query} ${location}` : query;
-  
-  // Text Search
   const searchUrl = `https://maps.googleapis.com/maps/api/place/textsearch/json?query=${encodeURIComponent(searchQuery)}&key=${apiKey}`;
   const searchRes = await fetch(searchUrl);
   const searchData = await searchRes.json();
-  
   if (!searchData.results?.length) return null;
-  
   const placeId = searchData.results[0].place_id;
-  
-  // Place Details
   const detailsUrl = `https://maps.googleapis.com/maps/api/place/details/json?place_id=${placeId}&fields=name,formatted_address,formatted_phone_number,international_phone_number,website,opening_hours,address_components,geometry,types,business_status,rating,user_ratings_total,url,photos&key=${apiKey}`;
   const detailsRes = await fetch(detailsUrl);
   const detailsData = await detailsRes.json();
-  
   return detailsData.result || null;
 }
 
@@ -53,20 +39,11 @@ async function scrapeWebsite(url: string, firecrawlKey: string): Promise<string 
   try {
     let formattedUrl = url.trim();
     if (!formattedUrl.startsWith('http')) formattedUrl = `https://${formattedUrl}`;
-    
     const res = await fetch('https://api.firecrawl.dev/v1/scrape', {
       method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${firecrawlKey}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        url: formattedUrl,
-        formats: ['markdown'],
-        onlyMainContent: true,
-      }),
+      headers: { 'Authorization': `Bearer ${firecrawlKey}`, 'Content-Type': 'application/json' },
+      body: JSON.stringify({ url: formattedUrl, formats: ['markdown'], onlyMainContent: true }),
     });
-    
     const data = await res.json();
     return data?.data?.markdown || null;
   } catch (e) {
@@ -77,9 +54,7 @@ async function scrapeWebsite(url: string, firecrawlKey: string): Promise<string 
 
 function extractAddressComponents(components: PlaceResult['address_components']) {
   if (!components) return {};
-  
   const get = (type: string) => components.find(c => c.types.includes(type));
-  
   return {
     street_number: get('street_number')?.long_name || '',
     street: get('route')?.long_name || '',
@@ -94,18 +69,14 @@ function extractAddressComponents(components: PlaceResult['address_components'])
 
 async function enrichWithAI(placeData: any, websiteContent: string | null): Promise<any> {
   const apiKey = Deno.env.get('LOVABLE_API_KEY');
-  if (!apiKey) {
-    console.error('LOVABLE_API_KEY not set');
-    return placeData;
-  }
+  if (!apiKey) { console.error('LOVABLE_API_KEY not set'); return placeData; }
 
   const prompt = `You are a bilingual data enrichment assistant (Arabic & English). Given raw business data, produce a clean, structured JSON object. Fill in missing fields intelligently.
 
 RAW PLACE DATA:
 ${JSON.stringify(placeData, null, 2)}
 
-${websiteContent ? `WEBSITE CONTENT (first 3000 chars):
-${websiteContent.substring(0, 3000)}` : ''}
+${websiteContent ? `WEBSITE CONTENT (first 3000 chars):\n${websiteContent.substring(0, 3000)}` : ''}
 
 Return ONLY valid JSON with this exact structure (no markdown, no comments):
 {
@@ -116,7 +87,7 @@ Return ONLY valid JSON with this exact structure (no markdown, no comments):
   "city_en": "City in English",
   "city_ar": "City in Arabic",
   "neighborhood_en": "Neighborhood in English",
-  "neighborhood_ar": "Neighborhood in Arabic", 
+  "neighborhood_ar": "Neighborhood in Arabic",
   "street_en": "Street name in English",
   "street_ar": "Street name in Arabic",
   "full_address_en": "Full formatted address in English",
@@ -140,116 +111,64 @@ Return ONLY valid JSON with this exact structure (no markdown, no comments):
   "longitude": null,
   "google_maps_url": "",
   "national_id": "Commercial/national registration if found on website",
-  "social_media": {
-    "instagram": "",
-    "twitter": "",
-    "facebook": "",
-    "linkedin": "",
-    "tiktok": ""
-  }
+  "social_media": { "instagram": "", "twitter": "", "facebook": "", "linkedin": "", "tiktok": "" }
 }`;
 
   try {
     const res = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
       method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${apiKey}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        model: 'google/gemini-2.5-flash',
-        messages: [{ role: 'user', content: prompt }],
-        temperature: 0.2,
-      }),
+      headers: { 'Authorization': `Bearer ${apiKey}`, 'Content-Type': 'application/json' },
+      body: JSON.stringify({ model: 'google/gemini-2.5-flash', messages: [{ role: 'user', content: prompt }], temperature: 0.2 }),
     });
-
     const data = await res.json();
     const content = data.choices?.[0]?.message?.content || '';
-    
-    // Extract JSON from response
     const jsonMatch = content.match(/\{[\s\S]*\}/);
-    if (jsonMatch) {
-      return JSON.parse(jsonMatch[0]);
-    }
-  } catch (e) {
-    console.error('AI enrichment error:', e);
-  }
-  
+    if (jsonMatch) return JSON.parse(jsonMatch[0]);
+  } catch (e) { console.error('AI enrichment error:', e); }
   return placeData;
 }
 
 Deno.serve(async (req) => {
-  if (req.method === 'OPTIONS') {
-    return new Response(null, { headers: corsHeaders });
-  }
+  if (req.method === 'OPTIONS') return new Response(null, { headers: corsHeaders });
 
   try {
     const authHeader = req.headers.get("Authorization");
     if (!authHeader?.startsWith("Bearer ")) {
-      return new Response(JSON.stringify({ success: false, error: "Unauthorized" }), {
-        status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-      });
+      return new Response(JSON.stringify({ success: false, error: "Unauthorized" }), { status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
     }
 
-    const supabaseClient = createClient(
-      Deno.env.get("SUPABASE_URL")!,
-      Deno.env.get("SUPABASE_ANON_KEY")!,
-      { global: { headers: { Authorization: authHeader } } }
-    );
-
+    const supabaseClient = createClient(Deno.env.get("SUPABASE_URL")!, Deno.env.get("SUPABASE_ANON_KEY")!, { global: { headers: { Authorization: authHeader } } });
     const { data: { user }, error: authError } = await supabaseClient.auth.getUser();
     if (authError || !user) {
-      return new Response(JSON.stringify({ success: false, error: "Unauthorized" }), {
-        status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-      });
+      return new Response(JSON.stringify({ success: false, error: "Unauthorized" }), { status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
     }
 
-    // Check admin
-    const { data: roles } = await supabaseClient
-      .from('user_roles')
-      .select('role')
-      .eq('user_id', user.id)
-      .eq('role', 'supervisor');
-    
+    const { data: roles } = await supabaseClient.from('user_roles').select('role').eq('user_id', user.id).eq('role', 'supervisor');
     if (!roles?.length) {
-      return new Response(JSON.stringify({ success: false, error: "Admin access required" }), {
-        status: 403, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-      });
+      return new Response(JSON.stringify({ success: false, error: "Admin access required" }), { status: 403, headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
     }
 
-    const { query, location, website_url, sources } = await req.json();
-
+    const { query, location, website_url } = await req.json();
     if (!query) {
-      return new Response(JSON.stringify({ success: false, error: "Search query is required" }), {
-        status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-      });
+      return new Response(JSON.stringify({ success: false, error: "Search query is required" }), { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
     }
 
-    const useSources = sources || ['google_places', 'website', 'ai'];
     let placeData: any = {};
     let websiteContent: string | null = null;
+    const sourcesUsed = { google_places: false, website: false, ai: true };
 
-    // 1. Google Places API
-    if (useSources.includes('google_places')) {
-      // Get API key from integration_settings
-      const adminClient = createClient(
-        Deno.env.get("SUPABASE_URL")!,
-        Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!
-      );
-      
-      const { data: placesConfig } = await adminClient
-        .from('integration_settings')
-        .select('config, is_active')
-        .eq('integration_type', 'google_places')
-        .single();
+    // 1. Google Places API — always attempt
+    const adminClient = createClient(Deno.env.get("SUPABASE_URL")!, Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!);
+    const { data: placesConfig } = await adminClient.from('integration_settings').select('config, is_active').eq('integration_type', 'google_places').single();
 
+    const googlePlacesPromise = (async () => {
       if (placesConfig?.is_active && (placesConfig.config as any)?.api_key) {
         console.log('Searching Google Places for:', query);
         const place = await searchGooglePlaces(query, (placesConfig.config as any).api_key, location);
-        
         if (place) {
+          sourcesUsed.google_places = true;
           const addr = extractAddressComponents(place.address_components);
-          placeData = {
+          return {
             name_en: place.name,
             formatted_address: place.formatted_address,
             phone: place.international_phone_number || place.formatted_phone_number,
@@ -266,45 +185,49 @@ Deno.serve(async (req) => {
             types: place.types,
           };
         }
-      } else {
-        console.log('Google Places API not configured or not active');
       }
-    }
+      return {};
+    })();
 
-    // 2. Website scraping via Firecrawl
-    const targetUrl = website_url || placeData.website;
-    if (useSources.includes('website') && targetUrl) {
-      const firecrawlKey = Deno.env.get('FIRECRAWL_API_KEY');
-      if (firecrawlKey) {
+    // 2. Firecrawl — always attempt in parallel
+    const firecrawlKey = Deno.env.get('FIRECRAWL_API_KEY');
+    const firecrawlPromise = (async () => {
+      const targetUrl = website_url;
+      if (firecrawlKey && targetUrl) {
         console.log('Scraping website:', targetUrl);
-        websiteContent = await scrapeWebsite(targetUrl, firecrawlKey);
+        return await scrapeWebsite(targetUrl, firecrawlKey);
       }
-    }
+      // If no explicit URL, try after Google Places resolves
+      return null;
+    })();
 
-    // 3. AI Enrichment
-    let enrichedData = placeData;
-    if (useSources.includes('ai')) {
-      console.log('Enriching with AI...');
-      enrichedData = await enrichWithAI(placeData, websiteContent);
-      
-      // Merge back non-AI fields
-      if (placeData.latitude) enrichedData.latitude = placeData.latitude;
-      if (placeData.longitude) enrichedData.longitude = placeData.longitude;
-      if (placeData.rating) enrichedData.rating = placeData.rating;
-      if (placeData.total_reviews) enrichedData.total_reviews = placeData.total_reviews;
-      if (placeData.google_maps_url) enrichedData.google_maps_url = placeData.google_maps_url;
+    // Await both in parallel
+    const [googleResult, firecrawlResult] = await Promise.all([googlePlacesPromise, firecrawlPromise]);
+    placeData = googleResult;
+
+    // If no explicit URL was given but Google found a website, scrape it
+    const resolvedWebsiteUrl = website_url || placeData.website;
+    if (!firecrawlResult && firecrawlKey && resolvedWebsiteUrl) {
+      console.log('Scraping Google-discovered website:', resolvedWebsiteUrl);
+      websiteContent = await scrapeWebsite(resolvedWebsiteUrl, firecrawlKey);
+    } else {
+      websiteContent = firecrawlResult;
     }
+    if (websiteContent) sourcesUsed.website = true;
+
+    // 3. AI Enrichment — merge everything
+    console.log('Enriching with AI...');
+    const enrichedData = await enrichWithAI(placeData, websiteContent);
+
+    // Preserve precise fields from Google
+    if (placeData.latitude) enrichedData.latitude = placeData.latitude;
+    if (placeData.longitude) enrichedData.longitude = placeData.longitude;
+    if (placeData.rating) enrichedData.rating = placeData.rating;
+    if (placeData.total_reviews) enrichedData.total_reviews = placeData.total_reviews;
+    if (placeData.google_maps_url) enrichedData.google_maps_url = placeData.google_maps_url;
 
     return new Response(
-      JSON.stringify({ 
-        success: true, 
-        data: enrichedData,
-        sources_used: {
-          google_places: !!Object.keys(placeData).length,
-          website: !!websiteContent,
-          ai: useSources.includes('ai'),
-        }
-      }),
+      JSON.stringify({ success: true, data: enrichedData, sources_used: sourcesUsed }),
       { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     );
   } catch (error) {
