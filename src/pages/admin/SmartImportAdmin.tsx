@@ -452,7 +452,7 @@ export default function SmartImportAdmin() {
       if (targetTable === "culinary_entities") {
         subType = selectedEntityType;
         const slug = name.toLowerCase().replace(/\s+/g, "-").replace(/[^a-z0-9-]/g, "");
-        const payload = { ...buildEntityPayload(details), name: details.name_en || name, type: selectedEntityType, scope: "local" as const, status: "active" as const, is_visible: true, is_verified: false, slug, entity_number: "", created_by: user?.id || null };
+        const payload = { ...buildEntityPayload(details), name: details.name_en || name, type: selectedEntityType, scope: "local" as const, status: "pending" as const, is_visible: false, is_verified: false, slug, entity_number: "", created_by: user?.id || null };
         const { data: inserted, error } = await supabase.from("culinary_entities").insert(payload).select("id").single();
         if (error) throw error;
         recordId = inserted?.id;
@@ -570,7 +570,7 @@ export default function SmartImportAdmin() {
 
         if (tbl === 'culinary_entities') {
           const slug = name.toLowerCase().replace(/\s+/g, "-").replace(/[^a-z0-9-]/g, "");
-          const payload = { ...buildEntityPayload(d), name: d.name_en || name, type: suggestion.sub_type as EntityType, scope: 'local' as const, status: 'active' as const, is_visible: true, is_verified: false, slug, entity_number: '', created_by: user?.id || null };
+          const payload = { ...buildEntityPayload(d), name: d.name_en || name, type: suggestion.sub_type as EntityType, scope: 'local' as const, status: 'pending' as const, is_visible: false, is_verified: false, slug, entity_number: '', created_by: user?.id || null };
           const { data: inserted } = await supabase.from("culinary_entities").insert(payload).select("id").single();
           recordId = inserted?.id;
         } else if (tbl === 'companies') {
