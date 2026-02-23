@@ -58,6 +58,7 @@ const ChefScheduleAdmin = lazy(() => import("@/pages/admin/ChefScheduleAdmin"));
 const GlobalEventsAdmin = lazy(() => import("@/pages/admin/GlobalEventsAdmin"));
 const HeroSlidesAdmin = lazy(() => import("@/pages/admin/HeroSlidesAdmin"));
 const HomepageSectionsAdmin = lazy(() => import("@/pages/admin/HomepageSectionsAdmin"));
+const SmartImportAdmin = lazy(() => import("@/pages/admin/SmartImportAdmin"));
 
 export const adminRoutes = (
   <Route path="/admin" element={<AdminRoute><AdminLayout /></AdminRoute>}>
@@ -116,5 +117,6 @@ export const adminRoutes = (
     <Route path="global-events" element={<GlobalEventsAdmin />} />
     <Route path="hero-slides" element={<HeroSlidesAdmin />} />
     <Route path="homepage-sections" element={<HomepageSectionsAdmin />} />
+    <Route path="smart-import" element={<SmartImportAdmin />} />
   </Route>
 );

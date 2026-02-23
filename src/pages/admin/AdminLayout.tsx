@@ -21,6 +21,7 @@ import {
   
   Plug,
   Bot,
+  Sparkles,
   Newspaper,
   Image,
   Eye,
@@ -94,6 +95,7 @@ export default function AdminLayout() {
       title: language === "ar" ? "التكاملات" : "Integrations",
       items: [
         { to: "/admin/integrations", icon: Plug, label: language === "ar" ? "التكاملات" : "Integrations" },
+        { to: "/admin/smart-import", icon: Sparkles, label: language === "ar" ? "استيراد ذكي" : "Smart Import" },
         { to: "/admin/ai", icon: Bot, label: language === "ar" ? "الذكاء الاصطناعي" : "AI Configuration" },
       ],
     },
