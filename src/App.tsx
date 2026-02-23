@@ -64,7 +64,6 @@ const App = () => (
               <GoogleTrackingProvider />
               <TrackingScriptsInjector />
               <PageTracker />
-              <Suspense fallback={null}><LiveChatWidget /></Suspense>
               <FloatingHelpButton />
               <MaintenanceGuard>
               <ErrorBoundary>
@@ -81,6 +80,7 @@ const App = () => (
               </Suspense>
               </ErrorBoundary>
               </MaintenanceGuard>
+              <ErrorBoundary><Suspense fallback={null}><LiveChatWidget /></Suspense></ErrorBoundary>
               <MobileBottomNav />
               <SmartInstallBanner />
               <OfflineBanner />
