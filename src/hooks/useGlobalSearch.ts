@@ -1,4 +1,4 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback, useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import type { Database } from "@/integrations/supabase/types";
@@ -7,7 +7,7 @@ type CompetitionStatus = Database["public"]["Enums"]["competition_status"];
 
 export interface SearchFilters {
   query: string;
-  type: "all" | "competitions" | "articles" | "members" | "posts";
+  type: "all" | "competitions" | "articles" | "members" | "posts" | "entities";
   competitionStatus?: CompetitionStatus | "all";
   isVirtual?: boolean | null;
   articleType?: "news" | "blog" | "exhibition" | "all";
@@ -31,6 +31,7 @@ export interface CompetitionResult {
   city: string | null;
   country: string | null;
   is_virtual: boolean | null;
+  _relevance?: number;
 }
 
 export interface ArticleResult {
@@ -44,6 +45,7 @@ export interface ArticleResult {
   status: string | null;
   published_at: string | null;
   slug: string;
+  _relevance?: number;
 }
 
 export interface MemberResult {
@@ -62,6 +64,7 @@ export interface MemberResult {
   experience_level: Database["public"]["Enums"]["experience_level"] | null;
   location: string | null;
   is_verified: boolean | null;
+  _relevance?: number;
 }
 
 export interface PostResult {
@@ -74,6 +77,22 @@ export interface PostResult {
   author_name: string | null;
   author_username: string | null;
   author_avatar: string | null;
+  _relevance?: number;
+}
+
+export interface EntityResult {
+  id: string;
+  name: string;
+  name_ar: string | null;
+  type: string | null;
+  description: string | null;
+  description_ar: string | null;
+  logo_url: string | null;
+  city: string | null;
+  country: string | null;
+  is_verified: boolean | null;
+  source: "entity" | "establishment";
+  _relevance?: number;
 }
 
 export interface SearchResults {
@@ -81,6 +100,7 @@ export interface SearchResults {
   articles: ArticleResult[];
   members: MemberResult[];
   posts: PostResult[];
+  entities: EntityResult[];
 }
 
 const DEFAULT_FILTERS: SearchFilters = {
@@ -94,25 +114,7 @@ const DEFAULT_FILTERS: SearchFilters = {
   experienceLevel: "all",
 };
 
-/**
- * Build an OR filter string for Supabase .or() that matches ALL words
- * in any of the given columns. For a single word this is a simple OR across columns.
- * For multiple words we require each word to appear in at least one column.
- * Because Supabase .or() doesn't support nested AND, we apply word-level filtering
- * client-side for multi-word queries while using the first word for the DB filter
- * to narrow results.
- */
-function buildIlikeFilter(query: string, columns: string[]): string {
-  // Use the full query as a single pattern – good for exact / single-word
-  const parts: string[] = [];
-  const escaped = query.replace(/[%_]/g, "\\$&");
-  for (const col of columns) {
-    parts.push(`${col}.ilike.%${escaped}%`);
-  }
-  return parts.join(",");
-}
-
-/** Split query into meaningful words (>=2 chars) */
+/** Split query into searchable words (>=2 chars) */
 function getSearchWords(query: string): string[] {
   return query
     .trim()
@@ -120,14 +122,34 @@ function getSearchWords(query: string): string[] {
     .filter((w) => w.length >= 2);
 }
 
-/** Check if a record's text fields contain all search words (case-insensitive) */
-function matchesAllWords(words: string[], ...fields: (string | null | undefined)[]): boolean {
-  if (words.length <= 1) return true; // single word already filtered by DB
-  const combined = fields
-    .filter(Boolean)
-    .join(" ")
-    .toLowerCase();
-  return words.every((w) => combined.includes(w.toLowerCase()));
+/**
+ * Build an OR filter for Supabase that matches ANY of the words in ANY column.
+ * This gives broader results like Google Maps.
+ */
+function buildFlexibleFilter(words: string[], columns: string[]): string {
+  const parts: string[] = [];
+  for (const word of words) {
+    const escaped = word.replace(/[%_]/g, "\\$&");
+    for (const col of columns) {
+      parts.push(`${col}.ilike.%${escaped}%`);
+    }
+  }
+  return parts.join(",");
+}
+
+/**
+ * Count how many search words match in the given fields.
+ * Returns a relevance score (0 to words.length).
+ */
+function countMatchingWords(words: string[], ...fields: (string | null | undefined)[]): number {
+  if (words.length === 0) return 0;
+  const combined = fields.filter(Boolean).join(" ").toLowerCase();
+  return words.filter((w) => combined.includes(w.toLowerCase())).length;
+}
+
+/** Sort by relevance descending */
+function sortByRelevance<T extends { _relevance?: number }>(items: T[]): T[] {
+  return items.sort((a, b) => (b._relevance || 0) - (a._relevance || 0));
 }
 
 export function useGlobalSearch() {
@@ -144,7 +166,7 @@ export function useGlobalSearch() {
     setFilters(DEFAULT_FILTERS);
   }, []);
 
-  const searchWords = getSearchWords(filters.query);
+  const searchWords = useMemo(() => getSearchWords(filters.query), [filters.query]);
 
   // Search competitions
   const { data: competitionsData, isLoading: competitionsLoading } = useQuery({
@@ -157,16 +179,14 @@ export function useGlobalSearch() {
         .select("id, title, title_ar, description, description_ar, cover_image_url, status, competition_start, competition_end, venue, venue_ar, city, country, is_virtual")
         .neq("status", "draft");
 
-      if (filters.query) {
-        // Use first word for DB-level filter to get a broad set, then refine client-side
-        const filterWord = searchWords[0] || filters.query;
-        query = query.or(buildIlikeFilter(filterWord, ["title", "title_ar", "description", "description_ar", "city", "venue", "venue_ar", "country"]));
+      if (filters.query && searchWords.length > 0) {
+        const cols = ["title", "title_ar", "description", "description_ar", "city", "venue", "venue_ar", "country"];
+        query = query.or(buildFlexibleFilter(searchWords, cols));
       }
 
       if (filters.competitionStatus && filters.competitionStatus !== "all") {
         query = query.eq("status", filters.competitionStatus);
       }
-
       if (filters.isVirtual !== null) {
         query = query.eq("is_virtual", filters.isVirtual);
       }
@@ -176,15 +196,15 @@ export function useGlobalSearch() {
         .limit(30);
 
       if (error) throw error;
+      if (!data) return [];
 
-      // Client-side multi-word refinement
-      if (searchWords.length > 1 && data) {
-        return data.filter((r) =>
-          matchesAllWords(searchWords, r.title, r.title_ar, r.description, r.description_ar, r.city, r.venue, r.venue_ar, r.country)
-        ) as CompetitionResult[];
-      }
-
-      return data as CompetitionResult[];
+      // Score and sort by relevance
+      return sortByRelevance(
+        data.map((r) => ({
+          ...r,
+          _relevance: countMatchingWords(searchWords, r.title, r.title_ar, r.description, r.description_ar, r.city, r.venue, r.venue_ar, r.country),
+        }))
+      ) as CompetitionResult[];
     },
     enabled: filters.type === "all" || filters.type === "competitions",
   });
@@ -199,15 +219,14 @@ export function useGlobalSearch() {
         .from("articles")
         .select("id, title, title_ar, excerpt, excerpt_ar, featured_image_url, type, status, published_at, slug");
 
-      if (filters.query) {
-        const filterWord = searchWords[0] || filters.query;
-        query = query.or(buildIlikeFilter(filterWord, ["title", "title_ar", "excerpt", "excerpt_ar", "content", "content_ar"]));
+      if (filters.query && searchWords.length > 0) {
+        const cols = ["title", "title_ar", "excerpt", "excerpt_ar", "content", "content_ar"];
+        query = query.or(buildFlexibleFilter(searchWords, cols));
       }
 
       if (filters.articleType && filters.articleType !== "all") {
         query = query.eq("type", filters.articleType);
       }
-
       if (filters.articleStatus && filters.articleStatus !== "all") {
         query = query.eq("status", filters.articleStatus);
       } else {
@@ -219,14 +238,14 @@ export function useGlobalSearch() {
         .limit(30);
 
       if (error) throw error;
+      if (!data) return [];
 
-      if (searchWords.length > 1 && data) {
-        return data.filter((r) =>
-          matchesAllWords(searchWords, r.title, r.title_ar, r.excerpt, r.excerpt_ar)
-        ) as ArticleResult[];
-      }
-
-      return data as ArticleResult[];
+      return sortByRelevance(
+        data.map((r) => ({
+          ...r,
+          _relevance: countMatchingWords(searchWords, r.title, r.title_ar, r.excerpt, r.excerpt_ar),
+        }))
+      ) as ArticleResult[];
     },
     enabled: filters.type === "all" || filters.type === "articles",
   });
@@ -242,12 +261,12 @@ export function useGlobalSearch() {
         .select("id, user_id, full_name, full_name_ar, display_name, display_name_ar, username, avatar_url, bio, bio_ar, specialization, specialization_ar, experience_level, location, is_verified")
         .eq("account_status", "active");
 
-      if (filters.query) {
-        const filterWord = searchWords[0] || filters.query;
-        query = query.or(buildIlikeFilter(filterWord, [
+      if (filters.query && searchWords.length > 0) {
+        const cols = [
           "full_name", "full_name_ar", "display_name", "display_name_ar",
           "username", "bio", "bio_ar", "specialization", "specialization_ar", "location"
-        ]));
+        ];
+        query = query.or(buildFlexibleFilter(searchWords, cols));
       }
 
       if (filters.experienceLevel && filters.experienceLevel !== "all") {
@@ -255,21 +274,19 @@ export function useGlobalSearch() {
       }
 
       const { data, error } = await query.limit(30);
-
       if (error) throw error;
-
+      
       let results = data || [];
 
-      // Multi-word client-side refinement
-      if (searchWords.length > 1) {
-        results = results.filter((r) =>
-          matchesAllWords(searchWords, r.full_name, r.full_name_ar, r.display_name, r.display_name_ar, r.username, r.bio, r.bio_ar, r.specialization, r.specialization_ar, r.location)
-        );
-      }
+      // Score by relevance
+      let scored = results.map((r) => ({
+        ...r,
+        _relevance: countMatchingWords(searchWords, r.full_name, r.full_name_ar, r.display_name, r.display_name_ar, r.username, r.bio, r.bio_ar, r.specialization, r.specialization_ar, r.location),
+      }));
 
       // Role filter
-      if (filters.memberRole && filters.memberRole !== "all" && results.length > 0) {
-        const userIds = results.map(m => m.user_id);
+      if (filters.memberRole && filters.memberRole !== "all" && scored.length > 0) {
+        const userIds = scored.map(m => m.user_id);
         const { data: rolesData } = await supabase
           .from("user_roles")
           .select("user_id")
@@ -277,10 +294,10 @@ export function useGlobalSearch() {
           .in("user_id", userIds);
         
         const filteredUserIds = new Set(rolesData?.map(r => r.user_id) || []);
-        return results.filter(m => filteredUserIds.has(m.user_id)) as MemberResult[];
+        scored = scored.filter(m => filteredUserIds.has(m.user_id));
       }
 
-      return results as MemberResult[];
+      return sortByRelevance(scored) as MemberResult[];
     },
     enabled: filters.type === "all" || filters.type === "members",
   });
@@ -289,29 +306,29 @@ export function useGlobalSearch() {
   const { data: postsData, isLoading: postsLoading } = useQuery({
     queryKey: ["search-posts", filters.query],
     queryFn: async () => {
-      if (!filters.query) return [];
+      if (!filters.query || searchWords.length === 0) return [];
       
-      const filterWord = searchWords[0] || filters.query;
+      // Search with ANY word matching
+      const orParts = searchWords.map(w => `content.ilike.%${w.replace(/[%_]/g, "\\$&")}%`);
 
       const { data: posts, error } = await supabase
         .from("posts")
         .select("id, content, image_url, video_url, created_at, author_id")
         .eq("moderation_status", "approved")
-        .ilike("content", `%${filterWord}%`)
+        .or(orParts.join(","))
         .order("created_at", { ascending: false })
         .limit(30);
 
       if (error) throw error;
       if (!posts?.length) return [];
 
-      // Multi-word refinement
-      let filtered = posts;
-      if (searchWords.length > 1) {
-        filtered = posts.filter((p) => matchesAllWords(searchWords, p.content));
-      }
-      if (!filtered.length) return [];
+      // Score by relevance
+      const scored = posts.map(p => ({
+        ...p,
+        _relevance: countMatchingWords(searchWords, p.content),
+      }));
 
-      const authorIds = [...new Set(filtered.map(p => p.author_id))];
+      const authorIds = [...new Set(scored.map(p => p.author_id))];
       const { data: profiles } = await supabase
         .from("profiles")
         .select("user_id, full_name, username, avatar_url")
@@ -319,22 +336,84 @@ export function useGlobalSearch() {
       
       const profileMap = new Map(profiles?.map(p => [p.user_id, p]) || []);
 
-      return filtered.map(p => {
-        const profile = profileMap.get(p.author_id);
-        return {
-          id: p.id,
-          content: p.content,
-          image_url: p.image_url,
-          video_url: (p as any).video_url || null,
-          created_at: p.created_at,
-          author_id: p.author_id,
-          author_name: profile?.full_name || null,
-          author_username: profile?.username || null,
-          author_avatar: profile?.avatar_url || null,
-        };
-      }) as PostResult[];
+      return sortByRelevance(
+        scored.map(p => {
+          const profile = profileMap.get(p.author_id);
+          return {
+            id: p.id,
+            content: p.content,
+            image_url: p.image_url,
+            video_url: (p as any).video_url || null,
+            created_at: p.created_at,
+            author_id: p.author_id,
+            author_name: profile?.full_name || null,
+            author_username: profile?.username || null,
+            author_avatar: profile?.avatar_url || null,
+            _relevance: p._relevance,
+          };
+        })
+      ) as PostResult[];
     },
     enabled: filters.type === "all" || filters.type === "posts",
+  });
+
+  // Search entities (culinary_entities + establishments)
+  const { data: entitiesData, isLoading: entitiesLoading } = useQuery({
+    queryKey: ["search-entities", filters.query],
+    queryFn: async () => {
+      if (!filters.query || searchWords.length === 0) return [];
+
+      const entityCols = ["name", "name_ar", "description", "description_ar", "city", "country"];
+      const estabCols = ["name", "name_ar", "description", "description_ar", "city", "cuisine_type", "cuisine_type_ar"];
+
+      const [entRes, estRes] = await Promise.all([
+        supabase
+          .from("culinary_entities")
+          .select("id, name, name_ar, type, description, description_ar, logo_url, city, country, is_verified")
+          .eq("is_visible", true)
+          .or(buildFlexibleFilter(searchWords, entityCols))
+          .limit(15),
+        supabase
+          .from("establishments")
+          .select("id, name, name_ar, type, description, description_ar, logo_url, city, city_ar, is_verified")
+          .eq("is_active", true)
+          .or(buildFlexibleFilter(searchWords, estabCols))
+          .limit(15),
+      ]);
+
+      const entities: EntityResult[] = (entRes.data || []).map((e: any) => ({
+        id: e.id,
+        name: e.name,
+        name_ar: e.name_ar,
+        type: e.type,
+        description: e.description,
+        description_ar: e.description_ar,
+        logo_url: e.logo_url,
+        city: e.city,
+        country: e.country,
+        is_verified: e.is_verified,
+        source: "entity" as const,
+        _relevance: countMatchingWords(searchWords, e.name, e.name_ar, e.description, e.description_ar, e.city, e.country),
+      }));
+
+      const establishments: EntityResult[] = (estRes.data || []).map((e: any) => ({
+        id: e.id,
+        name: e.name,
+        name_ar: e.name_ar,
+        type: e.type,
+        description: e.description,
+        description_ar: e.description_ar,
+        logo_url: e.logo_url,
+        city: e.city,
+        country: null,
+        is_verified: e.is_verified,
+        source: "establishment" as const,
+        _relevance: countMatchingWords(searchWords, e.name, e.name_ar, e.description, e.description_ar, e.city),
+      }));
+
+      return sortByRelevance([...entities, ...establishments]);
+    },
+    enabled: filters.type === "all" || filters.type === "entities",
   });
 
   const results: SearchResults = {
@@ -342,10 +421,11 @@ export function useGlobalSearch() {
     articles: articlesData || [],
     members: membersData || [],
     posts: postsData || [],
+    entities: entitiesData || [],
   };
 
-  const totalResults = results.competitions.length + results.articles.length + results.members.length + results.posts.length;
-  const isLoading = competitionsLoading || articlesLoading || membersLoading || postsLoading;
+  const totalResults = results.competitions.length + results.articles.length + results.members.length + results.posts.length + results.entities.length;
+  const isLoading = competitionsLoading || articlesLoading || membersLoading || postsLoading || entitiesLoading;
 
   return {
     filters,
