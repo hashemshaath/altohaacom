@@ -14992,6 +14992,66 @@ export type Database = {
         }
         Relationships: []
       }
+      smart_import_logs: {
+        Row: {
+          action: string
+          created_at: string
+          entity_name: string | null
+          entity_name_ar: string | null
+          entity_type: string | null
+          error_message: string | null
+          extracted_fields_count: number | null
+          id: string
+          imported_by: string
+          imported_data: Json | null
+          source_location: string | null
+          source_query: string | null
+          source_url: string | null
+          sources_used: Json | null
+          status: string
+          target_record_id: string | null
+          target_table: string
+        }
+        Insert: {
+          action?: string
+          created_at?: string
+          entity_name?: string | null
+          entity_name_ar?: string | null
+          entity_type?: string | null
+          error_message?: string | null
+          extracted_fields_count?: number | null
+          id?: string
+          imported_by: string
+          imported_data?: Json | null
+          source_location?: string | null
+          source_query?: string | null
+          source_url?: string | null
+          sources_used?: Json | null
+          status?: string
+          target_record_id?: string | null
+          target_table: string
+        }
+        Update: {
+          action?: string
+          created_at?: string
+          entity_name?: string | null
+          entity_name_ar?: string | null
+          entity_type?: string | null
+          error_message?: string | null
+          extracted_fields_count?: number | null
+          id?: string
+          imported_by?: string
+          imported_data?: Json | null
+          source_location?: string | null
+          source_query?: string | null
+          source_url?: string | null
+          sources_used?: Json | null
+          status?: string
+          target_record_id?: string | null
+          target_table?: string
+        }
+        Relationships: []
+      }
       specialties: {
         Row: {
           approved_at: string | null
