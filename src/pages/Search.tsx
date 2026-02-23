@@ -5,7 +5,6 @@ import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -13,14 +12,14 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import { 
-  Search as SearchIcon, 
-  Calendar, 
-  MapPin, 
-  Globe, 
-  User, 
-  FileText, 
+import { Card } from "@/components/ui/card";
+import {
+  Search as SearchIcon,
+  Calendar,
+  MapPin,
+  Globe,
+  User,
+  FileText,
   Trophy,
   Filter,
   X,
@@ -28,6 +27,8 @@ import {
   Clock,
   Trash2,
   MessageSquare,
+  ChevronRight,
+  ExternalLink,
 } from "lucide-react";
 import { format } from "date-fns";
 import { useGlobalSearch, type SearchFilters } from "@/hooks/useGlobalSearch";
@@ -36,37 +37,36 @@ import type { Database } from "@/integrations/supabase/types";
 
 type CompetitionStatus = Database["public"]["Enums"]["competition_status"];
 
-const statusColors: Record<CompetitionStatus, string> = {
-  draft: "bg-muted text-muted-foreground",
-  upcoming: "bg-accent/20 text-accent",
-  registration_open: "bg-primary/20 text-primary",
-  registration_closed: "bg-muted text-muted-foreground",
-  in_progress: "bg-chart-3/20 text-chart-3",
-  judging: "bg-chart-4/20 text-chart-4",
-  completed: "bg-chart-5/20 text-chart-5",
-  cancelled: "bg-destructive/20 text-destructive",
+const statusLabelsEn: Record<CompetitionStatus, string> = {
+  draft: "Draft",
+  upcoming: "Upcoming",
+  registration_open: "Registration Open",
+  registration_closed: "Registration Closed",
+  in_progress: "In Progress",
+  judging: "Judging",
+  completed: "Completed",
+  cancelled: "Cancelled",
 };
 
 export default function Search() {
   const { t, language } = useLanguage();
+  const isAr = language === "ar";
   const [searchParams, setSearchParams] = useSearchParams();
   const [showFilters, setShowFilters] = useState(false);
   const [recentSearches, setRecentSearches] = useState<string[]>([]);
-  const { 
-    filters, 
-    updateFilter, 
-    resetFilters, 
-    results, 
-    totalResults, 
-    isLoading 
+  const {
+    filters,
+    updateFilter,
+    resetFilters,
+    results,
+    totalResults,
+    isLoading,
   } = useGlobalSearch();
 
-  // Load recent searches
   useEffect(() => {
     setRecentSearches(getRecentSearches());
   }, []);
 
-  // Initialize from URL params
   useEffect(() => {
     const query = searchParams.get("q") || "";
     const type = (searchParams.get("type") as SearchFilters["type"]) || "all";
@@ -78,7 +78,6 @@ export default function Search() {
     if (type) updateFilter("type", type);
   }, []);
 
-  // Update URL when query changes
   useEffect(() => {
     const params = new URLSearchParams();
     if (filters.query) params.set("q", filters.query);
@@ -104,6 +103,7 @@ export default function Search() {
     clearRecentSearches();
     setRecentSearches([]);
   };
+
   const getStatusLabel = (status: CompetitionStatus): string => {
     const labels: Record<CompetitionStatus, string> = {
       draft: t("draft"),
@@ -118,396 +118,264 @@ export default function Search() {
     return labels[status];
   };
 
+  // Flatten all results into a unified list for "all" tab (Google-style)
+  const allItems: { type: string; data: any }[] = [];
+  if (filters.type === "all" || filters.type === "competitions") {
+    results.competitions.forEach((c) => allItems.push({ type: "competition", data: c }));
+  }
+  if (filters.type === "all" || filters.type === "articles") {
+    results.articles.forEach((a) => allItems.push({ type: "article", data: a }));
+  }
+  if (filters.type === "all" || filters.type === "members") {
+    results.members.forEach((m) => allItems.push({ type: "member", data: m }));
+  }
+  if (filters.type === "all" || filters.type === "posts") {
+    results.posts.forEach((p) => allItems.push({ type: "post", data: p }));
+  }
+
   return (
     <div className="flex min-h-screen flex-col bg-background">
       <Header />
-      
+
       <main className="flex-1">
-        {/* Hero Section */}
-        <section className="border-b border-border/40 bg-gradient-to-b from-primary/5 to-background">
-          <div className="container py-8 md:py-10">
-            <div className="flex items-start gap-4">
-              <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-primary/10 ring-1 ring-primary/15 shadow-sm">
-                <SearchIcon className="h-6 w-6 text-primary" />
+        {/* Search bar — sticky top, Google-style */}
+        <div className="sticky top-0 z-40 border-b border-border/60 bg-background/95 backdrop-blur-md">
+          <div className="container max-w-3xl py-4">
+            <form
+              onSubmit={(e) => {
+                e.preventDefault();
+              }}
+              className="flex gap-2"
+            >
+              <div className="relative flex-1">
+                <SearchIcon className="absolute start-3.5 top-1/2 h-4.5 w-4.5 -translate-y-1/2 text-muted-foreground/60" />
+                <Input
+                  placeholder={isAr ? "ابحث عن مسابقات، طهاة، مقالات..." : "Search competitions, chefs, articles..."}
+                  value={filters.query}
+                  onChange={(e) => handleSearch(e.target.value)}
+                  className="ps-11 h-11 rounded-full border-border/80 bg-muted/30 text-base shadow-sm focus-visible:bg-background focus-visible:shadow-md"
+                  autoFocus
+                />
+                {filters.query && (
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    type="button"
+                    className="absolute end-2 top-1/2 -translate-y-1/2 h-7 w-7 rounded-full"
+                    onClick={() => handleSearch("")}
+                  >
+                    <X className="h-4 w-4" />
+                  </Button>
+                )}
               </div>
-              <div>
-                <h1 className="font-serif text-2xl font-bold md:text-3xl">{t("searchTitle")}</h1>
-                <p className="mt-0.5 text-sm text-muted-foreground">{t("searchSubtitle")}</p>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        <div className="container py-6 md:py-8">
-
-        {/* Search Input */}
-        <div className="flex gap-2 mb-6">
-          <div className="relative flex-1">
-            <SearchIcon className="absolute start-3 top-1/2 h-5 w-5 -translate-y-1/2 text-muted-foreground" />
-            <Input
-              placeholder={t("searchPlaceholder")}
-              value={filters.query}
-              onChange={(e) => handleSearch(e.target.value)}
-              className="ps-10 h-12 text-lg"
-              autoFocus
-            />
-            {filters.query && (
               <Button
-                variant="ghost"
+                variant="outline"
                 size="icon"
-                className="absolute end-2 top-1/2 -translate-y-1/2 h-8 w-8"
-                onClick={() => handleSearch("")}
+                type="button"
+                className="h-11 w-11 rounded-full shrink-0"
+                onClick={() => setShowFilters(!showFilters)}
               >
-                <X className="h-4 w-4" />
+                <Filter className="h-4 w-4" />
               </Button>
-            )}
+            </form>
+
+            {/* Tabs — horizontal pills like Google */}
+            <Tabs
+              value={filters.type}
+              onValueChange={(v) => updateFilter("type", v as SearchFilters["type"])}
+              className="mt-3"
+            >
+              <TabsList className="h-auto bg-transparent p-0 gap-1">
+                {[
+                  { value: "all", icon: SearchIcon, label: isAr ? "الكل" : "All", count: totalResults },
+                  { value: "competitions", icon: Trophy, label: isAr ? "المسابقات" : "Competitions", count: results.competitions.length },
+                  { value: "articles", icon: FileText, label: isAr ? "المقالات" : "Articles", count: results.articles.length },
+                  { value: "members", icon: User, label: isAr ? "الأعضاء" : "Members", count: results.members.length },
+                  { value: "posts", icon: MessageSquare, label: isAr ? "المنشورات" : "Posts", count: results.posts.length },
+                ].map((tab) => (
+                  <TabsTrigger
+                    key={tab.value}
+                    value={tab.value}
+                    className="rounded-full px-3.5 py-1.5 text-xs font-medium data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-sm gap-1.5"
+                  >
+                    <tab.icon className="h-3.5 w-3.5" />
+                    {tab.label}
+                    {filters.query && (
+                      <span className="text-[10px] opacity-70">({tab.count})</span>
+                    )}
+                  </TabsTrigger>
+                ))}
+              </TabsList>
+            </Tabs>
           </div>
-          <Button
-            variant="outline"
-            size="icon"
-            className="h-12 w-12"
-            onClick={() => setShowFilters(!showFilters)}
-          >
-            <Filter className="h-5 w-5" />
-          </Button>
         </div>
 
         {/* Filters Panel */}
         {showFilters && (
-          <Card className="mb-6 p-4">
-            <div className="flex items-center justify-between mb-4">
-              <h3 className="font-semibold">{t("filters")}</h3>
-              <Button variant="ghost" size="sm" onClick={resetFilters}>
-                {t("resetFilters")}
-              </Button>
+          <div className="border-b border-border/40 bg-muted/20">
+            <div className="container max-w-3xl py-4">
+              <div className="flex items-center justify-between mb-3">
+                <h3 className="text-sm font-semibold">{isAr ? "تصفية" : "Filters"}</h3>
+                <Button variant="ghost" size="sm" className="text-xs h-7" onClick={resetFilters}>
+                  {isAr ? "إعادة تعيين" : "Reset"}
+                </Button>
+              </div>
+              <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+                {(filters.type === "all" || filters.type === "competitions") && (
+                  <div className="space-y-1.5">
+                    <Label className="text-xs">{isAr ? "حالة المسابقة" : "Status"}</Label>
+                    <Select value={filters.competitionStatus || "all"} onValueChange={(v) => updateFilter("competitionStatus", v as any)}>
+                      <SelectTrigger className="h-8 text-xs"><SelectValue /></SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="all">{isAr ? "الكل" : "All"}</SelectItem>
+                        <SelectItem value="upcoming">{t("upcoming")}</SelectItem>
+                        <SelectItem value="registration_open">{t("registrationOpen")}</SelectItem>
+                        <SelectItem value="in_progress">{t("inProgress")}</SelectItem>
+                        <SelectItem value="completed">{t("completed")}</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                )}
+                {(filters.type === "all" || filters.type === "competitions") && (
+                  <div className="flex items-end gap-2 pb-0.5">
+                    <Checkbox id="virtual" checked={filters.isVirtual === true} onCheckedChange={(c) => updateFilter("isVirtual", c ? true : null)} />
+                    <Label htmlFor="virtual" className="text-xs cursor-pointer">{isAr ? "افتراضي فقط" : "Virtual only"}</Label>
+                  </div>
+                )}
+                {(filters.type === "all" || filters.type === "articles") && (
+                  <div className="space-y-1.5">
+                    <Label className="text-xs">{isAr ? "نوع المقال" : "Article type"}</Label>
+                    <Select value={filters.articleType || "all"} onValueChange={(v) => updateFilter("articleType", v as any)}>
+                      <SelectTrigger className="h-8 text-xs"><SelectValue /></SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="all">{isAr ? "الكل" : "All"}</SelectItem>
+                        <SelectItem value="news">{isAr ? "أخبار" : "News"}</SelectItem>
+                        <SelectItem value="blog">{isAr ? "مدونة" : "Blog"}</SelectItem>
+                        <SelectItem value="exhibition">{isAr ? "معارض" : "Exhibition"}</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                )}
+                {(filters.type === "all" || filters.type === "members") && (
+                  <div className="space-y-1.5">
+                    <Label className="text-xs">{isAr ? "مستوى الخبرة" : "Experience"}</Label>
+                    <Select value={filters.experienceLevel || "all"} onValueChange={(v) => updateFilter("experienceLevel", v as any)}>
+                      <SelectTrigger className="h-8 text-xs"><SelectValue /></SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="all">{isAr ? "الكل" : "All"}</SelectItem>
+                        <SelectItem value="beginner">{t("beginner")}</SelectItem>
+                        <SelectItem value="amateur">{t("amateur")}</SelectItem>
+                        <SelectItem value="professional">{t("professional")}</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                )}
+              </div>
             </div>
-            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-              {/* Competition Status Filter */}
-              {(filters.type === "all" || filters.type === "competitions") && (
-                <div className="space-y-2">
-                  <Label>{t("competitionStatus")}</Label>
-                  <Select
-                    value={filters.competitionStatus || "all"}
-                    onValueChange={(v) => updateFilter("competitionStatus", v as any)}
-                  >
-                    <SelectTrigger>
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="all">{t("allStatuses")}</SelectItem>
-                      <SelectItem value="upcoming">{t("upcoming")}</SelectItem>
-                      <SelectItem value="registration_open">{t("registrationOpen")}</SelectItem>
-                      <SelectItem value="in_progress">{t("inProgress")}</SelectItem>
-                      <SelectItem value="completed">{t("completed")}</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-              )}
-
-              {/* Virtual Filter */}
-              {(filters.type === "all" || filters.type === "competitions") && (
-                <div className="flex items-center gap-2 pt-8">
-                  <Checkbox
-                    id="virtual"
-                    checked={filters.isVirtual === true}
-                    onCheckedChange={(checked) => 
-                      updateFilter("isVirtual", checked ? true : null)
-                    }
-                  />
-                  <Label htmlFor="virtual" className="cursor-pointer">
-                    {t("virtualOnly")}
-                  </Label>
-                </div>
-              )}
-
-              {/* Article Type Filter */}
-              {(filters.type === "all" || filters.type === "articles") && (
-                <div className="space-y-2">
-                  <Label>{t("articleType")}</Label>
-                  <Select
-                    value={filters.articleType || "all"}
-                    onValueChange={(v) => updateFilter("articleType", v as any)}
-                  >
-                    <SelectTrigger>
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="all">{t("allTypes")}</SelectItem>
-                      <SelectItem value="news">{t("news")}</SelectItem>
-                      <SelectItem value="blog">{t("blog")}</SelectItem>
-                      <SelectItem value="exhibition">{t("exhibitions")}</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-              )}
-
-              {/* Experience Level Filter */}
-              {(filters.type === "all" || filters.type === "members") && (
-                <div className="space-y-2">
-                  <Label>{t("experienceLevel")}</Label>
-                  <Select
-                    value={filters.experienceLevel || "all"}
-                    onValueChange={(v) => updateFilter("experienceLevel", v as any)}
-                  >
-                    <SelectTrigger>
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="all">{t("allLevels")}</SelectItem>
-                      <SelectItem value="beginner">{t("beginner")}</SelectItem>
-                      <SelectItem value="amateur">{t("amateur")}</SelectItem>
-                      <SelectItem value="professional">{t("professional")}</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-              )}
-
-              {/* Member Role Filter */}
-              {(filters.type === "all" || filters.type === "members") && (
-                <div className="space-y-2">
-                  <Label>{t("role")}</Label>
-                  <Select
-                    value={filters.memberRole || "all"}
-                    onValueChange={(v) => updateFilter("memberRole", v as any)}
-                  >
-                    <SelectTrigger>
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="all">{t("allRoles")}</SelectItem>
-                      <SelectItem value="chef">{t("chef")}</SelectItem>
-                      <SelectItem value="judge">{t("judge")}</SelectItem>
-                      <SelectItem value="student">{t("student")}</SelectItem>
-                      <SelectItem value="organizer">{t("organizer")}</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-              )}
-            </div>
-          </Card>
+          </div>
         )}
 
-        {/* Results Tabs */}
-        <Tabs 
-          value={filters.type} 
-          onValueChange={(v) => updateFilter("type", v as SearchFilters["type"])}
-        >
-          <TabsList className="mb-6">
-            <TabsTrigger value="all" className="gap-2">
-              <SearchIcon className="h-4 w-4" />
-              {t("all")} {filters.query && `(${totalResults})`}
-            </TabsTrigger>
-            <TabsTrigger value="competitions" className="gap-2">
-              <Trophy className="h-4 w-4" />
-              {t("competitions")} {filters.query && `(${results.competitions.length})`}
-            </TabsTrigger>
-            <TabsTrigger value="articles" className="gap-2">
-              <FileText className="h-4 w-4" />
-              {t("articles")} {filters.query && `(${results.articles.length})`}
-            </TabsTrigger>
-            <TabsTrigger value="members" className="gap-2">
-              <User className="h-4 w-4" />
-              {t("members")} {filters.query && `(${results.members.length})`}
-            </TabsTrigger>
-            <TabsTrigger value="posts" className="gap-2">
-              <MessageSquare className="h-4 w-4" />
-              {language === "ar" ? "المنشورات" : "Posts"} {filters.query && `(${results.posts.length})`}
-            </TabsTrigger>
-          </TabsList>
+        {/* Results area */}
+        <div className="container max-w-3xl py-6">
+          {/* Results count */}
+          {filters.query && !isLoading && (
+            <p className="text-xs text-muted-foreground mb-5">
+              {isAr
+                ? `حوالي ${totalResults} نتيجة`
+                : `About ${totalResults} results`}
+            </p>
+          )}
 
-          {/* All Results */}
-          <TabsContent value="all">
-            {isLoading ? (
-              <SearchSkeleton />
-            ) : !filters.query ? (
-              <RecentSearchesPanel
-                recentSearches={recentSearches}
-                onRecentClick={handleRecentClick}
-                onClear={handleClearRecent}
-                language={language}
-                fallbackMessage={t("enterSearchQuery")}
-              />
-            ) : totalResults === 0 ? (
-              <EmptySearch message={t("noResultsFound")} />
-            ) : (
-              <div className="space-y-8">
-                {/* Competitions Section */}
-                {results.competitions.length > 0 && (
-                  <section>
-                    <div className="flex items-center justify-between mb-4">
-                      <h2 className="text-xl font-semibold flex items-center gap-2">
-                        <Trophy className="h-5 w-5 text-primary" />
-                        {t("competitions")}
-                      </h2>
-                      {results.competitions.length > 3 && (
-                        <Button variant="link" onClick={() => updateFilter("type", "competitions")}>
-                          {t("viewAll")}
-                        </Button>
-                      )}
-                    </div>
-                    <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-                      {results.competitions.slice(0, 3).map((comp) => (
-                        <CompetitionCard 
-                          key={comp.id} 
-                          competition={comp} 
-                          language={language}
-                          getStatusLabel={getStatusLabel}
-                          t={t}
-                        />
+          {isLoading ? (
+            <GoogleSkeleton />
+          ) : !filters.query ? (
+            <RecentSearchesPanel
+              recentSearches={recentSearches}
+              onRecentClick={handleRecentClick}
+              onClear={handleClearRecent}
+              isAr={isAr}
+            />
+          ) : totalResults === 0 ? (
+            <EmptySearch isAr={isAr} query={filters.query} />
+          ) : (
+            <div className="space-y-6">
+              {/* ALL tab — unified list */}
+              {filters.type === "all" && (
+                <>
+                  {results.competitions.length > 0 && (
+                    <ResultSection
+                      icon={<Trophy className="h-4 w-4" />}
+                      title={isAr ? "المسابقات" : "Competitions"}
+                      count={results.competitions.length}
+                      onViewAll={() => updateFilter("type", "competitions")}
+                      isAr={isAr}
+                    >
+                      {results.competitions.slice(0, 5).map((c) => (
+                        <CompetitionRow key={c.id} data={c} isAr={isAr} getStatusLabel={getStatusLabel} />
                       ))}
-                    </div>
-                  </section>
-                )}
-
-                {/* Articles Section */}
-                {results.articles.length > 0 && (
-                  <section>
-                    <div className="flex items-center justify-between mb-4">
-                      <h2 className="text-xl font-semibold flex items-center gap-2">
-                        <FileText className="h-5 w-5 text-primary" />
-                        {t("articles")}
-                      </h2>
-                      {results.articles.length > 3 && (
-                        <Button variant="link" onClick={() => updateFilter("type", "articles")}>
-                          {t("viewAll")}
-                        </Button>
-                      )}
-                    </div>
-                    <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-                      {results.articles.slice(0, 3).map((article) => (
-                        <ArticleCard 
-                          key={article.id} 
-                          article={article} 
-                          language={language}
-                          t={t}
-                        />
+                    </ResultSection>
+                  )}
+                  {results.articles.length > 0 && (
+                    <ResultSection
+                      icon={<FileText className="h-4 w-4" />}
+                      title={isAr ? "المقالات" : "Articles"}
+                      count={results.articles.length}
+                      onViewAll={() => updateFilter("type", "articles")}
+                      isAr={isAr}
+                    >
+                      {results.articles.slice(0, 5).map((a) => (
+                        <ArticleRow key={a.id} data={a} isAr={isAr} />
                       ))}
-                    </div>
-                  </section>
-                )}
-
-                {/* Members Section */}
-                {results.members.length > 0 && (
-                  <section>
-                    <div className="flex items-center justify-between mb-4">
-                      <h2 className="text-xl font-semibold flex items-center gap-2">
-                        <User className="h-5 w-5 text-primary" />
-                        {t("members")}
-                      </h2>
-                      {results.members.length > 4 && (
-                        <Button variant="link" onClick={() => updateFilter("type", "members")}>
-                          {t("viewAll")}
-                        </Button>
-                      )}
-                    </div>
-                    <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-                      {results.members.slice(0, 4).map((member) => (
-                        <MemberCard 
-                          key={member.id} 
-                          member={member}
-                          language={language}
-                          t={t}
-                        />
+                    </ResultSection>
+                  )}
+                  {results.members.length > 0 && (
+                    <ResultSection
+                      icon={<User className="h-4 w-4" />}
+                      title={isAr ? "الأعضاء" : "Members"}
+                      count={results.members.length}
+                      onViewAll={() => updateFilter("type", "members")}
+                      isAr={isAr}
+                    >
+                      {results.members.slice(0, 5).map((m) => (
+                        <MemberRow key={m.id} data={m} isAr={isAr} />
                       ))}
-                    </div>
-                  </section>
-                )}
-              </div>
-            )}
-          </TabsContent>
+                    </ResultSection>
+                  )}
+                  {results.posts.length > 0 && (
+                    <ResultSection
+                      icon={<MessageSquare className="h-4 w-4" />}
+                      title={isAr ? "المنشورات" : "Posts"}
+                      count={results.posts.length}
+                      onViewAll={() => updateFilter("type", "posts")}
+                      isAr={isAr}
+                    >
+                      {results.posts.slice(0, 5).map((p) => (
+                        <PostRow key={p.id} data={p} isAr={isAr} />
+                      ))}
+                    </ResultSection>
+                  )}
+                </>
+              )}
 
-          {/* Competitions Tab */}
-          <TabsContent value="competitions">
-            {isLoading ? (
-              <SearchSkeleton />
-            ) : results.competitions.length === 0 ? (
-              <EmptySearch message={filters.query ? t("noCompetitionsFound") : t("enterSearchQuery")} />
-            ) : (
-              <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-                {results.competitions.map((comp) => (
-                  <CompetitionCard 
-                    key={comp.id} 
-                    competition={comp} 
-                    language={language}
-                    getStatusLabel={getStatusLabel}
-                    t={t}
-                  />
+              {/* Individual tabs */}
+              {filters.type === "competitions" &&
+                results.competitions.map((c) => (
+                  <CompetitionRow key={c.id} data={c} isAr={isAr} getStatusLabel={getStatusLabel} />
                 ))}
-              </div>
-            )}
-          </TabsContent>
-
-          {/* Articles Tab */}
-          <TabsContent value="articles">
-            {isLoading ? (
-              <SearchSkeleton />
-            ) : results.articles.length === 0 ? (
-              <EmptySearch message={filters.query ? t("noArticlesFound") : t("enterSearchQuery")} />
-            ) : (
-              <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-                {results.articles.map((article) => (
-                  <ArticleCard 
-                    key={article.id} 
-                    article={article} 
-                    language={language}
-                    t={t}
-                  />
+              {filters.type === "articles" &&
+                results.articles.map((a) => (
+                  <ArticleRow key={a.id} data={a} isAr={isAr} />
                 ))}
-              </div>
-            )}
-          </TabsContent>
-
-          {/* Members Tab */}
-          <TabsContent value="members">
-            {isLoading ? (
-              <SearchSkeleton />
-            ) : results.members.length === 0 ? (
-              <EmptySearch message={filters.query ? t("noMembersFound") : t("enterSearchQuery")} />
-            ) : (
-              <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-                {results.members.map((member) => (
-                  <MemberCard 
-                    key={member.id} 
-                    member={member}
-                    language={language}
-                    t={t}
-                  />
+              {filters.type === "members" &&
+                results.members.map((m) => (
+                  <MemberRow key={m.id} data={m} isAr={isAr} />
                 ))}
-              </div>
-            )}
-          </TabsContent>
-
-          {/* Posts Tab */}
-          <TabsContent value="posts">
-            {isLoading ? (
-              <SearchSkeleton />
-            ) : results.posts.length === 0 ? (
-              <EmptySearch message={filters.query ? (language === "ar" ? "لا توجد منشورات" : "No posts found") : (language === "ar" ? "ابحث عن منشورات" : "Search for posts")} />
-            ) : (
-              <div className="space-y-3">
-                {results.posts.map((post) => (
-                  <Link key={post.id} to={`/community`}>
-                    <Card className="transition-all hover:shadow-md hover:border-primary/15 p-4">
-                      <div className="flex gap-3">
-                        <Avatar className="h-9 w-9 shrink-0">
-                          <AvatarImage src={post.author_avatar || undefined} />
-                          <AvatarFallback className="bg-primary/10 text-primary text-xs">{(post.author_name || "C")[0]}</AvatarFallback>
-                        </Avatar>
-                        <div className="min-w-0 flex-1">
-                          <div className="flex items-center gap-2">
-                            <span className="text-sm font-semibold truncate">{post.author_name || "Chef"}</span>
-                            {post.author_username && <span className="text-xs text-muted-foreground">@{post.author_username}</span>}
-                          </div>
-                          <p className="mt-1 text-sm text-muted-foreground line-clamp-3 whitespace-pre-wrap">{post.content}</p>
-                        </div>
-                      </div>
-                    </Card>
-                  </Link>
+              {filters.type === "posts" &&
+                results.posts.map((p) => (
+                  <PostRow key={p.id} data={p} isAr={isAr} />
                 ))}
-              </div>
-            )}
-          </TabsContent>
-        </Tabs>
+            </div>
+          )}
         </div>
       </main>
 
@@ -516,228 +384,340 @@ export default function Search() {
   );
 }
 
-// Component Cards
-function CompetitionCard({ competition, language, getStatusLabel, t }: {
-  competition: any;
-  language: string;
-  getStatusLabel: (status: CompetitionStatus) => string;
-  t: (key: any) => string;
+/* ──────────────── Result Section (grouped heading) ──────────────── */
+function ResultSection({
+  icon,
+  title,
+  count,
+  onViewAll,
+  isAr,
+  children,
+}: {
+  icon: React.ReactNode;
+  title: string;
+  count: number;
+  onViewAll: () => void;
+  isAr: boolean;
+  children: React.ReactNode;
 }) {
-  const title = language === "ar" && competition.title_ar ? competition.title_ar : competition.title;
-  const venue = language === "ar" && competition.venue_ar ? competition.venue_ar : competition.venue;
-
   return (
-    <Card className="group overflow-hidden transition-all hover:shadow-md">
-      <div className="relative h-32 overflow-hidden bg-gradient-to-br from-primary/20 to-accent/20">
-        {competition.cover_image_url ? (
-          <img
-            src={competition.cover_image_url}
-            alt={title}
-            className="h-full w-full object-cover"
-          />
-        ) : (
-          <div className="flex h-full items-center justify-center">
-            <Trophy className="h-10 w-10 text-primary/30" />
-          </div>
-        )}
-        <Badge className={`absolute end-2 top-2 ${statusColors[competition.status]}`}>
-          {getStatusLabel(competition.status)}
-        </Badge>
-      </div>
-      <CardHeader className="pb-2">
-        <h3 className="line-clamp-1 font-semibold">{title}</h3>
-      </CardHeader>
-      <CardContent className="space-y-1 text-sm text-muted-foreground pb-2">
-        <div className="flex items-center gap-2">
-          <Calendar className="h-3.5 w-3.5" />
-          <span>{format(new Date(competition.competition_start), "MMM d, yyyy")}</span>
+    <section className="space-y-1">
+      <div className="flex items-center justify-between mb-2">
+        <div className="flex items-center gap-2 text-sm font-semibold text-foreground">
+          {icon}
+          {title}
+          <span className="text-xs font-normal text-muted-foreground">({count})</span>
         </div>
-        {competition.is_virtual ? (
-          <div className="flex items-center gap-2">
-            <Globe className="h-3.5 w-3.5" />
-            <span>{t("virtual")}</span>
-          </div>
-        ) : venue && (
-          <div className="flex items-center gap-2">
-            <MapPin className="h-3.5 w-3.5" />
-            <span className="line-clamp-1">{venue}</span>
-          </div>
+        {count > 5 && (
+          <button onClick={onViewAll} className="text-xs text-primary hover:underline font-medium">
+            {isAr ? "عرض الكل" : "View all"} →
+          </button>
         )}
-      </CardContent>
-      <CardFooter className="pt-0">
-        <Button variant="outline" size="sm" className="w-full" asChild>
-          <Link to={`/competitions/${competition.id}`}>{t("viewDetails")}</Link>
-        </Button>
-      </CardFooter>
-    </Card>
+      </div>
+      <div className="space-y-1">{children}</div>
+    </section>
   );
 }
 
-function ArticleCard({ article, language, t }: {
-  article: any;
-  language: string;
-  t: (key: any) => string;
+/* ──────────────── Competition Row ──────────────── */
+function CompetitionRow({
+  data,
+  isAr,
+  getStatusLabel,
+}: {
+  data: any;
+  isAr: boolean;
+  getStatusLabel: (s: CompetitionStatus) => string;
 }) {
-  const title = language === "ar" && article.title_ar ? article.title_ar : article.title;
-  const excerpt = language === "ar" && article.excerpt_ar ? article.excerpt_ar : article.excerpt;
+  const title = isAr && data.title_ar ? data.title_ar : data.title;
+  const desc = isAr && data.description_ar ? data.description_ar : data.description;
+  const venue = isAr && data.venue_ar ? data.venue_ar : data.venue;
+  const location = [venue, data.city, data.country].filter(Boolean).join(" · ");
 
   return (
-    <Card className="group overflow-hidden transition-all hover:shadow-md">
-      <div className="relative h-32 overflow-hidden bg-gradient-to-br from-accent/20 to-primary/20">
-        {article.featured_image_url ? (
-          <img
-            src={article.featured_image_url}
-            alt={title}
-            className="h-full w-full object-cover"
-          />
-        ) : (
-          <div className="flex h-full items-center justify-center">
-            <FileText className="h-10 w-10 text-primary/30" />
+    <Link
+      to={`/competitions/${data.id}`}
+      className="group block rounded-xl px-4 py-3 -mx-2 transition-colors hover:bg-accent/40"
+    >
+      <div className="flex items-start gap-3">
+        {/* Thumbnail */}
+        <div className="w-10 h-10 rounded-lg bg-primary/10 shrink-0 flex items-center justify-center overflow-hidden mt-0.5">
+          {data.cover_image_url ? (
+            <img src={data.cover_image_url} alt="" className="w-full h-full object-cover" />
+          ) : (
+            <Trophy className="h-4.5 w-4.5 text-primary/60" />
+          )}
+        </div>
+        <div className="flex-1 min-w-0">
+          {/* Breadcrumb */}
+          <div className="flex items-center gap-1 text-xs text-muted-foreground mb-0.5">
+            <Trophy className="h-3 w-3" />
+            <span>{isAr ? "مسابقة" : "Competition"}</span>
+            <span className="mx-0.5">›</span>
+            <Badge variant="secondary" className="text-[10px] h-4 px-1.5 py-0 font-normal">
+              {getStatusLabel(data.status)}
+            </Badge>
           </div>
-        )}
-        <Badge className="absolute end-2 top-2 bg-background/80 text-foreground">
-          {article.type}
-        </Badge>
+          {/* Title */}
+          <h3 className="text-base font-medium text-primary group-hover:underline line-clamp-1">
+            {title}
+          </h3>
+          {/* Snippet */}
+          {desc && (
+            <p className="text-sm text-muted-foreground line-clamp-2 mt-0.5 leading-relaxed">
+              {desc}
+            </p>
+          )}
+          {/* Meta row */}
+          <div className="flex items-center gap-3 mt-1.5 text-xs text-muted-foreground/80">
+            <span className="flex items-center gap-1">
+              <Calendar className="h-3 w-3" />
+              {format(new Date(data.competition_start), "MMM d, yyyy")}
+            </span>
+            {data.is_virtual ? (
+              <span className="flex items-center gap-1">
+                <Globe className="h-3 w-3" />
+                {isAr ? "افتراضي" : "Virtual"}
+              </span>
+            ) : location ? (
+              <span className="flex items-center gap-1">
+                <MapPin className="h-3 w-3" />
+                <span className="truncate max-w-[200px]">{location}</span>
+              </span>
+            ) : null}
+          </div>
+        </div>
       </div>
-      <CardHeader className="pb-2">
-        <h3 className="line-clamp-1 font-semibold">{title}</h3>
-      </CardHeader>
-      <CardContent className="pb-2">
-        <p className="line-clamp-2 text-sm text-muted-foreground">{excerpt}</p>
-        {article.published_at && (
-          <p className="text-xs text-muted-foreground mt-2">
-            {format(new Date(article.published_at), "MMM d, yyyy")}
-          </p>
-        )}
-      </CardContent>
-      <CardFooter className="pt-0">
-        <Button variant="outline" size="sm" className="w-full" asChild>
-          <Link to={`/news/${article.slug}`}>{t("readMore")}</Link>
-        </Button>
-      </CardFooter>
-    </Card>
+    </Link>
   );
 }
 
-function MemberCard({ member, language, t }: {
-  member: any;
-  language: string;
-  t: (key: any) => string;
-}) {
-  const isAr = language === "ar";
+/* ──────────────── Article Row ──────────────── */
+function ArticleRow({ data, isAr }: { data: any; isAr: boolean }) {
+  const title = isAr && data.title_ar ? data.title_ar : data.title;
+  const excerpt = isAr && data.excerpt_ar ? data.excerpt_ar : data.excerpt;
+
+  return (
+    <Link
+      to={`/news/${data.slug}`}
+      className="group block rounded-xl px-4 py-3 -mx-2 transition-colors hover:bg-accent/40"
+    >
+      <div className="flex items-start gap-3">
+        <div className="w-10 h-10 rounded-lg bg-accent/30 shrink-0 flex items-center justify-center overflow-hidden mt-0.5">
+          {data.featured_image_url ? (
+            <img src={data.featured_image_url} alt="" className="w-full h-full object-cover" />
+          ) : (
+            <FileText className="h-4.5 w-4.5 text-muted-foreground/50" />
+          )}
+        </div>
+        <div className="flex-1 min-w-0">
+          <div className="flex items-center gap-1 text-xs text-muted-foreground mb-0.5">
+            <FileText className="h-3 w-3" />
+            <span>{isAr ? "مقال" : "Article"}</span>
+            <span className="mx-0.5">›</span>
+            <span className="capitalize">{data.type}</span>
+          </div>
+          <h3 className="text-base font-medium text-primary group-hover:underline line-clamp-1">
+            {title}
+          </h3>
+          {excerpt && (
+            <p className="text-sm text-muted-foreground line-clamp-2 mt-0.5 leading-relaxed">
+              {excerpt}
+            </p>
+          )}
+          {data.published_at && (
+            <p className="text-xs text-muted-foreground/70 mt-1.5">
+              {format(new Date(data.published_at), "MMM d, yyyy")}
+            </p>
+          )}
+        </div>
+      </div>
+    </Link>
+  );
+}
+
+/* ──────────────── Member Row ──────────────── */
+function MemberRow({ data, isAr }: { data: any; isAr: boolean }) {
   const displayName = isAr
-    ? (member.display_name_ar || member.full_name_ar || member.display_name || member.full_name || member.username || "Unknown")
-    : (member.display_name || member.full_name || member.display_name_ar || member.full_name_ar || member.username || "Unknown");
-  const specialization = isAr
-    ? (member.specialization_ar || member.specialization)
-    : (member.specialization || member.specialization_ar);
-  const initials = displayName
-    ? displayName.split(" ").map((n: string) => n[0]).join("").toUpperCase().slice(0, 2)
-    : "?";
+    ? data.display_name_ar || data.full_name_ar || data.display_name || data.full_name || data.username || "?"
+    : data.display_name || data.full_name || data.display_name_ar || data.full_name_ar || data.username || "?";
+  const spec = isAr ? (data.specialization_ar || data.specialization) : (data.specialization || data.specialization_ar);
+  const bio = isAr ? (data.bio_ar || data.bio) : (data.bio || data.bio_ar);
+  const initials = displayName.split(" ").map((n: string) => n[0]).join("").toUpperCase().slice(0, 2);
 
   return (
-    <Card className="group p-4 text-center transition-all hover:shadow-md">
-      <div className="flex flex-col items-center">
-        <Avatar className="h-16 w-16 mb-3">
-          <AvatarImage src={member.avatar_url || undefined} />
-          <AvatarFallback className="text-lg">{initials}</AvatarFallback>
+    <Link
+      to={`/${data.username || data.user_id}`}
+      className="group block rounded-xl px-4 py-3 -mx-2 transition-colors hover:bg-accent/40"
+    >
+      <div className="flex items-start gap-3">
+        <Avatar className="h-10 w-10 shrink-0 mt-0.5">
+          <AvatarImage src={data.avatar_url || undefined} />
+          <AvatarFallback className="text-xs bg-primary/10 text-primary">{initials}</AvatarFallback>
         </Avatar>
-        <div className="flex items-center gap-1 mb-1">
-          <h3 className="font-semibold line-clamp-1">{displayName}</h3>
-          {member.is_verified && <CheckCircle2 className="h-4 w-4 text-primary" />}
+        <div className="flex-1 min-w-0">
+          <div className="flex items-center gap-1 text-xs text-muted-foreground mb-0.5">
+            <User className="h-3 w-3" />
+            <span>{isAr ? "عضو" : "Member"}</span>
+            {data.username && (
+              <>
+                <span className="mx-0.5">›</span>
+                <span>@{data.username}</span>
+              </>
+            )}
+          </div>
+          <div className="flex items-center gap-1.5">
+            <h3 className="text-base font-medium text-primary group-hover:underline line-clamp-1">
+              {displayName}
+            </h3>
+            {data.is_verified && <CheckCircle2 className="h-3.5 w-3.5 text-primary shrink-0" />}
+          </div>
+          {(spec || bio) && (
+            <p className="text-sm text-muted-foreground line-clamp-2 mt-0.5 leading-relaxed">
+              {spec && <span className="font-medium">{spec}</span>}
+              {spec && bio && " — "}
+              {bio}
+            </p>
+          )}
+          {data.location && (
+            <p className="text-xs text-muted-foreground/70 mt-1.5 flex items-center gap-1">
+              <MapPin className="h-3 w-3" />
+              {data.location}
+            </p>
+          )}
         </div>
-        {member.username && (
-          <p className="text-sm text-muted-foreground">@{member.username}</p>
-        )}
-        {specialization && (
-          <Badge variant="secondary" className="mt-2 text-xs">
-            {specialization}
-          </Badge>
-        )}
-        {member.location && (
-          <p className="text-xs text-muted-foreground mt-2 flex items-center gap-1">
-            <MapPin className="h-3 w-3" />
-            {member.location}
-          </p>
-        )}
       </div>
-      <Button variant="outline" size="sm" className="w-full mt-4" asChild>
-        <Link to={`/${member.username || member.user_id}`}>{t("viewProfile")}</Link>
-      </Button>
-    </Card>
+    </Link>
   );
 }
 
-function SearchSkeleton() {
+/* ──────────────── Post Row ──────────────── */
+function PostRow({ data, isAr }: { data: any; isAr: boolean }) {
   return (
-    <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+    <Link
+      to="/community"
+      className="group block rounded-xl px-4 py-3 -mx-2 transition-colors hover:bg-accent/40"
+    >
+      <div className="flex items-start gap-3">
+        <Avatar className="h-10 w-10 shrink-0 mt-0.5">
+          <AvatarImage src={data.author_avatar || undefined} />
+          <AvatarFallback className="text-xs bg-primary/10 text-primary">
+            {(data.author_name || "C")[0]}
+          </AvatarFallback>
+        </Avatar>
+        <div className="flex-1 min-w-0">
+          <div className="flex items-center gap-1 text-xs text-muted-foreground mb-0.5">
+            <MessageSquare className="h-3 w-3" />
+            <span>{isAr ? "منشور" : "Post"}</span>
+            {data.author_username && (
+              <>
+                <span className="mx-0.5">›</span>
+                <span>@{data.author_username}</span>
+              </>
+            )}
+          </div>
+          <h3 className="text-sm font-medium text-foreground line-clamp-1">
+            {data.author_name || (isAr ? "طاهٍ" : "Chef")}
+          </h3>
+          <p className="text-sm text-muted-foreground line-clamp-3 mt-0.5 leading-relaxed whitespace-pre-wrap">
+            {data.content}
+          </p>
+          <p className="text-xs text-muted-foreground/70 mt-1.5">
+            {format(new Date(data.created_at), "MMM d, yyyy")}
+          </p>
+        </div>
+        {data.image_url && (
+          <div className="w-16 h-16 rounded-lg overflow-hidden shrink-0 bg-muted">
+            <img src={data.image_url} alt="" className="w-full h-full object-cover" />
+          </div>
+        )}
+      </div>
+    </Link>
+  );
+}
+
+/* ──────────────── Skeleton ──────────────── */
+function GoogleSkeleton() {
+  return (
+    <div className="space-y-6">
       {[1, 2, 3, 4, 5, 6].map((i) => (
-        <Card key={i}>
-          <Skeleton className="h-32 w-full" />
-          <CardHeader>
-            <Skeleton className="h-5 w-3/4" />
-          </CardHeader>
-          <CardContent>
-            <Skeleton className="h-4 w-1/2" />
-          </CardContent>
-        </Card>
+        <div key={i} className="flex items-start gap-3 px-2">
+          <Skeleton className="w-10 h-10 rounded-lg shrink-0" />
+          <div className="flex-1 space-y-2">
+            <Skeleton className="h-3 w-24" />
+            <Skeleton className="h-4 w-3/4" />
+            <Skeleton className="h-3 w-full" />
+            <Skeleton className="h-3 w-1/3" />
+          </div>
+        </div>
       ))}
     </div>
   );
 }
 
-function EmptySearch({ message }: { message: string }) {
+/* ──────────────── Empty State ──────────────── */
+function EmptySearch({ isAr, query }: { isAr: boolean; query: string }) {
   return (
-    <div className="flex flex-col items-center justify-center py-16 text-center">
-      <SearchIcon className="h-16 w-16 text-muted-foreground/30 mb-4" />
-      <p className="text-muted-foreground">{message}</p>
+    <div className="py-16 text-center">
+      <SearchIcon className="h-12 w-12 text-muted-foreground/20 mx-auto mb-4" />
+      <p className="text-foreground font-medium mb-1">
+        {isAr ? `لا توجد نتائج لـ "${query}"` : `No results for "${query}"`}
+      </p>
+      <p className="text-sm text-muted-foreground">
+        {isAr
+          ? "حاول استخدام كلمات مختلفة أو تحقق من التهجئة"
+          : "Try different keywords or check spelling"}
+      </p>
     </div>
   );
 }
 
-function RecentSearchesPanel({ 
-  recentSearches, 
-  onRecentClick, 
-  onClear, 
-  language, 
-  fallbackMessage 
-}: { 
-  recentSearches: string[]; 
-  onRecentClick: (term: string) => void; 
-  onClear: () => void; 
-  language: string; 
-  fallbackMessage: string; 
+/* ──────────────── Recent Searches ──────────────── */
+function RecentSearchesPanel({
+  recentSearches,
+  onRecentClick,
+  onClear,
+  isAr,
+}: {
+  recentSearches: string[];
+  onRecentClick: (term: string) => void;
+  onClear: () => void;
+  isAr: boolean;
 }) {
   if (recentSearches.length === 0) {
-    return <EmptySearch message={fallbackMessage} />;
+    return (
+      <div className="py-16 text-center">
+        <SearchIcon className="h-12 w-12 text-muted-foreground/20 mx-auto mb-4" />
+        <p className="text-muted-foreground text-sm">
+          {isAr ? "ابدأ البحث..." : "Start searching..."}
+        </p>
+      </div>
+    );
   }
 
   return (
-    <div className="flex flex-col items-center py-10">
-      <div className="mb-6 flex h-14 w-14 items-center justify-center rounded-full bg-muted/60">
-        <Clock className="h-6 w-6 text-muted-foreground/50" />
-      </div>
-      <div className="mb-4 flex items-center gap-2">
-        <h3 className="text-sm font-semibold text-muted-foreground">
-          {language === "ar" ? "عمليات البحث الأخيرة" : "Recent Searches"}
+    <div className="py-8">
+      <div className="flex items-center justify-between mb-4">
+        <h3 className="text-sm font-medium text-muted-foreground flex items-center gap-2">
+          <Clock className="h-4 w-4" />
+          {isAr ? "عمليات البحث الأخيرة" : "Recent searches"}
         </h3>
-        <Button variant="ghost" size="sm" className="h-6 px-2 text-xs text-muted-foreground" onClick={onClear}>
+        <Button variant="ghost" size="sm" className="text-xs h-7 text-muted-foreground" onClick={onClear}>
           <Trash2 className="h-3 w-3 me-1" />
-          {language === "ar" ? "مسح" : "Clear"}
+          {isAr ? "مسح" : "Clear"}
         </Button>
       </div>
-      <div className="flex flex-wrap justify-center gap-2">
+      <div className="space-y-1">
         {recentSearches.map((term) => (
-          <Button
+          <button
             key={term}
-            variant="outline"
-            size="sm"
-            className="gap-1.5"
             onClick={() => onRecentClick(term)}
+            className="flex items-center gap-3 w-full rounded-lg px-3 py-2.5 text-sm text-start hover:bg-accent/40 transition-colors group"
           >
-            <Clock className="h-3 w-3" />
-            {term}
-          </Button>
+            <Clock className="h-4 w-4 text-muted-foreground/50 shrink-0" />
+            <span className="flex-1 truncate">{term}</span>
+            <ChevronRight className="h-3.5 w-3.5 text-muted-foreground/30 group-hover:text-muted-foreground transition-colors" />
+          </button>
         ))}
       </div>
     </div>
