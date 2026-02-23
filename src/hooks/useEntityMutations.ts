@@ -98,13 +98,25 @@ export function useEntityMutations({ form, editingId, selectedManager, onSuccess
   });
 
   const changeStatus = useMutation({
-    mutationFn: async ({ id, status }: { id: string; status: EntityStatus }) => {
+    mutationFn: async ({ id, status, entityName, entityNameAr, createdBy }: { id: string; status: EntityStatus; entityName?: string; entityNameAr?: string; createdBy?: string | null }) => {
       const { error } = await supabase.from("culinary_entities").update({ status }).eq("id", id);
       if (error) throw error;
+      return { status, entityName, entityNameAr, createdBy };
     },
-    onSuccess: () => {
+    onSuccess: (data) => {
       invalidate();
       toast({ title: isAr ? "تم تحديث الحالة" : "Status updated" });
+      if (data) {
+        import("@/lib/notificationTriggers").then(({ notifyEntityStatusChanged }) => {
+          notifyEntityStatusChanged({
+            entityId: "",
+            entityName: data.entityName || "Entity",
+            entityNameAr: data.entityNameAr,
+            newStatus: data.status,
+            createdBy: data.createdBy,
+          });
+        });
+      }
     },
   });
 

@@ -514,6 +514,49 @@ export async function notifyAdminEntityReview(params: {
   });
 }
 
+/** Notify when entity status changes (pending → approved, etc.) */
+export async function notifyEntityStatusChanged(params: {
+  entityId: string;
+  entityName: string;
+  entityNameAr?: string;
+  newStatus: string;
+  createdBy?: string | null;
+}) {
+  const statusLabels: Record<string, { en: string; ar: string }> = {
+    active: { en: "approved and activated", ar: "تمت الموافقة والتفعيل" },
+    pending: { en: "set to pending review", ar: "في انتظار المراجعة" },
+    suspended: { en: "suspended", ar: "تم تعليقها" },
+    inactive: { en: "deactivated", ar: "تم إلغاء تفعيلها" },
+  };
+
+  const label = statusLabels[params.newStatus] || { en: params.newStatus, ar: params.newStatus };
+
+  // Notify admins about the status change
+  await notifyAllAdmins({
+    title: `Entity ${label.en}: ${params.entityName}`,
+    titleAr: `الجهة ${label.ar}: ${params.entityNameAr || params.entityName}`,
+    body: `The entity "${params.entityName}" has been ${label.en}.`,
+    bodyAr: `الجهة "${params.entityNameAr || params.entityName}" ${label.ar}.`,
+    type: params.newStatus === "active" ? "success" : params.newStatus === "suspended" ? "warning" : "info",
+    link: "/admin/entities",
+    channels: ["in_app"],
+  });
+
+  // If entity was created by a user, notify them too
+  if (params.createdBy) {
+    await sendNotification({
+      userId: params.createdBy,
+      title: `Your entity "${params.entityName}" has been ${label.en}`,
+      titleAr: `جهتك "${params.entityNameAr || params.entityName}" ${label.ar}`,
+      body: `The entity you submitted has been ${label.en} by the administration.`,
+      bodyAr: `الجهة التي قدمتها ${label.ar} من قبل الإدارة.`,
+      type: params.newStatus === "active" ? "success" : params.newStatus === "suspended" ? "warning" : "info",
+      link: "/admin/entities",
+      channels: ["in_app"],
+    });
+  }
+}
+
 /** Notify admins when a Michelin Star / award request is submitted */
 export async function notifyAdminAwardRequest(params: {
   userName: string;
