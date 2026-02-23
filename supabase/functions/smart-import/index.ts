@@ -158,23 +158,37 @@ async function handleSearch(query: string, apiKey: string, lovableKey: string, l
     firecrawlSearch(`${query} ${location || ''} official website`, apiKey, 5, 8000),
   ]);
 
-  let results: SearchResult[];
+  let results: SearchResult[] = [];
+
+  // Build fallback results from search APIs first (always available as backup)
+  const fallbackParsed = fallbackResults.length ? extractEntitiesFromSearchResults(fallbackResults) : [];
+  const webParsed = webResults.length ? extractEntitiesFromSearchResults(webResults) : [];
+
   if (scraped && scraped.length >= 50) {
-    results = await extractEntitiesWithAI(scraped, searchTerm, lovableKey);
-    // Merge fallback
-    if (fallbackResults.length) {
-      const fallback = extractEntitiesFromSearchResults(fallbackResults);
+    const aiResults = await extractEntitiesWithAI(scraped, searchTerm, lovableKey);
+    // If AI succeeded, use its results; otherwise fall back
+    results = aiResults.length > 0 ? aiResults : fallbackParsed;
+    // Merge any extras from fallback
+    if (aiResults.length > 0 && fallbackParsed.length) {
       const existingNames = new Set(results.map(r => r.name.toLowerCase()));
-      for (const fb of fallback) {
+      for (const fb of fallbackParsed) {
         if (!existingNames.has(fb.name.toLowerCase())) results.push(fb);
       }
     }
-  } else if (fallbackResults.length) {
-    results = extractEntitiesFromSearchResults(fallbackResults);
-  } else if (webResults.length) {
-    results = extractEntitiesFromSearchResults(webResults);
-  } else {
-    results = [];
+  } else if (fallbackParsed.length) {
+    results = fallbackParsed;
+  } else if (webParsed.length) {
+    results = webParsed;
+  }
+
+  // Last resort: merge web results
+  if (results.length === 0 && webParsed.length) {
+    results = webParsed;
+  } else if (webParsed.length) {
+    const existingNames = new Set(results.map(r => r.name.toLowerCase()));
+    for (const wp of webParsed) {
+      if (!existingNames.has(wp.name.toLowerCase())) results.push(wp);
+    }
   }
 
   if (results.length) setCache(cacheKey, results);
@@ -207,16 +221,19 @@ function extractEntitiesFromSearchResults(raw: any[]): SearchResult[] {
 }
 
 async function extractEntitiesWithAI(scraped: string, searchTerm: string, lovableKey: string): Promise<SearchResult[]> {
-  const prompt = `Extract ALL business/entity listings from this Google Maps search page. Do NOT filter or skip any result. Include every single listing regardless of type or category.
+  // Use less content to avoid timeouts
+  const truncated = scraped.substring(0, 10000);
+  const prompt = `Extract ALL business/entity listings from this Google Maps page.
 SEARCH: "${searchTerm}"
-CONTENT (truncated):
-${scraped.substring(0, 18000)}
+CONTENT:
+${truncated}
 
-Return JSON array: [{"name":"...","description":"...","rating":4.5,"total_reviews":100,"place_type":"...","latitude":null,"longitude":null,"google_maps_url":null,"address":"..."}]
-Rules: Extract EVERY listing without exception. No filtering. No hallucination. Return ONLY valid JSON array.`;
+Return JSON array: [{"name":"...","description":"short desc","rating":4.5,"total_reviews":100,"place_type":"...","address":"..."}]
+Rules: Every listing. No filtering. No hallucination. ONLY valid JSON array.`;
 
-  // Use fast lite model with adequate timeout
-  const content = await callAI(prompt, lovableKey, 'google/gemini-2.5-flash-lite', 0.1, 30000);
+  // Use flash (not lite) with longer timeout for reliability
+  const content = await callAI(prompt, lovableKey, 'google/gemini-2.5-flash', 0.1, 45000);
+  if (!content) return [];
   try {
     const jsonMatch = content.match(/\[[\s\S]*\]/);
     if (jsonMatch) {
