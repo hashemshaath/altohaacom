@@ -24,7 +24,7 @@ export function HomeSearch() {
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
     if (query.trim()) {
-      navigate(`/search?q=${encodeURIComponent(query.trim())}&tab=${activeCategory === "all" ? "" : activeCategory}`);
+      navigate(`/search?q=${encodeURIComponent(query.trim())}&type=${activeCategory === "all" ? "" : activeCategory}`);
     }
   };
 

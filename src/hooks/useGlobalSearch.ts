@@ -1,4 +1,4 @@
-import { useState, useCallback, useMemo } from "react";
+import { useState, useCallback, useMemo, useEffect, useRef } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import type { Database } from "@/integrations/supabase/types";
@@ -154,6 +154,15 @@ function sortByRelevance<T extends { _relevance?: number }>(items: T[]): T[] {
 
 export function useGlobalSearch() {
   const [filters, setFilters] = useState<SearchFilters>(DEFAULT_FILTERS);
+  const [debouncedQuery, setDebouncedQuery] = useState("");
+
+  // Debounce the query to avoid excessive DB calls
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setDebouncedQuery(filters.query);
+    }, 300);
+    return () => clearTimeout(timer);
+  }, [filters.query]);
 
   const updateFilter = useCallback(<K extends keyof SearchFilters>(
     key: K,
@@ -166,20 +175,20 @@ export function useGlobalSearch() {
     setFilters(DEFAULT_FILTERS);
   }, []);
 
-  const searchWords = useMemo(() => getSearchWords(filters.query), [filters.query]);
+  const searchWords = useMemo(() => getSearchWords(debouncedQuery), [debouncedQuery]);
 
   // Search competitions
   const { data: competitionsData, isLoading: competitionsLoading } = useQuery({
-    queryKey: ["search-competitions", filters.query, filters.competitionStatus, filters.isVirtual],
+    queryKey: ["search-competitions", debouncedQuery, filters.competitionStatus, filters.isVirtual],
     queryFn: async () => {
-      if (!filters.query && filters.type !== "competitions") return [];
+      if (!debouncedQuery && filters.type !== "competitions") return [];
       
       let query = supabase
         .from("competitions")
         .select("id, title, title_ar, description, description_ar, cover_image_url, status, competition_start, competition_end, venue, venue_ar, city, country, is_virtual")
         .neq("status", "draft");
 
-      if (filters.query && searchWords.length > 0) {
+      if (debouncedQuery && searchWords.length > 0) {
         const cols = ["title", "title_ar", "description", "description_ar", "city", "venue", "venue_ar", "country"];
         query = query.or(buildFlexibleFilter(searchWords, cols));
       }
@@ -198,7 +207,6 @@ export function useGlobalSearch() {
       if (error) throw error;
       if (!data) return [];
 
-      // Score and sort by relevance
       return sortByRelevance(
         data.map((r) => ({
           ...r,
@@ -207,19 +215,20 @@ export function useGlobalSearch() {
       ) as CompetitionResult[];
     },
     enabled: filters.type === "all" || filters.type === "competitions",
+    staleTime: 1000 * 60 * 2,
   });
 
   // Search articles
   const { data: articlesData, isLoading: articlesLoading } = useQuery({
-    queryKey: ["search-articles", filters.query, filters.articleType, filters.articleStatus],
+    queryKey: ["search-articles", debouncedQuery, filters.articleType, filters.articleStatus],
     queryFn: async () => {
-      if (!filters.query && filters.type !== "articles") return [];
+      if (!debouncedQuery && filters.type !== "articles") return [];
       
       let query = supabase
         .from("articles")
         .select("id, title, title_ar, excerpt, excerpt_ar, featured_image_url, type, status, published_at, slug");
 
-      if (filters.query && searchWords.length > 0) {
+      if (debouncedQuery && searchWords.length > 0) {
         const cols = ["title", "title_ar", "excerpt", "excerpt_ar", "content", "content_ar"];
         query = query.or(buildFlexibleFilter(searchWords, cols));
       }
@@ -248,20 +257,21 @@ export function useGlobalSearch() {
       ) as ArticleResult[];
     },
     enabled: filters.type === "all" || filters.type === "articles",
+    staleTime: 1000 * 60 * 2,
   });
 
   // Search members
   const { data: membersData, isLoading: membersLoading } = useQuery({
-    queryKey: ["search-members", filters.query, filters.memberRole, filters.experienceLevel],
+    queryKey: ["search-members", debouncedQuery, filters.memberRole, filters.experienceLevel],
     queryFn: async () => {
-      if (!filters.query && filters.type !== "members") return [];
+      if (!debouncedQuery && filters.type !== "members") return [];
       
       let query = supabase
         .from("profiles")
         .select("id, user_id, full_name, full_name_ar, display_name, display_name_ar, username, avatar_url, bio, bio_ar, specialization, specialization_ar, experience_level, location, is_verified")
         .eq("account_status", "active");
 
-      if (filters.query && searchWords.length > 0) {
+      if (debouncedQuery && searchWords.length > 0) {
         const cols = [
           "full_name", "full_name_ar", "display_name", "display_name_ar",
           "username", "bio", "bio_ar", "specialization", "specialization_ar", "location"
@@ -276,15 +286,11 @@ export function useGlobalSearch() {
       const { data, error } = await query.limit(30);
       if (error) throw error;
       
-      let results = data || [];
-
-      // Score by relevance
-      let scored = results.map((r) => ({
+      let scored = (data || []).map((r) => ({
         ...r,
         _relevance: countMatchingWords(searchWords, r.full_name, r.full_name_ar, r.display_name, r.display_name_ar, r.username, r.bio, r.bio_ar, r.specialization, r.specialization_ar, r.location),
       }));
 
-      // Role filter
       if (filters.memberRole && filters.memberRole !== "all" && scored.length > 0) {
         const userIds = scored.map(m => m.user_id);
         const { data: rolesData } = await supabase
@@ -300,15 +306,15 @@ export function useGlobalSearch() {
       return sortByRelevance(scored) as MemberResult[];
     },
     enabled: filters.type === "all" || filters.type === "members",
+    staleTime: 1000 * 60 * 2,
   });
 
   // Search posts
   const { data: postsData, isLoading: postsLoading } = useQuery({
-    queryKey: ["search-posts", filters.query],
+    queryKey: ["search-posts", debouncedQuery],
     queryFn: async () => {
-      if (!filters.query || searchWords.length === 0) return [];
+      if (!debouncedQuery || searchWords.length === 0) return [];
       
-      // Search with ANY word matching
       const orParts = searchWords.map(w => `content.ilike.%${w.replace(/[%_]/g, "\\$&")}%`);
 
       const { data: posts, error } = await supabase
@@ -322,7 +328,6 @@ export function useGlobalSearch() {
       if (error) throw error;
       if (!posts?.length) return [];
 
-      // Score by relevance
       const scored = posts.map(p => ({
         ...p,
         _relevance: countMatchingWords(searchWords, p.content),
@@ -355,13 +360,14 @@ export function useGlobalSearch() {
       ) as PostResult[];
     },
     enabled: filters.type === "all" || filters.type === "posts",
+    staleTime: 1000 * 60 * 2,
   });
 
   // Search entities (culinary_entities + establishments)
   const { data: entitiesData, isLoading: entitiesLoading } = useQuery({
-    queryKey: ["search-entities", filters.query],
+    queryKey: ["search-entities", debouncedQuery],
     queryFn: async () => {
-      if (!filters.query || searchWords.length === 0) return [];
+      if (!debouncedQuery || searchWords.length === 0) return [];
 
       const entityCols = ["name", "name_ar", "description", "description_ar", "city", "country"];
       const estabCols = ["name", "name_ar", "description", "description_ar", "city", "cuisine_type", "cuisine_type_ar"];
@@ -414,6 +420,7 @@ export function useGlobalSearch() {
       return sortByRelevance([...entities, ...establishments]);
     },
     enabled: filters.type === "all" || filters.type === "entities",
+    staleTime: 1000 * 60 * 2,
   });
 
   const results: SearchResults = {
