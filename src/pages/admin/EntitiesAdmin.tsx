@@ -13,7 +13,8 @@ import {
   AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent,
   AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
-import { ArrowDown, ArrowUp, ArrowUpDown, Building2, Download, FileSpreadsheet, FilterX, Plus, Search, Sparkles } from "lucide-react";
+import { ArrowDown, ArrowUp, ArrowUpDown, Building2, CheckSquare, Download, Eye, EyeOff, FileSpreadsheet, FilterX, Plus, Search, Sparkles, Trash2 } from "lucide-react";
+import { Checkbox } from "@/components/ui/checkbox";
 import { SmartImportDialog, type ImportedData } from "@/components/smart-import/SmartImportDialog";
 import { EntitySubModulesPanel } from "@/components/entities/EntitySubModulesPanel";
 import AdminPageHeader from "@/components/admin/AdminPageHeader";
@@ -61,6 +62,7 @@ export default function EntitiesAdmin() {
   const [sortDir, setSortDir] = useState<SortDir>("desc");
   const [showUnsavedWarning, setShowUnsavedWarning] = useState(false);
   const [pendingClose, setPendingClose] = useState(false);
+  const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
 
   const { data: entities, isLoading } = useQuery({
     queryKey: ["admin-entities"],
@@ -212,6 +214,38 @@ export default function EntitiesAdmin() {
     toast({ title: isAr ? "تم التصدير" : "Export complete" });
   };
 
+  const toggleSelectAll = () => {
+    if (selectedIds.size === paginatedEntities.length) {
+      setSelectedIds(new Set());
+    } else {
+      setSelectedIds(new Set(paginatedEntities.map(e => e.id)));
+    }
+  };
+
+  const handleBulkStatus = async (status: string) => {
+    for (const id of selectedIds) {
+      const ent = entities?.find(e => e.id === id);
+      if (ent) changeStatus.mutate({ id, status: status as Database["public"]["Enums"]["entity_status"], entityName: ent.name, entityNameAr: ent.name_ar || undefined, createdBy: ent.created_by });
+    }
+    setSelectedIds(new Set());
+    toast({ title: isAr ? `تم تحديث ${selectedIds.size} جهة` : `Updated ${selectedIds.size} entities` });
+  };
+
+  const handleBulkVisibility = async (visible: boolean) => {
+    for (const id of selectedIds) {
+      toggleVisibility.mutate({ id, visible });
+    }
+    setSelectedIds(new Set());
+    toast({ title: isAr ? `تم تحديث ${selectedIds.size} جهة` : `Updated ${selectedIds.size} entities` });
+  };
+
+  const handleBulkDelete = async () => {
+    for (const id of selectedIds) {
+      deleteMutation.mutate(id);
+    }
+    setSelectedIds(new Set());
+  };
+
   return (
     <div className="space-y-6">
       <AdminPageHeader
@@ -322,6 +356,38 @@ export default function EntitiesAdmin() {
         </span>
       </div>
 
+      {/* Bulk Actions Bar */}
+      {selectedIds.size > 0 && (
+        <Card className="border-primary/30 bg-primary/5">
+          <CardContent className="flex items-center gap-3 p-3">
+            <CheckSquare className="h-4 w-4 text-primary" />
+            <span className="text-sm font-medium">{selectedIds.size} {isAr ? "محدد" : "selected"}</span>
+            <div className="flex items-center gap-2 ms-auto">
+              <Select onValueChange={handleBulkStatus}>
+                <SelectTrigger className="h-8 w-[140px] text-xs">
+                  <SelectValue placeholder={isAr ? "تغيير الحالة" : "Change Status"} />
+                </SelectTrigger>
+                <SelectContent>
+                  {statusOptions.map(s => <SelectItem key={s} value={s}>{isAr ? statusLabels[s]?.ar : statusLabels[s]?.en}</SelectItem>)}
+                </SelectContent>
+              </Select>
+              <Button variant="outline" size="sm" className="h-8 text-xs" onClick={() => handleBulkVisibility(true)}>
+                <Eye className="me-1 h-3 w-3" />{isAr ? "إظهار" : "Show"}
+              </Button>
+              <Button variant="outline" size="sm" className="h-8 text-xs" onClick={() => handleBulkVisibility(false)}>
+                <EyeOff className="me-1 h-3 w-3" />{isAr ? "إخفاء" : "Hide"}
+              </Button>
+              <Button variant="destructive" size="sm" className="h-8 text-xs" onClick={handleBulkDelete}>
+                <Trash2 className="me-1 h-3 w-3" />{isAr ? "حذف" : "Delete"}
+              </Button>
+              <Button variant="ghost" size="sm" className="h-8 text-xs" onClick={() => setSelectedIds(new Set())}>
+                {isAr ? "إلغاء" : "Cancel"}
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
       {/* Table */}
       <Card>
         <CardContent className="p-0">
@@ -329,6 +395,12 @@ export default function EntitiesAdmin() {
             <Table>
               <TableHeader>
                 <TableRow>
+                  <TableHead className="w-[40px]">
+                    <Checkbox
+                      checked={paginatedEntities.length > 0 && selectedIds.size === paginatedEntities.length}
+                      onCheckedChange={toggleSelectAll}
+                    />
+                  </TableHead>
                   <TableHead className="hidden xl:table-cell w-[100px]">{isAr ? "الرقم" : "#"}</TableHead>
                   <TableHead>
                     <button className="flex items-center font-medium hover:text-foreground transition-colors" onClick={() => toggleSort("name")}>
@@ -353,11 +425,11 @@ export default function EntitiesAdmin() {
               </TableHeader>
               <TableBody>
                 {isLoading ? (
-                  <TableRow><TableCell colSpan={8} className="text-center py-12">
+                  <TableRow><TableCell colSpan={9} className="text-center py-12">
                     <div className="h-8 w-8 mx-auto animate-spin rounded-full border-4 border-primary border-t-transparent" />
                   </TableCell></TableRow>
                 ) : paginatedEntities.length === 0 ? (
-                  <TableRow><TableCell colSpan={8} className="text-center py-12 text-muted-foreground">
+                  <TableRow><TableCell colSpan={9} className="text-center py-12 text-muted-foreground">
                     <Building2 className="h-10 w-10 mx-auto mb-2 opacity-30" />
                     <p>{isAr ? "لا توجد جهات مسجلة" : "No entities found"}</p>
                   </TableCell></TableRow>
@@ -377,6 +449,14 @@ export default function EntitiesAdmin() {
                         changeStatus.mutate({ id, status: status as Database["public"]["Enums"]["entity_status"], entityName: ent?.name, entityNameAr: ent?.name_ar || undefined, createdBy: ent?.created_by });
                       }}
                       onVerifiedChange={(id, verified) => changeVerified.mutate({ id, verified })}
+                      selected={selectedIds.has(entity.id)}
+                      onSelect={(id, checked) => {
+                        setSelectedIds(prev => {
+                          const next = new Set(prev);
+                          checked ? next.add(id) : next.delete(id);
+                          return next;
+                        });
+                      }}
                     />
                   ))
                 )}

@@ -10,6 +10,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import { TableCell, TableRow } from "@/components/ui/table";
 import { Building2, Eye, EyeOff, Pencil, Settings2, ShieldCheck, Trash2, Users } from "lucide-react";
+import { Checkbox } from "@/components/ui/checkbox";
 
 interface EntityRow {
   id: string;
@@ -48,6 +49,8 @@ interface Props {
   onManage: (id: string, name: string) => void;
   onStatusChange?: (id: string, status: string) => void;
   onVerifiedChange?: (id: string, verified: boolean) => void;
+  selected?: boolean;
+  onSelect?: (id: string, checked: boolean) => void;
 }
 
 const statusConfig: Record<string, { variant: "default" | "secondary" | "destructive" | "outline"; labelEn: string; labelAr: string }> = {
@@ -57,7 +60,7 @@ const statusConfig: Record<string, { variant: "default" | "secondary" | "destruc
   archived: { variant: "secondary", labelEn: "Archived", labelAr: "مؤرشف" },
 };
 
-export default function EntityTableRow({ entity, typeLabel, scopeLabel, onEdit, onDelete, onToggleVisibility, onManage, onStatusChange, onVerifiedChange }: Props) {
+export default function EntityTableRow({ entity, typeLabel, scopeLabel, onEdit, onDelete, onToggleVisibility, onManage, onStatusChange, onVerifiedChange, selected, onSelect }: Props) {
   const { language } = useLanguage();
   const isAr = language === "ar";
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
@@ -73,6 +76,11 @@ export default function EntityTableRow({ entity, typeLabel, scopeLabel, onEdit, 
   return (
     <>
       <TableRow className="group">
+        {onSelect && (
+          <TableCell className="w-[40px]">
+            <Checkbox checked={selected} onCheckedChange={(v) => onSelect(entity.id, !!v)} />
+          </TableCell>
+        )}
         <TableCell className="hidden xl:table-cell font-mono text-xs text-muted-foreground">{entity.entity_number}</TableCell>
         <TableCell>
           <div className="flex items-center gap-3">
