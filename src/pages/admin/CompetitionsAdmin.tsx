@@ -16,7 +16,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { useToast } from "@/hooks/use-toast";
-import { Search, MoreHorizontal, Eye, Edit, Trash2, Trophy, Users, Calendar, MapPin, Sparkles, Filter, Globe, Plus, Copy, Building2, Tag, FileSpreadsheet, Gavel, Medal, BarChart3 } from "lucide-react";
+import { Search, MoreHorizontal, Eye, Edit, Trash2, Trophy, Users, Calendar, MapPin, Sparkles, Filter, Globe, Plus, Copy, Building2, Tag, FileSpreadsheet, Gavel, Medal, BarChart3, CheckCircle, XCircle } from "lucide-react";
 import { format } from "date-fns";
 import type { Database } from "@/integrations/supabase/types";
 
@@ -171,6 +171,38 @@ export default function CompetitionsAdmin() {
       await supabase.from("admin_actions").insert({ admin_id: user!.id, action_type: "update_competition_status", details: { competition_id: id, new_status: status } });
     },
     onSuccess: () => { queryClient.invalidateQueries({ queryKey: ["adminCompetitions"] }); queryClient.invalidateQueries({ queryKey: ["admin-pending-counts"] }); toast({ title: isAr ? "تم تحديث الحالة" : "Status updated" }); },
+    onError: (error) => { toast({ variant: "destructive", title: "Error", description: error.message }); },
+  });
+
+  const approveCompetition = useMutation({
+    mutationFn: async (comp: any) => {
+      const { error } = await supabase.from("competitions").update({ status: "draft" as CompetitionStatus }).eq("id", comp.id);
+      if (error) throw error;
+      await supabase.from("admin_actions").insert({ admin_id: user!.id, action_type: "approve_competition", details: { competition_id: comp.id } });
+      // Notify admins
+      import("@/lib/notificationTriggers").then(({ notifyAdminCompetitionReview }) => {
+        // We reuse the pattern but with a status-change style notification
+      });
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["adminCompetitions"] });
+      queryClient.invalidateQueries({ queryKey: ["admin-pending-counts"] });
+      toast({ title: isAr ? "تمت الموافقة ونقلها إلى مسودة" : "Competition approved and moved to draft" });
+    },
+    onError: (error) => { toast({ variant: "destructive", title: "Error", description: error.message }); },
+  });
+
+  const rejectCompetition = useMutation({
+    mutationFn: async (comp: any) => {
+      const { error } = await supabase.from("competitions").update({ status: "cancelled" as CompetitionStatus }).eq("id", comp.id);
+      if (error) throw error;
+      await supabase.from("admin_actions").insert({ admin_id: user!.id, action_type: "reject_competition", details: { competition_id: comp.id } });
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["adminCompetitions"] });
+      queryClient.invalidateQueries({ queryKey: ["admin-pending-counts"] });
+      toast({ title: isAr ? "تم رفض المسابقة" : "Competition rejected" });
+    },
     onError: (error) => { toast({ variant: "destructive", title: "Error", description: error.message }); },
   });
 
@@ -541,6 +573,17 @@ export default function CompetitionsAdmin() {
                         </div>
                       </TableCell>
                       <TableCell>
+                        <div className="flex justify-end gap-1">
+                          {comp.status === "pending" && (
+                            <>
+                              <Button size="icon" variant="ghost" onClick={() => approveCompetition.mutate(comp)} className="h-8 w-8 text-chart-2 hover:text-chart-2" title={isAr ? "موافقة" : "Approve"}>
+                                <CheckCircle className="h-4 w-4" />
+                              </Button>
+                              <Button size="icon" variant="ghost" onClick={() => rejectCompetition.mutate(comp)} className="h-8 w-8 text-destructive hover:text-destructive" title={isAr ? "رفض" : "Reject"}>
+                                <XCircle className="h-4 w-4" />
+                              </Button>
+                            </>
+                          )}
                         <DropdownMenu>
                           <DropdownMenuTrigger asChild>
                             <Button variant="ghost" size="icon" className="h-8 w-8">
@@ -579,6 +622,7 @@ export default function CompetitionsAdmin() {
                             )}
                           </DropdownMenuContent>
                         </DropdownMenu>
+                        </div>
                       </TableCell>
                     </TableRow>
                   );
