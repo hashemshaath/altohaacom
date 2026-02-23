@@ -203,28 +203,19 @@ Deno.serve(async (req) => {
     // ═══════ MODE: SEARCH — return list of results ═══════
     if (mode === 'search') {
       let results: SearchResultItem[] = [];
-      const sourcesUsed = { google_places: false, firecrawl_search: false };
 
-      const googlePromise = googleApiKey
-        ? searchPlaces(query, googleApiKey, location).then(r => { if (r.length) { sourcesUsed.google_places = true; } return r; })
-        : Promise.resolve([]);
-
-      const firecrawlPromise = firecrawlKey
-        ? searchWithFirecrawl(query, firecrawlKey, location).then(r => { if (r.results.length) { sourcesUsed.firecrawl_search = true; } return r; })
-        : Promise.resolve({ results: [] as SearchResultItem[], websiteUrl: null, searchContent: null });
-
-      const [googleResults, firecrawlResult] = await Promise.all([googlePromise, firecrawlPromise]);
-
-      // Prefer Google results; add Firecrawl results that aren't duplicates
-      results = googleResults;
-      if (!results.length) {
-        results = firecrawlResult.results;
+      if (!googleApiKey) {
+        return new Response(
+          JSON.stringify({ success: false, error: "Google Places API key is not configured. Please add it in integration settings." }),
+          { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+        );
       }
 
-      console.log(`Search returned ${results.length} results (Google: ${sourcesUsed.google_places}, Firecrawl: ${sourcesUsed.firecrawl_search})`);
+      results = await searchPlaces(query, googleApiKey, location);
+      console.log(`Search returned ${results.length} results from Google Places`);
 
       return new Response(
-        JSON.stringify({ success: true, results, sources_used: sourcesUsed }),
+        JSON.stringify({ success: true, results }),
         { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       );
     }
