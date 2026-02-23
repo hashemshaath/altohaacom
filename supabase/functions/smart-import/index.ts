@@ -4,7 +4,6 @@ const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version',
 };
-
 const jsonHeaders = { ...corsHeaders, 'Content-Type': 'application/json' };
 
 // ─── Types ───
@@ -19,6 +18,24 @@ interface SearchResult {
   total_reviews: number | null;
   google_maps_url: string | null;
   place_type: string | null;
+}
+
+// ─── In-memory cache (per cold start) ───
+const cache = new Map<string, { data: any; ts: number }>();
+const CACHE_TTL = 5 * 60 * 1000; // 5 min
+
+function getCached(key: string): any | null {
+  const entry = cache.get(key);
+  if (entry && Date.now() - entry.ts < CACHE_TTL) return entry.data;
+  cache.delete(key);
+  return null;
+}
+function setCache(key: string, data: any) {
+  if (cache.size > 100) { // LRU-like cleanup
+    const oldest = cache.keys().next().value;
+    if (oldest) cache.delete(oldest);
+  }
+  cache.set(key, { data, ts: Date.now() });
 }
 
 // ─── Auth ───
@@ -37,75 +54,69 @@ async function authenticateAdmin(req: Request) {
   return client;
 }
 
-// ─── Firecrawl helpers with timeout ───
-async function firecrawlSearch(query: string, apiKey: string, limit = 10, timeoutMs = 15000): Promise<any[]> {
+// ─── Firecrawl with timeout + retry ───
+async function firecrawlFetch(url: string, body: any, apiKey: string, timeoutMs: number): Promise<any> {
   const controller = new AbortController();
   const timer = setTimeout(() => controller.abort(), timeoutMs);
   try {
-    const res = await fetch('https://api.firecrawl.dev/v1/search', {
+    const res = await fetch(url, {
       method: 'POST',
       headers: { 'Authorization': `Bearer ${apiKey}`, 'Content-Type': 'application/json' },
-      body: JSON.stringify({ query, limit }),
+      body: JSON.stringify(body),
       signal: controller.signal,
     });
-    const data = await res.json();
-    return data?.success ? (data.data || []) : [];
+    return await res.json();
   } catch (e) {
     if (e instanceof DOMException && e.name === 'AbortError') {
-      console.warn('[SmartImport] Firecrawl search timed out');
-    }
-    return [];
-  } finally { clearTimeout(timer); }
-}
-
-async function firecrawlScrape(url: string, apiKey: string, timeoutMs = 18000): Promise<string | null> {
-  const controller = new AbortController();
-  const timer = setTimeout(() => controller.abort(), timeoutMs);
-  try {
-    let formatted = url.trim();
-    if (!formatted.startsWith('http')) formatted = `https://${formatted}`;
-    const res = await fetch('https://api.firecrawl.dev/v1/scrape', {
-      method: 'POST',
-      headers: { 'Authorization': `Bearer ${apiKey}`, 'Content-Type': 'application/json' },
-      body: JSON.stringify({ url: formatted, formats: ['markdown'], onlyMainContent: true }),
-      signal: controller.signal,
-    });
-    const data = await res.json();
-    return data?.data?.markdown || null;
-  } catch (e) {
-    if (e instanceof DOMException && e.name === 'AbortError') {
-      console.warn('[SmartImport] Scrape timed out for:', url);
+      console.warn(`[SmartImport] Timed out: ${url}`);
     } else {
-      console.error('[SmartImport] Scrape error:', e);
+      console.error(`[SmartImport] Fetch error:`, e);
     }
     return null;
   } finally { clearTimeout(timer); }
 }
 
-// ─── AI call with timeout + retry ───
-async function callAI(prompt: string, lovableKey: string, model = 'google/gemini-3-flash-preview', temperature = 0.1, timeoutMs = 20000): Promise<string> {
+async function firecrawlSearch(query: string, apiKey: string, limit = 10, timeoutMs = 12000): Promise<any[]> {
+  const data = await firecrawlFetch('https://api.firecrawl.dev/v1/search', { query, limit }, apiKey, timeoutMs);
+  return data?.success ? (data.data || []) : [];
+}
+
+async function firecrawlScrape(url: string, apiKey: string, timeoutMs = 15000): Promise<string | null> {
+  const cacheKey = `scrape:${url}`;
+  const cached = getCached(cacheKey);
+  if (cached) { console.log('[SmartImport] Cache hit:', url); return cached; }
+
+  let formatted = url.trim();
+  if (!formatted.startsWith('http')) formatted = `https://${formatted}`;
+  const data = await firecrawlFetch('https://api.firecrawl.dev/v1/scrape', {
+    url: formatted, formats: ['markdown'], onlyMainContent: true,
+  }, apiKey, timeoutMs);
+  const md = data?.data?.markdown || null;
+  if (md) setCache(cacheKey, md);
+  return md;
+}
+
+// ─── AI call ───
+async function callAI(prompt: string, lovableKey: string, model = 'google/gemini-2.5-flash', temperature = 0.1, timeoutMs = 22000): Promise<string> {
   const controller = new AbortController();
   const timer = setTimeout(() => controller.abort(), timeoutMs);
   try {
     const res = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
       method: 'POST',
       headers: { 'Authorization': `Bearer ${lovableKey}`, 'Content-Type': 'application/json' },
-      body: JSON.stringify({ model, messages: [{ role: 'user', content: prompt }], temperature }),
+      body: JSON.stringify({
+        model,
+        messages: [{ role: 'system', content: 'You are a precise data extraction assistant. Return ONLY valid JSON. No markdown, no explanations.' }, { role: 'user', content: prompt }],
+        temperature,
+      }),
       signal: controller.signal,
     });
-    if (!res.ok) {
-      const errText = await res.text();
-      console.error('[SmartImport] AI error:', res.status, errText);
-      return '';
-    }
+    if (!res.ok) { console.error('[SmartImport] AI error:', res.status); return ''; }
     const data = await res.json();
     return data.choices?.[0]?.message?.content || '';
   } catch (e) {
-    if (e instanceof DOMException && e.name === 'AbortError') {
-      console.warn('[SmartImport] AI call timed out');
-    } else {
-      console.error('[SmartImport] AI error:', e);
-    }
+    if (e instanceof DOMException && e.name === 'AbortError') console.warn('[SmartImport] AI timed out');
+    else console.error('[SmartImport] AI error:', e);
     return '';
   } finally { clearTimeout(timer); }
 }
@@ -113,23 +124,40 @@ async function callAI(prompt: string, lovableKey: string, model = 'google/gemini
 // ─── MODE: SEARCH ───
 async function handleSearch(query: string, apiKey: string, lovableKey: string, location?: string): Promise<SearchResult[]> {
   const searchTerm = location ? `${query} ${location}` : query;
-  console.log('[SmartImport] Searching Google Maps for:', searchTerm);
+  const cacheKey = `search:${searchTerm}`;
+  const cached = getCached(cacheKey);
+  if (cached) return cached;
 
+  console.log('[SmartImport] Searching:', searchTerm);
   const mapsUrl = `https://www.google.com/maps/search/${encodeURIComponent(searchTerm)}`;
-  const scraped = await firecrawlScrape(mapsUrl, apiKey, 20000);
 
-  if (!scraped || scraped.length < 50) {
-    console.log('[SmartImport] Maps scrape thin, using search API fallback');
-    const searchResults = await firecrawlSearch(`"${query}" ${location || ''} site:google.com/maps`, apiKey, 15);
-    if (searchResults.length) return extractEntitiesFromSearchResults(searchResults);
-    return [];
+  // Parallel: scrape maps + fallback search
+  const [scraped, fallbackResults] = await Promise.all([
+    firecrawlScrape(mapsUrl, apiKey, 18000),
+    firecrawlSearch(`"${query}" ${location || ''} site:google.com/maps`, apiKey, 12, 10000),
+  ]);
+
+  let results: SearchResult[];
+  if (scraped && scraped.length >= 50) {
+    results = await extractEntitiesWithAI(scraped, searchTerm, lovableKey);
+    // Merge unique fallback results
+    if (fallbackResults.length) {
+      const fallback = extractEntitiesFromSearchResults(fallbackResults);
+      const existingNames = new Set(results.map(r => r.name.toLowerCase()));
+      for (const fb of fallback) {
+        if (!existingNames.has(fb.name.toLowerCase())) results.push(fb);
+      }
+    }
+  } else if (fallbackResults.length) {
+    results = extractEntitiesFromSearchResults(fallbackResults);
+  } else {
+    results = [];
   }
 
-  console.log(`[SmartImport] Scraped ${scraped.length} chars from Google Maps`);
-  return await extractEntitiesWithAI(scraped, searchTerm, lovableKey);
+  if (results.length) setCache(cacheKey, results);
+  return results;
 }
 
-// ─── Extract entities from Firecrawl search results ───
 function extractEntitiesFromSearchResults(raw: any[]): SearchResult[] {
   const seen = new Set<string>();
   return raw.filter(item => {
@@ -137,7 +165,7 @@ function extractEntitiesFromSearchResults(raw: any[]): SearchResult[] {
     if (!url || seen.has(url)) return false;
     seen.add(url);
     return true;
-  }).slice(0, 15).map((item, i) => {
+  }).slice(0, 20).map((item, i) => {
     const url = item.url || '';
     const title = (item.title || '').replace(/\s*[-–|]\s*Google\s*Maps?$/i, '').trim();
     const coordMatch = url.match(/@(-?\d+\.\d+),(-?\d+\.\d+)/);
@@ -148,43 +176,23 @@ function extractEntitiesFromSearchResults(raw: any[]): SearchResult[] {
       url,
       latitude: coordMatch ? parseFloat(coordMatch[1]) : null,
       longitude: coordMatch ? parseFloat(coordMatch[2]) : null,
-      rating: null,
-      total_reviews: null,
+      rating: null, total_reviews: null,
       google_maps_url: /google\.\w+\/maps/i.test(url) ? url : null,
       place_type: null,
     };
   });
 }
 
-// ─── Use AI to extract entity list from scraped Google Maps content ───
 async function extractEntitiesWithAI(scraped: string, searchTerm: string, lovableKey: string): Promise<SearchResult[]> {
-  const prompt = `You are a data extraction assistant. From the following Google Maps search results page content, extract ALL business/entity listings found.
+  const prompt = `Extract ALL business/entity listings from this Google Maps search page.
+SEARCH: "${searchTerm}"
+CONTENT (truncated):
+${scraped.substring(0, 10000)}
 
-SEARCH TERM: "${searchTerm}"
+Return JSON array: [{"name":"...","description":"...","rating":4.5,"total_reviews":100,"place_type":"...","latitude":null,"longitude":null,"google_maps_url":null,"address":"..."}]
+Rules: Extract ALL real businesses. No hallucination. Return ONLY valid JSON array.`;
 
-SCRAPED GOOGLE MAPS CONTENT:
-${scraped.substring(0, 8000)}
-
-Extract each entity and return a JSON array. Each entity should have:
-- name: Business/entity name (clean, no extra characters)
-- description: Short description or category (e.g. "Restaurant", "Hotel", "Kitchen supplies store")
-- rating: Google rating number (e.g. 4.5) or null
-- total_reviews: Number of reviews or null  
-- place_type: Category/type of business or null
-- latitude: latitude if found in any URL or data, or null
-- longitude: longitude if found in any URL or data, or null
-- google_maps_url: Direct Google Maps URL for this place if available, or null
-- address: Short address if visible, or null
-
-IMPORTANT:
-- Extract ALL entities/businesses listed, not just the first one
-- Only include REAL businesses found in the content
-- Do NOT make up or hallucinate businesses
-- Return ONLY a valid JSON array, nothing else
-
-Return format: [{"name":"...","description":"...","rating":4.5,"total_reviews":100,"place_type":"...","latitude":null,"longitude":null,"google_maps_url":null,"address":"..."}]`;
-
-  const content = await callAI(prompt, lovableKey, 'google/gemini-3-flash-preview', 0.1, 18000);
+  const content = await callAI(prompt, lovableKey, 'google/gemini-2.5-flash', 0.1, 18000);
   try {
     const jsonMatch = content.match(/\[[\s\S]*\]/);
     if (jsonMatch) {
@@ -194,40 +202,33 @@ Return format: [{"name":"...","description":"...","rating":4.5,"total_reviews":1
         name: e.name || 'Unknown',
         description: e.address ? `${e.description || e.place_type || ''} • ${e.address}`.trim() : (e.description || e.place_type || ''),
         url: e.google_maps_url || `https://www.google.com/maps/search/${encodeURIComponent(e.name)}`,
-        latitude: e.latitude || null,
-        longitude: e.longitude || null,
-        rating: e.rating || null,
-        total_reviews: e.total_reviews || null,
-        google_maps_url: e.google_maps_url || null,
-        place_type: e.place_type || e.description || null,
+        latitude: e.latitude || null, longitude: e.longitude || null,
+        rating: e.rating || null, total_reviews: e.total_reviews || null,
+        google_maps_url: e.google_maps_url || null, place_type: e.place_type || e.description || null,
       }));
     }
-  } catch (e) {
-    console.error('[SmartImport] AI entity extraction parse error:', e);
-  }
+  } catch (e) { console.error('[SmartImport] AI parse error:', e); }
   return [];
 }
 
 // ─── MODE: DETAILS ───
 async function handleDetails(
-  query: string,
-  apiKey: string,
-  resultUrl?: string,
-  websiteUrl?: string,
-  location?: string,
-  latitude?: number,
-  longitude?: number,
+  query: string, apiKey: string, resultUrl?: string, websiteUrl?: string,
+  location?: string, latitude?: number, longitude?: number,
 ): Promise<{ data: any; sources_used: Record<string, boolean>; data_quality: number }> {
+  const cacheKey = `details:${query}:${resultUrl || ''}:${websiteUrl || ''}`;
+  const cached = getCached(cacheKey);
+  if (cached) return cached;
+
   const sources = { google_maps: false, web_search: false, website: false, ai: true };
 
-  // Run ALL scrapes in parallel
   const [scraped, searchRaw, websiteContent] = await Promise.all([
-    resultUrl ? firecrawlScrape(resultUrl, apiKey, 18000).catch(() => null) : Promise.resolve(null),
+    resultUrl ? firecrawlScrape(resultUrl, apiKey, 15000).catch(() => null) : Promise.resolve(null),
     firecrawlSearch(
-      location ? `${query} ${location} contact address phone email about` : `${query} contact address phone email about`,
-      apiKey, 5, 12000
+      location ? `${query} ${location} contact address phone email` : `${query} contact address phone email`,
+      apiKey, 5, 10000
     ).catch(() => []),
-    websiteUrl ? firecrawlScrape(websiteUrl, apiKey, 18000).catch(() => null) : Promise.resolve(null),
+    websiteUrl ? firecrawlScrape(websiteUrl, apiKey, 15000).catch(() => null) : Promise.resolve(null),
   ]);
 
   if (scraped) sources.google_maps = true;
@@ -237,167 +238,138 @@ async function handleDetails(
   if (searchRaw.length) {
     sources.web_search = true;
     searchContent = searchRaw.slice(0, 5).map((r: any) =>
-      `## ${r.title || ''}\nURL: ${r.url}\n${r.description || ''}\n${(r.markdown || '').substring(0, 1200)}`
+      `## ${r.title || ''}\nURL: ${r.url}\n${r.description || ''}\n${(r.markdown || '').substring(0, 1500)}`
     ).join('\n\n---\n\n');
   }
 
   const lovableKey = Deno.env.get('LOVABLE_API_KEY')!;
   const enriched = await enrichWithAI(scraped, searchContent, websiteContent, query, latitude, longitude, lovableKey);
-  
-  // Calculate data quality score (0-100)
   const dataQuality = calculateDataQuality(enriched, sources);
-  
-  return { data: enriched, sources_used: sources, data_quality: dataQuality };
+  const result = { data: enriched, sources_used: sources, data_quality: dataQuality };
+  setCache(cacheKey, result);
+  return result;
 }
 
-// ─── Calculate data quality score ───
 function calculateDataQuality(data: any, sources: Record<string, boolean>): number {
   let score = 0;
-  const maxScore = 100;
-  
-  // Source diversity (20 points)
   const sourceCount = Object.values(sources).filter(Boolean).length;
   score += Math.min(sourceCount * 5, 20);
-  
-  // Name completeness (10 points)
   if (data.name_en) score += 5;
   if (data.name_ar) score += 5;
-  
-  // Description quality (10 points)
   if (data.description_en && data.description_en.length > 50) score += 5;
   if (data.description_ar && data.description_ar.length > 50) score += 5;
-  
-  // Contact info (15 points)
   if (data.phone) score += 5;
   if (data.email) score += 5;
   if (data.website) score += 5;
-  
-  // Address completeness (15 points)
   if (data.city_en || data.city_ar) score += 4;
   if (data.full_address_en || data.full_address_ar) score += 4;
   if (data.country_code) score += 3;
   if (data.postal_code) score += 2;
   if (data.latitude && data.longitude) score += 2;
-  
-  // Services & specializations (10 points)
   if (data.services_en?.length > 0) score += 5;
   if (data.specializations_en?.length > 0) score += 5;
-  
-  // Organization details (10 points)
   if (data.founded_year) score += 3;
   if (data.registration_number || data.license_number) score += 3;
   if (data.president_name_en || data.president_name_ar) score += 2;
   if (data.member_count) score += 2;
-  
-  // Social media (5 points)
   if (data.social_media) {
     const socialCount = Object.values(data.social_media).filter(Boolean).length;
     score += Math.min(socialCount * 2, 5);
   }
-  
-  // Business hours (5 points)
   if (data.business_hours?.length > 0) score += 5;
-
-  return Math.min(score, maxScore);
+  return Math.min(score, 100);
 }
 
-// ─── MODE: URL — Direct URL scrape & enrich ───
-async function handleUrlImport(
-  url: string,
-  apiKey: string,
-  lovableKey: string,
-): Promise<{ data: any; sources_used: Record<string, boolean>; data_quality: number }> {
+// ─── MODE: URL ───
+async function handleUrlImport(url: string, apiKey: string, lovableKey: string): Promise<{ data: any; sources_used: Record<string, boolean>; data_quality: number }> {
+  const cacheKey = `url:${url}`;
+  const cached = getCached(cacheKey);
+  if (cached) return cached;
+
   const sources = { google_maps: false, web_search: false, website: true, ai: true };
-  
-  console.log('[SmartImport] Direct URL import:', url);
-  const scraped = await firecrawlScrape(url, apiKey, 22000);
-  
-  if (!scraped || scraped.length < 20) {
-    throw new Error('Could not scrape the provided URL');
-  }
-  
-  // Also do a quick web search for more context
+  const scraped = await firecrawlScrape(url, apiKey, 20000);
+  if (!scraped || scraped.length < 20) throw new Error('Could not scrape the provided URL');
+
   const titleMatch = scraped.match(/^#\s*(.+)$/m);
   const entityName = titleMatch?.[1] || url.replace(/^https?:\/\//, '').split('/')[0];
-  
+
   const searchRaw = await firecrawlSearch(`${entityName} contact phone email`, apiKey, 3, 8000).catch(() => []);
   let searchContent: string | null = null;
   if (searchRaw.length) {
     sources.web_search = true;
     searchContent = searchRaw.slice(0, 3).map((r: any) =>
-      `## ${r.title || ''}\n${r.description || ''}\n${(r.markdown || '').substring(0, 800)}`
+      `## ${r.title || ''}\n${r.description || ''}\n${(r.markdown || '').substring(0, 1000)}`
     ).join('\n\n---\n\n');
   }
 
   const enriched = await enrichWithAI(null, searchContent, scraped, entityName, null, null, lovableKey);
   const dataQuality = calculateDataQuality(enriched, sources);
-  
-  return { data: enriched, sources_used: sources, data_quality: dataQuality };
+  const result = { data: enriched, sources_used: sources, data_quality: dataQuality };
+  setCache(cacheKey, result);
+  return result;
+}
+
+// ─── MODE: BULK URL ───
+async function handleBulkUrl(urls: string[], apiKey: string, lovableKey: string): Promise<{ results: any[] }> {
+  const results: any[] = [];
+  // Process up to 5 URLs in parallel batches
+  for (let i = 0; i < urls.length; i += 3) {
+    const batch = urls.slice(i, i + 3);
+    const batchResults = await Promise.allSettled(
+      batch.map(async (url) => {
+        try {
+          const result = await handleUrlImport(url, apiKey, lovableKey);
+          const suggestion = autoDetectTargetTable(result.data);
+          return { success: true, url, ...result, suggested_target: suggestion };
+        } catch (e) {
+          return { success: false, url, error: (e as Error).message };
+        }
+      })
+    );
+    for (const r of batchResults) {
+      results.push(r.status === 'fulfilled' ? r.value : { success: false, error: 'Failed' });
+    }
+  }
+  return { results };
 }
 
 // ─── AI Enrichment ───
 async function enrichWithAI(
-  scraped: string | null,
-  search: string | null,
-  website: string | null,
-  query: string,
-  lat?: number | null,
-  lng?: number | null,
-  lovableKey?: string,
+  scraped: string | null, search: string | null, website: string | null,
+  query: string, lat?: number | null, lng?: number | null, lovableKey?: string,
 ): Promise<any> {
   const apiKey = lovableKey || Deno.env.get('LOVABLE_API_KEY');
   if (!apiKey) { console.error('LOVABLE_API_KEY not set'); return {}; }
 
-  const prompt = `You are a bilingual SEO expert and data enrichment assistant (Arabic & English). Given raw scraped data from Google Maps and web search results, produce a COMPREHENSIVE structured JSON object with ALL available data.
+  const prompt = `You are a bilingual data extraction expert (Arabic & English). Extract ALL available data from these sources into a structured JSON.
 
 RULES:
-- MANDATORY: Every _en and _ar field MUST have a value. If only one language is found, TRANSLATE to the other language professionally.
-- If a field has no real data AND cannot be reasonably inferred, set it to null
-- Extract as much information as possible from all sources
-- Provide BOTH English and Arabic values for ALL bilingual fields — NEVER leave one language empty if the other has data
-- The original search query was: "${query}"
-${lat && lng ? `- Known coordinates: ${lat}, ${lng}` : ''}
+- Every _en/_ar field pair: if only one language found, TRANSLATE to the other professionally
+- If a field has no data, set null
+- Search query was: "${query}"
+${lat && lng ? `- Coordinates: ${lat}, ${lng}` : ''}
 
-SEO OPTIMIZATION RULES (CRITICAL):
-- "description_en": Write a professional, SEO-optimized description (150-300 chars). Include relevant keywords naturally. Make it compelling for search engines and users. Focus on what the entity does, its location, and unique value proposition.
-- "description_ar": Write the Arabic equivalent with the same SEO quality. Use relevant Arabic keywords naturally. Must be a professional Arabic description, NOT a literal translation.
-- "services_en" and "services_ar": List ALL services found. Each service must be in BOTH languages. Minimum 3 services if any are found. Use industry-standard terminology.
-- "specializations_en" and "specializations_ar": List ALL specializations/expertise areas. Each must be in BOTH languages. Use professional culinary/industry terms.
-- "tags": Include 5-10 relevant SEO keywords in English that describe the entity (used for search indexing)
-- "full_address_en": Complete formatted address in English (Street, Neighborhood, City, Country, Postal Code)
-- "full_address_ar": Complete formatted address in Arabic (الشارع، الحي، المدينة، الدولة، الرمز البريدي)
+SEO: Write compelling keyword-rich descriptions (150-300 chars). Tags: 5-10 English SEO keywords.
 
-${scraped ? `GOOGLE MAPS SCRAPED CONTENT:\n${scraped.substring(0, 4000)}` : ''}
-${search ? `WEB SEARCH RESULTS:\n${search.substring(0, 3000)}` : ''}
-${website ? `WEBSITE CONTENT:\n${website.substring(0, 3000)}` : ''}
+${scraped ? `GOOGLE MAPS:\n${scraped.substring(0, 5000)}` : ''}
+${search ? `WEB SEARCH:\n${search.substring(0, 4000)}` : ''}
+${website ? `WEBSITE:\n${website.substring(0, 4000)}` : ''}
 
-Return ONLY valid JSON with ALL these fields:
+Return ONLY valid JSON:
 {
-  "name_en": null,
-  "name_ar": null,
-  "abbreviation_en": null,
-  "abbreviation_ar": null,
-  "description_en": "SEO-optimized description in English (150-300 chars with keywords)",
-  "description_ar": "وصف محسّن لمحركات البحث بالعربية (150-300 حرف مع كلمات مفتاحية)",
-  "mission_en": null,
-  "mission_ar": null,
-  "city_en": null,
-  "city_ar": null,
-  "neighborhood_en": null,
-  "neighborhood_ar": null,
-  "street_en": null,
-  "street_ar": null,
-  "full_address_en": "Full formatted address: Street, Neighborhood, City, Country, Postal Code",
-  "full_address_ar": "العنوان الكامل: الشارع، الحي، المدينة، الدولة، الرمز البريدي",
+  "name_en": null, "name_ar": null,
+  "abbreviation_en": null, "abbreviation_ar": null,
+  "description_en": "SEO description 150-300 chars",
+  "description_ar": "وصف محسّن 150-300 حرف",
+  "mission_en": null, "mission_ar": null,
+  "city_en": null, "city_ar": null,
+  "neighborhood_en": null, "neighborhood_ar": null,
+  "street_en": null, "street_ar": null,
+  "full_address_en": null, "full_address_ar": null,
   "postal_code": null,
-  "country_en": null,
-  "country_ar": null,
-  "country_code": null,
-  "phone": null,
-  "phone_secondary": null,
-  "fax": null,
-  "email": null,
-  "website": null,
+  "country_en": null, "country_ar": null, "country_code": null,
+  "phone": null, "phone_secondary": null, "fax": null,
+  "email": null, "website": null,
   "business_hours": [
     {"day_en":"Saturday","day_ar":"السبت","open":"09:00","close":"17:00","is_closed":false},
     {"day_en":"Sunday","day_ar":"الأحد","open":"09:00","close":"17:00","is_closed":false},
@@ -407,58 +379,25 @@ Return ONLY valid JSON with ALL these fields:
     {"day_en":"Thursday","day_ar":"الخميس","open":"09:00","close":"17:00","is_closed":false},
     {"day_en":"Friday","day_ar":"الجمعة","open":"09:00","close":"17:00","is_closed":true}
   ],
-  "business_type_en": null,
-  "business_type_ar": null,
-  "rating": null,
-  "total_reviews": null,
-  "latitude": ${lat || 'null'},
-  "longitude": ${lng || 'null'},
+  "business_type_en": null, "business_type_ar": null,
+  "rating": null, "total_reviews": null,
+  "latitude": ${lat || 'null'}, "longitude": ${lng || 'null'},
   "google_maps_url": null,
-  "national_id": null,
-  "registration_number": null,
-  "license_number": null,
+  "national_id": null, "registration_number": null, "license_number": null,
   "founded_year": null,
-  "president_name_en": null,
-  "president_name_ar": null,
-  "secretary_name_en": null,
-  "secretary_name_ar": null,
+  "president_name_en": null, "president_name_ar": null,
+  "secretary_name_en": null, "secretary_name_ar": null,
   "member_count": null,
-  "services_en": ["Service 1", "Service 2", "Service 3"],
-  "services_ar": ["الخدمة 1", "الخدمة 2", "الخدمة 3"],
-  "specializations_en": ["Specialization 1", "Specialization 2"],
-  "specializations_ar": ["التخصص 1", "التخصص 2"],
+  "services_en": [], "services_ar": [],
+  "specializations_en": [], "specializations_ar": [],
   "affiliated_organizations": [],
-  "tags": ["keyword1", "keyword2", "keyword3", "keyword4", "keyword5"],
-  "social_media": {
-    "instagram": null,
-    "twitter": null,
-    "facebook": null,
-    "linkedin": null,
-    "tiktok": null,
-    "youtube": null,
-    "snapchat": null,
-    "whatsapp": null
-  }
+  "tags": [],
+  "social_media": {"instagram":null,"twitter":null,"facebook":null,"linkedin":null,"tiktok":null,"youtube":null,"snapchat":null,"whatsapp":null}
 }
 
-EXTRACTION GUIDELINES:
-- "abbreviation": Short form / acronym of the entity name if commonly used
-- "mission": The entity's mission statement or vision — MUST be in BOTH languages
-- "founded_year": Year the entity was established (integer like 1995)
-- "president_name" / "secretary_name": Leadership names if found — provide in BOTH en and ar
-- "member_count": Number of members if the entity is an association
-- "services": CRITICAL — List ALL services found from ALL sources. Each service MUST appear in BOTH services_en AND services_ar arrays at the same index. If only one language is found, translate professionally.
-- "specializations": CRITICAL — List ALL areas of expertise. Each MUST be in BOTH languages. Use professional industry terminology.
-- "affiliated_organizations": Names of partner/parent organizations
-- "tags": 5-10 relevant English SEO keywords for search indexing (e.g., "restaurant", "fine dining", "Saudi cuisine", "Riyadh")
-- "registration_number" / "license_number" / "national_id": Official registration/license numbers
-- "fax": Fax number if available
-- "description": CRITICAL SEO — Write compelling, keyword-rich descriptions. EN description should include location, type of business, and key offerings. AR description should be equally professional with Arabic SEO keywords, NOT a literal translation.
-- "full_address": CRITICAL — Construct complete addresses in BOTH languages. Include all components: street, neighborhood, city, country, postal code. Format professionally.
-- "business_hours": CRITICAL — Return EXACTLY 7 entries, one for each day (Saturday through Friday). Replace template hours with ACTUAL hours from scraped data. Use 24-hour format. Set is_closed=true for closed days.
-- "social_media": Extract ALL social media links found (Instagram, Twitter/X, Facebook, LinkedIn, TikTok, YouTube, Snapchat, WhatsApp)`;
+Extract ALL data. Services & specializations in BOTH languages. Business hours from ACTUAL data (24h format). Social media links.`;
 
-  const content = await callAI(prompt, apiKey, 'google/gemini-3-flash-preview', 0.1, 22000);
+  const content = await callAI(prompt, apiKey, 'google/gemini-2.5-flash', 0.1, 22000);
   try {
     const jsonMatch = content.match(/\{[\s\S]*\}/);
     if (jsonMatch) return JSON.parse(jsonMatch[0]);
@@ -466,7 +405,7 @@ EXTRACTION GUIDELINES:
   return {};
 }
 
-// ─── Auto-detect target table from business type ───
+// ─── Auto-detect target ───
 function autoDetectTargetTable(data: any): { table: string; sub_type: string; confidence: number } {
   const bt = (data.business_type_en || data.description_en || '').toLowerCase();
   const name = (data.name_en || '').toLowerCase();
@@ -497,7 +436,7 @@ function autoDetectTargetTable(data: any): { table: string; sub_type: string; co
   }
 
   const entityPatterns: Record<string, string[]> = {
-    culinary_association: ['association', 'society', 'federation', 'union', 'guild', 'chef association', 'culinary association'],
+    culinary_association: ['association', 'society', 'federation', 'union', 'guild', 'chef association'],
     government_entity: ['government', 'ministry', 'municipality', 'authority', 'department', 'bureau'],
     culinary_academy: ['academy', 'culinary school', 'culinary institute', 'cooking school'],
     university: ['university'],
@@ -514,38 +453,82 @@ function autoDetectTargetTable(data: any): { table: string; sub_type: string; co
   return { table: 'culinary_entities', sub_type: 'culinary_association', confidence: 0.3 };
 }
 
+// ─── Stats endpoint ───
+async function handleStats(client: any): Promise<any> {
+  const [entities, companies, establishments, logs] = await Promise.all([
+    client.from('culinary_entities').select('id', { count: 'exact', head: true }),
+    client.from('companies').select('id', { count: 'exact', head: true }),
+    client.from('establishments').select('id', { count: 'exact', head: true }),
+    client.from('smart_import_logs').select('id, action, target_table, created_at, status').order('created_at', { ascending: false }).limit(100),
+  ]);
+
+  const logsData = logs.data || [];
+  const today = new Date().toISOString().split('T')[0];
+  const todayImports = logsData.filter((l: any) => l.created_at?.startsWith(today)).length;
+  const weekAgo = new Date(Date.now() - 7 * 86400000).toISOString();
+  const weekImports = logsData.filter((l: any) => l.created_at >= weekAgo).length;
+
+  return {
+    totals: {
+      entities: entities.count || 0,
+      companies: companies.count || 0,
+      establishments: establishments.count || 0,
+    },
+    imports: {
+      today: todayImports,
+      week: weekImports,
+      total: logsData.length,
+      by_table: {
+        culinary_entities: logsData.filter((l: any) => l.target_table === 'culinary_entities').length,
+        companies: logsData.filter((l: any) => l.target_table === 'companies').length,
+        establishments: logsData.filter((l: any) => l.target_table === 'establishments').length,
+      },
+      by_action: {
+        create: logsData.filter((l: any) => l.action === 'create').length,
+        update: logsData.filter((l: any) => l.action === 'update').length,
+      },
+    },
+    recent: logsData.slice(0, 5),
+  };
+}
+
 // ─── Main handler ───
 Deno.serve(async (req) => {
   if (req.method === 'OPTIONS') return new Response(null, { headers: corsHeaders });
 
   try {
-    await authenticateAdmin(req);
+    const client = await authenticateAdmin(req);
     const body = await req.json();
-    const { query, location, website_url, mode = 'search', result_url, latitude, longitude, url } = body;
+    const { query, location, website_url, mode = 'search', result_url, latitude, longitude, url, urls } = body;
 
     const firecrawlKey = Deno.env.get('FIRECRAWL_API_KEY');
-    if (!firecrawlKey) {
-      return new Response(JSON.stringify({ success: false, error: "Firecrawl is not configured." }), { status: 400, headers: jsonHeaders });
-    }
-
     const lovableKey = Deno.env.get('LOVABLE_API_KEY');
-    if (!lovableKey) {
-      return new Response(JSON.stringify({ success: false, error: "AI service not configured." }), { status: 400, headers: jsonHeaders });
+
+    // Stats mode doesn't need API keys
+    if (mode === 'stats') {
+      const stats = await handleStats(client);
+      return new Response(JSON.stringify({ success: true, stats }), { headers: jsonHeaders });
     }
 
-    // MODE: Direct URL import
+    if (!firecrawlKey) return new Response(JSON.stringify({ success: false, error: "Firecrawl not configured." }), { status: 400, headers: jsonHeaders });
+    if (!lovableKey) return new Response(JSON.stringify({ success: false, error: "AI service not configured." }), { status: 400, headers: jsonHeaders });
+
+    // Bulk URL import
+    if (mode === 'bulk_url') {
+      if (!urls?.length) return new Response(JSON.stringify({ success: false, error: "URLs required" }), { status: 400, headers: jsonHeaders });
+      const result = await handleBulkUrl(urls.slice(0, 10), firecrawlKey, lovableKey);
+      return new Response(JSON.stringify({ success: true, ...result }), { headers: jsonHeaders });
+    }
+
+    // Direct URL
     if (mode === 'url') {
-      if (!url?.trim()) {
-        return new Response(JSON.stringify({ success: false, error: "URL is required" }), { status: 400, headers: jsonHeaders });
-      }
+      if (!url?.trim()) return new Response(JSON.stringify({ success: false, error: "URL required" }), { status: 400, headers: jsonHeaders });
       const result = await handleUrlImport(url.trim(), firecrawlKey, lovableKey);
       const suggestion = autoDetectTargetTable(result.data);
       return new Response(JSON.stringify({ success: true, ...result, suggested_target: suggestion }), { headers: jsonHeaders });
     }
 
-    if (!query?.trim()) {
-      return new Response(JSON.stringify({ success: false, error: "Query is required" }), { status: 400, headers: jsonHeaders });
-    }
+    if (!query?.trim()) return new Response(JSON.stringify({ success: false, error: "Query required" }), { status: 400, headers: jsonHeaders });
 
     if (mode === 'search') {
       const results = await handleSearch(query.trim(), firecrawlKey, lovableKey, location?.trim());
