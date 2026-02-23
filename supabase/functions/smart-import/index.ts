@@ -108,7 +108,7 @@ async function firecrawlScrape(url: string, apiKey: string, timeoutMs = 15000): 
 }
 
 // ─── AI call with retry ───
-async function callAI(prompt: string, lovableKey: string, model = 'google/gemini-3-flash-preview', temperature = 0.1, timeoutMs = 25000): Promise<string> {
+async function callAI(prompt: string, lovableKey: string, model = 'google/gemini-2.5-flash-lite', temperature = 0.1, timeoutMs = 30000): Promise<string> {
   for (let attempt = 0; attempt < 2; attempt++) {
     const controller = new AbortController();
     const timer = setTimeout(() => controller.abort(), timeoutMs);
@@ -210,13 +210,13 @@ async function extractEntitiesWithAI(scraped: string, searchTerm: string, lovabl
   const prompt = `Extract ALL business/entity listings from this Google Maps search page. Do NOT filter or skip any result. Include every single listing regardless of type or category.
 SEARCH: "${searchTerm}"
 CONTENT (truncated):
-${scraped.substring(0, 25000)}
+${scraped.substring(0, 18000)}
 
 Return JSON array: [{"name":"...","description":"...","rating":4.5,"total_reviews":100,"place_type":"...","latitude":null,"longitude":null,"google_maps_url":null,"address":"..."}]
 Rules: Extract EVERY listing without exception. No filtering. No hallucination. Return ONLY valid JSON array.`;
 
-  // Use flash for fast search parsing
-  const content = await callAI(prompt, lovableKey, 'google/gemini-2.5-flash', 0.1, 15000);
+  // Use fast lite model with adequate timeout
+  const content = await callAI(prompt, lovableKey, 'google/gemini-2.5-flash-lite', 0.1, 30000);
   try {
     const jsonMatch = content.match(/\[[\s\S]*\]/);
     if (jsonMatch) {
