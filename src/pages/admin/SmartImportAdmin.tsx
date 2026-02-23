@@ -471,8 +471,20 @@ export default function SmartImportAdmin() {
       }
 
       const tableLabel = TARGET_TABLE_OPTIONS.find(t => t.value === targetTable);
-      toast({ title: isAr ? "تم الإضافة بنجاح" : `${tableLabel?.label_en || 'Record'} added successfully` });
+      toast({ title: isAr ? "تم الإضافة بنجاح (بانتظار الموافقة)" : `${tableLabel?.label_en || 'Record'} added (pending approval)` });
       await logImport('create', targetTable, recordId, subType);
+
+      // Trigger admin notification for pending review
+      if (targetTable === "culinary_entities") {
+        import("@/lib/notificationTriggers").then(({ notifyAdminEntityReview }) => {
+          notifyAdminEntityReview({ entityName: details.name_en || name, entityNameAr: details.name_ar || undefined, submittedBy: "Smart Import" });
+        });
+      } else if (targetTable === "companies") {
+        import("@/lib/notificationTriggers").then(({ notifyAdminCompanyRegistration }) => {
+          notifyAdminCompanyRegistration({ companyName: details.name_en || name, companyNameAr: details.name_ar || undefined, submittedBy: "Smart Import" });
+        });
+      }
+
       setShowAddForm(false);
       setDbChecked(false);
       // Refresh stats
@@ -601,6 +613,14 @@ export default function SmartImportAdmin() {
     setBatchImporting(false);
     setBatchSelected(new Set());
     setBatchProgress({ current: selected.length, total: selected.length, successes: successCount, failures: failCount });
+
+    // Notify admins about batch import pending items
+    if (successCount > 0) {
+      import("@/lib/notificationTriggers").then(({ notifyAdminEntityReview }) => {
+        notifyAdminEntityReview({ entityName: `${successCount} records via Smart Import`, entityNameAr: `${successCount} سجل عبر الاستيراد الذكي`, submittedBy: "Smart Import (Batch)" });
+      });
+    }
+
     toast({
       title: isAr ? "تم الاستيراد الجماعي" : "Batch Import Complete",
       description: isAr

@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
+import AdminPendingBanner from "@/components/admin/AdminPendingBanner";
 import { Outlet, NavLink } from "react-router-dom";
 import { AdminHeader } from "@/components/admin/AdminHeader";
 import { cn } from "@/lib/utils";
@@ -228,6 +229,7 @@ export default function AdminLayout() {
         {/* Main Content */}
         <main className="min-w-0 flex-1">
           <div className="container py-6">
+            <AdminPendingBanner />
             <Outlet />
           </div>
         </main>
