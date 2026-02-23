@@ -30,6 +30,7 @@ import {
   Truck, DollarSign, Star, Image, CalendarCheck, MessageSquare, UserPlus, Building,
   Upload, FolderOpen, FileImage, File, Sparkles, FileSpreadsheet, Factory,
 } from "lucide-react";
+import { SmartImportDialog, type ImportedData } from "@/components/smart-import/SmartImportDialog";
 import { format } from "date-fns";
 
 type CompanyType = "sponsor" | "supplier" | "partner" | "vendor";
@@ -94,6 +95,7 @@ export default function CompaniesAdmin() {
   const [statusFilter, setStatusFilter] = useState<string>("all");
   const [showCompanyForm, setShowCompanyForm] = useState(false);
   const [showBulkImport, setShowBulkImport] = useState(false);
+  const [showSmartImport, setShowSmartImport] = useState(false);
   const [mainTab, setMainTab] = useState<"companies" | "suppliers" | "reviews">("companies");
   const [selectedCompany, setSelectedCompany] = useState<string | null>(null);
   const [companyDetailTab, setCompanyDetailTab] = useState("overview");
@@ -1790,6 +1792,9 @@ export default function CompaniesAdmin() {
           <Button onClick={() => setShowCompanyForm(true)}>
             <Plus className="h-4 w-4 me-2" />{isAr ? "شركة جديدة" : "New Company"}
           </Button>
+          <Button variant="outline" onClick={() => setShowSmartImport(true)}>
+            <Sparkles className="h-4 w-4 me-2" />{isAr ? "استيراد ذكي" : "Smart Import"}
+          </Button>
           <Button variant="outline" onClick={() => setShowBulkImport(!showBulkImport)}>
             <Upload className="h-4 w-4 me-2" />{isAr ? "استيراد" : "Import"}
           </Button>
@@ -1879,6 +1884,30 @@ export default function CompaniesAdmin() {
         )}
       </div>
       )}
+      <SmartImportDialog
+        open={showSmartImport}
+        onOpenChange={setShowSmartImport}
+        entityType="company"
+        onImport={(data: ImportedData) => {
+          setCompanyForm(prev => ({
+            ...prev,
+            name: data.name_en || prev.name,
+            name_ar: data.name_ar || prev.name_ar,
+            description: data.description_en || prev.description,
+            description_ar: data.description_ar || prev.description_ar,
+            country_code: data.country_code || prev.country_code,
+            city: data.city_en || prev.city,
+            address: data.full_address_en || prev.address,
+            address_ar: data.full_address_ar || prev.address_ar,
+            postal_code: data.postal_code || prev.postal_code,
+            email: data.email || prev.email,
+            phone: data.phone || prev.phone,
+            website: data.website || prev.website,
+            registration_number: data.national_id || prev.registration_number,
+          }));
+          setShowCompanyForm(true);
+        }}
+      />
     </div>
   );
 }

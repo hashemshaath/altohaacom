@@ -13,7 +13,8 @@ import {
   AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent,
   AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
-import { ArrowDown, ArrowUp, ArrowUpDown, Building2, Download, FileSpreadsheet, FilterX, Plus, Search } from "lucide-react";
+import { ArrowDown, ArrowUp, ArrowUpDown, Building2, Download, FileSpreadsheet, FilterX, Plus, Search, Sparkles } from "lucide-react";
+import { SmartImportDialog, type ImportedData } from "@/components/smart-import/SmartImportDialog";
 import { EntitySubModulesPanel } from "@/components/entities/EntitySubModulesPanel";
 import AdminPageHeader from "@/components/admin/AdminPageHeader";
 import EntityStatsCards from "@/components/admin/entities/EntityStatsCards";
@@ -45,6 +46,7 @@ export default function EntitiesAdmin() {
 
   const [showForm, setShowForm] = useState(false);
   const [showBulkImport, setShowBulkImport] = useState(false);
+  const [showSmartImport, setShowSmartImport] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [form, setForm] = useState<EntityFormData>(emptyForm);
   const [selectedManager, setSelectedManager] = useState("");
@@ -224,6 +226,10 @@ export default function EntitiesAdmin() {
               <FileSpreadsheet className="me-2 h-4 w-4" />
               {isAr ? "استيراد" : "Import"}
             </Button>
+            <Button variant="outline" size="sm" onClick={() => setShowSmartImport(true)}>
+              <Sparkles className="me-2 h-4 w-4" />
+              {isAr ? "استيراد ذكي" : "Smart Import"}
+            </Button>
             <Button size="sm" onClick={() => { if (showForm) { handleCloseForm(); } else { resetForm(); setShowForm(true); } if (showBulkImport) setShowBulkImport(false); }}>
               {showForm ? (isAr ? "إغلاق" : "Close") : <><Plus className="me-2 h-4 w-4" />{isAr ? "إضافة جهة" : "Add Entity"}</>}
             </Button>
@@ -249,6 +255,32 @@ export default function EntitiesAdmin() {
           onCancel={handleCloseForm}
         />
       )}
+
+      <SmartImportDialog
+        open={showSmartImport}
+        onOpenChange={setShowSmartImport}
+        entityType="entity"
+        onImport={(data: ImportedData) => {
+          setForm(prev => ({
+            ...prev,
+            name: data.name_en || prev.name,
+            name_ar: data.name_ar || prev.name_ar,
+            description: data.description_en || prev.description,
+            description_ar: data.description_ar || prev.description_ar,
+            country: data.country_code || prev.country,
+            city: data.city_en || prev.city,
+            address: data.full_address_en || prev.address,
+            address_ar: data.full_address_ar || prev.address_ar,
+            postal_code: data.postal_code || prev.postal_code,
+            email: data.email || prev.email,
+            phone: data.phone || prev.phone,
+            website: data.website || prev.website,
+            latitude: data.latitude?.toString() || prev.latitude,
+            longitude: data.longitude?.toString() || prev.longitude,
+          }));
+          setShowForm(true);
+        }}
+      />
 
       {/* Filters */}
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center">

@@ -15,7 +15,8 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { Building2, MapPin, Star, Search, Plus, Globe, Phone, Mail } from "lucide-react";
+import { Building2, MapPin, Star, Search, Plus, Globe, Phone, Mail, Sparkles } from "lucide-react";
+import { SmartImportDialog, type ImportedData } from "@/components/smart-import/SmartImportDialog";
 
 const establishmentTypes = [
   { value: "restaurant", en: "Restaurant", ar: "مطعم" },
@@ -35,6 +36,7 @@ export default function Establishments() {
   const [search, setSearch] = useState("");
   const [typeFilter, setTypeFilter] = useState("all");
   const [dialogOpen, setDialogOpen] = useState(false);
+  const [showSmartImport, setShowSmartImport] = useState(false);
   const { data: establishments, isLoading } = useEstablishments({
     search: search || undefined,
     type: typeFilter !== "all" ? typeFilter : undefined,
@@ -112,6 +114,10 @@ export default function Establishments() {
                 </SelectContent>
               </Select>
               {user && (
+                <>
+                <Button variant="outline" onClick={() => setShowSmartImport(true)} className="shadow-sm">
+                  <Sparkles className="me-2 h-4 w-4" />{isAr ? "استيراد ذكي" : "Smart Import"}
+                </Button>
                 <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
                   <DialogTrigger asChild>
                     <Button className="shadow-sm shadow-primary/15"><Plus className="me-2 h-4 w-4" />{isAr ? "إضافة منشأة" : "Add Establishment"}</Button>
@@ -148,6 +154,26 @@ export default function Establishments() {
                     </div>
                   </DialogContent>
                 </Dialog>
+                <SmartImportDialog
+                  open={showSmartImport}
+                  onOpenChange={setShowSmartImport}
+                  entityType="establishment"
+                  onImport={(data: ImportedData) => {
+                    setForm(prev => ({
+                      ...prev,
+                      name: data.name_en || prev.name,
+                      name_ar: data.name_ar || prev.name_ar,
+                      description: data.description_en || prev.description,
+                      city: data.city_en || prev.city,
+                      country_code: data.country_code || prev.country_code,
+                      phone: data.phone || prev.phone,
+                      email: data.email || prev.email,
+                      website: data.website || prev.website,
+                    }));
+                    setDialogOpen(true);
+                  }}
+                />
+                </>
               )}
             </div>
           </div>
