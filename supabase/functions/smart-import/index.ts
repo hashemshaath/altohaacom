@@ -108,7 +108,7 @@ async function firecrawlScrape(url: string, apiKey: string, timeoutMs = 15000): 
 }
 
 // ─── AI call with retry ───
-async function callAI(prompt: string, lovableKey: string, model = 'google/gemini-2.5-flash', temperature = 0.1, timeoutMs = 25000): Promise<string> {
+async function callAI(prompt: string, lovableKey: string, model = 'google/gemini-3-flash-preview', temperature = 0.1, timeoutMs = 25000): Promise<string> {
   for (let attempt = 0; attempt < 2; attempt++) {
     const controller = new AbortController();
     const timer = setTimeout(() => controller.abort(), timeoutMs);
@@ -215,8 +215,8 @@ ${scraped.substring(0, 12000)}
 Return JSON array: [{"name":"...","description":"...","rating":4.5,"total_reviews":100,"place_type":"...","latitude":null,"longitude":null,"google_maps_url":null,"address":"..."}]
 Rules: Extract ALL real businesses. No hallucination. Return ONLY valid JSON array.`;
 
-  // Use flash-lite for fast search parsing
-  const content = await callAI(prompt, lovableKey, 'google/gemini-2.5-flash-lite', 0.1, 15000);
+  // Use flash for fast search parsing
+  const content = await callAI(prompt, lovableKey, 'google/gemini-2.5-flash', 0.1, 15000);
   try {
     const jsonMatch = content.match(/\[[\s\S]*\]/);
     if (jsonMatch) {
@@ -450,7 +450,7 @@ Return ONLY valid JSON:
 
 Extract ALL data. Services & specializations in BOTH languages. Business hours from ACTUAL data (24h format). Social media links.`;
 
-  const content = await callAI(prompt, apiKey, 'google/gemini-2.5-flash', 0.1, 25000);
+  const content = await callAI(prompt, apiKey, 'google/gemini-3-flash-preview', 0.1, 30000);
   try {
     const jsonMatch = content.match(/\{[\s\S]*\}/);
     if (jsonMatch) return JSON.parse(jsonMatch[0]);
