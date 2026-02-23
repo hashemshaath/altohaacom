@@ -557,6 +557,40 @@ export async function notifyEntityStatusChanged(params: {
   }
 }
 
+/** Notify admins when a new exhibition is submitted for review */
+export async function notifyAdminExhibitionReview(params: {
+  exhibitionName: string;
+  exhibitionNameAr?: string;
+  submittedBy: string;
+}) {
+  return notifyAllAdmins({
+    title: `Exhibition Review Required: ${params.exhibitionName}`,
+    titleAr: `مراجعة معرض مطلوبة: ${params.exhibitionNameAr || params.exhibitionName}`,
+    body: `A new exhibition "${params.exhibitionName}" has been submitted via ${params.submittedBy} and requires admin review.`,
+    bodyAr: `تم إرسال معرض جديد "${params.exhibitionNameAr || params.exhibitionName}" عبر ${params.submittedBy} ويحتاج لمراجعة الإدارة.`,
+    type: "info",
+    link: "/admin/exhibitions",
+    channels: ["in_app", "email"],
+  });
+}
+
+/** Notify admins when a new competition is submitted for review */
+export async function notifyAdminCompetitionReview(params: {
+  competitionName: string;
+  competitionNameAr?: string;
+  submittedBy: string;
+}) {
+  return notifyAllAdmins({
+    title: `Competition Review Required: ${params.competitionName}`,
+    titleAr: `مراجعة مسابقة مطلوبة: ${params.competitionNameAr || params.competitionName}`,
+    body: `A new competition "${params.competitionName}" has been submitted via ${params.submittedBy} and requires admin review.`,
+    bodyAr: `تم إرسال مسابقة جديدة "${params.competitionNameAr || params.competitionName}" عبر ${params.submittedBy} وتحتاج لمراجعة الإدارة.`,
+    type: "info",
+    link: "/admin/competitions",
+    channels: ["in_app", "email"],
+  });
+}
+
 /** Notify admins when a Michelin Star / award request is submitted */
 export async function notifyAdminAwardRequest(params: {
   userName: string;

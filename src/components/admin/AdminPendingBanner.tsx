@@ -6,7 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import {
   Building2, Building, ShieldCheck, Trophy, Megaphone, Ticket, Flag, Clock,
-  ChefHat, FileText, CreditCard,
+  ChefHat, FileText, CreditCard, Landmark,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -38,6 +38,8 @@ export default function AdminPendingBanner() {
         chefsTable,
         articles,
         invoices,
+        exhibitions,
+        competitions,
       ] = await Promise.all([
         supabase.from("culinary_entities").select("*", { count: "exact", head: true }).eq("status", "pending"),
         supabase.from("companies").select("*", { count: "exact", head: true }).eq("status", "pending"),
@@ -49,6 +51,8 @@ export default function AdminPendingBanner() {
         supabase.from("chefs_table_requests").select("*", { count: "exact", head: true }).eq("status", "pending"),
         supabase.from("articles").select("*", { count: "exact", head: true }).eq("status", "draft"),
         supabase.from("invoices").select("*", { count: "exact", head: true }).eq("status", "draft"),
+        (supabase as any).from("exhibitions").select("*", { count: "exact", head: true }).eq("status", "pending"),
+        (supabase as any).from("competitions").select("*", { count: "exact", head: true }).eq("status", "pending"),
       ]);
 
       const list: PendingItem[] = [
@@ -62,6 +66,8 @@ export default function AdminPendingBanner() {
         { key: "chefsTable", label: "Chef's Table", labelAr: "طاولة الشيف", count: chefsTable.count || 0, icon: ChefHat, to: "/admin/chefs-table", color: "text-chart-2" },
         { key: "articles", label: "Drafts", labelAr: "مسودات", count: articles.count || 0, icon: FileText, to: "/admin/articles", color: "text-muted-foreground" },
         { key: "invoices", label: "Invoices", labelAr: "فواتير", count: invoices.count || 0, icon: CreditCard, to: "/admin/invoices", color: "text-chart-4" },
+        { key: "exhibitions", label: "Exhibitions", labelAr: "المعارض", count: exhibitions.count || 0, icon: Landmark, to: "/admin/exhibitions", color: "text-chart-2" },
+        { key: "competitions", label: "Competitions", labelAr: "المسابقات", count: competitions.count || 0, icon: Trophy, to: "/admin/competitions", color: "text-chart-1" },
       ];
 
       return list.filter(i => i.count > 0);
