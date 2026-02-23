@@ -330,6 +330,59 @@ EXTRACTION GUIDELINES:
   return {};
 }
 
+// ─── Auto-detect target table from business type ───
+function autoDetectTargetTable(data: any): { table: string; sub_type: string; confidence: number } {
+  const bt = (data.business_type_en || data.description_en || '').toLowerCase();
+  const name = (data.name_en || '').toLowerCase();
+  const all = `${bt} ${name}`;
+
+  // Establishment patterns
+  const estPatterns: Record<string, string[]> = {
+    restaurant: ['restaurant', 'dining', 'eatery', 'grill', 'bistro', 'pizzeria', 'sushi', 'steakhouse', 'food court'],
+    hotel: ['hotel', 'motel', 'inn', 'lodge', 'hostel', 'accommodation', 'suites'],
+    cafe: ['cafe', 'café', 'coffee', 'tea house', 'coffeehouse'],
+    bakery: ['bakery', 'pastry', 'patisserie', 'confectionery'],
+    catering: ['catering', 'banquet', 'event food'],
+    kitchen: ['kitchen', 'cloud kitchen', 'ghost kitchen', 'commissary'],
+    resort: ['resort', 'spa', 'wellness center'],
+    club: ['club', 'lounge', 'bar', 'pub', 'nightclub'],
+  };
+  for (const [type, keywords] of Object.entries(estPatterns)) {
+    if (keywords.some(k => all.includes(k))) return { table: 'establishments', sub_type: type, confidence: 0.85 };
+  }
+
+  // Company patterns
+  const companyPatterns: Record<string, string[]> = {
+    supplier: ['supplier', 'supply', 'wholesale', 'distributor', 'distribution', 'import', 'export', 'trading', 'manufacturer', 'equipment', 'packaging'],
+    sponsor: ['sponsor', 'sponsorship'],
+    partner: ['partner', 'consulting', 'consultancy', 'agency', 'marketing', 'media', 'advertising', 'technology', 'tech', 'software'],
+    vendor: ['vendor', 'seller', 'store', 'shop', 'retail', 'market', 'supermarket', 'grocery'],
+  };
+  for (const [type, keywords] of Object.entries(companyPatterns)) {
+    if (keywords.some(k => all.includes(k))) return { table: 'companies', sub_type: type, confidence: 0.8 };
+  }
+
+  // Entity patterns
+  const entityPatterns: Record<string, string[]> = {
+    culinary_association: ['association', 'society', 'federation', 'union', 'guild', 'chef association', 'culinary association'],
+    government_entity: ['government', 'ministry', 'municipality', 'authority', 'department', 'bureau'],
+    culinary_academy: ['academy', 'culinary school', 'culinary institute', 'cooking school'],
+    university: ['university'],
+    college: ['college'],
+    training_center: ['training center', 'training centre', 'workshop', 'learning center'],
+    industry_body: ['industry body', 'standards', 'certification body', 'accreditation'],
+    private_association: ['private association', 'foundation', 'ngo', 'non-profit', 'nonprofit', 'charity'],
+  };
+  for (const [type, keywords] of Object.entries(entityPatterns)) {
+    if (keywords.some(k => all.includes(k))) return { table: 'culinary_entities', sub_type: type, confidence: 0.8 };
+  }
+
+  // Default: if it has rating/reviews it's likely an establishment
+  if (data.rating || data.total_reviews) return { table: 'establishments', sub_type: 'restaurant', confidence: 0.5 };
+
+  return { table: 'culinary_entities', sub_type: 'culinary_association', confidence: 0.3 };
+}
+
 // ─── Main handler ───
 Deno.serve(async (req) => {
   if (req.method === 'OPTIONS') return new Response(null, { headers: corsHeaders });
@@ -366,7 +419,9 @@ Deno.serve(async (req) => {
 
     if (mode === 'details') {
       const result = await handleDetails(query.trim(), firecrawlKey, result_url, website_url, location?.trim(), latitude, longitude);
-      return new Response(JSON.stringify({ success: true, ...result }), { headers: jsonHeaders });
+      // Auto-detect target table
+      const suggestion = autoDetectTargetTable(result.data);
+      return new Response(JSON.stringify({ success: true, ...result, suggested_target: suggestion }), { headers: jsonHeaders });
     }
 
     return new Response(JSON.stringify({ success: false, error: "Invalid mode." }), { status: 400, headers: jsonHeaders });

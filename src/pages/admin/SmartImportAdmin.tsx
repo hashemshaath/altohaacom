@@ -178,6 +178,19 @@ export default function SmartImportAdmin() {
   const [updating, setUpdating] = useState(false);
   const [selectedExistingId, setSelectedExistingId] = useState<string | null>(null);
 
+  // Auto-detect suggestion from AI
+  const [suggestedTarget, setSuggestedTarget] = useState<{ table: string; sub_type: string; confidence: number } | null>(null);
+
+  // Batch import
+  const [batchSelected, setBatchSelected] = useState<Set<string>>(new Set());
+  const [batchImporting, setBatchImporting] = useState(false);
+  const [batchProgress, setBatchProgress] = useState({ current: 0, total: 0 });
+
+  // Import history
+  const [showHistory, setShowHistory] = useState(false);
+  const [importHistory, setImportHistory] = useState<any[]>([]);
+  const [loadingHistory, setLoadingHistory] = useState(false);
+
   // ─── Step 1: Search ───
   const handleSearch = useCallback(async () => {
     if (!query.trim()) return;
@@ -235,6 +248,21 @@ export default function SmartImportAdmin() {
 
       setDetails(data.data);
       setSourcesUsed(data.sources_used || {});
+      // Apply auto-detect suggestion
+      if (data.suggested_target) {
+        setSuggestedTarget(data.suggested_target);
+        const st = data.suggested_target;
+        if (st.table === 'culinary_entities') {
+          setTargetTable('culinary_entities');
+          setSelectedEntityType(st.sub_type as EntityType);
+        } else if (st.table === 'companies') {
+          setTargetTable('companies');
+          setSelectedCompanyType(st.sub_type as CompanyType);
+        } else if (st.table === 'establishments') {
+          setTargetTable('establishments');
+          setSelectedEstablishmentType(st.sub_type);
+        }
+      }
       setStep("details");
       toast({ title: isAr ? "تم جلب البيانات بنجاح" : "Data fetched successfully" });
     } catch (err: any) {
@@ -397,6 +425,7 @@ export default function SmartImportAdmin() {
       if (error) throw error;
       const tableLabel = TARGET_TABLE_OPTIONS.find(t => t.value === record.table);
       toast({ title: isAr ? "تم تحديث البيانات بنجاح" : `${tableLabel?.label_en || 'Record'} updated successfully` });
+      await logImport('update', record.table, record.id, record.sub_type);
       setDbChecked(false);
     } catch (err: any) {
       toast({ title: isAr ? "خطأ" : "Error", description: err.message, variant: "destructive" });
@@ -413,8 +442,11 @@ export default function SmartImportAdmin() {
 
     try {
       const name = details.name_en || details.name_ar || "Unknown";
+      let recordId: string | null = null;
+      let subType = '';
 
       if (targetTable === "culinary_entities") {
+        subType = selectedEntityType;
         const slug = name.toLowerCase().replace(/\s+/g, "-").replace(/[^a-z0-9-]/g, "");
         const payload = {
           ...buildEntityPayload(details),
@@ -428,9 +460,11 @@ export default function SmartImportAdmin() {
           entity_number: "",
           created_by: user?.id || null,
         };
-        const { error } = await supabase.from("culinary_entities").insert(payload);
+        const { data: inserted, error } = await supabase.from("culinary_entities").insert(payload).select("id").single();
         if (error) throw error;
+        recordId = inserted?.id;
       } else if (targetTable === "companies") {
+        subType = selectedCompanyType;
         const payload = {
           ...buildCompanyPayload(details),
           name: details.name_en || name,
@@ -439,9 +473,11 @@ export default function SmartImportAdmin() {
           country_code: details.country_code || "SA",
           created_by: user?.id || null,
         };
-        const { error } = await supabase.from("companies").insert(payload);
+        const { data: inserted, error } = await supabase.from("companies").insert(payload).select("id").single();
         if (error) throw error;
+        recordId = inserted?.id;
       } else {
+        subType = selectedEstablishmentType;
         const payload = {
           ...buildEstablishmentPayload(details),
           name: details.name_en || name,
@@ -450,12 +486,14 @@ export default function SmartImportAdmin() {
           is_verified: false,
           created_by: user?.id || null,
         };
-        const { error } = await supabase.from("establishments").insert(payload);
+        const { data: inserted, error } = await supabase.from("establishments").insert(payload).select("id").single();
         if (error) throw error;
+        recordId = inserted?.id;
       }
 
       const tableLabel = TARGET_TABLE_OPTIONS.find(t => t.value === targetTable);
       toast({ title: isAr ? "تم الإضافة بنجاح" : `${tableLabel?.label_en || 'Record'} added successfully` });
+      await logImport('create', targetTable, recordId, subType);
       setShowAddDialog(false);
       setDbChecked(false);
     } catch (err: any) {
@@ -473,6 +511,8 @@ export default function SmartImportAdmin() {
     setSourcesUsed({});
     setDbChecked(false);
     setExistingRecords([]);
+    setBatchSelected(new Set());
+    setSuggestedTarget(null);
   };
 
   const handleBackToResults = () => {
@@ -481,6 +521,145 @@ export default function SmartImportAdmin() {
     setSourcesUsed({});
     setDbChecked(false);
     setExistingRecords([]);
+    setSuggestedTarget(null);
+  };
+
+  // ─── Log import to smart_import_logs ───
+  const logImport = async (action: 'create' | 'update', table: TargetTable, recordId: string | null, entityType: string) => {
+    try {
+      await supabase.from("smart_import_logs").insert({
+        imported_by: user?.id || '',
+        target_table: table,
+        target_record_id: recordId,
+        action,
+        entity_name: details?.name_en || selectedResult?.name,
+        entity_name_ar: details?.name_ar,
+        entity_type: entityType,
+        source_query: searchedQuery,
+        source_location: searchedLocation,
+        source_url: selectedResult?.url,
+        sources_used: sourcesUsed,
+        extracted_fields_count: countFields(details),
+        imported_data: details as any,
+        status: 'success',
+      });
+    } catch (e) {
+      console.error('Failed to log import:', e);
+    }
+  };
+
+  // ─── Load import history ───
+  const loadHistory = async () => {
+    setLoadingHistory(true);
+    try {
+      const { data } = await supabase
+        .from("smart_import_logs")
+        .select("*")
+        .order("created_at", { ascending: false })
+        .limit(50);
+      setImportHistory(data || []);
+    } catch (e) {
+      console.error('Failed to load history:', e);
+    } finally {
+      setLoadingHistory(false);
+    }
+  };
+
+  // ─── Batch import handler ───
+  const handleBatchImport = async () => {
+    if (batchSelected.size === 0) return;
+    setBatchImporting(true);
+    const selected = searchResults.filter(r => batchSelected.has(r.id));
+    setBatchProgress({ current: 0, total: selected.length });
+    let successCount = 0;
+
+    for (let i = 0; i < selected.length; i++) {
+      setBatchProgress({ current: i + 1, total: selected.length });
+      const item = selected[i];
+      try {
+        // Fetch details for each
+        const { data, error } = await supabase.functions.invoke("smart-import", {
+          body: {
+            query: item.name,
+            location: location.trim() || undefined,
+            mode: "details",
+            result_url: item.url || undefined,
+            latitude: item.latitude || undefined,
+            longitude: item.longitude || undefined,
+          },
+        });
+        if (error || !data?.success) continue;
+
+        const d = data.data as ImportedData;
+        const suggestion = data.suggested_target || { table: 'establishments', sub_type: 'restaurant' };
+        const tbl = suggestion.table as TargetTable;
+        const name = d.name_en || d.name_ar || item.name;
+
+        let recordId: string | null = null;
+
+        if (tbl === 'culinary_entities') {
+          const slug = name.toLowerCase().replace(/\s+/g, "-").replace(/[^a-z0-9-]/g, "");
+          const payload = { ...buildEntityPayload(d), name: d.name_en || name, type: suggestion.sub_type as EntityType, scope: 'local' as const, status: 'pending' as const, is_visible: false, is_verified: false, slug, entity_number: '', created_by: user?.id || null };
+          const { data: inserted } = await supabase.from("culinary_entities").insert(payload).select("id").single();
+          recordId = inserted?.id;
+        } else if (tbl === 'companies') {
+          const payload = { ...buildCompanyPayload(d), name: d.name_en || name, type: suggestion.sub_type as CompanyType, status: 'active' as const, country_code: d.country_code || 'SA', created_by: user?.id || null };
+          const { data: inserted } = await supabase.from("companies").insert(payload).select("id").single();
+          recordId = inserted?.id;
+        } else {
+          const payload = { ...buildEstablishmentPayload(d), name: d.name_en || name, type: suggestion.sub_type, is_active: true, is_verified: false, created_by: user?.id || null };
+          const { data: inserted } = await supabase.from("establishments").insert(payload).select("id").single();
+          recordId = inserted?.id;
+        }
+
+        // Log import
+        try {
+          await supabase.from("smart_import_logs").insert({
+            imported_by: user?.id || '',
+            target_table: tbl,
+            target_record_id: recordId,
+            action: 'create',
+            entity_name: d.name_en || name,
+            entity_name_ar: d.name_ar,
+            entity_type: suggestion.sub_type,
+            source_query: searchedQuery,
+            source_location: searchedLocation,
+            source_url: item.url,
+            sources_used: data.sources_used,
+            extracted_fields_count: countFields(d),
+            imported_data: d as any,
+            status: 'success',
+          });
+        } catch {}
+
+        successCount++;
+      } catch (err) {
+        console.error('Batch import error for:', item.name, err);
+      }
+    }
+
+    setBatchImporting(false);
+    setBatchSelected(new Set());
+    toast({
+      title: isAr ? "تم الاستيراد الجماعي" : "Batch Import Complete",
+      description: isAr ? `تم استيراد ${successCount} من ${selected.length} بنجاح` : `${successCount} of ${selected.length} imported successfully`,
+    });
+  };
+
+  const toggleBatchSelect = (id: string) => {
+    setBatchSelected(prev => {
+      const next = new Set(prev);
+      if (next.has(id)) next.delete(id); else next.add(id);
+      return next;
+    });
+  };
+
+  const toggleSelectAll = () => {
+    if (batchSelected.size === searchResults.length) {
+      setBatchSelected(new Set());
+    } else {
+      setBatchSelected(new Set(searchResults.map(r => r.id)));
+    }
   };
 
   // Count how many detail fields are populated
@@ -520,19 +699,25 @@ export default function SmartImportAdmin() {
             </p>
           </div>
         </div>
-        <div className="hidden sm:flex items-center gap-1.5">
-          {[
-            { key: "search", label: isAr ? "بحث" : "Search", num: 1 },
-            { key: "results", label: isAr ? "نتائج" : "Results", num: 2 },
-            { key: "details", label: isAr ? "تفاصيل" : "Details", num: 3 },
-          ].map((s, i) => (
-            <div key={s.key} className="flex items-center gap-1.5">
-              {i > 0 && <ChevronRight className="h-3 w-3 text-muted-foreground/50" />}
-              <Badge variant={step === s.key ? "default" : "outline"} className="text-xs gap-1">
-                {s.num}. {s.label}
-              </Badge>
-            </div>
-          ))}
+        <div className="hidden sm:flex items-center gap-2">
+          <Button variant="outline" size="sm" className="gap-1.5 text-xs" onClick={() => { setShowHistory(true); loadHistory(); }}>
+            <Clock className="h-3.5 w-3.5" />
+            {isAr ? "السجل" : "History"}
+          </Button>
+          <div className="flex items-center gap-1.5">
+            {[
+              { key: "search", label: isAr ? "بحث" : "Search", num: 1 },
+              { key: "results", label: isAr ? "نتائج" : "Results", num: 2 },
+              { key: "details", label: isAr ? "تفاصيل" : "Details", num: 3 },
+            ].map((s, i) => (
+              <div key={s.key} className="flex items-center gap-1.5">
+                {i > 0 && <ChevronRight className="h-3 w-3 text-muted-foreground/50" />}
+                <Badge variant={step === s.key ? "default" : "outline"} className="text-xs gap-1">
+                  {s.num}. {s.label}
+                </Badge>
+              </div>
+            ))}
+          </div>
         </div>
       </div>
 
@@ -604,6 +789,38 @@ export default function SmartImportAdmin() {
             </Button>
           </div>
 
+          {/* Batch import bar */}
+          {searchResults.length > 0 && (
+            <div className="flex items-center justify-between rounded-lg border bg-accent/30 p-3">
+              <div className="flex items-center gap-3">
+                <Button variant="outline" size="sm" onClick={toggleSelectAll} className="text-xs gap-1.5">
+                  <input type="checkbox" checked={batchSelected.size === searchResults.length && searchResults.length > 0} readOnly className="rounded" />
+                  {isAr ? "تحديد الكل" : "Select All"}
+                </Button>
+                {batchSelected.size > 0 && (
+                  <Badge variant="secondary" className="text-xs">
+                    {batchSelected.size} {isAr ? "محدد" : "selected"}
+                  </Badge>
+                )}
+              </div>
+              {batchSelected.size > 0 && (
+                <Button size="sm" onClick={handleBatchImport} disabled={batchImporting} className="gap-1.5">
+                  {batchImporting ? (
+                    <>
+                      <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                      {isAr ? `${batchProgress.current}/${batchProgress.total}` : `${batchProgress.current}/${batchProgress.total}`}
+                    </>
+                  ) : (
+                    <>
+                      <Plus className="h-3.5 w-3.5" />
+                      {isAr ? `استيراد ${batchSelected.size} (تلقائي)` : `Import ${batchSelected.size} (auto-detect)`}
+                    </>
+                  )}
+                </Button>
+              )}
+            </div>
+          )}
+
           <div className="grid grid-cols-1 lg:grid-cols-5 gap-4">
             <div className="lg:col-span-2">
               <Card className="h-full">
@@ -639,45 +856,52 @@ export default function SmartImportAdmin() {
                           const isSelected = selectedResult?.id === item.id;
                           const isLoading = loadingDetails && isSelected;
                           return (
-                            <button
-                              key={item.id}
-                              className={`w-full text-start p-3 rounded-lg transition-all ${
-                                isSelected ? 'bg-primary/10 border border-primary/30 shadow-sm' : 'hover:bg-accent/50 border border-transparent'
-                              }`}
-                              onClick={() => !loadingDetails && handleResultClick(item)}
-                              disabled={loadingDetails}
-                            >
-                              <div className="flex items-start gap-2.5">
-                                <div className={`w-9 h-9 rounded-lg flex items-center justify-center shrink-0 mt-0.5 ${isSelected ? 'bg-primary/15' : 'bg-red-500/10'}`}>
-                                  {isLoading ? <Loader2 className="h-4 w-4 text-primary animate-spin" /> : <MapPin className="h-4 w-4 text-red-500" />}
-                                </div>
-                                <div className="flex-1 min-w-0">
-                                  <div className="flex items-center gap-2">
-                                    <p className="font-semibold text-sm truncate">{item.name}</p>
-                                    {item.rating != null && (
-                                      <span className="flex items-center gap-0.5 text-xs font-medium shrink-0">
-                                        <Star className="h-3 w-3 text-yellow-500 fill-yellow-500" />
-                                        {item.rating}
-                                      </span>
-                                    )}
+                            <div key={item.id} className="flex items-start gap-1.5">
+                              <input
+                                type="checkbox"
+                                className="mt-4 rounded shrink-0"
+                                checked={batchSelected.has(item.id)}
+                                onChange={() => toggleBatchSelect(item.id)}
+                              />
+                              <button
+                                className={`flex-1 text-start p-3 rounded-lg transition-all ${
+                                  isSelected ? 'bg-primary/10 border border-primary/30 shadow-sm' : 'hover:bg-accent/50 border border-transparent'
+                                }`}
+                                onClick={() => !loadingDetails && handleResultClick(item)}
+                                disabled={loadingDetails || batchImporting}
+                              >
+                                <div className="flex items-start gap-2.5">
+                                  <div className={`w-9 h-9 rounded-lg flex items-center justify-center shrink-0 mt-0.5 ${isSelected ? 'bg-primary/15' : 'bg-red-500/10'}`}>
+                                    {isLoading ? <Loader2 className="h-4 w-4 text-primary animate-spin" /> : <MapPin className="h-4 w-4 text-red-500" />}
                                   </div>
-                                  {item.place_type && <p className="text-[11px] text-muted-foreground mt-0.5">{item.place_type}</p>}
-                                  {item.description && <p className="text-xs text-muted-foreground/80 line-clamp-1 mt-0.5">{item.description}</p>}
-                                  <div className="flex items-center gap-1.5 mt-1.5">
-                                    {item.google_maps_url && <Badge variant="outline" className="text-[9px] h-[18px] px-1 bg-red-500/10 text-red-600 border-red-500/20 gap-0.5"><MapPin className="h-2 w-2" /> Maps</Badge>}
-                                    {item.latitude != null && <Badge variant="outline" className="text-[9px] h-[18px] px-1 bg-blue-500/10 text-blue-600 border-blue-500/20 gap-0.5">📍 {item.latitude.toFixed(2)}, {item.longitude?.toFixed(2)}</Badge>}
-                                    {item.total_reviews != null && <span className="text-[10px] text-muted-foreground">({item.total_reviews} {isAr ? "تقييم" : "reviews"})</span>}
+                                  <div className="flex-1 min-w-0">
+                                    <div className="flex items-center gap-2">
+                                      <p className="font-semibold text-sm truncate">{item.name}</p>
+                                      {item.rating != null && (
+                                        <span className="flex items-center gap-0.5 text-xs font-medium shrink-0">
+                                          <Star className="h-3 w-3 text-yellow-500 fill-yellow-500" />
+                                          {item.rating}
+                                        </span>
+                                      )}
+                                    </div>
+                                    {item.place_type && <p className="text-[11px] text-muted-foreground mt-0.5">{item.place_type}</p>}
+                                    {item.description && <p className="text-xs text-muted-foreground/80 line-clamp-1 mt-0.5">{item.description}</p>}
+                                    <div className="flex items-center gap-1.5 mt-1.5">
+                                      {item.google_maps_url && <Badge variant="outline" className="text-[9px] h-[18px] px-1 bg-red-500/10 text-red-600 border-red-500/20 gap-0.5"><MapPin className="h-2 w-2" /> Maps</Badge>}
+                                      {item.latitude != null && <Badge variant="outline" className="text-[9px] h-[18px] px-1 bg-blue-500/10 text-blue-600 border-blue-500/20 gap-0.5">📍 {item.latitude.toFixed(2)}, {item.longitude?.toFixed(2)}</Badge>}
+                                      {item.total_reviews != null && <span className="text-[10px] text-muted-foreground">({item.total_reviews} {isAr ? "تقييم" : "reviews"})</span>}
+                                    </div>
                                   </div>
+                                  <ChevronRight className={`h-4 w-4 shrink-0 mt-2 transition-colors ${isSelected ? 'text-primary' : 'text-muted-foreground/30'}`} />
                                 </div>
-                                <ChevronRight className={`h-4 w-4 shrink-0 mt-2 transition-colors ${isSelected ? 'text-primary' : 'text-muted-foreground/30'}`} />
-                              </div>
-                              {isLoading && (
-                                <div className="flex items-center justify-center gap-2 mt-2 pt-2 border-t border-primary/10">
-                                  <Loader2 className="h-3 w-3 text-primary animate-spin" />
-                                  <p className="text-xs text-primary font-medium">{isAr ? "جاري جلب التفاصيل..." : "Fetching details..."}</p>
-                                </div>
-                              )}
-                            </button>
+                                {isLoading && (
+                                  <div className="flex items-center justify-center gap-2 mt-2 pt-2 border-t border-primary/10">
+                                    <Loader2 className="h-3 w-3 text-primary animate-spin" />
+                                    <p className="text-xs text-primary font-medium">{isAr ? "جاري جلب التفاصيل..." : "Fetching details..."}</p>
+                                  </div>
+                                )}
+                              </button>
+                            </div>
                           );
                         })}
                       </div>
@@ -768,6 +992,29 @@ export default function SmartImportAdmin() {
               </div>
             </CardContent>
           </Card>
+
+          {/* AI Suggested Target */}
+          {suggestedTarget && (
+            <Card className="border-primary/20 bg-primary/5">
+              <CardContent className="py-3">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <Sparkles className="h-4 w-4 text-primary" />
+                    <span className="text-sm font-medium">
+                      {isAr ? "اقتراح الذكاء الاصطناعي:" : "AI Suggestion:"}
+                    </span>
+                    <Badge variant="secondary" className="gap-1">
+                      {TARGET_TABLE_OPTIONS.find(t => t.value === suggestedTarget.table)
+                        ? (isAr ? TARGET_TABLE_OPTIONS.find(t => t.value === suggestedTarget.table)!.label_ar : TARGET_TABLE_OPTIONS.find(t => t.value === suggestedTarget.table)!.label_en)
+                        : suggestedTarget.table}
+                    </Badge>
+                    <Badge variant="outline" className="text-xs">{suggestedTarget.sub_type}</Badge>
+                    <span className="text-xs text-muted-foreground">({Math.round(suggestedTarget.confidence * 100)}%)</span>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          )}
 
           {/* DB Check */}
           <Card className={existingRecords.length > 0 ? "border-yellow-500/30 bg-yellow-500/5" : dbChecked ? "border-green-500/30 bg-green-500/5" : ""}>
@@ -1255,6 +1502,60 @@ export default function SmartImportAdmin() {
               {saving ? (isAr ? "جاري الإضافة..." : "Adding...") : (isAr ? "إضافة" : "Add Record")}
             </Button>
           </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* ─── Import History Dialog ─── */}
+      <Dialog open={showHistory} onOpenChange={setShowHistory}>
+        <DialogContent className="sm:max-w-2xl max-h-[80vh]">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <Clock className="h-5 w-5 text-primary" />
+              {isAr ? "سجل الاستيراد" : "Import History"}
+            </DialogTitle>
+            <DialogDescription>
+              {isAr ? "جميع عمليات الاستيراد السابقة" : "All previous import operations"}
+            </DialogDescription>
+          </DialogHeader>
+          <ScrollArea className="max-h-[60vh]">
+            {loadingHistory ? (
+              <div className="flex items-center justify-center py-8">
+                <Loader2 className="h-6 w-6 animate-spin text-primary" />
+              </div>
+            ) : importHistory.length === 0 ? (
+              <div className="text-center py-8 text-muted-foreground">
+                <DatabaseIcon className="h-8 w-8 mx-auto mb-2 opacity-30" />
+                <p className="text-sm">{isAr ? "لا توجد عمليات استيراد سابقة" : "No previous imports"}</p>
+              </div>
+            ) : (
+              <div className="space-y-2 pe-2">
+                {importHistory.map((log) => {
+                  const tableInfo = TARGET_TABLE_OPTIONS.find(t => t.value === log.target_table);
+                  return (
+                    <div key={log.id} className="flex items-center justify-between rounded-lg border p-3">
+                      <div className="flex items-center gap-3 min-w-0">
+                        <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
+                          {log.action === 'create' ? <Plus className="h-4 w-4 text-primary" /> : <RefreshCw className="h-4 w-4 text-primary" />}
+                        </div>
+                        <div className="min-w-0">
+                          <p className="text-sm font-medium truncate">{log.entity_name || 'Unknown'}</p>
+                          <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
+                            <Badge variant="outline" className="text-[10px] h-4">{isAr ? tableInfo?.label_ar : tableInfo?.label_en}</Badge>
+                            <Badge variant="secondary" className="text-[10px] h-4">{log.entity_type}</Badge>
+                            <span>{log.action === 'create' ? (isAr ? 'إضافة' : 'Created') : (isAr ? 'تحديث' : 'Updated')}</span>
+                          </div>
+                        </div>
+                      </div>
+                      <div className="text-xs text-muted-foreground shrink-0 text-end">
+                        <p>{new Date(log.created_at).toLocaleDateString()}</p>
+                        <p>{new Date(log.created_at).toLocaleTimeString()}</p>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            )}
+          </ScrollArea>
         </DialogContent>
       </Dialog>
     </div>
