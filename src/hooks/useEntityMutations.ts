@@ -99,7 +99,9 @@ export function useEntityMutations({ form, editingId, selectedManager, onSuccess
 
   const changeStatus = useMutation({
     mutationFn: async ({ id, status, entityName, entityNameAr, createdBy }: { id: string; status: EntityStatus; entityName?: string; entityNameAr?: string; createdBy?: string | null }) => {
-      const { error } = await supabase.from("culinary_entities").update({ status }).eq("id", id);
+      // When activating, also make visible; when suspending/pending, hide
+      const is_visible = status === "active";
+      const { error } = await supabase.from("culinary_entities").update({ status, is_visible }).eq("id", id);
       if (error) throw error;
       return { status, entityName, entityNameAr, createdBy };
     },
