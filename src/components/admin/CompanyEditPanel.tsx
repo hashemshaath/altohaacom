@@ -19,6 +19,7 @@ import { useToast } from "@/hooks/use-toast";
 import {
   Building2, Save, X, Edit, Sparkles, Upload, Image, CheckCircle,
   Globe, Mail, Phone, MapPin, FileText, CreditCard, Shield, Send,
+  Star, ExternalLink, Navigation,
 } from "lucide-react";
 
 type CompanyType = "sponsor" | "supplier" | "partner" | "vendor";
@@ -56,6 +57,15 @@ export function CompanyEditPanel({ companyId, companyDetails }: CompanyEditPanel
     credit_limit: 0, payment_terms: 30, currency: "SAR",
     logo_url: "",
     status: "pending" as string,
+    // Location fields
+    neighborhood: "", neighborhood_ar: "",
+    street: "", street_ar: "",
+    national_address: "", national_address_ar: "",
+    latitude: "" as string | number, longitude: "" as string | number,
+    google_maps_url: "",
+    rating: "" as string | number, total_reviews: "" as string | number,
+    import_source: "",
+    phone_secondary: "", fax: "",
   });
 
   // Media query for logo selection
@@ -94,6 +104,20 @@ export function CompanyEditPanel({ companyId, companyDetails }: CompanyEditPanel
         currency: companyDetails.currency || "SAR",
         logo_url: companyDetails.logo_url || "",
         status: companyDetails.status || "pending",
+        neighborhood: companyDetails.neighborhood || "",
+        neighborhood_ar: companyDetails.neighborhood_ar || "",
+        street: companyDetails.street || "",
+        street_ar: companyDetails.street_ar || "",
+        national_address: companyDetails.national_address || "",
+        national_address_ar: companyDetails.national_address_ar || "",
+        latitude: companyDetails.latitude ?? "",
+        longitude: companyDetails.longitude ?? "",
+        google_maps_url: companyDetails.google_maps_url || "",
+        rating: companyDetails.rating ?? "",
+        total_reviews: companyDetails.total_reviews ?? "",
+        import_source: companyDetails.import_source || "",
+        phone_secondary: companyDetails.phone_secondary || "",
+        fax: companyDetails.fax || "",
       });
     }
   }, [companyDetails]);
@@ -102,14 +126,14 @@ export function CompanyEditPanel({ companyId, companyDetails }: CompanyEditPanel
   const completionFields = [
     "name", "name_ar", "email", "phone", "website", "address", "address_ar",
     "city", "country_code", "description", "description_ar", "registration_number",
-    "tax_number", "logo_url", "type",
+    "tax_number", "logo_url", "type", "neighborhood", "street",
   ];
   const filledFields = completionFields.filter(f => !!(form as any)[f]);
   const completionPct = Math.round((filledFields.length / completionFields.length) * 100);
 
   const updateMutation = useMutation({
     mutationFn: async (data: typeof form) => {
-      const { status, ...rest } = data;
+      const { status, import_source, ...rest } = data;
       const { error } = await supabase.from("companies").update({
         ...rest,
         status: status as any,
@@ -117,6 +141,19 @@ export function CompanyEditPanel({ companyId, companyDetails }: CompanyEditPanel
         credit_limit: Number(rest.credit_limit) || 0,
         payment_terms: Number(rest.payment_terms) || 30,
         logo_url: rest.logo_url || null,
+        latitude: rest.latitude ? Number(rest.latitude) : null,
+        longitude: rest.longitude ? Number(rest.longitude) : null,
+        rating: rest.rating ? Number(rest.rating) : null,
+        total_reviews: rest.total_reviews ? Number(rest.total_reviews) : null,
+        neighborhood: rest.neighborhood || null,
+        neighborhood_ar: rest.neighborhood_ar || null,
+        street: rest.street || null,
+        street_ar: rest.street_ar || null,
+        national_address: rest.national_address || null,
+        national_address_ar: rest.national_address_ar || null,
+        google_maps_url: rest.google_maps_url || null,
+        phone_secondary: rest.phone_secondary || null,
+        fax: rest.fax || null,
       }).eq("id", companyId);
       if (error) throw error;
     },
@@ -154,7 +191,6 @@ export function CompanyEditPanel({ companyId, companyDetails }: CompanyEditPanel
       if (uploadError) throw uploadError;
       const { data: urlData } = supabase.storage.from("company-media").getPublicUrl(path);
       setForm(prev => ({ ...prev, logo_url: urlData.publicUrl }));
-      // Also save to company_media
       const user = (await supabase.auth.getUser()).data.user;
       await supabase.from("company_media").insert({
         company_id: companyId, category: "logo", file_url: urlData.publicUrl,
@@ -224,7 +260,7 @@ export function CompanyEditPanel({ companyId, companyDetails }: CompanyEditPanel
                 <Button onClick={() => updateMutation.mutate(form)} disabled={updateMutation.isPending} className="gap-2">
                   <Save className="h-4 w-4" />{isAr ? "حفظ" : "Save"}
                 </Button>
-                <Button variant="outline" onClick={() => { setEditing(false); setForm(prev => ({ ...prev })); }}>
+                <Button variant="outline" onClick={() => { setEditing(false); }}>
                   <X className="h-4 w-4" />
                 </Button>
               </div>
@@ -250,12 +286,22 @@ export function CompanyEditPanel({ companyId, companyDetails }: CompanyEditPanel
                 }
               }}
             />
-            <Badge className={form.status === "active" ? "bg-chart-5/10 text-chart-5 border-chart-5/20" : "bg-muted-foreground/10 text-muted-foreground"}>
-              {form.status === "active" ? (isAr ? "نشط" : "Active") : (isAr ? "غير نشط" : "Inactive")}
+            <Badge className={form.status === "active" ? "bg-chart-5/10 text-chart-5 border-chart-5/20" : form.status === "pending" ? "bg-chart-4/10 text-chart-4 border-chart-4/20" : "bg-muted-foreground/10 text-muted-foreground"}>
+              {form.status === "active" ? (isAr ? "نشط" : "Active") : form.status === "pending" ? (isAr ? "قيد الانتظار" : "Pending") : (isAr ? "غير نشط" : "Inactive")}
             </Badge>
           </div>
         </div>
       </div>
+
+      {/* Import Source Badge */}
+      {form.import_source && (
+        <div className="flex items-center gap-2">
+          <Badge variant="outline" className="bg-primary/5 text-primary border-primary/20 gap-1">
+            <Sparkles className="h-3 w-3" />
+            {form.import_source === 'smart_import' ? (isAr ? 'مستورد عبر الاستيراد الذكي' : 'Imported via Smart Import') : form.import_source}
+          </Badge>
+        </div>
+      )}
 
       {/* Completion Progress */}
       <Card>
@@ -309,7 +355,6 @@ export function CompanyEditPanel({ companyId, companyDetails }: CompanyEditPanel
             )}
           </div>
 
-          {/* Media Picker */}
           {showMediaPicker && (
             <div className="mt-4 border rounded-lg p-3">
               <p className="text-sm font-medium mb-2">{isAr ? "اختر من مكتبة الوسائط" : "Select from Media Library"}</p>
@@ -391,6 +436,14 @@ export function CompanyEditPanel({ companyId, companyDetails }: CompanyEditPanel
               <Input value={form.phone} onChange={e => setForm(p => ({ ...p, phone: e.target.value }))} disabled={!editing} />
             </div>
             <div className="space-y-1.5">
+              <Label className="text-xs">{isAr ? "هاتف ثانوي" : "Secondary Phone"}</Label>
+              <Input value={form.phone_secondary} onChange={e => setForm(p => ({ ...p, phone_secondary: e.target.value }))} disabled={!editing} />
+            </div>
+            <div className="space-y-1.5">
+              <Label className="text-xs">{isAr ? "الفاكس" : "Fax"}</Label>
+              <Input value={form.fax} onChange={e => setForm(p => ({ ...p, fax: e.target.value }))} disabled={!editing} />
+            </div>
+            <div className="space-y-1.5">
               <Label className="text-xs">{isAr ? "الموقع الإلكتروني" : "Website"}</Label>
               <Input value={form.website} onChange={e => setForm(p => ({ ...p, website: e.target.value }))} disabled={!editing} />
             </div>
@@ -398,7 +451,7 @@ export function CompanyEditPanel({ companyId, companyDetails }: CompanyEditPanel
         </CardContent>
       </Card>
 
-      {/* Address */}
+      {/* Address & Location */}
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2 text-base">
@@ -436,101 +489,73 @@ export function CompanyEditPanel({ companyId, companyDetails }: CompanyEditPanel
 
           {/* Neighborhood & Street */}
           <Separator />
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="space-y-1.5">
-              <Label className="text-xs">{isAr ? "الحي (EN)" : "Neighborhood (EN)"}</Label>
-              <Input value={companyDetails?.neighborhood || ""} disabled className="text-muted-foreground" />
-            </div>
-            <div className="space-y-1.5">
-              <Label className="text-xs">{isAr ? "الحي (AR)" : "Neighborhood (AR)"}</Label>
-              <Input value={companyDetails?.neighborhood_ar || ""} disabled dir="rtl" className="text-muted-foreground" />
-            </div>
-            <div className="space-y-1.5">
-              <Label className="text-xs">{isAr ? "الشارع (EN)" : "Street (EN)"}</Label>
-              <Input value={companyDetails?.street || ""} disabled className="text-muted-foreground" />
-            </div>
-            <div className="space-y-1.5">
-              <Label className="text-xs">{isAr ? "الشارع (AR)" : "Street (AR)"}</Label>
-              <Input value={companyDetails?.street_ar || ""} disabled dir="rtl" className="text-muted-foreground" />
-            </div>
-          </div>
+          <BilingualField
+            labelEn="Neighborhood" labelAr="الحي"
+            valueEn={form.neighborhood} valueAr={form.neighborhood_ar}
+            onChangeEn={v => setForm(p => ({ ...p, neighborhood: v }))} onChangeAr={v => setForm(p => ({ ...p, neighborhood_ar: v }))}
+          />
+          <BilingualField
+            labelEn="Street" labelAr="الشارع"
+            valueEn={form.street} valueAr={form.street_ar}
+            onChangeEn={v => setForm(p => ({ ...p, street: v }))} onChangeAr={v => setForm(p => ({ ...p, street_ar: v }))}
+          />
 
           {/* National Address */}
-          {(companyDetails?.national_address || companyDetails?.national_address_ar) && (
-            <>
-              <Separator />
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="space-y-1.5">
-                  <Label className="text-xs">{isAr ? "العنوان الوطني (EN)" : "National Address (EN)"}</Label>
-                  <Input value={companyDetails?.national_address || ""} disabled className="text-muted-foreground font-mono" />
-                </div>
-                <div className="space-y-1.5">
-                  <Label className="text-xs">{isAr ? "العنوان الوطني (AR)" : "National Address (AR)"}</Label>
-                  <Input value={companyDetails?.national_address_ar || ""} disabled dir="rtl" className="text-muted-foreground" />
-                </div>
-              </div>
-            </>
-          )}
+          <Separator />
+          <BilingualField
+            labelEn="National Address" labelAr="العنوان الوطني"
+            valueEn={form.national_address} valueAr={form.national_address_ar}
+            onChangeEn={v => setForm(p => ({ ...p, national_address: v }))} onChangeAr={v => setForm(p => ({ ...p, national_address_ar: v }))}
+          />
 
           {/* Coordinates & Google Maps */}
-          {(companyDetails?.latitude || companyDetails?.longitude || companyDetails?.google_maps_url) && (
-            <>
-              <Separator />
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                {companyDetails?.latitude && (
-                  <div className="space-y-1.5">
-                    <Label className="text-xs">{isAr ? "خط العرض" : "Latitude"}</Label>
-                    <Input value={companyDetails.latitude} disabled className="font-mono text-muted-foreground" />
-                  </div>
-                )}
-                {companyDetails?.longitude && (
-                  <div className="space-y-1.5">
-                    <Label className="text-xs">{isAr ? "خط الطول" : "Longitude"}</Label>
-                    <Input value={companyDetails.longitude} disabled className="font-mono text-muted-foreground" />
-                  </div>
-                )}
-                {companyDetails?.google_maps_url && (
-                  <div className="space-y-1.5">
-                    <Label className="text-xs">{isAr ? "خرائط جوجل" : "Google Maps"}</Label>
-                    <a href={companyDetails.google_maps_url} target="_blank" rel="noopener noreferrer"
-                      className="text-sm text-primary hover:underline truncate block">
-                      {isAr ? "فتح في خرائط جوجل ↗" : "Open in Google Maps ↗"}
-                    </a>
-                  </div>
+          <Separator />
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div className="space-y-1.5">
+              <Label className="text-xs">{isAr ? "خط العرض" : "Latitude"}</Label>
+              <Input value={String(form.latitude)} onChange={e => setForm(p => ({ ...p, latitude: e.target.value }))} disabled={!editing} className="font-mono" placeholder="24.7136" />
+            </div>
+            <div className="space-y-1.5">
+              <Label className="text-xs">{isAr ? "خط الطول" : "Longitude"}</Label>
+              <Input value={String(form.longitude)} onChange={e => setForm(p => ({ ...p, longitude: e.target.value }))} disabled={!editing} className="font-mono" placeholder="46.6753" />
+            </div>
+            <div className="space-y-1.5">
+              <Label className="text-xs">{isAr ? "رابط خرائط جوجل" : "Google Maps URL"}</Label>
+              <div className="flex gap-2">
+                <Input value={form.google_maps_url} onChange={e => setForm(p => ({ ...p, google_maps_url: e.target.value }))} disabled={!editing} className="flex-1" />
+                {form.google_maps_url && (
+                  <a href={form.google_maps_url} target="_blank" rel="noopener noreferrer">
+                    <Button variant="outline" size="icon" type="button"><ExternalLink className="h-4 w-4" /></Button>
+                  </a>
                 )}
               </div>
-            </>
-          )}
+            </div>
+          </div>
+        </CardContent>
+      </Card>
 
-          {/* Rating & Reviews */}
-          {(companyDetails?.rating || companyDetails?.total_reviews) && (
-            <>
-              <Separator />
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                {companyDetails?.rating && (
-                  <div className="space-y-1.5">
-                    <Label className="text-xs">{isAr ? "التقييم" : "Rating"}</Label>
-                    <div className="flex items-center gap-1.5">
-                      <span className="text-lg font-bold">{Number(companyDetails.rating).toFixed(1)}</span>
-                      <span className="text-muted-foreground text-xs">/ 5</span>
-                    </div>
-                  </div>
-                )}
-                {companyDetails?.total_reviews && (
-                  <div className="space-y-1.5">
-                    <Label className="text-xs">{isAr ? "عدد التقييمات" : "Total Reviews"}</Label>
-                    <span className="text-sm font-medium">{companyDetails.total_reviews}</span>
-                  </div>
-                )}
-                {companyDetails?.import_source && (
-                  <div className="space-y-1.5">
-                    <Label className="text-xs">{isAr ? "مصدر البيانات" : "Data Source"}</Label>
-                    <Badge variant="outline" className="text-xs">{companyDetails.import_source === 'smart_import' ? (isAr ? 'استيراد ذكي' : 'Smart Import') : companyDetails.import_source}</Badge>
-                  </div>
-                )}
+      {/* Rating & Reviews */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2 text-base">
+            <Star className="h-4 w-4 text-primary" />
+            {isAr ? "التقييم والمراجعات" : "Rating & Reviews"}
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="space-y-1.5">
+              <Label className="text-xs">{isAr ? "التقييم" : "Rating"}</Label>
+              <div className="flex items-center gap-2">
+                <Input type="number" step="0.1" min="0" max="5" value={String(form.rating)} onChange={e => setForm(p => ({ ...p, rating: e.target.value }))} disabled={!editing} className="w-24" />
+                {form.rating && <span className="text-muted-foreground text-xs">/ 5</span>}
               </div>
-            </>
-          )}
+            </div>
+            <div className="space-y-1.5">
+              <Label className="text-xs">{isAr ? "عدد التقييمات" : "Total Reviews"}</Label>
+              <Input type="number" value={String(form.total_reviews)} onChange={e => setForm(p => ({ ...p, total_reviews: e.target.value }))} disabled={!editing} />
+            </div>
+          </div>
         </CardContent>
       </Card>
 
