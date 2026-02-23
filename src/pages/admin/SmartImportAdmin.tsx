@@ -18,6 +18,8 @@ import { AddRecordForm } from "@/components/smart-import/AddRecordForm";
 import { ImportHistory } from "@/components/smart-import/ImportHistory";
 import { DataQualityIndicator } from "@/components/smart-import/DataQualityIndicator";
 import { ExportDataButton } from "@/components/smart-import/ExportDataButton";
+import { ImportStats } from "@/components/smart-import/ImportStats";
+import { BulkUrlImport } from "@/components/smart-import/BulkUrlImport";
 import type { ImportedData } from "@/components/smart-import/SmartImportDialog";
 import {
   type SearchResultItem, type ExistingRecord, type Step,
@@ -30,7 +32,7 @@ import {
   Search, Loader2, MapPin, Globe, Sparkles, CheckCircle,
   Star, ChevronRight, ArrowLeft, AlertCircle,
   RefreshCw, Plus, Clock, Calendar, Building2,
-  Phone, Link2, Zap, BarChart3,
+  Phone, Link2, Zap, BarChart3, Layers,
 } from "lucide-react";
 
 // ─── Payload builders ───
@@ -174,10 +176,31 @@ export default function SmartImportAdmin() {
   const [importHistory, setImportHistory] = useState<any[]>([]);
   const [loadingHistory, setLoadingHistory] = useState(false);
 
-  const [importMode, setImportMode] = useState<"search" | "url">("search");
+  const [importMode, setImportMode] = useState<"search" | "url" | "bulk">("search");
   const [urlImporting, setUrlImporting] = useState(false);
 
+  // Stats
+  const [stats, setStats] = useState<any>(null);
+  const [loadingStats, setLoadingStats] = useState(true);
+
   const fieldCount = useMemo(() => countFields(details), [details]);
+
+  // Load stats on mount
+  useEffect(() => {
+    const loadStats = async () => {
+      try {
+        const { data } = await supabase.functions.invoke("smart-import", { body: { mode: "stats" } });
+        if (data?.success) setStats(data.stats);
+      } catch {} finally { setLoadingStats(false); }
+    };
+    loadStats();
+  }, []);
+
+  // Inline field editing
+  const handleFieldUpdate = useCallback((key: string, value: string) => {
+    setDetails(prev => prev ? { ...prev, [key]: value } : prev);
+    toast({ title: isAr ? "تم تعديل الحقل" : "Field updated" });
+  }, [isAr]);
 
   // ─── Step 1: Search ───
   const handleSearch = useCallback(async () => {
@@ -294,17 +317,13 @@ export default function SmartImportAdmin() {
     }
   }, [location, websiteUrl, isAr]);
 
-  // ─── Re-scrape / Refresh data ───
   const handleRescrape = useCallback(async () => {
     if (!selectedResult && !directUrl) return;
-    if (selectedResult) {
-      await handleResultClick(selectedResult);
-    } else if (directUrl) {
-      await handleUrlImport();
-    }
+    if (selectedResult) await handleResultClick(selectedResult);
+    else if (directUrl) await handleUrlImport();
   }, [selectedResult, directUrl, handleResultClick, handleUrlImport]);
 
-  // ─── Check DB for existing records ───
+  // ─── Check DB ───
   const checkExistingEntity = useCallback(async () => {
     if (!details) return;
     setCheckingDb(true);
@@ -458,9 +477,7 @@ export default function SmartImportAdmin() {
         imported_data: details as any,
         status: 'success',
       });
-    } catch (e) {
-      console.error('Failed to log import:', e);
-    }
+    } catch (e) { console.error('Failed to log import:', e); }
   };
 
   const loadHistory = async () => {
@@ -468,14 +485,11 @@ export default function SmartImportAdmin() {
     try {
       const { data } = await supabase.from("smart_import_logs").select("*").order("created_at", { ascending: false }).limit(50);
       setImportHistory(data || []);
-    } catch (e) {
-      console.error('Failed to load history:', e);
-    } finally {
-      setLoadingHistory(false);
-    }
+    } catch (e) { console.error('Failed to load history:', e); }
+    finally { setLoadingHistory(false); }
   };
 
-  // ─── Batch import with status tracking ───
+  // ─── Batch import ───
   const handleBatchImport = async () => {
     if (batchSelected.size === 0) return;
     setBatchImporting(true);
@@ -525,7 +539,7 @@ export default function SmartImportAdmin() {
         } catch {}
         successCount++;
       } catch (err) {
-        console.error('Batch import error for:', item.name, err);
+        console.error('Batch import error:', item.name, err);
         failCount++;
       }
     }
@@ -569,12 +583,12 @@ export default function SmartImportAdmin() {
             <h1 className="font-serif text-2xl font-bold flex items-center gap-2">
               <Sparkles className="h-6 w-6 text-primary" />
               {isAr ? "الاستيراد الذكي" : "Smart Import"}
-              <Badge variant="secondary" className="text-[10px] font-normal">v2.0</Badge>
+              <Badge variant="secondary" className="text-[10px] font-normal">v3.0</Badge>
             </h1>
             <p className="text-muted-foreground text-sm mt-0.5">
-              {step === "search" && (isAr ? "ابحث عن كيان أو الصق رابط موقع لاستيراد البيانات تلقائياً" : "Search Google Maps or paste a URL to auto-import data")}
-              {step === "results" && (isAr ? `${searchResults.length} نتيجة${searchTime ? ` في ${(searchTime / 1000).toFixed(1)} ثانية` : ''} — اضغط للتحليل` : `${searchResults.length} results${searchTime ? ` in ${(searchTime / 1000).toFixed(1)}s` : ''} — click to analyze`)}
-              {step === "details" && (isAr ? `${fieldCount} حقل بيانات — جودة ${dataQuality}%` : `${fieldCount} fields extracted — ${dataQuality}% quality`)}
+              {step === "search" && (isAr ? "ابحث، الصق رابط، أو استورد دفعة واحدة" : "Search, paste URL, or bulk import")}
+              {step === "results" && (isAr ? `${searchResults.length} نتيجة${searchTime ? ` في ${(searchTime / 1000).toFixed(1)}ث` : ''} — اضغط للتحليل` : `${searchResults.length} results${searchTime ? ` in ${(searchTime / 1000).toFixed(1)}s` : ''} — click to analyze`)}
+              {step === "details" && (isAr ? `${fieldCount} حقل — جودة ${dataQuality}% — قابل للتعديل` : `${fieldCount} fields — ${dataQuality}% quality — editable`)}
             </p>
           </div>
         </div>
@@ -603,25 +617,23 @@ export default function SmartImportAdmin() {
       {/* ─── STEP 1: Search Form ─── */}
       {step === "search" && (
         <div className="space-y-4">
+          {/* Stats Dashboard */}
+          <ImportStats stats={stats} loading={loadingStats} isAr={isAr} />
+
           {/* Mode Toggle */}
           <div className="flex gap-2">
-            <Button
-              variant={importMode === "search" ? "default" : "outline"}
-              size="sm"
-              className="gap-1.5"
-              onClick={() => setImportMode("search")}
-            >
+            <Button variant={importMode === "search" ? "default" : "outline"} size="sm" className="gap-1.5" onClick={() => setImportMode("search")}>
               <Search className="h-3.5 w-3.5" />
-              {isAr ? "بحث خرائط جوجل" : "Google Maps Search"}
+              {isAr ? "بحث خرائط" : "Maps Search"}
             </Button>
-            <Button
-              variant={importMode === "url" ? "default" : "outline"}
-              size="sm"
-              className="gap-1.5"
-              onClick={() => setImportMode("url")}
-            >
+            <Button variant={importMode === "url" ? "default" : "outline"} size="sm" className="gap-1.5" onClick={() => setImportMode("url")}>
               <Link2 className="h-3.5 w-3.5" />
-              {isAr ? "استيراد من رابط" : "Import from URL"}
+              {isAr ? "رابط مباشر" : "URL Import"}
+            </Button>
+            <Button variant={importMode === "bulk" ? "default" : "outline"} size="sm" className="gap-1.5" onClick={() => setImportMode("bulk")}>
+              <Layers className="h-3.5 w-3.5" />
+              {isAr ? "استيراد جماعي" : "Bulk Import"}
+              <Badge variant="secondary" className="text-[9px] h-4 px-1">{isAr ? "جديد" : "NEW"}</Badge>
             </Button>
           </div>
 
@@ -633,7 +645,7 @@ export default function SmartImportAdmin() {
                   {isAr ? "البحث في خرائط جوجل" : "Search Google Maps"}
                 </CardTitle>
                 <CardDescription>
-                  {isAr ? "أدخل اسم المنشأة والموقع للبحث في خرائط جوجل" : "Enter entity name and location to search Google Maps"}
+                  {isAr ? "أدخل اسم المنشأة والموقع" : "Enter entity name and location"}
                 </CardDescription>
               </CardHeader>
               <CardContent>
@@ -664,47 +676,43 @@ export default function SmartImportAdmin() {
                     </div>
                     <Button onClick={handleSearch} disabled={searching || !query.trim()} className="gap-2 h-10 px-8 shrink-0">
                       {searching ? <Loader2 className="h-4 w-4 animate-spin" /> : <Search className="h-4 w-4" />}
-                      {searching ? (isAr ? "جاري البحث..." : "Searching...") : (isAr ? "بحث في جوجل" : "Search Google Maps")}
+                      {searching ? (isAr ? "جاري البحث..." : "Searching...") : (isAr ? "بحث" : "Search")}
                     </Button>
                   </div>
                 </div>
               </CardContent>
             </Card>
-          ) : (
+          ) : importMode === "url" ? (
             <Card className="border-primary/20">
               <CardHeader>
                 <CardTitle className="text-base flex items-center gap-2">
                   <Link2 className="h-5 w-5 text-primary" />
-                  {isAr ? "استيراد مباشر من رابط" : "Direct URL Import"}
+                  {isAr ? "استيراد من رابط" : "Direct URL Import"}
                 </CardTitle>
                 <CardDescription>
-                  {isAr ? "الصق رابط الموقع الإلكتروني لاستخراج البيانات تلقائياً بالذكاء الاصطناعي" : "Paste a website URL to auto-extract data using AI"}
+                  {isAr ? "الصق رابط الموقع لاستخراج البيانات بالذكاء الاصطناعي" : "Paste a URL to auto-extract data with AI"}
                 </CardDescription>
               </CardHeader>
               <CardContent>
                 <div className="flex flex-col sm:flex-row gap-3">
                   <div className="flex-1 relative">
                     <Globe className="absolute start-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                    <Input
-                      className="ps-9 h-11"
-                      placeholder={isAr ? "الصق رابط الموقع هنا..." : "Paste website URL here..."}
-                      value={directUrl}
-                      onChange={(e) => setDirectUrl(e.target.value)}
-                      onKeyDown={(e) => e.key === "Enter" && handleUrlImport()}
-                    />
+                    <Input className="ps-9 h-11" placeholder={isAr ? "الصق الرابط هنا..." : "Paste URL here..."} value={directUrl} onChange={(e) => setDirectUrl(e.target.value)} onKeyDown={(e) => e.key === "Enter" && handleUrlImport()} />
                   </div>
                   <Button onClick={handleUrlImport} disabled={urlImporting || !directUrl.trim()} className="gap-2 h-11 px-8 shrink-0">
                     {urlImporting ? <Loader2 className="h-4 w-4 animate-spin" /> : <Zap className="h-4 w-4" />}
-                    {urlImporting ? (isAr ? "جاري الاستخراج..." : "Extracting...") : (isAr ? "استخراج البيانات" : "Extract Data")}
+                    {urlImporting ? (isAr ? "جاري الاستخراج..." : "Extracting...") : (isAr ? "استخراج" : "Extract")}
                   </Button>
                 </div>
                 <div className="flex items-center gap-4 mt-3 text-xs text-muted-foreground">
-                  <span className="flex items-center gap-1"><Sparkles className="h-3 w-3" />{isAr ? "تحليل ذكي" : "AI-powered analysis"}</span>
+                  <span className="flex items-center gap-1"><Sparkles className="h-3 w-3" />{isAr ? "تحليل ذكي" : "AI analysis"}</span>
                   <span className="flex items-center gap-1"><Globe className="h-3 w-3" />{isAr ? "أي موقع" : "Any website"}</span>
-                  <span className="flex items-center gap-1"><BarChart3 className="h-3 w-3" />{isAr ? "مقياس الجودة" : "Quality scoring"}</span>
+                  <span className="flex items-center gap-1"><BarChart3 className="h-3 w-3" />{isAr ? "مقياس جودة" : "Quality scoring"}</span>
                 </div>
               </CardContent>
             </Card>
+          ) : (
+            <BulkUrlImport isAr={isAr} onComplete={() => {}} userId={user?.id} />
           )}
         </div>
       )}
@@ -732,9 +740,7 @@ export default function SmartImportAdmin() {
                   {isAr ? "تحديد الكل" : "Select All"}
                 </Button>
                 {batchSelected.size > 0 && (
-                  <Badge variant="secondary" className="text-xs">
-                    {batchSelected.size} {isAr ? "محدد" : "selected"}
-                  </Badge>
+                  <Badge variant="secondary" className="text-xs">{batchSelected.size} {isAr ? "محدد" : "selected"}</Badge>
                 )}
               </div>
               <div className="flex items-center gap-2">
@@ -749,7 +755,7 @@ export default function SmartImportAdmin() {
                     {batchImporting ? (
                       <><Loader2 className="h-3.5 w-3.5 animate-spin" />{batchProgress.current}/{batchProgress.total}</>
                     ) : (
-                      <><Plus className="h-3.5 w-3.5" />{isAr ? `استيراد ${batchSelected.size} (تلقائي)` : `Import ${batchSelected.size} (auto-detect)`}</>
+                      <><Plus className="h-3.5 w-3.5" />{isAr ? `استيراد ${batchSelected.size}` : `Import ${batchSelected.size}`}</>
                     )}
                   </Button>
                 )}
@@ -764,7 +770,7 @@ export default function SmartImportAdmin() {
                   <CardTitle className="text-sm flex items-center justify-between">
                     <span className="flex items-center gap-1.5">
                       <MapPin className="h-4 w-4 text-red-500" />
-                      {isAr ? "نتائج خرائط جوجل" : "Google Maps Results"}
+                      {isAr ? "النتائج" : "Results"}
                     </span>
                     <div className="flex items-center gap-1.5">
                       {searchTime && (
@@ -870,7 +876,7 @@ export default function SmartImportAdmin() {
               </div>
               <div>
                 <p className="font-semibold text-lg">{isAr ? "جاري جلب وتحليل البيانات..." : "Fetching & Analyzing Data..."}</p>
-                <p className="text-sm text-muted-foreground mt-1">{isAr ? "جمع البيانات من مصادر متعددة وتحليلها بالذكاء الاصطناعي" : "Collecting from multiple sources and analyzing with AI"}</p>
+                <p className="text-sm text-muted-foreground mt-1">{isAr ? "جمع البيانات من مصادر متعددة" : "Collecting from multiple sources"}</p>
               </div>
             </div>
           </CardContent>
@@ -906,10 +912,7 @@ export default function SmartImportAdmin() {
                   )}
                 </div>
                 <div className="flex items-center gap-2 flex-wrap">
-                  {/* Data Quality */}
                   <DataQualityIndicator score={dataQuality} isAr={isAr} compact />
-                  
-                  {/* Sources */}
                   <TooltipProvider>
                     {Object.entries(SOURCE_CHANNELS).map(([key, config]) => {
                       if (!sourcesUsed[key]) return null;
@@ -921,13 +924,11 @@ export default function SmartImportAdmin() {
                               <Icon className="h-3 w-3" />{isAr ? config.label_ar : config.label_en}
                             </Badge>
                           </TooltipTrigger>
-                          <TooltipContent>{isAr ? `تم الحصول على بيانات من ${config.label_ar}` : `Data sourced from ${config.label_en}`}</TooltipContent>
+                          <TooltipContent>{isAr ? `بيانات من ${config.label_ar}` : `Data from ${config.label_en}`}</TooltipContent>
                         </Tooltip>
                       );
                     })}
                   </TooltipProvider>
-
-                  {/* Action Buttons */}
                   <ExportDataButton data={details} isAr={isAr} />
                   <Button variant="outline" size="sm" className="gap-1.5 text-xs" onClick={handleRescrape} disabled={loadingDetails || urlImporting}>
                     <RefreshCw className={`h-3.5 w-3.5 ${loadingDetails ? 'animate-spin' : ''}`} />
@@ -938,18 +939,15 @@ export default function SmartImportAdmin() {
             </CardContent>
           </Card>
 
-          {/* Data Quality Bar */}
-          {dataQuality > 0 && (
-            <DataQualityIndicator score={dataQuality} isAr={isAr} />
-          )}
+          {dataQuality > 0 && <DataQualityIndicator score={dataQuality} isAr={isAr} />}
 
-          {/* AI Suggested Target */}
+          {/* AI Suggestion */}
           {suggestedTarget && (
             <Card className="border-primary/20 bg-primary/5">
               <CardContent className="py-3">
                 <div className="flex items-center gap-2">
                   <Sparkles className="h-4 w-4 text-primary" />
-                  <span className="text-sm font-medium">{isAr ? "اقتراح الذكاء الاصطناعي:" : "AI Suggestion:"}</span>
+                  <span className="text-sm font-medium">{isAr ? "اقتراح AI:" : "AI Suggestion:"}</span>
                   <Badge variant="secondary" className="gap-1">
                     {TARGET_TABLE_OPTIONS.find(t => t.value === suggestedTarget.table)
                       ? (isAr ? TARGET_TABLE_OPTIONS.find(t => t.value === suggestedTarget.table)!.label_ar : TARGET_TABLE_OPTIONS.find(t => t.value === suggestedTarget.table)!.label_en)
@@ -968,14 +966,14 @@ export default function SmartImportAdmin() {
               {checkingDb ? (
                 <div className="flex items-center gap-3">
                   <Loader2 className="h-5 w-5 animate-spin text-primary" />
-                  <span className="text-sm">{isAr ? "جاري التحقق من قاعدة البيانات..." : "Checking all databases..."}</span>
+                  <span className="text-sm">{isAr ? "جاري التحقق..." : "Checking databases..."}</span>
                 </div>
               ) : dbChecked && existingRecords.length > 0 ? (
                 <div className="space-y-3">
                   <div className="flex items-center gap-2">
                     <AlertCircle className="h-5 w-5 text-yellow-600" />
                     <span className="text-sm font-semibold text-yellow-700">
-                      {isAr ? `تم العثور على ${existingRecords.length} سجل مطابق` : `Found ${existingRecords.length} matching record${existingRecords.length > 1 ? 's' : ''}`}
+                      {isAr ? `${existingRecords.length} سجل مطابق` : `${existingRecords.length} matching record${existingRecords.length > 1 ? 's' : ''}`}
                     </span>
                   </div>
                   <div className="space-y-2">
@@ -1004,7 +1002,7 @@ export default function SmartImportAdmin() {
                           </div>
                           <Button size="sm" variant="outline" className="gap-1.5" onClick={() => handleUpdateRecord(record)} disabled={updating}>
                             {updating && selectedExistingId === record.id ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <RefreshCw className="h-3.5 w-3.5" />}
-                            {isAr ? "تحديث البيانات" : "Update Data"}
+                            {isAr ? "تحديث" : "Update"}
                           </Button>
                         </div>
                       );
@@ -1012,7 +1010,7 @@ export default function SmartImportAdmin() {
                   </div>
                   <Separator />
                   <div className="flex items-center justify-between">
-                    <span className="text-xs text-muted-foreground">{isAr ? "أو أضف كسجل جديد" : "Or add as new record"}</span>
+                    <span className="text-xs text-muted-foreground">{isAr ? "أو أضف كسجل جديد" : "Or add as new"}</span>
                     <Button size="sm" variant="default" className="gap-1.5" onClick={() => setShowAddForm(true)}>
                       <Plus className="h-3.5 w-3.5" />{isAr ? "إضافة جديد" : "Add New"}
                     </Button>
@@ -1022,10 +1020,10 @@ export default function SmartImportAdmin() {
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
                     <CheckCircle className="h-5 w-5 text-green-600" />
-                    <span className="text-sm font-medium text-green-700">{isAr ? "لا يوجد سجل مطابق" : "No matching records found"}</span>
+                    <span className="text-sm font-medium text-green-700">{isAr ? "لا يوجد سجل مطابق" : "No matching records"}</span>
                   </div>
                   <Button size="sm" variant="default" className="gap-1.5" onClick={() => setShowAddForm(true)}>
-                    <Plus className="h-3.5 w-3.5" />{isAr ? "إضافة كسجل جديد" : "Add as New Record"}
+                    <Plus className="h-3.5 w-3.5" />{isAr ? "إضافة" : "Add Record"}
                   </Button>
                 </div>
               ) : null}
