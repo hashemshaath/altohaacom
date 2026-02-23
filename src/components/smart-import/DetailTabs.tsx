@@ -7,11 +7,13 @@ import { Button } from "@/components/ui/button";
 import { GoogleMapEmbed } from "./GoogleMapEmbed";
 import { DataField, TagList } from "./DataField";
 import { EditableField } from "./EditableField";
+import { ImagePreviewEditor } from "./ImagePreviewEditor";
 import type { ImportedData } from "./SmartImportDialog";
 import {
   FileText, Phone, MapPin, Building2, Briefcase, Clock,
   Star, Globe, Calendar, Users, Award, Share2,
   UserCheck, Shield, Link2, BookOpen, ExternalLink,
+  Image as ImageIcon,
 } from "lucide-react";
 
 type EditProps = { editing?: boolean; onFieldUpdate?: (key: string, value: string) => void };
@@ -40,6 +42,7 @@ export const DetailTabs = React.memo(({ details, activeTab, onTabChange, isAr, e
     <Tabs value={activeTab} onValueChange={onTabChange}>
       <TabsList className="w-full justify-start flex-wrap h-auto gap-1 p-1">
         <TabsTrigger value="overview" className="gap-1.5"><FileText className="h-3.5 w-3.5" />{isAr ? "نظرة عامة" : "Overview"}</TabsTrigger>
+        <TabsTrigger value="media" className="gap-1.5"><ImageIcon className="h-3.5 w-3.5" />{isAr ? "الوسائط" : "Media"}</TabsTrigger>
         <TabsTrigger value="contact" className="gap-1.5"><Phone className="h-3.5 w-3.5" />{isAr ? "التواصل" : "Contact"}</TabsTrigger>
         <TabsTrigger value="address" className="gap-1.5"><MapPin className="h-3.5 w-3.5" />{isAr ? "العنوان" : "Address"}</TabsTrigger>
         <TabsTrigger value="organization" className="gap-1.5"><Building2 className="h-3.5 w-3.5" />{isAr ? "المنظمة" : "Organization"}</TabsTrigger>
@@ -49,6 +52,10 @@ export const DetailTabs = React.memo(({ details, activeTab, onTabChange, isAr, e
 
       <TabsContent value="overview" className="mt-4">
         <OverviewTab details={details} isAr={isAr} editing={editing} onFieldUpdate={onFieldUpdate} />
+      </TabsContent>
+
+      <TabsContent value="media" className="mt-4">
+        <MediaTab details={details} isAr={isAr} editing={editing} onFieldUpdate={onFieldUpdate} />
       </TabsContent>
 
       <TabsContent value="contact" className="mt-4">
@@ -330,3 +337,89 @@ const HoursTab = React.memo(({ details, isAr }: { details: ImportedData; isAr: b
   </div>
 ));
 HoursTab.displayName = "HoursTab";
+
+// ── Media Tab ──
+const MediaTab = React.memo(({ details, isAr, editing, onFieldUpdate }: TabProps) => (
+  <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+    <Card>
+      <CardHeader className="pb-2">
+        <CardTitle className="text-sm flex items-center gap-1.5">
+          <ImageIcon className="h-4 w-4" />
+          {isAr ? "الشعار" : "Logo"}
+        </CardTitle>
+      </CardHeader>
+      <CardContent>
+        {editing && onFieldUpdate ? (
+          <ImagePreviewEditor
+            label={isAr ? "شعار الجهة" : "Entity Logo"}
+            value={details.logo_url}
+            fieldKey="logo_url"
+            onUpdate={onFieldUpdate}
+            aspectRatio="square"
+            isAr={isAr}
+          />
+        ) : details.logo_url ? (
+          <div className="aspect-square rounded-lg border overflow-hidden bg-muted/30">
+            <img src={details.logo_url} alt="Logo" className="w-full h-full object-contain p-4" />
+          </div>
+        ) : (
+          <div className="aspect-square rounded-lg border-2 border-dashed flex flex-col items-center justify-center text-muted-foreground/50 gap-2">
+            <ImageIcon className="h-10 w-10" />
+            <p className="text-xs">{isAr ? "لم يتم العثور على شعار" : "No logo found"}</p>
+            {onFieldUpdate && (
+              <ImagePreviewEditor
+                label=""
+                value={null}
+                fieldKey="logo_url"
+                onUpdate={onFieldUpdate}
+                aspectRatio="square"
+                isAr={isAr}
+              />
+            )}
+          </div>
+        )}
+      </CardContent>
+    </Card>
+
+    <Card>
+      <CardHeader className="pb-2">
+        <CardTitle className="text-sm flex items-center gap-1.5">
+          <ImageIcon className="h-4 w-4" />
+          {isAr ? "صورة الغلاف" : "Cover Image"}
+        </CardTitle>
+      </CardHeader>
+      <CardContent>
+        {editing && onFieldUpdate ? (
+          <ImagePreviewEditor
+            label={isAr ? "صورة الغلاف" : "Cover Image"}
+            value={details.cover_url}
+            fieldKey="cover_url"
+            onUpdate={onFieldUpdate}
+            aspectRatio="wide"
+            isAr={isAr}
+          />
+        ) : details.cover_url ? (
+          <div className="aspect-[21/9] rounded-lg border overflow-hidden bg-muted/30">
+            <img src={details.cover_url} alt="Cover" className="w-full h-full object-cover" />
+          </div>
+        ) : (
+          <div className="aspect-[21/9] rounded-lg border-2 border-dashed flex flex-col items-center justify-center text-muted-foreground/50 gap-2">
+            <ImageIcon className="h-10 w-10" />
+            <p className="text-xs">{isAr ? "لم يتم العثور على صورة غلاف" : "No cover image found"}</p>
+            {onFieldUpdate && (
+              <ImagePreviewEditor
+                label=""
+                value={null}
+                fieldKey="cover_url"
+                onUpdate={onFieldUpdate}
+                aspectRatio="wide"
+                isAr={isAr}
+              />
+            )}
+          </div>
+        )}
+      </CardContent>
+    </Card>
+  </div>
+));
+MediaTab.displayName = "MediaTab";

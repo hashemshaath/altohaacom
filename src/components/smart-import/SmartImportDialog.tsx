@@ -84,6 +84,8 @@ export interface ImportedData {
   affiliated_organizations?: string[];
   tags?: string[];
   social_media?: Record<string, string>;
+  logo_url?: string;
+  cover_url?: string;
 }
 
 interface SmartImportDialogProps {
