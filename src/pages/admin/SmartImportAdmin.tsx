@@ -52,6 +52,7 @@ export default function SmartImportAdmin() {
     setSearchedLocation(location.trim());
 
     try {
+      console.log("[SmartImport] Searching:", query.trim(), "location:", location.trim());
       const { data, error } = await supabase.functions.invoke("smart-import", {
         body: {
           query: query.trim(),
@@ -59,13 +60,22 @@ export default function SmartImportAdmin() {
           website_url: websiteUrl.trim() || undefined,
         },
       });
-      if (error) throw error;
-      if (!data?.success) throw new Error(data?.error || "Import failed");
+      console.log("[SmartImport] Response:", { data, error });
+      if (error) {
+        console.error("[SmartImport] Function error:", error);
+        throw new Error(typeof error === 'object' && error.message ? error.message : String(error));
+      }
+      if (!data?.success) {
+        console.error("[SmartImport] API error:", data?.error);
+        throw new Error(data?.error || "Import failed");
+      }
 
       setResult(data.data);
       setSourcesUsed(data.sources_used || {});
+      toast({ title: isAr ? "تم الاستيراد بنجاح" : "Import Successful", description: isAr ? `تم العثور على: ${data.data?.name_ar || data.data?.name_en}` : `Found: ${data.data?.name_en || data.data?.name_ar}` });
     } catch (err: any) {
-      toast({ title: isAr ? "خطأ في الاستيراد" : "Import Error", description: err.message, variant: "destructive" });
+      console.error("[SmartImport] Error:", err);
+      toast({ title: isAr ? "خطأ في الاستيراد" : "Import Error", description: err.message || String(err), variant: "destructive" });
     } finally {
       setLoading(false);
     }
