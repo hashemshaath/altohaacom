@@ -20,64 +20,82 @@ interface PlaceResult {
   user_ratings_total?: number;
   url?: string;
   photos?: any[];
+  place_id?: string;
 }
 
-async function searchGooglePlaces(query: string, apiKey: string, location?: string): Promise<PlaceResult | null> {
+interface SearchResultItem {
+  place_id: string;
+  name: string;
+  address: string;
+  latitude: number | null;
+  longitude: number | null;
+  rating: number | null;
+  total_reviews: number | null;
+  types: string[];
+  business_status: string | null;
+}
+
+// ─── Search: returns multiple results ───
+async function searchPlaces(query: string, apiKey: string, location?: string): Promise<SearchResultItem[]> {
   const searchQuery = location ? `${query} ${location}` : query;
   const searchUrl = `https://maps.googleapis.com/maps/api/place/textsearch/json?query=${encodeURIComponent(searchQuery)}&key=${apiKey}`;
-  const searchRes = await fetch(searchUrl);
-  const searchData = await searchRes.json();
-  if (!searchData.results?.length) return null;
-  const placeId = searchData.results[0].place_id;
-  const detailsUrl = `https://maps.googleapis.com/maps/api/place/details/json?place_id=${placeId}&fields=name,formatted_address,formatted_phone_number,international_phone_number,website,opening_hours,address_components,geometry,types,business_status,rating,user_ratings_total,url,photos&key=${apiKey}`;
-  const detailsRes = await fetch(detailsUrl);
-  const detailsData = await detailsRes.json();
-  return detailsData.result || null;
+  const res = await fetch(searchUrl);
+  const data = await res.json();
+  if (!data.results?.length) return [];
+  return data.results.slice(0, 10).map((r: any) => ({
+    place_id: r.place_id,
+    name: r.name || '',
+    address: r.formatted_address || '',
+    latitude: r.geometry?.location?.lat || null,
+    longitude: r.geometry?.location?.lng || null,
+    rating: r.rating || null,
+    total_reviews: r.user_ratings_total || null,
+    types: r.types || [],
+    business_status: r.business_status || null,
+  }));
 }
 
-async function searchWithFirecrawl(query: string, firecrawlKey: string, location?: string): Promise<{ websiteUrl: string | null; searchContent: string | null }> {
+// ─── Details: full info for one place ───
+async function getPlaceDetails(placeId: string, apiKey: string): Promise<PlaceResult | null> {
+  const url = `https://maps.googleapis.com/maps/api/place/details/json?place_id=${placeId}&fields=name,formatted_address,formatted_phone_number,international_phone_number,website,opening_hours,address_components,geometry,types,business_status,rating,user_ratings_total,url,photos&key=${apiKey}`;
+  const res = await fetch(url);
+  const data = await res.json();
+  return data.result || null;
+}
+
+// ─── Firecrawl search ───
+async function searchWithFirecrawl(query: string, firecrawlKey: string, location?: string): Promise<{ websiteUrl: string | null; searchContent: string | null; results: SearchResultItem[] }> {
   try {
     const searchQuery = location ? `${query} ${location}` : query;
-    console.log('Firecrawl web search:', searchQuery);
-    
     const res = await fetch('https://api.firecrawl.dev/v1/search', {
       method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${firecrawlKey}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        query: searchQuery,
-        limit: 5,
-        scrapeOptions: { formats: ['markdown'] },
-      }),
+      headers: { 'Authorization': `Bearer ${firecrawlKey}`, 'Content-Type': 'application/json' },
+      body: JSON.stringify({ query: searchQuery, limit: 5, scrapeOptions: { formats: ['markdown'] } }),
     });
-    
     const data = await res.json();
-    if (!data?.success || !data?.data?.length) {
-      console.log('Firecrawl search returned no results');
-      return { websiteUrl: null, searchContent: null };
-    }
+    if (!data?.success || !data?.data?.length) return { websiteUrl: null, searchContent: null, results: [] };
 
-    // Collect content from search results
-    const results = data.data.slice(0, 3);
-    const combinedContent = results.map((r: any) => {
-      const title = r.title || '';
-      const desc = r.description || '';
-      const md = r.markdown ? r.markdown.substring(0, 1500) : '';
-      return `## ${title}\nURL: ${r.url}\n${desc}\n${md}`;
-    }).join('\n\n---\n\n');
-
-    // First result URL as the main website
-    const mainUrl = results[0]?.url || null;
-    
-    return { websiteUrl: mainUrl, searchContent: combinedContent };
+    const items = data.data.slice(0, 5);
+    const combinedContent = items.map((r: any) => `## ${r.title || ''}\nURL: ${r.url}\n${r.description || ''}\n${(r.markdown || '').substring(0, 1500)}`).join('\n\n---\n\n');
+    const firecrawlResults: SearchResultItem[] = items.map((r: any, i: number) => ({
+      place_id: `fc_${i}_${Date.now()}`,
+      name: r.title || r.url || 'Unknown',
+      address: r.description || r.url || '',
+      latitude: null,
+      longitude: null,
+      rating: null,
+      total_reviews: null,
+      types: [],
+      business_status: null,
+    }));
+    return { websiteUrl: items[0]?.url || null, searchContent: combinedContent, results: firecrawlResults };
   } catch (e) {
     console.error('Firecrawl search error:', e);
-    return { websiteUrl: null, searchContent: null };
+    return { websiteUrl: null, searchContent: null, results: [] };
   }
 }
 
+// ─── Scrape website ───
 async function scrapeWebsite(url: string, firecrawlKey: string): Promise<string | null> {
   try {
     let formattedUrl = url.trim();
@@ -114,53 +132,27 @@ async function enrichWithAI(placeData: any, websiteContent: string | null, searc
   const apiKey = Deno.env.get('LOVABLE_API_KEY');
   if (!apiKey) { console.error('LOVABLE_API_KEY not set'); return placeData; }
 
-  const hasRealData = Object.keys(placeData).length > 0 || websiteContent || searchContent;
-
   const prompt = `You are a bilingual data enrichment assistant (Arabic & English). Given raw business data and web search results, produce a clean, structured JSON object with REAL data only. 
 
 IMPORTANT RULES:
 - Only include data you can verify from the provided sources
 - If a field has no real data, set it to null (NOT placeholder text)
 - The original search query was: "${originalQuery}"
-- Extract real business information from the search results and website content
 
 ${Object.keys(placeData).length > 0 ? `RAW PLACE DATA:\n${JSON.stringify(placeData, null, 2)}` : ''}
-
 ${searchContent ? `WEB SEARCH RESULTS:\n${searchContent.substring(0, 4000)}` : ''}
-
 ${websiteContent ? `WEBSITE CONTENT (first 3000 chars):\n${websiteContent.substring(0, 3000)}` : ''}
 
-Return ONLY valid JSON with this exact structure (no markdown, no comments). Use null for unknown fields, NOT placeholder text:
+Return ONLY valid JSON with this exact structure. Use null for unknown fields:
 {
-  "name_en": "English business name or null",
-  "name_ar": "Arabic business name or null",
-  "description_en": "Real description from sources or null",
-  "description_ar": "Real Arabic description or null",
-  "city_en": null,
-  "city_ar": null,
-  "neighborhood_en": null,
-  "neighborhood_ar": null,
-  "street_en": null,
-  "street_ar": null,
-  "full_address_en": null,
-  "full_address_ar": null,
-  "postal_code": null,
-  "country_en": null,
-  "country_ar": null,
-  "country_code": null,
-  "phone": null,
-  "phone_secondary": null,
-  "email": null,
-  "website": null,
-  "business_hours": [],
-  "business_type_en": null,
-  "business_type_ar": null,
-  "rating": null,
-  "total_reviews": null,
-  "latitude": null,
-  "longitude": null,
-  "google_maps_url": null,
-  "national_id": null,
+  "name_en": null, "name_ar": null, "description_en": null, "description_ar": null,
+  "city_en": null, "city_ar": null, "neighborhood_en": null, "neighborhood_ar": null,
+  "street_en": null, "street_ar": null, "full_address_en": null, "full_address_ar": null,
+  "postal_code": null, "country_en": null, "country_ar": null, "country_code": null,
+  "phone": null, "phone_secondary": null, "email": null, "website": null,
+  "business_hours": [], "business_type_en": null, "business_type_ar": null,
+  "rating": null, "total_reviews": null, "latitude": null, "longitude": null,
+  "google_maps_url": null, "national_id": null,
   "social_media": { "instagram": null, "twitter": null, "facebook": null, "linkedin": null, "tiktok": null }
 }`;
 
@@ -178,113 +170,127 @@ Return ONLY valid JSON with this exact structure (no markdown, no comments). Use
   return placeData;
 }
 
+// ─── Auth helper ───
+async function authenticateAdmin(req: Request) {
+  const authHeader = req.headers.get("Authorization");
+  if (!authHeader?.startsWith("Bearer ")) throw new Error("Unauthorized");
+  const supabaseClient = createClient(Deno.env.get("SUPABASE_URL")!, Deno.env.get("SUPABASE_ANON_KEY")!, { global: { headers: { Authorization: authHeader } } });
+  const { data: { user }, error } = await supabaseClient.auth.getUser();
+  if (error || !user) throw new Error("Unauthorized");
+  const { data: roles } = await supabaseClient.from('user_roles').select('role').eq('user_id', user.id).eq('role', 'supervisor');
+  if (!roles?.length) throw new Error("Admin access required");
+  return supabaseClient;
+}
+
 Deno.serve(async (req) => {
   if (req.method === 'OPTIONS') return new Response(null, { headers: corsHeaders });
 
   try {
-    const authHeader = req.headers.get("Authorization");
-    if (!authHeader?.startsWith("Bearer ")) {
-      return new Response(JSON.stringify({ success: false, error: "Unauthorized" }), { status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
-    }
+    await authenticateAdmin(req);
+    const body = await req.json();
+    const { query, location, website_url, mode = 'search', place_id } = body;
 
-    const supabaseClient = createClient(Deno.env.get("SUPABASE_URL")!, Deno.env.get("SUPABASE_ANON_KEY")!, { global: { headers: { Authorization: authHeader } } });
-    const { data: { user }, error: authError } = await supabaseClient.auth.getUser();
-    if (authError || !user) {
-      return new Response(JSON.stringify({ success: false, error: "Unauthorized" }), { status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
-    }
-
-    const { data: roles } = await supabaseClient.from('user_roles').select('role').eq('user_id', user.id).eq('role', 'supervisor');
-    if (!roles?.length) {
-      return new Response(JSON.stringify({ success: false, error: "Admin access required" }), { status: 403, headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
-    }
-
-    const { query, location, website_url } = await req.json();
-    if (!query) {
+    if (!query && mode !== 'details') {
       return new Response(JSON.stringify({ success: false, error: "Search query is required" }), { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
     }
 
-    let placeData: any = {};
-    let websiteContent: string | null = null;
-    let searchContent: string | null = null;
-    const sourcesUsed = { google_places: false, firecrawl_search: false, website: false, ai: true };
-
-    // Get configs
     const adminClient = createClient(Deno.env.get("SUPABASE_URL")!, Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!);
     const { data: placesConfig } = await adminClient.from('integration_settings').select('config, is_active').eq('integration_type', 'google_places').single();
     const firecrawlKey = Deno.env.get('FIRECRAWL_API_KEY');
-
     const hasGooglePlaces = placesConfig?.is_active && (placesConfig.config as any)?.api_key;
+    const googleApiKey = hasGooglePlaces ? (placesConfig!.config as any).api_key : null;
 
-    // Run Google Places and Firecrawl search in parallel
-    const googlePlacesPromise = (async () => {
-      if (!hasGooglePlaces) return {};
-      console.log('Searching Google Places for:', query);
-      const place = await searchGooglePlaces(query, (placesConfig!.config as any).api_key, location);
-      if (place) {
-        sourcesUsed.google_places = true;
-        const addr = extractAddressComponents(place.address_components);
-        return {
-          name_en: place.name,
-          formatted_address: place.formatted_address,
-          phone: place.international_phone_number || place.formatted_phone_number,
-          website: place.website,
-          business_hours_raw: place.opening_hours?.weekday_text,
-          business_hours_periods: place.opening_hours?.periods,
-          ...addr,
-          latitude: place.geometry?.location?.lat,
-          longitude: place.geometry?.location?.lng,
-          rating: place.rating,
-          total_reviews: place.user_ratings_total,
-          google_maps_url: place.url,
-          business_status: place.business_status,
-          types: place.types,
-        };
+    // ═══════ MODE: SEARCH — return list of results ═══════
+    if (mode === 'search') {
+      let results: SearchResultItem[] = [];
+      const sourcesUsed = { google_places: false, firecrawl_search: false };
+
+      const googlePromise = googleApiKey
+        ? searchPlaces(query, googleApiKey, location).then(r => { if (r.length) { sourcesUsed.google_places = true; } return r; })
+        : Promise.resolve([]);
+
+      const firecrawlPromise = firecrawlKey
+        ? searchWithFirecrawl(query, firecrawlKey, location).then(r => { if (r.results.length) { sourcesUsed.firecrawl_search = true; } return r; })
+        : Promise.resolve({ results: [] as SearchResultItem[], websiteUrl: null, searchContent: null });
+
+      const [googleResults, firecrawlResult] = await Promise.all([googlePromise, firecrawlPromise]);
+
+      // Prefer Google results; add Firecrawl results that aren't duplicates
+      results = googleResults;
+      if (!results.length) {
+        results = firecrawlResult.results;
       }
-      return {};
-    })();
 
-    // Firecrawl web search — always run for additional data
-    const firecrawlSearchPromise = (async () => {
-      if (!firecrawlKey) return { websiteUrl: null, searchContent: null };
-      return await searchWithFirecrawl(query, firecrawlKey, location);
-    })();
+      console.log(`Search returned ${results.length} results (Google: ${sourcesUsed.google_places}, Firecrawl: ${sourcesUsed.firecrawl_search})`);
 
-    const [googleResult, firecrawlSearchResult] = await Promise.all([googlePlacesPromise, firecrawlSearchPromise]);
-    placeData = googleResult;
-
-    if (firecrawlSearchResult.searchContent) {
-      searchContent = firecrawlSearchResult.searchContent;
-      sourcesUsed.firecrawl_search = true;
+      return new Response(
+        JSON.stringify({ success: true, results, sources_used: sourcesUsed }),
+        { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
     }
 
-    // Scrape the website (from Google, user input, or Firecrawl search)
-    const targetUrl = website_url || placeData.website || firecrawlSearchResult.websiteUrl;
-    if (firecrawlKey && targetUrl) {
-      console.log('Scraping website:', targetUrl);
-      websiteContent = await scrapeWebsite(targetUrl, firecrawlKey);
-      if (websiteContent) sourcesUsed.website = true;
+    // ═══════ MODE: DETAILS — full data for one place ═══════
+    if (mode === 'details') {
+      let placeData: any = {};
+      let websiteContent: string | null = null;
+      let searchContent: string | null = null;
+      const sourcesUsed = { google_places: false, firecrawl_search: false, website: false, ai: true };
+
+      // If we have a Google place_id, fetch details directly
+      if (place_id && googleApiKey && !place_id.startsWith('fc_')) {
+        console.log('Fetching Google Place details for:', place_id);
+        const place = await getPlaceDetails(place_id, googleApiKey);
+        if (place) {
+          sourcesUsed.google_places = true;
+          const addr = extractAddressComponents(place.address_components);
+          placeData = {
+            name_en: place.name, formatted_address: place.formatted_address,
+            phone: place.international_phone_number || place.formatted_phone_number,
+            website: place.website, business_hours_raw: place.opening_hours?.weekday_text,
+            ...addr,
+            latitude: place.geometry?.location?.lat, longitude: place.geometry?.location?.lng,
+            rating: place.rating, total_reviews: place.user_ratings_total,
+            google_maps_url: place.url, business_status: place.business_status, types: place.types,
+          };
+        }
+      }
+
+      // Web search for supplementary data
+      if (firecrawlKey && query) {
+        const fcResult = await searchWithFirecrawl(query, firecrawlKey, location);
+        if (fcResult.searchContent) { searchContent = fcResult.searchContent; sourcesUsed.firecrawl_search = true; }
+        const targetUrl = website_url || placeData.website || fcResult.websiteUrl;
+        if (targetUrl) {
+          websiteContent = await scrapeWebsite(targetUrl, firecrawlKey);
+          if (websiteContent) sourcesUsed.website = true;
+        }
+      }
+
+      // AI Enrichment
+      console.log('Enriching with AI...', { google: sourcesUsed.google_places, search: sourcesUsed.firecrawl_search, website: sourcesUsed.website });
+      const enrichedData = await enrichWithAI(placeData, websiteContent, searchContent, query || '');
+
+      // Preserve precise Google fields
+      if (placeData.latitude) enrichedData.latitude = placeData.latitude;
+      if (placeData.longitude) enrichedData.longitude = placeData.longitude;
+      if (placeData.rating) enrichedData.rating = placeData.rating;
+      if (placeData.total_reviews) enrichedData.total_reviews = placeData.total_reviews;
+      if (placeData.google_maps_url) enrichedData.google_maps_url = placeData.google_maps_url;
+
+      return new Response(
+        JSON.stringify({ success: true, data: enrichedData, sources_used: sourcesUsed }),
+        { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
     }
 
-    // AI Enrichment with all collected data
-    console.log('Enriching with AI...', { google: sourcesUsed.google_places, search: sourcesUsed.firecrawl_search, website: sourcesUsed.website });
-    const enrichedData = await enrichWithAI(placeData, websiteContent, searchContent, query);
-
-    // Preserve precise Google fields
-    if (placeData.latitude) enrichedData.latitude = placeData.latitude;
-    if (placeData.longitude) enrichedData.longitude = placeData.longitude;
-    if (placeData.rating) enrichedData.rating = placeData.rating;
-    if (placeData.total_reviews) enrichedData.total_reviews = placeData.total_reviews;
-    if (placeData.google_maps_url) enrichedData.google_maps_url = placeData.google_maps_url;
-
-    return new Response(
-      JSON.stringify({ success: true, data: enrichedData, sources_used: sourcesUsed }),
-      { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-    );
+    return new Response(JSON.stringify({ success: false, error: "Invalid mode" }), { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
   } catch (error) {
     console.error('Smart import error:', error);
+    const msg = (error as Error).message;
+    const status = msg === "Unauthorized" ? 401 : msg === "Admin access required" ? 403 : 500;
     return new Response(
-      JSON.stringify({ success: false, error: 'Import service error: ' + (error as Error).message }),
-      { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      JSON.stringify({ success: false, error: msg }),
+      { status, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     );
   }
 });
