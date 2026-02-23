@@ -5,7 +5,10 @@ const corsHeaders = {
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version',
 };
 
-interface SearchResultItem {
+const jsonHeaders = { ...corsHeaders, 'Content-Type': 'application/json' };
+
+// ─── Types ───
+interface SearchResult {
   id: string;
   name: string;
   description: string;
@@ -14,121 +17,44 @@ interface SearchResultItem {
   longitude: number | null;
   rating: number | null;
   total_reviews: number | null;
+  google_maps_url: string | null;
 }
 
-// ─── Auth helper ───
+// ─── Auth ───
 async function authenticateAdmin(req: Request) {
   const authHeader = req.headers.get("Authorization");
   if (!authHeader?.startsWith("Bearer ")) throw new Error("Unauthorized");
-  const supabaseClient = createClient(
+  const client = createClient(
     Deno.env.get("SUPABASE_URL")!,
     Deno.env.get("SUPABASE_ANON_KEY")!,
     { global: { headers: { Authorization: authHeader } } }
   );
-  const { data: { user }, error } = await supabaseClient.auth.getUser();
+  const { data: { user }, error } = await client.auth.getUser();
   if (error || !user) throw new Error("Unauthorized");
-  const { data: roles } = await supabaseClient.from('user_roles').select('role').eq('user_id', user.id).eq('role', 'supervisor');
+  const { data: roles } = await client.from('user_roles').select('role').eq('user_id', user.id).eq('role', 'supervisor');
   if (!roles?.length) throw new Error("Admin access required");
-  return supabaseClient;
+  return client;
 }
 
-// ─── MODE: SEARCH via Firecrawl ───
-async function handleSearch(query: string, firecrawlKey: string, location?: string): Promise<SearchResultItem[]> {
-  const searchQuery = location ? `${query} ${location}` : query;
-
-  console.log('[SmartImport] Firecrawl search:', searchQuery);
+// ─── Firecrawl helpers ───
+async function firecrawlSearch(query: string, apiKey: string, limit = 10): Promise<any[]> {
   const res = await fetch('https://api.firecrawl.dev/v1/search', {
     method: 'POST',
-    headers: { 'Authorization': `Bearer ${firecrawlKey}`, 'Content-Type': 'application/json' },
-    body: JSON.stringify({ query: searchQuery, limit: 10 }),
+    headers: { 'Authorization': `Bearer ${apiKey}`, 'Content-Type': 'application/json' },
+    body: JSON.stringify({ query, limit }),
   });
   const data = await res.json();
-  console.log('[SmartImport] Firecrawl search status:', res.status, 'results:', data?.data?.length || 0);
-
-  if (!data?.success || !data?.data?.length) return [];
-
-  return data.data.slice(0, 10).map((item: any, i: number) => {
-    // Extract coords from Google Maps URLs if present
-    const coordMatch = item.url?.match(/@(-?\d+\.\d+),(-?\d+\.\d+)/);
-    const ratingMatch = (item.description || '').match(/(\d\.\d)\s*(?:star|⭐|rating)/i);
-    const reviewMatch = (item.description || '').match(/(\d[\d,]*)\s*(?:review|تقييم)/i);
-
-    return {
-      id: `fc_${i}_${Date.now()}`,
-      name: (item.title || '').replace(/\s*[-–|]\s*Google\s*Maps?$/i, '').trim() || item.url || 'Unknown',
-      description: item.description || '',
-      url: item.url || '',
-      latitude: coordMatch ? parseFloat(coordMatch[1]) : null,
-      longitude: coordMatch ? parseFloat(coordMatch[2]) : null,
-      rating: ratingMatch ? parseFloat(ratingMatch[1]) : null,
-      total_reviews: reviewMatch ? parseInt(reviewMatch[1].replace(/,/g, '')) : null,
-    };
-  });
+  if (!data?.success) return [];
+  return data.data || [];
 }
 
-// ─── MODE: DETAILS — scrape + AI enrich ───
-async function handleDetails(
-  query: string,
-  firecrawlKey: string,
-  resultUrl?: string,
-  websiteUrl?: string,
-  location?: string,
-  latitude?: number,
-  longitude?: number,
-): Promise<{ data: any; sources_used: Record<string, boolean> }> {
-  const sourcesUsed = { firecrawl_scrape: false, web_search: false, website: false, ai: true };
-  let scrapedContent: string | null = null;
-  let searchContent: string | null = null;
-  let websiteContent: string | null = null;
-
-  // 1. Scrape the result URL (could be a Google Maps page, a business page, etc.)
-  if (resultUrl) {
-    console.log('[SmartImport] Scraping result URL:', resultUrl);
-    scrapedContent = await scrapeUrl(resultUrl, firecrawlKey);
-    if (scrapedContent) sourcesUsed.firecrawl_scrape = true;
-  }
-
-  // 2. Web search for more context
-  const searchQuery = location ? `${query} ${location}` : query;
-  console.log('[SmartImport] Web search for details:', searchQuery);
-  const searchRes = await fetch('https://api.firecrawl.dev/v1/search', {
-    method: 'POST',
-    headers: { 'Authorization': `Bearer ${firecrawlKey}`, 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      query: searchQuery,
-      limit: 5,
-      scrapeOptions: { formats: ['markdown'] },
-    }),
-  });
-  const searchData = await searchRes.json();
-  if (searchData?.success && searchData?.data?.length) {
-    searchContent = searchData.data.slice(0, 5).map((r: any) =>
-      `## ${r.title || ''}\nURL: ${r.url}\n${r.description || ''}\n${(r.markdown || '').substring(0, 2000)}`
-    ).join('\n\n---\n\n');
-    sourcesUsed.web_search = true;
-  }
-
-  // 3. Scrape a dedicated website if provided
-  if (websiteUrl) {
-    console.log('[SmartImport] Scraping website:', websiteUrl);
-    websiteContent = await scrapeUrl(websiteUrl, firecrawlKey);
-    if (websiteContent) sourcesUsed.website = true;
-  }
-
-  // 4. AI enrichment
-  console.log('[SmartImport] AI enrichment. Sources:', sourcesUsed);
-  const enrichedData = await enrichWithAI(scrapedContent, searchContent, websiteContent, query, latitude, longitude);
-
-  return { data: enrichedData, sources_used: sourcesUsed };
-}
-
-async function scrapeUrl(url: string, firecrawlKey: string): Promise<string | null> {
+async function firecrawlScrape(url: string, apiKey: string): Promise<string | null> {
   try {
     let formatted = url.trim();
     if (!formatted.startsWith('http')) formatted = `https://${formatted}`;
     const res = await fetch('https://api.firecrawl.dev/v1/scrape', {
       method: 'POST',
-      headers: { 'Authorization': `Bearer ${firecrawlKey}`, 'Content-Type': 'application/json' },
+      headers: { 'Authorization': `Bearer ${apiKey}`, 'Content-Type': 'application/json' },
       body: JSON.stringify({ url: formatted, formats: ['markdown'], onlyMainContent: true }),
     });
     const data = await res.json();
@@ -139,30 +65,121 @@ async function scrapeUrl(url: string, firecrawlKey: string): Promise<string | nu
   }
 }
 
+// ─── Parse search results ───
+function parseSearchResults(raw: any[]): SearchResult[] {
+  return raw.slice(0, 10).map((item: any, i: number) => {
+    const url = item.url || '';
+    const title = (item.title || '').replace(/\s*[-–|]\s*Google\s*Maps?$/i, '').trim();
+    const desc = item.description || '';
+
+    // Extract coordinates from Google Maps URLs
+    const coordMatch = url.match(/@(-?\d+\.\d+),(-?\d+\.\d+)/);
+    const ratingMatch = desc.match(/(\d\.\d)\s*(?:star|⭐|rating|نجوم)/i);
+    const reviewMatch = desc.match(/(\d[\d,]*)\s*(?:review|تقييم)/i);
+
+    const isGoogleMaps = /google\.\w+\/maps/i.test(url);
+
+    return {
+      id: `sr_${i}_${Date.now()}`,
+      name: title || url || 'Unknown',
+      description: desc,
+      url,
+      latitude: coordMatch ? parseFloat(coordMatch[1]) : null,
+      longitude: coordMatch ? parseFloat(coordMatch[2]) : null,
+      rating: ratingMatch ? parseFloat(ratingMatch[1]) : null,
+      total_reviews: reviewMatch ? parseInt(reviewMatch[1].replace(/,/g, '')) : null,
+      google_maps_url: isGoogleMaps ? url : null,
+    };
+  });
+}
+
+// ─── MODE: SEARCH ───
+async function handleSearch(query: string, apiKey: string, location?: string): Promise<SearchResult[]> {
+  const searchQuery = location ? `${query} ${location}` : query;
+  console.log('[SmartImport] Search:', searchQuery);
+
+  // Run two searches in parallel: general + Google Maps specific
+  const [generalResults, mapsResults] = await Promise.all([
+    firecrawlSearch(searchQuery, apiKey, 5),
+    firecrawlSearch(`${searchQuery} site:google.com/maps`, apiKey, 5),
+  ]);
+
+  // Merge: maps results first, then general, deduplicate by URL
+  const combined = [...mapsResults, ...generalResults];
+  const seen = new Set<string>();
+  const unique = combined.filter(item => {
+    const url = item.url || '';
+    if (seen.has(url)) return false;
+    seen.add(url);
+    return true;
+  });
+
+  return parseSearchResults(unique);
+}
+
+// ─── MODE: DETAILS ───
+async function handleDetails(
+  query: string,
+  apiKey: string,
+  resultUrl?: string,
+  websiteUrl?: string,
+  location?: string,
+  latitude?: number,
+  longitude?: number,
+): Promise<{ data: any; sources_used: Record<string, boolean> }> {
+  const sources = { scrape: false, web_search: false, website: false, ai: true };
+
+  // Run scrape + search + website in parallel
+  const scrapePromise = resultUrl ? firecrawlScrape(resultUrl, apiKey) : Promise.resolve(null);
+  
+  const searchQuery = location ? `${query} ${location} contact address phone` : `${query} contact address phone`;
+  const searchPromise = firecrawlSearch(searchQuery, apiKey, 5);
+  
+  const websitePromise = websiteUrl ? firecrawlScrape(websiteUrl, apiKey) : Promise.resolve(null);
+
+  const [scraped, searchRaw, websiteContent] = await Promise.all([scrapePromise, searchPromise, websitePromise]);
+
+  if (scraped) sources.scrape = true;
+  if (websiteContent) sources.website = true;
+
+  let searchContent: string | null = null;
+  if (searchRaw.length) {
+    sources.web_search = true;
+    searchContent = searchRaw.slice(0, 5).map((r: any) =>
+      `## ${r.title || ''}\nURL: ${r.url}\n${r.description || ''}\n${(r.markdown || '').substring(0, 2000)}`
+    ).join('\n\n---\n\n');
+  }
+
+  console.log('[SmartImport] Sources:', sources);
+  const enriched = await enrichWithAI(scraped, searchContent, websiteContent, query, latitude, longitude);
+  return { data: enriched, sources_used: sources };
+}
+
+// ─── AI Enrichment ───
 async function enrichWithAI(
-  scrapedContent: string | null,
-  searchContent: string | null,
-  websiteContent: string | null,
-  originalQuery: string,
-  latitude?: number | null,
-  longitude?: number | null,
+  scraped: string | null,
+  search: string | null,
+  website: string | null,
+  query: string,
+  lat?: number | null,
+  lng?: number | null,
 ): Promise<any> {
   const apiKey = Deno.env.get('LOVABLE_API_KEY');
   if (!apiKey) { console.error('LOVABLE_API_KEY not set'); return {}; }
 
   const prompt = `You are a bilingual data enrichment assistant (Arabic & English). Given raw scraped data and web search results, produce a clean, structured JSON object with REAL data only.
 
-IMPORTANT RULES:
+RULES:
 - Only include data you can verify from the provided sources
-- If a field has no real data, set it to null (NOT placeholder text)
-- The original search query was: "${originalQuery}"
-${latitude && longitude ? `- Known coordinates: ${latitude}, ${longitude}` : ''}
+- If a field has no real data, set it to null
+- The original search query was: "${query}"
+${lat && lng ? `- Known coordinates: ${lat}, ${lng}` : ''}
 
-${scrapedContent ? `SCRAPED CONTENT:\n${scrapedContent.substring(0, 4000)}` : ''}
-${searchContent ? `WEB SEARCH RESULTS:\n${searchContent.substring(0, 4000)}` : ''}
-${websiteContent ? `WEBSITE CONTENT:\n${websiteContent.substring(0, 3000)}` : ''}
+${scraped ? `SCRAPED CONTENT:\n${scraped.substring(0, 4000)}` : ''}
+${search ? `WEB SEARCH RESULTS:\n${search.substring(0, 4000)}` : ''}
+${website ? `WEBSITE CONTENT:\n${website.substring(0, 3000)}` : ''}
 
-Return ONLY valid JSON with this exact structure. Use null for unknown fields:
+Return ONLY valid JSON:
 {
   "name_en": null, "name_ar": null, "description_en": null, "description_ar": null,
   "city_en": null, "city_ar": null, "neighborhood_en": null, "neighborhood_ar": null,
@@ -170,7 +187,8 @@ Return ONLY valid JSON with this exact structure. Use null for unknown fields:
   "postal_code": null, "country_en": null, "country_ar": null, "country_code": null,
   "phone": null, "phone_secondary": null, "email": null, "website": null,
   "business_hours": [], "business_type_en": null, "business_type_ar": null,
-  "rating": null, "total_reviews": null, "latitude": ${latitude || 'null'}, "longitude": ${longitude || 'null'},
+  "rating": ${lat ? 'null' : 'null'}, "total_reviews": null,
+  "latitude": ${lat || 'null'}, "longitude": ${lng || 'null'},
   "google_maps_url": null, "national_id": null,
   "social_media": { "instagram": null, "twitter": null, "facebook": null, "linkedin": null, "tiktok": null }
 }`;
@@ -202,37 +220,29 @@ Deno.serve(async (req) => {
     if (!firecrawlKey) {
       return new Response(
         JSON.stringify({ success: false, error: "Firecrawl is not configured. Please connect the Firecrawl connector." }),
-        { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+        { status: 400, headers: jsonHeaders }
       );
     }
 
+    if (!query?.trim()) {
+      return new Response(JSON.stringify({ success: false, error: "Query is required" }), { status: 400, headers: jsonHeaders });
+    }
+
     if (mode === 'search') {
-      if (!query) {
-        return new Response(JSON.stringify({ success: false, error: "Search query is required" }),
-          { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
-      }
-      const results = await handleSearch(query, firecrawlKey, location);
-      return new Response(JSON.stringify({ success: true, results }),
-        { headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
+      const results = await handleSearch(query.trim(), firecrawlKey, location?.trim());
+      return new Response(JSON.stringify({ success: true, results }), { headers: jsonHeaders });
     }
 
     if (mode === 'details') {
-      if (!query) {
-        return new Response(JSON.stringify({ success: false, error: "Query is required for details" }),
-          { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
-      }
-      const result = await handleDetails(query, firecrawlKey, result_url, website_url, location, latitude, longitude);
-      return new Response(JSON.stringify({ success: true, ...result }),
-        { headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
+      const result = await handleDetails(query.trim(), firecrawlKey, result_url, website_url, location?.trim(), latitude, longitude);
+      return new Response(JSON.stringify({ success: true, ...result }), { headers: jsonHeaders });
     }
 
-    return new Response(JSON.stringify({ success: false, error: "Invalid mode" }),
-      { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
+    return new Response(JSON.stringify({ success: false, error: "Invalid mode. Use 'search' or 'details'." }), { status: 400, headers: jsonHeaders });
   } catch (error) {
     console.error('[SmartImport] Error:', error);
     const msg = (error as Error).message;
     const status = msg === "Unauthorized" ? 401 : msg === "Admin access required" ? 403 : 500;
-    return new Response(JSON.stringify({ success: false, error: msg }),
-      { status, headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
+    return new Response(JSON.stringify({ success: false, error: msg }), { status, headers: jsonHeaders });
   }
 });
