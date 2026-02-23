@@ -3,8 +3,10 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useAuth } from "@/contexts/AuthContext";
+import { useAllCountries } from "@/hooks/useCountries";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
+import { SEOHead } from "@/components/SEOHead";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
@@ -12,6 +14,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Skeleton } from "@/components/ui/skeleton";
 import { toast } from "@/hooks/use-toast";
 import { toEnglishDigits } from "@/lib/formatNumber";
+import { countryFlag } from "@/lib/countryFlag";
 import {
   Building2, MapPin, Globe, Mail, Phone, Users, ShieldCheck,
   Bell, BellOff, ArrowLeft, ExternalLink, Share2, Calendar, Award, Target,
@@ -31,6 +34,8 @@ import { EntityStatsStrip } from "@/components/entities/EntityStatsStrip";
 import { EntitySocialLinks } from "@/components/entities/EntitySocialLinks";
 import { EntityOverviewCard } from "@/components/entities/EntityOverviewCard";
 import { EntityNotificationsCard } from "@/components/entities/EntityNotificationsCard";
+import { EntityMapEmbed } from "@/components/entities/EntityMapEmbed";
+import { EntityContactCard } from "@/components/entities/EntityContactCard";
 import entitiesHero from "@/assets/entities-hero.jpg";
 import type { Database } from "@/integrations/supabase/types";
 
@@ -63,6 +68,16 @@ export default function EntityDetail() {
   const { user } = useAuth();
   const queryClient = useQueryClient();
   const isAr = language === "ar";
+  const { data: countries = [] } = useAllCountries();
+
+  // Helper to get localized country name
+  const getCountryName = (nameOrCode: string | null) => {
+    if (!nameOrCode) return null;
+    // Try to find by code or by name
+    const c = countries.find((ct) => ct.code === nameOrCode || ct.name === nameOrCode || ct.name_ar === nameOrCode);
+    if (c) return isAr ? (c.name_ar || c.name) : c.name;
+    return nameOrCode;
+  };
 
   const { data: entity, isLoading } = useQuery({
     queryKey: ["entity", slug],
@@ -109,7 +124,6 @@ export default function EntityDetail() {
     staleTime: 1000 * 60 * 2,
   });
 
-  // Batch counts for stats strip
   const { data: counts } = useQuery({
     queryKey: ["entity-counts", entity?.id],
     queryFn: async () => {
@@ -203,12 +217,17 @@ export default function EntityDetail() {
     );
   }
 
+  // === Bilingual field resolution ===
   const name = isAr && entity.name_ar ? entity.name_ar : entity.name;
+  const altName = isAr ? entity.name : entity.name_ar;
   const description = isAr && entity.description_ar ? entity.description_ar : entity.description;
   const mission = isAr && entity.mission_ar ? entity.mission_ar : entity.mission;
   const address = isAr && entity.address_ar ? entity.address_ar : entity.address;
+  const abbreviation = isAr && entity.abbreviation_ar ? entity.abbreviation_ar : entity.abbreviation;
   const presidentName = isAr && entity.president_name_ar ? entity.president_name_ar : entity.president_name;
   const secretaryName = isAr && entity.secretary_name_ar ? entity.secretary_name_ar : entity.secretary_name;
+  const localizedCity = getCountryName(entity.city) || entity.city;
+  const localizedCountry = getCountryName(entity.country) || entity.country;
   const tLabel = typeLabels[entity.type as EntityType];
   const sLabel = scopeLabels[entity.scope as EntityScope];
   const services = (entity.services as string[]) || [];
@@ -217,8 +236,53 @@ export default function EntityDetail() {
   const isEducational = educationalTypes.includes(entity.type as EntityType);
   const BackIcon = isAr ? ArrowRight : ArrowLeft;
 
+  // SEO
+  const seoTitle = name;
+  const seoDescription = description
+    ? description.substring(0, 155)
+    : `${isAr ? tLabel.ar : tLabel.en} - ${[localizedCity, localizedCountry].filter(Boolean).join(", ")}`;
+  const canonicalUrl = `${window.location.origin}/entities/${entity.slug}`;
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": isEducational ? "EducationalOrganization" : "Organization",
+    name: entity.name,
+    ...(entity.name_ar && { alternateName: entity.name_ar }),
+    description: entity.description || undefined,
+    url: entity.website || canonicalUrl,
+    ...(entity.logo_url && { logo: entity.logo_url }),
+    ...(entity.email && { email: entity.email }),
+    ...(entity.phone && { telephone: entity.phone }),
+    ...(entity.founded_year && { foundingDate: String(entity.founded_year) }),
+    ...(entity.country && {
+      address: {
+        "@type": "PostalAddress",
+        addressLocality: entity.city || undefined,
+        addressCountry: entity.country,
+        streetAddress: entity.address || undefined,
+        postalCode: entity.postal_code || undefined,
+      },
+    }),
+    ...(entity.latitude && entity.longitude && {
+      geo: {
+        "@type": "GeoCoordinates",
+        latitude: entity.latitude,
+        longitude: entity.longitude,
+      },
+    }),
+  };
+
   return (
     <div className="flex min-h-screen flex-col bg-background">
+      <SEOHead
+        title={seoTitle}
+        description={seoDescription}
+        ogImage={entity.cover_image_url || entity.logo_url || undefined}
+        ogType="profile"
+        canonical={canonicalUrl}
+        lang={language}
+        jsonLd={jsonLd}
+        keywords={[isAr ? tLabel.ar : tLabel.en, localizedCity, localizedCountry, entity.name, entity.name_ar].filter(Boolean).join(", ")}
+      />
       <Header />
 
       {/* Hero Cover Banner */}
@@ -233,12 +297,10 @@ export default function EntityDetail() {
           <div className="absolute inset-0 bg-gradient-to-r from-background/50 to-transparent" />
         </div>
 
-        {/* Animated orbs */}
         <div className="absolute -top-20 start-1/4 h-48 w-48 rounded-full bg-primary/10 blur-[80px] animate-pulse pointer-events-none" />
         <div className="absolute -top-16 end-1/3 h-40 w-40 rounded-full bg-accent/10 blur-[60px] animate-pulse [animation-delay:1s] pointer-events-none" />
 
         <div className="container relative py-12 md:py-16">
-          {/* Back button */}
           <Button variant="ghost" size="sm" className="mb-6 -ms-2 backdrop-blur-sm bg-background/30 hover:bg-background/50" asChild>
             <Link to="/entities">
               <BackIcon className="me-1.5 h-4 w-4" />
@@ -247,7 +309,6 @@ export default function EntityDetail() {
           </Button>
 
           <div className="flex items-start gap-5">
-            {/* Logo */}
             {entity.logo_url ? (
               <img src={entity.logo_url} alt={name} className="h-20 w-20 rounded-2xl border-2 border-background/50 object-cover shadow-xl ring-1 ring-border/10 backdrop-blur-sm md:h-24 md:w-24" />
             ) : (
@@ -272,20 +333,23 @@ export default function EntityDetail() {
                 )}
               </div>
               <h1 className="font-serif text-2xl font-bold md:text-3xl lg:text-4xl">{name}</h1>
-              {entity.abbreviation && (
-                <p className="text-muted-foreground mt-0.5">({entity.abbreviation})</p>
+              {altName && altName !== name && (
+                <p className="text-muted-foreground/60 mt-0.5 font-serif text-lg italic">{altName}</p>
+              )}
+              {abbreviation && (
+                <p className="text-muted-foreground mt-0.5">({abbreviation})</p>
               )}
               <div className="mt-1 flex items-center gap-3">
-                <p className="text-sm text-muted-foreground/70 font-mono">#{entity.entity_number}</p>
-                {entity.country && (
+                <p className="text-sm text-muted-foreground/70 font-mono" dir="ltr">#{entity.entity_number}</p>
+                {(localizedCity || localizedCountry) && (
                   <span className="text-sm text-muted-foreground/70 flex items-center gap-1">
                     <MapPin className="h-3 w-3" />
-                    {entity.city ? `${entity.city}, ` : ""}{entity.country}
+                    {entity.country && countryFlag(entity.country)}{" "}
+                    {localizedCity ? `${localizedCity}, ` : ""}{localizedCountry}
                   </span>
                 )}
               </div>
 
-              {/* Stats Strip */}
               <EntityStatsStrip
                 followerCount={followerCount}
                 memberCount={entity.member_count}
@@ -393,7 +457,7 @@ export default function EntityDetail() {
               </section>
             )}
 
-            {/* Entity Sub-sections Tabs */}
+            {/* Tabs */}
             <Tabs defaultValue="news" className="mt-8">
               <TabsList className="flex-wrap bg-muted/50 p-1 gap-0.5">
                 <TabsTrigger value="news" className="gap-1.5 text-xs sm:text-sm">
@@ -482,57 +546,33 @@ export default function EntityDetail() {
             </Card>
 
             {/* Overview Card */}
-            <EntityOverviewCard
-              entity={entity}
-              followerCount={followerCount}
-              counts={counts}
+            <EntityOverviewCard entity={entity} followerCount={followerCount} counts={counts} />
+
+            {/* Map */}
+            <EntityMapEmbed
+              latitude={entity.latitude}
+              longitude={entity.longitude}
+              name={entity.name}
+              address={address}
+              city={localizedCity}
+              country={localizedCountry}
+              isAr={isAr}
             />
 
             {/* Recent Activity */}
-            <EntityNotificationsCard entityId={entity.id} entityName={entity.name} />
+            <EntityNotificationsCard entityId={entity.id} entityName={name} />
 
             {/* Contact Info */}
-            <Card className="overflow-hidden">
-              <div className="border-b bg-muted/30 px-4 py-3">
-                <h3 className="flex items-center gap-2 text-sm font-semibold">
-                  <div className="flex h-6 w-6 items-center justify-center rounded-lg bg-accent/10">
-                    <Mail className="h-3.5 w-3.5 text-accent-foreground" />
-                  </div>
-                  {isAr ? "معلومات الاتصال" : "Contact Information"}
-                </h3>
-              </div>
-              <CardContent className="space-y-3 p-4 text-sm">
-                {entity.email && (
-                  <div className="flex items-center gap-3">
-                    <Mail className="h-4 w-4 shrink-0 text-primary" />
-                    <a href={`mailto:${entity.email}`} className="text-primary hover:underline truncate">{entity.email}</a>
-                  </div>
-                )}
-                {entity.phone && (
-                  <div className="flex items-center gap-3">
-                    <Phone className="h-4 w-4 shrink-0 text-primary" />
-                    <span>{entity.phone}</span>
-                  </div>
-                )}
-                {entity.fax && (
-                  <div className="flex items-center gap-3">
-                    <Phone className="h-4 w-4 shrink-0 text-muted-foreground" />
-                    <span>{isAr ? "فاكس:" : "Fax:"} {entity.fax}</span>
-                  </div>
-                )}
-                {(entity.city || entity.country) && (
-                  <div className="flex items-start gap-3">
-                    <MapPin className="mt-0.5 h-4 w-4 shrink-0 text-primary" />
-                    <div>
-                      {address && <p>{address}</p>}
-                      <p className="text-muted-foreground">
-                        {entity.city}{entity.country ? `, ${entity.country}` : ""}
-                      </p>
-                    </div>
-                  </div>
-                )}
-              </CardContent>
-            </Card>
+            <EntityContactCard
+              email={entity.email}
+              phone={entity.phone}
+              fax={entity.fax}
+              address={address}
+              city={localizedCity}
+              country={localizedCountry}
+              postalCode={entity.postal_code}
+              isAr={isAr}
+            />
 
             {/* Social Links */}
             {entity.social_links && <EntitySocialLinks socialLinks={entity.social_links} />}
@@ -562,7 +602,7 @@ export default function EntityDetail() {
                   <FactRow label={isAr ? "تأسست" : "Founded"} value={toEnglishDigits(String(entity.founded_year))} />
                 )}
                 {entity.member_count && (
-                  <FactRow label={isAr ? "الأعضاء المسجلون" : "Registered Members"} value={toEnglishDigits(entity.member_count.toLocaleString())} />
+                  <FactRow label={isAr ? (isEducational ? "الطلاب المسجلون" : "الأعضاء المسجلون") : (isEducational ? "Enrolled Students" : "Registered Members")} value={toEnglishDigits(entity.member_count.toLocaleString())} />
                 )}
                 {entity.registration_number && (
                   <FactRow label={isAr ? "رقم التسجيل" : "Reg. #"} value={entity.registration_number} mono />
@@ -573,7 +613,7 @@ export default function EntityDetail() {
                 {entity.license_expires_at && (
                   <FactRow
                     label={isAr ? "انتهاء الترخيص" : "License Expires"}
-                    value={toEnglishDigits(new Date(entity.license_expires_at).toLocaleDateString())}
+                    value={toEnglishDigits(new Date(entity.license_expires_at).toLocaleDateString(isAr ? "ar-SA" : "en-US"))}
                   />
                 )}
                 {entity.verification_level && (
