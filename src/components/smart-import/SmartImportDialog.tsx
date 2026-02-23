@@ -86,6 +86,27 @@ export interface ImportedData {
   social_media?: Record<string, string>;
   logo_url?: string;
   cover_url?: string;
+  // Exhibition/Conference fields
+  venue_en?: string;
+  venue_ar?: string;
+  start_date?: string;
+  end_date?: string;
+  registration_url?: string;
+  registration_deadline?: string;
+  max_attendees?: number;
+  organizer_name_en?: string;
+  organizer_name_ar?: string;
+  map_url?: string;
+  ticket_price?: string;
+  is_free?: boolean;
+  is_virtual?: boolean;
+  virtual_link?: string;
+  target_audience?: string[];
+  // Competition fields
+  registration_fee?: number;
+  rules_summary_en?: string;
+  rules_summary_ar?: string;
+  edition_year?: number;
 }
 
 interface SmartImportDialogProps {

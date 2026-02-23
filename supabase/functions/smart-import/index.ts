@@ -544,6 +544,24 @@ function autoDetectTargetTable(data: any): { table: string; sub_type: string; co
   const name = (data.name_en || '').toLowerCase();
   const all = `${bt} ${name}`;
 
+  // Exhibition / Conference patterns (check first - higher priority)
+  const exhibitionPatterns: Record<string, string[]> = {
+    exhibition: ['exhibition', 'expo', 'trade show', 'trade fair', 'fair', 'showcase', 'food show'],
+    conference: ['conference', 'congress', 'forum', 'symposium', 'convention'],
+    summit: ['summit', 'global summit'],
+    workshop: ['workshop', 'seminar', 'masterclass', 'bootcamp'],
+    food_festival: ['food festival', 'festival', 'culinary festival', 'gastronomy festival', 'food week'],
+    trade_show: ['trade show', 'b2b event'],
+    competition_event: ['competition event', 'championship event'],
+  };
+  for (const [type, keywords] of Object.entries(exhibitionPatterns)) {
+    if (keywords.some(k => all.includes(k))) return { table: 'exhibitions', sub_type: type, confidence: 0.85 };
+  }
+
+  // Competition patterns
+  const competitionKeywords = ['competition', 'championship', 'contest', 'culinary competition', 'cooking competition', 'chef competition', 'bake off', 'cook off', 'challenge', 'cup', 'prix', 'award ceremony'];
+  if (competitionKeywords.some(k => all.includes(k))) return { table: 'competitions', sub_type: 'competition', confidence: 0.85 };
+
   const estPatterns: Record<string, string[]> = {
     restaurant: ['restaurant', 'dining', 'eatery', 'grill', 'bistro', 'pizzeria', 'sushi', 'steakhouse', 'food court'],
     hotel: ['hotel', 'motel', 'inn', 'lodge', 'hostel', 'accommodation', 'suites'],
@@ -588,10 +606,12 @@ function autoDetectTargetTable(data: any): { table: string; sub_type: string; co
 
 // ─── Stats endpoint ───
 async function handleStats(client: any): Promise<any> {
-  const [entities, companies, establishments, logs] = await Promise.all([
+  const [entities, companies, establishments, exhibitions, competitions, logs] = await Promise.all([
     client.from('culinary_entities').select('id', { count: 'exact', head: true }),
     client.from('companies').select('id', { count: 'exact', head: true }),
     client.from('establishments').select('id', { count: 'exact', head: true }),
+    client.from('exhibitions').select('id', { count: 'exact', head: true }),
+    client.from('competitions').select('id', { count: 'exact', head: true }),
     client.from('smart_import_logs').select('id, action, target_table, created_at, status').order('created_at', { ascending: false }).limit(200),
   ]);
 
@@ -606,6 +626,8 @@ async function handleStats(client: any): Promise<any> {
       entities: entities.count || 0,
       companies: companies.count || 0,
       establishments: establishments.count || 0,
+      exhibitions: exhibitions.count || 0,
+      competitions: competitions.count || 0,
     },
     imports: {
       today: todayImports,
@@ -615,6 +637,8 @@ async function handleStats(client: any): Promise<any> {
         culinary_entities: logsData.filter((l: any) => l.target_table === 'culinary_entities').length,
         companies: logsData.filter((l: any) => l.target_table === 'companies').length,
         establishments: logsData.filter((l: any) => l.target_table === 'establishments').length,
+        exhibitions: logsData.filter((l: any) => l.target_table === 'exhibitions').length,
+        competitions: logsData.filter((l: any) => l.target_table === 'competitions').length,
       },
       by_action: {
         create: logsData.filter((l: any) => l.action === 'create').length,
