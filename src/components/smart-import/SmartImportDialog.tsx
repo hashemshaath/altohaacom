@@ -31,8 +31,12 @@ import {
 export interface ImportedData {
   name_en?: string;
   name_ar?: string;
+  abbreviation_en?: string;
+  abbreviation_ar?: string;
   description_en?: string;
   description_ar?: string;
+  mission_en?: string;
+  mission_ar?: string;
   city_en?: string;
   city_ar?: string;
   neighborhood_en?: string;
@@ -47,6 +51,7 @@ export interface ImportedData {
   country_code?: string;
   phone?: string;
   phone_secondary?: string;
+  fax?: string;
   email?: string;
   website?: string;
   business_hours?: {
@@ -64,6 +69,20 @@ export interface ImportedData {
   longitude?: number;
   google_maps_url?: string;
   national_id?: string;
+  registration_number?: string;
+  license_number?: string;
+  founded_year?: number;
+  president_name_en?: string;
+  president_name_ar?: string;
+  secretary_name_en?: string;
+  secretary_name_ar?: string;
+  member_count?: number;
+  services_en?: string[];
+  services_ar?: string[];
+  specializations_en?: string[];
+  specializations_ar?: string[];
+  affiliated_organizations?: string[];
+  tags?: string[];
   social_media?: Record<string, string>;
 }
 

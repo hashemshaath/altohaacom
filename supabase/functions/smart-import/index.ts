@@ -66,18 +66,16 @@ async function firecrawlScrape(url: string, apiKey: string): Promise<string | nu
   }
 }
 
-// ─── MODE: SEARCH — Scrape Google Maps search page + use AI to extract entities ───
+// ─── MODE: SEARCH ───
 async function handleSearch(query: string, apiKey: string, lovableKey: string, location?: string): Promise<SearchResult[]> {
   const searchTerm = location ? `${query} ${location}` : query;
   console.log('[SmartImport] Searching Google Maps for:', searchTerm);
 
-  // Scrape Google Maps search results page directly
   const mapsUrl = `https://www.google.com/maps/search/${encodeURIComponent(searchTerm)}`;
   const scraped = await firecrawlScrape(mapsUrl, apiKey);
 
   if (!scraped || scraped.length < 50) {
     console.log('[SmartImport] Google Maps scrape returned little content, trying search API fallback');
-    // Fallback: use search API with specific query
     const searchResults = await firecrawlSearch(`"${query}" ${location || ''} site:google.com/maps`, apiKey, 15);
     if (searchResults.length) {
       return extractEntitiesFromSearchResults(searchResults);
@@ -86,8 +84,6 @@ async function handleSearch(query: string, apiKey: string, lovableKey: string, l
   }
 
   console.log(`[SmartImport] Scraped ${scraped.length} chars from Google Maps`);
-
-  // Use AI to extract structured entities from the scraped maps content
   const entities = await extractEntitiesWithAI(scraped, searchTerm, lovableKey);
   return entities;
 }
@@ -181,7 +177,7 @@ Return format: [{"name":"...","description":"...","rating":4.5,"total_reviews":1
   return [];
 }
 
-// ─── MODE: DETAILS ───
+// ─── MODE: DETAILS — Enhanced to extract ALL culinary_entities fields ───
 async function handleDetails(
   query: string,
   apiKey: string,
@@ -194,8 +190,8 @@ async function handleDetails(
   const sources = { google_maps: false, web_search: false, website: false, ai: true };
 
   const scrapePromise = resultUrl ? firecrawlScrape(resultUrl, apiKey) : Promise.resolve(null);
-  const searchQuery = location ? `${query} ${location} contact address phone` : `${query} contact address phone`;
-  const searchPromise = firecrawlSearch(searchQuery, apiKey, 5);
+  const searchQuery = location ? `${query} ${location} contact address phone email about` : `${query} contact address phone email about`;
+  const searchPromise = firecrawlSearch(searchQuery, apiKey, 8);
   const websitePromise = websiteUrl ? firecrawlScrape(websiteUrl, apiKey) : Promise.resolve(null);
 
   const [scraped, searchRaw, websiteContent] = await Promise.all([scrapePromise, searchPromise, websitePromise]);
@@ -206,8 +202,8 @@ async function handleDetails(
   let searchContent: string | null = null;
   if (searchRaw.length) {
     sources.web_search = true;
-    searchContent = searchRaw.slice(0, 5).map((r: any) =>
-      `## ${r.title || ''}\nURL: ${r.url}\n${r.description || ''}\n${(r.markdown || '').substring(0, 2000)}`
+    searchContent = searchRaw.slice(0, 8).map((r: any) =>
+      `## ${r.title || ''}\nURL: ${r.url}\n${r.description || ''}\n${(r.markdown || '').substring(0, 2500)}`
     ).join('\n\n---\n\n');
   }
 
@@ -216,7 +212,7 @@ async function handleDetails(
   return { data: enriched, sources_used: sources };
 }
 
-// ─── AI Enrichment ───
+// ─── AI Enrichment — Comprehensive extraction matching culinary_entities schema ───
 async function enrichWithAI(
   scraped: string | null,
   search: string | null,
@@ -229,32 +225,96 @@ async function enrichWithAI(
   const apiKey = lovableKey || Deno.env.get('LOVABLE_API_KEY');
   if (!apiKey) { console.error('LOVABLE_API_KEY not set'); return {}; }
 
-  const prompt = `You are a bilingual data enrichment assistant (Arabic & English). Given raw scraped data from Google Maps and web search results, produce a clean, structured JSON object with REAL data only.
+  const prompt = `You are a bilingual data enrichment assistant (Arabic & English). Given raw scraped data from Google Maps and web search results, produce a COMPREHENSIVE structured JSON object with ALL available data.
 
 RULES:
 - Only include data you can verify from the provided sources
 - If a field has no real data, set it to null
-- Extract the Google Maps rating and review count if available
+- Extract as much information as possible from all sources
+- Provide BOTH English and Arabic values wherever possible
 - The original search query was: "${query}"
 ${lat && lng ? `- Known coordinates: ${lat}, ${lng}` : ''}
 
-${scraped ? `GOOGLE MAPS SCRAPED CONTENT:\n${scraped.substring(0, 5000)}` : ''}
-${search ? `WEB SEARCH RESULTS:\n${search.substring(0, 4000)}` : ''}
-${website ? `WEBSITE CONTENT:\n${website.substring(0, 3000)}` : ''}
+${scraped ? `GOOGLE MAPS SCRAPED CONTENT:\n${scraped.substring(0, 6000)}` : ''}
+${search ? `WEB SEARCH RESULTS:\n${search.substring(0, 5000)}` : ''}
+${website ? `WEBSITE CONTENT:\n${website.substring(0, 4000)}` : ''}
 
-Return ONLY valid JSON:
+Return ONLY valid JSON with ALL these fields:
 {
-  "name_en": null, "name_ar": null, "description_en": null, "description_ar": null,
-  "city_en": null, "city_ar": null, "neighborhood_en": null, "neighborhood_ar": null,
-  "street_en": null, "street_ar": null, "full_address_en": null, "full_address_ar": null,
-  "postal_code": null, "country_en": null, "country_ar": null, "country_code": null,
-  "phone": null, "phone_secondary": null, "email": null, "website": null,
-  "business_hours": [], "business_type_en": null, "business_type_ar": null,
-  "rating": null, "total_reviews": null,
-  "latitude": ${lat || 'null'}, "longitude": ${lng || 'null'},
-  "google_maps_url": null, "national_id": null,
-  "social_media": { "instagram": null, "twitter": null, "facebook": null, "linkedin": null, "tiktok": null }
-}`;
+  "name_en": null,
+  "name_ar": null,
+  "abbreviation_en": null,
+  "abbreviation_ar": null,
+  "description_en": null,
+  "description_ar": null,
+  "mission_en": null,
+  "mission_ar": null,
+  "city_en": null,
+  "city_ar": null,
+  "neighborhood_en": null,
+  "neighborhood_ar": null,
+  "street_en": null,
+  "street_ar": null,
+  "full_address_en": null,
+  "full_address_ar": null,
+  "postal_code": null,
+  "country_en": null,
+  "country_ar": null,
+  "country_code": null,
+  "phone": null,
+  "phone_secondary": null,
+  "fax": null,
+  "email": null,
+  "website": null,
+  "business_hours": [],
+  "business_type_en": null,
+  "business_type_ar": null,
+  "rating": ${lat ? 'null' : 'null'},
+  "total_reviews": null,
+  "latitude": ${lat || 'null'},
+  "longitude": ${lng || 'null'},
+  "google_maps_url": null,
+  "national_id": null,
+  "registration_number": null,
+  "license_number": null,
+  "founded_year": null,
+  "president_name_en": null,
+  "president_name_ar": null,
+  "secretary_name_en": null,
+  "secretary_name_ar": null,
+  "member_count": null,
+  "services_en": [],
+  "services_ar": [],
+  "specializations_en": [],
+  "specializations_ar": [],
+  "affiliated_organizations": [],
+  "tags": [],
+  "social_media": {
+    "instagram": null,
+    "twitter": null,
+    "facebook": null,
+    "linkedin": null,
+    "tiktok": null,
+    "youtube": null,
+    "snapchat": null,
+    "whatsapp": null
+  }
+}
+
+EXTRACTION GUIDELINES:
+- "abbreviation": Short form / acronym of the entity name if commonly used
+- "mission": The entity's mission statement or vision
+- "founded_year": Year the entity was established (integer like 1995)
+- "president_name" / "secretary_name": Leadership names if found
+- "member_count": Number of members if the entity is an association
+- "services": List of services the entity provides
+- "specializations": Areas of expertise or focus
+- "affiliated_organizations": Names of partner/parent organizations
+- "tags": Relevant keywords describing the entity
+- "registration_number" / "license_number" / "national_id": Official registration/license numbers
+- "fax": Fax number if available
+- "business_hours": Array of {day_en, day_ar, open, close, is_closed}
+- "social_media": Extract ALL social media links found (Instagram, Twitter/X, Facebook, LinkedIn, TikTok, YouTube, Snapchat, WhatsApp)`;
 
   try {
     const res = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
