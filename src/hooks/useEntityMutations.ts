@@ -24,7 +24,7 @@ export function useEntityMutations({ form, editingId, selectedManager, onSuccess
 
   const saveMutation = useMutation({
     mutationFn: async () => {
-      const slug = form.name.toLowerCase().replace(/\s+/g, "-").replace(/[^a-z0-9-]/g, "");
+      const slug = form.name.toLowerCase().replace(/\s+/g, "-").replace(/[^a-z0-9-]/g, "") + "-" + Date.now().toString(36);
       const payload = {
         name: form.name, name_ar: form.name_ar || null,
         abbreviation: form.abbreviation || null, abbreviation_ar: form.abbreviation_ar || null,
