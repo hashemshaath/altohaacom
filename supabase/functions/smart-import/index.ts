@@ -18,6 +18,7 @@ interface SearchResult {
   rating: number | null;
   total_reviews: number | null;
   google_maps_url: string | null;
+  place_type: string | null;
 }
 
 // ─── Auth ───
@@ -65,56 +66,73 @@ async function firecrawlScrape(url: string, apiKey: string): Promise<string | nu
   }
 }
 
-// ─── Parse search results ───
-function parseSearchResults(raw: any[]): SearchResult[] {
-  return raw.slice(0, 10).map((item: any, i: number) => {
+// ─── Parse Google Maps search results ───
+function parseGoogleMapsResults(raw: any[]): SearchResult[] {
+  // Only keep Google Maps results
+  const mapsResults = raw.filter(item => {
+    const url = item.url || '';
+    return /google\.\w+\/maps/i.test(url);
+  });
+
+  return mapsResults.slice(0, 15).map((item: any, i: number) => {
     const url = item.url || '';
     const title = (item.title || '').replace(/\s*[-–|]\s*Google\s*Maps?$/i, '').trim();
     const desc = item.description || '';
+    const markdown = item.markdown || '';
+    const fullText = `${desc} ${markdown}`;
 
     // Extract coordinates from Google Maps URLs
     const coordMatch = url.match(/@(-?\d+\.\d+),(-?\d+\.\d+)/);
-    const ratingMatch = desc.match(/(\d\.\d)\s*(?:star|⭐|rating|نجوم)/i);
-    const reviewMatch = desc.match(/(\d[\d,]*)\s*(?:review|تقييم)/i);
+    
+    // Extract rating - try multiple patterns
+    const ratingMatch = fullText.match(/(\d\.\d)\s*(?:star|⭐|rating|نجوم|out of 5)/i)
+      || fullText.match(/(?:Rating|Rated|التقييم)[:\s]*(\d\.\d)/i)
+      || desc.match(/(\d\.\d)/);
+    
+    // Extract reviews count
+    const reviewMatch = fullText.match(/(\d[\d,]*)\s*(?:review|تقييم|Google review)/i)
+      || fullText.match(/\((\d[\d,]*)\)/);
 
-    const isGoogleMaps = /google\.\w+\/maps/i.test(url);
+    // Extract place type/category
+    const typeMatch = fullText.match(/(?:Category|Type|النوع)[:\s]*([^\n,]+)/i);
 
     return {
       id: `sr_${i}_${Date.now()}`,
-      name: title || url || 'Unknown',
+      name: title || 'Unknown',
       description: desc,
       url,
       latitude: coordMatch ? parseFloat(coordMatch[1]) : null,
       longitude: coordMatch ? parseFloat(coordMatch[2]) : null,
       rating: ratingMatch ? parseFloat(ratingMatch[1]) : null,
       total_reviews: reviewMatch ? parseInt(reviewMatch[1].replace(/,/g, '')) : null,
-      google_maps_url: isGoogleMaps ? url : null,
+      google_maps_url: url,
+      place_type: typeMatch ? typeMatch[1].trim() : null,
     };
   });
 }
 
-// ─── MODE: SEARCH ───
+// ─── MODE: SEARCH (Google Maps only) ───
 async function handleSearch(query: string, apiKey: string, location?: string): Promise<SearchResult[]> {
-  const searchQuery = location ? `${query} ${location}` : query;
-  console.log('[SmartImport] Search:', searchQuery);
+  const baseQuery = location ? `${query} ${location}` : query;
+  console.log('[SmartImport] Google Maps Search:', baseQuery);
 
-  // Run two searches in parallel: general + Google Maps specific
-  const [generalResults, mapsResults] = await Promise.all([
-    firecrawlSearch(searchQuery, apiKey, 5),
-    firecrawlSearch(`${searchQuery} site:google.com/maps`, apiKey, 5),
+  // Search exclusively on Google Maps with multiple queries for better coverage
+  const [mapsResults1, mapsResults2] = await Promise.all([
+    firecrawlSearch(`${baseQuery} site:google.com/maps`, apiKey, 10),
+    firecrawlSearch(`${baseQuery} google maps`, apiKey, 10),
   ]);
 
-  // Merge: maps results first, then general, deduplicate by URL
-  const combined = [...mapsResults, ...generalResults];
+  // Merge and deduplicate by URL
+  const combined = [...mapsResults1, ...mapsResults2];
   const seen = new Set<string>();
   const unique = combined.filter(item => {
     const url = item.url || '';
-    if (seen.has(url)) return false;
+    if (!url || seen.has(url)) return false;
     seen.add(url);
     return true;
   });
 
-  return parseSearchResults(unique);
+  return parseGoogleMapsResults(unique);
 }
 
 // ─── MODE: DETAILS ───
@@ -127,9 +145,9 @@ async function handleDetails(
   latitude?: number,
   longitude?: number,
 ): Promise<{ data: any; sources_used: Record<string, boolean> }> {
-  const sources = { scrape: false, web_search: false, website: false, ai: true };
+  const sources = { google_maps: false, web_search: false, website: false, ai: true };
 
-  // Run scrape + search + website in parallel
+  // Run scrape (Google Maps page) + search + website in parallel
   const scrapePromise = resultUrl ? firecrawlScrape(resultUrl, apiKey) : Promise.resolve(null);
   
   const searchQuery = location ? `${query} ${location} contact address phone` : `${query} contact address phone`;
@@ -139,7 +157,7 @@ async function handleDetails(
 
   const [scraped, searchRaw, websiteContent] = await Promise.all([scrapePromise, searchPromise, websitePromise]);
 
-  if (scraped) sources.scrape = true;
+  if (scraped) sources.google_maps = true;
   if (websiteContent) sources.website = true;
 
   let searchContent: string | null = null;
@@ -167,15 +185,16 @@ async function enrichWithAI(
   const apiKey = Deno.env.get('LOVABLE_API_KEY');
   if (!apiKey) { console.error('LOVABLE_API_KEY not set'); return {}; }
 
-  const prompt = `You are a bilingual data enrichment assistant (Arabic & English). Given raw scraped data and web search results, produce a clean, structured JSON object with REAL data only.
+  const prompt = `You are a bilingual data enrichment assistant (Arabic & English). Given raw scraped data from Google Maps and web search results, produce a clean, structured JSON object with REAL data only.
 
 RULES:
 - Only include data you can verify from the provided sources
 - If a field has no real data, set it to null
+- Extract the Google Maps rating and review count if available
 - The original search query was: "${query}"
 ${lat && lng ? `- Known coordinates: ${lat}, ${lng}` : ''}
 
-${scraped ? `SCRAPED CONTENT:\n${scraped.substring(0, 4000)}` : ''}
+${scraped ? `GOOGLE MAPS SCRAPED CONTENT:\n${scraped.substring(0, 5000)}` : ''}
 ${search ? `WEB SEARCH RESULTS:\n${search.substring(0, 4000)}` : ''}
 ${website ? `WEBSITE CONTENT:\n${website.substring(0, 3000)}` : ''}
 
@@ -187,7 +206,7 @@ Return ONLY valid JSON:
   "postal_code": null, "country_en": null, "country_ar": null, "country_code": null,
   "phone": null, "phone_secondary": null, "email": null, "website": null,
   "business_hours": [], "business_type_en": null, "business_type_ar": null,
-  "rating": ${lat ? 'null' : 'null'}, "total_reviews": null,
+  "rating": null, "total_reviews": null,
   "latitude": ${lat || 'null'}, "longitude": ${lng || 'null'},
   "google_maps_url": null, "national_id": null,
   "social_media": { "instagram": null, "twitter": null, "facebook": null, "linkedin": null, "tiktok": null }
