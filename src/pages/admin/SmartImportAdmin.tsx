@@ -13,7 +13,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { GoogleMapEmbed } from "@/components/smart-import/GoogleMapEmbed";
 import type { ImportedData } from "@/components/smart-import/SmartImportDialog";
 import type { Database } from "@/integrations/supabase/types";
@@ -169,7 +169,7 @@ export default function SmartImportAdmin() {
   const [existingRecords, setExistingRecords] = useState<ExistingRecord[]>([]);
   const [dbChecked, setDbChecked] = useState(false);
 
-  const [showAddDialog, setShowAddDialog] = useState(false);
+  const [showAddForm, setShowAddForm] = useState(false);
   const [targetTable, setTargetTable] = useState<TargetTable>("culinary_entities");
   const [selectedEntityType, setSelectedEntityType] = useState<EntityType>("culinary_association");
   const [selectedCompanyType, setSelectedCompanyType] = useState<CompanyType>("supplier");
@@ -494,7 +494,7 @@ export default function SmartImportAdmin() {
       const tableLabel = TARGET_TABLE_OPTIONS.find(t => t.value === targetTable);
       toast({ title: isAr ? "تم الإضافة بنجاح" : `${tableLabel?.label_en || 'Record'} added successfully` });
       await logImport('create', targetTable, recordId, subType);
-      setShowAddDialog(false);
+      setShowAddForm(false);
       setDbChecked(false);
     } catch (err: any) {
       toast({ title: isAr ? "خطأ" : "Error", description: err.message, variant: "destructive" });
@@ -1067,7 +1067,7 @@ export default function SmartImportAdmin() {
                   <Separator />
                   <div className="flex items-center justify-between">
                     <span className="text-xs text-muted-foreground">{isAr ? "أو أضف كسجل جديد" : "Or add as new record"}</span>
-                    <Button size="sm" variant="default" className="gap-1.5" onClick={() => setShowAddDialog(true)}>
+                    <Button size="sm" variant="default" className="gap-1.5" onClick={() => setShowAddForm(true)}>
                       <Plus className="h-3.5 w-3.5" />
                       {isAr ? "إضافة جديد" : "Add New"}
                     </Button>
@@ -1079,7 +1079,7 @@ export default function SmartImportAdmin() {
                     <CheckCircle className="h-5 w-5 text-green-600" />
                     <span className="text-sm font-medium text-green-700">{isAr ? "لا يوجد سجل مطابق" : "No matching records found"}</span>
                   </div>
-                  <Button size="sm" variant="default" className="gap-1.5" onClick={() => setShowAddDialog(true)}>
+                  <Button size="sm" variant="default" className="gap-1.5" onClick={() => setShowAddForm(true)}>
                     <Plus className="h-3.5 w-3.5" />
                     {isAr ? "إضافة كسجل جديد" : "Add as New Record"}
                   </Button>
@@ -1387,21 +1387,25 @@ export default function SmartImportAdmin() {
         </div>
       )}
 
-      {/* ─── Add New Record Dialog ─── */}
-      <Dialog open={showAddDialog} onOpenChange={setShowAddDialog}>
-        <DialogContent className="sm:max-w-md">
-          <DialogHeader>
-            <DialogTitle className="flex items-center gap-2">
-              <Plus className="h-5 w-5 text-primary" />
-              {isAr ? "إضافة سجل جديد" : "Add New Record"}
-            </DialogTitle>
-            <DialogDescription>
+      {/* ─── Add New Record Inline Form ─── */}
+      {showAddForm && details && step === "details" && (
+        <Card className="border-primary/30 bg-primary/5">
+          <CardHeader className="pb-3">
+            <CardTitle className="text-base flex items-center justify-between">
+              <span className="flex items-center gap-2">
+                <Plus className="h-5 w-5 text-primary" />
+                {isAr ? "إضافة سجل جديد" : "Add New Record"}
+              </span>
+              <Button variant="ghost" size="sm" onClick={() => setShowAddForm(false)} className="text-xs">
+                {isAr ? "إلغاء" : "Cancel"}
+              </Button>
+            </CardTitle>
+            <CardDescription>
               {isAr ? "حدد الجدول والنوع لإضافة البيانات المستخرجة" : "Select target table and type to add extracted data"}
-            </DialogDescription>
-          </DialogHeader>
-
-          <div className="space-y-4 py-2">
-            <div className="rounded-lg border p-3 bg-accent/30 space-y-1.5">
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div className="rounded-lg border p-3 bg-background space-y-1.5">
               <p className="text-sm font-semibold">{details?.name_en || details?.name_ar}</p>
               {details?.name_ar && details?.name_en && <p className="text-xs text-muted-foreground">{details.name_ar}</p>}
               <div className="flex items-center gap-2 text-xs text-muted-foreground flex-wrap">
@@ -1491,19 +1495,19 @@ export default function SmartImportAdmin() {
                   ? (isAr ? "سيتم تعيين رقم شركة جديد تلقائياً (C...)" : "A new company number (C...) will be auto-assigned")
                   : (isAr ? "سيتم إنشاء سجل منشأة جديد" : "A new establishment record will be created")}
             </div>
-          </div>
 
-          <DialogFooter>
-            <Button variant="outline" onClick={() => setShowAddDialog(false)} disabled={saving}>
-              {isAr ? "إلغاء" : "Cancel"}
-            </Button>
-            <Button onClick={handleAddNewRecord} disabled={saving} className="gap-1.5">
-              {saving ? <Loader2 className="h-4 w-4 animate-spin" /> : <Plus className="h-4 w-4" />}
-              {saving ? (isAr ? "جاري الإضافة..." : "Adding...") : (isAr ? "إضافة" : "Add Record")}
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
+            <div className="flex justify-end gap-2 pt-2">
+              <Button variant="outline" onClick={() => setShowAddForm(false)} disabled={saving}>
+                {isAr ? "إلغاء" : "Cancel"}
+              </Button>
+              <Button onClick={handleAddNewRecord} disabled={saving} className="gap-1.5">
+                {saving ? <Loader2 className="h-4 w-4 animate-spin" /> : <Plus className="h-4 w-4" />}
+                {saving ? (isAr ? "جاري الإضافة..." : "Adding...") : (isAr ? "إضافة" : "Add Record")}
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+      )}
 
       {/* ─── Import History Dialog ─── */}
       <Dialog open={showHistory} onOpenChange={setShowHistory}>
