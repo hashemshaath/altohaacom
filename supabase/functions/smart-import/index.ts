@@ -22,7 +22,7 @@ interface SearchResult {
 
 // ─── In-memory cache (per cold start) ───
 const cache = new Map<string, { data: any; ts: number }>();
-const CACHE_TTL = 5 * 60 * 1000; // 5 min
+const CACHE_TTL = 5 * 60 * 1000;
 
 function getCached(key: string): any | null {
   const entry = cache.get(key);
@@ -31,7 +31,7 @@ function getCached(key: string): any | null {
   return null;
 }
 function setCache(key: string, data: any) {
-  if (cache.size > 100) { // LRU-like cleanup
+  if (cache.size > 200) {
     const oldest = cache.keys().next().value;
     if (oldest) cache.delete(oldest);
   }
@@ -55,25 +55,36 @@ async function authenticateAdmin(req: Request) {
 }
 
 // ─── Firecrawl with timeout + retry ───
-async function firecrawlFetch(url: string, body: any, apiKey: string, timeoutMs: number): Promise<any> {
-  const controller = new AbortController();
-  const timer = setTimeout(() => controller.abort(), timeoutMs);
-  try {
-    const res = await fetch(url, {
-      method: 'POST',
-      headers: { 'Authorization': `Bearer ${apiKey}`, 'Content-Type': 'application/json' },
-      body: JSON.stringify(body),
-      signal: controller.signal,
-    });
-    return await res.json();
-  } catch (e) {
-    if (e instanceof DOMException && e.name === 'AbortError') {
-      console.warn(`[SmartImport] Timed out: ${url}`);
-    } else {
-      console.error(`[SmartImport] Fetch error:`, e);
-    }
-    return null;
-  } finally { clearTimeout(timer); }
+async function firecrawlFetch(url: string, body: any, apiKey: string, timeoutMs: number, retries = 1): Promise<any> {
+  for (let attempt = 0; attempt <= retries; attempt++) {
+    const controller = new AbortController();
+    const timer = setTimeout(() => controller.abort(), timeoutMs);
+    try {
+      const res = await fetch(url, {
+        method: 'POST',
+        headers: { 'Authorization': `Bearer ${apiKey}`, 'Content-Type': 'application/json' },
+        body: JSON.stringify(body),
+        signal: controller.signal,
+      });
+      const data = await res.json();
+      if (res.ok) return data;
+      if (attempt < retries && res.status >= 500) {
+        console.warn(`[SmartImport] Retry ${attempt + 1} for ${url}`);
+        await new Promise(r => setTimeout(r, 1000 * (attempt + 1)));
+        continue;
+      }
+      return data;
+    } catch (e) {
+      if (e instanceof DOMException && e.name === 'AbortError') {
+        console.warn(`[SmartImport] Timed out (attempt ${attempt + 1}): ${url}`);
+        if (attempt < retries) continue;
+      } else {
+        console.error(`[SmartImport] Fetch error:`, e);
+      }
+      return null;
+    } finally { clearTimeout(timer); }
+  }
+  return null;
 }
 
 async function firecrawlSearch(query: string, apiKey: string, limit = 10, timeoutMs = 12000): Promise<any[]> {
@@ -84,7 +95,7 @@ async function firecrawlSearch(query: string, apiKey: string, limit = 10, timeou
 async function firecrawlScrape(url: string, apiKey: string, timeoutMs = 15000): Promise<string | null> {
   const cacheKey = `scrape:${url}`;
   const cached = getCached(cacheKey);
-  if (cached) { console.log('[SmartImport] Cache hit:', url); return cached; }
+  if (cached) return cached;
 
   let formatted = url.trim();
   if (!formatted.startsWith('http')) formatted = `https://${formatted}`;
@@ -96,29 +107,38 @@ async function firecrawlScrape(url: string, apiKey: string, timeoutMs = 15000): 
   return md;
 }
 
-// ─── AI call ───
-async function callAI(prompt: string, lovableKey: string, model = 'google/gemini-2.5-flash', temperature = 0.1, timeoutMs = 22000): Promise<string> {
-  const controller = new AbortController();
-  const timer = setTimeout(() => controller.abort(), timeoutMs);
-  try {
-    const res = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
-      method: 'POST',
-      headers: { 'Authorization': `Bearer ${lovableKey}`, 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        model,
-        messages: [{ role: 'system', content: 'You are a precise data extraction assistant. Return ONLY valid JSON. No markdown, no explanations.' }, { role: 'user', content: prompt }],
-        temperature,
-      }),
-      signal: controller.signal,
-    });
-    if (!res.ok) { console.error('[SmartImport] AI error:', res.status); return ''; }
-    const data = await res.json();
-    return data.choices?.[0]?.message?.content || '';
-  } catch (e) {
-    if (e instanceof DOMException && e.name === 'AbortError') console.warn('[SmartImport] AI timed out');
-    else console.error('[SmartImport] AI error:', e);
-    return '';
-  } finally { clearTimeout(timer); }
+// ─── AI call with retry ───
+async function callAI(prompt: string, lovableKey: string, model = 'google/gemini-2.5-flash', temperature = 0.1, timeoutMs = 25000): Promise<string> {
+  for (let attempt = 0; attempt < 2; attempt++) {
+    const controller = new AbortController();
+    const timer = setTimeout(() => controller.abort(), timeoutMs);
+    try {
+      const res = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
+        method: 'POST',
+        headers: { 'Authorization': `Bearer ${lovableKey}`, 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          model,
+          messages: [{ role: 'system', content: 'You are a precise data extraction assistant. Return ONLY valid JSON. No markdown, no explanations.' }, { role: 'user', content: prompt }],
+          temperature,
+        }),
+        signal: controller.signal,
+      });
+      if (!res.ok) {
+        console.error('[SmartImport] AI error:', res.status);
+        if (attempt === 0 && res.status >= 500) { await new Promise(r => setTimeout(r, 1500)); continue; }
+        return '';
+      }
+      const data = await res.json();
+      return data.choices?.[0]?.message?.content || '';
+    } catch (e) {
+      if (e instanceof DOMException && e.name === 'AbortError') {
+        console.warn(`[SmartImport] AI timed out (attempt ${attempt + 1})`);
+        if (attempt === 0) continue;
+      } else console.error('[SmartImport] AI error:', e);
+      return '';
+    } finally { clearTimeout(timer); }
+  }
+  return '';
 }
 
 // ─── MODE: SEARCH ───
@@ -131,16 +151,17 @@ async function handleSearch(query: string, apiKey: string, lovableKey: string, l
   console.log('[SmartImport] Searching:', searchTerm);
   const mapsUrl = `https://www.google.com/maps/search/${encodeURIComponent(searchTerm)}`;
 
-  // Parallel: scrape maps + fallback search
-  const [scraped, fallbackResults] = await Promise.all([
+  // Parallel: scrape maps + fallback search + web search
+  const [scraped, fallbackResults, webResults] = await Promise.all([
     firecrawlScrape(mapsUrl, apiKey, 18000),
     firecrawlSearch(`"${query}" ${location || ''} site:google.com/maps`, apiKey, 12, 10000),
+    firecrawlSearch(`${query} ${location || ''} official website`, apiKey, 5, 8000),
   ]);
 
   let results: SearchResult[];
   if (scraped && scraped.length >= 50) {
     results = await extractEntitiesWithAI(scraped, searchTerm, lovableKey);
-    // Merge unique fallback results
+    // Merge fallback
     if (fallbackResults.length) {
       const fallback = extractEntitiesFromSearchResults(fallbackResults);
       const existingNames = new Set(results.map(r => r.name.toLowerCase()));
@@ -150,6 +171,8 @@ async function handleSearch(query: string, apiKey: string, lovableKey: string, l
     }
   } else if (fallbackResults.length) {
     results = extractEntitiesFromSearchResults(fallbackResults);
+  } else if (webResults.length) {
+    results = extractEntitiesFromSearchResults(webResults);
   } else {
     results = [];
   }
@@ -187,12 +210,13 @@ async function extractEntitiesWithAI(scraped: string, searchTerm: string, lovabl
   const prompt = `Extract ALL business/entity listings from this Google Maps search page.
 SEARCH: "${searchTerm}"
 CONTENT (truncated):
-${scraped.substring(0, 10000)}
+${scraped.substring(0, 12000)}
 
 Return JSON array: [{"name":"...","description":"...","rating":4.5,"total_reviews":100,"place_type":"...","latitude":null,"longitude":null,"google_maps_url":null,"address":"..."}]
 Rules: Extract ALL real businesses. No hallucination. Return ONLY valid JSON array.`;
 
-  const content = await callAI(prompt, lovableKey, 'google/gemini-2.5-flash', 0.1, 18000);
+  // Use flash-lite for fast search parsing
+  const content = await callAI(prompt, lovableKey, 'google/gemini-2.5-flash-lite', 0.1, 15000);
   try {
     const jsonMatch = content.match(/\[[\s\S]*\]/);
     if (jsonMatch) {
@@ -215,37 +239,52 @@ Rules: Extract ALL real businesses. No hallucination. Return ONLY valid JSON arr
 async function handleDetails(
   query: string, apiKey: string, resultUrl?: string, websiteUrl?: string,
   location?: string, latitude?: number, longitude?: number,
-): Promise<{ data: any; sources_used: Record<string, boolean>; data_quality: number }> {
+): Promise<{ data: any; sources_used: Record<string, boolean>; data_quality: number; suggested_target: any }> {
   const cacheKey = `details:${query}:${resultUrl || ''}:${websiteUrl || ''}`;
   const cached = getCached(cacheKey);
   if (cached) return cached;
 
   const sources = { google_maps: false, web_search: false, website: false, ai: true };
 
+  // Auto-detect website from result page if not provided
+  let effectiveWebsiteUrl = websiteUrl;
+
   const [scraped, searchRaw, websiteContent] = await Promise.all([
-    resultUrl ? firecrawlScrape(resultUrl, apiKey, 15000).catch(() => null) : Promise.resolve(null),
+    resultUrl ? firecrawlScrape(resultUrl, apiKey, 18000).catch(() => null) : Promise.resolve(null),
     firecrawlSearch(
       location ? `${query} ${location} contact address phone email` : `${query} contact address phone email`,
-      apiKey, 5, 10000
+      apiKey, 8, 10000
     ).catch(() => []),
-    websiteUrl ? firecrawlScrape(websiteUrl, apiKey, 15000).catch(() => null) : Promise.resolve(null),
+    effectiveWebsiteUrl ? firecrawlScrape(effectiveWebsiteUrl, apiKey, 15000).catch(() => null) : Promise.resolve(null),
   ]);
 
   if (scraped) sources.google_maps = true;
   if (websiteContent) sources.website = true;
 
+  // If no website was scraped, try to find official website from search results
+  let extraWebsite: string | null = null;
   let searchContent: string | null = null;
   if (searchRaw.length) {
     sources.web_search = true;
-    searchContent = searchRaw.slice(0, 5).map((r: any) =>
-      `## ${r.title || ''}\nURL: ${r.url}\n${r.description || ''}\n${(r.markdown || '').substring(0, 1500)}`
+    // Find official website (not google maps, not social media)
+    const officialSite = searchRaw.find((r: any) => {
+      const u = (r.url || '').toLowerCase();
+      return !u.includes('google.com/maps') && !u.includes('facebook.com') && !u.includes('instagram.com') && !u.includes('twitter.com') && !u.includes('linkedin.com') && !u.includes('yelp.com') && !u.includes('tripadvisor.com');
+    });
+    if (officialSite && !websiteContent) {
+      extraWebsite = await firecrawlScrape(officialSite.url, apiKey, 12000).catch(() => null);
+      if (extraWebsite) sources.website = true;
+    }
+    searchContent = searchRaw.slice(0, 8).map((r: any) =>
+      `## ${r.title || ''}\nURL: ${r.url}\n${r.description || ''}\n${(r.markdown || '').substring(0, 2000)}`
     ).join('\n\n---\n\n');
   }
 
   const lovableKey = Deno.env.get('LOVABLE_API_KEY')!;
-  const enriched = await enrichWithAI(scraped, searchContent, websiteContent, query, latitude, longitude, lovableKey);
+  const enriched = await enrichWithAI(scraped, searchContent, websiteContent || extraWebsite, query, latitude, longitude, lovableKey);
   const dataQuality = calculateDataQuality(enriched, sources);
-  const result = { data: enriched, sources_used: sources, data_quality: dataQuality };
+  const suggestion = autoDetectTargetTable(enriched);
+  const result = { data: enriched, sources_used: sources, data_quality: dataQuality, suggested_target: suggestion };
   setCache(cacheKey, result);
   return result;
 }
@@ -293,16 +332,30 @@ async function handleUrlImport(url: string, apiKey: string, lovableKey: string):
   const titleMatch = scraped.match(/^#\s*(.+)$/m);
   const entityName = titleMatch?.[1] || url.replace(/^https?:\/\//, '').split('/')[0];
 
-  const searchRaw = await firecrawlSearch(`${entityName} contact phone email`, apiKey, 3, 8000).catch(() => []);
+  // Parallel: search + maps check
+  const [searchRaw, mapsResult] = await Promise.all([
+    firecrawlSearch(`${entityName} contact phone email`, apiKey, 5, 8000).catch(() => []),
+    firecrawlSearch(`${entityName} site:google.com/maps`, apiKey, 3, 8000).catch(() => []),
+  ]);
+
   let searchContent: string | null = null;
   if (searchRaw.length) {
     sources.web_search = true;
-    searchContent = searchRaw.slice(0, 3).map((r: any) =>
-      `## ${r.title || ''}\n${r.description || ''}\n${(r.markdown || '').substring(0, 1000)}`
+    searchContent = searchRaw.slice(0, 5).map((r: any) =>
+      `## ${r.title || ''}\n${r.description || ''}\n${(r.markdown || '').substring(0, 1500)}`
     ).join('\n\n---\n\n');
   }
 
-  const enriched = await enrichWithAI(null, searchContent, scraped, entityName, null, null, lovableKey);
+  let mapsContent: string | null = null;
+  if (mapsResult.length) {
+    const mapsUrl = mapsResult[0]?.url;
+    if (mapsUrl && /google\.\w+\/maps/i.test(mapsUrl)) {
+      mapsContent = await firecrawlScrape(mapsUrl, apiKey, 12000).catch(() => null);
+      if (mapsContent) sources.google_maps = true;
+    }
+  }
+
+  const enriched = await enrichWithAI(mapsContent, searchContent, scraped, entityName, null, null, lovableKey);
   const dataQuality = calculateDataQuality(enriched, sources);
   const result = { data: enriched, sources_used: sources, data_quality: dataQuality };
   setCache(cacheKey, result);
@@ -312,9 +365,9 @@ async function handleUrlImport(url: string, apiKey: string, lovableKey: string):
 // ─── MODE: BULK URL ───
 async function handleBulkUrl(urls: string[], apiKey: string, lovableKey: string): Promise<{ results: any[] }> {
   const results: any[] = [];
-  // Process up to 5 URLs in parallel batches
-  for (let i = 0; i < urls.length; i += 3) {
-    const batch = urls.slice(i, i + 3);
+  // Process up to 5 URLs in parallel
+  for (let i = 0; i < urls.length; i += 5) {
+    const batch = urls.slice(i, i + 5);
     const batchResults = await Promise.allSettled(
       batch.map(async (url) => {
         try {
@@ -351,9 +404,9 @@ ${lat && lng ? `- Coordinates: ${lat}, ${lng}` : ''}
 
 SEO: Write compelling keyword-rich descriptions (150-300 chars). Tags: 5-10 English SEO keywords.
 
-${scraped ? `GOOGLE MAPS:\n${scraped.substring(0, 5000)}` : ''}
-${search ? `WEB SEARCH:\n${search.substring(0, 4000)}` : ''}
-${website ? `WEBSITE:\n${website.substring(0, 4000)}` : ''}
+${scraped ? `GOOGLE MAPS:\n${scraped.substring(0, 6000)}` : ''}
+${search ? `WEB SEARCH:\n${search.substring(0, 5000)}` : ''}
+${website ? `WEBSITE:\n${website.substring(0, 5000)}` : ''}
 
 Return ONLY valid JSON:
 {
@@ -397,7 +450,7 @@ Return ONLY valid JSON:
 
 Extract ALL data. Services & specializations in BOTH languages. Business hours from ACTUAL data (24h format). Social media links.`;
 
-  const content = await callAI(prompt, apiKey, 'google/gemini-2.5-flash', 0.1, 22000);
+  const content = await callAI(prompt, apiKey, 'google/gemini-2.5-flash', 0.1, 25000);
   try {
     const jsonMatch = content.match(/\{[\s\S]*\}/);
     if (jsonMatch) return JSON.parse(jsonMatch[0]);
@@ -459,7 +512,7 @@ async function handleStats(client: any): Promise<any> {
     client.from('culinary_entities').select('id', { count: 'exact', head: true }),
     client.from('companies').select('id', { count: 'exact', head: true }),
     client.from('establishments').select('id', { count: 'exact', head: true }),
-    client.from('smart_import_logs').select('id, action, target_table, created_at, status').order('created_at', { ascending: false }).limit(100),
+    client.from('smart_import_logs').select('id, action, target_table, created_at, status').order('created_at', { ascending: false }).limit(200),
   ]);
 
   const logsData = logs.data || [];
@@ -488,7 +541,7 @@ async function handleStats(client: any): Promise<any> {
         update: logsData.filter((l: any) => l.action === 'update').length,
       },
     },
-    recent: logsData.slice(0, 5),
+    recent: logsData.slice(0, 10),
   };
 }
 
@@ -537,8 +590,7 @@ Deno.serve(async (req) => {
 
     if (mode === 'details') {
       const result = await handleDetails(query.trim(), firecrawlKey, result_url, website_url, location?.trim(), latitude, longitude);
-      const suggestion = autoDetectTargetTable(result.data);
-      return new Response(JSON.stringify({ success: true, ...result, suggested_target: suggestion }), { headers: jsonHeaders });
+      return new Response(JSON.stringify({ success: true, ...result }), { headers: jsonHeaders });
     }
 
     return new Response(JSON.stringify({ success: false, error: "Invalid mode." }), { status: 400, headers: jsonHeaders });
