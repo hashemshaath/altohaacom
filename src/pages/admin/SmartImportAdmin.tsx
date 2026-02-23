@@ -494,7 +494,7 @@ export default function SmartImportAdmin() {
                               key={item.id}
                               className={`w-full text-start p-3 rounded-lg transition-all ${
                                 isLoading
-                                  ? 'bg-primary/10 border border-primary/30 shadow-sm animate-pulse'
+                                  ? 'bg-primary/10 border border-primary/30 shadow-sm'
                                   : isSelected
                                   ? 'bg-primary/10 border border-primary/30 shadow-sm'
                                   : 'hover:bg-accent/50 border border-transparent'
@@ -502,8 +502,8 @@ export default function SmartImportAdmin() {
                               onClick={() => !loadingDetails && handleResultClick(item)}
                               disabled={loadingDetails}
                             >
-                              <div className="flex items-start gap-2">
-                                <div className="w-8 h-8 rounded-full bg-red-500/10 flex items-center justify-center shrink-0 mt-0.5">
+                              <div className="flex items-start gap-2.5">
+                                <div className={`w-9 h-9 rounded-lg flex items-center justify-center shrink-0 mt-0.5 ${isSelected ? 'bg-primary/15' : 'bg-red-500/10'}`}>
                                   {isLoading ? (
                                     <Loader2 className="h-4 w-4 text-primary animate-spin" />
                                   ) : (
@@ -511,32 +511,46 @@ export default function SmartImportAdmin() {
                                   )}
                                 </div>
                                 <div className="flex-1 min-w-0">
-                                  <p className="font-medium text-sm truncate">{item.name}</p>
-                                  <p className="text-xs text-muted-foreground line-clamp-2 mt-0.5">{item.description}</p>
-                                  <div className="flex items-center gap-2 mt-1.5 flex-wrap">
-                                    <Badge variant="outline" className="text-[10px] h-4 px-1.5 bg-red-500/10 text-red-600 border-red-500/20">
-                                      <MapPin className="h-2.5 w-2.5 me-0.5" /> Google Maps
-                                    </Badge>
-                                    {item.rating && (
-                                      <span className="flex items-center gap-0.5 text-xs font-medium">
+                                  <div className="flex items-center gap-2">
+                                    <p className="font-semibold text-sm truncate">{item.name}</p>
+                                    {item.rating != null && (
+                                      <span className="flex items-center gap-0.5 text-xs font-medium shrink-0">
                                         <Star className="h-3 w-3 text-yellow-500 fill-yellow-500" />
                                         {item.rating}
-                                        {item.total_reviews != null && (
-                                          <span className="text-muted-foreground font-normal">({item.total_reviews})</span>
-                                        )}
                                       </span>
                                     )}
-                                    {item.place_type && (
-                                      <span className="text-[10px] text-muted-foreground">{item.place_type}</span>
+                                  </div>
+                                  {item.place_type && (
+                                    <p className="text-[11px] text-muted-foreground mt-0.5">{item.place_type}</p>
+                                  )}
+                                  {item.description && (
+                                    <p className="text-xs text-muted-foreground/80 line-clamp-1 mt-0.5">{item.description}</p>
+                                  )}
+                                  <div className="flex items-center gap-1.5 mt-1.5">
+                                    {item.google_maps_url && (
+                                      <Badge variant="outline" className="text-[9px] h-[18px] px-1 bg-red-500/10 text-red-600 border-red-500/20 gap-0.5">
+                                        <MapPin className="h-2 w-2" /> Maps
+                                      </Badge>
+                                    )}
+                                    {item.latitude != null && (
+                                      <Badge variant="outline" className="text-[9px] h-[18px] px-1 bg-blue-500/10 text-blue-600 border-blue-500/20 gap-0.5">
+                                        📍 {item.latitude.toFixed(2)}, {item.longitude?.toFixed(2)}
+                                      </Badge>
+                                    )}
+                                    {item.total_reviews != null && (
+                                      <span className="text-[10px] text-muted-foreground">({item.total_reviews} {isAr ? "تقييم" : "reviews"})</span>
                                     )}
                                   </div>
                                 </div>
-                                <ChevronRight className="h-4 w-4 text-muted-foreground/40 shrink-0 mt-2" />
+                                <ChevronRight className={`h-4 w-4 shrink-0 mt-2 transition-colors ${isSelected ? 'text-primary' : 'text-muted-foreground/30'}`} />
                               </div>
                               {isLoading && (
-                                <p className="text-xs text-primary mt-2 text-center">
-                                  {isAr ? "جاري جلب البيانات..." : "Fetching data..."}
-                                </p>
+                                <div className="flex items-center justify-center gap-2 mt-2 pt-2 border-t border-primary/10">
+                                  <Loader2 className="h-3 w-3 text-primary animate-spin" />
+                                  <p className="text-xs text-primary font-medium">
+                                    {isAr ? "جاري جلب التفاصيل من مصادر متعددة..." : "Fetching details from multiple sources..."}
+                                  </p>
+                                </div>
                               )}
                             </button>
                           );

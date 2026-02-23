@@ -66,73 +66,119 @@ async function firecrawlScrape(url: string, apiKey: string): Promise<string | nu
   }
 }
 
-// ─── Parse Google Maps search results ───
-function parseGoogleMapsResults(raw: any[]): SearchResult[] {
-  // Only keep Google Maps results
-  const mapsResults = raw.filter(item => {
-    const url = item.url || '';
-    return /google\.\w+\/maps/i.test(url);
-  });
+// ─── MODE: SEARCH — Scrape Google Maps search page + use AI to extract entities ───
+async function handleSearch(query: string, apiKey: string, lovableKey: string, location?: string): Promise<SearchResult[]> {
+  const searchTerm = location ? `${query} ${location}` : query;
+  console.log('[SmartImport] Searching Google Maps for:', searchTerm);
 
-  return mapsResults.slice(0, 15).map((item: any, i: number) => {
-    const url = item.url || '';
-    const title = (item.title || '').replace(/\s*[-–|]\s*Google\s*Maps?$/i, '').trim();
-    const desc = item.description || '';
-    const markdown = item.markdown || '';
-    const fullText = `${desc} ${markdown}`;
+  // Scrape Google Maps search results page directly
+  const mapsUrl = `https://www.google.com/maps/search/${encodeURIComponent(searchTerm)}`;
+  const scraped = await firecrawlScrape(mapsUrl, apiKey);
 
-    // Extract coordinates from Google Maps URLs
-    const coordMatch = url.match(/@(-?\d+\.\d+),(-?\d+\.\d+)/);
-    
-    // Extract rating - try multiple patterns
-    const ratingMatch = fullText.match(/(\d\.\d)\s*(?:star|⭐|rating|نجوم|out of 5)/i)
-      || fullText.match(/(?:Rating|Rated|التقييم)[:\s]*(\d\.\d)/i)
-      || desc.match(/(\d\.\d)/);
-    
-    // Extract reviews count
-    const reviewMatch = fullText.match(/(\d[\d,]*)\s*(?:review|تقييم|Google review)/i)
-      || fullText.match(/\((\d[\d,]*)\)/);
+  if (!scraped || scraped.length < 50) {
+    console.log('[SmartImport] Google Maps scrape returned little content, trying search API fallback');
+    // Fallback: use search API with specific query
+    const searchResults = await firecrawlSearch(`"${query}" ${location || ''} site:google.com/maps`, apiKey, 15);
+    if (searchResults.length) {
+      return extractEntitiesFromSearchResults(searchResults);
+    }
+    return [];
+  }
 
-    // Extract place type/category
-    const typeMatch = fullText.match(/(?:Category|Type|النوع)[:\s]*([^\n,]+)/i);
+  console.log(`[SmartImport] Scraped ${scraped.length} chars from Google Maps`);
 
-    return {
-      id: `sr_${i}_${Date.now()}`,
-      name: title || 'Unknown',
-      description: desc,
-      url,
-      latitude: coordMatch ? parseFloat(coordMatch[1]) : null,
-      longitude: coordMatch ? parseFloat(coordMatch[2]) : null,
-      rating: ratingMatch ? parseFloat(ratingMatch[1]) : null,
-      total_reviews: reviewMatch ? parseInt(reviewMatch[1].replace(/,/g, '')) : null,
-      google_maps_url: url,
-      place_type: typeMatch ? typeMatch[1].trim() : null,
-    };
-  });
+  // Use AI to extract structured entities from the scraped maps content
+  const entities = await extractEntitiesWithAI(scraped, searchTerm, lovableKey);
+  return entities;
 }
 
-// ─── MODE: SEARCH (Google Maps only) ───
-async function handleSearch(query: string, apiKey: string, location?: string): Promise<SearchResult[]> {
-  const baseQuery = location ? `${query} ${location}` : query;
-  console.log('[SmartImport] Google Maps Search:', baseQuery);
-
-  // Search exclusively on Google Maps with multiple queries for better coverage
-  const [mapsResults1, mapsResults2] = await Promise.all([
-    firecrawlSearch(`${baseQuery} site:google.com/maps`, apiKey, 10),
-    firecrawlSearch(`${baseQuery} google maps`, apiKey, 10),
-  ]);
-
-  // Merge and deduplicate by URL
-  const combined = [...mapsResults1, ...mapsResults2];
+// ─── Extract entities from Firecrawl search results ───
+function extractEntitiesFromSearchResults(raw: any[]): SearchResult[] {
   const seen = new Set<string>();
-  const unique = combined.filter(item => {
+  return raw.filter(item => {
     const url = item.url || '';
     if (!url || seen.has(url)) return false;
     seen.add(url);
     return true;
+  }).slice(0, 15).map((item, i) => {
+    const url = item.url || '';
+    const title = (item.title || '').replace(/\s*[-–|]\s*Google\s*Maps?$/i, '').trim();
+    const coordMatch = url.match(/@(-?\d+\.\d+),(-?\d+\.\d+)/);
+    return {
+      id: `sr_${i}_${Date.now()}`,
+      name: title || 'Unknown',
+      description: (item.description || '').substring(0, 200),
+      url,
+      latitude: coordMatch ? parseFloat(coordMatch[1]) : null,
+      longitude: coordMatch ? parseFloat(coordMatch[2]) : null,
+      rating: null,
+      total_reviews: null,
+      google_maps_url: /google\.\w+\/maps/i.test(url) ? url : null,
+      place_type: null,
+    };
   });
+}
 
-  return parseGoogleMapsResults(unique);
+// ─── Use AI to extract entity list from scraped Google Maps content ───
+async function extractEntitiesWithAI(scraped: string, searchTerm: string, lovableKey: string): Promise<SearchResult[]> {
+  const prompt = `You are a data extraction assistant. From the following Google Maps search results page content, extract ALL business/entity listings found.
+
+SEARCH TERM: "${searchTerm}"
+
+SCRAPED GOOGLE MAPS CONTENT:
+${scraped.substring(0, 8000)}
+
+Extract each entity and return a JSON array. Each entity should have:
+- name: Business/entity name (clean, no extra characters)
+- description: Short description or category (e.g. "Restaurant", "Hotel", "Kitchen supplies store")
+- rating: Google rating number (e.g. 4.5) or null
+- total_reviews: Number of reviews or null  
+- place_type: Category/type of business or null
+- latitude: latitude if found in any URL or data, or null
+- longitude: longitude if found in any URL or data, or null
+- google_maps_url: Direct Google Maps URL for this place if available, or null
+- address: Short address if visible, or null
+
+IMPORTANT:
+- Extract ALL entities/businesses listed, not just the first one
+- Only include REAL businesses found in the content
+- Do NOT make up or hallucinate businesses
+- Return ONLY a valid JSON array, nothing else
+
+Return format: [{"name":"...","description":"...","rating":4.5,"total_reviews":100,"place_type":"...","latitude":null,"longitude":null,"google_maps_url":null,"address":"..."}]`;
+
+  try {
+    const res = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
+      method: 'POST',
+      headers: { 'Authorization': `Bearer ${lovableKey}`, 'Content-Type': 'application/json' },
+      body: JSON.stringify({ 
+        model: 'google/gemini-2.5-flash', 
+        messages: [{ role: 'user', content: prompt }], 
+        temperature: 0.1 
+      }),
+    });
+    const data = await res.json();
+    const content = data.choices?.[0]?.message?.content || '';
+    const jsonMatch = content.match(/\[[\s\S]*\]/);
+    if (jsonMatch) {
+      const entities = JSON.parse(jsonMatch[0]);
+      return entities.map((e: any, i: number) => ({
+        id: `sr_${i}_${Date.now()}`,
+        name: e.name || 'Unknown',
+        description: e.address ? `${e.description || e.place_type || ''} • ${e.address}`.trim() : (e.description || e.place_type || ''),
+        url: e.google_maps_url || `https://www.google.com/maps/search/${encodeURIComponent(e.name)}`,
+        latitude: e.latitude || null,
+        longitude: e.longitude || null,
+        rating: e.rating || null,
+        total_reviews: e.total_reviews || null,
+        google_maps_url: e.google_maps_url || null,
+        place_type: e.place_type || e.description || null,
+      }));
+    }
+  } catch (e) {
+    console.error('[SmartImport] AI entity extraction error:', e);
+  }
+  return [];
 }
 
 // ─── MODE: DETAILS ───
@@ -147,12 +193,9 @@ async function handleDetails(
 ): Promise<{ data: any; sources_used: Record<string, boolean> }> {
   const sources = { google_maps: false, web_search: false, website: false, ai: true };
 
-  // Run scrape (Google Maps page) + search + website in parallel
   const scrapePromise = resultUrl ? firecrawlScrape(resultUrl, apiKey) : Promise.resolve(null);
-  
   const searchQuery = location ? `${query} ${location} contact address phone` : `${query} contact address phone`;
   const searchPromise = firecrawlSearch(searchQuery, apiKey, 5);
-  
   const websitePromise = websiteUrl ? firecrawlScrape(websiteUrl, apiKey) : Promise.resolve(null);
 
   const [scraped, searchRaw, websiteContent] = await Promise.all([scrapePromise, searchPromise, websitePromise]);
@@ -168,8 +211,8 @@ async function handleDetails(
     ).join('\n\n---\n\n');
   }
 
-  console.log('[SmartImport] Sources:', sources);
-  const enriched = await enrichWithAI(scraped, searchContent, websiteContent, query, latitude, longitude);
+  const lovableKey = Deno.env.get('LOVABLE_API_KEY')!;
+  const enriched = await enrichWithAI(scraped, searchContent, websiteContent, query, latitude, longitude, lovableKey);
   return { data: enriched, sources_used: sources };
 }
 
@@ -181,8 +224,9 @@ async function enrichWithAI(
   query: string,
   lat?: number | null,
   lng?: number | null,
+  lovableKey?: string,
 ): Promise<any> {
-  const apiKey = Deno.env.get('LOVABLE_API_KEY');
+  const apiKey = lovableKey || Deno.env.get('LOVABLE_API_KEY');
   if (!apiKey) { console.error('LOVABLE_API_KEY not set'); return {}; }
 
   const prompt = `You are a bilingual data enrichment assistant (Arabic & English). Given raw scraped data from Google Maps and web search results, produce a clean, structured JSON object with REAL data only.
@@ -238,7 +282,15 @@ Deno.serve(async (req) => {
     const firecrawlKey = Deno.env.get('FIRECRAWL_API_KEY');
     if (!firecrawlKey) {
       return new Response(
-        JSON.stringify({ success: false, error: "Firecrawl is not configured. Please connect the Firecrawl connector." }),
+        JSON.stringify({ success: false, error: "Firecrawl is not configured." }),
+        { status: 400, headers: jsonHeaders }
+      );
+    }
+
+    const lovableKey = Deno.env.get('LOVABLE_API_KEY');
+    if (!lovableKey) {
+      return new Response(
+        JSON.stringify({ success: false, error: "AI service not configured." }),
         { status: 400, headers: jsonHeaders }
       );
     }
@@ -248,7 +300,7 @@ Deno.serve(async (req) => {
     }
 
     if (mode === 'search') {
-      const results = await handleSearch(query.trim(), firecrawlKey, location?.trim());
+      const results = await handleSearch(query.trim(), firecrawlKey, lovableKey, location?.trim());
       return new Response(JSON.stringify({ success: true, results }), { headers: jsonHeaders });
     }
 
@@ -257,7 +309,7 @@ Deno.serve(async (req) => {
       return new Response(JSON.stringify({ success: true, ...result }), { headers: jsonHeaders });
     }
 
-    return new Response(JSON.stringify({ success: false, error: "Invalid mode. Use 'search' or 'details'." }), { status: 400, headers: jsonHeaders });
+    return new Response(JSON.stringify({ success: false, error: "Invalid mode." }), { status: 400, headers: jsonHeaders });
   } catch (error) {
     console.error('[SmartImport] Error:', error);
     const msg = (error as Error).message;
