@@ -372,7 +372,10 @@ export default function EntitiesAdmin() {
                       onDelete={(id) => deleteMutation.mutate(id)}
                       onToggleVisibility={(id, visible) => toggleVisibility.mutate({ id, visible })}
                       onManage={(id, name) => setManagingEntity({ id, name })}
-                      onStatusChange={(id, status) => changeStatus.mutate({ id, status: status as Database["public"]["Enums"]["entity_status"] })}
+                      onStatusChange={(id, status) => {
+                        const ent = entities?.find(e => e.id === id);
+                        changeStatus.mutate({ id, status: status as Database["public"]["Enums"]["entity_status"], entityName: ent?.name, entityNameAr: ent?.name_ar || undefined, createdBy: ent?.created_by });
+                      }}
                       onVerifiedChange={(id, verified) => changeVerified.mutate({ id, verified })}
                     />
                   ))
