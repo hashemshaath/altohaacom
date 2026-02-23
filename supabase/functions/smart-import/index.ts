@@ -35,6 +35,49 @@ async function searchGooglePlaces(query: string, apiKey: string, location?: stri
   return detailsData.result || null;
 }
 
+async function searchWithFirecrawl(query: string, firecrawlKey: string, location?: string): Promise<{ websiteUrl: string | null; searchContent: string | null }> {
+  try {
+    const searchQuery = location ? `${query} ${location}` : query;
+    console.log('Firecrawl web search:', searchQuery);
+    
+    const res = await fetch('https://api.firecrawl.dev/v1/search', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${firecrawlKey}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        query: searchQuery,
+        limit: 5,
+        scrapeOptions: { formats: ['markdown'] },
+      }),
+    });
+    
+    const data = await res.json();
+    if (!data?.success || !data?.data?.length) {
+      console.log('Firecrawl search returned no results');
+      return { websiteUrl: null, searchContent: null };
+    }
+
+    // Collect content from search results
+    const results = data.data.slice(0, 3);
+    const combinedContent = results.map((r: any) => {
+      const title = r.title || '';
+      const desc = r.description || '';
+      const md = r.markdown ? r.markdown.substring(0, 1500) : '';
+      return `## ${title}\nURL: ${r.url}\n${desc}\n${md}`;
+    }).join('\n\n---\n\n');
+
+    // First result URL as the main website
+    const mainUrl = results[0]?.url || null;
+    
+    return { websiteUrl: mainUrl, searchContent: combinedContent };
+  } catch (e) {
+    console.error('Firecrawl search error:', e);
+    return { websiteUrl: null, searchContent: null };
+  }
+}
+
 async function scrapeWebsite(url: string, firecrawlKey: string): Promise<string | null> {
   try {
     let formattedUrl = url.trim();
@@ -47,7 +90,7 @@ async function scrapeWebsite(url: string, firecrawlKey: string): Promise<string 
     const data = await res.json();
     return data?.data?.markdown || null;
   } catch (e) {
-    console.error('Firecrawl error:', e);
+    console.error('Firecrawl scrape error:', e);
     return null;
   }
 }
@@ -67,58 +110,65 @@ function extractAddressComponents(components: PlaceResult['address_components'])
   };
 }
 
-async function enrichWithAI(placeData: any, websiteContent: string | null): Promise<any> {
+async function enrichWithAI(placeData: any, websiteContent: string | null, searchContent: string | null, originalQuery: string): Promise<any> {
   const apiKey = Deno.env.get('LOVABLE_API_KEY');
   if (!apiKey) { console.error('LOVABLE_API_KEY not set'); return placeData; }
 
-  const prompt = `You are a bilingual data enrichment assistant (Arabic & English). Given raw business data, produce a clean, structured JSON object. Fill in missing fields intelligently.
+  const hasRealData = Object.keys(placeData).length > 0 || websiteContent || searchContent;
 
-RAW PLACE DATA:
-${JSON.stringify(placeData, null, 2)}
+  const prompt = `You are a bilingual data enrichment assistant (Arabic & English). Given raw business data and web search results, produce a clean, structured JSON object with REAL data only. 
+
+IMPORTANT RULES:
+- Only include data you can verify from the provided sources
+- If a field has no real data, set it to null (NOT placeholder text)
+- The original search query was: "${originalQuery}"
+- Extract real business information from the search results and website content
+
+${Object.keys(placeData).length > 0 ? `RAW PLACE DATA:\n${JSON.stringify(placeData, null, 2)}` : ''}
+
+${searchContent ? `WEB SEARCH RESULTS:\n${searchContent.substring(0, 4000)}` : ''}
 
 ${websiteContent ? `WEBSITE CONTENT (first 3000 chars):\n${websiteContent.substring(0, 3000)}` : ''}
 
-Return ONLY valid JSON with this exact structure (no markdown, no comments):
+Return ONLY valid JSON with this exact structure (no markdown, no comments). Use null for unknown fields, NOT placeholder text:
 {
-  "name_en": "English business name",
-  "name_ar": "Arabic business name (translate if not available)",
-  "description_en": "Brief English description (2-3 sentences about the business)",
-  "description_ar": "Brief Arabic description (2-3 sentences)",
-  "city_en": "City in English",
-  "city_ar": "City in Arabic",
-  "neighborhood_en": "Neighborhood in English",
-  "neighborhood_ar": "Neighborhood in Arabic",
-  "street_en": "Street name in English",
-  "street_ar": "Street name in Arabic",
-  "full_address_en": "Full formatted address in English",
-  "full_address_ar": "Full formatted address in Arabic",
-  "postal_code": "Postal/ZIP code",
-  "country_en": "Country in English",
-  "country_ar": "Country in Arabic",
-  "country_code": "2-letter ISO code",
-  "phone": "Primary phone with country code",
-  "phone_secondary": "Secondary phone if found",
-  "email": "Business email if found",
-  "website": "Website URL",
-  "business_hours": [
-    {"day_en": "Monday", "day_ar": "الاثنين", "open": "09:00", "close": "22:00", "is_closed": false}
-  ],
-  "business_type_en": "Type of business in English",
-  "business_type_ar": "Type of business in Arabic",
+  "name_en": "English business name or null",
+  "name_ar": "Arabic business name or null",
+  "description_en": "Real description from sources or null",
+  "description_ar": "Real Arabic description or null",
+  "city_en": null,
+  "city_ar": null,
+  "neighborhood_en": null,
+  "neighborhood_ar": null,
+  "street_en": null,
+  "street_ar": null,
+  "full_address_en": null,
+  "full_address_ar": null,
+  "postal_code": null,
+  "country_en": null,
+  "country_ar": null,
+  "country_code": null,
+  "phone": null,
+  "phone_secondary": null,
+  "email": null,
+  "website": null,
+  "business_hours": [],
+  "business_type_en": null,
+  "business_type_ar": null,
   "rating": null,
   "total_reviews": null,
   "latitude": null,
   "longitude": null,
-  "google_maps_url": "",
-  "national_id": "Commercial/national registration if found on website",
-  "social_media": { "instagram": "", "twitter": "", "facebook": "", "linkedin": "", "tiktok": "" }
+  "google_maps_url": null,
+  "national_id": null,
+  "social_media": { "instagram": null, "twitter": null, "facebook": null, "linkedin": null, "tiktok": null }
 }`;
 
   try {
     const res = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
       method: 'POST',
       headers: { 'Authorization': `Bearer ${apiKey}`, 'Content-Type': 'application/json' },
-      body: JSON.stringify({ model: 'google/gemini-2.5-flash', messages: [{ role: 'user', content: prompt }], temperature: 0.2 }),
+      body: JSON.stringify({ model: 'google/gemini-2.5-flash', messages: [{ role: 'user', content: prompt }], temperature: 0.1 }),
     });
     const data = await res.json();
     const content = data.choices?.[0]?.message?.content || '';
@@ -155,71 +205,71 @@ Deno.serve(async (req) => {
 
     let placeData: any = {};
     let websiteContent: string | null = null;
-    const sourcesUsed = { google_places: false, website: false, ai: true };
+    let searchContent: string | null = null;
+    const sourcesUsed = { google_places: false, firecrawl_search: false, website: false, ai: true };
 
-    // 1. Google Places API — always attempt
+    // Get configs
     const adminClient = createClient(Deno.env.get("SUPABASE_URL")!, Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!);
     const { data: placesConfig } = await adminClient.from('integration_settings').select('config, is_active').eq('integration_type', 'google_places').single();
+    const firecrawlKey = Deno.env.get('FIRECRAWL_API_KEY');
 
+    const hasGooglePlaces = placesConfig?.is_active && (placesConfig.config as any)?.api_key;
+
+    // Run Google Places and Firecrawl search in parallel
     const googlePlacesPromise = (async () => {
-      if (placesConfig?.is_active && (placesConfig.config as any)?.api_key) {
-        console.log('Searching Google Places for:', query);
-        const place = await searchGooglePlaces(query, (placesConfig.config as any).api_key, location);
-        if (place) {
-          sourcesUsed.google_places = true;
-          const addr = extractAddressComponents(place.address_components);
-          return {
-            name_en: place.name,
-            formatted_address: place.formatted_address,
-            phone: place.international_phone_number || place.formatted_phone_number,
-            website: place.website,
-            business_hours_raw: place.opening_hours?.weekday_text,
-            business_hours_periods: place.opening_hours?.periods,
-            ...addr,
-            latitude: place.geometry?.location?.lat,
-            longitude: place.geometry?.location?.lng,
-            rating: place.rating,
-            total_reviews: place.user_ratings_total,
-            google_maps_url: place.url,
-            business_status: place.business_status,
-            types: place.types,
-          };
-        }
+      if (!hasGooglePlaces) return {};
+      console.log('Searching Google Places for:', query);
+      const place = await searchGooglePlaces(query, (placesConfig!.config as any).api_key, location);
+      if (place) {
+        sourcesUsed.google_places = true;
+        const addr = extractAddressComponents(place.address_components);
+        return {
+          name_en: place.name,
+          formatted_address: place.formatted_address,
+          phone: place.international_phone_number || place.formatted_phone_number,
+          website: place.website,
+          business_hours_raw: place.opening_hours?.weekday_text,
+          business_hours_periods: place.opening_hours?.periods,
+          ...addr,
+          latitude: place.geometry?.location?.lat,
+          longitude: place.geometry?.location?.lng,
+          rating: place.rating,
+          total_reviews: place.user_ratings_total,
+          google_maps_url: place.url,
+          business_status: place.business_status,
+          types: place.types,
+        };
       }
       return {};
     })();
 
-    // 2. Firecrawl — always attempt in parallel
-    const firecrawlKey = Deno.env.get('FIRECRAWL_API_KEY');
-    const firecrawlPromise = (async () => {
-      const targetUrl = website_url;
-      if (firecrawlKey && targetUrl) {
-        console.log('Scraping website:', targetUrl);
-        return await scrapeWebsite(targetUrl, firecrawlKey);
-      }
-      // If no explicit URL, try after Google Places resolves
-      return null;
+    // Firecrawl web search — always run for additional data
+    const firecrawlSearchPromise = (async () => {
+      if (!firecrawlKey) return { websiteUrl: null, searchContent: null };
+      return await searchWithFirecrawl(query, firecrawlKey, location);
     })();
 
-    // Await both in parallel
-    const [googleResult, firecrawlResult] = await Promise.all([googlePlacesPromise, firecrawlPromise]);
+    const [googleResult, firecrawlSearchResult] = await Promise.all([googlePlacesPromise, firecrawlSearchPromise]);
     placeData = googleResult;
 
-    // If no explicit URL was given but Google found a website, scrape it
-    const resolvedWebsiteUrl = website_url || placeData.website;
-    if (!firecrawlResult && firecrawlKey && resolvedWebsiteUrl) {
-      console.log('Scraping Google-discovered website:', resolvedWebsiteUrl);
-      websiteContent = await scrapeWebsite(resolvedWebsiteUrl, firecrawlKey);
-    } else {
-      websiteContent = firecrawlResult;
+    if (firecrawlSearchResult.searchContent) {
+      searchContent = firecrawlSearchResult.searchContent;
+      sourcesUsed.firecrawl_search = true;
     }
-    if (websiteContent) sourcesUsed.website = true;
 
-    // 3. AI Enrichment — merge everything
-    console.log('Enriching with AI...');
-    const enrichedData = await enrichWithAI(placeData, websiteContent);
+    // Scrape the website (from Google, user input, or Firecrawl search)
+    const targetUrl = website_url || placeData.website || firecrawlSearchResult.websiteUrl;
+    if (firecrawlKey && targetUrl) {
+      console.log('Scraping website:', targetUrl);
+      websiteContent = await scrapeWebsite(targetUrl, firecrawlKey);
+      if (websiteContent) sourcesUsed.website = true;
+    }
 
-    // Preserve precise fields from Google
+    // AI Enrichment with all collected data
+    console.log('Enriching with AI...', { google: sourcesUsed.google_places, search: sourcesUsed.firecrawl_search, website: sourcesUsed.website });
+    const enrichedData = await enrichWithAI(placeData, websiteContent, searchContent, query);
+
+    // Preserve precise Google fields
     if (placeData.latitude) enrichedData.latitude = placeData.latitude;
     if (placeData.longitude) enrichedData.longitude = placeData.longitude;
     if (placeData.rating) enrichedData.rating = placeData.rating;
