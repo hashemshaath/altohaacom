@@ -525,10 +525,22 @@ Return ONLY valid JSON:
   "tags": [],
   "social_media": {"instagram":null,"twitter":null,"facebook":null,"linkedin":null,"tiktok":null,"youtube":null,"snapchat":null,"whatsapp":null},
   "logo_url": null,
-  "cover_url": null
+  "cover_url": null,
+  "venue_en": null, "venue_ar": null,
+  "start_date": null, "end_date": null,
+  "registration_url": null, "registration_deadline": null,
+  "max_attendees": null,
+  "organizer_name_en": null, "organizer_name_ar": null,
+  "map_url": null,
+  "ticket_price": null, "is_free": null, "is_virtual": null, "virtual_link": null,
+  "target_audience": [],
+  "registration_fee": null,
+  "rules_summary_en": null, "rules_summary_ar": null,
+  "edition_year": null
 }
 
-Extract ALL data. Services & specializations in BOTH languages. Business hours from ACTUAL data (24h format). Social media links. Logo and cover images from available URLs.`;
+Extract ALL data. Services & specializations in BOTH languages. Business hours from ACTUAL data (24h format). Social media links. Logo and cover images from available URLs.
+For exhibitions/conferences/competitions: extract venue, dates (YYYY-MM-DD format), registration info, organizer details, ticket pricing, and target audience.`;
 
   const content = await callAI(prompt, apiKey, 'google/gemini-3-flash-preview', 0.1, 30000);
   try {
