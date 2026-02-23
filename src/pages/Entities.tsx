@@ -77,6 +77,8 @@ export default function Entities() {
       const { data, error } = await supabase
         .from("culinary_entities")
         .select("*, entity_followers(id)")
+        .eq("status", "active")
+        .eq("is_visible", true)
         .order("name");
       if (error) throw error;
       return data;
