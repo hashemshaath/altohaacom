@@ -15,7 +15,8 @@ import {
 } from "@/components/ui/alert-dialog";
 import { ArrowDown, ArrowUp, ArrowUpDown, Building2, CheckSquare, Download, Eye, EyeOff, FileSpreadsheet, FilterX, Plus, Search, Sparkles, Trash2 } from "lucide-react";
 import { Checkbox } from "@/components/ui/checkbox";
-import { SmartImportDialog, type ImportedData } from "@/components/smart-import/SmartImportDialog";
+import { InlineSmartImport } from "@/components/smart-import/InlineSmartImport";
+import type { ImportedData } from "@/components/smart-import/SmartImportDialog";
 import { EntitySubModulesPanel } from "@/components/entities/EntitySubModulesPanel";
 import AdminPageHeader from "@/components/admin/AdminPageHeader";
 import EntityStatsCards from "@/components/admin/entities/EntityStatsCards";
@@ -292,31 +293,45 @@ export default function EntitiesAdmin() {
         />
       )}
 
-      <SmartImportDialog
-        open={showSmartImport}
-        onOpenChange={setShowSmartImport}
-        entityType="entity"
-        onImport={(data: ImportedData) => {
-          setForm(prev => ({
-            ...prev,
-            name: data.name_en || prev.name,
-            name_ar: data.name_ar || prev.name_ar,
-            description: data.description_en || prev.description,
-            description_ar: data.description_ar || prev.description_ar,
-            country: data.country_code || prev.country,
-            city: data.city_en || prev.city,
-            address: data.full_address_en || prev.address,
-            address_ar: data.full_address_ar || prev.address_ar,
-            postal_code: data.postal_code || prev.postal_code,
-            email: data.email || prev.email,
-            phone: data.phone || prev.phone,
-            website: data.website || prev.website,
-            latitude: data.latitude?.toString() || prev.latitude,
-            longitude: data.longitude?.toString() || prev.longitude,
-          }));
-          setShowForm(true);
-        }}
-      />
+      {showSmartImport && (
+        <InlineSmartImport
+          onClose={() => setShowSmartImport(false)}
+          onImport={(data: ImportedData) => {
+            setForm(prev => ({
+              ...prev,
+              name: data.name_en || prev.name,
+              name_ar: data.name_ar || prev.name_ar,
+              description: data.description_en || prev.description,
+              description_ar: data.description_ar || prev.description_ar,
+              country: data.country_code || prev.country,
+              city: data.city_en || prev.city,
+              address: data.full_address_en || prev.address,
+              address_ar: data.full_address_ar || prev.address_ar,
+              postal_code: data.postal_code || prev.postal_code,
+              email: data.email || prev.email,
+              phone: data.phone || prev.phone,
+              website: data.website || prev.website,
+              latitude: data.latitude?.toString() || prev.latitude,
+              longitude: data.longitude?.toString() || prev.longitude,
+              mission: data.mission_en || prev.mission,
+              mission_ar: data.mission_ar || prev.mission_ar,
+              president_name: data.president_name_en || prev.president_name,
+              president_name_ar: data.president_name_ar || prev.president_name_ar,
+              secretary_name: data.secretary_name_en || prev.secretary_name,
+              secretary_name_ar: data.secretary_name_ar || prev.secretary_name_ar,
+              founded_year: data.founded_year || prev.founded_year,
+              member_count: data.member_count || prev.member_count,
+              registration_number: data.registration_number || prev.registration_number,
+              license_number: data.license_number || prev.license_number,
+              services_input: data.services_en?.join(", ") || prev.services_input,
+              specializations_input: data.specializations_en?.join(", ") || prev.specializations_input,
+              tags_input: data.tags?.join(", ") || prev.tags_input,
+            }));
+            setShowSmartImport(false);
+            setShowForm(true);
+          }}
+        />
+      )}
 
       {/* Filters */}
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
