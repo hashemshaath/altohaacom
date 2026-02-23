@@ -225,15 +225,24 @@ async function enrichWithAI(
   const apiKey = lovableKey || Deno.env.get('LOVABLE_API_KEY');
   if (!apiKey) { console.error('LOVABLE_API_KEY not set'); return {}; }
 
-  const prompt = `You are a bilingual data enrichment assistant (Arabic & English). Given raw scraped data from Google Maps and web search results, produce a COMPREHENSIVE structured JSON object with ALL available data.
+  const prompt = `You are a bilingual SEO expert and data enrichment assistant (Arabic & English). Given raw scraped data from Google Maps and web search results, produce a COMPREHENSIVE structured JSON object with ALL available data.
 
 RULES:
-- Only include data you can verify from the provided sources
-- If a field has no real data, set it to null
+- MANDATORY: Every _en and _ar field MUST have a value. If only one language is found, TRANSLATE to the other language professionally.
+- If a field has no real data AND cannot be reasonably inferred, set it to null
 - Extract as much information as possible from all sources
-- Provide BOTH English and Arabic values wherever possible
+- Provide BOTH English and Arabic values for ALL bilingual fields — NEVER leave one language empty if the other has data
 - The original search query was: "${query}"
 ${lat && lng ? `- Known coordinates: ${lat}, ${lng}` : ''}
+
+SEO OPTIMIZATION RULES (CRITICAL):
+- "description_en": Write a professional, SEO-optimized description (150-300 chars). Include relevant keywords naturally. Make it compelling for search engines and users. Focus on what the entity does, its location, and unique value proposition.
+- "description_ar": Write the Arabic equivalent with the same SEO quality. Use relevant Arabic keywords naturally. Must be a professional Arabic description, NOT a literal translation.
+- "services_en" and "services_ar": List ALL services found. Each service must be in BOTH languages. Minimum 3 services if any are found. Use industry-standard terminology.
+- "specializations_en" and "specializations_ar": List ALL specializations/expertise areas. Each must be in BOTH languages. Use professional culinary/industry terms.
+- "tags": Include 5-10 relevant SEO keywords in English that describe the entity (used for search indexing)
+- "full_address_en": Complete formatted address in English (Street, Neighborhood, City, Country, Postal Code)
+- "full_address_ar": Complete formatted address in Arabic (الشارع، الحي، المدينة، الدولة، الرمز البريدي)
 
 ${scraped ? `GOOGLE MAPS SCRAPED CONTENT:\n${scraped.substring(0, 6000)}` : ''}
 ${search ? `WEB SEARCH RESULTS:\n${search.substring(0, 5000)}` : ''}
@@ -245,8 +254,8 @@ Return ONLY valid JSON with ALL these fields:
   "name_ar": null,
   "abbreviation_en": null,
   "abbreviation_ar": null,
-  "description_en": null,
-  "description_ar": null,
+  "description_en": "SEO-optimized description in English (150-300 chars with keywords)",
+  "description_ar": "وصف محسّن لمحركات البحث بالعربية (150-300 حرف مع كلمات مفتاحية)",
   "mission_en": null,
   "mission_ar": null,
   "city_en": null,
@@ -255,8 +264,8 @@ Return ONLY valid JSON with ALL these fields:
   "neighborhood_ar": null,
   "street_en": null,
   "street_ar": null,
-  "full_address_en": null,
-  "full_address_ar": null,
+  "full_address_en": "Full formatted address: Street, Neighborhood, City, Country, Postal Code",
+  "full_address_ar": "العنوان الكامل: الشارع، الحي، المدينة، الدولة، الرمز البريدي",
   "postal_code": null,
   "country_en": null,
   "country_ar": null,
@@ -291,12 +300,12 @@ Return ONLY valid JSON with ALL these fields:
   "secretary_name_en": null,
   "secretary_name_ar": null,
   "member_count": null,
-  "services_en": [],
-  "services_ar": [],
-  "specializations_en": [],
-  "specializations_ar": [],
+  "services_en": ["Service 1", "Service 2", "Service 3"],
+  "services_ar": ["الخدمة 1", "الخدمة 2", "الخدمة 3"],
+  "specializations_en": ["Specialization 1", "Specialization 2"],
+  "specializations_ar": ["التخصص 1", "التخصص 2"],
   "affiliated_organizations": [],
-  "tags": [],
+  "tags": ["keyword1", "keyword2", "keyword3", "keyword4", "keyword5"],
   "social_media": {
     "instagram": null,
     "twitter": null,
@@ -311,17 +320,19 @@ Return ONLY valid JSON with ALL these fields:
 
 EXTRACTION GUIDELINES:
 - "abbreviation": Short form / acronym of the entity name if commonly used
-- "mission": The entity's mission statement or vision
+- "mission": The entity's mission statement or vision — MUST be in BOTH languages
 - "founded_year": Year the entity was established (integer like 1995)
-- "president_name" / "secretary_name": Leadership names if found
+- "president_name" / "secretary_name": Leadership names if found — provide in BOTH en and ar
 - "member_count": Number of members if the entity is an association
-- "services": List of services the entity provides
-- "specializations": Areas of expertise or focus
+- "services": CRITICAL — List ALL services found from ALL sources. Each service MUST appear in BOTH services_en AND services_ar arrays at the same index. If only one language is found, translate professionally.
+- "specializations": CRITICAL — List ALL areas of expertise. Each MUST be in BOTH languages. Use professional industry terminology.
 - "affiliated_organizations": Names of partner/parent organizations
-- "tags": Relevant keywords describing the entity
+- "tags": 5-10 relevant English SEO keywords for search indexing (e.g., "restaurant", "fine dining", "Saudi cuisine", "Riyadh")
 - "registration_number" / "license_number" / "national_id": Official registration/license numbers
 - "fax": Fax number if available
-- "business_hours": CRITICAL - Return EXACTLY 7 entries, one for each day (Saturday through Friday). Replace the template hours with ACTUAL hours from scraped data. Use 24-hour format ("09:00", "22:00"). Set is_closed=true for closed days. If a day's hours are unknown but business is open, use the most common hours found
+- "description": CRITICAL SEO — Write compelling, keyword-rich descriptions. EN description should include location, type of business, and key offerings. AR description should be equally professional with Arabic SEO keywords, NOT a literal translation.
+- "full_address": CRITICAL — Construct complete addresses in BOTH languages. Include all components: street, neighborhood, city, country, postal code. Format professionally.
+- "business_hours": CRITICAL — Return EXACTLY 7 entries, one for each day (Saturday through Friday). Replace template hours with ACTUAL hours from scraped data. Use 24-hour format. Set is_closed=true for closed days.
 - "social_media": Extract ALL social media links found (Instagram, Twitter/X, Facebook, LinkedIn, TikTok, YouTube, Snapchat, WhatsApp)`;
 
   try {
