@@ -154,7 +154,7 @@ async function handleSearch(query: string, apiKey: string, lovableKey: string, l
   // Parallel: scrape maps + fallback search + web search
   const [scraped, fallbackResults, webResults] = await Promise.all([
     firecrawlScrape(mapsUrl, apiKey, 18000),
-    firecrawlSearch(`"${query}" ${location || ''} site:google.com/maps`, apiKey, 12, 10000),
+    firecrawlSearch(`"${query}" ${location || ''} site:google.com/maps`, apiKey, 20, 10000),
     firecrawlSearch(`${query} ${location || ''} official website`, apiKey, 5, 8000),
   ]);
 
@@ -188,7 +188,7 @@ function extractEntitiesFromSearchResults(raw: any[]): SearchResult[] {
     if (!url || seen.has(url)) return false;
     seen.add(url);
     return true;
-  }).slice(0, 20).map((item, i) => {
+  }).map((item, i) => {
     const url = item.url || '';
     const title = (item.title || '').replace(/\s*[-–|]\s*Google\s*Maps?$/i, '').trim();
     const coordMatch = url.match(/@(-?\d+\.\d+),(-?\d+\.\d+)/);
@@ -207,13 +207,13 @@ function extractEntitiesFromSearchResults(raw: any[]): SearchResult[] {
 }
 
 async function extractEntitiesWithAI(scraped: string, searchTerm: string, lovableKey: string): Promise<SearchResult[]> {
-  const prompt = `Extract ALL business/entity listings from this Google Maps search page.
+  const prompt = `Extract ALL business/entity listings from this Google Maps search page. Do NOT filter or skip any result. Include every single listing regardless of type or category.
 SEARCH: "${searchTerm}"
 CONTENT (truncated):
-${scraped.substring(0, 12000)}
+${scraped.substring(0, 25000)}
 
 Return JSON array: [{"name":"...","description":"...","rating":4.5,"total_reviews":100,"place_type":"...","latitude":null,"longitude":null,"google_maps_url":null,"address":"..."}]
-Rules: Extract ALL real businesses. No hallucination. Return ONLY valid JSON array.`;
+Rules: Extract EVERY listing without exception. No filtering. No hallucination. Return ONLY valid JSON array.`;
 
   // Use flash for fast search parsing
   const content = await callAI(prompt, lovableKey, 'google/gemini-2.5-flash', 0.1, 15000);
