@@ -189,27 +189,40 @@ async function handleDetails(
 ): Promise<{ data: any; sources_used: Record<string, boolean> }> {
   const sources = { google_maps: false, web_search: false, website: false, ai: true };
 
-  const scrapePromise = resultUrl ? firecrawlScrape(resultUrl, apiKey) : Promise.resolve(null);
-  const searchQuery = location ? `${query} ${location} contact address phone email about` : `${query} contact address phone email about`;
-  const searchPromise = firecrawlSearch(searchQuery, apiKey, 8);
-  const websitePromise = websiteUrl ? firecrawlScrape(websiteUrl, apiKey) : Promise.resolve(null);
+  // Use AbortController with 25s timeout to prevent edge function timeout
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), 25000);
 
-  const [scraped, searchRaw, websiteContent] = await Promise.all([scrapePromise, searchPromise, websitePromise]);
+  try {
+    // Run scrapes in parallel with timeout protection
+    const scrapePromise = resultUrl 
+      ? firecrawlScrape(resultUrl, apiKey).catch(() => null) 
+      : Promise.resolve(null);
+    const searchQuery = location ? `${query} ${location} contact address phone email about` : `${query} contact address phone email about`;
+    const searchPromise = firecrawlSearch(searchQuery, apiKey, 5).catch(() => []);
+    const websitePromise = websiteUrl 
+      ? firecrawlScrape(websiteUrl, apiKey).catch(() => null) 
+      : Promise.resolve(null);
 
-  if (scraped) sources.google_maps = true;
-  if (websiteContent) sources.website = true;
+    const [scraped, searchRaw, websiteContent] = await Promise.all([scrapePromise, searchPromise, websitePromise]);
 
-  let searchContent: string | null = null;
-  if (searchRaw.length) {
-    sources.web_search = true;
-    searchContent = searchRaw.slice(0, 8).map((r: any) =>
-      `## ${r.title || ''}\nURL: ${r.url}\n${r.description || ''}\n${(r.markdown || '').substring(0, 2500)}`
-    ).join('\n\n---\n\n');
+    if (scraped) sources.google_maps = true;
+    if (websiteContent) sources.website = true;
+
+    let searchContent: string | null = null;
+    if (searchRaw.length) {
+      sources.web_search = true;
+      searchContent = searchRaw.slice(0, 5).map((r: any) =>
+        `## ${r.title || ''}\nURL: ${r.url}\n${r.description || ''}\n${(r.markdown || '').substring(0, 1500)}`
+      ).join('\n\n---\n\n');
+    }
+
+    const lovableKey = Deno.env.get('LOVABLE_API_KEY')!;
+    const enriched = await enrichWithAI(scraped, searchContent, websiteContent, query, latitude, longitude, lovableKey);
+    return { data: enriched, sources_used: sources };
+  } finally {
+    clearTimeout(timeout);
   }
-
-  const lovableKey = Deno.env.get('LOVABLE_API_KEY')!;
-  const enriched = await enrichWithAI(scraped, searchContent, websiteContent, query, latitude, longitude, lovableKey);
-  return { data: enriched, sources_used: sources };
 }
 
 // ─── AI Enrichment — Comprehensive extraction matching culinary_entities schema ───
@@ -244,9 +257,9 @@ SEO OPTIMIZATION RULES (CRITICAL):
 - "full_address_en": Complete formatted address in English (Street, Neighborhood, City, Country, Postal Code)
 - "full_address_ar": Complete formatted address in Arabic (الشارع، الحي، المدينة، الدولة، الرمز البريدي)
 
-${scraped ? `GOOGLE MAPS SCRAPED CONTENT:\n${scraped.substring(0, 6000)}` : ''}
-${search ? `WEB SEARCH RESULTS:\n${search.substring(0, 5000)}` : ''}
-${website ? `WEBSITE CONTENT:\n${website.substring(0, 4000)}` : ''}
+${scraped ? `GOOGLE MAPS SCRAPED CONTENT:\n${scraped.substring(0, 4000)}` : ''}
+${search ? `WEB SEARCH RESULTS:\n${search.substring(0, 3000)}` : ''}
+${website ? `WEBSITE CONTENT:\n${website.substring(0, 2500)}` : ''}
 
 Return ONLY valid JSON with ALL these fields:
 {
