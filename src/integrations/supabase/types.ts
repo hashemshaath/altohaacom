@@ -17517,6 +17517,7 @@ export type Database = {
       company_status: "active" | "inactive" | "pending" | "suspended"
       company_type: "sponsor" | "supplier" | "partner" | "vendor"
       competition_status:
+        | "pending"
         | "draft"
         | "upcoming"
         | "registration_open"
@@ -17564,6 +17565,7 @@ export type Database = {
         | "college"
         | "training_center"
       exhibition_status:
+        | "pending"
         | "draft"
         | "upcoming"
         | "active"
@@ -17796,6 +17798,7 @@ export const Constants = {
       company_status: ["active", "inactive", "pending", "suspended"],
       company_type: ["sponsor", "supplier", "partner", "vendor"],
       competition_status: [
+        "pending",
         "draft",
         "upcoming",
         "registration_open",
@@ -17848,6 +17851,7 @@ export const Constants = {
         "training_center",
       ],
       exhibition_status: [
+        "pending",
         "draft",
         "upcoming",
         "active",

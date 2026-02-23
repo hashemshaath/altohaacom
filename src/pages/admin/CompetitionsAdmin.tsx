@@ -23,11 +23,12 @@ import type { Database } from "@/integrations/supabase/types";
 type CompetitionStatus = Database["public"]["Enums"]["competition_status"];
 
 const ALL_STATUSES: CompetitionStatus[] = [
-  "draft", "upcoming", "registration_open", "registration_closed",
+  "pending", "draft", "upcoming", "registration_open", "registration_closed",
   "in_progress", "judging", "completed", "cancelled"
 ];
 
 const statusConfig: Record<CompetitionStatus, { bg: string; dot: string; label: string; labelAr: string }> = {
+  pending: { bg: "bg-chart-4/10 text-chart-4", dot: "bg-chart-4", label: "Pending", labelAr: "بانتظار الموافقة" },
   draft: { bg: "bg-muted/60 text-muted-foreground", dot: "bg-muted-foreground", label: "Draft", labelAr: "مسودة" },
   upcoming: { bg: "bg-accent/10 text-accent-foreground", dot: "bg-accent", label: "Upcoming", labelAr: "قادمة" },
   registration_open: { bg: "bg-primary/10 text-primary", dot: "bg-primary", label: "Reg. Open", labelAr: "مفتوح" },
@@ -169,7 +170,7 @@ export default function CompetitionsAdmin() {
       if (error) throw error;
       await supabase.from("admin_actions").insert({ admin_id: user!.id, action_type: "update_competition_status", details: { competition_id: id, new_status: status } });
     },
-    onSuccess: () => { queryClient.invalidateQueries({ queryKey: ["adminCompetitions"] }); toast({ title: isAr ? "تم تحديث الحالة" : "Status updated" }); },
+    onSuccess: () => { queryClient.invalidateQueries({ queryKey: ["adminCompetitions"] }); queryClient.invalidateQueries({ queryKey: ["admin-pending-counts"] }); toast({ title: isAr ? "تم تحديث الحالة" : "Status updated" }); },
     onError: (error) => { toast({ variant: "destructive", title: "Error", description: error.message }); },
   });
 
@@ -203,6 +204,7 @@ export default function CompetitionsAdmin() {
 
   const stats = {
     total: competitions?.length || 0,
+    pending: competitions?.filter(c => c.status === "pending").length || 0,
     active: competitions?.filter(c => ["in_progress", "judging", "registration_open"].includes(c.status)).length || 0,
     completed: competitions?.filter(c => c.status === "completed").length || 0,
     draft: competitions?.filter(c => c.status === "draft").length || 0,
@@ -272,9 +274,10 @@ export default function CompetitionsAdmin() {
         <TabsContent value="list">
 
       {/* Stats */}
-      <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+      <div className="grid grid-cols-2 gap-3 sm:grid-cols-5">
         {[
           { label: isAr ? "الإجمالي" : "Total", value: stats.total, icon: <Trophy className="h-4 w-4 text-primary" /> },
+          { label: isAr ? "معلقة" : "Pending", value: stats.pending, icon: <Calendar className="h-4 w-4 text-chart-4" /> },
           { label: isAr ? "نشطة" : "Active", value: stats.active, icon: <Sparkles className="h-4 w-4 text-chart-3" /> },
           { label: isAr ? "مكتملة" : "Completed", value: stats.completed, icon: <Calendar className="h-4 w-4 text-chart-5" /> },
           { label: isAr ? "مسودة" : "Draft", value: stats.draft, icon: <Edit className="h-4 w-4 text-muted-foreground" /> },
@@ -562,7 +565,7 @@ export default function CompetitionsAdmin() {
                               </DropdownMenuItem>
                             ))}
                             <DropdownMenuSeparator />
-                            {comp.status === "draft" && (
+                            {(comp.status === "draft" || comp.status === "pending") && (
                               <DropdownMenuItem
                                 onClick={() => {
                                   if (confirm(isAr ? "هل أنت متأكد من الحذف؟" : "Are you sure you want to delete?")) {

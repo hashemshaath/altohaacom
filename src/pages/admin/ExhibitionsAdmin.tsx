@@ -17,7 +17,7 @@ import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { toast } from "@/hooks/use-toast";
-import { Plus, Pencil, Trash2, Eye, Landmark, Calendar, MapPin, Building, Ticket, Tag, Globe, Save, X, Loader2, Search, Trophy, GraduationCap, Mic, Image, Users, FileText, Bot, Copy, FileSpreadsheet } from "lucide-react";
+import { Plus, Pencil, Trash2, Eye, Landmark, Calendar, MapPin, Building, Ticket, Tag, Globe, Save, X, Loader2, Search, Trophy, GraduationCap, Mic, Image, Users, FileText, Bot, Copy, FileSpreadsheet, CheckCircle, XCircle } from "lucide-react";
 import { AITextOptimizer } from "@/components/admin/AITextOptimizer";
 import { OrganizerSearchSelector, type OrganizerValue } from "@/components/admin/OrganizerSearchSelector";
 import { ExhibitionMediaUploader } from "@/components/admin/ExhibitionMediaUploader";
@@ -32,6 +32,7 @@ type ExhibitionType = Database["public"]["Enums"]["exhibition_type"];
 type ExhibitionInsert = Database["public"]["Tables"]["exhibitions"]["Insert"];
 
 const statusOptions: { value: ExhibitionStatus; en: string; ar: string }[] = [
+  { value: "pending", en: "Pending Approval", ar: "بانتظار الموافقة" },
   { value: "draft", en: "Draft", ar: "مسودة" },
   { value: "upcoming", en: "Upcoming", ar: "قادمة" },
   { value: "active", en: "Active", ar: "نشطة" },
@@ -50,6 +51,7 @@ const typeOptions: { value: ExhibitionType; en: string; ar: string }[] = [
 ];
 
 const statusColorMap: Record<string, string> = {
+  pending: "bg-chart-4/10 text-chart-4",
   draft: "bg-muted text-muted-foreground",
   upcoming: "bg-chart-4/10 text-chart-4",
   active: "bg-chart-2/10 text-chart-2",
@@ -217,6 +219,36 @@ export default function ExhibitionsAdmin() {
     },
   });
 
+  const approveExhibition = useMutation({
+    mutationFn: async (id: string) => {
+      const { error } = await supabase.from("exhibitions").update({ status: "draft" as ExhibitionStatus }).eq("id", id);
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["admin-exhibitions"] });
+      queryClient.invalidateQueries({ queryKey: ["admin-pending-counts"] });
+      toast({ title: t("Exhibition approved and moved to draft", "تمت الموافقة ونقلها إلى مسودة") });
+    },
+    onError: (err: any) => {
+      toast({ title: t("Error", "خطأ"), description: err.message, variant: "destructive" });
+    },
+  });
+
+  const rejectExhibition = useMutation({
+    mutationFn: async (id: string) => {
+      const { error } = await supabase.from("exhibitions").update({ status: "cancelled" as ExhibitionStatus }).eq("id", id);
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["admin-exhibitions"] });
+      queryClient.invalidateQueries({ queryKey: ["admin-pending-counts"] });
+      toast({ title: t("Exhibition rejected", "تم رفض الفعالية") });
+    },
+    onError: (err: any) => {
+      toast({ title: t("Error", "خطأ"), description: err.message, variant: "destructive" });
+    },
+  });
+
   const resetForm = () => {
     setForm(emptyForm);
     setTagsInput("");
@@ -324,9 +356,10 @@ export default function ExhibitionsAdmin() {
 
       {/* Quick Stats */}
       {exhibitions && exhibitions.length > 0 && (
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+        <div className="grid grid-cols-2 sm:grid-cols-5 gap-3">
           {[
             { label: t("Total", "الإجمالي"), value: exhibitions.length, color: "text-foreground" },
+            { label: t("Pending", "معلقة"), value: exhibitions.filter(e => e.status === "pending").length, color: "text-chart-4" },
             { label: t("Active", "نشطة"), value: exhibitions.filter(e => e.status === "active").length, color: "text-chart-2" },
             { label: t("Upcoming", "قادمة"), value: exhibitions.filter(e => e.status === "upcoming").length, color: "text-chart-4" },
             { label: t("Draft", "مسودة"), value: exhibitions.filter(e => e.status === "draft").length, color: "text-muted-foreground" },
@@ -851,6 +884,16 @@ export default function ExhibitionsAdmin() {
                     </TableCell>
                     <TableCell>
                       <div className="flex justify-end gap-1">
+                        {ex.status === "pending" && (
+                          <>
+                            <Button size="icon" variant="ghost" onClick={() => approveExhibition.mutate(ex.id)} className="h-8 w-8 text-chart-2 hover:text-chart-2" title={t("Approve", "موافقة")}>
+                              <CheckCircle className="h-4 w-4" />
+                            </Button>
+                            <Button size="icon" variant="ghost" onClick={() => rejectExhibition.mutate(ex.id)} className="h-8 w-8 text-destructive hover:text-destructive" title={t("Reject", "رفض")}>
+                              <XCircle className="h-4 w-4" />
+                            </Button>
+                          </>
+                        )}
                         <Button size="icon" variant="ghost" asChild className="h-8 w-8">
                           <Link to={`/exhibitions/${ex.slug}`} title={t("View", "عرض")}>
                             <Eye className="h-4 w-4" />
