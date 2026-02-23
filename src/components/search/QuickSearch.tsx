@@ -80,50 +80,75 @@ export function QuickSearch({ onClose }: QuickSearchProps) {
     queryKey: ["quick-search", debouncedQuery],
     queryFn: async () => {
       if (!debouncedQuery || debouncedQuery.length < 2) {
-        return { competitions: [], articles: [], members: [] };
+        return { competitions: [], articles: [], members: [], posts: [], entities: [] };
       }
 
-      const searchPattern = `%${debouncedQuery}%`;
+      // Use the first word for DB-level filtering (broader match), refine client-side for multi-word
+      const words = debouncedQuery.trim().split(/\s+/).filter(w => w.length >= 2);
+      const firstWord = words[0] || debouncedQuery;
+      const searchPattern = `%${firstWord}%`;
 
       const [competitionsRes, articlesRes, membersRes, postsRes, entitiesRes] = await Promise.all([
         supabase
           .from("competitions")
-          .select("id, title, title_ar, status, cover_image_url")
+          .select("id, title, title_ar, description, status, cover_image_url, city, venue, country")
           .neq("status", "draft")
-          .or(`title.ilike.${searchPattern},title_ar.ilike.${searchPattern}`)
-          .limit(3),
+          .or(`title.ilike.${searchPattern},title_ar.ilike.${searchPattern},description.ilike.${searchPattern},city.ilike.${searchPattern},venue.ilike.${searchPattern},country.ilike.${searchPattern}`)
+          .limit(5),
         supabase
           .from("articles")
-          .select("id, title, title_ar, slug, type, featured_image_url")
+          .select("id, title, title_ar, excerpt, slug, type, featured_image_url")
           .eq("status", "published")
-          .or(`title.ilike.${searchPattern},title_ar.ilike.${searchPattern}`)
-          .limit(3),
+          .or(`title.ilike.${searchPattern},title_ar.ilike.${searchPattern},excerpt.ilike.${searchPattern},content.ilike.${searchPattern}`)
+          .limit(5),
         supabase
           .from("profiles")
-          .select("id, user_id, username, full_name, avatar_url, specialization")
-          .or(`full_name.ilike.${searchPattern},username.ilike.${searchPattern},specialization.ilike.${searchPattern}`)
-          .limit(3),
+          .select("id, user_id, username, full_name, full_name_ar, avatar_url, specialization, specialization_ar, location, bio")
+          .eq("account_status", "active")
+          .or(`full_name.ilike.${searchPattern},full_name_ar.ilike.${searchPattern},username.ilike.${searchPattern},specialization.ilike.${searchPattern},specialization_ar.ilike.${searchPattern},location.ilike.${searchPattern},bio.ilike.${searchPattern}`)
+          .limit(5),
         supabase
           .from("posts")
           .select("id, content, created_at, author_id")
           .eq("visibility", "public")
           .ilike("content", searchPattern)
           .order("created_at", { ascending: false })
-          .limit(3),
+          .limit(5),
         supabase
           .from("entities" as any)
-          .select("id, name, name_ar, type, logo_url")
-          .or(`name.ilike.${searchPattern},name_ar.ilike.${searchPattern}`)
-          .limit(3),
+          .select("id, name, name_ar, type, logo_url, description")
+          .or(`name.ilike.${searchPattern},name_ar.ilike.${searchPattern},description.ilike.${searchPattern}`)
+          .limit(5),
       ]);
 
-      return {
-        competitions: competitionsRes.data || [],
-        articles: articlesRes.data || [],
-        members: membersRes.data || [],
-        posts: postsRes.data || [],
-        entities: (entitiesRes.data as any[]) || [],
+      // Client-side multi-word refinement
+      const matchAll = (texts: (string | null | undefined)[]) => {
+        if (words.length <= 1) return true;
+        const combined = texts.filter(Boolean).join(" ").toLowerCase();
+        return words.every(w => combined.includes(w.toLowerCase()));
       };
+
+      const competitions = (competitionsRes.data || []).filter((r: any) =>
+        matchAll([r.title, r.title_ar, r.description, r.city, r.venue, r.country])
+      ).slice(0, 3);
+
+      const articles = (articlesRes.data || []).filter((r: any) =>
+        matchAll([r.title, r.title_ar, r.excerpt])
+      ).slice(0, 3);
+
+      const members = (membersRes.data || []).filter((r: any) =>
+        matchAll([r.full_name, r.full_name_ar, r.username, r.specialization, r.specialization_ar, r.location, r.bio])
+      ).slice(0, 3);
+
+      const posts = (postsRes.data || []).filter((r: any) =>
+        matchAll([r.content])
+      ).slice(0, 3);
+
+      const entities = ((entitiesRes.data as any[]) || []).filter((r: any) =>
+        matchAll([r.name, r.name_ar, r.description])
+      ).slice(0, 3);
+
+      return { competitions, articles, members, posts, entities };
     },
     enabled: debouncedQuery.length >= 2,
     staleTime: 1000 * 60 * 2,
