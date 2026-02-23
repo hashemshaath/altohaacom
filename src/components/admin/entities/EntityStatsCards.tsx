@@ -1,6 +1,6 @@
 import { useLanguage } from "@/i18n/LanguageContext";
 import { Card } from "@/components/ui/card";
-import { Building2, CheckCircle, Clock, Eye, TrendingUp } from "lucide-react";
+import { Building2, CheckCircle, Clock, Eye, EyeOff, TrendingUp } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface EntityStats {
@@ -8,6 +8,7 @@ interface EntityStats {
   active: number;
   pending: number;
   visible: number;
+  hidden: number;
 }
 
 interface Props {
@@ -27,10 +28,11 @@ export default function EntityStatsCards({ stats, activeFilter, onFilterChange }
     { label: isAr ? "نشطة" : "Active", value: stats.active, icon: CheckCircle, color: "text-chart-3", bgColor: "bg-chart-3/10", filter: "active", subtitle: `${activeRate}% ${isAr ? "معدل التفعيل" : "activation rate"}` },
     { label: isAr ? "قيد المراجعة" : "Pending Review", value: stats.pending, icon: Clock, color: "text-chart-4", bgColor: "bg-chart-4/10", filter: "pending", subtitle: isAr ? "بانتظار الموافقة" : "Awaiting approval" },
     { label: isAr ? "مرئية للعامة" : "Public Visible", value: stats.visible, icon: Eye, color: "text-primary", bgColor: "bg-primary/10", filter: "visible", subtitle: isAr ? "ظاهرة في الدليل" : "Shown in directory" },
+    { label: isAr ? "مخفية" : "Hidden", value: stats.hidden, icon: EyeOff, color: "text-muted-foreground", bgColor: "bg-muted", filter: "hidden", subtitle: isAr ? "مخفية عن العامة" : "Not shown publicly" },
   ];
 
   return (
-    <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
+    <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-5">
       {cards.map(c => (
         <Card
           key={c.filter}

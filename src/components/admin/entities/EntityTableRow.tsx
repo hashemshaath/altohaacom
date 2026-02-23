@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -26,6 +26,16 @@ interface EntityRow {
   is_visible: boolean;
   is_verified: boolean;
   entity_followers?: { id: string }[];
+  description?: string | null;
+  description_ar?: string | null;
+  email?: string | null;
+  phone?: string | null;
+  website?: string | null;
+  mission?: string | null;
+  services?: string[] | null;
+  specializations?: string[] | null;
+  latitude?: number | null;
+  longitude?: number | null;
 }
 
 interface Props {
@@ -55,6 +65,11 @@ export default function EntityTableRow({ entity, typeLabel, scopeLabel, onEdit, 
   const followers = (entity as any).entity_followers?.length || 0;
   const sc = statusConfig[entity.status] || statusConfig.pending;
 
+  const completeness = useMemo(() => {
+    const fields = [entity.name, entity.name_ar, entity.description, entity.description_ar, entity.email, entity.phone, entity.website, entity.city, entity.country, entity.logo_url, entity.mission, entity.latitude, entity.services?.length, entity.specializations?.length];
+    return Math.round((fields.filter(Boolean).length / fields.length) * 100);
+  }, [entity]);
+
   return (
     <>
       <TableRow className="group">
@@ -76,6 +91,15 @@ export default function EntityTableRow({ entity, typeLabel, scopeLabel, onEdit, 
                   {entity.city}{entity.country ? `, ${entity.country}` : ""}
                 </p>
               )}
+              <div className="flex items-center gap-1.5 mt-0.5">
+                <div className="h-1.5 w-12 rounded-full bg-muted overflow-hidden">
+                  <div
+                    className={`h-full rounded-full transition-all ${completeness >= 80 ? "bg-chart-3" : completeness >= 50 ? "bg-chart-4" : "bg-destructive"}`}
+                    style={{ width: `${completeness}%` }}
+                  />
+                </div>
+                <span className="text-[9px] text-muted-foreground">{completeness}%</span>
+              </div>
             </div>
           </div>
         </TableCell>

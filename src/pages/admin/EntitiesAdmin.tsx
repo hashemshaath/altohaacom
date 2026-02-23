@@ -156,9 +156,10 @@ export default function EntitiesAdmin() {
     let result = entities?.filter(e => {
       const matchesSearch = (e.name + (e.name_ar || "") + (e.entity_number || "")).toLowerCase().includes(debouncedSearch.toLowerCase());
       const matchesType = filterType === "all" || e.type === filterType;
-      const matchesStatus = filterStatus === "all" || filterStatus === "visible" || e.status === filterStatus;
       const matchesVisible = filterStatus === "visible" ? e.is_visible : true;
-      return matchesSearch && matchesType && matchesStatus && matchesVisible;
+      const matchesHidden = filterStatus === "hidden" ? !e.is_visible : true;
+      const matchesStatus = filterStatus === "all" || filterStatus === "visible" || filterStatus === "hidden" || e.status === filterStatus;
+      return matchesSearch && matchesType && matchesStatus && matchesVisible && matchesHidden;
     }) || [];
 
     result.sort((a, b) => {
@@ -182,6 +183,7 @@ export default function EntitiesAdmin() {
     active: entities?.filter(e => e.status === "active").length || 0,
     pending: entities?.filter(e => e.status === "pending").length || 0,
     visible: entities?.filter(e => e.is_visible).length || 0,
+    hidden: entities?.filter(e => !e.is_visible).length || 0,
   };
 
   const statusLabels: Record<string, { en: string; ar: string }> = {
@@ -300,11 +302,13 @@ export default function EntitiesAdmin() {
             {typeOptions.map(t => <SelectItem key={t.value} value={t.value}>{isAr ? t.ar : t.en}</SelectItem>)}
           </SelectContent>
         </Select>
-        <Select value={filterStatus === "visible" ? "all" : filterStatus} onValueChange={v => { setFilterStatus(v); setCurrentPage(1); }}>
+        <Select value={filterStatus} onValueChange={v => { setFilterStatus(v); setCurrentPage(1); }}>
           <SelectTrigger className="w-full sm:w-40"><SelectValue /></SelectTrigger>
           <SelectContent>
             <SelectItem value="all">{isAr ? "جميع الحالات" : "All Status"}</SelectItem>
             {statusOptions.map(s => <SelectItem key={s} value={s}>{isAr ? statusLabels[s]?.ar : statusLabels[s]?.en}</SelectItem>)}
+            <SelectItem value="visible">{isAr ? "مرئية فقط" : "Visible Only"}</SelectItem>
+            <SelectItem value="hidden">{isAr ? "مخفية فقط" : "Hidden Only"}</SelectItem>
           </SelectContent>
         </Select>
         {(searchQuery || filterType !== "all" || filterStatus !== "all") && (
