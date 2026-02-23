@@ -1,4 +1,4 @@
-import { useState, useCallback, useEffect, useMemo } from "react";
+import { useState, useCallback, useEffect, useMemo, useRef } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
@@ -20,6 +20,7 @@ import { DataQualityIndicator } from "@/components/smart-import/DataQualityIndic
 import { ExportDataButton } from "@/components/smart-import/ExportDataButton";
 import { ImportStats } from "@/components/smart-import/ImportStats";
 import { BulkUrlImport } from "@/components/smart-import/BulkUrlImport";
+import { EditableField } from "@/components/smart-import/EditableField";
 import type { ImportedData } from "@/components/smart-import/SmartImportDialog";
 import {
   type SearchResultItem, type ExistingRecord, type Step,
@@ -32,7 +33,8 @@ import {
   Search, Loader2, MapPin, Globe, Sparkles, CheckCircle,
   Star, ChevronRight, ArrowLeft, AlertCircle,
   RefreshCw, Plus, Clock, Calendar, Building2,
-  Phone, Link2, Zap, BarChart3, Layers,
+  Phone, Link2, Zap, BarChart3, Layers, Edit3,
+  Copy, ExternalLink,
 } from "lucide-react";
 
 // ─── Payload builders ───
@@ -133,6 +135,7 @@ export default function SmartImportAdmin() {
   const { language } = useLanguage();
   const { user } = useAuth();
   const isAr = language === "ar";
+  const searchInputRef = useRef<HTMLInputElement>(null);
 
   const [query, setQuery] = useState("");
   const [location, setLocation] = useState("");
@@ -179,9 +182,11 @@ export default function SmartImportAdmin() {
   const [importMode, setImportMode] = useState<"search" | "url" | "bulk">("search");
   const [urlImporting, setUrlImporting] = useState(false);
 
-  // Stats
   const [stats, setStats] = useState<any>(null);
   const [loadingStats, setLoadingStats] = useState(true);
+
+  // Inline editing mode
+  const [editingFields, setEditingFields] = useState(false);
 
   const fieldCount = useMemo(() => countFields(details), [details]);
 
@@ -195,6 +200,24 @@ export default function SmartImportAdmin() {
     };
     loadStats();
   }, []);
+
+  // Keyboard shortcuts
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement) return;
+      if (e.key === 'Escape') {
+        if (step === "details") handleBackToResults();
+        else if (step === "results") handleNewSearch();
+      }
+      if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
+        e.preventDefault();
+        handleNewSearch();
+        setTimeout(() => searchInputRef.current?.focus(), 100);
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [step]);
 
   // Inline field editing
   const handleFieldUpdate = useCallback((key: string, value: string) => {
@@ -428,6 +451,11 @@ export default function SmartImportAdmin() {
       await logImport('create', targetTable, recordId, subType);
       setShowAddForm(false);
       setDbChecked(false);
+      // Refresh stats
+      try {
+        const { data: newStats } = await supabase.functions.invoke("smart-import", { body: { mode: "stats" } });
+        if (newStats?.success) setStats(newStats.stats);
+      } catch {}
     } catch (err: any) {
       toast({ title: isAr ? "خطأ" : "Error", description: err.message, variant: "destructive" });
     } finally {
@@ -447,6 +475,7 @@ export default function SmartImportAdmin() {
     setSuggestedTarget(null);
     setDataQuality(0);
     setSearchTime(null);
+    setEditingFields(false);
   }, []);
 
   const handleBackToResults = useCallback(() => {
@@ -457,6 +486,7 @@ export default function SmartImportAdmin() {
     setExistingRecords([]);
     setSuggestedTarget(null);
     setDataQuality(0);
+    setEditingFields(false);
   }, []);
 
   const logImport = async (action: 'create' | 'update', table: TargetTable, recordId: string | null, entityType: string) => {
@@ -553,6 +583,11 @@ export default function SmartImportAdmin() {
         ? `✅ ${successCount} نجح | ❌ ${failCount} فشل — من أصل ${selected.length}`
         : `✅ ${successCount} succeeded | ❌ ${failCount} failed — out of ${selected.length}`,
     });
+    // Refresh stats
+    try {
+      const { data: newStats } = await supabase.functions.invoke("smart-import", { body: { mode: "stats" } });
+      if (newStats?.success) setStats(newStats.stats);
+    } catch {}
   };
 
   const toggleBatchSelect = useCallback((id: string) => {
@@ -569,6 +604,14 @@ export default function SmartImportAdmin() {
     );
   }, [searchResults]);
 
+  // Copy all details as JSON
+  const copyAllData = useCallback(() => {
+    if (details) {
+      navigator.clipboard.writeText(JSON.stringify(details, null, 2));
+      toast({ title: isAr ? "تم نسخ البيانات" : "Data copied to clipboard" });
+    }
+  }, [details, isAr]);
+
   return (
     <div className="space-y-6">
       {/* ─── Header ─── */}
@@ -583,7 +626,7 @@ export default function SmartImportAdmin() {
             <h1 className="font-serif text-2xl font-bold flex items-center gap-2">
               <Sparkles className="h-6 w-6 text-primary" />
               {isAr ? "الاستيراد الذكي" : "Smart Import"}
-              <Badge variant="secondary" className="text-[10px] font-normal">v3.0</Badge>
+              <Badge variant="secondary" className="text-[10px] font-normal">v4.0</Badge>
             </h1>
             <p className="text-muted-foreground text-sm mt-0.5">
               {step === "search" && (isAr ? "ابحث، الصق رابط، أو استورد دفعة واحدة" : "Search, paste URL, or bulk import")}
@@ -593,10 +636,17 @@ export default function SmartImportAdmin() {
           </div>
         </div>
         <div className="hidden sm:flex items-center gap-2">
-          <Button variant="outline" size="sm" className="gap-1.5 text-xs" onClick={() => { setShowHistory(true); loadHistory(); }}>
-            <Clock className="h-3.5 w-3.5" />
-            {isAr ? "السجل" : "History"}
-          </Button>
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button variant="outline" size="sm" className="gap-1.5 text-xs" onClick={() => { setShowHistory(true); loadHistory(); }}>
+                  <Clock className="h-3.5 w-3.5" />
+                  {isAr ? "السجل" : "History"}
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>{isAr ? "عرض سجل الاستيراد" : "View import history"}</TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
           <div className="flex items-center gap-1.5">
             {[
               { key: "search", label: isAr ? "بحث" : "Search", num: 1 },
@@ -633,7 +683,6 @@ export default function SmartImportAdmin() {
             <Button variant={importMode === "bulk" ? "default" : "outline"} size="sm" className="gap-1.5" onClick={() => setImportMode("bulk")}>
               <Layers className="h-3.5 w-3.5" />
               {isAr ? "استيراد جماعي" : "Bulk Import"}
-              <Badge variant="secondary" className="text-[9px] h-4 px-1">{isAr ? "جديد" : "NEW"}</Badge>
             </Button>
           </div>
 
@@ -645,7 +694,7 @@ export default function SmartImportAdmin() {
                   {isAr ? "البحث في خرائط جوجل" : "Search Google Maps"}
                 </CardTitle>
                 <CardDescription>
-                  {isAr ? "أدخل اسم المنشأة والموقع" : "Enter entity name and location"}
+                  {isAr ? "أدخل اسم المنشأة والموقع — ⌘K للبحث السريع" : "Enter entity name and location — ⌘K for quick search"}
                 </CardDescription>
               </CardHeader>
               <CardContent>
@@ -655,7 +704,7 @@ export default function SmartImportAdmin() {
                       <Label className="text-xs">{isAr ? "اسم الكيان / المنشأة" : "Entity / Business Name"}</Label>
                       <div className="relative">
                         <Search className="absolute start-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                        <Input className="ps-9 h-11" placeholder={isAr ? "مثال: مطعم الريف، فندق هيلتون..." : "e.g. Al Reef Restaurant, Hilton Hotel..."} value={query} onChange={(e) => setQuery(e.target.value)} onKeyDown={(e) => e.key === "Enter" && handleSearch()} />
+                        <Input ref={searchInputRef} className="ps-9 h-11" placeholder={isAr ? "مثال: مطعم الريف، فندق هيلتون..." : "e.g. Al Reef Restaurant, Hilton Hotel..."} value={query} onChange={(e) => setQuery(e.target.value)} onKeyDown={(e) => e.key === "Enter" && handleSearch()} />
                       </div>
                     </div>
                     <div className="space-y-1.5">
@@ -705,7 +754,7 @@ export default function SmartImportAdmin() {
                   </Button>
                 </div>
                 <div className="flex items-center gap-4 mt-3 text-xs text-muted-foreground">
-                  <span className="flex items-center gap-1"><Sparkles className="h-3 w-3" />{isAr ? "تحليل ذكي" : "AI analysis"}</span>
+                  <span className="flex items-center gap-1"><Sparkles className="h-3 w-3" />{isAr ? "تحليل ذكي + خرائط" : "AI + Maps analysis"}</span>
                   <span className="flex items-center gap-1"><Globe className="h-3 w-3" />{isAr ? "أي موقع" : "Any website"}</span>
                   <span className="flex items-center gap-1"><BarChart3 className="h-3 w-3" />{isAr ? "مقياس جودة" : "Quality scoring"}</span>
                 </div>
@@ -746,6 +795,8 @@ export default function SmartImportAdmin() {
               <div className="flex items-center gap-2">
                 {batchImporting && (
                   <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                    <Loader2 className="h-3 w-3 animate-spin" />
+                    <span>{batchProgress.current}/{batchProgress.total}</span>
                     <span className="text-green-600">✅ {batchProgress.successes}</span>
                     {batchProgress.failures > 0 && <span className="text-red-600">❌ {batchProgress.failures}</span>}
                   </div>
@@ -876,7 +927,7 @@ export default function SmartImportAdmin() {
               </div>
               <div>
                 <p className="font-semibold text-lg">{isAr ? "جاري جلب وتحليل البيانات..." : "Fetching & Analyzing Data..."}</p>
-                <p className="text-sm text-muted-foreground mt-1">{isAr ? "جمع البيانات من مصادر متعددة" : "Collecting from multiple sources"}</p>
+                <p className="text-sm text-muted-foreground mt-1">{isAr ? "تحليل ذكي + خرائط جوجل + الموقع الرسمي" : "AI analysis + Google Maps + Official website"}</p>
               </div>
             </div>
           </CardContent>
@@ -895,10 +946,19 @@ export default function SmartImportAdmin() {
                     <MapPin className="h-6 w-6 text-red-500" />
                   </div>
                   <div>
-                    <h2 className="text-xl font-bold">{details.name_en || details.name_ar}</h2>
-                    {details.name_en && details.name_ar && <p className="text-sm text-muted-foreground">{details.name_ar}</p>}
-                    {(details.abbreviation_en || details.abbreviation_ar) && (
-                      <p className="text-xs text-muted-foreground/70">{[details.abbreviation_en, details.abbreviation_ar].filter(Boolean).join(" / ")}</p>
+                    {editingFields ? (
+                      <div className="space-y-1.5">
+                        <EditableField label={isAr ? "الاسم EN" : "Name EN"} value={details.name_en} fieldKey="name_en" onUpdate={handleFieldUpdate} />
+                        <EditableField label={isAr ? "الاسم AR" : "Name AR"} value={details.name_ar} fieldKey="name_ar" onUpdate={handleFieldUpdate} />
+                      </div>
+                    ) : (
+                      <>
+                        <h2 className="text-xl font-bold">{details.name_en || details.name_ar}</h2>
+                        {details.name_en && details.name_ar && <p className="text-sm text-muted-foreground">{details.name_ar}</p>}
+                        {(details.abbreviation_en || details.abbreviation_ar) && (
+                          <p className="text-xs text-muted-foreground/70">{[details.abbreviation_en, details.abbreviation_ar].filter(Boolean).join(" / ")}</p>
+                        )}
+                      </>
                     )}
                   </div>
                   {details.rating && (
@@ -929,17 +989,40 @@ export default function SmartImportAdmin() {
                       );
                     })}
                   </TooltipProvider>
+                  <Button variant="outline" size="sm" className="gap-1.5 text-xs" onClick={() => setEditingFields(!editingFields)}>
+                    <Edit3 className={`h-3.5 w-3.5 ${editingFields ? 'text-primary' : ''}`} />
+                    {editingFields ? (isAr ? "إنهاء التعديل" : "Done") : (isAr ? "تعديل" : "Edit")}
+                  </Button>
                   <ExportDataButton data={details} isAr={isAr} />
+                  <Button variant="outline" size="sm" className="gap-1.5 text-xs" onClick={copyAllData}>
+                    <Copy className="h-3.5 w-3.5" />
+                  </Button>
                   <Button variant="outline" size="sm" className="gap-1.5 text-xs" onClick={handleRescrape} disabled={loadingDetails || urlImporting}>
                     <RefreshCw className={`h-3.5 w-3.5 ${loadingDetails ? 'animate-spin' : ''}`} />
-                    {isAr ? "إعادة الجلب" : "Re-fetch"}
+                    {isAr ? "إعادة" : "Re-fetch"}
                   </Button>
                 </div>
               </div>
+
+              {/* Quick editable fields when editing mode is on */}
+              {editingFields && (
+                <div className="mt-4 pt-4 border-t grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                  <EditableField label={isAr ? "الوصف EN" : "Description EN"} value={details.description_en} fieldKey="description_en" onUpdate={handleFieldUpdate} multiline />
+                  <EditableField label={isAr ? "الوصف AR" : "Description AR"} value={details.description_ar} fieldKey="description_ar" onUpdate={handleFieldUpdate} multiline />
+                  <EditableField label={isAr ? "الهاتف" : "Phone"} value={details.phone} fieldKey="phone" onUpdate={handleFieldUpdate} copyable />
+                  <EditableField label={isAr ? "البريد" : "Email"} value={details.email} fieldKey="email" onUpdate={handleFieldUpdate} copyable />
+                  <EditableField label={isAr ? "الموقع" : "Website"} value={details.website} fieldKey="website" onUpdate={handleFieldUpdate} copyable />
+                  <EditableField label={isAr ? "المدينة EN" : "City EN"} value={details.city_en} fieldKey="city_en" onUpdate={handleFieldUpdate} />
+                  <EditableField label={isAr ? "المدينة AR" : "City AR"} value={details.city_ar} fieldKey="city_ar" onUpdate={handleFieldUpdate} />
+                  <EditableField label={isAr ? "العنوان EN" : "Address EN"} value={details.full_address_en} fieldKey="full_address_en" onUpdate={handleFieldUpdate} />
+                  <EditableField label={isAr ? "العنوان AR" : "Address AR"} value={details.full_address_ar} fieldKey="full_address_ar" onUpdate={handleFieldUpdate} />
+                  <EditableField label={isAr ? "رمز البلد" : "Country Code"} value={details.country_code} fieldKey="country_code" onUpdate={handleFieldUpdate} />
+                </div>
+              )}
             </CardContent>
           </Card>
 
-          {dataQuality > 0 && <DataQualityIndicator score={dataQuality} isAr={isAr} />}
+          {dataQuality > 0 && !editingFields && <DataQualityIndicator score={dataQuality} isAr={isAr} />}
 
           {/* AI Suggestion */}
           {suggestedTarget && (
@@ -958,6 +1041,33 @@ export default function SmartImportAdmin() {
                 </div>
               </CardContent>
             </Card>
+          )}
+
+          {/* Quick links */}
+          {(details.website || details.google_maps_url) && (
+            <div className="flex items-center gap-2 flex-wrap">
+              {details.website && (
+                <Button variant="outline" size="sm" className="gap-1.5 text-xs" asChild>
+                  <a href={details.website} target="_blank" rel="noopener noreferrer">
+                    <ExternalLink className="h-3 w-3" /> {isAr ? "الموقع الرسمي" : "Official Website"}
+                  </a>
+                </Button>
+              )}
+              {details.google_maps_url && (
+                <Button variant="outline" size="sm" className="gap-1.5 text-xs" asChild>
+                  <a href={details.google_maps_url} target="_blank" rel="noopener noreferrer">
+                    <MapPin className="h-3 w-3" /> Google Maps
+                  </a>
+                </Button>
+              )}
+              {details.phone && (
+                <Button variant="outline" size="sm" className="gap-1.5 text-xs" asChild>
+                  <a href={`tel:${details.phone}`}>
+                    <Phone className="h-3 w-3" /> {details.phone}
+                  </a>
+                </Button>
+              )}
+            </div>
           )}
 
           {/* DB Check */}
