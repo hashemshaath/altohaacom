@@ -37,19 +37,30 @@ async function authenticateAdmin(req: Request) {
   return client;
 }
 
-// ─── Firecrawl helpers ───
-async function firecrawlSearch(query: string, apiKey: string, limit = 10): Promise<any[]> {
-  const res = await fetch('https://api.firecrawl.dev/v1/search', {
-    method: 'POST',
-    headers: { 'Authorization': `Bearer ${apiKey}`, 'Content-Type': 'application/json' },
-    body: JSON.stringify({ query, limit }),
-  });
-  const data = await res.json();
-  if (!data?.success) return [];
-  return data.data || [];
+// ─── Firecrawl helpers with timeout ───
+async function firecrawlSearch(query: string, apiKey: string, limit = 10, timeoutMs = 15000): Promise<any[]> {
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), timeoutMs);
+  try {
+    const res = await fetch('https://api.firecrawl.dev/v1/search', {
+      method: 'POST',
+      headers: { 'Authorization': `Bearer ${apiKey}`, 'Content-Type': 'application/json' },
+      body: JSON.stringify({ query, limit }),
+      signal: controller.signal,
+    });
+    const data = await res.json();
+    return data?.success ? (data.data || []) : [];
+  } catch (e) {
+    if (e instanceof DOMException && e.name === 'AbortError') {
+      console.warn('[SmartImport] Firecrawl search timed out');
+    }
+    return [];
+  } finally { clearTimeout(timer); }
 }
 
-async function firecrawlScrape(url: string, apiKey: string): Promise<string | null> {
+async function firecrawlScrape(url: string, apiKey: string, timeoutMs = 18000): Promise<string | null> {
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), timeoutMs);
   try {
     let formatted = url.trim();
     if (!formatted.startsWith('http')) formatted = `https://${formatted}`;
@@ -57,13 +68,46 @@ async function firecrawlScrape(url: string, apiKey: string): Promise<string | nu
       method: 'POST',
       headers: { 'Authorization': `Bearer ${apiKey}`, 'Content-Type': 'application/json' },
       body: JSON.stringify({ url: formatted, formats: ['markdown'], onlyMainContent: true }),
+      signal: controller.signal,
     });
     const data = await res.json();
     return data?.data?.markdown || null;
   } catch (e) {
-    console.error('[SmartImport] Scrape error:', e);
+    if (e instanceof DOMException && e.name === 'AbortError') {
+      console.warn('[SmartImport] Scrape timed out for:', url);
+    } else {
+      console.error('[SmartImport] Scrape error:', e);
+    }
     return null;
-  }
+  } finally { clearTimeout(timer); }
+}
+
+// ─── AI call with timeout + retry ───
+async function callAI(prompt: string, lovableKey: string, model = 'google/gemini-3-flash-preview', temperature = 0.1, timeoutMs = 20000): Promise<string> {
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), timeoutMs);
+  try {
+    const res = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
+      method: 'POST',
+      headers: { 'Authorization': `Bearer ${lovableKey}`, 'Content-Type': 'application/json' },
+      body: JSON.stringify({ model, messages: [{ role: 'user', content: prompt }], temperature }),
+      signal: controller.signal,
+    });
+    if (!res.ok) {
+      const errText = await res.text();
+      console.error('[SmartImport] AI error:', res.status, errText);
+      return '';
+    }
+    const data = await res.json();
+    return data.choices?.[0]?.message?.content || '';
+  } catch (e) {
+    if (e instanceof DOMException && e.name === 'AbortError') {
+      console.warn('[SmartImport] AI call timed out');
+    } else {
+      console.error('[SmartImport] AI error:', e);
+    }
+    return '';
+  } finally { clearTimeout(timer); }
 }
 
 // ─── MODE: SEARCH ───
@@ -72,20 +116,17 @@ async function handleSearch(query: string, apiKey: string, lovableKey: string, l
   console.log('[SmartImport] Searching Google Maps for:', searchTerm);
 
   const mapsUrl = `https://www.google.com/maps/search/${encodeURIComponent(searchTerm)}`;
-  const scraped = await firecrawlScrape(mapsUrl, apiKey);
+  const scraped = await firecrawlScrape(mapsUrl, apiKey, 20000);
 
   if (!scraped || scraped.length < 50) {
-    console.log('[SmartImport] Google Maps scrape returned little content, trying search API fallback');
+    console.log('[SmartImport] Maps scrape thin, using search API fallback');
     const searchResults = await firecrawlSearch(`"${query}" ${location || ''} site:google.com/maps`, apiKey, 15);
-    if (searchResults.length) {
-      return extractEntitiesFromSearchResults(searchResults);
-    }
+    if (searchResults.length) return extractEntitiesFromSearchResults(searchResults);
     return [];
   }
 
   console.log(`[SmartImport] Scraped ${scraped.length} chars from Google Maps`);
-  const entities = await extractEntitiesWithAI(scraped, searchTerm, lovableKey);
-  return entities;
+  return await extractEntitiesWithAI(scraped, searchTerm, lovableKey);
 }
 
 // ─── Extract entities from Firecrawl search results ───
@@ -143,18 +184,8 @@ IMPORTANT:
 
 Return format: [{"name":"...","description":"...","rating":4.5,"total_reviews":100,"place_type":"...","latitude":null,"longitude":null,"google_maps_url":null,"address":"..."}]`;
 
+  const content = await callAI(prompt, lovableKey, 'google/gemini-3-flash-preview', 0.1, 18000);
   try {
-    const res = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
-      method: 'POST',
-      headers: { 'Authorization': `Bearer ${lovableKey}`, 'Content-Type': 'application/json' },
-      body: JSON.stringify({ 
-        model: 'google/gemini-2.5-flash', 
-        messages: [{ role: 'user', content: prompt }], 
-        temperature: 0.1 
-      }),
-    });
-    const data = await res.json();
-    const content = data.choices?.[0]?.message?.content || '';
     const jsonMatch = content.match(/\[[\s\S]*\]/);
     if (jsonMatch) {
       const entities = JSON.parse(jsonMatch[0]);
@@ -172,12 +203,12 @@ Return format: [{"name":"...","description":"...","rating":4.5,"total_reviews":1
       }));
     }
   } catch (e) {
-    console.error('[SmartImport] AI entity extraction error:', e);
+    console.error('[SmartImport] AI entity extraction parse error:', e);
   }
   return [];
 }
 
-// ─── MODE: DETAILS — Enhanced to extract ALL culinary_entities fields ───
+// ─── MODE: DETAILS ───
 async function handleDetails(
   query: string,
   apiKey: string,
@@ -186,46 +217,125 @@ async function handleDetails(
   location?: string,
   latitude?: number,
   longitude?: number,
-): Promise<{ data: any; sources_used: Record<string, boolean> }> {
+): Promise<{ data: any; sources_used: Record<string, boolean>; data_quality: number }> {
   const sources = { google_maps: false, web_search: false, website: false, ai: true };
 
-  // Use AbortController with 25s timeout to prevent edge function timeout
-  const controller = new AbortController();
-  const timeout = setTimeout(() => controller.abort(), 25000);
+  // Run ALL scrapes in parallel
+  const [scraped, searchRaw, websiteContent] = await Promise.all([
+    resultUrl ? firecrawlScrape(resultUrl, apiKey, 18000).catch(() => null) : Promise.resolve(null),
+    firecrawlSearch(
+      location ? `${query} ${location} contact address phone email about` : `${query} contact address phone email about`,
+      apiKey, 5, 12000
+    ).catch(() => []),
+    websiteUrl ? firecrawlScrape(websiteUrl, apiKey, 18000).catch(() => null) : Promise.resolve(null),
+  ]);
 
-  try {
-    // Run scrapes in parallel with timeout protection
-    const scrapePromise = resultUrl 
-      ? firecrawlScrape(resultUrl, apiKey).catch(() => null) 
-      : Promise.resolve(null);
-    const searchQuery = location ? `${query} ${location} contact address phone email about` : `${query} contact address phone email about`;
-    const searchPromise = firecrawlSearch(searchQuery, apiKey, 5).catch(() => []);
-    const websitePromise = websiteUrl 
-      ? firecrawlScrape(websiteUrl, apiKey).catch(() => null) 
-      : Promise.resolve(null);
+  if (scraped) sources.google_maps = true;
+  if (websiteContent) sources.website = true;
 
-    const [scraped, searchRaw, websiteContent] = await Promise.all([scrapePromise, searchPromise, websitePromise]);
-
-    if (scraped) sources.google_maps = true;
-    if (websiteContent) sources.website = true;
-
-    let searchContent: string | null = null;
-    if (searchRaw.length) {
-      sources.web_search = true;
-      searchContent = searchRaw.slice(0, 5).map((r: any) =>
-        `## ${r.title || ''}\nURL: ${r.url}\n${r.description || ''}\n${(r.markdown || '').substring(0, 1500)}`
-      ).join('\n\n---\n\n');
-    }
-
-    const lovableKey = Deno.env.get('LOVABLE_API_KEY')!;
-    const enriched = await enrichWithAI(scraped, searchContent, websiteContent, query, latitude, longitude, lovableKey);
-    return { data: enriched, sources_used: sources };
-  } finally {
-    clearTimeout(timeout);
+  let searchContent: string | null = null;
+  if (searchRaw.length) {
+    sources.web_search = true;
+    searchContent = searchRaw.slice(0, 5).map((r: any) =>
+      `## ${r.title || ''}\nURL: ${r.url}\n${r.description || ''}\n${(r.markdown || '').substring(0, 1200)}`
+    ).join('\n\n---\n\n');
   }
+
+  const lovableKey = Deno.env.get('LOVABLE_API_KEY')!;
+  const enriched = await enrichWithAI(scraped, searchContent, websiteContent, query, latitude, longitude, lovableKey);
+  
+  // Calculate data quality score (0-100)
+  const dataQuality = calculateDataQuality(enriched, sources);
+  
+  return { data: enriched, sources_used: sources, data_quality: dataQuality };
 }
 
-// ─── AI Enrichment — Comprehensive extraction matching culinary_entities schema ───
+// ─── Calculate data quality score ───
+function calculateDataQuality(data: any, sources: Record<string, boolean>): number {
+  let score = 0;
+  const maxScore = 100;
+  
+  // Source diversity (20 points)
+  const sourceCount = Object.values(sources).filter(Boolean).length;
+  score += Math.min(sourceCount * 5, 20);
+  
+  // Name completeness (10 points)
+  if (data.name_en) score += 5;
+  if (data.name_ar) score += 5;
+  
+  // Description quality (10 points)
+  if (data.description_en && data.description_en.length > 50) score += 5;
+  if (data.description_ar && data.description_ar.length > 50) score += 5;
+  
+  // Contact info (15 points)
+  if (data.phone) score += 5;
+  if (data.email) score += 5;
+  if (data.website) score += 5;
+  
+  // Address completeness (15 points)
+  if (data.city_en || data.city_ar) score += 4;
+  if (data.full_address_en || data.full_address_ar) score += 4;
+  if (data.country_code) score += 3;
+  if (data.postal_code) score += 2;
+  if (data.latitude && data.longitude) score += 2;
+  
+  // Services & specializations (10 points)
+  if (data.services_en?.length > 0) score += 5;
+  if (data.specializations_en?.length > 0) score += 5;
+  
+  // Organization details (10 points)
+  if (data.founded_year) score += 3;
+  if (data.registration_number || data.license_number) score += 3;
+  if (data.president_name_en || data.president_name_ar) score += 2;
+  if (data.member_count) score += 2;
+  
+  // Social media (5 points)
+  if (data.social_media) {
+    const socialCount = Object.values(data.social_media).filter(Boolean).length;
+    score += Math.min(socialCount * 2, 5);
+  }
+  
+  // Business hours (5 points)
+  if (data.business_hours?.length > 0) score += 5;
+
+  return Math.min(score, maxScore);
+}
+
+// ─── MODE: URL — Direct URL scrape & enrich ───
+async function handleUrlImport(
+  url: string,
+  apiKey: string,
+  lovableKey: string,
+): Promise<{ data: any; sources_used: Record<string, boolean>; data_quality: number }> {
+  const sources = { google_maps: false, web_search: false, website: true, ai: true };
+  
+  console.log('[SmartImport] Direct URL import:', url);
+  const scraped = await firecrawlScrape(url, apiKey, 22000);
+  
+  if (!scraped || scraped.length < 20) {
+    throw new Error('Could not scrape the provided URL');
+  }
+  
+  // Also do a quick web search for more context
+  const titleMatch = scraped.match(/^#\s*(.+)$/m);
+  const entityName = titleMatch?.[1] || url.replace(/^https?:\/\//, '').split('/')[0];
+  
+  const searchRaw = await firecrawlSearch(`${entityName} contact phone email`, apiKey, 3, 8000).catch(() => []);
+  let searchContent: string | null = null;
+  if (searchRaw.length) {
+    sources.web_search = true;
+    searchContent = searchRaw.slice(0, 3).map((r: any) =>
+      `## ${r.title || ''}\n${r.description || ''}\n${(r.markdown || '').substring(0, 800)}`
+    ).join('\n\n---\n\n');
+  }
+
+  const enriched = await enrichWithAI(null, searchContent, scraped, entityName, null, null, lovableKey);
+  const dataQuality = calculateDataQuality(enriched, sources);
+  
+  return { data: enriched, sources_used: sources, data_quality: dataQuality };
+}
+
+// ─── AI Enrichment ───
 async function enrichWithAI(
   scraped: string | null,
   search: string | null,
@@ -259,7 +369,7 @@ SEO OPTIMIZATION RULES (CRITICAL):
 
 ${scraped ? `GOOGLE MAPS SCRAPED CONTENT:\n${scraped.substring(0, 4000)}` : ''}
 ${search ? `WEB SEARCH RESULTS:\n${search.substring(0, 3000)}` : ''}
-${website ? `WEBSITE CONTENT:\n${website.substring(0, 2500)}` : ''}
+${website ? `WEBSITE CONTENT:\n${website.substring(0, 3000)}` : ''}
 
 Return ONLY valid JSON with ALL these fields:
 {
@@ -299,7 +409,7 @@ Return ONLY valid JSON with ALL these fields:
   ],
   "business_type_en": null,
   "business_type_ar": null,
-  "rating": ${lat ? 'null' : 'null'},
+  "rating": null,
   "total_reviews": null,
   "latitude": ${lat || 'null'},
   "longitude": ${lng || 'null'},
@@ -348,17 +458,11 @@ EXTRACTION GUIDELINES:
 - "business_hours": CRITICAL — Return EXACTLY 7 entries, one for each day (Saturday through Friday). Replace template hours with ACTUAL hours from scraped data. Use 24-hour format. Set is_closed=true for closed days.
 - "social_media": Extract ALL social media links found (Instagram, Twitter/X, Facebook, LinkedIn, TikTok, YouTube, Snapchat, WhatsApp)`;
 
+  const content = await callAI(prompt, apiKey, 'google/gemini-3-flash-preview', 0.1, 22000);
   try {
-    const res = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
-      method: 'POST',
-      headers: { 'Authorization': `Bearer ${apiKey}`, 'Content-Type': 'application/json' },
-      body: JSON.stringify({ model: 'google/gemini-2.5-flash', messages: [{ role: 'user', content: prompt }], temperature: 0.1 }),
-    });
-    const data = await res.json();
-    const content = data.choices?.[0]?.message?.content || '';
     const jsonMatch = content.match(/\{[\s\S]*\}/);
     if (jsonMatch) return JSON.parse(jsonMatch[0]);
-  } catch (e) { console.error('[SmartImport] AI error:', e); }
+  } catch (e) { console.error('[SmartImport] AI parse error:', e); }
   return {};
 }
 
@@ -368,7 +472,6 @@ function autoDetectTargetTable(data: any): { table: string; sub_type: string; co
   const name = (data.name_en || '').toLowerCase();
   const all = `${bt} ${name}`;
 
-  // Establishment patterns
   const estPatterns: Record<string, string[]> = {
     restaurant: ['restaurant', 'dining', 'eatery', 'grill', 'bistro', 'pizzeria', 'sushi', 'steakhouse', 'food court'],
     hotel: ['hotel', 'motel', 'inn', 'lodge', 'hostel', 'accommodation', 'suites'],
@@ -383,7 +486,6 @@ function autoDetectTargetTable(data: any): { table: string; sub_type: string; co
     if (keywords.some(k => all.includes(k))) return { table: 'establishments', sub_type: type, confidence: 0.85 };
   }
 
-  // Company patterns
   const companyPatterns: Record<string, string[]> = {
     supplier: ['supplier', 'supply', 'wholesale', 'distributor', 'distribution', 'import', 'export', 'trading', 'manufacturer', 'equipment', 'packaging'],
     sponsor: ['sponsor', 'sponsorship'],
@@ -394,7 +496,6 @@ function autoDetectTargetTable(data: any): { table: string; sub_type: string; co
     if (keywords.some(k => all.includes(k))) return { table: 'companies', sub_type: type, confidence: 0.8 };
   }
 
-  // Entity patterns
   const entityPatterns: Record<string, string[]> = {
     culinary_association: ['association', 'society', 'federation', 'union', 'guild', 'chef association', 'culinary association'],
     government_entity: ['government', 'ministry', 'municipality', 'authority', 'department', 'bureau'],
@@ -409,9 +510,7 @@ function autoDetectTargetTable(data: any): { table: string; sub_type: string; co
     if (keywords.some(k => all.includes(k))) return { table: 'culinary_entities', sub_type: type, confidence: 0.8 };
   }
 
-  // Default: if it has rating/reviews it's likely an establishment
   if (data.rating || data.total_reviews) return { table: 'establishments', sub_type: 'restaurant', confidence: 0.5 };
-
   return { table: 'culinary_entities', sub_type: 'culinary_association', confidence: 0.3 };
 }
 
@@ -422,22 +521,26 @@ Deno.serve(async (req) => {
   try {
     await authenticateAdmin(req);
     const body = await req.json();
-    const { query, location, website_url, mode = 'search', result_url, latitude, longitude } = body;
+    const { query, location, website_url, mode = 'search', result_url, latitude, longitude, url } = body;
 
     const firecrawlKey = Deno.env.get('FIRECRAWL_API_KEY');
     if (!firecrawlKey) {
-      return new Response(
-        JSON.stringify({ success: false, error: "Firecrawl is not configured." }),
-        { status: 400, headers: jsonHeaders }
-      );
+      return new Response(JSON.stringify({ success: false, error: "Firecrawl is not configured." }), { status: 400, headers: jsonHeaders });
     }
 
     const lovableKey = Deno.env.get('LOVABLE_API_KEY');
     if (!lovableKey) {
-      return new Response(
-        JSON.stringify({ success: false, error: "AI service not configured." }),
-        { status: 400, headers: jsonHeaders }
-      );
+      return new Response(JSON.stringify({ success: false, error: "AI service not configured." }), { status: 400, headers: jsonHeaders });
+    }
+
+    // MODE: Direct URL import
+    if (mode === 'url') {
+      if (!url?.trim()) {
+        return new Response(JSON.stringify({ success: false, error: "URL is required" }), { status: 400, headers: jsonHeaders });
+      }
+      const result = await handleUrlImport(url.trim(), firecrawlKey, lovableKey);
+      const suggestion = autoDetectTargetTable(result.data);
+      return new Response(JSON.stringify({ success: true, ...result, suggested_target: suggestion }), { headers: jsonHeaders });
     }
 
     if (!query?.trim()) {
@@ -451,7 +554,6 @@ Deno.serve(async (req) => {
 
     if (mode === 'details') {
       const result = await handleDetails(query.trim(), firecrawlKey, result_url, website_url, location?.trim(), latitude, longitude);
-      // Auto-detect target table
       const suggestion = autoDetectTargetTable(result.data);
       return new Response(JSON.stringify({ success: true, ...result, suggested_target: suggestion }), { headers: jsonHeaders });
     }
