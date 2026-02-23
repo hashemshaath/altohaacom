@@ -64,20 +64,17 @@ export default function Search() {
     isLoading,
   } = useGlobalSearch();
 
-  useEffect(() => {
-    setRecentSearches(getRecentSearches());
-  }, []);
-
+  // Read URL params on mount and when they change
   useEffect(() => {
     const query = searchParams.get("q") || "";
-    const type = (searchParams.get("type") as SearchFilters["type"]) || "all";
+    const type = (searchParams.get("type") || searchParams.get("tab") || "all") as SearchFilters["type"];
     if (query) {
       updateFilter("query", query);
       addRecentSearch(query);
       setRecentSearches(getRecentSearches());
     }
-    if (type) updateFilter("type", type);
-  }, []);
+    if (type && type !== "all") updateFilter("type", type);
+  }, [searchParams]);
 
   useEffect(() => {
     const params = new URLSearchParams();
