@@ -29,6 +29,7 @@ import {
   MessageSquare,
   ChevronRight,
   ExternalLink,
+  Building2,
 } from "lucide-react";
 import { format } from "date-fns";
 import { useGlobalSearch, type SearchFilters } from "@/hooks/useGlobalSearch";
@@ -186,13 +187,14 @@ export default function Search() {
               className="mt-3"
             >
               <TabsList className="h-auto bg-transparent p-0 gap-1">
-                {[
-                  { value: "all", icon: SearchIcon, label: isAr ? "الكل" : "All", count: totalResults },
-                  { value: "competitions", icon: Trophy, label: isAr ? "المسابقات" : "Competitions", count: results.competitions.length },
-                  { value: "articles", icon: FileText, label: isAr ? "المقالات" : "Articles", count: results.articles.length },
-                  { value: "members", icon: User, label: isAr ? "الأعضاء" : "Members", count: results.members.length },
-                  { value: "posts", icon: MessageSquare, label: isAr ? "المنشورات" : "Posts", count: results.posts.length },
-                ].map((tab) => (
+                 {[
+                   { value: "all", icon: SearchIcon, label: isAr ? "الكل" : "All", count: totalResults },
+                   { value: "competitions", icon: Trophy, label: isAr ? "المسابقات" : "Competitions", count: results.competitions.length },
+                   { value: "articles", icon: FileText, label: isAr ? "المقالات" : "Articles", count: results.articles.length },
+                   { value: "members", icon: User, label: isAr ? "الأعضاء" : "Members", count: results.members.length },
+                   { value: "entities", icon: Building2, label: isAr ? "الجهات" : "Organizations", count: results.entities.length },
+                   { value: "posts", icon: MessageSquare, label: isAr ? "المنشورات" : "Posts", count: results.posts.length },
+                 ].map((tab) => (
                   <TabsTrigger
                     key={tab.value}
                     value={tab.value}
@@ -341,6 +343,19 @@ export default function Search() {
                       ))}
                     </ResultSection>
                   )}
+                  {results.entities.length > 0 && (
+                    <ResultSection
+                      icon={<Building2 className="h-4 w-4" />}
+                      title={isAr ? "الجهات والمؤسسات" : "Organizations"}
+                      count={results.entities.length}
+                      onViewAll={() => updateFilter("type", "entities")}
+                      isAr={isAr}
+                    >
+                      {results.entities.slice(0, 5).map((e) => (
+                        <EntityRow key={`${e.source}-${e.id}`} data={e} isAr={isAr} />
+                      ))}
+                    </ResultSection>
+                  )}
                   {results.posts.length > 0 && (
                     <ResultSection
                       icon={<MessageSquare className="h-4 w-4" />}
@@ -369,6 +384,10 @@ export default function Search() {
               {filters.type === "members" &&
                 results.members.map((m) => (
                   <MemberRow key={m.id} data={m} isAr={isAr} />
+                ))}
+              {filters.type === "entities" &&
+                results.entities.map((e) => (
+                  <EntityRow key={`${e.source}-${e.id}`} data={e} isAr={isAr} />
                 ))}
               {filters.type === "posts" &&
                 results.posts.map((p) => (
@@ -631,6 +650,60 @@ function PostRow({ data, isAr }: { data: any; isAr: boolean }) {
             <img src={data.image_url} alt="" className="w-full h-full object-cover" />
           </div>
         )}
+      </div>
+    </Link>
+  );
+}
+
+/* ──────────────── Entity Row ──────────────── */
+function EntityRow({ data, isAr }: { data: any; isAr: boolean }) {
+  const name = isAr && data.name_ar ? data.name_ar : data.name;
+  const desc = isAr && data.description_ar ? data.description_ar : data.description;
+  const location = [data.city, data.country].filter(Boolean).join(" · ");
+  const linkPath = data.source === "establishment" ? `/establishments/${data.id}` : `/entities/${data.id}`;
+
+  return (
+    <Link
+      to={linkPath}
+      className="group block rounded-xl px-4 py-3 -mx-2 transition-colors hover:bg-accent/40"
+    >
+      <div className="flex items-start gap-3">
+        <div className="w-10 h-10 rounded-lg bg-accent/30 shrink-0 flex items-center justify-center overflow-hidden mt-0.5">
+          {data.logo_url ? (
+            <img src={data.logo_url} alt="" className="w-full h-full object-cover" />
+          ) : (
+            <Building2 className="h-4.5 w-4.5 text-muted-foreground/50" />
+          )}
+        </div>
+        <div className="flex-1 min-w-0">
+          <div className="flex items-center gap-1 text-xs text-muted-foreground mb-0.5">
+            <Building2 className="h-3 w-3" />
+            <span>{isAr ? "جهة" : "Organization"}</span>
+            {data.type && (
+              <>
+                <span className="mx-0.5">›</span>
+                <span className="capitalize">{data.type}</span>
+              </>
+            )}
+          </div>
+          <div className="flex items-center gap-1.5">
+            <h3 className="text-base font-medium text-primary group-hover:underline line-clamp-1">
+              {name}
+            </h3>
+            {data.is_verified && <CheckCircle2 className="h-3.5 w-3.5 text-primary shrink-0" />}
+          </div>
+          {desc && (
+            <p className="text-sm text-muted-foreground line-clamp-2 mt-0.5 leading-relaxed">
+              {desc}
+            </p>
+          )}
+          {location && (
+            <p className="text-xs text-muted-foreground/70 mt-1.5 flex items-center gap-1">
+              <MapPin className="h-3 w-3" />
+              {location}
+            </p>
+          )}
+        </div>
       </div>
     </Link>
   );
