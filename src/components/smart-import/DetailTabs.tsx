@@ -1,0 +1,317 @@
+import React from "react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Separator } from "@/components/ui/separator";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { GoogleMapEmbed } from "./GoogleMapEmbed";
+import { DataField, TagList } from "./DataField";
+import type { ImportedData } from "./SmartImportDialog";
+import {
+  FileText, Phone, MapPin, Building2, Briefcase, Clock,
+  Star, Globe, Calendar, Users, Award, Share2,
+  UserCheck, Shield, Link2, BookOpen, ExternalLink,
+} from "lucide-react";
+
+interface DetailTabsProps {
+  details: ImportedData;
+  activeTab: string;
+  onTabChange: (tab: string) => void;
+  isAr: boolean;
+}
+
+export const DetailTabs = React.memo(({ details, activeTab, onTabChange, isAr }: DetailTabsProps) => {
+  return (
+    <Tabs value={activeTab} onValueChange={onTabChange}>
+      <TabsList className="w-full justify-start flex-wrap h-auto gap-1 p-1">
+        <TabsTrigger value="overview" className="gap-1.5"><FileText className="h-3.5 w-3.5" />{isAr ? "نظرة عامة" : "Overview"}</TabsTrigger>
+        <TabsTrigger value="contact" className="gap-1.5"><Phone className="h-3.5 w-3.5" />{isAr ? "التواصل" : "Contact"}</TabsTrigger>
+        <TabsTrigger value="address" className="gap-1.5"><MapPin className="h-3.5 w-3.5" />{isAr ? "العنوان" : "Address"}</TabsTrigger>
+        <TabsTrigger value="organization" className="gap-1.5"><Building2 className="h-3.5 w-3.5" />{isAr ? "المنظمة" : "Organization"}</TabsTrigger>
+        <TabsTrigger value="services" className="gap-1.5"><Briefcase className="h-3.5 w-3.5" />{isAr ? "الخدمات" : "Services"}</TabsTrigger>
+        <TabsTrigger value="hours" className="gap-1.5"><Clock className="h-3.5 w-3.5" />{isAr ? "ساعات العمل" : "Hours"}</TabsTrigger>
+      </TabsList>
+
+      <TabsContent value="overview" className="mt-4">
+        <OverviewTab details={details} isAr={isAr} />
+      </TabsContent>
+
+      <TabsContent value="contact" className="mt-4">
+        <ContactTab details={details} isAr={isAr} />
+      </TabsContent>
+
+      <TabsContent value="address" className="mt-4">
+        <AddressTab details={details} isAr={isAr} />
+      </TabsContent>
+
+      <TabsContent value="organization" className="mt-4">
+        <OrganizationTab details={details} isAr={isAr} />
+      </TabsContent>
+
+      <TabsContent value="services" className="mt-4">
+        <ServicesTab details={details} isAr={isAr} />
+      </TabsContent>
+
+      <TabsContent value="hours" className="mt-4">
+        <HoursTab details={details} isAr={isAr} />
+      </TabsContent>
+    </Tabs>
+  );
+});
+DetailTabs.displayName = "DetailTabs";
+
+// ── Overview Tab ──
+const OverviewTab = React.memo(({ details, isAr }: { details: ImportedData; isAr: boolean }) => (
+  <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+    <Card className="lg:col-span-2">
+      <CardContent className="pt-4">
+        <div className="grid grid-cols-2 sm:grid-cols-5 gap-3">
+          {details.rating && (
+            <StatCard icon={Star} iconClass="text-yellow-500 fill-yellow-500" bgClass="bg-yellow-500/10" label={isAr ? "التقييم" : "Rating"} value={details.rating} sub={details.total_reviews != null ? `${details.total_reviews} ${isAr ? "تقييم" : "reviews"}` : undefined} />
+          )}
+          {details.phone && <StatCard icon={Phone} label={isAr ? "الهاتف" : "Phone"} value={details.phone} small />}
+          {details.website && <StatCard icon={Globe} label={isAr ? "الموقع" : "Website"} value={details.website.replace(/^https?:\/\//, '')} small />}
+          {(details.city_en || details.city_ar) && <StatCard icon={MapPin} label={isAr ? "المدينة" : "City"} value={details.city_en || details.city_ar || ''} small />}
+          {details.founded_year && <StatCard icon={Calendar} label={isAr ? "سنة التأسيس" : "Founded"} value={details.founded_year} />}
+          {details.member_count && <StatCard icon={Users} label={isAr ? "الأعضاء" : "Members"} value={details.member_count} />}
+        </div>
+      </CardContent>
+    </Card>
+
+    <Card>
+      <CardHeader className="pb-2"><CardTitle className="text-sm">{isAr ? "الأسماء" : "Names"}</CardTitle></CardHeader>
+      <CardContent className="space-y-3">
+        <DataField label={isAr ? "الاسم (EN)" : "Name (EN)"} value={details.name_en} copyable />
+        <DataField label={isAr ? "الاسم (AR)" : "Name (AR)"} value={details.name_ar} copyable />
+        <DataField label={isAr ? "الاختصار (EN)" : "Abbreviation (EN)"} value={details.abbreviation_en} copyable />
+        <DataField label={isAr ? "الاختصار (AR)" : "Abbreviation (AR)"} value={details.abbreviation_ar} copyable />
+      </CardContent>
+    </Card>
+
+    <Card>
+      <CardHeader className="pb-2"><CardTitle className="text-sm">{isAr ? "نوع النشاط" : "Business Type"}</CardTitle></CardHeader>
+      <CardContent className="space-y-3">
+        <DataField label={isAr ? "النوع (EN)" : "Type (EN)"} value={details.business_type_en} />
+        <DataField label={isAr ? "النوع (AR)" : "Type (AR)"} value={details.business_type_ar} />
+        <TagList label={isAr ? "الكلمات المفتاحية" : "Tags"} items={details.tags} />
+      </CardContent>
+    </Card>
+
+    {(details.description_en || details.description_ar) && (
+      <Card className="lg:col-span-2">
+        <CardHeader className="pb-2"><CardTitle className="text-sm">{isAr ? "الوصف" : "Description"}</CardTitle></CardHeader>
+        <CardContent className="space-y-3">
+          <DataField label={isAr ? "الوصف (EN)" : "Description (EN)"} value={details.description_en} multiline />
+          <DataField label={isAr ? "الوصف (AR)" : "Description (AR)"} value={details.description_ar} multiline />
+        </CardContent>
+      </Card>
+    )}
+
+    {(details.mission_en || details.mission_ar) && (
+      <Card className="lg:col-span-2">
+        <CardHeader className="pb-2"><CardTitle className="text-sm flex items-center gap-1.5"><BookOpen className="h-4 w-4" />{isAr ? "الرسالة والرؤية" : "Mission & Vision"}</CardTitle></CardHeader>
+        <CardContent className="space-y-3">
+          <DataField label={isAr ? "الرسالة (EN)" : "Mission (EN)"} value={details.mission_en} multiline />
+          <DataField label={isAr ? "الرسالة (AR)" : "Mission (AR)"} value={details.mission_ar} multiline />
+        </CardContent>
+      </Card>
+    )}
+  </div>
+));
+OverviewTab.displayName = "OverviewTab";
+
+// ── Stat Card ──
+const StatCard = React.memo(({ icon: Icon, iconClass, bgClass, label, value, sub, small }: {
+  icon: any; iconClass?: string; bgClass?: string; label: string; value: string | number; sub?: string; small?: boolean;
+}) => (
+  <div className={`text-center p-3 rounded-lg ${bgClass || 'bg-accent/30'}`}>
+    <Icon className={`h-4 w-4 mx-auto mb-1 ${iconClass || 'text-primary'}`} />
+    <p className="text-xs text-muted-foreground">{label}</p>
+    <p className={`font-${small ? 'medium' : 'bold'} ${small ? 'text-sm truncate' : 'text-lg'}`}>{value}</p>
+    {sub && <p className="text-xs text-muted-foreground">{sub}</p>}
+  </div>
+));
+StatCard.displayName = "StatCard";
+
+// ── Contact Tab ──
+const ContactTab = React.memo(({ details, isAr }: { details: ImportedData; isAr: boolean }) => (
+  <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+    <Card>
+      <CardHeader className="pb-2"><CardTitle className="text-sm">{isAr ? "معلومات التواصل" : "Contact Info"}</CardTitle></CardHeader>
+      <CardContent className="space-y-3">
+        <DataField label={isAr ? "الهاتف" : "Phone"} value={details.phone} copyable />
+        <DataField label={isAr ? "هاتف ثانوي" : "Secondary Phone"} value={details.phone_secondary} copyable />
+        <DataField label={isAr ? "الفاكس" : "Fax"} value={details.fax} copyable />
+        <DataField label={isAr ? "البريد الإلكتروني" : "Email"} value={details.email} copyable />
+        <DataField label={isAr ? "الموقع الإلكتروني" : "Website"} value={details.website} copyable />
+      </CardContent>
+    </Card>
+    {details.social_media && Object.values(details.social_media).some(Boolean) && (
+      <Card>
+        <CardHeader className="pb-2">
+          <CardTitle className="text-sm flex items-center gap-1.5"><Share2 className="h-4 w-4" /> {isAr ? "التواصل الاجتماعي" : "Social Media"}</CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-3">
+          {Object.entries(details.social_media).filter(([, v]) => v).map(([k, v]) => (
+            <DataField key={k} label={k.charAt(0).toUpperCase() + k.slice(1)} value={v} copyable />
+          ))}
+        </CardContent>
+      </Card>
+    )}
+  </div>
+));
+ContactTab.displayName = "ContactTab";
+
+// ── Address Tab ──
+const AddressTab = React.memo(({ details, isAr }: { details: ImportedData; isAr: boolean }) => (
+  <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+    <Card>
+      <CardContent className="pt-4 space-y-3">
+        <div className="grid grid-cols-2 gap-3">
+          <DataField label={isAr ? "المدينة (EN)" : "City (EN)"} value={details.city_en} />
+          <DataField label={isAr ? "المدينة (AR)" : "City (AR)"} value={details.city_ar} />
+          <DataField label={isAr ? "الحي (EN)" : "Neighborhood (EN)"} value={details.neighborhood_en} />
+          <DataField label={isAr ? "الحي (AR)" : "Neighborhood (AR)"} value={details.neighborhood_ar} />
+          <DataField label={isAr ? "الشارع (EN)" : "Street (EN)"} value={details.street_en} />
+          <DataField label={isAr ? "الشارع (AR)" : "Street (AR)"} value={details.street_ar} />
+          <DataField label={isAr ? "الرمز البريدي" : "Postal Code"} value={details.postal_code} />
+          <DataField label={isAr ? "الدولة" : "Country"} value={details.country_en ? `${details.country_en}${details.country_code ? ` (${details.country_code})` : ''}` : details.country_ar} />
+        </div>
+        <Separator />
+        <DataField label={isAr ? "العنوان الكامل (EN)" : "Full Address (EN)"} value={details.full_address_en} copyable />
+        <DataField label={isAr ? "العنوان الكامل (AR)" : "Full Address (AR)"} value={details.full_address_ar} copyable />
+        {(details.latitude || details.longitude) && (
+          <>
+            <Separator />
+            <div className="grid grid-cols-2 gap-3">
+              <DataField label={isAr ? "خط العرض" : "Latitude"} value={details.latitude?.toString()} copyable />
+              <DataField label={isAr ? "خط الطول" : "Longitude"} value={details.longitude?.toString()} copyable />
+            </div>
+          </>
+        )}
+      </CardContent>
+    </Card>
+    <GoogleMapEmbed latitude={details.latitude} longitude={details.longitude} name={details.name_en || details.name_ar} className="h-[400px]" />
+  </div>
+));
+AddressTab.displayName = "AddressTab";
+
+// ── Organization Tab ──
+const OrganizationTab = React.memo(({ details, isAr }: { details: ImportedData; isAr: boolean }) => (
+  <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+    <Card>
+      <CardHeader className="pb-2"><CardTitle className="text-sm flex items-center gap-1.5"><UserCheck className="h-4 w-4" />{isAr ? "القيادة" : "Leadership"}</CardTitle></CardHeader>
+      <CardContent className="space-y-3">
+        <DataField label={isAr ? "الرئيس (EN)" : "President (EN)"} value={details.president_name_en} />
+        <DataField label={isAr ? "الرئيس (AR)" : "President (AR)"} value={details.president_name_ar} />
+        <DataField label={isAr ? "السكرتير (EN)" : "Secretary (EN)"} value={details.secretary_name_en} />
+        <DataField label={isAr ? "السكرتير (AR)" : "Secretary (AR)"} value={details.secretary_name_ar} />
+        {details.member_count && (
+          <div className="flex items-center gap-2 p-2.5 rounded-lg bg-accent/30">
+            <Users className="h-4 w-4 text-primary" />
+            <span className="text-sm">{isAr ? "عدد الأعضاء:" : "Member Count:"} <strong>{details.member_count}</strong></span>
+          </div>
+        )}
+      </CardContent>
+    </Card>
+
+    <Card>
+      <CardHeader className="pb-2"><CardTitle className="text-sm flex items-center gap-1.5"><Shield className="h-4 w-4" />{isAr ? "التسجيل والترخيص" : "Registration & Legal"}</CardTitle></CardHeader>
+      <CardContent className="space-y-3">
+        <DataField label={isAr ? "السجل التجاري" : "National/Commercial ID"} value={details.national_id} copyable />
+        <DataField label={isAr ? "رقم التسجيل" : "Registration Number"} value={details.registration_number} copyable />
+        <DataField label={isAr ? "رقم الترخيص" : "License Number"} value={details.license_number} copyable />
+        {details.founded_year && (
+          <div className="flex items-center gap-2 p-2.5 rounded-lg bg-accent/30">
+            <Calendar className="h-4 w-4 text-primary" />
+            <span className="text-sm">{isAr ? "سنة التأسيس:" : "Founded:"} <strong>{details.founded_year}</strong></span>
+          </div>
+        )}
+      </CardContent>
+    </Card>
+
+    {details.affiliated_organizations && details.affiliated_organizations.length > 0 && (
+      <Card className="lg:col-span-2">
+        <CardHeader className="pb-2"><CardTitle className="text-sm flex items-center gap-1.5"><Link2 className="h-4 w-4" />{isAr ? "المنظمات التابعة" : "Affiliated Organizations"}</CardTitle></CardHeader>
+        <CardContent>
+          <TagList label="" items={details.affiliated_organizations} />
+        </CardContent>
+      </Card>
+    )}
+  </div>
+));
+OrganizationTab.displayName = "OrganizationTab";
+
+// ── Services Tab ──
+const ServicesTab = React.memo(({ details, isAr }: { details: ImportedData; isAr: boolean }) => (
+  <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+    <Card>
+      <CardHeader className="pb-2"><CardTitle className="text-sm flex items-center gap-1.5"><Briefcase className="h-4 w-4" />{isAr ? "الخدمات" : "Services"}</CardTitle></CardHeader>
+      <CardContent className="space-y-4">
+        <TagList label={isAr ? "الخدمات (EN)" : "Services (EN)"} items={details.services_en} />
+        <TagList label={isAr ? "الخدمات (AR)" : "Services (AR)"} items={details.services_ar} />
+        {!details.services_en?.length && !details.services_ar?.length && (
+          <p className="text-sm text-muted-foreground">{isAr ? "لم يتم العثور على خدمات" : "No services found"}</p>
+        )}
+      </CardContent>
+    </Card>
+    <Card>
+      <CardHeader className="pb-2"><CardTitle className="text-sm flex items-center gap-1.5"><Award className="h-4 w-4" />{isAr ? "التخصصات" : "Specializations"}</CardTitle></CardHeader>
+      <CardContent className="space-y-4">
+        <TagList label={isAr ? "التخصصات (EN)" : "Specializations (EN)"} items={details.specializations_en} />
+        <TagList label={isAr ? "التخصصات (AR)" : "Specializations (AR)"} items={details.specializations_ar} />
+        {!details.specializations_en?.length && !details.specializations_ar?.length && (
+          <p className="text-sm text-muted-foreground">{isAr ? "لم يتم العثور على تخصصات" : "No specializations found"}</p>
+        )}
+      </CardContent>
+    </Card>
+  </div>
+));
+ServicesTab.displayName = "ServicesTab";
+
+// ── Hours Tab ──
+const HoursTab = React.memo(({ details, isAr }: { details: ImportedData; isAr: boolean }) => (
+  <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+    {details.business_hours && details.business_hours.length > 0 ? (
+      <Card>
+        <CardHeader className="pb-2">
+          <CardTitle className="text-sm flex items-center gap-1.5"><Clock className="h-4 w-4" /> {isAr ? "ساعات العمل" : "Business Hours"}</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="space-y-1.5">
+            {details.business_hours.map((h, i) => (
+              <div key={i} className="flex justify-between text-xs rounded-lg border p-2.5">
+                <span className="font-medium">{isAr ? h.day_ar : h.day_en}</span>
+                <span className={h.is_closed ? "text-muted-foreground" : "text-primary font-medium"}>
+                  {h.is_closed ? (isAr ? "مغلق" : "Closed") : `${h.open} - ${h.close}`}
+                </span>
+              </div>
+            ))}
+          </div>
+        </CardContent>
+      </Card>
+    ) : (
+      <Card>
+        <CardContent className="py-8 text-center text-muted-foreground">
+          <Clock className="h-8 w-8 mx-auto mb-2 opacity-30" />
+          <p className="text-sm">{isAr ? "لم يتم العثور على ساعات العمل" : "No business hours found"}</p>
+        </CardContent>
+      </Card>
+    )}
+    {details.google_maps_url && (
+      <Card>
+        <CardContent className="pt-4 flex flex-col items-center justify-center gap-3 text-center h-full">
+          <MapPin className="h-8 w-8 text-red-500" />
+          <p className="text-sm font-medium">{isAr ? "عرض على الخريطة" : "View on Map"}</p>
+          <a href={details.google_maps_url} target="_blank" rel="noopener noreferrer">
+            <Button variant="outline" size="sm" className="gap-1.5">
+              <ExternalLink className="h-3.5 w-3.5" />
+              {isAr ? "فتح في خرائط جوجل" : "Open in Google Maps"}
+            </Button>
+          </a>
+        </CardContent>
+      </Card>
+    )}
+  </div>
+));
+HoursTab.displayName = "HoursTab";
