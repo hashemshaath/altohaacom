@@ -51,6 +51,12 @@ interface Company {
   operating_countries: string[] | null;
   logo_url: string | null;
   created_at: string;
+  import_source: string | null;
+  rating: number | null;
+  neighborhood: string | null;
+  google_maps_url: string | null;
+  latitude: number | null;
+  longitude: number | null;
 }
 
 const companyTypes: { value: CompanyType; label: string; labelAr: string }[] = [
@@ -1508,75 +1514,6 @@ export default function CompaniesAdmin() {
         <p className="text-muted-foreground mt-1">{isAr ? "إدارة الشركات والرعاة والموردين والشركاء - موحّدة" : "Unified management for companies, sponsors, suppliers & partners"}</p>
       </div>
 
-      {/* Stats */}
-      <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
-        <Card>
-          <CardContent className="pt-4">
-            <div className="flex items-center gap-3">
-              <div className="h-10 w-10 rounded-lg bg-primary/10 flex items-center justify-center">
-                <Building2 className="h-5 w-5 text-primary" />
-              </div>
-              <div>
-                <p className="text-xs text-muted-foreground">{isAr ? "إجمالي" : "Total"}</p>
-                <p className="text-xl font-bold">{stats.total}</p>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardContent className="pt-4">
-            <div className="flex items-center gap-3">
-              <div className="h-10 w-10 rounded-lg bg-chart-5/10 flex items-center justify-center">
-                <CheckCircle className="h-5 w-5 text-chart-5" />
-              </div>
-              <div>
-                <p className="text-xs text-muted-foreground">{isAr ? "نشطة" : "Active"}</p>
-                <p className="text-xl font-bold text-chart-5">{stats.active}</p>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardContent className="pt-4">
-            <div className="flex items-center gap-3">
-              <div className="h-10 w-10 rounded-lg bg-chart-4/10 flex items-center justify-center">
-                <Clock className="h-5 w-5 text-chart-4" />
-              </div>
-              <div>
-                <p className="text-xs text-muted-foreground">{isAr ? "قيد الانتظار" : "Pending"}</p>
-                <p className="text-xl font-bold text-chart-4">{stats.pending}</p>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardContent className="pt-4">
-            <div className="flex items-center gap-3">
-              <div className="h-10 w-10 rounded-lg bg-chart-3/10 flex items-center justify-center">
-                <Star className="h-5 w-5 text-chart-3" />
-              </div>
-              <div>
-                <p className="text-xs text-muted-foreground">{isAr ? "رعاة" : "Sponsors"}</p>
-                <p className="text-xl font-bold text-chart-3">{stats.sponsors}</p>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardContent className="pt-4">
-            <div className="flex items-center gap-3">
-              <div className="h-10 w-10 rounded-lg bg-accent/10 flex items-center justify-center">
-                <Truck className="h-5 w-5 text-accent-foreground" />
-              </div>
-              <div>
-                <p className="text-xs text-muted-foreground">{isAr ? "موردين" : "Suppliers"}</p>
-                <p className="text-xl font-bold">{stats.suppliers}</p>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-      </div>
-
       {/* Bulk Import & Export */}
       <div className="flex flex-wrap gap-2">
         <Button variant={showBulkImport ? "secondary" : "outline"} size="sm" onClick={() => setShowBulkImport(!showBulkImport)}>
@@ -1888,12 +1825,33 @@ export default function CompaniesAdmin() {
                       <TableCell>
                         <div className="flex items-center gap-3">
                           {company.logo_url ? <img src={company.logo_url} alt={company.name} className="h-10 w-10 rounded-lg object-cover" /> : <div className="h-10 w-10 rounded-lg bg-muted flex items-center justify-center"><Building2 className="h-5 w-5 text-muted-foreground" /></div>}
-                          <div><p className="font-medium">{isAr && company.name_ar ? company.name_ar : company.name}</p>{company.company_number && <p className="text-xs text-muted-foreground font-mono">{company.company_number}</p>}{(isAr ? company.name : company.name_ar) && <p className="text-sm text-muted-foreground" dir={isAr ? "ltr" : "rtl"}>{isAr ? company.name : company.name_ar}</p>}</div>
+                          <div>
+                            <p className="font-medium">{isAr && company.name_ar ? company.name_ar : company.name}</p>
+                            {company.company_number && <p className="text-xs text-muted-foreground font-mono">{company.company_number}</p>}
+                            {(isAr ? company.name : company.name_ar) && <p className="text-sm text-muted-foreground" dir={isAr ? "ltr" : "rtl"}>{isAr ? company.name : company.name_ar}</p>}
+                            <div className="flex items-center gap-1.5 mt-0.5">
+                              {company.import_source === 'smart_import' && (
+                                <Badge variant="outline" className="text-[9px] px-1 py-0 h-4 gap-0.5 bg-primary/5 text-primary border-primary/20">
+                                  <Sparkles className="h-2.5 w-2.5" />{isAr ? "ذكي" : "Smart"}
+                                </Badge>
+                              )}
+                              {company.rating && (
+                                <Badge variant="outline" className="text-[9px] px-1 py-0 h-4 gap-0.5 bg-chart-4/5 text-chart-4 border-chart-4/20">
+                                  <Star className="h-2.5 w-2.5" />{Number(company.rating).toFixed(1)}
+                                </Badge>
+                              )}
+                            </div>
+                          </div>
                         </div>
                       </TableCell>
                       <TableCell><Badge variant="outline">{getTypeLabel(company.type)}</Badge></TableCell>
                       <TableCell><div className="text-sm">{company.email && <p>{company.email}</p>}{company.phone && <p className="text-muted-foreground">{company.phone}</p>}</div></TableCell>
-                      <TableCell>{company.country_code ? `${countryFlag(company.country_code)} ` : ""}{[company.city, company.country].filter(Boolean).join(", ") || "-"}</TableCell>
+                      <TableCell>
+                        <div className="text-sm">
+                          <p>{company.country_code ? `${countryFlag(company.country_code)} ` : ""}{[company.city, company.country].filter(Boolean).join(", ") || "-"}</p>
+                          {company.neighborhood && <p className="text-xs text-muted-foreground">{company.neighborhood}</p>}
+                        </div>
+                      </TableCell>
                       <TableCell><Badge className={statusColors[company.status]}>{getStatusLabel(company.status)}</Badge></TableCell>
                       <TableCell>{format(new Date(company.created_at), "yyyy-MM-dd")}</TableCell>
                       <TableCell>
