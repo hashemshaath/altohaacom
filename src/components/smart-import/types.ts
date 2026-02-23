@@ -1,12 +1,13 @@
 import type { Database } from "@/integrations/supabase/types";
 import type { ImportedData } from "./SmartImportDialog";
 import {
-  MapPin, Globe, ExternalLink, Sparkles, Building2, Briefcase,
+  MapPin, Globe, ExternalLink, Sparkles, Building2, Briefcase, Trophy, Landmark,
 } from "lucide-react";
 
 export type EntityType = Database["public"]["Enums"]["entity_type"];
 export type CompanyType = Database["public"]["Enums"]["company_type"];
-export type TargetTable = "culinary_entities" | "companies" | "establishments";
+export type ExhibitionType = Database["public"]["Enums"]["exhibition_type"];
+export type TargetTable = "culinary_entities" | "companies" | "establishments" | "exhibitions" | "competitions";
 export type Step = "search" | "results" | "details";
 
 export interface SearchResultItem {
@@ -53,6 +54,8 @@ export const TARGET_TABLE_OPTIONS: {
   { value: "culinary_entities", label_en: "Culinary Entity", label_ar: "كيان طهوي", icon: Building2, description_en: "Associations, academies, government entities", description_ar: "جمعيات، أكاديميات، جهات حكومية" },
   { value: "companies", label_en: "Company", label_ar: "شركة", icon: Briefcase, description_en: "Sponsors, suppliers, partners, vendors", description_ar: "رعاة، موردون، شركاء" },
   { value: "establishments", label_en: "Establishment", label_ar: "منشأة", icon: MapPin, description_en: "Hotels, restaurants, kitchens", description_ar: "فنادق، مطاعم، مطابخ" },
+  { value: "exhibitions", label_en: "Exhibition", label_ar: "معرض / مؤتمر", icon: Landmark, description_en: "Exhibitions, conferences, summits, food festivals", description_ar: "معارض، مؤتمرات، قمم، مهرجانات طعام" },
+  { value: "competitions", label_en: "Competition", label_ar: "مسابقة", icon: Trophy, description_en: "Culinary competitions & championships", description_ar: "مسابقات وبطولات طهي" },
 ];
 
 export const ENTITY_TYPE_LABELS: Record<EntityType, { en: string; ar: string }> = {
@@ -84,6 +87,16 @@ export const ESTABLISHMENT_TYPES = [
   { value: "club", en: "Club", ar: "نادي" },
   { value: "other", en: "Other", ar: "أخرى" },
 ];
+
+export const EXHIBITION_TYPE_LABELS: Record<ExhibitionType, { en: string; ar: string }> = {
+  exhibition: { en: "Exhibition", ar: "معرض" },
+  conference: { en: "Conference", ar: "مؤتمر" },
+  summit: { en: "Summit", ar: "قمة" },
+  workshop: { en: "Workshop", ar: "ورشة عمل" },
+  food_festival: { en: "Food Festival", ar: "مهرجان طعام" },
+  trade_show: { en: "Trade Show", ar: "معرض تجاري" },
+  competition_event: { en: "Competition Event", ar: "حدث مسابقة" },
+};
 
 /** Count how many detail fields are populated */
 export const countFields = (d: ImportedData | null) => {

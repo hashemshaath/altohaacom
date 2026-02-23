@@ -24,9 +24,10 @@ import { EditableField } from "@/components/smart-import/EditableField";
 import type { ImportedData } from "@/components/smart-import/SmartImportDialog";
 import {
   type SearchResultItem, type ExistingRecord, type Step,
-  type TargetTable, type EntityType, type CompanyType,
+  type TargetTable, type EntityType, type CompanyType, type ExhibitionType,
   SOURCE_CHANNELS, TARGET_TABLE_OPTIONS,
   ENTITY_TYPE_LABELS, COMPANY_TYPE_LABELS,
+  EXHIBITION_TYPE_LABELS,
   countFields,
 } from "@/components/smart-import/types";
 import {
@@ -146,11 +147,60 @@ const buildEstablishmentPayload = (d: ImportedData) => {
   return payload;
 };
 
+const buildExhibitionPayload = (d: ImportedData) => {
+  const payload: Record<string, any> = {};
+  if (d.name_en) payload.title = d.name_en;
+  if (d.name_ar) payload.title_ar = d.name_ar;
+  if (d.description_en) payload.description = d.description_en;
+  if (d.description_ar) payload.description_ar = d.description_ar;
+  if (d.city_en || d.city_ar) payload.city = d.city_en || d.city_ar;
+  if (d.country_en || d.country_ar) payload.country = d.country_en || d.country_ar;
+  if (d.full_address_en) payload.address = d.full_address_en;
+  if (d.full_address_ar) payload.address_ar = d.full_address_ar;
+  if (d.venue_en) payload.venue = d.venue_en;
+  if (d.venue_ar) payload.venue_ar = d.venue_ar;
+  if (d.phone) payload.organizer_phone = d.phone;
+  if (d.email) payload.organizer_email = d.email;
+  if (d.website) payload.website_url = d.website;
+  if (d.cover_url) payload.cover_image_url = d.cover_url;
+  if (d.logo_url) payload.logo_url = d.logo_url;
+  if (d.tags?.length) payload.tags = d.tags;
+  if (d.social_media && Object.values(d.social_media).some(Boolean)) payload.social_links = d.social_media;
+  if (d.registration_url) payload.registration_url = d.registration_url;
+  if (d.max_attendees) payload.max_attendees = d.max_attendees;
+  if (d.organizer_name_en) payload.organizer_name = d.organizer_name_en;
+  if (d.organizer_name_ar) payload.organizer_name_ar = d.organizer_name_ar;
+  if (d.map_url) payload.map_url = d.map_url;
+  payload.import_source = 'smart_import';
+  return payload;
+};
+
+const buildCompetitionPayload = (d: ImportedData) => {
+  const payload: Record<string, any> = {};
+  if (d.name_en) payload.title = d.name_en;
+  if (d.name_ar) payload.title_ar = d.name_ar;
+  if (d.description_en) payload.description = d.description_en;
+  if (d.description_ar) payload.description_ar = d.description_ar;
+  if (d.city_en || d.city_ar) payload.city = d.city_en || d.city_ar;
+  if (d.country_en || d.country_ar) payload.country = d.country_en || d.country_ar;
+  if (d.country_code) payload.country_code = d.country_code;
+  if (d.cover_url) payload.cover_image_url = d.cover_url;
+  if (d.venue_en) payload.venue = d.venue_en;
+  if (d.venue_ar) payload.venue_ar = d.venue_ar;
+  if (d.max_attendees) payload.max_participants = d.max_attendees;
+  if (d.registration_fee) payload.registration_fee = d.registration_fee;
+  if (d.rules_summary_en) payload.rules_summary = d.rules_summary_en;
+  if (d.rules_summary_ar) payload.rules_summary_ar = d.rules_summary_ar;
+  return payload;
+};
+
 const getPayloadForTable = (d: ImportedData, table: TargetTable) => {
   switch (table) {
     case "culinary_entities": return buildEntityPayload(d);
     case "companies": return buildCompanyPayload(d);
     case "establishments": return buildEstablishmentPayload(d);
+    case "exhibitions": return buildExhibitionPayload(d);
+    case "competitions": return buildCompetitionPayload(d);
   }
 };
 
@@ -189,6 +239,7 @@ export default function SmartImportAdmin() {
   const [selectedEntityType, setSelectedEntityType] = useState<EntityType>("culinary_association");
   const [selectedCompanyType, setSelectedCompanyType] = useState<CompanyType>("supplier");
   const [selectedEstablishmentType, setSelectedEstablishmentType] = useState("restaurant");
+  const [selectedExhibitionType, setSelectedExhibitionType] = useState<ExhibitionType>("exhibition");
   const [saving, setSaving] = useState(false);
   const [updating, setUpdating] = useState(false);
   const [selectedExistingId, setSelectedExistingId] = useState<string | null>(null);
@@ -310,6 +361,8 @@ export default function SmartImportAdmin() {
         if (st.table === 'culinary_entities') { setTargetTable('culinary_entities'); setSelectedEntityType(st.sub_type as EntityType); }
         else if (st.table === 'companies') { setTargetTable('companies'); setSelectedCompanyType(st.sub_type as CompanyType); }
         else if (st.table === 'establishments') { setTargetTable('establishments'); setSelectedEstablishmentType(st.sub_type); }
+        else if (st.table === 'exhibitions') { setTargetTable('exhibitions'); setSelectedExhibitionType(st.sub_type as ExhibitionType); }
+        else if (st.table === 'competitions') { setTargetTable('competitions'); }
       }
       setStep("details");
       toast({ title: isAr ? "تم استخراج البيانات بنجاح" : "Data extracted successfully" });
@@ -354,6 +407,8 @@ export default function SmartImportAdmin() {
         if (st.table === 'culinary_entities') { setTargetTable('culinary_entities'); setSelectedEntityType(st.sub_type as EntityType); }
         else if (st.table === 'companies') { setTargetTable('companies'); setSelectedCompanyType(st.sub_type as CompanyType); }
         else if (st.table === 'establishments') { setTargetTable('establishments'); setSelectedEstablishmentType(st.sub_type); }
+        else if (st.table === 'exhibitions') { setTargetTable('exhibitions'); setSelectedExhibitionType(st.sub_type as ExhibitionType); }
+        else if (st.table === 'competitions') { setTargetTable('competitions'); }
       }
       setStep("details");
       toast({ title: isAr ? "تم جلب البيانات بنجاح" : "Data fetched successfully" });
@@ -388,19 +443,29 @@ export default function SmartImportAdmin() {
       if (phone) orConditions.push(`phone.eq.${phone}`);
       if (email) orConditions.push(`email.ilike.${email}`);
 
-      if (orConditions.length === 0) { setCheckingDb(false); setDbChecked(true); return; }
-      const orStr = orConditions.join(",");
+      // Title-based conditions for exhibitions/competitions
+      const titleOrConditions: string[] = [];
+      if (nameEn) titleOrConditions.push(`title.ilike.%${nameEn}%`);
+      if (nameAr) titleOrConditions.push(`title_ar.ilike.%${nameAr}%`);
 
-      const [entRes, compRes, estRes] = await Promise.all([
-        supabase.from("culinary_entities").select("id, name, name_ar, entity_number, type, city, phone, email, website").or(orStr),
-        supabase.from("companies").select("id, name, name_ar, company_number, type, city, phone, email, website").or(orStr),
-        supabase.from("establishments").select("id, name, name_ar, type, city, phone, email, website").or(orStr),
+      if (orConditions.length === 0 && titleOrConditions.length === 0) { setCheckingDb(false); setDbChecked(true); return; }
+      const orStr = orConditions.join(",");
+      const titleOrStr = titleOrConditions.join(",");
+
+      const [entRes, compRes, estRes, exhRes, compResComp] = await Promise.all([
+        orStr ? supabase.from("culinary_entities").select("id, name, name_ar, entity_number, type, city, phone, email, website").or(orStr) : Promise.resolve({ data: [] }),
+        orStr ? supabase.from("companies").select("id, name, name_ar, company_number, type, city, phone, email, website").or(orStr) : Promise.resolve({ data: [] }),
+        orStr ? supabase.from("establishments").select("id, name, name_ar, type, city, phone, email, website").or(orStr) : Promise.resolve({ data: [] }),
+        titleOrStr ? (supabase as any).from("exhibitions").select("id, title, title_ar, type, city, organizer_email, website_url, slug").or(titleOrStr) : Promise.resolve({ data: [] }),
+        titleOrStr ? (supabase as any).from("competitions").select("id, title, title_ar, city, country_code, status, competition_number").or(titleOrStr) : Promise.resolve({ data: [] }),
       ]);
 
       const records: ExistingRecord[] = [];
       (entRes.data || []).forEach((e: any) => records.push({ id: e.id, name: e.name, name_ar: e.name_ar, identifier: e.entity_number, sub_type: e.type, city: e.city, phone: e.phone, email: e.email, website: e.website, table: "culinary_entities" }));
       (compRes.data || []).forEach((c: any) => records.push({ id: c.id, name: c.name, name_ar: c.name_ar, identifier: c.company_number || c.id.slice(0, 8), sub_type: c.type, city: c.city, phone: c.phone, email: c.email, website: c.website, table: "companies" }));
       (estRes.data || []).forEach((e: any) => records.push({ id: e.id, name: e.name, name_ar: e.name_ar, identifier: e.id.slice(0, 8), sub_type: e.type, city: e.city, phone: e.phone, email: e.email, website: e.website, table: "establishments" }));
+      (exhRes.data || []).forEach((e: any) => records.push({ id: e.id, name: e.title, name_ar: e.title_ar, identifier: e.slug || e.id.slice(0, 8), sub_type: e.type, city: e.city, phone: null, email: e.organizer_email, website: e.website_url, table: "exhibitions" }));
+      (compResComp.data || []).forEach((c: any) => records.push({ id: c.id, name: c.title, name_ar: c.title_ar, identifier: c.competition_number || c.id.slice(0, 8), sub_type: "competition", city: c.city, phone: null, email: null, website: null, table: "competitions" }));
 
       setExistingRecords(records);
     } catch (err: any) {
@@ -451,7 +516,7 @@ export default function SmartImportAdmin() {
 
       if (targetTable === "culinary_entities") {
         subType = selectedEntityType;
-        const slug = name.toLowerCase().replace(/\s+/g, "-").replace(/[^a-z0-9-]/g, "");
+        const slug = name.toLowerCase().replace(/\s+/g, "-").replace(/[^a-z0-9-]/g, "") + "-" + Date.now().toString(36);
         const payload = { ...buildEntityPayload(details), name: details.name_en || name, type: selectedEntityType, scope: "local" as const, status: "pending" as const, is_visible: false, is_verified: false, slug, entity_number: "", created_by: user?.id || null };
         const { data: inserted, error } = await supabase.from("culinary_entities").insert(payload).select("id").single();
         if (error) throw error;
@@ -460,6 +525,43 @@ export default function SmartImportAdmin() {
         subType = selectedCompanyType;
         const payload = { ...buildCompanyPayload(details), name: details.name_en || name, type: selectedCompanyType, status: "pending" as const, country_code: details.country_code || "SA", created_by: user?.id || null };
         const { data: inserted, error } = await supabase.from("companies").insert(payload).select("id").single();
+        if (error) throw error;
+        recordId = inserted?.id;
+      } else if (targetTable === "exhibitions") {
+        subType = selectedExhibitionType;
+        const slug = name.toLowerCase().replace(/\s+/g, "-").replace(/[^a-z0-9-]/g, "") + "-" + Date.now().toString(36);
+        const now = new Date();
+        const defaultStart = details.start_date || now.toISOString().split('T')[0];
+        const defaultEnd = details.end_date || new Date(now.getTime() + 3 * 86400000).toISOString().split('T')[0];
+        const payload = {
+          ...buildExhibitionPayload(details),
+          title: details.name_en || name,
+          type: selectedExhibitionType,
+          status: "draft" as const,
+          slug,
+          start_date: defaultStart,
+          end_date: defaultEnd,
+          created_by: user?.id || null,
+        };
+        const { data: inserted, error } = await (supabase as any).from("exhibitions").insert(payload).select("id").single();
+        if (error) throw error;
+        recordId = inserted?.id;
+      } else if (targetTable === "competitions") {
+        subType = "competition";
+        const now = new Date();
+        const defaultStart = details.start_date || now.toISOString().split('T')[0];
+        const defaultEnd = details.end_date || new Date(now.getTime() + 3 * 86400000).toISOString().split('T')[0];
+        const payload = {
+          ...buildCompetitionPayload(details),
+          title: details.name_en || name,
+          status: "draft" as const,
+          competition_start: defaultStart,
+          competition_end: defaultEnd,
+          organizer_id: user?.id || '',
+          country_code: details.country_code || "SA",
+          edition_year: details.edition_year || now.getFullYear(),
+        };
+        const { data: inserted, error } = await (supabase as any).from("competitions").insert(payload).select("id").single();
         if (error) throw error;
         recordId = inserted?.id;
       } else {
@@ -1201,6 +1303,8 @@ export default function SmartImportAdmin() {
           onCompanyTypeChange={setSelectedCompanyType}
           selectedEstablishmentType={selectedEstablishmentType}
           onEstablishmentTypeChange={setSelectedEstablishmentType}
+          selectedExhibitionType={selectedExhibitionType}
+          onExhibitionTypeChange={setSelectedExhibitionType}
           saving={saving}
           onSave={handleAddNewRecord}
           onCancel={() => setShowAddForm(false)}

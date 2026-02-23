@@ -8,9 +8,9 @@ import {
 } from "lucide-react";
 import type { ImportedData } from "./SmartImportDialog";
 import {
-  type TargetTable, type EntityType, type CompanyType,
+  type TargetTable, type EntityType, type CompanyType, type ExhibitionType,
   TARGET_TABLE_OPTIONS, ENTITY_TYPE_LABELS, COMPANY_TYPE_LABELS,
-  ESTABLISHMENT_TYPES, countFields,
+  ESTABLISHMENT_TYPES, EXHIBITION_TYPE_LABELS, countFields,
 } from "./types";
 
 interface AddRecordFormProps {
@@ -23,6 +23,8 @@ interface AddRecordFormProps {
   onCompanyTypeChange: (t: CompanyType) => void;
   selectedEstablishmentType: string;
   onEstablishmentTypeChange: (t: string) => void;
+  selectedExhibitionType: ExhibitionType;
+  onExhibitionTypeChange: (t: ExhibitionType) => void;
   saving: boolean;
   onSave: () => void;
   onCancel: () => void;
@@ -34,6 +36,7 @@ export const AddRecordForm = React.memo(({
   selectedEntityType, onEntityTypeChange,
   selectedCompanyType, onCompanyTypeChange,
   selectedEstablishmentType, onEstablishmentTypeChange,
+  selectedExhibitionType, onExhibitionTypeChange,
   saving, onSave, onCancel, isAr,
 }: AddRecordFormProps) => {
   return (
@@ -71,7 +74,7 @@ export const AddRecordForm = React.memo(({
         {/* Target Table Selector */}
         <div className="space-y-2">
           <Label className="text-sm font-medium">{isAr ? "الجدول المستهدف" : "Target Table"} *</Label>
-          <div className="grid grid-cols-3 gap-2">
+          <div className="grid grid-cols-3 sm:grid-cols-5 gap-2">
             {TARGET_TABLE_OPTIONS.map((opt) => {
               const Icon = opt.icon;
               const isSelected = targetTable === opt.value;
@@ -102,6 +105,8 @@ export const AddRecordForm = React.memo(({
           <Label className="text-sm font-medium">
             {targetTable === "culinary_entities" ? (isAr ? "نوع الكيان" : "Entity Type")
               : targetTable === "companies" ? (isAr ? "نوع الشركة" : "Company Type")
+              : targetTable === "exhibitions" ? (isAr ? "نوع الحدث" : "Event Type")
+              : targetTable === "competitions" ? (isAr ? "المسابقة" : "Competition")
               : (isAr ? "نوع المنشأة" : "Establishment Type")} *
           </Label>
           {targetTable === "culinary_entities" && (
@@ -134,6 +139,21 @@ export const AddRecordForm = React.memo(({
               </SelectContent>
             </Select>
           )}
+          {targetTable === "exhibitions" && (
+            <Select value={selectedExhibitionType} onValueChange={(v) => onExhibitionTypeChange(v as ExhibitionType)}>
+              <SelectTrigger><SelectValue /></SelectTrigger>
+              <SelectContent>
+                {Object.entries(EXHIBITION_TYPE_LABELS).map(([value, labels]) => (
+                  <SelectItem key={value} value={value}>{isAr ? labels.ar : labels.en}</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          )}
+          {targetTable === "competitions" && (
+            <div className="text-xs text-muted-foreground p-2 border rounded-lg bg-muted/30">
+              {isAr ? "سيتم إنشاء مسابقة بحالة مسودة — يمكنك تعديل التفاصيل لاحقاً" : "A draft competition will be created — you can edit details later"}
+            </div>
+          )}
         </div>
 
         <div className="rounded-lg border border-dashed p-3 text-xs text-muted-foreground flex items-center gap-2">
@@ -142,7 +162,11 @@ export const AddRecordForm = React.memo(({
             ? (isAr ? "سيتم تعيين رقم تسلسلي جديد تلقائياً (ENT...)" : "A new serial number (ENT...) will be auto-assigned")
             : targetTable === "companies"
               ? (isAr ? "سيتم تعيين رقم شركة جديد تلقائياً (C...)" : "A new company number (C...) will be auto-assigned")
-              : (isAr ? "سيتم إنشاء سجل منشأة جديد" : "A new establishment record will be created")}
+              : targetTable === "exhibitions"
+                ? (isAr ? "سيتم إنشاء معرض/مؤتمر جديد بحالة مسودة" : "A new exhibition/conference will be created as draft")
+                : targetTable === "competitions"
+                  ? (isAr ? "سيتم إنشاء مسابقة جديدة بحالة مسودة" : "A new competition will be created as draft")
+                  : (isAr ? "سيتم إنشاء سجل منشأة جديد" : "A new establishment record will be created")}
         </div>
 
         <div className="flex justify-end gap-2 pt-2">
