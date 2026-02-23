@@ -23,6 +23,8 @@ import {
   Building2, ExternalLink, ChevronRight,
   FileText, Mail, Hash, ArrowLeft, AlertCircle,
   RefreshCw, Plus, Database as DatabaseIcon,
+  Users, Award, Briefcase, Tag, Link2, Shield,
+  Calendar, BookOpen, UserCheck,
 } from "lucide-react";
 
 type EntityType = Database["public"]["Enums"]["entity_type"];
@@ -99,18 +101,30 @@ const DataField = ({ label, value, copyable, multiline }: { label: string; value
   );
 };
 
+const TagList = ({ label, items }: { label: string; items?: string[] | null }) => {
+  if (!items?.length) return null;
+  return (
+    <div className="space-y-1.5">
+      <span className="text-[10px] font-medium text-muted-foreground uppercase tracking-wider">{label}</span>
+      <div className="flex flex-wrap gap-1.5">
+        {items.map((item, i) => (
+          <Badge key={i} variant="outline" className="text-xs">{item}</Badge>
+        ))}
+      </div>
+    </div>
+  );
+};
+
 // ─── Main Component ───
 export default function SmartImportAdmin() {
   const { language } = useLanguage();
   const { user } = useAuth();
   const isAr = language === "ar";
 
-  // Search inputs
   const [query, setQuery] = useState("");
   const [location, setLocation] = useState("");
   const [websiteUrl, setWebsiteUrl] = useState("");
 
-  // State
   const [step, setStep] = useState<Step>("search");
   const [searching, setSearching] = useState(false);
   const [searchResults, setSearchResults] = useState<SearchResultItem[]>([]);
@@ -123,12 +137,10 @@ export default function SmartImportAdmin() {
   const [sourcesUsed, setSourcesUsed] = useState<Record<string, boolean>>({});
   const [activeTab, setActiveTab] = useState("overview");
 
-  // DB check state
   const [checkingDb, setCheckingDb] = useState(false);
   const [existingEntities, setExistingEntities] = useState<ExistingEntity[]>([]);
   const [dbChecked, setDbChecked] = useState(false);
 
-  // Add/Update state
   const [showAddDialog, setShowAddDialog] = useState(false);
   const [selectedEntityType, setSelectedEntityType] = useState<EntityType>("culinary_association");
   const [saving, setSaving] = useState(false);
@@ -233,12 +245,53 @@ export default function SmartImportAdmin() {
     }
   }, [details]);
 
-  // Auto-check DB when details arrive
   useEffect(() => {
     if (details && !dbChecked && step === "details") {
       checkExistingEntity();
     }
   }, [details, dbChecked, step, checkExistingEntity]);
+
+  // ─── Build update payload from all extracted data ───
+  const buildPayload = (d: ImportedData) => {
+    const payload: Record<string, any> = {};
+    if (d.name_en) payload.name = d.name_en;
+    if (d.name_ar) payload.name_ar = d.name_ar;
+    if (d.abbreviation_en) payload.abbreviation = d.abbreviation_en;
+    if (d.abbreviation_ar) payload.abbreviation_ar = d.abbreviation_ar;
+    if (d.description_en) payload.description = d.description_en;
+    if (d.description_ar) payload.description_ar = d.description_ar;
+    if (d.mission_en) payload.mission = d.mission_en;
+    if (d.mission_ar) payload.mission_ar = d.mission_ar;
+    if (d.phone) payload.phone = d.phone;
+    if (d.fax) payload.fax = d.fax;
+    if (d.email) payload.email = d.email;
+    if (d.website) payload.website = d.website;
+    if (d.city_en || d.city_ar) payload.city = d.city_en || d.city_ar;
+    if (d.country_en || d.country_ar) payload.country = d.country_en || d.country_ar;
+    if (d.full_address_en) payload.address = d.full_address_en;
+    if (d.full_address_ar) payload.address_ar = d.full_address_ar;
+    if (d.postal_code) payload.postal_code = d.postal_code;
+    if (d.latitude) payload.latitude = d.latitude;
+    if (d.longitude) payload.longitude = d.longitude;
+    if (d.registration_number) payload.registration_number = d.registration_number;
+    if (d.license_number) payload.license_number = d.license_number;
+    if (d.founded_year) payload.founded_year = d.founded_year;
+    if (d.president_name_en) payload.president_name = d.president_name_en;
+    if (d.president_name_ar) payload.president_name_ar = d.president_name_ar;
+    if (d.secretary_name_en) payload.secretary_name = d.secretary_name_en;
+    if (d.secretary_name_ar) payload.secretary_name_ar = d.secretary_name_ar;
+    if (d.member_count) payload.member_count = d.member_count;
+    // Merge services (EN + AR)
+    const services = [...(d.services_en || []), ...(d.services_ar || [])].filter(Boolean);
+    if (services.length) payload.services = services;
+    // Merge specializations
+    const specs = [...(d.specializations_en || []), ...(d.specializations_ar || [])].filter(Boolean);
+    if (specs.length) payload.specializations = specs;
+    if (d.affiliated_organizations?.length) payload.affiliated_organizations = d.affiliated_organizations;
+    if (d.tags?.length) payload.tags = d.tags;
+    if (d.social_media && Object.values(d.social_media).some(Boolean)) payload.social_links = d.social_media;
+    return payload;
+  };
 
   // ─── Update existing entity ───
   const handleUpdateEntity = async (entityId: string) => {
@@ -247,26 +300,9 @@ export default function SmartImportAdmin() {
     setSelectedExistingId(entityId);
 
     try {
-      const updatePayload: Record<string, any> = {};
-      if (details.name_en) updatePayload.name = details.name_en;
-      if (details.name_ar) updatePayload.name_ar = details.name_ar;
-      if (details.description_en) updatePayload.description = details.description_en;
-      if (details.description_ar) updatePayload.description_ar = details.description_ar;
-      if (details.phone) updatePayload.phone = details.phone;
-      if (details.email) updatePayload.email = details.email;
-      if (details.website) updatePayload.website = details.website;
-      if (details.city_en || details.city_ar) updatePayload.city = details.city_en || details.city_ar;
-      if (details.country_en || details.country_ar) updatePayload.country = details.country_en || details.country_ar;
-      if (details.full_address_en) updatePayload.address = details.full_address_en;
-      if (details.full_address_ar) updatePayload.address_ar = details.full_address_ar;
-      if (details.postal_code) updatePayload.postal_code = details.postal_code;
-      if (details.latitude) updatePayload.latitude = details.latitude;
-      if (details.longitude) updatePayload.longitude = details.longitude;
-      if (details.social_media) updatePayload.social_links = details.social_media;
-
+      const updatePayload = buildPayload(details);
       const { error } = await supabase.from("culinary_entities").update(updatePayload).eq("id", entityId);
       if (error) throw error;
-
       toast({ title: isAr ? "تم تحديث الجهة بنجاح" : "Entity updated successfully" });
       setDbChecked(false);
     } catch (err: any) {
@@ -285,28 +321,16 @@ export default function SmartImportAdmin() {
     try {
       const name = details.name_en || details.name_ar || "Unknown";
       const slug = name.toLowerCase().replace(/\s+/g, "-").replace(/[^a-z0-9-]/g, "");
+      const basePayload = buildPayload(details);
 
       const payload = {
-        name,
-        name_ar: details.name_ar || null,
-        description: details.description_en || null,
-        description_ar: details.description_ar || null,
+        ...basePayload,
+        name: basePayload.name || name,
         type: selectedEntityType,
         scope: "local" as const,
         status: "pending" as const,
         is_visible: false,
         is_verified: false,
-        country: details.country_en || details.country_ar || null,
-        city: details.city_en || details.city_ar || null,
-        address: details.full_address_en || null,
-        address_ar: details.full_address_ar || null,
-        postal_code: details.postal_code || null,
-        email: details.email || null,
-        phone: details.phone || null,
-        website: details.website || null,
-        latitude: details.latitude || null,
-        longitude: details.longitude || null,
-        social_links: details.social_media ? details.social_media as any : null,
         slug,
         entity_number: "",
         created_by: user?.id || null,
@@ -325,7 +349,6 @@ export default function SmartImportAdmin() {
     }
   };
 
-  // ─── Reset ───
   const handleNewSearch = () => {
     setStep("search");
     setSearchResults([]);
@@ -342,6 +365,21 @@ export default function SmartImportAdmin() {
     setSourcesUsed({});
     setDbChecked(false);
     setExistingEntities([]);
+  };
+
+  // Count how many detail fields are populated
+  const countFields = (d: ImportedData | null) => {
+    if (!d) return 0;
+    let count = 0;
+    const check = (v: any) => { if (v !== null && v !== undefined && v !== '' && !(Array.isArray(v) && v.length === 0)) count++; };
+    Object.values(d).forEach(v => {
+      if (typeof v === 'object' && v !== null && !Array.isArray(v)) {
+        Object.values(v).forEach(sv => check(sv));
+      } else {
+        check(v);
+      }
+    });
+    return count;
   };
 
   return (
@@ -362,12 +400,10 @@ export default function SmartImportAdmin() {
             <p className="text-muted-foreground text-sm mt-0.5">
               {step === "search" && (isAr ? "ابحث عن كيان في خرائط جوجل واستورد بياناته تلقائياً" : "Search Google Maps for entities and auto-import data")}
               {step === "results" && (isAr ? `${searchResults.length} نتيجة من خرائط جوجل — اضغط للتحليل` : `${searchResults.length} Google Maps results — click to analyze`)}
-              {step === "details" && (isAr ? "البيانات المستخرجة جاهزة للاستيراد" : "Extracted data ready for import")}
+              {step === "details" && (isAr ? `تم استخراج ${countFields(details)} حقل بيانات — جاهز للاستيراد` : `${countFields(details)} data fields extracted — ready for import`)}
             </p>
           </div>
         </div>
-
-        {/* Step indicator */}
         <div className="hidden sm:flex items-center gap-1.5">
           {[
             { key: "search", label: isAr ? "بحث" : "Search", num: 1 },
@@ -438,10 +474,9 @@ export default function SmartImportAdmin() {
         </Card>
       )}
 
-      {/* ─── STEP 2: Results (Google Maps only) ─── */}
+      {/* ─── STEP 2: Results ─── */}
       {step === "results" && (
         <>
-          {/* Inline search bar */}
           <div className="flex gap-2">
             <div className="relative flex-1">
               <Search className="absolute start-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
@@ -454,7 +489,6 @@ export default function SmartImportAdmin() {
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-5 gap-4">
-            {/* Results List */}
             <div className="lg:col-span-2">
               <Card className="h-full">
                 <CardHeader className="pb-2 px-4 pt-4">
@@ -481,8 +515,7 @@ export default function SmartImportAdmin() {
                     ) : searchResults.length === 0 ? (
                       <div className="p-8 text-center text-muted-foreground">
                         <MapPin className="h-8 w-8 mx-auto mb-2 opacity-30" />
-                        <p className="text-sm">{isAr ? "لم يتم العثور على نتائج في خرائط جوجل" : "No Google Maps results found"}</p>
-                        <p className="text-xs mt-1">{isAr ? "جرب كلمات بحث مختلفة" : "Try different search terms"}</p>
+                        <p className="text-sm">{isAr ? "لم يتم العثور على نتائج" : "No results found"}</p>
                       </div>
                     ) : (
                       <div className="p-2 space-y-1">
@@ -493,22 +526,14 @@ export default function SmartImportAdmin() {
                             <button
                               key={item.id}
                               className={`w-full text-start p-3 rounded-lg transition-all ${
-                                isLoading
-                                  ? 'bg-primary/10 border border-primary/30 shadow-sm'
-                                  : isSelected
-                                  ? 'bg-primary/10 border border-primary/30 shadow-sm'
-                                  : 'hover:bg-accent/50 border border-transparent'
+                                isSelected ? 'bg-primary/10 border border-primary/30 shadow-sm' : 'hover:bg-accent/50 border border-transparent'
                               }`}
                               onClick={() => !loadingDetails && handleResultClick(item)}
                               disabled={loadingDetails}
                             >
                               <div className="flex items-start gap-2.5">
                                 <div className={`w-9 h-9 rounded-lg flex items-center justify-center shrink-0 mt-0.5 ${isSelected ? 'bg-primary/15' : 'bg-red-500/10'}`}>
-                                  {isLoading ? (
-                                    <Loader2 className="h-4 w-4 text-primary animate-spin" />
-                                  ) : (
-                                    <MapPin className="h-4 w-4 text-red-500" />
-                                  )}
+                                  {isLoading ? <Loader2 className="h-4 w-4 text-primary animate-spin" /> : <MapPin className="h-4 w-4 text-red-500" />}
                                 </div>
                                 <div className="flex-1 min-w-0">
                                   <div className="flex items-center gap-2">
@@ -520,26 +545,12 @@ export default function SmartImportAdmin() {
                                       </span>
                                     )}
                                   </div>
-                                  {item.place_type && (
-                                    <p className="text-[11px] text-muted-foreground mt-0.5">{item.place_type}</p>
-                                  )}
-                                  {item.description && (
-                                    <p className="text-xs text-muted-foreground/80 line-clamp-1 mt-0.5">{item.description}</p>
-                                  )}
+                                  {item.place_type && <p className="text-[11px] text-muted-foreground mt-0.5">{item.place_type}</p>}
+                                  {item.description && <p className="text-xs text-muted-foreground/80 line-clamp-1 mt-0.5">{item.description}</p>}
                                   <div className="flex items-center gap-1.5 mt-1.5">
-                                    {item.google_maps_url && (
-                                      <Badge variant="outline" className="text-[9px] h-[18px] px-1 bg-red-500/10 text-red-600 border-red-500/20 gap-0.5">
-                                        <MapPin className="h-2 w-2" /> Maps
-                                      </Badge>
-                                    )}
-                                    {item.latitude != null && (
-                                      <Badge variant="outline" className="text-[9px] h-[18px] px-1 bg-blue-500/10 text-blue-600 border-blue-500/20 gap-0.5">
-                                        📍 {item.latitude.toFixed(2)}, {item.longitude?.toFixed(2)}
-                                      </Badge>
-                                    )}
-                                    {item.total_reviews != null && (
-                                      <span className="text-[10px] text-muted-foreground">({item.total_reviews} {isAr ? "تقييم" : "reviews"})</span>
-                                    )}
+                                    {item.google_maps_url && <Badge variant="outline" className="text-[9px] h-[18px] px-1 bg-red-500/10 text-red-600 border-red-500/20 gap-0.5"><MapPin className="h-2 w-2" /> Maps</Badge>}
+                                    {item.latitude != null && <Badge variant="outline" className="text-[9px] h-[18px] px-1 bg-blue-500/10 text-blue-600 border-blue-500/20 gap-0.5">📍 {item.latitude.toFixed(2)}, {item.longitude?.toFixed(2)}</Badge>}
+                                    {item.total_reviews != null && <span className="text-[10px] text-muted-foreground">({item.total_reviews} {isAr ? "تقييم" : "reviews"})</span>}
                                   </div>
                                 </div>
                                 <ChevronRight className={`h-4 w-4 shrink-0 mt-2 transition-colors ${isSelected ? 'text-primary' : 'text-muted-foreground/30'}`} />
@@ -547,9 +558,7 @@ export default function SmartImportAdmin() {
                               {isLoading && (
                                 <div className="flex items-center justify-center gap-2 mt-2 pt-2 border-t border-primary/10">
                                   <Loader2 className="h-3 w-3 text-primary animate-spin" />
-                                  <p className="text-xs text-primary font-medium">
-                                    {isAr ? "جاري جلب التفاصيل من مصادر متعددة..." : "Fetching details from multiple sources..."}
-                                  </p>
+                                  <p className="text-xs text-primary font-medium">{isAr ? "جاري جلب التفاصيل..." : "Fetching details..."}</p>
                                 </div>
                               )}
                             </button>
@@ -561,8 +570,6 @@ export default function SmartImportAdmin() {
                 </CardContent>
               </Card>
             </div>
-
-            {/* Map */}
             <div className="lg:col-span-3">
               <GoogleMapEmbed
                 latitude={selectedResult?.latitude}
@@ -577,7 +584,7 @@ export default function SmartImportAdmin() {
         </>
       )}
 
-      {/* ─── Loading overlay (when navigating to details) ─── */}
+      {/* ─── Loading ─── */}
       {loadingDetails && step === "details" && (
         <Card>
           <CardContent className="py-16">
@@ -588,16 +595,14 @@ export default function SmartImportAdmin() {
               </div>
               <div>
                 <p className="font-semibold text-lg">{isAr ? "جاري جلب البيانات..." : "Fetching Data..."}</p>
-                <p className="text-sm text-muted-foreground mt-1">
-                  {isAr ? "جمع البيانات من خرائط جوجل ومصادر متعددة" : "Collecting from Google Maps and multiple sources"}
-                </p>
+                <p className="text-sm text-muted-foreground mt-1">{isAr ? "جمع البيانات من خرائط جوجل ومصادر متعددة" : "Collecting from Google Maps and multiple sources"}</p>
               </div>
             </div>
           </CardContent>
         </Card>
       )}
 
-      {/* ─── STEP 3: Details View ─── */}
+      {/* ─── STEP 3: Comprehensive Details View ─── */}
       {step === "details" && details && (details.name_en || details.name_ar) && (
         <div className="space-y-4">
           {/* Entity Header */}
@@ -610,8 +615,11 @@ export default function SmartImportAdmin() {
                   </div>
                   <div>
                     <h2 className="text-xl font-bold">{details.name_en || details.name_ar}</h2>
-                    {details.name_en && details.name_ar && (
-                      <p className="text-sm text-muted-foreground">{details.name_ar}</p>
+                    {details.name_en && details.name_ar && <p className="text-sm text-muted-foreground">{details.name_ar}</p>}
+                    {(details.abbreviation_en || details.abbreviation_ar) && (
+                      <p className="text-xs text-muted-foreground/70">
+                        {[details.abbreviation_en, details.abbreviation_ar].filter(Boolean).join(" / ")}
+                      </p>
                     )}
                   </div>
                   {details.rating && (
@@ -621,9 +629,13 @@ export default function SmartImportAdmin() {
                       {details.total_reviews != null && <span className="text-muted-foreground">({details.total_reviews})</span>}
                     </Badge>
                   )}
+                  {details.founded_year && (
+                    <Badge variant="outline" className="gap-1 ms-1 text-xs">
+                      <Calendar className="h-3 w-3" />
+                      {details.founded_year}
+                    </Badge>
+                  )}
                 </div>
-
-                {/* Source Channels */}
                 <div className="flex items-center gap-1.5 flex-wrap">
                   <span className="text-xs font-medium text-muted-foreground me-1">{isAr ? "المصادر:" : "Sources:"}</span>
                   {Object.entries(SOURCE_CHANNELS).map(([key, config]) => {
@@ -641,7 +653,7 @@ export default function SmartImportAdmin() {
             </CardContent>
           </Card>
 
-          {/* ─── DB Existence Check ─── */}
+          {/* DB Check */}
           <Card className={existingEntities.length > 0 ? "border-yellow-500/30 bg-yellow-500/5" : dbChecked ? "border-green-500/30 bg-green-500/5" : ""}>
             <CardContent className="py-4">
               {checkingDb ? (
@@ -654,9 +666,7 @@ export default function SmartImportAdmin() {
                   <div className="flex items-center gap-2">
                     <AlertCircle className="h-5 w-5 text-yellow-600" />
                     <span className="text-sm font-semibold text-yellow-700">
-                      {isAr
-                        ? `تم العثور على ${existingEntities.length} كيان مطابق في قاعدة البيانات`
-                        : `Found ${existingEntities.length} matching entit${existingEntities.length > 1 ? 'ies' : 'y'} in database`}
+                      {isAr ? `تم العثور على ${existingEntities.length} كيان مطابق` : `Found ${existingEntities.length} matching entit${existingEntities.length > 1 ? 'ies' : 'y'}`}
                     </span>
                   </div>
                   <div className="space-y-2">
@@ -671,22 +681,11 @@ export default function SmartImportAdmin() {
                             <div className="flex items-center gap-2 text-xs text-muted-foreground">
                               <Badge variant="outline" className="text-[10px] h-4">{entity.entity_number}</Badge>
                               <span>{isAr ? ENTITY_TYPE_LABELS[entity.type]?.ar : ENTITY_TYPE_LABELS[entity.type]?.en}</span>
-                              {entity.city && <span>• {entity.city}</span>}
                             </div>
                           </div>
                         </div>
-                        <Button
-                          size="sm"
-                          variant="outline"
-                          className="gap-1.5"
-                          onClick={() => handleUpdateEntity(entity.id)}
-                          disabled={updating}
-                        >
-                          {updating && selectedExistingId === entity.id ? (
-                            <Loader2 className="h-3.5 w-3.5 animate-spin" />
-                          ) : (
-                            <RefreshCw className="h-3.5 w-3.5" />
-                          )}
+                        <Button size="sm" variant="outline" className="gap-1.5" onClick={() => handleUpdateEntity(entity.id)} disabled={updating}>
+                          {updating && selectedExistingId === entity.id ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <RefreshCw className="h-3.5 w-3.5" />}
                           {isAr ? "تحديث البيانات" : "Update Data"}
                         </Button>
                       </div>
@@ -694,9 +693,7 @@ export default function SmartImportAdmin() {
                   </div>
                   <Separator />
                   <div className="flex items-center justify-between">
-                    <span className="text-xs text-muted-foreground">
-                      {isAr ? "أو يمكنك إضافة ككيان جديد" : "Or you can add as a new entity"}
-                    </span>
+                    <span className="text-xs text-muted-foreground">{isAr ? "أو أضف ككيان جديد" : "Or add as new entity"}</span>
                     <Button size="sm" variant="default" className="gap-1.5" onClick={() => setShowAddDialog(true)}>
                       <Plus className="h-3.5 w-3.5" />
                       {isAr ? "إضافة جديد" : "Add New"}
@@ -707,9 +704,7 @@ export default function SmartImportAdmin() {
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
                     <CheckCircle className="h-5 w-5 text-green-600" />
-                    <span className="text-sm font-medium text-green-700">
-                      {isAr ? "لا يوجد كيان مطابق في قاعدة البيانات" : "No matching entity found in database"}
-                    </span>
+                    <span className="text-sm font-medium text-green-700">{isAr ? "لا يوجد كيان مطابق" : "No matching entity found"}</span>
                   </div>
                   <Button size="sm" variant="default" className="gap-1.5" onClick={() => setShowAddDialog(true)}>
                     <Plus className="h-3.5 w-3.5" />
@@ -720,57 +715,28 @@ export default function SmartImportAdmin() {
             </CardContent>
           </Card>
 
-          {/* Tabbed Content */}
+          {/* ─── Comprehensive Tabbed Content ─── */}
           <Tabs value={activeTab} onValueChange={setActiveTab}>
-            <TabsList className="w-full justify-start">
-              <TabsTrigger value="overview" className="gap-1.5">
-                <FileText className="h-3.5 w-3.5" />
-                {isAr ? "نظرة عامة" : "Overview"}
-              </TabsTrigger>
-              <TabsTrigger value="contact" className="gap-1.5">
-                <Phone className="h-3.5 w-3.5" />
-                {isAr ? "التواصل" : "Contact"}
-              </TabsTrigger>
-              <TabsTrigger value="address" className="gap-1.5">
-                <MapPin className="h-3.5 w-3.5" />
-                {isAr ? "العنوان" : "Address"}
-              </TabsTrigger>
-              <TabsTrigger value="more" className="gap-1.5">
-                <Clock className="h-3.5 w-3.5" />
-                {isAr ? "المزيد" : "More"}
-              </TabsTrigger>
+            <TabsList className="w-full justify-start flex-wrap h-auto gap-1 p-1">
+              <TabsTrigger value="overview" className="gap-1.5"><FileText className="h-3.5 w-3.5" />{isAr ? "نظرة عامة" : "Overview"}</TabsTrigger>
+              <TabsTrigger value="contact" className="gap-1.5"><Phone className="h-3.5 w-3.5" />{isAr ? "التواصل" : "Contact"}</TabsTrigger>
+              <TabsTrigger value="address" className="gap-1.5"><MapPin className="h-3.5 w-3.5" />{isAr ? "العنوان" : "Address"}</TabsTrigger>
+              <TabsTrigger value="organization" className="gap-1.5"><Building2 className="h-3.5 w-3.5" />{isAr ? "المنظمة" : "Organization"}</TabsTrigger>
+              <TabsTrigger value="services" className="gap-1.5"><Briefcase className="h-3.5 w-3.5" />{isAr ? "الخدمات" : "Services"}</TabsTrigger>
+              <TabsTrigger value="hours" className="gap-1.5"><Clock className="h-3.5 w-3.5" />{isAr ? "ساعات العمل" : "Hours"}</TabsTrigger>
             </TabsList>
 
-            {/* Overview */}
+            {/* ── Overview Tab ── */}
             <TabsContent value="overview" className="mt-4">
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-                {(details.business_type_en || details.business_type_ar) && (
-                  <Card>
-                    <CardContent className="pt-4">
-                      <p className="text-[10px] font-medium text-muted-foreground uppercase tracking-wider mb-2">{isAr ? "نوع النشاط" : "Business Type"}</p>
-                      <div className="flex gap-2 flex-wrap">
-                        {details.business_type_en && <Badge variant="outline">{details.business_type_en}</Badge>}
-                        {details.business_type_ar && <Badge variant="outline">{details.business_type_ar}</Badge>}
-                      </div>
-                    </CardContent>
-                  </Card>
-                )}
-                {(details.description_en || details.description_ar) && (
-                  <Card className={!(details.business_type_en || details.business_type_ar) ? "lg:col-span-2" : ""}>
-                    <CardContent className="pt-4 space-y-3">
-                      <DataField label={isAr ? "الوصف (EN)" : "Description (EN)"} value={details.description_en} multiline />
-                      <DataField label={isAr ? "الوصف (AR)" : "Description (AR)"} value={details.description_ar} multiline />
-                    </CardContent>
-                  </Card>
-                )}
-                {/* Quick stats */}
+                {/* Quick Stats */}
                 <Card className="lg:col-span-2">
                   <CardContent className="pt-4">
-                    <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+                    <div className="grid grid-cols-2 sm:grid-cols-5 gap-3">
                       {details.rating && (
                         <div className="text-center p-3 rounded-lg bg-yellow-500/10">
                           <Star className="h-4 w-4 mx-auto text-yellow-500 fill-yellow-500 mb-1" />
-                          <p className="text-xs text-muted-foreground">{isAr ? "تقييم جوجل" : "Google Rating"}</p>
+                          <p className="text-xs text-muted-foreground">{isAr ? "التقييم" : "Rating"}</p>
                           <p className="text-lg font-bold">{details.rating}</p>
                           {details.total_reviews != null && <p className="text-xs text-muted-foreground">{details.total_reviews} {isAr ? "تقييم" : "reviews"}</p>}
                         </div>
@@ -786,7 +752,7 @@ export default function SmartImportAdmin() {
                         <div className="text-center p-3 rounded-lg bg-accent/30">
                           <Globe className="h-4 w-4 mx-auto text-primary mb-1" />
                           <p className="text-xs text-muted-foreground">{isAr ? "الموقع" : "Website"}</p>
-                          <p className="text-sm font-medium truncate">{details.website}</p>
+                          <p className="text-sm font-medium truncate">{details.website.replace(/^https?:\/\//, '')}</p>
                         </div>
                       )}
                       {(details.city_en || details.city_ar) && (
@@ -796,22 +762,78 @@ export default function SmartImportAdmin() {
                           <p className="text-sm font-medium truncate">{details.city_en || details.city_ar}</p>
                         </div>
                       )}
+                      {details.founded_year && (
+                        <div className="text-center p-3 rounded-lg bg-accent/30">
+                          <Calendar className="h-4 w-4 mx-auto text-primary mb-1" />
+                          <p className="text-xs text-muted-foreground">{isAr ? "سنة التأسيس" : "Founded"}</p>
+                          <p className="text-lg font-bold">{details.founded_year}</p>
+                        </div>
+                      )}
+                      {details.member_count && (
+                        <div className="text-center p-3 rounded-lg bg-accent/30">
+                          <Users className="h-4 w-4 mx-auto text-primary mb-1" />
+                          <p className="text-xs text-muted-foreground">{isAr ? "الأعضاء" : "Members"}</p>
+                          <p className="text-lg font-bold">{details.member_count}</p>
+                        </div>
+                      )}
                     </div>
                   </CardContent>
                 </Card>
+
+                {/* Names & Abbreviations */}
+                <Card>
+                  <CardHeader className="pb-2"><CardTitle className="text-sm">{isAr ? "الأسماء" : "Names"}</CardTitle></CardHeader>
+                  <CardContent className="space-y-3">
+                    <DataField label={isAr ? "الاسم (EN)" : "Name (EN)"} value={details.name_en} copyable />
+                    <DataField label={isAr ? "الاسم (AR)" : "Name (AR)"} value={details.name_ar} copyable />
+                    <DataField label={isAr ? "الاختصار (EN)" : "Abbreviation (EN)"} value={details.abbreviation_en} copyable />
+                    <DataField label={isAr ? "الاختصار (AR)" : "Abbreviation (AR)"} value={details.abbreviation_ar} copyable />
+                  </CardContent>
+                </Card>
+
+                {/* Business Type */}
+                <Card>
+                  <CardHeader className="pb-2"><CardTitle className="text-sm">{isAr ? "نوع النشاط" : "Business Type"}</CardTitle></CardHeader>
+                  <CardContent className="space-y-3">
+                    <DataField label={isAr ? "النوع (EN)" : "Type (EN)"} value={details.business_type_en} />
+                    <DataField label={isAr ? "النوع (AR)" : "Type (AR)"} value={details.business_type_ar} />
+                    <TagList label={isAr ? "الكلمات المفتاحية" : "Tags"} items={details.tags} />
+                  </CardContent>
+                </Card>
+
+                {/* Description */}
+                {(details.description_en || details.description_ar) && (
+                  <Card className="lg:col-span-2">
+                    <CardHeader className="pb-2"><CardTitle className="text-sm">{isAr ? "الوصف" : "Description"}</CardTitle></CardHeader>
+                    <CardContent className="space-y-3">
+                      <DataField label={isAr ? "الوصف (EN)" : "Description (EN)"} value={details.description_en} multiline />
+                      <DataField label={isAr ? "الوصف (AR)" : "Description (AR)"} value={details.description_ar} multiline />
+                    </CardContent>
+                  </Card>
+                )}
+
+                {/* Mission */}
+                {(details.mission_en || details.mission_ar) && (
+                  <Card className="lg:col-span-2">
+                    <CardHeader className="pb-2"><CardTitle className="text-sm flex items-center gap-1.5"><BookOpen className="h-4 w-4" />{isAr ? "الرسالة والرؤية" : "Mission & Vision"}</CardTitle></CardHeader>
+                    <CardContent className="space-y-3">
+                      <DataField label={isAr ? "الرسالة (EN)" : "Mission (EN)"} value={details.mission_en} multiline />
+                      <DataField label={isAr ? "الرسالة (AR)" : "Mission (AR)"} value={details.mission_ar} multiline />
+                    </CardContent>
+                  </Card>
+                )}
               </div>
             </TabsContent>
 
-            {/* Contact */}
+            {/* ── Contact Tab ── */}
             <TabsContent value="contact" className="mt-4">
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
                 <Card>
-                  <CardHeader className="pb-2">
-                    <CardTitle className="text-sm">{isAr ? "معلومات التواصل" : "Contact Info"}</CardTitle>
-                  </CardHeader>
+                  <CardHeader className="pb-2"><CardTitle className="text-sm">{isAr ? "معلومات التواصل" : "Contact Info"}</CardTitle></CardHeader>
                   <CardContent className="space-y-3">
                     <DataField label={isAr ? "الهاتف" : "Phone"} value={details.phone} copyable />
                     <DataField label={isAr ? "هاتف ثانوي" : "Secondary Phone"} value={details.phone_secondary} copyable />
+                    <DataField label={isAr ? "الفاكس" : "Fax"} value={details.fax} copyable />
                     <DataField label={isAr ? "البريد الإلكتروني" : "Email"} value={details.email} copyable />
                     <DataField label={isAr ? "الموقع الإلكتروني" : "Website"} value={details.website} copyable />
                   </CardContent>
@@ -823,7 +845,7 @@ export default function SmartImportAdmin() {
                     </CardHeader>
                     <CardContent className="space-y-3">
                       {Object.entries(details.social_media).filter(([, v]) => v).map(([k, v]) => (
-                        <DataField key={k} label={k} value={v} copyable />
+                        <DataField key={k} label={k.charAt(0).toUpperCase() + k.slice(1)} value={v} copyable />
                       ))}
                     </CardContent>
                   </Card>
@@ -831,7 +853,7 @@ export default function SmartImportAdmin() {
               </div>
             </TabsContent>
 
-            {/* Address */}
+            {/* ── Address Tab ── */}
             <TabsContent value="address" className="mt-4">
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
                 <Card>
@@ -839,18 +861,23 @@ export default function SmartImportAdmin() {
                     <div className="grid grid-cols-2 gap-3">
                       <DataField label={isAr ? "المدينة (EN)" : "City (EN)"} value={details.city_en} />
                       <DataField label={isAr ? "المدينة (AR)" : "City (AR)"} value={details.city_ar} />
-                      <DataField label={isAr ? "الحي" : "Neighborhood"} value={details.neighborhood_en || details.neighborhood_ar} />
-                      <DataField label={isAr ? "الشارع" : "Street"} value={details.street_en || details.street_ar} />
+                      <DataField label={isAr ? "الحي (EN)" : "Neighborhood (EN)"} value={details.neighborhood_en} />
+                      <DataField label={isAr ? "الحي (AR)" : "Neighborhood (AR)"} value={details.neighborhood_ar} />
+                      <DataField label={isAr ? "الشارع (EN)" : "Street (EN)"} value={details.street_en} />
+                      <DataField label={isAr ? "الشارع (AR)" : "Street (AR)"} value={details.street_ar} />
                       <DataField label={isAr ? "الرمز البريدي" : "Postal Code"} value={details.postal_code} />
-                      <DataField label={isAr ? "الدولة" : "Country"} value={details.country_en ? `${details.country_en} (${details.country_code || ''})` : details.country_ar} />
+                      <DataField label={isAr ? "الدولة" : "Country"} value={details.country_en ? `${details.country_en}${details.country_code ? ` (${details.country_code})` : ''}` : details.country_ar} />
                     </div>
                     <Separator />
                     <DataField label={isAr ? "العنوان الكامل (EN)" : "Full Address (EN)"} value={details.full_address_en} copyable />
                     <DataField label={isAr ? "العنوان الكامل (AR)" : "Full Address (AR)"} value={details.full_address_ar} copyable />
-                    {details.national_id && (
+                    {(details.latitude || details.longitude) && (
                       <>
                         <Separator />
-                        <DataField label={isAr ? "السجل التجاري" : "Registration ID"} value={details.national_id} copyable />
+                        <div className="grid grid-cols-2 gap-3">
+                          <DataField label={isAr ? "خط العرض" : "Latitude"} value={details.latitude?.toString()} copyable />
+                          <DataField label={isAr ? "خط الطول" : "Longitude"} value={details.longitude?.toString()} copyable />
+                        </div>
                       </>
                     )}
                   </CardContent>
@@ -859,15 +886,89 @@ export default function SmartImportAdmin() {
                   latitude={details.latitude}
                   longitude={details.longitude}
                   name={details.name_en || details.name_ar}
-                  className="h-[350px]"
+                  className="h-[400px]"
                 />
               </div>
             </TabsContent>
 
-            {/* More */}
-            <TabsContent value="more" className="mt-4">
+            {/* ── Organization Tab ── */}
+            <TabsContent value="organization" className="mt-4">
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-                {details.business_hours && details.business_hours.length > 0 && (
+                {/* Leadership */}
+                <Card>
+                  <CardHeader className="pb-2"><CardTitle className="text-sm flex items-center gap-1.5"><UserCheck className="h-4 w-4" />{isAr ? "القيادة" : "Leadership"}</CardTitle></CardHeader>
+                  <CardContent className="space-y-3">
+                    <DataField label={isAr ? "الرئيس (EN)" : "President (EN)"} value={details.president_name_en} />
+                    <DataField label={isAr ? "الرئيس (AR)" : "President (AR)"} value={details.president_name_ar} />
+                    <DataField label={isAr ? "السكرتير (EN)" : "Secretary (EN)"} value={details.secretary_name_en} />
+                    <DataField label={isAr ? "السكرتير (AR)" : "Secretary (AR)"} value={details.secretary_name_ar} />
+                    {details.member_count && (
+                      <div className="flex items-center gap-2 p-2.5 rounded-lg bg-accent/30">
+                        <Users className="h-4 w-4 text-primary" />
+                        <span className="text-sm">{isAr ? "عدد الأعضاء:" : "Member Count:"} <strong>{details.member_count}</strong></span>
+                      </div>
+                    )}
+                  </CardContent>
+                </Card>
+
+                {/* Registration & Legal */}
+                <Card>
+                  <CardHeader className="pb-2"><CardTitle className="text-sm flex items-center gap-1.5"><Shield className="h-4 w-4" />{isAr ? "التسجيل والترخيص" : "Registration & Legal"}</CardTitle></CardHeader>
+                  <CardContent className="space-y-3">
+                    <DataField label={isAr ? "السجل التجاري" : "National/Commercial ID"} value={details.national_id} copyable />
+                    <DataField label={isAr ? "رقم التسجيل" : "Registration Number"} value={details.registration_number} copyable />
+                    <DataField label={isAr ? "رقم الترخيص" : "License Number"} value={details.license_number} copyable />
+                    {details.founded_year && (
+                      <div className="flex items-center gap-2 p-2.5 rounded-lg bg-accent/30">
+                        <Calendar className="h-4 w-4 text-primary" />
+                        <span className="text-sm">{isAr ? "سنة التأسيس:" : "Founded:"} <strong>{details.founded_year}</strong></span>
+                      </div>
+                    )}
+                  </CardContent>
+                </Card>
+
+                {/* Affiliated Organizations */}
+                {details.affiliated_organizations && details.affiliated_organizations.length > 0 && (
+                  <Card className="lg:col-span-2">
+                    <CardHeader className="pb-2"><CardTitle className="text-sm flex items-center gap-1.5"><Link2 className="h-4 w-4" />{isAr ? "المنظمات التابعة" : "Affiliated Organizations"}</CardTitle></CardHeader>
+                    <CardContent>
+                      <TagList label="" items={details.affiliated_organizations} />
+                    </CardContent>
+                  </Card>
+                )}
+              </div>
+            </TabsContent>
+
+            {/* ── Services Tab ── */}
+            <TabsContent value="services" className="mt-4">
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                <Card>
+                  <CardHeader className="pb-2"><CardTitle className="text-sm flex items-center gap-1.5"><Briefcase className="h-4 w-4" />{isAr ? "الخدمات" : "Services"}</CardTitle></CardHeader>
+                  <CardContent className="space-y-4">
+                    <TagList label={isAr ? "الخدمات (EN)" : "Services (EN)"} items={details.services_en} />
+                    <TagList label={isAr ? "الخدمات (AR)" : "Services (AR)"} items={details.services_ar} />
+                    {!details.services_en?.length && !details.services_ar?.length && (
+                      <p className="text-sm text-muted-foreground">{isAr ? "لم يتم العثور على خدمات" : "No services found"}</p>
+                    )}
+                  </CardContent>
+                </Card>
+                <Card>
+                  <CardHeader className="pb-2"><CardTitle className="text-sm flex items-center gap-1.5"><Award className="h-4 w-4" />{isAr ? "التخصصات" : "Specializations"}</CardTitle></CardHeader>
+                  <CardContent className="space-y-4">
+                    <TagList label={isAr ? "التخصصات (EN)" : "Specializations (EN)"} items={details.specializations_en} />
+                    <TagList label={isAr ? "التخصصات (AR)" : "Specializations (AR)"} items={details.specializations_ar} />
+                    {!details.specializations_en?.length && !details.specializations_ar?.length && (
+                      <p className="text-sm text-muted-foreground">{isAr ? "لم يتم العثور على تخصصات" : "No specializations found"}</p>
+                    )}
+                  </CardContent>
+                </Card>
+              </div>
+            </TabsContent>
+
+            {/* ── Hours Tab ── */}
+            <TabsContent value="hours" className="mt-4">
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                {details.business_hours && details.business_hours.length > 0 ? (
                   <Card>
                     <CardHeader className="pb-2">
                       <CardTitle className="text-sm flex items-center gap-1.5"><Clock className="h-4 w-4" /> {isAr ? "ساعات العمل" : "Business Hours"}</CardTitle>
@@ -883,6 +984,13 @@ export default function SmartImportAdmin() {
                           </div>
                         ))}
                       </div>
+                    </CardContent>
+                  </Card>
+                ) : (
+                  <Card>
+                    <CardContent className="py-8 text-center text-muted-foreground">
+                      <Clock className="h-8 w-8 mx-auto mb-2 opacity-30" />
+                      <p className="text-sm">{isAr ? "لم يتم العثور على ساعات العمل" : "No business hours found"}</p>
                     </CardContent>
                   </Card>
                 )}
@@ -915,26 +1023,25 @@ export default function SmartImportAdmin() {
               {isAr ? "إضافة كيان جديد" : "Add New Entity"}
             </DialogTitle>
             <DialogDescription>
-              {isAr ? "حدد نوع الكيان لإضافته إلى قاعدة البيانات مع رقم تسلسلي جديد" : "Select the entity type to add it to the database with a new serial number"}
+              {isAr ? "حدد نوع الكيان لإضافته إلى قاعدة البيانات مع جميع البيانات المستخرجة" : "Select entity type to add with all extracted data"}
             </DialogDescription>
           </DialogHeader>
 
           <div className="space-y-4 py-2">
-            {/* Preview */}
             <div className="rounded-lg border p-3 bg-accent/30 space-y-1.5">
               <p className="text-sm font-semibold">{details?.name_en || details?.name_ar}</p>
               {details?.name_ar && details?.name_en && <p className="text-xs text-muted-foreground">{details.name_ar}</p>}
-              <div className="flex items-center gap-2 text-xs text-muted-foreground">
+              <div className="flex items-center gap-2 text-xs text-muted-foreground flex-wrap">
                 {details?.city_en && <span className="flex items-center gap-0.5"><MapPin className="h-3 w-3" />{details.city_en}</span>}
-                {details?.rating && (
-                  <span className="flex items-center gap-0.5">
-                    <Star className="h-3 w-3 text-yellow-500 fill-yellow-500" />{details.rating}
-                  </span>
-                )}
+                {details?.rating && <span className="flex items-center gap-0.5"><Star className="h-3 w-3 text-yellow-500 fill-yellow-500" />{details.rating}</span>}
+                {details?.founded_year && <span className="flex items-center gap-0.5"><Calendar className="h-3 w-3" />{details.founded_year}</span>}
+                {details?.phone && <span className="flex items-center gap-0.5"><Phone className="h-3 w-3" />{details.phone}</span>}
               </div>
+              <p className="text-[10px] text-muted-foreground/70 mt-1">
+                {isAr ? `سيتم استيراد ${countFields(details)} حقل بيانات` : `${countFields(details)} data fields will be imported`}
+              </p>
             </div>
 
-            {/* Entity Type Selection */}
             <div className="space-y-2">
               <Label className="text-sm font-medium">{isAr ? "نوع الكيان" : "Entity Type"} *</Label>
               <Select value={selectedEntityType} onValueChange={(v) => setSelectedEntityType(v as EntityType)}>
