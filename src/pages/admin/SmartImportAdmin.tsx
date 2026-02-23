@@ -1,6 +1,7 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/contexts/AuthContext";
 import { toast } from "@/hooks/use-toast";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -11,14 +12,20 @@ import { Separator } from "@/components/ui/separator";
 import { Skeleton } from "@/components/ui/skeleton";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
 import { GoogleMapEmbed } from "@/components/smart-import/GoogleMapEmbed";
 import type { ImportedData } from "@/components/smart-import/SmartImportDialog";
+import type { Database } from "@/integrations/supabase/types";
 import {
   Search, Loader2, MapPin, Globe, Phone, Clock,
   Sparkles, CheckCircle, Star, Share2, Copy,
   Building2, Download, ExternalLink, ChevronRight,
-  FileText, Mail, Hash, ArrowLeft,
+  FileText, Mail, Hash, ArrowLeft, AlertCircle,
+  RefreshCw, Plus, Database as DatabaseIcon,
 } from "lucide-react";
+
+type EntityType = Database["public"]["Enums"]["entity_type"];
 
 // ─── Types ───
 interface SearchResultItem {
@@ -33,7 +40,38 @@ interface SearchResultItem {
   google_maps_url: string | null;
 }
 
+interface ExistingEntity {
+  id: string;
+  name: string;
+  name_ar: string | null;
+  entity_number: string;
+  type: EntityType;
+  city: string | null;
+  phone: string | null;
+  email: string | null;
+  website: string | null;
+}
+
 type Step = "search" | "results" | "details";
+
+// ─── Source Channel Colors ───
+const SOURCE_CHANNELS = {
+  scrape: { label_en: "Google Maps", label_ar: "خرائط جوجل", icon: MapPin, color: "bg-red-500/10 text-red-600 border-red-500/20" },
+  web_search: { label_en: "Web Search", label_ar: "بحث الويب", icon: Globe, color: "bg-blue-500/10 text-blue-600 border-blue-500/20" },
+  website: { label_en: "Official Website", label_ar: "الموقع الرسمي", icon: ExternalLink, color: "bg-green-500/10 text-green-600 border-green-500/20" },
+  ai: { label_en: "AI Enrichment", label_ar: "تحليل ذكي", icon: Sparkles, color: "bg-purple-500/10 text-purple-600 border-purple-500/20" },
+} as const;
+
+const ENTITY_TYPE_LABELS: Record<EntityType, { en: string; ar: string }> = {
+  culinary_association: { en: "Culinary Association", ar: "جمعية طهي" },
+  government_entity: { en: "Government Entity", ar: "جهة حكومية" },
+  private_association: { en: "Private Association", ar: "جمعية خاصة" },
+  culinary_academy: { en: "Culinary Academy", ar: "أكاديمية طهي" },
+  industry_body: { en: "Industry Body", ar: "هيئة صناعية" },
+  university: { en: "University", ar: "جامعة" },
+  college: { en: "College", ar: "كلية" },
+  training_center: { en: "Training Center", ar: "مركز تدريب" },
+};
 
 // ─── Helpers ───
 const DataField = ({ label, value, copyable, multiline }: { label: string; value?: string | null; copyable?: boolean; multiline?: boolean }) => {
@@ -60,18 +98,10 @@ const DataField = ({ label, value, copyable, multiline }: { label: string; value
   );
 };
 
-const SourceBadge = ({ active, label, icon: Icon }: { active: boolean; label: string; icon: any }) => {
-  if (!active) return null;
-  return (
-    <Badge variant="secondary" className="gap-1 text-xs">
-      <Icon className="h-3 w-3" /> {label}
-    </Badge>
-  );
-};
-
 // ─── Main Component ───
 export default function SmartImportAdmin() {
   const { language } = useLanguage();
+  const { user } = useAuth();
   const isAr = language === "ar";
 
   // Search inputs
@@ -92,6 +122,18 @@ export default function SmartImportAdmin() {
   const [sourcesUsed, setSourcesUsed] = useState<Record<string, boolean>>({});
   const [activeTab, setActiveTab] = useState("overview");
 
+  // DB check state
+  const [checkingDb, setCheckingDb] = useState(false);
+  const [existingEntities, setExistingEntities] = useState<ExistingEntity[]>([]);
+  const [dbChecked, setDbChecked] = useState(false);
+
+  // Add/Update state
+  const [showAddDialog, setShowAddDialog] = useState(false);
+  const [selectedEntityType, setSelectedEntityType] = useState<EntityType>("culinary_association");
+  const [saving, setSaving] = useState(false);
+  const [updating, setUpdating] = useState(false);
+  const [selectedExistingId, setSelectedExistingId] = useState<string | null>(null);
+
   // ─── Step 1: Search ───
   const handleSearch = useCallback(async () => {
     if (!query.trim()) return;
@@ -100,6 +142,8 @@ export default function SmartImportAdmin() {
     setSelectedResult(null);
     setDetails(null);
     setSourcesUsed({});
+    setDbChecked(false);
+    setExistingEntities([]);
     setSearchedQuery(query.trim());
     setSearchedLocation(location.trim());
 
@@ -126,6 +170,8 @@ export default function SmartImportAdmin() {
     setLoadingDetails(true);
     setDetails(null);
     setActiveTab("overview");
+    setDbChecked(false);
+    setExistingEntities([]);
 
     try {
       const { data, error } = await supabase.functions.invoke("smart-import", {
@@ -153,6 +199,135 @@ export default function SmartImportAdmin() {
     }
   }, [location, websiteUrl, isAr]);
 
+  // ─── Check DB for existing entity ───
+  const checkExistingEntity = useCallback(async () => {
+    if (!details) return;
+    setCheckingDb(true);
+    setExistingEntities([]);
+
+    try {
+      const nameEn = details.name_en?.trim();
+      const nameAr = details.name_ar?.trim();
+      const phone = details.phone?.trim();
+      const email = details.email?.trim()?.toLowerCase();
+      const website = details.website?.trim()?.toLowerCase();
+
+      let query = supabase.from("culinary_entities").select("id, name, name_ar, entity_number, type, city, phone, email, website");
+
+      // Build OR conditions for matching
+      const orConditions: string[] = [];
+      if (nameEn) orConditions.push(`name.ilike.%${nameEn}%`);
+      if (nameAr) orConditions.push(`name_ar.ilike.%${nameAr}%`);
+      if (phone) orConditions.push(`phone.eq.${phone}`);
+      if (email) orConditions.push(`email.ilike.${email}`);
+
+      if (orConditions.length > 0) {
+        const { data, error } = await query.or(orConditions.join(","));
+        if (error) throw error;
+        setExistingEntities((data as ExistingEntity[]) || []);
+      }
+    } catch (err: any) {
+      console.error("DB check error:", err);
+    } finally {
+      setCheckingDb(false);
+      setDbChecked(true);
+    }
+  }, [details]);
+
+  // Auto-check DB when details arrive
+  useEffect(() => {
+    if (details && !dbChecked && step === "details") {
+      checkExistingEntity();
+    }
+  }, [details, dbChecked, step, checkExistingEntity]);
+
+  // ─── Update existing entity ───
+  const handleUpdateEntity = async (entityId: string) => {
+    if (!details) return;
+    setUpdating(true);
+    setSelectedExistingId(entityId);
+
+    try {
+      const updatePayload: Record<string, any> = {};
+      if (details.name_en) updatePayload.name = details.name_en;
+      if (details.name_ar) updatePayload.name_ar = details.name_ar;
+      if (details.description_en) updatePayload.description = details.description_en;
+      if (details.description_ar) updatePayload.description_ar = details.description_ar;
+      if (details.phone) updatePayload.phone = details.phone;
+      if (details.email) updatePayload.email = details.email;
+      if (details.website) updatePayload.website = details.website;
+      if (details.city_en || details.city_ar) updatePayload.city = details.city_en || details.city_ar;
+      if (details.country_en || details.country_ar) updatePayload.country = details.country_en || details.country_ar;
+      if (details.full_address_en) updatePayload.address = details.full_address_en;
+      if (details.full_address_ar) updatePayload.address_ar = details.full_address_ar;
+      if (details.postal_code) updatePayload.postal_code = details.postal_code;
+      if (details.latitude) updatePayload.latitude = details.latitude;
+      if (details.longitude) updatePayload.longitude = details.longitude;
+      if (details.social_media) updatePayload.social_links = details.social_media;
+
+      const { error } = await supabase.from("culinary_entities").update(updatePayload).eq("id", entityId);
+      if (error) throw error;
+
+      toast({ title: isAr ? "تم تحديث الجهة بنجاح" : "Entity updated successfully" });
+      // Re-check to refresh
+      setDbChecked(false);
+    } catch (err: any) {
+      toast({ title: isAr ? "خطأ" : "Error", description: err.message, variant: "destructive" });
+    } finally {
+      setUpdating(false);
+      setSelectedExistingId(null);
+    }
+  };
+
+  // ─── Add new entity ───
+  const handleAddNewEntity = async () => {
+    if (!details) return;
+    setSaving(true);
+
+    try {
+      const name = details.name_en || details.name_ar || "Unknown";
+      const slug = name.toLowerCase().replace(/\s+/g, "-").replace(/[^a-z0-9-]/g, "");
+
+      const payload = {
+        name,
+        name_ar: details.name_ar || null,
+        description: details.description_en || null,
+        description_ar: details.description_ar || null,
+        type: selectedEntityType,
+        scope: "local" as const,
+        status: "pending" as const,
+        is_visible: false,
+        is_verified: false,
+        country: details.country_en || details.country_ar || null,
+        city: details.city_en || details.city_ar || null,
+        address: details.full_address_en || null,
+        address_ar: details.full_address_ar || null,
+        postal_code: details.postal_code || null,
+        email: details.email || null,
+        phone: details.phone || null,
+        website: details.website || null,
+        latitude: details.latitude || null,
+        longitude: details.longitude || null,
+        social_links: details.social_media ? details.social_media as any : null,
+        slug,
+        entity_number: "", // auto-assigned by trigger
+        created_by: user?.id || null,
+      };
+
+      const { error } = await supabase.from("culinary_entities").insert(payload);
+      if (error) throw error;
+
+      toast({ title: isAr ? "تم إضافة الجهة بنجاح" : "Entity added successfully" });
+      setShowAddDialog(false);
+      // Re-check
+      setDbChecked(false);
+    } catch (err: any) {
+      toast({ title: isAr ? "خطأ" : "Error", description: err.message, variant: "destructive" });
+    } finally {
+      setSaving(false);
+    }
+  };
+
   // ─── Reset ───
   const handleNewSearch = () => {
     setStep("search");
@@ -160,12 +335,16 @@ export default function SmartImportAdmin() {
     setSelectedResult(null);
     setDetails(null);
     setSourcesUsed({});
+    setDbChecked(false);
+    setExistingEntities([]);
   };
 
   const handleBackToResults = () => {
     setStep("results");
     setDetails(null);
     setSourcesUsed({});
+    setDbChecked(false);
+    setExistingEntities([]);
   };
 
   return (
@@ -322,14 +501,17 @@ export default function SmartImportAdmin() {
                                   <p className="text-xs text-muted-foreground line-clamp-2 mt-0.5">{item.description}</p>
                                   <div className="flex items-center gap-2 mt-1.5">
                                     {item.google_maps_url && (
-                                      <Badge variant="outline" className="text-[10px] h-4 px-1.5">
-                                        <MapPin className="h-2.5 w-2.5 me-0.5" /> Maps
+                                      <Badge variant="outline" className="text-[10px] h-4 px-1.5 bg-red-500/10 text-red-600 border-red-500/20">
+                                        <MapPin className="h-2.5 w-2.5 me-0.5" /> Google Maps
                                       </Badge>
                                     )}
                                     {item.rating && (
-                                      <span className="flex items-center gap-0.5 text-xs">
-                                        <Star className="h-3 w-3 text-primary fill-primary" />
+                                      <span className="flex items-center gap-0.5 text-xs font-medium">
+                                        <Star className="h-3 w-3 text-yellow-500 fill-yellow-500" />
                                         {item.rating}
+                                        {item.total_reviews != null && (
+                                          <span className="text-muted-foreground font-normal">({item.total_reviews})</span>
+                                        )}
                                       </span>
                                     )}
                                   </div>
@@ -409,20 +591,108 @@ export default function SmartImportAdmin() {
                     )}
                   </div>
                   {details.rating && (
-                    <Badge variant="secondary" className="gap-1 ms-2">
-                      <Star className="h-3 w-3 fill-primary text-primary" />
+                    <Badge variant="secondary" className="gap-1 ms-2 bg-yellow-500/10 text-yellow-700 border-yellow-500/20">
+                      <Star className="h-3 w-3 fill-yellow-500 text-yellow-500" />
                       {details.rating}
                       {details.total_reviews != null && <span className="text-muted-foreground">({details.total_reviews})</span>}
                     </Badge>
                   )}
                 </div>
+
+                {/* Source Channels - Clear attribution */}
                 <div className="flex items-center gap-1.5 flex-wrap">
-                  <SourceBadge active={!!sourcesUsed.scrape} label={isAr ? "محتوى" : "Scraped"} icon={CheckCircle} />
-                  <SourceBadge active={!!sourcesUsed.web_search} label={isAr ? "ويب" : "Web"} icon={Globe} />
-                  <SourceBadge active={!!sourcesUsed.website} label={isAr ? "موقع" : "Website"} icon={ExternalLink} />
-                  <SourceBadge active={!!sourcesUsed.ai} label="AI" icon={Sparkles} />
+                  <span className="text-xs font-medium text-muted-foreground me-1">{isAr ? "المصادر:" : "Sources:"}</span>
+                  {Object.entries(SOURCE_CHANNELS).map(([key, config]) => {
+                    if (!sourcesUsed[key]) return null;
+                    const Icon = config.icon;
+                    return (
+                      <Badge key={key} variant="outline" className={`gap-1 text-xs border ${config.color}`}>
+                        <Icon className="h-3 w-3" />
+                        {isAr ? config.label_ar : config.label_en}
+                      </Badge>
+                    );
+                  })}
                 </div>
               </div>
+            </CardContent>
+          </Card>
+
+          {/* ─── DB Existence Check ─── */}
+          <Card className={existingEntities.length > 0 ? "border-yellow-500/30 bg-yellow-500/5" : dbChecked ? "border-green-500/30 bg-green-500/5" : ""}>
+            <CardContent className="py-4">
+              {checkingDb ? (
+                <div className="flex items-center gap-3">
+                  <Loader2 className="h-5 w-5 animate-spin text-primary" />
+                  <span className="text-sm">{isAr ? "جاري التحقق من قاعدة البيانات..." : "Checking database..."}</span>
+                </div>
+              ) : dbChecked && existingEntities.length > 0 ? (
+                <div className="space-y-3">
+                  <div className="flex items-center gap-2">
+                    <AlertCircle className="h-5 w-5 text-yellow-600" />
+                    <span className="text-sm font-semibold text-yellow-700">
+                      {isAr
+                        ? `تم العثور على ${existingEntities.length} كيان مطابق في قاعدة البيانات`
+                        : `Found ${existingEntities.length} matching entit${existingEntities.length > 1 ? 'ies' : 'y'} in database`}
+                    </span>
+                  </div>
+                  <div className="space-y-2">
+                    {existingEntities.map((entity) => (
+                      <div key={entity.id} className="flex items-center justify-between rounded-lg border bg-background p-3">
+                        <div className="flex items-center gap-3">
+                          <div className="w-9 h-9 rounded-lg bg-primary/10 flex items-center justify-center">
+                            <DatabaseIcon className="h-4 w-4 text-primary" />
+                          </div>
+                          <div>
+                            <p className="text-sm font-medium">{entity.name}</p>
+                            <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                              <Badge variant="outline" className="text-[10px] h-4">{entity.entity_number}</Badge>
+                              <span>{isAr ? ENTITY_TYPE_LABELS[entity.type]?.ar : ENTITY_TYPE_LABELS[entity.type]?.en}</span>
+                              {entity.city && <span>• {entity.city}</span>}
+                            </div>
+                          </div>
+                        </div>
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          className="gap-1.5"
+                          onClick={() => handleUpdateEntity(entity.id)}
+                          disabled={updating}
+                        >
+                          {updating && selectedExistingId === entity.id ? (
+                            <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                          ) : (
+                            <RefreshCw className="h-3.5 w-3.5" />
+                          )}
+                          {isAr ? "تحديث البيانات" : "Update Data"}
+                        </Button>
+                      </div>
+                    ))}
+                  </div>
+                  <Separator />
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs text-muted-foreground">
+                      {isAr ? "أو يمكنك إضافة ككيان جديد" : "Or you can add as a new entity"}
+                    </span>
+                    <Button size="sm" variant="default" className="gap-1.5" onClick={() => setShowAddDialog(true)}>
+                      <Plus className="h-3.5 w-3.5" />
+                      {isAr ? "إضافة جديد" : "Add New"}
+                    </Button>
+                  </div>
+                </div>
+              ) : dbChecked ? (
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <CheckCircle className="h-5 w-5 text-green-600" />
+                    <span className="text-sm font-medium text-green-700">
+                      {isAr ? "لا يوجد كيان مطابق في قاعدة البيانات" : "No matching entity found in database"}
+                    </span>
+                  </div>
+                  <Button size="sm" variant="default" className="gap-1.5" onClick={() => setShowAddDialog(true)}>
+                    <Plus className="h-3.5 w-3.5" />
+                    {isAr ? "إضافة ككيان جديد" : "Add as New Entity"}
+                  </Button>
+                </div>
+              ) : null}
             </CardContent>
           </Card>
 
@@ -473,6 +743,14 @@ export default function SmartImportAdmin() {
                 <Card className="lg:col-span-2">
                   <CardContent className="pt-4">
                     <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+                      {details.rating && (
+                        <div className="text-center p-3 rounded-lg bg-yellow-500/10">
+                          <Star className="h-4 w-4 mx-auto text-yellow-500 fill-yellow-500 mb-1" />
+                          <p className="text-xs text-muted-foreground">{isAr ? "التقييم" : "Rating"}</p>
+                          <p className="text-lg font-bold">{details.rating}</p>
+                          {details.total_reviews != null && <p className="text-xs text-muted-foreground">{details.total_reviews} {isAr ? "تقييم" : "reviews"}</p>}
+                        </div>
+                      )}
                       {details.phone && (
                         <div className="text-center p-3 rounded-lg bg-accent/30">
                           <Phone className="h-4 w-4 mx-auto text-primary mb-1" />
@@ -492,13 +770,6 @@ export default function SmartImportAdmin() {
                           <MapPin className="h-4 w-4 mx-auto text-primary mb-1" />
                           <p className="text-xs text-muted-foreground">{isAr ? "المدينة" : "City"}</p>
                           <p className="text-sm font-medium truncate">{details.city_en || details.city_ar}</p>
-                        </div>
-                      )}
-                      {(details.country_en || details.country_ar) && (
-                        <div className="text-center p-3 rounded-lg bg-accent/30">
-                          <Globe className="h-4 w-4 mx-auto text-primary mb-1" />
-                          <p className="text-xs text-muted-foreground">{isAr ? "الدولة" : "Country"}</p>
-                          <p className="text-sm font-medium truncate">{details.country_en || details.country_ar} {details.country_code && `(${details.country_code})`}</p>
                         </div>
                       )}
                     </div>
@@ -610,6 +881,69 @@ export default function SmartImportAdmin() {
           </Tabs>
         </div>
       )}
+
+      {/* ─── Add New Entity Dialog ─── */}
+      <Dialog open={showAddDialog} onOpenChange={setShowAddDialog}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <Plus className="h-5 w-5 text-primary" />
+              {isAr ? "إضافة كيان جديد" : "Add New Entity"}
+            </DialogTitle>
+            <DialogDescription>
+              {isAr ? "حدد نوع الكيان لإضافته إلى قاعدة البيانات مع رقم تسلسلي جديد" : "Select the entity type to add it to the database with a new serial number"}
+            </DialogDescription>
+          </DialogHeader>
+
+          <div className="space-y-4 py-2">
+            {/* Preview */}
+            <div className="rounded-lg border p-3 bg-accent/30 space-y-1.5">
+              <p className="text-sm font-semibold">{details?.name_en || details?.name_ar}</p>
+              {details?.name_ar && details?.name_en && <p className="text-xs text-muted-foreground">{details.name_ar}</p>}
+              <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                {details?.city_en && <span className="flex items-center gap-0.5"><MapPin className="h-3 w-3" />{details.city_en}</span>}
+                {details?.rating && (
+                  <span className="flex items-center gap-0.5">
+                    <Star className="h-3 w-3 text-yellow-500 fill-yellow-500" />{details.rating}
+                  </span>
+                )}
+              </div>
+            </div>
+
+            {/* Entity Type Selection */}
+            <div className="space-y-2">
+              <Label className="text-sm font-medium">{isAr ? "نوع الكيان" : "Entity Type"} *</Label>
+              <Select value={selectedEntityType} onValueChange={(v) => setSelectedEntityType(v as EntityType)}>
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  {Object.entries(ENTITY_TYPE_LABELS).map(([value, labels]) => (
+                    <SelectItem key={value} value={value}>
+                      {isAr ? labels.ar : labels.en}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div className="rounded-lg border border-dashed p-3 text-xs text-muted-foreground flex items-center gap-2">
+              <Hash className="h-4 w-4 shrink-0" />
+              {isAr ? "سيتم تعيين رقم تسلسلي جديد تلقائياً (ENT...)" : "A new serial number (ENT...) will be auto-assigned"}
+            </div>
+          </div>
+
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setShowAddDialog(false)} disabled={saving}>
+              {isAr ? "إلغاء" : "Cancel"}
+            </Button>
+            <Button onClick={handleAddNewEntity} disabled={saving} className="gap-1.5">
+              {saving ? <Loader2 className="h-4 w-4 animate-spin" /> : <Plus className="h-4 w-4" />}
+              {saving ? (isAr ? "جاري الإضافة..." : "Adding...") : (isAr ? "إضافة الكيان" : "Add Entity")}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
