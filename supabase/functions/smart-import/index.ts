@@ -266,7 +266,15 @@ Return ONLY valid JSON with ALL these fields:
   "fax": null,
   "email": null,
   "website": null,
-  "business_hours": [],
+  "business_hours": [
+    {"day_en":"Saturday","day_ar":"السبت","open":"09:00","close":"17:00","is_closed":false},
+    {"day_en":"Sunday","day_ar":"الأحد","open":"09:00","close":"17:00","is_closed":false},
+    {"day_en":"Monday","day_ar":"الاثنين","open":"09:00","close":"17:00","is_closed":false},
+    {"day_en":"Tuesday","day_ar":"الثلاثاء","open":"09:00","close":"17:00","is_closed":false},
+    {"day_en":"Wednesday","day_ar":"الأربعاء","open":"09:00","close":"17:00","is_closed":false},
+    {"day_en":"Thursday","day_ar":"الخميس","open":"09:00","close":"17:00","is_closed":false},
+    {"day_en":"Friday","day_ar":"الجمعة","open":"09:00","close":"17:00","is_closed":true}
+  ],
   "business_type_en": null,
   "business_type_ar": null,
   "rating": ${lat ? 'null' : 'null'},
@@ -313,7 +321,7 @@ EXTRACTION GUIDELINES:
 - "tags": Relevant keywords describing the entity
 - "registration_number" / "license_number" / "national_id": Official registration/license numbers
 - "fax": Fax number if available
-- "business_hours": Array of {day_en, day_ar, open, close, is_closed}
+- "business_hours": CRITICAL - Return EXACTLY 7 entries, one for each day (Saturday through Friday). Replace the template hours with ACTUAL hours from scraped data. Use 24-hour format ("09:00", "22:00"). Set is_closed=true for closed days. If a day's hours are unknown but business is open, use the most common hours found
 - "social_media": Extract ALL social media links found (Instagram, Twitter/X, Facebook, LinkedIn, TikTok, YouTube, Snapchat, WhatsApp)`;
 
   try {
