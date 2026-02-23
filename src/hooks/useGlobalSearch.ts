@@ -181,7 +181,7 @@ export function useGlobalSearch() {
   const { data: competitionsData, isLoading: competitionsLoading } = useQuery({
     queryKey: ["search-competitions", debouncedQuery, filters.competitionStatus, filters.isVirtual],
     queryFn: async () => {
-      if (!debouncedQuery && filters.type !== "competitions") return [];
+      if (!debouncedQuery || searchWords.length === 0) return [];
       
       let query = supabase
         .from("competitions")
@@ -214,7 +214,7 @@ export function useGlobalSearch() {
         }))
       ) as CompetitionResult[];
     },
-    enabled: filters.type === "all" || filters.type === "competitions",
+    enabled: !!debouncedQuery && searchWords.length > 0,
     staleTime: 1000 * 60 * 2,
   });
 
@@ -222,7 +222,7 @@ export function useGlobalSearch() {
   const { data: articlesData, isLoading: articlesLoading } = useQuery({
     queryKey: ["search-articles", debouncedQuery, filters.articleType, filters.articleStatus],
     queryFn: async () => {
-      if (!debouncedQuery && filters.type !== "articles") return [];
+      if (!debouncedQuery || searchWords.length === 0) return [];
       
       let query = supabase
         .from("articles")
@@ -256,7 +256,7 @@ export function useGlobalSearch() {
         }))
       ) as ArticleResult[];
     },
-    enabled: filters.type === "all" || filters.type === "articles",
+    enabled: !!debouncedQuery && searchWords.length > 0,
     staleTime: 1000 * 60 * 2,
   });
 
@@ -264,7 +264,7 @@ export function useGlobalSearch() {
   const { data: membersData, isLoading: membersLoading } = useQuery({
     queryKey: ["search-members", debouncedQuery, filters.memberRole, filters.experienceLevel],
     queryFn: async () => {
-      if (!debouncedQuery && filters.type !== "members") return [];
+      if (!debouncedQuery || searchWords.length === 0) return [];
       
       let query = supabase
         .from("profiles")
@@ -305,7 +305,7 @@ export function useGlobalSearch() {
 
       return sortByRelevance(scored) as MemberResult[];
     },
-    enabled: filters.type === "all" || filters.type === "members",
+    enabled: !!debouncedQuery && searchWords.length > 0,
     staleTime: 1000 * 60 * 2,
   });
 
@@ -359,7 +359,7 @@ export function useGlobalSearch() {
         })
       ) as PostResult[];
     },
-    enabled: filters.type === "all" || filters.type === "posts",
+    enabled: !!debouncedQuery && searchWords.length > 0,
     staleTime: 1000 * 60 * 2,
   });
 
@@ -441,7 +441,7 @@ export function useGlobalSearch() {
 
       return sortByRelevance([...entities, ...establishments, ...companies]);
     },
-    enabled: filters.type === "all" || filters.type === "entities",
+    enabled: !!debouncedQuery && searchWords.length > 0,
     staleTime: 1000 * 60 * 2,
   });
 
