@@ -1,8 +1,7 @@
-import React, { useState, useCallback, useRef } from "react";
+import React, { useState, useCallback, useRef, DragEvent } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "@/hooks/use-toast";
@@ -26,6 +25,7 @@ interface ImagePreviewEditorProps {
   onUpdate: (key: string, value: string) => void;
   aspectRatio?: "square" | "wide";
   isAr?: boolean;
+  readOnly?: boolean;
 }
 
 export const ImagePreviewEditor = React.memo(({
@@ -35,12 +35,14 @@ export const ImagePreviewEditor = React.memo(({
   onUpdate,
   aspectRatio = "square",
   isAr = false,
+  readOnly = false,
 }: ImagePreviewEditorProps) => {
   const [mode, setMode] = useState<"preview" | "url" | "upload">("preview");
   const [urlInput, setUrlInput] = useState(value || "");
   const [uploading, setUploading] = useState(false);
   const [imageError, setImageError] = useState(false);
   const [imageLoaded, setImageLoaded] = useState(false);
+  const [isDragging, setIsDragging] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleUrlSave = useCallback(() => {
@@ -93,29 +95,67 @@ export const ImagePreviewEditor = React.memo(({
     setImageLoaded(false);
   }, [fieldKey, onUpdate]);
 
+  // Drag and drop handlers
+  const handleDragOver = useCallback((e: DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (!readOnly) setIsDragging(true);
+  }, [readOnly]);
+
+  const handleDragLeave = useCallback((e: DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDragging(false);
+  }, []);
+
+  const handleDrop = useCallback((e: DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDragging(false);
+    if (readOnly) return;
+
+    const file = e.dataTransfer.files?.[0];
+    if (file && file.type.startsWith("image/")) {
+      handleUpload(file);
+    }
+
+    // Check for dropped URL/text
+    const text = e.dataTransfer.getData("text/plain");
+    if (text && /^https?:\/\/.+\.(png|jpg|jpeg|svg|webp|gif)/i.test(text)) {
+      onUpdate(fieldKey, text);
+      setUrlInput(text);
+      setImageError(false);
+      setImageLoaded(false);
+    }
+  }, [readOnly, handleUpload, onUpdate, fieldKey]);
+
   const isWide = aspectRatio === "wide";
   const containerClass = isWide ? "aspect-[21/9]" : "aspect-square";
 
   return (
     <div className="space-y-2">
-      <div className="flex items-center justify-between">
-        <Label className="text-xs font-medium text-muted-foreground uppercase tracking-wider">{label}</Label>
-        <div className="flex items-center gap-1">
-          {value && (
-            <Button variant="ghost" size="icon" className="h-6 w-6" onClick={handleRemove} title={isAr ? "حذف" : "Remove"}>
-              <Trash2 className="h-3 w-3 text-destructive" />
-            </Button>
+      {label && (
+        <div className="flex items-center justify-between">
+          <Label className="text-xs font-medium text-muted-foreground uppercase tracking-wider">{label}</Label>
+          {!readOnly && (
+            <div className="flex items-center gap-1">
+              {value && (
+                <Button variant="ghost" size="icon" className="h-6 w-6" onClick={handleRemove} title={isAr ? "حذف" : "Remove"}>
+                  <Trash2 className="h-3 w-3 text-destructive" />
+                </Button>
+              )}
+              <Button variant="ghost" size="icon" className="h-6 w-6" onClick={() => setMode("url")} title={isAr ? "رابط" : "URL"}>
+                <Link2 className="h-3 w-3" />
+              </Button>
+              <Button variant="ghost" size="icon" className="h-6 w-6" onClick={() => fileInputRef.current?.click()} title={isAr ? "رفع" : "Upload"}>
+                <Upload className="h-3 w-3" />
+              </Button>
+            </div>
           )}
-          <Button variant="ghost" size="icon" className="h-6 w-6" onClick={() => setMode("url")} title={isAr ? "رابط" : "URL"}>
-            <Link2 className="h-3 w-3" />
-          </Button>
-          <Button variant="ghost" size="icon" className="h-6 w-6" onClick={() => fileInputRef.current?.click()} title={isAr ? "رفع" : "Upload"}>
-            <Upload className="h-3 w-3" />
-          </Button>
         </div>
-      </div>
+      )}
 
-      {mode === "url" && (
+      {mode === "url" && !readOnly && (
         <div className="flex gap-1.5">
           <Input
             className="text-xs h-8"
@@ -135,8 +175,11 @@ export const ImagePreviewEditor = React.memo(({
       )}
 
       <div
-        className={`relative rounded-lg border-2 border-dashed overflow-hidden bg-muted/30 ${containerClass} ${!value ? "cursor-pointer hover:border-primary/40 transition-colors" : ""}`}
-        onClick={!value ? () => fileInputRef.current?.click() : undefined}
+        className={`relative rounded-lg border-2 overflow-hidden bg-muted/30 ${containerClass} ${isDragging ? "border-primary border-solid ring-2 ring-primary/20" : "border-dashed"} ${!value && !readOnly ? "cursor-pointer hover:border-primary/40 transition-colors" : ""}`}
+        onClick={!value && !readOnly ? () => fileInputRef.current?.click() : undefined}
+        onDragOver={handleDragOver}
+        onDragLeave={handleDragLeave}
+        onDrop={handleDrop}
       >
         {value && !imageError ? (
           <>
@@ -144,11 +187,11 @@ export const ImagePreviewEditor = React.memo(({
             <img
               src={value}
               alt={label}
-              className={`w-full h-full object-cover transition-opacity duration-300 ${imageLoaded ? "opacity-100" : "opacity-0"}`}
+              className={`w-full h-full ${aspectRatio === "square" ? "object-contain p-2" : "object-cover"} transition-opacity duration-300 ${imageLoaded ? "opacity-100" : "opacity-0"}`}
               onLoad={() => setImageLoaded(true)}
               onError={() => setImageError(true)}
             />
-            {imageLoaded && (
+            {imageLoaded && !readOnly && (
               <div className="absolute inset-0 bg-black/0 hover:bg-black/40 transition-colors flex items-center justify-center opacity-0 hover:opacity-100">
                 <div className="flex gap-2">
                   <Button
@@ -170,6 +213,18 @@ export const ImagePreviewEditor = React.memo(({
                 </div>
               </div>
             )}
+            {imageLoaded && readOnly && (
+              <div className="absolute bottom-2 right-2 opacity-0 hover:opacity-100 transition-opacity">
+                <Button
+                  variant="secondary"
+                  size="sm"
+                  className="h-7 gap-1 text-xs"
+                  onClick={(e) => { e.stopPropagation(); window.open(value, "_blank"); }}
+                >
+                  <ExternalLink className="h-3 w-3" />
+                </Button>
+              </div>
+            )}
           </>
         ) : value && imageError ? (
           <div className="flex flex-col items-center justify-center h-full gap-2 p-4">
@@ -183,27 +238,34 @@ export const ImagePreviewEditor = React.memo(({
           <div className="flex flex-col items-center justify-center h-full gap-2 text-muted-foreground/60">
             {uploading ? (
               <Loader2 className="h-6 w-6 animate-spin" />
+            ) : isDragging ? (
+              <>
+                <Upload className="h-8 w-8 text-primary animate-bounce" />
+                <p className="text-xs text-primary font-medium">{isAr ? "أفلت الصورة هنا" : "Drop image here"}</p>
+              </>
             ) : (
               <>
                 <ImageIcon className="h-8 w-8" />
-                <p className="text-xs">{isAr ? "اسحب أو انقر لرفع صورة" : "Drop or click to upload"}</p>
+                <p className="text-xs">{readOnly ? (isAr ? "لا توجد صورة" : "No image") : (isAr ? "اسحب أو انقر لرفع صورة" : "Drop or click to upload")}</p>
               </>
             )}
           </div>
         )}
       </div>
 
-      <input
-        ref={fileInputRef}
-        type="file"
-        accept="image/*"
-        className="hidden"
-        onChange={(e) => {
-          const file = e.target.files?.[0];
-          if (file) handleUpload(file);
-          e.target.value = "";
-        }}
-      />
+      {!readOnly && (
+        <input
+          ref={fileInputRef}
+          type="file"
+          accept="image/*"
+          className="hidden"
+          onChange={(e) => {
+            const file = e.target.files?.[0];
+            if (file) handleUpload(file);
+            e.target.value = "";
+          }}
+        />
+      )}
     </div>
   );
 });

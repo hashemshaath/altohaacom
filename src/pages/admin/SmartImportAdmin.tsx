@@ -136,6 +136,13 @@ const buildEstablishmentPayload = (d: ImportedData) => {
   if (d.business_type_en) payload.cuisine_type = d.business_type_en;
   if (d.business_type_ar) payload.cuisine_type_ar = d.business_type_ar;
   if (d.rating) payload.star_rating = Math.round(d.rating);
+  if (d.logo_url) payload.logo_url = d.logo_url;
+  if (d.cover_url) payload.cover_image_url = d.cover_url;
+  if (d.latitude) payload.latitude = d.latitude;
+  if (d.longitude) payload.longitude = d.longitude;
+  if (d.country_code) payload.country_code = d.country_code;
+  if (d.google_maps_url) payload.google_maps_url = d.google_maps_url;
+  if (d.social_media && Object.values(d.social_media).some(Boolean)) payload.social_links = d.social_media;
   return payload;
 };
 
