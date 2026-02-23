@@ -20,7 +20,7 @@ import type { Database } from "@/integrations/supabase/types";
 import {
   Search, Loader2, MapPin, Globe, Phone, Clock,
   Sparkles, CheckCircle, Star, Share2, Copy,
-  Building2, Download, ExternalLink, ChevronRight,
+  Building2, ExternalLink, ChevronRight,
   FileText, Mail, Hash, ArrowLeft, AlertCircle,
   RefreshCw, Plus, Database as DatabaseIcon,
 } from "lucide-react";
@@ -38,6 +38,7 @@ interface SearchResultItem {
   rating: number | null;
   total_reviews: number | null;
   google_maps_url: string | null;
+  place_type: string | null;
 }
 
 interface ExistingEntity {
@@ -54,9 +55,9 @@ interface ExistingEntity {
 
 type Step = "search" | "results" | "details";
 
-// ─── Source Channel Colors ───
+// ─── Source Channel Config ───
 const SOURCE_CHANNELS = {
-  scrape: { label_en: "Google Maps", label_ar: "خرائط جوجل", icon: MapPin, color: "bg-red-500/10 text-red-600 border-red-500/20" },
+  google_maps: { label_en: "Google Maps", label_ar: "خرائط جوجل", icon: MapPin, color: "bg-red-500/10 text-red-600 border-red-500/20" },
   web_search: { label_en: "Web Search", label_ar: "بحث الويب", icon: Globe, color: "bg-blue-500/10 text-blue-600 border-blue-500/20" },
   website: { label_en: "Official Website", label_ar: "الموقع الرسمي", icon: ExternalLink, color: "bg-green-500/10 text-green-600 border-green-500/20" },
   ai: { label_en: "AI Enrichment", label_ar: "تحليل ذكي", icon: Sparkles, color: "bg-purple-500/10 text-purple-600 border-purple-500/20" },
@@ -165,8 +166,9 @@ export default function SmartImportAdmin() {
     }
   }, [query, location, isAr]);
 
-  // ─── Step 2: Fetch Details ───
-  const handleFetchDetails = useCallback(async (item: SearchResultItem) => {
+  // ─── Click result → auto-fetch details ───
+  const handleResultClick = useCallback(async (item: SearchResultItem) => {
+    setSelectedResult(item);
     setLoadingDetails(true);
     setDetails(null);
     setActiveTab("overview");
@@ -191,7 +193,7 @@ export default function SmartImportAdmin() {
       setDetails(data.data);
       setSourcesUsed(data.sources_used || {});
       setStep("details");
-      toast({ title: isAr ? "تم التحليل بنجاح" : "Analysis Complete" });
+      toast({ title: isAr ? "تم جلب البيانات بنجاح" : "Data fetched successfully" });
     } catch (err: any) {
       toast({ title: isAr ? "خطأ" : "Error", description: err.message, variant: "destructive" });
     } finally {
@@ -210,11 +212,8 @@ export default function SmartImportAdmin() {
       const nameAr = details.name_ar?.trim();
       const phone = details.phone?.trim();
       const email = details.email?.trim()?.toLowerCase();
-      const website = details.website?.trim()?.toLowerCase();
 
       let query = supabase.from("culinary_entities").select("id, name, name_ar, entity_number, type, city, phone, email, website");
-
-      // Build OR conditions for matching
       const orConditions: string[] = [];
       if (nameEn) orConditions.push(`name.ilike.%${nameEn}%`);
       if (nameAr) orConditions.push(`name_ar.ilike.%${nameAr}%`);
@@ -269,7 +268,6 @@ export default function SmartImportAdmin() {
       if (error) throw error;
 
       toast({ title: isAr ? "تم تحديث الجهة بنجاح" : "Entity updated successfully" });
-      // Re-check to refresh
       setDbChecked(false);
     } catch (err: any) {
       toast({ title: isAr ? "خطأ" : "Error", description: err.message, variant: "destructive" });
@@ -310,7 +308,7 @@ export default function SmartImportAdmin() {
         longitude: details.longitude || null,
         social_links: details.social_media ? details.social_media as any : null,
         slug,
-        entity_number: "", // auto-assigned by trigger
+        entity_number: "",
         created_by: user?.id || null,
       };
 
@@ -319,7 +317,6 @@ export default function SmartImportAdmin() {
 
       toast({ title: isAr ? "تم إضافة الجهة بنجاح" : "Entity added successfully" });
       setShowAddDialog(false);
-      // Re-check
       setDbChecked(false);
     } catch (err: any) {
       toast({ title: isAr ? "خطأ" : "Error", description: err.message, variant: "destructive" });
@@ -363,8 +360,8 @@ export default function SmartImportAdmin() {
               {isAr ? "الاستيراد الذكي" : "Smart Import"}
             </h1>
             <p className="text-muted-foreground text-sm mt-0.5">
-              {step === "search" && (isAr ? "ابحث عن أي كيان واستورد بياناته بالذكاء الاصطناعي" : "Search any entity and auto-import with AI")}
-              {step === "results" && (isAr ? `${searchResults.length} نتيجة — اختر كياناً للتحليل` : `${searchResults.length} results — select one to analyze`)}
+              {step === "search" && (isAr ? "ابحث عن كيان في خرائط جوجل واستورد بياناته تلقائياً" : "Search Google Maps for entities and auto-import data")}
+              {step === "results" && (isAr ? `${searchResults.length} نتيجة من خرائط جوجل — اضغط للتحليل` : `${searchResults.length} Google Maps results — click to analyze`)}
               {step === "details" && (isAr ? "البيانات المستخرجة جاهزة للاستيراد" : "Extracted data ready for import")}
             </p>
           </div>
@@ -374,8 +371,8 @@ export default function SmartImportAdmin() {
         <div className="hidden sm:flex items-center gap-1.5">
           {[
             { key: "search", label: isAr ? "بحث" : "Search", num: 1 },
-            { key: "results", label: isAr ? "اختيار" : "Select", num: 2 },
-            { key: "details", label: isAr ? "تحليل" : "Analyze", num: 3 },
+            { key: "results", label: isAr ? "نتائج" : "Results", num: 2 },
+            { key: "details", label: isAr ? "تفاصيل" : "Details", num: 3 },
           ].map((s, i) => (
             <div key={s.key} className="flex items-center gap-1.5">
               {i > 0 && <ChevronRight className="h-3 w-3 text-muted-foreground/50" />}
@@ -391,16 +388,19 @@ export default function SmartImportAdmin() {
       {step === "search" && (
         <Card className="border-primary/20">
           <CardHeader>
-            <CardTitle className="text-base">{isAr ? "البحث عن كيان" : "Search for an Entity"}</CardTitle>
+            <CardTitle className="text-base flex items-center gap-2">
+              <MapPin className="h-5 w-5 text-red-500" />
+              {isAr ? "البحث في خرائط جوجل" : "Search Google Maps"}
+            </CardTitle>
             <CardDescription>
-              {isAr ? "أدخل اسم المنشأة أو الشركة والموقع للبحث عبر الويب" : "Enter the business name and location to search across the web"}
+              {isAr ? "أدخل اسم المنشأة والموقع للبحث في خرائط جوجل" : "Enter entity name and location to search Google Maps"}
             </CardDescription>
           </CardHeader>
           <CardContent>
             <div className="space-y-4">
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                 <div className="sm:col-span-2 space-y-1.5">
-                  <Label className="text-xs">{isAr ? "اسم الكيان / الشركة" : "Entity / Company Name"}</Label>
+                  <Label className="text-xs">{isAr ? "اسم الكيان / المنشأة" : "Entity / Business Name"}</Label>
                   <div className="relative">
                     <Search className="absolute start-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                     <Input
@@ -430,7 +430,7 @@ export default function SmartImportAdmin() {
                 </div>
                 <Button onClick={handleSearch} disabled={searching || !query.trim()} className="gap-2 h-10 px-8 shrink-0">
                   {searching ? <Loader2 className="h-4 w-4 animate-spin" /> : <Search className="h-4 w-4" />}
-                  {searching ? (isAr ? "جاري البحث..." : "Searching...") : (isAr ? "بحث" : "Search")}
+                  {searching ? (isAr ? "جاري البحث..." : "Searching...") : (isAr ? "بحث في جوجل" : "Search Google Maps")}
                 </Button>
               </div>
             </div>
@@ -438,7 +438,7 @@ export default function SmartImportAdmin() {
         </Card>
       )}
 
-      {/* ─── STEP 2: Results + Map ─── */}
+      {/* ─── STEP 2: Results (Google Maps only) ─── */}
       {step === "results" && (
         <>
           {/* Inline search bar */}
@@ -460,8 +460,8 @@ export default function SmartImportAdmin() {
                 <CardHeader className="pb-2 px-4 pt-4">
                   <CardTitle className="text-sm flex items-center justify-between">
                     <span className="flex items-center gap-1.5">
-                      <Building2 className="h-4 w-4 text-primary" />
-                      {isAr ? "النتائج" : "Results"}
+                      <MapPin className="h-4 w-4 text-red-500" />
+                      {isAr ? "نتائج خرائط جوجل" : "Google Maps Results"}
                     </span>
                     {!searching && <Badge variant="secondary" className="text-xs font-normal">{searchResults.length}</Badge>}
                   </CardTitle>
@@ -478,33 +478,45 @@ export default function SmartImportAdmin() {
                           </div>
                         ))}
                       </div>
+                    ) : searchResults.length === 0 ? (
+                      <div className="p-8 text-center text-muted-foreground">
+                        <MapPin className="h-8 w-8 mx-auto mb-2 opacity-30" />
+                        <p className="text-sm">{isAr ? "لم يتم العثور على نتائج في خرائط جوجل" : "No Google Maps results found"}</p>
+                        <p className="text-xs mt-1">{isAr ? "جرب كلمات بحث مختلفة" : "Try different search terms"}</p>
+                      </div>
                     ) : (
                       <div className="p-2 space-y-1">
                         {searchResults.map((item) => {
                           const isSelected = selectedResult?.id === item.id;
+                          const isLoading = loadingDetails && isSelected;
                           return (
                             <button
                               key={item.id}
                               className={`w-full text-start p-3 rounded-lg transition-all ${
-                                isSelected
+                                isLoading
+                                  ? 'bg-primary/10 border border-primary/30 shadow-sm animate-pulse'
+                                  : isSelected
                                   ? 'bg-primary/10 border border-primary/30 shadow-sm'
                                   : 'hover:bg-accent/50 border border-transparent'
                               }`}
-                              onClick={() => { setSelectedResult(item); setDetails(null); }}
+                              onClick={() => !loadingDetails && handleResultClick(item)}
+                              disabled={loadingDetails}
                             >
                               <div className="flex items-start gap-2">
-                                <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center shrink-0 mt-0.5">
-                                  <MapPin className="h-4 w-4 text-primary" />
+                                <div className="w-8 h-8 rounded-full bg-red-500/10 flex items-center justify-center shrink-0 mt-0.5">
+                                  {isLoading ? (
+                                    <Loader2 className="h-4 w-4 text-primary animate-spin" />
+                                  ) : (
+                                    <MapPin className="h-4 w-4 text-red-500" />
+                                  )}
                                 </div>
                                 <div className="flex-1 min-w-0">
                                   <p className="font-medium text-sm truncate">{item.name}</p>
                                   <p className="text-xs text-muted-foreground line-clamp-2 mt-0.5">{item.description}</p>
-                                  <div className="flex items-center gap-2 mt-1.5">
-                                    {item.google_maps_url && (
-                                      <Badge variant="outline" className="text-[10px] h-4 px-1.5 bg-red-500/10 text-red-600 border-red-500/20">
-                                        <MapPin className="h-2.5 w-2.5 me-0.5" /> Google Maps
-                                      </Badge>
-                                    )}
+                                  <div className="flex items-center gap-2 mt-1.5 flex-wrap">
+                                    <Badge variant="outline" className="text-[10px] h-4 px-1.5 bg-red-500/10 text-red-600 border-red-500/20">
+                                      <MapPin className="h-2.5 w-2.5 me-0.5" /> Google Maps
+                                    </Badge>
                                     {item.rating && (
                                       <span className="flex items-center gap-0.5 text-xs font-medium">
                                         <Star className="h-3 w-3 text-yellow-500 fill-yellow-500" />
@@ -514,19 +526,17 @@ export default function SmartImportAdmin() {
                                         )}
                                       </span>
                                     )}
+                                    {item.place_type && (
+                                      <span className="text-[10px] text-muted-foreground">{item.place_type}</span>
+                                    )}
                                   </div>
                                 </div>
+                                <ChevronRight className="h-4 w-4 text-muted-foreground/40 shrink-0 mt-2" />
                               </div>
-                              {isSelected && (
-                                <Button
-                                  size="sm"
-                                  className="mt-3 gap-1.5 w-full"
-                                  onClick={(e) => { e.stopPropagation(); handleFetchDetails(item); }}
-                                  disabled={loadingDetails}
-                                >
-                                  {loadingDetails ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Sparkles className="h-3.5 w-3.5" />}
-                                  {loadingDetails ? (isAr ? "جاري التحليل..." : "Analyzing...") : (isAr ? "تحليل واستيراد" : "Analyze & Import")}
-                                </Button>
+                              {isLoading && (
+                                <p className="text-xs text-primary mt-2 text-center">
+                                  {isAr ? "جاري جلب البيانات..." : "Fetching data..."}
+                                </p>
                               )}
                             </button>
                           );
@@ -553,8 +563,8 @@ export default function SmartImportAdmin() {
         </>
       )}
 
-      {/* ─── Loading overlay ─── */}
-      {loadingDetails && step !== "results" && (
+      {/* ─── Loading overlay (when navigating to details) ─── */}
+      {loadingDetails && step === "details" && (
         <Card>
           <CardContent className="py-16">
             <div className="flex flex-col items-center gap-4 text-center">
@@ -563,9 +573,9 @@ export default function SmartImportAdmin() {
                 <Sparkles className="h-5 w-5 text-primary absolute -top-1 -end-1 animate-pulse" />
               </div>
               <div>
-                <p className="font-semibold text-lg">{isAr ? "جاري التحليل..." : "Analyzing..."}</p>
+                <p className="font-semibold text-lg">{isAr ? "جاري جلب البيانات..." : "Fetching Data..."}</p>
                 <p className="text-sm text-muted-foreground mt-1">
-                  {isAr ? "جمع البيانات من مصادر متعددة وتحليلها بالذكاء الاصطناعي" : "Collecting from multiple sources and enriching with AI"}
+                  {isAr ? "جمع البيانات من خرائط جوجل ومصادر متعددة" : "Collecting from Google Maps and multiple sources"}
                 </p>
               </div>
             </div>
@@ -581,8 +591,8 @@ export default function SmartImportAdmin() {
             <CardContent className="py-5">
               <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
                 <div className="flex items-center gap-3">
-                  <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center shrink-0">
-                    <Building2 className="h-6 w-6 text-primary" />
+                  <div className="w-12 h-12 rounded-xl bg-red-500/10 flex items-center justify-center shrink-0">
+                    <MapPin className="h-6 w-6 text-red-500" />
                   </div>
                   <div>
                     <h2 className="text-xl font-bold">{details.name_en || details.name_ar}</h2>
@@ -599,7 +609,7 @@ export default function SmartImportAdmin() {
                   )}
                 </div>
 
-                {/* Source Channels - Clear attribution */}
+                {/* Source Channels */}
                 <div className="flex items-center gap-1.5 flex-wrap">
                   <span className="text-xs font-medium text-muted-foreground me-1">{isAr ? "المصادر:" : "Sources:"}</span>
                   {Object.entries(SOURCE_CHANNELS).map(([key, config]) => {
@@ -746,7 +756,7 @@ export default function SmartImportAdmin() {
                       {details.rating && (
                         <div className="text-center p-3 rounded-lg bg-yellow-500/10">
                           <Star className="h-4 w-4 mx-auto text-yellow-500 fill-yellow-500 mb-1" />
-                          <p className="text-xs text-muted-foreground">{isAr ? "التقييم" : "Rating"}</p>
+                          <p className="text-xs text-muted-foreground">{isAr ? "تقييم جوجل" : "Google Rating"}</p>
                           <p className="text-lg font-bold">{details.rating}</p>
                           {details.total_reviews != null && <p className="text-xs text-muted-foreground">{details.total_reviews} {isAr ? "تقييم" : "reviews"}</p>}
                         </div>
@@ -865,7 +875,7 @@ export default function SmartImportAdmin() {
                 {details.google_maps_url && (
                   <Card>
                     <CardContent className="pt-4 flex flex-col items-center justify-center gap-3 text-center h-full">
-                      <MapPin className="h-8 w-8 text-primary" />
+                      <MapPin className="h-8 w-8 text-red-500" />
                       <p className="text-sm font-medium">{isAr ? "عرض على الخريطة" : "View on Map"}</p>
                       <a href={details.google_maps_url} target="_blank" rel="noopener noreferrer">
                         <Button variant="outline" size="sm" className="gap-1.5">
