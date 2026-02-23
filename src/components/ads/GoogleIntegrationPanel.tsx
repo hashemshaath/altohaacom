@@ -66,6 +66,17 @@ const googleIntegrations = [
       { key: "ad_slot", labelEn: "Default Ad Slot", labelAr: "شريحة الإعلان الافتراضية", placeholder: "Optional" },
     ],
   },
+  {
+    type: "google_places",
+    icon: Globe,
+    nameEn: "Google Places API",
+    nameAr: "واجهة أماكن جوجل",
+    descEn: "Enable smart content import for entities & companies using Google Maps data",
+    descAr: "تمكين الاستيراد الذكي للكيانات والشركات باستخدام بيانات خرائط جوجل",
+    fields: [
+      { key: "api_key", labelEn: "API Key", labelAr: "مفتاح API", placeholder: "AIzaSy..." },
+    ],
+  },
 ];
 
 export function GoogleIntegrationPanel() {
