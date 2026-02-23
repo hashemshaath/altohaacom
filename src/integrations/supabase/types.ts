@@ -5517,6 +5517,7 @@ export type Database = {
           edition_year: number | null
           exhibition_id: string | null
           id: string
+          import_source: string | null
           is_virtual: boolean | null
           link_type: string | null
           linked_chef_id: string | null
@@ -5563,6 +5564,7 @@ export type Database = {
           edition_year?: number | null
           exhibition_id?: string | null
           id?: string
+          import_source?: string | null
           is_virtual?: boolean | null
           link_type?: string | null
           linked_chef_id?: string | null
@@ -5609,6 +5611,7 @@ export type Database = {
           edition_year?: number | null
           exhibition_id?: string | null
           id?: string
+          import_source?: string | null
           is_virtual?: boolean | null
           link_type?: string | null
           linked_chef_id?: string | null
@@ -8419,6 +8422,7 @@ export type Database = {
           end_date: string
           gallery_urls: string[] | null
           id: string
+          import_source: string | null
           includes_competitions: boolean | null
           includes_seminars: boolean | null
           includes_training: boolean | null
@@ -8478,6 +8482,7 @@ export type Database = {
           end_date: string
           gallery_urls?: string[] | null
           id?: string
+          import_source?: string | null
           includes_competitions?: boolean | null
           includes_seminars?: boolean | null
           includes_training?: boolean | null
@@ -8537,6 +8542,7 @@ export type Database = {
           end_date?: string
           gallery_urls?: string[] | null
           id?: string
+          import_source?: string | null
           includes_competitions?: boolean | null
           includes_seminars?: boolean | null
           includes_training?: boolean | null
