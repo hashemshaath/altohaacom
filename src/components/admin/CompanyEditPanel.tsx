@@ -403,7 +403,7 @@ export function CompanyEditPanel({ companyId, companyDetails }: CompanyEditPanel
         <CardHeader>
           <CardTitle className="flex items-center gap-2 text-base">
             <MapPin className="h-4 w-4 text-primary" />
-            {isAr ? "العنوان" : "Address"}
+            {isAr ? "العنوان والموقع" : "Address & Location"}
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
@@ -433,6 +433,104 @@ export function CompanyEditPanel({ companyId, companyDetails }: CompanyEditPanel
               <Input value={form.postal_code} onChange={e => setForm(p => ({ ...p, postal_code: e.target.value }))} disabled={!editing} />
             </div>
           </div>
+
+          {/* Neighborhood & Street */}
+          <Separator />
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="space-y-1.5">
+              <Label className="text-xs">{isAr ? "الحي (EN)" : "Neighborhood (EN)"}</Label>
+              <Input value={companyDetails?.neighborhood || ""} disabled className="text-muted-foreground" />
+            </div>
+            <div className="space-y-1.5">
+              <Label className="text-xs">{isAr ? "الحي (AR)" : "Neighborhood (AR)"}</Label>
+              <Input value={companyDetails?.neighborhood_ar || ""} disabled dir="rtl" className="text-muted-foreground" />
+            </div>
+            <div className="space-y-1.5">
+              <Label className="text-xs">{isAr ? "الشارع (EN)" : "Street (EN)"}</Label>
+              <Input value={companyDetails?.street || ""} disabled className="text-muted-foreground" />
+            </div>
+            <div className="space-y-1.5">
+              <Label className="text-xs">{isAr ? "الشارع (AR)" : "Street (AR)"}</Label>
+              <Input value={companyDetails?.street_ar || ""} disabled dir="rtl" className="text-muted-foreground" />
+            </div>
+          </div>
+
+          {/* National Address */}
+          {(companyDetails?.national_address || companyDetails?.national_address_ar) && (
+            <>
+              <Separator />
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="space-y-1.5">
+                  <Label className="text-xs">{isAr ? "العنوان الوطني (EN)" : "National Address (EN)"}</Label>
+                  <Input value={companyDetails?.national_address || ""} disabled className="text-muted-foreground font-mono" />
+                </div>
+                <div className="space-y-1.5">
+                  <Label className="text-xs">{isAr ? "العنوان الوطني (AR)" : "National Address (AR)"}</Label>
+                  <Input value={companyDetails?.national_address_ar || ""} disabled dir="rtl" className="text-muted-foreground" />
+                </div>
+              </div>
+            </>
+          )}
+
+          {/* Coordinates & Google Maps */}
+          {(companyDetails?.latitude || companyDetails?.longitude || companyDetails?.google_maps_url) && (
+            <>
+              <Separator />
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                {companyDetails?.latitude && (
+                  <div className="space-y-1.5">
+                    <Label className="text-xs">{isAr ? "خط العرض" : "Latitude"}</Label>
+                    <Input value={companyDetails.latitude} disabled className="font-mono text-muted-foreground" />
+                  </div>
+                )}
+                {companyDetails?.longitude && (
+                  <div className="space-y-1.5">
+                    <Label className="text-xs">{isAr ? "خط الطول" : "Longitude"}</Label>
+                    <Input value={companyDetails.longitude} disabled className="font-mono text-muted-foreground" />
+                  </div>
+                )}
+                {companyDetails?.google_maps_url && (
+                  <div className="space-y-1.5">
+                    <Label className="text-xs">{isAr ? "خرائط جوجل" : "Google Maps"}</Label>
+                    <a href={companyDetails.google_maps_url} target="_blank" rel="noopener noreferrer"
+                      className="text-sm text-primary hover:underline truncate block">
+                      {isAr ? "فتح في خرائط جوجل ↗" : "Open in Google Maps ↗"}
+                    </a>
+                  </div>
+                )}
+              </div>
+            </>
+          )}
+
+          {/* Rating & Reviews */}
+          {(companyDetails?.rating || companyDetails?.total_reviews) && (
+            <>
+              <Separator />
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                {companyDetails?.rating && (
+                  <div className="space-y-1.5">
+                    <Label className="text-xs">{isAr ? "التقييم" : "Rating"}</Label>
+                    <div className="flex items-center gap-1.5">
+                      <span className="text-lg font-bold">{Number(companyDetails.rating).toFixed(1)}</span>
+                      <span className="text-muted-foreground text-xs">/ 5</span>
+                    </div>
+                  </div>
+                )}
+                {companyDetails?.total_reviews && (
+                  <div className="space-y-1.5">
+                    <Label className="text-xs">{isAr ? "عدد التقييمات" : "Total Reviews"}</Label>
+                    <span className="text-sm font-medium">{companyDetails.total_reviews}</span>
+                  </div>
+                )}
+                {companyDetails?.import_source && (
+                  <div className="space-y-1.5">
+                    <Label className="text-xs">{isAr ? "مصدر البيانات" : "Data Source"}</Label>
+                    <Badge variant="outline" className="text-xs">{companyDetails.import_source === 'smart_import' ? (isAr ? 'استيراد ذكي' : 'Smart Import') : companyDetails.import_source}</Badge>
+                  </div>
+                )}
+              </div>
+            </>
+          )}
         </CardContent>
       </Card>
 

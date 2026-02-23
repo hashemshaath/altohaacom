@@ -84,6 +84,8 @@ const buildCompanyPayload = (d: ImportedData) => {
   if (d.description_en) payload.description = d.description_en;
   if (d.description_ar) payload.description_ar = d.description_ar;
   if (d.phone) payload.phone = d.phone;
+  if (d.phone_secondary) payload.phone_secondary = d.phone_secondary;
+  if (d.fax) payload.fax = d.fax;
   if (d.email) payload.email = d.email;
   if (d.website) payload.website = d.website;
   if (d.city_en || d.city_ar) payload.city = d.city_en || d.city_ar;
@@ -95,10 +97,21 @@ const buildCompanyPayload = (d: ImportedData) => {
   if (d.registration_number) payload.registration_number = d.registration_number;
   if (d.founded_year) payload.founded_year = d.founded_year;
   if (d.business_hours) payload.working_hours = d.business_hours;
+  if (d.latitude) payload.latitude = d.latitude;
+  if (d.longitude) payload.longitude = d.longitude;
+  if (d.neighborhood_en) payload.neighborhood = d.neighborhood_en;
+  if (d.neighborhood_ar) payload.neighborhood_ar = d.neighborhood_ar;
+  if (d.street_en) payload.street = d.street_en;
+  if (d.street_ar) payload.street_ar = d.street_ar;
+  if (d.google_maps_url) payload.google_maps_url = d.google_maps_url;
+  if (d.rating) payload.rating = d.rating;
+  if (d.total_reviews) payload.total_reviews = d.total_reviews;
+  if (d.national_id) payload.national_address = d.national_id;
   const specs = [...(d.specializations_en || []), ...(d.specializations_ar || [])].filter(Boolean);
   if (specs.length) payload.specializations = specs;
   if (d.social_media && Object.values(d.social_media).some(Boolean)) payload.social_links = d.social_media;
   if (d.description_en || d.business_type_en) payload.tagline = d.business_type_en || d.description_en?.substring(0, 100);
+  payload.import_source = 'smart_import';
   return payload;
 };
 
@@ -434,7 +447,7 @@ export default function SmartImportAdmin() {
         recordId = inserted?.id;
       } else if (targetTable === "companies") {
         subType = selectedCompanyType;
-        const payload = { ...buildCompanyPayload(details), name: details.name_en || name, type: selectedCompanyType, status: "active" as const, country_code: details.country_code || "SA", created_by: user?.id || null };
+        const payload = { ...buildCompanyPayload(details), name: details.name_en || name, type: selectedCompanyType, status: "pending" as const, country_code: details.country_code || "SA", created_by: user?.id || null };
         const { data: inserted, error } = await supabase.from("companies").insert(payload).select("id").single();
         if (error) throw error;
         recordId = inserted?.id;
@@ -550,7 +563,7 @@ export default function SmartImportAdmin() {
           const { data: inserted } = await supabase.from("culinary_entities").insert(payload).select("id").single();
           recordId = inserted?.id;
         } else if (tbl === 'companies') {
-          const payload = { ...buildCompanyPayload(d), name: d.name_en || name, type: suggestion.sub_type as CompanyType, status: 'active' as const, country_code: d.country_code || 'SA', created_by: user?.id || null };
+          const payload = { ...buildCompanyPayload(d), name: d.name_en || name, type: suggestion.sub_type as CompanyType, status: 'pending' as const, country_code: d.country_code || 'SA', created_by: user?.id || null };
           const { data: inserted } = await supabase.from("companies").insert(payload).select("id").single();
           recordId = inserted?.id;
         } else {

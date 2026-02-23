@@ -164,7 +164,7 @@ export default function CompaniesAdmin() {
     queryKey: ["companies", searchQuery, typeFilter, statusFilter],
     queryFn: async () => {
       let query = supabase.from("companies").select("*").order("created_at", { ascending: false });
-      if (searchQuery) query = query.or(`name.ilike.%${searchQuery}%,email.ilike.%${searchQuery}%`);
+      if (searchQuery) query = query.or(`name.ilike.%${searchQuery}%,name_ar.ilike.%${searchQuery}%,email.ilike.%${searchQuery}%`);
       if (typeFilter !== "all") query = query.eq("type", typeFilter as CompanyType);
       if (statusFilter !== "all") query = query.eq("status", statusFilter as CompanyStatus);
       const { data, error } = await query;
@@ -702,7 +702,7 @@ export default function CompaniesAdmin() {
                 </div>
               )}
               <div>
-                <h1 className="text-2xl font-bold">{companyDetails.name}</h1>
+                <h1 className="text-2xl font-bold">{isAr && companyDetails.name_ar ? companyDetails.name_ar : companyDetails.name}</h1>
                 <div className="flex flex-wrap items-center gap-2 mt-1">
                   <Badge className={statusColors[companyDetails.status as CompanyStatus]}>{getStatusLabel(companyDetails.status)}</Badge>
                   <Badge variant="outline">{getTypeLabel(companyDetails.type)}</Badge>
@@ -1888,7 +1888,7 @@ export default function CompaniesAdmin() {
                       <TableCell>
                         <div className="flex items-center gap-3">
                           {company.logo_url ? <img src={company.logo_url} alt={company.name} className="h-10 w-10 rounded-lg object-cover" /> : <div className="h-10 w-10 rounded-lg bg-muted flex items-center justify-center"><Building2 className="h-5 w-5 text-muted-foreground" /></div>}
-                          <div><p className="font-medium">{company.name}</p>{company.company_number && <p className="text-xs text-muted-foreground font-mono">{company.company_number}</p>}{!company.company_number && company.name_ar && <p className="text-sm text-muted-foreground" dir="rtl">{company.name_ar}</p>}</div>
+                          <div><p className="font-medium">{isAr && company.name_ar ? company.name_ar : company.name}</p>{company.company_number && <p className="text-xs text-muted-foreground font-mono">{company.company_number}</p>}{(isAr ? company.name : company.name_ar) && <p className="text-sm text-muted-foreground" dir={isAr ? "ltr" : "rtl"}>{isAr ? company.name : company.name_ar}</p>}</div>
                         </div>
                       </TableCell>
                       <TableCell><Badge variant="outline">{getTypeLabel(company.type)}</Badge></TableCell>
@@ -1956,7 +1956,7 @@ export default function CompaniesAdmin() {
             email: data.email || prev.email,
             phone: data.phone || prev.phone,
             website: data.website || prev.website,
-            registration_number: data.national_id || prev.registration_number,
+            registration_number: data.national_id || data.registration_number || prev.registration_number,
           }));
           setShowCompanyForm(true);
         }}
