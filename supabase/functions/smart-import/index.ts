@@ -118,6 +118,28 @@ async function firecrawlScrape(url: string, apiKey: string, timeoutMs = 15000, f
   return md;
 }
 
+// Scrape with branding format for auto logo detection
+async function firecrawlScrapeWithBranding(url: string, apiKey: string, timeoutMs = 18000): Promise<any> {
+  const cacheKey = `scrape_branding:${url}`;
+  const cached = getCached(cacheKey);
+  if (cached) return cached;
+
+  let formatted = url.trim();
+  if (!formatted.startsWith('http')) formatted = `https://${formatted}`;
+  const data = await firecrawlFetch('https://api.firecrawl.dev/v1/scrape', {
+    url: formatted, formats: ['markdown', 'links', 'branding'], onlyMainContent: false,
+  }, apiKey, timeoutMs);
+  
+  const result = {
+    markdown: data?.data?.markdown || null,
+    links: data?.data?.links || [],
+    metadata: data?.data?.metadata || {},
+    branding: data?.data?.branding || data?.branding || null,
+  };
+  setCache(cacheKey, result);
+  return result;
+}
+
 // ─── AI call with retry ───
 async function callAI(prompt: string, lovableKey: string, model = 'google/gemini-2.5-flash-lite', temperature = 0.1, timeoutMs = 30000): Promise<string> {
   for (let attempt = 0; attempt < 2; attempt++) {
@@ -277,13 +299,14 @@ async function handleDetails(
   // Auto-detect website from result page if not provided
   let effectiveWebsiteUrl = websiteUrl;
 
+  // Scrape website with branding format for automatic logo detection
   const [scrapedRaw, searchRaw, websiteRaw] = await Promise.all([
     resultUrl ? firecrawlScrape(resultUrl, apiKey, 18000, ['markdown', 'links']).catch(() => null) : Promise.resolve(null),
     firecrawlSearch(
       location ? `${query} ${location} contact address phone email` : `${query} contact address phone email`,
       apiKey, 8, 10000
     ).catch(() => []),
-    effectiveWebsiteUrl ? firecrawlScrape(effectiveWebsiteUrl, apiKey, 15000, ['markdown', 'links']).catch(() => null) : Promise.resolve(null),
+    effectiveWebsiteUrl ? firecrawlScrapeWithBranding(effectiveWebsiteUrl, apiKey, 18000).catch(() => null) : Promise.resolve(null),
   ]);
 
   const scraped = typeof scrapedRaw === 'string' ? scrapedRaw : scrapedRaw?.markdown || null;
@@ -294,6 +317,11 @@ async function handleDetails(
   if (scrapedRaw?.links) allLinks.push(...scrapedRaw.links);
   if (websiteRaw?.links) allLinks.push(...websiteRaw.links);
   const imageUrls = allLinks.filter((l: string) => /\.(png|jpg|jpeg|svg|webp|gif)/i.test(l)).slice(0, 20);
+
+  // Extract branding data (logo from Firecrawl's branding format)
+  const brandingLogo = websiteRaw?.branding?.logo || websiteRaw?.branding?.images?.logo || null;
+  const brandingFavicon = websiteRaw?.branding?.images?.favicon || null;
+  const brandingOgImage = websiteRaw?.branding?.images?.ogImage || null;
 
   if (scraped) sources.google_maps = true;
   if (websiteContent) sources.website = true;
@@ -319,6 +347,11 @@ async function handleDetails(
 
   const lovableKey = Deno.env.get('LOVABLE_API_KEY')!;
   const enriched = await enrichWithAI(scraped, searchContent, websiteContent || extraWebsite, query, latitude, longitude, lovableKey, imageUrls);
+  
+  // Apply branding logo/cover if AI didn't find them
+  if (!enriched.logo_url && brandingLogo) enriched.logo_url = brandingLogo;
+  if (!enriched.logo_url && brandingFavicon) enriched.logo_url = brandingFavicon;
+  if (!enriched.cover_url && brandingOgImage) enriched.cover_url = brandingOgImage;
   const dataQuality = calculateDataQuality(enriched, sources);
   const suggestion = autoDetectTargetTable(enriched);
   const result = { data: enriched, sources_used: sources, data_quality: dataQuality, suggested_target: suggestion };

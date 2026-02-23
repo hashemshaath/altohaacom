@@ -349,35 +349,15 @@ const MediaTab = React.memo(({ details, isAr, editing, onFieldUpdate }: TabProps
         </CardTitle>
       </CardHeader>
       <CardContent>
-        {editing && onFieldUpdate ? (
-          <ImagePreviewEditor
-            label={isAr ? "شعار الجهة" : "Entity Logo"}
-            value={details.logo_url}
-            fieldKey="logo_url"
-            onUpdate={onFieldUpdate}
-            aspectRatio="square"
-            isAr={isAr}
-          />
-        ) : details.logo_url ? (
-          <div className="aspect-square rounded-lg border overflow-hidden bg-muted/30">
-            <img src={details.logo_url} alt="Logo" className="w-full h-full object-contain p-4" />
-          </div>
-        ) : (
-          <div className="aspect-square rounded-lg border-2 border-dashed flex flex-col items-center justify-center text-muted-foreground/50 gap-2">
-            <ImageIcon className="h-10 w-10" />
-            <p className="text-xs">{isAr ? "لم يتم العثور على شعار" : "No logo found"}</p>
-            {onFieldUpdate && (
-              <ImagePreviewEditor
-                label=""
-                value={null}
-                fieldKey="logo_url"
-                onUpdate={onFieldUpdate}
-                aspectRatio="square"
-                isAr={isAr}
-              />
-            )}
-          </div>
-        )}
+        <ImagePreviewEditor
+          label={isAr ? "شعار الجهة" : "Entity Logo"}
+          value={details.logo_url}
+          fieldKey="logo_url"
+          onUpdate={onFieldUpdate || (() => {})}
+          aspectRatio="square"
+          isAr={isAr}
+          readOnly={!editing && !onFieldUpdate}
+        />
       </CardContent>
     </Card>
 
@@ -389,35 +369,15 @@ const MediaTab = React.memo(({ details, isAr, editing, onFieldUpdate }: TabProps
         </CardTitle>
       </CardHeader>
       <CardContent>
-        {editing && onFieldUpdate ? (
-          <ImagePreviewEditor
-            label={isAr ? "صورة الغلاف" : "Cover Image"}
-            value={details.cover_url}
-            fieldKey="cover_url"
-            onUpdate={onFieldUpdate}
-            aspectRatio="wide"
-            isAr={isAr}
-          />
-        ) : details.cover_url ? (
-          <div className="aspect-[21/9] rounded-lg border overflow-hidden bg-muted/30">
-            <img src={details.cover_url} alt="Cover" className="w-full h-full object-cover" />
-          </div>
-        ) : (
-          <div className="aspect-[21/9] rounded-lg border-2 border-dashed flex flex-col items-center justify-center text-muted-foreground/50 gap-2">
-            <ImageIcon className="h-10 w-10" />
-            <p className="text-xs">{isAr ? "لم يتم العثور على صورة غلاف" : "No cover image found"}</p>
-            {onFieldUpdate && (
-              <ImagePreviewEditor
-                label=""
-                value={null}
-                fieldKey="cover_url"
-                onUpdate={onFieldUpdate}
-                aspectRatio="wide"
-                isAr={isAr}
-              />
-            )}
-          </div>
-        )}
+        <ImagePreviewEditor
+          label={isAr ? "صورة الغلاف" : "Cover Image"}
+          value={details.cover_url}
+          fieldKey="cover_url"
+          onUpdate={onFieldUpdate || (() => {})}
+          aspectRatio="wide"
+          isAr={isAr}
+          readOnly={!editing && !onFieldUpdate}
+        />
       </CardContent>
     </Card>
   </div>
