@@ -74,6 +74,8 @@ const buildEntityPayload = (d: ImportedData) => {
   if (d.affiliated_organizations?.length) payload.affiliated_organizations = d.affiliated_organizations;
   if (d.tags?.length) payload.tags = d.tags;
   if (d.social_media && Object.values(d.social_media).some(Boolean)) payload.social_links = d.social_media;
+  if (d.logo_url) payload.logo_url = d.logo_url;
+  if (d.cover_url) payload.cover_image_url = d.cover_url;
   return payload;
 };
 
@@ -111,6 +113,8 @@ const buildCompanyPayload = (d: ImportedData) => {
   if (specs.length) payload.specializations = specs;
   if (d.social_media && Object.values(d.social_media).some(Boolean)) payload.social_links = d.social_media;
   if (d.description_en || d.business_type_en) payload.tagline = d.business_type_en || d.description_en?.substring(0, 100);
+  if (d.logo_url) payload.logo_url = d.logo_url;
+  if (d.cover_url) payload.cover_image_url = d.cover_url;
   payload.import_source = 'smart_import';
   return payload;
 };

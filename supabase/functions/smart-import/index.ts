@@ -92,16 +92,27 @@ async function firecrawlSearch(query: string, apiKey: string, limit = 10, timeou
   return data?.success ? (data.data || []) : [];
 }
 
-async function firecrawlScrape(url: string, apiKey: string, timeoutMs = 15000): Promise<string | null> {
-  const cacheKey = `scrape:${url}`;
+async function firecrawlScrape(url: string, apiKey: string, timeoutMs = 15000, formats: string[] = ['markdown']): Promise<any> {
+  const cacheKey = `scrape:${url}:${formats.join(',')}`;
   const cached = getCached(cacheKey);
   if (cached) return cached;
 
   let formatted = url.trim();
   if (!formatted.startsWith('http')) formatted = `https://${formatted}`;
   const data = await firecrawlFetch('https://api.firecrawl.dev/v1/scrape', {
-    url: formatted, formats: ['markdown'], onlyMainContent: true,
+    url: formatted, formats, onlyMainContent: formats.length === 1 && formats[0] === 'markdown',
   }, apiKey, timeoutMs);
+  
+  if (formats.includes('links') || formats.includes('markdown')) {
+    const result = {
+      markdown: data?.data?.markdown || null,
+      links: data?.data?.links || [],
+      metadata: data?.data?.metadata || {},
+    };
+    setCache(cacheKey, result);
+    return result;
+  }
+  
   const md = data?.data?.markdown || null;
   if (md) setCache(cacheKey, md);
   return md;
@@ -266,14 +277,23 @@ async function handleDetails(
   // Auto-detect website from result page if not provided
   let effectiveWebsiteUrl = websiteUrl;
 
-  const [scraped, searchRaw, websiteContent] = await Promise.all([
-    resultUrl ? firecrawlScrape(resultUrl, apiKey, 18000).catch(() => null) : Promise.resolve(null),
+  const [scrapedRaw, searchRaw, websiteRaw] = await Promise.all([
+    resultUrl ? firecrawlScrape(resultUrl, apiKey, 18000, ['markdown', 'links']).catch(() => null) : Promise.resolve(null),
     firecrawlSearch(
       location ? `${query} ${location} contact address phone email` : `${query} contact address phone email`,
       apiKey, 8, 10000
     ).catch(() => []),
-    effectiveWebsiteUrl ? firecrawlScrape(effectiveWebsiteUrl, apiKey, 15000).catch(() => null) : Promise.resolve(null),
+    effectiveWebsiteUrl ? firecrawlScrape(effectiveWebsiteUrl, apiKey, 15000, ['markdown', 'links']).catch(() => null) : Promise.resolve(null),
   ]);
+
+  const scraped = typeof scrapedRaw === 'string' ? scrapedRaw : scrapedRaw?.markdown || null;
+  const websiteContent = typeof websiteRaw === 'string' ? websiteRaw : websiteRaw?.markdown || null;
+  
+  // Extract image URLs from scraped pages for logo/cover detection
+  const allLinks: string[] = [];
+  if (scrapedRaw?.links) allLinks.push(...scrapedRaw.links);
+  if (websiteRaw?.links) allLinks.push(...websiteRaw.links);
+  const imageUrls = allLinks.filter((l: string) => /\.(png|jpg|jpeg|svg|webp|gif)/i.test(l)).slice(0, 20);
 
   if (scraped) sources.google_maps = true;
   if (websiteContent) sources.website = true;
@@ -298,7 +318,7 @@ async function handleDetails(
   }
 
   const lovableKey = Deno.env.get('LOVABLE_API_KEY')!;
-  const enriched = await enrichWithAI(scraped, searchContent, websiteContent || extraWebsite, query, latitude, longitude, lovableKey);
+  const enriched = await enrichWithAI(scraped, searchContent, websiteContent || extraWebsite, query, latitude, longitude, lovableKey, imageUrls);
   const dataQuality = calculateDataQuality(enriched, sources);
   const suggestion = autoDetectTargetTable(enriched);
   const result = { data: enriched, sources_used: sources, data_quality: dataQuality, suggested_target: suggestion };
@@ -333,6 +353,8 @@ function calculateDataQuality(data: any, sources: Record<string, boolean>): numb
     score += Math.min(socialCount * 2, 5);
   }
   if (data.business_hours?.length > 0) score += 5;
+  if (data.logo_url) score += 3;
+  if (data.cover_url) score += 2;
   return Math.min(score, 100);
 }
 
@@ -407,9 +429,14 @@ async function handleBulkUrl(urls: string[], apiKey: string, lovableKey: string)
 async function enrichWithAI(
   scraped: string | null, search: string | null, website: string | null,
   query: string, lat?: number | null, lng?: number | null, lovableKey?: string,
+  imageUrls?: string[],
 ): Promise<any> {
   const apiKey = lovableKey || Deno.env.get('LOVABLE_API_KEY');
   if (!apiKey) { console.error('LOVABLE_API_KEY not set'); return {}; }
+
+  const imageContext = imageUrls?.length
+    ? `\nIMAGE URLs found on the page:\n${imageUrls.join('\n')}\n\nFrom these URLs, identify:\n- logo_url: The company/entity logo (usually small, contains "logo" in name or path, or is an SVG)\n- cover_url: A cover/banner/hero image (usually wide, large resolution, header/banner image)\nIf no suitable image found, set null.`
+    : '';
 
   const prompt = `You are a bilingual data extraction expert (Arabic & English). Extract ALL available data from these sources into a structured JSON.
 
@@ -420,6 +447,7 @@ RULES:
 ${lat && lng ? `- Coordinates: ${lat}, ${lng}` : ''}
 
 SEO: Write compelling keyword-rich descriptions (150-300 chars). Tags: 5-10 English SEO keywords.
+${imageContext}
 
 ${scraped ? `GOOGLE MAPS:\n${scraped.substring(0, 6000)}` : ''}
 ${search ? `WEB SEARCH:\n${search.substring(0, 5000)}` : ''}
@@ -462,10 +490,12 @@ Return ONLY valid JSON:
   "specializations_en": [], "specializations_ar": [],
   "affiliated_organizations": [],
   "tags": [],
-  "social_media": {"instagram":null,"twitter":null,"facebook":null,"linkedin":null,"tiktok":null,"youtube":null,"snapchat":null,"whatsapp":null}
+  "social_media": {"instagram":null,"twitter":null,"facebook":null,"linkedin":null,"tiktok":null,"youtube":null,"snapchat":null,"whatsapp":null},
+  "logo_url": null,
+  "cover_url": null
 }
 
-Extract ALL data. Services & specializations in BOTH languages. Business hours from ACTUAL data (24h format). Social media links.`;
+Extract ALL data. Services & specializations in BOTH languages. Business hours from ACTUAL data (24h format). Social media links. Logo and cover images from available URLs.`;
 
   const content = await callAI(prompt, apiKey, 'google/gemini-3-flash-preview', 0.1, 30000);
   try {
