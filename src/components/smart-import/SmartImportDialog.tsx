@@ -209,9 +209,14 @@ export function SmartImportDialog({
             <Separator />
             <div className="flex items-center gap-2 flex-wrap">
               <span className="text-sm font-medium">{isAr ? "المصادر:" : "Sources:"}</span>
-              {sourcesUsed.google_places && (
+              {sourcesUsed.scrape && (
                 <Badge variant="secondary" className="gap-1 text-xs">
-                  <CheckCircle className="h-3 w-3" /> Google Places
+                  <CheckCircle className="h-3 w-3" /> Scraped
+                </Badge>
+              )}
+              {sourcesUsed.web_search && (
+                <Badge variant="secondary" className="gap-1 text-xs">
+                  <CheckCircle className="h-3 w-3" /> Web
                 </Badge>
               )}
               {sourcesUsed.website && (
@@ -222,12 +227,6 @@ export function SmartImportDialog({
               {sourcesUsed.ai && (
                 <Badge variant="secondary" className="gap-1 text-xs">
                   <Sparkles className="h-3 w-3" /> AI
-                </Badge>
-              )}
-              {!sourcesUsed.google_places && (
-                <Badge variant="outline" className="gap-1 text-xs text-muted-foreground">
-                  <AlertCircle className="h-3 w-3" />
-                  {isAr ? "جوجل غير مفعل" : "Google Places inactive"}
                 </Badge>
               )}
             </div>
