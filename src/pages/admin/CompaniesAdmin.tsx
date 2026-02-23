@@ -1718,6 +1718,33 @@ export default function CompaniesAdmin() {
           <AdminReviewsModeration />
         ) : (
         <>
+        {/* Pending Approvals Alert */}
+        {stats.pending > 0 && (
+          <Card className="border-chart-4/50 bg-chart-4/5">
+            <CardContent className="flex items-center gap-4 p-4">
+              <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-chart-4/15">
+                <Clock className="h-6 w-6 text-chart-4" />
+              </div>
+              <div className="flex-1">
+                <h3 className="font-semibold text-chart-4">
+                  {isAr ? `${stats.pending} شركات بانتظار الموافقة` : `${stats.pending} Companies Pending Approval`}
+                </h3>
+                <p className="text-sm text-muted-foreground">
+                  {isAr ? "يرجى مراجعة الطلبات والموافقة عليها أو رفضها" : "Please review and approve or reject these requests"}
+                </p>
+              </div>
+              <Button
+                variant="outline"
+                className="border-chart-4/30 text-chart-4 hover:bg-chart-4/10"
+                onClick={() => setStatusFilter("pending")}
+              >
+                <Eye className="h-4 w-4 me-2" />
+                {isAr ? "عرض الطلبات" : "View Requests"}
+              </Button>
+            </CardContent>
+          </Card>
+        )}
+
         {/* Stats Cards */}
         <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
           <Card className="group hover:shadow-md transition-shadow">
@@ -1869,7 +1896,33 @@ export default function CompaniesAdmin() {
                       <TableCell>{company.country_code ? `${countryFlag(company.country_code)} ` : ""}{[company.city, company.country].filter(Boolean).join(", ") || "-"}</TableCell>
                       <TableCell><Badge className={statusColors[company.status]}>{getStatusLabel(company.status)}</Badge></TableCell>
                       <TableCell>{format(new Date(company.created_at), "yyyy-MM-dd")}</TableCell>
-                      <TableCell><Button variant="ghost" size="icon"><Eye className="h-4 w-4" /></Button></TableCell>
+                      <TableCell>
+                        <div className="flex items-center gap-1">
+                          {company.status === "pending" && (
+                            <>
+                              <Button
+                                variant="ghost"
+                                size="icon"
+                                className="text-chart-5 hover:text-chart-5 hover:bg-chart-5/10"
+                                onClick={(e) => { e.stopPropagation(); updateStatusMutation.mutate({ id: company.id, status: "active" }); }}
+                                title={isAr ? "تفعيل" : "Approve"}
+                              >
+                                <CheckCircle className="h-4 w-4" />
+                              </Button>
+                              <Button
+                                variant="ghost"
+                                size="icon"
+                                className="text-destructive hover:text-destructive hover:bg-destructive/10"
+                                onClick={(e) => { e.stopPropagation(); updateStatusMutation.mutate({ id: company.id, status: "suspended" }); }}
+                                title={isAr ? "رفض" : "Reject"}
+                              >
+                                <XCircle className="h-4 w-4" />
+                              </Button>
+                            </>
+                          )}
+                          <Button variant="ghost" size="icon"><Eye className="h-4 w-4" /></Button>
+                        </div>
+                      </TableCell>
                     </TableRow>
                   ))}
                   {companies.length === 0 && (
