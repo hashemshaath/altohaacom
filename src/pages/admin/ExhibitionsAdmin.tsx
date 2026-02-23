@@ -223,6 +223,7 @@ export default function ExhibitionsAdmin() {
     mutationFn: async (id: string) => {
       const { error } = await supabase.from("exhibitions").update({ status: "draft" as ExhibitionStatus }).eq("id", id);
       if (error) throw error;
+      await supabase.from("admin_actions").insert({ admin_id: user!.id, action_type: "approve_exhibition", details: { exhibition_id: id } });
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["admin-exhibitions"] });
@@ -238,6 +239,7 @@ export default function ExhibitionsAdmin() {
     mutationFn: async (id: string) => {
       const { error } = await supabase.from("exhibitions").update({ status: "cancelled" as ExhibitionStatus }).eq("id", id);
       if (error) throw error;
+      await supabase.from("admin_actions").insert({ admin_id: user!.id, action_type: "reject_exhibition", details: { exhibition_id: id } });
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["admin-exhibitions"] });
