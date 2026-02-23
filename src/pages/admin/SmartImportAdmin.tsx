@@ -537,7 +537,7 @@ export default function SmartImportAdmin() {
           ...buildExhibitionPayload(details),
           title: details.name_en || name,
           type: selectedExhibitionType,
-          status: "draft" as const,
+          status: "pending" as const,
           slug,
           start_date: defaultStart,
           end_date: defaultEnd,
@@ -554,7 +554,7 @@ export default function SmartImportAdmin() {
         const payload = {
           ...buildCompetitionPayload(details),
           title: details.name_en || name,
-          status: "draft" as const,
+          status: "pending" as const,
           competition_start: defaultStart,
           competition_end: defaultEnd,
           organizer_id: user?.id || '',
@@ -584,6 +584,14 @@ export default function SmartImportAdmin() {
       } else if (targetTable === "companies") {
         import("@/lib/notificationTriggers").then(({ notifyAdminCompanyRegistration }) => {
           notifyAdminCompanyRegistration({ companyName: details.name_en || name, companyNameAr: details.name_ar || undefined, submittedBy: "Smart Import" });
+        });
+      } else if (targetTable === "exhibitions") {
+        import("@/lib/notificationTriggers").then(({ notifyAdminExhibitionReview }) => {
+          notifyAdminExhibitionReview({ exhibitionName: details.name_en || name, exhibitionNameAr: details.name_ar || undefined, submittedBy: "Smart Import" });
+        });
+      } else if (targetTable === "competitions") {
+        import("@/lib/notificationTriggers").then(({ notifyAdminCompetitionReview }) => {
+          notifyAdminCompetitionReview({ competitionName: details.name_en || name, competitionNameAr: details.name_ar || undefined, submittedBy: "Smart Import" });
         });
       }
 
@@ -697,7 +705,7 @@ export default function SmartImportAdmin() {
           const payload = {
             ...buildExhibitionPayload(d), title: d.name_en || name,
             type: (suggestion.sub_type || 'exhibition') as ExhibitionType,
-            status: 'draft' as const, slug,
+            status: 'pending' as const, slug,
             start_date: d.start_date || now.toISOString().split('T')[0],
             end_date: d.end_date || new Date(now.getTime() + 3 * 86400000).toISOString().split('T')[0],
             created_by: user?.id || null,
@@ -708,7 +716,7 @@ export default function SmartImportAdmin() {
           const now = new Date();
           const payload = {
             ...buildCompetitionPayload(d), title: d.name_en || name,
-            status: 'draft' as const,
+            status: 'pending' as const,
             competition_start: d.start_date || now.toISOString().split('T')[0],
             competition_end: d.end_date || new Date(now.getTime() + 3 * 86400000).toISOString().split('T')[0],
             organizer_id: user?.id || '', country_code: d.country_code || 'SA',
