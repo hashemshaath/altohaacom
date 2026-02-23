@@ -28,6 +28,8 @@ import {
 } from "lucide-react";
 
 type EntityType = Database["public"]["Enums"]["entity_type"];
+type CompanyType = Database["public"]["Enums"]["company_type"];
+type TargetTable = "culinary_entities" | "companies" | "establishments";
 
 // ─── Types ───
 interface SearchResultItem {
@@ -43,16 +45,17 @@ interface SearchResultItem {
   place_type: string | null;
 }
 
-interface ExistingEntity {
+interface ExistingRecord {
   id: string;
   name: string;
   name_ar: string | null;
-  entity_number: string;
-  type: EntityType;
+  identifier: string; // entity_number, company_number, or id
+  sub_type: string;
   city: string | null;
   phone: string | null;
   email: string | null;
   website: string | null;
+  table: TargetTable;
 }
 
 type Step = "search" | "results" | "details";
@@ -65,6 +68,12 @@ const SOURCE_CHANNELS = {
   ai: { label_en: "AI Enrichment", label_ar: "تحليل ذكي", icon: Sparkles, color: "bg-purple-500/10 text-purple-600 border-purple-500/20" },
 } as const;
 
+const TARGET_TABLE_OPTIONS: { value: TargetTable; label_en: string; label_ar: string; icon: typeof Building2; description_en: string; description_ar: string }[] = [
+  { value: "culinary_entities", label_en: "Culinary Entity", label_ar: "كيان طهوي", icon: Building2, description_en: "Associations, academies, government entities", description_ar: "جمعيات، أكاديميات، جهات حكومية" },
+  { value: "companies", label_en: "Company", label_ar: "شركة", icon: Briefcase, description_en: "Sponsors, suppliers, partners, vendors", description_ar: "رعاة، موردون، شركاء" },
+  { value: "establishments", label_en: "Establishment", label_ar: "منشأة", icon: MapPin, description_en: "Hotels, restaurants, kitchens", description_ar: "فنادق، مطاعم، مطابخ" },
+];
+
 const ENTITY_TYPE_LABELS: Record<EntityType, { en: string; ar: string }> = {
   culinary_association: { en: "Culinary Association", ar: "جمعية طهي" },
   government_entity: { en: "Government Entity", ar: "جهة حكومية" },
@@ -75,6 +84,25 @@ const ENTITY_TYPE_LABELS: Record<EntityType, { en: string; ar: string }> = {
   college: { en: "College", ar: "كلية" },
   training_center: { en: "Training Center", ar: "مركز تدريب" },
 };
+
+const COMPANY_TYPE_LABELS: Record<CompanyType, { en: string; ar: string }> = {
+  sponsor: { en: "Sponsor", ar: "راعي" },
+  supplier: { en: "Supplier", ar: "مورد" },
+  partner: { en: "Partner", ar: "شريك" },
+  vendor: { en: "Vendor", ar: "بائع" },
+};
+
+const ESTABLISHMENT_TYPES = [
+  { value: "restaurant", en: "Restaurant", ar: "مطعم" },
+  { value: "hotel", en: "Hotel", ar: "فندق" },
+  { value: "cafe", en: "Café", ar: "مقهى" },
+  { value: "catering", en: "Catering", ar: "تموين" },
+  { value: "bakery", en: "Bakery", ar: "مخبز" },
+  { value: "kitchen", en: "Kitchen", ar: "مطبخ" },
+  { value: "resort", en: "Resort", ar: "منتجع" },
+  { value: "club", en: "Club", ar: "نادي" },
+  { value: "other", en: "Other", ar: "أخرى" },
+];
 
 // ─── Helpers ───
 const DataField = ({ label, value, copyable, multiline }: { label: string; value?: string | null; copyable?: boolean; multiline?: boolean }) => {
@@ -138,11 +166,14 @@ export default function SmartImportAdmin() {
   const [activeTab, setActiveTab] = useState("overview");
 
   const [checkingDb, setCheckingDb] = useState(false);
-  const [existingEntities, setExistingEntities] = useState<ExistingEntity[]>([]);
+  const [existingRecords, setExistingRecords] = useState<ExistingRecord[]>([]);
   const [dbChecked, setDbChecked] = useState(false);
 
   const [showAddDialog, setShowAddDialog] = useState(false);
+  const [targetTable, setTargetTable] = useState<TargetTable>("culinary_entities");
   const [selectedEntityType, setSelectedEntityType] = useState<EntityType>("culinary_association");
+  const [selectedCompanyType, setSelectedCompanyType] = useState<CompanyType>("supplier");
+  const [selectedEstablishmentType, setSelectedEstablishmentType] = useState("restaurant");
   const [saving, setSaving] = useState(false);
   const [updating, setUpdating] = useState(false);
   const [selectedExistingId, setSelectedExistingId] = useState<string | null>(null);
@@ -156,7 +187,7 @@ export default function SmartImportAdmin() {
     setDetails(null);
     setSourcesUsed({});
     setDbChecked(false);
-    setExistingEntities([]);
+    setExistingRecords([]);
     setSearchedQuery(query.trim());
     setSearchedLocation(location.trim());
 
@@ -185,7 +216,7 @@ export default function SmartImportAdmin() {
     setDetails(null);
     setActiveTab("overview");
     setDbChecked(false);
-    setExistingEntities([]);
+    setExistingRecords([]);
 
     try {
       const { data, error } = await supabase.functions.invoke("smart-import", {
@@ -213,11 +244,11 @@ export default function SmartImportAdmin() {
     }
   }, [location, websiteUrl, isAr]);
 
-  // ─── Check DB for existing entity ───
+  // ─── Check DB for existing records across all 3 tables ───
   const checkExistingEntity = useCallback(async () => {
     if (!details) return;
     setCheckingDb(true);
-    setExistingEntities([]);
+    setExistingRecords([]);
 
     try {
       const nameEn = details.name_en?.trim();
@@ -225,18 +256,28 @@ export default function SmartImportAdmin() {
       const phone = details.phone?.trim();
       const email = details.email?.trim()?.toLowerCase();
 
-      let query = supabase.from("culinary_entities").select("id, name, name_ar, entity_number, type, city, phone, email, website");
       const orConditions: string[] = [];
       if (nameEn) orConditions.push(`name.ilike.%${nameEn}%`);
       if (nameAr) orConditions.push(`name_ar.ilike.%${nameAr}%`);
       if (phone) orConditions.push(`phone.eq.${phone}`);
       if (email) orConditions.push(`email.ilike.${email}`);
 
-      if (orConditions.length > 0) {
-        const { data, error } = await query.or(orConditions.join(","));
-        if (error) throw error;
-        setExistingEntities((data as ExistingEntity[]) || []);
-      }
+      if (orConditions.length === 0) { setCheckingDb(false); setDbChecked(true); return; }
+      const orStr = orConditions.join(",");
+
+      // Search all 3 tables in parallel
+      const [entRes, compRes, estRes] = await Promise.all([
+        supabase.from("culinary_entities").select("id, name, name_ar, entity_number, type, city, phone, email, website").or(orStr),
+        supabase.from("companies").select("id, name, name_ar, company_number, type, city, phone, email, website").or(orStr),
+        supabase.from("establishments").select("id, name, name_ar, type, city, phone, email, website").or(orStr),
+      ]);
+
+      const records: ExistingRecord[] = [];
+      (entRes.data || []).forEach((e: any) => records.push({ id: e.id, name: e.name, name_ar: e.name_ar, identifier: e.entity_number, sub_type: e.type, city: e.city, phone: e.phone, email: e.email, website: e.website, table: "culinary_entities" }));
+      (compRes.data || []).forEach((c: any) => records.push({ id: c.id, name: c.name, name_ar: c.name_ar, identifier: c.company_number || c.id.slice(0, 8), sub_type: c.type, city: c.city, phone: c.phone, email: c.email, website: c.website, table: "companies" }));
+      (estRes.data || []).forEach((e: any) => records.push({ id: e.id, name: e.name, name_ar: e.name_ar, identifier: e.id.slice(0, 8), sub_type: e.type, city: e.city, phone: e.phone, email: e.email, website: e.website, table: "establishments" }));
+
+      setExistingRecords(records);
     } catch (err: any) {
       console.error("DB check error:", err);
     } finally {
@@ -251,8 +292,8 @@ export default function SmartImportAdmin() {
     }
   }, [details, dbChecked, step, checkExistingEntity]);
 
-  // ─── Build update payload from all extracted data ───
-  const buildPayload = (d: ImportedData) => {
+  // ─── Build payload per target table ───
+  const buildEntityPayload = (d: ImportedData) => {
     const payload: Record<string, any> = {};
     if (d.name_en) payload.name = d.name_en;
     if (d.name_ar) payload.name_ar = d.name_ar;
@@ -281,10 +322,8 @@ export default function SmartImportAdmin() {
     if (d.secretary_name_en) payload.secretary_name = d.secretary_name_en;
     if (d.secretary_name_ar) payload.secretary_name_ar = d.secretary_name_ar;
     if (d.member_count) payload.member_count = d.member_count;
-    // Merge services (EN + AR)
     const services = [...(d.services_en || []), ...(d.services_ar || [])].filter(Boolean);
     if (services.length) payload.services = services;
-    // Merge specializations
     const specs = [...(d.specializations_en || []), ...(d.specializations_ar || [])].filter(Boolean);
     if (specs.length) payload.specializations = specs;
     if (d.affiliated_organizations?.length) payload.affiliated_organizations = d.affiliated_organizations;
@@ -293,17 +332,71 @@ export default function SmartImportAdmin() {
     return payload;
   };
 
-  // ─── Update existing entity ───
-  const handleUpdateEntity = async (entityId: string) => {
+  const buildCompanyPayload = (d: ImportedData) => {
+    const payload: Record<string, any> = {};
+    if (d.name_en) payload.name = d.name_en;
+    if (d.name_ar) payload.name_ar = d.name_ar;
+    if (d.description_en) payload.description = d.description_en;
+    if (d.description_ar) payload.description_ar = d.description_ar;
+    if (d.phone) payload.phone = d.phone;
+    if (d.email) payload.email = d.email;
+    if (d.website) payload.website = d.website;
+    if (d.city_en || d.city_ar) payload.city = d.city_en || d.city_ar;
+    if (d.country_en || d.country_ar) payload.country = d.country_en || d.country_ar;
+    if (d.full_address_en) payload.address = d.full_address_en;
+    if (d.full_address_ar) payload.address_ar = d.full_address_ar;
+    if (d.postal_code) payload.postal_code = d.postal_code;
+    if (d.country_code) payload.country_code = d.country_code;
+    if (d.registration_number) payload.registration_number = d.registration_number;
+    if (d.founded_year) payload.founded_year = d.founded_year;
+    if (d.business_hours) payload.working_hours = d.business_hours;
+    const specs = [...(d.specializations_en || []), ...(d.specializations_ar || [])].filter(Boolean);
+    if (specs.length) payload.specializations = specs;
+    if (d.social_media && Object.values(d.social_media).some(Boolean)) payload.social_links = d.social_media;
+    if (d.description_en || d.business_type_en) payload.tagline = d.business_type_en || d.description_en?.substring(0, 100);
+    return payload;
+  };
+
+  const buildEstablishmentPayload = (d: ImportedData) => {
+    const payload: Record<string, any> = {};
+    if (d.name_en) payload.name = d.name_en;
+    if (d.name_ar) payload.name_ar = d.name_ar;
+    if (d.description_en) payload.description = d.description_en;
+    if (d.description_ar) payload.description_ar = d.description_ar;
+    if (d.phone) payload.phone = d.phone;
+    if (d.email) payload.email = d.email;
+    if (d.website) payload.website = d.website;
+    if (d.city_en || d.city_ar) payload.city = d.city_en || d.city_ar;
+    if (d.city_ar) payload.city_ar = d.city_ar;
+    if (d.country_code) payload.country_code = d.country_code;
+    if (d.full_address_en) payload.address = d.full_address_en;
+    if (d.full_address_ar) payload.address_ar = d.full_address_ar;
+    if (d.business_type_en) payload.cuisine_type = d.business_type_en;
+    if (d.business_type_ar) payload.cuisine_type_ar = d.business_type_ar;
+    if (d.rating) payload.star_rating = Math.round(d.rating);
+    return payload;
+  };
+
+  const getPayloadForTable = (d: ImportedData, table: TargetTable) => {
+    switch (table) {
+      case "culinary_entities": return buildEntityPayload(d);
+      case "companies": return buildCompanyPayload(d);
+      case "establishments": return buildEstablishmentPayload(d);
+    }
+  };
+
+  // ─── Update existing record (any table) ───
+  const handleUpdateRecord = async (record: ExistingRecord) => {
     if (!details) return;
     setUpdating(true);
-    setSelectedExistingId(entityId);
+    setSelectedExistingId(record.id);
 
     try {
-      const updatePayload = buildPayload(details);
-      const { error } = await supabase.from("culinary_entities").update(updatePayload).eq("id", entityId);
+      const updatePayload = getPayloadForTable(details, record.table);
+      const { error } = await supabase.from(record.table).update(updatePayload).eq("id", record.id);
       if (error) throw error;
-      toast({ title: isAr ? "تم تحديث الجهة بنجاح" : "Entity updated successfully" });
+      const tableLabel = TARGET_TABLE_OPTIONS.find(t => t.value === record.table);
+      toast({ title: isAr ? "تم تحديث البيانات بنجاح" : `${tableLabel?.label_en || 'Record'} updated successfully` });
       setDbChecked(false);
     } catch (err: any) {
       toast({ title: isAr ? "خطأ" : "Error", description: err.message, variant: "destructive" });
@@ -313,33 +406,56 @@ export default function SmartImportAdmin() {
     }
   };
 
-  // ─── Add new entity ───
-  const handleAddNewEntity = async () => {
+  // ─── Add new record (routes to correct table) ───
+  const handleAddNewRecord = async () => {
     if (!details) return;
     setSaving(true);
 
     try {
       const name = details.name_en || details.name_ar || "Unknown";
-      const slug = name.toLowerCase().replace(/\s+/g, "-").replace(/[^a-z0-9-]/g, "");
-      const basePayload = buildPayload(details);
 
-      const payload = {
-        ...basePayload,
-        name: basePayload.name || name,
-        type: selectedEntityType,
-        scope: "local" as const,
-        status: "pending" as const,
-        is_visible: false,
-        is_verified: false,
-        slug,
-        entity_number: "",
-        created_by: user?.id || null,
-      };
+      if (targetTable === "culinary_entities") {
+        const slug = name.toLowerCase().replace(/\s+/g, "-").replace(/[^a-z0-9-]/g, "");
+        const payload = {
+          ...buildEntityPayload(details),
+          name: details.name_en || name,
+          type: selectedEntityType,
+          scope: "local" as const,
+          status: "pending" as const,
+          is_visible: false,
+          is_verified: false,
+          slug,
+          entity_number: "",
+          created_by: user?.id || null,
+        };
+        const { error } = await supabase.from("culinary_entities").insert(payload);
+        if (error) throw error;
+      } else if (targetTable === "companies") {
+        const payload = {
+          ...buildCompanyPayload(details),
+          name: details.name_en || name,
+          type: selectedCompanyType,
+          status: "active" as const,
+          country_code: details.country_code || "SA",
+          created_by: user?.id || null,
+        };
+        const { error } = await supabase.from("companies").insert(payload);
+        if (error) throw error;
+      } else {
+        const payload = {
+          ...buildEstablishmentPayload(details),
+          name: details.name_en || name,
+          type: selectedEstablishmentType,
+          is_active: true,
+          is_verified: false,
+          created_by: user?.id || null,
+        };
+        const { error } = await supabase.from("establishments").insert(payload);
+        if (error) throw error;
+      }
 
-      const { error } = await supabase.from("culinary_entities").insert(payload);
-      if (error) throw error;
-
-      toast({ title: isAr ? "تم إضافة الجهة بنجاح" : "Entity added successfully" });
+      const tableLabel = TARGET_TABLE_OPTIONS.find(t => t.value === targetTable);
+      toast({ title: isAr ? "تم الإضافة بنجاح" : `${tableLabel?.label_en || 'Record'} added successfully` });
       setShowAddDialog(false);
       setDbChecked(false);
     } catch (err: any) {
@@ -356,7 +472,7 @@ export default function SmartImportAdmin() {
     setDetails(null);
     setSourcesUsed({});
     setDbChecked(false);
-    setExistingEntities([]);
+    setExistingRecords([]);
   };
 
   const handleBackToResults = () => {
@@ -364,7 +480,7 @@ export default function SmartImportAdmin() {
     setDetails(null);
     setSourcesUsed({});
     setDbChecked(false);
-    setExistingEntities([]);
+    setExistingRecords([]);
   };
 
   // Count how many detail fields are populated
@@ -654,46 +770,56 @@ export default function SmartImportAdmin() {
           </Card>
 
           {/* DB Check */}
-          <Card className={existingEntities.length > 0 ? "border-yellow-500/30 bg-yellow-500/5" : dbChecked ? "border-green-500/30 bg-green-500/5" : ""}>
+          <Card className={existingRecords.length > 0 ? "border-yellow-500/30 bg-yellow-500/5" : dbChecked ? "border-green-500/30 bg-green-500/5" : ""}>
             <CardContent className="py-4">
               {checkingDb ? (
                 <div className="flex items-center gap-3">
                   <Loader2 className="h-5 w-5 animate-spin text-primary" />
-                  <span className="text-sm">{isAr ? "جاري التحقق من قاعدة البيانات..." : "Checking database..."}</span>
+                  <span className="text-sm">{isAr ? "جاري التحقق من قاعدة البيانات..." : "Checking all databases..."}</span>
                 </div>
-              ) : dbChecked && existingEntities.length > 0 ? (
+              ) : dbChecked && existingRecords.length > 0 ? (
                 <div className="space-y-3">
                   <div className="flex items-center gap-2">
                     <AlertCircle className="h-5 w-5 text-yellow-600" />
                     <span className="text-sm font-semibold text-yellow-700">
-                      {isAr ? `تم العثور على ${existingEntities.length} كيان مطابق` : `Found ${existingEntities.length} matching entit${existingEntities.length > 1 ? 'ies' : 'y'}`}
+                      {isAr ? `تم العثور على ${existingRecords.length} سجل مطابق` : `Found ${existingRecords.length} matching record${existingRecords.length > 1 ? 's' : ''}`}
                     </span>
                   </div>
                   <div className="space-y-2">
-                    {existingEntities.map((entity) => (
-                      <div key={entity.id} className="flex items-center justify-between rounded-lg border bg-background p-3">
-                        <div className="flex items-center gap-3">
-                          <div className="w-9 h-9 rounded-lg bg-primary/10 flex items-center justify-center">
-                            <DatabaseIcon className="h-4 w-4 text-primary" />
-                          </div>
-                          <div>
-                            <p className="text-sm font-medium">{entity.name}</p>
-                            <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                              <Badge variant="outline" className="text-[10px] h-4">{entity.entity_number}</Badge>
-                              <span>{isAr ? ENTITY_TYPE_LABELS[entity.type]?.ar : ENTITY_TYPE_LABELS[entity.type]?.en}</span>
+                    {existingRecords.map((record) => {
+                      const tableInfo = TARGET_TABLE_OPTIONS.find(t => t.value === record.table);
+                      const TableIcon = tableInfo?.icon || Building2;
+                      const typeLabel = record.table === "culinary_entities"
+                        ? (isAr ? ENTITY_TYPE_LABELS[record.sub_type as EntityType]?.ar : ENTITY_TYPE_LABELS[record.sub_type as EntityType]?.en) || record.sub_type
+                        : record.table === "companies"
+                          ? (isAr ? COMPANY_TYPE_LABELS[record.sub_type as CompanyType]?.ar : COMPANY_TYPE_LABELS[record.sub_type as CompanyType]?.en) || record.sub_type
+                          : record.sub_type;
+                      return (
+                        <div key={`${record.table}-${record.id}`} className="flex items-center justify-between rounded-lg border bg-background p-3">
+                          <div className="flex items-center gap-3">
+                            <div className="w-9 h-9 rounded-lg bg-primary/10 flex items-center justify-center">
+                              <TableIcon className="h-4 w-4 text-primary" />
+                            </div>
+                            <div>
+                              <p className="text-sm font-medium">{record.name}</p>
+                              <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                                <Badge variant="outline" className="text-[10px] h-4">{record.identifier}</Badge>
+                                <Badge variant="secondary" className="text-[10px] h-4">{isAr ? tableInfo?.label_ar : tableInfo?.label_en}</Badge>
+                                <span>{typeLabel}</span>
+                              </div>
                             </div>
                           </div>
+                          <Button size="sm" variant="outline" className="gap-1.5" onClick={() => handleUpdateRecord(record)} disabled={updating}>
+                            {updating && selectedExistingId === record.id ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <RefreshCw className="h-3.5 w-3.5" />}
+                            {isAr ? "تحديث البيانات" : "Update Data"}
+                          </Button>
                         </div>
-                        <Button size="sm" variant="outline" className="gap-1.5" onClick={() => handleUpdateEntity(entity.id)} disabled={updating}>
-                          {updating && selectedExistingId === entity.id ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <RefreshCw className="h-3.5 w-3.5" />}
-                          {isAr ? "تحديث البيانات" : "Update Data"}
-                        </Button>
-                      </div>
-                    ))}
+                      );
+                    })}
                   </div>
                   <Separator />
                   <div className="flex items-center justify-between">
-                    <span className="text-xs text-muted-foreground">{isAr ? "أو أضف ككيان جديد" : "Or add as new entity"}</span>
+                    <span className="text-xs text-muted-foreground">{isAr ? "أو أضف كسجل جديد" : "Or add as new record"}</span>
                     <Button size="sm" variant="default" className="gap-1.5" onClick={() => setShowAddDialog(true)}>
                       <Plus className="h-3.5 w-3.5" />
                       {isAr ? "إضافة جديد" : "Add New"}
@@ -704,11 +830,11 @@ export default function SmartImportAdmin() {
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
                     <CheckCircle className="h-5 w-5 text-green-600" />
-                    <span className="text-sm font-medium text-green-700">{isAr ? "لا يوجد كيان مطابق" : "No matching entity found"}</span>
+                    <span className="text-sm font-medium text-green-700">{isAr ? "لا يوجد سجل مطابق" : "No matching records found"}</span>
                   </div>
                   <Button size="sm" variant="default" className="gap-1.5" onClick={() => setShowAddDialog(true)}>
                     <Plus className="h-3.5 w-3.5" />
-                    {isAr ? "إضافة ككيان جديد" : "Add as New Entity"}
+                    {isAr ? "إضافة كسجل جديد" : "Add as New Record"}
                   </Button>
                 </div>
               ) : null}
@@ -1014,16 +1140,16 @@ export default function SmartImportAdmin() {
         </div>
       )}
 
-      {/* ─── Add New Entity Dialog ─── */}
+      {/* ─── Add New Record Dialog ─── */}
       <Dialog open={showAddDialog} onOpenChange={setShowAddDialog}>
         <DialogContent className="sm:max-w-md">
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2">
               <Plus className="h-5 w-5 text-primary" />
-              {isAr ? "إضافة كيان جديد" : "Add New Entity"}
+              {isAr ? "إضافة سجل جديد" : "Add New Record"}
             </DialogTitle>
             <DialogDescription>
-              {isAr ? "حدد نوع الكيان لإضافته إلى قاعدة البيانات مع جميع البيانات المستخرجة" : "Select entity type to add with all extracted data"}
+              {isAr ? "حدد الجدول والنوع لإضافة البيانات المستخرجة" : "Select target table and type to add extracted data"}
             </DialogDescription>
           </DialogHeader>
 
@@ -1042,25 +1168,81 @@ export default function SmartImportAdmin() {
               </p>
             </div>
 
+            {/* Target Table Selector */}
             <div className="space-y-2">
-              <Label className="text-sm font-medium">{isAr ? "نوع الكيان" : "Entity Type"} *</Label>
-              <Select value={selectedEntityType} onValueChange={(v) => setSelectedEntityType(v as EntityType)}>
-                <SelectTrigger>
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  {Object.entries(ENTITY_TYPE_LABELS).map(([value, labels]) => (
-                    <SelectItem key={value} value={value}>
-                      {isAr ? labels.ar : labels.en}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+              <Label className="text-sm font-medium">{isAr ? "الجدول المستهدف" : "Target Table"} *</Label>
+              <div className="grid grid-cols-3 gap-2">
+                {TARGET_TABLE_OPTIONS.map((opt) => {
+                  const Icon = opt.icon;
+                  const isSelected = targetTable === opt.value;
+                  return (
+                    <button
+                      key={opt.value}
+                      type="button"
+                      className={`flex flex-col items-center gap-1.5 rounded-lg border p-3 transition-all text-center ${
+                        isSelected ? 'border-primary bg-primary/5 shadow-sm' : 'hover:bg-accent/50'
+                      }`}
+                      onClick={() => setTargetTable(opt.value)}
+                    >
+                      <Icon className={`h-5 w-5 ${isSelected ? 'text-primary' : 'text-muted-foreground'}`} />
+                      <span className={`text-xs font-medium ${isSelected ? 'text-primary' : ''}`}>
+                        {isAr ? opt.label_ar : opt.label_en}
+                      </span>
+                      <span className="text-[10px] text-muted-foreground leading-tight">
+                        {isAr ? opt.description_ar : opt.description_en}
+                      </span>
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+
+            {/* Sub-type selector */}
+            <div className="space-y-2">
+              <Label className="text-sm font-medium">
+                {targetTable === "culinary_entities" ? (isAr ? "نوع الكيان" : "Entity Type")
+                  : targetTable === "companies" ? (isAr ? "نوع الشركة" : "Company Type")
+                  : (isAr ? "نوع المنشأة" : "Establishment Type")} *
+              </Label>
+              {targetTable === "culinary_entities" && (
+                <Select value={selectedEntityType} onValueChange={(v) => setSelectedEntityType(v as EntityType)}>
+                  <SelectTrigger><SelectValue /></SelectTrigger>
+                  <SelectContent>
+                    {Object.entries(ENTITY_TYPE_LABELS).map(([value, labels]) => (
+                      <SelectItem key={value} value={value}>{isAr ? labels.ar : labels.en}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              )}
+              {targetTable === "companies" && (
+                <Select value={selectedCompanyType} onValueChange={(v) => setSelectedCompanyType(v as CompanyType)}>
+                  <SelectTrigger><SelectValue /></SelectTrigger>
+                  <SelectContent>
+                    {Object.entries(COMPANY_TYPE_LABELS).map(([value, labels]) => (
+                      <SelectItem key={value} value={value}>{isAr ? labels.ar : labels.en}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              )}
+              {targetTable === "establishments" && (
+                <Select value={selectedEstablishmentType} onValueChange={setSelectedEstablishmentType}>
+                  <SelectTrigger><SelectValue /></SelectTrigger>
+                  <SelectContent>
+                    {ESTABLISHMENT_TYPES.map((t) => (
+                      <SelectItem key={t.value} value={t.value}>{isAr ? t.ar : t.en}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              )}
             </div>
 
             <div className="rounded-lg border border-dashed p-3 text-xs text-muted-foreground flex items-center gap-2">
               <Hash className="h-4 w-4 shrink-0" />
-              {isAr ? "سيتم تعيين رقم تسلسلي جديد تلقائياً (ENT...)" : "A new serial number (ENT...) will be auto-assigned"}
+              {targetTable === "culinary_entities"
+                ? (isAr ? "سيتم تعيين رقم تسلسلي جديد تلقائياً (ENT...)" : "A new serial number (ENT...) will be auto-assigned")
+                : targetTable === "companies"
+                  ? (isAr ? "سيتم تعيين رقم شركة جديد تلقائياً (C...)" : "A new company number (C...) will be auto-assigned")
+                  : (isAr ? "سيتم إنشاء سجل منشأة جديد" : "A new establishment record will be created")}
             </div>
           </div>
 
@@ -1068,9 +1250,9 @@ export default function SmartImportAdmin() {
             <Button variant="outline" onClick={() => setShowAddDialog(false)} disabled={saving}>
               {isAr ? "إلغاء" : "Cancel"}
             </Button>
-            <Button onClick={handleAddNewEntity} disabled={saving} className="gap-1.5">
+            <Button onClick={handleAddNewRecord} disabled={saving} className="gap-1.5">
               {saving ? <Loader2 className="h-4 w-4 animate-spin" /> : <Plus className="h-4 w-4" />}
-              {saving ? (isAr ? "جاري الإضافة..." : "Adding...") : (isAr ? "إضافة الكيان" : "Add Entity")}
+              {saving ? (isAr ? "جاري الإضافة..." : "Adding...") : (isAr ? "إضافة" : "Add Record")}
             </Button>
           </DialogFooter>
         </DialogContent>
