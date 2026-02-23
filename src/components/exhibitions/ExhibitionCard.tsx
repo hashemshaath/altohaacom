@@ -46,6 +46,7 @@ export interface Exhibition {
 }
 
 const statusConfig: Record<ExhibitionStatus, { label: string; labelAr: string; className: string }> = {
+  pending: { label: "Pending Approval", labelAr: "بانتظار الموافقة", className: "bg-chart-4/15 text-chart-4 border-chart-4/20" },
   draft: { label: "Draft", labelAr: "مسودة", className: "bg-muted text-muted-foreground" },
   upcoming: { label: "Upcoming", labelAr: "قادم", className: "bg-primary/15 text-primary border-primary/20" },
   active: { label: "Happening Now", labelAr: "يحدث الآن", className: "bg-chart-3/15 text-chart-3 border-chart-3/20" },

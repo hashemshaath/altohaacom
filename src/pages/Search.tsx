@@ -39,6 +39,7 @@ import type { Database } from "@/integrations/supabase/types";
 type CompetitionStatus = Database["public"]["Enums"]["competition_status"];
 
 const statusLabelsEn: Record<CompetitionStatus, string> = {
+  pending: "Pending",
   draft: "Draft",
   upcoming: "Upcoming",
   registration_open: "Registration Open",
@@ -104,6 +105,7 @@ export default function Search() {
 
   const getStatusLabel = (status: CompetitionStatus): string => {
     const labels: Record<CompetitionStatus, string> = {
+      pending: t("pending"),
       draft: t("draft"),
       upcoming: t("upcoming"),
       registration_open: t("registrationOpen"),

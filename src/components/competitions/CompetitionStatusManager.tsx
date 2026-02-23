@@ -36,6 +36,14 @@ interface StatusConfig {
 }
 
 const STATUS_CONFIG: Record<CompetitionStatus, StatusConfig> = {
+  pending: {
+    label: "Pending Approval",
+    labelAr: "بانتظار الموافقة",
+    icon: FileEdit,
+    color: "bg-chart-4/20 text-chart-4",
+    description: "Competition is pending admin approval.",
+    descriptionAr: "المسابقة بانتظار موافقة الإدارة.",
+  },
   draft: {
     label: "Draft",
     labelAr: "مسودة",
@@ -104,6 +112,7 @@ const STATUS_CONFIG: Record<CompetitionStatus, StatusConfig> = {
 
 // Define allowed status transitions
 const STATUS_TRANSITIONS: Record<CompetitionStatus, CompetitionStatus[]> = {
+  pending: ["draft", "cancelled"],
   draft: ["upcoming", "registration_open", "cancelled"],
   upcoming: ["registration_open", "cancelled"],
   registration_open: ["registration_closed", "in_progress", "cancelled"],
