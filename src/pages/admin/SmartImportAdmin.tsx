@@ -691,6 +691,31 @@ export default function SmartImportAdmin() {
           const payload = { ...buildCompanyPayload(d), name: d.name_en || name, type: suggestion.sub_type as CompanyType, status: 'pending' as const, country_code: d.country_code || 'SA', created_by: user?.id || null };
           const { data: inserted } = await supabase.from("companies").insert(payload).select("id").single();
           recordId = inserted?.id;
+        } else if (tbl === 'exhibitions') {
+          const slug = name.toLowerCase().replace(/\s+/g, "-").replace(/[^a-z0-9-]/g, "") + "-" + Date.now().toString(36);
+          const now = new Date();
+          const payload = {
+            ...buildExhibitionPayload(d), title: d.name_en || name,
+            type: (suggestion.sub_type || 'exhibition') as ExhibitionType,
+            status: 'draft' as const, slug,
+            start_date: d.start_date || now.toISOString().split('T')[0],
+            end_date: d.end_date || new Date(now.getTime() + 3 * 86400000).toISOString().split('T')[0],
+            created_by: user?.id || null,
+          };
+          const { data: inserted } = await (supabase as any).from("exhibitions").insert(payload).select("id").single();
+          recordId = inserted?.id;
+        } else if (tbl === 'competitions') {
+          const now = new Date();
+          const payload = {
+            ...buildCompetitionPayload(d), title: d.name_en || name,
+            status: 'draft' as const,
+            competition_start: d.start_date || now.toISOString().split('T')[0],
+            competition_end: d.end_date || new Date(now.getTime() + 3 * 86400000).toISOString().split('T')[0],
+            organizer_id: user?.id || '', country_code: d.country_code || 'SA',
+            edition_year: d.edition_year || now.getFullYear(),
+          };
+          const { data: inserted } = await (supabase as any).from("competitions").insert(payload).select("id").single();
+          recordId = inserted?.id;
         } else {
           const payload = { ...buildEstablishmentPayload(d), name: d.name_en || name, type: suggestion.sub_type, is_active: true, is_verified: false, created_by: user?.id || null };
           const { data: inserted } = await supabase.from("establishments").insert(payload).select("id").single();

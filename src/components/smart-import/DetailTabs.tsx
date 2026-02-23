@@ -48,6 +48,7 @@ export const DetailTabs = React.memo(({ details, activeTab, onTabChange, isAr, e
         <TabsTrigger value="organization" className="gap-1.5"><Building2 className="h-3.5 w-3.5" />{isAr ? "المنظمة" : "Organization"}</TabsTrigger>
         <TabsTrigger value="services" className="gap-1.5"><Briefcase className="h-3.5 w-3.5" />{isAr ? "الخدمات" : "Services"}</TabsTrigger>
         <TabsTrigger value="hours" className="gap-1.5"><Clock className="h-3.5 w-3.5" />{isAr ? "ساعات العمل" : "Hours"}</TabsTrigger>
+        <TabsTrigger value="event" className="gap-1.5"><Calendar className="h-3.5 w-3.5" />{isAr ? "الحدث" : "Event"}</TabsTrigger>
       </TabsList>
 
       <TabsContent value="overview" className="mt-4">
@@ -76,6 +77,10 @@ export const DetailTabs = React.memo(({ details, activeTab, onTabChange, isAr, e
 
       <TabsContent value="hours" className="mt-4">
         <HoursTab details={details} isAr={isAr} />
+      </TabsContent>
+
+      <TabsContent value="event" className="mt-4">
+        <EventTab details={details} isAr={isAr} editing={editing} onFieldUpdate={onFieldUpdate} />
       </TabsContent>
     </Tabs>
   );
@@ -337,6 +342,77 @@ const HoursTab = React.memo(({ details, isAr }: { details: ImportedData; isAr: b
   </div>
 ));
 HoursTab.displayName = "HoursTab";
+
+// ── Event Tab (Exhibitions / Competitions) ──
+const EventTab = React.memo(({ details, isAr, editing, onFieldUpdate }: TabProps) => (
+  <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+    <Card>
+      <CardHeader className="pb-2"><CardTitle className="text-sm flex items-center gap-1.5"><Calendar className="h-4 w-4" />{isAr ? "تفاصيل الحدث" : "Event Details"}</CardTitle></CardHeader>
+      <CardContent className="space-y-3">
+        <Field label={isAr ? "المكان (EN)" : "Venue (EN)"} value={details.venue_en} fieldKey="venue_en" editing={editing} onFieldUpdate={onFieldUpdate} />
+        <Field label={isAr ? "المكان (AR)" : "Venue (AR)"} value={details.venue_ar} fieldKey="venue_ar" editing={editing} onFieldUpdate={onFieldUpdate} />
+        <div className="grid grid-cols-2 gap-3">
+          <Field label={isAr ? "تاريخ البداية" : "Start Date"} value={details.start_date} fieldKey="start_date" editing={editing} onFieldUpdate={onFieldUpdate} />
+          <Field label={isAr ? "تاريخ النهاية" : "End Date"} value={details.end_date} fieldKey="end_date" editing={editing} onFieldUpdate={onFieldUpdate} />
+        </div>
+        {details.is_virtual !== undefined && details.is_virtual !== null && (
+          <div className="flex items-center gap-2 p-2.5 rounded-lg bg-accent/30">
+            <Globe className="h-4 w-4 text-primary" />
+            <span className="text-sm">{details.is_virtual ? (isAr ? "حدث افتراضي" : "Virtual Event") : (isAr ? "حدث حضوري" : "In-Person Event")}</span>
+          </div>
+        )}
+        {details.virtual_link && <Field label={isAr ? "رابط الحدث الافتراضي" : "Virtual Link"} value={details.virtual_link} fieldKey="virtual_link" editing={editing} onFieldUpdate={onFieldUpdate} copyable />}
+        {details.map_url && <Field label={isAr ? "رابط الخريطة" : "Map URL"} value={details.map_url} fieldKey="map_url" editing={editing} onFieldUpdate={onFieldUpdate} copyable />}
+      </CardContent>
+    </Card>
+
+    <Card>
+      <CardHeader className="pb-2"><CardTitle className="text-sm flex items-center gap-1.5"><Users className="h-4 w-4" />{isAr ? "التسجيل والحضور" : "Registration & Attendance"}</CardTitle></CardHeader>
+      <CardContent className="space-y-3">
+        <Field label={isAr ? "المنظم (EN)" : "Organizer (EN)"} value={details.organizer_name_en} fieldKey="organizer_name_en" editing={editing} onFieldUpdate={onFieldUpdate} />
+        <Field label={isAr ? "المنظم (AR)" : "Organizer (AR)"} value={details.organizer_name_ar} fieldKey="organizer_name_ar" editing={editing} onFieldUpdate={onFieldUpdate} />
+        <Field label={isAr ? "رابط التسجيل" : "Registration URL"} value={details.registration_url} fieldKey="registration_url" editing={editing} onFieldUpdate={onFieldUpdate} copyable />
+        {details.registration_deadline && <Field label={isAr ? "آخر موعد للتسجيل" : "Registration Deadline"} value={details.registration_deadline} fieldKey="registration_deadline" editing={editing} onFieldUpdate={onFieldUpdate} />}
+        {details.max_attendees && (
+          <div className="flex items-center gap-2 p-2.5 rounded-lg bg-accent/30">
+            <Users className="h-4 w-4 text-primary" />
+            <span className="text-sm">{isAr ? "الحد الأقصى:" : "Max Attendees:"} <strong>{details.max_attendees}</strong></span>
+          </div>
+        )}
+        {details.ticket_price && <Field label={isAr ? "سعر التذكرة" : "Ticket Price"} value={details.ticket_price} fieldKey="ticket_price" editing={editing} onFieldUpdate={onFieldUpdate} />}
+        {details.is_free !== undefined && details.is_free !== null && (
+          <div className="flex items-center gap-2 p-2.5 rounded-lg bg-accent/30">
+            <span className="text-sm">{details.is_free ? (isAr ? "✅ مجاني" : "✅ Free Event") : (isAr ? "💰 مدفوع" : "💰 Paid Event")}</span>
+          </div>
+        )}
+        {details.registration_fee !== undefined && details.registration_fee !== null && (
+          <Field label={isAr ? "رسوم التسجيل" : "Registration Fee"} value={String(details.registration_fee)} fieldKey="registration_fee" editing={editing} onFieldUpdate={onFieldUpdate} />
+        )}
+        {details.target_audience && details.target_audience.length > 0 && (
+          <div className="space-y-1">
+            <span className="text-[10px] font-medium text-muted-foreground uppercase">{isAr ? "الجمهور المستهدف" : "Target Audience"}</span>
+            <div className="flex flex-wrap gap-1">
+              {details.target_audience.map((a, i) => (
+                <Badge key={i} variant="secondary" className="text-xs">{a}</Badge>
+              ))}
+            </div>
+          </div>
+        )}
+      </CardContent>
+    </Card>
+
+    {(details.rules_summary_en || details.rules_summary_ar) && (
+      <Card className="lg:col-span-2">
+        <CardHeader className="pb-2"><CardTitle className="text-sm flex items-center gap-1.5"><Award className="h-4 w-4" />{isAr ? "ملخص القواعد" : "Rules Summary"}</CardTitle></CardHeader>
+        <CardContent className="space-y-3">
+          <Field label={isAr ? "القواعد (EN)" : "Rules (EN)"} value={details.rules_summary_en} fieldKey="rules_summary_en" editing={editing} onFieldUpdate={onFieldUpdate} multiline />
+          <Field label={isAr ? "القواعد (AR)" : "Rules (AR)"} value={details.rules_summary_ar} fieldKey="rules_summary_ar" editing={editing} onFieldUpdate={onFieldUpdate} multiline />
+        </CardContent>
+      </Card>
+    )}
+  </div>
+));
+EventTab.displayName = "EventTab";
 
 // ── Media Tab ──
 const MediaTab = React.memo(({ details, isAr, editing, onFieldUpdate }: TabProps) => (
