@@ -27,6 +27,7 @@ interface SearchResultItem {
   total_reviews: number | null;
   types: string[];
   business_status: string | null;
+  google_maps_url: string | null;
 }
 
 const DataField = ({ label, value, multiline }: { label: string; value?: string | null; multiline?: boolean }) => {
@@ -106,6 +107,9 @@ export default function SmartImportAdmin() {
           website_url: websiteUrl.trim() || undefined,
           mode: "details",
           place_id: item.place_id,
+          google_maps_url: (item as any).google_maps_url || undefined,
+          latitude: item.latitude || undefined,
+          longitude: item.longitude || undefined,
         },
       });
       if (error) throw new Error(typeof error === 'object' && error.message ? error.message : String(error));
@@ -277,10 +281,10 @@ export default function SmartImportAdmin() {
           {/* Source badges */}
           <div className="flex items-center gap-2 flex-wrap">
             <span className="text-sm font-medium">{isAr ? "المصادر:" : "Sources:"}</span>
-            {sourcesUsed.google_places ? (
-              <Badge variant="secondary" className="gap-1 text-xs"><CheckCircle className="h-3 w-3" /> Google Places</Badge>
+            {sourcesUsed.google_maps_scrape ? (
+              <Badge variant="secondary" className="gap-1 text-xs"><CheckCircle className="h-3 w-3" /> Google Maps</Badge>
             ) : (
-              <Badge variant="outline" className="gap-1 text-xs text-muted-foreground"><AlertCircle className="h-3 w-3" /> Google N/A</Badge>
+              <Badge variant="outline" className="gap-1 text-xs text-muted-foreground"><AlertCircle className="h-3 w-3" /> Google Maps N/A</Badge>
             )}
             {sourcesUsed.firecrawl_search && <Badge variant="secondary" className="gap-1 text-xs"><CheckCircle className="h-3 w-3" /> Web</Badge>}
             {sourcesUsed.website && <Badge variant="secondary" className="gap-1 text-xs"><CheckCircle className="h-3 w-3" /> Website</Badge>}
