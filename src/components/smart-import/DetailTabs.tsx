@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { GoogleMapEmbed } from "./GoogleMapEmbed";
 import { DataField, TagList } from "./DataField";
+import { EditableField } from "./EditableField";
 import type { ImportedData } from "./SmartImportDialog";
 import {
   FileText, Phone, MapPin, Building2, Briefcase, Clock,
@@ -13,14 +14,28 @@ import {
   UserCheck, Shield, Link2, BookOpen, ExternalLink,
 } from "lucide-react";
 
+type EditProps = { editing?: boolean; onFieldUpdate?: (key: string, value: string) => void };
+type TabProps = { details: ImportedData; isAr: boolean } & EditProps;
+
+const Field = ({ label, value, fieldKey, editing, onFieldUpdate, copyable, multiline }: {
+  label: string; value?: string | null; fieldKey: string; copyable?: boolean; multiline?: boolean;
+} & EditProps) => {
+  if (editing && onFieldUpdate) {
+    return <EditableField label={label} value={value} fieldKey={fieldKey} onUpdate={onFieldUpdate} copyable={copyable} multiline={multiline} />;
+  }
+  return <DataField label={label} value={value} copyable={copyable} multiline={multiline} />;
+};
+
 interface DetailTabsProps {
   details: ImportedData;
   activeTab: string;
   onTabChange: (tab: string) => void;
   isAr: boolean;
+  editing?: boolean;
+  onFieldUpdate?: (key: string, value: string) => void;
 }
 
-export const DetailTabs = React.memo(({ details, activeTab, onTabChange, isAr }: DetailTabsProps) => {
+export const DetailTabs = React.memo(({ details, activeTab, onTabChange, isAr, editing, onFieldUpdate }: DetailTabsProps) => {
   return (
     <Tabs value={activeTab} onValueChange={onTabChange}>
       <TabsList className="w-full justify-start flex-wrap h-auto gap-1 p-1">
@@ -33,19 +48,19 @@ export const DetailTabs = React.memo(({ details, activeTab, onTabChange, isAr }:
       </TabsList>
 
       <TabsContent value="overview" className="mt-4">
-        <OverviewTab details={details} isAr={isAr} />
+        <OverviewTab details={details} isAr={isAr} editing={editing} onFieldUpdate={onFieldUpdate} />
       </TabsContent>
 
       <TabsContent value="contact" className="mt-4">
-        <ContactTab details={details} isAr={isAr} />
+        <ContactTab details={details} isAr={isAr} editing={editing} onFieldUpdate={onFieldUpdate} />
       </TabsContent>
 
       <TabsContent value="address" className="mt-4">
-        <AddressTab details={details} isAr={isAr} />
+        <AddressTab details={details} isAr={isAr} editing={editing} onFieldUpdate={onFieldUpdate} />
       </TabsContent>
 
       <TabsContent value="organization" className="mt-4">
-        <OrganizationTab details={details} isAr={isAr} />
+        <OrganizationTab details={details} isAr={isAr} editing={editing} onFieldUpdate={onFieldUpdate} />
       </TabsContent>
 
       <TabsContent value="services" className="mt-4">
@@ -61,7 +76,7 @@ export const DetailTabs = React.memo(({ details, activeTab, onTabChange, isAr }:
 DetailTabs.displayName = "DetailTabs";
 
 // ── Overview Tab ──
-const OverviewTab = React.memo(({ details, isAr }: { details: ImportedData; isAr: boolean }) => (
+const OverviewTab = React.memo(({ details, isAr, editing, onFieldUpdate }: TabProps) => (
   <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
     <Card className="lg:col-span-2">
       <CardContent className="pt-4">
@@ -81,18 +96,18 @@ const OverviewTab = React.memo(({ details, isAr }: { details: ImportedData; isAr
     <Card>
       <CardHeader className="pb-2"><CardTitle className="text-sm">{isAr ? "الأسماء" : "Names"}</CardTitle></CardHeader>
       <CardContent className="space-y-3">
-        <DataField label={isAr ? "الاسم (EN)" : "Name (EN)"} value={details.name_en} copyable />
-        <DataField label={isAr ? "الاسم (AR)" : "Name (AR)"} value={details.name_ar} copyable />
-        <DataField label={isAr ? "الاختصار (EN)" : "Abbreviation (EN)"} value={details.abbreviation_en} copyable />
-        <DataField label={isAr ? "الاختصار (AR)" : "Abbreviation (AR)"} value={details.abbreviation_ar} copyable />
+        <Field label={isAr ? "الاسم (EN)" : "Name (EN)"} value={details.name_en} fieldKey="name_en" editing={editing} onFieldUpdate={onFieldUpdate} copyable />
+        <Field label={isAr ? "الاسم (AR)" : "Name (AR)"} value={details.name_ar} fieldKey="name_ar" editing={editing} onFieldUpdate={onFieldUpdate} copyable />
+        <Field label={isAr ? "الاختصار (EN)" : "Abbreviation (EN)"} value={details.abbreviation_en} fieldKey="abbreviation_en" editing={editing} onFieldUpdate={onFieldUpdate} copyable />
+        <Field label={isAr ? "الاختصار (AR)" : "Abbreviation (AR)"} value={details.abbreviation_ar} fieldKey="abbreviation_ar" editing={editing} onFieldUpdate={onFieldUpdate} copyable />
       </CardContent>
     </Card>
 
     <Card>
       <CardHeader className="pb-2"><CardTitle className="text-sm">{isAr ? "نوع النشاط" : "Business Type"}</CardTitle></CardHeader>
       <CardContent className="space-y-3">
-        <DataField label={isAr ? "النوع (EN)" : "Type (EN)"} value={details.business_type_en} />
-        <DataField label={isAr ? "النوع (AR)" : "Type (AR)"} value={details.business_type_ar} />
+        <Field label={isAr ? "النوع (EN)" : "Type (EN)"} value={details.business_type_en} fieldKey="business_type_en" editing={editing} onFieldUpdate={onFieldUpdate} />
+        <Field label={isAr ? "النوع (AR)" : "Type (AR)"} value={details.business_type_ar} fieldKey="business_type_ar" editing={editing} onFieldUpdate={onFieldUpdate} />
         <TagList label={isAr ? "الكلمات المفتاحية" : "Tags"} items={details.tags} />
       </CardContent>
     </Card>
@@ -101,8 +116,8 @@ const OverviewTab = React.memo(({ details, isAr }: { details: ImportedData; isAr
       <Card className="lg:col-span-2">
         <CardHeader className="pb-2"><CardTitle className="text-sm">{isAr ? "الوصف" : "Description"}</CardTitle></CardHeader>
         <CardContent className="space-y-3">
-          <DataField label={isAr ? "الوصف (EN)" : "Description (EN)"} value={details.description_en} multiline />
-          <DataField label={isAr ? "الوصف (AR)" : "Description (AR)"} value={details.description_ar} multiline />
+          <Field label={isAr ? "الوصف (EN)" : "Description (EN)"} value={details.description_en} fieldKey="description_en" editing={editing} onFieldUpdate={onFieldUpdate} multiline />
+          <Field label={isAr ? "الوصف (AR)" : "Description (AR)"} value={details.description_ar} fieldKey="description_ar" editing={editing} onFieldUpdate={onFieldUpdate} multiline />
         </CardContent>
       </Card>
     )}
@@ -111,8 +126,8 @@ const OverviewTab = React.memo(({ details, isAr }: { details: ImportedData; isAr
       <Card className="lg:col-span-2">
         <CardHeader className="pb-2"><CardTitle className="text-sm flex items-center gap-1.5"><BookOpen className="h-4 w-4" />{isAr ? "الرسالة والرؤية" : "Mission & Vision"}</CardTitle></CardHeader>
         <CardContent className="space-y-3">
-          <DataField label={isAr ? "الرسالة (EN)" : "Mission (EN)"} value={details.mission_en} multiline />
-          <DataField label={isAr ? "الرسالة (AR)" : "Mission (AR)"} value={details.mission_ar} multiline />
+          <Field label={isAr ? "الرسالة (EN)" : "Mission (EN)"} value={details.mission_en} fieldKey="mission_en" editing={editing} onFieldUpdate={onFieldUpdate} multiline />
+          <Field label={isAr ? "الرسالة (AR)" : "Mission (AR)"} value={details.mission_ar} fieldKey="mission_ar" editing={editing} onFieldUpdate={onFieldUpdate} multiline />
         </CardContent>
       </Card>
     )}
@@ -134,16 +149,16 @@ const StatCard = React.memo(({ icon: Icon, iconClass, bgClass, label, value, sub
 StatCard.displayName = "StatCard";
 
 // ── Contact Tab ──
-const ContactTab = React.memo(({ details, isAr }: { details: ImportedData; isAr: boolean }) => (
+const ContactTab = React.memo(({ details, isAr, editing, onFieldUpdate }: TabProps) => (
   <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
     <Card>
       <CardHeader className="pb-2"><CardTitle className="text-sm">{isAr ? "معلومات التواصل" : "Contact Info"}</CardTitle></CardHeader>
       <CardContent className="space-y-3">
-        <DataField label={isAr ? "الهاتف" : "Phone"} value={details.phone} copyable />
-        <DataField label={isAr ? "هاتف ثانوي" : "Secondary Phone"} value={details.phone_secondary} copyable />
-        <DataField label={isAr ? "الفاكس" : "Fax"} value={details.fax} copyable />
-        <DataField label={isAr ? "البريد الإلكتروني" : "Email"} value={details.email} copyable />
-        <DataField label={isAr ? "الموقع الإلكتروني" : "Website"} value={details.website} copyable />
+        <Field label={isAr ? "الهاتف" : "Phone"} value={details.phone} fieldKey="phone" editing={editing} onFieldUpdate={onFieldUpdate} copyable />
+        <Field label={isAr ? "هاتف ثانوي" : "Secondary Phone"} value={details.phone_secondary} fieldKey="phone_secondary" editing={editing} onFieldUpdate={onFieldUpdate} copyable />
+        <Field label={isAr ? "الفاكس" : "Fax"} value={details.fax} fieldKey="fax" editing={editing} onFieldUpdate={onFieldUpdate} copyable />
+        <Field label={isAr ? "البريد الإلكتروني" : "Email"} value={details.email} fieldKey="email" editing={editing} onFieldUpdate={onFieldUpdate} copyable />
+        <Field label={isAr ? "الموقع الإلكتروني" : "Website"} value={details.website} fieldKey="website" editing={editing} onFieldUpdate={onFieldUpdate} copyable />
       </CardContent>
     </Card>
     {details.social_media && Object.values(details.social_media).some(Boolean) && (
@@ -163,23 +178,23 @@ const ContactTab = React.memo(({ details, isAr }: { details: ImportedData; isAr:
 ContactTab.displayName = "ContactTab";
 
 // ── Address Tab ──
-const AddressTab = React.memo(({ details, isAr }: { details: ImportedData; isAr: boolean }) => (
+const AddressTab = React.memo(({ details, isAr, editing, onFieldUpdate }: TabProps) => (
   <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
     <Card>
       <CardContent className="pt-4 space-y-3">
         <div className="grid grid-cols-2 gap-3">
-          <DataField label={isAr ? "المدينة (EN)" : "City (EN)"} value={details.city_en} />
-          <DataField label={isAr ? "المدينة (AR)" : "City (AR)"} value={details.city_ar} />
-          <DataField label={isAr ? "الحي (EN)" : "Neighborhood (EN)"} value={details.neighborhood_en} />
-          <DataField label={isAr ? "الحي (AR)" : "Neighborhood (AR)"} value={details.neighborhood_ar} />
-          <DataField label={isAr ? "الشارع (EN)" : "Street (EN)"} value={details.street_en} />
-          <DataField label={isAr ? "الشارع (AR)" : "Street (AR)"} value={details.street_ar} />
-          <DataField label={isAr ? "الرمز البريدي" : "Postal Code"} value={details.postal_code} />
+          <Field label={isAr ? "المدينة (EN)" : "City (EN)"} value={details.city_en} fieldKey="city_en" editing={editing} onFieldUpdate={onFieldUpdate} />
+          <Field label={isAr ? "المدينة (AR)" : "City (AR)"} value={details.city_ar} fieldKey="city_ar" editing={editing} onFieldUpdate={onFieldUpdate} />
+          <Field label={isAr ? "الحي (EN)" : "Neighborhood (EN)"} value={details.neighborhood_en} fieldKey="neighborhood_en" editing={editing} onFieldUpdate={onFieldUpdate} />
+          <Field label={isAr ? "الحي (AR)" : "Neighborhood (AR)"} value={details.neighborhood_ar} fieldKey="neighborhood_ar" editing={editing} onFieldUpdate={onFieldUpdate} />
+          <Field label={isAr ? "الشارع (EN)" : "Street (EN)"} value={details.street_en} fieldKey="street_en" editing={editing} onFieldUpdate={onFieldUpdate} />
+          <Field label={isAr ? "الشارع (AR)" : "Street (AR)"} value={details.street_ar} fieldKey="street_ar" editing={editing} onFieldUpdate={onFieldUpdate} />
+          <Field label={isAr ? "الرمز البريدي" : "Postal Code"} value={details.postal_code} fieldKey="postal_code" editing={editing} onFieldUpdate={onFieldUpdate} />
           <DataField label={isAr ? "الدولة" : "Country"} value={details.country_en ? `${details.country_en}${details.country_code ? ` (${details.country_code})` : ''}` : details.country_ar} />
         </div>
         <Separator />
-        <DataField label={isAr ? "العنوان الكامل (EN)" : "Full Address (EN)"} value={details.full_address_en} copyable />
-        <DataField label={isAr ? "العنوان الكامل (AR)" : "Full Address (AR)"} value={details.full_address_ar} copyable />
+        <Field label={isAr ? "العنوان الكامل (EN)" : "Full Address (EN)"} value={details.full_address_en} fieldKey="full_address_en" editing={editing} onFieldUpdate={onFieldUpdate} copyable />
+        <Field label={isAr ? "العنوان الكامل (AR)" : "Full Address (AR)"} value={details.full_address_ar} fieldKey="full_address_ar" editing={editing} onFieldUpdate={onFieldUpdate} copyable />
         {(details.latitude || details.longitude) && (
           <>
             <Separator />
@@ -197,15 +212,15 @@ const AddressTab = React.memo(({ details, isAr }: { details: ImportedData; isAr:
 AddressTab.displayName = "AddressTab";
 
 // ── Organization Tab ──
-const OrganizationTab = React.memo(({ details, isAr }: { details: ImportedData; isAr: boolean }) => (
+const OrganizationTab = React.memo(({ details, isAr, editing, onFieldUpdate }: TabProps) => (
   <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
     <Card>
       <CardHeader className="pb-2"><CardTitle className="text-sm flex items-center gap-1.5"><UserCheck className="h-4 w-4" />{isAr ? "القيادة" : "Leadership"}</CardTitle></CardHeader>
       <CardContent className="space-y-3">
-        <DataField label={isAr ? "الرئيس (EN)" : "President (EN)"} value={details.president_name_en} />
-        <DataField label={isAr ? "الرئيس (AR)" : "President (AR)"} value={details.president_name_ar} />
-        <DataField label={isAr ? "السكرتير (EN)" : "Secretary (EN)"} value={details.secretary_name_en} />
-        <DataField label={isAr ? "السكرتير (AR)" : "Secretary (AR)"} value={details.secretary_name_ar} />
+        <Field label={isAr ? "الرئيس (EN)" : "President (EN)"} value={details.president_name_en} fieldKey="president_name_en" editing={editing} onFieldUpdate={onFieldUpdate} />
+        <Field label={isAr ? "الرئيس (AR)" : "President (AR)"} value={details.president_name_ar} fieldKey="president_name_ar" editing={editing} onFieldUpdate={onFieldUpdate} />
+        <Field label={isAr ? "السكرتير (EN)" : "Secretary (EN)"} value={details.secretary_name_en} fieldKey="secretary_name_en" editing={editing} onFieldUpdate={onFieldUpdate} />
+        <Field label={isAr ? "السكرتير (AR)" : "Secretary (AR)"} value={details.secretary_name_ar} fieldKey="secretary_name_ar" editing={editing} onFieldUpdate={onFieldUpdate} />
         {details.member_count && (
           <div className="flex items-center gap-2 p-2.5 rounded-lg bg-accent/30">
             <Users className="h-4 w-4 text-primary" />
@@ -218,9 +233,9 @@ const OrganizationTab = React.memo(({ details, isAr }: { details: ImportedData; 
     <Card>
       <CardHeader className="pb-2"><CardTitle className="text-sm flex items-center gap-1.5"><Shield className="h-4 w-4" />{isAr ? "التسجيل والترخيص" : "Registration & Legal"}</CardTitle></CardHeader>
       <CardContent className="space-y-3">
-        <DataField label={isAr ? "السجل التجاري" : "National/Commercial ID"} value={details.national_id} copyable />
-        <DataField label={isAr ? "رقم التسجيل" : "Registration Number"} value={details.registration_number} copyable />
-        <DataField label={isAr ? "رقم الترخيص" : "License Number"} value={details.license_number} copyable />
+        <Field label={isAr ? "السجل التجاري" : "National/Commercial ID"} value={details.national_id} fieldKey="national_id" editing={editing} onFieldUpdate={onFieldUpdate} copyable />
+        <Field label={isAr ? "رقم التسجيل" : "Registration Number"} value={details.registration_number} fieldKey="registration_number" editing={editing} onFieldUpdate={onFieldUpdate} copyable />
+        <Field label={isAr ? "رقم الترخيص" : "License Number"} value={details.license_number} fieldKey="license_number" editing={editing} onFieldUpdate={onFieldUpdate} copyable />
         {details.founded_year && (
           <div className="flex items-center gap-2 p-2.5 rounded-lg bg-accent/30">
             <Calendar className="h-4 w-4 text-primary" />

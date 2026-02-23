@@ -1141,7 +1141,7 @@ export default function SmartImportAdmin() {
           </Card>
 
           {/* Tabbed Details */}
-          <DetailTabs details={details} activeTab={activeTab} onTabChange={setActiveTab} isAr={isAr} />
+          <DetailTabs details={details} activeTab={activeTab} onTabChange={setActiveTab} isAr={isAr} editing={editingFields} onFieldUpdate={handleFieldUpdate} />
         </div>
       )}
 
