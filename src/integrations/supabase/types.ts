@@ -1585,6 +1585,72 @@ export type Database = {
           },
         ]
       }
+      challenges: {
+        Row: {
+          category: string
+          challenge_type: string
+          created_at: string | null
+          description: string | null
+          description_ar: string | null
+          difficulty: string | null
+          ends_at: string | null
+          icon_emoji: string | null
+          id: string
+          is_active: boolean | null
+          is_hidden: boolean | null
+          reward_badge: string | null
+          reward_points: number | null
+          sort_order: number | null
+          starts_at: string | null
+          target_action: string
+          target_count: number | null
+          title: string
+          title_ar: string | null
+        }
+        Insert: {
+          category?: string
+          challenge_type?: string
+          created_at?: string | null
+          description?: string | null
+          description_ar?: string | null
+          difficulty?: string | null
+          ends_at?: string | null
+          icon_emoji?: string | null
+          id?: string
+          is_active?: boolean | null
+          is_hidden?: boolean | null
+          reward_badge?: string | null
+          reward_points?: number | null
+          sort_order?: number | null
+          starts_at?: string | null
+          target_action: string
+          target_count?: number | null
+          title: string
+          title_ar?: string | null
+        }
+        Update: {
+          category?: string
+          challenge_type?: string
+          created_at?: string | null
+          description?: string | null
+          description_ar?: string | null
+          difficulty?: string | null
+          ends_at?: string | null
+          icon_emoji?: string | null
+          id?: string
+          is_active?: boolean | null
+          is_hidden?: boolean | null
+          reward_badge?: string | null
+          reward_points?: number | null
+          sort_order?: number | null
+          starts_at?: string | null
+          target_action?: string
+          target_count?: number | null
+          title?: string
+          title_ar?: string | null
+        }
+        Relationships: []
+      }
       chat_group_members: {
         Row: {
           group_id: string
@@ -12355,6 +12421,51 @@ export type Database = {
         }
         Relationships: []
       }
+      loyalty_tiers: {
+        Row: {
+          benefits: Json | null
+          color: string | null
+          created_at: string | null
+          icon_emoji: string | null
+          id: string
+          is_active: boolean | null
+          min_points: number
+          multiplier: number | null
+          name: string
+          name_ar: string | null
+          slug: string
+          sort_order: number | null
+        }
+        Insert: {
+          benefits?: Json | null
+          color?: string | null
+          created_at?: string | null
+          icon_emoji?: string | null
+          id?: string
+          is_active?: boolean | null
+          min_points?: number
+          multiplier?: number | null
+          name: string
+          name_ar?: string | null
+          slug: string
+          sort_order?: number | null
+        }
+        Update: {
+          benefits?: Json | null
+          color?: string | null
+          created_at?: string | null
+          icon_emoji?: string | null
+          id?: string
+          is_active?: boolean | null
+          min_points?: number
+          multiplier?: number | null
+          name?: string
+          name_ar?: string | null
+          slug?: string
+          sort_order?: number | null
+        }
+        Relationships: []
+      }
       marketing_tracking_config: {
         Row: {
           config: Json | null
@@ -14762,6 +14873,7 @@ export type Database = {
           location: string | null
           login_method: string | null
           loyalty_points: number | null
+          loyalty_tier: string | null
           membership_expires_at: string | null
           membership_status:
             | Database["public"]["Enums"]["membership_status"]
@@ -14839,6 +14951,7 @@ export type Database = {
           location?: string | null
           login_method?: string | null
           loyalty_points?: number | null
+          loyalty_tier?: string | null
           membership_expires_at?: string | null
           membership_status?:
             | Database["public"]["Enums"]["membership_status"]
@@ -14918,6 +15031,7 @@ export type Database = {
           location?: string | null
           login_method?: string | null
           loyalty_points?: number | null
+          loyalty_tier?: string | null
           membership_expires_at?: string | null
           membership_status?:
             | Database["public"]["Enums"]["membership_status"]
@@ -16387,6 +16501,122 @@ export type Database = {
           name_ar?: string | null
           updated_at?: string
           usage_count?: number
+        }
+        Relationships: []
+      }
+      reward_redemptions: {
+        Row: {
+          created_at: string | null
+          fulfilled_at: string | null
+          fulfilled_by: string | null
+          id: string
+          notes: string | null
+          points_spent: number
+          redemption_code: string | null
+          reward_id: string
+          status: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          fulfilled_at?: string | null
+          fulfilled_by?: string | null
+          id?: string
+          notes?: string | null
+          points_spent: number
+          redemption_code?: string | null
+          reward_id: string
+          status?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          fulfilled_at?: string | null
+          fulfilled_by?: string | null
+          id?: string
+          notes?: string | null
+          points_spent?: number
+          redemption_code?: string | null
+          reward_id?: string
+          status?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "reward_redemptions_reward_id_fkey"
+            columns: ["reward_id"]
+            isOneToOne: false
+            referencedRelation: "rewards_catalog"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      rewards_catalog: {
+        Row: {
+          category: string | null
+          created_at: string | null
+          description: string | null
+          description_ar: string | null
+          id: string
+          image_url: string | null
+          is_active: boolean | null
+          is_featured: boolean | null
+          max_per_user: number | null
+          min_tier: string | null
+          name: string
+          name_ar: string | null
+          points_cost: number
+          redemption_instructions: string | null
+          redemption_instructions_ar: string | null
+          sort_order: number | null
+          stock: number | null
+          updated_at: string | null
+          valid_from: string | null
+          valid_until: string | null
+        }
+        Insert: {
+          category?: string | null
+          created_at?: string | null
+          description?: string | null
+          description_ar?: string | null
+          id?: string
+          image_url?: string | null
+          is_active?: boolean | null
+          is_featured?: boolean | null
+          max_per_user?: number | null
+          min_tier?: string | null
+          name: string
+          name_ar?: string | null
+          points_cost: number
+          redemption_instructions?: string | null
+          redemption_instructions_ar?: string | null
+          sort_order?: number | null
+          stock?: number | null
+          updated_at?: string | null
+          valid_from?: string | null
+          valid_until?: string | null
+        }
+        Update: {
+          category?: string | null
+          created_at?: string | null
+          description?: string | null
+          description_ar?: string | null
+          id?: string
+          image_url?: string | null
+          is_active?: boolean | null
+          is_featured?: boolean | null
+          max_per_user?: number | null
+          min_tier?: string | null
+          name?: string
+          name_ar?: string | null
+          points_cost?: number
+          redemption_instructions?: string | null
+          redemption_instructions_ar?: string | null
+          sort_order?: number | null
+          stock?: number | null
+          updated_at?: string | null
+          valid_from?: string | null
+          valid_until?: string | null
         }
         Relationships: []
       }
@@ -18315,6 +18545,47 @@ export type Database = {
           },
         ]
       }
+      user_challenges: {
+        Row: {
+          challenge_id: string
+          claimed_at: string | null
+          completed_at: string | null
+          created_at: string | null
+          id: string
+          progress: number | null
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          challenge_id: string
+          claimed_at?: string | null
+          completed_at?: string | null
+          created_at?: string | null
+          id?: string
+          progress?: number | null
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          challenge_id?: string
+          claimed_at?: string | null
+          completed_at?: string | null
+          created_at?: string | null
+          id?: string
+          progress?: number | null
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_challenges_challenge_id_fkey"
+            columns: ["challenge_id"]
+            isOneToOne: false
+            referencedRelation: "challenges"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       user_engagement_scores: {
         Row: {
           activity_score: number | null
@@ -18553,6 +18824,36 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      user_streaks: {
+        Row: {
+          current_streak: number | null
+          id: string
+          last_activity_date: string | null
+          longest_streak: number | null
+          streak_type: string
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          current_streak?: number | null
+          id?: string
+          last_activity_date?: string | null
+          longest_streak?: number | null
+          streak_type?: string
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          current_streak?: number | null
+          id?: string
+          last_activity_date?: string | null
+          longest_streak?: number | null
+          streak_type?: string
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: []
       }
       user_titles: {
         Row: {
