@@ -4,27 +4,13 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
-  Calendar, Users, Trophy, Landmark, Target, ImageIcon, Building,
-  Star, Award,
+  Calendar, Users, Trophy, Landmark, Target, ImageIcon,
+  Star, Sparkles, CheckCircle, BarChart3, Tag,
 } from "lucide-react";
 import { toEnglishDigits } from "@/lib/formatNumber";
 import { differenceInDays, format, isFuture, isWithinInterval } from "date-fns";
 
-interface ScheduleItem {
-  time?: string; title?: string; title_ar?: string;
-  description?: string; description_ar?: string;
-}
 interface Section { name?: string; name_ar?: string; description?: string; description_ar?: string; }
-interface SponsorInfo { name?: string; name_ar?: string; tier?: string; logo_url?: string; }
-
-const TIER_CONFIG: Record<string, { gradient: string; order: number }> = {
-  patron: { gradient: "from-chart-4/20 to-chart-4/5", order: 0 },
-  platinum: { gradient: "from-chart-3/20 to-chart-3/5", order: 1 },
-  gold: { gradient: "from-chart-4/20 to-chart-4/5", order: 2 },
-  partner: { gradient: "from-primary/20 to-primary/5", order: 3 },
-  silver: { gradient: "from-muted-foreground/20 to-muted-foreground/5", order: 4 },
-  bronze: { gradient: "from-chart-2/20 to-chart-2/5", order: 5 },
-};
 
 interface Props {
   exhibition: any;
@@ -49,6 +35,15 @@ export const ExhibitionOverviewTab = memo(function ExhibitionOverviewTab({
   const hasCompetitions = linkedCompetitions && linkedCompetitions.length > 0;
   const hasGallery = galleryUrls.length > 0;
 
+  const reasonsToAttend = (exhibition.reasons_to_attend as any[]) || [];
+  const uniqueFeatures = (exhibition.unique_features as any[]) || [];
+  const targetedSectors = (exhibition.targeted_sectors as string[]) || [];
+  const categories = (exhibition.categories as string[]) || [];
+  const highlights = (exhibition.highlights as any[]) || [];
+  const editionStats = (exhibition.edition_stats as Record<string, any>) || {};
+  const editionYear = (exhibition as any).edition_year;
+  const statEntries = Object.entries(editionStats).filter(([, v]) => v != null && v !== 0 && v !== "");
+
   return (
     <div className="space-y-6">
       {/* Key Highlights */}
@@ -70,10 +65,106 @@ export const ExhibitionOverviewTab = memo(function ExhibitionOverviewTab({
         })}
       </div>
 
+      {/* Edition Stats */}
+      {statEntries.length > 0 && (
+        <Card className="overflow-hidden border-primary/15">
+          <div className="border-b bg-gradient-to-r from-primary/10 via-primary/5 to-transparent px-4 py-3">
+            <h3 className="flex items-center gap-2 font-semibold text-sm">
+              <div className="flex h-6 w-6 items-center justify-center rounded-md bg-primary/10"><BarChart3 className="h-3.5 w-3.5 text-primary" /></div>
+              {isAr ? `إحصائيات النسخة ${editionYear || ""}` : `Edition ${editionYear || ""} Statistics`}
+            </h3>
+          </div>
+          <CardContent className="p-4">
+            <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
+              {statEntries.map(([key, value]) => (
+                <div key={key} className="rounded-lg border p-3 text-center">
+                  <p className="text-lg font-bold text-primary">{typeof value === "number" ? toEnglishDigits(value.toLocaleString()) : value}</p>
+                  <p className="text-[10px] font-medium uppercase tracking-wider text-muted-foreground">{key.replace(/_/g, " ")}</p>
+                </div>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
       {description && (
         <Card className="border-s-[3px] border-s-primary/40">
           <CardContent className="prose prose-sm max-w-none p-4 md:p-6 dark:prose-invert">
             <p className="whitespace-pre-wrap leading-relaxed">{description}</p>
+          </CardContent>
+        </Card>
+      )}
+
+      {/* Reasons to Attend */}
+      {reasonsToAttend.length > 0 && (
+        <Card className="overflow-hidden">
+          <div className="border-b bg-gradient-to-r from-chart-2/10 via-chart-2/5 to-transparent px-4 py-3">
+            <h3 className="flex items-center gap-2 font-semibold text-sm">
+              <div className="flex h-6 w-6 items-center justify-center rounded-md bg-chart-2/10"><CheckCircle className="h-3.5 w-3.5 text-chart-2" /></div>
+              {isAr ? "لماذا يجب أن تحضر؟" : "Why Attend?"}
+            </h3>
+          </div>
+          <CardContent className="p-4">
+            <div className="space-y-2.5">
+              {reasonsToAttend.map((r: any, i: number) => (
+                <div key={i} className="flex items-start gap-3 rounded-lg border p-3">
+                  <div className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-chart-2/10 text-chart-2 text-xs font-bold">{i + 1}</div>
+                  <p className="text-sm">{isAr && r.reason_ar ? r.reason_ar : r.reason}</p>
+                </div>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
+      {/* Unique Features */}
+      {uniqueFeatures.length > 0 && (
+        <Card className="overflow-hidden">
+          <div className="border-b bg-gradient-to-r from-chart-4/10 via-chart-4/5 to-transparent px-4 py-3">
+            <h3 className="flex items-center gap-2 font-semibold text-sm">
+              <div className="flex h-6 w-6 items-center justify-center rounded-md bg-chart-4/10"><Sparkles className="h-3.5 w-3.5 text-chart-4" /></div>
+              {isAr ? "ما يميز هذا الحدث" : "What Makes It Unique"}
+            </h3>
+          </div>
+          <CardContent className="p-4">
+            <div className="grid gap-3 sm:grid-cols-2">
+              {uniqueFeatures.map((f: any, i: number) => (
+                <div key={i} className="flex items-start gap-2 rounded-lg border p-3">
+                  <Sparkles className="h-4 w-4 shrink-0 text-chart-4 mt-0.5" />
+                  <p className="text-sm">{isAr && f.feature_ar ? f.feature_ar : f.feature}</p>
+                </div>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
+      {/* Targeted Sectors & Categories */}
+      {(targetedSectors.length > 0 || categories.length > 0) && (
+        <Card className="overflow-hidden">
+          <div className="border-b bg-muted/30 px-4 py-3">
+            <h3 className="flex items-center gap-2 font-semibold text-sm">
+              <div className="flex h-6 w-6 items-center justify-center rounded-md bg-muted/60"><Tag className="h-3.5 w-3.5 text-muted-foreground" /></div>
+              {isAr ? "القطاعات والفئات المستهدفة" : "Targeted Sectors & Categories"}
+            </h3>
+          </div>
+          <CardContent className="p-4 space-y-3">
+            {targetedSectors.length > 0 && (
+              <div>
+                <p className="text-[10px] font-medium uppercase tracking-wider text-muted-foreground mb-2">{isAr ? "القطاعات" : "Sectors"}</p>
+                <div className="flex flex-wrap gap-2">
+                  {targetedSectors.map((s) => <Badge key={s} variant="secondary" className="py-1 capitalize">{s.replace(/_/g, " ")}</Badge>)}
+                </div>
+              </div>
+            )}
+            {categories.length > 0 && (
+              <div>
+                <p className="text-[10px] font-medium uppercase tracking-wider text-muted-foreground mb-2">{isAr ? "الفئات" : "Categories"}</p>
+                <div className="flex flex-wrap gap-2">
+                  {categories.map((c) => <Badge key={c} variant="outline" className="py-1 capitalize">{c.replace(/_/g, " ")}</Badge>)}
+                </div>
+              </div>
+            )}
           </CardContent>
         </Card>
       )}
@@ -158,6 +249,28 @@ export const ExhibitionOverviewTab = memo(function ExhibitionOverviewTab({
           <CardContent className="p-4">
             <div className="flex flex-wrap gap-2">
               {targetAudience.map((a) => <Badge key={a} variant="outline" className="py-1.5 capitalize">{a.replace(/_/g, " ")}</Badge>)}
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
+      {/* Highlights */}
+      {highlights.length > 0 && (
+        <Card className="overflow-hidden">
+          <div className="border-b bg-muted/30 px-4 py-3">
+            <h3 className="flex items-center gap-2 font-semibold text-sm">
+              <div className="flex h-6 w-6 items-center justify-center rounded-md bg-chart-3/10"><Star className="h-3.5 w-3.5 text-chart-3" /></div>
+              {isAr ? "أبرز النقاط" : "Highlights"}
+            </h3>
+          </div>
+          <CardContent className="p-4">
+            <div className="grid gap-2 sm:grid-cols-2">
+              {highlights.map((h: any, i: number) => (
+                <div key={i} className="flex items-center justify-between rounded-lg border p-3">
+                  <span className="text-sm font-medium">{isAr && h.label_ar ? h.label_ar : h.label}</span>
+                  <Badge variant="secondary">{h.value}</Badge>
+                </div>
+              ))}
             </div>
           </CardContent>
         </Card>

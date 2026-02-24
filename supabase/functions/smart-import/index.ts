@@ -531,16 +531,27 @@ Return ONLY valid JSON:
   "registration_url": null, "registration_deadline": null,
   "max_attendees": null,
   "organizer_name_en": null, "organizer_name_ar": null,
+  "organizer_logo_url": null, "organizer_website": null,
   "map_url": null,
   "ticket_price": null, "is_free": null, "is_virtual": null, "virtual_link": null,
   "target_audience": [],
   "registration_fee": null,
   "rules_summary_en": null, "rules_summary_ar": null,
-  "edition_year": null
+  "edition_year": null,
+  "reasons_to_attend": [{"reason":"...","reason_ar":"..."}],
+  "unique_features": [{"feature":"...","feature_ar":"..."}],
+  "targeted_sectors": [],
+  "categories": [],
+  "highlights": [{"label":"...","label_ar":"...","value":"..."}],
+  "edition_stats": {"exhibitors":null,"visitors":null,"countries":null,"brands":null,"sessions":null,"area_sqm":null},
+  "entry_details": {"type":null,"ticket_types":[],"early_bird_price":null,"vip_price":null,"group_discount":null},
+  "venue_details": {"capacity":null,"halls":null,"area_sqm":null,"parking":null,"accessibility":null},
+  "sponsors": [{"name":"...","name_ar":"...","tier":"partner","logo_url":null,"website_url":null}]
 }
 
 Extract ALL data. Services & specializations in BOTH languages. Business hours from ACTUAL data (24h format). Social media links. Logo and cover images from available URLs.
-For exhibitions/conferences/competitions: extract venue, dates (YYYY-MM-DD format), registration info, organizer details, ticket pricing, and target audience.`;
+For exhibitions/conferences/competitions: extract venue, dates (YYYY-MM-DD format), registration info, organizer details, ticket pricing, target audience, reasons to attend, unique features, targeted sectors/industries, categories, edition statistics (exhibitors, visitors, countries, brands), entry details (free/paid/types), venue details (capacity, halls, area), and sponsors/partners with tiers and logos.
+For edition stats: extract numbers like "X exhibitors", "X visitors", "X countries represented" etc.`;
 
   const content = await callAI(prompt, apiKey, 'google/gemini-3-flash-preview', 0.1, 30000);
   try {

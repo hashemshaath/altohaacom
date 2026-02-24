@@ -9261,6 +9261,70 @@ export type Database = {
           },
         ]
       }
+      exhibition_organizers: {
+        Row: {
+          company_id: string | null
+          created_at: string
+          entity_id: string | null
+          exhibition_id: string
+          id: string
+          logo_url: string | null
+          name: string
+          name_ar: string | null
+          role: string | null
+          sort_order: number | null
+          website_url: string | null
+        }
+        Insert: {
+          company_id?: string | null
+          created_at?: string
+          entity_id?: string | null
+          exhibition_id: string
+          id?: string
+          logo_url?: string | null
+          name: string
+          name_ar?: string | null
+          role?: string | null
+          sort_order?: number | null
+          website_url?: string | null
+        }
+        Update: {
+          company_id?: string | null
+          created_at?: string
+          entity_id?: string | null
+          exhibition_id?: string
+          id?: string
+          logo_url?: string | null
+          name?: string
+          name_ar?: string | null
+          role?: string | null
+          sort_order?: number | null
+          website_url?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "exhibition_organizers_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "exhibition_organizers_entity_id_fkey"
+            columns: ["entity_id"]
+            isOneToOne: false
+            referencedRelation: "culinary_entities"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "exhibition_organizers_exhibition_id_fkey"
+            columns: ["exhibition_id"]
+            isOneToOne: false
+            referencedRelation: "exhibitions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       exhibition_review_replies: {
         Row: {
           content: string
@@ -9691,6 +9755,76 @@ export type Database = {
         Relationships: [
           {
             foreignKeyName: "exhibition_social_posts_exhibition_id_fkey"
+            columns: ["exhibition_id"]
+            isOneToOne: false
+            referencedRelation: "exhibitions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      exhibition_sponsors: {
+        Row: {
+          company_id: string | null
+          created_at: string
+          entity_id: string | null
+          exhibition_id: string
+          id: string
+          is_active: boolean | null
+          logo_url: string | null
+          name: string
+          name_ar: string | null
+          sort_order: number | null
+          tier: string | null
+          updated_at: string
+          website_url: string | null
+        }
+        Insert: {
+          company_id?: string | null
+          created_at?: string
+          entity_id?: string | null
+          exhibition_id: string
+          id?: string
+          is_active?: boolean | null
+          logo_url?: string | null
+          name: string
+          name_ar?: string | null
+          sort_order?: number | null
+          tier?: string | null
+          updated_at?: string
+          website_url?: string | null
+        }
+        Update: {
+          company_id?: string | null
+          created_at?: string
+          entity_id?: string | null
+          exhibition_id?: string
+          id?: string
+          is_active?: boolean | null
+          logo_url?: string | null
+          name?: string
+          name_ar?: string | null
+          sort_order?: number | null
+          tier?: string | null
+          updated_at?: string
+          website_url?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "exhibition_sponsors_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "exhibition_sponsors_entity_id_fkey"
+            columns: ["entity_id"]
+            isOneToOne: false
+            referencedRelation: "culinary_entities"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "exhibition_sponsors_exhibition_id_fkey"
             columns: ["exhibition_id"]
             isOneToOne: false
             referencedRelation: "exhibitions"
@@ -10130,6 +10264,7 @@ export type Database = {
         Row: {
           address: string | null
           address_ar: string | null
+          categories: string[] | null
           city: string | null
           country: string | null
           cover_image_url: string | null
@@ -10140,8 +10275,12 @@ export type Database = {
           description_ar: string | null
           documents: Json | null
           early_bird_deadline: string | null
+          edition_stats: Json | null
+          edition_year: number | null
           end_date: string
+          entry_details: Json | null
           gallery_urls: string[] | null
+          highlights: Json | null
           id: string
           import_source: string | null
           includes_competitions: boolean | null
@@ -10163,10 +10302,12 @@ export type Database = {
           organizer_type: string | null
           organizer_user_id: string | null
           organizer_website: string | null
+          reasons_to_attend: Json | null
           registration_deadline: string | null
           registration_url: string | null
           schedule: Json | null
           sections: Json | null
+          series_id: string | null
           slug: string
           social_links: Json | null
           speakers: Json | null
@@ -10175,14 +10316,17 @@ export type Database = {
           status: Database["public"]["Enums"]["exhibition_status"]
           tags: string[] | null
           target_audience: string[] | null
+          targeted_sectors: string[] | null
           ticket_price: string | null
           ticket_price_ar: string | null
           title: string
           title_ar: string | null
           type: Database["public"]["Enums"]["exhibition_type"]
+          unique_features: Json | null
           updated_at: string
           venue: string | null
           venue_ar: string | null
+          venue_details: Json | null
           view_count: number | null
           virtual_link: string | null
           website_url: string | null
@@ -10190,6 +10334,7 @@ export type Database = {
         Insert: {
           address?: string | null
           address_ar?: string | null
+          categories?: string[] | null
           city?: string | null
           country?: string | null
           cover_image_url?: string | null
@@ -10200,8 +10345,12 @@ export type Database = {
           description_ar?: string | null
           documents?: Json | null
           early_bird_deadline?: string | null
+          edition_stats?: Json | null
+          edition_year?: number | null
           end_date: string
+          entry_details?: Json | null
           gallery_urls?: string[] | null
+          highlights?: Json | null
           id?: string
           import_source?: string | null
           includes_competitions?: boolean | null
@@ -10223,10 +10372,12 @@ export type Database = {
           organizer_type?: string | null
           organizer_user_id?: string | null
           organizer_website?: string | null
+          reasons_to_attend?: Json | null
           registration_deadline?: string | null
           registration_url?: string | null
           schedule?: Json | null
           sections?: Json | null
+          series_id?: string | null
           slug: string
           social_links?: Json | null
           speakers?: Json | null
@@ -10235,14 +10386,17 @@ export type Database = {
           status?: Database["public"]["Enums"]["exhibition_status"]
           tags?: string[] | null
           target_audience?: string[] | null
+          targeted_sectors?: string[] | null
           ticket_price?: string | null
           ticket_price_ar?: string | null
           title: string
           title_ar?: string | null
           type?: Database["public"]["Enums"]["exhibition_type"]
+          unique_features?: Json | null
           updated_at?: string
           venue?: string | null
           venue_ar?: string | null
+          venue_details?: Json | null
           view_count?: number | null
           virtual_link?: string | null
           website_url?: string | null
@@ -10250,6 +10404,7 @@ export type Database = {
         Update: {
           address?: string | null
           address_ar?: string | null
+          categories?: string[] | null
           city?: string | null
           country?: string | null
           cover_image_url?: string | null
@@ -10260,8 +10415,12 @@ export type Database = {
           description_ar?: string | null
           documents?: Json | null
           early_bird_deadline?: string | null
+          edition_stats?: Json | null
+          edition_year?: number | null
           end_date?: string
+          entry_details?: Json | null
           gallery_urls?: string[] | null
+          highlights?: Json | null
           id?: string
           import_source?: string | null
           includes_competitions?: boolean | null
@@ -10283,10 +10442,12 @@ export type Database = {
           organizer_type?: string | null
           organizer_user_id?: string | null
           organizer_website?: string | null
+          reasons_to_attend?: Json | null
           registration_deadline?: string | null
           registration_url?: string | null
           schedule?: Json | null
           sections?: Json | null
+          series_id?: string | null
           slug?: string
           social_links?: Json | null
           speakers?: Json | null
@@ -10295,14 +10456,17 @@ export type Database = {
           status?: Database["public"]["Enums"]["exhibition_status"]
           tags?: string[] | null
           target_audience?: string[] | null
+          targeted_sectors?: string[] | null
           ticket_price?: string | null
           ticket_price_ar?: string | null
           title?: string
           title_ar?: string | null
           type?: Database["public"]["Enums"]["exhibition_type"]
+          unique_features?: Json | null
           updated_at?: string
           venue?: string | null
           venue_ar?: string | null
+          venue_details?: Json | null
           view_count?: number | null
           virtual_link?: string | null
           website_url?: string | null

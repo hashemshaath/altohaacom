@@ -96,6 +96,8 @@ export interface ImportedData {
   max_attendees?: number;
   organizer_name_en?: string;
   organizer_name_ar?: string;
+  organizer_logo_url?: string;
+  organizer_website?: string;
   map_url?: string;
   ticket_price?: string;
   is_free?: boolean;
@@ -107,6 +109,16 @@ export interface ImportedData {
   rules_summary_en?: string;
   rules_summary_ar?: string;
   edition_year?: number;
+  // Enhanced exhibition fields
+  reasons_to_attend?: { reason: string; reason_ar: string }[];
+  unique_features?: { feature: string; feature_ar: string }[];
+  targeted_sectors?: string[];
+  categories?: string[];
+  highlights?: { label: string; label_ar: string; value: string }[];
+  edition_stats?: Record<string, any>;
+  entry_details?: Record<string, any>;
+  venue_details?: Record<string, any>;
+  sponsors?: { name: string; name_ar?: string; tier?: string; logo_url?: string; website_url?: string }[];
 }
 
 interface SmartImportDialogProps {
