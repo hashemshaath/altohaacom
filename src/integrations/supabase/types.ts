@@ -13528,6 +13528,123 @@ export type Database = {
           },
         ]
       }
+      notification_rule_logs: {
+        Row: {
+          id: string
+          metadata: Json | null
+          notification_id: string | null
+          rule_id: string
+          triggered_at: string | null
+          user_id: string
+        }
+        Insert: {
+          id?: string
+          metadata?: Json | null
+          notification_id?: string | null
+          rule_id: string
+          triggered_at?: string | null
+          user_id: string
+        }
+        Update: {
+          id?: string
+          metadata?: Json | null
+          notification_id?: string | null
+          rule_id?: string
+          triggered_at?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "notification_rule_logs_notification_id_fkey"
+            columns: ["notification_id"]
+            isOneToOne: false
+            referencedRelation: "notifications"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "notification_rule_logs_rule_id_fkey"
+            columns: ["rule_id"]
+            isOneToOne: false
+            referencedRelation: "notification_rules"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      notification_rules: {
+        Row: {
+          channels: string[] | null
+          conditions: Json | null
+          cooldown_hours: number | null
+          created_at: string | null
+          created_by: string | null
+          delay_minutes: number | null
+          description: string | null
+          description_ar: string | null
+          id: string
+          is_active: boolean | null
+          max_sends_per_user: number | null
+          name: string
+          name_ar: string | null
+          notification_body: string
+          notification_body_ar: string | null
+          notification_link: string | null
+          notification_title: string
+          notification_title_ar: string | null
+          notification_type: string | null
+          priority: number | null
+          trigger_event: string
+          updated_at: string | null
+        }
+        Insert: {
+          channels?: string[] | null
+          conditions?: Json | null
+          cooldown_hours?: number | null
+          created_at?: string | null
+          created_by?: string | null
+          delay_minutes?: number | null
+          description?: string | null
+          description_ar?: string | null
+          id?: string
+          is_active?: boolean | null
+          max_sends_per_user?: number | null
+          name: string
+          name_ar?: string | null
+          notification_body: string
+          notification_body_ar?: string | null
+          notification_link?: string | null
+          notification_title: string
+          notification_title_ar?: string | null
+          notification_type?: string | null
+          priority?: number | null
+          trigger_event: string
+          updated_at?: string | null
+        }
+        Update: {
+          channels?: string[] | null
+          conditions?: Json | null
+          cooldown_hours?: number | null
+          created_at?: string | null
+          created_by?: string | null
+          delay_minutes?: number | null
+          description?: string | null
+          description_ar?: string | null
+          id?: string
+          is_active?: boolean | null
+          max_sends_per_user?: number | null
+          name?: string
+          name_ar?: string | null
+          notification_body?: string
+          notification_body_ar?: string | null
+          notification_link?: string | null
+          notification_title?: string
+          notification_title_ar?: string | null
+          notification_type?: string | null
+          priority?: number | null
+          trigger_event?: string
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
       notification_templates: {
         Row: {
           body: string
