@@ -4,22 +4,22 @@ import { useSocialLinkPageByUsername } from "@/hooks/useSocialLinkPage";
 import { SEOHead } from "@/components/SEOHead";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Skeleton } from "@/components/ui/skeleton";
-import { ExternalLink, Instagram, Twitter, Facebook, Linkedin, Youtube, Globe, User, ArrowLeft, Share2, Copy, Check, BadgeCheck, MapPin, Briefcase, Award, Clock, Mail } from "lucide-react";
+import { ExternalLink, Instagram, Twitter, Facebook, Linkedin, Youtube, Globe, User, ArrowLeft, Share2, Check, BadgeCheck, MapPin, Briefcase, Award } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 
-const SOCIAL_ICONS: Record<string, { icon: typeof Instagram; label: string; color: string; urlPrefix?: string }> = {
-  instagram: { icon: Instagram, label: "Instagram", color: "#E4405F", urlPrefix: "https://instagram.com/" },
-  twitter: { icon: Twitter, label: "X / Twitter", color: "#1DA1F2", urlPrefix: "https://x.com/" },
-  facebook: { icon: Facebook, label: "Facebook", color: "#1877F2", urlPrefix: "https://facebook.com/" },
-  linkedin: { icon: Linkedin, label: "LinkedIn", color: "#0A66C2", urlPrefix: "https://linkedin.com/in/" },
-  youtube: { icon: Youtube, label: "YouTube", color: "#FF0000", urlPrefix: "https://youtube.com/@" },
-  tiktok: { icon: Globe, label: "TikTok", color: "#000000", urlPrefix: "https://tiktok.com/@" },
-  snapchat: { icon: Globe, label: "Snapchat", color: "#FFFC00", urlPrefix: "https://snapchat.com/add/" },
-  website: { icon: Globe, label: "Website", color: "#6366f1" },
+const SOCIAL_ICONS: Record<string, { icon: typeof Instagram; label: string; urlPrefix?: string }> = {
+  instagram: { icon: Instagram, label: "Instagram", urlPrefix: "https://instagram.com/" },
+  twitter: { icon: Twitter, label: "X / Twitter", urlPrefix: "https://x.com/" },
+  facebook: { icon: Facebook, label: "Facebook", urlPrefix: "https://facebook.com/" },
+  linkedin: { icon: Linkedin, label: "LinkedIn", urlPrefix: "https://linkedin.com/in/" },
+  youtube: { icon: Youtube, label: "YouTube", urlPrefix: "https://youtube.com/@" },
+  tiktok: { icon: Globe, label: "TikTok", urlPrefix: "https://tiktok.com/@" },
+  snapchat: { icon: Globe, label: "Snapchat", urlPrefix: "https://snapchat.com/add/" },
+  website: { icon: Globe, label: "Website" },
 };
 
 const THEMES: Record<string, { bg: string; card: string; text: string; accent: string }> = {
@@ -120,7 +120,7 @@ export default function SocialLinks() {
   const bio = isAr
     ? ((profile as any).bio_ar || (profile as any).bio || page?.bio_ar || page?.bio)
     : ((profile as any).bio || (profile as any).bio_ar || page?.bio || page?.bio_ar);
-  
+
   const title = isAr ? (page?.page_title_ar || page?.page_title || displayName) : (page?.page_title || page?.page_title_ar || displayName);
 
   const specialization = isAr
@@ -154,121 +154,138 @@ export default function SocialLinks() {
   const membershipTier = (profile as any).membership_tier;
   const globalAwards = (profile as any).global_awards;
   const viewCount = (profile as any).view_count;
+  const hasCover = !!coverImage;
 
   return (
     <div
-      className={`flex min-h-screen flex-col items-center ${!coverImage ? theme.bg : ""} ${theme.text} transition-colors`}
+      className="flex min-h-screen flex-col items-center bg-[#0a0a0a] text-white"
       dir={isAr ? "rtl" : "ltr"}
-      style={coverImage ? {
-        backgroundImage: `url(${coverImage})`,
-        backgroundSize: "cover",
-        backgroundPosition: "center",
-        backgroundAttachment: "fixed",
-      } : undefined}
     >
       <SEOHead
         title={`${title} - Altoha Links`}
         description={bio || `${displayName}'s links on Altoha`}
       />
 
-      {coverImage && <div className="fixed inset-0 bg-black/50 backdrop-blur-sm" />}
+      {/* Cover / Hero Section */}
+      <div className="relative w-full h-[280px] sm:h-[320px] overflow-hidden">
+        {hasCover ? (
+          <>
+            <img
+              src={coverImage}
+              alt=""
+              className="absolute inset-0 w-full h-full object-cover"
+            />
+            <div className="absolute inset-0 bg-gradient-to-b from-black/30 via-black/10 to-[#0a0a0a]" />
+          </>
+        ) : (
+          <div className="absolute inset-0 bg-gradient-to-b from-primary/20 via-primary/5 to-[#0a0a0a]" />
+        )}
 
-      <div className="relative z-10 w-full max-w-lg px-4 py-8 sm:py-12">
-        {/* Share button */}
-        <div className={`flex justify-end mb-4 transition-all duration-700 ${animated ? "opacity-100 translate-y-0" : "opacity-0 -translate-y-4"}`}>
-          <Button
-            variant="ghost"
-            size="icon"
-            className={`h-9 w-9 rounded-full ${coverImage || themeName !== "default" ? "text-white/80 hover:text-white hover:bg-white/10" : "text-muted-foreground hover:text-foreground"}`}
+        {/* Share button in top corner */}
+        <div className={`absolute top-4 ${isAr ? "left-4" : "right-4"} z-20 transition-all duration-700 ${animated ? "opacity-100 translate-y-0" : "opacity-0 -translate-y-4"}`}>
+          <button
             onClick={shareNative}
+            className="flex h-10 w-10 items-center justify-center rounded-full bg-black/40 backdrop-blur-md border border-white/10 text-white/80 hover:text-white hover:bg-black/60 transition-all"
           >
             {copied ? <Check className="h-4 w-4" /> : <Share2 className="h-4 w-4" />}
-          </Button>
+          </button>
         </div>
 
-        {/* Avatar & Name */}
-        <div className={`flex flex-col items-center gap-3 mb-6 transition-all duration-700 delay-100 ${animated ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"}`}>
+        {/* Avatar positioned at bottom of cover */}
+        <div className={`absolute -bottom-14 left-1/2 -translate-x-1/2 z-20 transition-all duration-700 delay-100 ${animated ? "opacity-100 scale-100" : "opacity-0 scale-90"}`}>
           {(page?.show_avatar !== false) && (
             <div className="relative">
-              <Avatar className="h-28 w-28 sm:h-32 sm:w-32 ring-4 ring-white/20 shadow-2xl">
-                <AvatarImage src={profile.avatar_url || ""} alt={displayName} />
-                <AvatarFallback className="text-2xl font-bold bg-primary/20">{displayName?.charAt(0)}</AvatarFallback>
+              <Avatar className="h-28 w-28 sm:h-32 sm:w-32 ring-[3px] ring-[#0a0a0a] shadow-2xl">
+                <AvatarImage src={profile.avatar_url || ""} alt={displayName} className="object-cover" />
+                <AvatarFallback className="text-3xl font-bold bg-primary/30 text-white">{displayName?.charAt(0)}</AvatarFallback>
               </Avatar>
               {isVerified && (
-                <div className="absolute -bottom-1 -end-1 h-7 w-7 rounded-full bg-primary flex items-center justify-center ring-2 ring-background shadow-lg">
+                <div className="absolute -bottom-0.5 -end-0.5 h-7 w-7 rounded-full bg-primary flex items-center justify-center ring-2 ring-[#0a0a0a] shadow-lg">
                   <BadgeCheck className="h-4 w-4 text-primary-foreground" />
                 </div>
               )}
             </div>
           )}
-          <div className="text-center">
-            <h1 className="text-xl sm:text-2xl font-bold">{title}</h1>
-            <p className="text-sm opacity-70 mt-0.5">@{profile.username}</p>
+        </div>
+      </div>
+
+      {/* Main Content */}
+      <div className="relative z-10 w-full max-w-lg px-5 pt-16 pb-10">
+        {/* Name & Meta */}
+        <div className={`text-center mb-6 transition-all duration-700 delay-200 ${animated ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"}`}>
+          <h1 className="font-serif text-2xl sm:text-3xl font-bold text-white tracking-tight">{title}</h1>
+          <p className="text-sm text-white/50 mt-1">@{profile.username}</p>
+
+          {/* Job title / specialization & location in a refined row */}
+          <div className="flex items-center justify-center flex-wrap gap-x-4 gap-y-1 mt-2.5">
             {(jobTitle || specialization) && (
-              <p className="text-sm opacity-80 mt-1 flex items-center justify-center gap-1.5">
-                <Briefcase className="h-3.5 w-3.5 opacity-60" />
+              <span className="text-sm text-white/70 flex items-center gap-1.5">
+                <Briefcase className="h-3.5 w-3.5 text-primary/80" />
                 {jobTitle || specialization}
-              </p>
+              </span>
             )}
             {(city || countryCode) && (
-              <p className="text-sm opacity-70 mt-1 flex items-center justify-center gap-1.5">
-                <MapPin className="h-3.5 w-3.5 opacity-60" />
+              <span className="text-sm text-white/70 flex items-center gap-1.5">
+                <MapPin className="h-3.5 w-3.5 text-primary/80" />
                 {city}{city && countryCode ? ", " : ""}{countryCode}
-              </p>
+              </span>
             )}
           </div>
+
+          {/* Membership badge */}
+          {membershipTier && membershipTier !== "free" && (
+            <div className="mt-3">
+              <span className="inline-flex items-center gap-1 px-3 py-1 text-xs font-semibold rounded-full bg-primary/15 text-primary border border-primary/20 capitalize">
+                ✦ {membershipTier}
+              </span>
+            </div>
+          )}
         </div>
 
-        {/* Quick Stats */}
-        {(yearsExp || viewCount || membershipTier) && (
-          <div className={`flex justify-center gap-4 sm:gap-6 mb-6 transition-all duration-700 delay-150 ${animated ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"}`}>
+        {/* Stats Row */}
+        {(yearsExp || viewCount) && (
+          <div className={`flex justify-center gap-8 mb-6 transition-all duration-700 delay-250 ${animated ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"}`}>
             {yearsExp && (
               <div className="text-center">
-                <p className="text-lg font-bold">{yearsExp}+</p>
-                <p className="text-[11px] opacity-60 uppercase tracking-wider">{isAr ? "سنوات خبرة" : "Years Exp."}</p>
+                <p className="text-xl font-bold text-white">{yearsExp}<span className="text-primary">+</span></p>
+                <p className="text-[10px] text-white/40 uppercase tracking-widest mt-0.5">{isAr ? "سنوات خبرة" : "Years Exp."}</p>
               </div>
             )}
             {viewCount > 0 && (
               <div className="text-center">
-                <p className="text-lg font-bold">{viewCount}</p>
-                <p className="text-[11px] opacity-60 uppercase tracking-wider">{isAr ? "مشاهدات" : "Views"}</p>
-              </div>
-            )}
-            {membershipTier && membershipTier !== "free" && (
-              <div className="text-center">
-                <span className="inline-block px-2.5 py-0.5 text-xs font-semibold rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/30 capitalize">
-                  {membershipTier}
-                </span>
+                <p className="text-xl font-bold text-white">{viewCount}</p>
+                <p className="text-[10px] text-white/40 uppercase tracking-widest mt-0.5">{isAr ? "مشاهدات" : "Views"}</p>
               </div>
             )}
           </div>
         )}
+
+        {/* Separator */}
+        <div className={`w-12 h-px bg-white/10 mx-auto mb-6 transition-all duration-700 delay-300 ${animated ? "opacity-100 w-12" : "opacity-0 w-0"}`} />
 
         {/* Bio */}
         {bio && (
-          <div className={`mb-6 transition-all duration-700 delay-200 ${animated ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"}`}>
-            <div className={`${theme.card} border rounded-2xl p-4`}>
-              <p className="text-sm leading-relaxed opacity-90 text-center">{bio}</p>
-            </div>
+          <div className={`mb-6 transition-all duration-700 delay-300 ${animated ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"}`}>
+            <p className="text-sm text-white/75 leading-relaxed text-center max-w-md mx-auto">{bio}</p>
           </div>
         )}
 
-        {/* Global Awards */}
+        {/* Awards */}
         {globalAwards && Array.isArray(globalAwards) && globalAwards.length > 0 && (
-          <div className={`mb-6 transition-all duration-700 delay-250 ${animated ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"}`}>
-            <div className={`${theme.card} border rounded-2xl p-4`}>
-              <h3 className="text-xs font-semibold uppercase tracking-wider opacity-60 mb-3 flex items-center gap-1.5">
-                <Award className="h-3.5 w-3.5" />
+          <div className={`mb-6 transition-all duration-700 delay-350 ${animated ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"}`}>
+            <div className="rounded-2xl bg-white/[0.04] border border-white/[0.08] p-4">
+              <h3 className="text-[10px] font-semibold uppercase tracking-widest text-white/40 mb-3 flex items-center gap-1.5">
+                <Award className="h-3.5 w-3.5 text-primary/70" />
                 {isAr ? "الجوائز والإنجازات" : "Awards & Achievements"}
               </h3>
               <div className="flex flex-wrap gap-2">
                 {globalAwards.map((award: any, i: number) => (
-                  <div key={i} className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/10 border border-white/10 text-xs">
+                  <div key={i} className="flex items-center gap-2 px-3 py-2 rounded-xl bg-white/[0.06] border border-white/[0.06] text-xs text-white/80">
                     {award.icon === "gold" && <span>🏅</span>}
                     {award.icon === "tabakh" && <span>👨‍🍳</span>}
                     {award.icon && !["gold", "tabakh"].includes(award.icon) && <span>🏆</span>}
                     <span>{isAr ? (award.name_ar || award.name) : (award.name || award.name_ar)}</span>
-                    {award.year && <span className="opacity-50">({award.year})</span>}
+                    {award.year && <span className="text-white/30">({award.year})</span>}
                   </div>
                 ))}
               </div>
@@ -278,7 +295,7 @@ export default function SocialLinks() {
 
         {/* Social Icons */}
         {page?.show_social_icons !== false && socialPlatforms.length > 0 && (
-          <div className={`flex justify-center flex-wrap gap-3 mb-6 transition-all duration-700 delay-300 ${animated ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"}`}>
+          <div className={`flex justify-center flex-wrap gap-3 mb-8 transition-all duration-700 delay-400 ${animated ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"}`}>
             {socialPlatforms.map(({ key, value }) => {
               const info = SOCIAL_ICONS[key];
               if (!info) return null;
@@ -290,7 +307,7 @@ export default function SocialLinks() {
                   href={href}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className={`flex h-12 w-12 items-center justify-center rounded-full ${theme.card} border transition-all duration-300 hover:scale-110 hover:shadow-lg active:scale-95`}
+                  className="flex h-12 w-12 items-center justify-center rounded-full bg-white/[0.06] border border-white/[0.08] text-white/70 hover:text-white hover:bg-white/[0.12] hover:border-white/[0.15] transition-all duration-300 hover:scale-110 active:scale-95"
                   title={info.label}
                 >
                   <Icon className="h-5 w-5" />
@@ -302,7 +319,7 @@ export default function SocialLinks() {
 
         {/* Link Items */}
         {items.length > 0 && (
-          <div className="space-y-3 mb-6">
+          <div className="space-y-3 mb-8">
             {items.map((item, index) => (
               <a
                 key={item.id}
@@ -310,10 +327,10 @@ export default function SocialLinks() {
                 target="_blank"
                 rel="noopener noreferrer"
                 onClick={() => handleLinkClick(item.id)}
-                className={`group flex items-center gap-3 border px-5 py-4 ${btnStyle} ${theme.card} transition-all duration-500 hover:scale-[1.02] hover:shadow-xl active:scale-[0.98] ${animated ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}
+                className={`group flex items-center gap-3 border border-white/[0.08] px-5 py-4 ${btnStyle} bg-white/[0.04] backdrop-blur-sm transition-all duration-500 hover:bg-white/[0.08] hover:border-white/[0.15] hover:scale-[1.02] hover:shadow-xl active:scale-[0.98] ${animated ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}
                 style={{
                   ...buttonColorStyle,
-                  transitionDelay: `${400 + index * 80}ms`,
+                  transitionDelay: `${500 + index * 80}ms`,
                 }}
               >
                 {item.thumbnail_url && (
@@ -322,38 +339,38 @@ export default function SocialLinks() {
                 {item.icon && !item.thumbnail_url && (
                   <span className="text-xl shrink-0">{item.icon}</span>
                 )}
-                <span className="flex-1 text-sm font-medium text-center">
+                <span className="flex-1 text-sm font-medium text-center text-white/90">
                   {isAr ? (item.title_ar || item.title) : item.title}
                 </span>
-                <ExternalLink className="h-4 w-4 opacity-0 group-hover:opacity-60 transition-opacity shrink-0" />
+                <ExternalLink className="h-4 w-4 opacity-0 group-hover:opacity-50 transition-opacity shrink-0 text-white/60" />
               </a>
             ))}
           </div>
         )}
 
         {items.length === 0 && socialPlatforms.length === 0 && (
-          <div className={`text-center py-12 opacity-60 transition-all duration-700 delay-300 ${animated ? "opacity-60 translate-y-0" : "opacity-0 translate-y-6"}`}>
-            <Globe className="h-12 w-12 mx-auto mb-3 opacity-40" />
-            <p className="text-sm">{isAr ? "لا توجد روابط بعد" : "No links yet"}</p>
+          <div className={`text-center py-10 transition-all duration-700 delay-400 ${animated ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"}`}>
+            <Globe className="h-10 w-10 mx-auto mb-3 text-white/20" />
+            <p className="text-sm text-white/40">{isAr ? "لا توجد روابط بعد" : "No links yet"}</p>
           </div>
         )}
 
-        {/* View Full Profile Link */}
-        <div className={`mt-8 transition-all duration-700 delay-500 ${animated ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"}`}>
+        {/* View Full Profile */}
+        <div className={`mt-2 transition-all duration-700 delay-500 ${animated ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"}`}>
           <Link
             to={`/${profile.username}`}
-            className={`flex items-center justify-center gap-2 w-full py-3.5 rounded-2xl ${theme.card} border text-sm font-medium transition-all hover:scale-[1.02] hover:shadow-lg active:scale-[0.98]`}
+            className="flex items-center justify-center gap-2 w-full py-3.5 rounded-2xl bg-primary/10 border border-primary/20 text-sm font-medium text-primary hover:bg-primary/20 transition-all hover:scale-[1.02] active:scale-[0.98]"
           >
-            <User className="h-4 w-4 opacity-70" />
+            <User className="h-4 w-4" />
             {isAr ? "عرض البروفايل الكامل" : "View Full Profile"}
           </Link>
         </div>
 
         {/* Footer */}
-        <div className={`mt-8 text-center transition-all duration-700 delay-600 ${animated ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"}`}>
-          <Link to="/" className="inline-flex items-center gap-1.5 text-[10px] opacity-30 hover:opacity-50 transition-opacity font-medium tracking-wider uppercase">
-            <div className="h-4 w-4 rounded bg-primary/30 flex items-center justify-center">
-              <span className="text-[8px] font-bold">A</span>
+        <div className={`mt-10 text-center transition-all duration-700 delay-600 ${animated ? "opacity-100" : "opacity-0"}`}>
+          <Link to="/" className="inline-flex items-center gap-1.5 text-[10px] text-white/20 hover:text-white/40 transition-opacity font-medium tracking-wider uppercase">
+            <div className="h-4 w-4 rounded bg-primary/20 flex items-center justify-center">
+              <span className="text-[8px] font-bold text-primary/60">A</span>
             </div>
             Altoha
           </Link>
