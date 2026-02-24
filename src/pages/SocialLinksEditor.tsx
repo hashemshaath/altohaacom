@@ -25,12 +25,12 @@ import { Link } from "react-router-dom";
 import { QRCodeSVG } from "qrcode.react";
 import {
   Palette, Eye, Link as LinkIcon, Plus, Trash2, ExternalLink,
-  Globe, Save, Copy, Check, QrCode,
+  Globe, Save, Copy, Check, QrCode, Download,
   BarChart3, MousePointerClick, Pencil, Instagram, Twitter,
   Facebook, Linkedin, Youtube, Smartphone, Type, EyeOff, Settings2,
   Phone, MessageCircle, Music, ShoppingBag, CalendarDays, Video, Briefcase,
-  Sparkles, TrendingUp, Loader2, GripVertical,
-  AlignLeft, AlignCenter, AlignRight, LayoutGrid, LayoutList, ArrowLeftRight
+  Sparkles, TrendingUp, Loader2, GripVertical, Image, FileText,
+  AlignLeft, AlignCenter, AlignRight, LayoutGrid, LayoutList, ArrowLeftRight, Clock, Calendar
 } from "lucide-react";
 import { buildSocialLinksPath, buildSocialLinksUrl } from "@/lib/publicAppUrl";
 
@@ -195,7 +195,7 @@ export default function SocialLinksEditor() {
   });
 
   const [extra, setExtra] = useState<ExtraSettings>({ ...DEFAULT_EXTRA });
-  const [newLink, setNewLink] = useState({ title: "", title_ar: "", url: "", icon: "", link_type: "custom" });
+  const [newLink, setNewLink] = useState({ title: "", title_ar: "", url: "", icon: "", link_type: "custom", scheduled_start: "", scheduled_end: "" });
 
   useEffect(() => {
     if (page) {
@@ -306,7 +306,7 @@ export default function SocialLinksEditor() {
       title_ar: newLink.title_ar || undefined, url: newLink.url,
       icon: newLink.icon || undefined, link_type: newLink.link_type, sort_order: items.length,
     });
-    setNewLink({ title: "", title_ar: "", url: "", icon: "", link_type: "custom" });
+    setNewLink({ title: "", title_ar: "", url: "", icon: "", link_type: "custom", scheduled_start: "", scheduled_end: "" });
   }, [newLink, page, form, extra, items.length, isAr, toast, upsertPage, addItem]);
 
   const startEditing = useCallback((item: any) => {
@@ -473,13 +473,50 @@ export default function SocialLinksEditor() {
                     <DialogContent className="max-w-xs">
                       <DialogHeader><DialogTitle className="text-center">{isAr ? "رمز QR" : "QR Code"}</DialogTitle></DialogHeader>
                       <div className="flex flex-col items-center gap-4 py-4">
-                        <div className="p-5 bg-white rounded-2xl shadow-lg">
-                          <QRCodeSVG value={fullUrl} size={180} level="H" />
+                        <div id="qr-themed-container" className="p-6 rounded-2xl shadow-lg" style={{
+                          background: THEME_COLORS[form.theme]?.bg || "#ffffff",
+                          border: `2px solid ${THEME_COLORS[form.theme]?.border || "#e5e7eb"}`,
+                        }}>
+                          <QRCodeSVG
+                            value={fullUrl}
+                            size={180}
+                            level="H"
+                            fgColor={THEME_COLORS[form.theme]?.accent || "#000000"}
+                            bgColor="transparent"
+                          />
                         </div>
                         <p className="text-xs text-muted-foreground text-center font-mono" dir="ltr">{fullUrl}</p>
-                        <Button variant="outline" size="sm" onClick={copyLink} className="gap-1.5">
-                          <Copy className="h-3.5 w-3.5" />{isAr ? "نسخ" : "Copy"}
-                        </Button>
+                        <div className="flex gap-2">
+                          <Button variant="outline" size="sm" onClick={copyLink} className="gap-1.5">
+                            <Copy className="h-3.5 w-3.5" />{isAr ? "نسخ" : "Copy"}
+                          </Button>
+                          <Button variant="outline" size="sm" className="gap-1.5" onClick={() => {
+                            const svg = document.querySelector('#qr-themed-container svg') as SVGSVGElement;
+                            if (!svg) return;
+                            const canvas = document.createElement('canvas');
+                            const ctx = canvas.getContext('2d');
+                            canvas.width = 400; canvas.height = 400;
+                            const svgData = new XMLSerializer().serializeToString(svg);
+                            const img = new window.Image();
+                            img.onload = () => {
+                              if (ctx) {
+                                const tc = THEME_COLORS[form.theme];
+                                ctx.fillStyle = tc?.accent || '#ffffff';
+                                ctx.globalAlpha = 0.08;
+                                ctx.fillRect(0, 0, 400, 400);
+                                ctx.globalAlpha = 1;
+                                ctx.drawImage(img, 20, 20, 360, 360);
+                              }
+                              const link = document.createElement('a');
+                              link.download = `${profile?.username || 'qr'}-altoha.png`;
+                              link.href = canvas.toDataURL('image/png');
+                              link.click();
+                            };
+                            img.src = 'data:image/svg+xml;base64,' + btoa(unescape(encodeURIComponent(svgData)));
+                          }}>
+                            <Download className="h-3.5 w-3.5" />{isAr ? "تحميل PNG" : "Download PNG"}
+                          </Button>
+                        </div>
                       </div>
                     </DialogContent>
                   </Dialog>
@@ -834,6 +871,17 @@ export default function SocialLinksEditor() {
                               <SelectItem value="music">{isAr ? "موسيقى" : "Music"}</SelectItem>
                             </SelectContent>
                           </Select>
+                        </div>
+                        {/* Scheduling */}
+                        <div className="grid grid-cols-2 gap-3">
+                          <div>
+                            <Label className="text-[10px] mb-1 block text-muted-foreground flex items-center gap-1"><Calendar className="h-3 w-3" />{isAr ? "يبدأ من" : "Start Date"}</Label>
+                            <Input type="datetime-local" value={newLink.scheduled_start} onChange={e => setNewLink(l => ({ ...l, scheduled_start: e.target.value }))} className="text-xs h-8" dir="ltr" />
+                          </div>
+                          <div>
+                            <Label className="text-[10px] mb-1 block text-muted-foreground flex items-center gap-1"><Clock className="h-3 w-3" />{isAr ? "ينتهي في" : "End Date"}</Label>
+                            <Input type="datetime-local" value={newLink.scheduled_end} onChange={e => setNewLink(l => ({ ...l, scheduled_end: e.target.value }))} className="text-xs h-8" dir="ltr" />
+                          </div>
                         </div>
                         <Button onClick={handleAddLink} disabled={addItem.isPending} className="w-full gap-1.5" size="sm">
                           {addItem.isPending ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Plus className="h-3.5 w-3.5" />}
@@ -1232,6 +1280,87 @@ export default function SocialLinksEditor() {
                         </div>
                       </CardContent>
                     </Card>
+
+                    {/* Cover Image */}
+                    <Card className="overflow-hidden">
+                      <CardHeader className="pb-3 bg-gradient-to-r from-muted/40 to-transparent">
+                        <CardTitle className="text-sm flex items-center gap-2">
+                          <div className="h-7 w-7 rounded-lg bg-primary/10 flex items-center justify-center">
+                            <Image className="h-3.5 w-3.5 text-primary" />
+                          </div>
+                          {isAr ? "صورة الغلاف" : "Cover Image"}
+                        </CardTitle>
+                        <p className="text-[11px] text-muted-foreground">
+                          {isAr ? "تظهر في أعلى صفحة الروابط العامة" : "Displayed at the top of your public page"}
+                        </p>
+                      </CardHeader>
+                      <CardContent className="space-y-3 pt-3">
+                        {extra.cover_image_url && (
+                          <div className="relative group rounded-xl overflow-hidden">
+                            <img src={extra.cover_image_url} alt="Cover" className="w-full h-28 object-cover" />
+                            <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                              <Button size="sm" variant="destructive" className="h-8 text-xs gap-1" onClick={() => updateExtra({ cover_image_url: "" })}>
+                                <Trash2 className="h-3 w-3" />{isAr ? "إزالة" : "Remove"}
+                              </Button>
+                            </div>
+                          </div>
+                        )}
+                        <div>
+                          <Label htmlFor="cover-upload" className="cursor-pointer">
+                            <div className="border-2 border-dashed border-border/40 rounded-xl p-4 text-center hover:border-primary/30 transition-all duration-200 hover:bg-muted/20">
+                              <Image className="h-5 w-5 mx-auto text-muted-foreground mb-1" />
+                              <p className="text-[11px] text-muted-foreground">{isAr ? "اضغط لرفع صورة غلاف" : "Click to upload cover image"}</p>
+                            </div>
+                          </Label>
+                          <input id="cover-upload" type="file" accept="image/*" className="hidden" onChange={async (e) => {
+                            const file = e.target.files?.[0];
+                            if (!file || !user) return;
+                            try {
+                              const ext = file.name.split(".").pop();
+                              const path = `${user.id}/cover-${Date.now()}.${ext}`;
+                              const { error } = await supabase.storage.from("user-media").upload(path, file, { upsert: true });
+                              if (error) throw error;
+                              const { data: urlData } = supabase.storage.from("user-media").getPublicUrl(path);
+                              updateExtra({ cover_image_url: urlData.publicUrl });
+                              toast({ title: isAr ? "تم رفع صورة الغلاف" : "Cover image uploaded" });
+                            } catch (err: any) {
+                              toast({ title: "Error", description: err.message, variant: "destructive" });
+                            }
+                          }} />
+                        </div>
+                        <Input placeholder={isAr ? "أو أدخل رابط الصورة" : "Or enter image URL"} value={extra.cover_image_url} onChange={e => updateExtra({ cover_image_url: e.target.value })} dir="ltr" className="text-xs" />
+                      </CardContent>
+                    </Card>
+
+                    {/* Custom Footer */}
+                    <Card className="overflow-hidden">
+                      <CardHeader className="pb-3 bg-gradient-to-r from-muted/40 to-transparent">
+                        <CardTitle className="text-sm flex items-center gap-2">
+                          <div className="h-7 w-7 rounded-lg bg-primary/10 flex items-center justify-center">
+                            <FileText className="h-3.5 w-3.5 text-primary" />
+                          </div>
+                          {isAr ? "تذييل مخصص" : "Custom Footer"}
+                        </CardTitle>
+                      </CardHeader>
+                      <CardContent className="space-y-3 pt-3">
+                        <div className="flex items-center justify-between rounded-lg p-2 hover:bg-muted/30 transition-colors">
+                          <Label className="text-xs cursor-pointer">{isAr ? "إظهار التذييل" : "Show Footer"}</Label>
+                          <Switch checked={extra.show_footer} onCheckedChange={v => updateExtra({ show_footer: v })} />
+                        </div>
+                        {extra.show_footer && (
+                          <div className="grid sm:grid-cols-2 gap-3">
+                            <div>
+                              <Label className="text-[11px] mb-1 block font-medium">{isAr ? "نص التذييل (EN)" : "Footer Text (EN)"}</Label>
+                              <Input value={extra.footer_text} onChange={e => updateExtra({ footer_text: e.target.value })} placeholder="© 2024 My Brand" dir="ltr" className="text-xs" />
+                            </div>
+                            <div>
+                              <Label className="text-[11px] mb-1 block font-medium">{isAr ? "نص التذييل (AR)" : "Footer Text (AR)"}</Label>
+                              <Input value={extra.footer_text_ar} onChange={e => updateExtra({ footer_text_ar: e.target.value })} placeholder="© 2024 علامتي" dir="rtl" className="text-xs" />
+                            </div>
+                          </div>
+                        )}
+                      </CardContent>
+                    </Card>
                   </TabsContent>
                 </Tabs>
               </div>
@@ -1243,9 +1372,9 @@ export default function SocialLinksEditor() {
                     <div className="flex items-center justify-between">
                       <p className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider">{isAr ? "معاينة مباشرة" : "Live Preview"}</p>
                       <div className="flex gap-1">
-                        <div className="h-2 w-2 rounded-full bg-red-400/80" />
-                        <div className="h-2 w-2 rounded-full bg-yellow-400/80" />
-                        <div className="h-2 w-2 rounded-full bg-green-400/80" />
+                        <div className="h-2 w-2 rounded-full bg-destructive/60" />
+                        <div className="h-2 w-2 rounded-full bg-chart-2/60" />
+                        <div className="h-2 w-2 rounded-full bg-chart-1/60" />
                       </div>
                     </div>
                   </CardHeader>
@@ -1261,6 +1390,13 @@ export default function SocialLinksEditor() {
                             color: pt.text,
                           }}
                         >
+                          {/* Cover image preview */}
+                          {extra.cover_image_url && (
+                            <div className="relative -mx-4 -mt-4 mb-4 h-20 overflow-hidden rounded-t-lg">
+                              <img src={extra.cover_image_url} alt="" className="w-full h-full object-cover" />
+                              <div className="absolute inset-0" style={{ background: `linear-gradient(to bottom, transparent, ${pt.bg.includes('gradient') ? 'rgba(0,0,0,0.6)' : pt.bg})` }} />
+                            </div>
+                          )}
                           <div className="relative z-10 flex flex-col items-center gap-3">
                             {form.show_avatar && (
                               <Avatar className="h-16 w-16 shadow-xl" style={{ boxShadow: `0 0 0 2px ${pt.border}` }}>
@@ -1316,6 +1452,13 @@ export default function SocialLinksEditor() {
                                 </div>
                               )}
                             </div>
+
+                            {/* Footer preview */}
+                            {extra.show_footer && extra.footer_text && (
+                              <div className="mt-4 pt-3 w-full text-center" style={{ borderTop: `1px solid ${pt.border}` }}>
+                                <p className="text-[9px]" style={{ color: `${pt.text}55` }}>{extra.footer_text}</p>
+                              </div>
+                            )}
                           </div>
                         </div>
                       );
