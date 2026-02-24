@@ -118,3 +118,33 @@ export const FONT_FAMILIES = [
   { id: "montserrat", label: "Montserrat", labelAr: "مونتسيرات", css: "'Montserrat', sans-serif" },
   { id: "roboto", label: "Roboto", labelAr: "روبوتو", css: "'Roboto', sans-serif" },
 ];
+
+// ── Auto-detect link type & icon from URL ──
+const URL_PATTERNS: { pattern: RegExp; type: string; icon: string; label: string }[] = [
+  { pattern: /youtu\.?be/i, type: "video", icon: "▶️", label: "YouTube" },
+  { pattern: /spotify\.com/i, type: "music", icon: "🎵", label: "Spotify" },
+  { pattern: /apple\.com\/music/i, type: "music", icon: "🎵", label: "Apple Music" },
+  { pattern: /soundcloud\.com/i, type: "music", icon: "🎧", label: "SoundCloud" },
+  { pattern: /tiktok\.com/i, type: "video", icon: "🎬", label: "TikTok" },
+  { pattern: /github\.com/i, type: "portfolio", icon: "💻", label: "GitHub" },
+  { pattern: /dribbble\.com/i, type: "portfolio", icon: "🎨", label: "Dribbble" },
+  { pattern: /behance\.net/i, type: "portfolio", icon: "🎨", label: "Behance" },
+  { pattern: /medium\.com/i, type: "custom", icon: "📝", label: "Medium" },
+  { pattern: /wa\.me|whatsapp/i, type: "custom", icon: "💬", label: "WhatsApp" },
+  { pattern: /t\.me|telegram/i, type: "custom", icon: "✈️", label: "Telegram" },
+  { pattern: /calendly\.com|cal\.com/i, type: "booking", icon: "📅", label: "Booking" },
+  { pattern: /gofundme|buymeacoffee|ko-fi/i, type: "custom", icon: "☕", label: "Support" },
+  { pattern: /shopify|etsy|amazon/i, type: "store", icon: "🛍️", label: "Store" },
+  { pattern: /docs\.google|notion\.so/i, type: "custom", icon: "📄", label: "Document" },
+  { pattern: /discord\.gg|discord\.com/i, type: "custom", icon: "💬", label: "Discord" },
+  { pattern: /twitch\.tv/i, type: "video", icon: "🎮", label: "Twitch" },
+  { pattern: /podcast|anchor\.fm|podcasters/i, type: "music", icon: "🎙️", label: "Podcast" },
+];
+
+export function detectLinkType(url: string): { type: string; icon: string; label: string } | null {
+  if (!url) return null;
+  for (const { pattern, type, icon, label } of URL_PATTERNS) {
+    if (pattern.test(url)) return { type, icon, label };
+  }
+  return null;
+}
