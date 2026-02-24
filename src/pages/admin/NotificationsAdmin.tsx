@@ -25,8 +25,9 @@ import {
   Bell, Send, Plus, Mail, MessageSquare, Smartphone, Clock, Check, X,
   AlertCircle, BarChart3, RefreshCw, Megaphone, Search, Filter, ChevronDown,
   ChevronUp, Trash2, RotateCcw, Eye, Users, Zap, Target, TrendingUp,
-  CheckSquare, XSquare, Download,
+  CheckSquare, XSquare, Download, Sparkles,
 } from "lucide-react";
+import { SmartNotificationRules } from "@/components/admin/SmartNotificationRules";
 
 // ─── Types ─────────────────────────────────────────────────
 interface Segment {
@@ -415,6 +416,7 @@ export default function NotificationsAdmin() {
       <Tabs defaultValue="recent">
         <TabsList>
           <TabsTrigger value="recent" className="gap-1.5"><Bell className="h-3.5 w-3.5" />{isAr ? "الأخيرة" : "Recent"}</TabsTrigger>
+          <TabsTrigger value="smart-rules" className="gap-1.5"><Sparkles className="h-3.5 w-3.5" />{isAr ? "القواعد الذكية" : "Smart Rules"}</TabsTrigger>
           <TabsTrigger value="queue" className="gap-1.5"><Send className="h-3.5 w-3.5" />{isAr ? "التوصيل" : "Queue"}</TabsTrigger>
           <TabsTrigger value="analytics" className="gap-1.5"><BarChart3 className="h-3.5 w-3.5" />{isAr ? "التحليلات" : "Analytics"}</TabsTrigger>
           <TabsTrigger value="templates" className="gap-1.5"><Zap className="h-3.5 w-3.5" />{isAr ? "القوالب" : "Templates"}</TabsTrigger>
@@ -550,6 +552,11 @@ export default function NotificationsAdmin() {
               )}
             </CardContent>
           </Card>
+        </TabsContent>
+
+        {/* ═══ SMART RULES TAB ═══ */}
+        <TabsContent value="smart-rules" className="mt-6">
+          <SmartNotificationRules />
         </TabsContent>
 
         {/* ═══ QUEUE TAB ═══ */}

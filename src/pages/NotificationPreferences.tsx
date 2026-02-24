@@ -10,19 +10,14 @@ import { Switch } from "@/components/ui/switch";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { useToast } from "@/components/ui/use-toast";
 import {
-  Bell,
-  Mail,
-  MessageSquare,
-  Smartphone,
-  Megaphone,
-  Trophy,
-  FileText,
-  Users,
-  ShieldCheck,
-  Settings2,
-  Info,
+  Bell, Mail, MessageSquare, Smartphone, Megaphone,
+  Trophy, FileText, Users, ShieldCheck, Settings2, Info,
+  Moon, Clock, Zap,
 } from "lucide-react";
 import type { Database } from "@/integrations/supabase/types";
 
@@ -32,6 +27,10 @@ interface NotificationPreference {
   id: string;
   channel: NotificationChannel;
   enabled: boolean;
+  quiet_hours_start: string | null;
+  quiet_hours_end: string | null;
+  digest_frequency: string | null;
+  muted_types: string[] | null;
 }
 
 const CHANNELS: { channel: NotificationChannel; label: string; labelAr: string; desc: string; descAr: string; icon: React.ElementType }[] = [
@@ -47,6 +46,15 @@ const NOTIFICATION_CATEGORIES = [
   { key: "invoices", label: "Billing & Payments", labelAr: "الفواتير والمدفوعات", desc: "Invoices, receipts, and payment confirmations", descAr: "الفواتير والإيصالات وتأكيدات الدفع", icon: FileText },
   { key: "community", label: "Community & Social", labelAr: "المجتمع والتواصل", desc: "Posts, comments, mentions, and group activity", descAr: "المنشورات والتعليقات والإشارات", icon: Users },
   { key: "security", label: "Security & Account", labelAr: "الأمان والحساب", desc: "Login alerts, password changes, and sessions", descAr: "تنبيهات الدخول وتغيير كلمة المرور", icon: ShieldCheck },
+  { key: "exhibitions", label: "Exhibitions & Trade Shows", labelAr: "المعارض والأحداث التجارية", desc: "Exhibition updates, booth assignments, schedules", descAr: "تحديثات المعارض والأجنحة والجداول", icon: Megaphone },
+  { key: "orders", label: "Orders & Shipping", labelAr: "الطلبات والشحن", desc: "Order confirmations, tracking, and delivery", descAr: "تأكيدات الطلبات والتتبع والتسليم", icon: FileText },
+];
+
+const DIGEST_OPTIONS = [
+  { value: "realtime", label: "Real-time", labelAr: "فوري" },
+  { value: "hourly", label: "Hourly digest", labelAr: "ملخص كل ساعة" },
+  { value: "daily", label: "Daily digest", labelAr: "ملخص يومي" },
+  { value: "weekly", label: "Weekly digest", labelAr: "ملخص أسبوعي" },
 ];
 
 export default function NotificationPreferences() {
@@ -57,6 +65,11 @@ export default function NotificationPreferences() {
   const [preferences, setPreferences] = useState<NotificationPreference[]>([]);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState<string | null>(null);
+  const [mutedTypes, setMutedTypes] = useState<Set<string>>(new Set());
+  const [quietStart, setQuietStart] = useState("22:00");
+  const [quietEnd, setQuietEnd] = useState("08:00");
+  const [quietEnabled, setQuietEnabled] = useState(false);
+  const [digestFrequency, setDigestFrequency] = useState("realtime");
 
   useEffect(() => {
     if (!user) return;
@@ -73,13 +86,27 @@ export default function NotificationPreferences() {
 
       const existingChannels = new Set(data?.map((p) => p.channel) || []);
       const allPreferences: NotificationPreference[] = [];
-      if (data) allPreferences.push(...data);
+      if (data) allPreferences.push(...(data as NotificationPreference[]));
 
       for (const ch of CHANNELS) {
         if (!existingChannels.has(ch.channel)) {
-          allPreferences.push({ id: `new_${ch.channel}`, channel: ch.channel, enabled: ch.channel === "in_app" });
+          allPreferences.push({ id: `new_${ch.channel}`, channel: ch.channel, enabled: ch.channel === "in_app", quiet_hours_start: null, quiet_hours_end: null, digest_frequency: null, muted_types: null });
         }
       }
+
+      // Load quiet hours & digest from first existing record
+      const firstExisting = data?.find(p => p.quiet_hours_start);
+      if (firstExisting) {
+        setQuietStart((firstExisting as any).quiet_hours_start || "22:00");
+        setQuietEnd((firstExisting as any).quiet_hours_end || "08:00");
+        setQuietEnabled(true);
+      }
+      const digestPref = data?.find(p => (p as any).digest_frequency);
+      if (digestPref) setDigestFrequency((digestPref as any).digest_frequency || "realtime");
+
+      // Load muted types
+      const mutedPref = data?.find(p => (p as any).muted_types?.length > 0);
+      if (mutedPref) setMutedTypes(new Set((mutedPref as any).muted_types || []));
 
       setPreferences(allPreferences.sort((a, b) => {
         const aIdx = CHANNELS.findIndex((c) => c.channel === a.channel);
@@ -110,6 +137,72 @@ export default function NotificationPreferences() {
       toast({ title: isAr ? "خطأ" : "Error", description: isAr ? "فشل التحديث" : "Update failed", variant: "destructive" });
     } finally {
       setSaving(null);
+    }
+  };
+
+  const handleQuietHoursChange = async (enabled: boolean) => {
+    setQuietEnabled(enabled);
+    setSaving("quiet");
+    try {
+      const inAppPref = preferences.find(p => p.channel === "in_app" && !p.id.startsWith("new_"));
+      if (inAppPref) {
+        await supabase.from("notification_preferences").update({
+          quiet_hours_start: enabled ? quietStart : null,
+          quiet_hours_end: enabled ? quietEnd : null,
+        }).eq("id", inAppPref.id).eq("user_id", user?.id);
+      }
+      toast({ title: isAr ? "تم الحفظ" : "Saved" });
+    } catch {
+      toast({ title: isAr ? "خطأ" : "Error", variant: "destructive" });
+    } finally {
+      setSaving(null);
+    }
+  };
+
+  const handleQuietTimeUpdate = async (field: "start" | "end", value: string) => {
+    if (field === "start") setQuietStart(value);
+    else setQuietEnd(value);
+    if (!quietEnabled) return;
+    const inAppPref = preferences.find(p => p.channel === "in_app" && !p.id.startsWith("new_"));
+    if (inAppPref) {
+      await supabase.from("notification_preferences").update({
+        quiet_hours_start: field === "start" ? value : quietStart,
+        quiet_hours_end: field === "end" ? value : quietEnd,
+      }).eq("id", inAppPref.id).eq("user_id", user?.id);
+    }
+  };
+
+  const handleDigestChange = async (value: string) => {
+    setDigestFrequency(value);
+    setSaving("digest");
+    try {
+      const emailPref = preferences.find(p => p.channel === "email" && !p.id.startsWith("new_"));
+      if (emailPref) {
+        await supabase.from("notification_preferences").update({ digest_frequency: value }).eq("id", emailPref.id).eq("user_id", user?.id);
+      }
+      toast({ title: isAr ? "تم الحفظ" : "Saved" });
+    } catch {
+      toast({ title: isAr ? "خطأ" : "Error", variant: "destructive" });
+    } finally {
+      setSaving(null);
+    }
+  };
+
+  const handleCategoryToggle = async (categoryKey: string, enabled: boolean) => {
+    const newMuted = new Set(mutedTypes);
+    if (enabled) newMuted.delete(categoryKey);
+    else newMuted.add(categoryKey);
+    setMutedTypes(newMuted);
+
+    try {
+      const inAppPref = preferences.find(p => p.channel === "in_app" && !p.id.startsWith("new_"));
+      if (inAppPref) {
+        await supabase.from("notification_preferences").update({
+          muted_types: Array.from(newMuted),
+        }).eq("id", inAppPref.id).eq("user_id", user?.id);
+      }
+    } catch {
+      toast({ title: isAr ? "خطأ" : "Error", variant: "destructive" });
     }
   };
 
@@ -199,6 +292,74 @@ export default function NotificationPreferences() {
             </CardContent>
           </Card>
 
+          {/* Quiet Hours */}
+          <Card>
+            <CardHeader className="pb-3">
+              <CardTitle className="text-base flex items-center gap-2">
+                <Moon className="h-4 w-4 text-primary" />
+                {isAr ? "ساعات الهدوء" : "Quiet Hours"}
+              </CardTitle>
+              <CardDescription className="text-xs">
+                {isAr ? "إيقاف الإشعارات مؤقتاً خلال فترة محددة" : "Pause notifications during a set time period"}
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <div className={`flex h-9 w-9 items-center justify-center rounded-lg transition-colors ${quietEnabled ? "bg-primary/10" : "bg-muted"}`}>
+                    <Clock className={`h-4 w-4 transition-colors ${quietEnabled ? "text-primary" : "text-muted-foreground"}`} />
+                  </div>
+                  <div>
+                    <p className="text-sm font-medium">{isAr ? "تفعيل ساعات الهدوء" : "Enable Quiet Hours"}</p>
+                    <p className="text-xs text-muted-foreground">
+                      {isAr ? "لن تتلقى إشعارات خلال هذه الفترة" : "No notifications during this period"}
+                    </p>
+                  </div>
+                </div>
+                <Switch checked={quietEnabled} onCheckedChange={handleQuietHoursChange} disabled={saving === "quiet"} />
+              </div>
+              {quietEnabled && (
+                <div className="grid grid-cols-2 gap-4 ps-12">
+                  <div className="space-y-1.5">
+                    <Label className="text-xs">{isAr ? "من" : "From"}</Label>
+                    <Input type="time" value={quietStart} onChange={(e) => handleQuietTimeUpdate("start", e.target.value)} className="h-9" />
+                  </div>
+                  <div className="space-y-1.5">
+                    <Label className="text-xs">{isAr ? "إلى" : "To"}</Label>
+                    <Input type="time" value={quietEnd} onChange={(e) => handleQuietTimeUpdate("end", e.target.value)} className="h-9" />
+                  </div>
+                </div>
+              )}
+            </CardContent>
+          </Card>
+
+          {/* Digest Frequency */}
+          <Card>
+            <CardHeader className="pb-3">
+              <CardTitle className="text-base flex items-center gap-2">
+                <Zap className="h-4 w-4 text-primary" />
+                {isAr ? "تردد الملخصات" : "Digest Frequency"}
+              </CardTitle>
+              <CardDescription className="text-xs">
+                {isAr ? "كيف تريد تلقي ملخصات الإشعارات عبر البريد؟" : "How often should we send email digests?"}
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <Select value={digestFrequency} onValueChange={handleDigestChange} disabled={saving === "digest"}>
+                <SelectTrigger className="max-w-xs">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  {DIGEST_OPTIONS.map(opt => (
+                    <SelectItem key={opt.value} value={opt.value}>
+                      {isAr ? opt.labelAr : opt.label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </CardContent>
+          </Card>
+
           {/* Notification Categories */}
           <Card>
             <CardHeader className="pb-3">
@@ -213,20 +374,25 @@ export default function NotificationPreferences() {
             <CardContent className="space-y-0">
               {NOTIFICATION_CATEGORIES.map((cat, idx) => {
                 const Icon = cat.icon;
+                const isMuted = mutedTypes.has(cat.key);
                 return (
                   <div key={cat.key}>
                     {idx > 0 && <Separator />}
                     <label className="flex items-center justify-between py-3.5 cursor-pointer" htmlFor={`cat-${cat.key}`}>
                       <div className="flex items-center gap-3">
-                        <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary/10">
-                          <Icon className="h-4 w-4 text-primary" />
+                        <div className={`flex h-9 w-9 items-center justify-center rounded-lg transition-colors ${!isMuted ? "bg-primary/10" : "bg-muted"}`}>
+                          <Icon className={`h-4 w-4 transition-colors ${!isMuted ? "text-primary" : "text-muted-foreground"}`} />
                         </div>
                         <div>
                           <p className="text-sm font-medium">{isAr ? cat.labelAr : cat.label}</p>
                           <p className="text-xs text-muted-foreground">{isAr ? cat.descAr : cat.desc}</p>
                         </div>
                       </div>
-                      <Switch id={`cat-${cat.key}`} defaultChecked />
+                      <Switch
+                        id={`cat-${cat.key}`}
+                        checked={!isMuted}
+                        onCheckedChange={(enabled) => handleCategoryToggle(cat.key, enabled)}
+                      />
                     </label>
                   </div>
                 );
