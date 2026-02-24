@@ -1,0 +1,192 @@
+import { memo } from "react";
+import { Link } from "react-router-dom";
+import { Card, CardContent } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import {
+  Calendar, Users, Trophy, Landmark, Target, ImageIcon, Building,
+  Star, Award,
+} from "lucide-react";
+import { toEnglishDigits } from "@/lib/formatNumber";
+import { differenceInDays, format, isFuture, isWithinInterval } from "date-fns";
+
+interface ScheduleItem {
+  time?: string; title?: string; title_ar?: string;
+  description?: string; description_ar?: string;
+}
+interface Section { name?: string; name_ar?: string; description?: string; description_ar?: string; }
+interface SponsorInfo { name?: string; name_ar?: string; tier?: string; logo_url?: string; }
+
+const TIER_CONFIG: Record<string, { gradient: string; order: number }> = {
+  patron: { gradient: "from-chart-4/20 to-chart-4/5", order: 0 },
+  platinum: { gradient: "from-chart-3/20 to-chart-3/5", order: 1 },
+  gold: { gradient: "from-chart-4/20 to-chart-4/5", order: 2 },
+  partner: { gradient: "from-primary/20 to-primary/5", order: 3 },
+  silver: { gradient: "from-muted-foreground/20 to-muted-foreground/5", order: 4 },
+  bronze: { gradient: "from-chart-2/20 to-chart-2/5", order: 5 },
+};
+
+interface Props {
+  exhibition: any;
+  title: string;
+  description: string | null;
+  isAr: boolean;
+  linkedCompetitions: any[] | undefined;
+  sections: Section[];
+  targetAudience: string[];
+  galleryUrls: string[];
+  onSetActiveTab: (tab: string) => void;
+  onLightboxOpen: (i: number) => void;
+}
+
+export const ExhibitionOverviewTab = memo(function ExhibitionOverviewTab({
+  exhibition, title, description, isAr, linkedCompetitions,
+  sections, targetAudience, galleryUrls,
+  onSetActiveTab, onLightboxOpen,
+}: Props) {
+  const start = new Date(exhibition.start_date);
+  const end = new Date(exhibition.end_date);
+  const hasCompetitions = linkedCompetitions && linkedCompetitions.length > 0;
+  const hasGallery = galleryUrls.length > 0;
+
+  return (
+    <div className="space-y-6">
+      {/* Key Highlights */}
+      <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+        {[
+          { icon: Calendar, value: differenceInDays(end, start) + 1, label: isAr ? "أيام" : "Days", color: "primary" },
+          { icon: Trophy, value: linkedCompetitions?.length || 0, label: isAr ? "مسابقات" : "Competitions", color: "chart-4" },
+          { icon: Users, value: exhibition.max_attendees ? toEnglishDigits(exhibition.max_attendees.toLocaleString()) : "—", label: isAr ? "سعة" : "Capacity", color: "chart-3" },
+          { icon: Landmark, value: sections.length || "—", label: isAr ? "أقسام" : "Sections", color: "accent" },
+        ].map((item) => {
+          const Icon = item.icon;
+          return (
+            <div key={item.label} className={`rounded-xl border border-${item.color}/15 bg-gradient-to-br from-${item.color}/10 via-${item.color}/5 to-transparent p-4 text-center`}>
+              <Icon className={`mx-auto mb-1.5 h-5 w-5 text-${item.color}`} />
+              <p className="text-lg font-bold text-foreground">{item.value}</p>
+              <p className="text-[10px] font-medium uppercase tracking-wider text-muted-foreground">{item.label}</p>
+            </div>
+          );
+        })}
+      </div>
+
+      {description && (
+        <Card className="border-s-[3px] border-s-primary/40">
+          <CardContent className="prose prose-sm max-w-none p-4 md:p-6 dark:prose-invert">
+            <p className="whitespace-pre-wrap leading-relaxed">{description}</p>
+          </CardContent>
+        </Card>
+      )}
+
+      {sections.length > 0 && (
+        <Card className="overflow-hidden">
+          <div className="border-b bg-muted/30 px-4 py-3">
+            <h3 className="flex items-center gap-2 font-semibold text-sm">
+              <div className="flex h-6 w-6 items-center justify-center rounded-md bg-primary/10"><Landmark className="h-3.5 w-3.5 text-primary" /></div>
+              {isAr ? "أقسام الحدث" : "Event Sections"}
+            </h3>
+          </div>
+          <CardContent className="p-4">
+            <div className="grid gap-3 sm:grid-cols-2">
+              {sections.map((section, i) => (
+                <div key={i} className="rounded-lg border p-3">
+                  <p className="font-medium text-sm">{isAr && section.name_ar ? section.name_ar : section.name}</p>
+                  {(section.description || section.description_ar) && (
+                    <p className="mt-1 text-xs text-muted-foreground">{isAr && section.description_ar ? section.description_ar : section.description}</p>
+                  )}
+                </div>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
+      {hasCompetitions && (
+        <Card className="overflow-hidden">
+          <div className="border-b bg-gradient-to-r from-primary/10 via-primary/5 to-transparent px-4 py-3 flex items-center justify-between">
+            <h3 className="flex items-center gap-2 font-semibold text-sm">
+              <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-gradient-to-br from-primary/20 to-chart-4/20"><Trophy className="h-3.5 w-3.5 text-primary" /></div>
+              {isAr ? "المسابقات المرتبطة" : "Linked Competitions"}
+              <Badge className="ms-1 bg-primary/10 text-primary border-primary/20">{linkedCompetitions!.length}</Badge>
+            </h3>
+            <Button variant="ghost" size="sm" className="text-xs text-primary hover:text-primary" onClick={() => onSetActiveTab("competitions")}>{isAr ? "عرض الكل →" : "View All →"}</Button>
+          </div>
+          <CardContent className="p-4">
+            <div className="space-y-2.5">
+              {linkedCompetitions!.slice(0, 3).map((comp: any) => {
+                const compTitle = isAr && comp.title_ar ? comp.title_ar : comp.title;
+                const regCount = comp.competition_registrations?.length || 0;
+                const compStart = new Date(comp.competition_start);
+                const compEnd = new Date(comp.competition_end);
+                const compIsLive = isWithinInterval(new Date(), { start: compStart, end: compEnd });
+                const compIsUpcoming = isFuture(compStart);
+                return (
+                  <Link key={comp.id} to={`/competitions/${comp.id}`} className="flex items-center gap-3 rounded-xl border border-border/60 p-3 hover:bg-primary/5 hover:border-primary/20 transition-all group">
+                    {comp.cover_image_url ? (
+                      <img src={comp.cover_image_url} alt={compTitle} className="h-12 w-12 rounded-lg object-cover shrink-0 ring-1 ring-border" loading="lazy" />
+                    ) : (
+                      <div className="h-12 w-12 rounded-lg bg-gradient-to-br from-primary/10 to-chart-4/10 flex items-center justify-center shrink-0"><Trophy className="h-5 w-5 text-primary/40" /></div>
+                    )}
+                    <div className="min-w-0 flex-1">
+                      <p className="text-sm font-semibold truncate group-hover:text-primary transition-colors">{compTitle}</p>
+                      <div className="flex items-center gap-2 mt-0.5">
+                        <span className="text-[10px] text-muted-foreground">{format(compStart, "MMM d, yyyy")}</span>
+                        {compIsLive && <Badge className="h-4 px-1.5 text-[8px] bg-destructive text-destructive-foreground border-none">{isAr ? "مباشر" : "LIVE"}</Badge>}
+                        {compIsUpcoming && <Badge variant="outline" className="h-4 px-1.5 text-[8px] border-primary/30 text-primary">{isAr ? "قادم" : "Soon"}</Badge>}
+                      </div>
+                    </div>
+                    <div className="text-end shrink-0">
+                      <p className="text-xs font-bold text-primary">{regCount}</p>
+                      <p className="text-[9px] text-muted-foreground">{isAr ? "مسجل" : "entries"}</p>
+                    </div>
+                  </Link>
+                );
+              })}
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
+      {targetAudience.length > 0 && (
+        <Card className="overflow-hidden">
+          <div className="border-b bg-muted/30 px-4 py-3">
+            <h3 className="flex items-center gap-2 font-semibold text-sm">
+              <div className="flex h-6 w-6 items-center justify-center rounded-md bg-muted/60"><Target className="h-3.5 w-3.5 text-muted-foreground" /></div>
+              {isAr ? "الفئة المستهدفة" : "Target Audience"}
+            </h3>
+          </div>
+          <CardContent className="p-4">
+            <div className="flex flex-wrap gap-2">
+              {targetAudience.map((a) => <Badge key={a} variant="outline" className="py-1.5 capitalize">{a.replace(/_/g, " ")}</Badge>)}
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
+      {hasGallery && (
+        <Card className="overflow-hidden">
+          <div className="border-b bg-muted/30 px-4 py-3 flex items-center justify-between">
+            <h3 className="flex items-center gap-2 font-semibold text-sm">
+              <div className="flex h-6 w-6 items-center justify-center rounded-md bg-primary/10"><ImageIcon className="h-3.5 w-3.5 text-primary" /></div>
+              {isAr ? "معرض الصور" : "Gallery"}
+            </h3>
+            <Button variant="ghost" size="sm" className="text-xs" onClick={() => onSetActiveTab("gallery")}>{isAr ? "عرض الكل" : "View All"}</Button>
+          </div>
+          <CardContent className="p-4">
+            <div className="grid grid-cols-3 gap-2">
+              {galleryUrls.slice(0, 6).map((url, i) => (
+                <button key={i} onClick={() => onLightboxOpen(i)} className="group relative aspect-[4/3] overflow-hidden rounded-lg">
+                  <img src={url} alt={`${title} ${i + 1}`} className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-110" loading="lazy" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+                  {i === 5 && galleryUrls.length > 6 && (
+                    <div className="absolute inset-0 flex items-center justify-center bg-black/40 text-white font-bold text-sm">+{galleryUrls.length - 6}</div>
+                  )}
+                </button>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
+      )}
+    </div>
+  );
+});
