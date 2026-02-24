@@ -22,6 +22,7 @@ import { OfflineBanner } from "@/components/pwa/OfflineBanner";
 import { UpdatePrompt } from "@/components/pwa/UpdatePrompt";
 import { IOSInstallGuide } from "@/components/pwa/IOSInstallGuide";
 import { PullToRefreshIndicator } from "@/components/pwa/PullToRefreshIndicator";
+import { ResourceHints } from "@/components/performance/ResourceHints";
 import { usePullToRefresh } from "@/hooks/usePullToRefresh";
 
 const LiveChatWidget = lazy(() => import("@/components/crm/LiveChatWidget").then(m => ({ default: m.LiveChatWidget })));
@@ -98,6 +99,7 @@ const App = () => (
             <Toaster />
             <Sonner />
             <BrowserRouter>
+              <ResourceHints />
               <AppContent />
             </BrowserRouter>
           </TooltipProvider>
