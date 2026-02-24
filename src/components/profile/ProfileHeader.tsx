@@ -10,6 +10,7 @@ import { countryFlag } from "@/lib/countryFlag";
 import { VerifiedBadge } from "@/components/verification/VerifiedBadge";
 import { toEnglishDigits } from "@/lib/formatNumber";
 import { Link } from "react-router-dom";
+import { buildPublicUrl } from "@/lib/publicAppUrl";
 
 interface ProfileHeaderProps {
   profile: any;
@@ -27,7 +28,7 @@ export function ProfileHeader({ profile, roles, userId, onProfileUpdate }: Profi
   const [uploading, setUploading] = useState(false);
   const [linkCopied, setLinkCopied] = useState(false);
 
-  const linksUrl = profile?.username ? `https://altoha.com/${profile.username}/links` : "";
+  const linksUrl = profile?.username ? buildPublicUrl(`/${profile.username}/links`) : "";
   const linksPath = profile?.username ? `/${profile.username}/links` : "";
 
   const copyLinksUrl = async () => {

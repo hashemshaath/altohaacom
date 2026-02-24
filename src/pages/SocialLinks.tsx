@@ -15,6 +15,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useState, useEffect } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
+import { buildPublicUrl } from "@/lib/publicAppUrl";
 
 const SOCIAL_ICONS: Record<string, { icon: typeof Instagram; label: string; urlPrefix?: string; gradient: string }> = {
   instagram: { icon: Instagram, label: "Instagram", urlPrefix: "https://instagram.com/", gradient: "from-pink-500 to-purple-600" },
@@ -109,7 +110,8 @@ export default function SocialLinks() {
   };
 
   const copyLink = async () => {
-    await navigator.clipboard.writeText(`https://altoha.com/${username}/links`);
+    if (!username) return;
+    await navigator.clipboard.writeText(buildPublicUrl(`/${username}/links`));
     setCopied(true);
     toast({ title: isAr ? "تم نسخ الرابط" : "Link copied!" });
     setTimeout(() => setCopied(false), 2000);
@@ -118,7 +120,7 @@ export default function SocialLinks() {
   const shareNative = async () => {
     if (navigator.share) {
       try {
-        await navigator.share({ title: `${username} - Altoha`, url: `https://altoha.com/${username}/links` });
+        await navigator.share({ title: `${username} - Altoha`, url: buildPublicUrl(`/${username}/links`) });
       } catch {}
     } else {
       copyLink();

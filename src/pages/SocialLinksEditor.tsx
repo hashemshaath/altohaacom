@@ -27,6 +27,7 @@ import {
   BarChart3, MousePointerClick, Pencil, Instagram, Twitter,
   Facebook, Linkedin, Youtube, Smartphone, Type, EyeOff, Settings2
 } from "lucide-react";
+import { buildPublicUrl } from "@/lib/publicAppUrl";
 
 const THEMES = [
   { id: "default", label: "Default", labelAr: "افتراضي", preview: "bg-gradient-to-br from-background to-muted/30" },
@@ -233,7 +234,7 @@ export default function SocialLinksEditor() {
 
   const copyLink = async () => {
     if (!profile?.username) return;
-    await navigator.clipboard.writeText(`https://altoha.com/${profile.username}/links`);
+    await navigator.clipboard.writeText(buildPublicUrl(`/${profile.username}/links`));
     setCopied(true);
     toast({ title: isAr ? "تم نسخ الرابط" : "Link copied!" });
     setTimeout(() => setCopied(false), 2000);
@@ -241,7 +242,7 @@ export default function SocialLinksEditor() {
 
   const totalClicks = items.reduce((sum, item) => sum + (item.click_count || 0), 0);
   const previewUrl = profile?.username ? `/${profile.username}/links` : "#";
-  const fullUrl = profile?.username ? `https://altoha.com/${profile.username}/links` : "";
+  const fullUrl = profile?.username ? buildPublicUrl(`/${profile.username}/links`) : "";
   const displayName = profile?.display_name || profile?.full_name || profile?.username || "";
 
   const socialLinks = profile ? [
