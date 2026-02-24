@@ -13173,20 +13173,32 @@ export type Database = {
       notification_preferences: {
         Row: {
           channel: Database["public"]["Enums"]["notification_channel"]
+          digest_frequency: string | null
           enabled: boolean | null
           id: string
+          muted_types: string[] | null
+          quiet_hours_end: string | null
+          quiet_hours_start: string | null
           user_id: string
         }
         Insert: {
           channel: Database["public"]["Enums"]["notification_channel"]
+          digest_frequency?: string | null
           enabled?: boolean | null
           id?: string
+          muted_types?: string[] | null
+          quiet_hours_end?: string | null
+          quiet_hours_start?: string | null
           user_id: string
         }
         Update: {
           channel?: Database["public"]["Enums"]["notification_channel"]
+          digest_frequency?: string | null
           enabled?: boolean | null
           id?: string
+          muted_types?: string[] | null
+          quiet_hours_end?: string | null
+          quiet_hours_start?: string | null
           user_id?: string
         }
         Relationships: []
@@ -15510,6 +15522,50 @@ export type Database = {
           },
         ]
       }
+      report_exports: {
+        Row: {
+          created_at: string
+          exported_by: string
+          file_url: string | null
+          filters: Json | null
+          format: string
+          id: string
+          report_id: string | null
+          report_type: string
+          row_count: number | null
+        }
+        Insert: {
+          created_at?: string
+          exported_by: string
+          file_url?: string | null
+          filters?: Json | null
+          format?: string
+          id?: string
+          report_id?: string | null
+          report_type: string
+          row_count?: number | null
+        }
+        Update: {
+          created_at?: string
+          exported_by?: string
+          file_url?: string | null
+          filters?: Json | null
+          format?: string
+          id?: string
+          report_id?: string | null
+          report_type?: string
+          row_count?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "report_exports_report_id_fkey"
+            columns: ["report_id"]
+            isOneToOne: false
+            referencedRelation: "saved_reports"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       requirement_delivery_logs: {
         Row: {
           action: string
@@ -16256,6 +16312,51 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      saved_reports: {
+        Row: {
+          columns: string[] | null
+          created_at: string
+          created_by: string
+          filters: Json | null
+          id: string
+          is_active: boolean | null
+          last_generated_at: string | null
+          name: string
+          name_ar: string | null
+          report_type: string
+          schedule: string | null
+          updated_at: string
+        }
+        Insert: {
+          columns?: string[] | null
+          created_at?: string
+          created_by: string
+          filters?: Json | null
+          id?: string
+          is_active?: boolean | null
+          last_generated_at?: string | null
+          name: string
+          name_ar?: string | null
+          report_type: string
+          schedule?: string | null
+          updated_at?: string
+        }
+        Update: {
+          columns?: string[] | null
+          created_at?: string
+          created_by?: string
+          filters?: Json | null
+          id?: string
+          is_active?: boolean | null
+          last_generated_at?: string | null
+          name?: string
+          name_ar?: string | null
+          report_type?: string
+          schedule?: string | null
+          updated_at?: string
+        }
+        Relationships: []
       }
       seo_ai_models: {
         Row: {
