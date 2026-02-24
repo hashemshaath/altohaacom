@@ -8518,6 +8518,102 @@ export type Database = {
           },
         ]
       }
+      exhibition_cooking_sessions: {
+        Row: {
+          actual_end: string | null
+          actual_start: string | null
+          booth_id: string | null
+          chef_id: string
+          created_at: string
+          created_by: string | null
+          cuisine_type: string | null
+          description: string | null
+          description_ar: string | null
+          difficulty: string | null
+          equipment: string[] | null
+          exhibition_id: string
+          id: string
+          ingredients: string[] | null
+          is_featured: boolean | null
+          max_audience: number | null
+          scheduled_end: string
+          scheduled_start: string
+          status: string | null
+          stream_url: string | null
+          thumbnail_url: string | null
+          title: string
+          title_ar: string | null
+          updated_at: string
+        }
+        Insert: {
+          actual_end?: string | null
+          actual_start?: string | null
+          booth_id?: string | null
+          chef_id: string
+          created_at?: string
+          created_by?: string | null
+          cuisine_type?: string | null
+          description?: string | null
+          description_ar?: string | null
+          difficulty?: string | null
+          equipment?: string[] | null
+          exhibition_id: string
+          id?: string
+          ingredients?: string[] | null
+          is_featured?: boolean | null
+          max_audience?: number | null
+          scheduled_end: string
+          scheduled_start: string
+          status?: string | null
+          stream_url?: string | null
+          thumbnail_url?: string | null
+          title: string
+          title_ar?: string | null
+          updated_at?: string
+        }
+        Update: {
+          actual_end?: string | null
+          actual_start?: string | null
+          booth_id?: string | null
+          chef_id?: string
+          created_at?: string
+          created_by?: string | null
+          cuisine_type?: string | null
+          description?: string | null
+          description_ar?: string | null
+          difficulty?: string | null
+          equipment?: string[] | null
+          exhibition_id?: string
+          id?: string
+          ingredients?: string[] | null
+          is_featured?: boolean | null
+          max_audience?: number | null
+          scheduled_end?: string
+          scheduled_start?: string
+          status?: string | null
+          stream_url?: string | null
+          thumbnail_url?: string | null
+          title?: string
+          title_ar?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "exhibition_cooking_sessions_booth_id_fkey"
+            columns: ["booth_id"]
+            isOneToOne: false
+            referencedRelation: "exhibition_booths"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "exhibition_cooking_sessions_exhibition_id_fkey"
+            columns: ["exhibition_id"]
+            isOneToOne: false
+            referencedRelation: "exhibitions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       exhibition_documents: {
         Row: {
           category: string
@@ -9028,6 +9124,82 @@ export type Database = {
             columns: ["schedule_item_id"]
             isOneToOne: false
             referencedRelation: "exhibition_schedule_items"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      exhibition_session_interactions: {
+        Row: {
+          content: string | null
+          created_at: string
+          emoji: string | null
+          id: string
+          is_answered: boolean | null
+          is_pinned: boolean | null
+          session_id: string
+          type: string
+          user_id: string
+        }
+        Insert: {
+          content?: string | null
+          created_at?: string
+          emoji?: string | null
+          id?: string
+          is_answered?: boolean | null
+          is_pinned?: boolean | null
+          session_id: string
+          type?: string
+          user_id: string
+        }
+        Update: {
+          content?: string | null
+          created_at?: string
+          emoji?: string | null
+          id?: string
+          is_answered?: boolean | null
+          is_pinned?: boolean | null
+          session_id?: string
+          type?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "exhibition_session_interactions_session_id_fkey"
+            columns: ["session_id"]
+            isOneToOne: false
+            referencedRelation: "exhibition_cooking_sessions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      exhibition_session_registrations: {
+        Row: {
+          attended: boolean | null
+          id: string
+          registered_at: string
+          session_id: string
+          user_id: string
+        }
+        Insert: {
+          attended?: boolean | null
+          id?: string
+          registered_at?: string
+          session_id: string
+          user_id: string
+        }
+        Update: {
+          attended?: boolean | null
+          id?: string
+          registered_at?: string
+          session_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "exhibition_session_registrations_session_id_fkey"
+            columns: ["session_id"]
+            isOneToOne: false
+            referencedRelation: "exhibition_cooking_sessions"
             referencedColumns: ["id"]
           },
         ]
