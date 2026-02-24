@@ -39,11 +39,16 @@ export function useSocialLinkPageByUsername(username?: string) {
   return useQuery({
     queryKey: ["social-link-page-public", username],
     queryFn: async () => {
+      const normalizedUsername = (username ?? "").trim().replace(/^@/, "");
+      if (!normalizedUsername) throw new Error("Username missing");
+
       // First get user_id from profiles_public
       const { data: profile, error: pErr } = await supabase
         .from("profiles_public")
-        .select("user_id, username, full_name, full_name_ar, display_name, display_name_ar, avatar_url, cover_image_url, bio, bio_ar, instagram, twitter, facebook, linkedin, youtube, tiktok, snapchat, website, specialization, specialization_ar, city, country_code, nationality, years_of_experience, is_verified, verification_badge, membership_tier, job_title, job_title_ar, global_awards, view_count")
-        .eq("username", username!.toLowerCase())
+        .select(
+          "user_id, username, full_name, full_name_ar, display_name, display_name_ar, avatar_url, cover_image_url, bio, bio_ar, instagram, twitter, facebook, linkedin, youtube, tiktok, snapchat, website, specialization, specialization_ar, city, country_code, nationality, years_of_experience, is_verified, verification_badge, membership_tier, job_title, job_title_ar, global_awards, view_count"
+        )
+        .ilike("username", normalizedUsername)
         .maybeSingle();
       if (pErr) throw pErr;
       if (!profile) throw new Error("Profile not found");
