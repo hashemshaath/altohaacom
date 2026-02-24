@@ -2,12 +2,13 @@ import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Eye, Users, Ticket, Star, TrendingUp, CheckCircle2, Clock, BarChart3 } from "lucide-react";
+import { Users, Ticket, Star, TrendingUp, CheckCircle2, Clock, BarChart3, LayoutGrid } from "lucide-react";
 import { format } from "date-fns";
 import { ExhibitionTicketCheckin } from "./detail/ExhibitionTicketCheckin";
+import { ExhibitionOrganizerAnalytics } from "./detail/ExhibitionOrganizerAnalytics";
+import { ExhibitionBoothManagement } from "./detail/ExhibitionBoothManagement";
 
 interface Props {
   exhibitionId: string;
@@ -18,7 +19,6 @@ interface Props {
 export function ExhibitionOrganizerDashboard({ exhibitionId, exhibitionTitle, isAr }: Props) {
   const t = (en: string, ar: string) => isAr ? ar : en;
 
-  // Stats
   const { data: stats } = useQuery({
     queryKey: ["organizer-stats", exhibitionId],
     queryFn: async () => {
@@ -43,7 +43,6 @@ export function ExhibitionOrganizerDashboard({ exhibitionId, exhibitionTitle, is
     staleTime: 1000 * 30,
   });
 
-  // Tickets list
   const { data: ticketsList = [] } = useQuery({
     queryKey: ["organizer-tickets", exhibitionId],
     queryFn: async () => {
@@ -95,6 +94,14 @@ export function ExhibitionOrganizerDashboard({ exhibitionId, exhibitionTitle, is
           <TabsTrigger value="attendees" className="gap-1.5 text-xs">
             <Users className="h-3.5 w-3.5" />
             {t("Attendees", "الحضور")}
+          </TabsTrigger>
+          <TabsTrigger value="analytics" className="gap-1.5 text-xs">
+            <BarChart3 className="h-3.5 w-3.5" />
+            {t("Analytics", "التحليلات")}
+          </TabsTrigger>
+          <TabsTrigger value="booths" className="gap-1.5 text-xs">
+            <LayoutGrid className="h-3.5 w-3.5" />
+            {t("Booths", "الأجنحة")}
           </TabsTrigger>
         </TabsList>
 
@@ -153,6 +160,14 @@ export function ExhibitionOrganizerDashboard({ exhibitionId, exhibitionTitle, is
               </div>
             </CardContent>
           </Card>
+        </TabsContent>
+
+        <TabsContent value="analytics">
+          <ExhibitionOrganizerAnalytics exhibitionId={exhibitionId} isAr={isAr} />
+        </TabsContent>
+
+        <TabsContent value="booths">
+          <ExhibitionBoothManagement exhibitionId={exhibitionId} isAr={isAr} />
         </TabsContent>
       </Tabs>
     </div>

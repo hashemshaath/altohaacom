@@ -8316,6 +8316,8 @@ export type Database = {
       }
       exhibition_booths: {
         Row: {
+          assigned_at: string | null
+          assigned_to: string | null
           booth_number: string
           category: string | null
           company_id: string | null
@@ -8323,6 +8325,7 @@ export type Database = {
           contact_name: string | null
           contact_phone: string | null
           created_at: string
+          currency: string | null
           description: string | null
           description_ar: string | null
           exhibition_id: string
@@ -8336,11 +8339,15 @@ export type Database = {
           logo_url: string | null
           name: string
           name_ar: string | null
+          price: number | null
           size: string | null
+          status: string | null
           updated_at: string
           website_url: string | null
         }
         Insert: {
+          assigned_at?: string | null
+          assigned_to?: string | null
           booth_number: string
           category?: string | null
           company_id?: string | null
@@ -8348,6 +8355,7 @@ export type Database = {
           contact_name?: string | null
           contact_phone?: string | null
           created_at?: string
+          currency?: string | null
           description?: string | null
           description_ar?: string | null
           exhibition_id: string
@@ -8361,11 +8369,15 @@ export type Database = {
           logo_url?: string | null
           name: string
           name_ar?: string | null
+          price?: number | null
           size?: string | null
+          status?: string | null
           updated_at?: string
           website_url?: string | null
         }
         Update: {
+          assigned_at?: string | null
+          assigned_to?: string | null
           booth_number?: string
           category?: string | null
           company_id?: string | null
@@ -8373,6 +8385,7 @@ export type Database = {
           contact_name?: string | null
           contact_phone?: string | null
           created_at?: string
+          currency?: string | null
           description?: string | null
           description_ar?: string | null
           exhibition_id?: string
@@ -8386,7 +8399,9 @@ export type Database = {
           logo_url?: string | null
           name?: string
           name_ar?: string | null
+          price?: number | null
           size?: string | null
+          status?: string | null
           updated_at?: string
           website_url?: string | null
         }
@@ -17795,6 +17810,7 @@ export type Database = {
       is_admin: { Args: { p_user_id: string }; Returns: boolean }
       is_admin_user: { Args: never; Returns: boolean }
       is_free_preview: { Args: { p_module_id: string }; Returns: boolean }
+      notify_upcoming_exhibitions: { Args: never; Returns: undefined }
       reject_chefs_table_request: {
         Args: { p_rejection_reason: string; p_request_id: string }
         Returns: undefined
