@@ -8,10 +8,9 @@ import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogDescription } from "@/components/ui/dialog";
 import { QRCodeDisplay } from "@/components/qr/QRCodeDisplay";
 import { toast } from "@/hooks/use-toast";
-import { Ticket, CheckCircle2, Sparkles, ArrowRight, Shield, Calendar } from "lucide-react";
+import { Ticket, CheckCircle2, Sparkles, Shield, ChevronDown, ChevronUp, User, Mail, Phone } from "lucide-react";
 
 interface Props {
   exhibitionId: string;
@@ -25,7 +24,7 @@ interface Props {
 export function ExhibitionTicketBooking({ exhibitionId, exhibitionTitle, isFree, ticketPrice, hasEnded, isAr }: Props) {
   const { user } = useAuth();
   const queryClient = useQueryClient();
-  const [dialogOpen, setDialogOpen] = useState(false);
+  const [expanded, setExpanded] = useState(false);
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
@@ -74,7 +73,7 @@ export function ExhibitionTicketBooking({ exhibitionId, exhibitionTitle, isFree,
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["exhibition-ticket", exhibitionId] });
-      setDialogOpen(false);
+      setExpanded(false);
       toast({
         title: isAr ? "تم حجز التذكرة! 🎟️" : "Ticket Booked! 🎟️",
         description: isAr ? "يمكنك عرض تذكرتك مع رمز QR" : "You can view your ticket with QR code",
@@ -87,11 +86,10 @@ export function ExhibitionTicketBooking({ exhibitionId, exhibitionTitle, isFree,
 
   if (hasEnded || isLoading) return null;
 
-  // Already has ticket
+  // Already has ticket - show confirmed inline
   if (existingTicket) {
     return (
       <Card className="overflow-hidden border-chart-3/20 shadow-lg">
-        {/* Ticket header with subtle pattern */}
         <div className="relative overflow-hidden bg-gradient-to-r from-chart-3/15 via-chart-3/10 to-chart-3/5 px-4 py-4">
           <div className="absolute inset-0 opacity-[0.03]" style={{ backgroundImage: "radial-gradient(circle at 1px 1px, currentColor 1px, transparent 0)", backgroundSize: "20px 20px" }} />
           <div className="relative flex items-center justify-between">
@@ -111,7 +109,6 @@ export function ExhibitionTicketBooking({ exhibitionId, exhibitionTitle, isFree,
           </div>
         </div>
 
-        {/* Dashed separator for ticket feel */}
         <div className="relative mx-4">
           <div className="absolute -start-6 top-1/2 -translate-y-1/2 h-5 w-5 rounded-full bg-background" />
           <div className="absolute -end-6 top-1/2 -translate-y-1/2 h-5 w-5 rounded-full bg-background" />
@@ -134,67 +131,83 @@ export function ExhibitionTicketBooking({ exhibitionId, exhibitionTitle, isFree,
     );
   }
 
-  // Booking CTA
+  // Inline booking form (no dialog)
   return (
-    <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
-      <DialogTrigger asChild>
-        <Card className="group cursor-pointer overflow-hidden border-primary/20 transition-all hover:border-primary/40 hover:shadow-xl hover:shadow-primary/10">
-          <CardContent className="p-0">
-            <div className="relative overflow-hidden bg-gradient-to-br from-primary/10 via-primary/5 to-transparent p-5">
-              <div className="absolute inset-0 opacity-[0.03]" style={{ backgroundImage: "radial-gradient(circle at 1px 1px, currentColor 1px, transparent 0)", backgroundSize: "16px 16px" }} />
-              <div className="relative flex items-center gap-3">
-                <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-primary/15 ring-2 ring-primary/10 transition-transform group-hover:scale-105">
-                  <Ticket className="h-5 w-5 text-primary" />
-                </div>
-                <div className="flex-1">
-                  <p className="text-sm font-bold">
-                    {isFree ? (isAr ? "احجز تذكرة مجانية" : "Book Free Ticket") : (isAr ? "احجز تذكرتك" : "Book Your Ticket")}
-                  </p>
-                  {!isFree && ticketPrice && (
-                    <p className="text-xs font-semibold text-primary">{ticketPrice}</p>
-                  )}
-                  <p className="text-[10px] text-muted-foreground mt-0.5">{isAr ? "احصل على رمز QR للدخول السريع" : "Get a QR code for quick entry"}</p>
-                </div>
-                <ArrowRight className="h-4 w-4 text-muted-foreground transition-transform group-hover:translate-x-1 rtl:rotate-180 rtl:group-hover:-translate-x-1" />
+    <Card className={`overflow-hidden transition-all ${expanded ? "border-primary/30 shadow-xl shadow-primary/10" : "border-primary/20 hover:border-primary/40 hover:shadow-lg hover:shadow-primary/10"}`}>
+      <CardContent className="p-0">
+        {/* Header / CTA - always visible */}
+        <button
+          onClick={() => setExpanded(!expanded)}
+          className="flex w-full items-center gap-3 p-4 text-start transition-colors hover:bg-primary/5"
+        >
+          <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-primary/15 ring-2 ring-primary/10 shrink-0">
+            <Ticket className="h-5 w-5 text-primary" />
+          </div>
+          <div className="flex-1 min-w-0">
+            <p className="text-sm font-bold">
+              {isFree ? (isAr ? "احجز تذكرة مجانية" : "Book Free Ticket") : (isAr ? "احجز تذكرتك" : "Book Your Ticket")}
+            </p>
+            {!isFree && ticketPrice && (
+              <p className="text-xs font-semibold text-primary">{ticketPrice}</p>
+            )}
+            <p className="text-[10px] text-muted-foreground mt-0.5">{isAr ? "احصل على رمز QR للدخول السريع" : "Get a QR code for quick entry"}</p>
+          </div>
+          {expanded ? <ChevronUp className="h-4 w-4 text-muted-foreground shrink-0" /> : <ChevronDown className="h-4 w-4 text-muted-foreground shrink-0" />}
+        </button>
+
+        {/* Expanded inline form */}
+        {expanded && (
+          <div className="border-t border-border/40 px-4 pb-4 pt-3 space-y-3 animate-in slide-in-from-top-2 duration-200">
+            <p className="text-xs font-medium text-muted-foreground">{exhibitionTitle}</p>
+            
+            <div className="space-y-2.5">
+              <div className="relative">
+                <User className="absolute start-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground/50" />
+                <Input
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  placeholder={isAr ? "الاسم (اختياري)" : "Name (optional)"}
+                  className="ps-9 h-10 rounded-xl"
+                />
+              </div>
+              <div className="relative">
+                <Mail className="absolute start-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground/50" />
+                <Input
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder={user?.email || "email@example.com"}
+                  className="ps-9 h-10 rounded-xl"
+                />
+              </div>
+              <div className="relative">
+                <Phone className="absolute start-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground/50" />
+                <Input
+                  value={phone}
+                  onChange={(e) => setPhone(e.target.value)}
+                  placeholder={isAr ? "رقم الهاتف (اختياري)" : "Phone (optional)"}
+                  className="ps-9 h-10 rounded-xl"
+                />
               </div>
             </div>
-          </CardContent>
-        </Card>
-      </DialogTrigger>
-      <DialogContent className="sm:max-w-md">
-        <DialogHeader>
-          <DialogTitle className="flex items-center gap-2.5">
-            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-primary/10">
-              <Ticket className="h-4.5 w-4.5 text-primary" />
-            </div>
-            {isAr ? "حجز تذكرة" : "Book Ticket"}
-          </DialogTitle>
-          <DialogDescription className="text-start">{exhibitionTitle}</DialogDescription>
-        </DialogHeader>
-        <div className="space-y-4 py-2">
-          <div className="space-y-2">
-            <Label className="text-xs font-medium">{isAr ? "الاسم (اختياري)" : "Name (optional)"}</Label>
-            <Input value={name} onChange={(e) => setName(e.target.value)} placeholder={isAr ? "اسمك الكامل" : "Your full name"} className="h-10" />
+
+            <Separator className="my-1" />
+
+            <Button
+              className="w-full h-11 font-semibold shadow-lg shadow-primary/15 rounded-xl"
+              onClick={() => bookTicket.mutate()}
+              disabled={bookTicket.isPending || !user}
+            >
+              {bookTicket.isPending ? (
+                <span className="flex items-center gap-2"><Sparkles className="h-4 w-4 animate-pulse" />{isAr ? "جاري الحجز..." : "Booking..."}</span>
+              ) : (
+                <span className="flex items-center gap-2"><Ticket className="h-4 w-4" />{isAr ? "تأكيد الحجز" : "Confirm Booking"}</span>
+              )}
+            </Button>
+            {!user && <p className="text-center text-xs text-muted-foreground">{isAr ? "يجب تسجيل الدخول أولاً" : "Please sign in first"}</p>}
           </div>
-          <div className="space-y-2">
-            <Label className="text-xs font-medium">{isAr ? "البريد الإلكتروني" : "Email"}</Label>
-            <Input type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder={user?.email || "email@example.com"} className="h-10" />
-          </div>
-          <div className="space-y-2">
-            <Label className="text-xs font-medium">{isAr ? "رقم الهاتف (اختياري)" : "Phone (optional)"}</Label>
-            <Input value={phone} onChange={(e) => setPhone(e.target.value)} placeholder="+966..." className="h-10" />
-          </div>
-          <Separator />
-          <Button className="w-full h-11 font-semibold shadow-lg shadow-primary/15" onClick={() => bookTicket.mutate()} disabled={bookTicket.isPending || !user}>
-            {bookTicket.isPending ? (
-              <span className="flex items-center gap-2"><Sparkles className="h-4 w-4 animate-pulse" />{isAr ? "جاري الحجز..." : "Booking..."}</span>
-            ) : (
-              <span className="flex items-center gap-2"><Ticket className="h-4 w-4" />{isAr ? "تأكيد الحجز" : "Confirm Booking"}</span>
-            )}
-          </Button>
-          {!user && <p className="text-center text-xs text-muted-foreground">{isAr ? "يجب تسجيل الدخول أولاً" : "Please sign in first"}</p>}
-        </div>
-      </DialogContent>
-    </Dialog>
+        )}
+      </CardContent>
+    </Card>
   );
 }

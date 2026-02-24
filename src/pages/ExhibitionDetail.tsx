@@ -45,6 +45,7 @@ const ExhibitionBoothsTab = lazy(() => import("@/components/exhibitions/detail/E
 const ExhibitionReviewsTab = lazy(() => import("@/components/exhibitions/detail/ExhibitionReviewsTab").then(m => ({ default: m.ExhibitionReviewsTab })));
 const ExhibitionFloorMap = lazy(() => import("@/components/exhibitions/detail/ExhibitionFloorMap").then(m => ({ default: m.ExhibitionFloorMap })));
 const ExhibitionNotificationPrompt = lazy(() => import("@/components/exhibitions/detail/ExhibitionNotificationPrompt").then(m => ({ default: m.ExhibitionNotificationPrompt })));
+const ExhibitionStats = lazy(() => import("@/components/exhibitions/detail/ExhibitionStats").then(m => ({ default: m.ExhibitionStats })));
 
 // Suspense fallback for lazy tabs
 const TabFallback = () => <div className="space-y-3">{[1,2,3].map(i => <div key={i} className="h-24 animate-pulse rounded-2xl bg-muted" />)}</div>;
@@ -361,9 +362,14 @@ export default function ExhibitionDetail() {
         jsonLd={{
           "@context": "https://schema.org", "@type": "Event", name: title,
           description: description || undefined, startDate: exhibition.start_date, endDate: exhibition.end_date,
-          location: exhibition.is_virtual ? { "@type": "VirtualLocation" } : { "@type": "Place", name: venue || undefined, address: { "@type": "PostalAddress", addressLocality: exhibition.city, addressCountry: exhibition.country } },
+          eventStatus: hasEnded ? "https://schema.org/EventCancelled" : "https://schema.org/EventScheduled",
+          eventAttendanceMode: exhibition.is_virtual ? "https://schema.org/OnlineEventAttendanceMode" : "https://schema.org/OfflineEventAttendanceMode",
+          location: exhibition.is_virtual
+            ? { "@type": "VirtualLocation", url: exhibition.virtual_link || exhibition.website_url }
+            : { "@type": "Place", name: venue || undefined, address: { "@type": "PostalAddress", addressLocality: exhibition.city, addressCountry: exhibition.country } },
           image: exhibition.cover_image_url || undefined,
-          organizer: organizer ? { "@type": "Organization", name: organizer } : undefined,
+          organizer: organizer ? { "@type": "Organization", name: organizer, url: exhibition.organizer_website || undefined } : undefined,
+          ...(exhibition.is_free ? { isAccessibleForFree: true } : exhibition.ticket_price ? { offers: { "@type": "Offer", price: exhibition.ticket_price, availability: hasEnded ? "https://schema.org/SoldOut" : "https://schema.org/InStock" } } : {}),
         }}
       />
       <Header />
@@ -416,6 +422,7 @@ export default function ExhibitionDetail() {
 
           {/* Push notification prompt for followers */}
           <Suspense fallback={null}>
+            <ExhibitionStats exhibitionId={exhibition.id} isAr={isAr} />
             <ExhibitionNotificationPrompt exhibitionId={exhibition.id} exhibitionName={title} isAr={isAr} isFollowing={!!isFollowing} />
           </Suspense>
 
@@ -770,6 +777,12 @@ export default function ExhibitionDetail() {
             <ExhibitionRegistrationStatus registrationDeadline={exhibition.registration_deadline} registrationUrl={exhibition.registration_url} maxAttendees={exhibition.max_attendees} isFree={exhibition.is_free} ticketPrice={exhibition.ticket_price} ticketPriceAr={exhibition.ticket_price_ar} startDate={exhibition.start_date} endDate={exhibition.end_date} isAr={isAr} />
             <ExhibitionTicketBooking exhibitionId={exhibition.id} exhibitionTitle={title} isFree={exhibition.is_free} ticketPrice={exhibition.ticket_price} hasEnded={hasEnded} isAr={isAr} />
             <ExhibitionDayIndicator startDate={exhibition.start_date} endDate={exhibition.end_date} isAr={isAr} />
+
+            {/* Stats + Notification Prompt */}
+            <Suspense fallback={null}>
+              <ExhibitionStats exhibitionId={exhibition.id} isAr={isAr} />
+              <ExhibitionNotificationPrompt exhibitionId={exhibition.id} exhibitionName={title} isAr={isAr} isFollowing={!!isFollowing} />
+            </Suspense>
 
             {/* Actions */}
             <Card className="relative overflow-hidden shadow-md border-primary/15">
