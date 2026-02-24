@@ -12,7 +12,7 @@ import { Badge } from "@/components/ui/badge";
 import { toast } from "@/hooks/use-toast";
 import {
   Calendar, Landmark, ImageIcon, LayoutGrid, MessageSquare, Award,
-  Star, Trophy, Users, Clock, Settings,
+  Star, Trophy, Users, Clock, Settings, CalendarClock,
 } from "lucide-react";
 import { SEOHead } from "@/components/SEOHead";
 import { ImageLightbox } from "@/components/competitions/ImageLightbox";
@@ -35,6 +35,7 @@ const ExhibitionPeopleTab = lazy(() => import("@/components/exhibitions/detail/E
 const ExhibitionGalleryTab = lazy(() => import("@/components/exhibitions/detail/ExhibitionGalleryTab").then(m => ({ default: m.ExhibitionGalleryTab })));
 const ExhibitionSponsorsTab = lazy(() => import("@/components/exhibitions/detail/ExhibitionSponsorsTab").then(m => ({ default: m.ExhibitionSponsorsTab })));
 const ExhibitionAgendaTab = lazy(() => import("@/components/exhibitions/detail/ExhibitionAgendaTab").then(m => ({ default: m.ExhibitionAgendaTab })));
+const ExhibitionSchedulePublic = lazy(() => import("@/components/exhibitions/detail/ExhibitionSchedulePublic").then(m => ({ default: m.ExhibitionSchedulePublic })));
 const ExhibitionBoothsTab = lazy(() => import("@/components/exhibitions/detail/ExhibitionBoothsTab").then(m => ({ default: m.ExhibitionBoothsTab })));
 const ExhibitionFloorMap = lazy(() => import("@/components/exhibitions/detail/ExhibitionFloorMap").then(m => ({ default: m.ExhibitionFloorMap })));
 const ExhibitionExhibitorRegistration = lazy(() => import("@/components/exhibitions/detail/ExhibitionExhibitorRegistration").then(m => ({ default: m.ExhibitionExhibitorRegistration })));
@@ -214,12 +215,13 @@ export default function ExhibitionDetail() {
   const { data: featureCounts } = useQuery({
     queryKey: ["exhibition-feature-counts", exhibition?.id],
     queryFn: async () => {
-      const [agenda, booths, reviews] = await Promise.all([
+      const [agenda, booths, reviews, scheduleItems] = await Promise.all([
         supabase.from("exhibition_agenda_items").select("id", { count: "exact", head: true }).eq("exhibition_id", exhibition!.id),
         supabase.from("exhibition_booths").select("id", { count: "exact", head: true }).eq("exhibition_id", exhibition!.id),
         supabase.from("exhibition_reviews").select("id", { count: "exact", head: true }).eq("exhibition_id", exhibition!.id),
+        supabase.from("exhibition_schedule_items").select("id", { count: "exact", head: true }).eq("exhibition_id", exhibition!.id),
       ]);
-      return { agenda: agenda.count || 0, booths: booths.count || 0, reviews: reviews.count || 0 };
+      return { agenda: agenda.count || 0, booths: booths.count || 0, reviews: reviews.count || 0, scheduleItems: scheduleItems.count || 0 };
     },
     enabled: !!exhibition,
     staleTime: 1000 * 60 * 5,
@@ -228,7 +230,7 @@ export default function ExhibitionDetail() {
   const agendaCount = featureCounts?.agenda || 0;
   const boothCount = featureCounts?.booths || 0;
   const reviewCount = featureCounts?.reviews || 0;
-
+  const scheduleItemCount = featureCounts?.scheduleItems || 0;
   const handleFollow = useCallback(() => toggleFollow.mutate(), [toggleFollow]);
   const handleLightbox = useCallback((i: number) => { setLightboxIndex(i); setLightboxOpen(true); }, []);
 
@@ -304,6 +306,7 @@ export default function ExhibitionDetail() {
   const hasAgenda = agendaCount > 0;
   const hasBooths = boothCount > 0;
   const hasReviews = reviewCount > 0 || hasEnded;
+  const hasScheduleItems = scheduleItemCount > 0;
 
   return (
     <div className="flex min-h-screen flex-col overflow-x-hidden bg-background">
@@ -351,6 +354,7 @@ export default function ExhibitionDetail() {
                   {(hasJudges || hasSpeakers) && <ExhibitionTabTrigger value="people" icon={Users} label={isAr ? "الأشخاص" : "People"} />}
                   {hasGallery && <ExhibitionTabTrigger value="gallery" icon={ImageIcon} label={isAr ? "المعرض" : "Gallery"} />}
                   {hasAgenda && <ExhibitionTabTrigger value="agenda" icon={Clock} label={isAr ? "الأجندة" : "Agenda"} count={agendaCount} />}
+                  {hasScheduleItems && <ExhibitionTabTrigger value="event-schedule" icon={CalendarClock} label={isAr ? "البرنامج" : "Program"} count={scheduleItemCount} />}
                   {hasBooths && <ExhibitionTabTrigger value="booths" icon={LayoutGrid} label={isAr ? "الأجنحة" : "Booths"} count={boothCount} />}
                   {hasSponsors && <ExhibitionTabTrigger value="sponsors" icon={Star} label={isAr ? "الرعاة" : "Sponsors"} />}
                   {hasReviews && <ExhibitionTabTrigger value="reviews" icon={MessageSquare} label={isAr ? "التقييمات" : "Reviews"} count={reviewCount > 0 ? reviewCount : undefined} />}
@@ -421,6 +425,14 @@ export default function ExhibitionDetail() {
                 <TabsContent value="agenda" className="mt-6">
                   <Suspense fallback={<TabFallback />}>
                     <ExhibitionAgendaTab exhibitionId={exhibition.id} startDate={exhibition.start_date} endDate={exhibition.end_date} isAr={isAr} />
+                  </Suspense>
+                </TabsContent>
+              )}
+
+              {hasScheduleItems && (
+                <TabsContent value="event-schedule" className="mt-6">
+                  <Suspense fallback={<TabFallback />}>
+                    <ExhibitionSchedulePublic exhibitionId={exhibition.id} startDate={exhibition.start_date} endDate={exhibition.end_date} isAr={isAr} />
                   </Suspense>
                 </TabsContent>
               )}

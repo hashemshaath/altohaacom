@@ -8413,6 +8413,7 @@ export type Database = {
           assigned_to: string | null
           booth_number: string
           category: string | null
+          color_hex: string | null
           company_id: string | null
           contact_email: string | null
           contact_name: string | null
@@ -8443,6 +8444,7 @@ export type Database = {
           assigned_to?: string | null
           booth_number: string
           category?: string | null
+          color_hex?: string | null
           company_id?: string | null
           contact_email?: string | null
           contact_name?: string | null
@@ -8473,6 +8475,7 @@ export type Database = {
           assigned_to?: string | null
           booth_number?: string
           category?: string | null
+          color_hex?: string | null
           company_id?: string | null
           contact_email?: string | null
           contact_name?: string | null
@@ -8806,6 +8809,177 @@ export type Database = {
           },
         ]
       }
+      exhibition_schedule_items: {
+        Row: {
+          category: string
+          created_at: string
+          created_by: string | null
+          description: string | null
+          description_ar: string | null
+          end_time: string
+          exhibition_id: string
+          id: string
+          is_featured: boolean | null
+          location: string | null
+          location_ar: string | null
+          max_attendees: number | null
+          sort_order: number | null
+          speaker_image_url: string | null
+          speaker_name: string | null
+          speaker_name_ar: string | null
+          start_time: string
+          title: string
+          title_ar: string | null
+          updated_at: string
+        }
+        Insert: {
+          category?: string
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          description_ar?: string | null
+          end_time: string
+          exhibition_id: string
+          id?: string
+          is_featured?: boolean | null
+          location?: string | null
+          location_ar?: string | null
+          max_attendees?: number | null
+          sort_order?: number | null
+          speaker_image_url?: string | null
+          speaker_name?: string | null
+          speaker_name_ar?: string | null
+          start_time: string
+          title: string
+          title_ar?: string | null
+          updated_at?: string
+        }
+        Update: {
+          category?: string
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          description_ar?: string | null
+          end_time?: string
+          exhibition_id?: string
+          id?: string
+          is_featured?: boolean | null
+          location?: string | null
+          location_ar?: string | null
+          max_attendees?: number | null
+          sort_order?: number | null
+          speaker_image_url?: string | null
+          speaker_name?: string | null
+          speaker_name_ar?: string | null
+          start_time?: string
+          title?: string
+          title_ar?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "exhibition_schedule_items_exhibition_id_fkey"
+            columns: ["exhibition_id"]
+            isOneToOne: false
+            referencedRelation: "exhibitions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      exhibition_schedule_registrations: {
+        Row: {
+          created_at: string
+          id: string
+          schedule_item_id: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          schedule_item_id: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          schedule_item_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "exhibition_schedule_registrations_schedule_item_id_fkey"
+            columns: ["schedule_item_id"]
+            isOneToOne: false
+            referencedRelation: "exhibition_schedule_items"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      exhibition_ticket_types: {
+        Row: {
+          benefits: Json | null
+          color: string | null
+          created_at: string
+          currency: string
+          description: string | null
+          description_ar: string | null
+          exhibition_id: string
+          id: string
+          is_active: boolean
+          max_quantity: number | null
+          name: string
+          name_ar: string | null
+          price: number
+          sold_count: number
+          sort_order: number | null
+          updated_at: string
+        }
+        Insert: {
+          benefits?: Json | null
+          color?: string | null
+          created_at?: string
+          currency?: string
+          description?: string | null
+          description_ar?: string | null
+          exhibition_id: string
+          id?: string
+          is_active?: boolean
+          max_quantity?: number | null
+          name: string
+          name_ar?: string | null
+          price?: number
+          sold_count?: number
+          sort_order?: number | null
+          updated_at?: string
+        }
+        Update: {
+          benefits?: Json | null
+          color?: string | null
+          created_at?: string
+          currency?: string
+          description?: string | null
+          description_ar?: string | null
+          exhibition_id?: string
+          id?: string
+          is_active?: boolean
+          max_quantity?: number | null
+          name?: string
+          name_ar?: string | null
+          price?: number
+          sold_count?: number
+          sort_order?: number | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "exhibition_ticket_types_exhibition_id_fkey"
+            columns: ["exhibition_id"]
+            isOneToOne: false
+            referencedRelation: "exhibitions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       exhibition_tickets: {
         Row: {
           attendee_email: string | null
@@ -8817,13 +8991,16 @@ export type Database = {
           checked_in_at: string | null
           checked_in_by: string | null
           created_at: string
+          currency: string | null
           exhibition_id: string
           id: string
           notes: string | null
+          price_paid: number | null
           qr_code: string | null
           status: string
           ticket_number: string
           ticket_type: string
+          ticket_type_id: string | null
           updated_at: string
           user_id: string
         }
@@ -8837,13 +9014,16 @@ export type Database = {
           checked_in_at?: string | null
           checked_in_by?: string | null
           created_at?: string
+          currency?: string | null
           exhibition_id: string
           id?: string
           notes?: string | null
+          price_paid?: number | null
           qr_code?: string | null
           status?: string
           ticket_number?: string
           ticket_type?: string
+          ticket_type_id?: string | null
           updated_at?: string
           user_id: string
         }
@@ -8857,13 +9037,16 @@ export type Database = {
           checked_in_at?: string | null
           checked_in_by?: string | null
           created_at?: string
+          currency?: string | null
           exhibition_id?: string
           id?: string
           notes?: string | null
+          price_paid?: number | null
           qr_code?: string | null
           status?: string
           ticket_number?: string
           ticket_type?: string
+          ticket_type_id?: string | null
           updated_at?: string
           user_id?: string
         }
@@ -8873,6 +9056,13 @@ export type Database = {
             columns: ["exhibition_id"]
             isOneToOne: false
             referencedRelation: "exhibitions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "exhibition_tickets_ticket_type_id_fkey"
+            columns: ["ticket_type_id"]
+            isOneToOne: false
+            referencedRelation: "exhibition_ticket_types"
             referencedColumns: ["id"]
           },
         ]

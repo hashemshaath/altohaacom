@@ -4,13 +4,15 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Users, Ticket, Star, TrendingUp, CheckCircle2, Clock, BarChart3, LayoutGrid, ClipboardList, Award } from "lucide-react";
+import { Users, Ticket, Star, TrendingUp, CheckCircle2, Clock, BarChart3, LayoutGrid, ClipboardList, Award, CalendarClock, Tags } from "lucide-react";
 import { format } from "date-fns";
 import { ExhibitionTicketCheckin } from "./detail/ExhibitionTicketCheckin";
 import { ExhibitionOrganizerAnalytics } from "./detail/ExhibitionOrganizerAnalytics";
 import { ExhibitionBoothManagement } from "./detail/ExhibitionBoothManagement";
 import { ExhibitionBoothRequests } from "./detail/ExhibitionBoothRequests";
 import { ExhibitionCertificateGenerator } from "./detail/ExhibitionCertificateGenerator";
+import { ExhibitionScheduleManager } from "./detail/ExhibitionScheduleManager";
+import { ExhibitionTicketTypeManager } from "./detail/ExhibitionTicketTypeManager";
 
 interface Props {
   exhibitionId: string;
@@ -117,6 +119,14 @@ export function ExhibitionOrganizerDashboard({ exhibitionId, exhibitionTitle, is
               <Award className="h-3.5 w-3.5" />
               <span className="hidden sm:inline">{t("Certs", "شهادات")}</span>
             </TabsTrigger>
+            <TabsTrigger value="schedule-mgmt" className="gap-1.5 text-xs">
+              <CalendarClock className="h-3.5 w-3.5" />
+              <span className="hidden sm:inline">{t("Schedule", "الجدول")}</span>
+            </TabsTrigger>
+            <TabsTrigger value="ticket-types" className="gap-1.5 text-xs">
+              <Tags className="h-3.5 w-3.5" />
+              <span className="hidden sm:inline">{t("Tickets", "التذاكر")}</span>
+            </TabsTrigger>
           </TabsList>
         </div>
 
@@ -191,6 +201,14 @@ export function ExhibitionOrganizerDashboard({ exhibitionId, exhibitionTitle, is
 
         <TabsContent value="certificates">
           <ExhibitionCertificateGenerator exhibitionId={exhibitionId} exhibitionTitle={exhibitionTitle} isAr={isAr} />
+        </TabsContent>
+
+        <TabsContent value="schedule-mgmt">
+          <ExhibitionScheduleManager exhibitionId={exhibitionId} isAr={isAr} />
+        </TabsContent>
+
+        <TabsContent value="ticket-types">
+          <ExhibitionTicketTypeManager exhibitionId={exhibitionId} isAr={isAr} />
         </TabsContent>
       </Tabs>
     </div>
