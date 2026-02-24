@@ -115,6 +115,8 @@ export default function AdminLayout() {
       items: [
         { to: "/admin/settings", icon: Settings, label: language === "ar" ? "الإعدادات العامة" : "General Settings" },
         { to: "/admin/components", icon: Eye, label: language === "ar" ? "إظهار المكونات" : "Component Visibility" },
+        { to: "/admin/reports", icon: FileText, label: language === "ar" ? "التقارير" : "Reports" },
+        { to: "/admin/performance", icon: BarChart3, label: language === "ar" ? "الأداء" : "Performance" },
         { to: "/admin/localization", icon: Globe, label: language === "ar" ? "اللغات" : "Localization" },
         { to: "/admin/translation-seo", icon: Languages, label: language === "ar" ? "الترجمة وتحسين المحتوى" : "Translation & SEO" },
         { to: "/admin/countries", icon: Earth, label: language === "ar" ? "إدارة الدول" : "Countries" },
