@@ -61,7 +61,7 @@ export function ExhibitionHero({
   const { height, isVisible, gradientOverlay } = useCoverSettings("exhibition-detail");
 
   return (
-    <div className="relative bg-background">
+    <div className="relative bg-background transition-colors duration-300">
       {/* Cover Image — only when visible */}
       {isVisible && (
       <div className="relative w-full overflow-hidden" style={{ maxHeight: height ? `${height}px` : "360px" }}>

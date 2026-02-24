@@ -66,7 +66,7 @@ function getCountryFlag(country?: string): string {
 
 /* ---------- Memoized Tab Trigger ---------- */
 const ExhibitionTabTrigger = memo(({ value, icon: Icon, label, count }: { value: string; icon: any; label: string; count?: number }) => (
-  <TabsTrigger value={value} className="gap-1.5 rounded-xl px-3 py-2 text-[10px] font-bold uppercase tracking-wider transition-all data-[state=active]:bg-primary data-[state=active]:text-primary-foreground sm:gap-2 sm:px-5 sm:py-2.5 sm:text-xs whitespace-nowrap">
+  <TabsTrigger value={value} className="gap-1.5 rounded-xl px-3 py-2 text-[10px] font-bold uppercase tracking-wider transition-all duration-200 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-lg data-[state=active]:shadow-primary/20 hover:bg-muted/60 sm:gap-2 sm:px-5 sm:py-2.5 sm:text-xs whitespace-nowrap">
     <Icon className="h-3 w-3 sm:h-3.5 sm:w-3.5" />
     {label}
     {count !== undefined && count > 0 && (
