@@ -28,6 +28,7 @@ const CreateRecipe = lazy(() => import("@/pages/CreateRecipe"));
 const MyEvaluations = lazy(() => import("@/pages/MyEvaluations"));
 const Checkout = lazy(() => import("@/pages/Checkout"));
 const AdvertiseWithUs = lazy(() => import("@/pages/AdvertiseWithUs"));
+const SocialLinksEditor = lazy(() => import("@/pages/SocialLinksEditor"));
 
 export const protectedRoutes = (
   <>
@@ -57,5 +58,6 @@ export const protectedRoutes = (
     <Route path="/my-evaluations" element={<ProtectedRoute><MyEvaluations /></ProtectedRoute>} />
     <Route path="/checkout" element={<ProtectedRoute><Checkout /></ProtectedRoute>} />
     <Route path="/advertise" element={<ProtectedRoute><AdvertiseWithUs /></ProtectedRoute>} />
+    <Route path="/social-links" element={<ProtectedRoute><SocialLinksEditor /></ProtectedRoute>} />
   </>
 );
