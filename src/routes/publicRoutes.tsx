@@ -51,6 +51,7 @@ const TermsConditions = lazy(() => import("@/pages/TermsConditions"));
 const AboutUs = lazy(() => import("@/pages/AboutUs"));
 const CookiePolicy = lazy(() => import("@/pages/CookiePolicy"));
 const EventsCalendar = lazy(() => import("@/pages/EventsCalendar"));
+const SocialLinks = lazy(() => import("@/pages/SocialLinks"));
 
 export const publicRoutes = (
   <>
@@ -108,6 +109,7 @@ export const publicRoutes = (
     <Route path="/cookies" element={<CookiePolicy />} />
     <Route path="/profile/:username" element={<PublicProfile />} />
     <Route path="/offline" element={<OfflinePage />} />
+    <Route path="/:username/links" element={<SocialLinks />} />
     <Route path="/:username" element={<PublicProfile />} />
   </>
 );

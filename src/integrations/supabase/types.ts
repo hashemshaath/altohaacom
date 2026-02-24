@@ -17508,6 +17508,131 @@ export type Database = {
         }
         Relationships: []
       }
+      social_link_items: {
+        Row: {
+          click_count: number | null
+          created_at: string
+          icon: string | null
+          id: string
+          is_active: boolean | null
+          link_type: string
+          page_id: string
+          sort_order: number
+          thumbnail_url: string | null
+          title: string
+          title_ar: string | null
+          updated_at: string
+          url: string
+          user_id: string
+        }
+        Insert: {
+          click_count?: number | null
+          created_at?: string
+          icon?: string | null
+          id?: string
+          is_active?: boolean | null
+          link_type?: string
+          page_id: string
+          sort_order?: number
+          thumbnail_url?: string | null
+          title: string
+          title_ar?: string | null
+          updated_at?: string
+          url: string
+          user_id: string
+        }
+        Update: {
+          click_count?: number | null
+          created_at?: string
+          icon?: string | null
+          id?: string
+          is_active?: boolean | null
+          link_type?: string
+          page_id?: string
+          sort_order?: number
+          thumbnail_url?: string | null
+          title?: string
+          title_ar?: string | null
+          updated_at?: string
+          url?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "social_link_items_page_id_fkey"
+            columns: ["page_id"]
+            isOneToOne: false
+            referencedRelation: "social_link_pages"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      social_link_pages: {
+        Row: {
+          background_color: string | null
+          background_image_url: string | null
+          bio: string | null
+          bio_ar: string | null
+          button_color: string | null
+          button_style: string | null
+          created_at: string
+          custom_css: string | null
+          font_family: string | null
+          id: string
+          is_published: boolean | null
+          page_title: string | null
+          page_title_ar: string | null
+          show_avatar: boolean | null
+          show_social_icons: boolean | null
+          text_color: string | null
+          theme: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          background_color?: string | null
+          background_image_url?: string | null
+          bio?: string | null
+          bio_ar?: string | null
+          button_color?: string | null
+          button_style?: string | null
+          created_at?: string
+          custom_css?: string | null
+          font_family?: string | null
+          id?: string
+          is_published?: boolean | null
+          page_title?: string | null
+          page_title_ar?: string | null
+          show_avatar?: boolean | null
+          show_social_icons?: boolean | null
+          text_color?: string | null
+          theme?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          background_color?: string | null
+          background_image_url?: string | null
+          bio?: string | null
+          bio_ar?: string | null
+          button_color?: string | null
+          button_style?: string | null
+          created_at?: string
+          custom_css?: string | null
+          font_family?: string | null
+          id?: string
+          is_published?: boolean | null
+          page_title?: string | null
+          page_title_ar?: string | null
+          show_avatar?: boolean | null
+          show_social_icons?: boolean | null
+          text_color?: string | null
+          theme?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       specialties: {
         Row: {
           approved_at: string | null
