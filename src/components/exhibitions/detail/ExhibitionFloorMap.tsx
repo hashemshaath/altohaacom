@@ -4,8 +4,9 @@ import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { Input } from "@/components/ui/input";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
-import { Map, ZoomIn, ZoomOut, RotateCcw, Building, Star, Hash, MapPin, X, Mail, Phone, ExternalLink } from "lucide-react";
+import { Map, ZoomIn, ZoomOut, RotateCcw, Building, Star, Hash, MapPin, X, Mail, Phone, ExternalLink, Search } from "lucide-react";
 
 interface Booth {
   id: string;
@@ -74,6 +75,8 @@ export function ExhibitionFloorMap({ exhibitionId, isAr }: Props) {
   const [selectedBooth, setSelectedBooth] = useState<Booth | null>(null);
   const [selectedHall, setSelectedHall] = useState<string | null>(null);
   const [hoveredId, setHoveredId] = useState<string | null>(null);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [statusFilter, setStatusFilter] = useState<string | null>(null);
   const svgRef = useRef<SVGSVGElement>(null);
 
   const { data: booths = [] } = useQuery({
@@ -93,9 +96,14 @@ export function ExhibitionFloorMap({ exhibitionId, isAr }: Props) {
   const halls = useMemo(() => [...new Set(booths.filter(b => b.hall).map(b => b.hall!))], [booths]);
 
   const filteredBooths = useMemo(() => {
-    const list = selectedHall ? booths.filter(b => b.hall === selectedHall) : booths;
+    let list = selectedHall ? booths.filter(b => b.hall === selectedHall) : booths;
+    if (statusFilter) list = list.filter(b => (b.status || "available") === statusFilter);
+    if (searchTerm) {
+      const q = searchTerm.toLowerCase();
+      list = list.filter(b => b.name.toLowerCase().includes(q) || b.booth_number.toLowerCase().includes(q) || b.name_ar?.toLowerCase().includes(q));
+    }
     return autoLayout(list);
-  }, [booths, selectedHall]);
+  }, [booths, selectedHall, statusFilter, searchTerm]);
 
   const viewBox = useMemo(() => {
     if (filteredBooths.length === 0) return "0 0 800 500";
@@ -146,35 +154,44 @@ export function ExhibitionFloorMap({ exhibitionId, isAr }: Props) {
         </div>
       </div>
 
-      {/* Hall filter */}
-      {halls.length > 1 && (
-        <div className="border-b border-border/30 px-4 py-2">
-          <ScrollArea className="w-full">
+      {/* Search + Hall filter */}
+      <div className="border-b border-border/30 px-4 py-2 flex flex-wrap gap-2 items-center">
+        <div className="relative flex-1 min-w-[140px] max-w-[220px]">
+          <Search className="absolute start-2 top-1/2 -translate-y-1/2 h-3 w-3 text-muted-foreground" />
+          <Input
+            placeholder={isAr ? "بحث..." : "Search..."}
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="h-7 ps-7 text-[10px]"
+          />
+        </div>
+
+        {halls.length > 1 && (
+          <ScrollArea className="flex-1">
             <div className="flex gap-1.5">
-              <Button
-                variant={!selectedHall ? "default" : "ghost"}
-                size="sm"
-                className="rounded-full text-[10px] h-6 px-3 shrink-0"
-                onClick={() => setSelectedHall(null)}
-              >
+              <Button variant={!selectedHall ? "default" : "ghost"} size="sm" className="rounded-full text-[10px] h-6 px-3 shrink-0" onClick={() => setSelectedHall(null)}>
                 {isAr ? "كل القاعات" : "All Halls"}
               </Button>
               {halls.map(h => (
-                <Button
-                  key={h}
-                  variant={selectedHall === h ? "default" : "ghost"}
-                  size="sm"
-                  className="rounded-full text-[10px] h-6 px-3 shrink-0"
-                  onClick={() => setSelectedHall(selectedHall === h ? null : h)}
-                >
+                <Button key={h} variant={selectedHall === h ? "default" : "ghost"} size="sm" className="rounded-full text-[10px] h-6 px-3 shrink-0" onClick={() => setSelectedHall(selectedHall === h ? null : h)}>
                   {h}
                 </Button>
               ))}
             </div>
             <ScrollBar orientation="horizontal" />
           </ScrollArea>
+        )}
+
+        {/* Status filter */}
+        <div className="flex gap-1">
+          {["available", "reserved", "occupied"].map(s => (
+            <Button key={s} variant={statusFilter === s ? "default" : "ghost"} size="sm" className="rounded-full text-[10px] h-6 px-2.5 shrink-0" onClick={() => setStatusFilter(statusFilter === s ? null : s)}>
+              <div className={`h-2 w-2 rounded-full me-1 ${s === "available" ? "bg-chart-3" : s === "reserved" ? "bg-chart-4" : "bg-muted-foreground"}`} />
+              {s === "available" ? (isAr ? "متاح" : "Available") : s === "reserved" ? (isAr ? "محجوز" : "Reserved") : (isAr ? "مشغول" : "Occupied")}
+            </Button>
+          ))}
         </div>
-      )}
+      </div>
 
       <CardContent className="p-0 relative">
         {/* SVG Map */}

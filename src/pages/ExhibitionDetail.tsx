@@ -12,7 +12,7 @@ import { Badge } from "@/components/ui/badge";
 import { toast } from "@/hooks/use-toast";
 import {
   Calendar, Landmark, ImageIcon, LayoutGrid, MessageSquare, Award,
-  Star, Trophy, Users, Clock, Settings, CalendarClock,
+  Star, Trophy, Users, Clock, Settings, CalendarClock, ChefHat,
 } from "lucide-react";
 import { SEOHead } from "@/components/SEOHead";
 import { ImageLightbox } from "@/components/competitions/ImageLightbox";
@@ -40,6 +40,7 @@ const ExhibitionBoothsTab = lazy(() => import("@/components/exhibitions/detail/E
 const ExhibitionFloorMap = lazy(() => import("@/components/exhibitions/detail/ExhibitionFloorMap").then(m => ({ default: m.ExhibitionFloorMap })));
 const ExhibitionExhibitorRegistration = lazy(() => import("@/components/exhibitions/detail/ExhibitionExhibitorRegistration").then(m => ({ default: m.ExhibitionExhibitorRegistration })));
 const ExhibitionReviewsTab = lazy(() => import("@/components/exhibitions/detail/ExhibitionReviewsTab").then(m => ({ default: m.ExhibitionReviewsTab })));
+const ExhibitionCookingSessions = lazy(() => import("@/components/exhibitions/detail/ExhibitionCookingSessions").then(m => ({ default: m.ExhibitionCookingSessions })));
 const ExhibitionOrganizerDashboard = lazy(() => import("@/components/exhibitions/ExhibitionOrganizerDashboard").then(m => ({ default: m.ExhibitionOrganizerDashboard })));
 
 const TabFallback = () => <div className="space-y-3">{[1, 2, 3].map(i => <div key={i} className="h-24 animate-pulse rounded-2xl bg-muted" />)}</div>;
@@ -357,6 +358,7 @@ export default function ExhibitionDetail() {
                   {hasScheduleItems && <ExhibitionTabTrigger value="event-schedule" icon={CalendarClock} label={isAr ? "البرنامج" : "Program"} count={scheduleItemCount} />}
                   {hasBooths && <ExhibitionTabTrigger value="booths" icon={LayoutGrid} label={isAr ? "الأجنحة" : "Booths"} count={boothCount} />}
                   {hasSponsors && <ExhibitionTabTrigger value="sponsors" icon={Star} label={isAr ? "الرعاة" : "Sponsors"} />}
+                  <ExhibitionTabTrigger value="cooking" icon={ChefHat} label={isAr ? "الطهي الحي" : "Live Cooking"} />
                   {hasReviews && <ExhibitionTabTrigger value="reviews" icon={MessageSquare} label={isAr ? "التقييمات" : "Reviews"} count={reviewCount > 0 ? reviewCount : undefined} />}
                   {isOwner && <ExhibitionTabTrigger value="organizer" icon={Settings} label={isAr ? "لوحة التحكم" : "Dashboard"} />}
                 </TabsList>
@@ -448,6 +450,12 @@ export default function ExhibitionDetail() {
                   </Suspense>
                 </TabsContent>
               )}
+
+              <TabsContent value="cooking" className="mt-6">
+                <Suspense fallback={<TabFallback />}>
+                  <ExhibitionCookingSessions exhibitionId={exhibition.id} isAr={isAr} />
+                </Suspense>
+              </TabsContent>
 
               {hasReviews && (
                 <TabsContent value="reviews" className="mt-6">
