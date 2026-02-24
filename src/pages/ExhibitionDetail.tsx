@@ -388,6 +388,30 @@ export default function ExhibitionDetail() {
               {/* === OVERVIEW TAB === */}
               <TabsContent value="overview" className="mt-6 space-y-6">
 
+                {/* Key Highlights */}
+                <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+                  <div className="rounded-xl border border-primary/15 bg-gradient-to-br from-primary/10 via-primary/5 to-transparent p-4 text-center">
+                    <Calendar className="mx-auto mb-1.5 h-5 w-5 text-primary" />
+                    <p className="text-lg font-bold text-foreground">{differenceInDays(end, start) + 1}</p>
+                    <p className="text-[10px] font-medium uppercase tracking-wider text-muted-foreground">{isAr ? "أيام" : "Days"}</p>
+                  </div>
+                  <div className="rounded-xl border border-chart-4/15 bg-gradient-to-br from-chart-4/10 via-chart-4/5 to-transparent p-4 text-center">
+                    <Trophy className="mx-auto mb-1.5 h-5 w-5 text-chart-4" />
+                    <p className="text-lg font-bold text-foreground">{linkedCompetitions?.length || 0}</p>
+                    <p className="text-[10px] font-medium uppercase tracking-wider text-muted-foreground">{isAr ? "مسابقات" : "Competitions"}</p>
+                  </div>
+                  <div className="rounded-xl border border-chart-3/15 bg-gradient-to-br from-chart-3/10 via-chart-3/5 to-transparent p-4 text-center">
+                    <Users className="mx-auto mb-1.5 h-5 w-5 text-chart-3" />
+                    <p className="text-lg font-bold text-foreground">{exhibition.max_attendees ? toEnglishDigits(exhibition.max_attendees.toLocaleString()) : "—"}</p>
+                    <p className="text-[10px] font-medium uppercase tracking-wider text-muted-foreground">{isAr ? "سعة" : "Capacity"}</p>
+                  </div>
+                  <div className="rounded-xl border border-accent/15 bg-gradient-to-br from-accent/10 via-accent/5 to-transparent p-4 text-center">
+                    <Landmark className="mx-auto mb-1.5 h-5 w-5 text-accent" />
+                    <p className="text-lg font-bold text-foreground">{sections.length || speakers.length || "—"}</p>
+                    <p className="text-[10px] font-medium uppercase tracking-wider text-muted-foreground">{isAr ? "أقسام" : "Sections"}</p>
+                  </div>
+                </div>
+
                 {description && (
                   <Card className="border-s-[3px] border-s-primary/40">
                     <CardContent className="prose prose-sm max-w-none p-4 md:p-6 dark:prose-invert">
@@ -421,28 +445,41 @@ export default function ExhibitionDetail() {
 
                 {hasCompetitions && (
                   <Card className="overflow-hidden">
-                    <div className="border-b bg-muted/30 px-4 py-3 flex items-center justify-between">
+                    <div className="border-b bg-gradient-to-r from-primary/10 via-primary/5 to-transparent px-4 py-3 flex items-center justify-between">
                       <h3 className="flex items-center gap-2 font-semibold text-sm">
-                        <div className="flex h-6 w-6 items-center justify-center rounded-md bg-primary/10"><Trophy className="h-3.5 w-3.5 text-primary" /></div>
-                        {isAr ? "المسابقات" : "Competitions"}
-                        <Badge variant="secondary" className="ms-1">{linkedCompetitions!.length}</Badge>
+                        <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-gradient-to-br from-primary/20 to-chart-4/20"><Trophy className="h-3.5 w-3.5 text-primary" /></div>
+                        {isAr ? "المسابقات المرتبطة" : "Linked Competitions"}
+                        <Badge className="ms-1 bg-primary/10 text-primary border-primary/20">{linkedCompetitions!.length}</Badge>
                       </h3>
-                      <Button variant="ghost" size="sm" className="text-xs" onClick={() => setActiveTab("competitions")}>{isAr ? "عرض الكل" : "View All"}</Button>
+                      <Button variant="ghost" size="sm" className="text-xs text-primary hover:text-primary" onClick={() => setActiveTab("competitions")}>{isAr ? "عرض الكل →" : "View All →"}</Button>
                     </div>
                     <CardContent className="p-4">
-                      <div className="space-y-2">
+                      <div className="space-y-2.5">
                         {linkedCompetitions!.slice(0, 3).map((comp: any) => {
                           const compTitle = isAr && comp.title_ar ? comp.title_ar : comp.title;
+                          const regCount = comp.competition_registrations?.length || 0;
+                          const compStart = new Date(comp.competition_start);
+                          const compEnd = new Date(comp.competition_end);
+                          const compIsLive = isWithinInterval(new Date(), { start: compStart, end: compEnd });
+                          const compIsUpcoming = isFuture(compStart);
                           return (
-                            <Link key={comp.id} to={`/competitions/${comp.id}`} className="flex items-center gap-3 rounded-lg border p-2.5 hover:bg-muted/30 transition-colors group">
+                            <Link key={comp.id} to={`/competitions/${comp.id}`} className="flex items-center gap-3 rounded-xl border border-border/60 p-3 hover:bg-primary/5 hover:border-primary/20 transition-all group">
                               {comp.cover_image_url ? (
-                                <img src={comp.cover_image_url} alt={compTitle} className="h-10 w-10 rounded-md object-cover shrink-0" />
+                                <img src={comp.cover_image_url} alt={compTitle} className="h-12 w-12 rounded-lg object-cover shrink-0 ring-1 ring-border" />
                               ) : (
-                                <div className="h-10 w-10 rounded-md bg-primary/5 flex items-center justify-center shrink-0"><Trophy className="h-4 w-4 text-primary/30" /></div>
+                                <div className="h-12 w-12 rounded-lg bg-gradient-to-br from-primary/10 to-chart-4/10 flex items-center justify-center shrink-0"><Trophy className="h-5 w-5 text-primary/40" /></div>
                               )}
                               <div className="min-w-0 flex-1">
-                                <p className="text-sm font-medium truncate group-hover:text-primary transition-colors">{compTitle}</p>
-                                <p className="text-[10px] text-muted-foreground">{format(new Date(comp.competition_start), "MMM d, yyyy")}</p>
+                                <p className="text-sm font-semibold truncate group-hover:text-primary transition-colors">{compTitle}</p>
+                                <div className="flex items-center gap-2 mt-0.5">
+                                  <span className="text-[10px] text-muted-foreground">{format(compStart, "MMM d, yyyy")}</span>
+                                  {compIsLive && <Badge className="h-4 px-1.5 text-[8px] bg-destructive text-destructive-foreground border-none">{isAr ? "مباشر" : "LIVE"}</Badge>}
+                                  {compIsUpcoming && <Badge variant="outline" className="h-4 px-1.5 text-[8px] border-primary/30 text-primary">{isAr ? "قادم" : "Soon"}</Badge>}
+                                </div>
+                              </div>
+                              <div className="text-end shrink-0">
+                                <p className="text-xs font-bold text-primary">{regCount}</p>
+                                <p className="text-[9px] text-muted-foreground">{isAr ? "مسجل" : "entries"}</p>
                               </div>
                             </Link>
                           );
@@ -637,7 +674,7 @@ export default function ExhibitionDetail() {
                     {isHappening ? (isAr ? "ينتهي خلال" : "Ends In") : (isAr ? "يبدأ خلال" : "Starts In")}
                   </h3>
                 </div>
-                <CardContent className="py-5 px-3"><CountdownTimer targetDate={isHappening ? end : start} isAr={isAr} /></CardContent>
+                <CardContent className="py-4 px-3"><CountdownTimer targetDate={isHappening ? end : start} isAr={isAr} compact /></CardContent>
               </Card>
             )}
 
