@@ -17,7 +17,8 @@ import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { toast } from "@/hooks/use-toast";
-import { Plus, Pencil, Trash2, Eye, Landmark, Calendar, MapPin, Building, Ticket, Tag, Globe, Save, X, Loader2, Search, Trophy, GraduationCap, Mic, Image, Users, FileText, Bot, Copy, FileSpreadsheet, CheckCircle, XCircle } from "lucide-react";
+import { Plus, Pencil, Trash2, Eye, Landmark, Calendar, MapPin, Building, Ticket, Tag, Globe, Save, X, Loader2, Search, Trophy, GraduationCap, Mic, Image, Users, FileText, Bot, Copy, FileSpreadsheet, CheckCircle, XCircle, Layers } from "lucide-react";
+import { EventSeriesManager } from "@/components/admin/EventSeriesManager";
 import { AITextOptimizer } from "@/components/admin/AITextOptimizer";
 import { OrganizerSearchSelector, type OrganizerValue } from "@/components/admin/OrganizerSearchSelector";
 import { ExhibitionMediaUploader } from "@/components/admin/ExhibitionMediaUploader";
@@ -95,9 +96,23 @@ export default function ExhibitionsAdmin() {
   const [includesCompetitions, setIncludesCompetitions] = useState(false);
   const [includesTraining, setIncludesTraining] = useState(false);
   const [includesSeminars, setIncludesSeminars] = useState(false);
+  const [selectedSeriesId, setSelectedSeriesId] = useState<string | null>(null);
+  const [editionYear, setEditionYear] = useState<number | null>(null);
+  const [showSeries, setShowSeries] = useState(false);
+  const [seriesFilter, setSeriesFilter] = useState<string>("all");
   const { data: countries } = useCountries();
 
   const t = (en: string, ar: string) => isAr ? ar : en;
+
+  // Fetch event series for selector
+  const { data: seriesList } = useQuery({
+    queryKey: ["event-series-select"],
+    queryFn: async () => {
+      const { data, error } = await (supabase as any).from("event_series").select("id, name, name_ar, series_type, default_venue, default_venue_ar, default_city, default_country, default_organizer_name, default_organizer_name_ar, default_organizer_email, default_organizer_phone, default_organizer_website, default_organizer_logo_url, cover_image_url, logo_url, tags, website_url").eq("is_active", true).order("name");
+      if (error) throw error;
+      return data as any[];
+    },
+  });
 
   const [organizer, setOrganizer] = useState<OrganizerValue | null>(null);
 
@@ -128,7 +143,8 @@ export default function ExhibitionsAdmin() {
     const matchesYear = yearFilter === "all" || new Date(ex.start_date).getFullYear().toString() === yearFilter;
     const matchesCity = cityFilter === "all" || ex.city === cityFilter;
     const matchesOrganizer = organizerFilter === "all" || ex.organizer_name === organizerFilter;
-    return matchesSearch && matchesStatus && matchesType && matchesYear && matchesCity && matchesOrganizer;
+    const matchesSeries = seriesFilter === "all" || (seriesFilter === "none" ? !(ex as any).series_id : (ex as any).series_id === seriesFilter);
+    return matchesSearch && matchesStatus && matchesType && matchesYear && matchesCity && matchesOrganizer && matchesSeries;
   });
 
   const saveMutation = useMutation({
@@ -154,6 +170,8 @@ export default function ExhibitionsAdmin() {
         tags: tagsInput ? tagsInput.split(",").map(t => t.trim()) : [],
         target_audience: audienceInput ? audienceInput.split(",").map(t => t.trim()) : [],
         created_by: user?.id,
+        series_id: selectedSeriesId || null,
+        edition_year: editionYear || null,
       };
 
       if (editingId) {
@@ -260,6 +278,8 @@ export default function ExhibitionsAdmin() {
     setIncludesCompetitions(false);
     setIncludesTraining(false);
     setIncludesSeminars(false);
+    setSelectedSeriesId(null);
+    setEditionYear(null);
     setEditingId(null);
     setShowForm(false);
   };
@@ -305,6 +325,8 @@ export default function ExhibitionsAdmin() {
     setIncludesSeminars(ex.includes_seminars || false);
     setTagsInput((ex.tags || []).join(", "));
     setAudienceInput((ex.target_audience || []).join(", "));
+    setSelectedSeriesId(ex.series_id || null);
+    setEditionYear(ex.edition_year || null);
     setEditingId(ex.id);
     setShowForm(true);
   };
@@ -346,6 +368,10 @@ export default function ExhibitionsAdmin() {
           </div>
         </div>
         <div className="flex gap-2">
+          <Button variant="outline" size="sm" onClick={() => { setShowSeries(!showSeries); }}>
+            <Layers className="me-2 h-4 w-4" />
+            {t("Series", "السلاسل")}
+          </Button>
           <Button variant="outline" size="sm" onClick={() => { setShowBulkImport(!showBulkImport); if (showForm) setShowForm(false); }}>
             <FileSpreadsheet className="me-2 h-4 w-4" />
             {t("Bulk Import", "استيراد جماعي")}
@@ -376,6 +402,28 @@ export default function ExhibitionsAdmin() {
         </div>
       )}
 
+      {/* Event Series Manager */}
+      {showSeries && (
+        <EventSeriesManager onCreateEdition={(series, year) => {
+          resetForm();
+          setSelectedSeriesId(series.id);
+          setEditionYear(year);
+          updateField("title", `${series.name} ${year}`);
+          updateField("title_ar", series.name_ar ? `${series.name_ar} ${year}` : "");
+          if (series.default_venue) updateField("venue", series.default_venue);
+          if (series.default_venue_ar) updateField("venue_ar", series.default_venue_ar);
+          if (series.default_city) updateField("city", series.default_city);
+          if (series.default_country) updateField("country", series.default_country);
+          if (series.default_organizer_name) updateField("organizer_name", series.default_organizer_name);
+          if (series.default_organizer_name_ar) updateField("organizer_name_ar", series.default_organizer_name_ar);
+          if (series.default_organizer_email) updateField("organizer_email", series.default_organizer_email);
+          if (series.cover_image_url) updateField("cover_image_url", series.cover_image_url);
+          if (series.tags) setTagsInput(series.tags.join(", "));
+          setShowForm(true);
+          setShowSeries(false);
+        }} />
+      )}
+
       {/* Bulk Import */}
       {showBulkImport && (
         <BulkImportPanel entityType="exhibition" onImportComplete={() => { setShowBulkImport(false); queryClient.invalidateQueries({ queryKey: ["admin-exhibitions"] }); }} />
@@ -390,6 +438,70 @@ export default function ExhibitionsAdmin() {
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-6">
+            {/* Section: Series & Edition */}
+            <div>
+              <SectionHeader icon={Layers} title={t("Event Series & Edition", "سلسلة الفعالية والإصدار")} />
+              <p className="text-xs text-muted-foreground mb-3">
+                {t("Link to a recurring series (e.g. Foodex). The edition year becomes part of the display title.", "اربط بسلسلة متكررة (مثل فودكس). سنة الإصدار تصبح جزءاً من العنوان المعروض.")}
+              </p>
+              <div className="grid gap-4 sm:grid-cols-3">
+                <div>
+                  <Label>{t("Event Series", "سلسلة الفعاليات")}</Label>
+                  <Select value={selectedSeriesId || "none"} onValueChange={v => {
+                    const sid = v === "none" ? null : v;
+                    setSelectedSeriesId(sid);
+                    if (sid && !editingId) {
+                      const series = seriesList?.find(s => s.id === sid);
+                      if (series) {
+                        if (series.default_venue) updateField("venue", series.default_venue);
+                        if (series.default_venue_ar) updateField("venue_ar", series.default_venue_ar);
+                        if (series.default_city) updateField("city", series.default_city);
+                        if (series.default_country) updateField("country", series.default_country);
+                        if (series.default_organizer_name) updateField("organizer_name", series.default_organizer_name);
+                        if (series.default_organizer_name_ar) updateField("organizer_name_ar", series.default_organizer_name_ar);
+                        if (series.default_organizer_email) updateField("organizer_email", series.default_organizer_email);
+                        if (series.cover_image_url) updateField("cover_image_url", series.cover_image_url);
+                        if (series.tags) setTagsInput(series.tags.join(", "));
+                      }
+                    }
+                  }}>
+                    <SelectTrigger><SelectValue placeholder={t("No series", "بدون سلسلة")} /></SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="none">{t("No series (standalone)", "بدون سلسلة (مستقل)")}</SelectItem>
+                      {seriesList?.map(s => (
+                        <SelectItem key={s.id} value={s.id}>
+                          {isAr && s.name_ar ? s.name_ar : s.name}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div>
+                  <Label>{t("Edition Year", "سنة الإصدار")}</Label>
+                  <Input
+                    type="number"
+                    value={editionYear || ""}
+                    onChange={e => setEditionYear(e.target.value ? parseInt(e.target.value) : null)}
+                    placeholder={new Date().getFullYear().toString()}
+                    min={2000}
+                    max={2100}
+                  />
+                </div>
+                {selectedSeriesId && editionYear && (
+                  <div className="flex items-end">
+                    <div className="rounded-lg border bg-primary/5 px-3 py-2 text-sm">
+                      <span className="text-muted-foreground">{t("Display title:", "العنوان المعروض:")}</span>{" "}
+                      <span className="font-bold text-primary">
+                        {form.title || seriesList?.find(s => s.id === selectedSeriesId)?.name || "..."} +{editionYear}
+                      </span>
+                    </div>
+                  </div>
+                )}
+              </div>
+            </div>
+
+            <Separator />
+
             {/* Section: Basic Info */}
             <div>
               <SectionHeader icon={Landmark} title={t("Basic Information", "المعلومات الأساسية")} />
@@ -799,6 +911,18 @@ export default function ExhibitionsAdmin() {
             <SelectItem value="all">{t("All Organizers", "جميع المنظمين")}</SelectItem>
             {uniqueOrganizers.map(o => (
               <SelectItem key={o!} value={o!}>{o}</SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+        <Select value={seriesFilter} onValueChange={setSeriesFilter}>
+          <SelectTrigger className="w-[160px]">
+            <SelectValue placeholder={t("Series", "السلسلة")} />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="all">{t("All Series", "جميع السلاسل")}</SelectItem>
+            <SelectItem value="none">{t("No Series", "بدون سلسلة")}</SelectItem>
+            {seriesList?.map(s => (
+              <SelectItem key={s.id} value={s.id}>{isAr && s.name_ar ? s.name_ar : s.name}</SelectItem>
             ))}
           </SelectContent>
         </Select>
