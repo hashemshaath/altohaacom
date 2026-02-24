@@ -4,11 +4,13 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Users, Ticket, Star, TrendingUp, CheckCircle2, Clock, BarChart3, LayoutGrid } from "lucide-react";
+import { Users, Ticket, Star, TrendingUp, CheckCircle2, Clock, BarChart3, LayoutGrid, ClipboardList, Award } from "lucide-react";
 import { format } from "date-fns";
 import { ExhibitionTicketCheckin } from "./detail/ExhibitionTicketCheckin";
 import { ExhibitionOrganizerAnalytics } from "./detail/ExhibitionOrganizerAnalytics";
 import { ExhibitionBoothManagement } from "./detail/ExhibitionBoothManagement";
+import { ExhibitionBoothRequests } from "./detail/ExhibitionBoothRequests";
+import { ExhibitionCertificateGenerator } from "./detail/ExhibitionCertificateGenerator";
 
 interface Props {
   exhibitionId: string;
@@ -86,24 +88,37 @@ export function ExhibitionOrganizerDashboard({ exhibitionId, exhibitionTitle, is
       </div>
 
       <Tabs defaultValue="checkin" className="space-y-4">
-        <TabsList>
-          <TabsTrigger value="checkin" className="gap-1.5 text-xs">
-            <CheckCircle2 className="h-3.5 w-3.5" />
-            {t("Check-in", "تسجيل الدخول")}
-          </TabsTrigger>
-          <TabsTrigger value="attendees" className="gap-1.5 text-xs">
-            <Users className="h-3.5 w-3.5" />
-            {t("Attendees", "الحضور")}
-          </TabsTrigger>
-          <TabsTrigger value="analytics" className="gap-1.5 text-xs">
-            <BarChart3 className="h-3.5 w-3.5" />
-            {t("Analytics", "التحليلات")}
-          </TabsTrigger>
-          <TabsTrigger value="booths" className="gap-1.5 text-xs">
-            <LayoutGrid className="h-3.5 w-3.5" />
-            {t("Booths", "الأجنحة")}
-          </TabsTrigger>
-        </TabsList>
+        <div className="overflow-x-auto -mx-1 px-1 scrollbar-none">
+          <TabsList className="w-max">
+            <TabsTrigger value="checkin" className="gap-1.5 text-xs">
+              <CheckCircle2 className="h-3.5 w-3.5" />
+              <span className="hidden sm:inline">{t("Check-in", "تسجيل الدخول")}</span>
+              <span className="sm:hidden">{t("Check", "دخول")}</span>
+            </TabsTrigger>
+            <TabsTrigger value="attendees" className="gap-1.5 text-xs">
+              <Users className="h-3.5 w-3.5" />
+              <span className="hidden sm:inline">{t("Attendees", "الحضور")}</span>
+              <span className="sm:hidden">{t("👥", "👥")}</span>
+            </TabsTrigger>
+            <TabsTrigger value="analytics" className="gap-1.5 text-xs">
+              <BarChart3 className="h-3.5 w-3.5" />
+              <span className="hidden sm:inline">{t("Analytics", "التحليلات")}</span>
+              <span className="sm:hidden">{t("📊", "📊")}</span>
+            </TabsTrigger>
+            <TabsTrigger value="booths" className="gap-1.5 text-xs">
+              <LayoutGrid className="h-3.5 w-3.5" />
+              <span className="hidden sm:inline">{t("Booths", "الأجنحة")}</span>
+            </TabsTrigger>
+            <TabsTrigger value="requests" className="gap-1.5 text-xs">
+              <ClipboardList className="h-3.5 w-3.5" />
+              <span className="hidden sm:inline">{t("Requests", "الطلبات")}</span>
+            </TabsTrigger>
+            <TabsTrigger value="certificates" className="gap-1.5 text-xs">
+              <Award className="h-3.5 w-3.5" />
+              <span className="hidden sm:inline">{t("Certs", "شهادات")}</span>
+            </TabsTrigger>
+          </TabsList>
+        </div>
 
         <TabsContent value="checkin">
           <ExhibitionTicketCheckin exhibitionId={exhibitionId} isAr={isAr} />
@@ -168,6 +183,14 @@ export function ExhibitionOrganizerDashboard({ exhibitionId, exhibitionTitle, is
 
         <TabsContent value="booths">
           <ExhibitionBoothManagement exhibitionId={exhibitionId} isAr={isAr} />
+        </TabsContent>
+
+        <TabsContent value="requests">
+          <ExhibitionBoothRequests exhibitionId={exhibitionId} isAr={isAr} />
+        </TabsContent>
+
+        <TabsContent value="certificates">
+          <ExhibitionCertificateGenerator exhibitionId={exhibitionId} exhibitionTitle={exhibitionTitle} isAr={isAr} />
         </TabsContent>
       </Tabs>
     </div>
