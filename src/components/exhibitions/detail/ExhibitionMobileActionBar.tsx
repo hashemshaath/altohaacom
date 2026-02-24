@@ -1,6 +1,6 @@
-import { memo } from "react";
+import { memo, useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
-import { Bell, BellOff, Ticket, Globe, Share2 } from "lucide-react";
+import { Bell, BellOff, Ticket, Globe, Share2, Download } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 
 interface Props {
@@ -21,6 +21,20 @@ export const ExhibitionMobileActionBar = memo(function ExhibitionMobileActionBar
   const showRegistration = registrationUrl && !hasEnded;
   const showFollow = !!user;
   const showWebsite = !!websiteUrl;
+  const [deferredPrompt, setDeferredPrompt] = useState<any>(null);
+
+  useEffect(() => {
+    const handler = (e: any) => { e.preventDefault(); setDeferredPrompt(e); };
+    window.addEventListener("beforeinstallprompt", handler);
+    return () => window.removeEventListener("beforeinstallprompt", handler);
+  }, []);
+
+  const handleInstall = async () => {
+    if (!deferredPrompt) return;
+    deferredPrompt.prompt();
+    await deferredPrompt.userChoice;
+    setDeferredPrompt(null);
+  };
 
   const handleShare = async () => {
     const shareData = {
@@ -42,6 +56,16 @@ export const ExhibitionMobileActionBar = memo(function ExhibitionMobileActionBar
   return (
     <div className="fixed inset-x-0 bottom-0 z-50 border-t border-border/60 bg-card/95 backdrop-blur-lg px-3 py-2.5 lg:hidden safe-area-bottom">
       <div className="flex gap-2">
+        {deferredPrompt && (
+          <Button
+            variant="outline"
+            size="sm"
+            className="h-10 w-10 rounded-xl p-0 shrink-0 active:scale-95 transition-transform"
+            onClick={handleInstall}
+          >
+            <Download className="h-4 w-4" />
+          </Button>
+        )}
         <Button
           variant="outline"
           size="sm"

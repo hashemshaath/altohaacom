@@ -91,6 +91,61 @@ function HelpfulButton({ reviewId, helpfulCount, isAr }: { reviewId: string; hel
   );
 }
 
+function OrganizerResponse({ review, isAr, isOrganizer, exhibitionId }: { review: any; isAr: boolean; isOrganizer?: boolean; exhibitionId: string }) {
+  const { user } = useAuth();
+  const queryClient = useQueryClient();
+  const [showInput, setShowInput] = useState(false);
+  const [response, setResponse] = useState(review.organizer_response || "");
+
+  const saveResponse = useMutation({
+    mutationFn: async () => {
+      if (!user) return;
+      const { error } = await supabase.from("exhibition_reviews").update({
+        organizer_response: response.trim(),
+        organizer_response_at: new Date().toISOString(),
+        organizer_response_by: user.id,
+      }).eq("id", review.id);
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["exhibition-reviews", exhibitionId] });
+      setShowInput(false);
+      toast({ title: isAr ? "تم حفظ الرد ✅" : "Response saved ✅" });
+    },
+  });
+
+  if (review.organizer_response) {
+    return (
+      <div className="mt-2 ms-6 rounded-lg p-2.5 border-s-2 bg-primary/5 border-primary/40">
+        <div className="flex items-center gap-1.5">
+          <Badge variant="secondary" className="text-[8px] h-3.5 px-1 bg-primary/10 text-primary border-0">
+            {isAr ? "رد المنظم" : "Organizer Response"}
+          </Badge>
+          {review.organizer_response_at && (
+            <span className="text-[9px] text-muted-foreground">{format(new Date(review.organizer_response_at), "MMM d")}</span>
+          )}
+        </div>
+        <p className="text-[11px] text-muted-foreground mt-1">{review.organizer_response}</p>
+      </div>
+    );
+  }
+
+  if (!isOrganizer) return null;
+
+  return showInput ? (
+    <div className="mt-2 ms-6 flex gap-2">
+      <Input value={response} onChange={e => setResponse(e.target.value)} placeholder={isAr ? "اكتب رد المنظم..." : "Write organizer response..."} className="h-8 text-xs flex-1" />
+      <Button size="sm" className="h-8 text-xs" disabled={!response.trim() || saveResponse.isPending} onClick={() => saveResponse.mutate()}>
+        <Send className="h-3 w-3" />
+      </Button>
+    </div>
+  ) : (
+    <button onClick={() => setShowInput(true)} className="mt-2 ms-6 text-[10px] text-primary hover:underline flex items-center gap-1">
+      <Reply className="h-2.5 w-2.5" /> {isAr ? "رد كمنظم" : "Reply as Organizer"}
+    </button>
+  );
+}
+
 function ReviewReplySection({ reviewId, isAr, isOrganizer, exhibitionCreatorId }: { reviewId: string; isAr: boolean; isOrganizer?: boolean; exhibitionCreatorId?: string }) {
   const { user } = useAuth();
   const queryClient = useQueryClient();
@@ -504,6 +559,7 @@ export function ExhibitionReviewsTab({ exhibitionId, hasEnded, isAr, creatorId }
                     <HelpfulButton reviewId={review.id} helpfulCount={review.helpful_count || 0} isAr={isAr} />
                     <span className="text-[10px] text-muted-foreground/60 font-medium">{format(new Date(review.created_at), "MMM d, yyyy")}</span>
                   </div>
+                  <OrganizerResponse review={review} isAr={isAr} isOrganizer={!!creatorId && user?.id === creatorId} exhibitionId={exhibitionId} />
                   <ReviewReplySection reviewId={review.id} isAr={isAr} isOrganizer={!!creatorId && user?.id === creatorId} exhibitionCreatorId={creatorId} />
                 </div>
               </div>
