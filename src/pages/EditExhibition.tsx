@@ -81,6 +81,8 @@ export default function EditExhibition() {
         tags: (exhibition.tags || []).join(", "),
         targetAudience: (exhibition.target_audience || []).join(", "),
         isFeatured: exhibition.is_featured || false,
+        seriesId: (exhibition as any).series_id || "",
+        editionYear: (exhibition as any).edition_year?.toString() || "",
       });
     }
   }, [exhibition]);
@@ -126,7 +128,9 @@ export default function EditExhibition() {
           target_audience: data.targetAudience
             ? data.targetAudience.split(",").map((t) => t.trim()).filter(Boolean)
             : [],
-        })
+          series_id: data.seriesId || null,
+          edition_year: data.editionYear ? parseInt(data.editionYear) : null,
+        } as any)
         .eq("id", exhibition.id);
 
       if (error) throw error;

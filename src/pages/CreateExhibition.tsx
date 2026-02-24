@@ -85,6 +85,8 @@ export default function CreateExhibition() {
             ? data.targetAudience.split(",").map((t) => t.trim()).filter(Boolean)
             : [],
           created_by: user.id,
+          series_id: data.seriesId || null,
+          edition_year: data.editionYear ? parseInt(data.editionYear) : null,
         })
         .select()
         .single();

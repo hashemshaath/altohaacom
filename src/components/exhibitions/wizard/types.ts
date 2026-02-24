@@ -29,6 +29,8 @@ export interface ExhibitionFormData {
   tags: string;
   targetAudience: string;
   isFeatured: boolean;
+  seriesId: string;
+  editionYear: string;
 }
 
 export const initialExhibitionData: ExhibitionFormData = {
@@ -62,4 +64,6 @@ export const initialExhibitionData: ExhibitionFormData = {
   tags: "",
   targetAudience: "",
   isFeatured: false,
+  seriesId: "",
+  editionYear: "",
 };
