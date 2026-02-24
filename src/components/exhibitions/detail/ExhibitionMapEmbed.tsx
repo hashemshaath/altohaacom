@@ -1,6 +1,6 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { MapPin, ExternalLink, Navigation } from "lucide-react";
+import { MapPin, ExternalLink, Navigation, Compass } from "lucide-react";
 
 interface Props {
   mapUrl?: string | null;
@@ -12,25 +12,19 @@ interface Props {
 }
 
 function extractEmbedUrl(mapUrl: string): string | null {
-  // Try to extract lat/lng from Google Maps URL for embed
   const coordMatch = mapUrl.match(/@(-?\d+\.?\d*),(-?\d+\.?\d*)/);
   if (coordMatch) {
-    const lat = coordMatch[1];
-    const lng = coordMatch[2];
-    return `https://maps.google.com/maps?q=${lat},${lng}&z=15&output=embed`;
+    return `https://maps.google.com/maps?q=${coordMatch[1]},${coordMatch[2]}&z=15&output=embed`;
   }
-  // Try place ID format
   const placeMatch = mapUrl.match(/place\/([^/@]+)/);
   if (placeMatch) {
     const placeName = decodeURIComponent(placeMatch[1]).replace(/\+/g, " ");
     return `https://maps.google.com/maps?q=${encodeURIComponent(placeName)}&z=15&output=embed`;
   }
-  // Try query parameter
   const queryMatch = mapUrl.match(/[?&]q=([^&]+)/);
   if (queryMatch) {
     return `https://maps.google.com/maps?q=${queryMatch[1]}&z=15&output=embed`;
   }
-  // Fallback: use venue/city/country as search query
   return null;
 }
 
@@ -49,15 +43,15 @@ export function ExhibitionMapEmbed({ mapUrl, venue, city, country, address, isAr
   if (!mapUrl && !venue) return null;
 
   return (
-    <Card className="overflow-hidden border-primary/10">
-      <div className="border-b bg-gradient-to-r from-chart-1/10 via-transparent to-transparent px-4 py-3">
-        <h3 className="flex items-center gap-2 text-sm font-semibold">
-          <div className="flex h-6 w-6 items-center justify-center rounded-md bg-chart-1/10">
-            <MapPin className="h-3.5 w-3.5 text-chart-1" />
-          </div>
-          {isAr ? "الموقع على الخريطة" : "Location Map"}
-        </h3>
+    <Card className="overflow-hidden border-border/60 shadow-sm">
+      {/* Header */}
+      <div className="flex items-center gap-2.5 border-b border-border/40 bg-gradient-to-r from-chart-1/8 via-transparent to-transparent px-4 py-3">
+        <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-chart-1/10">
+          <Compass className="h-3.5 w-3.5 text-chart-1" />
+        </div>
+        <h3 className="text-sm font-semibold">{isAr ? "الموقع على الخريطة" : "Location Map"}</h3>
       </div>
+
       <CardContent className="p-0">
         {/* Map embed */}
         {finalEmbedUrl ? (
@@ -72,10 +66,12 @@ export function ExhibitionMapEmbed({ mapUrl, venue, city, country, address, isAr
             />
           </div>
         ) : (
-          <div className="flex aspect-[16/9] items-center justify-center bg-gradient-to-br from-muted/50 to-muted/20">
+          <div className="flex aspect-[2/1] items-center justify-center bg-gradient-to-br from-muted/40 to-muted/10">
             <div className="text-center space-y-2">
-              <Navigation className="h-10 w-10 text-muted-foreground/30 mx-auto" />
-              <p className="text-xs text-muted-foreground">{isAr ? "لا تتوفر خريطة" : "Map not available"}</p>
+              <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-2xl bg-muted/60">
+                <Navigation className="h-6 w-6 text-muted-foreground/30" />
+              </div>
+              <p className="text-xs text-muted-foreground/60">{isAr ? "لا تتوفر خريطة" : "Map not available"}</p>
             </div>
           </div>
         )}
@@ -84,27 +80,25 @@ export function ExhibitionMapEmbed({ mapUrl, venue, city, country, address, isAr
         <div className="p-4 space-y-3">
           {locationLabel && (
             <div className="flex items-start gap-2.5">
-              <MapPin className="h-4 w-4 text-primary shrink-0 mt-0.5" />
+              <div className="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-md bg-primary/10">
+                <MapPin className="h-3 w-3 text-primary" />
+              </div>
               <div>
-                <p className="text-sm font-semibold">{venue}</p>
+                {venue && <p className="text-sm font-semibold text-foreground">{venue}</p>}
                 {(city || country) && (
-                  <p className="text-xs text-muted-foreground">
-                    {[city, country].filter(Boolean).join(", ")}
-                  </p>
+                  <p className="text-xs text-muted-foreground">{[city, country].filter(Boolean).join(", ")}</p>
                 )}
-                {address && (
-                  <p className="text-xs text-muted-foreground mt-0.5">{address}</p>
-                )}
+                {address && <p className="text-[11px] text-muted-foreground/70 mt-0.5">{address}</p>}
               </div>
             </div>
           )}
 
           {mapUrl && (
-            <Button variant="outline" size="sm" className="w-full" asChild>
+            <Button variant="outline" size="sm" className="w-full rounded-xl h-9 border-border/60" asChild>
               <a href={mapUrl} target="_blank" rel="noopener noreferrer">
-                <Navigation className="me-2 h-3.5 w-3.5" />
-                {isAr ? "فتح في خرائط جوجل" : "Open in Google Maps"}
-                <ExternalLink className="ms-auto h-3 w-3 text-muted-foreground" />
+                <Navigation className="me-2 h-3.5 w-3.5 text-primary" />
+                <span className="flex-1 text-start">{isAr ? "فتح في خرائط جوجل" : "Open in Google Maps"}</span>
+                <ExternalLink className="ms-2 h-3 w-3 text-muted-foreground/50" />
               </a>
             </Button>
           )}

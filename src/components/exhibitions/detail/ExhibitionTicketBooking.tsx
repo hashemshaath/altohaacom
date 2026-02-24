@@ -7,10 +7,11 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Separator } from "@/components/ui/separator";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogDescription } from "@/components/ui/dialog";
 import { QRCodeDisplay } from "@/components/qr/QRCodeDisplay";
 import { toast } from "@/hooks/use-toast";
-import { Ticket, CheckCircle2, Download, QrCode } from "lucide-react";
+import { Ticket, CheckCircle2, Sparkles, ArrowRight, Shield, Calendar } from "lucide-react";
 
 interface Props {
   exhibitionId: string;
@@ -48,10 +49,7 @@ export function ExhibitionTicketBooking({ exhibitionId, exhibitionTitle, isFree,
   const bookTicket = useMutation({
     mutationFn: async () => {
       if (!user) throw new Error("Not authenticated");
-      
-      // Generate QR code
       const { data: qrCode } = await supabase.rpc("generate_qr_code", { p_prefix: "ETK" });
-      
       const { data, error } = await supabase
         .from("exhibition_tickets")
         .insert({
@@ -65,8 +63,6 @@ export function ExhibitionTicketBooking({ exhibitionId, exhibitionTitle, isFree,
         .select()
         .single();
       if (error) throw error;
-      
-      // Also create QR code entry
       await supabase.from("qr_codes").insert({
         code: qrCode as string,
         entity_type: "participant",
@@ -74,7 +70,6 @@ export function ExhibitionTicketBooking({ exhibitionId, exhibitionTitle, isFree,
         category: "exhibition_ticket",
         created_by: user.id,
       });
-      
       return data;
     },
     onSuccess: () => {
@@ -90,75 +85,114 @@ export function ExhibitionTicketBooking({ exhibitionId, exhibitionTitle, isFree,
     },
   });
 
-  if (hasEnded) return null;
-  if (isLoading) return null;
+  if (hasEnded || isLoading) return null;
 
-  // Already has ticket - show it
+  // Already has ticket
   if (existingTicket) {
     return (
-      <Card className="overflow-hidden border-chart-3/30 shadow-md">
-        <div className="border-b bg-gradient-to-r from-chart-3/10 via-chart-3/5 to-transparent px-4 py-3">
-          <h3 className="flex items-center gap-2 text-sm font-semibold">
-            <div className="flex h-6 w-6 items-center justify-center rounded-md bg-chart-3/15">
-              <CheckCircle2 className="h-3.5 w-3.5 text-chart-3" />
+      <Card className="overflow-hidden border-chart-3/20 shadow-lg">
+        {/* Ticket header with subtle pattern */}
+        <div className="relative overflow-hidden bg-gradient-to-r from-chart-3/15 via-chart-3/10 to-chart-3/5 px-4 py-4">
+          <div className="absolute inset-0 opacity-[0.03]" style={{ backgroundImage: "radial-gradient(circle at 1px 1px, currentColor 1px, transparent 0)", backgroundSize: "20px 20px" }} />
+          <div className="relative flex items-center justify-between">
+            <div className="flex items-center gap-2.5">
+              <div className="flex h-8 w-8 items-center justify-center rounded-full bg-chart-3/15 ring-2 ring-chart-3/10">
+                <CheckCircle2 className="h-4 w-4 text-chart-3" />
+              </div>
+              <div>
+                <p className="text-sm font-bold">{isAr ? "تذكرتك مؤكدة" : "Ticket Confirmed"}</p>
+                <p className="text-[10px] text-muted-foreground">{isAr ? "جاهز للدخول" : "Ready for entry"}</p>
+              </div>
             </div>
-            {isAr ? "تذكرتك" : "Your Ticket"}
-          </h3>
-        </div>
-        <CardContent className="p-4 space-y-3">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-xs text-muted-foreground">{isAr ? "رقم التذكرة" : "Ticket #"}</p>
-              <p className="font-mono text-sm font-bold">{existingTicket.ticket_number}</p>
-            </div>
-            <Badge className="bg-chart-3/15 text-chart-3 border-chart-3/20">
-              {isAr ? "مؤكدة" : "Confirmed"}
+            <Badge className="bg-chart-3/15 text-chart-3 border-chart-3/25 font-semibold text-[10px] uppercase tracking-wider">
+              <Shield className="me-1 h-2.5 w-2.5" />
+              {isAr ? "مؤكدة" : "Valid"}
             </Badge>
+          </div>
+        </div>
+
+        {/* Dashed separator for ticket feel */}
+        <div className="relative mx-4">
+          <div className="absolute -start-6 top-1/2 -translate-y-1/2 h-5 w-5 rounded-full bg-background" />
+          <div className="absolute -end-6 top-1/2 -translate-y-1/2 h-5 w-5 rounded-full bg-background" />
+          <Separator className="border-dashed" />
+        </div>
+
+        <CardContent className="p-4 space-y-4">
+          <div className="rounded-xl border border-border/50 bg-muted/30 p-3">
+            <p className="text-[10px] font-medium uppercase tracking-wider text-muted-foreground mb-1">{isAr ? "رقم التذكرة" : "Ticket Number"}</p>
+            <p className="font-mono text-base font-bold tracking-widest text-foreground">{existingTicket.ticket_number}</p>
           </div>
           
           {existingTicket.qr_code && (
-            <QRCodeDisplay code={existingTicket.qr_code} label={isAr ? "رمز الدخول" : "Entry Pass"} size={120} compact={false} />
+            <div className="flex justify-center">
+              <QRCodeDisplay code={existingTicket.qr_code} label={isAr ? "رمز الدخول" : "Entry Pass"} size={140} compact={false} />
+            </div>
           )}
         </CardContent>
       </Card>
     );
   }
 
-  // No ticket yet - show booking button
+  // Booking CTA
   return (
     <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
       <DialogTrigger asChild>
-        <Button className="w-full shadow-lg shadow-primary/20" disabled={!user}>
-          <Ticket className="me-2 h-4 w-4" />
-          {isAr ? "احجز تذكرة مجانية" : isFree ? "Book Free Ticket" : `Book Ticket ${ticketPrice ? `- ${ticketPrice}` : ""}`}
-        </Button>
+        <Card className="group cursor-pointer overflow-hidden border-primary/20 transition-all hover:border-primary/40 hover:shadow-xl hover:shadow-primary/10">
+          <CardContent className="p-0">
+            <div className="relative overflow-hidden bg-gradient-to-br from-primary/10 via-primary/5 to-transparent p-5">
+              <div className="absolute inset-0 opacity-[0.03]" style={{ backgroundImage: "radial-gradient(circle at 1px 1px, currentColor 1px, transparent 0)", backgroundSize: "16px 16px" }} />
+              <div className="relative flex items-center gap-3">
+                <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-primary/15 ring-2 ring-primary/10 transition-transform group-hover:scale-105">
+                  <Ticket className="h-5 w-5 text-primary" />
+                </div>
+                <div className="flex-1">
+                  <p className="text-sm font-bold">
+                    {isFree ? (isAr ? "احجز تذكرة مجانية" : "Book Free Ticket") : (isAr ? "احجز تذكرتك" : "Book Your Ticket")}
+                  </p>
+                  {!isFree && ticketPrice && (
+                    <p className="text-xs font-semibold text-primary">{ticketPrice}</p>
+                  )}
+                  <p className="text-[10px] text-muted-foreground mt-0.5">{isAr ? "احصل على رمز QR للدخول السريع" : "Get a QR code for quick entry"}</p>
+                </div>
+                <ArrowRight className="h-4 w-4 text-muted-foreground transition-transform group-hover:translate-x-1 rtl:rotate-180 rtl:group-hover:-translate-x-1" />
+              </div>
+            </div>
+          </CardContent>
+        </Card>
       </DialogTrigger>
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
-          <DialogTitle className="flex items-center gap-2">
-            <Ticket className="h-5 w-5 text-primary" />
+          <DialogTitle className="flex items-center gap-2.5">
+            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-primary/10">
+              <Ticket className="h-4.5 w-4.5 text-primary" />
+            </div>
             {isAr ? "حجز تذكرة" : "Book Ticket"}
           </DialogTitle>
-          <DialogDescription>
-            {exhibitionTitle}
-          </DialogDescription>
+          <DialogDescription className="text-start">{exhibitionTitle}</DialogDescription>
         </DialogHeader>
         <div className="space-y-4 py-2">
           <div className="space-y-2">
-            <Label>{isAr ? "الاسم (اختياري)" : "Name (optional)"}</Label>
-            <Input value={name} onChange={(e) => setName(e.target.value)} placeholder={isAr ? "اسمك الكامل" : "Your full name"} />
+            <Label className="text-xs font-medium">{isAr ? "الاسم (اختياري)" : "Name (optional)"}</Label>
+            <Input value={name} onChange={(e) => setName(e.target.value)} placeholder={isAr ? "اسمك الكامل" : "Your full name"} className="h-10" />
           </div>
           <div className="space-y-2">
-            <Label>{isAr ? "البريد الإلكتروني" : "Email"}</Label>
-            <Input type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder={user?.email || "email@example.com"} />
+            <Label className="text-xs font-medium">{isAr ? "البريد الإلكتروني" : "Email"}</Label>
+            <Input type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder={user?.email || "email@example.com"} className="h-10" />
           </div>
           <div className="space-y-2">
-            <Label>{isAr ? "رقم الهاتف (اختياري)" : "Phone (optional)"}</Label>
-            <Input value={phone} onChange={(e) => setPhone(e.target.value)} placeholder="+966..." />
+            <Label className="text-xs font-medium">{isAr ? "رقم الهاتف (اختياري)" : "Phone (optional)"}</Label>
+            <Input value={phone} onChange={(e) => setPhone(e.target.value)} placeholder="+966..." className="h-10" />
           </div>
-          <Button className="w-full" onClick={() => bookTicket.mutate()} disabled={bookTicket.isPending}>
-            {bookTicket.isPending ? (isAr ? "جاري الحجز..." : "Booking...") : (isAr ? "تأكيد الحجز" : "Confirm Booking")}
+          <Separator />
+          <Button className="w-full h-11 font-semibold shadow-lg shadow-primary/15" onClick={() => bookTicket.mutate()} disabled={bookTicket.isPending || !user}>
+            {bookTicket.isPending ? (
+              <span className="flex items-center gap-2"><Sparkles className="h-4 w-4 animate-pulse" />{isAr ? "جاري الحجز..." : "Booking..."}</span>
+            ) : (
+              <span className="flex items-center gap-2"><Ticket className="h-4 w-4" />{isAr ? "تأكيد الحجز" : "Confirm Booking"}</span>
+            )}
           </Button>
+          {!user && <p className="text-center text-xs text-muted-foreground">{isAr ? "يجب تسجيل الدخول أولاً" : "Please sign in first"}</p>}
         </div>
       </DialogContent>
     </Dialog>
