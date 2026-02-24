@@ -17,7 +17,7 @@ import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { toast } from "@/hooks/use-toast";
-import { Plus, Pencil, Trash2, Eye, Landmark, Calendar, MapPin, Building, Ticket, Tag, Globe, Save, X, Loader2, Search, Trophy, GraduationCap, Mic, Image, Users, FileText, Bot, Copy, FileSpreadsheet, CheckCircle, XCircle, Layers } from "lucide-react";
+import { Plus, Pencil, Trash2, Eye, Landmark, Calendar, MapPin, Building, Ticket, Tag, Globe, Save, X, Loader2, Search, Trophy, GraduationCap, Mic, Image, Users, FileText, Bot, Copy, FileSpreadsheet, CheckCircle, XCircle, Layers, Download, TrendingUp, Clock } from "lucide-react";
 import { EventSeriesManager } from "@/components/admin/EventSeriesManager";
 import { AITextOptimizer } from "@/components/admin/AITextOptimizer";
 import { OrganizerSearchSelector, type OrganizerValue } from "@/components/admin/OrganizerSearchSelector";
@@ -367,7 +367,7 @@ export default function ExhibitionsAdmin() {
             </p>
           </div>
         </div>
-        <div className="flex gap-2">
+        <div className="flex gap-2 flex-wrap">
           <Button variant="outline" size="sm" onClick={() => { setShowSeries(!showSeries); }}>
             <Layers className="me-2 h-4 w-4" />
             {t("Series", "السلاسل")}
@@ -375,6 +375,28 @@ export default function ExhibitionsAdmin() {
           <Button variant="outline" size="sm" onClick={() => { setShowBulkImport(!showBulkImport); if (showForm) setShowForm(false); }}>
             <FileSpreadsheet className="me-2 h-4 w-4" />
             {t("Bulk Import", "استيراد جماعي")}
+          </Button>
+          <Button variant="outline" size="sm" onClick={() => {
+            if (!filteredExhibitions?.length) return;
+            const headers = ["Title", "Type", "Status", "Start Date", "End Date", "City", "Country", "Organizer", "Is Virtual", "Is Free", "Views"];
+            const rows = filteredExhibitions.map(ex => [
+              ex.title, ex.type, ex.status,
+              format(new Date(ex.start_date), "yyyy-MM-dd"),
+              format(new Date(ex.end_date), "yyyy-MM-dd"),
+              ex.city || "", ex.country || "", ex.organizer_name || "",
+              ex.is_virtual ? "Yes" : "No", ex.is_free ? "Yes" : "No",
+              ex.view_count || 0,
+            ]);
+            const csv = [headers.join(","), ...rows.map(r => r.map(v => `"${v}"`).join(","))].join("\n");
+            const blob = new Blob([csv], { type: "text/csv" });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement("a");
+            a.href = url; a.download = `exhibitions-${format(new Date(), "yyyyMMdd")}.csv`; a.click();
+            URL.revokeObjectURL(url);
+            toast({ title: t("Exported " + filteredExhibitions.length + " events", "تم تصدير " + filteredExhibitions.length + " فعالية") });
+          }}>
+            <Download className="me-2 h-4 w-4" />
+            {t("Export CSV", "تصدير CSV")}
           </Button>
           <Button onClick={() => { resetForm(); setShowForm(!showForm); if (showBulkImport) setShowBulkImport(false); }} size="sm">
             {showForm ? <><X className="me-2 h-4 w-4" />{t("Close", "إغلاق")}</> : <><Plus className="me-2 h-4 w-4" />{t("Add Event", "إضافة فعالية")}</>}
@@ -384,18 +406,24 @@ export default function ExhibitionsAdmin() {
 
       {/* Quick Stats */}
       {exhibitions && exhibitions.length > 0 && (
-        <div className="grid grid-cols-2 sm:grid-cols-5 gap-3">
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
           {[
-            { label: t("Total", "الإجمالي"), value: exhibitions.length, color: "text-foreground" },
-            { label: t("Pending", "معلقة"), value: exhibitions.filter(e => e.status === "pending").length, color: "text-chart-4" },
-            { label: t("Active", "نشطة"), value: exhibitions.filter(e => e.status === "active").length, color: "text-chart-2" },
-            { label: t("Upcoming", "قادمة"), value: exhibitions.filter(e => e.status === "upcoming").length, color: "text-chart-4" },
-            { label: t("Draft", "مسودة"), value: exhibitions.filter(e => e.status === "draft").length, color: "text-muted-foreground" },
+            { label: t("Total", "الإجمالي"), value: exhibitions.length, color: "text-foreground", icon: Landmark },
+            { label: t("Pending", "معلقة"), value: exhibitions.filter(e => e.status === "pending").length, color: "text-chart-4", icon: Clock },
+            { label: t("Active", "نشطة"), value: exhibitions.filter(e => e.status === "active").length, color: "text-chart-2", icon: TrendingUp },
+            { label: t("Upcoming", "قادمة"), value: exhibitions.filter(e => e.status === "upcoming").length, color: "text-chart-4", icon: Calendar },
+            { label: t("Completed", "مكتملة"), value: exhibitions.filter(e => e.status === "completed").length, color: "text-chart-1", icon: CheckCircle },
+            { label: t("Total Views", "المشاهدات"), value: exhibitions.reduce((sum, e) => sum + (e.view_count || 0), 0), color: "text-primary", icon: Eye },
           ].map((stat) => (
             <Card key={stat.label} className="border-border/40">
-              <CardContent className="p-3 text-center">
-                <p className={`text-2xl font-bold ${stat.color}`}>{stat.value}</p>
-                <p className="text-[10px] text-muted-foreground">{stat.label}</p>
+              <CardContent className="p-3 flex items-center gap-3">
+                <div className={`flex h-9 w-9 items-center justify-center rounded-lg bg-muted/60 shrink-0`}>
+                  <stat.icon className={`h-4 w-4 ${stat.color}`} />
+                </div>
+                <div>
+                  <p className={`text-xl font-bold ${stat.color}`}>{stat.value}</p>
+                  <p className="text-[10px] text-muted-foreground">{stat.label}</p>
+                </div>
               </CardContent>
             </Card>
           ))}

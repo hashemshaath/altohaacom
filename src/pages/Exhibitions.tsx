@@ -36,6 +36,12 @@ const typeOptions: { value: ExhibitionType | "all"; en: string; ar: string }[] =
   { value: "competition_event", en: "Competition Events", ar: "أحداث تنافسية" },
 ];
 
+const sortOptions = [
+  { value: "date_asc", en: "Date (Earliest)", ar: "التاريخ (الأقرب)" },
+  { value: "date_desc", en: "Date (Latest)", ar: "التاريخ (الأحدث)" },
+  { value: "name_asc", en: "Name (A-Z)", ar: "الاسم (أ-ي)" },
+];
+
 export default function Exhibitions() {
   const { language } = useLanguage();
   const isAr = language === "ar";
@@ -45,6 +51,8 @@ export default function Exhibitions() {
   const [activeTab, setActiveTab] = useState("all");
   const [typeFilter, setTypeFilter] = useState<string>("all");
   const [countryFilter, setCountryFilter] = useState<string>("all");
+  const [yearFilter, setYearFilter] = useState<string>("all");
+  const [sortBy, setSortBy] = useState<string>("date_asc");
 
   const { data: exhibitions, isLoading } = useQuery({
     queryKey: ["exhibitions"],
@@ -63,11 +71,18 @@ export default function Exhibitions() {
     new Set(exhibitions?.map(e => e.country).filter(Boolean) as string[])
   ).sort();
 
+  const years = Array.from(
+    new Set(exhibitions?.map(e => new Date(e.start_date).getFullYear().toString()) || [])
+  ).sort((a, b) => Number(b) - Number(a));
+
   const filtered = exhibitions?.filter((ex) => {
     const title = isAr && ex.title_ar ? ex.title_ar : ex.title;
-    const matchesSearch = title.toLowerCase().includes(searchQuery.toLowerCase());
+    const matchesSearch = !searchQuery || title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      (ex.city && ex.city.toLowerCase().includes(searchQuery.toLowerCase())) ||
+      (ex.organizer_name && ex.organizer_name.toLowerCase().includes(searchQuery.toLowerCase()));
     const matchesType = typeFilter === "all" || ex.type === typeFilter;
     const matchesCountry = countryFilter === "all" || ex.country === countryFilter;
+    const matchesYear = yearFilter === "all" || new Date(ex.start_date).getFullYear().toString() === yearFilter;
 
     const now = new Date();
     const start = new Date(ex.start_date);
@@ -78,7 +93,11 @@ export default function Exhibitions() {
     else if (activeTab === "current") matchesTab = isWithinInterval(now, { start, end });
     else if (activeTab === "past") matchesTab = isPast(end);
 
-    return matchesSearch && matchesType && matchesCountry && matchesTab;
+    return matchesSearch && matchesType && matchesCountry && matchesYear && matchesTab;
+  })?.sort((a, b) => {
+    if (sortBy === "date_desc") return new Date(b.start_date).getTime() - new Date(a.start_date).getTime();
+    if (sortBy === "name_asc") return (isAr && a.title_ar ? a.title_ar : a.title).localeCompare(isAr && b.title_ar ? b.title_ar : b.title);
+    return new Date(a.start_date).getTime() - new Date(b.start_date).getTime();
   });
 
   const featuredExhibitions = exhibitions?.filter((ex) => ex.is_featured && !isPast(new Date(ex.end_date)));
@@ -207,9 +226,9 @@ export default function Exhibitions() {
                   className="h-10 border-border/40 bg-muted/30 ps-10 rounded-xl text-sm transition-all focus:bg-background focus:ring-primary/20"
                 />
               </div>
-              <div className="flex gap-2">
+              <div className="flex flex-wrap gap-2">
                 <Select value={typeFilter} onValueChange={setTypeFilter}>
-                  <SelectTrigger className="h-10 w-full border-border/40 bg-muted/30 rounded-xl sm:w-40 text-xs">
+                  <SelectTrigger className="h-10 w-full border-border/40 bg-muted/30 rounded-xl sm:w-36 text-xs">
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent className="rounded-xl">
@@ -220,7 +239,7 @@ export default function Exhibitions() {
                 </Select>
                 {countries.length > 0 && (
                   <Select value={countryFilter} onValueChange={setCountryFilter}>
-                    <SelectTrigger className="h-10 w-full border-border/40 bg-muted/30 rounded-xl sm:w-40 text-xs">
+                    <SelectTrigger className="h-10 w-full border-border/40 bg-muted/30 rounded-xl sm:w-36 text-xs">
                       <div className="flex items-center gap-1.5">
                         <MapPin className="h-3.5 w-3.5 text-primary/50" />
                         <SelectValue placeholder={isAr ? "كل الدول" : "All Countries"} />
@@ -236,6 +255,32 @@ export default function Exhibitions() {
                     </SelectContent>
                   </Select>
                 )}
+                {years.length > 1 && (
+                  <Select value={yearFilter} onValueChange={setYearFilter}>
+                    <SelectTrigger className="h-10 w-full border-border/40 bg-muted/30 rounded-xl sm:w-28 text-xs">
+                      <div className="flex items-center gap-1.5">
+                        <CalendarDays className="h-3.5 w-3.5 text-primary/50" />
+                        <SelectValue placeholder={isAr ? "كل السنوات" : "All Years"} />
+                      </div>
+                    </SelectTrigger>
+                    <SelectContent className="rounded-xl">
+                      <SelectItem value="all">{isAr ? "كل السنوات" : "All Years"}</SelectItem>
+                      {years.map((y) => (
+                        <SelectItem key={y} value={y}>{y}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                )}
+                <Select value={sortBy} onValueChange={setSortBy}>
+                  <SelectTrigger className="h-10 w-full border-border/40 bg-muted/30 rounded-xl sm:w-36 text-xs">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent className="rounded-xl">
+                    {sortOptions.map((opt) => (
+                      <SelectItem key={opt.value} value={opt.value}>{isAr ? opt.ar : opt.en}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
               </div>
             </div>
           </div>
@@ -293,12 +338,12 @@ export default function Exhibitions() {
                 <p className="max-w-sm text-sm text-muted-foreground">
                   {isAr ? "جرب تعديل معايير البحث أو الفلاتر" : "Try adjusting your search criteria or filters"}
                 </p>
-                {(searchQuery || typeFilter !== "all" || countryFilter !== "all") && (
+                {(searchQuery || typeFilter !== "all" || countryFilter !== "all" || yearFilter !== "all") && (
                   <Button
                     variant="outline"
                     size="sm"
                     className="mt-5 rounded-xl"
-                    onClick={() => { setSearchQuery(""); setTypeFilter("all"); setCountryFilter("all"); }}
+                    onClick={() => { setSearchQuery(""); setTypeFilter("all"); setCountryFilter("all"); setYearFilter("all"); }}
                   >
                     {isAr ? "مسح جميع الفلاتر" : "Clear all filters"}
                   </Button>
