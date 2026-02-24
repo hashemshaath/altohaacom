@@ -15,3 +15,12 @@ export function buildPublicUrl(path: string) {
   const normalizedPath = path.startsWith("/") ? path : `/${path}`;
   return `${getPublicAppOrigin()}${normalizedPath}`;
 }
+
+export function buildSocialLinksPath(username: string) {
+  return `/bio/${username}`;
+}
+
+export function buildSocialLinksUrl(username: string) {
+  return buildPublicUrl(buildSocialLinksPath(username));
+}
+

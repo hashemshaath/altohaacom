@@ -109,7 +109,7 @@ export const publicRoutes = (
     <Route path="/cookies" element={<CookiePolicy />} />
     <Route path="/profile/:username" element={<PublicProfile />} />
     <Route path="/offline" element={<OfflinePage />} />
-    <Route path="/:username/links" element={<SocialLinks />} />
+    <Route path="/bio/:username" element={<SocialLinks />} />
     <Route path="/:username" element={<PublicProfile />} />
   </>
 );

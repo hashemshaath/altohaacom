@@ -27,7 +27,7 @@ import {
   BarChart3, MousePointerClick, Pencil, Instagram, Twitter,
   Facebook, Linkedin, Youtube, Smartphone, Type, EyeOff, Settings2
 } from "lucide-react";
-import { buildPublicUrl } from "@/lib/publicAppUrl";
+import { buildSocialLinksPath, buildSocialLinksUrl } from "@/lib/publicAppUrl";
 
 const THEMES = [
   { id: "default", label: "Default", labelAr: "افتراضي", preview: "bg-gradient-to-br from-background to-muted/30" },
@@ -234,15 +234,15 @@ export default function SocialLinksEditor() {
 
   const copyLink = async () => {
     if (!profile?.username) return;
-    await navigator.clipboard.writeText(buildPublicUrl(`/${profile.username}/links`));
+    await navigator.clipboard.writeText(buildSocialLinksUrl(profile.username));
     setCopied(true);
     toast({ title: isAr ? "تم نسخ الرابط" : "Link copied!" });
     setTimeout(() => setCopied(false), 2000);
   };
 
   const totalClicks = items.reduce((sum, item) => sum + (item.click_count || 0), 0);
-  const previewUrl = profile?.username ? `/${profile.username}/links` : "#";
-  const fullUrl = profile?.username ? buildPublicUrl(`/${profile.username}/links`) : "";
+  const previewUrl = profile?.username ? buildSocialLinksPath(profile.username) : "#";
+  const fullUrl = profile?.username ? buildSocialLinksUrl(profile.username) : "";
   const displayName = profile?.display_name || profile?.full_name || profile?.username || "";
 
   const socialLinks = profile ? [
@@ -348,7 +348,7 @@ export default function SocialLinksEditor() {
               <div className="flex items-center gap-2">
                 <Globe className="h-4 w-4 text-primary shrink-0" />
                 <span className="font-medium">{isAr ? "رابط صفحتك:" : "Your link:"}</span>
-                <code className="text-xs bg-background/80 px-2 py-1 rounded font-mono" dir="ltr">altoha.com/{profile.username}/links</code>
+                <code className="text-xs bg-background/80 px-2 py-1 rounded font-mono" dir="ltr">altoha.com/bio/{profile.username}</code>
               </div>
               <Badge variant={form.is_published ? "default" : "secondary"} className="text-[10px]">
                 {form.is_published ? (isAr ? "منشور" : "Published") : (isAr ? "مسودة" : "Draft")}
