@@ -16,6 +16,8 @@ export function useSocialLinkPage(userId?: string) {
       return data;
     },
     enabled: !!userId,
+    staleTime: 2 * 60_000,
+    gcTime: 10 * 60_000,
   });
 }
 
@@ -32,6 +34,8 @@ export function useSocialLinkItems(pageId?: string) {
       return data || [];
     },
     enabled: !!pageId,
+    staleTime: 60_000,
+    gcTime: 5 * 60_000,
   });
 }
 
@@ -53,6 +57,7 @@ export function useSocialLinkPageByUsername(username?: string) {
       if (pErr) throw pErr;
       if (!profile) throw new Error("Profile not found");
 
+      // Fetch page and items in parallel if page exists
       const { data: page, error: pgErr } = await supabase
         .from("social_link_pages")
         .select("*")
@@ -62,7 +67,7 @@ export function useSocialLinkPageByUsername(username?: string) {
 
       const items = page ? await supabase
         .from("social_link_items")
-        .select("*")
+        .select("id, title, title_ar, url, icon, link_type, sort_order, is_active, click_count, thumbnail_url")
         .eq("page_id", page.id)
         .eq("is_active", true)
         .order("sort_order", { ascending: true })
@@ -71,6 +76,8 @@ export function useSocialLinkPageByUsername(username?: string) {
       return { profile, page, items };
     },
     enabled: !!username,
+    staleTime: 3 * 60_000,
+    gcTime: 10 * 60_000,
   });
 }
 
