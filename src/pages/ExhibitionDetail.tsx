@@ -12,7 +12,7 @@ import { Badge } from "@/components/ui/badge";
 import { toast } from "@/hooks/use-toast";
 import {
   Calendar, Landmark, ImageIcon, LayoutGrid, MessageSquare, Award,
-  Star, Trophy, Users, Clock,
+  Star, Trophy, Users, Clock, Settings,
 } from "lucide-react";
 import { SEOHead } from "@/components/SEOHead";
 import { ImageLightbox } from "@/components/competitions/ImageLightbox";
@@ -38,6 +38,7 @@ const ExhibitionAgendaTab = lazy(() => import("@/components/exhibitions/detail/E
 const ExhibitionBoothsTab = lazy(() => import("@/components/exhibitions/detail/ExhibitionBoothsTab").then(m => ({ default: m.ExhibitionBoothsTab })));
 const ExhibitionFloorMap = lazy(() => import("@/components/exhibitions/detail/ExhibitionFloorMap").then(m => ({ default: m.ExhibitionFloorMap })));
 const ExhibitionReviewsTab = lazy(() => import("@/components/exhibitions/detail/ExhibitionReviewsTab").then(m => ({ default: m.ExhibitionReviewsTab })));
+const ExhibitionOrganizerDashboard = lazy(() => import("@/components/exhibitions/ExhibitionOrganizerDashboard").then(m => ({ default: m.ExhibitionOrganizerDashboard })));
 
 const TabFallback = () => <div className="space-y-3">{[1, 2, 3].map(i => <div key={i} className="h-24 animate-pulse rounded-2xl bg-muted" />)}</div>;
 
@@ -352,6 +353,7 @@ export default function ExhibitionDetail() {
                   {hasBooths && <ExhibitionTabTrigger value="booths" icon={LayoutGrid} label={isAr ? "الأجنحة" : "Booths"} count={boothCount} />}
                   {hasSponsors && <ExhibitionTabTrigger value="sponsors" icon={Star} label={isAr ? "الرعاة" : "Sponsors"} />}
                   {hasReviews && <ExhibitionTabTrigger value="reviews" icon={MessageSquare} label={isAr ? "التقييمات" : "Reviews"} count={reviewCount > 0 ? reviewCount : undefined} />}
+                  {isOwner && <ExhibitionTabTrigger value="organizer" icon={Settings} label={isAr ? "لوحة التحكم" : "Dashboard"} />}
                 </TabsList>
               </div>
 
@@ -435,6 +437,14 @@ export default function ExhibitionDetail() {
                 <TabsContent value="reviews" className="mt-6">
                   <Suspense fallback={<TabFallback />}>
                     <ExhibitionReviewsTab exhibitionId={exhibition.id} hasEnded={hasEnded} isAr={isAr} />
+                  </Suspense>
+                </TabsContent>
+              )}
+
+              {isOwner && (
+                <TabsContent value="organizer" className="mt-6">
+                  <Suspense fallback={<TabFallback />}>
+                    <ExhibitionOrganizerDashboard exhibitionId={exhibition.id} exhibitionTitle={title} isAr={isAr} />
                   </Suspense>
                 </TabsContent>
               )}
