@@ -21,7 +21,8 @@ import { countryFlag } from "@/lib/countryFlag";
 import { useCountries } from "@/hooks/useCountries";
 import {
   THEME_COLORS, BUTTON_STYLES_MAP, FONT_MAP, FONT_SIZE_MAP,
-  parseExtra, getButtonStyleOverrides, type ExtraSettings,
+  parseExtra, getButtonStyleOverrides, getVideoEmbedUrl, isVideoLink,
+  type ExtraSettings,
 } from "@/lib/socialLinksConstants";
 
 // ── Multi-language support (10 languages) ──
@@ -61,6 +62,13 @@ const T: Record<string, Record<LangCode, string>> = {
   nationality: { ar: "الجنسية", en: "Nationality", fr: "Nationalité", es: "Nacionalidad", de: "Nationalität", tr: "Uyruk", pt: "Nacionalidade", zh: "国籍", ja: "国籍", ko: "국적" },
   residence: { ar: "الإقامة", en: "Residence", fr: "Résidence", es: "Residencia", de: "Wohnsitz", tr: "İkamet", pt: "Residência", zh: "居住地", ja: "居住地", ko: "거주지" },
   about: { ar: "نبذة", en: "About", fr: "À propos", es: "Acerca de", de: "Über", tr: "Hakkında", pt: "Sobre", zh: "关于", ja: "紹介", ko: "소개" },
+  contactTitle: { ar: "تواصل معي", en: "Get in Touch", fr: "Contactez-moi", es: "Contáctame", de: "Kontakt", tr: "İletişim", pt: "Contato", zh: "联系我", ja: "お問い合わせ", ko: "연락하기" },
+  contactName: { ar: "الاسم", en: "Name", fr: "Nom", es: "Nombre", de: "Name", tr: "Ad", pt: "Nome", zh: "姓名", ja: "名前", ko: "이름" },
+  contactEmail: { ar: "البريد الإلكتروني", en: "Email", fr: "Email", es: "Email", de: "E-Mail", tr: "E-posta", pt: "Email", zh: "邮箱", ja: "メール", ko: "이메일" },
+  contactMessage: { ar: "الرسالة", en: "Message", fr: "Message", es: "Mensaje", de: "Nachricht", tr: "Mesaj", pt: "Mensagem", zh: "消息", ja: "メッセージ", ko: "메시지" },
+  contactSend: { ar: "إرسال", en: "Send", fr: "Envoyer", es: "Enviar", de: "Senden", tr: "Gönder", pt: "Enviar", zh: "发送", ja: "送信", ko: "보내기" },
+  contactSent: { ar: "تم الإرسال ✓", en: "Sent ✓", fr: "Envoyé ✓", es: "Enviado ✓", de: "Gesendet ✓", tr: "Gönderildi ✓", pt: "Enviado ✓", zh: "已发送 ✓", ja: "送信済 ✓", ko: "전송됨 ✓" },
+  all: { ar: "الكل", en: "All", fr: "Tout", es: "Todo", de: "Alle", tr: "Tümü", pt: "Tudo", zh: "全部", ja: "すべて", ko: "전체" },
 };
 
 function t(key: string, lang: LangCode): string {
@@ -106,6 +114,182 @@ function formatCompact(n: number): string {
   return n.toString();
 }
 
+// ── Floating Particles ──
+const FloatingParticles = memo(function FloatingParticles({ color, count = 20 }: { color: string; count?: number }) {
+  const particles = useMemo(() => Array.from({ length: count }, (_, i) => ({
+    id: i,
+    x: Math.random() * 100,
+    y: Math.random() * 100,
+    size: 2 + Math.random() * 3,
+    duration: 8 + Math.random() * 12,
+    delay: Math.random() * 5,
+  })), [count]);
+
+  return (
+    <div className="pointer-events-none fixed inset-0 z-0 overflow-hidden">
+      {particles.map(p => (
+        <div
+          key={p.id}
+          className="absolute rounded-full animate-pulse"
+          style={{
+            left: `${p.x}%`,
+            top: `${p.y}%`,
+            width: p.size,
+            height: p.size,
+            background: color || "rgba(255,255,255,0.15)",
+            opacity: 0.3,
+            animation: `float-particle ${p.duration}s ease-in-out ${p.delay}s infinite alternate`,
+          }}
+        />
+      ))}
+      <style>{`
+        @keyframes float-particle {
+          0% { transform: translateY(0) translateX(0); opacity: 0.1; }
+          50% { opacity: 0.4; }
+          100% { transform: translateY(-80px) translateX(30px); opacity: 0.05; }
+        }
+      `}</style>
+    </div>
+  );
+});
+
+// ── Typing Text Animation ──
+const TypingText = memo(function TypingText({ text, speed = 40, style, className }: { text: string; speed?: number; style?: React.CSSProperties; className?: string }) {
+  const [displayed, setDisplayed] = useState("");
+  const [done, setDone] = useState(false);
+
+  useEffect(() => {
+    if (!text) return;
+    setDisplayed("");
+    setDone(false);
+    let i = 0;
+    const interval = setInterval(() => {
+      i++;
+      setDisplayed(text.slice(0, i));
+      if (i >= text.length) { clearInterval(interval); setDone(true); }
+    }, speed);
+    return () => clearInterval(interval);
+  }, [text, speed]);
+
+  return (
+    <span className={className} style={style}>
+      {displayed}
+      {!done && <span className="animate-pulse">|</span>}
+    </span>
+  );
+});
+
+// ── Video Embed ──
+const VideoEmbed = memo(function VideoEmbed({ url, theme }: { url: string; theme: any }) {
+  const embedUrl = getVideoEmbedUrl(url);
+  if (!embedUrl) return null;
+  return (
+    <div className="rounded-2xl overflow-hidden mb-3" style={{ border: `1px solid ${theme.border}`, background: theme.card }}>
+      <div className="relative" style={{ paddingBottom: "56.25%" }}>
+        <iframe
+          src={embedUrl}
+          className="absolute inset-0 w-full h-full"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+          allowFullScreen
+          loading="lazy"
+          style={{ border: "none" }}
+        />
+      </div>
+    </div>
+  );
+});
+
+// ── Contact Form ──
+function ContactFormSection({ theme, lang, isRtl, profileUserId, ownerName }: {
+  theme: any; lang: LangCode; isRtl: boolean; profileUserId: string; ownerName: string;
+}) {
+  const [form, setForm] = useState({ name: "", email: "", message: "" });
+  const [sending, setSending] = useState(false);
+  const [sent, setSent] = useState(false);
+  const { toast } = useToast();
+
+  const handleSend = useCallback(async () => {
+    if (!form.name || !form.email || !form.message) return;
+    setSending(true);
+    try {
+      // Store message in notifications table as contact_form type
+      const { error } = await supabase.from("notifications").insert({
+        user_id: profileUserId,
+        title: `📩 ${form.name}`,
+        title_ar: `📩 ${form.name}`,
+        body: `${form.email}: ${form.message}`,
+        body_ar: `${form.email}: ${form.message}`,
+        type: "contact_form",
+        metadata: { sender_name: form.name, sender_email: form.email, message: form.message },
+      });
+      if (error) throw error;
+      setSent(true);
+      setForm({ name: "", email: "", message: "" });
+      toast({ title: t("contactSent", lang) });
+    } catch {
+      toast({ title: "Error", variant: "destructive" });
+    } finally {
+      setSending(false);
+    }
+  }, [form, profileUserId, lang, toast]);
+
+  if (sent) {
+    return (
+      <div className="text-center py-6 rounded-2xl" style={{ background: theme.card, border: `1px solid ${theme.border}` }}>
+        <Check className="h-8 w-8 mx-auto mb-2" style={{ color: theme.accent }} />
+        <p className="text-sm font-semibold" style={{ color: theme.text }}>{t("contactSent", lang)}</p>
+      </div>
+    );
+  }
+
+  return (
+    <div className="space-y-3 rounded-2xl p-5" style={{ background: theme.card, border: `1px solid ${theme.border}` }}>
+      <input
+        value={form.name}
+        onChange={e => setForm(f => ({ ...f, name: e.target.value }))}
+        placeholder={t("contactName", lang)}
+        className="w-full rounded-xl px-4 py-2.5 text-sm outline-none transition-all duration-200"
+        style={{ background: theme.btnBg, border: `1px solid ${theme.border}`, color: theme.text }}
+        onFocus={e => (e.target.style.borderColor = theme.accent)}
+        onBlur={e => (e.target.style.borderColor = theme.border)}
+      />
+      <input
+        type="email"
+        value={form.email}
+        onChange={e => setForm(f => ({ ...f, email: e.target.value }))}
+        placeholder={t("contactEmail", lang)}
+        className="w-full rounded-xl px-4 py-2.5 text-sm outline-none transition-all duration-200"
+        dir="ltr"
+        style={{ background: theme.btnBg, border: `1px solid ${theme.border}`, color: theme.text }}
+        onFocus={e => (e.target.style.borderColor = theme.accent)}
+        onBlur={e => (e.target.style.borderColor = theme.border)}
+      />
+      <textarea
+        value={form.message}
+        onChange={e => setForm(f => ({ ...f, message: e.target.value }))}
+        placeholder={t("contactMessage", lang)}
+        rows={3}
+        className="w-full rounded-xl px-4 py-2.5 text-sm outline-none resize-none transition-all duration-200"
+        style={{ background: theme.btnBg, border: `1px solid ${theme.border}`, color: theme.text }}
+        onFocus={e => (e.target.style.borderColor = theme.accent)}
+        onBlur={e => (e.target.style.borderColor = theme.border)}
+      />
+      <button
+        onClick={handleSend}
+        disabled={sending || !form.name || !form.email || !form.message}
+        className="w-full py-2.5 rounded-xl text-sm font-semibold transition-all duration-300 hover:scale-[1.02] active:scale-[0.98] disabled:opacity-50"
+        style={{
+          background: `linear-gradient(135deg, ${theme.accent}, ${theme.accent}dd)`,
+          color: theme.bg.includes("fff") ? "#ffffff" : "#0a0a12",
+          boxShadow: `0 4px 20px ${theme.accentLight}`,
+        }}
+      >
+        {sending ? "..." : t("contactSend", lang)}
+      </button>
+    </div>
+  );
+}
+
 // ── Divider component ──
 function SectionDivider({ color }: { color: string }) {
   return (
@@ -126,6 +310,7 @@ export default function SocialLinks() {
   const { data, isLoading, error } = useSocialLinkPageByUsername(username);
   const [copied, setCopied] = useState(false);
   const [animated, setAnimated] = useState(false);
+  const [activePage, setActivePage] = useState("main");
 
   const langParam = searchParams.get("lang") as LangCode | null;
   const lang: LangCode = SUPPORTED_LANGUAGES.find(l => l.code === langParam)?.code || (appLanguage === "ar" ? "ar" : "en");
@@ -310,12 +495,21 @@ export default function SocialLinks() {
 
   const isLight = themeId === "minimal";
 
+  // Filter items by active page
+  const filteredItems = activePage === "main" || !extra.pages.length ? items : items;
+
+  const hasMultiPages = extra.pages && extra.pages.length > 0;
+
   return (
     <div
-      className="flex min-h-screen flex-col items-center"
+      className="flex min-h-screen flex-col items-center relative"
       dir={contentDir}
       style={{ background: theme.bg, fontFamily, color: theme.text }}
     >
+      {/* Floating Particles */}
+      {extra.enable_particles && (
+        <FloatingParticles color={extra.particle_color || theme.accent} />
+      )}
       {googleFontLink && <link rel="stylesheet" href={googleFontLink} />}
       <SEOHead
         title={`${title} - Altoha`}
@@ -557,9 +751,18 @@ export default function SocialLinks() {
         {/* Bio */}
         {extra.show_bio && bio && (
           <div className={`mb-5 transition-all duration-700 delay-350 ${animated ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}>
-            <p className={`leading-relaxed ${textAlignClass} ${fontSize.bio}`} dir="auto" style={{ color: theme.textMuted }}>
-              {bio}
-            </p>
+            {extra.enable_typing_animation ? (
+              <TypingText
+                text={bio}
+                speed={35}
+                className={`leading-relaxed ${textAlignClass} ${fontSize.bio} block`}
+                style={{ color: theme.textMuted }}
+              />
+            ) : (
+              <p className={`leading-relaxed ${textAlignClass} ${fontSize.bio}`} dir="auto" style={{ color: theme.textMuted }}>
+                {bio}
+              </p>
+            )}
           </div>
         )}
 
@@ -650,66 +853,121 @@ export default function SocialLinks() {
           <SectionDivider color={theme.border} />
         )}
 
+        {/* Multi-Page Tabs */}
+        {hasMultiPages && (
+          <div className={`mb-5 transition-all duration-700 delay-470 ${animated ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}>
+            <div className={`flex ${justifyClass} flex-wrap gap-1.5`}>
+              <button
+                onClick={() => setActivePage("main")}
+                className="px-4 py-2 rounded-full text-xs font-semibold transition-all duration-300"
+                style={{
+                  background: activePage === "main" ? `linear-gradient(135deg, ${theme.accentLight}, ${theme.accentMedium})` : theme.btnBg,
+                  border: `1px solid ${activePage === "main" ? theme.accentMedium : theme.border}`,
+                  color: activePage === "main" ? theme.accent : theme.textMuted,
+                }}
+              >
+                {t("all", lang)}
+              </button>
+              {extra.pages.map(pg => (
+                <button
+                  key={pg.id}
+                  onClick={() => setActivePage(pg.id)}
+                  className="px-4 py-2 rounded-full text-xs font-semibold transition-all duration-300"
+                  style={{
+                    background: activePage === pg.id ? `linear-gradient(135deg, ${theme.accentLight}, ${theme.accentMedium})` : theme.btnBg,
+                    border: `1px solid ${activePage === pg.id ? theme.accentMedium : theme.border}`,
+                    color: activePage === pg.id ? theme.accent : theme.textMuted,
+                  }}
+                >
+                  {isRtl ? (pg.label_ar || pg.label) : pg.label}
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
+
         {/* Link Items */}
-        {items.length > 0 && (
+        {filteredItems.length > 0 && (
           <div className="mb-5">
             <div className={`${extra.link_layout === "grid" ? "grid grid-cols-2 gap-2.5" : "space-y-2.5"}`}>
-              {items.filter(item => {
+              {filteredItems.filter(item => {
                 // Schedule filtering
                 const now = new Date();
                 if ((item as any).scheduled_start && new Date((item as any).scheduled_start) > now) return false;
                 if ((item as any).scheduled_end && new Date((item as any).scheduled_end) < now) return false;
                 return true;
               }).map((item, index) => (
-                <a
-                  key={item.id}
-                  href={item.url.startsWith("http") ? item.url : `https://${item.url}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  onClick={() => handleLinkClick(item.id)}
-                  className={`group relative flex ${extra.link_layout === "grid" ? "flex-col items-center text-center py-5" : "items-center"} gap-3 px-5 py-3.5 ${btnStyle} backdrop-blur-sm transition-all duration-300 hover:scale-[1.02] active:scale-[0.98] overflow-hidden`}
-                  style={{
-                    background: buttonColorStyle.backgroundColor || theme.card,
-                    border: `1px solid ${buttonColorStyle.backgroundColor ? "transparent" : theme.border}`,
-                    color: buttonColorStyle.color || theme.text,
-                    opacity: animated ? 1 : 0,
-                    transform: animated ? "translateY(0)" : "translateY(16px)",
-                    transition: `all 0.5s cubic-bezier(0.4,0,0.2,1) ${500 + index * 80}ms`,
-                    ...(!buttonColorStyle.backgroundColor ? getButtonStyleOverrides(page?.button_style || "rounded", theme.accent, theme.card, theme.border) : {}),
-                  }}
-                  onMouseEnter={e => {
-                    if (!buttonColorStyle.backgroundColor) {
-                      (e.currentTarget as HTMLElement).style.background = theme.btnHover;
-                      (e.currentTarget as HTMLElement).style.borderColor = theme.accentMedium;
-                    }
-                  }}
-                  onMouseLeave={e => {
-                    if (!buttonColorStyle.backgroundColor) {
-                      (e.currentTarget as HTMLElement).style.background = theme.card;
-                      (e.currentTarget as HTMLElement).style.borderColor = theme.border;
-                    }
-                  }}
-                >
-                  {/* Hover shine */}
-                  <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500" style={{
-                    background: `linear-gradient(90deg, transparent 0%, ${theme.btnHover} 50%, transparent 100%)`
-                  }} />
+                <div key={item.id}>
+                  <a
+                    href={item.url.startsWith("http") ? item.url : `https://${item.url}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    onClick={() => handleLinkClick(item.id)}
+                    className={`group relative flex ${extra.link_layout === "grid" ? "flex-col items-center text-center py-5" : "items-center"} gap-3 px-5 py-3.5 ${btnStyle} backdrop-blur-sm transition-all duration-300 hover:scale-[1.02] active:scale-[0.98] overflow-hidden`}
+                    style={{
+                      background: buttonColorStyle.backgroundColor || theme.card,
+                      border: `1px solid ${buttonColorStyle.backgroundColor ? "transparent" : theme.border}`,
+                      color: buttonColorStyle.color || theme.text,
+                      opacity: animated ? 1 : 0,
+                      transform: animated ? "translateY(0)" : "translateY(16px)",
+                      transition: `all 0.5s cubic-bezier(0.4,0,0.2,1) ${500 + index * 80}ms`,
+                      ...(!buttonColorStyle.backgroundColor ? getButtonStyleOverrides(page?.button_style || "rounded", theme.accent, theme.card, theme.border) : {}),
+                    }}
+                    onMouseEnter={e => {
+                      if (!buttonColorStyle.backgroundColor) {
+                        (e.currentTarget as HTMLElement).style.background = theme.btnHover;
+                        (e.currentTarget as HTMLElement).style.borderColor = theme.accentMedium;
+                      }
+                    }}
+                    onMouseLeave={e => {
+                      if (!buttonColorStyle.backgroundColor) {
+                        (e.currentTarget as HTMLElement).style.background = theme.card;
+                        (e.currentTarget as HTMLElement).style.borderColor = theme.border;
+                      }
+                    }}
+                  >
+                    {/* Hover shine */}
+                    <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500" style={{
+                      background: `linear-gradient(90deg, transparent 0%, ${theme.btnHover} 50%, transparent 100%)`
+                    }} />
 
-                  {item.thumbnail_url && (
-                    <img src={item.thumbnail_url} alt="" className={`${extra.link_layout === "grid" ? "h-10 w-10" : "h-9 w-9"} rounded-lg object-cover shrink-0 relative z-10`} loading="lazy" />
+                    {item.thumbnail_url && (
+                      <img src={item.thumbnail_url} alt="" className={`${extra.link_layout === "grid" ? "h-10 w-10" : "h-9 w-9"} rounded-lg object-cover shrink-0 relative z-10`} loading="lazy" />
+                    )}
+                    {item.icon && !item.thumbnail_url && (
+                      <span className={`${extra.link_layout === "grid" ? "text-xl" : "text-lg"} shrink-0 relative z-10`}>{item.icon}</span>
+                    )}
+                    <span className={`${extra.link_layout === "grid" ? "" : "flex-1"} font-medium ${textAlignClass} relative z-10 ${fontSize.link}`}>
+                      {isRtl ? (item.title_ar || item.title) : item.title}
+                    </span>
+                    {extra.link_layout !== "grid" && (
+                      <ExternalLink className="h-3.5 w-3.5 opacity-20 group-hover:opacity-50 transition-opacity shrink-0 relative z-10" />
+                    )}
+                  </a>
+                  {/* Video Embed Preview */}
+                  {extra.show_video_embeds && isVideoLink(item.url) && (
+                    <VideoEmbed url={item.url} theme={theme} />
                   )}
-                  {item.icon && !item.thumbnail_url && (
-                    <span className={`${extra.link_layout === "grid" ? "text-xl" : "text-lg"} shrink-0 relative z-10`}>{item.icon}</span>
-                  )}
-                  <span className={`${extra.link_layout === "grid" ? "" : "flex-1"} font-medium ${textAlignClass} relative z-10 ${fontSize.link}`}>
-                    {isRtl ? (item.title_ar || item.title) : item.title}
-                  </span>
-                  {extra.link_layout !== "grid" && (
-                    <ExternalLink className="h-3.5 w-3.5 opacity-20 group-hover:opacity-50 transition-opacity shrink-0 relative z-10" />
-                  )}
-                </a>
+                </div>
               ))}
             </div>
+          </div>
+        )}
+
+        {/* Contact Form */}
+        {extra.show_contact_form && profileUserId && !isOwner && (
+          <div className={`mb-5 transition-all duration-700 delay-500 ${animated ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}>
+            <SectionDivider color={theme.border} />
+            <h3 className={`text-[9px] font-semibold uppercase tracking-[0.2em] mb-3 ${textAlignClass}`} style={{ color: theme.accent }}>
+              {isRtl ? (extra.contact_form_title_ar || extra.contact_form_title) : (extra.contact_form_title || t("contactTitle", lang))}
+            </h3>
+            <ContactFormSection
+              theme={theme}
+              lang={lang}
+              isRtl={isRtl}
+              profileUserId={profileUserId}
+              ownerName={displayName}
+            />
           </div>
         )}
 
