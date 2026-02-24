@@ -49,6 +49,7 @@ const initialData: CompetitionFormData = {
   linkedEntityId: null,
   linkedChefId: null,
   linkedTastingId: null,
+  seriesId: "",
 };
 
 const STEP_LABELS_EN = ["Types & Categories", "Linkage", "Basic Info", "Schedule", "Supervising & Judges", "Criteria", "Review"];
@@ -104,6 +105,7 @@ export default function CreateCompetition() {
           country: data.isVirtual ? null : data.country || null,
           country_code: data.countryCode.toUpperCase() || null,
           edition_year: data.editionYear || null,
+          series_id: data.seriesId || null,
           max_participants: data.maxParticipants || null,
           organizer_id: user.id,
           status: "draft",

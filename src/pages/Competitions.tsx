@@ -47,6 +47,7 @@ interface Competition {
   is_virtual: boolean | null;
   max_participants: number | null;
   organizer_id: string;
+  edition_year: number | null;
 }
 
 const statusConfig: Record<CompetitionStatus, { bg: string; dot: string; label: string; labelAr: string }> = {
@@ -343,7 +344,8 @@ export default function Competitions() {
 
 /* ─── Featured Competition Banner ─── */
 function FeaturedCard({ competition, language, isAr }: { competition: Competition & { competition_registrations?: { id: string }[] }; language: string; isAr: boolean }) {
-  const title = isAr && competition.title_ar ? competition.title_ar : competition.title;
+  const baseTitle = isAr && competition.title_ar ? competition.title_ar : competition.title;
+  const title = competition.edition_year ? `${baseTitle} +${competition.edition_year}` : baseTitle;
   const desc = isAr && competition.description_ar ? competition.description_ar : competition.description;
   const derived = deriveCompetitionStatus({
     registrationStart: competition.registration_start,
@@ -443,7 +445,8 @@ function FeaturedCard({ competition, language, isAr }: { competition: Competitio
 
 /* ─── Competition Card ─── */
 function CompetitionCard({ competition, language, isAr }: { competition: Competition & { competition_registrations?: { id: string }[] }; language: string; isAr: boolean }) {
-  const title = isAr && competition.title_ar ? competition.title_ar : competition.title;
+  const baseTitle = isAr && competition.title_ar ? competition.title_ar : competition.title;
+  const title = competition.edition_year ? `${baseTitle} +${competition.edition_year}` : baseTitle;
   const regCount = competition.competition_registrations?.length || 0;
   const maxP = competition.max_participants;
   const fillPct = maxP ? Math.min(Math.round((regCount / maxP) * 100), 100) : 0;
