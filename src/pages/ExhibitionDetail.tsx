@@ -6,57 +6,46 @@ import { useAuth } from "@/contexts/AuthContext";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { Card, CardContent } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Badge } from "@/components/ui/badge";
 import { toast } from "@/hooks/use-toast";
 import {
-  Calendar, Globe, Bell, BellOff, Clock, Users, Trophy, Landmark, ImageIcon,
-  LayoutGrid, MessageSquare, Award, Star, Building,
+  Calendar, Landmark, ImageIcon, LayoutGrid, MessageSquare, Award,
+  Star, Trophy, Users, Clock,
 } from "lucide-react";
 import { SEOHead } from "@/components/SEOHead";
 import { ImageLightbox } from "@/components/competitions/ImageLightbox";
 import { countryFlag as getCountryFlagUtil } from "@/lib/countryFlag";
-import { format, isPast, isFuture, isWithinInterval } from "date-fns";
+import { isPast, isFuture, isWithinInterval } from "date-fns";
 import { useState, useMemo, lazy, Suspense, memo, useCallback } from "react";
 import { useEntityQRCode } from "@/hooks/useQRCode";
 
-// Detail sub-components (static imports for critical path)
+// Static imports for critical path
 import { ExhibitionHero } from "@/components/exhibitions/detail/ExhibitionHero";
-import { CountdownTimer } from "@/components/exhibitions/detail/CountdownTimer";
-import { ExhibitionDayIndicator } from "@/components/exhibitions/detail/ExhibitionDayIndicator";
-import { ExhibitionRegistrationStatus } from "@/components/exhibitions/detail/ExhibitionRegistrationStatus";
-import { ExhibitionTicketBooking } from "@/components/exhibitions/detail/ExhibitionTicketBooking";
+import { ExhibitionMobileActionBar } from "@/components/exhibitions/detail/ExhibitionMobileActionBar";
 
 // Lazy-loaded components
-const ExhibitionCompetitionsTab = lazy(() => import("@/components/exhibitions/detail/ExhibitionCompetitionsTab").then(m => ({ default: m.ExhibitionCompetitionsTab })));
-const ExhibitionPeopleTab = lazy(() => import("@/components/exhibitions/detail/ExhibitionPeopleTab").then(m => ({ default: m.ExhibitionPeopleTab })));
-const ExhibitionMapEmbed = lazy(() => import("@/components/exhibitions/detail/ExhibitionMapEmbed").then(m => ({ default: m.ExhibitionMapEmbed })));
-const ExhibitionSocialLinks = lazy(() => import("@/components/exhibitions/detail/ExhibitionSocialLinks").then(m => ({ default: m.ExhibitionSocialLinks })));
-const ExhibitionDocuments = lazy(() => import("@/components/exhibitions/detail/ExhibitionDocuments").then(m => ({ default: m.ExhibitionDocuments })));
-const ExhibitionAgendaTab = lazy(() => import("@/components/exhibitions/detail/ExhibitionAgendaTab").then(m => ({ default: m.ExhibitionAgendaTab })));
-const ExhibitionBoothsTab = lazy(() => import("@/components/exhibitions/detail/ExhibitionBoothsTab").then(m => ({ default: m.ExhibitionBoothsTab })));
-const ExhibitionReviewsTab = lazy(() => import("@/components/exhibitions/detail/ExhibitionReviewsTab").then(m => ({ default: m.ExhibitionReviewsTab })));
-const ExhibitionFloorMap = lazy(() => import("@/components/exhibitions/detail/ExhibitionFloorMap").then(m => ({ default: m.ExhibitionFloorMap })));
-const ExhibitionNotificationPrompt = lazy(() => import("@/components/exhibitions/detail/ExhibitionNotificationPrompt").then(m => ({ default: m.ExhibitionNotificationPrompt })));
-const ExhibitionStats = lazy(() => import("@/components/exhibitions/detail/ExhibitionStats").then(m => ({ default: m.ExhibitionStats })));
 const ExhibitionOverviewTab = lazy(() => import("@/components/exhibitions/detail/ExhibitionOverviewTab").then(m => ({ default: m.ExhibitionOverviewTab })));
 const ExhibitionSidebar = lazy(() => import("@/components/exhibitions/detail/ExhibitionSidebar").then(m => ({ default: m.ExhibitionSidebar })));
-const ExhibitionShareButtons = lazy(() => import("@/components/exhibitions/detail/ExhibitionShareButtons").then(m => ({ default: m.ExhibitionShareButtons })));
-const ExhibitionContactCard = lazy(() => import("@/components/exhibitions/detail/ExhibitionContactCard").then(m => ({ default: m.ExhibitionContactCard })));
+const ExhibitionWinningDishesTab = lazy(() => import("@/components/exhibitions/detail/ExhibitionWinningDishesTab").then(m => ({ default: m.ExhibitionWinningDishesTab })));
+const ExhibitionCompetitionsTab = lazy(() => import("@/components/exhibitions/detail/ExhibitionCompetitionsTab").then(m => ({ default: m.ExhibitionCompetitionsTab })));
+const ExhibitionScheduleTab = lazy(() => import("@/components/exhibitions/detail/ExhibitionScheduleTab").then(m => ({ default: m.ExhibitionScheduleTab })));
+const ExhibitionPeopleTab = lazy(() => import("@/components/exhibitions/detail/ExhibitionPeopleTab").then(m => ({ default: m.ExhibitionPeopleTab })));
+const ExhibitionGalleryTab = lazy(() => import("@/components/exhibitions/detail/ExhibitionGalleryTab").then(m => ({ default: m.ExhibitionGalleryTab })));
+const ExhibitionSponsorsTab = lazy(() => import("@/components/exhibitions/detail/ExhibitionSponsorsTab").then(m => ({ default: m.ExhibitionSponsorsTab })));
+const ExhibitionAgendaTab = lazy(() => import("@/components/exhibitions/detail/ExhibitionAgendaTab").then(m => ({ default: m.ExhibitionAgendaTab })));
+const ExhibitionBoothsTab = lazy(() => import("@/components/exhibitions/detail/ExhibitionBoothsTab").then(m => ({ default: m.ExhibitionBoothsTab })));
+const ExhibitionFloorMap = lazy(() => import("@/components/exhibitions/detail/ExhibitionFloorMap").then(m => ({ default: m.ExhibitionFloorMap })));
+const ExhibitionReviewsTab = lazy(() => import("@/components/exhibitions/detail/ExhibitionReviewsTab").then(m => ({ default: m.ExhibitionReviewsTab })));
 
-const TabFallback = () => <div className="space-y-3">{[1,2,3].map(i => <div key={i} className="h-24 animate-pulse rounded-2xl bg-muted" />)}</div>;
+const TabFallback = () => <div className="space-y-3">{[1, 2, 3].map(i => <div key={i} className="h-24 animate-pulse rounded-2xl bg-muted" />)}</div>;
 
 /* ---------- types ---------- */
 interface ScheduleDay {
   day?: string; day_ar?: string; title?: string; title_ar?: string;
-  items?: ScheduleItem[]; events?: ScheduleItem[];
+  items?: any[]; events?: any[];
   time?: string; description?: string; description_ar?: string;
-}
-interface ScheduleItem {
-  time?: string; title?: string; title_ar?: string;
-  description?: string; description_ar?: string;
 }
 interface Speaker {
   name?: string; name_ar?: string; title?: string; title_ar?: string;
@@ -66,32 +55,13 @@ interface Speaker {
 interface SponsorInfo { name?: string; name_ar?: string; tier?: string; logo_url?: string; }
 interface Section { name?: string; name_ar?: string; description?: string; description_ar?: string; }
 
-const typeLabels: Record<string, { en: string; ar: string }> = {
-  exhibition: { en: "Exhibition", ar: "معرض" },
-  conference: { en: "Conference", ar: "مؤتمر" },
-  summit: { en: "Summit", ar: "قمة" },
-  workshop: { en: "Workshop", ar: "ورشة عمل" },
-  food_festival: { en: "Food Festival", ar: "مهرجان طعام" },
-  trade_show: { en: "Trade Show", ar: "معرض تجاري" },
-  competition_event: { en: "Competition Event", ar: "حدث تنافسي" },
-};
-
 function getCountryFlag(country?: string): string {
   if (!country) return "🏳️";
   return getCountryFlagUtil(country) || "🏳️";
 }
 
-const TIER_CONFIG: Record<string, { icon: typeof Star; gradient: string; label: string; labelAr: string; order: number }> = {
-  patron: { icon: Award, gradient: "from-chart-4/20 to-chart-4/5", label: "Patron", labelAr: "راعي رسمي", order: 0 },
-  platinum: { icon: Star, gradient: "from-chart-3/20 to-chart-3/5", label: "Platinum", labelAr: "بلاتيني", order: 1 },
-  gold: { icon: Star, gradient: "from-chart-4/20 to-chart-4/5", label: "Gold", labelAr: "ذهبي", order: 2 },
-  partner: { icon: Building, gradient: "from-primary/20 to-primary/5", label: "Partner", labelAr: "شريك", order: 3 },
-  silver: { icon: Star, gradient: "from-muted-foreground/20 to-muted-foreground/5", label: "Silver", labelAr: "فضي", order: 4 },
-  bronze: { icon: Star, gradient: "from-chart-2/20 to-chart-2/5", label: "Bronze", labelAr: "برونزي", order: 5 },
-};
-
 /* ---------- Memoized Tab Trigger ---------- */
-const ExhibitionTabTrigger = memo(({ value, icon: Icon, label, count, isAr }: { value: string; icon: any; label: string; count?: number; isAr: boolean }) => (
+const ExhibitionTabTrigger = memo(({ value, icon: Icon, label, count }: { value: string; icon: any; label: string; count?: number }) => (
   <TabsTrigger value={value} className="gap-1.5 rounded-xl px-3 py-2 text-[10px] font-bold uppercase tracking-wider transition-all data-[state=active]:bg-primary data-[state=active]:text-primary-foreground sm:gap-2 sm:px-5 sm:py-2.5 sm:text-xs whitespace-nowrap">
     <Icon className="h-3 w-3 sm:h-3.5 sm:w-3.5" />
     {label}
@@ -102,7 +72,7 @@ const ExhibitionTabTrigger = memo(({ value, icon: Icon, label, count, isAr }: { 
 ));
 ExhibitionTabTrigger.displayName = "ExhibitionTabTrigger";
 
-/* ---------- main ---------- */
+/* ========== MAIN ========== */
 export default function ExhibitionDetail() {
   const { slug } = useParams<{ slug: string }>();
   const { language } = useLanguage();
@@ -238,36 +208,24 @@ export default function ExhibitionDetail() {
 
   const { data: exhibitionQrCode } = useEntityQRCode("exhibition", exhibition?.id, "exhibition");
 
-  // Feature counts
-  const { data: agendaCount = 0 } = useQuery({
-    queryKey: ["exhibition-agenda-count", exhibition?.id],
+  // Feature counts (batched)
+  const { data: featureCounts } = useQuery({
+    queryKey: ["exhibition-feature-counts", exhibition?.id],
     queryFn: async () => {
-      const { count } = await supabase.from("exhibition_agenda_items").select("id", { count: "exact", head: true }).eq("exhibition_id", exhibition!.id);
-      return count || 0;
+      const [agenda, booths, reviews] = await Promise.all([
+        supabase.from("exhibition_agenda_items").select("id", { count: "exact", head: true }).eq("exhibition_id", exhibition!.id),
+        supabase.from("exhibition_booths").select("id", { count: "exact", head: true }).eq("exhibition_id", exhibition!.id),
+        supabase.from("exhibition_reviews").select("id", { count: "exact", head: true }).eq("exhibition_id", exhibition!.id),
+      ]);
+      return { agenda: agenda.count || 0, booths: booths.count || 0, reviews: reviews.count || 0 };
     },
     enabled: !!exhibition,
     staleTime: 1000 * 60 * 5,
   });
 
-  const { data: boothCount = 0 } = useQuery({
-    queryKey: ["exhibition-booth-count", exhibition?.id],
-    queryFn: async () => {
-      const { count } = await supabase.from("exhibition_booths").select("id", { count: "exact", head: true }).eq("exhibition_id", exhibition!.id);
-      return count || 0;
-    },
-    enabled: !!exhibition,
-    staleTime: 1000 * 60 * 5,
-  });
-
-  const { data: reviewCount = 0 } = useQuery({
-    queryKey: ["exhibition-review-count", exhibition?.id],
-    queryFn: async () => {
-      const { count } = await supabase.from("exhibition_reviews").select("id", { count: "exact", head: true }).eq("exhibition_id", exhibition!.id);
-      return count || 0;
-    },
-    enabled: !!exhibition,
-    staleTime: 1000 * 60 * 5,
-  });
+  const agendaCount = featureCounts?.agenda || 0;
+  const boothCount = featureCounts?.booths || 0;
+  const reviewCount = featureCounts?.reviews || 0;
 
   const handleFollow = useCallback(() => toggleFollow.mutate(), [toggleFollow]);
   const handleLightbox = useCallback((i: number) => { setLightboxIndex(i); setLightboxOpen(true); }, []);
@@ -330,11 +288,7 @@ export default function ExhibitionDetail() {
   const targetAudience = (exhibition.target_audience as string[]) || [];
   const tags = (exhibition.tags as string[]) || [];
   const galleryUrls = (exhibition.gallery_urls as string[]) || [];
-
   const countryFlag = getCountryFlag(exhibition.country || undefined);
-  const sortedSponsors = [...sponsorsInfo].sort((a, b) => (TIER_CONFIG[a.tier || ""]?.order ?? 99) - (TIER_CONFIG[b.tier || ""]?.order ?? 99));
-  const sponsorsByTier = sortedSponsors.reduce<Record<string, SponsorInfo[]>>((acc, s) => { const tier = s.tier || "other"; if (!acc[tier]) acc[tier] = []; acc[tier].push(s); return acc; }, {});
-
   const organizerLogoUrl = (exhibition as any).organizer_logo_url || exhibition.logo_url;
   const isOwner = user && exhibition.created_by === user.id;
 
@@ -344,7 +298,7 @@ export default function ExhibitionDetail() {
   const hasJudges = judgeProfiles && judgeProfiles.length > 0;
   const hasSpeakers = speakers.length > 0;
   const hasGallery = galleryUrls.length > 0;
-  const hasSponsors = sortedSponsors.length > 0;
+  const hasSponsors = sponsorsInfo.length > 0;
   const hasAgenda = agendaCount > 0;
   const hasBooths = boothCount > 0;
   const hasReviews = reviewCount > 0 || hasEnded;
@@ -372,62 +326,13 @@ export default function ExhibitionDetail() {
       <Header />
 
       <ExhibitionHero
-        exhibition={exhibition}
-        title={title}
-        venue={venue}
-        organizer={organizer}
-        organizerLogoUrl={organizerLogoUrl}
-        isHappening={isHappening}
-        isUpcoming={isUpcoming}
-        hasEnded={hasEnded}
-        isOwner={!!isOwner}
-        followerCount={followerCount || 0}
-        linkedCompetitionsCount={linkedCompetitions?.length || 0}
-        isAr={isAr}
+        exhibition={exhibition} title={title} venue={venue} organizer={organizer}
+        organizerLogoUrl={organizerLogoUrl} isHappening={isHappening} isUpcoming={isUpcoming}
+        hasEnded={hasEnded} isOwner={!!isOwner} followerCount={followerCount || 0}
+        linkedCompetitionsCount={linkedCompetitions?.length || 0} isAr={isAr}
       />
 
-      <main className="container flex-1 py-6 md:py-8">
-        {/* ====== MOBILE ACTION BAR ====== */}
-        <div className="mb-5 space-y-3 lg:hidden">
-          <div className="flex gap-2">
-            {user && (
-              <Button variant={isFollowing ? "outline" : "secondary"} size="sm" className="flex-1 h-10 rounded-xl text-xs font-semibold active:scale-95 transition-transform" onClick={handleFollow} disabled={toggleFollow.isPending}>
-                {isFollowing ? (<><BellOff className="me-1.5 h-3.5 w-3.5" />{isAr ? "إلغاء" : "Unfollow"}</>) : (<><Bell className="me-1.5 h-3.5 w-3.5" />{isAr ? "متابعة" : "Follow"}</>)}
-              </Button>
-            )}
-            {exhibition.website_url && (
-              <Button variant="outline" size="sm" className="h-10 rounded-xl text-xs active:scale-95 transition-transform" asChild>
-                <a href={exhibition.website_url} target="_blank" rel="noopener noreferrer"><Globe className="me-1.5 h-3.5 w-3.5" />{isAr ? "الموقع" : "Website"}</a>
-              </Button>
-            )}
-          </div>
-
-          {(isUpcoming || isHappening) && (
-            <Card className="overflow-hidden border-primary/15">
-              <CardContent className="py-4 px-3">
-                <CountdownTimer targetDate={isHappening ? end : start} isAr={isAr} compact />
-              </CardContent>
-            </Card>
-          )}
-
-          <ExhibitionDayIndicator startDate={exhibition.start_date} endDate={exhibition.end_date} isAr={isAr} />
-          <ExhibitionRegistrationStatus registrationDeadline={exhibition.registration_deadline} registrationUrl={exhibition.registration_url} maxAttendees={exhibition.max_attendees} isFree={exhibition.is_free} ticketPrice={exhibition.ticket_price} ticketPriceAr={exhibition.ticket_price_ar} startDate={exhibition.start_date} endDate={exhibition.end_date} isAr={isAr} />
-          <ExhibitionTicketBooking exhibitionId={exhibition.id} exhibitionTitle={title} isFree={exhibition.is_free} ticketPrice={exhibition.ticket_price} hasEnded={hasEnded} isAr={isAr} />
-
-          <Suspense fallback={null}>
-            <ExhibitionStats exhibitionId={exhibition.id} isAr={isAr} />
-            <ExhibitionShareButtons title={title} description={description || undefined} imageUrl={exhibition.cover_image_url} isAr={isAr} />
-            <ExhibitionNotificationPrompt exhibitionId={exhibition.id} exhibitionName={title} isAr={isAr} isFollowing={!!isFollowing} />
-          </Suspense>
-
-          <Suspense fallback={null}>
-            {!exhibition.is_virtual && <ExhibitionMapEmbed mapUrl={exhibition.map_url} venue={venue} city={exhibition.city} country={exhibition.country} address={(exhibition as any).address || null} isAr={isAr} />}
-            <ExhibitionContactCard organizerName={organizer} organizerLogo={organizerLogoUrl} email={exhibition.organizer_email} phone={exhibition.organizer_phone} website={exhibition.organizer_website} isAr={isAr} />
-            <ExhibitionSocialLinks socialLinks={exhibition.social_links as any} websiteUrl={exhibition.website_url} isAr={isAr} />
-            <ExhibitionDocuments documents={(exhibition as any).documents} isAr={isAr} />
-          </Suspense>
-        </div>
-
+      <main className="container flex-1 py-6 pb-20 lg:pb-8 md:py-8">
         <div className="grid gap-6 lg:grid-cols-3">
           {/* ======== MAIN CONTENT ======== */}
           <div className="lg:col-span-2">
@@ -437,80 +342,37 @@ export default function ExhibitionDetail() {
                   <TabsTrigger value="overview" className="rounded-xl px-3 py-2 text-[10px] font-bold uppercase tracking-wider transition-all data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-lg shadow-primary/20 sm:px-5 sm:py-2.5 sm:text-xs whitespace-nowrap">
                     {isAr ? "نظرة عامة" : "Overview"}
                   </TabsTrigger>
-                  {hasWinningDishes && <ExhibitionTabTrigger value="winning-dishes" icon={Award} label={isAr ? "الأطباق" : "Winners"} count={winningDishes!.length} isAr={isAr} />}
-                  {hasCompetitions && <ExhibitionTabTrigger value="competitions" icon={Trophy} label={isAr ? "المسابقات" : "Competitions"} count={linkedCompetitions!.length} isAr={isAr} />}
-                  {hasSchedule && <ExhibitionTabTrigger value="schedule" icon={Calendar} label={isAr ? "الجدول" : "Schedule"} isAr={isAr} />}
-                  {(hasJudges || hasSpeakers) && <ExhibitionTabTrigger value="people" icon={Users} label={isAr ? "الأشخاص" : "People"} isAr={isAr} />}
-                  {hasGallery && <ExhibitionTabTrigger value="gallery" icon={ImageIcon} label={isAr ? "المعرض" : "Gallery"} isAr={isAr} />}
-                  {hasAgenda && <ExhibitionTabTrigger value="agenda" icon={Clock} label={isAr ? "الأجندة" : "Agenda"} count={agendaCount} isAr={isAr} />}
-                  {hasBooths && <ExhibitionTabTrigger value="booths" icon={LayoutGrid} label={isAr ? "الأجنحة" : "Booths"} count={boothCount} isAr={isAr} />}
-                  {hasSponsors && <ExhibitionTabTrigger value="sponsors" icon={Star} label={isAr ? "الرعاة" : "Sponsors"} isAr={isAr} />}
-                  {hasReviews && <ExhibitionTabTrigger value="reviews" icon={MessageSquare} label={isAr ? "التقييمات" : "Reviews"} count={reviewCount > 0 ? reviewCount : undefined} isAr={isAr} />}
+                  {hasWinningDishes && <ExhibitionTabTrigger value="winning-dishes" icon={Award} label={isAr ? "الأطباق" : "Winners"} count={winningDishes!.length} />}
+                  {hasCompetitions && <ExhibitionTabTrigger value="competitions" icon={Trophy} label={isAr ? "المسابقات" : "Competitions"} count={linkedCompetitions!.length} />}
+                  {hasSchedule && <ExhibitionTabTrigger value="schedule" icon={Calendar} label={isAr ? "الجدول" : "Schedule"} />}
+                  {(hasJudges || hasSpeakers) && <ExhibitionTabTrigger value="people" icon={Users} label={isAr ? "الأشخاص" : "People"} />}
+                  {hasGallery && <ExhibitionTabTrigger value="gallery" icon={ImageIcon} label={isAr ? "المعرض" : "Gallery"} />}
+                  {hasAgenda && <ExhibitionTabTrigger value="agenda" icon={Clock} label={isAr ? "الأجندة" : "Agenda"} count={agendaCount} />}
+                  {hasBooths && <ExhibitionTabTrigger value="booths" icon={LayoutGrid} label={isAr ? "الأجنحة" : "Booths"} count={boothCount} />}
+                  {hasSponsors && <ExhibitionTabTrigger value="sponsors" icon={Star} label={isAr ? "الرعاة" : "Sponsors"} />}
+                  {hasReviews && <ExhibitionTabTrigger value="reviews" icon={MessageSquare} label={isAr ? "التقييمات" : "Reviews"} count={reviewCount > 0 ? reviewCount : undefined} />}
                 </TabsList>
               </div>
 
-              {/* === OVERVIEW === */}
               <TabsContent value="overview" className="mt-6">
                 <Suspense fallback={<TabFallback />}>
                   <ExhibitionOverviewTab
-                    exhibition={exhibition}
-                    title={title}
-                    description={description}
-                    isAr={isAr}
-                    linkedCompetitions={linkedCompetitions}
-                    sections={sections}
-                    targetAudience={targetAudience}
-                    galleryUrls={galleryUrls}
-                    onSetActiveTab={setActiveTab}
-                    onLightboxOpen={handleLightbox}
+                    exhibition={exhibition} title={title} description={description} isAr={isAr}
+                    linkedCompetitions={linkedCompetitions} sections={sections}
+                    targetAudience={targetAudience} galleryUrls={galleryUrls}
+                    onSetActiveTab={setActiveTab} onLightboxOpen={handleLightbox}
                   />
                 </Suspense>
               </TabsContent>
 
-              {/* === WINNING DISHES === */}
               {hasWinningDishes && (
-                <TabsContent value="winning-dishes" className="mt-6 space-y-6">
-                  <div className="grid gap-4 sm:grid-cols-2">
-                    {winningDishes!.map((dish: any, i: number) => {
-                      const comp = dish.competition;
-                      const compTitle = comp ? (isAr && comp.title_ar ? comp.title_ar : comp.title) : "";
-                      const participantName = dish.participant?.full_name || dish.team_name || (isAr ? "متسابق" : "Contestant");
-                      const medal = i === 0 ? "🥇" : i === 1 ? "🥈" : i === 2 ? "🥉" : `#${i + 1}`;
-                      return (
-                        <Card key={dish.id} className="overflow-hidden group hover:shadow-lg transition-all hover:-translate-y-0.5 active:scale-[0.98]">
-                          {dish.dish_image_url ? (
-                            <div className="relative h-44 overflow-hidden">
-                              <img src={dish.dish_image_url} alt={dish.dish_name} className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105" loading="lazy" />
-                              <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
-                              <div className="absolute top-3 start-3"><Badge className="bg-chart-4/90 text-chart-4-foreground text-sm font-bold shadow-md">{medal}</Badge></div>
-                              <div className="absolute bottom-3 start-3 end-3"><p className="font-bold text-lg leading-tight text-white drop-shadow-md">{dish.dish_name}</p></div>
-                            </div>
-                          ) : (
-                            <div className="relative h-32 bg-gradient-to-br from-chart-4/20 via-chart-4/10 to-background flex items-center justify-center">
-                              <Trophy className="h-10 w-10 text-chart-4/30" />
-                              <div className="absolute top-3 start-3"><Badge className="bg-chart-4/90 text-chart-4-foreground text-sm font-bold shadow-md">{medal}</Badge></div>
-                              <div className="absolute bottom-3 start-3 end-3"><p className="font-bold text-lg leading-tight">{dish.dish_name}</p></div>
-                            </div>
-                          )}
-                          <CardContent className="p-4 space-y-2">
-                            {dish.dish_description && <p className="text-xs text-muted-foreground line-clamp-2">{dish.dish_description}</p>}
-                            <div className="flex items-center gap-2">
-                              <div className="h-6 w-6 rounded-full bg-primary/10 flex items-center justify-center"><Users className="h-3 w-3 text-primary" /></div>
-                              <span className="text-sm font-medium truncate">{participantName}</span>
-                            </div>
-                            <div className="flex items-center justify-between">
-                              <Badge variant="outline" className="text-[10px]">{compTitle}</Badge>
-                              <span className="text-xs font-bold text-chart-4">{dish.totalScore.toFixed(1)} {isAr ? "نقطة" : "pts"}</span>
-                            </div>
-                          </CardContent>
-                        </Card>
-                      );
-                    })}
-                  </div>
+                <TabsContent value="winning-dishes" className="mt-6">
+                  <Suspense fallback={<TabFallback />}>
+                    <ExhibitionWinningDishesTab winningDishes={winningDishes!} isAr={isAr} />
+                  </Suspense>
                 </TabsContent>
               )}
 
-              {/* === LAZY TABS === */}
               {hasCompetitions && (
                 <TabsContent value="competitions" className="mt-6">
                   <Suspense fallback={<TabFallback />}>
@@ -520,24 +382,10 @@ export default function ExhibitionDetail() {
               )}
 
               {hasSchedule && (
-                <TabsContent value="schedule" className="mt-6 space-y-4">
-                  {schedule.map((dayOrItem, i) => {
-                    const dayEvents = dayOrItem.items || dayOrItem.events || [];
-                    const dayLabel = isAr && dayOrItem.day_ar ? dayOrItem.day_ar : dayOrItem.day;
-                    const dayTitle = isAr && dayOrItem.title_ar ? dayOrItem.title_ar : dayOrItem.title;
-                    if (dayEvents.length > 0) {
-                      return <CollapsibleDay key={i} index={i} dayLabel={dayLabel} dayTitle={dayTitle} events={dayEvents} isAr={isAr} defaultOpen={i === 0} />;
-                    }
-                    return (
-                      <div key={i} className="flex gap-4 rounded-xl border bg-card p-4 shadow-sm">
-                        <div className="shrink-0 font-mono text-sm font-semibold text-primary">{dayOrItem.time || dayLabel}</div>
-                        <div>
-                          <p className="font-medium">{isAr && dayOrItem.title_ar ? dayOrItem.title_ar : dayOrItem.title}</p>
-                          {(dayOrItem.description || dayOrItem.description_ar) && <p className="text-sm text-muted-foreground">{isAr && dayOrItem.description_ar ? dayOrItem.description_ar : dayOrItem.description}</p>}
-                        </div>
-                      </div>
-                    );
-                  })}
+                <TabsContent value="schedule" className="mt-6">
+                  <Suspense fallback={<TabFallback />}>
+                    <ExhibitionScheduleTab schedule={schedule} isAr={isAr} />
+                  </Suspense>
                 </TabsContent>
               )}
 
@@ -551,50 +399,17 @@ export default function ExhibitionDetail() {
 
               {hasGallery && (
                 <TabsContent value="gallery" className="mt-6">
-                  <div className="grid grid-cols-2 gap-3 md:grid-cols-3">
-                    {galleryUrls.map((url, i) => (
-                      <button key={i} onClick={() => handleLightbox(i)} className="relative aspect-video rounded-xl overflow-hidden shadow-sm group cursor-pointer active:scale-[0.98] transition-transform">
-                        <img src={url} alt={`${title} ${i + 1}`} className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105" loading="lazy" decoding="async" />
-                        <div className="absolute inset-0 bg-background/0 group-hover:bg-background/20 transition-colors flex items-center justify-center">
-                          <ImageIcon className="h-6 w-6 text-foreground opacity-0 group-hover:opacity-70 transition-opacity" />
-                        </div>
-                      </button>
-                    ))}
-                  </div>
+                  <Suspense fallback={<TabFallback />}>
+                    <ExhibitionGalleryTab galleryUrls={galleryUrls} title={title} onLightboxOpen={handleLightbox} />
+                  </Suspense>
                 </TabsContent>
               )}
 
               {hasSponsors && (
-                <TabsContent value="sponsors" className="mt-6 space-y-8">
-                  {Object.entries(sponsorsByTier).map(([tier, sponsors]) => {
-                    const config = TIER_CONFIG[tier];
-                    const tierLabel = config ? (isAr ? config.labelAr : config.label) : tier;
-                    return (
-                      <section key={tier}>
-                        <h3 className="mb-4 flex items-center gap-2 text-sm font-bold uppercase tracking-wider">
-                          <div className={`flex h-6 w-6 items-center justify-center rounded-md bg-gradient-to-br ${config?.gradient || "from-muted to-muted/50"}`}>
-                            {config ? <config.icon className="h-3.5 w-3.5" /> : <Star className="h-3.5 w-3.5" />}
-                          </div>
-                          {tierLabel}
-                          <Badge variant="outline" className="text-[9px] ms-1">{sponsors.length}</Badge>
-                        </h3>
-                        <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4">
-                          {sponsors.map((sponsor, i) => (
-                            <Card key={i} className="overflow-hidden transition-all hover:shadow-md hover:-translate-y-0.5 active:scale-[0.98]">
-                              <CardContent className="flex flex-col items-center p-4 text-center">
-                                {sponsor.logo_url ? (
-                                  <img src={sponsor.logo_url} alt={sponsor.name} className="mb-2 h-12 w-auto max-w-[120px] object-contain" loading="lazy" />
-                                ) : (
-                                  <div className="mb-2 flex h-12 w-12 items-center justify-center rounded-lg bg-muted"><Building className="h-5 w-5 text-muted-foreground" /></div>
-                                )}
-                                <p className="text-xs font-medium">{isAr && sponsor.name_ar ? sponsor.name_ar : sponsor.name}</p>
-                              </CardContent>
-                            </Card>
-                          ))}
-                        </div>
-                      </section>
-                    );
-                  })}
+                <TabsContent value="sponsors" className="mt-6">
+                  <Suspense fallback={<TabFallback />}>
+                    <ExhibitionSponsorsTab sponsors={sponsorsInfo} isAr={isAr} />
+                  </Suspense>
                 </TabsContent>
               )}
 
@@ -628,81 +443,28 @@ export default function ExhibitionDetail() {
           {/* ======== SIDEBAR (Desktop) ======== */}
           <Suspense fallback={null}>
             <ExhibitionSidebar
-              exhibition={exhibition}
-              title={title}
-              description={description}
-              venue={venue}
-              organizer={organizer}
-              organizerLogoUrl={organizerLogoUrl}
-              isHappening={isHappening}
-              isUpcoming={isUpcoming}
-              hasEnded={hasEnded}
-              isFollowing={!!isFollowing}
-              followerCount={followerCount || 0}
-              user={user}
-              isAr={isAr}
-              countryFlag={countryFlag}
-              tags={tags}
-              exhibitionQrCode={exhibitionQrCode}
-              onFollow={handleFollow}
-              followPending={toggleFollow.isPending}
+              exhibition={exhibition} title={title} description={description} venue={venue}
+              organizer={organizer} organizerLogoUrl={organizerLogoUrl}
+              isHappening={isHappening} isUpcoming={isUpcoming} hasEnded={hasEnded}
+              isFollowing={!!isFollowing} followerCount={followerCount || 0} user={user}
+              isAr={isAr} countryFlag={countryFlag} tags={tags}
+              exhibitionQrCode={exhibitionQrCode} onFollow={handleFollow} followPending={toggleFollow.isPending}
             />
           </Suspense>
         </div>
       </main>
+
+      {/* Sticky mobile action bar */}
+      <ExhibitionMobileActionBar
+        user={user} isFollowing={!!isFollowing} followPending={toggleFollow.isPending}
+        onFollow={handleFollow} registrationUrl={exhibition.registration_url}
+        websiteUrl={exhibition.website_url} hasEnded={hasEnded} isAr={isAr}
+      />
 
       {lightboxOpen && (
         <ImageLightbox images={galleryUrls.map((url, i) => ({ url, title: `${title} ${i + 1}` }))} currentIndex={lightboxIndex} onClose={() => setLightboxOpen(false)} onNavigate={setLightboxIndex} />
       )}
       <Footer />
     </div>
-  );
-}
-
-/* ---------- Collapsible Day Component ---------- */
-import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
-import { ChevronDown } from "lucide-react";
-
-function CollapsibleDay({ index, dayLabel, dayTitle, events, isAr, defaultOpen }: {
-  index: number; dayLabel?: string; dayTitle?: string; events: ScheduleItem[]; isAr: boolean; defaultOpen: boolean;
-}) {
-  const [open, setOpen] = useState(defaultOpen);
-  return (
-    <Collapsible open={open} onOpenChange={setOpen}>
-      <Card className="overflow-hidden shadow-sm">
-        <CollapsibleTrigger asChild>
-          <button className="w-full text-start active:scale-[0.99] transition-transform">
-            <div className="relative overflow-hidden">
-              <div className="absolute inset-0 bg-gradient-to-r from-primary/10 via-primary/5 to-accent/5" />
-              <div className="relative flex items-center justify-between px-5 py-4">
-                <div className="flex items-center gap-3">
-                  <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary/15 font-bold text-primary text-sm">{index + 1}</div>
-                  <div>
-                    <p className="text-xs text-muted-foreground">{dayLabel}</p>
-                    {dayTitle && <p className="font-semibold">{dayTitle}</p>}
-                    <p className="text-xs text-muted-foreground">{events.length} {isAr ? "فعالية" : "events"}</p>
-                  </div>
-                </div>
-                <ChevronDown className={`h-5 w-5 text-muted-foreground transition-transform ${open ? "rotate-180" : ""}`} />
-              </div>
-            </div>
-          </button>
-        </CollapsibleTrigger>
-        <CollapsibleContent>
-          <div className="border-t px-5 py-4 space-y-4">
-            <div className="relative border-s-2 border-border ps-6 space-y-5">
-              {events.map((event, j) => (
-                <div key={j} className="relative">
-                  <div className="absolute -start-[29px] top-0.5 h-3.5 w-3.5 rounded-full border-2 border-primary bg-background" />
-                  {event.time && <p className="font-mono text-xs font-semibold text-primary">{event.time}</p>}
-                  <p className="font-medium text-sm">{isAr && event.title_ar ? event.title_ar : event.title}</p>
-                  {(event.description || event.description_ar) && <p className="mt-0.5 text-xs text-muted-foreground">{isAr && event.description_ar ? event.description_ar : event.description}</p>}
-                </div>
-              ))}
-            </div>
-          </div>
-        </CollapsibleContent>
-      </Card>
-    </Collapsible>
   );
 }
