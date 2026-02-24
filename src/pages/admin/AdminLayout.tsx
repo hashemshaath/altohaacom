@@ -4,7 +4,7 @@ import AdminPendingBanner from "@/components/admin/AdminPendingBanner";
 import { Outlet, NavLink } from "react-router-dom";
 import { AdminHeader } from "@/components/admin/AdminHeader";
 import { cn } from "@/lib/utils";
-import { GraduationCap, BarChart3, Landmark, Building2, MessageSquare as MessageSquareIcon, Earth, QrCode, UtensilsCrossed, MailOpen, HandHeart, ShieldCheck, Ticket, Target, Headphones, Activity, Megaphone, Languages, Package, ChefHat, ClipboardCheck, Calculator, Calendar, Crown } from "lucide-react";
+import { GraduationCap, BarChart3, Landmark, Building2, MessageSquare as MessageSquareIcon, Earth, QrCode, UtensilsCrossed, MailOpen, HandHeart, ShieldCheck, ShieldAlert, Ticket, Target, Headphones, Activity, Megaphone, Languages, Package, ChefHat, ClipboardCheck, Calculator, Calendar, Crown } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
@@ -115,6 +115,7 @@ export default function AdminLayout() {
       title: language === "ar" ? "النظام والإعدادات" : "System & Settings",
       items: [
         { to: "/admin/settings", icon: Settings, label: language === "ar" ? "الإعدادات العامة" : "General Settings" },
+        { to: "/admin/security", icon: ShieldAlert, label: language === "ar" ? "الأمان والحماية" : "Security Center" },
         { to: "/admin/components", icon: Eye, label: language === "ar" ? "إظهار المكونات" : "Component Visibility" },
         { to: "/admin/reports", icon: FileText, label: language === "ar" ? "التقارير" : "Reports" },
         { to: "/admin/performance", icon: BarChart3, label: language === "ar" ? "الأداء" : "Performance" },
