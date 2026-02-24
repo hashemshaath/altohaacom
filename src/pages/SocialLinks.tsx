@@ -3,13 +3,13 @@ import { useLanguage } from "@/i18n/LanguageContext";
 import { useSocialLinkPageByUsername } from "@/hooks/useSocialLinkPage";
 import { SEOHead } from "@/components/SEOHead";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
-import { ExternalLink, Instagram, Twitter, Facebook, Linkedin, Youtube, Globe, User, ArrowLeft, Share2, Copy } from "lucide-react";
+import { ExternalLink, Instagram, Twitter, Facebook, Linkedin, Youtube, Globe, User, ArrowLeft, Share2, Copy, Check, BadgeCheck } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useToast } from "@/hooks/use-toast";
+import { supabase } from "@/integrations/supabase/client";
 
 const SOCIAL_ICONS: Record<string, { icon: typeof Instagram; label: string; color: string }> = {
   instagram: { icon: Instagram, label: "Instagram", color: "#E4405F" },
@@ -17,6 +17,8 @@ const SOCIAL_ICONS: Record<string, { icon: typeof Instagram; label: string; colo
   facebook: { icon: Facebook, label: "Facebook", color: "#1877F2" },
   linkedin: { icon: Linkedin, label: "LinkedIn", color: "#0A66C2" },
   youtube: { icon: Youtube, label: "YouTube", color: "#FF0000" },
+  tiktok: { icon: Globe, label: "TikTok", color: "#000000" },
+  snapchat: { icon: Globe, label: "Snapchat", color: "#FFFC00" },
   website: { icon: Globe, label: "Website", color: "#6366f1" },
 };
 
@@ -46,12 +48,36 @@ export default function SocialLinks() {
   const { toast } = useToast();
   const { data, isLoading, error } = useSocialLinkPageByUsername(username);
   const [copied, setCopied] = useState(false);
+  const [animated, setAnimated] = useState(false);
+
+  // Trigger entrance animation
+  useEffect(() => {
+    const timer = setTimeout(() => setAnimated(true), 100);
+    return () => clearTimeout(timer);
+  }, []);
+
+  // Record click
+  const handleLinkClick = async (itemId: string) => {
+    try {
+      await supabase.from("social_link_items").update({ click_count: (data?.items.find(i => i.id === itemId)?.click_count || 0) + 1 }).eq("id", itemId);
+    } catch {}
+  };
 
   const copyLink = async () => {
     await navigator.clipboard.writeText(`https://altoha.com/${username}/links`);
     setCopied(true);
     toast({ title: isAr ? "تم نسخ الرابط" : "Link copied!" });
     setTimeout(() => setCopied(false), 2000);
+  };
+
+  const shareNative = async () => {
+    if (navigator.share) {
+      try {
+        await navigator.share({ title: `${username} - Altoha`, url: `https://altoha.com/${username}/links` });
+      } catch {}
+    } else {
+      copyLink();
+    }
   };
 
   if (isLoading) {
@@ -74,6 +100,9 @@ export default function SocialLinks() {
       <div className="flex min-h-screen flex-col items-center justify-center gap-4 bg-background p-4">
         <div className="rounded-2xl bg-muted/60 p-5"><User className="h-10 w-10 text-muted-foreground/40" /></div>
         <h1 className="font-serif text-xl font-bold">{isAr ? "الصفحة غير موجودة" : "Page not found"}</h1>
+        <p className="text-sm text-muted-foreground max-w-xs text-center">
+          {isAr ? "هذه الصفحة غير موجودة أو لم يتم إنشاؤها بعد" : "This page doesn't exist or hasn't been created yet"}
+        </p>
         <Button asChild variant="outline" size="sm">
           <Link to="/"><ArrowLeft className="me-1.5 h-3.5 w-3.5" />{isAr ? "الرئيسية" : "Go Home"}</Link>
         </Button>
@@ -99,6 +128,8 @@ export default function SocialLinks() {
     { key: "facebook", value: profile.facebook },
     { key: "linkedin", value: profile.linkedin },
     { key: "youtube", value: profile.youtube },
+    { key: "tiktok", value: (profile as any).tiktok },
+    { key: "snapchat", value: (profile as any).snapchat },
     { key: "website", value: profile.website },
   ].filter(s => s.value);
 
@@ -128,35 +159,41 @@ export default function SocialLinks() {
 
       <div className="relative z-10 w-full max-w-lg px-4 py-8 sm:py-12">
         {/* Share button */}
-        <div className="flex justify-end mb-4">
+        <div className={`flex justify-end mb-4 transition-all duration-700 ${animated ? "opacity-100 translate-y-0" : "opacity-0 -translate-y-4"}`}>
           <Button
             variant="ghost"
             size="icon"
             className={`h-9 w-9 rounded-full ${hasCustomBg || themeName !== "default" ? "text-white/80 hover:text-white hover:bg-white/10" : "text-muted-foreground hover:text-foreground"}`}
-            onClick={copyLink}
+            onClick={shareNative}
           >
-            {copied ? <Copy className="h-4 w-4" /> : <Share2 className="h-4 w-4" />}
+            {copied ? <Check className="h-4 w-4" /> : <Share2 className="h-4 w-4" />}
           </Button>
         </div>
 
-        {/* Avatar & Name */}
-        <div className="flex flex-col items-center gap-3 mb-8">
+        {/* Avatar & Name with animation */}
+        <div className={`flex flex-col items-center gap-3 mb-8 transition-all duration-700 delay-100 ${animated ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"}`}>
           {(page?.show_avatar !== false) && (
-            <Avatar className="h-24 w-24 ring-4 ring-white/20 shadow-2xl">
-              <AvatarImage src={profile.avatar_url || ""} alt={displayName} />
-              <AvatarFallback className="text-2xl font-bold bg-primary/20">{displayName?.charAt(0)}</AvatarFallback>
-            </Avatar>
+            <div className="relative">
+              <Avatar className="h-24 w-24 sm:h-28 sm:w-28 ring-4 ring-white/20 shadow-2xl">
+                <AvatarImage src={profile.avatar_url || ""} alt={displayName} />
+                <AvatarFallback className="text-2xl font-bold bg-primary/20">{displayName?.charAt(0)}</AvatarFallback>
+              </Avatar>
+              {/* Verified badge - shown for users with certain roles */}
+              <div className="absolute -bottom-1 -end-1 h-7 w-7 rounded-full bg-primary flex items-center justify-center ring-2 ring-background shadow-lg">
+                <BadgeCheck className="h-4 w-4 text-primary-foreground" />
+              </div>
+            </div>
           )}
           <div className="text-center">
-            <h1 className="text-xl font-bold">{title}</h1>
+            <h1 className="text-xl sm:text-2xl font-bold">{title}</h1>
             <p className="text-sm opacity-70 mt-0.5">@{profile.username}</p>
             {bio && <p className="text-sm opacity-80 mt-2 max-w-xs mx-auto leading-relaxed">{bio}</p>}
           </div>
         </div>
 
-        {/* Social Icons */}
+        {/* Social Icons with animation */}
         {page?.show_social_icons !== false && socialPlatforms.length > 0 && (
-          <div className="flex justify-center gap-3 mb-8">
+          <div className={`flex justify-center gap-3 mb-8 transition-all duration-700 delay-200 ${animated ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"}`}>
             {socialPlatforms.map(({ key, value }) => {
               const info = SOCIAL_ICONS[key];
               if (!info) return null;
@@ -168,7 +205,7 @@ export default function SocialLinks() {
                   href={href}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className={`flex h-11 w-11 items-center justify-center rounded-full ${theme.card} border transition-all hover:scale-110 hover:shadow-lg`}
+                  className={`flex h-11 w-11 items-center justify-center rounded-full ${theme.card} border transition-all duration-300 hover:scale-110 hover:shadow-lg active:scale-95`}
                   title={info.label}
                 >
                   <Icon className="h-5 w-5" />
@@ -178,16 +215,20 @@ export default function SocialLinks() {
           </div>
         )}
 
-        {/* Link Items */}
+        {/* Link Items with staggered animation */}
         <div className="space-y-3">
-          {items.map((item) => (
+          {items.map((item, index) => (
             <a
               key={item.id}
               href={item.url.startsWith("http") ? item.url : `https://${item.url}`}
               target="_blank"
               rel="noopener noreferrer"
-              className={`group flex items-center gap-3 border px-5 py-4 ${btnStyle} ${theme.card} transition-all duration-300 hover:scale-[1.02] hover:shadow-xl active:scale-[0.98]`}
-              style={buttonColorStyle}
+              onClick={() => handleLinkClick(item.id)}
+              className={`group flex items-center gap-3 border px-5 py-4 ${btnStyle} ${theme.card} transition-all duration-500 hover:scale-[1.02] hover:shadow-xl active:scale-[0.98] ${animated ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}
+              style={{
+                ...buttonColorStyle,
+                transitionDelay: `${300 + index * 80}ms`,
+              }}
             >
               {item.thumbnail_url && (
                 <img src={item.thumbnail_url} alt="" className="h-10 w-10 rounded-lg object-cover shrink-0" />
@@ -204,19 +245,22 @@ export default function SocialLinks() {
         </div>
 
         {items.length === 0 && socialPlatforms.length === 0 && (
-          <div className="text-center py-12 opacity-60">
+          <div className={`text-center py-12 opacity-60 transition-all duration-700 delay-300 ${animated ? "opacity-60 translate-y-0" : "opacity-0 translate-y-6"}`}>
             <Globe className="h-12 w-12 mx-auto mb-3 opacity-40" />
             <p className="text-sm">{isAr ? "لا توجد روابط بعد" : "No links yet"}</p>
           </div>
         )}
 
         {/* Footer */}
-        <div className="mt-12 text-center">
-          <Link to={`/${profile.username}`} className="text-xs opacity-50 hover:opacity-80 transition-opacity">
+        <div className={`mt-12 text-center transition-all duration-700 delay-500 ${animated ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"}`}>
+          <Link to={`/${profile.username}`} className="inline-flex items-center gap-1 text-xs opacity-50 hover:opacity-80 transition-opacity px-4 py-2 rounded-full hover:bg-white/5">
             {isAr ? "عرض البروفايل الكامل" : "View full profile"} →
           </Link>
-          <div className="mt-3">
-            <Link to="/" className="text-[10px] opacity-30 hover:opacity-50 transition-opacity font-medium tracking-wider uppercase">
+          <div className="mt-4">
+            <Link to="/" className="inline-flex items-center gap-1.5 text-[10px] opacity-30 hover:opacity-50 transition-opacity font-medium tracking-wider uppercase">
+              <div className="h-4 w-4 rounded bg-primary/30 flex items-center justify-center">
+                <span className="text-[8px] font-bold">A</span>
+              </div>
               Altoha
             </Link>
           </div>
