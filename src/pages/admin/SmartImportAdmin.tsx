@@ -442,12 +442,31 @@ export default function SmartImportAdmin() {
       const nameEnNoYear = stripYear(nameEn);
       const nameArNoYear = stripYear(nameAr);
 
-      // Use full-name matching + year-stripped matching
+      // Extract significant keywords for partial matching (min 4 chars EN, 3 chars AR)
+      const stopWords = new Set(['the', 'and', 'for', 'of', 'in', 'at', 'to', 'a', 'an', 'is', 'on', 'its', 'with']);
+      const extractKeywords = (name: string | undefined) => {
+        if (!name) return [];
+        return name.split(/[\s\-_,&()]+/)
+          .map(w => w.replace(/[^a-zA-Z0-9\u0600-\u06FF]/g, '').trim())
+          .filter(w => w.length >= 3 && !stopWords.has(w.toLowerCase()));
+      };
+
+      const enKeywords = extractKeywords(nameEnNoYear || nameEn);
+      const arKeywords = extractKeywords(nameArNoYear || nameAr);
+
+      // Build conditions: full name + year-stripped + significant keywords (only 5+ char words to reduce false positives)
       const orConditions: string[] = [];
       if (nameEn) orConditions.push(`name.ilike.%${nameEn}%`);
       if (nameAr) orConditions.push(`name_ar.ilike.%${nameAr}%`);
       if (nameEnNoYear && nameEnNoYear !== nameEn) orConditions.push(`name.ilike.%${nameEnNoYear}%`);
       if (nameArNoYear && nameArNoYear !== nameAr) orConditions.push(`name_ar.ilike.%${nameArNoYear}%`);
+      // Add keyword matches for significant words (5+ chars EN, 3+ chars AR)
+      for (const kw of enKeywords) {
+        if (kw.length >= 5) orConditions.push(`name.ilike.%${kw}%`);
+      }
+      for (const kw of arKeywords) {
+        if (kw.length >= 3) orConditions.push(`name_ar.ilike.%${kw}%`);
+      }
       if (phone) orConditions.push(`phone.eq.${phone}`);
       if (email) orConditions.push(`email.ilike.${email}`);
 
@@ -457,6 +476,12 @@ export default function SmartImportAdmin() {
       if (nameAr) titleOrConditions.push(`title_ar.ilike.%${nameAr}%`);
       if (nameEnNoYear && nameEnNoYear !== nameEn) titleOrConditions.push(`title.ilike.%${nameEnNoYear}%`);
       if (nameArNoYear && nameArNoYear !== nameAr) titleOrConditions.push(`title_ar.ilike.%${nameArNoYear}%`);
+      for (const kw of enKeywords) {
+        if (kw.length >= 5) titleOrConditions.push(`title.ilike.%${kw}%`);
+      }
+      for (const kw of arKeywords) {
+        if (kw.length >= 3) titleOrConditions.push(`title_ar.ilike.%${kw}%`);
+      }
 
       if (orConditions.length === 0 && titleOrConditions.length === 0) { setCheckingDb(false); setDbChecked(true); return; }
       // Deduplicate conditions
