@@ -82,7 +82,7 @@ const FONT_SIZES = [
 
 import {
   THEME_COLORS, THEME_PREVIEW_MAP, BUTTON_STYLES_MAP, FONT_MAP, FONT_SIZE_MAP,
-  FONT_FAMILIES, parseExtra, DEFAULT_EXTRA,
+  FONT_FAMILIES, parseExtra, DEFAULT_EXTRA, detectLinkType,
   type ExtraSettings, type PreviewTheme,
 } from "@/lib/socialLinksConstants";
 
@@ -243,6 +243,19 @@ export default function SocialLinksEditor() {
     });
   }, [form, extra, upsertPage]);
 
+  // ── Auto-save with debounce (3s) ──
+  const autoSaveTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  useEffect(() => {
+    if (!hasUnsavedChanges || !page) return;
+    if (autoSaveTimerRef.current) clearTimeout(autoSaveTimerRef.current);
+    autoSaveTimerRef.current = setTimeout(() => {
+      upsertPage.mutate({ ...form, custom_css: JSON.stringify(extra) }, {
+        onSuccess: () => setHasUnsavedChanges(false),
+      });
+    }, 3000);
+    return () => { if (autoSaveTimerRef.current) clearTimeout(autoSaveTimerRef.current); };
+  }, [hasUnsavedChanges, form, extra, page]);
+
   const handleSaveSocials = useCallback(async () => {
     if (!user) return;
     setSavingSocials(true);
@@ -271,6 +284,16 @@ export default function SocialLinksEditor() {
       setSavingSocials(false);
     }
   }, [user, socials, contacts, isAr, toast, refetchProfile]);
+
+  // Auto-detect link type when URL changes
+  const handleNewLinkUrlChange = useCallback((url: string) => {
+    const detected = detectLinkType(url);
+    setNewLink(prev => ({
+      ...prev,
+      url,
+      ...(detected && !prev.icon ? { icon: detected.icon, link_type: detected.type } : {}),
+    }));
+  }, []);
 
   const handleAddLink = useCallback(async () => {
     if (!newLink.title || !newLink.url) {
@@ -427,8 +450,8 @@ export default function SocialLinksEditor() {
               </div>
               <div className="flex gap-2 flex-wrap items-center">
                 {hasUnsavedChanges && (
-                  <Badge variant="outline" className="text-[10px] border-amber-500/30 text-amber-600 dark:text-amber-400 animate-in fade-in duration-200">
-                    {isAr ? "تغييرات غير محفوظة" : "Unsaved changes"}
+                  <Badge variant="outline" className="text-[10px] border-amber-500/30 text-amber-600 dark:text-amber-400 animate-in fade-in duration-200 gap-1">
+                    {page ? <><Loader2 className="h-2.5 w-2.5 animate-spin" />{isAr ? "حفظ تلقائي..." : "Auto-saving..."}</> : (isAr ? "تغييرات غير محفوظة" : "Unsaved changes")}
                   </Badge>
                 )}
                 <TooltipProvider>
@@ -796,7 +819,7 @@ export default function SocialLinksEditor() {
                           <Input placeholder={isAr ? "العنوان (EN)" : "Title (EN)"} value={newLink.title} onChange={e => setNewLink(l => ({ ...l, title: e.target.value }))} dir="ltr" />
                           <Input placeholder={isAr ? "العنوان (AR)" : "Title (AR)"} value={newLink.title_ar} onChange={e => setNewLink(l => ({ ...l, title_ar: e.target.value }))} dir="rtl" />
                         </div>
-                        <Input placeholder="https://example.com" value={newLink.url} onChange={e => setNewLink(l => ({ ...l, url: e.target.value }))} dir="ltr" />
+                        <Input placeholder="https://example.com" value={newLink.url} onChange={e => handleNewLinkUrlChange(e.target.value)} dir="ltr" />
                         <div className="grid grid-cols-2 gap-3">
                           <Input placeholder={isAr ? "إيموجي 🔗" : "Emoji 🔗"} value={newLink.icon} onChange={e => setNewLink(l => ({ ...l, icon: e.target.value }))} />
                           <Select value={newLink.link_type} onValueChange={v => setNewLink(l => ({ ...l, link_type: v }))}>
@@ -915,6 +938,15 @@ export default function SocialLinksEditor() {
                                       <p className="text-sm font-medium truncate">{item.title}</p>
                                       {item.title_ar && <p className="text-[10px] text-muted-foreground truncate" dir="rtl">{item.title_ar}</p>}
                                       <p className="text-[11px] text-muted-foreground truncate">{item.url}</p>
+                                      {/* Mini click bar */}
+                                      {totalClicks > 0 && (item.click_count || 0) > 0 && (
+                                        <div className="mt-1.5 flex items-center gap-2">
+                                          <div className="h-1 flex-1 max-w-[80px] rounded-full bg-muted overflow-hidden">
+                                            <div className="h-full rounded-full bg-primary/60 transition-all duration-500" style={{ width: `${Math.min(100, ((item.click_count || 0) / totalClicks) * 100)}%` }} />
+                                          </div>
+                                          <span className="text-[9px] text-muted-foreground tabular-nums">{Math.round(((item.click_count || 0) / totalClicks) * 100)}%</span>
+                                        </div>
+                                      )}
                                     </div>
                                   )}
 

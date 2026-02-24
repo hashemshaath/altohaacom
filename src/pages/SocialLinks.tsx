@@ -652,7 +652,7 @@ export default function SocialLinks() {
 
         {/* Link Items */}
         {items.length > 0 && (
-          <div className={`mb-5 transition-all duration-700 delay-500 ${animated ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}>
+          <div className="mb-5">
             <div className={`${extra.link_layout === "grid" ? "grid grid-cols-2 gap-2.5" : "space-y-2.5"}`}>
               {items.map((item, index) => (
                 <a
@@ -666,6 +666,9 @@ export default function SocialLinks() {
                     background: buttonColorStyle.backgroundColor || theme.card,
                     border: `1px solid ${buttonColorStyle.backgroundColor ? "transparent" : theme.border}`,
                     color: buttonColorStyle.color || theme.text,
+                    opacity: animated ? 1 : 0,
+                    transform: animated ? "translateY(0)" : "translateY(16px)",
+                    transition: `all 0.5s cubic-bezier(0.4,0,0.2,1) ${500 + index * 80}ms`,
                   }}
                   onMouseEnter={e => {
                     if (!buttonColorStyle.backgroundColor) {
