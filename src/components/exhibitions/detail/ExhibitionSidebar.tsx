@@ -23,6 +23,7 @@ const ExhibitionSocialLinks = lazy(() => import("./ExhibitionSocialLinks").then(
 const ExhibitionDocuments = lazy(() => import("./ExhibitionDocuments").then(m => ({ default: m.ExhibitionDocuments })));
 const ExhibitionShareButtons = lazy(() => import("./ExhibitionShareButtons").then(m => ({ default: m.ExhibitionShareButtons })));
 const ExhibitionInviteLink = lazy(() => import("./ExhibitionInviteLink").then(m => ({ default: m.ExhibitionInviteLink })));
+const ExhibitionVolunteerRegistration = lazy(() => import("./ExhibitionVolunteerRegistration").then(m => ({ default: m.ExhibitionVolunteerRegistration })));
 
 interface Props {
   exhibition: any;
@@ -192,6 +193,11 @@ export function ExhibitionSidebar({
       </Card>
 
       {exhibitionQrCode && <QRCodeDisplay code={exhibitionQrCode.code} label={isAr ? "رمز QR للفعالية" : "Exhibition QR Code"} size={140} compact={false} />}
+
+      {/* Volunteer Registration */}
+      <Suspense fallback={null}>
+        <ExhibitionVolunteerRegistration exhibitionId={exhibition.id} isAr={isAr} />
+      </Suspense>
 
       {tags.length > 0 && (
         <Card className="overflow-hidden transition-all hover:shadow-sm">

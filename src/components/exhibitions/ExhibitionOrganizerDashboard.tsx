@@ -4,7 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Users, Ticket, Star, TrendingUp, CheckCircle2, Clock, BarChart3, LayoutGrid, ClipboardList, Award, CalendarClock, Tags, Download } from "lucide-react";
+import { Users, Ticket, Star, TrendingUp, CheckCircle2, Clock, BarChart3, LayoutGrid, ClipboardList, Award, CalendarClock, Tags, Download, HandHeart } from "lucide-react";
 import { format } from "date-fns";
 import { ExhibitionTicketCheckin } from "./detail/ExhibitionTicketCheckin";
 import { ExhibitionOrganizerAnalytics } from "./detail/ExhibitionOrganizerAnalytics";
@@ -14,6 +14,7 @@ import { ExhibitionCertificateGenerator } from "./detail/ExhibitionCertificateGe
 import { ExhibitionScheduleManager } from "./detail/ExhibitionScheduleManager";
 import { ExhibitionTicketTypeManager } from "./detail/ExhibitionTicketTypeManager";
 import { ExhibitionDataExport } from "./detail/ExhibitionDataExport";
+import { ExhibitionVolunteerManager } from "./detail/ExhibitionVolunteerManager";
 
 interface Props {
   exhibitionId: string;
@@ -60,6 +61,7 @@ export function ExhibitionOrganizerDashboard({ exhibitionId, exhibitionTitle, is
       if (error) throw error;
       return data || [];
     },
+    staleTime: 1000 * 60,
   });
 
   const statCards = [
@@ -127,6 +129,10 @@ export function ExhibitionOrganizerDashboard({ exhibitionId, exhibitionTitle, is
             <TabsTrigger value="ticket-types" className="gap-1.5 text-xs">
               <Tags className="h-3.5 w-3.5" />
               <span className="hidden sm:inline">{t("Tickets", "التذاكر")}</span>
+            </TabsTrigger>
+            <TabsTrigger value="volunteers" className="gap-1.5 text-xs">
+              <HandHeart className="h-3.5 w-3.5" />
+              <span className="hidden sm:inline">{t("Volunteers", "المتطوعين")}</span>
             </TabsTrigger>
             <TabsTrigger value="export" className="gap-1.5 text-xs">
               <Download className="h-3.5 w-3.5" />
@@ -218,6 +224,10 @@ export function ExhibitionOrganizerDashboard({ exhibitionId, exhibitionTitle, is
 
         <TabsContent value="export">
           <ExhibitionDataExport exhibitionId={exhibitionId} exhibitionTitle={exhibitionTitle} isAr={isAr} />
+        </TabsContent>
+
+        <TabsContent value="volunteers">
+          <ExhibitionVolunteerManager exhibitionId={exhibitionId} isAr={isAr} />
         </TabsContent>
       </Tabs>
     </div>
