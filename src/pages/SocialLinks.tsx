@@ -339,7 +339,7 @@ export default function SocialLinks() {
     return () => clearTimeout(timer);
   }, []);
 
-  // Fire-and-forget: increment view count for this profile
+  // Fire-and-forget: increment view count and record visit
   useEffect(() => {
     if (!profileUserId || isOwner) return;
     supabase.rpc("increment_field" as any, {
@@ -347,7 +347,23 @@ export default function SocialLinks() {
       field_name: "view_count",
       row_id: profileUserId,
     }).then(() => {});
-  }, [profileUserId, isOwner]);
+
+    // Record visit for advanced analytics
+    if (data?.page?.id) {
+      const ua = navigator.userAgent;
+      const isMobile = /Mobi|Android|iPhone/i.test(ua);
+      const isTablet = /iPad|Tablet/i.test(ua);
+      const deviceType = isMobile ? "mobile" : isTablet ? "tablet" : "desktop";
+      const browser = /Firefox/i.test(ua) ? "Firefox" : /Edg/i.test(ua) ? "Edge" : /Chrome/i.test(ua) ? "Chrome" : /Safari/i.test(ua) ? "Safari" : "Other";
+      supabase.from("social_link_visits").insert({
+        page_id: data.page.id,
+        device_type: deviceType,
+        browser,
+        referrer: document.referrer || null,
+        page_url: window.location.href,
+      } as any).then(() => {});
+    }
+  }, [profileUserId, isOwner, data?.page?.id]);
 
   const handleLinkClick = useCallback((itemId: string) => {
     supabase.rpc("increment_field" as any, { table_name: "social_link_items", field_name: "click_count", row_id: itemId }).then(() => {});
@@ -509,6 +525,10 @@ export default function SocialLinks() {
       {/* Floating Particles */}
       {extra.enable_particles && (
         <FloatingParticles color={extra.particle_color || theme.accent} />
+      )}
+      {/* Custom CSS */}
+      {extra.custom_user_css && (
+        <style dangerouslySetInnerHTML={{ __html: extra.custom_user_css }} />
       )}
       {googleFontLink && <link rel="stylesheet" href={googleFontLink} />}
       <SEOHead

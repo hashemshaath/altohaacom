@@ -17515,11 +17515,14 @@ export type Database = {
         Row: {
           click_count: number | null
           created_at: string
+          custom_css: string | null
           icon: string | null
           id: string
           is_active: boolean | null
           link_type: string
           page_id: string
+          scheduled_end: string | null
+          scheduled_start: string | null
           sort_order: number
           thumbnail_url: string | null
           title: string
@@ -17531,11 +17534,14 @@ export type Database = {
         Insert: {
           click_count?: number | null
           created_at?: string
+          custom_css?: string | null
           icon?: string | null
           id?: string
           is_active?: boolean | null
           link_type?: string
           page_id: string
+          scheduled_end?: string | null
+          scheduled_start?: string | null
           sort_order?: number
           thumbnail_url?: string | null
           title: string
@@ -17547,11 +17553,14 @@ export type Database = {
         Update: {
           click_count?: number | null
           created_at?: string
+          custom_css?: string | null
           icon?: string | null
           id?: string
           is_active?: boolean | null
           link_type?: string
           page_id?: string
+          scheduled_end?: string | null
+          scheduled_start?: string | null
           sort_order?: number
           thumbnail_url?: string | null
           title?: string
@@ -17635,6 +17644,53 @@ export type Database = {
           user_id?: string
         }
         Relationships: []
+      }
+      social_link_visits: {
+        Row: {
+          browser: string | null
+          country: string | null
+          created_at: string
+          device_type: string | null
+          id: string
+          page_id: string | null
+          page_url: string | null
+          referrer: string | null
+          session_id: string | null
+          user_id: string | null
+        }
+        Insert: {
+          browser?: string | null
+          country?: string | null
+          created_at?: string
+          device_type?: string | null
+          id?: string
+          page_id?: string | null
+          page_url?: string | null
+          referrer?: string | null
+          session_id?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          browser?: string | null
+          country?: string | null
+          created_at?: string
+          device_type?: string | null
+          id?: string
+          page_id?: string | null
+          page_url?: string | null
+          referrer?: string | null
+          session_id?: string | null
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "social_link_visits_page_id_fkey"
+            columns: ["page_id"]
+            isOneToOne: false
+            referencedRelation: "social_link_pages"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       specialties: {
         Row: {
