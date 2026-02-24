@@ -20,6 +20,9 @@ import { PageTracker } from "@/components/tracking/PageTracker";
 import { SmartInstallBanner } from "@/components/pwa/SmartInstallBanner";
 import { OfflineBanner } from "@/components/pwa/OfflineBanner";
 import { UpdatePrompt } from "@/components/pwa/UpdatePrompt";
+import { IOSInstallGuide } from "@/components/pwa/IOSInstallGuide";
+import { PullToRefreshIndicator } from "@/components/pwa/PullToRefreshIndicator";
+import { usePullToRefresh } from "@/hooks/usePullToRefresh";
 
 const LiveChatWidget = lazy(() => import("@/components/crm/LiveChatWidget").then(m => ({ default: m.LiveChatWidget })));
 const NotFound = lazy(() => import("./pages/NotFound"));
@@ -44,6 +47,42 @@ const queryClient = new QueryClient({
   },
 });
 
+function AppContent() {
+  const ptr = usePullToRefresh();
+  return (
+    <>
+      <PullToRefreshIndicator {...ptr} />
+      <ScrollToTop />
+      <SkipToContent />
+      <GoogleTrackingProvider />
+      <TrackingScriptsInjector />
+      <PageTracker />
+      <FloatingHelpButton />
+      <MaintenanceGuard>
+      <ErrorBoundary>
+      <Suspense fallback={<div className="flex h-screen items-center justify-center" role="status" aria-label="Loading"><div className="h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent" /><span className="sr-only">Loading page...</span></div>}>
+      <main id="main-content" className="pt-14 pb-16 md:pb-0 overflow-x-hidden">
+      <Routes>
+        {publicRoutes}
+        {protectedRoutes}
+        {adminRoutes}
+        {companyRoutes}
+        <Route path="*" element={<NotFound />} />
+      </Routes>
+      </main>
+      </Suspense>
+      </ErrorBoundary>
+      </MaintenanceGuard>
+      <ErrorBoundary><Suspense fallback={null}><LiveChatWidget /></Suspense></ErrorBoundary>
+      <MobileBottomNav />
+      <SmartInstallBanner />
+      <IOSInstallGuide />
+      <OfflineBanner />
+      <UpdatePrompt />
+    </>
+  );
+}
+
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <ThemeProvider
@@ -59,32 +98,7 @@ const App = () => (
             <Toaster />
             <Sonner />
             <BrowserRouter>
-              <ScrollToTop />
-              <SkipToContent />
-              <GoogleTrackingProvider />
-              <TrackingScriptsInjector />
-              <PageTracker />
-              <FloatingHelpButton />
-              <MaintenanceGuard>
-              <ErrorBoundary>
-              <Suspense fallback={<div className="flex h-screen items-center justify-center" role="status" aria-label="Loading"><div className="h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent" /><span className="sr-only">Loading page...</span></div>}>
-              <main id="main-content" className="pt-14 pb-16 md:pb-0 overflow-x-hidden">
-              <Routes>
-                {publicRoutes}
-                {protectedRoutes}
-                {adminRoutes}
-                {companyRoutes}
-                <Route path="*" element={<NotFound />} />
-              </Routes>
-              </main>
-              </Suspense>
-              </ErrorBoundary>
-              </MaintenanceGuard>
-              <ErrorBoundary><Suspense fallback={null}><LiveChatWidget /></Suspense></ErrorBoundary>
-              <MobileBottomNav />
-              <SmartInstallBanner />
-              <OfflineBanner />
-              <UpdatePrompt />
+              <AppContent />
             </BrowserRouter>
           </TooltipProvider>
           </SiteSettingsProvider>
