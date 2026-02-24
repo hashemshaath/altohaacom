@@ -22,17 +22,6 @@ const SOCIAL_ICONS: Record<string, { icon: typeof Instagram; label: string; urlP
   website: { icon: Globe, label: "Website" },
 };
 
-const THEMES: Record<string, { bg: string; card: string; text: string; accent: string }> = {
-  default: { bg: "bg-gradient-to-br from-background via-background to-muted/30", card: "bg-card/90 backdrop-blur-xl border-border/30", text: "text-foreground", accent: "bg-primary" },
-  dark: { bg: "bg-gradient-to-br from-gray-950 via-gray-900 to-gray-950", card: "bg-white/5 backdrop-blur-xl border-white/10", text: "text-white", accent: "bg-white" },
-  ocean: { bg: "bg-gradient-to-br from-blue-950 via-cyan-900 to-teal-950", card: "bg-white/10 backdrop-blur-xl border-white/15", text: "text-white", accent: "bg-cyan-400" },
-  sunset: { bg: "bg-gradient-to-br from-orange-950 via-rose-900 to-purple-950", card: "bg-white/10 backdrop-blur-xl border-white/15", text: "text-white", accent: "bg-orange-400" },
-  forest: { bg: "bg-gradient-to-br from-green-950 via-emerald-900 to-teal-950", card: "bg-white/10 backdrop-blur-xl border-white/15", text: "text-white", accent: "bg-emerald-400" },
-  minimal: { bg: "bg-white dark:bg-gray-950", card: "bg-gray-50 dark:bg-gray-900 border-gray-200 dark:border-gray-800", text: "text-gray-900 dark:text-gray-100", accent: "bg-gray-900 dark:bg-white" },
-  candy: { bg: "bg-gradient-to-br from-pink-400 via-purple-400 to-indigo-500", card: "bg-white/20 backdrop-blur-xl border-white/25", text: "text-white", accent: "bg-white" },
-  gold: { bg: "bg-gradient-to-br from-yellow-900 via-amber-800 to-yellow-950", card: "bg-white/10 backdrop-blur-xl border-yellow-500/20", text: "text-amber-50", accent: "bg-amber-400" },
-};
-
 const BUTTON_STYLES: Record<string, string> = {
   rounded: "rounded-2xl",
   pill: "rounded-full",
@@ -40,6 +29,55 @@ const BUTTON_STYLES: Record<string, string> = {
   sharp: "rounded-none",
   outline: "rounded-2xl border-2 bg-transparent",
 };
+
+const FONT_MAP: Record<string, string> = {
+  default: "inherit",
+  inter: "'Inter', sans-serif",
+  playfair: "'Playfair Display', serif",
+  poppins: "'Poppins', sans-serif",
+  cairo: "'Cairo', sans-serif",
+  tajawal: "'Tajawal', sans-serif",
+  montserrat: "'Montserrat', sans-serif",
+  roboto: "'Roboto', sans-serif",
+};
+
+const FONT_SIZE_MAP: Record<string, { name: string; bio: string; meta: string; link: string }> = {
+  sm: { name: "text-lg sm:text-xl", bio: "text-xs", meta: "text-[10px]", link: "text-xs" },
+  md: { name: "text-2xl sm:text-3xl", bio: "text-sm", meta: "text-xs", link: "text-sm" },
+  lg: { name: "text-3xl sm:text-4xl", bio: "text-base", meta: "text-sm", link: "text-base" },
+  xl: { name: "text-4xl sm:text-5xl", bio: "text-lg", meta: "text-base", link: "text-lg" },
+};
+
+interface ExtraSettings {
+  font_size: string;
+  show_bio: boolean;
+  show_job_title: boolean;
+  show_location: boolean;
+  show_stats: boolean;
+  show_awards: boolean;
+  show_membership: boolean;
+  show_full_profile_btn: boolean;
+}
+
+const DEFAULT_EXTRA: ExtraSettings = {
+  font_size: "md",
+  show_bio: true,
+  show_job_title: true,
+  show_location: true,
+  show_stats: true,
+  show_awards: true,
+  show_membership: true,
+  show_full_profile_btn: true,
+};
+
+function parseExtra(customCss: string | null | undefined): ExtraSettings {
+  if (!customCss) return { ...DEFAULT_EXTRA };
+  try {
+    return { ...DEFAULT_EXTRA, ...JSON.parse(customCss) };
+  } catch {
+    return { ...DEFAULT_EXTRA };
+  }
+}
 
 export default function SocialLinks() {
   const { username } = useParams<{ username: string }>();
@@ -80,14 +118,14 @@ export default function SocialLinks() {
 
   if (isLoading) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-background">
+      <div className="flex min-h-screen items-center justify-center" style={{ background: "linear-gradient(135deg, #0f0f0f 0%, #1a1a2e 50%, #0f0f0f 100%)" }}>
         <div className="w-full max-w-md space-y-4 p-6">
           <div className="flex flex-col items-center gap-3">
-            <Skeleton className="h-24 w-24 rounded-full" />
-            <Skeleton className="h-6 w-40" />
-            <Skeleton className="h-4 w-56" />
+            <Skeleton className="h-24 w-24 rounded-full bg-white/10" />
+            <Skeleton className="h-6 w-40 bg-white/10" />
+            <Skeleton className="h-4 w-56 bg-white/10" />
           </div>
-          {[1, 2, 3, 4].map(i => <Skeleton key={i} className="h-14 w-full rounded-2xl" />)}
+          {[1, 2, 3, 4].map(i => <Skeleton key={i} className="h-14 w-full rounded-2xl bg-white/10" />)}
         </div>
       </div>
     );
@@ -95,13 +133,13 @@ export default function SocialLinks() {
 
   if (error || !data?.profile) {
     return (
-      <div className="flex min-h-screen flex-col items-center justify-center gap-4 bg-background p-4">
-        <div className="rounded-2xl bg-muted/60 p-5"><User className="h-10 w-10 text-muted-foreground/40" /></div>
-        <h1 className="font-serif text-xl font-bold">{isAr ? "الصفحة غير موجودة" : "Page not found"}</h1>
-        <p className="text-sm text-muted-foreground max-w-xs text-center">
+      <div className="flex min-h-screen flex-col items-center justify-center gap-4 p-4" style={{ background: "linear-gradient(135deg, #0f0f0f 0%, #1a1a2e 50%, #0f0f0f 100%)" }}>
+        <div className="rounded-2xl bg-white/5 p-5 border border-white/10"><User className="h-10 w-10 text-white/30" /></div>
+        <h1 className="font-serif text-xl font-bold text-white">{isAr ? "الصفحة غير موجودة" : "Page not found"}</h1>
+        <p className="text-sm text-white/50 max-w-xs text-center">
           {isAr ? "هذه الصفحة غير موجودة أو لم يتم إنشاؤها بعد" : "This page doesn't exist or hasn't been created yet"}
         </p>
-        <Button asChild variant="outline" size="sm">
+        <Button asChild variant="outline" size="sm" className="border-white/20 text-white hover:bg-white/10">
           <Link to="/"><ArrowLeft className="me-1.5 h-3.5 w-3.5" />{isAr ? "الرئيسية" : "Go Home"}</Link>
         </Button>
       </div>
@@ -109,9 +147,10 @@ export default function SocialLinks() {
   }
 
   const { profile, page, items } = data;
-  const themeName = page?.theme || "default";
-  const theme = THEMES[themeName] || THEMES.default;
   const btnStyle = BUTTON_STYLES[page?.button_style || "rounded"] || BUTTON_STYLES.rounded;
+  const extra = parseExtra(page?.custom_css);
+  const fontSize = FONT_SIZE_MAP[extra.font_size] || FONT_SIZE_MAP.md;
+  const fontFamily = FONT_MAP[page?.font_family || "default"] || "inherit";
 
   const displayName = isAr
     ? (profile.display_name_ar || profile.full_name_ar || profile.display_name || profile.full_name || "")
@@ -156,52 +195,60 @@ export default function SocialLinks() {
   const viewCount = (profile as any).view_count;
   const hasCover = !!coverImage;
 
+  // Google Fonts link for the chosen font
+  const googleFontLink = page?.font_family && page.font_family !== "default"
+    ? `https://fonts.googleapis.com/css2?family=${encodeURIComponent(page.font_family === "playfair" ? "Playfair Display" : page.font_family === "cairo" ? "Cairo" : page.font_family === "tajawal" ? "Tajawal" : page.font_family === "montserrat" ? "Montserrat" : page.font_family === "poppins" ? "Poppins" : page.font_family === "roboto" ? "Roboto" : "Inter")}:wght@300;400;500;600;700&display=swap`
+    : null;
+
   return (
     <div
-      className="flex min-h-screen flex-col items-center bg-[#0a0a0a] text-white"
+      className="flex min-h-screen flex-col items-center"
       dir={isAr ? "rtl" : "ltr"}
+      style={{
+        background: "linear-gradient(135deg, #0f0f0f 0%, #1a1a2e 50%, #0f0f0f 100%)",
+        fontFamily,
+        color: "#f0f0f0",
+      }}
     >
+      {googleFontLink && <link rel="stylesheet" href={googleFontLink} />}
       <SEOHead
         title={`${title} - Altoha Links`}
         description={bio || `${displayName}'s links on Altoha`}
       />
 
       {/* Cover / Hero Section */}
-      <div className="relative w-full h-[280px] sm:h-[320px] overflow-hidden">
+      <div className="relative w-full h-[260px] sm:h-[300px] overflow-hidden">
         {hasCover ? (
           <>
-            <img
-              src={coverImage}
-              alt=""
-              className="absolute inset-0 w-full h-full object-cover"
-            />
-            <div className="absolute inset-0 bg-gradient-to-b from-black/30 via-black/10 to-[#0a0a0a]" />
+            <img src={coverImage} alt="" className="absolute inset-0 w-full h-full object-cover" />
+            <div className="absolute inset-0" style={{ background: "linear-gradient(to bottom, rgba(0,0,0,0.2) 0%, rgba(15,15,15,0.6) 60%, #0f0f0f 100%)" }} />
           </>
         ) : (
-          <div className="absolute inset-0 bg-gradient-to-b from-primary/20 via-primary/5 to-[#0a0a0a]" />
+          <div className="absolute inset-0" style={{ background: "linear-gradient(to bottom, rgba(99,102,241,0.15) 0%, transparent 100%)" }} />
         )}
 
-        {/* Share button in top corner */}
+        {/* Share button */}
         <div className={`absolute top-4 ${isAr ? "left-4" : "right-4"} z-20 transition-all duration-700 ${animated ? "opacity-100 translate-y-0" : "opacity-0 -translate-y-4"}`}>
           <button
             onClick={shareNative}
-            className="flex h-10 w-10 items-center justify-center rounded-full bg-black/40 backdrop-blur-md border border-white/10 text-white/80 hover:text-white hover:bg-black/60 transition-all"
+            className="flex h-10 w-10 items-center justify-center rounded-full backdrop-blur-md border transition-all"
+            style={{ backgroundColor: "rgba(255,255,255,0.08)", borderColor: "rgba(255,255,255,0.12)", color: "rgba(255,255,255,0.7)" }}
           >
             {copied ? <Check className="h-4 w-4" /> : <Share2 className="h-4 w-4" />}
           </button>
         </div>
 
-        {/* Avatar positioned at bottom of cover */}
+        {/* Avatar */}
         <div className={`absolute -bottom-14 left-1/2 -translate-x-1/2 z-20 transition-all duration-700 delay-100 ${animated ? "opacity-100 scale-100" : "opacity-0 scale-90"}`}>
           {(page?.show_avatar !== false) && (
             <div className="relative">
-              <Avatar className="h-28 w-28 sm:h-32 sm:w-32 ring-[3px] ring-[#0a0a0a] shadow-2xl">
+              <Avatar className="h-28 w-28 sm:h-32 sm:w-32 shadow-2xl" style={{ boxShadow: "0 0 0 4px #0f0f0f, 0 8px 32px rgba(0,0,0,0.5)" }}>
                 <AvatarImage src={profile.avatar_url || ""} alt={displayName} className="object-cover" />
-                <AvatarFallback className="text-3xl font-bold bg-primary/30 text-white">{displayName?.charAt(0)}</AvatarFallback>
+                <AvatarFallback className="text-3xl font-bold" style={{ background: "rgba(99,102,241,0.2)", color: "#e0e0e0" }}>{displayName?.charAt(0)}</AvatarFallback>
               </Avatar>
               {isVerified && (
-                <div className="absolute -bottom-0.5 -end-0.5 h-7 w-7 rounded-full bg-primary flex items-center justify-center ring-2 ring-[#0a0a0a] shadow-lg">
-                  <BadgeCheck className="h-4 w-4 text-primary-foreground" />
+                <div className="absolute -bottom-0.5 -end-0.5 h-7 w-7 rounded-full flex items-center justify-center shadow-lg" style={{ background: "#6366f1", boxShadow: "0 0 0 3px #0f0f0f" }}>
+                  <BadgeCheck className="h-4 w-4 text-white" />
                 </div>
               )}
             </div>
@@ -213,29 +260,32 @@ export default function SocialLinks() {
       <div className="relative z-10 w-full max-w-lg px-5 pt-16 pb-10">
         {/* Name & Meta */}
         <div className={`text-center mb-6 transition-all duration-700 delay-200 ${animated ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"}`}>
-          <h1 className="font-serif text-2xl sm:text-3xl font-bold text-white tracking-tight">{title}</h1>
-          <p className="text-sm text-white/50 mt-1">@{profile.username}</p>
+          <h1 className={`font-bold tracking-tight ${fontSize.name}`} style={{ color: "#ffffff" }}>{title}</h1>
+          <p className="mt-1" style={{ fontSize: "13px", color: "rgba(255,255,255,0.4)" }}>@{profile.username}</p>
 
-          {/* Job title / specialization & location in a refined row */}
-          <div className="flex items-center justify-center flex-wrap gap-x-4 gap-y-1 mt-2.5">
-            {(jobTitle || specialization) && (
-              <span className="text-sm text-white/70 flex items-center gap-1.5">
-                <Briefcase className="h-3.5 w-3.5 text-primary/80" />
-                {jobTitle || specialization}
-              </span>
-            )}
-            {(city || countryCode) && (
-              <span className="text-sm text-white/70 flex items-center gap-1.5">
-                <MapPin className="h-3.5 w-3.5 text-primary/80" />
-                {city}{city && countryCode ? ", " : ""}{countryCode}
-              </span>
-            )}
-          </div>
+          {/* Job title / specialization & location */}
+          {(extra.show_job_title || extra.show_location) && (
+            <div className="flex items-center justify-center flex-wrap gap-x-4 gap-y-1 mt-3">
+              {extra.show_job_title && (jobTitle || specialization) && (
+                <span className={`flex items-center gap-1.5 ${fontSize.meta}`} style={{ color: "rgba(255,255,255,0.6)" }}>
+                  <Briefcase className="h-3.5 w-3.5" style={{ color: "rgba(129,140,248,0.8)" }} />
+                  {jobTitle || specialization}
+                </span>
+              )}
+              {extra.show_location && (city || countryCode) && (
+                <span className={`flex items-center gap-1.5 ${fontSize.meta}`} style={{ color: "rgba(255,255,255,0.6)" }}>
+                  <MapPin className="h-3.5 w-3.5" style={{ color: "rgba(129,140,248,0.8)" }} />
+                  {city}{city && countryCode ? ", " : ""}{countryCode}
+                </span>
+              )}
+            </div>
+          )}
 
           {/* Membership badge */}
-          {membershipTier && membershipTier !== "free" && (
+          {extra.show_membership && membershipTier && membershipTier !== "free" && (
             <div className="mt-3">
-              <span className="inline-flex items-center gap-1 px-3 py-1 text-xs font-semibold rounded-full bg-primary/15 text-primary border border-primary/20 capitalize">
+              <span className="inline-flex items-center gap-1 px-3 py-1.5 text-xs font-semibold rounded-full capitalize"
+                style={{ background: "rgba(99,102,241,0.15)", color: "#a5b4fc", border: "1px solid rgba(99,102,241,0.25)" }}>
                 ✦ {membershipTier}
               </span>
             </div>
@@ -243,49 +293,50 @@ export default function SocialLinks() {
         </div>
 
         {/* Stats Row */}
-        {(yearsExp || viewCount) && (
-          <div className={`flex justify-center gap-8 mb-6 transition-all duration-700 delay-250 ${animated ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"}`}>
+        {extra.show_stats && (yearsExp || viewCount > 0) && (
+          <div className={`flex justify-center gap-10 mb-6 transition-all duration-700 delay-250 ${animated ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"}`}>
             {yearsExp && (
               <div className="text-center">
-                <p className="text-xl font-bold text-white">{yearsExp}<span className="text-primary">+</span></p>
-                <p className="text-[10px] text-white/40 uppercase tracking-widest mt-0.5">{isAr ? "سنوات خبرة" : "Years Exp."}</p>
+                <p className="text-2xl font-bold" style={{ color: "#ffffff" }}>{yearsExp}<span style={{ color: "#818cf8" }}>+</span></p>
+                <p className="text-[10px] uppercase tracking-widest mt-0.5" style={{ color: "rgba(255,255,255,0.3)" }}>{isAr ? "سنوات خبرة" : "Years Exp."}</p>
               </div>
             )}
             {viewCount > 0 && (
               <div className="text-center">
-                <p className="text-xl font-bold text-white">{viewCount}</p>
-                <p className="text-[10px] text-white/40 uppercase tracking-widest mt-0.5">{isAr ? "مشاهدات" : "Views"}</p>
+                <p className="text-2xl font-bold" style={{ color: "#ffffff" }}>{viewCount.toLocaleString()}</p>
+                <p className="text-[10px] uppercase tracking-widest mt-0.5" style={{ color: "rgba(255,255,255,0.3)" }}>{isAr ? "مشاهدات" : "Views"}</p>
               </div>
             )}
           </div>
         )}
 
         {/* Separator */}
-        <div className={`w-12 h-px bg-white/10 mx-auto mb-6 transition-all duration-700 delay-300 ${animated ? "opacity-100 w-12" : "opacity-0 w-0"}`} />
+        <div className={`h-px mx-auto mb-6 transition-all duration-700 delay-300 ${animated ? "opacity-100 w-16" : "opacity-0 w-0"}`} style={{ background: "rgba(255,255,255,0.08)" }} />
 
         {/* Bio */}
-        {bio && (
+        {extra.show_bio && bio && (
           <div className={`mb-6 transition-all duration-700 delay-300 ${animated ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"}`}>
-            <p className="text-sm text-white/75 leading-relaxed text-center max-w-md mx-auto">{bio}</p>
+            <p className={`leading-relaxed text-center max-w-md mx-auto ${fontSize.bio}`} style={{ color: "rgba(255,255,255,0.65)" }}>{bio}</p>
           </div>
         )}
 
         {/* Awards */}
-        {globalAwards && Array.isArray(globalAwards) && globalAwards.length > 0 && (
+        {extra.show_awards && globalAwards && Array.isArray(globalAwards) && globalAwards.length > 0 && (
           <div className={`mb-6 transition-all duration-700 delay-350 ${animated ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"}`}>
-            <div className="rounded-2xl bg-white/[0.04] border border-white/[0.08] p-4">
-              <h3 className="text-[10px] font-semibold uppercase tracking-widest text-white/40 mb-3 flex items-center gap-1.5">
-                <Award className="h-3.5 w-3.5 text-primary/70" />
+            <div className="rounded-2xl p-4" style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.06)" }}>
+              <h3 className="text-[10px] font-semibold uppercase tracking-widest mb-3 flex items-center gap-1.5" style={{ color: "rgba(255,255,255,0.35)" }}>
+                <Award className="h-3.5 w-3.5" style={{ color: "rgba(129,140,248,0.6)" }} />
                 {isAr ? "الجوائز والإنجازات" : "Awards & Achievements"}
               </h3>
               <div className="flex flex-wrap gap-2">
                 {globalAwards.map((award: any, i: number) => (
-                  <div key={i} className="flex items-center gap-2 px-3 py-2 rounded-xl bg-white/[0.06] border border-white/[0.06] text-xs text-white/80">
+                  <div key={i} className="flex items-center gap-2 px-3 py-2 rounded-xl text-xs"
+                    style={{ background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.06)", color: "rgba(255,255,255,0.75)" }}>
                     {award.icon === "gold" && <span>🏅</span>}
                     {award.icon === "tabakh" && <span>👨‍🍳</span>}
                     {award.icon && !["gold", "tabakh"].includes(award.icon) && <span>🏆</span>}
                     <span>{isAr ? (award.name_ar || award.name) : (award.name || award.name_ar)}</span>
-                    {award.year && <span className="text-white/30">({award.year})</span>}
+                    {award.year && <span style={{ color: "rgba(255,255,255,0.25)" }}>({award.year})</span>}
                   </div>
                 ))}
               </div>
@@ -307,8 +358,21 @@ export default function SocialLinks() {
                   href={href}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex h-12 w-12 items-center justify-center rounded-full bg-white/[0.06] border border-white/[0.08] text-white/70 hover:text-white hover:bg-white/[0.12] hover:border-white/[0.15] transition-all duration-300 hover:scale-110 active:scale-95"
+                  className="flex h-12 w-12 items-center justify-center rounded-full transition-all duration-300 hover:scale-110 active:scale-95"
+                  style={{
+                    background: "rgba(255,255,255,0.06)",
+                    border: "1px solid rgba(255,255,255,0.08)",
+                    color: "rgba(255,255,255,0.65)",
+                  }}
                   title={info.label}
+                  onMouseEnter={e => {
+                    (e.currentTarget as HTMLElement).style.background = "rgba(255,255,255,0.12)";
+                    (e.currentTarget as HTMLElement).style.color = "#ffffff";
+                  }}
+                  onMouseLeave={e => {
+                    (e.currentTarget as HTMLElement).style.background = "rgba(255,255,255,0.06)";
+                    (e.currentTarget as HTMLElement).style.color = "rgba(255,255,255,0.65)";
+                  }}
                 >
                   <Icon className="h-5 w-5" />
                 </a>
@@ -327,10 +391,24 @@ export default function SocialLinks() {
                 target="_blank"
                 rel="noopener noreferrer"
                 onClick={() => handleLinkClick(item.id)}
-                className={`group flex items-center gap-3 border border-white/[0.08] px-5 py-4 ${btnStyle} bg-white/[0.04] backdrop-blur-sm transition-all duration-500 hover:bg-white/[0.08] hover:border-white/[0.15] hover:scale-[1.02] hover:shadow-xl active:scale-[0.98] ${animated ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}
+                className={`group flex items-center gap-3 px-5 py-4 ${btnStyle} backdrop-blur-sm transition-all duration-500 hover:scale-[1.02] hover:shadow-xl active:scale-[0.98] ${animated ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}
                 style={{
-                  ...buttonColorStyle,
+                  background: buttonColorStyle.backgroundColor || "rgba(255,255,255,0.04)",
+                  border: `1px solid ${buttonColorStyle.backgroundColor ? "transparent" : "rgba(255,255,255,0.08)"}`,
+                  color: buttonColorStyle.color || "rgba(255,255,255,0.85)",
                   transitionDelay: `${500 + index * 80}ms`,
+                }}
+                onMouseEnter={e => {
+                  if (!buttonColorStyle.backgroundColor) {
+                    (e.currentTarget as HTMLElement).style.background = "rgba(255,255,255,0.08)";
+                    (e.currentTarget as HTMLElement).style.borderColor = "rgba(255,255,255,0.15)";
+                  }
+                }}
+                onMouseLeave={e => {
+                  if (!buttonColorStyle.backgroundColor) {
+                    (e.currentTarget as HTMLElement).style.background = "rgba(255,255,255,0.04)";
+                    (e.currentTarget as HTMLElement).style.borderColor = "rgba(255,255,255,0.08)";
+                  }
                 }}
               >
                 {item.thumbnail_url && (
@@ -339,10 +417,10 @@ export default function SocialLinks() {
                 {item.icon && !item.thumbnail_url && (
                   <span className="text-xl shrink-0">{item.icon}</span>
                 )}
-                <span className="flex-1 text-sm font-medium text-center text-white/90">
+                <span className={`flex-1 font-medium text-center ${fontSize.link}`}>
                   {isAr ? (item.title_ar || item.title) : item.title}
                 </span>
-                <ExternalLink className="h-4 w-4 opacity-0 group-hover:opacity-50 transition-opacity shrink-0 text-white/60" />
+                <ExternalLink className="h-4 w-4 opacity-0 group-hover:opacity-50 transition-opacity shrink-0" />
               </a>
             ))}
           </div>
@@ -350,27 +428,30 @@ export default function SocialLinks() {
 
         {items.length === 0 && socialPlatforms.length === 0 && (
           <div className={`text-center py-10 transition-all duration-700 delay-400 ${animated ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"}`}>
-            <Globe className="h-10 w-10 mx-auto mb-3 text-white/20" />
-            <p className="text-sm text-white/40">{isAr ? "لا توجد روابط بعد" : "No links yet"}</p>
+            <Globe className="h-10 w-10 mx-auto mb-3" style={{ color: "rgba(255,255,255,0.15)" }} />
+            <p className="text-sm" style={{ color: "rgba(255,255,255,0.3)" }}>{isAr ? "لا توجد روابط بعد" : "No links yet"}</p>
           </div>
         )}
 
         {/* View Full Profile */}
-        <div className={`mt-2 transition-all duration-700 delay-500 ${animated ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"}`}>
-          <Link
-            to={`/${profile.username}`}
-            className="flex items-center justify-center gap-2 w-full py-3.5 rounded-2xl bg-primary/10 border border-primary/20 text-sm font-medium text-primary hover:bg-primary/20 transition-all hover:scale-[1.02] active:scale-[0.98]"
-          >
-            <User className="h-4 w-4" />
-            {isAr ? "عرض البروفايل الكامل" : "View Full Profile"}
-          </Link>
-        </div>
+        {extra.show_full_profile_btn && (
+          <div className={`mt-2 transition-all duration-700 delay-500 ${animated ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"}`}>
+            <Link
+              to={`/${profile.username}`}
+              className="flex items-center justify-center gap-2 w-full py-3.5 rounded-2xl text-sm font-medium transition-all hover:scale-[1.02] active:scale-[0.98]"
+              style={{ background: "rgba(99,102,241,0.1)", border: "1px solid rgba(99,102,241,0.2)", color: "#a5b4fc" }}
+            >
+              <User className="h-4 w-4" />
+              {isAr ? "عرض البروفايل الكامل" : "View Full Profile"}
+            </Link>
+          </div>
+        )}
 
         {/* Footer */}
         <div className={`mt-10 text-center transition-all duration-700 delay-600 ${animated ? "opacity-100" : "opacity-0"}`}>
-          <Link to="/" className="inline-flex items-center gap-1.5 text-[10px] text-white/20 hover:text-white/40 transition-opacity font-medium tracking-wider uppercase">
-            <div className="h-4 w-4 rounded bg-primary/20 flex items-center justify-center">
-              <span className="text-[8px] font-bold text-primary/60">A</span>
+          <Link to="/" className="inline-flex items-center gap-1.5 font-medium tracking-wider uppercase transition-opacity" style={{ fontSize: "10px", color: "rgba(255,255,255,0.15)" }}>
+            <div className="h-4 w-4 rounded flex items-center justify-center" style={{ background: "rgba(99,102,241,0.15)" }}>
+              <span className="text-[8px] font-bold" style={{ color: "rgba(99,102,241,0.5)" }}>A</span>
             </div>
             Altoha
           </Link>
