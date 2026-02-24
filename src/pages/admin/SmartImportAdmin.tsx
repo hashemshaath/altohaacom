@@ -437,20 +437,47 @@ export default function SmartImportAdmin() {
       const phone = details.phone?.trim();
       const email = details.email?.trim()?.toLowerCase();
 
+      // Extract significant keywords (3+ chars, no stop words) for fuzzy matching
+      const stopWords = new Set(['the', 'and', 'for', 'of', 'in', 'at', 'to', 'a', 'an', 'is', 'on']);
+      const extractKeywords = (name: string | undefined) => {
+        if (!name) return [];
+        return name.split(/[\s\-_,]+/)
+          .map(w => w.replace(/[^a-zA-Z0-9\u0600-\u06FF]/g, '').trim())
+          .filter(w => w.length >= 3 && !stopWords.has(w.toLowerCase()));
+      };
+
+      const enKeywords = extractKeywords(nameEn);
+      const arKeywords = extractKeywords(nameAr);
+
       const orConditions: string[] = [];
+      // Full name match
       if (nameEn) orConditions.push(`name.ilike.%${nameEn}%`);
       if (nameAr) orConditions.push(`name_ar.ilike.%${nameAr}%`);
+      // Keyword-based fuzzy match (each significant word)
+      for (const kw of enKeywords) {
+        if (kw.length >= 4) orConditions.push(`name.ilike.%${kw}%`);
+      }
+      for (const kw of arKeywords) {
+        if (kw.length >= 3) orConditions.push(`name_ar.ilike.%${kw}%`);
+      }
       if (phone) orConditions.push(`phone.eq.${phone}`);
       if (email) orConditions.push(`email.ilike.${email}`);
 
-      // Title-based conditions for exhibitions/competitions
+      // Title-based conditions for exhibitions/competitions (full + keyword)
       const titleOrConditions: string[] = [];
       if (nameEn) titleOrConditions.push(`title.ilike.%${nameEn}%`);
       if (nameAr) titleOrConditions.push(`title_ar.ilike.%${nameAr}%`);
+      for (const kw of enKeywords) {
+        if (kw.length >= 4) titleOrConditions.push(`title.ilike.%${kw}%`);
+      }
+      for (const kw of arKeywords) {
+        if (kw.length >= 3) titleOrConditions.push(`title_ar.ilike.%${kw}%`);
+      }
 
       if (orConditions.length === 0 && titleOrConditions.length === 0) { setCheckingDb(false); setDbChecked(true); return; }
-      const orStr = orConditions.join(",");
-      const titleOrStr = titleOrConditions.join(",");
+      // Deduplicate conditions
+      const orStr = [...new Set(orConditions)].join(",");
+      const titleOrStr = [...new Set(titleOrConditions)].join(",");
 
       const [entRes, compRes, estRes, exhRes, compResComp] = await Promise.all([
         orStr ? supabase.from("culinary_entities").select("id, name, name_ar, entity_number, type, city, phone, email, website").or(orStr) : Promise.resolve({ data: [] }),
