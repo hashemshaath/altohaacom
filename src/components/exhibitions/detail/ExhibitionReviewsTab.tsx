@@ -11,7 +11,8 @@ import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { toast } from "@/hooks/use-toast";
-import { Star, MessageSquare, Send, PenLine, Shield, ThumbsUp, Image as ImageIcon, X, Flag, Reply, MoreHorizontal } from "lucide-react";
+import { Star, MessageSquare, Send, PenLine, Shield, ThumbsUp, Image as ImageIcon, X, Flag, Reply, MoreHorizontal, ArrowUpDown, Filter } from "lucide-react";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { format } from "date-fns";
 
@@ -194,6 +195,8 @@ export function ExhibitionReviewsTab({ exhibitionId, hasEnded, isAr }: Props) {
   const [newContent, setNewContent] = useState("");
   const [photoUrls, setPhotoUrls] = useState<string[]>([]);
   const [uploading, setUploading] = useState(false);
+  const [sortBy, setSortBy] = useState<"helpful" | "newest" | "highest" | "lowest">("helpful");
+  const [filterRating, setFilterRating] = useState<number | null>(null);
 
   const { data: reviews = [], isLoading } = useQuery({
     queryKey: ["exhibition-reviews", exhibitionId],
@@ -297,6 +300,15 @@ export function ExhibitionReviewsTab({ exhibitionId, hasEnded, isAr }: Props) {
     pct: reviews.length > 0 ? (reviews.filter((rev) => rev.rating === r).length / reviews.length) * 100 : 0,
   }));
 
+  const sortedReviews = [...reviews]
+    .filter((r) => filterRating === null || r.rating === filterRating)
+    .sort((a, b) => {
+      if (sortBy === "newest") return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
+      if (sortBy === "highest") return b.rating - a.rating;
+      if (sortBy === "lowest") return a.rating - b.rating;
+      return (b.helpful_count || 0) - (a.helpful_count || 0);
+    });
+
   return (
     <div className="space-y-6">
       {/* Summary card */}
@@ -396,9 +408,48 @@ export function ExhibitionReviewsTab({ exhibitionId, hasEnded, isAr }: Props) {
         </div>
       )}
 
+      {/* Sort & Filter Controls */}
+      {reviews.length > 1 && (
+        <div className="flex items-center gap-2 flex-wrap">
+          <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
+            <ArrowUpDown className="h-3 w-3" />
+            {isAr ? "ترتيب:" : "Sort:"}
+          </div>
+          <Select value={sortBy} onValueChange={(v) => setSortBy(v as any)}>
+            <SelectTrigger className="h-8 w-[130px] text-xs">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="helpful" className="text-xs">{isAr ? "الأكثر فائدة" : "Most Helpful"}</SelectItem>
+              <SelectItem value="newest" className="text-xs">{isAr ? "الأحدث" : "Newest"}</SelectItem>
+              <SelectItem value="highest" className="text-xs">{isAr ? "الأعلى تقييماً" : "Highest Rated"}</SelectItem>
+              <SelectItem value="lowest" className="text-xs">{isAr ? "الأقل تقييماً" : "Lowest Rated"}</SelectItem>
+            </SelectContent>
+          </Select>
+
+          <div className="flex items-center gap-1">
+            <button
+              onClick={() => setFilterRating(null)}
+              className={`px-2 py-1 rounded-md text-[10px] font-medium transition-colors ${filterRating === null ? "bg-primary text-primary-foreground" : "bg-muted/60 text-muted-foreground hover:bg-muted"}`}
+            >
+              {isAr ? "الكل" : "All"}
+            </button>
+            {[5, 4, 3, 2, 1].map((r) => (
+              <button
+                key={r}
+                onClick={() => setFilterRating(filterRating === r ? null : r)}
+                className={`px-2 py-1 rounded-md text-[10px] font-medium transition-colors ${filterRating === r ? "bg-primary text-primary-foreground" : "bg-muted/60 text-muted-foreground hover:bg-muted"}`}
+              >
+                {r}⭐
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
+
       {/* Reviews list */}
       <div className="space-y-3">
-        {reviews.map((review: any) => (
+        {sortedReviews.map((review: any) => (
           <Card key={review.id} className="border-border/50 transition-all hover:shadow-sm">
             <CardContent className="p-4">
               <div className="flex items-start gap-3">
@@ -450,6 +501,12 @@ export function ExhibitionReviewsTab({ exhibitionId, hasEnded, isAr }: Props) {
             </CardContent>
           </Card>
         ))}
+
+        {sortedReviews.length === 0 && reviews.length > 0 && (
+          <div className="py-8 text-center">
+            <p className="text-sm text-muted-foreground">{isAr ? "لا توجد تقييمات بهذا الفلتر" : "No reviews match this filter"}</p>
+          </div>
+        )}
 
         {reviews.length === 0 && (
           <div className="py-16 text-center">
