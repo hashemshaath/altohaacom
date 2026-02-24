@@ -25,7 +25,7 @@ import {
   Palette, Eye, Link as LinkIcon, Plus, Trash2, ExternalLink,
   Globe, ArrowUp, ArrowDown, Save, Copy, Check, QrCode,
   BarChart3, MousePointerClick, Pencil, Instagram, Twitter,
-  Facebook, Linkedin, Youtube, Smartphone
+  Facebook, Linkedin, Youtube, Smartphone, Type, EyeOff, Settings2
 } from "lucide-react";
 
 const THEMES = [
@@ -47,6 +47,24 @@ const BUTTON_STYLES = [
   { id: "outline", label: "Outline", labelAr: "إطار" },
 ];
 
+const FONT_FAMILIES = [
+  { id: "default", label: "Default", labelAr: "افتراضي", css: "inherit" },
+  { id: "inter", label: "Inter", labelAr: "إنتر", css: "'Inter', sans-serif" },
+  { id: "playfair", label: "Playfair", labelAr: "بلايفير", css: "'Playfair Display', serif" },
+  { id: "poppins", label: "Poppins", labelAr: "بوبينز", css: "'Poppins', sans-serif" },
+  { id: "cairo", label: "Cairo", labelAr: "القاهرة", css: "'Cairo', sans-serif" },
+  { id: "tajawal", label: "Tajawal", labelAr: "تجوال", css: "'Tajawal', sans-serif" },
+  { id: "montserrat", label: "Montserrat", labelAr: "مونتسيرات", css: "'Montserrat', sans-serif" },
+  { id: "roboto", label: "Roboto", labelAr: "روبوتو", css: "'Roboto', sans-serif" },
+];
+
+const FONT_SIZES = [
+  { id: "sm", label: "Small", labelAr: "صغير" },
+  { id: "md", label: "Medium", labelAr: "متوسط" },
+  { id: "lg", label: "Large", labelAr: "كبير" },
+  { id: "xl", label: "Extra Large", labelAr: "كبير جداً" },
+];
+
 const THEME_MAP: Record<string, { bg: string; card: string; text: string }> = {
   default: { bg: "bg-gradient-to-br from-background via-background to-muted/30", card: "bg-card/90 backdrop-blur-xl border-border/30", text: "text-foreground" },
   dark: { bg: "bg-gradient-to-br from-gray-950 via-gray-900 to-gray-950", card: "bg-white/5 backdrop-blur-xl border-white/10", text: "text-white" },
@@ -62,6 +80,38 @@ const SOCIAL_ICONS: Record<string, typeof Instagram> = {
   instagram: Instagram, twitter: Twitter, facebook: Facebook,
   linkedin: Linkedin, youtube: Youtube, website: Globe,
 };
+
+interface ExtraSettings {
+  font_size: string;
+  show_bio: boolean;
+  show_job_title: boolean;
+  show_location: boolean;
+  show_stats: boolean;
+  show_awards: boolean;
+  show_membership: boolean;
+  show_full_profile_btn: boolean;
+}
+
+const DEFAULT_EXTRA: ExtraSettings = {
+  font_size: "md",
+  show_bio: true,
+  show_job_title: true,
+  show_location: true,
+  show_stats: true,
+  show_awards: true,
+  show_membership: true,
+  show_full_profile_btn: true,
+};
+
+function parseExtra(customCss: string | null): ExtraSettings {
+  if (!customCss) return { ...DEFAULT_EXTRA };
+  try {
+    const parsed = JSON.parse(customCss);
+    return { ...DEFAULT_EXTRA, ...parsed };
+  } catch {
+    return { ...DEFAULT_EXTRA };
+  }
+}
 
 export default function SocialLinksEditor() {
   const { user } = useAuth();
@@ -92,9 +142,10 @@ export default function SocialLinksEditor() {
     theme: "default", button_style: "rounded", button_color: "#000000",
     text_color: "#ffffff", background_color: "#ffffff",
     show_avatar: true, show_social_icons: true, is_published: true,
-    background_image_url: "",
+    background_image_url: "", font_family: "default",
   });
 
+  const [extra, setExtra] = useState<ExtraSettings>({ ...DEFAULT_EXTRA });
   const [newLink, setNewLink] = useState({ title: "", title_ar: "", url: "", icon: "", link_type: "custom" });
 
   useEffect(() => {
@@ -113,26 +164,30 @@ export default function SocialLinksEditor() {
         show_social_icons: page.show_social_icons !== false,
         is_published: page.is_published !== false,
         background_image_url: page.background_image_url || "",
+        font_family: page.font_family || "default",
       });
+      setExtra(parseExtra(page.custom_css));
     }
   }, [page]);
 
-  const handleSavePage = () => upsertPage.mutate(form);
+  const handleSavePage = () => {
+    const payload = {
+      ...form,
+      custom_css: JSON.stringify(extra),
+    };
+    upsertPage.mutate(payload);
+  };
 
   const handleAddLink = async () => {
     if (!newLink.title || !newLink.url) {
       toast({ title: isAr ? "أدخل العنوان والرابط" : "Enter title and URL", variant: "destructive" });
       return;
     }
-    const pageId = page?.id || (await upsertPage.mutateAsync(form)).id;
+    const pageId = page?.id || (await upsertPage.mutateAsync({ ...form, custom_css: JSON.stringify(extra) })).id;
     addItem.mutate({
-      page_id: pageId,
-      title: newLink.title,
-      title_ar: newLink.title_ar || undefined,
-      url: newLink.url,
-      icon: newLink.icon || undefined,
-      link_type: newLink.link_type,
-      sort_order: items.length,
+      page_id: pageId, title: newLink.title,
+      title_ar: newLink.title_ar || undefined, url: newLink.url,
+      icon: newLink.icon || undefined, link_type: newLink.link_type, sort_order: items.length,
     });
     setNewLink({ title: "", title_ar: "", url: "", icon: "", link_type: "custom" });
   };
@@ -198,6 +253,16 @@ export default function SocialLinksEditor() {
     { key: "website", value: profile.website },
   ].filter(s => s.value) : [];
 
+  const VISIBILITY_SECTIONS = [
+    { key: "show_bio" as const, label: isAr ? "النبذة" : "Bio", icon: Type },
+    { key: "show_job_title" as const, label: isAr ? "المسمى الوظيفي" : "Job Title", icon: Settings2 },
+    { key: "show_location" as const, label: isAr ? "الموقع" : "Location", icon: Globe },
+    { key: "show_stats" as const, label: isAr ? "الإحصائيات" : "Stats", icon: BarChart3 },
+    { key: "show_awards" as const, label: isAr ? "الجوائز" : "Awards", icon: BarChart3 },
+    { key: "show_membership" as const, label: isAr ? "العضوية" : "Membership", icon: Settings2 },
+    { key: "show_full_profile_btn" as const, label: isAr ? "زر البروفايل الكامل" : "Full Profile Button", icon: Eye },
+  ];
+
   return (
     <div className="flex min-h-screen flex-col bg-background" dir={isAr ? "rtl" : "ltr"}>
       <Header />
@@ -215,8 +280,6 @@ export default function SocialLinksEditor() {
               {copied ? <Check className="h-4 w-4 me-1.5" /> : <Copy className="h-4 w-4 me-1.5" />}
               {isAr ? "نسخ الرابط" : "Copy Link"}
             </Button>
-
-            {/* QR Code Dialog */}
             {profile?.username && (
               <Dialog>
                 <DialogTrigger asChild>
@@ -233,7 +296,6 @@ export default function SocialLinksEditor() {
                 </DialogContent>
               </Dialog>
             )}
-
             {profile?.username && (
               <Button variant="outline" size="sm" asChild>
                 <Link to={previewUrl} target="_blank">
@@ -299,10 +361,11 @@ export default function SocialLinksEditor() {
           {/* Left: Editor */}
           <div className="space-y-4">
             <Tabs defaultValue="settings" className="w-full">
-              <TabsList className="w-full grid grid-cols-3">
+              <TabsList className="w-full grid grid-cols-4">
                 <TabsTrigger value="settings">{isAr ? "الإعدادات" : "Settings"}</TabsTrigger>
                 <TabsTrigger value="links">{isAr ? "الروابط" : "Links"}</TabsTrigger>
                 <TabsTrigger value="appearance">{isAr ? "المظهر" : "Appearance"}</TabsTrigger>
+                <TabsTrigger value="visibility">{isAr ? "العرض" : "Display"}</TabsTrigger>
               </TabsList>
 
               {/* Settings Tab */}
@@ -343,7 +406,6 @@ export default function SocialLinksEditor() {
 
               {/* Links Tab */}
               <TabsContent value="links" className="space-y-4 mt-4">
-                {/* Add New Link */}
                 <Card>
                   <CardHeader className="pb-3">
                     <CardTitle className="text-base flex items-center gap-2">
@@ -377,7 +439,6 @@ export default function SocialLinksEditor() {
                   </CardContent>
                 </Card>
 
-                {/* Existing Links */}
                 <Card>
                   <CardHeader className="pb-3">
                     <CardTitle className="text-base flex items-center gap-2">
@@ -466,6 +527,47 @@ export default function SocialLinksEditor() {
                   </CardContent>
                 </Card>
 
+                {/* Font Family */}
+                <Card>
+                  <CardHeader className="pb-3">
+                    <CardTitle className="text-base flex items-center gap-2">
+                      <Type className="h-4 w-4 text-primary" />{isAr ? "الخط" : "Font"}
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
+                    <div>
+                      <Label className="text-xs mb-2 block">{isAr ? "نوع الخط" : "Font Family"}</Label>
+                      <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+                        {FONT_FAMILIES.map(f => (
+                          <button
+                            key={f.id}
+                            onClick={() => setForm(prev => ({ ...prev, font_family: f.id }))}
+                            className={`text-xs py-2.5 px-2 rounded-lg border transition-all ${form.font_family === f.id ? "border-primary bg-primary/10 font-semibold" : "border-border hover:border-primary/40"}`}
+                            style={{ fontFamily: f.css }}
+                          >
+                            {isAr ? f.labelAr : f.label}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                    <Separator />
+                    <div>
+                      <Label className="text-xs mb-2 block">{isAr ? "حجم الخط" : "Font Size"}</Label>
+                      <div className="grid grid-cols-4 gap-2">
+                        {FONT_SIZES.map(s => (
+                          <button
+                            key={s.id}
+                            onClick={() => setExtra(prev => ({ ...prev, font_size: s.id }))}
+                            className={`text-xs py-2 px-2 rounded-lg border transition-all ${extra.font_size === s.id ? "border-primary bg-primary/10 font-semibold" : "border-border hover:border-primary/40"}`}
+                          >
+                            {isAr ? s.labelAr : s.label}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+
                 <Card>
                   <CardHeader className="pb-3">
                     <CardTitle className="text-base flex items-center gap-2">
@@ -528,13 +630,43 @@ export default function SocialLinksEditor() {
                       </Label>
                       <input id="bg-upload" type="file" accept="image/*" className="hidden" onChange={handleBgUpload} disabled={uploading} />
                     </div>
-                    <Input
-                      placeholder={isAr ? "أو أدخل رابط الصورة" : "Or enter image URL"}
-                      value={form.background_image_url}
-                      onChange={e => setForm(f => ({ ...f, background_image_url: e.target.value }))}
-                      dir="ltr"
-                      className="text-xs"
-                    />
+                    <Input placeholder={isAr ? "أو أدخل رابط الصورة" : "Or enter image URL"} value={form.background_image_url} onChange={e => setForm(f => ({ ...f, background_image_url: e.target.value }))} dir="ltr" className="text-xs" />
+                  </CardContent>
+                </Card>
+              </TabsContent>
+
+              {/* Display / Visibility Tab */}
+              <TabsContent value="visibility" className="space-y-4 mt-4">
+                <Card>
+                  <CardHeader className="pb-3">
+                    <CardTitle className="text-base flex items-center gap-2">
+                      <EyeOff className="h-4 w-4 text-primary" />{isAr ? "التحكم بالأقسام" : "Section Visibility"}
+                    </CardTitle>
+                    <p className="text-xs text-muted-foreground mt-1">
+                      {isAr ? "تحكم بما يظهر في صفحة الروابط العامة" : "Control what appears on your public links page"}
+                    </p>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="space-y-2">
+                      {VISIBILITY_SECTIONS.map(section => (
+                        <div key={section.key} className="flex items-center justify-between rounded-lg border border-border/50 p-3 transition-colors hover:bg-accent/20">
+                          <div className="flex items-center gap-3">
+                            <div className={`flex h-8 w-8 items-center justify-center rounded-lg ${extra[section.key] ? "bg-primary/10" : "bg-muted"}`}>
+                              {extra[section.key] ? (
+                                <Eye className="h-4 w-4 text-primary" />
+                              ) : (
+                                <EyeOff className="h-4 w-4 text-muted-foreground" />
+                              )}
+                            </div>
+                            <Label className="text-sm cursor-pointer">{section.label}</Label>
+                          </div>
+                          <Switch
+                            checked={extra[section.key]}
+                            onCheckedChange={v => setExtra(prev => ({ ...prev, [section.key]: v }))}
+                          />
+                        </div>
+                      ))}
+                    </div>
                   </CardContent>
                 </Card>
               </TabsContent>
@@ -556,7 +688,10 @@ export default function SocialLinksEditor() {
               </CardHeader>
               <CardContent className="p-0">
                 <div className={`p-4 min-h-[500px] ${THEME_MAP[form.theme]?.bg || THEME_MAP.default.bg}`}
-                  style={form.background_image_url ? { backgroundImage: `url(${form.background_image_url})`, backgroundSize: "cover", backgroundPosition: "center" } : undefined}
+                  style={{
+                    ...(form.background_image_url ? { backgroundImage: `url(${form.background_image_url})`, backgroundSize: "cover", backgroundPosition: "center" } : undefined),
+                    fontFamily: FONT_FAMILIES.find(f => f.id === form.font_family)?.css || "inherit",
+                  }}
                 >
                   {form.background_image_url && <div className="absolute inset-0 bg-black/30 rounded-b-lg" />}
                   <div className="relative z-10 flex flex-col items-center gap-3">
@@ -567,13 +702,13 @@ export default function SocialLinksEditor() {
                       </Avatar>
                     )}
                     <div className="text-center">
-                      <p className={`text-sm font-bold ${THEME_MAP[form.theme]?.text || ""}`}>
+                      <p className={`font-bold ${THEME_MAP[form.theme]?.text || ""} ${extra.font_size === "sm" ? "text-xs" : extra.font_size === "lg" ? "text-base" : extra.font_size === "xl" ? "text-lg" : "text-sm"}`}>
                         {form.page_title || displayName || "Your Name"}
                       </p>
                       <p className={`text-[10px] opacity-70 ${THEME_MAP[form.theme]?.text || ""}`}>
                         @{profile?.username || "username"}
                       </p>
-                      {form.bio && <p className={`text-[10px] opacity-80 mt-1 ${THEME_MAP[form.theme]?.text || ""}`}>{form.bio}</p>}
+                      {extra.show_bio && form.bio && <p className={`text-[10px] opacity-80 mt-1 ${THEME_MAP[form.theme]?.text || ""}`}>{form.bio}</p>}
                     </div>
 
                     {form.show_social_icons && socialLinks.length > 0 && (
@@ -587,10 +722,9 @@ export default function SocialLinksEditor() {
 
                     <div className="w-full space-y-2 mt-3">
                       {items.filter(i => i.is_active !== false).map(item => {
-                        const btnRadius = BUTTON_STYLES.find(s => s.id === form.button_style)?.id || "rounded";
-                        const radiusClass = btnRadius === "rounded" ? "rounded-xl" : btnRadius === "pill" ? "rounded-full" : btnRadius === "square" ? "rounded-lg" : btnRadius === "sharp" ? "rounded-none" : "rounded-xl border-2";
+                        const btnRadius = form.button_style === "rounded" ? "rounded-xl" : form.button_style === "pill" ? "rounded-full" : form.button_style === "square" ? "rounded-lg" : form.button_style === "sharp" ? "rounded-none" : "rounded-xl border-2";
                         return (
-                          <div key={item.id} className={`flex items-center gap-2 px-3 py-2.5 border ${radiusClass} ${THEME_MAP[form.theme]?.card || ""}`}
+                          <div key={item.id} className={`flex items-center gap-2 px-3 py-2.5 border ${btnRadius} ${THEME_MAP[form.theme]?.card || ""}`}
                             style={form.button_color !== "#000000" ? { backgroundColor: form.button_color, color: form.text_color } : undefined}
                           >
                             {item.icon && <span className="text-sm">{item.icon}</span>}
@@ -605,8 +739,6 @@ export default function SocialLinksEditor() {
                         </div>
                       )}
                     </div>
-
-                    <p className="text-[8px] opacity-30 mt-4 uppercase tracking-widest">Altoha</p>
                   </div>
                 </div>
               </CardContent>
