@@ -11,7 +11,7 @@ import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { toast } from "@/hooks/use-toast";
-import { Star, MessageSquare, Send, PenLine, Shield, TrendingUp } from "lucide-react";
+import { Star, MessageSquare, Send, PenLine, Shield, ThumbsUp, Image as ImageIcon, X } from "lucide-react";
 import { format } from "date-fns";
 
 interface Props {
@@ -39,6 +39,55 @@ function StarRating({ rating, onRate, size = "md" }: { rating: number; onRate?: 
   );
 }
 
+function HelpfulButton({ reviewId, helpfulCount, isAr }: { reviewId: string; helpfulCount: number; isAr: boolean }) {
+  const { user } = useAuth();
+  const queryClient = useQueryClient();
+
+  const { data: myVote } = useQuery({
+    queryKey: ["review-vote", reviewId, user?.id],
+    queryFn: async () => {
+      if (!user) return null;
+      const { data } = await supabase
+        .from("exhibition_review_votes")
+        .select("id")
+        .eq("review_id", reviewId)
+        .eq("user_id", user.id)
+        .maybeSingle();
+      return data;
+    },
+    enabled: !!user,
+  });
+
+  const toggleVote = useMutation({
+    mutationFn: async () => {
+      if (!user) throw new Error("Not authenticated");
+      if (myVote) {
+        await supabase.from("exhibition_review_votes").delete().eq("id", myVote.id);
+      } else {
+        await supabase.from("exhibition_review_votes").insert({ review_id: reviewId, user_id: user.id });
+      }
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["review-vote", reviewId] });
+      queryClient.invalidateQueries({ queryKey: ["exhibition-reviews"] });
+    },
+  });
+
+  return (
+    <button
+      onClick={() => user && toggleVote.mutate()}
+      disabled={!user || toggleVote.isPending}
+      className={`inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-[10px] font-medium transition-all ${
+        myVote ? "bg-primary/10 text-primary" : "bg-muted/60 text-muted-foreground hover:bg-muted"
+      }`}
+    >
+      <ThumbsUp className={`h-3 w-3 ${myVote ? "fill-primary" : ""}`} />
+      {helpfulCount > 0 && <span>{helpfulCount}</span>}
+      <span>{isAr ? "مفيد" : "Helpful"}</span>
+    </button>
+  );
+}
+
 export function ExhibitionReviewsTab({ exhibitionId, hasEnded, isAr }: Props) {
   const { user } = useAuth();
   const queryClient = useQueryClient();
@@ -46,6 +95,8 @@ export function ExhibitionReviewsTab({ exhibitionId, hasEnded, isAr }: Props) {
   const [newRating, setNewRating] = useState(0);
   const [newTitle, setNewTitle] = useState("");
   const [newContent, setNewContent] = useState("");
+  const [photoUrls, setPhotoUrls] = useState<string[]>([]);
+  const [uploading, setUploading] = useState(false);
 
   const { data: reviews = [], isLoading } = useQuery({
     queryKey: ["exhibition-reviews", exhibitionId],
@@ -54,6 +105,7 @@ export function ExhibitionReviewsTab({ exhibitionId, hasEnded, isAr }: Props) {
         .from("exhibition_reviews")
         .select("*")
         .eq("exhibition_id", exhibitionId)
+        .order("helpful_count", { ascending: false })
         .order("created_at", { ascending: false });
       if (error) throw error;
       const userIds = [...new Set((data || []).map((r) => r.user_id))];
@@ -84,6 +136,28 @@ export function ExhibitionReviewsTab({ exhibitionId, hasEnded, isAr }: Props) {
     enabled: !!user,
   });
 
+  const handlePhotoUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files;
+    if (!files || !user) return;
+    setUploading(true);
+    try {
+      const urls: string[] = [];
+      for (const file of Array.from(files).slice(0, 4 - photoUrls.length)) {
+        const ext = file.name.split(".").pop();
+        const path = `reviews/${exhibitionId}/${user.id}/${Date.now()}.${ext}`;
+        const { error } = await supabase.storage.from("exhibition-files").upload(path, file);
+        if (error) throw error;
+        const { data: urlData } = supabase.storage.from("exhibition-files").getPublicUrl(path);
+        urls.push(urlData.publicUrl);
+      }
+      setPhotoUrls(prev => [...prev, ...urls]);
+    } catch {
+      toast({ title: isAr ? "خطأ في رفع الصور" : "Upload failed", variant: "destructive" });
+    } finally {
+      setUploading(false);
+    }
+  };
+
   const submitReview = useMutation({
     mutationFn: async () => {
       if (!user) throw new Error("Not authenticated");
@@ -94,17 +168,19 @@ export function ExhibitionReviewsTab({ exhibitionId, hasEnded, isAr }: Props) {
         rating: newRating,
         title: newTitle || null,
         content: newContent || null,
+        photo_urls: photoUrls.length > 0 ? photoUrls : [],
       });
       if (error) throw error;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["exhibition-reviews", exhibitionId] });
       queryClient.invalidateQueries({ queryKey: ["exhibition-my-review", exhibitionId] });
-      queryClient.invalidateQueries({ queryKey: ["exhibition-review-count"] });
+      queryClient.invalidateQueries({ queryKey: ["exhibition-feature-counts"] });
       setShowForm(false);
       setNewRating(0);
       setNewTitle("");
       setNewContent("");
+      setPhotoUrls([]);
       toast({ title: isAr ? "شكراً لتقييمك! ⭐" : "Thanks for your review! ⭐" });
     },
     onError: (e: any) => {
@@ -126,11 +202,10 @@ export function ExhibitionReviewsTab({ exhibitionId, hasEnded, isAr }: Props) {
 
   return (
     <div className="space-y-6">
-      {/* Summary card - elevated design */}
+      {/* Summary card */}
       <Card className="overflow-hidden border-border/60">
         <CardContent className="p-0">
           <div className="flex flex-col sm:flex-row">
-            {/* Left: big score */}
             <div className="flex flex-col items-center justify-center bg-gradient-to-br from-primary/5 to-transparent p-6 sm:w-44 sm:border-e border-b sm:border-b-0 border-border/40">
               <p className="text-5xl font-bold tracking-tight text-foreground">{avgRating.toFixed(1)}</p>
               <StarRating rating={Math.round(avgRating)} size="md" />
@@ -138,8 +213,6 @@ export function ExhibitionReviewsTab({ exhibitionId, hasEnded, isAr }: Props) {
                 {reviews.length} {isAr ? "تقييم" : reviews.length === 1 ? "review" : "reviews"}
               </p>
             </div>
-
-            {/* Right: distribution */}
             <div className="flex-1 p-5 space-y-2">
               {ratingDistribution.map((d) => (
                 <div key={d.stars} className="flex items-center gap-2.5">
@@ -148,10 +221,7 @@ export function ExhibitionReviewsTab({ exhibitionId, hasEnded, isAr }: Props) {
                     <Star className="h-3 w-3 text-chart-4 fill-chart-4" />
                   </div>
                   <div className="h-2.5 flex-1 rounded-full bg-muted/60 overflow-hidden">
-                    <div
-                      className="h-full rounded-full bg-gradient-to-r from-chart-4/80 to-chart-4 transition-all duration-500"
-                      style={{ width: `${d.pct}%` }}
-                    />
+                    <div className="h-full rounded-full bg-gradient-to-r from-chart-4/80 to-chart-4 transition-all duration-500" style={{ width: `${d.pct}%` }} />
                   </div>
                   <span className="w-6 text-[10px] text-muted-foreground text-end tabular-nums font-medium">{d.count}</span>
                 </div>
@@ -189,12 +259,37 @@ export function ExhibitionReviewsTab({ exhibitionId, hasEnded, isAr }: Props) {
                   <Label className="text-xs font-medium">{isAr ? "التفاصيل (اختياري)" : "Details (optional)"}</Label>
                   <Textarea value={newContent} onChange={(e) => setNewContent(e.target.value)} placeholder={isAr ? "شاركنا تجربتك..." : "Share your experience..."} rows={3} className="rounded-xl resize-none" />
                 </div>
+
+                {/* Photo upload */}
+                <div className="space-y-2">
+                  <Label className="text-xs font-medium">{isAr ? "صور (اختياري، حتى 4)" : "Photos (optional, up to 4)"}</Label>
+                  {photoUrls.length > 0 && (
+                    <div className="flex gap-2 flex-wrap">
+                      {photoUrls.map((url, i) => (
+                        <div key={i} className="relative h-16 w-16 rounded-lg overflow-hidden border border-border/50">
+                          <img src={url} alt="" className="h-full w-full object-cover" />
+                          <button onClick={() => setPhotoUrls(prev => prev.filter((_, idx) => idx !== i))} className="absolute top-0.5 end-0.5 h-4 w-4 rounded-full bg-destructive/80 flex items-center justify-center">
+                            <X className="h-2.5 w-2.5 text-destructive-foreground" />
+                          </button>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                  {photoUrls.length < 4 && (
+                    <label className="inline-flex items-center gap-1.5 cursor-pointer text-xs text-primary hover:underline">
+                      <ImageIcon className="h-3.5 w-3.5" />
+                      {uploading ? (isAr ? "جاري الرفع..." : "Uploading...") : (isAr ? "إضافة صور" : "Add Photos")}
+                      <input type="file" accept="image/*" multiple className="hidden" onChange={handlePhotoUpload} disabled={uploading} />
+                    </label>
+                  )}
+                </div>
+
                 <div className="flex gap-2">
                   <Button className="shadow-md shadow-primary/10" onClick={() => submitReview.mutate()} disabled={newRating === 0 || submitReview.isPending}>
                     <Send className="me-2 h-3.5 w-3.5" />
                     {submitReview.isPending ? (isAr ? "جاري الإرسال..." : "Submitting...") : (isAr ? "إرسال التقييم" : "Submit Review")}
                   </Button>
-                  <Button variant="ghost" onClick={() => { setShowForm(false); setNewRating(0); }}>
+                  <Button variant="ghost" onClick={() => { setShowForm(false); setNewRating(0); setPhotoUrls([]); }}>
                     {isAr ? "إلغاء" : "Cancel"}
                   </Button>
                 </div>
@@ -235,7 +330,22 @@ export function ExhibitionReviewsTab({ exhibitionId, hasEnded, isAr }: Props) {
                   {review.content && (
                     <p className="mt-1 text-xs text-muted-foreground leading-relaxed whitespace-pre-wrap break-words">{review.content}</p>
                   )}
-                  <p className="mt-2.5 text-[10px] text-muted-foreground/60 font-medium">{format(new Date(review.created_at), "MMM d, yyyy")}</p>
+
+                  {/* Review photos */}
+                  {review.photo_urls && review.photo_urls.length > 0 && (
+                    <div className="mt-3 flex gap-2 flex-wrap">
+                      {review.photo_urls.map((url: string, i: number) => (
+                        <a key={i} href={url} target="_blank" rel="noopener noreferrer" className="h-20 w-20 rounded-lg overflow-hidden border border-border/40 hover:opacity-80 transition-opacity">
+                          <img src={url} alt="" className="h-full w-full object-cover" loading="lazy" />
+                        </a>
+                      ))}
+                    </div>
+                  )}
+
+                  <div className="mt-3 flex items-center gap-3">
+                    <HelpfulButton reviewId={review.id} helpfulCount={review.helpful_count || 0} isAr={isAr} />
+                    <span className="text-[10px] text-muted-foreground/60 font-medium">{format(new Date(review.created_at), "MMM d, yyyy")}</span>
+                  </div>
                 </div>
               </div>
             </CardContent>

@@ -8604,6 +8604,38 @@ export type Database = {
           },
         ]
       }
+      exhibition_review_votes: {
+        Row: {
+          created_at: string
+          id: string
+          review_id: string
+          user_id: string
+          vote_type: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          review_id: string
+          user_id: string
+          vote_type?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          review_id?: string
+          user_id?: string
+          vote_type?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "exhibition_review_votes_review_id_fkey"
+            columns: ["review_id"]
+            isOneToOne: false
+            referencedRelation: "exhibition_reviews"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       exhibition_reviews: {
         Row: {
           content: string | null
@@ -8614,7 +8646,9 @@ export type Database = {
           id: string
           is_published: boolean | null
           is_verified_attendee: boolean | null
+          photo_urls: string[] | null
           rating: number
+          reviewer_type: string | null
           title: string | null
           title_ar: string | null
           updated_at: string
@@ -8629,7 +8663,9 @@ export type Database = {
           id?: string
           is_published?: boolean | null
           is_verified_attendee?: boolean | null
+          photo_urls?: string[] | null
           rating: number
+          reviewer_type?: string | null
           title?: string | null
           title_ar?: string | null
           updated_at?: string
@@ -8644,7 +8680,9 @@ export type Database = {
           id?: string
           is_published?: boolean | null
           is_verified_attendee?: boolean | null
+          photo_urls?: string[] | null
           rating?: number
+          reviewer_type?: string | null
           title?: string | null
           title_ar?: string | null
           updated_at?: string
@@ -8667,7 +8705,9 @@ export type Database = {
           attendee_name_ar: string | null
           attendee_phone: string | null
           booking_date: string
+          check_in_notes: string | null
           checked_in_at: string | null
+          checked_in_by: string | null
           created_at: string
           exhibition_id: string
           id: string
@@ -8685,7 +8725,9 @@ export type Database = {
           attendee_name_ar?: string | null
           attendee_phone?: string | null
           booking_date?: string
+          check_in_notes?: string | null
           checked_in_at?: string | null
+          checked_in_by?: string | null
           created_at?: string
           exhibition_id: string
           id?: string
@@ -8703,7 +8745,9 @@ export type Database = {
           attendee_name_ar?: string | null
           attendee_phone?: string | null
           booking_date?: string
+          check_in_notes?: string | null
           checked_in_at?: string | null
+          checked_in_by?: string | null
           created_at?: string
           exhibition_id?: string
           id?: string
