@@ -9,6 +9,7 @@ import { CompanySponsorshipPanelEnhanced } from "@/components/admin/CompanySpons
 import { AdminSupplierControls } from "@/components/admin/AdminSupplierControls";
 import { AdminReviewsModeration } from "@/components/admin/AdminReviewsModeration";
 import { CompanyEditPanel } from "@/components/admin/CompanyEditPanel";
+import { CompanySupplierScorecard } from "@/components/admin/CompanySupplierScorecard";
 import { useAllCountries } from "@/hooks/useCountries";
 import { countryFlag } from "@/lib/countryFlag";
 import { Button } from "@/components/ui/button";
@@ -757,6 +758,7 @@ export default function CompaniesAdmin() {
             <TabsTrigger value="media">{isAr ? "الوسائط" : "Media"}</TabsTrigger>
             <TabsTrigger value="roles">{isAr ? "التصنيفات" : "Classifications"}</TabsTrigger>
             <TabsTrigger value="sponsorship">{isAr ? "الرعاية" : "Sponsorship"}</TabsTrigger>
+            <TabsTrigger value="scorecard">{isAr ? "بطاقة الأداء" : "Scorecard"}</TabsTrigger>
           </TabsList>
 
           {/* ── Overview Tab ── */}
@@ -1495,6 +1497,11 @@ export default function CompaniesAdmin() {
           {/* ── Sponsorship Tab ── */}
           <TabsContent value="sponsorship" className="space-y-4">
             <CompanySponsorshipPanelEnhanced companyId={selectedCompany} />
+          </TabsContent>
+
+          {/* ── Scorecard Tab ── */}
+          <TabsContent value="scorecard" className="space-y-4">
+            <CompanySupplierScorecard />
           </TabsContent>
         </Tabs>
       </div>

@@ -3175,6 +3175,7 @@ export type Database = {
           national_address_ar: string | null
           neighborhood: string | null
           neighborhood_ar: string | null
+          on_time_delivery_rate: number | null
           operating_countries: string[] | null
           payment_terms: number | null
           phone: string | null
@@ -3182,15 +3183,18 @@ export type Database = {
           postal_code: string | null
           rating: number | null
           registration_number: string | null
+          response_time_hours: number | null
           social_links: Json | null
           specializations: string[] | null
           status: Database["public"]["Enums"]["company_status"] | null
           street: string | null
           street_ar: string | null
           supplier_category: string | null
+          supplier_score: number | null
           tagline: string | null
           tagline_ar: string | null
           tax_number: string | null
+          total_orders: number | null
           total_reviews: number | null
           type: Database["public"]["Enums"]["company_type"]
           updated_at: string | null
@@ -3234,6 +3238,7 @@ export type Database = {
           national_address_ar?: string | null
           neighborhood?: string | null
           neighborhood_ar?: string | null
+          on_time_delivery_rate?: number | null
           operating_countries?: string[] | null
           payment_terms?: number | null
           phone?: string | null
@@ -3241,15 +3246,18 @@ export type Database = {
           postal_code?: string | null
           rating?: number | null
           registration_number?: string | null
+          response_time_hours?: number | null
           social_links?: Json | null
           specializations?: string[] | null
           status?: Database["public"]["Enums"]["company_status"] | null
           street?: string | null
           street_ar?: string | null
           supplier_category?: string | null
+          supplier_score?: number | null
           tagline?: string | null
           tagline_ar?: string | null
           tax_number?: string | null
+          total_orders?: number | null
           total_reviews?: number | null
           type: Database["public"]["Enums"]["company_type"]
           updated_at?: string | null
@@ -3293,6 +3301,7 @@ export type Database = {
           national_address_ar?: string | null
           neighborhood?: string | null
           neighborhood_ar?: string | null
+          on_time_delivery_rate?: number | null
           operating_countries?: string[] | null
           payment_terms?: number | null
           phone?: string | null
@@ -3300,15 +3309,18 @@ export type Database = {
           postal_code?: string | null
           rating?: number | null
           registration_number?: string | null
+          response_time_hours?: number | null
           social_links?: Json | null
           specializations?: string[] | null
           status?: Database["public"]["Enums"]["company_status"] | null
           street?: string | null
           street_ar?: string | null
           supplier_category?: string | null
+          supplier_score?: number | null
           tagline?: string | null
           tagline_ar?: string | null
           tax_number?: string | null
+          total_orders?: number | null
           total_reviews?: number | null
           type?: Database["public"]["Enums"]["company_type"]
           updated_at?: string | null
@@ -8358,6 +8370,109 @@ export type Database = {
           },
         ]
       }
+      exhibition_auction_bids: {
+        Row: {
+          amount: number
+          auction_id: string
+          created_at: string
+          id: string
+          user_id: string
+        }
+        Insert: {
+          amount: number
+          auction_id: string
+          created_at?: string
+          id?: string
+          user_id: string
+        }
+        Update: {
+          amount?: number
+          auction_id?: string
+          created_at?: string
+          id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "exhibition_auction_bids_auction_id_fkey"
+            columns: ["auction_id"]
+            isOneToOne: false
+            referencedRelation: "exhibition_auctions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      exhibition_auctions: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          currency: string | null
+          current_price: number
+          description: string | null
+          description_ar: string | null
+          ends_at: string
+          exhibition_id: string
+          id: string
+          image_url: string | null
+          min_increment: number
+          starting_price: number
+          starts_at: string
+          status: string
+          title: string
+          title_ar: string | null
+          updated_at: string
+          winner_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          currency?: string | null
+          current_price?: number
+          description?: string | null
+          description_ar?: string | null
+          ends_at: string
+          exhibition_id: string
+          id?: string
+          image_url?: string | null
+          min_increment?: number
+          starting_price?: number
+          starts_at: string
+          status?: string
+          title: string
+          title_ar?: string | null
+          updated_at?: string
+          winner_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          currency?: string | null
+          current_price?: number
+          description?: string | null
+          description_ar?: string | null
+          ends_at?: string
+          exhibition_id?: string
+          id?: string
+          image_url?: string | null
+          min_increment?: number
+          starting_price?: number
+          starts_at?: string
+          status?: string
+          title?: string
+          title_ar?: string | null
+          updated_at?: string
+          winner_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "exhibition_auctions_exhibition_id_fkey"
+            columns: ["exhibition_id"]
+            isOneToOne: false
+            referencedRelation: "exhibitions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       exhibition_booth_requests: {
         Row: {
           admin_notes: string | null
@@ -8893,6 +9008,75 @@ export type Database = {
           },
         ]
       }
+      exhibition_map_waypoints: {
+        Row: {
+          booth_id: string | null
+          created_at: string
+          description: string | null
+          description_ar: string | null
+          exhibition_id: string
+          floor_number: number | null
+          icon: string | null
+          id: string
+          is_accessible: boolean | null
+          name: string
+          name_ar: string | null
+          sort_order: number | null
+          waypoint_type: string
+          x_position: number
+          y_position: number
+        }
+        Insert: {
+          booth_id?: string | null
+          created_at?: string
+          description?: string | null
+          description_ar?: string | null
+          exhibition_id: string
+          floor_number?: number | null
+          icon?: string | null
+          id?: string
+          is_accessible?: boolean | null
+          name: string
+          name_ar?: string | null
+          sort_order?: number | null
+          waypoint_type?: string
+          x_position?: number
+          y_position?: number
+        }
+        Update: {
+          booth_id?: string | null
+          created_at?: string
+          description?: string | null
+          description_ar?: string | null
+          exhibition_id?: string
+          floor_number?: number | null
+          icon?: string | null
+          id?: string
+          is_accessible?: boolean | null
+          name?: string
+          name_ar?: string | null
+          sort_order?: number | null
+          waypoint_type?: string
+          x_position?: number
+          y_position?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "exhibition_map_waypoints_booth_id_fkey"
+            columns: ["booth_id"]
+            isOneToOne: false
+            referencedRelation: "exhibition_booths"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "exhibition_map_waypoints_exhibition_id_fkey"
+            columns: ["exhibition_id"]
+            isOneToOne: false
+            referencedRelation: "exhibitions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       exhibition_media: {
         Row: {
           category: string
@@ -8933,6 +9117,87 @@ export type Database = {
         Relationships: [
           {
             foreignKeyName: "exhibition_media_exhibition_id_fkey"
+            columns: ["exhibition_id"]
+            isOneToOne: false
+            referencedRelation: "exhibitions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      exhibition_offers: {
+        Row: {
+          booth_id: string | null
+          created_at: string
+          created_by: string | null
+          currency: string | null
+          description: string | null
+          description_ar: string | null
+          discount_percent: number | null
+          ends_at: string
+          exhibition_id: string
+          id: string
+          image_url: string | null
+          is_active: boolean | null
+          offer_price: number
+          original_price: number | null
+          quantity_available: number | null
+          quantity_claimed: number | null
+          starts_at: string
+          title: string
+          title_ar: string | null
+        }
+        Insert: {
+          booth_id?: string | null
+          created_at?: string
+          created_by?: string | null
+          currency?: string | null
+          description?: string | null
+          description_ar?: string | null
+          discount_percent?: number | null
+          ends_at: string
+          exhibition_id: string
+          id?: string
+          image_url?: string | null
+          is_active?: boolean | null
+          offer_price: number
+          original_price?: number | null
+          quantity_available?: number | null
+          quantity_claimed?: number | null
+          starts_at?: string
+          title: string
+          title_ar?: string | null
+        }
+        Update: {
+          booth_id?: string | null
+          created_at?: string
+          created_by?: string | null
+          currency?: string | null
+          description?: string | null
+          description_ar?: string | null
+          discount_percent?: number | null
+          ends_at?: string
+          exhibition_id?: string
+          id?: string
+          image_url?: string | null
+          is_active?: boolean | null
+          offer_price?: number
+          original_price?: number | null
+          quantity_available?: number | null
+          quantity_claimed?: number | null
+          starts_at?: string
+          title?: string
+          title_ar?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "exhibition_offers_booth_id_fkey"
+            columns: ["booth_id"]
+            isOneToOne: false
+            referencedRelation: "exhibition_booths"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "exhibition_offers_exhibition_id_fkey"
             columns: ["exhibition_id"]
             isOneToOne: false
             referencedRelation: "exhibitions"
