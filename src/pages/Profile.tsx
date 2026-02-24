@@ -10,7 +10,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { SEOHead } from "@/components/SEOHead";
-import { User, Edit, Shield, Crown, BarChart3, Wallet, FileText, Gift, Trophy, ShoppingBag, ExternalLink } from "lucide-react";
+import { User, Edit, Shield, Crown, BarChart3, Wallet, FileText, Gift, Trophy, ShoppingBag, ExternalLink, Link2 } from "lucide-react";
 import type { Database } from "@/integrations/supabase/types";
 import { useQuery } from "@tanstack/react-query";
 import { format } from "date-fns";
@@ -107,6 +107,7 @@ export default function Profile() {
     { id: "referrals", label: isAr ? "الإحالات" : "Referrals", icon: Gift, description: isAr ? "دعوة الأصدقاء" : "Invite friends" },
     { id: "invoices", label: isAr ? "الفواتير" : "Invoices", icon: FileText, description: isAr ? "سجل الدفعات" : "Payment history" },
     { id: "analytics", label: isAr ? "الإحصائيات" : "Analytics", icon: BarChart3, description: isAr ? "أداء الملف" : "Profile insights" },
+    { id: "social-links", label: isAr ? "صفحة الروابط" : "Social Links", icon: Link2, description: isAr ? "إدارة روابطك" : "Manage your links", href: "/social-links" },
     { id: "edit", label: isAr ? "تعديل" : "Edit", icon: Edit, description: isAr ? "تحديث البيانات" : "Update info" },
     { id: "privacy", label: isAr ? "الخصوصية" : "Privacy", icon: Shield, description: isAr ? "إعدادات الأمان" : "Security settings" },
   ];
@@ -125,16 +126,32 @@ export default function Profile() {
         <Tabs value={activeTab} onValueChange={setActiveTab} className="mt-8">
           <div className="sticky top-12 z-30 -mx-4 border-y border-border/30 bg-background/90 px-4 py-2 backdrop-blur-xl md:rounded-2xl md:border md:mx-0 md:px-4 shadow-sm">
             <TabsList className="h-auto w-full justify-start gap-1 overflow-x-auto bg-transparent p-0 no-scrollbar snap-x snap-mandatory">
-              {tabs.map((tab) => (
-                <TabsTrigger
-                  key={tab.id}
-                  value={tab.id}
-                  className="group relative flex items-center gap-2 rounded-xl px-3 py-2 text-xs font-semibold transition-all duration-200 snap-start min-w-max data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-md data-[state=active]:shadow-primary/20 hover:bg-muted/60"
-                >
-                  <tab.icon className="h-3.5 w-3.5 shrink-0" />
-                  <span>{tab.label}</span>
-                </TabsTrigger>
-              ))}
+              {tabs.map((tab) => {
+                const TabTag = (tab as any).href ? "a" : TabsTrigger;
+                if ((tab as any).href) {
+                  return (
+                    <Link
+                      key={tab.id}
+                      to={(tab as any).href}
+                      className="group relative flex items-center gap-2 rounded-xl px-3 py-2 text-xs font-semibold transition-all duration-200 snap-start min-w-max hover:bg-muted/60 text-muted-foreground"
+                    >
+                      <tab.icon className="h-3.5 w-3.5 shrink-0" />
+                      <span>{tab.label}</span>
+                      <ExternalLink className="h-3 w-3 opacity-50" />
+                    </Link>
+                  );
+                }
+                return (
+                  <TabsTrigger
+                    key={tab.id}
+                    value={tab.id}
+                    className="group relative flex items-center gap-2 rounded-xl px-3 py-2 text-xs font-semibold transition-all duration-200 snap-start min-w-max data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-md data-[state=active]:shadow-primary/20 hover:bg-muted/60"
+                  >
+                    <tab.icon className="h-3.5 w-3.5 shrink-0" />
+                    <span>{tab.label}</span>
+                  </TabsTrigger>
+                );
+              })}
             </TabsList>
           </div>
 
