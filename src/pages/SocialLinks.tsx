@@ -63,15 +63,15 @@ function t(key: string, lang: LangCode): string {
   return T[key]?.[lang] || T[key]?.en || key;
 }
 
-const SOCIAL_ICONS: Record<string, { icon: typeof Instagram; label: string; urlPrefix?: string; hoverBg: string }> = {
-  instagram: { icon: Instagram, label: "Instagram", urlPrefix: "https://instagram.com/", hoverBg: "rgba(225,48,108,0.2)" },
-  twitter: { icon: Twitter, label: "X / Twitter", urlPrefix: "https://x.com/", hoverBg: "rgba(29,155,240,0.2)" },
-  facebook: { icon: Facebook, label: "Facebook", urlPrefix: "https://facebook.com/", hoverBg: "rgba(24,119,242,0.2)" },
-  linkedin: { icon: Linkedin, label: "LinkedIn", urlPrefix: "https://linkedin.com/in/", hoverBg: "rgba(10,102,194,0.2)" },
-  youtube: { icon: Youtube, label: "YouTube", urlPrefix: "https://youtube.com/@", hoverBg: "rgba(255,0,0,0.2)" },
-  tiktok: { icon: Globe, label: "TikTok", urlPrefix: "https://tiktok.com/@", hoverBg: "rgba(255,255,255,0.1)" },
-  snapchat: { icon: Globe, label: "Snapchat", urlPrefix: "https://snapchat.com/add/", hoverBg: "rgba(255,252,0,0.15)" },
-  website: { icon: Globe, label: "Website", hoverBg: "rgba(16,185,129,0.2)" },
+const SOCIAL_ICONS: Record<string, { icon: typeof Instagram; label: string; urlPrefix?: string; hoverColor: string }> = {
+  instagram: { icon: Instagram, label: "Instagram", urlPrefix: "https://instagram.com/", hoverColor: "#E1306C" },
+  twitter: { icon: Twitter, label: "X / Twitter", urlPrefix: "https://x.com/", hoverColor: "#1DA1F2" },
+  facebook: { icon: Facebook, label: "Facebook", urlPrefix: "https://facebook.com/", hoverColor: "#1877F2" },
+  linkedin: { icon: Linkedin, label: "LinkedIn", urlPrefix: "https://linkedin.com/in/", hoverColor: "#0A66C2" },
+  youtube: { icon: Youtube, label: "YouTube", urlPrefix: "https://youtube.com/@", hoverColor: "#FF0000" },
+  tiktok: { icon: Globe, label: "TikTok", urlPrefix: "https://tiktok.com/@", hoverColor: "#ffffff" },
+  snapchat: { icon: Globe, label: "Snapchat", urlPrefix: "https://snapchat.com/add/", hoverColor: "#FFFC00" },
+  website: { icon: Globe, label: "Website", hoverColor: "#10B981" },
 };
 
 const BUTTON_STYLES: Record<string, string> = {
@@ -98,6 +98,31 @@ const FONT_SIZE_MAP: Record<string, { name: string; bio: string; meta: string; l
   md: { name: "text-2xl sm:text-3xl", bio: "text-sm", meta: "text-xs", link: "text-sm" },
   lg: { name: "text-3xl sm:text-4xl", bio: "text-base", meta: "text-sm", link: "text-base" },
   xl: { name: "text-4xl sm:text-5xl", bio: "text-lg", meta: "text-base", link: "text-lg" },
+};
+
+// ── Theme system ──
+interface ThemeColors {
+  bg: string;
+  card: string;
+  text: string;
+  textMuted: string;
+  accent: string;
+  accentLight: string;
+  accentMedium: string;
+  border: string;
+  btnBg: string;
+  btnHover: string;
+}
+
+const THEME_COLORS: Record<string, ThemeColors> = {
+  default: { bg: "linear-gradient(180deg, #0a0a12 0%, #0d0d18 50%, #0a0a12 100%)", card: "rgba(255,255,255,0.04)", text: "#f5f5f5", textMuted: "rgba(255,255,255,0.4)", accent: "#c4a265", accentLight: "rgba(196,162,101,0.12)", accentMedium: "rgba(196,162,101,0.25)", border: "rgba(255,255,255,0.08)", btnBg: "rgba(255,255,255,0.05)", btnHover: "rgba(255,255,255,0.08)" },
+  dark: { bg: "linear-gradient(180deg, #0a0a0a 0%, #111111 50%, #0a0a0a 100%)", card: "rgba(255,255,255,0.03)", text: "#ffffff", textMuted: "rgba(255,255,255,0.35)", accent: "#818cf8", accentLight: "rgba(129,140,248,0.12)", accentMedium: "rgba(129,140,248,0.25)", border: "rgba(255,255,255,0.06)", btnBg: "rgba(255,255,255,0.04)", btnHover: "rgba(255,255,255,0.07)" },
+  ocean: { bg: "linear-gradient(180deg, #0a1628 0%, #0c1e3a 50%, #0a1628 100%)", card: "rgba(255,255,255,0.05)", text: "#e0f0ff", textMuted: "rgba(224,240,255,0.4)", accent: "#38bdf8", accentLight: "rgba(56,189,248,0.12)", accentMedium: "rgba(56,189,248,0.25)", border: "rgba(56,189,248,0.1)", btnBg: "rgba(56,189,248,0.06)", btnHover: "rgba(56,189,248,0.12)" },
+  sunset: { bg: "linear-gradient(180deg, #1a0a1e 0%, #2d1030 50%, #1a0a1e 100%)", card: "rgba(255,255,255,0.05)", text: "#ffe8f0", textMuted: "rgba(255,232,240,0.4)", accent: "#f472b6", accentLight: "rgba(244,114,182,0.12)", accentMedium: "rgba(244,114,182,0.25)", border: "rgba(244,114,182,0.1)", btnBg: "rgba(244,114,182,0.06)", btnHover: "rgba(244,114,182,0.12)" },
+  forest: { bg: "linear-gradient(180deg, #0a1a0e 0%, #0e2a14 50%, #0a1a0e 100%)", card: "rgba(255,255,255,0.05)", text: "#e0ffe8", textMuted: "rgba(224,255,232,0.4)", accent: "#34d399", accentLight: "rgba(52,211,153,0.12)", accentMedium: "rgba(52,211,153,0.25)", border: "rgba(52,211,153,0.1)", btnBg: "rgba(52,211,153,0.06)", btnHover: "rgba(52,211,153,0.12)" },
+  minimal: { bg: "linear-gradient(180deg, #ffffff 0%, #f8f9fa 50%, #ffffff 100%)", card: "rgba(0,0,0,0.03)", text: "#1a1a1a", textMuted: "rgba(0,0,0,0.45)", accent: "#3b82f6", accentLight: "rgba(59,130,246,0.1)", accentMedium: "rgba(59,130,246,0.2)", border: "rgba(0,0,0,0.08)", btnBg: "rgba(0,0,0,0.04)", btnHover: "rgba(0,0,0,0.07)" },
+  candy: { bg: "linear-gradient(135deg, #ec4899 0%, #8b5cf6 50%, #6366f1 100%)", card: "rgba(255,255,255,0.15)", text: "#ffffff", textMuted: "rgba(255,255,255,0.7)", accent: "#fbbf24", accentLight: "rgba(251,191,36,0.2)", accentMedium: "rgba(251,191,36,0.35)", border: "rgba(255,255,255,0.2)", btnBg: "rgba(255,255,255,0.12)", btnHover: "rgba(255,255,255,0.2)" },
+  gold: { bg: "linear-gradient(180deg, #1a1408 0%, #2a1f0e 50%, #1a1408 100%)", card: "rgba(196,162,101,0.06)", text: "#fef3c7", textMuted: "rgba(254,243,199,0.45)", accent: "#c4a265", accentLight: "rgba(196,162,101,0.15)", accentMedium: "rgba(196,162,101,0.3)", border: "rgba(196,162,101,0.12)", btnBg: "rgba(196,162,101,0.08)", btnHover: "rgba(196,162,101,0.15)" },
 };
 
 interface ExtraSettings {
@@ -164,11 +189,21 @@ const AnimatedNumber = memo(function AnimatedNumber({ value, duration = 1200 }: 
   return <>{display.toLocaleString()}</>;
 });
 
-// ── Compact number formatter ──
 function formatCompact(n: number): string {
   if (n >= 1_000_000) return (n / 1_000_000).toFixed(1).replace(/\.0$/, "") + "M";
   if (n >= 1_000) return (n / 1_000).toFixed(1).replace(/\.0$/, "") + "K";
   return n.toString();
+}
+
+// ── Divider component ──
+function SectionDivider({ color }: { color: string }) {
+  return (
+    <div className="flex items-center justify-center gap-3 my-5">
+      <div className="h-px flex-1 max-w-[60px]" style={{ background: `linear-gradient(to right, transparent, ${color})` }} />
+      <div className="h-1 w-1 rounded-full" style={{ background: color }} />
+      <div className="h-px flex-1 max-w-[60px]" style={{ background: `linear-gradient(to left, transparent, ${color})` }} />
+    </div>
+  );
 }
 
 export default function SocialLinks() {
@@ -181,7 +216,6 @@ export default function SocialLinks() {
   const [copied, setCopied] = useState(false);
   const [animated, setAnimated] = useState(false);
 
-  // Language from URL param or app language
   const langParam = searchParams.get("lang") as LangCode | null;
   const lang: LangCode = SUPPORTED_LANGUAGES.find(l => l.code === langParam)?.code || (appLanguage === "ar" ? "ar" : "en");
   const isRtl = SUPPORTED_LANGUAGES.find(l => l.code === lang)?.dir === "rtl";
@@ -198,13 +232,10 @@ export default function SocialLinks() {
   const profileUserId = data?.profile?.user_id;
   const isOwner = !!(user && profileUserId && user.id === profileUserId);
 
-  // Follow hooks
   const { data: followStats } = useFollowStats(profileUserId || undefined);
   const { data: isFollowing } = useIsFollowing(profileUserId || undefined);
   const { data: pendingRequest } = usePendingFollowRequest(profileUserId || undefined);
   const toggleFollow = useToggleFollow(profileUserId || undefined);
-
-  // Countries for flag resolution
   const { data: countries } = useCountries();
 
   useEffect(() => {
@@ -226,12 +257,8 @@ export default function SocialLinks() {
 
   const shareNative = useCallback(async () => {
     if (navigator.share) {
-      try {
-        await navigator.share({ title: `${username} - Altoha`, url: buildSocialLinksUrl(username) });
-      } catch {}
-    } else {
-      copyLink();
-    }
+      try { await navigator.share({ title: `${username} - Altoha`, url: buildSocialLinksUrl(username) }); } catch {}
+    } else { copyLink(); }
   }, [username, copyLink]);
 
   const handleFollow = useCallback(() => {
@@ -252,7 +279,6 @@ export default function SocialLinks() {
     return `https://fonts.googleapis.com/css2?family=${encodeURIComponent(name)}:wght@400;600;700&display=swap`;
   }, [data?.page?.font_family]);
 
-  // Resolve country name from code
   const getCountryName = useCallback((code: string | null | undefined): string => {
     if (!code || !countries) return "";
     const c = countries.find(c => c.code === code);
@@ -286,9 +312,7 @@ export default function SocialLinks() {
         </div>
         <div className="text-center">
           <h1 className="text-xl font-bold" style={{ color: "#ffffff" }}>{t("notFound", lang)}</h1>
-          <p className="mt-2 text-sm max-w-xs" style={{ color: "rgba(255,255,255,0.35)" }}>
-            {t("notFoundDesc", lang)}
-          </p>
+          <p className="mt-2 text-sm max-w-xs" style={{ color: "rgba(255,255,255,0.35)" }}>{t("notFoundDesc", lang)}</p>
         </div>
         <Button asChild variant="outline" size="sm" className="mt-2" style={{ borderColor: "rgba(255,255,255,0.12)", color: "#ffffff", background: "rgba(255,255,255,0.04)" }}>
           <Link to="/"><ArrowLeft className="me-1.5 h-3.5 w-3.5" />{t("goHome", lang)}</Link>
@@ -298,6 +322,8 @@ export default function SocialLinks() {
   }
 
   const { profile, page, items } = data;
+  const themeId = page?.theme || "default";
+  const theme = THEME_COLORS[themeId] || THEME_COLORS.default;
   const btnStyle = BUTTON_STYLES[page?.button_style || "rounded"] || BUTTON_STYLES.rounded;
   const extra = parseExtra(page?.custom_css);
   const fontSize = FONT_SIZE_MAP[extra.font_size] || FONT_SIZE_MAP.md;
@@ -352,14 +378,8 @@ export default function SocialLinks() {
   const viewCount = (profile as any).view_count || 0;
   const hasCover = !!coverImage;
 
-  const accentColor = "#c4a265";
-  const accentLight = "rgba(196,162,101,0.12)";
-  const accentMedium = "rgba(196,162,101,0.25)";
-
   const followersCount = followStats?.followers || 0;
-  const followingCount = followStats?.following || 0;
 
-  // Compute layout classes from extra settings
   const textAlignClass = extra.text_align === "start" ? "text-start" : extra.text_align === "end" ? "text-end" : "text-center";
   const justifyClass = extra.text_align === "start" ? "justify-start" : extra.text_align === "end" ? "justify-end" : "justify-center";
   const contentDir = extra.text_direction === "auto" ? dir : extra.text_direction;
@@ -367,40 +387,29 @@ export default function SocialLinks() {
   const hasSocialIcons = socialPlatforms.length > 0 || whatsapp || phone;
   const hasStats = yearsExp || (extra.show_views && viewCount > 0);
 
+  const isLight = themeId === "minimal";
+
   return (
     <div
       className="flex min-h-screen flex-col items-center"
       dir={contentDir}
-      style={{
-        background: "linear-gradient(180deg, #0a0a12 0%, #0d0d18 50%, #0a0a12 100%)",
-        fontFamily,
-        color: "#f5f5f5",
-      }}
+      style={{ background: theme.bg, fontFamily, color: theme.text }}
     >
       {googleFontLink && <link rel="stylesheet" href={googleFontLink} />}
-      <SEOHead
-        title={`${title} - Altoha`}
-        description={bio || `${displayName}'s links on Altoha`}
-      />
+      <SEOHead title={`${title} - Altoha`} description={bio || `${displayName}'s links on Altoha`} />
 
       {/* Cover / Hero */}
-      <div className="relative w-full" style={{ height: hasCover ? "280px" : "180px" }}>
+      <div className="relative w-full" style={{ height: hasCover ? "280px" : "160px" }}>
         {hasCover ? (
           <>
             <img src={coverImage} alt="" className="absolute inset-0 w-full h-full object-cover" loading="eager" />
-            <div className="absolute inset-0" style={{ background: "linear-gradient(to bottom, rgba(10,10,18,0.1) 0%, rgba(10,10,18,0.5) 50%, #0a0a12 100%)" }} />
+            <div className="absolute inset-0" style={{ background: `linear-gradient(to bottom, transparent 0%, ${isLight ? "#ffffff" : "#0a0a12"} 100%)` }} />
           </>
         ) : (
           <div className="absolute inset-0" style={{
-            background: `radial-gradient(ellipse at 50% 0%, ${accentLight} 0%, transparent 60%), linear-gradient(180deg, rgba(196,162,101,0.03) 0%, transparent 100%)`
+            background: `radial-gradient(ellipse at 50% 0%, ${theme.accentLight} 0%, transparent 60%)`
           }} />
         )}
-
-        {/* Subtle pattern overlay */}
-        <div className="absolute inset-0 opacity-[0.012]" style={{
-          backgroundImage: "radial-gradient(circle at 1px 1px, white 1px, transparent 0)",
-          backgroundSize: "24px 24px"
-        }} />
 
         {/* Top Actions */}
         <div className={`absolute top-4 ${contentDir === "rtl" ? "left-4" : "right-4"} z-20 flex gap-2 transition-all duration-700 ${animated ? "opacity-100 translate-y-0" : "opacity-0 -translate-y-4"}`}>
@@ -408,7 +417,7 @@ export default function SocialLinks() {
             <Link
               to="/social-links"
               className="flex h-9 w-9 items-center justify-center rounded-full backdrop-blur-xl transition-all duration-300 hover:scale-110 active:scale-95"
-              style={{ backgroundColor: "rgba(196,162,101,0.2)", border: "1px solid rgba(196,162,101,0.35)", color: accentColor }}
+              style={{ backgroundColor: theme.accentLight, border: `1px solid ${theme.accentMedium}`, color: theme.accent }}
               title={t("editPage", lang)}
             >
               <Pencil className="h-3.5 w-3.5" />
@@ -417,7 +426,7 @@ export default function SocialLinks() {
           <button
             onClick={shareNative}
             className="flex h-9 w-9 items-center justify-center rounded-full backdrop-blur-xl transition-all duration-300 hover:scale-110 active:scale-95"
-            style={{ backgroundColor: "rgba(255,255,255,0.07)", border: "1px solid rgba(255,255,255,0.1)", color: "#fff" }}
+            style={{ backgroundColor: theme.btnBg, border: `1px solid ${theme.border}`, color: theme.text }}
           >
             {copied ? <Check className="h-3.5 w-3.5" /> : <Share2 className="h-3.5 w-3.5" />}
           </button>
@@ -429,19 +438,24 @@ export default function SocialLinks() {
             <div className="relative group">
               <button
                 className="flex h-9 w-9 items-center justify-center rounded-full backdrop-blur-xl transition-all duration-300 hover:scale-110 active:scale-95"
-                style={{ backgroundColor: "rgba(255,255,255,0.07)", border: "1px solid rgba(255,255,255,0.1)", color: "#fff" }}
+                style={{ backgroundColor: theme.btnBg, border: `1px solid ${theme.border}`, color: theme.text }}
               >
                 <Globe className="h-3.5 w-3.5" />
               </button>
-              <div className="absolute top-11 start-0 min-w-[140px] rounded-xl overflow-hidden opacity-0 pointer-events-none group-hover:opacity-100 group-hover:pointer-events-auto group-focus-within:opacity-100 group-focus-within:pointer-events-auto transition-all duration-200 z-50"
-                style={{ background: "rgba(20,20,30,0.95)", border: "1px solid rgba(255,255,255,0.1)", backdropFilter: "blur(20px)" }}
+              <div className="absolute top-11 start-0 min-w-[140px] rounded-xl overflow-hidden opacity-0 pointer-events-none group-hover:opacity-100 group-hover:pointer-events-auto group-focus-within:opacity-100 group-focus-within:pointer-events-auto transition-all duration-200 z-50 shadow-2xl"
+                style={{ background: isLight ? "rgba(255,255,255,0.95)" : "rgba(20,20,30,0.95)", border: `1px solid ${theme.border}`, backdropFilter: "blur(20px)" }}
               >
                 {SUPPORTED_LANGUAGES.map(l => (
                   <button
                     key={l.code}
                     onClick={() => setLang(l.code)}
-                    className="w-full text-start px-4 py-2 text-xs font-medium transition-colors hover:bg-white/5 flex items-center justify-between"
-                    style={{ color: lang === l.code ? accentColor : "rgba(255,255,255,0.6)" }}
+                    className="w-full text-start px-4 py-2 text-xs font-medium transition-colors flex items-center justify-between"
+                    style={{
+                      color: lang === l.code ? theme.accent : theme.textMuted,
+                      backgroundColor: lang === l.code ? theme.accentLight : "transparent",
+                    }}
+                    onMouseEnter={e => { if (lang !== l.code) (e.target as HTMLElement).style.backgroundColor = theme.btnHover; }}
+                    onMouseLeave={e => { if (lang !== l.code) (e.target as HTMLElement).style.backgroundColor = "transparent"; }}
                   >
                     <span>{l.label}</span>
                     {lang === l.code && <Check className="h-3 w-3" />}
@@ -456,13 +470,14 @@ export default function SocialLinks() {
         <div className={`absolute -bottom-14 left-1/2 -translate-x-1/2 z-20 transition-all duration-700 delay-150 ${animated ? "opacity-100 scale-100" : "opacity-0 scale-75"}`}>
           {(page?.show_avatar !== false) && (
             <div className="relative">
-              <div className="absolute -inset-1 rounded-full animate-pulse" style={{ background: `radial-gradient(circle, ${accentLight} 0%, transparent 70%)`, opacity: 0.4 }} />
-              <Avatar className="h-28 w-28 shadow-2xl relative" style={{ boxShadow: `0 0 0 3px #0a0a12, 0 0 40px ${accentLight}` }}>
+              <div className="absolute -inset-1.5 rounded-full animate-pulse" style={{ background: `radial-gradient(circle, ${theme.accentLight} 0%, transparent 70%)`, opacity: 0.5 }} />
+              <Avatar className="h-28 w-28 shadow-2xl relative" style={{ boxShadow: `0 0 0 3px ${isLight ? "#ffffff" : "#0a0a12"}, 0 0 40px ${theme.accentLight}` }}>
                 <AvatarImage src={profile.avatar_url || ""} alt={displayName} className="object-cover" />
-                <AvatarFallback className="text-2xl font-bold" style={{ background: accentLight, color: accentColor }}>{displayName?.charAt(0)}</AvatarFallback>
+                <AvatarFallback className="text-2xl font-bold" style={{ background: theme.accentLight, color: theme.accent }}>{displayName?.charAt(0)}</AvatarFallback>
               </Avatar>
               {isVerified && (
-                <div className="absolute -bottom-0.5 -end-0.5 h-7 w-7 rounded-full flex items-center justify-center shadow-lg" style={{ background: `linear-gradient(135deg, ${accentColor}, #d4b576)`, boxShadow: `0 0 0 2.5px #0a0a12, 0 4px 12px rgba(196,162,101,0.3)` }}>
+                <div className="absolute -bottom-0.5 -end-0.5 h-7 w-7 rounded-full flex items-center justify-center shadow-lg"
+                  style={{ background: `linear-gradient(135deg, ${theme.accent}, ${theme.accent}dd)`, boxShadow: `0 0 0 2.5px ${isLight ? "#ffffff" : "#0a0a12"}, 0 4px 12px ${theme.accentLight}` }}>
                   <BadgeCheck className="h-4 w-4 text-white" />
                 </div>
               )}
@@ -475,44 +490,41 @@ export default function SocialLinks() {
       <div className="relative z-10 w-full max-w-lg px-5 pt-20 pb-12">
 
         {/* Name & Meta */}
-        <div className={`${textAlignClass} mb-5 transition-all duration-700 delay-250 ${animated ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}>
-          <h1 className={`font-bold tracking-tight ${fontSize.name}`} style={{ color: "#ffffff", textShadow: "0 2px 20px rgba(0,0,0,0.3)" }}>
+        <div className={`${textAlignClass} mb-4 transition-all duration-700 delay-250 ${animated ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}>
+          <h1 className={`font-bold tracking-tight ${fontSize.name}`} style={{ color: theme.text, textShadow: isLight ? "none" : "0 2px 20px rgba(0,0,0,0.3)" }}>
             {title}
           </h1>
 
-          <p className="mt-1.5 font-medium" style={{ fontSize: "12px", color: "rgba(255,255,255,0.25)", letterSpacing: "1.5px" }}>
+          <p className="mt-1 font-medium" style={{ fontSize: "11px", color: theme.textMuted, letterSpacing: "1.5px" }}>
             @{profile.username}
           </p>
 
-          {/* Job & Specialization */}
           {extra.show_job_title && (jobTitle || specialization) && (
-            <p className={`mt-2.5 flex items-center ${justifyClass} gap-1.5 font-medium ${fontSize.meta}`} style={{ color: "rgba(255,255,255,0.45)" }}>
-              <Briefcase className="h-3 w-3" style={{ color: accentColor }} />
+            <p className={`mt-2.5 flex items-center ${justifyClass} gap-1.5 font-medium ${fontSize.meta}`} style={{ color: theme.textMuted }}>
+              <Briefcase className="h-3 w-3" style={{ color: theme.accent }} />
               {jobTitle || specialization}
             </p>
           )}
 
-          {/* Location */}
           {extra.show_location && (city || countryCode) && (
-            <p className={`mt-1 flex items-center ${justifyClass} gap-1.5 font-medium ${fontSize.meta}`} style={{ color: "rgba(255,255,255,0.4)" }}>
-              <MapPin className="h-3 w-3" style={{ color: accentColor }} />
+            <p className={`mt-1 flex items-center ${justifyClass} gap-1.5 font-medium ${fontSize.meta}`} style={{ color: theme.textMuted }}>
+              <MapPin className="h-3 w-3" style={{ color: theme.accent }} />
               {city}{city && countryCode ? ", " : ""}{countryCode && getCountryName(countryCode)} {countryCode && countryFlag(countryCode)}
             </p>
           )}
 
-          {/* Nationality Flags */}
           {extra.show_flags && showNationality && (nationalityCode || secondNationalityCode) && (
             <div className={`flex items-center ${justifyClass} flex-wrap gap-2 mt-2.5`}>
               {nationalityCode && (
                 <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-medium"
-                  style={{ background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.06)", color: "rgba(255,255,255,0.5)" }}>
+                  style={{ background: theme.card, border: `1px solid ${theme.border}`, color: theme.textMuted }}>
                   <span className="text-sm leading-none">{countryFlag(nationalityCode)}</span>
                   {getCountryName(nationalityCode)}
                 </span>
               )}
               {secondNationalityCode && secondNationalityCode !== nationalityCode && (
                 <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-medium"
-                  style={{ background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.06)", color: "rgba(255,255,255,0.5)" }}>
+                  style={{ background: theme.card, border: `1px solid ${theme.border}`, color: theme.textMuted }}>
                   <span className="text-sm leading-none">{countryFlag(secondNationalityCode)}</span>
                   {getCountryName(secondNationalityCode)}
                 </span>
@@ -520,64 +532,65 @@ export default function SocialLinks() {
             </div>
           )}
 
-          {/* Membership */}
           {extra.show_membership && membershipTier && membershipTier !== "free" && (
             <div className="mt-2.5">
               <span className="inline-flex items-center gap-1.5 px-3.5 py-1.5 text-[10px] font-semibold rounded-full capitalize tracking-wide"
-                style={{ background: `linear-gradient(135deg, ${accentLight}, rgba(196,162,101,0.06))`, color: accentColor, border: `1px solid ${accentMedium}` }}>
+                style={{ background: `linear-gradient(135deg, ${theme.accentLight}, ${theme.accentLight}88)`, color: theme.accent, border: `1px solid ${theme.accentMedium}` }}>
                 ✦ {membershipTier}
               </span>
             </div>
           )}
         </div>
 
-        {/* Stats Row: Followers + Experience + Views */}
+        {/* Stats Row */}
         {(extra.show_followers || (extra.show_stats && hasStats)) && (
-          <div className={`flex items-center ${justifyClass} gap-6 mb-6 transition-all duration-700 delay-300 ${animated ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}>
-            {/* Followers */}
-            {extra.show_followers && (
-              <div className="text-center">
-                <p className="text-lg font-bold tabular-nums" style={{ color: "#fff" }}>{formatCompact(followersCount)}</p>
-                <p className="text-[9px] uppercase tracking-[0.15em] font-medium" style={{ color: "rgba(255,255,255,0.3)" }}>{t("followers", lang)}</p>
-              </div>
-            )}
-
-            {/* Years Experience */}
-            {extra.show_stats && yearsExp && (
-              <div className="text-center">
-                <p className="text-lg font-bold tabular-nums" style={{ color: "#fff" }}>
-                  <AnimatedNumber value={yearsExp} /><span style={{ color: accentColor }}>+</span>
-                </p>
-                <p className="text-[9px] uppercase tracking-[0.15em] font-medium" style={{ color: "rgba(255,255,255,0.3)" }}>{t("yearsExp", lang)}</p>
-              </div>
-            )}
-
-            {/* Views */}
-            {extra.show_stats && extra.show_views && viewCount > 0 && (
-              <div className="text-center">
-                <p className="text-lg font-bold tabular-nums" style={{ color: "#fff" }}>
-                  <AnimatedNumber value={viewCount} />
-                </p>
-                <p className="text-[9px] uppercase tracking-[0.15em] font-medium" style={{ color: "rgba(255,255,255,0.3)" }}>{t("views", lang)}</p>
-              </div>
-            )}
+          <div className={`transition-all duration-700 delay-300 ${animated ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}>
+            <div className={`flex items-center ${justifyClass} gap-0 rounded-2xl overflow-hidden mb-5`}
+              style={{ background: theme.card, border: `1px solid ${theme.border}` }}>
+              {extra.show_followers && (
+                <div className="flex-1 text-center py-3.5 px-3">
+                  <p className="text-lg font-bold tabular-nums" style={{ color: theme.text }}>{formatCompact(followersCount)}</p>
+                  <p className="text-[9px] uppercase tracking-[0.15em] font-medium" style={{ color: theme.textMuted }}>{t("followers", lang)}</p>
+                </div>
+              )}
+              {extra.show_stats && yearsExp && (
+                <>
+                  <div className="w-px h-8" style={{ background: theme.border }} />
+                  <div className="flex-1 text-center py-3.5 px-3">
+                    <p className="text-lg font-bold tabular-nums" style={{ color: theme.text }}>
+                      <AnimatedNumber value={yearsExp} /><span style={{ color: theme.accent }}>+</span>
+                    </p>
+                    <p className="text-[9px] uppercase tracking-[0.15em] font-medium" style={{ color: theme.textMuted }}>{t("yearsExp", lang)}</p>
+                  </div>
+                </>
+              )}
+              {extra.show_stats && extra.show_views && viewCount > 0 && (
+                <>
+                  <div className="w-px h-8" style={{ background: theme.border }} />
+                  <div className="flex-1 text-center py-3.5 px-3">
+                    <p className="text-lg font-bold tabular-nums" style={{ color: theme.text }}>
+                      <AnimatedNumber value={viewCount} />
+                    </p>
+                    <p className="text-[9px] uppercase tracking-[0.15em] font-medium" style={{ color: theme.textMuted }}>{t("views", lang)}</p>
+                  </div>
+                </>
+              )}
+            </div>
           </div>
         )}
 
         {/* Follow Button */}
         {extra.show_followers && !isOwner && (
-          <div className={`flex ${justifyClass} mb-6 transition-all duration-700 delay-320 ${animated ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}>
+          <div className={`flex ${justifyClass} mb-5 transition-all duration-700 delay-320 ${animated ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}>
             <button
               onClick={handleFollow}
               disabled={toggleFollow.isPending || !user}
               className="group relative inline-flex items-center gap-2 px-7 py-2.5 rounded-full text-sm font-semibold transition-all duration-300 hover:scale-105 active:scale-95 disabled:opacity-50"
               style={{
-                background: isFollowing
-                  ? "rgba(255,255,255,0.06)"
-                  : `linear-gradient(135deg, ${accentColor}, #d4b576)`,
-                border: isFollowing ? "1px solid rgba(255,255,255,0.12)" : "none",
-                color: isFollowing ? "rgba(255,255,255,0.7)" : "#0a0a12",
-                boxShadow: isFollowing ? "none" : `0 4px 20px rgba(196,162,101,0.3)`,
+                background: isFollowing ? theme.card : `linear-gradient(135deg, ${theme.accent}, ${theme.accent}dd)`,
+                border: isFollowing ? `1px solid ${theme.border}` : "none",
+                color: isFollowing ? theme.textMuted : (isLight ? "#ffffff" : "#0a0a12"),
+                boxShadow: isFollowing ? "none" : `0 4px 20px ${theme.accentLight}`,
               }}
             >
               {toggleFollow.isPending ? (
@@ -589,22 +602,15 @@ export default function SocialLinks() {
               ) : (
                 <UserPlus className="h-4 w-4" />
               )}
-              {toggleFollow.isPending
-                ? "..."
-                : isFollowing
-                  ? t("following", lang)
-                  : pendingRequest
-                    ? t("requested", lang)
-                    : t("follow", lang)
-              }
+              {toggleFollow.isPending ? "..." : isFollowing ? t("following", lang) : pendingRequest ? t("requested", lang) : t("follow", lang)}
             </button>
           </div>
         )}
 
         {/* Bio */}
         {extra.show_bio && bio && (
-          <div className={`mb-6 transition-all duration-700 delay-350 ${animated ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}>
-            <p className={`leading-relaxed ${textAlignClass} ${fontSize.bio}`} dir="auto" style={{ color: "rgba(255,255,255,0.55)" }}>
+          <div className={`mb-5 transition-all duration-700 delay-350 ${animated ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}>
+            <p className={`leading-relaxed ${textAlignClass} ${fontSize.bio}`} dir="auto" style={{ color: theme.textMuted }}>
               {bio}
             </p>
           </div>
@@ -612,21 +618,21 @@ export default function SocialLinks() {
 
         {/* Awards */}
         {extra.show_awards && globalAwards && Array.isArray(globalAwards) && globalAwards.length > 0 && (
-          <div className={`mb-6 transition-all duration-700 delay-400 ${animated ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}>
-            <h3 className={`text-[9px] font-semibold uppercase tracking-[0.2em] mb-3 ${textAlignClass}`} style={{ color: accentColor }}>
+          <div className={`mb-5 transition-all duration-700 delay-400 ${animated ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}>
+            <h3 className={`text-[9px] font-semibold uppercase tracking-[0.2em] mb-3 ${textAlignClass}`} style={{ color: theme.accent }}>
               {t("awards", lang)}
             </h3>
             <div className="space-y-1.5">
               {globalAwards.map((award: any, i: number) => (
                 <div key={i} className="flex items-center gap-3 px-4 py-2.5 rounded-xl transition-all duration-200"
-                  style={{ background: "rgba(255,255,255,0.02)", border: "1px solid rgba(255,255,255,0.04)" }}>
+                  style={{ background: theme.card, border: `1px solid ${theme.border}` }}>
                   <span className="text-base">
                     {award.icon === "gold" ? "🏅" : award.icon === "tabakh" ? "👨‍🍳" : "🏆"}
                   </span>
-                  <span className="flex-1 text-xs font-medium" style={{ color: "rgba(255,255,255,0.65)" }}>
+                  <span className="flex-1 text-xs font-medium" style={{ color: theme.textMuted }}>
                     {isRtl ? (award.name_ar || award.name) : (award.name || award.name_ar)}
                   </span>
-                  {award.year && <span className="text-[10px] font-medium tabular-nums" style={{ color: "rgba(255,255,255,0.2)" }}>{award.year}</span>}
+                  {award.year && <span className="text-[10px] font-medium tabular-nums" style={{ color: `${theme.textMuted}88` }}>{award.year}</span>}
                 </div>
               ))}
             </div>
@@ -635,7 +641,7 @@ export default function SocialLinks() {
 
         {/* Social Icons */}
         {page?.show_social_icons !== false && hasSocialIcons && (
-          <div className={`mb-6 transition-all duration-700 delay-450 ${animated ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}>
+          <div className={`mb-5 transition-all duration-700 delay-450 ${animated ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}>
             <div className={`flex ${justifyClass} flex-wrap gap-2.5`}>
               {socialPlatforms.map(({ key, value }) => {
                 const info = SOCIAL_ICONS[key];
@@ -649,15 +655,20 @@ export default function SocialLinks() {
                     target="_blank"
                     rel="noopener noreferrer"
                     className="group relative flex h-11 w-11 items-center justify-center rounded-full transition-all duration-300 hover:scale-110 active:scale-95"
-                    style={{
-                      background: "rgba(255,255,255,0.05)",
-                      border: "1px solid rgba(255,255,255,0.08)",
-                      color: "#ffffff",
-                    }}
+                    style={{ background: theme.btnBg, border: `1px solid ${theme.border}`, color: theme.text }}
                     title={info.label}
+                    onMouseEnter={e => {
+                      (e.currentTarget as HTMLElement).style.backgroundColor = `${info.hoverColor}22`;
+                      (e.currentTarget as HTMLElement).style.borderColor = `${info.hoverColor}44`;
+                      (e.currentTarget as HTMLElement).style.color = info.hoverColor;
+                    }}
+                    onMouseLeave={e => {
+                      (e.currentTarget as HTMLElement).style.backgroundColor = theme.btnBg;
+                      (e.currentTarget as HTMLElement).style.borderColor = theme.border;
+                      (e.currentTarget as HTMLElement).style.color = theme.text;
+                    }}
                   >
-                    <div className="absolute inset-0 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300" style={{ background: info.hoverBg }} />
-                    <Icon className="h-4.5 w-4.5 relative z-10" />
+                    <Icon className="h-[18px] w-[18px]" />
                   </a>
                 );
               })}
@@ -667,31 +678,34 @@ export default function SocialLinks() {
                   target="_blank"
                   rel="noopener noreferrer"
                   className="group relative flex h-11 w-11 items-center justify-center rounded-full transition-all duration-300 hover:scale-110 active:scale-95"
-                  style={{ background: "rgba(37,211,102,0.1)", border: "1px solid rgba(37,211,102,0.2)", color: "#25d366" }}
+                  style={{ background: "rgba(37,211,102,0.08)", border: "1px solid rgba(37,211,102,0.15)", color: "#25d366" }}
                   title="WhatsApp"
                 >
-                  <div className="absolute inset-0 rounded-full opacity-0 group-hover:opacity-100 transition-opacity" style={{ background: "rgba(37,211,102,0.15)" }} />
-                  <MessageCircle className="h-4.5 w-4.5 relative z-10" />
+                  <MessageCircle className="h-[18px] w-[18px]" />
                 </a>
               )}
               {phone && (
                 <a
                   href={`tel:${phone}`}
                   className="group relative flex h-11 w-11 items-center justify-center rounded-full transition-all duration-300 hover:scale-110 active:scale-95"
-                  style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.08)", color: "#ffffff" }}
+                  style={{ background: theme.btnBg, border: `1px solid ${theme.border}`, color: theme.text }}
                   title={isRtl ? "اتصل" : "Call"}
                 >
-                  <div className="absolute inset-0 rounded-full opacity-0 group-hover:opacity-100 transition-opacity" style={{ background: "rgba(255,255,255,0.08)" }} />
-                  <Phone className="h-4.5 w-4.5 relative z-10" />
+                  <Phone className="h-[18px] w-[18px]" />
                 </a>
               )}
             </div>
           </div>
         )}
 
+        {/* Divider before links */}
+        {items.length > 0 && hasSocialIcons && (
+          <SectionDivider color={theme.border} />
+        )}
+
         {/* Link Items */}
         {items.length > 0 && (
-          <div className={`mb-6 transition-all duration-700 delay-500 ${animated ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}>
+          <div className={`mb-5 transition-all duration-700 delay-500 ${animated ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}>
             <div className={`${extra.link_layout === "grid" ? "grid grid-cols-2 gap-2.5" : "space-y-2.5"}`}>
               {items.map((item, index) => (
                 <a
@@ -702,15 +716,26 @@ export default function SocialLinks() {
                   onClick={() => handleLinkClick(item.id)}
                   className={`group relative flex ${extra.link_layout === "grid" ? "flex-col items-center text-center py-5" : "items-center"} gap-3 px-5 py-3.5 ${btnStyle} backdrop-blur-sm transition-all duration-300 hover:scale-[1.02] active:scale-[0.98] overflow-hidden`}
                   style={{
-                    background: buttonColorStyle.backgroundColor || "rgba(255,255,255,0.04)",
-                    border: `1px solid ${buttonColorStyle.backgroundColor ? "transparent" : "rgba(255,255,255,0.08)"}`,
-                    color: buttonColorStyle.color || "#ffffff",
-                    animationDelay: `${index * 60}ms`,
+                    background: buttonColorStyle.backgroundColor || theme.card,
+                    border: `1px solid ${buttonColorStyle.backgroundColor ? "transparent" : theme.border}`,
+                    color: buttonColorStyle.color || theme.text,
+                  }}
+                  onMouseEnter={e => {
+                    if (!buttonColorStyle.backgroundColor) {
+                      (e.currentTarget as HTMLElement).style.background = theme.btnHover;
+                      (e.currentTarget as HTMLElement).style.borderColor = theme.accentMedium;
+                    }
+                  }}
+                  onMouseLeave={e => {
+                    if (!buttonColorStyle.backgroundColor) {
+                      (e.currentTarget as HTMLElement).style.background = theme.card;
+                      (e.currentTarget as HTMLElement).style.borderColor = theme.border;
+                    }
                   }}
                 >
                   {/* Hover shine */}
                   <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500" style={{
-                    background: "linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.03) 50%, transparent 100%)"
+                    background: `linear-gradient(90deg, transparent 0%, ${theme.btnHover} 50%, transparent 100%)`
                   }} />
 
                   {item.thumbnail_url && (
@@ -723,7 +748,7 @@ export default function SocialLinks() {
                     {isRtl ? (item.title_ar || item.title) : item.title}
                   </span>
                   {extra.link_layout !== "grid" && (
-                    <ExternalLink className="h-3.5 w-3.5 opacity-15 group-hover:opacity-50 transition-opacity shrink-0 relative z-10" />
+                    <ExternalLink className="h-3.5 w-3.5 opacity-20 group-hover:opacity-50 transition-opacity shrink-0 relative z-10" />
                   )}
                 </a>
               ))}
@@ -733,25 +758,23 @@ export default function SocialLinks() {
 
         {/* Empty state */}
         {items.length === 0 && socialPlatforms.length === 0 && !whatsapp && !phone && (
-          <div className={`text-center py-8 mb-6 rounded-2xl transition-all duration-700 delay-400 ${animated ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}
-            style={{ background: "rgba(255,255,255,0.015)", border: "1px solid rgba(255,255,255,0.03)" }}>
-            <Link2 className="h-7 w-7 mx-auto mb-2.5" style={{ color: "rgba(255,255,255,0.1)" }} />
-            <p className="text-xs font-medium" style={{ color: "rgba(255,255,255,0.2)" }}>
-              {t("noLinks", lang)}
-            </p>
+          <div className={`text-center py-8 mb-5 rounded-2xl transition-all duration-700 delay-400 ${animated ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}
+            style={{ background: theme.card, border: `1px solid ${theme.border}` }}>
+            <Link2 className="h-7 w-7 mx-auto mb-2.5" style={{ color: theme.textMuted }} />
+            <p className="text-xs font-medium" style={{ color: theme.textMuted }}>{t("noLinks", lang)}</p>
           </div>
         )}
 
         {/* View Full Profile */}
         {extra.show_full_profile_btn && (
-          <div className={`mt-4 transition-all duration-700 delay-550 ${animated ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"}`}>
+          <div className={`mt-6 transition-all duration-700 delay-550 ${animated ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"}`}>
             <Link
               to={`/${profile.username}`}
               className="flex items-center justify-center gap-2 w-full py-3.5 rounded-2xl text-sm font-semibold transition-all duration-300 hover:scale-[1.02] active:scale-[0.98]"
               style={{
-                background: `linear-gradient(135deg, ${accentLight}, rgba(196,162,101,0.06))`,
-                border: `1px solid ${accentMedium}`,
-                color: accentColor,
+                background: `linear-gradient(135deg, ${theme.accentLight}, ${theme.accentLight}66)`,
+                border: `1px solid ${theme.accentMedium}`,
+                color: theme.accent,
               }}
             >
               <User className="h-4 w-4" />
@@ -762,11 +785,11 @@ export default function SocialLinks() {
 
         {/* Owner Edit Banner */}
         {isOwner && (
-          <div className={`mt-4 transition-all duration-700 delay-600 ${animated ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"}`}>
+          <div className={`mt-3 transition-all duration-700 delay-600 ${animated ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"}`}>
             <Link
               to="/social-links"
               className="flex items-center justify-center gap-2 w-full py-3 rounded-2xl text-xs font-semibold transition-all duration-300 hover:scale-[1.02] active:scale-[0.98]"
-              style={{ background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.08)", color: "#ffffff" }}
+              style={{ background: theme.card, border: `1px solid ${theme.border}`, color: theme.text }}
             >
               <Pencil className="h-3.5 w-3.5" />
               {t("editPage", lang)}
@@ -776,11 +799,11 @@ export default function SocialLinks() {
 
         {/* Login CTA */}
         {!user && (
-          <div className={`mt-4 transition-all duration-700 delay-600 ${animated ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"}`}>
+          <div className={`mt-3 transition-all duration-700 delay-600 ${animated ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"}`}>
             <Link
               to="/auth"
               className="flex items-center justify-center gap-2 w-full py-2.5 rounded-2xl text-xs font-medium transition-all duration-300 hover:scale-[1.02] active:scale-[0.98]"
-              style={{ background: "rgba(255,255,255,0.02)", border: "1px solid rgba(255,255,255,0.05)", color: "rgba(255,255,255,0.3)" }}
+              style={{ background: theme.card, border: `1px solid ${theme.border}`, color: theme.textMuted }}
             >
               <LogIn className="h-3 w-3" />
               {t("createPage", lang)}
@@ -790,9 +813,9 @@ export default function SocialLinks() {
 
         {/* Footer */}
         <div className={`mt-12 text-center transition-all duration-700 delay-700 ${animated ? "opacity-100" : "opacity-0"}`}>
-          <Link to="/" className="inline-flex items-center gap-2 transition-opacity hover:opacity-60" style={{ color: "rgba(255,255,255,0.08)" }}>
-            <div className="h-4.5 w-4.5 rounded-md flex items-center justify-center" style={{ background: accentLight }}>
-              <span className="text-[8px] font-bold" style={{ color: accentColor }}>A</span>
+          <Link to="/" className="inline-flex items-center gap-2 transition-opacity hover:opacity-60" style={{ color: `${theme.textMuted}44` }}>
+            <div className="h-4.5 w-4.5 rounded-md flex items-center justify-center" style={{ background: theme.accentLight }}>
+              <span className="text-[8px] font-bold" style={{ color: theme.accent }}>A</span>
             </div>
             <span className="text-[9px] font-semibold uppercase tracking-[0.2em]">Altoha</span>
           </Link>
