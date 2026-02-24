@@ -12,7 +12,7 @@ import { Badge } from "@/components/ui/badge";
 import { toast } from "@/hooks/use-toast";
 import {
   Calendar, Landmark, ImageIcon, LayoutGrid, MessageSquare, Award,
-  Star, Trophy, Users, Clock, Settings, CalendarClock, ChefHat,
+  Star, Trophy, Users, Clock, Settings, CalendarClock, ChefHat, Navigation, Gavel,
 } from "lucide-react";
 import { SEOHead } from "@/components/SEOHead";
 import { ImageLightbox } from "@/components/competitions/ImageLightbox";
@@ -47,6 +47,8 @@ const ExhibitionBoothNavigator = lazy(() => import("@/components/exhibitions/det
 const ExhibitionSurveyManager = lazy(() => import("@/components/exhibitions/detail/ExhibitionSurveyManager").then(m => ({ default: m.ExhibitionSurveyManager })));
 const ExhibitionSocialWall = lazy(() => import("@/components/exhibitions/detail/ExhibitionSocialWall").then(m => ({ default: m.ExhibitionSocialWall })));
 const ExhibitionAnalyticsDashboardDetail = lazy(() => import("@/components/exhibitions/detail/ExhibitionAnalyticsDashboard").then(m => ({ default: m.ExhibitionAnalyticsDashboard })));
+const ExhibitionIndoorMap = lazy(() => import("@/components/exhibitions/detail/ExhibitionIndoorMap").then(m => ({ default: m.ExhibitionIndoorMap })));
+const ExhibitionAuctionsOffers = lazy(() => import("@/components/exhibitions/detail/ExhibitionAuctionsOffers").then(m => ({ default: m.ExhibitionAuctionsOffers })));
 
 const TabFallback = () => <div className="space-y-3">{[1, 2, 3].map(i => <div key={i} className="h-24 animate-pulse rounded-2xl bg-muted" />)}</div>;
 
@@ -365,6 +367,8 @@ export default function ExhibitionDetail() {
                   {hasSponsors && <ExhibitionTabTrigger value="sponsors" icon={Star} label={isAr ? "الرعاة" : "Sponsors"} />}
                   <ExhibitionTabTrigger value="cooking" icon={ChefHat} label={isAr ? "الطهي الحي" : "Live Cooking"} />
                   <ExhibitionTabTrigger value="social" icon={MessageSquare} label={isAr ? "اجتماعي" : "Social"} />
+                  <ExhibitionTabTrigger value="navigation" icon={Navigation} label={isAr ? "الملاحة" : "Navigate"} />
+                  <ExhibitionTabTrigger value="auctions" icon={Gavel} label={isAr ? "مزادات" : "Auctions"} />
                   {hasReviews && <ExhibitionTabTrigger value="reviews" icon={MessageSquare} label={isAr ? "التقييمات" : "Reviews"} count={reviewCount > 0 ? reviewCount : undefined} />}
                   {isOwner && <ExhibitionTabTrigger value="organizer" icon={Settings} label={isAr ? "لوحة التحكم" : "Dashboard"} />}
                 </TabsList>
@@ -467,6 +471,18 @@ export default function ExhibitionDetail() {
               <TabsContent value="social" className="mt-6">
                 <Suspense fallback={<TabFallback />}>
                   <ExhibitionSocialWall exhibitionId={exhibition.id} exhibitionTitle={title} exhibitionHashtag={exhibition.slug?.replace(/-/g, "_")} />
+                </Suspense>
+              </TabsContent>
+
+              <TabsContent value="navigation" className="mt-6">
+                <Suspense fallback={<TabFallback />}>
+                  <ExhibitionIndoorMap exhibitionId={exhibition.id} isAr={isAr} />
+                </Suspense>
+              </TabsContent>
+
+              <TabsContent value="auctions" className="mt-6">
+                <Suspense fallback={<TabFallback />}>
+                  <ExhibitionAuctionsOffers exhibitionId={exhibition.id} isAr={isAr} />
                 </Suspense>
               </TabsContent>
 
