@@ -9184,6 +9184,143 @@ export type Database = {
           },
         ]
       }
+      exhibition_volunteer_tasks: {
+        Row: {
+          assigned_by: string | null
+          completed_at: string | null
+          created_at: string
+          description: string | null
+          description_ar: string | null
+          due_date: string | null
+          exhibition_id: string
+          id: string
+          priority: string | null
+          status: string | null
+          title: string
+          title_ar: string | null
+          updated_at: string
+          volunteer_id: string
+        }
+        Insert: {
+          assigned_by?: string | null
+          completed_at?: string | null
+          created_at?: string
+          description?: string | null
+          description_ar?: string | null
+          due_date?: string | null
+          exhibition_id: string
+          id?: string
+          priority?: string | null
+          status?: string | null
+          title: string
+          title_ar?: string | null
+          updated_at?: string
+          volunteer_id: string
+        }
+        Update: {
+          assigned_by?: string | null
+          completed_at?: string | null
+          created_at?: string
+          description?: string | null
+          description_ar?: string | null
+          due_date?: string | null
+          exhibition_id?: string
+          id?: string
+          priority?: string | null
+          status?: string | null
+          title?: string
+          title_ar?: string | null
+          updated_at?: string
+          volunteer_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "exhibition_volunteer_tasks_exhibition_id_fkey"
+            columns: ["exhibition_id"]
+            isOneToOne: false
+            referencedRelation: "exhibitions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "exhibition_volunteer_tasks_volunteer_id_fkey"
+            columns: ["volunteer_id"]
+            isOneToOne: false
+            referencedRelation: "exhibition_volunteers"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      exhibition_volunteers: {
+        Row: {
+          availability_end: string | null
+          availability_start: string | null
+          checked_in_at: string | null
+          checked_out_at: string | null
+          created_at: string
+          exhibition_id: string
+          id: string
+          notes: string | null
+          notes_ar: string | null
+          reviewed_at: string | null
+          reviewed_by: string | null
+          role_title: string | null
+          role_title_ar: string | null
+          skills: string[] | null
+          status: string
+          total_hours: number | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          availability_end?: string | null
+          availability_start?: string | null
+          checked_in_at?: string | null
+          checked_out_at?: string | null
+          created_at?: string
+          exhibition_id: string
+          id?: string
+          notes?: string | null
+          notes_ar?: string | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          role_title?: string | null
+          role_title_ar?: string | null
+          skills?: string[] | null
+          status?: string
+          total_hours?: number | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          availability_end?: string | null
+          availability_start?: string | null
+          checked_in_at?: string | null
+          checked_out_at?: string | null
+          created_at?: string
+          exhibition_id?: string
+          id?: string
+          notes?: string | null
+          notes_ar?: string | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          role_title?: string | null
+          role_title_ar?: string | null
+          skills?: string[] | null
+          status?: string
+          total_hours?: number | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "exhibition_volunteers_exhibition_id_fkey"
+            columns: ["exhibition_id"]
+            isOneToOne: false
+            referencedRelation: "exhibitions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       exhibitions: {
         Row: {
           address: string | null
