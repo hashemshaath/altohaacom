@@ -101,6 +101,19 @@ export interface ExtraSettings {
   footer_text: string;
   footer_text_ar: string;
   show_footer: boolean;
+  // Video embeds
+  show_video_embeds: boolean;
+  // Contact form
+  show_contact_form: boolean;
+  contact_form_title: string;
+  contact_form_title_ar: string;
+  // Motion effects
+  enable_typing_animation: boolean;
+  enable_particles: boolean;
+  particle_color: string;
+  // Multi-page profiles
+  active_page: string;
+  pages: Array<{ id: string; label: string; label_ar: string }>;
 }
 
 export const DEFAULT_EXTRA: ExtraSettings = {
@@ -123,6 +136,15 @@ export const DEFAULT_EXTRA: ExtraSettings = {
   footer_text: "",
   footer_text_ar: "",
   show_footer: false,
+  show_video_embeds: true,
+  show_contact_form: false,
+  contact_form_title: "Get in Touch",
+  contact_form_title_ar: "تواصل معي",
+  enable_typing_animation: false,
+  enable_particles: false,
+  particle_color: "",
+  active_page: "main",
+  pages: [],
 };
 
 export function parseExtra(customCss: string | null | undefined): ExtraSettings {
@@ -173,4 +195,24 @@ export function detectLinkType(url: string): { type: string; icon: string; label
     if (pattern.test(url)) return { type, icon, label };
   }
   return null;
+}
+
+/** Extract video embed URL from link */
+export function getVideoEmbedUrl(url: string): string | null {
+  if (!url) return null;
+  // YouTube
+  const ytMatch = url.match(/(?:youtube\.com\/(?:watch\?v=|embed\/|shorts\/)|youtu\.be\/)([a-zA-Z0-9_-]{11})/);
+  if (ytMatch) return `https://www.youtube.com/embed/${ytMatch[1]}?rel=0&modestbranding=1`;
+  // TikTok - return oembed iframe approach
+  const ttMatch = url.match(/tiktok\.com\/@[\w.]+\/video\/(\d+)/);
+  if (ttMatch) return `https://www.tiktok.com/embed/v2/${ttMatch[1]}`;
+  // Instagram Reels
+  const igMatch = url.match(/instagram\.com\/(?:reel|p)\/([\w-]+)/);
+  if (igMatch) return `https://www.instagram.com/p/${igMatch[1]}/embed`;
+  return null;
+}
+
+/** Check if a URL is a video link */
+export function isVideoLink(url: string): boolean {
+  return /youtu\.?be|tiktok\.com\/@[\w.]+\/video|instagram\.com\/(?:reel|p)/i.test(url);
 }

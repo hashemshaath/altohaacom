@@ -86,6 +86,7 @@ const FONT_SIZES = [
 import {
   THEME_COLORS, THEME_PREVIEW_MAP, BUTTON_STYLES_MAP, FONT_MAP, FONT_SIZE_MAP,
   FONT_FAMILIES, parseExtra, DEFAULT_EXTRA, detectLinkType, getButtonStyleOverrides,
+  isVideoLink,
   type ExtraSettings, type PreviewTheme,
 } from "@/lib/socialLinksConstants";
 
@@ -1366,6 +1367,146 @@ export default function SocialLinksEditor() {
                       </CardContent>
                     </Card>
 
+                    {/* Video Embeds */}
+                    <Card className="overflow-hidden">
+                      <CardHeader className="pb-3 bg-gradient-to-r from-muted/40 to-transparent">
+                        <CardTitle className="text-sm flex items-center gap-2">
+                          <div className="h-7 w-7 rounded-lg bg-primary/10 flex items-center justify-center">
+                            <Video className="h-3.5 w-3.5 text-primary" />
+                          </div>
+                          {isAr ? "معاينة الفيديو" : "Video Embeds"}
+                        </CardTitle>
+                        <p className="text-[11px] text-muted-foreground">
+                          {isAr ? "عرض معاينة مضمنة لروابط YouTube و TikTok و Instagram" : "Show inline preview for YouTube, TikTok & Instagram links"}
+                        </p>
+                      </CardHeader>
+                      <CardContent className="pt-3">
+                        <div className="flex items-center justify-between rounded-lg p-2 hover:bg-muted/30 transition-colors">
+                          <Label className="text-xs cursor-pointer">{isAr ? "تفعيل المعاينة المضمنة" : "Enable Video Previews"}</Label>
+                          <Switch checked={extra.show_video_embeds} onCheckedChange={v => updateExtra({ show_video_embeds: v })} />
+                        </div>
+                      </CardContent>
+                    </Card>
+
+                    {/* Contact Form */}
+                    <Card className="overflow-hidden">
+                      <CardHeader className="pb-3 bg-gradient-to-r from-muted/40 to-transparent">
+                        <CardTitle className="text-sm flex items-center gap-2">
+                          <div className="h-7 w-7 rounded-lg bg-primary/10 flex items-center justify-center">
+                            <MessageCircle className="h-3.5 w-3.5 text-primary" />
+                          </div>
+                          {isAr ? "نموذج التواصل" : "Contact Form"}
+                        </CardTitle>
+                        <p className="text-[11px] text-muted-foreground">
+                          {isAr ? "نموذج اتصال مباشر في صفحة Bio" : "Direct contact form on your Bio page"}
+                        </p>
+                      </CardHeader>
+                      <CardContent className="space-y-3 pt-3">
+                        <div className="flex items-center justify-between rounded-lg p-2 hover:bg-muted/30 transition-colors">
+                          <Label className="text-xs cursor-pointer">{isAr ? "إظهار نموذج التواصل" : "Show Contact Form"}</Label>
+                          <Switch checked={extra.show_contact_form} onCheckedChange={v => updateExtra({ show_contact_form: v })} />
+                        </div>
+                        {extra.show_contact_form && (
+                          <div className="grid sm:grid-cols-2 gap-3">
+                            <div>
+                              <Label className="text-[11px] mb-1 block font-medium">{isAr ? "عنوان النموذج (EN)" : "Form Title (EN)"}</Label>
+                              <Input value={extra.contact_form_title} onChange={e => updateExtra({ contact_form_title: e.target.value })} dir="ltr" className="text-xs" />
+                            </div>
+                            <div>
+                              <Label className="text-[11px] mb-1 block font-medium">{isAr ? "عنوان النموذج (AR)" : "Form Title (AR)"}</Label>
+                              <Input value={extra.contact_form_title_ar} onChange={e => updateExtra({ contact_form_title_ar: e.target.value })} dir="rtl" className="text-xs" />
+                            </div>
+                          </div>
+                        )}
+                      </CardContent>
+                    </Card>
+
+                    {/* Motion Effects */}
+                    <Card className="overflow-hidden">
+                      <CardHeader className="pb-3 bg-gradient-to-r from-muted/40 to-transparent">
+                        <CardTitle className="text-sm flex items-center gap-2">
+                          <div className="h-7 w-7 rounded-lg bg-primary/10 flex items-center justify-center">
+                            <Sparkles className="h-3.5 w-3.5 text-primary" />
+                          </div>
+                          {isAr ? "تأثيرات حركية" : "Motion Effects"}
+                        </CardTitle>
+                        <p className="text-[11px] text-muted-foreground">
+                          {isAr ? "تأثيرات Typing و Particles للصفحة" : "Typing animation & Particle effects"}
+                        </p>
+                      </CardHeader>
+                      <CardContent className="space-y-2 pt-3">
+                        <div className="flex items-center justify-between rounded-lg p-2 hover:bg-muted/30 transition-colors">
+                          <div className="flex items-center gap-2">
+                            <Type className="h-3.5 w-3.5 text-muted-foreground" />
+                            <Label className="text-xs cursor-pointer">{isAr ? "تأثير الكتابة على النبذة" : "Typing Animation on Bio"}</Label>
+                          </div>
+                          <Switch checked={extra.enable_typing_animation} onCheckedChange={v => updateExtra({ enable_typing_animation: v })} />
+                        </div>
+                        <div className="flex items-center justify-between rounded-lg p-2 hover:bg-muted/30 transition-colors">
+                          <div className="flex items-center gap-2">
+                            <Sparkles className="h-3.5 w-3.5 text-muted-foreground" />
+                            <Label className="text-xs cursor-pointer">{isAr ? "جزيئات عائمة" : "Floating Particles"}</Label>
+                          </div>
+                          <Switch checked={extra.enable_particles} onCheckedChange={v => updateExtra({ enable_particles: v })} />
+                        </div>
+                      </CardContent>
+                    </Card>
+
+                    {/* Multi-Page Profiles */}
+                    <Card className="overflow-hidden">
+                      <CardHeader className="pb-3 bg-gradient-to-r from-muted/40 to-transparent">
+                        <CardTitle className="text-sm flex items-center gap-2">
+                          <div className="h-7 w-7 rounded-lg bg-primary/10 flex items-center justify-center">
+                            <LayoutGrid className="h-3.5 w-3.5 text-primary" />
+                          </div>
+                          {isAr ? "صفحات متعددة" : "Multi-Page Profiles"}
+                        </CardTitle>
+                        <p className="text-[11px] text-muted-foreground">
+                          {isAr ? "أنشئ تبويبات مختلفة (شخصي، مهني، إبداعي)" : "Create different tabs (Personal, Professional, Creative)"}
+                        </p>
+                      </CardHeader>
+                      <CardContent className="space-y-3 pt-3">
+                        {extra.pages.length > 0 && (
+                          <div className="space-y-1.5">
+                            {extra.pages.map((pg, i) => (
+                              <div key={pg.id} className="flex items-center gap-2 p-2 rounded-lg border border-border/30">
+                                <span className="text-xs font-medium flex-1">{isAr ? pg.label_ar || pg.label : pg.label}</span>
+                                <Button variant="ghost" size="sm" className="h-6 w-6 p-0" onClick={() => {
+                                  updateExtra({ pages: extra.pages.filter((_, idx) => idx !== i) });
+                                }}>
+                                  <Trash2 className="h-3 w-3 text-destructive" />
+                                </Button>
+                              </div>
+                            ))}
+                          </div>
+                        )}
+                        <div className="flex gap-2">
+                          <Input
+                            id="new-page-label"
+                            placeholder={isAr ? "اسم الصفحة (EN)" : "Page name (EN)"}
+                            className="text-xs flex-1"
+                            dir="ltr"
+                          />
+                          <Input
+                            id="new-page-label-ar"
+                            placeholder={isAr ? "اسم الصفحة (AR)" : "Page name (AR)"}
+                            className="text-xs flex-1"
+                            dir="rtl"
+                          />
+                          <Button variant="outline" size="sm" className="shrink-0" onClick={() => {
+                            const labelEn = (document.getElementById("new-page-label") as HTMLInputElement)?.value?.trim();
+                            const labelAr = (document.getElementById("new-page-label-ar") as HTMLInputElement)?.value?.trim();
+                            if (!labelEn) return;
+                            const newPage = { id: `page-${Date.now()}`, label: labelEn, label_ar: labelAr || labelEn };
+                            updateExtra({ pages: [...extra.pages, newPage] });
+                            (document.getElementById("new-page-label") as HTMLInputElement).value = "";
+                            (document.getElementById("new-page-label-ar") as HTMLInputElement).value = "";
+                          }}>
+                            <Plus className="h-3.5 w-3.5" />
+                          </Button>
+                        </div>
+                      </CardContent>
+                    </Card>
                     {/* Import / Export */}
                     <Card className="overflow-hidden">
                       <CardHeader className="pb-3 bg-gradient-to-r from-muted/40 to-transparent">
