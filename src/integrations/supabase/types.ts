@@ -15056,6 +15056,7 @@ export type Database = {
           view_count: number | null
           wallet_balance: number | null
           website: string | null
+          whatsapp: string | null
           years_of_experience: number | null
           youtube: string | null
         }
@@ -15136,6 +15137,7 @@ export type Database = {
           view_count?: number | null
           wallet_balance?: number | null
           website?: string | null
+          whatsapp?: string | null
           years_of_experience?: number | null
           youtube?: string | null
         }
@@ -15216,6 +15218,7 @@ export type Database = {
           view_count?: number | null
           wallet_balance?: number | null
           website?: string | null
+          whatsapp?: string | null
           years_of_experience?: number | null
           youtube?: string | null
         }
@@ -19834,6 +19837,7 @@ export type Database = {
           verified_at: string | null
           view_count: number | null
           website: string | null
+          whatsapp: string | null
           years_of_experience: number | null
           youtube: string | null
         }
@@ -19900,6 +19904,7 @@ export type Database = {
           verified_at?: string | null
           view_count?: number | null
           website?: string | null
+          whatsapp?: string | null
           years_of_experience?: number | null
           youtube?: string | null
         }
@@ -19966,6 +19971,7 @@ export type Database = {
           verified_at?: string | null
           view_count?: number | null
           website?: string | null
+          whatsapp?: string | null
           years_of_experience?: number | null
           youtube?: string | null
         }
