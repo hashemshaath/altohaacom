@@ -4,7 +4,7 @@ import AdminPendingBanner from "@/components/admin/AdminPendingBanner";
 import { Outlet, NavLink } from "react-router-dom";
 import { AdminHeader } from "@/components/admin/AdminHeader";
 import { cn } from "@/lib/utils";
-import { GraduationCap, BarChart3, Landmark, Building2, MessageSquare as MessageSquareIcon, Earth, QrCode, UtensilsCrossed, MailOpen, HandHeart, ShieldCheck, Ticket, Target, Headphones, Activity, Megaphone, Languages, Package, ChefHat, ClipboardCheck, Calculator, Calendar } from "lucide-react";
+import { GraduationCap, BarChart3, Landmark, Building2, MessageSquare as MessageSquareIcon, Earth, QrCode, UtensilsCrossed, MailOpen, HandHeart, ShieldCheck, Ticket, Target, Headphones, Activity, Megaphone, Languages, Package, ChefHat, ClipboardCheck, Calculator, Calendar, Crown } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
@@ -57,6 +57,7 @@ export default function AdminLayout() {
         { to: "/admin/roles", icon: Shield, label: language === "ar" ? "الأدوار والصلاحيات" : "Roles & Permissions" },
         { to: "/admin/verification", icon: ShieldCheck, label: language === "ar" ? "التوثيق والتحقق" : "Verification" },
         { to: "/admin/memberships", icon: CreditCard, label: language === "ar" ? "العضويات" : "Memberships" },
+        { to: "/admin/loyalty", icon: Crown, label: language === "ar" ? "الولاء والمكافآت" : "Loyalty & Rewards" },
         { to: "/admin/companies", icon: Building, label: language === "ar" ? "الشركات والرعاة" : "Companies & Sponsors" },
         { to: "/admin/entities", icon: Building2, label: language === "ar" ? "الجهات والجمعيات" : "Entities Registry" },
         { to: "/admin/establishments", icon: Building, label: language === "ar" ? "المنشآت" : "Establishments" },
