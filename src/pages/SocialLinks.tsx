@@ -6,10 +6,12 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Skeleton } from "@/components/ui/skeleton";
 import {
   ExternalLink, Instagram, Twitter, Facebook, Linkedin, Youtube, Globe,
-  User, ArrowLeft, Share2, Check, BadgeCheck, MapPin, Briefcase, Award, Link2
+  User, ArrowLeft, Share2, Check, BadgeCheck, MapPin, Briefcase, Award, Link2,
+  Pencil, LogIn
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
+import { useAuth } from "@/contexts/AuthContext";
 import { useState, useEffect } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
@@ -87,9 +89,13 @@ export default function SocialLinks() {
   const { language } = useLanguage();
   const isAr = language === "ar";
   const { toast } = useToast();
+  const { user } = useAuth();
   const { data, isLoading, error } = useSocialLinkPageByUsername(username);
   const [copied, setCopied] = useState(false);
   const [animated, setAnimated] = useState(false);
+
+  // Check if current user is the owner of this profile
+  const isOwner = !!(user && data?.profile && user.id === data.profile.user_id);
 
   useEffect(() => {
     const timer = setTimeout(() => setAnimated(true), 100);
@@ -239,8 +245,18 @@ export default function SocialLinks() {
           }} />
         )}
 
-        {/* Share */}
-        <div className={`absolute top-4 ${isAr ? "left-4" : "right-4"} z-20 transition-all duration-500 ${animated ? "opacity-100 translate-y-0" : "opacity-0 -translate-y-4"}`}>
+        {/* Top Actions: Share + Edit */}
+        <div className={`absolute top-4 ${isAr ? "left-4" : "right-4"} z-20 flex gap-2 transition-all duration-500 ${animated ? "opacity-100 translate-y-0" : "opacity-0 -translate-y-4"}`}>
+          {isOwner && (
+            <Link
+              to="/social-links"
+              className="flex h-10 w-10 items-center justify-center rounded-full backdrop-blur-xl transition-all hover:scale-105"
+              style={{ backgroundColor: "rgba(196,162,101,0.25)", border: "1px solid rgba(196,162,101,0.4)", color: "#c4a265" }}
+              title={isAr ? "تعديل" : "Edit"}
+            >
+              <Pencil className="h-4 w-4" />
+            </Link>
+          )}
           <button
             onClick={shareNative}
             className="flex h-10 w-10 items-center justify-center rounded-full backdrop-blur-xl transition-all hover:scale-105"
@@ -464,6 +480,42 @@ export default function SocialLinks() {
             >
               <User className="h-4 w-4" />
               {isAr ? "عرض البروفايل الكامل" : "View Full Profile"}
+            </Link>
+          </div>
+        )}
+
+        {/* Owner Edit Banner */}
+        {isOwner && (
+          <div className={`mt-6 transition-all duration-700 delay-550 ${animated ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"}`}>
+            <Link
+              to="/social-links"
+              className="flex items-center justify-center gap-2 w-full py-3.5 rounded-2xl text-sm font-semibold transition-all duration-300 hover:scale-[1.02] active:scale-[0.98]"
+              style={{
+                background: "rgba(255,255,255,0.06)",
+                border: "1px solid rgba(255,255,255,0.1)",
+                color: "#ffffff",
+              }}
+            >
+              <Pencil className="h-4 w-4" />
+              {isAr ? "تعديل ونشر الصفحة" : "Edit & Publish Page"}
+            </Link>
+          </div>
+        )}
+
+        {/* Login CTA for visitors */}
+        {!user && (
+          <div className={`mt-6 transition-all duration-700 delay-550 ${animated ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"}`}>
+            <Link
+              to="/auth"
+              className="flex items-center justify-center gap-2 w-full py-3 rounded-2xl text-xs font-medium transition-all duration-300 hover:scale-[1.02] active:scale-[0.98]"
+              style={{
+                background: "rgba(255,255,255,0.03)",
+                border: "1px solid rgba(255,255,255,0.06)",
+                color: "rgba(255,255,255,0.4)",
+              }}
+            >
+              <LogIn className="h-3.5 w-3.5" />
+              {isAr ? "أنشئ صفحتك الخاصة" : "Create your own page"}
             </Link>
           </div>
         )}
