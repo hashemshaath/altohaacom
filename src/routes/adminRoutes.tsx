@@ -56,7 +56,7 @@ export const adminRoutes = (
     <Route index element={<AdminDashboard />} />
     <Route path="analytics" element={<AnalyticsDashboard />} />
 
-    {/* Users & Organizations */}
+    {/* Users & CRM */}
     <Route path="users" element={<UserManagement />} />
     <Route path="users/:userId" element={<CRMCustomerDetail />} />
     <Route path="roles" element={<RoleManagement />} />
@@ -65,6 +65,9 @@ export const adminRoutes = (
     <Route path="loyalty" element={<LoyaltyAdmin />} />
     <Route path="companies" element={<CompaniesAdmin />} />
     <Route path="establishments" element={<EstablishmentsAdmin />} />
+    <Route path="crm" element={<CRMDashboard />} />
+    <Route path="leads" element={<LeadManagement />} />
+    <Route path="audience-segments" element={<AudienceSegments />} />
 
     {/* Competitions & Events */}
     <Route path="competitions" element={<CompetitionsAdmin />} />
@@ -85,12 +88,12 @@ export const adminRoutes = (
     <Route path="moderation" element={<ContentModeration />} />
     <Route path="advertising" element={<AdvertisingAdmin />} />
 
-    {/* Finance & Operations */}
+    {/* Finance */}
     <Route path="orders" element={<OrdersAdmin />} />
     <Route path="invoices" element={<InvoicesAdmin />} />
     <Route path="cost-center" element={<CostCenterAdmin />} />
 
-    {/* Support & Communications */}
+    {/* Communications */}
     <Route path="support-tickets" element={<SupportTicketsAdmin />} />
     <Route path="live-chat" element={<LiveChatAdmin />} />
     <Route path="communications" element={<CommunicationsAdmin />} />
@@ -98,12 +101,7 @@ export const adminRoutes = (
     <Route path="notifications" element={<NotificationsAdmin />} />
     <Route path="marketing-automation" element={<MarketingAutomationAdmin />} />
 
-    {/* CRM & Audiences */}
-    <Route path="crm" element={<CRMDashboard />} />
-    <Route path="leads" element={<LeadManagement />} />
-    <Route path="audience-segments" element={<AudienceSegments />} />
-
-    {/* System & Settings */}
+    {/* System */}
     <Route path="settings" element={<SystemSettings />} />
     <Route path="security" element={<SecurityAdmin />} />
     <Route path="localization" element={<LocalizationAdmin />} />
