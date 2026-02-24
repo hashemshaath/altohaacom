@@ -15,27 +15,20 @@ const SystemSettings = lazy(() => import("@/pages/admin/SystemSettings"));
 const IntegrationsAdmin = lazy(() => import("@/pages/admin/IntegrationsAdmin"));
 const AIConfigAdmin = lazy(() => import("@/pages/admin/AIConfigAdmin"));
 const ArticlesAdmin = lazy(() => import("@/pages/admin/ArticlesAdmin"));
-
-const ComponentsAdmin = lazy(() => import("@/pages/admin/ComponentsAdmin"));
 const MediaAdmin = lazy(() => import("@/pages/admin/MediaAdmin"));
 const NotificationsAdmin = lazy(() => import("@/pages/admin/NotificationsAdmin"));
 const LocalizationAdmin = lazy(() => import("@/pages/admin/LocalizationAdmin"));
 const DatabaseAdmin = lazy(() => import("@/pages/admin/DatabaseAdmin"));
 const CertificatesAdmin = lazy(() => import("@/pages/admin/CertificatesAdmin"));
 const CompaniesAdmin = lazy(() => import("@/pages/admin/CompaniesAdmin"));
-const SponsorsAdmin = lazy(() => import("@/pages/admin/SponsorsAdmin"));
-const CompanyRolesAdmin = lazy(() => import("@/pages/admin/CompanyRolesAdmin"));
 const CommunicationsAdmin = lazy(() => import("@/pages/admin/CommunicationsAdmin"));
 const OrdersAdmin = lazy(() => import("@/pages/admin/OrdersAdmin"));
 const InvoicesAdmin = lazy(() => import("@/pages/admin/InvoicesAdmin"));
-const InvoiceCustomization = lazy(() => import("@/pages/admin/InvoiceCustomization"));
 const KnowledgeAdmin = lazy(() => import("@/pages/admin/KnowledgeAdmin"));
 const QRCodesAdmin = lazy(() => import("@/pages/admin/QRCodesAdmin"));
 const MasterclassesAdmin = lazy(() => import("@/pages/admin/MasterclassesAdmin"));
 const AnalyticsDashboard = lazy(() => import("@/pages/admin/AnalyticsDashboard"));
 const ExhibitionsAdmin = lazy(() => import("@/pages/admin/ExhibitionsAdmin"));
-const EntitiesAdmin = lazy(() => import("@/pages/admin/EntitiesAdmin"));
-const JudgesAdmin = lazy(() => import("@/pages/admin/JudgesAdmin"));
 const EvaluationCenter = lazy(() => import("@/pages/admin/EvaluationCenter"));
 const CountriesAdmin = lazy(() => import("@/pages/admin/CountriesAdmin"));
 const ChefsTableAdmin = lazy(() => import("@/pages/admin/ChefsTableAdmin"));
@@ -49,84 +42,76 @@ const LiveChatAdmin = lazy(() => import("@/pages/admin/LiveChatAdmin"));
 const CRMDashboard = lazy(() => import("@/pages/admin/CRMDashboard"));
 const CRMCustomerDetail = lazy(() => import("@/pages/admin/CRMCustomerDetail"));
 const AdvertisingAdmin = lazy(() => import("@/pages/admin/AdvertisingAdmin"));
-const TranslationSEOAdmin = lazy(() => import("@/pages/admin/TranslationSEOAdmin"));
-const OrderCenterAdmin = lazy(() => import("@/pages/admin/OrderCenterAdmin"));
-const ModerationCenter = lazy(() => import("@/pages/admin/ModerationCenter"));
 const MarketingAutomationAdmin = lazy(() => import("@/pages/admin/MarketingAutomationAdmin"));
 const CostCenterAdmin = lazy(() => import("@/pages/admin/CostCenterAdmin"));
 const ChefScheduleAdmin = lazy(() => import("@/pages/admin/ChefScheduleAdmin"));
 const GlobalEventsAdmin = lazy(() => import("@/pages/admin/GlobalEventsAdmin"));
-const HeroSlidesAdmin = lazy(() => import("@/pages/admin/HeroSlidesAdmin"));
-const HomepageSectionsAdmin = lazy(() => import("@/pages/admin/HomepageSectionsAdmin"));
 const SmartImportAdmin = lazy(() => import("@/pages/admin/SmartImportAdmin"));
-const EventSeriesAdmin = lazy(() => import("@/pages/admin/EventSeriesAdmin"));
-const ReportsAdmin = lazy(() => import("@/pages/admin/ReportsAdmin"));
-const PerformanceAdmin = lazy(() => import("@/pages/admin/PerformanceAdmin"));
 const LoyaltyAdmin = lazy(() => import("@/pages/admin/LoyaltyAdmin"));
 const SecurityAdmin = lazy(() => import("@/pages/admin/SecurityAdmin"));
 
 export const adminRoutes = (
   <Route path="/admin" element={<AdminRoute><AdminLayout /></AdminRoute>}>
+    {/* Dashboard */}
     <Route index element={<AdminDashboard />} />
-    <Route path="users/:userId" element={<CRMCustomerDetail />} />
+    <Route path="analytics" element={<AnalyticsDashboard />} />
+
+    {/* Users & Organizations */}
     <Route path="users" element={<UserManagement />} />
-    <Route path="leads" element={<LeadManagement />} />
+    <Route path="users/:userId" element={<CRMCustomerDetail />} />
     <Route path="roles" element={<RoleManagement />} />
+    <Route path="verification" element={<VerificationAdmin />} />
     <Route path="memberships" element={<MembershipManagement />} />
-    <Route path="articles" element={<ArticlesAdmin />} />
-    <Route path="competitions" element={<CompetitionsAdmin />} />
-    <Route path="media" element={<MediaAdmin />} />
-    <Route path="moderation" element={<ContentModeration />} />
-    <Route path="integrations" element={<IntegrationsAdmin />} />
-    <Route path="ai" element={<AIConfigAdmin />} />
-    
-    <Route path="components" element={<ComponentsAdmin />} />
-    <Route path="settings" element={<SystemSettings />} />
-    <Route path="notifications" element={<NotificationsAdmin />} />
-    <Route path="localization" element={<LocalizationAdmin />} />
-    <Route path="audit" element={<AuditLog />} />
-    <Route path="database" element={<DatabaseAdmin />} />
-    <Route path="certificates" element={<CertificatesAdmin />} />
+    <Route path="loyalty" element={<LoyaltyAdmin />} />
     <Route path="companies" element={<CompaniesAdmin />} />
-    <Route path="sponsors" element={<SponsorsAdmin />} />
-    <Route path="company-roles" element={<CompanyRolesAdmin />} />
-    <Route path="orders" element={<OrdersAdmin />} />
-    <Route path="invoices" element={<InvoicesAdmin />} />
-    <Route path="invoice-customization" element={<InvoiceCustomization />} />
+    <Route path="establishments" element={<EstablishmentsAdmin />} />
+
+    {/* Competitions & Events */}
+    <Route path="competitions" element={<CompetitionsAdmin />} />
+    <Route path="evaluation" element={<EvaluationCenter />} />
+    <Route path="certificates" element={<CertificatesAdmin />} />
+    <Route path="exhibitions" element={<ExhibitionsAdmin />} />
+    <Route path="global-events" element={<GlobalEventsAdmin />} />
+    <Route path="chefs-table" element={<ChefsTableAdmin />} />
+    <Route path="chef-schedule" element={<ChefScheduleAdmin />} />
+
+    {/* Content & Media */}
+    <Route path="articles" element={<ArticlesAdmin />} />
     <Route path="knowledge" element={<KnowledgeAdmin />} />
     <Route path="masterclasses" element={<MasterclassesAdmin />} />
-    <Route path="analytics" element={<AnalyticsDashboard />} />
-    <Route path="exhibitions" element={<ExhibitionsAdmin />} />
-    <Route path="qr-codes" element={<QRCodesAdmin />} />
-    <Route path="entities" element={<EntitiesAdmin />} />
-    <Route path="judges" element={<JudgesAdmin />} />
-    <Route path="evaluation" element={<EvaluationCenter />} />
-    <Route path="chefs-table" element={<ChefsTableAdmin />} />
-    <Route path="communications" element={<CommunicationsAdmin />} />
-    <Route path="countries" element={<CountriesAdmin />} />
-    <Route path="templates" element={<CommunicationTemplatesAdmin />} />
     <Route path="mentorship" element={<MentorshipAdmin />} />
-    <Route path="establishments" element={<EstablishmentsAdmin />} />
-    <Route path="verification" element={<VerificationAdmin />} />
-    <Route path="support-tickets" element={<SupportTicketsAdmin />} />
-    <Route path="audience-segments" element={<AudienceSegments />} />
-    <Route path="live-chat" element={<LiveChatAdmin />} />
-    <Route path="crm" element={<CRMDashboard />} />
+    <Route path="media" element={<MediaAdmin />} />
+    <Route path="qr-codes" element={<QRCodesAdmin />} />
+    <Route path="moderation" element={<ContentModeration />} />
     <Route path="advertising" element={<AdvertisingAdmin />} />
-    <Route path="translation-seo" element={<TranslationSEOAdmin />} />
-    <Route path="order-center" element={<OrderCenterAdmin />} />
-    <Route path="moderation-center" element={<ModerationCenter />} />
-    <Route path="marketing-automation" element={<MarketingAutomationAdmin />} />
+
+    {/* Finance & Operations */}
+    <Route path="orders" element={<OrdersAdmin />} />
+    <Route path="invoices" element={<InvoicesAdmin />} />
     <Route path="cost-center" element={<CostCenterAdmin />} />
-    <Route path="chef-schedule" element={<ChefScheduleAdmin />} />
-    <Route path="global-events" element={<GlobalEventsAdmin />} />
-    <Route path="hero-slides" element={<HeroSlidesAdmin />} />
-    <Route path="homepage-sections" element={<HomepageSectionsAdmin />} />
-    <Route path="smart-import" element={<SmartImportAdmin />} />
-    <Route path="event-series" element={<EventSeriesAdmin />} />
-    <Route path="reports" element={<ReportsAdmin />} />
-    <Route path="performance" element={<PerformanceAdmin />} />
-    <Route path="loyalty" element={<LoyaltyAdmin />} />
+
+    {/* Support & Communications */}
+    <Route path="support-tickets" element={<SupportTicketsAdmin />} />
+    <Route path="live-chat" element={<LiveChatAdmin />} />
+    <Route path="communications" element={<CommunicationsAdmin />} />
+    <Route path="templates" element={<CommunicationTemplatesAdmin />} />
+    <Route path="notifications" element={<NotificationsAdmin />} />
+    <Route path="marketing-automation" element={<MarketingAutomationAdmin />} />
+
+    {/* CRM & Audiences */}
+    <Route path="crm" element={<CRMDashboard />} />
+    <Route path="leads" element={<LeadManagement />} />
+    <Route path="audience-segments" element={<AudienceSegments />} />
+
+    {/* System & Settings */}
+    <Route path="settings" element={<SystemSettings />} />
     <Route path="security" element={<SecurityAdmin />} />
+    <Route path="localization" element={<LocalizationAdmin />} />
+    <Route path="countries" element={<CountriesAdmin />} />
+    <Route path="integrations" element={<IntegrationsAdmin />} />
+    <Route path="smart-import" element={<SmartImportAdmin />} />
+    <Route path="ai" element={<AIConfigAdmin />} />
+    <Route path="audit" element={<AuditLog />} />
+    <Route path="database" element={<DatabaseAdmin />} />
   </Route>
 );
