@@ -1,6 +1,6 @@
 import { useLanguage } from "@/i18n/LanguageContext";
-import { useLoyaltyTiers, useUserTier, useChallenges, useUserChallenges, useRewardsCatalog, useUserRedemptions, useRedeemReward, useUserBadges, useUserStreaks } from "@/hooks/useLoyalty";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { useLoyaltyTiers, useUserTier, useChallenges, useUserChallenges, useRewardsCatalog, useUserRedemptions, useRedeemLoyaltyReward, useUserBadges, useUserStreaks } from "@/hooks/useLoyalty";
+import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
@@ -21,7 +21,7 @@ export function LoyaltyCenter() {
   const { data: redemptions = [] } = useUserRedemptions();
   const { data: badges = [] } = useUserBadges();
   const { data: streaks = [] } = useUserStreaks();
-  const redeemMutation = useRedeemReward();
+  const redeemMutation = useRedeemLoyaltyReward();
 
   const currentTier = tierData?.currentTier;
   const nextTier = tierData?.nextTier;

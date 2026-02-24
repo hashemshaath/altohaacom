@@ -18,6 +18,7 @@ export function usePointsBalance() {
       return data?.points_balance || 0;
     },
     enabled: !!user,
+    staleTime: 1000 * 60 * 2,
   });
 }
 
@@ -53,6 +54,7 @@ export function usePointsRewards() {
       if (error) throw error;
       return data || [];
     },
+    staleTime: 1000 * 60 * 10,
   });
 }
 
@@ -68,6 +70,7 @@ export function useEarningRules() {
       if (error) throw error;
       return data || [];
     },
+    staleTime: 1000 * 60 * 10,
   });
 }
 

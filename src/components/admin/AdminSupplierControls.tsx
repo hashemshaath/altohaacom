@@ -10,7 +10,7 @@ import { Switch } from "@/components/ui/switch";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { useToast } from "@/hooks/use-toast";
-import { Factory, Search, CheckCircle, Star, Save } from "lucide-react";
+import { Factory, Search } from "lucide-react";
 
 const SUPPLIER_CATEGORIES = [
   { value: "equipment", en: "Equipment", ar: "معدات" },

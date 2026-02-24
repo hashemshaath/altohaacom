@@ -52,6 +52,7 @@ export function useGlobalEvents(filters?: { status?: string }) {
       if (error) throw error;
       return (data || []) as GlobalEventRecord[];
     },
+    staleTime: 1000 * 60 * 3,
   });
 }
 
