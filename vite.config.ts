@@ -47,6 +47,30 @@ export default defineConfig(({ mode }) => ({
             purpose: "maskable",
           },
         ],
+        shortcuts: [
+          {
+            name: "Competitions",
+            short_name: "Compete",
+            description: "Browse culinary competitions",
+            url: "/competitions",
+            icons: [{ src: "/pwa-192x192.png", sizes: "192x192" }],
+          },
+          {
+            name: "Community",
+            short_name: "Community",
+            description: "Join the culinary community",
+            url: "/community",
+            icons: [{ src: "/pwa-192x192.png", sizes: "192x192" }],
+          },
+          {
+            name: "Dashboard",
+            short_name: "My Space",
+            description: "Your personal dashboard",
+            url: "/dashboard",
+            icons: [{ src: "/pwa-192x192.png", sizes: "192x192" }],
+          },
+        ],
+        categories: ["food", "social", "education"],
       },
       workbox: {
         navigateFallbackDenylist: [/^\/~oauth/],
