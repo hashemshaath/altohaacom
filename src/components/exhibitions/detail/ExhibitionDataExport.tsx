@@ -7,7 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { downloadCSV } from "@/lib/exportUtils";
 import { toast } from "@/hooks/use-toast";
-import { Download, FileSpreadsheet, Users, Ticket, LayoutGrid, CalendarClock } from "lucide-react";
+import { Download, FileSpreadsheet, Users, Ticket, LayoutGrid, CalendarClock, Star } from "lucide-react";
 import { format } from "date-fns";
 
 interface Props {
@@ -16,7 +16,7 @@ interface Props {
   isAr: boolean;
 }
 
-type ExportType = "attendees" | "booths" | "schedule" | "ticket-types";
+type ExportType = "attendees" | "booths" | "schedule" | "ticket-types" | "reviews" | "summary";
 
 export function ExhibitionDataExport({ exhibitionId, exhibitionTitle, isAr }: Props) {
   const t = (en: string, ar: string) => isAr ? ar : en;
@@ -149,6 +149,80 @@ export function ExhibitionDataExport({ exhibitionId, exhibitionTitle, isAr }: Pr
             { key: "active", label: t("Active", "فعال") },
           ]
         );
+      } else if (type === "reviews") {
+        const { data, error } = await supabase
+          .from("exhibition_reviews")
+          .select("rating, title, content, helpful_count, is_verified_attendee, created_at, user_id")
+          .eq("exhibition_id", exhibitionId)
+          .order("created_at", { ascending: false });
+        if (error) throw error;
+        const userIds = [...new Set((data || []).map(r => r.user_id))];
+        let profileMap = new Map<string, any>();
+        if (userIds.length > 0) {
+          const { data: profiles } = await supabase.from("profiles").select("user_id, full_name, username").in("user_id", userIds);
+          profileMap = new Map((profiles || []).map(p => [p.user_id, p]));
+        }
+        downloadCSV(
+          (data || []).map((r: any) => {
+            const p = profileMap.get(r.user_id);
+            return {
+              reviewer: p?.full_name || p?.username || "—",
+              rating: r.rating,
+              title: r.title || "",
+              content: r.content || "",
+              helpful: r.helpful_count || 0,
+              verified: r.is_verified_attendee ? "Yes" : "No",
+              date: format(new Date(r.created_at), "yyyy-MM-dd HH:mm"),
+            };
+          }),
+          `${exhibitionTitle}-reviews-${dateStr}`,
+          [
+            { key: "reviewer", label: t("Reviewer", "المُقيِّم") },
+            { key: "rating", label: t("Rating", "التقييم") },
+            { key: "title", label: t("Title", "العنوان") },
+            { key: "content", label: t("Content", "المحتوى") },
+            { key: "helpful", label: t("Helpful", "مفيد") },
+            { key: "verified", label: t("Verified", "موثق") },
+            { key: "date", label: t("Date", "التاريخ") },
+          ]
+        );
+      } else if (type === "summary") {
+        const [tickets, checkins, reviews, booths, followers] = await Promise.all([
+          supabase.from("exhibition_tickets").select("id, price_paid", { count: "exact" }).eq("exhibition_id", exhibitionId),
+          supabase.from("exhibition_tickets").select("id", { count: "exact", head: true }).eq("exhibition_id", exhibitionId).not("checked_in_at", "is", null),
+          supabase.from("exhibition_reviews").select("id, rating", { count: "exact" }).eq("exhibition_id", exhibitionId),
+          supabase.from("exhibition_booths").select("id", { count: "exact", head: true }).eq("exhibition_id", exhibitionId),
+          supabase.from("exhibition_followers").select("id", { count: "exact", head: true }).eq("exhibition_id", exhibitionId),
+        ]);
+        const revenue = (tickets.data || []).reduce((s: number, t: any) => s + (t.price_paid || 0), 0);
+        const avgRating = (reviews.data || []).length > 0
+          ? (reviews.data || []).reduce((s: number, r: any) => s + r.rating, 0) / (reviews.data || []).length
+          : 0;
+        const checkinRate = (tickets.count || 0) > 0 ? Math.round(((checkins.count || 0) / (tickets.count || 0)) * 100) : 0;
+        downloadCSV(
+          [{
+            metric_en: "Total Tickets", metric_ar: "إجمالي التذاكر", value: tickets.count || 0,
+          }, {
+            metric_en: "Checked In", metric_ar: "تم الحضور", value: checkins.count || 0,
+          }, {
+            metric_en: "Check-in Rate", metric_ar: "معدل الحضور", value: `${checkinRate}%`,
+          }, {
+            metric_en: "Revenue (SAR)", metric_ar: "الإيرادات", value: revenue,
+          }, {
+            metric_en: "Reviews", metric_ar: "التقييمات", value: reviews.count || 0,
+          }, {
+            metric_en: "Avg Rating", metric_ar: "متوسط التقييم", value: avgRating.toFixed(1),
+          }, {
+            metric_en: "Booths", metric_ar: "الأجنحة", value: booths.count || 0,
+          }, {
+            metric_en: "Followers", metric_ar: "المتابعين", value: followers.count || 0,
+          }],
+          `${exhibitionTitle}-summary-${dateStr}`,
+          [
+            { key: isAr ? "metric_ar" : "metric_en", label: t("Metric", "المؤشر") },
+            { key: "value", label: t("Value", "القيمة") },
+          ]
+        );
       }
 
       toast({ title: t("Export complete ✅", "تم التصدير ✅") });
@@ -160,10 +234,12 @@ export function ExhibitionDataExport({ exhibitionId, exhibitionTitle, isAr }: Pr
   };
 
   const exportOptions = [
+    { value: "summary" as ExportType, icon: FileSpreadsheet, label: t("Summary Report", "تقرير ملخص"), desc: t("KPIs, revenue, ratings overview", "المؤشرات والإيرادات والتقييمات") },
     { value: "attendees" as ExportType, icon: Users, label: t("Attendees", "الحضور"), desc: t("Names, emails, check-in status", "الأسماء والبريد والحضور") },
     { value: "booths" as ExportType, icon: LayoutGrid, label: t("Booths", "الأجنحة"), desc: t("Booth details, contacts, status", "تفاصيل الأجنحة وجهات الاتصال") },
     { value: "schedule" as ExportType, icon: CalendarClock, label: t("Schedule", "الجدول"), desc: t("Sessions, speakers, times", "الجلسات والمتحدثين والأوقات") },
     { value: "ticket-types" as ExportType, icon: Ticket, label: t("Ticket Types", "أنواع التذاكر"), desc: t("Types, pricing, sales", "الأنواع والأسعار والمبيعات") },
+    { value: "reviews" as ExportType, icon: Star, label: t("Reviews", "التقييمات"), desc: t("Ratings, comments, verified status", "التقييمات والتعليقات والتوثيق") },
   ];
 
   return (

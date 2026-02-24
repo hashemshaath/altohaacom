@@ -7,6 +7,8 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import { Label } from "@/components/ui/label";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import {
   Dialog,
   DialogContent,
@@ -16,8 +18,7 @@ import {
 } from "@/components/ui/dialog";
 import { toast } from "@/hooks/use-toast";
 import {
-  Megaphone, Send, Users, Bell, MessageSquare,
-  Loader2, CheckCircle2,
+  Megaphone, Send, Users, Loader2,
 } from "lucide-react";
 
 interface Props {
@@ -28,6 +29,8 @@ interface Props {
   ticketCount: number;
 }
 
+type Audience = "all" | "followers" | "ticket_holders" | "checked_in" | "not_checked_in";
+
 export function ExhibitionOrganizerQuickActions({
   exhibitionId, exhibitionTitle, isAr, followerCount, ticketCount,
 }: Props) {
@@ -37,33 +40,53 @@ export function ExhibitionOrganizerQuickActions({
   const [announcementOpen, setAnnouncementOpen] = useState(false);
   const [title, setTitle] = useState("");
   const [body, setBody] = useState("");
+  const [audience, setAudience] = useState<Audience>("all");
 
   const sendAnnouncement = useMutation({
     mutationFn: async () => {
       if (!user) throw new Error("Not authenticated");
 
-      // Get all followers
-      const { data: followers } = await supabase
-        .from("exhibition_followers")
-        .select("user_id")
-        .eq("exhibition_id", exhibitionId);
-
-      // Get all ticket holders
-      const { data: ticketHolders } = await supabase
-        .from("exhibition_tickets")
-        .select("user_id")
-        .eq("exhibition_id", exhibitionId)
-        .eq("status", "confirmed");
-
-      // Merge unique user IDs
       const allIds = new Set<string>();
-      followers?.forEach((f) => allIds.add(f.user_id));
-      ticketHolders?.forEach((t) => allIds.add(t.user_id));
-      allIds.delete(user.id); // don't notify self
 
+      if (audience === "all" || audience === "followers") {
+        const { data: followers } = await supabase
+          .from("exhibition_followers")
+          .select("user_id")
+          .eq("exhibition_id", exhibitionId);
+        followers?.forEach((f) => allIds.add(f.user_id));
+      }
+
+      if (audience === "all" || audience === "ticket_holders") {
+        const { data: ticketHolders } = await supabase
+          .from("exhibition_tickets")
+          .select("user_id")
+          .eq("exhibition_id", exhibitionId)
+          .eq("status", "confirmed");
+        ticketHolders?.forEach((t) => allIds.add(t.user_id));
+      }
+
+      if (audience === "checked_in") {
+        const { data: checkedIn } = await supabase
+          .from("exhibition_tickets")
+          .select("user_id")
+          .eq("exhibition_id", exhibitionId)
+          .not("checked_in_at", "is", null);
+        checkedIn?.forEach((t) => allIds.add(t.user_id));
+      }
+
+      if (audience === "not_checked_in") {
+        const { data: notCheckedIn } = await supabase
+          .from("exhibition_tickets")
+          .select("user_id")
+          .eq("exhibition_id", exhibitionId)
+          .is("checked_in_at", null)
+          .eq("status", "confirmed");
+        notCheckedIn?.forEach((t) => allIds.add(t.user_id));
+      }
+
+      allIds.delete(user.id);
       if (allIds.size === 0) throw new Error("No recipients");
 
-      // Batch insert notifications
       const notifications = Array.from(allIds).map((uid) => ({
         user_id: uid,
         title: `📢 ${title}`,
@@ -72,7 +95,7 @@ export function ExhibitionOrganizerQuickActions({
         body_ar: body,
         type: "exhibition_announcement" as const,
         link: `/exhibitions/${exhibitionId}`,
-        metadata: { exhibition_id: exhibitionId, sender_id: user.id },
+        metadata: { exhibition_id: exhibitionId, sender_id: user.id, audience },
       }));
 
       const { error } = await supabase.from("notifications").insert(notifications);
@@ -83,6 +106,7 @@ export function ExhibitionOrganizerQuickActions({
       setAnnouncementOpen(false);
       setTitle("");
       setBody("");
+      setAudience("all");
       toast({
         title: t("Announcement Sent! 📢", "تم إرسال الإعلان! 📢"),
         description: t(`Sent to ${count} recipients`, `تم الإرسال إلى ${count} مستلم`),
@@ -98,6 +122,14 @@ export function ExhibitionOrganizerQuickActions({
   });
 
   const totalRecipients = followerCount + ticketCount;
+
+  const audienceOptions = [
+    { value: "all", label: t("Everyone (Followers + Ticket Holders)", "الجميع (المتابعين + حاملي التذاكر)") },
+    { value: "followers", label: t("Followers Only", "المتابعين فقط") },
+    { value: "ticket_holders", label: t("Ticket Holders Only", "حاملي التذاكر فقط") },
+    { value: "checked_in", label: t("Checked-In Attendees", "الحضور المسجلين") },
+    { value: "not_checked_in", label: t("Not Yet Checked In", "لم يحضروا بعد") },
+  ];
 
   return (
     <Card className="border-primary/15 bg-gradient-to-r from-primary/5 via-transparent to-transparent">
@@ -131,13 +163,29 @@ export function ExhibitionOrganizerQuickActions({
                   </DialogTitle>
                 </DialogHeader>
                 <div className="space-y-3 pt-2">
+                  <div className="space-y-1.5">
+                    <Label className="text-xs font-medium">{t("Audience", "الجمهور المستهدف")}</Label>
+                    <Select value={audience} onValueChange={(v) => setAudience(v as Audience)}>
+                      <SelectTrigger className="h-9 rounded-lg text-xs">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {audienceOptions.map(opt => (
+                          <SelectItem key={opt.value} value={opt.value} className="text-xs">{opt.label}</SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+
                   <div className="rounded-lg bg-muted/40 p-3 flex items-center gap-2">
                     <Users className="h-4 w-4 text-muted-foreground" />
                     <span className="text-xs text-muted-foreground">
-                      {t(
-                        `Will be sent to ${totalRecipients} followers & ticket holders`,
-                        `سيتم الإرسال إلى ${totalRecipients} متابع وحامل تذكرة`,
-                      )}
+                      {audience === "all"
+                        ? t(`~${totalRecipients} followers & ticket holders`, `~${totalRecipients} متابع وحامل تذكرة`)
+                        : audience === "followers"
+                        ? t(`~${followerCount} followers`, `~${followerCount} متابع`)
+                        : t(`~${ticketCount} ticket holders`, `~${ticketCount} حامل تذكرة`)
+                      }
                     </span>
                   </div>
 

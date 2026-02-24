@@ -20,6 +20,7 @@ interface Props {
   exhibitionId: string;
   hasEnded: boolean;
   isAr: boolean;
+  creatorId?: string;
 }
 
 function StarRating({ rating, onRate, size = "md" }: { rating: number; onRate?: (r: number) => void; size?: "sm" | "md" | "lg" }) {
@@ -90,7 +91,7 @@ function HelpfulButton({ reviewId, helpfulCount, isAr }: { reviewId: string; hel
   );
 }
 
-function ReviewReplySection({ reviewId, isAr, isOrganizer }: { reviewId: string; isAr: boolean; isOrganizer?: boolean }) {
+function ReviewReplySection({ reviewId, isAr, isOrganizer, exhibitionCreatorId }: { reviewId: string; isAr: boolean; isOrganizer?: boolean; exhibitionCreatorId?: string }) {
   const { user } = useAuth();
   const queryClient = useQueryClient();
   const [showReply, setShowReply] = useState(false);
@@ -127,15 +128,23 @@ function ReviewReplySection({ reviewId, isAr, isOrganizer }: { reviewId: string;
 
   return (
     <div className="mt-2 space-y-2">
-      {replies.map((r: any) => (
-        <div key={r.id} className="ms-6 rounded-lg bg-muted/40 p-2.5 border-s-2 border-primary/20">
-          <div className="flex items-center gap-1.5">
-            <span className="text-[10px] font-semibold text-foreground">{r.profile?.full_name || r.profile?.username || (isAr ? "مستخدم" : "User")}</span>
-            <span className="text-[9px] text-muted-foreground">{format(new Date(r.created_at), "MMM d")}</span>
+      {replies.map((r: any) => {
+        const isOrganizerReply = exhibitionCreatorId && r.user_id === exhibitionCreatorId;
+        return (
+          <div key={r.id} className={`ms-6 rounded-lg p-2.5 border-s-2 ${isOrganizerReply ? "bg-primary/5 border-primary/40" : "bg-muted/40 border-primary/20"}`}>
+            <div className="flex items-center gap-1.5">
+              <span className="text-[10px] font-semibold text-foreground">{r.profile?.full_name || r.profile?.username || (isAr ? "مستخدم" : "User")}</span>
+              {isOrganizerReply && (
+                <Badge variant="secondary" className="text-[8px] h-3.5 px-1 bg-primary/10 text-primary border-0">
+                  {isAr ? "المنظم" : "Organizer"}
+                </Badge>
+              )}
+              <span className="text-[9px] text-muted-foreground">{format(new Date(r.created_at), "MMM d")}</span>
+            </div>
+            <p className="text-[11px] text-muted-foreground mt-0.5">{r.content}</p>
           </div>
-          <p className="text-[11px] text-muted-foreground mt-0.5">{r.content}</p>
-        </div>
-      ))}
+        );
+      })}
       {user && (isOrganizer || replies.length > 0) && !showReply && (
         <button onClick={() => setShowReply(true)} className="ms-6 text-[10px] text-primary hover:underline flex items-center gap-1">
           <Reply className="h-2.5 w-2.5" /> {isAr ? "رد" : "Reply"}
@@ -186,7 +195,7 @@ function ReportButton({ reviewId, isAr }: { reviewId: string; isAr: boolean }) {
   );
 }
 
-export function ExhibitionReviewsTab({ exhibitionId, hasEnded, isAr }: Props) {
+export function ExhibitionReviewsTab({ exhibitionId, hasEnded, isAr, creatorId }: Props) {
   const { user } = useAuth();
   const queryClient = useQueryClient();
   const [showForm, setShowForm] = useState(false);
@@ -495,7 +504,7 @@ export function ExhibitionReviewsTab({ exhibitionId, hasEnded, isAr }: Props) {
                     <HelpfulButton reviewId={review.id} helpfulCount={review.helpful_count || 0} isAr={isAr} />
                     <span className="text-[10px] text-muted-foreground/60 font-medium">{format(new Date(review.created_at), "MMM d, yyyy")}</span>
                   </div>
-                  <ReviewReplySection reviewId={review.id} isAr={isAr} />
+                  <ReviewReplySection reviewId={review.id} isAr={isAr} isOrganizer={!!creatorId && user?.id === creatorId} exhibitionCreatorId={creatorId} />
                 </div>
               </div>
             </CardContent>
