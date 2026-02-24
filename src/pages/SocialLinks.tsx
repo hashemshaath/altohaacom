@@ -1,4 +1,4 @@
-import { useParams } from "react-router-dom";
+import { useParams, useSearchParams } from "react-router-dom";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useSocialLinkPageByUsername } from "@/hooks/useSocialLinkPage";
 import { SEOHead } from "@/components/SEOHead";
@@ -7,7 +7,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import {
   ExternalLink, Instagram, Twitter, Facebook, Linkedin, Youtube, Globe,
   User, ArrowLeft, Share2, Check, BadgeCheck, MapPin, Briefcase, Award, Link2,
-  Pencil, LogIn, Phone, MessageCircle
+  Pencil, LogIn, Phone, MessageCircle, Eye, Users, UserPlus, UserCheck, Loader2
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
@@ -16,6 +16,51 @@ import { useState, useEffect, useMemo, useCallback, memo } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { buildSocialLinksUrl } from "@/lib/publicAppUrl";
+import { useFollowStats, useIsFollowing, useToggleFollow, usePendingFollowRequest } from "@/hooks/useFollow";
+import { countryFlag } from "@/lib/countryFlag";
+import { useCountries } from "@/hooks/useCountries";
+
+// ── Multi-language support (10 languages) ──
+const SUPPORTED_LANGUAGES = [
+  { code: "ar", label: "العربية", dir: "rtl" },
+  { code: "en", label: "English", dir: "ltr" },
+  { code: "fr", label: "Français", dir: "ltr" },
+  { code: "es", label: "Español", dir: "ltr" },
+  { code: "de", label: "Deutsch", dir: "ltr" },
+  { code: "tr", label: "Türkçe", dir: "ltr" },
+  { code: "pt", label: "Português", dir: "ltr" },
+  { code: "zh", label: "中文", dir: "ltr" },
+  { code: "ja", label: "日本語", dir: "ltr" },
+  { code: "ko", label: "한국어", dir: "ltr" },
+] as const;
+
+type LangCode = typeof SUPPORTED_LANGUAGES[number]["code"];
+
+const T: Record<string, Record<LangCode, string>> = {
+  follow: { ar: "متابعة", en: "Follow", fr: "Suivre", es: "Seguir", de: "Folgen", tr: "Takip Et", pt: "Seguir", zh: "关注", ja: "フォロー", ko: "팔로우" },
+  following: { ar: "متابَع", en: "Following", fr: "Abonné", es: "Siguiendo", de: "Folgend", tr: "Takip", pt: "Seguindo", zh: "已关注", ja: "フォロー中", ko: "팔로잉" },
+  followers: { ar: "متابع", en: "Followers", fr: "Abonnés", es: "Seguidores", de: "Follower", tr: "Takipçi", pt: "Seguidores", zh: "粉丝", ja: "フォロワー", ko: "팔로워" },
+  requested: { ar: "تم الطلب", en: "Requested", fr: "Demandé", es: "Solicitado", de: "Angefragt", tr: "İstendi", pt: "Solicitado", zh: "已请求", ja: "リクエスト済", ko: "요청됨" },
+  views: { ar: "مشاهدة", en: "Views", fr: "Vues", es: "Vistas", de: "Aufrufe", tr: "Görüntüleme", pt: "Visualizações", zh: "浏览", ja: "閲覧", ko: "조회" },
+  yearsExp: { ar: "سنوات خبرة", en: "Years Exp.", fr: "Ans d'exp.", es: "Años Exp.", de: "Jahre Erf.", tr: "Yıl Den.", pt: "Anos Exp.", zh: "年经验", ja: "年経験", ko: "년 경력" },
+  followMe: { ar: "تابعني", en: "Follow Me", fr: "Suivez-moi", es: "Sígueme", de: "Folge mir", tr: "Beni Takip Et", pt: "Siga-me", zh: "关注我", ja: "フォローする", ko: "팔로우하기" },
+  links: { ar: "الروابط", en: "Links", fr: "Liens", es: "Enlaces", de: "Links", tr: "Bağlantılar", pt: "Links", zh: "链接", ja: "リンク", ko: "링크" },
+  awards: { ar: "الجوائز والإنجازات", en: "Awards & Achievements", fr: "Prix & Réalisations", es: "Premios y Logros", de: "Auszeichnungen", tr: "Ödüller", pt: "Prêmios", zh: "奖项与成就", ja: "受賞歴", ko: "수상 경력" },
+  viewProfile: { ar: "عرض البروفايل الكامل", en: "View Full Profile", fr: "Voir le profil complet", es: "Ver perfil completo", de: "Vollständiges Profil", tr: "Tam Profili Gör", pt: "Ver perfil completo", zh: "查看完整资料", ja: "プロフィール全体を見る", ko: "전체 프로필 보기" },
+  editPage: { ar: "تعديل ونشر الصفحة", en: "Edit & Publish Page", fr: "Modifier et publier", es: "Editar y publicar", de: "Bearbeiten & Veröffentlichen", tr: "Düzenle & Yayınla", pt: "Editar e publicar", zh: "编辑并发布", ja: "編集して公開", ko: "편집 및 게시" },
+  createPage: { ar: "أنشئ صفحتك الخاصة", en: "Create your own page", fr: "Créez votre page", es: "Crea tu propia página", de: "Erstelle deine Seite", tr: "Kendi sayfanı oluştur", pt: "Crie sua página", zh: "创建你的页面", ja: "自分のページを作る", ko: "나만의 페이지 만들기" },
+  notFound: { ar: "الصفحة غير موجودة", en: "Page not found", fr: "Page introuvable", es: "Página no encontrada", de: "Seite nicht gefunden", tr: "Sayfa bulunamadı", pt: "Página não encontrada", zh: "页面未找到", ja: "ページが見つかりません", ko: "페이지를 찾을 수 없습니다" },
+  notFoundDesc: { ar: "هذه الصفحة غير موجودة أو لم يتم إنشاؤها بعد", en: "This page doesn't exist or hasn't been created yet", fr: "Cette page n'existe pas ou n'a pas encore été créée", es: "Esta página no existe o no ha sido creada aún", de: "Diese Seite existiert nicht oder wurde noch nicht erstellt", tr: "Bu sayfa mevcut değil veya henüz oluşturulmamış", pt: "Esta página não existe ou ainda não foi criada", zh: "此页面不存在或尚未创建", ja: "このページは存在しないか、まだ作成されていません", ko: "이 페이지가 존재하지 않거나 아직 생성되지 않았습니다" },
+  goHome: { ar: "الرئيسية", en: "Go Home", fr: "Accueil", es: "Inicio", de: "Startseite", tr: "Ana Sayfa", pt: "Início", zh: "首页", ja: "ホームへ", ko: "홈으로" },
+  linkCopied: { ar: "تم نسخ الرابط", en: "Link copied!", fr: "Lien copié !", es: "¡Enlace copiado!", de: "Link kopiert!", tr: "Bağlantı kopyalandı!", pt: "Link copiado!", zh: "链接已复制！", ja: "リンクをコピーしました！", ko: "링크가 복사되었습니다!" },
+  noLinks: { ar: "لا توجد روابط بعد", en: "No links yet", fr: "Aucun lien encore", es: "Sin enlaces aún", de: "Noch keine Links", tr: "Henüz bağlantı yok", pt: "Sem links ainda", zh: "暂无链接", ja: "リンクはまだありません", ko: "아직 링크가 없습니다" },
+  nationality: { ar: "الجنسية", en: "Nationality", fr: "Nationalité", es: "Nacionalidad", de: "Nationalität", tr: "Uyruk", pt: "Nacionalidade", zh: "国籍", ja: "国籍", ko: "국적" },
+  residence: { ar: "الإقامة", en: "Residence", fr: "Résidence", es: "Residencia", de: "Wohnsitz", tr: "İkamet", pt: "Residência", zh: "居住地", ja: "居住地", ko: "거주지" },
+};
+
+function t(key: string, lang: LangCode): string {
+  return T[key]?.[lang] || T[key]?.en || key;
+}
 
 const SOCIAL_ICONS: Record<string, { icon: typeof Instagram; label: string; urlPrefix?: string; gradient: string; hoverBg: string }> = {
   instagram: { icon: Instagram, label: "Instagram", urlPrefix: "https://instagram.com/", gradient: "from-pink-500 to-purple-600", hoverBg: "rgba(225,48,108,0.2)" },
@@ -63,6 +108,10 @@ interface ExtraSettings {
   show_awards: boolean;
   show_membership: boolean;
   show_full_profile_btn: boolean;
+  show_followers: boolean;
+  show_flags: boolean;
+  show_views: boolean;
+  show_language_switcher: boolean;
 }
 
 const DEFAULT_EXTRA: ExtraSettings = {
@@ -74,6 +123,10 @@ const DEFAULT_EXTRA: ExtraSettings = {
   show_awards: true,
   show_membership: true,
   show_full_profile_btn: true,
+  show_followers: true,
+  show_flags: true,
+  show_views: true,
+  show_language_switcher: true,
 };
 
 function parseExtra(customCss: string | null | undefined): ExtraSettings {
@@ -104,17 +157,48 @@ const AnimatedNumber = memo(function AnimatedNumber({ value, duration = 1200 }: 
   return <>{display.toLocaleString()}</>;
 });
 
+// ── Compact number formatter ──
+function formatCompact(n: number): string {
+  if (n >= 1_000_000) return (n / 1_000_000).toFixed(1).replace(/\.0$/, "") + "M";
+  if (n >= 1_000) return (n / 1_000).toFixed(1).replace(/\.0$/, "") + "K";
+  return n.toString();
+}
+
 export default function SocialLinks() {
   const { username } = useParams<{ username: string }>();
-  const { language } = useLanguage();
-  const isAr = language === "ar";
+  const [searchParams, setSearchParams] = useSearchParams();
+  const { language: appLanguage } = useLanguage();
   const { toast } = useToast();
   const { user } = useAuth();
   const { data, isLoading, error } = useSocialLinkPageByUsername(username);
   const [copied, setCopied] = useState(false);
   const [animated, setAnimated] = useState(false);
 
-  const isOwner = !!(user && data?.profile && user.id === data.profile.user_id);
+  // Language from URL param or app language
+  const langParam = searchParams.get("lang") as LangCode | null;
+  const lang: LangCode = SUPPORTED_LANGUAGES.find(l => l.code === langParam)?.code || (appLanguage === "ar" ? "ar" : "en");
+  const isRtl = lang === "ar";
+  const dir = isRtl ? "rtl" : "ltr";
+
+  const setLang = useCallback((code: LangCode) => {
+    setSearchParams(prev => {
+      const next = new URLSearchParams(prev);
+      next.set("lang", code);
+      return next;
+    }, { replace: true });
+  }, [setSearchParams]);
+
+  const profileUserId = data?.profile?.user_id;
+  const isOwner = !!(user && profileUserId && user.id === profileUserId);
+
+  // Follow hooks
+  const { data: followStats } = useFollowStats(profileUserId || undefined);
+  const { data: isFollowing } = useIsFollowing(profileUserId || undefined);
+  const { data: pendingRequest } = usePendingFollowRequest(profileUserId || undefined);
+  const toggleFollow = useToggleFollow(profileUserId || undefined);
+
+  // Countries for flag resolution
+  const { data: countries } = useCountries();
 
   useEffect(() => {
     const timer = setTimeout(() => setAnimated(true), 100);
@@ -129,9 +213,9 @@ export default function SocialLinks() {
     if (!username) return;
     await navigator.clipboard.writeText(buildSocialLinksUrl(username));
     setCopied(true);
-    toast({ title: isAr ? "تم نسخ الرابط" : "Link copied!" });
+    toast({ title: t("linkCopied", lang) });
     setTimeout(() => setCopied(false), 2000);
-  }, [username, isAr, toast]);
+  }, [username, lang, toast]);
 
   const shareNative = useCallback(async () => {
     if (navigator.share) {
@@ -143,12 +227,31 @@ export default function SocialLinks() {
     }
   }, [username, copyLink]);
 
+  const handleFollow = useCallback(() => {
+    if (!user) return;
+    toggleFollow.mutate(!!isFollowing, {
+      onSuccess: (result: any) => {
+        if (result?.type === "request_sent") {
+          toast({ title: t("requested", lang) });
+        }
+      },
+    });
+  }, [user, isFollowing, toggleFollow, lang, toast]);
+
   const googleFontLink = useMemo(() => {
     const ff = data?.page?.font_family;
     if (!ff || ff === "default") return null;
     const name = ff === "playfair" ? "Playfair Display" : ff === "cairo" ? "Cairo" : ff === "tajawal" ? "Tajawal" : ff === "montserrat" ? "Montserrat" : ff === "poppins" ? "Poppins" : ff === "roboto" ? "Roboto" : "Inter";
     return `https://fonts.googleapis.com/css2?family=${encodeURIComponent(name)}:wght@400;600;700&display=swap`;
   }, [data?.page?.font_family]);
+
+  // Resolve country name from code
+  const getCountryName = useCallback((code: string | null | undefined): string => {
+    if (!code || !countries) return "";
+    const c = countries.find(c => c.code === code);
+    if (!c) return code;
+    return isRtl ? (c.name_ar || c.name) : c.name;
+  }, [countries, isRtl]);
 
   if (isLoading) {
     return (
@@ -170,18 +273,18 @@ export default function SocialLinks() {
 
   if (error || !data?.profile) {
     return (
-      <div className="flex min-h-screen flex-col items-center justify-center gap-5 p-4" style={{ background: "linear-gradient(180deg, #0a0a12 0%, #0d0d18 100%)" }}>
+      <div className="flex min-h-screen flex-col items-center justify-center gap-5 p-4" dir={dir} style={{ background: "linear-gradient(180deg, #0a0a12 0%, #0d0d18 100%)" }}>
         <div className="rounded-full p-6" style={{ background: "rgba(255,255,255,0.02)", border: "1px solid rgba(255,255,255,0.05)" }}>
           <User className="h-10 w-10" style={{ color: "rgba(255,255,255,0.15)" }} />
         </div>
         <div className="text-center">
-          <h1 className="text-xl font-bold" style={{ color: "#ffffff" }}>{isAr ? "الصفحة غير موجودة" : "Page not found"}</h1>
+          <h1 className="text-xl font-bold" style={{ color: "#ffffff" }}>{t("notFound", lang)}</h1>
           <p className="mt-2 text-sm max-w-xs" style={{ color: "rgba(255,255,255,0.35)" }}>
-            {isAr ? "هذه الصفحة غير موجودة أو لم يتم إنشاؤها بعد" : "This page doesn't exist or hasn't been created yet"}
+            {t("notFoundDesc", lang)}
           </p>
         </div>
         <Button asChild variant="outline" size="sm" className="mt-2" style={{ borderColor: "rgba(255,255,255,0.12)", color: "#ffffff", background: "rgba(255,255,255,0.04)" }}>
-          <Link to="/"><ArrowLeft className="me-1.5 h-3.5 w-3.5" />{isAr ? "الرئيسية" : "Go Home"}</Link>
+          <Link to="/"><ArrowLeft className="me-1.5 h-3.5 w-3.5" />{t("goHome", lang)}</Link>
         </Button>
       </div>
     );
@@ -193,21 +296,21 @@ export default function SocialLinks() {
   const fontSize = FONT_SIZE_MAP[extra.font_size] || FONT_SIZE_MAP.md;
   const fontFamily = FONT_MAP[page?.font_family || "default"] || "inherit";
 
-  const displayName = isAr
+  const displayName = isRtl
     ? (profile.display_name_ar || profile.full_name_ar || profile.display_name || profile.full_name || "")
     : (profile.display_name || profile.full_name || profile.display_name_ar || profile.full_name_ar || "");
 
-  const bio = isAr
+  const bio = isRtl
     ? ((profile as any).bio_ar || (profile as any).bio || page?.bio_ar || page?.bio)
     : ((profile as any).bio || (profile as any).bio_ar || page?.bio || page?.bio_ar);
 
-  const title = isAr ? (page?.page_title_ar || page?.page_title || displayName) : (page?.page_title || page?.page_title_ar || displayName);
+  const title = isRtl ? (page?.page_title_ar || page?.page_title || displayName) : (page?.page_title || page?.page_title_ar || displayName);
 
-  const specialization = isAr
+  const specialization = isRtl
     ? ((profile as any).specialization_ar || (profile as any).specialization)
     : ((profile as any).specialization || (profile as any).specialization_ar);
 
-  const jobTitle = isAr
+  const jobTitle = isRtl
     ? ((profile as any).job_title_ar || (profile as any).job_title)
     : ((profile as any).job_title || (profile as any).job_title_ar);
 
@@ -234,21 +337,24 @@ export default function SocialLinks() {
   const yearsExp = (profile as any).years_of_experience;
   const city = (profile as any).city;
   const countryCode = (profile as any).country_code;
+  const nationalityCode = (profile as any).nationality;
+  const secondNationalityCode = (profile as any).second_nationality;
+  const showNationality = (profile as any).show_nationality !== false;
   const membershipTier = (profile as any).membership_tier;
   const globalAwards = (profile as any).global_awards;
   const viewCount = (profile as any).view_count;
   const hasCover = !!coverImage;
 
-  // googleFontLink already computed above before early returns
-
   const accentColor = "#c4a265";
   const accentLight = "rgba(196,162,101,0.12)";
   const accentMedium = "rgba(196,162,101,0.25)";
 
+  const followersCount = followStats?.followers || 0;
+
   return (
     <div
       className="flex min-h-screen flex-col items-center"
-      dir={isAr ? "rtl" : "ltr"}
+      dir={dir}
       style={{
         background: "linear-gradient(180deg, #0a0a12 0%, #0d0d18 50%, #0a0a12 100%)",
         fontFamily,
@@ -281,13 +387,13 @@ export default function SocialLinks() {
         }} />
 
         {/* Top Actions */}
-        <div className={`absolute top-4 ${isAr ? "left-4" : "right-4"} z-20 flex gap-2 transition-all duration-700 ${animated ? "opacity-100 translate-y-0" : "opacity-0 -translate-y-4"}`}>
+        <div className={`absolute top-4 ${isRtl ? "left-4" : "right-4"} z-20 flex gap-2 transition-all duration-700 ${animated ? "opacity-100 translate-y-0" : "opacity-0 -translate-y-4"}`}>
           {isOwner && (
             <Link
               to="/social-links"
               className="flex h-10 w-10 items-center justify-center rounded-full backdrop-blur-xl transition-all duration-300 hover:scale-110 active:scale-95"
               style={{ backgroundColor: "rgba(196,162,101,0.2)", border: "1px solid rgba(196,162,101,0.35)", color: accentColor }}
-              title={isAr ? "تعديل" : "Edit"}
+              title={isRtl ? "تعديل" : "Edit"}
             >
               <Pencil className="h-4 w-4" />
             </Link>
@@ -300,6 +406,35 @@ export default function SocialLinks() {
             {copied ? <Check className="h-4 w-4" /> : <Share2 className="h-4 w-4" />}
           </button>
         </div>
+
+        {/* Language Switcher */}
+        {extra.show_language_switcher && (
+          <div className={`absolute top-4 ${isRtl ? "right-4" : "left-4"} z-20 transition-all duration-700 ${animated ? "opacity-100 translate-y-0" : "opacity-0 -translate-y-4"}`}>
+            <div className="relative group">
+              <button
+                className="flex h-10 w-10 items-center justify-center rounded-full backdrop-blur-xl transition-all duration-300 hover:scale-110 active:scale-95"
+                style={{ backgroundColor: "rgba(255,255,255,0.07)", border: "1px solid rgba(255,255,255,0.1)", color: "#fff" }}
+              >
+                <Globe className="h-4 w-4" />
+              </button>
+              <div className="absolute top-12 start-0 min-w-[140px] rounded-xl overflow-hidden opacity-0 pointer-events-none group-hover:opacity-100 group-hover:pointer-events-auto group-focus-within:opacity-100 group-focus-within:pointer-events-auto transition-all duration-200 z-50"
+                style={{ background: "rgba(20,20,30,0.95)", border: "1px solid rgba(255,255,255,0.1)", backdropFilter: "blur(20px)" }}
+              >
+                {SUPPORTED_LANGUAGES.map(l => (
+                  <button
+                    key={l.code}
+                    onClick={() => setLang(l.code)}
+                    className="w-full text-start px-4 py-2 text-xs font-medium transition-colors hover:bg-white/5 flex items-center justify-between"
+                    style={{ color: lang === l.code ? accentColor : "rgba(255,255,255,0.6)" }}
+                  >
+                    <span>{l.label}</span>
+                    {lang === l.code && <Check className="h-3 w-3" />}
+                  </button>
+                ))}
+              </div>
+            </div>
+          </div>
+        )}
 
         {/* Avatar */}
         <div className={`absolute -bottom-16 left-1/2 -translate-x-1/2 z-20 transition-all duration-700 delay-150 ${animated ? "opacity-100 scale-100" : "opacity-0 scale-75"}`}>
@@ -324,7 +459,7 @@ export default function SocialLinks() {
       <div className="relative z-10 w-full max-w-lg px-5 pt-20 pb-12">
 
         {/* Name & Meta */}
-        <div className={`text-center mb-8 transition-all duration-700 delay-250 ${animated ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}>
+        <div className={`text-center mb-6 transition-all duration-700 delay-250 ${animated ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}>
           <h1 className={`font-bold tracking-tight ${fontSize.name}`} style={{ color: "#ffffff", textShadow: "0 2px 20px rgba(0,0,0,0.3)" }}>
             {title}
           </h1>
@@ -333,9 +468,36 @@ export default function SocialLinks() {
             @{profile.username}
           </p>
 
+          {/* Nationality Flags */}
+          {extra.show_flags && showNationality && (nationalityCode || countryCode) && (
+            <div className="flex items-center justify-center flex-wrap gap-3 mt-3">
+              {nationalityCode && (
+                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-medium"
+                  style={{ background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.08)", color: "rgba(255,255,255,0.55)" }}>
+                  <span className="text-base leading-none">{countryFlag(nationalityCode)}</span>
+                  {getCountryName(nationalityCode)}
+                </span>
+              )}
+              {countryCode && countryCode !== nationalityCode && (
+                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-medium"
+                  style={{ background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.08)", color: "rgba(255,255,255,0.55)" }}>
+                  <MapPin className="h-3 w-3" style={{ color: accentColor }} />
+                  <span className="text-base leading-none">{countryFlag(countryCode)}</span>
+                  {getCountryName(countryCode)}
+                </span>
+              )}
+              {secondNationalityCode && secondNationalityCode !== nationalityCode && (
+                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-medium"
+                  style={{ background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.08)", color: "rgba(255,255,255,0.55)" }}>
+                  <span className="text-base leading-none">{countryFlag(secondNationalityCode)}</span>
+                </span>
+              )}
+            </div>
+          )}
+
           {/* Job & Location */}
           {(extra.show_job_title || extra.show_location) && (
-            <div className="flex items-center justify-center flex-wrap gap-x-5 gap-y-1.5 mt-4">
+            <div className="flex items-center justify-center flex-wrap gap-x-5 gap-y-1.5 mt-3">
               {extra.show_job_title && (jobTitle || specialization) && (
                 <span className={`flex items-center gap-1.5 font-medium ${fontSize.meta}`} style={{ color: "rgba(255,255,255,0.5)" }}>
                   <Briefcase className="h-3.5 w-3.5" style={{ color: accentColor }} />
@@ -345,7 +507,7 @@ export default function SocialLinks() {
               {extra.show_location && (city || countryCode) && (
                 <span className={`flex items-center gap-1.5 font-medium ${fontSize.meta}`} style={{ color: "rgba(255,255,255,0.5)" }}>
                   <MapPin className="h-3.5 w-3.5" style={{ color: accentColor }} />
-                  {city}{city && countryCode ? ", " : ""}{countryCode}
+                  {city}{city && countryCode ? ", " : ""}{countryCode && countryFlag(countryCode)}
                 </span>
               )}
             </div>
@@ -353,7 +515,7 @@ export default function SocialLinks() {
 
           {/* Membership */}
           {extra.show_membership && membershipTier && membershipTier !== "free" && (
-            <div className="mt-4">
+            <div className="mt-3">
               <span className="inline-flex items-center gap-1.5 px-4 py-1.5 text-[11px] font-semibold rounded-full capitalize tracking-wide"
                 style={{ background: `linear-gradient(135deg, ${accentLight}, rgba(196,162,101,0.08))`, color: accentColor, border: `1px solid ${accentMedium}`, backdropFilter: "blur(10px)" }}>
                 ✦ {membershipTier}
@@ -362,8 +524,55 @@ export default function SocialLinks() {
           )}
         </div>
 
+        {/* Follow Button + Follower Count */}
+        {extra.show_followers && (
+          <div className={`flex items-center justify-center gap-4 mb-6 transition-all duration-700 delay-280 ${animated ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}>
+            {/* Follow / Unfollow Button */}
+            {!isOwner && (
+              <button
+                onClick={handleFollow}
+                disabled={toggleFollow.isPending || !user}
+                className="group relative inline-flex items-center gap-2 px-6 py-2.5 rounded-full text-sm font-semibold transition-all duration-300 hover:scale-105 active:scale-95 disabled:opacity-50"
+                style={{
+                  background: isFollowing
+                    ? "rgba(255,255,255,0.06)"
+                    : `linear-gradient(135deg, ${accentColor}, #d4b576)`,
+                  border: isFollowing ? "1px solid rgba(255,255,255,0.12)" : "none",
+                  color: isFollowing ? "rgba(255,255,255,0.7)" : "#0a0a12",
+                  boxShadow: isFollowing ? "none" : `0 4px 20px rgba(196,162,101,0.3)`,
+                }}
+              >
+                {toggleFollow.isPending ? (
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                ) : isFollowing ? (
+                  <UserCheck className="h-4 w-4" />
+                ) : pendingRequest ? (
+                  <User className="h-4 w-4" />
+                ) : (
+                  <UserPlus className="h-4 w-4" />
+                )}
+                {toggleFollow.isPending
+                  ? "..."
+                  : isFollowing
+                    ? t("following", lang)
+                    : pendingRequest
+                      ? t("requested", lang)
+                      : t("follow", lang)
+                }
+              </button>
+            )}
+
+            {/* Follower count */}
+            <div className="flex items-center gap-1.5 text-sm" style={{ color: "rgba(255,255,255,0.4)" }}>
+              <Users className="h-3.5 w-3.5" />
+              <span className="font-semibold tabular-nums" style={{ color: "rgba(255,255,255,0.7)" }}>{formatCompact(followersCount)}</span>
+              <span className="text-xs">{t("followers", lang)}</span>
+            </div>
+          </div>
+        )}
+
         {/* Stats */}
-        {extra.show_stats && (yearsExp || viewCount > 0) && (
+        {extra.show_stats && (yearsExp || (extra.show_views && viewCount > 0)) && (
           <div className={`flex justify-center gap-2 mb-8 transition-all duration-700 delay-300 ${animated ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}>
             {yearsExp && (
               <div className="text-center px-7 py-4 rounded-2xl backdrop-blur-sm" style={{ background: "rgba(255,255,255,0.025)", border: "1px solid rgba(255,255,255,0.05)" }}>
@@ -371,17 +580,17 @@ export default function SocialLinks() {
                   <AnimatedNumber value={yearsExp} /><span style={{ color: accentColor }}>+</span>
                 </p>
                 <p className="text-[10px] uppercase tracking-[0.15em] mt-1.5 font-medium" style={{ color: "rgba(255,255,255,0.3)" }}>
-                  {isAr ? "سنوات خبرة" : "Years Exp."}
+                  {t("yearsExp", lang)}
                 </p>
               </div>
             )}
-            {viewCount > 0 && (
+            {extra.show_views && viewCount > 0 && (
               <div className="text-center px-7 py-4 rounded-2xl backdrop-blur-sm" style={{ background: "rgba(255,255,255,0.025)", border: "1px solid rgba(255,255,255,0.05)" }}>
                 <p className="text-2xl font-bold tabular-nums" style={{ color: "#fff" }}>
                   <AnimatedNumber value={viewCount} />
                 </p>
                 <p className="text-[10px] uppercase tracking-[0.15em] mt-1.5 font-medium" style={{ color: "rgba(255,255,255,0.3)" }}>
-                  {isAr ? "مشاهدات" : "Views"}
+                  {t("views", lang)}
                 </p>
               </div>
             )}
@@ -392,7 +601,7 @@ export default function SocialLinks() {
         {extra.show_bio && bio && (
           <div className={`mb-8 transition-all duration-700 delay-350 ${animated ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}>
             <div className="rounded-2xl px-5 py-4 backdrop-blur-sm" style={{ background: "rgba(255,255,255,0.025)", border: "1px solid rgba(255,255,255,0.05)" }}>
-              <p className={`leading-relaxed text-center ${fontSize.bio}`} style={{ color: "rgba(255,255,255,0.65)" }}>
+              <p className={`leading-relaxed text-center ${fontSize.bio}`} dir="auto" style={{ color: "rgba(255,255,255,0.65)" }}>
                 {bio}
               </p>
             </div>
@@ -405,7 +614,7 @@ export default function SocialLinks() {
             <div className="rounded-2xl p-5 backdrop-blur-sm" style={{ background: "rgba(255,255,255,0.025)", border: "1px solid rgba(255,255,255,0.05)" }}>
               <h3 className="text-[10px] font-semibold uppercase tracking-[0.2em] mb-4 flex items-center gap-2" style={{ color: accentColor }}>
                 <Award className="h-3.5 w-3.5" />
-                {isAr ? "الجوائز والإنجازات" : "Awards & Achievements"}
+                {t("awards", lang)}
               </h3>
               <div className="space-y-2">
                 {globalAwards.map((award: any, i: number) => (
@@ -415,7 +624,7 @@ export default function SocialLinks() {
                       {award.icon === "gold" ? "🏅" : award.icon === "tabakh" ? "👨‍🍳" : "🏆"}
                     </span>
                     <span className="flex-1 text-sm font-medium" style={{ color: "rgba(255,255,255,0.75)" }}>
-                      {isAr ? (award.name_ar || award.name) : (award.name || award.name_ar)}
+                      {isRtl ? (award.name_ar || award.name) : (award.name || award.name_ar)}
                     </span>
                     {award.year && <span className="text-xs font-medium tabular-nums" style={{ color: "rgba(255,255,255,0.25)" }}>{award.year}</span>}
                   </div>
@@ -429,7 +638,7 @@ export default function SocialLinks() {
         {page?.show_social_icons !== false && (socialPlatforms.length > 0 || whatsapp || phone) && (
           <div className={`mb-8 transition-all duration-700 delay-450 ${animated ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}>
             <h3 className="text-[10px] font-semibold uppercase tracking-[0.2em] mb-4 text-center" style={{ color: "rgba(255,255,255,0.25)" }}>
-              {isAr ? "تابعني" : "Follow Me"}
+              {t("followMe", lang)}
             </h3>
             <div className="flex justify-center flex-wrap gap-3">
               {socialPlatforms.map(({ key, value }, index) => {
@@ -475,7 +684,7 @@ export default function SocialLinks() {
                   href={`tel:${phone}`}
                   className="group relative flex h-12 w-12 items-center justify-center rounded-full transition-all duration-300 hover:scale-110 active:scale-95"
                   style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.08)", color: "#ffffff" }}
-                  title={isAr ? "اتصل" : "Call"}
+                  title={isRtl ? "اتصل" : "Call"}
                 >
                   <div className="absolute inset-0 rounded-full opacity-0 group-hover:opacity-100 transition-opacity" style={{ background: "rgba(255,255,255,0.08)" }} />
                   <Phone className="h-5 w-5 relative z-10" />
@@ -489,7 +698,7 @@ export default function SocialLinks() {
         {items.length > 0 && (
           <div className={`space-y-3 mb-8 transition-all duration-700 delay-500 ${animated ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}>
             <h3 className="text-[10px] font-semibold uppercase tracking-[0.2em] mb-4 text-center" style={{ color: "rgba(255,255,255,0.25)" }}>
-              {isAr ? "الروابط" : "Links"}
+              {t("links", lang)}
             </h3>
             {items.map((item, index) => (
               <a
@@ -518,7 +727,7 @@ export default function SocialLinks() {
                   <span className="text-xl shrink-0 relative z-10">{item.icon}</span>
                 )}
                 <span className={`flex-1 font-medium text-center relative z-10 ${fontSize.link}`}>
-                  {isAr ? (item.title_ar || item.title) : item.title}
+                  {isRtl ? (item.title_ar || item.title) : item.title}
                 </span>
                 <ExternalLink className="h-4 w-4 opacity-20 group-hover:opacity-60 transition-opacity shrink-0 relative z-10" />
               </a>
@@ -532,7 +741,7 @@ export default function SocialLinks() {
             style={{ background: "rgba(255,255,255,0.015)", border: "1px solid rgba(255,255,255,0.03)" }}>
             <Link2 className="h-8 w-8 mx-auto mb-3" style={{ color: "rgba(255,255,255,0.1)" }} />
             <p className="text-sm font-medium" style={{ color: "rgba(255,255,255,0.2)" }}>
-              {isAr ? "لا توجد روابط بعد" : "No links yet"}
+              {t("noLinks", lang)}
             </p>
           </div>
         )}
@@ -550,7 +759,7 @@ export default function SocialLinks() {
               }}
             >
               <User className="h-4 w-4" />
-              {isAr ? "عرض البروفايل الكامل" : "View Full Profile"}
+              {t("viewProfile", lang)}
             </Link>
           </div>
         )}
@@ -568,7 +777,7 @@ export default function SocialLinks() {
               }}
             >
               <Pencil className="h-4 w-4" />
-              {isAr ? "تعديل ونشر الصفحة" : "Edit & Publish Page"}
+              {t("editPage", lang)}
             </Link>
           </div>
         )}
@@ -586,7 +795,7 @@ export default function SocialLinks() {
               }}
             >
               <LogIn className="h-3.5 w-3.5" />
-              {isAr ? "أنشئ صفحتك الخاصة" : "Create your own page"}
+              {t("createPage", lang)}
             </Link>
           </div>
         )}

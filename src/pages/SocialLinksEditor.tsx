@@ -118,6 +118,10 @@ interface ExtraSettings {
   show_awards: boolean;
   show_membership: boolean;
   show_full_profile_btn: boolean;
+  show_followers: boolean;
+  show_flags: boolean;
+  show_views: boolean;
+  show_language_switcher: boolean;
 }
 
 const DEFAULT_EXTRA: ExtraSettings = {
@@ -129,6 +133,10 @@ const DEFAULT_EXTRA: ExtraSettings = {
   show_awards: true,
   show_membership: true,
   show_full_profile_btn: true,
+  show_followers: true,
+  show_flags: true,
+  show_views: true,
+  show_language_switcher: true,
 };
 
 function parseExtra(customCss: string | null): ExtraSettings {
@@ -380,6 +388,10 @@ export default function SocialLinksEditor() {
     { key: "show_job_title" as const, label: isAr ? "المسمى الوظيفي" : "Job Title", icon: Briefcase },
     { key: "show_location" as const, label: isAr ? "الموقع" : "Location", icon: Globe },
     { key: "show_stats" as const, label: isAr ? "الإحصائيات" : "Stats", icon: BarChart3 },
+    { key: "show_views" as const, label: isAr ? "عدد المشاهدات" : "View Count", icon: Eye },
+    { key: "show_followers" as const, label: isAr ? "زر المتابعة والمتابعين" : "Follow Button & Count", icon: TrendingUp },
+    { key: "show_flags" as const, label: isAr ? "أعلام الجنسية والإقامة" : "Nationality & Residence Flags", icon: Globe },
+    { key: "show_language_switcher" as const, label: isAr ? "محوّل اللغات" : "Language Switcher", icon: Globe },
     { key: "show_awards" as const, label: isAr ? "الجوائز" : "Awards", icon: Sparkles },
     { key: "show_membership" as const, label: isAr ? "العضوية" : "Membership", icon: Settings2 },
     { key: "show_full_profile_btn" as const, label: isAr ? "زر البروفايل الكامل" : "Full Profile Button", icon: Eye },
