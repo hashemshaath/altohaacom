@@ -21,7 +21,7 @@ import { countryFlag } from "@/lib/countryFlag";
 import { useCountries } from "@/hooks/useCountries";
 import {
   THEME_COLORS, BUTTON_STYLES_MAP, FONT_MAP, FONT_SIZE_MAP,
-  parseExtra, type ExtraSettings,
+  parseExtra, getButtonStyleOverrides, type ExtraSettings,
 } from "@/lib/socialLinksConstants";
 
 // ── Multi-language support (10 languages) ──
@@ -675,6 +675,7 @@ export default function SocialLinks() {
                     opacity: animated ? 1 : 0,
                     transform: animated ? "translateY(0)" : "translateY(16px)",
                     transition: `all 0.5s cubic-bezier(0.4,0,0.2,1) ${500 + index * 80}ms`,
+                    ...(!buttonColorStyle.backgroundColor ? getButtonStyleOverrides(page?.button_style || "rounded", theme.accent, theme.card, theme.border) : {}),
                   }}
                   onMouseEnter={e => {
                     if (!buttonColorStyle.backgroundColor) {

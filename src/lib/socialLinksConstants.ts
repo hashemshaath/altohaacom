@@ -1,3 +1,4 @@
+import type React from "react";
 // ── Shared constants for Social Links bio page & editor ──
 
 export interface ThemeColors {
@@ -43,7 +44,24 @@ export const BUTTON_STYLES_MAP: Record<string, string> = {
   square: "rounded-lg",
   sharp: "rounded-none",
   outline: "rounded-2xl border-2 bg-transparent",
+  gradient: "rounded-2xl",
+  glass: "rounded-2xl backdrop-blur-xl",
+  neon: "rounded-2xl",
 };
+
+/** Returns inline style overrides for special button styles */
+export function getButtonStyleOverrides(styleId: string, accent: string, card: string, border: string): React.CSSProperties {
+  switch (styleId) {
+    case "gradient":
+      return { background: `linear-gradient(135deg, ${accent}33, ${accent}11)`, borderColor: `${accent}44` };
+    case "glass":
+      return { background: `${card}cc`, borderColor: `${border}`, backdropFilter: "blur(16px)" };
+    case "neon":
+      return { background: "transparent", borderColor: accent, boxShadow: `0 0 12px ${accent}44, inset 0 0 12px ${accent}11` };
+    default:
+      return {};
+  }
+}
 
 export const FONT_MAP: Record<string, string> = {
   default: "inherit",

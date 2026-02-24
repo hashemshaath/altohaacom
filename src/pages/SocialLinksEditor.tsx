@@ -25,7 +25,7 @@ import { Link } from "react-router-dom";
 import { QRCodeSVG } from "qrcode.react";
 import {
   Palette, Eye, Link as LinkIcon, Plus, Trash2, ExternalLink,
-  Globe, Save, Copy, Check, QrCode, Download,
+  Globe, Save, Copy, Check, QrCode, Download, Upload,
   BarChart3, MousePointerClick, Pencil, Instagram, Twitter,
   Facebook, Linkedin, Youtube, Smartphone, Type, EyeOff, Settings2,
   Phone, MessageCircle, Music, ShoppingBag, CalendarDays, Video, Briefcase,
@@ -69,6 +69,9 @@ const BUTTON_STYLES = [
   { id: "square", label: "Square", labelAr: "مربع" },
   { id: "sharp", label: "Sharp", labelAr: "حاد" },
   { id: "outline", label: "Outline", labelAr: "إطار" },
+  { id: "gradient", label: "Gradient", labelAr: "تدرج" },
+  { id: "glass", label: "Glass", labelAr: "زجاجي" },
+  { id: "neon", label: "Neon", labelAr: "نيون" },
 ];
 
 // FONT_FAMILIES now imported from shared constants
@@ -82,7 +85,7 @@ const FONT_SIZES = [
 
 import {
   THEME_COLORS, THEME_PREVIEW_MAP, BUTTON_STYLES_MAP, FONT_MAP, FONT_SIZE_MAP,
-  FONT_FAMILIES, parseExtra, DEFAULT_EXTRA, detectLinkType,
+  FONT_FAMILIES, parseExtra, DEFAULT_EXTRA, detectLinkType, getButtonStyleOverrides,
   type ExtraSettings, type PreviewTheme,
 } from "@/lib/socialLinksConstants";
 
@@ -650,12 +653,13 @@ export default function SocialLinksEditor() {
               {/* Left: Editor */}
               <div className="space-y-4">
                 <Tabs defaultValue="socials" className="w-full">
-                  <TabsList className="w-full grid grid-cols-5 h-11">
+                  <TabsList className="w-full grid grid-cols-6 h-11">
                     <TabsTrigger value="socials" className="text-xs gap-1"><Globe className="h-3 w-3 hidden sm:block" />{isAr ? "الحسابات" : "Accounts"}</TabsTrigger>
                     <TabsTrigger value="settings" className="text-xs gap-1"><Settings2 className="h-3 w-3 hidden sm:block" />{isAr ? "الإعدادات" : "Settings"}</TabsTrigger>
                     <TabsTrigger value="links" className="text-xs gap-1"><LinkIcon className="h-3 w-3 hidden sm:block" />{isAr ? "الروابط" : "Links"}</TabsTrigger>
                     <TabsTrigger value="appearance" className="text-xs gap-1"><Palette className="h-3 w-3 hidden sm:block" />{isAr ? "المظهر" : "Style"}</TabsTrigger>
                     <TabsTrigger value="visibility" className="text-xs gap-1"><Eye className="h-3 w-3 hidden sm:block" />{isAr ? "العرض" : "Display"}</TabsTrigger>
+                    <TabsTrigger value="analytics" className="text-xs gap-1"><BarChart3 className="h-3 w-3 hidden sm:block" />{isAr ? "التحليلات" : "Analytics"}</TabsTrigger>
                   </TabsList>
 
                   {/* ── Social Accounts Tab ── */}
@@ -1180,7 +1184,7 @@ export default function SocialLinksEditor() {
                         </CardTitle>
                       </CardHeader>
                       <CardContent className="space-y-4 pt-3">
-                        <div className="grid grid-cols-5 gap-1.5">
+                        <div className="grid grid-cols-3 sm:grid-cols-4 gap-1.5">
                           {BUTTON_STYLES.map(s => (
                             <button
                               key={s.id}
@@ -1361,6 +1365,166 @@ export default function SocialLinksEditor() {
                         )}
                       </CardContent>
                     </Card>
+
+                    {/* Import / Export */}
+                    <Card className="overflow-hidden">
+                      <CardHeader className="pb-3 bg-gradient-to-r from-muted/40 to-transparent">
+                        <CardTitle className="text-sm flex items-center gap-2">
+                          <div className="h-7 w-7 rounded-lg bg-primary/10 flex items-center justify-center">
+                            <Download className="h-3.5 w-3.5 text-primary" />
+                          </div>
+                          {isAr ? "استيراد / تصدير" : "Import / Export"}
+                        </CardTitle>
+                        <p className="text-[11px] text-muted-foreground">
+                          {isAr ? "نسخ احتياطي أو نقل إعدادات الصفحة" : "Backup or transfer your page settings"}
+                        </p>
+                      </CardHeader>
+                      <CardContent className="space-y-3 pt-3">
+                        <div className="grid grid-cols-2 gap-3">
+                          <Button variant="outline" size="sm" className="gap-1.5" onClick={() => {
+                            const exportData = {
+                              version: 1,
+                              page: { ...form, custom_css: JSON.stringify(extra) },
+                              socials,
+                              contacts,
+                              items: items.map(i => ({ title: i.title, title_ar: i.title_ar, url: i.url, icon: i.icon, link_type: i.link_type, thumbnail_url: i.thumbnail_url })),
+                            };
+                            const blob = new Blob([JSON.stringify(exportData, null, 2)], { type: "application/json" });
+                            const a = document.createElement("a");
+                            a.href = URL.createObjectURL(blob);
+                            a.download = `${profile?.username || "social-links"}-export.json`;
+                            a.click();
+                            URL.revokeObjectURL(a.href);
+                            toast({ title: isAr ? "✅ تم تصدير الإعدادات" : "✅ Settings exported" });
+                          }}>
+                            <Download className="h-3.5 w-3.5" />{isAr ? "تصدير JSON" : "Export JSON"}
+                          </Button>
+                          <div>
+                            <Label htmlFor="import-json" className="cursor-pointer">
+                              <Button variant="outline" size="sm" className="gap-1.5 w-full pointer-events-none" tabIndex={-1}>
+                                <Upload className="h-3.5 w-3.5" />{isAr ? "استيراد JSON" : "Import JSON"}
+                              </Button>
+                            </Label>
+                            <input id="import-json" type="file" accept=".json,application/json" className="hidden" onChange={async (e) => {
+                              const file = e.target.files?.[0];
+                              if (!file) return;
+                              try {
+                                const text = await file.text();
+                                const data = JSON.parse(text);
+                                if (!data.version || !data.page) throw new Error("Invalid format");
+                                const importedExtra = data.page.custom_css ? parseExtra(data.page.custom_css) : { ...DEFAULT_EXTRA };
+                                const { custom_css, ...pageFields } = data.page;
+                                setForm(f => ({ ...f, ...pageFields }));
+                                setExtra(importedExtra);
+                                if (data.socials) setSocials(s => ({ ...s, ...data.socials }));
+                                if (data.contacts) setContacts(c => ({ ...c, ...data.contacts }));
+                                setHasUnsavedChanges(true);
+                                toast({ title: isAr ? "✅ تم استيراد الإعدادات — اضغط حفظ" : "✅ Settings imported — press Save" });
+                              } catch {
+                                toast({ title: isAr ? "ملف غير صالح" : "Invalid file", variant: "destructive" });
+                              }
+                              e.target.value = "";
+                            }} />
+                          </div>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  </TabsContent>
+
+                  {/* ── Analytics Tab ── */}
+                  <TabsContent value="analytics" className="space-y-4 mt-4 animate-in fade-in slide-in-from-bottom-2 duration-300">
+                    <Card className="overflow-hidden">
+                      <CardHeader className="pb-3 bg-gradient-to-r from-muted/40 to-transparent">
+                        <CardTitle className="text-sm flex items-center gap-2">
+                          <div className="h-7 w-7 rounded-lg bg-primary/10 flex items-center justify-center">
+                            <BarChart3 className="h-3.5 w-3.5 text-primary" />
+                          </div>
+                          {isAr ? "أداء الروابط" : "Link Performance"}
+                        </CardTitle>
+                        <p className="text-[11px] text-muted-foreground">
+                          {isAr ? "تحليل النقرات على كل رابط" : "Click analysis for each link"}
+                        </p>
+                      </CardHeader>
+                      <CardContent className="pt-3">
+                        {items.length === 0 ? (
+                          <div className="text-center py-8">
+                            <BarChart3 className="h-8 w-8 mx-auto text-muted-foreground/30 mb-2" />
+                            <p className="text-xs text-muted-foreground">{isAr ? "أضف روابط لرؤية التحليلات" : "Add links to see analytics"}</p>
+                          </div>
+                        ) : (
+                          <div className="space-y-2.5">
+                            {items
+                              .slice()
+                              .sort((a, b) => (b.click_count || 0) - (a.click_count || 0))
+                              .map(item => {
+                                const clicks = item.click_count || 0;
+                                const maxClicks = Math.max(...items.map(i => i.click_count || 0), 1);
+                                const pct = Math.round((clicks / maxClicks) * 100);
+                                return (
+                                  <div key={item.id} className="space-y-1">
+                                    <div className="flex items-center justify-between">
+                                      <span className="text-xs font-medium truncate flex-1">{item.icon && <span className="me-1">{item.icon}</span>}{item.title}</span>
+                                      <span className="text-xs font-bold tabular-nums ms-2">{clicks}</span>
+                                    </div>
+                                    <div className="h-2 rounded-full bg-muted/50 overflow-hidden">
+                                      <div className="h-full rounded-full bg-primary/60 transition-all duration-500" style={{ width: `${pct}%` }} />
+                                    </div>
+                                  </div>
+                                );
+                              })}
+                            <Separator className="my-3" />
+                            <div className="grid grid-cols-3 gap-3 text-center">
+                              <div>
+                                <p className="text-lg font-bold tabular-nums">{totalClicks}</p>
+                                <p className="text-[10px] text-muted-foreground">{isAr ? "إجمالي النقرات" : "Total Clicks"}</p>
+                              </div>
+                              <div>
+                                <p className="text-lg font-bold tabular-nums">{items.length > 0 ? Math.round(totalClicks / items.length) : 0}</p>
+                                <p className="text-[10px] text-muted-foreground">{isAr ? "متوسط/رابط" : "Avg per Link"}</p>
+                              </div>
+                              <div>
+                                <p className="text-lg font-bold tabular-nums">{items.filter(i => (i.click_count || 0) > 0).length}/{items.length}</p>
+                                <p className="text-[10px] text-muted-foreground">{isAr ? "روابط نشطة" : "Active Links"}</p>
+                              </div>
+                            </div>
+                          </div>
+                        )}
+                      </CardContent>
+                    </Card>
+
+                    {/* Top Performing */}
+                    {items.length > 0 && totalClicks > 0 && (
+                      <Card className="overflow-hidden">
+                        <CardHeader className="pb-3 bg-gradient-to-r from-muted/40 to-transparent">
+                          <CardTitle className="text-sm flex items-center gap-2">
+                            <div className="h-7 w-7 rounded-lg bg-chart-1/10 flex items-center justify-center">
+                              <TrendingUp className="h-3.5 w-3.5 text-chart-1" />
+                            </div>
+                            {isAr ? "الأفضل أداءً" : "Top Performing"}
+                          </CardTitle>
+                        </CardHeader>
+                        <CardContent className="pt-3">
+                          <div className="space-y-2">
+                            {items
+                              .slice()
+                              .sort((a, b) => (b.click_count || 0) - (a.click_count || 0))
+                              .slice(0, 3)
+                              .map((item, i) => (
+                                <div key={item.id} className="flex items-center gap-3 p-2.5 rounded-xl border border-border/30">
+                                  <div className={`h-7 w-7 rounded-lg flex items-center justify-center text-xs font-bold ${i === 0 ? "bg-chart-2/10 text-chart-2" : i === 1 ? "bg-chart-3/10 text-chart-3" : "bg-muted text-muted-foreground"}`}>
+                                    {i + 1}
+                                  </div>
+                                  <div className="flex-1 min-w-0">
+                                    <p className="text-xs font-medium truncate">{item.icon && <span className="me-1">{item.icon}</span>}{item.title}</p>
+                                    <p className="text-[10px] text-muted-foreground">{totalClicks > 0 ? Math.round(((item.click_count || 0) / totalClicks) * 100) : 0}% {isAr ? "من النقرات" : "of clicks"}</p>
+                                  </div>
+                                  <span className="text-sm font-bold tabular-nums">{item.click_count || 0}</span>
+                                </div>
+                              ))}
+                          </div>
+                        </CardContent>
+                      </Card>
+                    )}
                   </TabsContent>
                 </Tabs>
               </div>
