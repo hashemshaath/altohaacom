@@ -11402,6 +11402,36 @@ export type Database = {
           },
         ]
       }
+      ip_blocklist: {
+        Row: {
+          blocked_at: string
+          blocked_by: string | null
+          expires_at: string | null
+          id: string
+          ip_address: string
+          is_active: boolean | null
+          reason: string | null
+        }
+        Insert: {
+          blocked_at?: string
+          blocked_by?: string | null
+          expires_at?: string | null
+          id?: string
+          ip_address: string
+          is_active?: boolean | null
+          reason?: string | null
+        }
+        Update: {
+          blocked_at?: string
+          blocked_by?: string | null
+          expires_at?: string | null
+          id?: string
+          ip_address?: string
+          is_active?: boolean | null
+          reason?: string | null
+        }
+        Relationships: []
+      }
       judge_ai_conversations: {
         Row: {
           competition_id: string | null
@@ -16869,6 +16899,45 @@ export type Database = {
         }
         Relationships: []
       }
+      security_events: {
+        Row: {
+          created_at: string
+          description: string | null
+          description_ar: string | null
+          event_type: string
+          id: string
+          ip_address: string | null
+          metadata: Json | null
+          severity: string
+          user_agent: string | null
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          description_ar?: string | null
+          event_type: string
+          id?: string
+          ip_address?: string | null
+          metadata?: Json | null
+          severity?: string
+          user_agent?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          description_ar?: string | null
+          event_type?: string
+          id?: string
+          ip_address?: string | null
+          metadata?: Json | null
+          severity?: string
+          user_agent?: string | null
+          user_id?: string | null
+        }
+        Relationships: []
+      }
       seo_ai_models: {
         Row: {
           capabilities: string[] | null
@@ -18913,6 +18982,45 @@ export type Database = {
         }
         Relationships: []
       }
+      user_sessions: {
+        Row: {
+          created_at: string
+          device_info: Json | null
+          id: string
+          ip_address: string | null
+          is_active: boolean | null
+          last_active_at: string | null
+          revoked_at: string | null
+          session_token_hash: string | null
+          user_agent: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          device_info?: Json | null
+          id?: string
+          ip_address?: string | null
+          is_active?: boolean | null
+          last_active_at?: string | null
+          revoked_at?: string | null
+          session_token_hash?: string | null
+          user_agent?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          device_info?: Json | null
+          id?: string
+          ip_address?: string | null
+          is_active?: boolean | null
+          last_active_at?: string | null
+          revoked_at?: string | null
+          session_token_hash?: string | null
+          user_agent?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       user_specialties: {
         Row: {
           created_at: string
@@ -19835,6 +19943,17 @@ export type Database = {
       is_admin: { Args: { p_user_id: string }; Returns: boolean }
       is_admin_user: { Args: never; Returns: boolean }
       is_free_preview: { Args: { p_module_id: string }; Returns: boolean }
+      log_security_event: {
+        Args: {
+          p_description?: string
+          p_description_ar?: string
+          p_event_type: string
+          p_metadata?: Json
+          p_severity?: string
+          p_user_id: string
+        }
+        Returns: string
+      }
       notify_upcoming_exhibitions: { Args: never; Returns: undefined }
       reject_chefs_table_request: {
         Args: { p_rejection_reason: string; p_request_id: string }
