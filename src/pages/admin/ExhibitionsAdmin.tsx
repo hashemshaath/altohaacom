@@ -971,7 +971,11 @@ export default function ExhibitionsAdmin() {
                         <div className="min-w-0">
                           <Link to={`/exhibitions/${ex.slug}`} className="font-semibold text-sm truncate block group-hover:text-primary transition-colors hover:underline">
                             {isAr && ex.title_ar ? ex.title_ar : ex.title}
-                            <span className="text-primary ms-1 font-bold">{new Date(ex.start_date).getFullYear()}</span>
+                            {(ex as any).edition_year ? (
+                              <span className="text-primary ms-1 font-bold">+{(ex as any).edition_year}</span>
+                            ) : (
+                              <span className="text-primary ms-1 font-bold">{new Date(ex.start_date).getFullYear()}</span>
+                            )}
                           </Link>
                         </div>
                       </div>

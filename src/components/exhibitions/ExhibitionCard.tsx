@@ -43,6 +43,8 @@ export interface Exhibition {
   website_url: string | null;
   registration_url: string | null;
   view_count: number | null;
+  edition_year?: number | null;
+  series_id?: string | null;
 }
 
 const statusConfig: Record<ExhibitionStatus, { label: string; labelAr: string; className: string }> = {
@@ -72,7 +74,8 @@ interface ExhibitionCardProps {
 
 export function ExhibitionCard({ exhibition, language, variant = "default" }: ExhibitionCardProps) {
   const isAr = language === "ar";
-  const title = isAr && exhibition.title_ar ? exhibition.title_ar : exhibition.title;
+  const baseTitle = isAr && exhibition.title_ar ? exhibition.title_ar : exhibition.title;
+  const title = exhibition.edition_year ? `${baseTitle} +${exhibition.edition_year}` : baseTitle;
   const description = isAr && exhibition.description_ar ? exhibition.description_ar : exhibition.description;
   const venue = isAr && exhibition.venue_ar ? exhibition.venue_ar : exhibition.venue;
   const organizer = isAr && exhibition.organizer_name_ar ? exhibition.organizer_name_ar : exhibition.organizer_name;

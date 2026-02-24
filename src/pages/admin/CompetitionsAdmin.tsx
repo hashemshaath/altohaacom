@@ -16,7 +16,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { useToast } from "@/hooks/use-toast";
-import { Search, MoreHorizontal, Eye, Edit, Trash2, Trophy, Users, Calendar, MapPin, Sparkles, Filter, Globe, Plus, Copy, Building2, Tag, FileSpreadsheet, Gavel, Medal, BarChart3, CheckCircle, XCircle } from "lucide-react";
+import { Search, MoreHorizontal, Eye, Edit, Trash2, Trophy, Users, Calendar, MapPin, Sparkles, Filter, Globe, Plus, Copy, Building2, Tag, FileSpreadsheet, Gavel, Medal, BarChart3, CheckCircle, XCircle, Layers } from "lucide-react";
 import { format } from "date-fns";
 import type { Database } from "@/integrations/supabase/types";
 
@@ -53,6 +53,17 @@ export default function CompetitionsAdmin() {
   const [yearFilter, setYearFilter] = useState<string>("all");
   const [showBulkImport, setShowBulkImport] = useState(false);
   const [viewTab, setViewTab] = useState<"list" | "judging" | "results">("list");
+  const [seriesFilter, setSeriesFilter] = useState<string>("all");
+
+  // Fetch event series for filter
+  const { data: seriesList } = useQuery({
+    queryKey: ["event-series-comp-filter"],
+    queryFn: async () => {
+      const { data, error } = await (supabase as any).from("event_series").select("id, name, name_ar").eq("is_active", true).order("name");
+      if (error) throw error;
+      return data as { id: string; name: string; name_ar: string | null }[];
+    },
+  });
 
   // Fetch competitions with organizer and exhibition info
   const { data: competitions, isLoading } = useQuery({
@@ -398,6 +409,21 @@ export default function CompetitionsAdmin() {
               </SelectContent>
             </Select>
           )}
+          {seriesList && seriesList.length > 0 && (
+            <Select value={seriesFilter} onValueChange={setSeriesFilter}>
+              <SelectTrigger className="w-40">
+                <Layers className="me-1.5 h-3.5 w-3.5 text-muted-foreground" />
+                <SelectValue placeholder={isAr ? "السلسلة" : "Series"} />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">{isAr ? "جميع السلاسل" : "All Series"}</SelectItem>
+                <SelectItem value="none">{isAr ? "بدون سلسلة" : "No Series"}</SelectItem>
+                {seriesList.map(s => (
+                  <SelectItem key={s.id} value={s.id}>{isAr && s.name_ar ? s.name_ar : s.name}</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          )}
         </CardContent>
       </Card>
 
@@ -473,7 +499,7 @@ export default function CompetitionsAdmin() {
                         <div className="max-w-[220px]">
                           <p className="font-semibold text-sm truncate group-hover:text-primary transition-colors">
                             {isAr && comp.title_ar ? comp.title_ar : comp.title}
-                            {year && <span className="ms-1.5 text-[10px] text-muted-foreground font-normal">{year}</span>}
+                            {comp.edition_year && <span className="ms-1.5 text-primary font-bold text-[10px]">+{comp.edition_year}</span>}
                           </p>
                           {types.length > 0 && (
                             <div className="flex flex-wrap gap-1 mt-1">
