@@ -8314,6 +8314,50 @@ export type Database = {
           },
         ]
       }
+      exhibition_analytics_events: {
+        Row: {
+          country: string | null
+          created_at: string
+          device_type: string | null
+          event_data: Json | null
+          event_type: string
+          exhibition_id: string
+          id: string
+          source: string | null
+          user_id: string | null
+        }
+        Insert: {
+          country?: string | null
+          created_at?: string
+          device_type?: string | null
+          event_data?: Json | null
+          event_type?: string
+          exhibition_id: string
+          id?: string
+          source?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          country?: string | null
+          created_at?: string
+          device_type?: string | null
+          event_data?: Json | null
+          event_type?: string
+          exhibition_id?: string
+          id?: string
+          source?: string | null
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "exhibition_analytics_events_exhibition_id_fkey"
+            columns: ["exhibition_id"]
+            isOneToOne: false
+            referencedRelation: "exhibitions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       exhibition_booth_requests: {
         Row: {
           admin_notes: string | null
@@ -9303,6 +9347,88 @@ export type Database = {
             columns: ["session_id"]
             isOneToOne: false
             referencedRelation: "exhibition_cooking_sessions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      exhibition_social_likes: {
+        Row: {
+          created_at: string
+          id: string
+          post_id: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          post_id: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          post_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "exhibition_social_likes_post_id_fkey"
+            columns: ["post_id"]
+            isOneToOne: false
+            referencedRelation: "exhibition_social_posts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      exhibition_social_posts: {
+        Row: {
+          content: string
+          created_at: string
+          exhibition_id: string
+          hashtags: string[] | null
+          id: string
+          image_url: string | null
+          is_approved: boolean | null
+          is_pinned: boolean | null
+          likes_count: number | null
+          platform: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          content: string
+          created_at?: string
+          exhibition_id: string
+          hashtags?: string[] | null
+          id?: string
+          image_url?: string | null
+          is_approved?: boolean | null
+          is_pinned?: boolean | null
+          likes_count?: number | null
+          platform?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          content?: string
+          created_at?: string
+          exhibition_id?: string
+          hashtags?: string[] | null
+          id?: string
+          image_url?: string | null
+          is_approved?: boolean | null
+          is_pinned?: boolean | null
+          likes_count?: number | null
+          platform?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "exhibition_social_posts_exhibition_id_fkey"
+            columns: ["exhibition_id"]
+            isOneToOne: false
+            referencedRelation: "exhibitions"
             referencedColumns: ["id"]
           },
         ]
