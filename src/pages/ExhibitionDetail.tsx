@@ -11,38 +11,41 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { toast } from "@/hooks/use-toast";
 import {
   Calendar, MapPin, Globe, ExternalLink, Bell, BellOff,
   Clock, Users, Tag, Building, Ticket, Trophy, Landmark, Timer,
-  ChevronDown, Star, Target, Award, Pencil,
-  ImageIcon, LayoutGrid, MessageSquare,
+  Star, Target, Award, ImageIcon, LayoutGrid, MessageSquare,
 } from "lucide-react";
 import { SEOHead } from "@/components/SEOHead";
 import { toEnglishDigits } from "@/lib/formatNumber";
 import { ImageLightbox } from "@/components/competitions/ImageLightbox";
 import { countryFlag as getCountryFlagUtil } from "@/lib/countryFlag";
 import { format, isPast, isFuture, isWithinInterval, differenceInDays } from "date-fns";
-import { useState, useMemo } from "react";
+import { useState, useMemo, lazy, Suspense, memo, useCallback } from "react";
 import { QRCodeDisplay } from "@/components/qr/QRCodeDisplay";
 import { useEntityQRCode } from "@/hooks/useQRCode";
 
-// Detail sub-components
+// Detail sub-components (static imports for critical path)
 import { ExhibitionHero } from "@/components/exhibitions/detail/ExhibitionHero";
 import { CountdownTimer } from "@/components/exhibitions/detail/CountdownTimer";
-import { ExhibitionCompetitionsTab } from "@/components/exhibitions/detail/ExhibitionCompetitionsTab";
-import { ExhibitionPeopleTab } from "@/components/exhibitions/detail/ExhibitionPeopleTab";
 import { ExhibitionDayIndicator } from "@/components/exhibitions/detail/ExhibitionDayIndicator";
-import { ExhibitionMapEmbed } from "@/components/exhibitions/detail/ExhibitionMapEmbed";
 import { ExhibitionRegistrationStatus } from "@/components/exhibitions/detail/ExhibitionRegistrationStatus";
-import { ExhibitionSocialLinks } from "@/components/exhibitions/detail/ExhibitionSocialLinks";
-import { ExhibitionDocuments } from "@/components/exhibitions/detail/ExhibitionDocuments";
-import { ExhibitionContactCard } from "@/components/exhibitions/detail/ExhibitionContactCard";
 import { ExhibitionTicketBooking } from "@/components/exhibitions/detail/ExhibitionTicketBooking";
-import { ExhibitionAgendaTab } from "@/components/exhibitions/detail/ExhibitionAgendaTab";
-import { ExhibitionBoothsTab } from "@/components/exhibitions/detail/ExhibitionBoothsTab";
-import { ExhibitionReviewsTab } from "@/components/exhibitions/detail/ExhibitionReviewsTab";
+import { ExhibitionContactCard } from "@/components/exhibitions/detail/ExhibitionContactCard";
+
+// Lazy-loaded tab components for code splitting
+const ExhibitionCompetitionsTab = lazy(() => import("@/components/exhibitions/detail/ExhibitionCompetitionsTab").then(m => ({ default: m.ExhibitionCompetitionsTab })));
+const ExhibitionPeopleTab = lazy(() => import("@/components/exhibitions/detail/ExhibitionPeopleTab").then(m => ({ default: m.ExhibitionPeopleTab })));
+const ExhibitionMapEmbed = lazy(() => import("@/components/exhibitions/detail/ExhibitionMapEmbed").then(m => ({ default: m.ExhibitionMapEmbed })));
+const ExhibitionSocialLinks = lazy(() => import("@/components/exhibitions/detail/ExhibitionSocialLinks").then(m => ({ default: m.ExhibitionSocialLinks })));
+const ExhibitionDocuments = lazy(() => import("@/components/exhibitions/detail/ExhibitionDocuments").then(m => ({ default: m.ExhibitionDocuments })));
+const ExhibitionAgendaTab = lazy(() => import("@/components/exhibitions/detail/ExhibitionAgendaTab").then(m => ({ default: m.ExhibitionAgendaTab })));
+const ExhibitionBoothsTab = lazy(() => import("@/components/exhibitions/detail/ExhibitionBoothsTab").then(m => ({ default: m.ExhibitionBoothsTab })));
+const ExhibitionReviewsTab = lazy(() => import("@/components/exhibitions/detail/ExhibitionReviewsTab").then(m => ({ default: m.ExhibitionReviewsTab })));
+
+// Suspense fallback for lazy tabs
+const TabFallback = () => <div className="space-y-3">{[1,2,3].map(i => <div key={i} className="h-24 animate-pulse rounded-2xl bg-muted" />)}</div>;
 
 /* ---------- types ---------- */
 interface ScheduleDay {
@@ -86,6 +89,18 @@ const TIER_CONFIG: Record<string, { icon: typeof Star; gradient: string; label: 
   bronze: { icon: Star, gradient: "from-chart-2/20 to-chart-2/5", label: "Bronze", labelAr: "برونزي", order: 5 },
 };
 
+/* ---------- Memoized Tab Trigger ---------- */
+const ExhibitionTabTrigger = memo(({ value, icon: Icon, label, count, isAr }: { value: string; icon: any; label: string; count?: number; isAr: boolean }) => (
+  <TabsTrigger value={value} className="gap-1.5 rounded-xl px-3 py-2 text-[10px] font-bold uppercase tracking-wider transition-all data-[state=active]:bg-primary data-[state=active]:text-primary-foreground sm:gap-2 sm:px-5 sm:py-2.5 sm:text-xs whitespace-nowrap">
+    <Icon className="h-3 w-3 sm:h-3.5 sm:w-3.5" />
+    {label}
+    {count !== undefined && count > 0 && (
+      <Badge variant="secondary" className="ms-1 h-5 rounded-full bg-background/20 text-current px-1.5 text-[10px]">{count}</Badge>
+    )}
+  </TabsTrigger>
+));
+ExhibitionTabTrigger.displayName = "ExhibitionTabTrigger";
+
 /* ---------- main ---------- */
 export default function ExhibitionDetail() {
   const { slug } = useParams<{ slug: string }>();
@@ -97,7 +112,7 @@ export default function ExhibitionDetail() {
   const [lightboxOpen, setLightboxOpen] = useState(false);
   const [lightboxIndex, setLightboxIndex] = useState(0);
 
-  // --- Queries ---
+  // --- Core query ---
   const { data: exhibition, isLoading } = useQuery({
     queryKey: ["exhibition", slug],
     queryFn: async () => {
@@ -144,6 +159,7 @@ export default function ExhibitionDetail() {
       return data || [];
     },
     enabled: !!exhibition,
+    staleTime: 1000 * 60 * 3,
   });
 
   const competitionIds = useMemo(() => linkedCompetitions?.map((c: any) => c.id) || [], [linkedCompetitions]);
@@ -177,6 +193,7 @@ export default function ExhibitionDetail() {
       return scored;
     },
     enabled: competitionIds.length > 0,
+    staleTime: 1000 * 60 * 5,
   });
 
   const allJudgeIds = useMemo(() => {
@@ -196,6 +213,7 @@ export default function ExhibitionDetail() {
       return (profiles || []).map(p => ({ ...p, judgeExtra: extrasMap.get(p.user_id) || null }));
     },
     enabled: allJudgeIds.length > 0,
+    staleTime: 1000 * 60 * 5,
   });
 
   const toggleFollow = useMutation({
@@ -218,6 +236,41 @@ export default function ExhibitionDetail() {
   });
 
   const { data: exhibitionQrCode } = useEntityQRCode("exhibition", exhibition?.id, "exhibition");
+
+  // Feature counts - lightweight HEAD queries
+  const { data: agendaCount = 0 } = useQuery({
+    queryKey: ["exhibition-agenda-count", exhibition?.id],
+    queryFn: async () => {
+      const { count } = await supabase.from("exhibition_agenda_items").select("id", { count: "exact", head: true }).eq("exhibition_id", exhibition!.id);
+      return count || 0;
+    },
+    enabled: !!exhibition,
+    staleTime: 1000 * 60 * 5,
+  });
+
+  const { data: boothCount = 0 } = useQuery({
+    queryKey: ["exhibition-booth-count", exhibition?.id],
+    queryFn: async () => {
+      const { count } = await supabase.from("exhibition_booths").select("id", { count: "exact", head: true }).eq("exhibition_id", exhibition!.id);
+      return count || 0;
+    },
+    enabled: !!exhibition,
+    staleTime: 1000 * 60 * 5,
+  });
+
+  const { data: reviewCount = 0 } = useQuery({
+    queryKey: ["exhibition-review-count", exhibition?.id],
+    queryFn: async () => {
+      const { count } = await supabase.from("exhibition_reviews").select("id", { count: "exact", head: true }).eq("exhibition_id", exhibition!.id);
+      return count || 0;
+    },
+    enabled: !!exhibition,
+    staleTime: 1000 * 60 * 5,
+  });
+
+  // Memoized callbacks
+  const handleFollow = useCallback(() => toggleFollow.mutate(), [toggleFollow]);
+  const handleLightbox = useCallback((i: number) => { setLightboxIndex(i); setLightboxOpen(true); }, []);
 
   /* ---------- loading / not found ---------- */
   if (isLoading) {
@@ -292,32 +345,6 @@ export default function ExhibitionDetail() {
   const hasSpeakers = speakers.length > 0;
   const hasGallery = galleryUrls.length > 0;
   const hasSponsors = sortedSponsors.length > 0;
-
-  // New feature queries
-  const { data: agendaCount = 0 } = useQuery({
-    queryKey: ["exhibition-agenda-count", exhibition.id],
-    queryFn: async () => {
-      const { count } = await supabase.from("exhibition_agenda_items").select("id", { count: "exact", head: true }).eq("exhibition_id", exhibition.id);
-      return count || 0;
-    },
-  });
-
-  const { data: boothCount = 0 } = useQuery({
-    queryKey: ["exhibition-booth-count", exhibition.id],
-    queryFn: async () => {
-      const { count } = await supabase.from("exhibition_booths").select("id", { count: "exact", head: true }).eq("exhibition_id", exhibition.id);
-      return count || 0;
-    },
-  });
-
-  const { data: reviewCount = 0 } = useQuery({
-    queryKey: ["exhibition-review-count", exhibition.id],
-    queryFn: async () => {
-      const { count } = await supabase.from("exhibition_reviews").select("id", { count: "exact", head: true }).eq("exhibition_id", exhibition.id);
-      return count || 0;
-    },
-  });
-
   const hasAgenda = agendaCount > 0;
   const hasBooths = boothCount > 0;
   const hasReviews = reviewCount > 0 || hasEnded;
@@ -356,90 +383,68 @@ export default function ExhibitionDetail() {
       />
 
       <main className="container flex-1 py-6 md:py-8">
-        {/* Mobile-only extras (follow, countdown, sidebar widgets) */}
-        <div className="mb-6 space-y-3 lg:hidden">
-          {user && (
-            <Button variant={isFollowing ? "outline" : "secondary"} className="w-full" onClick={() => toggleFollow.mutate()} disabled={toggleFollow.isPending}>
-              {isFollowing ? (<><BellOff className="me-2 h-4 w-4" />{isAr ? "إلغاء المتابعة" : "Unfollow"}</>) : (<><Bell className="me-2 h-4 w-4" />{isAr ? "تابع للإشعارات" : "Follow for Updates"}</>)}
-            </Button>
-          )}
+        {/* ====== MOBILE ACTION BAR ====== */}
+        <div className="mb-5 space-y-3 lg:hidden">
+          {/* Quick actions row */}
+          <div className="flex gap-2">
+            {user && (
+              <Button variant={isFollowing ? "outline" : "secondary"} size="sm" className="flex-1 h-10 rounded-xl text-xs font-semibold" onClick={handleFollow} disabled={toggleFollow.isPending}>
+                {isFollowing ? (<><BellOff className="me-1.5 h-3.5 w-3.5" />{isAr ? "إلغاء" : "Unfollow"}</>) : (<><Bell className="me-1.5 h-3.5 w-3.5" />{isAr ? "متابعة" : "Follow"}</>)}
+              </Button>
+            )}
+            {exhibition.website_url && (
+              <Button variant="outline" size="sm" className="h-10 rounded-xl text-xs" asChild>
+                <a href={exhibition.website_url} target="_blank" rel="noopener noreferrer"><Globe className="me-1.5 h-3.5 w-3.5" />{isAr ? "الموقع" : "Website"}</a>
+              </Button>
+            )}
+          </div>
+
+          {/* Countdown - compact mobile */}
           {(isUpcoming || isHappening) && (
-            <Card className="overflow-hidden border-primary/20"><CardContent className="py-6"><CountdownTimer targetDate={isHappening ? end : start} isAr={isAr} /></CardContent></Card>
+            <Card className="overflow-hidden border-primary/15">
+              <CardContent className="py-4 px-3">
+                <CountdownTimer targetDate={isHappening ? end : start} isAr={isAr} compact />
+              </CardContent>
+            </Card>
           )}
+
           <ExhibitionDayIndicator startDate={exhibition.start_date} endDate={exhibition.end_date} isAr={isAr} />
           <ExhibitionRegistrationStatus registrationDeadline={exhibition.registration_deadline} registrationUrl={exhibition.registration_url} maxAttendees={exhibition.max_attendees} isFree={exhibition.is_free} ticketPrice={exhibition.ticket_price} ticketPriceAr={exhibition.ticket_price_ar} startDate={exhibition.start_date} endDate={exhibition.end_date} isAr={isAr} />
           <ExhibitionTicketBooking exhibitionId={exhibition.id} exhibitionTitle={title} isFree={exhibition.is_free} ticketPrice={exhibition.ticket_price} hasEnded={hasEnded} isAr={isAr} />
-          {!exhibition.is_virtual && <ExhibitionMapEmbed mapUrl={exhibition.map_url} venue={venue} city={exhibition.city} country={exhibition.country} address={(exhibition as any).address || null} isAr={isAr} />}
-          <ExhibitionContactCard organizerName={organizer} organizerLogo={organizerLogoUrl} email={exhibition.organizer_email} phone={exhibition.organizer_phone} website={exhibition.organizer_website} isAr={isAr} />
-          <ExhibitionSocialLinks socialLinks={exhibition.social_links as any} websiteUrl={exhibition.website_url} isAr={isAr} />
-          <ExhibitionDocuments documents={(exhibition as any).documents} isAr={isAr} />
+
+          {/* Mobile map + contact - collapsed for density */}
+          <Suspense fallback={null}>
+            {!exhibition.is_virtual && <ExhibitionMapEmbed mapUrl={exhibition.map_url} venue={venue} city={exhibition.city} country={exhibition.country} address={(exhibition as any).address || null} isAr={isAr} />}
+            <ExhibitionContactCard organizerName={organizer} organizerLogo={organizerLogoUrl} email={exhibition.organizer_email} phone={exhibition.organizer_phone} website={exhibition.organizer_website} isAr={isAr} />
+            <ExhibitionSocialLinks socialLinks={exhibition.social_links as any} websiteUrl={exhibition.website_url} isAr={isAr} />
+            <ExhibitionDocuments documents={(exhibition as any).documents} isAr={isAr} />
+          </Suspense>
         </div>
 
         <div className="grid gap-6 lg:grid-cols-3">
           {/* ======== MAIN CONTENT ======== */}
           <div className="lg:col-span-2">
             <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6 sm:space-y-8">
-              <div className="sticky top-14 z-30 -mx-3 border-b border-border/40 bg-background/80 px-3 py-2.5 backdrop-blur-md md:mx-0 md:rounded-2xl md:border md:px-4 md:py-3">
+              {/* Sticky tabs - mobile optimized with better scroll */}
+              <div className="sticky top-14 z-30 -mx-2 border-b border-border/40 bg-background/80 px-2 py-2 backdrop-blur-md sm:mx-0 sm:rounded-2xl sm:border sm:px-4 sm:py-3">
                 <TabsList className="h-auto w-full justify-start gap-0.5 overflow-x-auto bg-transparent p-0 scrollbar-none sm:gap-1">
                   <TabsTrigger value="overview" className="rounded-xl px-3 py-2 text-[10px] font-bold uppercase tracking-wider transition-all data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-lg shadow-primary/20 sm:px-5 sm:py-2.5 sm:text-xs whitespace-nowrap">
                     {isAr ? "نظرة عامة" : "Overview"}
                   </TabsTrigger>
-                  {hasWinningDishes && (
-                    <TabsTrigger value="winning-dishes" className="gap-1.5 rounded-xl px-3 py-2 text-[10px] font-bold uppercase tracking-wider transition-all data-[state=active]:bg-primary data-[state=active]:text-primary-foreground sm:gap-2 sm:px-5 sm:py-2.5 sm:text-xs whitespace-nowrap">
-                      <Award className="h-3 w-3 sm:h-3.5 sm:w-3.5" />{isAr ? "الأطباق" : "Winners"}
-                      <Badge variant="secondary" className="ms-1 h-5 rounded-full bg-background/20 text-current px-1.5 text-[10px]">{winningDishes!.length}</Badge>
-                    </TabsTrigger>
-                  )}
-                  {hasCompetitions && (
-                    <TabsTrigger value="competitions" className="gap-1.5 rounded-xl px-3 py-2 text-[10px] font-bold uppercase tracking-wider transition-all data-[state=active]:bg-primary data-[state=active]:text-primary-foreground sm:gap-2 sm:px-5 sm:py-2.5 sm:text-xs whitespace-nowrap">
-                      <Trophy className="h-3 w-3 sm:h-3.5 sm:w-3.5" />{isAr ? "المسابقات" : "Competitions"}
-                      <Badge variant="secondary" className="ms-1 h-5 rounded-full bg-background/20 text-current px-1.5 text-[10px]">{linkedCompetitions!.length}</Badge>
-                    </TabsTrigger>
-                  )}
-                  {hasSchedule && (
-                    <TabsTrigger value="schedule" className="gap-1.5 rounded-xl px-3 py-2 text-[10px] font-bold uppercase tracking-wider transition-all data-[state=active]:bg-primary data-[state=active]:text-primary-foreground sm:gap-2 sm:px-5 sm:py-2.5 sm:text-xs whitespace-nowrap">
-                      <Calendar className="h-3 w-3 sm:h-3.5 sm:w-3.5" />{isAr ? "الجدول" : "Schedule"}
-                    </TabsTrigger>
-                  )}
-                  {(hasJudges || hasSpeakers) && (
-                    <TabsTrigger value="people" className="gap-1.5 rounded-xl px-3 py-2 text-[10px] font-bold uppercase tracking-wider transition-all data-[state=active]:bg-primary data-[state=active]:text-primary-foreground sm:gap-2 sm:px-5 sm:py-2.5 sm:text-xs whitespace-nowrap">
-                      <Users className="h-3 w-3 sm:h-3.5 sm:w-3.5" />{isAr ? "الأشخاص" : "People"}
-                    </TabsTrigger>
-                  )}
-                  {hasGallery && (
-                    <TabsTrigger value="gallery" className="gap-1.5 rounded-xl px-3 py-2 text-[10px] font-bold uppercase tracking-wider transition-all data-[state=active]:bg-primary data-[state=active]:text-primary-foreground sm:gap-2 sm:px-5 sm:py-2.5 sm:text-xs whitespace-nowrap">
-                      <ImageIcon className="h-3 w-3 sm:h-3.5 sm:w-3.5" />{isAr ? "المعرض" : "Gallery"}
-                    </TabsTrigger>
-                  )}
-                  {hasAgenda && (
-                    <TabsTrigger value="agenda" className="gap-1.5 rounded-xl px-3 py-2 text-[10px] font-bold uppercase tracking-wider transition-all data-[state=active]:bg-primary data-[state=active]:text-primary-foreground sm:gap-2 sm:px-5 sm:py-2.5 sm:text-xs whitespace-nowrap">
-                      <Clock className="h-3 w-3 sm:h-3.5 sm:w-3.5" />{isAr ? "الأجندة" : "Agenda"}
-                      <Badge variant="secondary" className="ms-1 h-5 rounded-full bg-background/20 text-current px-1.5 text-[10px]">{agendaCount}</Badge>
-                    </TabsTrigger>
-                  )}
-                  {hasBooths && (
-                    <TabsTrigger value="booths" className="gap-1.5 rounded-xl px-3 py-2 text-[10px] font-bold uppercase tracking-wider transition-all data-[state=active]:bg-primary data-[state=active]:text-primary-foreground sm:gap-2 sm:px-5 sm:py-2.5 sm:text-xs whitespace-nowrap">
-                      <LayoutGrid className="h-3 w-3 sm:h-3.5 sm:w-3.5" />{isAr ? "الأجنحة" : "Booths"}
-                      <Badge variant="secondary" className="ms-1 h-5 rounded-full bg-background/20 text-current px-1.5 text-[10px]">{boothCount}</Badge>
-                    </TabsTrigger>
-                  )}
-                  {hasSponsors && (
-                    <TabsTrigger value="sponsors" className="gap-1.5 rounded-xl px-3 py-2 text-[10px] font-bold uppercase tracking-wider transition-all data-[state=active]:bg-primary data-[state=active]:text-primary-foreground sm:gap-2 sm:px-5 sm:py-2.5 sm:text-xs whitespace-nowrap">
-                      <Star className="h-3 w-3 sm:h-3.5 sm:w-3.5" />{isAr ? "الرعاة" : "Sponsors"}
-                    </TabsTrigger>
-                  )}
-                  {hasReviews && (
-                    <TabsTrigger value="reviews" className="gap-1.5 rounded-xl px-3 py-2 text-[10px] font-bold uppercase tracking-wider transition-all data-[state=active]:bg-primary data-[state=active]:text-primary-foreground sm:gap-2 sm:px-5 sm:py-2.5 sm:text-xs whitespace-nowrap">
-                      <MessageSquare className="h-3 w-3 sm:h-3.5 sm:w-3.5" />{isAr ? "التقييمات" : "Reviews"}
-                      {reviewCount > 0 && <Badge variant="secondary" className="ms-1 h-5 rounded-full bg-background/20 text-current px-1.5 text-[10px]">{reviewCount}</Badge>}
-                    </TabsTrigger>
-                  )}
+                  {hasWinningDishes && <ExhibitionTabTrigger value="winning-dishes" icon={Award} label={isAr ? "الأطباق" : "Winners"} count={winningDishes!.length} isAr={isAr} />}
+                  {hasCompetitions && <ExhibitionTabTrigger value="competitions" icon={Trophy} label={isAr ? "المسابقات" : "Competitions"} count={linkedCompetitions!.length} isAr={isAr} />}
+                  {hasSchedule && <ExhibitionTabTrigger value="schedule" icon={Calendar} label={isAr ? "الجدول" : "Schedule"} isAr={isAr} />}
+                  {(hasJudges || hasSpeakers) && <ExhibitionTabTrigger value="people" icon={Users} label={isAr ? "الأشخاص" : "People"} isAr={isAr} />}
+                  {hasGallery && <ExhibitionTabTrigger value="gallery" icon={ImageIcon} label={isAr ? "المعرض" : "Gallery"} isAr={isAr} />}
+                  {hasAgenda && <ExhibitionTabTrigger value="agenda" icon={Clock} label={isAr ? "الأجندة" : "Agenda"} count={agendaCount} isAr={isAr} />}
+                  {hasBooths && <ExhibitionTabTrigger value="booths" icon={LayoutGrid} label={isAr ? "الأجنحة" : "Booths"} count={boothCount} isAr={isAr} />}
+                  {hasSponsors && <ExhibitionTabTrigger value="sponsors" icon={Star} label={isAr ? "الرعاة" : "Sponsors"} isAr={isAr} />}
+                  {hasReviews && <ExhibitionTabTrigger value="reviews" icon={MessageSquare} label={isAr ? "التقييمات" : "Reviews"} count={reviewCount > 0 ? reviewCount : undefined} isAr={isAr} />}
                 </TabsList>
               </div>
 
               {/* === OVERVIEW TAB === */}
               <TabsContent value="overview" className="mt-6 space-y-6">
-
                 {/* Key Highlights */}
                 <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
                   <div className="rounded-xl border border-primary/15 bg-gradient-to-br from-primary/10 via-primary/5 to-transparent p-4 text-center">
@@ -517,7 +522,7 @@ export default function ExhibitionDetail() {
                           return (
                             <Link key={comp.id} to={`/competitions/${comp.id}`} className="flex items-center gap-3 rounded-xl border border-border/60 p-3 hover:bg-primary/5 hover:border-primary/20 transition-all group">
                               {comp.cover_image_url ? (
-                                <img src={comp.cover_image_url} alt={compTitle} className="h-12 w-12 rounded-lg object-cover shrink-0 ring-1 ring-border" />
+                                <img src={comp.cover_image_url} alt={compTitle} className="h-12 w-12 rounded-lg object-cover shrink-0 ring-1 ring-border" loading="lazy" />
                               ) : (
                                 <div className="h-12 w-12 rounded-lg bg-gradient-to-br from-primary/10 to-chart-4/10 flex items-center justify-center shrink-0"><Trophy className="h-5 w-5 text-primary/40" /></div>
                               )}
@@ -569,8 +574,8 @@ export default function ExhibitionDetail() {
                     <CardContent className="p-4">
                       <div className="grid grid-cols-3 gap-2">
                         {galleryUrls.slice(0, 6).map((url, i) => (
-                          <button key={i} onClick={() => { setLightboxIndex(i); setLightboxOpen(true); }} className="relative aspect-square rounded-lg overflow-hidden group">
-                            <img src={url} alt={`${title} ${i + 1}`} className="h-full w-full object-cover transition-transform group-hover:scale-105" />
+                          <button key={i} onClick={() => handleLightbox(i)} className="relative aspect-square rounded-lg overflow-hidden group">
+                            <img src={url} alt={`${title} ${i + 1}`} className="h-full w-full object-cover transition-transform group-hover:scale-105" loading="lazy" />
                             {i === 5 && galleryUrls.length > 6 && (
                               <div className="absolute inset-0 flex items-center justify-center bg-background/60 backdrop-blur-sm"><span className="font-bold text-lg">+{galleryUrls.length - 6}</span></div>
                             )}
@@ -595,7 +600,7 @@ export default function ExhibitionDetail() {
                         <Card key={dish.id} className="overflow-hidden group hover:shadow-lg transition-all hover:-translate-y-0.5">
                           {dish.dish_image_url ? (
                             <div className="relative h-44 overflow-hidden">
-                              <img src={dish.dish_image_url} alt={dish.dish_name} className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105" />
+                              <img src={dish.dish_image_url} alt={dish.dish_name} className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105" loading="lazy" />
                               <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
                               <div className="absolute top-3 start-3"><Badge className="bg-chart-4/90 text-chart-4-foreground text-sm font-bold shadow-md">{medal}</Badge></div>
                               <div className="absolute bottom-3 start-3 end-3"><p className="font-bold text-lg leading-tight text-white drop-shadow-md">{dish.dish_name}</p></div>
@@ -625,14 +630,15 @@ export default function ExhibitionDetail() {
                 </TabsContent>
               )}
 
-              {/* === COMPETITIONS TAB === */}
+              {/* === LAZY LOADED TABS === */}
               {hasCompetitions && (
                 <TabsContent value="competitions" className="mt-6">
-                  <ExhibitionCompetitionsTab competitions={linkedCompetitions!} isAr={isAr} />
+                  <Suspense fallback={<TabFallback />}>
+                    <ExhibitionCompetitionsTab competitions={linkedCompetitions!} isAr={isAr} />
+                  </Suspense>
                 </TabsContent>
               )}
 
-              {/* === SCHEDULE TAB === */}
               {hasSchedule && (
                 <TabsContent value="schedule" className="mt-6 space-y-4">
                   {schedule.map((dayOrItem, i) => {
@@ -655,20 +661,20 @@ export default function ExhibitionDetail() {
                 </TabsContent>
               )}
 
-              {/* === PEOPLE TAB === */}
               {(hasJudges || hasSpeakers) && (
                 <TabsContent value="people" className="mt-6">
-                  <ExhibitionPeopleTab judgeProfiles={judgeProfiles || null} speakers={speakers} isAr={isAr} />
+                  <Suspense fallback={<TabFallback />}>
+                    <ExhibitionPeopleTab judgeProfiles={judgeProfiles || null} speakers={speakers} isAr={isAr} />
+                  </Suspense>
                 </TabsContent>
               )}
 
-              {/* === GALLERY TAB === */}
               {hasGallery && (
                 <TabsContent value="gallery" className="mt-6">
                   <div className="grid grid-cols-2 gap-3 md:grid-cols-3">
                     {galleryUrls.map((url, i) => (
-                      <button key={i} onClick={() => { setLightboxIndex(i); setLightboxOpen(true); }} className="relative aspect-video rounded-xl overflow-hidden shadow-sm group cursor-pointer">
-                        <img src={url} alt={`${title} ${i + 1}`} className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105" loading="lazy" />
+                      <button key={i} onClick={() => handleLightbox(i)} className="relative aspect-video rounded-xl overflow-hidden shadow-sm group cursor-pointer">
+                        <img src={url} alt={`${title} ${i + 1}`} className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105" loading="lazy" decoding="async" />
                         <div className="absolute inset-0 bg-background/0 group-hover:bg-background/20 transition-colors flex items-center justify-center">
                           <ImageIcon className="h-6 w-6 text-foreground opacity-0 group-hover:opacity-70 transition-opacity" />
                         </div>
@@ -678,7 +684,6 @@ export default function ExhibitionDetail() {
                 </TabsContent>
               )}
 
-              {/* === SPONSORS TAB === */}
               {hasSponsors && (
                 <TabsContent value="sponsors" className="mt-6 space-y-8">
                   {Object.entries(sponsorsByTier).map(([tier, sponsors]) => {
@@ -698,7 +703,7 @@ export default function ExhibitionDetail() {
                             <Card key={i} className="overflow-hidden transition-all hover:shadow-md hover:-translate-y-0.5">
                               <CardContent className="flex flex-col items-center p-4 text-center">
                                 {sponsor.logo_url ? (
-                                  <img src={sponsor.logo_url} alt={sponsor.name} className="mb-2 h-12 w-auto max-w-[120px] object-contain" />
+                                  <img src={sponsor.logo_url} alt={sponsor.name} className="mb-2 h-12 w-auto max-w-[120px] object-contain" loading="lazy" />
                                 ) : (
                                   <div className="mb-2 flex h-12 w-12 items-center justify-center rounded-lg bg-muted"><Building className="h-5 w-5 text-muted-foreground" /></div>
                                 )}
@@ -713,24 +718,27 @@ export default function ExhibitionDetail() {
                 </TabsContent>
               )}
 
-              {/* === AGENDA TAB === */}
               {hasAgenda && (
                 <TabsContent value="agenda" className="mt-6">
-                  <ExhibitionAgendaTab exhibitionId={exhibition.id} startDate={exhibition.start_date} endDate={exhibition.end_date} isAr={isAr} />
+                  <Suspense fallback={<TabFallback />}>
+                    <ExhibitionAgendaTab exhibitionId={exhibition.id} startDate={exhibition.start_date} endDate={exhibition.end_date} isAr={isAr} />
+                  </Suspense>
                 </TabsContent>
               )}
 
-              {/* === BOOTHS TAB === */}
               {hasBooths && (
                 <TabsContent value="booths" className="mt-6">
-                  <ExhibitionBoothsTab exhibitionId={exhibition.id} isAr={isAr} />
+                  <Suspense fallback={<TabFallback />}>
+                    <ExhibitionBoothsTab exhibitionId={exhibition.id} isAr={isAr} />
+                  </Suspense>
                 </TabsContent>
               )}
 
-              {/* === REVIEWS TAB === */}
               {hasReviews && (
                 <TabsContent value="reviews" className="mt-6">
-                  <ExhibitionReviewsTab exhibitionId={exhibition.id} hasEnded={hasEnded} isAr={isAr} />
+                  <Suspense fallback={<TabFallback />}>
+                    <ExhibitionReviewsTab exhibitionId={exhibition.id} hasEnded={hasEnded} isAr={isAr} />
+                  </Suspense>
                 </TabsContent>
               )}
             </Tabs>
@@ -771,7 +779,7 @@ export default function ExhibitionDetail() {
                   </Button>
                 )}
                 {user && (
-                  <Button variant={isFollowing ? "outline" : "secondary"} className="w-full" onClick={() => toggleFollow.mutate()} disabled={toggleFollow.isPending}>
+                  <Button variant={isFollowing ? "outline" : "secondary"} className="w-full" onClick={handleFollow} disabled={toggleFollow.isPending}>
                     {isFollowing ? (<><BellOff className="me-2 h-4 w-4" />{isAr ? "إلغاء المتابعة" : "Unfollow"}</>) : (<><Bell className="me-2 h-4 w-4" />{isAr ? "تابع للإشعارات" : "Follow for Updates"}</>)}
                   </Button>
                 )}
@@ -784,10 +792,12 @@ export default function ExhibitionDetail() {
               </CardContent>
             </Card>
 
-            <ExhibitionContactCard organizerName={organizer} organizerLogo={organizerLogoUrl} email={exhibition.organizer_email} phone={exhibition.organizer_phone} website={exhibition.organizer_website} isAr={isAr} />
-            {!exhibition.is_virtual && <ExhibitionMapEmbed mapUrl={exhibition.map_url} venue={venue} city={exhibition.city} country={exhibition.country} address={(exhibition as any).address || null} isAr={isAr} />}
-            <ExhibitionSocialLinks socialLinks={exhibition.social_links as any} websiteUrl={exhibition.website_url} isAr={isAr} />
-            <ExhibitionDocuments documents={(exhibition as any).documents} isAr={isAr} />
+            <Suspense fallback={null}>
+              <ExhibitionContactCard organizerName={organizer} organizerLogo={organizerLogoUrl} email={exhibition.organizer_email} phone={exhibition.organizer_phone} website={exhibition.organizer_website} isAr={isAr} />
+              {!exhibition.is_virtual && <ExhibitionMapEmbed mapUrl={exhibition.map_url} venue={venue} city={exhibition.city} country={exhibition.country} address={(exhibition as any).address || null} isAr={isAr} />}
+              <ExhibitionSocialLinks socialLinks={exhibition.social_links as any} websiteUrl={exhibition.website_url} isAr={isAr} />
+              <ExhibitionDocuments documents={(exhibition as any).documents} isAr={isAr} />
+            </Suspense>
 
             {/* Event Details */}
             <Card className="overflow-hidden transition-all hover:shadow-sm">
@@ -892,6 +902,9 @@ export default function ExhibitionDetail() {
 }
 
 /* ---------- Collapsible Day Component ---------- */
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
+import { ChevronDown } from "lucide-react";
+
 function CollapsibleDay({ index, dayLabel, dayTitle, events, isAr, defaultOpen }: {
   index: number; dayLabel?: string; dayTitle?: string; events: ScheduleItem[]; isAr: boolean; defaultOpen: boolean;
 }) {
