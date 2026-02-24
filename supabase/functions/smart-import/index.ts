@@ -482,9 +482,14 @@ ${lat && lng ? `- Coordinates: ${lat}, ${lng}` : ''}
 SEO: Write compelling keyword-rich descriptions (150-300 chars). Tags: 5-10 English SEO keywords.
 ${imageContext}
 
+IMPORTANT DESCRIPTION RULES:
+- description_short_en/ar: A concise 1-2 sentence summary (50-100 words) suitable for cards/listings
+- description_long_en/ar: A comprehensive detailed description (200-500 words) covering: what the event is about, its significance, history, what visitors can expect, key highlights
+- description_en/ar: Standard SEO description (150-300 chars) for meta/search
+
 ${scraped ? `GOOGLE MAPS:\n${scraped.substring(0, 6000)}` : ''}
 ${search ? `WEB SEARCH:\n${search.substring(0, 5000)}` : ''}
-${website ? `WEBSITE:\n${website.substring(0, 5000)}` : ''}
+${website ? `WEBSITE:\n${website.substring(0, 6000)}` : ''}
 
 Return ONLY valid JSON:
 {
@@ -492,6 +497,10 @@ Return ONLY valid JSON:
   "abbreviation_en": null, "abbreviation_ar": null,
   "description_en": "SEO description 150-300 chars",
   "description_ar": "وصف محسّن 150-300 حرف",
+  "description_short_en": "Concise 1-2 sentence summary for card display",
+  "description_short_ar": "ملخص موجز من جملة أو جملتين",
+  "description_long_en": "Comprehensive 200-500 word description covering all aspects of the entity/event",
+  "description_long_ar": "وصف شامل من 200-500 كلمة يغطي جميع جوانب الكيان/الحدث",
   "mission_en": null, "mission_ar": null,
   "city_en": null, "city_ar": null,
   "neighborhood_en": null, "neighborhood_ar": null,
@@ -532,26 +541,47 @@ Return ONLY valid JSON:
   "max_attendees": null,
   "organizer_name_en": null, "organizer_name_ar": null,
   "organizer_logo_url": null, "organizer_website": null,
+  "organizer_email": null, "organizer_phone": null,
   "map_url": null,
   "ticket_price": null, "is_free": null, "is_virtual": null, "virtual_link": null,
   "target_audience": [],
   "registration_fee": null,
   "rules_summary_en": null, "rules_summary_ar": null,
   "edition_year": null,
+  "activities_en": ["Workshop on...", "Live cooking demo", "Panel discussion on..."],
+  "activities_ar": ["ورشة عمل حول...", "عرض طهي مباشر", "حلقة نقاش حول..."],
   "reasons_to_attend": [{"reason":"...","reason_ar":"..."}],
   "unique_features": [{"feature":"...","feature_ar":"..."}],
   "targeted_sectors": [],
   "categories": [],
   "highlights": [{"label":"...","label_ar":"...","value":"..."}],
-  "edition_stats": {"exhibitors":null,"visitors":null,"countries":null,"brands":null,"sessions":null,"area_sqm":null},
+  "edition_stats": {"exhibitors":null,"visitors":null,"countries":null,"brands":null,"sessions":null,"area_sqm":null,"speakers":null,"workshops":null},
   "entry_details": {"type":null,"ticket_types":[],"early_bird_price":null,"vip_price":null,"group_discount":null},
-  "venue_details": {"capacity":null,"halls":null,"area_sqm":null,"parking":null,"accessibility":null},
-  "sponsors": [{"name":"...","name_ar":"...","tier":"partner","logo_url":null,"website_url":null}]
+  "venue_details": {"capacity":null,"halls":null,"area_sqm":null,"parking":null,"accessibility":null,"facilities":[]},
+  "sponsors": [{"name":"...","name_ar":"...","tier":"platinum|gold|silver|bronze|partner","logo_url":null,"website_url":null}],
+  "speakers": [{"name":"...","name_ar":"...","title":"...","title_ar":"...","photo_url":null}],
+  "schedule_items": [{"time":"09:00","title":"Opening ceremony","title_ar":"حفل الافتتاح","description":"...","description_ar":"..."}],
+  "gallery_urls": [],
+  "includes_competitions": null,
+  "includes_seminars": null,
+  "includes_training": null,
+  "currency": null,
+  "early_bird_deadline": null
 }
 
-Extract ALL data. Services & specializations in BOTH languages. Business hours from ACTUAL data (24h format). Social media links. Logo and cover images from available URLs.
-For exhibitions/conferences/competitions: extract venue, dates (YYYY-MM-DD format), registration info, organizer details, ticket pricing, target audience, reasons to attend, unique features, targeted sectors/industries, categories, edition statistics (exhibitors, visitors, countries, brands), entry details (free/paid/types), venue details (capacity, halls, area), and sponsors/partners with tiers and logos.
-For edition stats: extract numbers like "X exhibitors", "X visitors", "X countries represented" etc.`;
+Extract ALL data comprehensively. For exhibitions/conferences:
+- Write SHORT description (card-friendly, 50-100 words) and LONG description (comprehensive, 200-500 words)
+- List ALL activities within the event (workshops, demos, panels, tastings, etc.)
+- Extract ALL sponsors/partners with tier classification (platinum, gold, silver, bronze, partner)
+- Extract speaker information if available
+- Extract schedule/agenda items
+- Extract edition statistics (exhibitors count, visitors count, countries, brands, area sqm)
+- Extract entry/ticket details (free/paid, types, pricing)
+- Extract venue details (capacity, halls, area, parking, facilities)
+- Extract target audience segments
+- Extract targeted industry sectors
+- Services & specializations in BOTH languages. Business hours from ACTUAL data (24h format). Social media links.`;
+
 
   const content = await callAI(prompt, apiKey, 'google/gemini-3-flash-preview', 0.1, 30000);
   try {
