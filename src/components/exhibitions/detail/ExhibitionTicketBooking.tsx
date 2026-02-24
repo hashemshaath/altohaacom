@@ -10,7 +10,8 @@ import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
 import { QRCodeDisplay } from "@/components/qr/QRCodeDisplay";
 import { toast } from "@/hooks/use-toast";
-import { Ticket, CheckCircle2, Sparkles, Shield, ChevronDown, ChevronUp, User, Mail, Phone } from "lucide-react";
+import { Ticket, CheckCircle2, Sparkles, Shield, ChevronDown, ChevronUp, User, Mail, Phone, CreditCard } from "lucide-react";
+import { MoyasarPaymentForm } from "./MoyasarPaymentForm";
 
 interface Props {
   exhibitionId: string;
@@ -25,6 +26,8 @@ export function ExhibitionTicketBooking({ exhibitionId, exhibitionTitle, isFree,
   const { user } = useAuth();
   const queryClient = useQueryClient();
   const [expanded, setExpanded] = useState(false);
+  const [showPayment, setShowPayment] = useState(false);
+  const [pendingTicketId, setPendingTicketId] = useState<string | null>(null);
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
@@ -49,6 +52,7 @@ export function ExhibitionTicketBooking({ exhibitionId, exhibitionTitle, isFree,
     mutationFn: async () => {
       if (!user) throw new Error("Not authenticated");
       const { data: qrCode } = await supabase.rpc("generate_qr_code", { p_prefix: "ETK" });
+      const isPaid = !isFree && ticketPrice;
       const { data, error } = await supabase
         .from("exhibition_tickets")
         .insert({
@@ -58,6 +62,8 @@ export function ExhibitionTicketBooking({ exhibitionId, exhibitionTitle, isFree,
           attendee_email: email || user.email || undefined,
           attendee_phone: phone || undefined,
           qr_code: qrCode as string,
+          status: isPaid ? "pending" : "confirmed",
+          payment_status: isPaid ? "pending" : "free",
         })
         .select()
         .single();
@@ -71,18 +77,28 @@ export function ExhibitionTicketBooking({ exhibitionId, exhibitionTitle, isFree,
       });
       return data;
     },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["exhibition-ticket", exhibitionId] });
-      setExpanded(false);
-      toast({
-        title: isAr ? "تم حجز التذكرة! 🎟️" : "Ticket Booked! 🎟️",
-        description: isAr ? "يمكنك عرض تذكرتك مع رمز QR" : "You can view your ticket with QR code",
-      });
+    onSuccess: (data) => {
+      if (!isFree && ticketPrice) {
+        // Show payment form for paid tickets
+        setPendingTicketId(data.id);
+        setShowPayment(true);
+        setExpanded(false);
+      } else {
+        queryClient.invalidateQueries({ queryKey: ["exhibition-ticket", exhibitionId] });
+        setExpanded(false);
+        toast({
+          title: isAr ? "تم حجز التذكرة! 🎟️" : "Ticket Booked! 🎟️",
+          description: isAr ? "يمكنك عرض تذكرتك مع رمز QR" : "You can view your ticket with QR code",
+        });
+      }
     },
     onError: () => {
       toast({ title: isAr ? "خطأ" : "Error", description: isAr ? "فشل في حجز التذكرة" : "Failed to book ticket", variant: "destructive" });
     },
   });
+
+  // Parse price from string
+  const parsedPrice = ticketPrice ? parseFloat(ticketPrice.replace(/[^\d.]/g, "")) : 0;
 
   if (hasEnded || isLoading) return null;
 
@@ -128,6 +144,32 @@ export function ExhibitionTicketBooking({ exhibitionId, exhibitionTitle, isFree,
           )}
         </CardContent>
       </Card>
+    );
+  }
+
+  // Show Moyasar payment form
+  if (showPayment && pendingTicketId) {
+    return (
+      <MoyasarPaymentForm
+        exhibitionId={exhibitionId}
+        exhibitionTitle={exhibitionTitle}
+        ticketId={pendingTicketId}
+        amount={parsedPrice || 50}
+        isAr={isAr}
+        onSuccess={() => {
+          setShowPayment(false);
+          setPendingTicketId(null);
+          queryClient.invalidateQueries({ queryKey: ["exhibition-ticket", exhibitionId] });
+          toast({
+            title: isAr ? "تم الدفع والحجز! 🎟️" : "Payment & Booking Complete! 🎟️",
+            description: isAr ? "تذكرتك جاهزة" : "Your ticket is ready",
+          });
+        }}
+        onCancel={() => {
+          setShowPayment(false);
+          setPendingTicketId(null);
+        }}
+      />
     );
   }
 
