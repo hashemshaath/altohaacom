@@ -37,6 +37,7 @@ const ExhibitionSponsorsTab = lazy(() => import("@/components/exhibitions/detail
 const ExhibitionAgendaTab = lazy(() => import("@/components/exhibitions/detail/ExhibitionAgendaTab").then(m => ({ default: m.ExhibitionAgendaTab })));
 const ExhibitionBoothsTab = lazy(() => import("@/components/exhibitions/detail/ExhibitionBoothsTab").then(m => ({ default: m.ExhibitionBoothsTab })));
 const ExhibitionFloorMap = lazy(() => import("@/components/exhibitions/detail/ExhibitionFloorMap").then(m => ({ default: m.ExhibitionFloorMap })));
+const ExhibitionExhibitorRegistration = lazy(() => import("@/components/exhibitions/detail/ExhibitionExhibitorRegistration").then(m => ({ default: m.ExhibitionExhibitorRegistration })));
 const ExhibitionReviewsTab = lazy(() => import("@/components/exhibitions/detail/ExhibitionReviewsTab").then(m => ({ default: m.ExhibitionReviewsTab })));
 const ExhibitionOrganizerDashboard = lazy(() => import("@/components/exhibitions/ExhibitionOrganizerDashboard").then(m => ({ default: m.ExhibitionOrganizerDashboard })));
 
@@ -429,6 +430,9 @@ export default function ExhibitionDetail() {
                   <Suspense fallback={<TabFallback />}>
                     <ExhibitionFloorMap exhibitionId={exhibition.id} isAr={isAr} />
                     <ExhibitionBoothsTab exhibitionId={exhibition.id} isAr={isAr} />
+                    {!isOwner && !hasEnded && (
+                      <ExhibitionExhibitorRegistration exhibitionId={exhibition.id} isAr={isAr} />
+                    )}
                   </Suspense>
                 </TabsContent>
               )}

@@ -8314,6 +8314,99 @@ export type Database = {
           },
         ]
       }
+      exhibition_booth_requests: {
+        Row: {
+          admin_notes: string | null
+          booth_id: string | null
+          company_name: string
+          company_name_ar: string | null
+          contact_email: string
+          contact_name: string
+          contact_phone: string | null
+          created_at: string
+          description: string | null
+          description_ar: string | null
+          exhibition_id: string
+          id: string
+          logo_url: string | null
+          preferred_category: string | null
+          preferred_hall: string | null
+          preferred_size: string | null
+          reviewed_at: string | null
+          reviewed_by: string | null
+          special_requirements: string | null
+          status: string | null
+          updated_at: string
+          user_id: string
+          website_url: string | null
+        }
+        Insert: {
+          admin_notes?: string | null
+          booth_id?: string | null
+          company_name: string
+          company_name_ar?: string | null
+          contact_email: string
+          contact_name: string
+          contact_phone?: string | null
+          created_at?: string
+          description?: string | null
+          description_ar?: string | null
+          exhibition_id: string
+          id?: string
+          logo_url?: string | null
+          preferred_category?: string | null
+          preferred_hall?: string | null
+          preferred_size?: string | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          special_requirements?: string | null
+          status?: string | null
+          updated_at?: string
+          user_id: string
+          website_url?: string | null
+        }
+        Update: {
+          admin_notes?: string | null
+          booth_id?: string | null
+          company_name?: string
+          company_name_ar?: string | null
+          contact_email?: string
+          contact_name?: string
+          contact_phone?: string | null
+          created_at?: string
+          description?: string | null
+          description_ar?: string | null
+          exhibition_id?: string
+          id?: string
+          logo_url?: string | null
+          preferred_category?: string | null
+          preferred_hall?: string | null
+          preferred_size?: string | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          special_requirements?: string | null
+          status?: string | null
+          updated_at?: string
+          user_id?: string
+          website_url?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "exhibition_booth_requests_booth_id_fkey"
+            columns: ["booth_id"]
+            isOneToOne: false
+            referencedRelation: "exhibition_booths"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "exhibition_booth_requests_exhibition_id_fkey"
+            columns: ["exhibition_id"]
+            isOneToOne: false
+            referencedRelation: "exhibitions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       exhibition_booths: {
         Row: {
           assigned_at: string | null
