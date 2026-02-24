@@ -11,7 +11,8 @@ import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { toast } from "@/hooks/use-toast";
-import { Star, MessageSquare, Send, PenLine, Shield, ThumbsUp, Image as ImageIcon, X } from "lucide-react";
+import { Star, MessageSquare, Send, PenLine, Shield, ThumbsUp, Image as ImageIcon, X, Flag, Reply, MoreHorizontal } from "lucide-react";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { format } from "date-fns";
 
 interface Props {
@@ -85,6 +86,102 @@ function HelpfulButton({ reviewId, helpfulCount, isAr }: { reviewId: string; hel
       {helpfulCount > 0 && <span>{helpfulCount}</span>}
       <span>{isAr ? "مفيد" : "Helpful"}</span>
     </button>
+  );
+}
+
+function ReviewReplySection({ reviewId, isAr, isOrganizer }: { reviewId: string; isAr: boolean; isOrganizer?: boolean }) {
+  const { user } = useAuth();
+  const queryClient = useQueryClient();
+  const [showReply, setShowReply] = useState(false);
+  const [replyText, setReplyText] = useState("");
+
+  const { data: replies = [] } = useQuery({
+    queryKey: ["review-replies", reviewId],
+    queryFn: async () => {
+      const { data } = await supabase
+        .from("exhibition_review_replies")
+        .select("*")
+        .eq("review_id", reviewId)
+        .order("created_at", { ascending: true });
+      if (!data || data.length === 0) return [];
+      const userIds = [...new Set(data.map(r => r.user_id))];
+      const { data: profiles } = await supabase.from("profiles").select("user_id, full_name, username, avatar_url").in("user_id", userIds);
+      const pMap = new Map((profiles || []).map(p => [p.user_id, p]));
+      return data.map(r => ({ ...r, profile: pMap.get(r.user_id) }));
+    },
+  });
+
+  const addReply = useMutation({
+    mutationFn: async () => {
+      if (!user || !replyText.trim()) return;
+      const { error } = await supabase.from("exhibition_review_replies").insert({ review_id: reviewId, user_id: user.id, content: replyText.trim() });
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["review-replies", reviewId] });
+      setReplyText("");
+      setShowReply(false);
+    },
+  });
+
+  return (
+    <div className="mt-2 space-y-2">
+      {replies.map((r: any) => (
+        <div key={r.id} className="ms-6 rounded-lg bg-muted/40 p-2.5 border-s-2 border-primary/20">
+          <div className="flex items-center gap-1.5">
+            <span className="text-[10px] font-semibold text-foreground">{r.profile?.full_name || r.profile?.username || (isAr ? "مستخدم" : "User")}</span>
+            <span className="text-[9px] text-muted-foreground">{format(new Date(r.created_at), "MMM d")}</span>
+          </div>
+          <p className="text-[11px] text-muted-foreground mt-0.5">{r.content}</p>
+        </div>
+      ))}
+      {user && (isOrganizer || replies.length > 0) && !showReply && (
+        <button onClick={() => setShowReply(true)} className="ms-6 text-[10px] text-primary hover:underline flex items-center gap-1">
+          <Reply className="h-2.5 w-2.5" /> {isAr ? "رد" : "Reply"}
+        </button>
+      )}
+      {showReply && (
+        <div className="ms-6 flex gap-2">
+          <Input value={replyText} onChange={e => setReplyText(e.target.value)} placeholder={isAr ? "اكتب رداً..." : "Write a reply..."} className="h-8 text-xs flex-1" />
+          <Button size="sm" className="h-8 text-xs" disabled={!replyText.trim() || addReply.isPending} onClick={() => addReply.mutate()}>
+            <Send className="h-3 w-3" />
+          </Button>
+        </div>
+      )}
+    </div>
+  );
+}
+
+function ReportButton({ reviewId, isAr }: { reviewId: string; isAr: boolean }) {
+  const { user } = useAuth();
+  const reportMutation = useMutation({
+    mutationFn: async (reason: string) => {
+      if (!user) return;
+      const { error } = await supabase.from("exhibition_review_reports").insert({ review_id: reviewId, user_id: user.id, reason });
+      if (error) {
+        if (error.code === "23505") throw new Error("already_reported");
+        throw error;
+      }
+    },
+    onSuccess: () => toast({ title: isAr ? "تم الإبلاغ ✅" : "Reported ✅" }),
+    onError: (e: any) => toast({ title: e.message === "already_reported" ? (isAr ? "تم الإبلاغ مسبقاً" : "Already reported") : (isAr ? "خطأ" : "Error"), variant: "destructive" }),
+  });
+
+  if (!user) return null;
+
+  return (
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
+        <button className="h-6 w-6 rounded-full flex items-center justify-center hover:bg-muted/60 transition-colors">
+          <MoreHorizontal className="h-3.5 w-3.5 text-muted-foreground" />
+        </button>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent align="end" className="min-w-[140px]">
+        <DropdownMenuItem onClick={() => reportMutation.mutate("inappropriate")} className="text-xs gap-2 text-destructive">
+          <Flag className="h-3 w-3" /> {isAr ? "إبلاغ" : "Report"}
+        </DropdownMenuItem>
+      </DropdownMenuContent>
+    </DropdownMenu>
   );
 }
 
@@ -322,6 +419,7 @@ export function ExhibitionReviewsTab({ exhibitionId, hasEnded, isAr }: Props) {
                         {isAr ? "حاضر" : "Verified"}
                       </Badge>
                     )}
+                    <div className="ms-auto"><ReportButton reviewId={review.id} isAr={isAr} /></div>
                   </div>
                   <div className="mt-0.5">
                     <StarRating rating={review.rating} size="sm" />
@@ -346,6 +444,7 @@ export function ExhibitionReviewsTab({ exhibitionId, hasEnded, isAr }: Props) {
                     <HelpfulButton reviewId={review.id} helpfulCount={review.helpful_count || 0} isAr={isAr} />
                     <span className="text-[10px] text-muted-foreground/60 font-medium">{format(new Date(review.created_at), "MMM d, yyyy")}</span>
                   </div>
+                  <ReviewReplySection reviewId={review.id} isAr={isAr} />
                 </div>
               </div>
             </CardContent>

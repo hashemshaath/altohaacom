@@ -22,6 +22,7 @@ const ExhibitionMapEmbed = lazy(() => import("./ExhibitionMapEmbed").then(m => (
 const ExhibitionSocialLinks = lazy(() => import("./ExhibitionSocialLinks").then(m => ({ default: m.ExhibitionSocialLinks })));
 const ExhibitionDocuments = lazy(() => import("./ExhibitionDocuments").then(m => ({ default: m.ExhibitionDocuments })));
 const ExhibitionShareButtons = lazy(() => import("./ExhibitionShareButtons").then(m => ({ default: m.ExhibitionShareButtons })));
+const ExhibitionInviteLink = lazy(() => import("./ExhibitionInviteLink").then(m => ({ default: m.ExhibitionInviteLink })));
 
 interface Props {
   exhibition: any;
@@ -75,6 +76,7 @@ export function ExhibitionSidebar({
       <Suspense fallback={null}>
         <ExhibitionStats exhibitionId={exhibition.id} isAr={isAr} />
         <ExhibitionShareButtons title={title} description={description || undefined} imageUrl={exhibition.cover_image_url} isAr={isAr} />
+        <ExhibitionInviteLink exhibitionId={exhibition.id} exhibitionSlug={exhibition.slug} isAr={isAr} />
         <ExhibitionNotificationPrompt exhibitionId={exhibition.id} exhibitionName={title} isAr={isAr} isFollowing={isFollowing} />
       </Suspense>
 
