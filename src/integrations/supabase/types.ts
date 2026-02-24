@@ -8811,6 +8811,44 @@ export type Database = {
           },
         ]
       }
+      exhibition_loyalty_actions: {
+        Row: {
+          action_type: string
+          created_at: string
+          exhibition_id: string
+          id: string
+          metadata: Json | null
+          points_earned: number
+          user_id: string
+        }
+        Insert: {
+          action_type: string
+          created_at?: string
+          exhibition_id: string
+          id?: string
+          metadata?: Json | null
+          points_earned?: number
+          user_id: string
+        }
+        Update: {
+          action_type?: string
+          created_at?: string
+          exhibition_id?: string
+          id?: string
+          metadata?: Json | null
+          points_earned?: number
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "exhibition_loyalty_actions_exhibition_id_fkey"
+            columns: ["exhibition_id"]
+            isOneToOne: false
+            referencedRelation: "exhibitions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       exhibition_media: {
         Row: {
           category: string
@@ -9265,6 +9303,132 @@ export type Database = {
             columns: ["session_id"]
             isOneToOne: false
             referencedRelation: "exhibition_cooking_sessions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      exhibition_survey_questions: {
+        Row: {
+          created_at: string
+          id: string
+          is_required: boolean
+          options: Json | null
+          question: string
+          question_ar: string | null
+          question_type: string
+          sort_order: number
+          survey_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          is_required?: boolean
+          options?: Json | null
+          question: string
+          question_ar?: string | null
+          question_type?: string
+          sort_order?: number
+          survey_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          is_required?: boolean
+          options?: Json | null
+          question?: string
+          question_ar?: string | null
+          question_type?: string
+          sort_order?: number
+          survey_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "exhibition_survey_questions_survey_id_fkey"
+            columns: ["survey_id"]
+            isOneToOne: false
+            referencedRelation: "exhibition_surveys"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      exhibition_survey_responses: {
+        Row: {
+          answers: Json
+          id: string
+          submitted_at: string
+          survey_id: string
+          user_id: string
+        }
+        Insert: {
+          answers?: Json
+          id?: string
+          submitted_at?: string
+          survey_id: string
+          user_id: string
+        }
+        Update: {
+          answers?: Json
+          id?: string
+          submitted_at?: string
+          survey_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "exhibition_survey_responses_survey_id_fkey"
+            columns: ["survey_id"]
+            isOneToOne: false
+            referencedRelation: "exhibition_surveys"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      exhibition_surveys: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          description: string | null
+          description_ar: string | null
+          exhibition_id: string
+          id: string
+          is_active: boolean
+          survey_type: string
+          title: string
+          title_ar: string | null
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          description_ar?: string | null
+          exhibition_id: string
+          id?: string
+          is_active?: boolean
+          survey_type?: string
+          title: string
+          title_ar?: string | null
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          description_ar?: string | null
+          exhibition_id?: string
+          id?: string
+          is_active?: boolean
+          survey_type?: string
+          title?: string
+          title_ar?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "exhibition_surveys_exhibition_id_fkey"
+            columns: ["exhibition_id"]
+            isOneToOne: false
+            referencedRelation: "exhibitions"
             referencedColumns: ["id"]
           },
         ]

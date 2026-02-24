@@ -42,6 +42,9 @@ const ExhibitionExhibitorRegistration = lazy(() => import("@/components/exhibiti
 const ExhibitionReviewsTab = lazy(() => import("@/components/exhibitions/detail/ExhibitionReviewsTab").then(m => ({ default: m.ExhibitionReviewsTab })));
 const ExhibitionCookingSessions = lazy(() => import("@/components/exhibitions/detail/ExhibitionCookingSessions").then(m => ({ default: m.ExhibitionCookingSessions })));
 const ExhibitionOrganizerDashboard = lazy(() => import("@/components/exhibitions/ExhibitionOrganizerDashboard").then(m => ({ default: m.ExhibitionOrganizerDashboard })));
+const ExhibitionLoyaltyWidget = lazy(() => import("@/components/exhibitions/detail/ExhibitionLoyaltyWidget").then(m => ({ default: m.ExhibitionLoyaltyWidget })));
+const ExhibitionBoothNavigator = lazy(() => import("@/components/exhibitions/detail/ExhibitionBoothNavigator").then(m => ({ default: m.ExhibitionBoothNavigator })));
+const ExhibitionSurveyManager = lazy(() => import("@/components/exhibitions/detail/ExhibitionSurveyManager").then(m => ({ default: m.ExhibitionSurveyManager })));
 
 const TabFallback = () => <div className="space-y-3">{[1, 2, 3].map(i => <div key={i} className="h-24 animate-pulse rounded-2xl bg-muted" />)}</div>;
 
@@ -442,6 +445,7 @@ export default function ExhibitionDetail() {
               {hasBooths && (
                 <TabsContent value="booths" className="mt-6 space-y-6">
                   <Suspense fallback={<TabFallback />}>
+                    <ExhibitionBoothNavigator exhibitionId={exhibition.id} isAr={isAr} />
                     <ExhibitionFloorMap exhibitionId={exhibition.id} isAr={isAr} />
                     <ExhibitionBoothsTab exhibitionId={exhibition.id} isAr={isAr} />
                     {!isOwner && !hasEnded && (
@@ -458,9 +462,13 @@ export default function ExhibitionDetail() {
               </TabsContent>
 
               {hasReviews && (
-                <TabsContent value="reviews" className="mt-6">
+                <TabsContent value="reviews" className="mt-6 space-y-6">
                   <Suspense fallback={<TabFallback />}>
                     <ExhibitionReviewsTab exhibitionId={exhibition.id} hasEnded={hasEnded} isAr={isAr} creatorId={exhibition.created_by || undefined} />
+                    {hasEnded && (
+                      <ExhibitionSurveyManager exhibitionId={exhibition.id} isAr={isAr} isOrganizer={!!isOwner} />
+                    )}
+                    <ExhibitionLoyaltyWidget exhibitionId={exhibition.id} isAr={isAr} />
                   </Suspense>
                 </TabsContent>
               )}

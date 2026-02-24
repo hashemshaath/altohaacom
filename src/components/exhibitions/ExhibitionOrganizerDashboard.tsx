@@ -21,6 +21,7 @@ import { ExhibitionOrganizerQuickActions } from "./detail/ExhibitionOrganizerQui
 import { ExhibitionRealtimeStats } from "./detail/ExhibitionRealtimeStats";
 import { ExhibitionDiscountCodes } from "./detail/ExhibitionDiscountCodes";
 import { ExhibitionOrganizerMessaging } from "./detail/ExhibitionOrganizerMessaging";
+import { ExhibitionSurveyManager } from "./detail/ExhibitionSurveyManager";
 interface Props {
   exhibitionId: string;
   exhibitionTitle: string;
@@ -168,6 +169,10 @@ export function ExhibitionOrganizerDashboard({ exhibitionId, exhibitionTitle, is
               <Download className="h-3.5 w-3.5" />
               <span className="hidden sm:inline">{t("Export", "تصدير")}</span>
             </TabsTrigger>
+            <TabsTrigger value="surveys" className="gap-1.5 text-xs">
+              <ClipboardList className="h-3.5 w-3.5" />
+              <span className="hidden sm:inline">{t("Surveys", "استبيانات")}</span>
+            </TabsTrigger>
           </TabsList>
         </div>
 
@@ -272,6 +277,10 @@ export function ExhibitionOrganizerDashboard({ exhibitionId, exhibitionTitle, is
             <ExhibitionOrganizerMessaging exhibitionId={exhibitionId} exhibitionTitle={exhibitionTitle} isAr={isAr} />
             <ExhibitionNotificationPreferences exhibitionId={exhibitionId} isAr={isAr} />
           </div>
+        </TabsContent>
+
+        <TabsContent value="surveys">
+          <ExhibitionSurveyManager exhibitionId={exhibitionId} isAr={isAr} isOrganizer={true} />
         </TabsContent>
       </Tabs>
     </div>
