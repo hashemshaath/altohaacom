@@ -387,23 +387,6 @@ export default function ExhibitionDetail() {
 
               {/* === OVERVIEW TAB === */}
               <TabsContent value="overview" className="mt-6 space-y-6">
-                {(isUpcoming || isHappening) && (
-                  <Card className="relative overflow-hidden border-primary/20 shadow-md hidden lg:block">
-                    <div className="absolute -top-16 -end-16 h-40 w-40 rounded-full bg-primary/5 blur-[50px] animate-pulse" />
-                    <div className="bg-gradient-to-r from-primary/10 via-primary/5 to-transparent px-6 py-4">
-                      <h3 className="flex items-center gap-2.5 font-semibold">
-                        <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-primary/15"><Timer className="h-4.5 w-4.5 text-primary" /></div>
-                        {isHappening ? (isAr ? "الحدث جارٍ الآن — ينتهي خلال" : "Event is Live — Ends in") : (isAr ? "العد التنازلي" : "Event Countdown")}
-                      </h3>
-                    </div>
-                    <CardContent className="py-8">
-                      <CountdownTimer targetDate={isHappening ? end : start} isAr={isAr} />
-                      <p className="mt-5 text-center text-sm text-muted-foreground">
-                        {isHappening ? (isAr ? `ينتهي في ${format(end, "d MMMM yyyy")}` : `Ends on ${format(end, "MMMM d, yyyy")}`) : (isAr ? `يبدأ في ${format(start, "d MMMM yyyy")}` : `Starts on ${format(start, "MMMM d, yyyy")}`)}
-                      </p>
-                    </CardContent>
-                  </Card>
-                )}
 
                 {description && (
                   <Card className="border-s-[3px] border-s-primary/40">
