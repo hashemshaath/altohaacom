@@ -4,7 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Users, Ticket, Star, TrendingUp, CheckCircle2, Clock, BarChart3, LayoutGrid, ClipboardList, Award, CalendarClock, Tags, Download, HandHeart, ChefHat, Bell } from "lucide-react";
+import { Users, Ticket, Star, TrendingUp, CheckCircle2, Clock, BarChart3, LayoutGrid, ClipboardList, Award, CalendarClock, Tags, Download, HandHeart, ChefHat, Bell, Megaphone } from "lucide-react";
 import { format } from "date-fns";
 import { ExhibitionTicketCheckin } from "./detail/ExhibitionTicketCheckin";
 import { ExhibitionOrganizerAnalytics } from "./detail/ExhibitionOrganizerAnalytics";
@@ -17,7 +17,8 @@ import { ExhibitionDataExport } from "./detail/ExhibitionDataExport";
 import { ExhibitionVolunteerManager } from "./detail/ExhibitionVolunteerManager";
 import { ExhibitionCookingSessionManager } from "./detail/ExhibitionCookingSessionManager";
 import { ExhibitionNotificationPreferences } from "./detail/ExhibitionNotificationPreferences";
-
+import { ExhibitionOrganizerQuickActions } from "./detail/ExhibitionOrganizerQuickActions";
+import { ExhibitionRealtimeStats } from "./detail/ExhibitionRealtimeStats";
 interface Props {
   exhibitionId: string;
   exhibitionTitle: string;
@@ -77,10 +78,27 @@ export function ExhibitionOrganizerDashboard({ exhibitionId, exhibitionTitle, is
 
   return (
     <div className="space-y-6">
+      {/* Quick Actions */}
+      <ExhibitionOrganizerQuickActions
+        exhibitionId={exhibitionId}
+        exhibitionTitle={exhibitionTitle}
+        isAr={isAr}
+        followerCount={stats?.followers || 0}
+        ticketCount={stats?.totalTickets || 0}
+      />
+
+      {/* Realtime Stats Bar */}
+      <ExhibitionRealtimeStats
+        exhibitionId={exhibitionId}
+        initialTickets={stats?.totalTickets || 0}
+        initialCheckins={stats?.checkedIn || 0}
+        isAr={isAr}
+      />
+
       {/* Stats Grid */}
       <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
         {statCards.map((s) => (
-          <Card key={s.label} className="border-border/40">
+          <Card key={s.label} className="border-border/40 transition-all hover:shadow-md hover:border-primary/20">
             <CardContent className="p-3 flex items-center gap-3">
               <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-muted/60 shrink-0">
                 <s.icon className={`h-4 w-4 ${s.color}`} />

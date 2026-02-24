@@ -61,7 +61,7 @@ export const ExhibitionOverviewTab = memo(function ExhibitionOverviewTab({
         ].map((item) => {
           const Icon = item.icon;
           return (
-            <div key={item.label} className={`rounded-xl border border-${item.color}/15 bg-gradient-to-br from-${item.color}/10 via-${item.color}/5 to-transparent p-4 text-center`}>
+            <div key={item.label} className={`rounded-xl border border-${item.color}/15 bg-gradient-to-br from-${item.color}/10 via-${item.color}/5 to-transparent p-4 text-center transition-all duration-200 hover:shadow-md hover:scale-[1.02] active:scale-[0.98]`}>
               <Icon className={`mx-auto mb-1.5 h-5 w-5 text-${item.color}`} />
               <p className="text-lg font-bold text-foreground">{item.value}</p>
               <p className="text-[10px] font-medium uppercase tracking-wider text-muted-foreground">{item.label}</p>
