@@ -437,17 +437,26 @@ export default function SmartImportAdmin() {
       const phone = details.phone?.trim();
       const email = details.email?.trim()?.toLowerCase();
 
-      // Use full-name matching only (no individual keyword matching to avoid false positives)
+      // Strip year patterns (e.g., "2025", "2026") from names for broader matching
+      const stripYear = (s: string | undefined) => s?.replace(/\b(19|20)\d{2}\b/g, '').replace(/\s+/g, ' ').trim();
+      const nameEnNoYear = stripYear(nameEn);
+      const nameArNoYear = stripYear(nameAr);
+
+      // Use full-name matching + year-stripped matching
       const orConditions: string[] = [];
       if (nameEn) orConditions.push(`name.ilike.%${nameEn}%`);
       if (nameAr) orConditions.push(`name_ar.ilike.%${nameAr}%`);
+      if (nameEnNoYear && nameEnNoYear !== nameEn) orConditions.push(`name.ilike.%${nameEnNoYear}%`);
+      if (nameArNoYear && nameArNoYear !== nameAr) orConditions.push(`name_ar.ilike.%${nameArNoYear}%`);
       if (phone) orConditions.push(`phone.eq.${phone}`);
       if (email) orConditions.push(`email.ilike.${email}`);
 
-      // Title-based conditions for exhibitions/competitions (full name only)
+      // Title-based conditions for exhibitions/competitions
       const titleOrConditions: string[] = [];
       if (nameEn) titleOrConditions.push(`title.ilike.%${nameEn}%`);
       if (nameAr) titleOrConditions.push(`title_ar.ilike.%${nameAr}%`);
+      if (nameEnNoYear && nameEnNoYear !== nameEn) titleOrConditions.push(`title.ilike.%${nameEnNoYear}%`);
+      if (nameArNoYear && nameArNoYear !== nameAr) titleOrConditions.push(`title_ar.ilike.%${nameArNoYear}%`);
 
       if (orConditions.length === 0 && titleOrConditions.length === 0) { setCheckingDb(false); setDbChecked(true); return; }
       // Deduplicate conditions
