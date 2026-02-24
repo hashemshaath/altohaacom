@@ -89,15 +89,23 @@ const FONT_SIZES = [
   { id: "xl", label: "Extra Large", labelAr: "كبير جداً" },
 ];
 
-const THEME_MAP: Record<string, { bg: string; card: string; text: string }> = {
-  default: { bg: "bg-gradient-to-br from-background via-background to-muted/30", card: "bg-card/90 backdrop-blur-xl border-border/30", text: "text-foreground" },
-  dark: { bg: "bg-gradient-to-br from-gray-950 via-gray-900 to-gray-950", card: "bg-white/5 backdrop-blur-xl border-white/10", text: "text-white" },
-  ocean: { bg: "bg-gradient-to-br from-blue-950 via-cyan-900 to-teal-950", card: "bg-white/10 backdrop-blur-xl border-white/15", text: "text-white" },
-  sunset: { bg: "bg-gradient-to-br from-orange-950 via-rose-900 to-purple-950", card: "bg-white/10 backdrop-blur-xl border-white/15", text: "text-white" },
-  forest: { bg: "bg-gradient-to-br from-green-950 via-emerald-900 to-teal-950", card: "bg-white/10 backdrop-blur-xl border-white/15", text: "text-white" },
-  minimal: { bg: "bg-white dark:bg-gray-950", card: "bg-gray-50 dark:bg-gray-900 border-gray-200 dark:border-gray-800", text: "text-gray-900 dark:text-gray-100" },
-  candy: { bg: "bg-gradient-to-br from-pink-400 via-purple-400 to-indigo-500", card: "bg-white/20 backdrop-blur-xl border-white/25", text: "text-white" },
-  gold: { bg: "bg-gradient-to-br from-yellow-900 via-amber-800 to-yellow-950", card: "bg-white/10 backdrop-blur-xl border-yellow-500/20", text: "text-amber-50" },
+interface PreviewTheme {
+  bg: string;
+  card: string;
+  text: string;
+  accent: string;
+  border: string;
+}
+
+const THEME_MAP: Record<string, PreviewTheme> = {
+  default: { bg: "linear-gradient(180deg, #0a0a12, #0d0d18)", card: "rgba(255,255,255,0.04)", text: "#f5f5f5", accent: "#c4a265", border: "rgba(255,255,255,0.08)" },
+  dark: { bg: "linear-gradient(180deg, #0a0a0a, #111111)", card: "rgba(255,255,255,0.03)", text: "#ffffff", accent: "#818cf8", border: "rgba(255,255,255,0.06)" },
+  ocean: { bg: "linear-gradient(180deg, #0a1628, #0c1e3a)", card: "rgba(255,255,255,0.05)", text: "#e0f0ff", accent: "#38bdf8", border: "rgba(56,189,248,0.1)" },
+  sunset: { bg: "linear-gradient(180deg, #1a0a1e, #2d1030)", card: "rgba(255,255,255,0.05)", text: "#ffe8f0", accent: "#f472b6", border: "rgba(244,114,182,0.1)" },
+  forest: { bg: "linear-gradient(180deg, #0a1a0e, #0e2a14)", card: "rgba(255,255,255,0.05)", text: "#e0ffe8", accent: "#34d399", border: "rgba(52,211,153,0.1)" },
+  minimal: { bg: "linear-gradient(180deg, #ffffff, #f8f9fa)", card: "rgba(0,0,0,0.03)", text: "#1a1a1a", accent: "#3b82f6", border: "rgba(0,0,0,0.08)" },
+  candy: { bg: "linear-gradient(135deg, #ec4899, #8b5cf6, #6366f1)", card: "rgba(255,255,255,0.15)", text: "#ffffff", accent: "#fbbf24", border: "rgba(255,255,255,0.2)" },
+  gold: { bg: "linear-gradient(180deg, #1a1408, #2a1f0e)", card: "rgba(196,162,101,0.06)", text: "#fef3c7", accent: "#c4a265", border: "rgba(196,162,101,0.12)" },
 };
 
 const SOCIAL_ICONS: Record<string, typeof Instagram> = {
@@ -1181,72 +1189,76 @@ export default function SocialLinksEditor() {
                     </div>
                   </CardHeader>
                   <CardContent className="p-0">
-                    <div className={`p-4 min-h-[500px] ${THEME_MAP[form.theme]?.bg || THEME_MAP.default.bg}`}
-                      dir={extra.text_direction === "auto" ? undefined : extra.text_direction}
-                      style={{
-                        ...(form.background_image_url ? { backgroundImage: `url(${form.background_image_url})`, backgroundSize: "cover", backgroundPosition: "center" } : undefined),
-                        fontFamily: FONT_FAMILIES.find(f => f.id === form.font_family)?.css || "inherit",
-                      }}
-                    >
-                      {form.background_image_url && <div className="absolute inset-0 bg-black/30 rounded-b-lg" />}
-                      <div className={`relative z-10 flex flex-col items-center gap-3`}>
-                        {form.show_avatar && (
-                          <Avatar className="h-16 w-16 ring-2 ring-white/20 shadow-xl">
-                            <AvatarImage src={profile?.avatar_url || ""} />
-                            <AvatarFallback className="text-lg bg-primary/20">{displayName.charAt(0)}</AvatarFallback>
-                          </Avatar>
-                        )}
-                        <div className={alignClass}>
-                          <p className={`font-bold ${THEME_MAP[form.theme]?.text || ""} ${extra.font_size === "sm" ? "text-xs" : extra.font_size === "lg" ? "text-base" : extra.font_size === "xl" ? "text-lg" : "text-sm"}`}>
-                            {form.page_title || displayName || "Your Name"}
-                          </p>
-                          <p className={`text-[10px] opacity-70 ${THEME_MAP[form.theme]?.text || ""}`}>
-                            @{profile?.username || "username"}
-                          </p>
-                          {extra.show_bio && form.bio && <p className={`text-[10px] opacity-80 mt-1 ${THEME_MAP[form.theme]?.text || ""}`}>{form.bio}</p>}
-                        </div>
-
-                        {form.show_social_icons && activeSocials.length > 0 && (
-                          <div className={`flex gap-2 mt-1 flex-wrap ${justifyClass}`}>
-                            {activeSocials.map(({ key, icon: Icon }) => (
-                              <div key={key} className={`h-8 w-8 rounded-full ${THEME_MAP[form.theme]?.card || ""} border flex items-center justify-center`}>
-                                <Icon className={`h-3.5 w-3.5 ${THEME_MAP[form.theme]?.text || ""}`} />
-                              </div>
-                            ))}
-                            {contacts.whatsapp && (
-                              <div className={`h-8 w-8 rounded-full ${THEME_MAP[form.theme]?.card || ""} border flex items-center justify-center`}>
-                                <MessageCircle className={`h-3.5 w-3.5 ${THEME_MAP[form.theme]?.text || ""}`} />
-                              </div>
+                    {(() => {
+                      const pt = THEME_MAP[form.theme] || THEME_MAP.default;
+                      return (
+                        <div className="p-4 min-h-[500px] rounded-b-lg"
+                          dir={extra.text_direction === "auto" ? undefined : extra.text_direction}
+                          style={{
+                            background: form.background_image_url ? `url(${form.background_image_url}) center/cover` : pt.bg,
+                            fontFamily: FONT_FAMILIES.find(f => f.id === form.font_family)?.css || "inherit",
+                            color: pt.text,
+                          }}
+                        >
+                          <div className="relative z-10 flex flex-col items-center gap-3">
+                            {form.show_avatar && (
+                              <Avatar className="h-16 w-16 shadow-xl" style={{ boxShadow: `0 0 0 2px ${pt.border}` }}>
+                                <AvatarImage src={profile?.avatar_url || ""} />
+                                <AvatarFallback className="text-lg" style={{ background: `${pt.accent}22`, color: pt.accent }}>{displayName.charAt(0)}</AvatarFallback>
+                              </Avatar>
                             )}
-                            {contacts.phone && (
-                              <div className={`h-8 w-8 rounded-full ${THEME_MAP[form.theme]?.card || ""} border flex items-center justify-center`}>
-                                <Phone className={`h-3.5 w-3.5 ${THEME_MAP[form.theme]?.text || ""}`} />
-                              </div>
-                            )}
-                          </div>
-                        )}
-
-                        <div className={`w-full ${extra.link_layout === "grid" ? "grid grid-cols-2 gap-2" : "space-y-2"} mt-3`}>
-                          {items.filter(i => i.is_active !== false).map(item => {
-                            const btnRadius = form.button_style === "rounded" ? "rounded-xl" : form.button_style === "pill" ? "rounded-full" : form.button_style === "square" ? "rounded-lg" : form.button_style === "sharp" ? "rounded-none" : "rounded-xl border-2";
-                            return (
-                              <div key={item.id} className={`flex items-center gap-2 px-3 py-2.5 border ${btnRadius} ${THEME_MAP[form.theme]?.card || ""} ${extra.link_layout === "grid" ? "flex-col text-center py-4" : ""}`}
-                                style={form.button_color !== "#000000" ? { backgroundColor: form.button_color, color: form.text_color } : undefined}
-                              >
-                                {item.icon && <span className="text-sm">{item.icon}</span>}
-                                <span className={`${extra.link_layout === "grid" ? "" : "flex-1"} text-[11px] font-medium ${alignClass} ${THEME_MAP[form.theme]?.text || ""}`}>{item.title}</span>
-                              </div>
-                            );
-                          })}
-                          {items.length === 0 && (
-                            <div className={`text-center py-6 ${THEME_MAP[form.theme]?.text || ""} opacity-40 ${extra.link_layout === "grid" ? "col-span-2" : ""}`}>
-                              <Globe className="h-8 w-8 mx-auto mb-2" />
-                              <p className="text-[10px]">{isAr ? "أضف روابط" : "Add links"}</p>
+                            <div className={alignClass}>
+                              <p className={`font-bold ${extra.font_size === "sm" ? "text-xs" : extra.font_size === "lg" ? "text-base" : extra.font_size === "xl" ? "text-lg" : "text-sm"}`} style={{ color: pt.text }}>
+                                {form.page_title || displayName || "Your Name"}
+                              </p>
+                              <p className="text-[10px] mt-0.5" style={{ color: `${pt.text}66` }}>@{profile?.username || "username"}</p>
+                              {extra.show_bio && form.bio && <p className="text-[10px] mt-1" style={{ color: `${pt.text}aa` }}>{form.bio}</p>}
                             </div>
-                          )}
+
+                            {form.show_social_icons && activeSocials.length > 0 && (
+                              <div className={`flex gap-2 mt-1 flex-wrap ${justifyClass}`}>
+                                {activeSocials.map(({ key, icon: Icon }) => (
+                                  <div key={key} className="h-8 w-8 rounded-full flex items-center justify-center" style={{ background: pt.card, border: `1px solid ${pt.border}` }}>
+                                    <Icon className="h-3.5 w-3.5" style={{ color: pt.text }} />
+                                  </div>
+                                ))}
+                                {contacts.whatsapp && (
+                                  <div className="h-8 w-8 rounded-full flex items-center justify-center" style={{ background: "rgba(37,211,102,0.08)", border: "1px solid rgba(37,211,102,0.15)" }}>
+                                    <MessageCircle className="h-3.5 w-3.5" style={{ color: "#25d366" }} />
+                                  </div>
+                                )}
+                                {contacts.phone && (
+                                  <div className="h-8 w-8 rounded-full flex items-center justify-center" style={{ background: pt.card, border: `1px solid ${pt.border}` }}>
+                                    <Phone className="h-3.5 w-3.5" style={{ color: pt.text }} />
+                                  </div>
+                                )}
+                              </div>
+                            )}
+
+                            <div className={`w-full ${extra.link_layout === "grid" ? "grid grid-cols-2 gap-2" : "space-y-2"} mt-3`}>
+                              {items.filter(i => i.is_active !== false).map(item => {
+                                const btnRadius = form.button_style === "rounded" ? "rounded-xl" : form.button_style === "pill" ? "rounded-full" : form.button_style === "square" ? "rounded-lg" : form.button_style === "sharp" ? "rounded-none" : "rounded-xl";
+                                const customColor = form.button_color !== "#000000" ? { backgroundColor: form.button_color, color: form.text_color, border: "1px solid transparent" } : { background: pt.card, border: `1px solid ${pt.border}` };
+                                return (
+                                  <div key={item.id} className={`flex items-center gap-2 px-3 py-2.5 ${btnRadius} ${extra.link_layout === "grid" ? "flex-col text-center py-4" : ""}`}
+                                    style={customColor}
+                                  >
+                                    {item.icon && <span className="text-sm">{item.icon}</span>}
+                                    <span className={`${extra.link_layout === "grid" ? "" : "flex-1"} text-[11px] font-medium ${alignClass}`} style={{ color: customColor.color || pt.text }}>{item.title}</span>
+                                  </div>
+                                );
+                              })}
+                              {items.length === 0 && (
+                                <div className={`text-center py-6 opacity-40 ${extra.link_layout === "grid" ? "col-span-2" : ""}`} style={{ color: pt.text }}>
+                                  <Globe className="h-8 w-8 mx-auto mb-2" />
+                                  <p className="text-[10px]">{isAr ? "أضف روابط" : "Add links"}</p>
+                                </div>
+                              )}
+                            </div>
+                          </div>
                         </div>
-                      </div>
-                    </div>
+                      );
+                    })()}
                   </CardContent>
                 </Card>
               </div>
