@@ -298,6 +298,21 @@ export default function SocialLinksEditor() {
     }
   }, [editingItem, editForm, updateItem]);
 
+  const handleThumbnailUpload = useCallback(async (itemId: string, file: File) => {
+    if (!user) return;
+    try {
+      const ext = file.name.split(".").pop();
+      const path = `${user.id}/link-thumb-${itemId}-${Date.now()}.${ext}`;
+      const { error } = await supabase.storage.from("user-media").upload(path, file, { upsert: true });
+      if (error) throw error;
+      const { data: urlData } = supabase.storage.from("user-media").getPublicUrl(path);
+      updateItem.mutate({ id: itemId, thumbnail_url: urlData.publicUrl });
+      toast({ title: isAr ? "تم رفع الصورة المصغرة" : "Thumbnail uploaded" });
+    } catch (err: any) {
+      toast({ title: "Error", description: err.message, variant: "destructive" });
+    }
+  }, [user, isAr, toast, updateItem]);
+
   // ── Drag and Drop handlers ──
   const handleDragStart = useCallback((index: number, e: React.DragEvent<HTMLDivElement>) => {
     setDragIndex(index);
@@ -447,12 +462,78 @@ export default function SocialLinksEditor() {
                   </Dialog>
                 )}
                 {profile?.username && (
-                  <Button variant="outline" size="sm" asChild className="gap-1.5">
+                  <Button variant="outline" size="sm" asChild className="gap-1.5 hidden sm:inline-flex">
                     <Link to={previewUrl} target="_blank">
                       <Eye className="h-3.5 w-3.5" /><span className="hidden sm:inline">{isAr ? "معاينة" : "Preview"}</span>
                     </Link>
                   </Button>
                 )}
+                {/* Mobile Preview Button */}
+                <Dialog>
+                  <DialogTrigger asChild>
+                    <Button variant="outline" size="sm" className="gap-1.5 lg:hidden">
+                      <Smartphone className="h-3.5 w-3.5" /><span className="hidden sm:inline">{isAr ? "معاينة" : "Preview"}</span>
+                    </Button>
+                  </DialogTrigger>
+                  <DialogContent className="max-w-sm p-0 overflow-hidden max-h-[85vh]">
+                    <DialogHeader className="py-2 px-4 border-b">
+                      <DialogTitle className="text-sm">{isAr ? "معاينة مباشرة" : "Live Preview"}</DialogTitle>
+                    </DialogHeader>
+                    <div className="overflow-y-auto max-h-[75vh]">
+                      {(() => {
+                        const pt = THEME_PREVIEW_MAP[form.theme] || THEME_PREVIEW_MAP.default;
+                        return (
+                          <div className="p-4 min-h-[400px]"
+                            dir={extra.text_direction === "auto" ? undefined : extra.text_direction}
+                            style={{
+                              background: form.background_image_url ? `url(${form.background_image_url}) center/cover` : pt.bg,
+                              fontFamily: FONT_FAMILIES.find(f => f.id === form.font_family)?.css || "inherit",
+                              color: pt.text,
+                            }}
+                          >
+                            <div className="relative z-10 flex flex-col items-center gap-3">
+                              {form.show_avatar && (
+                                <Avatar className="h-16 w-16 shadow-xl" style={{ boxShadow: `0 0 0 2px ${pt.border}` }}>
+                                  <AvatarImage src={profile?.avatar_url || ""} />
+                                  <AvatarFallback className="text-lg" style={{ background: `${pt.accent}22`, color: pt.accent }}>{displayName.charAt(0)}</AvatarFallback>
+                                </Avatar>
+                              )}
+                              <div className={alignClass}>
+                                <p className={`font-bold ${extra.font_size === "sm" ? "text-xs" : extra.font_size === "lg" ? "text-base" : extra.font_size === "xl" ? "text-lg" : "text-sm"}`} style={{ color: pt.text }}>
+                                  {form.page_title || displayName || "Your Name"}
+                                </p>
+                                <p className="text-[10px] mt-0.5" style={{ color: `${pt.text}66` }}>@{profile?.username || "username"}</p>
+                                {extra.show_bio && form.bio && <p className="text-[10px] mt-1" style={{ color: `${pt.text}aa` }}>{form.bio}</p>}
+                              </div>
+                              {form.show_social_icons && activeSocials.length > 0 && (
+                                <div className={`flex gap-2 mt-1 flex-wrap ${justifyClass}`}>
+                                  {activeSocials.map(({ key, icon: Icon }) => (
+                                    <div key={key} className="h-8 w-8 rounded-full flex items-center justify-center" style={{ background: pt.card, border: `1px solid ${pt.border}` }}>
+                                      <Icon className="h-3.5 w-3.5" style={{ color: pt.text }} />
+                                    </div>
+                                  ))}
+                                </div>
+                              )}
+                              <div className={`w-full ${extra.link_layout === "grid" ? "grid grid-cols-2 gap-2" : "space-y-2"} mt-3`}>
+                                {items.filter(i => i.is_active !== false).map(item => {
+                                  const btnRadius = BUTTON_STYLES_MAP[form.button_style] || "rounded-xl";
+                                  const customColor = form.button_color !== "#000000" ? { backgroundColor: form.button_color, color: form.text_color, border: "1px solid transparent" } : { background: pt.card, border: `1px solid ${pt.border}` };
+                                  return (
+                                    <div key={item.id} className={`flex items-center gap-2 px-3 py-2.5 ${btnRadius} ${extra.link_layout === "grid" ? "flex-col text-center py-4" : ""}`} style={customColor}>
+                                      {item.thumbnail_url && <img src={item.thumbnail_url} alt="" className="h-8 w-8 rounded-lg object-cover shrink-0" />}
+                                      {item.icon && !item.thumbnail_url && <span className="text-sm">{item.icon}</span>}
+                                      <span className={`${extra.link_layout === "grid" ? "" : "flex-1"} text-[11px] font-medium ${alignClass}`} style={{ color: (customColor as any).color || pt.text }}>{item.title}</span>
+                                    </div>
+                                  );
+                                })}
+                              </div>
+                            </div>
+                          </div>
+                        );
+                      })()}
+                    </div>
+                  </DialogContent>
+                </Dialog>
                 <Button size="sm" onClick={handleSavePage} disabled={upsertPage.isPending} className="gap-1.5 min-w-[80px]">
                   {upsertPage.isPending ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Save className="h-3.5 w-3.5" />}
                   {isAr ? "حفظ" : "Save"}
@@ -804,8 +885,15 @@ export default function SocialLinksEditor() {
                                         <Input value={editForm.title_ar} onChange={e => setEditForm(f => ({ ...f, title_ar: e.target.value }))} placeholder="العنوان (AR)" className="h-8 text-xs" dir="rtl" />
                                       </div>
                                       <Input value={editForm.url} onChange={e => setEditForm(f => ({ ...f, url: e.target.value }))} placeholder="URL" className="h-8 text-xs" dir="ltr" />
-                                      <div className="flex gap-2">
+                                      <div className="flex gap-2 items-center">
                                         <Input value={editForm.icon} onChange={e => setEditForm(f => ({ ...f, icon: e.target.value }))} placeholder="🔗 Emoji" className="h-8 text-xs w-24" />
+                                        <Label htmlFor={`thumb-${item.id}`} className="cursor-pointer shrink-0">
+                                          <div className="h-8 px-2.5 rounded-md border border-border/40 bg-muted/30 hover:bg-muted/50 flex items-center gap-1 text-[10px] font-medium text-muted-foreground transition-colors">
+                                            <Palette className="h-3 w-3" />
+                                            {isAr ? "صورة" : "Thumb"}
+                                          </div>
+                                        </Label>
+                                        <input id={`thumb-${item.id}`} type="file" accept="image/*" className="hidden" onChange={e => { const f = e.target.files?.[0]; if (f) handleThumbnailUpload(item.id, f); }} />
                                         <Button size="sm" variant="default" className="h-8 text-xs gap-1" onClick={saveEdit}>
                                           <Check className="h-3 w-3" />{isAr ? "حفظ" : "Save"}
                                         </Button>
@@ -813,6 +901,14 @@ export default function SocialLinksEditor() {
                                           {isAr ? "إلغاء" : "Cancel"}
                                         </Button>
                                       </div>
+                                      {item.thumbnail_url && (
+                                        <div className="flex items-center gap-2">
+                                          <img src={item.thumbnail_url} alt="" className="h-8 w-8 rounded-md object-cover" />
+                                          <Button size="sm" variant="ghost" className="h-6 text-[10px] text-destructive" onClick={() => updateItem.mutate({ id: item.id, thumbnail_url: null })}>
+                                            {isAr ? "إزالة الصورة" : "Remove thumbnail"}
+                                          </Button>
+                                        </div>
+                                      )}
                                     </div>
                                   ) : (
                                     <div className="flex-1 min-w-0">
@@ -1108,7 +1204,7 @@ export default function SocialLinksEditor() {
                 </Tabs>
               </div>
 
-              {/* Right: Live Preview */}
+              {/* Right: Live Preview (desktop) */}
               <div className="hidden lg:block sticky top-20 self-start">
                 <Card className="overflow-hidden border-border/20 shadow-lg">
                   <CardHeader className="py-2 px-3 bg-muted/40 border-b border-border/20">

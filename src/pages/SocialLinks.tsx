@@ -317,7 +317,33 @@ export default function SocialLinks() {
       style={{ background: theme.bg, fontFamily, color: theme.text }}
     >
       {googleFontLink && <link rel="stylesheet" href={googleFontLink} />}
-      <SEOHead title={`${title} - Altoha`} description={bio || `${displayName}'s links on Altoha`} />
+      <SEOHead
+        title={`${title} - Altoha`}
+        description={bio || `${displayName}'s links on Altoha`}
+        ogImage={profile.avatar_url || undefined}
+        ogType="profile"
+        canonical={buildSocialLinksUrl(username)}
+        lang={lang}
+        jsonLd={{
+          "@context": "https://schema.org",
+          "@type": "ProfilePage",
+          name: displayName,
+          description: bio || undefined,
+          url: buildSocialLinksUrl(username),
+          image: profile.avatar_url || undefined,
+          mainEntity: {
+            "@type": "Person",
+            name: displayName,
+            jobTitle: jobTitle || specialization || undefined,
+            url: buildSocialLinksUrl(username),
+            image: profile.avatar_url || undefined,
+            sameAs: socialPlatforms.map(s => {
+              const info = SOCIAL_ICONS[s.key];
+              return s.value?.startsWith("http") ? s.value : (info?.urlPrefix ? `${info.urlPrefix}${s.value}` : undefined);
+            }).filter(Boolean),
+          },
+        }}
+      />
 
       {/* Cover / Hero */}
       <div className="relative w-full" style={{ height: hasCover ? "280px" : "160px" }}>
