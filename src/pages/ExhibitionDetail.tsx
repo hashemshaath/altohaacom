@@ -460,7 +460,7 @@ export default function ExhibitionDetail() {
               {hasReviews && (
                 <TabsContent value="reviews" className="mt-6">
                   <Suspense fallback={<TabFallback />}>
-                    <ExhibitionReviewsTab exhibitionId={exhibition.id} hasEnded={hasEnded} isAr={isAr} />
+                    <ExhibitionReviewsTab exhibitionId={exhibition.id} hasEnded={hasEnded} isAr={isAr} creatorId={exhibition.created_by || undefined} />
                   </Suspense>
                 </TabsContent>
               )}
@@ -494,6 +494,7 @@ export default function ExhibitionDetail() {
         user={user} isFollowing={!!isFollowing} followPending={toggleFollow.isPending}
         onFollow={handleFollow} registrationUrl={exhibition.registration_url}
         websiteUrl={exhibition.website_url} hasEnded={hasEnded} isAr={isAr}
+        exhibitionTitle={title}
       />
 
       {lightboxOpen && (
