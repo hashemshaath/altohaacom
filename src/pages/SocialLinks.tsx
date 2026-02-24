@@ -4,21 +4,21 @@ import { useSocialLinkPageByUsername } from "@/hooks/useSocialLinkPage";
 import { SEOHead } from "@/components/SEOHead";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Skeleton } from "@/components/ui/skeleton";
-import { ExternalLink, Instagram, Twitter, Facebook, Linkedin, Youtube, Globe, User, ArrowLeft, Share2, Copy, Check, BadgeCheck } from "lucide-react";
+import { ExternalLink, Instagram, Twitter, Facebook, Linkedin, Youtube, Globe, User, ArrowLeft, Share2, Copy, Check, BadgeCheck, MapPin, Briefcase, Award, Clock, Mail } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 
-const SOCIAL_ICONS: Record<string, { icon: typeof Instagram; label: string; color: string }> = {
-  instagram: { icon: Instagram, label: "Instagram", color: "#E4405F" },
-  twitter: { icon: Twitter, label: "X / Twitter", color: "#1DA1F2" },
-  facebook: { icon: Facebook, label: "Facebook", color: "#1877F2" },
-  linkedin: { icon: Linkedin, label: "LinkedIn", color: "#0A66C2" },
-  youtube: { icon: Youtube, label: "YouTube", color: "#FF0000" },
-  tiktok: { icon: Globe, label: "TikTok", color: "#000000" },
-  snapchat: { icon: Globe, label: "Snapchat", color: "#FFFC00" },
+const SOCIAL_ICONS: Record<string, { icon: typeof Instagram; label: string; color: string; urlPrefix?: string }> = {
+  instagram: { icon: Instagram, label: "Instagram", color: "#E4405F", urlPrefix: "https://instagram.com/" },
+  twitter: { icon: Twitter, label: "X / Twitter", color: "#1DA1F2", urlPrefix: "https://x.com/" },
+  facebook: { icon: Facebook, label: "Facebook", color: "#1877F2", urlPrefix: "https://facebook.com/" },
+  linkedin: { icon: Linkedin, label: "LinkedIn", color: "#0A66C2", urlPrefix: "https://linkedin.com/in/" },
+  youtube: { icon: Youtube, label: "YouTube", color: "#FF0000", urlPrefix: "https://youtube.com/@" },
+  tiktok: { icon: Globe, label: "TikTok", color: "#000000", urlPrefix: "https://tiktok.com/@" },
+  snapchat: { icon: Globe, label: "Snapchat", color: "#FFFC00", urlPrefix: "https://snapchat.com/add/" },
   website: { icon: Globe, label: "Website", color: "#6366f1" },
 };
 
@@ -50,13 +50,11 @@ export default function SocialLinks() {
   const [copied, setCopied] = useState(false);
   const [animated, setAnimated] = useState(false);
 
-  // Trigger entrance animation
   useEffect(() => {
     const timer = setTimeout(() => setAnimated(true), 100);
     return () => clearTimeout(timer);
   }, []);
 
-  // Record click
   const handleLinkClick = async (itemId: string) => {
     try {
       await supabase.from("social_link_items").update({ click_count: (data?.items.find(i => i.id === itemId)?.click_count || 0) + 1 }).eq("id", itemId);
@@ -119,8 +117,19 @@ export default function SocialLinks() {
     ? (profile.display_name_ar || profile.full_name_ar || profile.display_name || profile.full_name || "")
     : (profile.display_name || profile.full_name || profile.display_name_ar || profile.full_name_ar || "");
 
-  const bio = isAr ? (page?.bio_ar || page?.bio) : (page?.bio || page?.bio_ar);
+  const bio = isAr
+    ? ((profile as any).bio_ar || (profile as any).bio || page?.bio_ar || page?.bio)
+    : ((profile as any).bio || (profile as any).bio_ar || page?.bio || page?.bio_ar);
+  
   const title = isAr ? (page?.page_title_ar || page?.page_title || displayName) : (page?.page_title || page?.page_title_ar || displayName);
+
+  const specialization = isAr
+    ? ((profile as any).specialization_ar || (profile as any).specialization)
+    : ((profile as any).specialization || (profile as any).specialization_ar);
+
+  const jobTitle = isAr
+    ? ((profile as any).job_title_ar || (profile as any).job_title)
+    : ((profile as any).job_title || (profile as any).job_title_ar);
 
   const socialPlatforms = [
     { key: "instagram", value: profile.instagram },
@@ -137,14 +146,21 @@ export default function SocialLinks() {
     ? { backgroundColor: page.button_color, color: page.text_color || "#ffffff" }
     : {};
 
-  const hasCustomBg = page?.background_image_url;
+  const coverImage = (profile as any).cover_image_url || page?.background_image_url;
+  const isVerified = (profile as any).is_verified;
+  const yearsExp = (profile as any).years_of_experience;
+  const city = (profile as any).city;
+  const countryCode = (profile as any).country_code;
+  const membershipTier = (profile as any).membership_tier;
+  const globalAwards = (profile as any).global_awards;
+  const viewCount = (profile as any).view_count;
 
   return (
     <div
-      className={`flex min-h-screen flex-col items-center ${!hasCustomBg ? theme.bg : ""} ${theme.text} transition-colors`}
+      className={`flex min-h-screen flex-col items-center ${!coverImage ? theme.bg : ""} ${theme.text} transition-colors`}
       dir={isAr ? "rtl" : "ltr"}
-      style={hasCustomBg ? {
-        backgroundImage: `url(${page.background_image_url})`,
+      style={coverImage ? {
+        backgroundImage: `url(${coverImage})`,
         backgroundSize: "cover",
         backgroundPosition: "center",
         backgroundAttachment: "fixed",
@@ -155,7 +171,7 @@ export default function SocialLinks() {
         description={bio || `${displayName}'s links on Altoha`}
       />
 
-      {hasCustomBg && <div className="fixed inset-0 bg-black/40 backdrop-blur-[2px]" />}
+      {coverImage && <div className="fixed inset-0 bg-black/50 backdrop-blur-sm" />}
 
       <div className="relative z-10 w-full max-w-lg px-4 py-8 sm:py-12">
         {/* Share button */}
@@ -163,49 +179,118 @@ export default function SocialLinks() {
           <Button
             variant="ghost"
             size="icon"
-            className={`h-9 w-9 rounded-full ${hasCustomBg || themeName !== "default" ? "text-white/80 hover:text-white hover:bg-white/10" : "text-muted-foreground hover:text-foreground"}`}
+            className={`h-9 w-9 rounded-full ${coverImage || themeName !== "default" ? "text-white/80 hover:text-white hover:bg-white/10" : "text-muted-foreground hover:text-foreground"}`}
             onClick={shareNative}
           >
             {copied ? <Check className="h-4 w-4" /> : <Share2 className="h-4 w-4" />}
           </Button>
         </div>
 
-        {/* Avatar & Name with animation */}
-        <div className={`flex flex-col items-center gap-3 mb-8 transition-all duration-700 delay-100 ${animated ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"}`}>
+        {/* Avatar & Name */}
+        <div className={`flex flex-col items-center gap-3 mb-6 transition-all duration-700 delay-100 ${animated ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"}`}>
           {(page?.show_avatar !== false) && (
             <div className="relative">
-              <Avatar className="h-24 w-24 sm:h-28 sm:w-28 ring-4 ring-white/20 shadow-2xl">
+              <Avatar className="h-28 w-28 sm:h-32 sm:w-32 ring-4 ring-white/20 shadow-2xl">
                 <AvatarImage src={profile.avatar_url || ""} alt={displayName} />
                 <AvatarFallback className="text-2xl font-bold bg-primary/20">{displayName?.charAt(0)}</AvatarFallback>
               </Avatar>
-              {/* Verified badge - shown for users with certain roles */}
-              <div className="absolute -bottom-1 -end-1 h-7 w-7 rounded-full bg-primary flex items-center justify-center ring-2 ring-background shadow-lg">
-                <BadgeCheck className="h-4 w-4 text-primary-foreground" />
-              </div>
+              {isVerified && (
+                <div className="absolute -bottom-1 -end-1 h-7 w-7 rounded-full bg-primary flex items-center justify-center ring-2 ring-background shadow-lg">
+                  <BadgeCheck className="h-4 w-4 text-primary-foreground" />
+                </div>
+              )}
             </div>
           )}
           <div className="text-center">
             <h1 className="text-xl sm:text-2xl font-bold">{title}</h1>
             <p className="text-sm opacity-70 mt-0.5">@{profile.username}</p>
-            {bio && <p className="text-sm opacity-80 mt-2 max-w-xs mx-auto leading-relaxed">{bio}</p>}
+            {(jobTitle || specialization) && (
+              <p className="text-sm opacity-80 mt-1 flex items-center justify-center gap-1.5">
+                <Briefcase className="h-3.5 w-3.5 opacity-60" />
+                {jobTitle || specialization}
+              </p>
+            )}
+            {(city || countryCode) && (
+              <p className="text-sm opacity-70 mt-1 flex items-center justify-center gap-1.5">
+                <MapPin className="h-3.5 w-3.5 opacity-60" />
+                {city}{city && countryCode ? ", " : ""}{countryCode}
+              </p>
+            )}
           </div>
         </div>
 
-        {/* Social Icons with animation */}
+        {/* Quick Stats */}
+        {(yearsExp || viewCount || membershipTier) && (
+          <div className={`flex justify-center gap-4 sm:gap-6 mb-6 transition-all duration-700 delay-150 ${animated ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"}`}>
+            {yearsExp && (
+              <div className="text-center">
+                <p className="text-lg font-bold">{yearsExp}+</p>
+                <p className="text-[11px] opacity-60 uppercase tracking-wider">{isAr ? "سنوات خبرة" : "Years Exp."}</p>
+              </div>
+            )}
+            {viewCount > 0 && (
+              <div className="text-center">
+                <p className="text-lg font-bold">{viewCount}</p>
+                <p className="text-[11px] opacity-60 uppercase tracking-wider">{isAr ? "مشاهدات" : "Views"}</p>
+              </div>
+            )}
+            {membershipTier && membershipTier !== "free" && (
+              <div className="text-center">
+                <span className="inline-block px-2.5 py-0.5 text-xs font-semibold rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/30 capitalize">
+                  {membershipTier}
+                </span>
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* Bio */}
+        {bio && (
+          <div className={`mb-6 transition-all duration-700 delay-200 ${animated ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"}`}>
+            <div className={`${theme.card} border rounded-2xl p-4`}>
+              <p className="text-sm leading-relaxed opacity-90 text-center">{bio}</p>
+            </div>
+          </div>
+        )}
+
+        {/* Global Awards */}
+        {globalAwards && Array.isArray(globalAwards) && globalAwards.length > 0 && (
+          <div className={`mb-6 transition-all duration-700 delay-250 ${animated ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"}`}>
+            <div className={`${theme.card} border rounded-2xl p-4`}>
+              <h3 className="text-xs font-semibold uppercase tracking-wider opacity-60 mb-3 flex items-center gap-1.5">
+                <Award className="h-3.5 w-3.5" />
+                {isAr ? "الجوائز والإنجازات" : "Awards & Achievements"}
+              </h3>
+              <div className="flex flex-wrap gap-2">
+                {globalAwards.map((award: any, i: number) => (
+                  <div key={i} className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/10 border border-white/10 text-xs">
+                    {award.icon === "gold" && <span>🏅</span>}
+                    {award.icon === "tabakh" && <span>👨‍🍳</span>}
+                    {award.icon && !["gold", "tabakh"].includes(award.icon) && <span>🏆</span>}
+                    <span>{isAr ? (award.name_ar || award.name) : (award.name || award.name_ar)}</span>
+                    {award.year && <span className="opacity-50">({award.year})</span>}
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Social Icons */}
         {page?.show_social_icons !== false && socialPlatforms.length > 0 && (
-          <div className={`flex justify-center gap-3 mb-8 transition-all duration-700 delay-200 ${animated ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"}`}>
+          <div className={`flex justify-center flex-wrap gap-3 mb-6 transition-all duration-700 delay-300 ${animated ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"}`}>
             {socialPlatforms.map(({ key, value }) => {
               const info = SOCIAL_ICONS[key];
               if (!info) return null;
               const Icon = info.icon;
-              const href = value?.startsWith("http") ? value : `https://${value}`;
+              const href = value?.startsWith("http") ? value : (info.urlPrefix ? `${info.urlPrefix}${value}` : `https://${value}`);
               return (
                 <a
                   key={key}
                   href={href}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className={`flex h-11 w-11 items-center justify-center rounded-full ${theme.card} border transition-all duration-300 hover:scale-110 hover:shadow-lg active:scale-95`}
+                  className={`flex h-12 w-12 items-center justify-center rounded-full ${theme.card} border transition-all duration-300 hover:scale-110 hover:shadow-lg active:scale-95`}
                   title={info.label}
                 >
                   <Icon className="h-5 w-5" />
@@ -215,34 +300,36 @@ export default function SocialLinks() {
           </div>
         )}
 
-        {/* Link Items with staggered animation */}
-        <div className="space-y-3">
-          {items.map((item, index) => (
-            <a
-              key={item.id}
-              href={item.url.startsWith("http") ? item.url : `https://${item.url}`}
-              target="_blank"
-              rel="noopener noreferrer"
-              onClick={() => handleLinkClick(item.id)}
-              className={`group flex items-center gap-3 border px-5 py-4 ${btnStyle} ${theme.card} transition-all duration-500 hover:scale-[1.02] hover:shadow-xl active:scale-[0.98] ${animated ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}
-              style={{
-                ...buttonColorStyle,
-                transitionDelay: `${300 + index * 80}ms`,
-              }}
-            >
-              {item.thumbnail_url && (
-                <img src={item.thumbnail_url} alt="" className="h-10 w-10 rounded-lg object-cover shrink-0" />
-              )}
-              {item.icon && !item.thumbnail_url && (
-                <span className="text-xl shrink-0">{item.icon}</span>
-              )}
-              <span className="flex-1 text-sm font-medium text-center">
-                {isAr ? (item.title_ar || item.title) : item.title}
-              </span>
-              <ExternalLink className="h-4 w-4 opacity-0 group-hover:opacity-60 transition-opacity shrink-0" />
-            </a>
-          ))}
-        </div>
+        {/* Link Items */}
+        {items.length > 0 && (
+          <div className="space-y-3 mb-6">
+            {items.map((item, index) => (
+              <a
+                key={item.id}
+                href={item.url.startsWith("http") ? item.url : `https://${item.url}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={() => handleLinkClick(item.id)}
+                className={`group flex items-center gap-3 border px-5 py-4 ${btnStyle} ${theme.card} transition-all duration-500 hover:scale-[1.02] hover:shadow-xl active:scale-[0.98] ${animated ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}
+                style={{
+                  ...buttonColorStyle,
+                  transitionDelay: `${400 + index * 80}ms`,
+                }}
+              >
+                {item.thumbnail_url && (
+                  <img src={item.thumbnail_url} alt="" className="h-10 w-10 rounded-lg object-cover shrink-0" />
+                )}
+                {item.icon && !item.thumbnail_url && (
+                  <span className="text-xl shrink-0">{item.icon}</span>
+                )}
+                <span className="flex-1 text-sm font-medium text-center">
+                  {isAr ? (item.title_ar || item.title) : item.title}
+                </span>
+                <ExternalLink className="h-4 w-4 opacity-0 group-hover:opacity-60 transition-opacity shrink-0" />
+              </a>
+            ))}
+          </div>
+        )}
 
         {items.length === 0 && socialPlatforms.length === 0 && (
           <div className={`text-center py-12 opacity-60 transition-all duration-700 delay-300 ${animated ? "opacity-60 translate-y-0" : "opacity-0 translate-y-6"}`}>
@@ -251,19 +338,25 @@ export default function SocialLinks() {
           </div>
         )}
 
-        {/* Footer */}
-        <div className={`mt-12 text-center transition-all duration-700 delay-500 ${animated ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"}`}>
-          <Link to={`/${profile.username}`} className="inline-flex items-center gap-1 text-xs opacity-50 hover:opacity-80 transition-opacity px-4 py-2 rounded-full hover:bg-white/5">
-            {isAr ? "عرض البروفايل الكامل" : "View full profile"} →
+        {/* View Full Profile Link */}
+        <div className={`mt-8 transition-all duration-700 delay-500 ${animated ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"}`}>
+          <Link
+            to={`/${profile.username}`}
+            className={`flex items-center justify-center gap-2 w-full py-3.5 rounded-2xl ${theme.card} border text-sm font-medium transition-all hover:scale-[1.02] hover:shadow-lg active:scale-[0.98]`}
+          >
+            <User className="h-4 w-4 opacity-70" />
+            {isAr ? "عرض البروفايل الكامل" : "View Full Profile"}
           </Link>
-          <div className="mt-4">
-            <Link to="/" className="inline-flex items-center gap-1.5 text-[10px] opacity-30 hover:opacity-50 transition-opacity font-medium tracking-wider uppercase">
-              <div className="h-4 w-4 rounded bg-primary/30 flex items-center justify-center">
-                <span className="text-[8px] font-bold">A</span>
-              </div>
-              Altoha
-            </Link>
-          </div>
+        </div>
+
+        {/* Footer */}
+        <div className={`mt-8 text-center transition-all duration-700 delay-600 ${animated ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"}`}>
+          <Link to="/" className="inline-flex items-center gap-1.5 text-[10px] opacity-30 hover:opacity-50 transition-opacity font-medium tracking-wider uppercase">
+            <div className="h-4 w-4 rounded bg-primary/30 flex items-center justify-center">
+              <span className="text-[8px] font-bold">A</span>
+            </div>
+            Altoha
+          </Link>
         </div>
       </div>
     </div>
