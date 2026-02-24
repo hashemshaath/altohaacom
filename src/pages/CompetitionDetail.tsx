@@ -275,7 +275,8 @@ export default function CompetitionDetail() {
     );
   }
 
-  const title = isAr && competition.title_ar ? competition.title_ar : competition.title;
+  const baseTitle = isAr && competition.title_ar ? competition.title_ar : competition.title;
+  const title = competition.edition_year ? `${baseTitle} +${competition.edition_year}` : baseTitle;
   const description = isAr && competition.description_ar ? competition.description_ar : competition.description;
   const venue = isAr && competition.venue_ar ? competition.venue_ar : competition.venue;
   const canRegister = competition.status === "registration_open" && user && !myRegistration;

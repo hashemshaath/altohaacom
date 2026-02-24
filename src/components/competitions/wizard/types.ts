@@ -63,6 +63,7 @@ export interface CompetitionFormData {
   linkedEntityId: string | null;
   linkedChefId: string | null;
   linkedTastingId: string | null;
+  seriesId: string;
 }
 
 export const emptyCategory: CategoryForm = {

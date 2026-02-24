@@ -141,6 +141,7 @@ export default function EditCompetition() {
         linkedEntityId: (competition as any).linked_entity_id || null,
         linkedChefId: (competition as any).linked_chef_id || null,
         linkedTastingId: (competition as any).linked_tasting_id || null,
+        seriesId: (competition as any).series_id || "",
         categories: existingCategories.map((c) => ({
           id: c.id,
           name: c.name,
@@ -189,6 +190,7 @@ export default function EditCompetition() {
         country: data.isVirtual ? null : data.country || null,
         country_code: data.countryCode.toUpperCase() || null,
         edition_year: data.editionYear || null,
+        series_id: data.seriesId || null,
         max_participants: data.maxParticipants || null,
         exhibition_id: data.exhibitionId || null,
         registration_fee_type: data.registrationFeeType,
