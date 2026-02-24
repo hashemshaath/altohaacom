@@ -1,5 +1,5 @@
 import { lazy } from "react";
-import { Route, Navigate } from "react-router-dom";
+import { Route, Navigate, useParams } from "react-router-dom";
 import Index from "@/pages/Index";
 const OfflinePage = lazy(() => import("@/pages/OfflinePage"));
 const Auth = lazy(() => import("@/pages/Auth"));
@@ -52,6 +52,11 @@ const AboutUs = lazy(() => import("@/pages/AboutUs"));
 const CookiePolicy = lazy(() => import("@/pages/CookiePolicy"));
 const EventsCalendar = lazy(() => import("@/pages/EventsCalendar"));
 const SocialLinks = lazy(() => import("@/pages/SocialLinks"));
+
+function LegacyLinksRedirect() {
+  const { username } = useParams<{ username: string }>();
+  return <Navigate to={`/bio/${username ?? ""}`} replace />;
+}
 
 export const publicRoutes = (
   <>
@@ -109,6 +114,7 @@ export const publicRoutes = (
     <Route path="/cookies" element={<CookiePolicy />} />
     <Route path="/profile/:username" element={<PublicProfile />} />
     <Route path="/offline" element={<OfflinePage />} />
+    <Route path="/:username/links" element={<LegacyLinksRedirect />} />
     <Route path="/bio/:username" element={<SocialLinks />} />
     <Route path="/:username" element={<PublicProfile />} />
   </>
