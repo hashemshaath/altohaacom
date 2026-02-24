@@ -12,7 +12,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
-import { useState, useEffect, useMemo, useCallback } from "react";
+import { useState, useEffect, useMemo, useCallback, memo } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { buildSocialLinksUrl } from "@/lib/publicAppUrl";
@@ -85,22 +85,24 @@ function parseExtra(customCss: string | null | undefined): ExtraSettings {
   }
 }
 
-// ── Animated counter for stats ──
-function AnimatedNumber({ value, duration = 1200 }: { value: number; duration?: number }) {
+// ── Lightweight animated counter using RAF ──
+const AnimatedNumber = memo(function AnimatedNumber({ value, duration = 1200 }: { value: number; duration?: number }) {
   const [display, setDisplay] = useState(0);
   useEffect(() => {
     if (value === 0) { setDisplay(0); return; }
     const start = performance.now();
+    let raf: number;
     const step = (now: number) => {
       const progress = Math.min((now - start) / duration, 1);
       const eased = 1 - Math.pow(1 - progress, 3);
       setDisplay(Math.round(eased * value));
-      if (progress < 1) requestAnimationFrame(step);
+      if (progress < 1) raf = requestAnimationFrame(step);
     };
-    requestAnimationFrame(step);
+    raf = requestAnimationFrame(step);
+    return () => cancelAnimationFrame(raf);
   }, [value, duration]);
   return <>{display.toLocaleString()}</>;
-}
+});
 
 export default function SocialLinks() {
   const { username } = useParams<{ username: string }>();
@@ -119,11 +121,9 @@ export default function SocialLinks() {
     return () => clearTimeout(timer);
   }, []);
 
-  const handleLinkClick = useCallback(async (itemId: string) => {
-    try {
-      await supabase.from("social_link_items").update({ click_count: (data?.items.find(i => i.id === itemId)?.click_count || 0) + 1 }).eq("id", itemId);
-    } catch {}
-  }, [data?.items]);
+  const handleLinkClick = useCallback((itemId: string) => {
+    supabase.rpc("increment_field" as any, { table_name: "social_link_items", field_name: "click_count", row_id: itemId }).then(() => {});
+  }, []);
 
   const copyLink = useCallback(async () => {
     if (!username) return;
@@ -142,6 +142,13 @@ export default function SocialLinks() {
       copyLink();
     }
   }, [username, copyLink]);
+
+  const googleFontLink = useMemo(() => {
+    const ff = data?.page?.font_family;
+    if (!ff || ff === "default") return null;
+    const name = ff === "playfair" ? "Playfair Display" : ff === "cairo" ? "Cairo" : ff === "tajawal" ? "Tajawal" : ff === "montserrat" ? "Montserrat" : ff === "poppins" ? "Poppins" : ff === "roboto" ? "Roboto" : "Inter";
+    return `https://fonts.googleapis.com/css2?family=${encodeURIComponent(name)}:wght@400;600;700&display=swap`;
+  }, [data?.page?.font_family]);
 
   if (isLoading) {
     return (
@@ -232,9 +239,7 @@ export default function SocialLinks() {
   const viewCount = (profile as any).view_count;
   const hasCover = !!coverImage;
 
-  const googleFontLink = page?.font_family && page.font_family !== "default"
-    ? `https://fonts.googleapis.com/css2?family=${encodeURIComponent(page.font_family === "playfair" ? "Playfair Display" : page.font_family === "cairo" ? "Cairo" : page.font_family === "tajawal" ? "Tajawal" : page.font_family === "montserrat" ? "Montserrat" : page.font_family === "poppins" ? "Poppins" : page.font_family === "roboto" ? "Roboto" : "Inter")}:wght@300;400;500;600;700&display=swap`
-    : null;
+  // googleFontLink already computed above before early returns
 
   const accentColor = "#c4a265";
   const accentLight = "rgba(196,162,101,0.12)";
