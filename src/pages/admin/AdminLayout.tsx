@@ -47,7 +47,7 @@ export default function AdminLayout() {
       title: language === "ar" ? "لوحة التحكم" : "Dashboard",
       items: [
         { to: "/admin", icon: LayoutDashboard, label: language === "ar" ? "نظرة عامة" : "Overview", end: true },
-        { to: "/admin/analytics", icon: BarChart3, label: language === "ar" ? "التحليلات" : "Analytics" },
+        { to: "/admin/analytics", icon: BarChart3, label: language === "ar" ? "التقارير والتحليلات" : "Reports & Analytics" },
       ],
     },
     {
@@ -58,9 +58,8 @@ export default function AdminLayout() {
         { to: "/admin/verification", icon: ShieldCheck, label: language === "ar" ? "التوثيق والتحقق" : "Verification" },
         { to: "/admin/memberships", icon: CreditCard, label: language === "ar" ? "العضويات" : "Memberships" },
         { to: "/admin/loyalty", icon: Crown, label: language === "ar" ? "الولاء والمكافآت" : "Loyalty & Rewards" },
-        { to: "/admin/companies", icon: Building, label: language === "ar" ? "الشركات والرعاة" : "Companies & Sponsors" },
-        { to: "/admin/entities", icon: Building2, label: language === "ar" ? "الجهات والجمعيات" : "Entities Registry" },
-        { to: "/admin/establishments", icon: Building, label: language === "ar" ? "المنشآت" : "Establishments" },
+        { to: "/admin/companies", icon: Building, label: language === "ar" ? "الجهات والشركات" : "Organizations & Companies" },
+        { to: "/admin/establishments", icon: Building2, label: language === "ar" ? "المنشآت" : "Establishments" },
       ],
     },
     {
@@ -91,10 +90,8 @@ export default function AdminLayout() {
     {
       title: language === "ar" ? "المالية والعمليات" : "Finance & Operations",
       items: [
-        { to: "/admin/orders", icon: CreditCard, label: language === "ar" ? "الطلبات" : "Orders" },
-        { to: "/admin/order-center", icon: Package, label: language === "ar" ? "مركز الطلبات" : "Order Center" },
+        { to: "/admin/orders", icon: Package, label: language === "ar" ? "مركز الطلبات" : "Order Center" },
         { to: "/admin/invoices", icon: FileText, label: language === "ar" ? "الفواتير" : "Invoices" },
-        { to: "/admin/invoice-customization", icon: FileText, label: language === "ar" ? "تخصيص الفواتير" : "Invoice Settings" },
         { to: "/admin/cost-center", icon: Calculator, label: language === "ar" ? "مركز التكلفة" : "Cost Center" },
       ],
     },
@@ -122,11 +119,7 @@ export default function AdminLayout() {
       items: [
         { to: "/admin/settings", icon: Settings, label: language === "ar" ? "الإعدادات العامة" : "General Settings" },
         { to: "/admin/security", icon: ShieldAlert, label: language === "ar" ? "الأمان والحماية" : "Security Center" },
-        { to: "/admin/components", icon: Eye, label: language === "ar" ? "إظهار المكونات" : "Component Visibility" },
-        { to: "/admin/reports", icon: FileText, label: language === "ar" ? "التقارير" : "Reports" },
-        { to: "/admin/performance", icon: BarChart3, label: language === "ar" ? "الأداء" : "Performance" },
-        { to: "/admin/localization", icon: Globe, label: language === "ar" ? "اللغات" : "Localization" },
-        { to: "/admin/translation-seo", icon: Languages, label: language === "ar" ? "الترجمة وتحسين المحتوى" : "Translation & SEO" },
+        { to: "/admin/localization", icon: Globe, label: language === "ar" ? "اللغات والترجمة" : "Localization & Translation" },
         { to: "/admin/countries", icon: Earth, label: language === "ar" ? "إدارة الدول" : "Countries" },
         { to: "/admin/integrations", icon: Plug, label: language === "ar" ? "التكاملات" : "Integrations" },
         { to: "/admin/smart-import", icon: Sparkles, label: language === "ar" ? "استيراد ذكي" : "Smart Import" },
