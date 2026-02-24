@@ -98,6 +98,8 @@ export interface ImportedData {
   organizer_name_ar?: string;
   organizer_logo_url?: string;
   organizer_website?: string;
+  organizer_email?: string;
+  organizer_phone?: string;
   map_url?: string;
   ticket_price?: string;
   is_free?: boolean;
@@ -110,6 +112,12 @@ export interface ImportedData {
   rules_summary_ar?: string;
   edition_year?: number;
   // Enhanced exhibition fields
+  description_short_en?: string;
+  description_short_ar?: string;
+  description_long_en?: string;
+  description_long_ar?: string;
+  activities_en?: string[];
+  activities_ar?: string[];
   reasons_to_attend?: { reason: string; reason_ar: string }[];
   unique_features?: { feature: string; feature_ar: string }[];
   targeted_sectors?: string[];
@@ -119,6 +127,14 @@ export interface ImportedData {
   entry_details?: Record<string, any>;
   venue_details?: Record<string, any>;
   sponsors?: { name: string; name_ar?: string; tier?: string; logo_url?: string; website_url?: string }[];
+  speakers?: { name: string; name_ar?: string; title?: string; title_ar?: string; photo_url?: string }[];
+  schedule_items?: { time: string; title: string; title_ar?: string; description?: string; description_ar?: string }[];
+  gallery_urls?: string[];
+  includes_competitions?: boolean;
+  includes_seminars?: boolean;
+  includes_training?: boolean;
+  currency?: string;
+  early_bird_deadline?: string;
 }
 
 interface SmartImportDialogProps {

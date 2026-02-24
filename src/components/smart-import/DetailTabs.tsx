@@ -13,17 +13,19 @@ import {
   FileText, Phone, MapPin, Building2, Briefcase, Clock,
   Star, Globe, Calendar, Users, Award, Share2,
   UserCheck, Shield, Link2, BookOpen, ExternalLink,
-  Image as ImageIcon,
+  Image as ImageIcon, BarChart3, Layers, Mic, ListChecks,
+  Sparkles, Trophy,
 } from "lucide-react";
 
 type EditProps = { editing?: boolean; onFieldUpdate?: (key: string, value: string) => void };
 type TabProps = { details: ImportedData; isAr: boolean } & EditProps;
 
-const Field = ({ label, value, fieldKey, editing, onFieldUpdate, copyable, multiline }: {
+const Field = ({ label, value, fieldKey, editing, onFieldUpdate, copyable, multiline, pairedFieldKey, pairedFieldValue }: {
   label: string; value?: string | null; fieldKey: string; copyable?: boolean; multiline?: boolean;
+  pairedFieldKey?: string; pairedFieldValue?: string | null;
 } & EditProps) => {
   if (editing && onFieldUpdate) {
-    return <EditableField label={label} value={value} fieldKey={fieldKey} onUpdate={onFieldUpdate} copyable={copyable} multiline={multiline} />;
+    return <EditableField label={label} value={value} fieldKey={fieldKey} onUpdate={onFieldUpdate} copyable={copyable} multiline={multiline} pairedFieldKey={pairedFieldKey} pairedFieldValue={pairedFieldValue} />;
   }
   return <DataField label={label} value={value} copyable={copyable} multiline={multiline} />;
 };
@@ -108,28 +110,51 @@ const OverviewTab = React.memo(({ details, isAr, editing, onFieldUpdate }: TabPr
     <Card>
       <CardHeader className="pb-2"><CardTitle className="text-sm">{isAr ? "الأسماء" : "Names"}</CardTitle></CardHeader>
       <CardContent className="space-y-3">
-        <Field label={isAr ? "الاسم (EN)" : "Name (EN)"} value={details.name_en} fieldKey="name_en" editing={editing} onFieldUpdate={onFieldUpdate} copyable />
-        <Field label={isAr ? "الاسم (AR)" : "Name (AR)"} value={details.name_ar} fieldKey="name_ar" editing={editing} onFieldUpdate={onFieldUpdate} copyable />
-        <Field label={isAr ? "الاختصار (EN)" : "Abbreviation (EN)"} value={details.abbreviation_en} fieldKey="abbreviation_en" editing={editing} onFieldUpdate={onFieldUpdate} copyable />
-        <Field label={isAr ? "الاختصار (AR)" : "Abbreviation (AR)"} value={details.abbreviation_ar} fieldKey="abbreviation_ar" editing={editing} onFieldUpdate={onFieldUpdate} copyable />
+        <Field label={isAr ? "الاسم (EN)" : "Name (EN)"} value={details.name_en} fieldKey="name_en" editing={editing} onFieldUpdate={onFieldUpdate} copyable pairedFieldKey="name_ar" pairedFieldValue={details.name_ar} />
+        <Field label={isAr ? "الاسم (AR)" : "Name (AR)"} value={details.name_ar} fieldKey="name_ar" editing={editing} onFieldUpdate={onFieldUpdate} copyable pairedFieldKey="name_en" pairedFieldValue={details.name_en} />
+        <Field label={isAr ? "الاختصار (EN)" : "Abbreviation (EN)"} value={details.abbreviation_en} fieldKey="abbreviation_en" editing={editing} onFieldUpdate={onFieldUpdate} copyable pairedFieldKey="abbreviation_ar" pairedFieldValue={details.abbreviation_ar} />
+        <Field label={isAr ? "الاختصار (AR)" : "Abbreviation (AR)"} value={details.abbreviation_ar} fieldKey="abbreviation_ar" editing={editing} onFieldUpdate={onFieldUpdate} copyable pairedFieldKey="abbreviation_en" pairedFieldValue={details.abbreviation_en} />
       </CardContent>
     </Card>
 
     <Card>
       <CardHeader className="pb-2"><CardTitle className="text-sm">{isAr ? "نوع النشاط" : "Business Type"}</CardTitle></CardHeader>
       <CardContent className="space-y-3">
-        <Field label={isAr ? "النوع (EN)" : "Type (EN)"} value={details.business_type_en} fieldKey="business_type_en" editing={editing} onFieldUpdate={onFieldUpdate} />
-        <Field label={isAr ? "النوع (AR)" : "Type (AR)"} value={details.business_type_ar} fieldKey="business_type_ar" editing={editing} onFieldUpdate={onFieldUpdate} />
+        <Field label={isAr ? "النوع (EN)" : "Type (EN)"} value={details.business_type_en} fieldKey="business_type_en" editing={editing} onFieldUpdate={onFieldUpdate} pairedFieldKey="business_type_ar" pairedFieldValue={details.business_type_ar} />
+        <Field label={isAr ? "النوع (AR)" : "Type (AR)"} value={details.business_type_ar} fieldKey="business_type_ar" editing={editing} onFieldUpdate={onFieldUpdate} pairedFieldKey="business_type_en" pairedFieldValue={details.business_type_en} />
         <TagList label={isAr ? "الكلمات المفتاحية" : "Tags"} items={details.tags} />
       </CardContent>
     </Card>
 
-    {(details.description_en || details.description_ar) && (
+    {/* Short Description */}
+    {(details.description_short_en || details.description_short_ar || details.description_en || details.description_ar) && (
+      <Card className="lg:col-span-2">
+        <CardHeader className="pb-2"><CardTitle className="text-sm">{isAr ? "الوصف المختصر" : "Short Description"}</CardTitle></CardHeader>
+        <CardContent className="space-y-3">
+          <Field label={isAr ? "الوصف المختصر (EN)" : "Short Description (EN)"} value={details.description_short_en || details.description_en} fieldKey="description_short_en" editing={editing} onFieldUpdate={onFieldUpdate} multiline pairedFieldKey="description_short_ar" pairedFieldValue={details.description_short_ar} />
+          <Field label={isAr ? "الوصف المختصر (AR)" : "Short Description (AR)"} value={details.description_short_ar || details.description_ar} fieldKey="description_short_ar" editing={editing} onFieldUpdate={onFieldUpdate} multiline pairedFieldKey="description_short_en" pairedFieldValue={details.description_short_en} />
+        </CardContent>
+      </Card>
+    )}
+
+    {/* Long Description */}
+    {(details.description_long_en || details.description_long_ar) && (
+      <Card className="lg:col-span-2">
+        <CardHeader className="pb-2"><CardTitle className="text-sm">{isAr ? "الوصف التفصيلي" : "Detailed Description"}</CardTitle></CardHeader>
+        <CardContent className="space-y-3">
+          <Field label={isAr ? "الوصف التفصيلي (EN)" : "Detailed Description (EN)"} value={details.description_long_en} fieldKey="description_long_en" editing={editing} onFieldUpdate={onFieldUpdate} multiline pairedFieldKey="description_long_ar" pairedFieldValue={details.description_long_ar} />
+          <Field label={isAr ? "الوصف التفصيلي (AR)" : "Detailed Description (AR)"} value={details.description_long_ar} fieldKey="description_long_ar" editing={editing} onFieldUpdate={onFieldUpdate} multiline pairedFieldKey="description_long_en" pairedFieldValue={details.description_long_en} />
+        </CardContent>
+      </Card>
+    )}
+
+    {/* Standard Description (fallback if no short/long) */}
+    {!(details.description_short_en || details.description_short_ar) && (details.description_en || details.description_ar) && (
       <Card className="lg:col-span-2">
         <CardHeader className="pb-2"><CardTitle className="text-sm">{isAr ? "الوصف" : "Description"}</CardTitle></CardHeader>
         <CardContent className="space-y-3">
-          <Field label={isAr ? "الوصف (EN)" : "Description (EN)"} value={details.description_en} fieldKey="description_en" editing={editing} onFieldUpdate={onFieldUpdate} multiline />
-          <Field label={isAr ? "الوصف (AR)" : "Description (AR)"} value={details.description_ar} fieldKey="description_ar" editing={editing} onFieldUpdate={onFieldUpdate} multiline />
+          <Field label={isAr ? "الوصف (EN)" : "Description (EN)"} value={details.description_en} fieldKey="description_en" editing={editing} onFieldUpdate={onFieldUpdate} multiline pairedFieldKey="description_ar" pairedFieldValue={details.description_ar} />
+          <Field label={isAr ? "الوصف (AR)" : "Description (AR)"} value={details.description_ar} fieldKey="description_ar" editing={editing} onFieldUpdate={onFieldUpdate} multiline pairedFieldKey="description_en" pairedFieldValue={details.description_en} />
         </CardContent>
       </Card>
     )}
@@ -138,8 +163,8 @@ const OverviewTab = React.memo(({ details, isAr, editing, onFieldUpdate }: TabPr
       <Card className="lg:col-span-2">
         <CardHeader className="pb-2"><CardTitle className="text-sm flex items-center gap-1.5"><BookOpen className="h-4 w-4" />{isAr ? "الرسالة والرؤية" : "Mission & Vision"}</CardTitle></CardHeader>
         <CardContent className="space-y-3">
-          <Field label={isAr ? "الرسالة (EN)" : "Mission (EN)"} value={details.mission_en} fieldKey="mission_en" editing={editing} onFieldUpdate={onFieldUpdate} multiline />
-          <Field label={isAr ? "الرسالة (AR)" : "Mission (AR)"} value={details.mission_ar} fieldKey="mission_ar" editing={editing} onFieldUpdate={onFieldUpdate} multiline />
+          <Field label={isAr ? "الرسالة (EN)" : "Mission (EN)"} value={details.mission_en} fieldKey="mission_en" editing={editing} onFieldUpdate={onFieldUpdate} multiline pairedFieldKey="mission_ar" pairedFieldValue={details.mission_ar} />
+          <Field label={isAr ? "الرسالة (AR)" : "Mission (AR)"} value={details.mission_ar} fieldKey="mission_ar" editing={editing} onFieldUpdate={onFieldUpdate} multiline pairedFieldKey="mission_en" pairedFieldValue={details.mission_en} />
         </CardContent>
       </Card>
     )}
@@ -346,15 +371,22 @@ HoursTab.displayName = "HoursTab";
 // ── Event Tab (Exhibitions / Competitions) ──
 const EventTab = React.memo(({ details, isAr, editing, onFieldUpdate }: TabProps) => (
   <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+    {/* Event Details */}
     <Card>
       <CardHeader className="pb-2"><CardTitle className="text-sm flex items-center gap-1.5"><Calendar className="h-4 w-4" />{isAr ? "تفاصيل الحدث" : "Event Details"}</CardTitle></CardHeader>
       <CardContent className="space-y-3">
-        <Field label={isAr ? "المكان (EN)" : "Venue (EN)"} value={details.venue_en} fieldKey="venue_en" editing={editing} onFieldUpdate={onFieldUpdate} />
-        <Field label={isAr ? "المكان (AR)" : "Venue (AR)"} value={details.venue_ar} fieldKey="venue_ar" editing={editing} onFieldUpdate={onFieldUpdate} />
+        <Field label={isAr ? "المكان (EN)" : "Venue (EN)"} value={details.venue_en} fieldKey="venue_en" editing={editing} onFieldUpdate={onFieldUpdate} pairedFieldKey="venue_ar" pairedFieldValue={details.venue_ar} />
+        <Field label={isAr ? "المكان (AR)" : "Venue (AR)"} value={details.venue_ar} fieldKey="venue_ar" editing={editing} onFieldUpdate={onFieldUpdate} pairedFieldKey="venue_en" pairedFieldValue={details.venue_en} />
         <div className="grid grid-cols-2 gap-3">
           <Field label={isAr ? "تاريخ البداية" : "Start Date"} value={details.start_date} fieldKey="start_date" editing={editing} onFieldUpdate={onFieldUpdate} />
           <Field label={isAr ? "تاريخ النهاية" : "End Date"} value={details.end_date} fieldKey="end_date" editing={editing} onFieldUpdate={onFieldUpdate} />
         </div>
+        {details.edition_year && (
+          <div className="flex items-center gap-2 p-2.5 rounded-lg bg-accent/30">
+            <Calendar className="h-4 w-4 text-primary" />
+            <span className="text-sm">{isAr ? "سنة الإصدار:" : "Edition Year:"} <strong>{details.edition_year}</strong></span>
+          </div>
+        )}
         {details.is_virtual !== undefined && details.is_virtual !== null && (
           <div className="flex items-center gap-2 p-2.5 rounded-lg bg-accent/30">
             <Globe className="h-4 w-4 text-primary" />
@@ -366,11 +398,14 @@ const EventTab = React.memo(({ details, isAr, editing, onFieldUpdate }: TabProps
       </CardContent>
     </Card>
 
+    {/* Registration & Attendance */}
     <Card>
       <CardHeader className="pb-2"><CardTitle className="text-sm flex items-center gap-1.5"><Users className="h-4 w-4" />{isAr ? "التسجيل والحضور" : "Registration & Attendance"}</CardTitle></CardHeader>
       <CardContent className="space-y-3">
-        <Field label={isAr ? "المنظم (EN)" : "Organizer (EN)"} value={details.organizer_name_en} fieldKey="organizer_name_en" editing={editing} onFieldUpdate={onFieldUpdate} />
-        <Field label={isAr ? "المنظم (AR)" : "Organizer (AR)"} value={details.organizer_name_ar} fieldKey="organizer_name_ar" editing={editing} onFieldUpdate={onFieldUpdate} />
+        <Field label={isAr ? "المنظم (EN)" : "Organizer (EN)"} value={details.organizer_name_en} fieldKey="organizer_name_en" editing={editing} onFieldUpdate={onFieldUpdate} pairedFieldKey="organizer_name_ar" pairedFieldValue={details.organizer_name_ar} />
+        <Field label={isAr ? "المنظم (AR)" : "Organizer (AR)"} value={details.organizer_name_ar} fieldKey="organizer_name_ar" editing={editing} onFieldUpdate={onFieldUpdate} pairedFieldKey="organizer_name_en" pairedFieldValue={details.organizer_name_en} />
+        {details.organizer_email && <Field label={isAr ? "بريد المنظم" : "Organizer Email"} value={details.organizer_email} fieldKey="organizer_email" editing={editing} onFieldUpdate={onFieldUpdate} copyable />}
+        {details.organizer_phone && <Field label={isAr ? "هاتف المنظم" : "Organizer Phone"} value={details.organizer_phone} fieldKey="organizer_phone" editing={editing} onFieldUpdate={onFieldUpdate} copyable />}
         <Field label={isAr ? "رابط التسجيل" : "Registration URL"} value={details.registration_url} fieldKey="registration_url" editing={editing} onFieldUpdate={onFieldUpdate} copyable />
         {details.registration_deadline && <Field label={isAr ? "آخر موعد للتسجيل" : "Registration Deadline"} value={details.registration_deadline} fieldKey="registration_deadline" editing={editing} onFieldUpdate={onFieldUpdate} />}
         {details.max_attendees && (
@@ -388,25 +423,268 @@ const EventTab = React.memo(({ details, isAr, editing, onFieldUpdate }: TabProps
         {details.registration_fee !== undefined && details.registration_fee !== null && (
           <Field label={isAr ? "رسوم التسجيل" : "Registration Fee"} value={String(details.registration_fee)} fieldKey="registration_fee" editing={editing} onFieldUpdate={onFieldUpdate} />
         )}
-        {details.target_audience && details.target_audience.length > 0 && (
-          <div className="space-y-1">
-            <span className="text-[10px] font-medium text-muted-foreground uppercase">{isAr ? "الجمهور المستهدف" : "Target Audience"}</span>
-            <div className="flex flex-wrap gap-1">
-              {details.target_audience.map((a, i) => (
-                <Badge key={i} variant="secondary" className="text-xs">{a}</Badge>
-              ))}
-            </div>
-          </div>
-        )}
       </CardContent>
     </Card>
 
+    {/* Edition Statistics */}
+    {details.edition_stats && Object.values(details.edition_stats).some(v => v !== null && v !== undefined) && (
+      <Card className="lg:col-span-2">
+        <CardHeader className="pb-2"><CardTitle className="text-sm flex items-center gap-1.5"><BarChart3 className="h-4 w-4" />{isAr ? "إحصائيات الحدث" : "Event Statistics"}</CardTitle></CardHeader>
+        <CardContent>
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+            {details.edition_stats.exhibitors && <StatCard icon={Building2} label={isAr ? "عارضون" : "Exhibitors"} value={details.edition_stats.exhibitors} />}
+            {details.edition_stats.visitors && <StatCard icon={Users} label={isAr ? "زوار" : "Visitors"} value={details.edition_stats.visitors} />}
+            {details.edition_stats.countries && <StatCard icon={Globe} label={isAr ? "دول" : "Countries"} value={details.edition_stats.countries} />}
+            {details.edition_stats.brands && <StatCard icon={Award} label={isAr ? "علامات تجارية" : "Brands"} value={details.edition_stats.brands} />}
+            {details.edition_stats.sessions && <StatCard icon={Mic} label={isAr ? "جلسات" : "Sessions"} value={details.edition_stats.sessions} />}
+            {details.edition_stats.speakers && <StatCard icon={UserCheck} label={isAr ? "متحدثون" : "Speakers"} value={details.edition_stats.speakers} />}
+            {details.edition_stats.workshops && <StatCard icon={Briefcase} label={isAr ? "ورش عمل" : "Workshops"} value={details.edition_stats.workshops} />}
+            {details.edition_stats.area_sqm && <StatCard icon={Layers} label={isAr ? "المساحة (م²)" : "Area (sqm)"} value={details.edition_stats.area_sqm} />}
+          </div>
+        </CardContent>
+      </Card>
+    )}
+
+    {/* Target Audience */}
+    {details.target_audience && details.target_audience.length > 0 && (
+      <Card>
+        <CardHeader className="pb-2"><CardTitle className="text-sm flex items-center gap-1.5"><Users className="h-4 w-4" />{isAr ? "الجمهور المستهدف" : "Target Audience"}</CardTitle></CardHeader>
+        <CardContent>
+          <div className="flex flex-wrap gap-1.5">
+            {details.target_audience.map((a, i) => (
+              <Badge key={i} variant="secondary" className="text-xs">{a}</Badge>
+            ))}
+          </div>
+        </CardContent>
+      </Card>
+    )}
+
+    {/* Targeted Sectors */}
+    {details.targeted_sectors && details.targeted_sectors.length > 0 && (
+      <Card>
+        <CardHeader className="pb-2"><CardTitle className="text-sm flex items-center gap-1.5"><Layers className="h-4 w-4" />{isAr ? "القطاعات المستهدفة" : "Targeted Sectors"}</CardTitle></CardHeader>
+        <CardContent>
+          <div className="flex flex-wrap gap-1.5">
+            {details.targeted_sectors.map((s, i) => (
+              <Badge key={i} variant="outline" className="text-xs">{s}</Badge>
+            ))}
+          </div>
+        </CardContent>
+      </Card>
+    )}
+
+    {/* Activities */}
+    {(details.activities_en?.length || details.activities_ar?.length) && (
+      <Card className="lg:col-span-2">
+        <CardHeader className="pb-2"><CardTitle className="text-sm flex items-center gap-1.5"><ListChecks className="h-4 w-4" />{isAr ? "الأنشطة والفعاليات" : "Activities & Events"}</CardTitle></CardHeader>
+        <CardContent>
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+            {details.activities_en?.length ? (
+              <div className="space-y-1.5">
+                <span className="text-[10px] font-medium text-muted-foreground uppercase">English</span>
+                <ul className="space-y-1">
+                  {details.activities_en.map((a, i) => (
+                    <li key={i} className="text-sm flex items-start gap-2">
+                      <span className="text-primary mt-1">•</span>{a}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ) : null}
+            {details.activities_ar?.length ? (
+              <div className="space-y-1.5" dir="rtl">
+                <span className="text-[10px] font-medium text-muted-foreground uppercase">عربي</span>
+                <ul className="space-y-1">
+                  {details.activities_ar.map((a, i) => (
+                    <li key={i} className="text-sm flex items-start gap-2">
+                      <span className="text-primary mt-1">•</span>{a}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ) : null}
+          </div>
+        </CardContent>
+      </Card>
+    )}
+
+    {/* Reasons to Attend */}
+    {details.reasons_to_attend && details.reasons_to_attend.length > 0 && (
+      <Card className="lg:col-span-2">
+        <CardHeader className="pb-2"><CardTitle className="text-sm flex items-center gap-1.5"><Sparkles className="h-4 w-4" />{isAr ? "أسباب الحضور" : "Reasons to Attend"}</CardTitle></CardHeader>
+        <CardContent>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+            {details.reasons_to_attend.map((r, i) => (
+              <div key={i} className="p-2.5 rounded-lg border bg-accent/20 text-sm">
+                <p>{r.reason}</p>
+                {r.reason_ar && <p className="text-muted-foreground text-xs mt-1" dir="rtl">{r.reason_ar}</p>}
+              </div>
+            ))}
+          </div>
+        </CardContent>
+      </Card>
+    )}
+
+    {/* Unique Features */}
+    {details.unique_features && details.unique_features.length > 0 && (
+      <Card className="lg:col-span-2">
+        <CardHeader className="pb-2"><CardTitle className="text-sm flex items-center gap-1.5"><Trophy className="h-4 w-4" />{isAr ? "الميزات الفريدة" : "Unique Features"}</CardTitle></CardHeader>
+        <CardContent>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+            {details.unique_features.map((f, i) => (
+              <div key={i} className="p-2.5 rounded-lg border bg-accent/20 text-sm">
+                <p>{f.feature}</p>
+                {f.feature_ar && <p className="text-muted-foreground text-xs mt-1" dir="rtl">{f.feature_ar}</p>}
+              </div>
+            ))}
+          </div>
+        </CardContent>
+      </Card>
+    )}
+
+    {/* Sponsors */}
+    {details.sponsors && details.sponsors.length > 0 && (
+      <Card className="lg:col-span-2">
+        <CardHeader className="pb-2"><CardTitle className="text-sm flex items-center gap-1.5"><Award className="h-4 w-4" />{isAr ? "الرعاة والشركاء" : "Sponsors & Partners"}</CardTitle></CardHeader>
+        <CardContent>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+            {details.sponsors.map((s, i) => (
+              <div key={i} className="p-3 rounded-lg border flex items-center gap-3">
+                {s.logo_url ? (
+                  <img src={s.logo_url} alt={s.name} className="h-10 w-10 object-contain rounded" />
+                ) : (
+                  <div className="h-10 w-10 rounded bg-accent/50 flex items-center justify-center text-xs font-bold text-muted-foreground">{s.name.charAt(0)}</div>
+                )}
+                <div className="flex-1 min-w-0">
+                  <p className="text-sm font-medium truncate">{s.name}</p>
+                  {s.name_ar && <p className="text-xs text-muted-foreground truncate" dir="rtl">{s.name_ar}</p>}
+                  {s.tier && (
+                    <Badge variant="outline" className="text-[10px] mt-0.5 capitalize">{s.tier}</Badge>
+                  )}
+                </div>
+                {s.website_url && (
+                  <a href={s.website_url} target="_blank" rel="noopener noreferrer">
+                    <ExternalLink className="h-3.5 w-3.5 text-muted-foreground hover:text-primary" />
+                  </a>
+                )}
+              </div>
+            ))}
+          </div>
+        </CardContent>
+      </Card>
+    )}
+
+    {/* Speakers */}
+    {details.speakers && details.speakers.length > 0 && (
+      <Card className="lg:col-span-2">
+        <CardHeader className="pb-2"><CardTitle className="text-sm flex items-center gap-1.5"><Mic className="h-4 w-4" />{isAr ? "المتحدثون" : "Speakers"}</CardTitle></CardHeader>
+        <CardContent>
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
+            {details.speakers.map((s, i) => (
+              <div key={i} className="p-3 rounded-lg border text-center">
+                {s.photo_url ? (
+                  <img src={s.photo_url} alt={s.name} className="h-12 w-12 rounded-full mx-auto object-cover mb-2" />
+                ) : (
+                  <div className="h-12 w-12 rounded-full bg-accent/50 flex items-center justify-center mx-auto mb-2 text-sm font-bold text-muted-foreground">{s.name.charAt(0)}</div>
+                )}
+                <p className="text-sm font-medium truncate">{s.name}</p>
+                {s.title && <p className="text-xs text-muted-foreground truncate">{s.title}</p>}
+              </div>
+            ))}
+          </div>
+        </CardContent>
+      </Card>
+    )}
+
+    {/* Schedule */}
+    {details.schedule_items && details.schedule_items.length > 0 && (
+      <Card className="lg:col-span-2">
+        <CardHeader className="pb-2"><CardTitle className="text-sm flex items-center gap-1.5"><Clock className="h-4 w-4" />{isAr ? "الجدول الزمني" : "Schedule"}</CardTitle></CardHeader>
+        <CardContent>
+          <div className="space-y-2">
+            {details.schedule_items.map((item, i) => (
+              <div key={i} className="flex items-start gap-3 p-2.5 rounded-lg border">
+                <span className="text-xs font-mono text-primary shrink-0 pt-0.5">{item.time}</span>
+                <div className="flex-1 min-w-0">
+                  <p className="text-sm font-medium">{item.title}</p>
+                  {item.title_ar && <p className="text-xs text-muted-foreground" dir="rtl">{item.title_ar}</p>}
+                  {item.description && <p className="text-xs text-muted-foreground mt-0.5">{item.description}</p>}
+                </div>
+              </div>
+            ))}
+          </div>
+        </CardContent>
+      </Card>
+    )}
+
+    {/* Venue Details */}
+    {details.venue_details && Object.values(details.venue_details).some(v => v !== null && v !== undefined) && (
+      <Card>
+        <CardHeader className="pb-2"><CardTitle className="text-sm flex items-center gap-1.5"><Building2 className="h-4 w-4" />{isAr ? "تفاصيل المكان" : "Venue Details"}</CardTitle></CardHeader>
+        <CardContent className="space-y-2">
+          {details.venue_details.capacity && <DataField label={isAr ? "السعة" : "Capacity"} value={String(details.venue_details.capacity)} />}
+          {details.venue_details.halls && <DataField label={isAr ? "القاعات" : "Halls"} value={String(details.venue_details.halls)} />}
+          {details.venue_details.area_sqm && <DataField label={isAr ? "المساحة (م²)" : "Area (sqm)"} value={String(details.venue_details.area_sqm)} />}
+          {details.venue_details.parking && <DataField label={isAr ? "المواقف" : "Parking"} value={String(details.venue_details.parking)} />}
+          {details.venue_details.accessibility && <DataField label={isAr ? "إمكانية الوصول" : "Accessibility"} value={String(details.venue_details.accessibility)} />}
+          {details.venue_details.facilities?.length > 0 && <TagList label={isAr ? "المرافق" : "Facilities"} items={details.venue_details.facilities} />}
+        </CardContent>
+      </Card>
+    )}
+
+    {/* Entry Details */}
+    {details.entry_details && Object.values(details.entry_details).some(v => v !== null && v !== undefined) && (
+      <Card>
+        <CardHeader className="pb-2"><CardTitle className="text-sm flex items-center gap-1.5"><ListChecks className="h-4 w-4" />{isAr ? "تفاصيل الدخول" : "Entry Details"}</CardTitle></CardHeader>
+        <CardContent className="space-y-2">
+          {details.entry_details.type && <DataField label={isAr ? "النوع" : "Type"} value={details.entry_details.type} />}
+          {details.entry_details.early_bird_price && <DataField label={isAr ? "سعر الحجز المبكر" : "Early Bird Price"} value={String(details.entry_details.early_bird_price)} />}
+          {details.entry_details.vip_price && <DataField label={isAr ? "سعر VIP" : "VIP Price"} value={String(details.entry_details.vip_price)} />}
+          {details.entry_details.group_discount && <DataField label={isAr ? "خصم المجموعات" : "Group Discount"} value={String(details.entry_details.group_discount)} />}
+          {details.entry_details.ticket_types?.length > 0 && <TagList label={isAr ? "أنواع التذاكر" : "Ticket Types"} items={details.entry_details.ticket_types} />}
+        </CardContent>
+      </Card>
+    )}
+
+    {/* Highlights */}
+    {details.highlights && details.highlights.length > 0 && (
+      <Card className="lg:col-span-2">
+        <CardHeader className="pb-2"><CardTitle className="text-sm flex items-center gap-1.5"><Star className="h-4 w-4" />{isAr ? "أبرز النقاط" : "Highlights"}</CardTitle></CardHeader>
+        <CardContent>
+          <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+            {details.highlights.map((h, i) => (
+              <div key={i} className="p-2.5 rounded-lg border text-center">
+                <p className="text-lg font-bold text-primary">{h.value}</p>
+                <p className="text-xs text-muted-foreground">{h.label}</p>
+                {h.label_ar && <p className="text-[10px] text-muted-foreground" dir="rtl">{h.label_ar}</p>}
+              </div>
+            ))}
+          </div>
+        </CardContent>
+      </Card>
+    )}
+
+    {/* Categories */}
+    {details.categories && details.categories.length > 0 && (
+      <Card>
+        <CardHeader className="pb-2"><CardTitle className="text-sm flex items-center gap-1.5"><Layers className="h-4 w-4" />{isAr ? "الفئات" : "Categories"}</CardTitle></CardHeader>
+        <CardContent>
+          <div className="flex flex-wrap gap-1.5">
+            {details.categories.map((c, i) => (
+              <Badge key={i} variant="secondary" className="text-xs">{c}</Badge>
+            ))}
+          </div>
+        </CardContent>
+      </Card>
+    )}
+
+    {/* Rules Summary */}
     {(details.rules_summary_en || details.rules_summary_ar) && (
       <Card className="lg:col-span-2">
         <CardHeader className="pb-2"><CardTitle className="text-sm flex items-center gap-1.5"><Award className="h-4 w-4" />{isAr ? "ملخص القواعد" : "Rules Summary"}</CardTitle></CardHeader>
         <CardContent className="space-y-3">
-          <Field label={isAr ? "القواعد (EN)" : "Rules (EN)"} value={details.rules_summary_en} fieldKey="rules_summary_en" editing={editing} onFieldUpdate={onFieldUpdate} multiline />
-          <Field label={isAr ? "القواعد (AR)" : "Rules (AR)"} value={details.rules_summary_ar} fieldKey="rules_summary_ar" editing={editing} onFieldUpdate={onFieldUpdate} multiline />
+          <Field label={isAr ? "القواعد (EN)" : "Rules (EN)"} value={details.rules_summary_en} fieldKey="rules_summary_en" editing={editing} onFieldUpdate={onFieldUpdate} multiline pairedFieldKey="rules_summary_ar" pairedFieldValue={details.rules_summary_ar} />
+          <Field label={isAr ? "القواعد (AR)" : "Rules (AR)"} value={details.rules_summary_ar} fieldKey="rules_summary_ar" editing={editing} onFieldUpdate={onFieldUpdate} multiline pairedFieldKey="rules_summary_en" pairedFieldValue={details.rules_summary_en} />
         </CardContent>
       </Card>
     )}

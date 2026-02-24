@@ -2,8 +2,9 @@ import React, { useState, useCallback } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { Pencil, Check, X, Copy } from "lucide-react";
+import { Pencil, Check, X, Copy, Languages, Loader2 } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
+import { supabase } from "@/integrations/supabase/client";
 
 interface EditableFieldProps {
   label: string;
@@ -12,11 +13,15 @@ interface EditableFieldProps {
   onUpdate: (key: string, value: string) => void;
   copyable?: boolean;
   multiline?: boolean;
+  /** If set, clicking translate will auto-translate to the paired field */
+  pairedFieldKey?: string;
+  pairedFieldValue?: string | null;
 }
 
-export const EditableField = React.memo(({ label, value, fieldKey, onUpdate, copyable, multiline }: EditableFieldProps) => {
+export const EditableField = React.memo(({ label, value, fieldKey, onUpdate, copyable, multiline, pairedFieldKey, pairedFieldValue }: EditableFieldProps) => {
   const [editing, setEditing] = useState(false);
   const [editValue, setEditValue] = useState(value || "");
+  const [translating, setTranslating] = useState(false);
 
   const handleSave = useCallback(() => {
     onUpdate(fieldKey, editValue);
@@ -27,6 +32,36 @@ export const EditableField = React.memo(({ label, value, fieldKey, onUpdate, cop
     setEditValue(value || "");
     setEditing(false);
   }, [value]);
+
+  const isArabicField = fieldKey.endsWith("_ar") || fieldKey.includes("_ar_") || label.includes("(AR)") || label.includes("عربي");
+  const targetLang = isArabicField ? "en" : "ar";
+
+  const handleSmartTranslate = useCallback(async () => {
+    const textToTranslate = editValue || value;
+    if (!textToTranslate || !pairedFieldKey) return;
+
+    setTranslating(true);
+    try {
+      const { data, error } = await supabase.functions.invoke("smart-translate", {
+        body: {
+          text: textToTranslate,
+          from: isArabicField ? "ar" : "en",
+          to: targetLang,
+          context: "culinary/exhibition/food industry",
+        },
+      });
+
+      if (error) throw error;
+      if (data?.translated) {
+        onUpdate(pairedFieldKey, data.translated);
+        toast({ title: targetLang === "ar" ? "تمت الترجمة" : "Translated", description: targetLang === "ar" ? "تم ترجمة النص إلى العربية" : "Text translated to English" });
+      }
+    } catch (err: any) {
+      toast({ title: "Translation Error", description: err.message, variant: "destructive" });
+    } finally {
+      setTranslating(false);
+    }
+  }, [editValue, value, pairedFieldKey, isArabicField, targetLang, onUpdate]);
 
   if (!value && !editing) return null;
 
@@ -58,6 +93,16 @@ export const EditableField = React.memo(({ label, value, fieldKey, onUpdate, cop
             <Button variant="ghost" size="icon" className="h-8 w-8 shrink-0 text-destructive" onClick={handleCancel}>
               <X className="h-3.5 w-3.5" />
             </Button>
+            {pairedFieldKey && (
+              <Button
+                variant="ghost" size="icon" className="h-8 w-8 shrink-0 text-blue-600"
+                onClick={handleSmartTranslate}
+                disabled={translating}
+                title={targetLang === "ar" ? "ترجمة إلى العربية" : "Translate to English"}
+              >
+                {translating ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Languages className="h-3.5 w-3.5" />}
+              </Button>
+            )}
           </div>
         ) : (
           <>
@@ -72,6 +117,16 @@ export const EditableField = React.memo(({ label, value, fieldKey, onUpdate, cop
             >
               <Pencil className="h-3 w-3" />
             </Button>
+            {pairedFieldKey && value && (
+              <Button
+                variant="ghost" size="icon" className="h-6 w-6 shrink-0 opacity-0 group-hover:opacity-100 transition-opacity text-blue-500"
+                onClick={handleSmartTranslate}
+                disabled={translating}
+                title={targetLang === "ar" ? "ترجمة إلى العربية" : "Translate to English"}
+              >
+                {translating ? <Loader2 className="h-3 w-3 animate-spin" /> : <Languages className="h-3 w-3" />}
+              </Button>
+            )}
             {copyable && value && (
               <Button
                 variant="ghost" size="icon" className="h-6 w-6 shrink-0 opacity-0 group-hover:opacity-100 transition-opacity"
