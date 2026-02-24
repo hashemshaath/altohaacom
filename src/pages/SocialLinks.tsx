@@ -19,6 +19,10 @@ import { buildSocialLinksUrl } from "@/lib/publicAppUrl";
 import { useFollowStats, useIsFollowing, useToggleFollow, usePendingFollowRequest } from "@/hooks/useFollow";
 import { countryFlag } from "@/lib/countryFlag";
 import { useCountries } from "@/hooks/useCountries";
+import {
+  THEME_COLORS, BUTTON_STYLES_MAP, FONT_MAP, FONT_SIZE_MAP,
+  parseExtra, type ExtraSettings,
+} from "@/lib/socialLinksConstants";
 
 // ── Multi-language support (10 languages) ──
 const SUPPORTED_LANGUAGES = [
@@ -74,101 +78,8 @@ const SOCIAL_ICONS: Record<string, { icon: typeof Instagram; label: string; urlP
   website: { icon: Globe, label: "Website", hoverColor: "#10B981" },
 };
 
-const BUTTON_STYLES: Record<string, string> = {
-  rounded: "rounded-2xl",
-  pill: "rounded-full",
-  square: "rounded-lg",
-  sharp: "rounded-none",
-  outline: "rounded-2xl border-2 bg-transparent",
-};
-
-const FONT_MAP: Record<string, string> = {
-  default: "inherit",
-  inter: "'Inter', sans-serif",
-  playfair: "'Playfair Display', serif",
-  poppins: "'Poppins', sans-serif",
-  cairo: "'Cairo', sans-serif",
-  tajawal: "'Tajawal', sans-serif",
-  montserrat: "'Montserrat', sans-serif",
-  roboto: "'Roboto', sans-serif",
-};
-
-const FONT_SIZE_MAP: Record<string, { name: string; bio: string; meta: string; link: string }> = {
-  sm: { name: "text-lg sm:text-xl", bio: "text-xs", meta: "text-[10px]", link: "text-xs" },
-  md: { name: "text-2xl sm:text-3xl", bio: "text-sm", meta: "text-xs", link: "text-sm" },
-  lg: { name: "text-3xl sm:text-4xl", bio: "text-base", meta: "text-sm", link: "text-base" },
-  xl: { name: "text-4xl sm:text-5xl", bio: "text-lg", meta: "text-base", link: "text-lg" },
-};
-
-// ── Theme system ──
-interface ThemeColors {
-  bg: string;
-  card: string;
-  text: string;
-  textMuted: string;
-  accent: string;
-  accentLight: string;
-  accentMedium: string;
-  border: string;
-  btnBg: string;
-  btnHover: string;
-}
-
-const THEME_COLORS: Record<string, ThemeColors> = {
-  default: { bg: "linear-gradient(180deg, #0a0a12 0%, #0d0d18 50%, #0a0a12 100%)", card: "rgba(255,255,255,0.04)", text: "#f5f5f5", textMuted: "rgba(255,255,255,0.4)", accent: "#c4a265", accentLight: "rgba(196,162,101,0.12)", accentMedium: "rgba(196,162,101,0.25)", border: "rgba(255,255,255,0.08)", btnBg: "rgba(255,255,255,0.05)", btnHover: "rgba(255,255,255,0.08)" },
-  dark: { bg: "linear-gradient(180deg, #0a0a0a 0%, #111111 50%, #0a0a0a 100%)", card: "rgba(255,255,255,0.03)", text: "#ffffff", textMuted: "rgba(255,255,255,0.35)", accent: "#818cf8", accentLight: "rgba(129,140,248,0.12)", accentMedium: "rgba(129,140,248,0.25)", border: "rgba(255,255,255,0.06)", btnBg: "rgba(255,255,255,0.04)", btnHover: "rgba(255,255,255,0.07)" },
-  ocean: { bg: "linear-gradient(180deg, #0a1628 0%, #0c1e3a 50%, #0a1628 100%)", card: "rgba(255,255,255,0.05)", text: "#e0f0ff", textMuted: "rgba(224,240,255,0.4)", accent: "#38bdf8", accentLight: "rgba(56,189,248,0.12)", accentMedium: "rgba(56,189,248,0.25)", border: "rgba(56,189,248,0.1)", btnBg: "rgba(56,189,248,0.06)", btnHover: "rgba(56,189,248,0.12)" },
-  sunset: { bg: "linear-gradient(180deg, #1a0a1e 0%, #2d1030 50%, #1a0a1e 100%)", card: "rgba(255,255,255,0.05)", text: "#ffe8f0", textMuted: "rgba(255,232,240,0.4)", accent: "#f472b6", accentLight: "rgba(244,114,182,0.12)", accentMedium: "rgba(244,114,182,0.25)", border: "rgba(244,114,182,0.1)", btnBg: "rgba(244,114,182,0.06)", btnHover: "rgba(244,114,182,0.12)" },
-  forest: { bg: "linear-gradient(180deg, #0a1a0e 0%, #0e2a14 50%, #0a1a0e 100%)", card: "rgba(255,255,255,0.05)", text: "#e0ffe8", textMuted: "rgba(224,255,232,0.4)", accent: "#34d399", accentLight: "rgba(52,211,153,0.12)", accentMedium: "rgba(52,211,153,0.25)", border: "rgba(52,211,153,0.1)", btnBg: "rgba(52,211,153,0.06)", btnHover: "rgba(52,211,153,0.12)" },
-  minimal: { bg: "linear-gradient(180deg, #ffffff 0%, #f8f9fa 50%, #ffffff 100%)", card: "rgba(0,0,0,0.03)", text: "#1a1a1a", textMuted: "rgba(0,0,0,0.45)", accent: "#3b82f6", accentLight: "rgba(59,130,246,0.1)", accentMedium: "rgba(59,130,246,0.2)", border: "rgba(0,0,0,0.08)", btnBg: "rgba(0,0,0,0.04)", btnHover: "rgba(0,0,0,0.07)" },
-  candy: { bg: "linear-gradient(135deg, #ec4899 0%, #8b5cf6 50%, #6366f1 100%)", card: "rgba(255,255,255,0.15)", text: "#ffffff", textMuted: "rgba(255,255,255,0.7)", accent: "#fbbf24", accentLight: "rgba(251,191,36,0.2)", accentMedium: "rgba(251,191,36,0.35)", border: "rgba(255,255,255,0.2)", btnBg: "rgba(255,255,255,0.12)", btnHover: "rgba(255,255,255,0.2)" },
-  gold: { bg: "linear-gradient(180deg, #1a1408 0%, #2a1f0e 50%, #1a1408 100%)", card: "rgba(196,162,101,0.06)", text: "#fef3c7", textMuted: "rgba(254,243,199,0.45)", accent: "#c4a265", accentLight: "rgba(196,162,101,0.15)", accentMedium: "rgba(196,162,101,0.3)", border: "rgba(196,162,101,0.12)", btnBg: "rgba(196,162,101,0.08)", btnHover: "rgba(196,162,101,0.15)" },
-};
-
-interface ExtraSettings {
-  font_size: string;
-  show_bio: boolean;
-  show_job_title: boolean;
-  show_location: boolean;
-  show_stats: boolean;
-  show_awards: boolean;
-  show_membership: boolean;
-  show_full_profile_btn: boolean;
-  show_followers: boolean;
-  show_flags: boolean;
-  show_views: boolean;
-  show_language_switcher: boolean;
-  text_align: "start" | "center" | "end";
-  text_direction: "auto" | "ltr" | "rtl";
-  link_layout: "list" | "grid";
-}
-
-const DEFAULT_EXTRA: ExtraSettings = {
-  font_size: "md",
-  show_bio: true,
-  show_job_title: true,
-  show_location: true,
-  show_stats: true,
-  show_awards: true,
-  show_membership: true,
-  show_full_profile_btn: true,
-  show_followers: true,
-  show_flags: true,
-  show_views: true,
-  show_language_switcher: true,
-  text_align: "center",
-  text_direction: "auto",
-  link_layout: "list",
-};
-
-function parseExtra(customCss: string | null | undefined): ExtraSettings {
-  if (!customCss) return { ...DEFAULT_EXTRA };
-  try {
-    return { ...DEFAULT_EXTRA, ...JSON.parse(customCss) };
-  } catch {
-    return { ...DEFAULT_EXTRA };
-  }
-}
+// Note: BUTTON_STYLES_MAP, FONT_MAP, FONT_SIZE_MAP, THEME_COLORS, ExtraSettings, parseExtra
+// are all imported from @/lib/socialLinksConstants
 
 // ── Lightweight animated counter using RAF ──
 const AnimatedNumber = memo(function AnimatedNumber({ value, duration = 1200 }: { value: number; duration?: number }) {
@@ -242,6 +153,16 @@ export default function SocialLinks() {
     const timer = setTimeout(() => setAnimated(true), 100);
     return () => clearTimeout(timer);
   }, []);
+
+  // Fire-and-forget: increment view count for this profile
+  useEffect(() => {
+    if (!profileUserId || isOwner) return;
+    supabase.rpc("increment_field" as any, {
+      table_name: "profiles_public",
+      field_name: "view_count",
+      row_id: profileUserId,
+    }).then(() => {});
+  }, [profileUserId, isOwner]);
 
   const handleLinkClick = useCallback((itemId: string) => {
     supabase.rpc("increment_field" as any, { table_name: "social_link_items", field_name: "click_count", row_id: itemId }).then(() => {});
@@ -324,7 +245,7 @@ export default function SocialLinks() {
   const { profile, page, items } = data;
   const themeId = page?.theme || "default";
   const theme = THEME_COLORS[themeId] || THEME_COLORS.default;
-  const btnStyle = BUTTON_STYLES[page?.button_style || "rounded"] || BUTTON_STYLES.rounded;
+  const btnStyle = BUTTON_STYLES_MAP[page?.button_style || "rounded"] || BUTTON_STYLES_MAP.rounded;
   const extra = parseExtra(page?.custom_css);
   const fontSize = FONT_SIZE_MAP[extra.font_size] || FONT_SIZE_MAP.md;
   const fontFamily = FONT_MAP[page?.font_family || "default"] || "inherit";
@@ -811,14 +732,21 @@ export default function SocialLinks() {
           </div>
         )}
 
-        {/* Footer */}
-        <div className={`mt-12 text-center transition-all duration-700 delay-700 ${animated ? "opacity-100" : "opacity-0"}`}>
-          <Link to="/" className="inline-flex items-center gap-2 transition-opacity hover:opacity-60" style={{ color: `${theme.textMuted}44` }}>
-            <div className="h-4.5 w-4.5 rounded-md flex items-center justify-center" style={{ background: theme.accentLight }}>
-              <span className="text-[8px] font-bold" style={{ color: theme.accent }}>A</span>
-            </div>
-            <span className="text-[9px] font-semibold uppercase tracking-[0.2em]">Altoha</span>
-          </Link>
+        {/* Footer Watermark */}
+        <div className={`mt-14 text-center transition-all duration-700 delay-700 ${animated ? "opacity-100" : "opacity-0"}`}>
+          <div className="inline-flex flex-col items-center gap-2">
+            <div className="h-px w-12 mx-auto" style={{ background: `linear-gradient(90deg, transparent, ${theme.border}, transparent)` }} />
+            <Link to="/" className="group inline-flex items-center gap-2 py-2 px-4 rounded-full transition-all duration-300 hover:scale-105"
+              style={{ color: `${theme.textMuted}66` }}>
+              <div className="h-5 w-5 rounded-md flex items-center justify-center transition-all duration-300 group-hover:shadow-lg"
+                style={{ background: `linear-gradient(135deg, ${theme.accentLight}, ${theme.accentMedium})`, boxShadow: `0 0 12px ${theme.accentLight}` }}>
+                <span className="text-[8px] font-extrabold" style={{ color: theme.accent }}>A</span>
+              </div>
+              <span className="text-[9px] font-semibold uppercase tracking-[0.25em] transition-colors group-hover:text-current" style={{ opacity: 0.5 }}>
+                Altoha
+              </span>
+            </Link>
+          </div>
         </div>
       </div>
     </div>

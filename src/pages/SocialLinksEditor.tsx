@@ -71,16 +71,7 @@ const BUTTON_STYLES = [
   { id: "outline", label: "Outline", labelAr: "إطار" },
 ];
 
-const FONT_FAMILIES = [
-  { id: "default", label: "Default", labelAr: "افتراضي", css: "inherit" },
-  { id: "inter", label: "Inter", labelAr: "إنتر", css: "'Inter', sans-serif" },
-  { id: "playfair", label: "Playfair", labelAr: "بلايفير", css: "'Playfair Display', serif" },
-  { id: "poppins", label: "Poppins", labelAr: "بوبينز", css: "'Poppins', sans-serif" },
-  { id: "cairo", label: "Cairo", labelAr: "القاهرة", css: "'Cairo', sans-serif" },
-  { id: "tajawal", label: "Tajawal", labelAr: "تجوال", css: "'Tajawal', sans-serif" },
-  { id: "montserrat", label: "Montserrat", labelAr: "مونتسيرات", css: "'Montserrat', sans-serif" },
-  { id: "roboto", label: "Roboto", labelAr: "روبوتو", css: "'Roboto', sans-serif" },
-];
+// FONT_FAMILIES now imported from shared constants
 
 const FONT_SIZES = [
   { id: "sm", label: "Small", labelAr: "صغير" },
@@ -89,24 +80,11 @@ const FONT_SIZES = [
   { id: "xl", label: "Extra Large", labelAr: "كبير جداً" },
 ];
 
-interface PreviewTheme {
-  bg: string;
-  card: string;
-  text: string;
-  accent: string;
-  border: string;
-}
-
-const THEME_MAP: Record<string, PreviewTheme> = {
-  default: { bg: "linear-gradient(180deg, #0a0a12, #0d0d18)", card: "rgba(255,255,255,0.04)", text: "#f5f5f5", accent: "#c4a265", border: "rgba(255,255,255,0.08)" },
-  dark: { bg: "linear-gradient(180deg, #0a0a0a, #111111)", card: "rgba(255,255,255,0.03)", text: "#ffffff", accent: "#818cf8", border: "rgba(255,255,255,0.06)" },
-  ocean: { bg: "linear-gradient(180deg, #0a1628, #0c1e3a)", card: "rgba(255,255,255,0.05)", text: "#e0f0ff", accent: "#38bdf8", border: "rgba(56,189,248,0.1)" },
-  sunset: { bg: "linear-gradient(180deg, #1a0a1e, #2d1030)", card: "rgba(255,255,255,0.05)", text: "#ffe8f0", accent: "#f472b6", border: "rgba(244,114,182,0.1)" },
-  forest: { bg: "linear-gradient(180deg, #0a1a0e, #0e2a14)", card: "rgba(255,255,255,0.05)", text: "#e0ffe8", accent: "#34d399", border: "rgba(52,211,153,0.1)" },
-  minimal: { bg: "linear-gradient(180deg, #ffffff, #f8f9fa)", card: "rgba(0,0,0,0.03)", text: "#1a1a1a", accent: "#3b82f6", border: "rgba(0,0,0,0.08)" },
-  candy: { bg: "linear-gradient(135deg, #ec4899, #8b5cf6, #6366f1)", card: "rgba(255,255,255,0.15)", text: "#ffffff", accent: "#fbbf24", border: "rgba(255,255,255,0.2)" },
-  gold: { bg: "linear-gradient(180deg, #1a1408, #2a1f0e)", card: "rgba(196,162,101,0.06)", text: "#fef3c7", accent: "#c4a265", border: "rgba(196,162,101,0.12)" },
-};
+import {
+  THEME_COLORS, THEME_PREVIEW_MAP, BUTTON_STYLES_MAP, FONT_MAP, FONT_SIZE_MAP,
+  FONT_FAMILIES, parseExtra, DEFAULT_EXTRA,
+  type ExtraSettings, type PreviewTheme,
+} from "@/lib/socialLinksConstants";
 
 const SOCIAL_ICONS: Record<string, typeof Instagram> = {
   instagram: Instagram, twitter: Twitter, facebook: Facebook,
@@ -117,51 +95,6 @@ const LINK_TYPE_ICONS: Record<string, typeof Globe> = {
   custom: LinkIcon, menu: ShoppingBag, store: ShoppingBag,
   booking: CalendarDays, portfolio: Briefcase, video: Video, music: Music,
 };
-
-interface ExtraSettings {
-  font_size: string;
-  show_bio: boolean;
-  show_job_title: boolean;
-  show_location: boolean;
-  show_stats: boolean;
-  show_awards: boolean;
-  show_membership: boolean;
-  show_full_profile_btn: boolean;
-  show_followers: boolean;
-  show_flags: boolean;
-  show_views: boolean;
-  show_language_switcher: boolean;
-  text_align: "start" | "center" | "end";
-  text_direction: "auto" | "ltr" | "rtl";
-  link_layout: "list" | "grid";
-}
-
-const DEFAULT_EXTRA: ExtraSettings = {
-  font_size: "md",
-  show_bio: true,
-  show_job_title: true,
-  show_location: true,
-  show_stats: true,
-  show_awards: true,
-  show_membership: true,
-  show_full_profile_btn: true,
-  show_followers: true,
-  show_flags: true,
-  show_views: true,
-  show_language_switcher: true,
-  text_align: "center",
-  text_direction: "auto",
-  link_layout: "list",
-};
-
-function parseExtra(customCss: string | null): ExtraSettings {
-  if (!customCss) return { ...DEFAULT_EXTRA };
-  try {
-    return { ...DEFAULT_EXTRA, ...JSON.parse(customCss) };
-  } catch {
-    return { ...DEFAULT_EXTRA };
-  }
-}
 
 // ── Loading Skeleton ──
 function EditorSkeleton() {
@@ -1190,7 +1123,7 @@ export default function SocialLinksEditor() {
                   </CardHeader>
                   <CardContent className="p-0">
                     {(() => {
-                      const pt = THEME_MAP[form.theme] || THEME_MAP.default;
+                      const pt = THEME_PREVIEW_MAP[form.theme] || THEME_PREVIEW_MAP.default;
                       return (
                         <div className="p-4 min-h-[500px] rounded-b-lg"
                           dir={extra.text_direction === "auto" ? undefined : extra.text_direction}
