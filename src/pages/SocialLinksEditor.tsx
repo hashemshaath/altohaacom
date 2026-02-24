@@ -132,7 +132,7 @@ export default function SocialLinksEditor() {
   const { data: profile } = useQuery({
     queryKey: ["my-profile-for-links", user?.id],
     queryFn: async () => {
-      const { data } = await supabase.from("profiles").select("username, avatar_url, full_name, display_name, instagram, twitter, facebook, linkedin, youtube, website").eq("id", user!.id).single();
+      const { data } = await supabase.from("profiles").select("username, avatar_url, full_name, display_name, instagram, twitter, facebook, linkedin, youtube, website").eq("user_id", user!.id).single();
       return data;
     },
     enabled: !!user?.id,
