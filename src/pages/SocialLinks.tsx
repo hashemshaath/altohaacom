@@ -112,6 +112,9 @@ interface ExtraSettings {
   show_flags: boolean;
   show_views: boolean;
   show_language_switcher: boolean;
+  text_align: "start" | "center" | "end";
+  text_direction: "auto" | "ltr" | "rtl";
+  link_layout: "list" | "grid";
 }
 
 const DEFAULT_EXTRA: ExtraSettings = {
@@ -127,6 +130,9 @@ const DEFAULT_EXTRA: ExtraSettings = {
   show_flags: true,
   show_views: true,
   show_language_switcher: true,
+  text_align: "center",
+  text_direction: "auto",
+  link_layout: "list",
 };
 
 function parseExtra(customCss: string | null | undefined): ExtraSettings {
@@ -351,10 +357,15 @@ export default function SocialLinks() {
 
   const followersCount = followStats?.followers || 0;
 
+  // Compute layout classes from extra settings
+  const textAlignClass = extra.text_align === "start" ? "text-start" : extra.text_align === "end" ? "text-end" : "text-center";
+  const justifyClass = extra.text_align === "start" ? "justify-start" : extra.text_align === "end" ? "justify-end" : "justify-center";
+  const contentDir = extra.text_direction === "auto" ? dir : extra.text_direction;
+
   return (
     <div
       className="flex min-h-screen flex-col items-center"
-      dir={dir}
+      dir={contentDir}
       style={{
         background: "linear-gradient(180deg, #0a0a12 0%, #0d0d18 50%, #0a0a12 100%)",
         fontFamily,
@@ -459,7 +470,7 @@ export default function SocialLinks() {
       <div className="relative z-10 w-full max-w-lg px-5 pt-20 pb-12">
 
         {/* Name & Meta */}
-        <div className={`text-center mb-6 transition-all duration-700 delay-250 ${animated ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}>
+        <div className={`${textAlignClass} mb-6 transition-all duration-700 delay-250 ${animated ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}>
           <h1 className={`font-bold tracking-tight ${fontSize.name}`} style={{ color: "#ffffff", textShadow: "0 2px 20px rgba(0,0,0,0.3)" }}>
             {title}
           </h1>
@@ -470,7 +481,7 @@ export default function SocialLinks() {
 
           {/* Nationality Flags */}
           {extra.show_flags && showNationality && (nationalityCode || countryCode) && (
-            <div className="flex items-center justify-center flex-wrap gap-3 mt-3">
+            <div className={`flex items-center ${justifyClass} flex-wrap gap-3 mt-3`}>
               {nationalityCode && (
                 <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-medium"
                   style={{ background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.08)", color: "rgba(255,255,255,0.55)" }}>
@@ -497,7 +508,7 @@ export default function SocialLinks() {
 
           {/* Job & Location */}
           {(extra.show_job_title || extra.show_location) && (
-            <div className="flex items-center justify-center flex-wrap gap-x-5 gap-y-1.5 mt-3">
+            <div className={`flex items-center ${justifyClass} flex-wrap gap-x-5 gap-y-1.5 mt-3`}>
               {extra.show_job_title && (jobTitle || specialization) && (
                 <span className={`flex items-center gap-1.5 font-medium ${fontSize.meta}`} style={{ color: "rgba(255,255,255,0.5)" }}>
                   <Briefcase className="h-3.5 w-3.5" style={{ color: accentColor }} />
@@ -526,7 +537,7 @@ export default function SocialLinks() {
 
         {/* Follow Button + Follower Count */}
         {extra.show_followers && (
-          <div className={`flex items-center justify-center gap-4 mb-6 transition-all duration-700 delay-280 ${animated ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}>
+          <div className={`flex items-center ${justifyClass} gap-4 mb-6 transition-all duration-700 delay-280 ${animated ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}>
             {/* Follow / Unfollow Button */}
             {!isOwner && (
               <button
@@ -573,7 +584,7 @@ export default function SocialLinks() {
 
         {/* Stats */}
         {extra.show_stats && (yearsExp || (extra.show_views && viewCount > 0)) && (
-          <div className={`flex justify-center gap-2 mb-8 transition-all duration-700 delay-300 ${animated ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}>
+          <div className={`flex ${justifyClass} gap-2 mb-8 transition-all duration-700 delay-300 ${animated ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}>
             {yearsExp && (
               <div className="text-center px-7 py-4 rounded-2xl backdrop-blur-sm" style={{ background: "rgba(255,255,255,0.025)", border: "1px solid rgba(255,255,255,0.05)" }}>
                 <p className="text-2xl font-bold tabular-nums" style={{ color: "#fff" }}>
@@ -601,7 +612,7 @@ export default function SocialLinks() {
         {extra.show_bio && bio && (
           <div className={`mb-8 transition-all duration-700 delay-350 ${animated ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}>
             <div className="rounded-2xl px-5 py-4 backdrop-blur-sm" style={{ background: "rgba(255,255,255,0.025)", border: "1px solid rgba(255,255,255,0.05)" }}>
-              <p className={`leading-relaxed text-center ${fontSize.bio}`} dir="auto" style={{ color: "rgba(255,255,255,0.65)" }}>
+              <p className={`leading-relaxed ${textAlignClass} ${fontSize.bio}`} dir="auto" style={{ color: "rgba(255,255,255,0.65)" }}>
                 {bio}
               </p>
             </div>
@@ -637,10 +648,10 @@ export default function SocialLinks() {
         {/* Social Icons */}
         {page?.show_social_icons !== false && (socialPlatforms.length > 0 || whatsapp || phone) && (
           <div className={`mb-8 transition-all duration-700 delay-450 ${animated ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}>
-            <h3 className="text-[10px] font-semibold uppercase tracking-[0.2em] mb-4 text-center" style={{ color: "rgba(255,255,255,0.25)" }}>
+            <h3 className={`text-[10px] font-semibold uppercase tracking-[0.2em] mb-4 ${textAlignClass}`} style={{ color: "rgba(255,255,255,0.25)" }}>
               {t("followMe", lang)}
             </h3>
-            <div className="flex justify-center flex-wrap gap-3">
+            <div className={`flex ${justifyClass} flex-wrap gap-3`}>
               {socialPlatforms.map(({ key, value }, index) => {
                 const info = SOCIAL_ICONS[key];
                 if (!info) return null;
@@ -696,8 +707,8 @@ export default function SocialLinks() {
 
         {/* Link Items */}
         {items.length > 0 && (
-          <div className={`space-y-3 mb-8 transition-all duration-700 delay-500 ${animated ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}>
-            <h3 className="text-[10px] font-semibold uppercase tracking-[0.2em] mb-4 text-center" style={{ color: "rgba(255,255,255,0.25)" }}>
+          <div className={`${extra.link_layout === "grid" ? "grid grid-cols-2 gap-3" : "space-y-3"} mb-8 transition-all duration-700 delay-500 ${animated ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}>
+            <h3 className={`text-[10px] font-semibold uppercase tracking-[0.2em] mb-4 ${textAlignClass} ${extra.link_layout === "grid" ? "col-span-2" : ""}`} style={{ color: "rgba(255,255,255,0.25)" }}>
               {t("links", lang)}
             </h3>
             {items.map((item, index) => (
@@ -707,7 +718,7 @@ export default function SocialLinks() {
                 target="_blank"
                 rel="noopener noreferrer"
                 onClick={() => handleLinkClick(item.id)}
-                className={`group relative flex items-center gap-3 px-5 py-4 ${btnStyle} backdrop-blur-sm transition-all duration-300 hover:scale-[1.02] active:scale-[0.98] overflow-hidden`}
+                className={`group relative flex ${extra.link_layout === "grid" ? "flex-col items-center text-center py-5" : "items-center"} gap-3 px-5 py-4 ${btnStyle} backdrop-blur-sm transition-all duration-300 hover:scale-[1.02] active:scale-[0.98] overflow-hidden`}
                 style={{
                   background: buttonColorStyle.backgroundColor || "rgba(255,255,255,0.04)",
                   border: `1px solid ${buttonColorStyle.backgroundColor ? "transparent" : "rgba(255,255,255,0.08)"}`,
@@ -721,15 +732,17 @@ export default function SocialLinks() {
                 }} />
 
                 {item.thumbnail_url && (
-                  <img src={item.thumbnail_url} alt="" className="h-10 w-10 rounded-lg object-cover shrink-0 relative z-10" loading="lazy" />
+                  <img src={item.thumbnail_url} alt="" className={`${extra.link_layout === "grid" ? "h-12 w-12" : "h-10 w-10"} rounded-lg object-cover shrink-0 relative z-10`} loading="lazy" />
                 )}
                 {item.icon && !item.thumbnail_url && (
-                  <span className="text-xl shrink-0 relative z-10">{item.icon}</span>
+                  <span className={`${extra.link_layout === "grid" ? "text-2xl" : "text-xl"} shrink-0 relative z-10`}>{item.icon}</span>
                 )}
-                <span className={`flex-1 font-medium text-center relative z-10 ${fontSize.link}`}>
+                <span className={`${extra.link_layout === "grid" ? "" : "flex-1"} font-medium ${textAlignClass} relative z-10 ${fontSize.link}`}>
                   {isRtl ? (item.title_ar || item.title) : item.title}
                 </span>
-                <ExternalLink className="h-4 w-4 opacity-20 group-hover:opacity-60 transition-opacity shrink-0 relative z-10" />
+                {extra.link_layout !== "grid" && (
+                  <ExternalLink className="h-4 w-4 opacity-20 group-hover:opacity-60 transition-opacity shrink-0 relative z-10" />
+                )}
               </a>
             ))}
           </div>

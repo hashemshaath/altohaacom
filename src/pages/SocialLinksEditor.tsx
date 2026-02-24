@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo, useCallback } from "react";
+import { useState, useEffect, useMemo, useCallback, useRef } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useSocialLinkPage, useSocialLinkItems, useUpsertSocialLinkPage, useManageSocialLinkItems } from "@/hooks/useSocialLinkPage";
@@ -25,11 +25,12 @@ import { Link } from "react-router-dom";
 import { QRCodeSVG } from "qrcode.react";
 import {
   Palette, Eye, Link as LinkIcon, Plus, Trash2, ExternalLink,
-  Globe, ArrowUp, ArrowDown, Save, Copy, Check, QrCode,
+  Globe, Save, Copy, Check, QrCode,
   BarChart3, MousePointerClick, Pencil, Instagram, Twitter,
   Facebook, Linkedin, Youtube, Smartphone, Type, EyeOff, Settings2,
   Phone, MessageCircle, Music, ShoppingBag, CalendarDays, Video, Briefcase,
-  Sparkles, TrendingUp, Loader2, Download, Share2, GripVertical
+  Sparkles, TrendingUp, Loader2, GripVertical,
+  AlignLeft, AlignCenter, AlignRight, LayoutGrid, LayoutList, ArrowLeftRight
 } from "lucide-react";
 import { buildSocialLinksPath, buildSocialLinksUrl } from "@/lib/publicAppUrl";
 
@@ -122,6 +123,9 @@ interface ExtraSettings {
   show_flags: boolean;
   show_views: boolean;
   show_language_switcher: boolean;
+  text_align: "start" | "center" | "end";
+  text_direction: "auto" | "ltr" | "rtl";
+  link_layout: "list" | "grid";
 }
 
 const DEFAULT_EXTRA: ExtraSettings = {
@@ -137,6 +141,9 @@ const DEFAULT_EXTRA: ExtraSettings = {
   show_flags: true,
   show_views: true,
   show_language_switcher: true,
+  text_align: "center",
+  text_direction: "auto",
+  link_layout: "list",
 };
 
 function parseExtra(customCss: string | null): ExtraSettings {
@@ -190,6 +197,11 @@ export default function SocialLinksEditor() {
   const [uploading, setUploading] = useState(false);
   const [savingSocials, setSavingSocials] = useState(false);
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
+
+  // Drag-and-drop state
+  const [dragIndex, setDragIndex] = useState<number | null>(null);
+  const [dragOverIndex, setDragOverIndex] = useState<number | null>(null);
+  const dragNodeRef = useRef<HTMLDivElement | null>(null);
 
   const { data: page, isLoading: pageLoading } = useSocialLinkPage(user?.id);
   const { data: items = [], isLoading: itemsLoading } = useSocialLinkItems(page?.id);
@@ -279,6 +291,11 @@ export default function SocialLinksEditor() {
     setHasUnsavedChanges(true);
   }, []);
 
+  const updateExtra = useCallback((updates: Partial<ExtraSettings>) => {
+    setExtra(prev => ({ ...prev, ...updates }));
+    setHasUnsavedChanges(true);
+  }, []);
+
   const handleSavePage = useCallback(() => {
     upsertPage.mutate({ ...form, custom_css: JSON.stringify(extra) }, {
       onSuccess: () => setHasUnsavedChanges(false),
@@ -340,13 +357,43 @@ export default function SocialLinksEditor() {
     }
   }, [editingItem, editForm, updateItem]);
 
-  const moveItem = useCallback((index: number, direction: "up" | "down") => {
-    const newItems = [...items];
-    const swapIndex = direction === "up" ? index - 1 : index + 1;
-    if (swapIndex < 0 || swapIndex >= newItems.length) return;
-    [newItems[index], newItems[swapIndex]] = [newItems[swapIndex], newItems[index]];
-    reorderItems.mutate(newItems.map((item, i) => ({ id: item.id, sort_order: i })));
-  }, [items, reorderItems]);
+  // ── Drag and Drop handlers ──
+  const handleDragStart = useCallback((index: number, e: React.DragEvent<HTMLDivElement>) => {
+    setDragIndex(index);
+    dragNodeRef.current = e.currentTarget;
+    e.dataTransfer.effectAllowed = "move";
+    // Make drag ghost slightly transparent
+    requestAnimationFrame(() => {
+      if (dragNodeRef.current) {
+        dragNodeRef.current.style.opacity = "0.4";
+      }
+    });
+  }, []);
+
+  const handleDragEnter = useCallback((index: number) => {
+    if (dragIndex === null || dragIndex === index) return;
+    setDragOverIndex(index);
+  }, [dragIndex]);
+
+  const handleDragOver = useCallback((e: React.DragEvent) => {
+    e.preventDefault();
+    e.dataTransfer.dropEffect = "move";
+  }, []);
+
+  const handleDragEnd = useCallback(() => {
+    if (dragNodeRef.current) {
+      dragNodeRef.current.style.opacity = "1";
+    }
+    if (dragIndex !== null && dragOverIndex !== null && dragIndex !== dragOverIndex) {
+      const newItems = [...items];
+      const [removed] = newItems.splice(dragIndex, 1);
+      newItems.splice(dragOverIndex, 0, removed);
+      reorderItems.mutate(newItems.map((item, i) => ({ id: item.id, sort_order: i })));
+    }
+    setDragIndex(null);
+    setDragOverIndex(null);
+    dragNodeRef.current = null;
+  }, [dragIndex, dragOverIndex, items, reorderItems]);
 
   const handleBgUpload = useCallback(async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -398,6 +445,10 @@ export default function SocialLinksEditor() {
   ], [isAr]);
 
   const isLoading = pageLoading || profileLoading;
+
+  // Text align mapping for preview
+  const alignClass = extra.text_align === "start" ? "text-start" : extra.text_align === "end" ? "text-end" : "text-center";
+  const justifyClass = extra.text_align === "start" ? "justify-start" : extra.text_align === "end" ? "justify-end" : "justify-center";
 
   return (
     <div className="flex min-h-screen flex-col bg-background" dir={isAr ? "rtl" : "ltr"}>
@@ -707,7 +758,7 @@ export default function SocialLinksEditor() {
                     </Card>
                   </TabsContent>
 
-                  {/* ── Links Tab ── */}
+                  {/* ── Links Tab (with Drag & Drop) ── */}
                   <TabsContent value="links" className="space-y-4 mt-4 animate-in fade-in slide-in-from-bottom-2 duration-300">
                     <Card className="overflow-hidden">
                       <CardHeader className="pb-3 bg-gradient-to-r from-muted/40 to-transparent">
@@ -755,6 +806,9 @@ export default function SocialLinksEditor() {
                           {isAr ? "الروابط" : "Links"}
                           {items.length > 0 && <Badge variant="secondary" className="text-[10px] ms-1">{items.length}</Badge>}
                         </CardTitle>
+                        <p className="text-[11px] text-muted-foreground">
+                          {isAr ? "اسحب وأفلت لإعادة الترتيب" : "Drag and drop to reorder"}
+                        </p>
                       </CardHeader>
                       <CardContent className="pt-3">
                         {itemsLoading ? (
@@ -773,11 +827,25 @@ export default function SocialLinksEditor() {
                           <div className="space-y-2">
                             {items.map((item, index) => {
                               const TypeIcon = LINK_TYPE_ICONS[item.link_type || "custom"] || LinkIcon;
+                              const isDragOver = dragOverIndex === index && dragIndex !== index;
                               return (
-                                <div key={item.id} className={`flex items-center gap-2 p-3 rounded-xl border transition-all duration-200 group ${item.is_active !== false ? "border-border/50 bg-card hover:border-primary/20 hover:shadow-sm" : "border-border/30 bg-muted/30 opacity-60"}`}>
-                                  <div className="flex flex-col gap-0.5 opacity-40 group-hover:opacity-100 transition-opacity">
-                                    <button onClick={() => moveItem(index, "up")} disabled={index === 0} className="text-muted-foreground hover:text-foreground disabled:opacity-20 p-0.5"><ArrowUp className="h-3 w-3" /></button>
-                                    <button onClick={() => moveItem(index, "down")} disabled={index === items.length - 1} className="text-muted-foreground hover:text-foreground disabled:opacity-20 p-0.5"><ArrowDown className="h-3 w-3" /></button>
+                                <div
+                                  key={item.id}
+                                  draggable={editingItem !== item.id}
+                                  onDragStart={(e) => handleDragStart(index, e)}
+                                  onDragEnter={() => handleDragEnter(index)}
+                                  onDragOver={handleDragOver}
+                                  onDragEnd={handleDragEnd}
+                                  className={`flex items-center gap-2 p-3 rounded-xl border transition-all duration-200 group
+                                    ${item.is_active !== false ? "border-border/50 bg-card hover:border-primary/20 hover:shadow-sm" : "border-border/30 bg-muted/30 opacity-60"}
+                                    ${isDragOver ? "border-primary/40 bg-primary/5 scale-[1.02] shadow-md" : ""}
+                                    ${dragIndex === index ? "opacity-40" : ""}
+                                  `}
+                                  style={{ cursor: editingItem === item.id ? "default" : "grab" }}
+                                >
+                                  {/* Drag Handle */}
+                                  <div className="flex items-center text-muted-foreground/40 group-hover:text-muted-foreground/70 transition-colors cursor-grab active:cursor-grabbing shrink-0">
+                                    <GripVertical className="h-4 w-4" />
                                   </div>
 
                                   {item.icon ? (
@@ -790,13 +858,17 @@ export default function SocialLinksEditor() {
 
                                   {editingItem === item.id ? (
                                     <div className="flex-1 space-y-2">
-                                      <Input value={editForm.title} onChange={e => setEditForm(f => ({ ...f, title: e.target.value }))} placeholder="Title" className="h-8 text-xs" dir="ltr" />
+                                      <div className="grid grid-cols-2 gap-2">
+                                        <Input value={editForm.title} onChange={e => setEditForm(f => ({ ...f, title: e.target.value }))} placeholder="Title (EN)" className="h-8 text-xs" dir="ltr" />
+                                        <Input value={editForm.title_ar} onChange={e => setEditForm(f => ({ ...f, title_ar: e.target.value }))} placeholder="العنوان (AR)" className="h-8 text-xs" dir="rtl" />
+                                      </div>
                                       <Input value={editForm.url} onChange={e => setEditForm(f => ({ ...f, url: e.target.value }))} placeholder="URL" className="h-8 text-xs" dir="ltr" />
                                       <div className="flex gap-2">
-                                        <Button size="sm" variant="default" className="h-7 text-xs gap-1" onClick={saveEdit}>
+                                        <Input value={editForm.icon} onChange={e => setEditForm(f => ({ ...f, icon: e.target.value }))} placeholder="🔗 Emoji" className="h-8 text-xs w-24" />
+                                        <Button size="sm" variant="default" className="h-8 text-xs gap-1" onClick={saveEdit}>
                                           <Check className="h-3 w-3" />{isAr ? "حفظ" : "Save"}
                                         </Button>
-                                        <Button size="sm" variant="ghost" className="h-7 text-xs" onClick={() => setEditingItem(null)}>
+                                        <Button size="sm" variant="ghost" className="h-8 text-xs" onClick={() => setEditingItem(null)}>
                                           {isAr ? "إلغاء" : "Cancel"}
                                         </Button>
                                       </div>
@@ -804,6 +876,7 @@ export default function SocialLinksEditor() {
                                   ) : (
                                     <div className="flex-1 min-w-0">
                                       <p className="text-sm font-medium truncate">{item.title}</p>
+                                      {item.title_ar && <p className="text-[10px] text-muted-foreground truncate" dir="rtl">{item.title_ar}</p>}
                                       <p className="text-[11px] text-muted-foreground truncate">{item.url}</p>
                                     </div>
                                   )}
@@ -890,10 +963,89 @@ export default function SocialLinksEditor() {
                             {FONT_SIZES.map(s => (
                               <button
                                 key={s.id}
-                                onClick={() => setExtra(prev => { setHasUnsavedChanges(true); return { ...prev, font_size: s.id }; })}
+                                onClick={() => updateExtra({ font_size: s.id })}
                                 className={`text-xs py-2 px-2 rounded-lg border-2 transition-all duration-200 ${extra.font_size === s.id ? "border-primary bg-primary/5 font-semibold shadow-sm" : "border-transparent bg-muted/30 hover:bg-muted/50"}`}
                               >
                                 {isAr ? s.labelAr : s.label}
+                              </button>
+                            ))}
+                          </div>
+                        </div>
+                      </CardContent>
+                    </Card>
+
+                    {/* Layout Controls */}
+                    <Card className="overflow-hidden">
+                      <CardHeader className="pb-3 bg-gradient-to-r from-muted/40 to-transparent">
+                        <CardTitle className="text-sm flex items-center gap-2">
+                          <div className="h-7 w-7 rounded-lg bg-primary/10 flex items-center justify-center">
+                            <LayoutList className="h-3.5 w-3.5 text-primary" />
+                          </div>
+                          {isAr ? "التخطيط والمحاذاة" : "Layout & Alignment"}
+                        </CardTitle>
+                      </CardHeader>
+                      <CardContent className="space-y-4 pt-3">
+                        {/* Text Alignment */}
+                        <div>
+                          <Label className="text-[11px] mb-2 block font-medium">{isAr ? "محاذاة النص" : "Text Alignment"}</Label>
+                          <div className="grid grid-cols-3 gap-1.5">
+                            {([
+                              { id: "start" as const, label: isAr ? "بداية" : "Start", icon: AlignLeft },
+                              { id: "center" as const, label: isAr ? "وسط" : "Center", icon: AlignCenter },
+                              { id: "end" as const, label: isAr ? "نهاية" : "End", icon: AlignRight },
+                            ]).map(a => (
+                              <button
+                                key={a.id}
+                                onClick={() => updateExtra({ text_align: a.id })}
+                                className={`flex items-center justify-center gap-1.5 text-xs py-2.5 px-2 rounded-lg border-2 transition-all duration-200 ${extra.text_align === a.id ? "border-primary bg-primary/5 font-semibold shadow-sm" : "border-transparent bg-muted/30 hover:bg-muted/50"}`}
+                              >
+                                <a.icon className="h-3.5 w-3.5" />
+                                {a.label}
+                              </button>
+                            ))}
+                          </div>
+                        </div>
+
+                        <Separator />
+
+                        {/* Text Direction */}
+                        <div>
+                          <Label className="text-[11px] mb-2 block font-medium">{isAr ? "اتجاه النص" : "Text Direction"}</Label>
+                          <div className="grid grid-cols-3 gap-1.5">
+                            {([
+                              { id: "auto" as const, label: isAr ? "تلقائي" : "Auto", icon: ArrowLeftRight },
+                              { id: "ltr" as const, label: "LTR", icon: AlignLeft },
+                              { id: "rtl" as const, label: "RTL", icon: AlignRight },
+                            ]).map(d => (
+                              <button
+                                key={d.id}
+                                onClick={() => updateExtra({ text_direction: d.id })}
+                                className={`flex items-center justify-center gap-1.5 text-xs py-2.5 px-2 rounded-lg border-2 transition-all duration-200 ${extra.text_direction === d.id ? "border-primary bg-primary/5 font-semibold shadow-sm" : "border-transparent bg-muted/30 hover:bg-muted/50"}`}
+                              >
+                                <d.icon className="h-3.5 w-3.5" />
+                                {d.label}
+                              </button>
+                            ))}
+                          </div>
+                        </div>
+
+                        <Separator />
+
+                        {/* Link Layout */}
+                        <div>
+                          <Label className="text-[11px] mb-2 block font-medium">{isAr ? "تخطيط الروابط" : "Link Layout"}</Label>
+                          <div className="grid grid-cols-2 gap-1.5">
+                            {([
+                              { id: "list" as const, label: isAr ? "قائمة" : "List", icon: LayoutList },
+                              { id: "grid" as const, label: isAr ? "شبكة" : "Grid", icon: LayoutGrid },
+                            ]).map(l => (
+                              <button
+                                key={l.id}
+                                onClick={() => updateExtra({ link_layout: l.id })}
+                                className={`flex items-center justify-center gap-1.5 text-xs py-2.5 px-2 rounded-lg border-2 transition-all duration-200 ${extra.link_layout === l.id ? "border-primary bg-primary/5 font-semibold shadow-sm" : "border-transparent bg-muted/30 hover:bg-muted/50"}`}
+                              >
+                                <l.icon className="h-3.5 w-3.5" />
+                                {l.label}
                               </button>
                             ))}
                           </div>
@@ -997,20 +1149,17 @@ export default function SocialLinksEditor() {
                       </CardHeader>
                       <CardContent className="pt-3">
                         <div className="space-y-1.5">
-                          {VISIBILITY_SECTIONS.map(section => {
-                            const SIcon = section.icon;
-                            return (
-                              <div key={section.key} className={`flex items-center justify-between rounded-xl border p-3 transition-all duration-200 ${extra[section.key] ? "border-primary/15 bg-primary/[0.02]" : "border-border/30 bg-muted/10"}`}>
-                                <div className="flex items-center gap-2.5">
-                                  <div className={`flex h-7 w-7 items-center justify-center rounded-lg transition-colors ${extra[section.key] ? "bg-primary/10" : "bg-muted"}`}>
-                                    {extra[section.key] ? <Eye className="h-3.5 w-3.5 text-primary" /> : <EyeOff className="h-3.5 w-3.5 text-muted-foreground" />}
-                                  </div>
-                                  <Label className="text-xs cursor-pointer font-medium">{section.label}</Label>
+                          {VISIBILITY_SECTIONS.map(section => (
+                            <div key={section.key} className={`flex items-center justify-between rounded-xl border p-3 transition-all duration-200 ${extra[section.key] ? "border-primary/15 bg-primary/[0.02]" : "border-border/30 bg-muted/10"}`}>
+                              <div className="flex items-center gap-2.5">
+                                <div className={`flex h-7 w-7 items-center justify-center rounded-lg transition-colors ${extra[section.key] ? "bg-primary/10" : "bg-muted"}`}>
+                                  {extra[section.key] ? <Eye className="h-3.5 w-3.5 text-primary" /> : <EyeOff className="h-3.5 w-3.5 text-muted-foreground" />}
                                 </div>
-                                <Switch checked={extra[section.key]} onCheckedChange={v => { setExtra(prev => ({ ...prev, [section.key]: v })); setHasUnsavedChanges(true); }} />
+                                <Label className="text-xs cursor-pointer font-medium">{section.label}</Label>
                               </div>
-                            );
-                          })}
+                              <Switch checked={extra[section.key] as boolean} onCheckedChange={v => updateExtra({ [section.key]: v } as any)} />
+                            </div>
+                          ))}
                         </div>
                       </CardContent>
                     </Card>
@@ -1033,20 +1182,21 @@ export default function SocialLinksEditor() {
                   </CardHeader>
                   <CardContent className="p-0">
                     <div className={`p-4 min-h-[500px] ${THEME_MAP[form.theme]?.bg || THEME_MAP.default.bg}`}
+                      dir={extra.text_direction === "auto" ? undefined : extra.text_direction}
                       style={{
                         ...(form.background_image_url ? { backgroundImage: `url(${form.background_image_url})`, backgroundSize: "cover", backgroundPosition: "center" } : undefined),
                         fontFamily: FONT_FAMILIES.find(f => f.id === form.font_family)?.css || "inherit",
                       }}
                     >
                       {form.background_image_url && <div className="absolute inset-0 bg-black/30 rounded-b-lg" />}
-                      <div className="relative z-10 flex flex-col items-center gap-3">
+                      <div className={`relative z-10 flex flex-col items-center gap-3`}>
                         {form.show_avatar && (
                           <Avatar className="h-16 w-16 ring-2 ring-white/20 shadow-xl">
                             <AvatarImage src={profile?.avatar_url || ""} />
                             <AvatarFallback className="text-lg bg-primary/20">{displayName.charAt(0)}</AvatarFallback>
                           </Avatar>
                         )}
-                        <div className="text-center">
+                        <div className={alignClass}>
                           <p className={`font-bold ${THEME_MAP[form.theme]?.text || ""} ${extra.font_size === "sm" ? "text-xs" : extra.font_size === "lg" ? "text-base" : extra.font_size === "xl" ? "text-lg" : "text-sm"}`}>
                             {form.page_title || displayName || "Your Name"}
                           </p>
@@ -1057,7 +1207,7 @@ export default function SocialLinksEditor() {
                         </div>
 
                         {form.show_social_icons && activeSocials.length > 0 && (
-                          <div className="flex gap-2 mt-1 flex-wrap justify-center">
+                          <div className={`flex gap-2 mt-1 flex-wrap ${justifyClass}`}>
                             {activeSocials.map(({ key, icon: Icon }) => (
                               <div key={key} className={`h-8 w-8 rounded-full ${THEME_MAP[form.theme]?.card || ""} border flex items-center justify-center`}>
                                 <Icon className={`h-3.5 w-3.5 ${THEME_MAP[form.theme]?.text || ""}`} />
@@ -1076,20 +1226,20 @@ export default function SocialLinksEditor() {
                           </div>
                         )}
 
-                        <div className="w-full space-y-2 mt-3">
+                        <div className={`w-full ${extra.link_layout === "grid" ? "grid grid-cols-2 gap-2" : "space-y-2"} mt-3`}>
                           {items.filter(i => i.is_active !== false).map(item => {
                             const btnRadius = form.button_style === "rounded" ? "rounded-xl" : form.button_style === "pill" ? "rounded-full" : form.button_style === "square" ? "rounded-lg" : form.button_style === "sharp" ? "rounded-none" : "rounded-xl border-2";
                             return (
-                              <div key={item.id} className={`flex items-center gap-2 px-3 py-2.5 border ${btnRadius} ${THEME_MAP[form.theme]?.card || ""}`}
+                              <div key={item.id} className={`flex items-center gap-2 px-3 py-2.5 border ${btnRadius} ${THEME_MAP[form.theme]?.card || ""} ${extra.link_layout === "grid" ? "flex-col text-center py-4" : ""}`}
                                 style={form.button_color !== "#000000" ? { backgroundColor: form.button_color, color: form.text_color } : undefined}
                               >
                                 {item.icon && <span className="text-sm">{item.icon}</span>}
-                                <span className={`flex-1 text-[11px] font-medium text-center ${THEME_MAP[form.theme]?.text || ""}`}>{item.title}</span>
+                                <span className={`${extra.link_layout === "grid" ? "" : "flex-1"} text-[11px] font-medium ${alignClass} ${THEME_MAP[form.theme]?.text || ""}`}>{item.title}</span>
                               </div>
                             );
                           })}
                           {items.length === 0 && (
-                            <div className={`text-center py-6 ${THEME_MAP[form.theme]?.text || ""} opacity-40`}>
+                            <div className={`text-center py-6 ${THEME_MAP[form.theme]?.text || ""} opacity-40 ${extra.link_layout === "grid" ? "col-span-2" : ""}`}>
                               <Globe className="h-8 w-8 mx-auto mb-2" />
                               <p className="text-[10px]">{isAr ? "أضف روابط" : "Add links"}</p>
                             </div>
