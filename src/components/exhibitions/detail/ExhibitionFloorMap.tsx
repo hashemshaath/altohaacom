@@ -5,7 +5,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
-import { Map, ZoomIn, ZoomOut, RotateCcw, Building, Star, Hash, MapPin, X } from "lucide-react";
+import { Map, ZoomIn, ZoomOut, RotateCcw, Building, Star, Hash, MapPin, X, Mail, Phone, ExternalLink } from "lucide-react";
 
 interface Booth {
   id: string;
@@ -25,6 +25,10 @@ interface Booth {
   logo_url?: string | null;
   website_url?: string | null;
   contact_name?: string | null;
+  contact_email?: string | null;
+  contact_phone?: string | null;
+  status?: string | null;
+  color_hex?: string | null;
 }
 
 interface Props {
@@ -77,7 +81,7 @@ export function ExhibitionFloorMap({ exhibitionId, isAr }: Props) {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("exhibition_booths")
-        .select("id, booth_number, name, name_ar, description, description_ar, category, hall, hall_ar, floor_level, size, location_x, location_y, is_featured, logo_url, website_url, contact_name")
+        .select("id, booth_number, name, name_ar, description, description_ar, category, hall, hall_ar, floor_level, size, location_x, location_y, is_featured, logo_url, website_url, contact_name, contact_email, contact_phone, status, color_hex")
         .eq("exhibition_id", exhibitionId)
         .order("booth_number");
       if (error) throw error;
@@ -205,6 +209,8 @@ export function ExhibitionFloorMap({ exhibitionId, isAr }: Props) {
               const colors = CATEGORY_COLORS[booth.category || "general"] || CATEGORY_COLORS.general;
               const isSelected = selectedBooth?.id === booth.id;
               const isHovered = hoveredId === booth.id;
+              const status = booth.status || "available";
+              const statusOpacity = status === "occupied" ? 0.6 : status === "reserved" ? 0.8 : 1;
 
               return (
                 <g
@@ -213,6 +219,7 @@ export function ExhibitionFloorMap({ exhibitionId, isAr }: Props) {
                   onClick={() => setSelectedBooth(isSelected ? null : booth)}
                   onMouseEnter={() => setHoveredId(booth.id)}
                   onMouseLeave={() => setHoveredId(null)}
+                  opacity={statusOpacity}
                 >
                   {/* Shadow */}
                   {(isSelected || isHovered) && (
@@ -236,8 +243,8 @@ export function ExhibitionFloorMap({ exhibitionId, isAr }: Props) {
                     width={dim.w}
                     height={dim.h}
                     rx={4}
-                    fill={isSelected ? "hsl(var(--primary) / 0.15)" : colors.fill}
-                    stroke={isSelected ? "hsl(var(--primary))" : colors.stroke}
+                    fill={booth.color_hex ? `${booth.color_hex}20` : isSelected ? "hsl(var(--primary) / 0.15)" : colors.fill}
+                    stroke={booth.color_hex || (isSelected ? "hsl(var(--primary))" : colors.stroke)}
                     strokeWidth={booth.is_featured ? 1.5 : 0.8}
                   />
 
@@ -313,6 +320,25 @@ export function ExhibitionFloorMap({ exhibitionId, isAr }: Props) {
                   <p className="text-[11px] text-muted-foreground line-clamp-2 mt-0.5">
                     {isAr && selectedBooth.description_ar ? selectedBooth.description_ar : selectedBooth.description}
                   </p>
+                )}
+                {(selectedBooth.contact_email || selectedBooth.contact_phone || selectedBooth.website_url) && (
+                  <div className="flex flex-wrap gap-2 mt-1.5">
+                    {selectedBooth.contact_email && (
+                      <a href={`mailto:${selectedBooth.contact_email}`} className="text-[9px] text-primary flex items-center gap-0.5 hover:underline">
+                        <Mail className="h-2.5 w-2.5" /> {isAr ? "بريد" : "Email"}
+                      </a>
+                    )}
+                    {selectedBooth.contact_phone && (
+                      <a href={`tel:${selectedBooth.contact_phone}`} className="text-[9px] text-primary flex items-center gap-0.5 hover:underline">
+                        <Phone className="h-2.5 w-2.5" /> {isAr ? "اتصال" : "Call"}
+                      </a>
+                    )}
+                    {selectedBooth.website_url && (
+                      <a href={selectedBooth.website_url} target="_blank" rel="noopener noreferrer" className="text-[9px] text-primary flex items-center gap-0.5 hover:underline">
+                        <ExternalLink className="h-2.5 w-2.5" /> {isAr ? "موقع" : "Website"}
+                      </a>
+                    )}
+                  </div>
                 )}
               </div>
 
