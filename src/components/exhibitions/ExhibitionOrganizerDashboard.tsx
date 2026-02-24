@@ -4,7 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Users, Ticket, Star, TrendingUp, CheckCircle2, Clock, BarChart3, LayoutGrid, ClipboardList, Award, CalendarClock, Tags, Download, HandHeart } from "lucide-react";
+import { Users, Ticket, Star, TrendingUp, CheckCircle2, Clock, BarChart3, LayoutGrid, ClipboardList, Award, CalendarClock, Tags, Download, HandHeart, ChefHat, Bell } from "lucide-react";
 import { format } from "date-fns";
 import { ExhibitionTicketCheckin } from "./detail/ExhibitionTicketCheckin";
 import { ExhibitionOrganizerAnalytics } from "./detail/ExhibitionOrganizerAnalytics";
@@ -15,6 +15,8 @@ import { ExhibitionScheduleManager } from "./detail/ExhibitionScheduleManager";
 import { ExhibitionTicketTypeManager } from "./detail/ExhibitionTicketTypeManager";
 import { ExhibitionDataExport } from "./detail/ExhibitionDataExport";
 import { ExhibitionVolunteerManager } from "./detail/ExhibitionVolunteerManager";
+import { ExhibitionCookingSessionManager } from "./detail/ExhibitionCookingSessionManager";
+import { ExhibitionNotificationPreferences } from "./detail/ExhibitionNotificationPreferences";
 
 interface Props {
   exhibitionId: string;
@@ -134,6 +136,14 @@ export function ExhibitionOrganizerDashboard({ exhibitionId, exhibitionTitle, is
               <HandHeart className="h-3.5 w-3.5" />
               <span className="hidden sm:inline">{t("Volunteers", "المتطوعين")}</span>
             </TabsTrigger>
+            <TabsTrigger value="cooking-mgmt" className="gap-1.5 text-xs">
+              <ChefHat className="h-3.5 w-3.5" />
+              <span className="hidden sm:inline">{t("Cooking", "الطهي")}</span>
+            </TabsTrigger>
+            <TabsTrigger value="notifications" className="gap-1.5 text-xs">
+              <Bell className="h-3.5 w-3.5" />
+              <span className="hidden sm:inline">{t("Alerts", "التنبيهات")}</span>
+            </TabsTrigger>
             <TabsTrigger value="export" className="gap-1.5 text-xs">
               <Download className="h-3.5 w-3.5" />
               <span className="hidden sm:inline">{t("Export", "تصدير")}</span>
@@ -228,6 +238,14 @@ export function ExhibitionOrganizerDashboard({ exhibitionId, exhibitionTitle, is
 
         <TabsContent value="volunteers">
           <ExhibitionVolunteerManager exhibitionId={exhibitionId} isAr={isAr} />
+        </TabsContent>
+
+        <TabsContent value="cooking-mgmt">
+          <ExhibitionCookingSessionManager exhibitionId={exhibitionId} isAr={isAr} />
+        </TabsContent>
+
+        <TabsContent value="notifications">
+          <ExhibitionNotificationPreferences exhibitionId={exhibitionId} isAr={isAr} />
         </TabsContent>
       </Tabs>
     </div>
