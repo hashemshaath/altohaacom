@@ -17,7 +17,7 @@ import {
   Calendar, MapPin, Globe, ExternalLink, Bell, BellOff,
   Clock, Users, Tag, Building, Ticket, Trophy, Landmark, Timer,
   ChevronDown, Star, Target, Award, Pencil,
-  ImageIcon,
+  ImageIcon, LayoutGrid, MessageSquare,
 } from "lucide-react";
 import { SEOHead } from "@/components/SEOHead";
 import { toEnglishDigits } from "@/lib/formatNumber";
@@ -39,6 +39,10 @@ import { ExhibitionRegistrationStatus } from "@/components/exhibitions/detail/Ex
 import { ExhibitionSocialLinks } from "@/components/exhibitions/detail/ExhibitionSocialLinks";
 import { ExhibitionDocuments } from "@/components/exhibitions/detail/ExhibitionDocuments";
 import { ExhibitionContactCard } from "@/components/exhibitions/detail/ExhibitionContactCard";
+import { ExhibitionTicketBooking } from "@/components/exhibitions/detail/ExhibitionTicketBooking";
+import { ExhibitionAgendaTab } from "@/components/exhibitions/detail/ExhibitionAgendaTab";
+import { ExhibitionBoothsTab } from "@/components/exhibitions/detail/ExhibitionBoothsTab";
+import { ExhibitionReviewsTab } from "@/components/exhibitions/detail/ExhibitionReviewsTab";
 
 /* ---------- types ---------- */
 interface ScheduleDay {
@@ -289,6 +293,35 @@ export default function ExhibitionDetail() {
   const hasGallery = galleryUrls.length > 0;
   const hasSponsors = sortedSponsors.length > 0;
 
+  // New feature queries
+  const { data: agendaCount = 0 } = useQuery({
+    queryKey: ["exhibition-agenda-count", exhibition.id],
+    queryFn: async () => {
+      const { count } = await supabase.from("exhibition_agenda_items").select("id", { count: "exact", head: true }).eq("exhibition_id", exhibition.id);
+      return count || 0;
+    },
+  });
+
+  const { data: boothCount = 0 } = useQuery({
+    queryKey: ["exhibition-booth-count", exhibition.id],
+    queryFn: async () => {
+      const { count } = await supabase.from("exhibition_booths").select("id", { count: "exact", head: true }).eq("exhibition_id", exhibition.id);
+      return count || 0;
+    },
+  });
+
+  const { data: reviewCount = 0 } = useQuery({
+    queryKey: ["exhibition-review-count", exhibition.id],
+    queryFn: async () => {
+      const { count } = await supabase.from("exhibition_reviews").select("id", { count: "exact", head: true }).eq("exhibition_id", exhibition.id);
+      return count || 0;
+    },
+  });
+
+  const hasAgenda = agendaCount > 0;
+  const hasBooths = boothCount > 0;
+  const hasReviews = reviewCount > 0 || hasEnded;
+
   return (
     <div className="flex min-h-screen flex-col overflow-x-hidden bg-background">
       <SEOHead
@@ -335,6 +368,7 @@ export default function ExhibitionDetail() {
           )}
           <ExhibitionDayIndicator startDate={exhibition.start_date} endDate={exhibition.end_date} isAr={isAr} />
           <ExhibitionRegistrationStatus registrationDeadline={exhibition.registration_deadline} registrationUrl={exhibition.registration_url} maxAttendees={exhibition.max_attendees} isFree={exhibition.is_free} ticketPrice={exhibition.ticket_price} ticketPriceAr={exhibition.ticket_price_ar} startDate={exhibition.start_date} endDate={exhibition.end_date} isAr={isAr} />
+          <ExhibitionTicketBooking exhibitionId={exhibition.id} exhibitionTitle={title} isFree={exhibition.is_free} ticketPrice={exhibition.ticket_price} hasEnded={hasEnded} isAr={isAr} />
           {!exhibition.is_virtual && <ExhibitionMapEmbed mapUrl={exhibition.map_url} venue={venue} city={exhibition.city} country={exhibition.country} address={(exhibition as any).address || null} isAr={isAr} />}
           <ExhibitionContactCard organizerName={organizer} organizerLogo={organizerLogoUrl} email={exhibition.organizer_email} phone={exhibition.organizer_phone} website={exhibition.organizer_website} isAr={isAr} />
           <ExhibitionSocialLinks socialLinks={exhibition.social_links as any} websiteUrl={exhibition.website_url} isAr={isAr} />
@@ -377,9 +411,27 @@ export default function ExhibitionDetail() {
                       <ImageIcon className="h-3 w-3 sm:h-3.5 sm:w-3.5" />{isAr ? "المعرض" : "Gallery"}
                     </TabsTrigger>
                   )}
+                  {hasAgenda && (
+                    <TabsTrigger value="agenda" className="gap-1.5 rounded-xl px-3 py-2 text-[10px] font-bold uppercase tracking-wider transition-all data-[state=active]:bg-primary data-[state=active]:text-primary-foreground sm:gap-2 sm:px-5 sm:py-2.5 sm:text-xs whitespace-nowrap">
+                      <Clock className="h-3 w-3 sm:h-3.5 sm:w-3.5" />{isAr ? "الأجندة" : "Agenda"}
+                      <Badge variant="secondary" className="ms-1 h-5 rounded-full bg-background/20 text-current px-1.5 text-[10px]">{agendaCount}</Badge>
+                    </TabsTrigger>
+                  )}
+                  {hasBooths && (
+                    <TabsTrigger value="booths" className="gap-1.5 rounded-xl px-3 py-2 text-[10px] font-bold uppercase tracking-wider transition-all data-[state=active]:bg-primary data-[state=active]:text-primary-foreground sm:gap-2 sm:px-5 sm:py-2.5 sm:text-xs whitespace-nowrap">
+                      <LayoutGrid className="h-3 w-3 sm:h-3.5 sm:w-3.5" />{isAr ? "الأجنحة" : "Booths"}
+                      <Badge variant="secondary" className="ms-1 h-5 rounded-full bg-background/20 text-current px-1.5 text-[10px]">{boothCount}</Badge>
+                    </TabsTrigger>
+                  )}
                   {hasSponsors && (
                     <TabsTrigger value="sponsors" className="gap-1.5 rounded-xl px-3 py-2 text-[10px] font-bold uppercase tracking-wider transition-all data-[state=active]:bg-primary data-[state=active]:text-primary-foreground sm:gap-2 sm:px-5 sm:py-2.5 sm:text-xs whitespace-nowrap">
                       <Star className="h-3 w-3 sm:h-3.5 sm:w-3.5" />{isAr ? "الرعاة" : "Sponsors"}
+                    </TabsTrigger>
+                  )}
+                  {hasReviews && (
+                    <TabsTrigger value="reviews" className="gap-1.5 rounded-xl px-3 py-2 text-[10px] font-bold uppercase tracking-wider transition-all data-[state=active]:bg-primary data-[state=active]:text-primary-foreground sm:gap-2 sm:px-5 sm:py-2.5 sm:text-xs whitespace-nowrap">
+                      <MessageSquare className="h-3 w-3 sm:h-3.5 sm:w-3.5" />{isAr ? "التقييمات" : "Reviews"}
+                      {reviewCount > 0 && <Badge variant="secondary" className="ms-1 h-5 rounded-full bg-background/20 text-current px-1.5 text-[10px]">{reviewCount}</Badge>}
                     </TabsTrigger>
                   )}
                 </TabsList>
@@ -660,6 +712,27 @@ export default function ExhibitionDetail() {
                   })}
                 </TabsContent>
               )}
+
+              {/* === AGENDA TAB === */}
+              {hasAgenda && (
+                <TabsContent value="agenda" className="mt-6">
+                  <ExhibitionAgendaTab exhibitionId={exhibition.id} startDate={exhibition.start_date} endDate={exhibition.end_date} isAr={isAr} />
+                </TabsContent>
+              )}
+
+              {/* === BOOTHS TAB === */}
+              {hasBooths && (
+                <TabsContent value="booths" className="mt-6">
+                  <ExhibitionBoothsTab exhibitionId={exhibition.id} isAr={isAr} />
+                </TabsContent>
+              )}
+
+              {/* === REVIEWS TAB === */}
+              {hasReviews && (
+                <TabsContent value="reviews" className="mt-6">
+                  <ExhibitionReviewsTab exhibitionId={exhibition.id} hasEnded={hasEnded} isAr={isAr} />
+                </TabsContent>
+              )}
             </Tabs>
           </div>
 
@@ -679,6 +752,7 @@ export default function ExhibitionDetail() {
             )}
 
             <ExhibitionRegistrationStatus registrationDeadline={exhibition.registration_deadline} registrationUrl={exhibition.registration_url} maxAttendees={exhibition.max_attendees} isFree={exhibition.is_free} ticketPrice={exhibition.ticket_price} ticketPriceAr={exhibition.ticket_price_ar} startDate={exhibition.start_date} endDate={exhibition.end_date} isAr={isAr} />
+            <ExhibitionTicketBooking exhibitionId={exhibition.id} exhibitionTitle={title} isFree={exhibition.is_free} ticketPrice={exhibition.ticket_price} hasEnded={hasEnded} isAr={isAr} />
             <ExhibitionDayIndicator startDate={exhibition.start_date} endDate={exhibition.end_date} isAr={isAr} />
 
             {/* Actions */}
