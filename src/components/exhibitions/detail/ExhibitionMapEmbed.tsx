@@ -20,23 +20,37 @@ function extractEmbedUrl(mapUrl: string): string | null {
     return `https://maps.google.com/maps?q=${lat},${lng}&z=15&output=embed`;
   }
   // Try place ID format
-  const placeMatch = mapUrl.match(/place\/([^/]+)/);
+  const placeMatch = mapUrl.match(/place\/([^/@]+)/);
   if (placeMatch) {
     const placeName = decodeURIComponent(placeMatch[1]).replace(/\+/g, " ");
     return `https://maps.google.com/maps?q=${encodeURIComponent(placeName)}&z=15&output=embed`;
   }
+  // Try query parameter
+  const queryMatch = mapUrl.match(/[?&]q=([^&]+)/);
+  if (queryMatch) {
+    return `https://maps.google.com/maps?q=${queryMatch[1]}&z=15&output=embed`;
+  }
+  // Fallback: use venue/city/country as search query
   return null;
+}
+
+function buildFallbackEmbedUrl(venue?: string | null, city?: string | null, country?: string | null): string | null {
+  const query = [venue, city, country].filter(Boolean).join(", ");
+  if (!query) return null;
+  return `https://maps.google.com/maps?q=${encodeURIComponent(query)}&z=14&output=embed`;
 }
 
 export function ExhibitionMapEmbed({ mapUrl, venue, city, country, address, isAr }: Props) {
   const embedUrl = mapUrl ? extractEmbedUrl(mapUrl) : null;
+  const fallbackEmbed = !embedUrl ? buildFallbackEmbedUrl(venue, city, country) : null;
+  const finalEmbedUrl = embedUrl || fallbackEmbed;
   const locationLabel = [venue, city, country].filter(Boolean).join(", ");
 
   if (!mapUrl && !venue) return null;
 
   return (
-    <Card className="overflow-hidden">
-      <div className="border-b bg-muted/30 px-4 py-3">
+    <Card className="overflow-hidden border-primary/10">
+      <div className="border-b bg-gradient-to-r from-chart-1/10 via-transparent to-transparent px-4 py-3">
         <h3 className="flex items-center gap-2 text-sm font-semibold">
           <div className="flex h-6 w-6 items-center justify-center rounded-md bg-chart-1/10">
             <MapPin className="h-3.5 w-3.5 text-chart-1" />
@@ -46,10 +60,10 @@ export function ExhibitionMapEmbed({ mapUrl, venue, city, country, address, isAr
       </div>
       <CardContent className="p-0">
         {/* Map embed */}
-        {embedUrl ? (
-          <div className="relative aspect-[16/9] w-full overflow-hidden bg-muted rounded-b-none">
+        {finalEmbedUrl ? (
+          <div className="relative aspect-[16/9] w-full overflow-hidden bg-muted">
             <iframe
-              src={embedUrl}
+              src={finalEmbedUrl}
               className="h-full w-full border-0"
               allowFullScreen
               loading="lazy"
