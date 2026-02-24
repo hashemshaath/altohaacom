@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useSocialLinkPage, useSocialLinkItems, useUpsertSocialLinkPage, useManageSocialLinkItems } from "@/hooks/useSocialLinkPage";
@@ -25,9 +25,28 @@ import {
   Palette, Eye, Link as LinkIcon, Plus, Trash2, ExternalLink,
   Globe, ArrowUp, ArrowDown, Save, Copy, Check, QrCode,
   BarChart3, MousePointerClick, Pencil, Instagram, Twitter,
-  Facebook, Linkedin, Youtube, Smartphone, Type, EyeOff, Settings2
+  Facebook, Linkedin, Youtube, Smartphone, Type, EyeOff, Settings2,
+  Phone, MessageCircle, Music, ShoppingBag, CalendarDays, Video, Briefcase
 } from "lucide-react";
 import { buildSocialLinksPath, buildSocialLinksUrl } from "@/lib/publicAppUrl";
+
+// ── Constants ──
+
+const SOCIAL_PLATFORMS = [
+  { key: "instagram", label: "Instagram", labelAr: "انستقرام", icon: Instagram, prefix: "https://instagram.com/", placeholder: "username" },
+  { key: "twitter", label: "X / Twitter", labelAr: "إكس / تويتر", icon: Twitter, prefix: "https://x.com/", placeholder: "username" },
+  { key: "tiktok", label: "TikTok", labelAr: "تيك توك", icon: Globe, prefix: "https://tiktok.com/@", placeholder: "username" },
+  { key: "youtube", label: "YouTube", labelAr: "يوتيوب", icon: Youtube, prefix: "https://youtube.com/@", placeholder: "channel" },
+  { key: "snapchat", label: "Snapchat", labelAr: "سناب شات", icon: Globe, prefix: "https://snapchat.com/add/", placeholder: "username" },
+  { key: "facebook", label: "Facebook", labelAr: "فيسبوك", icon: Facebook, prefix: "https://facebook.com/", placeholder: "username" },
+  { key: "linkedin", label: "LinkedIn", labelAr: "لينكدإن", icon: Linkedin, prefix: "https://linkedin.com/in/", placeholder: "username" },
+  { key: "website", label: "Website", labelAr: "الموقع", icon: Globe, prefix: "", placeholder: "https://example.com" },
+];
+
+const CONTACT_FIELDS = [
+  { key: "whatsapp", label: "WhatsApp", labelAr: "واتساب", icon: MessageCircle, placeholder: "+966XXXXXXXXX" },
+  { key: "phone", label: "Phone", labelAr: "الهاتف", icon: Phone, placeholder: "+966XXXXXXXXX" },
+];
 
 const THEMES = [
   { id: "default", label: "Default", labelAr: "افتراضي", preview: "bg-gradient-to-br from-background to-muted/30" },
@@ -107,12 +126,13 @@ const DEFAULT_EXTRA: ExtraSettings = {
 function parseExtra(customCss: string | null): ExtraSettings {
   if (!customCss) return { ...DEFAULT_EXTRA };
   try {
-    const parsed = JSON.parse(customCss);
-    return { ...DEFAULT_EXTRA, ...parsed };
+    return { ...DEFAULT_EXTRA, ...JSON.parse(customCss) };
   } catch {
     return { ...DEFAULT_EXTRA };
   }
 }
+
+// ── Component ──
 
 export default function SocialLinksEditor() {
   const { user } = useAuth();
@@ -123,20 +143,49 @@ export default function SocialLinksEditor() {
   const [editingItem, setEditingItem] = useState<string | null>(null);
   const [editForm, setEditForm] = useState({ title: "", title_ar: "", url: "", icon: "" });
   const [uploading, setUploading] = useState(false);
+  const [savingSocials, setSavingSocials] = useState(false);
 
   const { data: page, isLoading: pageLoading } = useSocialLinkPage(user?.id);
   const { data: items = [], isLoading: itemsLoading } = useSocialLinkItems(page?.id);
   const upsertPage = useUpsertSocialLinkPage();
   const { addItem, updateItem, deleteItem, reorderItems } = useManageSocialLinkItems();
 
-  const { data: profile } = useQuery({
+  // Fetch full profile including social accounts, bio, phone, whatsapp
+  const { data: profile, refetch: refetchProfile } = useQuery({
     queryKey: ["my-profile-for-links", user?.id],
     queryFn: async () => {
-      const { data } = await supabase.from("profiles").select("username, avatar_url, full_name, display_name, instagram, twitter, facebook, linkedin, youtube, website").eq("user_id", user!.id).single();
+      const { data } = await supabase
+        .from("profiles")
+        .select("username, avatar_url, full_name, full_name_ar, display_name, display_name_ar, bio, bio_ar, instagram, twitter, facebook, linkedin, youtube, tiktok, snapchat, website, phone, whatsapp, job_title, job_title_ar")
+        .eq("user_id", user!.id)
+        .single();
       return data;
     },
     enabled: !!user?.id,
   });
+
+  // Social accounts local state (synced from profile)
+  const [socials, setSocials] = useState<Record<string, string>>({});
+  const [contacts, setContacts] = useState<Record<string, string>>({});
+
+  useEffect(() => {
+    if (profile) {
+      setSocials({
+        instagram: profile.instagram || "",
+        twitter: profile.twitter || "",
+        tiktok: profile.tiktok || "",
+        youtube: profile.youtube || "",
+        snapchat: profile.snapchat || "",
+        facebook: profile.facebook || "",
+        linkedin: profile.linkedin || "",
+        website: profile.website || "",
+      });
+      setContacts({
+        whatsapp: profile.whatsapp || "",
+        phone: profile.phone || "",
+      });
+    }
+  }, [profile]);
 
   const [form, setForm] = useState({
     page_title: "", page_title_ar: "", bio: "", bio_ar: "",
@@ -149,6 +198,7 @@ export default function SocialLinksEditor() {
   const [extra, setExtra] = useState<ExtraSettings>({ ...DEFAULT_EXTRA });
   const [newLink, setNewLink] = useState({ title: "", title_ar: "", url: "", icon: "", link_type: "custom" });
 
+  // Initialize form from page data, auto-fill bio/title from profile if empty
   useEffect(() => {
     if (page) {
       setForm({
@@ -168,15 +218,49 @@ export default function SocialLinksEditor() {
         font_family: page.font_family || "default",
       });
       setExtra(parseExtra(page.custom_css));
+    } else if (profile && !page) {
+      // Auto-fill from profile for first-time setup
+      setForm(f => ({
+        ...f,
+        page_title: profile.display_name || profile.full_name || "",
+        page_title_ar: profile.display_name_ar || profile.full_name_ar || "",
+        bio: profile.bio || "",
+        bio_ar: profile.bio_ar || "",
+      }));
     }
-  }, [page]);
+  }, [page, profile]);
 
   const handleSavePage = () => {
-    const payload = {
-      ...form,
-      custom_css: JSON.stringify(extra),
-    };
-    upsertPage.mutate(payload);
+    upsertPage.mutate({ ...form, custom_css: JSON.stringify(extra) });
+  };
+
+  const handleSaveSocials = async () => {
+    if (!user) return;
+    setSavingSocials(true);
+    try {
+      const { error } = await supabase
+        .from("profiles")
+        .update({
+          instagram: socials.instagram || null,
+          twitter: socials.twitter || null,
+          tiktok: socials.tiktok || null,
+          youtube: socials.youtube || null,
+          snapchat: socials.snapchat || null,
+          facebook: socials.facebook || null,
+          linkedin: socials.linkedin || null,
+          website: socials.website || null,
+          whatsapp: contacts.whatsapp || null,
+          phone: contacts.phone || null,
+        })
+        .eq("user_id", user.id);
+      if (error) throw error;
+      toast({ title: isAr ? "✅ تم حفظ الحسابات" : "✅ Accounts saved" });
+      refetchProfile();
+    } catch (err: any) {
+      toast({ title: "Error", description: err.message, variant: "destructive" });
+    } finally {
+      setSavingSocials(false);
+    }
   };
 
   const handleAddLink = async () => {
@@ -245,14 +329,8 @@ export default function SocialLinksEditor() {
   const fullUrl = profile?.username ? buildSocialLinksUrl(profile.username) : "";
   const displayName = profile?.display_name || profile?.full_name || profile?.username || "";
 
-  const socialLinks = profile ? [
-    { key: "instagram", value: profile.instagram },
-    { key: "twitter", value: profile.twitter },
-    { key: "facebook", value: profile.facebook },
-    { key: "linkedin", value: profile.linkedin },
-    { key: "youtube", value: profile.youtube },
-    { key: "website", value: profile.website },
-  ].filter(s => s.value) : [];
+  const activeSocials = SOCIAL_PLATFORMS.filter(p => socials[p.key]);
+  const activeContacts = CONTACT_FIELDS.filter(c => contacts[c.key]);
 
   const VISIBILITY_SECTIONS = [
     { key: "show_bio" as const, label: isAr ? "النبذة" : "Bio", icon: Type },
@@ -327,7 +405,7 @@ export default function SocialLinksEditor() {
           <Card className="border-border/30">
             <CardContent className="py-3 px-4 flex items-center gap-3">
               <div className="h-9 w-9 rounded-xl bg-chart-1/10 flex items-center justify-center"><Globe className="h-4 w-4 text-chart-1" /></div>
-              <div><p className="text-lg font-bold">{socialLinks.length}</p><p className="text-[10px] text-muted-foreground">{isAr ? "حسابات" : "Socials"}</p></div>
+              <div><p className="text-lg font-bold">{activeSocials.length}</p><p className="text-[10px] text-muted-foreground">{isAr ? "حسابات" : "Socials"}</p></div>
             </CardContent>
           </Card>
           <Card className="border-border/30">
@@ -361,30 +439,161 @@ export default function SocialLinksEditor() {
         <div className="grid lg:grid-cols-[1fr_340px] gap-6">
           {/* Left: Editor */}
           <div className="space-y-4">
-            <Tabs defaultValue="settings" className="w-full">
-              <TabsList className="w-full grid grid-cols-4">
-                <TabsTrigger value="settings">{isAr ? "الإعدادات" : "Settings"}</TabsTrigger>
-                <TabsTrigger value="links">{isAr ? "الروابط" : "Links"}</TabsTrigger>
-                <TabsTrigger value="appearance">{isAr ? "المظهر" : "Appearance"}</TabsTrigger>
-                <TabsTrigger value="visibility">{isAr ? "العرض" : "Display"}</TabsTrigger>
+            <Tabs defaultValue="socials" className="w-full">
+              <TabsList className="w-full grid grid-cols-5">
+                <TabsTrigger value="socials" className="text-xs">{isAr ? "الحسابات" : "Accounts"}</TabsTrigger>
+                <TabsTrigger value="settings" className="text-xs">{isAr ? "الإعدادات" : "Settings"}</TabsTrigger>
+                <TabsTrigger value="links" className="text-xs">{isAr ? "الروابط" : "Links"}</TabsTrigger>
+                <TabsTrigger value="appearance" className="text-xs">{isAr ? "المظهر" : "Appearance"}</TabsTrigger>
+                <TabsTrigger value="visibility" className="text-xs">{isAr ? "العرض" : "Display"}</TabsTrigger>
               </TabsList>
 
-              {/* Settings Tab */}
+              {/* ── Social Accounts Tab ── */}
+              <TabsContent value="socials" className="space-y-4 mt-4">
+                {/* Active Channels Summary */}
+                {activeSocials.length > 0 && (
+                  <div className="flex flex-wrap gap-2">
+                    {activeSocials.map(p => {
+                      const Icon = p.icon;
+                      return (
+                        <Badge key={p.key} variant="secondary" className="gap-1.5 py-1">
+                          <Icon className="h-3 w-3" />
+                          <span className="text-xs">{isAr ? p.labelAr : p.label}</span>
+                          <Check className="h-3 w-3 text-chart-1" />
+                        </Badge>
+                      );
+                    })}
+                    {activeContacts.map(c => {
+                      const Icon = c.icon;
+                      return (
+                        <Badge key={c.key} variant="secondary" className="gap-1.5 py-1">
+                          <Icon className="h-3 w-3" />
+                          <span className="text-xs">{isAr ? c.labelAr : c.label}</span>
+                          <Check className="h-3 w-3 text-chart-1" />
+                        </Badge>
+                      );
+                    })}
+                  </div>
+                )}
+
+                {/* Social Media Accounts */}
+                <Card>
+                  <CardHeader className="pb-3">
+                    <CardTitle className="text-base flex items-center gap-2">
+                      <Globe className="h-4 w-4 text-primary" />
+                      {isAr ? "حسابات التواصل الاجتماعي" : "Social Media Accounts"}
+                    </CardTitle>
+                    <p className="text-xs text-muted-foreground">
+                      {isAr ? "أدخل اسم المستخدم فقط — سيتم إنشاء الرابط تلقائياً" : "Just enter your username — links are generated automatically"}
+                    </p>
+                  </CardHeader>
+                  <CardContent className="space-y-3">
+                    {SOCIAL_PLATFORMS.map(platform => {
+                      const Icon = platform.icon;
+                      const value = socials[platform.key] || "";
+                      const isActive = !!value;
+                      return (
+                        <div key={platform.key} className={`flex items-center gap-3 p-3 rounded-xl border transition-all ${isActive ? "border-primary/30 bg-primary/5" : "border-border/50"}`}>
+                          <div className={`h-9 w-9 rounded-lg flex items-center justify-center shrink-0 ${isActive ? "bg-primary/10" : "bg-muted"}`}>
+                            <Icon className={`h-4 w-4 ${isActive ? "text-primary" : "text-muted-foreground"}`} />
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <Label className="text-xs font-semibold mb-1 block">{isAr ? platform.labelAr : platform.label}</Label>
+                            <div className="flex items-center gap-1">
+                              {platform.prefix && (
+                                <span className="text-[10px] text-muted-foreground shrink-0 hidden sm:inline" dir="ltr">{platform.prefix}</span>
+                              )}
+                              <Input
+                                value={value}
+                                onChange={e => setSocials(s => ({ ...s, [platform.key]: e.target.value }))}
+                                placeholder={platform.placeholder}
+                                className="h-8 text-xs"
+                                dir="ltr"
+                              />
+                            </div>
+                          </div>
+                          {isActive && <Check className="h-4 w-4 text-chart-1 shrink-0" />}
+                        </div>
+                      );
+                    })}
+                  </CardContent>
+                </Card>
+
+                {/* Contact: WhatsApp & Phone */}
+                <Card>
+                  <CardHeader className="pb-3">
+                    <CardTitle className="text-base flex items-center gap-2">
+                      <Phone className="h-4 w-4 text-primary" />
+                      {isAr ? "معلومات الاتصال" : "Contact Info"}
+                    </CardTitle>
+                    <p className="text-xs text-muted-foreground">
+                      {isAr ? "تظهر كأيقونات في صفحة الروابط العامة" : "Displayed as icons on your public links page"}
+                    </p>
+                  </CardHeader>
+                  <CardContent className="space-y-3">
+                    {CONTACT_FIELDS.map(field => {
+                      const Icon = field.icon;
+                      const value = contacts[field.key] || "";
+                      const isActive = !!value;
+                      return (
+                        <div key={field.key} className={`flex items-center gap-3 p-3 rounded-xl border transition-all ${isActive ? "border-primary/30 bg-primary/5" : "border-border/50"}`}>
+                          <div className={`h-9 w-9 rounded-lg flex items-center justify-center shrink-0 ${isActive ? "bg-primary/10" : "bg-muted"}`}>
+                            <Icon className={`h-4 w-4 ${isActive ? "text-primary" : "text-muted-foreground"}`} />
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <Label className="text-xs font-semibold mb-1 block">{isAr ? field.labelAr : field.label}</Label>
+                            <Input
+                              value={value}
+                              onChange={e => setContacts(c => ({ ...c, [field.key]: e.target.value }))}
+                              placeholder={field.placeholder}
+                              className="h-8 text-xs"
+                              dir="ltr"
+                            />
+                          </div>
+                          {isActive && <Check className="h-4 w-4 text-chart-1 shrink-0" />}
+                        </div>
+                      );
+                    })}
+                  </CardContent>
+                </Card>
+
+                <Button onClick={handleSaveSocials} disabled={savingSocials} className="w-full">
+                  <Save className="h-4 w-4 me-1.5" />
+                  {savingSocials ? (isAr ? "جاري الحفظ..." : "Saving...") : (isAr ? "حفظ الحسابات والاتصال" : "Save Accounts & Contact")}
+                </Button>
+              </TabsContent>
+
+              {/* ── Settings Tab ── */}
               <TabsContent value="settings" className="space-y-4 mt-4">
                 <Card>
                   <CardHeader className="pb-3">
                     <CardTitle className="text-base flex items-center gap-2">
                       <Globe className="h-4 w-4 text-primary" />{isAr ? "المعلومات الأساسية" : "Basic Info"}
                     </CardTitle>
+                    <p className="text-xs text-muted-foreground">
+                      {isAr ? "يتم تعبئة الاسم والنبذة تلقائياً من بروفايلك" : "Name & bio are auto-filled from your profile"}
+                    </p>
                   </CardHeader>
                   <CardContent className="space-y-3">
                     <div className="grid sm:grid-cols-2 gap-3">
-                      <Input placeholder={isAr ? "عنوان الصفحة (EN)" : "Page Title (EN)"} value={form.page_title} onChange={e => setForm(f => ({ ...f, page_title: e.target.value }))} dir="ltr" />
-                      <Input placeholder={isAr ? "عنوان الصفحة (AR)" : "Page Title (AR)"} value={form.page_title_ar} onChange={e => setForm(f => ({ ...f, page_title_ar: e.target.value }))} dir="rtl" />
+                      <div>
+                        <Label className="text-xs mb-1 block">{isAr ? "عنوان الصفحة (EN)" : "Page Title (EN)"}</Label>
+                        <Input value={form.page_title} onChange={e => setForm(f => ({ ...f, page_title: e.target.value }))} dir="ltr" placeholder={profile?.display_name || profile?.full_name || ""} />
+                      </div>
+                      <div>
+                        <Label className="text-xs mb-1 block">{isAr ? "عنوان الصفحة (AR)" : "Page Title (AR)"}</Label>
+                        <Input value={form.page_title_ar} onChange={e => setForm(f => ({ ...f, page_title_ar: e.target.value }))} dir="rtl" placeholder={profile?.display_name_ar || profile?.full_name_ar || ""} />
+                      </div>
                     </div>
                     <div className="grid sm:grid-cols-2 gap-3">
-                      <Textarea placeholder={isAr ? "نبذة (EN)" : "Bio (EN)"} value={form.bio} onChange={e => setForm(f => ({ ...f, bio: e.target.value }))} className="min-h-[60px]" dir="ltr" />
-                      <Textarea placeholder={isAr ? "نبذة (AR)" : "Bio (AR)"} value={form.bio_ar} onChange={e => setForm(f => ({ ...f, bio_ar: e.target.value }))} className="min-h-[60px]" dir="rtl" />
+                      <div>
+                        <Label className="text-xs mb-1 block">{isAr ? "نبذة (EN)" : "Bio (EN)"}</Label>
+                        <Textarea value={form.bio} onChange={e => setForm(f => ({ ...f, bio: e.target.value }))} className="min-h-[60px]" dir="ltr" placeholder={profile?.bio || ""} />
+                      </div>
+                      <div>
+                        <Label className="text-xs mb-1 block">{isAr ? "نبذة (AR)" : "Bio (AR)"}</Label>
+                        <Textarea value={form.bio_ar} onChange={e => setForm(f => ({ ...f, bio_ar: e.target.value }))} className="min-h-[60px]" dir="rtl" placeholder={profile?.bio_ar || ""} />
+                      </div>
                     </div>
                     <Separator />
                     <div className="space-y-3">
@@ -405,7 +614,7 @@ export default function SocialLinksEditor() {
                 </Card>
               </TabsContent>
 
-              {/* Links Tab */}
+              {/* ── Links Tab ── */}
               <TabsContent value="links" className="space-y-4 mt-4">
                 <Card>
                   <CardHeader className="pb-3">
@@ -504,7 +713,7 @@ export default function SocialLinksEditor() {
                 </Card>
               </TabsContent>
 
-              {/* Appearance Tab */}
+              {/* ── Appearance Tab ── */}
               <TabsContent value="appearance" className="space-y-4 mt-4">
                 <Card>
                   <CardHeader className="pb-3">
@@ -528,7 +737,6 @@ export default function SocialLinksEditor() {
                   </CardContent>
                 </Card>
 
-                {/* Font Family */}
                 <Card>
                   <CardHeader className="pb-3">
                     <CardTitle className="text-base flex items-center gap-2">
@@ -606,7 +814,6 @@ export default function SocialLinksEditor() {
                   </CardContent>
                 </Card>
 
-                {/* Background Image Upload */}
                 <Card>
                   <CardHeader className="pb-3">
                     <CardTitle className="text-base flex items-center gap-2">
@@ -636,7 +843,7 @@ export default function SocialLinksEditor() {
                 </Card>
               </TabsContent>
 
-              {/* Display / Visibility Tab */}
+              {/* ── Display / Visibility Tab ── */}
               <TabsContent value="visibility" className="space-y-4 mt-4">
                 <Card>
                   <CardHeader className="pb-3">
@@ -653,18 +860,11 @@ export default function SocialLinksEditor() {
                         <div key={section.key} className="flex items-center justify-between rounded-lg border border-border/50 p-3 transition-colors hover:bg-accent/20">
                           <div className="flex items-center gap-3">
                             <div className={`flex h-8 w-8 items-center justify-center rounded-lg ${extra[section.key] ? "bg-primary/10" : "bg-muted"}`}>
-                              {extra[section.key] ? (
-                                <Eye className="h-4 w-4 text-primary" />
-                              ) : (
-                                <EyeOff className="h-4 w-4 text-muted-foreground" />
-                              )}
+                              {extra[section.key] ? <Eye className="h-4 w-4 text-primary" /> : <EyeOff className="h-4 w-4 text-muted-foreground" />}
                             </div>
                             <Label className="text-sm cursor-pointer">{section.label}</Label>
                           </div>
-                          <Switch
-                            checked={extra[section.key]}
-                            onCheckedChange={v => setExtra(prev => ({ ...prev, [section.key]: v }))}
-                          />
+                          <Switch checked={extra[section.key]} onCheckedChange={v => setExtra(prev => ({ ...prev, [section.key]: v }))} />
                         </div>
                       ))}
                     </div>
@@ -712,12 +912,24 @@ export default function SocialLinksEditor() {
                       {extra.show_bio && form.bio && <p className={`text-[10px] opacity-80 mt-1 ${THEME_MAP[form.theme]?.text || ""}`}>{form.bio}</p>}
                     </div>
 
-                    {form.show_social_icons && socialLinks.length > 0 && (
-                      <div className="flex gap-2 mt-1">
-                        {socialLinks.map(({ key }) => {
-                          const Icon = SOCIAL_ICONS[key] || Globe;
-                          return <div key={key} className={`h-8 w-8 rounded-full ${THEME_MAP[form.theme]?.card || ""} border flex items-center justify-center`}><Icon className={`h-3.5 w-3.5 ${THEME_MAP[form.theme]?.text || ""}`} /></div>;
-                        })}
+                    {/* Preview social icons */}
+                    {form.show_social_icons && activeSocials.length > 0 && (
+                      <div className="flex gap-2 mt-1 flex-wrap justify-center">
+                        {activeSocials.map(({ key, icon: Icon }) => (
+                          <div key={key} className={`h-8 w-8 rounded-full ${THEME_MAP[form.theme]?.card || ""} border flex items-center justify-center`}>
+                            <Icon className={`h-3.5 w-3.5 ${THEME_MAP[form.theme]?.text || ""}`} />
+                          </div>
+                        ))}
+                        {contacts.whatsapp && (
+                          <div className={`h-8 w-8 rounded-full ${THEME_MAP[form.theme]?.card || ""} border flex items-center justify-center`}>
+                            <MessageCircle className={`h-3.5 w-3.5 ${THEME_MAP[form.theme]?.text || ""}`} />
+                          </div>
+                        )}
+                        {contacts.phone && (
+                          <div className={`h-8 w-8 rounded-full ${THEME_MAP[form.theme]?.card || ""} border flex items-center justify-center`}>
+                            <Phone className={`h-3.5 w-3.5 ${THEME_MAP[form.theme]?.text || ""}`} />
+                          </div>
+                        )}
                       </div>
                     )}
 

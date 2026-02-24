@@ -7,7 +7,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import {
   ExternalLink, Instagram, Twitter, Facebook, Linkedin, Youtube, Globe,
   User, ArrowLeft, Share2, Check, BadgeCheck, MapPin, Briefcase, Award, Link2,
-  Pencil, LogIn
+  Pencil, LogIn, Phone, MessageCircle
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
@@ -195,6 +195,9 @@ export default function SocialLinks() {
     { key: "snapchat", value: (profile as any).snapchat },
     { key: "website", value: profile.website },
   ].filter(s => s.value);
+
+  const whatsapp = (profile as any).whatsapp;
+  const phone = (profile as any).phone;
 
   const buttonColorStyle = page?.button_color && page.button_color !== "#000000"
     ? { backgroundColor: page.button_color, color: page.text_color || "#ffffff" }
@@ -388,7 +391,7 @@ export default function SocialLinks() {
         )}
 
         {/* Social Icons */}
-        {page?.show_social_icons !== false && socialPlatforms.length > 0 && (
+        {page?.show_social_icons !== false && (socialPlatforms.length > 0 || whatsapp || phone) && (
           <div className={`mb-8 transition-all duration-700 delay-400 ${animated ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"}`}>
             <h3 className="text-[11px] font-semibold uppercase tracking-[0.15em] mb-4 text-center" style={{ color: "rgba(255,255,255,0.3)" }}>
               {isAr ? "تابعني" : "Follow Me"}
@@ -417,6 +420,28 @@ export default function SocialLinks() {
                   </a>
                 );
               })}
+              {whatsapp && (
+                <a
+                  href={`https://wa.me/${whatsapp.replace(/[^0-9+]/g, "")}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex h-12 w-12 items-center justify-center rounded-full transition-all duration-300 hover:scale-110 active:scale-95"
+                  style={{ background: "rgba(37,211,102,0.15)", border: "1px solid rgba(37,211,102,0.3)", color: "#25d366" }}
+                  title="WhatsApp"
+                >
+                  <MessageCircle className="h-5 w-5" />
+                </a>
+              )}
+              {phone && (
+                <a
+                  href={`tel:${phone}`}
+                  className="flex h-12 w-12 items-center justify-center rounded-full transition-all duration-300 hover:scale-110 active:scale-95"
+                  style={{ background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.1)", color: "#ffffff" }}
+                  title={isAr ? "اتصل" : "Call"}
+                >
+                  <Phone className="h-5 w-5" />
+                </a>
+              )}
             </div>
           </div>
         )}
