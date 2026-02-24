@@ -306,21 +306,22 @@ export default function ExhibitionDetail() {
   return (
     <div className="flex min-h-screen flex-col overflow-x-hidden bg-background">
       <SEOHead
-        title={title}
-        description={description || `${title} - Event on Altoha`}
+        title={`${title} — ${isAr ? "الطهاة" : "Altoha"}`}
+        description={description ? description.slice(0, 160) : `${title} - ${isAr ? "فعالية على الطهاة" : "Event on Altoha"}`}
         ogImage={exhibition.cover_image_url || undefined}
         ogType="article"
         jsonLd={{
           "@context": "https://schema.org", "@type": "Event", name: title,
           description: description || undefined, startDate: exhibition.start_date, endDate: exhibition.end_date,
-          eventStatus: hasEnded ? "https://schema.org/EventCancelled" : "https://schema.org/EventScheduled",
+          eventStatus: hasEnded ? "https://schema.org/EventPostponed" : isHappening ? "https://schema.org/EventScheduled" : "https://schema.org/EventScheduled",
           eventAttendanceMode: exhibition.is_virtual ? "https://schema.org/OnlineEventAttendanceMode" : "https://schema.org/OfflineEventAttendanceMode",
           location: exhibition.is_virtual
             ? { "@type": "VirtualLocation", url: exhibition.virtual_link || exhibition.website_url }
             : { "@type": "Place", name: venue || undefined, address: { "@type": "PostalAddress", addressLocality: exhibition.city, addressCountry: exhibition.country } },
           image: exhibition.cover_image_url || undefined,
           organizer: organizer ? { "@type": "Organization", name: organizer, url: exhibition.organizer_website || undefined } : undefined,
-          ...(exhibition.is_free ? { isAccessibleForFree: true } : exhibition.ticket_price ? { offers: { "@type": "Offer", price: exhibition.ticket_price, availability: hasEnded ? "https://schema.org/SoldOut" : "https://schema.org/InStock" } } : {}),
+          ...(exhibition.registration_url && !hasEnded ? { offers: { "@type": "Offer", url: exhibition.registration_url, availability: "https://schema.org/InStock", ...(exhibition.is_free ? { price: "0" } : exhibition.ticket_price ? { price: exhibition.ticket_price } : {}) } } : {}),
+          ...(reviewCount > 0 ? { aggregateRating: { "@type": "AggregateRating", ratingCount: reviewCount } } : {}),
         }}
       />
       <Header />
