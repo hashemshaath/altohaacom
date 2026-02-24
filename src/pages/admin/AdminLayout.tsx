@@ -4,7 +4,7 @@ import AdminPendingBanner from "@/components/admin/AdminPendingBanner";
 import { Outlet, NavLink } from "react-router-dom";
 import { AdminHeader } from "@/components/admin/AdminHeader";
 import { cn } from "@/lib/utils";
-import { GraduationCap, BarChart3, Landmark, Building2, MessageSquare as MessageSquareIcon, Earth, QrCode, UtensilsCrossed, MailOpen, HandHeart, ShieldCheck, ShieldAlert, Ticket, Target, Headphones, Activity, Megaphone, Languages, Package, ChefHat, ClipboardCheck, Calculator, Calendar, Crown } from "lucide-react";
+import { GraduationCap, BarChart3, Landmark, Building2, MessageSquare as MessageSquareIcon, Earth, QrCode, UtensilsCrossed, MailOpen, HandHeart, ShieldCheck, ShieldAlert, Ticket, Target, Headphones, Activity, Megaphone, Languages, Package, ChefHat, ClipboardCheck, Calculator, Calendar, Crown, MessageCircle, LifeBuoy } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
@@ -99,16 +99,22 @@ export default function AdminLayout() {
       ],
     },
     {
-      title: language === "ar" ? "الدعم وإدارة العلاقات" : "CRM & Support",
+      title: language === "ar" ? "الدعم والتواصل" : "Support & Communications",
+      items: [
+        { to: "/admin/support-tickets", icon: Ticket, label: language === "ar" ? "تذاكر الدعم" : "Support Tickets" },
+        { to: "/admin/live-chat", icon: Headphones, label: language === "ar" ? "الدعم المباشر" : "Live Support" },
+        { to: "/admin/communications", icon: MessageSquareIcon, label: language === "ar" ? "صندوق التواصل" : "Communications" },
+        { to: "/admin/templates", icon: MailOpen, label: language === "ar" ? "قوالب الاتصالات" : "Templates" },
+        { to: "/admin/notifications", icon: Bell, label: language === "ar" ? "الإشعارات" : "Notifications" },
+        { to: "/admin/marketing-automation", icon: Megaphone, label: language === "ar" ? "أتمتة التسويق" : "Marketing Automation" },
+      ],
+    },
+    {
+      title: language === "ar" ? "إدارة علاقات العملاء" : "CRM & Audiences",
       items: [
         { to: "/admin/crm", icon: Activity, label: language === "ar" ? "نظرة عامة" : "CRM Overview" },
         { to: "/admin/leads", icon: UserSearch, label: language === "ar" ? "العملاء المحتملين" : "Leads" },
         { to: "/admin/audience-segments", icon: Target, label: language === "ar" ? "شرائح الجمهور" : "Audience Segments" },
-        { to: "/admin/support-tickets", icon: Ticket, label: language === "ar" ? "تذاكر الدعم" : "Support Tickets" },
-        { to: "/admin/live-chat", icon: Headphones, label: language === "ar" ? "الدعم المباشر" : "Live Chat" },
-        { to: "/admin/communications", icon: MessageSquareIcon, label: language === "ar" ? "صندوق التواصل" : "Communications" },
-        { to: "/admin/templates", icon: MailOpen, label: language === "ar" ? "قوالب الاتصالات" : "Templates" },
-        { to: "/admin/notifications", icon: Bell, label: language === "ar" ? "الإشعارات" : "Notifications" },
       ],
     },
     {
