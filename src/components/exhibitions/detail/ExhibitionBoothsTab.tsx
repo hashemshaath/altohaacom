@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
-import { Building, MapPin, Globe, Phone, Mail, Search, LayoutGrid, Star } from "lucide-react";
+import { Building, MapPin, Globe, Search, LayoutGrid, Star, Hash, ArrowUpRight } from "lucide-react";
 
 interface Props {
   exhibitionId: string;
@@ -61,43 +61,52 @@ export function ExhibitionBoothsTab({ exhibitionId, isAr }: Props) {
   }, [booths, search, selectedCategory, selectedHall]);
 
   if (isLoading) {
-    return <div className="space-y-3">{[1,2,3].map(i => <div key={i} className="h-28 animate-pulse rounded-xl bg-muted" />)}</div>;
+    return (
+      <div className="space-y-4">
+        <div className="h-10 animate-pulse rounded-xl bg-muted" />
+        <div className="grid gap-3 sm:grid-cols-2">{[1, 2, 3, 4].map((i) => <div key={i} className="h-32 animate-pulse rounded-2xl bg-muted" />)}</div>
+      </div>
+    );
   }
 
   if (booths.length === 0) {
     return (
-      <Card className="border-dashed">
-        <CardContent className="py-12 text-center">
-          <LayoutGrid className="mx-auto mb-3 h-10 w-10 text-muted-foreground/30" />
-          <p className="text-sm text-muted-foreground">{isAr ? "لم يتم إضافة أجنحة بعد" : "No booths added yet"}</p>
+      <Card className="border-dashed border-2">
+        <CardContent className="py-16 text-center">
+          <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-muted/60">
+            <LayoutGrid className="h-7 w-7 text-muted-foreground/40" />
+          </div>
+          <p className="text-sm font-medium text-muted-foreground">{isAr ? "لم يتم إضافة أجنحة بعد" : "No booths added yet"}</p>
+          <p className="mt-1 text-xs text-muted-foreground/60">{isAr ? "سيتم تحديث القائمة قريباً" : "The list will be updated soon"}</p>
         </CardContent>
       </Card>
     );
   }
 
   return (
-    <div className="space-y-4">
-      {/* Search */}
+    <div className="space-y-5">
+      {/* Search with icon */}
       <div className="relative">
-        <Search className="absolute start-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+        <Search className="absolute start-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground/60" />
         <Input
           value={search}
           onChange={(e) => setSearch(e.target.value)}
-          placeholder={isAr ? "ابحث عن جناح..." : "Search booths..."}
-          className="ps-10"
+          placeholder={isAr ? "ابحث عن جناح أو شركة..." : "Search booths or companies..."}
+          className="ps-10 h-11 rounded-xl border-border/60 bg-muted/20 placeholder:text-muted-foreground/40"
         />
       </div>
 
-      {/* Filters */}
+      {/* Category filter pills */}
       <ScrollArea className="w-full">
-        <div className="flex gap-2 pb-2">
+        <div className="flex gap-1.5 pb-2">
           <Button
-            variant={!selectedCategory ? "default" : "outline"}
+            variant={!selectedCategory ? "default" : "ghost"}
             size="sm"
-            className="text-xs shrink-0"
+            className="rounded-full text-xs shrink-0 h-8 px-4"
             onClick={() => setSelectedCategory(null)}
           >
-            {isAr ? "الكل" : "All"} ({booths.length})
+            {isAr ? "الكل" : "All"}
+            <Badge variant="secondary" className="ms-1.5 h-4 min-w-4 rounded-full px-1 text-[9px]">{booths.length}</Badge>
           </Button>
           {categories.map((cat) => {
             const label = CATEGORY_LABELS[cat] || { en: cat, ar: cat };
@@ -105,12 +114,13 @@ export function ExhibitionBoothsTab({ exhibitionId, isAr }: Props) {
             return (
               <Button
                 key={cat}
-                variant={selectedCategory === cat ? "default" : "outline"}
+                variant={selectedCategory === cat ? "default" : "ghost"}
                 size="sm"
-                className="text-xs shrink-0"
+                className="rounded-full text-xs shrink-0 h-8 px-3"
                 onClick={() => setSelectedCategory(selectedCategory === cat ? null : cat)}
               >
-                {isAr ? label.ar : label.en} ({count})
+                {isAr ? label.ar : label.en}
+                <span className="ms-1 text-[9px] opacity-60">({count})</span>
               </Button>
             );
           })}
@@ -118,15 +128,17 @@ export function ExhibitionBoothsTab({ exhibitionId, isAr }: Props) {
         <ScrollBar orientation="horizontal" />
       </ScrollArea>
 
+      {/* Hall filter */}
       {halls.length > 1 && (
         <ScrollArea className="w-full">
-          <div className="flex gap-2 pb-2">
+          <div className="flex gap-1.5 pb-2">
             <Button
               variant={!selectedHall ? "secondary" : "ghost"}
               size="sm"
-              className="text-xs shrink-0"
+              className="rounded-full text-xs shrink-0 h-7 px-3"
               onClick={() => setSelectedHall(null)}
             >
+              <MapPin className="me-1 h-3 w-3" />
               {isAr ? "كل القاعات" : "All Halls"}
             </Button>
             {halls.map((hall) => (
@@ -134,7 +146,7 @@ export function ExhibitionBoothsTab({ exhibitionId, isAr }: Props) {
                 key={hall}
                 variant={selectedHall === hall ? "secondary" : "ghost"}
                 size="sm"
-                className="text-xs shrink-0"
+                className="rounded-full text-xs shrink-0 h-7 px-3"
                 onClick={() => setSelectedHall(selectedHall === hall ? null : hall)}
               >
                 {hall}
@@ -145,47 +157,83 @@ export function ExhibitionBoothsTab({ exhibitionId, isAr }: Props) {
         </ScrollArea>
       )}
 
-      {/* Results */}
-      <p className="text-xs text-muted-foreground">
-        {filtered.length} {isAr ? "جناح" : "booths"}
-      </p>
+      {/* Results count */}
+      <div className="flex items-center justify-between">
+        <p className="text-xs text-muted-foreground">
+          {filtered.length} {isAr ? "جناح" : filtered.length === 1 ? "booth" : "booths"}
+          {(search || selectedCategory || selectedHall) && ` ${isAr ? "من" : "of"} ${booths.length}`}
+        </p>
+      </div>
 
+      {/* Booth grid */}
       <div className="grid gap-3 sm:grid-cols-2">
         {filtered.map((booth) => (
-          <Card key={booth.id} className={`overflow-hidden transition-all hover:shadow-md ${booth.is_featured ? "border-chart-4/30 ring-1 ring-chart-4/10" : ""}`}>
+          <Card
+            key={booth.id}
+            className={`group overflow-hidden transition-all hover:shadow-md ${
+              booth.is_featured
+                ? "border-chart-4/30 bg-gradient-to-br from-chart-4/[0.03] to-transparent ring-1 ring-chart-4/10"
+                : "border-border/60"
+            }`}
+          >
             <CardContent className="p-4">
-              <div className="flex items-start gap-3">
+              <div className="flex items-start gap-3.5">
+                {/* Logo / Placeholder */}
                 {booth.logo_url ? (
-                  <img src={booth.logo_url} alt={booth.name} className="h-12 w-12 rounded-lg object-contain shrink-0 ring-1 ring-border" />
+                  <div className="relative h-14 w-14 shrink-0 overflow-hidden rounded-xl border border-border/50 bg-card p-1.5">
+                    <img src={booth.logo_url} alt={booth.name} className="h-full w-full object-contain" />
+                  </div>
                 ) : (
-                  <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-muted shrink-0">
-                    <Building className="h-5 w-5 text-muted-foreground/40" />
+                  <div className="flex h-14 w-14 items-center justify-center rounded-xl bg-gradient-to-br from-muted to-muted/50 shrink-0">
+                    <Building className="h-6 w-6 text-muted-foreground/30" />
                   </div>
                 )}
+
                 <div className="min-w-0 flex-1">
-                  <div className="flex items-center gap-2">
-                    <Badge variant="outline" className="font-mono text-[9px] shrink-0">{booth.booth_number}</Badge>
-                    {booth.is_featured && <Star className="h-3 w-3 text-chart-4 fill-chart-4" />}
+                  {/* Header with booth number + featured */}
+                  <div className="flex items-center gap-2 mb-1">
+                    <Badge variant="outline" className="font-mono text-[9px] shrink-0 rounded-md h-5 px-1.5 border-border/60">
+                      <Hash className="me-0.5 h-2.5 w-2.5 text-muted-foreground/50" />
+                      {booth.booth_number}
+                    </Badge>
+                    {booth.is_featured && (
+                      <Badge variant="outline" className="text-[8px] h-4 px-1.5 border-chart-4/30 text-chart-4 gap-0.5">
+                        <Star className="h-2 w-2 fill-chart-4" />
+                        {isAr ? "مميز" : "Featured"}
+                      </Badge>
+                    )}
                   </div>
-                  <p className="mt-1 text-sm font-semibold truncate">
+
+                  {/* Name */}
+                  <p className="text-sm font-semibold truncate text-foreground">
                     {isAr && booth.name_ar ? booth.name_ar : booth.name}
                   </p>
+
+                  {/* Description */}
                   {(booth.description || booth.description_ar) && (
-                    <p className="mt-0.5 text-xs text-muted-foreground line-clamp-2">
+                    <p className="mt-0.5 text-[11px] text-muted-foreground line-clamp-2 leading-relaxed">
                       {isAr && booth.description_ar ? booth.description_ar : booth.description}
                     </p>
                   )}
-                  <div className="mt-2 flex flex-wrap items-center gap-2">
+
+                  {/* Meta */}
+                  <div className="mt-2.5 flex flex-wrap items-center gap-x-3 gap-y-1">
                     {booth.hall && (
                       <span className="flex items-center gap-1 text-[10px] text-muted-foreground">
-                        <MapPin className="h-3 w-3" />
+                        <MapPin className="h-3 w-3 text-chart-2/60" />
                         {isAr && booth.hall_ar ? booth.hall_ar : booth.hall}
                       </span>
                     )}
                     {booth.website_url && (
-                      <a href={booth.website_url} target="_blank" rel="noopener noreferrer" className="flex items-center gap-1 text-[10px] text-primary hover:underline">
+                      <a
+                        href={booth.website_url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="flex items-center gap-1 text-[10px] text-primary font-medium hover:underline"
+                      >
                         <Globe className="h-3 w-3" />
                         {isAr ? "الموقع" : "Website"}
+                        <ArrowUpRight className="h-2.5 w-2.5" />
                       </a>
                     )}
                   </div>
@@ -195,6 +243,17 @@ export function ExhibitionBoothsTab({ exhibitionId, isAr }: Props) {
           </Card>
         ))}
       </div>
+
+      {/* No results */}
+      {filtered.length === 0 && booths.length > 0 && (
+        <div className="py-12 text-center">
+          <Search className="mx-auto mb-3 h-8 w-8 text-muted-foreground/30" />
+          <p className="text-sm text-muted-foreground">{isAr ? "لا نتائج مطابقة" : "No matching booths found"}</p>
+          <Button variant="link" size="sm" className="mt-1 text-xs" onClick={() => { setSearch(""); setSelectedCategory(null); setSelectedHall(null); }}>
+            {isAr ? "مسح الفلاتر" : "Clear filters"}
+          </Button>
+        </div>
+      )}
     </div>
   );
 }
