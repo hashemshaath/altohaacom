@@ -43,6 +43,8 @@ const ExhibitionDocuments = lazy(() => import("@/components/exhibitions/detail/E
 const ExhibitionAgendaTab = lazy(() => import("@/components/exhibitions/detail/ExhibitionAgendaTab").then(m => ({ default: m.ExhibitionAgendaTab })));
 const ExhibitionBoothsTab = lazy(() => import("@/components/exhibitions/detail/ExhibitionBoothsTab").then(m => ({ default: m.ExhibitionBoothsTab })));
 const ExhibitionReviewsTab = lazy(() => import("@/components/exhibitions/detail/ExhibitionReviewsTab").then(m => ({ default: m.ExhibitionReviewsTab })));
+const ExhibitionFloorMap = lazy(() => import("@/components/exhibitions/detail/ExhibitionFloorMap").then(m => ({ default: m.ExhibitionFloorMap })));
+const ExhibitionNotificationPrompt = lazy(() => import("@/components/exhibitions/detail/ExhibitionNotificationPrompt").then(m => ({ default: m.ExhibitionNotificationPrompt })));
 
 // Suspense fallback for lazy tabs
 const TabFallback = () => <div className="space-y-3">{[1,2,3].map(i => <div key={i} className="h-24 animate-pulse rounded-2xl bg-muted" />)}</div>;
@@ -412,6 +414,11 @@ export default function ExhibitionDetail() {
           <ExhibitionRegistrationStatus registrationDeadline={exhibition.registration_deadline} registrationUrl={exhibition.registration_url} maxAttendees={exhibition.max_attendees} isFree={exhibition.is_free} ticketPrice={exhibition.ticket_price} ticketPriceAr={exhibition.ticket_price_ar} startDate={exhibition.start_date} endDate={exhibition.end_date} isAr={isAr} />
           <ExhibitionTicketBooking exhibitionId={exhibition.id} exhibitionTitle={title} isFree={exhibition.is_free} ticketPrice={exhibition.ticket_price} hasEnded={hasEnded} isAr={isAr} />
 
+          {/* Push notification prompt for followers */}
+          <Suspense fallback={null}>
+            <ExhibitionNotificationPrompt exhibitionId={exhibition.id} exhibitionName={title} isAr={isAr} isFollowing={!!isFollowing} />
+          </Suspense>
+
           {/* Mobile map + contact - collapsed for density */}
           <Suspense fallback={null}>
             {!exhibition.is_virtual && <ExhibitionMapEmbed mapUrl={exhibition.map_url} venue={venue} city={exhibition.city} country={exhibition.country} address={(exhibition as any).address || null} isAr={isAr} />}
@@ -727,8 +734,9 @@ export default function ExhibitionDetail() {
               )}
 
               {hasBooths && (
-                <TabsContent value="booths" className="mt-6">
+                <TabsContent value="booths" className="mt-6 space-y-6">
                   <Suspense fallback={<TabFallback />}>
+                    <ExhibitionFloorMap exhibitionId={exhibition.id} isAr={isAr} />
                     <ExhibitionBoothsTab exhibitionId={exhibition.id} isAr={isAr} />
                   </Suspense>
                 </TabsContent>
