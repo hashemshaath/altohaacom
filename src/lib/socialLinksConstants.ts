@@ -79,6 +79,10 @@ export interface ExtraSettings {
   text_align: "start" | "center" | "end";
   text_direction: "auto" | "ltr" | "rtl";
   link_layout: "list" | "grid";
+  cover_image_url: string;
+  footer_text: string;
+  footer_text_ar: string;
+  show_footer: boolean;
 }
 
 export const DEFAULT_EXTRA: ExtraSettings = {
@@ -97,6 +101,10 @@ export const DEFAULT_EXTRA: ExtraSettings = {
   text_align: "center",
   text_direction: "auto",
   link_layout: "list",
+  cover_image_url: "",
+  footer_text: "",
+  footer_text_ar: "",
+  show_footer: false,
 };
 
 export function parseExtra(customCss: string | null | undefined): ExtraSettings {

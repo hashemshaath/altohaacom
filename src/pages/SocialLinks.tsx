@@ -286,7 +286,7 @@ export default function SocialLinks() {
     ? { backgroundColor: page.button_color, color: page.text_color || "#ffffff" }
     : {};
 
-  const coverImage = (profile as any).cover_image_url || page?.background_image_url;
+  const coverImage = extra.cover_image_url || (profile as any).cover_image_url || page?.background_image_url;
   const isVerified = (profile as any).is_verified;
   const yearsExp = (profile as any).years_of_experience;
   const city = (profile as any).city;
@@ -654,7 +654,13 @@ export default function SocialLinks() {
         {items.length > 0 && (
           <div className="mb-5">
             <div className={`${extra.link_layout === "grid" ? "grid grid-cols-2 gap-2.5" : "space-y-2.5"}`}>
-              {items.map((item, index) => (
+              {items.filter(item => {
+                // Schedule filtering
+                const now = new Date();
+                if ((item as any).scheduled_start && new Date((item as any).scheduled_start) > now) return false;
+                if ((item as any).scheduled_end && new Date((item as any).scheduled_end) < now) return false;
+                return true;
+              }).map((item, index) => (
                 <a
                   key={item.id}
                   href={item.url.startsWith("http") ? item.url : `https://${item.url}`}
@@ -761,8 +767,17 @@ export default function SocialLinks() {
           </div>
         )}
 
+        {/* Custom Footer */}
+        {extra.show_footer && (extra.footer_text || extra.footer_text_ar) && (
+          <div className={`mt-8 mb-4 text-center transition-all duration-700 delay-650 ${animated ? "opacity-100" : "opacity-0"}`}>
+            <p className="text-xs" style={{ color: theme.textMuted }}>
+              {isRtl ? (extra.footer_text_ar || extra.footer_text) : (extra.footer_text || extra.footer_text_ar)}
+            </p>
+          </div>
+        )}
+
         {/* Footer Watermark */}
-        <div className={`mt-14 text-center transition-all duration-700 delay-700 ${animated ? "opacity-100" : "opacity-0"}`}>
+        <div className={`mt-${extra.show_footer ? '4' : '14'} text-center transition-all duration-700 delay-700 ${animated ? "opacity-100" : "opacity-0"}`}>
           <div className="inline-flex flex-col items-center gap-2">
             <div className="h-px w-12 mx-auto" style={{ background: `linear-gradient(90deg, transparent, ${theme.border}, transparent)` }} />
             <Link to="/" className="group inline-flex items-center gap-2 py-2 px-4 rounded-full transition-all duration-300 hover:scale-105"
