@@ -5,10 +5,11 @@ import { useToast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Camera, MapPin, ChefHat, Shield, Crown, Star, Eye, Award } from "lucide-react";
+import { Camera, MapPin, ChefHat, Shield, Crown, Star, Eye, Award, Link2, Copy, Check, Share2, ExternalLink } from "lucide-react";
 import { countryFlag } from "@/lib/countryFlag";
 import { VerifiedBadge } from "@/components/verification/VerifiedBadge";
 import { toEnglishDigits } from "@/lib/formatNumber";
+import { Link } from "react-router-dom";
 
 interface ProfileHeaderProps {
   profile: any;
@@ -24,6 +25,28 @@ export function ProfileHeader({ profile, roles, userId, onProfileUpdate }: Profi
   const avatarInputRef = useRef<HTMLInputElement>(null);
   const coverInputRef = useRef<HTMLInputElement>(null);
   const [uploading, setUploading] = useState(false);
+  const [linkCopied, setLinkCopied] = useState(false);
+
+  const linksUrl = profile?.username ? `https://altoha.com/${profile.username}/links` : "";
+  const linksPath = profile?.username ? `/${profile.username}/links` : "";
+
+  const copyLinksUrl = async () => {
+    if (!linksUrl) return;
+    await navigator.clipboard.writeText(linksUrl);
+    setLinkCopied(true);
+    toast({ title: isAr ? "تم نسخ رابط صفحة الروابط" : "Links page URL copied!" });
+    setTimeout(() => setLinkCopied(false), 2000);
+  };
+
+  const shareLinksUrl = async () => {
+    if (!linksUrl) return;
+    const shareText = isAr ? `صفحة روابطي على الطهاة` : `My links page on Altoha`;
+    if (navigator.share) {
+      try { await navigator.share({ title: shareText, url: linksUrl }); } catch {}
+    } else {
+      copyLinksUrl();
+    }
+  };
 
   const uploadImage = async (file: File, type: "avatar" | "cover") => {
     if (!file) return;
@@ -173,6 +196,35 @@ export function ProfileHeader({ profile, roles, userId, onProfileUpdate }: Profi
               <span className="font-semibold text-primary">{toEnglishDigits(profile.loyalty_points)}</span>
               <span className="text-muted-foreground">{isAr ? "نقطة" : "pts"}</span>
             </div>
+          )}
+
+          {/* Social Links Page Actions */}
+          {profile?.username && (
+            <>
+              <div className="ms-auto" />
+              <Link
+                to={linksPath}
+                className="flex items-center gap-1.5 rounded-lg bg-primary/10 px-2.5 py-1.5 text-xs font-semibold text-primary border border-primary/20 hover:bg-primary/20 transition-colors"
+              >
+                <Link2 className="h-3 w-3" />
+                {isAr ? "صفحة روابطي" : "My Links"}
+                <ExternalLink className="h-2.5 w-2.5 opacity-60" />
+              </Link>
+              <button
+                onClick={copyLinksUrl}
+                className="flex items-center gap-1.5 rounded-lg bg-muted/40 px-2.5 py-1.5 text-xs text-muted-foreground border border-border/30 hover:bg-muted/60 transition-colors"
+              >
+                {linkCopied ? <Check className="h-3 w-3 text-chart-2" /> : <Copy className="h-3 w-3" />}
+                {isAr ? "نسخ" : "Copy"}
+              </button>
+              <button
+                onClick={shareLinksUrl}
+                className="flex items-center gap-1.5 rounded-lg bg-muted/40 px-2.5 py-1.5 text-xs text-muted-foreground border border-border/30 hover:bg-muted/60 transition-colors"
+              >
+                <Share2 className="h-3 w-3" />
+                {isAr ? "مشاركة" : "Share"}
+              </button>
+            </>
           )}
         </div>
       </div>
