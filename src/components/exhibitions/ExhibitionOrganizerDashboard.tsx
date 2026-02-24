@@ -22,6 +22,7 @@ import { ExhibitionRealtimeStats } from "./detail/ExhibitionRealtimeStats";
 import { ExhibitionDiscountCodes } from "./detail/ExhibitionDiscountCodes";
 import { ExhibitionOrganizerMessaging } from "./detail/ExhibitionOrganizerMessaging";
 import { ExhibitionSurveyManager } from "./detail/ExhibitionSurveyManager";
+import { ExhibitionAnalyticsDashboard } from "./detail/ExhibitionAnalyticsDashboard";
 interface Props {
   exhibitionId: string;
   exhibitionTitle: string;
@@ -234,7 +235,10 @@ export function ExhibitionOrganizerDashboard({ exhibitionId, exhibitionTitle, is
         </TabsContent>
 
         <TabsContent value="analytics">
-          <ExhibitionOrganizerAnalytics exhibitionId={exhibitionId} isAr={isAr} />
+          <div className="space-y-6">
+            <ExhibitionAnalyticsDashboard exhibitionId={exhibitionId} />
+            <ExhibitionOrganizerAnalytics exhibitionId={exhibitionId} isAr={isAr} />
+          </div>
         </TabsContent>
 
         <TabsContent value="booths">

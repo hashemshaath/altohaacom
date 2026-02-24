@@ -45,6 +45,8 @@ const ExhibitionOrganizerDashboard = lazy(() => import("@/components/exhibitions
 const ExhibitionLoyaltyWidget = lazy(() => import("@/components/exhibitions/detail/ExhibitionLoyaltyWidget").then(m => ({ default: m.ExhibitionLoyaltyWidget })));
 const ExhibitionBoothNavigator = lazy(() => import("@/components/exhibitions/detail/ExhibitionBoothNavigator").then(m => ({ default: m.ExhibitionBoothNavigator })));
 const ExhibitionSurveyManager = lazy(() => import("@/components/exhibitions/detail/ExhibitionSurveyManager").then(m => ({ default: m.ExhibitionSurveyManager })));
+const ExhibitionSocialWall = lazy(() => import("@/components/exhibitions/detail/ExhibitionSocialWall").then(m => ({ default: m.ExhibitionSocialWall })));
+const ExhibitionAnalyticsDashboardDetail = lazy(() => import("@/components/exhibitions/detail/ExhibitionAnalyticsDashboard").then(m => ({ default: m.ExhibitionAnalyticsDashboard })));
 
 const TabFallback = () => <div className="space-y-3">{[1, 2, 3].map(i => <div key={i} className="h-24 animate-pulse rounded-2xl bg-muted" />)}</div>;
 
@@ -362,6 +364,7 @@ export default function ExhibitionDetail() {
                   {hasBooths && <ExhibitionTabTrigger value="booths" icon={LayoutGrid} label={isAr ? "الأجنحة" : "Booths"} count={boothCount} />}
                   {hasSponsors && <ExhibitionTabTrigger value="sponsors" icon={Star} label={isAr ? "الرعاة" : "Sponsors"} />}
                   <ExhibitionTabTrigger value="cooking" icon={ChefHat} label={isAr ? "الطهي الحي" : "Live Cooking"} />
+                  <ExhibitionTabTrigger value="social" icon={MessageSquare} label={isAr ? "اجتماعي" : "Social"} />
                   {hasReviews && <ExhibitionTabTrigger value="reviews" icon={MessageSquare} label={isAr ? "التقييمات" : "Reviews"} count={reviewCount > 0 ? reviewCount : undefined} />}
                   {isOwner && <ExhibitionTabTrigger value="organizer" icon={Settings} label={isAr ? "لوحة التحكم" : "Dashboard"} />}
                 </TabsList>
@@ -458,6 +461,12 @@ export default function ExhibitionDetail() {
               <TabsContent value="cooking" className="mt-6">
                 <Suspense fallback={<TabFallback />}>
                   <ExhibitionCookingSessions exhibitionId={exhibition.id} isAr={isAr} />
+                </Suspense>
+              </TabsContent>
+
+              <TabsContent value="social" className="mt-6">
+                <Suspense fallback={<TabFallback />}>
+                  <ExhibitionSocialWall exhibitionId={exhibition.id} exhibitionTitle={title} exhibitionHashtag={exhibition.slug?.replace(/-/g, "_")} />
                 </Suspense>
               </TabsContent>
 
