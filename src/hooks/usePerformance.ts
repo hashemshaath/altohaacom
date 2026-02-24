@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, useCallback } from "react";
+import { useEffect, useRef, useState, useCallback, useMemo } from "react";
 
 /**
  * Hook to detect if the user prefers reduced motion.
@@ -99,4 +99,81 @@ export function useDebouncedCallback<T extends (...args: any[]) => void>(
     }) as T,
     [callback, delay]
   );
+}
+
+/**
+ * Debounced value hook - returns value after delay of inactivity.
+ */
+export function useDebouncedValue<T>(value: T, delay: number): T {
+  const [debounced, setDebounced] = useState(value);
+
+  useEffect(() => {
+    const timer = setTimeout(() => setDebounced(value), delay);
+    return () => clearTimeout(timer);
+  }, [value, delay]);
+
+  return debounced;
+}
+
+/**
+ * Throttled callback - executes at most once per interval.
+ */
+export function useThrottledCallback<T extends (...args: any[]) => void>(
+  callback: T,
+  interval: number
+): T {
+  const lastRun = useRef(0);
+  const timeoutRef = useRef<ReturnType<typeof setTimeout>>();
+
+  return useCallback(
+    ((...args: any[]) => {
+      const now = Date.now();
+      const elapsed = now - lastRun.current;
+
+      if (elapsed >= interval) {
+        lastRun.current = now;
+        callback(...args);
+      } else {
+        if (timeoutRef.current) clearTimeout(timeoutRef.current);
+        timeoutRef.current = setTimeout(() => {
+          lastRun.current = Date.now();
+          callback(...args);
+        }, interval - elapsed);
+      }
+    }) as T,
+    [callback, interval]
+  );
+}
+
+/**
+ * Track and report FID (First Input Delay).
+ */
+export function useFID(onReport?: (value: number) => void) {
+  useEffect(() => {
+    if (!onReport || typeof PerformanceObserver === "undefined") return;
+    try {
+      const observer = new PerformanceObserver((list) => {
+        const entries = list.getEntries() as any[];
+        for (const entry of entries) {
+          onReport(entry.processingStart - entry.startTime);
+        }
+      });
+      observer.observe({ type: "first-input", buffered: true });
+      return () => observer.disconnect();
+    } catch {}
+  }, [onReport]);
+}
+
+/**
+ * Measure time-to-interactive for a component.
+ */
+export function useComponentLoadTime(componentName: string) {
+  const mountTime = useRef(performance.now());
+
+  useEffect(() => {
+    const loadTime = performance.now() - mountTime.current;
+    if (loadTime > 500) {
+      console.warn(`[Perf] ${componentName} took ${loadTime.toFixed(0)}ms to mount`);
+    }
+  }, [componentName]);
 }
