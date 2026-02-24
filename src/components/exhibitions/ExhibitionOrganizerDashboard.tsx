@@ -19,6 +19,8 @@ import { ExhibitionCookingSessionManager } from "./detail/ExhibitionCookingSessi
 import { ExhibitionNotificationPreferences } from "./detail/ExhibitionNotificationPreferences";
 import { ExhibitionOrganizerQuickActions } from "./detail/ExhibitionOrganizerQuickActions";
 import { ExhibitionRealtimeStats } from "./detail/ExhibitionRealtimeStats";
+import { ExhibitionDiscountCodes } from "./detail/ExhibitionDiscountCodes";
+import { ExhibitionOrganizerMessaging } from "./detail/ExhibitionOrganizerMessaging";
 interface Props {
   exhibitionId: string;
   exhibitionTitle: string;
@@ -251,7 +253,10 @@ export function ExhibitionOrganizerDashboard({ exhibitionId, exhibitionTitle, is
         </TabsContent>
 
         <TabsContent value="export">
-          <ExhibitionDataExport exhibitionId={exhibitionId} exhibitionTitle={exhibitionTitle} isAr={isAr} />
+          <div className="space-y-4">
+            <ExhibitionDataExport exhibitionId={exhibitionId} exhibitionTitle={exhibitionTitle} isAr={isAr} />
+            <ExhibitionDiscountCodes exhibitionId={exhibitionId} isAr={isAr} />
+          </div>
         </TabsContent>
 
         <TabsContent value="volunteers">
@@ -263,7 +268,10 @@ export function ExhibitionOrganizerDashboard({ exhibitionId, exhibitionTitle, is
         </TabsContent>
 
         <TabsContent value="notifications">
-          <ExhibitionNotificationPreferences exhibitionId={exhibitionId} isAr={isAr} />
+          <div className="space-y-4">
+            <ExhibitionOrganizerMessaging exhibitionId={exhibitionId} exhibitionTitle={exhibitionTitle} isAr={isAr} />
+            <ExhibitionNotificationPreferences exhibitionId={exhibitionId} isAr={isAr} />
+          </div>
         </TabsContent>
       </Tabs>
     </div>

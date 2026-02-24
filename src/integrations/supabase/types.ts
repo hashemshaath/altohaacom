@@ -8614,6 +8614,62 @@ export type Database = {
           },
         ]
       }
+      exhibition_discount_codes: {
+        Row: {
+          code: string
+          created_at: string
+          created_by: string | null
+          discount_type: string
+          discount_value: number
+          exhibition_id: string
+          id: string
+          is_active: boolean
+          max_uses: number | null
+          updated_at: string
+          used_count: number
+          valid_from: string | null
+          valid_until: string | null
+        }
+        Insert: {
+          code: string
+          created_at?: string
+          created_by?: string | null
+          discount_type?: string
+          discount_value?: number
+          exhibition_id: string
+          id?: string
+          is_active?: boolean
+          max_uses?: number | null
+          updated_at?: string
+          used_count?: number
+          valid_from?: string | null
+          valid_until?: string | null
+        }
+        Update: {
+          code?: string
+          created_at?: string
+          created_by?: string | null
+          discount_type?: string
+          discount_value?: number
+          exhibition_id?: string
+          id?: string
+          is_active?: boolean
+          max_uses?: number | null
+          updated_at?: string
+          used_count?: number
+          valid_from?: string | null
+          valid_until?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "exhibition_discount_codes_exhibition_id_fkey"
+            columns: ["exhibition_id"]
+            isOneToOne: false
+            referencedRelation: "exhibitions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       exhibition_documents: {
         Row: {
           category: string
@@ -8970,6 +9026,9 @@ export type Database = {
           id: string
           is_published: boolean | null
           is_verified_attendee: boolean | null
+          organizer_response: string | null
+          organizer_response_at: string | null
+          organizer_response_by: string | null
           photo_urls: string[] | null
           rating: number
           reviewer_type: string | null
@@ -8987,6 +9046,9 @@ export type Database = {
           id?: string
           is_published?: boolean | null
           is_verified_attendee?: boolean | null
+          organizer_response?: string | null
+          organizer_response_at?: string | null
+          organizer_response_by?: string | null
           photo_urls?: string[] | null
           rating: number
           reviewer_type?: string | null
@@ -9004,6 +9066,9 @@ export type Database = {
           id?: string
           is_published?: boolean | null
           is_verified_attendee?: boolean | null
+          organizer_response?: string | null
+          organizer_response_at?: string | null
+          organizer_response_by?: string | null
           photo_urls?: string[] | null
           rating?: number
           reviewer_type?: string | null
@@ -9281,6 +9346,8 @@ export type Database = {
           checked_in_by: string | null
           created_at: string
           currency: string | null
+          discount_amount: number | null
+          discount_code_id: string | null
           exhibition_id: string
           id: string
           notes: string | null
@@ -9304,6 +9371,8 @@ export type Database = {
           checked_in_by?: string | null
           created_at?: string
           currency?: string | null
+          discount_amount?: number | null
+          discount_code_id?: string | null
           exhibition_id: string
           id?: string
           notes?: string | null
@@ -9327,6 +9396,8 @@ export type Database = {
           checked_in_by?: string | null
           created_at?: string
           currency?: string | null
+          discount_amount?: number | null
+          discount_code_id?: string | null
           exhibition_id?: string
           id?: string
           notes?: string | null
@@ -9340,6 +9411,13 @@ export type Database = {
           user_id?: string
         }
         Relationships: [
+          {
+            foreignKeyName: "exhibition_tickets_discount_code_id_fkey"
+            columns: ["discount_code_id"]
+            isOneToOne: false
+            referencedRelation: "exhibition_discount_codes"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "exhibition_tickets_exhibition_id_fkey"
             columns: ["exhibition_id"]
