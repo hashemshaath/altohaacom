@@ -114,6 +114,11 @@ export interface ExtraSettings {
   // Multi-page profiles
   active_page: string;
   pages: Array<{ id: string; label: string; label_ar: string }>;
+  // Custom CSS
+  custom_user_css: string;
+  // QR settings
+  qr_logo_url: string;
+  qr_show_username: boolean;
 }
 
 export const DEFAULT_EXTRA: ExtraSettings = {
@@ -145,6 +150,9 @@ export const DEFAULT_EXTRA: ExtraSettings = {
   particle_color: "",
   active_page: "main",
   pages: [],
+  custom_user_css: "",
+  qr_logo_url: "",
+  qr_show_username: true,
 };
 
 export function parseExtra(customCss: string | null | undefined): ExtraSettings {

@@ -168,6 +168,38 @@ export default function SocialLinksEditor() {
     gcTime: 10 * 60_000,
   });
 
+  // Visitor analytics data
+  const { data: visitorStats } = useQuery({
+    queryKey: ["social-link-visits-stats", page?.id],
+    queryFn: async () => {
+      const { data: visits } = await supabase
+        .from("social_link_visits")
+        .select("country, device_type, browser, referrer, created_at")
+        .eq("page_id", page!.id)
+        .order("created_at", { ascending: false })
+        .limit(500);
+      if (!visits) return { countries: {}, devices: {}, browsers: {}, referrers: {}, total: 0, recent7d: 0 };
+      const now = Date.now();
+      const week = 7 * 24 * 60 * 60 * 1000;
+      const countries: Record<string, number> = {};
+      const devices: Record<string, number> = {};
+      const browsers: Record<string, number> = {};
+      const referrers: Record<string, number> = {};
+      let recent7d = 0;
+      for (const v of visits) {
+        if (v.country) countries[v.country] = (countries[v.country] || 0) + 1;
+        if (v.device_type) devices[v.device_type] = (devices[v.device_type] || 0) + 1;
+        if (v.browser) browsers[v.browser] = (browsers[v.browser] || 0) + 1;
+        const ref = v.referrer ? new URL(v.referrer).hostname.replace("www.", "") : "direct";
+        referrers[ref] = (referrers[ref] || 0) + 1;
+        if (now - new Date(v.created_at).getTime() < week) recent7d++;
+      }
+      return { countries, devices, browsers, referrers, total: visits.length, recent7d };
+    },
+    enabled: !!page?.id,
+    staleTime: 5 * 60_000,
+  });
+
   const [socials, setSocials] = useState<Record<string, string>>({});
   const [contacts, setContacts] = useState<Record<string, string>>({});
 
@@ -309,7 +341,9 @@ export default function SocialLinksEditor() {
       page_id: pageId, title: newLink.title,
       title_ar: newLink.title_ar || undefined, url: newLink.url,
       icon: newLink.icon || undefined, link_type: newLink.link_type, sort_order: items.length,
-    });
+      ...(newLink.scheduled_start ? { scheduled_start: new Date(newLink.scheduled_start).toISOString() } : {}),
+      ...(newLink.scheduled_end ? { scheduled_end: new Date(newLink.scheduled_end).toISOString() } : {}),
+    } as any);
     setNewLink({ title: "", title_ar: "", url: "", icon: "", link_type: "custom", scheduled_start: "", scheduled_end: "" });
   }, [newLink, page, form, extra, items.length, isAr, toast, upsertPage, addItem]);
 
@@ -474,42 +508,81 @@ export default function SocialLinksEditor() {
                     <DialogTrigger asChild>
                       <Button variant="outline" size="sm" className="gap-1.5"><QrCode className="h-3.5 w-3.5" /><span className="hidden sm:inline">QR</span></Button>
                     </DialogTrigger>
-                    <DialogContent className="max-w-xs">
-                      <DialogHeader><DialogTitle className="text-center">{isAr ? "رمز QR" : "QR Code"}</DialogTitle></DialogHeader>
+                    <DialogContent className="max-w-sm">
+                      <DialogHeader><DialogTitle className="text-center">{isAr ? "رمز QR مخصص" : "Custom QR Code"}</DialogTitle></DialogHeader>
                       <div className="flex flex-col items-center gap-4 py-4">
-                        <div id="qr-themed-container" className="p-6 rounded-2xl shadow-lg" style={{
+                        <div id="qr-themed-container" className="p-6 rounded-2xl shadow-lg relative" style={{
                           background: THEME_COLORS[form.theme]?.bg || "#ffffff",
                           border: `2px solid ${THEME_COLORS[form.theme]?.border || "#e5e7eb"}`,
                         }}>
                           <QRCodeSVG
                             value={fullUrl}
-                            size={180}
+                            size={200}
                             level="H"
                             fgColor={THEME_COLORS[form.theme]?.accent || "#000000"}
                             bgColor="transparent"
+                            imageSettings={extra.qr_logo_url ? { src: extra.qr_logo_url, height: 40, width: 40, excavate: true } : undefined}
                           />
+                          {extra.qr_show_username && (
+                            <p className="text-center mt-3 text-xs font-semibold" style={{ color: THEME_COLORS[form.theme]?.text || "#000", fontFamily: FONT_MAP[form.font_family] || "inherit" }}>
+                              @{profile.username}
+                            </p>
+                          )}
                         </div>
                         <p className="text-xs text-muted-foreground text-center font-mono" dir="ltr">{fullUrl}</p>
-                        <div className="flex gap-2">
+                        {/* QR Settings */}
+                        <div className="w-full space-y-2">
+                          <div className="flex items-center justify-between">
+                            <Label className="text-xs">{isAr ? "إظهار اسم المستخدم" : "Show Username"}</Label>
+                            <Switch checked={extra.qr_show_username} onCheckedChange={v => updateExtra({ qr_show_username: v })} />
+                          </div>
+                          <div>
+                            <Label className="text-[11px] mb-1 block">{isAr ? "شعار مخصص (URL)" : "Custom Logo (URL)"}</Label>
+                            <Input value={extra.qr_logo_url} onChange={e => updateExtra({ qr_logo_url: e.target.value })} placeholder="https://..." dir="ltr" className="text-xs h-8" />
+                          </div>
+                        </div>
+                        <div className="flex gap-2 flex-wrap justify-center">
                           <Button variant="outline" size="sm" onClick={copyLink} className="gap-1.5">
                             <Copy className="h-3.5 w-3.5" />{isAr ? "نسخ" : "Copy"}
                           </Button>
                           <Button variant="outline" size="sm" className="gap-1.5" onClick={() => {
                             const svg = document.querySelector('#qr-themed-container svg') as SVGSVGElement;
                             if (!svg) return;
+                            const svgData = new XMLSerializer().serializeToString(svg);
+                            const blob = new Blob([svgData], { type: "image/svg+xml" });
+                            const a = document.createElement("a");
+                            a.href = URL.createObjectURL(blob);
+                            a.download = `${profile?.username || "qr"}-altoha.svg`;
+                            a.click();
+                            URL.revokeObjectURL(a.href);
+                          }}>
+                            <Download className="h-3.5 w-3.5" />{isAr ? "SVG" : "SVG"}
+                          </Button>
+                          <Button variant="outline" size="sm" className="gap-1.5" onClick={() => {
+                            const svg = document.querySelector('#qr-themed-container svg') as SVGSVGElement;
+                            if (!svg) return;
                             const canvas = document.createElement('canvas');
                             const ctx = canvas.getContext('2d');
-                            canvas.width = 400; canvas.height = 400;
+                            canvas.width = 600; canvas.height = extra.qr_show_username ? 680 : 600;
                             const svgData = new XMLSerializer().serializeToString(svg);
                             const img = new window.Image();
                             img.onload = () => {
                               if (ctx) {
                                 const tc = THEME_COLORS[form.theme];
+                                // Draw themed background
                                 ctx.fillStyle = tc?.accent || '#ffffff';
-                                ctx.globalAlpha = 0.08;
-                                ctx.fillRect(0, 0, 400, 400);
+                                ctx.globalAlpha = 0.06;
+                                ctx.fillRect(0, 0, canvas.width, canvas.height);
                                 ctx.globalAlpha = 1;
-                                ctx.drawImage(img, 20, 20, 360, 360);
+                                // Draw QR centered
+                                ctx.drawImage(img, 50, 50, 500, 500);
+                                // Draw username
+                                if (extra.qr_show_username) {
+                                  ctx.fillStyle = tc?.text || '#000000';
+                                  ctx.font = "bold 24px sans-serif";
+                                  ctx.textAlign = "center";
+                                  ctx.fillText(`@${profile?.username}`, canvas.width / 2, 620);
+                                }
                               }
                               const link = document.createElement('a');
                               link.download = `${profile?.username || 'qr'}-altoha.png`;
@@ -518,7 +591,7 @@ export default function SocialLinksEditor() {
                             };
                             img.src = 'data:image/svg+xml;base64,' + btoa(unescape(encodeURIComponent(svgData)));
                           }}>
-                            <Download className="h-3.5 w-3.5" />{isAr ? "تحميل PNG" : "Download PNG"}
+                            <Download className="h-3.5 w-3.5" />{isAr ? "PNG" : "PNG"}
                           </Button>
                         </div>
                       </div>
@@ -1452,6 +1525,33 @@ export default function SocialLinksEditor() {
                       </CardContent>
                     </Card>
 
+                    {/* Custom CSS */}
+                    <Card className="overflow-hidden">
+                      <CardHeader className="pb-3 bg-gradient-to-r from-muted/40 to-transparent">
+                        <CardTitle className="text-sm flex items-center gap-2">
+                          <div className="h-7 w-7 rounded-lg bg-primary/10 flex items-center justify-center">
+                            <Settings2 className="h-3.5 w-3.5 text-primary" />
+                          </div>
+                          {isAr ? "تخصيص CSS متقدم" : "Advanced CSS Customization"}
+                        </CardTitle>
+                        <p className="text-[11px] text-muted-foreground">
+                          {isAr ? "أضف أنماط CSS مخصصة لصفحتك العامة — للمستخدمين المتقدمين" : "Add custom CSS styles to your public page — for advanced users"}
+                        </p>
+                      </CardHeader>
+                      <CardContent className="space-y-3 pt-3">
+                        <Textarea
+                          value={extra.custom_user_css}
+                          onChange={e => updateExtra({ custom_user_css: e.target.value })}
+                          placeholder={isAr ? "/* أضف CSS مخصص */\n.my-class { color: red; }" : "/* Add custom CSS */\n.my-class { color: red; }"}
+                          className="min-h-[120px] text-xs font-mono"
+                          dir="ltr"
+                        />
+                        <p className="text-[10px] text-muted-foreground">
+                          {isAr ? "⚠️ CSS غير صالح قد يؤثر على مظهر الصفحة" : "⚠️ Invalid CSS may affect page appearance"}
+                        </p>
+                      </CardContent>
+                    </Card>
+
                     {/* Multi-Page Profiles */}
                     <Card className="overflow-hidden">
                       <CardHeader className="pb-3 bg-gradient-to-r from-muted/40 to-transparent">
@@ -1663,6 +1763,74 @@ export default function SocialLinksEditor() {
                                 </div>
                               ))}
                           </div>
+                        </CardContent>
+                      </Card>
+                    )}
+
+                    {/* Visitor Analytics */}
+                    {visitorStats && visitorStats.total > 0 && (
+                      <Card className="overflow-hidden">
+                        <CardHeader className="pb-3 bg-gradient-to-r from-muted/40 to-transparent">
+                          <CardTitle className="text-sm flex items-center gap-2">
+                            <div className="h-7 w-7 rounded-lg bg-chart-3/10 flex items-center justify-center">
+                              <Eye className="h-3.5 w-3.5 text-chart-3" />
+                            </div>
+                            {isAr ? "إحصائيات الزوار" : "Visitor Analytics"}
+                            <Badge variant="secondary" className="text-[10px] ms-auto">{visitorStats.total} {isAr ? "زيارة" : "visits"}</Badge>
+                          </CardTitle>
+                          <p className="text-[11px] text-muted-foreground">
+                            {isAr ? `${visitorStats.recent7d} زيارة في آخر 7 أيام` : `${visitorStats.recent7d} visits in the last 7 days`}
+                          </p>
+                        </CardHeader>
+                        <CardContent className="pt-3 space-y-4">
+                          {/* Devices */}
+                          {Object.keys(visitorStats.devices).length > 0 && (
+                            <div>
+                              <p className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground mb-2">{isAr ? "الأجهزة" : "Devices"}</p>
+                              <div className="flex flex-wrap gap-1.5">
+                                {Object.entries(visitorStats.devices).sort((a, b) => b[1] - a[1]).map(([device, count]) => (
+                                  <Badge key={device} variant="outline" className="text-[10px] gap-1">
+                                    <Smartphone className="h-2.5 w-2.5" />
+                                    {device} <span className="font-bold">{count}</span>
+                                  </Badge>
+                                ))}
+                              </div>
+                            </div>
+                          )}
+                          {/* Top Countries */}
+                          {Object.keys(visitorStats.countries).length > 0 && (
+                            <div>
+                              <p className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground mb-2">{isAr ? "الدول" : "Countries"}</p>
+                              <div className="space-y-1">
+                                {Object.entries(visitorStats.countries).sort((a, b) => b[1] - a[1]).slice(0, 5).map(([country, count]) => {
+                                  const pct = Math.round((count / visitorStats.total) * 100);
+                                  return (
+                                    <div key={country} className="flex items-center gap-2">
+                                      <span className="text-xs w-16 truncate">{country}</span>
+                                      <div className="flex-1 h-1.5 rounded-full bg-muted/50 overflow-hidden">
+                                        <div className="h-full rounded-full bg-chart-1/60" style={{ width: `${pct}%` }} />
+                                      </div>
+                                      <span className="text-[10px] font-bold tabular-nums w-6 text-end">{count}</span>
+                                    </div>
+                                  );
+                                })}
+                              </div>
+                            </div>
+                          )}
+                          {/* Referrers */}
+                          {Object.keys(visitorStats.referrers).length > 0 && (
+                            <div>
+                              <p className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground mb-2">{isAr ? "مصادر الزيارة" : "Referrers"}</p>
+                              <div className="space-y-1">
+                                {Object.entries(visitorStats.referrers).sort((a, b) => b[1] - a[1]).slice(0, 5).map(([ref, count]) => (
+                                  <div key={ref} className="flex items-center justify-between text-xs">
+                                    <span className="truncate flex-1">{ref}</span>
+                                    <span className="font-bold tabular-nums ms-2">{count}</span>
+                                  </div>
+                                ))}
+                              </div>
+                            </div>
+                          )}
                         </CardContent>
                       </Card>
                     )}
