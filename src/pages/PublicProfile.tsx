@@ -40,6 +40,7 @@ import { PublicProfileGallery } from "@/components/public-profile/PublicProfileG
 import { PublicProfileEmptySection } from "@/components/public-profile/PublicProfileEmptySection";
 import { PublicProfileAchievements } from "@/components/public-profile/PublicProfileAchievements";
 import { ProfileActivityTimeline } from "@/components/profile/ProfileActivityTimeline";
+import { CollapsibleProfileSection } from "@/components/public-profile/CollapsibleProfileSection";
 
 type Profile = Database["public"]["Tables"]["profiles"]["Row"];
 type AppRole = Database["public"]["Enums"]["app_role"];
@@ -82,38 +83,8 @@ const formatPeriodRange = (startDate: string | null, endDate: string | null, isC
   return isAr ? "غير محدد" : "Not specified";
 };
 
-function SectionTitle({ icon: Icon, label }: { icon: any; label: string }) {
-  return (
-    <div className="flex items-center gap-2.5 mb-3">
-      <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-primary/8">
-        <Icon className="h-4 w-4 text-primary" />
-      </div>
-      <h2 className="font-serif text-base font-bold">{label}</h2>
-      <div className="flex-1 h-px bg-border/25" />
-    </div>
-  );
-}
 
-function CompetitionHistoryWrapper({ userId, isAr }: { userId: string; isAr: boolean }) {
-  const { data: regs } = useQuery({
-    queryKey: ["user-competition-count", userId],
-    queryFn: async () => {
-      const { count } = await supabase
-        .from("competition_registrations")
-        .select("id", { count: "exact", head: true })
-        .eq("participant_id", userId);
-      return count || 0;
-    },
-    enabled: !!userId,
-  });
-  if (!regs) return null;
-  return (
-    <>
-      <SectionTitle icon={Trophy} label={isAr ? "المسابقات" : "Competitions"} />
-      <CompetitionHistory userId={userId} />
-    </>
-  );
-}
+
 
 export default function PublicProfile() {
   const { username } = useParams<{ username: string }>();
@@ -328,26 +299,30 @@ export default function PublicProfile() {
       <main className="flex-1 px-3 sm:px-4 md:px-6 max-w-[1200px] mx-auto w-full mt-4 sm:mt-6 pb-10">
         <div className="grid grid-cols-1 md:grid-cols-[1fr_280px] lg:grid-cols-[1fr_320px] gap-4 sm:gap-6">
           {/* ── LEFT COLUMN (Main Content) ── */}
-          <div className="space-y-6 min-w-0">
+          <div className="space-y-5 min-w-0">
             {/* About */}
             {isVisible("bio") && (
               <SectionReveal delay={150}>
-                {(bio || specialization) ? (
-                  <>
-                    <SectionTitle icon={User} label={isAr ? "نبذة" : "About"} />
+                <CollapsibleProfileSection
+                  icon={User}
+                  label={isAr ? "نبذة" : "About"}
+                  defaultOpen={true}
+                  isEmpty={!bio && !specialization}
+                >
+                  {(bio || specialization) ? (
                     <PublicProfileAbout
                       profile={profile} bio={bio} specialization={specialization}
                       userSpecialties={userSpecialties} isAr={isAr}
                     />
-                  </>
-                ) : (
-                  <PublicProfileEmptySection
-                    icon={User}
-                    label={isAr ? "نبذة" : "About"}
-                    description={isAr ? "لم يتم إضافة نبذة بعد" : "No bio added yet"}
-                    isAr={isAr}
-                  />
-                )}
+                  ) : (
+                    <PublicProfileEmptySection
+                      icon={User}
+                      label={isAr ? "نبذة" : "About"}
+                      description={isAr ? "لم يتم إضافة نبذة بعد" : "No bio added yet"}
+                      isAr={isAr}
+                    />
+                  )}
+                </CollapsibleProfileSection>
               </SectionReveal>
             )}
 
@@ -368,9 +343,14 @@ export default function PublicProfile() {
             {/* Experience */}
             {isVisible("career") && (
               <SectionReveal delay={250}>
-                {workRecords.length > 0 ? (
-                  <>
-                    <SectionTitle icon={Briefcase} label={isAr ? "الخبرة المهنية" : "Professional Experience"} />
+                <CollapsibleProfileSection
+                  icon={Briefcase}
+                  label={isAr ? "الخبرة المهنية" : "Professional Experience"}
+                  count={workRecords.length}
+                  defaultOpen={true}
+                  isEmpty={workRecords.length === 0}
+                >
+                  {workRecords.length > 0 ? (
                     <div className="space-y-2.5">
                       {workRecords.map((record: any) => (
                         <Card key={record.id} className="rounded-2xl border-border/25 hover:shadow-md transition-all duration-300 hover:border-border/40 hover:-translate-y-0.5 group/card">
@@ -407,24 +387,29 @@ export default function PublicProfile() {
                         </Card>
                       ))}
                     </div>
-                  </>
-                ) : (
-                  <PublicProfileEmptySection
-                    icon={Briefcase}
-                    label={isAr ? "الخبرة المهنية" : "Professional Experience"}
-                    description={isAr ? "لم يتم إضافة خبرة مهنية بعد" : "No experience added yet"}
-                    isAr={isAr}
-                  />
-                )}
+                  ) : (
+                    <PublicProfileEmptySection
+                      icon={Briefcase}
+                      label={isAr ? "الخبرة المهنية" : "Professional Experience"}
+                      description={isAr ? "لم يتم إضافة خبرة مهنية بعد" : "No experience added yet"}
+                      isAr={isAr}
+                    />
+                  )}
+                </CollapsibleProfileSection>
               </SectionReveal>
             )}
 
             {/* Education */}
             {isVisible("education") && (
               <SectionReveal delay={300}>
-                {educationRecords.length > 0 ? (
-                  <>
-                    <SectionTitle icon={GraduationCap} label={isAr ? "التعليم" : "Education"} />
+                <CollapsibleProfileSection
+                  icon={GraduationCap}
+                  label={isAr ? "التعليم" : "Education"}
+                  count={educationRecords.length}
+                  defaultOpen={true}
+                  isEmpty={educationRecords.length === 0}
+                >
+                  {educationRecords.length > 0 ? (
                     <div className="space-y-2.5">
                       {educationRecords.map((record: any) => (
                         <Card key={record.id} className="rounded-2xl border-border/25 hover:shadow-md transition-all duration-300 hover:border-border/40 hover:-translate-y-0.5 group/card">
@@ -453,24 +438,29 @@ export default function PublicProfile() {
                         </Card>
                       ))}
                     </div>
-                  </>
-                ) : (
-                  <PublicProfileEmptySection
-                    icon={GraduationCap}
-                    label={isAr ? "التعليم" : "Education"}
-                    description={isAr ? "لم يتم إضافة تعليم بعد" : "No education added yet"}
-                    isAr={isAr}
-                  />
-                )}
+                  ) : (
+                    <PublicProfileEmptySection
+                      icon={GraduationCap}
+                      label={isAr ? "التعليم" : "Education"}
+                      description={isAr ? "لم يتم إضافة تعليم بعد" : "No education added yet"}
+                      isAr={isAr}
+                    />
+                  )}
+                </CollapsibleProfileSection>
               </SectionReveal>
             )}
 
             {/* Memberships */}
             {isVisible("memberships") && (
               <SectionReveal delay={350}>
-                {memberships.length > 0 ? (
-                  <>
-                    <SectionTitle icon={Building2} label={isAr ? "العضويات والجهات" : "Memberships & Entities"} />
+                <CollapsibleProfileSection
+                  icon={Building2}
+                  label={isAr ? "العضويات والجهات" : "Memberships & Entities"}
+                  count={memberships.length}
+                  defaultOpen={true}
+                  isEmpty={memberships.length === 0}
+                >
+                  {memberships.length > 0 ? (
                     <div className="grid gap-2.5 sm:grid-cols-2">
                       {memberships.map((m: any) => (
                         <Card key={m.id} className="rounded-2xl border-border/25 hover:shadow-md transition-all duration-300 hover:border-border/40 hover:-translate-y-0.5 group/card">
@@ -493,51 +483,77 @@ export default function PublicProfile() {
                         </Card>
                       ))}
                     </div>
-                  </>
-                ) : (
-                  <PublicProfileEmptySection
-                    icon={Building2}
-                    label={isAr ? "العضويات والجهات" : "Memberships & Entities"}
-                    description={isAr ? "لم يتم إضافة عضويات بعد" : "No memberships added yet"}
-                    isAr={isAr}
-                  />
-                )}
+                  ) : (
+                    <PublicProfileEmptySection
+                      icon={Building2}
+                      label={isAr ? "العضويات والجهات" : "Memberships & Entities"}
+                      description={isAr ? "لم يتم إضافة عضويات بعد" : "No memberships added yet"}
+                      isAr={isAr}
+                    />
+                  )}
+                </CollapsibleProfileSection>
               </SectionReveal>
             )}
 
             {/* Certificates */}
             {isVisible("certificates") && (
               <SectionReveal delay={400}>
-                <ProfileCertificates userId={profile.user_id} isOwner={isOwnProfile} />
+                <CollapsibleProfileSection
+                  icon={Award}
+                  label={isAr ? "الشهادات" : "Certificates"}
+                  defaultOpen={true}
+                >
+                  <ProfileCertificates userId={profile.user_id} isOwner={isOwnProfile} />
+                </CollapsibleProfileSection>
               </SectionReveal>
             )}
 
             {/* Competitions */}
             {isVisible("competitions") && (
               <SectionReveal delay={450}>
-                <CompetitionHistoryWrapper userId={profile.user_id} isAr={isAr} />
+                <CollapsibleProfileSection
+                  icon={Trophy}
+                  label={isAr ? "المسابقات" : "Competitions"}
+                  defaultOpen={false}
+                >
+                  <CompetitionHistory userId={profile.user_id} />
+                </CollapsibleProfileSection>
               </SectionReveal>
             )}
 
             {/* Badges */}
             {isVisible("badges") && (
               <SectionReveal delay={500}>
-                <UserBadgesDisplay userId={profile.user_id} />
+                <CollapsibleProfileSection
+                  icon={Medal}
+                  label={isAr ? "الأوسمة" : "Badges"}
+                  defaultOpen={false}
+                >
+                  <UserBadgesDisplay userId={profile.user_id} />
+                </CollapsibleProfileSection>
               </SectionReveal>
             )}
 
             {/* Gallery */}
             <SectionReveal delay={550}>
-              {mediaFiles.length > 0 ? (
-                <PublicProfileGallery mediaFiles={mediaFiles} isAr={isAr} />
-              ) : (
-                <PublicProfileEmptySection
-                  icon={ImageIcon}
-                  label={isAr ? "الألبوم" : "Gallery"}
-                  description={isAr ? "لم يتم إضافة صور بعد" : "No photos added yet"}
-                  isAr={isAr}
-                />
-              )}
+              <CollapsibleProfileSection
+                icon={ImageIcon}
+                label={isAr ? "الألبوم" : "Gallery"}
+                count={mediaFiles.length}
+                defaultOpen={mediaFiles.length > 0}
+                isEmpty={mediaFiles.length === 0}
+              >
+                {mediaFiles.length > 0 ? (
+                  <PublicProfileGallery mediaFiles={mediaFiles} isAr={isAr} />
+                ) : (
+                  <PublicProfileEmptySection
+                    icon={ImageIcon}
+                    label={isAr ? "الألبوم" : "Gallery"}
+                    description={isAr ? "لم يتم إضافة صور بعد" : "No photos added yet"}
+                    isAr={isAr}
+                  />
+                )}
+              </CollapsibleProfileSection>
             </SectionReveal>
           </div>
 
