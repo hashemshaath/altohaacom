@@ -1085,6 +1085,44 @@ export type Database = {
         }
         Relationships: []
       }
+      bio_subscribers: {
+        Row: {
+          email: string
+          id: string
+          is_active: boolean
+          name: string | null
+          page_id: string
+          page_owner_id: string
+          subscribed_at: string
+        }
+        Insert: {
+          email: string
+          id?: string
+          is_active?: boolean
+          name?: string | null
+          page_id: string
+          page_owner_id: string
+          subscribed_at?: string
+        }
+        Update: {
+          email?: string
+          id?: string
+          is_active?: boolean
+          name?: string | null
+          page_id?: string
+          page_owner_id?: string
+          subscribed_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "bio_subscribers_page_id_fkey"
+            columns: ["page_id"]
+            isOneToOne: false
+            referencedRelation: "social_link_pages"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       blind_judging_codes: {
         Row: {
           blind_code: string

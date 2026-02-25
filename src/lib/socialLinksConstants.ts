@@ -119,6 +119,15 @@ export interface ExtraSettings {
   // QR settings
   qr_logo_url: string;
   qr_show_username: boolean;
+  // Password protection
+  enable_password: boolean;
+  page_password: string;
+  // Email collection
+  enable_email_collection: boolean;
+  email_collection_title: string;
+  email_collection_title_ar: string;
+  email_collection_description: string;
+  email_collection_description_ar: string;
 }
 
 export const DEFAULT_EXTRA: ExtraSettings = {
@@ -153,6 +162,13 @@ export const DEFAULT_EXTRA: ExtraSettings = {
   custom_user_css: "",
   qr_logo_url: "",
   qr_show_username: true,
+  enable_password: false,
+  page_password: "",
+  enable_email_collection: false,
+  email_collection_title: "Stay Connected",
+  email_collection_title_ar: "ابقَ على تواصل",
+  email_collection_description: "Subscribe to get updates",
+  email_collection_description_ar: "اشترك للحصول على التحديثات",
 };
 
 export function parseExtra(customCss: string | null | undefined): ExtraSettings {
