@@ -2121,6 +2121,56 @@ export default function SocialLinksEditor() {
                         </CardContent>
                       </Card>
                     )}
+
+                    {/* Export Data */}
+                    <Card className="overflow-hidden">
+                      <CardHeader className="pb-3 bg-gradient-to-r from-muted/40 to-transparent">
+                        <CardTitle className="text-sm flex items-center gap-2">
+                          <div className="h-7 w-7 rounded-lg bg-primary/10 flex items-center justify-center">
+                            <FileDown className="h-3.5 w-3.5 text-primary" />
+                          </div>
+                          {isAr ? "تصدير البيانات" : "Export Data"}
+                        </CardTitle>
+                      </CardHeader>
+                      <CardContent className="pt-3">
+                        <div className="grid grid-cols-2 gap-2">
+                          <Button variant="outline" size="sm" className="text-xs gap-1.5" onClick={async () => {
+                            if (!page) return;
+                            const { data } = await supabase.from("social_link_visits").select("country, device_type, browser, referrer, created_at").eq("page_id", page.id).order("created_at", { ascending: false }).limit(1000);
+                            if (!data?.length) return;
+                            const csv = "Date,Country,Device,Browser,Referrer\n" + data.map(r => `${r.created_at},${r.country || ""},${r.device_type || ""},${r.browser || ""},${r.referrer || ""}`).join("\n");
+                            const blob = new Blob(["\uFEFF" + csv], { type: "text/csv;charset=utf-8;" });
+                            const url = URL.createObjectURL(blob);
+                            const a = document.createElement("a"); a.href = url; a.download = `visitors_${new Date().toISOString().slice(0,10)}.csv`; a.click(); URL.revokeObjectURL(url);
+                          }}>
+                            <Eye className="h-3 w-3" />
+                            {isAr ? "الزوار" : "Visitors"}
+                          </Button>
+                          <Button variant="outline" size="sm" className="text-xs gap-1.5" onClick={() => {
+                            if (!items?.length) return;
+                            const csv = "Title,URL,Clicks,Type\n" + items.map(i => `"${i.title}","${i.url}",${i.click_count || 0},${i.link_type || ""}`).join("\n");
+                            const blob = new Blob(["\uFEFF" + csv], { type: "text/csv;charset=utf-8;" });
+                            const url = URL.createObjectURL(blob);
+                            const a = document.createElement("a"); a.href = url; a.download = `links_${new Date().toISOString().slice(0,10)}.csv`; a.click(); URL.revokeObjectURL(url);
+                          }}>
+                            <MousePointerClick className="h-3 w-3" />
+                            {isAr ? "النقرات" : "Clicks"}
+                          </Button>
+                          <Button variant="outline" size="sm" className="text-xs gap-1.5 col-span-2" onClick={async () => {
+                            if (!page) return;
+                            const { data } = await supabase.from("bio_subscribers").select("email, name, subscribed_at").eq("page_id", page.id).order("subscribed_at", { ascending: false });
+                            if (!data?.length) return;
+                            const csv = "Email,Name,Subscribed At\n" + data.map(r => `${r.email},"${r.name || ""}",${r.subscribed_at}`).join("\n");
+                            const blob = new Blob(["\uFEFF" + csv], { type: "text/csv;charset=utf-8;" });
+                            const url = URL.createObjectURL(blob);
+                            const a = document.createElement("a"); a.href = url; a.download = `subscribers_${new Date().toISOString().slice(0,10)}.csv`; a.click(); URL.revokeObjectURL(url);
+                          }}>
+                            <Download className="h-3 w-3" />
+                            {isAr ? "المشتركين" : "Subscribers"}
+                          </Button>
+                        </div>
+                      </CardContent>
+                    </Card>
                   </TabsContent>
                 </Tabs>
               </div>
