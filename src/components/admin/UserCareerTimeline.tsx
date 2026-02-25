@@ -1678,38 +1678,58 @@ function CareerForm({ form, editingId, isAr, isPending, onUpdate, onSave, onCanc
   form: any; editingId: string | null; isAr: boolean; isPending: boolean;
   onUpdate: (key: string, value: any) => void; onSave: () => void; onCancel: () => void;
 }) {
-  const isEdu = form.record_type === "education";
-  
+  const rt = form.record_type;
+  const isEdu = rt === "education";
+  const isWork = rt === "work";
+  const isJudging = rt === "judging";
+  const isMedia = rt === "media";
+  const isOrganizing = rt === "organizing";
+
+  const formTitle = editingId
+    ? (isAr ? "تعديل" : "Edit")
+    : isEdu ? (isAr ? "إضافة تعليم" : "Add Education")
+    : isWork ? (isAr ? "إضافة خبرة" : "Add Experience")
+    : isJudging ? (isAr ? "إضافة تحكيم" : "Add Judging")
+    : isMedia ? (isAr ? "إضافة مقابلة تلفزيونية" : "Add TV Interview")
+    : isOrganizing ? (isAr ? "إضافة فعالية منظمة" : "Add Organized Event")
+    : (isAr ? "إضافة عنصر" : "Add Item");
+
+  const formIcon = isEdu ? GraduationCap : isJudging ? Scale : isMedia ? Tv : isOrganizing ? CalendarCheck : Briefcase;
+  const FormIcon = formIcon;
+  const iconClass = isEdu ? "bg-chart-2/15 text-chart-2" : isJudging ? "bg-amber-500/15 text-amber-600" : isMedia ? "bg-blue-500/15 text-blue-600" : isOrganizing ? "bg-green-500/15 text-green-600" : "bg-chart-3/15 text-chart-3";
+
   return (
     <div className="rounded-xl border border-primary/20 bg-card p-3 sm:p-4 space-y-3 shadow-sm animate-in fade-in-0 zoom-in-95 duration-200">
-      {/* Compact Header */}
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <div className={`flex h-7 w-7 items-center justify-center rounded-lg ${isEdu ? "bg-chart-2/15 text-chart-2" : "bg-chart-3/15 text-chart-3"}`}>
-            {isEdu ? <GraduationCap className="h-3.5 w-3.5" /> : <Briefcase className="h-3.5 w-3.5" />}
+          <div className={`flex h-7 w-7 items-center justify-center rounded-lg ${iconClass}`}>
+            <FormIcon className="h-3.5 w-3.5" />
           </div>
-          <h4 className="text-xs font-bold">
-            {editingId ? (isAr ? "تعديل" : "Edit") : isEdu ? (isAr ? "إضافة تعليم" : "Add Education") : (isAr ? "إضافة خبرة" : "Add Experience")}
-          </h4>
+          <h4 className="text-xs font-bold">{formTitle}</h4>
         </div>
         <Button size="icon" variant="ghost" className="h-6 w-6 rounded-md" onClick={onCancel}><X className="h-3.5 w-3.5" /></Button>
       </div>
 
-      {/* Organization */}
+      {/* Organization / Entity */}
       <EntitySelector value={form.entity_id} entityName={form.entity_name}
         onChange={(id, name) => { onUpdate("entity_id", id); onUpdate("entity_name", name); }}
-        label={isEdu ? (isAr ? "المؤسسة" : "Institution") : (isAr ? "جهة العمل" : "Organization")} />
+        label={isEdu ? (isAr ? "المؤسسة التعليمية" : "Institution")
+          : isJudging ? (isAr ? "المسابقة / المعرض" : "Competition / Exhibition")
+          : isMedia ? (isAr ? "اسم القناة" : "Channel Name")
+          : isOrganizing ? (isAr ? "اسم الفعالية / المسابقة" : "Event / Competition Name")
+          : (isAr ? "جهة العمل" : "Organization")} />
 
       {/* Title bilingual */}
       <BilingualFieldPair
-        labelEn={isEdu ? "Degree" : "Title"} labelAr={isEdu ? "الدرجة" : "المسمى"}
+        labelEn={isEdu ? "Degree / Specialization" : isJudging ? "Competition Name" : isMedia ? "Program Name" : isOrganizing ? "Specialization / Role" : "Job Title"}
+        labelAr={isEdu ? "الدرجة / التخصص" : isJudging ? "اسم المسابقة" : isMedia ? "اسم البرنامج" : isOrganizing ? "التخصص / الدور" : "المسمى الوظيفي"}
         valueEn={form.title} valueAr={form.title_ar}
         onChangeEn={(v) => onUpdate("title", v)} onChangeAr={(v) => onUpdate("title_ar", v)}
         isAr={isAr} required
       />
 
-      {/* Type-specific fields */}
-      {isEdu ? (
+      {/* ── Section-specific fields ── */}
+      {isEdu && (
         <div className="grid gap-2 sm:grid-cols-3">
           <div className="space-y-1">
             <Label className="text-[11px] font-medium text-muted-foreground">{isAr ? "المستوى" : "Level"}</Label>
@@ -1719,29 +1739,87 @@ function CareerForm({ form, editingId, isAr, isPending, onUpdate, onSave, onCanc
             </Select>
           </div>
           <div className="space-y-1">
-            <Label className="text-[11px] font-medium text-muted-foreground">{isAr ? "التخصص" : "Field"}</Label>
-            <Input value={form.field_of_study} onChange={(e) => onUpdate("field_of_study", e.target.value)} className="h-8 text-xs" placeholder={isAr ? "الطهي" : "Culinary"} />
+            <Label className="text-[11px] font-medium text-muted-foreground">{isAr ? "التخصص" : "Field of Study"}</Label>
+            <Input value={form.field_of_study} onChange={(e) => onUpdate("field_of_study", e.target.value)} className="h-8 text-xs" placeholder={isAr ? "الطهي" : "Culinary Arts"} />
           </div>
           <div className="space-y-1">
             <Label className="text-[11px] font-medium text-muted-foreground">{isAr ? "المعدل" : "GPA"}</Label>
             <Input value={form.grade} onChange={(e) => onUpdate("grade", e.target.value)} className="h-8 text-xs" placeholder="4.0" />
           </div>
         </div>
-      ) : form.record_type === "work" ? (
+      )}
+
+      {isWork && (
         <div className="grid gap-2 sm:grid-cols-2">
           <div className="space-y-1">
-            <Label className="text-[11px] font-medium text-muted-foreground">{isAr ? "نوع التوظيف" : "Type"}</Label>
+            <Label className="text-[11px] font-medium text-muted-foreground">{isAr ? "نوع التوظيف" : "Employment Type"}</Label>
             <Select value={form.employment_type} onValueChange={(v) => onUpdate("employment_type", v)}>
               <SelectTrigger className="h-8 text-xs"><SelectValue placeholder={isAr ? "اختر" : "Select"} /></SelectTrigger>
               <SelectContent>{EMPLOYMENT_TYPES.map(t => <SelectItem key={t.value} value={t.value}>{isAr ? t.ar : t.en}</SelectItem>)}</SelectContent>
             </Select>
           </div>
-          <div className="space-y-1">
-            <Label className="text-[11px] font-medium text-muted-foreground">{isAr ? "الموقع" : "Location"}</Label>
-            <Input value={form.location} onChange={(e) => onUpdate("location", e.target.value)} className="h-8 text-xs" placeholder={isAr ? "الرياض" : "Riyadh"} />
-          </div>
+          <BilingualFieldPair
+            labelEn="Department" labelAr="القسم"
+            valueEn={form.department} valueAr={form.department_ar}
+            onChangeEn={(v) => onUpdate("department", v)} onChangeAr={(v) => onUpdate("department_ar", v)}
+            isAr={isAr}
+          />
         </div>
-      ) : null}
+      )}
+
+      {isJudging && (
+        <div className="grid gap-2 sm:grid-cols-2">
+          <div className="space-y-1">
+            <Label className="text-[11px] font-medium text-muted-foreground">{isAr ? "منصب التحكيم" : "Judging Position"}</Label>
+            <Select value={form.employment_type || "judge"} onValueChange={(v) => onUpdate("employment_type", v)}>
+              <SelectTrigger className="h-8 text-xs"><SelectValue /></SelectTrigger>
+              <SelectContent>{JUDGING_POSITIONS.map(p => <SelectItem key={p.value} value={p.value}>{isAr ? p.ar : p.en}</SelectItem>)}</SelectContent>
+            </Select>
+          </div>
+          <EntitySelector value={null} entityName={form.department || ""}
+            onChange={(_, name) => onUpdate("department", name)}
+            label={isAr ? "الجمعية المعتمدة" : "Associated Organization"} />
+        </div>
+      )}
+
+      {isMedia && (
+        <div className="grid gap-2 sm:grid-cols-2">
+          <div className="space-y-1">
+            <Label className="text-[11px] font-medium text-muted-foreground">{isAr ? "المقدم / المحاور" : "Host / Interviewer"}</Label>
+            <Input value={form.department} onChange={(e) => onUpdate("department", e.target.value)} className="h-8 text-xs" placeholder={isAr ? "اسم المقدم" : "Host name"} />
+          </div>
+          <BilingualFieldPair
+            labelEn="Episode / Topic" labelAr="الحلقة / الموضوع"
+            valueEn={form.description} valueAr={form.description_ar}
+            onChangeEn={(v) => onUpdate("description", v)} onChangeAr={(v) => onUpdate("description_ar", v)}
+            isAr={isAr}
+          />
+        </div>
+      )}
+
+      {isOrganizing && (
+        <BilingualFieldPair
+          labelEn="Description (organizer & beneficiaries)" labelAr="الوصف (المنظم والمستفيدون)"
+          valueEn={form.description} valueAr={form.description_ar}
+          onChangeEn={(v) => onUpdate("description", v)} onChangeAr={(v) => onUpdate("description_ar", v)}
+          isAr={isAr}
+        />
+      )}
+
+      {/* Location: city + country (for all section types) */}
+      <div className="grid gap-2 sm:grid-cols-2">
+        <div className="space-y-1">
+          <Label className="text-[11px] font-medium text-muted-foreground">{isAr ? "المدينة" : "City"}</Label>
+          <Input value={form.location} onChange={(e) => onUpdate("location", e.target.value)} className="h-8 text-xs" placeholder={isAr ? "الرياض" : "Riyadh"} />
+        </div>
+        <div className="space-y-1">
+          <Label className="text-[11px] font-medium text-muted-foreground">{isAr ? "الدولة" : "Country"}</Label>
+          <Select value={form.country_code} onValueChange={(v) => onUpdate("country_code", v)}>
+            <SelectTrigger className="h-8 text-xs"><SelectValue placeholder={isAr ? "اختر الدولة" : "Select country"} /></SelectTrigger>
+            <SelectContent>{COUNTRIES.map(c => <SelectItem key={c.code} value={c.code}>{c.flag} {isAr ? c.ar : c.en}</SelectItem>)}</SelectContent>
+          </Select>
+        </div>
+      </div>
 
       {/* Date section */}
       <div className="space-y-2">
@@ -1758,7 +1836,7 @@ function CareerForm({ form, editingId, isAr, isPending, onUpdate, onSave, onCanc
             <div className="flex items-center gap-2 px-2 py-1.5 rounded-lg bg-muted/40">
               <Switch checked={form.is_current} onCheckedChange={(v) => { onUpdate("is_current", v); if (v) onUpdate("end_date", ""); }} className="scale-90" id="is-current-toggle" />
               <Label htmlFor="is-current-toggle" className="text-[11px] font-medium cursor-pointer">
-                {isEdu ? (isAr ? "لا يزال يدرس" : "Still studying") : (isAr ? "لا يزال مستمراً" : "Still ongoing")}
+                {isAr ? "لا يزال مستمراً" : "Still ongoing"}
               </Label>
             </div>
           )}
@@ -1772,6 +1850,16 @@ function CareerForm({ form, editingId, isAr, isPending, onUpdate, onSave, onCanc
           )}
         </div>
       </div>
+
+      {/* Description for work/edu/custom only (media/organizing already handled above) */}
+      {!isMedia && !isOrganizing && (isWork || isEdu || (!isJudging)) && (
+        <BilingualFieldPair
+          labelEn="Description / Notes" labelAr="الوصف / ملاحظات"
+          valueEn={form.description} valueAr={form.description_ar}
+          onChangeEn={(v) => onUpdate("description", v)} onChangeAr={(v) => onUpdate("description_ar", v)}
+          isAr={isAr}
+        />
+      )}
 
       <FormActions isAr={isAr} isPending={isPending} editingId={editingId} canSave={!!form.title.trim()} onSave={onSave} onCancel={onCancel} />
     </div>
@@ -1907,7 +1995,7 @@ function CompetitionEventForm({ form, editingId, isAr, isPending, onUpdate, onSa
       )}
 
       <BilingualFieldPair
-        labelEn="Event / Competition Name" labelAr="اسم الفعالية / المسابقة"
+        labelEn="Competition Name" labelAr="اسم المسابقة"
         valueEn={form.title} valueAr={form.title_ar}
         onChangeEn={(v) => onUpdate("title", v)} onChangeAr={(v) => onUpdate("title_ar", v)}
         isAr={isAr} required
@@ -1917,17 +2005,24 @@ function CompetitionEventForm({ form, editingId, isAr, isPending, onUpdate, onSa
         onChange={(id, name) => { onUpdate("entity_id", id); onUpdate("entity_name", name); }}
         label={isAr ? "الجهة المنظمة" : "Organizer"} />
 
-      <div className="grid gap-2 sm:grid-cols-2">
+      <div className="grid gap-2 sm:grid-cols-3">
         <div className="space-y-1">
-          <Label className="text-[11px] font-medium text-muted-foreground">{isAr ? "الدور" : "Role"}</Label>
-          <Select value={form.employment_type || "participant"} onValueChange={(v) => onUpdate("employment_type", v)}>
-            <SelectTrigger className="h-8 text-xs"><SelectValue /></SelectTrigger>
-            <SelectContent>{COMPETITION_ROLES.map(r => <SelectItem key={r.value} value={r.value}>{isAr ? r.ar : r.en}</SelectItem>)}</SelectContent>
+          <Label className="text-[11px] font-medium text-muted-foreground">{isAr ? "المدينة" : "City"}</Label>
+          <Input value={form.location} onChange={(e) => onUpdate("location", e.target.value)} className="h-8 text-xs" placeholder={isAr ? "الرياض" : "Riyadh"} />
+        </div>
+        <div className="space-y-1">
+          <Label className="text-[11px] font-medium text-muted-foreground">{isAr ? "الدولة" : "Country"}</Label>
+          <Select value={form.country_code || ""} onValueChange={(v) => onUpdate("country_code", v)}>
+            <SelectTrigger className="h-8 text-xs"><SelectValue placeholder={isAr ? "اختر" : "Select"} /></SelectTrigger>
+            <SelectContent>{COUNTRIES.map(c => <SelectItem key={c.code} value={c.code}>{c.flag} {isAr ? c.ar : c.en}</SelectItem>)}</SelectContent>
           </Select>
         </div>
         <div className="space-y-1">
-          <Label className="text-[11px] font-medium text-muted-foreground">{isAr ? "الموقع" : "Location"}</Label>
-          <Input value={form.location} onChange={(e) => onUpdate("location", e.target.value)} className="h-8 text-xs" placeholder={isAr ? "الرياض" : "Riyadh"} />
+          <Label className="text-[11px] font-medium text-muted-foreground">{isAr ? "الميدالية / الإنجاز" : "Medal / Achievement"}</Label>
+          <Select value={form.grade || ""} onValueChange={(v) => onUpdate("grade", v)}>
+            <SelectTrigger className="h-8 text-xs"><SelectValue placeholder={isAr ? "اختر" : "Select"} /></SelectTrigger>
+            <SelectContent>{MEDAL_TYPES.map(m => <SelectItem key={m.value} value={m.value}>{isAr ? m.ar : m.en}</SelectItem>)}</SelectContent>
+          </Select>
         </div>
       </div>
 
