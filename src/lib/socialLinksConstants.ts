@@ -101,6 +101,7 @@ export interface ExtraSettings {
   footer_text: string;
   footer_text_ar: string;
   show_footer: boolean;
+  show_vcard_btn: boolean;
   // Video embeds
   show_video_embeds: boolean;
   // Contact form
@@ -165,6 +166,7 @@ export const DEFAULT_EXTRA: ExtraSettings = {
   footer_text: "",
   footer_text_ar: "",
   show_footer: false,
+  show_vcard_btn: true,
   show_video_embeds: true,
   show_contact_form: false,
   contact_form_title: "Get in Touch",

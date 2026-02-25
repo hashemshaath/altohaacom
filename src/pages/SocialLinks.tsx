@@ -979,6 +979,44 @@ export default function SocialLinks() {
                   <Phone className="h-[18px] w-[18px]" />
                 </a>
               )}
+              {extra.show_vcard_btn && (displayName || phone || whatsapp) && (
+                <button
+                  onClick={() => {
+                    const fn = (profile.full_name || profile.display_name || "").split(" ");
+                    const firstName = fn[0] || "";
+                    const lastName = fn.slice(1).join(" ") || "";
+                    const lines = [
+                      "BEGIN:VCARD",
+                      "VERSION:3.0",
+                      `FN:${displayName}`,
+                      `N:${lastName};${firstName};;;`,
+                    ];
+                    if (jobTitle) lines.push(`TITLE:${jobTitle}`);
+                    if (phone) lines.push(`TEL;TYPE=CELL:${phone}`);
+                    if (whatsapp && whatsapp !== phone) lines.push(`TEL;TYPE=CELL:${whatsapp}`);
+                    if (profile.website) lines.push(`URL:${profile.website}`);
+                    if (profile.instagram) lines.push(`X-SOCIALPROFILE;TYPE=instagram:${profile.instagram}`);
+                    if (profile.linkedin) lines.push(`X-SOCIALPROFILE;TYPE=linkedin:${profile.linkedin}`);
+                    if (profile.avatar_url) lines.push(`PHOTO;VALUE=URI:${profile.avatar_url}`);
+                    const bioUrl = `${window.location.origin}/bio/${profile.username}`;
+                    lines.push(`URL:${bioUrl}`);
+                    if (bio) lines.push(`NOTE:${bio.replace(/\n/g, "\\n").slice(0, 200)}`);
+                    lines.push("END:VCARD");
+                    const blob = new Blob([lines.join("\r\n")], { type: "text/vcard;charset=utf-8" });
+                    const url = URL.createObjectURL(blob);
+                    const a = document.createElement("a");
+                    a.href = url;
+                    a.download = `${profile.username || "contact"}.vcf`;
+                    a.click();
+                    URL.revokeObjectURL(url);
+                  }}
+                  className="group relative flex h-11 w-11 items-center justify-center rounded-full transition-all duration-300 hover:scale-110 active:scale-95"
+                  style={{ background: theme.accentLight, border: `1px solid ${theme.accentMedium}`, color: theme.accent }}
+                  title={isRtl ? "حفظ جهة اتصال" : "Save Contact"}
+                >
+                  <UserPlus className="h-[18px] w-[18px]" />
+                </button>
+              )}
             </div>
           </div>
         )}
