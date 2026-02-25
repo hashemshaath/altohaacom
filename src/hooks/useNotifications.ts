@@ -189,6 +189,43 @@ export function useNotifications() {
           }
         }
       )
+      .on(
+        "postgres_changes",
+        {
+          event: "UPDATE",
+          schema: "public",
+          table: "notifications",
+          filter: `user_id=eq.${user.id}`,
+        },
+        (payload) => {
+          const updated = payload.new as Notification;
+          setNotifications(prev =>
+            prev.map(n => (n.id === updated.id ? updated : n))
+          );
+          // Recalculate unread count
+          setNotifications(prev => {
+            setUnreadCount(prev.filter(n => !n.is_read).length);
+            return prev;
+          });
+        }
+      )
+      .on(
+        "postgres_changes",
+        {
+          event: "DELETE",
+          schema: "public",
+          table: "notifications",
+          filter: `user_id=eq.${user.id}`,
+        },
+        (payload) => {
+          const deletedId = (payload.old as any).id;
+          setNotifications(prev => {
+            const next = prev.filter(n => n.id !== deletedId);
+            setUnreadCount(next.filter(n => !n.is_read).length);
+            return next;
+          });
+        }
+      )
       .subscribe();
 
     return () => {
