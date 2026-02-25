@@ -5,10 +5,11 @@ import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
-import { FileText, Upload, Loader2, Sparkles, ClipboardPaste } from "lucide-react";
+import { FileText, Upload, Loader2, Sparkles, ClipboardPaste, CheckCircle2 } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import type { CVData } from "./types";
 import { CVPreview } from "./CVPreview";
+import { extractTextFromFile } from "./fileParser";
 
 interface Props {
   open: boolean;
@@ -25,6 +26,7 @@ export function CVImportDialog({ open, onOpenChange, targetUserId, isAr, onImpor
   const [parsing, setParsing] = useState(false);
   const [parsedData, setParsedData] = useState<CVData | null>(null);
   const [fileUploading, setFileUploading] = useState(false);
+  const [fileName, setFileName] = useState("");
 
   const handleFileUpload = useCallback(async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -37,38 +39,43 @@ export function CVImportDialog({ open, onOpenChange, targetUserId, isAr, onImpor
       "text/plain",
     ];
 
-    if (!allowedTypes.includes(file.type) && !file.name.endsWith(".txt")) {
+    if (!allowedTypes.includes(file.type) && !file.name.match(/\.(txt|pdf|doc|docx)$/i)) {
       toast({ variant: "destructive", title: isAr ? "نوع ملف غير مدعوم" : "Unsupported file type" });
       return;
     }
 
-    if (file.size > 5 * 1024 * 1024) {
-      toast({ variant: "destructive", title: isAr ? "الملف كبير جداً (الحد 5MB)" : "File too large (max 5MB)" });
+    if (file.size > 10 * 1024 * 1024) {
+      toast({ variant: "destructive", title: isAr ? "الملف كبير جداً (الحد 10MB)" : "File too large (max 10MB)" });
       return;
     }
 
     setFileUploading(true);
+    setFileName(file.name);
     try {
-      if (file.type === "text/plain" || file.name.endsWith(".txt")) {
-        const text = await file.text();
-        setCvText(text);
+      const text = await extractTextFromFile(file);
+      if (text.trim().length < 30) {
+        toast({
+          title: isAr ? "لم نتمكن من استخراج نص كافٍ" : "Could not extract enough text",
+          description: isAr
+            ? "يرجى نسخ محتوى السيرة الذاتية ولصقه في حقل النص"
+            : "Please copy and paste the CV content into the text field",
+          variant: "destructive",
+        });
       } else {
-        // For PDF/DOCX, read as text (basic extraction)
-        const text = await file.text();
-        if (text.trim().length > 50) {
-          setCvText(text);
-        } else {
-          toast({
-            title: isAr ? "لم نتمكن من قراءة الملف" : "Could not read file",
-            description: isAr
-              ? "يرجى نسخ محتوى السيرة الذاتية ولصقه في حقل النص"
-              : "Please copy and paste the CV content into the text field",
-            variant: "destructive",
-          });
-        }
+        setCvText(text);
+        toast({ title: isAr ? `✅ تم استخراج ${text.length} حرف من الملف` : `✅ Extracted ${text.length} characters from file` });
       }
-    } catch {
-      toast({ variant: "destructive", title: isAr ? "خطأ في قراءة الملف" : "Error reading file" });
+    } catch (err: any) {
+      if (err?.message === "OLD_DOC_FORMAT") {
+        toast({
+          variant: "destructive",
+          title: isAr ? "صيغة .doc القديمة غير مدعومة" : "Old .doc format not supported",
+          description: isAr ? "يرجى تحويل الملف إلى .docx أو PDF" : "Please convert to .docx or PDF",
+        });
+      } else {
+        toast({ variant: "destructive", title: isAr ? "خطأ في قراءة الملف" : "Error reading file" });
+        console.error("File parse error:", err);
+      }
     }
     setFileUploading(false);
     e.target.value = "";
@@ -175,15 +182,24 @@ export function CVImportDialog({ open, onOpenChange, targetUserId, isAr, onImpor
                     </label>
                   </div>
                   <p className="text-[10px] text-muted-foreground">
-                    {isAr ? "PDF, Word, TXT — الحد الأقصى 5MB" : "PDF, Word, TXT — Max 5MB"}
+                    {isAr ? "PDF, Word (.docx), TXT — الحد الأقصى 10MB" : "PDF, Word (.docx), TXT — Max 10MB"}
                   </p>
-                  {fileUploading && <Loader2 className="h-5 w-5 animate-spin mx-auto text-primary" />}
+                  {fileUploading && (
+                    <div className="flex items-center gap-2 text-primary">
+                      <Loader2 className="h-5 w-5 animate-spin" />
+                      <span className="text-xs">{isAr ? "جاري استخراج النص..." : "Extracting text..."}</span>
+                    </div>
+                  )}
                 </div>
                 {cvText.length > 0 && (
-                  <div className="mt-3 p-3 rounded-lg border bg-muted/30">
-                    <p className="text-xs text-muted-foreground">
-                      {isAr ? `✅ تم تحميل ${cvText.length} حرف` : `✅ Loaded ${cvText.length} characters`}
-                    </p>
+                  <div className="mt-3 p-3 rounded-lg border bg-muted/30 flex items-center gap-2">
+                    <CheckCircle2 className="h-4 w-4 text-chart-2 shrink-0" />
+                    <div className="flex-1 min-w-0">
+                      {fileName && <p className="text-xs font-medium truncate">{fileName}</p>}
+                      <p className="text-[10px] text-muted-foreground">
+                        {isAr ? `تم استخراج ${cvText.length.toLocaleString()} حرف` : `Extracted ${cvText.length.toLocaleString()} characters`}
+                      </p>
+                    </div>
                   </div>
                 )}
               </TabsContent>
