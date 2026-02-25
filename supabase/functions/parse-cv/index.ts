@@ -35,14 +35,24 @@ Deno.serve(async (req) => {
 
 Return data using the extract_cv_data tool. Be thorough and extract ALL information available.
 
-CRITICAL BILINGUAL RULES:
+CRITICAL BILINGUAL RULES - STRICT SEPARATION:
 - You MUST provide BOTH English AND Arabic versions for ALL text fields that have bilingual variants (_ar suffix).
-- If the CV is in Arabic only: extract the Arabic text AND translate it to professional English for the English fields.
-- If the CV is in English only: extract the English text AND translate it to professional Arabic for the Arabic fields.
-- If the CV has both languages: extract each language into its corresponding field.
+- STRICT RULE: English fields (without _ar) must contain ONLY English text. Arabic fields (with _ar) must contain ONLY Arabic text.
+- If the CV is in Arabic only: extract the Arabic text into _ar fields AND translate it to professional English for the English fields.
+- If the CV is in English only: extract the English text into English fields AND translate it to professional Arabic for the Arabic fields.
+- If the CV has both languages: separate each language into its corresponding field.
 - NEVER leave Arabic fields empty if you have the English version, and vice versa.
-- NEVER mix languages: English fields must contain ONLY English text, Arabic fields must contain ONLY Arabic text.
+- NEVER mix languages within a single field. Each field must be purely one language.
+- NEVER concatenate Arabic and English in the same field.
 - Translations must be professional, culinary-industry appropriate, and natural-sounding.
+- For tasks[] and achievements[] arrays: write them ONLY in English. Keep each item concise and professionally rephrased.
+- For names of companies/institutions: transliterate proper nouns if no official translation exists (e.g., "Hilton" stays "هيلتون" in Arabic).
+
+FORMATTING RULES:
+- Each task/responsibility should be a single clear sentence without bullet points or special characters.
+- Each achievement should be a single clear sentence.
+- Do NOT include section headers like "Key Responsibilities:" inside task/achievement strings.
+- Summarize and rephrase tasks/achievements professionally, removing redundancy.
 
 OTHER GUIDELINES:
 - For dates, use ISO format (YYYY-MM-DD). If only year is known, use YYYY-01-01
@@ -52,7 +62,6 @@ OTHER GUIDELINES:
 - For competition_role use: participant, organizer, judge, head_judge
 - Extract tasks/responsibilities and achievements separately for each work experience
 - Include TV/radio appearances under media_appearances
-- Summarize tasks and achievements professionally without losing value
 - Include national address details if mentioned
 - For competitions, always extract the year and edition separately
 - Extract ALL skills mentioned (cooking techniques, cuisines, management skills, software, etc.)
