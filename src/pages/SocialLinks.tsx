@@ -91,13 +91,13 @@ const pickLocalizedText = (isArabicUi: boolean, arText?: string | null, enText?:
 
   if (isArabicUi) {
     if (ar) return ar;
-    if (en && containsArabic(en) && !containsLatin(en)) return en;
-    return "";
+    if (en && containsArabic(en)) return en;
+    return en || "";
   }
 
-  if (en) return en;
-  if (ar && containsLatin(ar) && !containsArabic(ar)) return ar;
-  return "";
+  if (en && !containsArabic(en)) return en;
+  if (ar && containsLatin(ar)) return ar;
+  return en || ar || "";
 };
 
 const SOCIAL_ICONS: Record<string, { icon: typeof Instagram; label: string; urlPrefix?: string; hoverColor: string }> = {

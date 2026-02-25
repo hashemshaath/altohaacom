@@ -58,13 +58,17 @@ const pickLocalizedText = (isAr: boolean, arText?: string | null, enText?: strin
 
   if (isAr) {
     if (ar) return ar;
-    if (en && containsArabic(en) && !containsLatin(en)) return en;
-    return "";
+    // Fallback: if EN field contains Arabic text, use it
+    if (en && containsArabic(en)) return en;
+    // Last resort: show whatever is available
+    return en || "";
   }
 
-  if (en) return en;
-  if (ar && containsLatin(ar) && !containsArabic(ar)) return ar;
-  return "";
+  if (en && !containsArabic(en)) return en;
+  // Fallback: if EN field has Arabic, try AR field for Latin text
+  if (ar && containsLatin(ar)) return ar;
+  // Last resort: show whatever is available
+  return en || ar || "";
 };
 
 const formatPeriodRange = (startDate: string | null, endDate: string | null, isCurrent: boolean, isAr: boolean) => {
