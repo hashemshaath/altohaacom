@@ -38,7 +38,7 @@ export default function Community() {
   return (
     <div className="flex min-h-screen flex-col bg-background">
       <SEOHead
-        title={isAr ? "مجتمع الطهاة | الطهاة" : "Culinary Community | Altoha"}
+        title={isAr ? "مجتمع الطهاة" : "Culinary Community"}
         description={isAr ? "تواصل مع الطهاة وشارك الوصفات وانضم إلى المجموعات" : "Connect with chefs, share recipes, join groups on Altoha."}
       />
       <Header />

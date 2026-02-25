@@ -3,9 +3,7 @@ import { Link } from "react-router-dom";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useAuth } from "@/contexts/AuthContext";
 import { useRecipes, useDistinctCuisines, RecipeWithMeta } from "@/hooks/useRecipes";
-import { Header } from "@/components/Header";
-import { Footer } from "@/components/Footer";
-import { SEOHead } from "@/components/SEOHead";
+import { PageShell } from "@/components/PageShell";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -131,19 +129,21 @@ export default function Recipes() {
   });
 
   return (
-    <div className="min-h-screen flex flex-col bg-background">
-      <SEOHead
-        title={isAr ? "الوصفات — الطهاة" : "Recipe Database — Altoha"}
-        description={isAr ? "اكتشف وشارك وصفات الطهي" : "Discover and share culinary recipes with ingredients, steps, and nutritional data"}
-        jsonLd={{
+    <PageShell
+      title={isAr ? "الوصفات — الطهاة" : "Recipe Database — Altoha"}
+      description={isAr ? "اكتشف وشارك وصفات الطهي" : "Discover and share culinary recipes with ingredients, steps, and nutritional data"}
+      seoProps={{
+        jsonLd: {
           "@context": "https://schema.org",
           "@type": "CollectionPage",
           name: isAr ? "وصفات الطهي" : "Culinary Recipes",
           url: `${window.location.origin}/recipes`,
           isPartOf: { "@type": "WebSite", name: "Altoha", url: window.location.origin },
-        }}
-      />
-      <Header />
+        },
+      }}
+      container={false}
+      padding="none"
+    >
 
       <main className="flex-1">
         {/* Compact Hero */}
@@ -280,8 +280,6 @@ export default function Recipes() {
           )}
         </div>
       </main>
-
-      <Footer />
-    </div>
+    </PageShell>
   );
 }
