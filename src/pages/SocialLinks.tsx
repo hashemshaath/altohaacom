@@ -374,7 +374,22 @@ export default function SocialLinks() {
 
   const handleLinkClick = useCallback((itemId: string) => {
     supabase.rpc("increment_field" as any, { table_name: "social_link_items", field_name: "click_count", row_id: itemId }).then(() => {});
-  }, []);
+    // Record detailed click for advanced analytics
+    if (data?.page?.id) {
+      const ua = navigator.userAgent;
+      const isMobile = /Mobi|Android|iPhone/i.test(ua);
+      const isTablet = /iPad|Tablet/i.test(ua);
+      const deviceType = isMobile ? "mobile" : isTablet ? "tablet" : "desktop";
+      const browser = /Firefox/i.test(ua) ? "Firefox" : /Edg/i.test(ua) ? "Edge" : /Chrome/i.test(ua) ? "Chrome" : /Safari/i.test(ua) ? "Safari" : "Other";
+      supabase.from("social_link_clicks" as any).insert({
+        page_id: data.page.id,
+        link_id: itemId,
+        device_type: deviceType,
+        browser,
+        referrer: document.referrer || null,
+      } as any).then(() => {});
+    }
+  }, [data?.page?.id]);
 
   const copyLink = useCallback(async () => {
     if (!username) return;
