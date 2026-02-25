@@ -65,14 +65,25 @@ function CollapsibleBioSection({ icon: Icon, title, count, theme, children, defa
   );
 }
 
-function RecordCard({ record, isAr, theme, icon: Icon, iconBg }: {
-  record: any; isAr: boolean; theme: any; icon: any; iconBg: string;
+const COMPETITION_ROLES_MAP: Record<string, { en: string; ar: string }> = {
+  participant: { en: "Participant", ar: "مشارك" },
+  organizer: { en: "Organizer", ar: "منظّم" },
+  judge: { en: "Judge", ar: "حَكَم" },
+  volunteer: { en: "Volunteer", ar: "متطوع" },
+  sponsor: { en: "Sponsor", ar: "راعي" },
+  coordinator: { en: "Coordinator", ar: "منسّق" },
+  speaker: { en: "Speaker", ar: "متحدث" },
+};
+
+function RecordCard({ record, isAr, theme, icon: Icon, iconBg, showRole }: {
+  record: any; isAr: boolean; theme: any; icon: any; iconBg: string; showRole?: boolean;
 }) {
   const title = pick(isAr, record.title_ar, record.title);
   const entity = pick(isAr, record.entity_name_ar, record.entity_name);
   const desc = pick(isAr, record.description_ar, record.description);
   const start = fmtDate(record.start_date, isAr);
   const end = record.is_current ? (isAr ? "الحالي" : "Present") : fmtDate(record.end_date, isAr);
+  const role = showRole && record.employment_type ? COMPETITION_ROLES_MAP[record.employment_type] : null;
 
   return (
     <div className="flex gap-3 px-3.5 py-3 rounded-xl transition-all duration-200" style={{ background: theme.card, border: `1px solid ${theme.border}` }}>
@@ -82,14 +93,21 @@ function RecordCard({ record, isAr, theme, icon: Icon, iconBg }: {
       <div className="flex-1 min-w-0">
         <p className="text-xs font-semibold truncate" style={{ color: theme.text }}>{title || "—"}</p>
         {entity && <p className="text-[10px] mt-0.5 truncate" style={{ color: theme.textMuted }}>{entity}</p>}
-        <div className="flex items-center gap-1.5 mt-1">
-          <Calendar className="h-2.5 w-2.5" style={{ color: theme.textMuted }} />
-          <span className="text-[10px]" style={{ color: `${theme.textMuted}99` }}>
-            {start}{(start || end) && " – "}{end}
-          </span>
+        <div className="flex items-center gap-1.5 mt-1 flex-wrap">
+          {(start || end) && <Calendar className="h-2.5 w-2.5" style={{ color: theme.textMuted }} />}
+          {(start || end) && (
+            <span className="text-[10px]" style={{ color: `${theme.textMuted}99` }}>
+              {start}{end && start ? " – " : ""}{end}
+            </span>
+          )}
           {record.is_current && (
             <span className="text-[8px] font-semibold px-1.5 py-0.5 rounded-full" style={{ background: `${theme.accent}20`, color: theme.accent }}>
               {isAr ? "حالي" : "Current"}
+            </span>
+          )}
+          {role && (
+            <span className="text-[8px] font-semibold px-1.5 py-0.5 rounded-full" style={{ background: `${theme.accent}15`, color: theme.accent }}>
+              {isAr ? role.ar : role.en}
             </span>
           )}
         </div>
@@ -165,7 +183,7 @@ export function BioCareerSections({ userId, theme, isRtl, animated }: Props) {
       <CollapsibleBioSection icon={Trophy} title={isRtl ? "المسابقات والفعاليات" : "Competitions & Events"} count={competitionRecords.length} theme={theme} defaultOpen={false}>
         <div className="space-y-2">
           {competitionRecords.map((r: any) => (
-            <RecordCard key={r.id} record={r} isAr={isRtl} theme={theme} icon={Trophy} iconBg={iconBg} />
+            <RecordCard key={r.id} record={r} isAr={isRtl} theme={theme} icon={Trophy} iconBg={iconBg} showRole />
           ))}
         </div>
       </CollapsibleBioSection>

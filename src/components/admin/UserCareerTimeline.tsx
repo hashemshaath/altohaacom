@@ -469,7 +469,7 @@ export function UserCareerTimeline({ userId, isAr }: Props) {
     const overSectionKey = overData.sectionKey as string;
 
     // Only handle career records (education/work/custom)
-    if (!["education", "work"].includes(activeSectionKey) && !sections.find(s => s.isCustom && s.key === activeSectionKey)) return;
+    if (!["education", "work", "competitions"].includes(activeSectionKey) && !sections.find(s => s.isCustom && s.key === activeSectionKey)) return;
 
     if (activeSectionKey === overSectionKey) {
       // Reorder within same section
@@ -700,7 +700,7 @@ export function UserCareerTimeline({ userId, isAr }: Props) {
 
   const getMoveSections = (currentKey: string) => {
     return sections
-      .filter(s => s.key !== currentKey && (s.key === "education" || s.key === "work" || s.isCustom))
+      .filter(s => s.key !== currentKey && (s.key === "education" || s.key === "work" || s.key === "competitions" || s.isCustom))
       .map(s => ({ key: s.key, label: isAr ? s.ar : s.en }));
   };
 
@@ -836,11 +836,12 @@ export function UserCareerTimeline({ userId, isAr }: Props) {
   const getSectionItemIds = (key: string): string[] => {
     if (key === "education") return educationRecords.map(r => r.id);
     if (key === "work") return workRecords.map(r => r.id);
+    if (key === "competitions") return competitionCareerRecords.map(r => r.id);
     if (sections.find(s => s.isCustom && s.key === key)) return customSectionRecords(key).map(r => r.id);
     return [];
   };
 
-  const isDraggableSection = (key: string) => ["education", "work"].includes(key) || sections.find(s => s.isCustom && s.key === key);
+  const isDraggableSection = (key: string) => ["education", "work", "competitions"].includes(key) || sections.find(s => s.isCustom && s.key === key);
   const sectionIds = useMemo(() => sections.map(s => s.key), [sections]);
 
   return (
