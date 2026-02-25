@@ -14,8 +14,9 @@ import { EntitySelector } from "@/components/admin/EntitySelector";
 import { toast } from "@/hooks/use-toast";
 import {
   GraduationCap, Briefcase, Plus, Pencil, Trash2, X, Check, Calendar,
-  Building2, MapPin, Trophy, Award, Medal, Users, ChevronDown, ChevronUp,
+  Building2, MapPin, Trophy, Award, Medal, Users, ChevronDown, ChevronUp, FileText,
 } from "lucide-react";
+import { CVImportDialog } from "@/components/cv-import/CVImportDialog";
 
 // ── Constants ──────────────────────────────────────
 
@@ -358,8 +359,28 @@ export function UserCareerTimeline({ userId, isAr }: Props) {
 
   // ── Render ──────────────────────────────────────
 
+  const [cvImportOpen, setCvImportOpen] = useState(false);
+
   return (
     <div className="space-y-3">
+      {/* CV Import Button */}
+      <div className="flex justify-end">
+        <Button variant="outline" size="sm" className="gap-1.5" onClick={() => setCvImportOpen(true)}>
+          <FileText className="h-4 w-4" />
+          {isAr ? "استيراد سيرة ذاتية" : "Import CV"}
+        </Button>
+      </div>
+
+      <CVImportDialog
+        open={cvImportOpen}
+        onOpenChange={setCvImportOpen}
+        targetUserId={userId}
+        isAr={isAr}
+        onImported={() => {
+          queryClient.invalidateQueries({ queryKey: ["career-records", userId] });
+          queryClient.invalidateQueries({ queryKey: ["user-entity-memberships", userId] });
+        }}
+      />
       {SECTIONS.map(section => {
         const Icon = section.icon;
         const count = sectionCounts[section.key];
