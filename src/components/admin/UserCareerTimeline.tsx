@@ -26,6 +26,7 @@ import {
   Popover, PopoverContent, PopoverTrigger,
 } from "@/components/ui/popover";
 import { CVImportDialog } from "@/components/cv-import/CVImportDialog";
+import { TranslatableInput } from "@/components/profile/edit/TranslatableInput";
 import {
   DndContext, closestCenter, KeyboardSensor, PointerSensor, useSensor, useSensors,
   DragEndEvent, DragStartEvent, DragOverEvent, DragOverlay,
@@ -34,6 +35,31 @@ import {
   arrayMove, SortableContext, sortableKeyboardCoordinates, useSortable, verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
+
+// ── Inline Translate Button (compact for inline editing) ──
+function TranslateInlineButton({ text, fromLang, toLang, onTranslated, isAr }: {
+  text: string; fromLang: "en" | "ar"; toLang: "en" | "ar";
+  onTranslated: (v: string) => void; isAr: boolean;
+}) {
+  const [loading, setLoading] = useState(false);
+  const handleTranslate = async () => {
+    if (!text?.trim()) return;
+    setLoading(true);
+    try {
+      const { data, error } = await supabase.functions.invoke("smart-translate", {
+        body: { text, from: fromLang, to: toLang, context: "culinary/chef profile/section titles" },
+      });
+      if (error) throw error;
+      if (data?.translated) onTranslated(data.translated);
+    } catch { /* silent */ } finally { setLoading(false); }
+  };
+  return (
+    <Button type="button" variant="ghost" size="icon" className="h-6 w-6 shrink-0" onClick={handleTranslate} disabled={loading}
+      title={toLang === "ar" ? "ترجمة إلى العربية" : "Translate to English"}>
+      {loading ? <Loader2 className="h-3 w-3 animate-spin" /> : <Languages className="h-3 w-3 text-primary" />}
+    </Button>
+  );
+}
 
 // ── Constants ──────────────────────────────────────
 
@@ -696,16 +722,22 @@ export function UserCareerTimeline({ userId, isAr }: Props) {
               </Button>
             </div>
             <div className="grid gap-2.5 sm:grid-cols-2">
-              <div className="space-y-1.5">
-                <Label className="text-xs font-medium">{isAr ? "الاسم (EN)" : "Name (EN)"} *</Label>
-                <Input value={newSectionName.en} onChange={e => setNewSectionName(p => ({ ...p, en: e.target.value }))} 
-                  className="h-9 text-xs" dir="ltr" placeholder="e.g., Volunteering" />
-              </div>
-              <div className="space-y-1.5">
-                <Label className="text-xs font-medium">{isAr ? "الاسم (AR)" : "Name (AR)"}</Label>
-                <Input value={newSectionName.ar} onChange={e => setNewSectionName(p => ({ ...p, ar: e.target.value }))} 
-                  className="h-9 text-xs" dir="rtl" placeholder="مثل: التطوع" />
-              </div>
+              <TranslatableInput
+                label={isAr ? "الاسم (EN) *" : "Name (EN) *"}
+                value={newSectionName.en}
+                onChange={(v) => setNewSectionName(p => ({ ...p, en: v }))}
+                dir="ltr" lang="en" placeholder="e.g., Volunteering"
+                pairedValue={newSectionName.ar}
+                onTranslated={(v) => setNewSectionName(p => ({ ...p, ar: v }))}
+              />
+              <TranslatableInput
+                label={isAr ? "الاسم (AR)" : "Name (AR)"}
+                value={newSectionName.ar}
+                onChange={(v) => setNewSectionName(p => ({ ...p, ar: v }))}
+                dir="rtl" lang="ar" placeholder="مثل: التطوع"
+                pairedValue={newSectionName.en}
+                onTranslated={(v) => setNewSectionName(p => ({ ...p, en: v }))}
+              />
             </div>
             <div className="flex gap-2">
               <Button variant="outline" size="sm" className="flex-1 h-8 text-xs" onClick={() => setAddingSectionDialog(false)}>
@@ -773,11 +805,29 @@ export function UserCareerTimeline({ userId, isAr }: Props) {
                   </Popover>
                   <div className="flex-1 text-start">
                     {isEditingTitle ? (
-                      <div className="flex items-center gap-2" onClick={e => e.stopPropagation()}>
-                        <Input value={sectionEditName.en} onChange={e => setSectionEditName(p => ({ ...p, en: e.target.value }))}
-                          className="h-7 text-xs w-24" dir="ltr" placeholder="EN" />
-                        <Input value={sectionEditName.ar} onChange={e => setSectionEditName(p => ({ ...p, ar: e.target.value }))}
-                          className="h-7 text-xs w-24" dir="rtl" placeholder="AR" />
+                      <div className="flex items-center gap-2 flex-wrap" onClick={e => e.stopPropagation()}>
+                        <div className="flex items-center gap-1.5">
+                          <Input value={sectionEditName.en} onChange={e => setSectionEditName(p => ({ ...p, en: e.target.value }))}
+                            className="h-7 text-xs w-24" dir="ltr" placeholder="EN" />
+                          {sectionEditName.en?.trim() && (
+                            <TranslateInlineButton
+                              text={sectionEditName.en} fromLang="en" toLang="ar"
+                              onTranslated={(v) => setSectionEditName(p => ({ ...p, ar: v }))}
+                              isAr={isAr}
+                            />
+                          )}
+                        </div>
+                        <div className="flex items-center gap-1.5">
+                          <Input value={sectionEditName.ar} onChange={e => setSectionEditName(p => ({ ...p, ar: e.target.value }))}
+                            className="h-7 text-xs w-24" dir="rtl" placeholder="AR" />
+                          {sectionEditName.ar?.trim() && (
+                            <TranslateInlineButton
+                              text={sectionEditName.ar} fromLang="ar" toLang="en"
+                              onTranslated={(v) => setSectionEditName(p => ({ ...p, en: v }))}
+                              isAr={isAr}
+                            />
+                          )}
+                        </div>
                         <Button size="icon" variant="ghost" className="h-6 w-6 shrink-0" onClick={saveSectionTitle}>
                           <Check className="h-3 w-3 text-primary" />
                         </Button>
