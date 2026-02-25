@@ -2032,6 +2032,57 @@ export default function SocialLinksEditor() {
                       </Card>
                     )}
 
+                    {/* Click Heatmap */}
+                    {items.length > 0 && (
+                      <Card className="overflow-hidden">
+                        <CardHeader className="pb-3 bg-gradient-to-r from-muted/40 to-transparent">
+                          <CardTitle className="text-sm flex items-center gap-2">
+                            <div className="h-7 w-7 rounded-lg bg-destructive/10 flex items-center justify-center">
+                              <BarChart3 className="h-3.5 w-3.5 text-destructive" />
+                            </div>
+                            {isAr ? "خريطة حرارية للنقرات" : "Click Heatmap"}
+                            {visitorStats && <Badge variant="secondary" className="text-[9px] ms-auto">CTR: {visitorStats.total > 0 ? ((totalClicks / visitorStats.total) * 100).toFixed(1) : "0"}%</Badge>}
+                          </CardTitle>
+                          <p className="text-[11px] text-muted-foreground">{isAr ? "كثافة النقرات لكل رابط مقارنة بالمجموع" : "Click intensity per link relative to total"}</p>
+                        </CardHeader>
+                        <CardContent className="pt-3">
+                          <div className="space-y-1.5">
+                            {items.slice().sort((a, b) => (b.click_count || 0) - (a.click_count || 0)).map((item) => {
+                              const clicks = item.click_count || 0;
+                              const maxClicks = Math.max(...items.map(i => i.click_count || 0), 1);
+                              const pct = maxClicks > 0 ? (clicks / maxClicks) * 100 : 0;
+                              const sharePct = totalClicks > 0 ? ((clicks / totalClicks) * 100).toFixed(1) : "0";
+                              // Heat color: high=red, medium=amber, low=blue
+                              const heat = pct > 66 ? "bg-destructive/70" : pct > 33 ? "bg-chart-2/70" : pct > 0 ? "bg-chart-4/50" : "bg-muted/30";
+                              return (
+                                <div key={item.id} className="group relative">
+                                  <div className="flex items-center gap-2 px-2 py-1.5 rounded-lg hover:bg-muted/30 transition-colors">
+                                    <span className="text-xs w-5 shrink-0">{item.icon || "🔗"}</span>
+                                    <div className="flex-1 min-w-0">
+                                      <div className="flex items-center justify-between mb-0.5">
+                                        <span className="text-[11px] font-medium truncate max-w-[60%]">{item.title}</span>
+                                        <span className="text-[10px] text-muted-foreground tabular-nums">{clicks} <span className="text-[9px]">({sharePct}%)</span></span>
+                                      </div>
+                                      <div className="h-2 rounded-full bg-muted/40 overflow-hidden">
+                                        <div className={`h-full rounded-full transition-all duration-500 ${heat}`} style={{ width: `${Math.max(pct, 2)}%` }} />
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                              );
+                            })}
+                          </div>
+                          {visitorStats && visitorStats.total > 0 && (
+                            <div className="mt-3 pt-3 border-t border-border/30 flex items-center justify-between text-[10px] text-muted-foreground">
+                              <span>{isAr ? "إجمالي الزيارات" : "Total Visits"}: <strong className="text-foreground">{visitorStats.total}</strong></span>
+                              <span>{isAr ? "إجمالي النقرات" : "Total Clicks"}: <strong className="text-foreground">{totalClicks}</strong></span>
+                              <span>CTR: <strong className="text-foreground">{((totalClicks / visitorStats.total) * 100).toFixed(1)}%</strong></span>
+                            </div>
+                          )}
+                        </CardContent>
+                      </Card>
+                    )}
+
                     {/* Visitor Analytics */}
                     {visitorStats && visitorStats.total > 0 && (
                       <Card className="overflow-hidden">
