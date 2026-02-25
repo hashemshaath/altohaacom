@@ -436,6 +436,82 @@ export default function SocialLinks() {
     return isRtl ? (c.name_ar || c.name) : c.name;
   }, [countries, isRtl]);
 
+  // A/B variants initialization
+  const items = data?.items || [];
+  useMemo(() => {
+    const map: Record<string, "A" | "B"> = {};
+    for (const item of items) {
+      if ((item as any).ab_enabled && (item as any).ab_variant_title) {
+        map[item.id] = abVariantsRef.current[item.id] || (Math.random() < 0.5 ? "A" : "B");
+      }
+    }
+    abVariantsRef.current = map;
+  }, [items]);
+
+  const filteredItems = useMemo(() => {
+    const now = new Date();
+    return items.filter(item => {
+      if (activePage !== "main") {
+        const itemTab = (item as any).page_tab || "main";
+        if (itemTab !== activePage) return false;
+      }
+      const start = (item as any).scheduled_start;
+      const end = (item as any).scheduled_end;
+      if (start && new Date(start) > now) return false;
+      if (end && new Date(end) < now) return false;
+      return true;
+    });
+  }, [items, activePage]);
+
+  // Password protection state
+  const [passwordUnlocked, setPasswordUnlocked] = useState(false);
+  const [passwordInput, setPasswordInput] = useState("");
+  const [passwordError, setPasswordError] = useState(false);
+
+  const extra_pre = data?.page?.custom_css ? parseExtra(data.page.custom_css) : ({} as ExtraSettings);
+  const handlePasswordSubmit = useCallback(() => {
+    if (passwordInput === extra_pre.page_password) {
+      setPasswordUnlocked(true);
+      setPasswordError(false);
+    } else {
+      setPasswordError(true);
+    }
+  }, [passwordInput, extra_pre.page_password]);
+
+  // Email subscription state
+  const [subEmail, setSubEmail] = useState("");
+  const [subName, setSubName] = useState("");
+  const [subscribing, setSubscribing] = useState(false);
+  const [subscribed, setSubscribed] = useState(false);
+
+  const handleSubscribe = useCallback(async () => {
+    if (!subEmail || !data?.page?.id || !profileUserId) return;
+    setSubscribing(true);
+    try {
+      const { error: subErr } = await supabase.from("bio_subscribers").insert({
+        page_id: data.page.id,
+        page_owner_id: profileUserId,
+        email: subEmail,
+        name: subName || null,
+      } as any);
+      if (subErr) {
+        if (subErr.code === "23505") {
+          toast({ title: t("subscribed", lang) });
+          setSubscribed(true);
+        } else throw subErr;
+      } else {
+        setSubscribed(true);
+        toast({ title: t("subscribed", lang) });
+        setSubEmail("");
+        setSubName("");
+      }
+    } catch {
+      toast({ title: "Error", variant: "destructive" });
+    } finally {
+      setSubscribing(false);
+    }
+  }, [subEmail, subName, data?.page?.id, profileUserId, lang, toast]);
+
   if (isLoading) {
     return (
       <div className="flex min-h-screen items-center justify-center" style={{ background: "linear-gradient(180deg, #0a0a12 0%, #0d0d18 100%)" }}>
@@ -471,7 +547,7 @@ export default function SocialLinks() {
     );
   }
 
-  const { profile, page, items } = data;
+  const { profile, page } = data;
   const extra = parseExtra(page?.custom_css);
   const themeId = resolveActiveTheme(page?.theme || "default", extra);
   const theme = THEME_COLORS[themeId] || THEME_COLORS.default;
@@ -540,84 +616,8 @@ export default function SocialLinks() {
 
   const isLight = themeId === "minimal";
 
-  // Initialize A/B variants after items are available
-  useMemo(() => {
-    const map: Record<string, "A" | "B"> = {};
-    for (const item of items) {
-      if ((item as any).ab_enabled && (item as any).ab_variant_title) {
-        // Keep existing assignment if already set for this item
-        map[item.id] = abVariantsRef.current[item.id] || (Math.random() < 0.5 ? "A" : "B");
-      }
-    }
-    abVariantsRef.current = map;
-  }, [items]);
-
-  const filteredItems = useMemo(() => {
-    const now = new Date();
-    return items.filter(item => {
-      // Filter by page tab
-      if (activePage !== "main") {
-        const itemTab = (item as any).page_tab || "main";
-        if (itemTab !== activePage) return false;
-      }
-      const start = (item as any).scheduled_start;
-      const end = (item as any).scheduled_end;
-      if (start && new Date(start) > now) return false;
-      if (end && new Date(end) < now) return false;
-      return true;
-    });
-  }, [items, activePage]);
-
   const hasMultiPages = extra.pages && extra.pages.length > 0;
-
-  // Password protection state
-  const [passwordUnlocked, setPasswordUnlocked] = useState(false);
-  const [passwordInput, setPasswordInput] = useState("");
-  const [passwordError, setPasswordError] = useState(false);
   const needsPassword = extra.enable_password && extra.page_password && !isOwner && !passwordUnlocked;
-
-  const handlePasswordSubmit = useCallback(() => {
-    if (passwordInput === extra.page_password) {
-      setPasswordUnlocked(true);
-      setPasswordError(false);
-    } else {
-      setPasswordError(true);
-    }
-  }, [passwordInput, extra.page_password]);
-
-  // Email subscription state
-  const [subEmail, setSubEmail] = useState("");
-  const [subName, setSubName] = useState("");
-  const [subscribing, setSubscribing] = useState(false);
-  const [subscribed, setSubscribed] = useState(false);
-
-  const handleSubscribe = useCallback(async () => {
-    if (!subEmail || !data?.page?.id || !profileUserId) return;
-    setSubscribing(true);
-    try {
-      const { error } = await supabase.from("bio_subscribers").insert({
-        page_id: data.page.id,
-        page_owner_id: profileUserId,
-        email: subEmail,
-        name: subName || null,
-      } as any);
-      if (error) {
-        if (error.code === "23505") {
-          toast({ title: t("subscribed", lang) });
-          setSubscribed(true);
-        } else throw error;
-      } else {
-        setSubscribed(true);
-        toast({ title: t("subscribed", lang) });
-        setSubEmail("");
-        setSubName("");
-      }
-    } catch {
-      toast({ title: "Error", variant: "destructive" });
-    } finally {
-      setSubscribing(false);
-    }
-  }, [subEmail, subName, data?.page?.id, profileUserId, lang, toast]);
 
   // Password gate
   if (needsPassword) {
