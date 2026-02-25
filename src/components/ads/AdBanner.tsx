@@ -1,8 +1,7 @@
-import { useEffect, useRef, useCallback } from "react";
+import { forwardRef, useEffect, useRef, useCallback } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useLanguage } from "@/i18n/LanguageContext";
-import { X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
@@ -11,7 +10,7 @@ interface AdBannerProps {
   className?: string;
 }
 
-export function AdBanner({ placementSlug, className }: AdBannerProps) {
+export const AdBanner = forwardRef<HTMLDivElement, AdBannerProps>(function AdBanner({ placementSlug, className }, ref) {
   const { language } = useLanguage();
   const isAr = language === "ar";
   const impressionLogged = useRef(false);
@@ -83,7 +82,7 @@ export function AdBanner({ placementSlug, className }: AdBannerProps) {
   if (!creative) return null;
 
   return (
-    <div className={cn("relative group cursor-pointer overflow-hidden rounded-lg border border-border/40", className)} onClick={handleClick}>
+    <div ref={ref} className={cn("relative group cursor-pointer overflow-hidden rounded-lg border border-border/40", className)} onClick={handleClick}>
       {creative.image_url && (
         <img src={creative.image_url} alt={isAr ? creative.title_ar || creative.title : creative.title || "Ad"} className="w-full h-full object-cover" />
       )}
@@ -99,4 +98,6 @@ export function AdBanner({ placementSlug, className }: AdBannerProps) {
       </span>
     </div>
   );
-}
+});
+
+AdBanner.displayName = "AdBanner";
