@@ -98,6 +98,16 @@ const CERTIFICATE_TYPES = [
   { value: "judge", en: "Judging", ar: "تحكيم" },
 ];
 
+const COMPETITION_ROLES = [
+  { value: "participant", en: "Participant", ar: "مشارك" },
+  { value: "organizer", en: "Organizer", ar: "منظّم" },
+  { value: "judge", en: "Judge", ar: "حَكَم" },
+  { value: "volunteer", en: "Volunteer", ar: "متطوع" },
+  { value: "sponsor", en: "Sponsor", ar: "راعي" },
+  { value: "coordinator", en: "Coordinator", ar: "منسّق" },
+  { value: "speaker", en: "Speaker", ar: "متحدث" },
+];
+
 const DEFAULT_SECTIONS: SectionConfig[] = [
   { key: "education", icon: "GraduationCap", en: "Education", ar: "التعليم", color: "bg-chart-2/10 text-chart-2", isCustom: false },
   { key: "work", icon: "Briefcase", en: "Experience", ar: "الخبرات", color: "bg-chart-3/10 text-chart-3", isCustom: false },
@@ -393,6 +403,7 @@ export function UserCareerTimeline({ userId, isAr }: Props) {
 
   const educationRecords = useMemo(() => records.filter(r => r.record_type === "education"), [records]);
   const workRecords = useMemo(() => records.filter(r => r.record_type === "work"), [records]);
+  const competitionCareerRecords = useMemo(() => records.filter(r => r.record_type === "competitions"), [records]);
   
   // Custom section records
   const customSectionRecords = useCallback((key: string) => {
@@ -403,7 +414,7 @@ export function UserCareerTimeline({ userId, isAr }: Props) {
     if (key === "education") return educationRecords.length;
     if (key === "work") return workRecords.length;
     if (key === "memberships") return memberships.length;
-    if (key === "competitions") return competitions.length;
+    if (key === "competitions") return competitions.length + competitionCareerRecords.length;
     if (key === "awards") return certificates.length;
     return customSectionRecords(key).length;
   };
@@ -561,6 +572,38 @@ export function UserCareerTimeline({ userId, isAr }: Props) {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["user-competition-history", userId] });
       toast({ title: isAr ? "تمت إضافة المسابقة" : "Competition added" });
+      closeForm();
+    },
+    onError: (err: any) => toast({ title: isAr ? "خطأ" : "Error", description: err.message, variant: "destructive" }),
+  });
+
+  const addManualCompetitionMutation = useMutation({
+    mutationFn: async () => {
+      const payload = {
+        user_id: userId, record_type: "competitions",
+        entity_id: careerForm.entity_id || null,
+        entity_name: careerForm.entity_name || null,
+        title: careerForm.title,
+        title_ar: careerForm.title_ar || null,
+        description: careerForm.description || null,
+        description_ar: careerForm.description_ar || null,
+        start_date: careerForm.start_date || null,
+        end_date: careerForm.is_current ? null : (careerForm.end_date || null),
+        is_current: careerForm.is_current,
+        location: careerForm.location || null,
+        employment_type: careerForm.employment_type || null, // reuse for role (organizer/participant/judge)
+      };
+      if (editingId) {
+        const { error } = await supabase.from("user_career_records").update(payload).eq("id", editingId);
+        if (error) throw error;
+      } else {
+        const { error } = await supabase.from("user_career_records").insert(payload);
+        if (error) throw error;
+      }
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["career-records", userId] });
+      toast({ title: editingId ? (isAr ? "تم التحديث" : "Updated") : (isAr ? "تمت الإضافة" : "Added") });
       closeForm();
     },
     onError: (err: any) => toast({ title: isAr ? "خطأ" : "Error", description: err.message, variant: "destructive" }),
@@ -1101,12 +1144,13 @@ export function UserCareerTimeline({ userId, isAr }: Props) {
                     </>
                   )}
 
-                  {/* ═══ COMPETITIONS ═══ */}
+                  {/* ═══ COMPETITIONS & EVENTS ═══ */}
                   {section.key === "competitions" && (
                     <>
-                      {competitions.length === 0 && !isAddingHere && (
-                        <EmptyState icon={Trophy} message={isAr ? "لا توجد مشاركات" : "No competitions"} />
+                      {competitions.length === 0 && competitionCareerRecords.length === 0 && !isAddingHere && (
+                        <EmptyState icon={Trophy} message={isAr ? "لا توجد مشاركات أو فعاليات" : "No competitions or events"} />
                       )}
+                      {/* DB-linked competitions */}
                       {competitions.map((reg: any) => (
                         <CompactRow key={reg.id} icon={Trophy} color={section.color}
                           title={isAr ? (reg.competitions?.title_ar || reg.competitions?.title) : reg.competitions?.title}
@@ -1123,16 +1167,39 @@ export function UserCareerTimeline({ userId, isAr }: Props) {
                           }}
                         />
                       ))}
-                      {isAddingHere ? (
+                      {/* Manual competition/event career records */}
+                      {competitionCareerRecords.map(r => (
+                        editingId === r.id ? (
+                          <CompetitionEventForm key={r.id} form={careerForm} editingId={editingId} isAr={isAr}
+                            isPending={addManualCompetitionMutation.isPending}
+                            onUpdate={(k, v) => setCareerForm(prev => ({ ...prev, [k]: v }))}
+                            onSave={() => addManualCompetitionMutation.mutate()} onCancel={closeForm} />
+                        ) : (
+                          <CompactRow key={r.id} icon={Trophy} color={section.color}
+                            title={isAr ? (r.title_ar || r.title) : r.title}
+                            subtitle={r.entity_name || ""}
+                            meta={`${formatDateRange(r.start_date, r.end_date, r.is_current, isAr)}${r.employment_type ? ` · ${labelFor(r.employment_type, COMPETITION_ROLES, isAr)}` : ""}`}
+                            isAr={isAr}
+                            onEdit={() => startEditCareer(r)}
+                            onDelete={() => deleteCareerMutation.mutate(r.id)}
+                          />
+                        )
+                      ))}
+                      {isAddingHere && !editingId ? (
                         <CompetitionAddForm
                           competitions={availableCompetitions} selectedId={selectedCompetitionId}
                           onSelect={setSelectedCompetitionId} isAr={isAr}
-                          isPending={addCompetitionMutation.isPending}
-                          onSave={() => addCompetitionMutation.mutate()} onCancel={closeForm}
+                          isPendingLink={addCompetitionMutation.isPending}
+                          onSaveLink={() => addCompetitionMutation.mutate()}
+                          careerForm={careerForm}
+                          onUpdateCareer={(k, v) => setCareerForm(prev => ({ ...prev, [k]: v }))}
+                          isPendingManual={addManualCompetitionMutation.isPending}
+                          onSaveManual={() => addManualCompetitionMutation.mutate()}
+                          onCancel={closeForm}
                         />
-                      ) : (
-                        <AddButton label={isAr ? "إضافة مسابقة" : "Add Competition"} onClick={() => setAddingSection("competitions")} />
-                      )}
+                      ) : !editingId ? (
+                        <AddButton label={isAr ? "إضافة مسابقة / فعالية" : "Add Competition / Event"} onClick={() => { startAddCareer("competitions"); setAddingSection("competitions"); }} />
+                      ) : null}
                     </>
                   )}
 
@@ -1573,10 +1640,14 @@ function MembershipForm({ form, isAr, isPending, editingId, onUpdate, onSave, on
   );
 }
 
-function CompetitionAddForm({ competitions, selectedId, onSelect, isAr, isPending, onSave, onCancel }: {
+function CompetitionAddForm({ competitions, selectedId, onSelect, isAr, isPendingLink, onSaveLink,
+  careerForm, onUpdateCareer, isPendingManual, onSaveManual, onCancel }: {
   competitions: any[]; selectedId: string; onSelect: (id: string) => void;
-  isAr: boolean; isPending: boolean; onSave: () => void; onCancel: () => void;
+  isAr: boolean; isPendingLink: boolean; onSaveLink: () => void;
+  careerForm: any; onUpdateCareer: (key: string, value: any) => void;
+  isPendingManual: boolean; onSaveManual: () => void; onCancel: () => void;
 }) {
+  const [mode, setMode] = useState<"link" | "manual">("link");
   const [search, setSearch] = useState("");
   const filtered = useMemo(() => {
     if (!search.trim()) return competitions.slice(0, 10);
@@ -1591,28 +1662,104 @@ function CompetitionAddForm({ competitions, selectedId, onSelect, isAr, isPendin
           <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-chart-4/15 text-chart-4">
             <Trophy className="h-3.5 w-3.5" />
           </div>
-          <h4 className="text-xs font-bold">{isAr ? "إضافة مسابقة" : "Add Competition"}</h4>
+          <h4 className="text-xs font-bold">{isAr ? "إضافة مسابقة / فعالية" : "Add Competition / Event"}</h4>
         </div>
         <Button size="icon" variant="ghost" className="h-6 w-6 rounded-md" onClick={onCancel}><X className="h-3.5 w-3.5" /></Button>
       </div>
 
-      <Input placeholder={isAr ? "🔍 بحث..." : "🔍 Search..."}
-        value={search} onChange={(e) => setSearch(e.target.value)} className="h-8 text-xs" />
-
-      <div className="max-h-44 overflow-y-auto space-y-0.5 rounded-lg border border-border/30 bg-muted/10 p-1.5">
-        {filtered.length === 0 && <p className="text-xs text-muted-foreground text-center py-3">{isAr ? "لا توجد نتائج" : "No results"}</p>}
-        {filtered.map(c => (
-          <button key={c.id} onClick={() => onSelect(c.id)}
-            className={`w-full flex items-center gap-2 rounded-lg px-2.5 py-2 text-start transition-all text-xs ${selectedId === c.id ? "bg-primary/10 border border-primary/30 text-primary" : "hover:bg-muted/50 border border-transparent"}`}>
-            <Trophy className="h-3.5 w-3.5 shrink-0 text-chart-4" />
-            <p className="flex-1 min-w-0 truncate font-medium">{isAr ? (c.title_ar || c.title) : c.title}</p>
-            {c.competition_start && <span className="text-[10px] text-muted-foreground shrink-0">{formatDateShort(c.competition_start, isAr)}</span>}
-            {selectedId === c.id && <Check className="h-3.5 w-3.5 text-primary shrink-0" />}
-          </button>
-        ))}
+      {/* Mode tabs */}
+      <div className="flex gap-1 p-0.5 rounded-lg bg-muted/40">
+        <button type="button" onClick={() => setMode("link")}
+          className={`flex-1 text-[11px] font-medium py-1.5 px-3 rounded-md transition-all ${mode === "link" ? "bg-background shadow-sm text-foreground" : "text-muted-foreground hover:text-foreground"}`}>
+          {isAr ? "🔗 ربط بمسابقة موجودة" : "🔗 Link Existing"}
+        </button>
+        <button type="button" onClick={() => setMode("manual")}
+          className={`flex-1 text-[11px] font-medium py-1.5 px-3 rounded-md transition-all ${mode === "manual" ? "bg-background shadow-sm text-foreground" : "text-muted-foreground hover:text-foreground"}`}>
+          {isAr ? "✏️ إضافة يدوية" : "✏️ Add Manually"}
+        </button>
       </div>
 
-      <FormActions isAr={isAr} isPending={isPending} canSave={!!selectedId} onSave={onSave} onCancel={onCancel} />
+      {mode === "link" ? (
+        <>
+          <Input placeholder={isAr ? "🔍 بحث في المسابقات..." : "🔍 Search competitions..."}
+            value={search} onChange={(e) => setSearch(e.target.value)} className="h-8 text-xs" />
+          <div className="max-h-44 overflow-y-auto space-y-0.5 rounded-lg border border-border/30 bg-muted/10 p-1.5">
+            {filtered.length === 0 && <p className="text-xs text-muted-foreground text-center py-3">{isAr ? "لا توجد نتائج — جرّب الإضافة اليدوية" : "No results — try adding manually"}</p>}
+            {filtered.map(c => (
+              <button key={c.id} onClick={() => onSelect(c.id)}
+                className={`w-full flex items-center gap-2 rounded-lg px-2.5 py-2 text-start transition-all text-xs ${selectedId === c.id ? "bg-primary/10 border border-primary/30 text-primary" : "hover:bg-muted/50 border border-transparent"}`}>
+                <Trophy className="h-3.5 w-3.5 shrink-0 text-chart-4" />
+                <p className="flex-1 min-w-0 truncate font-medium">{isAr ? (c.title_ar || c.title) : c.title}</p>
+                {c.competition_start && <span className="text-[10px] text-muted-foreground shrink-0">{formatDateShort(c.competition_start, isAr)}</span>}
+                {selectedId === c.id && <Check className="h-3.5 w-3.5 text-primary shrink-0" />}
+              </button>
+            ))}
+          </div>
+          <FormActions isAr={isAr} isPending={isPendingLink} canSave={!!selectedId} onSave={onSaveLink} onCancel={onCancel} />
+        </>
+      ) : (
+        <CompetitionEventForm form={careerForm} editingId={null} isAr={isAr}
+          isPending={isPendingManual} onUpdate={onUpdateCareer}
+          onSave={onSaveManual} onCancel={onCancel} />
+      )}
+    </div>
+  );
+}
+
+function CompetitionEventForm({ form, editingId, isAr, isPending, onUpdate, onSave, onCancel }: {
+  form: any; editingId: string | null; isAr: boolean; isPending: boolean;
+  onUpdate: (key: string, value: any) => void; onSave: () => void; onCancel: () => void;
+}) {
+  return (
+    <div className={editingId ? "rounded-xl border border-primary/20 bg-card p-3 sm:p-4 space-y-3 shadow-sm animate-in fade-in-0 zoom-in-95 duration-200" : "space-y-3"}>
+      {editingId && (
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-chart-4/15 text-chart-4">
+              <Trophy className="h-3.5 w-3.5" />
+            </div>
+            <h4 className="text-xs font-bold">{isAr ? "تعديل" : "Edit"}</h4>
+          </div>
+          <Button size="icon" variant="ghost" className="h-6 w-6 rounded-md" onClick={onCancel}><X className="h-3.5 w-3.5" /></Button>
+        </div>
+      )}
+
+      <BilingualFieldPair
+        labelEn="Event / Competition Name" labelAr="اسم الفعالية / المسابقة"
+        valueEn={form.title} valueAr={form.title_ar}
+        onChangeEn={(v) => onUpdate("title", v)} onChangeAr={(v) => onUpdate("title_ar", v)}
+        isAr={isAr} required
+      />
+
+      <EntitySelector value={form.entity_id} entityName={form.entity_name}
+        onChange={(id, name) => { onUpdate("entity_id", id); onUpdate("entity_name", name); }}
+        label={isAr ? "الجهة المنظمة" : "Organizer"} />
+
+      <div className="grid gap-2 sm:grid-cols-2">
+        <div className="space-y-1">
+          <Label className="text-[11px] font-medium text-muted-foreground">{isAr ? "الدور" : "Role"}</Label>
+          <Select value={form.employment_type || "participant"} onValueChange={(v) => onUpdate("employment_type", v)}>
+            <SelectTrigger className="h-8 text-xs"><SelectValue /></SelectTrigger>
+            <SelectContent>{COMPETITION_ROLES.map(r => <SelectItem key={r.value} value={r.value}>{isAr ? r.ar : r.en}</SelectItem>)}</SelectContent>
+          </Select>
+        </div>
+        <div className="space-y-1">
+          <Label className="text-[11px] font-medium text-muted-foreground">{isAr ? "الموقع" : "Location"}</Label>
+          <Input value={form.location} onChange={(e) => onUpdate("location", e.target.value)} className="h-8 text-xs" placeholder={isAr ? "الرياض" : "Riyadh"} />
+        </div>
+      </div>
+
+      <FlexibleDateInput value={form.start_date} onChange={(v) => onUpdate("start_date", v)}
+        label={isAr ? "التاريخ" : "Date"} isAr={isAr} />
+
+      <BilingualFieldPair
+        labelEn="Description" labelAr="الوصف"
+        valueEn={form.description} valueAr={form.description_ar}
+        onChangeEn={(v) => onUpdate("description", v)} onChangeAr={(v) => onUpdate("description_ar", v)}
+        isAr={isAr}
+      />
+
+      <FormActions isAr={isAr} isPending={isPending} editingId={editingId} canSave={!!form.title.trim()} onSave={onSave} onCancel={onCancel} />
     </div>
   );
 }
