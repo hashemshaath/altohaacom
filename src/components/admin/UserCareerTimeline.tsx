@@ -185,6 +185,8 @@ export function UserCareerTimeline({ userId, isAr }: Props) {
   const [expandedSections, setExpandedSections] = useState<Set<string>>(new Set(["education", "work"]));
   const [addingSection, setAddingSection] = useState<string | null>(null);
   const [editingId, setEditingId] = useState<string | null>(null);
+  const [editingMembershipId, setEditingMembershipId] = useState<string | null>(null);
+  const [editingAwardId, setEditingAwardId] = useState<string | null>(null);
   const [sections, setSections] = useState<SectionConfig[]>(DEFAULT_SECTIONS);
   const [editingSectionKey, setEditingSectionKey] = useState<string | null>(null);
   const [sectionEditName, setSectionEditName] = useState({ en: "", ar: "" });
@@ -383,17 +385,25 @@ export function UserCareerTimeline({ userId, isAr }: Props) {
 
   const saveMembershipMutation = useMutation({
     mutationFn: async () => {
-      const { error } = await supabase.from("entity_memberships").insert({
-        user_id: userId, entity_id: membershipForm.entity_id,
-        membership_type: membershipForm.membership_type, title: membershipForm.title || null,
-        title_ar: membershipForm.title_ar || null, enrollment_date: membershipForm.enrollment_date || null,
-        notes: membershipForm.notes || null, status: "active",
-      });
-      if (error) throw error;
+      const payload = {
+        entity_id: membershipForm.entity_id,
+        membership_type: membershipForm.membership_type,
+        title: membershipForm.title || null,
+        title_ar: membershipForm.title_ar || null,
+        enrollment_date: membershipForm.enrollment_date || null,
+        notes: membershipForm.notes || null,
+      };
+      if (editingMembershipId) {
+        const { error } = await supabase.from("entity_memberships").update(payload).eq("id", editingMembershipId);
+        if (error) throw error;
+      } else {
+        const { error } = await supabase.from("entity_memberships").insert({ ...payload, user_id: userId, status: "active" });
+        if (error) throw error;
+      }
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["user-entity-memberships", userId] });
-      toast({ title: isAr ? "تمت إضافة العضوية" : "Membership added" });
+      toast({ title: editingMembershipId ? (isAr ? "تم التحديث" : "Updated") : (isAr ? "تمت إضافة العضوية" : "Membership added") });
       closeForm();
     },
     onError: (err: any) => toast({ title: isAr ? "خطأ" : "Error", description: err.message, variant: "destructive" }),
@@ -439,6 +449,36 @@ export function UserCareerTimeline({ userId, isAr }: Props) {
     onError: (err: any) => toast({ title: isAr ? "خطأ" : "Error", description: err.message, variant: "destructive" }),
   });
 
+  const saveAwardMutation = useMutation({
+    mutationFn: async () => {
+      if (editingAwardId) {
+        const { error } = await supabase.from("certificates").update({
+          event_name: awardForm.event_name, event_name_ar: awardForm.event_name_ar || null,
+          achievement: awardForm.achievement || null, achievement_ar: awardForm.achievement_ar || null,
+          event_date: awardForm.event_date || null, type: awardForm.type as any,
+        }).eq("id", editingAwardId);
+        if (error) throw error;
+      }
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["user-certificates-awards", userId] });
+      toast({ title: isAr ? "تم التحديث" : "Updated" });
+      closeForm();
+    },
+    onError: (err: any) => toast({ title: isAr ? "خطأ" : "Error", description: err.message, variant: "destructive" }),
+  });
+
+  const deleteAwardMutation = useMutation({
+    mutationFn: async (id: string) => {
+      const { error } = await supabase.from("certificates").delete().eq("id", id);
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["user-certificates-awards", userId] });
+      toast({ title: isAr ? "تم الحذف" : "Deleted" });
+    },
+  });
+
   const deleteCareerMutation = useMutation({
     mutationFn: async (id: string) => {
       const { error } = await supabase.from("user_career_records").delete().eq("id", id);
@@ -482,6 +522,8 @@ export function UserCareerTimeline({ userId, isAr }: Props) {
   const closeForm = () => {
     setAddingSection(null);
     setEditingId(null);
+    setEditingMembershipId(null);
+    setEditingAwardId(null);
     setSelectedCompetitionId("");
   };
 
@@ -514,11 +556,33 @@ export function UserCareerTimeline({ userId, isAr }: Props) {
 
   const startAddMembership = () => {
     setMembershipForm({ entity_id: "", membership_type: "member", title: "", title_ar: "", enrollment_date: "", notes: "" });
+    setEditingMembershipId(null);
+    setAddingSection("memberships");
+  };
+
+  const startEditMembership = (m: any) => {
+    setMembershipForm({
+      entity_id: m.entity_id || "", membership_type: m.membership_type || "member",
+      title: m.title || "", title_ar: m.title_ar || "",
+      enrollment_date: m.enrollment_date || "", notes: m.notes || "",
+    });
+    setEditingMembershipId(m.id);
     setAddingSection("memberships");
   };
 
   const startAddAward = () => {
     setAwardForm({ event_name: "", event_name_ar: "", achievement: "", achievement_ar: "", type: "participation", event_date: "" });
+    setEditingAwardId(null);
+    setAddingSection("awards");
+  };
+
+  const startEditAward = (cert: any) => {
+    setAwardForm({
+      event_name: cert.event_name || "", event_name_ar: cert.event_name_ar || "",
+      achievement: cert.achievement || "", achievement_ar: cert.achievement_ar || "",
+      type: cert.type || "participation", event_date: cert.event_date || "",
+    });
+    setEditingAwardId(cert.id);
     setAddingSection("awards");
   };
 
@@ -776,25 +840,34 @@ export function UserCareerTimeline({ userId, isAr }: Props) {
                         <EmptyState icon={Users} message={isAr ? "لا توجد عضويات" : "No memberships"} />
                       )}
                       {memberships.map((m: any) => (
-                        <CompactRow key={m.id} icon={Users} color={section.color}
-                          logoUrl={m.culinary_entities?.logo_url}
-                          title={isAr ? (m.culinary_entities?.name_ar || m.culinary_entities?.name) : m.culinary_entities?.name}
-                          subtitle={[m.title && (isAr ? m.title_ar || m.title : m.title), m.membership_type && labelFor(m.membership_type, MEMBERSHIP_TYPES, isAr)].filter(Boolean).join(" · ")}
-                          meta={m.enrollment_date ? formatDateShort(m.enrollment_date, isAr) : formatDateShort(m.created_at, isAr)}
-                          badge={m.status === "active" ? (isAr ? "نشط" : "Active") : m.status}
-                          badgeVariant={m.status === "active" ? "default" : "secondary"}
-                          isAr={isAr}
-                          onDelete={() => deleteMembershipMutation.mutate(m.id)}
-                        />
+                        editingMembershipId === m.id ? (
+                          <MembershipForm key={m.id} form={membershipForm} isAr={isAr}
+                            editingId={editingMembershipId}
+                            isPending={saveMembershipMutation.isPending}
+                            onUpdate={(k, v) => setMembershipForm(prev => ({ ...prev, [k]: v }))}
+                            onSave={() => saveMembershipMutation.mutate()} onCancel={closeForm} />
+                        ) : (
+                          <CompactRow key={m.id} icon={Users} color={section.color}
+                            logoUrl={m.culinary_entities?.logo_url}
+                            title={isAr ? (m.culinary_entities?.name_ar || m.culinary_entities?.name) : m.culinary_entities?.name}
+                            subtitle={[m.title && (isAr ? m.title_ar || m.title : m.title), m.membership_type && labelFor(m.membership_type, MEMBERSHIP_TYPES, isAr)].filter(Boolean).join(" · ")}
+                            meta={m.enrollment_date ? formatDateShort(m.enrollment_date, isAr) : formatDateShort(m.created_at, isAr)}
+                            badge={m.status === "active" ? (isAr ? "نشط" : "Active") : m.status}
+                            badgeVariant={m.status === "active" ? "default" : "secondary"}
+                            isAr={isAr}
+                            onEdit={() => startEditMembership(m)}
+                            onDelete={() => deleteMembershipMutation.mutate(m.id)}
+                          />
+                        )
                       ))}
-                      {isAddingHere ? (
+                      {isAddingHere && !editingMembershipId ? (
                         <MembershipForm form={membershipForm} isAr={isAr}
                           isPending={saveMembershipMutation.isPending}
                           onUpdate={(k, v) => setMembershipForm(prev => ({ ...prev, [k]: v }))}
                           onSave={() => saveMembershipMutation.mutate()} onCancel={closeForm} />
-                      ) : (
+                      ) : !editingMembershipId ? (
                         <AddButton label={isAr ? "إضافة عضوية" : "Add Membership"} onClick={startAddMembership} />
-                      )}
+                      ) : null}
                     </>
                   )}
 
@@ -812,6 +885,12 @@ export function UserCareerTimeline({ userId, isAr }: Props) {
                           badge={reg.status === "approved" ? (isAr ? "مقبول" : "Approved") : reg.status === "pending" ? (isAr ? "قيد المراجعة" : "Pending") : reg.status}
                           badgeVariant={reg.status === "approved" ? "default" : "secondary"}
                           isAr={isAr}
+                          onDelete={() => {
+                            supabase.from("competition_registrations").delete().eq("id", reg.id).then(() => {
+                              queryClient.invalidateQueries({ queryKey: ["user-competition-history", userId] });
+                              toast({ title: isAr ? "تم الحذف" : "Deleted" });
+                            });
+                          }}
                         />
                       ))}
                       {isAddingHere ? (
@@ -834,22 +913,32 @@ export function UserCareerTimeline({ userId, isAr }: Props) {
                         <EmptyState icon={Medal} message={isAr ? "لا توجد جوائز" : "No awards"} />
                       )}
                       {certificates.map((cert: any) => (
-                        <CompactRow key={cert.id} icon={Award} color={section.color}
-                          title={isAr ? (cert.event_name_ar || cert.event_name) : cert.event_name}
-                          subtitle={isAr ? (cert.achievement_ar || cert.achievement || "") : (cert.achievement || "")}
-                          meta={`${cert.verification_code ? cert.verification_code.slice(-4) : ""}${cert.issued_at ? ` · ${formatDateShort(cert.issued_at, isAr)}` : ""}`}
-                          badge={cert.type} badgeVariant="outline"
-                          isAr={isAr}
-                        />
+                        editingAwardId === cert.id ? (
+                          <AwardAddForm key={cert.id} form={awardForm} isAr={isAr}
+                            editingId={editingAwardId}
+                            isPending={saveAwardMutation.isPending}
+                            onUpdate={(k, v) => setAwardForm(prev => ({ ...prev, [k]: v }))}
+                            onSave={() => saveAwardMutation.mutate()} onCancel={closeForm} />
+                        ) : (
+                          <CompactRow key={cert.id} icon={Award} color={section.color}
+                            title={isAr ? (cert.event_name_ar || cert.event_name) : cert.event_name}
+                            subtitle={isAr ? (cert.achievement_ar || cert.achievement || "") : (cert.achievement || "")}
+                            meta={`${cert.verification_code ? cert.verification_code.slice(-4) : ""}${cert.issued_at ? ` · ${formatDateShort(cert.issued_at, isAr)}` : ""}`}
+                            badge={cert.type} badgeVariant="outline"
+                            isAr={isAr}
+                            onEdit={() => startEditAward(cert)}
+                            onDelete={() => deleteAwardMutation.mutate(cert.id)}
+                          />
+                        )
                       ))}
-                      {isAddingHere ? (
+                      {isAddingHere && !editingAwardId ? (
                         <AwardAddForm form={awardForm} isAr={isAr}
                           isPending={addAwardMutation.isPending}
                           onUpdate={(k, v) => setAwardForm(prev => ({ ...prev, [k]: v }))}
                           onSave={() => addAwardMutation.mutate()} onCancel={closeForm} />
-                      ) : (
+                      ) : !editingAwardId ? (
                         <AddButton label={isAr ? "إضافة جائزة" : "Add Award"} onClick={startAddAward} />
-                      )}
+                      ) : null}
                     </>
                   )}
 
@@ -1156,8 +1245,8 @@ function CareerForm({ form, editingId, isAr, isPending, onUpdate, onSave, onCanc
   );
 }
 
-function MembershipForm({ form, isAr, isPending, onUpdate, onSave, onCancel }: {
-  form: any; isAr: boolean; isPending: boolean;
+function MembershipForm({ form, isAr, isPending, editingId, onUpdate, onSave, onCancel }: {
+  form: any; isAr: boolean; isPending: boolean; editingId?: string | null;
   onUpdate: (key: string, value: any) => void; onSave: () => void; onCancel: () => void;
 }) {
   return (
@@ -1167,7 +1256,7 @@ function MembershipForm({ form, isAr, isPending, onUpdate, onSave, onCancel }: {
           <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-primary/10 text-primary">
             <Users className="h-3.5 w-3.5" />
           </div>
-          <h4 className="text-xs font-bold">{isAr ? "إضافة عضوية" : "Add Membership"}</h4>
+          <h4 className="text-xs font-bold">{editingId ? (isAr ? "تعديل العضوية" : "Edit Membership") : (isAr ? "إضافة عضوية" : "Add Membership")}</h4>
         </div>
         <Button size="icon" variant="ghost" className="h-6 w-6 rounded-md" onClick={onCancel}><X className="h-3.5 w-3.5" /></Button>
       </div>
@@ -1244,8 +1333,8 @@ function CompetitionAddForm({ competitions, selectedId, onSelect, isAr, isPendin
   );
 }
 
-function AwardAddForm({ form, isAr, isPending, onUpdate, onSave, onCancel }: {
-  form: any; isAr: boolean; isPending: boolean;
+function AwardAddForm({ form, isAr, isPending, editingId, onUpdate, onSave, onCancel }: {
+  form: any; isAr: boolean; isPending: boolean; editingId?: string | null;
   onUpdate: (key: string, value: any) => void; onSave: () => void; onCancel: () => void;
 }) {
   return (
@@ -1255,7 +1344,7 @@ function AwardAddForm({ form, isAr, isPending, onUpdate, onSave, onCancel }: {
           <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-chart-1/15 text-chart-1">
             <Medal className="h-3.5 w-3.5" />
           </div>
-          <h4 className="text-xs font-bold">{isAr ? "إضافة جائزة" : "Add Award"}</h4>
+          <h4 className="text-xs font-bold">{editingId ? (isAr ? "تعديل الجائزة" : "Edit Award") : (isAr ? "إضافة جائزة" : "Add Award")}</h4>
         </div>
         <Button size="icon" variant="ghost" className="h-6 w-6 rounded-md" onClick={onCancel}><X className="h-3.5 w-3.5" /></Button>
       </div>
