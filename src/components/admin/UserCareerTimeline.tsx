@@ -1361,7 +1361,7 @@ export function UserCareerTimeline({ userId, isAr }: Props) {
                               <CompactRow icon={Tv} color={section.color}
                                 title={isAr ? (r.title_ar || r.title) : r.title}
                                 subtitle={r.entity_name || ""}
-                                meta={`${formatDateRange(r.start_date, r.end_date, r.is_current, isAr)}${r.department ? ` · ${isAr ? "مقدم: " : "Host: "}${r.department}` : ""}`}
+                                meta={`${formatDateRange(r.start_date, r.end_date, r.is_current, isAr)}${r.department ? ` · ${isAr ? "مقدم: " : "Host: "}${r.department}` : ""}${r.field_of_study ? ` · ${isAr ? "ضيف: " : "Guest: "}${r.field_of_study}` : ""}`}
                                 isAr={isAr}
                                 onEdit={() => startEditCareer(r)} onDelete={() => deleteCareerMutation.mutate(r.id)}
                                 moveSections={getMoveSections("media")} onMove={(target) => moveRecordToSection.mutate({ id: r.id, targetSection: target })}
@@ -1783,10 +1783,16 @@ function CareerForm({ form, editingId, isAr, isPending, onUpdate, onSave, onCanc
       )}
 
       {isMedia && (
-        <div className="grid gap-2 sm:grid-cols-2">
-          <div className="space-y-1">
-            <Label className="text-[11px] font-medium text-muted-foreground">{isAr ? "المقدم / المحاور" : "Host / Interviewer"}</Label>
-            <Input value={form.department} onChange={(e) => onUpdate("department", e.target.value)} className="h-8 text-xs" placeholder={isAr ? "اسم المقدم" : "Host name"} />
+        <>
+          <div className="grid gap-2 sm:grid-cols-2">
+            <div className="space-y-1">
+              <Label className="text-[11px] font-medium text-muted-foreground">{isAr ? "المقدم / المحاور" : "Host / Interviewer"}</Label>
+              <Input value={form.department} onChange={(e) => onUpdate("department", e.target.value)} className="h-8 text-xs" placeholder={isAr ? "اسم المقدم" : "Host name"} />
+            </div>
+            <div className="space-y-1">
+              <Label className="text-[11px] font-medium text-muted-foreground">{isAr ? "الضيف" : "Guest"}</Label>
+              <Input value={form.field_of_study} onChange={(e) => onUpdate("field_of_study", e.target.value)} className="h-8 text-xs" placeholder={isAr ? "اسم الضيف" : "Guest name"} />
+            </div>
           </div>
           <BilingualFieldPair
             labelEn="Episode / Topic" labelAr="الحلقة / الموضوع"
@@ -1794,7 +1800,7 @@ function CareerForm({ form, editingId, isAr, isPending, onUpdate, onSave, onCanc
             onChangeEn={(v) => onUpdate("description", v)} onChangeAr={(v) => onUpdate("description_ar", v)}
             isAr={isAr}
           />
-        </div>
+        </>
       )}
 
       {isOrganizing && (
@@ -1884,7 +1890,7 @@ function MembershipForm({ form, isAr, isPending, editingId, onUpdate, onSave, on
 
       <EntitySelector value={form.entity_id} entityName=""
         onChange={(id, name) => onUpdate("entity_id", id)}
-        label={isAr ? "المنظمة" : "Organization"} />
+        label={isAr ? "المنظمة / الجمعية" : "Organization / Association"} />
 
       <div className="grid gap-2 sm:grid-cols-2">
         <div className="space-y-1">
@@ -1899,11 +1905,31 @@ function MembershipForm({ form, isAr, isPending, editingId, onUpdate, onSave, on
       </div>
 
       <BilingualFieldPair
-        labelEn="Title" labelAr="المسمى"
+        labelEn="Title / Position" labelAr="المسمى / المنصب"
         valueEn={form.title} valueAr={form.title_ar}
         onChangeEn={(v) => onUpdate("title", v)} onChangeAr={(v) => onUpdate("title_ar", v)}
         isAr={isAr}
       />
+
+      <div className="grid gap-2 sm:grid-cols-2">
+        <div className="space-y-1">
+          <Label className="text-[11px] font-medium text-muted-foreground">{isAr ? "المدينة" : "City"}</Label>
+          <Input value={form.notes?.split("|")[0] || ""} onChange={(e) => {
+            const parts = (form.notes || "").split("|");
+            parts[0] = e.target.value;
+            onUpdate("notes", parts.join("|"));
+          }} className="h-8 text-xs" placeholder={isAr ? "الرياض" : "Riyadh"} />
+        </div>
+        <div className="space-y-1">
+          <Label className="text-[11px] font-medium text-muted-foreground">{isAr ? "الدولة" : "Country"}</Label>
+          <Input value={form.notes?.split("|")[1] || ""} onChange={(e) => {
+            const parts = (form.notes || "").split("|");
+            while (parts.length < 2) parts.push("");
+            parts[1] = e.target.value;
+            onUpdate("notes", parts.join("|"));
+          }} className="h-8 text-xs" placeholder={isAr ? "السعودية" : "Saudi Arabia"} />
+        </div>
+      </div>
 
       <FormActions isAr={isAr} isPending={isPending} canSave={!!form.entity_id} onSave={onSave} onCancel={onCancel} />
     </div>
@@ -2005,7 +2031,24 @@ function CompetitionEventForm({ form, editingId, isAr, isPending, onUpdate, onSa
         onChange={(id, name) => { onUpdate("entity_id", id); onUpdate("entity_name", name); }}
         label={isAr ? "الجهة المنظمة" : "Organizer"} />
 
-      <div className="grid gap-2 sm:grid-cols-3">
+      <div className="grid gap-2 sm:grid-cols-2">
+        <div className="space-y-1">
+          <Label className="text-[11px] font-medium text-muted-foreground">{isAr ? "الدور" : "Role"}</Label>
+          <Select value={form.employment_type || "participant"} onValueChange={(v) => onUpdate("employment_type", v)}>
+            <SelectTrigger className="h-8 text-xs"><SelectValue /></SelectTrigger>
+            <SelectContent>{COMPETITION_ROLES.map(r => <SelectItem key={r.value} value={r.value}>{isAr ? r.ar : r.en}</SelectItem>)}</SelectContent>
+          </Select>
+        </div>
+        <div className="space-y-1">
+          <Label className="text-[11px] font-medium text-muted-foreground">{isAr ? "الميدالية / الإنجاز" : "Medal / Achievement"}</Label>
+          <Select value={form.grade || ""} onValueChange={(v) => onUpdate("grade", v)}>
+            <SelectTrigger className="h-8 text-xs"><SelectValue placeholder={isAr ? "اختر" : "Select"} /></SelectTrigger>
+            <SelectContent>{MEDAL_TYPES.map(m => <SelectItem key={m.value} value={m.value}>{isAr ? m.ar : m.en}</SelectItem>)}</SelectContent>
+          </Select>
+        </div>
+      </div>
+
+      <div className="grid gap-2 sm:grid-cols-2">
         <div className="space-y-1">
           <Label className="text-[11px] font-medium text-muted-foreground">{isAr ? "المدينة" : "City"}</Label>
           <Input value={form.location} onChange={(e) => onUpdate("location", e.target.value)} className="h-8 text-xs" placeholder={isAr ? "الرياض" : "Riyadh"} />
@@ -2015,13 +2058,6 @@ function CompetitionEventForm({ form, editingId, isAr, isPending, onUpdate, onSa
           <Select value={form.country_code || ""} onValueChange={(v) => onUpdate("country_code", v)}>
             <SelectTrigger className="h-8 text-xs"><SelectValue placeholder={isAr ? "اختر" : "Select"} /></SelectTrigger>
             <SelectContent>{COUNTRIES.map(c => <SelectItem key={c.code} value={c.code}>{c.flag} {isAr ? c.ar : c.en}</SelectItem>)}</SelectContent>
-          </Select>
-        </div>
-        <div className="space-y-1">
-          <Label className="text-[11px] font-medium text-muted-foreground">{isAr ? "الميدالية / الإنجاز" : "Medal / Achievement"}</Label>
-          <Select value={form.grade || ""} onValueChange={(v) => onUpdate("grade", v)}>
-            <SelectTrigger className="h-8 text-xs"><SelectValue placeholder={isAr ? "اختر" : "Select"} /></SelectTrigger>
-            <SelectContent>{MEDAL_TYPES.map(m => <SelectItem key={m.value} value={m.value}>{isAr ? m.ar : m.en}</SelectItem>)}</SelectContent>
           </Select>
         </div>
       </div>
