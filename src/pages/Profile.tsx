@@ -99,7 +99,7 @@ export default function Profile() {
   }
 
   const tabs = [
-    { id: "overview", label: isAr ? "مساحتي" : "My Space", icon: User, description: isAr ? "ملخص عام" : "Your summary" },
+    { id: "overview", label: isAr ? "ملفي الشخصي" : "Profile", icon: User, description: isAr ? "ملخص عام" : "Your summary" },
     { id: "competitions", label: isAr ? "المسابقات" : "Competitions", icon: Trophy, description: isAr ? "سجل المسابقات" : "Competition history" },
     { id: "membership", label: isAr ? "العضوية" : "Membership", icon: Crown, description: isAr ? "خطتك الحالية" : "Your plan" },
     { id: "wallet", label: isAr ? "المحفظة" : "Wallet", icon: Wallet, description: isAr ? "الرصيد والنقاط" : "Balance & points" },

@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useCallback } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
@@ -9,14 +9,23 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
 import { toEnglishDigits } from "@/lib/formatNumber";
-import { Separator } from "@/components/ui/separator";
 import { EntitySelector } from "@/components/admin/EntitySelector";
+import { FlexibleDateInput } from "@/components/ui/flexible-date-input";
 import { toast } from "@/hooks/use-toast";
 import {
-  GraduationCap, Briefcase, Plus, Pencil, Trash2, X, Check, Calendar,
+  GraduationCap, Briefcase, Plus, Pencil, Trash2, X, Check, 
   Building2, MapPin, Trophy, Award, Medal, Users, ChevronDown, ChevronUp, FileText,
+  GripVertical, FolderPlus, Type,
 } from "lucide-react";
 import { CVImportDialog } from "@/components/cv-import/CVImportDialog";
+import {
+  DndContext, closestCenter, KeyboardSensor, PointerSensor, useSensor, useSensors,
+  DragEndEvent, DragStartEvent, DragOverEvent, DragOverlay,
+} from "@dnd-kit/core";
+import {
+  arrayMove, SortableContext, sortableKeyboardCoordinates, useSortable, verticalListSortingStrategy,
+} from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
 
 // ── Constants ──────────────────────────────────────
 
@@ -55,15 +64,37 @@ const CERTIFICATE_TYPES = [
   { value: "judge", en: "Judging", ar: "تحكيم" },
 ];
 
-const SECTIONS = [
-  { key: "education" as const, icon: GraduationCap, en: "Education", ar: "التعليم", color: "bg-chart-2/10 text-chart-2" },
-  { key: "work" as const, icon: Briefcase, en: "Experience", ar: "الخبرات", color: "bg-chart-3/10 text-chart-3" },
-  { key: "memberships" as const, icon: Users, en: "Memberships", ar: "العضويات", color: "bg-primary/10 text-primary" },
-  { key: "competitions" as const, icon: Trophy, en: "Competitions", ar: "المسابقات", color: "bg-chart-4/10 text-chart-4" },
-  { key: "awards" as const, icon: Medal, en: "Awards", ar: "الجوائز", color: "bg-chart-1/10 text-chart-1" },
+const DEFAULT_SECTIONS: SectionConfig[] = [
+  { key: "education", icon: "GraduationCap", en: "Education", ar: "التعليم", color: "bg-chart-2/10 text-chart-2", isCustom: false },
+  { key: "work", icon: "Briefcase", en: "Experience", ar: "الخبرات", color: "bg-chart-3/10 text-chart-3", isCustom: false },
+  { key: "memberships", icon: "Users", en: "Memberships", ar: "العضويات", color: "bg-primary/10 text-primary", isCustom: false },
+  { key: "competitions", icon: "Trophy", en: "Competitions", ar: "المسابقات", color: "bg-chart-4/10 text-chart-4", isCustom: false },
+  { key: "awards", icon: "Medal", en: "Awards", ar: "الجوائز", color: "bg-chart-1/10 text-chart-1", isCustom: false },
 ];
 
-type SectionKey = typeof SECTIONS[number]["key"];
+const ICON_MAP: Record<string, any> = {
+  GraduationCap, Briefcase, Users, Trophy, Medal, Award, Building2, FileText, MapPin,
+};
+
+const CUSTOM_SECTION_COLORS = [
+  "bg-chart-2/10 text-chart-2",
+  "bg-chart-3/10 text-chart-3",
+  "bg-primary/10 text-primary",
+  "bg-chart-4/10 text-chart-4",
+  "bg-chart-1/10 text-chart-1",
+  "bg-chart-5/10 text-chart-5",
+];
+
+interface SectionConfig {
+  key: string;
+  icon: string;
+  en: string;
+  ar: string;
+  color: string;
+  isCustom: boolean;
+}
+
+type SectionKey = string;
 
 // ── Types ──────────────────────────────────────
 
@@ -73,12 +104,20 @@ interface CareerRecord {
   field_of_study_ar: string | null; grade: string | null; department: string | null; department_ar: string | null;
   employment_type: string | null; start_date: string | null; end_date: string | null; is_current: boolean;
   description: string | null; description_ar: string | null; location: string | null; sort_order: number; created_at: string;
+  entity_name_ar?: string | null;
 }
 
 interface Props { userId: string; isAr: boolean; }
 
 const formatDateShort = (date: string | null, isAr: boolean) => {
   if (!date) return isAr ? "الحالي" : "Present";
+  // Handle flexible formats: year only, year-month, full date
+  const parts = date.split("-");
+  if (parts.length === 1) return parts[0]; // year only
+  if (parts.length === 2) {
+    const d = new Date(Number(parts[0]), Number(parts[1]) - 1);
+    return toEnglishDigits(d.toLocaleDateString(isAr ? "ar-SA" : "en-US", { year: "numeric", month: "short" }));
+  }
   const d = new Date(date);
   return toEnglishDigits(d.toLocaleDateString(isAr ? "ar-SA" : "en-US", { year: "numeric", month: "short" }));
 };
@@ -92,9 +131,15 @@ const labelFor = (key: string, list: { value: string; en: string; ar: string }[]
 
 export function UserCareerTimeline({ userId, isAr }: Props) {
   const queryClient = useQueryClient();
-  const [expandedSections, setExpandedSections] = useState<Set<SectionKey>>(new Set(["education", "work"]));
-  const [addingSection, setAddingSection] = useState<SectionKey | null>(null);
+  const [expandedSections, setExpandedSections] = useState<Set<string>>(new Set(["education", "work"]));
+  const [addingSection, setAddingSection] = useState<string | null>(null);
   const [editingId, setEditingId] = useState<string | null>(null);
+  const [sections, setSections] = useState<SectionConfig[]>(DEFAULT_SECTIONS);
+  const [editingSectionKey, setEditingSectionKey] = useState<string | null>(null);
+  const [sectionEditName, setSectionEditName] = useState({ en: "", ar: "" });
+  const [addingSectionDialog, setAddingSectionDialog] = useState(false);
+  const [newSectionName, setNewSectionName] = useState({ en: "", ar: "" });
+  const [activeId, setActiveId] = useState<string | null>(null);
 
   // Career form state
   const [careerForm, setCareerForm] = useState({
@@ -116,7 +161,7 @@ export function UserCareerTimeline({ userId, isAr }: Props) {
     type: "participation" as string, event_date: "",
   });
 
-  const toggleSection = (key: SectionKey) => {
+  const toggleSection = (key: string) => {
     setExpandedSections(prev => {
       const next = new Set(prev);
       next.has(key) ? next.delete(key) : next.add(key);
@@ -124,13 +169,20 @@ export function UserCareerTimeline({ userId, isAr }: Props) {
     });
   };
 
+  // ── DnD Sensors ──────────────────────────────────────
+  const sensors = useSensors(
+    useSensor(PointerSensor, { activationConstraint: { distance: 8 } }),
+    useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates }),
+  );
+
   // ── Data Queries ──────────────────────────────────────
 
   const { data: records = [], isLoading } = useQuery({
     queryKey: ["career-records", userId],
     queryFn: async () => {
       const { data, error } = await supabase.from("user_career_records").select("*")
-        .eq("user_id", userId).order("is_current", { ascending: false })
+        .eq("user_id", userId).order("sort_order", { ascending: true })
+        .order("is_current", { ascending: false })
         .order("end_date", { ascending: false, nullsFirst: true }).order("start_date", { ascending: false });
       if (error) throw error;
       return (data || []) as CareerRecord[];
@@ -170,7 +222,6 @@ export function UserCareerTimeline({ userId, isAr }: Props) {
     },
   });
 
-  // Available competitions for adding
   const { data: availableCompetitions = [] } = useQuery({
     queryKey: ["available-competitions-for-user"],
     queryFn: async () => {
@@ -188,14 +239,64 @@ export function UserCareerTimeline({ userId, isAr }: Props) {
 
   const educationRecords = useMemo(() => records.filter(r => r.record_type === "education"), [records]);
   const workRecords = useMemo(() => records.filter(r => r.record_type === "work"), [records]);
+  
+  // Custom section records
+  const customSectionRecords = useCallback((key: string) => {
+    return records.filter(r => r.record_type === key);
+  }, [records]);
 
-  const sectionCounts: Record<SectionKey, number> = {
-    education: educationRecords.length,
-    work: workRecords.length,
-    memberships: memberships.length,
-    competitions: competitions.length,
-    awards: certificates.length,
+  const getSectionCount = (key: string): number => {
+    if (key === "education") return educationRecords.length;
+    if (key === "work") return workRecords.length;
+    if (key === "memberships") return memberships.length;
+    if (key === "competitions") return competitions.length;
+    if (key === "awards") return certificates.length;
+    return customSectionRecords(key).length;
   };
+
+  // ── Drag & Drop ──────────────────────────────────────
+
+  const handleDragStart = (event: DragStartEvent) => {
+    setActiveId(String(event.active.id));
+  };
+
+  const handleDragEnd = useCallback(async (event: DragEndEvent) => {
+    setActiveId(null);
+    const { active, over } = event;
+    if (!over || active.id === over.id) return;
+
+    const activeData = active.data.current;
+    const overData = over.data.current;
+
+    if (!activeData || !overData) return;
+
+    const activeSectionKey = activeData.sectionKey as string;
+    const overSectionKey = overData.sectionKey as string;
+
+    // Only handle career records (education/work/custom)
+    if (!["education", "work"].includes(activeSectionKey) && !sections.find(s => s.isCustom && s.key === activeSectionKey)) return;
+
+    if (activeSectionKey === overSectionKey) {
+      // Reorder within same section
+      const sectionRecords = records.filter(r => r.record_type === activeSectionKey);
+      const oldIndex = sectionRecords.findIndex(r => r.id === active.id);
+      const newIndex = sectionRecords.findIndex(r => r.id === over.id);
+      if (oldIndex === -1 || newIndex === -1) return;
+
+      const reordered = arrayMove(sectionRecords, oldIndex, newIndex);
+      // Update sort_order in DB
+      for (let i = 0; i < reordered.length; i++) {
+        await supabase.from("user_career_records").update({ sort_order: i }).eq("id", reordered[i].id);
+      }
+      queryClient.invalidateQueries({ queryKey: ["career-records", userId] });
+    } else {
+      // Move to different section (change record_type)
+      const targetType = overSectionKey;
+      await supabase.from("user_career_records").update({ record_type: targetType }).eq("id", String(active.id));
+      queryClient.invalidateQueries({ queryKey: ["career-records", userId] });
+      toast({ title: isAr ? "تم نقل العنصر" : "Item moved" });
+    }
+  }, [records, sections, userId, queryClient, isAr]);
 
   // ── Mutations ──────────────────────────────────────
 
@@ -264,16 +365,13 @@ export function UserCareerTimeline({ userId, isAr }: Props) {
 
   const addAwardMutation = useMutation({
     mutationFn: async () => {
-      // Get or create a default template
-      const { data: templates } = await supabase.from("certificate_templates")
-        .select("id").limit(1);
+      const { data: templates } = await supabase.from("certificate_templates").select("id").limit(1);
       const templateId = templates?.[0]?.id;
       if (!templateId) throw new Error("No certificate template found");
 
       const { error } = await supabase.from("certificates").insert({
         recipient_id: userId, recipient_name: "User",
-        template_id: templateId,
-        type: awardForm.type as any,
+        template_id: templateId, type: awardForm.type as any,
         event_name: awardForm.event_name, event_name_ar: awardForm.event_name_ar || null,
         achievement: awardForm.achievement || null, achievement_ar: awardForm.achievement_ar || null,
         event_date: awardForm.event_date || null,
@@ -320,7 +418,7 @@ export function UserCareerTimeline({ userId, isAr }: Props) {
     setSelectedCompetitionId("");
   };
 
-  const startAddCareer = (type: "education" | "work") => {
+  const startAddCareer = (type: string) => {
     setCareerForm({
       record_type: type, entity_id: null, entity_name: "", title: "", title_ar: "",
       education_level: "", field_of_study: "", field_of_study_ar: "", grade: "",
@@ -344,7 +442,7 @@ export function UserCareerTimeline({ userId, isAr }: Props) {
       description_ar: record.description_ar || "", location: record.location || "",
     });
     setEditingId(record.id);
-    setAddingSection(record.record_type as SectionKey);
+    setAddingSection(record.record_type);
   };
 
   const startAddMembership = () => {
@@ -357,198 +455,385 @@ export function UserCareerTimeline({ userId, isAr }: Props) {
     setAddingSection("awards");
   };
 
+  // ── Section Management ──────────────────────────────────────
+
+  const startEditSectionTitle = (section: SectionConfig) => {
+    setEditingSectionKey(section.key);
+    setSectionEditName({ en: section.en, ar: section.ar });
+  };
+
+  const saveSectionTitle = () => {
+    if (!editingSectionKey) return;
+    setSections(prev => prev.map(s => 
+      s.key === editingSectionKey ? { ...s, en: sectionEditName.en || s.en, ar: sectionEditName.ar || s.ar } : s
+    ));
+    setEditingSectionKey(null);
+    toast({ title: isAr ? "تم تحديث العنوان" : "Title updated" });
+  };
+
+  const addCustomSection = () => {
+    if (!newSectionName.en.trim()) return;
+    const key = `custom_${Date.now()}`;
+    const colorIndex = sections.filter(s => s.isCustom).length % CUSTOM_SECTION_COLORS.length;
+    setSections(prev => [...prev, {
+      key, icon: "FileText", en: newSectionName.en, ar: newSectionName.ar || newSectionName.en,
+      color: CUSTOM_SECTION_COLORS[colorIndex], isCustom: true,
+    }]);
+    setExpandedSections(prev => new Set([...prev, key]));
+    setNewSectionName({ en: "", ar: "" });
+    setAddingSectionDialog(false);
+    toast({ title: isAr ? "تم إنشاء القسم" : "Section created" });
+  };
+
+  const deleteCustomSection = (key: string) => {
+    setSections(prev => prev.filter(s => s.key !== key));
+    toast({ title: isAr ? "تم حذف القسم" : "Section deleted" });
+  };
+
   // ── Render ──────────────────────────────────────
 
   const [cvImportOpen, setCvImportOpen] = useState(false);
 
+  // Collect all draggable IDs for each section
+  const getSectionItemIds = (key: string): string[] => {
+    if (key === "education") return educationRecords.map(r => r.id);
+    if (key === "work") return workRecords.map(r => r.id);
+    if (sections.find(s => s.isCustom && s.key === key)) return customSectionRecords(key).map(r => r.id);
+    return [];
+  };
+
+  const isDraggableSection = (key: string) => ["education", "work"].includes(key) || sections.find(s => s.isCustom && s.key === key);
+
   return (
-    <div className="space-y-3">
-      {/* CV Import Button */}
-      <div className="flex justify-end">
-        <Button variant="outline" size="sm" className="gap-1.5" onClick={() => setCvImportOpen(true)}>
-          <FileText className="h-4 w-4" />
-          {isAr ? "استيراد سيرة ذاتية" : "Import CV"}
-        </Button>
-      </div>
+    <DndContext sensors={sensors} collisionDetection={closestCenter} onDragStart={handleDragStart} onDragEnd={handleDragEnd}>
+      <div className="space-y-3">
+        {/* Header Actions */}
+        <div className="flex gap-2 justify-end flex-wrap">
+          <Button variant="outline" size="sm" className="gap-1.5 text-xs" onClick={() => setAddingSectionDialog(true)}>
+            <FolderPlus className="h-3.5 w-3.5" />
+            {isAr ? "قسم جديد" : "New Section"}
+          </Button>
+          <Button variant="outline" size="sm" className="gap-1.5 text-xs" onClick={() => setCvImportOpen(true)}>
+            <FileText className="h-4 w-4" />
+            {isAr ? "استيراد سيرة ذاتية" : "Import CV"}
+          </Button>
+        </div>
 
-      <CVImportDialog
-        open={cvImportOpen}
-        onOpenChange={setCvImportOpen}
-        targetUserId={userId}
-        isAr={isAr}
-        onImported={() => {
-          queryClient.invalidateQueries({ queryKey: ["career-records", userId] });
-          queryClient.invalidateQueries({ queryKey: ["user-entity-memberships", userId] });
-        }}
-      />
-      {SECTIONS.map(section => {
-        const Icon = section.icon;
-        const count = sectionCounts[section.key];
-        const isExpanded = expandedSections.has(section.key);
-        const isAddingHere = addingSection === section.key;
-
-        return (
-          <div key={section.key} className="rounded-xl border bg-card/50 overflow-hidden transition-all hover:shadow-sm">
-            {/* Section Header */}
-            <button
-              onClick={() => toggleSection(section.key)}
-              className="w-full flex items-center gap-3 px-5 py-4 hover:bg-muted/40 transition-all group"
-            >
-              <div className={`flex h-9 w-9 items-center justify-center rounded-xl shrink-0 ${section.color} group-hover:scale-110 transition-transform`}>
-                <Icon className="h-4.5 w-4.5" />
+        {/* Add Section Dialog */}
+        {addingSectionDialog && (
+          <div className="rounded-xl border bg-card/50 p-4 space-y-3">
+            <div className="flex items-center justify-between pb-2 border-b border-border/30">
+              <h4 className="text-sm font-semibold flex items-center gap-2">
+                <FolderPlus className="h-4 w-4" />
+                {isAr ? "إنشاء قسم جديد" : "Create New Section"}
+              </h4>
+              <Button size="icon" variant="ghost" className="h-6 w-6" onClick={() => setAddingSectionDialog(false)}>
+                <X className="h-3.5 w-3.5" />
+              </Button>
+            </div>
+            <div className="grid gap-2.5 sm:grid-cols-2">
+              <div className="space-y-1.5">
+                <Label className="text-xs font-medium">{isAr ? "الاسم (EN)" : "Name (EN)"} *</Label>
+                <Input value={newSectionName.en} onChange={e => setNewSectionName(p => ({ ...p, en: e.target.value }))} 
+                  className="h-9 text-xs" dir="ltr" placeholder="e.g., Volunteering" />
               </div>
-              <div className="flex-1 text-start">
-                <span className="text-sm font-semibold">{isAr ? section.ar : section.en}</span>
+              <div className="space-y-1.5">
+                <Label className="text-xs font-medium">{isAr ? "الاسم (AR)" : "Name (AR)"}</Label>
+                <Input value={newSectionName.ar} onChange={e => setNewSectionName(p => ({ ...p, ar: e.target.value }))} 
+                  className="h-9 text-xs" dir="rtl" placeholder="مثل: التطوع" />
               </div>
-              {count > 0 && (
-                <Badge variant="outline" className="text-xs h-6 px-2.5 font-medium">{count}</Badge>
-              )}
-              {isExpanded ? <ChevronUp className="h-5 w-5 text-muted-foreground transition-transform" /> : <ChevronDown className="h-5 w-5 text-muted-foreground transition-transform" />}
-            </button>
-
-            {/* Section Content */}
-            {isExpanded && (
-              <div className="border-t px-5 py-4 space-y-2.5">
-                {/* ═══ EDUCATION ═══ */}
-                {section.key === "education" && (
-                  <>
-                    {educationRecords.length === 0 && !isAddingHere && (
-                      <EmptyState icon={GraduationCap} message={isAr ? "لا يوجد سجل تعليمي" : "No education records"} />
-                    )}
-                    {educationRecords.map(r => (
-                      <CompactRow key={r.id} icon={GraduationCap} color={section.color}
-                        title={isAr ? (r.title_ar || r.title) : r.title}
-                        subtitle={r.entity_name || ""}
-                        meta={`${formatDateShort(r.start_date, isAr)} – ${r.is_current ? (isAr ? "الحالي" : "Present") : formatDateShort(r.end_date, isAr)}${r.education_level ? ` · ${labelFor(r.education_level, EDUCATION_LEVELS, isAr)}` : ""}`}
-                        isCurrent={r.is_current} isAr={isAr}
-                        onEdit={() => startEditCareer(r)} onDelete={() => deleteCareerMutation.mutate(r.id)}
-                      />
-                    ))}
-                    {isAddingHere ? (
-                      <CareerForm form={careerForm} editingId={editingId} isAr={isAr}
-                        isPending={saveCareerMutation.isPending}
-                        onUpdate={(k, v) => setCareerForm(prev => ({ ...prev, [k]: v }))}
-                        onSave={() => saveCareerMutation.mutate()} onCancel={closeForm} />
-                    ) : (
-                      <AddButton label={isAr ? "إضافة تعليم" : "Add Education"} onClick={() => startAddCareer("education")} />
-                    )}
-                  </>
-                )}
-
-                {/* ═══ EXPERIENCE ═══ */}
-                {section.key === "work" && (
-                  <>
-                    {workRecords.length === 0 && !isAddingHere && (
-                      <EmptyState icon={Briefcase} message={isAr ? "لا يوجد سجل خبرات" : "No work experience"} />
-                    )}
-                    {workRecords.map(r => (
-                      <CompactRow key={r.id} icon={Briefcase} color={section.color}
-                        title={isAr ? (r.title_ar || r.title) : r.title}
-                        subtitle={r.entity_name || ""}
-                        meta={`${formatDateShort(r.start_date, isAr)} — ${r.is_current ? (isAr ? "الحالي" : "Present") : formatDateShort(r.end_date, isAr)}${r.employment_type ? ` · ${labelFor(r.employment_type, EMPLOYMENT_TYPES, isAr)}` : ""}${r.location ? ` · ${r.location}` : ""}`}
-                        isCurrent={r.is_current} isAr={isAr}
-                        onEdit={() => startEditCareer(r)} onDelete={() => deleteCareerMutation.mutate(r.id)}
-                      />
-                    ))}
-                    {isAddingHere ? (
-                      <CareerForm form={careerForm} editingId={editingId} isAr={isAr}
-                        isPending={saveCareerMutation.isPending}
-                        onUpdate={(k, v) => setCareerForm(prev => ({ ...prev, [k]: v }))}
-                        onSave={() => saveCareerMutation.mutate()} onCancel={closeForm} />
-                    ) : (
-                      <AddButton label={isAr ? "إضافة خبرة" : "Add Experience"} onClick={() => startAddCareer("work")} />
-                    )}
-                  </>
-                )}
-
-                {/* ═══ MEMBERSHIPS ═══ */}
-                {section.key === "memberships" && (
-                  <>
-                    {memberships.length === 0 && !isAddingHere && (
-                      <EmptyState icon={Users} message={isAr ? "لا توجد عضويات" : "No memberships"} />
-                    )}
-                    {memberships.map((m: any) => (
-                      <CompactRow key={m.id} icon={Users} color={section.color}
-                        logoUrl={m.culinary_entities?.logo_url}
-                        title={isAr ? (m.culinary_entities?.name_ar || m.culinary_entities?.name) : m.culinary_entities?.name}
-                        subtitle={[m.title && (isAr ? m.title_ar || m.title : m.title), m.membership_type && labelFor(m.membership_type, MEMBERSHIP_TYPES, isAr)].filter(Boolean).join(" · ")}
-                        meta={m.enrollment_date ? formatDateShort(m.enrollment_date, isAr) : formatDateShort(m.created_at, isAr)}
-                        badge={m.status === "active" ? (isAr ? "نشط" : "Active") : m.status}
-                        badgeVariant={m.status === "active" ? "default" : "secondary"}
-                        isAr={isAr}
-                        onDelete={() => deleteMembershipMutation.mutate(m.id)}
-                      />
-                    ))}
-                    {isAddingHere ? (
-                      <MembershipForm form={membershipForm} isAr={isAr}
-                        isPending={saveMembershipMutation.isPending}
-                        onUpdate={(k, v) => setMembershipForm(prev => ({ ...prev, [k]: v }))}
-                        onSave={() => saveMembershipMutation.mutate()} onCancel={closeForm} />
-                    ) : (
-                      <AddButton label={isAr ? "إضافة عضوية" : "Add Membership"} onClick={startAddMembership} />
-                    )}
-                  </>
-                )}
-
-                {/* ═══ COMPETITIONS ═══ */}
-                {section.key === "competitions" && (
-                  <>
-                    {competitions.length === 0 && !isAddingHere && (
-                      <EmptyState icon={Trophy} message={isAr ? "لا توجد مشاركات" : "No competitions"} />
-                    )}
-                    {competitions.map((reg: any) => (
-                      <CompactRow key={reg.id} icon={Trophy} color={section.color}
-                        title={isAr ? (reg.competitions?.title_ar || reg.competitions?.title) : reg.competitions?.title}
-                        subtitle=""
-                        meta={`${reg.competitions?.competition_start ? formatDateShort(reg.competitions.competition_start, isAr) : ""}${reg.competitions?.country_code ? ` · ${reg.competitions.country_code}` : ""}`}
-                        badge={reg.status === "approved" ? (isAr ? "مقبول" : "Approved") : reg.status === "pending" ? (isAr ? "قيد المراجعة" : "Pending") : reg.status}
-                        badgeVariant={reg.status === "approved" ? "default" : "secondary"}
-                        isAr={isAr}
-                      />
-                    ))}
-                    {isAddingHere ? (
-                      <CompetitionAddForm
-                        competitions={availableCompetitions} selectedId={selectedCompetitionId}
-                        onSelect={setSelectedCompetitionId} isAr={isAr}
-                        isPending={addCompetitionMutation.isPending}
-                        onSave={() => addCompetitionMutation.mutate()} onCancel={closeForm}
-                      />
-                    ) : (
-                      <AddButton label={isAr ? "إضافة مسابقة" : "Add Competition"} onClick={() => setAddingSection("competitions")} />
-                    )}
-                  </>
-                )}
-
-                {/* ═══ AWARDS ═══ */}
-                {section.key === "awards" && (
-                  <>
-                    {certificates.length === 0 && !isAddingHere && (
-                      <EmptyState icon={Medal} message={isAr ? "لا توجد جوائز" : "No awards"} />
-                    )}
-                    {certificates.map((cert: any) => (
-                      <CompactRow key={cert.id} icon={Award} color={section.color}
-                        title={isAr ? (cert.event_name_ar || cert.event_name) : cert.event_name}
-                        subtitle={isAr ? (cert.achievement_ar || cert.achievement || "") : (cert.achievement || "")}
-                        meta={`${cert.verification_code ? cert.verification_code.slice(-4) : ""}${cert.issued_at ? ` · ${formatDateShort(cert.issued_at, isAr)}` : ""}`}
-                        badge={cert.type} badgeVariant="outline"
-                        isAr={isAr}
-                      />
-                    ))}
-                    {isAddingHere ? (
-                      <AwardAddForm form={awardForm} isAr={isAr}
-                        isPending={addAwardMutation.isPending}
-                        onUpdate={(k, v) => setAwardForm(prev => ({ ...prev, [k]: v }))}
-                        onSave={() => addAwardMutation.mutate()} onCancel={closeForm} />
-                    ) : (
-                      <AddButton label={isAr ? "إضافة جائزة" : "Add Award"} onClick={startAddAward} />
-                    )}
-                  </>
-                )}
-              </div>
-            )}
+            </div>
+            <div className="flex gap-2">
+              <Button variant="outline" size="sm" className="flex-1 h-8 text-xs" onClick={() => setAddingSectionDialog(false)}>
+                {isAr ? "إلغاء" : "Cancel"}
+              </Button>
+              <Button size="sm" className="flex-1 h-8 text-xs gap-1" onClick={addCustomSection} disabled={!newSectionName.en.trim()}>
+                <Check className="h-3 w-3" />{isAr ? "إنشاء" : "Create"}
+              </Button>
+            </div>
           </div>
-        );
-      })}
+        )}
+
+        <CVImportDialog
+          open={cvImportOpen}
+          onOpenChange={setCvImportOpen}
+          targetUserId={userId}
+          isAr={isAr}
+          onImported={() => {
+            queryClient.invalidateQueries({ queryKey: ["career-records", userId] });
+            queryClient.invalidateQueries({ queryKey: ["user-entity-memberships", userId] });
+          }}
+        />
+
+        {sections.map(section => {
+          const IconComp = ICON_MAP[section.icon] || FileText;
+          const count = getSectionCount(section.key);
+          const isExpanded = expandedSections.has(section.key);
+          const isAddingHere = addingSection === section.key;
+          const isEditingTitle = editingSectionKey === section.key;
+          const itemIds = getSectionItemIds(section.key);
+
+          return (
+            <div key={section.key} className="rounded-xl border bg-card/50 overflow-hidden transition-all hover:shadow-sm">
+              {/* Section Header */}
+              <div className="flex items-center gap-1 px-2">
+                <button
+                  onClick={() => toggleSection(section.key)}
+                  className="flex-1 flex items-center gap-3 px-3 py-4 hover:bg-muted/40 transition-all group"
+                >
+                  <div className={`flex h-9 w-9 items-center justify-center rounded-xl shrink-0 ${section.color} group-hover:scale-110 transition-transform`}>
+                    <IconComp className="h-4.5 w-4.5" />
+                  </div>
+                  <div className="flex-1 text-start">
+                    {isEditingTitle ? (
+                      <div className="flex items-center gap-2" onClick={e => e.stopPropagation()}>
+                        <Input value={sectionEditName.en} onChange={e => setSectionEditName(p => ({ ...p, en: e.target.value }))}
+                          className="h-7 text-xs w-24" dir="ltr" placeholder="EN" />
+                        <Input value={sectionEditName.ar} onChange={e => setSectionEditName(p => ({ ...p, ar: e.target.value }))}
+                          className="h-7 text-xs w-24" dir="rtl" placeholder="AR" />
+                        <Button size="icon" variant="ghost" className="h-6 w-6 shrink-0" onClick={saveSectionTitle}>
+                          <Check className="h-3 w-3 text-primary" />
+                        </Button>
+                        <Button size="icon" variant="ghost" className="h-6 w-6 shrink-0" onClick={() => setEditingSectionKey(null)}>
+                          <X className="h-3 w-3" />
+                        </Button>
+                      </div>
+                    ) : (
+                      <span className="text-sm font-semibold">{isAr ? section.ar : section.en}</span>
+                    )}
+                  </div>
+                  {count > 0 && <Badge variant="outline" className="text-xs h-6 px-2.5 font-medium">{count}</Badge>}
+                  {isExpanded ? <ChevronUp className="h-5 w-5 text-muted-foreground" /> : <ChevronDown className="h-5 w-5 text-muted-foreground" />}
+                </button>
+                
+                {/* Section actions */}
+                <div className="flex items-center gap-0.5 shrink-0">
+                  <Button size="icon" variant="ghost" className="h-7 w-7 text-muted-foreground hover:text-foreground"
+                    onClick={() => startEditSectionTitle(section)} title={isAr ? "تعديل العنوان" : "Edit title"}>
+                    <Type className="h-3 w-3" />
+                  </Button>
+                  {section.isCustom && (
+                    <Button size="icon" variant="ghost" className="h-7 w-7 text-destructive/60 hover:text-destructive"
+                      onClick={() => deleteCustomSection(section.key)}>
+                      <Trash2 className="h-3 w-3" />
+                    </Button>
+                  )}
+                </div>
+              </div>
+
+              {/* Section Content */}
+              {isExpanded && (
+                <div className="border-t px-5 py-4 space-y-2.5">
+                  {/* ═══ EDUCATION ═══ */}
+                  {section.key === "education" && (
+                    <>
+                      {educationRecords.length === 0 && !isAddingHere && (
+                        <EmptyState icon={GraduationCap} message={isAr ? "لا يوجد سجل تعليمي" : "No education records"} />
+                      )}
+                      <SortableContext items={itemIds} strategy={verticalListSortingStrategy}>
+                        {educationRecords.map(r => (
+                          <SortableItem key={r.id} id={r.id} sectionKey="education">
+                            <CompactRow icon={GraduationCap} color={section.color}
+                              title={isAr ? (r.title_ar || r.title) : r.title}
+                              subtitle={r.entity_name || ""}
+                              meta={`${formatDateShort(r.start_date, isAr)} – ${r.is_current ? (isAr ? "الحالي" : "Present") : formatDateShort(r.end_date, isAr)}${r.education_level ? ` · ${labelFor(r.education_level, EDUCATION_LEVELS, isAr)}` : ""}`}
+                              isCurrent={r.is_current} isAr={isAr}
+                              onEdit={() => startEditCareer(r)} onDelete={() => deleteCareerMutation.mutate(r.id)}
+                              draggable
+                            />
+                          </SortableItem>
+                        ))}
+                      </SortableContext>
+                      {isAddingHere ? (
+                        <CareerForm form={careerForm} editingId={editingId} isAr={isAr}
+                          isPending={saveCareerMutation.isPending}
+                          onUpdate={(k, v) => setCareerForm(prev => ({ ...prev, [k]: v }))}
+                          onSave={() => saveCareerMutation.mutate()} onCancel={closeForm} />
+                      ) : (
+                        <AddButton label={isAr ? "إضافة تعليم" : "Add Education"} onClick={() => startAddCareer("education")} />
+                      )}
+                    </>
+                  )}
+
+                  {/* ═══ EXPERIENCE ═══ */}
+                  {section.key === "work" && (
+                    <>
+                      {workRecords.length === 0 && !isAddingHere && (
+                        <EmptyState icon={Briefcase} message={isAr ? "لا يوجد سجل خبرات" : "No work experience"} />
+                      )}
+                      <SortableContext items={itemIds} strategy={verticalListSortingStrategy}>
+                        {workRecords.map(r => (
+                          <SortableItem key={r.id} id={r.id} sectionKey="work">
+                            <CompactRow icon={Briefcase} color={section.color}
+                              title={isAr ? (r.title_ar || r.title) : r.title}
+                              subtitle={r.entity_name || ""}
+                              meta={`${formatDateShort(r.start_date, isAr)} — ${r.is_current ? (isAr ? "الحالي" : "Present") : formatDateShort(r.end_date, isAr)}${r.employment_type ? ` · ${labelFor(r.employment_type, EMPLOYMENT_TYPES, isAr)}` : ""}${r.location ? ` · ${r.location}` : ""}`}
+                              isCurrent={r.is_current} isAr={isAr}
+                              onEdit={() => startEditCareer(r)} onDelete={() => deleteCareerMutation.mutate(r.id)}
+                              draggable
+                            />
+                          </SortableItem>
+                        ))}
+                      </SortableContext>
+                      {isAddingHere ? (
+                        <CareerForm form={careerForm} editingId={editingId} isAr={isAr}
+                          isPending={saveCareerMutation.isPending}
+                          onUpdate={(k, v) => setCareerForm(prev => ({ ...prev, [k]: v }))}
+                          onSave={() => saveCareerMutation.mutate()} onCancel={closeForm} />
+                      ) : (
+                        <AddButton label={isAr ? "إضافة خبرة" : "Add Experience"} onClick={() => startAddCareer("work")} />
+                      )}
+                    </>
+                  )}
+
+                  {/* ═══ MEMBERSHIPS ═══ */}
+                  {section.key === "memberships" && (
+                    <>
+                      {memberships.length === 0 && !isAddingHere && (
+                        <EmptyState icon={Users} message={isAr ? "لا توجد عضويات" : "No memberships"} />
+                      )}
+                      {memberships.map((m: any) => (
+                        <CompactRow key={m.id} icon={Users} color={section.color}
+                          logoUrl={m.culinary_entities?.logo_url}
+                          title={isAr ? (m.culinary_entities?.name_ar || m.culinary_entities?.name) : m.culinary_entities?.name}
+                          subtitle={[m.title && (isAr ? m.title_ar || m.title : m.title), m.membership_type && labelFor(m.membership_type, MEMBERSHIP_TYPES, isAr)].filter(Boolean).join(" · ")}
+                          meta={m.enrollment_date ? formatDateShort(m.enrollment_date, isAr) : formatDateShort(m.created_at, isAr)}
+                          badge={m.status === "active" ? (isAr ? "نشط" : "Active") : m.status}
+                          badgeVariant={m.status === "active" ? "default" : "secondary"}
+                          isAr={isAr}
+                          onDelete={() => deleteMembershipMutation.mutate(m.id)}
+                        />
+                      ))}
+                      {isAddingHere ? (
+                        <MembershipForm form={membershipForm} isAr={isAr}
+                          isPending={saveMembershipMutation.isPending}
+                          onUpdate={(k, v) => setMembershipForm(prev => ({ ...prev, [k]: v }))}
+                          onSave={() => saveMembershipMutation.mutate()} onCancel={closeForm} />
+                      ) : (
+                        <AddButton label={isAr ? "إضافة عضوية" : "Add Membership"} onClick={startAddMembership} />
+                      )}
+                    </>
+                  )}
+
+                  {/* ═══ COMPETITIONS ═══ */}
+                  {section.key === "competitions" && (
+                    <>
+                      {competitions.length === 0 && !isAddingHere && (
+                        <EmptyState icon={Trophy} message={isAr ? "لا توجد مشاركات" : "No competitions"} />
+                      )}
+                      {competitions.map((reg: any) => (
+                        <CompactRow key={reg.id} icon={Trophy} color={section.color}
+                          title={isAr ? (reg.competitions?.title_ar || reg.competitions?.title) : reg.competitions?.title}
+                          subtitle=""
+                          meta={`${reg.competitions?.competition_start ? formatDateShort(reg.competitions.competition_start, isAr) : ""}${reg.competitions?.country_code ? ` · ${reg.competitions.country_code}` : ""}`}
+                          badge={reg.status === "approved" ? (isAr ? "مقبول" : "Approved") : reg.status === "pending" ? (isAr ? "قيد المراجعة" : "Pending") : reg.status}
+                          badgeVariant={reg.status === "approved" ? "default" : "secondary"}
+                          isAr={isAr}
+                        />
+                      ))}
+                      {isAddingHere ? (
+                        <CompetitionAddForm
+                          competitions={availableCompetitions} selectedId={selectedCompetitionId}
+                          onSelect={setSelectedCompetitionId} isAr={isAr}
+                          isPending={addCompetitionMutation.isPending}
+                          onSave={() => addCompetitionMutation.mutate()} onCancel={closeForm}
+                        />
+                      ) : (
+                        <AddButton label={isAr ? "إضافة مسابقة" : "Add Competition"} onClick={() => setAddingSection("competitions")} />
+                      )}
+                    </>
+                  )}
+
+                  {/* ═══ AWARDS ═══ */}
+                  {section.key === "awards" && (
+                    <>
+                      {certificates.length === 0 && !isAddingHere && (
+                        <EmptyState icon={Medal} message={isAr ? "لا توجد جوائز" : "No awards"} />
+                      )}
+                      {certificates.map((cert: any) => (
+                        <CompactRow key={cert.id} icon={Award} color={section.color}
+                          title={isAr ? (cert.event_name_ar || cert.event_name) : cert.event_name}
+                          subtitle={isAr ? (cert.achievement_ar || cert.achievement || "") : (cert.achievement || "")}
+                          meta={`${cert.verification_code ? cert.verification_code.slice(-4) : ""}${cert.issued_at ? ` · ${formatDateShort(cert.issued_at, isAr)}` : ""}`}
+                          badge={cert.type} badgeVariant="outline"
+                          isAr={isAr}
+                        />
+                      ))}
+                      {isAddingHere ? (
+                        <AwardAddForm form={awardForm} isAr={isAr}
+                          isPending={addAwardMutation.isPending}
+                          onUpdate={(k, v) => setAwardForm(prev => ({ ...prev, [k]: v }))}
+                          onSave={() => addAwardMutation.mutate()} onCancel={closeForm} />
+                      ) : (
+                        <AddButton label={isAr ? "إضافة جائزة" : "Add Award"} onClick={startAddAward} />
+                      )}
+                    </>
+                  )}
+
+                  {/* ═══ CUSTOM SECTIONS ═══ */}
+                  {section.isCustom && (
+                    <>
+                      {customSectionRecords(section.key).length === 0 && !isAddingHere && (
+                        <EmptyState icon={FileText} message={isAr ? "لا توجد عناصر" : "No items"} />
+                      )}
+                      <SortableContext items={itemIds} strategy={verticalListSortingStrategy}>
+                        {customSectionRecords(section.key).map(r => (
+                          <SortableItem key={r.id} id={r.id} sectionKey={section.key}>
+                            <CompactRow icon={FileText} color={section.color}
+                              title={isAr ? (r.title_ar || r.title) : r.title}
+                              subtitle={r.entity_name || ""}
+                              meta={`${formatDateShort(r.start_date, isAr)} – ${r.is_current ? (isAr ? "الحالي" : "Present") : formatDateShort(r.end_date, isAr)}`}
+                              isCurrent={r.is_current} isAr={isAr}
+                              onEdit={() => startEditCareer(r)} onDelete={() => deleteCareerMutation.mutate(r.id)}
+                              draggable
+                            />
+                          </SortableItem>
+                        ))}
+                      </SortableContext>
+                      {isAddingHere ? (
+                        <CareerForm form={careerForm} editingId={editingId} isAr={isAr}
+                          isPending={saveCareerMutation.isPending}
+                          onUpdate={(k, v) => setCareerForm(prev => ({ ...prev, [k]: v }))}
+                          onSave={() => saveCareerMutation.mutate()} onCancel={closeForm} />
+                      ) : (
+                        <AddButton label={isAr ? "إضافة عنصر" : "Add Item"} onClick={() => startAddCareer(section.key)} />
+                      )}
+                    </>
+                  )}
+                </div>
+              )}
+            </div>
+          );
+        })}
+      </div>
+    </DndContext>
+  );
+}
+
+// ── Sortable Item Wrapper ──────────────────────────────────────
+
+function SortableItem({ id, sectionKey, children }: { id: string; sectionKey: string; children: React.ReactNode }) {
+  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
+    id,
+    data: { sectionKey },
+  });
+
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+    opacity: isDragging ? 0.5 : 1,
+    position: "relative" as const,
+    zIndex: isDragging ? 10 : undefined,
+  };
+
+  return (
+    <div ref={setNodeRef} style={style} {...attributes}>
+      <div className="flex items-center gap-0.5">
+        <button {...listeners} className="cursor-grab active:cursor-grabbing p-1 text-muted-foreground/40 hover:text-muted-foreground transition-colors touch-none">
+          <GripVertical className="h-3.5 w-3.5" />
+        </button>
+        <div className="flex-1 min-w-0">{children}</div>
+      </div>
     </div>
   );
 }
@@ -574,12 +859,11 @@ function AddButton({ label, onClick }: { label: string; onClick: () => void }) {
   );
 }
 
-function CompactRow({ icon: Icon, color, logoUrl, title, subtitle, meta, badge, badgeVariant, isCurrent, isAr, onEdit, onDelete }: {
+function CompactRow({ icon: Icon, color, logoUrl, title, subtitle, meta, badge, badgeVariant, isCurrent, isAr, onEdit, onDelete, draggable }: {
   icon: any; color: string; logoUrl?: string; title: string; subtitle: string; meta: string;
   badge?: string; badgeVariant?: "default" | "secondary" | "outline"; isCurrent?: boolean; isAr: boolean;
-  onEdit?: () => void; onDelete?: () => void;
+  onEdit?: () => void; onDelete?: () => void; draggable?: boolean;
 }) {
-  // Build single-line content
   const mainContent = [title, subtitle, meta].filter(Boolean).join(" · ");
   
   return (
@@ -625,6 +909,8 @@ function CareerForm({ form, editingId, isAr, isPending, onUpdate, onSave, onCanc
   onUpdate: (key: string, value: any) => void; onSave: () => void; onCancel: () => void;
 }) {
   const isEdu = form.record_type === "education";
+  const isEvent = !["education", "work"].includes(form.record_type) && !form.record_type.startsWith("custom_");
+  
   return (
     <div className="rounded-lg border border-border/50 bg-gradient-to-br from-muted/30 to-muted/10 p-4 space-y-3">
       <div className="flex items-center justify-between pb-2 border-b border-border/30">
@@ -650,7 +936,6 @@ function CareerForm({ form, editingId, isAr, isPending, onUpdate, onSave, onCanc
         </div>
       </div>
 
-
       {isEdu ? (
         <div className="grid gap-2.5 sm:grid-cols-3">
           <div className="space-y-1.5">
@@ -669,7 +954,7 @@ function CareerForm({ form, editingId, isAr, isPending, onUpdate, onSave, onCanc
             <Input value={form.grade} onChange={(e) => onUpdate("grade", e.target.value)} className="h-9 text-xs" placeholder={isAr ? "مثل 4.0" : "e.g., 4.0"} />
           </div>
         </div>
-      ) : (
+      ) : form.record_type === "work" ? (
         <div className="grid gap-2.5 sm:grid-cols-2">
           <div className="space-y-1.5">
             <Label className="text-xs font-medium">{isAr ? "نوع التوظيف" : "Employment Type"}</Label>
@@ -683,22 +968,30 @@ function CareerForm({ form, editingId, isAr, isPending, onUpdate, onSave, onCanc
             <Input value={form.location} onChange={(e) => onUpdate("location", e.target.value)} className="h-9 text-xs" placeholder={isAr ? "مثل الرياض" : "e.g., Riyadh"} />
           </div>
         </div>
-      )}
+      ) : null}
 
+      {/* Flexible Date Inputs */}
       <div className="grid gap-2.5 sm:grid-cols-2">
-        <div className="space-y-1.5">
-          <Label className="text-xs font-medium">{isAr ? "من" : "Start Date"}</Label>
-          <Input type="date" value={form.start_date} onChange={(e) => onUpdate("start_date", e.target.value)} className="h-9 text-xs" dir="ltr" />
-        </div>
-        <div className="space-y-1.5">
-          <Label className="text-xs font-medium">{isAr ? "إلى" : "End Date"}</Label>
-          <Input type="date" value={form.end_date} onChange={(e) => onUpdate("end_date", e.target.value)} className="h-9 text-xs" dir="ltr" disabled={form.is_current} />
-        </div>
+        <FlexibleDateInput
+          value={form.start_date}
+          onChange={(v) => onUpdate("start_date", v)}
+          label={isAr ? "من" : "Start Date"}
+          isAr={isAr}
+        />
+        <FlexibleDateInput
+          value={form.end_date}
+          onChange={(v) => onUpdate("end_date", v)}
+          label={isAr ? "إلى" : "End Date"}
+          isAr={isAr}
+          disabled={form.is_current}
+        />
       </div>
 
       <div className="flex items-center gap-2.5 p-2.5 rounded-lg bg-muted/40">
         <Switch checked={form.is_current} onCheckedChange={(v) => onUpdate("is_current", v)} />
-        <Label className="text-xs font-medium cursor-pointer">{isEdu ? (isAr ? "ما زلت أدرس" : "Currently studying") : (isAr ? "أعمل حالياً" : "Currently working")}</Label>
+        <Label className="text-xs font-medium cursor-pointer">
+          {isEdu ? (isAr ? "ما زلت أدرس" : "Currently studying") : (isAr ? "أعمل حالياً" : "Currently working")}
+        </Label>
       </div>
 
       <FormActions isAr={isAr} isPending={isPending} editingId={editingId} canSave={!!form.title.trim()} onSave={onSave} onCancel={onCancel} />
@@ -731,10 +1024,12 @@ function MembershipForm({ form, isAr, isPending, onUpdate, onSave, onCancel }: {
             <SelectContent>{MEMBERSHIP_TYPES.map(t => <SelectItem key={t.value} value={t.value}>{isAr ? t.ar : t.en}</SelectItem>)}</SelectContent>
           </Select>
         </div>
-        <div className="space-y-1.5">
-          <Label className="text-xs font-medium">{isAr ? "تاريخ الانتساب" : "Enrollment Date"}</Label>
-          <Input type="date" value={form.enrollment_date} onChange={(e) => onUpdate("enrollment_date", e.target.value)} className="h-9 text-xs" dir="ltr" />
-        </div>
+        <FlexibleDateInput
+          value={form.enrollment_date}
+          onChange={(v) => onUpdate("enrollment_date", v)}
+          label={isAr ? "تاريخ الانتساب" : "Enrollment Date"}
+          isAr={isAr}
+        />
       </div>
 
       <div className="grid gap-2.5 sm:grid-cols-2">
@@ -838,10 +1133,13 @@ function AwardAddForm({ form, isAr, isPending, onUpdate, onSave, onCancel }: {
             <SelectContent>{CERTIFICATE_TYPES.map(t => <SelectItem key={t.value} value={t.value}>{isAr ? t.ar : t.en}</SelectItem>)}</SelectContent>
           </Select>
         </div>
-        <div className="space-y-1.5">
-          <Label className="text-xs font-medium">{isAr ? "التاريخ" : "Award Date"}</Label>
-          <Input type="date" value={form.event_date} onChange={(e) => onUpdate("event_date", e.target.value)} className="h-9 text-xs" dir="ltr" />
-        </div>
+        <FlexibleDateInput
+          value={form.event_date}
+          onChange={(v) => onUpdate("event_date", v)}
+          label={isAr ? "التاريخ" : "Event Date"}
+          isAr={isAr}
+          eventMode
+        />
       </div>
 
       <FormActions isAr={isAr} isPending={isPending} canSave={!!form.event_name.trim()} onSave={onSave} onCancel={onCancel} />

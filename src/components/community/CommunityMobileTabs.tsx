@@ -17,7 +17,7 @@ export function CommunityMobileTabs({ activeTab, setActiveTab }: CommunityMobile
   const isAr = language === "ar";
 
   const tabs: { id: CommunityTab; label: string; icon: any; requiresAuth?: boolean }[] = [
-    { id: "feed", label: isAr ? "مساحتي" : "My Space", icon: Newspaper },
+    { id: "feed", label: isAr ? "الرئيسية" : "Feed", icon: Newspaper },
     { id: "chefs", label: isAr ? "الطهاة" : "Chefs", icon: Users },
     { id: "recipes", label: isAr ? "الوصفات" : "Recipes", icon: BookOpen },
     { id: "groups", label: isAr ? "المجموعات" : "Groups", icon: UsersRound },
