@@ -8,8 +8,7 @@ import { AdVertical } from "@/components/ads/AdVertical";
 import { useAdTracking } from "@/hooks/useAdTracking";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useAuth } from "@/contexts/AuthContext";
-import { Header } from "@/components/Header";
-import { Footer } from "@/components/Footer";
+import { PageShell } from "@/components/PageShell";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent } from "@/components/ui/card";
@@ -154,20 +153,22 @@ export default function Competitions() {
   });
 
   return (
-    <div className="flex min-h-screen flex-col bg-background">
-      <SEOHead
-        title={isAr ? "مسابقات الطهي — الطهاة" : "Culinary Competitions — Altoha"}
-        description={isAr ? "تصفح وانضم لمسابقات الطهي حول العالم. أبرز مهاراتك وتنافس مع أفضل الطهاة." : "Browse and join culinary competitions worldwide. Showcase your cooking skills and compete with the best chefs."}
-        jsonLd={{
+    <PageShell
+      title={isAr ? "مسابقات الطهي — الطهاة" : "Culinary Competitions — Altoha"}
+      description={isAr ? "تصفح وانضم لمسابقات الطهي حول العالم. أبرز مهاراتك وتنافس مع أفضل الطهاة." : "Browse and join culinary competitions worldwide. Showcase your cooking skills and compete with the best chefs."}
+      seoProps={{
+        jsonLd: {
           "@context": "https://schema.org",
           "@type": "CollectionPage",
           name: isAr ? "مسابقات الطهي" : "Culinary Competitions",
           description: "Browse culinary competitions on Altoha",
           url: `${window.location.origin}/competitions`,
           isPartOf: { "@type": "WebSite", name: "Altoha", url: window.location.origin },
-        }}
-      />
-      <Header />
+        },
+      }}
+      container={false}
+      padding="none"
+    >
 
       <main className="flex-1">
         {/* Top Banner Ad */}
@@ -336,9 +337,7 @@ export default function Competitions() {
           )}
         </div>
       </main>
-
-      <Footer />
-    </div>
+    </PageShell>
   );
 }
 

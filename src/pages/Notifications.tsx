@@ -1,7 +1,6 @@
 import React, { useState, useMemo } from "react";
 import { Bell, Check, CheckCheck, Trash2, X, Filter, Info, AlertTriangle, CircleCheck, CircleX, ShoppingCart, Trophy, FileText, Building2, GraduationCap, Users, Handshake, HeadphonesIcon, CreditCard, CalendarDays, Settings, Search } from "lucide-react";
-import { Header } from "@/components/Header";
-import { Footer } from "@/components/Footer";
+import { PageShell } from "@/components/PageShell";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -168,10 +167,8 @@ export default function Notifications() {
   );
 
   return (
-    <div className="flex min-h-screen flex-col bg-background">
-      <Header />
-      <main className="container flex-1 py-6 md:py-8">
-        <div className="mx-auto max-w-3xl space-y-6">
+    <PageShell title={isAr ? "الإشعارات" : "Notifications"} description={isAr ? "مركز الإشعارات" : "Your notification center"} seoProps={{ noIndex: true }} className="max-w-3xl mx-auto">
+        <div className="space-y-6">
           {/* Header */}
           <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
             <div className="flex items-center gap-3">
@@ -449,8 +446,6 @@ export default function Notifications() {
             </div>
           )}
         </div>
-      </main>
-      <Footer />
-    </div>
+    </PageShell>
   );
 }

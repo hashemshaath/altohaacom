@@ -4,8 +4,7 @@ import { useLanguage } from "@/i18n/LanguageContext";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { useQuery } from "@tanstack/react-query";
-import { Header } from "@/components/Header";
-import { Footer } from "@/components/Footer";
+import { PageShell } from "@/components/PageShell";
 import { Card, CardContent } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useCart } from "@/hooks/useCart";
@@ -74,12 +73,12 @@ export default function Shop() {
   };
 
   return (
-    <div className="flex min-h-screen flex-col">
-      <SEOHead
-        title="Culinary Shop"
-        description="Browse culinary tools, books, ingredients, and professional services on Altoha."
-      />
-      <Header />
+    <PageShell
+      title="Culinary Shop"
+      description="Browse culinary tools, books, ingredients, and professional services on Altoha."
+      container={false}
+      padding="none"
+    >
 
       <ShopHero productCount={filtered.length} cart={cart} onCartOpen={() => setCartOpen(true)} />
 
@@ -118,8 +117,7 @@ export default function Shop() {
         )}
       </main>
 
-      <Footer />
       <CartSheet open={cartOpen} onOpenChange={setCartOpen} cart={cart} />
-    </div>
+    </PageShell>
   );
 }

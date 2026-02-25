@@ -1,10 +1,11 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 import { SEOHead } from "@/components/SEOHead";
-import { AdBanner } from "@/components/ads/AdBanner";
 import { useAdTracking } from "@/hooks/useAdTracking";
 import { Search, Calendar, Eye, Newspaper, Building2, ChefHat, Award, TrendingUp } from "lucide-react";
-import { Header } from "@/components/Header";
-import { Footer } from "@/components/Footer";
+import { PageShell } from "@/components/PageShell";
+import { PageSkeleton } from "@/components/ui/page-skeleton";
+import { EmptyState } from "@/components/ui/empty-state";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -58,30 +59,33 @@ export default function News() {
   const { language } = useLanguage();
   const isAr = language === "ar";
   useAdTracking();
-  const [articles, setArticles] = useState<Article[]>([]);
-  const [categories, setCategories] = useState<Category[]>([]);
-  const [loading, setLoading] = useState(true);
+
   const [searchQuery, setSearchQuery] = useState("");
   const [activeType, setActiveType] = useState("all");
   const [selectedCategory, setSelectedCategory] = useState("all");
 
-  useEffect(() => {
-    const fetchData = async () => {
-      setLoading(true);
-      const [articlesRes, categoriesRes] = await Promise.all([
-        supabase
-          .from("articles")
-          .select("*")
-          .eq("status", "published")
-          .order("published_at", { ascending: false }),
-        supabase.from("content_categories").select("*"),
-      ]);
-      if (articlesRes.data) setArticles(articlesRes.data);
-      if (categoriesRes.data) setCategories(categoriesRes.data);
-      setLoading(false);
-    };
-    fetchData();
-  }, []);
+  const { data: articles = [], isLoading } = useQuery({
+    queryKey: ["news-articles"],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("articles")
+        .select("*")
+        .eq("status", "published")
+        .order("published_at", { ascending: false });
+      if (error) throw error;
+      return (data || []) as Article[];
+    },
+    staleTime: 1000 * 60 * 3,
+  });
+
+  const { data: categories = [] } = useQuery({
+    queryKey: ["news-categories"],
+    queryFn: async () => {
+      const { data } = await supabase.from("content_categories").select("*");
+      return (data || []) as Category[];
+    },
+    staleTime: 1000 * 60 * 10,
+  });
 
   const filteredArticles = articles.filter((article) => {
     const matchesSearch =
@@ -120,13 +124,13 @@ export default function News() {
   };
 
   return (
-    <div className="flex min-h-screen flex-col bg-background">
-      <SEOHead
-        title={isAr ? "أخبار ومقالات الطهاة | Altoha" : "Culinary News & Articles | Altoha"}
-        description={isAr ? "أحدث أخبار الطهاة والشركات والجمعيات ومقالات ملهمة من عالم فنون الطهي" : "Latest culinary news about chefs, companies, associations, and inspiring articles from the food industry"}
-        jsonLd={jsonLd}
-      />
-      <Header />
+    <PageShell
+      title={isAr ? "أخبار ومقالات الطهاة" : "Culinary News & Articles"}
+      description={isAr ? "أحدث أخبار الطهاة والشركات والجمعيات ومقالات ملهمة من عالم فنون الطهي" : "Latest culinary news about chefs, companies, associations, and inspiring articles from the food industry"}
+      seoProps={{ jsonLd }}
+      container={false}
+      padding="none"
+    >
 
       <main className="flex-1">
         {/* Hero */}
@@ -216,7 +220,7 @@ export default function News() {
             </TabsList>
 
             <TabsContent value={activeType} className="mt-6">
-              {loading ? (
+              {isLoading ? (
                 <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
                   {[1, 2, 3, 4, 5, 6].map((i) => (
                     <Card key={i} className="overflow-hidden" aria-hidden>
@@ -279,8 +283,7 @@ export default function News() {
           </Tabs>
         </div>
       </main>
-      <Footer />
-    </div>
+    </PageShell>
   );
 }
 

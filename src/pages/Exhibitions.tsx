@@ -5,8 +5,7 @@ import { useAdTracking } from "@/hooks/useAdTracking";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useLanguage } from "@/i18n/LanguageContext";
-import { Header } from "@/components/Header";
-import { Footer } from "@/components/Footer";
+import { PageShell } from "@/components/PageShell";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -113,19 +112,21 @@ export default function Exhibitions() {
   const nextEvent = exhibitions?.find(e => isFuture(new Date(e.start_date)));
 
   return (
-    <div className="flex min-h-screen flex-col bg-background">
-      <SEOHead
-        title={isAr ? "المعارض والفعاليات — الطهاة" : "Food Exhibitions & Events — Altoha"}
-        description={isAr ? "اكتشف معارض الطعام والمؤتمرات والفعاليات" : "Discover food exhibitions, conferences, and culinary events worldwide. Stay updated with the latest in gastronomy."}
-        jsonLd={{
+    <PageShell
+      title={isAr ? "المعارض والفعاليات — الطهاة" : "Food Exhibitions & Events — Altoha"}
+      description={isAr ? "اكتشف معارض الطعام والمؤتمرات والفعاليات" : "Discover food exhibitions, conferences, and culinary events worldwide. Stay updated with the latest in gastronomy."}
+      seoProps={{
+        jsonLd: {
           "@context": "https://schema.org",
           "@type": "CollectionPage",
           name: isAr ? "المعارض والفعاليات" : "Food Exhibitions & Events",
           url: `${window.location.origin}/exhibitions`,
           isPartOf: { "@type": "WebSite", name: "Altoha", url: window.location.origin },
-        }}
-      />
-      <Header />
+        },
+      }}
+      container={false}
+      padding="none"
+    >
 
       {/* Editorial Hero */}
       <section className="relative border-b border-border/30 overflow-hidden">
@@ -381,8 +382,6 @@ export default function Exhibitions() {
           </section>
         )}
       </main>
-
-      <Footer />
-    </div>
+    </PageShell>
   );
 }
