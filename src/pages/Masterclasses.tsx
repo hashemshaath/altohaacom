@@ -1,11 +1,9 @@
 import { useState } from "react";
-import { SEOHead } from "@/components/SEOHead";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { useQuery } from "@tanstack/react-query";
-import { Header } from "@/components/Header";
-import { Footer } from "@/components/Footer";
+import { PageShell } from "@/components/PageShell";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -83,27 +81,28 @@ export default function Masterclasses() {
   );
 
   return (
-    <div className="flex min-h-screen flex-col bg-background">
-      <SEOHead
-        title={isAr ? "الدروس المتقدمة — الطهاة" : "Culinary Masterclasses — Altoha"}
-        description={isAr ? "تعلم من أمهر الطهاة عبر دروس حصرية" : "Learn from world-class chefs with our curated masterclasses. From French cuisine to pastry arts."}
-        jsonLd={{
+    <PageShell
+      title={isAr ? "الدروس المتقدمة — الطهاة" : "Culinary Masterclasses — Altoha"}
+      description={isAr ? "تعلم من أمهر الطهاة عبر دروس حصرية" : "Learn from world-class chefs with our curated masterclasses. From French cuisine to pastry arts."}
+      seoProps={{
+        jsonLd: {
           "@context": "https://schema.org",
           "@type": "CollectionPage",
           name: isAr ? "الدروس المتقدمة" : "Culinary Masterclasses",
           url: `${window.location.origin}/masterclasses`,
           isPartOf: { "@type": "WebSite", name: "Altoha", url: window.location.origin },
-        }}
-      />
-      <Header />
-
+        },
+      }}
+      container={false}
+      padding="none"
+    >
       <MasterclassHero
         totalCount={masterclasses.length}
         filteredCount={filtered.length}
         totalEnrollments={totalEnrollments}
       />
 
-      <main className="container flex-1 py-4 md:py-6">
+      <div className="container flex-1 py-4 md:py-6">
         <MasterclassFilters
           search={search} onSearchChange={setSearch}
           levelFilter={levelFilter} onLevelChange={setLevelFilter}
@@ -157,8 +156,7 @@ export default function Masterclasses() {
             ))}
           </div>
         )}
-      </main>
-      <Footer />
-    </div>
+      </div>
+    </PageShell>
   );
 }

@@ -1,9 +1,7 @@
 import { useEffect } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useAuth } from "@/contexts/AuthContext";
-import { Header } from "@/components/Header";
-import { Footer } from "@/components/Footer";
-import { SEOHead } from "@/components/SEOHead";
+import { PageShell } from "@/components/PageShell";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -64,10 +62,7 @@ export default function Referrals() {
   if (!user) return null;
 
   return (
-    <div className="flex min-h-screen flex-col bg-background">
-      <SEOHead title={isAr ? "نظام الإحالة" : "Referral Program"} description="Invite friends and earn rewards" />
-      <Header />
-      <main className="container flex-1 py-6 md:py-10">
+    <PageShell title={isAr ? "نظام الإحالة" : "Referral Program"} description="Invite friends and earn rewards">
         {/* Hero */}
         <div className="relative mb-8 overflow-hidden rounded-2xl bg-gradient-to-br from-primary/20 via-background to-chart-2/15 p-6 sm:p-10 border border-primary/10">
           <div className="pointer-events-none absolute -end-24 -top-24 h-72 w-72 rounded-full bg-primary/10 blur-[120px] animate-pulse" />
@@ -666,8 +661,6 @@ export default function Referrals() {
             </div>
           </TabsContent>
         </Tabs>
-      </main>
-      <Footer />
-    </div>
+    </PageShell>
   );
 }
