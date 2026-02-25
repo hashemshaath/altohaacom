@@ -18977,6 +18977,7 @@ export type Database = {
       }
       user_career_records: {
         Row: {
+          country_code: string | null
           created_at: string
           department: string | null
           department_ar: string | null
@@ -19003,6 +19004,7 @@ export type Database = {
           user_id: string
         }
         Insert: {
+          country_code?: string | null
           created_at?: string
           department?: string | null
           department_ar?: string | null
@@ -19029,6 +19031,7 @@ export type Database = {
           user_id: string
         }
         Update: {
+          country_code?: string | null
           created_at?: string
           department?: string | null
           department_ar?: string | null
