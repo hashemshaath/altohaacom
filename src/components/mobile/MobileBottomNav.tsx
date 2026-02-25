@@ -23,7 +23,7 @@ const navItems = [
   { to: "/competitions", icon: Trophy, labelEn: "Compete", labelAr: "المسابقات", authOnly: false },
   { to: "__fab__", icon: Plus, labelEn: "Create", labelAr: "إنشاء", authOnly: true, isFab: true },
   { to: "/community", icon: Users, labelEn: "Community", labelAr: "المجتمع", authOnly: false },
-  { to: "/dashboard", icon: LayoutDashboard, labelEn: "My Space", labelAr: "مساحتي", authOnly: true },
+  { to: "/dashboard", icon: LayoutDashboard, labelEn: "Profile", labelAr: "ملفي", authOnly: true },
 ];
 
 // Contextual FAB actions based on current route
