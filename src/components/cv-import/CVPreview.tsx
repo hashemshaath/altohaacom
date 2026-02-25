@@ -14,8 +14,9 @@ import {
 import {
   ArrowLeft, Save, Loader2, User, GraduationCap, Briefcase,
   Trophy, Award, Tv, Globe2, Languages, CheckCircle2, MapPin,
-  Edit3, X, Trash2,
+  Edit3, X, Trash2, Download,
 } from "lucide-react";
+import { downloadCSV, downloadJSON } from "@/lib/exportUtils";
 import type { CVData, CVWorkExperience, CVEducation, CVCompetition, CVMediaAppearance } from "./types";
 import {
   getFlag, ROLE_LABELS, MEDIA_TYPE_LABELS,
@@ -222,8 +223,10 @@ export function CVPreview({ data: initialData, targetUserId, isAr, onBack, onSav
       }
       if (sections.education && hasEdu) {
         const eduRecords = data.education!.map((edu) => ({
-          user_id: targetUserId, record_type: "education", entity_name: edu.institution,
-          title: edu.degree, title_ar: edu.degree_ar || null, education_level: edu.education_level || null,
+          user_id: targetUserId, record_type: "education",
+          entity_name: edu.institution, entity_name_ar: edu.institution_ar || null,
+          title: edu.degree, title_ar: edu.degree_ar || null,
+          education_level: edu.education_level || null,
           field_of_study: edu.field_of_study || null, field_of_study_ar: edu.field_of_study_ar || null,
           grade: edu.grade || null, start_date: edu.start_date || null, end_date: edu.end_date || null,
           is_current: edu.is_current || false,
@@ -234,12 +237,16 @@ export function CVPreview({ data: initialData, targetUserId, isAr, onBack, onSav
       }
       if (sections.work && hasWork) {
         const workRecords = data.work_experience!.map((work) => {
-          const desc = [...(work.tasks?.map(t => `• ${t}`) || []), ...(work.achievements?.length ? [`\n${isAr ? "الإنجازات:" : "Achievements:"}`, ...work.achievements.map(a => `★ ${a}`)] : [])].join("\n");
+          const descEn = [...(work.tasks?.map(t => `• ${t}`) || []), ...(work.achievements?.length ? ["\nAchievements:", ...work.achievements.map(a => `★ ${a}`)] : [])].join("\n");
           return {
-            user_id: targetUserId, record_type: "work", entity_name: work.company, title: work.title, title_ar: work.title_ar || null,
-            employment_type: work.employment_type || null, department: work.department || null, department_ar: work.department_ar || null,
+            user_id: targetUserId, record_type: "work",
+            entity_name: work.company, entity_name_ar: work.company_ar || null,
+            title: work.title, title_ar: work.title_ar || null,
+            employment_type: work.employment_type || null,
+            department: work.department || null, department_ar: work.department_ar || null,
             start_date: work.start_date || null, end_date: work.end_date || null, is_current: work.is_current || false,
-            description: desc || null, location: work.location ? `${work.country_code ? getFlag(work.country_code) + " " : ""}${work.location}` : null,
+            description: descEn || null,
+            location: work.location ? `${work.country_code ? getFlag(work.country_code) + " " : ""}${work.location}` : null,
           };
         });
         const { error } = await supabase.from("user_career_records").insert(workRecords);
@@ -247,10 +254,12 @@ export function CVPreview({ data: initialData, targetUserId, isAr, onBack, onSav
       }
       if (sections.competitions && hasComp) {
         const compRecords = data.competitions!.map((comp) => ({
-          user_id: targetUserId, record_type: "work", entity_name: comp.name,
+          user_id: targetUserId, record_type: "work",
+          entity_name: comp.name, entity_name_ar: comp.name_ar || null,
           title: `${comp.name}${comp.year ? ` ${comp.year}` : ""}${comp.edition ? ` (${comp.edition})` : ""}`.trim(),
-          title_ar: comp.name_ar || null,
-          description: [comp.role ? `${isAr ? "الدور:" : "Role:"} ${isAr ? (ROLE_LABELS[comp.role]?.ar || comp.role) : (ROLE_LABELS[comp.role]?.en || comp.role)}` : "", comp.achievement ? `${isAr ? "الإنجاز:" : "Achievement:"} ${isAr ? (comp.achievement_ar || comp.achievement) : comp.achievement}` : ""].filter(Boolean).join("\n") || null,
+          title_ar: comp.name_ar ? `${comp.name_ar}${comp.year ? ` ${comp.year}` : ""}${comp.edition ? ` (${comp.edition})` : ""}`.trim() : null,
+          description: [comp.role ? `Role: ${ROLE_LABELS[comp.role]?.en || comp.role}` : "", comp.achievement || ""].filter(Boolean).join("\n") || null,
+          description_ar: [comp.role ? `الدور: ${ROLE_LABELS[comp.role]?.ar || comp.role}` : "", comp.achievement_ar || ""].filter(Boolean).join("\n") || null,
           start_date: comp.year ? `${comp.year}-01-01` : null, end_date: comp.year ? `${comp.year}-12-31` : null,
           is_current: false, location: comp.city ? `${comp.country_code ? getFlag(comp.country_code) + " " : ""}${comp.city}` : null,
         }));
@@ -259,8 +268,10 @@ export function CVPreview({ data: initialData, targetUserId, isAr, onBack, onSav
       }
       if (sections.media && hasMedia) {
         const mediaRecords = data.media_appearances!.map((m) => ({
-          user_id: targetUserId, record_type: "work", entity_name: m.channel_name, title: m.program_name || m.channel_name,
-          description: [m.type ? `${MEDIA_TYPE_LABELS[m.type]?.icon || "📺"} ${isAr ? (MEDIA_TYPE_LABELS[m.type]?.ar || m.type) : (MEDIA_TYPE_LABELS[m.type]?.en || m.type)}` : "", m.description || ""].filter(Boolean).join("\n") || null,
+          user_id: targetUserId, record_type: "work",
+          entity_name: m.channel_name, title: m.program_name || m.channel_name,
+          description: [m.type ? `${MEDIA_TYPE_LABELS[m.type]?.icon || "📺"} ${MEDIA_TYPE_LABELS[m.type]?.en || m.type}` : "", m.description || ""].filter(Boolean).join("\n") || null,
+          description_ar: m.type ? `${MEDIA_TYPE_LABELS[m.type]?.icon || "📺"} ${MEDIA_TYPE_LABELS[m.type]?.ar || m.type}` : null,
           start_date: m.date || null, is_current: false, location: m.country_code ? `${getFlag(m.country_code)}` : null,
         }));
         const { error } = await supabase.from("user_career_records").insert(mediaRecords);
@@ -833,12 +844,31 @@ export function CVPreview({ data: initialData, targetUserId, isAr, onBack, onSav
 
       <Separator />
 
-      <div className="flex justify-end gap-2">
-        <Button variant="outline" onClick={onBack} disabled={saving}>{isAr ? "رجوع" : "Back"}</Button>
-        <Button onClick={handleSave} disabled={saving} className="gap-1.5">
-          {saving ? <Loader2 className="h-4 w-4 animate-spin" /> : <Save className="h-4 w-4" />}
-          {saving ? (isAr ? "جاري الحفظ..." : "Saving...") : (isAr ? "حفظ في الملف الشخصي" : "Save to Profile")}
-        </Button>
+      <div className="flex justify-between gap-2">
+        <div className="flex gap-1.5">
+          <Button variant="outline" size="sm" className="gap-1 text-xs" onClick={() => downloadJSON(data, `cv-data-${targetUserId.slice(0, 8)}`)}>
+            <Download className="h-3 w-3" /> JSON
+          </Button>
+          <Button variant="outline" size="sm" className="gap-1 text-xs" onClick={() => {
+            const rows: Record<string, any>[] = [];
+            if (data.personal_info) rows.push({ section: "Personal", ...data.personal_info });
+            data.education?.forEach(e => rows.push({ section: "Education", ...e }));
+            data.work_experience?.forEach(w => rows.push({ section: "Work", ...w, tasks: w.tasks?.join("; "), achievements: w.achievements?.join("; ") }));
+            data.competitions?.forEach(c => rows.push({ section: "Competition", ...c }));
+            data.certifications?.forEach(c => rows.push({ section: "Certification", ...c }));
+            data.media_appearances?.forEach(m => rows.push({ section: "Media", ...m }));
+            downloadCSV(rows, `cv-data-${targetUserId.slice(0, 8)}`);
+          }}>
+            <Download className="h-3 w-3" /> CSV
+          </Button>
+        </div>
+        <div className="flex gap-2">
+          <Button variant="outline" onClick={onBack} disabled={saving}>{isAr ? "رجوع" : "Back"}</Button>
+          <Button onClick={handleSave} disabled={saving} className="gap-1.5">
+            {saving ? <Loader2 className="h-4 w-4 animate-spin" /> : <Save className="h-4 w-4" />}
+            {saving ? (isAr ? "جاري الحفظ..." : "Saving...") : (isAr ? "حفظ في الملف الشخصي" : "Save to Profile")}
+          </Button>
+        </div>
       </div>
     </div>
   );
