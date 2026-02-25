@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { SegmentBroadcastDialog } from "@/components/crm/SegmentBroadcastDialog";
 import { supabase } from "@/integrations/supabase/client";
+import AdminPageHeader from "@/components/admin/AdminPageHeader";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -195,28 +196,19 @@ export default function AudienceSegments() {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-3">
-          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-primary/10">
-            <Target className="h-5 w-5 text-primary" />
-          </div>
-          <div>
-            <h1 className="font-serif text-xl font-bold sm:text-2xl">
-              {isAr ? "شرائح الجمهور" : "Audience Segments"}
-            </h1>
-            <p className="text-xs text-muted-foreground">
-              {isAr ? "إنشاء شرائح مستهدفة للإشعارات والحملات" : "Create targeted segments for notifications & campaigns"}
-            </p>
-          </div>
-        </div>
+      <AdminPageHeader
+        icon={Target}
+        title={isAr ? "شرائح الجمهور" : "Audience Segments"}
+        description={isAr ? "إنشاء شرائح مستهدفة للإشعارات والحملات" : "Create targeted segments for notifications & campaigns"}
+        actions={
+          <Button className="gap-2" onClick={() => setIsCreateOpen(true)}>
+            <Plus className="h-4 w-4" />
+            {isAr ? "شريحة جديدة" : "New Segment"}
+          </Button>
+        }
+      />
 
-        <Dialog open={isCreateOpen} onOpenChange={setIsCreateOpen}>
-          <DialogTrigger asChild>
-            <Button className="gap-2">
-              <Plus className="h-4 w-4" />
-              {isAr ? "شريحة جديدة" : "New Segment"}
-            </Button>
-          </DialogTrigger>
+      <Dialog open={isCreateOpen} onOpenChange={setIsCreateOpen}>
           <DialogContent className="max-w-lg max-h-[90vh] overflow-y-auto">
             <DialogHeader>
               <DialogTitle>{isAr ? "إنشاء شريحة جمهور" : "Create Audience Segment"}</DialogTitle>
@@ -334,8 +326,7 @@ export default function AudienceSegments() {
               </Button>
             </DialogFooter>
           </DialogContent>
-        </Dialog>
-      </div>
+      </Dialog>
 
       {/* Segments Grid */}
       {isLoading ? (

@@ -15,6 +15,7 @@ import { Switch } from "@/components/ui/switch";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Separator } from "@/components/ui/separator";
 import { useToast } from "@/hooks/use-toast";
+import AdminPageHeader from "@/components/admin/AdminPageHeader";
 import {
   BookOpen, Plus, Trash2, Edit, Link, FileText, Image, Scale, Upload,
   Folder, Star, Eye, EyeOff, Save, X, GalleryHorizontalEnd, Globe, Loader2
@@ -312,21 +313,11 @@ export default function KnowledgeAdmin() {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center gap-3">
-        <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-primary/10">
-          <BookOpen className="h-5 w-5 text-primary" />
-        </div>
-        <div>
-          <h1 className="font-serif text-xl font-bold sm:text-2xl">
-            {language === "ar" ? "بوابة المعرفة" : "Knowledge Portal"}
-          </h1>
-          <p className="text-xs text-muted-foreground">
-            {language === "ar"
-              ? "إدارة الموارد والمراجع ومعايير التحكيم"
-              : "Manage resources, references, and judging standards"}
-          </p>
-        </div>
-      </div>
+      <AdminPageHeader
+        icon={BookOpen}
+        title={language === "ar" ? "بوابة المعرفة" : "Knowledge Portal"}
+        description={language === "ar" ? "إدارة الموارد والمراجع ومعايير التحكيم" : "Manage resources, references, and judging standards"}
+      />
 
       <Tabs value={activeTab} onValueChange={setActiveTab}>
         <TabsList>
