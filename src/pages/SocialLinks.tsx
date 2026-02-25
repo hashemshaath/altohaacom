@@ -7,7 +7,8 @@ import { Skeleton } from "@/components/ui/skeleton";
 import {
   ExternalLink, Instagram, Twitter, Facebook, Linkedin, Youtube, Globe,
   User, ArrowLeft, Share2, Check, BadgeCheck, MapPin, Briefcase, Award, Link2,
-  Pencil, LogIn, Phone, MessageCircle, Eye, Users, UserPlus, UserCheck, Loader2
+  Pencil, LogIn, Phone, MessageCircle, Eye, Users, UserPlus, UserCheck, Loader2,
+  Lock, Mail
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
@@ -69,6 +70,12 @@ const T: Record<string, Record<LangCode, string>> = {
   contactSend: { ar: "إرسال", en: "Send", fr: "Envoyer", es: "Enviar", de: "Senden", tr: "Gönder", pt: "Enviar", zh: "发送", ja: "送信", ko: "보내기" },
   contactSent: { ar: "تم الإرسال ✓", en: "Sent ✓", fr: "Envoyé ✓", es: "Enviado ✓", de: "Gesendet ✓", tr: "Gönderildi ✓", pt: "Enviado ✓", zh: "已发送 ✓", ja: "送信済 ✓", ko: "전송됨 ✓" },
   all: { ar: "الكل", en: "All", fr: "Tout", es: "Todo", de: "Alle", tr: "Tümü", pt: "Tudo", zh: "全部", ja: "すべて", ko: "전체" },
+  passwordProtected: { ar: "هذه الصفحة محمية بكلمة مرور", en: "This page is password protected", fr: "Page protégée par mot de passe", es: "Página protegida con contraseña", de: "Passwortgeschützte Seite", tr: "Şifre korumalı sayfa", pt: "Página protegida por senha", zh: "此页面受密码保护", ja: "パスワード保護ページ", ko: "비밀번호 보호 페이지" },
+  enterPassword: { ar: "أدخل كلمة المرور", en: "Enter password", fr: "Entrez le mot de passe", es: "Ingrese contraseña", de: "Passwort eingeben", tr: "Şifre girin", pt: "Digite a senha", zh: "输入密码", ja: "パスワードを入力", ko: "비밀번호 입력" },
+  unlock: { ar: "فتح", en: "Unlock", fr: "Déverrouiller", es: "Desbloquear", de: "Entsperren", tr: "Aç", pt: "Desbloquear", zh: "解锁", ja: "ロック解除", ko: "잠금 해제" },
+  wrongPassword: { ar: "كلمة المرور غير صحيحة", en: "Wrong password", fr: "Mot de passe incorrect", es: "Contraseña incorrecta", de: "Falsches Passwort", tr: "Yanlış şifre", pt: "Senha incorreta", zh: "密码错误", ja: "パスワードが違います", ko: "비밀번호가 틀렸습니다" },
+  subscribe: { ar: "اشتراك", en: "Subscribe", fr: "S'abonner", es: "Suscribirse", de: "Abonnieren", tr: "Abone Ol", pt: "Inscrever-se", zh: "订阅", ja: "登録", ko: "구독" },
+  subscribed: { ar: "تم الاشتراك ✓", en: "Subscribed ✓", fr: "Abonné ✓", es: "Suscrito ✓", de: "Abonniert ✓", tr: "Abone Olundu ✓", pt: "Inscrito ✓", zh: "已订阅 ✓", ja: "登録済 ✓", ko: "구독됨 ✓" },
 };
 
 function t(key: string, lang: LangCode): string {
@@ -515,6 +522,92 @@ export default function SocialLinks() {
   const filteredItems = activePage === "main" || !extra.pages.length ? items : items;
 
   const hasMultiPages = extra.pages && extra.pages.length > 0;
+
+  // Password protection state
+  const [passwordUnlocked, setPasswordUnlocked] = useState(false);
+  const [passwordInput, setPasswordInput] = useState("");
+  const [passwordError, setPasswordError] = useState(false);
+  const needsPassword = extra.enable_password && extra.page_password && !isOwner && !passwordUnlocked;
+
+  const handlePasswordSubmit = useCallback(() => {
+    if (passwordInput === extra.page_password) {
+      setPasswordUnlocked(true);
+      setPasswordError(false);
+    } else {
+      setPasswordError(true);
+    }
+  }, [passwordInput, extra.page_password]);
+
+  // Email subscription state
+  const [subEmail, setSubEmail] = useState("");
+  const [subName, setSubName] = useState("");
+  const [subscribing, setSubscribing] = useState(false);
+  const [subscribed, setSubscribed] = useState(false);
+
+  const handleSubscribe = useCallback(async () => {
+    if (!subEmail || !data?.page?.id || !profileUserId) return;
+    setSubscribing(true);
+    try {
+      const { error } = await supabase.from("bio_subscribers").insert({
+        page_id: data.page.id,
+        page_owner_id: profileUserId,
+        email: subEmail,
+        name: subName || null,
+      } as any);
+      if (error) {
+        if (error.code === "23505") {
+          toast({ title: t("subscribed", lang) });
+          setSubscribed(true);
+        } else throw error;
+      } else {
+        setSubscribed(true);
+        toast({ title: t("subscribed", lang) });
+        setSubEmail("");
+        setSubName("");
+      }
+    } catch {
+      toast({ title: "Error", variant: "destructive" });
+    } finally {
+      setSubscribing(false);
+    }
+  }, [subEmail, subName, data?.page?.id, profileUserId, lang, toast]);
+
+  // Password gate
+  if (needsPassword) {
+    return (
+      <div className="flex min-h-screen flex-col items-center justify-center p-6" dir={contentDir} style={{ background: theme.bg, fontFamily, color: theme.text }}>
+        {googleFontLink && <link rel="stylesheet" href={googleFontLink} />}
+        <div className="w-full max-w-xs space-y-6 text-center">
+          <div className="mx-auto rounded-full p-5" style={{ background: theme.card, border: `1px solid ${theme.border}` }}>
+            <Lock className="h-8 w-8 mx-auto" style={{ color: theme.accent }} />
+          </div>
+          <div>
+            <h1 className="text-lg font-bold mb-1" style={{ color: theme.text }}>{t("passwordProtected", lang)}</h1>
+            <p className="text-xs" style={{ color: theme.textMuted }}>{displayName}</p>
+          </div>
+          <div className="space-y-3">
+            <input
+              type="password"
+              value={passwordInput}
+              onChange={e => { setPasswordInput(e.target.value); setPasswordError(false); }}
+              onKeyDown={e => e.key === "Enter" && handlePasswordSubmit()}
+              placeholder={t("enterPassword", lang)}
+              className="w-full rounded-xl px-4 py-3 text-sm text-center outline-none transition-all"
+              style={{ background: theme.btnBg, border: `1px solid ${passwordError ? "#ef4444" : theme.border}`, color: theme.text }}
+            />
+            {passwordError && <p className="text-xs" style={{ color: "#ef4444" }}>{t("wrongPassword", lang)}</p>}
+            <button
+              onClick={handlePasswordSubmit}
+              className="w-full py-3 rounded-xl text-sm font-semibold transition-all hover:scale-[1.02] active:scale-[0.98]"
+              style={{ background: `linear-gradient(135deg, ${theme.accent}, ${theme.accent}dd)`, color: isLight ? "#ffffff" : "#0a0a12" }}
+            >
+              {t("unlock", lang)}
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div
@@ -1003,7 +1096,60 @@ export default function SocialLinks() {
           </div>
         )}
 
-        {/* Empty state */}
+        {/* Email Collection */}
+        {extra.enable_email_collection && profileUserId && !isOwner && (
+          <div className={`mb-5 transition-all duration-700 delay-600 ${animated ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}>
+            <SectionDivider color={theme.border} />
+            <div className="rounded-2xl p-5 space-y-3" style={{ background: theme.card, border: `1px solid ${theme.border}` }}>
+              <div className="flex items-center gap-2 mb-1" style={{ justifyContent: extra.text_align === "start" ? "flex-start" : extra.text_align === "end" ? "flex-end" : "center" }}>
+                <Mail className="h-4 w-4" style={{ color: theme.accent }} />
+                <h3 className="text-sm font-semibold" style={{ color: theme.text }}>
+                  {isRtl ? (extra.email_collection_title_ar || extra.email_collection_title) : (extra.email_collection_title || "Stay Connected")}
+                </h3>
+              </div>
+              <p className="text-xs" style={{ color: theme.textMuted }}>
+                {isRtl ? (extra.email_collection_description_ar || extra.email_collection_description) : (extra.email_collection_description || "Subscribe to get updates")}
+              </p>
+              {subscribed ? (
+                <div className="text-center py-3">
+                  <Check className="h-6 w-6 mx-auto mb-1" style={{ color: theme.accent }} />
+                  <p className="text-xs font-semibold" style={{ color: theme.text }}>{t("subscribed", lang)}</p>
+                </div>
+              ) : (
+                <div className="space-y-2">
+                  <input
+                    value={subName}
+                    onChange={e => setSubName(e.target.value)}
+                    placeholder={t("contactName", lang)}
+                    className="w-full rounded-xl px-4 py-2.5 text-sm outline-none"
+                    style={{ background: theme.btnBg, border: `1px solid ${theme.border}`, color: theme.text }}
+                  />
+                  <input
+                    type="email"
+                    value={subEmail}
+                    onChange={e => setSubEmail(e.target.value)}
+                    placeholder={t("contactEmail", lang)}
+                    dir="ltr"
+                    className="w-full rounded-xl px-4 py-2.5 text-sm outline-none"
+                    style={{ background: theme.btnBg, border: `1px solid ${theme.border}`, color: theme.text }}
+                  />
+                  <button
+                    onClick={handleSubscribe}
+                    disabled={subscribing || !subEmail}
+                    className="w-full py-2.5 rounded-xl text-sm font-semibold transition-all hover:scale-[1.02] active:scale-[0.98] disabled:opacity-50"
+                    style={{
+                      background: `linear-gradient(135deg, ${theme.accent}, ${theme.accent}dd)`,
+                      color: theme.bg.includes("fff") ? "#ffffff" : "#0a0a12",
+                    }}
+                  >
+                    {subscribing ? <Loader2 className="h-4 w-4 mx-auto animate-spin" /> : t("subscribe", lang)}
+                  </button>
+                </div>
+              )}
+            </div>
+          </div>
+        )}
+
         {items.length === 0 && socialPlatforms.length === 0 && !whatsapp && !phone && (
           <div className={`text-center py-8 mb-5 rounded-2xl transition-all duration-700 delay-400 ${animated ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}
             style={{ background: theme.card, border: `1px solid ${theme.border}` }}>

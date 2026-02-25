@@ -1589,7 +1589,85 @@ export default function SocialLinksEditor() {
                       </CardContent>
                     </Card>
 
-                    {/* Motion Effects */}
+                    {/* Password Protection */}
+                    <Card className="overflow-hidden">
+                      <CardHeader className="pb-3 bg-gradient-to-r from-muted/40 to-transparent">
+                        <CardTitle className="text-sm flex items-center gap-2">
+                          <div className="h-7 w-7 rounded-lg bg-primary/10 flex items-center justify-center">
+                            <EyeOff className="h-3.5 w-3.5 text-primary" />
+                          </div>
+                          {isAr ? "حماية بكلمة مرور" : "Password Protection"}
+                        </CardTitle>
+                        <p className="text-[11px] text-muted-foreground">
+                          {isAr ? "أضف كلمة مرور لحماية صفحتك من الوصول غير المصرح" : "Add a password to restrict access to your bio page"}
+                        </p>
+                      </CardHeader>
+                      <CardContent className="space-y-3 pt-3">
+                        <div className="flex items-center justify-between rounded-lg p-2 hover:bg-muted/30 transition-colors">
+                          <Label className="text-xs cursor-pointer">{isAr ? "تفعيل الحماية" : "Enable Protection"}</Label>
+                          <Switch checked={extra.enable_password} onCheckedChange={v => updateExtra({ enable_password: v })} />
+                        </div>
+                        {extra.enable_password && (
+                          <div>
+                            <Label className="text-[11px] mb-1 block font-medium">{isAr ? "كلمة المرور" : "Password"}</Label>
+                            <Input
+                              type="text"
+                              value={extra.page_password}
+                              onChange={e => updateExtra({ page_password: e.target.value })}
+                              placeholder={isAr ? "أدخل كلمة المرور" : "Enter page password"}
+                              dir="ltr"
+                              className="text-xs"
+                            />
+                          </div>
+                        )}
+                      </CardContent>
+                    </Card>
+
+                    {/* Email Collection */}
+                    <Card className="overflow-hidden">
+                      <CardHeader className="pb-3 bg-gradient-to-r from-muted/40 to-transparent">
+                        <CardTitle className="text-sm flex items-center gap-2">
+                          <div className="h-7 w-7 rounded-lg bg-primary/10 flex items-center justify-center">
+                            <Upload className="h-3.5 w-3.5 text-primary" />
+                          </div>
+                          {isAr ? "جمع الإيميلات" : "Email Collection"}
+                        </CardTitle>
+                        <p className="text-[11px] text-muted-foreground">
+                          {isAr ? "اجمع إيميلات الزوار عبر نموذج اشتراك مدمج" : "Collect visitor emails with an embedded subscribe form"}
+                        </p>
+                      </CardHeader>
+                      <CardContent className="space-y-3 pt-3">
+                        <div className="flex items-center justify-between rounded-lg p-2 hover:bg-muted/30 transition-colors">
+                          <Label className="text-xs cursor-pointer">{isAr ? "تفعيل جمع الإيميلات" : "Enable Email Collection"}</Label>
+                          <Switch checked={extra.enable_email_collection} onCheckedChange={v => updateExtra({ enable_email_collection: v })} />
+                        </div>
+                        {extra.enable_email_collection && (
+                          <div className="space-y-3">
+                            <div className="grid sm:grid-cols-2 gap-3">
+                              <div>
+                                <Label className="text-[11px] mb-1 block font-medium">{isAr ? "العنوان (EN)" : "Title (EN)"}</Label>
+                                <Input value={extra.email_collection_title} onChange={e => updateExtra({ email_collection_title: e.target.value })} dir="ltr" className="text-xs" />
+                              </div>
+                              <div>
+                                <Label className="text-[11px] mb-1 block font-medium">{isAr ? "العنوان (AR)" : "Title (AR)"}</Label>
+                                <Input value={extra.email_collection_title_ar} onChange={e => updateExtra({ email_collection_title_ar: e.target.value })} dir="rtl" className="text-xs" />
+                              </div>
+                            </div>
+                            <div className="grid sm:grid-cols-2 gap-3">
+                              <div>
+                                <Label className="text-[11px] mb-1 block font-medium">{isAr ? "الوصف (EN)" : "Description (EN)"}</Label>
+                                <Input value={extra.email_collection_description} onChange={e => updateExtra({ email_collection_description: e.target.value })} dir="ltr" className="text-xs" />
+                              </div>
+                              <div>
+                                <Label className="text-[11px] mb-1 block font-medium">{isAr ? "الوصف (AR)" : "Description (AR)"}</Label>
+                                <Input value={extra.email_collection_description_ar} onChange={e => updateExtra({ email_collection_description_ar: e.target.value })} dir="rtl" className="text-xs" />
+                              </div>
+                            </div>
+                          </div>
+                        )}
+                      </CardContent>
+                    </Card>
+
                     <Card className="overflow-hidden">
                       <CardHeader className="pb-3 bg-gradient-to-r from-muted/40 to-transparent">
                         <CardTitle className="text-sm flex items-center gap-2">
