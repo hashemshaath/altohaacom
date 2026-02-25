@@ -24,6 +24,8 @@ import { IOSInstallGuide } from "@/components/pwa/IOSInstallGuide";
 import { PullToRefreshIndicator } from "@/components/pwa/PullToRefreshIndicator";
 import { ResourceHints } from "@/components/performance/ResourceHints";
 import { usePullToRefresh } from "@/hooks/usePullToRefresh";
+import { ScrollProgress } from "@/components/ui/scroll-progress";
+import { BackToTop } from "@/components/ui/back-to-top";
 
 const LiveChatWidget = lazy(() => import("@/components/crm/LiveChatWidget").then(m => ({ default: m.LiveChatWidget })));
 const NotFound = lazy(() => import("./pages/NotFound"));
@@ -76,6 +78,8 @@ function AppContent() {
       </MaintenanceGuard>
       <ErrorBoundary><Suspense fallback={null}><LiveChatWidget /></Suspense></ErrorBoundary>
       <MobileBottomNav />
+      <ScrollProgress />
+      <BackToTop />
       <SmartInstallBanner />
       <IOSInstallGuide />
       <OfflineBanner />

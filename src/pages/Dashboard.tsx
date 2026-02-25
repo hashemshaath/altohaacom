@@ -1,15 +1,13 @@
 import { lazy, Suspense, useEffect, useRef } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
-import { Header } from "@/components/Header";
-import { Footer } from "@/components/Footer";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { PageShell } from "@/components/PageShell";
 import { Trophy, Users, GraduationCap, Landmark, MessageSquare, ShoppingBag, Sparkles, Award, Star, UtensilsCrossed, HandHeart, AlertCircle, Megaphone, ClipboardList, ArrowRight } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import { SEOHead } from "@/components/SEOHead";
 import { useAwardPoints } from "@/hooks/useAwardPoints";
 import { DashboardWidgetSkeleton } from "@/components/dashboard/DashboardWidgetSkeleton";
 import { DashboardLayoutControl, useDashboardLayout } from "@/components/dashboard/DashboardLayoutControl";
@@ -84,10 +82,7 @@ export default function Dashboard() {
   ];
 
   return (
-    <div className="flex min-h-screen flex-col bg-background">
-      <SEOHead title="Dashboard" description="Your personal Altoha dashboard" />
-      <Header />
-      <main className="container flex-1 py-4 md:py-6">
+    <PageShell title="Dashboard" description="Your personal Altoha dashboard">
         {/* Welcome Banner */}
         <WelcomeBanner greeting={greeting} isAr={isAr} widgets={widgets} toggleWidget={toggleWidget} resetLayout={resetLayout} />
 
@@ -129,9 +124,7 @@ export default function Dashboard() {
             {user && <W><DashboardPersonalizationWidget /></W>}
           </div>
         </div>
-      </main>
-      <Footer />
-    </div>
+    </PageShell>
   );
 }
 
