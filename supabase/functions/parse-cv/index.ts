@@ -45,7 +45,9 @@ CRITICAL BILINGUAL RULES - STRICT SEPARATION:
 - NEVER mix languages within a single field. Each field must be purely one language.
 - NEVER concatenate Arabic and English in the same field.
 - Translations must be professional, culinary-industry appropriate, and natural-sounding.
-- For tasks[] and achievements[] arrays: write them ONLY in English. Keep each item concise and professionally rephrased.
+- For tasks[] and achievements[] arrays: write them in professional English.
+- For tasks_ar[] and achievements_ar[] arrays: write the same content in professional Arabic.
+- Keep tasks/achievements concise, non-repetitive, and aligned across EN/AR pairs.
 - For skills[]: provide BOTH English name and Arabic name_ar for each skill as objects {name, name_ar}.
 - For languages[]: provide BOTH English (language, level) and Arabic (language_ar, level_ar) for each entry.
 - For names of companies/institutions: transliterate proper nouns if no official translation exists (e.g., "Hilton" stays "هيلتون" in Arabic).
@@ -72,7 +74,7 @@ OTHER GUIDELINES:
 - Extract ALL certifications including food safety, HACCP, hygiene, culinary awards
 - For languages, include proficiency level (native, fluent, intermediate, basic)
 - Infer years_of_experience from work history dates if not explicitly stated
-- Infer experience_level: <3 years=beginner, 3-7=intermediate, 7-15=advanced, 15+=expert
+- Infer experience_level using ONLY allowed values: <3 years=beginner, 3-9 years=amateur, 10+ years=professional
 - Extract LinkedIn, Instagram, Twitter, and website URLs if present`;
 
     const response = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
@@ -118,7 +120,7 @@ OTHER GUIDELINES:
                       bio: { type: "string", description: "Professional summary in English" },
                       bio_ar: { type: "string", description: "Professional summary in Arabic" },
                       years_of_experience: { type: "number" },
-                      experience_level: { type: "string", enum: ["beginner", "intermediate", "advanced", "expert"] },
+                      experience_level: { type: "string", enum: ["beginner", "amateur", "professional"] },
                       website: { type: "string" },
                       linkedin: { type: "string" },
                       instagram: { type: "string" },
@@ -166,6 +168,8 @@ OTHER GUIDELINES:
                         country_code: { type: "string" },
                         tasks: { type: "array", items: { type: "string" }, description: "Key responsibilities in English, professionally summarized" },
                         achievements: { type: "array", items: { type: "string" }, description: "Achievements in English, professionally summarized" },
+                        tasks_ar: { type: "array", items: { type: "string" }, description: "Key responsibilities in Arabic, professionally summarized" },
+                        achievements_ar: { type: "array", items: { type: "string" }, description: "Achievements in Arabic, professionally summarized" },
                       },
                       required: ["company", "title"],
                     },

@@ -41,6 +41,10 @@ export interface CVEducation {
   country_code?: string;
 }
 
+export type CVExperienceLevel = "beginner" | "amateur" | "professional";
+
+export const EXPERIENCE_LEVEL_VALUES: CVExperienceLevel[] = ["beginner", "amateur", "professional"];
+
 export interface CVWorkExperience {
   company: string;
   company_ar?: string;
@@ -56,6 +60,8 @@ export interface CVWorkExperience {
   country_code?: string;
   tasks?: string[];
   achievements?: string[];
+  tasks_ar?: string[];
+  achievements_ar?: string[];
 }
 
 export interface CVCompetition {

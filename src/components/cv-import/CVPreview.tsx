@@ -239,152 +239,255 @@ export function CVPreview({ data: initialData, targetUserId, isAr, onBack, onSav
   const hasMedia = (data.media_appearances?.length || 0) > 0;
 
   // ─── Save handler ───
+  const normalizeExperienceLevel = (level?: string, years?: number | null): "beginner" | "amateur" | "professional" | null => {
+    const normalized = (level || "").toLowerCase().trim();
+    if (normalized === "beginner" || normalized === "amateur" || normalized === "professional") return normalized;
+    if (normalized === "expert" || normalized === "advanced" || normalized === "intermediate") {
+      if (normalized === "expert" || normalized === "advanced") return "professional";
+      if (normalized === "intermediate") return "amateur";
+    }
+    if (typeof years === "number") {
+      if (years < 3) return "beginner";
+      if (years < 10) return "amateur";
+      return "professional";
+    }
+    return null;
+  };
+
   const handleSave = async () => {
     setSaving(true);
     let recordsCreated = 0;
     const sectionsImported: string[] = [];
+
     try {
       if (sections.personal && hasPersonal) {
         const profileUpdate: Record<string, any> = {};
-        const keys = ["full_name","full_name_ar","phone","nationality","second_nationality","country_code","city","location","job_title","job_title_ar","specialization","specialization_ar","bio","bio_ar","years_of_experience","experience_level","date_of_birth","gender","website","linkedin","instagram","twitter"];
-        keys.forEach(k => { if ((pi as any)[k]) profileUpdate[k] = (pi as any)[k]; });
+        const keys = ["full_name","full_name_ar","phone","nationality","second_nationality","country_code","city","location","job_title","job_title_ar","specialization","specialization_ar","bio","bio_ar","years_of_experience","date_of_birth","gender","website","linkedin","instagram","twitter"];
+
+        keys.forEach((k) => {
+          const val = (pi as any)[k];
+          if (val !== undefined && val !== null && `${val}`.trim() !== "") profileUpdate[k] = val;
+        });
+
+        const normalizedExperienceLevel = normalizeExperienceLevel((pi as any)?.experience_level, (pi as any)?.years_of_experience);
+        if (normalizedExperienceLevel) profileUpdate.experience_level = normalizedExperienceLevel;
+
         if (Object.keys(profileUpdate).length > 0) {
           const { error } = await supabase.from("profiles").update(profileUpdate).eq("user_id", targetUserId);
-          if (!error) { recordsCreated++; sectionsImported.push("personal"); }
+          if (error) throw error;
+          recordsCreated++;
+          sectionsImported.push("personal");
         }
 
-        // ─── Auto-update Bio page (social_link_pages) ───
-        try {
-          const { data: existingPage } = await supabase
-            .from("social_link_pages")
-            .select("id")
-            .eq("user_id", targetUserId)
-            .maybeSingle();
+        const { data: existingPage, error: pageLookupError } = await supabase
+          .from("social_link_pages")
+          .select("id")
+          .eq("user_id", targetUserId)
+          .maybeSingle();
+        if (pageLookupError) throw pageLookupError;
 
-          const bioPageUpdate: Record<string, any> = {};
-          if (pi.full_name) bioPageUpdate.page_title = pi.full_name;
-          if (pi.full_name_ar) bioPageUpdate.page_title_ar = pi.full_name_ar;
-          if (pi.bio) bioPageUpdate.bio = pi.bio;
-          if (pi.bio_ar) bioPageUpdate.bio_ar = pi.bio_ar;
+        const bioPageUpdate: Record<string, any> = {};
+        if (pi.full_name) bioPageUpdate.page_title = pi.full_name;
+        if (pi.full_name_ar) bioPageUpdate.page_title_ar = pi.full_name_ar;
+        if (pi.bio) bioPageUpdate.bio = pi.bio;
+        if (pi.bio_ar) bioPageUpdate.bio_ar = pi.bio_ar;
 
-          if (Object.keys(bioPageUpdate).length > 0) {
-            if (existingPage) {
-              await supabase.from("social_link_pages").update({ ...bioPageUpdate, updated_at: new Date().toISOString() }).eq("id", existingPage.id);
-            } else {
-              await supabase.from("social_link_pages").insert({
-                user_id: targetUserId,
-                ...bioPageUpdate,
-                is_published: true,
-                show_avatar: true,
-                show_social_icons: true,
-                theme: "default",
-              });
-            }
+        if (Object.keys(bioPageUpdate).length > 0) {
+          if (existingPage) {
+            const { error: pageUpdateError } = await supabase
+              .from("social_link_pages")
+              .update({ ...bioPageUpdate, updated_at: new Date().toISOString() })
+              .eq("id", existingPage.id);
+            if (pageUpdateError) throw pageUpdateError;
+          } else {
+            const { error: pageInsertError } = await supabase.from("social_link_pages").insert({
+              user_id: targetUserId,
+              ...bioPageUpdate,
+              is_published: true,
+              show_avatar: true,
+              show_social_icons: true,
+              theme: "default",
+            });
+            if (pageInsertError) throw pageInsertError;
           }
-        } catch (bioErr) {
-          console.error("Bio page update error:", bioErr);
         }
       }
-      // ─── Delete existing career records for this user before re-importing ───
+
       const sectionsToDelete: string[] = [];
       if (sections.education && hasEdu) sectionsToDelete.push("education");
       if (sections.work && hasWork) sectionsToDelete.push("work");
-      if (sections.competitions && hasComp) sectionsToDelete.push("work"); // competitions stored as "work"
+      if (sections.competitions && hasComp) sectionsToDelete.push("work");
       if (sections.media && hasMedia) sectionsToDelete.push("work");
-      if (sections.certifications && hasCert) sectionsToDelete.push("education"); // certs stored as "education"
-      
-      // Delete all career records for selected sections to avoid duplication
+      if (sections.certifications && hasCert) sectionsToDelete.push("education");
+
       const uniqueTypes = [...new Set(sectionsToDelete)];
       if (uniqueTypes.length > 0) {
-        await supabase.from("user_career_records").delete().eq("user_id", targetUserId).in("record_type", uniqueTypes);
+        const { error: deleteError } = await supabase
+          .from("user_career_records")
+          .delete()
+          .eq("user_id", targetUserId)
+          .in("record_type", uniqueTypes);
+        if (deleteError) throw deleteError;
       }
 
       if (sections.education && hasEdu) {
         const eduRecords = data.education!.map((edu) => ({
-          user_id: targetUserId, record_type: "education",
-          entity_name: edu.institution, entity_name_ar: edu.institution_ar || null,
-          title: edu.degree, title_ar: edu.degree_ar || null,
+          user_id: targetUserId,
+          record_type: "education",
+          entity_name: edu.institution,
+          entity_name_ar: edu.institution_ar || null,
+          title: edu.degree,
+          title_ar: edu.degree_ar || null,
           education_level: edu.education_level || null,
-          field_of_study: edu.field_of_study || null, field_of_study_ar: edu.field_of_study_ar || null,
-          grade: edu.grade || null, start_date: edu.start_date || null, end_date: edu.end_date || null,
+          field_of_study: edu.field_of_study || null,
+          field_of_study_ar: edu.field_of_study_ar || null,
+          grade: edu.grade || null,
+          start_date: edu.start_date || null,
+          end_date: edu.end_date || null,
           is_current: edu.is_current === true && !edu.end_date,
-          location: edu.location ? `${edu.country_code ? getFlag(edu.country_code) + " " : ""}${edu.location}` : null,
+          location: edu.location || null,
         }));
+
         const { error } = await supabase.from("user_career_records").insert(eduRecords);
-        if (!error) { recordsCreated += eduRecords.length; sectionsImported.push("education"); }
+        if (error) throw error;
+        recordsCreated += eduRecords.length;
+        sectionsImported.push("education");
       }
+
       if (sections.work && hasWork) {
         const workRecords = data.work_experience!.map((work) => {
-          const descEn = [...(work.tasks?.map(t => `• ${t}`) || []), ...(work.achievements?.length ? ["\nAchievements:", ...work.achievements.map(a => `★ ${a}`)] : [])].join("\n");
+          const enParts = [
+            ...(work.tasks?.map((t) => t.trim()).filter(Boolean) || []),
+            ...(work.achievements?.map((a) => a.trim()).filter(Boolean) || []),
+          ];
+          const arParts = [
+            ...(work.tasks_ar?.map((t) => t.trim()).filter(Boolean) || []),
+            ...(work.achievements_ar?.map((a) => a.trim()).filter(Boolean) || []),
+          ];
+
           return {
-            user_id: targetUserId, record_type: "work",
-            entity_name: work.company, entity_name_ar: work.company_ar || null,
-            title: work.title, title_ar: work.title_ar || null,
+            user_id: targetUserId,
+            record_type: "work",
+            entity_name: work.company,
+            entity_name_ar: work.company_ar || null,
+            title: work.title,
+            title_ar: work.title_ar || null,
             employment_type: work.employment_type || null,
-            department: work.department || null, department_ar: work.department_ar || null,
-            start_date: work.start_date || null, end_date: work.end_date || null, is_current: work.is_current === true && !work.end_date,
-            description: descEn || null,
-            location: work.location ? `${work.country_code ? getFlag(work.country_code) + " " : ""}${work.location}` : null,
+            department: work.department || null,
+            department_ar: work.department_ar || null,
+            start_date: work.start_date || null,
+            end_date: work.end_date || null,
+            is_current: work.is_current === true && !work.end_date,
+            description: enParts.length ? enParts.join("\n") : null,
+            description_ar: arParts.length ? arParts.join("\n") : null,
+            location: work.location || null,
           };
         });
+
         const { error } = await supabase.from("user_career_records").insert(workRecords);
-        if (!error) { recordsCreated += workRecords.length; sectionsImported.push("work"); }
+        if (error) throw error;
+        recordsCreated += workRecords.length;
+        sectionsImported.push("work");
       }
+
       if (sections.competitions && hasComp) {
         const compRecords = data.competitions!.map((comp) => ({
-          user_id: targetUserId, record_type: "work",
-          entity_name: comp.name, entity_name_ar: comp.name_ar || null,
+          user_id: targetUserId,
+          record_type: "work",
+          entity_name: comp.name,
+          entity_name_ar: comp.name_ar || null,
           title: `${comp.name}${comp.year ? ` ${comp.year}` : ""}${comp.edition ? ` (${comp.edition})` : ""}`.trim(),
           title_ar: comp.name_ar ? `${comp.name_ar}${comp.year ? ` ${comp.year}` : ""}${comp.edition ? ` (${comp.edition})` : ""}`.trim() : null,
           description: [comp.role ? `Role: ${ROLE_LABELS[comp.role]?.en || comp.role}` : "", comp.achievement || ""].filter(Boolean).join("\n") || null,
           description_ar: [comp.role ? `الدور: ${ROLE_LABELS[comp.role]?.ar || comp.role}` : "", comp.achievement_ar || ""].filter(Boolean).join("\n") || null,
-          start_date: comp.year ? `${comp.year}-01-01` : null, end_date: comp.year ? `${comp.year}-12-31` : null,
-          is_current: false, location: comp.city ? `${comp.country_code ? getFlag(comp.country_code) + " " : ""}${comp.city}` : null,
+          start_date: comp.year ? `${comp.year}-01-01` : null,
+          end_date: comp.year ? `${comp.year}-12-31` : null,
+          is_current: false,
+          location: comp.city || null,
         }));
+
         const { error } = await supabase.from("user_career_records").insert(compRecords);
-        if (!error) { recordsCreated += compRecords.length; sectionsImported.push("competitions"); }
+        if (error) throw error;
+        recordsCreated += compRecords.length;
+        sectionsImported.push("competitions");
       }
+
       if (sections.media && hasMedia) {
         const mediaRecords = data.media_appearances!.map((m) => ({
-          user_id: targetUserId, record_type: "work",
-          entity_name: m.channel_name, title: m.program_name || m.channel_name,
+          user_id: targetUserId,
+          record_type: "work",
+          entity_name: m.channel_name,
+          entity_name_ar: m.channel_name_ar || null,
+          title: m.program_name || m.channel_name,
+          title_ar: m.program_name_ar || null,
           description: [m.type ? `${MEDIA_TYPE_LABELS[m.type]?.icon || "📺"} ${MEDIA_TYPE_LABELS[m.type]?.en || m.type}` : "", m.description || ""].filter(Boolean).join("\n") || null,
-          description_ar: m.type ? `${MEDIA_TYPE_LABELS[m.type]?.icon || "📺"} ${MEDIA_TYPE_LABELS[m.type]?.ar || m.type}` : null,
-          start_date: m.date || null, is_current: false, location: m.country_code ? `${getFlag(m.country_code)}` : null,
+          description_ar: [m.type ? `${MEDIA_TYPE_LABELS[m.type]?.icon || "📺"} ${MEDIA_TYPE_LABELS[m.type]?.ar || m.type}` : "", m.description_ar || ""].filter(Boolean).join("\n") || null,
+          start_date: m.date || null,
+          is_current: false,
         }));
+
         const { error } = await supabase.from("user_career_records").insert(mediaRecords);
-        if (!error) { recordsCreated += mediaRecords.length; sectionsImported.push("media"); }
+        if (error) throw error;
+        recordsCreated += mediaRecords.length;
+        sectionsImported.push("media");
       }
+
       if (sections.certifications && hasCert) {
         const certRecords = data.certifications!.map((cert) => ({
-          user_id: targetUserId, record_type: "education",
-          entity_name: cert.issuer || "—", entity_name_ar: null,
-          title: cert.name, title_ar: cert.name_ar || null,
+          user_id: targetUserId,
+          record_type: "education",
+          entity_name: cert.issuer || "—",
+          entity_name_ar: null,
+          title: cert.name,
+          title_ar: cert.name_ar || null,
           description: cert.description || null,
-          start_date: cert.date || null, is_current: false,
+          start_date: cert.date || null,
+          is_current: false,
         }));
+
         const { error } = await supabase.from("user_career_records").insert(certRecords);
-        if (!error) { recordsCreated += certRecords.length; sectionsImported.push("certifications"); }
+        if (error) throw error;
+        recordsCreated += certRecords.length;
+        sectionsImported.push("certifications");
       }
-      // Save skills to profile
+
       if (data.skills?.length) {
-        const skillsStr = data.skills.join(", ");
-        await supabase.from("profiles").update({ specialization: data.personal_info?.specialization || skillsStr }).eq("user_id", targetUserId);
+        const skillObjects = data.skills.map((s: any) => typeof s === "string" ? { name: s, name_ar: "" } : s);
+        const skillsEn = skillObjects.map((s: any) => s.name).filter(Boolean).join(", ");
+        const skillsAr = skillObjects.map((s: any) => s.name_ar).filter(Boolean).join("، ");
+        const { error: skillsError } = await supabase
+          .from("profiles")
+          .update({
+            specialization: data.personal_info?.specialization || skillsEn || null,
+            specialization_ar: data.personal_info?.specialization_ar || skillsAr || null,
+          })
+          .eq("user_id", targetUserId);
+        if (skillsError) throw skillsError;
       }
+
       try {
         const { data: { user: currentUser } } = await supabase.auth.getUser();
         if (currentUser) {
           await supabase.from("cv_imports").insert({
-            chef_id: targetUserId, imported_by: currentUser.id, status: "completed",
-            sections_imported: sectionsImported, extracted_data: data as any, records_created: recordsCreated, input_method: "paste",
+            chef_id: targetUserId,
+            imported_by: currentUser.id,
+            status: "completed",
+            sections_imported: sectionsImported,
+            extracted_data: data as any,
+            records_created: recordsCreated,
+            input_method: "paste",
           });
         }
-      } catch (logErr) { console.error("Failed to log import:", logErr); }
+      } catch (logErr) {
+        console.error("Failed to log import:", logErr);
+      }
+
       toast({ title: isAr ? `✅ تم استيراد ${recordsCreated} سجل وتحديث صفحة Bio تلقائياً` : `✅ Imported ${recordsCreated} records & Bio page auto-updated` });
       onSaved();
     } catch (err: any) {
       toast({ variant: "destructive", title: isAr ? "خطأ" : "Error", description: err.message });
     }
+
     setSaving(false);
   };
 

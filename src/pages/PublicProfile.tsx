@@ -351,21 +351,21 @@ export default function PublicProfile() {
                                   <h4 className="font-semibold text-sm">{isAr ? (record.title_ar || record.title) : record.title}</h4>
                                   {record.is_current && <Badge className="bg-chart-3/10 text-chart-3 text-[10px] h-5">{isAr ? "حالي" : "Current"}</Badge>}
                                 </div>
-                                {record.entity_name && (
+                                {(record.entity_name || record.entity_name_ar) && (
                                   record.entity_id ? (
                                     <Link to={`/entities/${record.entity_id}`} className="text-xs text-primary font-medium hover:underline flex items-center gap-1 mt-0.5">
-                                      {record.entity_name}<ExternalLink className="h-2.5 w-2.5" />
+                                      {isAr ? (record.entity_name_ar || record.entity_name) : (record.entity_name || record.entity_name_ar)}<ExternalLink className="h-2.5 w-2.5" />
                                     </Link>
-                                  ) : <p className="text-xs text-muted-foreground mt-0.5">{record.entity_name}</p>
+                                  ) : <p className="text-xs text-muted-foreground mt-0.5">{isAr ? (record.entity_name_ar || record.entity_name) : (record.entity_name || record.entity_name_ar)}</p>
                                 )}
                                 <div className="flex flex-wrap gap-2 mt-1 text-[11px] text-muted-foreground">
                                   <span className="flex items-center gap-1"><Calendar className="h-2.5 w-2.5" />{formatDate(record.start_date, isAr)} – {formatDate(record.end_date, isAr)}</span>
                                   {record.employment_type && <Badge variant="outline" className="text-[9px] h-4">{record.employment_type}</Badge>}
                                   {record.location && <span className="flex items-center gap-1"><MapPin className="h-2.5 w-2.5" />{record.location}</span>}
                                 </div>
-                                {(record.description || record.description_ar) && (
-                                  <p className="mt-1.5 text-[11px] text-muted-foreground leading-relaxed">
-                                    {isAr ? (record.description_ar || record.description) : (record.description || record.description_ar)}
+                                {((isAr && record.description_ar) || (!isAr && record.description)) && (
+                                  <p className="mt-1.5 text-[11px] text-muted-foreground leading-relaxed" dir={isAr ? "rtl" : "ltr"}>
+                                    {isAr ? record.description_ar : record.description}
                                   </p>
                                 )}
                               </div>
@@ -402,12 +402,12 @@ export default function PublicProfile() {
                               </div>
                               <div className="flex-1 min-w-0">
                                 <h4 className="font-semibold text-sm">{isAr ? (record.title_ar || record.title) : record.title}</h4>
-                                {record.entity_name && (
+                                {(record.entity_name || record.entity_name_ar) && (
                                   record.entity_id ? (
                                     <Link to={`/entities/${record.entity_id}`} className="text-xs text-primary font-medium hover:underline flex items-center gap-1 mt-0.5">
-                                      {record.entity_name}<ExternalLink className="h-2.5 w-2.5" />
+                                      {isAr ? (record.entity_name_ar || record.entity_name) : (record.entity_name || record.entity_name_ar)}<ExternalLink className="h-2.5 w-2.5" />
                                     </Link>
-                                  ) : <p className="text-xs text-muted-foreground mt-0.5">{record.entity_name}</p>
+                                  ) : <p className="text-xs text-muted-foreground mt-0.5">{isAr ? (record.entity_name_ar || record.entity_name) : (record.entity_name || record.entity_name_ar)}</p>
                                 )}
                                 <div className="flex flex-wrap gap-2 mt-1 text-[11px] text-muted-foreground">
                                   <span className="flex items-center gap-1"><Calendar className="h-2.5 w-2.5" />{formatDate(record.start_date, isAr)} – {formatDate(record.end_date, isAr)}</span>
