@@ -24,7 +24,7 @@ import { useRecordProfileView } from "@/hooks/useProfileViews";
 import { SectionReveal } from "@/components/ui/section-reveal";
 import {
   User, Award, BadgeCheck, ArrowLeft, Calendar, Briefcase, GraduationCap, Building2,
-  ExternalLink, Trophy, Medal, ImageIcon, MapPin, Globe, Tv,
+  ExternalLink, Trophy, Medal, ImageIcon, MapPin, Globe, Tv, Gavel, Users,
 } from "lucide-react";
 import { countryFlag } from "@/lib/countryFlag";
 import { useAllCountries } from "@/hooks/useCountries";
@@ -256,8 +256,22 @@ export default function PublicProfile() {
   ].filter(s => s.value);
 
   const educationRecords = careerRecords.filter((r: any) => r.record_type === "education");
-  const workRecords = careerRecords.filter((r: any) => r.record_type === "work");
-  const mediaRecords = careerRecords.filter((r: any) => r.record_type === "media");
+
+  // Split "work" records into sub-categories based on description patterns
+  const allWorkRecords = careerRecords.filter((r: any) => r.record_type === "work");
+  const isJudging = (r: any) => /Role:\s*Judge|Head.?Judge/i.test(r.description || "") || /Role:\s*Judge|Head.?Judge/i.test(r.description_ar || "");
+  const isMediaInWork = (r: any) => /^📺|^📻|^🎙️|^📰|^📖|^🌐|TV\b|Radio\b|Podcast\b|interview/i.test(r.description || "");
+  const isParticipation = (r: any) => /Role:\s*(Organizer|Participant)/i.test(r.description || "");
+
+  const judgingRecords = allWorkRecords.filter(isJudging);
+  const mediaInWorkRecords = allWorkRecords.filter((r: any) => !isJudging(r) && isMediaInWork(r));
+  const participationRecords = allWorkRecords.filter((r: any) => !isJudging(r) && !isMediaInWork(r) && isParticipation(r));
+  const workRecords = allWorkRecords.filter((r: any) => !isJudging(r) && !isMediaInWork(r) && !isParticipation(r));
+
+  const mediaRecords = [
+    ...careerRecords.filter((r: any) => r.record_type === "media"),
+    ...mediaInWorkRecords,
+  ];
   const certificationRecords = careerRecords.filter((r: any) => r.record_type === "certification");
   const currentWork = workRecords.find((r: any) => r.is_current) || workRecords[0];
 
@@ -397,6 +411,86 @@ export default function PublicProfile() {
                       isAr={isAr}
                     />
                   )}
+                </CollapsibleProfileSection>
+              </SectionReveal>
+            )}
+
+            {/* Judging */}
+            {isVisible("career") && judgingRecords.length > 0 && (
+              <SectionReveal delay={275}>
+                <CollapsibleProfileSection
+                  icon={Gavel}
+                  label={isAr ? "التحكيم" : "Judging"}
+                  count={judgingRecords.length}
+                  defaultOpen={true}
+                >
+                  <div className="space-y-2.5">
+                    {judgingRecords.map((record: any) => (
+                      <Card key={record.id} className="rounded-2xl border-border/25 hover:shadow-md transition-all duration-300 hover:border-border/40 hover:-translate-y-0.5 group/card">
+                        <CardContent className="p-4">
+                          <div className="flex gap-3">
+                            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-chart-5/8 group-hover/card:scale-110 transition-transform duration-300">
+                              <Gavel className="h-4 w-4 text-chart-5" />
+                            </div>
+                            <div className="flex-1 min-w-0">
+                              <h4 className="font-semibold text-sm">{pickLocalizedText(isAr, record.title_ar, record.title) || "—"}</h4>
+                              {(record.entity_name || record.entity_name_ar) && (
+                                record.entity_id ? (
+                                  <Link to={`/entities/${record.entity_id}`} className="text-xs text-primary font-medium hover:underline flex items-center gap-1 mt-0.5">
+                                    {pickLocalizedText(isAr, record.entity_name_ar, record.entity_name)}<ExternalLink className="h-2.5 w-2.5" />
+                                  </Link>
+                                ) : <p className="text-xs text-muted-foreground mt-0.5">{pickLocalizedText(isAr, record.entity_name_ar, record.entity_name)}</p>
+                              )}
+                              <div className="flex flex-wrap gap-2 mt-1 text-[11px] text-muted-foreground">
+                                <span className="flex items-center gap-1"><Calendar className="h-2.5 w-2.5" />{formatPeriodRange(record.start_date, record.end_date, !!record.is_current, isAr)}</span>
+                                {record.location && <span className="flex items-center gap-1"><MapPin className="h-2.5 w-2.5" />{record.location}</span>}
+                              </div>
+                            </div>
+                          </div>
+                        </CardContent>
+                      </Card>
+                    ))}
+                  </div>
+                </CollapsibleProfileSection>
+              </SectionReveal>
+            )}
+
+            {/* Participation & Events */}
+            {isVisible("career") && participationRecords.length > 0 && (
+              <SectionReveal delay={285}>
+                <CollapsibleProfileSection
+                  icon={Users}
+                  label={isAr ? "المشاركات والفعاليات" : "Participation & Events"}
+                  count={participationRecords.length}
+                  defaultOpen={false}
+                >
+                  <div className="space-y-2.5">
+                    {participationRecords.map((record: any) => (
+                      <Card key={record.id} className="rounded-2xl border-border/25 hover:shadow-md transition-all duration-300 hover:border-border/40 hover:-translate-y-0.5 group/card">
+                        <CardContent className="p-4">
+                          <div className="flex gap-3">
+                            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-chart-1/8 group-hover/card:scale-110 transition-transform duration-300">
+                              <Users className="h-4 w-4 text-chart-1" />
+                            </div>
+                            <div className="flex-1 min-w-0">
+                              <h4 className="font-semibold text-sm">{pickLocalizedText(isAr, record.title_ar, record.title) || "—"}</h4>
+                              {(record.entity_name || record.entity_name_ar) && (
+                                record.entity_id ? (
+                                  <Link to={`/entities/${record.entity_id}`} className="text-xs text-primary font-medium hover:underline flex items-center gap-1 mt-0.5">
+                                    {pickLocalizedText(isAr, record.entity_name_ar, record.entity_name)}<ExternalLink className="h-2.5 w-2.5" />
+                                  </Link>
+                                ) : <p className="text-xs text-muted-foreground mt-0.5">{pickLocalizedText(isAr, record.entity_name_ar, record.entity_name)}</p>
+                              )}
+                              <div className="flex flex-wrap gap-2 mt-1 text-[11px] text-muted-foreground">
+                                <span className="flex items-center gap-1"><Calendar className="h-2.5 w-2.5" />{formatPeriodRange(record.start_date, record.end_date, !!record.is_current, isAr)}</span>
+                                {record.location && <span className="flex items-center gap-1"><MapPin className="h-2.5 w-2.5" />{record.location}</span>}
+                              </div>
+                            </div>
+                          </div>
+                        </CardContent>
+                      </Card>
+                    ))}
+                  </div>
                 </CollapsibleProfileSection>
               </SectionReveal>
             )}
