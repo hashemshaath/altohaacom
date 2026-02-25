@@ -24,7 +24,7 @@ import { useRecordProfileView } from "@/hooks/useProfileViews";
 import { SectionReveal } from "@/components/ui/section-reveal";
 import {
   User, Award, BadgeCheck, ArrowLeft, Calendar, Briefcase, GraduationCap, Building2,
-  ExternalLink, Trophy, Medal, ImageIcon, MapPin, Globe,
+  ExternalLink, Trophy, Medal, ImageIcon, MapPin, Globe, Tv,
 } from "lucide-react";
 import { countryFlag } from "@/lib/countryFlag";
 import { useAllCountries } from "@/hooks/useCountries";
@@ -257,6 +257,8 @@ export default function PublicProfile() {
 
   const educationRecords = careerRecords.filter((r: any) => r.record_type === "education");
   const workRecords = careerRecords.filter((r: any) => r.record_type === "work");
+  const mediaRecords = careerRecords.filter((r: any) => r.record_type === "media");
+  const certificationRecords = careerRecords.filter((r: any) => r.record_type === "certification");
   const currentWork = workRecords.find((r: any) => r.is_current) || workRecords[0];
 
   const roleLabels: Record<string, { en: string; ar: string }> = {
@@ -446,6 +448,87 @@ export default function PublicProfile() {
                       isAr={isAr}
                     />
                   )}
+                </CollapsibleProfileSection>
+              </SectionReveal>
+            )}
+
+            {/* Media Appearances */}
+            {isVisible("career") && mediaRecords.length > 0 && (
+              <SectionReveal delay={325}>
+                <CollapsibleProfileSection
+                  icon={Tv}
+                  label={isAr ? "الظهور الإعلامي" : "Media Appearances"}
+                  count={mediaRecords.length}
+                  defaultOpen={true}
+                >
+                  <div className="space-y-2.5">
+                    {mediaRecords.map((record: any) => (
+                      <Card key={record.id} className="rounded-2xl border-border/25 hover:shadow-md transition-all duration-300 hover:border-border/40 hover:-translate-y-0.5 group/card">
+                        <CardContent className="p-4">
+                          <div className="flex gap-3">
+                            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-chart-4/8 group-hover/card:scale-110 transition-transform duration-300">
+                              <Tv className="h-4 w-4 text-chart-4 group-hover/card:text-chart-4" />
+                            </div>
+                            <div className="flex-1 min-w-0">
+                              <h4 className="font-semibold text-sm">{pickLocalizedText(isAr, record.title_ar, record.title) || "—"}</h4>
+                              {(record.entity_name || record.entity_name_ar) && (
+                                <p className="text-xs text-muted-foreground mt-0.5">{pickLocalizedText(isAr, record.entity_name_ar, record.entity_name)}</p>
+                              )}
+                              <div className="flex flex-wrap gap-2 mt-1 text-[11px] text-muted-foreground">
+                                <span className="flex items-center gap-1"><Calendar className="h-2.5 w-2.5" />{formatPeriodRange(record.start_date, record.end_date, !!record.is_current, isAr)}</span>
+                                {record.location && <span className="flex items-center gap-1"><MapPin className="h-2.5 w-2.5" />{record.location}</span>}
+                              </div>
+                              {pickLocalizedText(isAr, record.description_ar, record.description) && (
+                                <p className="mt-1.5 text-[11px] text-muted-foreground leading-relaxed" dir={isAr ? "rtl" : "ltr"}>
+                                  {pickLocalizedText(isAr, record.description_ar, record.description)}
+                                </p>
+                              )}
+                            </div>
+                          </div>
+                        </CardContent>
+                      </Card>
+                    ))}
+                  </div>
+                </CollapsibleProfileSection>
+              </SectionReveal>
+            )}
+
+            {/* Career Certifications */}
+            {isVisible("career") && certificationRecords.length > 0 && (
+              <SectionReveal delay={340}>
+                <CollapsibleProfileSection
+                  icon={Award}
+                  label={isAr ? "الشهادات المهنية" : "Professional Certifications"}
+                  count={certificationRecords.length}
+                  defaultOpen={true}
+                >
+                  <div className="space-y-2.5">
+                    {certificationRecords.map((record: any) => (
+                      <Card key={record.id} className="rounded-2xl border-border/25 hover:shadow-md transition-all duration-300 hover:border-border/40 hover:-translate-y-0.5 group/card">
+                        <CardContent className="p-4">
+                          <div className="flex gap-3">
+                            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-chart-5/8 group-hover/card:scale-110 transition-transform duration-300">
+                              <Award className="h-4 w-4 text-chart-5 group-hover/card:text-chart-5" />
+                            </div>
+                            <div className="flex-1 min-w-0">
+                              <h4 className="font-semibold text-sm">{pickLocalizedText(isAr, record.title_ar, record.title) || "—"}</h4>
+                              {(record.entity_name || record.entity_name_ar) && (
+                                <p className="text-xs text-muted-foreground mt-0.5">{pickLocalizedText(isAr, record.entity_name_ar, record.entity_name)}</p>
+                              )}
+                              <div className="flex flex-wrap gap-2 mt-1 text-[11px] text-muted-foreground">
+                                <span className="flex items-center gap-1"><Calendar className="h-2.5 w-2.5" />{formatPeriodRange(record.start_date, record.end_date, !!record.is_current, isAr)}</span>
+                              </div>
+                              {pickLocalizedText(isAr, record.description_ar, record.description) && (
+                                <p className="mt-1.5 text-[11px] text-muted-foreground leading-relaxed" dir={isAr ? "rtl" : "ltr"}>
+                                  {pickLocalizedText(isAr, record.description_ar, record.description)}
+                                </p>
+                              )}
+                            </div>
+                          </div>
+                        </CardContent>
+                      </Card>
+                    ))}
+                  </div>
                 </CollapsibleProfileSection>
               </SectionReveal>
             )}
