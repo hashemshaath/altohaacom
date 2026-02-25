@@ -1,4 +1,4 @@
-import { useState, useMemo, useCallback } from "react";
+import { useState, useMemo, useCallback, createContext, useContext } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -83,6 +83,18 @@ const DEFAULT_SECTIONS: SectionConfig[] = [
 const ICON_MAP: Record<string, any> = {
   GraduationCap, Briefcase, Users, Trophy, Medal, Award, Building2, FileText, MapPin,
 };
+
+const AVAILABLE_ICONS = [
+  { key: "GraduationCap", label: "Education", icon: GraduationCap },
+  { key: "Briefcase", label: "Work", icon: Briefcase },
+  { key: "Users", label: "Group", icon: Users },
+  { key: "Trophy", label: "Trophy", icon: Trophy },
+  { key: "Medal", label: "Medal", icon: Medal },
+  { key: "Award", label: "Award", icon: Award },
+  { key: "Building2", label: "Building", icon: Building2 },
+  { key: "FileText", label: "Document", icon: FileText },
+  { key: "MapPin", label: "Location", icon: MapPin },
+];
 
 const CUSTOM_SECTION_COLORS = [
   "bg-chart-2/10 text-chart-2",
@@ -313,13 +325,24 @@ export function UserCareerTimeline({ userId, isAr }: Props) {
     setActiveId(String(event.active.id));
   };
 
-  const handleDragEnd = useCallback(async (event: DragEndEvent) => {
+   const handleDragEnd = useCallback(async (event: DragEndEvent) => {
     setActiveId(null);
     const { active, over } = event;
     if (!over || active.id === over.id) return;
 
     const activeData = active.data.current;
     const overData = over.data.current;
+
+    // Handle section reordering
+    if (activeData?.type === "section" && overData?.type === "section") {
+      const oldIndex = sections.findIndex(s => s.key === active.id);
+      const newIndex = sections.findIndex(s => s.key === over.id);
+      if (oldIndex !== -1 && newIndex !== -1) {
+        setSections(prev => arrayMove(prev, oldIndex, newIndex));
+        toast({ title: isAr ? "تم إعادة ترتيب الأقسام" : "Sections reordered" });
+      }
+      return;
+    }
 
     if (!activeData || !overData) return;
 
@@ -337,7 +360,6 @@ export function UserCareerTimeline({ userId, isAr }: Props) {
       if (oldIndex === -1 || newIndex === -1) return;
 
       const reordered = arrayMove(sectionRecords, oldIndex, newIndex);
-      // Update sort_order in DB
       for (let i = 0; i < reordered.length; i++) {
         await supabase.from("user_career_records").update({ sort_order: i }).eq("id", reordered[i].id);
       }
@@ -350,6 +372,16 @@ export function UserCareerTimeline({ userId, isAr }: Props) {
       toast({ title: isAr ? "تم نقل العنصر" : "Item moved" });
     }
   }, [records, sections, userId, queryClient, isAr]);
+
+  const changeSectionIcon = (sectionKey: string, iconKey: string) => {
+    setSections(prev => prev.map(s => s.key === sectionKey ? { ...s, icon: iconKey } : s));
+    toast({ title: isAr ? "تم تغيير الأيقونة" : "Icon changed" });
+  };
+
+  const deleteSection = (key: string) => {
+    setSections(prev => prev.filter(s => s.key !== key));
+    toast({ title: isAr ? "تم حذف القسم" : "Section deleted" });
+  };
 
   // ── Mutations ──────────────────────────────────────
 
@@ -634,6 +666,7 @@ export function UserCareerTimeline({ userId, isAr }: Props) {
   };
 
   const isDraggableSection = (key: string) => ["education", "work"].includes(key) || sections.find(s => s.isCustom && s.key === key);
+  const sectionIds = useMemo(() => sections.map(s => s.key), [sections]);
 
   return (
     <DndContext sensors={sensors} collisionDetection={closestCenter} onDragStart={handleDragStart} onDragEnd={handleDragEnd}>
@@ -696,6 +729,7 @@ export function UserCareerTimeline({ userId, isAr }: Props) {
           }}
         />
 
+        <SortableContext items={sectionIds} strategy={verticalListSortingStrategy}>
         {sections.map(section => {
           const IconComp = ICON_MAP[section.icon] || FileText;
           const count = getSectionCount(section.key);
@@ -705,16 +739,38 @@ export function UserCareerTimeline({ userId, isAr }: Props) {
           const itemIds = getSectionItemIds(section.key);
 
           return (
-            <div key={section.key} className="rounded-xl border bg-card/50 overflow-hidden transition-all hover:shadow-sm">
+            <SortableSectionItem key={section.key} id={section.key}>
+            <div className="rounded-xl border bg-card/50 overflow-hidden transition-all hover:shadow-sm">
               {/* Section Header */}
               <div className="flex items-center gap-1 px-2">
+                <SectionDragHandle />
                 <button
                   onClick={() => toggleSection(section.key)}
-                  className="flex-1 flex items-center gap-3 px-3 py-4 hover:bg-muted/40 transition-all group"
+                  className="flex-1 flex items-center gap-3 px-2 py-4 hover:bg-muted/40 transition-all group"
                 >
-                  <div className={`flex h-9 w-9 items-center justify-center rounded-xl shrink-0 ${section.color} group-hover:scale-110 transition-transform`}>
-                    <IconComp className="h-4.5 w-4.5" />
-                  </div>
+                  <Popover>
+                    <PopoverTrigger asChild>
+                      <div
+                        className={`flex h-9 w-9 items-center justify-center rounded-xl shrink-0 ${section.color} group-hover:scale-110 transition-transform cursor-pointer`}
+                        onClick={e => e.stopPropagation()}
+                        title={isAr ? "تغيير الأيقونة" : "Change icon"}
+                      >
+                        <IconComp className="h-4.5 w-4.5" />
+                      </div>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-auto p-2" align="start" onClick={e => e.stopPropagation()}>
+                      <p className="text-[10px] font-semibold text-muted-foreground px-1 pb-1.5">{isAr ? "اختر أيقونة" : "Pick icon"}</p>
+                      <div className="grid grid-cols-3 gap-1">
+                        {AVAILABLE_ICONS.map(ic => (
+                          <button key={ic.key} onClick={() => changeSectionIcon(section.key, ic.key)}
+                            className={`flex items-center justify-center h-9 w-9 rounded-lg transition-all ${section.icon === ic.key ? "bg-primary/15 text-primary ring-1 ring-primary/30" : "hover:bg-muted/60 text-muted-foreground"}`}
+                            title={ic.label}>
+                            <ic.icon className="h-4 w-4" />
+                          </button>
+                        ))}
+                      </div>
+                    </PopoverContent>
+                  </Popover>
                   <div className="flex-1 text-start">
                     {isEditingTitle ? (
                       <div className="flex items-center gap-2" onClick={e => e.stopPropagation()}>
@@ -743,12 +799,30 @@ export function UserCareerTimeline({ userId, isAr }: Props) {
                     onClick={() => startEditSectionTitle(section)} title={isAr ? "تعديل العنوان" : "Edit title"}>
                     <Type className="h-3 w-3" />
                   </Button>
-                  {section.isCustom && (
-                    <Button size="icon" variant="ghost" className="h-7 w-7 text-destructive/60 hover:text-destructive"
-                      onClick={() => deleteCustomSection(section.key)}>
-                      <Trash2 className="h-3 w-3" />
-                    </Button>
-                  )}
+                  <AlertDialog>
+                    <AlertDialogTrigger asChild>
+                      <Button size="icon" variant="ghost" className="h-7 w-7 text-destructive/60 hover:text-destructive"
+                        title={isAr ? "حذف القسم" : "Delete section"}>
+                        <Trash2 className="h-3 w-3" />
+                      </Button>
+                    </AlertDialogTrigger>
+                    <AlertDialogContent>
+                      <AlertDialogHeader>
+                        <AlertDialogTitle>{isAr ? "تأكيد الحذف" : "Confirm Deletion"}</AlertDialogTitle>
+                        <AlertDialogDescription>
+                          {isAr
+                            ? `هل أنت متأكد من حذف قسم "${section.ar}"؟ سيتم حذف القسم فقط وليس البيانات الموجودة فيه.`
+                            : `Are you sure you want to delete the "${section.en}" section? This only removes the section, not the data in it.`}
+                        </AlertDialogDescription>
+                      </AlertDialogHeader>
+                      <AlertDialogFooter>
+                        <AlertDialogCancel>{isAr ? "إلغاء" : "Cancel"}</AlertDialogCancel>
+                        <AlertDialogAction onClick={() => deleteSection(section.key)} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">
+                          {isAr ? "حذف" : "Delete"}
+                        </AlertDialogAction>
+                      </AlertDialogFooter>
+                    </AlertDialogContent>
+                  </AlertDialog>
                 </div>
               </div>
 
@@ -983,8 +1057,10 @@ export function UserCareerTimeline({ userId, isAr }: Props) {
                 </div>
               )}
             </div>
+            </SortableSectionItem>
           );
         })}
+        </SortableContext>
       </div>
     </DndContext>
   );
@@ -1015,6 +1091,44 @@ function SortableItem({ id, sectionKey, children }: { id: string; sectionKey: st
         <div className="flex-1 min-w-0">{children}</div>
       </div>
     </div>
+  );
+}
+
+// ── Sortable Section Wrapper ──────────────────────────────────────
+
+
+
+const SectionDragListenersContext = createContext<Record<string, any> | null>(null);
+
+function SortableSectionItem({ id, children }: { id: string; children: React.ReactNode }) {
+  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
+    id,
+    data: { type: "section" },
+  });
+
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+    opacity: isDragging ? 0.6 : 1,
+    position: "relative" as const,
+    zIndex: isDragging ? 20 : undefined,
+  };
+
+  return (
+    <SectionDragListenersContext.Provider value={listeners || {}}>
+      <div ref={setNodeRef} style={style} {...attributes}>
+        {children}
+      </div>
+    </SectionDragListenersContext.Provider>
+  );
+}
+
+function SectionDragHandle() {
+  const listeners = useContext(SectionDragListenersContext);
+  return (
+    <button {...(listeners || {})} className="cursor-grab active:cursor-grabbing p-1.5 text-muted-foreground/40 hover:text-muted-foreground transition-colors touch-none">
+      <GripVertical className="h-4 w-4" />
+    </button>
   );
 }
 
