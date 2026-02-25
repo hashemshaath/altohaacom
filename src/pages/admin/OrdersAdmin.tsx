@@ -1,4 +1,5 @@
 import { useState } from "react";
+import AdminPageHeader from "@/components/admin/AdminPageHeader";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useAuth } from "@/contexts/AuthContext";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
@@ -1176,15 +1177,11 @@ export default function OrdersAdmin() {
 
   return (
     <div className="space-y-6">
-      <div>
-        <h1 className="text-3xl font-bold flex items-center gap-3">
-          <Package className="h-8 w-8 text-primary" />
-          {isAr ? "إدارة الطلبات" : "Order Management"}
-        </h1>
-        <p className="text-muted-foreground mt-1">
-          {isAr ? "إدارة طلبات الشركات وطلبات المتجر" : "Manage company orders and shop orders"}
-        </p>
-      </div>
+      <AdminPageHeader
+        icon={Package}
+        title={isAr ? "إدارة الطلبات" : "Order Management"}
+        description={isAr ? "إدارة طلبات الشركات وطلبات المتجر" : "Manage company orders and shop orders"}
+      />
 
       <Tabs value={activeTab} onValueChange={setActiveTab}>
         <TabsList>

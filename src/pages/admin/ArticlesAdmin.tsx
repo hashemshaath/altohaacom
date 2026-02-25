@@ -1,4 +1,5 @@
 import { useState, useMemo } from "react";
+import AdminPageHeader from "@/components/admin/AdminPageHeader";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { supabase } from "@/integrations/supabase/client";
@@ -405,30 +406,22 @@ export default function ArticlesAdmin() {
   // List View
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-3">
-          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary/10">
-            <FileText className="h-5 w-5 text-primary" />
+      <AdminPageHeader
+        icon={FileText}
+        title={language === "ar" ? "إدارة المقالات والأخبار" : "Articles & News Management"}
+        description={language === "ar" ? "إنشاء وتعديل المحتوى" : "Create and manage content"}
+        actions={
+          <div className="flex gap-2">
+            <Button variant="outline" size="sm" onClick={exportArticlesCSV} className="gap-1.5">
+              <Download className="h-3.5 w-3.5" /> CSV
+            </Button>
+            <Button onClick={() => setViewMode("create")}>
+              <Plus className="me-2 h-4 w-4" />
+              {language === "ar" ? "مقال جديد" : "New Article"}
+            </Button>
           </div>
-          <div>
-            <h1 className="font-serif text-2xl font-bold">
-              {language === "ar" ? "إدارة المقالات والأخبار" : "Articles & News Management"}
-            </h1>
-            <p className="text-sm text-muted-foreground">
-              {language === "ar" ? "إنشاء وتعديل المحتوى" : "Create and manage content"}
-            </p>
-          </div>
-        </div>
-        <div className="flex gap-2">
-          <Button variant="outline" size="sm" onClick={exportArticlesCSV} className="gap-1.5">
-            <Download className="h-3.5 w-3.5" /> CSV
-          </Button>
-          <Button onClick={() => setViewMode("create")}>
-            <Plus className="me-2 h-4 w-4" />
-            {language === "ar" ? "مقال جديد" : "New Article"}
-          </Button>
-        </div>
-      </div>
+        }
+      />
 
       {/* Stats */}
       <div className="grid grid-cols-2 gap-3 sm:grid-cols-5">

@@ -1,4 +1,5 @@
 import { useState } from "react";
+import AdminPageHeader from "@/components/admin/AdminPageHeader";
 import { BulkImportPanel } from "@/components/admin/BulkImportPanel";
 import { Link } from "react-router-dom";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
@@ -258,34 +259,25 @@ export default function CompetitionsAdmin() {
 
   return (
     <div className="space-y-6">
-      {/* Header */}
-      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-        <div className="flex items-center gap-3">
-          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary/10">
-            <Trophy className="h-5 w-5 text-primary" />
+      <AdminPageHeader
+        icon={Trophy}
+        title={isAr ? "إدارة المسابقات" : "Competition Management"}
+        description={isAr ? "إدارة ومراقبة جميع المسابقات" : "Manage and monitor all competitions"}
+        actions={
+          <div className="flex flex-wrap gap-2">
+            <Button variant={showBulkImport ? "secondary" : "outline"} size="sm" onClick={() => setShowBulkImport(!showBulkImport)}>
+              <FileSpreadsheet className="me-2 h-4 w-4" />
+              {isAr ? "استيراد" : "Import"}
+            </Button>
+            <Button asChild className="gap-2 shadow-lg shadow-primary/20">
+              <Link to="/competitions/create">
+                <Plus className="h-4 w-4" />
+                {isAr ? "إضافة مسابقة" : "Add Competition"}
+              </Link>
+            </Button>
           </div>
-          <div>
-            <h1 className="font-serif text-xl font-bold sm:text-2xl">{isAr ? "إدارة المسابقات" : "Competition Management"}</h1>
-            <p className="text-xs text-muted-foreground">{isAr ? "إدارة ومراقبة جميع المسابقات" : "Manage and monitor all competitions"}</p>
-          </div>
-        </div>
-        <div className="flex flex-wrap gap-2">
-          <Button
-            variant={showBulkImport ? "secondary" : "outline"}
-            size="sm"
-            onClick={() => setShowBulkImport(!showBulkImport)}
-          >
-            <FileSpreadsheet className="me-2 h-4 w-4" />
-            {isAr ? "استيراد مسابقات" : "Import Competitions"}
-          </Button>
-          <Button asChild className="gap-2 shadow-lg shadow-primary/20">
-            <Link to="/competitions/create">
-              <Plus className="h-4 w-4" />
-              {isAr ? "إضافة مسابقة" : "Add Competition"}
-            </Link>
-          </Button>
-        </div>
-      </div>
+        }
+      />
 
       {/* Bulk Import */}
       {showBulkImport && (

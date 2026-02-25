@@ -25,6 +25,7 @@ import { UserCareerTimeline } from "@/components/admin/UserCareerTimeline";
 import { UserModificationHistory } from "@/components/admin/UserModificationHistory";
 import { UserBioOptimizer } from "@/components/admin/UserBioOptimizer";
 import { BulkUserImport } from "@/components/admin/BulkUserImport";
+import AdminPageHeader from "@/components/admin/AdminPageHeader";
 import {
   Search, UserX, UserCheck, Eye, Edit, ChevronRight, ChevronLeft, X, Save,
   UserPlus, KeyRound, Mail, Loader2, Upload, Image as ImageIcon, Users, Plus,
@@ -545,21 +546,19 @@ export default function UserManagement() {
 
   return (
     <div className="space-y-6">
-      {/* Header */}
-      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-        <div>
-          <h1 className="font-serif text-2xl font-bold">{isAr ? "إدارة المستخدمين" : "User Management"}</h1>
-          <p className="text-sm text-muted-foreground">
-            {isAr ? "تحكم كامل بإدارة الحسابات والأدوار والمجموعات والتخصصات" : "Manage accounts, roles, groups, specialties and media"}
-          </p>
-        </div>
-        <div className="flex flex-wrap items-center gap-2">
-          <Badge variant="outline" className="text-sm">
-            {usersData?.totalCount || 0} {isAr ? "مستخدم" : "users"}
-          </Badge>
-          <UserStatsQuickView language={language} />
-        </div>
-      </div>
+      <AdminPageHeader
+        icon={Users}
+        title={isAr ? "إدارة المستخدمين" : "User Management"}
+        description={isAr ? "تحكم كامل بإدارة الحسابات والأدوار والمجموعات والتخصصات" : "Manage accounts, roles, groups, specialties and media"}
+        actions={
+          <div className="flex flex-wrap items-center gap-2">
+            <Badge variant="outline" className="text-sm">
+              {usersData?.totalCount || 0} {isAr ? "مستخدم" : "users"}
+            </Badge>
+            <UserStatsQuickView language={language} />
+          </div>
+        }
+      />
 
       {/* Stats Cards */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">

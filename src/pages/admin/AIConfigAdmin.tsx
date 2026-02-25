@@ -11,6 +11,7 @@ import { Slider } from "@/components/ui/slider";
 import { Separator } from "@/components/ui/separator";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
+import AdminPageHeader from "@/components/admin/AdminPageHeader";
 import { 
   Bot, 
   Sparkles,
@@ -79,27 +80,23 @@ export default function AIConfigAdmin() {
 
   return (
     <div className="space-y-4 sm:space-y-6">
-      {/* Header */}
-      <div className="flex items-start justify-between gap-2">
-        <div className="min-w-0">
-          <h1 className="font-serif text-xl sm:text-2xl font-bold truncate">
-            {isAr ? "إعدادات الذكاء الاصطناعي" : "AI Configuration"}
-          </h1>
-          <p className="text-xs sm:text-sm text-muted-foreground truncate">
-            {isAr ? "إدارة خدمات AI" : "Manage AI services"}
-          </p>
-        </div>
-        <div className="flex gap-1.5 sm:gap-2 shrink-0">
-          <Button variant="outline" size="sm" onClick={handleTestConnection} className="h-8 px-2 sm:px-3">
-            <Zap className="h-3.5 w-3.5 sm:me-1.5" />
-            <span className="hidden sm:inline text-xs">{isAr ? "اختبار" : "Test"}</span>
-          </Button>
-          <Button size="sm" onClick={handleSave} className="h-8 px-2 sm:px-3">
-            <Save className="h-3.5 w-3.5 sm:me-1.5" />
-            <span className="hidden sm:inline text-xs">{isAr ? "حفظ" : "Save"}</span>
-          </Button>
-        </div>
-      </div>
+      <AdminPageHeader
+        icon={Brain}
+        title={isAr ? "إعدادات الذكاء الاصطناعي" : "AI Configuration"}
+        description={isAr ? "إدارة خدمات AI والنماذج" : "Manage AI services & models"}
+        actions={
+          <div className="flex gap-2">
+            <Button variant="outline" size="sm" onClick={handleTestConnection}>
+              <Zap className="h-3.5 w-3.5 me-1.5" />
+              {isAr ? "اختبار" : "Test"}
+            </Button>
+            <Button size="sm" onClick={handleSave}>
+              <Save className="h-3.5 w-3.5 me-1.5" />
+              {isAr ? "حفظ" : "Save"}
+            </Button>
+          </div>
+        }
+      />
 
       {/* Status Card */}
       <Card className="bg-gradient-to-r from-primary/10 to-accent/10 border-primary/20">
