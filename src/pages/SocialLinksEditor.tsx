@@ -31,7 +31,7 @@ import {
   Phone, MessageCircle, Music, ShoppingBag, CalendarDays, Video, Briefcase,
   Sparkles, TrendingUp, Loader2, GripVertical, Image, FileText,
   AlignLeft, AlignCenter, AlignRight, LayoutGrid, LayoutList, ArrowLeftRight, Clock, Calendar,
-  FileDown, FileUp, Search, UserPlus
+  FileDown, FileUp, Search, UserPlus, Bell
 } from "lucide-react";
 import { buildSocialLinksPath, buildSocialLinksUrl } from "@/lib/publicAppUrl";
 import { AreaChart, Area, BarChart, Bar, XAxis, YAxis, Tooltip as RechartsTooltip, ResponsiveContainer, Cell } from "recharts";
@@ -270,6 +270,23 @@ export default function SocialLinksEditor() {
     },
     enabled: !!page?.id,
     staleTime: 5 * 60_000,
+  });
+
+  // Bio page notifications feed
+  const { data: bioNotifications } = useQuery({
+    queryKey: ["bio-notifications", user?.id],
+    queryFn: async () => {
+      const { data } = await supabase
+        .from("notifications")
+        .select("id, title, title_ar, body, body_ar, type, is_read, created_at, metadata")
+        .eq("user_id", user!.id)
+        .in("type", ["bio_subscriber", "bio_milestone", "link_milestone"])
+        .order("created_at", { ascending: false })
+        .limit(20);
+      return data || [];
+    },
+    enabled: !!user?.id,
+    staleTime: 60_000,
   });
 
   const [socials, setSocials] = useState<Record<string, string>>({});
@@ -2711,6 +2728,77 @@ export default function SocialLinksEditor() {
                             {isAr ? "المشتركين" : "Subscribers"}
                           </Button>
                         </div>
+                      </CardContent>
+                    </Card>
+
+                    {/* ── Notifications Feed ── */}
+                    <Card className="overflow-hidden">
+                      <CardHeader className="pb-3 bg-gradient-to-r from-muted/40 to-transparent">
+                        <CardTitle className="text-sm flex items-center gap-2">
+                          <div className="h-7 w-7 rounded-lg bg-chart-4/10 flex items-center justify-center">
+                            <Bell className="h-3.5 w-3.5 text-chart-4" />
+                          </div>
+                          {isAr ? "الإشعارات" : "Notifications"}
+                          {bioNotifications && bioNotifications.filter((n: any) => !n.is_read).length > 0 && (
+                            <Badge variant="destructive" className="text-[10px] h-4 px-1.5 ms-auto">
+                              {bioNotifications.filter((n: any) => !n.is_read).length}
+                            </Badge>
+                          )}
+                        </CardTitle>
+                        <p className="text-[11px] text-muted-foreground">
+                          {isAr ? "مشتركون جدد وإنجازات" : "New subscribers & milestones"}
+                        </p>
+                      </CardHeader>
+                      <CardContent className="pt-3">
+                        {!bioNotifications || bioNotifications.length === 0 ? (
+                          <div className="text-center py-8">
+                            <Bell className="h-8 w-8 mx-auto text-muted-foreground/30 mb-2" />
+                            <p className="text-xs text-muted-foreground">{isAr ? "لا توجد إشعارات بعد" : "No notifications yet"}</p>
+                          </div>
+                        ) : (
+                          <div className="space-y-2 max-h-[360px] overflow-y-auto">
+                            {bioNotifications.map((n: any) => {
+                              const timeAgo = (() => {
+                                const diff = Date.now() - new Date(n.created_at).getTime();
+                                const mins = Math.floor(diff / 60000);
+                                if (mins < 1) return isAr ? "الآن" : "now";
+                                if (mins < 60) return `${mins}${isAr ? "د" : "m"}`;
+                                const hrs = Math.floor(mins / 60);
+                                if (hrs < 24) return `${hrs}${isAr ? "س" : "h"}`;
+                                const days = Math.floor(hrs / 24);
+                                return `${days}${isAr ? "ي" : "d"}`;
+                              })();
+                              const icon = n.type === "bio_subscriber" ? "📬" : n.type === "bio_milestone" ? "🎉" : "🔥";
+                              return (
+                                <div
+                                  key={n.id}
+                                  className={`flex items-start gap-2.5 p-2.5 rounded-xl border transition-colors ${!n.is_read ? "border-primary/20 bg-primary/5" : "border-border/30 bg-transparent"}`}
+                                >
+                                  <span className="text-base mt-0.5 shrink-0">{icon}</span>
+                                  <div className="flex-1 min-w-0">
+                                    <p className="text-xs font-medium leading-snug">{isAr ? n.title_ar : n.title}</p>
+                                    <p className="text-[10px] text-muted-foreground mt-0.5 truncate">{isAr ? n.body_ar : n.body}</p>
+                                  </div>
+                                  <span className="text-[10px] text-muted-foreground shrink-0 tabular-nums">{timeAgo}</span>
+                                </div>
+                              );
+                            })}
+                          </div>
+                        )}
+                        {bioNotifications && bioNotifications.filter((n: any) => !n.is_read).length > 0 && (
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            className="w-full mt-3 text-xs text-muted-foreground"
+                            onClick={async () => {
+                              const unreadIds = bioNotifications.filter((n: any) => !n.is_read).map((n: any) => n.id);
+                              if (unreadIds.length === 0) return;
+                              await supabase.from("notifications").update({ is_read: true } as any).in("id", unreadIds);
+                            }}
+                          >
+                            {isAr ? "تحديد الكل كمقروء" : "Mark all as read"}
+                          </Button>
+                        )}
                       </CardContent>
                     </Card>
                   </TabsContent>
