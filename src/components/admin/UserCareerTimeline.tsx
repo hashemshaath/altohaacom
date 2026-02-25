@@ -1,5 +1,5 @@
 import { useState, useMemo, useCallback } from "react";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -22,13 +22,14 @@ import {
 import { arrayMove, SortableContext, sortableKeyboardCoordinates, verticalListSortingStrategy } from "@dnd-kit/sortable";
 
 import type { SectionConfig, CareerRecord } from "./career-timeline/constants";
-import {
-  DEFAULT_SECTIONS, ICON_MAP, AVAILABLE_ICONS, CUSTOM_SECTION_COLORS,
-} from "./career-timeline/constants";
+import { ICON_MAP, AVAILABLE_ICONS } from "./career-timeline/constants";
 import {
   TranslateInlineButton, SortableSectionItem, SectionDragHandle,
 } from "./career-timeline/shared-ui";
 import { SectionContent } from "./career-timeline/section-renderer";
+import { useCareerData } from "./career-timeline/useCareerData";
+import { useCareerMutations } from "./career-timeline/useCareerMutations";
+import { CareerTimelineSkeleton } from "./career-timeline/CareerTimelineSkeleton";
 
 interface Props { userId: string; isAr: boolean; }
 
@@ -63,93 +64,26 @@ export function UserCareerTimeline({ userId, isAr }: Props) {
   });
   const [selectedCompetitionId, setSelectedCompetitionId] = useState("");
 
-  // ── Load sections ──
-  const { data: dbSections = [] } = useQuery({
-    queryKey: ["user-career-sections", userId],
-    queryFn: async () => {
-      const { data, error } = await supabase.from("user_career_sections").select("*")
-        .eq("user_id", userId).order("sort_order", { ascending: true });
-      if (error) throw error;
-      return data || [];
-    },
-  });
+  // ── Extracted hooks ──
+  const {
+    dbSections, sections, records, memberships, competitions, certificates,
+    competitionCareerRecords, getRecordsForSection, getSectionCount,
+    getSectionItemIds, sectionIds, isLoading,
+  } = useCareerData(userId);
 
-  const sections: SectionConfig[] = useMemo(() => {
-    const customFromDb: SectionConfig[] = dbSections
-      .filter((s: any) => s.is_custom)
-      .map((s: any) => ({
-        key: s.section_key, icon: s.icon || "FileText",
-        en: s.name_en, ar: s.name_ar || s.name_en,
-        color: s.color || CUSTOM_SECTION_COLORS[0], isCustom: true,
-      }));
-    const dbDefaultOrder = dbSections
-      .filter((s: any) => !s.is_custom)
-      .reduce((acc: Record<string, any>, s: any) => { acc[s.section_key] = s; return acc; }, {} as Record<string, any>);
-    const defaults = DEFAULT_SECTIONS.map(d => {
-      const override = dbDefaultOrder[d.key];
-      if (override) return { ...d, icon: override.icon || d.icon, en: override.name_en || d.en, ar: override.name_ar || d.ar };
-      return d;
-    });
-    if (dbSections.length > 0) {
-      const orderedKeys = dbSections.map((s: any) => s.section_key);
-      const allSections = [...defaults, ...customFromDb];
-      const ordered: SectionConfig[] = [];
-      for (const key of orderedKeys) {
-        const found = allSections.find(s => s.key === key);
-        if (found) ordered.push(found);
-      }
-      for (const d of defaults) {
-        if (!ordered.find(s => s.key === d.key)) ordered.push(d);
-      }
-      return ordered;
-    }
-    return [...defaults, ...customFromDb];
-  }, [dbSections]);
+  const closeForm = useCallback(() => {
+    setAddingSection(null); setEditingId(null); setEditingMembershipId(null);
+    setEditingAwardId(null); setSelectedCompetitionId("");
+  }, []);
 
-  // ── Data Queries ──
-  const { data: records = [], isLoading } = useQuery({
-    queryKey: ["career-records", userId],
-    queryFn: async () => {
-      const { data, error } = await supabase.from("user_career_records").select("*")
-        .eq("user_id", userId).order("sort_order", { ascending: true })
-        .order("is_current", { ascending: false })
-        .order("end_date", { ascending: false, nullsFirst: true }).order("start_date", { ascending: false });
-      if (error) throw error;
-      return (data || []) as CareerRecord[];
-    },
-  });
-
-  const { data: memberships = [] } = useQuery({
-    queryKey: ["user-entity-memberships", userId],
-    queryFn: async () => {
-      const { data, error } = await supabase.from("entity_memberships")
-        .select("*, culinary_entities(name, name_ar, logo_url, type)")
-        .eq("user_id", userId).order("created_at", { ascending: false });
-      if (error) throw error;
-      return data || [];
-    },
-  });
-
-  const { data: competitions = [] } = useQuery({
-    queryKey: ["user-competition-history", userId],
-    queryFn: async () => {
-      const { data, error } = await supabase.from("competition_registrations")
-        .select("id, registered_at, status, competitions(title, title_ar, competition_start, country_code, status)")
-        .eq("participant_id", userId).order("registered_at", { ascending: false });
-      if (error) throw error;
-      return data || [];
-    },
-  });
-
-  const { data: certificates = [] } = useQuery({
-    queryKey: ["user-certificates-awards", userId],
-    queryFn: async () => {
-      const { data, error } = await supabase.from("certificates")
-        .select("id, issued_at, event_name, event_name_ar, achievement, achievement_ar, type, status, verification_code")
-        .eq("recipient_id", userId).eq("status", "issued").order("issued_at", { ascending: false });
-      if (error) throw error;
-      return data || [];
-    },
+  const {
+    saveCareerMutation, saveMembershipMutation, addCompetitionMutation,
+    addManualCompetitionMutation, addAwardMutation, saveAwardMutation,
+    deleteAwardMutation, deleteCareerMutation, deleteMembershipMutation,
+    moveRecordToSection, persistSectionsOrder, getMoveSections,
+  } = useCareerMutations({
+    userId, isAr, sections, careerForm, membershipForm, awardForm,
+    editingId, editingMembershipId, editingAwardId, selectedCompetitionId, closeForm,
   });
 
   const { data: availableCompetitions = [] } = useQuery({
@@ -165,34 +99,11 @@ export function UserCareerTimeline({ userId, isAr }: Props) {
     enabled: addingSection === "competitions",
   });
 
-  // ── Memoized record filters ──
-  const getRecordsForSection = useCallback((key: string) => records.filter(r => r.record_type === key), [records]);
-  const competitionCareerRecords = useMemo(() => records.filter(r => r.record_type === "competitions"), [records]);
-
-  const getSectionCount = useCallback((key: string): number => {
-    if (key === "memberships") return memberships.length;
-    if (key === "competitions") return competitions.length + competitionCareerRecords.length;
-    if (key === "awards") return certificates.length;
-    return getRecordsForSection(key).length;
-  }, [memberships, competitions, competitionCareerRecords, certificates, getRecordsForSection]);
-
   // ── DnD ──
   const sensors = useSensors(
     useSensor(PointerSensor, { activationConstraint: { distance: 8 } }),
     useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates }),
   );
-
-  const persistSectionsOrder = useCallback(async (newSections: SectionConfig[]) => {
-    for (let i = 0; i < newSections.length; i++) {
-      const s = newSections[i];
-      await supabase.from("user_career_sections" as any).upsert({
-        user_id: userId, section_key: s.key, icon: s.icon,
-        name_en: s.en, name_ar: s.ar, color: s.color,
-        sort_order: i, is_custom: s.isCustom,
-      } as any, { onConflict: "user_id,section_key" });
-    }
-    queryClient.invalidateQueries({ queryKey: ["user-career-sections", userId] });
-  }, [userId, queryClient]);
 
   const handleDragStart = (event: DragStartEvent) => { setActiveId(String(event.active.id)); };
 
@@ -237,113 +148,6 @@ export function UserCareerTimeline({ userId, isAr }: Props) {
     }
   }, [records, sections, userId, queryClient, isAr, persistSectionsOrder]);
 
-  // ── Mutations ──
-  const closeForm = () => { setAddingSection(null); setEditingId(null); setEditingMembershipId(null); setEditingAwardId(null); setSelectedCompetitionId(""); };
-
-  const saveCareerMutation = useMutation({
-    mutationFn: async () => {
-      const payload = {
-        user_id: userId, record_type: careerForm.record_type,
-        entity_id: careerForm.entity_id || null, entity_name: careerForm.entity_name || null,
-        title: careerForm.title, title_ar: careerForm.title_ar || null,
-        education_level: careerForm.education_level || null,
-        field_of_study: careerForm.field_of_study || null, field_of_study_ar: careerForm.field_of_study_ar || null,
-        grade: careerForm.grade || null, department: careerForm.department || null, department_ar: careerForm.department_ar || null,
-        employment_type: careerForm.employment_type || null,
-        start_date: careerForm.start_date || null, end_date: careerForm.is_current ? null : (careerForm.end_date || null),
-        is_current: careerForm.is_current, description: careerForm.description || null,
-        description_ar: careerForm.description_ar || null, location: careerForm.location || null,
-        country_code: careerForm.country_code || null,
-      } as any;
-      if (editingId) {
-        const { error } = await supabase.from("user_career_records").update(payload).eq("id", editingId);
-        if (error) throw error;
-      } else {
-        const { error } = await supabase.from("user_career_records").insert(payload);
-        if (error) throw error;
-      }
-    },
-    onSuccess: () => { queryClient.invalidateQueries({ queryKey: ["career-records", userId] }); toast({ title: editingId ? (isAr ? "تم التحديث" : "Updated") : (isAr ? "تمت الإضافة" : "Added") }); closeForm(); },
-    onError: (err: any) => toast({ title: isAr ? "خطأ" : "Error", description: err.message, variant: "destructive" }),
-  });
-
-  const saveMembershipMutation = useMutation({
-    mutationFn: async () => {
-      const payload = { entity_id: membershipForm.entity_id, membership_type: membershipForm.membership_type, title: membershipForm.title || null, title_ar: membershipForm.title_ar || null, enrollment_date: membershipForm.enrollment_date || null, notes: membershipForm.notes || null };
-      if (editingMembershipId) { const { error } = await supabase.from("entity_memberships").update(payload).eq("id", editingMembershipId); if (error) throw error; }
-      else { const { error } = await supabase.from("entity_memberships").insert({ ...payload, user_id: userId, status: "active" }); if (error) throw error; }
-    },
-    onSuccess: () => { queryClient.invalidateQueries({ queryKey: ["user-entity-memberships", userId] }); toast({ title: editingMembershipId ? (isAr ? "تم التحديث" : "Updated") : (isAr ? "تمت إضافة العضوية" : "Membership added") }); closeForm(); },
-    onError: (err: any) => toast({ title: isAr ? "خطأ" : "Error", description: err.message, variant: "destructive" }),
-  });
-
-  const addCompetitionMutation = useMutation({
-    mutationFn: async () => { const { error } = await supabase.from("competition_registrations").insert({ participant_id: userId, competition_id: selectedCompetitionId, status: "approved" }); if (error) throw error; },
-    onSuccess: () => { queryClient.invalidateQueries({ queryKey: ["user-competition-history", userId] }); toast({ title: isAr ? "تمت إضافة المسابقة" : "Competition added" }); closeForm(); },
-    onError: (err: any) => toast({ title: isAr ? "خطأ" : "Error", description: err.message, variant: "destructive" }),
-  });
-
-  const addManualCompetitionMutation = useMutation({
-    mutationFn: async () => {
-      const payload = { user_id: userId, record_type: "competitions", entity_id: careerForm.entity_id || null, entity_name: careerForm.entity_name || null, title: careerForm.title, title_ar: careerForm.title_ar || null, description: careerForm.description || null, description_ar: careerForm.description_ar || null, start_date: careerForm.start_date || null, end_date: careerForm.is_current ? null : (careerForm.end_date || null), is_current: careerForm.is_current, location: careerForm.location || null, employment_type: careerForm.employment_type || null, grade: careerForm.grade || null, country_code: careerForm.country_code || null } as any;
-      if (editingId) { const { error } = await supabase.from("user_career_records").update(payload).eq("id", editingId); if (error) throw error; }
-      else { const { error } = await supabase.from("user_career_records").insert(payload); if (error) throw error; }
-    },
-    onSuccess: () => { queryClient.invalidateQueries({ queryKey: ["career-records", userId] }); toast({ title: editingId ? (isAr ? "تم التحديث" : "Updated") : (isAr ? "تمت الإضافة" : "Added") }); closeForm(); },
-    onError: (err: any) => toast({ title: isAr ? "خطأ" : "Error", description: err.message, variant: "destructive" }),
-  });
-
-  const addAwardMutation = useMutation({
-    mutationFn: async () => {
-      const { data: templates } = await supabase.from("certificate_templates").select("id").limit(1);
-      const templateId = templates?.[0]?.id;
-      if (!templateId) throw new Error("No certificate template found");
-      const { error } = await supabase.from("certificates").insert({ recipient_id: userId, recipient_name: "User", template_id: templateId, type: awardForm.type as any, event_name: awardForm.event_name, event_name_ar: awardForm.event_name_ar || null, achievement: awardForm.achievement || null, achievement_ar: awardForm.achievement_ar || null, event_date: awardForm.event_date || null, status: "issued", verification_code: crypto.randomUUID().substring(0, 8).toUpperCase(), issued_at: new Date().toISOString() });
-      if (error) throw error;
-    },
-    onSuccess: () => { queryClient.invalidateQueries({ queryKey: ["user-certificates-awards", userId] }); toast({ title: isAr ? "تمت إضافة الجائزة" : "Award added" }); closeForm(); },
-    onError: (err: any) => toast({ title: isAr ? "خطأ" : "Error", description: err.message, variant: "destructive" }),
-  });
-
-  const saveAwardMutation = useMutation({
-    mutationFn: async () => {
-      if (!editingAwardId) return;
-      const { error } = await supabase.from("certificates").update({ event_name: awardForm.event_name, event_name_ar: awardForm.event_name_ar || null, achievement: awardForm.achievement || null, achievement_ar: awardForm.achievement_ar || null, event_date: awardForm.event_date || null, type: awardForm.type as any }).eq("id", editingAwardId);
-      if (error) throw error;
-    },
-    onSuccess: () => { queryClient.invalidateQueries({ queryKey: ["user-certificates-awards", userId] }); toast({ title: isAr ? "تم التحديث" : "Updated" }); closeForm(); },
-    onError: (err: any) => toast({ title: isAr ? "خطأ" : "Error", description: err.message, variant: "destructive" }),
-  });
-
-  const deleteAwardMutation = useMutation({
-    mutationFn: async (id: string) => { const { error } = await supabase.from("certificates").delete().eq("id", id); if (error) throw error; },
-    onSuccess: () => { queryClient.invalidateQueries({ queryKey: ["user-certificates-awards", userId] }); toast({ title: isAr ? "تم الحذف" : "Deleted" }); },
-  });
-
-  const deleteCareerMutation = useMutation({
-    mutationFn: async (id: string) => { const { error } = await supabase.from("user_career_records").delete().eq("id", id); if (error) throw error; },
-    onSuccess: () => { queryClient.invalidateQueries({ queryKey: ["career-records", userId] }); toast({ title: isAr ? "تم الحذف" : "Deleted" }); },
-  });
-
-  const deleteMembershipMutation = useMutation({
-    mutationFn: async (id: string) => { const { error } = await supabase.from("entity_memberships").delete().eq("id", id); if (error) throw error; },
-    onSuccess: () => { queryClient.invalidateQueries({ queryKey: ["user-entity-memberships", userId] }); toast({ title: isAr ? "تم الحذف" : "Deleted" }); },
-  });
-
-  const moveRecordToSection = useMutation({
-    mutationFn: async ({ id, targetSection }: { id: string; targetSection: string }) => {
-      const { error } = await supabase.from("user_career_records").update({ record_type: targetSection }).eq("id", id);
-      if (error) throw error;
-    },
-    onSuccess: () => { queryClient.invalidateQueries({ queryKey: ["career-records", userId] }); toast({ title: isAr ? "تم نقل العنصر" : "Item moved" }); },
-    onError: (err: any) => toast({ title: isAr ? "خطأ" : "Error", description: err.message, variant: "destructive" }),
-  });
-
-  const getMoveSections = useCallback((currentKey: string) => {
-    const movableKeys = ["education", "work", "competitions", "judging", "media", "organizing"];
-    return sections.filter(s => s.key !== currentKey && (movableKeys.includes(s.key) || s.isCustom)).map(s => ({ key: s.key, label: isAr ? s.ar : s.en }));
-  }, [sections, isAr]);
-
   // ── Form Starters ──
   const resetCareerForm = (type: string) => {
     setCareerForm({ record_type: type, entity_id: null, entity_name: "", title: "", title_ar: "", education_level: "", field_of_study: "", field_of_study_ar: "", grade: "", department: "", department_ar: "", employment_type: "", start_date: "", end_date: "", is_current: false, description: "", description_ar: "", location: "", country_code: "" });
@@ -380,6 +184,7 @@ export function UserCareerTimeline({ userId, isAr }: Props) {
   const addCustomSection = async () => {
     if (!newSectionName.en.trim()) return;
     const key = `custom_${Date.now()}`;
+    const { CUSTOM_SECTION_COLORS } = await import("./career-timeline/constants");
     const colorIndex = sections.filter(s => s.isCustom).length % CUSTOM_SECTION_COLORS.length;
     const newSection: SectionConfig = { key, icon: "FileText", en: newSectionName.en, ar: newSectionName.ar || newSectionName.en, color: CUSTOM_SECTION_COLORS[colorIndex], isCustom: true };
     await supabase.from("user_career_sections" as any).insert({ user_id: userId, section_key: key, icon: newSection.icon, name_en: newSection.en, name_ar: newSection.ar, color: newSection.color, sort_order: sections.length, is_custom: true } as any);
@@ -398,13 +203,8 @@ export function UserCareerTimeline({ userId, isAr }: Props) {
 
   const toggleSection = (key: string) => setExpandedSections(prev => { const next = new Set(prev); next.has(key) ? next.delete(key) : next.add(key); return next; });
 
-  const getSectionItemIds = (key: string): string[] => {
-    const draggableKeys = ["education", "work", "competitions", "judging", "media", "organizing"];
-    if (draggableKeys.includes(key) || sections.find(s => s.isCustom && s.key === key)) return getRecordsForSection(key).map(r => r.id);
-    return [];
-  };
-
-  const sectionIds = useMemo(() => sections.map(s => s.key), [sections]);
+  // ── Loading State ──
+  if (isLoading) return <CareerTimelineSkeleton />;
 
   // ── Render ──
   return (
@@ -422,7 +222,7 @@ export function UserCareerTimeline({ userId, isAr }: Props) {
 
         {/* Add Section Dialog */}
         {addingSectionDialog && (
-          <div className="rounded-xl border bg-card/50 p-4 space-y-3">
+          <div className="rounded-xl border bg-card/50 p-4 space-y-3 animate-in fade-in-0 slide-in-from-top-2 duration-200">
             <div className="flex items-center justify-between pb-2 border-b border-border/30">
               <h4 className="text-sm font-semibold flex items-center gap-2"><FolderPlus className="h-4 w-4" />{isAr ? "إنشاء قسم جديد" : "Create New Section"}</h4>
               <Button size="icon" variant="ghost" className="h-6 w-6" onClick={() => setAddingSectionDialog(false)}><X className="h-3.5 w-3.5" /></Button>
@@ -517,9 +317,9 @@ export function UserCareerTimeline({ userId, isAr }: Props) {
                     </div>
                   </div>
 
-                  {/* Section Content — delegated to SectionContent */}
+                  {/* Section Content */}
                   {isExpanded && (
-                    <div className="border-t px-5 py-4 space-y-2.5">
+                    <div className="border-t px-5 py-4 space-y-2.5 animate-in fade-in-0 slide-in-from-top-1 duration-200">
                       <SectionContent
                         section={section} isAr={isAr} isAddingHere={isAddingHere} itemIds={itemIds}
                         sectionRecords={getRecordsForSection(section.key)}
@@ -533,7 +333,6 @@ export function UserCareerTimeline({ userId, isAr }: Props) {
                         onCloseForm={closeForm}
                         getMoveSections={getMoveSections}
                         onMoveRecord={(id, target) => moveRecordToSection.mutate({ id, targetSection: target })}
-                        // Memberships
                         memberships={memberships}
                         membershipForm={membershipForm}
                         editingMembershipId={editingMembershipId}
@@ -543,7 +342,6 @@ export function UserCareerTimeline({ userId, isAr }: Props) {
                         onStartAddMembership={startAddMembership}
                         onStartEditMembership={startEditMembership}
                         onDeleteMembership={(id) => deleteMembershipMutation.mutate(id)}
-                        // Competitions
                         competitions={competitions}
                         availableCompetitions={availableCompetitions}
                         selectedCompetitionId={selectedCompetitionId}
@@ -553,8 +351,7 @@ export function UserCareerTimeline({ userId, isAr }: Props) {
                         addManualCompetitionPending={addManualCompetitionMutation.isPending}
                         onSaveManualCompetition={() => addManualCompetitionMutation.mutate()}
                         competitionCareerRecords={competitionCareerRecords}
-                        onDeleteCompetitionReg={(id) => { supabase.from("competition_registrations").delete().eq("id", id).then(() => { queryClient.invalidateQueries({ queryKey: ["user-competition-history", userId] }); toast({ title: isAr ? "تم الحذف" : "Deleted" }); }); }}
-                        // Awards
+                        onDeleteCompetitionReg={(id) => deleteCareerMutation.mutate(id)}
                         certificates={certificates}
                         awardForm={awardForm}
                         editingAwardId={editingAwardId}
