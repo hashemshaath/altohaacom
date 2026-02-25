@@ -31,7 +31,7 @@ import {
   Phone, MessageCircle, Music, ShoppingBag, CalendarDays, Video, Briefcase,
   Sparkles, TrendingUp, Loader2, GripVertical, Image, FileText,
   AlignLeft, AlignCenter, AlignRight, LayoutGrid, LayoutList, ArrowLeftRight, Clock, Calendar,
-  FileDown, FileUp, Search
+  FileDown, FileUp, Search, UserPlus
 } from "lucide-react";
 import { buildSocialLinksPath, buildSocialLinksUrl } from "@/lib/publicAppUrl";
 import { AreaChart, Area, XAxis, YAxis, Tooltip as RechartsTooltip, ResponsiveContainer } from "recharts";
@@ -556,6 +556,7 @@ export default function SocialLinksEditor() {
     { key: "show_awards" as const, label: isAr ? "الجوائز" : "Awards", icon: Sparkles },
     { key: "show_membership" as const, label: isAr ? "العضوية" : "Membership", icon: Settings2 },
     { key: "show_full_profile_btn" as const, label: isAr ? "زر البروفايل الكامل" : "Full Profile Button", icon: Eye },
+    { key: "show_vcard_btn" as const, label: isAr ? "زر حفظ جهة الاتصال" : "Save Contact (vCard)", icon: UserPlus },
   ], [isAr]);
 
   const isLoading = pageLoading || profileLoading;
