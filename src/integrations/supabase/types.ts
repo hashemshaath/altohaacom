@@ -17549,6 +17549,54 @@ export type Database = {
         }
         Relationships: []
       }
+      social_link_clicks: {
+        Row: {
+          browser: string | null
+          country: string | null
+          created_at: string
+          device_type: string | null
+          id: string
+          link_id: string
+          page_id: string
+          referrer: string | null
+        }
+        Insert: {
+          browser?: string | null
+          country?: string | null
+          created_at?: string
+          device_type?: string | null
+          id?: string
+          link_id: string
+          page_id: string
+          referrer?: string | null
+        }
+        Update: {
+          browser?: string | null
+          country?: string | null
+          created_at?: string
+          device_type?: string | null
+          id?: string
+          link_id?: string
+          page_id?: string
+          referrer?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "social_link_clicks_link_id_fkey"
+            columns: ["link_id"]
+            isOneToOne: false
+            referencedRelation: "social_link_items"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "social_link_clicks_page_id_fkey"
+            columns: ["page_id"]
+            isOneToOne: false
+            referencedRelation: "social_link_pages"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       social_link_items: {
         Row: {
           click_count: number | null

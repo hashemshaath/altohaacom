@@ -34,7 +34,7 @@ import {
   FileDown, FileUp, Search, UserPlus
 } from "lucide-react";
 import { buildSocialLinksPath, buildSocialLinksUrl } from "@/lib/publicAppUrl";
-import { AreaChart, Area, XAxis, YAxis, Tooltip as RechartsTooltip, ResponsiveContainer } from "recharts";
+import { AreaChart, Area, BarChart, Bar, XAxis, YAxis, Tooltip as RechartsTooltip, ResponsiveContainer, Cell } from "recharts";
 
 // ── Constants ──
 
@@ -210,6 +210,63 @@ export default function SocialLinksEditor() {
         dailyVisits.push({ date: key.slice(5), visits: dailyMap[key] || 0 });
       }
       return { countries, devices, browsers, referrers, total: visits.length, recent7d, dailyVisits };
+    },
+    enabled: !!page?.id,
+    staleTime: 5 * 60_000,
+  });
+
+  // Advanced click analytics (per-link, hourly heatmap, daily clicks)
+  const { data: clickAnalytics } = useQuery({
+    queryKey: ["social-link-clicks-analytics", page?.id],
+    queryFn: async () => {
+      const { data: clicks } = await supabase
+        .from("social_link_clicks" as any)
+        .select("link_id, device_type, browser, created_at")
+        .eq("page_id", page!.id)
+        .order("created_at", { ascending: false })
+        .limit(2000);
+      if (!clicks || !Array.isArray(clicks) || clicks.length === 0) return null;
+
+      // Hourly heatmap (24h x 7 days)
+      const heatmap: number[][] = Array.from({ length: 7 }, () => Array(24).fill(0));
+      const dailyClickMap: Record<string, number> = {};
+      const linkDaily: Record<string, Record<string, number>> = {};
+
+      for (const c of clicks as any[]) {
+        const d = new Date(c.created_at);
+        const dow = d.getDay(); // 0=Sun
+        const hour = d.getHours();
+        heatmap[dow][hour]++;
+        const dayKey = c.created_at.slice(0, 10);
+        dailyClickMap[dayKey] = (dailyClickMap[dayKey] || 0) + 1;
+        if (c.link_id) {
+          if (!linkDaily[c.link_id]) linkDaily[c.link_id] = {};
+          linkDaily[c.link_id][dayKey] = (linkDaily[c.link_id][dayKey] || 0) + 1;
+        }
+      }
+
+      // Best hour & day
+      let bestHour = 0, bestDay = 0, maxVal = 0;
+      for (let d = 0; d < 7; d++) {
+        for (let h = 0; h < 24; h++) {
+          if (heatmap[d][h] > maxVal) { maxVal = heatmap[d][h]; bestHour = h; bestDay = d; }
+        }
+      }
+
+      // Daily clicks for chart (14 days)
+      const now = Date.now();
+      const dailyClicks: { date: string; clicks: number }[] = [];
+      for (let i = 13; i >= 0; i--) {
+        const dt = new Date(now - i * 86400000);
+        const key = dt.toISOString().slice(0, 10);
+        dailyClicks.push({ date: key.slice(5), clicks: dailyClickMap[key] || 0 });
+      }
+
+      // Hourly aggregate for bar chart
+      const hourlyAgg = Array(24).fill(0);
+      for (let d = 0; d < 7; d++) for (let h = 0; h < 24; h++) hourlyAgg[h] += heatmap[d][h];
+
+      return { heatmap, bestHour, bestDay, dailyClicks, hourlyAgg, total: clicks.length, linkDaily };
     },
     enabled: !!page?.id,
     staleTime: 5 * 60_000,
@@ -2241,7 +2298,154 @@ export default function SocialLinksEditor() {
                       </Card>
                     )}
 
-                    {/* Visitor Analytics */}
+                    {/* Best Times to Post / Click Activity */}
+                    {clickAnalytics && clickAnalytics.total > 0 && (
+                      <Card className="overflow-hidden">
+                        <CardHeader className="pb-3 bg-gradient-to-r from-muted/40 to-transparent">
+                          <CardTitle className="text-sm flex items-center gap-2">
+                            <div className="h-7 w-7 rounded-lg bg-chart-2/10 flex items-center justify-center">
+                              <Clock className="h-3.5 w-3.5 text-chart-2" />
+                            </div>
+                            {isAr ? "أفضل أوقات النقر" : "Best Click Times"}
+                            <Badge variant="secondary" className="text-[9px] ms-auto">{clickAnalytics.total} {isAr ? "نقرة" : "clicks"}</Badge>
+                          </CardTitle>
+                          <p className="text-[11px] text-muted-foreground">
+                            {isAr
+                              ? `أفضل وقت: ${["الأحد","الاثنين","الثلاثاء","الأربعاء","الخميس","الجمعة","السبت"][clickAnalytics.bestDay]} الساعة ${clickAnalytics.bestHour}:00`
+                              : `Peak: ${["Sun","Mon","Tue","Wed","Thu","Fri","Sat"][clickAnalytics.bestDay]} at ${clickAnalytics.bestHour}:00`}
+                          </p>
+                        </CardHeader>
+                        <CardContent className="pt-3 space-y-4">
+                          {/* Hourly Bar Chart */}
+                          <div>
+                            <p className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground mb-2">{isAr ? "النقرات حسب الساعة" : "Clicks by Hour"}</p>
+                            <div className="h-32 w-full">
+                              <ResponsiveContainer width="100%" height="100%">
+                                <BarChart data={clickAnalytics.hourlyAgg.map((v: number, h: number) => ({ hour: `${h}`, clicks: v }))} margin={{ top: 5, right: 5, left: -20, bottom: 0 }}>
+                                  <XAxis dataKey="hour" tick={{ fontSize: 8 }} axisLine={false} tickLine={false} interval={2} />
+                                  <YAxis tick={{ fontSize: 8 }} axisLine={false} tickLine={false} allowDecimals={false} />
+                                  <RechartsTooltip />
+                                  <Bar dataKey="clicks" radius={[3, 3, 0, 0]}>
+                                    {clickAnalytics.hourlyAgg.map((_: number, i: number) => (
+                                      <Cell key={i} fill={i === clickAnalytics.bestHour ? "hsl(var(--chart-2))" : "hsl(var(--primary) / 0.4)"} />
+                                    ))}
+                                  </Bar>
+                                </BarChart>
+                              </ResponsiveContainer>
+                            </div>
+                          </div>
+
+                          {/* Weekly Heatmap Grid */}
+                          <div>
+                            <p className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground mb-2">{isAr ? "خريطة الحرارة الأسبوعية" : "Weekly Heatmap"}</p>
+                            <div className="overflow-x-auto">
+                              <div className="grid grid-cols-[auto_repeat(24,1fr)] gap-[2px] min-w-[400px]">
+                                {/* Header row */}
+                                <div className="text-[7px] text-muted-foreground" />
+                                {Array.from({ length: 24 }, (_, h) => (
+                                  <div key={h} className="text-[7px] text-center text-muted-foreground">{h % 4 === 0 ? h : ""}</div>
+                                ))}
+                                {/* Day rows */}
+                                {(isAr ? ["أحد","إثن","ثلا","أرب","خمي","جمع","سبت"] : ["Sun","Mon","Tue","Wed","Thu","Fri","Sat"]).map((day, d) => (
+                                  <>
+                                    <div key={`l-${d}`} className="text-[8px] text-muted-foreground pe-1 flex items-center">{day}</div>
+                                    {clickAnalytics.heatmap[d].map((val: number, h: number) => {
+                                      const maxH = Math.max(...clickAnalytics.heatmap.flat(), 1);
+                                      const intensity = val / maxH;
+                                      return (
+                                        <div
+                                          key={`${d}-${h}`}
+                                          className="aspect-square rounded-[2px] transition-colors"
+                                          style={{ backgroundColor: intensity > 0 ? `hsl(var(--chart-2) / ${0.15 + intensity * 0.85})` : "hsl(var(--muted) / 0.3)" }}
+                                          title={`${day} ${h}:00 — ${val} ${isAr ? "نقرة" : "clicks"}`}
+                                        />
+                                      );
+                                    })}
+                                  </>
+                                ))}
+                              </div>
+                            </div>
+                          </div>
+
+                          {/* Daily Clicks Chart */}
+                          <div>
+                            <p className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground mb-2">{isAr ? "النقرات اليومية (14 يوم)" : "Daily Clicks (14 days)"}</p>
+                            <div className="h-32 w-full">
+                              <ResponsiveContainer width="100%" height="100%">
+                                <AreaChart data={clickAnalytics.dailyClicks} margin={{ top: 5, right: 5, left: -20, bottom: 0 }}>
+                                  <defs>
+                                    <linearGradient id="clickGrad" x1="0" y1="0" x2="0" y2="1">
+                                      <stop offset="5%" stopColor="hsl(var(--chart-2))" stopOpacity={0.3} />
+                                      <stop offset="95%" stopColor="hsl(var(--chart-2))" stopOpacity={0} />
+                                    </linearGradient>
+                                  </defs>
+                                  <XAxis dataKey="date" tick={{ fontSize: 9 }} axisLine={false} tickLine={false} />
+                                  <YAxis tick={{ fontSize: 9 }} axisLine={false} tickLine={false} allowDecimals={false} />
+                                  <RechartsTooltip />
+                                  <Area type="monotone" dataKey="clicks" stroke="hsl(var(--chart-2))" fill="url(#clickGrad)" strokeWidth={2} />
+                                </AreaChart>
+                              </ResponsiveContainer>
+                            </div>
+                          </div>
+                        </CardContent>
+                      </Card>
+                    )}
+
+                    {/* Link Performance Comparison */}
+                    {clickAnalytics && clickAnalytics.total > 0 && items.length > 1 && (
+                      <Card className="overflow-hidden">
+                        <CardHeader className="pb-3 bg-gradient-to-r from-muted/40 to-transparent">
+                          <CardTitle className="text-sm flex items-center gap-2">
+                            <div className="h-7 w-7 rounded-lg bg-chart-4/10 flex items-center justify-center">
+                              <TrendingUp className="h-3.5 w-3.5 text-chart-4" />
+                            </div>
+                            {isAr ? "مقارنة أداء الروابط" : "Link Performance Comparison"}
+                          </CardTitle>
+                          <p className="text-[11px] text-muted-foreground">{isAr ? "النقرات اليومية لكل رابط" : "Daily clicks per link"}</p>
+                        </CardHeader>
+                        <CardContent className="pt-3">
+                          <div className="space-y-3">
+                            {items
+                              .slice()
+                              .sort((a, b) => (b.click_count || 0) - (a.click_count || 0))
+                              .slice(0, 5)
+                              .map((item, idx) => {
+                                const linkDays = clickAnalytics.linkDaily?.[item.id] || {};
+                                const now = Date.now();
+                                const sparkData = Array.from({ length: 7 }, (_, i) => {
+                                  const key = new Date(now - (6 - i) * 86400000).toISOString().slice(0, 10);
+                                  return linkDays[key] || 0;
+                                });
+                                const max = Math.max(...sparkData, 1);
+                                const chartColors = ["hsl(var(--chart-1))", "hsl(var(--chart-2))", "hsl(var(--chart-3))", "hsl(var(--chart-4))", "hsl(var(--chart-5))"];
+                                return (
+                                  <div key={item.id} className="flex items-center gap-3">
+                                    <span className="text-xs w-5 shrink-0">{item.icon || "🔗"}</span>
+                                    <div className="flex-1 min-w-0">
+                                      <p className="text-[11px] font-medium truncate">{item.title}</p>
+                                    </div>
+                                    {/* Mini sparkline */}
+                                    <div className="flex items-end gap-[2px] h-4 shrink-0">
+                                      {sparkData.map((v, i) => (
+                                        <div
+                                          key={i}
+                                          className="w-1.5 rounded-t-sm transition-all"
+                                          style={{
+                                            height: `${Math.max((v / max) * 100, 8)}%`,
+                                            backgroundColor: chartColors[idx % chartColors.length],
+                                            opacity: 0.4 + (v / max) * 0.6,
+                                          }}
+                                        />
+                                      ))}
+                                    </div>
+                                    <span className="text-[10px] font-bold tabular-nums w-8 text-end">{item.click_count || 0}</span>
+                                  </div>
+                                );
+                              })}
+                          </div>
+                        </CardContent>
+                      </Card>
+                    )}
                     {visitorStats && visitorStats.total > 0 && (
                       <Card className="overflow-hidden">
                         <CardHeader className="pb-3 bg-gradient-to-r from-muted/40 to-transparent">
