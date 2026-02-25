@@ -898,29 +898,31 @@ export function CVPreview({ data: initialData, targetUserId, isAr, onBack, onSav
             </TableBody>
           </Table>
           {/* Tasks & Achievements - collapsible per job */}
-          {data.work_experience!.some(w => (w.tasks?.length || 0) > 0 || (w.achievements?.length || 0) > 0) && (
+          {data.work_experience!.some(w => (w.tasks?.length || 0) > 0 || (w.achievements?.length || 0) > 0 || (w.tasks_ar?.length || 0) > 0 || (w.achievements_ar?.length || 0) > 0) && (
             <div className="border-t border-border/20 p-3 space-y-1">
               <p className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider mb-2">{isAr ? "التفاصيل والإنجازات" : "Details & Achievements"}</p>
               {data.work_experience!.map((work, i) => {
-                if (!(work.tasks?.length || work.achievements?.length)) return null;
+                const tasksToShow = isAr ? (work.tasks_ar || []) : (work.tasks || []);
+                const achievementsToShow = isAr ? (work.achievements_ar || []) : (work.achievements || []);
+                if (!(tasksToShow.length || achievementsToShow.length)) return null;
                 return (
                   <details key={i} className={`rounded-lg ${rowBg(i)} border border-border/10`}>
                     <summary className="cursor-pointer p-2.5 text-[11px] font-semibold text-foreground select-none hover:bg-accent/20 rounded-lg transition-colors">
                       {isAr ? (work.title_ar || work.title) : work.title} — {isAr ? (work.company_ar || work.company) : work.company}
                     </summary>
                     <div className="px-2.5 pb-2.5">
-                      {work.tasks && work.tasks.length > 0 && (
+                      {tasksToShow.length > 0 && (
                         <div className="mt-1.5 space-y-0.5">
                           <p className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider">{isAr ? "المهام الرئيسية" : "Key Responsibilities"}</p>
-                          {work.tasks.map((t, j) => (
+                          {tasksToShow.map((t, j) => (
                             <p key={j} className="text-[11px] text-foreground/80 ps-3 relative before:content-['•'] before:absolute before:start-0 before:text-primary">{t}</p>
                           ))}
                         </div>
                       )}
-                      {work.achievements && work.achievements.length > 0 && (
+                      {achievementsToShow.length > 0 && (
                         <div className="mt-1.5 space-y-0.5">
                           <p className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider">{isAr ? "الإنجازات البارزة" : "Notable Achievements"}</p>
-                          {work.achievements.map((a, j) => (
+                          {achievementsToShow.map((a, j) => (
                             <p key={j} className="text-[11px] text-foreground/80 ps-3 relative before:content-['★'] before:absolute before:start-0 before:text-chart-4">{a}</p>
                           ))}
                         </div>

@@ -45,8 +45,37 @@ type Profile = Database["public"]["Tables"]["profiles"]["Row"];
 type AppRole = Database["public"]["Enums"]["app_role"];
 
 const formatDate = (date: string | null, isAr: boolean) => {
-  if (!date) return isAr ? "الحالي" : "Present";
+  if (!date) return "";
   return toEnglishDigits(new Date(date).toLocaleDateString(isAr ? "ar-SA" : "en-US", { year: "numeric", month: "short" }));
+};
+
+const containsArabic = (text?: string | null) => !!text && /[\u0600-\u06FF]/.test(text);
+const containsLatin = (text?: string | null) => !!text && /[A-Za-z]/.test(text);
+
+const pickLocalizedText = (isAr: boolean, arText?: string | null, enText?: string | null) => {
+  const ar = (arText || "").trim();
+  const en = (enText || "").trim();
+
+  if (isAr) {
+    if (ar) return ar;
+    if (en && containsArabic(en) && !containsLatin(en)) return en;
+    return "";
+  }
+
+  if (en) return en;
+  if (ar && containsLatin(ar) && !containsArabic(ar)) return ar;
+  return "";
+};
+
+const formatPeriodRange = (startDate: string | null, endDate: string | null, isCurrent: boolean, isAr: boolean) => {
+  const start = formatDate(startDate, isAr);
+  const end = formatDate(endDate, isAr);
+
+  if (isCurrent) return `${start || (isAr ? "غير محدد" : "Unknown")} – ${isAr ? "الحالي" : "Present"}`;
+  if (start && end) return `${start} – ${end}`;
+  if (start) return start;
+  if (end) return end;
+  return isAr ? "غير محدد" : "Not specified";
 };
 
 function SectionTitle({ icon: Icon, label }: { icon: any; label: string }) {
@@ -239,8 +268,8 @@ export default function PublicProfile() {
   const displayName = isAr
     ? (profile.display_name_ar || profile.full_name_ar || profile.display_name || profile.full_name || "طاهٍ")
     : (profile.display_name || profile.full_name || profile.display_name_ar || profile.full_name_ar || "Chef");
-  const bio = isAr ? (profile.bio_ar || profile.bio) : (profile.bio || profile.bio_ar);
-  const specialization = isAr ? (profile.specialization_ar || profile.specialization) : (profile.specialization || profile.specialization_ar);
+  const bio = pickLocalizedText(isAr, profile.bio_ar, profile.bio);
+  const specialization = pickLocalizedText(isAr, profile.specialization_ar, profile.specialization);
 
   const socialLinks = [
     { key: "instagram", value: profile.instagram, label: "Instagram" },
@@ -348,24 +377,24 @@ export default function PublicProfile() {
                               </div>
                               <div className="flex-1 min-w-0">
                                 <div className="flex items-center gap-2 flex-wrap">
-                                  <h4 className="font-semibold text-sm">{isAr ? (record.title_ar || record.title) : record.title}</h4>
+                                  <h4 className="font-semibold text-sm">{pickLocalizedText(isAr, record.title_ar, record.title) || "—"}</h4>
                                   {record.is_current && <Badge className="bg-chart-3/10 text-chart-3 text-[10px] h-5">{isAr ? "حالي" : "Current"}</Badge>}
                                 </div>
                                 {(record.entity_name || record.entity_name_ar) && (
                                   record.entity_id ? (
                                     <Link to={`/entities/${record.entity_id}`} className="text-xs text-primary font-medium hover:underline flex items-center gap-1 mt-0.5">
-                                      {isAr ? (record.entity_name_ar || record.entity_name) : (record.entity_name || record.entity_name_ar)}<ExternalLink className="h-2.5 w-2.5" />
+                                      {pickLocalizedText(isAr, record.entity_name_ar, record.entity_name)}<ExternalLink className="h-2.5 w-2.5" />
                                     </Link>
-                                  ) : <p className="text-xs text-muted-foreground mt-0.5">{isAr ? (record.entity_name_ar || record.entity_name) : (record.entity_name || record.entity_name_ar)}</p>
+                                  ) : <p className="text-xs text-muted-foreground mt-0.5">{pickLocalizedText(isAr, record.entity_name_ar, record.entity_name)}</p>
                                 )}
                                 <div className="flex flex-wrap gap-2 mt-1 text-[11px] text-muted-foreground">
-                                  <span className="flex items-center gap-1"><Calendar className="h-2.5 w-2.5" />{formatDate(record.start_date, isAr)} – {formatDate(record.end_date, isAr)}</span>
+                                  <span className="flex items-center gap-1"><Calendar className="h-2.5 w-2.5" />{formatPeriodRange(record.start_date, record.end_date, !!record.is_current, isAr)}</span>
                                   {record.employment_type && <Badge variant="outline" className="text-[9px] h-4">{record.employment_type}</Badge>}
                                   {record.location && <span className="flex items-center gap-1"><MapPin className="h-2.5 w-2.5" />{record.location}</span>}
                                 </div>
-                                {((isAr && record.description_ar) || (!isAr && record.description)) && (
+                                {pickLocalizedText(isAr, record.description_ar, record.description) && (
                                   <p className="mt-1.5 text-[11px] text-muted-foreground leading-relaxed" dir={isAr ? "rtl" : "ltr"}>
-                                    {isAr ? record.description_ar : record.description}
+                                    {pickLocalizedText(isAr, record.description_ar, record.description)}
                                   </p>
                                 )}
                               </div>
@@ -401,18 +430,18 @@ export default function PublicProfile() {
                                 <GraduationCap className="h-4 w-4 text-chart-2 group-hover/card:text-chart-2" />
                               </div>
                               <div className="flex-1 min-w-0">
-                                <h4 className="font-semibold text-sm">{isAr ? (record.title_ar || record.title) : record.title}</h4>
+                                <h4 className="font-semibold text-sm">{pickLocalizedText(isAr, record.title_ar, record.title) || "—"}</h4>
                                 {(record.entity_name || record.entity_name_ar) && (
                                   record.entity_id ? (
                                     <Link to={`/entities/${record.entity_id}`} className="text-xs text-primary font-medium hover:underline flex items-center gap-1 mt-0.5">
-                                      {isAr ? (record.entity_name_ar || record.entity_name) : (record.entity_name || record.entity_name_ar)}<ExternalLink className="h-2.5 w-2.5" />
+                                      {pickLocalizedText(isAr, record.entity_name_ar, record.entity_name)}<ExternalLink className="h-2.5 w-2.5" />
                                     </Link>
-                                  ) : <p className="text-xs text-muted-foreground mt-0.5">{isAr ? (record.entity_name_ar || record.entity_name) : (record.entity_name || record.entity_name_ar)}</p>
+                                  ) : <p className="text-xs text-muted-foreground mt-0.5">{pickLocalizedText(isAr, record.entity_name_ar, record.entity_name)}</p>
                                 )}
                                 <div className="flex flex-wrap gap-2 mt-1 text-[11px] text-muted-foreground">
-                                  <span className="flex items-center gap-1"><Calendar className="h-2.5 w-2.5" />{formatDate(record.start_date, isAr)} – {formatDate(record.end_date, isAr)}</span>
+                                  <span className="flex items-center gap-1"><Calendar className="h-2.5 w-2.5" />{formatPeriodRange(record.start_date, record.end_date, !!record.is_current, isAr)}</span>
                                   {record.education_level && <Badge variant="outline" className="text-[9px] h-4">{record.education_level}</Badge>}
-                                  {record.field_of_study && <span>{isAr ? (record.field_of_study_ar || record.field_of_study) : record.field_of_study}</span>}
+                                  {pickLocalizedText(isAr, record.field_of_study_ar, record.field_of_study) && <span>{pickLocalizedText(isAr, record.field_of_study_ar, record.field_of_study)}</span>}
                                 </div>
                               </div>
                             </div>
