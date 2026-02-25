@@ -93,6 +93,21 @@ const COMPETITION_ROLES_MAP: Record<string, { en: string; ar: string }> = {
   speaker: { en: "Speaker", ar: "متحدث" },
 };
 
+const MEMBERSHIP_TYPE_MAP: Record<string, { en: string; ar: string }> = {
+  member: { en: "Member", ar: "عضو" },
+  associate: { en: "Associate", ar: "منتسب" },
+  honorary: { en: "Honorary", ar: "شرفي" },
+  student: { en: "Student", ar: "طالب" },
+  professional: { en: "Professional", ar: "محترف" },
+};
+
+const CERT_TYPE_MAP: Record<string, { en: string; ar: string; emoji: string }> = {
+  participation: { en: "Participation", ar: "مشاركة", emoji: "📋" },
+  achievement: { en: "Achievement", ar: "إنجاز", emoji: "⭐" },
+  winner: { en: "Winner", ar: "فائز", emoji: "🏆" },
+  judge: { en: "Judging", ar: "تحكيم", emoji: "⚖️" },
+};
+
 function RecordCard({ record, isAr, theme, icon: Icon, iconBg, sectionType }: {
   record: any; isAr: boolean; theme: any; icon: any; iconBg: string; sectionType: string;
 }) {
@@ -103,7 +118,6 @@ function RecordCard({ record, isAr, theme, icon: Icon, iconBg, sectionType }: {
   const end = record.is_current ? (isAr ? "الحالي" : "Present") : fmtDate(record.end_date, isAr);
   const flag = record.country_code ? countryFlag(record.country_code) : "";
 
-  // Section-specific badges
   const badges: { label: string; bg: string }[] = [];
 
   if (sectionType === "judging" && record.employment_type) {
@@ -125,8 +139,8 @@ function RecordCard({ record, isAr, theme, icon: Icon, iconBg, sectionType }: {
     badges.push({ label: isAr ? "حالي" : "Current", bg: `${theme.accent}20` });
   }
 
-  // Media-specific: host
   const host = sectionType === "media" && record.department ? record.department : null;
+  const guest = sectionType === "media" && record.field_of_study ? record.field_of_study : null;
 
   return (
     <div className="flex gap-3 px-3.5 py-3 rounded-xl transition-all duration-200" style={{ background: theme.card, border: `1px solid ${theme.border}` }}>
@@ -156,6 +170,11 @@ function RecordCard({ record, isAr, theme, icon: Icon, iconBg, sectionType }: {
               🎤 {host}
             </span>
           )}
+          {guest && (
+            <span className="text-[10px]" style={{ color: `${theme.textMuted}cc` }}>
+              👤 {guest}
+            </span>
+          )}
           {badges.map((b, i) => (
             <span key={i} className="text-[8px] font-semibold px-1.5 py-0.5 rounded-full" style={{ background: b.bg, color: theme.accent }}>
               {b.label}
@@ -167,6 +186,74 @@ function RecordCard({ record, isAr, theme, icon: Icon, iconBg, sectionType }: {
             {desc}
           </p>
         )}
+      </div>
+    </div>
+  );
+}
+
+function MembershipCard({ membership, isAr, theme, iconBg }: { membership: any; isAr: boolean; theme: any; iconBg: string }) {
+  const entity = membership.culinary_entities;
+  const name = isAr ? (entity?.name_ar || entity?.name) : entity?.name;
+  const title = isAr ? (membership.title_ar || membership.title) : membership.title;
+  const typeLabel = membership.membership_type && MEMBERSHIP_TYPE_MAP[membership.membership_type];
+  const date = fmtDate(membership.enrollment_date || membership.created_at, isAr);
+  const cityCountry = membership.notes ? membership.notes.split("|").filter(Boolean).join(", ") : "";
+
+  return (
+    <div className="flex gap-3 px-3.5 py-3 rounded-xl transition-all duration-200" style={{ background: theme.card, border: `1px solid ${theme.border}` }}>
+      {entity?.logo_url ? (
+        <img src={entity.logo_url} className="h-8 w-8 rounded-lg object-cover shrink-0" alt="" />
+      ) : (
+        <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg" style={{ background: iconBg }}>
+          <Users className="h-3.5 w-3.5" style={{ color: theme.accent }} />
+        </div>
+      )}
+      <div className="flex-1 min-w-0">
+        <p className="text-xs font-semibold truncate" style={{ color: theme.text }}>{name || "—"}</p>
+        {title && <p className="text-[10px] mt-0.5 truncate" style={{ color: theme.textMuted }}>{title}</p>}
+        <div className="flex items-center gap-1.5 mt-1 flex-wrap">
+          {date && <Calendar className="h-2.5 w-2.5" style={{ color: theme.textMuted }} />}
+          {date && <span className="text-[10px]" style={{ color: `${theme.textMuted}99` }}>{date}</span>}
+          {cityCountry && <span className="text-[10px]" style={{ color: `${theme.textMuted}99` }}>{cityCountry}</span>}
+          {typeLabel && (
+            <span className="text-[8px] font-semibold px-1.5 py-0.5 rounded-full" style={{ background: `${theme.accent}15`, color: theme.accent }}>
+              {isAr ? typeLabel.ar : typeLabel.en}
+            </span>
+          )}
+          {membership.status === "active" && (
+            <span className="text-[8px] font-semibold px-1.5 py-0.5 rounded-full" style={{ background: `${theme.accent}20`, color: theme.accent }}>
+              {isAr ? "نشط" : "Active"}
+            </span>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function AwardCard({ cert, isAr, theme, iconBg }: { cert: any; isAr: boolean; theme: any; iconBg: string }) {
+  const eventName = pick(isAr, cert.event_name_ar, cert.event_name);
+  const achievement = pick(isAr, cert.achievement_ar, cert.achievement);
+  const date = fmtDate(cert.event_date || cert.issued_at, isAr);
+  const typeInfo = cert.type && CERT_TYPE_MAP[cert.type];
+
+  return (
+    <div className="flex gap-3 px-3.5 py-3 rounded-xl transition-all duration-200" style={{ background: theme.card, border: `1px solid ${theme.border}` }}>
+      <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg" style={{ background: iconBg }}>
+        <Medal className="h-3.5 w-3.5" style={{ color: theme.accent }} />
+      </div>
+      <div className="flex-1 min-w-0">
+        <p className="text-xs font-semibold truncate" style={{ color: theme.text }}>{eventName || "—"}</p>
+        {achievement && <p className="text-[10px] mt-0.5 truncate" style={{ color: theme.textMuted }}>{achievement}</p>}
+        <div className="flex items-center gap-1.5 mt-1 flex-wrap">
+          {date && <Calendar className="h-2.5 w-2.5" style={{ color: theme.textMuted }} />}
+          {date && <span className="text-[10px]" style={{ color: `${theme.textMuted}99` }}>{date}</span>}
+          {typeInfo && (
+            <span className="text-[8px] font-semibold px-1.5 py-0.5 rounded-full" style={{ background: `${theme.accent}15`, color: theme.accent }}>
+              {typeInfo.emoji} {isAr ? typeInfo.ar : typeInfo.en}
+            </span>
+          )}
+        </div>
       </div>
     </div>
   );
@@ -186,15 +273,40 @@ export function BioCareerSections({ userId, theme, isRtl, animated }: Props) {
     staleTime: 60_000,
   });
 
+  const { data: memberships = [] } = useQuery({
+    queryKey: ["bio-memberships", userId],
+    queryFn: async () => {
+      const { data } = await supabase.from("entity_memberships")
+        .select("*, culinary_entities(name, name_ar, logo_url, type)")
+        .eq("user_id", userId).eq("status", "active")
+        .order("created_at", { ascending: false });
+      return data || [];
+    },
+    enabled: !!userId,
+    staleTime: 60_000,
+  });
+
+  const { data: certificates = [] } = useQuery({
+    queryKey: ["bio-certificates", userId],
+    queryFn: async () => {
+      const { data } = await supabase.from("certificates")
+        .select("id, event_name, event_name_ar, achievement, achievement_ar, type, event_date, issued_at")
+        .eq("recipient_id", userId).eq("status", "issued").eq("visibility", "public")
+        .order("issued_at", { ascending: false });
+      return data || [];
+    },
+    enabled: !!userId,
+    staleTime: 60_000,
+  });
+
   const workRecords = records.filter((r: any) => r.record_type === "work");
   const eduRecords = records.filter((r: any) => r.record_type === "education");
   const judgingRecords = records.filter((r: any) => r.record_type === "judging");
   const competitionRecords = records.filter((r: any) => r.record_type === "competitions");
   const mediaRecords = records.filter((r: any) => r.record_type === "media");
   const organizingRecords = records.filter((r: any) => r.record_type === "organizing");
-  const certRecords = records.filter((r: any) => r.record_type === "certification");
 
-  const hasAny = workRecords.length + eduRecords.length + judgingRecords.length + competitionRecords.length + mediaRecords.length + organizingRecords.length + certRecords.length > 0;
+  const hasAny = workRecords.length + eduRecords.length + judgingRecords.length + competitionRecords.length + mediaRecords.length + organizingRecords.length + memberships.length + certificates.length > 0;
   if (!hasAny) return null;
 
   const iconBg = `${theme.accent}15`;
@@ -225,10 +337,26 @@ export function BioCareerSections({ userId, theme, isRtl, animated }: Props) {
         </div>
       </CollapsibleBioSection>
 
+      <CollapsibleBioSection icon={Users} title={isRtl ? "العضويات" : "Memberships"} count={memberships.length} theme={theme} defaultOpen={false}>
+        <div className="space-y-2">
+          {memberships.map((m: any) => (
+            <MembershipCard key={m.id} membership={m} isAr={isRtl} theme={theme} iconBg={iconBg} />
+          ))}
+        </div>
+      </CollapsibleBioSection>
+
       <CollapsibleBioSection icon={Trophy} title={isRtl ? "المسابقات المشارك فيها" : "Competitions"} count={competitionRecords.length} theme={theme} defaultOpen={false}>
         <div className="space-y-2">
           {competitionRecords.map((r: any) => (
             <RecordCard key={r.id} record={r} isAr={isRtl} theme={theme} icon={Trophy} iconBg={iconBg} sectionType="competitions" />
+          ))}
+        </div>
+      </CollapsibleBioSection>
+
+      <CollapsibleBioSection icon={Medal} title={isRtl ? "الجوائز والميداليات" : "Awards & Medals"} count={certificates.length} theme={theme} defaultOpen={false}>
+        <div className="space-y-2">
+          {certificates.map((cert: any) => (
+            <AwardCard key={cert.id} cert={cert} isAr={isRtl} theme={theme} iconBg={iconBg} />
           ))}
         </div>
       </CollapsibleBioSection>
@@ -245,14 +373,6 @@ export function BioCareerSections({ userId, theme, isRtl, animated }: Props) {
         <div className="space-y-2">
           {organizingRecords.map((r: any) => (
             <RecordCard key={r.id} record={r} isAr={isRtl} theme={theme} icon={CalendarCheck} iconBg={iconBg} sectionType="organizing" />
-          ))}
-        </div>
-      </CollapsibleBioSection>
-
-      <CollapsibleBioSection icon={Award} title={isRtl ? "الشهادات" : "Certifications"} count={certRecords.length} theme={theme} defaultOpen={false}>
-        <div className="space-y-2">
-          {certRecords.map((r: any) => (
-            <RecordCard key={r.id} record={r} isAr={isRtl} theme={theme} icon={Award} iconBg={iconBg} sectionType="certification" />
           ))}
         </div>
       </CollapsibleBioSection>
