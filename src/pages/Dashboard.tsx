@@ -18,6 +18,7 @@ import { ChefScheduleWidget } from "@/components/dashboard/ChefScheduleWidget";
 import { ContentStatsWidget } from "@/components/dashboard/ContentStatsWidget";
 import { ProfileInsightsWidget } from "@/components/dashboard/ProfileInsightsWidget";
 import { NotificationActivityWidget } from "@/components/dashboard/NotificationActivityWidget";
+import { EngagementAnalyticsWidget } from "@/components/dashboard/EngagementAnalyticsWidget";
 import { useAuth } from "@/contexts/AuthContext";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -178,6 +179,7 @@ export default function Dashboard() {
           </div>
           <div className="space-y-6">
             {user && <ProfileInsightsWidget />}
+            {user && <EngagementAnalyticsWidget />}
             {user && <NotificationActivityWidget />}
             {user && <ContentStatsWidget />}
             {user && <ReferralWidget />}
