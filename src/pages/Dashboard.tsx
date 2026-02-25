@@ -12,6 +12,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { SEOHead } from "@/components/SEOHead";
 import { useAwardPoints } from "@/hooks/useAwardPoints";
 import { DashboardWidgetSkeleton } from "@/components/dashboard/DashboardWidgetSkeleton";
+import { DashboardLayoutControl, useDashboardLayout } from "@/components/dashboard/DashboardLayoutControl";
 
 // Lazy-loaded widgets
 const UpcomingCompetitionsWidget = lazy(() => import("@/components/dashboard/UpcomingCompetitionsWidget").then(m => ({ default: m.UpcomingCompetitionsWidget })));
@@ -27,8 +28,11 @@ const ContentStatsWidget = lazy(() => import("@/components/dashboard/ContentStat
 const ProfileInsightsWidget = lazy(() => import("@/components/dashboard/ProfileInsightsWidget").then(m => ({ default: m.ProfileInsightsWidget })));
 const NotificationActivityWidget = lazy(() => import("@/components/dashboard/NotificationActivityWidget").then(m => ({ default: m.NotificationActivityWidget })));
 const EngagementAnalyticsWidget = lazy(() => import("@/components/dashboard/EngagementAnalyticsWidget").then(m => ({ default: m.EngagementAnalyticsWidget })));
+const ProgressReportWidget = lazy(() => import("@/components/dashboard/ProgressReportWidget").then(m => ({ default: m.ProgressReportWidget })));
+const NotificationPreferencesWidget = lazy(() => import("@/components/dashboard/NotificationPreferencesWidget").then(m => ({ default: m.NotificationPreferencesWidget })));
+const DashboardPersonalizationWidget = lazy(() => import("@/components/dashboard/DashboardPersonalizationWidget").then(m => ({ default: m.DashboardPersonalizationWidget })));
 
-function WidgetSuspense({ children, lines }: { children: React.ReactNode; lines?: number }) {
+function W({ children, lines }: { children: React.ReactNode; lines?: number }) {
   return <Suspense fallback={<DashboardWidgetSkeleton lines={lines} />}>{children}</Suspense>;
 }
 
@@ -36,6 +40,7 @@ export default function Dashboard() {
   const { t, language } = useLanguage();
   const { user } = useAuth();
   const isAr = language === "ar";
+  const { widgets, toggleWidget, resetLayout, isVisible } = useDashboardLayout();
 
   const { data: profile } = useQuery({
     queryKey: ["dashboard-profile", user?.id],
@@ -51,7 +56,6 @@ export default function Dashboard() {
     enabled: !!user,
   });
 
-  // Award daily login points once per session
   const awardPoints = useAwardPoints();
   const dailyLoginAwarded = useRef(false);
   useEffect(() => {
@@ -85,7 +89,7 @@ export default function Dashboard() {
       <Header />
       <main className="container flex-1 py-4 md:py-6">
         {/* Welcome Banner */}
-        <WelcomeBanner greeting={greeting} isAr={isAr} />
+        <WelcomeBanner greeting={greeting} isAr={isAr} widgets={widgets} toggleWidget={toggleWidget} resetLayout={resetLayout} />
 
         {/* Profile Completion Nudge */}
         {user && profile && !profile.profile_completed && <ProfileNudge isAr={isAr} />}
@@ -94,36 +98,35 @@ export default function Dashboard() {
         <QuickAccessGrid sections={sections} isAr={isAr} />
 
         {/* Quick Stats */}
-        {user && (
-          <div className="mb-8">
-            <WidgetSuspense lines={1}><QuickStatsWidget /></WidgetSuspense>
-          </div>
+        {user && isVisible("quick-stats") && (
+          <div className="mb-8"><W lines={1}><QuickStatsWidget /></W></div>
         )}
 
         {/* Achievements Summary */}
-        {user && (
-          <div className="mb-8">
-            <AchievementsSummary userId={user.id} isAr={isAr} />
-          </div>
+        {user && isVisible("achievements") && (
+          <div className="mb-8"><AchievementsSummary userId={user.id} isAr={isAr} /></div>
         )}
 
         {/* Main Content Grid */}
         <div className="grid gap-6 lg:grid-cols-3">
           <div className="lg:col-span-2 space-y-6">
-            <WidgetSuspense><UpcomingCompetitionsWidget /></WidgetSuspense>
-            <WidgetSuspense><UpcomingExhibitionsWidget /></WidgetSuspense>
-            {user && <WidgetSuspense><MasterclassProgressWidget /></WidgetSuspense>}
+            {isVisible("competitions") && <W><UpcomingCompetitionsWidget /></W>}
+            {isVisible("exhibitions") && <W><UpcomingExhibitionsWidget /></W>}
+            {user && isVisible("masterclass") && <W><MasterclassProgressWidget /></W>}
           </div>
           <div className="space-y-6">
-            {user && <WidgetSuspense><ProfileInsightsWidget /></WidgetSuspense>}
-            {user && <WidgetSuspense><EngagementAnalyticsWidget /></WidgetSuspense>}
-            {user && <WidgetSuspense><NotificationActivityWidget /></WidgetSuspense>}
-            {user && <WidgetSuspense><ContentStatsWidget /></WidgetSuspense>}
-            {user && <WidgetSuspense><ReferralWidget /></WidgetSuspense>}
-            {user && <WidgetSuspense><ChefScheduleWidget /></WidgetSuspense>}
-            {user && <WidgetSuspense><EventsCalendarWidget /></WidgetSuspense>}
-            {user && <WidgetSuspense><NotificationsSummaryWidget /></WidgetSuspense>}
-            <WidgetSuspense><RecentActivityWidget /></WidgetSuspense>
+            {user && isVisible("profile-insights") && <W><ProfileInsightsWidget /></W>}
+            {user && isVisible("progress-report") && <W><ProgressReportWidget /></W>}
+            {user && isVisible("engagement") && <W><EngagementAnalyticsWidget /></W>}
+            {user && isVisible("notification-activity") && <W><NotificationActivityWidget /></W>}
+            {user && isVisible("content-stats") && <W><ContentStatsWidget /></W>}
+            {user && isVisible("referral") && <W><ReferralWidget /></W>}
+            {user && isVisible("chef-schedule") && <W><ChefScheduleWidget /></W>}
+            {user && isVisible("events-calendar") && <W><EventsCalendarWidget /></W>}
+            {user && isVisible("notification-prefs") && <W><NotificationPreferencesWidget /></W>}
+            {user && isVisible("notifications") && <W><NotificationsSummaryWidget /></W>}
+            {isVisible("activity") && <W><RecentActivityWidget /></W>}
+            {user && <W><DashboardPersonalizationWidget /></W>}
           </div>
         </div>
       </main>
@@ -132,9 +135,12 @@ export default function Dashboard() {
   );
 }
 
-/* ---------- Extracted Sub-Components ---------- */
+/* ---------- Sub-Components ---------- */
 
-function WelcomeBanner({ greeting, isAr }: { greeting: string; isAr: boolean }) {
+function WelcomeBanner({ greeting, isAr, widgets, toggleWidget, resetLayout }: {
+  greeting: string; isAr: boolean;
+  widgets: any[]; toggleWidget: (id: string) => void; resetLayout: () => void;
+}) {
   return (
     <div className="relative mb-6 overflow-hidden rounded-2xl border border-primary/10 bg-gradient-to-br from-primary/10 via-background to-accent/10 p-4 sm:p-6 md:p-8 group shadow-sm transition-all duration-300 hover:shadow-md hover:border-primary/20">
       <div className="pointer-events-none absolute -end-16 -top-16 h-48 w-48 rounded-full bg-primary/15 blur-[80px] animate-pulse" />
@@ -152,13 +158,16 @@ function WelcomeBanner({ greeting, isAr }: { greeting: string; isAr: boolean }) 
             </p>
           </div>
         </div>
-        <Link to="/profile?tab=edit" className="shrink-0">
-          <Button variant="secondary" size="sm" className="gap-1.5 shadow-sm rounded-xl text-xs sm:text-sm">
-            <span className="hidden sm:inline">{isAr ? "إدارة الملف" : "Manage Profile"}</span>
-            <span className="sm:hidden">{isAr ? "الملف" : "Profile"}</span>
-            <ArrowRight className="h-3.5 w-3.5" />
-          </Button>
-        </Link>
+        <div className="flex items-center gap-2 shrink-0">
+          <DashboardLayoutControl widgets={widgets} toggleWidget={toggleWidget} resetLayout={resetLayout} />
+          <Link to="/profile?tab=edit">
+            <Button variant="secondary" size="sm" className="gap-1.5 shadow-sm rounded-xl text-xs sm:text-sm">
+              <span className="hidden sm:inline">{isAr ? "إدارة الملف" : "Manage Profile"}</span>
+              <span className="sm:hidden">{isAr ? "الملف" : "Profile"}</span>
+              <ArrowRight className="h-3.5 w-3.5" />
+            </Button>
+          </Link>
+        </div>
       </div>
     </div>
   );
@@ -193,10 +202,7 @@ function QuickAccessGrid({ sections, isAr }: { sections: Array<{ icon: any; titl
         {isAr ? "الوصول السريع" : "Quick Access"}
       </h2>
       <div className="relative">
-        <div
-          className="flex gap-2 overflow-x-auto pb-2 sm:pb-0 sm:grid sm:grid-cols-5 lg:grid-cols-10 sm:overflow-visible"
-          style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
-        >
+        <div className="flex gap-2 overflow-x-auto pb-2 sm:pb-0 sm:grid sm:grid-cols-5 lg:grid-cols-10 sm:overflow-visible" style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}>
           {sections.map((s) => (
             <Link key={s.title} to={s.href} className="group shrink-0 sm:shrink">
               <div className={`flex flex-col items-center gap-1.5 p-2 rounded-2xl border border-border/30 bg-card/60 backdrop-blur-sm transition-all duration-200 hover:shadow-md hover:border-border/60 active:scale-[0.92] w-[68px] sm:w-auto ${s.glow}`}>
