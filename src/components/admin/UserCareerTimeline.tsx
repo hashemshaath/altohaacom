@@ -16,8 +16,15 @@ import { toast } from "@/hooks/use-toast";
 import {
   GraduationCap, Briefcase, Plus, Pencil, Trash2, X, Check, 
   Building2, MapPin, Trophy, Award, Medal, Users, ChevronDown, ChevronUp, FileText,
-  GripVertical, FolderPlus, Type, Languages, Loader2,
+  GripVertical, FolderPlus, Type, Languages, Loader2, ArrowRightLeft,
 } from "lucide-react";
+import {
+  AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent,
+  AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
+import {
+  Popover, PopoverContent, PopoverTrigger,
+} from "@/components/ui/popover";
 import { CVImportDialog } from "@/components/cv-import/CVImportDialog";
 import {
   DndContext, closestCenter, KeyboardSensor, PointerSensor, useSensor, useSensors,
@@ -454,7 +461,23 @@ export function UserCareerTimeline({ userId, isAr }: Props) {
     },
   });
 
-  // ── Form Helpers ──────────────────────────────────────
+  const moveRecordToSection = useMutation({
+    mutationFn: async ({ id, targetSection }: { id: string; targetSection: string }) => {
+      const { error } = await supabase.from("user_career_records").update({ record_type: targetSection }).eq("id", id);
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["career-records", userId] });
+      toast({ title: isAr ? "تم نقل العنصر" : "Item moved" });
+    },
+    onError: (err: any) => toast({ title: isAr ? "خطأ" : "Error", description: err.message, variant: "destructive" }),
+  });
+
+  const getMoveSections = (currentKey: string) => {
+    return sections
+      .filter(s => s.key !== currentKey && (s.key === "education" || s.key === "work" || s.isCustom))
+      .map(s => ({ key: s.key, label: isAr ? s.ar : s.en }));
+  };
 
   const closeForm = () => {
     setAddingSection(null);
@@ -683,6 +706,7 @@ export function UserCareerTimeline({ userId, isAr }: Props) {
                               meta={`${formatDateRange(r.start_date, r.end_date, r.is_current, isAr)}${r.education_level ? ` · ${labelFor(r.education_level, EDUCATION_LEVELS, isAr)}` : ""}`}
                               isCurrent={r.is_current} isAr={isAr}
                               onEdit={() => startEditCareer(r)} onDelete={() => deleteCareerMutation.mutate(r.id)}
+                              moveSections={getMoveSections("education")} onMove={(target) => moveRecordToSection.mutate({ id: r.id, targetSection: target })}
                               draggable
                             />
                           </SortableItem>
@@ -714,6 +738,7 @@ export function UserCareerTimeline({ userId, isAr }: Props) {
                               meta={`${formatDateRange(r.start_date, r.end_date, r.is_current, isAr)}${r.employment_type ? ` · ${labelFor(r.employment_type, EMPLOYMENT_TYPES, isAr)}` : ""}${r.location ? ` · ${r.location}` : ""}`}
                               isCurrent={r.is_current} isAr={isAr}
                               onEdit={() => startEditCareer(r)} onDelete={() => deleteCareerMutation.mutate(r.id)}
+                              moveSections={getMoveSections("work")} onMove={(target) => moveRecordToSection.mutate({ id: r.id, targetSection: target })}
                               draggable
                             />
                           </SortableItem>
@@ -829,6 +854,7 @@ export function UserCareerTimeline({ userId, isAr }: Props) {
                               meta={formatDateRange(r.start_date, r.end_date, r.is_current, isAr)}
                               isCurrent={r.is_current} isAr={isAr}
                               onEdit={() => startEditCareer(r)} onDelete={() => deleteCareerMutation.mutate(r.id)}
+                              moveSections={getMoveSections(section.key)} onMove={(target) => moveRecordToSection.mutate({ id: r.id, targetSection: target })}
                               draggable
                             />
                           </SortableItem>
@@ -903,12 +929,14 @@ function AddButton({ label, onClick }: { label: string; onClick: () => void }) {
   );
 }
 
-function CompactRow({ icon: Icon, color, logoUrl, title, subtitle, meta, badge, badgeVariant, isCurrent, isAr, onEdit, onDelete, draggable }: {
+function CompactRow({ icon: Icon, color, logoUrl, title, subtitle, meta, badge, badgeVariant, isCurrent, isAr, onEdit, onDelete, draggable, moveSections, onMove }: {
   icon: any; color: string; logoUrl?: string; title: string; subtitle: string; meta: string;
   badge?: string; badgeVariant?: "default" | "secondary" | "outline"; isCurrent?: boolean; isAr: boolean;
   onEdit?: () => void; onDelete?: () => void; draggable?: boolean;
+  moveSections?: { key: string; label: string }[]; onMove?: (targetSection: string) => void;
 }) {
   const mainContent = [title, subtitle, meta].filter(Boolean).join(" · ");
+  const [moveOpen, setMoveOpen] = useState(false);
   
   return (
     <div className="flex items-center gap-3 rounded-lg border border-border/50 px-4 py-2.5 hover:bg-muted/50 transition-all hover:border-border/80 group">
@@ -924,10 +952,54 @@ function CompactRow({ icon: Icon, color, logoUrl, title, subtitle, meta, badge, 
         {isCurrent && <Badge variant="default" className="text-[10px] h-5 px-1.5 shrink-0 whitespace-nowrap">{isAr ? "مستمر" : "Ongoing"}</Badge>}
         {badge && <Badge variant={badgeVariant || "secondary"} className="text-[10px] h-5 px-1.5 shrink-0 capitalize whitespace-nowrap">{badge}</Badge>}
       </div>
-      {(onEdit || onDelete) && (
+      {(onEdit || onDelete || (moveSections && moveSections.length > 0)) && (
         <div className="flex items-center gap-1 shrink-0 ms-2">
-          {onEdit && <Button size="icon" variant="ghost" className="h-7 w-7 text-muted-foreground hover:text-foreground" onClick={onEdit}><Pencil className="h-3.5 w-3.5" /></Button>}
-          {onDelete && <Button size="icon" variant="ghost" className="h-7 w-7 text-destructive/60 hover:text-destructive hover:bg-destructive/5" onClick={onDelete}><Trash2 className="h-3.5 w-3.5" /></Button>}
+          {onEdit && (
+            <Button size="icon" variant="ghost" className="h-7 w-7 text-muted-foreground hover:text-foreground" onClick={onEdit} title={isAr ? "تعديل" : "Edit"}>
+              <Pencil className="h-3.5 w-3.5" />
+            </Button>
+          )}
+          {moveSections && moveSections.length > 0 && onMove && (
+            <Popover open={moveOpen} onOpenChange={setMoveOpen}>
+              <PopoverTrigger asChild>
+                <Button size="icon" variant="ghost" className="h-7 w-7 text-muted-foreground hover:text-foreground" title={isAr ? "نقل إلى قسم آخر" : "Move to another section"}>
+                  <ArrowRightLeft className="h-3.5 w-3.5" />
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent className="w-48 p-1.5" align="end">
+                <p className="text-xs font-semibold text-muted-foreground px-2 py-1.5">{isAr ? "نقل إلى:" : "Move to:"}</p>
+                {moveSections.map(s => (
+                  <button key={s.key} className="w-full text-start text-xs px-2 py-1.5 rounded-md hover:bg-muted/60 transition-colors"
+                    onClick={() => { onMove(s.key); setMoveOpen(false); }}>
+                    {s.label}
+                  </button>
+                ))}
+              </PopoverContent>
+            </Popover>
+          )}
+          {onDelete && (
+            <AlertDialog>
+              <AlertDialogTrigger asChild>
+                <Button size="icon" variant="ghost" className="h-7 w-7 text-destructive/60 hover:text-destructive hover:bg-destructive/5" title={isAr ? "حذف" : "Delete"}>
+                  <Trash2 className="h-3.5 w-3.5" />
+                </Button>
+              </AlertDialogTrigger>
+              <AlertDialogContent>
+                <AlertDialogHeader>
+                  <AlertDialogTitle>{isAr ? "تأكيد الحذف" : "Confirm Deletion"}</AlertDialogTitle>
+                  <AlertDialogDescription>
+                    {isAr ? "هل أنت متأكد من حذف هذا العنصر؟ لا يمكن التراجع عن هذا الإجراء." : "Are you sure you want to delete this item? This action cannot be undone."}
+                  </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                  <AlertDialogCancel>{isAr ? "إلغاء" : "Cancel"}</AlertDialogCancel>
+                  <AlertDialogAction onClick={onDelete} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">
+                    {isAr ? "حذف" : "Delete"}
+                  </AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
+          )}
         </div>
       )}
     </div>
