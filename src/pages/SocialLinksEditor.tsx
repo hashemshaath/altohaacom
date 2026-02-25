@@ -1262,6 +1262,103 @@ export default function SocialLinksEditor() {
                       </CardContent>
                     </Card>
 
+                    {/* Scheduled Themes */}
+                    <Card className="overflow-hidden">
+                      <CardHeader className="pb-3 bg-gradient-to-r from-muted/40 to-transparent">
+                        <CardTitle className="text-sm flex items-center gap-2">
+                          <div className="h-7 w-7 rounded-lg bg-primary/10 flex items-center justify-center">
+                            <Calendar className="h-3.5 w-3.5 text-primary" />
+                          </div>
+                          {isAr ? "جدولة مظهر الصفحة" : "Scheduled Themes"}
+                          {(extra.scheduled_themes?.length || 0) > 0 && (
+                            <Badge variant="secondary" className="text-[9px] ms-auto">{extra.scheduled_themes.length}</Badge>
+                          )}
+                        </CardTitle>
+                        <p className="text-[11px] text-muted-foreground">{isAr ? "تغيير الثيم تلقائياً حسب التاريخ أو المناسبة" : "Auto-switch theme based on date or occasion"}</p>
+                      </CardHeader>
+                      <CardContent className="space-y-3 pt-3">
+                        {(extra.scheduled_themes || []).map((sched, idx) => {
+                          const now = new Date();
+                          const isActive = new Date(sched.start_date) <= now && now <= new Date(sched.end_date);
+                          const isPast = new Date(sched.end_date) < now;
+                          return (
+                            <div key={sched.id} className={`relative rounded-xl border p-3 space-y-2 transition-all ${isActive ? "border-primary/40 bg-primary/5" : isPast ? "border-border/30 opacity-60" : "border-border/50"}`}>
+                              {isActive && <Badge className="absolute -top-2 end-2 text-[9px] px-1.5 py-0">{isAr ? "نشط الآن" : "Active"}</Badge>}
+                              <div className="flex items-center gap-2">
+                                <div className={`w-5 h-5 rounded-md shadow-inner ${THEMES.find(t => t.id === sched.theme_id)?.preview || "bg-muted"}`} />
+                                <Input
+                                  value={isAr ? sched.label_ar : sched.label}
+                                  onChange={e => {
+                                    const updated = [...extra.scheduled_themes];
+                                    if (isAr) updated[idx] = { ...updated[idx], label_ar: e.target.value };
+                                    else updated[idx] = { ...updated[idx], label: e.target.value };
+                                    updateExtra({ scheduled_themes: updated });
+                                  }}
+                                  placeholder={isAr ? "اسم المناسبة (رمضان، عيد...)" : "Occasion name (Ramadan, Eid...)"}
+                                  className="h-7 text-xs flex-1"
+                                />
+                                <Button size="icon" variant="ghost" className="h-7 w-7 shrink-0 text-destructive/70 hover:text-destructive" onClick={() => {
+                                  const updated = extra.scheduled_themes.filter((_, i) => i !== idx);
+                                  updateExtra({ scheduled_themes: updated });
+                                }}>
+                                  <Trash2 className="h-3.5 w-3.5" />
+                                </Button>
+                              </div>
+                              <Select value={sched.theme_id} onValueChange={v => {
+                                const updated = [...extra.scheduled_themes];
+                                updated[idx] = { ...updated[idx], theme_id: v };
+                                updateExtra({ scheduled_themes: updated });
+                              }}>
+                                <SelectTrigger className="h-7 text-xs"><SelectValue /></SelectTrigger>
+                                <SelectContent>
+                                  {THEMES.map(t => (
+                                    <SelectItem key={t.id} value={t.id}>
+                                      <span className="flex items-center gap-2">
+                                        <span className={`w-3 h-3 rounded-sm inline-block ${t.preview}`} />
+                                        {isAr ? t.labelAr : t.label}
+                                      </span>
+                                    </SelectItem>
+                                  ))}
+                                </SelectContent>
+                              </Select>
+                              <div className="grid grid-cols-2 gap-2">
+                                <div>
+                                  <Label className="text-[10px] mb-0.5 block">{isAr ? "من" : "Start"}</Label>
+                                  <Input type="date" value={sched.start_date} onChange={e => {
+                                    const updated = [...extra.scheduled_themes];
+                                    updated[idx] = { ...updated[idx], start_date: e.target.value };
+                                    updateExtra({ scheduled_themes: updated });
+                                  }} className="h-7 text-xs" dir="ltr" />
+                                </div>
+                                <div>
+                                  <Label className="text-[10px] mb-0.5 block">{isAr ? "إلى" : "End"}</Label>
+                                  <Input type="date" value={sched.end_date} onChange={e => {
+                                    const updated = [...extra.scheduled_themes];
+                                    updated[idx] = { ...updated[idx], end_date: e.target.value };
+                                    updateExtra({ scheduled_themes: updated });
+                                  }} className="h-7 text-xs" dir="ltr" />
+                                </div>
+                              </div>
+                            </div>
+                          );
+                        })}
+                        <Button variant="outline" size="sm" className="w-full text-xs gap-1.5 h-8" onClick={() => {
+                          const newSched = {
+                            id: Date.now().toString(36),
+                            theme_id: "gold",
+                            start_date: new Date().toISOString().slice(0, 10),
+                            end_date: new Date(Date.now() + 7 * 86400000).toISOString().slice(0, 10),
+                            label: "New Occasion",
+                            label_ar: "مناسبة جديدة",
+                          };
+                          updateExtra({ scheduled_themes: [...(extra.scheduled_themes || []), newSched] });
+                        }}>
+                          <Plus className="h-3.5 w-3.5" />
+                          {isAr ? "إضافة جدولة ثيم" : "Add Scheduled Theme"}
+                        </Button>
+                      </CardContent>
+                    </Card>
+
                     <Card className="overflow-hidden">
                       <CardHeader className="pb-3 bg-gradient-to-r from-muted/40 to-transparent">
                         <CardTitle className="text-sm flex items-center gap-2">

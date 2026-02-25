@@ -22,7 +22,7 @@ import { countryFlag } from "@/lib/countryFlag";
 import { useCountries } from "@/hooks/useCountries";
 import {
   THEME_COLORS, BUTTON_STYLES_MAP, FONT_MAP, FONT_SIZE_MAP,
-  parseExtra, getButtonStyleOverrides, getVideoEmbedUrl, isVideoLink,
+  parseExtra, getButtonStyleOverrides, getVideoEmbedUrl, isVideoLink, resolveActiveTheme,
   type ExtraSettings,
 } from "@/lib/socialLinksConstants";
 
@@ -451,10 +451,11 @@ export default function SocialLinks() {
   }
 
   const { profile, page, items } = data;
-  const themeId = page?.theme || "default";
+  const extra = parseExtra(page?.custom_css);
+  const themeId = resolveActiveTheme(page?.theme || "default", extra);
   const theme = THEME_COLORS[themeId] || THEME_COLORS.default;
   const btnStyle = BUTTON_STYLES_MAP[page?.button_style || "rounded"] || BUTTON_STYLES_MAP.rounded;
-  const extra = parseExtra(page?.custom_css);
+  
   const fontSize = FONT_SIZE_MAP[extra.font_size] || FONT_SIZE_MAP.md;
   const fontFamily = FONT_MAP[page?.font_family || "default"] || "inherit";
 
