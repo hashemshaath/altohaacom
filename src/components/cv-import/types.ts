@@ -81,15 +81,25 @@ export interface CVCertification {
 export interface CVMediaAppearance {
   type?: string;
   channel_name: string;
+  channel_name_ar?: string;
   program_name?: string;
+  program_name_ar?: string;
   date?: string;
   description?: string;
+  description_ar?: string;
   country_code?: string;
 }
 
 export interface CVLanguage {
   language: string;
+  language_ar?: string;
   level?: string;
+  level_ar?: string;
+}
+
+export interface CVSkill {
+  name: string;
+  name_ar?: string;
 }
 
 export interface CVData {
@@ -99,7 +109,7 @@ export interface CVData {
   competitions?: CVCompetition[];
   certifications?: CVCertification[];
   media_appearances?: CVMediaAppearance[];
-  skills?: string[];
+  skills?: string[] | CVSkill[];
   languages?: CVLanguage[];
 }
 
