@@ -47,13 +47,20 @@ export function NotificationsSummaryWidget() {
     );
   }
 
-    return (
+  return (
     <Card className="relative overflow-hidden transition-shadow hover:shadow-md border-border/50">
       <div className="pointer-events-none absolute -top-12 -end-12 h-32 w-32 rounded-full bg-chart-4/5 blur-[40px]" />
       <div className="flex items-center justify-between border-b bg-muted/30 px-4 py-3">
         <h3 className="flex items-center gap-2 text-sm font-semibold">
-          <div className="flex h-6 w-6 items-center justify-center rounded-md bg-chart-4/10">
+          <div className="relative flex h-6 w-6 items-center justify-center rounded-md bg-chart-4/10">
             <Bell className="h-3.5 w-3.5 text-chart-4" />
+            {/* Live pulse indicator */}
+            {unreadCount > 0 && (
+              <span className="absolute -top-1 -end-1 flex h-2.5 w-2.5">
+                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-chart-4 opacity-75" />
+                <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-chart-4" />
+              </span>
+            )}
           </div>
           {isAr ? "الإشعارات" : "Notifications"}
           {unreadCount > 0 && (
