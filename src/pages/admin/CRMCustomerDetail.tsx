@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { formatCurrency } from "@/lib/currencyFormatter";
 import { useParams, Link } from "react-router-dom";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -607,7 +608,7 @@ export default function CRMCustomerDetail() {
                             <p className="text-xs text-muted-foreground">{item.item_type}</p>
                           </div>
                            {item.item_price && (
-                             <span className="text-sm font-bold">{(() => { try { const { formatCurrency } = require('@/lib/currencyFormatter'); return formatCurrency(item.item_price, 'ar'); } catch { return `${item.item_price} SAR`; } })()}</span>
+                             <span className="text-sm font-bold">{formatCurrency(item.item_price, language === "ar" ? "ar" : "en")}</span>
                            )}
                         </div>
                       ))}

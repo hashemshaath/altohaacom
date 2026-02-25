@@ -47,7 +47,7 @@ export class ErrorBoundary extends React.Component<Props, State> {
                 ? "نعتذر عن هذا الخطأ. يرجى تحديث الصفحة أو العودة للرئيسية."
                 : "We apologize for the inconvenience. Please try refreshing the page or go back to the homepage."}
             </p>
-            {this.state.error && process.env.NODE_ENV === "development" && (
+            {this.state.error && import.meta.env.DEV && (
               <details className="mt-3 text-start max-w-lg mx-auto">
                 <summary className="text-xs text-muted-foreground cursor-pointer hover:text-foreground transition-colors">
                   {isAr ? "تفاصيل الخطأ" : "Error details"}
