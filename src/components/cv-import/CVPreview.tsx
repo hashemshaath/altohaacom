@@ -1,4 +1,4 @@
-import { useState, useCallback } from "react";
+import React, { useState, useCallback } from "react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
@@ -20,7 +20,7 @@ import {
   Edit3, X, Trash2, Download, Printer, ChevronDown, ChevronRight,
 } from "lucide-react";
 import { downloadCSV, downloadJSON } from "@/lib/exportUtils";
-import type { CVData, CVWorkExperience, CVEducation, CVCompetition, CVMediaAppearance } from "./types";
+import type { CVData, CVWorkExperience, CVEducation, CVCompetition, CVMediaAppearance, CVSkill } from "./types";
 import {
   getFlag, ROLE_LABELS, MEDIA_TYPE_LABELS,
   EMPLOYMENT_TYPE_LABELS, EDUCATION_LEVEL_LABELS,
@@ -134,19 +134,19 @@ function EditableText({ value, onChange, label, multiline, className = "" }: {
 const rowBg = (i: number) => i % 2 === 0 ? "bg-muted/20" : "bg-muted/50";
 
 // ─── Collapsible Section Wrapper ───
-function CollapsibleSection({
-  icon, titleEn, titleAr, count, sectionKey, colorClass, isAr, checked, onToggle,
-  defaultOpen = false, extraActions, children,
-}: {
+const CollapsibleSection = React.forwardRef<HTMLDivElement, {
   icon: React.ReactNode; titleEn: string; titleAr: string;
   count: number; sectionKey: string; colorClass: string;
   isAr: boolean; checked: boolean; onToggle: () => void;
   defaultOpen?: boolean; extraActions?: React.ReactNode;
   children: React.ReactNode;
-}) {
+}>(function CollapsibleSection({
+  icon, titleEn, titleAr, count, sectionKey, colorClass, isAr, checked, onToggle,
+  defaultOpen = false, extraActions, children,
+}, ref) {
   const [open, setOpen] = useState(defaultOpen);
   return (
-    <Card className="overflow-hidden">
+    <Card ref={ref} className="overflow-hidden">
       <Collapsible open={open} onOpenChange={setOpen}>
         <CardHeader className={`pb-2 ${colorClass.replace("text-", "bg-").split(" ")[0]}/5`}>
           <div className="flex items-center justify-between">
@@ -172,7 +172,7 @@ function CollapsibleSection({
       </Collapsible>
     </Card>
   );
-}
+});
 
 // ─── Paired personal field definitions ───
 type PersonalFieldDef = [string, string, string, string | null];
@@ -483,8 +483,18 @@ export function CVPreview({ data: initialData, targetUserId, isAr, onBack, onSav
       ${data.certifications.map(c => `<tr><td>${c.name || ""}</td><td>${c.name_ar || ""}</td><td>${c.issuer || ""}</td><td>${formatD(c.date)}</td></tr>`).join("")}
       </table>` : "";
 
-    const skillsHtml = data.skills?.length ? `<h2>Skills / المهارات</h2><p>${data.skills.join(" • ")}</p>` : "";
-    const langsHtml = data.languages?.length ? `<h2>Languages / اللغات</h2><p>${data.languages.map(l => `${l.language}${l.level ? ` (${l.level})` : ""}`).join(" • ")}</p>` : "";
+    const skillsHtml = data.skills?.length ? `<h2>Skills / المهارات</h2>
+      <table><tr><th>English</th><th>العربية</th></tr>
+      ${data.skills.map(s => {
+        const en = typeof s === "string" ? s : s.name;
+        const ar = typeof s === "string" ? "" : (s.name_ar || "");
+        return `<tr><td>${en}</td><td dir="rtl">${ar}</td></tr>`;
+      }).join("")}
+      </table>` : "";
+    const langsHtml = data.languages?.length ? `<h2>Languages / اللغات</h2>
+      <table><tr><th>Language</th><th>اللغة</th><th>Level</th><th>المستوى</th></tr>
+      ${data.languages.map(l => `<tr><td>${l.language}</td><td dir="rtl">${l.language_ar || ""}</td><td>${l.level || ""}</td><td dir="rtl">${l.level_ar || ""}</td></tr>`).join("")}
+      </table>` : "";
 
     win.document.write(`<!DOCTYPE html><html><head><title>CV - ${p.full_name || ""}</title>
       <style>
@@ -938,8 +948,10 @@ export function CVPreview({ data: initialData, targetUserId, isAr, onBack, onSav
             <TableHeader>
               <TableRow className="bg-chart-1/5 border-border/10">
                 <TableHead className="text-[10px] py-1.5 h-auto">{isAr ? "النوع" : "Type"}</TableHead>
-                <TableHead className="text-[10px] py-1.5 h-auto">{isAr ? "القناة" : "Channel"}</TableHead>
-                <TableHead className="text-[10px] py-1.5 h-auto">{isAr ? "البرنامج" : "Program"}</TableHead>
+                <TableHead className="text-[10px] py-1.5 h-auto">Channel (EN)</TableHead>
+                <TableHead className="text-[10px] py-1.5 h-auto" dir="rtl">القناة (AR)</TableHead>
+                <TableHead className="text-[10px] py-1.5 h-auto">Program (EN)</TableHead>
+                <TableHead className="text-[10px] py-1.5 h-auto" dir="rtl">البرنامج (AR)</TableHead>
                 <TableHead className="text-[10px] py-1.5 h-auto">{isAr ? "التاريخ" : "Date"}</TableHead>
                 <TableHead className="text-[10px] py-1.5 h-auto">{isAr ? "البلد" : "Country"}</TableHead>
                 <TableHead className="text-[10px] py-1.5 h-auto w-8"></TableHead>
@@ -952,10 +964,15 @@ export function CVPreview({ data: initialData, targetUserId, isAr, onBack, onSav
                     <span className="text-sm">{m.type ? (MEDIA_TYPE_LABELS[m.type]?.icon || "📺") : "📺"}</span>
                     {m.type && <span className="text-[10px] text-muted-foreground ms-1">{isAr ? (MEDIA_TYPE_LABELS[m.type]?.ar || m.type) : (MEDIA_TYPE_LABELS[m.type]?.en || m.type)}</span>}
                   </TableCell>
-                  <TableCell className="py-2 px-3"><span className="text-xs font-medium">{m.channel_name}</span></TableCell>
+                  <TableCell className="py-2 px-3"><EditableText value={m.channel_name || ""} onChange={v => updateData(d => ({ ...d, media_appearances: d.media_appearances?.map((x, xi) => xi === i ? { ...x, channel_name: v } : x) }))} className="text-xs font-medium" /></TableCell>
+                  <TableCell className="py-2 px-3" dir="rtl"><EditableText value={m.channel_name_ar || ""} onChange={v => updateData(d => ({ ...d, media_appearances: d.media_appearances?.map((x, xi) => xi === i ? { ...x, channel_name_ar: v } : x) }))} className="text-xs font-medium" /></TableCell>
                   <TableCell className="py-2 px-3">
-                    <span className="text-xs">{m.program_name || "—"}</span>
+                    <EditableText value={m.program_name || ""} onChange={v => updateData(d => ({ ...d, media_appearances: d.media_appearances?.map((x, xi) => xi === i ? { ...x, program_name: v } : x) }))} className="text-xs" />
                     {m.description && <span className="text-[10px] text-muted-foreground block mt-0.5">{m.description}</span>}
+                  </TableCell>
+                  <TableCell className="py-2 px-3" dir="rtl">
+                    <EditableText value={m.program_name_ar || ""} onChange={v => updateData(d => ({ ...d, media_appearances: d.media_appearances?.map((x, xi) => xi === i ? { ...x, program_name_ar: v } : x) }))} className="text-xs" />
+                    {m.description_ar && <span className="text-[10px] text-muted-foreground block mt-0.5" dir="rtl">{m.description_ar}</span>}
                   </TableCell>
                   <TableCell className="py-2 px-3"><span className="text-[11px] text-muted-foreground">{formatDate(m.date)}</span></TableCell>
                   <TableCell className="py-2 px-3">{m.country_code && <span>{getFlag(m.country_code)} {m.country_code}</span>}</TableCell>
@@ -974,17 +991,57 @@ export function CVPreview({ data: initialData, targetUserId, isAr, onBack, onSav
       {/* ═══ SKILLS & LANGUAGES ═══ */}
       {((data.skills?.length || 0) > 0 || (data.languages?.length || 0) > 0) && (
         <Card>
-          <CardContent className="p-4 space-y-3">
+          <CardContent className="p-4 space-y-4">
             {(data.skills?.length || 0) > 0 && (
               <div>
-                <p className="text-xs font-semibold mb-1.5 flex items-center gap-1"><Globe2 className="h-3.5 w-3.5 text-primary" />{isAr ? "المهارات" : "Skills"}</p>
-                <div className="flex flex-wrap gap-1.5">{data.skills!.map((s, i) => <Badge key={i} variant="secondary" className="text-[10px] h-5">{s}</Badge>)}</div>
+                <p className="text-xs font-semibold mb-2 flex items-center gap-1"><Globe2 className="h-3.5 w-3.5 text-primary" />{isAr ? "المهارات" : "Skills"}</p>
+                <div className="grid grid-cols-2 gap-2">
+                  <div>
+                    <p className="text-[10px] text-muted-foreground mb-1">English</p>
+                    <div className="flex flex-wrap gap-1.5">
+                      {data.skills!.map((s, i) => {
+                        const name = typeof s === "string" ? s : s.name;
+                        return <Badge key={i} variant="secondary" className="text-[10px] h-5">{name}</Badge>;
+                      })}
+                    </div>
+                  </div>
+                  <div dir="rtl">
+                    <p className="text-[10px] text-muted-foreground mb-1">العربية</p>
+                    <div className="flex flex-wrap gap-1.5">
+                      {data.skills!.map((s, i) => {
+                        const nameAr = typeof s === "string" ? "" : (s.name_ar || "");
+                        return nameAr ? <Badge key={i} variant="secondary" className="text-[10px] h-5">{nameAr}</Badge> : null;
+                      })}
+                    </div>
+                  </div>
+                </div>
               </div>
             )}
             {(data.languages?.length || 0) > 0 && (
               <div>
-                <p className="text-xs font-semibold mb-1.5 flex items-center gap-1"><Languages className="h-3.5 w-3.5 text-primary" />{isAr ? "اللغات" : "Languages"}</p>
-                <div className="flex flex-wrap gap-1.5">{data.languages!.map((l, i) => <Badge key={i} variant="outline" className="text-[10px] h-5">{l.language} {l.level && `(${l.level})`}</Badge>)}</div>
+                <p className="text-xs font-semibold mb-2 flex items-center gap-1"><Languages className="h-3.5 w-3.5 text-primary" />{isAr ? "اللغات" : "Languages"}</p>
+                <div className="grid grid-cols-2 gap-2">
+                  <div>
+                    <p className="text-[10px] text-muted-foreground mb-1">English</p>
+                    <div className="flex flex-wrap gap-1.5">
+                      {data.languages!.map((l, i) => (
+                        <Badge key={i} variant="outline" className="text-[10px] h-5">
+                          {l.language}{l.level ? ` (${l.level})` : ""}
+                        </Badge>
+                      ))}
+                    </div>
+                  </div>
+                  <div dir="rtl">
+                    <p className="text-[10px] text-muted-foreground mb-1">العربية</p>
+                    <div className="flex flex-wrap gap-1.5">
+                      {data.languages!.map((l, i) => (
+                        <Badge key={i} variant="outline" className="text-[10px] h-5">
+                          {l.language_ar || l.language}{l.level_ar ? ` (${l.level_ar})` : ""}
+                        </Badge>
+                      ))}
+                    </div>
+                  </div>
+                </div>
               </div>
             )}
           </CardContent>

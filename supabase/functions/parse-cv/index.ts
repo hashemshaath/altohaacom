@@ -46,7 +46,10 @@ CRITICAL BILINGUAL RULES - STRICT SEPARATION:
 - NEVER concatenate Arabic and English in the same field.
 - Translations must be professional, culinary-industry appropriate, and natural-sounding.
 - For tasks[] and achievements[] arrays: write them ONLY in English. Keep each item concise and professionally rephrased.
+- For skills[]: provide BOTH English name and Arabic name_ar for each skill as objects {name, name_ar}.
+- For languages[]: provide BOTH English (language, level) and Arabic (language_ar, level_ar) for each entry.
 - For names of companies/institutions: transliterate proper nouns if no official translation exists (e.g., "Hilton" stays "هيلتون" in Arabic).
+- For media_appearances: provide BOTH English and Arabic for channel_name, program_name, and description.
 
 FORMATTING RULES:
 - Each task/responsibility should be a single clear sentence without bullet points or special characters.
@@ -204,23 +207,39 @@ OTHER GUIDELINES:
                       type: "object",
                       properties: {
                         type: { type: "string", enum: ["tv", "radio", "podcast", "newspaper", "magazine", "online"] },
-                        channel_name: { type: "string" },
-                        program_name: { type: "string" },
+                        channel_name: { type: "string", description: "Channel name in English" },
+                        channel_name_ar: { type: "string", description: "Channel name in Arabic" },
+                        program_name: { type: "string", description: "Program name in English" },
+                        program_name_ar: { type: "string", description: "Program name in Arabic" },
                         date: { type: "string" },
-                        description: { type: "string" },
+                        description: { type: "string", description: "Description in English" },
+                        description_ar: { type: "string", description: "Description in Arabic" },
                         country_code: { type: "string" },
                       },
                       required: ["channel_name"],
                     },
                   },
-                  skills: { type: "array", items: { type: "string" } },
+                  skills: {
+                    type: "array",
+                    items: {
+                      type: "object",
+                      properties: {
+                        name: { type: "string", description: "Skill name in English" },
+                        name_ar: { type: "string", description: "Skill name in Arabic" },
+                      },
+                      required: ["name"],
+                    },
+                    description: "All skills as objects with bilingual names",
+                  },
                   languages: {
                     type: "array",
                     items: {
                       type: "object",
                       properties: {
-                        language: { type: "string" },
-                        level: { type: "string" },
+                        language: { type: "string", description: "Language name in English" },
+                        language_ar: { type: "string", description: "Language name in Arabic" },
+                        level: { type: "string", description: "Proficiency level in English" },
+                        level_ar: { type: "string", description: "Proficiency level in Arabic" },
                       },
                     },
                   },
