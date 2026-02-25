@@ -532,30 +532,42 @@ export default function SocialLinks() {
       )}
       {googleFontLink && <link rel="stylesheet" href={googleFontLink} />}
       <SEOHead
-        title={`${title} - Altoha`}
-        description={bio || `${displayName}'s links on Altoha`}
-        ogImage={profile.avatar_url || undefined}
+        title={`${displayName} (@${username}) - Altoha`}
+        description={bio ? `${bio.slice(0, 150)}` : `${displayName}'s links, bio & contact on Altoha`}
+        ogImage={coverImage || profile.avatar_url || undefined}
         ogType="profile"
         canonical={buildSocialLinksUrl(username)}
         lang={lang}
+        keywords={[displayName, username, jobTitle, specialization, "bio", "links", "altoha"].filter(Boolean).join(", ")}
+        author={displayName}
         jsonLd={{
           "@context": "https://schema.org",
           "@type": "ProfilePage",
           name: displayName,
-          description: bio || undefined,
+          description: bio || `${displayName}'s links on Altoha`,
           url: buildSocialLinksUrl(username),
-          image: profile.avatar_url || undefined,
+          image: coverImage || profile.avatar_url || undefined,
+          dateModified: page?.updated_at || undefined,
           mainEntity: {
             "@type": "Person",
             name: displayName,
+            alternateName: `@${username}`,
             jobTitle: jobTitle || specialization || undefined,
             url: buildSocialLinksUrl(username),
             image: profile.avatar_url || undefined,
+            ...(city && countryCode ? { address: { "@type": "PostalAddress", addressLocality: city, addressCountry: countryCode } } : {}),
             sameAs: socialPlatforms.map(s => {
               const info = SOCIAL_ICONS[s.key];
               return s.value?.startsWith("http") ? s.value : (info?.urlPrefix ? `${info.urlPrefix}${s.value}` : undefined);
             }).filter(Boolean),
           },
+          ...(items.length > 0 ? {
+            hasPart: items.slice(0, 10).map(item => ({
+              "@type": "WebPage",
+              name: item.title,
+              url: item.url,
+            })),
+          } : {}),
         }}
       />
 
