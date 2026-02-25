@@ -34,6 +34,7 @@ import {
   FileDown, FileUp
 } from "lucide-react";
 import { buildSocialLinksPath, buildSocialLinksUrl } from "@/lib/publicAppUrl";
+import { AreaChart, Area, XAxis, YAxis, Tooltip as RechartsTooltip, ResponsiveContainer } from "recharts";
 
 // ── Constants ──
 
@@ -139,7 +140,7 @@ export default function SocialLinksEditor() {
   const { toast } = useToast();
   const [copied, setCopied] = useState(false);
   const [editingItem, setEditingItem] = useState<string | null>(null);
-  const [editForm, setEditForm] = useState({ title: "", title_ar: "", url: "", icon: "" });
+  const [editForm, setEditForm] = useState({ title: "", title_ar: "", url: "", icon: "", scheduled_start: "", scheduled_end: "" });
   const [uploading, setUploading] = useState(false);
   const [savingSocials, setSavingSocials] = useState(false);
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
@@ -178,24 +179,37 @@ export default function SocialLinksEditor() {
         .select("country, device_type, browser, referrer, created_at")
         .eq("page_id", page!.id)
         .order("created_at", { ascending: false })
-        .limit(500);
-      if (!visits) return { countries: {}, devices: {}, browsers: {}, referrers: {}, total: 0, recent7d: 0 };
+        .limit(1000);
+      if (!visits) return { countries: {}, devices: {}, browsers: {}, referrers: {}, total: 0, recent7d: 0, dailyVisits: [] };
       const now = Date.now();
       const week = 7 * 24 * 60 * 60 * 1000;
       const countries: Record<string, number> = {};
       const devices: Record<string, number> = {};
       const browsers: Record<string, number> = {};
       const referrers: Record<string, number> = {};
+      const dailyMap: Record<string, number> = {};
       let recent7d = 0;
       for (const v of visits) {
         if (v.country) countries[v.country] = (countries[v.country] || 0) + 1;
         if (v.device_type) devices[v.device_type] = (devices[v.device_type] || 0) + 1;
         if (v.browser) browsers[v.browser] = (browsers[v.browser] || 0) + 1;
-        const ref = v.referrer ? new URL(v.referrer).hostname.replace("www.", "") : "direct";
-        referrers[ref] = (referrers[ref] || 0) + 1;
-        if (now - new Date(v.created_at).getTime() < week) recent7d++;
+        try {
+          const ref = v.referrer ? new URL(v.referrer).hostname.replace("www.", "") : "direct";
+          referrers[ref] = (referrers[ref] || 0) + 1;
+        } catch { referrers["direct"] = (referrers["direct"] || 0) + 1; }
+        const ts = new Date(v.created_at).getTime();
+        if (now - ts < week) recent7d++;
+        const day = v.created_at.slice(0, 10);
+        dailyMap[day] = (dailyMap[day] || 0) + 1;
       }
-      return { countries, devices, browsers, referrers, total: visits.length, recent7d };
+      // Build last 14 days chart data
+      const dailyVisits: { date: string; visits: number }[] = [];
+      for (let i = 13; i >= 0; i--) {
+        const d = new Date(now - i * 86400000);
+        const key = d.toISOString().slice(0, 10);
+        dailyVisits.push({ date: key.slice(5), visits: dailyMap[key] || 0 });
+      }
+      return { countries, devices, browsers, referrers, total: visits.length, recent7d, dailyVisits };
     },
     enabled: !!page?.id,
     staleTime: 5 * 60_000,
@@ -426,12 +440,18 @@ export default function SocialLinksEditor() {
 
   const startEditing = useCallback((item: any) => {
     setEditingItem(item.id);
-    setEditForm({ title: item.title, title_ar: item.title_ar || "", url: item.url, icon: item.icon || "" });
+    setEditForm({ title: item.title, title_ar: item.title_ar || "", url: item.url, icon: item.icon || "", scheduled_start: item.scheduled_start ? new Date(item.scheduled_start).toISOString().slice(0, 16) : "", scheduled_end: item.scheduled_end ? new Date(item.scheduled_end).toISOString().slice(0, 16) : "" });
   }, []);
 
   const saveEdit = useCallback(() => {
     if (editingItem) {
-      updateItem.mutate({ id: editingItem, ...editForm });
+      const { scheduled_start, scheduled_end, ...rest } = editForm;
+      updateItem.mutate({
+        id: editingItem,
+        ...rest,
+        ...(scheduled_start ? { scheduled_start: new Date(scheduled_start).toISOString() } : { scheduled_start: null }),
+        ...(scheduled_end ? { scheduled_end: new Date(scheduled_end).toISOString() } : { scheduled_end: null }),
+      });
       setEditingItem(null);
     }
   }, [editingItem, editForm, updateItem]);
@@ -1145,6 +1165,17 @@ export default function SocialLinksEditor() {
                                           {isAr ? "إلغاء" : "Cancel"}
                                         </Button>
                                       </div>
+                                      {/* Schedule fields in edit mode */}
+                                      <div className="grid grid-cols-2 gap-2">
+                                        <div>
+                                          <Label className="text-[9px] text-muted-foreground flex items-center gap-1"><Calendar className="h-2.5 w-2.5" />{isAr ? "يبدأ" : "Start"}</Label>
+                                          <Input type="datetime-local" value={editForm.scheduled_start} onChange={e => setEditForm(f => ({ ...f, scheduled_start: e.target.value }))} className="text-xs h-7" dir="ltr" />
+                                        </div>
+                                        <div>
+                                          <Label className="text-[9px] text-muted-foreground flex items-center gap-1"><Clock className="h-2.5 w-2.5" />{isAr ? "ينتهي" : "End"}</Label>
+                                          <Input type="datetime-local" value={editForm.scheduled_end} onChange={e => setEditForm(f => ({ ...f, scheduled_end: e.target.value }))} className="text-xs h-7" dir="ltr" />
+                                        </div>
+                                      </div>
                                       {item.thumbnail_url && (
                                         <div className="flex items-center gap-2">
                                           <img src={item.thumbnail_url} alt="" className="h-8 w-8 rounded-md object-cover" />
@@ -1159,6 +1190,16 @@ export default function SocialLinksEditor() {
                                       <p className="text-sm font-medium truncate">{item.title}</p>
                                       {item.title_ar && <p className="text-[10px] text-muted-foreground truncate" dir="rtl">{item.title_ar}</p>}
                                       <p className="text-[11px] text-muted-foreground truncate">{item.url}</p>
+                                      {((item as any).scheduled_start || (item as any).scheduled_end) && (
+                                        <div className="flex items-center gap-1 mt-1">
+                                          <Clock className="h-2.5 w-2.5 text-chart-2" />
+                                          <span className="text-[9px] text-chart-2 font-medium">
+                                            {(item as any).scheduled_start ? new Date((item as any).scheduled_start).toLocaleDateString() : "∞"}
+                                            {" → "}
+                                            {(item as any).scheduled_end ? new Date((item as any).scheduled_end).toLocaleDateString() : "∞"}
+                                          </span>
+                                        </div>
+                                      )}
                                       {/* Mini click bar */}
                                       {totalClicks > 0 && (item.click_count || 0) > 0 && (
                                         <div className="mt-1.5 flex items-center gap-2">
@@ -1956,6 +1997,28 @@ export default function SocialLinksEditor() {
                           </p>
                         </CardHeader>
                         <CardContent className="pt-3 space-y-4">
+                          {/* Daily Visits Chart */}
+                          {visitorStats.dailyVisits && visitorStats.dailyVisits.length > 0 && (
+                            <div>
+                              <p className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground mb-2">{isAr ? "الزيارات اليومية (14 يوم)" : "Daily Visits (14 days)"}</p>
+                              <div className="h-40 w-full">
+                                <ResponsiveContainer width="100%" height="100%">
+                                  <AreaChart data={visitorStats.dailyVisits} margin={{ top: 5, right: 5, left: -20, bottom: 0 }}>
+                                    <defs>
+                                      <linearGradient id="visitGrad" x1="0" y1="0" x2="0" y2="1">
+                                        <stop offset="5%" stopColor="hsl(var(--primary))" stopOpacity={0.3} />
+                                        <stop offset="95%" stopColor="hsl(var(--primary))" stopOpacity={0} />
+                                      </linearGradient>
+                                    </defs>
+                                    <XAxis dataKey="date" tick={{ fontSize: 9 }} axisLine={false} tickLine={false} />
+                                    <YAxis tick={{ fontSize: 9 }} axisLine={false} tickLine={false} allowDecimals={false} />
+                                    <RechartsTooltip />
+                                    <Area type="monotone" dataKey="visits" stroke="hsl(var(--primary))" fill="url(#visitGrad)" strokeWidth={2} />
+                                  </AreaChart>
+                                </ResponsiveContainer>
+                              </div>
+                            </div>
+                          )}
                           {/* Devices */}
                           {Object.keys(visitorStats.devices).length > 0 && (
                             <div>
