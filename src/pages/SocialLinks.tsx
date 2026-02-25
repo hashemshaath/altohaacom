@@ -634,9 +634,9 @@ export default function SocialLinks() {
       )}
       {googleFontLink && <link rel="stylesheet" href={googleFontLink} />}
       <SEOHead
-        title={`${displayName} (@${username}) - Altoha`}
-        description={bio ? `${bio.slice(0, 150)}` : `${displayName}'s links, bio & contact on Altoha`}
-        ogImage={coverImage || profile.avatar_url || undefined}
+        title={(lang === "ar" ? extra.seo_title_ar || extra.seo_title : extra.seo_title) || `${displayName} (@${username}) - Altoha`}
+        description={(lang === "ar" ? extra.seo_description_ar || extra.seo_description : extra.seo_description) || (bio ? `${bio.slice(0, 150)}` : `${displayName}'s links, bio & contact on Altoha`)}
+        ogImage={extra.og_image_url || coverImage || profile.avatar_url || undefined}
         ogType="profile"
         canonical={buildSocialLinksUrl(username)}
         lang={lang}
