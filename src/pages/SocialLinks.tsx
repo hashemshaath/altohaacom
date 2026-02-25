@@ -8,8 +8,9 @@ import {
   ExternalLink, Instagram, Twitter, Facebook, Linkedin, Youtube, Globe,
   User, ArrowLeft, Share2, Check, BadgeCheck, MapPin, Briefcase, Award, Link2,
   Pencil, LogIn, Phone, MessageCircle, Eye, Users, UserPlus, UserCheck, Loader2,
-  Lock, Mail
+  Lock, Mail, Tv
 } from "lucide-react";
+import { BioCareerSections } from "@/components/public-profile/BioCareerSections";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
@@ -988,6 +989,11 @@ export default function SocialLinks() {
               ))}
             </div>
           </div>
+        )}
+
+        {/* Career Sections (Work, Education, Media, Certifications) */}
+        {profileUserId && (
+          <BioCareerSections userId={profileUserId} theme={theme} isRtl={isRtl} animated={animated} />
         )}
 
         {/* Social Icons */}
