@@ -518,8 +518,17 @@ export default function SocialLinks() {
 
   const isLight = themeId === "minimal";
 
-  // Filter items by active page
-  const filteredItems = activePage === "main" || !extra.pages.length ? items : items;
+  // Filter items by active page and scheduling
+  const filteredItems = useMemo(() => {
+    const now = new Date();
+    return (activePage === "main" || !extra.pages.length ? items : items).filter(item => {
+      const start = (item as any).scheduled_start;
+      const end = (item as any).scheduled_end;
+      if (start && new Date(start) > now) return false;
+      if (end && new Date(end) < now) return false;
+      return true;
+    });
+  }, [items, activePage, extra.pages.length]);
 
   const hasMultiPages = extra.pages && extra.pages.length > 0;
 
@@ -1015,13 +1024,7 @@ export default function SocialLinks() {
         {filteredItems.length > 0 && (
           <div className="mb-5">
             <div className={`${extra.link_layout === "grid" ? "grid grid-cols-2 gap-2.5" : "space-y-2.5"}`}>
-              {filteredItems.filter(item => {
-                // Schedule filtering
-                const now = new Date();
-                if ((item as any).scheduled_start && new Date((item as any).scheduled_start) > now) return false;
-                if ((item as any).scheduled_end && new Date((item as any).scheduled_end) < now) return false;
-                return true;
-              }).map((item, index) => (
+              {filteredItems.map((item, index) => (
                 <div key={item.id}>
                   <a
                     href={item.url.startsWith("http") ? item.url : `https://${item.url}`}
