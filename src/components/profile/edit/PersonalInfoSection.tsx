@@ -1,9 +1,9 @@
-import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
+import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { User } from "lucide-react";
+import { TranslatableInput } from "./TranslatableInput";
 
 const GENDERS = [
   { value: "male", en: "Male", ar: "ذكر" },
@@ -28,22 +28,30 @@ export function PersonalInfoSection({ form, update, isAr }: PersonalInfoSectionP
       </CardHeader>
       <CardContent className="space-y-4">
         <div className="grid gap-4 sm:grid-cols-2">
-          <div className="space-y-1.5">
-            <Label className="text-xs">{isAr ? "الاسم الكامل (إنجليزي)" : "Full Name (English)"}</Label>
-            <Input value={form.full_name} onChange={(e) => update("full_name", e.target.value)} dir="ltr" />
-          </div>
-          <div className="space-y-1.5">
-            <Label className="text-xs">{isAr ? "الاسم الكامل (عربي)" : "Full Name (Arabic)"}</Label>
-            <Input value={form.full_name_ar} onChange={(e) => update("full_name_ar", e.target.value)} dir="rtl" />
-          </div>
-          <div className="space-y-1.5">
-            <Label className="text-xs">{isAr ? "الاسم المعروض (إنجليزي)" : "Display Name (English)"}</Label>
-            <Input value={form.display_name} onChange={(e) => update("display_name", e.target.value)} dir="ltr" placeholder="Chef John" />
-          </div>
-          <div className="space-y-1.5">
-            <Label className="text-xs">{isAr ? "الاسم المعروض (عربي)" : "Display Name (Arabic)"}</Label>
-            <Input value={form.display_name_ar} onChange={(e) => update("display_name_ar", e.target.value)} dir="rtl" placeholder="الشيف جون" />
-          </div>
+          <TranslatableInput
+            label={isAr ? "الاسم الكامل (إنجليزي)" : "Full Name (English)"}
+            value={form.full_name} onChange={(v) => update("full_name", v)}
+            dir="ltr" lang="en"
+            pairedValue={form.full_name_ar} onTranslated={(v) => update("full_name_ar", v)}
+          />
+          <TranslatableInput
+            label={isAr ? "الاسم الكامل (عربي)" : "Full Name (Arabic)"}
+            value={form.full_name_ar} onChange={(v) => update("full_name_ar", v)}
+            dir="rtl" lang="ar"
+            pairedValue={form.full_name} onTranslated={(v) => update("full_name", v)}
+          />
+          <TranslatableInput
+            label={isAr ? "الاسم المعروض (إنجليزي)" : "Display Name (English)"}
+            value={form.display_name} onChange={(v) => update("display_name", v)}
+            dir="ltr" lang="en" placeholder="Chef John"
+            pairedValue={form.display_name_ar} onTranslated={(v) => update("display_name_ar", v)}
+          />
+          <TranslatableInput
+            label={isAr ? "الاسم المعروض (عربي)" : "Display Name (Arabic)"}
+            value={form.display_name_ar} onChange={(v) => update("display_name_ar", v)}
+            dir="rtl" lang="ar" placeholder="الشيف جون"
+            pairedValue={form.display_name} onTranslated={(v) => update("display_name", v)}
+          />
         </div>
         <div className="grid gap-4 sm:grid-cols-3">
           <div className="space-y-1.5">
@@ -71,14 +79,18 @@ export function PersonalInfoSection({ form, update, isAr }: PersonalInfoSectionP
           </div>
         </div>
         <div className="grid gap-4 sm:grid-cols-2">
-          <div className="space-y-1.5">
-            <Label className="text-xs">{isAr ? "النبذة (إنجليزي)" : "Bio (English)"}</Label>
-            <Textarea value={form.bio} onChange={(e) => update("bio", e.target.value)} rows={3} dir="ltr" />
-          </div>
-          <div className="space-y-1.5">
-            <Label className="text-xs">{isAr ? "النبذة (عربي)" : "Bio (Arabic)"}</Label>
-            <Textarea value={form.bio_ar} onChange={(e) => update("bio_ar", e.target.value)} rows={3} dir="rtl" />
-          </div>
+          <TranslatableInput
+            label={isAr ? "النبذة (إنجليزي)" : "Bio (English)"}
+            value={form.bio} onChange={(v) => update("bio", v)}
+            dir="ltr" lang="en" multiline rows={3}
+            pairedValue={form.bio_ar} onTranslated={(v) => update("bio_ar", v)}
+          />
+          <TranslatableInput
+            label={isAr ? "النبذة (عربي)" : "Bio (Arabic)"}
+            value={form.bio_ar} onChange={(v) => update("bio_ar", v)}
+            dir="rtl" lang="ar" multiline rows={3}
+            pairedValue={form.bio} onTranslated={(v) => update("bio", v)}
+          />
         </div>
       </CardContent>
     </Card>

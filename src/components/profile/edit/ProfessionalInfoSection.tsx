@@ -3,6 +3,7 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Briefcase } from "lucide-react";
+import { TranslatableInput } from "./TranslatableInput";
 
 interface ProfessionalInfoSectionProps {
   form: Record<string, any>;
@@ -21,22 +22,30 @@ export function ProfessionalInfoSection({ form, update, isAr }: ProfessionalInfo
       </CardHeader>
       <CardContent className="space-y-4">
         <div className="grid gap-4 sm:grid-cols-2">
-          <div className="space-y-1.5">
-            <Label className="text-xs">{isAr ? "المسمى الوظيفي (إنجليزي)" : "Job Title (English)"}</Label>
-            <Input value={form.job_title} onChange={(e) => update("job_title", e.target.value)} dir="ltr" placeholder="Executive Chef" />
-          </div>
-          <div className="space-y-1.5">
-            <Label className="text-xs">{isAr ? "المسمى الوظيفي (عربي)" : "Job Title (Arabic)"}</Label>
-            <Input value={form.job_title_ar} onChange={(e) => update("job_title_ar", e.target.value)} dir="rtl" placeholder="الشيف التنفيذي" />
-          </div>
-          <div className="space-y-1.5">
-            <Label className="text-xs">{isAr ? "التخصص (إنجليزي)" : "Specialization (English)"}</Label>
-            <Input value={form.specialization} onChange={(e) => update("specialization", e.target.value)} dir="ltr" />
-          </div>
-          <div className="space-y-1.5">
-            <Label className="text-xs">{isAr ? "التخصص (عربي)" : "Specialization (Arabic)"}</Label>
-            <Input value={form.specialization_ar} onChange={(e) => update("specialization_ar", e.target.value)} dir="rtl" />
-          </div>
+          <TranslatableInput
+            label={isAr ? "المسمى الوظيفي (إنجليزي)" : "Job Title (English)"}
+            value={form.job_title} onChange={(v) => update("job_title", v)}
+            dir="ltr" lang="en" placeholder="Executive Chef"
+            pairedValue={form.job_title_ar} onTranslated={(v) => update("job_title_ar", v)}
+          />
+          <TranslatableInput
+            label={isAr ? "المسمى الوظيفي (عربي)" : "Job Title (Arabic)"}
+            value={form.job_title_ar} onChange={(v) => update("job_title_ar", v)}
+            dir="rtl" lang="ar" placeholder="الشيف التنفيذي"
+            pairedValue={form.job_title} onTranslated={(v) => update("job_title", v)}
+          />
+          <TranslatableInput
+            label={isAr ? "التخصص (إنجليزي)" : "Specialization (English)"}
+            value={form.specialization} onChange={(v) => update("specialization", v)}
+            dir="ltr" lang="en"
+            pairedValue={form.specialization_ar} onTranslated={(v) => update("specialization_ar", v)}
+          />
+          <TranslatableInput
+            label={isAr ? "التخصص (عربي)" : "Specialization (Arabic)"}
+            value={form.specialization_ar} onChange={(v) => update("specialization_ar", v)}
+            dir="rtl" lang="ar"
+            pairedValue={form.specialization} onTranslated={(v) => update("specialization", v)}
+          />
         </div>
         <div className="grid gap-4 sm:grid-cols-2">
           <div className="space-y-1.5">
