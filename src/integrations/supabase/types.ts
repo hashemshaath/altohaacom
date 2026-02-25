@@ -17599,6 +17599,11 @@ export type Database = {
       }
       social_link_items: {
         Row: {
+          ab_enabled: boolean | null
+          ab_variant_click_count: number | null
+          ab_variant_icon: string | null
+          ab_variant_title: string | null
+          ab_variant_title_ar: string | null
           click_count: number | null
           created_at: string
           custom_css: string | null
@@ -17618,6 +17623,11 @@ export type Database = {
           user_id: string
         }
         Insert: {
+          ab_enabled?: boolean | null
+          ab_variant_click_count?: number | null
+          ab_variant_icon?: string | null
+          ab_variant_title?: string | null
+          ab_variant_title_ar?: string | null
           click_count?: number | null
           created_at?: string
           custom_css?: string | null
@@ -17637,6 +17647,11 @@ export type Database = {
           user_id: string
         }
         Update: {
+          ab_enabled?: boolean | null
+          ab_variant_click_count?: number | null
+          ab_variant_icon?: string | null
+          ab_variant_title?: string | null
+          ab_variant_title_ar?: string | null
           click_count?: number | null
           created_at?: string
           custom_css?: string | null

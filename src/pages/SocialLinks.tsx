@@ -13,7 +13,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
-import { useState, useEffect, useMemo, useCallback, memo } from "react";
+import { useState, useEffect, useMemo, useCallback, useRef, memo } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { buildSocialLinksUrl } from "@/lib/publicAppUrl";
@@ -372,9 +372,15 @@ export default function SocialLinks() {
     }
   }, [profileUserId, isOwner, data?.page?.id]);
 
+  const abVariantsRef = useRef<Record<string, "A" | "B">>({});
+
   const handleLinkClick = useCallback((itemId: string) => {
-    supabase.rpc("increment_field" as any, { table_name: "social_link_items", field_name: "click_count", row_id: itemId }).then(() => {});
-    // Record detailed click for advanced analytics
+    const variant = abVariantsRef.current[itemId];
+    if (variant === "B") {
+      supabase.rpc("increment_field" as any, { table_name: "social_link_items", field_name: "ab_variant_click_count", row_id: itemId }).then(() => {});
+    } else {
+      supabase.rpc("increment_field" as any, { table_name: "social_link_items", field_name: "click_count", row_id: itemId }).then(() => {});
+    }
     if (data?.page?.id) {
       const ua = navigator.userAgent;
       const isMobile = /Mobi|Android|iPhone/i.test(ua);
@@ -534,7 +540,18 @@ export default function SocialLinks() {
 
   const isLight = themeId === "minimal";
 
-  // Filter items by active page and scheduling
+  // Initialize A/B variants after items are available
+  useMemo(() => {
+    const map: Record<string, "A" | "B"> = {};
+    for (const item of items) {
+      if ((item as any).ab_enabled && (item as any).ab_variant_title) {
+        // Keep existing assignment if already set for this item
+        map[item.id] = abVariantsRef.current[item.id] || (Math.random() < 0.5 ? "A" : "B");
+      }
+    }
+    abVariantsRef.current = map;
+  }, [items]);
+
   const filteredItems = useMemo(() => {
     const now = new Date();
     return (activePage === "main" || !extra.pages.length ? items : items).filter(item => {
@@ -1116,11 +1133,21 @@ export default function SocialLinks() {
                     {item.thumbnail_url && (
                       <img src={item.thumbnail_url} alt="" className={`${extra.link_layout === "grid" ? "h-10 w-10" : "h-9 w-9"} rounded-lg object-cover shrink-0 relative z-10`} loading="lazy" />
                     )}
-                    {item.icon && !item.thumbnail_url && (
-                      <span className={`${extra.link_layout === "grid" ? "text-xl" : "text-lg"} shrink-0 relative z-10`}>{item.icon}</span>
-                    )}
+                    {(() => {
+                      const abIcon = abVariantsRef.current[item.id] === "B" ? (item as any).ab_variant_icon : null;
+                      const displayIcon = abIcon || item.icon;
+                      return displayIcon && !item.thumbnail_url ? (
+                        <span className={`${extra.link_layout === "grid" ? "text-xl" : "text-lg"} shrink-0 relative z-10`}>{displayIcon}</span>
+                      ) : null;
+                    })()}
                     <span className={`${extra.link_layout === "grid" ? "" : "flex-1"} font-medium ${textAlignClass} relative z-10 ${fontSize.link}`}>
-                      {isRtl ? (item.title_ar || item.title) : item.title}
+                      {(() => {
+                        const isB = abVariantsRef.current[item.id] === "B";
+                        if (isB) {
+                          return isRtl ? ((item as any).ab_variant_title_ar || (item as any).ab_variant_title || item.title) : ((item as any).ab_variant_title || item.title);
+                        }
+                        return isRtl ? (item.title_ar || item.title) : item.title;
+                      })()}
                     </span>
                     {extra.link_layout !== "grid" && (
                       <ExternalLink className="h-3.5 w-3.5 opacity-20 group-hover:opacity-50 transition-opacity shrink-0 relative z-10" />
