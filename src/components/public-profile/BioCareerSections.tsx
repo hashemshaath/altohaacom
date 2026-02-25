@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import { Briefcase, GraduationCap, Tv, Award, ChevronDown, Calendar, Building2 } from "lucide-react";
+import { Briefcase, GraduationCap, Tv, Award, Trophy, ChevronDown, Calendar, Building2 } from "lucide-react";
 
 interface Props {
   userId: string;
@@ -121,8 +121,9 @@ export function BioCareerSections({ userId, theme, isRtl, animated }: Props) {
   const eduRecords = records.filter((r: any) => r.record_type === "education");
   const mediaRecords = records.filter((r: any) => r.record_type === "media");
   const certRecords = records.filter((r: any) => r.record_type === "certification");
+  const competitionRecords = records.filter((r: any) => r.record_type === "competitions");
 
-  const hasAny = workRecords.length + eduRecords.length + mediaRecords.length + certRecords.length > 0;
+  const hasAny = workRecords.length + eduRecords.length + mediaRecords.length + certRecords.length + competitionRecords.length > 0;
   if (!hasAny) return null;
 
   const iconBg = `${theme.accent}15`;
@@ -157,6 +158,14 @@ export function BioCareerSections({ userId, theme, isRtl, animated }: Props) {
         <div className="space-y-2">
           {certRecords.map((r: any) => (
             <RecordCard key={r.id} record={r} isAr={isRtl} theme={theme} icon={Award} iconBg={iconBg} />
+          ))}
+        </div>
+      </CollapsibleBioSection>
+
+      <CollapsibleBioSection icon={Trophy} title={isRtl ? "المسابقات والفعاليات" : "Competitions & Events"} count={competitionRecords.length} theme={theme} defaultOpen={false}>
+        <div className="space-y-2">
+          {competitionRecords.map((r: any) => (
+            <RecordCard key={r.id} record={r} isAr={isRtl} theme={theme} icon={Trophy} iconBg={iconBg} />
           ))}
         </div>
       </CollapsibleBioSection>
