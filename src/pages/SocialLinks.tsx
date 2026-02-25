@@ -82,6 +82,24 @@ function t(key: string, lang: LangCode): string {
   return T[key]?.[lang] || T[key]?.en || key;
 }
 
+const containsArabic = (text?: string | null) => !!text && /[\u0600-\u06FF]/.test(text);
+const containsLatin = (text?: string | null) => !!text && /[A-Za-z]/.test(text);
+
+const pickLocalizedText = (isArabicUi: boolean, arText?: string | null, enText?: string | null) => {
+  const ar = (arText || "").trim();
+  const en = (enText || "").trim();
+
+  if (isArabicUi) {
+    if (ar) return ar;
+    if (en && containsArabic(en) && !containsLatin(en)) return en;
+    return "";
+  }
+
+  if (en) return en;
+  if (ar && containsLatin(ar) && !containsArabic(ar)) return ar;
+  return "";
+};
+
 const SOCIAL_ICONS: Record<string, { icon: typeof Instagram; label: string; urlPrefix?: string; hoverColor: string }> = {
   instagram: { icon: Instagram, label: "Instagram", urlPrefix: "https://instagram.com/", hoverColor: "#E1306C" },
   twitter: { icon: Twitter, label: "X / Twitter", urlPrefix: "https://x.com/", hoverColor: "#1DA1F2" },
@@ -556,23 +574,34 @@ export default function SocialLinks() {
   const fontSize = FONT_SIZE_MAP[extra.font_size] || FONT_SIZE_MAP.md;
   const fontFamily = FONT_MAP[page?.font_family || "default"] || "inherit";
 
-  const displayName = isRtl
-    ? (profile.display_name_ar || profile.full_name_ar || profile.display_name || profile.full_name || "")
-    : (profile.display_name || profile.full_name || profile.display_name_ar || profile.full_name_ar || "");
+  const displayName =
+    pickLocalizedText(
+      isRtl,
+      profile.display_name_ar || profile.full_name_ar || null,
+      profile.display_name || profile.full_name || null,
+    ) || (isRtl ? "الملف الشخصي" : "Profile");
 
-  const bio = isRtl
-    ? ((profile as any).bio_ar || (profile as any).bio || page?.bio_ar || page?.bio)
-    : ((profile as any).bio || (profile as any).bio_ar || page?.bio || page?.bio_ar);
+  const bio = pickLocalizedText(
+    isRtl,
+    page?.bio_ar || (profile as any).bio_ar || null,
+    page?.bio || (profile as any).bio || null,
+  );
 
-  const title = isRtl ? (page?.page_title_ar || page?.page_title || displayName) : (page?.page_title || page?.page_title_ar || displayName);
+  const title =
+    pickLocalizedText(isRtl, page?.page_title_ar || null, page?.page_title || null) ||
+    displayName;
 
-  const specialization = isRtl
-    ? ((profile as any).specialization_ar || (profile as any).specialization)
-    : ((profile as any).specialization || (profile as any).specialization_ar);
+  const specialization = pickLocalizedText(
+    isRtl,
+    (profile as any).specialization_ar || null,
+    (profile as any).specialization || null,
+  );
 
-  const jobTitle = isRtl
-    ? ((profile as any).job_title_ar || (profile as any).job_title)
-    : ((profile as any).job_title || (profile as any).job_title_ar);
+  const jobTitle = pickLocalizedText(
+    isRtl,
+    (profile as any).job_title_ar || null,
+    (profile as any).job_title || null,
+  );
 
   const socialPlatforms = [
     { key: "instagram", value: profile.instagram },
