@@ -1,30 +1,36 @@
+import { lazy, Suspense, useEffect, useRef } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Trophy, Users, GraduationCap, Landmark, MessageSquare, ShoppingBag, Sparkles, Award, Star, UtensilsCrossed, HandHeart, AlertCircle, Megaphone, ClipboardList } from "lucide-react";
+import { Trophy, Users, GraduationCap, Landmark, MessageSquare, ShoppingBag, Sparkles, Award, Star, UtensilsCrossed, HandHeart, AlertCircle, Megaphone, ClipboardList, ArrowRight } from "lucide-react";
 import { Link } from "react-router-dom";
-import { UpcomingCompetitionsWidget } from "@/components/dashboard/UpcomingCompetitionsWidget";
-import { RecentActivityWidget } from "@/components/dashboard/RecentActivityWidget";
-import { ReferralWidget } from "@/components/dashboard/ReferralWidget";
-import { QuickStatsWidget } from "@/components/dashboard/QuickStatsWidget";
-import { MasterclassProgressWidget } from "@/components/dashboard/MasterclassProgressWidget";
-import { ArrowRight } from "lucide-react";
-import { NotificationsSummaryWidget } from "@/components/dashboard/NotificationsSummaryWidget";
-import { UpcomingExhibitionsWidget } from "@/components/dashboard/UpcomingExhibitionsWidget";
-import { EventsCalendarWidget } from "@/components/dashboard/EventsCalendarWidget";
-import { ChefScheduleWidget } from "@/components/dashboard/ChefScheduleWidget";
-import { ContentStatsWidget } from "@/components/dashboard/ContentStatsWidget";
-import { ProfileInsightsWidget } from "@/components/dashboard/ProfileInsightsWidget";
-import { NotificationActivityWidget } from "@/components/dashboard/NotificationActivityWidget";
-import { EngagementAnalyticsWidget } from "@/components/dashboard/EngagementAnalyticsWidget";
 import { useAuth } from "@/contexts/AuthContext";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { SEOHead } from "@/components/SEOHead";
 import { useAwardPoints } from "@/hooks/useAwardPoints";
-import { useEffect, useRef } from "react";
+import { DashboardWidgetSkeleton } from "@/components/dashboard/DashboardWidgetSkeleton";
+
+// Lazy-loaded widgets
+const UpcomingCompetitionsWidget = lazy(() => import("@/components/dashboard/UpcomingCompetitionsWidget").then(m => ({ default: m.UpcomingCompetitionsWidget })));
+const RecentActivityWidget = lazy(() => import("@/components/dashboard/RecentActivityWidget").then(m => ({ default: m.RecentActivityWidget })));
+const ReferralWidget = lazy(() => import("@/components/dashboard/ReferralWidget").then(m => ({ default: m.ReferralWidget })));
+const QuickStatsWidget = lazy(() => import("@/components/dashboard/QuickStatsWidget").then(m => ({ default: m.QuickStatsWidget })));
+const MasterclassProgressWidget = lazy(() => import("@/components/dashboard/MasterclassProgressWidget").then(m => ({ default: m.MasterclassProgressWidget })));
+const NotificationsSummaryWidget = lazy(() => import("@/components/dashboard/NotificationsSummaryWidget").then(m => ({ default: m.NotificationsSummaryWidget })));
+const UpcomingExhibitionsWidget = lazy(() => import("@/components/dashboard/UpcomingExhibitionsWidget").then(m => ({ default: m.UpcomingExhibitionsWidget })));
+const EventsCalendarWidget = lazy(() => import("@/components/dashboard/EventsCalendarWidget").then(m => ({ default: m.EventsCalendarWidget })));
+const ChefScheduleWidget = lazy(() => import("@/components/dashboard/ChefScheduleWidget").then(m => ({ default: m.ChefScheduleWidget })));
+const ContentStatsWidget = lazy(() => import("@/components/dashboard/ContentStatsWidget").then(m => ({ default: m.ContentStatsWidget })));
+const ProfileInsightsWidget = lazy(() => import("@/components/dashboard/ProfileInsightsWidget").then(m => ({ default: m.ProfileInsightsWidget })));
+const NotificationActivityWidget = lazy(() => import("@/components/dashboard/NotificationActivityWidget").then(m => ({ default: m.NotificationActivityWidget })));
+const EngagementAnalyticsWidget = lazy(() => import("@/components/dashboard/EngagementAnalyticsWidget").then(m => ({ default: m.EngagementAnalyticsWidget })));
+
+function WidgetSuspense({ children, lines }: { children: React.ReactNode; lines?: number }) {
+  return <Suspense fallback={<DashboardWidgetSkeleton lines={lines} />}>{children}</Suspense>;
+}
 
 export default function Dashboard() {
   const { t, language } = useLanguage();
@@ -78,88 +84,19 @@ export default function Dashboard() {
       <SEOHead title="Dashboard" description="Your personal Altoha dashboard" />
       <Header />
       <main className="container flex-1 py-4 md:py-6">
-        {/* Welcome Banner — compact on mobile, spacious on desktop */}
-        <div className="relative mb-6 overflow-hidden rounded-2xl border border-primary/10 bg-gradient-to-br from-primary/10 via-background to-accent/10 p-4 sm:p-6 md:p-8 group shadow-sm transition-all duration-300 hover:shadow-md hover:border-primary/20">
-          <div className="pointer-events-none absolute -end-16 -top-16 h-48 w-48 rounded-full bg-primary/15 blur-[80px] animate-pulse" />
-          <div className="pointer-events-none absolute -start-8 -bottom-8 h-36 w-36 rounded-full bg-accent/15 blur-[60px] animate-pulse [animation-delay:2s]" />
-          <div className="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-primary/30 to-transparent" />
-
-          <div className="relative flex items-center justify-between gap-4">
-            <div className="flex items-center gap-3 sm:gap-4 min-w-0">
-              <div className="flex h-12 w-12 sm:h-14 sm:w-14 shrink-0 items-center justify-center rounded-2xl bg-primary/10 ring-2 ring-primary/10 shadow-inner transition-transform duration-300 group-hover:scale-105">
-                <Sparkles className="h-6 w-6 sm:h-7 sm:w-7 text-primary animate-pulse" />
-              </div>
-              <div className="min-w-0">
-                <h1 className="font-serif text-xl sm:text-2xl md:text-3xl font-bold tracking-tight text-foreground truncate">{greeting} 👋</h1>
-                <p className="mt-0.5 text-xs sm:text-sm text-muted-foreground font-medium line-clamp-1 sm:line-clamp-none">
-                  {isAr
-                    ? "إليك ملخص نشاطك ومسابقاتك القادمة"
-                    : "Your culinary milestones await below."}
-                </p>
-              </div>
-            </div>
-            <Link to="/profile?tab=edit" className="shrink-0">
-              <Button variant="secondary" size="sm" className="gap-1.5 shadow-sm rounded-xl text-xs sm:text-sm">
-                <span className="hidden sm:inline">{isAr ? "إدارة الملف" : "Manage Profile"}</span>
-                <span className="sm:hidden">{isAr ? "الملف" : "Profile"}</span>
-                <ArrowRight className="h-3.5 w-3.5" />
-              </Button>
-            </Link>
-          </div>
-        </div>
+        {/* Welcome Banner */}
+        <WelcomeBanner greeting={greeting} isAr={isAr} />
 
         {/* Profile Completion Nudge */}
-        {user && profile && !profile.profile_completed && (
-          <div className="mb-5 animate-fade-in">
-            <Link to="/onboarding">
-              <Card className="group border-chart-4/30 bg-gradient-to-r from-chart-4/5 to-transparent transition-all hover:shadow-md active:scale-[0.99]">
-                <CardContent className="flex items-center gap-3 py-3.5 px-4">
-                  <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-chart-4/10 ring-2 ring-chart-4/20">
-                    <AlertCircle className="h-4 w-4 text-chart-4" />
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <p className="text-sm font-semibold">{isAr ? "أكمل ملفك الشخصي" : "Complete Your Profile"}</p>
-                    <p className="text-xs text-muted-foreground truncate">{isAr ? "أكمل معلوماتك لفتح جميع المزايا" : "Finish setup to unlock all features"}</p>
-                  </div>
-                  <ArrowRight className="h-4 w-4 text-muted-foreground group-hover:text-primary transition-colors shrink-0" />
-                </CardContent>
-              </Card>
-            </Link>
-          </div>
-        )}
+        {user && profile && !profile.profile_completed && <ProfileNudge isAr={isAr} />}
 
-        {/* Quick Navigation - Scrollable 2-row on mobile, grid on desktop */}
-        <div className="mb-8">
-          <h2 className="text-xs font-bold uppercase tracking-wider text-muted-foreground mb-3 flex items-center gap-2">
-            <Sparkles className="h-3 w-3 text-primary" />
-            {isAr ? "الوصول السريع" : "Quick Access"}
-          </h2>
-          {/* Mobile: horizontal scroll strip. Tablet+: grid */}
-          <div className="relative">
-            <div
-              className="flex gap-2 overflow-x-auto pb-2 sm:pb-0 sm:grid sm:grid-cols-5 lg:grid-cols-10 sm:overflow-visible"
-              style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
-            >
-              {sections.map((s) => (
-                <Link key={s.title} to={s.href} className="group shrink-0 sm:shrink">
-                  <div className={`flex flex-col items-center gap-1.5 p-2 rounded-2xl border border-border/30 bg-card/60 backdrop-blur-sm transition-all duration-200 hover:shadow-md hover:border-border/60 active:scale-[0.92] w-[68px] sm:w-auto ${s.glow}`}>
-                    <div className={`flex h-10 w-10 items-center justify-center rounded-xl ${s.bg} ring-1 ${s.ring} transition-all duration-200 group-hover:scale-105`}>
-                      <s.icon className={`h-4 w-4 ${s.color}`} />
-                    </div>
-                    <span className="text-[9px] font-semibold text-center text-foreground/80 leading-tight w-full line-clamp-2">{s.title}</span>
-                  </div>
-                </Link>
-              ))}
-            </div>
-            {/* Right fade hint on mobile */}
-            <div className="pointer-events-none absolute end-0 top-0 bottom-2 w-8 bg-gradient-to-l from-background to-transparent sm:hidden" />
-          </div>
-        </div>
+        {/* Quick Navigation */}
+        <QuickAccessGrid sections={sections} isAr={isAr} />
 
         {/* Quick Stats */}
         {user && (
           <div className="mb-8">
-            <QuickStatsWidget />
+            <WidgetSuspense lines={1}><QuickStatsWidget /></WidgetSuspense>
           </div>
         )}
 
@@ -173,24 +110,106 @@ export default function Dashboard() {
         {/* Main Content Grid */}
         <div className="grid gap-6 lg:grid-cols-3">
           <div className="lg:col-span-2 space-y-6">
-            <UpcomingCompetitionsWidget />
-            <UpcomingExhibitionsWidget />
-            {user && <MasterclassProgressWidget />}
+            <WidgetSuspense><UpcomingCompetitionsWidget /></WidgetSuspense>
+            <WidgetSuspense><UpcomingExhibitionsWidget /></WidgetSuspense>
+            {user && <WidgetSuspense><MasterclassProgressWidget /></WidgetSuspense>}
           </div>
           <div className="space-y-6">
-            {user && <ProfileInsightsWidget />}
-            {user && <EngagementAnalyticsWidget />}
-            {user && <NotificationActivityWidget />}
-            {user && <ContentStatsWidget />}
-            {user && <ReferralWidget />}
-            {user && <ChefScheduleWidget />}
-            {user && <EventsCalendarWidget />}
-            {user && <NotificationsSummaryWidget />}
-            <RecentActivityWidget />
+            {user && <WidgetSuspense><ProfileInsightsWidget /></WidgetSuspense>}
+            {user && <WidgetSuspense><EngagementAnalyticsWidget /></WidgetSuspense>}
+            {user && <WidgetSuspense><NotificationActivityWidget /></WidgetSuspense>}
+            {user && <WidgetSuspense><ContentStatsWidget /></WidgetSuspense>}
+            {user && <WidgetSuspense><ReferralWidget /></WidgetSuspense>}
+            {user && <WidgetSuspense><ChefScheduleWidget /></WidgetSuspense>}
+            {user && <WidgetSuspense><EventsCalendarWidget /></WidgetSuspense>}
+            {user && <WidgetSuspense><NotificationsSummaryWidget /></WidgetSuspense>}
+            <WidgetSuspense><RecentActivityWidget /></WidgetSuspense>
           </div>
         </div>
       </main>
       <Footer />
+    </div>
+  );
+}
+
+/* ---------- Extracted Sub-Components ---------- */
+
+function WelcomeBanner({ greeting, isAr }: { greeting: string; isAr: boolean }) {
+  return (
+    <div className="relative mb-6 overflow-hidden rounded-2xl border border-primary/10 bg-gradient-to-br from-primary/10 via-background to-accent/10 p-4 sm:p-6 md:p-8 group shadow-sm transition-all duration-300 hover:shadow-md hover:border-primary/20">
+      <div className="pointer-events-none absolute -end-16 -top-16 h-48 w-48 rounded-full bg-primary/15 blur-[80px] animate-pulse" />
+      <div className="pointer-events-none absolute -start-8 -bottom-8 h-36 w-36 rounded-full bg-accent/15 blur-[60px] animate-pulse [animation-delay:2s]" />
+      <div className="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-primary/30 to-transparent" />
+      <div className="relative flex items-center justify-between gap-4">
+        <div className="flex items-center gap-3 sm:gap-4 min-w-0">
+          <div className="flex h-12 w-12 sm:h-14 sm:w-14 shrink-0 items-center justify-center rounded-2xl bg-primary/10 ring-2 ring-primary/10 shadow-inner transition-transform duration-300 group-hover:scale-105">
+            <Sparkles className="h-6 w-6 sm:h-7 sm:w-7 text-primary animate-pulse" />
+          </div>
+          <div className="min-w-0">
+            <h1 className="font-serif text-xl sm:text-2xl md:text-3xl font-bold tracking-tight text-foreground truncate">{greeting} 👋</h1>
+            <p className="mt-0.5 text-xs sm:text-sm text-muted-foreground font-medium line-clamp-1 sm:line-clamp-none">
+              {isAr ? "إليك ملخص نشاطك ومسابقاتك القادمة" : "Your culinary milestones await below."}
+            </p>
+          </div>
+        </div>
+        <Link to="/profile?tab=edit" className="shrink-0">
+          <Button variant="secondary" size="sm" className="gap-1.5 shadow-sm rounded-xl text-xs sm:text-sm">
+            <span className="hidden sm:inline">{isAr ? "إدارة الملف" : "Manage Profile"}</span>
+            <span className="sm:hidden">{isAr ? "الملف" : "Profile"}</span>
+            <ArrowRight className="h-3.5 w-3.5" />
+          </Button>
+        </Link>
+      </div>
+    </div>
+  );
+}
+
+function ProfileNudge({ isAr }: { isAr: boolean }) {
+  return (
+    <div className="mb-5 animate-fade-in">
+      <Link to="/onboarding">
+        <Card className="group border-chart-4/30 bg-gradient-to-r from-chart-4/5 to-transparent transition-all hover:shadow-md active:scale-[0.99]">
+          <CardContent className="flex items-center gap-3 py-3.5 px-4">
+            <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-chart-4/10 ring-2 ring-chart-4/20">
+              <AlertCircle className="h-4 w-4 text-chart-4" />
+            </div>
+            <div className="flex-1 min-w-0">
+              <p className="text-sm font-semibold">{isAr ? "أكمل ملفك الشخصي" : "Complete Your Profile"}</p>
+              <p className="text-xs text-muted-foreground truncate">{isAr ? "أكمل معلوماتك لفتح جميع المزايا" : "Finish setup to unlock all features"}</p>
+            </div>
+            <ArrowRight className="h-4 w-4 text-muted-foreground group-hover:text-primary transition-colors shrink-0" />
+          </CardContent>
+        </Card>
+      </Link>
+    </div>
+  );
+}
+
+function QuickAccessGrid({ sections, isAr }: { sections: Array<{ icon: any; title: string; href: string; color: string; bg: string; ring: string; glow: string }>; isAr: boolean }) {
+  return (
+    <div className="mb-8">
+      <h2 className="text-xs font-bold uppercase tracking-wider text-muted-foreground mb-3 flex items-center gap-2">
+        <Sparkles className="h-3 w-3 text-primary" />
+        {isAr ? "الوصول السريع" : "Quick Access"}
+      </h2>
+      <div className="relative">
+        <div
+          className="flex gap-2 overflow-x-auto pb-2 sm:pb-0 sm:grid sm:grid-cols-5 lg:grid-cols-10 sm:overflow-visible"
+          style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
+        >
+          {sections.map((s) => (
+            <Link key={s.title} to={s.href} className="group shrink-0 sm:shrink">
+              <div className={`flex flex-col items-center gap-1.5 p-2 rounded-2xl border border-border/30 bg-card/60 backdrop-blur-sm transition-all duration-200 hover:shadow-md hover:border-border/60 active:scale-[0.92] w-[68px] sm:w-auto ${s.glow}`}>
+                <div className={`flex h-10 w-10 items-center justify-center rounded-xl ${s.bg} ring-1 ${s.ring} transition-all duration-200 group-hover:scale-105`}>
+                  <s.icon className={`h-4 w-4 ${s.color}`} />
+                </div>
+                <span className="text-[9px] font-semibold text-center text-foreground/80 leading-tight w-full line-clamp-2">{s.title}</span>
+              </div>
+            </Link>
+          ))}
+        </div>
+        <div className="pointer-events-none absolute end-0 top-0 bottom-2 w-8 bg-gradient-to-l from-background to-transparent sm:hidden" />
+      </div>
     </div>
   );
 }
