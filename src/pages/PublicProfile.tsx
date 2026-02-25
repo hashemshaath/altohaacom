@@ -76,7 +76,7 @@ const formatPeriodRange = (startDate: string | null, endDate: string | null, isC
   const start = formatDate(startDate, isAr);
   const end = formatDate(endDate, isAr);
 
-  if (isCurrent) return `${start || (isAr ? "غير محدد" : "Unknown")} – ${isAr ? "الحالي" : "Present"}`;
+  if (isCurrent) return `${start || (isAr ? "غير محدد" : "Unknown")} – ${isAr ? "مستمر" : "Ongoing"}`;
   if (start && end) return `${start} – ${end}`;
   if (start) return start;
   if (end) return end;
@@ -378,7 +378,7 @@ export default function PublicProfile() {
                               <div className="flex-1 min-w-0">
                                 <div className="flex items-center gap-2 flex-wrap">
                                   <h4 className="font-semibold text-sm">{pickLocalizedText(isAr, record.title_ar, record.title) || "—"}</h4>
-                                  {record.is_current && <Badge className="bg-chart-3/10 text-chart-3 text-[10px] h-5">{isAr ? "حالي" : "Current"}</Badge>}
+                                  {record.is_current && <Badge className="bg-chart-3/10 text-chart-3 text-[10px] h-5">{isAr ? "مستمر" : "Ongoing"}</Badge>}
                                 </div>
                                 {(record.entity_name || record.entity_name_ar) && (
                                   record.entity_id ? (
