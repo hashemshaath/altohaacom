@@ -1,4 +1,3 @@
-import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
 const corsHeaders = {
@@ -6,7 +5,7 @@ const corsHeaders = {
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
 };
 
-serve(async (req) => {
+Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
 
   try {
@@ -17,7 +16,6 @@ serve(async (req) => {
     const supabaseKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
     const supabase = createClient(supabaseUrl, supabaseKey);
 
-    // Verify user
     const token = authHeader.replace("Bearer ", "");
     const { data: { user }, error: authError } = await supabase.auth.getUser(token);
     if (authError || !user) throw new Error("Unauthorized");
@@ -27,7 +25,6 @@ serve(async (req) => {
       throw new Error("CV text is too short. Please provide more content.");
     }
 
-    // Check if admin or self
     const isAdmin = await checkAdmin(supabase, user.id);
     const effectiveUserId = target_user_id && isAdmin ? target_user_id : user.id;
 
@@ -38,8 +35,16 @@ serve(async (req) => {
 
 Return data using the extract_cv_data tool. Be thorough and extract ALL information available.
 
-Guidelines:
-- Detect language (Arabic or English) and provide bilingual data when possible
+CRITICAL BILINGUAL RULES:
+- You MUST provide BOTH English AND Arabic versions for ALL text fields that have bilingual variants (_ar suffix).
+- If the CV is in Arabic only: extract the Arabic text AND translate it to professional English for the English fields.
+- If the CV is in English only: extract the English text AND translate it to professional Arabic for the Arabic fields.
+- If the CV has both languages: extract each language into its corresponding field.
+- NEVER leave Arabic fields empty if you have the English version, and vice versa.
+- NEVER mix languages: English fields must contain ONLY English text, Arabic fields must contain ONLY Arabic text.
+- Translations must be professional, culinary-industry appropriate, and natural-sounding.
+
+OTHER GUIDELINES:
 - For dates, use ISO format (YYYY-MM-DD). If only year is known, use YYYY-01-01
 - For country codes, use 2-letter ISO codes (SA, AE, US, etc.)
 - For employment_type use: full_time, part_time, contract, internship, freelance, volunteer
@@ -47,7 +52,9 @@ Guidelines:
 - For competition_role use: participant, organizer, judge, head_judge
 - Extract tasks/responsibilities and achievements separately for each work experience
 - Include TV/radio appearances under media_appearances
-- Include national address details if mentioned`;
+- Summarize tasks and achievements professionally without losing value
+- Include national address details if mentioned
+- For competitions, always extract the year and edition separately`;
 
     const response = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
       method: "POST",
@@ -59,38 +66,38 @@ Guidelines:
         model: "google/gemini-2.5-pro",
         messages: [
           { role: "system", content: systemPrompt },
-          { role: "user", content: `Parse this CV thoroughly. Extract every detail:\n\n${cv_text.substring(0, 25000)}` },
+          { role: "user", content: `Parse this CV thoroughly. Extract every detail and provide BOTH English AND Arabic versions for all text fields:\n\n${cv_text.substring(0, 25000)}` },
         ],
         tools: [
           {
             type: "function",
             function: {
               name: "extract_cv_data",
-              description: "Extract structured CV data from text",
+              description: "Extract structured CV data with full bilingual (EN+AR) support",
               parameters: {
                 type: "object",
                 properties: {
                   personal_info: {
                     type: "object",
                     properties: {
-                      full_name: { type: "string" },
-                      full_name_ar: { type: "string" },
+                      full_name: { type: "string", description: "Full name in English" },
+                      full_name_ar: { type: "string", description: "Full name in Arabic" },
                       email: { type: "string" },
                       phone: { type: "string" },
                       nationality: { type: "string", description: "2-letter country code" },
                       second_nationality: { type: "string", description: "2-letter country code" },
                       country_code: { type: "string", description: "Current country, 2-letter code" },
                       city: { type: "string" },
-                      location: { type: "string", description: "Full address or area/neighborhood" },
-                      national_address: { type: "string", description: "Saudi national address if mentioned" },
+                      location: { type: "string", description: "Full address or area" },
+                      national_address: { type: "string" },
                       date_of_birth: { type: "string", description: "ISO date" },
                       gender: { type: "string", enum: ["male", "female"] },
-                      job_title: { type: "string" },
-                      job_title_ar: { type: "string" },
-                      specialization: { type: "string" },
-                      specialization_ar: { type: "string" },
-                      bio: { type: "string", description: "Professional summary/objective" },
-                      bio_ar: { type: "string" },
+                      job_title: { type: "string", description: "Job title in English" },
+                      job_title_ar: { type: "string", description: "Job title in Arabic" },
+                      specialization: { type: "string", description: "Specialization in English" },
+                      specialization_ar: { type: "string", description: "Specialization in Arabic" },
+                      bio: { type: "string", description: "Professional summary in English" },
+                      bio_ar: { type: "string", description: "Professional summary in Arabic" },
                       years_of_experience: { type: "number" },
                       experience_level: { type: "string", enum: ["beginner", "intermediate", "advanced", "expert"] },
                       website: { type: "string" },
@@ -104,13 +111,13 @@ Guidelines:
                     items: {
                       type: "object",
                       properties: {
-                        institution: { type: "string" },
-                        institution_ar: { type: "string" },
-                        degree: { type: "string" },
-                        degree_ar: { type: "string" },
+                        institution: { type: "string", description: "Institution name in English" },
+                        institution_ar: { type: "string", description: "Institution name in Arabic" },
+                        degree: { type: "string", description: "Degree name in English" },
+                        degree_ar: { type: "string", description: "Degree name in Arabic" },
                         education_level: { type: "string" },
-                        field_of_study: { type: "string" },
-                        field_of_study_ar: { type: "string" },
+                        field_of_study: { type: "string", description: "Field in English" },
+                        field_of_study_ar: { type: "string", description: "Field in Arabic" },
                         grade: { type: "string" },
                         start_date: { type: "string" },
                         end_date: { type: "string" },
@@ -126,28 +133,20 @@ Guidelines:
                     items: {
                       type: "object",
                       properties: {
-                        company: { type: "string" },
-                        company_ar: { type: "string" },
-                        title: { type: "string" },
-                        title_ar: { type: "string" },
+                        company: { type: "string", description: "Company name in English" },
+                        company_ar: { type: "string", description: "Company name in Arabic" },
+                        title: { type: "string", description: "Job title in English" },
+                        title_ar: { type: "string", description: "Job title in Arabic" },
                         employment_type: { type: "string" },
-                        department: { type: "string" },
-                        department_ar: { type: "string" },
+                        department: { type: "string", description: "Department in English" },
+                        department_ar: { type: "string", description: "Department in Arabic" },
                         start_date: { type: "string" },
                         end_date: { type: "string" },
                         is_current: { type: "boolean" },
                         location: { type: "string" },
                         country_code: { type: "string" },
-                        tasks: {
-                          type: "array",
-                          items: { type: "string" },
-                          description: "Key responsibilities and tasks",
-                        },
-                        achievements: {
-                          type: "array",
-                          items: { type: "string" },
-                          description: "Achievements and accomplishments in this role",
-                        },
+                        tasks: { type: "array", items: { type: "string" }, description: "Key responsibilities in English, professionally summarized" },
+                        achievements: { type: "array", items: { type: "string" }, description: "Achievements in English, professionally summarized" },
                       },
                       required: ["company", "title"],
                     },
@@ -157,15 +156,15 @@ Guidelines:
                     items: {
                       type: "object",
                       properties: {
-                        name: { type: "string" },
-                        name_ar: { type: "string" },
+                        name: { type: "string", description: "Competition name in English" },
+                        name_ar: { type: "string", description: "Competition name in Arabic" },
                         role: { type: "string", enum: ["participant", "organizer", "judge", "head_judge"] },
                         edition: { type: "string" },
                         year: { type: "number" },
                         country_code: { type: "string" },
                         city: { type: "string" },
-                        achievement: { type: "string" },
-                        achievement_ar: { type: "string" },
+                        achievement: { type: "string", description: "Achievement in English" },
+                        achievement_ar: { type: "string", description: "Achievement in Arabic" },
                       },
                       required: ["name"],
                     },
@@ -175,8 +174,8 @@ Guidelines:
                     items: {
                       type: "object",
                       properties: {
-                        name: { type: "string" },
-                        name_ar: { type: "string" },
+                        name: { type: "string", description: "Certification name in English" },
+                        name_ar: { type: "string", description: "Certification name in Arabic" },
                         issuer: { type: "string" },
                         date: { type: "string" },
                         description: { type: "string" },
@@ -199,10 +198,7 @@ Guidelines:
                       required: ["channel_name"],
                     },
                   },
-                  skills: {
-                    type: "array",
-                    items: { type: "string" },
-                  },
+                  skills: { type: "array", items: { type: "string" } },
                   languages: {
                     type: "array",
                     items: {
