@@ -14,7 +14,7 @@ import {
 import {
   ArrowLeft, Save, Loader2, User, GraduationCap, Briefcase,
   Trophy, Award, Tv, Globe2, Languages, CheckCircle2, MapPin,
-  Edit3, X, Trash2, Download,
+  Edit3, X, Trash2, Download, Printer,
 } from "lucide-react";
 import { downloadCSV, downloadJSON } from "@/lib/exportUtils";
 import type { CVData, CVWorkExperience, CVEducation, CVCompetition, CVMediaAppearance } from "./types";
@@ -277,6 +277,22 @@ export function CVPreview({ data: initialData, targetUserId, isAr, onBack, onSav
         const { error } = await supabase.from("user_career_records").insert(mediaRecords);
         if (!error) { recordsCreated += mediaRecords.length; sectionsImported.push("media"); }
       }
+      if (sections.certifications && hasCert) {
+        const certRecords = data.certifications!.map((cert) => ({
+          user_id: targetUserId, record_type: "education",
+          entity_name: cert.issuer || "—", entity_name_ar: null,
+          title: cert.name, title_ar: cert.name_ar || null,
+          description: cert.description || null,
+          start_date: cert.date || null, is_current: false,
+        }));
+        const { error } = await supabase.from("user_career_records").insert(certRecords);
+        if (!error) { recordsCreated += certRecords.length; sectionsImported.push("certifications"); }
+      }
+      // Save skills to profile
+      if (data.skills?.length) {
+        const skillsStr = data.skills.join(", ");
+        await supabase.from("profiles").update({ specialization: data.personal_info?.specialization || skillsStr }).eq("user_id", targetUserId);
+      }
       try {
         const { data: { user: currentUser } } = await supabase.auth.getUser();
         if (currentUser) {
@@ -371,6 +387,69 @@ export function CVPreview({ data: initialData, targetUserId, isAr, onBack, onSav
       }
     }
   }, [data.competitions, translate, updateData]);
+
+  // ─── Print CV Report ───
+  const handlePrintCV = useCallback(() => {
+    const win = window.open("", "_blank");
+    if (!win) return;
+    const p = data.personal_info;
+    const formatD = (d?: string) => { if (!d) return ""; try { return new Date(d).toLocaleDateString("en-US", { year: "numeric", month: "short" }); } catch { return d; } };
+    
+    const eduHtml = data.education?.length ? `
+      <h2>Education / التعليم</h2>
+      <table><tr><th>Degree</th><th>الشهادة</th><th>Institution</th><th>Field</th><th>Period</th></tr>
+      ${data.education.map(e => `<tr><td>${e.degree || ""}</td><td>${e.degree_ar || ""}</td><td>${e.institution || ""}</td><td>${e.field_of_study || ""}</td><td>${formatD(e.start_date)} - ${e.is_current ? "Present" : formatD(e.end_date)}</td></tr>`).join("")}
+      </table>` : "";
+    
+    const workHtml = data.work_experience?.length ? `
+      <h2>Professional Experience / الخبرات المهنية</h2>
+      <table><tr><th>Position</th><th>المنصب</th><th>Company</th><th>الشركة</th><th>Period</th></tr>
+      ${data.work_experience.map(w => `<tr><td>${w.title || ""}</td><td>${w.title_ar || ""}</td><td>${w.company || ""}</td><td>${w.company_ar || ""}</td><td>${formatD(w.start_date)} - ${w.is_current ? "Present" : formatD(w.end_date)}</td></tr>`).join("")}
+      </table>` : "";
+
+    const compHtml = data.competitions?.length ? `
+      <h2>Competitions / المسابقات</h2>
+      <table><tr><th>Name</th><th>الاسم</th><th>Year</th><th>Role</th><th>Achievement</th></tr>
+      ${data.competitions.map(c => `<tr><td>${c.name || ""}</td><td>${c.name_ar || ""}</td><td>${c.year || ""}</td><td>${ROLE_LABELS[c.role || ""]?.en || c.role || ""}</td><td>${c.achievement || ""}</td></tr>`).join("")}
+      </table>` : "";
+
+    const certHtml = data.certifications?.length ? `
+      <h2>Certifications / الشهادات</h2>
+      <table><tr><th>Name</th><th>الاسم</th><th>Issuer</th><th>Date</th></tr>
+      ${data.certifications.map(c => `<tr><td>${c.name || ""}</td><td>${c.name_ar || ""}</td><td>${c.issuer || ""}</td><td>${formatD(c.date)}</td></tr>`).join("")}
+      </table>` : "";
+
+    const skillsHtml = data.skills?.length ? `<h2>Skills / المهارات</h2><p>${data.skills.join(" • ")}</p>` : "";
+    const langsHtml = data.languages?.length ? `<h2>Languages / اللغات</h2><p>${data.languages.map(l => `${l.language}${l.level ? ` (${l.level})` : ""}`).join(" • ")}</p>` : "";
+
+    win.document.write(`<!DOCTYPE html><html><head><title>CV - ${p.full_name || ""}</title>
+      <style>
+        @page { size: portrait; margin: 1.5cm; }
+        body { font-family: system-ui, sans-serif; padding: 2rem; color: #1a1a1a; }
+        h1 { font-size: 20px; margin: 0; border-bottom: 2px solid #c8956c; padding-bottom: 6px; }
+        h2 { font-size: 14px; color: #c8956c; margin: 1.2rem 0 0.4rem; border-bottom: 1px solid #e5e5e5; padding-bottom: 3px; }
+        table { width: 100%; border-collapse: collapse; margin: 0.5rem 0; font-size: 12px; }
+        th, td { border: 1px solid #e0e0e0; padding: 5px 8px; text-align: start; }
+        th { background: #f5f0ec; font-weight: 600; font-size: 11px; }
+        tr:nth-child(even) { background: #fafafa; }
+        .meta { color: #888; font-size: 11px; margin-top: 4px; }
+        .bio { background: #f9f7f5; padding: 8px 12px; border-radius: 6px; margin: 8px 0; font-size: 12px; line-height: 1.5; }
+        .subtitle { font-size: 13px; color: #666; margin: 2px 0 0; }
+        @media print { body { padding: 0; } }
+      </style>
+    </head><body>
+      <h1>${p.full_name || ""} ${p.full_name_ar ? `<span style="float:inline-end;font-family:serif;" dir="rtl">${p.full_name_ar}</span>` : ""}</h1>
+      ${p.job_title || p.job_title_ar ? `<p class="subtitle">${p.job_title || ""} ${p.job_title_ar ? `| ${p.job_title_ar}` : ""}</p>` : ""}
+      <p class="meta">${[p.email, p.phone, p.city && p.country_code ? `${getFlag(p.country_code)} ${p.city}` : p.city].filter(Boolean).join(" | ")}${p.years_of_experience ? ` | ${p.years_of_experience} years` : ""}</p>
+      ${p.bio ? `<div class="bio">${p.bio}</div>` : ""}
+      ${p.bio_ar ? `<div class="bio" dir="rtl">${p.bio_ar}</div>` : ""}
+      ${eduHtml}${workHtml}${compHtml}${certHtml}${skillsHtml}${langsHtml}
+      <p class="meta" style="margin-top:1.5rem;border-top:1px solid #ddd;padding-top:6px;">Generated: ${new Date().toLocaleString()} | Altoha Platform</p>
+    </body></html>`);
+    win.document.close();
+    win.focus();
+    win.print();
+  }, [data]);
 
   const sectionHeader = (
     icon: React.ReactNode, titleEn: string, titleAr: string,
@@ -860,6 +939,9 @@ export function CVPreview({ data: initialData, targetUserId, isAr, onBack, onSav
             downloadCSV(rows, `cv-data-${targetUserId.slice(0, 8)}`);
           }}>
             <Download className="h-3 w-3" /> CSV
+          </Button>
+          <Button variant="outline" size="sm" className="gap-1 text-xs" onClick={() => handlePrintCV()}>
+            <Printer className="h-3 w-3" /> {isAr ? "طباعة" : "Print"}
           </Button>
         </div>
         <div className="flex gap-2">

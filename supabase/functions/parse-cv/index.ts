@@ -54,7 +54,13 @@ OTHER GUIDELINES:
 - Include TV/radio appearances under media_appearances
 - Summarize tasks and achievements professionally without losing value
 - Include national address details if mentioned
-- For competitions, always extract the year and edition separately`;
+- For competitions, always extract the year and edition separately
+- Extract ALL skills mentioned (cooking techniques, cuisines, management skills, software, etc.)
+- Extract ALL certifications including food safety, HACCP, hygiene, culinary awards
+- For languages, include proficiency level (native, fluent, intermediate, basic)
+- Infer years_of_experience from work history dates if not explicitly stated
+- Infer experience_level: <3 years=beginner, 3-7=intermediate, 7-15=advanced, 15+=expert
+- Extract LinkedIn, Instagram, Twitter, and website URLs if present`;
 
     const response = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
       method: "POST",
