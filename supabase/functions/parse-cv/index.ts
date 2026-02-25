@@ -56,10 +56,10 @@ Guidelines:
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        model: "google/gemini-2.5-flash",
+        model: "google/gemini-2.5-pro",
         messages: [
           { role: "system", content: systemPrompt },
-          { role: "user", content: `Parse this CV:\n\n${cv_text.substring(0, 15000)}` },
+          { role: "user", content: `Parse this CV thoroughly. Extract every detail:\n\n${cv_text.substring(0, 25000)}` },
         ],
         tools: [
           {
