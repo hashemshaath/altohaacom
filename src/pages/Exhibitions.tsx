@@ -1,24 +1,24 @@
-import { useState } from "react";
-import { SEOHead } from "@/components/SEOHead";
-import { AdBanner } from "@/components/ads/AdBanner";
-import { useAdTracking } from "@/hooks/useAdTracking";
+import { useState, useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
+import { Link } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useLanguage } from "@/i18n/LanguageContext";
+import { useAuth } from "@/contexts/AuthContext";
+import { useAdTracking } from "@/hooks/useAdTracking";
+import { useExhibitionSponsors } from "@/hooks/useExhibitionSponsors";
 import { PageShell } from "@/components/PageShell";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Card, CardContent } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Search, CalendarDays, Landmark, MapPin, Plus, Globe, Clock, History, TrendingUp, Users } from "lucide-react";
-import { Link } from "react-router-dom";
-import { useAuth } from "@/contexts/AuthContext";
+import { EmptyState } from "@/components/ui/empty-state";
+import { Search, CalendarDays, Landmark, MapPin, Plus, Globe, Clock, History, TrendingUp } from "lucide-react";
 import { countryFlag } from "@/lib/countryFlag";
 import { ExhibitionCard, type Exhibition } from "@/components/exhibitions/ExhibitionCard";
-import { isPast, isFuture, isWithinInterval, format } from "date-fns";
+import { NextEventHighlight } from "@/components/exhibitions/NextEventHighlight";
+import { isPast, isFuture, isWithinInterval } from "date-fns";
 import { toEnglishDigits } from "@/lib/formatNumber";
 import type { Database } from "@/integrations/supabase/types";
 
@@ -46,6 +46,7 @@ export default function Exhibitions() {
   const isAr = language === "ar";
   const { user } = useAuth();
   useAdTracking();
+
   const [searchQuery, setSearchQuery] = useState("");
   const [activeTab, setActiveTab] = useState("all");
   const [typeFilter, setTypeFilter] = useState<string>("all");
@@ -66,55 +67,94 @@ export default function Exhibitions() {
     staleTime: 1000 * 60 * 3,
   });
 
-  const countries = Array.from(
-    new Set(exhibitions?.map(e => e.country).filter(Boolean) as string[])
-  ).sort();
+  // Batch sponsor fetch for all exhibitions (eliminates N+1)
+  const exhibitionIds = useMemo(() => exhibitions?.map(e => e.id) || [], [exhibitions]);
+  const { data: sponsorsMap } = useExhibitionSponsors(exhibitionIds);
 
-  const years = Array.from(
-    new Set(exhibitions?.map(e => new Date(e.start_date).getFullYear().toString()) || [])
-  ).sort((a, b) => Number(b) - Number(a));
+  // Derived data
+  const countries = useMemo(
+    () => Array.from(new Set(exhibitions?.map(e => e.country).filter(Boolean) as string[])).sort(),
+    [exhibitions]
+  );
 
-  const filtered = exhibitions?.filter((ex) => {
-    const title = isAr && ex.title_ar ? ex.title_ar : ex.title;
-    const matchesSearch = !searchQuery || title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      (ex.city && ex.city.toLowerCase().includes(searchQuery.toLowerCase())) ||
-      (ex.organizer_name && ex.organizer_name.toLowerCase().includes(searchQuery.toLowerCase()));
-    const matchesType = typeFilter === "all" || ex.type === typeFilter;
-    const matchesCountry = countryFilter === "all" || ex.country === countryFilter;
-    const matchesYear = yearFilter === "all" || new Date(ex.start_date).getFullYear().toString() === yearFilter;
+  const years = useMemo(
+    () => Array.from(new Set(exhibitions?.map(e => new Date(e.start_date).getFullYear().toString()) || [])).sort((a, b) => Number(b) - Number(a)),
+    [exhibitions]
+  );
 
+  const { happeningNowCount, upcomingCount, countriesCount, featuredExhibitions, nextEvent } = useMemo(() => {
+    if (!exhibitions) return { happeningNowCount: 0, upcomingCount: 0, countriesCount: 0, featuredExhibitions: [], nextEvent: undefined };
     const now = new Date();
-    const start = new Date(ex.start_date);
-    const end = new Date(ex.end_date);
+    let happeningNow = 0;
+    let upcoming = 0;
+    const featured: Exhibition[] = [];
+    let next: Exhibition | undefined;
 
-    let matchesTab = true;
-    if (activeTab === "upcoming") matchesTab = isFuture(start);
-    else if (activeTab === "current") matchesTab = isWithinInterval(now, { start, end });
-    else if (activeTab === "past") matchesTab = isPast(end);
+    for (const e of exhibitions) {
+      const start = new Date(e.start_date);
+      const end = new Date(e.end_date);
+      try {
+        if (isWithinInterval(now, { start, end })) happeningNow++;
+      } catch { /* invalid interval */ }
+      if (isFuture(start)) {
+        upcoming++;
+        if (!next) next = e;
+      }
+      if (e.is_featured && !isPast(end)) featured.push(e);
+    }
 
-    return matchesSearch && matchesType && matchesCountry && matchesYear && matchesTab;
-  })?.sort((a, b) => {
-    if (sortBy === "date_desc") return new Date(b.start_date).getTime() - new Date(a.start_date).getTime();
-    if (sortBy === "name_asc") return (isAr && a.title_ar ? a.title_ar : a.title).localeCompare(isAr && b.title_ar ? b.title_ar : b.title);
-    return new Date(a.start_date).getTime() - new Date(b.start_date).getTime();
-  });
+    return {
+      happeningNowCount: happeningNow,
+      upcomingCount: upcoming,
+      countriesCount: new Set(exhibitions.map(e => e.country).filter(Boolean)).size,
+      featuredExhibitions: featured,
+      nextEvent: next,
+    };
+  }, [exhibitions]);
 
-  const featuredExhibitions = exhibitions?.filter((ex) => ex.is_featured && !isPast(new Date(ex.end_date)));
+  const filtered = useMemo(() => {
+    return exhibitions?.filter((ex) => {
+      const title = isAr && ex.title_ar ? ex.title_ar : ex.title;
+      const matchesSearch = !searchQuery ||
+        title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        ex.city?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        ex.organizer_name?.toLowerCase().includes(searchQuery.toLowerCase());
+      const matchesType = typeFilter === "all" || ex.type === typeFilter;
+      const matchesCountry = countryFilter === "all" || ex.country === countryFilter;
+      const matchesYear = yearFilter === "all" || new Date(ex.start_date).getFullYear().toString() === yearFilter;
 
-  const happeningNowCount = exhibitions?.filter(e => {
-    try { return isWithinInterval(new Date(), { start: new Date(e.start_date), end: new Date(e.end_date) }); } catch { return false; }
-  }).length || 0;
+      const now = new Date();
+      const start = new Date(ex.start_date);
+      const end = new Date(ex.end_date);
 
-  const upcomingCount = exhibitions?.filter(e => isFuture(new Date(e.start_date))).length || 0;
-  const countriesCount = new Set(exhibitions?.map(e => e.country).filter(Boolean)).size;
+      let matchesTab = true;
+      if (activeTab === "upcoming") matchesTab = isFuture(start);
+      else if (activeTab === "current") {
+        try { matchesTab = isWithinInterval(now, { start, end }); } catch { matchesTab = false; }
+      }
+      else if (activeTab === "past") matchesTab = isPast(end);
 
-  // Next upcoming event for hero highlight
-  const nextEvent = exhibitions?.find(e => isFuture(new Date(e.start_date)));
+      return matchesSearch && matchesType && matchesCountry && matchesYear && matchesTab;
+    })?.sort((a, b) => {
+      if (sortBy === "date_desc") return new Date(b.start_date).getTime() - new Date(a.start_date).getTime();
+      if (sortBy === "name_asc") return (isAr && a.title_ar ? a.title_ar : a.title).localeCompare(isAr && b.title_ar ? b.title_ar : b.title);
+      return new Date(a.start_date).getTime() - new Date(b.start_date).getTime();
+    });
+  }, [exhibitions, searchQuery, typeFilter, countryFilter, yearFilter, activeTab, sortBy, isAr]);
+
+  const clearFilters = () => {
+    setSearchQuery("");
+    setTypeFilter("all");
+    setCountryFilter("all");
+    setYearFilter("all");
+  };
+
+  const hasActiveFilters = searchQuery || typeFilter !== "all" || countryFilter !== "all" || yearFilter !== "all";
 
   return (
     <PageShell
       title={isAr ? "المعارض والفعاليات — الطهاة" : "Food Exhibitions & Events — Altoha"}
-      description={isAr ? "اكتشف معارض الطعام والمؤتمرات والفعاليات" : "Discover food exhibitions, conferences, and culinary events worldwide. Stay updated with the latest in gastronomy."}
+      description={isAr ? "اكتشف معارض الطعام والمؤتمرات والفعاليات" : "Discover food exhibitions, conferences, and culinary events worldwide."}
       seoProps={{
         jsonLd: {
           "@context": "https://schema.org",
@@ -127,14 +167,13 @@ export default function Exhibitions() {
       container={false}
       padding="none"
     >
-
       {/* Editorial Hero */}
       <section className="relative border-b border-border/30 overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-br from-primary/6 via-background to-accent/4" />
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,hsl(var(--primary)/0.08),transparent_60%)]" />
         <div className="container relative py-10 md:py-14">
-          <div className="flex flex-col gap-8 md:flex-row md:items-end md:justify-between">
-            <div className="space-y-4 max-w-2xl">
+          <div className="flex flex-col gap-8 lg:flex-row lg:items-end lg:justify-between">
+            <div className="space-y-4 max-w-2xl flex-1">
               <div className="inline-flex items-center gap-2 rounded-full bg-primary/10 px-3.5 py-1.5 ring-1 ring-primary/20">
                 <div className="relative flex h-2 w-2">
                   <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-primary opacity-75" />
@@ -178,25 +217,32 @@ export default function Exhibitions() {
                   </div>
                 </div>
               )}
-            </div>
 
-            <div className="flex items-center gap-3 flex-shrink-0">
               {user && (
-                <Button className="shadow-lg shadow-primary/15 rounded-xl" asChild>
-                  <Link to="/exhibitions/create">
-                    <Plus className="me-1.5 h-4 w-4" />
-                    {isAr ? "إضافة فعالية" : "Add Event"}
-                  </Link>
-                </Button>
+                <div className="pt-2">
+                  <Button className="shadow-lg shadow-primary/15 rounded-xl" asChild>
+                    <Link to="/exhibitions/create">
+                      <Plus className="me-1.5 h-4 w-4" />
+                      {isAr ? "إضافة فعالية" : "Add Event"}
+                    </Link>
+                  </Button>
+                </div>
               )}
             </div>
+
+            {/* Next Event Highlight */}
+            {nextEvent && (
+              <div className="w-full lg:w-80 xl:w-96 shrink-0">
+                <NextEventHighlight exhibition={nextEvent} isAr={isAr} />
+              </div>
+            )}
           </div>
         </div>
       </section>
 
       <main className="container flex-1 py-6 md:py-8">
-        {/* Featured Hero Section */}
-        {featuredExhibitions && featuredExhibitions.length > 0 && (
+        {/* Featured Section */}
+        {featuredExhibitions.length > 0 && (
           <section className="mb-10">
             <div className="mb-5 flex items-center gap-3">
               <div className="h-px flex-1 bg-gradient-to-r from-primary/30 to-transparent" />
@@ -208,7 +254,13 @@ export default function Exhibitions() {
             </div>
             <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-3">
               {featuredExhibitions.slice(0, 3).map((ex) => (
-                <ExhibitionCard key={ex.id} exhibition={ex} language={language} variant="featured" />
+                <ExhibitionCard
+                  key={ex.id}
+                  exhibition={ex}
+                  language={language}
+                  variant="featured"
+                  sponsors={sponsorsMap?.get(ex.id) || []}
+                />
               ))}
             </div>
           </section>
@@ -313,7 +365,7 @@ export default function Exhibitions() {
           <TabsContent value={activeTab} className="mt-0">
             {isLoading ? (
               <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-                {[1, 2, 3, 4, 5, 6].map((i) => (
+                {Array.from({ length: 6 }, (_, i) => (
                   <Card key={i} className="overflow-hidden border-border/30">
                     <Skeleton className="aspect-[16/10] w-full" />
                     <div className="space-y-2.5 p-4">
@@ -329,31 +381,25 @@ export default function Exhibitions() {
                 ))}
               </div>
             ) : filtered?.length === 0 ? (
-              <div className="flex flex-col items-center justify-center py-24 text-center">
-                <div className="mb-5 flex h-20 w-20 items-center justify-center rounded-3xl bg-muted/40 ring-1 ring-border/30">
-                  <Landmark className="h-10 w-10 text-muted-foreground/30" />
-                </div>
-                <h3 className="mb-1.5 text-lg font-bold">
-                  {isAr ? "لم يتم العثور على فعاليات" : "No events found"}
-                </h3>
-                <p className="max-w-sm text-sm text-muted-foreground">
-                  {isAr ? "جرب تعديل معايير البحث أو الفلاتر" : "Try adjusting your search criteria or filters"}
-                </p>
-                {(searchQuery || typeFilter !== "all" || countryFilter !== "all" || yearFilter !== "all") && (
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    className="mt-5 rounded-xl"
-                    onClick={() => { setSearchQuery(""); setTypeFilter("all"); setCountryFilter("all"); setYearFilter("all"); }}
-                  >
+              <EmptyState
+                icon={Landmark}
+                title={isAr ? "لم يتم العثور على فعاليات" : "No events found"}
+                description={isAr ? "جرب تعديل معايير البحث أو الفلاتر" : "Try adjusting your search criteria or filters"}
+                action={hasActiveFilters ? (
+                  <Button variant="outline" size="sm" className="rounded-xl" onClick={clearFilters}>
                     {isAr ? "مسح جميع الفلاتر" : "Clear all filters"}
                   </Button>
-                )}
-              </div>
+                ) : undefined}
+              />
             ) : (
               <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
                 {filtered?.map((ex) => (
-                  <ExhibitionCard key={ex.id} exhibition={ex} language={language} />
+                  <ExhibitionCard
+                    key={ex.id}
+                    exhibition={ex}
+                    language={language}
+                    sponsors={sponsorsMap?.get(ex.id) || []}
+                  />
                 ))}
               </div>
             )}
