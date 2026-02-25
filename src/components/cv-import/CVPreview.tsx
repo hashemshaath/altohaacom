@@ -37,7 +37,25 @@ interface Props {
 
 const formatDate = (d?: string) => {
   if (!d) return "";
-  try { return new Date(d).toLocaleDateString("en-US", { year: "numeric", month: "short" }); } catch { return d; }
+  const norm = normalizeDate(d);
+  if (!norm) return d;
+  try { return new Date(norm).toLocaleDateString("en-US", { year: "numeric", month: "short" }); } catch { return d; }
+};
+
+/** Normalize partial dates like "2011" or "2011-06" into valid YYYY-MM-DD for Postgres */
+const normalizeDate = (d?: string | null): string | null => {
+  if (!d) return null;
+  const s = d.trim();
+  // Already valid YYYY-MM-DD
+  if (/^\d{4}-\d{2}-\d{2}$/.test(s)) return s;
+  // Year only: "2011"
+  if (/^\d{4}$/.test(s)) return `${s}-01-01`;
+  // Year-month: "2011-06"
+  if (/^\d{4}-\d{2}$/.test(s)) return `${s}-01`;
+  // Try parsing as date
+  const parsed = new Date(s);
+  if (!isNaN(parsed.getTime())) return parsed.toISOString().split("T")[0];
+  return null;
 };
 
 // ─── Smart Translate Hook ───
@@ -342,8 +360,8 @@ export function CVPreview({ data: initialData, targetUserId, isAr, onBack, onSav
           field_of_study: edu.field_of_study || null,
           field_of_study_ar: edu.field_of_study_ar || null,
           grade: edu.grade || null,
-          start_date: edu.start_date || null,
-          end_date: edu.end_date || null,
+          start_date: normalizeDate(edu.start_date),
+          end_date: normalizeDate(edu.end_date),
           is_current: edu.is_current === true && !edu.end_date,
           location: edu.location || null,
         }));
@@ -375,8 +393,8 @@ export function CVPreview({ data: initialData, targetUserId, isAr, onBack, onSav
             employment_type: work.employment_type || null,
             department: work.department || null,
             department_ar: work.department_ar || null,
-            start_date: work.start_date || null,
-            end_date: work.end_date || null,
+            start_date: normalizeDate(work.start_date),
+            end_date: normalizeDate(work.end_date),
             is_current: work.is_current === true && !work.end_date,
             description: enParts.length ? enParts.join("\n") : null,
             description_ar: arParts.length ? arParts.join("\n") : null,
@@ -422,7 +440,7 @@ export function CVPreview({ data: initialData, targetUserId, isAr, onBack, onSav
           title_ar: m.program_name_ar || null,
           description: [m.type ? `${MEDIA_TYPE_LABELS[m.type]?.icon || "📺"} ${MEDIA_TYPE_LABELS[m.type]?.en || m.type}` : "", m.description || ""].filter(Boolean).join("\n") || null,
           description_ar: [m.type ? `${MEDIA_TYPE_LABELS[m.type]?.icon || "📺"} ${MEDIA_TYPE_LABELS[m.type]?.ar || m.type}` : "", m.description_ar || ""].filter(Boolean).join("\n") || null,
-          start_date: m.date || null,
+          start_date: normalizeDate(m.date),
           is_current: false,
         }));
 
@@ -441,7 +459,7 @@ export function CVPreview({ data: initialData, targetUserId, isAr, onBack, onSav
           title: cert.name,
           title_ar: cert.name_ar || null,
           description: cert.description || null,
-          start_date: cert.date || null,
+          start_date: normalizeDate(cert.date),
           is_current: false,
         }));
 
