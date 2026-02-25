@@ -10,6 +10,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { Separator } from "@/components/ui/separator";
 import { VerifiedBadge } from "@/components/verification/VerifiedBadge";
+import AdminPageHeader from "@/components/admin/AdminPageHeader";
 import {
   ShieldCheck, Bot, CheckCircle, XCircle, Clock, AlertTriangle,
   Search, Eye, Loader2, Shield, Users, Building, Building2,
@@ -102,21 +103,11 @@ export default function VerificationAdmin() {
 
   return (
     <div className="space-y-6">
-      {/* Hero */}
-      <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-primary/10 via-accent/5 to-background p-6 md:p-8">
-        <div className="absolute -end-10 -top-10 h-40 w-40 rounded-full bg-primary/5 blur-3xl" />
-        <div className="relative flex items-center gap-4">
-          <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-primary/10">
-            <ShieldCheck className="h-7 w-7 text-primary" />
-          </div>
-          <div>
-            <h1 className="font-serif text-2xl font-bold">{isAr ? "إدارة التوثيق" : "Verification Center"}</h1>
-            <p className="text-sm text-muted-foreground">
-              {isAr ? "مراجعة طلبات التوثيق والتحقق بالذكاء الاصطناعي" : "Review verification requests with AI-assisted fraud detection"}
-            </p>
-          </div>
-        </div>
-      </div>
+      <AdminPageHeader
+        icon={ShieldCheck}
+        title={isAr ? "إدارة التوثيق" : "Verification Center"}
+        description={isAr ? "مراجعة طلبات التوثيق والتحقق بالذكاء الاصطناعي" : "Review verification requests with AI-assisted fraud detection"}
+      />
 
       {/* Stats */}
       <div className="grid gap-4 sm:grid-cols-4">

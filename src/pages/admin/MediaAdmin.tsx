@@ -13,6 +13,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Progress } from "@/components/ui/progress";
 import { useToast } from "@/hooks/use-toast";
 import { format } from "date-fns";
+import AdminPageHeader from "@/components/admin/AdminPageHeader";
 import { 
   Search, Upload, Image, File, Video, MoreVertical, Trash2, Copy, Download,
   Grid, List, Filter, HardDrive, ImageIcon, FileVideo, FileText,
@@ -145,20 +146,17 @@ export default function MediaAdmin() {
   return (
     <div className="space-y-6">
       <input ref={fileInputRef} type="file" multiple accept="image/*,video/*,application/pdf" className="hidden" onChange={handleUpload} />
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="font-serif text-2xl font-bold">
-            {language === "ar" ? "مكتبة الوسائط" : "Media Library"}
-          </h1>
-          <p className="text-muted-foreground">
-            {language === "ar" ? "إدارة الصور والملفات" : "Manage images and files"}
-          </p>
-        </div>
-        <Button onClick={() => fileInputRef.current?.click()} disabled={uploading}>
-          <Upload className="me-2 h-4 w-4" />
-          {uploading ? `${uploadProgress}%` : (language === "ar" ? "رفع ملف" : "Upload File")}
-        </Button>
-      </div>
+      <AdminPageHeader
+        icon={ImageIcon}
+        title={language === "ar" ? "مكتبة الوسائط" : "Media Library"}
+        description={language === "ar" ? "إدارة الصور والملفات" : "Manage images and files"}
+        actions={
+          <Button onClick={() => fileInputRef.current?.click()} disabled={uploading}>
+            <Upload className="me-2 h-4 w-4" />
+            {uploading ? `${uploadProgress}%` : (language === "ar" ? "رفع ملف" : "Upload File")}
+          </Button>
+        }
+      />
 
       {uploading && <Progress value={uploadProgress} className="h-2" />}
 

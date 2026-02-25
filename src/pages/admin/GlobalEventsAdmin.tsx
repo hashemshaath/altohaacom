@@ -20,6 +20,7 @@ import { toast } from "sonner";
 import { format, parseISO } from "date-fns";
 import { cn } from "@/lib/utils";
 import { downloadCSV } from "@/lib/exportUtils";
+import AdminPageHeader from "@/components/admin/AdminPageHeader";
 import {
   Globe, Plus, Search, Edit2, Trash2, Save, X, Calendar, MapPin,
   Trophy, Landmark, ChefHat, Tv, Mic, GraduationCap, Plane, Users,
@@ -346,25 +347,21 @@ export default function GlobalEventsAdmin() {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between flex-wrap gap-3">
-        <div>
-          <h1 className="text-xl font-bold flex items-center gap-2">
-            <Globe className="h-5 w-5 text-primary" />
-            {isAr ? "تقويم الفعاليات العالمية" : "Global Events Calendar"}
-          </h1>
-          <p className="text-sm text-muted-foreground mt-0.5">
-            {isAr ? "إدارة الفعاليات العالمية والمحلية المتكررة" : "Manage global and local recurring events"}
-          </p>
-        </div>
-        <div className="flex gap-2">
-          <Button variant="outline" size="sm" onClick={exportEvents} className="gap-1.5">
-            <Download className="h-3.5 w-3.5" />{isAr ? "تصدير" : "Export CSV"}
-          </Button>
-          <Button className="gap-1.5" onClick={openNew}>
-            <Plus className="h-4 w-4" />{isAr ? "فعالية جديدة" : "New Event"}
-          </Button>
-        </div>
-      </div>
+      <AdminPageHeader
+        icon={Globe}
+        title={isAr ? "تقويم الفعاليات العالمية" : "Global Events Calendar"}
+        description={isAr ? "إدارة الفعاليات العالمية والمحلية المتكررة" : "Manage global and local recurring events"}
+        actions={
+          <div className="flex gap-2">
+            <Button variant="outline" size="sm" onClick={exportEvents} className="gap-1.5">
+              <Download className="h-3.5 w-3.5" />{isAr ? "تصدير" : "Export CSV"}
+            </Button>
+            <Button className="gap-1.5" onClick={openNew}>
+              <Plus className="h-4 w-4" />{isAr ? "فعالية جديدة" : "New Event"}
+            </Button>
+          </div>
+        }
+      />
 
       {/* KPIs */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3">

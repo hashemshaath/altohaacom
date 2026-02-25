@@ -26,6 +26,7 @@ import {
 } from "lucide-react";
 import ChefScheduleEventForm from "@/components/admin/chef-schedule/ChefScheduleEventForm";
 import AdminScheduleCalendar from "@/components/admin/chef-schedule/AdminScheduleCalendar";
+import AdminPageHeader from "@/components/admin/AdminPageHeader";
 
 const EVENT_ICONS: Record<string, any> = {
   competition: Trophy, chefs_table: ChefHat, exhibition: Landmark,
@@ -193,26 +194,21 @@ export default function ChefScheduleAdmin() {
 
   return (
     <div className="space-y-6">
-      {/* Header */}
-      <div className="flex items-center justify-between flex-wrap gap-3">
-        <div>
-          <h1 className="text-xl font-bold flex items-center gap-2">
-            <Calendar className="h-5 w-5 text-primary" />
-            {isAr ? "إدارة جداول الطهاة" : "Chef Schedule Management"}
-          </h1>
-          <p className="text-sm text-muted-foreground mt-0.5">
-            {isAr ? "عرض وإدارة جداول جميع الطهاة والفعاليات" : "View and manage all chef schedules and events"}
-          </p>
-        </div>
-        <div className="flex gap-2">
-          <Button variant="outline" size="sm" onClick={exportCSV} className="gap-1.5">
-            <Download className="h-3.5 w-3.5" />{isAr ? "تصدير" : "Export CSV"}
-          </Button>
-          <Button size="sm" onClick={handleAddNew} className="gap-1.5">
-            <Plus className="h-3.5 w-3.5" />{isAr ? "إضافة حدث" : "Add Event"}
-          </Button>
-        </div>
-      </div>
+      <AdminPageHeader
+        icon={CalendarDays}
+        title={isAr ? "إدارة جداول الطهاة" : "Chef Schedule Management"}
+        description={isAr ? "عرض وإدارة جداول جميع الطهاة والفعاليات" : "View and manage all chef schedules and events"}
+        actions={
+          <div className="flex gap-2">
+            <Button variant="outline" size="sm" onClick={exportCSV} className="gap-1.5">
+              <Download className="h-3.5 w-3.5" />{isAr ? "تصدير" : "Export CSV"}
+            </Button>
+            <Button size="sm" onClick={handleAddNew} className="gap-1.5">
+              <Plus className="h-3.5 w-3.5" />{isAr ? "إضافة حدث" : "Add Event"}
+            </Button>
+          </div>
+        }
+      />
 
       {/* Inline Form */}
       {showForm && (

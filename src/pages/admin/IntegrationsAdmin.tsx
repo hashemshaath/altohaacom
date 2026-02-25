@@ -1,4 +1,5 @@
 import { useState } from "react";
+import AdminPageHeader from "@/components/admin/AdminPageHeader";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -193,16 +194,11 @@ export default function IntegrationsAdmin() {
 
   return (
     <div className="space-y-6">
-      <div>
-        <h1 className="font-serif text-2xl font-bold">
-          {language === "ar" ? "التكاملات والربط" : "Integrations"}
-        </h1>
-        <p className="text-muted-foreground">
-          {language === "ar" 
-            ? "ربط المنصة مع الخدمات والأدوات الخارجية" 
-            : "Connect platform with external services and tools"}
-        </p>
-      </div>
+      <AdminPageHeader
+        icon={Plug}
+        title={language === "ar" ? "التكاملات والربط" : "Integrations"}
+        description={language === "ar" ? "ربط المنصة مع الخدمات والأدوات الخارجية" : "Connect platform with external services and tools"}
+      />
 
       <Tabs defaultValue="all">
         <TabsList className="flex-wrap h-auto">

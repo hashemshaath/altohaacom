@@ -16,6 +16,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Skeleton } from "@/components/ui/skeleton";
 import { useToast } from "@/hooks/use-toast";
 import PrintableInvoice from "@/components/invoices/PrintableInvoice";
+import AdminPageHeader from "@/components/admin/AdminPageHeader";
 import {
   FileText, Search, Plus, Eye, ChevronLeft, Save, Trash2,
   DollarSign, Clock, CheckCircle, XCircle, Send, Copy,
@@ -567,18 +568,17 @@ export default function InvoicesAdmin() {
   // ── List View ──
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-3xl font-bold">{language === "ar" ? "الفواتير" : "Invoices"}</h1>
-          <p className="mt-1 text-muted-foreground">
-            {language === "ar" ? "إدارة وتتبع جميع الفواتير" : "Manage and track all invoices"}
-          </p>
-        </div>
-        <Button onClick={() => setShowForm(true)}>
-          <Plus className="me-2 h-4 w-4" />
-          {language === "ar" ? "إنشاء فاتورة" : "Create Invoice"}
-        </Button>
-      </div>
+      <AdminPageHeader
+        icon={FileText}
+        title={language === "ar" ? "الفواتير" : "Invoices"}
+        description={language === "ar" ? "إدارة وتتبع جميع الفواتير" : "Manage and track all invoices"}
+        actions={
+          <Button onClick={() => setShowForm(true)}>
+            <Plus className="me-2 h-4 w-4" />
+            {language === "ar" ? "إنشاء فاتورة" : "Create Invoice"}
+          </Button>
+        }
+      />
 
       {/* Stats */}
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">

@@ -18,6 +18,7 @@ import { Separator } from "@/components/ui/separator";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { toast } from "@/hooks/use-toast";
 import { Plus, Pencil, Trash2, Eye, Landmark, Calendar, MapPin, Building, Ticket, Tag, Globe, Save, X, Loader2, Search, Trophy, GraduationCap, Mic, Image, Users, FileText, Bot, Copy, FileSpreadsheet, CheckCircle, XCircle, Layers, Download, TrendingUp, Clock } from "lucide-react";
+import AdminPageHeader from "@/components/admin/AdminPageHeader";
 import { EventSeriesManager } from "@/components/admin/EventSeriesManager";
 import { AITextOptimizer } from "@/components/admin/AITextOptimizer";
 import { OrganizerSearchSelector, type OrganizerValue } from "@/components/admin/OrganizerSearchSelector";
@@ -352,57 +353,48 @@ export default function ExhibitionsAdmin() {
 
   return (
     <div className="space-y-6">
-      {/* Page Header */}
-      <div className="flex items-center justify-between flex-wrap gap-3">
-        <div className="flex items-center gap-3">
-          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-primary/10">
-            <Landmark className="h-5 w-5 text-primary" />
+      <AdminPageHeader
+        icon={Landmark}
+        title={t("Exhibitions & Events", "إدارة المعارض والفعاليات")}
+        description={t("Create, manage, and monitor all exhibitions, conferences, and events", "إنشاء وإدارة ومراقبة جميع المعارض والمؤتمرات والفعاليات")}
+        actions={
+          <div className="flex gap-2 flex-wrap">
+            <Button variant="outline" size="sm" onClick={() => { setShowSeries(!showSeries); }}>
+              <Layers className="me-2 h-4 w-4" />
+              {t("Series", "السلاسل")}
+            </Button>
+            <Button variant="outline" size="sm" onClick={() => { setShowBulkImport(!showBulkImport); if (showForm) setShowForm(false); }}>
+              <FileSpreadsheet className="me-2 h-4 w-4" />
+              {t("Bulk Import", "استيراد جماعي")}
+            </Button>
+            <Button variant="outline" size="sm" onClick={() => {
+              if (!filteredExhibitions?.length) return;
+              const headers = ["Title", "Type", "Status", "Start Date", "End Date", "City", "Country", "Organizer", "Is Virtual", "Is Free", "Views"];
+              const rows = filteredExhibitions.map(ex => [
+                ex.title, ex.type, ex.status,
+                format(new Date(ex.start_date), "yyyy-MM-dd"),
+                format(new Date(ex.end_date), "yyyy-MM-dd"),
+                ex.city || "", ex.country || "", ex.organizer_name || "",
+                ex.is_virtual ? "Yes" : "No", ex.is_free ? "Yes" : "No",
+                ex.view_count || 0,
+              ]);
+              const csv = [headers.join(","), ...rows.map(r => r.map(v => `"${v}"`).join(","))].join("\n");
+              const blob = new Blob([csv], { type: "text/csv" });
+              const url = URL.createObjectURL(blob);
+              const a = document.createElement("a");
+              a.href = url; a.download = `exhibitions-${format(new Date(), "yyyyMMdd")}.csv`; a.click();
+              URL.revokeObjectURL(url);
+              toast({ title: t("Exported " + filteredExhibitions.length + " events", "تم تصدير " + filteredExhibitions.length + " فعالية") });
+            }}>
+              <Download className="me-2 h-4 w-4" />
+              {t("Export CSV", "تصدير CSV")}
+            </Button>
+            <Button onClick={() => { resetForm(); setShowForm(!showForm); if (showBulkImport) setShowBulkImport(false); }} size="sm">
+              {showForm ? <><X className="me-2 h-4 w-4" />{t("Close", "إغلاق")}</> : <><Plus className="me-2 h-4 w-4" />{t("Add Event", "إضافة فعالية")}</>}
+            </Button>
           </div>
-          <div>
-            <h1 className="font-serif text-xl font-bold sm:text-2xl">
-              {t("Exhibitions & Events", "إدارة المعارض والفعاليات")}
-            </h1>
-            <p className="text-xs text-muted-foreground">
-              {t("Create, manage, and monitor all exhibitions, conferences, and events", "إنشاء وإدارة ومراقبة جميع المعارض والمؤتمرات والفعاليات")}
-            </p>
-          </div>
-        </div>
-        <div className="flex gap-2 flex-wrap">
-          <Button variant="outline" size="sm" onClick={() => { setShowSeries(!showSeries); }}>
-            <Layers className="me-2 h-4 w-4" />
-            {t("Series", "السلاسل")}
-          </Button>
-          <Button variant="outline" size="sm" onClick={() => { setShowBulkImport(!showBulkImport); if (showForm) setShowForm(false); }}>
-            <FileSpreadsheet className="me-2 h-4 w-4" />
-            {t("Bulk Import", "استيراد جماعي")}
-          </Button>
-          <Button variant="outline" size="sm" onClick={() => {
-            if (!filteredExhibitions?.length) return;
-            const headers = ["Title", "Type", "Status", "Start Date", "End Date", "City", "Country", "Organizer", "Is Virtual", "Is Free", "Views"];
-            const rows = filteredExhibitions.map(ex => [
-              ex.title, ex.type, ex.status,
-              format(new Date(ex.start_date), "yyyy-MM-dd"),
-              format(new Date(ex.end_date), "yyyy-MM-dd"),
-              ex.city || "", ex.country || "", ex.organizer_name || "",
-              ex.is_virtual ? "Yes" : "No", ex.is_free ? "Yes" : "No",
-              ex.view_count || 0,
-            ]);
-            const csv = [headers.join(","), ...rows.map(r => r.map(v => `"${v}"`).join(","))].join("\n");
-            const blob = new Blob([csv], { type: "text/csv" });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement("a");
-            a.href = url; a.download = `exhibitions-${format(new Date(), "yyyyMMdd")}.csv`; a.click();
-            URL.revokeObjectURL(url);
-            toast({ title: t("Exported " + filteredExhibitions.length + " events", "تم تصدير " + filteredExhibitions.length + " فعالية") });
-          }}>
-            <Download className="me-2 h-4 w-4" />
-            {t("Export CSV", "تصدير CSV")}
-          </Button>
-          <Button onClick={() => { resetForm(); setShowForm(!showForm); if (showBulkImport) setShowBulkImport(false); }} size="sm">
-            {showForm ? <><X className="me-2 h-4 w-4" />{t("Close", "إغلاق")}</> : <><Plus className="me-2 h-4 w-4" />{t("Add Event", "إضافة فعالية")}</>}
-          </Button>
-        </div>
-      </div>
+        }
+      />
 
       {/* Quick Stats */}
       {exhibitions && exhibitions.length > 0 && (

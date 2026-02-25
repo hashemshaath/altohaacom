@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
+import AdminPageHeader from "@/components/admin/AdminPageHeader";
 import {
   useMentorshipPrograms,
   useAllMentorApplications,
@@ -28,6 +29,7 @@ import {
   Users,
   ClipboardList,
   Plus,
+  Handshake,
   CheckCircle,
   XCircle,
   Clock,
@@ -118,16 +120,11 @@ export default function MentorshipAdmin() {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="font-serif text-2xl font-bold">
-            {isAr ? "إدارة الإرشاد" : "Mentorship Management"}
-          </h1>
-          <p className="text-muted-foreground text-sm">
-            {isAr ? "إدارة البرامج والطلبات والمطابقات" : "Manage programs, applications, and matches"}
-          </p>
-        </div>
-      </div>
+      <AdminPageHeader
+        icon={Handshake}
+        title={isAr ? "إدارة الإرشاد" : "Mentorship Management"}
+        description={isAr ? "إدارة البرامج والطلبات والمطابقات" : "Manage programs, applications, and matches"}
+      />
 
       {/* Analytics Stats */}
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">

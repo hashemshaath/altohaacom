@@ -33,6 +33,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useToast } from "@/hooks/use-toast";
+import AdminPageHeader from "@/components/admin/AdminPageHeader";
 import {
   Ticket,
   Search,
@@ -257,20 +258,11 @@ export default function SupportTicketsAdmin() {
 
   return (
     <div className="space-y-4 sm:space-y-6">
-      {/* Header */}
-      <div className="flex items-center gap-2 sm:gap-3">
-        <div className="flex h-8 w-8 sm:h-10 sm:w-10 shrink-0 items-center justify-center rounded-xl bg-primary/10">
-          <Ticket className="h-4 w-4 sm:h-5 sm:w-5 text-primary" />
-        </div>
-        <div className="min-w-0">
-          <h1 className="font-serif text-lg sm:text-2xl font-bold truncate">
-            {isAr ? "تذاكر الدعم" : "Support Tickets"}
-          </h1>
-          <p className="text-[11px] sm:text-xs text-muted-foreground truncate">
-            {isAr ? "إدارة طلبات الدعم" : "Manage support requests"}
-          </p>
-        </div>
-      </div>
+      <AdminPageHeader
+        icon={Ticket}
+        title={isAr ? "تذاكر الدعم" : "Support Tickets"}
+        description={isAr ? "إدارة طلبات الدعم" : "Manage support requests"}
+      />
 
       {/* Stats */}
       <div className="grid grid-cols-3 sm:grid-cols-6 gap-2 sm:gap-4">

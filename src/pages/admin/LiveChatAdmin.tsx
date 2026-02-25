@@ -11,6 +11,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useToast } from "@/hooks/use-toast";
+import AdminPageHeader from "@/components/admin/AdminPageHeader";
 import {
   MessageCircle,
   Send,
@@ -210,20 +211,11 @@ export default function LiveChatAdmin() {
 
   return (
     <div className="space-y-4 sm:space-y-6">
-      {/* Header */}
-      <div className="flex items-center gap-3">
-        <div className="flex h-9 w-9 sm:h-10 sm:w-10 shrink-0 items-center justify-center rounded-xl bg-primary/10">
-          <Headphones className="h-4 w-4 sm:h-5 sm:w-5 text-primary" />
-        </div>
-        <div className="min-w-0">
-          <h1 className="font-serif text-lg sm:text-2xl font-bold truncate">
-            {isAr ? "الدعم المباشر" : "Live Chat"}
-          </h1>
-          <p className="text-[10px] sm:text-xs text-muted-foreground truncate">
-            {isAr ? "إدارة محادثات الدعم" : "Real-time support"}
-          </p>
-        </div>
-      </div>
+      <AdminPageHeader
+        icon={Headphones}
+        title={isAr ? "الدعم المباشر" : "Live Chat"}
+        description={isAr ? "إدارة محادثات الدعم" : "Real-time support"}
+      />
 
       {/* Stats - compact 4-col on mobile */}
       <div className="grid grid-cols-4 gap-2 sm:gap-4">

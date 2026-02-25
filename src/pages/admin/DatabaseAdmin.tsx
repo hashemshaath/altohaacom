@@ -1,4 +1,5 @@
 import { useState } from "react";
+import AdminPageHeader from "@/components/admin/AdminPageHeader";
 import { useQuery } from "@tanstack/react-query";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { supabase } from "@/integrations/supabase/client";
@@ -87,20 +88,17 @@ export default function DatabaseAdmin() {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="font-serif text-2xl font-bold">
-            {language === "ar" ? "قاعدة البيانات" : "Database Overview"}
-          </h1>
-          <p className="text-muted-foreground">
-            {language === "ar" ? "نظرة عامة على قاعدة البيانات والتخزين" : "Database and storage overview"}
-          </p>
-        </div>
-        <Button onClick={handleRefresh} disabled={isRefreshing}>
-          <RefreshCw className={`me-2 h-4 w-4 ${isRefreshing ? "animate-spin" : ""}`} />
-          {language === "ar" ? "تحديث" : "Refresh"}
-        </Button>
-      </div>
+      <AdminPageHeader
+        icon={Database}
+        title={language === "ar" ? "قاعدة البيانات" : "Database Overview"}
+        description={language === "ar" ? "نظرة عامة على قاعدة البيانات والتخزين" : "Database and storage overview"}
+        actions={
+          <Button onClick={handleRefresh} disabled={isRefreshing}>
+            <RefreshCw className={`me-2 h-4 w-4 ${isRefreshing ? "animate-spin" : ""}`} />
+            {language === "ar" ? "تحديث" : "Refresh"}
+          </Button>
+        }
+      />
 
       {/* Overview Stats */}
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">

@@ -2,6 +2,7 @@ import { useLanguage } from "@/i18n/LanguageContext";
 import { useEstablishments } from "@/hooks/useEstablishments";
 import { supabase } from "@/integrations/supabase/client";
 import { useQueryClient } from "@tanstack/react-query";
+import AdminPageHeader from "@/components/admin/AdminPageHeader";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -31,10 +32,11 @@ export default function EstablishmentsAdmin() {
 
   return (
     <div className="space-y-6">
-      <div>
-        <h1 className="text-2xl font-bold">{isAr ? "إدارة المنشآت" : "Establishments Management"}</h1>
-        <p className="text-sm text-muted-foreground">{isAr ? "إدارة المطاعم والفنادق والمنشآت الغذائية" : "Manage restaurants, hotels, and food establishments"}</p>
-      </div>
+      <AdminPageHeader
+        icon={Building2}
+        title={isAr ? "إدارة المنشآت" : "Establishments Management"}
+        description={isAr ? "إدارة المطاعم والفنادق والمنشآت الغذائية" : "Manage restaurants, hotels, and food establishments"}
+      />
 
       {isLoading ? (
         <div className="space-y-3">{[1, 2, 3].map((i) => <Skeleton key={i} className="h-16 w-full rounded-lg" />)}</div>
