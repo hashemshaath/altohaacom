@@ -1242,6 +1242,69 @@ export default function SocialLinksEditor() {
                                           </Button>
                                         </div>
                                       )}
+                                      {/* A/B Testing Section */}
+                                      <Separator className="my-2" />
+                                      <div className="space-y-2">
+                                        <div className="flex items-center justify-between">
+                                          <Label className="text-[10px] flex items-center gap-1 font-semibold">
+                                            <Sparkles className="h-3 w-3 text-chart-2" />
+                                            {isAr ? "اختبار A/B" : "A/B Test"}
+                                          </Label>
+                                          <Switch
+                                            checked={(item as any).ab_enabled || false}
+                                            onCheckedChange={v => updateItem.mutate({ id: item.id, ab_enabled: v } as any)}
+                                          />
+                                        </div>
+                                        {(item as any).ab_enabled && (
+                                          <div className="space-y-1.5 p-2 rounded-lg bg-muted/30 border border-border/30">
+                                            <p className="text-[9px] text-muted-foreground">{isAr ? "النسخة البديلة (B)" : "Variant B"}</p>
+                                            <div className="grid grid-cols-2 gap-1.5">
+                                              <Input
+                                                value={(item as any).ab_variant_title || ""}
+                                                onChange={e => updateItem.mutate({ id: item.id, ab_variant_title: e.target.value } as any)}
+                                                placeholder={isAr ? "عنوان B (EN)" : "Title B (EN)"}
+                                                className="h-7 text-[10px]"
+                                                dir="ltr"
+                                              />
+                                              <Input
+                                                value={(item as any).ab_variant_title_ar || ""}
+                                                onChange={e => updateItem.mutate({ id: item.id, ab_variant_title_ar: e.target.value } as any)}
+                                                placeholder={isAr ? "عنوان B (AR)" : "Title B (AR)"}
+                                                className="h-7 text-[10px]"
+                                                dir="rtl"
+                                              />
+                                            </div>
+                                            <Input
+                                              value={(item as any).ab_variant_icon || ""}
+                                              onChange={e => updateItem.mutate({ id: item.id, ab_variant_icon: e.target.value } as any)}
+                                              placeholder={isAr ? "أيقونة B (إيموجي)" : "Icon B (emoji)"}
+                                              className="h-7 text-[10px] w-28"
+                                            />
+                                            {((item.click_count || 0) + ((item as any).ab_variant_click_count || 0)) > 0 && (
+                                              <div className="flex items-center gap-3 pt-1">
+                                                <div className="flex-1">
+                                                  <div className="flex justify-between text-[9px] mb-0.5">
+                                                    <span className="font-medium">A</span>
+                                                    <span className="tabular-nums">{item.click_count || 0}</span>
+                                                  </div>
+                                                  <div className="h-1.5 rounded-full bg-primary/20">
+                                                    <div className="h-full rounded-full bg-primary/70 transition-all" style={{ width: `${Math.max(5, ((item.click_count || 0) / Math.max((item.click_count || 0) + ((item as any).ab_variant_click_count || 0), 1)) * 100)}%` }} />
+                                                  </div>
+                                                </div>
+                                                <div className="flex-1">
+                                                  <div className="flex justify-between text-[9px] mb-0.5">
+                                                    <span className="font-medium">B</span>
+                                                    <span className="tabular-nums">{(item as any).ab_variant_click_count || 0}</span>
+                                                  </div>
+                                                  <div className="h-1.5 rounded-full bg-chart-2/20">
+                                                    <div className="h-full rounded-full bg-chart-2/70 transition-all" style={{ width: `${Math.max(5, (((item as any).ab_variant_click_count || 0) / Math.max((item.click_count || 0) + ((item as any).ab_variant_click_count || 0), 1)) * 100)}%` }} />
+                                                  </div>
+                                                </div>
+                                              </div>
+                                            )}
+                                          </div>
+                                        )}
+                                      </div>
                                     </div>
                                   ) : (
                                     <div className="flex-1 min-w-0">
@@ -1256,6 +1319,26 @@ export default function SocialLinksEditor() {
                                             {" → "}
                                             {(item as any).scheduled_end ? new Date((item as any).scheduled_end).toLocaleDateString() : "∞"}
                                           </span>
+                                        </div>
+                                      )}
+                                      {/* A/B Test indicator */}
+                                      {(item as any).ab_enabled && (item as any).ab_variant_title && (
+                                        <div className="flex items-center gap-1.5 mt-1">
+                                          <Badge variant="outline" className="text-[8px] h-4 px-1.5 gap-0.5 border-chart-2/30 text-chart-2">
+                                            <Sparkles className="h-2 w-2" /> A/B
+                                          </Badge>
+                                          <span className="text-[9px] text-muted-foreground">
+                                            A: {item.click_count || 0} • B: {(item as any).ab_variant_click_count || 0}
+                                          </span>
+                                          {(() => {
+                                            const a = item.click_count || 0;
+                                            const b = (item as any).ab_variant_click_count || 0;
+                                            if (a + b >= 10) {
+                                              const winner = a > b ? "A" : b > a ? "B" : "—";
+                                              return <Badge variant="secondary" className="text-[8px] h-4 px-1.5">🏆 {winner}</Badge>;
+                                            }
+                                            return null;
+                                          })()}
                                         </div>
                                       )}
                                       {/* Mini click bar */}
