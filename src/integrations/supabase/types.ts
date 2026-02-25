@@ -19064,6 +19064,48 @@ export type Database = {
           },
         ]
       }
+      user_career_sections: {
+        Row: {
+          color: string
+          created_at: string
+          icon: string
+          id: string
+          is_custom: boolean
+          name_ar: string
+          name_en: string
+          section_key: string
+          sort_order: number
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          color?: string
+          created_at?: string
+          icon?: string
+          id?: string
+          is_custom?: boolean
+          name_ar?: string
+          name_en: string
+          section_key: string
+          sort_order?: number
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          color?: string
+          created_at?: string
+          icon?: string
+          id?: string
+          is_custom?: boolean
+          name_ar?: string
+          name_en?: string
+          section_key?: string
+          sort_order?: number
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       user_challenges: {
         Row: {
           challenge_id: string

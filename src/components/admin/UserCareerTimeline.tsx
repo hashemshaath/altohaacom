@@ -225,12 +225,74 @@ export function UserCareerTimeline({ userId, isAr }: Props) {
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editingMembershipId, setEditingMembershipId] = useState<string | null>(null);
   const [editingAwardId, setEditingAwardId] = useState<string | null>(null);
-  const [sections, setSections] = useState<SectionConfig[]>(DEFAULT_SECTIONS);
   const [editingSectionKey, setEditingSectionKey] = useState<string | null>(null);
   const [sectionEditName, setSectionEditName] = useState({ en: "", ar: "" });
   const [addingSectionDialog, setAddingSectionDialog] = useState(false);
   const [newSectionName, setNewSectionName] = useState({ en: "", ar: "" });
   const [activeId, setActiveId] = useState<string | null>(null);
+
+  // ── Load custom sections from DB ──────────────────────────────────────
+  const { data: dbSections = [] } = useQuery({
+    queryKey: ["user-career-sections", userId],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("user_career_sections")
+        .select("*")
+        .eq("user_id", userId)
+        .order("sort_order", { ascending: true });
+      if (error) throw error;
+      return data || [];
+    },
+  });
+
+  // Merge default sections with DB custom sections
+  const sections: SectionConfig[] = useMemo(() => {
+    const customFromDb: SectionConfig[] = dbSections
+      .filter((s: any) => s.is_custom)
+      .map((s: any) => ({
+        key: s.section_key,
+        icon: s.icon || "FileText",
+        en: s.name_en,
+        ar: s.name_ar || s.name_en,
+        color: s.color || CUSTOM_SECTION_COLORS[0],
+        isCustom: true,
+      }));
+
+    // Check if DB has stored order for default sections
+    const dbDefaultOrder = dbSections
+      .filter((s: any) => !s.is_custom)
+      .reduce((acc: Record<string, any>, s: any) => {
+        acc[s.section_key] = s;
+        return acc;
+      }, {} as Record<string, any>);
+
+    // Apply saved icon/name overrides to defaults
+    const defaults = DEFAULT_SECTIONS.map(d => {
+      const override = dbDefaultOrder[d.key];
+      if (override) {
+        return { ...d, icon: override.icon || d.icon, en: override.name_en || d.en, ar: override.name_ar || d.ar };
+      }
+      return d;
+    });
+
+    // If we have stored order, use it; otherwise append customs after defaults
+    if (dbSections.length > 0) {
+      const orderedKeys = dbSections.map((s: any) => s.section_key);
+      const allSections = [...defaults, ...customFromDb];
+      const ordered: SectionConfig[] = [];
+      for (const key of orderedKeys) {
+        const found = allSections.find(s => s.key === key);
+        if (found) ordered.push(found);
+      }
+      // Add any defaults not in DB (new defaults)
+      for (const d of defaults) {
+        if (!ordered.find(s => s.key === d.key)) ordered.push(d);
+      }
+      return ordered;
+    }
+
+    return [...defaults, ...customFromDb];
+  }, [dbSections]);
 
   // Career form state
   const [careerForm, setCareerForm] = useState({
@@ -350,6 +412,24 @@ export function UserCareerTimeline({ userId, isAr }: Props) {
   const handleDragStart = (event: DragStartEvent) => {
     setActiveId(String(event.active.id));
   };
+  // ── Helper: persist section order to DB ──────────────────────────────────────
+  const persistSectionsOrder = useCallback(async (newSections: SectionConfig[]) => {
+    // Upsert all sections (both default and custom) to preserve order
+    for (let i = 0; i < newSections.length; i++) {
+      const s = newSections[i];
+      await supabase.from("user_career_sections" as any).upsert({
+        user_id: userId,
+        section_key: s.key,
+        icon: s.icon,
+        name_en: s.en,
+        name_ar: s.ar,
+        color: s.color,
+        sort_order: i,
+        is_custom: s.isCustom,
+      } as any, { onConflict: "user_id,section_key" });
+    }
+    queryClient.invalidateQueries({ queryKey: ["user-career-sections", userId] });
+  }, [userId, queryClient]);
 
    const handleDragEnd = useCallback(async (event: DragEndEvent) => {
     setActiveId(null);
@@ -364,7 +444,8 @@ export function UserCareerTimeline({ userId, isAr }: Props) {
       const oldIndex = sections.findIndex(s => s.key === active.id);
       const newIndex = sections.findIndex(s => s.key === over.id);
       if (oldIndex !== -1 && newIndex !== -1) {
-        setSections(prev => arrayMove(prev, oldIndex, newIndex));
+        const reordered = arrayMove([...sections], oldIndex, newIndex);
+        await persistSectionsOrder(reordered);
         toast({ title: isAr ? "تم إعادة ترتيب الأقسام" : "Sections reordered" });
       }
       return;
@@ -397,15 +478,17 @@ export function UserCareerTimeline({ userId, isAr }: Props) {
       queryClient.invalidateQueries({ queryKey: ["career-records", userId] });
       toast({ title: isAr ? "تم نقل العنصر" : "Item moved" });
     }
-  }, [records, sections, userId, queryClient, isAr]);
+  }, [records, sections, userId, queryClient, isAr, persistSectionsOrder]);
 
-  const changeSectionIcon = (sectionKey: string, iconKey: string) => {
-    setSections(prev => prev.map(s => s.key === sectionKey ? { ...s, icon: iconKey } : s));
+  const changeSectionIcon = async (sectionKey: string, iconKey: string) => {
+    const updated = sections.map(s => s.key === sectionKey ? { ...s, icon: iconKey } : s);
+    await persistSectionsOrder(updated);
     toast({ title: isAr ? "تم تغيير الأيقونة" : "Icon changed" });
   };
 
-  const deleteSection = (key: string) => {
-    setSections(prev => prev.filter(s => s.key !== key));
+  const deleteSection = async (key: string) => {
+    await supabase.from("user_career_sections" as any).delete().eq("user_id", userId).eq("section_key", key);
+    queryClient.invalidateQueries({ queryKey: ["user-career-sections", userId] });
     toast({ title: isAr ? "تم حذف القسم" : "Section deleted" });
   };
 
@@ -651,31 +734,53 @@ export function UserCareerTimeline({ userId, isAr }: Props) {
     setSectionEditName({ en: section.en, ar: section.ar });
   };
 
-  const saveSectionTitle = () => {
+  const saveSectionTitle = async () => {
     if (!editingSectionKey) return;
-    setSections(prev => prev.map(s => 
+    const updated = sections.map(s => 
       s.key === editingSectionKey ? { ...s, en: sectionEditName.en || s.en, ar: sectionEditName.ar || s.ar } : s
-    ));
+    );
+    await persistSectionsOrder(updated);
     setEditingSectionKey(null);
     toast({ title: isAr ? "تم تحديث العنوان" : "Title updated" });
   };
 
-  const addCustomSection = () => {
+  const addCustomSection = async () => {
     if (!newSectionName.en.trim()) return;
     const key = `custom_${Date.now()}`;
     const colorIndex = sections.filter(s => s.isCustom).length % CUSTOM_SECTION_COLORS.length;
-    setSections(prev => [...prev, {
+    const newSection: SectionConfig = {
       key, icon: "FileText", en: newSectionName.en, ar: newSectionName.ar || newSectionName.en,
       color: CUSTOM_SECTION_COLORS[colorIndex], isCustom: true,
-    }]);
+    };
+    // Save to DB
+    await supabase.from("user_career_sections" as any).insert({
+      user_id: userId,
+      section_key: key,
+      icon: newSection.icon,
+      name_en: newSection.en,
+      name_ar: newSection.ar,
+      color: newSection.color,
+      sort_order: sections.length,
+      is_custom: true,
+    } as any);
+    // Also persist all default sections if not yet saved (to preserve order)
+    if (dbSections.length === 0) {
+      await persistSectionsOrder([...sections, newSection]);
+    } else {
+      queryClient.invalidateQueries({ queryKey: ["user-career-sections", userId] });
+    }
     setExpandedSections(prev => new Set([...prev, key]));
     setNewSectionName({ en: "", ar: "" });
     setAddingSectionDialog(false);
     toast({ title: isAr ? "تم إنشاء القسم" : "Section created" });
   };
 
-  const deleteCustomSection = (key: string) => {
-    setSections(prev => prev.filter(s => s.key !== key));
+  const deleteCustomSection = async (key: string) => {
+    await supabase.from("user_career_sections" as any).delete().eq("user_id", userId).eq("section_key", key);
+    // Also delete any career records in this section
+    await supabase.from("user_career_records").delete().eq("user_id", userId).eq("record_type", key);
+    queryClient.invalidateQueries({ queryKey: ["user-career-sections", userId] });
+    queryClient.invalidateQueries({ queryKey: ["career-records", userId] });
     toast({ title: isAr ? "تم حذف القسم" : "Section deleted" });
   };
 
