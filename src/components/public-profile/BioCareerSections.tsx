@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, memo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Briefcase, GraduationCap, Tv, Award, Trophy, ChevronDown, Calendar, Scale, Users, Medal, CalendarCheck, FileText } from "lucide-react";
@@ -8,6 +8,7 @@ import {
   MEMBERSHIP_TYPES, CERTIFICATE_TYPES, COUNTRIES,
   labelFor,
 } from "@/components/admin/career-timeline/constants";
+import { BioCareerSkeleton } from "./BioCareerSkeleton";
 
 interface Props {
   userId: string;
@@ -41,7 +42,7 @@ const SECTION_ICONS: Record<string, any> = {
   competitions: Trophy, awards: Medal, media: Tv, organizing: CalendarCheck,
 };
 
-function CollapsibleBioSection({ icon: Icon, title, count, theme, children, defaultOpen = true }: {
+const CollapsibleBioSection = memo(function CollapsibleBioSection({ icon: Icon, title, count, theme, children, defaultOpen = true }: {
   icon: any; title: string; count: number; theme: any; children: React.ReactNode; defaultOpen?: boolean;
 }) {
   const [open, setOpen] = useState(defaultOpen);
@@ -68,9 +69,9 @@ function CollapsibleBioSection({ icon: Icon, title, count, theme, children, defa
       </div>
     </div>
   );
-}
+});
 
-function RecordCard({ record, isAr, theme, icon: Icon, iconBg, sectionType }: {
+const RecordCard = memo(function RecordCard({ record, isAr, theme, icon: Icon, iconBg, sectionType }: {
   record: any; isAr: boolean; theme: any; icon: any; iconBg: string; sectionType: string;
 }) {
   const title = pick(isAr, record.title_ar, record.title);
@@ -82,55 +83,34 @@ function RecordCard({ record, isAr, theme, icon: Icon, iconBg, sectionType }: {
 
   const badges: { label: string; bg: string }[] = [];
 
-  // Education details
   if (sectionType === "education") {
-    if (record.education_level) {
-      badges.push({ label: labelFor(record.education_level, EDUCATION_LEVELS, isAr), bg: `${theme.accent}15` });
-    }
+    if (record.education_level) badges.push({ label: labelFor(record.education_level, EDUCATION_LEVELS, isAr), bg: `${theme.accent}15` });
     if (record.field_of_study) {
       const fieldText = isAr ? (record.field_of_study_ar || record.field_of_study) : record.field_of_study;
       badges.push({ label: fieldText, bg: `${theme.accent}10` });
     }
   }
-
-  // Judging position
-  if (sectionType === "judging" && record.employment_type) {
-    badges.push({ label: labelFor(record.employment_type, JUDGING_POSITIONS, isAr), bg: `${theme.accent}15` });
-  }
-
-  // Competition medal & role
+  if (sectionType === "judging" && record.employment_type) badges.push({ label: labelFor(record.employment_type, JUDGING_POSITIONS, isAr), bg: `${theme.accent}15` });
   if (sectionType === "competitions" && record.grade) {
     const medal = MEDAL_TYPES.find(m => m.value === record.grade);
     if (medal) badges.push({ label: `${medal.emoji || ""} ${isAr ? medal.ar : medal.en}`.trim(), bg: `${theme.accent}20` });
   }
-  if (sectionType === "competitions" && record.employment_type) {
-    badges.push({ label: labelFor(record.employment_type, COMPETITION_ROLES, isAr), bg: `${theme.accent}10` });
-  }
-
-  // Work employment type
+  if (sectionType === "competitions" && record.employment_type) badges.push({ label: labelFor(record.employment_type, COMPETITION_ROLES, isAr), bg: `${theme.accent}10` });
   if (sectionType === "work" && record.employment_type) {
     badges.push({ label: labelFor(record.employment_type, [
-      { value: "full_time", en: "Full-time", ar: "دوام كامل" },
-      { value: "part_time", en: "Part-time", ar: "دوام جزئي" },
-      { value: "contract", en: "Contract", ar: "عقد" },
-      { value: "internship", en: "Internship", ar: "تدريب" },
-      { value: "freelance", en: "Freelance", ar: "عمل حر" },
-      { value: "volunteer", en: "Volunteer", ar: "تطوعي" },
+      { value: "full_time", en: "Full-time", ar: "دوام كامل" }, { value: "part_time", en: "Part-time", ar: "دوام جزئي" },
+      { value: "contract", en: "Contract", ar: "عقد" }, { value: "internship", en: "Internship", ar: "تدريب" },
+      { value: "freelance", en: "Freelance", ar: "عمل حر" }, { value: "volunteer", en: "Volunteer", ar: "تطوعي" },
     ], isAr), bg: `${theme.accent}10` });
   }
-
-  if (record.is_current) {
-    badges.push({ label: isAr ? "حالي" : "Current", bg: `${theme.accent}20` });
-  }
+  if (record.is_current) badges.push({ label: isAr ? "حالي" : "Current", bg: `${theme.accent}20` });
 
   const host = sectionType === "media" && record.department ? record.department : null;
   const guest = sectionType === "media" && record.field_of_study ? record.field_of_study : null;
-
-  // GPA badge for education
   const gpa = sectionType === "education" && record.grade ? record.grade : null;
 
   return (
-    <div className="flex gap-3 px-3.5 py-3 rounded-xl transition-all duration-200" style={{ background: theme.card, border: `1px solid ${theme.border}` }}>
+    <div className="flex gap-3 px-3.5 py-3 rounded-xl transition-all duration-200 hover:shadow-sm" style={{ background: theme.card, border: `1px solid ${theme.border}` }}>
       <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg" style={{ background: iconBg }}>
         <Icon className="h-3.5 w-3.5" style={{ color: theme.accent }} />
       </div>
@@ -167,9 +147,9 @@ function RecordCard({ record, isAr, theme, icon: Icon, iconBg, sectionType }: {
       </div>
     </div>
   );
-}
+});
 
-function MembershipCard({ membership, isAr, theme, iconBg }: { membership: any; isAr: boolean; theme: any; iconBg: string }) {
+const MembershipCard = memo(function MembershipCard({ membership, isAr, theme, iconBg }: { membership: any; isAr: boolean; theme: any; iconBg: string }) {
   const entity = membership.culinary_entities;
   const name = isAr ? (entity?.name_ar || entity?.name) : entity?.name;
   const title = isAr ? (membership.title_ar || membership.title) : membership.title;
@@ -178,9 +158,9 @@ function MembershipCard({ membership, isAr, theme, iconBg }: { membership: any; 
   const cityCountry = membership.notes ? membership.notes.split("|").filter(Boolean).join(", ") : "";
 
   return (
-    <div className="flex gap-3 px-3.5 py-3 rounded-xl transition-all duration-200" style={{ background: theme.card, border: `1px solid ${theme.border}` }}>
+    <div className="flex gap-3 px-3.5 py-3 rounded-xl transition-all duration-200 hover:shadow-sm" style={{ background: theme.card, border: `1px solid ${theme.border}` }}>
       {entity?.logo_url ? (
-        <img src={entity.logo_url} className="h-8 w-8 rounded-lg object-cover shrink-0" alt="" />
+        <img src={entity.logo_url} className="h-8 w-8 rounded-lg object-cover shrink-0" alt="" loading="lazy" />
       ) : (
         <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg" style={{ background: iconBg }}>
           <Users className="h-3.5 w-3.5" style={{ color: theme.accent }} />
@@ -207,16 +187,16 @@ function MembershipCard({ membership, isAr, theme, iconBg }: { membership: any; 
       </div>
     </div>
   );
-}
+});
 
-function AwardCard({ cert, isAr, theme, iconBg }: { cert: any; isAr: boolean; theme: any; iconBg: string }) {
+const AwardCard = memo(function AwardCard({ cert, isAr, theme, iconBg }: { cert: any; isAr: boolean; theme: any; iconBg: string }) {
   const eventName = pick(isAr, cert.event_name_ar, cert.event_name);
   const achievement = pick(isAr, cert.achievement_ar, cert.achievement);
   const date = fmtDate(cert.event_date || cert.issued_at, isAr);
   const typeInfo = cert.type ? CERTIFICATE_TYPES.find(t => t.value === cert.type) : null;
 
   return (
-    <div className="flex gap-3 px-3.5 py-3 rounded-xl transition-all duration-200" style={{ background: theme.card, border: `1px solid ${theme.border}` }}>
+    <div className="flex gap-3 px-3.5 py-3 rounded-xl transition-all duration-200 hover:shadow-sm" style={{ background: theme.card, border: `1px solid ${theme.border}` }}>
       <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg" style={{ background: iconBg }}>
         <Medal className="h-3.5 w-3.5" style={{ color: theme.accent }} />
       </div>
@@ -235,7 +215,7 @@ function AwardCard({ cert, isAr, theme, iconBg }: { cert: any; isAr: boolean; th
       </div>
     </div>
   );
-}
+});
 
 // ── Section order from DB ──
 const DEFAULT_SECTION_ORDER = ["work", "education", "judging", "memberships", "competitions", "awards", "media", "organizing"];
@@ -251,7 +231,7 @@ const DEFAULT_SECTION_LABELS: Record<string, [string, string]> = {
 };
 
 export function BioCareerSections({ userId, theme, isRtl, animated }: Props) {
-  const { data: records = [] } = useQuery({
+  const { data: records = [], isLoading: recordsLoading } = useQuery({
     queryKey: ["bio-career-records", userId],
     queryFn: async () => {
       const { data } = await supabase.from("user_career_records").select("*")
@@ -290,7 +270,6 @@ export function BioCareerSections({ userId, theme, isRtl, animated }: Props) {
     staleTime: 60_000,
   });
 
-  // Load user's custom section order
   const { data: userSections = [] } = useQuery({
     queryKey: ["bio-career-sections", userId],
     queryFn: async () => {
@@ -304,11 +283,9 @@ export function BioCareerSections({ userId, theme, isRtl, animated }: Props) {
     staleTime: 60_000,
   });
 
-  // Build ordered sections
   const orderedSections = useMemo(() => {
     if (userSections.length > 0) {
       const sectionOrder = userSections.map((s: any) => s.section_key);
-      // Add any missing defaults
       for (const key of DEFAULT_SECTION_ORDER) {
         if (!sectionOrder.includes(key)) sectionOrder.push(key);
       }
@@ -317,7 +294,6 @@ export function BioCareerSections({ userId, theme, isRtl, animated }: Props) {
     return DEFAULT_SECTION_ORDER;
   }, [userSections]);
 
-  // Section labels with DB overrides
   const getSectionLabel = (key: string) => {
     const dbSection = userSections.find((s: any) => s.section_key === key);
     if (dbSection) return isRtl ? (dbSection.name_ar || dbSection.name_en) : dbSection.name_en;
@@ -325,7 +301,6 @@ export function BioCareerSections({ userId, theme, isRtl, animated }: Props) {
     return defaults ? (isRtl ? defaults[0] : defaults[1]) : key;
   };
 
-  // Group records by type
   const recordsByType = useMemo(() => {
     const map: Record<string, any[]> = {};
     for (const r of records) {
@@ -342,6 +317,8 @@ export function BioCareerSections({ userId, theme, isRtl, animated }: Props) {
   };
 
   const totalCount = orderedSections.reduce((sum: number, k: string) => sum + getCount(k), 0);
+
+  if (recordsLoading) return <BioCareerSkeleton />;
   if (totalCount === 0) return null;
 
   const iconBg = `${theme.accent}15`;
