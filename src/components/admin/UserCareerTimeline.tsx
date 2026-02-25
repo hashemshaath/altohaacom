@@ -700,26 +700,33 @@ export function UserCareerTimeline({ userId, isAr }: Props) {
                       <SortableContext items={itemIds} strategy={verticalListSortingStrategy}>
                         {educationRecords.map(r => (
                           <SortableItem key={r.id} id={r.id} sectionKey="education">
-                            <CompactRow icon={GraduationCap} color={section.color}
-                              title={isAr ? (r.title_ar || r.title) : r.title}
-                              subtitle={r.entity_name || ""}
-                              meta={`${formatDateRange(r.start_date, r.end_date, r.is_current, isAr)}${r.education_level ? ` · ${labelFor(r.education_level, EDUCATION_LEVELS, isAr)}` : ""}`}
-                              isCurrent={r.is_current} isAr={isAr}
-                              onEdit={() => startEditCareer(r)} onDelete={() => deleteCareerMutation.mutate(r.id)}
-                              moveSections={getMoveSections("education")} onMove={(target) => moveRecordToSection.mutate({ id: r.id, targetSection: target })}
-                              draggable
-                            />
+                            {editingId === r.id ? (
+                              <CareerForm form={careerForm} editingId={editingId} isAr={isAr}
+                                isPending={saveCareerMutation.isPending}
+                                onUpdate={(k, v) => setCareerForm(prev => ({ ...prev, [k]: v }))}
+                                onSave={() => saveCareerMutation.mutate()} onCancel={closeForm} />
+                            ) : (
+                              <CompactRow icon={GraduationCap} color={section.color}
+                                title={isAr ? (r.title_ar || r.title) : r.title}
+                                subtitle={r.entity_name || ""}
+                                meta={`${formatDateRange(r.start_date, r.end_date, r.is_current, isAr)}${r.education_level ? ` · ${labelFor(r.education_level, EDUCATION_LEVELS, isAr)}` : ""}`}
+                                isCurrent={r.is_current} isAr={isAr}
+                                onEdit={() => startEditCareer(r)} onDelete={() => deleteCareerMutation.mutate(r.id)}
+                                moveSections={getMoveSections("education")} onMove={(target) => moveRecordToSection.mutate({ id: r.id, targetSection: target })}
+                                draggable
+                              />
+                            )}
                           </SortableItem>
                         ))}
                       </SortableContext>
-                      {isAddingHere ? (
-                        <CareerForm form={careerForm} editingId={editingId} isAr={isAr}
+                      {addingSection === "education" && !editingId ? (
+                        <CareerForm form={careerForm} editingId={null} isAr={isAr}
                           isPending={saveCareerMutation.isPending}
                           onUpdate={(k, v) => setCareerForm(prev => ({ ...prev, [k]: v }))}
                           onSave={() => saveCareerMutation.mutate()} onCancel={closeForm} />
-                      ) : (
+                      ) : !editingId || addingSection !== "education" ? (
                         <AddButton label={isAr ? "إضافة تعليم" : "Add Education"} onClick={() => startAddCareer("education")} />
-                      )}
+                      ) : null}
                     </>
                   )}
 
@@ -732,26 +739,33 @@ export function UserCareerTimeline({ userId, isAr }: Props) {
                       <SortableContext items={itemIds} strategy={verticalListSortingStrategy}>
                         {workRecords.map(r => (
                           <SortableItem key={r.id} id={r.id} sectionKey="work">
-                            <CompactRow icon={Briefcase} color={section.color}
-                              title={isAr ? (r.title_ar || r.title) : r.title}
-                              subtitle={r.entity_name || ""}
-                              meta={`${formatDateRange(r.start_date, r.end_date, r.is_current, isAr)}${r.employment_type ? ` · ${labelFor(r.employment_type, EMPLOYMENT_TYPES, isAr)}` : ""}${r.location ? ` · ${r.location}` : ""}`}
-                              isCurrent={r.is_current} isAr={isAr}
-                              onEdit={() => startEditCareer(r)} onDelete={() => deleteCareerMutation.mutate(r.id)}
-                              moveSections={getMoveSections("work")} onMove={(target) => moveRecordToSection.mutate({ id: r.id, targetSection: target })}
-                              draggable
-                            />
+                            {editingId === r.id ? (
+                              <CareerForm form={careerForm} editingId={editingId} isAr={isAr}
+                                isPending={saveCareerMutation.isPending}
+                                onUpdate={(k, v) => setCareerForm(prev => ({ ...prev, [k]: v }))}
+                                onSave={() => saveCareerMutation.mutate()} onCancel={closeForm} />
+                            ) : (
+                              <CompactRow icon={Briefcase} color={section.color}
+                                title={isAr ? (r.title_ar || r.title) : r.title}
+                                subtitle={r.entity_name || ""}
+                                meta={`${formatDateRange(r.start_date, r.end_date, r.is_current, isAr)}${r.employment_type ? ` · ${labelFor(r.employment_type, EMPLOYMENT_TYPES, isAr)}` : ""}${r.location ? ` · ${r.location}` : ""}`}
+                                isCurrent={r.is_current} isAr={isAr}
+                                onEdit={() => startEditCareer(r)} onDelete={() => deleteCareerMutation.mutate(r.id)}
+                                moveSections={getMoveSections("work")} onMove={(target) => moveRecordToSection.mutate({ id: r.id, targetSection: target })}
+                                draggable
+                              />
+                            )}
                           </SortableItem>
                         ))}
                       </SortableContext>
-                      {isAddingHere ? (
-                        <CareerForm form={careerForm} editingId={editingId} isAr={isAr}
+                      {addingSection === "work" && !editingId ? (
+                        <CareerForm form={careerForm} editingId={null} isAr={isAr}
                           isPending={saveCareerMutation.isPending}
                           onUpdate={(k, v) => setCareerForm(prev => ({ ...prev, [k]: v }))}
                           onSave={() => saveCareerMutation.mutate()} onCancel={closeForm} />
-                      ) : (
+                      ) : !editingId || addingSection !== "work" ? (
                         <AddButton label={isAr ? "إضافة خبرة" : "Add Experience"} onClick={() => startAddCareer("work")} />
-                      )}
+                      ) : null}
                     </>
                   )}
 
@@ -848,26 +862,33 @@ export function UserCareerTimeline({ userId, isAr }: Props) {
                       <SortableContext items={itemIds} strategy={verticalListSortingStrategy}>
                         {customSectionRecords(section.key).map(r => (
                           <SortableItem key={r.id} id={r.id} sectionKey={section.key}>
-                            <CompactRow icon={FileText} color={section.color}
-                              title={isAr ? (r.title_ar || r.title) : r.title}
-                              subtitle={r.entity_name || ""}
-                              meta={formatDateRange(r.start_date, r.end_date, r.is_current, isAr)}
-                              isCurrent={r.is_current} isAr={isAr}
-                              onEdit={() => startEditCareer(r)} onDelete={() => deleteCareerMutation.mutate(r.id)}
-                              moveSections={getMoveSections(section.key)} onMove={(target) => moveRecordToSection.mutate({ id: r.id, targetSection: target })}
-                              draggable
-                            />
+                            {editingId === r.id ? (
+                              <CareerForm form={careerForm} editingId={editingId} isAr={isAr}
+                                isPending={saveCareerMutation.isPending}
+                                onUpdate={(k, v) => setCareerForm(prev => ({ ...prev, [k]: v }))}
+                                onSave={() => saveCareerMutation.mutate()} onCancel={closeForm} />
+                            ) : (
+                              <CompactRow icon={FileText} color={section.color}
+                                title={isAr ? (r.title_ar || r.title) : r.title}
+                                subtitle={r.entity_name || ""}
+                                meta={formatDateRange(r.start_date, r.end_date, r.is_current, isAr)}
+                                isCurrent={r.is_current} isAr={isAr}
+                                onEdit={() => startEditCareer(r)} onDelete={() => deleteCareerMutation.mutate(r.id)}
+                                moveSections={getMoveSections(section.key)} onMove={(target) => moveRecordToSection.mutate({ id: r.id, targetSection: target })}
+                                draggable
+                              />
+                            )}
                           </SortableItem>
                         ))}
                       </SortableContext>
-                      {isAddingHere ? (
-                        <CareerForm form={careerForm} editingId={editingId} isAr={isAr}
+                      {addingSection === section.key && !editingId ? (
+                        <CareerForm form={careerForm} editingId={null} isAr={isAr}
                           isPending={saveCareerMutation.isPending}
                           onUpdate={(k, v) => setCareerForm(prev => ({ ...prev, [k]: v }))}
                           onSave={() => saveCareerMutation.mutate()} onCancel={closeForm} />
-                      ) : (
+                      ) : !editingId || addingSection !== section.key ? (
                         <AddButton label={isAr ? "إضافة عنصر" : "Add Item"} onClick={() => startAddCareer(section.key)} />
-                      )}
+                      ) : null}
                     </>
                   )}
                 </div>
@@ -1010,26 +1031,12 @@ function FormActions({ isAr, isPending, editingId, canSave, onSave, onCancel }: 
   isAr: boolean; isPending: boolean; editingId?: string | null; canSave: boolean; onSave: () => void; onCancel: () => void;
 }) {
   return (
-    <div className="flex gap-2.5 pt-3 mt-1">
-      <Button variant="outline" size="sm" className="flex-1 h-10 text-xs font-medium rounded-xl" onClick={onCancel}>{isAr ? "إلغاء" : "Cancel"}</Button>
-      <Button size="sm" className="flex-1 h-10 text-xs font-medium gap-1.5 rounded-xl" onClick={onSave} disabled={!canSave || isPending}>
-        {isPending ? <span className="animate-spin h-3 w-3 border-2 border-current border-t-transparent rounded-full" /> : <Check className="h-3.5 w-3.5" />}
-        {editingId ? (isAr ? "حفظ التعديلات" : "Save Changes") : (isAr ? "إضافة" : "Add")}
+    <div className="flex gap-2 pt-2 border-t border-border/30">
+      <Button variant="outline" size="sm" className="flex-1 h-8 text-xs font-medium" onClick={onCancel}>{isAr ? "إلغاء" : "Cancel"}</Button>
+      <Button size="sm" className="flex-1 h-8 text-xs font-medium gap-1.5" onClick={onSave} disabled={!canSave || isPending}>
+        {isPending ? <span className="animate-spin h-3 w-3 border-2 border-current border-t-transparent rounded-full" /> : <Check className="h-3 w-3" />}
+        {editingId ? (isAr ? "حفظ" : "Save") : (isAr ? "إضافة" : "Add")}
       </Button>
-    </div>
-  );
-}
-
-function FormSection({ title, icon: Icon, children }: { title: string; icon?: any; children: React.ReactNode }) {
-  return (
-    <div className="space-y-2.5">
-      {title && (
-        <div className="flex items-center gap-2 text-xs font-semibold text-muted-foreground uppercase tracking-wider">
-          {Icon && <Icon className="h-3.5 w-3.5" />}
-          {title}
-        </div>
-      )}
-      {children}
     </div>
   );
 }
@@ -1040,18 +1047,18 @@ function BilingualFieldPair({ labelEn, labelAr, valueEn, valueAr, onChangeEn, on
   isAr: boolean; placeholderEn?: string; placeholderAr?: string; required?: boolean;
 }) {
   return (
-    <div className="grid gap-2.5 sm:grid-cols-2">
-      <div className="space-y-1.5">
-        <Label className="text-xs font-medium text-foreground/80">{isAr ? labelAr : labelEn} {required && <span className="text-destructive">*</span>}</Label>
+    <div className="grid gap-2 sm:grid-cols-2">
+      <div className="space-y-1">
+        <Label className="text-[11px] font-medium text-muted-foreground">{labelEn} {required && <span className="text-destructive">*</span>}</Label>
         <div className="flex gap-1">
-          <Input value={valueEn} onChange={(e) => onChangeEn(e.target.value)} className="h-9 text-xs flex-1 rounded-lg" dir="ltr" placeholder={placeholderEn || (isAr ? "باللغة الإنجليزية" : "In English")} />
+          <Input value={valueEn} onChange={(e) => onChangeEn(e.target.value)} className="h-8 text-xs flex-1" dir="ltr" placeholder={placeholderEn || "English"} />
           <SmartTranslateBtn sourceText={valueEn} fromLang="en" onTranslated={onChangeAr} />
         </div>
       </div>
-      <div className="space-y-1.5">
-        <Label className="text-xs font-medium text-foreground/80">{isAr ? labelAr : labelEn} <span className="text-muted-foreground">(AR)</span></Label>
+      <div className="space-y-1">
+        <Label className="text-[11px] font-medium text-muted-foreground">{labelAr} <span className="text-muted-foreground/60">(AR)</span></Label>
         <div className="flex gap-1">
-          <Input value={valueAr} onChange={(e) => onChangeAr(e.target.value)} className="h-9 text-xs flex-1 rounded-lg" dir="rtl" placeholder={placeholderAr || (isAr ? "باللغة العربية" : "In Arabic")} />
+          <Input value={valueAr} onChange={(e) => onChangeAr(e.target.value)} className="h-8 text-xs flex-1" dir="rtl" placeholder={placeholderAr || "عربي"} />
           <SmartTranslateBtn sourceText={valueAr} fromLang="ar" onTranslated={onChangeEn} />
         </div>
       </div>
@@ -1066,112 +1073,83 @@ function CareerForm({ form, editingId, isAr, isPending, onUpdate, onSave, onCanc
   const isEdu = form.record_type === "education";
   
   return (
-    <div className="rounded-2xl border border-primary/20 bg-gradient-to-br from-card to-muted/20 p-5 space-y-5 shadow-sm">
-      {/* Header */}
+    <div className="rounded-xl border border-primary/20 bg-card p-3 sm:p-4 space-y-3 shadow-sm animate-in fade-in-0 zoom-in-95 duration-200">
+      {/* Compact Header */}
       <div className="flex items-center justify-between">
-        <div className="flex items-center gap-3">
-          <div className={`flex h-10 w-10 items-center justify-center rounded-xl ${isEdu ? "bg-chart-2/15 text-chart-2" : "bg-chart-3/15 text-chart-3"}`}>
-            {isEdu ? <GraduationCap className="h-5 w-5" /> : <Briefcase className="h-5 w-5" />}
+        <div className="flex items-center gap-2">
+          <div className={`flex h-7 w-7 items-center justify-center rounded-lg ${isEdu ? "bg-chart-2/15 text-chart-2" : "bg-chart-3/15 text-chart-3"}`}>
+            {isEdu ? <GraduationCap className="h-3.5 w-3.5" /> : <Briefcase className="h-3.5 w-3.5" />}
           </div>
-          <div>
-            <h4 className="text-sm font-bold">
-              {editingId ? (isAr ? "تعديل البيانات" : "Edit Details") : isEdu ? (isAr ? "إضافة تعليم جديد" : "Add Education") : (isAr ? "إضافة خبرة جديدة" : "Add Experience")}
-            </h4>
-            <p className="text-[11px] text-muted-foreground">{isAr ? "جميع الحقول ثنائية اللغة" : "All fields support bilingual input"}</p>
-          </div>
+          <h4 className="text-xs font-bold">
+            {editingId ? (isAr ? "تعديل" : "Edit") : isEdu ? (isAr ? "إضافة تعليم" : "Add Education") : (isAr ? "إضافة خبرة" : "Add Experience")}
+          </h4>
         </div>
-        <Button size="icon" variant="ghost" className="h-8 w-8 rounded-lg" onClick={onCancel}><X className="h-4 w-4" /></Button>
+        <Button size="icon" variant="ghost" className="h-6 w-6 rounded-md" onClick={onCancel}><X className="h-3.5 w-3.5" /></Button>
       </div>
 
-      <div className="h-px bg-border/40" />
-
       {/* Organization */}
-      <FormSection title={isEdu ? (isAr ? "المؤسسة التعليمية" : "Institution") : (isAr ? "جهة العمل" : "Organization")} icon={Building2}>
-        <EntitySelector value={form.entity_id} entityName={form.entity_name}
-          onChange={(id, name) => { onUpdate("entity_id", id); onUpdate("entity_name", name); }}
-          label="" />
-      </FormSection>
+      <EntitySelector value={form.entity_id} entityName={form.entity_name}
+        onChange={(id, name) => { onUpdate("entity_id", id); onUpdate("entity_name", name); }}
+        label={isEdu ? (isAr ? "المؤسسة" : "Institution") : (isAr ? "جهة العمل" : "Organization")} />
 
-      {/* Title / Degree */}
-      <FormSection title={isEdu ? (isAr ? "الدرجة العلمية" : "Degree") : (isAr ? "المسمى الوظيفي" : "Job Title")} icon={FileText}>
-        <BilingualFieldPair
-          labelEn={isEdu ? "Degree" : "Title"} labelAr={isEdu ? "الدرجة" : "المسمى"}
-          valueEn={form.title} valueAr={form.title_ar}
-          onChangeEn={(v) => onUpdate("title", v)} onChangeAr={(v) => onUpdate("title_ar", v)}
-          isAr={isAr} required
-        />
-      </FormSection>
+      {/* Title bilingual */}
+      <BilingualFieldPair
+        labelEn={isEdu ? "Degree" : "Title"} labelAr={isEdu ? "الدرجة" : "المسمى"}
+        valueEn={form.title} valueAr={form.title_ar}
+        onChangeEn={(v) => onUpdate("title", v)} onChangeAr={(v) => onUpdate("title_ar", v)}
+        isAr={isAr} required
+      />
 
       {/* Type-specific fields */}
       {isEdu ? (
-        <FormSection title={isAr ? "تفاصيل الدراسة" : "Study Details"} icon={GraduationCap}>
-          <div className="grid gap-2.5 sm:grid-cols-3">
-            <div className="space-y-1.5">
-              <Label className="text-xs font-medium text-foreground/80">{isAr ? "المستوى" : "Level"}</Label>
-              <Select value={form.education_level} onValueChange={(v) => onUpdate("education_level", v)}>
-                <SelectTrigger className="h-9 text-xs rounded-lg"><SelectValue placeholder={isAr ? "اختر المستوى" : "Select level"} /></SelectTrigger>
-                <SelectContent>{EDUCATION_LEVELS.map(l => <SelectItem key={l.value} value={l.value}>{isAr ? l.ar : l.en}</SelectItem>)}</SelectContent>
-              </Select>
-            </div>
-            <div className="space-y-1.5">
-              <Label className="text-xs font-medium text-foreground/80">{isAr ? "التخصص" : "Field of Study"}</Label>
-              <Input value={form.field_of_study} onChange={(e) => onUpdate("field_of_study", e.target.value)} className="h-9 text-xs rounded-lg" placeholder={isAr ? "مثل فنون الطهي" : "e.g., Culinary Arts"} />
-            </div>
-            <div className="space-y-1.5">
-              <Label className="text-xs font-medium text-foreground/80">{isAr ? "المعدل" : "Grade / GPA"}</Label>
-              <Input value={form.grade} onChange={(e) => onUpdate("grade", e.target.value)} className="h-9 text-xs rounded-lg" placeholder={isAr ? "مثل 4.0" : "e.g., 4.0"} />
-            </div>
+        <div className="grid gap-2 sm:grid-cols-3">
+          <div className="space-y-1">
+            <Label className="text-[11px] font-medium text-muted-foreground">{isAr ? "المستوى" : "Level"}</Label>
+            <Select value={form.education_level} onValueChange={(v) => onUpdate("education_level", v)}>
+              <SelectTrigger className="h-8 text-xs"><SelectValue placeholder={isAr ? "اختر" : "Select"} /></SelectTrigger>
+              <SelectContent>{EDUCATION_LEVELS.map(l => <SelectItem key={l.value} value={l.value}>{isAr ? l.ar : l.en}</SelectItem>)}</SelectContent>
+            </Select>
           </div>
-        </FormSection>
+          <div className="space-y-1">
+            <Label className="text-[11px] font-medium text-muted-foreground">{isAr ? "التخصص" : "Field"}</Label>
+            <Input value={form.field_of_study} onChange={(e) => onUpdate("field_of_study", e.target.value)} className="h-8 text-xs" placeholder={isAr ? "الطهي" : "Culinary"} />
+          </div>
+          <div className="space-y-1">
+            <Label className="text-[11px] font-medium text-muted-foreground">{isAr ? "المعدل" : "GPA"}</Label>
+            <Input value={form.grade} onChange={(e) => onUpdate("grade", e.target.value)} className="h-8 text-xs" placeholder="4.0" />
+          </div>
+        </div>
       ) : form.record_type === "work" ? (
-        <FormSection title={isAr ? "تفاصيل العمل" : "Work Details"} icon={Briefcase}>
-          <div className="grid gap-2.5 sm:grid-cols-2">
-            <div className="space-y-1.5">
-              <Label className="text-xs font-medium text-foreground/80">{isAr ? "نوع التوظيف" : "Employment Type"}</Label>
-              <Select value={form.employment_type} onValueChange={(v) => onUpdate("employment_type", v)}>
-                <SelectTrigger className="h-9 text-xs rounded-lg"><SelectValue placeholder={isAr ? "اختر النوع" : "Select type"} /></SelectTrigger>
-                <SelectContent>{EMPLOYMENT_TYPES.map(t => <SelectItem key={t.value} value={t.value}>{isAr ? t.ar : t.en}</SelectItem>)}</SelectContent>
-              </Select>
-            </div>
-            <div className="space-y-1.5">
-              <Label className="text-xs font-medium text-foreground/80">{isAr ? "الموقع" : "Location"}</Label>
-              <Input value={form.location} onChange={(e) => onUpdate("location", e.target.value)} className="h-9 text-xs rounded-lg" placeholder={isAr ? "مثل الرياض" : "e.g., Riyadh"} />
-            </div>
+        <div className="grid gap-2 sm:grid-cols-2">
+          <div className="space-y-1">
+            <Label className="text-[11px] font-medium text-muted-foreground">{isAr ? "نوع التوظيف" : "Type"}</Label>
+            <Select value={form.employment_type} onValueChange={(v) => onUpdate("employment_type", v)}>
+              <SelectTrigger className="h-8 text-xs"><SelectValue placeholder={isAr ? "اختر" : "Select"} /></SelectTrigger>
+              <SelectContent>{EMPLOYMENT_TYPES.map(t => <SelectItem key={t.value} value={t.value}>{isAr ? t.ar : t.en}</SelectItem>)}</SelectContent>
+            </Select>
           </div>
-        </FormSection>
+          <div className="space-y-1">
+            <Label className="text-[11px] font-medium text-muted-foreground">{isAr ? "الموقع" : "Location"}</Label>
+            <Input value={form.location} onChange={(e) => onUpdate("location", e.target.value)} className="h-8 text-xs" placeholder={isAr ? "الرياض" : "Riyadh"} />
+          </div>
+        </div>
       ) : null}
 
-      {/* Date Range */}
-      <FormSection title={isAr ? "الفترة الزمنية" : "Time Period"} icon={MapPin}>
-        <div className="grid gap-2.5 sm:grid-cols-2 items-end">
-          <FlexibleDateInput value={form.start_date} onChange={(v) => onUpdate("start_date", v)}
-            label={isAr ? "من" : "Start Date"} isAr={isAr} />
-          {!form.is_current && (
-            <FlexibleDateInput value={form.end_date} onChange={(v) => onUpdate("end_date", v)}
-              label={isAr ? "إلى (اختياري)" : "End Date (optional)"} isAr={isAr} />
-          )}
-        </div>
-        <div className="flex items-center gap-3 p-3 rounded-xl bg-muted/50 border border-border/30">
-          <Switch checked={form.is_current} onCheckedChange={(v) => { onUpdate("is_current", v); if (v) onUpdate("end_date", ""); }} />
-          <Label className="text-xs font-medium cursor-pointer">
-            {isEdu ? (isAr ? "لا يزال يدرس" : "Still studying") : (isAr ? "لا يزال يعمل" : "Still working")}
-          </Label>
-        </div>
-      </FormSection>
-
-      {/* Description */}
-      <FormSection title={isAr ? "الوصف" : "Description"}>
-        <div className="grid gap-2.5 sm:grid-cols-2">
-          <div className="space-y-1.5">
-            <Label className="text-xs font-medium text-foreground/80">{isAr ? "الوصف (EN)" : "Description (EN)"}</Label>
-            <Textarea value={form.description} onChange={(e) => onUpdate("description", e.target.value)} className="text-xs min-h-[60px] rounded-lg resize-none" dir="ltr" placeholder={isAr ? "وصف مختصر" : "Brief description"} />
-          </div>
-          <div className="space-y-1.5">
-            <Label className="text-xs font-medium text-foreground/80">{isAr ? "الوصف (AR)" : "Description (AR)"}</Label>
-            <Textarea value={form.description_ar} onChange={(e) => onUpdate("description_ar", e.target.value)} className="text-xs min-h-[60px] rounded-lg resize-none" dir="rtl" placeholder={isAr ? "وصف مختصر بالعربية" : "Brief description in Arabic"} />
-          </div>
-        </div>
-      </FormSection>
+      {/* Date & Status row */}
+      <div className="grid gap-2 sm:grid-cols-2 items-end">
+        <FlexibleDateInput value={form.start_date} onChange={(v) => onUpdate("start_date", v)}
+          label={isAr ? "من" : "From"} isAr={isAr} />
+        {!form.is_current && (
+          <FlexibleDateInput value={form.end_date} onChange={(v) => onUpdate("end_date", v)}
+            label={isAr ? "إلى" : "To"} isAr={isAr} />
+        )}
+      </div>
+      <div className="flex items-center gap-2 px-2 py-1.5 rounded-lg bg-muted/40">
+        <Switch checked={form.is_current} onCheckedChange={(v) => { onUpdate("is_current", v); if (v) onUpdate("end_date", ""); }} className="scale-90" />
+        <Label className="text-[11px] font-medium cursor-pointer">
+          {isEdu ? (isAr ? "لا يزال يدرس" : "Still studying") : (isAr ? "لا يزال يعمل" : "Still working")}
+        </Label>
+      </div>
 
       <FormActions isAr={isAr} isPending={isPending} editingId={editingId} canSave={!!form.title.trim()} onSave={onSave} onCancel={onCancel} />
     </div>
@@ -1183,50 +1161,39 @@ function MembershipForm({ form, isAr, isPending, onUpdate, onSave, onCancel }: {
   onUpdate: (key: string, value: any) => void; onSave: () => void; onCancel: () => void;
 }) {
   return (
-    <div className="rounded-2xl border border-primary/20 bg-gradient-to-br from-card to-muted/20 p-5 space-y-5 shadow-sm">
+    <div className="rounded-xl border border-primary/20 bg-card p-3 sm:p-4 space-y-3 shadow-sm animate-in fade-in-0 zoom-in-95 duration-200">
       <div className="flex items-center justify-between">
-        <div className="flex items-center gap-3">
-          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary/10 text-primary">
-            <Users className="h-5 w-5" />
+        <div className="flex items-center gap-2">
+          <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-primary/10 text-primary">
+            <Users className="h-3.5 w-3.5" />
           </div>
-          <div>
-            <h4 className="text-sm font-bold">{isAr ? "إضافة عضوية" : "Add Membership"}</h4>
-            <p className="text-[11px] text-muted-foreground">{isAr ? "ربط بمنظمة أو جمعية" : "Link to an organization"}</p>
-          </div>
+          <h4 className="text-xs font-bold">{isAr ? "إضافة عضوية" : "Add Membership"}</h4>
         </div>
-        <Button size="icon" variant="ghost" className="h-8 w-8 rounded-lg" onClick={onCancel}><X className="h-4 w-4" /></Button>
+        <Button size="icon" variant="ghost" className="h-6 w-6 rounded-md" onClick={onCancel}><X className="h-3.5 w-3.5" /></Button>
       </div>
 
-      <div className="h-px bg-border/40" />
+      <EntitySelector value={form.entity_id} entityName=""
+        onChange={(id, name) => onUpdate("entity_id", id)}
+        label={isAr ? "المنظمة" : "Organization"} />
 
-      <FormSection title={isAr ? "المنظمة" : "Organization"} icon={Building2}>
-        <EntitySelector value={form.entity_id} entityName=""
-          onChange={(id, name) => onUpdate("entity_id", id)}
-          label="" />
-      </FormSection>
-
-      <FormSection title={isAr ? "تفاصيل العضوية" : "Membership Details"} icon={Users}>
-        <div className="grid gap-2.5 sm:grid-cols-2">
-          <div className="space-y-1.5">
-            <Label className="text-xs font-medium text-foreground/80">{isAr ? "نوع العضوية" : "Membership Type"}</Label>
-            <Select value={form.membership_type} onValueChange={(v) => onUpdate("membership_type", v)}>
-              <SelectTrigger className="h-9 text-xs rounded-lg"><SelectValue placeholder={isAr ? "اختر النوع" : "Select type"} /></SelectTrigger>
-              <SelectContent>{MEMBERSHIP_TYPES.map(t => <SelectItem key={t.value} value={t.value}>{isAr ? t.ar : t.en}</SelectItem>)}</SelectContent>
-            </Select>
-          </div>
-          <FlexibleDateInput value={form.enrollment_date} onChange={(v) => onUpdate("enrollment_date", v)}
-            label={isAr ? "تاريخ الانتساب" : "Enrollment Date"} isAr={isAr} />
+      <div className="grid gap-2 sm:grid-cols-2">
+        <div className="space-y-1">
+          <Label className="text-[11px] font-medium text-muted-foreground">{isAr ? "نوع العضوية" : "Type"}</Label>
+          <Select value={form.membership_type} onValueChange={(v) => onUpdate("membership_type", v)}>
+            <SelectTrigger className="h-8 text-xs"><SelectValue placeholder={isAr ? "اختر" : "Select"} /></SelectTrigger>
+            <SelectContent>{MEMBERSHIP_TYPES.map(t => <SelectItem key={t.value} value={t.value}>{isAr ? t.ar : t.en}</SelectItem>)}</SelectContent>
+          </Select>
         </div>
-      </FormSection>
+        <FlexibleDateInput value={form.enrollment_date} onChange={(v) => onUpdate("enrollment_date", v)}
+          label={isAr ? "تاريخ الانتساب" : "Enrollment"} isAr={isAr} />
+      </div>
 
-      <FormSection title={isAr ? "المسمى" : "Title"} icon={FileText}>
-        <BilingualFieldPair
-          labelEn="Title" labelAr="المسمى"
-          valueEn={form.title} valueAr={form.title_ar}
-          onChangeEn={(v) => onUpdate("title", v)} onChangeAr={(v) => onUpdate("title_ar", v)}
-          isAr={isAr}
-        />
-      </FormSection>
+      <BilingualFieldPair
+        labelEn="Title" labelAr="المسمى"
+        valueEn={form.title} valueAr={form.title_ar}
+        onChangeEn={(v) => onUpdate("title", v)} onChangeAr={(v) => onUpdate("title_ar", v)}
+        isAr={isAr}
+      />
 
       <FormActions isAr={isAr} isPending={isPending} canSave={!!form.entity_id} onSave={onSave} onCancel={onCancel} />
     </div>
@@ -1245,36 +1212,29 @@ function CompetitionAddForm({ competitions, selectedId, onSelect, isAr, isPendin
   }, [competitions, search]);
 
   return (
-    <div className="rounded-2xl border border-primary/20 bg-gradient-to-br from-card to-muted/20 p-5 space-y-5 shadow-sm">
+    <div className="rounded-xl border border-primary/20 bg-card p-3 sm:p-4 space-y-3 shadow-sm animate-in fade-in-0 zoom-in-95 duration-200">
       <div className="flex items-center justify-between">
-        <div className="flex items-center gap-3">
-          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-chart-4/15 text-chart-4">
-            <Trophy className="h-5 w-5" />
+        <div className="flex items-center gap-2">
+          <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-chart-4/15 text-chart-4">
+            <Trophy className="h-3.5 w-3.5" />
           </div>
-          <div>
-            <h4 className="text-sm font-bold">{isAr ? "إضافة مسابقة" : "Add Competition"}</h4>
-            <p className="text-[11px] text-muted-foreground">{isAr ? "اختر من المسابقات المتاحة" : "Select from available competitions"}</p>
-          </div>
+          <h4 className="text-xs font-bold">{isAr ? "إضافة مسابقة" : "Add Competition"}</h4>
         </div>
-        <Button size="icon" variant="ghost" className="h-8 w-8 rounded-lg" onClick={onCancel}><X className="h-4 w-4" /></Button>
+        <Button size="icon" variant="ghost" className="h-6 w-6 rounded-md" onClick={onCancel}><X className="h-3.5 w-3.5" /></Button>
       </div>
 
-      <div className="h-px bg-border/40" />
+      <Input placeholder={isAr ? "🔍 بحث..." : "🔍 Search..."}
+        value={search} onChange={(e) => setSearch(e.target.value)} className="h-8 text-xs" />
 
-      <Input placeholder={isAr ? "🔍 ابحث عن مسابقة..." : "🔍 Search competitions..."}
-        value={search} onChange={(e) => setSearch(e.target.value)} className="h-10 text-xs rounded-xl" />
-
-      <div className="max-h-52 overflow-y-auto space-y-1 rounded-xl border border-border/30 bg-muted/10 p-2">
-        {filtered.length === 0 && <p className="text-xs text-muted-foreground text-center py-4">{isAr ? "لا توجد نتائج" : "No results"}</p>}
+      <div className="max-h-44 overflow-y-auto space-y-0.5 rounded-lg border border-border/30 bg-muted/10 p-1.5">
+        {filtered.length === 0 && <p className="text-xs text-muted-foreground text-center py-3">{isAr ? "لا توجد نتائج" : "No results"}</p>}
         {filtered.map(c => (
           <button key={c.id} onClick={() => onSelect(c.id)}
-            className={`w-full flex items-center gap-3 rounded-xl px-3 py-2.5 text-start transition-all text-xs font-medium ${selectedId === c.id ? "bg-primary/10 border border-primary/30 text-primary shadow-sm" : "hover:bg-muted/50 border border-transparent"}`}>
-            <Trophy className="h-4 w-4 shrink-0 text-chart-4" />
-            <div className="flex-1 min-w-0">
-              <p className="truncate font-medium">{isAr ? (c.title_ar || c.title) : c.title}</p>
-            </div>
+            className={`w-full flex items-center gap-2 rounded-lg px-2.5 py-2 text-start transition-all text-xs ${selectedId === c.id ? "bg-primary/10 border border-primary/30 text-primary" : "hover:bg-muted/50 border border-transparent"}`}>
+            <Trophy className="h-3.5 w-3.5 shrink-0 text-chart-4" />
+            <p className="flex-1 min-w-0 truncate font-medium">{isAr ? (c.title_ar || c.title) : c.title}</p>
             {c.competition_start && <span className="text-[10px] text-muted-foreground shrink-0">{formatDateShort(c.competition_start, isAr)}</span>}
-            {selectedId === c.id && <Check className="h-4 w-4 text-primary shrink-0" />}
+            {selectedId === c.id && <Check className="h-3.5 w-3.5 text-primary shrink-0" />}
           </button>
         ))}
       </div>
@@ -1289,54 +1249,43 @@ function AwardAddForm({ form, isAr, isPending, onUpdate, onSave, onCancel }: {
   onUpdate: (key: string, value: any) => void; onSave: () => void; onCancel: () => void;
 }) {
   return (
-    <div className="rounded-2xl border border-primary/20 bg-gradient-to-br from-card to-muted/20 p-5 space-y-5 shadow-sm">
+    <div className="rounded-xl border border-primary/20 bg-card p-3 sm:p-4 space-y-3 shadow-sm animate-in fade-in-0 zoom-in-95 duration-200">
       <div className="flex items-center justify-between">
-        <div className="flex items-center gap-3">
-          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-chart-1/15 text-chart-1">
-            <Medal className="h-5 w-5" />
+        <div className="flex items-center gap-2">
+          <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-chart-1/15 text-chart-1">
+            <Medal className="h-3.5 w-3.5" />
           </div>
-          <div>
-            <h4 className="text-sm font-bold">{isAr ? "إضافة جائزة / شهادة" : "Add Award / Certificate"}</h4>
-            <p className="text-[11px] text-muted-foreground">{isAr ? "توثيق الإنجازات والجوائز" : "Document achievements and awards"}</p>
-          </div>
+          <h4 className="text-xs font-bold">{isAr ? "إضافة جائزة" : "Add Award"}</h4>
         </div>
-        <Button size="icon" variant="ghost" className="h-8 w-8 rounded-lg" onClick={onCancel}><X className="h-4 w-4" /></Button>
+        <Button size="icon" variant="ghost" className="h-6 w-6 rounded-md" onClick={onCancel}><X className="h-3.5 w-3.5" /></Button>
       </div>
 
-      <div className="h-px bg-border/40" />
+      <BilingualFieldPair
+        labelEn="Event Name" labelAr="اسم الحدث"
+        valueEn={form.event_name} valueAr={form.event_name_ar}
+        onChangeEn={(v) => onUpdate("event_name", v)} onChangeAr={(v) => onUpdate("event_name_ar", v)}
+        isAr={isAr} required
+      />
 
-      <FormSection title={isAr ? "اسم الحدث" : "Event Name"} icon={Trophy}>
-        <BilingualFieldPair
-          labelEn="Event Name" labelAr="اسم الحدث"
-          valueEn={form.event_name} valueAr={form.event_name_ar}
-          onChangeEn={(v) => onUpdate("event_name", v)} onChangeAr={(v) => onUpdate("event_name_ar", v)}
-          isAr={isAr} required
-        />
-      </FormSection>
+      <BilingualFieldPair
+        labelEn="Achievement" labelAr="الإنجاز"
+        valueEn={form.achievement} valueAr={form.achievement_ar}
+        onChangeEn={(v) => onUpdate("achievement", v)} onChangeAr={(v) => onUpdate("achievement_ar", v)}
+        isAr={isAr}
+        placeholderEn="Gold Medal" placeholderAr="ميدالية ذهبية"
+      />
 
-      <FormSection title={isAr ? "الإنجاز" : "Achievement"} icon={Award}>
-        <BilingualFieldPair
-          labelEn="Achievement" labelAr="الإنجاز"
-          valueEn={form.achievement} valueAr={form.achievement_ar}
-          onChangeEn={(v) => onUpdate("achievement", v)} onChangeAr={(v) => onUpdate("achievement_ar", v)}
-          isAr={isAr}
-          placeholderEn="e.g., Gold Medal Winner" placeholderAr="مثل: حائز على الميدالية الذهبية"
-        />
-      </FormSection>
-
-      <FormSection title={isAr ? "معلومات إضافية" : "Additional Info"}>
-        <div className="grid gap-2.5 sm:grid-cols-2">
-          <div className="space-y-1.5">
-            <Label className="text-xs font-medium text-foreground/80">{isAr ? "النوع" : "Type"}</Label>
-            <Select value={form.type} onValueChange={(v) => onUpdate("type", v)}>
-              <SelectTrigger className="h-9 text-xs rounded-lg"><SelectValue placeholder={isAr ? "اختر النوع" : "Select type"} /></SelectTrigger>
-              <SelectContent>{CERTIFICATE_TYPES.map(t => <SelectItem key={t.value} value={t.value}>{isAr ? t.ar : t.en}</SelectItem>)}</SelectContent>
-            </Select>
-          </div>
-          <FlexibleDateInput value={form.event_date} onChange={(v) => onUpdate("event_date", v)}
-            label={isAr ? "تاريخ الحدث" : "Event Date"} isAr={isAr} eventMode />
+      <div className="grid gap-2 sm:grid-cols-2">
+        <div className="space-y-1">
+          <Label className="text-[11px] font-medium text-muted-foreground">{isAr ? "النوع" : "Type"}</Label>
+          <Select value={form.type} onValueChange={(v) => onUpdate("type", v)}>
+            <SelectTrigger className="h-8 text-xs"><SelectValue placeholder={isAr ? "اختر" : "Select"} /></SelectTrigger>
+            <SelectContent>{CERTIFICATE_TYPES.map(t => <SelectItem key={t.value} value={t.value}>{isAr ? t.ar : t.en}</SelectItem>)}</SelectContent>
+          </Select>
         </div>
-      </FormSection>
+        <FlexibleDateInput value={form.event_date} onChange={(v) => onUpdate("event_date", v)}
+          label={isAr ? "التاريخ" : "Date"} isAr={isAr} eventMode />
+      </div>
 
       <FormActions isAr={isAr} isPending={isPending} canSave={!!form.event_name.trim()} onSave={onSave} onCancel={onCancel} />
     </div>
