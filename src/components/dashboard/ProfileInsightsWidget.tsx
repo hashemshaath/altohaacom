@@ -4,9 +4,11 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Eye, TrendingUp, Users, Smartphone, Monitor } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Eye, TrendingUp, Users, Smartphone, Monitor, ExternalLink } from "lucide-react";
 import { AreaChart, Area, ResponsiveContainer, Tooltip, XAxis } from "recharts";
 import { cn } from "@/lib/utils";
+import { Link } from "react-router-dom";
 
 export function ProfileInsightsWidget() {
   const { user } = useAuth();
@@ -96,12 +98,19 @@ export function ProfileInsightsWidget() {
     <Card className="relative overflow-hidden transition-shadow hover:shadow-md border-border/50">
       <div className="pointer-events-none absolute -top-8 -end-8 h-24 w-24 rounded-full bg-primary/5 blur-[40px]" />
       <CardHeader className="pb-2">
-        <CardTitle className="flex items-center gap-2 text-base">
-          <div className="flex h-6 w-6 items-center justify-center rounded-md bg-primary/10">
-            <Eye className="h-3.5 w-3.5 text-primary" />
-          </div>
-          {isAr ? "تحليلات الملف" : "Profile Insights"}
-        </CardTitle>
+        <div className="flex items-center justify-between">
+          <CardTitle className="flex items-center gap-2 text-base">
+            <div className="flex h-6 w-6 items-center justify-center rounded-md bg-primary/10">
+              <Eye className="h-3.5 w-3.5 text-primary" />
+            </div>
+            {isAr ? "تحليلات الملف" : "Profile Insights"}
+          </CardTitle>
+          <Button variant="ghost" size="sm" className="text-xs gap-1 h-7" asChild>
+            <Link to="/profile/analytics">
+              {isAr ? "تقرير كامل" : "Full Report"} <ExternalLink className="h-3 w-3" />
+            </Link>
+          </Button>
+        </div>
       </CardHeader>
       <CardContent className="space-y-3">
         {/* Sparkline Chart */}

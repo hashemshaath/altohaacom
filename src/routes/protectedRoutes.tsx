@@ -29,11 +29,14 @@ const MyEvaluations = lazy(() => import("@/pages/MyEvaluations"));
 const Checkout = lazy(() => import("@/pages/Checkout"));
 const AdvertiseWithUs = lazy(() => import("@/pages/AdvertiseWithUs"));
 const SocialLinksEditor = lazy(() => import("@/pages/SocialLinksEditor"));
+const ProfileAnalytics = lazy(() => import("@/pages/ProfileAnalytics"));
+const BioAnalytics = lazy(() => import("@/pages/BioAnalytics"));
 
 export const protectedRoutes = (
   <>
     <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
     <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
+    <Route path="/profile/analytics" element={<ProtectedRoute><ProfileAnalytics /></ProtectedRoute>} />
     <Route path="/community" element={<ProtectedRoute><Community /></ProtectedRoute>} />
     <Route path="/competitions/create" element={<ProtectedRoute><CreateCompetition /></ProtectedRoute>} />
     <Route path="/competitions/:id/edit" element={<ProtectedRoute><EditCompetition /></ProtectedRoute>} />
@@ -59,5 +62,6 @@ export const protectedRoutes = (
     <Route path="/checkout" element={<ProtectedRoute><Checkout /></ProtectedRoute>} />
     <Route path="/advertise" element={<ProtectedRoute><AdvertiseWithUs /></ProtectedRoute>} />
     <Route path="/social-links" element={<ProtectedRoute><SocialLinksEditor /></ProtectedRoute>} />
+    <Route path="/social-links/analytics" element={<ProtectedRoute><BioAnalytics /></ProtectedRoute>} />
   </>
 );
