@@ -58,6 +58,7 @@ FORMATTING RULES:
 - Summarize and rephrase tasks/achievements professionally, removing redundancy.
 
 OTHER GUIDELINES:
+- CRITICAL: For competitions and events that happened in specific years (e.g., 2010, 2012, 2017, 2018), NEVER set is_current to true. These are past events. Only set is_current: true if the person is CURRENTLY working there or CURRENTLY studying there with no end date.
 - For dates, use ISO format (YYYY-MM-DD). If only year is known, use YYYY-01-01
 - For country codes, use 2-letter ISO codes (SA, AE, US, etc.)
 - For employment_type use: full_time, part_time, contract, internship, freelance, volunteer

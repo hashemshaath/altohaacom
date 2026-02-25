@@ -285,6 +285,20 @@ export function CVPreview({ data: initialData, targetUserId, isAr, onBack, onSav
           console.error("Bio page update error:", bioErr);
         }
       }
+      // ─── Delete existing career records for this user before re-importing ───
+      const sectionsToDelete: string[] = [];
+      if (sections.education && hasEdu) sectionsToDelete.push("education");
+      if (sections.work && hasWork) sectionsToDelete.push("work");
+      if (sections.competitions && hasComp) sectionsToDelete.push("work"); // competitions stored as "work"
+      if (sections.media && hasMedia) sectionsToDelete.push("work");
+      if (sections.certifications && hasCert) sectionsToDelete.push("education"); // certs stored as "education"
+      
+      // Delete all career records for selected sections to avoid duplication
+      const uniqueTypes = [...new Set(sectionsToDelete)];
+      if (uniqueTypes.length > 0) {
+        await supabase.from("user_career_records").delete().eq("user_id", targetUserId).in("record_type", uniqueTypes);
+      }
+
       if (sections.education && hasEdu) {
         const eduRecords = data.education!.map((edu) => ({
           user_id: targetUserId, record_type: "education",
@@ -293,7 +307,7 @@ export function CVPreview({ data: initialData, targetUserId, isAr, onBack, onSav
           education_level: edu.education_level || null,
           field_of_study: edu.field_of_study || null, field_of_study_ar: edu.field_of_study_ar || null,
           grade: edu.grade || null, start_date: edu.start_date || null, end_date: edu.end_date || null,
-          is_current: edu.is_current || false,
+          is_current: edu.is_current === true && !edu.end_date,
           location: edu.location ? `${edu.country_code ? getFlag(edu.country_code) + " " : ""}${edu.location}` : null,
         }));
         const { error } = await supabase.from("user_career_records").insert(eduRecords);
@@ -308,7 +322,7 @@ export function CVPreview({ data: initialData, targetUserId, isAr, onBack, onSav
             title: work.title, title_ar: work.title_ar || null,
             employment_type: work.employment_type || null,
             department: work.department || null, department_ar: work.department_ar || null,
-            start_date: work.start_date || null, end_date: work.end_date || null, is_current: work.is_current || false,
+            start_date: work.start_date || null, end_date: work.end_date || null, is_current: work.is_current === true && !work.end_date,
             description: descEn || null,
             location: work.location ? `${work.country_code ? getFlag(work.country_code) + " " : ""}${work.location}` : null,
           };
