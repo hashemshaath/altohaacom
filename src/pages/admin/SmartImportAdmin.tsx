@@ -35,8 +35,9 @@ import {
   Star, ChevronRight, ArrowLeft, AlertCircle,
   RefreshCw, Plus, Clock, Calendar, Building2,
   Phone, Link2, Zap, BarChart3, Layers, Edit3,
-  Copy, ExternalLink,
+  Copy, ExternalLink, FileText,
 } from "lucide-react";
+import { CVImportSection } from "@/components/cv-import/CVImportSection";
 
 // ─── Payload builders ───
 const buildEntityPayload = (d: ImportedData) => {
@@ -283,7 +284,7 @@ export default function SmartImportAdmin() {
   const [importHistory, setImportHistory] = useState<any[]>([]);
   const [loadingHistory, setLoadingHistory] = useState(false);
 
-  const [importMode, setImportMode] = useState<"search" | "url" | "bulk">("search");
+  const [importMode, setImportMode] = useState<"search" | "url" | "bulk" | "cv">("search");
   const [urlImporting, setUrlImporting] = useState(false);
 
   const [stats, setStats] = useState<any>(null);
@@ -933,6 +934,10 @@ export default function SmartImportAdmin() {
               <Layers className="h-3.5 w-3.5" />
               {isAr ? "استيراد جماعي" : "Bulk Import"}
             </Button>
+            <Button variant={importMode === "cv" ? "default" : "outline"} size="sm" className="gap-1.5" onClick={() => setImportMode("cv")}>
+              <FileText className="h-3.5 w-3.5" />
+              {isAr ? "سيرة ذاتية" : "CV Import"}
+            </Button>
           </div>
 
           {importMode === "search" ? (
@@ -1009,6 +1014,8 @@ export default function SmartImportAdmin() {
                 </div>
               </CardContent>
             </Card>
+          ) : importMode === "cv" ? (
+            <CVImportSection />
           ) : (
             <BulkUrlImport isAr={isAr} onComplete={() => {}} userId={user?.id} />
           )}
