@@ -75,16 +75,21 @@ export function ProfileOverviewTab({ profile, userId }: ProfileOverviewTabProps)
           <Card>
             <CardContent className="py-5">
               <div className="flex flex-wrap gap-2">
-                {socialLinks.map((link) => (
-                  <Badge
-                    key={link.key}
-                    variant="outline"
-                    className="text-xs gap-1.5 font-normal py-1.5 px-3"
-                  >
-                    <span className="font-semibold">{link.label}</span>
-                    <span className="text-muted-foreground" dir="ltr">{link.value}</span>
-                  </Badge>
-                ))}
+                {socialLinks.map((link) => {
+                  const url = link.value?.startsWith("http") ? link.value : `https://${link.value}`;
+                  return (
+                    <a
+                      key={link.key}
+                      href={url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-1.5 rounded-lg border border-border/50 bg-muted/30 px-3 py-1.5 text-xs transition-colors hover:bg-primary/10 hover:border-primary/30 hover:text-primary"
+                    >
+                      <span className="font-semibold">{link.label}</span>
+                      <span className="text-muted-foreground" dir="ltr">{link.value}</span>
+                    </a>
+                  );
+                })}
               </div>
             </CardContent>
           </Card>

@@ -62,7 +62,7 @@ export default function Profile() {
   if (loading) {
     return (
       <div className="flex min-h-screen flex-col bg-background">
-        <SEOHead title="Profile" description="Your Altoha profile" />
+        <SEOHead title={isAr ? "ملفي الشخصي" : "My Profile"} description={isAr ? "ملفك الشخصي على الطهاة" : "Your Altoha profile"} lang={language} noIndex />
         <Header />
         <main className="container flex-1 py-4 md:py-6">
           {/* Profile header skeleton */}
@@ -114,7 +114,25 @@ export default function Profile() {
 
   return (
     <div className="flex min-h-screen flex-col bg-background">
-      <SEOHead title="Profile" description="Your Altoha profile" />
+      <SEOHead 
+        title={isAr ? "ملفي الشخصي" : "My Profile"} 
+        description={isAr 
+          ? `الملف الشخصي لـ ${profile?.display_name_ar || profile?.full_name_ar || profile?.full_name || "المستخدم"} على الطهاة`
+          : `${profile?.display_name || profile?.full_name || "User"}'s professional culinary profile on Altoha`
+        }
+        ogImage={profile?.avatar_url}
+        lang={language}
+        keywords={isAr ? "طاهي, ملف شخصي, الطهاة" : "chef, profile, culinary, altoha"}
+        jsonLd={profile ? {
+          "@context": "https://schema.org",
+          "@type": "Person",
+          name: profile.display_name || profile.full_name,
+          jobTitle: profile.job_title || profile.specialization,
+          image: profile.avatar_url,
+          url: `${window.location.origin}/u/${profile.username}`,
+        } : undefined}
+        noIndex
+      />
       <Header />
        <main className="container flex-1 py-4 md:py-6">
         <div className="relative group">
@@ -156,45 +174,45 @@ export default function Profile() {
           </div>
 
 
-          <TabsContent value="overview" className="mt-6">
+          <TabsContent value="overview" className="mt-6 animate-in fade-in-0 slide-in-from-bottom-2 duration-300">
             {profile && user && <ProfileOverviewTab profile={profile} userId={user.id} />}
           </TabsContent>
 
-          <TabsContent value="competitions" className="mt-6">
+          <TabsContent value="competitions" className="mt-6 animate-in fade-in-0 slide-in-from-bottom-2 duration-300">
             {user && <CompetitionHistory userId={user.id} />}
           </TabsContent>
 
-          <TabsContent value="membership" className="mt-6">
+          <TabsContent value="membership" className="mt-6 animate-in fade-in-0 slide-in-from-bottom-2 duration-300">
             {profile && user && (
               <UnifiedMembershipTab profile={profile} userId={user.id} onMembershipChange={fetchProfile} />
             )}
           </TabsContent>
 
-          <TabsContent value="wallet" className="mt-6">
+          <TabsContent value="wallet" className="mt-6 animate-in fade-in-0 slide-in-from-bottom-2 duration-300">
             {user && <WalletDashboard userId={user.id} />}
           </TabsContent>
 
-          <TabsContent value="orders" className="mt-6">
+          <TabsContent value="orders" className="mt-6 animate-in fade-in-0 slide-in-from-bottom-2 duration-300">
             {user && <ProfileOrdersTab userId={user.id} isAr={isAr} />}
           </TabsContent>
 
-          <TabsContent value="referrals" className="mt-6">
+          <TabsContent value="referrals" className="mt-6 animate-in fade-in-0 slide-in-from-bottom-2 duration-300">
             {user && <ProfileReferralsTab userId={user.id} />}
           </TabsContent>
 
-          <TabsContent value="analytics" className="mt-6">
+          <TabsContent value="analytics" className="mt-6 animate-in fade-in-0 slide-in-from-bottom-2 duration-300">
             {user && <ProfileAnalyticsDashboard userId={user.id} />}
           </TabsContent>
 
-          <TabsContent value="invoices" className="mt-6">
+          <TabsContent value="invoices" className="mt-6 animate-in fade-in-0 slide-in-from-bottom-2 duration-300">
             {user && <ProfileInvoicesTab userId={user.id} />}
           </TabsContent>
 
-          <TabsContent value="edit" className="mt-6">
+          <TabsContent value="edit" className="mt-6 animate-in fade-in-0 slide-in-from-bottom-2 duration-300">
             {profile && user && <ProfileEditForm profile={profile} userId={user.id} onSaved={fetchProfile} />}
           </TabsContent>
 
-          <TabsContent value="privacy" className="mt-6">
+          <TabsContent value="privacy" className="mt-6 animate-in fade-in-0 slide-in-from-bottom-2 duration-300">
             {profile && user && <ProfilePrivacySettings profile={profile} userId={user.id} onSaved={fetchProfile} />}
           </TabsContent>
         </Tabs>
