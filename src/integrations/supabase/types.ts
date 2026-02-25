@@ -6997,6 +6997,48 @@ export type Database = {
         }
         Relationships: []
       }
+      cv_imports: {
+        Row: {
+          chef_id: string
+          created_at: string
+          extracted_data: Json | null
+          file_name: string | null
+          id: string
+          imported_by: string
+          input_method: string
+          notes: string | null
+          records_created: number | null
+          sections_imported: string[] | null
+          status: string
+        }
+        Insert: {
+          chef_id: string
+          created_at?: string
+          extracted_data?: Json | null
+          file_name?: string | null
+          id?: string
+          imported_by: string
+          input_method?: string
+          notes?: string | null
+          records_created?: number | null
+          sections_imported?: string[] | null
+          status?: string
+        }
+        Update: {
+          chef_id?: string
+          created_at?: string
+          extracted_data?: Json | null
+          file_name?: string | null
+          id?: string
+          imported_by?: string
+          input_method?: string
+          notes?: string | null
+          records_created?: number | null
+          sections_imported?: string[] | null
+          status?: string
+        }
+        Relationships: []
+      }
       deliberation_messages: {
         Row: {
           created_at: string | null

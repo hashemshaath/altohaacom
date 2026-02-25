@@ -7,16 +7,13 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
-import { Textarea } from "@/components/ui/textarea";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Separator } from "@/components/ui/separator";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
-  Search, Loader2, FileText, Upload, ClipboardPaste, Sparkles,
-  UserPlus, CheckCircle2, User, ChefHat, AlertCircle,
+  Search, Loader2, FileText, UserPlus, AlertCircle, ChefHat,
 } from "lucide-react";
-import { extractTextFromFile } from "@/components/cv-import/fileParser";
 import { CVImportDialog } from "@/components/cv-import/CVImportDialog";
+import { CVImportHistory } from "@/components/cv-import/CVImportHistory";
 import { getFlag } from "@/components/cv-import/types";
 
 interface ChefResult {
@@ -43,6 +40,7 @@ export function CVImportSection() {
   const [searched, setSearched] = useState(false);
   const [selectedChef, setSelectedChef] = useState<ChefResult | null>(null);
   const [cvDialogOpen, setCvDialogOpen] = useState(false);
+  const [historyRefresh, setHistoryRefresh] = useState(0);
 
   // New account creation
   const [showCreate, setShowCreate] = useState(false);
@@ -60,7 +58,6 @@ export function CVImportSection() {
     setShowCreate(false);
 
     try {
-      // Search profiles by name (English and Arabic), email, or phone
       const q = searchQuery.trim();
       const { data, error } = await supabase
         .from("profiles")
@@ -89,7 +86,6 @@ export function CVImportSection() {
     }
     setCreating(true);
     try {
-      // Create user via admin function
       const { data, error } = await supabase.functions.invoke("admin-user-management", {
         body: {
           action: "create",
@@ -131,8 +127,8 @@ export function CVImportSection() {
           </CardTitle>
           <CardDescription>
             {isAr
-              ? "ابحث عن الشيف بالاسم أو البريد أو الهاتف، ثم استورد سيرته الذاتية"
-              : "Search for chef by name, email, or phone, then import their CV"}
+              ? "ابحث عن الشيف بالاسم أو البريد أو الهاتف، ثم استورد سيرته الذاتية بالذكاء الاصطناعي"
+              : "Search for chef by name, email, or phone, then import their CV with AI extraction"}
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
@@ -270,6 +266,9 @@ export function CVImportSection() {
         </CardContent>
       </Card>
 
+      {/* Import History */}
+      <CVImportHistory isAr={isAr} refreshTrigger={historyRefresh} />
+
       {/* CV Import Dialog */}
       {selectedChef && (
         <CVImportDialog
@@ -280,6 +279,7 @@ export function CVImportSection() {
           onImported={() => {
             toast({ title: isAr ? "✅ تم استيراد السيرة الذاتية بنجاح" : "✅ CV imported successfully" });
             setSelectedChef(null);
+            setHistoryRefresh(prev => prev + 1);
           }}
         />
       )}
