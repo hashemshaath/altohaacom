@@ -1854,6 +1854,66 @@ export default function SocialLinksEditor() {
                             </div>
                           )}
                         </div>
+
+                        {/* Smart OG Preview */}
+                        <div className="pt-2">
+                          <Label className="text-[11px] mb-2 block font-medium">{isAr ? "معاينة المشاركة" : "Share Preview"}</Label>
+                          <div className="space-y-3">
+                            {/* Twitter/X Card Preview */}
+                            <div className="rounded-xl border border-border/60 overflow-hidden bg-card shadow-sm">
+                              <div className="text-[9px] px-2 py-1 bg-muted/40 text-muted-foreground font-medium flex items-center gap-1">
+                                <Twitter className="h-2.5 w-2.5" /> X / Twitter
+                              </div>
+                              {(extra.og_image_url || profile?.avatar_url) && (
+                                <div className="h-28 bg-muted/20 overflow-hidden">
+                                  <img
+                                    src={extra.og_image_url || profile?.avatar_url || ""}
+                                    alt=""
+                                    className="w-full h-full object-cover"
+                                    onError={e => (e.currentTarget.style.display = "none")}
+                                  />
+                                </div>
+                              )}
+                              <div className="p-2.5 space-y-0.5">
+                                <p className="text-[11px] font-semibold text-foreground truncate">
+                                  {(isAr ? extra.seo_title_ar : extra.seo_title) || profile?.display_name || profile?.full_name || "Bio Page"}
+                                </p>
+                                <p className="text-[10px] text-muted-foreground line-clamp-2">
+                                  {(isAr ? extra.seo_description_ar : extra.seo_description) || (isAr ? "صفحة Bio الشخصية" : "Personal bio page")}
+                                </p>
+                                <p className="text-[9px] text-muted-foreground/70 truncate">{window.location.host}/bio/{profile?.username}</p>
+                              </div>
+                            </div>
+
+                            {/* WhatsApp Preview */}
+                            <div className="rounded-xl border border-border/60 overflow-hidden bg-card shadow-sm">
+                              <div className="text-[9px] px-2 py-1 bg-muted/40 text-muted-foreground font-medium flex items-center gap-1">
+                                <MessageCircle className="h-2.5 w-2.5" /> WhatsApp
+                              </div>
+                              <div className="flex gap-2 p-2">
+                                {(extra.og_image_url || profile?.avatar_url) && (
+                                  <div className="w-16 h-16 rounded-md overflow-hidden shrink-0 bg-muted/20">
+                                    <img
+                                      src={extra.og_image_url || profile?.avatar_url || ""}
+                                      alt=""
+                                      className="w-full h-full object-cover"
+                                      onError={e => (e.currentTarget.style.display = "none")}
+                                    />
+                                  </div>
+                                )}
+                                <div className="min-w-0 flex-1 space-y-0.5">
+                                  <p className="text-[10px] font-semibold text-foreground truncate">
+                                    {(isAr ? extra.seo_title_ar : extra.seo_title) || profile?.display_name || profile?.full_name || "Bio Page"}
+                                  </p>
+                                  <p className="text-[9px] text-muted-foreground line-clamp-2">
+                                    {(isAr ? extra.seo_description_ar : extra.seo_description) || (isAr ? "صفحة Bio الشخصية" : "Personal bio page")}
+                                  </p>
+                                  <p className="text-[8px] text-muted-foreground/60 truncate">{window.location.host}</p>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
                       </CardContent>
                     </Card>
 
