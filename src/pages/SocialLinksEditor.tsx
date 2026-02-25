@@ -2252,20 +2252,66 @@ export default function SocialLinksEditor() {
                               </div>
                             </div>
                           )}
-                          {/* Referrers */}
-                          {Object.keys(visitorStats.referrers).length > 0 && (
-                            <div>
-                              <p className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground mb-2">{isAr ? "مصادر الزيارة" : "Referrers"}</p>
-                              <div className="space-y-1">
-                                {Object.entries(visitorStats.referrers).sort((a, b) => b[1] - a[1]).slice(0, 5).map(([ref, count]) => (
-                                  <div key={ref} className="flex items-center justify-between text-xs">
-                                    <span className="truncate flex-1">{ref}</span>
-                                    <span className="font-bold tabular-nums ms-2">{count}</span>
-                                  </div>
-                                ))}
+                          {/* Referrer Sources - Enhanced */}
+                          {Object.keys(visitorStats.referrers).length > 0 && (() => {
+                            const categorize = (host: string): string => {
+                              if (host === "direct") return "direct";
+                              if (/instagram|facebook|twitter|x\.com|tiktok|snapchat|linkedin|youtube|reddit|pinterest|threads/i.test(host)) return "social";
+                              if (/google|bing|yahoo|duckduckgo|baidu|yandex/i.test(host)) return "search";
+                              if (/t\.co|lnkd\.in|bit\.ly|linktr\.ee/i.test(host)) return "shortlink";
+                              return "other";
+                            };
+                            const cats: Record<string, { count: number; sources: Record<string, number> }> = {};
+                            Object.entries(visitorStats.referrers).forEach(([ref, count]) => {
+                              const cat = categorize(ref);
+                              if (!cats[cat]) cats[cat] = { count: 0, sources: {} };
+                              cats[cat].count += count;
+                              cats[cat].sources[ref] = count;
+                            });
+                            const catLabels: Record<string, { en: string; ar: string; emoji: string; color: string }> = {
+                              direct: { en: "Direct", ar: "مباشر", emoji: "🔗", color: "bg-chart-1/60" },
+                              social: { en: "Social Media", ar: "سوشال ميديا", emoji: "📱", color: "bg-chart-2/60" },
+                              search: { en: "Search Engines", ar: "محركات بحث", emoji: "🔍", color: "bg-chart-3/60" },
+                              shortlink: { en: "Short Links", ar: "روابط مختصرة", emoji: "🔗", color: "bg-chart-4/60" },
+                              other: { en: "Other", ar: "أخرى", emoji: "🌐", color: "bg-chart-5/60" },
+                            };
+                            const sorted = Object.entries(cats).sort((a, b) => b[1].count - a[1].count);
+                            const maxCat = sorted[0]?.[1].count || 1;
+                            return (
+                              <div>
+                                <p className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground mb-2">{isAr ? "مصادر الزيارات" : "Traffic Sources"}</p>
+                                <div className="space-y-2">
+                                  {sorted.map(([cat, { count, sources }]) => {
+                                    const info = catLabels[cat] || catLabels.other;
+                                    const pct = Math.round((count / visitorStats.total) * 100);
+                                    const barW = Math.round((count / maxCat) * 100);
+                                    return (
+                                      <div key={cat}>
+                                        <div className="flex items-center gap-2 mb-0.5">
+                                          <span className="text-xs">{info.emoji}</span>
+                                          <span className="text-[11px] font-medium flex-1">{isAr ? info.ar : info.en}</span>
+                                          <span className="text-[10px] font-bold tabular-nums">{count} <span className="text-muted-foreground font-normal">({pct}%)</span></span>
+                                        </div>
+                                        <div className="h-2 rounded-full bg-muted/40 overflow-hidden mb-1">
+                                          <div className={`h-full rounded-full transition-all duration-500 ${info.color}`} style={{ width: `${Math.max(barW, 3)}%` }} />
+                                        </div>
+                                        {Object.keys(sources).length > 1 && (
+                                          <div className="ps-5 space-y-0.5">
+                                            {Object.entries(sources).sort((a, b) => b[1] - a[1]).slice(0, 4).map(([src, cnt]) => (
+                                              <div key={src} className="flex items-center justify-between text-[10px] text-muted-foreground">
+                                                <span className="truncate max-w-[70%]">{src}</span>
+                                                <span className="tabular-nums font-medium">{cnt}</span>
+                                              </div>
+                                            ))}
+                                          </div>
+                                        )}
+                                      </div>
+                                    );
+                                  })}
+                                </div>
                               </div>
-                            </div>
-                          )}
+                            );
+                          })()}
                         </CardContent>
                       </Card>
                     )}
