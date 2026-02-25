@@ -1,4 +1,5 @@
 import { useState, useMemo } from "react";
+import AdminPageHeader from "@/components/admin/AdminPageHeader";
 import { useQuery } from "@tanstack/react-query";
 import { BehaviorAnalytics } from "@/components/crm/BehaviorAnalytics";
 import { CustomerHealthScores } from "@/components/crm/CustomerHealthScores";
@@ -248,34 +249,25 @@ export default function CRMDashboard() {
 
   return (
     <div className="space-y-6">
-      {/* Header */}
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-3">
-          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-primary/10">
-            <Activity className="h-5 w-5 text-primary" />
-          </div>
-          <div>
-            <h1 className="font-serif text-xl font-bold sm:text-2xl">
-              {isAr ? "مركز إدارة العلاقات" : "CRM Command Center"}
-            </h1>
-            <p className="text-xs text-muted-foreground">
-              {isAr ? "نظرة شاملة على الدعم والتواصل والاستهداف" : "Unified view of support, communication & targeting"}
-            </p>
-          </div>
-        </div>
-        <Select value={dateRange} onValueChange={setDateRange}>
-          <SelectTrigger className="w-[120px] gap-1">
-            <Calendar className="h-3.5 w-3.5" />
-            <SelectValue />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="1d">{isAr ? "اليوم" : "Today"}</SelectItem>
-            <SelectItem value="7d">{isAr ? "7 أيام" : "7 Days"}</SelectItem>
-            <SelectItem value="30d">{isAr ? "30 يوم" : "30 Days"}</SelectItem>
-            <SelectItem value="90d">{isAr ? "90 يوم" : "90 Days"}</SelectItem>
-          </SelectContent>
-        </Select>
-      </div>
+      <AdminPageHeader
+        icon={Activity}
+        title={isAr ? "مركز إدارة العلاقات" : "CRM Command Center"}
+        description={isAr ? "نظرة شاملة على الدعم والتواصل والاستهداف" : "Unified view of support, communication & targeting"}
+        actions={
+          <Select value={dateRange} onValueChange={setDateRange}>
+            <SelectTrigger className="w-[120px] gap-1">
+              <Calendar className="h-3.5 w-3.5" />
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="1d">{isAr ? "اليوم" : "Today"}</SelectItem>
+              <SelectItem value="7d">{isAr ? "7 أيام" : "7 Days"}</SelectItem>
+              <SelectItem value="30d">{isAr ? "30 يوم" : "30 Days"}</SelectItem>
+              <SelectItem value="90d">{isAr ? "90 يوم" : "90 Days"}</SelectItem>
+            </SelectContent>
+          </Select>
+        }
+      />
 
       {/* Top KPI Cards */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">

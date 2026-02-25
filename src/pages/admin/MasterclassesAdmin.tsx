@@ -14,6 +14,7 @@ import { Switch } from "@/components/ui/switch";
 import { Separator } from "@/components/ui/separator";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { useToast } from "@/hooks/use-toast";
+import AdminPageHeader from "@/components/admin/AdminPageHeader";
 import {
   BookOpen, Plus, Edit, Trash2, Users, Eye, EyeOff,
   GraduationCap, ChevronDown, ChevronUp, Save, X, ArrowLeft, MapPin,
@@ -145,27 +146,19 @@ export default function MasterclassesAdmin() {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-3">
-          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-primary/10">
-            <GraduationCap className="h-5 w-5 text-primary" />
-          </div>
-          <div>
-            <h1 className="font-serif text-xl font-bold sm:text-2xl">
-              {language === "ar" ? "إدارة الدورات التعليمية" : "Masterclasses Management"}
-            </h1>
-            <p className="text-xs text-muted-foreground">
-              {language === "ar" ? "إنشاء وإدارة الدورات والمحتوى التعليمي" : "Create and manage courses and educational content"}
-            </p>
-          </div>
-        </div>
-        <Button onClick={() => setShowCreateForm(!showCreateForm)}>
-          {showCreateForm ? <X className="me-2 h-4 w-4" /> : <Plus className="me-2 h-4 w-4" />}
-          {showCreateForm
-            ? (language === "ar" ? "إلغاء" : "Cancel")
-            : (language === "ar" ? "إنشاء دورة" : "Create Masterclass")}
-        </Button>
-      </div>
+      <AdminPageHeader
+        icon={GraduationCap}
+        title={language === "ar" ? "إدارة الدورات التعليمية" : "Masterclasses Management"}
+        description={language === "ar" ? "إنشاء وإدارة الدورات والمحتوى التعليمي" : "Create and manage courses and educational content"}
+        actions={
+          <Button onClick={() => setShowCreateForm(!showCreateForm)}>
+            {showCreateForm ? <X className="me-2 h-4 w-4" /> : <Plus className="me-2 h-4 w-4" />}
+            {showCreateForm
+              ? (language === "ar" ? "إلغاء" : "Cancel")
+              : (language === "ar" ? "إنشاء دورة" : "Create Masterclass")}
+          </Button>
+        }
+      />
 
       {/* Create Form */}
       {showCreateForm && (

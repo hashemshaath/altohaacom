@@ -18,6 +18,7 @@ import { useToast } from "@/hooks/use-toast";
 import { CertificateDesigner } from "@/components/certificates/CertificateDesigner";
 import { CertificateViewPanel } from "@/components/certificates/CertificateViewPanel";
 import { CandidateSelector } from "@/components/certificates/CandidateSelector";
+import AdminPageHeader from "@/components/admin/AdminPageHeader";
 import {
   Award, FileText, Users, Send, Download, Search, Plus, Edit, Trash2, Eye,
   CheckCircle, XCircle, Clock, ChevronLeft, Save, X, Copy, Palette,
@@ -299,36 +300,24 @@ export default function CertificatesAdmin() {
   // ═══ Main View ═══
   return (
     <div className="space-y-6">
-      {/* Header */}
-      <div className="flex items-center justify-between flex-wrap gap-4">
-        <div className="flex items-center gap-3">
-          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-primary/10">
-            <Award className="h-5 w-5 text-primary" />
+      <AdminPageHeader
+        icon={Award}
+        title={language === "ar" ? "مركز الشهادات" : "Certificate Center"}
+        description={language === "ar" ? "إدارة وإصدار واعتماد وإرسال الشهادات" : "Manage, issue, approve, and send certificates"}
+        actions={
+          <div className="flex gap-2 flex-wrap">
+            <Button variant="outline" size="sm" onClick={() => setShowDesigner(true)}>
+              <Palette className="h-3.5 w-3.5 me-1.5" />{language === "ar" ? "مصمم" : "Designer"}
+            </Button>
+            <Button variant="outline" size="sm" onClick={() => bulkSignMutation.mutate()} disabled={stats.draft === 0 || bulkSignMutation.isPending}>
+              <PenTool className="h-3.5 w-3.5 me-1.5" />{language === "ar" ? `اعتماد (${stats.draft})` : `Approve (${stats.draft})`}
+            </Button>
+            <Button variant="outline" size="sm" onClick={() => bulkIssueMutation.mutate()} disabled={stats.signed === 0 || bulkIssueMutation.isPending}>
+              <CheckCircle className="h-3.5 w-3.5 me-1.5" />{language === "ar" ? `إصدار (${stats.signed})` : `Issue (${stats.signed})`}
+            </Button>
           </div>
-          <div>
-            <h1 className="font-serif text-xl font-bold sm:text-2xl">
-              {language === "ar" ? "مركز الشهادات" : "Certificate Center"}
-            </h1>
-            <p className="text-xs text-muted-foreground">
-              {language === "ar" ? "إدارة وإصدار واعتماد وإرسال الشهادات" : "Manage, issue, approve, and send certificates"}
-            </p>
-          </div>
-        </div>
-        <div className="flex gap-2 flex-wrap">
-          <Button variant="outline" onClick={() => setShowDesigner(true)}>
-            <Palette className="h-4 w-4 me-2" />{language === "ar" ? "مصمم" : "Designer"}
-          </Button>
-          <Button variant="outline" onClick={() => bulkSignMutation.mutate()} disabled={stats.draft === 0 || bulkSignMutation.isPending}>
-            <PenTool className="h-4 w-4 me-2" />{language === "ar" ? `اعتماد الكل (${stats.draft})` : `Approve All (${stats.draft})`}
-          </Button>
-          <Button variant="outline" onClick={() => bulkIssueMutation.mutate()} disabled={stats.signed === 0 || bulkIssueMutation.isPending}>
-            <CheckCircle className="h-4 w-4 me-2" />{language === "ar" ? `إصدار الكل (${stats.signed})` : `Issue All (${stats.signed})`}
-          </Button>
-          <Button variant="outline" onClick={handlePrintAll} disabled={stats.issued === 0}>
-            <Printer className="h-4 w-4 me-2" />{language === "ar" ? `طباعة الكل (${stats.issued})` : `Print All (${stats.issued})`}
-          </Button>
-        </div>
-      </div>
+        }
+      />
 
       {/* Stats */}
       <div className="grid grid-cols-2 md:grid-cols-5 gap-4">

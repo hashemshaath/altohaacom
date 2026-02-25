@@ -15,6 +15,7 @@ import { Separator } from "@/components/ui/separator";
 import { Switch } from "@/components/ui/switch";
 import { toast } from "@/hooks/use-toast";
 import { Search, Gavel, Pencil, Trash2, Plus, Eye, FileText, Building2, MapPin, Users, Upload, Download, Calendar } from "lucide-react";
+import AdminPageHeader from "@/components/admin/AdminPageHeader";
 import { format } from "date-fns";
 import JudgeProfileForm from "@/components/judges/JudgeProfileForm";
 import JudgeDocumentsPanel from "@/components/judges/JudgeDocumentsPanel";
@@ -156,20 +157,11 @@ export default function JudgesAdmin() {
 
   return (
     <div className="space-y-6">
-      {/* Header */}
-      <div className="flex items-center gap-3">
-        <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-primary/10">
-          <Gavel className="h-5 w-5 text-primary" />
-        </div>
-        <div>
-          <h1 className="font-serif text-xl font-bold sm:text-2xl">
-            {isAr ? "إدارة المحكّمين" : "Judges Management"}
-          </h1>
-          <p className="text-xs text-muted-foreground">
-            {isAr ? "ملفات المحكّمين الشاملة، التصنيف، المستندات، والسجلات" : "Comprehensive judge profiles, classification, documents & records"}
-          </p>
-        </div>
-      </div>
+      <AdminPageHeader
+        icon={Gavel}
+        title={isAr ? "إدارة المحكّمين" : "Judges Management"}
+        description={isAr ? "ملفات المحكّمين الشاملة، التصنيف، المستندات، والسجلات" : "Comprehensive judge profiles, classification, documents & records"}
+      />
 
       {/* Stats */}
       <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">

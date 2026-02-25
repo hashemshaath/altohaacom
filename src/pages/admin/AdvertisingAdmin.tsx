@@ -10,6 +10,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import { toast } from "@/hooks/use-toast";
+import AdminPageHeader from "@/components/admin/AdminPageHeader";
 import {
   Megaphone, BarChart3, Package, LayoutGrid, CheckCircle, XCircle,
   Eye, MousePointer, DollarSign, Clock, FileText,
@@ -268,19 +269,19 @@ const AdvertisingAdmin = forwardRef<HTMLDivElement>(function AdvertisingAdmin(_p
 
   return (
     <div ref={ref} className="space-y-4 sm:space-y-6">
-      {/* Header */}
-      <div className="flex items-center justify-between gap-2">
-        <div className="min-w-0">
-          <h1 className="text-xl sm:text-2xl font-bold truncate">{isAr ? "مركز الإعلانات" : "Advertising Center"}</h1>
-          <p className="text-xs sm:text-sm text-muted-foreground">{isAr ? "إدارة الإعلانات والحملات" : "Manage ads, campaigns & analytics"}</p>
-        </div>
-        {pendingRequests.length > 0 && (
-          <Badge variant="destructive" className="gap-1 shrink-0 text-[10px] sm:text-xs">
-            <Clock className="h-3 w-3" />
-            {pendingRequests.length}
-          </Badge>
-        )}
-      </div>
+      <AdminPageHeader
+        icon={Megaphone}
+        title={isAr ? "مركز الإعلانات" : "Advertising Center"}
+        description={isAr ? "إدارة الإعلانات والحملات" : "Manage ads, campaigns & analytics"}
+        actions={
+          pendingRequests.length > 0 ? (
+            <Badge variant="destructive" className="gap-1 text-xs">
+              <Clock className="h-3 w-3" />
+              {pendingRequests.length} {isAr ? "معلقة" : "pending"}
+            </Badge>
+          ) : undefined
+        }
+      />
 
       {/* KPIs */}
       <div className="grid grid-cols-2 gap-2.5 sm:gap-4 md:grid-cols-4">

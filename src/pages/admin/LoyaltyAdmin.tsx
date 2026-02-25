@@ -9,6 +9,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { useToast } from "@/hooks/use-toast";
 import { Crown, Trophy, Gift, TrendingUp } from "lucide-react";
+import AdminPageHeader from "@/components/admin/AdminPageHeader";
 
 export default function LoyaltyAdmin() {
   const { language } = useLanguage();
@@ -106,13 +107,11 @@ export default function LoyaltyAdmin() {
 
   return (
     <div className="space-y-6">
-      <div>
-        <h1 className="text-2xl font-bold flex items-center gap-2">
-          <Crown className="h-6 w-6 text-amber-500" />
-          {isAr ? "نظام الولاء والمكافآت" : "Loyalty & Rewards"}
-        </h1>
-        <p className="text-sm text-muted-foreground">{isAr ? "إدارة المستويات والتحديات والمكافآت" : "Manage tiers, challenges, and rewards"}</p>
-      </div>
+      <AdminPageHeader
+        icon={Crown}
+        title={isAr ? "نظام الولاء والمكافآت" : "Loyalty & Rewards"}
+        description={isAr ? "إدارة المستويات والتحديات والمكافآت" : "Manage tiers, challenges, and rewards"}
+      />
 
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
         {statCards.map((s, i) => (
