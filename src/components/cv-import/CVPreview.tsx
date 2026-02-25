@@ -12,9 +12,12 @@ import {
   Table, TableBody, TableCell, TableHead, TableHeader, TableRow,
 } from "@/components/ui/table";
 import {
+  Collapsible, CollapsibleContent, CollapsibleTrigger,
+} from "@/components/ui/collapsible";
+import {
   ArrowLeft, Save, Loader2, User, GraduationCap, Briefcase,
   Trophy, Award, Tv, Globe2, Languages, CheckCircle2, MapPin,
-  Edit3, X, Trash2, Download, Printer,
+  Edit3, X, Trash2, Download, Printer, ChevronDown, ChevronRight,
 } from "lucide-react";
 import { downloadCSV, downloadJSON } from "@/lib/exportUtils";
 import type { CVData, CVWorkExperience, CVEducation, CVCompetition, CVMediaAppearance } from "./types";
@@ -81,17 +84,6 @@ const TranslateBtn = ({ onClick, loading, small }: { onClick: () => void; loadin
   </Button>
 );
 
-/** Bilingual display: EN / AR with flag */
-const BilingualText = ({ en, ar, flag }: { en?: string; ar?: string; flag?: string }) => {
-  if (!en && !ar) return <span className="text-muted-foreground/40">—</span>;
-  return (
-    <div className="flex flex-col gap-0.5">
-      {en && <span className="text-xs font-medium" dir="ltr">{flag && <span className="me-1">{flag}</span>}{en}</span>}
-      {ar && <span className="text-xs text-muted-foreground" dir="rtl">{flag && !en && <span className="me-1">{flag}</span>}{ar}</span>}
-    </div>
-  );
-};
-
 /** Location display: flag + city, country */
 const LocationDisplay = ({ city, countryCode }: { city?: string; countryCode?: string }) => {
   if (!city && !countryCode) return null;
@@ -141,8 +133,48 @@ function EditableText({ value, onChange, label, multiline, className = "" }: {
 
 const rowBg = (i: number) => i % 2 === 0 ? "bg-muted/20" : "bg-muted/50";
 
+// ─── Collapsible Section Wrapper ───
+function CollapsibleSection({
+  icon, titleEn, titleAr, count, sectionKey, colorClass, isAr, checked, onToggle,
+  defaultOpen = false, extraActions, children,
+}: {
+  icon: React.ReactNode; titleEn: string; titleAr: string;
+  count: number; sectionKey: string; colorClass: string;
+  isAr: boolean; checked: boolean; onToggle: () => void;
+  defaultOpen?: boolean; extraActions?: React.ReactNode;
+  children: React.ReactNode;
+}) {
+  const [open, setOpen] = useState(defaultOpen);
+  return (
+    <Card className="overflow-hidden">
+      <Collapsible open={open} onOpenChange={setOpen}>
+        <CardHeader className={`pb-2 ${colorClass.replace("text-", "bg-").split(" ")[0]}/5`}>
+          <div className="flex items-center justify-between">
+            <CollapsibleTrigger asChild>
+              <button className="flex items-center gap-2 hover:opacity-80 transition-opacity">
+                <div className={`flex h-8 w-8 items-center justify-center rounded-lg ${colorClass}`}>{icon}</div>
+                <span className="text-sm font-semibold">{isAr ? titleAr : titleEn}</span>
+                <Badge variant="secondary" className="text-[10px] h-5">{count}</Badge>
+                {open ? <ChevronDown className="h-3.5 w-3.5 text-muted-foreground" /> : <ChevronRight className="h-3.5 w-3.5 text-muted-foreground" />}
+              </button>
+            </CollapsibleTrigger>
+            <div className="flex items-center gap-1.5">
+              {extraActions}
+              <Checkbox checked={checked} onCheckedChange={onToggle} />
+            </div>
+          </div>
+        </CardHeader>
+        <CollapsibleContent>
+          <CardContent className="p-0">
+            {children}
+          </CardContent>
+        </CollapsibleContent>
+      </Collapsible>
+    </Card>
+  );
+}
+
 // ─── Paired personal field definitions ───
-// [key, labelEN, labelAR, pairedKey (for translation)]
 type PersonalFieldDef = [string, string, string, string | null];
 
 const PAIRED_PERSONAL_FIELDS: PersonalFieldDef[] = [
@@ -219,6 +251,38 @@ export function CVPreview({ data: initialData, targetUserId, isAr, onBack, onSav
         if (Object.keys(profileUpdate).length > 0) {
           const { error } = await supabase.from("profiles").update(profileUpdate).eq("user_id", targetUserId);
           if (!error) { recordsCreated++; sectionsImported.push("personal"); }
+        }
+
+        // ─── Auto-update Bio page (social_link_pages) ───
+        try {
+          const { data: existingPage } = await supabase
+            .from("social_link_pages")
+            .select("id")
+            .eq("user_id", targetUserId)
+            .maybeSingle();
+
+          const bioPageUpdate: Record<string, any> = {};
+          if (pi.full_name) bioPageUpdate.page_title = pi.full_name;
+          if (pi.full_name_ar) bioPageUpdate.page_title_ar = pi.full_name_ar;
+          if (pi.bio) bioPageUpdate.bio = pi.bio;
+          if (pi.bio_ar) bioPageUpdate.bio_ar = pi.bio_ar;
+
+          if (Object.keys(bioPageUpdate).length > 0) {
+            if (existingPage) {
+              await supabase.from("social_link_pages").update({ ...bioPageUpdate, updated_at: new Date().toISOString() }).eq("id", existingPage.id);
+            } else {
+              await supabase.from("social_link_pages").insert({
+                user_id: targetUserId,
+                ...bioPageUpdate,
+                is_published: true,
+                show_avatar: true,
+                show_social_icons: true,
+                theme: "default",
+              });
+            }
+          }
+        } catch (bioErr) {
+          console.error("Bio page update error:", bioErr);
         }
       }
       if (sections.education && hasEdu) {
@@ -302,7 +366,7 @@ export function CVPreview({ data: initialData, targetUserId, isAr, onBack, onSav
           });
         }
       } catch (logErr) { console.error("Failed to log import:", logErr); }
-      toast({ title: isAr ? `✅ تم استيراد ${recordsCreated} سجل بنجاح` : `✅ Successfully imported ${recordsCreated} records` });
+      toast({ title: isAr ? `✅ تم استيراد ${recordsCreated} سجل وتحديث صفحة Bio تلقائياً` : `✅ Imported ${recordsCreated} records & Bio page auto-updated` });
       onSaved();
     } catch (err: any) {
       toast({ variant: "destructive", title: isAr ? "خطأ" : "Error", description: err.message });
@@ -451,24 +515,6 @@ export function CVPreview({ data: initialData, targetUserId, isAr, onBack, onSav
     win.print();
   }, [data]);
 
-  const sectionHeader = (
-    icon: React.ReactNode, titleEn: string, titleAr: string,
-    count: number, key: keyof typeof sections, colorClass: string,
-    extraActions?: React.ReactNode,
-  ) => (
-    <div className="flex items-center justify-between">
-      <div className="flex items-center gap-2">
-        <div className={`flex h-8 w-8 items-center justify-center rounded-lg ${colorClass}`}>{icon}</div>
-        <span className="text-sm font-semibold">{isAr ? titleAr : titleEn}</span>
-        <Badge variant="secondary" className="text-[10px] h-5">{count}</Badge>
-      </div>
-      <div className="flex items-center gap-1.5">
-        {extraActions}
-        <Checkbox checked={sections[key]} onCheckedChange={() => toggle(key)} />
-      </div>
-    </div>
-  );
-
   // Helper: get display value for personal fields
   const getPersonalDisplay = (key: string): string | undefined => {
     const raw = (pi as any)[key];
@@ -499,409 +545,430 @@ export function CVPreview({ data: initialData, targetUserId, isAr, onBack, onSav
 
       {/* ═══ PERSONAL INFO ═══ */}
       {hasPersonal && (
-        <Card className="border-primary/20 overflow-hidden">
-          <CardHeader className="pb-2 bg-primary/5">
-            {sectionHeader(
-              <User className="h-4 w-4" />, "Personal Info", "المعلومات الشخصية", 1, "personal", "bg-primary/10 text-primary",
-              <Button variant="ghost" size="sm" className="h-7 text-[10px] gap-1 text-primary" onClick={handleTranslateAllPersonal} disabled={translatingKey?.startsWith("personal_")}>
-                {translatingKey?.startsWith("personal_") ? <Loader2 className="h-3 w-3 animate-spin" /> : <Languages className="h-3 w-3" />}
-                {isAr ? "ترجمة الكل" : "Translate All"}
-              </Button>
-            )}
-          </CardHeader>
-          <CardContent className="p-0">
-            <Table>
-              <TableBody>
-                {PAIRED_PERSONAL_FIELDS.map(([key, labelEn, labelAr, pairedKey], i) => {
-                  const value = getPersonalDisplay(key);
-                  if (!value) return null;
-                  const isArField = key.endsWith("_ar");
-                  return (
-                    <TableRow key={key} className={`${rowBg(i)} border-border/10 hover:bg-accent/30`}>
-                      <TableCell className="py-1.5 px-3 w-[140px]">
-                        <span className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wider">
-                          {isAr ? labelAr : labelEn}
-                        </span>
-                      </TableCell>
-                      <TableCell className="py-1.5 px-3">
-                        <div className="flex items-center gap-1">
-                          <EditableText value={value} onChange={(v) => updatePersonal(key, v || undefined)} label={isAr ? labelAr : labelEn} className="text-sm font-medium" />
-                          {pairedKey && value && (
-                            <TranslateBtn
-                              small
-                              loading={translatingKey === `personal_${pairedKey}`}
-                              onClick={() => translate(
-                                (pi as any)[key] || "",
-                                isArField ? "ar" : "en",
-                                (t) => updatePersonal(pairedKey, t),
-                                `personal_${pairedKey}`,
-                              )}
-                            />
-                          )}
-                        </div>
-                      </TableCell>
-                    </TableRow>
-                  );
-                })}
-              </TableBody>
-            </Table>
-            {(pi.bio || pi.bio_ar) && (
-              <div className="p-3 border-t border-border/20 bg-muted/10 space-y-2">
-                <div className="flex items-center justify-between">
-                  <span className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider">
-                    {isAr ? "النبذة المهنية" : "Professional Summary"}
-                  </span>
-                  {pi.bio && !pi.bio_ar && (
-                    <TranslateBtn
-                      loading={translatingKey === "personal_bio_ar"}
-                      onClick={() => translate(pi.bio!, "en", (t) => updatePersonal("bio_ar", t), "personal_bio_ar")}
-                    />
-                  )}
-                </div>
-                {pi.bio && <EditableText value={pi.bio} onChange={(v) => updatePersonal("bio", v || undefined)} multiline className="text-xs block" />}
-                {pi.bio_ar && <EditableText value={pi.bio_ar} onChange={(v) => updatePersonal("bio_ar", v || undefined)} multiline className="text-xs block text-muted-foreground" />}
+        <CollapsibleSection
+          icon={<User className="h-4 w-4" />}
+          titleEn="Personal Info" titleAr="المعلومات الشخصية"
+          count={1} sectionKey="personal" colorClass="bg-primary/10 text-primary"
+          isAr={isAr} checked={sections.personal} onToggle={() => toggle("personal")}
+          defaultOpen={true}
+          extraActions={
+            <Button variant="ghost" size="sm" className="h-7 text-[10px] gap-1 text-primary" onClick={handleTranslateAllPersonal} disabled={translatingKey?.startsWith("personal_")}>
+              {translatingKey?.startsWith("personal_") ? <Loader2 className="h-3 w-3 animate-spin" /> : <Languages className="h-3 w-3" />}
+              {isAr ? "ترجمة الكل" : "Translate All"}
+            </Button>
+          }
+        >
+          <Table>
+            <TableBody>
+              {PAIRED_PERSONAL_FIELDS.map(([key, labelEn, labelAr, pairedKey], i) => {
+                const value = getPersonalDisplay(key);
+                if (!value) return null;
+                const isArField = key.endsWith("_ar");
+                return (
+                  <TableRow key={key} className={`${rowBg(i)} border-border/10 hover:bg-accent/30`}>
+                    <TableCell className="py-1.5 px-3 w-[140px]">
+                      <span className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wider">
+                        {isAr ? labelAr : labelEn}
+                      </span>
+                    </TableCell>
+                    <TableCell className="py-1.5 px-3">
+                      <div className="flex items-center gap-1">
+                        <EditableText value={value} onChange={(v) => updatePersonal(key, v || undefined)} label={isAr ? labelAr : labelEn} className="text-sm font-medium" />
+                        {pairedKey && value && (
+                          <TranslateBtn
+                            small
+                            loading={translatingKey === `personal_${pairedKey}`}
+                            onClick={() => translate(
+                              (pi as any)[key] || "",
+                              isArField ? "ar" : "en",
+                              (t) => updatePersonal(pairedKey, t),
+                              `personal_${pairedKey}`,
+                            )}
+                          />
+                        )}
+                      </div>
+                    </TableCell>
+                  </TableRow>
+                );
+              })}
+            </TableBody>
+          </Table>
+          {(pi.bio || pi.bio_ar) && (
+            <div className="p-3 border-t border-border/20 bg-muted/10 space-y-2">
+              <div className="flex items-center justify-between">
+                <span className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider">
+                  {isAr ? "النبذة المهنية" : "Professional Summary"}
+                </span>
+                {pi.bio && !pi.bio_ar && (
+                  <TranslateBtn
+                    loading={translatingKey === "personal_bio_ar"}
+                    onClick={() => translate(pi.bio!, "en", (t) => updatePersonal("bio_ar", t), "personal_bio_ar")}
+                  />
+                )}
               </div>
-            )}
-          </CardContent>
-        </Card>
+              {pi.bio && <EditableText value={pi.bio} onChange={(v) => updatePersonal("bio", v || undefined)} multiline className="text-xs block" />}
+              {pi.bio_ar && <EditableText value={pi.bio_ar} onChange={(v) => updatePersonal("bio_ar", v || undefined)} multiline className="text-xs block text-muted-foreground" />}
+            </div>
+          )}
+        </CollapsibleSection>
       )}
 
       {/* ═══ EDUCATION ═══ */}
       {hasEdu && (
-        <Card className="overflow-hidden">
-          <CardHeader className="pb-2 bg-chart-2/5">
-            {sectionHeader(<GraduationCap className="h-4 w-4" />, "Education", "التعليم", data.education!.length, "education", "bg-chart-2/10 text-chart-2",
-              <Button variant="ghost" size="sm" className="h-7 text-[10px] gap-1 text-chart-2" onClick={handleTranslateAllEducation} disabled={translatingKey?.startsWith("edu_")}>
-                {translatingKey?.startsWith("edu_") ? <Loader2 className="h-3 w-3 animate-spin" /> : <Languages className="h-3 w-3" />}
-                {isAr ? "ترجمة الكل" : "Translate All"}
-              </Button>
-            )}
-          </CardHeader>
-          <CardContent className="p-0">
-            <Table>
-              <TableHeader>
-                <TableRow className="bg-chart-2/5 border-border/10">
-                  <TableHead className="text-[10px] py-1.5 h-auto">{isAr ? "الشهادة" : "Degree"}</TableHead>
-                  <TableHead className="text-[10px] py-1.5 h-auto">{isAr ? "المؤسسة" : "Institution"}</TableHead>
-                  <TableHead className="text-[10px] py-1.5 h-auto">{isAr ? "التخصص" : "Field"}</TableHead>
-                  <TableHead className="text-[10px] py-1.5 h-auto">{isAr ? "الفترة" : "Period"}</TableHead>
-                  <TableHead className="text-[10px] py-1.5 h-auto">{isAr ? "الموقع" : "Location"}</TableHead>
-                  <TableHead className="text-[10px] py-1.5 h-auto w-14"></TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {data.education!.map((edu, i) => (
-                  <TableRow key={i} className={`${rowBg(i)} border-border/10 group hover:bg-accent/30`}>
-                    <TableCell className="py-2 px-3">
+        <CollapsibleSection
+          icon={<GraduationCap className="h-4 w-4" />}
+          titleEn="Education" titleAr="التعليم"
+          count={data.education!.length} sectionKey="education" colorClass="bg-chart-2/10 text-chart-2"
+          isAr={isAr} checked={sections.education} onToggle={() => toggle("education")}
+          defaultOpen={true}
+          extraActions={
+            <Button variant="ghost" size="sm" className="h-7 text-[10px] gap-1 text-chart-2" onClick={handleTranslateAllEducation} disabled={translatingKey?.startsWith("edu_")}>
+              {translatingKey?.startsWith("edu_") ? <Loader2 className="h-3 w-3 animate-spin" /> : <Languages className="h-3 w-3" />}
+              {isAr ? "ترجمة الكل" : "Translate All"}
+            </Button>
+          }
+        >
+          <Table>
+            <TableHeader>
+              <TableRow className="bg-chart-2/5 border-border/10">
+                <TableHead className="text-[10px] py-1.5 h-auto">English</TableHead>
+                <TableHead className="text-[10px] py-1.5 h-auto">العربية</TableHead>
+                <TableHead className="text-[10px] py-1.5 h-auto">{isAr ? "الفترة" : "Period"}</TableHead>
+                <TableHead className="text-[10px] py-1.5 h-auto">{isAr ? "الموقع" : "Location"}</TableHead>
+                <TableHead className="text-[10px] py-1.5 h-auto w-14"></TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {data.education!.map((edu, i) => (
+                <TableRow key={i} className={`${rowBg(i)} border-border/10 group hover:bg-accent/30`}>
+                  <TableCell className="py-2 px-3" dir="ltr">
+                    <div className="space-y-0.5">
                       <div className="flex items-start gap-1">
-                        <BilingualText en={edu.degree} ar={edu.degree_ar} />
+                        <span className="text-xs font-semibold">{edu.degree || "—"}</span>
                         {edu.degree && !edu.degree_ar && (
                           <TranslateBtn small loading={translatingKey === `edu_degree_${i}`}
                             onClick={() => translate(edu.degree, "en", (t) => updateEduItem(i, "degree_ar", t), `edu_degree_${i}`)} />
                         )}
                       </div>
+                      <span className="text-[11px] text-muted-foreground block">{edu.institution || ""}</span>
+                      {edu.field_of_study && <span className="text-[10px] text-muted-foreground/70 block">{edu.field_of_study}</span>}
                       {edu.education_level && (
                         <Badge variant="outline" className="text-[9px] h-4 mt-0.5">
-                          {isAr ? (EDUCATION_LEVEL_LABELS[edu.education_level]?.ar || edu.education_level) : (EDUCATION_LEVEL_LABELS[edu.education_level]?.en || edu.education_level)}
+                          {EDUCATION_LEVEL_LABELS[edu.education_level]?.en || edu.education_level}
                         </Badge>
                       )}
-                    </TableCell>
-                    <TableCell className="py-2 px-3">
-                      <div className="flex items-start gap-1">
-                        <BilingualText en={edu.institution} ar={edu.institution_ar} />
-                        {edu.institution && !edu.institution_ar && (
-                          <TranslateBtn small loading={translatingKey === `edu_inst_${i}`}
-                            onClick={() => translate(edu.institution, "en", (t) => updateEduItem(i, "institution_ar", t), `edu_inst_${i}`)} />
-                        )}
-                      </div>
-                    </TableCell>
-                    <TableCell className="py-2 px-3">
-                      <BilingualText en={edu.field_of_study} ar={edu.field_of_study_ar} />
-                      {edu.grade && <span className="text-[10px] text-muted-foreground block">{edu.grade}</span>}
-                    </TableCell>
-                    <TableCell className="py-2 px-3">
-                      <span className="text-[11px] text-muted-foreground whitespace-nowrap">
-                        {formatDate(edu.start_date)} — {edu.is_current ? (isAr ? "الحالي" : "Present") : formatDate(edu.end_date)}
-                      </span>
-                    </TableCell>
-                    <TableCell className="py-2 px-3">
-                      <LocationDisplay city={edu.location} countryCode={edu.country_code} />
-                    </TableCell>
-                    <TableCell className="py-2 px-1">
-                      <Button size="icon" variant="ghost" className="h-5 w-5 opacity-0 group-hover:opacity-100" onClick={() => removeEduItem(i)}>
-                        <Trash2 className="h-3 w-3 text-destructive" />
-                      </Button>
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </CardContent>
-        </Card>
+                    </div>
+                  </TableCell>
+                  <TableCell className="py-2 px-3" dir="rtl">
+                    <div className="space-y-0.5">
+                      <span className="text-xs font-semibold">{edu.degree_ar || <span className="text-muted-foreground/40 italic text-[10px]">—</span>}</span>
+                      <span className="text-[11px] text-muted-foreground block">{edu.institution_ar || ""}</span>
+                      {edu.field_of_study_ar && <span className="text-[10px] text-muted-foreground/70 block">{edu.field_of_study_ar}</span>}
+                      {edu.education_level && (
+                        <Badge variant="outline" className="text-[9px] h-4 mt-0.5">
+                          {EDUCATION_LEVEL_LABELS[edu.education_level]?.ar || edu.education_level}
+                        </Badge>
+                      )}
+                    </div>
+                  </TableCell>
+                  <TableCell className="py-2 px-3">
+                    <span className="text-[11px] text-muted-foreground whitespace-nowrap">
+                      {formatDate(edu.start_date)} — {edu.is_current ? (isAr ? "الحالي" : "Present") : formatDate(edu.end_date)}
+                    </span>
+                  </TableCell>
+                  <TableCell className="py-2 px-3">
+                    <LocationDisplay city={edu.location} countryCode={edu.country_code} />
+                  </TableCell>
+                  <TableCell className="py-2 px-1">
+                    <Button size="icon" variant="ghost" className="h-5 w-5 opacity-0 group-hover:opacity-100" onClick={() => removeEduItem(i)}>
+                      <Trash2 className="h-3 w-3 text-destructive" />
+                    </Button>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </CollapsibleSection>
       )}
 
       {/* ═══ WORK EXPERIENCE ═══ */}
       {hasWork && (
-        <Card className="overflow-hidden">
-          <CardHeader className="pb-2 bg-chart-3/5">
-            {sectionHeader(<Briefcase className="h-4 w-4" />, "Professional Experience", "الخبرات المهنية", data.work_experience!.length, "work", "bg-chart-3/10 text-chart-3",
-              <Button variant="ghost" size="sm" className="h-7 text-[10px] gap-1 text-chart-3" onClick={handleTranslateAllWork} disabled={translatingKey?.startsWith("work_")}>
-                {translatingKey?.startsWith("work_") ? <Loader2 className="h-3 w-3 animate-spin" /> : <Languages className="h-3 w-3" />}
-                {isAr ? "ترجمة الكل" : "Translate All"}
-              </Button>
-            )}
-          </CardHeader>
-          <CardContent className="p-0">
-            <Table>
-              <TableHeader>
-                <TableRow className="bg-chart-3/5 border-border/10">
-                  <TableHead className="text-[10px] py-1.5 h-auto">{isAr ? "المنصب" : "Position"}</TableHead>
-                  <TableHead className="text-[10px] py-1.5 h-auto">{isAr ? "الجهة" : "Organization"}</TableHead>
-                  <TableHead className="text-[10px] py-1.5 h-auto">{isAr ? "النوع" : "Type"}</TableHead>
-                  <TableHead className="text-[10px] py-1.5 h-auto">{isAr ? "الفترة" : "Period"}</TableHead>
-                  <TableHead className="text-[10px] py-1.5 h-auto">{isAr ? "الموقع" : "Location"}</TableHead>
-                  <TableHead className="text-[10px] py-1.5 h-auto w-14"></TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {data.work_experience!.map((work, i) => (
-                  <TableRow key={i} className={`${rowBg(i)} border-border/10 group hover:bg-accent/30 align-top`}>
-                    <TableCell className="py-2 px-3">
+        <CollapsibleSection
+          icon={<Briefcase className="h-4 w-4" />}
+          titleEn="Professional Experience" titleAr="الخبرات المهنية"
+          count={data.work_experience!.length} sectionKey="work" colorClass="bg-chart-3/10 text-chart-3"
+          isAr={isAr} checked={sections.work} onToggle={() => toggle("work")}
+          defaultOpen={true}
+          extraActions={
+            <Button variant="ghost" size="sm" className="h-7 text-[10px] gap-1 text-chart-3" onClick={handleTranslateAllWork} disabled={translatingKey?.startsWith("work_")}>
+              {translatingKey?.startsWith("work_") ? <Loader2 className="h-3 w-3 animate-spin" /> : <Languages className="h-3 w-3" />}
+              {isAr ? "ترجمة الكل" : "Translate All"}
+            </Button>
+          }
+        >
+          <Table>
+            <TableHeader>
+              <TableRow className="bg-chart-3/5 border-border/10">
+                <TableHead className="text-[10px] py-1.5 h-auto">English</TableHead>
+                <TableHead className="text-[10px] py-1.5 h-auto">العربية</TableHead>
+                <TableHead className="text-[10px] py-1.5 h-auto">{isAr ? "النوع" : "Type"}</TableHead>
+                <TableHead className="text-[10px] py-1.5 h-auto">{isAr ? "الفترة" : "Period"}</TableHead>
+                <TableHead className="text-[10px] py-1.5 h-auto">{isAr ? "الموقع" : "Location"}</TableHead>
+                <TableHead className="text-[10px] py-1.5 h-auto w-14"></TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {data.work_experience!.map((work, i) => (
+                <TableRow key={i} className={`${rowBg(i)} border-border/10 group hover:bg-accent/30 align-top`}>
+                  <TableCell className="py-2 px-3" dir="ltr">
+                    <div className="space-y-0.5">
                       <div className="flex items-start gap-1">
-                        <BilingualText en={work.title} ar={work.title_ar} />
+                        <span className="text-xs font-semibold">{work.title || "—"}</span>
                         {work.title && !work.title_ar && (
                           <TranslateBtn small loading={translatingKey === `work_title_${i}`}
                             onClick={() => translate(work.title, "en", (t) => updateWorkItem(i, "title_ar", t), `work_title_${i}`)} />
                         )}
                       </div>
-                      {work.department && <span className="text-[10px] text-muted-foreground block mt-0.5">{isAr ? (work.department_ar || work.department) : work.department}</span>}
-                    </TableCell>
-                    <TableCell className="py-2 px-3">
                       <div className="flex items-start gap-1">
-                        <BilingualText en={work.company} ar={work.company_ar} />
+                        <span className="text-[11px] text-muted-foreground">{work.company || ""}</span>
                         {work.company && !work.company_ar && (
                           <TranslateBtn small loading={translatingKey === `work_company_${i}`}
                             onClick={() => translate(work.company, "en", (t) => updateWorkItem(i, "company_ar", t), `work_company_${i}`)} />
                         )}
                       </div>
-                    </TableCell>
-                    <TableCell className="py-2 px-3">
-                      {work.employment_type && (
-                        <Badge variant="outline" className="text-[9px] h-4">
-                          {isAr ? (EMPLOYMENT_TYPE_LABELS[work.employment_type]?.ar || work.employment_type) : (EMPLOYMENT_TYPE_LABELS[work.employment_type]?.en || work.employment_type)}
-                        </Badge>
+                      {work.department && <span className="text-[10px] text-muted-foreground/70 block">{work.department}</span>}
+                    </div>
+                  </TableCell>
+                  <TableCell className="py-2 px-3" dir="rtl">
+                    <div className="space-y-0.5">
+                      <span className="text-xs font-semibold">{work.title_ar || <span className="text-muted-foreground/40 italic text-[10px]">—</span>}</span>
+                      <span className="text-[11px] text-muted-foreground block">{work.company_ar || ""}</span>
+                      {work.department_ar && <span className="text-[10px] text-muted-foreground/70 block">{work.department_ar}</span>}
+                    </div>
+                  </TableCell>
+                  <TableCell className="py-2 px-3">
+                    {work.employment_type && (
+                      <Badge variant="outline" className="text-[9px] h-4">
+                        {isAr ? (EMPLOYMENT_TYPE_LABELS[work.employment_type]?.ar || work.employment_type) : (EMPLOYMENT_TYPE_LABELS[work.employment_type]?.en || work.employment_type)}
+                      </Badge>
+                    )}
+                  </TableCell>
+                  <TableCell className="py-2 px-3">
+                    <span className="text-[11px] text-muted-foreground whitespace-nowrap">
+                      {formatDate(work.start_date)} — {work.is_current ? (isAr ? "الحالي" : "Present") : formatDate(work.end_date)}
+                    </span>
+                  </TableCell>
+                  <TableCell className="py-2 px-3">
+                    <LocationDisplay city={work.location} countryCode={work.country_code} />
+                  </TableCell>
+                  <TableCell className="py-2 px-1">
+                    <Button size="icon" variant="ghost" className="h-5 w-5 opacity-0 group-hover:opacity-100" onClick={() => removeWorkItem(i)}>
+                      <Trash2 className="h-3 w-3 text-destructive" />
+                    </Button>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+          {/* Tasks & Achievements - collapsible per job */}
+          {data.work_experience!.some(w => (w.tasks?.length || 0) > 0 || (w.achievements?.length || 0) > 0) && (
+            <div className="border-t border-border/20 p-3 space-y-1">
+              <p className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider mb-2">{isAr ? "التفاصيل والإنجازات" : "Details & Achievements"}</p>
+              {data.work_experience!.map((work, i) => {
+                if (!(work.tasks?.length || work.achievements?.length)) return null;
+                return (
+                  <details key={i} className={`rounded-lg ${rowBg(i)} border border-border/10`}>
+                    <summary className="cursor-pointer p-2.5 text-[11px] font-semibold text-foreground select-none hover:bg-accent/20 rounded-lg transition-colors">
+                      {isAr ? (work.title_ar || work.title) : work.title} — {isAr ? (work.company_ar || work.company) : work.company}
+                    </summary>
+                    <div className="px-2.5 pb-2.5">
+                      {work.tasks && work.tasks.length > 0 && (
+                        <div className="mt-1.5 space-y-0.5">
+                          <p className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider">{isAr ? "المهام الرئيسية" : "Key Responsibilities"}</p>
+                          {work.tasks.map((t, j) => (
+                            <p key={j} className="text-[11px] text-foreground/80 ps-3 relative before:content-['•'] before:absolute before:start-0 before:text-primary">{t}</p>
+                          ))}
+                        </div>
                       )}
-                    </TableCell>
-                    <TableCell className="py-2 px-3">
-                      <span className="text-[11px] text-muted-foreground whitespace-nowrap">
-                        {formatDate(work.start_date)} — {work.is_current ? (isAr ? "الحالي" : "Present") : formatDate(work.end_date)}
-                      </span>
-                    </TableCell>
-                    <TableCell className="py-2 px-3">
-                      <LocationDisplay city={work.location} countryCode={work.country_code} />
-                    </TableCell>
-                    <TableCell className="py-2 px-1">
-                      <Button size="icon" variant="ghost" className="h-5 w-5 opacity-0 group-hover:opacity-100" onClick={() => removeWorkItem(i)}>
-                        <Trash2 className="h-3 w-3 text-destructive" />
-                      </Button>
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-            {data.work_experience!.some(w => (w.tasks?.length || 0) > 0 || (w.achievements?.length || 0) > 0) && (
-              <div className="border-t border-border/20 p-3 space-y-1">
-                <p className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider mb-2">{isAr ? "التفاصيل والإنجازات" : "Details & Achievements"}</p>
-                {data.work_experience!.map((work, i) => {
-                  if (!(work.tasks?.length || work.achievements?.length)) return null;
-                  return (
-                    <details key={i} className={`rounded-lg ${rowBg(i)} border border-border/10`}>
-                      <summary className="cursor-pointer p-2.5 text-[11px] font-semibold text-foreground select-none hover:bg-accent/20 rounded-lg transition-colors">
-                        {isAr ? (work.title_ar || work.title) : work.title} — {isAr ? (work.company_ar || work.company) : work.company}
-                      </summary>
-                      <div className="px-2.5 pb-2.5">
-                        {work.tasks && work.tasks.length > 0 && (
-                          <div className="mt-1.5 space-y-0.5">
-                            <p className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider">{isAr ? "المهام الرئيسية" : "Key Responsibilities"}</p>
-                            {work.tasks.map((t, j) => (
-                              <p key={j} className="text-[11px] text-foreground/80 ps-3 relative before:content-['•'] before:absolute before:start-0 before:text-primary">{t}</p>
-                            ))}
-                          </div>
-                        )}
-                        {work.achievements && work.achievements.length > 0 && (
-                          <div className="mt-1.5 space-y-0.5">
-                            <p className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider">{isAr ? "الإنجازات البارزة" : "Notable Achievements"}</p>
-                            {work.achievements.map((a, j) => (
-                              <p key={j} className="text-[11px] text-foreground/80 ps-3 relative before:content-['★'] before:absolute before:start-0 before:text-chart-4">{a}</p>
-                            ))}
-                          </div>
-                        )}
-                      </div>
-                    </details>
-                  );
-                })}
-              </div>
-            )}
-          </CardContent>
-        </Card>
+                      {work.achievements && work.achievements.length > 0 && (
+                        <div className="mt-1.5 space-y-0.5">
+                          <p className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider">{isAr ? "الإنجازات البارزة" : "Notable Achievements"}</p>
+                          {work.achievements.map((a, j) => (
+                            <p key={j} className="text-[11px] text-foreground/80 ps-3 relative before:content-['★'] before:absolute before:start-0 before:text-chart-4">{a}</p>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                  </details>
+                );
+              })}
+            </div>
+          )}
+        </CollapsibleSection>
       )}
 
       {/* ═══ COMPETITIONS ═══ */}
       {hasComp && (
-        <Card className="overflow-hidden">
-          <CardHeader className="pb-2 bg-chart-4/5">
-            {sectionHeader(<Trophy className="h-4 w-4" />, "Competitions", "المسابقات", data.competitions!.length, "competitions", "bg-chart-4/10 text-chart-4",
-              <Button variant="ghost" size="sm" className="h-7 text-[10px] gap-1 text-chart-4" onClick={handleTranslateAllCompetitions} disabled={translatingKey?.startsWith("comp_")}>
-                {translatingKey?.startsWith("comp_") ? <Loader2 className="h-3 w-3 animate-spin" /> : <Languages className="h-3 w-3" />}
-                {isAr ? "ترجمة الكل" : "Translate All"}
-              </Button>
-            )}
-          </CardHeader>
-          <CardContent className="p-0">
-            <Table>
-              <TableHeader>
-                <TableRow className="bg-chart-4/5 border-border/10">
-                  <TableHead className="text-[10px] py-1.5 h-auto">{isAr ? "المسابقة / السنة" : "Competition / Year"}</TableHead>
-                  <TableHead className="text-[10px] py-1.5 h-auto">{isAr ? "الدور" : "Role"}</TableHead>
-                  <TableHead className="text-[10px] py-1.5 h-auto">{isAr ? "الإنجاز" : "Achievement"}</TableHead>
-                  <TableHead className="text-[10px] py-1.5 h-auto">{isAr ? "الموقع" : "Location"}</TableHead>
-                  <TableHead className="text-[10px] py-1.5 h-auto w-14"></TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {data.competitions!.map((comp, i) => {
-                  const compName = isAr ? (comp.name_ar || comp.name) : comp.name;
-                  const yearStr = comp.year ? ` ${comp.year}` : "";
-                  const editionStr = comp.edition ? ` (${comp.edition})` : "";
-                  return (
-                    <TableRow key={i} className={`${rowBg(i)} border-border/10 group hover:bg-accent/30`}>
-                      <TableCell className="py-2 px-3">
-                        <div className="flex items-start gap-1">
-                          <div className="flex flex-col">
-                            <span className="text-xs font-semibold">{compName}{yearStr}{editionStr}</span>
-                            {comp.name_ar && !isAr && <span className="text-[10px] text-muted-foreground" dir="rtl">{comp.name_ar}</span>}
-                            {comp.name && isAr && comp.name_ar && <span className="text-[10px] text-muted-foreground" dir="ltr">{comp.name}</span>}
-                          </div>
-                          {comp.name && !comp.name_ar && (
-                            <TranslateBtn small loading={translatingKey === `comp_name_${i}`}
-                              onClick={() => translate(comp.name, "en", (t) => updateData(d => ({ ...d, competitions: d.competitions?.map((c, ci) => ci === i ? { ...c, name_ar: t } : c) })), `comp_name_${i}`)} />
-                          )}
-                        </div>
-                      </TableCell>
-                      <TableCell className="py-2 px-3">
-                        {comp.role && (
-                          <Badge variant="secondary" className="text-[9px] h-4">
-                            {isAr ? (ROLE_LABELS[comp.role]?.ar || comp.role) : (ROLE_LABELS[comp.role]?.en || comp.role)}
-                          </Badge>
+        <CollapsibleSection
+          icon={<Trophy className="h-4 w-4" />}
+          titleEn="Competitions" titleAr="المسابقات"
+          count={data.competitions!.length} sectionKey="competitions" colorClass="bg-chart-4/10 text-chart-4"
+          isAr={isAr} checked={sections.competitions} onToggle={() => toggle("competitions")}
+          extraActions={
+            <Button variant="ghost" size="sm" className="h-7 text-[10px] gap-1 text-chart-4" onClick={handleTranslateAllCompetitions} disabled={translatingKey?.startsWith("comp_")}>
+              {translatingKey?.startsWith("comp_") ? <Loader2 className="h-3 w-3 animate-spin" /> : <Languages className="h-3 w-3" />}
+              {isAr ? "ترجمة الكل" : "Translate All"}
+            </Button>
+          }
+        >
+          <Table>
+            <TableHeader>
+              <TableRow className="bg-chart-4/5 border-border/10">
+                <TableHead className="text-[10px] py-1.5 h-auto">English</TableHead>
+                <TableHead className="text-[10px] py-1.5 h-auto">العربية</TableHead>
+                <TableHead className="text-[10px] py-1.5 h-auto">{isAr ? "السنة" : "Year"}</TableHead>
+                <TableHead className="text-[10px] py-1.5 h-auto">{isAr ? "الدور" : "Role"}</TableHead>
+                <TableHead className="text-[10px] py-1.5 h-auto">{isAr ? "الموقع" : "Location"}</TableHead>
+                <TableHead className="text-[10px] py-1.5 h-auto w-14"></TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {data.competitions!.map((comp, i) => (
+                <TableRow key={i} className={`${rowBg(i)} border-border/10 group hover:bg-accent/30`}>
+                  <TableCell className="py-2 px-3" dir="ltr">
+                    <div className="space-y-0.5">
+                      <div className="flex items-start gap-1">
+                        <span className="text-xs font-semibold">{comp.name || "—"}</span>
+                        {comp.name && !comp.name_ar && (
+                          <TranslateBtn small loading={translatingKey === `comp_name_${i}`}
+                            onClick={() => translate(comp.name, "en", (t) => updateData(d => ({ ...d, competitions: d.competitions?.map((c, ci) => ci === i ? { ...c, name_ar: t } : c) })), `comp_name_${i}`)} />
                         )}
-                      </TableCell>
-                      <TableCell className="py-2 px-3">
-                        {comp.achievement && <BilingualText en={isAr ? undefined : comp.achievement} ar={isAr ? (comp.achievement_ar || comp.achievement) : comp.achievement_ar} />}
-                      </TableCell>
-                      <TableCell className="py-2 px-3">
-                        <LocationDisplay city={comp.city} countryCode={comp.country_code} />
-                      </TableCell>
-                      <TableCell className="py-2 px-1">
-                        <Button size="icon" variant="ghost" className="h-5 w-5 opacity-0 group-hover:opacity-100" onClick={() => removeCompItem(i)}>
-                          <Trash2 className="h-3 w-3 text-destructive" />
-                        </Button>
-                      </TableCell>
-                    </TableRow>
-                  );
-                })}
-              </TableBody>
-            </Table>
-          </CardContent>
-        </Card>
+                      </div>
+                      {comp.achievement && <span className="text-[10px] text-muted-foreground block">🏆 {comp.achievement}</span>}
+                    </div>
+                  </TableCell>
+                  <TableCell className="py-2 px-3" dir="rtl">
+                    <div className="space-y-0.5">
+                      <span className="text-xs font-semibold">{comp.name_ar || <span className="text-muted-foreground/40 italic text-[10px]">—</span>}</span>
+                      {comp.achievement_ar && <span className="text-[10px] text-muted-foreground block">🏆 {comp.achievement_ar}</span>}
+                    </div>
+                  </TableCell>
+                  <TableCell className="py-2 px-3">
+                    <span className="text-xs">{comp.year || "—"}{comp.edition ? ` (${comp.edition})` : ""}</span>
+                  </TableCell>
+                  <TableCell className="py-2 px-3">
+                    {comp.role && (
+                      <Badge variant="secondary" className="text-[9px] h-4">
+                        {isAr ? (ROLE_LABELS[comp.role]?.ar || comp.role) : (ROLE_LABELS[comp.role]?.en || comp.role)}
+                      </Badge>
+                    )}
+                  </TableCell>
+                  <TableCell className="py-2 px-3">
+                    <LocationDisplay city={comp.city} countryCode={comp.country_code} />
+                  </TableCell>
+                  <TableCell className="py-2 px-1">
+                    <Button size="icon" variant="ghost" className="h-5 w-5 opacity-0 group-hover:opacity-100" onClick={() => removeCompItem(i)}>
+                      <Trash2 className="h-3 w-3 text-destructive" />
+                    </Button>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </CollapsibleSection>
       )}
 
       {/* ═══ CERTIFICATIONS ═══ */}
       {hasCert && (
-        <Card className="overflow-hidden">
-          <CardHeader className="pb-2 bg-chart-5/5">
-            {sectionHeader(<Award className="h-4 w-4" />, "Certifications", "الشهادات المهنية", data.certifications!.length, "certifications", "bg-chart-5/10 text-chart-5")}
-          </CardHeader>
-          <CardContent className="p-0">
-            <Table>
-              <TableHeader>
-                <TableRow className="bg-chart-5/5 border-border/10">
-                  <TableHead className="text-[10px] py-1.5 h-auto">{isAr ? "الشهادة" : "Certification"}</TableHead>
-                  <TableHead className="text-[10px] py-1.5 h-auto">{isAr ? "الجهة المانحة" : "Issuer"}</TableHead>
-                  <TableHead className="text-[10px] py-1.5 h-auto">{isAr ? "التاريخ" : "Date"}</TableHead>
-                  <TableHead className="text-[10px] py-1.5 h-auto w-14"></TableHead>
+        <CollapsibleSection
+          icon={<Award className="h-4 w-4" />}
+          titleEn="Certifications" titleAr="الشهادات المهنية"
+          count={data.certifications!.length} sectionKey="certifications" colorClass="bg-chart-5/10 text-chart-5"
+          isAr={isAr} checked={sections.certifications} onToggle={() => toggle("certifications")}
+        >
+          <Table>
+            <TableHeader>
+              <TableRow className="bg-chart-5/5 border-border/10">
+                <TableHead className="text-[10px] py-1.5 h-auto">English</TableHead>
+                <TableHead className="text-[10px] py-1.5 h-auto">العربية</TableHead>
+                <TableHead className="text-[10px] py-1.5 h-auto">{isAr ? "الجهة المانحة" : "Issuer"}</TableHead>
+                <TableHead className="text-[10px] py-1.5 h-auto">{isAr ? "التاريخ" : "Date"}</TableHead>
+                <TableHead className="text-[10px] py-1.5 h-auto w-14"></TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {data.certifications!.map((cert, i) => (
+                <TableRow key={i} className={`${rowBg(i)} border-border/10 group hover:bg-accent/30`}>
+                  <TableCell className="py-2 px-3" dir="ltr">
+                    <div className="flex items-start gap-1">
+                      <span className="text-xs font-medium">{cert.name || "—"}</span>
+                      {cert.name && !cert.name_ar && (
+                        <TranslateBtn small loading={translatingKey === `cert_name_${i}`}
+                          onClick={() => translate(cert.name, "en", (t) => updateData(d => ({ ...d, certifications: d.certifications?.map((c, ci) => ci === i ? { ...c, name_ar: t } : c) })), `cert_name_${i}`)} />
+                      )}
+                    </div>
+                    {cert.description && <span className="text-[10px] text-muted-foreground block mt-0.5">{cert.description}</span>}
+                  </TableCell>
+                  <TableCell className="py-2 px-3" dir="rtl">
+                    <span className="text-xs font-medium">{cert.name_ar || <span className="text-muted-foreground/40 italic text-[10px]">—</span>}</span>
+                  </TableCell>
+                  <TableCell className="py-2 px-3"><span className="text-xs">{cert.issuer || "—"}</span></TableCell>
+                  <TableCell className="py-2 px-3"><span className="text-[11px] text-muted-foreground">{formatDate(cert.date)}</span></TableCell>
+                  <TableCell className="py-2 px-1">
+                    <Button size="icon" variant="ghost" className="h-5 w-5 opacity-0 group-hover:opacity-100" onClick={() => removeCertItem(i)}>
+                      <Trash2 className="h-3 w-3 text-destructive" />
+                    </Button>
+                  </TableCell>
                 </TableRow>
-              </TableHeader>
-              <TableBody>
-                {data.certifications!.map((cert, i) => (
-                  <TableRow key={i} className={`${rowBg(i)} border-border/10 group hover:bg-accent/30`}>
-                    <TableCell className="py-2 px-3">
-                      <div className="flex items-start gap-1">
-                        <BilingualText en={cert.name} ar={cert.name_ar} />
-                        {cert.name && !cert.name_ar && (
-                          <TranslateBtn small loading={translatingKey === `cert_name_${i}`}
-                            onClick={() => translate(cert.name, "en", (t) => updateData(d => ({ ...d, certifications: d.certifications?.map((c, ci) => ci === i ? { ...c, name_ar: t } : c) })), `cert_name_${i}`)} />
-                        )}
-                      </div>
-                      {cert.description && <span className="text-[10px] text-muted-foreground block mt-0.5">{cert.description}</span>}
-                    </TableCell>
-                    <TableCell className="py-2 px-3"><span className="text-xs">{cert.issuer || "—"}</span></TableCell>
-                    <TableCell className="py-2 px-3"><span className="text-[11px] text-muted-foreground">{formatDate(cert.date)}</span></TableCell>
-                    <TableCell className="py-2 px-1">
-                      <Button size="icon" variant="ghost" className="h-5 w-5 opacity-0 group-hover:opacity-100" onClick={() => removeCertItem(i)}>
-                        <Trash2 className="h-3 w-3 text-destructive" />
-                      </Button>
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </CardContent>
-        </Card>
+              ))}
+            </TableBody>
+          </Table>
+        </CollapsibleSection>
       )}
 
       {/* ═══ MEDIA APPEARANCES ═══ */}
       {hasMedia && (
-        <Card className="overflow-hidden">
-          <CardHeader className="pb-2 bg-chart-1/5">
-            {sectionHeader(<Tv className="h-4 w-4" />, "Media Appearances", "الظهور الإعلامي", data.media_appearances!.length, "media", "bg-chart-1/10 text-chart-1")}
-          </CardHeader>
-          <CardContent className="p-0">
-            <Table>
-              <TableHeader>
-                <TableRow className="bg-chart-1/5 border-border/10">
-                  <TableHead className="text-[10px] py-1.5 h-auto">{isAr ? "النوع" : "Type"}</TableHead>
-                  <TableHead className="text-[10px] py-1.5 h-auto">{isAr ? "القناة" : "Channel"}</TableHead>
-                  <TableHead className="text-[10px] py-1.5 h-auto">{isAr ? "البرنامج" : "Program"}</TableHead>
-                  <TableHead className="text-[10px] py-1.5 h-auto">{isAr ? "التاريخ" : "Date"}</TableHead>
-                  <TableHead className="text-[10px] py-1.5 h-auto">{isAr ? "البلد" : "Country"}</TableHead>
-                  <TableHead className="text-[10px] py-1.5 h-auto w-8"></TableHead>
+        <CollapsibleSection
+          icon={<Tv className="h-4 w-4" />}
+          titleEn="Media Appearances" titleAr="الظهور الإعلامي"
+          count={data.media_appearances!.length} sectionKey="media" colorClass="bg-chart-1/10 text-chart-1"
+          isAr={isAr} checked={sections.media} onToggle={() => toggle("media")}
+        >
+          <Table>
+            <TableHeader>
+              <TableRow className="bg-chart-1/5 border-border/10">
+                <TableHead className="text-[10px] py-1.5 h-auto">{isAr ? "النوع" : "Type"}</TableHead>
+                <TableHead className="text-[10px] py-1.5 h-auto">{isAr ? "القناة" : "Channel"}</TableHead>
+                <TableHead className="text-[10px] py-1.5 h-auto">{isAr ? "البرنامج" : "Program"}</TableHead>
+                <TableHead className="text-[10px] py-1.5 h-auto">{isAr ? "التاريخ" : "Date"}</TableHead>
+                <TableHead className="text-[10px] py-1.5 h-auto">{isAr ? "البلد" : "Country"}</TableHead>
+                <TableHead className="text-[10px] py-1.5 h-auto w-8"></TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {data.media_appearances!.map((m, i) => (
+                <TableRow key={i} className={`${rowBg(i)} border-border/10 group hover:bg-accent/30`}>
+                  <TableCell className="py-2 px-3">
+                    <span className="text-sm">{m.type ? (MEDIA_TYPE_LABELS[m.type]?.icon || "📺") : "📺"}</span>
+                    {m.type && <span className="text-[10px] text-muted-foreground ms-1">{isAr ? (MEDIA_TYPE_LABELS[m.type]?.ar || m.type) : (MEDIA_TYPE_LABELS[m.type]?.en || m.type)}</span>}
+                  </TableCell>
+                  <TableCell className="py-2 px-3"><span className="text-xs font-medium">{m.channel_name}</span></TableCell>
+                  <TableCell className="py-2 px-3">
+                    <span className="text-xs">{m.program_name || "—"}</span>
+                    {m.description && <span className="text-[10px] text-muted-foreground block mt-0.5">{m.description}</span>}
+                  </TableCell>
+                  <TableCell className="py-2 px-3"><span className="text-[11px] text-muted-foreground">{formatDate(m.date)}</span></TableCell>
+                  <TableCell className="py-2 px-3">{m.country_code && <span>{getFlag(m.country_code)} {m.country_code}</span>}</TableCell>
+                  <TableCell className="py-2 px-1">
+                    <Button size="icon" variant="ghost" className="h-5 w-5 opacity-0 group-hover:opacity-100" onClick={() => removeMediaItem(i)}>
+                      <Trash2 className="h-3 w-3 text-destructive" />
+                    </Button>
+                  </TableCell>
                 </TableRow>
-              </TableHeader>
-              <TableBody>
-                {data.media_appearances!.map((m, i) => (
-                  <TableRow key={i} className={`${rowBg(i)} border-border/10 group hover:bg-accent/30`}>
-                    <TableCell className="py-2 px-3">
-                      <span className="text-sm">{m.type ? (MEDIA_TYPE_LABELS[m.type]?.icon || "📺") : "📺"}</span>
-                      {m.type && <span className="text-[10px] text-muted-foreground ms-1">{isAr ? (MEDIA_TYPE_LABELS[m.type]?.ar || m.type) : (MEDIA_TYPE_LABELS[m.type]?.en || m.type)}</span>}
-                    </TableCell>
-                    <TableCell className="py-2 px-3"><span className="text-xs font-medium">{m.channel_name}</span></TableCell>
-                    <TableCell className="py-2 px-3">
-                      <span className="text-xs">{m.program_name || "—"}</span>
-                      {m.description && <span className="text-[10px] text-muted-foreground block mt-0.5">{m.description}</span>}
-                    </TableCell>
-                    <TableCell className="py-2 px-3"><span className="text-[11px] text-muted-foreground">{formatDate(m.date)}</span></TableCell>
-                    <TableCell className="py-2 px-3">{m.country_code && <span>{getFlag(m.country_code)} {m.country_code}</span>}</TableCell>
-                    <TableCell className="py-2 px-1">
-                      <Button size="icon" variant="ghost" className="h-5 w-5 opacity-0 group-hover:opacity-100" onClick={() => removeMediaItem(i)}>
-                        <Trash2 className="h-3 w-3 text-destructive" />
-                      </Button>
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </CardContent>
-        </Card>
+              ))}
+            </TableBody>
+          </Table>
+        </CollapsibleSection>
       )}
 
       {/* ═══ SKILLS & LANGUAGES ═══ */}
