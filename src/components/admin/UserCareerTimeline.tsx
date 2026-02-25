@@ -17,6 +17,7 @@ import {
   GraduationCap, Briefcase, Plus, Pencil, Trash2, X, Check, 
   Building2, MapPin, Trophy, Award, Medal, Users, ChevronDown, ChevronUp, FileText,
   GripVertical, FolderPlus, Type, Languages, Loader2, ArrowRightLeft,
+  Scale, Tv, CalendarCheck,
 } from "lucide-react";
 import {
   AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent,
@@ -108,16 +109,63 @@ const COMPETITION_ROLES = [
   { value: "speaker", en: "Speaker", ar: "متحدث" },
 ];
 
+const JUDGING_POSITIONS = [
+  { value: "head_judge", en: "Head Judge", ar: "رئيس لجنة التحكيم" },
+  { value: "judge", en: "Judge", ar: "حَكَم" },
+  { value: "assistant_judge", en: "Assistant Judge", ar: "مساعد حكم" },
+  { value: "technical_judge", en: "Technical Judge", ar: "حكم تقني" },
+];
+
+const MEDAL_TYPES = [
+  { value: "gold", en: "Gold Medal", ar: "ميدالية ذهبية" },
+  { value: "silver", en: "Silver Medal", ar: "ميدالية فضية" },
+  { value: "bronze", en: "Bronze Medal", ar: "ميدالية برونزية" },
+  { value: "diploma", en: "Diploma", ar: "دبلوم" },
+  { value: "best_in_show", en: "Best in Show", ar: "الأفضل" },
+  { value: "other", en: "Other", ar: "أخرى" },
+];
+
+const COUNTRIES = [
+  { code: "SA", en: "Saudi Arabia", ar: "السعودية", flag: "🇸🇦" },
+  { code: "AE", en: "UAE", ar: "الإمارات", flag: "🇦🇪" },
+  { code: "KW", en: "Kuwait", ar: "الكويت", flag: "🇰🇼" },
+  { code: "BH", en: "Bahrain", ar: "البحرين", flag: "🇧🇭" },
+  { code: "QA", en: "Qatar", ar: "قطر", flag: "🇶🇦" },
+  { code: "OM", en: "Oman", ar: "عُمان", flag: "🇴🇲" },
+  { code: "EG", en: "Egypt", ar: "مصر", flag: "🇪🇬" },
+  { code: "JO", en: "Jordan", ar: "الأردن", flag: "🇯🇴" },
+  { code: "LB", en: "Lebanon", ar: "لبنان", flag: "🇱🇧" },
+  { code: "IQ", en: "Iraq", ar: "العراق", flag: "🇮🇶" },
+  { code: "MA", en: "Morocco", ar: "المغرب", flag: "🇲🇦" },
+  { code: "TN", en: "Tunisia", ar: "تونس", flag: "🇹🇳" },
+  { code: "TR", en: "Turkey", ar: "تركيا", flag: "🇹🇷" },
+  { code: "GB", en: "United Kingdom", ar: "بريطانيا", flag: "🇬🇧" },
+  { code: "US", en: "United States", ar: "أمريكا", flag: "🇺🇸" },
+  { code: "FR", en: "France", ar: "فرنسا", flag: "🇫🇷" },
+  { code: "DE", en: "Germany", ar: "ألمانيا", flag: "🇩🇪" },
+  { code: "IT", en: "Italy", ar: "إيطاليا", flag: "🇮🇹" },
+  { code: "ES", en: "Spain", ar: "إسبانيا", flag: "🇪🇸" },
+  { code: "AU", en: "Australia", ar: "أستراليا", flag: "🇦🇺" },
+  { code: "CA", en: "Canada", ar: "كندا", flag: "🇨🇦" },
+  { code: "JP", en: "Japan", ar: "اليابان", flag: "🇯🇵" },
+  { code: "IN", en: "India", ar: "الهند", flag: "🇮🇳" },
+  { code: "SG", en: "Singapore", ar: "سنغافورة", flag: "🇸🇬" },
+  { code: "MY", en: "Malaysia", ar: "ماليزيا", flag: "🇲🇾" },
+];
+
 const DEFAULT_SECTIONS: SectionConfig[] = [
+  { key: "work", icon: "Briefcase", en: "Experience", ar: "الخبرة المهنية", color: "bg-chart-3/10 text-chart-3", isCustom: false },
   { key: "education", icon: "GraduationCap", en: "Education", ar: "التعليم", color: "bg-chart-2/10 text-chart-2", isCustom: false },
-  { key: "work", icon: "Briefcase", en: "Experience", ar: "الخبرات", color: "bg-chart-3/10 text-chart-3", isCustom: false },
+  { key: "judging", icon: "Scale", en: "Judging Competitions", ar: "تحكيم المسابقات", color: "bg-amber-500/10 text-amber-600", isCustom: false },
   { key: "memberships", icon: "Users", en: "Memberships", ar: "العضويات", color: "bg-primary/10 text-primary", isCustom: false },
-  { key: "competitions", icon: "Trophy", en: "Competitions & Events", ar: "المسابقات والفعاليات", color: "bg-chart-4/10 text-chart-4", isCustom: false },
-  { key: "awards", icon: "Medal", en: "Awards", ar: "الجوائز", color: "bg-chart-1/10 text-chart-1", isCustom: false },
+  { key: "competitions", icon: "Trophy", en: "Competitions Participated", ar: "المسابقات المشارك فيها", color: "bg-chart-4/10 text-chart-4", isCustom: false },
+  { key: "awards", icon: "Medal", en: "Awards & Medals", ar: "الجوائز والميداليات", color: "bg-chart-1/10 text-chart-1", isCustom: false },
+  { key: "media", icon: "Tv", en: "Television Interviews", ar: "المقابلات التلفزيونية", color: "bg-blue-500/10 text-blue-600", isCustom: false },
+  { key: "organizing", icon: "CalendarCheck", en: "Organizing Events", ar: "تنظيم الفعاليات والمسابقات", color: "bg-green-500/10 text-green-600", isCustom: false },
 ];
 
 const ICON_MAP: Record<string, any> = {
-  GraduationCap, Briefcase, Users, Trophy, Medal, Award, Building2, FileText, MapPin,
+  GraduationCap, Briefcase, Users, Trophy, Medal, Award, Building2, FileText, MapPin, Scale, Tv, CalendarCheck,
 };
 
 const AVAILABLE_ICONS = [
@@ -130,6 +178,9 @@ const AVAILABLE_ICONS = [
   { key: "Building2", label: "Building", icon: Building2 },
   { key: "FileText", label: "Document", icon: FileText },
   { key: "MapPin", label: "Location", icon: MapPin },
+  { key: "Scale", label: "Judging", icon: Scale },
+  { key: "Tv", label: "Media", icon: Tv },
+  { key: "CalendarCheck", label: "Events", icon: CalendarCheck },
 ];
 
 const CUSTOM_SECTION_COLORS = [
@@ -310,7 +361,7 @@ export function UserCareerTimeline({ userId, isAr }: Props) {
     record_type: "education", entity_id: null as string | null, entity_name: "",
     title: "", title_ar: "", education_level: "", field_of_study: "", field_of_study_ar: "", grade: "",
     department: "", department_ar: "", employment_type: "", start_date: "", end_date: "",
-    is_current: false, description: "", description_ar: "", location: "",
+    is_current: false, description: "", description_ar: "", location: "", country_code: "",
   });
 
   // Membership form state
@@ -404,19 +455,30 @@ export function UserCareerTimeline({ userId, isAr }: Props) {
   const educationRecords = useMemo(() => records.filter(r => r.record_type === "education"), [records]);
   const workRecords = useMemo(() => records.filter(r => r.record_type === "work"), [records]);
   const competitionCareerRecords = useMemo(() => records.filter(r => r.record_type === "competitions"), [records]);
+  const judgingRecords = useMemo(() => records.filter(r => r.record_type === "judging"), [records]);
+  const mediaRecords = useMemo(() => records.filter(r => r.record_type === "media"), [records]);
+  const organizingRecords = useMemo(() => records.filter(r => r.record_type === "organizing"), [records]);
   
   // Custom section records
   const customSectionRecords = useCallback((key: string) => {
     return records.filter(r => r.record_type === key);
   }, [records]);
 
+  const getRecordsForSection = useCallback((key: string) => {
+    if (key === "education") return educationRecords;
+    if (key === "work") return workRecords;
+    if (key === "competitions") return competitionCareerRecords;
+    if (key === "judging") return judgingRecords;
+    if (key === "media") return mediaRecords;
+    if (key === "organizing") return organizingRecords;
+    return customSectionRecords(key);
+  }, [educationRecords, workRecords, competitionCareerRecords, judgingRecords, mediaRecords, organizingRecords, customSectionRecords]);
+
   const getSectionCount = (key: string): number => {
-    if (key === "education") return educationRecords.length;
-    if (key === "work") return workRecords.length;
     if (key === "memberships") return memberships.length;
     if (key === "competitions") return competitions.length + competitionCareerRecords.length;
     if (key === "awards") return certificates.length;
-    return customSectionRecords(key).length;
+    return getRecordsForSection(key).length;
   };
 
   // ── Drag & Drop ──────────────────────────────────────
@@ -519,7 +581,8 @@ export function UserCareerTimeline({ userId, isAr }: Props) {
         start_date: careerForm.start_date || null, end_date: careerForm.is_current ? null : (careerForm.end_date || null),
         is_current: careerForm.is_current, description: careerForm.description || null,
         description_ar: careerForm.description_ar || null, location: careerForm.location || null,
-      };
+        country_code: careerForm.country_code || null,
+      } as any;
       if (editingId) {
         const { error } = await supabase.from("user_career_records").update(payload).eq("id", editingId);
         if (error) throw error;
@@ -699,8 +762,9 @@ export function UserCareerTimeline({ userId, isAr }: Props) {
   });
 
   const getMoveSections = (currentKey: string) => {
+    const movableKeys = ["education", "work", "competitions", "judging", "media", "organizing"];
     return sections
-      .filter(s => s.key !== currentKey && (s.key === "education" || s.key === "work" || s.key === "competitions" || s.isCustom))
+      .filter(s => s.key !== currentKey && (movableKeys.includes(s.key) || s.isCustom))
       .map(s => ({ key: s.key, label: isAr ? s.ar : s.en }));
   };
 
@@ -717,7 +781,7 @@ export function UserCareerTimeline({ userId, isAr }: Props) {
       record_type: type, entity_id: null, entity_name: "", title: "", title_ar: "",
       education_level: "", field_of_study: "", field_of_study_ar: "", grade: "",
       department: "", department_ar: "", employment_type: "", start_date: "", end_date: "",
-      is_current: false, description: "", description_ar: "", location: "",
+      is_current: false, description: "", description_ar: "", location: "", country_code: "",
     });
     setEditingId(null);
     setAddingSection(type);
@@ -734,6 +798,7 @@ export function UserCareerTimeline({ userId, isAr }: Props) {
       start_date: record.start_date || "", end_date: record.end_date || "",
       is_current: record.is_current, description: record.description || "",
       description_ar: record.description_ar || "", location: record.location || "",
+      country_code: (record as any).country_code || "",
     });
     setEditingId(record.id);
     setAddingSection(record.record_type);
@@ -834,14 +899,13 @@ export function UserCareerTimeline({ userId, isAr }: Props) {
 
   // Collect all draggable IDs for each section
   const getSectionItemIds = (key: string): string[] => {
-    if (key === "education") return educationRecords.map(r => r.id);
-    if (key === "work") return workRecords.map(r => r.id);
-    if (key === "competitions") return competitionCareerRecords.map(r => r.id);
+    const draggableKeys = ["education", "work", "competitions", "judging", "media", "organizing"];
+    if (draggableKeys.includes(key)) return getRecordsForSection(key).map(r => r.id);
     if (sections.find(s => s.isCustom && s.key === key)) return customSectionRecords(key).map(r => r.id);
     return [];
   };
 
-  const isDraggableSection = (key: string) => ["education", "work", "competitions"].includes(key) || sections.find(s => s.isCustom && s.key === key);
+  const isDraggableSection = (key: string) => ["education", "work", "competitions", "judging", "media", "organizing"].includes(key) || sections.find(s => s.isCustom && s.key === key);
   const sectionIds = useMemo(() => sections.map(s => s.key), [sections]);
 
   return (
@@ -1236,6 +1300,123 @@ export function UserCareerTimeline({ userId, isAr }: Props) {
                           onSave={() => addAwardMutation.mutate()} onCancel={closeForm} />
                       ) : !editingAwardId ? (
                         <AddButton label={isAr ? "إضافة جائزة" : "Add Award"} onClick={startAddAward} />
+                      ) : null}
+                    </>
+                  )}
+
+                  {/* ═══ JUDGING COMPETITIONS ═══ */}
+                  {section.key === "judging" && (
+                    <>
+                      {judgingRecords.length === 0 && !isAddingHere && (
+                        <EmptyState icon={Scale} message={isAr ? "لا يوجد سجل تحكيم" : "No judging records"} />
+                      )}
+                      <SortableContext items={itemIds} strategy={verticalListSortingStrategy}>
+                        {judgingRecords.map(r => (
+                          <SortableItem key={r.id} id={r.id} sectionKey="judging">
+                            {editingId === r.id ? (
+                              <CareerForm form={careerForm} editingId={editingId} isAr={isAr}
+                                isPending={saveCareerMutation.isPending}
+                                onUpdate={(k, v) => setCareerForm(prev => ({ ...prev, [k]: v }))}
+                                onSave={() => saveCareerMutation.mutate()} onCancel={closeForm} />
+                            ) : (
+                              <CompactRow icon={Scale} color={section.color}
+                                title={isAr ? (r.title_ar || r.title) : r.title}
+                                subtitle={r.entity_name || ""}
+                                meta={`${formatDateRange(r.start_date, r.end_date, r.is_current, isAr)}${r.employment_type ? ` · ${labelFor(r.employment_type, JUDGING_POSITIONS, isAr)}` : ""}${r.location ? ` · ${r.location}` : ""}${(r as any).country_code ? `, ${(r as any).country_code}` : ""}`}
+                                isAr={isAr}
+                                onEdit={() => startEditCareer(r)} onDelete={() => deleteCareerMutation.mutate(r.id)}
+                                moveSections={getMoveSections("judging")} onMove={(target) => moveRecordToSection.mutate({ id: r.id, targetSection: target })}
+                                draggable
+                              />
+                            )}
+                          </SortableItem>
+                        ))}
+                      </SortableContext>
+                      {addingSection === "judging" && !editingId ? (
+                        <CareerForm form={careerForm} editingId={null} isAr={isAr}
+                          isPending={saveCareerMutation.isPending}
+                          onUpdate={(k, v) => setCareerForm(prev => ({ ...prev, [k]: v }))}
+                          onSave={() => saveCareerMutation.mutate()} onCancel={closeForm} />
+                      ) : !editingId || addingSection !== "judging" ? (
+                        <AddButton label={isAr ? "إضافة تحكيم" : "Add Judging"} onClick={() => startAddCareer("judging")} />
+                      ) : null}
+                    </>
+                  )}
+
+                  {/* ═══ TELEVISION INTERVIEWS ═══ */}
+                  {section.key === "media" && (
+                    <>
+                      {mediaRecords.length === 0 && !isAddingHere && (
+                        <EmptyState icon={Tv} message={isAr ? "لا توجد مقابلات تلفزيونية" : "No television interviews"} />
+                      )}
+                      <SortableContext items={itemIds} strategy={verticalListSortingStrategy}>
+                        {mediaRecords.map(r => (
+                          <SortableItem key={r.id} id={r.id} sectionKey="media">
+                            {editingId === r.id ? (
+                              <CareerForm form={careerForm} editingId={editingId} isAr={isAr}
+                                isPending={saveCareerMutation.isPending}
+                                onUpdate={(k, v) => setCareerForm(prev => ({ ...prev, [k]: v }))}
+                                onSave={() => saveCareerMutation.mutate()} onCancel={closeForm} />
+                            ) : (
+                              <CompactRow icon={Tv} color={section.color}
+                                title={isAr ? (r.title_ar || r.title) : r.title}
+                                subtitle={r.entity_name || ""}
+                                meta={`${formatDateRange(r.start_date, r.end_date, r.is_current, isAr)}${r.department ? ` · ${isAr ? "مقدم: " : "Host: "}${r.department}` : ""}`}
+                                isAr={isAr}
+                                onEdit={() => startEditCareer(r)} onDelete={() => deleteCareerMutation.mutate(r.id)}
+                                moveSections={getMoveSections("media")} onMove={(target) => moveRecordToSection.mutate({ id: r.id, targetSection: target })}
+                                draggable
+                              />
+                            )}
+                          </SortableItem>
+                        ))}
+                      </SortableContext>
+                      {addingSection === "media" && !editingId ? (
+                        <CareerForm form={careerForm} editingId={null} isAr={isAr}
+                          isPending={saveCareerMutation.isPending}
+                          onUpdate={(k, v) => setCareerForm(prev => ({ ...prev, [k]: v }))}
+                          onSave={() => saveCareerMutation.mutate()} onCancel={closeForm} />
+                      ) : !editingId || addingSection !== "media" ? (
+                        <AddButton label={isAr ? "إضافة مقابلة" : "Add Interview"} onClick={() => startAddCareer("media")} />
+                      ) : null}
+                    </>
+                  )}
+
+                  {/* ═══ ORGANIZING EVENTS ═══ */}
+                  {section.key === "organizing" && (
+                    <>
+                      {organizingRecords.length === 0 && !isAddingHere && (
+                        <EmptyState icon={CalendarCheck} message={isAr ? "لا يوجد سجل تنظيم" : "No organizing records"} />
+                      )}
+                      <SortableContext items={itemIds} strategy={verticalListSortingStrategy}>
+                        {organizingRecords.map(r => (
+                          <SortableItem key={r.id} id={r.id} sectionKey="organizing">
+                            {editingId === r.id ? (
+                              <CareerForm form={careerForm} editingId={editingId} isAr={isAr}
+                                isPending={saveCareerMutation.isPending}
+                                onUpdate={(k, v) => setCareerForm(prev => ({ ...prev, [k]: v }))}
+                                onSave={() => saveCareerMutation.mutate()} onCancel={closeForm} />
+                            ) : (
+                              <CompactRow icon={CalendarCheck} color={section.color}
+                                title={isAr ? (r.title_ar || r.title) : r.title}
+                                subtitle={r.entity_name || ""}
+                                meta={`${formatDateRange(r.start_date, r.end_date, r.is_current, isAr)}${r.field_of_study ? ` · ${r.field_of_study}` : ""}${r.location ? ` · ${r.location}` : ""}${(r as any).country_code ? `, ${(r as any).country_code}` : ""}`}
+                                isAr={isAr}
+                                onEdit={() => startEditCareer(r)} onDelete={() => deleteCareerMutation.mutate(r.id)}
+                                moveSections={getMoveSections("organizing")} onMove={(target) => moveRecordToSection.mutate({ id: r.id, targetSection: target })}
+                                draggable
+                              />
+                            )}
+                          </SortableItem>
+                        ))}
+                      </SortableContext>
+                      {addingSection === "organizing" && !editingId ? (
+                        <CareerForm form={careerForm} editingId={null} isAr={isAr}
+                          isPending={saveCareerMutation.isPending}
+                          onUpdate={(k, v) => setCareerForm(prev => ({ ...prev, [k]: v }))}
+                          onSave={() => saveCareerMutation.mutate()} onCancel={closeForm} />
+                      ) : !editingId || addingSection !== "organizing" ? (
+                        <AddButton label={isAr ? "إضافة فعالية منظمة" : "Add Organized Event"} onClick={() => startAddCareer("organizing")} />
                       ) : null}
                     </>
                   )}
