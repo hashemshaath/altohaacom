@@ -128,6 +128,12 @@ export interface ExtraSettings {
   email_collection_title_ar: string;
   email_collection_description: string;
   email_collection_description_ar: string;
+  // SEO & Open Graph
+  seo_title: string;
+  seo_title_ar: string;
+  seo_description: string;
+  seo_description_ar: string;
+  og_image_url: string;
 }
 
 export const DEFAULT_EXTRA: ExtraSettings = {
@@ -169,6 +175,11 @@ export const DEFAULT_EXTRA: ExtraSettings = {
   email_collection_title_ar: "ابقَ على تواصل",
   email_collection_description: "Subscribe to get updates",
   email_collection_description_ar: "اشترك للحصول على التحديثات",
+  seo_title: "",
+  seo_title_ar: "",
+  seo_description: "",
+  seo_description_ar: "",
+  og_image_url: "",
 };
 
 export function parseExtra(customCss: string | null | undefined): ExtraSettings {

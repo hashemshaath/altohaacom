@@ -31,7 +31,7 @@ import {
   Phone, MessageCircle, Music, ShoppingBag, CalendarDays, Video, Briefcase,
   Sparkles, TrendingUp, Loader2, GripVertical, Image, FileText,
   AlignLeft, AlignCenter, AlignRight, LayoutGrid, LayoutList, ArrowLeftRight, Clock, Calendar,
-  FileDown, FileUp
+  FileDown, FileUp, Search
 } from "lucide-react";
 import { buildSocialLinksPath, buildSocialLinksUrl } from "@/lib/publicAppUrl";
 import { AreaChart, Area, XAxis, YAxis, Tooltip as RechartsTooltip, ResponsiveContainer } from "recharts";
@@ -1706,6 +1706,57 @@ export default function SocialLinksEditor() {
                             </div>
                           </div>
                         )}
+                      </CardContent>
+                    </Card>
+
+                    {/* SEO & Open Graph */}
+                    <Card className="overflow-hidden">
+                      <CardHeader className="pb-3 bg-gradient-to-r from-muted/40 to-transparent">
+                        <CardTitle className="text-sm flex items-center gap-2">
+                          <div className="h-7 w-7 rounded-lg bg-primary/10 flex items-center justify-center">
+                            <Search className="h-3.5 w-3.5 text-primary" />
+                          </div>
+                          {isAr ? "تحسين محركات البحث (SEO)" : "SEO & Open Graph"}
+                        </CardTitle>
+                        <p className="text-[11px] text-muted-foreground">
+                          {isAr ? "تحكم بعنوان ووصف وصورة الصفحة عند مشاركتها" : "Customize how your page appears in search & social shares"}
+                        </p>
+                      </CardHeader>
+                      <CardContent className="pt-3 space-y-3">
+                        <div className="grid sm:grid-cols-2 gap-3">
+                          <div>
+                            <Label className="text-[11px] mb-1 block font-medium">{isAr ? "العنوان (EN)" : "Page Title (EN)"}</Label>
+                            <Input value={extra.seo_title} onChange={e => updateExtra({ seo_title: e.target.value })} placeholder={isAr ? "اتركه فارغاً للافتراضي" : "Leave empty for default"} className="text-xs" dir="ltr" maxLength={60} />
+                            <span className="text-[9px] text-muted-foreground">{extra.seo_title.length}/60</span>
+                          </div>
+                          <div>
+                            <Label className="text-[11px] mb-1 block font-medium">{isAr ? "العنوان (AR)" : "Page Title (AR)"}</Label>
+                            <Input value={extra.seo_title_ar} onChange={e => updateExtra({ seo_title_ar: e.target.value })} placeholder={isAr ? "اتركه فارغاً للافتراضي" : "Leave empty for default"} className="text-xs" dir="rtl" maxLength={60} />
+                            <span className="text-[9px] text-muted-foreground">{extra.seo_title_ar.length}/60</span>
+                          </div>
+                        </div>
+                        <div className="grid sm:grid-cols-2 gap-3">
+                          <div>
+                            <Label className="text-[11px] mb-1 block font-medium">{isAr ? "الوصف (EN)" : "Description (EN)"}</Label>
+                            <Textarea value={extra.seo_description} onChange={e => updateExtra({ seo_description: e.target.value })} placeholder={isAr ? "وصف قصير للصفحة" : "Short page description"} className="text-xs min-h-[60px]" dir="ltr" maxLength={160} />
+                            <span className="text-[9px] text-muted-foreground">{extra.seo_description.length}/160</span>
+                          </div>
+                          <div>
+                            <Label className="text-[11px] mb-1 block font-medium">{isAr ? "الوصف (AR)" : "Description (AR)"}</Label>
+                            <Textarea value={extra.seo_description_ar} onChange={e => updateExtra({ seo_description_ar: e.target.value })} placeholder={isAr ? "وصف قصير بالعربية" : "Short description in Arabic"} className="text-xs min-h-[60px]" dir="rtl" maxLength={160} />
+                            <span className="text-[9px] text-muted-foreground">{extra.seo_description_ar.length}/160</span>
+                          </div>
+                        </div>
+                        <div>
+                          <Label className="text-[11px] mb-1 block font-medium">{isAr ? "صورة المشاركة (OG Image URL)" : "Share Image (OG Image URL)"}</Label>
+                          <Input value={extra.og_image_url} onChange={e => updateExtra({ og_image_url: e.target.value })} placeholder="https://..." className="text-xs" dir="ltr" />
+                          <p className="text-[9px] text-muted-foreground mt-1">{isAr ? "الحجم المثالي: 1200×630 بكسل" : "Recommended: 1200×630px"}</p>
+                          {extra.og_image_url && (
+                            <div className="mt-2 rounded-lg overflow-hidden border border-border/50">
+                              <img src={extra.og_image_url} alt="OG Preview" className="w-full h-auto max-h-32 object-cover" onError={e => (e.currentTarget.style.display = "none")} />
+                            </div>
+                          )}
+                        </div>
                       </CardContent>
                     </Card>
 
