@@ -287,9 +287,13 @@ export function CVPreview({ data: initialData, targetUserId, isAr, onBack, onSav
   const handleTranslateAllPersonal = useCallback(async () => {
     const pairs: [string, string, string][] = [
       ["full_name", "full_name_ar", "en"],
+      ["full_name_ar", "full_name", "ar"],
       ["job_title", "job_title_ar", "en"],
+      ["job_title_ar", "job_title", "ar"],
       ["specialization", "specialization_ar", "en"],
+      ["specialization_ar", "specialization", "ar"],
       ["bio", "bio_ar", "en"],
+      ["bio_ar", "bio", "ar"],
     ];
     for (const [srcKey, tgtKey, fromLang] of pairs) {
       const srcVal = (pi as any)[srcKey];
@@ -299,6 +303,63 @@ export function CVPreview({ data: initialData, targetUserId, isAr, onBack, onSav
       }
     }
   }, [pi, translate, updatePersonal]);
+
+  // ─── Translate All Education ───
+  const handleTranslateAllEducation = useCallback(async () => {
+    if (!data.education) return;
+    for (let i = 0; i < data.education.length; i++) {
+      const edu = data.education[i];
+      if (edu.degree && !edu.degree_ar) {
+        await translate(edu.degree, "en", (t) => updateEduItem(i, "degree_ar", t), `edu_degree_${i}`);
+      }
+      if (edu.degree_ar && !edu.degree) {
+        await translate(edu.degree_ar, "ar", (t) => updateEduItem(i, "degree", t), `edu_degree_en_${i}`);
+      }
+      if (edu.institution && !edu.institution_ar) {
+        await translate(edu.institution, "en", (t) => updateEduItem(i, "institution_ar", t), `edu_inst_${i}`);
+      }
+      if (edu.field_of_study && !edu.field_of_study_ar) {
+        await translate(edu.field_of_study, "en", (t) => updateEduItem(i, "field_of_study_ar", t), `edu_field_${i}`);
+      }
+    }
+  }, [data.education, translate, updateEduItem]);
+
+  // ─── Translate All Work Experience ───
+  const handleTranslateAllWork = useCallback(async () => {
+    if (!data.work_experience) return;
+    for (let i = 0; i < data.work_experience.length; i++) {
+      const work = data.work_experience[i];
+      if (work.title && !work.title_ar) {
+        await translate(work.title, "en", (t) => updateWorkItem(i, "title_ar", t), `work_title_${i}`);
+      }
+      if (work.title_ar && !work.title) {
+        await translate(work.title_ar, "ar", (t) => updateWorkItem(i, "title", t), `work_title_en_${i}`);
+      }
+      if (work.company && !work.company_ar) {
+        await translate(work.company, "en", (t) => updateWorkItem(i, "company_ar", t), `work_company_${i}`);
+      }
+      if (work.department && !work.department_ar) {
+        await translate(work.department, "en", (t) => updateWorkItem(i, "department_ar", t), `work_dept_${i}`);
+      }
+    }
+  }, [data.work_experience, translate, updateWorkItem]);
+
+  // ─── Translate All Competitions ───
+  const handleTranslateAllCompetitions = useCallback(async () => {
+    if (!data.competitions) return;
+    for (let i = 0; i < data.competitions.length; i++) {
+      const comp = data.competitions[i];
+      if (comp.name && !comp.name_ar) {
+        await translate(comp.name, "en", (t) => updateData(d => ({ ...d, competitions: d.competitions?.map((c, ci) => ci === i ? { ...c, name_ar: t } : c) })), `comp_name_${i}`);
+      }
+      if (comp.name_ar && !comp.name) {
+        await translate(comp.name_ar, "ar", (t) => updateData(d => ({ ...d, competitions: d.competitions?.map((c, ci) => ci === i ? { ...c, name: t } : c) })), `comp_name_en_${i}`);
+      }
+      if (comp.achievement && !comp.achievement_ar) {
+        await translate(comp.achievement, "en", (t) => updateData(d => ({ ...d, competitions: d.competitions?.map((c, ci) => ci === i ? { ...c, achievement_ar: t } : c) })), `comp_ach_${i}`);
+      }
+    }
+  }, [data.competitions, translate, updateData]);
 
   const sectionHeader = (
     icon: React.ReactNode, titleEn: string, titleAr: string,
@@ -419,7 +480,12 @@ export function CVPreview({ data: initialData, targetUserId, isAr, onBack, onSav
       {hasEdu && (
         <Card className="overflow-hidden">
           <CardHeader className="pb-2 bg-chart-2/5">
-            {sectionHeader(<GraduationCap className="h-4 w-4" />, "Education", "التعليم", data.education!.length, "education", "bg-chart-2/10 text-chart-2")}
+            {sectionHeader(<GraduationCap className="h-4 w-4" />, "Education", "التعليم", data.education!.length, "education", "bg-chart-2/10 text-chart-2",
+              <Button variant="ghost" size="sm" className="h-7 text-[10px] gap-1 text-chart-2" onClick={handleTranslateAllEducation} disabled={translatingKey?.startsWith("edu_")}>
+                {translatingKey?.startsWith("edu_") ? <Loader2 className="h-3 w-3 animate-spin" /> : <Languages className="h-3 w-3" />}
+                {isAr ? "ترجمة الكل" : "Translate All"}
+              </Button>
+            )}
           </CardHeader>
           <CardContent className="p-0">
             <Table>
@@ -488,7 +554,12 @@ export function CVPreview({ data: initialData, targetUserId, isAr, onBack, onSav
       {hasWork && (
         <Card className="overflow-hidden">
           <CardHeader className="pb-2 bg-chart-3/5">
-            {sectionHeader(<Briefcase className="h-4 w-4" />, "Professional Experience", "الخبرات المهنية", data.work_experience!.length, "work", "bg-chart-3/10 text-chart-3")}
+            {sectionHeader(<Briefcase className="h-4 w-4" />, "Professional Experience", "الخبرات المهنية", data.work_experience!.length, "work", "bg-chart-3/10 text-chart-3",
+              <Button variant="ghost" size="sm" className="h-7 text-[10px] gap-1 text-chart-3" onClick={handleTranslateAllWork} disabled={translatingKey?.startsWith("work_")}>
+                {translatingKey?.startsWith("work_") ? <Loader2 className="h-3 w-3 animate-spin" /> : <Languages className="h-3 w-3" />}
+                {isAr ? "ترجمة الكل" : "Translate All"}
+              </Button>
+            )}
           </CardHeader>
           <CardContent className="p-0">
             <Table>
@@ -586,7 +657,12 @@ export function CVPreview({ data: initialData, targetUserId, isAr, onBack, onSav
       {hasComp && (
         <Card className="overflow-hidden">
           <CardHeader className="pb-2 bg-chart-4/5">
-            {sectionHeader(<Trophy className="h-4 w-4" />, "Competitions", "المسابقات", data.competitions!.length, "competitions", "bg-chart-4/10 text-chart-4")}
+            {sectionHeader(<Trophy className="h-4 w-4" />, "Competitions", "المسابقات", data.competitions!.length, "competitions", "bg-chart-4/10 text-chart-4",
+              <Button variant="ghost" size="sm" className="h-7 text-[10px] gap-1 text-chart-4" onClick={handleTranslateAllCompetitions} disabled={translatingKey?.startsWith("comp_")}>
+                {translatingKey?.startsWith("comp_") ? <Loader2 className="h-3 w-3 animate-spin" /> : <Languages className="h-3 w-3" />}
+                {isAr ? "ترجمة الكل" : "Translate All"}
+              </Button>
+            )}
           </CardHeader>
           <CardContent className="p-0">
             <Table>
