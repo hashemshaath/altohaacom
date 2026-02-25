@@ -334,9 +334,9 @@ export function CVPreview({ data: initialData, targetUserId, isAr, onBack, onSav
       const sectionsToDelete: string[] = [];
       if (sections.education && hasEdu) sectionsToDelete.push("education");
       if (sections.work && hasWork) sectionsToDelete.push("work");
-      if (sections.competitions && hasComp) sectionsToDelete.push("work");
-      if (sections.media && hasMedia) sectionsToDelete.push("work");
-      if (sections.certifications && hasCert) sectionsToDelete.push("education");
+      if (sections.competitions && hasComp) sectionsToDelete.push("competitions");
+      if (sections.media && hasMedia) sectionsToDelete.push("media");
+      if (sections.certifications && hasCert) sectionsToDelete.push("certification");
 
       const uniqueTypes = [...new Set(sectionsToDelete)];
       if (uniqueTypes.length > 0) {
@@ -411,17 +411,19 @@ export function CVPreview({ data: initialData, targetUserId, isAr, onBack, onSav
       if (sections.competitions && hasComp) {
         const compRecords = data.competitions!.map((comp) => ({
           user_id: targetUserId,
-          record_type: "work",
+          record_type: "competitions",
           entity_name: comp.name,
           entity_name_ar: comp.name_ar || null,
           title: `${comp.name}${comp.year ? ` ${comp.year}` : ""}${comp.edition ? ` (${comp.edition})` : ""}`.trim(),
           title_ar: comp.name_ar ? `${comp.name_ar}${comp.year ? ` ${comp.year}` : ""}${comp.edition ? ` (${comp.edition})` : ""}`.trim() : null,
-          description: [comp.role ? `Role: ${ROLE_LABELS[comp.role]?.en || comp.role}` : "", comp.achievement || ""].filter(Boolean).join("\n") || null,
-          description_ar: [comp.role ? `الدور: ${ROLE_LABELS[comp.role]?.ar || comp.role}` : "", comp.achievement_ar || ""].filter(Boolean).join("\n") || null,
+          employment_type: comp.role || null,
+          description: comp.achievement || null,
+          description_ar: comp.achievement_ar || null,
           start_date: comp.year ? `${comp.year}-01-01` : null,
           end_date: comp.year ? `${comp.year}-12-31` : null,
           is_current: false,
           location: comp.city || null,
+          country_code: comp.country_code || null,
         }));
 
         const { error } = await supabase.from("user_career_records").insert(compRecords);
@@ -433,15 +435,17 @@ export function CVPreview({ data: initialData, targetUserId, isAr, onBack, onSav
       if (sections.media && hasMedia) {
         const mediaRecords = data.media_appearances!.map((m) => ({
           user_id: targetUserId,
-          record_type: "work",
+          record_type: "media",
           entity_name: m.channel_name,
           entity_name_ar: m.channel_name_ar || null,
           title: m.program_name || m.channel_name,
           title_ar: m.program_name_ar || null,
-          description: [m.type ? `${MEDIA_TYPE_LABELS[m.type]?.icon || "📺"} ${MEDIA_TYPE_LABELS[m.type]?.en || m.type}` : "", m.description || ""].filter(Boolean).join("\n") || null,
-          description_ar: [m.type ? `${MEDIA_TYPE_LABELS[m.type]?.icon || "📺"} ${MEDIA_TYPE_LABELS[m.type]?.ar || m.type}` : "", m.description_ar || ""].filter(Boolean).join("\n") || null,
+          department: null, // host field - not available from CV import
+          description: m.description || null,
+          description_ar: m.description_ar || null,
           start_date: normalizeDate(m.date),
           is_current: false,
+          country_code: m.country_code || null,
         }));
 
         const { error } = await supabase.from("user_career_records").insert(mediaRecords);
@@ -453,7 +457,7 @@ export function CVPreview({ data: initialData, targetUserId, isAr, onBack, onSav
       if (sections.certifications && hasCert) {
         const certRecords = data.certifications!.map((cert) => ({
           user_id: targetUserId,
-          record_type: "education",
+          record_type: "certification",
           entity_name: cert.issuer || "—",
           entity_name_ar: null,
           title: cert.name,
