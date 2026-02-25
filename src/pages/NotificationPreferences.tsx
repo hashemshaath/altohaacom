@@ -2,9 +2,7 @@ import { useState, useEffect } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { supabase } from "@/integrations/supabase/client";
-import { Header } from "@/components/Header";
-import { Footer } from "@/components/Footer";
-import { SEOHead } from "@/components/SEOHead";
+import { PageShell } from "@/components/PageShell";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Switch } from "@/components/ui/switch";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -209,12 +207,12 @@ export default function NotificationPreferences() {
   const enabledCount = preferences.filter((p) => p.enabled).length;
 
   return (
-    <div className="flex min-h-screen flex-col bg-background">
-      <SEOHead
-        title={isAr ? "تفضيلات الإشعارات | Altoha" : "Notification Preferences | Altoha"}
-        description={isAr ? "تحكم بقنوات وفئات الإشعارات الخاصة بك على منصة الطهاة" : "Manage your notification channels and categories on the culinary platform"}
-      />
-      <Header />
+    <PageShell
+      title={isAr ? "تفضيلات الإشعارات" : "Notification Preferences"}
+      description={isAr ? "تحكم بقنوات وفئات الإشعارات الخاصة بك على منصة الطهاة" : "Manage your notification channels and categories on the culinary platform"}
+      container={false}
+      padding="none"
+    >
 
       {/* Hero */}
       <section className="border-b border-border/40 bg-gradient-to-b from-primary/5 to-background" aria-labelledby="notif-heading">
@@ -414,7 +412,6 @@ export default function NotificationPreferences() {
           </div>
         </div>
       </main>
-      <Footer />
-    </div>
+    </PageShell>
   );
 }

@@ -3,9 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useLanguage } from "@/i18n/LanguageContext";
-import { SEOHead } from "@/components/SEOHead";
-import { Header } from "@/components/Header";
-import { Footer } from "@/components/Footer";
+import { PageShell } from "@/components/PageShell";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -114,13 +112,12 @@ export default function SupplierLeaderboard() {
   };
 
   return (
-    <div className="flex min-h-screen flex-col">
-      <SEOHead
-        title={isAr ? "ترتيب الموردين | التحاء" : "Supplier Leaderboard | Altoha"}
-        description={isAr ? "أفضل الموردين المحترفين" : "Top professional suppliers ranked"}
-      />
-      <Header />
-      <main className="flex-1">
+    <PageShell
+      title={isAr ? "ترتيب الموردين" : "Supplier Leaderboard"}
+      description={isAr ? "أفضل الموردين المحترفين" : "Top professional suppliers ranked"}
+      container={false}
+      padding="none"
+    >
         <div className="container py-6 md:py-10">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
             <div className="flex items-center gap-3">
@@ -222,8 +219,6 @@ export default function SupplierLeaderboard() {
             </div>
           )}
         </div>
-      </main>
-      <Footer />
-    </div>
+    </PageShell>
   );
 }

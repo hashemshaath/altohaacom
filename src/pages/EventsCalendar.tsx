@@ -1,8 +1,6 @@
 import { useState, useMemo, useCallback, useEffect } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
-import { Header } from "@/components/Header";
-import { Footer } from "@/components/Footer";
-import { SEOHead } from "@/components/SEOHead";
+import { PageShell } from "@/components/PageShell";
 import { useGlobalEventsCalendar, GLOBAL_EVENT_COLORS, GLOBAL_EVENT_LABELS, type GlobalEventType } from "@/hooks/useGlobalEventsCalendar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -120,12 +118,12 @@ export default function EventsCalendar() {
 
   return (
     <TooltipProvider delayDuration={200}>
-      <SEOHead
-        title={isAr ? "تقويم الفعاليات العالمية — Altoha" : "Global Events Calendar — Altoha"}
+      <PageShell
+        title={isAr ? "تقويم الفعاليات العالمية" : "Global Events Calendar"}
         description={isAr ? "تصفح جميع المسابقات والمعارض والفعاليات الطهوية" : "Browse all competitions, exhibitions, and culinary events worldwide"}
-      />
-      <Header />
-      <div className="min-h-screen bg-background">
+        container={false}
+        padding="none"
+      >
         {/* ─── Hero Section ─── */}
         <section className="relative border-b overflow-hidden">
           <div className="absolute inset-0 bg-gradient-to-br from-primary/8 via-primary/3 to-accent/5" />
@@ -362,8 +360,7 @@ export default function EventsCalendar() {
             <span>T = {isAr ? "اليوم" : "Today"}</span>
           </div>
         </div>
-      </div>
-      <Footer />
+      </PageShell>
     </TooltipProvider>
   );
 }
