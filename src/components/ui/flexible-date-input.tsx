@@ -21,7 +21,7 @@ const MONTHS_EN = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep"
 const MONTHS_AR = ["يناير", "فبراير", "مارس", "أبريل", "مايو", "يونيو", "يوليو", "أغسطس", "سبتمبر", "أكتوبر", "نوفمبر", "ديسمبر"];
 
 function parseDateParts(value: string): { year: string; month: string; day: string; precision: DatePrecision } {
-  if (!value) return { year: "", month: "", day: "", precision: "day" };
+  if (!value) return { year: "", month: "", day: "", precision: "year" };
   const parts = value.split("-");
   if (parts.length === 1 && parts[0].length === 4) return { year: parts[0], month: "", day: "", precision: "year" };
   if (parts.length === 2) return { year: parts[0], month: parts[1], day: "", precision: "month" };

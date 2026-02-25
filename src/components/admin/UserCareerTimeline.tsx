@@ -110,7 +110,7 @@ interface CareerRecord {
 interface Props { userId: string; isAr: boolean; }
 
 const formatDateShort = (date: string | null, isAr: boolean) => {
-  if (!date) return isAr ? "الحالي" : "Present";
+  if (!date) return "";
   // Handle flexible formats: year only, year-month, full date
   const parts = date.split("-");
   if (parts.length === 1) return parts[0]; // year only
@@ -120,6 +120,17 @@ const formatDateShort = (date: string | null, isAr: boolean) => {
   }
   const d = new Date(date);
   return toEnglishDigits(d.toLocaleDateString(isAr ? "ar-SA" : "en-US", { year: "numeric", month: "short" }));
+};
+
+const formatDateRange = (startDate: string | null, endDate: string | null, isCurrent: boolean, isAr: boolean) => {
+  const start = formatDateShort(startDate, isAr);
+  if (!start) {
+    if (isCurrent) return isAr ? "مستمر" : "Ongoing";
+    return "";
+  }
+  const end = isCurrent ? (isAr ? "مستمر" : "Ongoing") : formatDateShort(endDate, isAr);
+  if (!end) return start;
+  return `${start} – ${end}`;
 };
 
 const labelFor = (key: string, list: { value: string; en: string; ar: string }[], isAr: boolean) => {
@@ -636,7 +647,7 @@ export function UserCareerTimeline({ userId, isAr }: Props) {
                             <CompactRow icon={GraduationCap} color={section.color}
                               title={isAr ? (r.title_ar || r.title) : r.title}
                               subtitle={r.entity_name || ""}
-                              meta={`${formatDateShort(r.start_date, isAr)} – ${r.is_current ? (isAr ? "الحالي" : "Present") : formatDateShort(r.end_date, isAr)}${r.education_level ? ` · ${labelFor(r.education_level, EDUCATION_LEVELS, isAr)}` : ""}`}
+                              meta={`${formatDateRange(r.start_date, r.end_date, r.is_current, isAr)}${r.education_level ? ` · ${labelFor(r.education_level, EDUCATION_LEVELS, isAr)}` : ""}`}
                               isCurrent={r.is_current} isAr={isAr}
                               onEdit={() => startEditCareer(r)} onDelete={() => deleteCareerMutation.mutate(r.id)}
                               draggable
@@ -667,7 +678,7 @@ export function UserCareerTimeline({ userId, isAr }: Props) {
                             <CompactRow icon={Briefcase} color={section.color}
                               title={isAr ? (r.title_ar || r.title) : r.title}
                               subtitle={r.entity_name || ""}
-                              meta={`${formatDateShort(r.start_date, isAr)} — ${r.is_current ? (isAr ? "الحالي" : "Present") : formatDateShort(r.end_date, isAr)}${r.employment_type ? ` · ${labelFor(r.employment_type, EMPLOYMENT_TYPES, isAr)}` : ""}${r.location ? ` · ${r.location}` : ""}`}
+                              meta={`${formatDateRange(r.start_date, r.end_date, r.is_current, isAr)}${r.employment_type ? ` · ${labelFor(r.employment_type, EMPLOYMENT_TYPES, isAr)}` : ""}${r.location ? ` · ${r.location}` : ""}`}
                               isCurrent={r.is_current} isAr={isAr}
                               onEdit={() => startEditCareer(r)} onDelete={() => deleteCareerMutation.mutate(r.id)}
                               draggable
@@ -782,7 +793,7 @@ export function UserCareerTimeline({ userId, isAr }: Props) {
                             <CompactRow icon={FileText} color={section.color}
                               title={isAr ? (r.title_ar || r.title) : r.title}
                               subtitle={r.entity_name || ""}
-                              meta={`${formatDateShort(r.start_date, isAr)} – ${r.is_current ? (isAr ? "الحالي" : "Present") : formatDateShort(r.end_date, isAr)}`}
+                              meta={formatDateRange(r.start_date, r.end_date, r.is_current, isAr)}
                               isCurrent={r.is_current} isAr={isAr}
                               onEdit={() => startEditCareer(r)} onDelete={() => deleteCareerMutation.mutate(r.id)}
                               draggable
@@ -877,11 +888,11 @@ function CompactRow({ icon: Icon, color, logoUrl, title, subtitle, meta, badge, 
       )}
       <div className="flex-1 min-w-0 flex items-center gap-2 flex-wrap">
         <p className="text-sm font-medium truncate">{mainContent}</p>
-        {isCurrent && <Badge variant="default" className="text-[10px] h-5 px-1.5 shrink-0 whitespace-nowrap">{isAr ? "حالي" : "Current"}</Badge>}
+        {isCurrent && <Badge variant="default" className="text-[10px] h-5 px-1.5 shrink-0 whitespace-nowrap">{isAr ? "مستمر" : "Ongoing"}</Badge>}
         {badge && <Badge variant={badgeVariant || "secondary"} className="text-[10px] h-5 px-1.5 shrink-0 capitalize whitespace-nowrap">{badge}</Badge>}
       </div>
       {(onEdit || onDelete) && (
-        <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity shrink-0 ms-2">
+        <div className="flex items-center gap-1 shrink-0 ms-2">
           {onEdit && <Button size="icon" variant="ghost" className="h-7 w-7 text-muted-foreground hover:text-foreground" onClick={onEdit}><Pencil className="h-3.5 w-3.5" /></Button>}
           {onDelete && <Button size="icon" variant="ghost" className="h-7 w-7 text-destructive/60 hover:text-destructive hover:bg-destructive/5" onClick={onDelete}><Trash2 className="h-3.5 w-3.5" /></Button>}
         </div>
@@ -990,7 +1001,7 @@ function CareerForm({ form, editingId, isAr, isPending, onUpdate, onSave, onCanc
       <div className="flex items-center gap-2.5 p-2.5 rounded-lg bg-muted/40">
         <Switch checked={form.is_current} onCheckedChange={(v) => onUpdate("is_current", v)} />
         <Label className="text-xs font-medium cursor-pointer">
-          {isEdu ? (isAr ? "ما زلت أدرس" : "Currently studying") : (isAr ? "أعمل حالياً" : "Currently working")}
+          {isEdu ? (isAr ? "لا زلت أدرس" : "Still ongoing") : (isAr ? "لا زلت أعمل" : "Still ongoing")}
         </Label>
       </div>
 
