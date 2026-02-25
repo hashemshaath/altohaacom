@@ -2,7 +2,7 @@ import { useState, useCallback } from "react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -13,7 +13,7 @@ import {
 } from "@/components/ui/table";
 import {
   ArrowLeft, Save, Loader2, User, GraduationCap, Briefcase,
-  Trophy, Award, Tv, Globe2, Languages, CheckCircle2, MapPin, Calendar,
+  Trophy, Award, Tv, Globe2, Languages, CheckCircle2, MapPin,
   Edit3, X, Trash2,
 } from "lucide-react";
 import type { CVData, CVWorkExperience, CVEducation, CVCompetition, CVMediaAppearance } from "./types";
@@ -33,11 +33,52 @@ interface Props {
 
 const formatDate = (d?: string) => {
   if (!d) return "";
-  try {
-    const date = new Date(d);
-    return date.toLocaleDateString("en-US", { year: "numeric", month: "short" });
-  } catch { return d; }
+  try { return new Date(d).toLocaleDateString("en-US", { year: "numeric", month: "short" }); } catch { return d; }
 };
+
+// ─── Smart Translate Hook ───
+function useSmartTranslate() {
+  const [translatingKey, setTranslatingKey] = useState<string | null>(null);
+  const { toast } = useToast();
+
+  const translate = useCallback(async (
+    text: string,
+    fromLang: "ar" | "en",
+    onResult: (translated: string) => void,
+    key: string,
+  ) => {
+    if (!text.trim()) return;
+    setTranslatingKey(key);
+    try {
+      const { data, error } = await supabase.functions.invoke("smart-translate", {
+        body: { text, from: fromLang, to: fromLang === "ar" ? "en" : "ar", context: "culinary/hospitality/food industry professional CV" },
+      });
+      if (error) throw error;
+      if (data?.translated) {
+        onResult(data.translated);
+        toast({ title: fromLang === "ar" ? "Translated ✓" : "✓ تمت الترجمة" });
+      }
+    } catch (err: any) {
+      toast({ title: "Translation Error", description: err.message, variant: "destructive" });
+    } finally {
+      setTranslatingKey(null);
+    }
+  }, [toast]);
+
+  return { translate, translatingKey };
+}
+
+// ─── Translate Button ───
+const TranslateBtn = ({ onClick, loading, small }: { onClick: () => void; loading: boolean; small?: boolean }) => (
+  <Button
+    variant="ghost" size="icon"
+    className={`${small ? "h-5 w-5" : "h-6 w-6"} shrink-0 text-primary hover:text-primary/80`}
+    onClick={onClick} disabled={loading}
+    title="🔤 Smart Translate"
+  >
+    {loading ? <Loader2 className={`${small ? "h-3 w-3" : "h-3.5 w-3.5"} animate-spin`} /> : <Languages className={`${small ? "h-3 w-3" : "h-3.5 w-3.5"}`} />}
+  </Button>
+);
 
 /** Bilingual display: EN / AR with flag */
 const BilingualText = ({ en, ar, flag }: { en?: string; ar?: string; flag?: string }) => {
@@ -57,16 +98,13 @@ const LocationDisplay = ({ city, countryCode }: { city?: string; countryCode?: s
   const parts = [city, countryCode?.toUpperCase()].filter(Boolean).join(", ");
   return (
     <span className="text-[11px] text-muted-foreground inline-flex items-center gap-1">
-      {flag && <span>{flag}</span>}
-      {parts}
+      {flag && <span>{flag}</span>}{parts}
     </span>
   );
 };
 
-// Inline editable field component
-function EditableText({
-  value, onChange, label, multiline, className = "",
-}: {
+// Inline editable field
+function EditableText({ value, onChange, label, multiline, className = "" }: {
   value: string; onChange: (v: string) => void; label?: string; multiline?: boolean; className?: string;
 }) {
   const [editing, setEditing] = useState(false);
@@ -90,18 +128,40 @@ function EditableText({
 
   return (
     <span
-      className={`cursor-pointer hover:bg-muted/50 rounded px-1 -mx-1 transition-colors group inline-flex items-center gap-1 ${className}`}
+      className={`cursor-pointer hover:bg-muted/50 rounded px-1 -mx-1 transition-colors group/edit inline-flex items-center gap-1 ${className}`}
       onClick={() => { setDraft(value); setEditing(true); }}
       title={label || "Click to edit"}
     >
       {value || <span className="text-muted-foreground/50 italic text-[10px]">—</span>}
-      <Edit3 className="h-2.5 w-2.5 opacity-0 group-hover:opacity-50 shrink-0" />
+      <Edit3 className="h-2.5 w-2.5 opacity-0 group-hover/edit:opacity-50 shrink-0" />
     </span>
   );
 }
 
-/** Alternating row style helper */
 const rowBg = (i: number) => i % 2 === 0 ? "bg-muted/20" : "bg-muted/50";
+
+// ─── Paired personal field definitions ───
+// [key, labelEN, labelAR, pairedKey (for translation)]
+type PersonalFieldDef = [string, string, string, string | null];
+
+const PAIRED_PERSONAL_FIELDS: PersonalFieldDef[] = [
+  ["full_name", "Name", "الاسم", "full_name_ar"],
+  ["full_name_ar", "Name (AR)", "الاسم بالعربية", "full_name"],
+  ["job_title", "Job Title", "المسمى الوظيفي", "job_title_ar"],
+  ["job_title_ar", "Job Title (AR)", "المسمى (عربي)", "job_title"],
+  ["specialization", "Specialization", "التخصص", "specialization_ar"],
+  ["specialization_ar", "Specialization (AR)", "التخصص (عربي)", "specialization"],
+  ["phone", "Phone", "الهاتف", null],
+  ["email", "Email", "البريد", null],
+  ["nationality", "Nationality", "الجنسية", null],
+  ["city", "City", "المدينة", null],
+  ["country_code", "Country", "الدولة", null],
+  ["national_address", "National Address", "العنوان الوطني", null],
+  ["years_of_experience", "Years of Exp.", "سنوات الخبرة", null],
+  ["linkedin", "LinkedIn", "LinkedIn", null],
+  ["instagram", "Instagram", "Instagram", null],
+  ["website", "Website", "الموقع", null],
+];
 
 export function CVPreview({ data: initialData, targetUserId, isAr, onBack, onSaved, onDataChange }: Props) {
   const { toast } = useToast();
@@ -111,6 +171,7 @@ export function CVPreview({ data: initialData, targetUserId, isAr, onBack, onSav
     personal: true, education: true, work: true,
     competitions: true, certifications: true, media: true,
   });
+  const { translate, translatingKey } = useSmartTranslate();
 
   const updateData = useCallback((updater: (d: CVData) => CVData) => {
     setData(prev => { const next = updater(prev); onDataChange?.(next); return next; });
@@ -128,25 +189,11 @@ export function CVPreview({ data: initialData, targetUserId, isAr, onBack, onSav
     updateData(d => ({ ...d, education: d.education?.map((e, i) => i === index ? { ...e, [key]: value } : e) }));
   }, [updateData]);
 
-  const removeWorkItem = useCallback((index: number) => {
-    updateData(d => ({ ...d, work_experience: d.work_experience?.filter((_, i) => i !== index) }));
-  }, [updateData]);
-
-  const removeEduItem = useCallback((index: number) => {
-    updateData(d => ({ ...d, education: d.education?.filter((_, i) => i !== index) }));
-  }, [updateData]);
-
-  const removeCompItem = useCallback((index: number) => {
-    updateData(d => ({ ...d, competitions: d.competitions?.filter((_, i) => i !== index) }));
-  }, [updateData]);
-
-  const removeMediaItem = useCallback((index: number) => {
-    updateData(d => ({ ...d, media_appearances: d.media_appearances?.filter((_, i) => i !== index) }));
-  }, [updateData]);
-
-  const removeCertItem = useCallback((index: number) => {
-    updateData(d => ({ ...d, certifications: d.certifications?.filter((_, i) => i !== index) }));
-  }, [updateData]);
+  const removeWorkItem = useCallback((index: number) => { updateData(d => ({ ...d, work_experience: d.work_experience?.filter((_, i) => i !== index) })); }, [updateData]);
+  const removeEduItem = useCallback((index: number) => { updateData(d => ({ ...d, education: d.education?.filter((_, i) => i !== index) })); }, [updateData]);
+  const removeCompItem = useCallback((index: number) => { updateData(d => ({ ...d, competitions: d.competitions?.filter((_, i) => i !== index) })); }, [updateData]);
+  const removeMediaItem = useCallback((index: number) => { updateData(d => ({ ...d, media_appearances: d.media_appearances?.filter((_, i) => i !== index) })); }, [updateData]);
+  const removeCertItem = useCallback((index: number) => { updateData(d => ({ ...d, certifications: d.certifications?.filter((_, i) => i !== index) })); }, [updateData]);
 
   const toggle = (key: keyof typeof sections) => setSections((p) => ({ ...p, [key]: !p[key] }));
 
@@ -158,7 +205,7 @@ export function CVPreview({ data: initialData, targetUserId, isAr, onBack, onSav
   const hasCert = (data.certifications?.length || 0) > 0;
   const hasMedia = (data.media_appearances?.length || 0) > 0;
 
-  // --- Save handler (unchanged logic) ---
+  // ─── Save handler ───
   const handleSave = async () => {
     setSaving(true);
     let recordsCreated = 0;
@@ -236,9 +283,27 @@ export function CVPreview({ data: initialData, targetUserId, isAr, onBack, onSav
     setSaving(false);
   };
 
+  // ─── Translate All paired personal fields ───
+  const handleTranslateAllPersonal = useCallback(async () => {
+    const pairs: [string, string, string][] = [
+      ["full_name", "full_name_ar", "en"],
+      ["job_title", "job_title_ar", "en"],
+      ["specialization", "specialization_ar", "en"],
+      ["bio", "bio_ar", "en"],
+    ];
+    for (const [srcKey, tgtKey, fromLang] of pairs) {
+      const srcVal = (pi as any)[srcKey];
+      const tgtVal = (pi as any)[tgtKey];
+      if (srcVal && !tgtVal) {
+        await translate(srcVal, fromLang as "en" | "ar", (t) => updatePersonal(tgtKey, t), `personal_${tgtKey}`);
+      }
+    }
+  }, [pi, translate, updatePersonal]);
+
   const sectionHeader = (
     icon: React.ReactNode, titleEn: string, titleAr: string,
     count: number, key: keyof typeof sections, colorClass: string,
+    extraActions?: React.ReactNode,
   ) => (
     <div className="flex items-center justify-between">
       <div className="flex items-center gap-2">
@@ -246,28 +311,20 @@ export function CVPreview({ data: initialData, targetUserId, isAr, onBack, onSav
         <span className="text-sm font-semibold">{isAr ? titleAr : titleEn}</span>
         <Badge variant="secondary" className="text-[10px] h-5">{count}</Badge>
       </div>
-      <Checkbox checked={sections[key]} onCheckedChange={() => toggle(key)} />
+      <div className="flex items-center gap-1.5">
+        {extraActions}
+        <Checkbox checked={sections[key]} onCheckedChange={() => toggle(key)} />
+      </div>
     </div>
   );
 
-  // --- Personal info rows ---
-  const personalFields: [string, string, string, string | undefined][] = [
-    ["full_name", "Name", "الاسم", pi.full_name],
-    ["full_name_ar", "Name (AR)", "الاسم بالعربية", pi.full_name_ar],
-    ["job_title", "Job Title", "المسمى الوظيفي", pi.job_title],
-    ["job_title_ar", "Job Title (AR)", "المسمى (عربي)", pi.job_title_ar],
-    ["phone", "Phone", "الهاتف", pi.phone],
-    ["email", "Email", "البريد", pi.email],
-    ["nationality", "Nationality", "الجنسية", pi.nationality ? `${getFlag(pi.nationality)} ${pi.nationality}` : undefined],
-    ["city", "City", "المدينة", pi.city],
-    ["country_code", "Country", "الدولة", pi.country_code ? `${getFlag(pi.country_code)} ${pi.country_code}` : undefined],
-    ["national_address", "National Address", "العنوان الوطني", pi.national_address],
-    ["years_of_experience", "Years of Exp.", "سنوات الخبرة", pi.years_of_experience?.toString()],
-    ["specialization", "Specialization", "التخصص", pi.specialization],
-    ["linkedin", "LinkedIn", "LinkedIn", pi.linkedin],
-    ["instagram", "Instagram", "Instagram", pi.instagram],
-    ["website", "Website", "الموقع", pi.website],
-  ];
+  // Helper: get display value for personal fields
+  const getPersonalDisplay = (key: string): string | undefined => {
+    const raw = (pi as any)[key];
+    if (!raw) return undefined;
+    if (key === "nationality" || key === "country_code") return `${getFlag(raw)} ${raw}`;
+    return String(raw);
+  };
 
   return (
     <div className="space-y-4">
@@ -280,64 +337,85 @@ export function CVPreview({ data: initialData, targetUserId, isAr, onBack, onSav
         <div className="flex items-center gap-2">
           <Badge variant="outline" className="text-xs gap-1">
             <Edit3 className="h-3 w-3 text-primary" />
-            {isAr ? "انقر على أي حقل للتعديل" : "Click any field to edit"}
+            {isAr ? "انقر للتعديل" : "Click to edit"}
           </Badge>
           <Badge variant="outline" className="text-xs gap-1">
-            <CheckCircle2 className="h-3 w-3 text-chart-2" />
-            {isAr ? "تم التحليل" : "Parsed"}
+            <Languages className="h-3 w-3 text-primary" />
+            {isAr ? "🔤 ترجمة ذكية" : "🔤 Smart Translate"}
           </Badge>
         </div>
       </div>
 
-      {/* ========= PERSONAL INFO TABLE ========= */}
+      {/* ═══ PERSONAL INFO ═══ */}
       {hasPersonal && (
         <Card className="border-primary/20 overflow-hidden">
           <CardHeader className="pb-2 bg-primary/5">
-            {sectionHeader(<User className="h-4 w-4" />, "Personal Info", "المعلومات الشخصية", 1, "personal", "bg-primary/10 text-primary")}
+            {sectionHeader(
+              <User className="h-4 w-4" />, "Personal Info", "المعلومات الشخصية", 1, "personal", "bg-primary/10 text-primary",
+              <Button variant="ghost" size="sm" className="h-7 text-[10px] gap-1 text-primary" onClick={handleTranslateAllPersonal} disabled={translatingKey?.startsWith("personal_")}>
+                {translatingKey?.startsWith("personal_") ? <Loader2 className="h-3 w-3 animate-spin" /> : <Languages className="h-3 w-3" />}
+                {isAr ? "ترجمة الكل" : "Translate All"}
+              </Button>
+            )}
           </CardHeader>
           <CardContent className="p-0">
             <Table>
               <TableBody>
-                {personalFields.filter(([,,,v]) => v).map(([key, labelEn, labelAr, value], i) => (
-                  <TableRow key={key} className={`${rowBg(i)} border-border/10 hover:bg-accent/30`}>
-                    <TableCell className="py-1.5 px-3 w-[140px]">
-                      <span className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wider">
-                        {isAr ? labelAr : labelEn}
-                      </span>
-                    </TableCell>
-                    <TableCell className="py-1.5 px-3">
-                      <EditableText
-                        value={value || ""}
-                        onChange={(v) => updatePersonal(key, v || undefined)}
-                        label={isAr ? labelAr : labelEn}
-                        className="text-sm font-medium"
-                      />
-                    </TableCell>
-                  </TableRow>
-                ))}
+                {PAIRED_PERSONAL_FIELDS.map(([key, labelEn, labelAr, pairedKey], i) => {
+                  const value = getPersonalDisplay(key);
+                  if (!value) return null;
+                  const isArField = key.endsWith("_ar");
+                  return (
+                    <TableRow key={key} className={`${rowBg(i)} border-border/10 hover:bg-accent/30`}>
+                      <TableCell className="py-1.5 px-3 w-[140px]">
+                        <span className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wider">
+                          {isAr ? labelAr : labelEn}
+                        </span>
+                      </TableCell>
+                      <TableCell className="py-1.5 px-3">
+                        <div className="flex items-center gap-1">
+                          <EditableText value={value} onChange={(v) => updatePersonal(key, v || undefined)} label={isAr ? labelAr : labelEn} className="text-sm font-medium" />
+                          {pairedKey && value && (
+                            <TranslateBtn
+                              small
+                              loading={translatingKey === `personal_${pairedKey}`}
+                              onClick={() => translate(
+                                (pi as any)[key] || "",
+                                isArField ? "ar" : "en",
+                                (t) => updatePersonal(pairedKey, t),
+                                `personal_${pairedKey}`,
+                              )}
+                            />
+                          )}
+                        </div>
+                      </TableCell>
+                    </TableRow>
+                  );
+                })}
               </TableBody>
             </Table>
-            {/* Bio section */}
             {(pi.bio || pi.bio_ar) && (
-              <div className="p-3 border-t border-border/20 bg-muted/10">
-                <span className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider">
-                  {isAr ? "النبذة المهنية" : "Professional Summary"}
-                </span>
-                <div className="mt-1 space-y-1">
-                  {pi.bio && (
-                    <EditableText value={pi.bio} onChange={(v) => updatePersonal("bio", v || undefined)} multiline className="text-xs block" />
-                  )}
-                  {pi.bio_ar && (
-                    <EditableText value={pi.bio_ar} onChange={(v) => updatePersonal("bio_ar", v || undefined)} multiline className="text-xs block text-muted-foreground" />
+              <div className="p-3 border-t border-border/20 bg-muted/10 space-y-2">
+                <div className="flex items-center justify-between">
+                  <span className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider">
+                    {isAr ? "النبذة المهنية" : "Professional Summary"}
+                  </span>
+                  {pi.bio && !pi.bio_ar && (
+                    <TranslateBtn
+                      loading={translatingKey === "personal_bio_ar"}
+                      onClick={() => translate(pi.bio!, "en", (t) => updatePersonal("bio_ar", t), "personal_bio_ar")}
+                    />
                   )}
                 </div>
+                {pi.bio && <EditableText value={pi.bio} onChange={(v) => updatePersonal("bio", v || undefined)} multiline className="text-xs block" />}
+                {pi.bio_ar && <EditableText value={pi.bio_ar} onChange={(v) => updatePersonal("bio_ar", v || undefined)} multiline className="text-xs block text-muted-foreground" />}
               </div>
             )}
           </CardContent>
         </Card>
       )}
 
-      {/* ========= EDUCATION TABLE ========= */}
+      {/* ═══ EDUCATION ═══ */}
       {hasEdu && (
         <Card className="overflow-hidden">
           <CardHeader className="pb-2 bg-chart-2/5">
@@ -352,14 +430,20 @@ export function CVPreview({ data: initialData, targetUserId, isAr, onBack, onSav
                   <TableHead className="text-[10px] py-1.5 h-auto">{isAr ? "التخصص" : "Field"}</TableHead>
                   <TableHead className="text-[10px] py-1.5 h-auto">{isAr ? "الفترة" : "Period"}</TableHead>
                   <TableHead className="text-[10px] py-1.5 h-auto">{isAr ? "الموقع" : "Location"}</TableHead>
-                  <TableHead className="text-[10px] py-1.5 h-auto w-8"></TableHead>
+                  <TableHead className="text-[10px] py-1.5 h-auto w-14"></TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
                 {data.education!.map((edu, i) => (
                   <TableRow key={i} className={`${rowBg(i)} border-border/10 group hover:bg-accent/30`}>
                     <TableCell className="py-2 px-3">
-                      <BilingualText en={edu.degree} ar={edu.degree_ar} />
+                      <div className="flex items-start gap-1">
+                        <BilingualText en={edu.degree} ar={edu.degree_ar} />
+                        {edu.degree && !edu.degree_ar && (
+                          <TranslateBtn small loading={translatingKey === `edu_degree_${i}`}
+                            onClick={() => translate(edu.degree, "en", (t) => updateEduItem(i, "degree_ar", t), `edu_degree_${i}`)} />
+                        )}
+                      </div>
                       {edu.education_level && (
                         <Badge variant="outline" className="text-[9px] h-4 mt-0.5">
                           {isAr ? (EDUCATION_LEVEL_LABELS[edu.education_level]?.ar || edu.education_level) : (EDUCATION_LEVEL_LABELS[edu.education_level]?.en || edu.education_level)}
@@ -367,7 +451,13 @@ export function CVPreview({ data: initialData, targetUserId, isAr, onBack, onSav
                       )}
                     </TableCell>
                     <TableCell className="py-2 px-3">
-                      <BilingualText en={edu.institution} ar={edu.institution_ar} />
+                      <div className="flex items-start gap-1">
+                        <BilingualText en={edu.institution} ar={edu.institution_ar} />
+                        {edu.institution && !edu.institution_ar && (
+                          <TranslateBtn small loading={translatingKey === `edu_inst_${i}`}
+                            onClick={() => translate(edu.institution, "en", (t) => updateEduItem(i, "institution_ar", t), `edu_inst_${i}`)} />
+                        )}
+                      </div>
                     </TableCell>
                     <TableCell className="py-2 px-3">
                       <BilingualText en={edu.field_of_study} ar={edu.field_of_study_ar} />
@@ -394,7 +484,7 @@ export function CVPreview({ data: initialData, targetUserId, isAr, onBack, onSav
         </Card>
       )}
 
-      {/* ========= WORK EXPERIENCE TABLE ========= */}
+      {/* ═══ WORK EXPERIENCE ═══ */}
       {hasWork && (
         <Card className="overflow-hidden">
           <CardHeader className="pb-2 bg-chart-3/5">
@@ -409,22 +499,30 @@ export function CVPreview({ data: initialData, targetUserId, isAr, onBack, onSav
                   <TableHead className="text-[10px] py-1.5 h-auto">{isAr ? "النوع" : "Type"}</TableHead>
                   <TableHead className="text-[10px] py-1.5 h-auto">{isAr ? "الفترة" : "Period"}</TableHead>
                   <TableHead className="text-[10px] py-1.5 h-auto">{isAr ? "الموقع" : "Location"}</TableHead>
-                  <TableHead className="text-[10px] py-1.5 h-auto w-8"></TableHead>
+                  <TableHead className="text-[10px] py-1.5 h-auto w-14"></TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
                 {data.work_experience!.map((work, i) => (
                   <TableRow key={i} className={`${rowBg(i)} border-border/10 group hover:bg-accent/30 align-top`}>
                     <TableCell className="py-2 px-3">
-                      <BilingualText en={work.title} ar={work.title_ar} />
-                      {work.department && (
-                        <span className="text-[10px] text-muted-foreground block mt-0.5">
-                          {isAr ? (work.department_ar || work.department) : work.department}
-                        </span>
-                      )}
+                      <div className="flex items-start gap-1">
+                        <BilingualText en={work.title} ar={work.title_ar} />
+                        {work.title && !work.title_ar && (
+                          <TranslateBtn small loading={translatingKey === `work_title_${i}`}
+                            onClick={() => translate(work.title, "en", (t) => updateWorkItem(i, "title_ar", t), `work_title_${i}`)} />
+                        )}
+                      </div>
+                      {work.department && <span className="text-[10px] text-muted-foreground block mt-0.5">{isAr ? (work.department_ar || work.department) : work.department}</span>}
                     </TableCell>
                     <TableCell className="py-2 px-3">
-                      <BilingualText en={work.company} ar={work.company_ar} />
+                      <div className="flex items-start gap-1">
+                        <BilingualText en={work.company} ar={work.company_ar} />
+                        {work.company && !work.company_ar && (
+                          <TranslateBtn small loading={translatingKey === `work_company_${i}`}
+                            onClick={() => translate(work.company, "en", (t) => updateWorkItem(i, "company_ar", t), `work_company_${i}`)} />
+                        )}
+                      </div>
                     </TableCell>
                     <TableCell className="py-2 px-3">
                       {work.employment_type && (
@@ -450,7 +548,6 @@ export function CVPreview({ data: initialData, targetUserId, isAr, onBack, onSav
                 ))}
               </TableBody>
             </Table>
-            {/* Expandable tasks & achievements below table */}
             {data.work_experience!.some(w => (w.tasks?.length || 0) > 0 || (w.achievements?.length || 0) > 0) && (
               <div className="border-t border-border/20 p-3 space-y-3">
                 {data.work_experience!.map((work, i) => {
@@ -485,7 +582,7 @@ export function CVPreview({ data: initialData, targetUserId, isAr, onBack, onSav
         </Card>
       )}
 
-      {/* ========= COMPETITIONS TABLE ========= */}
+      {/* ═══ COMPETITIONS ═══ */}
       {hasComp && (
         <Card className="overflow-hidden">
           <CardHeader className="pb-2 bg-chart-4/5">
@@ -499,7 +596,7 @@ export function CVPreview({ data: initialData, targetUserId, isAr, onBack, onSav
                   <TableHead className="text-[10px] py-1.5 h-auto">{isAr ? "الدور" : "Role"}</TableHead>
                   <TableHead className="text-[10px] py-1.5 h-auto">{isAr ? "الإنجاز" : "Achievement"}</TableHead>
                   <TableHead className="text-[10px] py-1.5 h-auto">{isAr ? "الموقع" : "Location"}</TableHead>
-                  <TableHead className="text-[10px] py-1.5 h-auto w-8"></TableHead>
+                  <TableHead className="text-[10px] py-1.5 h-auto w-14"></TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -510,11 +607,16 @@ export function CVPreview({ data: initialData, targetUserId, isAr, onBack, onSav
                   return (
                     <TableRow key={i} className={`${rowBg(i)} border-border/10 group hover:bg-accent/30`}>
                       <TableCell className="py-2 px-3">
-                        <div className="flex flex-col">
-                          <span className="text-xs font-semibold">{compName}{yearStr}{editionStr}</span>
-                          {/* Show other language if available */}
-                          {comp.name_ar && !isAr && <span className="text-[10px] text-muted-foreground" dir="rtl">{comp.name_ar}</span>}
-                          {comp.name && isAr && comp.name_ar && <span className="text-[10px] text-muted-foreground" dir="ltr">{comp.name}</span>}
+                        <div className="flex items-start gap-1">
+                          <div className="flex flex-col">
+                            <span className="text-xs font-semibold">{compName}{yearStr}{editionStr}</span>
+                            {comp.name_ar && !isAr && <span className="text-[10px] text-muted-foreground" dir="rtl">{comp.name_ar}</span>}
+                            {comp.name && isAr && comp.name_ar && <span className="text-[10px] text-muted-foreground" dir="ltr">{comp.name}</span>}
+                          </div>
+                          {comp.name && !comp.name_ar && (
+                            <TranslateBtn small loading={translatingKey === `comp_name_${i}`}
+                              onClick={() => translate(comp.name, "en", (t) => updateData(d => ({ ...d, competitions: d.competitions?.map((c, ci) => ci === i ? { ...c, name_ar: t } : c) })), `comp_name_${i}`)} />
+                          )}
                         </div>
                       </TableCell>
                       <TableCell className="py-2 px-3">
@@ -525,9 +627,7 @@ export function CVPreview({ data: initialData, targetUserId, isAr, onBack, onSav
                         )}
                       </TableCell>
                       <TableCell className="py-2 px-3">
-                        {comp.achievement && (
-                          <BilingualText en={isAr ? undefined : comp.achievement} ar={isAr ? (comp.achievement_ar || comp.achievement) : comp.achievement_ar} />
-                        )}
+                        {comp.achievement && <BilingualText en={isAr ? undefined : comp.achievement} ar={isAr ? (comp.achievement_ar || comp.achievement) : comp.achievement_ar} />}
                       </TableCell>
                       <TableCell className="py-2 px-3">
                         <LocationDisplay city={comp.city} countryCode={comp.country_code} />
@@ -546,7 +646,7 @@ export function CVPreview({ data: initialData, targetUserId, isAr, onBack, onSav
         </Card>
       )}
 
-      {/* ========= CERTIFICATIONS TABLE ========= */}
+      {/* ═══ CERTIFICATIONS ═══ */}
       {hasCert && (
         <Card className="overflow-hidden">
           <CardHeader className="pb-2 bg-chart-5/5">
@@ -559,22 +659,24 @@ export function CVPreview({ data: initialData, targetUserId, isAr, onBack, onSav
                   <TableHead className="text-[10px] py-1.5 h-auto">{isAr ? "الشهادة" : "Certification"}</TableHead>
                   <TableHead className="text-[10px] py-1.5 h-auto">{isAr ? "الجهة المانحة" : "Issuer"}</TableHead>
                   <TableHead className="text-[10px] py-1.5 h-auto">{isAr ? "التاريخ" : "Date"}</TableHead>
-                  <TableHead className="text-[10px] py-1.5 h-auto w-8"></TableHead>
+                  <TableHead className="text-[10px] py-1.5 h-auto w-14"></TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
                 {data.certifications!.map((cert, i) => (
                   <TableRow key={i} className={`${rowBg(i)} border-border/10 group hover:bg-accent/30`}>
                     <TableCell className="py-2 px-3">
-                      <BilingualText en={cert.name} ar={cert.name_ar} />
+                      <div className="flex items-start gap-1">
+                        <BilingualText en={cert.name} ar={cert.name_ar} />
+                        {cert.name && !cert.name_ar && (
+                          <TranslateBtn small loading={translatingKey === `cert_name_${i}`}
+                            onClick={() => translate(cert.name, "en", (t) => updateData(d => ({ ...d, certifications: d.certifications?.map((c, ci) => ci === i ? { ...c, name_ar: t } : c) })), `cert_name_${i}`)} />
+                        )}
+                      </div>
                       {cert.description && <span className="text-[10px] text-muted-foreground block mt-0.5">{cert.description}</span>}
                     </TableCell>
-                    <TableCell className="py-2 px-3">
-                      <span className="text-xs">{cert.issuer || "—"}</span>
-                    </TableCell>
-                    <TableCell className="py-2 px-3">
-                      <span className="text-[11px] text-muted-foreground">{formatDate(cert.date)}</span>
-                    </TableCell>
+                    <TableCell className="py-2 px-3"><span className="text-xs">{cert.issuer || "—"}</span></TableCell>
+                    <TableCell className="py-2 px-3"><span className="text-[11px] text-muted-foreground">{formatDate(cert.date)}</span></TableCell>
                     <TableCell className="py-2 px-1">
                       <Button size="icon" variant="ghost" className="h-5 w-5 opacity-0 group-hover:opacity-100" onClick={() => removeCertItem(i)}>
                         <Trash2 className="h-3 w-3 text-destructive" />
@@ -588,7 +690,7 @@ export function CVPreview({ data: initialData, targetUserId, isAr, onBack, onSav
         </Card>
       )}
 
-      {/* ========= MEDIA APPEARANCES TABLE ========= */}
+      {/* ═══ MEDIA APPEARANCES ═══ */}
       {hasMedia && (
         <Card className="overflow-hidden">
           <CardHeader className="pb-2 bg-chart-1/5">
@@ -599,7 +701,7 @@ export function CVPreview({ data: initialData, targetUserId, isAr, onBack, onSav
               <TableHeader>
                 <TableRow className="bg-chart-1/5 border-border/10">
                   <TableHead className="text-[10px] py-1.5 h-auto">{isAr ? "النوع" : "Type"}</TableHead>
-                  <TableHead className="text-[10px] py-1.5 h-auto">{isAr ? "القناة / المنصة" : "Channel / Platform"}</TableHead>
+                  <TableHead className="text-[10px] py-1.5 h-auto">{isAr ? "القناة" : "Channel"}</TableHead>
                   <TableHead className="text-[10px] py-1.5 h-auto">{isAr ? "البرنامج" : "Program"}</TableHead>
                   <TableHead className="text-[10px] py-1.5 h-auto">{isAr ? "التاريخ" : "Date"}</TableHead>
                   <TableHead className="text-[10px] py-1.5 h-auto">{isAr ? "البلد" : "Country"}</TableHead>
@@ -611,25 +713,15 @@ export function CVPreview({ data: initialData, targetUserId, isAr, onBack, onSav
                   <TableRow key={i} className={`${rowBg(i)} border-border/10 group hover:bg-accent/30`}>
                     <TableCell className="py-2 px-3">
                       <span className="text-sm">{m.type ? (MEDIA_TYPE_LABELS[m.type]?.icon || "📺") : "📺"}</span>
-                      {m.type && (
-                        <span className="text-[10px] text-muted-foreground ms-1">
-                          {isAr ? (MEDIA_TYPE_LABELS[m.type]?.ar || m.type) : (MEDIA_TYPE_LABELS[m.type]?.en || m.type)}
-                        </span>
-                      )}
+                      {m.type && <span className="text-[10px] text-muted-foreground ms-1">{isAr ? (MEDIA_TYPE_LABELS[m.type]?.ar || m.type) : (MEDIA_TYPE_LABELS[m.type]?.en || m.type)}</span>}
                     </TableCell>
-                    <TableCell className="py-2 px-3">
-                      <span className="text-xs font-medium">{m.channel_name}</span>
-                    </TableCell>
+                    <TableCell className="py-2 px-3"><span className="text-xs font-medium">{m.channel_name}</span></TableCell>
                     <TableCell className="py-2 px-3">
                       <span className="text-xs">{m.program_name || "—"}</span>
                       {m.description && <span className="text-[10px] text-muted-foreground block mt-0.5">{m.description}</span>}
                     </TableCell>
-                    <TableCell className="py-2 px-3">
-                      <span className="text-[11px] text-muted-foreground">{formatDate(m.date)}</span>
-                    </TableCell>
-                    <TableCell className="py-2 px-3">
-                      {m.country_code && <span>{getFlag(m.country_code)} {m.country_code}</span>}
-                    </TableCell>
+                    <TableCell className="py-2 px-3"><span className="text-[11px] text-muted-foreground">{formatDate(m.date)}</span></TableCell>
+                    <TableCell className="py-2 px-3">{m.country_code && <span>{getFlag(m.country_code)} {m.country_code}</span>}</TableCell>
                     <TableCell className="py-2 px-1">
                       <Button size="icon" variant="ghost" className="h-5 w-5 opacity-0 group-hover:opacity-100" onClick={() => removeMediaItem(i)}>
                         <Trash2 className="h-3 w-3 text-destructive" />
@@ -643,36 +735,20 @@ export function CVPreview({ data: initialData, targetUserId, isAr, onBack, onSav
         </Card>
       )}
 
-      {/* ========= SKILLS & LANGUAGES ========= */}
+      {/* ═══ SKILLS & LANGUAGES ═══ */}
       {((data.skills?.length || 0) > 0 || (data.languages?.length || 0) > 0) && (
         <Card>
           <CardContent className="p-4 space-y-3">
             {(data.skills?.length || 0) > 0 && (
               <div>
-                <p className="text-xs font-semibold mb-1.5 flex items-center gap-1">
-                  <Globe2 className="h-3.5 w-3.5 text-primary" />
-                  {isAr ? "المهارات" : "Skills"}
-                </p>
-                <div className="flex flex-wrap gap-1.5">
-                  {data.skills!.map((s, i) => (
-                    <Badge key={i} variant="secondary" className="text-[10px] h-5">{s}</Badge>
-                  ))}
-                </div>
+                <p className="text-xs font-semibold mb-1.5 flex items-center gap-1"><Globe2 className="h-3.5 w-3.5 text-primary" />{isAr ? "المهارات" : "Skills"}</p>
+                <div className="flex flex-wrap gap-1.5">{data.skills!.map((s, i) => <Badge key={i} variant="secondary" className="text-[10px] h-5">{s}</Badge>)}</div>
               </div>
             )}
             {(data.languages?.length || 0) > 0 && (
               <div>
-                <p className="text-xs font-semibold mb-1.5 flex items-center gap-1">
-                  <Languages className="h-3.5 w-3.5 text-primary" />
-                  {isAr ? "اللغات" : "Languages"}
-                </p>
-                <div className="flex flex-wrap gap-1.5">
-                  {data.languages!.map((l, i) => (
-                    <Badge key={i} variant="outline" className="text-[10px] h-5">
-                      {l.language} {l.level && `(${l.level})`}
-                    </Badge>
-                  ))}
-                </div>
+                <p className="text-xs font-semibold mb-1.5 flex items-center gap-1"><Languages className="h-3.5 w-3.5 text-primary" />{isAr ? "اللغات" : "Languages"}</p>
+                <div className="flex flex-wrap gap-1.5">{data.languages!.map((l, i) => <Badge key={i} variant="outline" className="text-[10px] h-5">{l.language} {l.level && `(${l.level})`}</Badge>)}</div>
               </div>
             )}
           </CardContent>
