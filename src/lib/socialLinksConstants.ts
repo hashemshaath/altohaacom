@@ -134,6 +134,15 @@ export interface ExtraSettings {
   seo_description: string;
   seo_description_ar: string;
   og_image_url: string;
+  // Scheduled themes
+  scheduled_themes: Array<{
+    id: string;
+    theme_id: string;
+    start_date: string;
+    end_date: string;
+    label: string;
+    label_ar: string;
+  }>;
 }
 
 export const DEFAULT_EXTRA: ExtraSettings = {
@@ -180,6 +189,7 @@ export const DEFAULT_EXTRA: ExtraSettings = {
   seo_description: "",
   seo_description_ar: "",
   og_image_url: "",
+  scheduled_themes: [],
 };
 
 export function parseExtra(customCss: string | null | undefined): ExtraSettings {
@@ -189,6 +199,19 @@ export function parseExtra(customCss: string | null | undefined): ExtraSettings 
   } catch {
     return { ...DEFAULT_EXTRA };
   }
+}
+
+/** Resolve the active theme: if a scheduled theme is active now, use it; otherwise fall back to the page theme */
+export function resolveActiveTheme(pageTheme: string, extra: ExtraSettings): string {
+  const now = new Date();
+  for (const s of extra.scheduled_themes || []) {
+    const start = new Date(s.start_date);
+    const end = new Date(s.end_date);
+    if (now >= start && now <= end && THEME_COLORS[s.theme_id]) {
+      return s.theme_id;
+    }
+  }
+  return pageTheme;
 }
 
 export const FONT_FAMILIES = [
