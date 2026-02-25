@@ -1,4 +1,5 @@
 import { useState, useMemo, useCallback } from "react";
+import { useToast } from "@/hooks/use-toast";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
@@ -15,7 +16,7 @@ import { toast } from "@/hooks/use-toast";
 import {
   GraduationCap, Briefcase, Plus, Pencil, Trash2, X, Check, 
   Building2, MapPin, Trophy, Award, Medal, Users, ChevronDown, ChevronUp, FileText,
-  GripVertical, FolderPlus, Type,
+  GripVertical, FolderPlus, Type, Languages, Loader2,
 } from "lucide-react";
 import { CVImportDialog } from "@/components/cv-import/CVImportDialog";
 import {
@@ -96,6 +97,38 @@ interface SectionConfig {
 
 type SectionKey = string;
 
+// ── Smart Translate Button ──────────────────────────────────────
+
+function SmartTranslateBtn({ sourceText, fromLang, onTranslated, className }: {
+  sourceText: string; fromLang: "en" | "ar"; onTranslated: (text: string) => void; className?: string;
+}) {
+  const [loading, setLoading] = useState(false);
+  const { toast: showToast } = useToast();
+
+  const handleTranslate = async () => {
+    if (!sourceText.trim()) return;
+    setLoading(true);
+    try {
+      const { data, error } = await supabase.functions.invoke("smart-translate", {
+        body: { text: sourceText, from: fromLang, to: fromLang === "ar" ? "en" : "ar", context: "culinary/hospitality/food industry professional CV" },
+      });
+      if (error) throw error;
+      if (data?.translated) onTranslated(data.translated);
+    } catch (e: any) {
+      showToast({ title: "Translation failed", description: e.message, variant: "destructive" });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <Button type="button" variant="ghost" size="icon" className={`h-7 w-7 shrink-0 text-primary/70 hover:text-primary ${className || ""}`}
+      onClick={handleTranslate} disabled={loading || !sourceText.trim()} title={fromLang === "en" ? "ترجمة إلى العربية" : "Translate to English"}>
+      {loading ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Languages className="h-3.5 w-3.5" />}
+    </Button>
+  );
+}
+
 // ── Types ──────────────────────────────────────
 
 interface CareerRecord {
@@ -124,13 +157,13 @@ const formatDateShort = (date: string | null, isAr: boolean) => {
 
 const formatDateRange = (startDate: string | null, endDate: string | null, isCurrent: boolean, isAr: boolean) => {
   const start = formatDateShort(startDate, isAr);
-  if (!start) {
-    if (isCurrent) return isAr ? "مستمر" : "Ongoing";
-    return "";
+  const end = isCurrent ? "" : formatDateShort(endDate, isAr);
+  if (!start && !end) {
+    return isCurrent ? (isAr ? "لا يزال مستمراً" : "Still ongoing") : "";
   }
-  const end = isCurrent ? (isAr ? "مستمر" : "Ongoing") : formatDateShort(endDate, isAr);
-  if (!end) return start;
-  return `${start} – ${end}`;
+  if (isCurrent) return `${start} – ${isAr ? "مستمر" : "Ongoing"}`;
+  if (start && end && start !== end) return `${start} – ${end}`;
+  return start || end || "";
 };
 
 const labelFor = (key: string, list: { value: string; en: string; ar: string }[], isAr: boolean) => {
@@ -939,11 +972,17 @@ function CareerForm({ form, editingId, isAr, isPending, onUpdate, onSave, onCanc
       <div className="grid gap-2.5 sm:grid-cols-2">
         <div className="space-y-1.5">
           <Label className="text-xs font-medium">{isEdu ? (isAr ? "الدرجة (EN)" : "Degree (EN)") : (isAr ? "المسمى (EN)" : "Title (EN)")} *</Label>
-          <Input value={form.title} onChange={(e) => onUpdate("title", e.target.value)} className="h-9 text-xs" dir="ltr" placeholder={isAr ? "باللغة الإنجليزية" : "In English"} />
+          <div className="flex gap-1">
+            <Input value={form.title} onChange={(e) => onUpdate("title", e.target.value)} className="h-9 text-xs flex-1" dir="ltr" placeholder={isAr ? "باللغة الإنجليزية" : "In English"} />
+            <SmartTranslateBtn sourceText={form.title} fromLang="en" onTranslated={(t) => onUpdate("title_ar", t)} />
+          </div>
         </div>
         <div className="space-y-1.5">
           <Label className="text-xs font-medium">{isEdu ? (isAr ? "الدرجة (AR)" : "Degree (AR)") : (isAr ? "المسمى (AR)" : "Title (AR)")}</Label>
-          <Input value={form.title_ar} onChange={(e) => onUpdate("title_ar", e.target.value)} className="h-9 text-xs" dir="rtl" placeholder={isAr ? "باللغة العربية" : "In Arabic"} />
+          <div className="flex gap-1">
+            <Input value={form.title_ar} onChange={(e) => onUpdate("title_ar", e.target.value)} className="h-9 text-xs flex-1" dir="rtl" placeholder={isAr ? "باللغة العربية" : "In Arabic"} />
+            <SmartTranslateBtn sourceText={form.title_ar} fromLang="ar" onTranslated={(t) => onUpdate("title", t)} />
+          </div>
         </div>
       </div>
 
@@ -982,26 +1021,27 @@ function CareerForm({ form, editingId, isAr, isPending, onUpdate, onSave, onCanc
       ) : null}
 
       {/* Flexible Date Inputs */}
-      <div className="grid gap-2.5 sm:grid-cols-2">
+      <div className="grid gap-2.5 sm:grid-cols-2 items-end">
         <FlexibleDateInput
           value={form.start_date}
           onChange={(v) => onUpdate("start_date", v)}
           label={isAr ? "من" : "Start Date"}
           isAr={isAr}
         />
-        <FlexibleDateInput
-          value={form.end_date}
-          onChange={(v) => onUpdate("end_date", v)}
-          label={isAr ? "إلى" : "End Date"}
-          isAr={isAr}
-          disabled={form.is_current}
-        />
+        {!form.is_current && (
+          <FlexibleDateInput
+            value={form.end_date}
+            onChange={(v) => onUpdate("end_date", v)}
+            label={isAr ? "إلى (اختياري)" : "End Date (optional)"}
+            isAr={isAr}
+          />
+        )}
       </div>
 
       <div className="flex items-center gap-2.5 p-2.5 rounded-lg bg-muted/40">
-        <Switch checked={form.is_current} onCheckedChange={(v) => onUpdate("is_current", v)} />
+        <Switch checked={form.is_current} onCheckedChange={(v) => { onUpdate("is_current", v); if (v) onUpdate("end_date", ""); }} />
         <Label className="text-xs font-medium cursor-pointer">
-          {isEdu ? (isAr ? "لا زلت أدرس" : "Still ongoing") : (isAr ? "لا زلت أعمل" : "Still ongoing")}
+          {isEdu ? (isAr ? "لا يزال يدرس" : "Still ongoing") : (isAr ? "لا يزال يعمل" : "Still ongoing")}
         </Label>
       </div>
 

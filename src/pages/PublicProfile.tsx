@@ -73,14 +73,23 @@ const pickLocalizedText = (isAr: boolean, arText?: string | null, enText?: strin
 };
 
 const formatPeriodRange = (startDate: string | null, endDate: string | null, isCurrent: boolean, isAr: boolean) => {
-  const start = formatDate(startDate, isAr);
-  const end = formatDate(endDate, isAr);
+  const formatFlexDate = (date: string | null) => {
+    if (!date) return "";
+    const parts = date.split("-");
+    if (parts.length === 1 && parts[0].length === 4) return parts[0];
+    return formatDate(date, isAr);
+  };
+  const start = formatFlexDate(startDate);
+  const end = formatFlexDate(endDate);
 
-  if (isCurrent) return `${start || (isAr ? "غير محدد" : "Unknown")} – ${isAr ? "مستمر" : "Ongoing"}`;
-  if (start && end) return `${start} – ${end}`;
+  if (!start && !end) {
+    return isCurrent ? (isAr ? "لا يزال مستمراً" : "Still ongoing") : "";
+  }
+  if (isCurrent) return `${start} – ${isAr ? "مستمر" : "Ongoing"}`;
+  if (start && end && start !== end) return `${start} – ${end}`;
   if (start) return start;
   if (end) return end;
-  return isAr ? "غير محدد" : "Not specified";
+  return "";
 };
 
 
