@@ -102,7 +102,7 @@ const DEFAULT_SECTIONS: SectionConfig[] = [
   { key: "education", icon: "GraduationCap", en: "Education", ar: "التعليم", color: "bg-chart-2/10 text-chart-2", isCustom: false },
   { key: "work", icon: "Briefcase", en: "Experience", ar: "الخبرات", color: "bg-chart-3/10 text-chart-3", isCustom: false },
   { key: "memberships", icon: "Users", en: "Memberships", ar: "العضويات", color: "bg-primary/10 text-primary", isCustom: false },
-  { key: "competitions", icon: "Trophy", en: "Competitions", ar: "المسابقات", color: "bg-chart-4/10 text-chart-4", isCustom: false },
+  { key: "competitions", icon: "Trophy", en: "Competitions & Events", ar: "المسابقات والفعاليات", color: "bg-chart-4/10 text-chart-4", isCustom: false },
   { key: "awards", icon: "Medal", en: "Awards", ar: "الجوائز", color: "bg-chart-1/10 text-chart-1", isCustom: false },
 ];
 
@@ -207,6 +207,7 @@ const formatDateRange = (startDate: string | null, endDate: string | null, isCur
     return isCurrent ? (isAr ? "لا يزال مستمراً" : "Still ongoing") : "";
   }
   if (isCurrent) return `${start} – ${isAr ? "مستمر" : "Ongoing"}`;
+  if (!end) return start; // Single date only (year, month, or day)
   if (start && end && start !== end) return `${start} – ${end}`;
   return start || end || "";
 };
@@ -1493,20 +1494,34 @@ function CareerForm({ form, editingId, isAr, isPending, onUpdate, onSave, onCanc
         </div>
       ) : null}
 
-      {/* Date & Status row */}
-      <div className="grid gap-2 sm:grid-cols-2 items-end">
-        <FlexibleDateInput value={form.start_date} onChange={(v) => onUpdate("start_date", v)}
-          label={isAr ? "من" : "From"} isAr={isAr} />
-        {!form.is_current && (
-          <FlexibleDateInput value={form.end_date} onChange={(v) => onUpdate("end_date", v)}
-            label={isAr ? "إلى" : "To"} isAr={isAr} />
-        )}
-      </div>
-      <div className="flex items-center gap-2 px-2 py-1.5 rounded-lg bg-muted/40">
-        <Switch checked={form.is_current} onCheckedChange={(v) => { onUpdate("is_current", v); if (v) onUpdate("end_date", ""); }} className="scale-90" />
-        <Label className="text-[11px] font-medium cursor-pointer">
-          {isEdu ? (isAr ? "لا يزال يدرس" : "Still studying") : (isAr ? "لا يزال يعمل" : "Still working")}
-        </Label>
+      {/* Date section */}
+      <div className="space-y-2">
+        <div className="flex items-center gap-3 flex-wrap">
+          <div className="flex items-center gap-2 px-2 py-1.5 rounded-lg bg-muted/40">
+            <Switch checked={!form.is_current && !!form.end_date || form.is_current} onCheckedChange={(v) => {
+              if (!v) { onUpdate("end_date", ""); onUpdate("is_current", false); }
+            }} className="scale-90" id="date-range-toggle" />
+            <Label htmlFor="date-range-toggle" className="text-[11px] font-medium cursor-pointer">
+              {isAr ? "فترة (من - إلى)" : "Date range (From - To)"}
+            </Label>
+          </div>
+          {(!!form.end_date || form.is_current) && (
+            <div className="flex items-center gap-2 px-2 py-1.5 rounded-lg bg-muted/40">
+              <Switch checked={form.is_current} onCheckedChange={(v) => { onUpdate("is_current", v); if (v) onUpdate("end_date", ""); }} className="scale-90" id="is-current-toggle" />
+              <Label htmlFor="is-current-toggle" className="text-[11px] font-medium cursor-pointer">
+                {isEdu ? (isAr ? "لا يزال يدرس" : "Still studying") : (isAr ? "لا يزال مستمراً" : "Still ongoing")}
+              </Label>
+            </div>
+          )}
+        </div>
+        <div className="grid gap-2 sm:grid-cols-2 items-end">
+          <FlexibleDateInput value={form.start_date} onChange={(v) => onUpdate("start_date", v)}
+            label={(!!form.end_date || form.is_current) ? (isAr ? "من" : "From") : (isAr ? "التاريخ" : "Date")} isAr={isAr} />
+          {(!!form.end_date || form.is_current) && !form.is_current && (
+            <FlexibleDateInput value={form.end_date} onChange={(v) => onUpdate("end_date", v)}
+              label={isAr ? "إلى" : "To"} isAr={isAr} />
+          )}
+        </div>
       </div>
 
       <FormActions isAr={isAr} isPending={isPending} editingId={editingId} canSave={!!form.title.trim()} onSave={onSave} onCancel={onCancel} />
