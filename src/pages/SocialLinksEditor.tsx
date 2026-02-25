@@ -30,7 +30,8 @@ import {
   Facebook, Linkedin, Youtube, Smartphone, Type, EyeOff, Settings2,
   Phone, MessageCircle, Music, ShoppingBag, CalendarDays, Video, Briefcase,
   Sparkles, TrendingUp, Loader2, GripVertical, Image, FileText,
-  AlignLeft, AlignCenter, AlignRight, LayoutGrid, LayoutList, ArrowLeftRight, Clock, Calendar
+  AlignLeft, AlignCenter, AlignRight, LayoutGrid, LayoutList, ArrowLeftRight, Clock, Calendar,
+  FileDown, FileUp
 } from "lucide-react";
 import { buildSocialLinksPath, buildSocialLinksUrl } from "@/lib/publicAppUrl";
 
@@ -346,6 +347,82 @@ export default function SocialLinksEditor() {
     } as any);
     setNewLink({ title: "", title_ar: "", url: "", icon: "", link_type: "custom", scheduled_start: "", scheduled_end: "" });
   }, [newLink, page, form, extra, items.length, isAr, toast, upsertPage, addItem]);
+
+  // ── Export/Import Links ──
+  const handleExportLinks = useCallback(() => {
+    const exportData = items.map(item => ({
+      title: item.title,
+      title_ar: item.title_ar || "",
+      url: item.url,
+      icon: item.icon || "",
+      link_type: item.link_type || "custom",
+      sort_order: item.sort_order,
+      is_active: item.is_active,
+    }));
+    const blob = new Blob([JSON.stringify(exportData, null, 2)], { type: "application/json" });
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = `${profile?.username || "links"}-altoha-export.json`;
+    a.click();
+    URL.revokeObjectURL(a.href);
+    toast({ title: isAr ? "✅ تم تصدير الروابط" : "✅ Links exported" });
+  }, [items, profile?.username, isAr, toast]);
+
+  const handleExportCSV = useCallback(() => {
+    const header = "title,title_ar,url,icon,link_type,sort_order,is_active";
+    const rows = items.map(item =>
+      [item.title, item.title_ar || "", item.url, item.icon || "", item.link_type || "custom", item.sort_order, item.is_active]
+        .map(v => `"${String(v).replace(/"/g, '""')}"`)
+        .join(",")
+    );
+    const csv = [header, ...rows].join("\n");
+    const blob = new Blob([csv], { type: "text/csv" });
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = `${profile?.username || "links"}-altoha-export.csv`;
+    a.click();
+    URL.revokeObjectURL(a.href);
+    toast({ title: isAr ? "✅ تم تصدير CSV" : "✅ CSV exported" });
+  }, [items, profile?.username, isAr, toast]);
+
+  const handleImportLinks = useCallback(async (file: File) => {
+    if (!page?.id && !user) return;
+    try {
+      const text = await file.text();
+      let importedItems: any[];
+      if (file.name.endsWith(".csv")) {
+        const lines = text.trim().split("\n");
+        const headers = lines[0].split(",").map(h => h.replace(/"/g, "").trim());
+        importedItems = lines.slice(1).map(line => {
+          const values = line.match(/(".*?"|[^,]+)/g)?.map(v => v.replace(/^"|"$/g, "").replace(/""/g, '"')) || [];
+          const obj: any = {};
+          headers.forEach((h, i) => { obj[h] = values[i] || ""; });
+          return obj;
+        });
+      } else {
+        importedItems = JSON.parse(text);
+      }
+      if (!Array.isArray(importedItems)) throw new Error("Invalid format");
+
+      const pageId = page?.id || (await upsertPage.mutateAsync({ ...form, custom_css: JSON.stringify(extra) })).id;
+      let order = items.length;
+      for (const item of importedItems) {
+        if (!item.title || !item.url) continue;
+        await addItem.mutateAsync({
+          page_id: pageId,
+          title: item.title,
+          title_ar: item.title_ar || undefined,
+          url: item.url,
+          icon: item.icon || undefined,
+          link_type: item.link_type || "custom",
+          sort_order: order++,
+        } as any);
+      }
+      toast({ title: isAr ? `✅ تم استيراد ${importedItems.length} رابط` : `✅ Imported ${importedItems.length} links` });
+    } catch (err: any) {
+      toast({ title: isAr ? "خطأ في الاستيراد" : "Import error", description: err.message, variant: "destructive" });
+    }
+  }, [page, user, form, extra, items.length, isAr, toast, upsertPage, addItem]);
 
   const startEditing = useCallback((item: any) => {
     setEditingItem(item.id);
@@ -920,6 +997,24 @@ export default function SocialLinksEditor() {
 
                   {/* ── Links Tab (with Drag & Drop) ── */}
                   <TabsContent value="links" className="space-y-4 mt-4 animate-in fade-in slide-in-from-bottom-2 duration-300">
+                    {/* Export/Import Bar */}
+                    {items.length > 0 && (
+                      <div className="flex items-center gap-2 flex-wrap">
+                        <Button variant="outline" size="sm" className="gap-1.5 text-xs" onClick={handleExportLinks}>
+                          <FileDown className="h-3.5 w-3.5" />{isAr ? "تصدير JSON" : "Export JSON"}
+                        </Button>
+                        <Button variant="outline" size="sm" className="gap-1.5 text-xs" onClick={handleExportCSV}>
+                          <FileDown className="h-3.5 w-3.5" />{isAr ? "تصدير CSV" : "Export CSV"}
+                        </Button>
+                        <label>
+                          <Button variant="outline" size="sm" className="gap-1.5 text-xs cursor-pointer" asChild>
+                            <span><FileUp className="h-3.5 w-3.5" />{isAr ? "استيراد" : "Import"}</span>
+                          </Button>
+                          <input type="file" accept=".json,.csv" className="hidden" onChange={e => { if (e.target.files?.[0]) handleImportLinks(e.target.files[0]); e.target.value = ""; }} />
+                        </label>
+                        <Badge variant="secondary" className="text-[10px] ms-auto">{items.length} {isAr ? "رابط" : "links"}</Badge>
+                      </div>
+                    )}
                     <Card className="overflow-hidden">
                       <CardHeader className="pb-3 bg-gradient-to-r from-muted/40 to-transparent">
                         <CardTitle className="text-sm flex items-center gap-2">
