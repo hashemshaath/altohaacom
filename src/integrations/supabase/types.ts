@@ -17612,6 +17612,7 @@ export type Database = {
           is_active: boolean | null
           link_type: string
           page_id: string
+          page_tab: string
           scheduled_end: string | null
           scheduled_start: string | null
           sort_order: number
@@ -17636,6 +17637,7 @@ export type Database = {
           is_active?: boolean | null
           link_type?: string
           page_id: string
+          page_tab?: string
           scheduled_end?: string | null
           scheduled_start?: string | null
           sort_order?: number
@@ -17660,6 +17662,7 @@ export type Database = {
           is_active?: boolean | null
           link_type?: string
           page_id?: string
+          page_tab?: string
           scheduled_end?: string | null
           scheduled_start?: string | null
           sort_order?: number

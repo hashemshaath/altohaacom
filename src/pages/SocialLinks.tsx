@@ -554,14 +554,19 @@ export default function SocialLinks() {
 
   const filteredItems = useMemo(() => {
     const now = new Date();
-    return (activePage === "main" || !extra.pages.length ? items : items).filter(item => {
+    return items.filter(item => {
+      // Filter by page tab
+      if (activePage !== "main") {
+        const itemTab = (item as any).page_tab || "main";
+        if (itemTab !== activePage) return false;
+      }
       const start = (item as any).scheduled_start;
       const end = (item as any).scheduled_end;
       if (start && new Date(start) > now) return false;
       if (end && new Date(end) < now) return false;
       return true;
     });
-  }, [items, activePage, extra.pages.length]);
+  }, [items, activePage]);
 
   const hasMultiPages = extra.pages && extra.pages.length > 0;
 

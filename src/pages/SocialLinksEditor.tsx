@@ -140,7 +140,7 @@ export default function SocialLinksEditor() {
   const { toast } = useToast();
   const [copied, setCopied] = useState(false);
   const [editingItem, setEditingItem] = useState<string | null>(null);
-  const [editForm, setEditForm] = useState({ title: "", title_ar: "", url: "", icon: "", scheduled_start: "", scheduled_end: "" });
+  const [editForm, setEditForm] = useState({ title: "", title_ar: "", url: "", icon: "", scheduled_start: "", scheduled_end: "", page_tab: "main" });
   const [uploading, setUploading] = useState(false);
   const [savingSocials, setSavingSocials] = useState(false);
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
@@ -320,7 +320,7 @@ export default function SocialLinksEditor() {
   });
 
   const [extra, setExtra] = useState<ExtraSettings>({ ...DEFAULT_EXTRA });
-  const [newLink, setNewLink] = useState({ title: "", title_ar: "", url: "", icon: "", link_type: "custom", scheduled_start: "", scheduled_end: "" });
+  const [newLink, setNewLink] = useState({ title: "", title_ar: "", url: "", icon: "", link_type: "custom", scheduled_start: "", scheduled_end: "", page_tab: "main" });
 
   useEffect(() => {
     if (page) {
@@ -430,10 +430,11 @@ export default function SocialLinksEditor() {
       page_id: pageId, title: newLink.title,
       title_ar: newLink.title_ar || undefined, url: newLink.url,
       icon: newLink.icon || undefined, link_type: newLink.link_type, sort_order: items.length,
+      page_tab: newLink.page_tab || "main",
       ...(newLink.scheduled_start ? { scheduled_start: new Date(newLink.scheduled_start).toISOString() } : {}),
       ...(newLink.scheduled_end ? { scheduled_end: new Date(newLink.scheduled_end).toISOString() } : {}),
     } as any);
-    setNewLink({ title: "", title_ar: "", url: "", icon: "", link_type: "custom", scheduled_start: "", scheduled_end: "" });
+    setNewLink({ title: "", title_ar: "", url: "", icon: "", link_type: "custom", scheduled_start: "", scheduled_end: "", page_tab: newLink.page_tab });
   }, [newLink, page, form, extra, items.length, isAr, toast, upsertPage, addItem]);
 
   // ── Export/Import Links ──
@@ -514,15 +515,16 @@ export default function SocialLinksEditor() {
 
   const startEditing = useCallback((item: any) => {
     setEditingItem(item.id);
-    setEditForm({ title: item.title, title_ar: item.title_ar || "", url: item.url, icon: item.icon || "", scheduled_start: item.scheduled_start ? new Date(item.scheduled_start).toISOString().slice(0, 16) : "", scheduled_end: item.scheduled_end ? new Date(item.scheduled_end).toISOString().slice(0, 16) : "" });
+    setEditForm({ title: item.title, title_ar: item.title_ar || "", url: item.url, icon: item.icon || "", scheduled_start: item.scheduled_start ? new Date(item.scheduled_start).toISOString().slice(0, 16) : "", scheduled_end: item.scheduled_end ? new Date(item.scheduled_end).toISOString().slice(0, 16) : "", page_tab: (item as any).page_tab || "main" });
   }, []);
 
   const saveEdit = useCallback(() => {
     if (editingItem) {
-      const { scheduled_start, scheduled_end, ...rest } = editForm;
+      const { scheduled_start, scheduled_end, page_tab, ...rest } = editForm;
       updateItem.mutate({
         id: editingItem,
         ...rest,
+        page_tab: page_tab || "main",
         ...(scheduled_start ? { scheduled_start: new Date(scheduled_start).toISOString() } : { scheduled_start: null }),
         ...(scheduled_end ? { scheduled_end: new Date(scheduled_end).toISOString() } : { scheduled_end: null }),
       });
@@ -1088,6 +1090,89 @@ export default function SocialLinksEditor() {
                         </div>
                       </CardContent>
                     </Card>
+
+                    {/* ── Multi-Page Management ── */}
+                    <Card className="overflow-hidden">
+                      <CardHeader className="pb-3 bg-gradient-to-r from-muted/40 to-transparent">
+                        <CardTitle className="text-sm flex items-center gap-2">
+                          <div className="h-7 w-7 rounded-lg bg-chart-3/10 flex items-center justify-center">
+                            <LayoutGrid className="h-3.5 w-3.5 text-chart-3" />
+                          </div>
+                          {isAr ? "الصفحات الفرعية" : "Sub-Pages"}
+                          {extra.pages.length > 0 && <Badge variant="secondary" className="text-[10px] ms-auto">{extra.pages.length}</Badge>}
+                        </CardTitle>
+                        <p className="text-[11px] text-muted-foreground">
+                          {isAr ? "أنشئ صفحات فرعية مثل Portfolio, Menu, Services" : "Create sub-pages like Portfolio, Menu, Services"}
+                        </p>
+                      </CardHeader>
+                      <CardContent className="pt-3 space-y-3">
+                        {extra.pages.length > 0 && (
+                          <div className="space-y-2">
+                            {extra.pages.map((pg, idx) => (
+                              <div key={pg.id} className="flex items-center gap-2 p-2.5 rounded-xl border border-border/50 bg-card">
+                                <div className="h-7 w-7 rounded-lg bg-chart-3/10 flex items-center justify-center text-xs font-bold text-chart-3 shrink-0">
+                                  {idx + 1}
+                                </div>
+                                <div className="flex-1 min-w-0 grid grid-cols-2 gap-1.5">
+                                  <Input
+                                    value={pg.label}
+                                    onChange={e => {
+                                      const updated = [...extra.pages];
+                                      updated[idx] = { ...updated[idx], label: e.target.value };
+                                      setExtra(prev => ({ ...prev, pages: updated }));
+                                      setHasUnsavedChanges(true);
+                                    }}
+                                    placeholder="Label (EN)"
+                                    className="h-7 text-[10px]"
+                                    dir="ltr"
+                                  />
+                                  <Input
+                                    value={pg.label_ar}
+                                    onChange={e => {
+                                      const updated = [...extra.pages];
+                                      updated[idx] = { ...updated[idx], label_ar: e.target.value };
+                                      setExtra(prev => ({ ...prev, pages: updated }));
+                                      setHasUnsavedChanges(true);
+                                    }}
+                                    placeholder="التسمية (AR)"
+                                    className="h-7 text-[10px]"
+                                    dir="rtl"
+                                  />
+                                </div>
+                                <Button
+                                  variant="ghost"
+                                  size="sm"
+                                  className="h-7 w-7 p-0 text-destructive/60 hover:text-destructive shrink-0"
+                                  onClick={() => {
+                                    const updated = extra.pages.filter((_, i) => i !== idx);
+                                    setExtra(prev => ({ ...prev, pages: updated }));
+                                    setHasUnsavedChanges(true);
+                                  }}
+                                >
+                                  <Trash2 className="h-3 w-3" />
+                                </Button>
+                              </div>
+                            ))}
+                          </div>
+                        )}
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          className="w-full gap-1.5 text-xs"
+                          onClick={() => {
+                            const id = `page_${Date.now()}`;
+                            setExtra(prev => ({
+                              ...prev,
+                              pages: [...prev.pages, { id, label: "", label_ar: "" }],
+                            }));
+                            setHasUnsavedChanges(true);
+                          }}
+                        >
+                          <Plus className="h-3 w-3" />
+                          {isAr ? "إضافة صفحة فرعية" : "Add Sub-Page"}
+                        </Button>
+                      </CardContent>
+                    </Card>
                   </TabsContent>
 
                   {/* ── Links Tab (with Drag & Drop) ── */}
@@ -1151,6 +1236,21 @@ export default function SocialLinksEditor() {
                             <Input type="datetime-local" value={newLink.scheduled_end} onChange={e => setNewLink(l => ({ ...l, scheduled_end: e.target.value }))} className="text-xs h-8" dir="ltr" />
                           </div>
                         </div>
+                        {/* Page Tab Assignment */}
+                        {extra.pages.length > 0 && (
+                          <div>
+                            <Label className="text-[10px] mb-1 block text-muted-foreground flex items-center gap-1"><LayoutGrid className="h-3 w-3" />{isAr ? "الصفحة" : "Page"}</Label>
+                            <Select value={newLink.page_tab} onValueChange={v => setNewLink(l => ({ ...l, page_tab: v }))}>
+                              <SelectTrigger className="h-8 text-xs"><SelectValue /></SelectTrigger>
+                              <SelectContent>
+                                <SelectItem value="main">{isAr ? "الرئيسية" : "Main"}</SelectItem>
+                                {extra.pages.map(pg => (
+                                  <SelectItem key={pg.id} value={pg.id}>{pg.label || pg.label_ar || pg.id}</SelectItem>
+                                ))}
+                              </SelectContent>
+                            </Select>
+                          </div>
+                        )}
                         <Button onClick={handleAddLink} disabled={addItem.isPending} className="w-full gap-1.5" size="sm">
                           {addItem.isPending ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Plus className="h-3.5 w-3.5" />}
                           {isAr ? "إضافة" : "Add Link"}
@@ -1251,6 +1351,21 @@ export default function SocialLinksEditor() {
                                           <Input type="datetime-local" value={editForm.scheduled_end} onChange={e => setEditForm(f => ({ ...f, scheduled_end: e.target.value }))} className="text-xs h-7" dir="ltr" />
                                         </div>
                                       </div>
+                                      {/* Page Tab in edit mode */}
+                                      {extra.pages.length > 0 && (
+                                        <div>
+                                          <Label className="text-[9px] text-muted-foreground flex items-center gap-1"><LayoutGrid className="h-2.5 w-2.5" />{isAr ? "الصفحة" : "Page"}</Label>
+                                          <Select value={editForm.page_tab} onValueChange={v => setEditForm(f => ({ ...f, page_tab: v }))}>
+                                            <SelectTrigger className="h-7 text-[10px]"><SelectValue /></SelectTrigger>
+                                            <SelectContent>
+                                              <SelectItem value="main">{isAr ? "الرئيسية" : "Main"}</SelectItem>
+                                              {extra.pages.map(pg => (
+                                                <SelectItem key={pg.id} value={pg.id}>{pg.label || pg.label_ar || pg.id}</SelectItem>
+                                              ))}
+                                            </SelectContent>
+                                          </Select>
+                                        </div>
+                                      )}
                                       {item.thumbnail_url && (
                                         <div className="flex items-center gap-2">
                                           <img src={item.thumbnail_url} alt="" className="h-8 w-8 rounded-md object-cover" />
@@ -1328,6 +1443,13 @@ export default function SocialLinksEditor() {
                                       <p className="text-sm font-medium truncate">{item.title}</p>
                                       {item.title_ar && <p className="text-[10px] text-muted-foreground truncate" dir="rtl">{item.title_ar}</p>}
                                       <p className="text-[11px] text-muted-foreground truncate">{item.url}</p>
+                                      {/* Page tab badge */}
+                                      {extra.pages.length > 0 && (item as any).page_tab && (item as any).page_tab !== "main" && (
+                                        <Badge variant="outline" className="text-[8px] h-4 px-1.5 mt-1 border-chart-3/30 text-chart-3">
+                                          <LayoutGrid className="h-2 w-2 me-0.5" />
+                                          {extra.pages.find(p => p.id === (item as any).page_tab)?.label || (item as any).page_tab}
+                                        </Badge>
+                                      )}
                                       {((item as any).scheduled_start || (item as any).scheduled_end) && (
                                         <div className="flex items-center gap-1 mt-1">
                                           <Clock className="h-2.5 w-2.5 text-chart-2" />
