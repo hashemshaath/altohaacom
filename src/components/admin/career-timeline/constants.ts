@@ -21,6 +21,7 @@ export interface CareerRecord {
   employment_type: string | null; start_date: string | null; end_date: string | null; is_current: boolean;
   description: string | null; description_ar: string | null; location: string | null; sort_order: number; created_at: string;
   entity_name_ar?: string | null;
+  country_code?: string | null;
 }
 
 // ── Lookup Tables ──────────────────────────────────────
@@ -54,10 +55,10 @@ export const MEMBERSHIP_TYPES = [
 ];
 
 export const CERTIFICATE_TYPES = [
-  { value: "participation", en: "Participation", ar: "مشاركة" },
-  { value: "achievement", en: "Achievement", ar: "إنجاز" },
-  { value: "winner", en: "Winner", ar: "فائز" },
-  { value: "judge", en: "Judging", ar: "تحكيم" },
+  { value: "participation", en: "Participation", ar: "مشاركة", emoji: "📋" },
+  { value: "achievement", en: "Achievement", ar: "إنجاز", emoji: "⭐" },
+  { value: "winner", en: "Winner", ar: "فائز", emoji: "🏆" },
+  { value: "judge", en: "Judging", ar: "تحكيم", emoji: "⚖️" },
 ];
 
 export const COMPETITION_ROLES = [
@@ -78,12 +79,12 @@ export const JUDGING_POSITIONS = [
 ];
 
 export const MEDAL_TYPES = [
-  { value: "gold", en: "Gold Medal", ar: "ميدالية ذهبية" },
-  { value: "silver", en: "Silver Medal", ar: "ميدالية فضية" },
-  { value: "bronze", en: "Bronze Medal", ar: "ميدالية برونزية" },
-  { value: "diploma", en: "Diploma", ar: "دبلوم" },
-  { value: "best_in_show", en: "Best in Show", ar: "الأفضل" },
-  { value: "other", en: "Other", ar: "أخرى" },
+  { value: "gold", en: "Gold Medal", ar: "ميدالية ذهبية", emoji: "🥇" },
+  { value: "silver", en: "Silver Medal", ar: "ميدالية فضية", emoji: "🥈" },
+  { value: "bronze", en: "Bronze Medal", ar: "ميدالية برونزية", emoji: "🥉" },
+  { value: "diploma", en: "Diploma", ar: "دبلوم", emoji: "📜" },
+  { value: "best_in_show", en: "Best in Show", ar: "الأفضل", emoji: "🏆" },
+  { value: "other", en: "Other", ar: "أخرى", emoji: "" },
 ];
 
 export const COUNTRIES = [
@@ -184,4 +185,53 @@ export const formatDateRange = (startDate: string | null, endDate: string | null
 export const labelFor = (key: string, list: { value: string; en: string; ar: string }[], isAr: boolean) => {
   const item = list.find(l => l.value === key);
   return item ? (isAr ? item.ar : item.en) : key;
+};
+
+/** Build a compact summary string for a career record row */
+export const buildRecordMeta = (
+  r: CareerRecord,
+  sectionKey: string,
+  isAr: boolean,
+): { mainTitle: string; subtitle: string; meta: string; badge?: string; badgeVariant?: "default" | "secondary" | "outline" } => {
+  const mainTitle = isAr ? (r.title_ar || r.title) : r.title;
+  const subtitle = r.entity_name || "";
+
+  const parts: string[] = [];
+  const dateRange = formatDateRange(r.start_date, r.end_date, r.is_current, isAr);
+  if (dateRange) parts.push(dateRange);
+
+  // Section-specific metadata
+  if (sectionKey === "education") {
+    if (r.education_level) parts.push(labelFor(r.education_level, EDUCATION_LEVELS, isAr));
+    if (r.field_of_study) parts.push(isAr ? (r.field_of_study_ar || r.field_of_study) : r.field_of_study);
+    if (r.grade) parts.push(isAr ? `معدل: ${r.grade}` : `GPA: ${r.grade}`);
+  }
+  if (sectionKey === "work" && r.employment_type) {
+    parts.push(labelFor(r.employment_type, EMPLOYMENT_TYPES, isAr));
+  }
+  if (sectionKey === "judging" && r.employment_type) {
+    parts.push(labelFor(r.employment_type, JUDGING_POSITIONS, isAr));
+  }
+  if (sectionKey === "competitions" && r.employment_type) {
+    parts.push(labelFor(r.employment_type, COMPETITION_ROLES, isAr));
+  }
+  if (sectionKey === "media") {
+    if (r.department) parts.push(`${isAr ? "مقدم" : "Host"}: ${r.department}`);
+    if (r.field_of_study) parts.push(`${isAr ? "ضيف" : "Guest"}: ${r.field_of_study}`);
+  }
+  if (r.location) parts.push(r.location);
+  if (r.country_code) {
+    const country = COUNTRIES.find(c => c.code === r.country_code);
+    if (country) parts.push(`${country.flag} ${isAr ? country.ar : country.en}`);
+  }
+
+  // Medal badge for competitions
+  let badge: string | undefined;
+  let badgeVariant: "default" | "secondary" | "outline" | undefined;
+  if (sectionKey === "competitions" && r.grade) {
+    const medal = MEDAL_TYPES.find(m => m.value === r.grade);
+    if (medal) { badge = `${medal.emoji || ""} ${isAr ? medal.ar : medal.en}`.trim(); badgeVariant = "outline"; }
+  }
+
+  return { mainTitle, subtitle, meta: parts.join(" · "), badge, badgeVariant };
 };
