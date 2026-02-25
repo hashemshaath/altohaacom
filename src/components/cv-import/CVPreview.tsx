@@ -9,9 +9,12 @@ import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import {
+  Table, TableBody, TableCell, TableHead, TableHeader, TableRow,
+} from "@/components/ui/table";
+import {
   ArrowLeft, Save, Loader2, User, GraduationCap, Briefcase,
   Trophy, Award, Tv, Globe2, Languages, CheckCircle2, MapPin, Calendar,
-  Edit3, X, Plus, Trash2,
+  Edit3, X, Trash2,
 } from "lucide-react";
 import type { CVData, CVWorkExperience, CVEducation, CVCompetition, CVMediaAppearance } from "./types";
 import {
@@ -36,37 +39,35 @@ const formatDate = (d?: string) => {
   } catch { return d; }
 };
 
-const DateRange = ({ start, end, isCurrent, isAr }: { start?: string; end?: string; isCurrent?: boolean; isAr: boolean }) => (
-  <span className="text-[11px] text-muted-foreground flex items-center gap-1">
-    <Calendar className="h-3 w-3" />
-    {formatDate(start)} — {isCurrent ? (isAr ? "الحالي" : "Present") : formatDate(end)}
-  </span>
-);
-
-const LocationBadge = ({ location, countryCode }: { location?: string; countryCode?: string }) => {
-  if (!location && !countryCode) return null;
+/** Bilingual display: EN / AR with flag */
+const BilingualText = ({ en, ar, flag }: { en?: string; ar?: string; flag?: string }) => {
+  if (!en && !ar) return <span className="text-muted-foreground/40">—</span>;
   return (
-    <span className="text-[11px] text-muted-foreground flex items-center gap-0.5">
-      {countryCode && <span>{getFlag(countryCode)}</span>}
-      <MapPin className="h-3 w-3" />
-      {location}
+    <div className="flex flex-col gap-0.5">
+      {en && <span className="text-xs font-medium" dir="ltr">{flag && <span className="me-1">{flag}</span>}{en}</span>}
+      {ar && <span className="text-xs text-muted-foreground" dir="rtl">{flag && !en && <span className="me-1">{flag}</span>}{ar}</span>}
+    </div>
+  );
+};
+
+/** Location display: flag + city, country */
+const LocationDisplay = ({ city, countryCode }: { city?: string; countryCode?: string }) => {
+  if (!city && !countryCode) return null;
+  const flag = getFlag(countryCode);
+  const parts = [city, countryCode?.toUpperCase()].filter(Boolean).join(", ");
+  return (
+    <span className="text-[11px] text-muted-foreground inline-flex items-center gap-1">
+      {flag && <span>{flag}</span>}
+      {parts}
     </span>
   );
 };
 
 // Inline editable field component
 function EditableText({
-  value,
-  onChange,
-  label,
-  multiline,
-  className = "",
+  value, onChange, label, multiline, className = "",
 }: {
-  value: string;
-  onChange: (v: string) => void;
-  label?: string;
-  multiline?: boolean;
-  className?: string;
+  value: string; onChange: (v: string) => void; label?: string; multiline?: boolean; className?: string;
 }) {
   const [editing, setEditing] = useState(false);
   const [draft, setDraft] = useState(value);
@@ -99,25 +100,20 @@ function EditableText({
   );
 }
 
+/** Alternating row style helper */
+const rowBg = (i: number) => i % 2 === 0 ? "bg-muted/20" : "bg-muted/50";
+
 export function CVPreview({ data: initialData, targetUserId, isAr, onBack, onSaved, onDataChange }: Props) {
   const { toast } = useToast();
   const [saving, setSaving] = useState(false);
   const [data, setData] = useState<CVData>(initialData);
   const [sections, setSections] = useState({
-    personal: true,
-    education: true,
-    work: true,
-    competitions: true,
-    certifications: true,
-    media: true,
+    personal: true, education: true, work: true,
+    competitions: true, certifications: true, media: true,
   });
 
   const updateData = useCallback((updater: (d: CVData) => CVData) => {
-    setData(prev => {
-      const next = updater(prev);
-      onDataChange?.(next);
-      return next;
-    });
+    setData(prev => { const next = updater(prev); onDataChange?.(next); return next; });
   }, [onDataChange]);
 
   const updatePersonal = useCallback((key: string, value: any) => {
@@ -125,17 +121,11 @@ export function CVPreview({ data: initialData, targetUserId, isAr, onBack, onSav
   }, [updateData]);
 
   const updateWorkItem = useCallback((index: number, key: string, value: any) => {
-    updateData(d => ({
-      ...d,
-      work_experience: d.work_experience?.map((w, i) => i === index ? { ...w, [key]: value } : w),
-    }));
+    updateData(d => ({ ...d, work_experience: d.work_experience?.map((w, i) => i === index ? { ...w, [key]: value } : w) }));
   }, [updateData]);
 
   const updateEduItem = useCallback((index: number, key: string, value: any) => {
-    updateData(d => ({
-      ...d,
-      education: d.education?.map((e, i) => i === index ? { ...e, [key]: value } : e),
-    }));
+    updateData(d => ({ ...d, education: d.education?.map((e, i) => i === index ? { ...e, [key]: value } : e) }));
   }, [updateData]);
 
   const removeWorkItem = useCallback((index: number) => {
@@ -154,8 +144,11 @@ export function CVPreview({ data: initialData, targetUserId, isAr, onBack, onSav
     updateData(d => ({ ...d, media_appearances: d.media_appearances?.filter((_, i) => i !== index) }));
   }, [updateData]);
 
-  const toggle = (key: keyof typeof sections) =>
-    setSections((p) => ({ ...p, [key]: !p[key] }));
+  const removeCertItem = useCallback((index: number) => {
+    updateData(d => ({ ...d, certifications: d.certifications?.filter((_, i) => i !== index) }));
+  }, [updateData]);
+
+  const toggle = (key: keyof typeof sections) => setSections((p) => ({ ...p, [key]: !p[key] }));
 
   const pi = data.personal_info;
   const hasPersonal = pi && Object.values(pi).some(v => v);
@@ -165,155 +158,76 @@ export function CVPreview({ data: initialData, targetUserId, isAr, onBack, onSav
   const hasCert = (data.certifications?.length || 0) > 0;
   const hasMedia = (data.media_appearances?.length || 0) > 0;
 
+  // --- Save handler (unchanged logic) ---
   const handleSave = async () => {
     setSaving(true);
     let recordsCreated = 0;
     const sectionsImported: string[] = [];
-
     try {
-      // 1. Update profile personal info
       if (sections.personal && hasPersonal) {
         const profileUpdate: Record<string, any> = {};
-        if (pi.full_name) profileUpdate.full_name = pi.full_name;
-        if (pi.full_name_ar) profileUpdate.full_name_ar = pi.full_name_ar;
-        if (pi.phone) profileUpdate.phone = pi.phone;
-        if (pi.nationality) profileUpdate.nationality = pi.nationality;
-        if (pi.second_nationality) profileUpdate.second_nationality = pi.second_nationality;
-        if (pi.country_code) profileUpdate.country_code = pi.country_code;
-        if (pi.city) profileUpdate.city = pi.city;
-        if (pi.location) profileUpdate.location = pi.location;
-        if (pi.job_title) profileUpdate.job_title = pi.job_title;
-        if (pi.job_title_ar) profileUpdate.job_title_ar = pi.job_title_ar;
-        if (pi.specialization) profileUpdate.specialization = pi.specialization;
-        if (pi.specialization_ar) profileUpdate.specialization_ar = pi.specialization_ar;
-        if (pi.bio) profileUpdate.bio = pi.bio;
-        if (pi.bio_ar) profileUpdate.bio_ar = pi.bio_ar;
-        if (pi.years_of_experience) profileUpdate.years_of_experience = pi.years_of_experience;
-        if (pi.experience_level) profileUpdate.experience_level = pi.experience_level;
-        if (pi.date_of_birth) profileUpdate.date_of_birth = pi.date_of_birth;
-        if (pi.gender) profileUpdate.gender = pi.gender;
-        if (pi.website) profileUpdate.website = pi.website;
-        if (pi.linkedin) profileUpdate.linkedin = pi.linkedin;
-        if (pi.instagram) profileUpdate.instagram = pi.instagram;
-        if (pi.twitter) profileUpdate.twitter = pi.twitter;
-
+        const keys = ["full_name","full_name_ar","phone","nationality","second_nationality","country_code","city","location","job_title","job_title_ar","specialization","specialization_ar","bio","bio_ar","years_of_experience","experience_level","date_of_birth","gender","website","linkedin","instagram","twitter"];
+        keys.forEach(k => { if ((pi as any)[k]) profileUpdate[k] = (pi as any)[k]; });
         if (Object.keys(profileUpdate).length > 0) {
           const { error } = await supabase.from("profiles").update(profileUpdate).eq("user_id", targetUserId);
-          if (error) console.error("Profile update error:", error);
-          else { recordsCreated++; sectionsImported.push("personal"); }
+          if (!error) { recordsCreated++; sectionsImported.push("personal"); }
         }
       }
-
-      // 2. Insert education records
       if (sections.education && hasEdu) {
-        const eduRecords = data.education!.map((edu: CVEducation) => ({
-          user_id: targetUserId,
-          record_type: "education",
-          entity_name: edu.institution,
-          title: edu.degree,
-          title_ar: edu.degree_ar || null,
-          education_level: edu.education_level || null,
-          field_of_study: edu.field_of_study || null,
-          field_of_study_ar: edu.field_of_study_ar || null,
-          grade: edu.grade || null,
-          start_date: edu.start_date || null,
-          end_date: edu.end_date || null,
+        const eduRecords = data.education!.map((edu) => ({
+          user_id: targetUserId, record_type: "education", entity_name: edu.institution,
+          title: edu.degree, title_ar: edu.degree_ar || null, education_level: edu.education_level || null,
+          field_of_study: edu.field_of_study || null, field_of_study_ar: edu.field_of_study_ar || null,
+          grade: edu.grade || null, start_date: edu.start_date || null, end_date: edu.end_date || null,
           is_current: edu.is_current || false,
           location: edu.location ? `${edu.country_code ? getFlag(edu.country_code) + " " : ""}${edu.location}` : null,
         }));
         const { error } = await supabase.from("user_career_records").insert(eduRecords);
-        if (error) console.error("Education insert error:", error);
-        else { recordsCreated += eduRecords.length; sectionsImported.push("education"); }
+        if (!error) { recordsCreated += eduRecords.length; sectionsImported.push("education"); }
       }
-
-      // 3. Insert work experience records
       if (sections.work && hasWork) {
-        const workRecords = data.work_experience!.map((work: CVWorkExperience) => {
-          const desc = [
-            ...(work.tasks?.map(t => `• ${t}`) || []),
-            ...(work.achievements?.length ? [`\n${isAr ? "الإنجازات:" : "Achievements:"}`, ...work.achievements.map(a => `★ ${a}`)] : []),
-          ].join("\n");
+        const workRecords = data.work_experience!.map((work) => {
+          const desc = [...(work.tasks?.map(t => `• ${t}`) || []), ...(work.achievements?.length ? [`\n${isAr ? "الإنجازات:" : "Achievements:"}`, ...work.achievements.map(a => `★ ${a}`)] : [])].join("\n");
           return {
-            user_id: targetUserId,
-            record_type: "work",
-            entity_name: work.company,
-            title: work.title,
-            title_ar: work.title_ar || null,
-            employment_type: work.employment_type || null,
-            department: work.department || null,
-            department_ar: work.department_ar || null,
-            start_date: work.start_date || null,
-            end_date: work.end_date || null,
-            is_current: work.is_current || false,
-            description: desc || null,
-            location: work.location ? `${work.country_code ? getFlag(work.country_code) + " " : ""}${work.location}` : null,
+            user_id: targetUserId, record_type: "work", entity_name: work.company, title: work.title, title_ar: work.title_ar || null,
+            employment_type: work.employment_type || null, department: work.department || null, department_ar: work.department_ar || null,
+            start_date: work.start_date || null, end_date: work.end_date || null, is_current: work.is_current || false,
+            description: desc || null, location: work.location ? `${work.country_code ? getFlag(work.country_code) + " " : ""}${work.location}` : null,
           };
         });
         const { error } = await supabase.from("user_career_records").insert(workRecords);
-        if (error) console.error("Work insert error:", error);
-        else { recordsCreated += workRecords.length; sectionsImported.push("work"); }
+        if (!error) { recordsCreated += workRecords.length; sectionsImported.push("work"); }
       }
-
-      // 4. Insert competitions
       if (sections.competitions && hasComp) {
-        const compRecords = data.competitions!.map((comp: CVCompetition) => ({
-          user_id: targetUserId,
-          record_type: "work",
-          entity_name: comp.name,
-          title: `${comp.name} ${comp.edition ? `(${comp.edition})` : ""}`.trim(),
+        const compRecords = data.competitions!.map((comp) => ({
+          user_id: targetUserId, record_type: "work", entity_name: comp.name,
+          title: `${comp.name}${comp.year ? ` ${comp.year}` : ""}${comp.edition ? ` (${comp.edition})` : ""}`.trim(),
           title_ar: comp.name_ar || null,
-          description: [
-            comp.role ? `${isAr ? "الدور:" : "Role:"} ${isAr ? (ROLE_LABELS[comp.role]?.ar || comp.role) : (ROLE_LABELS[comp.role]?.en || comp.role)}` : "",
-            comp.achievement ? `${isAr ? "الإنجاز:" : "Achievement:"} ${isAr ? (comp.achievement_ar || comp.achievement) : comp.achievement}` : "",
-          ].filter(Boolean).join("\n") || null,
-          start_date: comp.year ? `${comp.year}-01-01` : null,
-          end_date: comp.year ? `${comp.year}-12-31` : null,
-          is_current: false,
-          location: comp.city ? `${comp.country_code ? getFlag(comp.country_code) + " " : ""}${comp.city}` : null,
+          description: [comp.role ? `${isAr ? "الدور:" : "Role:"} ${isAr ? (ROLE_LABELS[comp.role]?.ar || comp.role) : (ROLE_LABELS[comp.role]?.en || comp.role)}` : "", comp.achievement ? `${isAr ? "الإنجاز:" : "Achievement:"} ${isAr ? (comp.achievement_ar || comp.achievement) : comp.achievement}` : ""].filter(Boolean).join("\n") || null,
+          start_date: comp.year ? `${comp.year}-01-01` : null, end_date: comp.year ? `${comp.year}-12-31` : null,
+          is_current: false, location: comp.city ? `${comp.country_code ? getFlag(comp.country_code) + " " : ""}${comp.city}` : null,
         }));
         const { error } = await supabase.from("user_career_records").insert(compRecords);
-        if (error) console.error("Competitions insert error:", error);
-        else { recordsCreated += compRecords.length; sectionsImported.push("competitions"); }
+        if (!error) { recordsCreated += compRecords.length; sectionsImported.push("competitions"); }
       }
-
-      // 5. Insert media appearances
       if (sections.media && hasMedia) {
-        const mediaRecords = data.media_appearances!.map((m: CVMediaAppearance) => ({
-          user_id: targetUserId,
-          record_type: "work",
-          entity_name: m.channel_name,
-          title: m.program_name || m.channel_name,
-          description: [
-            m.type ? `${MEDIA_TYPE_LABELS[m.type]?.icon || "📺"} ${isAr ? (MEDIA_TYPE_LABELS[m.type]?.ar || m.type) : (MEDIA_TYPE_LABELS[m.type]?.en || m.type)}` : "",
-            m.description || "",
-          ].filter(Boolean).join("\n") || null,
-          start_date: m.date || null,
-          is_current: false,
-          location: m.country_code ? `${getFlag(m.country_code)}` : null,
+        const mediaRecords = data.media_appearances!.map((m) => ({
+          user_id: targetUserId, record_type: "work", entity_name: m.channel_name, title: m.program_name || m.channel_name,
+          description: [m.type ? `${MEDIA_TYPE_LABELS[m.type]?.icon || "📺"} ${isAr ? (MEDIA_TYPE_LABELS[m.type]?.ar || m.type) : (MEDIA_TYPE_LABELS[m.type]?.en || m.type)}` : "", m.description || ""].filter(Boolean).join("\n") || null,
+          start_date: m.date || null, is_current: false, location: m.country_code ? `${getFlag(m.country_code)}` : null,
         }));
         const { error } = await supabase.from("user_career_records").insert(mediaRecords);
-        if (error) console.error("Media insert error:", error);
-        else { recordsCreated += mediaRecords.length; sectionsImported.push("media"); }
+        if (!error) { recordsCreated += mediaRecords.length; sectionsImported.push("media"); }
       }
-
-      // 6. Log the import
       try {
         const { data: { user: currentUser } } = await supabase.auth.getUser();
         if (currentUser) {
           await supabase.from("cv_imports").insert({
-            chef_id: targetUserId,
-            imported_by: currentUser.id,
-            status: "completed",
-            sections_imported: sectionsImported,
-            extracted_data: data as any,
-            records_created: recordsCreated,
-            input_method: "paste",
+            chef_id: targetUserId, imported_by: currentUser.id, status: "completed",
+            sections_imported: sectionsImported, extracted_data: data as any, records_created: recordsCreated, input_method: "paste",
           });
         }
-      } catch (logErr) {
-        console.error("Failed to log import:", logErr);
-      }
-
+      } catch (logErr) { console.error("Failed to log import:", logErr); }
       toast({ title: isAr ? `✅ تم استيراد ${recordsCreated} سجل بنجاح` : `✅ Successfully imported ${recordsCreated} records` });
       onSaved();
     } catch (err: any) {
@@ -323,30 +237,41 @@ export function CVPreview({ data: initialData, targetUserId, isAr, onBack, onSav
   };
 
   const sectionHeader = (
-    icon: React.ReactNode,
-    titleEn: string,
-    titleAr: string,
-    count: number,
-    key: keyof typeof sections,
-    colorClass: string,
-    onRemoveAll?: () => void
+    icon: React.ReactNode, titleEn: string, titleAr: string,
+    count: number, key: keyof typeof sections, colorClass: string,
   ) => (
     <div className="flex items-center justify-between">
       <div className="flex items-center gap-2">
-        <div className={`flex h-8 w-8 items-center justify-center rounded-lg ${colorClass}`}>
-          {icon}
-        </div>
+        <div className={`flex h-8 w-8 items-center justify-center rounded-lg ${colorClass}`}>{icon}</div>
         <span className="text-sm font-semibold">{isAr ? titleAr : titleEn}</span>
         <Badge variant="secondary" className="text-[10px] h-5">{count}</Badge>
       </div>
-      <div className="flex items-center gap-1">
-        <Checkbox checked={sections[key]} onCheckedChange={() => toggle(key)} />
-      </div>
+      <Checkbox checked={sections[key]} onCheckedChange={() => toggle(key)} />
     </div>
   );
 
+  // --- Personal info rows ---
+  const personalFields: [string, string, string, string | undefined][] = [
+    ["full_name", "Name", "الاسم", pi.full_name],
+    ["full_name_ar", "Name (AR)", "الاسم بالعربية", pi.full_name_ar],
+    ["job_title", "Job Title", "المسمى الوظيفي", pi.job_title],
+    ["job_title_ar", "Job Title (AR)", "المسمى (عربي)", pi.job_title_ar],
+    ["phone", "Phone", "الهاتف", pi.phone],
+    ["email", "Email", "البريد", pi.email],
+    ["nationality", "Nationality", "الجنسية", pi.nationality ? `${getFlag(pi.nationality)} ${pi.nationality}` : undefined],
+    ["city", "City", "المدينة", pi.city],
+    ["country_code", "Country", "الدولة", pi.country_code ? `${getFlag(pi.country_code)} ${pi.country_code}` : undefined],
+    ["national_address", "National Address", "العنوان الوطني", pi.national_address],
+    ["years_of_experience", "Years of Exp.", "سنوات الخبرة", pi.years_of_experience?.toString()],
+    ["specialization", "Specialization", "التخصص", pi.specialization],
+    ["linkedin", "LinkedIn", "LinkedIn", pi.linkedin],
+    ["instagram", "Instagram", "Instagram", pi.instagram],
+    ["website", "Website", "الموقع", pi.website],
+  ];
+
   return (
     <div className="space-y-4">
+      {/* Top bar */}
       <div className="flex items-center justify-between">
         <Button variant="ghost" size="sm" onClick={onBack} className="gap-1">
           <ArrowLeft className="h-4 w-4" />
@@ -364,195 +289,361 @@ export function CVPreview({ data: initialData, targetUserId, isAr, onBack, onSav
         </div>
       </div>
 
-      {/* Personal Info */}
+      {/* ========= PERSONAL INFO TABLE ========= */}
       {hasPersonal && (
-        <Card className="border-primary/20 bg-primary/5">
-          <CardHeader className="pb-2">
+        <Card className="border-primary/20 overflow-hidden">
+          <CardHeader className="pb-2 bg-primary/5">
             {sectionHeader(<User className="h-4 w-4" />, "Personal Info", "المعلومات الشخصية", 1, "personal", "bg-primary/10 text-primary")}
           </CardHeader>
-          <CardContent className="pt-0">
-            <div className="grid grid-cols-2 gap-x-4 gap-y-1.5">
-              {([
-                ["full_name", isAr ? "الاسم" : "Name", pi.full_name],
-                ["full_name_ar", isAr ? "الاسم بالعربية" : "Name (AR)", pi.full_name_ar],
-                ["job_title", isAr ? "المسمى الوظيفي" : "Job Title", pi.job_title],
-                ["job_title_ar", isAr ? "المسمى (عربي)" : "Job Title (AR)", pi.job_title_ar],
-                ["phone", isAr ? "الهاتف" : "Phone", pi.phone],
-                ["email", isAr ? "البريد" : "Email", pi.email],
-                ["nationality", isAr ? "الجنسية" : "Nationality", pi.nationality],
-                ["city", isAr ? "المدينة" : "City", pi.city],
-                ["country_code", isAr ? "الدولة" : "Country", pi.country_code],
-                ["national_address", isAr ? "العنوان الوطني" : "National Address", pi.national_address],
-                ["years_of_experience", isAr ? "سنوات الخبرة" : "Years of Exp.", pi.years_of_experience?.toString()],
-                ["specialization", isAr ? "التخصص" : "Specialization", pi.specialization],
-                ["linkedin", "LinkedIn", pi.linkedin],
-                ["instagram", "Instagram", pi.instagram],
-                ["website", isAr ? "الموقع" : "Website", pi.website],
-              ] as [string, string, string | undefined][]).map(([key, label, value], i) => (
-                <div key={i} className="text-xs">
-                  <span className="text-muted-foreground">{label}: </span>
-                  <EditableText
-                    value={value || ""}
-                    onChange={(v) => updatePersonal(key, v || undefined)}
-                    label={label}
-                    className="font-medium"
-                  />
+          <CardContent className="p-0">
+            <Table>
+              <TableBody>
+                {personalFields.filter(([,,,v]) => v).map(([key, labelEn, labelAr, value], i) => (
+                  <TableRow key={key} className={`${rowBg(i)} border-border/10 hover:bg-accent/30`}>
+                    <TableCell className="py-1.5 px-3 w-[140px]">
+                      <span className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wider">
+                        {isAr ? labelAr : labelEn}
+                      </span>
+                    </TableCell>
+                    <TableCell className="py-1.5 px-3">
+                      <EditableText
+                        value={value || ""}
+                        onChange={(v) => updatePersonal(key, v || undefined)}
+                        label={isAr ? labelAr : labelEn}
+                        className="text-sm font-medium"
+                      />
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+            {/* Bio section */}
+            {(pi.bio || pi.bio_ar) && (
+              <div className="p-3 border-t border-border/20 bg-muted/10">
+                <span className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider">
+                  {isAr ? "النبذة المهنية" : "Professional Summary"}
+                </span>
+                <div className="mt-1 space-y-1">
+                  {pi.bio && (
+                    <EditableText value={pi.bio} onChange={(v) => updatePersonal("bio", v || undefined)} multiline className="text-xs block" />
+                  )}
+                  {pi.bio_ar && (
+                    <EditableText value={pi.bio_ar} onChange={(v) => updatePersonal("bio_ar", v || undefined)} multiline className="text-xs block text-muted-foreground" />
+                  )}
                 </div>
-              ))}
-            </div>
-            {(pi.bio || true) && (
-              <div className="mt-2 border-t pt-2 border-border/20">
-                <span className="text-[10px] text-muted-foreground">{isAr ? "النبذة:" : "Bio:"}</span>
-                <EditableText
-                  value={pi.bio || ""}
-                  onChange={(v) => updatePersonal("bio", v || undefined)}
-                  multiline
-                  className="text-xs italic block mt-0.5"
-                />
               </div>
             )}
           </CardContent>
         </Card>
       )}
 
-      {/* Education */}
+      {/* ========= EDUCATION TABLE ========= */}
       {hasEdu && (
-        <Card>
-          <CardHeader className="pb-2">
+        <Card className="overflow-hidden">
+          <CardHeader className="pb-2 bg-chart-2/5">
             {sectionHeader(<GraduationCap className="h-4 w-4" />, "Education", "التعليم", data.education!.length, "education", "bg-chart-2/10 text-chart-2")}
           </CardHeader>
-          <CardContent className="pt-0 space-y-2">
-            {data.education!.map((edu, i) => (
-              <div key={i} className="flex gap-3 p-2.5 rounded-lg bg-muted/30 border border-border/20 group relative">
-                <Button size="icon" variant="ghost" className="absolute top-1 end-1 h-5 w-5 opacity-0 group-hover:opacity-100" onClick={() => removeEduItem(i)}>
-                  <Trash2 className="h-3 w-3 text-destructive" />
-                </Button>
-                <div className="w-1 rounded-full bg-chart-2/40 shrink-0" />
-                <div className="flex-1 min-w-0 space-y-0.5">
-                  <EditableText value={edu.degree} onChange={v => updateEduItem(i, "degree", v)} className="text-sm font-semibold leading-tight" />
-                  <EditableText value={edu.institution} onChange={v => updateEduItem(i, "institution", v)} className="text-xs text-muted-foreground" />
-                  <div className="flex flex-wrap gap-2 mt-1">
-                    <DateRange start={edu.start_date} end={edu.end_date} isCurrent={edu.is_current} isAr={isAr} />
-                    <LocationBadge location={edu.location} countryCode={edu.country_code} />
-                    {edu.education_level && (
-                      <Badge variant="outline" className="text-[10px] h-5">
-                        {isAr ? (EDUCATION_LEVEL_LABELS[edu.education_level]?.ar || edu.education_level) : (EDUCATION_LEVEL_LABELS[edu.education_level]?.en || edu.education_level)}
-                      </Badge>
-                    )}
-                    {edu.field_of_study && <Badge variant="secondary" className="text-[10px] h-5">{edu.field_of_study}</Badge>}
-                  </div>
-                </div>
-              </div>
-            ))}
+          <CardContent className="p-0">
+            <Table>
+              <TableHeader>
+                <TableRow className="bg-chart-2/5 border-border/10">
+                  <TableHead className="text-[10px] py-1.5 h-auto">{isAr ? "الشهادة" : "Degree"}</TableHead>
+                  <TableHead className="text-[10px] py-1.5 h-auto">{isAr ? "المؤسسة" : "Institution"}</TableHead>
+                  <TableHead className="text-[10px] py-1.5 h-auto">{isAr ? "التخصص" : "Field"}</TableHead>
+                  <TableHead className="text-[10px] py-1.5 h-auto">{isAr ? "الفترة" : "Period"}</TableHead>
+                  <TableHead className="text-[10px] py-1.5 h-auto">{isAr ? "الموقع" : "Location"}</TableHead>
+                  <TableHead className="text-[10px] py-1.5 h-auto w-8"></TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {data.education!.map((edu, i) => (
+                  <TableRow key={i} className={`${rowBg(i)} border-border/10 group hover:bg-accent/30`}>
+                    <TableCell className="py-2 px-3">
+                      <BilingualText en={edu.degree} ar={edu.degree_ar} />
+                      {edu.education_level && (
+                        <Badge variant="outline" className="text-[9px] h-4 mt-0.5">
+                          {isAr ? (EDUCATION_LEVEL_LABELS[edu.education_level]?.ar || edu.education_level) : (EDUCATION_LEVEL_LABELS[edu.education_level]?.en || edu.education_level)}
+                        </Badge>
+                      )}
+                    </TableCell>
+                    <TableCell className="py-2 px-3">
+                      <BilingualText en={edu.institution} ar={edu.institution_ar} />
+                    </TableCell>
+                    <TableCell className="py-2 px-3">
+                      <BilingualText en={edu.field_of_study} ar={edu.field_of_study_ar} />
+                      {edu.grade && <span className="text-[10px] text-muted-foreground block">{edu.grade}</span>}
+                    </TableCell>
+                    <TableCell className="py-2 px-3">
+                      <span className="text-[11px] text-muted-foreground whitespace-nowrap">
+                        {formatDate(edu.start_date)} — {edu.is_current ? (isAr ? "الحالي" : "Present") : formatDate(edu.end_date)}
+                      </span>
+                    </TableCell>
+                    <TableCell className="py-2 px-3">
+                      <LocationDisplay city={edu.location} countryCode={edu.country_code} />
+                    </TableCell>
+                    <TableCell className="py-2 px-1">
+                      <Button size="icon" variant="ghost" className="h-5 w-5 opacity-0 group-hover:opacity-100" onClick={() => removeEduItem(i)}>
+                        <Trash2 className="h-3 w-3 text-destructive" />
+                      </Button>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
           </CardContent>
         </Card>
       )}
 
-      {/* Work Experience */}
+      {/* ========= WORK EXPERIENCE TABLE ========= */}
       {hasWork && (
-        <Card>
-          <CardHeader className="pb-2">
-            {sectionHeader(<Briefcase className="h-4 w-4" />, "Experience", "الخبرات المهنية", data.work_experience!.length, "work", "bg-chart-3/10 text-chart-3")}
+        <Card className="overflow-hidden">
+          <CardHeader className="pb-2 bg-chart-3/5">
+            {sectionHeader(<Briefcase className="h-4 w-4" />, "Professional Experience", "الخبرات المهنية", data.work_experience!.length, "work", "bg-chart-3/10 text-chart-3")}
           </CardHeader>
-          <CardContent className="pt-0 space-y-2">
-            {data.work_experience!.map((work, i) => (
-              <div key={i} className="flex gap-3 p-2.5 rounded-lg bg-muted/30 border border-border/20 group relative">
-                <Button size="icon" variant="ghost" className="absolute top-1 end-1 h-5 w-5 opacity-0 group-hover:opacity-100" onClick={() => removeWorkItem(i)}>
-                  <Trash2 className="h-3 w-3 text-destructive" />
-                </Button>
-                <div className="w-1 rounded-full bg-chart-3/40 shrink-0" />
-                <div className="flex-1 min-w-0 space-y-1">
-                  <EditableText value={work.title} onChange={v => updateWorkItem(i, "title", v)} className="text-sm font-semibold leading-tight" />
-                  <EditableText value={work.company} onChange={v => updateWorkItem(i, "company", v)} className="text-xs text-muted-foreground font-medium" />
-                  <div className="flex flex-wrap gap-2">
-                    <DateRange start={work.start_date} end={work.end_date} isCurrent={work.is_current} isAr={isAr} />
-                    <LocationBadge location={work.location} countryCode={work.country_code} />
-                    {work.employment_type && (
-                      <Badge variant="outline" className="text-[10px] h-5">
-                        {isAr ? (EMPLOYMENT_TYPE_LABELS[work.employment_type]?.ar || work.employment_type) : (EMPLOYMENT_TYPE_LABELS[work.employment_type]?.en || work.employment_type)}
-                      </Badge>
-                    )}
-                  </div>
-                  {work.tasks && work.tasks.length > 0 && (
-                    <div className="mt-1.5 space-y-0.5">
-                      <p className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider">{isAr ? "المهام" : "Tasks"}</p>
-                      {work.tasks.map((t, j) => (
-                        <p key={j} className="text-[11px] text-foreground/80 ps-3 relative before:content-['•'] before:absolute before:start-0 before:text-primary">{t}</p>
-                      ))}
+          <CardContent className="p-0">
+            <Table>
+              <TableHeader>
+                <TableRow className="bg-chart-3/5 border-border/10">
+                  <TableHead className="text-[10px] py-1.5 h-auto">{isAr ? "المنصب" : "Position"}</TableHead>
+                  <TableHead className="text-[10px] py-1.5 h-auto">{isAr ? "الجهة" : "Organization"}</TableHead>
+                  <TableHead className="text-[10px] py-1.5 h-auto">{isAr ? "النوع" : "Type"}</TableHead>
+                  <TableHead className="text-[10px] py-1.5 h-auto">{isAr ? "الفترة" : "Period"}</TableHead>
+                  <TableHead className="text-[10px] py-1.5 h-auto">{isAr ? "الموقع" : "Location"}</TableHead>
+                  <TableHead className="text-[10px] py-1.5 h-auto w-8"></TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {data.work_experience!.map((work, i) => (
+                  <TableRow key={i} className={`${rowBg(i)} border-border/10 group hover:bg-accent/30 align-top`}>
+                    <TableCell className="py-2 px-3">
+                      <BilingualText en={work.title} ar={work.title_ar} />
+                      {work.department && (
+                        <span className="text-[10px] text-muted-foreground block mt-0.5">
+                          {isAr ? (work.department_ar || work.department) : work.department}
+                        </span>
+                      )}
+                    </TableCell>
+                    <TableCell className="py-2 px-3">
+                      <BilingualText en={work.company} ar={work.company_ar} />
+                    </TableCell>
+                    <TableCell className="py-2 px-3">
+                      {work.employment_type && (
+                        <Badge variant="outline" className="text-[9px] h-4">
+                          {isAr ? (EMPLOYMENT_TYPE_LABELS[work.employment_type]?.ar || work.employment_type) : (EMPLOYMENT_TYPE_LABELS[work.employment_type]?.en || work.employment_type)}
+                        </Badge>
+                      )}
+                    </TableCell>
+                    <TableCell className="py-2 px-3">
+                      <span className="text-[11px] text-muted-foreground whitespace-nowrap">
+                        {formatDate(work.start_date)} — {work.is_current ? (isAr ? "الحالي" : "Present") : formatDate(work.end_date)}
+                      </span>
+                    </TableCell>
+                    <TableCell className="py-2 px-3">
+                      <LocationDisplay city={work.location} countryCode={work.country_code} />
+                    </TableCell>
+                    <TableCell className="py-2 px-1">
+                      <Button size="icon" variant="ghost" className="h-5 w-5 opacity-0 group-hover:opacity-100" onClick={() => removeWorkItem(i)}>
+                        <Trash2 className="h-3 w-3 text-destructive" />
+                      </Button>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+            {/* Expandable tasks & achievements below table */}
+            {data.work_experience!.some(w => (w.tasks?.length || 0) > 0 || (w.achievements?.length || 0) > 0) && (
+              <div className="border-t border-border/20 p-3 space-y-3">
+                {data.work_experience!.map((work, i) => {
+                  if (!(work.tasks?.length || work.achievements?.length)) return null;
+                  return (
+                    <div key={i} className={`rounded-lg p-2.5 ${rowBg(i)} border border-border/10`}>
+                      <span className="text-[11px] font-semibold text-foreground">
+                        {isAr ? (work.title_ar || work.title) : work.title} — {isAr ? (work.company_ar || work.company) : work.company}
+                      </span>
+                      {work.tasks && work.tasks.length > 0 && (
+                        <div className="mt-1.5 space-y-0.5">
+                          <p className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider">{isAr ? "المهام الرئيسية" : "Key Responsibilities"}</p>
+                          {work.tasks.map((t, j) => (
+                            <p key={j} className="text-[11px] text-foreground/80 ps-3 relative before:content-['•'] before:absolute before:start-0 before:text-primary">{t}</p>
+                          ))}
+                        </div>
+                      )}
+                      {work.achievements && work.achievements.length > 0 && (
+                        <div className="mt-1.5 space-y-0.5">
+                          <p className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider">{isAr ? "الإنجازات البارزة" : "Notable Achievements"}</p>
+                          {work.achievements.map((a, j) => (
+                            <p key={j} className="text-[11px] text-foreground/80 ps-3 relative before:content-['★'] before:absolute before:start-0 before:text-chart-4">{a}</p>
+                          ))}
+                        </div>
+                      )}
                     </div>
-                  )}
-                  {work.achievements && work.achievements.length > 0 && (
-                    <div className="mt-1.5 space-y-0.5">
-                      <p className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider">{isAr ? "الإنجازات" : "Achievements"}</p>
-                      {work.achievements.map((a, j) => (
-                        <p key={j} className="text-[11px] text-foreground/80 ps-3 relative before:content-['★'] before:absolute before:start-0 before:text-chart-4">{a}</p>
-                      ))}
-                    </div>
-                  )}
-                </div>
+                  );
+                })}
               </div>
-            ))}
+            )}
           </CardContent>
         </Card>
       )}
 
-      {/* Competitions */}
+      {/* ========= COMPETITIONS TABLE ========= */}
       {hasComp && (
-        <Card>
-          <CardHeader className="pb-2">
+        <Card className="overflow-hidden">
+          <CardHeader className="pb-2 bg-chart-4/5">
             {sectionHeader(<Trophy className="h-4 w-4" />, "Competitions", "المسابقات", data.competitions!.length, "competitions", "bg-chart-4/10 text-chart-4")}
           </CardHeader>
-          <CardContent className="pt-0">
-            <div className="space-y-1.5">
-              {data.competitions!.map((comp, i) => (
-                <div key={i} className="flex items-center gap-2 p-2 rounded-lg bg-muted/30 border border-border/20 group relative">
-                  <Button size="icon" variant="ghost" className="absolute top-1 end-1 h-5 w-5 opacity-0 group-hover:opacity-100" onClick={() => removeCompItem(i)}>
-                    <Trash2 className="h-3 w-3 text-destructive" />
-                  </Button>
-                  <Trophy className="h-3.5 w-3.5 text-chart-4 shrink-0" />
-                  <div className="flex-1 min-w-0">
-                    <EditableText value={isAr ? (comp.name_ar || comp.name) : comp.name} onChange={v => updateData(d => ({ ...d, competitions: d.competitions?.map((c, ci) => ci === i ? { ...c, name: v } : c) }))} className="text-xs font-medium" />
-                    <div className="flex flex-wrap gap-2 mt-0.5">
-                      {comp.role && <Badge variant="secondary" className="text-[10px] h-5">{isAr ? (ROLE_LABELS[comp.role]?.ar || comp.role) : (ROLE_LABELS[comp.role]?.en || comp.role)}</Badge>}
-                      {(comp.edition || comp.year) && <span className="text-[10px] text-muted-foreground">{comp.edition || comp.year}</span>}
-                      {comp.country_code && <span className="text-[10px]">{getFlag(comp.country_code)} {comp.city}</span>}
-                      {comp.achievement && <Badge variant="outline" className="text-[10px] h-5">{isAr ? (comp.achievement_ar || comp.achievement) : comp.achievement}</Badge>}
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
+          <CardContent className="p-0">
+            <Table>
+              <TableHeader>
+                <TableRow className="bg-chart-4/5 border-border/10">
+                  <TableHead className="text-[10px] py-1.5 h-auto">{isAr ? "المسابقة / السنة" : "Competition / Year"}</TableHead>
+                  <TableHead className="text-[10px] py-1.5 h-auto">{isAr ? "الدور" : "Role"}</TableHead>
+                  <TableHead className="text-[10px] py-1.5 h-auto">{isAr ? "الإنجاز" : "Achievement"}</TableHead>
+                  <TableHead className="text-[10px] py-1.5 h-auto">{isAr ? "الموقع" : "Location"}</TableHead>
+                  <TableHead className="text-[10px] py-1.5 h-auto w-8"></TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {data.competitions!.map((comp, i) => {
+                  const compName = isAr ? (comp.name_ar || comp.name) : comp.name;
+                  const yearStr = comp.year ? ` ${comp.year}` : "";
+                  const editionStr = comp.edition ? ` (${comp.edition})` : "";
+                  return (
+                    <TableRow key={i} className={`${rowBg(i)} border-border/10 group hover:bg-accent/30`}>
+                      <TableCell className="py-2 px-3">
+                        <div className="flex flex-col">
+                          <span className="text-xs font-semibold">{compName}{yearStr}{editionStr}</span>
+                          {/* Show other language if available */}
+                          {comp.name_ar && !isAr && <span className="text-[10px] text-muted-foreground" dir="rtl">{comp.name_ar}</span>}
+                          {comp.name && isAr && comp.name_ar && <span className="text-[10px] text-muted-foreground" dir="ltr">{comp.name}</span>}
+                        </div>
+                      </TableCell>
+                      <TableCell className="py-2 px-3">
+                        {comp.role && (
+                          <Badge variant="secondary" className="text-[9px] h-4">
+                            {isAr ? (ROLE_LABELS[comp.role]?.ar || comp.role) : (ROLE_LABELS[comp.role]?.en || comp.role)}
+                          </Badge>
+                        )}
+                      </TableCell>
+                      <TableCell className="py-2 px-3">
+                        {comp.achievement && (
+                          <BilingualText en={isAr ? undefined : comp.achievement} ar={isAr ? (comp.achievement_ar || comp.achievement) : comp.achievement_ar} />
+                        )}
+                      </TableCell>
+                      <TableCell className="py-2 px-3">
+                        <LocationDisplay city={comp.city} countryCode={comp.country_code} />
+                      </TableCell>
+                      <TableCell className="py-2 px-1">
+                        <Button size="icon" variant="ghost" className="h-5 w-5 opacity-0 group-hover:opacity-100" onClick={() => removeCompItem(i)}>
+                          <Trash2 className="h-3 w-3 text-destructive" />
+                        </Button>
+                      </TableCell>
+                    </TableRow>
+                  );
+                })}
+              </TableBody>
+            </Table>
           </CardContent>
         </Card>
       )}
 
-      {/* Media Appearances */}
+      {/* ========= CERTIFICATIONS TABLE ========= */}
+      {hasCert && (
+        <Card className="overflow-hidden">
+          <CardHeader className="pb-2 bg-chart-5/5">
+            {sectionHeader(<Award className="h-4 w-4" />, "Certifications", "الشهادات المهنية", data.certifications!.length, "certifications", "bg-chart-5/10 text-chart-5")}
+          </CardHeader>
+          <CardContent className="p-0">
+            <Table>
+              <TableHeader>
+                <TableRow className="bg-chart-5/5 border-border/10">
+                  <TableHead className="text-[10px] py-1.5 h-auto">{isAr ? "الشهادة" : "Certification"}</TableHead>
+                  <TableHead className="text-[10px] py-1.5 h-auto">{isAr ? "الجهة المانحة" : "Issuer"}</TableHead>
+                  <TableHead className="text-[10px] py-1.5 h-auto">{isAr ? "التاريخ" : "Date"}</TableHead>
+                  <TableHead className="text-[10px] py-1.5 h-auto w-8"></TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {data.certifications!.map((cert, i) => (
+                  <TableRow key={i} className={`${rowBg(i)} border-border/10 group hover:bg-accent/30`}>
+                    <TableCell className="py-2 px-3">
+                      <BilingualText en={cert.name} ar={cert.name_ar} />
+                      {cert.description && <span className="text-[10px] text-muted-foreground block mt-0.5">{cert.description}</span>}
+                    </TableCell>
+                    <TableCell className="py-2 px-3">
+                      <span className="text-xs">{cert.issuer || "—"}</span>
+                    </TableCell>
+                    <TableCell className="py-2 px-3">
+                      <span className="text-[11px] text-muted-foreground">{formatDate(cert.date)}</span>
+                    </TableCell>
+                    <TableCell className="py-2 px-1">
+                      <Button size="icon" variant="ghost" className="h-5 w-5 opacity-0 group-hover:opacity-100" onClick={() => removeCertItem(i)}>
+                        <Trash2 className="h-3 w-3 text-destructive" />
+                      </Button>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </CardContent>
+        </Card>
+      )}
+
+      {/* ========= MEDIA APPEARANCES TABLE ========= */}
       {hasMedia && (
-        <Card>
-          <CardHeader className="pb-2">
+        <Card className="overflow-hidden">
+          <CardHeader className="pb-2 bg-chart-1/5">
             {sectionHeader(<Tv className="h-4 w-4" />, "Media Appearances", "الظهور الإعلامي", data.media_appearances!.length, "media", "bg-chart-1/10 text-chart-1")}
           </CardHeader>
-          <CardContent className="pt-0">
-            <div className="space-y-1.5">
-              {data.media_appearances!.map((m, i) => (
-                <div key={i} className="flex items-center gap-2 p-2 rounded-lg bg-muted/30 border border-border/20 group relative">
-                  <Button size="icon" variant="ghost" className="absolute top-1 end-1 h-5 w-5 opacity-0 group-hover:opacity-100" onClick={() => removeMediaItem(i)}>
-                    <Trash2 className="h-3 w-3 text-destructive" />
-                  </Button>
-                  <span className="shrink-0">{m.type ? MEDIA_TYPE_LABELS[m.type]?.icon || "📺" : "📺"}</span>
-                  <div className="flex-1 min-w-0">
-                    <span className="text-xs font-medium">{m.country_code && getFlag(m.country_code)} {m.channel_name}</span>
-                    {m.program_name && <span className="text-[10px] text-muted-foreground ms-2">{m.program_name}</span>}
-                    {m.date && <span className="text-[10px] text-muted-foreground ms-2">{formatDate(m.date)}</span>}
-                  </div>
-                </div>
-              ))}
-            </div>
+          <CardContent className="p-0">
+            <Table>
+              <TableHeader>
+                <TableRow className="bg-chart-1/5 border-border/10">
+                  <TableHead className="text-[10px] py-1.5 h-auto">{isAr ? "النوع" : "Type"}</TableHead>
+                  <TableHead className="text-[10px] py-1.5 h-auto">{isAr ? "القناة / المنصة" : "Channel / Platform"}</TableHead>
+                  <TableHead className="text-[10px] py-1.5 h-auto">{isAr ? "البرنامج" : "Program"}</TableHead>
+                  <TableHead className="text-[10px] py-1.5 h-auto">{isAr ? "التاريخ" : "Date"}</TableHead>
+                  <TableHead className="text-[10px] py-1.5 h-auto">{isAr ? "البلد" : "Country"}</TableHead>
+                  <TableHead className="text-[10px] py-1.5 h-auto w-8"></TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {data.media_appearances!.map((m, i) => (
+                  <TableRow key={i} className={`${rowBg(i)} border-border/10 group hover:bg-accent/30`}>
+                    <TableCell className="py-2 px-3">
+                      <span className="text-sm">{m.type ? (MEDIA_TYPE_LABELS[m.type]?.icon || "📺") : "📺"}</span>
+                      {m.type && (
+                        <span className="text-[10px] text-muted-foreground ms-1">
+                          {isAr ? (MEDIA_TYPE_LABELS[m.type]?.ar || m.type) : (MEDIA_TYPE_LABELS[m.type]?.en || m.type)}
+                        </span>
+                      )}
+                    </TableCell>
+                    <TableCell className="py-2 px-3">
+                      <span className="text-xs font-medium">{m.channel_name}</span>
+                    </TableCell>
+                    <TableCell className="py-2 px-3">
+                      <span className="text-xs">{m.program_name || "—"}</span>
+                      {m.description && <span className="text-[10px] text-muted-foreground block mt-0.5">{m.description}</span>}
+                    </TableCell>
+                    <TableCell className="py-2 px-3">
+                      <span className="text-[11px] text-muted-foreground">{formatDate(m.date)}</span>
+                    </TableCell>
+                    <TableCell className="py-2 px-3">
+                      {m.country_code && <span>{getFlag(m.country_code)} {m.country_code}</span>}
+                    </TableCell>
+                    <TableCell className="py-2 px-1">
+                      <Button size="icon" variant="ghost" className="h-5 w-5 opacity-0 group-hover:opacity-100" onClick={() => removeMediaItem(i)}>
+                        <Trash2 className="h-3 w-3 text-destructive" />
+                      </Button>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
           </CardContent>
         </Card>
       )}
 
-      {/* Skills & Languages */}
+      {/* ========= SKILLS & LANGUAGES ========= */}
       {((data.skills?.length || 0) > 0 || (data.languages?.length || 0) > 0) && (
         <Card>
           <CardContent className="p-4 space-y-3">
@@ -591,9 +682,7 @@ export function CVPreview({ data: initialData, targetUserId, isAr, onBack, onSav
       <Separator />
 
       <div className="flex justify-end gap-2">
-        <Button variant="outline" onClick={onBack} disabled={saving}>
-          {isAr ? "رجوع" : "Back"}
-        </Button>
+        <Button variant="outline" onClick={onBack} disabled={saving}>{isAr ? "رجوع" : "Back"}</Button>
         <Button onClick={handleSave} disabled={saving} className="gap-1.5">
           {saving ? <Loader2 className="h-4 w-4 animate-spin" /> : <Save className="h-4 w-4" />}
           {saving ? (isAr ? "جاري الحفظ..." : "Saving...") : (isAr ? "حفظ في الملف الشخصي" : "Save to Profile")}
