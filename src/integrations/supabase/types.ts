@@ -18987,6 +18987,7 @@ export type Database = {
           end_date: string | null
           entity_id: string | null
           entity_name: string | null
+          entity_name_ar: string | null
           field_of_study: string | null
           field_of_study_ar: string | null
           grade: string | null
@@ -19012,6 +19013,7 @@ export type Database = {
           end_date?: string | null
           entity_id?: string | null
           entity_name?: string | null
+          entity_name_ar?: string | null
           field_of_study?: string | null
           field_of_study_ar?: string | null
           grade?: string | null
@@ -19037,6 +19039,7 @@ export type Database = {
           end_date?: string | null
           entity_id?: string | null
           entity_name?: string | null
+          entity_name_ar?: string | null
           field_of_study?: string | null
           field_of_study_ar?: string | null
           grade?: string | null
