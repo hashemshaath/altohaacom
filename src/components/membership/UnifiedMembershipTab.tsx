@@ -175,57 +175,70 @@ export function UnifiedMembershipTab({ profile, userId, onMembershipChange }: Un
     }
   };
 
-  const handlePrint = () => {
+  const handlePrint = async () => {
     if (!cardRef.current) return;
-    const printWindow = window.open("", "_blank");
-    if (!printWindow) return;
-    const clone = cardRef.current.cloneNode(true) as HTMLElement;
-    clone.querySelectorAll("button").forEach(b => b.remove());
+    try {
+      const html2canvas = (await import("html2canvas")).default;
+      const canvas = await html2canvas(cardRef.current, {
+        scale: 4,
+        useCORS: true,
+        allowTaint: true,
+        backgroundColor: null,
+        logging: false,
+      });
+      const imgDataUrl = canvas.toDataURL("image/png");
 
-    const isVert = orientation === "vertical";
-    const cardWidth = isVert ? "320px" : "540px";
-    const pageSize = isVert ? "90mm 143mm" : "143mm 90mm";
+      const isVert = orientation === "vertical";
+      // ISO/IEC 7810 ID-1: 85.6mm × 53.98mm
+      const cardW = isVert ? "53.98mm" : "85.6mm";
+      const cardH = isVert ? "85.6mm" : "53.98mm";
+      const pageW = isVert ? "64mm" : "96mm";
+      const pageH = isVert ? "96mm" : "64mm";
 
-    printWindow.document.write(`<!DOCTYPE html><html dir="${isAr ? "rtl" : "ltr"}"><head>
-      <title>${isAr ? "بطاقة العضوية" : "Membership Card"}</title>
-      <style>
-        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
-        html, body {
-          width: 100%; height: 100%;
-          -webkit-print-color-adjust: exact !important;
-          print-color-adjust: exact !important;
-          color-adjust: exact !important;
-          font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
-        }
-        body {
-          display: flex; justify-content: center; align-items: center;
-          min-height: 100vh; background: #f0f0f0; padding: 16mm;
-        }
-        .print-card-container {
-          width: ${cardWidth}; max-width: 100%;
-          filter: drop-shadow(0 4px 20px rgba(0,0,0,0.15));
-          border-radius: 16px; overflow: hidden;
-        }
-        .print-card-container > * { border-radius: 16px; overflow: hidden; }
-        .print-footer {
-          text-align: center; margin-top: 10mm;
-          font-size: 7px; color: #aaa; letter-spacing: 0.12em;
-        }
-        @media print {
-          @page { size: ${pageSize}; margin: 5mm; }
-          body { min-height: auto; padding: 0; background: white; align-items: flex-start; padding-top: 4mm; }
-          .print-card-container { filter: none; width: 100%; }
-          .print-footer { margin-top: 4mm; }
-        }
-      </style>
-    </head><body>
-      <div>
-        <div class="print-card-container">${clone.outerHTML}</div>
+      const printWindow = window.open("", "_blank");
+      if (!printWindow) return;
+
+      printWindow.document.write(`<!DOCTYPE html><html dir="${isAr ? "rtl" : "ltr"}"><head>
+        <title>${isAr ? "بطاقة العضوية" : "Membership Card"}</title>
+        <style>
+          *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+          html, body {
+            width: 100%; height: 100%;
+            -webkit-print-color-adjust: exact !important;
+            print-color-adjust: exact !important;
+            color-adjust: exact !important;
+            font-family: system-ui, sans-serif;
+          }
+          body {
+            display: flex; flex-direction: column; justify-content: center; align-items: center;
+            min-height: 100vh; background: #f5f5f5;
+          }
+          .card-img {
+            width: ${cardW}; height: ${cardH};
+            border-radius: 3mm;
+            object-fit: contain;
+            filter: drop-shadow(0 2px 8px rgba(0,0,0,0.2));
+          }
+          .print-footer {
+            text-align: center; margin-top: 5mm;
+            font-size: 7pt; color: #bbb; letter-spacing: 0.1em;
+          }
+          @media print {
+            @page { size: ${pageW} ${pageH}; margin: 5mm; }
+            body { min-height: auto; background: white; }
+            .card-img { filter: none; }
+            .print-footer { margin-top: 3mm; }
+          }
+        </style>
+      </head><body>
+        <img class="card-img" src="${imgDataUrl}" alt="Membership Card" />
         <div class="print-footer">ALTOHA • ${isAr ? "بطاقة العضوية الرقمية" : "Digital Membership Card"} • ${new Date().getFullYear()}</div>
-      </div>
-    </body></html>`);
-    printWindow.document.close();
-    setTimeout(() => { printWindow.focus(); printWindow.print(); }, 700);
+      </body></html>`);
+      printWindow.document.close();
+      setTimeout(() => { printWindow.focus(); printWindow.print(); }, 500);
+    } catch {
+      toast({ variant: "destructive", title: isAr ? "خطأ في الطباعة" : "Print failed" });
+    }
   };
 
   const handleSaveAsImage = async () => {
