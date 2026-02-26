@@ -21,7 +21,6 @@ export function FeaturedChefs() {
   const { data: chefs = [] } = useQuery({
     queryKey: ["featured-chefs-home"],
     queryFn: async () => {
-      // Try rankings first, fall back to verified profiles
       const { data: ranked } = await supabase
         .from("chef_rankings")
         .select("user_id, total_points, gold_medals, silver_medals, bronze_medals, rank")
@@ -40,7 +39,6 @@ export function FeaturedChefs() {
         return ranked.map((r: any) => ({ ...r, ...(profileMap.get(r.user_id) || {}) }));
       }
 
-      // Fallback: verified profiles
       const { data: profiles } = await supabase
         .from("profiles")
         .select("user_id, username, full_name, full_name_ar, display_name, display_name_ar, avatar_url, country_code, city, specialization, specialization_ar, is_verified, loyalty_points, nationality, show_nationality")
@@ -61,21 +59,21 @@ export function FeaturedChefs() {
   if (chefs.length === 0) return null;
 
   return (
-    <section className="relative overflow-hidden py-10 md:py-14" aria-labelledby="featured-chefs-heading">
-      <div className="absolute inset-0 bg-muted/30" />
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,hsl(var(--primary)/0.04),transparent_60%)]" />
+    <section className="relative overflow-hidden py-8 md:py-12" aria-labelledby="featured-chefs-heading">
+      <div className="absolute inset-0 bg-muted/20" />
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,hsl(var(--primary)/0.03),transparent_60%)]" />
       <div className="container relative">
         <SectionReveal>
-          <div className="mb-8 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+          <div className="mb-6 flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
             <div>
-              <Badge variant="secondary" className="mb-2 gap-1">
+              <Badge variant="secondary" className="mb-1.5 gap-1">
                 <Award className="h-3 w-3" />
                 {isAr ? "طهاة مميزون" : "Featured Chefs"}
               </Badge>
-              <h2 id="featured-chefs-heading" className={cn("text-xl font-bold sm:text-2xl", !isAr && "font-serif")}>
+              <h2 id="featured-chefs-heading" className={cn("text-xl font-bold sm:text-2xl text-foreground tracking-tight", !isAr && "font-serif")}>
                 {isAr ? "أبرز الطهاة على المنصة" : "Top Chefs on the Platform"}
               </h2>
-              <p className="mt-1 text-sm text-muted-foreground">
+              <p className="mt-0.5 text-sm text-muted-foreground">
                 {isAr ? "تعرّف على أمهر الطهاة المسجلين في مجتمعنا العالمي" : "Meet the most skilled chefs in our global community"}
               </p>
             </div>
@@ -88,8 +86,8 @@ export function FeaturedChefs() {
           </div>
         </SectionReveal>
 
-        <SectionReveal delay={100}>
-        <div className="grid grid-cols-2 gap-2 sm:grid-cols-3 md:grid-cols-4">
+        <SectionReveal delay={80}>
+        <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4">
           {chefs.map((chef: any, idx: number) => {
             const name = getDisplayName(chef, isAr);
             const spec = isAr && chef.specialization_ar ? chef.specialization_ar : chef.specialization;
@@ -102,29 +100,29 @@ export function FeaturedChefs() {
 
             return (
               <Link key={chef.user_id || idx} to={chef.username ? `/${chef.username}` : `/profile/${chef.user_id}`} className="group block">
-                <Card className="h-full border-border/50 transition-all duration-300 hover:shadow-lg hover:-translate-y-1 hover:border-primary/20 overflow-hidden">
+                <Card className="h-full border-border/40 transition-all duration-300 hover:shadow-lg hover:-translate-y-0.5 hover:border-primary/20 overflow-hidden">
                   <CardContent className="p-3 text-center">
-                    <div className="relative mx-auto mb-3 w-fit">
-                      <Avatar className="h-14 w-14 sm:h-18 sm:w-18 ring-2 ring-primary/20 shadow-lg transition-transform duration-300 group-hover:scale-105">
+                    <div className="relative mx-auto mb-2.5 w-fit">
+                      <Avatar className="h-14 w-14 sm:h-16 sm:w-16 ring-2 ring-primary/15 shadow-md transition-transform duration-300 group-hover:scale-105">
                         <AvatarImage src={chef.avatar_url} alt={name} />
                         <AvatarFallback className="bg-primary/10 text-primary font-bold text-base">
                           {initials}
                         </AvatarFallback>
                       </Avatar>
                       {chef.is_verified && (
-                        <div className="absolute -bottom-1 -end-1 flex h-6 w-6 items-center justify-center rounded-full bg-primary text-primary-foreground shadow-sm">
-                          <Star className="h-3 w-3 fill-current" />
+                        <div className="absolute -bottom-1 -end-1 flex h-5 w-5 items-center justify-center rounded-full bg-primary text-primary-foreground shadow-sm">
+                          <Star className="h-2.5 w-2.5 fill-current" />
                         </div>
                       )}
                       {nationalityEmoji && (
-                        <span className="absolute -top-1 -start-1 text-base leading-none drop-shadow">{nationalityEmoji}</span>
+                        <span className="absolute -top-1 -start-1 text-sm leading-none drop-shadow">{nationalityEmoji}</span>
                       )}
                     </div>
-                    <h3 className="text-sm font-bold truncate group-hover:text-primary transition-colors">
+                    <h3 className="text-sm font-bold truncate text-foreground group-hover:text-primary transition-colors">
                       {name || (isAr ? "طاهٍ" : "Chef")}
                     </h3>
                     {spec && (
-                      <div className="mt-1 flex items-center justify-center gap-1 text-[11px] text-muted-foreground">
+                      <div className="mt-0.5 flex items-center justify-center gap-1 text-[11px] text-muted-foreground">
                         <ChefHat className="h-3 w-3 shrink-0" />
                         <span className="truncate">{spec}</span>
                       </div>
@@ -136,7 +134,7 @@ export function FeaturedChefs() {
                       </div>
                     )}
                     {hasMedals && (
-                      <div className="mt-2 flex items-center justify-center gap-2 text-[11px]">
+                      <div className="mt-1.5 flex items-center justify-center gap-2 text-[11px]">
                         {chef.gold_medals > 0 && <span className="flex items-center gap-0.5 text-chart-4"><Trophy className="h-3 w-3" />{chef.gold_medals}</span>}
                         {chef.silver_medals > 0 && <span className="flex items-center gap-0.5 text-muted-foreground"><Trophy className="h-3 w-3" />{chef.silver_medals}</span>}
                         {chef.bronze_medals > 0 && <span className="flex items-center gap-0.5 text-chart-3"><Trophy className="h-3 w-3" />{chef.bronze_medals}</span>}

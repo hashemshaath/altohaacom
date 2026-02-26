@@ -14,18 +14,20 @@ function StatItem({ value, label, icon: Icon, color, isVisible, delay }: {
   return (
     <div
       className={cn(
-        "flex flex-col items-center gap-2.5 px-2 transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)]",
-        isVisible ? "opacity-100 translate-y-0 scale-100" : "opacity-0 translate-y-6 scale-95"
+        "flex items-center gap-3 sm:flex-col sm:items-center sm:gap-2 px-3 py-2 sm:py-0 transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)]",
+        isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"
       )}
       style={{ transitionDelay: `${delay}ms` }}
     >
-      <div className="flex h-11 w-11 sm:h-14 sm:w-14 items-center justify-center rounded-2xl bg-primary/8 ring-1 ring-primary/10 transition-all duration-500 hover:scale-110 hover:ring-primary/20 hover:bg-primary/10">
-        <Icon className={`h-5 w-5 sm:h-6 sm:w-6 ${color}`} />
+      <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-primary/8 ring-1 ring-primary/10">
+        <Icon className={`h-4.5 w-4.5 sm:h-5 sm:w-5 ${color}`} />
       </div>
-      <p className="text-lg font-bold sm:text-2xl md:text-3xl tracking-tight tabular-nums">
-        {count}+
-      </p>
-      <p className="text-[11px] text-muted-foreground font-semibold uppercase tracking-wider">{label}</p>
+      <div className="sm:text-center">
+        <p className="text-xl font-bold sm:text-2xl tracking-tight tabular-nums text-foreground">
+          {count}+
+        </p>
+        <p className="text-[10px] sm:text-[11px] text-muted-foreground font-semibold uppercase tracking-wider">{label}</p>
+      </div>
     </div>
   );
 }
@@ -62,10 +64,10 @@ export function HomeStats() {
   ];
 
   return (
-    <section ref={ref} className="border-y border-border/40 bg-card/60 backdrop-blur-sm" aria-label={isAr ? "إحصائيات المنصة" : "Platform statistics"}>
-      <div className="container grid grid-cols-2 sm:grid-cols-4 gap-4 py-8 sm:py-10">
+    <section ref={ref} className="border-y border-border/30 bg-card/50 backdrop-blur-sm" aria-label={isAr ? "إحصائيات المنصة" : "Platform statistics"}>
+      <div className="container grid grid-cols-2 sm:grid-cols-4 gap-2 py-6 sm:py-8">
         {items.map((stat, i) => (
-          <StatItem key={stat.label} {...stat} isVisible={isVisible} delay={i * 120} />
+          <StatItem key={stat.label} {...stat} isVisible={isVisible} delay={i * 100} />
         ))}
       </div>
     </section>
