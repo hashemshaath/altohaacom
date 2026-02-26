@@ -23,6 +23,9 @@ import {
   MessageSquare, Plus, Edit, Trash2, Search, Mail, Phone, Send, Eye, Copy, Filter, FileText,
   Variable, Zap, ChevronDown, ChevronUp, CheckSquare, XSquare, Download, LayoutGrid, List,
 } from "lucide-react";
+import { useAdminBulkActions } from "@/hooks/useAdminBulkActions";
+import { useCSVExport } from "@/hooks/useCSVExport";
+import { BulkActionBar } from "@/components/admin/BulkActionBar";
 
 interface Template {
   id: string;
@@ -75,9 +78,8 @@ export default function CommunicationTemplatesAdmin() {
   const [sendUserId, setSendUserId] = useState("");
   const [sendPhone, setSendPhone] = useState("");
   const [sendVars, setSendVars] = useState<Record<string, string>>({});
-  const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
-  const [expandedId, setExpandedId] = useState<string | null>(null);
   const [viewMode, setViewMode] = useState<"table" | "grid">("table");
+  const [expandedId, setExpandedId] = useState<string | null>(null);
 
   const [form, setForm] = useState({
     name: "", name_ar: "", slug: "", category: "general", channel: "email",
@@ -147,26 +149,26 @@ export default function CommunicationTemplatesAdmin() {
 
   const bulkToggleMutation = useMutation({
     mutationFn: async (active: boolean) => {
-      const ids = Array.from(selectedIds);
+      const ids = [...bulk.selected];
       const { error } = await supabase.from("communication_templates").update({ is_active: active }).in("id", ids);
       if (error) throw error;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["communication-templates"] });
-      setSelectedIds(new Set());
+      bulk.clearSelection();
       toast({ title: isAr ? "تم التحديث" : "Templates updated" });
     },
   });
 
   const bulkDeleteMutation = useMutation({
     mutationFn: async () => {
-      const ids = Array.from(selectedIds);
+      const ids = [...bulk.selected];
       const { error } = await supabase.from("communication_templates").delete().in("id", ids);
       if (error) throw error;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["communication-templates"] });
-      setSelectedIds(new Set());
+      bulk.clearSelection();
       toast({ title: isAr ? "تم الحذف" : "Templates deleted" });
     },
   });
@@ -208,19 +210,20 @@ export default function CommunicationTemplatesAdmin() {
     }
   };
 
-  const exportCSV = () => {
-    const headers = ["Name", "Slug", "Category", "Channel", "Subject", "Active", "Variables"];
-    const rows = templates.map(t => [
-      t.name, t.slug, t.category, t.channel, t.subject || "", t.is_active ? "Yes" : "No",
-      (t.variables || []).join("; "),
-    ]);
-    const csv = [headers, ...rows].map(r => r.map(c => `"${c}"`).join(",")).join("\n");
-    const blob = new Blob([csv], { type: "text/csv" });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url; a.download = "communication-templates.csv"; a.click();
-    URL.revokeObjectURL(url);
-  };
+  const bulk = useAdminBulkActions(templates);
+
+  const { exportCSV: exportTemplatesCSV } = useCSVExport({
+    columns: [
+      { header: isAr ? "الاسم" : "Name", accessor: (r: Template) => isAr && r.name_ar ? r.name_ar : r.name },
+      { header: "Slug", accessor: (r: Template) => r.slug },
+      { header: isAr ? "الفئة" : "Category", accessor: (r: Template) => r.category },
+      { header: isAr ? "القناة" : "Channel", accessor: (r: Template) => r.channel },
+      { header: isAr ? "الموضوع" : "Subject", accessor: (r: Template) => r.subject || "" },
+      { header: isAr ? "نشط" : "Active", accessor: (r: Template) => r.is_active ? "Yes" : "No" },
+      { header: isAr ? "المتغيرات" : "Variables", accessor: (r: Template) => (r.variables || []).join("; ") },
+    ],
+    filename: "communication-templates",
+  });
 
   const openSendDialog = (t: Template) => {
     setEditingTemplate(t);
@@ -252,20 +255,6 @@ export default function CommunicationTemplatesAdmin() {
   };
   const getChannelInfo = (ch: string) => channels.find((c) => c.value === ch);
 
-  const toggleSelect = (id: string) => {
-    setSelectedIds(prev => {
-      const next = new Set(prev);
-      next.has(id) ? next.delete(id) : next.add(id);
-      return next;
-    });
-  };
-  const toggleSelectAll = () => {
-    if (selectedIds.size === templates.length) {
-      setSelectedIds(new Set());
-    } else {
-      setSelectedIds(new Set(templates.map(t => t.id)));
-    }
-  };
 
   const stats = {
     total: templates.length,
@@ -282,7 +271,7 @@ export default function CommunicationTemplatesAdmin() {
         description={isAr ? "إدارة قوالب البريد الإلكتروني والرسائل النصية والواتساب" : "Manage email, WhatsApp, SMS and in-app notification templates"}
         actions={
           <div className="flex items-center gap-2">
-            <Button variant="outline" size="sm" onClick={exportCSV}>
+            <Button variant="outline" size="sm" onClick={() => exportTemplatesCSV(templates)}>
               <Download className="me-2 h-4 w-4" />
               {isAr ? "تصدير" : "Export CSV"}
             </Button>
@@ -316,33 +305,18 @@ export default function CommunicationTemplatesAdmin() {
         ))}
       </div>
 
-      {/* Bulk Actions Bar */}
-      {selectedIds.size > 0 && (
-        <Card className="border-primary/30 bg-primary/5">
-          <CardContent className="flex items-center justify-between p-3">
-            <span className="text-sm font-medium">
-              {selectedIds.size} {isAr ? "محدد" : "selected"}
-            </span>
-            <div className="flex items-center gap-2">
-              <Button variant="outline" size="sm" onClick={() => bulkToggleMutation.mutate(true)}>
-                <CheckSquare className="me-1 h-3.5 w-3.5" />
-                {isAr ? "تفعيل" : "Activate"}
-              </Button>
-              <Button variant="outline" size="sm" onClick={() => bulkToggleMutation.mutate(false)}>
-                <XSquare className="me-1 h-3.5 w-3.5" />
-                {isAr ? "تعطيل" : "Deactivate"}
-              </Button>
-              <Button variant="destructive" size="sm" onClick={() => bulkDeleteMutation.mutate()}>
-                <Trash2 className="me-1 h-3.5 w-3.5" />
-                {isAr ? "حذف" : "Delete"}
-              </Button>
-              <Button variant="ghost" size="sm" onClick={() => setSelectedIds(new Set())}>
-                {isAr ? "إلغاء" : "Cancel"}
-              </Button>
-            </div>
-          </CardContent>
-        </Card>
-      )}
+      <BulkActionBar
+        count={bulk.count}
+        onClear={bulk.clearSelection}
+        onDelete={() => bulkDeleteMutation.mutate()}
+        onStatusChange={() => bulkToggleMutation.mutate(true)}
+        onExport={() => exportTemplatesCSV(bulk.selectedItems)}
+      >
+        <Button variant="outline" size="sm" onClick={() => bulkToggleMutation.mutate(false)} className="gap-1.5">
+          <XSquare className="h-3.5 w-3.5" />
+          {isAr ? "تعطيل" : "Deactivate"}
+        </Button>
+      </BulkActionBar>
 
       {/* Filters */}
       <div className="flex flex-wrap items-center gap-3">
@@ -434,7 +408,7 @@ export default function CommunicationTemplatesAdmin() {
             <TableHeader>
               <TableRow>
                 <TableHead className="w-10">
-                  <Checkbox checked={selectedIds.size === templates.length && templates.length > 0} onCheckedChange={toggleSelectAll} />
+                  <Checkbox checked={bulk.isAllSelected} onCheckedChange={bulk.toggleAll} />
                 </TableHead>
                 <TableHead>{isAr ? "القالب" : "Template"}</TableHead>
                 <TableHead>{isAr ? "الفئة" : "Category"}</TableHead>
@@ -453,7 +427,7 @@ export default function CommunicationTemplatesAdmin() {
                   <>
                     <TableRow key={t.id} className={`cursor-pointer ${isExpanded ? "bg-muted/30" : ""}`}>
                       <TableCell onClick={(e) => e.stopPropagation()}>
-                        <Checkbox checked={selectedIds.has(t.id)} onCheckedChange={() => toggleSelect(t.id)} />
+                        <Checkbox checked={bulk.isSelected(t.id)} onCheckedChange={() => bulk.toggleOne(t.id)} />
                       </TableCell>
                       <TableCell onClick={() => setExpandedId(isExpanded ? null : t.id)}>
                         <div className="flex items-center gap-2">

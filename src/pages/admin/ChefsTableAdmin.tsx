@@ -25,11 +25,15 @@ import { ChefsTableChefRegistrations } from "@/components/admin/chefs-table/Chef
 import {
   ChefHat, Search, Eye, Package, Calendar, FileText,
   Clock, Check, X, ThumbsUp, ThumbsDown, MapPin, Image,
-  Send, Gavel, Printer, ChevronDown, DollarSign,
+  Send, Gavel, Printer, ChevronDown, DollarSign, Download,
   Users, AlertCircle, BarChart3, UserPlus, Receipt,
 } from "lucide-react";
 import { format } from "date-fns";
 import { toast } from "sonner";
+import { useAdminBulkActions } from "@/hooks/useAdminBulkActions";
+import { useCSVExport } from "@/hooks/useCSVExport";
+import { BulkActionBar } from "@/components/admin/BulkActionBar";
+import { Checkbox } from "@/components/ui/checkbox";
 
 const JudgesAdmin = lazy(() => import("./JudgesAdmin"));
 
@@ -99,6 +103,20 @@ export default function ChefsTableAdmin() {
   }, [requests, requestStatusFilter]);
 
   const pendingRequests = requests.filter(r => r.status === "pending");
+
+  const bulkSessions = useAdminBulkActions(filteredSessions);
+
+  const { exportCSV: exportSessionsCSV } = useCSVExport({
+    columns: [
+      { header: isAr ? "الجلسة" : "Session", accessor: (r: any) => isAr && r.title_ar ? r.title_ar : r.title },
+      { header: isAr ? "المنتج" : "Product", accessor: (r: any) => isAr && r.product_name_ar ? r.product_name_ar : r.product_name },
+      { header: isAr ? "النوع" : "Type", accessor: (r: any) => r.experience_type },
+      { header: isAr ? "الحالة" : "Status", accessor: (r: any) => r.status },
+      { header: isAr ? "التاريخ" : "Date", accessor: (r: any) => r.session_date ? format(new Date(r.session_date), "yyyy-MM-dd") : "" },
+      { header: isAr ? "الطهاة" : "Max Chefs", accessor: (r: any) => r.max_chefs },
+    ],
+    filename: "chefs-table-sessions",
+  });
 
   const handleApprove = async (req: any) => {
     setProcessingId(req.id);
@@ -397,6 +415,8 @@ export default function ChefsTableAdmin() {
             </div>
           </div>
 
+          <BulkActionBar count={bulkSessions.count} onClear={bulkSessions.clearSelection} onExport={() => exportSessionsCSV(bulkSessions.selectedItems)} />
+
           {sessionsLoading ? (
             <div className="space-y-2 sm:space-y-3">{[1,2,3].map(i => <Skeleton key={i} className="h-16 sm:h-20 rounded-xl" />)}</div>
           ) : filteredSessions.length === 0 ? (
@@ -452,6 +472,9 @@ export default function ChefsTableAdmin() {
                 <Table>
                   <TableHeader>
                     <TableRow className="bg-muted/30">
+                      <TableHead className="w-10">
+                        <Checkbox checked={bulkSessions.isAllSelected} onCheckedChange={bulkSessions.toggleAll} />
+                      </TableHead>
                       <TableHead className="font-bold text-[11px] uppercase tracking-wider cursor-pointer select-none" onClick={() => toggleSort("title")}>
                         {isAr ? "الجلسة" : "Session"}<SortIndicator col="title" />
                       </TableHead>
@@ -475,9 +498,12 @@ export default function ChefsTableAdmin() {
                         <>
                           <TableRow
                             key={session.id}
-                            className={`cursor-pointer transition-colors ${isExpanded ? "bg-muted/40" : "hover:bg-muted/40"}`}
+                            className={`cursor-pointer transition-colors ${bulkSessions.isSelected(session.id) ? "bg-primary/5" : isExpanded ? "bg-muted/40" : "hover:bg-muted/40"}`}
                             onClick={() => setExpandedSessionId(isExpanded ? null : session.id)}
                           >
+                            <TableCell onClick={e => e.stopPropagation()}>
+                              <Checkbox checked={bulkSessions.isSelected(session.id)} onCheckedChange={() => bulkSessions.toggleOne(session.id)} />
+                            </TableCell>
                             <TableCell>
                               <div>
                                 <p className="font-bold text-sm">{isAr && session.title_ar ? session.title_ar : session.title}</p>
@@ -515,7 +541,7 @@ export default function ChefsTableAdmin() {
                           </TableRow>
                           {isExpanded && (
                             <TableRow key={`${session.id}-detail`}>
-                              <TableCell colSpan={7} className="p-0">
+                              <TableCell colSpan={8} className="p-0">
                                 <ChefsTableSessionDetail session={session} onNavigate={(id) => navigate(`/chefs-table/${id}`)} />
                               </TableCell>
                             </TableRow>
