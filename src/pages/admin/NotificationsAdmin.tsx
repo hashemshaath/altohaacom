@@ -20,6 +20,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
 import { useToast } from "@/hooks/use-toast";
+import { useCSVExport } from "@/hooks/useCSVExport";
 import { format } from "date-fns";
 import {
   Bell, Send, Plus, Mail, MessageSquare, Smartphone, Clock, Check, X,
@@ -365,18 +366,17 @@ export default function NotificationsAdmin() {
     });
   };
 
-  const exportNotifications = () => {
-    const headers = ["Title", "Type", "Channel", "Status", "Date"];
-    const rows = filteredRecent.map((n: any) => [
-      n.title || "", n.type || "info", n.channel || "in_app", n.status || "pending",
-      format(new Date(n.created_at), "yyyy-MM-dd HH:mm"),
-    ]);
-    const csv = [headers, ...rows].map((r) => r.map((c: string) => `"${c}"`).join(",")).join("\n");
-    const blob = new Blob([csv], { type: "text/csv" });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a"); a.href = url; a.download = "notifications.csv"; a.click();
-    URL.revokeObjectURL(url);
-  };
+  const { exportCSV: exportNotifications } = useCSVExport({
+    columns: [
+      { header: isAr ? "العنوان" : "Title", accessor: (n: any) => n.title || "" },
+      { header: isAr ? "العنوان (عربي)" : "Title (AR)", accessor: (n: any) => n.title_ar || "" },
+      { header: isAr ? "النوع" : "Type", accessor: (n: any) => n.type || "info" },
+      { header: isAr ? "القناة" : "Channel", accessor: (n: any) => n.channel || "in_app" },
+      { header: isAr ? "الحالة" : "Status", accessor: (n: any) => n.status || "pending" },
+      { header: isAr ? "التاريخ" : "Date", accessor: (n: any) => format(new Date(n.created_at), "yyyy-MM-dd HH:mm") },
+    ],
+    filename: "notifications",
+  });
 
   return (
     <div className="space-y-6">
@@ -462,7 +462,7 @@ export default function NotificationsAdmin() {
                 <SelectItem value="failed">Failed</SelectItem>
               </SelectContent>
             </Select>
-            <Button variant="outline" size="sm" className="h-10" onClick={exportNotifications}>
+            <Button variant="outline" size="sm" className="h-10" onClick={() => exportNotifications(filteredRecent)}>
               <Download className="me-1 h-3.5 w-3.5" />{isAr ? "تصدير" : "Export"}
             </Button>
           </div>
