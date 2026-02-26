@@ -69,7 +69,7 @@ export function SponsorCarousel() {
   const platinums = sponsors.filter(s => s.tier === "platinum");
 
   return (
-    <section className="py-10 md:py-14 overflow-hidden">
+    <section className="py-8 md:py-12 overflow-hidden">
       <div className="container">
         <div className="mb-8 text-center">
           <Badge variant="secondary" className="mb-3 gap-1">

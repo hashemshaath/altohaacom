@@ -31,17 +31,17 @@ const HomeProSuppliers = lazy(() => import("@/components/home/HomeProSuppliers")
 const LazyFallback = memo(({ type = "grid" }: { type?: "grid" | "cards" | "banner" }) => {
   if (type === "banner") {
     return (
-      <div className="container my-4">
+      <div className="container py-2">
         <Skeleton className="h-[90px] w-full rounded-xl" />
       </div>
     );
   }
   return (
-    <div className="container my-4">
+    <div className="container py-2">
       <div className="space-y-3">
-        <Skeleton className="h-6 w-40 rounded-lg" />
-        <Skeleton className="h-4 w-64 rounded-md" />
-        <div className="grid gap-4 grid-cols-2 sm:grid-cols-3 lg:grid-cols-4">
+        <Skeleton className="h-5 w-36 rounded-lg" />
+        <Skeleton className="h-4 w-56 rounded-md" />
+        <div className="grid gap-3 grid-cols-2 sm:grid-cols-3 lg:grid-cols-4">
           {Array.from({ length: 4 }).map((_, i) => (
             <div key={i} className="space-y-2">
               <Skeleton className="aspect-[16/10] rounded-xl" />
@@ -106,7 +106,7 @@ const Index = () => {
       />
       <Header />
 
-      <div>
+      <div className="space-y-0">
         {/* 1. Hero Slider */}
         {isVisible(sections, "hero") && <HeroSlider />}
 
@@ -114,11 +114,7 @@ const Index = () => {
         {isVisible(sections, "search") && <HomeSearch />}
 
         {/* 3. Platform Stats */}
-        {isVisible(sections, "stats") && (
-          <div className="mt-4">
-            <HomeStats />
-          </div>
-        )}
+        {isVisible(sections, "stats") && <HomeStats />}
 
         {/* Dynamic lazy sections — sorted by sort_order from DB */}
         {sections
@@ -140,7 +136,7 @@ const Index = () => {
         {/* Ad banners rendered in position */}
         {isVisible(sections, "ad_banner_top") && (
           <Suspense fallback={<LazyFallback type="banner" />}>
-            <section className="container py-4">
+            <section className="container py-2">
               <AdBanner placementSlug="home-hero-banner" className="w-full rounded-xl overflow-hidden aspect-[728/90] sm:aspect-[970/90] max-h-[120px]" />
             </section>
           </Suspense>
@@ -148,7 +144,7 @@ const Index = () => {
 
         {isVisible(sections, "ad_banner_mid") && (
           <Suspense fallback={<LazyFallback type="banner" />}>
-            <section className="container py-4">
+            <section className="container py-2">
               <AdBanner placementSlug="in-feed" className="w-full max-w-3xl mx-auto rounded-xl overflow-hidden aspect-[728/90] sm:aspect-[970/250] max-h-[250px]" />
             </section>
           </Suspense>
@@ -159,7 +155,7 @@ const Index = () => {
           <>
             <Suspense fallback={<LazyFallback />}><EventsByCategory /></Suspense>
             <Suspense fallback={<LazyFallback type="banner" />}>
-              <section className="container py-4">
+              <section className="container py-2">
                 <AdBanner placementSlug="home-hero-banner" className="w-full rounded-xl overflow-hidden aspect-[728/90] sm:aspect-[970/90] max-h-[120px]" />
               </section>
             </Suspense>
@@ -171,7 +167,7 @@ const Index = () => {
             <Suspense fallback={<LazyFallback />}><HomeProSuppliers /></Suspense>
             <Suspense fallback={<LazyFallback />}><HomeMasterclasses /></Suspense>
             <Suspense fallback={<LazyFallback type="banner" />}>
-              <section className="container py-4">
+              <section className="container py-2">
                 <AdBanner placementSlug="in-feed" className="w-full max-w-3xl mx-auto rounded-xl overflow-hidden aspect-[728/90] sm:aspect-[970/250] max-h-[250px]" />
               </section>
             </Suspense>

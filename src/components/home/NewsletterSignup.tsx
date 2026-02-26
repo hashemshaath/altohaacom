@@ -47,7 +47,7 @@ export function NewsletterSignup() {
       <div className="absolute inset-0 bg-gradient-to-br from-primary/8 via-card/80 to-accent/8" />
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,hsl(var(--primary)/0.08),transparent_70%)]" />
 
-      <div className="container relative py-10 md:py-16">
+      <div className="container relative py-8 md:py-12">
         <div
           className={cn(
             "mx-auto max-w-xl text-center transition-all duration-700",

@@ -54,7 +54,7 @@ export function SponsorshipOpportunities() {
   if (opportunities.length === 0) return null;
 
   return (
-    <section className="relative overflow-hidden py-14 md:py-20">
+    <section className="relative overflow-hidden py-8 md:py-12">
       <div className="absolute inset-0 bg-gradient-to-b from-transparent via-primary/[0.03] to-transparent" />
       <div className="container relative">
         <div className="mb-8 flex items-center justify-between">

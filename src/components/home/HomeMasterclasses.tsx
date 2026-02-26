@@ -37,18 +37,18 @@ export function HomeMasterclasses() {
   if (classes.length === 0) return null;
 
   return (
-    <section className="container py-10 md:py-14" aria-labelledby="masterclasses-heading">
+    <section className="container py-8 md:py-12" aria-labelledby="masterclasses-heading">
       <SectionReveal>
-        <div className="mb-8 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+        <div className="mb-6 flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
           <div>
-            <Badge variant="secondary" className="mb-2 gap-1">
+            <Badge variant="secondary" className="mb-1.5 gap-1">
               <GraduationCap className="h-3 w-3" />
               {isAr ? "دروس متقدمة" : "Masterclasses"}
             </Badge>
-            <h2 id="masterclasses-heading" className={cn("text-xl font-bold sm:text-2xl", !isAr && "font-serif")}>
+            <h2 id="masterclasses-heading" className={cn("text-xl font-bold sm:text-2xl text-foreground tracking-tight", !isAr && "font-serif")}>
               {isAr ? "طوّر مهاراتك مع الخبراء" : "Level Up with Expert-Led Classes"}
             </h2>
-            <p className="mt-1 text-sm text-muted-foreground">
+            <p className="mt-0.5 text-sm text-muted-foreground">
               {isAr ? "تعلّم من أمهر الطهاة واحترف فنون الطهي" : "Learn from top chefs and master culinary arts"}
             </p>
           </div>
@@ -61,15 +61,15 @@ export function HomeMasterclasses() {
         </div>
       </SectionReveal>
 
-      <SectionReveal delay={100}>
-      <div className="grid gap-2.5 grid-cols-2 sm:grid-cols-2 lg:grid-cols-4">
+      <SectionReveal delay={80}>
+      <div className="grid gap-3 grid-cols-2 sm:grid-cols-2 lg:grid-cols-4">
         {classes.map((mc: any) => {
           const title = isAr && mc.title_ar ? mc.title_ar : mc.title;
           const levelLabel = LEVEL_LABELS[mc.level];
 
           return (
             <Link key={mc.id} to={`/masterclasses/${mc.id}`} className="group block">
-              <Card className="h-full overflow-hidden border-border/50 transition-all duration-300 hover:shadow-lg hover:-translate-y-1 hover:border-primary/20">
+              <Card className="h-full overflow-hidden border-border/40 transition-all duration-300 hover:shadow-lg hover:-translate-y-0.5 hover:border-primary/20">
                 <div className="relative aspect-[16/10] overflow-hidden bg-muted">
                   {mc.cover_image_url ? (
                     <img src={mc.cover_image_url} alt={title} className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105" loading="lazy" />
@@ -91,10 +91,10 @@ export function HomeMasterclasses() {
                     )}
                   </div>
                 </div>
-                <CardContent className="p-3.5">
-                  <div className="mb-2">
-                    <Badge variant="outline" className="text-[10px] mb-1.5">{mc.category}</Badge>
-                    <h3 className="line-clamp-2 text-sm font-semibold group-hover:text-primary transition-colors">{title}</h3>
+                <CardContent className="p-3">
+                  <div className="mb-1.5">
+                    <Badge variant="outline" className="text-[10px] mb-1">{mc.category}</Badge>
+                    <h3 className="line-clamp-2 text-sm font-bold text-foreground group-hover:text-primary transition-colors leading-snug">{title}</h3>
                   </div>
                   <div className="flex items-center gap-3 text-[11px] text-muted-foreground">
                     {mc.duration_hours && (

@@ -53,7 +53,7 @@ export function PartnersLogos() {
   if (!hasContent) return null;
 
   return (
-    <section className="py-12 md:py-16" aria-labelledby="partners-heading">
+    <section className="py-8 md:py-12" aria-labelledby="partners-heading">
       <div className="container">
         <SectionReveal>
           <div className="mb-8 text-center">
