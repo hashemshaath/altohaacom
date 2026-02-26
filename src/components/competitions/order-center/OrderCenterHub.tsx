@@ -1,9 +1,11 @@
-import { useState, lazy, Suspense } from "react";
+import { useState, lazy, Suspense, useCallback } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
-import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
-import { LayoutDashboard, ClipboardList, Package, Lightbulb, CheckSquare, Send, Wallet, Truck, Activity, BarChart3, ClipboardCheck, BookTemplate, FileInput } from "lucide-react";
+import {
+  LayoutDashboard, ClipboardList, Package, Lightbulb, CheckSquare,
+  Send, Wallet, Truck, Activity, BarChart3, ClipboardCheck, BookTemplate, FileInput,
+} from "lucide-react";
 import { useDeadlineAlerts } from "./useDeadlineAlerts";
 
 // Lazy load all tab panels for performance
@@ -82,24 +84,22 @@ export function OrderCenterHub({ competitionId, isOrganizer }: Props) {
   // Show toast alerts for overdue/upcoming deadlines on load
   useDeadlineAlerts(competitionId);
 
-  const renderTabContent = () => {
-    const props = { competitionId, isOrganizer };
-    switch (activeTab) {
-      case "overview": return <OrderOverviewDashboard {...props} />;
-      case "requests": return <ItemRequestPanel {...props} />;
-      case "lists": return <RequirementsListPanel {...props} />;
-      case "catalog": return <SupermarketCatalog />;
-      case "checklist": return <DeliveryChecklist {...props} />;
-      case "quotes": return <QuoteRequestPanel {...props} />;
-      case "budget": return <BudgetTracker {...props} />;
-      case "vendors": return <VendorAssignmentPanel {...props} />;
-      case "performance": return <VendorPerformance {...props} />;
-      case "suggestions": return <SuggestionPanel {...props} />;
-      case "templates": return <RequirementTemplates {...props} />;
-      case "readiness": return <ReadinessChecklist {...props} />;
-      case "activity": return <OrderActivityLog {...props} />;
-      default: return null;
-    }
+  const handleTabChange = useCallback((id: string) => setActiveTab(id), []);
+
+  const TAB_COMPONENTS: Record<string, React.ReactNode> = {
+    overview: <OrderOverviewDashboard competitionId={competitionId} isOrganizer={isOrganizer} />,
+    requests: <ItemRequestPanel competitionId={competitionId} isOrganizer={isOrganizer} />,
+    lists: <RequirementsListPanel competitionId={competitionId} isOrganizer={isOrganizer} />,
+    catalog: <SupermarketCatalog />,
+    checklist: <DeliveryChecklist competitionId={competitionId} isOrganizer={isOrganizer} />,
+    quotes: <QuoteRequestPanel competitionId={competitionId} isOrganizer={isOrganizer} />,
+    budget: <BudgetTracker competitionId={competitionId} isOrganizer={isOrganizer} />,
+    vendors: <VendorAssignmentPanel competitionId={competitionId} isOrganizer={isOrganizer} />,
+    performance: <VendorPerformance competitionId={competitionId} isOrganizer={isOrganizer} />,
+    suggestions: <SuggestionPanel competitionId={competitionId} isOrganizer={isOrganizer} />,
+    templates: <RequirementTemplates competitionId={competitionId} isOrganizer={isOrganizer} />,
+    readiness: <ReadinessChecklist competitionId={competitionId} isOrganizer={isOrganizer} />,
+    activity: <OrderActivityLog competitionId={competitionId} isOrganizer={isOrganizer} />,
   };
 
   return (
@@ -135,7 +135,7 @@ export function OrderCenterHub({ competitionId, isOrganizer }: Props) {
                     return (
                       <button
                         key={tab.id}
-                        onClick={() => setActiveTab(tab.id)}
+                        onClick={() => handleTabChange(tab.id)}
                         className={`
                           flex items-center gap-1 rounded-lg px-2 py-1.5 text-[11px] sm:text-xs font-medium transition-all active:scale-95
                           ${isActive
@@ -160,7 +160,7 @@ export function OrderCenterHub({ competitionId, isOrganizer }: Props) {
       {/* Tab Content with Suspense */}
       <div className="mt-4">
         <Suspense fallback={<TabSkeleton />}>
-          {renderTabContent()}
+          {TAB_COMPONENTS[activeTab] || null}
         </Suspense>
       </div>
     </div>

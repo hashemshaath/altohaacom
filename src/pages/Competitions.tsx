@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useCallback } from "react";
 import { Link } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -14,7 +14,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { EmptyState } from "@/components/ui/empty-state";
-import { Search, MapPin, Plus, Globe, Trophy, Flame, Sparkles, Users, TrendingUp } from "lucide-react";
+import { Search, MapPin, Plus, Globe, Trophy, Flame, Sparkles, Users, TrendingUp, ArrowUpDown } from "lucide-react";
 import { countryFlag } from "@/lib/countryFlag";
 import { toEnglishDigits } from "@/lib/formatNumber";
 import {
@@ -24,7 +24,6 @@ import {
   getTabBucket,
   type CompetitionWithRegs,
 } from "@/components/competitions/CompetitionCard";
-import type { Database } from "@/integrations/supabase/types";
 
 const TAB_FILTERS = ["all", "upcoming", "active", "past"] as const;
 type TabFilter = typeof TAB_FILTERS[number];
@@ -36,6 +35,8 @@ const tabLabels: Record<TabFilter, { en: string; ar: string }> = {
   past: { en: "Past", ar: "سابقة" },
 };
 
+type SortOption = "date" | "name" | "popularity";
+
 export default function Competitions() {
   const { t, language } = useLanguage();
   const { user } = useAuth();
@@ -43,6 +44,7 @@ export default function Competitions() {
   const [search, setSearch] = useState("");
   const [activeTab, setActiveTab] = useState<TabFilter>("all");
   const [countryFilter, setCountryFilter] = useState("all");
+  const [sortBy, setSortBy] = useState<SortOption>("date");
   const { data: allCountries = [] } = useAllCountries();
   useAdTracking();
 
@@ -76,10 +78,10 @@ export default function Competitions() {
     [competitions]
   );
 
-  const getCountryName = (code: string) => {
+  const getCountryName = useCallback((code: string) => {
     const c = allCountries.find((ct) => ct.code === code);
     return c ? (isAr ? c.name_ar || c.name : c.name) : code;
-  };
+  }, [allCountries, isAr]);
 
   // Pre-compute counts & featured
   const { counts, featured, totalRegistrations } = useMemo(() => {
@@ -101,16 +103,37 @@ export default function Competitions() {
   }, [competitions]);
 
   const filtered = useMemo(() => {
-    return competitions?.filter(comp => {
+    let result = competitions?.filter(comp => {
       const title = isAr && comp.title_ar ? comp.title_ar : comp.title;
       const matchesSearch = !search || title.toLowerCase().includes(search.toLowerCase());
       const matchesCountry = countryFilter === "all" || comp.country_code === countryFilter;
       const matchesTab = activeTab === "all" || getTabBucket(comp) === activeTab;
       return matchesSearch && matchesCountry && matchesTab;
-    });
-  }, [competitions, search, countryFilter, activeTab, isAr]);
+    }) || [];
+
+    // Apply sort
+    if (sortBy === "name") {
+      result = [...result].sort((a, b) => {
+        const aName = isAr && a.title_ar ? a.title_ar : a.title;
+        const bName = isAr && b.title_ar ? b.title_ar : b.title;
+        return aName.localeCompare(bName);
+      });
+    } else if (sortBy === "popularity") {
+      result = [...result].sort((a, b) => (b.competition_registrations?.length || 0) - (a.competition_registrations?.length || 0));
+    }
+    // "date" is default from query order
+
+    return result;
+  }, [competitions, search, countryFilter, activeTab, isAr, sortBy]);
 
   const hasActiveFilters = search || countryFilter !== "all";
+
+  const clearAll = useCallback(() => {
+    setSearch("");
+    setCountryFilter("all");
+    setActiveTab("all");
+    setSortBy("date");
+  }, []);
 
   return (
     <PageShell
@@ -196,7 +219,7 @@ export default function Competitions() {
             <FeaturedCompetitionCard competition={featured} language={language} isAr={isAr} />
           )}
 
-          {/* Sticky Filters + Tab Pills */}
+          {/* Sticky Filters + Tab Pills + Sort */}
           <div className="sticky top-12 z-30 -mx-4 mb-6 border-y border-border/40 bg-background/90 px-4 py-3 backdrop-blur-md md:rounded-2xl md:border md:mx-0 md:px-6 space-y-3">
             <div className="flex gap-2 items-center">
               <div className="relative flex-1">
@@ -227,6 +250,17 @@ export default function Competitions() {
                   </SelectContent>
                 </Select>
               )}
+              <Select value={sortBy} onValueChange={(v) => setSortBy(v as SortOption)}>
+                <SelectTrigger className="h-9 w-auto min-w-[42px] max-w-[130px] border-border/40 bg-muted/20 rounded-xl text-xs px-2.5">
+                  <ArrowUpDown className="h-3.5 w-3.5 text-muted-foreground/60 shrink-0" />
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent className="rounded-xl border-border/40">
+                  <SelectItem value="date" className="rounded-lg text-xs">{isAr ? "التاريخ" : "Date"}</SelectItem>
+                  <SelectItem value="name" className="rounded-lg text-xs">{isAr ? "الاسم" : "Name"}</SelectItem>
+                  <SelectItem value="popularity" className="rounded-lg text-xs">{isAr ? "الأكثر شعبية" : "Popular"}</SelectItem>
+                </SelectContent>
+              </Select>
             </div>
             {/* Tab Pills */}
             <div className="flex gap-1.5 overflow-x-auto scrollbar-none">
@@ -277,7 +311,7 @@ export default function Competitions() {
                 ? (isAr ? "جرّب كلمات بحث مختلفة" : "Try different search terms")
                 : (isAr ? "لا توجد مسابقات في هذه الفئة حالياً" : "No competitions in this category yet")}
               action={hasActiveFilters ? (
-                <Button variant="outline" size="sm" className="rounded-xl" onClick={() => { setSearch(""); setCountryFilter("all"); }}>
+                <Button variant="outline" size="sm" className="rounded-xl" onClick={clearAll}>
                   {isAr ? "مسح الفلاتر" : "Clear filters"}
                 </Button>
               ) : undefined}
