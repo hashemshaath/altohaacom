@@ -28,6 +28,7 @@ import { LayoutSEOSettings } from "@/components/admin/settings/LayoutSEOSettings
 import { SecurityContentSettings } from "@/components/admin/settings/SecurityContentSettings";
 import { CoverSettings } from "@/components/admin/settings/CoverSettings";
 import { HomepageSectionsManager } from "@/components/admin/settings/HomepageSectionsManager";
+import { HomepageTemplateSwitcher } from "@/components/admin/settings/HomepageTemplateSwitcher";
 import { GoogleIntegrationPanel } from "@/components/ads/GoogleIntegrationPanel";
 
 const tabs = [
@@ -116,6 +117,8 @@ export default function SystemSettings() {
           </TabsContent>
 
           <TabsContent value="homepage" className="mt-0 space-y-3">
+            {/* Template Switcher */}
+            <HomepageTemplateSwitcher />
             {/* Quick links */}
             <div className="grid gap-3 sm:grid-cols-2">
               <Card className="border-primary/20 bg-primary/5">

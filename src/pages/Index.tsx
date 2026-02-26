@@ -10,6 +10,8 @@ import { HomeStats } from "@/components/home/HomeStats";
 import { useAdTracking } from "@/hooks/useAdTracking";
 import { prefetchCommonRoutes } from "@/lib/prefetch";
 import { useHomepageSections, type HomepageSection } from "@/hooks/useHomepageSections";
+import { useSiteSettingsContext } from "@/contexts/SiteSettingsContext";
+import { HomepageV2 } from "@/components/home/HomepageV2";
 
 // Lazy load below-fold components
 const EventsByCategory = lazy(() => import("@/components/home/EventsByCategory").then(m => ({ default: m.EventsByCategory })));
@@ -83,6 +85,8 @@ const Index = () => {
   useAdTracking();
   useEffect(() => { prefetchCommonRoutes(); }, []);
   const { data: sections = [] } = useHomepageSections();
+  const siteSettings = useSiteSettingsContext();
+  const template = (siteSettings?.homepage as any)?.template || "v1";
 
   return (
     <div className="flex min-h-screen flex-col overflow-x-hidden" role="document">
@@ -106,83 +110,83 @@ const Index = () => {
       />
       <Header />
 
-      <div className="space-y-0">
-        {/* 1. Hero Slider */}
-        {isVisible(sections, "hero") && <HeroSlider />}
+      {template === "v2" ? (
+        <HomepageV2 />
+      ) : (
+        <div className="space-y-0">
+          {/* 1. Hero Slider */}
+          {isVisible(sections, "hero") && <HeroSlider />}
 
-        {/* 2. Search Bar */}
-        {isVisible(sections, "search") && <HomeSearch />}
+          {/* 2. Search Bar */}
+          {isVisible(sections, "search") && <HomeSearch />}
 
-        {/* 3. Platform Stats */}
-        {isVisible(sections, "stats") && <HomeStats />}
+          {/* 3. Platform Stats */}
+          {isVisible(sections, "stats") && <HomeStats />}
 
-        {/* Dynamic lazy sections — sorted by sort_order from DB */}
-        {sections
-          .filter((s) => s.is_visible && SECTION_MAP[s.section_key])
-          .map((s) => {
-            // Ad banners are special
-            if (s.section_key === "ad_banner_top" || s.section_key === "ad_banner_mid") return null;
+          {/* Dynamic lazy sections — sorted by sort_order from DB */}
+          {sections
+            .filter((s) => s.is_visible && SECTION_MAP[s.section_key])
+            .map((s) => {
+              if (s.section_key === "ad_banner_top" || s.section_key === "ad_banner_mid") return null;
+              const entry = SECTION_MAP[s.section_key];
+              if (!entry) return null;
+              return (
+                <Suspense key={s.section_key} fallback={<LazyFallback type={entry.fallback} />}>
+                  <entry.Component />
+                </Suspense>
+              );
+            })}
 
-            const entry = SECTION_MAP[s.section_key];
-            if (!entry) return null;
-
-            return (
-              <Suspense key={s.section_key} fallback={<LazyFallback type={entry.fallback} />}>
-                <entry.Component />
-              </Suspense>
-            );
-          })}
-
-        {/* Ad banners rendered in position */}
-        {isVisible(sections, "ad_banner_top") && (
-          <Suspense fallback={<LazyFallback type="banner" />}>
-            <section className="container py-2">
-              <AdBanner placementSlug="home-hero-banner" className="w-full rounded-xl overflow-hidden aspect-[728/90] sm:aspect-[970/90] max-h-[120px]" />
-            </section>
-          </Suspense>
-        )}
-
-        {isVisible(sections, "ad_banner_mid") && (
-          <Suspense fallback={<LazyFallback type="banner" />}>
-            <section className="container py-2">
-              <AdBanner placementSlug="in-feed" className="w-full max-w-3xl mx-auto rounded-xl overflow-hidden aspect-[728/90] sm:aspect-[970/250] max-h-[250px]" />
-            </section>
-          </Suspense>
-        )}
-
-        {/* Fallback: render all sections if DB returned nothing (first load) */}
-        {sections.length === 0 && (
-          <>
-            <Suspense fallback={<LazyFallback />}><EventsByCategory /></Suspense>
+          {/* Ad banners */}
+          {isVisible(sections, "ad_banner_top") && (
             <Suspense fallback={<LazyFallback type="banner" />}>
               <section className="container py-2">
                 <AdBanner placementSlug="home-hero-banner" className="w-full rounded-xl overflow-hidden aspect-[728/90] sm:aspect-[970/90] max-h-[120px]" />
               </section>
             </Suspense>
-            <Suspense fallback={<LazyFallback />}><RegionalEvents /></Suspense>
-            <Suspense fallback={<LazyFallback />}><HomeEventsCalendarPreview /></Suspense>
-            <Suspense fallback={<LazyFallback />}><FeaturedChefs /></Suspense>
-            <Suspense fallback={<LazyFallback />}><NewlyJoinedUsers /></Suspense>
-            <Suspense fallback={<LazyFallback />}><SponsorCarousel /></Suspense>
-            <Suspense fallback={<LazyFallback />}><HomeProSuppliers /></Suspense>
-            <Suspense fallback={<LazyFallback />}><HomeMasterclasses /></Suspense>
+          )}
+          {isVisible(sections, "ad_banner_mid") && (
             <Suspense fallback={<LazyFallback type="banner" />}>
               <section className="container py-2">
                 <AdBanner placementSlug="in-feed" className="w-full max-w-3xl mx-auto rounded-xl overflow-hidden aspect-[728/90] sm:aspect-[970/250] max-h-[250px]" />
               </section>
             </Suspense>
-            <Suspense fallback={<LazyFallback />}><SponsorshipOpportunities /></Suspense>
-            <Suspense fallback={<LazyFallback />}><HomeArticles /></Suspense>
-            <Suspense fallback={<LazyFallback />}><PlatformFeatures /></Suspense>
-            <Suspense fallback={<LazyFallback />}><NewsletterSignup /></Suspense>
-            <Suspense fallback={<LazyFallback />}><PartnersLogos /></Suspense>
-          </>
-        )}
+          )}
 
-        <Suspense fallback={null}>
-          <AdPopup />
-        </Suspense>
-      </div>
+          {/* Fallback: render all sections if DB returned nothing */}
+          {sections.length === 0 && (
+            <>
+              <Suspense fallback={<LazyFallback />}><EventsByCategory /></Suspense>
+              <Suspense fallback={<LazyFallback type="banner" />}>
+                <section className="container py-2">
+                  <AdBanner placementSlug="home-hero-banner" className="w-full rounded-xl overflow-hidden aspect-[728/90] sm:aspect-[970/90] max-h-[120px]" />
+                </section>
+              </Suspense>
+              <Suspense fallback={<LazyFallback />}><RegionalEvents /></Suspense>
+              <Suspense fallback={<LazyFallback />}><HomeEventsCalendarPreview /></Suspense>
+              <Suspense fallback={<LazyFallback />}><FeaturedChefs /></Suspense>
+              <Suspense fallback={<LazyFallback />}><NewlyJoinedUsers /></Suspense>
+              <Suspense fallback={<LazyFallback />}><SponsorCarousel /></Suspense>
+              <Suspense fallback={<LazyFallback />}><HomeProSuppliers /></Suspense>
+              <Suspense fallback={<LazyFallback />}><HomeMasterclasses /></Suspense>
+              <Suspense fallback={<LazyFallback type="banner" />}>
+                <section className="container py-2">
+                  <AdBanner placementSlug="in-feed" className="w-full max-w-3xl mx-auto rounded-xl overflow-hidden aspect-[728/90] sm:aspect-[970/250] max-h-[250px]" />
+                </section>
+              </Suspense>
+              <Suspense fallback={<LazyFallback />}><SponsorshipOpportunities /></Suspense>
+              <Suspense fallback={<LazyFallback />}><HomeArticles /></Suspense>
+              <Suspense fallback={<LazyFallback />}><PlatformFeatures /></Suspense>
+              <Suspense fallback={<LazyFallback />}><NewsletterSignup /></Suspense>
+              <Suspense fallback={<LazyFallback />}><PartnersLogos /></Suspense>
+            </>
+          )}
+
+          <Suspense fallback={null}>
+            <AdPopup />
+          </Suspense>
+        </div>
+      )}
 
       <Footer />
     </div>
