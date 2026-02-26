@@ -27,11 +27,24 @@ export function useCareerData(userId: string) {
     const dbDefaultOrder = dbSections
       .filter((s: any) => !s.is_custom)
       .reduce((acc: Record<string, any>, s: any) => { acc[s.section_key] = s; return acc; }, {} as Record<string, any>);
-    const defaults = DEFAULT_SECTIONS.map(d => {
-      const override = dbDefaultOrder[d.key];
-      if (override) return { ...d, icon: override.icon || d.icon, en: override.name_en || d.en, ar: override.name_ar || d.ar };
-      return d;
-    });
+
+    // Check if any custom section semantically duplicates a default section
+    const customNames = new Set(customFromDb.map(c => c.en.toLowerCase().trim()));
+    const duplicateDefaultKeys = new Set<string>();
+    for (const d of DEFAULT_SECTIONS) {
+      if (customNames.has(d.en.toLowerCase().trim())) {
+        duplicateDefaultKeys.add(d.key);
+      }
+    }
+
+    const defaults = DEFAULT_SECTIONS
+      .filter(d => !duplicateDefaultKeys.has(d.key))
+      .map(d => {
+        const override = dbDefaultOrder[d.key];
+        if (override) return { ...d, icon: override.icon || d.icon, en: override.name_en || d.en, ar: override.name_ar || d.ar };
+        return d;
+      });
+
     if (dbSections.length > 0) {
       const orderedKeys = dbSections.map((s: any) => s.section_key);
       const allSections = [...defaults, ...customFromDb];
