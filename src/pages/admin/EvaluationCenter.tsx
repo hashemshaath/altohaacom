@@ -2,13 +2,14 @@ import { useState } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import AdminPageHeader from "@/components/admin/AdminPageHeader";
-import { Settings2, FileText, ChefHat, Trophy, Wrench, UtensilsCrossed, Printer } from "lucide-react";
+import { Settings2, FileText, ChefHat, Trophy, Wrench, UtensilsCrossed, Printer, Download } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { useEvaluationDomains } from "@/hooks/useEvaluationSystem";
+import { useEvaluationDomains, useEvaluationCriteriaByDomain } from "@/hooks/useEvaluationSystem";
 import { CriteriaManager } from "@/components/evaluation/CriteriaManager";
 import { TemplatesManager } from "@/components/evaluation/TemplatesManager";
+import { useCSVExport } from "@/hooks/useCSVExport";
 
 function DomainStats() {
   const { language } = useLanguage();
@@ -53,6 +54,17 @@ export default function EvaluationCenter() {
   const { language } = useLanguage();
   const isAr = language === "ar";
   const [activeTab, setActiveTab] = useState("criteria");
+  const { data: domains } = useEvaluationDomains();
+
+  const { exportCSV } = useCSVExport({
+    columns: [
+      { header: isAr ? "الاسم" : "Name", accessor: (r: any) => isAr && r.name_ar ? r.name_ar : r.name },
+      { header: "Slug", accessor: (r: any) => r.slug },
+      { header: isAr ? "الوصف" : "Description", accessor: (r: any) => isAr && r.description_ar ? r.description_ar : r.description || "" },
+      { header: isAr ? "نشط" : "Active", accessor: (r: any) => r.is_active ? "Yes" : "No" },
+    ],
+    filename: "evaluation-domains",
+  });
 
   return (
     <div className="space-y-6">
@@ -63,10 +75,16 @@ export default function EvaluationCenter() {
           ? "إعداد وتخصيص معايير التقييم وقوالبها لجميع المجالات — المسابقات، طاولة الشيف، لجان التحكيم"
           : "Configure and manage evaluation criteria & templates for all domains — Competitions, Chef's Table, Judging Panels"}
         actions={
-          <Button variant="outline" size="sm" className="gap-1.5 print:hidden" onClick={() => window.print()}>
-            <Printer className="h-3.5 w-3.5" />
-            {isAr ? "طباعة" : "Print"}
-          </Button>
+          <div className="flex gap-2">
+            <Button variant="outline" size="sm" className="gap-1.5 print:hidden" onClick={() => domains?.length && exportCSV(domains)}>
+              <Download className="h-3.5 w-3.5" />
+              {isAr ? "تصدير" : "Export"}
+            </Button>
+            <Button variant="outline" size="sm" className="gap-1.5 print:hidden" onClick={() => window.print()}>
+              <Printer className="h-3.5 w-3.5" />
+              {isAr ? "طباعة" : "Print"}
+            </Button>
+          </div>
         }
       />
 

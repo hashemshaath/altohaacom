@@ -21,7 +21,8 @@ import {
   Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle,
 } from "@/components/ui/dialog";
 import { useToast } from "@/hooks/use-toast";
-import { Search, ArrowUpCircle, Mail, RefreshCw, UserCheck, AlertTriangle, CheckSquare } from "lucide-react";
+import { useCSVExport } from "@/hooks/useCSVExport";
+import { Search, ArrowUpCircle, Mail, RefreshCw, UserCheck, AlertTriangle, CheckSquare, Download } from "lucide-react";
 import { format, differenceInDays } from "date-fns";
 import type { Database } from "@/integrations/supabase/types";
 
@@ -47,6 +48,18 @@ export default function MembershipMembersTab() {
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const isAr = language === "ar";
+
+  const { exportCSV } = useCSVExport({
+    columns: [
+      { header: isAr ? "الاسم" : "Name", accessor: (r: MemberProfile) => isAr ? r.full_name_ar || r.full_name : r.full_name || "" },
+      { header: isAr ? "المعرف" : "Username", accessor: (r: MemberProfile) => r.username || "" },
+      { header: isAr ? "البريد" : "Email", accessor: (r: MemberProfile) => r.email || "" },
+      { header: isAr ? "المستوى" : "Tier", accessor: (r: MemberProfile) => r.membership_tier || "basic" },
+      { header: isAr ? "الحالة" : "Status", accessor: (r: MemberProfile) => r.membership_status || "N/A" },
+      { header: isAr ? "الانتهاء" : "Expires", accessor: (r: MemberProfile) => r.membership_expires_at ? format(new Date(r.membership_expires_at), "yyyy-MM-dd") : "" },
+    ],
+    filename: "membership-members",
+  });
 
   const [searchQuery, setSearchQuery] = useState("");
   const [tierFilter, setTierFilter] = useState("all");
@@ -279,6 +292,13 @@ export default function MembershipMembersTab() {
               <Button size="sm" onClick={() => setBulkDialogOpen(true)}>
                 <ArrowUpCircle className="h-3.5 w-3.5 me-1.5" />
                 {isAr ? "تغيير المستوى" : "Change Tier"}
+              </Button>
+              <Button variant="outline" size="sm" onClick={() => {
+                const selectedMembers = members?.filter(m => selectedIds.has(m.user_id)) || [];
+                exportCSV(selectedMembers);
+              }}>
+                <Download className="h-3.5 w-3.5 me-1.5" />
+                {isAr ? "تصدير" : "Export"}
               </Button>
             </div>
           </CardContent>
