@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, forwardRef } from "react";
 import { type HomepageSection } from "@/hooks/useHomepageSections";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -73,10 +73,10 @@ interface SectionRowProps {
   };
 }
 
-export function SectionRow({
+export const SectionRow = forwardRef<HTMLDivElement, SectionRowProps>(function SectionRow({
   section, index, isOpen, onToggle, onUpdate, onQuickToggle,
   onDuplicate, isPending, isAr, isDragging, dragHandleProps,
-}: SectionRowProps) {
+}, ref) {
   const [local, setLocal] = useState<Partial<HomepageSection>>({});
   const [jsonError, setJsonError] = useState<string | null>(null);
   const merged = { ...section, ...local };
@@ -96,7 +96,7 @@ export function SectionRow({
   });
 
   return (
-    <Collapsible open={isOpen} onOpenChange={onToggle}>
+    <Collapsible ref={ref} open={isOpen} onOpenChange={onToggle}>
       <div
         className={cn(
           "rounded-lg border transition-all",
@@ -538,4 +538,4 @@ export function SectionRow({
       </div>
     </Collapsible>
   );
-}
+});
