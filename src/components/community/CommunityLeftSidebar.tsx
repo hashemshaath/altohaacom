@@ -12,6 +12,7 @@ import {
 import { Link } from "react-router-dom";
 import { cn } from "@/lib/utils";
 import { OnlineCountBadge } from "./PresenceIndicator";
+import { ProfileCompletionCard } from "@/components/onboarding/ProfileCompletionCard";
 
 export type CommunityTab = "feed" | "chefs" | "recipes" | "groups" | "events" | "network" | "live" | "bookmarks";
 
@@ -127,6 +128,8 @@ export function CommunityLeftSidebar({ activeTab, setActiveTab, leftSidebarOpen,
           </button>
         ))}
       </nav>
+
+      {leftSidebarOpen && <ProfileCompletionCard />}
 
       {leftSidebarOpen && (
         <div className="mt-4 rounded-2xl border border-border bg-card p-4">
