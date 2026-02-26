@@ -18946,6 +18946,60 @@ export type Database = {
           },
         ]
       }
+      testimonials: {
+        Row: {
+          avatar_url: string | null
+          created_at: string
+          id: string
+          is_active: boolean | null
+          is_featured: boolean | null
+          name: string
+          name_ar: string | null
+          quote: string
+          quote_ar: string | null
+          rating: number | null
+          role: string | null
+          role_ar: string | null
+          sort_order: number | null
+          updated_at: string
+          user_id: string | null
+        }
+        Insert: {
+          avatar_url?: string | null
+          created_at?: string
+          id?: string
+          is_active?: boolean | null
+          is_featured?: boolean | null
+          name: string
+          name_ar?: string | null
+          quote: string
+          quote_ar?: string | null
+          rating?: number | null
+          role?: string | null
+          role_ar?: string | null
+          sort_order?: number | null
+          updated_at?: string
+          user_id?: string | null
+        }
+        Update: {
+          avatar_url?: string | null
+          created_at?: string
+          id?: string
+          is_active?: boolean | null
+          is_featured?: boolean | null
+          name?: string
+          name_ar?: string | null
+          quote?: string
+          quote_ar?: string | null
+          rating?: number | null
+          role?: string | null
+          role_ar?: string | null
+          sort_order?: number | null
+          updated_at?: string
+          user_id?: string | null
+        }
+        Relationships: []
+      }
       translation_keys: {
         Row: {
           ar: string

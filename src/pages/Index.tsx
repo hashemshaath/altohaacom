@@ -26,6 +26,8 @@ const SponsorCarousel = lazy(() => import("@/components/home/SponsorCarousel").t
 const NewlyJoinedUsers = lazy(() => import("@/components/home/NewlyJoinedUsers").then(m => ({ default: m.NewlyJoinedUsers })));
 const FeaturedChefs = lazy(() => import("@/components/home/FeaturedChefs").then(m => ({ default: m.FeaturedChefs })));
 const HomeMasterclasses = lazy(() => import("@/components/home/HomeMasterclasses").then(m => ({ default: m.HomeMasterclasses })));
+const HomeTestimonials = lazy(() => import("@/components/home/HomeTestimonials").then(m => ({ default: m.HomeTestimonials })));
+const HomeTrendingContent = lazy(() => import("@/components/home/HomeTrendingContent").then(m => ({ default: m.HomeTrendingContent })));
 const AdBanner = lazy(() => import("@/components/ads/AdBanner").then(m => ({ default: m.AdBanner })));
 const AdPopup = lazy(() => import("@/components/ads/AdPopup").then(m => ({ default: m.AdPopup })));
 const HomeProSuppliers = lazy(() => import("@/components/home/HomeProSuppliers").then(m => ({ default: m.HomeProSuppliers })));
@@ -73,6 +75,8 @@ const SECTION_MAP: Record<string, { Component: React.LazyExoticComponent<any>; f
   features: { Component: PlatformFeatures },
   newsletter: { Component: NewsletterSignup },
   partners: { Component: PartnersLogos },
+  testimonials: { Component: HomeTestimonials },
+  trending_content: { Component: HomeTrendingContent },
 };
 
 function isVisible(sections: HomepageSection[], key: string): boolean {
