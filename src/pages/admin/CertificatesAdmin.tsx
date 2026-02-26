@@ -3,6 +3,10 @@ import { useLanguage } from "@/i18n/LanguageContext";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
+import { useAdminBulkActions } from "@/hooks/useAdminBulkActions";
+import { BulkActionBar } from "@/components/admin/BulkActionBar";
+import { useCSVExport } from "@/hooks/useCSVExport";
+import { Checkbox } from "@/components/ui/checkbox";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -241,6 +245,32 @@ export default function CertificatesAdmin() {
     revoked: certificates.filter(c => c.status === "revoked").length,
   };
 
+  const bulk = useAdminBulkActions(certificates);
+
+  const { exportCSV: exportCertsCSV } = useCSVExport({
+    columns: [
+      { header: language === "ar" ? "رقم الشهادة" : "Certificate #", accessor: (c: Certificate) => c.certificate_number },
+      { header: language === "ar" ? "المستلم" : "Recipient", accessor: (c: Certificate) => c.recipient_name },
+      { header: language === "ar" ? "البريد" : "Email", accessor: (c: Certificate) => c.recipient_email || "" },
+      { header: language === "ar" ? "النوع" : "Type", accessor: (c: Certificate) => getTypeLabel(c.type) || c.type },
+      { header: language === "ar" ? "الحالة" : "Status", accessor: (c: Certificate) => getStatusLabel(c.status) },
+      { header: language === "ar" ? "الحدث" : "Event", accessor: (c: Certificate) => c.event_name || "" },
+      { header: language === "ar" ? "كود التحقق" : "Verify Code", accessor: (c: Certificate) => c.verification_code },
+    ],
+    filename: "certificates",
+  });
+
+  const bulkRevoke = async () => {
+    if (!confirm(language === "ar" ? "إلغاء الشهادات المحددة؟" : "Revoke selected certificates?")) return;
+    const ids = [...bulk.selected];
+    const { error } = await supabase.from("certificates").update({ status: "revoked" as any, revoked_at: new Date().toISOString(), revoked_by: user?.id }).in("id", ids);
+    if (!error) {
+      queryClient.invalidateQueries({ queryKey: ["certificates"] });
+      bulk.clearSelection();
+      toast({ title: language === "ar" ? `تم إلغاء ${ids.length} شهادة` : `Revoked ${ids.length} certificates` });
+    }
+  };
+
   // ═══ Designer View ═══
   if (showDesigner) {
     return (
@@ -366,6 +396,18 @@ export default function CertificatesAdmin() {
               <CardTitle>{language === "ar" ? "جميع الشهادات" : "All Certificates"}</CardTitle>
             </CardHeader>
             <CardContent>
+              <BulkActionBar
+                count={bulk.count}
+                onClear={bulk.clearSelection}
+                onDelete={bulkRevoke}
+                onExport={() => exportCertsCSV(bulk.selectedItems)}
+              >
+                <Button variant="outline" size="sm" className="gap-1.5" onClick={() => exportCertsCSV(bulk.count > 0 ? bulk.selectedItems : certificates)}>
+                  <Download className="h-3.5 w-3.5" />
+                  {language === "ar" ? "تصدير" : "Export"}
+                </Button>
+              </BulkActionBar>
+
               <div className="flex flex-wrap gap-3 mb-4">
                 <div className="relative flex-1 min-w-[200px]">
                   <Search className="absolute start-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
@@ -428,6 +470,9 @@ export default function CertificatesAdmin() {
                   <Table>
                     <TableHeader>
                       <TableRow>
+                        <TableHead className="w-10">
+                          <Checkbox checked={bulk.isAllSelected} onCheckedChange={bulk.toggleAll} />
+                        </TableHead>
                         <TableHead>{language === "ar" ? "رقم" : "#"}</TableHead>
                         <TableHead>{language === "ar" ? "المستلم" : "Recipient"}</TableHead>
                         <TableHead>{language === "ar" ? "النوع" : "Type"}</TableHead>
@@ -439,7 +484,10 @@ export default function CertificatesAdmin() {
                     </TableHeader>
                     <TableBody>
                       {certs.map(cert => (
-                        <TableRow key={cert.id} className={viewCertificate?.id === cert.id ? "bg-primary/5" : ""}>
+                        <TableRow key={cert.id} className={`${viewCertificate?.id === cert.id ? "bg-primary/5" : ""} ${bulk.isSelected(cert.id) ? "bg-primary/5" : ""}`}>
+                          <TableCell onClick={(e) => e.stopPropagation()}>
+                            <Checkbox checked={bulk.isSelected(cert.id)} onCheckedChange={() => bulk.toggleOne(cert.id)} />
+                          </TableCell>
                           <TableCell className="font-mono text-xs">{cert.certificate_number?.slice(-8) || "—"}</TableCell>
                           <TableCell>
                             <p className="font-medium text-sm">{cert.recipient_name}</p>

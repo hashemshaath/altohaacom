@@ -2,6 +2,10 @@ import { useState } from "react";
 import AdminPageHeader from "@/components/admin/AdminPageHeader";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useAuth } from "@/contexts/AuthContext";
+import { useAdminBulkActions } from "@/hooks/useAdminBulkActions";
+import { BulkActionBar } from "@/components/admin/BulkActionBar";
+import { useCSVExport } from "@/hooks/useCSVExport";
+import { Checkbox } from "@/components/ui/checkbox";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
@@ -452,20 +456,42 @@ export default function OrdersAdmin() {
     setSelectedOrder(null);
   };
 
-  const exportOrdersCSV = () => {
-    const headers = ["Order #", "Company", "Title", "Direction", "Category", "Amount", "Currency", "Status", "Date"];
-    const rows = orders.map((o: any) => [
-      o.order_number, o.companies?.name || "", o.title, o.direction, o.category,
-      o.total_amount, o.currency, o.status, o.created_at?.split("T")[0] || "",
-    ]);
-    const csv = [headers, ...rows].map(r => r.join(",")).join("\n");
-    const blob = new Blob([csv], { type: "text/csv" });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = `orders-${new Date().toISOString().split("T")[0]}.csv`;
-    a.click();
-    URL.revokeObjectURL(url);
+  const bulk = useAdminBulkActions(orders);
+
+  const { exportCSV: exportOrdersCSV } = useCSVExport({
+    columns: [
+      { header: isAr ? "رقم الطلب" : "Order #", accessor: (o: any) => o.order_number },
+      { header: isAr ? "الشركة" : "Company", accessor: (o: any) => o.companies?.name || "" },
+      { header: isAr ? "العنوان" : "Title", accessor: (o: any) => o.title },
+      { header: isAr ? "الاتجاه" : "Direction", accessor: (o: any) => o.direction },
+      { header: isAr ? "الفئة" : "Category", accessor: (o: any) => getCategoryLabel(o.category) },
+      { header: isAr ? "المبلغ" : "Amount", accessor: (o: any) => o.total_amount },
+      { header: isAr ? "العملة" : "Currency", accessor: (o: any) => o.currency },
+      { header: isAr ? "الحالة" : "Status", accessor: (o: any) => getStatusLabel(o.status) },
+      { header: isAr ? "التاريخ" : "Date", accessor: (o: any) => o.created_at?.split("T")[0] || "" },
+    ],
+    filename: "orders",
+  });
+
+  const bulkStatusChange = async (status: string) => {
+    const ids = [...bulk.selected];
+    const { error } = await supabase.from("company_orders").update({ status: status as any }).in("id", ids);
+    if (!error) {
+      queryClient.invalidateQueries({ queryKey: ["all-orders"] });
+      bulk.clearSelection();
+      toast({ title: isAr ? `تم تحديث ${ids.length} طلب` : `Updated ${ids.length} orders` });
+    }
+  };
+
+  const bulkDelete = async () => {
+    if (!confirm(isAr ? "هل أنت متأكد من حذف الطلبات المحددة؟" : "Delete selected orders?")) return;
+    const ids = [...bulk.selected];
+    const { error } = await supabase.from("company_orders").delete().in("id", ids);
+    if (!error) {
+      queryClient.invalidateQueries({ queryKey: ["all-orders"] });
+      bulk.clearSelection();
+      toast({ title: isAr ? `تم حذف ${ids.length} طلب` : `Deleted ${ids.length} orders` });
+    }
   };
 
   // ============ STATS ============
@@ -1213,7 +1239,7 @@ export default function OrdersAdmin() {
               <div className="flex items-center justify-between">
                 <CardTitle>{isAr ? "جميع الطلبات" : "All Orders"}</CardTitle>
                 <div className="flex gap-2">
-                  <Button variant="outline" size="sm" onClick={exportOrdersCSV}>
+                  <Button variant="outline" size="sm" onClick={() => exportOrdersCSV(bulk.count > 0 ? bulk.selectedItems : orders)}>
                     <Download className="h-4 w-4 me-1" />
                     {isAr ? "تصدير" : "Export"}
                   </Button>
@@ -1269,10 +1295,21 @@ export default function OrdersAdmin() {
                 </Select>
               </div>
 
+              <BulkActionBar
+                count={bulk.count}
+                onClear={bulk.clearSelection}
+                onDelete={bulkDelete}
+                onStatusChange={bulkStatusChange}
+                onExport={() => exportOrdersCSV(bulk.selectedItems)}
+              />
+
               <ScrollArea className="h-[500px]">
                 <Table>
                   <TableHeader>
                     <TableRow>
+                      <TableHead className="w-10">
+                        <Checkbox checked={bulk.isAllSelected} onCheckedChange={bulk.toggleAll} />
+                      </TableHead>
                       <TableHead>{isAr ? "رقم الطلب" : "Order #"}</TableHead>
                       <TableHead>{isAr ? "الشركة" : "Company"}</TableHead>
                       <TableHead>{isAr ? "العنوان" : "Title"}</TableHead>
@@ -1286,7 +1323,10 @@ export default function OrdersAdmin() {
                   </TableHeader>
                   <TableBody>
                     {orders.map((order: any) => (
-                      <TableRow key={order.id} className="cursor-pointer hover:bg-muted/50" onClick={() => setSelectedOrder(order.id)}>
+                      <TableRow key={order.id} className={`cursor-pointer hover:bg-muted/50 ${bulk.isSelected(order.id) ? "bg-primary/5" : ""}`} onClick={() => setSelectedOrder(order.id)}>
+                        <TableCell onClick={(e) => e.stopPropagation()}>
+                          <Checkbox checked={bulk.isSelected(order.id)} onCheckedChange={() => bulk.toggleOne(order.id)} />
+                        </TableCell>
                         <TableCell className="font-mono text-sm">{order.order_number}</TableCell>
                         <TableCell>
                           <div className="flex items-center gap-2">
@@ -1321,7 +1361,7 @@ export default function OrdersAdmin() {
                     ))}
                     {orders.length === 0 && (
                       <TableRow>
-                        <TableCell colSpan={9} className="text-center py-12 text-muted-foreground">
+                        <TableCell colSpan={10} className="text-center py-12 text-muted-foreground">
                           <Package className="h-12 w-12 mx-auto mb-4 opacity-50" />
                           <p>{isAr ? "لا توجد طلبات" : "No orders found"}</p>
                         </TableCell>
