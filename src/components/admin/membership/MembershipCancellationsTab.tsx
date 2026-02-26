@@ -17,7 +17,11 @@ import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
 } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
-import { UserX, Gift, Check, X, MessageSquare } from "lucide-react";
+import { useAdminBulkActions } from "@/hooks/useAdminBulkActions";
+import { useCSVExport } from "@/hooks/useCSVExport";
+import { BulkActionBar } from "@/components/admin/BulkActionBar";
+import { Checkbox } from "@/components/ui/checkbox";
+import { UserX, Gift, Check, X, MessageSquare, Download } from "lucide-react";
 import { format } from "date-fns";
 
 interface CancellationRequest {
@@ -61,6 +65,19 @@ export default function MembershipCancellationsTab() {
       if (error) throw error;
       return data as CancellationRequest[];
     },
+  });
+
+  const bulk = useAdminBulkActions(requests || []);
+
+  const { exportCSV } = useCSVExport({
+    columns: [
+      { header: isAr ? "المستوى" : "Tier", accessor: (r: CancellationRequest) => r.current_tier },
+      { header: isAr ? "السبب" : "Reason", accessor: (r: CancellationRequest) => (isAr ? r.reason_ar || r.reason : r.reason) || "" },
+      { header: isAr ? "الحالة" : "Status", accessor: (r: CancellationRequest) => r.status },
+      { header: isAr ? "التاريخ" : "Date", accessor: (r: CancellationRequest) => format(new Date(r.created_at), "yyyy-MM-dd") },
+      { header: isAr ? "ملاحظات" : "Admin Notes", accessor: (r: CancellationRequest) => r.admin_notes || "" },
+    ],
+    filename: "membership-cancellations",
   });
 
   const handleRequestMutation = useMutation({
@@ -141,29 +158,40 @@ export default function MembershipCancellationsTab() {
 
   return (
     <div className="space-y-4">
+      <BulkActionBar
+        count={bulk.count}
+        onClear={bulk.clearSelection}
+        onExport={() => exportCSV(bulk.count > 0 ? bulk.selectedItems : requests || [])}
+      />
       <Card>
         <CardHeader>
-          <div className="flex items-center justify-between">
-            <div>
-              <CardTitle className="flex items-center gap-2">
-                <UserX className="h-5 w-5" />
-                {isAr ? "طلبات الإلغاء" : "Cancellation Requests"}
-              </CardTitle>
-              <CardDescription>{isAr ? "مراجعة ومعالجة طلبات إلغاء العضوية وعروض الاحتفاظ" : "Review cancellation requests and offer retention deals"}</CardDescription>
+            <div className="flex items-center justify-between flex-wrap gap-2">
+              <div>
+                <CardTitle className="flex items-center gap-2">
+                  <UserX className="h-5 w-5" />
+                  {isAr ? "طلبات الإلغاء" : "Cancellation Requests"}
+                </CardTitle>
+                <CardDescription>{isAr ? "مراجعة ومعالجة طلبات إلغاء العضوية وعروض الاحتفاظ" : "Review cancellation requests and offer retention deals"}</CardDescription>
+              </div>
+              <div className="flex items-center gap-2">
+                <Select value={statusFilter} onValueChange={setStatusFilter}>
+                  <SelectTrigger className="w-36">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">{isAr ? "الكل" : "All"}</SelectItem>
+                    <SelectItem value="pending">{isAr ? "معلق" : "Pending"}</SelectItem>
+                    <SelectItem value="approved">{isAr ? "موافق" : "Approved"}</SelectItem>
+                    <SelectItem value="rejected">{isAr ? "مرفوض" : "Rejected"}</SelectItem>
+                    <SelectItem value="retained">{isAr ? "محتفظ" : "Retained"}</SelectItem>
+                  </SelectContent>
+                </Select>
+                <Button variant="outline" size="sm" onClick={() => exportCSV(requests || [])} className="gap-1.5">
+                  <Download className="h-3.5 w-3.5" />
+                  {isAr ? "تصدير" : "Export"}
+                </Button>
+              </div>
             </div>
-            <Select value={statusFilter} onValueChange={setStatusFilter}>
-              <SelectTrigger className="w-36">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">{isAr ? "الكل" : "All"}</SelectItem>
-                <SelectItem value="pending">{isAr ? "معلق" : "Pending"}</SelectItem>
-                <SelectItem value="approved">{isAr ? "موافق" : "Approved"}</SelectItem>
-                <SelectItem value="rejected">{isAr ? "مرفوض" : "Rejected"}</SelectItem>
-                <SelectItem value="retained">{isAr ? "محتفظ" : "Retained"}</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
         </CardHeader>
         <CardContent>
           {isLoading ? (
@@ -179,6 +207,9 @@ export default function MembershipCancellationsTab() {
             <Table>
               <TableHeader>
                 <TableRow>
+                  <TableHead className="w-10">
+                    <Checkbox checked={bulk.isAllSelected} onCheckedChange={bulk.toggleAll} />
+                  </TableHead>
                   <TableHead>{isAr ? "المستوى" : "Tier"}</TableHead>
                   <TableHead>{isAr ? "السبب" : "Reason"}</TableHead>
                   <TableHead>{isAr ? "الحالة" : "Status"}</TableHead>
@@ -188,7 +219,10 @@ export default function MembershipCancellationsTab() {
               </TableHeader>
               <TableBody>
                 {requests?.map((req) => (
-                  <TableRow key={req.id}>
+                  <TableRow key={req.id} className={bulk.isSelected(req.id) ? "bg-primary/5" : ""}>
+                    <TableCell>
+                      <Checkbox checked={bulk.isSelected(req.id)} onCheckedChange={() => bulk.toggleOne(req.id)} />
+                    </TableCell>
                     <TableCell>
                       <Badge variant="outline">{req.current_tier}</Badge>
                     </TableCell>
