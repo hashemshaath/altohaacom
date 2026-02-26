@@ -29,6 +29,7 @@ import { BackToTop } from "@/components/ui/back-to-top";
 
 const LiveChatWidget = lazy(() => import("@/components/crm/LiveChatWidget").then(m => ({ default: m.LiveChatWidget })));
 const WelcomeModal = lazy(() => import("@/components/onboarding/WelcomeModal").then(m => ({ default: m.WelcomeModal })));
+const GuidedTour = lazy(() => import("@/components/onboarding/GuidedTour").then(m => ({ default: m.GuidedTour })));
 const NotFound = lazy(() => import("./pages/NotFound"));
 
 import { publicRoutes } from "@/routes/publicRoutes";
@@ -79,6 +80,7 @@ function AppContent() {
       </MaintenanceGuard>
       <ErrorBoundary><Suspense fallback={null}><LiveChatWidget /></Suspense></ErrorBoundary>
       <ErrorBoundary><Suspense fallback={null}><WelcomeModal /></Suspense></ErrorBoundary>
+      <ErrorBoundary><Suspense fallback={null}><GuidedTour /></Suspense></ErrorBoundary>
       <MobileBottomNav />
       <ScrollProgress />
       <BackToTop />

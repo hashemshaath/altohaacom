@@ -79,7 +79,7 @@ export const HomeTestimonials = forwardRef<HTMLDivElement>(function HomeTestimon
                 <Quote className="h-20 w-20" />
               </div>
               <CardContent className="p-5 sm:p-8 md:p-10 text-center relative">
-                <p className="text-lg sm:text-xl leading-relaxed text-foreground/90 mb-6 italic">
+                <p className="text-base sm:text-lg md:text-xl leading-relaxed text-foreground/85 mb-6 italic">
                   &ldquo;{quote}&rdquo;
                 </p>
 
