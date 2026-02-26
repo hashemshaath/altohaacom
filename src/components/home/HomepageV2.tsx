@@ -22,6 +22,26 @@ const V2Fallback = memo(() => (
 ));
 V2Fallback.displayName = "V2Fallback";
 
+/* ─── Single stat item (hook-safe) ─── */
+function V2StatItem({ stat, index, isVisible }: { stat: { value: number; label: string; icon: any }; index: number; isVisible: boolean }) {
+  const count = useCountUp(stat.value, isVisible);
+  return (
+    <div
+      className={cn(
+        "text-center transition-all duration-1000",
+        isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"
+      )}
+      style={{ transitionDelay: `${index * 150}ms` }}
+    >
+      <div className="inline-flex h-14 w-14 items-center justify-center rounded-2xl bg-primary/10 mb-4">
+        <stat.icon className="h-6 w-6 text-primary" />
+      </div>
+      <p className="text-4xl sm:text-5xl font-bold tracking-tight tabular-nums">{count}+</p>
+      <p className="text-sm text-muted-foreground font-medium mt-2">{stat.label}</p>
+    </div>
+  );
+}
+
 /* ─── Parallax hook ─── */
 function useParallax(speed = 0.3) {
   const ref = useRef<HTMLDivElement>(null);
@@ -188,25 +208,9 @@ function ImmersiveStats() {
     <section ref={ref} className="py-16 sm:py-20">
       <div className="container">
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-12">
-          {items.map((stat, i) => {
-            const count = useCountUp(stat.value, isVisible);
-            return (
-              <div
-                key={stat.label}
-                className={cn(
-                  "text-center transition-all duration-1000",
-                  isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"
-                )}
-                style={{ transitionDelay: `${i * 150}ms` }}
-              >
-                <div className="inline-flex h-14 w-14 items-center justify-center rounded-2xl bg-primary/10 mb-4">
-                  <stat.icon className="h-6 w-6 text-primary" />
-                </div>
-                <p className="text-4xl sm:text-5xl font-bold tracking-tight tabular-nums">{count}+</p>
-                <p className="text-sm text-muted-foreground font-medium mt-2">{stat.label}</p>
-              </div>
-            );
-          })}
+          {items.map((stat, i) => (
+            <V2StatItem key={stat.label} stat={stat} index={i} isVisible={isVisible} />
+          ))}
         </div>
       </div>
     </section>
