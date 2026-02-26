@@ -4,13 +4,10 @@ import { Check, ChevronDown, ChevronUp } from "lucide-react";
 
 import { cn } from "@/lib/utils";
 
-const Select = React.forwardRef<
-  React.ElementRef<typeof SelectPrimitive.Root>,
-  React.ComponentPropsWithoutRef<typeof SelectPrimitive.Root>
->(({ dir, ...props }, _ref) => {
+function Select({ dir, ...props }: React.ComponentPropsWithoutRef<typeof SelectPrimitive.Root>) {
   const resolvedDir = dir ?? (document.documentElement.getAttribute("dir") as "ltr" | "rtl" | undefined) ?? undefined;
   return <SelectPrimitive.Root dir={resolvedDir} {...props} />;
-}) as React.FC<React.ComponentPropsWithoutRef<typeof SelectPrimitive.Root>>;
+}
 Select.displayName = "Select";
 
 const SelectGroup = SelectPrimitive.Group;
