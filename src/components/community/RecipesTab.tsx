@@ -69,11 +69,11 @@ export function RecipesTab() {
     const recipeIds = data?.map((r) => r.id) || [];
 
     const [profilesRes, ratingsRes] = await Promise.all([
-      supabase.from("profiles").select("user_id, full_name").in("user_id", authorIds),
+      supabase.from("profiles").select("user_id, full_name, full_name_ar, display_name, display_name_ar").in("user_id", authorIds),
       supabase.from("recipe_ratings").select("recipe_id, rating").in("recipe_id", recipeIds),
     ]);
 
-    const profileMap = new Map(profilesRes.data?.map((p) => [p.user_id, p.full_name]) || []);
+    const profileMap = new Map(profilesRes.data?.map((p) => [p.user_id, p.display_name || p.full_name]) || []);
     const ratingsMap = new Map<string, { sum: number; count: number }>();
     ratingsRes.data?.forEach((r) => {
       const existing = ratingsMap.get(r.recipe_id) || { sum: 0, count: 0 };

@@ -6,6 +6,9 @@ import { cn } from "@/lib/utils";
 interface MentionSuggestion {
   user_id: string;
   full_name: string | null;
+  display_name: string | null;
+  display_name_ar: string | null;
+  full_name_ar: string | null;
   username: string | null;
   avatar_url: string | null;
 }
@@ -49,7 +52,7 @@ export function MentionAutocomplete({ content, textareaRef, onSelect }: MentionA
     debounceRef.current = setTimeout(async () => {
       const { data } = await supabase
         .from("profiles")
-        .select("user_id, full_name, username, avatar_url")
+        .select("user_id, full_name, full_name_ar, display_name, display_name_ar, username, avatar_url")
         .eq("account_status", "active")
         .or(`username.ilike.%${query}%,full_name.ilike.%${query}%`)
         .limit(5);
@@ -103,11 +106,11 @@ export function MentionAutocomplete({ content, textareaRef, onSelect }: MentionA
           <Avatar className="h-7 w-7">
             <AvatarImage src={user.avatar_url || undefined} />
             <AvatarFallback className="text-[10px] bg-primary/10 text-primary">
-              {(user.full_name || "U")[0].toUpperCase()}
+              {(user.display_name || user.full_name || "U")[0].toUpperCase()}
             </AvatarFallback>
           </Avatar>
           <div className="min-w-0">
-            <p className="font-semibold truncate text-xs">{user.full_name || user.username}</p>
+            <p className="font-semibold truncate text-xs">{user.display_name || user.full_name || user.username}</p>
             {user.username && (
               <p className="text-[10px] text-muted-foreground">@{user.username}</p>
             )}

@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import { getDisplayName, getDisplayInitial } from "@/lib/getDisplayName";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useLanguage } from "@/i18n/LanguageContext";
@@ -32,7 +33,7 @@ export function FeaturedChefs() {
         const userIds = ranked.map((r: any) => r.user_id);
         const { data: profiles } = await supabase
           .from("profiles")
-          .select("user_id, username, full_name, full_name_ar, avatar_url, country_code, city, specialization, specialization_ar, is_verified, nationality, show_nationality")
+          .select("user_id, username, full_name, full_name_ar, display_name, display_name_ar, avatar_url, country_code, city, specialization, specialization_ar, is_verified, nationality, show_nationality")
           .in("user_id", userIds);
 
         const profileMap = new Map((profiles || []).map((p: any) => [p.user_id, p]));
@@ -42,7 +43,7 @@ export function FeaturedChefs() {
       // Fallback: verified profiles
       const { data: profiles } = await supabase
         .from("profiles")
-        .select("user_id, username, full_name, full_name_ar, avatar_url, country_code, city, specialization, specialization_ar, is_verified, loyalty_points, nationality, show_nationality")
+        .select("user_id, username, full_name, full_name_ar, display_name, display_name_ar, avatar_url, country_code, city, specialization, specialization_ar, is_verified, loyalty_points, nationality, show_nationality")
         .eq("is_verified", true)
         .order("loyalty_points", { ascending: false, nullsFirst: false })
         .limit(8);
@@ -90,7 +91,7 @@ export function FeaturedChefs() {
         <SectionReveal delay={100}>
         <div className="grid grid-cols-2 gap-2 sm:grid-cols-3 md:grid-cols-4">
           {chefs.map((chef: any, idx: number) => {
-            const name = isAr && chef.full_name_ar ? chef.full_name_ar : chef.full_name;
+            const name = getDisplayName(chef, isAr);
             const spec = isAr && chef.specialization_ar ? chef.specialization_ar : chef.specialization;
             const initials = name ? name.split(" ").map((w: string) => w[0]).join("").slice(0, 2).toUpperCase() : "?";
             const hasMedals = chef.gold_medals > 0 || chef.silver_medals > 0 || chef.bronze_medals > 0;

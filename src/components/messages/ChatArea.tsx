@@ -1,4 +1,5 @@
 import { RefObject } from "react";
+import { getDisplayName, getDisplayInitial } from "@/lib/getDisplayName";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -132,7 +133,7 @@ export function ChatArea({
         <div className="relative">
           <Avatar className="h-9 w-9">
             <AvatarImage src={selectedPartner.avatar_url || undefined} />
-            <AvatarFallback className="text-sm">{(selectedPartner.full_name || "U")[0].toUpperCase()}</AvatarFallback>
+            <AvatarFallback className="text-sm">{getDisplayInitial(selectedPartner, isAr)}</AvatarFallback>
           </Avatar>
           {isOnline(selectedPartner.user_id) && (
             <div className="absolute bottom-0 end-0 h-2.5 w-2.5 rounded-full border-2 border-card bg-primary" />
@@ -140,7 +141,7 @@ export function ChatArea({
         </div>
         <div className="min-w-0 flex-1">
           <p className="text-sm font-semibold truncate">
-            {selectedPartner.full_name || selectedPartner.username || "Unknown"}
+            {getDisplayName(selectedPartner, isAr, "Unknown")}
           </p>
           <p className="text-[11px] text-muted-foreground">
             {partnerTyping
@@ -268,7 +269,7 @@ export function ChatArea({
               );
             })}
             {partnerTyping && (
-              <TypingIndicator partnerName={selectedPartner?.full_name || selectedPartner?.username || undefined} />
+              <TypingIndicator partnerName={getDisplayName(selectedPartner, isAr) || undefined} />
             )}
             <div ref={messagesEndRef} />
           </div>

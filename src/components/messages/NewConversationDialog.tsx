@@ -33,7 +33,7 @@ export function NewConversationDialog({ open, onOpenChange, onSelectUser }: NewC
       if (!user || search.length < 2) return [];
       const { data } = await supabase
         .from("profiles")
-        .select("user_id, full_name, username, avatar_url")
+        .select("user_id, full_name, full_name_ar, display_name, display_name_ar, username, avatar_url")
         .neq("user_id", user.id)
         .or(`full_name.ilike.%${search}%,username.ilike.%${search}%`)
         .limit(20);
@@ -91,11 +91,11 @@ export function NewConversationDialog({ open, onOpenChange, onSelectUser }: NewC
                   <Avatar className="h-9 w-9">
                     <AvatarImage src={u.avatar_url || undefined} />
                     <AvatarFallback className="text-sm">
-                      {(u.full_name || "U")[0].toUpperCase()}
+                      {(u.display_name || u.full_name || "U")[0].toUpperCase()}
                     </AvatarFallback>
                   </Avatar>
                   <div>
-                    <p className="text-sm font-medium">{u.full_name || "Unknown"}</p>
+                    <p className="text-sm font-medium">{isAr ? (u.display_name_ar || u.full_name_ar || u.display_name || u.full_name) : (u.display_name || u.full_name) || "Unknown"}</p>
                     {u.username && (
                       <p className="text-xs text-muted-foreground">@{u.username}</p>
                     )}

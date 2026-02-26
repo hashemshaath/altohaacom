@@ -65,7 +65,7 @@ export default function AdminDashboard() {
         supabase.from("company_orders").select("*", { count: "exact", head: true }),
         supabase.from("masterclasses").select("*", { count: "exact", head: true }),
         supabase.from("admin_actions").select("*").order("created_at", { ascending: false }).limit(5),
-        supabase.from("profiles").select("id, full_name, username, avatar_url, created_at").order("created_at", { ascending: false }).limit(5),
+        supabase.from("profiles").select("id, full_name, display_name, username, avatar_url, created_at").order("created_at", { ascending: false }).limit(5),
       ]);
 
       return {
@@ -327,15 +327,15 @@ export default function AdminDashboard() {
               >
                 <div className="relative h-10 w-10 shrink-0 rounded-full overflow-hidden ring-2 ring-primary/20">
                   {user.avatar_url ? (
-                    <img src={user.avatar_url} alt={user.full_name || "User"} className="h-full w-full object-cover" />
+                    <img src={user.avatar_url} alt={user.display_name || user.full_name || "User"} className="h-full w-full object-cover" />
                   ) : (
                     <div className="flex h-full w-full items-center justify-center bg-primary/10 text-primary font-semibold">
-                      {(user.full_name || "U")[0].toUpperCase()}
+                      {(user.display_name || user.full_name || "U")[0].toUpperCase()}
                     </div>
                   )}
                 </div>
                 <div>
-                  <p className="text-sm font-medium">{user.full_name || "Unknown"}</p>
+                  <p className="text-sm font-medium">{user.display_name || user.full_name || "Unknown"}</p>
                   <p className="text-[10px] text-muted-foreground">
                     {format(new Date(user.created_at), "MMM d, yyyy")}
                   </p>

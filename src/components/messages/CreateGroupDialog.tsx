@@ -31,7 +31,7 @@ export function CreateGroupDialog({ open, onOpenChange, onCreated }: CreateGroup
   const { toast } = useToast();
   const [groupName, setGroupName] = useState("");
   const [search, setSearch] = useState("");
-  const [selectedUsers, setSelectedUsers] = useState<Array<{ user_id: string; full_name: string | null; username: string | null; avatar_url: string | null }>>([]);
+  const [selectedUsers, setSelectedUsers] = useState<Array<{ user_id: string; full_name: string | null; display_name: string | null; username: string | null; avatar_url: string | null }>>([]);
   const [creating, setCreating] = useState(false);
 
   const { data: users = [], isLoading } = useQuery({
@@ -40,7 +40,7 @@ export function CreateGroupDialog({ open, onOpenChange, onCreated }: CreateGroup
       if (!user || search.length < 2) return [];
       const { data } = await supabase
         .from("profiles")
-        .select("user_id, full_name, username, avatar_url")
+        .select("user_id, full_name, display_name, username, avatar_url")
         .neq("user_id", user.id)
         .or(`full_name.ilike.%${search}%,username.ilike.%${search}%`)
         .limit(20);
@@ -111,7 +111,7 @@ export function CreateGroupDialog({ open, onOpenChange, onCreated }: CreateGroup
           <div className="flex flex-wrap gap-1.5">
             {selectedUsers.map((u) => (
               <Badge key={u.user_id} variant="secondary" className="gap-1 pe-1">
-                {u.full_name || u.username}
+                {u.display_name || u.full_name || u.username}
                 <button onClick={() => toggleUser(u)} className="rounded-full hover:bg-muted p-0.5">
                   <X className="h-3 w-3" />
                 </button>
@@ -157,10 +157,10 @@ export function CreateGroupDialog({ open, onOpenChange, onCreated }: CreateGroup
                   >
                     <Avatar className="h-8 w-8">
                       <AvatarImage src={u.avatar_url || undefined} />
-                      <AvatarFallback className="text-xs">{(u.full_name || "U")[0].toUpperCase()}</AvatarFallback>
+                      <AvatarFallback className="text-xs">{(u.display_name || u.full_name || "U")[0].toUpperCase()}</AvatarFallback>
                     </Avatar>
                     <div className="flex-1 min-w-0">
-                      <p className="text-sm font-medium truncate">{u.full_name || "Unknown"}</p>
+                      <p className="text-sm font-medium truncate">{u.display_name || u.full_name || "Unknown"}</p>
                       {u.username && <p className="text-xs text-muted-foreground">@{u.username}</p>}
                     </div>
                     {selected && <Badge className="text-[10px]">{isAr ? "محدد" : "Added"}</Badge>}

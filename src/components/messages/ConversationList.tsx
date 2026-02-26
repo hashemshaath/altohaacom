@@ -1,4 +1,5 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { getDisplayName, getDisplayInitial } from "@/lib/getDisplayName";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -143,7 +144,7 @@ export function ConversationList({
                 <div className="relative shrink-0">
                   <Avatar className="h-10 w-10">
                     <AvatarImage src={conv.avatar_url || undefined} />
-                    <AvatarFallback className="text-sm">{(conv.full_name || "U")[0].toUpperCase()}</AvatarFallback>
+                    <AvatarFallback className="text-sm">{getDisplayInitial(conv, isAr)}</AvatarFallback>
                   </Avatar>
                   {isOnline(conv.user_id) && (
                     <div className="absolute bottom-0 end-0 h-2.5 w-2.5 rounded-full border-2 border-card bg-primary" />
@@ -152,7 +153,7 @@ export function ConversationList({
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center justify-between gap-2">
                     <p className={`text-sm truncate ${conv.unread_count > 0 ? "font-bold" : "font-medium"}`}>
-                      {conv.full_name || conv.username || "Unknown"}
+                      {getDisplayName(conv, isAr, "Unknown")}
                     </p>
                     <span className="text-[10px] text-muted-foreground shrink-0">
                       {formatConvTime(conv.last_message_at, isAr)}

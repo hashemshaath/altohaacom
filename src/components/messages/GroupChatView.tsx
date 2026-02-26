@@ -61,7 +61,7 @@ export function GroupChatView({ groupId, onBack }: GroupChatViewProps) {
       const userIds = memberRows.map((m) => m.user_id);
       const { data: profiles } = await supabase
         .from("profiles")
-        .select("user_id, full_name, username, avatar_url")
+        .select("user_id, full_name, display_name, username, avatar_url")
         .in("user_id", userIds);
       return memberRows.map((m) => ({
         ...m,
@@ -140,7 +140,7 @@ export function GroupChatView({ groupId, onBack }: GroupChatViewProps) {
 
   const getSenderName = (senderId: string) => {
     const m = members.find((mem) => mem.user_id === senderId);
-    return m?.profile?.full_name || m?.profile?.username || "Unknown";
+    return m?.profile?.display_name || m?.profile?.full_name || m?.profile?.username || "Unknown";
   };
 
   const getSenderAvatar = (senderId: string) => {
@@ -198,10 +198,10 @@ export function GroupChatView({ groupId, onBack }: GroupChatViewProps) {
           <div key={m.user_id} className="flex flex-col items-center gap-0.5 px-1.5">
             <Avatar className="h-7 w-7">
               <AvatarImage src={m.profile?.avatar_url || undefined} />
-              <AvatarFallback className="text-[10px]">{(m.profile?.full_name || "U")[0].toUpperCase()}</AvatarFallback>
+              <AvatarFallback className="text-[10px]">{(m.profile?.display_name || m.profile?.full_name || "U")[0].toUpperCase()}</AvatarFallback>
             </Avatar>
             <span className="text-[9px] text-muted-foreground truncate max-w-[50px]">
-              {m.user_id === user?.id ? (isAr ? "أنت" : "You") : (m.profile?.full_name?.split(" ")[0] || "")}
+              {m.user_id === user?.id ? (isAr ? "أنت" : "You") : ((m.profile?.display_name || m.profile?.full_name)?.split(" ")[0] || "")}
             </span>
           </div>
         ))}
