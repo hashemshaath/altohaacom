@@ -1,6 +1,7 @@
 import { useMemo } from "react";
 import { Link } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
+import { useAnimatedCounter } from "@/hooks/useAnimatedCounter";
 import { AdminAnalyticsWidgets } from "@/components/admin/AdminAnalyticsWidgets";
 import { MLAnalyticsDashboard } from "@/components/admin/MLAnalyticsDashboard";
 import { useLanguage } from "@/i18n/LanguageContext";
@@ -40,6 +41,15 @@ import {
 } from "lucide-react";
 import { format, subDays } from "date-fns";
 import { cn } from "@/lib/utils";
+
+function AnimatedStatValue({ value }: { value: number }) {
+  const animated = useAnimatedCounter(value);
+  return (
+    <p className="text-2xl font-black leading-none tracking-tight">
+      {toEnglishDigits(animated.toLocaleString())}
+    </p>
+  );
+}
 
 export default function AdminDashboard() {
   const { language } = useLanguage();
@@ -240,9 +250,7 @@ export default function AdminDashboard() {
                       ) : (
                         <>
                           <div className="flex items-center gap-1.5">
-                            <p className="text-2xl font-black leading-none tracking-tight">
-                              {toEnglishDigits(stat.value.toLocaleString())}
-                            </p>
+                            <AnimatedStatValue value={stat.value} />
                             {sparkPoints && trend !== 0 && (
                               <Badge variant="outline" className={cn(
                                 "text-[9px] px-1 py-0 gap-0.5",

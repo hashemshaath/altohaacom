@@ -13,8 +13,13 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Switch } from "@/components/ui/switch";
+import { Checkbox } from "@/components/ui/checkbox";
 import { useToast } from "@/hooks/use-toast";
+import { useCSVExport } from "@/hooks/useCSVExport";
+import { useAdminBulkActions } from "@/hooks/useAdminBulkActions";
+import { BulkActionBar } from "@/components/admin/BulkActionBar";
 import { format } from "date-fns";
+import { cn } from "@/lib/utils";
 import { 
   Plus, Search, Pencil, Trash2, Eye, FileText, X, Save, ArrowLeft,
   Calendar, Clock, Star, Download, BarChart3, TrendingUp,
@@ -181,23 +186,44 @@ export default function ArticlesAdmin() {
     };
   }, [articles]);
 
-  const exportArticlesCSV = () => {
-    if (!articles?.length) return;
-    const headers = ["Title", "Type", "Status", "Views", "Featured", "Published", "Created"];
-    const rows = articles.map(a => [
-      a.title, a.type, a.status, a.view_count || 0, a.is_featured ? "Yes" : "No",
-      a.published_at ? format(new Date(a.published_at), "yyyy-MM-dd") : "",
-      format(new Date(a.created_at), "yyyy-MM-dd"),
-    ]);
-    const csv = "\uFEFF" + [headers, ...rows].map(r => r.map(c => `"${String(c).replace(/"/g, '""')}"`).join(",")).join("\n");
-    const blob = new Blob([csv], { type: "text/csv;charset=utf-8" });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = `articles-${format(new Date(), "yyyyMMdd")}.csv`;
-    a.click();
-    URL.revokeObjectURL(url);
-  };
+  const { exportCSV: exportArticlesCSV } = useCSVExport({
+    columns: [
+      { header: "Title", accessor: (a: any) => a.title },
+      { header: "Type", accessor: (a: any) => a.type },
+      { header: "Status", accessor: (a: any) => a.status },
+      { header: "Views", accessor: (a: any) => a.view_count || 0 },
+      { header: "Featured", accessor: (a: any) => a.is_featured ? "Yes" : "No" },
+      { header: "Published", accessor: (a: any) => a.published_at ? format(new Date(a.published_at), "yyyy-MM-dd") : "" },
+      { header: "Created", accessor: (a: any) => format(new Date(a.created_at), "yyyy-MM-dd") },
+    ],
+    filename: "articles",
+  });
+
+  const bulk = useAdminBulkActions(articles || []);
+
+  const bulkDeleteMutation = useMutation({
+    mutationFn: async (ids: string[]) => {
+      const { error } = await supabase.from("articles").delete().in("id", ids);
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["admin-articles"] });
+      bulk.clearSelection();
+      toast({ title: language === "ar" ? "تم حذف المقالات" : "Articles deleted" });
+    },
+  });
+
+  const bulkStatusMutation = useMutation({
+    mutationFn: async ({ ids, status }: { ids: string[]; status: string }) => {
+      const { error } = await supabase.from("articles").update({ status }).in("id", ids);
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["admin-articles"] });
+      bulk.clearSelection();
+      toast({ title: language === "ar" ? "تم تحديث الحالة" : "Status updated" });
+    },
+  });
 
   const handleBackToList = () => {
     setViewMode("list");
@@ -412,7 +438,7 @@ export default function ArticlesAdmin() {
         description={language === "ar" ? "إنشاء وتعديل المحتوى" : "Create and manage content"}
         actions={
           <div className="flex gap-2">
-            <Button variant="outline" size="sm" onClick={exportArticlesCSV} className="gap-1.5">
+            <Button variant="outline" size="sm" onClick={() => exportArticlesCSV(articles || [])} className="gap-1.5">
               <Download className="h-3.5 w-3.5" /> CSV
             </Button>
             <Button onClick={() => setViewMode("create")}>
@@ -493,12 +519,31 @@ export default function ArticlesAdmin() {
         </CardContent>
       </Card>
 
+      {/* Bulk Action Bar */}
+      <BulkActionBar
+        count={bulk.count}
+        onClear={bulk.clearSelection}
+        onDelete={() => {
+          if (confirm(language === "ar" ? "حذف المقالات المحددة؟" : "Delete selected articles?")) {
+            bulkDeleteMutation.mutate(bulk.selectedItems.map(i => i.id));
+          }
+        }}
+        onStatusChange={(status) => bulkStatusMutation.mutate({ ids: bulk.selectedItems.map(i => i.id), status })}
+        onExport={() => exportArticlesCSV(bulk.selectedItems)}
+      />
+
       {/* Articles Table */}
       <Card>
         <CardContent className="p-0">
           <Table>
             <TableHeader>
               <TableRow>
+                <TableHead className="w-10">
+                  <Checkbox
+                    checked={bulk.isAllSelected}
+                    onCheckedChange={bulk.toggleAll}
+                  />
+                </TableHead>
                 <TableHead>{language === "ar" ? "العنوان" : "Title"}</TableHead>
                 <TableHead>{language === "ar" ? "النوع" : "Type"}</TableHead>
                 <TableHead>{language === "ar" ? "الحالة" : "Status"}</TableHead>
@@ -510,7 +555,7 @@ export default function ArticlesAdmin() {
             <TableBody>
               {isLoading ? (
                 <TableRow>
-                  <TableCell colSpan={6} className="text-center py-8">
+                  <TableCell colSpan={7} className="text-center py-8">
                     <div className="flex justify-center">
                       <div className="h-6 w-6 animate-spin rounded-full border-2 border-primary border-t-transparent" />
                     </div>
@@ -518,13 +563,19 @@ export default function ArticlesAdmin() {
                 </TableRow>
               ) : articles?.length === 0 ? (
                 <TableRow>
-                  <TableCell colSpan={6} className="text-center py-8 text-muted-foreground">
+                  <TableCell colSpan={7} className="text-center py-8 text-muted-foreground">
                     {language === "ar" ? "لا توجد مقالات" : "No articles found"}
                   </TableCell>
                 </TableRow>
               ) : (
                 articles?.map((article) => (
-                  <TableRow key={article.id} className="hover:bg-accent/30 transition-colors">
+                  <TableRow key={article.id} className={cn("hover:bg-accent/30 transition-colors", bulk.isSelected(article.id) && "bg-primary/5")}>
+                    <TableCell>
+                      <Checkbox
+                        checked={bulk.isSelected(article.id)}
+                        onCheckedChange={() => bulk.toggleOne(article.id)}
+                      />
+                    </TableCell>
                     <TableCell>
                       <div className="flex items-center gap-3">
                         {article.featured_image_url ? (
