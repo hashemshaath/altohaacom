@@ -7,6 +7,8 @@ import {
   Heart, MessageCircle, Repeat2, Bookmark, Share2, MoreHorizontal,
   Flag, Trash2, Pin, Mail, Pencil, History,
 } from "lucide-react";
+import { BookmarkCollections } from "./BookmarkCollections";
+import { LikeAnimation } from "./LikeAnimation";
 import {
   DropdownMenu, DropdownMenuContent, DropdownMenuItem,
   DropdownMenuSeparator, DropdownMenuTrigger,
@@ -234,44 +236,42 @@ export function PostCard({
                   variant="ghost"
                   size="sm"
                   className={cn(
-                    "h-8 gap-1 rounded-full px-3 text-xs hover:text-chart-3 hover:bg-chart-3/10",
+                    "h-8 gap-1 rounded-full px-3 text-xs hover:text-chart-3 hover:bg-chart-3/10 transition-transform active:scale-90",
                     post.is_reposted ? "text-chart-3" : "text-muted-foreground"
                   )}
                   onClick={() => onRepost(post.id, post.is_reposted)}
                 >
-                  <Repeat2 className="h-4 w-4" />
+                  <Repeat2 className={cn("h-4 w-4 transition-transform duration-300", post.is_reposted && "rotate-180")} />
                   {post.reposts_count > 0 && toEnglishDigits(`${post.reposts_count}`)}
                 </Button>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  className={cn(
-                    "h-8 gap-1 rounded-full px-3 text-xs hover:text-destructive hover:bg-destructive/10",
-                    post.is_liked ? "text-destructive" : "text-muted-foreground"
-                  )}
+                <LikeAnimation
+                  isLiked={post.is_liked}
+                  count={post.likes_count}
+                  displayCount={toEnglishDigits(`${post.likes_count}`)}
                   onClick={() => onLike(post.id, post.is_liked)}
-                >
-                  <Heart className={cn("h-4 w-4", post.is_liked && "fill-current")} />
-                  {post.likes_count > 0 && toEnglishDigits(`${post.likes_count}`)}
-                </Button>
+                />
                 <PostReactions postId={post.id} />
               </div>
               <div className="flex items-center">
+                <BookmarkCollections postId={post.id} />
                 <Button
                   variant="ghost"
                   size="sm"
                   className={cn(
-                    "h-8 rounded-full px-2 text-xs hover:text-primary hover:bg-primary/10",
+                    "h-8 rounded-full px-2 text-xs hover:text-primary hover:bg-primary/10 transition-transform active:scale-90",
                     post.is_bookmarked ? "text-primary" : "text-muted-foreground"
                   )}
                   onClick={() => onBookmark(post.id, post.is_bookmarked)}
                 >
-                  <Bookmark className={cn("h-4 w-4", post.is_bookmarked && "fill-current")} />
+                  <Bookmark className={cn(
+                    "h-4 w-4 transition-transform duration-300",
+                    post.is_bookmarked && "fill-current scale-110"
+                  )} />
                 </Button>
                 <Button
                   variant="ghost"
                   size="sm"
-                  className="h-8 rounded-full px-2 text-xs text-muted-foreground hover:text-primary hover:bg-primary/10"
+                  className="h-8 rounded-full px-2 text-xs text-muted-foreground hover:text-primary hover:bg-primary/10 transition-transform active:scale-90"
                   onClick={() => {
                     navigator.clipboard.writeText(window.location.origin + `/community/post/${post.id}`);
                     toast({ title: isAr ? "تم نسخ الرابط" : "Link copied" });
