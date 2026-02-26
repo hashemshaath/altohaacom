@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useCallback, useRef } from "react";
 import { Bell, BellOff, ShoppingCart, CheckCircle, Trophy, FileText, Users, Heart, MessageCircle, UserPlus, Radio, Eye, Flame, Settings, Volume2, VolumeX } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -14,6 +14,7 @@ import { useLanguage } from "@/i18n/LanguageContext";
 import { useNavigate } from "react-router-dom";
 import { toEnglishDigits } from "@/lib/formatNumber";
 import { cn } from "@/lib/utils";
+import { useKeyboardShortcuts } from "@/hooks/useKeyboardShortcuts";
 
 type NotificationCategory = "all" | "social" | "approvals" | "orders" | "competitions" | "general";
 
@@ -85,6 +86,13 @@ export const NotificationBell = React.forwardRef<HTMLButtonElement, Record<strin
   const navigate = useNavigate();
   const isAr = language === "ar";
   const [category, setCategory] = useState<NotificationCategory>("all");
+  const [menuOpen, setMenuOpen] = useState(false);
+  const triggerRef = useRef<HTMLButtonElement>(null);
+
+  // Keyboard shortcut: press 'n' to toggle notification panel
+  useKeyboardShortcuts([
+    { key: "n", handler: () => setMenuOpen(prev => !prev) },
+  ]);
 
   const filteredNotifications = category === "all"
     ? notifications
@@ -147,9 +155,9 @@ export const NotificationBell = React.forwardRef<HTMLButtonElement, Record<strin
   };
 
   return (
-    <DropdownMenu>
+    <DropdownMenu open={menuOpen} onOpenChange={setMenuOpen}>
       <DropdownMenuTrigger asChild>
-        <Button variant="ghost" size="icon" className="relative group">
+        <Button ref={triggerRef} variant="ghost" size="icon" className="relative group" title={`${isAr ? "الإشعارات" : "Notifications"} (N)`}>
           {dndMode ? (
             <BellOff className="h-5 w-5 text-muted-foreground" />
           ) : (
