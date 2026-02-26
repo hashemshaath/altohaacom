@@ -1,7 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useLanguage } from "@/i18n/LanguageContext";
-import { Card, CardContent } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -17,7 +16,6 @@ export function OrganizerCard({ organizerId, exhibitionId }: OrganizerCardProps)
   const { language } = useLanguage();
   const isAr = language === "ar";
 
-  // If linked to exhibition, get the exhibition's organizer instead
   const { data: exhibition } = useQuery({
     queryKey: ["exhibition-organizer", exhibitionId],
     queryFn: async () => {
@@ -32,12 +30,10 @@ export function OrganizerCard({ organizerId, exhibitionId }: OrganizerCardProps)
     enabled: !!exhibitionId,
   });
 
-  // Determine the real organizer from exhibition
   const exhEntityId = exhibition?.organizer_entity_id;
   const exhCompanyId = exhibition?.organizer_company_id;
   const exhUserId = exhibition?.organizer_user_id;
 
-  // Try to find as entity first
   const { data: entityOrganizer } = useQuery({
     queryKey: ["organizer-entity", exhEntityId],
     queryFn: async () => {
@@ -51,7 +47,6 @@ export function OrganizerCard({ organizerId, exhibitionId }: OrganizerCardProps)
     enabled: !!exhEntityId,
   });
 
-  // Try to find as company
   const { data: companyOrganizer } = useQuery({
     queryKey: ["organizer-company", exhCompanyId],
     queryFn: async () => {
@@ -65,7 +60,6 @@ export function OrganizerCard({ organizerId, exhibitionId }: OrganizerCardProps)
     enabled: !!exhCompanyId && !entityOrganizer,
   });
 
-  // Fallback: profile-based organizer (exhibition user or competition creator)
   const effectiveUserId = exhUserId || organizerId;
   const { data: profileOrganizer } = useQuery({
     queryKey: ["organizer-profile", effectiveUserId],
@@ -91,43 +85,40 @@ export function OrganizerCard({ organizerId, exhibitionId }: OrganizerCardProps)
     const abbr = entityOrganizer?.abbreviation;
 
     return (
-      <Card className="overflow-hidden border-border/50 group transition-all duration-300 hover:shadow-md hover:border-primary/20">
-        <div className="bg-gradient-to-r from-muted/50 to-transparent px-5 py-3 border-b border-border/40">
-          <h3 className="flex items-center gap-2.5 font-bold text-[11px] uppercase tracking-wider text-muted-foreground">
-            <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-primary/5 ring-1 ring-primary/10 transition-transform group-hover:scale-110">
-              <Building2 className="h-4 w-4 text-primary" />
-            </div>
+      <div className="overflow-hidden rounded-2xl border border-border/40 bg-card">
+        <div className="border-b border-border/30 bg-gradient-to-r from-muted/30 to-transparent px-5 py-3.5">
+          <h3 className="flex items-center gap-2.5 font-bold text-sm">
+            <Building2 className="h-4 w-4 text-primary" />
             {isAr ? "المنظم" : "Organizer"}
           </h3>
         </div>
-
-        <CardContent className="p-4">
-          <div className="flex items-center gap-3">
+        <div className="p-5">
+          <div className="flex items-center gap-4">
             {logo ? (
-              <img src={logo} alt={name || ""} className="h-11 w-11 rounded-lg object-contain" />
+              <img src={logo} alt={name || ""} className="h-14 w-14 rounded-xl object-contain bg-muted/30 p-1.5" />
             ) : (
-              <div className="h-11 w-11 rounded-lg bg-primary/10 flex items-center justify-center">
-                <Building2 className="h-5 w-5 text-primary/50" />
+              <div className="h-14 w-14 rounded-xl bg-primary/8 flex items-center justify-center">
+                <Building2 className="h-6 w-6 text-primary/40" />
               </div>
             )}
             <div className="min-w-0 flex-1">
-              <p className="text-sm font-medium truncate">{name}</p>
-              {abbr && <p className="text-[10px] text-muted-foreground">{abbr}</p>}
+              <p className="text-sm font-bold truncate">{name}</p>
+              {abbr && <p className="text-[11px] text-muted-foreground mt-0.5">{abbr}</p>}
               {entityOrganizer?.type && (
-                <p className="text-[10px] text-muted-foreground">{entityOrganizer.type.replace("_", " ")}</p>
+                <p className="text-[11px] text-muted-foreground capitalize">{entityOrganizer.type.replace("_", " ")}</p>
               )}
             </div>
           </div>
           {entityOrganizer && (
-            <Button asChild variant="outline" size="sm" className="w-full mt-3">
+            <Button asChild variant="outline" size="sm" className="w-full mt-4 rounded-xl h-9 text-xs font-semibold">
               <Link to={`/entities/${entityOrganizer.id}`}>
                 <ExternalLink className="me-1.5 h-3.5 w-3.5" />
                 {isAr ? "عرض الجهة" : "View Organization"}
               </Link>
             </Button>
           )}
-        </CardContent>
-      </Card>
+        </div>
+      </div>
     );
   }
 
@@ -139,44 +130,41 @@ export function OrganizerCard({ organizerId, exhibitionId }: OrganizerCardProps)
     : "?";
 
   return (
-    <Card className="overflow-hidden border-border/50 group transition-all duration-300 hover:shadow-md hover:border-primary/20">
-      <div className="bg-gradient-to-r from-muted/50 to-transparent px-5 py-3 border-b border-border/40">
-        <h3 className="flex items-center gap-2.5 font-bold text-[11px] uppercase tracking-wider text-muted-foreground">
-          <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-primary/5 ring-1 ring-primary/10 transition-transform group-hover:scale-110">
-            <User className="h-4 w-4 text-primary" />
-          </div>
+    <div className="overflow-hidden rounded-2xl border border-border/40 bg-card">
+      <div className="border-b border-border/30 bg-gradient-to-r from-muted/30 to-transparent px-5 py-3.5">
+        <h3 className="flex items-center gap-2.5 font-bold text-sm">
+          <User className="h-4 w-4 text-primary" />
           {isAr ? "المنظم" : "Organizer"}
         </h3>
       </div>
-
-      <CardContent className="p-4">
-        <div className="flex items-center gap-3">
-          <Avatar className="h-11 w-11">
-            <AvatarImage src={profileOrganizer.avatar_url || undefined} alt={profileOrganizer.full_name || ""} />
-            <AvatarFallback className="bg-primary/10 text-primary text-sm font-medium">{initials}</AvatarFallback>
+      <div className="p-5">
+        <div className="flex items-center gap-4">
+          <Avatar className="h-14 w-14 rounded-xl">
+            <AvatarImage src={profileOrganizer.avatar_url || undefined} alt={profileOrganizer.full_name || ""} className="rounded-xl" />
+            <AvatarFallback className="rounded-xl bg-primary/8 text-primary text-sm font-bold">{initials}</AvatarFallback>
           </Avatar>
           <div className="min-w-0 flex-1">
             <div className="flex items-center gap-1.5">
-              <p className="text-sm font-medium truncate">{profileOrganizer.full_name || (isAr ? "منظم" : "Organizer")}</p>
+              <p className="text-sm font-bold truncate">{profileOrganizer.full_name || (isAr ? "منظم" : "Organizer")}</p>
               {profileOrganizer.is_verified && (
                 <Badge variant="secondary" className="text-[9px] h-4 px-1 shrink-0">✓</Badge>
               )}
             </div>
             {profileOrganizer.specialization && (
-              <p className="text-[11px] text-muted-foreground truncate">{profileOrganizer.specialization}</p>
+              <p className="text-[12px] text-muted-foreground truncate mt-0.5">{profileOrganizer.specialization}</p>
             )}
             {profileOrganizer.username && (
-              <p className="text-[10px] text-muted-foreground">@{profileOrganizer.username}</p>
+              <p className="text-[11px] text-muted-foreground">@{profileOrganizer.username}</p>
             )}
           </div>
         </div>
-        <Button asChild variant="outline" size="sm" className="w-full mt-3">
+        <Button asChild variant="outline" size="sm" className="w-full mt-4 rounded-xl h-9 text-xs font-semibold">
           <Link to={`/profile/${profileOrganizer.username || profileOrganizer.user_id}`}>
             <ExternalLink className="me-1.5 h-3.5 w-3.5" />
             {isAr ? "عرض الملف الشخصي" : "View Profile"}
           </Link>
         </Button>
-      </CardContent>
-    </Card>
+      </div>
+    </div>
   );
 }
