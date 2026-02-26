@@ -26,6 +26,7 @@ import { ResourceHints } from "@/components/performance/ResourceHints";
 import { usePullToRefresh } from "@/hooks/usePullToRefresh";
 import { ScrollProgress } from "@/components/ui/scroll-progress";
 import { BackToTop } from "@/components/ui/back-to-top";
+import { RoutePrefetcher } from "@/components/ui/route-prefetcher";
 
 const LiveChatWidget = lazy(() => import("@/components/crm/LiveChatWidget").then(m => ({ default: m.LiveChatWidget })));
 const WelcomeModal = lazy(() => import("@/components/onboarding/WelcomeModal").then(m => ({ default: m.WelcomeModal })));
@@ -108,6 +109,7 @@ const App = () => (
             <Sonner />
             <BrowserRouter>
               <ResourceHints />
+              <RoutePrefetcher />
               <AppContent />
             </BrowserRouter>
           </TooltipProvider>
