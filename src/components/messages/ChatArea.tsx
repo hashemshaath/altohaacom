@@ -16,6 +16,7 @@ import { MessageStatus } from "@/components/messages/MessageStatus";
 import { VoiceMessageRecorder } from "@/components/messages/VoiceMessageRecorder";
 import { VoiceMessagePlayer } from "@/components/messages/VoiceMessagePlayer";
 import { ChatSearchBar } from "@/components/messages/ChatSearchBar";
+import { MessageReactions } from "@/components/messages/MessageReactions";
 import {
   Send, ArrowLeft, MoreVertical, Search, CheckSquare,
   Paperclip, Star, Link2, Image, Film, Music, FileText, Trash2, MessageSquare,
@@ -239,6 +240,29 @@ export function ChatArea({
                         <MessageStatus isMine={isMine} isRead={msg.is_read} readAt={msg.read_at} createdAt={msg.created_at} />
                       </div>
                     </div>
+                    {/* Message Reactions */}
+                    <MessageReactions
+                      reactions={(msg.metadata as any)?.reactions || {}}
+                      currentUserId={user?.id || ""}
+                      isMine={isMine}
+                      onReact={(emoji) => {
+                        const currentReactions = ((msg.metadata as any)?.reactions || {}) as Record<string, string[]>;
+                        const userIds = currentReactions[emoji] || [];
+                        const alreadyReacted = userIds.includes(user?.id || "");
+                        const newUserIds = alreadyReacted
+                          ? userIds.filter((id: string) => id !== user?.id)
+                          : [...userIds, user?.id || ""];
+                        const newReactions = { ...currentReactions };
+                        if (newUserIds.length === 0) delete newReactions[emoji];
+                        else newReactions[emoji] = newUserIds;
+                        
+                        supabase
+                          .from("messages")
+                          .update({ metadata: { ...((msg.metadata as any) || {}), reactions: newReactions } })
+                          .eq("id", msg.id)
+                          .then();
+                      }}
+                    />
                   </div>
                 </div>
               );
