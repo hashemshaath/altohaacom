@@ -123,7 +123,7 @@ const Index = () => {
           {/* 3. Platform Stats */}
           {isVisible(sections, "stats") && <HomeStats />}
 
-          {/* Ad banner top - positioned by sort_order */}
+          {/* Ad banner top */}
           {isVisible(sections, "ad_banner_top") && (
             <Suspense fallback={<LazyFallback type="banner" />}>
               <section className="container py-4">
@@ -135,7 +135,7 @@ const Index = () => {
           {/* Dynamic lazy sections — sorted by sort_order from DB */}
           {sections
             .filter((s) => s.is_visible && SECTION_MAP[s.section_key])
-            .map((s) => {
+            .map((s, idx) => {
               const entry = SECTION_MAP[s.section_key];
               if (!entry) return null;
               return (
