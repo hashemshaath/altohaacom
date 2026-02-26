@@ -3,7 +3,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { UserCareerTimeline } from "@/components/admin/UserCareerTimeline";
 import { UserBadgesDisplay } from "@/components/badges/UserBadgesDisplay";
-import { IdentityCard } from "@/components/profile/IdentityCard";
+
 import { ProfileActivityTimeline } from "@/components/profile/ProfileActivityTimeline";
 import { FileText, Globe } from "lucide-react";
 import { StaggeredList } from "@/components/ui/staggered-list";
@@ -96,8 +96,6 @@ export function ProfileOverviewTab({ profile, userId }: ProfileOverviewTabProps)
         </section>
       )}
 
-      {/* Identity Card */}
-      <IdentityCard profile={profile} userId={userId} />
     </StaggeredList>
   );
 }
