@@ -26,6 +26,7 @@ import {
 import { format, isToday, isYesterday } from "date-fns";
 import { ar, enUS } from "date-fns/locale";
 import { supabase } from "@/integrations/supabase/client";
+import { uploadMessageAttachment } from "@/utils/storageUtils";
 import { useToast } from "@/hooks/use-toast";
 import type { Message, ConversationPartner } from "@/hooks/useMessagesData";
 
@@ -388,13 +389,11 @@ export function ChatArea({
               onSend={async (blob, dur) => {
                 try {
                   const filePath = `${user!.id}/${Date.now()}-voice.webm`;
-                  const { error } = await supabase.storage.from("message-attachments").upload(filePath, blob);
-                  if (error) throw error;
-                  const { data: urlData } = supabase.storage.from("message-attachments").getPublicUrl(filePath);
+                  const signedUrl = await uploadMessageAttachment(filePath, blob);
                   sendMessage.mutate({
                     content: isAr ? "🎤 رسالة صوتية" : "🎤 Voice message",
                     message_type: "audio",
-                    attachment_urls: [urlData.publicUrl],
+                    attachment_urls: [signedUrl],
                     attachment_names: ["voice.webm"],
                     metadata: { duration: dur },
                   });

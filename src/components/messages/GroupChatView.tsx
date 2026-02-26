@@ -3,6 +3,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/i18n/LanguageContext";
+import { uploadMessageAttachment } from "@/utils/storageUtils";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -265,13 +266,11 @@ export function GroupChatView({ groupId, onBack }: GroupChatViewProps) {
                 setUploading(true);
                 try {
                   const filePath = `groups/${groupId}/${Date.now()}-voice.webm`;
-                  const { error } = await supabase.storage.from("message-attachments").upload(filePath, blob);
-                  if (error) throw error;
-                  const { data: urlData } = supabase.storage.from("message-attachments").getPublicUrl(filePath);
+                  const signedUrl = await uploadMessageAttachment(filePath, blob);
                   sendMutation.mutate({
                     content: isAr ? "🎤 رسالة صوتية" : "🎤 Voice message",
                     message_type: "audio",
-                    attachment_urls: [urlData.publicUrl],
+                    attachment_urls: [signedUrl],
                     attachment_names: ["voice.webm"],
                     metadata: { duration: dur },
                   });
@@ -302,10 +301,8 @@ export function GroupChatView({ groupId, onBack }: GroupChatViewProps) {
             const names: string[] = [];
             for (const file of files) {
               const path = `groups/${groupId}/${Date.now()}-${file.name}`;
-              const { error } = await supabase.storage.from("message-attachments").upload(path, file);
-              if (error) throw error;
-              const { data } = supabase.storage.from("message-attachments").getPublicUrl(path);
-              urls.push(data.publicUrl);
+              const signedUrl = await uploadMessageAttachment(path, file);
+              urls.push(signedUrl);
               names.push(file.name);
             }
             sendMutation.mutate({ content: isAr ? "مرفق" : "Attachment", message_type: "file", attachment_urls: urls, attachment_names: names });
