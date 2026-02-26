@@ -113,7 +113,7 @@ const Index = () => {
       {template === "v2" ? (
         <HomepageV2 />
       ) : (
-        <div className="space-y-0">
+        <main className="flex flex-col">
           {/* 1. Hero Slider */}
           {isVisible(sections, "hero") && <HeroSlider />}
 
@@ -123,11 +123,19 @@ const Index = () => {
           {/* 3. Platform Stats */}
           {isVisible(sections, "stats") && <HomeStats />}
 
+          {/* Ad banner top - positioned by sort_order */}
+          {isVisible(sections, "ad_banner_top") && (
+            <Suspense fallback={<LazyFallback type="banner" />}>
+              <section className="container py-4">
+                <AdBanner placementSlug="home-hero-banner" className="w-full rounded-xl overflow-hidden aspect-[728/90] sm:aspect-[970/90] max-h-[120px]" />
+              </section>
+            </Suspense>
+          )}
+
           {/* Dynamic lazy sections — sorted by sort_order from DB */}
           {sections
             .filter((s) => s.is_visible && SECTION_MAP[s.section_key])
             .map((s) => {
-              if (s.section_key === "ad_banner_top" || s.section_key === "ad_banner_mid") return null;
               const entry = SECTION_MAP[s.section_key];
               if (!entry) return null;
               return (
@@ -137,17 +145,10 @@ const Index = () => {
               );
             })}
 
-          {/* Ad banners */}
-          {isVisible(sections, "ad_banner_top") && (
-            <Suspense fallback={<LazyFallback type="banner" />}>
-              <section className="container py-2">
-                <AdBanner placementSlug="home-hero-banner" className="w-full rounded-xl overflow-hidden aspect-[728/90] sm:aspect-[970/90] max-h-[120px]" />
-              </section>
-            </Suspense>
-          )}
+          {/* Ad banner mid */}
           {isVisible(sections, "ad_banner_mid") && (
             <Suspense fallback={<LazyFallback type="banner" />}>
-              <section className="container py-2">
+              <section className="container py-4">
                 <AdBanner placementSlug="in-feed" className="w-full max-w-3xl mx-auto rounded-xl overflow-hidden aspect-[728/90] sm:aspect-[970/250] max-h-[250px]" />
               </section>
             </Suspense>
@@ -158,7 +159,7 @@ const Index = () => {
             <>
               <Suspense fallback={<LazyFallback />}><EventsByCategory /></Suspense>
               <Suspense fallback={<LazyFallback type="banner" />}>
-                <section className="container py-2">
+                <section className="container py-4">
                   <AdBanner placementSlug="home-hero-banner" className="w-full rounded-xl overflow-hidden aspect-[728/90] sm:aspect-[970/90] max-h-[120px]" />
                 </section>
               </Suspense>
@@ -170,7 +171,7 @@ const Index = () => {
               <Suspense fallback={<LazyFallback />}><HomeProSuppliers /></Suspense>
               <Suspense fallback={<LazyFallback />}><HomeMasterclasses /></Suspense>
               <Suspense fallback={<LazyFallback type="banner" />}>
-                <section className="container py-2">
+                <section className="container py-4">
                   <AdBanner placementSlug="in-feed" className="w-full max-w-3xl mx-auto rounded-xl overflow-hidden aspect-[728/90] sm:aspect-[970/250] max-h-[250px]" />
                 </section>
               </Suspense>
@@ -185,7 +186,7 @@ const Index = () => {
           <Suspense fallback={null}>
             <AdPopup />
           </Suspense>
-        </div>
+        </main>
       )}
 
       <Footer />
