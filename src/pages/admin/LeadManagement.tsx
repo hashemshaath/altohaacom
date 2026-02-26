@@ -3,6 +3,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
+import { useCSVExport } from "@/hooks/useCSVExport";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -314,29 +315,20 @@ export default function LeadManagement() {
     }
   };
 
-  // CSV export
-  const exportCSV = () => {
-    const rows = leads.map(l => ({
-      Name: l.contact_name,
-      Email: l.email,
-      Phone: l.phone || "",
-      Company: l.company_name || "",
-      Type: l.type,
-      Status: l.status || "new",
-      Source: l.source || "",
-      Created: format(new Date(l.created_at), "yyyy-MM-dd"),
-      Notes: (l.notes || "").replace(/\n/g, " "),
-    }));
-    const headers = Object.keys(rows[0] || {});
-    const csv = [headers.join(","), ...rows.map(r => headers.map(h => `"${(r as any)[h]}"`).join(","))].join("\n");
-    const blob = new Blob([csv], { type: "text/csv" });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = `leads-${format(new Date(), "yyyy-MM-dd")}.csv`;
-    a.click();
-    URL.revokeObjectURL(url);
-  };
+  const { exportCSV: exportLeadsCSV } = useCSVExport({
+    columns: [
+      { header: isAr ? "الاسم" : "Name", accessor: (l: Lead) => l.contact_name },
+      { header: isAr ? "البريد" : "Email", accessor: (l: Lead) => l.email },
+      { header: isAr ? "الهاتف" : "Phone", accessor: (l: Lead) => l.phone || "" },
+      { header: isAr ? "الشركة" : "Company", accessor: (l: Lead) => l.company_name || "" },
+      { header: isAr ? "النوع" : "Type", accessor: (l: Lead) => l.type },
+      { header: isAr ? "الحالة" : "Status", accessor: (l: Lead) => l.status || "new" },
+      { header: isAr ? "المصدر" : "Source", accessor: (l: Lead) => l.source || "" },
+      { header: isAr ? "التاريخ" : "Created", accessor: (l: Lead) => format(new Date(l.created_at), "yyyy-MM-dd") },
+      { header: isAr ? "ملاحظات" : "Notes", accessor: (l: Lead) => (l.notes || "").replace(/\n/g, " ") },
+    ],
+    filename: "leads",
+  });
 
   // Kanban data
   const kanbanData = useMemo(() => {
@@ -421,7 +413,7 @@ export default function LeadManagement() {
         description={isAr ? "تتبع وإدارة العملاء المحتملين والصفقات" : "Track and manage leads & deals pipeline"}
         actions={
           <div className="flex items-center gap-2">
-            <Button variant="outline" size="sm" onClick={exportCSV} className="gap-1.5">
+            <Button variant="outline" size="sm" onClick={() => exportLeadsCSV(selectedIds.size > 0 ? leads.filter(l => selectedIds.has(l.id)) : leads)} className="gap-1.5">
               <Download className="h-3.5 w-3.5" />
               {isAr ? "تصدير" : "Export"}
             </Button>
