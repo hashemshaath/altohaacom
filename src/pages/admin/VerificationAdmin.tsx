@@ -10,7 +10,11 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { Separator } from "@/components/ui/separator";
 import { VerifiedBadge } from "@/components/verification/VerifiedBadge";
+import { Checkbox } from "@/components/ui/checkbox";
 import AdminPageHeader from "@/components/admin/AdminPageHeader";
+import { useAdminBulkActions } from "@/hooks/useAdminBulkActions";
+import { useCSVExport } from "@/hooks/useCSVExport";
+import { BulkActionBar } from "@/components/admin/BulkActionBar";
 import {
   ShieldCheck, Bot, CheckCircle, XCircle, Clock, AlertTriangle,
   Search, Eye, Loader2, Shield, Users, Building, Building2,
@@ -60,6 +64,20 @@ export default function VerificationAdmin() {
     if (tab !== "all" && r.status !== tab) return false;
     if (search && !r.applicant_name.toLowerCase().includes(search.toLowerCase())) return false;
     return true;
+  }) || [];
+
+  const bulk = useAdminBulkActions(filtered);
+
+  const { exportCSV } = useCSVExport({
+    columns: [
+      { header: isAr ? "الاسم" : "Applicant", accessor: (r: any) => r.applicant_name },
+      { header: isAr ? "النوع" : "Entity Type", accessor: (r: any) => r.entity_type },
+      { header: isAr ? "المستوى" : "Level", accessor: (r: any) => r.verification_level },
+      { header: isAr ? "الحالة" : "Status", accessor: (r: any) => r.status },
+      { header: isAr ? "المخاطرة" : "Risk Score", accessor: (r: any) => r.ai_risk_score != null ? (r.ai_risk_score * 100).toFixed(0) + "%" : "" },
+      { header: isAr ? "التاريخ" : "Date", accessor: (r: any) => r.created_at?.slice(0, 10) || "" },
+    ],
+    filename: "verification-requests",
   });
 
   const stats = {
@@ -151,6 +169,12 @@ export default function VerificationAdmin() {
         </Tabs>
       </div>
 
+      <BulkActionBar
+        count={bulk.count}
+        onClear={bulk.clearSelection}
+        onExport={() => exportCSV(bulk.selectedItems)}
+      />
+
       {/* Requests List */}
       {isLoading ? (
         <div className="flex justify-center py-12">
@@ -158,7 +182,7 @@ export default function VerificationAdmin() {
         </div>
       ) : (
         <div className="space-y-3">
-          {filtered?.length === 0 && (
+          {filtered.length === 0 && (
             <Card>
               <CardContent className="flex flex-col items-center py-12 text-muted-foreground">
                 <Shield className="mb-2 h-10 w-10" />
@@ -166,17 +190,21 @@ export default function VerificationAdmin() {
               </CardContent>
             </Card>
           )}
-          {filtered?.map((req) => {
+          {filtered.map((req) => {
             const EntityIcon = entityIcons[req.entity_type] || Users;
             const statusLabel = statusLabels[req.status] || statusLabels.pending;
             const docs = (req.documents as any[]) || [];
             const aiAnalysis = req.ai_analysis as any;
 
             return (
-              <Card key={req.id} className="transition-all hover:-translate-y-0.5 hover:shadow-md">
+              <Card key={req.id} className={`transition-all hover:-translate-y-0.5 hover:shadow-md ${bulk.isSelected(req.id) ? "ring-1 ring-primary/30" : ""}`}>
                 <CardContent className="p-4">
                   <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
                     <div className="flex items-center gap-3">
+                      <Checkbox
+                        checked={bulk.isSelected(req.id)}
+                        onCheckedChange={() => bulk.toggleOne(req.id)}
+                      />
                       <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-muted">
                         <EntityIcon className="h-5 w-5 text-muted-foreground" />
                       </div>

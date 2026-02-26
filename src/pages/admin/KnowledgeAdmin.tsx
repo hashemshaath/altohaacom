@@ -15,6 +15,10 @@ import { Switch } from "@/components/ui/switch";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Separator } from "@/components/ui/separator";
 import { useToast } from "@/hooks/use-toast";
+import { useAdminBulkActions } from "@/hooks/useAdminBulkActions";
+import { useCSVExport } from "@/hooks/useCSVExport";
+import { BulkActionBar } from "@/components/admin/BulkActionBar";
+import { Checkbox } from "@/components/ui/checkbox";
 import AdminPageHeader from "@/components/admin/AdminPageHeader";
 import {
   BookOpen, Plus, Trash2, Edit, Link, FileText, Image, Scale, Upload,
@@ -27,6 +31,7 @@ export default function KnowledgeAdmin() {
   const { language } = useLanguage();
   const { user } = useAuth();
   const { toast } = useToast();
+  const isAr = language === "ar";
   const queryClient = useQueryClient();
   const [activeTab, setActiveTab] = useState("resources");
   const [showAddResource, setShowAddResource] = useState(false);
@@ -304,6 +309,25 @@ export default function KnowledgeAdmin() {
     }
   };
 
+  const bulkResources = useAdminBulkActions(resources || []);
+
+  const { exportCSV: exportResources } = useCSVExport({
+    columns: [
+      { header: isAr ? "العنوان" : "Title", accessor: (r: any) => isAr && r.title_ar ? r.title_ar : r.title },
+      { header: isAr ? "النوع" : "Type", accessor: (r: any) => r.resource_type },
+      { header: isAr ? "منشور" : "Published", accessor: (r: any) => r.is_published ? "Yes" : "No" },
+      { header: isAr ? "للحكام" : "Judge Resource", accessor: (r: any) => r.is_judge_resource ? "Yes" : "No" },
+      { header: isAr ? "الرابط" : "URL", accessor: (r: any) => r.url || "" },
+    ],
+    filename: "knowledge-resources",
+  });
+
+  const bulkDeleteResources = async () => {
+    const ids = [...bulkResources.selected];
+    for (const id of ids) await deleteResourceMutation.mutateAsync(id);
+    bulkResources.clearSelection();
+  };
+
   const ratingColors: Record<string, string> = {
     excellent: "bg-chart-5/10 text-chart-5",
     good: "bg-primary/10 text-primary",
@@ -490,14 +514,25 @@ export default function KnowledgeAdmin() {
             </Card>
           )}
 
+          <BulkActionBar
+            count={bulkResources.count}
+            onClear={bulkResources.clearSelection}
+            onExport={() => exportResources(bulkResources.selectedItems)}
+            onDelete={bulkDeleteResources}
+          />
+
           {loadingResources ? (
             <div className="space-y-3">{[1,2,3].map(i => <Skeleton key={i} className="h-20" />)}</div>
           ) : resources && resources.length > 0 ? (
             <div className="space-y-3">
               {resources.map(resource => (
-                <Card key={resource.id}>
+                <Card key={resource.id} className={bulkResources.isSelected(resource.id) ? "ring-1 ring-primary/30" : ""}>
                   <CardContent className="flex items-center justify-between p-4">
                     <div className="flex items-center gap-3 min-w-0 flex-1">
+                      <Checkbox
+                        checked={bulkResources.isSelected(resource.id)}
+                        onCheckedChange={() => bulkResources.toggleOne(resource.id)}
+                      />
                       <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-primary/10">
                         {resourceTypeIcon(resource.resource_type)}
                       </div>
