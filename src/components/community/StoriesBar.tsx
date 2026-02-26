@@ -6,10 +6,12 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Plus, X, ChevronLeft, ChevronRight, Eye, Move } from "lucide-react";
+import { Plus, X, ChevronLeft, ChevronRight, Eye, Move, Trash2, Pause, Play } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { cn } from "@/lib/utils";
 import { toEnglishDigits } from "@/lib/formatNumber";
+
+const STORY_DURATION = 5000; // 5 seconds per story
 
 interface Story {
   id: string;
@@ -45,11 +47,16 @@ export function StoriesBar() {
   const [caption, setCaption] = useState("");
   const [showCaptionInput, setShowCaptionInput] = useState(false);
   const [pendingFile, setPendingFile] = useState<File | null>(null);
-  const [imagePosition, setImagePosition] = useState(50); // percentage 0-100, 50 = center
+  const [imagePosition, setImagePosition] = useState(50);
   const [isDragging, setIsDragging] = useState(false);
   const [dragStartX, setDragStartX] = useState(0);
   const [dragStartPos, setDragStartPos] = useState(50);
+  const [paused, setPaused] = useState(false);
+  const [progress, setProgress] = useState(0);
+  const [viewCount, setViewCount] = useState(0);
   const previewContainerRef = useRef<HTMLDivElement>(null);
+  const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const progressStartRef = useRef<number>(0);
 
   const handlePointerDown = useCallback((e: React.PointerEvent) => {
     setIsDragging(true);
@@ -182,24 +189,61 @@ export function StoriesBar() {
   const openStory = async (group: GroupedStories) => {
     setViewing(group);
     setStoryIndex(0);
+    setPaused(false);
+    setProgress(0);
     if (user && user.id !== group.user_id) {
       await supabase.from("story_views").upsert({
         story_id: group.stories[0].id,
         viewer_id: user.id,
       }, { onConflict: "story_id,viewer_id" });
     }
+    // Fetch view count for own stories
+    if (user && user.id === group.user_id) {
+      const { count } = await supabase
+        .from("story_views")
+        .select("*", { count: "exact", head: true })
+        .eq("story_id", group.stories[0].id);
+      setViewCount(count || 0);
+    }
   };
+
+  // Auto-progress timer
+  useEffect(() => {
+    if (!viewing || paused) {
+      if (timerRef.current) clearInterval(timerRef.current);
+      return;
+    }
+    progressStartRef.current = Date.now();
+    setProgress(0);
+    timerRef.current = setInterval(() => {
+      const elapsed = Date.now() - progressStartRef.current;
+      const pct = Math.min((elapsed / STORY_DURATION) * 100, 100);
+      setProgress(pct);
+      if (pct >= 100) {
+        nextStory();
+      }
+    }, 50);
+    return () => { if (timerRef.current) clearInterval(timerRef.current); };
+  }, [viewing, storyIndex, paused]);
 
   const nextStory = async () => {
     if (!viewing) return;
     if (storyIndex < viewing.stories.length - 1) {
       const next = storyIndex + 1;
       setStoryIndex(next);
+      setProgress(0);
       if (user && user.id !== viewing.user_id) {
         await supabase.from("story_views").upsert({
           story_id: viewing.stories[next].id,
           viewer_id: user.id,
         }, { onConflict: "story_id,viewer_id" });
+      }
+      if (user && user.id === viewing.user_id) {
+        const { count } = await supabase
+          .from("story_views")
+          .select("*", { count: "exact", head: true })
+          .eq("story_id", viewing.stories[next].id);
+        setViewCount(count || 0);
       }
     } else {
       setViewing(null);
@@ -207,7 +251,24 @@ export function StoriesBar() {
   };
 
   const prevStory = () => {
-    if (storyIndex > 0) setStoryIndex(storyIndex - 1);
+    if (storyIndex > 0) {
+      setStoryIndex(storyIndex - 1);
+      setProgress(0);
+    }
+  };
+
+  const deleteStory = async (storyId: string) => {
+    if (!user) return;
+    await supabase.from("community_stories").delete().eq("id", storyId).eq("user_id", user.id);
+    toast({ title: isAr ? "تم حذف القصة" : "Story deleted" });
+    if (viewing && viewing.stories.length <= 1) {
+      setViewing(null);
+    } else if (viewing) {
+      const updated = { ...viewing, stories: viewing.stories.filter(s => s.id !== storyId) };
+      setViewing(updated);
+      if (storyIndex >= updated.stories.length) setStoryIndex(Math.max(0, updated.stories.length - 1));
+    }
+    fetchStories();
   };
 
   if (grouped.length === 0 && !user) return null;
@@ -332,7 +393,13 @@ export function StoriesBar() {
               <div className="absolute top-0 inset-x-0 z-10 flex gap-1 p-2">
                 {viewing.stories.map((_, i) => (
                   <div key={i} className="h-0.5 flex-1 rounded-full bg-foreground/20 overflow-hidden">
-                    <div className={cn("h-full rounded-full bg-foreground/80 transition-all duration-300", i < storyIndex ? "w-full" : i === storyIndex ? "w-full" : "w-0")} />
+                    <div
+                      className="h-full rounded-full bg-foreground/80"
+                      style={{
+                        width: i < storyIndex ? "100%" : i === storyIndex ? `${progress}%` : "0%",
+                        transition: i === storyIndex ? "none" : "width 0.3s",
+                      }}
+                    />
                   </div>
                 ))}
               </div>
@@ -346,14 +413,34 @@ export function StoriesBar() {
                   </AvatarFallback>
                 </Avatar>
                 <span className="text-xs font-bold text-foreground drop-shadow">{viewing.user_name || "Chef"}</span>
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  className="ms-auto h-8 w-8 text-foreground/80 hover:text-foreground"
-                  onClick={() => setViewing(null)}
-                >
-                  <X className="h-5 w-5" />
-                </Button>
+                <div className="ms-auto flex items-center gap-1">
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="h-8 w-8 text-foreground/80 hover:text-foreground"
+                    onClick={() => setPaused(!paused)}
+                  >
+                    {paused ? <Play className="h-4 w-4" /> : <Pause className="h-4 w-4" />}
+                  </Button>
+                  {user?.id === viewing.user_id && (
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="h-8 w-8 text-destructive/80 hover:text-destructive"
+                      onClick={() => deleteStory(viewing.stories[storyIndex].id)}
+                    >
+                      <Trash2 className="h-4 w-4" />
+                    </Button>
+                  )}
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="h-8 w-8 text-foreground/80 hover:text-foreground"
+                    onClick={() => setViewing(null)}
+                  >
+                    <X className="h-5 w-5" />
+                  </Button>
+                </div>
               </div>
 
               {/* Media */}
@@ -375,12 +462,18 @@ export function StoriesBar() {
                 )}
               </div>
 
-              {/* Caption */}
-              {viewing.stories[storyIndex]?.caption && (
-                <div className="absolute bottom-0 inset-x-0 z-10 bg-gradient-to-t from-background/90 to-transparent p-4 pt-10">
-                  <p className="text-sm text-foreground">{viewing.stories[storyIndex].caption}</p>
-                </div>
-              )}
+              {/* Caption + View count */}
+              <div className="absolute bottom-0 inset-x-0 z-10 bg-gradient-to-t from-background/90 to-transparent p-4 pt-10">
+                {viewing.stories[storyIndex]?.caption && (
+                  <p className="text-sm text-foreground mb-2">{viewing.stories[storyIndex].caption}</p>
+                )}
+                {user?.id === viewing.user_id && (
+                  <div className="flex items-center gap-1 text-xs text-muted-foreground">
+                    <Eye className="h-3.5 w-3.5" />
+                    {toEnglishDigits(`${viewCount}`)} {isAr ? "مشاهدة" : "views"}
+                  </div>
+                )}
+              </div>
 
               {/* Navigation */}
               <button

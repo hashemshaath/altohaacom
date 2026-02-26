@@ -3,14 +3,14 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { formatNumber } from "@/lib/formatNumber";
-import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { AdBanner } from "@/components/ads/AdBanner";
 import { ActivitySidebar } from "./ActivitySidebar";
+import { CommunitySearch } from "./CommunitySearch";
 import {
-  Search, TrendingUp, Hash, UserPlus, Sparkles,
+  TrendingUp, Hash, UserPlus, Sparkles,
   PanelLeftClose, PanelLeftOpen, PanelRightClose, PanelRightOpen,
 } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
@@ -117,13 +117,7 @@ export function CommunityRightSidebar({ rightSidebarOpen, setRightSidebarOpen }:
 
       {rightSidebarOpen && (
         <div className="space-y-4">
-          <div className="relative">
-            <Search className="absolute start-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-            <Input
-              placeholder={isAr ? "بحث في المجتمع..." : "Search community..."}
-              className="ps-9 rounded-full bg-muted/50 border-0 focus-visible:ring-1"
-            />
-          </div>
+          <CommunitySearch />
 
           <div className="rounded-2xl border border-border bg-card overflow-hidden">
             <h3 className="px-4 pt-3 pb-2 text-base font-bold flex items-center gap-2">
