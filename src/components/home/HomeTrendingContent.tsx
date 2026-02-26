@@ -57,14 +57,14 @@ export const HomeTrendingContent = forwardRef<HTMLDivElement>(function HomeTrend
             </div>
           </SectionReveal>
 
-          <div className="grid md:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4">
             {/* Featured large card */}
             <SectionReveal delay={0}>
               <Link to={`/articles/${featured.slug}`}>
                 <Card className="overflow-hidden group h-full border-border/40 hover:shadow-lg transition-all">
                   <div className="relative aspect-[16/10] overflow-hidden">
                     {featured.featured_image_url ? (
-                      <img src={featured.featured_image_url} alt="" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                      <img src={featured.featured_image_url} alt="" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" loading="lazy" />
                     ) : (
                       <div className="w-full h-full bg-muted flex items-center justify-center">
                         <TrendingUp className="h-10 w-10 text-muted-foreground/20" />
@@ -104,9 +104,9 @@ export const HomeTrendingContent = forwardRef<HTMLDivElement>(function HomeTrend
                 <SectionReveal key={article.id} delay={(i + 1) * 80}>
                   <Link to={`/articles/${article.slug}`}>
                     <Card className="flex overflow-hidden group border-border/40 hover:shadow-md transition-all h-full">
-                      <div className="w-24 sm:w-28 shrink-0 overflow-hidden">
+                      <div className="w-20 sm:w-28 shrink-0 overflow-hidden">
                         {article.featured_image_url ? (
-                          <img src={article.featured_image_url} alt="" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
+                          <img src={article.featured_image_url} alt="" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" loading="lazy" />
                         ) : (
                           <div className="w-full h-full bg-muted flex items-center justify-center">
                             <TrendingUp className="h-5 w-5 text-muted-foreground/20" />

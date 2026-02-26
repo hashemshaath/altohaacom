@@ -1,4 +1,4 @@
-import { forwardRef, useState, useEffect, useCallback } from "react";
+import { forwardRef, useState, useEffect, useCallback, useRef } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useLanguage } from "@/i18n/LanguageContext";
@@ -32,6 +32,16 @@ export const HomeTestimonials = forwardRef<HTMLDivElement>(function HomeTestimon
   const next = useCallback(() => setCurrent(c => (c + 1) % Math.max(testimonials.length, 1)), [testimonials.length]);
   const prev = useCallback(() => setCurrent(c => (c - 1 + testimonials.length) % Math.max(testimonials.length, 1)), [testimonials.length]);
 
+  // Touch swipe support
+  const touchStart = useRef<number | null>(null);
+  const handleTouchStart = (e: React.TouchEvent) => { touchStart.current = e.touches[0].clientX; };
+  const handleTouchEnd = (e: React.TouchEvent) => {
+    if (touchStart.current === null) return;
+    const diff = touchStart.current - e.changedTouches[0].clientX;
+    if (Math.abs(diff) > 50) { diff > 0 ? next() : prev(); }
+    touchStart.current = null;
+  };
+
   // Auto-rotate
   useEffect(() => {
     if (testimonials.length <= 1) return;
@@ -64,11 +74,11 @@ export const HomeTestimonials = forwardRef<HTMLDivElement>(function HomeTestimon
           </SectionReveal>
 
           <SectionReveal delay={100}>
-            <Card className="border-border/40 shadow-lg relative overflow-hidden">
+            <Card className="border-border/40 shadow-lg relative overflow-hidden touch-pan-y" onTouchStart={handleTouchStart} onTouchEnd={handleTouchEnd}>
               <div className="absolute top-4 start-4 opacity-5">
                 <Quote className="h-20 w-20" />
               </div>
-              <CardContent className="p-8 sm:p-10 text-center relative">
+              <CardContent className="p-5 sm:p-8 md:p-10 text-center relative">
                 <p className="text-lg sm:text-xl leading-relaxed text-foreground/90 mb-6 italic">
                   &ldquo;{quote}&rdquo;
                 </p>
