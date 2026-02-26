@@ -8425,6 +8425,87 @@ export type Database = {
           },
         ]
       }
+      event_series: {
+        Row: {
+          cover_image_url: string | null
+          created_at: string
+          created_by: string | null
+          default_city: string | null
+          default_country: string | null
+          default_organizer_email: string | null
+          default_organizer_logo_url: string | null
+          default_organizer_name: string | null
+          default_organizer_name_ar: string | null
+          default_organizer_phone: string | null
+          default_organizer_website: string | null
+          default_venue: string | null
+          default_venue_ar: string | null
+          description: string | null
+          description_ar: string | null
+          id: string
+          is_active: boolean
+          logo_url: string | null
+          name: string
+          name_ar: string | null
+          series_type: string
+          tags: string[] | null
+          updated_at: string
+          website_url: string | null
+        }
+        Insert: {
+          cover_image_url?: string | null
+          created_at?: string
+          created_by?: string | null
+          default_city?: string | null
+          default_country?: string | null
+          default_organizer_email?: string | null
+          default_organizer_logo_url?: string | null
+          default_organizer_name?: string | null
+          default_organizer_name_ar?: string | null
+          default_organizer_phone?: string | null
+          default_organizer_website?: string | null
+          default_venue?: string | null
+          default_venue_ar?: string | null
+          description?: string | null
+          description_ar?: string | null
+          id?: string
+          is_active?: boolean
+          logo_url?: string | null
+          name: string
+          name_ar?: string | null
+          series_type?: string
+          tags?: string[] | null
+          updated_at?: string
+          website_url?: string | null
+        }
+        Update: {
+          cover_image_url?: string | null
+          created_at?: string
+          created_by?: string | null
+          default_city?: string | null
+          default_country?: string | null
+          default_organizer_email?: string | null
+          default_organizer_logo_url?: string | null
+          default_organizer_name?: string | null
+          default_organizer_name_ar?: string | null
+          default_organizer_phone?: string | null
+          default_organizer_website?: string | null
+          default_venue?: string | null
+          default_venue_ar?: string | null
+          description?: string | null
+          description_ar?: string | null
+          id?: string
+          is_active?: boolean
+          logo_url?: string | null
+          name?: string
+          name_ar?: string | null
+          series_type?: string
+          tags?: string[] | null
+          updated_at?: string
+          website_url?: string | null
+        }
+        Relationships: []
+      }
       exhibition_agenda_favorites: {
         Row: {
           agenda_item_id: string
@@ -10689,6 +10770,13 @@ export type Database = {
             columns: ["organizer_entity_id"]
             isOneToOne: false
             referencedRelation: "culinary_entities"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "exhibitions_series_id_fkey"
+            columns: ["series_id"]
+            isOneToOne: false
+            referencedRelation: "event_series"
             referencedColumns: ["id"]
           },
         ]
