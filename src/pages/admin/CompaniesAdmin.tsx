@@ -1,5 +1,9 @@
 import { useState } from "react";
 import { BulkImportPanel } from "@/components/admin/BulkImportPanel";
+import { useAdminBulkActions } from "@/hooks/useAdminBulkActions";
+import { BulkActionBar } from "@/components/admin/BulkActionBar";
+import { useCSVExport } from "@/hooks/useCSVExport";
+import { Checkbox } from "@/components/ui/checkbox";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -672,6 +676,44 @@ export default function CompaniesAdmin() {
     pending: companies.filter(c => c.status === "pending").length,
     sponsors: companies.filter(c => c.type === "sponsor").length,
     suppliers: companies.filter(c => c.type === "supplier").length,
+  };
+
+  const bulk = useAdminBulkActions(companies);
+
+  const { exportCSV: exportCompaniesCSV } = useCSVExport({
+    columns: [
+      { header: isAr ? "الاسم" : "Name", accessor: (c: Company) => c.name },
+      { header: isAr ? "الاسم (AR)" : "Name (AR)", accessor: (c: Company) => c.name_ar || "" },
+      { header: isAr ? "النوع" : "Type", accessor: (c: Company) => getTypeLabel(c.type) || c.type },
+      { header: isAr ? "الحالة" : "Status", accessor: (c: Company) => getStatusLabel(c.status) },
+      { header: isAr ? "البريد" : "Email", accessor: (c: Company) => c.email || "" },
+      { header: isAr ? "الهاتف" : "Phone", accessor: (c: Company) => c.phone || "" },
+      { header: isAr ? "المدينة" : "City", accessor: (c: Company) => c.city || "" },
+      { header: isAr ? "الدولة" : "Country", accessor: (c: Company) => c.country || "" },
+      { header: isAr ? "التاريخ" : "Created", accessor: (c: Company) => c.created_at?.split("T")[0] || "" },
+    ],
+    filename: "companies",
+  });
+
+  const bulkActivate = async () => {
+    const ids = [...bulk.selected];
+    const { error } = await supabase.from("companies").update({ status: "active" as any }).in("id", ids);
+    if (!error) {
+      queryClient.invalidateQueries({ queryKey: ["companies"] });
+      bulk.clearSelection();
+      toast({ title: isAr ? `تم تفعيل ${ids.length} شركة` : `Activated ${ids.length} companies` });
+    }
+  };
+
+  const bulkSuspend = async () => {
+    if (!confirm(isAr ? "هل أنت متأكد من تعليق الشركات المحددة؟" : "Suspend selected companies?")) return;
+    const ids = [...bulk.selected];
+    const { error } = await supabase.from("companies").update({ status: "suspended" as any }).in("id", ids);
+    if (!error) {
+      queryClient.invalidateQueries({ queryKey: ["companies"] });
+      bulk.clearSelection();
+      toast({ title: isAr ? `تم تعليق ${ids.length} شركة` : `Suspended ${ids.length} companies` });
+    }
   };
 
   const companyBalance = transactions.reduce((acc, t: any) => {
@@ -1769,15 +1811,7 @@ export default function CompaniesAdmin() {
           <Button variant="outline" onClick={() => setShowBulkImport(!showBulkImport)}>
             <Upload className="h-4 w-4 me-2" />{isAr ? "استيراد" : "Import"}
           </Button>
-          <Button variant="outline" onClick={() => {
-            const csv = ["Name,Name (AR),Type,Status,Email,Phone,City,Country,Company Number,Created"];
-            companies.forEach(c => {
-              csv.push([c.name, c.name_ar || "", c.type, c.status, c.email || "", c.phone || "", c.city || "", c.country || "", c.company_number || "", format(new Date(c.created_at), "yyyy-MM-dd")].join(","));
-            });
-            const blob = new Blob([csv.join("\n")], { type: "text/csv" });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement("a"); a.href = url; a.download = `companies-export-${new Date().toISOString().slice(0, 10)}.csv`; a.click(); URL.revokeObjectURL(url);
-          }}>
+          <Button variant="outline" onClick={() => exportCompaniesCSV(bulk.count > 0 ? bulk.selectedItems : companies)}>
             <FileSpreadsheet className="h-4 w-4 me-2" />{isAr ? "تصدير CSV" : "Export CSV"}
           </Button>
         </div>
@@ -1813,10 +1847,21 @@ export default function CompaniesAdmin() {
               </Select>
             </div>
 
+            <BulkActionBar
+              count={bulk.count}
+              onClear={bulk.clearSelection}
+              onStatusChange={bulkActivate}
+              onDelete={bulkSuspend}
+              onExport={() => exportCompaniesCSV(bulk.selectedItems)}
+            />
+
             <ScrollArea className="h-[500px]">
               <Table>
                 <TableHeader>
                   <TableRow>
+                    <TableHead className="w-10">
+                      <Checkbox checked={bulk.isAllSelected} onCheckedChange={bulk.toggleAll} />
+                    </TableHead>
                     <TableHead>{isAr ? "الشركة" : "Company"}</TableHead>
                     <TableHead>{isAr ? "النوع" : "Type"}</TableHead>
                     <TableHead>{isAr ? "الاتصال" : "Contact"}</TableHead>
@@ -1828,7 +1873,10 @@ export default function CompaniesAdmin() {
                 </TableHeader>
                 <TableBody>
                   {companies.map(company => (
-                    <TableRow key={company.id} className="cursor-pointer hover:bg-muted/50" onClick={() => setSelectedCompany(company.id)}>
+                    <TableRow key={company.id} className={`cursor-pointer hover:bg-muted/50 ${bulk.isSelected(company.id) ? "bg-primary/5" : ""}`} onClick={() => setSelectedCompany(company.id)}>
+                      <TableCell onClick={(e) => e.stopPropagation()}>
+                        <Checkbox checked={bulk.isSelected(company.id)} onCheckedChange={() => bulk.toggleOne(company.id)} />
+                      </TableCell>
                       <TableCell>
                         <div className="flex items-center gap-3">
                           {company.logo_url ? <img src={company.logo_url} alt={company.name} className="h-10 w-10 rounded-lg object-cover" /> : <div className="h-10 w-10 rounded-lg bg-muted flex items-center justify-center"><Building2 className="h-5 w-5 text-muted-foreground" /></div>}
@@ -1891,7 +1939,7 @@ export default function CompaniesAdmin() {
                     </TableRow>
                   ))}
                   {companies.length === 0 && (
-                    <TableRow><TableCell colSpan={7} className="text-center py-12 text-muted-foreground"><Building2 className="h-12 w-12 mx-auto mb-4 opacity-50" /><p>{isAr ? "لا توجد شركات" : "No companies found"}</p></TableCell></TableRow>
+                    <TableRow><TableCell colSpan={8} className="text-center py-12 text-muted-foreground"><Building2 className="h-12 w-12 mx-auto mb-4 opacity-50" /><p>{isAr ? "لا توجد شركات" : "No companies found"}</p></TableCell></TableRow>
                   )}
                 </TableBody>
               </Table>

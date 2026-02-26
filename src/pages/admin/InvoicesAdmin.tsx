@@ -1,6 +1,10 @@
 import { useState } from "react";
 import { notifyInvoiceSent, notifyInvoicePaid } from "@/lib/notificationTriggers";
 import { useLanguage } from "@/i18n/LanguageContext";
+import { useAdminBulkActions } from "@/hooks/useAdminBulkActions";
+import { BulkActionBar } from "@/components/admin/BulkActionBar";
+import { useCSVExport } from "@/hooks/useCSVExport";
+import { Checkbox } from "@/components/ui/checkbox";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
@@ -258,6 +262,47 @@ export default function InvoicesAdmin() {
     };
     const l = labels[status] || labels.draft;
     return language === "ar" ? l.ar : l.en;
+  };
+
+  const isAr = language === "ar";
+
+  const bulk = useAdminBulkActions(invoices);
+
+  const { exportCSV: exportInvoicesCSV } = useCSVExport({
+    columns: [
+      { header: isAr ? "رقم الفاتورة" : "Invoice #", accessor: (i: any) => i.invoice_number },
+      { header: isAr ? "العنوان" : "Title", accessor: (i: any) => i.title || "" },
+      { header: isAr ? "الشركة" : "Company", accessor: (i: any) => i.companies?.name || "" },
+      { header: isAr ? "الحالة" : "Status", accessor: (i: any) => getStatusLabel(i.status || "draft") },
+      { header: isAr ? "المبلغ" : "Amount", accessor: (i: any) => Number(i.amount) },
+      { header: isAr ? "العملة" : "Currency", accessor: (i: any) => i.currency },
+      { header: isAr ? "الاستحقاق" : "Due", accessor: (i: any) => i.due_date || "" },
+      { header: isAr ? "التاريخ" : "Created", accessor: (i: any) => i.created_at?.split("T")[0] || "" },
+    ],
+    filename: "invoices",
+  });
+
+  const bulkStatusChange = async (status: string) => {
+    const ids = [...bulk.selected];
+    const updates: Record<string, unknown> = { status };
+    if (status === "paid") updates.paid_at = new Date().toISOString();
+    const { error } = await supabase.from("invoices").update(updates).in("id", ids);
+    if (!error) {
+      queryClient.invalidateQueries({ queryKey: ["admin-invoices"] });
+      bulk.clearSelection();
+      toast({ title: isAr ? `تم تحديث ${ids.length} فاتورة` : `Updated ${ids.length} invoices` });
+    }
+  };
+
+  const bulkDelete = async () => {
+    if (!confirm(isAr ? "هل أنت متأكد من حذف الفواتير المحددة؟" : "Delete selected invoices?")) return;
+    const ids = [...bulk.selected];
+    const { error } = await supabase.from("invoices").delete().in("id", ids);
+    if (!error) {
+      queryClient.invalidateQueries({ queryKey: ["admin-invoices"] });
+      bulk.clearSelection();
+      toast({ title: isAr ? `تم حذف ${ids.length} فاتورة` : `Deleted ${ids.length} invoices` });
+    }
   };
 
   // Stats
@@ -639,6 +684,14 @@ export default function InvoicesAdmin() {
         </Select>
       </div>
 
+      <BulkActionBar
+        count={bulk.count}
+        onClear={bulk.clearSelection}
+        onDelete={bulkDelete}
+        onStatusChange={bulkStatusChange}
+        onExport={() => exportInvoicesCSV(bulk.count > 0 ? bulk.selectedItems : invoices)}
+      />
+
       {/* Table */}
       <Card>
         <CardContent className="p-0">
@@ -649,6 +702,9 @@ export default function InvoicesAdmin() {
               <Table>
                 <TableHeader>
                   <TableRow>
+                    <TableHead className="w-10">
+                      <Checkbox checked={bulk.isAllSelected} onCheckedChange={bulk.toggleAll} />
+                    </TableHead>
                     <TableHead>{language === "ar" ? "رقم الفاتورة" : "Invoice #"}</TableHead>
                     <TableHead>{language === "ar" ? "العنوان" : "Title"}</TableHead>
                     <TableHead>{language === "ar" ? "الشركة" : "Company"}</TableHead>
@@ -660,7 +716,10 @@ export default function InvoicesAdmin() {
                 </TableHeader>
                 <TableBody>
                   {invoices.map((inv) => (
-                    <TableRow key={inv.id} className="cursor-pointer" onClick={() => setSelectedInvoice(inv.id)}>
+                    <TableRow key={inv.id} className={`cursor-pointer ${bulk.isSelected(inv.id) ? "bg-primary/5" : ""}`} onClick={() => setSelectedInvoice(inv.id)}>
+                      <TableCell onClick={(e) => e.stopPropagation()}>
+                        <Checkbox checked={bulk.isSelected(inv.id)} onCheckedChange={() => bulk.toggleOne(inv.id)} />
+                      </TableCell>
                       <TableCell className="font-medium">{inv.invoice_number}</TableCell>
                       <TableCell>{inv.title || inv.description || "—"}</TableCell>
                       <TableCell>

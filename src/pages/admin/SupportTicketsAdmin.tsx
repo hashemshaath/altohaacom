@@ -3,6 +3,10 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/i18n/LanguageContext";
+import { useAdminBulkActions } from "@/hooks/useAdminBulkActions";
+import { BulkActionBar } from "@/components/admin/BulkActionBar";
+import { useCSVExport } from "@/hooks/useCSVExport";
+import { Checkbox } from "@/components/ui/checkbox";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -236,6 +240,33 @@ export default function SupportTicketsAdmin() {
       const thresh = SLA_THRESHOLDS[t.priority] || SLA_THRESHOLDS.normal;
       return differenceInHours(new Date(), new Date(t.created_at)) >= thresh.breach;
     }).length,
+  };
+
+  const bulk = useAdminBulkActions(filteredTickets);
+
+  const { exportCSV: exportTicketsCSV } = useCSVExport({
+    columns: [
+      { header: isAr ? "الرقم" : "Ticket #", accessor: (t: any) => t.ticket_number },
+      { header: isAr ? "الموضوع" : "Subject", accessor: (t: any) => t.subject },
+      { header: isAr ? "المستخدم" : "User", accessor: (t: any) => profileMap.get(t.user_id)?.full_name || "Unknown" },
+      { header: isAr ? "الحالة" : "Status", accessor: (t: any) => t.status },
+      { header: isAr ? "الأولوية" : "Priority", accessor: (t: any) => t.priority },
+      { header: isAr ? "التاريخ" : "Date", accessor: (t: any) => t.created_at?.split("T")[0] || "" },
+    ],
+    filename: "support-tickets",
+  });
+
+  const bulkStatusChange = async (status: string) => {
+    const ids = [...bulk.selected];
+    const updates: any = { status };
+    if (status === "resolved") updates.resolved_at = new Date().toISOString();
+    if (status === "closed") updates.closed_at = new Date().toISOString();
+    const { error } = await supabase.from("support_tickets").update(updates).in("id", ids);
+    if (!error) {
+      queryClient.invalidateQueries({ queryKey: ["adminTickets"] });
+      bulk.clearSelection();
+      toast({ title: isAr ? `تم تحديث ${ids.length} تذكرة` : `Updated ${ids.length} tickets` });
+    }
   };
 
   const getStatusBadge = (status: string) => {
@@ -488,6 +519,13 @@ export default function SupportTicketsAdmin() {
             </Select>
           </div>
 
+          <BulkActionBar
+            count={bulk.count}
+            onClear={bulk.clearSelection}
+            onStatusChange={bulkStatusChange}
+            onExport={() => exportTicketsCSV(bulk.count > 0 ? bulk.selectedItems : filteredTickets)}
+          />
+
           <Card>
             <CardContent className="p-0">
               {isLoading ? (
@@ -536,6 +574,9 @@ export default function SupportTicketsAdmin() {
                     <Table>
                       <TableHeader>
                         <TableRow>
+                          <TableHead className="w-10">
+                            <Checkbox checked={bulk.isAllSelected} onCheckedChange={bulk.toggleAll} />
+                          </TableHead>
                           <TableHead>{isAr ? "الرقم" : "Ticket #"}</TableHead>
                           <TableHead>{isAr ? "الموضوع" : "Subject"}</TableHead>
                           <TableHead>{isAr ? "المستخدم" : "User"}</TableHead>
@@ -551,9 +592,12 @@ export default function SupportTicketsAdmin() {
                           return (
                             <TableRow
                               key={ticket.id}
-                              className="cursor-pointer hover:bg-accent/50 transition-colors"
+                              className={`cursor-pointer hover:bg-accent/50 transition-colors ${bulk.isSelected(ticket.id) ? "bg-primary/5" : ""}`}
                               onClick={() => setSelectedTicketId(ticket.id)}
                             >
+                              <TableCell onClick={(e) => e.stopPropagation()}>
+                                <Checkbox checked={bulk.isSelected(ticket.id)} onCheckedChange={() => bulk.toggleOne(ticket.id)} />
+                              </TableCell>
                               <TableCell className="font-mono text-xs">{ticket.ticket_number}</TableCell>
                               <TableCell>
                                 <p className="font-medium max-w-[240px] truncate">{ticket.subject}</p>
