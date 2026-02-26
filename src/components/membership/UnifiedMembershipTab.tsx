@@ -121,7 +121,7 @@ export function UnifiedMembershipTab({ profile, userId, onMembershipChange }: Un
       toast({
         title: isAr ? "تم تحديث العضوية!" : "Membership updated!",
         description: isAr
-          ? `تم ترقية عضويتك إلى ${newTier === "professional" ? "احترافي" : newTier === "enterprise" ? "مؤسسي" : "أساسي"}`
+          ? `تم ترقية عضويتك إلى ${newTier === "professional" ? "احترافية" : newTier === "enterprise" ? "مؤسسية" : "أساسية"}`
           : `Your membership has been changed to ${newTier}`,
       });
     },
@@ -281,7 +281,7 @@ export function UnifiedMembershipTab({ profile, userId, onMembershipChange }: Un
   const isPro = currentTier === "professional" || currentTier === "enterprise";
   const isEnterprise = currentTier === "enterprise";
   const TierIcon = isEnterprise ? Shield : currentTier === "professional" ? Crown : Star;
-  const tierName = isEnterprise ? (isAr ? "مؤسسي" : "Enterprise") : currentTier === "professional" ? (isAr ? "احترافي" : "Professional") : (isAr ? "أساسي" : "Basic");
+  const tierName = isEnterprise ? (isAr ? "مؤسسية" : "Enterprise") : currentTier === "professional" ? (isAr ? "احترافية" : "Professional") : (isAr ? "أساسية" : "Basic");
   const tierColor = isEnterprise ? "text-chart-2" : "text-primary";
   const tierBg = isEnterprise ? "bg-chart-2/10" : "bg-primary/10";
   const isTrial = card?.is_trial && card?.trial_ends_at && new Date(card.trial_ends_at) > new Date();
@@ -303,12 +303,12 @@ export function UnifiedMembershipTab({ profile, userId, onMembershipChange }: Un
 
   const tiers = [
     {
-      id: "basic", icon: Star, name: isAr ? "أساسي" : "Basic", price: isAr ? "مجاني" : "Free", color: "border-border",
+      id: "basic", icon: Star, name: isAr ? "أساسية" : "Basic", price: isAr ? "مجاني" : "Free", color: "border-border",
       yearlyPrice: null, savings: null,
       features: isAr ? ["إنشاء ملف شخصي", "الانضمام للمجتمع", "متابعة الطهاة", "عرض المسابقات"] : ["Create profile", "Join community", "Follow chefs", "View competitions"],
     },
     {
-      id: "professional", icon: Crown, name: isAr ? "احترافي" : "Professional",
+      id: "professional", icon: Crown, name: isAr ? "احترافية" : "Professional",
       price: "SAR 19/" + (isAr ? "شهر" : "month"),
       yearlyPrice: "SAR 190/" + (isAr ? "سنة" : "year"),
       savings: isAr ? "وفر 38 ر.س" : "Save SAR 38",
@@ -491,7 +491,9 @@ export function UnifiedMembershipTab({ profile, userId, onMembershipChange }: Un
                   }
                 >
                   <TierIcon className="h-4 w-4" style={{ color: cardTheme === "classic" ? "#c9a84c" : "hsl(var(--primary))" }} />
-                  <span className="text-[10px] sm:text-xs font-bold tracking-wide" style={{ color: cardTheme === "classic" ? "#c9a84c" : "hsl(var(--primary))" }}>{tierName}</span>
+                  <span className={`text-[10px] sm:text-xs font-bold ${isAr ? "tracking-normal leading-none" : "tracking-wide uppercase"}`} style={{ color: cardTheme === "classic" ? "#c9a84c" : "hsl(var(--primary))" }}>
+                    {tierName}
+                  </span>
                 </div>
               </div>
 
@@ -608,7 +610,7 @@ export function UnifiedMembershipTab({ profile, userId, onMembershipChange }: Un
                     <div className="flex items-center gap-2">
                       <span className="font-mono text-[9px] tracking-[0.15em]" style={{ color: cardTheme === "classic" ? "rgba(255,255,255,0.35)" : "hsl(var(--muted-foreground) / 0.5)" }}>{profile?.account_number || card.membership_number}</span>
                       <span
-                        className="ms-auto text-[8px] font-bold uppercase tracking-wider rounded-full px-2.5 py-1"
+                        className={`ms-auto text-[8px] font-bold rounded-full px-2.5 py-1 whitespace-nowrap ${isAr ? "tracking-normal" : "uppercase tracking-wider"}`}
                         style={isCardExpired
                           ? { color: "#f87171", background: "rgba(248,113,113,0.12)" }
                           : card.card_status === "suspended"
