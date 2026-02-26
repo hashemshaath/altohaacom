@@ -8,6 +8,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Label } from "@/components/ui/label";
+import { Checkbox } from "@/components/ui/checkbox";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -21,6 +22,9 @@ import JudgeProfileForm from "@/components/judges/JudgeProfileForm";
 import JudgeDocumentsPanel from "@/components/judges/JudgeDocumentsPanel";
 import JudgeMembershipsPanel from "@/components/judges/JudgeMembershipsPanel";
 import JudgeVisitLogsPanel from "@/components/judges/JudgeVisitLogsPanel";
+import { useAdminBulkActions } from "@/hooks/useAdminBulkActions";
+import { useCSVExport } from "@/hooks/useCSVExport";
+import { BulkActionBar } from "@/components/admin/BulkActionBar";
 
 export default function JudgesAdmin() {
   const { language } = useLanguage();
@@ -87,7 +91,10 @@ export default function JudgesAdmin() {
     },
   });
 
-  const filtered = judges?.filter(j => {
+  // Map judges to have `id` for useAdminBulkActions (needs { id: string })
+  const judgesWithId = (judges || []).map(j => ({ ...j, id: j.user_id }));
+
+  const filtered = judgesWithId.filter(j => {
     const name = (j.full_name || "").toLowerCase();
     const matchesSearch = name.includes(searchQuery.toLowerCase()) ||
       (j.judgeProfile?.nationality || "").toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -95,6 +102,22 @@ export default function JudgesAdmin() {
     const matchesCat = filterCategory === "all" || j.judgeProfile?.judge_category === filterCategory;
     const matchesLevel = filterLevel === "all" || j.judgeProfile?.judge_level === filterLevel;
     return matchesSearch && matchesCat && matchesLevel;
+  });
+
+  const bulk = useAdminBulkActions(filtered || []);
+
+  const { exportCSV } = useCSVExport({
+    columns: [
+      { header: isAr ? "الرقم" : "Account #", accessor: (r: any) => r.account_number || "" },
+      { header: isAr ? "الاسم" : "Name", accessor: (r: any) => r.full_name || "" },
+      { header: isAr ? "المستوى" : "Level", accessor: (r: any) => r.judgeProfile?.judge_level || "" },
+      { header: isAr ? "التخصص" : "Specialty", accessor: (r: any) => r.judgeProfile?.judge_category || "" },
+      { header: isAr ? "الجنسية" : "Nationality", accessor: (r: any) => r.judgeProfile?.nationality || r.location || "" },
+      { header: isAr ? "المستندات" : "Docs", accessor: (r: any) => r.docCount },
+      { header: isAr ? "العضويات" : "Memberships", accessor: (r: any) => r.membershipCount },
+      { header: isAr ? "المشاركات" : "Participations", accessor: (r: any) => r.visitCount },
+    ],
+    filename: "judges",
   });
 
   const stats = {
@@ -210,12 +233,21 @@ export default function JudgesAdmin() {
         </Select>
       </div>
 
+      <BulkActionBar
+        count={bulk.count}
+        onClear={bulk.clearSelection}
+        onExport={() => exportCSV(bulk.selectedItems)}
+      />
+
       {/* Table */}
       <Card>
         <CardContent className="p-0">
           <Table>
             <TableHeader>
               <TableRow>
+                <TableHead className="w-10">
+                  <Checkbox checked={bulk.isAllSelected} onCheckedChange={bulk.toggleAll} />
+                </TableHead>
                 <TableHead>{isAr ? "الرقم" : "#"}</TableHead>
                 <TableHead>{isAr ? "المحكّم" : "Judge"}</TableHead>
                 <TableHead>{isAr ? "التصنيف" : "Classification"}</TableHead>
@@ -229,12 +261,15 @@ export default function JudgesAdmin() {
             </TableHeader>
             <TableBody>
               {isLoading ? (
-                <TableRow><TableCell colSpan={9} className="text-center py-8">{isAr ? "جاري التحميل..." : "Loading..."}</TableCell></TableRow>
+                <TableRow><TableCell colSpan={10} className="text-center py-8">{isAr ? "جاري التحميل..." : "Loading..."}</TableCell></TableRow>
               ) : filtered?.length === 0 ? (
-                <TableRow><TableCell colSpan={9} className="text-center py-8 text-muted-foreground">{isAr ? "لا يوجد محكّمين" : "No judges found"}</TableCell></TableRow>
+                <TableRow><TableCell colSpan={10} className="text-center py-8 text-muted-foreground">{isAr ? "لا يوجد محكّمين" : "No judges found"}</TableCell></TableRow>
               ) : (
                 filtered?.map(judge => (
-                  <TableRow key={judge.user_id} className="cursor-pointer hover:bg-muted/50" onClick={() => setSelectedJudgeId(judge.user_id)}>
+                  <TableRow key={judge.user_id} className={`cursor-pointer hover:bg-muted/50 ${bulk.isSelected(judge.id) ? "bg-primary/5" : ""}`} onClick={() => setSelectedJudgeId(judge.user_id)}>
+                    <TableCell onClick={e => e.stopPropagation()}>
+                      <Checkbox checked={bulk.isSelected(judge.id)} onCheckedChange={() => bulk.toggleOne(judge.id)} />
+                    </TableCell>
                     <TableCell className="font-mono text-xs">{judge.account_number || "—"}</TableCell>
                     <TableCell>
                       <div className="flex items-center gap-3">
