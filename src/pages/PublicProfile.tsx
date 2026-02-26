@@ -32,6 +32,7 @@ import { PublicProfileGallery } from "@/components/public-profile/PublicProfileG
 import { PublicProfileEmptySection } from "@/components/public-profile/PublicProfileEmptySection";
 import { PublicProfileAchievements } from "@/components/public-profile/PublicProfileAchievements";
 import { ProfileActivityTimeline } from "@/components/profile/ProfileActivityTimeline";
+import { PublicProfilePosts } from "@/components/public-profile/PublicProfilePosts";
 import { CollapsibleProfileSection } from "@/components/public-profile/CollapsibleProfileSection";
 import { CareerRecordCard } from "@/components/public-profile/CareerRecordCard";
 import { usePublicProfileData } from "@/hooks/usePublicProfileData";
@@ -381,6 +382,9 @@ export default function PublicProfile() {
                 <PublicProfileSidebar profile={profile} qrCode={qrCode} isAr={isAr} isVisible={isVisible} getCountryName={getCountryName} profileUrl={profileUrl} t={t} />
               </SectionReveal>
               <SectionReveal delay={300} direction="right">
+                <PublicProfilePosts userId={profile.user_id} isOwnProfile={isOwnProfile} />
+              </SectionReveal>
+              <SectionReveal delay={400} direction="right">
                 <ProfileActivityTimeline userId={profile.user_id} />
               </SectionReveal>
             </div>
