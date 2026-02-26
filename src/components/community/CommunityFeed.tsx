@@ -8,6 +8,7 @@ import { MessageCircle, X, Loader2 } from "lucide-react";
 import { FeedSkeletonLoader } from "./PostSkeleton";
 import { useToast } from "@/hooks/use-toast";
 import { toEnglishDigits } from "@/lib/formatNumber";
+import { SwipeablePostWrapper } from "./SwipeablePostWrapper";
 import { PostComposer } from "./PostComposer";
 import { PostThread } from "./PostThread";
 import { ReportDialog } from "./ReportDialog";
@@ -475,22 +476,29 @@ export function CommunityFeed() {
           </div>
         ) : (
           posts.map((post) => (
-            <PostCard
+            <SwipeablePostWrapper
               key={post.id}
-              post={post}
-              isEditing={editingPost?.id === post.id}
-              onEdit={setEditingPost}
-              onEditClose={() => setEditingPost(null)}
-              onEditSaved={handleEditSaved}
-              onDelete={handleDelete}
-              onLike={handleLike}
-              onBookmark={handleBookmark}
-              onRepost={handleRepost}
-              onOpenThread={setThreadPostId}
-              onReport={setReportPostId}
-              onViewHistory={setHistoryPostId}
-              formatDate={formatDate}
-            />
+              isLiked={post.is_liked}
+              isBookmarked={post.is_bookmarked}
+              onSwipeRight={() => handleLike(post.id, post.is_liked)}
+              onSwipeLeft={() => handleBookmark(post.id, post.is_bookmarked)}
+            >
+              <PostCard
+                post={post}
+                isEditing={editingPost?.id === post.id}
+                onEdit={setEditingPost}
+                onEditClose={() => setEditingPost(null)}
+                onEditSaved={handleEditSaved}
+                onDelete={handleDelete}
+                onLike={handleLike}
+                onBookmark={handleBookmark}
+                onRepost={handleRepost}
+                onOpenThread={setThreadPostId}
+                onReport={setReportPostId}
+                onViewHistory={setHistoryPostId}
+                formatDate={formatDate}
+              />
+            </SwipeablePostWrapper>
           ))
         )}
       </div>
