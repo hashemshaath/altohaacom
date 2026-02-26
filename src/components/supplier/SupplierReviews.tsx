@@ -64,7 +64,7 @@ export function SupplierReviews({ companyId }: Props) {
       if (userIds.length === 0) return {};
       const { data } = await supabase
         .from("profiles")
-        .select("user_id, full_name, username")
+        .select("user_id, full_name, display_name, username")
         .in("user_id", userIds);
       const map: Record<string, any> = {};
       (data || []).forEach((p: any) => { map[p.user_id] = p; });
@@ -192,7 +192,7 @@ export function SupplierReviews({ companyId }: Props) {
       <div className="space-y-3">
         {reviews.map((r: any) => {
           const profile = reviewerProfiles[r.user_id];
-          const displayName = profile?.full_name || profile?.username || (isAr ? "مستخدم" : "User");
+          const displayName = profile?.display_name || profile?.full_name || profile?.username || (isAr ? "مستخدم" : "User");
           return (
             <Card key={r.id} className="rounded-xl">
               <CardContent className="p-4 space-y-2">

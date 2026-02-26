@@ -30,6 +30,9 @@ export interface ConversationPartner {
   user_id: string;
   username: string | null;
   full_name: string | null;
+  full_name_ar: string | null;
+  display_name: string | null;
+  display_name_ar: string | null;
   avatar_url: string | null;
   last_message?: string;
   last_message_at?: string;
@@ -120,7 +123,7 @@ export function useMessagesData() {
 
       const { data: profiles } = await supabase
         .from("profiles")
-        .select("user_id, username, full_name, avatar_url")
+        .select("user_id, username, full_name, full_name_ar, display_name, display_name_ar, avatar_url")
         .in("user_id", partnerIds);
 
       const profileMap = new Map(profiles?.map((p) => [p.user_id, p]) || []);
@@ -134,6 +137,9 @@ export function useMessagesData() {
             user_id: partnerId,
             username: profile?.username,
             full_name: profile?.full_name,
+            full_name_ar: profile?.full_name_ar || null,
+            display_name: profile?.display_name || null,
+            display_name_ar: profile?.display_name_ar || null,
             avatar_url: profile?.avatar_url,
             last_message: lastMsg ? getLastMsgPreview(lastMsg, isAr) : "",
             last_message_at: lastMsg?.created_at,
@@ -273,7 +279,7 @@ export function useMessagesData() {
       } else {
         supabase
           .from("profiles")
-          .select("user_id, username, full_name, avatar_url")
+          .select("user_id, username, full_name, full_name_ar, display_name, display_name_ar, avatar_url")
           .eq("user_id", initialUserId)
           .single()
           .then(({ data }) => {

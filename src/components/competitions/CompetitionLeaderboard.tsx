@@ -82,7 +82,7 @@ export function CompetitionLeaderboard({
       const participantIds = registrations.map((r) => r.participant_id);
       const { data: profiles } = await supabase
         .from("profiles")
-        .select("user_id, full_name, avatar_url, username")
+        .select("user_id, full_name, display_name, avatar_url, username")
         .in("user_id", participantIds);
 
       // Calculate weighted scores for each registration
@@ -121,7 +121,7 @@ export function CompetitionLeaderboard({
           dish_image_url: reg.dish_image_url,
           category_name: category?.name || null,
           category_name_ar: category?.name_ar || null,
-          participant_name: profile?.full_name || null,
+          participant_name: profile?.display_name || profile?.full_name || null,
           participant_avatar: profile?.avatar_url || null,
           participant_username: profile?.username || null,
           total_weighted_score: Math.round(finalScore * 100) / 100,

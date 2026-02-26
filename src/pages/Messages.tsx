@@ -74,7 +74,7 @@ export default function Messages() {
       <NewConversationDialog
         open={data.isNewConvOpen}
         onOpenChange={data.setIsNewConvOpen}
-        onSelectUser={(u) => data.setSelectedPartner({ ...u, unread_count: 0, has_approval: false, is_starred: false })}
+        onSelectUser={(u) => data.setSelectedPartner({ ...u, full_name_ar: null, display_name: null, display_name_ar: null, unread_count: 0, has_approval: false, is_starred: false })}
       />
 
       <ApprovalTemplateDialog

@@ -72,13 +72,13 @@ export function NetworkTab() {
                   <Avatar className="h-12 w-12 ring-2 ring-primary/10">
                     <AvatarImage src={req.profile?.avatar_url} />
                     <AvatarFallback className="bg-primary/10 text-primary font-bold">
-                      {(req.profile?.full_name || "U")[0]}
+                      {(req.profile?.display_name || req.profile?.full_name || "U")[0]}
                     </AvatarFallback>
                   </Avatar>
                 </Link>
                 <div className="flex-1 min-w-0">
                   <Link to={`/${req.profile?.username || req.requester_id}`} className="text-sm font-bold hover:text-primary truncate block transition-colors">
-                    {req.profile?.full_name || (isAr ? "مستخدم" : "User")}
+                    {isAr ? (req.profile?.display_name_ar || req.profile?.full_name_ar || req.profile?.display_name || req.profile?.full_name) : (req.profile?.display_name || req.profile?.full_name) || (isAr ? "مستخدم" : "User")}
                   </Link>
                   {req.profile?.specialization && (
                     <p className="text-xs text-muted-foreground truncate mt-0.5">{req.profile.specialization}</p>

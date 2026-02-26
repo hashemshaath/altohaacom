@@ -1,4 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
+import { getDisplayName } from "@/lib/getDisplayName";
 import { supabase } from "@/integrations/supabase/client";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -22,7 +23,7 @@ export function NewlyJoinedUsers() {
     queryFn: async () => {
       const { data } = await supabase
         .from("profiles")
-        .select("id, user_id, username, full_name, full_name_ar, avatar_url, country_code, city, specialization, specialization_ar, nationality, show_nationality, created_at")
+        .select("id, user_id, username, full_name, full_name_ar, display_name, display_name_ar, avatar_url, country_code, city, specialization, specialization_ar, nationality, show_nationality, created_at")
         .order("created_at", { ascending: false })
         .limit(12);
       return data || [];
@@ -62,7 +63,7 @@ export function NewlyJoinedUsers() {
 
         <div className="grid grid-cols-3 gap-2 sm:grid-cols-4 md:grid-cols-6">
           {users.map((user: any) => {
-            const name = isAr && user.full_name_ar ? user.full_name_ar : user.full_name;
+            const name = getDisplayName(user, isAr);
             const spec = isAr && user.specialization_ar ? user.specialization_ar : user.specialization;
             const initials = name
               ? name.split(" ").map((w: string) => w[0]).join("").slice(0, 2).toUpperCase()
