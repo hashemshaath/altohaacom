@@ -7,6 +7,7 @@ import { useLanguage } from "@/i18n/LanguageContext";
 import { useRealtimeMessages } from "@/hooks/useRealtimeMessages";
 import { usePresence } from "@/hooks/usePresence";
 import { useToast } from "@/hooks/use-toast";
+import { uploadMessageAttachment } from "@/utils/storageUtils";
 
 export interface Message {
   id: string;
@@ -306,10 +307,8 @@ export function useMessagesData() {
 
         for (const file of pendingFiles) {
           const filePath = `${user.id}/${Date.now()}-${file.name}`;
-          const { error } = await supabase.storage.from("message-attachments").upload(filePath, file);
-          if (error) throw error;
-          const { data: urlData } = supabase.storage.from("message-attachments").getPublicUrl(filePath);
-          urls.push(urlData.publicUrl);
+          const signedUrl = await uploadMessageAttachment(filePath, file);
+          urls.push(signedUrl);
           names.push(file.name);
           msgType = getMessageTypeFromMime(file.type);
         }
