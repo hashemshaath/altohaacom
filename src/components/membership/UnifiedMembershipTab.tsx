@@ -498,6 +498,30 @@ export function UnifiedMembershipTab({ profile, userId, onMembershipChange }: Un
               {/* ── Center: Avatar + Name + Details ── */}
               <div className={`flex-1 flex ${isVertical ? "flex-col items-center justify-center gap-3" : "items-center gap-5"} my-2`}>
                 <div className="shrink-0 relative">
+                  {profile?.avatar_url ? (
+                    <img
+                      src={profile.avatar_url}
+                      alt={profile.full_name || ""}
+                      className={`${isVertical ? "h-[80px] w-[80px]" : "h-[72px] w-[72px] sm:h-[80px] sm:w-[80px]"} rounded-xl object-cover`}
+                      style={cardTheme === "classic"
+                        ? { border: "2.5px solid rgba(201,168,76,0.5)", boxShadow: "0 4px 16px rgba(0,0,0,0.4)" }
+                        : { border: "2.5px solid hsl(var(--primary) / 0.3)", boxShadow: "0 4px 16px hsl(var(--primary) / 0.12)" }
+                      }
+                    />
+                  ) : (
+                    <div
+                      className={`${isVertical ? "h-[80px] w-[80px]" : "h-[72px] w-[72px] sm:h-[80px] sm:w-[80px]"} rounded-xl flex items-center justify-center`}
+                      style={cardTheme === "classic"
+                        ? { background: "linear-gradient(135deg, rgba(201,168,76,0.2), rgba(201,168,76,0.05))", border: "2.5px solid rgba(201,168,76,0.35)" }
+                        : { background: "hsl(var(--primary) / 0.08)", border: "2.5px solid hsl(var(--primary) / 0.2)" }
+                      }
+                    >
+                      <span className="text-3xl font-bold" style={{ color: cardTheme === "classic" ? "#c9a84c" : "hsl(var(--primary))" }}>{(profile?.full_name || "?")[0]}</span>
+                    </div>
+                  )}
+                </div>
+
+                <div className={`flex-1 min-w-0 ${isVertical ? "text-center" : isAr ? "text-right" : "text-left"}`}>
                   <p
                     className={`font-bold leading-tight break-words ${isVertical ? "text-center" : ""} ${isAr ? "text-base sm:text-lg" : "text-lg sm:text-xl"}`}
                     style={{ color: cardTheme === "classic" ? "#fff" : "hsl(var(--foreground))" }}
