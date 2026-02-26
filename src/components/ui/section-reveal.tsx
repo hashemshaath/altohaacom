@@ -19,6 +19,13 @@ export const SectionReveal = forwardRef<HTMLDivElement, SectionRevealProps>(
       const el = innerRef.current;
       if (!el) return;
 
+      // Immediately show if already in viewport on mount
+      const rect = el.getBoundingClientRect();
+      if (rect.top < window.innerHeight && rect.bottom > 0) {
+        setIsVisible(true);
+        return;
+      }
+
       const observer = new IntersectionObserver(
         ([entry]) => {
           if (entry.isIntersecting) {
@@ -26,7 +33,7 @@ export const SectionReveal = forwardRef<HTMLDivElement, SectionRevealProps>(
             observer.unobserve(el);
           }
         },
-        { threshold: 0.08, rootMargin: "0px 0px -30px 0px" }
+        { threshold: 0.05, rootMargin: "0px 0px 50px 0px" }
       );
 
       observer.observe(el);
